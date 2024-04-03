@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -141,6 +141,9 @@ class FiniteElementDescriptor : public DataStructure {
     bool exists() const;
 
     bool build();
+
+    /** @brief Get index of elem type */
+    ASTERINTEGER getElemTypeNume( const std::string elemTypeName ) const;
 
     /**
      * @brief Number of super-elements in model

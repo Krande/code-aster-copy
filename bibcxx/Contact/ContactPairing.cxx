@@ -2,7 +2,7 @@
  * @file ContactPairing.cxx
  * @brief Implementation de Contact
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,52 +24,58 @@
 
 #include "Messages/Messages.h"
 
+void ContactPairing::resizePairing( const int nbZoneCont ) {
+    if ( nbZoneCont == 0 )
+        raiseAsterError( "ContactZone vector is empty " );
+    _nbPairs.resize( nbZoneCont );
+    _listOfPairs.resize( nbZoneCont );
+    _nbIntersectionPoints.resize( nbZoneCont );
+    _slaveIntersectionPoints.resize( nbZoneCont );
+}
+
 ContactPairing::ContactPairing( const std::string name, const ContactNewPtr cont )
     : DataStructure( name, 8, "PAIRING_SD" ), _contDefi( cont ), _mesh( cont->getMesh() ) {
     if ( !_mesh || _mesh->isParallel() )
         raiseAsterError( "Mesh is empty or is parallel " );
 
-    _newCoordinates = std::make_shared< MeshCoordinatesField >( *( _mesh->getCoordinates() ) );
+    _currentCoordinates = std::make_shared< MeshCoordinatesField >( *( _mesh->getCoordinates() ) );
 
     // be sure that zones is not empty and get size of zones and resize
-    int size_zones = _contDefi->getNumberOfContactZones();
-    if ( size_zones == 0 )
+    int nbZoneCont = _contDefi->getNumberOfContactZones();
+    if ( nbZoneCont == 0 )
         raiseAsterError( "ContactZone vector is empty " );
 
-    // resize pairing quantities
-    _nbPairs.resize( size_zones );
-    _listOfPairs.resize( size_zones );
-    _nbIntersectionPoints.resize( size_zones );
-    _slaveIntersectionPoints.resize( size_zones );
+    // Resize pairing quantities
+    resizePairing( nbZoneCont );
 };
 
-ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
+ASTERBOOL ContactPairing::computeZone( ASTERINTEGER indexZone ) {
 
-    if ( i < 0 || i >= _contDefi->getNumberOfContactZones() ) {
+    if ( indexZone < 0 || indexZone >= _contDefi->getNumberOfContactZones() ) {
         throw std::out_of_range( "The zone index should be between 0  and " +
                                  std::to_string( _contDefi->getNumberOfContactZones() - 1 ) );
     }
 
     CALL_JEMARQ();
 
-    auto zone = _contDefi->getContactZone( i );
+    auto zone = _contDefi->getContactZone( indexZone );
     AS_ASSERT( !zone->hasSmoothing() );
 
-    // get and define some input parameters
-    VectorLong eleMaster = zone->getMasterCells();
-    VectorLong NodesMaster = zone->getMasterNodes();
-    VectorLong eleSlave = zone->getSlaveCells();
-    ASTERINTEGER nbCellMaster = eleMaster.size();
-    ASTERINTEGER nbNodeMaster = NodesMaster.size();
-    ASTERINTEGER nbCellSlave = eleSlave.size();
+    // Get and define some input parameters
+    VectorLong masterCells = zone->getMasterCells();
+    VectorLong masterNodes = zone->getMasterNodes();
+    VectorLong slaveCells = zone->getSlaveCells();
+    ASTERINTEGER nbCellMaster = masterCells.size();
+    ASTERINTEGER nbNodeMaster = masterNodes.size();
+    ASTERINTEGER nbCellSlave = slaveCells.size();
     std::string pair_method;
 
-    // update the numbering for fortran
-    std::for_each( eleMaster.begin(), eleMaster.end(), []( ASTERINTEGER &d ) { d += 1; } );
-    std::for_each( NodesMaster.begin(), NodesMaster.end(), []( ASTERINTEGER &d ) { d += 1; } );
-    std::for_each( eleSlave.begin(), eleSlave.end(), []( ASTERINTEGER &d ) { d += 1; } );
+    // Update the numbering for fortran
+    std::for_each( masterCells.begin(), masterCells.end(), []( ASTERINTEGER &d ) { d += 1; } );
+    std::for_each( masterNodes.begin(), masterNodes.end(), []( ASTERINTEGER &d ) { d += 1; } );
+    std::for_each( slaveCells.begin(), slaveCells.end(), []( ASTERINTEGER &d ) { d += 1; } );
 
-    // get pairing method
+    // Get pairing method
     auto variant = zone->getPairingParameter()->getAlgorithm();
     if ( variant == PairingAlgo::Mortar ) {
         pair_method = ljust( "RAPIDE", 24, ' ' );
@@ -77,38 +83,39 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
         AS_ABORT( "Not expected" );
     }
 
+    // Get distance ratio
     auto dist_pairing = zone->getPairingParameter()->getDistanceRatio();
 
-    // tolerence
+    // Tolerance for pairing
     ASTERDOUBLE pair_tole = 1e-8;
 
-    // set pairs numbers to 0
+    // Set pairs numbers to 0
     ASTERINTEGER nb_pairs = 0;
 
-    // output paramaters as C pointers
+    // Main routine for pairing
     auto pairs = JeveuxVectorLong( "&&LISTPAIRS" );
     auto nbInterPoints = JeveuxVectorLong( "&&NBPAIRS" );
     auto interSlavePoints = JeveuxVectorReal( "&&INTERSLPTS" );
 
-    CALLO_APLCPGN( _mesh->getName(), _newCoordinates->getName(), zone->getName(), pair_method,
-                   &pair_tole, &dist_pairing, &nbCellMaster, eleMaster.data(), &nbCellSlave,
-                   eleSlave.data(), NodesMaster.data(), &nbNodeMaster, &nb_pairs,
+    CALLO_APLCPGN( _mesh->getName(), _currentCoordinates->getName(), zone->getName(), pair_method,
+                   &pair_tole, &dist_pairing, &nbCellMaster, masterCells.data(), &nbCellSlave,
+                   slaveCells.data(), masterNodes.data(), &nbNodeMaster, &nb_pairs,
                    ljust( pairs->getName(), 19, ' ' ), ljust( nbInterPoints->getName(), 19, ' ' ),
                    ljust( interSlavePoints->getName(), 19, ' ' ) );
 
     // clearZone
-    this->clearZone( i );
+    this->clearZone( indexZone );
 
     // fill the pairing quantities
-    _nbPairs[i] = nb_pairs;
-    _listOfPairs[i] = pairs->toVector();
-    _nbIntersectionPoints[i] = nbInterPoints->toVector();
-    _slaveIntersectionPoints[i] = interSlavePoints->toVector();
+    _nbPairs[indexZone] = nb_pairs;
+    _listOfPairs[indexZone] = pairs->toVector();
+    _nbIntersectionPoints[indexZone] = nbInterPoints->toVector();
+    _slaveIntersectionPoints[indexZone] = interSlavePoints->toVector();
 
     // update numerotation
-
-    std::transform( _listOfPairs[i].begin(), _listOfPairs[i].end(), _listOfPairs[i].begin(),
-                    []( ASTERINTEGER &i ) -> ASTERINTEGER { return --i; } );
+    std::transform( _listOfPairs[indexZone].begin(), _listOfPairs[indexZone].end(),
+                    _listOfPairs[indexZone].begin(),
+                    []( ASTERINTEGER &indexZone ) -> ASTERINTEGER { return --indexZone; } );
 
     CALL_JEDEMA();
 
@@ -127,26 +134,24 @@ ASTERBOOL ContactPairing::compute() {
     return true;
 }
 
-void ContactPairing::clearZone( ASTERINTEGER i ) {
+void ContactPairing::clearZone( ASTERINTEGER indexZone ) {
 
-    // swap is recommended to release memory
-    _listOfPairs[i].clear();
-    _nbIntersectionPoints[i].clear();
-    _slaveIntersectionPoints[i].clear();
-
-    _nbPairs.at( i ) = 0;
+    _listOfPairs[indexZone].clear();
+    _nbIntersectionPoints[indexZone].clear();
+    _slaveIntersectionPoints[indexZone].clear();
+    _nbPairs.at( indexZone ) = 0;
 }
 
 std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > >
-ContactPairing::getListOfPairsOfZone( ASTERINTEGER zone_index ) const {
+ContactPairing::getListOfPairsOfZone( ASTERINTEGER indexZone ) const {
 
     std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > tmp;
-    ASTERINTEGER nbPairs = getNumberOfPairsOfZone( zone_index );
+    ASTERINTEGER nbPairs = getNumberOfPairsOfZone( indexZone );
     tmp.reserve( nbPairs );
 
-    for ( auto i = 0; i < nbPairs; i++ ) {
-        tmp.push_back( std::make_pair( _listOfPairs[zone_index][2 * i],
-                                       _listOfPairs[zone_index][2 * i + 1] ) );
+    for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
+        tmp.push_back( std::make_pair( _listOfPairs[indexZone][2 * iPair],
+                                       _listOfPairs[indexZone][2 * iPair + 1] ) );
     }
 
     return tmp;
@@ -158,12 +163,12 @@ std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > ContactPairing::getListOf
     ASTERINTEGER nbPairs = getNumberOfPairs();
     tmp.reserve( nbPairs );
 
-    for ( int zone_index = 0; zone_index < _contDefi->getNumberOfContactZones(); zone_index++ ) {
-        auto nbPairs = getNumberOfPairsOfZone( zone_index );
+    for ( int indexZone = 0; indexZone < _contDefi->getNumberOfContactZones(); indexZone++ ) {
+        auto nbPairs = getNumberOfPairsOfZone( indexZone );
 
-        for ( auto i = 0; i < nbPairs; i++ ) {
-            tmp.push_back( std::make_pair( _listOfPairs[zone_index][2 * i],
-                                           _listOfPairs[zone_index][2 * i + 1] ) );
+        for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
+            tmp.push_back( std::make_pair( _listOfPairs[indexZone][2 * iPair],
+                                           _listOfPairs[indexZone][2 * iPair + 1] ) );
         }
     }
 
@@ -171,13 +176,13 @@ std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > ContactPairing::getListOf
 }
 
 std::vector< VectorReal >
-ContactPairing::getSlaveIntersectionPoints( ASTERINTEGER zone_index ) const {
+ContactPairing::getSlaveIntersectionPoints( ASTERINTEGER indexZone ) const {
 
     std::vector< VectorReal > ret;
-    ASTERINTEGER nbPairs = getNumberOfPairsOfZone( zone_index );
+    ASTERINTEGER nbPairs = getNumberOfPairsOfZone( indexZone );
     ret.reserve( nbPairs );
 
-    auto iter = _slaveIntersectionPoints[zone_index].begin();
+    auto iter = _slaveIntersectionPoints[indexZone].begin();
     for ( auto i = 0; i < nbPairs; i++ ) {
         ret.push_back( VectorReal( iter + 16 * i, iter + 16 * ( i + 1 ) ) );
     }
@@ -185,271 +190,405 @@ ContactPairing::getSlaveIntersectionPoints( ASTERINTEGER zone_index ) const {
     return ret;
 }
 
-void ContactPairing::buildFiniteElementDescriptor() {
+ASTERINTEGER ContactPairing::getContCellIndx( const ContactAlgo contAlgo,
+                                              std::string slavCellTypeName,
+                                              std::string mastCellTypeName ) {
+    ASTERINTEGER cellIndx = -1;
 
-    CALL_JEMARQ();
-
-    auto model = _contDefi->getModel();
-    auto mesh = getMesh();
-
-    _fed = std::make_shared< FiniteElementDescriptor >( mesh );
-    _fed->setModel( model );
-
-    const ASTERINTEGER nbZoneCont = _contDefi->getNumberOfContactZones();
-    const ASTERINTEGER nbContPairTot = this->getNumberOfPairs();
-
-    using VectorPairLong = std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > >;
-
-    MapLong listType;
-
-    std::vector< VectorLong > listNodes;
-    listNodes.reserve( nbContPairTot );
-
-    std::vector< VectorPairLong > listContElem;
-    listContElem.reserve( 2 * nbZoneCont );
-
-    ASTERINTEGER modelDim = model->getGeometricDimension();
-    ASTERLOGICAL lAxis = model->existsAxis();
-
-    auto meshConnectivty = mesh->getConnectivity();
-
-    SetLong slaveNodePaired, slaveCellPaired;
-    ASTERINTEGER iContPair = 0;
-
-    // Create virtual cells for pairing cells
-    for ( int iZone = 0; iZone < nbZoneCont; iZone++ ) {
-        auto iZonePairing = this->getListOfPairsOfZone( iZone );
-        auto nbContPairZone = this->getNumberOfPairsOfZone( iZone );
-
-        auto zone = _contDefi->getContactZone( iZone );
-        auto contAlgo = zone->getContactParameter()->getAlgorithm();
-        auto lFrot = zone->getFrictionParameter()->hasFriction();
-
-        VectorPairLong listContElemZone;
-        listContElemZone.reserve( nbContPairZone );
-
-        auto surf2Volu = zone->getSlaveCellsSurfToVolu();
-
-        /*loop on  pair of iZone*/
-        for ( int iPair = 0; iPair < nbContPairZone; iPair++ ) {
-
-            /*get pairing of current zone*/
-            auto [slavCellNume, mastCellNume] = iZonePairing[iPair];
-            slaveCellPaired.insert( slavCellNume );
-
-            auto slaveCellUsedNume = slavCellNume;
-            if ( contAlgo == ContactAlgo::Nitsche ) {
-                slaveCellUsedNume = surf2Volu[slavCellNume];
+    if ( contAlgo == ContactAlgo::Lagrangian ) {
+        for ( int iContType = 0; iContType < contLagrType; iContType++ ) {
+            if ( slavCellTypeName == contCellLagr[iContType].slavCellType ) {
+                if ( mastCellTypeName == contCellLagr[iContType].mastCellType ) {
+                    AS_ASSERT( cellIndx == -1 )
+                    cellIndx = iContType;
+                }
             }
-
-            /*get slave and master geom type*/
-            auto typgSlavName = ljust( mesh->getCellTypeName( slaveCellUsedNume ), 8, ' ' );
-            auto typgMastName = ljust( mesh->getCellTypeName( mastCellNume ), 8, ' ' );
-
-            /*call mmelemdata_c*/
-            ASTERINTEGER typgContNume = 0, typfContNume = 0, typfFrotNume = 0, typeElem;
-            ASTERINTEGER nbNodesCell = 0, elemIndx = 0, nbType = 0;
-
-            if ( contAlgo == ContactAlgo::Lagrangian ) {
-                CALLO_MMELEM_DATA_LAGA( &lAxis, typgSlavName, typgMastName, &nbType, &nbNodesCell,
-                                        &typgContNume, &typfContNume, &typfFrotNume, &elemIndx );
-            } else if ( contAlgo == ContactAlgo::Nitsche ) {
-                CALLO_MMELEM_DATA_NITS( &lAxis, typgSlavName, typgMastName, &nbType, &nbNodesCell,
-                                        &typgContNume, &typfContNume, &typfFrotNume, &elemIndx );
-            } else {
-                AS_ABORT( "Not implemented" );
-            }
-
-            if ( lFrot ) {
-                typeElem = typfFrotNume;
-            } else {
-                typeElem = typfContNume;
-            }
-
-            if ( listType.count( typeElem ) == 0 ) {
-                listType[typeElem] = 0;
-            }
-
-            listType[typeElem] += 1;
-
-            listContElemZone.push_back( std::make_pair( typeElem, ++iContPair ) );
-
-            /* get nodes (be carefull with +1 ) */
-            auto slav_cell_con = ( *meshConnectivty )[slaveCellUsedNume + 1];
-            auto mast_cell_con = ( *meshConnectivty )[mastCellNume + 1];
-
-            VectorLong toCopy;
-            toCopy.reserve( slav_cell_con->size() + mast_cell_con->size() + 1 );
-
-            /*Copy slave nodes*/
-            auto toAdd = slav_cell_con->toVector();
-            toCopy.insert( toCopy.end(), toAdd.begin(), toAdd.end() );
-            slaveNodePaired.insert( toAdd.begin(), toAdd.end() );
-
-            /*Copy master nodes*/
-            toAdd = mast_cell_con->toVector();
-            toCopy.insert( toCopy.end(), toAdd.begin(), toAdd.end() );
-
-            /*Copy contact element type*/
-            toCopy.push_back( typeElem );
-
-            listNodes.push_back( toCopy );
         }
-        listContElem.push_back( listContElemZone );
+    } else if ( contAlgo == ContactAlgo::Nitsche ) {
+        for ( int iContType = 0; iContType < contNitsType; iContType++ ) {
+            if ( slavCellTypeName == contCellNits[iContType].slavCellType ) {
+                if ( mastCellTypeName == contCellNits[iContType].mastCellType ) {
+                    AS_ASSERT( cellIndx == -1 )
+                    cellIndx = iContType;
+                }
+            }
+        }
+    } else {
+        AS_ABORT( "Not implemented" );
+    };
+
+    return cellIndx;
+}
+
+ASTERINTEGER ContactPairing::getContCellType( const ContactAlgo contAlgo,
+                                              const ASTERINTEGER cellIndx, const bool lAxis,
+                                              const bool lFric ) {
+
+    AS_ASSERT( cellIndx != -1 );
+
+    ASTERINTEGER contTypeNume = -1;
+
+    // Get finite element descriptor of model
+    auto modelFEDesc = _contDefi->getModel()->getFiniteElementDescriptor();
+
+    // Get name of type of contact cell
+    std::string contTypeName;
+    if ( contAlgo == ContactAlgo::Lagrangian ) {
+        if ( lFric ) {
+            contTypeName = contCellLagr[cellIndx].fricElemType;
+        } else {
+            contTypeName = contCellLagr[cellIndx].contElemType;
+        }
+    } else if ( contAlgo == ContactAlgo::Nitsche ) {
+        if ( lFric ) {
+            contTypeName = contCellNits[cellIndx].fricElemType;
+        } else {
+            contTypeName = contCellNits[cellIndx].contElemType;
+        }
+    } else {
+        AS_ABORT( "Not implemented" );
+    };
+
+    if ( lAxis ) {
+        contTypeName.append( "A" );
     }
 
-    // Create Virtual cell for orphelan nodes
+    // Get index of type of contact cell
+    contTypeNume = modelFEDesc->getElemTypeNume( contTypeName );
+    return contTypeNume;
+}
+
+void ContactPairing::createVirtualElemForContact( const ASTERLOGICAL lAxis, const int nbZoneCont,
+                                                  MapLong &contactElemType,
+                                                  const JeveuxCollectionLong meshConnectivity,
+                                                  std::vector< VectorLong > &listContElem,
+                                                  std::vector< VectorPairLong > &listContType,
+                                                  ASTERINTEGER &iContPair, SetLong &slaveNodePaired,
+                                                  SetLong &slaveCellPaired ) {
+
+    auto mesh = getMesh();
+
+    // Loop on contact zones
     for ( int iZone = 0; iZone < nbZoneCont; iZone++ ) {
+        // Get current zone
+        auto zone = _contDefi->getContactZone( iZone );
+
+        // Get contact parameters for this zone
+        auto contAlgo = zone->getContactParameter()->getAlgorithm();
+        auto lFric = zone->getFrictionParameter()->hasFriction();
+
+        // Get pairing for this zone
+        auto surf2Volu = zone->getSlaveCellsSurfToVolu();
         auto iZonePairing = this->getListOfPairsOfZone( iZone );
         auto nbContPairZone = this->getNumberOfPairsOfZone( iZone );
 
-        auto zone = _contDefi->getContactZone( iZone );
-        auto contAlgo = zone->getContactParameter()->getAlgorithm();
-        auto lFrot = zone->getFrictionParameter()->hasFriction();
+        // Create vector of (virtual) contact cells for this zone
+        VectorPairLong listContTypeZone;
+        listContTypeZone.reserve( nbContPairZone );
 
+        // Loop on pairs in zone
+        for ( int iPair = 0; iPair < nbContPairZone; iPair++ ) {
+
+            // Get pairing of current zone
+            auto [slavCellNume, mastCellNume] = iZonePairing[iPair];
+
+            // Get cell slave to construct (is volumic cell for Nitsche)
+            auto slavCellUsedNume = slavCellNume;
+            if ( contAlgo == ContactAlgo::Nitsche ) {
+                slavCellUsedNume = surf2Volu[slavCellNume];
+            }
+
+            // Get slave and master cell type
+            auto slavCellTypeName = mesh->getCellTypeName( slavCellUsedNume );
+            auto mastCellTypeName = mesh->getCellTypeName( mastCellNume );
+
+            // Get index of contact cell (in fixed lists)
+            ASTERINTEGER cellIndx = getContCellIndx( contAlgo, slavCellTypeName, mastCellTypeName );
+            AS_ASSERT( cellIndx != -1 );
+
+            // Get index of type of contact cell
+            ASTERINTEGER typeElemNume = getContCellType( contAlgo, cellIndx, lAxis, lFric );
+            AS_ASSERT( typeElemNume != -1 );
+
+            // Add contact element to list
+            if ( contactElemType.count( typeElemNume ) == 0 ) {
+                contactElemType[typeElemNume] = 0;
+            }
+            contactElemType[typeElemNume] += 1;
+
+            listContTypeZone.push_back( std::make_pair( typeElemNume, ++iContPair ) );
+
+            // Get nodes
+            auto slav_cell_con = ( *meshConnectivity )[slavCellUsedNume + 1];
+            auto mast_cell_con = ( *meshConnectivity )[mastCellNume + 1];
+
+            // Contact element on zone
+            VectorLong contactElemZone;
+            contactElemZone.reserve( slav_cell_con->size() + mast_cell_con->size() + 1 );
+
+            // Copy slave nodes to contact element
+            auto toAdd = slav_cell_con->toVector();
+            contactElemZone.insert( contactElemZone.end(), toAdd.begin(), toAdd.end() );
+
+            // Add slave nodes to list of paired nodes
+            slaveNodePaired.insert( toAdd.begin(), toAdd.end() );
+
+            // Add slave cell to list of paired cells
+            slaveCellPaired.insert( slavCellNume );
+
+            // Copy master nodes to contact element
+            toAdd = mast_cell_con->toVector();
+            contactElemZone.insert( contactElemZone.end(), toAdd.begin(), toAdd.end() );
+
+            // Add type of contact element
+            contactElemZone.push_back( typeElemNume );
+
+            // Add contact element to all contact elements
+            listContElem.push_back( contactElemZone );
+        }
+        // Add contact elements of zone
+        listContType.push_back( listContTypeZone );
+    }
+}
+
+void ContactPairing::createVirtualElemForOrphelanNodes(
+    const ASTERLOGICAL lAxis, const int nbZoneCont, MapLong &contactElemType,
+    const JeveuxCollectionLong meshConnectivity, std::vector< VectorLong > &listContElem,
+    std::vector< VectorPairLong > &listContType, ASTERINTEGER &iContPair, SetLong &slaveNodePaired,
+    SetLong &slaveCellPaired ) {
+
+    // Get mesh
+    auto mesh = getMesh();
+
+    // Get model
+    auto model = _contDefi->getModel();
+    ASTERINTEGER modelDim = model->getGeometricDimension();
+
+    // Loop on contact zones
+    for ( int iZone = 0; iZone < nbZoneCont; iZone++ ) {
+        // Get current zone
+        auto zone = _contDefi->getContactZone( iZone );
+
+        // Get contact parameters for this zone
+        auto contAlgo = zone->getContactParameter()->getAlgorithm();
+        auto lFric = zone->getFrictionParameter()->hasFriction();
+
+        // Get pairing for this zone
+        auto iZonePairing = this->getListOfPairsOfZone( iZone );
+        auto nbContPairZone = this->getNumberOfPairsOfZone( iZone );
+
+        // Get slave cells on this zone
         auto slaveCells = zone->getSlaveCells();
 
-        VectorPairLong listContElemZone;
-        listContElemZone.reserve( slaveCells.size() );
+        // Create vector of (virtual) contact cells for this zone
+        VectorPairLong listContTypeZone;
+        listContTypeZone.reserve( slaveCells.size() );
 
         // Find slave cells that are not paired (because of LAGR_C)
         for ( auto &slavCellNume : slaveCells ) {
             if ( slaveCellPaired.count( slavCellNume ) == 0 ) {
                 slaveCellPaired.insert( slavCellNume );
-                auto slav_cell_con = ( *meshConnectivty )[slavCellNume + 1]->toVector();
-                auto cellType = strip( mesh->getCellTypeName( slavCellNume ) );
-                ASTERINTEGER nno_lgar = 0, nno = 0;
 
-                if ( cellType == "SEG2" ) {
+                // Get nodes of slave cell
+                auto slav_cell_con = ( *meshConnectivity )[slavCellNume + 1]->toVector();
+
+                // Get slave cell type
+                auto slavCellTypeName = mesh->getCellTypeName( slavCellNume );
+
+                // Select number of nodes with LAGR_C: P2/P1 for 3D and P2/P2 for 2D
+                ASTERINTEGER nno_lgar = 0;
+
+                if ( slavCellTypeName == "SEG2" ) {
                     nno_lgar = 2;
-                } else if ( cellType == "SEG3" ) {
+                } else if ( slavCellTypeName == "SEG3" ) {
                     nno_lgar = 3;
-                } else if ( cellType == "TRIA3" || cellType == "TRIA6" || cellType == "TRIA7" ) {
+                } else if ( slavCellTypeName == "TRIA3" || slavCellTypeName == "TRIA6" ||
+                            slavCellTypeName == "TRIA7" ) {
                     nno_lgar = 3;
-                } else if ( cellType == "QUAD4" || cellType == "QUAD8" || cellType == "QUAD9" ) {
+                } else if ( slavCellTypeName == "QUAD4" || slavCellTypeName == "QUAD8" ||
+                            slavCellTypeName == "QUAD9" ) {
                     nno_lgar = 4;
                 } else {
-                    AS_ABORT( cellType + " not supported" );
+                    AS_ABORT( slavCellTypeName + " not supported" );
                 }
 
+                // Loop on nodes on slave cell
+                ASTERINTEGER nno = 0;
                 for ( auto &nodeNume : slav_cell_con ) {
                     nno++;
+                    // This node hasn't been paired
                     if ( slaveNodePaired.count( nodeNume ) == 0 ) {
                         slaveNodePaired.insert( nodeNume );
 
-                        auto typgSlavName = ljust( "POI1", 8, ' ' );
-                        std::string typgMastName;
+                        // Type of cell for slave: POI1
+                        auto slavCellTypeName = "POI1";
+
+                        // Type of cell for master
+                        std::string mastCellTypeName;
                         if ( nno <= nno_lgar ) {
-                            typgMastName = ljust( "LAG" + std::to_string( modelDim ), 8, ' ' );
+                            mastCellTypeName = "LAG" + std::to_string( modelDim );
                         } else {
-                            typgMastName = ljust( "NOLAG" + std::to_string( modelDim ), 8, ' ' );
+                            mastCellTypeName = "NOLAG" + std::to_string( modelDim );
                         }
 
-                        /*call mmelemdata_c*/
-                        ASTERINTEGER typgContNume = 0, typfContNume = 0, typfFrotNume = 0;
-                        ASTERINTEGER nbNodesCell = 0, elemIndx = 0, typeElem, nbType;
-
                         if ( contAlgo == ContactAlgo::Lagrangian ) {
-                            CALLO_MMELEM_DATA_LAGA( &lAxis, typgSlavName, typgMastName, &nbType,
-                                                    &nbNodesCell, &typgContNume, &typfContNume,
-                                                    &typfFrotNume, &elemIndx );
+
                         } else if ( contAlgo == ContactAlgo::Nitsche ) {
                             continue;
                         } else {
                             AS_ABORT( "Not implemented" );
                         }
 
+                        // Get index of contact cell (in fixed lists)
+                        ASTERINTEGER cellIndx =
+                            getContCellIndx( contAlgo, slavCellTypeName, mastCellTypeName );
+                        AS_ASSERT( cellIndx != -1 );
+
+                        // Number of nodes
+                        ASTERINTEGER nbNodesCell = contCellLagr[cellIndx].nbNode;
                         AS_ASSERT( nbNodesCell == 1 );
 
-                        if ( lFrot ) {
-                            typeElem = typfFrotNume;
-                        } else {
-                            typeElem = typfContNume;
+                        // Get index of type of contact cell
+                        ASTERINTEGER typeElemNume =
+                            getContCellType( contAlgo, cellIndx, lAxis, lFric );
+                        AS_ASSERT( typeElemNume != -1 )
+
+                        // Add type of contact element
+                        if ( contactElemType.count( typeElemNume ) == 0 ) {
+                            contactElemType[typeElemNume] = 0;
                         }
+                        contactElemType[typeElemNume] += 1;
 
-                        if ( listType.count( typeElem ) == 0 ) {
-                            listType[typeElem] = 0;
-                        }
+                        // Add the new contact element
+                        listContTypeZone.push_back( std::make_pair( typeElemNume, ++iContPair ) );
 
-                        listType[typeElem] += 1;
-
-                        listContElemZone.push_back( std::make_pair( typeElem, ++iContPair ) );
-                        listNodes.push_back( VectorLong( {nodeNume, typeElem} ) );
+                        // Add the nodes of the new contact element
+                        listContElem.push_back( VectorLong( { nodeNume, typeElemNume } ) );
                     }
                 }
             }
         }
-        if ( !listContElemZone.empty() ) {
+        if ( !listContTypeZone.empty() ) {
 #ifdef ASTER_DEBUG_CXX
-            std::cout << "Not paired nodes: " << listContElemZone.size() << std::endl;
+            std::cout << "Not paired nodes: " << listContTypeZone.size() << std::endl;
 #endif
-            listContElem.push_back( listContElemZone );
+            listContType.push_back( listContTypeZone );
         }
     }
-    slaveNodePaired.clear();
-    slaveCellPaired.clear();
+};
 
-    /*FED building*/
+void ContactPairing::buildFiniteElementDescriptor() {
+
+    CALL_JEMARQ();
+
+    // Model
+    auto model = _contDefi->getModel();
+    const ASTERLOGICAL lAxis = model->existsAxis();
+
+    // Mesh
+    auto mesh = getMesh();
+    const JeveuxCollectionLong meshConnectivity = mesh->getConnectivity();
+
+    // Get pairing parameters
+    const ASTERINTEGER nbZoneCont = _contDefi->getNumberOfContactZones();
+    const ASTERINTEGER nbContPairTot = this->getNumberOfPairs();
+
+    // Number of cells for each type of contact cell
+    MapLong contactElemType;
+
+    // Create objets for nodes and cells
+    VectorOfVectorsLong listContElem;
+    listContElem.reserve( nbContPairTot );
+
+    std::vector< VectorPairLong > listContType;
+    listContType.reserve( 2 * nbZoneCont );
+
+    // Objects
+    SetLong slaveNodePaired, slaveCellPaired;
+
+    // Index of current contact pair
+    ASTERINTEGER iContPair = 0;
+
+    // Create virtual elements for contact
+    createVirtualElemForContact( lAxis, nbZoneCont, contactElemType, meshConnectivity, listContElem,
+                                 listContType, iContPair, slaveNodePaired, slaveCellPaired );
+
+    // Create virtual elements for orphelan nodes
+    createVirtualElemForOrphelanNodes( lAxis, nbZoneCont, contactElemType, meshConnectivity,
+                                       listContElem, listContType, iContPair, slaveNodePaired,
+                                       slaveCellPaired );
+
+    // Create finite element descriptor for virtual contact elements
+    _fed = std::make_shared< FiniteElementDescriptor >( mesh );
+    _fed->setModel( model );
+
+    // Create list of virtual nodes (none !)
     _fed->setNumberOfVirtualNodes( 0 );
 
-    /*NEMA building*/
+    // Create list of virtual elements (NEMA object)
     auto ContactResFEDNema = _fed->getVirtualCellsDescriptor();
-    ContactResFEDNema->allocateContiguousNumbered( listNodes );
-    listNodes.clear();
+    ContactResFEDNema->allocateContiguousNumbered( listContElem );
 
-    /*LIEL building
-    Size of LIEL object*/
+    // Number of groups of elements and length of FED for contact element
     ASTERINTEGER nbGrel = 0, ligrcf_liel_lont = 0;
-    for ( auto &[type, size] : listType ) {
-
+    for ( auto &[type, size] : contactElemType ) {
         ligrcf_liel_lont += size;
         nbGrel += 1;
     }
     ligrcf_liel_lont += nbGrel;
 
-    /*Create LIEL object*/
+    // Create list of elements (LIEL object)
     auto ContactResFEDLiel = _fed->getListOfGroupsOfElements();
     ContactResFEDLiel->allocateContiguousNumbered( nbGrel, ligrcf_liel_lont, Variable );
 
+    // Clear map between zone and contact elements
     _pair2Zone.clear();
 
-    /* Create and add  element*/
-    for ( auto &[type, size] : listType ) {
-        VectorLong toCopy;
-        toCopy.reserve( size );
+    // Add virtual element
+    for ( auto &[type, size] : contactElemType ) {
+        VectorLong contactElemZone;
+        contactElemZone.reserve( size );
 
         ASTERINTEGER iZone = 0;
-        for ( auto &listContElemZone : listContElem ) {
-            /*loop on  pair of iZone*/
-            for ( auto &[typContNume, iContPair] : listContElemZone ) {
-                if ( typContNume == type ) {
-                    toCopy.push_back( -iContPair );
+        for ( auto &listContTypeZone : listContType ) {
+            for ( auto &[typeElemNume, iContPair] : listContTypeZone ) {
+                if ( typeElemNume == type ) {
+                    // Virtual cells = index of cells is negative
+                    contactElemZone.push_back( -iContPair );
                     _pair2Zone[iContPair - 1] = iZone;
                 }
             }
             iZone++;
         }
-        toCopy.push_back( type );
-        ContactResFEDLiel->push_back( toCopy );
+        contactElemZone.push_back( type );
+        ContactResFEDLiel->push_back( contactElemZone );
     }
 
-    /*Create LGRF object*/
+    // Get parameters from standard model
     auto paramToCopy = model->getFiniteElementDescriptor()->getParameters();
     paramToCopy->updateValuePointer();
+    auto docu = paramToCopy->getInformationParameter();
+
+    // Create LGRF object
     auto parameters = _fed->getParameters();
     parameters->allocate( 3 );
-
     ( *parameters )[0] = mesh->getName();
     ( *parameters )[1] = model->getName();
     ( *parameters )[2] = ( *paramToCopy )[2];
-    auto docu = paramToCopy->getInformationParameter();
     parameters->setInformationParameter( docu );
 
+    // Adapt FED
     CALLO_ADALIG_WRAP( _fed->getName() );
     bool l_calc_rigi = false;
     CALLO_INITEL( _fed->getName(), (ASTERLOGICAL *)&l_calc_rigi );
 
+    // Final building
     _fed->build();
+
+    // Clean
+    listContElem.clear();
+    slaveNodePaired.clear();
+    slaveCellPaired.clear();
 
     CALL_JEDEMA();
 };
