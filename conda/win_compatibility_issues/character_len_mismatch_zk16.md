@@ -1,6 +1,6 @@
 # ZK16
 
-The following is an error message raised when compiling with `ifort`. The error message is 
+The following is an error message raised when compiling with `ifix`. The error message is 
 not present when compiling using gfortran on linux.
 
 `error #7938: Character length argument mismatch.   [ZK16]`
@@ -10,8 +10,8 @@ Here is how it is used in the offending fortran file
 `bibfor/plate/vdxnlr.F90`
 
 ```
-call behaviourOption(D%option, zk16(icompo), D%lMatr, D%lVect, &
-D%lVari, D%lSigm, codret)
+call behaviourOption(option, zk16(icompo), lMatr, lVect, &
+lVari, lSigm, codret)
 ```
 
 `icompo` is an integer variable.

@@ -40,6 +40,6 @@
     character(len=24)                         :: zk24
     character(len=32)                                  :: zk32
     character(len=80)                                           :: zk80
-    common  / kvarje / zk8(1), zk16(1), zk24(1), zk32(1), zk80(1)
+    common  / kvarje / zk8(1), zk16(25), zk24(1), zk32(1), zk80(1)
 !---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
 #endif

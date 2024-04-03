@@ -10,6 +10,12 @@ echo "Setting compiler env vars"
 set "CC=clang-cl.exe"
 set "CXX=clang-cl.exe"
 set "FC=ifx.exe"
+REM set "LINK_CC=XILINK.exe"
+REM set "LINK_CXX=XILINK.exe"
+REM set "LINK_FC=XILINK.exe"
+REM set "AR=XILIB.exe"
+REM set "RANLIB=XILIB.exe"
+REM set "LD=XILINK.exe"
 
 where python
 where cl
@@ -37,7 +43,7 @@ set LIBPATH_METIS=%LIB_PATH_ROOT%/lib
 set INCLUDES_METIS=%LIB_PATH_ROOT%/include
 
 set LIBPATH_MUMPS=%LIB_PATH_ROOT%/lib
-set INCLUDES_MUMPS=%LIB_PATH_ROOT%/include
+set "INCLUDES_MUMPS=%LIB_PATH_ROOT%/include %LIB_PATH_ROOT%/include/mumps_seq"
 
 set LIBPATH_SCOTCH=%LIB_PATH_ROOT%/lib
 set INCLUDES_SCOTCH=%LIB_PATH_ROOT%/include
@@ -49,7 +55,7 @@ set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 
 REM Compiler flags
 
-REM /MD link with MSVCRT.lib. /FS allow for multithreaded c compiler calls to vc140.pdb (for cl.exe only)
+REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
 set CFLAGS=%CFLAGS% /FS /MD
 set FCFLAGS=%FCFLAGS% -fpp /MD
 
@@ -62,7 +68,7 @@ set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
 REM Clean the build directory
 waf distclean
 
-REM set FORCE_BIBFOR_SEQUENCE=1
+set FORCE_BIBFOR_SEQUENCE=1
 REM set MANUALLY_ADD_BIBFOR_DEPS=1
 
 REM Install for standard sequential
@@ -72,9 +78,7 @@ waf configure ^
   --prefix=%LIBRARY_PREFIX% ^
   --disable-mpi ^
   --install-tests ^
-  --shared-aster ^
   --maths-libs=auto ^
-  --conda-build ^
   --without-hg
 
 REM if USE_LOG is set, then log the output to a file
