@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nopout
@@ -93,7 +94,9 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
 !
     if (option(6:9) .ne. 'NOEU') then
         call jenonu(jexnom('&CATA.OP.NOMOPT', option), opt)
-        if (opt .eq. 0) goto 999
+        if (opt .eq. 0) then
+            call utmess('F', 'CALCCHAMP_9', sk=option)
+        end if
         call jeveuo(jexnum('&CATA.OP.DESCOPT', opt), 'L', iaopds)
         if (zi(iaopds-1+2) .eq. 0) goto 999
         call jeveuo(jexnum('&CATA.OP.LOCALIS', opt), 'L', iaoplo)
