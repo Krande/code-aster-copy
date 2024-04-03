@@ -6150,18 +6150,6 @@ class ContactComputation:
             FieldOnCellsReal: contact data
         """
 
-    def geometricGap(self, coordinates):
-        """Compute geometric gap and indicator using projection. The indicator is equal to 0 for
-        a node with no projection (gap value is Nan) found else 1.
-
-        Arguments:
-            coordinates (MeshCoordinatesField): (current) coordinates of mesh
-
-        Returns:
-            FieldOnNodesReal: gap field.
-            FieldOnNodesReal: gap indicator.
-        """
-
 
 # class BaseAssemblyMatrix in libaster
 

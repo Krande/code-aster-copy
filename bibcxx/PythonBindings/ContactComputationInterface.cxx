@@ -2,7 +2,7 @@
  * @file ContactComputationInterface.cxx
  * @brief Interface python de ContactComputation
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,19 +31,6 @@ void exportContactComputationToPython( py::module_ &mod ) {
     py::class_< ContactComputation, ContactComputationPtr >( mod, "ContactComputation" )
         .def( py::init( &initFactoryPtr< ContactComputation, ContactNewPtr > ) )
         .def( define_pickling< ContactComputation >() )
-
-        .def( "geometricGap", &ContactComputation::geometricGap, R"(
-Compute geometric gap and indicator using projection. The indicator is equal to 0 for
-a node with no projection (gap value is Nan) found else 1.
-
-Arguments:
-    coordinates (MeshCoordinatesField): (current) coordinates of mesh
-
-Returns:
-    FieldOnNodesReal: gap field.
-    FieldOnNodesReal: gap indicator.
-        )",
-              py::arg( "coordinates" ) )
         .def( "contactData", &ContactComputation::contactData, R"(
 Compute contact data (cf. MMCHML) as input to compute contact forces and matrices.
 

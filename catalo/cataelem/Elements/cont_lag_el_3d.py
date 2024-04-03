@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
 from cataelem.Tools.base_objects import Calcul, Element
@@ -116,11 +114,6 @@ class CMQ4Q4(Element):
         SetOfNodes("EN3", (5, 6, 7, 8)),
     )
     calculs = (
-        OP.GAP_GEOM(
-            te=425,
-            para_in=((SP.PGEOMCR, NGEOMER),),
-            para_out=((OP.GAP_GEOM.PVECGAP, MVECGAP), (OP.GAP_GEOM.PVEIGAP, MVEIGAP)),
-        ),
         OP.CHAR_MECA_CONT(
             te=355,
             para_in=(
