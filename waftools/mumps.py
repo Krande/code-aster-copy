@@ -56,10 +56,6 @@ def options(self):
 
 
 def configure(self):
-    if self.options.conda_build:
-        mumps_seq_incl = pathlib.Path(self.env.PREFIX) / 'include/mumps_seq'
-        self.env.append_value('INCLUDES', [mumps_seq_incl.as_posix()])
-
     try:
         self.env.stash()
         self.check_mumps()

@@ -149,12 +149,7 @@ def options(self):
         action="store_false",
         help="disable address sanitizer in debug mode",
     )
-    group.add_option(
-        "--conda-build",
-        dest="conda_build",
-        action="store_true",
-        help="Adds build customizations for conda packaging",
-    )
+
     group = self.add_option_group("code_aster options")
 
     self.load("parallel", tooldir="waftools")
@@ -167,7 +162,6 @@ def options(self):
     self.load("scotch", tooldir="waftools")
     self.load("petsc", tooldir="waftools")
     self.load("runtest", tooldir="waftools")
-
     self.recurse("bibfor")
     self.recurse("code_aster")
     self.recurse("run_aster")
@@ -326,6 +320,7 @@ def configure(self):
     self.check_optimization_options()
     self.write_config_headers()
 
+
 def build(self):
     fc._use_custom_sig = self.options.custom_fc_sig
     # shared the list of dependencies between bibc/bibfor
@@ -387,7 +382,6 @@ def build(self):
         osp.join(self.env.ASTERLIBDIR, "code_aster", "Utilities", "aster_config.py"),
         ["aster_config.py"],
     )
-
 
 
 def build_elements(self):

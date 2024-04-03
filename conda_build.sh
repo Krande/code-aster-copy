@@ -1,18 +1,28 @@
 #!/bin/bash
 set -e
 
-export CLICOLOR_FORCE=1
-
 which python
+# set unbuffered output
+export PYTHONUNBUFFERED=1
+
+if [ -z "${CONDA_PREFIX}" ]; then
+  # if CONDA_PREFIX is not defined, we are not in a conda environment and will have to activate it using the env var
+  # CONDA_ENV_DIR and activate it. The CONDA_ENV_DIR is defined in the .env file
+  for line in $(cat .env); do export $line; done
+  if [ -z "${CONDA_ENV_DIR}" ]; then
+      echo "CONDA_ENV_DIR is not defined"
+      exit 1
+  fi
+  source ${CONDA_ENV_DIR}/bin/activate codeaster-deps
+else
+  echo "CONDA_PREFIX is defined"
+  export CLICOLOR_FORCE=1
+fi
 
 export PREFIX="${CONDA_PREFIX}"
 echo "PREFIX=${PREFIX}"
-# If prefix is not set, activate CONDA environment
-#export LD_LIBRARY_PATH="${PREFIX}/lib ${LD_LIBRARY_PATH}"
-#export LDFLAGS=${PREFIX}/lib:${LDFLAGS}
-echo "LDFLAGS"
-#export LIBPATH="$PREFIX/lib $LIBPATH"
-#export LDFLAGS="-Wl,--no-as-needed -L$PREFIX/lib -lm -lpthread -ldl -lz -lgomp ${LDFLAGS}"
+
+export LD_LIBRARY_PATH="${PREFIX}/lib ${LD_LIBRARY_PATH}"
 
 export CC=gcc
 export CXX=g++
@@ -40,6 +50,8 @@ export INCLUDES_MGIS=${PREFIX}/include
 
 export FCFLAGS="-fallow-argument-mismatch ${FCFLAGS}"
 
+export DEFINES="H5_BUILT_AS_DYNAMIC_LIB H5_USE_110_API ${DEFINES}"
+
 which gcc
 which g++
 which gfortran
@@ -49,10 +61,13 @@ which gfortran
 ./waf_std \
      --python=$PYTHON \
      --prefix="${PREFIX}" \
+     --libdir="${PREFIX}/lib" \
+     --enable-hdf5 \
+     --enable-med \
      --med-libs="med medC medfwrap medimport" \
      --mumps-libs="dmumps_seq zmumps_seq smumps_seq cmumps_seq mumps_common_seq pord_seq" \
      --install-tests \
-     --maths-libs=auto \
+     --maths-libs="cblas lapack" \
      --disable-mpi \
      --without-hg \
      --without-repo \

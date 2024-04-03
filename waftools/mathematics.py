@@ -38,7 +38,7 @@ def options(self):
         dest="maths_libs",
         default=None,
         help="Math librairies to link with like blas and lapack. "
-        'Use None or "auto" to search them automatically.',
+             'Use None or "auto" to search them automatically.',
     )
     group.add_option(
         "--embed-maths",
@@ -59,7 +59,6 @@ def configure(self):
     if self.options.maths_libs in (None, "auto"):
         # try MKL first, then automatic blas/lapack
         if not self.detect_mkl():
-            Logs.info("Unable to detect MKL libraries")
             self.detect_math_lib()
     elif self.options.maths_libs:
         self.check_opts_math_lib()
@@ -211,9 +210,9 @@ def detect_math_lib(self):
         """Check blacs"""
         libs = list(BLACS)
         libs = (
-            libs
-            + ["".join(n) for n in product(libs, ["mpi", "-mpi", "openmpi", "-openmpi"])]
-            + ["".join(n) for n in product(["mpi", "mpi-", "openmpi", "openmpi-"], libs)]
+                libs
+                + ["".join(n) for n in product(libs, ["mpi", "-mpi", "openmpi", "-openmpi"])]
+                + ["".join(n) for n in product(["mpi", "mpi-", "openmpi", "openmpi-"], libs)]
         )  # check the 3 blacs libs together: Cinit, F77init, ''
         ins = []
         for i in libs:
@@ -282,31 +281,37 @@ def check_math_libs(self, libs, embed, optional=False):
     return found
 
 
+def check_win_cores(self):
+    # Example: Using WMIC to get CPU count
+    import subprocess
+    try:
+        nproc = int(subprocess.check_output("WMIC CPU Get NumberOfCores /Value", shell=True).strip().split(b'=')[1])
+    except Errors.ConfigurationError:
+        nproc = 1
+    else:
+        self.end_msg(nproc)
+    self.env["NPROC"] = nproc
+
+
 @Configure.conf
 def check_number_cores(self):
     """Check for the number of available cores."""
     self.start_msg("Checking for number of cores")
     if self.env.CXX_NAME == 'msvc':
-        # Example: Using WMIC to get CPU count
-        import subprocess
+        check_win_cores(self)
+        return None
+
+    try:
+        self.find_program("nproc")
         try:
-            nproc = int(subprocess.check_output("WMIC CPU Get NumberOfCores /Value", shell=True).strip().split(b'=')[1])
-        except Errors.ConfigurationError:
-            nproc = 1
-        else:
-            self.end_msg(nproc)
+            res = self.cmd_and_log(["nproc"])
+            nproc = int(res)
+        except Errors.WafError:
+            raise Errors.ConfigurationError
+    except Errors.ConfigurationError:
+        nproc = 1
     else:
-        try:
-            self.find_program("nproc")
-            try:
-                res = self.cmd_and_log(["nproc"])
-                nproc = int(res)
-            except Errors.WafError:
-                raise Errors.ConfigurationError
-        except Errors.ConfigurationError:
-            nproc = 1
-        else:
-            self.end_msg(nproc)
+        self.end_msg(nproc)
     self.env["NPROC"] = nproc
 
 
@@ -338,6 +343,7 @@ def get_mathlib_from_numpy(self):
         if lib:
             libblas.append(lib)
     return libblas, liblapack
+
 
 @Configure.conf
 def get_mathlib_from_numpy_win(self):
@@ -379,6 +385,7 @@ def get_mathlib_from_numpy_win(self):
     Logs.info('BLAS libraries: %s' % libblas)
     Logs.info('LAPACK libraries: %s' % liblapack)
     return libblas, liblapack
+
 
 def _detect_libnames_in_ldd_line(line, libnames):
     if not list(filter(line.__contains__, libnames)):
