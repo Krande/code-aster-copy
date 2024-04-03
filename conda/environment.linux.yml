@@ -16,6 +16,6 @@ dependencies:
   - gdb
   - pyyaml
   - python-dotenv
-  - gcc
-  - gxx
-  - gfortran
+  - gcc=12
+  - gxx=12
+  - gfortran=12
