@@ -62,6 +62,7 @@ import inspect
 import linecache
 import re
 import sys
+import traceback
 from collections import namedtuple
 from contextlib import contextmanager
 
@@ -1001,15 +1002,17 @@ class ExceptHookManager:
         sys.excepthook = cls.excepthook
 
     @classmethod
-    def excepthook(cls, type, value, traceback):
+    def excepthook(cls, type, value, traceb):
         """Hook called on uncaught exceptions raised during the execution of a command.
 
         Args:
             command (ExecuteCommand): The current command.
             type (type): Exception type.
             value (BaseException): Exception instance.
-            traceback (traceback): Exception traceback.
+            traceb (traceback): Exception traceback.
         """
+        traceback.print_exception(type, value, traceb, file=sys.stderr)
+        sys.stderr.flush()
         try:
             assert sys.flags.interactive or "__IPYTHON__" in globals()
             print("An exception occurred! Return to interactive session.")
@@ -1025,7 +1028,7 @@ class ExceptHookManager:
             cls._current_cmd.publish_result()
             saveObjectsFromContext(cls._current_cmd.caller_context)
         else:
-            sys.__excepthook__(type, value, traceback)
+            sys.__excepthook__(type, value, traceb)
 
     @classmethod
     @contextmanager
