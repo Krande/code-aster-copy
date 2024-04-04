@@ -21,7 +21,6 @@
 
 import os.path as osp
 
-import aster
 from libaster import AsterError
 
 from ..Messages import UTMESS
