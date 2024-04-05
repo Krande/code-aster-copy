@@ -107,7 +107,13 @@ extern void DEFSP( ASMPI_COMM, asmpi_comm, char *, STRING_SIZE, MPI_Fint * );
 extern void DEFPPPSP( ASMPI_SPLIT_COMM, asmpi_split_comm, MPI_Fint *, MPI_Fint *, MPI_Fint *,
                       char *, STRING_SIZE, MPI_Fint * );
 extern void DEFPPP( ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *, MPI_Fint *, MPI_Fint * );
+
+// This fails with cl.exe and raises a conflict with the system header
+// C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\ucrt\corecrt_terminate.h
+// However, clang-cl.exe does not seem to have a problem with it.
+#ifndef ASTER_PLATFORM_MSVC64
 extern void terminate( void );
+#endif
 
 #define CALL_ASABRT( a ) CALLP( ASABRT, asabrt, a )
 extern void DEFP( ASABRT, asabrt, _IN ASTERINTEGER * );

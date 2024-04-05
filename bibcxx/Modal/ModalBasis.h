@@ -210,7 +210,7 @@ class StandardModalBasis : public GenericModalBasis {
 
     void setModalBasis( const StructureInterfacePtr &structInterf, const ModeResultPtr &mechaMode,
                         const VectorInt &vecOfInt = {} ) {
-        setModalBasis( structInterf, ( VectorOfMechaModePtr ) {mechaMode}, vecOfInt );
+        setModalBasis( structInterf, VectorOfMechaModePtr {mechaMode}, vecOfInt );
     };
 };
 
