@@ -36,3 +36,16 @@ real(kind=8) :: r8gaem
 end function r8gaem
 end interface
 ```
+
+## Conclusion
+
+After some more searching, it seems the r8gaem function is defined in a 
+C file `bibc/utilitai/envima.c` 
+
+```c
+/* ----------------------------------  GAMME D"UTILISATION RELLE */
+ASTERDOUBLE DEF0( R8GAEM, r8gaem ) { return (ASTERDOUBLE)R8GAME; }
+```
+
+It appears that forcing bibfor first is not the solution. Rather, evidence is pointing towards a
+name mangling issue, where the linker is not able to find the function `r8gaem` in the library.

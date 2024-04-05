@@ -68,7 +68,7 @@ set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
 REM Clean the build directory
 waf distclean
 
-set FORCE_BIBFOR_SEQUENCE=1
+REM set FORCE_BIBFOR_SEQUENCE=1
 REM set MANUALLY_ADD_BIBFOR_DEPS=1
 
 python conda\update_version.py
