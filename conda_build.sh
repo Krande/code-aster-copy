@@ -56,6 +56,8 @@ which gcc
 which g++
 which gfortran
 
+python conda/update_version.py
+
 ./waf distclean
 
 ./waf_std \

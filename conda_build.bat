@@ -71,6 +71,8 @@ waf distclean
 set FORCE_BIBFOR_SEQUENCE=1
 REM set MANUALLY_ADD_BIBFOR_DEPS=1
 
+python conda\update_version.py
+
 REM Install for standard sequential
 waf configure ^
   --use-config-dir=%PARENT_DIR%/config/ ^
