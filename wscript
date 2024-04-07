@@ -40,9 +40,7 @@ from waflib.Tools.c_config import DEFKEYS
 from waflib.Tools.fc import fc
 
 from waftools.wafutils import remove_previous
-from waflib.Tools.compiler_fc import fc_compiler
 
-fc_compiler['win32'] = ['ifort']
 top = "."
 out = "build"
 install_suffix = os.environ.get("WAF_DEFAULT_VARIANT") or os.environ.get("WAF_SUFFIX", "mpi")

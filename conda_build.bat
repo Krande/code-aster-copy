@@ -73,8 +73,12 @@ REM set MANUALLY_ADD_BIBFOR_DEPS=1
 
 python conda\update_version.py
 
+set BUILD=std
+
 REM Install for standard sequential
 waf configure ^
+  --safe ^
+  --check-fortran-compiler=ifort ^
   --use-config-dir=%PARENT_DIR%/config/ ^
   --med-libs=medC ^
   --prefix=%LIBRARY_PREFIX% ^
