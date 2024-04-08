@@ -24,6 +24,8 @@ where ifx
 SET PARENT_DIR=%~dp0
 SET PARENT_DIR=%PARENT_DIR:\=/%
 
+SET OUTPUT_DIR=%PARENT_DIR%/build/std/debug
+
 set ASTER_PLATFORM_MSVC=1
 set ASTER_PLATFORM_WINDOWS=1
 
@@ -82,6 +84,7 @@ waf configure ^
   --use-config-dir=%PARENT_DIR%/config/ ^
   --med-libs=medC ^
   --prefix=%LIBRARY_PREFIX% ^
+  --out=%OUTPUT_DIR% ^
   --disable-mpi ^
   --install-tests ^
   --maths-libs=auto ^
