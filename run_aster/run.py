@@ -346,6 +346,7 @@ class RunAster:
         status = get_status(exitcode, self._output, test=self._test and self._last)
         expected = self.export.get("expected_diag", [])
         if status.diag in expected:
+            logger.debug(f"Original status: {status.diag} reset to OK")
             status.state = StateOptions.Ok
             status.exitcode = 0
         # else the status unchanged

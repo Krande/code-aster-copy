@@ -213,12 +213,12 @@ class StateOptions(IntFlag):
             return "<F>_ERROR"
         if state & StateOptions.Memory:
             return "<S>_MEMORY_ERROR"
-        if state & StateOptions.Except:
-            return "<S>_ERROR"
         if state & StateOptions.Convergence:
             return "<S>_NO_CONVERGENCE"
         if state & StateOptions.CpuLimit:
             return "<S>_CPU_LIMIT"
+        if state & StateOptions.Except:
+            return "<S>_ERROR"
         if state & StateOptions.NoTest:
             return "NO_TEST_RESU"
         if state & StateOptions.Nook:

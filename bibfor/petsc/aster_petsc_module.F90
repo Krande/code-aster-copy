@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,8 @@ module aster_petsc_module
         end subroutine MatCreateVecs
     end interface
     interface
-     subroutine MatGetRowIJ(mat, shift, symmetric, inodecompressed, n, ia, iia, ja, jja, done, ierr)
+        subroutine MatGetRowIJ(mat, shift, symmetric, inodecompressed, n, ia, iia, &
+                               ja, jja, done, ierr)
             use petscmatdef
             Mat :: mat
             PetscInt :: shift
@@ -195,7 +196,8 @@ module aster_petsc_module
         end subroutine MatGetRowIJ
     end interface
     interface
- subroutine MatRestoreRowIJ(mat, shift, symmetric, inodecompressed, n, ia, iia, ja, jja, done, ierr)
+        subroutine MatRestoreRowIJ(mat, shift, symmetric, inodecompressed, n, ia, iia, &
+                                   ja, jja, done, ierr)
             use petscmatdef
             Mat :: mat
             PetscInt :: shift
@@ -300,26 +302,6 @@ module aster_petsc_module
             external :: mykspmonitor, mydestroy
             PetscErrorCode, intent(out) :: ierr
         end subroutine KSPMonitorSet
-    end interface
-!
-! Viewer routines
-!
-    interface
-        subroutine PetscViewerBinaryOpen(comm, n, t, v, ierr)
-            use petscsysdef
-            PetscMPIInt, intent(in) :: comm
-            character(len=*), intent(in) :: n
-            PetscFileMode, intent(in) :: t
-            PetscViewer, intent(out) :: v
-            PetscErrorCode, intent(out):: ierr
-        end subroutine PetscViewerBinaryOpen
-    end interface
-    interface
-        subroutine PetscViewerDestroy(v, ierr)
-            use petscsysdef
-            PetscViewer, intent(out) :: v
-            PetscErrorCode, intent(out):: ierr
-        end subroutine PetscViewerDestroy
     end interface
 #endif
 end module aster_petsc_module
