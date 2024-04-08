@@ -104,12 +104,6 @@ EGGEOP_R = LocatedComponents(
 CTEMPSR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
 
 
-EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", components=("X[30]",))
-
-
-EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
-
-
 ECOPILO = LocatedComponents(
     phys=PHY.PILO_R, type="ELGA", location="RIGI", components=("A0", "A[3]", "ETA")
 )
@@ -703,11 +697,12 @@ class GVI_3D_HE20(Element):
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(
+                (OP.TOU_INI_ELGA.PDEPL_R, LC.EGDEP3D),
                 (OP.TOU_INI_ELGA.PDOMMAG, LC.EDOMGGA),
                 (OP.TOU_INI_ELGA.PGEOM_R, EGGEOM_R),
                 (OP.TOU_INI_ELGA.PINST_R, LC.EGINST_R),
-                (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
-                (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
+                (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
+                (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
                 (OP.TOU_INI_ELGA.PSIEF_R, ECONTPG),
                 (SP.PVALO_R, LC.EGTINIV),
                 (OP.TOU_INI_ELGA.PVARI_R, ZVARIPG),
