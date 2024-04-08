@@ -73,8 +73,8 @@ class BaseAssemblyMatrix : public DataStructure {
 
     /** @brief Objet nume_ddl */
     BaseDOFNumberingPtr _dofNum;
-    /** @brief La matrice est elle vide ? */
-    bool _isEmpty;
+    /** @brief La matrice a-t-elle été construite ? */
+    bool _isBuilt;
     /** @brief La matrice est elle vide ? */
     bool _isFactorized;
     /** @brief Liste de charges cinematiques */
@@ -236,7 +236,7 @@ class BaseAssemblyMatrix : public DataStructure {
         PetscErrorCode ierr;
         const ASTERINTEGER local2 = local ? 1 : 0;
 
-        if ( _isEmpty )
+        if ( !_isBuilt )
             throw std::runtime_error( "Assembly matrix is empty" );
         if ( getType() != "MATR_ASSE_DEPL_R" && getType() != "MATR_ASSE_TEMP_R" )
             throw std::runtime_error( "Not yet implemented" );
@@ -251,10 +251,10 @@ class BaseAssemblyMatrix : public DataStructure {
 #endif
 
     /**
-     * @brief Methode permettant de savoir si la matrice est vide
-     * @return true si vide
+     * @brief Methode permettant de savoir si la matrice a été construite
+     * @return true si construite
      */
-    bool isEmpty() const { return _isEmpty; };
+    bool isBuilt() const { return _isBuilt; };
 
     /**
      * @brief Methode permettant de savoir si la matrice est factorisée
@@ -270,7 +270,7 @@ class BaseAssemblyMatrix : public DataStructure {
      */
     void setDOFNumbering( const BaseDOFNumberingPtr currentNum ) {
         _dofNum = currentNum;
-        _isEmpty = false;
+        _isBuilt = true;
     };
 
     /** @brief update _dofNum using DOFNumbering name created in Fortran */

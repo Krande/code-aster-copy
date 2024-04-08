@@ -29,7 +29,7 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::stri
       _ccid( JeveuxVectorLong( getName() + ".CCID" ) ),
       _ccll( JeveuxVectorLong( getName() + ".CCLL" ) ),
       _ccii( JeveuxVectorLong( getName() + ".CCII" ) ),
-      _isEmpty( true ),
+      _isBuilt( false ),
       _isFactorized( false ),
       _dofNum( nullptr ),
       _listOfLoads( std::make_shared< ListOfLoads >() ) {};
@@ -54,7 +54,7 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::stri
     // Objects
     _dofNum = toCopy._dofNum;
     _listOfLoads = toCopy._listOfLoads;
-    _isEmpty = toCopy._isEmpty;
+    _isBuilt = toCopy._isBuilt;
     _isFactorized = toCopy._isFactorized;
 }
 
@@ -70,7 +70,7 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( BaseAssemblyMatrix &&other )
     // Objects
     _dofNum = other._dofNum;
     _listOfLoads = other._listOfLoads;
-    _isEmpty = other._isEmpty;
+    _isBuilt = other._isBuilt;
     _isFactorized = other._isFactorized;
 }
 

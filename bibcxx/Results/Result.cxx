@@ -94,7 +94,7 @@ void Result::_setFieldBase(
     std::string internalName;
     internalName = _generateFieldName( indexSymbName, internalIndex );
 
-    if ( _namesOfFields->empty() ) {
+    if ( !_namesOfFields->isBuilt() ) {
         _namesOfFields->build( true );
     }
 
@@ -212,7 +212,7 @@ void Result::setParameterValue( std::string paraName, std::string paraValue,
 ASTERDOUBLE Result::getTime( ASTERINTEGER storageIndex ) const {
 
     _rspr->updateValuePointer();
-    if ( _calculationParameter->empty() ) {
+    if ( !_calculationParameter->isBuilt() ) {
         _calculationParameter->build( true );
     }
 

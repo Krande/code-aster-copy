@@ -41,7 +41,7 @@ PrestressingCable::PrestressingCable( const std::string name, const ModelPtr &mo
       _cableBP( new Table( getName() + "CABLEBP    " ) ),
       _cableGL( new Table( getName() + "CABLEGL    " ) ),
       _lirela( new ListOfLinearRelationsReal( getName() + ".LIRELA    " ) ),
-      _isEmpty( true ) {}
+      _isBuilt( false ) {}
 
 PrestressingCable::PrestressingCable( const ModelPtr &model, const MaterialFieldPtr &mater,
                                       const ElementaryCharacteristicsPtr &cara )
@@ -51,5 +51,6 @@ PrestressingCable::PrestressingCable( const ModelPtr &model, const MaterialField
 bool PrestressingCable::build() {
     _cableBP->build();
     _cableGL->build();
+    _isBuilt = true;
     return true;
 };

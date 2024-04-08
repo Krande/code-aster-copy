@@ -151,7 +151,7 @@ Kvc_elem = CALC_MATR_ELEM(
 Kvc = ASSE_MATRICE(MATR_ELEM=Kvc_elem, NUME_DDL=nddl)
 
 MATKC = COMB_MATR_ASSE(COMB_R=_F(MATR_ASSE=Kvc, PARTIE="IMAG", COEF_R=1.0))
-test.assertFalse(MATKC.isEmpty())
+test.assertTrue(MATKC.isBuilt())
 
 # ### Test des matrices (TEST_*)
 

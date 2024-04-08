@@ -6,7 +6,7 @@
  * @brief Definition of elementary matrices
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -102,7 +102,7 @@ class ElementaryMatrix : public BaseElementaryMatrix {
                 CALLO_SDMPIC( type, getName() );
             }
         }
-        _isEmpty = false;
+        _isBuilt = true;
         return true;
     };
 

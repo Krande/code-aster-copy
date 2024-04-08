@@ -3,7 +3,7 @@
  * @brief Implementation de DirichletBC
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,7 +37,7 @@ DirichletBC::DirichletBC( const std::string &type, const ModelPtr &model )
       _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
       _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
       _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ),
-      _isEmpty( true ) {
+      _isBuilt( false ) {
     this->setModel( model );
 };
 
@@ -46,7 +46,7 @@ DirichletBC::DirichletBC( const std::string &name, const std::string &type, cons
       _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
       _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
       _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ),
-      _isEmpty( true ) {
+      _isBuilt( false ) {
     this->setModel( model );
 };
 
@@ -115,7 +115,7 @@ bool DirichletBC::build() {
 
     ASTERINTEGER op = 101;
     CALL_EXECOP( &op );
-    _isEmpty = false;
+    _isBuilt = true;
 
     return true;
 };
