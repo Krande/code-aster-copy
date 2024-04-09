@@ -55,8 +55,8 @@ extern void DEFSSSSS( CARCHA, carcha, const char *, STRING_SIZE, const char *, S
                       const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                       STRING_SIZE );
 
-#define CALL_FCLOSE( a ) CALLP( FCLOSE, fclose, a )
-extern void DEFP( FCLOSE, fclose, ASTERINTEGER * );
+#define CALL_FCLOSE( a ) CALLP( FCLOSE, fort_fclose, a )
+extern void DEFP( FCLOSE, fort_fclose, ASTERINTEGER * );
 
 #define CALL_INFMAJ_EXT( a ) CALLP( INFMAJ_EXT, infmaj_ext, a )
 extern void DEFP( INFMAJ_EXT, infmaj_ext, const ASTERINTEGER *const );

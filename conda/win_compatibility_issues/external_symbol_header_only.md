@@ -1,5 +1,6 @@
 # Header only
 
+This is applicable when trying to force bibfor first. 
 In the linking phase of `bibfor` library on windows, I keep seeing these errors:
 
 `error LNK2001: unresolved external symbol R8GAEM`

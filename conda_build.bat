@@ -7,8 +7,8 @@ set CLICOLOR_FORCE=1
 call conda_env.bat
 
 echo "Setting compiler env vars"
-set "CC=clang-cl.exe"
-set "CXX=clang-cl.exe"
+set "CC=cl.exe"
+set "CXX=cl.exe"
 set "FC=ifx.exe"
 REM set "LINK_CC=XILINK.exe"
 REM set "LINK_CXX=XILINK.exe"
@@ -24,7 +24,8 @@ where ifx
 SET PARENT_DIR=%~dp0
 SET PARENT_DIR=%PARENT_DIR:\=/%
 
-SET OUTPUT_DIR=%PARENT_DIR%/build/std/debug
+SET OUTPUT_DIR=%PARENT_DIR%/build/std
+SET OUTPUT_DIR=%OUTPUT_DIR:\=/%
 
 set ASTER_PLATFORM_MSVC=1
 set ASTER_PLATFORM_WINDOWS=1
@@ -58,15 +59,16 @@ set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 REM Compiler flags
 
 REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
-set CFLAGS=%CFLAGS% /FS /MD
+set CFLAGS=%CFLAGS% /FS /LD /sourceDependencies %OUTPUT_DIR%
+
 set FCFLAGS=%FCFLAGS% -fpp /MD
+set FCFLAGS=%FCFLAGS% /names:lowercase
 
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
 
-set INCLUDES_BIBC=%PREF_ROOT%/include
+set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
-
 REM Clean the build directory
 waf distclean
 
@@ -96,7 +98,7 @@ if %USE_LOG%==1 (
     @call conda_datetime.bat
     waf install_debug -v > install_debug_%datetimeString%.log 2>&1
 ) else (
-    waf install_debug -v
+    waf install_debug -v -j 24
 )
 
 endlocal

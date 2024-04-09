@@ -53,8 +53,10 @@ def options(self):
 
 def configure(self):
     self.load("compiler_c")
+    # self.load("msvcdeps", tooldir=["config"])
+
     opts = self.options
-    # preserve symbols in the dyn table for stdcalls
+    # preserve symbols in the dyn table for stdcallsspo
     if sys.platform == "darwin":
         # '--export-dynamic' is '-export_dynamic' in OS X linker
         # http://stackoverflow.com/questions/21279036/what-is-clangs-equivalent-to-rdynamic-gcc-flag
@@ -74,13 +76,13 @@ def configure(self):
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
 
-    # top_dir = pathlib.Path(self.path.get_bld().abspath()).parent.parent
-    #
-    # bibfor_incldir = osp.join(top_dir, "bibfor", "include")
-    # self.env.append_value("INCLUDES_BIBC", bibfor_incldir)
-    #
-    # bibcxx_incldir = osp.join(top_dir, "bibcxx", "include")
-    # self.env.append_value("INCLUDES_BIBC", bibcxx_incldir)
+    top_dir = pathlib.Path(self.path.get_bld().abspath()).parent.parent
+
+    bibfor_incldir = osp.join(top_dir, "bibfor", "include")
+    self.env.append_value("INCLUDES_BIBC", bibfor_incldir)
+
+    bibcxx_incldir = osp.join(top_dir, "bibcxx", "include")
+    self.env.append_value("INCLUDES_BIBC", bibcxx_incldir)
 
     if "ifort" in self.env.FC_NAME.lower():
         self.env.append_value("LINKFLAGS_fcprogram", ["-nofor-main"])

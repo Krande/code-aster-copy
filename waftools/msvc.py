@@ -116,7 +116,7 @@ def build_clang_compilation_db(task_gen, c_tasks, cxx_tasks):
     ]
     top_dir = pathlib.Path(bld.top_dir)
     Logs.info(f"{top_dir=}")
-    build_dir = top_dir / "build/debug"
+    build_dir = top_dir / "build/std/debug"
 
     args2 = [
         "/FC",
@@ -200,6 +200,16 @@ def def_prep_fc_c_linking(self):
         c_task.dep_nodes.extend(fc_task.outputs)
         cxx_task.dep_nodes.extend(fc_task.outputs)
         cxx_task.dep_nodes.extend(c_task.outputs)
+        envima_c_task = None
+        # need to add output of "envima.c" to bibfor to resolve shared c symbols
+        for task in c_tasks:
+            if "envima.c" in task.inputs[0].abspath():
+                envima_c_task = task
+                break
+        if envima_c_task:
+            fc_task.inputs.extend(envima_c_task.outputs)
+        else:
+            Logs.error("envima.c output not found in c_tasks")
 
         # Not quite sure about these lines
         # c_task.inputs.extend(fc_task.outputs)

@@ -100,7 +100,7 @@ def check_fortran_compiler_flags(self):
         self.check_fortran_compiler_options("-ffree-line-length-none")
 
     if "ifort" in self.env.FC_NAME.lower():
-        self.check_fortran_compiler_options(["/nologo", "/nogen-interfaces"])
+        self.check_fortran_compiler_options(["/nologo"])
         if self.env.CC_NAME.lower() == "msvc":
             self.check_fortran_compiler_options(["/fpe:0", "/traceback"])
         else:
