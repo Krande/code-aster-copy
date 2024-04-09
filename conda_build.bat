@@ -7,8 +7,8 @@ set CLICOLOR_FORCE=1
 call conda_env.bat
 
 echo "Setting compiler env vars"
-set "CC=cl.exe"
-set "CXX=cl.exe"
+set "CC=clang-cl.exe"
+set "CXX=clang-cl.exe"
 set "FC=ifx.exe"
 REM set "LINK_CC=XILINK.exe"
 REM set "LINK_CXX=XILINK.exe"
@@ -18,8 +18,8 @@ REM set "RANLIB=XILIB.exe"
 REM set "LD=XILINK.exe"
 
 where python
-where cl
-where ifx
+where "%CC%"
+where "%FC%"
 
 SET PARENT_DIR=%~dp0
 SET PARENT_DIR=%PARENT_DIR:\=/%
@@ -59,10 +59,10 @@ set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 REM Compiler flags
 
 REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
-set CFLAGS=%CFLAGS% /FS /LD /sourceDependencies %OUTPUT_DIR%
+set CFLAGS=%CFLAGS% /FS /MD /sourceDependencies %OUTPUT_DIR%
 
 set FCFLAGS=%FCFLAGS% -fpp /MD
-set FCFLAGS=%FCFLAGS% /names:lowercase
+@REM set FCFLAGS=%FCFLAGS% /names:lowercase
 
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
 
@@ -72,7 +72,7 @@ set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
 REM Clean the build directory
 waf distclean
 
-REM set FORCE_BIBFOR_SEQUENCE=1
+set FORCE_BIBFOR_SEQUENCE=1
 REM set MANUALLY_ADD_BIBFOR_DEPS=1
 
 python conda\update_version.py
