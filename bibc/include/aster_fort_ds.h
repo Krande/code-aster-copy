@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -254,25 +254,6 @@ extern void DEFSSSSPPPPPPPPPSSS( APLCPGN, aplcpgn, const char *, STRING_SIZE, co
                                  ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
                                  ASTERINTEGER *, const char *, STRING_SIZE, const char *,
                                  STRING_SIZE, const char *, STRING_SIZE );
-
-#define CALLO_MMELEM_DATA_C( a, b, c, d, e, f, g, h, i, j )                                        \
-    CALLPPOOPPPPPP( MMELEM_DATA_C, mmelem_data_c, a, b, c, d, e, f, g, h, i, j )
-extern void DEFPPSSPPPPPP( MMELEM_DATA_C, mmelem_data_c, ASTERLOGICAL *, ASTERINTEGER *,
-                           const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *,
-                           ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
-                           ASTERINTEGER * );
-
-#define CALLO_MMELEM_DATA_LAGA( a, b, c, d, e, f, g, h, i )                                        \
-    CALLPOOPPPPPP( MMELEM_DATA_LAGA, mmelem_data_laga, a, b, c, d, e, f, g, h, i )
-extern void DEFPSSPPPPPP( MMELEM_DATA_LAGA, mmelem_data_laga, ASTERLOGICAL *, const char *,
-                          STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
-                          ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER * );
-
-#define CALLO_MMELEM_DATA_NITS( a, b, c, d, e, f, g, h, i )                                        \
-    CALLPOOPPPPPP( MMELEM_DATA_NITS, mmelem_data_nits, a, b, c, d, e, f, g, h, i )
-extern void DEFPSSPPPPPP( MMELEM_DATA_NITS, mmelem_data_nits, ASTERLOGICAL *, const char *,
-                          STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
-                          ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER * );
 
 #ifdef __cplusplus
 }

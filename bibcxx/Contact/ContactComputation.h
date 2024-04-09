@@ -1,7 +1,7 @@
 
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -45,12 +45,6 @@ class ContactComputation {
     ContactComputation( const py::tuple &tup )
         : ContactComputation( tup[0].cast< ContactNewPtr >() ) {};
     py::tuple _getState() const { return py::make_tuple( _contact ); };
-
-    /**
-     * @brief Compute geometric gap
-     */
-    std::pair< FieldOnNodesRealPtr, FieldOnNodesRealPtr >
-    geometricGap( const ContactPairingPtr pairing ) const;
 
     /**
      * @brief Compute contact mortar matrix

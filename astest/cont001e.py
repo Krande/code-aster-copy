@@ -40,7 +40,6 @@ MAT = DEFI_MATERIAU(ELAS=_F(E=20000, NU=0.3, ALPHA=0.01))
 
 CHMAT = AFFE_MATERIAU(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-
 MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
 
 # Slave side - CONT_BAS
@@ -58,19 +57,16 @@ DEFICO_BAS = DEFI_CONT(
     ),
 )
 
-# Dfeinition checks
+# Definition checks
 zone = DEFICO_BAS.getContactZone(0)
 test.assertSequenceEqual(zone.getSlaveNodes(), [1, 3, 10, 11])
 test.assertSequenceEqual(zone.getSlaveCells(), [9, 10, 11])
 
-
-# Pairing checks
-
+# Pairing
 pair = ContactPairing(DEFICO_BAS)
 pair.compute()
 
-
-# check FED creation
+# Check FED creation
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
 nemab = []
@@ -92,16 +88,6 @@ test.assertSequenceEqual(
     ],
 )
 
-CD = ContactComputation(DEFICO_BAS)
-gap, i_gap = CD.geometricGap(pair)
-test.assertEqual(gap.size(), 4)
-test.assertEqual(i_gap.size(), 4)
-val = gap.getValues()
-test.assertTrue(numpy.isnan(val[1]))
-val[1] = None
-test.assertSequenceEqual(val, [0.0, None, 33.33333333333333, 66.66666666666667])
-test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 1.0, 1.0])
-
 # Slave side - CONT_HAUT
 DEFICO_HAUT = DEFI_CONT(
     MODELE=MODI,
@@ -116,18 +102,15 @@ DEFICO_HAUT = DEFI_CONT(
     ),
 )
 
-# Dfeinition checks
+# Definition checks
 zone = DEFICO_HAUT.getContactZone(0)
 test.assertSequenceEqual(zone.getSlaveNodes(), [16, 18, 23, 24, 25])
 
-# Pairing checks
-
+# Pairing
 pair = ContactPairing(DEFICO_HAUT)
 pair.compute()
 
-
-# check FED creation
-
+# Check FED creation
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
 nemab = []
@@ -143,18 +126,7 @@ test.assertSequenceEqual(
     [[17, 24, 11, 2], [17, 24, 12, 11], [24, 25, 12, 11], [24, 25, 4, 12], [25, 26, 4, 12], [19]],
 )
 
-CD = ContactComputation(DEFICO_HAUT)
-gap, i_gap = CD.geometricGap(pair)
-val = gap.getValues()
-test.assertTrue(numpy.isnan(val[1]))
-val[1] = None
-val[4] = None
-test.assertEqual(gap.size(), 5)
-test.assertEqual(i_gap.size(), 5)
-test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 1.0, 1.0, 0.0])
-
-IMPR_RESU(FORMAT="MED", RESU=(_F(CHAM_GD=gap)))
-
+CD = ContactComputation(DEFICO_BAS)
 data = CD.contactData(pair, CHMAT, False)
 test.assertEqual(data.size(), 60 * len(nema))
 
