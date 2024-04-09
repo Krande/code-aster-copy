@@ -100,7 +100,7 @@ def check_metis_libs(self):
 
 @Configure.conf
 def check_metis_headers(self):
-    if self.is_defined("ASTER_PLATFORM_WINDOWS"):
+    if self.is_defined("ASTER_PLATFORM_MINGW"):
         self.define("USE_GKREGEX", 1)
     check = partial(
         self.check_cc, header_name="metis.h", uselib_store="METIS", use="PARMETIS METIS M"

@@ -34,6 +34,11 @@ import platform
 import os.path as osp
 import pathlib
 import sys
+WAF_SRC_PATH = os.getenv('WAF_SRC', None)
+if WAF_SRC_PATH is not None:
+    # If testing a local waf, add it to the path
+    print(f"Using WAF_SRC_PATH: {WAF_SRC_PATH}")
+    sys.path.insert(0, WAF_SRC_PATH)
 
 from waflib import Build, Configure, Logs, Utils
 from waflib.Tools.c_config import DEFKEYS

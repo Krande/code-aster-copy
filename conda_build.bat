@@ -59,9 +59,13 @@ set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 REM Compiler flags
 
 REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
-set CFLAGS=%CFLAGS% /FS /MD /sourceDependencies %OUTPUT_DIR%
 
+set CFLAGS=%CFLAGS% /FS /MD
+if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
+
+set CXXFLAGS=%CXXFLAGS% /MD
 set FCFLAGS=%FCFLAGS% -fpp /MD
+
 @REM set FCFLAGS=%FCFLAGS% /names:lowercase
 
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
@@ -98,7 +102,7 @@ if %USE_LOG%==1 (
     @call conda_datetime.bat
     waf install_debug -v > install_debug_%datetimeString%.log 2>&1
 ) else (
-    waf install_debug -v -j 24
+    waf install_debug -v
 )
 
 endlocal

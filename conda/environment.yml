@@ -16,6 +16,6 @@ dependencies:
   - waf
   - pyyaml
   - python-dotenv
-  - clang 18.1.2
-  - clangxx 18.1.2
-  - lld 18.1.2
+  - clang 18.1.3
+  - clangxx 18.1.3
+  - lld 18.1.3
