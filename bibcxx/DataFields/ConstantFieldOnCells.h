@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ConstantFieldOnCells
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -605,7 +605,7 @@ class ConstantFieldOnCells : public DataField {
     };
 
     bool build( bool force = false ) {
-        if ( _listOfMeshCells->empty() || force ) {
+        if ( !_listOfMeshCells->isBuilt() || force ) {
             _listOfMeshCells->build();
             return true;
         }

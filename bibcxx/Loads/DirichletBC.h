@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DirichletBC
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -61,8 +61,8 @@ class DirichletBC : public DataStructure {
     JeveuxVectorLong _intParam;
     JeveuxVectorChar8 _charParam;
     JeveuxVectorReal _doubleParam;
-    /** @brief La SD est-elle vide ? */
-    bool _isEmpty;
+    /** @brief La SD a-t-elle été construite ? */
+    bool _isBuilt;
 
     DirichletBC( void ) = delete;
 

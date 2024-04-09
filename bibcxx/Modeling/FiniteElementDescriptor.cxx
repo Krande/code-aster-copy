@@ -3,7 +3,7 @@
  * @brief Implementation de FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -207,6 +207,16 @@ bool FiniteElementDescriptor::build() {
     _listOfGroupsOfElements->build();
 
     return true;
+};
+
+ASTERINTEGER FiniteElementDescriptor::getElemTypeNume( const std::string elemTypeName ) const {
+
+    ASTERINTEGER elemTypeNume;
+    JeveuxChar32 objName( " " );
+    std::string name = "&CATA.TE.NOMTE";
+    CALLO_JEXNOM( objName, name, elemTypeName );
+    CALLO_JENONU( objName, &elemTypeNume );
+    return elemTypeNume;
 };
 
 #ifdef ASTER_HAVE_MPI

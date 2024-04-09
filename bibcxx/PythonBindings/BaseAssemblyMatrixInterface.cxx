@@ -3,7 +3,7 @@
  * @brief Interface python de AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -65,11 +65,11 @@ Arguments:
         )",
               py::arg( "load" ) )
         // -----------------------------------------------------------------------------------------
-        .def( "isEmpty", &BaseAssemblyMatrix::isEmpty, R"(
-Tell if the matrix is empty.
+        .def( "isBuilt", &BaseAssemblyMatrix::isBuilt, R"(
+Tell if the matrix has already been built.
 
 Returns:
-    bool: *True* if the matrix is empty.
+    bool: *True* if the matrix has been built.
         )" )
         // -----------------------------------------------------------------------------------------
         .def( "isFactorized", &BaseAssemblyMatrix::isFactorized,

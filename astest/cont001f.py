@@ -26,11 +26,7 @@ from libaster import ContactPairing, ContactComputation
 import numpy
 
 
-DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
-    # DEBUG=_F(SDVERI='OUI',),
-    INFO=1,
-)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 test = CA.TestCase()
 
@@ -53,28 +49,22 @@ DEFICO_BAS = DEFI_CONT(
             GROUP_MA_MAIT="CONT_HAUT",
             GROUP_MA_ESCL="CONT_BAS",
             ALGO_CONT="LAGRANGIEN",
-            # VARIANTE="ROBUSTE",
             CONTACT_INIT="OUI",
             COEF_MULT_APPA=-1,
         ),
     ),
 )
 
-# Dfeinition checks
+# Definition checks
 zone = DEFICO_BAS.getContactZone(0)
 test.assertSequenceEqual(zone.getSlaveNodes(), [7, 10, 57, 58, 59])
 test.assertSequenceEqual(zone.getSlaveCells(), [60, 61, 62, 63])
 
-
-# Pairing checks
-
+# Pairing
 pair = ContactPairing(DEFICO_BAS)
 pair.compute()
 
-
-# check FED creation
-CD = ContactComputation(DEFICO_BAS)
-
+# Check FED creation
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
 nemab = []
@@ -88,17 +78,6 @@ test.assertSequenceEqual(
     [[58, 59, 13, 1], [59, 60, 14, 13], [59, 60, 15, 14], [60, 8, 15, 14], [60, 8, 2, 15], [11]],
 )
 
-gap, i_gap = CD.geometricGap(pair)
-test.assertEqual(gap.size(), 5)
-test.assertEqual(i_gap.size(), 5)
-val = gap.getValues()
-test.assertTrue(numpy.isnan(val[1]))
-val[1] = None
-val[2] = None
-test.assertSequenceEqual(val, [0.0, None, None, 31.093378263431475, 5.980746753595154])
-test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 0.0, 1.0, 1.0])
-
-
 # Slave side - CONT_HAUT
 DEFICO_HAUT = DEFI_CONT(
     MODELE=MODI,
@@ -109,28 +88,23 @@ DEFICO_HAUT = DEFI_CONT(
             GROUP_MA_MAIT="CONT_BAS",
             GROUP_MA_ESCL="CONT_HAUT",
             ALGO_CONT="LAGRANGIEN",
-            # VARIANTE="ROBUSTE",
             CONTACT_INIT="OUI",
             COEF_MULT_APPA=100000.0,
         ),
     ),
 )
 
-# Dfeinition checks
+# Definition checks
 zone = DEFICO_HAUT.getContactZone(0)
 test.assertSequenceEqual(zone.getSlaveNodes(), [0, 1, 12, 13, 14])
 test.assertSequenceEqual(zone.getSlaveCells(), [0, 1, 2, 3])
 
 
-# Pairing checks
-
+# Pairing
 pair = ContactPairing(DEFICO_HAUT)
 pair.compute()
 
-
-# check FED creation
-CD = ContactComputation(DEFICO_HAUT)
-
+# Check FED creation
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
 nemab = []
@@ -144,15 +118,5 @@ test.assertSequenceEqual(
     [[14, 13, 58, 59], [14, 13, 11, 58], [15, 14, 59, 60], [15, 14, 60, 8], [2, 15, 60, 8], [1]],
 )
 
-gap, i_gap = CD.geometricGap(pair)
-val = gap.getValues()
-test.assertTrue(numpy.isnan(val[0]))
-
-test.assertEqual(gap.size(), 5)
-test.assertEqual(i_gap.size(), 5)
-
-test.assertSequenceEqual(i_gap.getValues(), [0.0, 1.0, 0.0, 1.0, 1.0])
-
-IMPR_RESU(FORMAT="MED", RESU=(_F(CHAM_GD=gap)))
 
 FIN()

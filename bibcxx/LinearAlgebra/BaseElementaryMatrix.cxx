@@ -20,7 +20,7 @@
 
 BaseElementaryMatrix::BaseElementaryMatrix( const std::string name, const std::string type )
     : DataStructure( name, 19, type ),
-      _isEmpty( true ),
+      _isBuilt( true ),
       _model( nullptr ),
       _materialField( nullptr ),
       _elemChara( nullptr ),

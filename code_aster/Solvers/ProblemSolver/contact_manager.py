@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,20 +94,6 @@ class ContactManager(SolverFeature):
 
         if self.enable:
             self.pair.setCoordinates(coor)
-
-    @profile
-    def gap(self):
-        """Compute geometric gap.
-
-        Returns:
-            (FieldOnNodesReal): geometric gap
-            (FieldOnNodesReal): gap indicator
-        """
-
-        if self.enable:
-            return self.comp.geometricGap(self.pair.getCoordinates())
-
-        return None, None
 
     @profile
     def data(self):

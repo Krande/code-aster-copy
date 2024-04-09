@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe PrestressingCable
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -60,8 +60,8 @@ class PrestressingCable : public DataStructure {
     TablePtr _cableGL;
     /** @brief Table '.LIRELA' */
     ListOfLinearRelationsRealPtr _lirela;
-    /** @brief Booleen indiquant si la sd a deja ete remplie */
-    bool _isEmpty;
+    /** @brief Booleen indiquant si la sd a deja ete construite */
+    bool _isBuilt;
 
   public:
     /**
@@ -88,10 +88,10 @@ class PrestressingCable : public DataStructure {
     ElementaryCharacteristicsPtr getElementaryCharacteristics() const { return _cara; };
 
     /**
-     * @brief Methode permettant de savoir si l'objet est vide
-     * @return true si le modele est vide
+     * @brief Methode permettant de savoir si l'objet a ete construit
+     * @return true si le modele a deja ete construit
      */
-    bool isEmpty() { return _isEmpty; };
+    bool isBuilt() { return _isBuilt; };
 
     bool build();
 };

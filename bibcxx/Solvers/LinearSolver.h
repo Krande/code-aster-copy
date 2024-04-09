@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe LinearSolver
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -38,7 +38,7 @@
  */
 class LinearSolver : public DataStructure {
   protected:
-    bool _isEmpty;
+    bool _isBuilt;
 
     JeveuxVectorChar24 _charValues;
     JeveuxVectorReal _doubleValues;
@@ -118,10 +118,10 @@ class LinearSolver : public DataStructure {
     py::dict getKeywords() const;
 
     /**
-     * @brief Methode permettant de savoir si la matrice est vide
-     * @return true si vide
+     * @brief Methode permettant de savoir si la matrice a été construite
+     * @return true si la matrice a été construite
      */
-    bool isEmpty() { return _isEmpty; };
+    bool isBuilt() { return _isBuilt; };
 
     /**
      * @brief Factorisation d'une matrice

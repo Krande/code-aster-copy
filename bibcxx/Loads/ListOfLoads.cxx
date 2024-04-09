@@ -3,7 +3,7 @@
  * @brief Implementation de ListOfLoads
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -38,7 +38,7 @@ ListOfLoads::ListOfLoads( const std::string &name, const ModelPtr model )
       _loadInformations( JeveuxVectorLong( getName() + ".INFC" ) ),
       _list( JeveuxVectorChar24( getName() + ".LCHA" ) ),
       _listOfFunctions( JeveuxVectorChar24( getName() + ".FCHA" ) ),
-      _isEmpty( true ),
+      _isBuilt( false ),
       _model( model ) {};
 
 ListOfLoads::ListOfLoads( const ModelPtr model )
@@ -79,7 +79,7 @@ int ListOfLoads::getPhysics( void ) const {
 };
 
 bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
-    if ( !_isEmpty )
+    if ( _isBuilt )
         return true;
 
     int physic;
@@ -270,7 +270,7 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         AS_ABORT( "Should not be here" );
     }
 
-    _isEmpty = false;
+    _isBuilt = true;
     return true;
 };
 
