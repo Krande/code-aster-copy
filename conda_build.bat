@@ -1,9 +1,8 @@
 @echo off
 setlocal
 
-set USE_LOG=0
-set CLICOLOR_FORCE=1
 
+set CLICOLOR_FORCE=1
 call conda_env.bat
 
 echo "Setting compiler env vars"
@@ -64,9 +63,8 @@ set CFLAGS=%CFLAGS% /FS /MD
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 set CXXFLAGS=%CXXFLAGS% /MD
-set FCFLAGS=%FCFLAGS% -fpp /MD
-
-@REM set FCFLAGS=%FCFLAGS% /names:lowercase
+set FCFLAGS=%FCFLAGS% /fpp /MD
+set FCFLAGS=%FCFLAGS% /names:lowercase /assume:underscore /assume:nobscc
 
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
 
@@ -76,8 +74,9 @@ set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
 REM Clean the build directory
 waf distclean
 
+set USE_LOG=0
 set FORCE_BIBFOR_SEQUENCE=1
-REM set MANUALLY_ADD_BIBFOR_DEPS=1
+@REM set MANUALLY_ADD_BIBFOR_DEPS=1
 
 python conda\update_version.py
 
@@ -91,6 +90,7 @@ waf configure ^
   --med-libs=medC ^
   --prefix=%LIBRARY_PREFIX% ^
   --out=%OUTPUT_DIR% ^
+  --embed-aster ^
   --disable-mpi ^
   --install-tests ^
   --maths-libs=auto ^
@@ -99,8 +99,9 @@ waf configure ^
 REM if USE_LOG is set, then log the output to a file
 if %USE_LOG%==1 (
     REM set a datetime variable down to the minute
+    set CLICOLOR_FORCE=0
     @call conda_datetime.bat
-    waf install_debug -v > install_debug_%datetimeString%.log 2>&1
+    waf install_debug -vvv > install_debug_%datetimeString%.log 2>&1
 ) else (
     waf install_debug -v
 )

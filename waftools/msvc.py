@@ -126,7 +126,7 @@ def build_clang_compilation_db(task_gen, c_tasks, cxx_tasks):
     for task in clang_compilation_database_tasks:
         f_node = task.inputs[0]
         filename = f_node.path_from(task.get_cwd())
-        filename_rel = str(filename).replace("..\\..\\", '')
+        filename_rel = str(filename).replace("..\\..\\", "")
         # Logs.info(f"{filename_rel=}")
         fp = (build_dir / filename).resolve().absolute()
         # Logs.info(f"{fp=}")
@@ -200,16 +200,54 @@ def def_prep_fc_c_linking(self):
         c_task.dep_nodes.extend(fc_task.outputs)
         cxx_task.dep_nodes.extend(fc_task.outputs)
         cxx_task.dep_nodes.extend(c_task.outputs)
-        envima_c_task = None
-        # need to add output of "envima.c" to bibfor to resolve shared c symbols
+
+        extra_c_deps = {
+            "envima.c",
+            "aster_module.c",
+            "aster_core_module.c",
+            "aster_utils.c",
+            "shared_vars.c",
+            "aster_exceptions.c",
+            "utflsh.c",
+            "uttrst.c",
+            "iodr.c",
+            "rmfile.c",
+            "hpalloc.c",
+            "inisig.c",
+            "aster_mpi.c",
+            "indik8.c",
+            "matfpe.c",
+            "erfcam.c",
+            "hpdeallc.c",
+            "dll_umat.c",
+            "hdftsd.c",
+            "dll_interface.c",
+            "dll_register.c",
+            "uttcsm.c",
+            "fetsco.c",
+            "gpmetis_aster.c",
+            "libinfos.c",
+            "kloklo.c",
+            "cpfile.c",
+            "hdfrsv.c",
+            "datetoi.c",
+            "strmov.c",
+            "hanfpe.c",
+            "mempid.c"
+        }
+        found = set()
+        # need to add output of som "*.c" files to bibfor to resolve shared c symbols
         for task in c_tasks:
-            if "envima.c" in task.inputs[0].abspath():
-                envima_c_task = task
-                break
-        if envima_c_task:
-            fc_task.inputs.extend(envima_c_task.outputs)
-        else:
-            Logs.error("envima.c output not found in c_tasks")
+            abs_path = pathlib.Path(task.inputs[0].abspath()).resolve()
+            for extra_dep in extra_c_deps:
+                if extra_dep == abs_path.name:
+                    fc_task.inputs.extend(task.outputs)
+                    found.add(extra_dep)
+                    break
+
+        # check if all extra deps are found
+        if found != extra_c_deps:
+            Logs.error(f"Extra deps not found: {extra_c_deps - found}")
 
         # Not quite sure about these lines
         # c_task.inputs.extend(fc_task.outputs)

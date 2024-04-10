@@ -1,0 +1,19 @@
+name: codeaster-deps-flang
+channels:
+  - conda-forge
+dependencies:
+  - python 3.11
+  - vswhere
+  - libblas=*=*mkl
+  - mfront=4.2.0
+  - mgis=2.2
+  - mkl-devel
+  - libmed=4.1.1
+  - medcoupling=9.12.0
+  - waf
+  - pyyaml
+  - python-dotenv
+  - flang 18.1.3
+  - clang 18.1.3
+  - clangxx 18.1.3
+  - lld 18.1.3

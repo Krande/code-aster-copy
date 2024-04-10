@@ -60,3 +60,7 @@ python conda\manual_link.py --bibfor
 ```
 
 Use the `--bibc` flag to re-link the compiled .o sources for bibc.
+
+## Resources
+
+https://github.com/scipy/scipy/pull/16957
