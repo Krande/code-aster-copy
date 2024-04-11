@@ -7,7 +7,7 @@ from waflib import Logs, TaskGen, Task, Node, Utils, Errors
 
 
 class msvclibgen(Task.Task):
-    run_str = "lib /OUT:{MSVC_LIBGEN_LIB_PATH} @{MSVC_LIBGEN_INPUT_FILE_TXT}"
+    run_str = "LIB.exe /OUT:{MSVC_LIBGEN_LIB_PATH} @{MSVC_LIBGEN_INPUT_FILE_TXT}"
     color = "BLUE"
 
     def run(self):
@@ -16,15 +16,26 @@ class msvclibgen(Task.Task):
         kwargs["cwd"] = self.get_cwd().abspath()
         Logs.info()
 
+        if "env" in kwargs:
+            environ = kwargs["env"]
+            del kwargs["env"]
+        else:
+            environ = os.environ.copy()
+
+        kwargs["env"] = environ
+        kwargs["shell"] = True
+
         output_fp = pathlib.Path(self.outputs[0].abspath())
         output_fp.parent.mkdir()
         ofiles = output_fp.parent / f"{output_fp.stem}_input_files.txt"
-        with open(ofiles, 'w') as f:
+        with open(ofiles, "w") as f:
             for i in self.inputs:
                 f.write(f"{i.abspath()}\n")
-        cmds = self.run_str.format(MSVC_LIBGEN_LIB_PATH=output_fp.as_posix(),
-                                   MSVC_LIBGEN_INPUT_FILE_TXT=ofiles.as_posix())
 
+        cmds = self.run_str.format(
+            MSVC_LIBGEN_LIB_PATH=output_fp.as_posix(), MSVC_LIBGEN_INPUT_FILE_TXT=ofiles.as_posix()
+        )
+        Logs.info("Executing %r", cmds)
         ret, stdout, stderr = Utils.run_process(cmds, kwargs)
         if ret:
             error = Errors.WafError("Command %r returned %r" % (cmds, ret))
@@ -197,11 +208,11 @@ class LibTask:
     fc_tasks: list[Task]
 
 
-def extract_main_tasks(self) -> LibTask:
+def extract_main_tasks(bld) -> LibTask:
     fc_task = None
     fc_program_task = None
     fc_tasks = []
-    for task in self.bld.get_tgen_by_name("asterbibfor").tasks:
+    for task in bld.get_tgen_by_name("asterbibfor").tasks:
         if task.__class__.__name__ == "fcshlib":
             fc_task = task
         if task.__class__.__name__ == "fcprogram":
@@ -216,7 +227,7 @@ def extract_main_tasks(self) -> LibTask:
     c_task = None
     c_program_task = None
     c_tasks = []
-    for task in self.bld.get_tgen_by_name("asterbibc").tasks:
+    for task in bld.get_tgen_by_name("asterbibc").tasks:
         if task.__class__.__name__ == "cshlib":
             c_task = task
         if task.__class__.__name__ == "cprogram":
@@ -231,7 +242,7 @@ def extract_main_tasks(self) -> LibTask:
     cxx_task = None
     cxx_program_task = None
     cxx_tasks = []
-    for task in self.bld.get_tgen_by_name("asterbibcxx").tasks:
+    for task in bld.get_tgen_by_name("asterbibcxx").tasks:
         if task.__class__.__name__ == "cxxshlib":
             cxx_task = task
         if task.__class__.__name__ == "cxxprogram":
@@ -243,8 +254,9 @@ def extract_main_tasks(self) -> LibTask:
         # Logs.info(f"{task.inputs=}")
         # Logs.info(f"{task=}")
 
-    return LibTask(c_task, cxx_task, fc_task, c_program_task, cxx_program_task, fc_program_task, c_tasks, cxx_tasks,
-                   fc_tasks)
+    return LibTask(
+        c_task, cxx_task, fc_task, c_program_task, cxx_program_task, fc_program_task, c_tasks, cxx_tasks, fc_tasks
+    )
 
 
 def force_bibfor_seq(task_obj: LibTask):
@@ -290,7 +302,7 @@ def force_bibfor_seq(task_obj: LibTask):
         "datetoi.c",
         "strmov.c",
         "hanfpe.c",
-        "mempid.c"
+        "mempid.c",
     }
     found = set()
     # need to add output of som "*.c" files to bibfor to resolve shared c symbols
@@ -364,12 +376,10 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     # fclib_task.outputs = [fclib_task.outputs[0].change_ext(".lib")]
 
 
-
-
 @TaskGen.feature("cshlib")
 @TaskGen.after_method("apply_link")
 def make_msvc_modifications(self):
-    task_obj = extract_main_tasks(self)
+    task_obj = extract_main_tasks(self.bld)
 
     # Print depends order for each task
     # Logs.info(f"{task_obj.fc_task.dep_nodes=}")
