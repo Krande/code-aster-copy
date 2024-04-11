@@ -342,7 +342,7 @@ def build(self):
     self.load("ext_aster", tooldir="waftools")
     # Need to remove Windows Kits includes from INCLUDES
     if self.env.CC_NAME == "msvc":
-        self.load("msvc", tooldir="waftools")
+        self.load("msvc_lib", tooldir="waftools")
         # Logs.info(f"{self.env}")
         pops = []
         for i, lib in enumerate(self.env.LIBPATH):

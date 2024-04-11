@@ -1,59 +1,17 @@
-import json
 import os
 import pathlib
 import subprocess
-from win_lib_symbols import get_env
 
 ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent
 THIS_DIR = pathlib.Path(__file__).resolve().parent
-BUILD_DIR = ROOT_DIR / "build" / "debug"
+BUILD_DIR = ROOT_DIR / "build" / "std" / "debug"
 
 CONDA_PREFIX = os.getenv("CONDA_PREFIX")
 
 
-# Function to extract symbols and create .lib file
-def create_lib_from_dll(dll_path: str):
-    env_cache_file = THIS_DIR / ".env_cache.json"
-    if not env_cache_file.exists():
-        env = get_env()
-        with open(env_cache_file, "w") as f:
-            json.dump(env, f, indent=4)
-    else:
-        with open(env_cache_file, "r") as f:
-            env = json.load(f)
-
-    # Ensure .dll path is valid
-    if not os.path.exists(dll_path):
-        print(f"Error: {dll_path} does not exist.")
-        return
-
-    # Extracting the file name and directory from the provided path
-    dll_directory, dll_name = os.path.split(dll_path)
-    base_name = dll_name.replace(".dll", "")
-    def_path = os.path.join(dll_directory, f"{base_name}.def")
-    lib_path = os.path.join(dll_directory, f"{base_name}.lib")
-
-    # Step 1: Use dumpbin to extract exports to a .def file
-    print("Extracting symbols using dumpbin...")
-    dumpbin_output = subprocess.check_output(["dumpbin", "/exports", dll_path], shell=True, text=True, env=env)
-    exports_lines = [line for line in dumpbin_output.split("\n") if "external symbol" in line]
-
-    # Writing to .def file
-    with open(def_path, "w") as def_file:
-        def_file.write("EXPORTS\n")
-        for line in exports_lines:
-            symbol = line.split()[-1]
-            def_file.write(f"{symbol}\n")
-
-    # Step 2: Use lib to create a .lib file from the .def file
-    print("Creating .lib file...")
-    subprocess.run(["lib", f"/def:{def_path}", f"/out:{lib_path}", "/machine:x64"], shell=True, check=True, env=env)
-
-    print(f".lib file created at {lib_path}")
-
-
 def create_args(
-    lib_name, dep_files: list[str], extra_deps: list[str], extra_flags: list[str] = None, pre_flags: list[str] = None
+        lib_name, dep_files: list[str], extra_deps: list[str], extra_flags: list[str] = None,
+        pre_flags: list[str] = None
 ) -> list[str]:
     extra_flags = extra_flags or []
     pre_flags = pre_flags or []
@@ -71,7 +29,7 @@ def create_args(
         f"/LIBPATH:{CONDA_PREFIX}/Library/bin",
         *pre_flags,
         *dep_files,
-        f"/OUT:{ROOT_DIR}\\build\\debug\\{lib_name}\\{lib_name}.dll",
+        f"/OUT:{BUILD_DIR}\\{lib_name}\\{lib_name}.dll",
         *extra_deps,
         *extra_flags,
     ]
@@ -112,15 +70,18 @@ def bibc(include_all_bibfor=False):
         "pthread.lib",
         "z.lib",
         "bibfor.lib",
+        "bibcxx.lib",
     ]
     input_args = create_args("bibc", [f"@{bibc_obj_list_path.name}"], extra_deps, ["/DEBUG", "/INCREMENTAL:NO"])
+    input_args += [f"/LIBPATH:{BUILD_DIR}/bibc", f"/LIBPATH:{BUILD_DIR}/bibfor", f"/LIBPATH:{BUILD_DIR}/bibcxx"]
 
     with open(bibc_obj_list_path, "w") as f:
         f.write("\n".join(map(str, bibc_objects)))
-        f.write("\n")
-        f.write("\n".join(map(str, cleaned_bibfor_objects)))
+        # f.write("\n")
+        # f.write("\n".join(map(str, cleaned_bibfor_objects)))
 
     # Now call that batch file
+    print(" ".join(input_args))
     subprocess.run(input_args, shell=True, cwd=ROOT_DIR)
 
 

@@ -75,7 +75,7 @@ REM Clean the build directory
 waf distclean
 
 set USE_LOG=0
-set FORCE_BIBFOR_SEQUENCE=1
+@REM set FORCE_BIBFOR_SEQUENCE=1
 @REM set MANUALLY_ADD_BIBFOR_DEPS=1
 
 python conda\update_version.py

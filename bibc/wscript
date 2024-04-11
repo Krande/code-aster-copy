@@ -21,7 +21,7 @@ import os.path as osp
 import pathlib
 import sys
 
-from waflib import Configure, TaskGen, Utils
+from waflib import Configure, TaskGen, Utils, Logs
 
 
 def options(self):
@@ -53,7 +53,6 @@ def options(self):
 
 def configure(self):
     self.load("compiler_c")
-    # self.load("msvcdeps", tooldir=["config"])
 
     opts = self.options
     # preserve symbols in the dyn table for stdcallsspo
@@ -110,6 +109,7 @@ def build(self):
     get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
 
+    Logs.info(f"{self.variant=}")
     build_libbibc(self, env)
     build_libaster(self, env)
 
