@@ -64,7 +64,7 @@ if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 set CXXFLAGS=%CXXFLAGS% /MD
 set FCFLAGS=%FCFLAGS% /fpp /MD
-set FCFLAGS=%FCFLAGS% /names:lowercase /assume:underscore /assume:nobscc
+set FCFLAGS=%FCFLAGS% /names:lowercase /assume:nobscc
 
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib libomp.lib
 
