@@ -7,44 +7,34 @@ from waflib import Logs, TaskGen, Task, Node, Utils, Errors
 
 
 class msvclibgen(Task.Task):
-    run_str = "LIB.exe /OUT:{MSVC_LIBGEN_LIB_PATH} @{MSVC_LIBGEN_INPUT_FILE_TXT}"
+    run_str = "${LIB_EXE} /OUT:${MSVC_LIBGEN_LIB_PATH} @${MSVC_LIBGEN_INPUT_FILE_TXT}"
     color = "BLUE"
 
-    def run(self):
+    def exec_command(self, cmd, **kw):
         """Execute the command"""
-        kwargs = self.env.get_merged_dict()
-        kwargs["cwd"] = self.get_cwd().abspath()
-        Logs.info()
+        environ = None
+        if "env" in kw:
+            environ = kw["env"]
+            del kw["env"]
 
-        if "env" in kwargs:
-            environ = kwargs["env"]
-            del kwargs["env"]
-        else:
+        if environ is None:
             environ = os.environ.copy()
 
-        kwargs["env"] = environ
-        kwargs["shell"] = True
-
         output_fp = pathlib.Path(self.outputs[0].abspath())
-        output_fp.parent.mkdir()
+
         ofiles = output_fp.parent / f"{output_fp.stem}_input_files.txt"
         with open(ofiles, "w") as f:
             for i in self.inputs:
                 f.write(f"{i.abspath()}\n")
 
-        cmds = self.run_str.format(
-            MSVC_LIBGEN_LIB_PATH=output_fp.as_posix(), MSVC_LIBGEN_INPUT_FILE_TXT=ofiles.as_posix()
-        )
-        Logs.info("Executing %r", cmds)
-        ret, stdout, stderr = Utils.run_process(cmds, kwargs)
-        if ret:
-            error = Errors.WafError("Command %r returned %r" % (cmds, ret))
-            error.returncode = ret
-            error.stderr = stderr
-            error.stdout = stdout
-            raise error
+        environ["MSVC_LIBGEN_LIB_PATH"] = output_fp.as_posix()
+        environ["MSVC_LIBGEN_INPUT_FILE_TXT"] = ofiles.as_posix()
 
-    def exec_command(self, cmd, **kw):
+        kw["env"] = environ
+        kw["shell"] = True
+        # Do this for now.
+        cmd = f"LIB.exe /OUT:{output_fp.as_posix()} @{ofiles.as_posix()}".split()
+        Logs.info("Executing %r", cmd)
         return super().exec_command(cmd, **kw)
 
 
@@ -333,7 +323,7 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     # the task takes in the outputs of all C tasks
     # it's outputs are bibc.lib and bibc.exp located in the build directory
     bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
-    bibc_lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
+    bibc_lib_output_file_path = bld_path / lib_name / f"{lib_name}_gen.lib"
     Logs.info(f"{bibc_lib_output_file_path=}")
 
     # create nodes for the output files
@@ -364,6 +354,12 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     bibfor_lib_task = create_msvclibgen_task(self, "bibfor", fc_input_tasks)
 
     clib_task.inputs += bibfor_lib_task.outputs + bibcxx_lib_task.outputs
+    # Add MKL libraries
+    # mkl_libs = ["mkl_intel_lp64_dll.lib", "mkl_intel_thread_dll.lib", "mkl_core_dll.lib"]
+    # clib_task.inputs += [self.bld.bldnode.make_node(lib) for lib in mkl_libs]
+
+    fclib_task.inputs += bibcxx_lib_task.outputs + clib_task.outputs
+    cxxlib_task.inputs += clib_task.outputs + fclib_task.outputs
     # clib_task.run_str = ""
 
     # cxxlib_task.inputs = bibc_output + bibfor_output

@@ -4,6 +4,7 @@
 import os
 import pathlib
 import subprocess
+from enum import Enum
 
 from dotenv import load_dotenv
 
@@ -13,24 +14,31 @@ ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent
 THIS_DIR = pathlib.Path(__file__).resolve().parent
 BUILD_DIR = ROOT_DIR / "build" / "std" / "debug"
 
-
 CONDA_PREFIX_DIR = pathlib.Path(os.getenv("CONDA_PREFIX"))
 
 
-def main(compile_bibc=False, compile_bibfor=False, compile_bibcxx=False):
-    for lib_name in ["bibfor", "bibcxx", "bibc"]:
+class CAModulue(Enum, str):
+    BIBC = "bibc"
+    BIBFOR = "bibfor"
+    BIBCXX = "bibcxx"
+    ALL = "all"
+
+    @staticmethod
+    def from_str(s: str) -> "CAModulue":
+        try:
+            return CAModulue(s)
+        except ValueError:
+            raise ValueError(f"Invalid CAModule: {s}")
+
+
+def main(ca_module: CAModulue):
+    for lib_name in [CAModulue.BIBFOR, CAModulue.BIBCXX, CAModulue.BIBC]:
         module_dir = BUILD_DIR / lib_name
         files = list(module_dir.rglob("*.o"))
         txt_file = module_dir / f"{lib_name}_ofiles.txt"
         out_file = module_dir / f"{lib_name}.lib"
 
-        if not compile_bibc and lib_name == "bibc":
-            continue
-
-        if not compile_bibfor and lib_name == "bibfor":
-            continue
-
-        if not compile_bibcxx and lib_name == "bibcxx":
+        if ca_module != CAModulue.ALL and lib_name != ca_module:
             continue
 
         if len(files) == 0:
@@ -58,7 +66,20 @@ if __name__ == "__main__":
     parser.add_argument("--bibc", action="store_true", help="Create .lib and .exp for the bibc library")
     parser.add_argument("--bibfor", action="store_true", help="Create .lib and .exp for the bibfor library")
     parser.add_argument("--bibcxx", action="store_true", help="Create .lib and .exp for the bibcxx library")
+    parser.add_argument("--all", action="store_true", help="Create .lib and .exp for all libraries")
 
     args = parser.parse_args()
 
-    main(compile_bibc=args.bibc, compile_bibfor=args.bibfor, compile_bibcxx=args.bibcxx)
+    if not any([args.bibc, args.bibfor, args.bibcxx, args.all]):
+        parser.error("No action requested, add --bibc, --bibfor, --bibcxx, or --all")
+
+    if args.all:
+        main(CAModulue.ALL)
+    elif args.bibc:
+        main(CAModulue.BIBC)
+    elif args.bibfor:
+        main(CAModulue.BIBFOR)
+    elif args.bibcxx:
+        main(CAModulue.BIBCXX)
+    else:
+        raise ValueError("Invalid state reached")

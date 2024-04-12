@@ -66,7 +66,9 @@ set CXXFLAGS=%CXXFLAGS% /MD
 set FCFLAGS=%FCFLAGS% /fpp /MD
 set FCFLAGS=%FCFLAGS% /names:lowercase /assume:underscore /assume:nobscc
 
-set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
+set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib libomp.lib
+
+@REM set CCLINKFLAGS=%CCLINKFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
@@ -92,6 +94,7 @@ waf configure ^
   --out=%OUTPUT_DIR% ^
   --embed-aster ^
   --disable-mpi ^
+  --disable-mumps ^
   --install-tests ^
   --maths-libs=auto ^
   --without-hg
