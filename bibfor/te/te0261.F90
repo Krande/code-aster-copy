@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -117,7 +117,7 @@ subroutine te0261(option, nomte)
     call jevech('PCONTRR', 'E', icont)
 !
     call xsidep(nno, nfh, nfe, ddlc, ddlm, &
-                igeom, typmod, zi(imate), compor, jpintt, &
+                igeom, typmod, zi(imate), jpintt, &
                 zi(jcnset), zi(jheavt), zi(jlonch), zr(jbaslo), idepl, &
                 zr(jlsn), zr(jlst), zr(icont), jpmilt, nfiss, &
                 jheavn, jstno)

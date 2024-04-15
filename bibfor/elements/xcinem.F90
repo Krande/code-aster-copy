@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,11 @@
 ! --------------------------------------------------------------------
 !
 subroutine xcinem(axi, igeom, nnop, nnos, idepl, &
-                  grand, ndim, he, nfiss, nfh, &
+                  ndim, he, nfiss, nfh, &
                   nfe, ddls, ddlm, fk, dkdgl, &
                   ff, dfdi, f, eps, grad, &
                   heavn)
 !
-!
-! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -37,7 +35,6 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, &
     integer, intent(in) :: nnop
     integer, intent(in) :: nnos
     integer, intent(in) :: idepl
-    aster_logical, intent(in) :: grand
     integer, intent(in) :: ndim
     integer, intent(in) :: nfiss
     real(kind=8), intent(in) :: he(nfiss)
@@ -67,10 +64,6 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, &
 ! IN  NNOP   : NOMBRE DE NOEUDS DE L'ELT DE RÉF PARENT
 !   L'ORDRE DES DDLS DOIT ETRE 'DC' 'H1' 'E1' 'E2' 'E3' 'E4' 'LAGC'
 ! IN  DEPL   : DEPLACEMENT RÉEL À PARTIR DE LA CONF DE REF
-! IN  GRAND  : INDICATEUR SI GRANDES TRANSFORMATIONS
-!              SI GRAND = .FALSE.
-!                --> MATRICE F: UNITE
-!                --> DEFORMATION EPS PETITES
 ! IN  NDIM   : DIMENSION DE L'ESPACE
 ! IN  HE     : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
 ! IN  R      : RADIUS POUR CALCULER EPSILON_33 POUR AXI
@@ -87,7 +80,7 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, &
 ! IN  HEAVN  : DEFINITION DES DOMAINES DES FONCTIONS HEAVISIDES
 !
     real(kind=8) :: zero, un, rac2, r, ur
-    integer :: i, j, k, n, p, ig, cpt, nn, hea_se, alp
+    integer :: i, j, n, p, ig, cpt, nn, hea_se, alp
     real(kind=8) :: kron(3, 3), tmp, epstab(3, 3)
     aster_logical :: ldec
 !
@@ -188,25 +181,11 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, &
         ASSERT(r .gt. zero)
     end if
 !
-    if (grand) then
-        do j = 1, ndim
-            do i = 1, ndim
-                f(i, j) = f(i, j)+grad(i, j)
-            end do
-        end do
-        if (axi) f(3, 3) = 1.d0+ur/r
-    end if
-!
 ! --- CALCUL DES DÉFORMATIONS : EPS
 !
     do i = 1, ndim
         do j = 1, i
             tmp = grad(i, j)+grad(j, i)
-            if (grand) then
-                do k = 1, ndim
-                    tmp = tmp+grad(k, i)*grad(k, j)
-                end do
-            end if
             epstab(i, j) = 0.5d0*tmp
         end do
     end do
@@ -220,7 +199,6 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, &
         eps(6) = epstab(3, 2)*rac2
     else if (axi) then
         eps(3) = ur/r
-        if (grand) eps(3) = eps(3)+0.5d0*ur*ur/(r*r)
     end if
 !
 end subroutine

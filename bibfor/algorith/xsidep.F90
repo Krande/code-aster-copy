@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm, &
-                  igeom, typmod, imate, compor, jpintt, &
+                  igeom, typmod, imate, jpintt, &
                   cnset, heavt, lonch, basloc, idepl, &
                   lsn, lst, sig, jpmilt, nfiss, &
                   jheavn, jstno)
@@ -40,7 +40,6 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm, &
 ! IN  IGEOM   : COORDONEES DES NOEUDS
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  IMATE   : MATERIAU CODE
-! IN  COMPOR  : COMPORTEMENT
 !
 ! IN  JPINTT  : POINTEUR DE COORDONNÉES DES POINTS D'INTERSECTION
 ! IN  CNSET   : CONNECTIVITE DES SOUS-ELEMENTS
@@ -69,7 +68,6 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm, &
 #include "asterfort/xside3.h"
     integer :: nfiss, nnop
     character(len=8) :: elrefp, elrese(6), fami(6), typmod(*)
-    character(len=16) :: compor(4)
     real(kind=8) :: he(nfiss), sig(*), lsn(nnop), lst(nnop), basloc(*)
     real(kind=8) :: coorse(81)
     integer :: nse, npg, imate, ddlc, ddlm, ndim, nfh
@@ -159,7 +157,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm, &
             call xside3(elrefp, ndim, coorse, elrese(ndim+irese), igeom, &
                         he, nfh, ddlc, ddlm, nfe, &
                         basloc, nnop, npg, idecpg, imate, &
-                        compor, idepl, lsn, lst, nfiss, &
+                        idepl, lsn, lst, nfiss, &
                         heavn, jstno, sig(idebs+1))
         else if (ndim .eq. 2) then
 !
@@ -168,7 +166,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm, &
             call xside2(elrefp, ndim, coorse, elrese(ndim+irese), igeom, &
                         he, nfh, ddlc, ddlm, nfe, &
                         basloc, nnop, npg, idecpg, typmod, &
-                        imate, compor, idepl, lsn, lst, &
+                        imate, idepl, lsn, lst, &
                         nfiss, heavn, jstno, sig(idebs+1))
 !
         end if

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,11 +110,6 @@ Seules quelques lois de comportement qui ne nécessitent pas la méthode Deborst
     14: _(
         """
  HUJEUX : erreur dans le calcul de la matrice tangente
-"""
-    ),
-    15: _(
-        """On ne peut pas utiliser les contraintes planes en élasticité avec une déformation de type GROT_GDEP.
-    Conseil: utilisez une loi élastoplastique sur laquelle vous aurez mis une limite d'élasticité très grande.
 """
     ),
     16: _(

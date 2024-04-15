@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand, ndim, he,&
+    subroutine xcinem(axi, igeom, nnop, nnos, idepl, ndim, he,&
                       nfiss, nfh, nfe, ddls, ddlm,&
                       fk, dkdgl, ff, dfdi, f, eps, grad, heavn)
         aster_logical, intent(in) :: axi
@@ -29,7 +29,6 @@ interface
         integer, intent(in) :: nnop
         integer, intent(in) :: nnos
         integer, intent(in) :: idepl
-        aster_logical, intent(in) :: grand
         integer, intent(in) :: ndim
         real(kind=8), intent(in) :: he(nfiss)
         integer, intent(in) :: nfiss

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine xbsig(ndim, nnop, nfh, nfe, &
-                 ddlc, ddlm, igeom, compor, jpintt, &
+                 ddlc, ddlm, igeom, jpintt, &
                  cnset, heavt, lonch, basloc, sigma, &
-                 nbsig, idepl, lsn, lst, ivectu, &
+                 nbsig, lsn, lst, ivectu, &
                  jpmilt, nfiss, jheavn, jstno, imate)
 !
 ! aslint: disable=W1306,W1504
@@ -34,9 +34,8 @@ subroutine xbsig(ndim, nnop, nfh, nfe, &
 #include "asterfort/xxbsig.h"
     integer :: ndim, nnop, nfh, nfe, ddlc, ddlm, igeom, nbsig, ivectu
     integer :: nfiss, jstno, imate
-    integer :: cnset(4*32), heavt(*), lonch(10), idepl, jpintt, jpmilt, jheavn
+    integer :: cnset(4*32), heavt(*), lonch(10), jpintt, jpmilt, jheavn
     real(kind=8) :: basloc(*), sigma(*), lsn(nnop), lst(nnop)
-    character(len=16) :: compor(*)
 !
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -154,7 +153,7 @@ subroutine xbsig(ndim, nnop, nfh, nfe, &
         call xxbsig(elrefp, elrese(ndim+irese), ndim, coorse, &
                     igeom, he, nfh, ddlc, ddlm, &
                     nfe, basloc, nnop, npg, sigma(idebs+1), &
-                    compor, idepl, lsn, lst, nfiss, &
+                    lsn, lst, nfiss, &
                     heavn, jstno, codopt, ivectu, imate)
 !
     end do

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -391,11 +391,6 @@ Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pa
         """
       Les flux correspondant a PRE2 et TEMP sont interdits pour les
       éléments HM-XFEM.
-"""
-    ),
-    49: _(
-        """
-     Le calcul de G avec X-FEM est impossible en grandes déformations.
 """
     ),
     50: _(

@@ -68,7 +68,7 @@ subroutine te0288(option, nomte)
     integer :: icodre(3), contac, iadzi, iazk24, jstno
     character(len=8) :: elrefp, elrese(6), fami(6), fami_se, nompar(4), enr
     character(len=16) :: compor(4), nomres(3)
-    aster_logical :: grand, incr
+    aster_logical :: incr
 !
 !
 !
@@ -110,14 +110,7 @@ subroutine te0288(option, nomte)
     end do
 !
     incr = compor(4) .eq. 'COMP_INCR'
-    grand = compor(3) .eq. 'GROT_GDEP'
-!
-!    if (incr) then
-!        call utmess('F', 'XFEM_48')
-!    endif
-    if (grand) then
-        call utmess('F', 'XFEM_49')
-    end if
+
 !
 !
 !     ------------------------------------------------------------------
