@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -148,9 +148,19 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym, &
     do kma = 1, nbma
         numa = zi(jlima-1+kma)
         ASSERT(numa .ge. 1 .and. numa .le. nbmat)
+!       si l'option MINMAX_SP n'existe pas pour la maille on boucle
+        nbpt = zi(jce4d-1+5+4*(numa-1)+1)
+!       pour les champs elga on a pas de points de gauss dans ce cas
+        if (nbpt .le. 0) goto 60
+!       pour les champs elno, nbpt n'est pas à zéro quand l'option
+!       n'existe pas sur la maille, on fait une vérification en plus
+        call cesexi('C', jce4d, jce4l, numa, 1, &
+                    1, 1, iad4)
+        if (iad4 .eq. 0) goto 60
+
         nbpt = zi(jce3d-1+5+4*(numa-1)+1)
         nbsp = zi(jce3d-1+5+4*(numa-1)+2)
-        if (nbsp .eq. 0) goto 60
+        if (nbsp .le. 0) goto 60
 !
         do kpt = 1, nbpt
 !         -- 4.1 CALCUL DE VMIMA ET ISP :
