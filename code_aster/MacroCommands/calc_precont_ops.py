@@ -25,6 +25,7 @@ import aster
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
     AFFE_CHAR_MECA,
+    AFFE_MATERIAU,
     AFFE_MODELE,
     CALC_CHAMP,
     CREA_CHAMP,
@@ -384,9 +385,15 @@ def calc_precont_ops(
         #     recuperation des _F_CAs aux noeuds
         #     on travaile entre tmin et tmax
         # -------------------------------------------------------------------
+
+        # Utilisation d'un cham_mater sans variables de commande (sinon, résultats faux)
+        MasquerAlarme("MATERIAL2_61")
+        __cham_mater_fictif = AFFE_MATERIAU(MODELE=MODELE, CHAM_MATER=CHAM_MATER)
+        RetablirAlarme("MATERIAL2_61")
+
         __EV1 = STAT_NON_LINE(
             MODELE=__M_CA,
-            CHAM_MATER=CHAM_MATER,
+            CHAM_MATER=__cham_mater_fictif,
             CARA_ELEM=CARA_ELEM,
             EXCIT=(_F(CHARGE=_B_CA), _F(CHARGE=_C_CN)),
             COMPORTEMENT=dComp_incrElas,
