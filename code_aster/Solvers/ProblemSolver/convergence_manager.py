@@ -441,7 +441,8 @@ class ConvergenceManager(SolverFeature):
         if not defined:
             logger.debug("no parameter set: not converged")
             return False
-        for name, para in self._residuals:
+        for name in self._param:
+            para = self._param[name]
             if not para.isConverged():
                 logger.debug("parameter %s is not converged", name)
                 return False
