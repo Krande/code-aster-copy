@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,11 @@ MINMAX_SP = Option(
     para_in=(),
     para_out=(SP.PGAMIMA, SP.PNOMIMA),
     condition=(
-        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.COQUE, "OUI"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.MODELI, "DKT"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.MODELI, "DST"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.MODELI, "CQ3"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.MODELI, "Q4G"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.MODELI, "CQA"))),
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.TUYAU, "OUI"))),
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.TYPMOD2, "PMF"))),
     ),

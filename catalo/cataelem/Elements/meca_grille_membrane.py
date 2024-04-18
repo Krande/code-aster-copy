@@ -388,7 +388,6 @@ class MEGMTR3(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, EGAMIMA), (SP.PNOMIMA, LC.ENOMIMA))),
         OP.M_GAMMA(
             te=432,
             para_in=(

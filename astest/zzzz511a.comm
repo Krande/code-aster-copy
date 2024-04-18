@@ -278,6 +278,16 @@ resu_sp = POST_CHAMP(
     ),
 )
 
+# même appel sans GROUP_MA
+resu_sp2 = POST_CHAMP(
+    RESULTAT=evol_me,
+    TOUT_ORDRE="OUI",
+    MIN_MAX_SP=(
+        _F(NOM_CHAM="VARC_ELGA", NOM_CMP="TEMP", TYPE_MAXI="MAXI", NUME_CHAM_RESU=1),
+        _F(NOM_CHAM="VARC_ELNO", NOM_CMP="TEMP", TYPE_MAXI="MAXI", NUME_CHAM_RESU=1),
+    ),
+)
+
 
 # Test des contraintes
 
