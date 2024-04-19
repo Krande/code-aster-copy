@@ -220,7 +220,7 @@ class ConvergenceManager(SolverFeature):
             """
             if not self.hasRef() or not self.isSet() or not self.minSet():
                 return False
-            return self._minValue >= self._value
+            return self._minValue > self._value
 
         def isFinished(self):
             """Tell if the current parameter should stop the calculation.
