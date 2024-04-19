@@ -115,8 +115,9 @@ class IncrementalSolver(SolverFeature, EventSource):
             lineSearch = self.get_feature(SOP.LineSearch)
             lineSearch.use(self.opers_manager)
 
-            if lineSearch.activated() and not force:
-                primal_incr = lineSearch.solve(primal_incr, scaling)
+            if not convManager.isPrediction():
+                if lineSearch.activated() and not force:
+                    primal_incr = lineSearch.solve(primal_incr, scaling)
         else:
             primal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)
 

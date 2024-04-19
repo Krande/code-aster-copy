@@ -204,13 +204,23 @@ class ConvergenceManager(SolverFeature):
 
         def isConverged(self):
             """The number of iteration is not a convergence criteria.
-
+                but it can nullify the convergence if < _minValue(=1)
             Returns:
                 bool: *True*.
             """
             if not self.hasRef() or not self.isSet() or not self.minSet():
                 return True
             return self._minValue <= self._value
+
+        def isPrediction(self):
+            """Return True is self._value<=1
+
+            Returns:
+                bool: *True*.
+            """
+            if not self.hasRef() or not self.isSet() or not self.minSet():
+                return False
+            return self._minValue >= self._value
 
         def isFinished(self):
             """Tell if the current parameter should stop the calculation.
@@ -447,6 +457,17 @@ class ConvergenceManager(SolverFeature):
                 logger.debug("parameter %s is not converged", name)
                 return False
         return True
+
+    def isPrediction(self):
+        """Tell if the current Nuewton iteration is the prediction
+           iteration.
+
+        Returns:
+            bool: *True* if predction, *False* otherwise.
+        """
+        name = "ITER_GLOB_MAXI"
+        para = self._param[name]
+        return para.isPrediction()
 
     # @with_loglevel()
     def isFinished(self):
