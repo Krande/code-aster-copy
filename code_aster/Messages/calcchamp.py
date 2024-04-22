@@ -75,7 +75,7 @@ Le champ STRX_ELGA n'est pas possible sur une modélisation XFEM.
     8: _(
         """Il y a des chargements pilotées dans le résultat, mais on ne peut pas récupérer la valeur du coefficient de pilotage."""
     ),
-    9: _("""L'option demandée %(k1)s n'existe pas."""),
+    9: _("""Le champ demandé %(k1)s n'existe pas."""),
     19: _(
         """
 Problème lors de l'appel de l'option %(k1)s.
