@@ -144,8 +144,9 @@ class MechanicalLoadDefinition(ExecuteCommand):
             partialMechanicalLoad = AFFE_CHAR_MECA(**keywords)
             keywords["MODELE"] = model
             self._result = ParallelMechanicalLoadReal(partialMechanicalLoad, model)
-            toSave = SyntaxSaver(self.command_name, 7, keywords)
-            self._result.setRebuildParameters(toSave, nodeGroups, cellGroups)
+            if keywords["SYNTAXE"] == "OUI":
+                toSave = SyntaxSaver(self.command_name, 7, keywords)
+                self._result.setRebuildParameters(toSave, nodeGroups, cellGroups)
 
     def post_exec(self, keywords):
         """Execute the command.

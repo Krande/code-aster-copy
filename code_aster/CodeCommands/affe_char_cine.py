@@ -52,8 +52,9 @@ class DirichletBCDefinition(ExecuteCommand):
                 raise NotImplementedError("Must be implemented")
         else:
             raise NotImplementedError("Must be implemented")
-        toSave = SyntaxSaver(self.command_name, 101, keywords)
-        self._result.setSyntax(toSave)
+        if keywords["SYNTAXE"] == "OUI":
+            toSave = SyntaxSaver(self.command_name, 101, keywords)
+            self._result.setSyntax(toSave)
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

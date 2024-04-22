@@ -114,6 +114,7 @@ mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=acier))
 
 cl = AFFE_CHAR_CINE(
     MODELE=model,
+    SYNTAXE="OUI",
     MECA_IMPO=(_F(GROUP_MA="BAS", DX=0.0, DY=0.0, DZ=0.0), _F(GROUP_MA="HAUT", DZ=1.0)),
 )
 
@@ -211,9 +212,11 @@ for initArray, newArray in zip(initDepl, newDepl):
 ########################################################
 # MECA_STATIQUE with AFFE_CHAR_CINE and AFFE_CHAR_MECA #
 ########################################################
-clCine = AFFE_CHAR_CINE(MODELE=model, MECA_IMPO=(_F(GROUP_MA="BAS", DX=0.0, DY=0.0, DZ=0.0),))
+clCine = AFFE_CHAR_CINE(
+    MODELE=model, MECA_IMPO=(_F(GROUP_MA="BAS", DX=0.0, DY=0.0, DZ=0.0),), SYNTAXE="OUI"
+)
 
-clMeca = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=(_F(GROUP_MA="HAUT", DZ=1.0),))
+clMeca = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=(_F(GROUP_MA="HAUT", DZ=1.0),), SYNTAXE="OUI")
 
 resu2 = MECA_STATIQUE(
     MODELE=model,
