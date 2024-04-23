@@ -58,6 +58,7 @@
    * - :py:class:`~code_aster.Objects.ObjectBalancer`
    * - :py:class:`~code_aster.Objects.PairingAlgo`
    * - :py:class:`~code_aster.Objects.PairingParameter`
+   * - :py:class:`~code_aster.Objects.ParMetisPartitioner`
    * - :py:class:`~code_aster.Objects.PartOfMaterialField`
    * - :py:class:`~code_aster.Objects.PhysicalProblem`
    * - :py:class:`~code_aster.Objects.PhysicalQuantityComponent`

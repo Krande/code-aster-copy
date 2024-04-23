@@ -439,6 +439,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ParMetisPartitioner` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ParMetisPartitioner
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.PartOfMaterialField` object
 ********************************************************************************
 

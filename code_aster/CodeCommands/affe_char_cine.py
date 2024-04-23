@@ -52,7 +52,7 @@ class DirichletBCDefinition(ExecuteCommand):
                 raise NotImplementedError("Must be implemented")
         else:
             raise NotImplementedError("Must be implemented")
-        if keywords["SYNTAXE"] == "OUI":
+        if keywords.get("SYNTAXE") == "OUI":
             toSave = SyntaxSaver(self.command_name, 101, keywords)
             self._result.setSyntax(toSave)
 

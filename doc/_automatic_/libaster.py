@@ -4465,11 +4465,11 @@ class ListOfLoads(DataStructure):
             bool: True if External load have been added
         """
 
-    def isBuilt(self):
-        """The list of loads has been built or not.
+    def isEmpty(self):
+        """The list of loads is empty or not.
 
         Returns:
-            bool: True if has been built already.
+            bool: True if empty
         """
 
 
@@ -6159,6 +6159,18 @@ class ContactComputation:
             FieldOnCellsReal: contact data
         """
 
+    def geometricGap(self, coordinates):
+        """Compute geometric gap and indicator using projection. The indicator is equal to 0 for
+        a node with no projection (gap value is Nan) found else 1.
+
+        Arguments:
+            coordinates (MeshCoordinatesField): (current) coordinates of mesh
+
+        Returns:
+            FieldOnNodesReal: gap field.
+            FieldOnNodesReal: gap indicator.
+        """
+
 
 # class BaseAssemblyMatrix in libaster
 
@@ -6236,11 +6248,11 @@ class BaseAssemblyMatrix(DataStructure):
             bool: *True* if matrix has some DOFs eliminated by Dirichlet boundaries conditions else *False*
         """
 
-    def isBuilt(self):
-        """Tell if the matrix has already been built.
+    def isEmpty(self):
+        """Tell if the matrix is empty.
 
         Returns:
-            bool: *True* if the matrix has been built.
+            bool: *True* if the matrix is empty.
         """
 
     def isFactorized(self):
@@ -15071,6 +15083,40 @@ class PtScotchPartitioner:
 
         Arguments:
             path: path to output file
+        """
+
+
+# class ParMetisPartitioner in libaster
+
+
+class ParMetisPartitioner:
+    pass
+
+    # Method resolution order:
+    #     ParMetisPartitioner
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def __pickling_disabled__(self):
+        pass
+
+    def buildGraph(self, meshConnectionGraph):
+        """Build the ParMetis graph from a MeshConnectionGraph
+
+        Arguments:
+            meshConnectionGraph: MeshConnectionGraph
+        """
+
+    def partitionGraph(self):
+        """Call ParMetis partitioning
+
+        Returns:
+            list[int]: Owner for each nodes
         """
 
 

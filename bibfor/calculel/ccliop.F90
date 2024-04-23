@@ -186,8 +186,8 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
                     isodep(nopout) = ' '
                 elseif (((optio2 .eq. 'DEPL') .or. (optio2 .eq. 'VITE') &
                          .or. (optio2 .eq. 'ACCE') .or. (optio2 .eq. 'TEMP') .or. &
-                         (optio2 .eq. 'VARI_ELGA')) .and. (zk24(iaoplo+3*ipara-1) &
-                                                      .eq. 'N') .and. (type(1:5) .eq. 'CHAMP')) then
+                         (optio2 .eq. 'VARI_ELGA')) .and. (zk24(iaoplo+3*ipara-1) .eq. 'N') &
+                        .and. (type(1:5) .eq. 'CHAMP')) then
 ! --------- ON DEPEND D'UN CHAMP QUI N'EST PAS UNE OPTION (POUR STANLEY)
                     nopout = nopout+1
                     loptio(nopout) = optio2
@@ -201,10 +201,10 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
                     lopdep(nopout) = zk24(iaoplo+3*ipara-1)
                     opajou = .true.
                     isodep(nopout) = ' '
-                elseif (((optio2 .eq. 'DEPL') .or. ( &
-                         optio2 .eq. 'SIEF_ELGA') .or. (optio2 .eq. 'VARI_ELGA')) &
-                        .and. ((zk24(iaoplo+3*ipara-1) .eq. 'NP1') .or. (zk24( &
-                                                          iaoplo+3*ipara-1) (1:3) .eq. 'NM1'))) then
+                elseif (((optio2 .eq. 'DEPL') .or. (optio2 .eq. 'SIEF_ELGA') &
+                         .or. (optio2 .eq. 'VARI_ELGA')) .and. &
+                        ((zk24(iaoplo+3*ipara-1) .eq. 'NP1') &
+                         .or. (zk24(iaoplo+3*ipara-1) (1:3) .eq. 'NM1'))) then
 ! --------- ON DEPEND DE SOIT-MEME A L'INSTANT NP1 OU NM1
                     nopout = nopout+1
                     loptio(nopout) = optio2
