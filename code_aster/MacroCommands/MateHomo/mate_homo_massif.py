@@ -133,13 +133,13 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
 
     CHAR22 = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPYY=-1.0))
 
-    CHAR12 = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXY=-1.0))
+    CHAR12 = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXY=-0.5))
 
     CHAR33 = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPZZ=-1.0))
 
-    CHAR31 = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXZ=-1.0))
+    CHAR31 = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXZ=-0.5))
 
-    CHAR23 = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPYZ=-1.0))
+    CHAR23 = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPYZ=-0.5))
 
     CHARDIL = AFFE_CHAR_MECA_F(
         MODELE=MODME,
@@ -147,17 +147,17 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
             _F(
                 GROUP_MA=item["GROUP_MA"],
                 EPXX=FORMULE(
-                    VALE="1.0*ALPHA_DIL(INST)",
+                    VALE="-1.0*ALPHA_DIL(INST)",
                     NOM_PARA=("INST",),
                     ALPHA_DIL=item["FONC_ALPHA_TIME"],
                 ),
                 EPYY=FORMULE(
-                    VALE="1.0*ALPHA_DIL(INST)",
+                    VALE="-1.0*ALPHA_DIL(INST)",
                     NOM_PARA=("INST",),
                     ALPHA_DIL=item["FONC_ALPHA_TIME"],
                 ),
                 EPZZ=FORMULE(
-                    VALE="1.0*ALPHA_DIL(INST)",
+                    VALE="-1.0*ALPHA_DIL(INST)",
                     NOM_PARA=("INST",),
                     ALPHA_DIL=item["FONC_ALPHA_TIME"],
                 ),
@@ -375,54 +375,33 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
 
     for i, (rank_meca, rank_ther) in enumerate(zip(ranks_meca, ranks_ther)):
 
-        enerpot_dila = utilities.combine_enerpot(CORR_DILA, CORR_DILA, rank_meca, ls_group_ma)
+        work_dila_11 = utilities.cross_work(CORR_MECA11, CORR_DILA, rank_meca, ls_group_ma)
+        work_dila_22 = utilities.cross_work(CORR_MECA22, CORR_DILA, rank_meca, ls_group_ma)
+        work_dila_33 = utilities.cross_work(CORR_MECA33, CORR_DILA, rank_meca, ls_group_ma)
 
-        enerpot_ther_11 = utilities.combine_enerpot(
-            CORR_THER11, CORR_THER11, rank_ther, ls_group_ma
-        )
-        enerpot_ther_22 = utilities.combine_enerpot(
-            CORR_THER22, CORR_THER22, rank_ther, ls_group_ma
-        )
-        enerpot_ther_33 = utilities.combine_enerpot(
-            CORR_THER33, CORR_THER33, rank_ther, ls_group_ma
-        )
+        work_ther_11 = utilities.cross_work(CORR_THER11, CORR_THER11, rank_ther, ls_group_ma)
+        work_ther_22 = utilities.cross_work(CORR_THER22, CORR_THER22, rank_ther, ls_group_ma)
+        work_ther_33 = utilities.cross_work(CORR_THER33, CORR_THER33, rank_ther, ls_group_ma)
 
-        enerpot_meca_11_11 = utilities.combine_enerpot(
-            CORR_MECA11, CORR_MECA11, rank_meca, ls_group_ma
-        )
-        enerpot_meca_22_22 = utilities.combine_enerpot(
-            CORR_MECA22, CORR_MECA22, rank_meca, ls_group_ma
-        )
-        enerpot_meca_33_33 = utilities.combine_enerpot(
-            CORR_MECA33, CORR_MECA33, rank_meca, ls_group_ma
-        )
+        work_meca_11_11 = utilities.cross_work(CORR_MECA11, CORR_MECA11, rank_meca, ls_group_ma)
+        work_meca_22_22 = utilities.cross_work(CORR_MECA22, CORR_MECA22, rank_meca, ls_group_ma)
+        work_meca_33_33 = utilities.cross_work(CORR_MECA33, CORR_MECA33, rank_meca, ls_group_ma)
 
-        enerpot_meca_11_22 = utilities.combine_enerpot(
-            CORR_MECA11, CORR_MECA22, rank_meca, ls_group_ma
-        )
-        enerpot_meca_11_33 = utilities.combine_enerpot(
-            CORR_MECA11, CORR_MECA33, rank_meca, ls_group_ma
-        )
-        enerpot_meca_22_33 = utilities.combine_enerpot(
-            CORR_MECA22, CORR_MECA33, rank_meca, ls_group_ma
-        )
+        work_meca_11_22 = utilities.cross_work(CORR_MECA11, CORR_MECA22, rank_meca, ls_group_ma)
+        work_meca_11_33 = utilities.cross_work(CORR_MECA11, CORR_MECA33, rank_meca, ls_group_ma)
+        work_meca_22_33 = utilities.cross_work(CORR_MECA22, CORR_MECA33, rank_meca, ls_group_ma)
 
-        enerpot_meca_12_12 = utilities.combine_enerpot(
-            CORR_MECA12, CORR_MECA12, rank_meca, ls_group_ma
-        )
-        enerpot_meca_23_23 = utilities.combine_enerpot(
-            CORR_MECA23, CORR_MECA23, rank_meca, ls_group_ma
-        )
-        enerpot_meca_31_31 = utilities.combine_enerpot(
-            CORR_MECA31, CORR_MECA31, rank_meca, ls_group_ma
-        )
+        work_meca_12_12 = utilities.cross_work(CORR_MECA12, CORR_MECA12, rank_meca, ls_group_ma)
+        work_meca_23_23 = utilities.cross_work(CORR_MECA23, CORR_MECA23, rank_meca, ls_group_ma)
+        work_meca_31_31 = utilities.cross_work(CORR_MECA31, CORR_MECA31, rank_meca, ls_group_ma)
 
         ########################
         # Matrice homogeneisee
+        lambda_ther = loimel["LAMBDA_THER"][i]
 
-        K11_hom = (1 / volume_ver) * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_11)
-        K22_hom = (1 / volume_ver) * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_22)
-        K33_hom = (1 / volume_ver) * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_33)
+        K11_hom = (1 / volume_ver) * (lambda_ther - work_ther_11)
+        K22_hom = (1 / volume_ver) * (lambda_ther - work_ther_22)
+        K33_hom = (1 / volume_ver) * (lambda_ther - work_ther_33)
 
         # fmt: off
         K_hom = np.array([[K11_hom, 0,       0      ],
@@ -430,23 +409,20 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
                           [0,       0,       K33_hom]])
         # fmt: on
 
-        A1111_hom = (1 / volume_ver) * (
-            loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_11_11
-        )
-        A2222_hom = (1 / volume_ver) * (
-            loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_22_22
-        )
-        A3333_hom = (1 / volume_ver) * (
-            loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_33_33
-        )
+        lambda_meca = loimel["LAME1"][i]
+        mu_meca = loimel["LAME2"][i]
 
-        A1122_hom = (1 / volume_ver) * (loimel["LAME1"][i] - 1 * enerpot_meca_11_22)
-        A1133_hom = (1 / volume_ver) * (loimel["LAME1"][i] - 1 * enerpot_meca_11_33)
-        A2233_hom = (1 / volume_ver) * (loimel["LAME1"][i] - 1 * enerpot_meca_22_33)
+        A1111_hom = (1 / volume_ver) * ((lambda_meca + 2 * mu_meca) - work_meca_11_11)
+        A2222_hom = (1 / volume_ver) * ((lambda_meca + 2 * mu_meca) - work_meca_22_22)
+        A3333_hom = (1 / volume_ver) * ((lambda_meca + 2 * mu_meca) - work_meca_33_33)
 
-        A1212_hom = (1 / volume_ver) * (loimel["LAME2"][i] - 0.5 * enerpot_meca_12_12)
-        A2323_hom = (1 / volume_ver) * (loimel["LAME2"][i] - 0.5 * enerpot_meca_23_23)
-        A3131_hom = (1 / volume_ver) * (loimel["LAME2"][i] - 0.5 * enerpot_meca_31_31)
+        A1122_hom = (1 / volume_ver) * (lambda_meca - work_meca_11_22)
+        A1133_hom = (1 / volume_ver) * (lambda_meca - work_meca_11_33)
+        A2233_hom = (1 / volume_ver) * (lambda_meca - work_meca_22_33)
+
+        A1212_hom = (1 / volume_ver) * (mu_meca - work_meca_12_12)
+        A2323_hom = (1 / volume_ver) * (mu_meca - work_meca_23_23)
+        A3131_hom = (1 / volume_ver) * (mu_meca - work_meca_31_31)
 
         check_isotrop_trans = abs(round((2 * A1212_hom - A1111_hom + A1122_hom) / A1212_hom, 12))
 
@@ -466,9 +442,11 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
 
         E_L, E_T, E_N, G_LT, G_LN, G_TN = A_inv.diagonal() ** -1
 
-        bdil = (1 / volume_ver) * (loimel["ALPHA3K"][i] - 2 * enerpot_dila)
+        Bdil_11 = (1 / volume_ver) * (loimel["ALPHA3K"][i] - work_dila_11)
+        Bdil_22 = (1 / volume_ver) * (loimel["ALPHA3K"][i] - work_dila_22)
+        Bdil_33 = (1 / volume_ver) * (loimel["ALPHA3K"][i] - work_dila_33)
 
-        ALPHA_L, ALPHA_T, ALPHA_N = bdil * np.dot(A_inv, (1, 1, 1, 0, 0, 0))[:3]
+        ALPHA_L, ALPHA_T, ALPHA_N = np.dot(A_inv, (Bdil_11, Bdil_22, Bdil_33, 0, 0, 0))[:3]
 
         NU_TL = -A_inv[0, 1] / A_inv[1, 1]
         NU_NL = -A_inv[0, 2] / A_inv[2, 2]

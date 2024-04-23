@@ -239,6 +239,8 @@ Please keep this list sorted.
 - Lionel Vivan
 - Cécile Vogel
 - François Voldoire
+- Francesco Bettonte <francesco.bettonte .at. edf.fr>
+- Matthieu Le Cren <matthieu.le-cren .at. edf.fr>
 - Jérôme Wabinski
 - Yves Wadier
 - François Waeckel
