@@ -139,17 +139,40 @@ def bibfor():
 
     dep_files = [f"@{bibfor_obj_list_path.name}"]
     extra_deps = [
-        "dmumps.lib",
-        "zmumps.lib",
-        "smumps.lib",
-        "cmumps.lib",
-        "esmumps.lib",
-        "mumps_common.lib",
-        "pord.lib",
+        # "dmumps.lib",
+        # "zmumps.lib",
+        # "smumps.lib",
+        # "cmumps.lib",
+        # "esmumps.lib",
+        # "mumps_common.lib",
+        # "pord.lib",
         "pthread.lib",
+        "scotch.lib",
+        "scotcherr.lib",
+        "scotcherrexit.lib",
+        "scotchmetisv3.lib",
+        "scotchmetisv5.lib",
+        "metis.lib",
+        "hdf5.lib",
+        # "hdf5_fortran.lib",
+        # "hdf5_f90cstub.lib",
+        # "hdf5_hl_fortran.lib",
+        "med.lib",
+        "medC.lib",
+        "medfwrap.lib",
+        "medimport.lib",
+        "medloader.lib",
+        "medpartitionercpp.lib",
+        "medcoupling.lib",
+        "medcouplingremapper.lib",
+        "MFrontGenericInterface.lib",
+        "MFrontGenericInterface-c.lib",
+        "TFELSystem.lib",
         "mkl_intel_lp64_dll.lib",
         "mkl_intel_thread_dll.lib",
-        "mkl_core_dll.lib"
+        "mkl_core_dll.lib",
+        "bibc.lib",
+        "bibcxx.lib",
     ]
     extra_flags = [
         # "/NOENTRY"
@@ -158,6 +181,7 @@ def bibfor():
     ]
 
     input_args = create_args("bibfor", dep_files, extra_deps, extra_flags=extra_flags)
+    input_args += [f"/LIBPATH:{BUILD_DIR}/bibc", f"/LIBPATH:{BUILD_DIR}/bibfor", f"/LIBPATH:{BUILD_DIR}/bibcxx"]
 
     subprocess.run(input_args, shell=True, cwd=ROOT_DIR)
 
