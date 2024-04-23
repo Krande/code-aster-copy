@@ -20,5 +20,10 @@ subroutine abortf()
 !     PERMET D'APPELER LA ROUTINE ABORT FORTRAN DEPUIS LE C
 !     LES UNITES LOGIQUES SERONT DONC "FLUSHEES" ET FERMEES
     implicit none
+#ifdef _WIN32
+#include "asterc/abort.h"
+    call abort_custom()
+#else
     call abort()
+#endif
 end subroutine
