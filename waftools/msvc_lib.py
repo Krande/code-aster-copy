@@ -35,7 +35,10 @@ class msvclibgen(Task.Task):
         # Do this for now.
         cmd = f"LIB.exe /OUT:{output_fp.as_posix()} @{ofiles.as_posix()}".split()
         Logs.info("Executing %r", cmd)
-        return super().exec_command(cmd, **kw)
+        clean_name = output_fp.stem.replace('_gen', '')
+        ret = super().exec_command(cmd, **kw)
+        shutil.copy(output_fp, (output_fp.parent / clean_name).with_suffix('.lib'))
+        return ret
 
 
 def scrape_all_tasks(self):
@@ -324,6 +327,7 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     # it's outputs are bibc.lib and bibc.exp located in the build directory
     bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
     bibc_lib_output_file_path = bld_path / lib_name / f"{lib_name}_gen.lib"
+
     Logs.info(f"{bibc_lib_output_file_path=}")
 
     # create nodes for the output files
@@ -345,31 +349,35 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     cxxlib_task = task_obj.cxxlib_task
     fclib_task = task_obj.fclib_task
 
-    # c_input_tasks = [ctask.outputs[0] for ctask in task_obj.c_tasks]
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.cxx_tasks]
     fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.fc_tasks]
 
-    # bibc_output = create_msvclibgen_task(self, "bibc", c_input_tasks)
     bibcxx_lib_task = create_msvclibgen_task(self, "bibcxx", cxx_input_tasks)
     bibfor_lib_task = create_msvclibgen_task(self, "bibfor", fc_input_tasks)
 
     clib_task.inputs += bibfor_lib_task.outputs + bibcxx_lib_task.outputs
-    # Add MKL libraries
-    # mkl_libs = ["mkl_intel_lp64_dll.lib", "mkl_intel_thread_dll.lib", "mkl_core_dll.lib"]
-    # clib_task.inputs += [self.bld.bldnode.make_node(lib) for lib in mkl_libs]
 
-    fclib_task.inputs += bibcxx_lib_task.outputs + clib_task.outputs
-    cxxlib_task.inputs += clib_task.outputs + fclib_task.outputs
-    # clib_task.run_str = ""
+    Logs.info(f"{clib_task.outputs=}")
+    Logs.info(f"{fclib_task.outputs=}")
 
-    # cxxlib_task.inputs = bibc_output + bibfor_output
-    # cxxlib_task.run_str = ""
+    # filter out all non-lib files
+    clib_task_outputs = [x for x in clib_task.outputs if x.suffix() == ".lib"]
+    fclib_task_outputs = [x for x in fclib_task.outputs if x.suffix() == ".lib"]
 
-    # fclib_task.inputs = bibc_output + bibcxx_output
-    # fclib_task.run_str = "${LINK_FC} ${FCLINKFLAGS} ${LINKFLAGS} ${FCLNK_SRC_F}${SRC} ${FCLNK_TGT_F}${TGT[0].abspath()} ${RPATH_ST:RPATH} ${FCSTLIB_MARKER} ${FCSTLIBPATH_ST:STLIBPATH} ${FCSTLIB_ST:STLIB} ${FCSHLIB_MARKER} ${FCLIBPATH_ST:LIBPATH} ${FCLIB_ST:LIB} ${LDFLAGS}"
-    # cxxlib_task.inputs += clib_task.outputs
-    # cxxlib_task.outputs = [cxxlib_task.outputs[0].change_ext(".lib")]
-    # fclib_task.outputs = [fclib_task.outputs[0].change_ext(".lib")]
+    Logs.info(f"{clib_task_outputs=}")
+    Logs.info(f"{fclib_task_outputs=}")
+
+    fclib_task.inputs += bibcxx_lib_task.outputs + clib_task_outputs
+    cxxlib_task.inputs += clib_task_outputs + fclib_task_outputs
+
+
+@TaskGen.feature("cshlib")
+@TaskGen.after_method("apply_link")
+def make_msvc_modifications_pre(self):
+    task_obj = extract_main_tasks(self.bld)
+
+    c_input_tasks = [ctask.outputs[0] for ctask in task_obj.c_tasks]
+    create_msvclibgen_task(self, "bibc", c_input_tasks)
 
 
 @TaskGen.feature("cshlib")

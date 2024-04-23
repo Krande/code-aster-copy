@@ -39,6 +39,42 @@ def filter_objects(objs: set[pathlib.Path], filter_func) -> set[pathlib.Path]:
     return set(filter(filter_func, objs))
 
 
+def bibcxx():
+    all_compiled_files = (BUILD_DIR / "bibcxx").rglob("*.o")
+    bib_objects = set(x.absolute() for x in all_compiled_files)
+
+    cleaned_bibfor_objects = filter_objects(bib_objects, lambda x: not x.name.startswith("ar_d"))
+    # print the removed objects
+    removed_objects = bib_objects - cleaned_bibfor_objects
+    print("Removed objects:")
+    print("\n".join(map(str, removed_objects)))
+
+    bibc_obj_list_path = ROOT_DIR / "tmp_bibcxx_objects.txt"
+
+    extra_deps = [
+        "esmumps.lib",
+        "smumps.lib",
+        "scotch.lib",
+        "scotcherr.lib",
+        "metis.lib",
+        "medC.lib",
+        "hdf5.lib",
+        "pthread.lib",
+        "z.lib",
+        "bibfor.lib",
+        "bibc.lib",
+    ]
+    input_args = create_args("bibc", [f"@{bibc_obj_list_path.name}"], extra_deps, ["/DEBUG", "/INCREMENTAL:NO"])
+    input_args += [f"/LIBPATH:{BUILD_DIR}/bibc", f"/LIBPATH:{BUILD_DIR}/bibfor"]
+
+    with open(bibc_obj_list_path, "w") as f:
+        f.write("\n".join(map(str, bib_objects)))
+
+    # Now call that batch file
+    print(" ".join(input_args))
+    subprocess.run(input_args, shell=True, cwd=ROOT_DIR)
+
+
 def bibc(include_all_bibfor=False):
     bibc_objects = set(
         (BUILD_DIR / x).absolute() for x in (THIS_DIR / "bibc_default_order.txt").read_text().splitlines()
@@ -131,8 +167,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Manually Link Code Aster libraries")
     parser.add_argument("--bibc", action="store_true", help="Link the bibc library")
+    parser.add_argument("--bibcxx", action="store_true", help="Link the bibcxx library")
     parser.add_argument("--bibfor", action="store_true", help="Link the bibfor library")
-    parser.add_argument("--dll-to-lib", help="Create a .lib file from a .dll file")
 
     args = parser.parse_args()
 
@@ -140,5 +176,5 @@ if __name__ == "__main__":
         bibc()
     if args.bibfor:
         bibfor()
-    if args.dll_to_lib:
-        create_lib_from_dll(args.dll_to_lib)
+    if args.bibcxx:
+        bibcxx()
