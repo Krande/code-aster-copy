@@ -273,11 +273,10 @@ class ObjectBalancer {
                                       std::vector< std::vector< T > > &,
                                       const Mask &mask = Mask() ) const;
 
-#ifdef ASTER_HAVE_MED
     template < typename TypeName = double >
     std::shared_ptr< MedVector< TypeName > > balanceMedVectorOverProcessesWithRenumbering(
         const std::shared_ptr< MedVector< TypeName > > & ) const;
-#endif
+
     template < typename TypeName = double >
     void
     balanceArrayOverProcessesWithRenumbering( const std::shared_ptr< ArrayWrapper< TypeName > > &,
@@ -587,7 +586,6 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
     }
 };
 
-#ifdef ASTER_HAVE_MED
 template < typename TypeName >
 std::shared_ptr< MedVector< TypeName > >
 ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering(
@@ -622,7 +620,6 @@ ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering(
     }
     return vecOut2;
 };
-#endif
 
 template < typename TypeName >
 void ObjectBalancer::balanceArrayOverProcessesWithRenumbering(

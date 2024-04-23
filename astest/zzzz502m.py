@@ -37,7 +37,7 @@ pMesh = MODI_MAILLAGE(
 )
 
 cellNum = pMesh.getLocalToGlobalCellIds()
-cellNumRef = [[0, 1, 2, 7, 4, 6, 9], [5, 7, 8, 2, 3, 9, 10]]
+cellNumRef = [[0, 1, 2, 6, 7, 4, 9], [5, 7, 8, 2, 3, 9, 10]]
 test.assertSequenceEqual(cellNum, cellNumRef[rank])
 
 

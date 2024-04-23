@@ -27,6 +27,8 @@
 
 #include <set>
 
+#ifdef ASTER_HAVE_MPI
+
 bool componentsCheck( const VectorString comp ) {
     VectorString compOut;
     AsterMPI::all_gather( comp, compOut );
@@ -41,3 +43,5 @@ bool componentsCheck( const VectorString comp ) {
     }
     return true;
 };
+
+#endif /* ASTER_HAVE_MPI */

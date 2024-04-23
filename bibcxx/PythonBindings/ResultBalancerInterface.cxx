@@ -33,6 +33,8 @@
 
 #include <Results/ResultBalancer.h>
 
+#ifdef ASTER_HAVE_MPI
+
 void exportResultBalancerToPython( py::module_ &mod ) {
 
     mod.def( "applyBalancingStrategy",
@@ -86,3 +88,5 @@ Returns:
         )",
              py::arg( "result" ), py::arg( "vector" ) );
 };
+
+#endif /* ASTER_HAVE_MPI */

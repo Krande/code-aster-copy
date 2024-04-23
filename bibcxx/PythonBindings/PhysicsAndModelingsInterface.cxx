@@ -200,6 +200,7 @@ void exportPhysicsAndModelingsToPython( py::module_ &mod ) {
         .value( "GRILLE_EXCENTRE", GRILLE_EXCENTRE )
         .value( "GRILLE_MEMBRANE", GRILLE_MEMBRANE )
         .value( "MEMBRANE", MEMBRANE )
+        .value( "Planar", Planar )
         .value( "PLAN_INTERFACE", PLAN_INTERFACE )
         .value( "PLAN_INTERFACE_S", PLAN_INTERFACE_S )
         .value( "PLAN_JHMS", PLAN_JHMS )

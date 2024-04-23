@@ -333,6 +333,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportParMetisPartitionerToPython( mod );
 #endif /* ASTER_HAVE_PARMETIS */
     exportMeshConnectionGraphToPython( mod );
+    exportResultBalancerToPython( mod );
 #endif /* ASTER_HAVE_MPI */
 #ifdef ASTER_HAVE_MED
     exportMedFileReaderToPython( mod );
@@ -344,5 +345,4 @@ PYBIND11_MODULE( libaster, mod ) {
     exportFieldCharacteristicsToPython( mod );
     exportModelingUtilitiesToPython( mod );
     exportSyntaxSaverToPython( mod );
-    exportResultBalancerToPython( mod );
 };

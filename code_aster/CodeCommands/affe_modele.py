@@ -51,6 +51,16 @@ class ModelAssignment(ExecuteCommand):
         FED = self._result.getFiniteElementDescriptor()
         FED.setModel(self._result)
 
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        FED = self._result.getFiniteElementDescriptor()
+        FED.build()
+
         allModelings = getModelings()
         for key in keywords:
             value = keywords[key]
@@ -58,7 +68,7 @@ class ModelAssignment(ExecuteCommand):
                 for item in value:
                     phenom = None
                     model = None
-                    grpma = None
+                    grpma = []
                     for keyAffe in item:
                         value2 = item[keyAffe]
                         if keyAffe == "PHENOMENE":
@@ -74,25 +84,19 @@ class ModelAssignment(ExecuteCommand):
                             model = allModelings[value2]
                         elif keyAffe == "TOUT":
                             grpma = -1
-                        elif keyAffe == "TOUT":
+                        elif keyAffe == "GROUP_MA":
                             grpma = value2
                     if grpma == -1:
                         self._result.addModelingOnMesh(phenom, model)
                     else:
-                        assert grpma != None
-                        self._result.addModelingOnGroupOfCells(phenom, model, grpma)
+                        assert grpma != []
+                        for grpName in grpma:
+                            try:
+                                self._result.addModelingOnGroupOfCells(phenom, model, grpName)
+                            except:
+                                self._result.banBalancing()
             elif key == "AFFE_SOUS_STRUC":
                 self._result.banBalancing()
-
-    def post_exec(self, keywords):
-        """Execute the command.
-
-        Arguments:
-            keywords (dict): User's keywords.
-        """
-
-        FED = self._result.getFiniteElementDescriptor()
-        FED.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

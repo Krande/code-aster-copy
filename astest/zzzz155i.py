@@ -103,7 +103,6 @@ part2 = CA.ParMetisPartitioner()
 part2.buildGraph(meshGraph)
 metisPart = part2.partitionGraph()
 outMesh3 = bMesh.applyBalancingStrategy(metisPart)
-outMesh3.printMedFile("/home/H85256/med" + str(rank) + ".med")
 
 checkJoints(outMesh3)
 

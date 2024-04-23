@@ -65,10 +65,8 @@ int getSize( const std::vector< T > *in ) {
     return 1;
 };
 
-#ifdef ASTER_HAVE_MED
 int getSize( const MedVector< double >::ElementValue &in );
 int getSize( const MedVector< long int >::ElementValue &in );
-#endif
 
 int getSize( const ArrayWrapper< JeveuxVectorReal >::ElementValue &in );
 int getSize( const ArrayWrapper< JeveuxVectorLogical >::ElementValue &in );
@@ -96,10 +94,8 @@ int getTotalSize( const JeveuxCollectionClass< T > &toCopy ) {
     return toCopy.totalSize();
 };
 
-#ifdef ASTER_HAVE_MED
 int getTotalSize( const MedVector< double > &toCopy );
 int getTotalSize( const MedVector< long int > &toCopy );
-#endif
 
 template < typename T >
 int getTotalSize( const ArrayWrapper< T > &toCopy ) {
@@ -172,7 +168,6 @@ struct StartPosition< JeveuxCollectionClass< T > > {
     static constexpr int value = 1;
 };
 
-#ifdef ASTER_HAVE_MED
 template <>
 struct StartPosition< MedVector< double > > {
     static constexpr int value = 0;
@@ -181,7 +176,6 @@ template <>
 struct StartPosition< MedVector< long int > > {
     static constexpr int value = 0;
 };
-#endif
 template < typename T >
 struct StartPosition< ArrayWrapper< T > > {
     static constexpr int value = 0;
@@ -202,10 +196,8 @@ void allocate( JeveuxCollectionClass< T > &in, const int &size1, const int &size
     in.allocateContiguousNumbered( size1, size2 );
 };
 
-#ifdef ASTER_HAVE_MED
 void allocate( MedVector< double > &in, const int &size1, const int &size2 );
 void allocate( MedVector< long int > &in, const int &size1, const int &size2 );
-#endif
 
 template < typename T >
 void allocate( ArrayWrapper< T > &in, const int &size1, const int &size2 ) {
@@ -224,10 +216,8 @@ void update( JeveuxCollectionObject< T > in ) {
     in->updateValuePointer();
 };
 
-#ifdef ASTER_HAVE_MED
 void update( MedVector< double >::ElementValue in );
 void update( MedVector< long int >::ElementValue in );
-#endif
 
 void update( typename ArrayWrapper< JeveuxVectorReal >::ElementValue in );
 void update( typename ArrayWrapper< JeveuxVectorLogical >::ElementValue in );
@@ -245,10 +235,8 @@ void allocateOccurence( JeveuxCollectionClass< T > &in, const int &pos, const in
     in.allocateObject( pos, size );
 };
 
-#ifdef ASTER_HAVE_MED
 void allocateOccurence( MedVector< double > &in, const int &pos, const int &size );
 void allocateOccurence( MedVector< long int > &in, const int &pos, const int &size );
-#endif
 
 template < typename T >
 void allocateOccurence( ArrayWrapper< T > &in, const int &pos, const int &size ) {
@@ -258,7 +246,6 @@ void allocateOccurence( ArrayWrapper< T > &in, const int &pos, const int &size )
 template < typename T >
 struct ObjectTemplateType;
 
-#ifdef ASTER_HAVE_MED
 template <>
 struct ObjectTemplateType< MedVector< double > > {
     typedef double value_type;
@@ -267,7 +254,6 @@ template <>
 struct ObjectTemplateType< MedVector< long int > > {
     typedef long int value_type;
 };
-#endif
 
 template <>
 struct ObjectTemplateType< JeveuxCollectionClass< ASTERINTEGER > > {

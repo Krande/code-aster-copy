@@ -34,6 +34,8 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "Results/Result.h"
 
+#ifdef ASTER_HAVE_MPI
+
 bool componentsCheck( const VectorString comp );
 
 template < typename FieldType >
@@ -242,5 +244,7 @@ std::shared_ptr< ResultType > applyBalancingStrategy( const std::shared_ptr< Res
 
     return resuOut;
 };
+
+#endif /* ASTER_HAVE_MPI */
 
 #endif /* RESULTBALANCER_H_ */

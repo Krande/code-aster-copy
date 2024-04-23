@@ -35,8 +35,6 @@
 #include <string>
 #include <vector>
 
-#ifdef ASTER_HAVE_MED
-#include "med.h"
 // aslint: disable=C3010
 // aslint: disable=C3008
 // aslint: disable=C3012
@@ -237,5 +235,4 @@ class MedVector {
 typedef std::shared_ptr< MedVector< double > > MedVectorPtr;
 typedef std::shared_ptr< MedVector< long int > > MedVectorLongPtr;
 
-#endif
 #endif /* MEDVECTOR_H */

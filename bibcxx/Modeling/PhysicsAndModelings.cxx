@@ -405,7 +405,7 @@ const Modelings MechanicsModelings[nbModelingsMechanics] = { PlanarBar,
 
 const Modelings ThermalModelings[nbModelingsThermal] = {
     Tridimensional, DIAG_3D,    HHO_3D,     Axisymmetrical, AXIS_DIAG, AXIS_FOURIER, AXIS_HHO,
-    COQUE,          COQUE_AXIS, COQUE_PLAN, PlanarBar,      PLAN_DIAG, PLAN_HHO
+    COQUE,          COQUE_AXIS, COQUE_PLAN, Planar,         PLAN_DIAG, PLAN_HHO
 };
 
 const Modelings AcousticModelings[nbModelingsAcoustic] = { Tridimensional,
