@@ -173,33 +173,7 @@ bool Model::build() {
     return buildWithSyntax( dict ) && update_tables() && _ligrel->build();
 };
 
-bool Model::existsThm() const { return dismoi( "EXI_THM", false ) == "OUI"; };
-
-bool Model::existsMultiFiberBeam() const { return dismoi( "EXI_STR2", false ) == "OUI"; };
-
-bool Model::xfemPreconditioningEnable() const { return dismoi( "PRE_COND_XFEM", false ) == "OUI"; };
-
-bool Model::existsXfem() const { return dismoi( "EXI_XFEM", false ) == "OUI"; };
-
-bool Model::existsHHO() const { return dismoi( "EXI_HHO", false ) == "OUI"; };
-
-bool Model::existsAxis() const { return dismoi( "EXI_AXIS", false ) == "OUI"; };
-
-bool Model::isAxis() const { return dismoi( "AXIS" ) == "OUI"; };
-
-bool Model::exists3DShell() const { return dismoi( "EXI_COQ3D" ) == "OUI"; };
-
-bool Model::existsSTRX() const { return dismoi( "EXI_STRX" ) == "OUI"; };
-
-bool Model::existsRdM() const { return dismoi( "EXI_RDM" ) == "OUI"; };
-
-bool Model::existsPartition() const { return dismoi( "PARTITION" ) != ""; }
-
-const std::string Model::getModelisationName() const { return dismoi( "MODELISATION" ); };
-
-const std::string Model::getPartitionMethod() const { return _partSD->getMethod(); };
-
-const std::string Model::dismoi( const std::string &question, bool stop ) const {
+const std::string Model::dismoi_method( const std::string &question, bool stop ) const {
     const std::string typeco( "MODELE" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -211,6 +185,33 @@ const std::string Model::dismoi( const std::string &question, bool stop ) const 
     CALLO_DISMOI( question, getName(), typeco, &repi, repk, arret, &ier );
     return strip( repk.toString() );
 };
+
+bool Model::existsThm() const { return Model::dismoi_method( "EXI_THM", false ) == "OUI"; };
+
+bool Model::existsMultiFiberBeam() const { return Model::dismoi_method( "EXI_STR2", false ) == "OUI"; };
+
+bool Model::xfemPreconditioningEnable() const { return Model::dismoi_method( "PRE_COND_XFEM", false ) == "OUI"; };
+
+bool Model::existsXfem() const { return Model::dismoi_method( "EXI_XFEM", false ) == "OUI"; };
+
+bool Model::existsHHO() const { return Model::dismoi_method( "EXI_HHO", false ) == "OUI"; };
+
+bool Model::existsAxis() const { return Model::dismoi_method( "EXI_AXIS", false ) == "OUI"; };
+
+bool Model::isAxis() const { return Model::dismoi_method( "AXIS" ) == "OUI"; };
+
+bool Model::exists3DShell() const { return Model::dismoi_method( "EXI_COQ3D" ) == "OUI"; };
+
+bool Model::existsSTRX() const { return Model::dismoi_method( "EXI_STRX" ) == "OUI"; };
+
+bool Model::existsRdM() const { return Model::dismoi_method( "EXI_RDM" ) == "OUI"; };
+
+bool Model::existsPartition() const { return Model::dismoi_method( "PARTITION" ) != ""; }
+
+const std::string Model::getModelisationName() const { return Model::dismoi_method( "MODELISATION" ); };
+
+const std::string Model::getPartitionMethod() const { return _partSD->getMethod(); };
+
 
 ASTERINTEGER Model::numberOfSuperElement() { return _ligrel->numberOfSuperElement(); };
 

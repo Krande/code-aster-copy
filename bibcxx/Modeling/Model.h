@@ -149,7 +149,7 @@ class Model : public DataStructure, public ListOfTables {
      */
     bool buildWithSyntax( SyntaxMapContainer & );
 
-    const std::string dismoi( const std::string &, bool stop = true ) const;
+    const std::string dismoi_method( const std::string &, bool stop = true ) const;
 
   public:
     Model( const std::string name, const bool is_xfem = false );

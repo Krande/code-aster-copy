@@ -44,7 +44,7 @@ std::string remove_brackets( const std::string &in_str );
 std::string to_string( const int varInt, const int stringSize );
 
 // wrapper arround dismoi;
-std::tuple< bool, ASTERINTEGER, std::string > dismoi( const std::string &question,
+std::tuple< bool, ASTERINTEGER, std::string > dismoi_wrap( const std::string &question,
                                                       const std::string &name,
                                                       const std::string &type, const bool stop );
 
