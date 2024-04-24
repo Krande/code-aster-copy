@@ -6,7 +6,7 @@
  * @brief Fichier entete de la struct SyntaxMapContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,6 +25,8 @@
  */
 
 #include "astercxx.h"
+
+#include "aster_pybind.h"
 
 #include <typeinfo>
 
@@ -69,7 +71,6 @@ class SyntaxMapContainer {
         return *this;
     };
 
-  protected:
     /**
      * @brief Convertisseur du conteneur en dictionnaire python
      * @return un dict python contenant la syntaxe valorisable par l'objet CommandSyntax
@@ -78,6 +79,7 @@ class SyntaxMapContainer {
      * @todo ajouter un const pour this
      */
     PyObject *convertToPythonDictionnary( PyObject *returnDict = NULL ) const;
+    py::dict convertToPyDict() const;
 
   private:
     friend class CommandSyntax;

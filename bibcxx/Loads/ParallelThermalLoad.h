@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelThermalLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -38,6 +38,7 @@
 #include "Modeling/ParallelFiniteElementDescriptor.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/ResultNaming.h"
+#include "Utilities/SyntaxSaver.h"
 
 /**
  * @class ParallelThermalLoad
@@ -47,6 +48,8 @@ template < typename ConstantFieldOnCellsType >
 class ParallelThermalLoad : public DataStructure {
   public:
     using ConstantFieldOnCellsTypePtr = std::shared_ptr< ConstantFieldOnCellsType >;
+
+    using ParallelThermalLoadPtr = std::shared_ptr< ParallelThermalLoad >;
 
   private:
     template < typename ConstantFieldOnCellsType2Ptr >
@@ -88,6 +91,20 @@ class ParallelThermalLoad : public DataStructure {
         }
     };
 
+    void allocateFields( const ThermalLoadPtr< ConstantFieldOnCellsType > &load ) {
+        auto typeLoadStd = load->getType();
+        typeLoadStd->updateValuePointer();
+
+        _type->allocate( 1 );
+        ( *_type )[0] = ( *typeLoadStd )[0];
+
+        _modelName->allocate( 1 );
+        ( *_modelName )[0] = _model->getName();
+
+        transferConstantFieldOnCells( load->getImposedField(), _cimpo );
+        transferConstantFieldOnCells( load->getMultiplicativeField(), _cmult );
+    };
+
   protected:
     /** @brief Modele */
     ModelPtr _model;
@@ -101,6 +118,9 @@ class ParallelThermalLoad : public DataStructure {
     JeveuxVectorChar8 _type;
     /** @brief Vecteur Jeveux '.MODEL.NOMO' */
     JeveuxVectorChar8 _modelName;
+    SyntaxSaverPtr _syntax;
+    /** @brief node and cell support groups of ParallelThermalLoad */
+    VectorString _grpNo, _grpMa;
 
   public:
     /**
@@ -115,6 +135,32 @@ class ParallelThermalLoad : public DataStructure {
     ParallelThermalLoad( const ThermalLoadPtr< ConstantFieldOnCellsType > &load,
                          const ModelPtr &model )
         : ParallelThermalLoad( ResultNaming::getNewResultName(), load, model ) {};
+
+    /** @brief Constructor */
+    ParallelThermalLoad( const ParallelThermalLoadPtr load, const ModelPtr &model )
+        : DataStructure( ResultNaming::getNewResultName(), 8, "CHAR_THER" ),
+          _type( getName() + ".TYPE" ),
+          _modelName( getName() + ".CHTH.MODEL.NOMO" ),
+          _model( model ) {
+        _syntax = load->_syntax;
+        _grpNo = load->_grpNo;
+        _grpMa = load->_grpMa;
+        auto pMesh = std::static_pointer_cast< ParallelMesh >( model->getMesh() );
+        ConnectionMeshPtr connectionMesh( new ConnectionMesh( pMesh, _grpNo, _grpMa ) );
+        ModelPtr connectionModel( new Model( connectionMesh ) );
+        connectionModel->setFrom( model );
+        ThermalLoadPtr< ConstantFieldOnCellsType > partialMechanicalLoad(
+            new ThermalLoad< ConstantFieldOnCellsType >( connectionModel ) );
+        partialMechanicalLoad->buildFromSyntax( _syntax );
+
+        _FEDesc = std::make_shared< ParallelFiniteElementDescriptor >(
+            getName() + ".CHTH.LIGRE", partialMechanicalLoad->getFiniteElementDescriptor(),
+            partialMechanicalLoad->getModel()->getConnectionMesh(), model );
+        _cimpo = std::make_shared< ConstantFieldOnCellsType >( getName() + ".CHTH.CIMPO", _FEDesc );
+        _cmult = std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CHTH.CMULT", _FEDesc );
+
+        allocateFields( partialMechanicalLoad );
+    };
 
     /**
      * @brief Constructeur
@@ -157,11 +203,22 @@ class ParallelThermalLoad : public DataStructure {
      */
     ModelPtr getModel() const { return _model; };
 
-    using ParallelThermalLoadPtr = std::shared_ptr< ParallelThermalLoad >;
-
     ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; };
 
-    ConstantFieldOnCellsTypePtr getImposedField() const { return _cimpo; }
+    ConstantFieldOnCellsTypePtr getImposedField() const { return _cimpo; };
+
+    /**
+     * @brief Function to set rebuild parameters (used for balancing)
+     * @param syntax aster syntax
+     * @param grpNo cell groups
+     * @param syntax node groups
+     */
+    void setRebuildParameters( SyntaxSaverPtr syntax, const VectorString &grpNo,
+                               const VectorString &grpMa ) {
+        _syntax = syntax;
+        _grpNo = grpNo;
+        _grpMa = grpMa;
+    };
 };
 
 /**

@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelThermalLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,7 +35,15 @@ void exportParallelThermalLoadToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ParallelThermalLoadReal, std::string, ThermalLoadRealPtr,
                                          ModelPtr > ) )
         .def( "getFiniteElementDescriptor", &ParallelThermalLoadReal::getFiniteElementDescriptor )
-        .def( "getModel", &ParallelThermalLoadReal::getModel );
+        .def( "getModel", &ParallelThermalLoadReal::getModel )
+        .def( "setRebuildParameters", &ParallelThermalLoadReal::setRebuildParameters, R"(
+Set parameters to be able to rebuild object in case of balancing
+
+Arguments:
+    syntax (SyntaxSaver): syntax used to build object
+    grpNo (list of strings): list of node groups
+    grpMa (list of strings): list of cell groups)",
+              py::arg( "syntax" ), py::arg( "grpNo" ), py::arg( "grpMa" ) );
 
     py::class_< ParallelThermalLoadFunction, ParallelThermalLoadFunction::ParallelThermalLoadPtr,
                 DataStructure >( mod, "ParallelThermalLoadFunction" )

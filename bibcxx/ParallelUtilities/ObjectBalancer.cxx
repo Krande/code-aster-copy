@@ -3,7 +3,7 @@
  * @brief Implementation of an object balancer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -57,10 +57,19 @@ void ObjectBalancer::prepareCommunications() {
             AsterMPI::send( tmp, proc, tag );
         }
     }
-    const auto tmp = std::set< int >( _toSend.begin(), _toSend.end() );
-    std::set< int > intersect;
-    std::set_intersection( tmp.begin(), tmp.end(), _toKeep.begin(), _toKeep.end(),
-                           std::inserter( intersect, intersect.begin() ) );
+    std::set< int > delInterKeep;
+    std::set_intersection( _toDelete.begin(), _toDelete.end(), _toKeep.begin(), _toKeep.end(),
+                           std::inserter( delInterKeep, delInterKeep.begin() ) );
+    if ( delInterKeep.size() != 0 ) {
+        throw std::runtime_error( "Inconsistent communication definition."
+                                  " Some elements are to keep and to delete at the same time." );
+    }
+    std::set< int > sendInterKeep;
+    std::set_intersection( _toSend.begin(), _toSend.end(), _toKeep.begin(), _toKeep.end(),
+                           std::inserter( sendInterKeep, sendInterKeep.begin() ) );
+    std::set< int > sendDiffDel;
+    std::set_difference( _toSend.begin(), _toSend.end(), _toDelete.begin(), _toDelete.end(),
+                         std::inserter( sendDiffDel, sendDiffDel.begin() ) );
     const auto nbProcs = getMPISize();
 
     // Compute size delta for vectors
@@ -68,7 +77,7 @@ void ObjectBalancer::prepareCommunications() {
     for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
         _sizeDelta += _recvSize[iProc];
     }
-    _sizeDelta -= ( _toSend.size() - intersect.size() );
+    _sizeDelta -= ( sendDiffDel.size() + _toDelete.size() - sendInterKeep.size() );
     _isOk = true;
 };
 
@@ -86,40 +95,5 @@ void ObjectBalancer::balanceObjectOverProcesses( const MeshCoordinatesFieldPtr &
                                                         valuesOut->getDataPtr() );
     coordsOut->buildDescriptor();
 };
-
-#ifdef ASTER_HAVE_MED
-MedVectorPtr
-ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering( const MedVectorPtr &vecIn ) const {
-    MedVectorPtr vecOut( new MedVector() );
-    balanceObjectOverProcesses3( *vecIn, *vecOut, DummyMaskDouble() );
-    vecOut->setComponentNumber( vecIn->getComponentNumber() );
-    vecOut->setComponentName( vecIn->getComponentName() );
-    if ( _renumbering.size() == 0 ) {
-        return vecOut;
-    }
-    const auto size = vecOut->size();
-    MedVectorPtr vecOut2( new MedVector() );
-    vecOut2->setComponentNumber( vecOut->getComponentNumber() );
-    vecOut2->setComponentName( vecOut->getComponentName() );
-    vecOut2->setSize( size );
-    if ( _renumbering.size() != size )
-        throw std::runtime_error( "Sizes not matching" );
-    for ( int i = 0; i < size; ++i ) {
-        const auto newId = _renumbering[i] - 1;
-        vecOut2->setElement( newId, vecOut->getElement( i ) );
-    }
-    vecOut2->endDefinition();
-    for ( int i = 0; i < size; ++i ) {
-        const auto newId = _renumbering[i] - 1;
-        const auto nbCmp = vecOut->getElement( i );
-        const auto &elInR = ( *vecOut )[i];
-        auto &elOutR = ( *vecOut2 )[newId];
-        for ( int j = 0; j < nbCmp; ++j ) {
-            elOutR[j] = elInR[j];
-        }
-    }
-    return vecOut2;
-};
-#endif
 
 #endif /* ASTER_HAVE_MPI */

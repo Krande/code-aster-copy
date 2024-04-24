@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import AcousticDirichletBC, MechanicalDirichletBC, ThermalDirichletBC
+from ..Objects import AcousticDirichletBC, MechanicalDirichletBC, ThermalDirichletBC, SyntaxSaver
 from ..Supervis import ExecuteCommand
 
 
@@ -52,6 +52,9 @@ class DirichletBCDefinition(ExecuteCommand):
                 raise NotImplementedError("Must be implemented")
         else:
             raise NotImplementedError("Must be implemented")
+        if keywords.get("SYNTAXE") == "OUI":
+            toSave = SyntaxSaver(self.command_name, 101, keywords)
+            self._result.setSyntax(toSave)
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

@@ -5,7 +5,7 @@
  * @file MaterialField.h
  * @brief Header of MaterialField classes
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -132,12 +132,17 @@ class MaterialField : public DataStructure {
     void updateExtStateVariablesObjects();
 
   public:
+    typedef std::shared_ptr< MaterialField > MaterialFieldPtr;
+
     /** @brief Constructor */
     MaterialField( const BaseMeshPtr &mesh )
         : MaterialField( ResultNaming::getNewResultName(), mesh ) {};
 
     /** @brief Constructor */
     MaterialField( const std::string &, const BaseMeshPtr & );
+
+    /** @brief Constructor */
+    MaterialField( const BaseMeshPtr &mesh, MaterialFieldPtr mater );
 
     /** @brief Destructor */
     ~MaterialField() {};

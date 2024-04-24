@@ -130,17 +130,36 @@ elif rank == 3:
     test.assertEqual(result[12], 3.0)
 
 bMesh = CA.MeshBalancer()
+bMesh2 = CA.MeshBalancer()
+# Partitioning from BaseMesh and then from ParallelMesh
+# From ParallelMesh, it tests mesh swap in multiple ways
 if rank == 0:
     myMesh = CA.Mesh()
     myMesh.readMedFile("fort.20")
     bMesh.buildFromBaseMesh(myMesh)
     outMesh = bMesh.applyBalancingStrategy([1, 2, 9, 11, 17, 19, 25, 31])
+    bMesh2.buildFromBaseMesh(outMesh)
+    outMesh2 = bMesh2.applyBalancingStrategy([5, 6, 13, 15, 18, 20, 26, 32])
+    outMesh3 = bMesh2.applyBalancingStrategy([1, 2, 9, 11, 17, 19, 25, 31])
+    outMesh4 = bMesh2.applyBalancingStrategy([7, 8, 14, 16, 22, 24, 28, 30])
 elif rank == 1:
     outMesh = bMesh.applyBalancingStrategy([5, 6, 13, 15, 18, 20, 26, 32])
+    bMesh2.buildFromBaseMesh(outMesh)
+    outMesh2 = bMesh2.applyBalancingStrategy([7, 8, 14, 16, 22, 24, 28, 30])
+    outMesh3 = bMesh2.applyBalancingStrategy([7, 8, 14, 16, 22, 24, 28, 30])
+    outMesh4 = bMesh2.applyBalancingStrategy([5, 6, 13, 15, 18, 20, 26, 32])
 elif rank == 2:
     outMesh = bMesh.applyBalancingStrategy([7, 8, 14, 16, 22, 24, 28, 30])
+    bMesh2.buildFromBaseMesh(outMesh)
+    outMesh2 = bMesh2.applyBalancingStrategy([3, 4, 10, 12, 21, 23, 27, 29])
+    outMesh3 = bMesh2.applyBalancingStrategy([3, 4, 10, 12, 21, 23, 27, 29])
+    outMesh4 = bMesh2.applyBalancingStrategy([1, 2, 9, 11, 17, 19, 25, 31])
 elif rank == 3:
     outMesh = bMesh.applyBalancingStrategy([3, 4, 10, 12, 21, 23, 27, 29])
+    bMesh2.buildFromBaseMesh(outMesh)
+    outMesh2 = bMesh2.applyBalancingStrategy([1, 2, 9, 11, 17, 19, 25, 31])
+    outMesh3 = bMesh2.applyBalancingStrategy([5, 6, 13, 15, 18, 20, 26, 32])
+    outMesh4 = bMesh2.applyBalancingStrategy([3, 4, 10, 12, 21, 23, 27, 29])
 
 checkMesh = CA.Mesh()
 checkMesh.readMedFile("fort.20")
@@ -568,6 +587,36 @@ part2 = CA.PtScotchPartitioner()
 part2.buildGraph(meshGraph)
 scotchPart = part2.partitionGraph()
 outMesh3 = bMesh.applyBalancingStrategy(scotchPart)
+innerNodes1 = len(outMesh3.getInnerNodes())
+
+meshGraph = CA.MeshConnectionGraph()
+weights = [1] * 55
+if rank == 0:
+    # Add load on first node
+    weights[0] = 10
+    meshGraph.buildFromIncompleteMeshWithVertexWeights(mesh3, weights)
+elif rank == 1:
+    meshGraph.buildFromIncompleteMeshWithVertexWeights(mesh3, weights)
+elif rank == 2:
+    meshGraph.buildFromIncompleteMeshWithVertexWeights(mesh3, weights)
+elif rank == 3:
+    meshGraph.buildFromIncompleteMeshWithVertexWeights(mesh3, weights)
+test.assertTrue(meshGraph.debugCheck())
+part2 = CA.PtScotchPartitioner()
+part2.buildGraph(meshGraph)
+scotchPart = part2.partitionGraph()
+outMesh4 = bMesh.applyBalancingStrategy(scotchPart)
+index = -1
+try:
+    index = scotchPart.index(1)
+except:
+    pass
+if index != -1:
+    # Node 1 has been loaded
+    # The processor that will contain it, will have fewer inner nodes than before
+    test.assertTrue(len(outMesh4.getInnerNodes()) < innerNodes1)
+else:
+    test.assertTrue(len(outMesh4.getInnerNodes()) >= innerNodes1)
 
 checkJoints(outMesh3)
 

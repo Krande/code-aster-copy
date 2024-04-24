@@ -7,7 +7,7 @@
  * STL en parallèle
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -471,15 +471,19 @@ void AsterMPI::bcast(std::vector<T> &value, int root,
 template <typename T>
 void AsterMPI::send(const std::vector<T> &in_values, int dest, int tag,
                     aster_comm_t *_commCurrent) {
-  aster_mpi_send(const_cast<T *>(&in_values[0]), in_values.size(),
-                 mpi_type<T>(), dest, tag, _commCurrent);
+  const T &firstValue = in_values[0];
+  T *firstValueP = const_cast<T *>(&firstValue);
+  aster_mpi_send(firstValueP, in_values.size(), mpi_type<T>(), dest, tag,
+                 _commCurrent);
 }
 
 template <typename T>
 void AsterMPI::receive(const std::vector<T> &out_values, int source, int tag,
                        aster_comm_t *_commCurrent) {
-  aster_mpi_recv(const_cast<T *>(&out_values[0]), out_values.size(),
-                 mpi_type<T>(), source, tag, _commCurrent);
+  const T &firstValue = out_values[0];
+  T *firstValueP = const_cast<T *>(&firstValue);
+  aster_mpi_recv(firstValueP, out_values.size(), mpi_type<T>(), source, tag,
+                 _commCurrent);
 }
 
 template <typename T>

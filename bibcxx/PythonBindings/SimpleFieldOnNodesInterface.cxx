@@ -3,7 +3,7 @@
  * @brief Interface python de SimpleFieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -95,6 +95,7 @@ Returns:
         .def( "getNumberOfNodes", &SimpleFieldOnNodesReal::getNumberOfNodes )
         .def( "getComponents", &SimpleFieldOnNodesReal::getComponents )
         .def( "getComponent", &SimpleFieldOnNodesReal::getComponent )
+        .def( "getMesh", &SimpleFieldOnNodesReal::getMesh, R"(Returns base mesh)" )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesReal::getPhysicalQuantity )
         .def( "updateValuePointers", &SimpleFieldOnNodesReal::updateValuePointers );
 
@@ -129,6 +130,7 @@ Returns:
         .def( "getNumberOfNodes", &SimpleFieldOnNodesComplex::getNumberOfNodes )
         .def( "getComponents", &SimpleFieldOnNodesComplex::getComponents )
         .def( "getComponent", &SimpleFieldOnNodesComplex::getComponent )
+        .def( "getMesh", &SimpleFieldOnNodesComplex::getMesh, R"(Returns base mesh)" )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesComplex::getPhysicalQuantity )
         .def( "updateValuePointers", &SimpleFieldOnNodesComplex::updateValuePointers );
 };

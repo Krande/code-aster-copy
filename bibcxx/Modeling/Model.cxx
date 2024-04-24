@@ -3,7 +3,7 @@
  * @brief Implementation de Model
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,9 +35,9 @@
 #include <stdexcept>
 #include <typeinfo>
 
-const char *const ModelSplitingMethodNames[nbModelSplitingMethod] = {"CENTRALISE", "SOUS_DOMAINE",
-                                                                     "GROUP_ELEM"};
-const char *const GraphPartitionerNames[nbGraphPartitioner] = {"SCOTCH", "METIS"};
+const char *const ModelSplitingMethodNames[nbModelSplitingMethod] = { "CENTRALISE", "SOUS_DOMAINE",
+                                                                      "GROUP_ELEM" };
+const char *const GraphPartitionerNames[nbGraphPartitioner] = { "SCOTCH", "METIS" };
 
 Model::Partition::Partition( const std::string name )
     : DataStructure( name, 19, "PARTITION" ),
@@ -105,6 +105,10 @@ Model::Model( const std::string name, const ConnectionMeshPtr mesh ) : Model( na
 Model::Model( const ConnectionMeshPtr mesh ) : Model( DataStructureNaming::getNewName(), mesh ) {};
 #endif /* ASTER_HAVE_MPI */
 
+Model::Model( const BaseMeshPtr mesh, const ModelPtr model ) : Model( mesh ) {
+    _modelisations = model->_modelisations;
+};
+
 bool Model::existsSuperElement() { return ( numberOfSuperElement() > 0 ); }
 
 FiniteElementDescriptorPtr Model::getFiniteElementDescriptor() const { return _ligrel; };
@@ -124,14 +128,19 @@ SyntaxMapContainer Model::buildModelingsSyntaxMapContainer() const {
         dict2.container["PHENOMENE"] = curIter->first.getPhysic();
         dict2.container["MODELISATION"] = curIter->first.getModeling();
 
-        if ( ( *( curIter->second ) ).getType() == AllMeshEntitiesType ) {
-            dict2.container["TOUT"] = "OUI";
-        } else {
-            if ( ( *( curIter->second ) ).getType() == GroupOfNodesType )
-                dict2.container["GROUP_NO"] = ( curIter->second )->getName();
-            else if ( ( *( curIter->second ) ).getType() == GroupOfCellsType )
-                dict2.container["GROUP_MA"] = ( curIter->second )->getName();
+        VectorString grpMa;
+        const auto &curList = curIter->second;
+        for ( const auto &curIter : curList ) {
+            if ( ( *( curIter ) ).getType() == AllMeshEntitiesType ) {
+                dict2.container["TOUT"] = "OUI";
+            } else {
+                if ( ( *( curIter ) ).getType() == GroupOfCellsType ) {
+                    grpMa.push_back( ( curIter )->getName() );
+                }
+            }
         }
+        if ( grpMa.size() != 0 )
+            dict2.container["GROUP_MA"] = grpMa;
         listeAFFE.push_back( dict2 );
     }
     dict.container["AFFE"] = listeAFFE;
@@ -216,29 +225,21 @@ ASTERINTEGER Model::numberOfSuperElement() { return _ligrel->numberOfSuperElemen
 
 bool Model::existsFiniteElement() { return _ligrel->existsFiniteElement(); };
 
-void Model::addModelingOnMesh( Physics phys, Modelings mod ) {
-    _modelisations.push_back( listOfModsAndGrpsValue( ElementaryModeling( phys, mod ),
-                                                      MeshEntityPtr( new AllMeshEntities() ) ) );
+void Model::addModelingOnMesh( Physics phys, Modelings mod, Formulation form ) {
+    _modelisations.push_back( listOfModsAndGrpsValue(
+        ElementaryModeling( phys, mod, form ), { MeshEntityPtr( new AllMeshEntities() ) } ) );
 };
 
-void Model::addModelingOnGroupOfCells( Physics phys, Modelings mod, std::string nameOfGroup ) {
+void Model::addModelingOnGroupOfCells( Physics phys, Modelings mod, std::string nameOfGroup,
+                                       Formulation form ) {
     if ( !_baseMesh )
         throw std::runtime_error( "Mesh is not defined" );
     if ( !_baseMesh->hasGroupOfCells( nameOfGroup ) )
         throw std::runtime_error( nameOfGroup + " not in mesh" );
 
-    _modelisations.push_back( listOfModsAndGrpsValue(
-        ElementaryModeling( phys, mod ), MeshEntityPtr( new GroupOfCells( nameOfGroup ) ) ) );
-};
-
-void Model::addModelingOnGroupOfNodes( Physics phys, Modelings mod, std::string nameOfGroup ) {
-    if ( !_baseMesh )
-        throw std::runtime_error( "Mesh is not defined" );
-    if ( !_baseMesh->hasGroupOfNodes( nameOfGroup ) )
-        throw std::runtime_error( nameOfGroup + " not in mesh" );
-
-    _modelisations.push_back( listOfModsAndGrpsValue(
-        ElementaryModeling( phys, mod ), MeshEntityPtr( new GroupOfNodes( nameOfGroup ) ) ) );
+    _modelisations.push_back(
+        listOfModsAndGrpsValue( ElementaryModeling( phys, mod, form ),
+                                { MeshEntityPtr( new GroupOfCells( nameOfGroup ) ) } ) );
 };
 
 void Model::setXfemModel() {

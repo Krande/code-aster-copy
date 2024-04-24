@@ -52,8 +52,14 @@ int PtScotchPartitioner::buildGraph( const MeshConnectionGraphPtr &graph ) {
     auto &edge = const_cast< VectorLong & >( graph->getEdges() );
     _nbVertex = vert.size() - 1;
     _minId = graph->getRange()[0];
-    return SCOTCH_dgraphBuild( _graph, 0, vert.size() - 1, vert.size() - 1, vert.data(), 0, 0, 0,
-                               edge.size(), edge.size(), edge.data(), 0, 0 );
+    if ( graph->getVertexWeights().size() == 0 ) {
+        return SCOTCH_dgraphBuild( _graph, 0, vert.size() - 1, vert.size() - 1, vert.data(), 0, 0,
+                                   0, edge.size(), edge.size(), edge.data(), 0, 0 );
+    } else {
+        auto &weights = const_cast< VectorLong & >( graph->getVertexWeights() );
+        return SCOTCH_dgraphBuild( _graph, 0, vert.size() - 1, vert.size() - 1, vert.data(), 0,
+                                   weights.data(), 0, edge.size(), edge.size(), edge.data(), 0, 0 );
+    }
 };
 
 int PtScotchPartitioner::checkGraph() { return SCOTCH_dgraphCheck( _graph ); };

@@ -105,6 +105,7 @@ AFFE_CHAR_MECA = OPER(
     VERI_AFFE=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
     VERI_NORM=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
     MODELE=SIMP(statut="o", typ=(modele_sdaster)),
+    SYNTAXE=SIMP(statut="c", typ="TXM", into=("OUI", "NON"), defaut="NON"),
     CARA_ELEM=SIMP(statut="f", typ=cara_elem),
     CHAM_MATER=SIMP(statut="f", typ=cham_mater),
     EVOL_CHAR=SIMP(

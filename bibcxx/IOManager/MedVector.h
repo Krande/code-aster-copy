@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MedVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,8 +35,6 @@
 #include <string>
 #include <vector>
 
-#ifdef ASTER_HAVE_MED
-#include "med.h"
 // aslint: disable=C3010
 // aslint: disable=C3008
 // aslint: disable=C3012
@@ -47,27 +45,29 @@
  * component*nbpg)
  * @author Nicolas Sellenet
  */
+template < typename TypeName = double >
 class MedVector {
   public:
+    typedef TypeName value_type;
     class ElementValue {
-        std::vector< double > &_vector;
+        std::vector< TypeName > &_vector;
         int _index = -1;
         int _nbCmp = 0;
 
-        ElementValue( std::vector< double > &vector ) : _vector( vector ) {};
+        ElementValue( std::vector< TypeName > &vector ) : _vector( vector ) {};
 
       public:
         int getComponentNumber() const { return _nbCmp; };
 
-        double &operator[]( const int &cmp ) { return _vector[_index + cmp]; };
-        const double &operator[]( const int &cmp ) const { return _vector[_index + cmp]; };
+        TypeName &operator[]( const int &cmp ) { return _vector[_index + cmp]; };
+        const TypeName &operator[]( const int &cmp ) const { return _vector[_index + cmp]; };
 
         friend class MedVector;
     };
 
   private:
     /** @brief value vector */
-    std::vector< double > _vector;
+    std::vector< TypeName > _vector;
     /** @brief cumulated size vector (used to explore _vector element by element) */
     std::vector< int > _cumSize;
     /** @brief component number of each element */
@@ -95,7 +95,7 @@ class MedVector {
 
     /** @brief restricted constructor (Set) and method (Get) to support pickling */
     MedVector( const py::tuple &tup ) : MedVector() {
-        _vector = tup[0].cast< std::vector< double > >();
+        _vector = tup[0].cast< std::vector< TypeName > >();
         _cumSize = tup[1].cast< std::vector< int > >();
         _cmps = tup[2].cast< std::vector< int > >();
         _cmpNb = tup[3].cast< int >();
@@ -111,7 +111,7 @@ class MedVector {
         for ( int i = 0; i < _size; ++i ) {
             _cumSize[i + 1] = _cumSize[i] + _cmps[i];
         }
-        _vector = std::vector< double >( _cumSize[_size] );
+        _vector = std::vector< TypeName >( _cumSize[_size], 0 );
     };
 
     /** @brief get component name */
@@ -134,7 +134,7 @@ class MedVector {
      * @return numpy array
      */
     py::object getValues() const {
-        npy_intp dims[1] = {(long int)_vector.size()};
+        npy_intp dims[1] = { (long int)_vector.size() };
 
         PyObject *values =
             PyArray_SimpleNewFromData( 1, dims, npy_type< double >::value, (void *)&_vector[0] );
@@ -153,7 +153,7 @@ class MedVector {
         if ( _cmpNb == 0 ) {
             _cmpNb = cmpName.size();
         } else {
-            if ( cmpName.size() != _cmpNb )
+            if ( cmpName.size() != 0 && cmpName.size() != _cmpNb )
                 throw std::runtime_error( "Bad component number" );
         }
         _cmpName = cmpName;
@@ -204,7 +204,7 @@ class MedVector {
     };
 
     /** @brief set total size (usefull for memory preallocation) */
-    void setTotalSize( int totalSize ) { _vector = std::vector< double >( totalSize ); };
+    void setTotalSize( int totalSize ) { _vector = std::vector< TypeName >( totalSize ); };
 
     /** @brief set total element number */
     void setValues( const std::vector< double > &values ) { _vector = values; };
@@ -232,7 +232,7 @@ class MedVector {
  * @typedef MedVectorPtr
  * @brief Pointeur intelligent vers un MedVector
  */
-typedef std::shared_ptr< MedVector > MedVectorPtr;
+typedef std::shared_ptr< MedVector< double > > MedVectorPtr;
+typedef std::shared_ptr< MedVector< long int > > MedVectorLongPtr;
 
-#endif
 #endif /* MEDVECTOR_H */

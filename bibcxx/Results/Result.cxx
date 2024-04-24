@@ -392,9 +392,11 @@ ModelPtr Result::getModel() const {
 
     const auto models = getModels();
     AS_ASSERT( models.size() <= 1 );
-
-    if ( models.size() == 1 )
-        return models[0];
+    auto indexes = getIndexes();
+    if ( models.size() == 1 ) {
+        ModelPtr toReturn = _mapModel.at( indexes[0] );
+        return toReturn;
+    }
 
     return ModelPtr( nullptr );
 };

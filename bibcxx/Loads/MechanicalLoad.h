@@ -5,7 +5,7 @@
  * @file MechanicalLoad.h
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,6 +25,8 @@
 
 #include "astercxx.h"
 
+#include "aster_fort_superv.h"
+
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataFields/ListOfTables.h"
 #include "DataStructures/DataStructure.h"
@@ -32,7 +34,9 @@
 #include "Meshes/BaseMesh.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
+#include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
+#include "Utilities/SyntaxSaver.h"
 
 /**
  * @class MechanicalLoad
@@ -164,7 +168,20 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
         _poidsMaille->updateValuePointer();
     };
 
-    bool build() { return _mecaLoadDesc->build(); }
+    bool build() { return _mecaLoadDesc->build(); };
+
+    bool buildFromSyntax( const SyntaxSaverPtr syntaxSaver ) {
+        py::dict keywords = syntaxSaver->keywords();
+        std::string cmd = "AFFE_CHAR_MECA";
+        CommandSyntax cmdSt( cmd );
+        cmdSt.setResult( getName(), DataStructure::getType() );
+        keywords["MODELE"] = _mecaLoadDesc->getModel()->getName();
+        cmdSt.define( keywords, false );
+
+        ASTERINTEGER op = 7;
+        CALL_EXECOP( &op );
+        return true;
+    };
 };
 
 /**********************************************************

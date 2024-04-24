@@ -3,7 +3,7 @@
  * @brief Création de LibAster
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -126,10 +126,12 @@
 #include "PythonBindings/ModalBasisInterface.h"
 #include "PythonBindings/ModeResultInterface.h"
 #include "PythonBindings/ModelInterface.h"
+#include "PythonBindings/ModelingUtilitiesInterface.h"
 #include "PythonBindings/MultipleElasticResultInterface.h"
 #include "PythonBindings/NodeInterface.h"
 #include "PythonBindings/NonLinearResultInterface.h"
 #include "PythonBindings/ObjectBalancerInterface.h"
+#include "PythonBindings/ParMetisPartitionerInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
 #include "PythonBindings/ParallelEquationNumberingInterface.h"
 #include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
@@ -143,6 +145,7 @@
 #include "PythonBindings/PostProcessingInterface.h"
 #include "PythonBindings/PrestressingCableInterface.h"
 #include "PythonBindings/PtScotchPartitionerInterface.h"
+#include "PythonBindings/ResultBalancerInterface.h"
 #include "PythonBindings/ResultInterface.h"
 #include "PythonBindings/ResultNamingInterface.h"
 #include "PythonBindings/SetLoggingLevelInterface.h"
@@ -152,6 +155,7 @@
 #include "PythonBindings/StaticMacroElementInterface.h"
 #include "PythonBindings/StructureInterfaceInterface.h"
 #include "PythonBindings/SuperMeshInterface.h"
+#include "PythonBindings/SyntaxSaverInterface.h"
 #include "PythonBindings/TableContainerInterface.h"
 #include "PythonBindings/TableInterface.h"
 #include "PythonBindings/ThermalFourierResultInterface.h"
@@ -261,8 +265,8 @@ PYBIND11_MODULE( libaster, mod ) {
     exportCrackShapeToPython( mod );
     exportCrackToPython( mod );
     exportGeneralizedModelToPython( mod );
-    exportModelToPython( mod );
     exportPhysicsAndModelingsToPython( mod );
+    exportModelToPython( mod );
     exportPrestressingCableToPython( mod );
     exportXfemCrackToPython( mod );
     exportResultToPython( mod );
@@ -324,8 +328,12 @@ PYBIND11_MODULE( libaster, mod ) {
     exportIncompleteMeshToPython( mod );
 #ifdef ASTER_HAVE_SCOTCH
     exportPtScotchPartitionerToPython( mod );
-    exportMeshConnectionGraphToPython( mod );
 #endif /* ASTER_HAVE_SCOTCH */
+#ifdef ASTER_HAVE_PARMETIS
+    exportParMetisPartitionerToPython( mod );
+#endif /* ASTER_HAVE_PARMETIS */
+    exportMeshConnectionGraphToPython( mod );
+    exportResultBalancerToPython( mod );
 #endif /* ASTER_HAVE_MPI */
 #ifdef ASTER_HAVE_MED
     exportMedFileReaderToPython( mod );
@@ -335,4 +343,6 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMedVectorToPython( mod );
 #endif /* ASTER_HAVE_MED */
     exportFieldCharacteristicsToPython( mod );
+    exportModelingUtilitiesToPython( mod );
+    exportSyntaxSaverToPython( mod );
 };

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -21,6 +21,7 @@
 
 from ..Cata.Language.SyntaxObjects import FactorKeyword
 from ..Objects import MechanicalLoadReal, ParallelMechanicalLoadReal, ConnectionMesh, Model
+from ..Objects import SyntaxSaver
 from ..Supervis import ExecuteCommand
 from ..Utilities import deprecate, force_list
 
@@ -143,6 +144,9 @@ class MechanicalLoadDefinition(ExecuteCommand):
             partialMechanicalLoad = AFFE_CHAR_MECA(**keywords)
             keywords["MODELE"] = model
             self._result = ParallelMechanicalLoadReal(partialMechanicalLoad, model)
+            if keywords.get("SYNTAXE") == "OUI":
+                toSave = SyntaxSaver(self.command_name, 7, keywords)
+                self._result.setRebuildParameters(toSave, nodeGroups, cellGroups)
 
     def post_exec(self, keywords):
         """Execute the command.
