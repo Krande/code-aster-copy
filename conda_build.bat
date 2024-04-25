@@ -6,8 +6,8 @@ set CLICOLOR_FORCE=1
 call conda_env.bat
 
 echo "Setting compiler env vars"
-set "CC=cl.exe"
-set "CXX=cl.exe"
+set "CC=clang-cl.exe"
+set "CXX=clang-cl.exe"
 set "FC=ifx.exe"
 REM set "LINK_CC=XILINK.exe"
 REM set "LINK_CXX=XILINK.exe"
@@ -88,7 +88,7 @@ waf configure ^
   --safe ^
   --check-fortran-compiler=ifort ^
   --use-config-dir=%PARENT_DIR%/config/ ^
-  --med-libs=medC medfwrap ^
+  --med-libs=medC ^
   --prefix=%LIBRARY_PREFIX% ^
   --out=%OUTPUT_DIR% ^
   --disable-mpi ^

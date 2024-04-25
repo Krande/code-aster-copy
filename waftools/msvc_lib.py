@@ -188,7 +188,6 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     clib_task = task_obj.c_task.libtask
     cxxlib_task = task_obj.cxx_task.libtask
     fclib_task = task_obj.fc_task.libtask
-    cxx_aster_task = task_obj.c_aster_task.libtask
 
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.cxx_task.tasks]
     fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.fc_task.tasks]
@@ -211,14 +210,28 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     fclib_task.inputs += bibcxx_lib_task.outputs + clib_task_outputs
     cxxlib_task.inputs += clib_task_outputs + fclib_task_outputs
 
+    bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
+    lib_output_file_path = bld_path / "aster" / f"py_aster_gen.lib"
+    bib_lib_output_file_node = self.bld.bldnode.make_node(lib_output_file_path.relative_to(bld_path).as_posix())
+
+    py_c_obj = self.path.find_resource("supervis/python.c.2.o")
+    input_tasks = [py_c_obj]
+
+    msvc_libgen_task = self.create_task("msvclibgen")
+    msvc_libgen_task.inputs = input_tasks
+    msvc_libgen_task.env = self.env
+    msvc_libgen_task.MSVC_LIBGEN_LIB_PATH = lib_output_file_path.as_posix()
+    msvc_libgen_task.dep_nodes = input_tasks
+    msvc_libgen_task.outputs = [bib_lib_output_file_node]
+
 
 @TaskGen.feature("cshlib")
 @TaskGen.after_method("apply_link")
 def make_msvc_modifications_pre(self):
     task_obj = extract_main_tasks(self.bld)
-
+    py_c = self.path.find_resource("supervis/python.c")
     self.bld.add_manual_dependency(
-        self.path.find_resource("supervis/python.c"),
+        py_c,
         self.path.find_resource("supervis/aster_core_module.c")
     )
 
