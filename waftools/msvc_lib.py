@@ -36,9 +36,9 @@ class msvclibgen(Task.Task):
         # Do this for now.
         cmd = f"LIB.exe /OUT:{output_fp.as_posix()} @{ofiles.as_posix()}".split()
         Logs.info("Executing %r", cmd)
-        clean_name = output_fp.stem.replace('_gen', '')
+        clean_name = output_fp.stem.replace("_gen", "")
         ret = super().exec_command(cmd, **kw)
-        shutil.copy(output_fp, (output_fp.parent / clean_name).with_suffix('.lib'))
+        shutil.copy(output_fp, (output_fp.parent / clean_name).with_suffix(".lib"))
         return ret
 
 
@@ -154,11 +154,11 @@ def get_task_object(bld: TaskGen, taskgen_name: str, compiler_prefix: str) -> Ta
 
 def extract_main_tasks(bld) -> LibTask:
     c_task_object = get_task_object(bld, "asterbibc", "c")
-    cxx_lib_task_object = get_task_object(bld, "asterlib", "cxx")
+    cxx_aster_object = get_task_object(bld, "asterpre", "cxx")
     cxx_task_object = get_task_object(bld, "asterbibcxx", "cxx")
     fc_task_object = get_task_object(bld, "asterbibfor", "fc")
 
-    return LibTask(c_task_object, cxx_lib_task_object, cxx_task_object, fc_task_object)
+    return LibTask(c_task_object, cxx_aster_object, cxx_task_object, fc_task_object)
 
 
 def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
@@ -166,17 +166,17 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     # the task takes in the outputs of all C tasks
     # it's outputs are bibc.lib and bibc.exp located in the build directory
     bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
-    bibc_lib_output_file_path = bld_path / lib_name / f"{lib_name}_gen.lib"
+    lib_output_file_path = bld_path / lib_name / f"{lib_name}_gen.lib"
 
-    Logs.info(f"{bibc_lib_output_file_path=}")
+    Logs.info(f"{lib_output_file_path=}")
 
     # create nodes for the output files
-    bib_lib_output_file_node = self.bld.bldnode.make_node(bibc_lib_output_file_path.relative_to(bld_path).as_posix())
+    bib_lib_output_file_node = self.bld.bldnode.make_node(lib_output_file_path.relative_to(bld_path).as_posix())
 
     msvc_libgen_task = self.create_task("msvclibgen")
     msvc_libgen_task.inputs = input_tasks
     msvc_libgen_task.env = self.env
-    msvc_libgen_task.MSVC_LIBGEN_LIB_PATH = bibc_lib_output_file_path.as_posix()
+    msvc_libgen_task.MSVC_LIBGEN_LIB_PATH = lib_output_file_path.as_posix()
     msvc_libgen_task.dep_nodes = input_tasks
     msvc_libgen_task.outputs = [bib_lib_output_file_node]
 
@@ -188,6 +188,7 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     clib_task = task_obj.c_task.libtask
     cxxlib_task = task_obj.cxx_task.libtask
     fclib_task = task_obj.fc_task.libtask
+    cxx_aster_task = task_obj.c_aster_task.libtask
 
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.cxx_task.tasks]
     fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.fc_task.tasks]
@@ -216,23 +217,13 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
 def make_msvc_modifications_pre(self):
     task_obj = extract_main_tasks(self.bld)
 
+    self.bld.add_manual_dependency(
+        self.path.find_resource("supervis/python.c"),
+        self.path.find_resource("supervis/aster_core_module.c")
+    )
+
     c_input_tasks = [ctask.outputs[0] for ctask in task_obj.c_task.tasks]
     create_msvclibgen_task(self, "bibc", c_input_tasks)
-
-
-@TaskGen.feature("cxx cxxshlib")
-@TaskGen.before_method("apply_link")
-def make_msvc_modifications_cxx(self):
-    task_obj = extract_main_tasks(self.bld)
-
-    c_aster_input_tasks = [clibtask.outputs[0] for clibtask in task_obj.c_aster_task.tasks]
-    if len(c_aster_input_tasks) == 0:
-        raise Errors.WafError("No CXX tasks found for asterlib")
-
-    bibc_aster_task = create_msvclibgen_task(self, "aster", c_aster_input_tasks)
-
-    cxxlib_task = task_obj.cxx_task.libtask
-    cxxlib_task.inputs += bibc_aster_task.outputs
 
 
 @TaskGen.feature("cshlib")

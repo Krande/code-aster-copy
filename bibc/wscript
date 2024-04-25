@@ -165,9 +165,28 @@ def build_libaster(self, env):
         extlib = ".pyd"
         mods.append("libaster")
         libaster = "aster.dll"
+
+        # add a pre-function that compiles the input file into an object file
+        self.add_pre_fun(compile_pyext)
+
     for submodule in mods:
         src = osp.join(env.ASTERLIBDIR, submodule + extlib)
         self.symlink_as(src, libaster)
+
+
+def compile_pyext(self):
+    # compile the python extension
+    env = self.all_envs[self.variant]
+    src = self.path.find_node(PYMAIN)
+    tgt = self.path.get_bld().make_node("python.o")
+    self(
+        features="cxx",
+        name="asterpre",
+        source=src,
+        target=tgt,
+        env=env,
+    )
+
 
 
 @Configure.conf
