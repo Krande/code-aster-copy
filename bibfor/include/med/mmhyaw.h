@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mmhyaw(fid, name, numdt, numit, dt,&
                       entype, geotype, cmode, filter, con,&
-                      cret)
+                      cret) BIND(C, name='MMHYAW')
         med_idt :: fid
         character(len=*) :: name
         med_int :: numdt

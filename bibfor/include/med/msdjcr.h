@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine msdjcr(fid,lmname,jname,des,dom,rmname,cret)
+    subroutine msdjcr(fid,lmname,jname,des,dom,rmname,cret) BIND(C, name='MSDJCR')
         med_idt :: fid
         med_int :: dom, cret
         character(len=*) :: lmname,jname,des,rmname

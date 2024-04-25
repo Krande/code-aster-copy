@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mfioex(fid, class, oname, oexist, cret)
+    subroutine mfioex(fid, class, oname, oexist, cret) BIND(C, name='MFIOEX')
         med_idt :: fid
         med_int :: class
         character(len=*) :: oname

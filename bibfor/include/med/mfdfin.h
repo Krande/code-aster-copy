@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mfdfin(fid, fname, mname, lmesh, type,&
-                      cname, cunit, dtunit, nc, cret)
+                      cname, cunit, dtunit, nc, cret) BIND(C, name='MFDFIN')
         med_idt :: fid
         character(len=*) :: fname
         character(len=*) :: mname

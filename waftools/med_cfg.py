@@ -230,7 +230,10 @@ def check_med(self):
         raise Errors.ConfigurationError("MED disabled")
 
     if opts.med_libs is None:
-        opts.med_libs = "med"
+        if self.env.CC_NAME == "msvc":
+            opts.med_libs = " medC medfwrap"
+        else:
+            opts.med_libs = "med"
 
     if opts.med_libs:
         self.check_med_libs()

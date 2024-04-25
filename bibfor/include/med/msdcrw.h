@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine msdcrw(fid,lmname,jname,numdt,numit,entlcl,&
-                      geolcl,entdst,geodst,ncorr,corrtab,cret)
+                      geolcl,entdst,geodst,ncorr,corrtab,cret) BIND(C, name='MSDCRW')
         med_idt :: fid
         med_int :: numdt,numit,entlcl,geolcl,entdst
         med_int :: geodst,ncorr,corrtab(*),cret

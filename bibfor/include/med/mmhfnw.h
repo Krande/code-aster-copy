@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mmhfnw(fid, name, numdt, numit, entype,&
-                      geotype, n, num, cret)
+                      geotype, n, num, cret) BIND(C, name='MMHFNW')
         med_idt :: fid
         character(len=*) :: name
         med_int :: numdt

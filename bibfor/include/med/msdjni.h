@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine msdjni(fid,lmname,ind,jname,des,dom,rmname,&
-                      nstep,ncor,cret)
+                      nstep,ncor,cret) BIND(C, name='MSDJNI')
         med_idt :: fid
         med_int :: ind,dom,nstep,ncor,cret
         character(len=*) :: lmname,jname,des,rmname

@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mfinvr(fid, major, minor, rel, cret)
+    subroutine mfinvr(fid, major, minor, rel, cret) BIND(C, name='MFINVR')
         med_idt :: fid
         med_int :: major
         med_int :: minor

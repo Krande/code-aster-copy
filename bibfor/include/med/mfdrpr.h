@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mfdrpr(fid, fname, numdt, numit, etype,&
                       gtype, stm, pname, swm, cs,&
-                      val, cret)
+                      val, cret) BIND(C, name='MFDRPR')
         med_idt :: fid
         character(len=*) :: fname
         med_int :: numdt

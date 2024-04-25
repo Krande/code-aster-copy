@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mmhgnr(fid, nomail, numdt, numo, typent,&
-                      typgeo, tblogl, cret)
+                      typgeo, tblogl, cret) BIND(C, name='MMHGNR')
         med_idt :: fid
         med_int :: typent, typgeo, cret, numdt, numo
         med_int :: tblogl(*)

@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mfrall(nflt, flt, cret)
+    subroutine mfrall(nflt, flt, cret) BIND(C, name='MFRALL')
         med_int :: nflt
         aster_int :: flt(*)
         med_int :: cret

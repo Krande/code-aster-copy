@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mfiope(fid, name, access, cret)
+    subroutine mfiope(fid, name, access, cret) BIND(C, name='MFIOPE')
         med_idt :: fid
         character(len=*) :: name
         med_int :: access

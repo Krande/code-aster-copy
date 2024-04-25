@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mfdraw(fid, fname, numdt, numit, dt,&
                       etype, gtype, lname, filter, val,&
-                      cret)
+                      cret) BIND(C, name='MFDRAW')
         med_idt :: fid
         character(len=*) :: fname
         med_int :: numdt

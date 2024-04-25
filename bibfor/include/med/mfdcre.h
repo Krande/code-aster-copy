@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mfdcre(fid, fname, ftype, ncomp, cname,&
-                      cunit, dtunit, mname, cret)
+                      cunit, dtunit, mname, cret) BIND(C, name='MFDCRE')
         med_idt :: fid
         character(len=*) :: fname
         med_int :: ftype

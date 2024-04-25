@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine msense(fid, n, cret)
+    subroutine msense(fid, n, cret) BIND(C, name='MSENSE')
         med_idt :: fid
         med_int :: n
         med_int :: cret

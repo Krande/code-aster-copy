@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mlclow(fid, lname, gtype, sdim, ecoo,&
                       swm, nip, ipcoo, wght, giname,&
-                      isname, cret)
+                      isname, cret) BIND(C, name='MLCLOW')
         med_idt :: fid
         character(len=*) :: lname
         med_int :: gtype

@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mficom(fname, hdfok, medok, cret)
+    subroutine mficom(fname, hdfok, medok, cret) BIND(C, name='MFICOM')
         character(len=*) :: fname
         med_int :: hdfok
         med_int :: medok

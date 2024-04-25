@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mpfpfi(fid, it, pname, psize, cret)
+    subroutine mpfpfi(fid, it, pname, psize, cret) BIND(C, name='MPFPFI')
         med_idt :: fid
         med_int :: it
         character(len=*) :: pname

@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mficow(fid, cmt, cret)
+    subroutine mficow(fid, cmt, cret) BIND(C, name='MFICOW')
         med_idt :: fid
         character(len=*) :: cmt
         med_int :: cret

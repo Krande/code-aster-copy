@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mfdonp(fid, fname, numdt, numit, etype,&
                       gtype, it, mname, dpname, dlname,&
-                      n, cret)
+                      n, cret) BIND(C, name='MFDONP')
         med_idt :: fid
         character(len=*) :: fname
         med_int :: numdt

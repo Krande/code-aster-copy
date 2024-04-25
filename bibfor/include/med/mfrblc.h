@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mfrblc(fid, nent, nvent, ncent, cs,&
                       swm, stm, pname, start, stride,&
-                      count, bsize, lbsize, flt, cret)
+                      count, bsize, lbsize, flt, cret) BIND(C, name='MFRBLC')
         med_idt :: fid
         med_int :: nent
         med_int :: nvent

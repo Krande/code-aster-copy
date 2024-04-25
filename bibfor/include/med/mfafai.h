@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mfafai(fid, maa, ind, fam, num,&
-                      gro, cret)
+                      gro, cret) BIND(C, name='MFAFAI')
         med_idt :: fid
         character(len=*) :: maa
         med_int :: ind

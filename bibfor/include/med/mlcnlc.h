@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mlcnlc(fid, n, cret)
+    subroutine mlcnlc(fid, n, cret) BIND(C, name='MLCNLC')
         med_idt :: fid
         med_int :: n
         med_int :: cret

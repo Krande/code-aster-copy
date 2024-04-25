@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mficlo(fid, cret)
+    subroutine mficlo(fid, cret) BIND(C, name='MFICLO')
         med_idt :: fid
         med_int :: cret
     end subroutine mficlo

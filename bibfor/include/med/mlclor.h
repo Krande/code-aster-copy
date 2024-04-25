@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mlclor(fid, lname, swm, ecoo, ipcoo,&
-                      wght, cret)
+                      wght, cret) BIND(C, name='MLCLOR')
         med_idt :: fid
         character(len=*) :: lname
         med_int :: swm

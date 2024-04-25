@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine msesei(fid, it, mname, mgtype, mdim,&
                       smname, setype, snnode, sncell, sgtype,&
-                      ncatt, ap, nvatt, cret)
+                      ncatt, ap, nvatt, cret) BIND(C, name='MSESEI')
         med_idt :: fid
         med_int :: it
         character(len=*) :: mname

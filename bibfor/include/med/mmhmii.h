@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mmhmii(fid, it, name, sdim, mdim,&
                       mtype, desc, dtunit, stype, nstep,&
-                      atype, aname, aunit, cret)
+                      atype, aname, aunit, cret) BIND(C, name='MMHMII')
         med_idt :: fid
         med_int :: it
         character(len=*) :: name

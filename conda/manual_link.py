@@ -53,14 +53,20 @@ def bibcxx():
 
     extra_deps = [
         "esmumps.lib",
-        "smumps.lib",
+        # "smumps.lib",
         "scotch.lib",
         "scotcherr.lib",
         "metis.lib",
         "medC.lib",
+        "medfwrap.lib",
         "hdf5.lib",
         "pthread.lib",
+        "TFELSystem.lib",
         "z.lib",
+        "MFrontGenericInterface.lib",
+        "mkl_intel_lp64_dll.lib",
+        "mkl_intel_thread_dll.lib",
+        "mkl_core_dll.lib",
         "bibfor.lib",
         "bibc.lib",
     ]
@@ -125,7 +131,8 @@ def bibfor():
     all_bibfor_files = (BUILD_DIR / "bibfor").rglob("*.o")
     bibfor_objects = set(x.absolute() for x in all_bibfor_files)
 
-    cleaned_bibfor_objects = filter_objects(bibfor_objects, lambda x: not x.name.startswith("ar_d"))
+    cleaned_bibfor_objects = bibfor_objects
+    # cleaned_bibfor_objects = filter_objects(bibfor_objects, lambda x: not x.name.startswith("ar_d"))
     bibfor_obj_list_path = ROOT_DIR / "tmp_bibfor_objects.txt"
 
     # print the removed objects
@@ -149,24 +156,24 @@ def bibfor():
         "pthread.lib",
         "scotch.lib",
         "scotcherr.lib",
-        "scotcherrexit.lib",
+        # "scotcherrexit.lib",
         # "scotchmetisv3.lib",
-        "scotchmetisv5.lib",
+        # "scotchmetisv5.lib",
         "metis.lib",
         "hdf5.lib",
         # "hdf5_fortran.lib",
         # "hdf5_f90cstub.lib",
         # "hdf5_hl_fortran.lib",
-        "med.lib",
+        # "med.lib",
         "medC.lib",
         "medfwrap.lib",
-        "medimport.lib",
-        "medloader.lib",
-        "medpartitionercpp.lib",
-        "medcoupling.lib",
-        "medcouplingremapper.lib",
+        # "medimport.lib",
+        # "medloader.lib",
+        # "medpartitionercpp.lib",
+        # "medcoupling.lib",
+        # "medcouplingremapper.lib",
         "MFrontGenericInterface.lib",
-        "TFELSystem.lib",
+        # "TFELSystem.lib",
         "mkl_intel_lp64_dll.lib",
         "mkl_intel_thread_dll.lib",
         "mkl_core_dll.lib",

@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mfdfdi(fid, it, fname, mname, lmesh,&
                       type, cname, cunit, dtunit, nc,&
-                      cret)
+                      cret) BIND(C, name='MFDFDI')
         med_idt :: fid
         med_int :: it
         character(len=*) :: fname

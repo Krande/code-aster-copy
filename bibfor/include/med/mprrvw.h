@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mprrvw(fid, nom, numdt, numit, dt, val, cret)
+    subroutine mprrvw(fid, nom, numdt, numit, dt, val, cret) BIND(C, name='MPRRVW')
         med_idt :: fid
         med_int :: numdt, numit
         character(len=*) :: nom

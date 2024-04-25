@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine msdnjn(fid,maa,n,cret)
+    subroutine msdnjn(fid,maa,n,cret) BIND(C, name='MSDNJN')
         med_idt :: fid
         med_int :: n,cret
         character(len=*) :: maa

@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine msevac(fid, mname, aname, atype, anc,&
-                      cret)
+                      cret) BIND(C, name='MSEVAC')
         med_idt :: fid
         character(len=*) :: mname
         character(len=*) :: aname

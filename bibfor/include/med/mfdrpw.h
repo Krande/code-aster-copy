@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mfdrpw(fid, fname, numdt, numit, dt,&
                       etype, gtype, stm, pname, lname,&
-                      swm, cs, n, val, cret)
+                      swm, cs, n, val, cret) BIND(C, name='MFDRPW')
         med_idt :: fid
         character(len=*) :: fname
         med_int :: numdt

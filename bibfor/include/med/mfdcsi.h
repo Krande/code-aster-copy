@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mfdcsi(fid, fname, it, numdt, numit,&
-                      dt, cret)
+                      dt, cret) BIND(C, name='MFDCSI')
         med_idt :: fid
         character(len=*) :: fname
         med_int :: it

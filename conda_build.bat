@@ -6,8 +6,8 @@ set CLICOLOR_FORCE=1
 call conda_env.bat
 
 echo "Setting compiler env vars"
-set "CC=clang-cl.exe"
-set "CXX=clang-cl.exe"
+set "CC=cl.exe"
+set "CXX=cl.exe"
 set "FC=ifx.exe"
 REM set "LINK_CC=XILINK.exe"
 REM set "LINK_CXX=XILINK.exe"
@@ -66,9 +66,10 @@ set CXXFLAGS=%CXXFLAGS% /MD
 set FCFLAGS=%FCFLAGS% /fpp /MD
 set FCFLAGS=%FCFLAGS% /names:lowercase /assume:underscore /assume:nobscc
 
-set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib libomp.lib
-
-@REM set CCLINKFLAGS=%CCLINKFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib
+set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin ^
+    pthread.lib libomp.lib medfwrap.lib hdf5.lib metis.lib ^
+    MFrontGenericInterface.lib scotch.lib scotcherr.lib ^
+    mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
@@ -77,8 +78,6 @@ REM Clean the build directory
 waf distclean
 
 set USE_LOG=0
-@REM set FORCE_BIBFOR_SEQUENCE=1
-@REM set MANUALLY_ADD_BIBFOR_DEPS=1
 
 python conda\update_version.py
 
@@ -89,10 +88,9 @@ waf configure ^
   --safe ^
   --check-fortran-compiler=ifort ^
   --use-config-dir=%PARENT_DIR%/config/ ^
-  --med-libs=medC ^
+  --med-libs=medC medfwrap ^
   --prefix=%LIBRARY_PREFIX% ^
   --out=%OUTPUT_DIR% ^
-  --embed-aster ^
   --disable-mpi ^
   --disable-openmp ^
   --disable-mumps ^
@@ -107,7 +105,7 @@ if %USE_LOG%==1 (
     @call conda_datetime.bat
     waf install_debug -vvv > install_debug_%datetimeString%.log 2>&1
 ) else (
-    waf install_debug -v
+    waf install_debug -v -j 24
 )
 
 endlocal

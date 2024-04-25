@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mfdncn(fid, fname, n, cret)
+    subroutine mfdncn(fid, fname, n, cret) BIND(C, name='MFDNCN')
         med_idt :: fid
         character(len=*) :: fname
         med_int :: n

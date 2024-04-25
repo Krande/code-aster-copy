@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mmhcaw(fid, name, numdt, numit, dt,&
-                      filter, coo, cret)
+                      filter, coo, cret) BIND(C, name='MMHCAW')
         med_idt :: fid
         character(len=*) :: name
         med_int :: numdt

@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mmhcre(fid, name, sdim, mdim, mtype,&
                       desc, dtunit, stype, atype, aname,&
-                      aunit, cret)
+                      aunit, cret) BIND(C, name='MMHCRE')
         med_idt :: fid
         character(len=*) :: name
         med_int :: sdim

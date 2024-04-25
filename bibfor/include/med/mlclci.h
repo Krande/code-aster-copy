@@ -22,7 +22,7 @@ interface
 #include "asterf_types.h"
     subroutine mlclci(fid, it, lname, gtype, sdim,&
                       nip, giname, isname, nsmc, sgtype,&
-                      cret)
+                      cret) BIND(C, name='MLCLCI')
         med_idt :: fid
         med_int :: it
         character(len=*) :: lname

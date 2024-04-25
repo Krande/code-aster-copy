@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mmhaaw(fid, name, dtype, numdt, numit,&
-                      entype, geotype, filter, num, cret)
+                      entype, geotype, filter, num, cret) BIND(C, name='MMHAAW')
         med_idt :: fid
         character(len=*) :: name
         med_int :: dtype

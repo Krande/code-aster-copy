@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine msmsmi(fid, it, name, sdim, mdim,&
-                      desc, atype, aname, aunit, cret)
+                      desc, atype, aname, aunit, cret) BIND(C, name='MSMSMI')
         med_idt :: fid
         med_int :: it
         character(len=*) :: name

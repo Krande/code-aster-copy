@@ -23,6 +23,7 @@ class msvclibgen(Task.Task):
         output_fp = pathlib.Path(self.outputs[0].abspath())
 
         ofiles = output_fp.parent / f"{output_fp.stem}_input_files.txt"
+        ofiles.parent.mkdir(parents=True, exist_ok=True)
         with open(ofiles, "w") as f:
             for i in self.inputs:
                 f.write(f"{i.abspath()}\n")
@@ -39,74 +40,6 @@ class msvclibgen(Task.Task):
         ret = super().exec_command(cmd, **kw)
         shutil.copy(output_fp, (output_fp.parent / clean_name).with_suffix('.lib'))
         return ret
-
-
-def scrape_all_tasks(self):
-    """Scrape all outputs from all tasks."""
-    all_outputs = []
-    lib_deps = {}
-    for mod in ["asterbibfor", "asterbibc", "asterbibcxx"]:
-        for task in self.bld.get_tgen_by_name(mod).tasks:
-            if task.__class__.__name__ not in ("c", "cxx", "fc"):
-                continue
-            fp_in = pathlib.Path(task.inputs[0].abspath())
-            lib_deps[fp_in] = task
-            all_outputs.extend(task.outputs)
-    return all_outputs, lib_deps
-
-
-def fix_specific_c_bibfor_includes(self):
-    config_dir = pathlib.Path(__file__).parent.parent / "config"
-    cshlib_txt = config_dir / "cshlib.txt"
-    cxxshlib_txt = config_dir / "cxxshlib.txt"
-
-    added_links = {
-        "cshlib": cshlib_txt.read_text().splitlines(),
-        "cxxshlib": cxxshlib_txt.read_text().splitlines(),
-    }
-    top_dir = pathlib.Path(self.bld.top_dir)
-    all_outputs, lib_deps = scrape_all_tasks(self)
-    # Logs.info(f"{all_outputs=}, {lib_deps=}")
-    # Logs.info(f"{self.bld.env.INCLUDES_BIBFOR=}")
-
-    # fscan = fc_scan.fortran_parser(self.bld.env.INCLUDES_BIBFOR)
-    # fp1 = top_dir / added_links["cshlib"][1]
-    # dep_task = lib_deps[fp1]
-    # n = self.path.find_node(dep_task.inputs[0])
-    # Logs.info(f"{n}")
-    # fscan.start(n)
-    # Logs.info(f"{fscan.nodes=}")
-
-    for task in self.bld.get_tgen_by_name("asterbibc").tasks:
-        tname = task.__class__.__name__
-        if tname != "cshlib":
-            continue
-        deps = added_links[tname]
-        for dep in deps:
-            dep_fp = top_dir / dep
-            if dep_fp not in lib_deps:
-                Logs.error(f"Dependency {dep_fp} not found for bibc")
-                continue
-            dep_task = lib_deps[dep_fp]
-            task.inputs.extend(dep_task.outputs)
-            Logs.info(f"Adding {dep_task} to {task}")
-            # Logs.info(f"{task.inputs=}")
-
-    for task in self.bld.get_tgen_by_name("asterbibcxx").tasks:
-        tname = task.__class__.__name__
-        if tname != "cxxshlib":
-            continue
-        # task.inputs.extend(all_outputs)
-        deps = added_links[tname]
-        for dep in deps:
-            dep_fp = top_dir / dep
-            if dep_fp not in lib_deps:
-                Logs.error(f"Dependency {dep_fp} not found for bibcxx")
-                continue
-            dep_task = lib_deps[dep_fp]
-            task.inputs.extend(dep_task.outputs)
-            Logs.info(f"Adding {dep_task} to {task}")
-            # Logs.info(f"{task.inputs=}")
 
 
 def build_clang_compilation_db(task_gen, c_tasks, cxx_tasks):
@@ -187,138 +120,45 @@ def build_clang_compilation_db(task_gen, c_tasks, cxx_tasks):
 
 
 @dataclass
+class TaskObject:
+    libtask: Task
+    program_task: Task
+    tasks: list[Task]
+
+
+@dataclass
 class LibTask:
-    clib_task: Task
-    cxxlib_task: Task
-    fclib_task: Task
+    c_task: TaskObject
+    c_aster_task: TaskObject
+    cxx_task: TaskObject
+    fc_task: TaskObject
 
-    c_program_task: Task
-    cxx_program_task: Task
-    fc_program_task: Task
 
-    c_tasks: list[Task]
-    cxx_tasks: list[Task]
-    fc_tasks: list[Task]
+def get_task_object(bld: TaskGen, taskgen_name: str, compiler_prefix: str) -> TaskObject:
+    lib_task = None
+    program_task = None
+    tasks = []
+    for task in bld.get_tgen_by_name(taskgen_name).tasks:
+        if task.__class__.__name__ == f"{compiler_prefix}shlib":
+            lib_task = task
+        if task.__class__.__name__ == f"{compiler_prefix}program":
+            program_task = task
+        if task.__class__.__name__ == compiler_prefix:
+            tasks.append(task)
+
+    if len(tasks) == 0:
+        Logs.info(f"No tasks found for {taskgen_name}")
+
+    return TaskObject(lib_task, program_task, tasks)
 
 
 def extract_main_tasks(bld) -> LibTask:
-    fc_task = None
-    fc_program_task = None
-    fc_tasks = []
-    for task in bld.get_tgen_by_name("asterbibfor").tasks:
-        if task.__class__.__name__ == "fcshlib":
-            fc_task = task
-        if task.__class__.__name__ == "fcprogram":
-            fc_program_task = task
-        if task.__class__.__name__ == "fc":
-            fc_tasks.append(task)
-        # Logs.info(f"{task.__class__.__name__=}")
-        # Logs.info(f"{task.outputs=}")
-        # Logs.info(f"{task.inputs=}")
-        # Logs.info(f"{task=}")
+    c_task_object = get_task_object(bld, "asterbibc", "c")
+    cxx_lib_task_object = get_task_object(bld, "asterlib", "cxx")
+    cxx_task_object = get_task_object(bld, "asterbibcxx", "cxx")
+    fc_task_object = get_task_object(bld, "asterbibfor", "fc")
 
-    c_task = None
-    c_program_task = None
-    c_tasks = []
-    for task in bld.get_tgen_by_name("asterbibc").tasks:
-        if task.__class__.__name__ == "cshlib":
-            c_task = task
-        if task.__class__.__name__ == "cprogram":
-            c_program_task = task
-        if task.__class__.__name__ == "c":
-            c_tasks.append(task)
-        # Logs.info(f"{task.__class__.__name__=}")
-        # Logs.info(f"{task.outputs=}")
-        # Logs.info(f"{task.inputs=}")
-        # Logs.info(f"{task=}")
-
-    cxx_task = None
-    cxx_program_task = None
-    cxx_tasks = []
-    for task in bld.get_tgen_by_name("asterbibcxx").tasks:
-        if task.__class__.__name__ == "cxxshlib":
-            cxx_task = task
-        if task.__class__.__name__ == "cxxprogram":
-            cxx_program_task = task
-        if task.__class__.__name__ == "cxx":
-            cxx_tasks.append(task)
-        # Logs.info(f"{task.__class__.__name__=}")
-        # Logs.info(f"{task.outputs=}")
-        # Logs.info(f"{task.inputs=}")
-        # Logs.info(f"{task=}")
-
-    return LibTask(
-        c_task, cxx_task, fc_task, c_program_task, cxx_program_task, fc_program_task, c_tasks, cxx_tasks, fc_tasks
-    )
-
-
-def force_bibfor_seq(task_obj: LibTask):
-    Logs.info("Forcing linking order: bibfor -> bibc -> bibcxx")
-
-    c_task = task_obj.clib_task
-    cxx_task = task_obj.cxxlib_task
-    fc_task = task_obj.fclib_task
-
-    c_task.dep_nodes.extend(fc_task.outputs)
-    cxx_task.dep_nodes.extend(fc_task.outputs)
-    cxx_task.dep_nodes.extend(c_task.outputs)
-
-    extra_c_deps = {
-        "envima.c",
-        "aster_module.c",
-        "aster_core_module.c",
-        "aster_utils.c",
-        "shared_vars.c",
-        "aster_exceptions.c",
-        "utflsh.c",
-        "uttrst.c",
-        "iodr.c",
-        "rmfile.c",
-        "hpalloc.c",
-        "inisig.c",
-        "aster_mpi.c",
-        "indik8.c",
-        "matfpe.c",
-        "erfcam.c",
-        "hpdeallc.c",
-        "dll_umat.c",
-        "hdftsd.c",
-        "dll_interface.c",
-        "dll_register.c",
-        "uttcsm.c",
-        "fetsco.c",
-        "gpmetis_aster.c",
-        "libinfos.c",
-        "kloklo.c",
-        "cpfile.c",
-        "hdfrsv.c",
-        "datetoi.c",
-        "strmov.c",
-        "hanfpe.c",
-        "mempid.c",
-    }
-    found = set()
-    # need to add output of som "*.c" files to bibfor to resolve shared c symbols
-    for task in task_obj.c_tasks:
-        abs_path = pathlib.Path(task.inputs[0].abspath()).resolve()
-        for extra_dep in extra_c_deps:
-            if extra_dep == abs_path.name:
-                fc_task.inputs.extend(task.outputs)
-                found.add(extra_dep)
-                break
-
-    # check if all extra deps are found
-    if found != extra_c_deps:
-        Logs.error(f"Extra deps not found: {extra_c_deps - found}")
-
-    # Not quite sure about these lines
-    # c_task.inputs.extend(fc_task.outputs)
-    # cxx_task.inputs.extend(fc_task.outputs)
-    # cxx_task.inputs.extend(c_task.outputs)
-
-    # Logs.info(f"{c_task.priority()=}")
-    # Logs.info(f"{cxx_task.priority()=}")
-    # Logs.info(f"{fc_task.priority()=}")
+    return LibTask(c_task_object, cxx_lib_task_object, cxx_task_object, fc_task_object)
 
 
 def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
@@ -345,12 +185,12 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
 
 def run_mvsc_lib_gen(self, task_obj: LibTask):
     Logs.info("Running MSVC lib generation")
-    clib_task = task_obj.clib_task
-    cxxlib_task = task_obj.cxxlib_task
-    fclib_task = task_obj.fclib_task
+    clib_task = task_obj.c_task.libtask
+    cxxlib_task = task_obj.cxx_task.libtask
+    fclib_task = task_obj.fc_task.libtask
 
-    cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.cxx_tasks]
-    fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.fc_tasks]
+    cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.cxx_task.tasks]
+    fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.fc_task.tasks]
 
     bibcxx_lib_task = create_msvclibgen_task(self, "bibcxx", cxx_input_tasks)
     bibfor_lib_task = create_msvclibgen_task(self, "bibfor", fc_input_tasks)
@@ -376,8 +216,23 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
 def make_msvc_modifications_pre(self):
     task_obj = extract_main_tasks(self.bld)
 
-    c_input_tasks = [ctask.outputs[0] for ctask in task_obj.c_tasks]
+    c_input_tasks = [ctask.outputs[0] for ctask in task_obj.c_task.tasks]
     create_msvclibgen_task(self, "bibc", c_input_tasks)
+
+
+@TaskGen.feature("cxx cxxshlib")
+@TaskGen.before_method("apply_link")
+def make_msvc_modifications_cxx(self):
+    task_obj = extract_main_tasks(self.bld)
+
+    c_aster_input_tasks = [clibtask.outputs[0] for clibtask in task_obj.c_aster_task.tasks]
+    if len(c_aster_input_tasks) == 0:
+        raise Errors.WafError("No CXX tasks found for asterlib")
+
+    bibc_aster_task = create_msvclibgen_task(self, "aster", c_aster_input_tasks)
+
+    cxxlib_task = task_obj.cxx_task.libtask
+    cxxlib_task.inputs += bibc_aster_task.outputs
 
 
 @TaskGen.feature("cshlib")
@@ -385,22 +240,10 @@ def make_msvc_modifications_pre(self):
 def make_msvc_modifications(self):
     task_obj = extract_main_tasks(self.bld)
 
-    # Print depends order for each task
-    # Logs.info(f"{task_obj.fc_task.dep_nodes=}")
-    # Logs.info(f"{task_obj.c_task.dep_nodes=}")
-    # Logs.info(f"{task_obj.cxx_task.dep_nodes=}")
-
-    # These will Force linking order: bibfor -> bibc -> bibcxx
-    if os.getenv("FORCE_BIBFOR_SEQUENCE"):
-        force_bibfor_seq(task_obj)
-
-    if os.getenv("MANUALLY_ADD_BIBFOR_DEPS"):
-        fix_specific_c_bibfor_includes(self)
-
     run_mvsc_lib_gen(self, task_obj)
 
-    Logs.info(f"{task_obj.clib_task.priority()=}")
-    Logs.info(f"{task_obj.cxxlib_task.priority()=}")
-    Logs.info(f"{task_obj.fclib_task.priority()=}")
+    Logs.info(f"{task_obj.c_task.libtask.priority()=}")
+    Logs.info(f"{task_obj.cxx_task.libtask.priority()=}")
+    Logs.info(f"{task_obj.fc_task.libtask.priority()=}")
 
-    build_clang_compilation_db(self, task_obj.c_tasks, task_obj.cxx_tasks)
+    build_clang_compilation_db(self, task_obj.c_task.tasks, task_obj.cxx_task.tasks)

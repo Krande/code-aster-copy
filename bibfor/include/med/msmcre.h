@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine msmcre(fid, maa, sdim, mdim, des,&
-                      atype, aname, aunit, cret)
+                      atype, aname, aunit, cret) BIND(C, name='MSMCRE')
         med_idt :: fid
         character(len=*) :: maa
         med_int :: sdim

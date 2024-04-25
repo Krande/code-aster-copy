@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mmhraw(fid, name, numdt, numit, geotype,&
-                      aname, n, val, cret)
+                      aname, n, val, cret) BIND(C, name='MMHRAW')
         med_idt :: fid
         character(len=*) :: name
         med_int :: numdt

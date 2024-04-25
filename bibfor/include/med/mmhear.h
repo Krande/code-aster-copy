@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mmhear(fid, mname, numdt, numit, entype,&
-                      geotype, ename, cret)
+                      geotype, ename, cret) BIND(C, name='MMHEAR')
         med_idt :: fid
         character(len=*) :: mname
         med_int :: numdt

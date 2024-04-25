@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mfanfa(fid, maa, n, cret)
+    subroutine mfanfa(fid, maa, n, cret) BIND(C, name='MFANFA')
         med_idt :: fid
         character(len=*) :: maa
         med_int :: n

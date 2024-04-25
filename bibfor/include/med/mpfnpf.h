@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mpfnpf(fid, n, cret)
+    subroutine mpfnpf(fid, n, cret) BIND(C, name='MPFNPF')
         med_idt :: fid
         med_int :: n
         med_int :: cret

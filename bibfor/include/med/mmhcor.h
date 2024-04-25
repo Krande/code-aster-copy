@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     subroutine mmhcor(fid, name, numdt, numit, swm,&
-                      coo, cret)
+                      coo, cret) BIND(C, name='MMHCOR')
         med_idt :: fid
         character(len=*) :: name
         med_int :: numdt

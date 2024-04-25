@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mlbnuv(major, minor, rel, cret)
+    subroutine mlbnuv(major, minor, rel, cret) BIND(C, name='MLBNUV')
         med_int :: major
         med_int :: minor
         med_int :: rel

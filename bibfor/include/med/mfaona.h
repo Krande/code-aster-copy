@@ -20,7 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    subroutine mfaona(fid, maa, it, n, cret)
+    subroutine mfaona(fid, maa, it, n, cret) BIND(C, name='MFAONA')
         med_idt :: fid
         character(len=*) :: maa
         med_int :: it
