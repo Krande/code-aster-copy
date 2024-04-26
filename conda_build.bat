@@ -56,6 +56,7 @@ set LIBPATH_MGIS=%LIB_PATH_ROOT%/bin
 set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 
 REM Compiler flags
+set LIBPATH=%PREF_ROOT%/libs %LIBPATH%
 
 REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
 
@@ -66,7 +67,7 @@ set CXXFLAGS=%CXXFLAGS% /MD
 set FCFLAGS=%FCFLAGS% /fpp /MD
 set FCFLAGS=%FCFLAGS% /names:lowercase /assume:underscore /assume:nobscc
 
-set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin ^
+set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs ^
     pthread.lib libomp.lib medfwrap.lib hdf5.lib metis.lib ^
     MFrontGenericInterface.lib scotch.lib scotcherr.lib ^
     mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib

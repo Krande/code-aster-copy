@@ -1,13 +1,12 @@
 import pathlib
-import pathlib
 import shutil
 from dataclasses import dataclass
 
-from waflib import Logs, TaskGen, Task, Errors
+from waflib import Logs, TaskGen, Task, Errors, ConfigSet
 
 
 class msvclibgen(Task.Task):
-    run_str = "LIB.exe /NOLOGO /MACHINE:X64 /OUT:${TGT} ${SRC}"
+    run_str = "LIB.exe /OUT:${TGT} ${SRC}"
     color = "BLUE"
     before = ["cshlib", "cxxshlib", "fcshlib"]
 
@@ -19,16 +18,23 @@ class msvclibgen(Task.Task):
         clean_name = output_fp.stem.replace("_gen", "")
         root_dir = pathlib.Path(self.generator.bld.root.abspath()).resolve().absolute()
         conda_dir = root_dir / "conda"
-        opts = []
+
+        task_gen: TaskGen.task_gen = self.generator
+        env: ConfigSet.ConfigSet = task_gen.env
+        lib_dir = pathlib.Path(env.LIBDIR)
+        root_dir = lib_dir.parent.parent
+        libs_dir = root_dir / "libs"
+
+        opts = ["/NOLOGO", "/MACHINE:X64", f"/LIBPATH:{libs_dir}"]
+
         if clean_name == "bibc":
             bibc_def = conda_dir / "bibc.def"
             opts += [f"/DEF:{bibc_def}"]
-            # opts += ["/REMOVE:CODEASTER_ARRAY_API"]
         elif clean_name == "bibfor":
             bibfor_def = conda_dir / "bibfor.def"
             opts += [f"/DEF:{bibfor_def}"]
 
-        cmd.extend(opts)
+        cmd = cmd[:2] + opts + cmd[2:]
 
         ret = super().exec_command(cmd, **kw)
         shutil.copy(output_fp, (output_fp.parent / clean_name).with_suffix(".lib"))
