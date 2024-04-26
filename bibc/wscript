@@ -19,9 +19,10 @@
 
 import os.path as osp
 import pathlib
+import platform
 import sys
 
-from waflib import Configure, TaskGen, Utils, Logs
+from waflib import Configure, TaskGen, Utils, Logs, Build
 
 
 def options(self):
@@ -109,9 +110,12 @@ def build(self):
     get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
 
-    Logs.info(f"{self.variant=}")
     build_libbibc(self, env)
     build_libaster(self, env)
+
+    if platform.system() == "Windows":
+        Logs.info(f"{self.variant=}")
+        compile_dummy_aster(self, env)
 
     self.add_group()
     # install headers
@@ -166,27 +170,24 @@ def build_libaster(self, env):
         mods.append("libaster")
         libaster = "aster.dll"
 
-        # add a pre-function that compiles the input file into an object file
-        self.add_pre_fun(compile_pyext)
-
     for submodule in mods:
         src = osp.join(env.ASTERLIBDIR, submodule + extlib)
         self.symlink_as(src, libaster)
 
 
-def compile_pyext(self):
-    # compile the python extension
-    env = self.all_envs[self.variant]
+def compile_dummy_aster(self: Build.InstallContext, env):
     src = self.path.find_node(PYMAIN)
-    tgt = self.path.get_bld().make_node("python.o")
+    bibc_incl = self.env.INCLUDES + self.env.INCLUDES_BIBC
     self(
         features="cxx",
         name="asterpre",
         source=src,
-        target=tgt,
+        defines="_MAIN_=_unused_main_",  # 'ASTER_WITHOUT_PYMOD',
+        target="astertmp",
         env=env,
+        includes=bibc_incl,
+        install_path=env.ASTERLIBDIR,
     )
-
 
 
 @Configure.conf

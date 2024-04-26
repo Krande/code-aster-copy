@@ -105,7 +105,7 @@ if %USE_LOG%==1 (
     @call conda_datetime.bat
     waf install_debug -vvv > install_debug_%datetimeString%.log 2>&1
 ) else (
-    waf install_debug -v -j 24
+    waf install_debug -v
 )
 
 endlocal

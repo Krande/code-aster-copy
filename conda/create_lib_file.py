@@ -3,6 +3,7 @@
 
 import os
 import pathlib
+import shutil
 import subprocess
 from enum import Enum
 
@@ -17,25 +18,26 @@ BUILD_DIR = ROOT_DIR / "build" / "std" / "debug"
 CONDA_PREFIX_DIR = pathlib.Path(os.getenv("CONDA_PREFIX"))
 
 
-class CAModule(Enum, str):
+class CAMod(str, Enum):
     BIBC = "bibc"
     BIBFOR = "bibfor"
     BIBCXX = "bibcxx"
-    BIBCXXASTER = "bibcxxaster"
+    BIBASTER = "aster"
     ALL = "all"
 
 
-def main(ca_module: CAModule):
-    for lib_name in [CAModule.BIBFOR, CAModule.BIBCXX, CAModule.BIBC, CAModule.BIBCXXASTER]:
-        module_dir = BUILD_DIR / str(lib_name)
-        if lib_name == CAModule.BIBCXXASTER:
+def main(ca_module: CAMod):
+    for lib_name in [CAMod.BIBFOR, CAMod.BIBCXX, CAMod.BIBC, CAMod.BIBASTER]:
+        module_dir = BUILD_DIR / str(lib_name.value)
+        if lib_name == CAMod.BIBASTER:
+            module_dir.mkdir(parents=True, exist_ok=True)
             files = [BUILD_DIR / "bibc" / "supervis" / "python.c.2.o"]
         else:
             files = list(module_dir.rglob("*.o"))
-        txt_file = module_dir / f"{lib_name}_ofiles.txt"
-        out_file = module_dir / f"{lib_name}.lib"
+        txt_file = module_dir / f"{lib_name.value}_ofiles.txt"
+        out_file = module_dir / f"{lib_name.value}.lib"
 
-        if ca_module != CAModule.ALL and lib_name != ca_module:
+        if ca_module != CAMod.ALL and lib_name != ca_module:
             continue
 
         if len(files) == 0:
@@ -43,6 +45,9 @@ def main(ca_module: CAModule):
 
         with open(txt_file, "w") as f:
             f.write("\n".join(map(str, files)))
+        lib_exe = shutil.which("LIB.exe")
+        if lib_exe is None:
+            raise FileNotFoundError("LIB.exe not found in PATH")
 
         args = [
             "LIB.exe",
@@ -63,23 +68,23 @@ if __name__ == "__main__":
     parser.add_argument("--bibc", action="store_true", help="Create .lib for bibc")
     parser.add_argument("--bibfor", action="store_true", help="Create .lib for bibfor")
     parser.add_argument("--bibcxx", action="store_true", help="Create .lib for bibcxx")
-    parser.add_argument("--bibcxxaster", action="store_true", help="Create .lib for bibcxxaster")
+    parser.add_argument("--bibaster", action="store_true", help="Create .lib for bibaster")
     parser.add_argument("--all", action="store_true", help="Create .lib for all")
 
     args = parser.parse_args()
 
-    if not any([args.bibc, args.bibfor, args.bibcxx, args.bibcxxaster, args.all]):
+    if not any([args.bibc, args.bibfor, args.bibcxx, args.bibaster, args.all]):
         parser.error("No action requested, add --bibc, --bibfor, --bibcxx, or --all")
 
     if args.all:
-        main(CAModule.ALL)
+        main(CAMod.ALL)
     elif args.bibc:
-        main(CAModule.BIBC)
+        main(CAMod.BIBC)
     elif args.bibfor:
-        main(CAModule.BIBFOR)
+        main(CAMod.BIBFOR)
     elif args.bibcxx:
-        main(CAModule.BIBCXX)
-    elif args.bibcxxaster:
-        main(CAModule.BIBCXXASTER)
+        main(CAMod.BIBCXX)
+    elif args.bibaster:
+        main(CAMod.BIBASTER)
     else:
         raise ValueError("Invalid state reached")
