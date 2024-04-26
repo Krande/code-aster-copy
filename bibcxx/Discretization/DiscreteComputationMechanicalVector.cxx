@@ -410,9 +410,9 @@ std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCells
 DiscreteComputation::getInternalMechanicalForces(
     const FieldOnNodesRealPtr displ_prev, const FieldOnNodesRealPtr displ_step,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr internVar,
-    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
-    const FieldOnCellsRealPtr &varc_prev, const FieldOnCellsRealPtr &varc_curr,
-    const VectorString &groupOfCells ) const {
+    const FieldOnCellsRealPtr internVarIter, const ASTERDOUBLE &time_prev,
+    const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr &varc_prev,
+    const FieldOnCellsRealPtr &varc_curr, const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -440,9 +440,8 @@ DiscreteComputation::getInternalMechanicalForces(
     calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
-    auto vari_iter = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "VARI_R", currBehaviour,
-                                                            currElemChara );
-    calcul->addInputField( "PVARIMP", vari_iter );
+    // Nécessaire également pour Deborst
+    calcul->addInputField( "PVARIMP", internVarIter );
 
     // Create output vector
     auto elemVect = std::make_shared< ElementaryVectorReal >(
