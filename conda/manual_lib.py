@@ -4,10 +4,11 @@
 import os
 import pathlib
 import shutil
-import subprocess
 from enum import Enum
 
 from dotenv import load_dotenv
+
+from msvc_utils import call_using_env
 
 load_dotenv()
 
@@ -58,7 +59,7 @@ def main(ca_module: CAMod):
         ]
         print(" ".join(args))
 
-        subprocess.run(args, shell=True, cwd=module_dir)
+        call_using_env(args)
 
 
 if __name__ == "__main__":

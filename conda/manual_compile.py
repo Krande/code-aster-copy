@@ -1,7 +1,10 @@
 import os
-import subprocess
 import pathlib
+import subprocess
+
 from dotenv import load_dotenv
+
+from msvc_utils import call_using_env
 
 load_dotenv()
 
@@ -14,7 +17,6 @@ CONDA_PREFIX_DIR = pathlib.Path(os.getenv("CONDA_PREFIX"))
 
 def compile_bibfor(specific_file: str = None):
     args = [
-        (ROOT_DIR / "call_compile.bat").as_posix(),
         "ifx.exe",
         "/fpp",
         "/MD",
@@ -58,6 +60,7 @@ def compile_bibfor(specific_file: str = None):
         copy_args.extend([str(output_ffile), str(ffile)])
         print(" ".join(copy_args))
         subprocess.run(copy_args, shell=True, cwd=ROOT_DIR)
+        call_using_env(copy_args)
         break
 
 

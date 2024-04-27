@@ -1,20 +1,7 @@
 @echo off
 setlocal
 
-set THIS_DIR=%~dp0
-
-rem "INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env"
-rem "VS_VARS_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build"
-rem "CONDA_ROOT=C:\Work\miniconda3"
-for /f "tokens=*" %%a in (.env) do set %%a
-rem Set the python library prefix
-set PYTHON_ENV=codeaster-deps
-set PREFIX=%CONDA_ROOT%\envs\%PYTHON_ENV%
-set LIBRARY_PREFIX=%PREFIX%\Library
-
-REM Activate python env, env variables for VS Cl (or clang-cl) and Intel fortran compiler
-@call "%CONDA_ROOT%\Scripts\activate.bat" %PYTHON_ENV%
-call "%VS_VARS_PATH%\vcvars64.bat"
+call conda_env.bat
 
 %*
 

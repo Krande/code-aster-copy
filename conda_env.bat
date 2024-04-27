@@ -6,12 +6,11 @@ REM set the local path variables, INTEL_VARS_PATH, VS_VARS_PATH and CONDA_ROOT f
 for /f "tokens=*" %%a in (.env) do set %%a
 
 rem Set the python library prefix
-set PYTHON_ENV=codeaster-deps
-set PREFIX=%CONDA_ROOT%\envs\%PYTHON_ENV%
+set PREFIX=%CONDA_ROOT%\envs\%PYTHON_ENV_NAME%
 set LIBRARY_PREFIX=%PREFIX%\Library
 
 REM Activate python env, env variables for VS Cl (or clang-cl) and Intel fortran compiler
-@call "%CONDA_ROOT%\Scripts\activate.bat" %PYTHON_ENV%
+@call "%CONDA_ROOT%\Scripts\activate.bat" %PYTHON_ENV_NAME%
 call "%VS_VARS_PATH%\vcvars64.bat"
 @call "%INTEL_VARS_PATH%\vars.bat" -arch intel64 vs2022
 

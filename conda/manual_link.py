@@ -1,6 +1,7 @@
 import os
 import pathlib
-import subprocess
+
+from msvc_utils import call_using_env
 
 ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent
 THIS_DIR = pathlib.Path(__file__).resolve().parent
@@ -16,7 +17,7 @@ def create_args(
     extra_flags = extra_flags or []
     pre_flags = pre_flags or []
     return [
-        "call_link.bat",
+        "LINK.exe",
         "/nologo",
         "/MANIFEST",
         "/subsystem:console",
@@ -76,9 +77,10 @@ def bibcxx():
     with open(bibc_obj_list_path, "w") as f:
         f.write("\n".join(map(str, bib_objects)))
 
-    # Now call that batch file
-    print(" ".join(input_args))
-    subprocess.run(input_args, shell=True, cwd=ROOT_DIR)
+    result = call_using_env(input_args)
+    print(result.stdout)
+    print(result.stderr)
+
 
 
 def bibc(include_all_bibfor=False):
@@ -124,7 +126,9 @@ def bibc(include_all_bibfor=False):
 
     # Now call that batch file
     print(" ".join(input_args))
-    subprocess.run(input_args, shell=True, cwd=ROOT_DIR)
+    result = call_using_env(input_args)
+    print(result.stdout)
+    print(result.stderr)
 
 
 def bibfor():
@@ -189,7 +193,9 @@ def bibfor():
     input_args = create_args("bibfor", dep_files, extra_deps, extra_flags=extra_flags)
     input_args += [f"/LIBPATH:{BUILD_DIR}/bibc", f"/LIBPATH:{BUILD_DIR}/bibfor", f"/LIBPATH:{BUILD_DIR}/bibcxx"]
 
-    subprocess.run(input_args, shell=True, cwd=ROOT_DIR)
+    result = call_using_env(input_args)
+    print(result.stdout)
+    print(result.stderr)
 
 
 if __name__ == "__main__":
