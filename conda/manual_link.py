@@ -6,33 +6,30 @@ from msvc_utils import call_using_env
 ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent
 THIS_DIR = pathlib.Path(__file__).resolve().parent
 BUILD_DIR = ROOT_DIR / "build" / "std" / "debug"
+TMP_DIR = THIS_DIR / "temp"
+TMP_DIR.mkdir(exist_ok=True)
 
 CONDA_PREFIX = os.getenv("CONDA_PREFIX")
 
 
-def create_args(
-        lib_name, dep_files: list[str], extra_deps: list[str], extra_flags: list[str] = None,
-        pre_flags: list[str] = None
-) -> list[str]:
-    extra_flags = extra_flags or []
-    pre_flags = pre_flags or []
+# https://learn.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170
+def get_default_flags():
     return [
-        "LINK.exe",
         "/nologo",
         "/MANIFEST",
         "/subsystem:console",
-        f"/IMPLIB:{lib_name}\\{lib_name}.lib",
         "/DLL",
+    ]
+
+
+def get_default_lib_paths(lib_name: str):
+    return [
         f"/LIBPATH:{CONDA_PREFIX}/libs",
         f"/LIBPATH:{CONDA_PREFIX}/include",
-        f"/LIBPATH:{ROOT_DIR}\\{lib_name}\\include",
+        f"/LIBPATH:{ROOT_DIR}/{lib_name}/include",
         f"/LIBPATH:{CONDA_PREFIX}/Library/lib",
         f"/LIBPATH:{CONDA_PREFIX}/Library/bin",
-        *pre_flags,
-        *dep_files,
-        f"/OUT:{BUILD_DIR}\\{lib_name}\\{lib_name}.dll",
-        *extra_deps,
-        *extra_flags,
+        f"/LIBPATH:{TMP_DIR}",
     ]
 
 
@@ -44,17 +41,10 @@ def bibcxx():
     all_compiled_files = (BUILD_DIR / "bibcxx").rglob("*.o")
     bib_objects = set(x.absolute() for x in all_compiled_files)
 
-    cleaned_bibfor_objects = filter_objects(bib_objects, lambda x: not x.name.startswith("ar_d"))
-    # print the removed objects
-    removed_objects = bib_objects - cleaned_bibfor_objects
-    print("Removed objects:")
-    print("\n".join(map(str, removed_objects)))
-
-    bibc_obj_list_path = ROOT_DIR / "tmp_bibcxx_objects.txt"
+    bibc_obj_list_path = THIS_DIR / "tmp_bibcxx_objects.txt"
 
     extra_deps = [
         "esmumps.lib",
-        # "smumps.lib",
         "scotch.lib",
         "scotcherr.lib",
         "metis.lib",
@@ -71,16 +61,27 @@ def bibcxx():
         "bibfor.lib",
         "bibc.lib",
     ]
-    input_args = create_args("bibc", [f"@{bibc_obj_list_path.name}"], extra_deps, ["/DEBUG", "/INCREMENTAL:NO"])
-    input_args += [f"/LIBPATH:{BUILD_DIR}/bibc", f"/LIBPATH:{BUILD_DIR}/bibfor"]
+    lib_name = "bibc"
+    lib_args = get_default_lib_paths(lib_name)
+    args = [
+        "LINK.exe",
+        f"/IMPLIB:{lib_name}/{lib_name}.lib",
+        f"/OUT:{BUILD_DIR}/{lib_name}/{lib_name}.dll",
+        f"@{bibc_obj_list_path}",
+    ]
 
     with open(bibc_obj_list_path, "w") as f:
+        f.write("\n".join(map(str, get_default_flags())))
+        f.write("\n")
+        f.write("\n".join(map(str, lib_args)))
+        f.write("\n")
         f.write("\n".join(map(str, bib_objects)))
+        f.write("\n")
+        f.write("\n".join(map(str, extra_deps)))
 
-    result = call_using_env(input_args)
+    result = call_using_env(args)
     print(result.stdout)
     print(result.stderr)
-
 
 
 def bibc(include_all_bibfor=False):
@@ -150,52 +151,29 @@ def bibfor():
 
     dep_files = [f"@{bibfor_obj_list_path.name}"]
     extra_deps = [
-        # "dmumps.lib",
-        # "zmumps.lib",
-        # "smumps.lib",
-        # "cmumps.lib",
-        # "esmumps.lib",
-        # "mumps_common.lib",
-        # "pord.lib",
         "pthread.lib",
         "scotch.lib",
         "scotcherr.lib",
-        # "scotcherrexit.lib",
-        # "scotchmetisv3.lib",
-        # "scotchmetisv5.lib",
         "metis.lib",
         "hdf5.lib",
-        # "hdf5_fortran.lib",
-        # "hdf5_f90cstub.lib",
-        # "hdf5_hl_fortran.lib",
-        # "med.lib",
         "medC.lib",
         "medfwrap.lib",
-        # "medimport.lib",
-        # "medloader.lib",
-        # "medpartitionercpp.lib",
-        # "medcoupling.lib",
-        # "medcouplingremapper.lib",
         "MFrontGenericInterface.lib",
-        # "TFELSystem.lib",
         "mkl_intel_lp64_dll.lib",
         "mkl_intel_thread_dll.lib",
         "mkl_core_dll.lib",
         "bibc.lib",
         "bibcxx.lib",
     ]
-    extra_flags = [
-        # "/NOENTRY"
-        # "/FORCE",
-        # "/WHOLEARCHIVE"
-    ]
 
     input_args = create_args("bibfor", dep_files, extra_deps, extra_flags=extra_flags)
     input_args += [f"/LIBPATH:{BUILD_DIR}/bibc", f"/LIBPATH:{BUILD_DIR}/bibfor", f"/LIBPATH:{BUILD_DIR}/bibcxx"]
 
     result = call_using_env(input_args)
-    print(result.stdout)
-    print(result.stderr)
+    if result.returncode != 0:
+        print(" ".join(input_args))
+        print(result.stdout)
+        print(result.stderr)
 
 
 if __name__ == "__main__":
@@ -206,11 +184,11 @@ if __name__ == "__main__":
     parser.add_argument("--bibcxx", action="store_true", help="Link the bibcxx library")
     parser.add_argument("--bibfor", action="store_true", help="Link the bibfor library")
 
-    args = parser.parse_args()
+    args_ = parser.parse_args()
 
-    if args.bibc:
+    if args_.bibc:
         bibc()
-    if args.bibfor:
+    if args_.bibfor:
         bibfor()
-    if args.bibcxx:
+    if args_.bibcxx:
         bibcxx()

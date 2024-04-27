@@ -15,6 +15,8 @@ load_dotenv()
 ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent
 THIS_DIR = pathlib.Path(__file__).resolve().parent
 BUILD_DIR = ROOT_DIR / "build" / "std" / "debug"
+TMP_DIR = THIS_DIR / "temp"
+TMP_DIR.mkdir(exist_ok=True)
 
 CONDA_PREFIX_DIR = pathlib.Path(os.getenv("CONDA_PREFIX"))
 
@@ -27,39 +29,43 @@ class CAMod(str, Enum):
     ALL = "all"
 
 
-def main(ca_module: CAMod):
+def run_link(lib_name: CAMod):
+    module_dir = BUILD_DIR / str(lib_name.value)
+    if lib_name == CAMod.BIBASTER:
+        module_dir.mkdir(parents=True, exist_ok=True)
+        files = [BUILD_DIR / "bibc" / "supervis" / "python.c.1.o"]
+    else:
+        files = list(module_dir.rglob("*.o"))
+
+    txt_file = TMP_DIR / f"{lib_name.value}_ofiles.txt"
+    out_file = TMP_DIR / f"{lib_name.value}.lib"
+
+    if len(files) == 0:
+        raise ValueError(f"No files found in {module_dir}")
+
+    with open(txt_file, "w") as f:
+        f.write("\n".join(map(str, files)))
+
+    cmd = [
+        "LIB.exe",
+        f"/LIBPATH:{CONDA_PREFIX_DIR}/libs",
+        f"@{txt_file.as_posix()}",
+        f"/OUT:{out_file.as_posix()}",
+        "/MACHINE:X64",
+        "/VERBOSE"
+    ]
+    print(" ".join(cmd))
+
+    result = call_using_env(cmd)
+    if result.returncode != 0:
+        raise ValueError(f"Error linking {lib_name} due to {result.stderr=}, {result.stdout=}")
+
+
+def main(lib_option: CAMod):
     for lib_name in [CAMod.BIBFOR, CAMod.BIBCXX, CAMod.BIBC, CAMod.BIBASTER]:
-        module_dir = BUILD_DIR / str(lib_name.value)
-        if lib_name == CAMod.BIBASTER:
-            module_dir.mkdir(parents=True, exist_ok=True)
-            files = [BUILD_DIR / "bibc" / "supervis" / "python.c.2.o"]
-        else:
-            files = list(module_dir.rglob("*.o"))
-        txt_file = module_dir / f"{lib_name.value}_ofiles.txt"
-        out_file = module_dir / f"{lib_name.value}.lib"
-
-        if ca_module != CAMod.ALL and lib_name != ca_module:
+        if lib_option != CAMod.ALL and lib_name != lib_option:
             continue
-
-        if len(files) == 0:
-            raise ValueError(f"No files found in {module_dir}")
-
-        with open(txt_file, "w") as f:
-            f.write("\n".join(map(str, files)))
-        lib_exe = shutil.which("LIB.exe")
-        if lib_exe is None:
-            raise FileNotFoundError("LIB.exe not found in PATH")
-
-        args = [
-            "LIB.exe",
-            f"/LIBPATH:{CONDA_PREFIX_DIR}/libs",
-            f"@{txt_file.as_posix()}",
-            f"/OUT:{out_file.as_posix()}",
-            "/MACHINE:X64",
-        ]
-        print(" ".join(args))
-
-        call_using_env(args)
+        run_link(lib_name)
 
 
 if __name__ == "__main__":
