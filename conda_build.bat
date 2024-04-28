@@ -70,7 +70,7 @@ set FCFLAGS=%FCFLAGS% /names:lowercase /assume:underscore /assume:nobscc
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs ^
     pthread.lib libomp.lib medfwrap.lib hdf5.lib metis.lib ^
     MFrontGenericInterface.lib scotch.lib scotcherr.lib ^
-    mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib
+    mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib /FORCE:MULTIPLE
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 

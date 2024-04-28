@@ -1,16 +1,16 @@
 import pathlib
 
-from config import TMP_DIR, LIB_RAW_PREFIX
+from config import TMP_DIR, LIB_RAW_PREFIX, get_obj_sym_file, get_lib_file, DEFOption
 from manual_lib import run_lib
 from msvc_utils import call_using_env
 
 
 def create_symbols_file(module_name: str) -> None:
-    symbol_output_file = (TMP_DIR / f"{LIB_RAW_PREFIX}{module_name}_sym").with_suffix(".txt")
-    bib_lib_file = symbol_output_file.with_name(f"{LIB_RAW_PREFIX}{module_name}.lib")
+    symbol_output_file = get_obj_sym_file(module_name)
+    bib_lib_file = get_lib_file(module_name, DEFOption.NO_DEF)
 
     if not bib_lib_file.exists():
-        bib_lib_file = run_lib(module_name, use_def=False)
+        run_lib(module_name, def_opt=DEFOption.NO_DEF)
 
     result = call_using_env(["dumpbin", "/symbols", bib_lib_file, ">", symbol_output_file])
     if result.returncode != 0:
@@ -41,7 +41,7 @@ def symbol_out_to_def_file(symbol_file: pathlib.Path):
 
 
 def create_symbol_def(module_name: str):
-    symbol_output_file = (TMP_DIR / f"{LIB_RAW_PREFIX}{module_name}_sym").with_suffix(".txt")
+    symbol_output_file = get_obj_sym_file(module_name)
     if not symbol_output_file.exists():
         create_symbols_file(module_name)
 
@@ -49,5 +49,6 @@ def create_symbol_def(module_name: str):
 
 
 if __name__ == "__main__":
-    for mod in ["bibc", "bibfor", "bibcxx"]:
-        create_symbol_def(mod)
+    # create_symbol_def('bibc')
+    create_symbol_def('bibcxx')
+    # create_symbol_def('bibcfor')

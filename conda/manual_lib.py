@@ -1,7 +1,8 @@
 # Based on https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2008/kkt2hd12(v=vs.90)?redirectedfrom=MSDN
 # and https://stackoverflow.com/questions/362830/circular-dependencies-between-dlls-with-visual-studio
 
-from config import CAMod, BUILD_DIR, TMP_DIR, THIS_DIR, CONDA_PREFIX_DIR, LIB_RAW_PREFIX, DEFOption
+from config import CAMod, BUILD_DIR, TMP_DIR, THIS_DIR, CONDA_PREFIX_DIR, LIB_RAW_PREFIX, DEFOption, get_obj_list_path, \
+    get_lib_file, get_bibc_compile_files, get_bibaster_compile_files, get_bibcxx_compile_files, get_bibfor_compile_files
 
 from msvc_utils import call_using_env
 
@@ -15,45 +16,18 @@ def run_lib(lib_name: CAMod | str, def_opt: DEFOption, use_wx=False):
 
     module_dir = BUILD_DIR / str(lib_name.value)
     if lib_name == CAMod.BIBASTER:
-        module_dir.mkdir(parents=True, exist_ok=True)
-        files = [BUILD_DIR / "bibc" / "supervis" / "python.c.2.o"]
+        files = get_bibaster_compile_files()
     elif lib_name == CAMod.BIBC:
-        files = list(module_dir.rglob("*.o"))
-        # remove the python.o file
-        files_clean = [x for x in files if "python.c.2.o" not in str(x)]
-        if len(files) - len(files_clean) != 1:
-            raise ValueError(f"python.c.2.o not found in {files}")
-        files = files_clean
+        files = get_bibc_compile_files()
     elif lib_name == CAMod.BIBCXX:
-        files = set(module_dir.rglob("*.o"))
-        if use_wx:
-            to_be_removed = {
-                "ConstantFieldOnCells.cxx.2.o",
-                "ElementaryTerm.cxx.2.o",
-                "FieldOnCells.cxx.2.o",
-                "BehaviourDefinition.cxx.2.o",
-                "ElementaryModeling.cxx.2.o",
-                "FieldOnNodes.cxx.2.o",
-            }
-            files_cleaned = set([x for x in files if not any(y in str(x) for y in to_be_removed)])
-            result = files_cleaned.intersection(to_be_removed)
-            if len(result) > 0:
-                raise ValueError(f"These files where not removed {result} from source")
-            files = files_cleaned
+        files = get_bibcxx_compile_files()
     else:
-        files = list(module_dir.rglob("*.o"))
+        files = get_bibfor_compile_files()
 
-    if def_opt == DEFOption.USE_BLANK_DEF:
-        lib_file_name = f"{LIB_RAW_PREFIX}{lib_name.value}_blankdef"
-    elif def_opt == DEFOption.USE_DEF:
-        lib_file_name = f"{LIB_RAW_PREFIX}{lib_name.value}_def"
-    else:  # NO_DEF
-        lib_file_name = f"{LIB_RAW_PREFIX}{lib_name.value}_nodef"
-
-    txt_file = TMP_DIR / "inputs" / f"{lib_file_name}_ofiles.txt"
+    txt_file = get_obj_list_path(str(lib_name.value))
     txt_file.parent.mkdir(exist_ok=True, parents=True)
 
-    out_file = TMP_DIR / f"{lib_file_name}.lib"
+    output_lib_file = get_lib_file(str(lib_name.value), def_opt)
 
     if len(files) == 0:
         raise ValueError(f"No files found in {module_dir}")
@@ -65,7 +39,7 @@ def run_lib(lib_name: CAMod | str, def_opt: DEFOption, use_wx=False):
         "LIB.exe",
         f"/LIBPATH:{CONDA_PREFIX_DIR}/libs",
         f"@{txt_file.as_posix()}",
-        f"/OUT:{out_file.as_posix()}",
+        f"/OUT:{output_lib_file.as_posix()}",
         "/MACHINE:X64",
         "/VERBOSE",
     ]
