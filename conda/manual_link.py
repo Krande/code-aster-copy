@@ -59,14 +59,16 @@ def bibcxx():
         "mkl_intel_thread_dll.lib",
         "mkl_core_dll.lib",
         "bibfor.lib",
+        "bibfor.exp",
         "bibc.lib",
+        "bibc.exp",
     ]
     lib_name = "bibc"
     lib_args = get_default_lib_paths(lib_name)
     args = [
         "LINK.exe",
         f"/IMPLIB:{lib_name}/{lib_name}.lib",
-        f"/OUT:{BUILD_DIR}/{lib_name}/{lib_name}.dll",
+        f"/OUT:{TMP_DIR}/{lib_name}.dll",
         f"@{bibc_obj_list_path}",
     ]
 
