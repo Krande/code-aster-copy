@@ -31,10 +31,10 @@ class msvclibgen(Task.Task):
 
         # opts += [f"/LIBPATH:{libs_dir}"]
         #
-        if clean_name == "bibc":
+        # if clean_name == "bibc":
             # bibc_def = conda_dir / "bibc.def"
             # opts += [f"/DEF:{bibc_def}"]
-            opts += ["/REMOVE:CODEASTER_ARRAY_API"]
+            # opts += ["/REMOVE:CODEASTER_ARRAY_API"]
         # elif clean_name == "bibfor":
         #     bibfor_def = conda_dir / "bibfor.def"
         #     opts += [f"/DEF:{bibfor_def}"]
@@ -42,7 +42,8 @@ class msvclibgen(Task.Task):
         cmd = cmd[:2] + opts + cmd[2:]
 
         ret = super().exec_command(cmd, **kw)
-        # shutil.copy(output_fp, (output_fp.parent / clean_name).with_suffix(".lib"))
+        # This is a hack to copy the generated lib to the build directory
+        shutil.copy(output_fp, (output_fp.parent / clean_name).with_suffix(".lib"))
         return ret
 
 
