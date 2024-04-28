@@ -43,7 +43,12 @@ class msvclibgen(Task.Task):
 
         ret = super().exec_command(cmd, **kw)
         # This is a hack to copy the generated lib to the build directory
-        shutil.copy(output_fp, (output_fp.parent / clean_name).with_suffix(".lib"))
+        if clean_name == "astertmp":
+            destination = output_fp.parent.parent / "aster" / "aster.lib"
+        else:
+            destination = (output_fp.parent / clean_name).with_suffix(".lib")
+
+        shutil.copy(output_fp, destination)
         return ret
 
 
