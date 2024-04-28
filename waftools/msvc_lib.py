@@ -64,7 +64,9 @@ class LibTask:
     asterlib: TaskObject = None
 
     def all_tasks_ready(self) -> bool:
-        for task in self.__dict__.values():
+        for key, task in self.__dict__.items():
+            if key == "asterlib":
+                continue
             if len(task.tasks) == 0:
                 Logs.error(f"No tasks found for {task.task_gen.get_name()=}")
                 return False
@@ -72,8 +74,8 @@ class LibTask:
 
     def get_missing_tasks(self) -> list[str]:
         missing_tasks = []
-        for task in self.__dict__.values():
-            if task.task_gen.get_name() == "asterlib":
+        for key, task in self.__dict__.items():
+            if key == "asterlib":
                 continue
             if len(task.tasks) == 0:
                 missing_tasks.append(task.task_gen.get_name())
@@ -191,12 +193,13 @@ def make_msvc_modifications(self: TaskGen.task_gen):
     global _task_obj
     global _task_done
     if _task_done:
+        Logs.info("Task already done")
         return
 
     if name not in _compiler_map.keys():
         Logs.info(f"Skipping {name=}")
         if name == "asterlib":
-            aster_object = get_task_object(self.bld, name, _compiler_map[name])
+            aster_object = get_task_object(self.bld, name, "cxx")
             setattr(_task_obj, name, aster_object)
         return
 
@@ -210,7 +213,7 @@ def make_msvc_modifications(self: TaskGen.task_gen):
             Logs.error(f"Missing tasks before: {missing_task_names}")
             aster_object = get_task_object(self.bld, name, _compiler_map[name])
             if name == "asterpre":
-                aster_object.tasks = [t for t in self.tasks if t.__class__.__name__ == "cxx"]
+                aster_object.tasks = self.tasks
 
             setattr(task_obj, name, aster_object)
 
