@@ -61,6 +61,7 @@ class LibTask:
     asterpre: TaskObject
     asterbibcxx: TaskObject
     asterbibfor: TaskObject
+    asterlib: TaskObject = None
 
     def all_tasks_ready(self) -> bool:
         for task in self.__dict__.values():
@@ -72,6 +73,8 @@ class LibTask:
     def get_missing_tasks(self) -> list[str]:
         missing_tasks = []
         for task in self.__dict__.values():
+            if task.task_gen.get_name() == "asterlib":
+                continue
             if len(task.tasks) == 0:
                 missing_tasks.append(task.task_gen.get_name())
 
@@ -136,6 +139,7 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     clib_task = task_obj.asterbibc.libtask
     cxxlib_task = task_obj.asterbibcxx.libtask
     fclib_task = task_obj.asterbibfor.libtask
+    aster_task = task_obj.asterlib.libtask
 
     c_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterbibc.tasks]
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.asterbibcxx.tasks]
@@ -168,6 +172,7 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
 
     fclib_task.inputs += bibcxx_lib_task.outputs + clib_task_outputs
     cxxlib_task.inputs += clib_task_outputs + fclib_task_outputs + bibaster_task_outputs
+    aster_task.inputs += bibcxx_lib_task.outputs
 
     Logs.info("Successfully ran MSVC lib generation")
 
@@ -183,12 +188,16 @@ def make_msvc_modifications(self: TaskGen.task_gen):
     name = self.get_name()
     Logs.info(f"task: {name=}")
 
-    if name not in _compiler_map.keys():
-        return
-
     global _task_obj
     global _task_done
     if _task_done:
+        return
+
+    if name not in _compiler_map.keys():
+        Logs.info(f"Skipping {name=}")
+        if name == "asterlib":
+            aster_object = get_task_object(self.bld, name, _compiler_map[name])
+            setattr(_task_obj, name, aster_object)
         return
 
     if _task_obj is None:
@@ -201,7 +210,8 @@ def make_msvc_modifications(self: TaskGen.task_gen):
             Logs.error(f"Missing tasks before: {missing_task_names}")
             aster_object = get_task_object(self.bld, name, _compiler_map[name])
             if name == "asterpre":
-                aster_object.tasks = self.tasks
+                aster_object.tasks = [t for t in self.tasks if t.__class__.__name__ == "cxx"]
+
             setattr(task_obj, name, aster_object)
 
     if not task_obj.all_tasks_ready():
