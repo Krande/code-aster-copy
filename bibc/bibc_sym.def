@@ -1,14 +1,25 @@
 EXPORTS
 	uttrst_
 	uttcsm_
+	time
+	difftime
 	utflsh_
 	strmov_
 	rmfile_
 	mempid_
 	matfpe_
 	kloklo_
+	localtime
 	ind_fac
+	open_fac
+	opendr_
+	closdr_
+	readdr_
+	writdr_
 	inisig_
+	etausr_
+	stpusr1
+	clrusr_
 	indik8_
 	hpdeallc_
 	hpalloc_
@@ -19,24 +30,260 @@ EXPORTS
 	_vsnprintf_l
 	__local_stdio_printf_options
 	lbisem_
+	lolsem_
+	loisem_
+	lor8em_
+	loc8em_
+	isnnem_
+	ncisem_
+	ncr8em_
+	ismaem_
+	lofiem_
+	mofiem_
+	ispbem_
+	isbaem_
+	rmirem_
+	rmarem_
+	rminem_
+	rmaxem_
+	r8nnem_
+	r8maem_
+	r8miem_
+	r8vide_
+	r8baem_
+	r8prem_
+	r8gaem_
+	r8t0_
+	r8pi_
+	r8depi_
+	r8dgrd_
+	r8rddg_
+	llbloc_
+	r4maem_
+	r4miem_
 	print_trace_
 	datetoi_
 	cpfile_
-	__local_stdio_printf_options
 	calc_SPEC_OSCI
 	register_sh_params
+	register_sh_msglog
+	register_sh_etape
+	register_sh_jeveux_status
+	get_sh_params
+	get_sh_msglog
+	get_sh_etape
+	get_sh_jeveux_status
+	init_etape_stack
+	append_etape
+	pop_etape
+	Py_INCREF
+	initAsterModules
+	_unused_main_
 	PyInit_med_aster
+	aster_nom_ch_med
+	Py_DECREF
 	openLogicalUnitFile
+	Py_TYPE
+	PyType_HasFeature
+	Py_XDECREF
+	releaseLogicalUnitFile
 	lihdfv_
+	limedv_
+	liscov_
 	umat_get_function_
+	umatwp_
 	libsymb_register
+	_libsymb_to_key
+	libsymb_release
+	libsymb_is_known
+	libsymb_get_handle
+	_libsymb_get_object
+	libsymb_get_symbol
+	libsymb_apply_on_all
+	NULL_FUNCTION
 	dll_init
+	get_dll_register_dict
+	dllcls_
+	windows_dlclose
 	FStrlen
+	_check_string_length
+	MakeCStrFromFStr
+	CopyCStrToFStr
+	MakeFStrFromCStr
+	BlankStr
+	MakeBlankFStr
+	MakeTabFStr
+	SetTabFStr
+	FreeStr
+	convc8
+	conv_un_c8
+	PyObject_TypeCheck
+	Py_IS_TYPE
+	convr8
+	convert
+	convertxt
+	converltx
+	MakeTupleString
+	MakeListString
+	MakeTupleInt
+	MakeListInt
+	MakeTupleFloat
+	MakeListFloat
 	aster_mpi_init
+	aster_get_comm_world
+	aster_get_current_comm
+	aster_set_current_comm
+	aster_get_mpi_info
+	aster_split_comm
+	aster_free_comm
+	asmpi_barrier_wrap_
+	aster_set_mpi_barrier
+	aster_mpi_bcast
+	aster_mpi_allreduce
+	aster_mpi_gather
+	aster_mpi_gatherv
+	aster_mpi_allgather
+	aster_mpi_allgatherv
+	aster_mpi_send
+	aster_mpi_recv
+	aster_mpi_sendrecv
+	_search_id
+	get_node_by_id
+	asmpi_comm_
+	asmpi_split_comm_
+	asmpi_info_wrap_
+	asmpi_send_r_
+	asmpi_send_i_
+	asmpi_send_i4_
+	asmpi_recv_r_
+	asmpi_recv_i_
+	asmpi_recv_i4_
+	asmpi_sendrecv_r_
+	asmpi_sendrecv_i_
+	asmpi_sendrecv_i4_
+	asmpi_isend_i_
+	asmpi_irecv_i_
+	asmpi_isend_i4_
+	asmpi_irecv_i4_
+	asmpi_test_
+	asmpi_cancel_
+	asmpi_wtime_
+	asmpi_reduce_r_
+	asmpi_reduce_c_
+	asmpi_reduce_i_
+	asmpi_reduce_i4_
+	asmpi_allreduce_r_
+	asmpi_allreduce_c_
+	asmpi_allreduce_i_
+	asmpi_allreduce_i4_
+	asmpi_bcast_r_
+	asmpi_bcast_c_
+	asmpi_bcast_i_
+	asmpi_bcast_i4_
+	asmpi_bcast_char80_
+	asmpi_allgather_i_
+	asmpi_allgather_r_
+	asmpi_allgather_char8_
+	asmpi_allgatherv_i_
+	asmpi_allgatherv_r_
+	asmpi_allgatherv_char16_
+	asmpi_allgatherv_char80_
+	asmpi_scan_r_
+	asmpi_scan_c_
+	asmpi_scan_i_
+	asmpi_scan_i4_
+	asabrt_
+	terminate
 	isjvup_
+	xfini_
+	TraiteMessageErreur
+	PRE_myabort
+	getltx_
+	getfac_
+	getran_
+	iniran_
+	getmat_
+	getmjm_
+	getexm_
+	getres_
+	getvc8_wrap_
+	getvr8_wrap_
+	getvis_wrap_
+	getvtx_wrap_
+	getvid_wrap_
+	getvpy
+	putvir_
+	putvrr_
+	gcecdu_
+	gcncon2_
+	lccree_
+	lcalgo_
+	lcinfo_
+	lcvari_
+	lcextevari_
+	lctest_
+	lctype_
+	lcdiscard_
+	lcsymb_
+	lcsymm_
+	lcdeformldc_
+	lcreguvisc_
+	lckitread_
+	PyInit_aster
+	aster_fclose
+	aster_ulopen
+	aster_affich
+	aster_impers
+	aster_mdnoma
+	aster_mdnoch
+	aster_rcvale
+	aster_gmardm
+	aster_postkutil
+	aster_argv
+	aster_getvectjev
+	aster_putvectjev
+	aster_putcolljev
+	aster_getcolljev
+	aster_GetResu
+	jeveux_getobjects
+	jeveux_getattr
+	jeveux_exists
+	aster_gcncon
 	PyInit_aster_fonctions
+	_import_array
+	SPEC_OSCI
+	PyArray_NDIM
+	PyArray_DIM
+	PyArray_DATA
 	_new_try
+	_end_try
 	jdcget_
+	jdcset_
+	GetJdcAttr
+	_reset_tpmax
+	get_tpmax
+	asterc_getopt_double
+	asterc_getopt
+	rdtmax_
+	asterc_getopt_long
+	asterc_getopt_string
+	gtopti_
+	gtoptr_
+	gtoptk_
+	utprin_
+	chkmsg_
+	utalrm_
+	gtalrm_
+	prhead_
+	cheksd_
+	testresu_print_
+	asterc_matfpe
+	PyInit_aster_core
+	register_jdc
+	asterc_get_mem_stat
+	asterc_set_mem_stat
+	aster_mpi_warn
+	asterc_setopt
 	gpmetis_aster_
 	fetsco_
 	hdfwsv_
@@ -47,6 +294,7 @@ EXPORTS
 	hdfopf_
 	hdfopd_
 	hdfnbo_
+	indiceNbName
 	hdfcrg_
 	hdfclg_
 	hdfclf_

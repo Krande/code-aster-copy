@@ -27,11 +27,10 @@ def iter_symbol_names(symbol_file: pathlib.Path | str):
                 continue
             if "()" not in line:
                 continue
-            if "00000000" not in line:
-                continue
             symbol_name = line.split("|")[-1].strip()
             if symbol_name in written_symbols:
                 continue
+            written_symbols.add(symbol_name)
             yield symbol_name
 
 
