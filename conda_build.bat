@@ -2,8 +2,20 @@
 setlocal
 
 
-set CLICOLOR_FORCE=1
+if "%1" == "--no-color" (
+    echo "Disabling color output"
+    set CLICOLOR_FORCE=0
+) else (
+    echo "Enabling color output"
+    set CLICOLOR_FORCE=1
+)
+
+:: TO set the number of cores, use the env variable JOBS
 call conda_env.bat
+
+if defined JOBS (
+    echo "Using %JOBS% cores"
+)
 
 echo "Setting compiler env vars"
 set "CC=clang-cl.exe"
@@ -90,7 +102,7 @@ waf configure ^
   --check-fortran-compiler=ifort ^
   --use-config-dir=%PARENT_DIR%/config/ ^
   --med-libs=medC ^
-  --prefix=%LIBRARY_PREFIX% ^
+  --prefix=%LIB_PATH_ROOT% ^
   --out=%OUTPUT_DIR% ^
   --disable-mpi ^
   --disable-openmp ^
@@ -100,7 +112,8 @@ waf configure ^
   --without-hg
 
 REM if USE_LOG is set, then log the output to a file
-if %USE_LOG%==1 (
+
+if "%1" == "--use-log" (
     REM set a datetime variable down to the minute
     set CLICOLOR_FORCE=0
     @call conda_datetime.bat

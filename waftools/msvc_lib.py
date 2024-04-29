@@ -18,33 +18,16 @@ class msvclibgen(Task.Task):
         output_fp.parent.mkdir(parents=True, exist_ok=True)
 
         clean_name = output_fp.stem.replace("_gen", "")
-        root_dir = pathlib.Path(self.generator.bld.root.abspath()).resolve().absolute()
-        conda_dir = root_dir / "conda"
-
-        task_gen: TaskGen.task_gen = self.generator
-        env: ConfigSet.ConfigSet = task_gen.env
-        lib_dir = pathlib.Path(env.LIBDIR)
-        root_dir = lib_dir.parent.parent
-        libs_dir = root_dir / "libs"
 
         opts = ["/NOLOGO", "/MACHINE:X64"]
-
-        # opts += [f"/LIBPATH:{libs_dir}"]
-        #
-        # if clean_name == "bibc":
-            # bibc_def = conda_dir / "bibc.def"
-            # opts += [f"/DEF:{bibc_def}"]
-            # opts += ["/REMOVE:CODEASTER_ARRAY_API"]
-        # elif clean_name == "bibfor":
-        #     bibfor_def = conda_dir / "bibfor.def"
-        #     opts += [f"/DEF:{bibfor_def}"]
 
         cmd = cmd[:2] + opts + cmd[2:]
 
         ret = super().exec_command(cmd, **kw)
         # This is a hack to copy the generated lib to the build directory
         if clean_name == "astertmp":
-            destination = output_fp.parent.parent / "aster" / "aster.lib"
+            destination = output_fp.parent.parent / "bibc" / "aster.lib"
+            destination.parent.mkdir(parents=True, exist_ok=True)
         else:
             destination = (output_fp.parent / clean_name).with_suffix(".lib")
 
