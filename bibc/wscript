@@ -134,6 +134,11 @@ def process_h(self, node):
 def build_libbibc(self, env):
     use = ["BIBCXX", "PETSC", "SCOTCH", "PARMETIS", "METIS", "MED", "HDF5", "NUMPY", "PYEXT"]
     get_srcs = self.path.get_src().ant_glob
+
+    extra_config = dict()
+    if platform.system() == "Windows":
+        extra_config["defs"] = "bibc_sym.def"
+
     # compile *.c
     self(
         features="c cshlib",
@@ -144,6 +149,7 @@ def build_libbibc(self, env):
         use=use,
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
+        **extra_config,
     )
 
 
@@ -151,6 +157,11 @@ def build_libaster(self, env):
     use = ["LIBASTER", "asterbibfor", "asterbibc", "asterbibcxx"]
     if env.BUILD_MFRONT:
         use.append("astermfront")
+
+    extra_config = dict()
+    if platform.system() == "Windows":
+        extra_config["defs"] = "aster_sym.def"
+
     # {bibfor, bibc, bibcxx}/*.o
     self(
         features="cxx cxxshlib",
@@ -161,6 +172,7 @@ def build_libaster(self, env):
         env=env.derive(),
         use=use,
         install_path=env.ASTERLIBDIR,
+        **extra_config
     )
     extlib = ".so"
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]

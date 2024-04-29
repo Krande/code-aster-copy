@@ -21,12 +21,6 @@ echo "Setting compiler env vars"
 set "CC=clang-cl.exe"
 set "CXX=clang-cl.exe"
 set "FC=ifx.exe"
-REM set "LINK_CC=XILINK.exe"
-REM set "LINK_CXX=XILINK.exe"
-REM set "LINK_FC=XILINK.exe"
-REM set "AR=XILIB.exe"
-REM set "RANLIB=XILIB.exe"
-REM set "LD=XILINK.exe"
 
 where python
 where "%CC%"
@@ -104,6 +98,7 @@ waf configure ^
   --med-libs=medC ^
   --prefix=%LIB_PATH_ROOT% ^
   --out=%OUTPUT_DIR% ^
+  --embed-aster ^
   --disable-mpi ^
   --disable-openmp ^
   --disable-mumps ^

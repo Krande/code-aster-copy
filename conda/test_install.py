@@ -1,5 +1,2 @@
-import ctypes.util
-name = ctypes.util.find_library('aster')
-lib = ctypes.cdll.LoadLibrary(name)
-import aster
-
+import code_aster
+from code_aster import CA

@@ -19,7 +19,7 @@
 
 import os.path as osp
 from functools import partial
-
+import pathlib
 from waflib import Configure, Errors, Logs, Utils
 
 import platform
@@ -74,6 +74,10 @@ def build(self):
     if self.env.BUILD_OPENMP:
         use.append("OPENMP")
 
+    extra_config = dict()
+    if platform.system() == "Windows":
+        extra_config["defs"] = "bibfor_sym.def"
+
     srcF90 = get_srcs("**/*.F90")
     self(
         features="fc fcshlib",
@@ -83,6 +87,7 @@ def build(self):
         use=use,
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
+        **extra_config
     )
 
 

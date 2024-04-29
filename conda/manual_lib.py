@@ -15,7 +15,7 @@ def run_lib(lib_name: CAMod | str, def_opt: DEFOption, use_wx=False):
         lib_name = CAMod(lib_name)
 
     module_dir = BUILD_DIR / str(lib_name.value)
-    if lib_name == CAMod.BIBASTER:
+    if lib_name == CAMod.LIBASTER:
         files = get_bibaster_compile_files()
     elif lib_name == CAMod.BIBC:
         files = get_bibc_compile_files()
@@ -64,7 +64,7 @@ def run_lib(lib_name: CAMod | str, def_opt: DEFOption, use_wx=False):
 
 
 def main(lib_option: CAMod, def_opt: DEFOption):
-    for lib_name in [CAMod.BIBFOR, CAMod.BIBCXX, CAMod.BIBC, CAMod.BIBASTER]:
+    for lib_name in [CAMod.BIBFOR, CAMod.BIBCXX, CAMod.BIBC, CAMod.LIBASTER]:
         if lib_option != CAMod.ALL and lib_name != lib_option:
             continue
         run_lib(lib_name, def_opt)
@@ -103,6 +103,6 @@ if __name__ == "__main__":
     elif args.bibcxx:
         main(CAMod.BIBCXX, def_option)
     elif args.bibaster:
-        main(CAMod.BIBASTER, def_option)
+        main(CAMod.LIBASTER, def_option)
     else:
         raise ValueError("Invalid state reached")

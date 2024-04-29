@@ -1,8 +1,7 @@
-import os
 import pathlib
 from typing import Iterable
 
-from conda.config import (
+from config import (
     get_obj_list_path,
     get_bibc_compile_files,
     get_bibcxx_compile_files,
@@ -41,7 +40,7 @@ def run_link(lib_name: str, bib_objects: Iterable[pathlib.Path], extra_deps: lis
     lib_args = get_default_lib_paths(lib_name)
     args = [
         "LINK.exe",
-        f"/IMPLIB:{lib_name}/{lib_name}.lib",
+        f"/IMPLIB:{TMP_DIR}/{lib_name}.lib",
         f"/OUT:{TMP_DIR}/{lib_name}.dll",
         f"@{bib_obj_list_path}",
     ]
@@ -60,7 +59,7 @@ def run_link(lib_name: str, bib_objects: Iterable[pathlib.Path], extra_deps: lis
     print(result.stderr)
 
 
-def bibaster():
+def bibaster(use_def: bool = False):
     extra_deps = [
         "esmumps.lib",
         "smumps.lib",
@@ -81,10 +80,13 @@ def bibaster():
         "_raw_bibc_nodef.lib",
         "_raw_bibcxx_nodef.lib",
     ]
+    if use_def:
+        extra_deps.append(f"/DEF:{TMP_DIR}/aster_sym.def")
+
     run_link(lib_name="aster", bib_objects=get_bibaster_compile_files(), extra_deps=extra_deps)
 
 
-def bibcxx():
+def bibcxx(use_def: bool = False):
     extra_deps = [
         "esmumps.lib",
         "scotch.lib",
@@ -103,13 +105,15 @@ def bibcxx():
         "_raw_aster_nodef.lib",
         "_raw_bibfor_nodef.lib",
         "_raw_bibc_nodef.lib",
-        "/FORCE:MULTIPLE"
+        "/FORCE:MULTIPLE",
     ]
+    if use_def:
+        extra_deps.append(f"/DEF:{TMP_DIR}/bibcxx_sym.def")
 
     run_link(lib_name="bibcxx", bib_objects=get_bibcxx_compile_files(), extra_deps=extra_deps)
 
 
-def bibc():
+def bibc(use_def: bool = False):
     extra_deps = [
         "esmumps.lib",
         "smumps.lib",
@@ -123,10 +127,13 @@ def bibc():
         "_raw_bibfor_nodef.lib",
         "_raw_bibcxx_nodef.lib",
     ]
+    if use_def:
+        extra_deps.append(f"/DEF:{TMP_DIR}/bibc_sym.def")
+
     run_link(lib_name="bibc", bib_objects=get_bibc_compile_files(), extra_deps=extra_deps)
 
 
-def bibfor():
+def bibfor(use_def: bool = False):
     extra_deps = [
         "pthread.lib",
         "scotch.lib",
@@ -142,6 +149,9 @@ def bibfor():
         "_raw_bibc_nodef.lib",
         "_raw_bibcxx_nodef.lib",
     ]
+    if use_def:
+        extra_deps.append(f"/DEF:{TMP_DIR}/bibfor_sym.def")
+
     run_link(lib_name="bibfor", bib_objects=get_bibfor_compile_files(), extra_deps=extra_deps)
 
 
@@ -153,14 +163,15 @@ if __name__ == "__main__":
     parser.add_argument("--bibcxx", action="store_true", help="Link the bibcxx library")
     parser.add_argument("--bibfor", action="store_true", help="Link the bibfor library")
     parser.add_argument("--bibaster", action="store_true", help="Link the bibaster library")
+    parser.add_argument("--use-def", action="store_true", help="Use a .def file to export symbols")
 
     args_ = parser.parse_args()
 
     if args_.bibc:
-        bibc()
+        bibc(args_.use_def)
     if args_.bibfor:
-        bibfor()
+        bibfor(args_.use_def)
     if args_.bibcxx:
-        bibcxx()
+        bibcxx(args_.use_def)
     if args_.bibaster:
-        bibaster()
+        bibaster(args_.use_def)

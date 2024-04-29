@@ -21,7 +21,7 @@ class CAMod(str, Enum):
     BIBC = "bibc"
     BIBFOR = "bibfor"
     BIBCXX = "bibcxx"
-    BIBASTER = "aster"
+    LIBASTER = "aster"
     ALL = "all"
 
 
@@ -86,4 +86,4 @@ def get_bibcxx_compile_files(skip_certain_files=False):
 
 
 def get_bibfor_compile_files():
-    return (BUILD_DIR / "bibfor").rglob("*.o")
+    return list((BUILD_DIR / "bibfor").rglob("*.o"))
