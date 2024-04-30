@@ -54,9 +54,10 @@ def get_bibc_compile_files(skip_pythonc=True):
     files = list((BUILD_DIR / "bibc").rglob("*.o"))
     if skip_pythonc:
         # remove the python.o file
-        files_clean = [x for x in files if "python.c.2.o" not in str(x)]
-        if len(files) - len(files_clean) != 1:
-            raise ValueError(f"python.c.2.o not found in {files}")
+        files_clean = set([x for x in files if "python.c" not in x.stem])
+        diff_files = set(files).difference(files_clean)
+        if len(diff_files) == 0:
+            raise ValueError(f"Removed too many files {diff_files}")
         files = files_clean
     return files
 
@@ -65,23 +66,8 @@ def get_bibaster_compile_files() -> Iterable[pathlib.Path]:
     return [BUILD_DIR / "bibc" / "supervis" / "python.c.2.o"]
 
 
-def get_bibcxx_compile_files(skip_certain_files=False):
+def get_bibcxx_compile_files():
     files = list((BUILD_DIR / "bibcxx").rglob("*.o"))
-    if skip_certain_files:
-        to_be_removed = {
-            "ConstantFieldOnCells.cxx.2.o",
-            "ElementaryTerm.cxx.2.o",
-            "FieldOnCells.cxx.2.o",
-            "BehaviourDefinition.cxx.2.o",
-            "ElementaryModeling.cxx.2.o",
-            "FieldOnNodes.cxx.2.o",
-        }
-        files_cleaned = set([x for x in files if not any(y in str(x) for y in to_be_removed)])
-        result = files_cleaned.intersection(to_be_removed)
-        if len(result) > 0:
-            raise ValueError(f"These files where not removed {result} from source")
-        files = files_cleaned
-
     return files
 
 

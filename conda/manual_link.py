@@ -44,7 +44,7 @@ def run_link(lib_name: str, bib_objects: Iterable[pathlib.Path], extra_deps: lis
         f"/OUT:{TMP_DIR}/{lib_name}.dll",
         f"@{bib_obj_list_path}",
     ]
-
+    bib_obj_list_path.parent.mkdir(exist_ok=True, parents=True)
     with open(bib_obj_list_path, "w") as f:
         f.write("\n".join(map(str, get_default_flags())))
         f.write("\n")

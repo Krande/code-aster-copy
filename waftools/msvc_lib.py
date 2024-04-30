@@ -31,7 +31,7 @@ class msvclibgen(Task.Task):
         else:
             destination = (output_fp.parent / clean_name).with_suffix(".lib")
 
-        shutil.copy(output_fp, destination)
+        # shutil.copy(output_fp, destination)
         return ret
 
 
@@ -160,9 +160,13 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     Logs.info(f"{fclib_task_outputs=}")
     Logs.info(f"{bibaster_task_outputs=}")
 
+
     fclib_task.inputs += bibcxx_lib_task.outputs + clib_task_outputs
     cxxlib_task.inputs += clib_task_outputs + fclib_task_outputs + bibaster_task_outputs
     aster_task.inputs += bibcxx_lib_task.outputs
+
+    # Add .exp files to the outputs
+    # fclib_task.outputs +=
 
     Logs.info("Successfully ran MSVC lib generation")
 

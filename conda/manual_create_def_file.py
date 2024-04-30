@@ -1,6 +1,6 @@
 import pathlib
 
-from config import TMP_DIR, LIB_RAW_PREFIX, get_obj_sym_file, get_lib_file, DEFOption
+from config import LIB_RAW_PREFIX, get_obj_sym_file, get_lib_file, DEFOption
 from manual_lib import run_lib
 from msvc_utils import call_using_env
 
@@ -26,6 +26,8 @@ def iter_symbol_names(symbol_file: pathlib.Path | str):
             if "SECT1" not in line:
                 continue
             if "()" not in line:
+                continue
+            if 'Static' in line:
                 continue
             symbol_name = line.split("|")[-1].strip()
             if symbol_name in written_symbols:
