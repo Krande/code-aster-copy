@@ -456,6 +456,17 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
             for j, r_j in enumerate(R_mi[i:], i):
                 R_m2 += 2 * H[i, j] * r_i * r_j
         R_m2 = np.maximum(R_m2, 0)
+
+    elif type_comb == "NRC_DSA" :  # DSA : Double sum absolute
+        if COMB_MODE["DUREE"] is None:
+            raise Exception("Il faut renseigner DUREE")
+        H = dsc_array(amors, freqs, COMB_MODE["DUREE"])
+        H[np.diag_indices_from(H)] /= 2
+        for i, r_i in enumerate(R_mi):
+            for j, r_j in enumerate(R_mi[i:], i):
+                R_m2 += 2 * H[i, j] * np.abs(r_i * r_j)
+        R_m2 = np.maximum(R_m2, 0)
+
     elif type_comb == "DPC":
         # neighbor modes (frequence close until 10%) will be combined by abs
         f0, r_r = freqs[0], R_mi[0]
@@ -472,6 +483,57 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
                 # combinied by abs value
                 l_abs_R_r[-1] += np.abs(r_r)
         R_m2 = sum(r_x**2 for r_x in l_abs_R_r)
+
+    elif type_comb in ("NRC_GROUPING", "NRC_ALL"):
+
+        if type_comb == "NRC_ALL":  # = All
+            groups = [list(range(len(freqs)))]
+        else:
+            # Create the modal group list by analyzing the frequencies
+            # **bottom-up** as required by RG 1.92 Rev.1
+            groups = []
+            for fidx, ff in enumerate(freqs):
+                if fidx == 0:
+                    # Initialize first group with the first mode
+                    groups.append([fidx])
+                    continue
+                #
+                # "Current" group reference frequency
+                ff_ref = freqs[groups[-1][0]]
+                #
+                if (ff-ff_ref)/ff_ref > 0.1:
+                    # Start a new group if the 10% is exceeded
+                    groups.append([fidx])
+                else:
+                    # Else, just append the mode index to the preceding group
+                    groups[-1].append(fidx)
+
+        # The regular Squared-Sum contribution (no correlation part)
+        sum_rk_sq = np.sum(R_mi**2, axis=0)
+
+        # The correlated part
+        sum_rl_rm = np.zeros_like(sum_rk_sq)
+        for group in groups:
+            nbmodes = len(group)
+            if nbmodes == 1:
+                continue
+            for ii in range(0, nbmodes-1):
+                rl = R_mi[group[ii]]
+                for jj in range(ii+1, nbmodes):
+                    # print(ii, jj)
+                    rm = R_mi[group[jj]]
+                    sum_rl_rm += 2.*np.abs(rl*rm)
+
+        print('---------------------------------------------')
+        print('Modal combination')
+        print('---------------------------------------------')
+        print('Grouping info          :', groups)
+        print('Uncorrelated part (max):', max(sum_rk_sq))
+        print('Correlated part   (max):', max(sum_rl_rm))
+        print('---------------------------------------------')
+
+        R_m2 = sum_rk_sq + sum_rl_rm
+
     elif type_comb == "GUPTA":
         f1 = min(COMB_MODE["FREQ_1"], COMB_MODE["FREQ_2"])
         f2 = max(COMB_MODE["FREQ_1"], COMB_MODE["FREQ_2"])
@@ -547,6 +609,10 @@ def comb_directions(type_comb_dir, l_R_x):
     if nb_direction > 1:
         if type_comb_dir == "QUAD":
             R_xyz = np.sqrt(sum(r_x**2 for r_x in l_R_x))
+            R_newmark_all = []
+
+        elif type_comb_dir == "ABS":
+            R_xyz = np.sum(np.abs(l_R_x), axis=0)
             R_newmark_all = []
 
         else:  # type_comb_dir == "NEWMARK":
@@ -1535,7 +1601,11 @@ def comb_sism_modal_ops(self, **args):
     comb_direction = args.get("COMB_DIRECTION")
     # Get input group_appui_correle
     group_appui_correle = args.get("GROUP_APPUI_CORRELE")
-    # Get input comb_mult_appui_corr
+    # Get input CUMUL_INTRA : Combination of the contributions of each response of support inside a group
+    cumul_intra = args.get("CUMUL_INTRA") 
+    # Get input CUMUL_INTER : Combination of the contributions of each group of supports
+    cumul_inter = args.get("CUMUL_INTER") 
+    # Get input COMB_DDS_CORRELE
     comb_dds_correle = args.get("COMB_DDS_CORRELE")
     # Get input depl_mult_appui
     depl_mult_appui = args.get("DEPL_MULT_APPUI")
@@ -2194,12 +2264,17 @@ def comb_sism_modal_ops(self, **args):
                     R_c_j = np.array(R_c_j)
                     # step 5: combinaison of all appuis in a group_appui
                     # rules are different for different components
-                    # pour oscillator and pseudo-mode: LINE
+                    # pour oscillator and pseudo-mode: CUMUL_INTRA
                     # pour dds: rule definied in COMB_DDS_CORRELE
                     # response of oscillator by group_appui
-                    R_m_group_appui = comb_appui_corr("LINE", R_m_j)
+
+                    print('OSC /   Corr. group combi. according to ', cumul_intra)
+                    print('OSC / Decorr. group combi. according to ', cumul_inter)
+                    print('DDS /   Corr. group combi. according to ', comb_dds_correle)
+
+                    R_m_group_appui = comb_appui_corr(cumul_intra, R_m_j)
                     # response of pseudo-mode by group_appui
-                    R_c_group_appui = comb_appui_corr("LINE", R_c_j)
+                    R_c_group_appui = comb_appui_corr(cumul_intra, R_c_j)
                     # response of DDS by group_appui)
                     R_e_group_appui = comb_appui_corr(comb_dds_correle, R_e_j)
                     # step 6: modal combinaison pour R_m_group_appui
@@ -2259,11 +2334,25 @@ def comb_sism_modal_ops(self, **args):
                 # While nb of group_appui > 1: rule = QUAD (considered as DECORRELATED)
                 if len(l_R_x_j) > 1:
                     # combi all group_appui
-                    R_x = np.sqrt(np.sum(np.array(l_R_x_j) ** 2, axis=0))
-                    part_d_x = np.sqrt(np.sum(np.array(l_part_d_j) ** 2, axis=0))
-                    part_s_x = np.sqrt(np.sum(np.array(l_part_s_j) ** 2, axis=0))
-                    R_prim_x = np.sqrt(np.sum(np.array(l_R_prim_j) ** 2, axis=0))
-                    R_seco_x = np.sqrt(np.sum(np.array(l_R_seco_j) ** 2, axis=0))
+                    if cumul_inter == 'QUAD':
+                        R_x = np.sqrt(np.sum(np.array(l_R_x_j) ** 2, axis=0))
+                        part_d_x = np.sqrt(np.sum(np.array(l_part_d_j) ** 2, axis=0))
+                        part_s_x = np.sqrt(np.sum(np.array(l_part_s_j) ** 2, axis=0))
+                        R_prim_x = np.sqrt(np.sum(np.array(l_R_prim_j) ** 2, axis=0))
+                        R_seco_x = np.sqrt(np.sum(np.array(l_R_seco_j) ** 2, axis=0))
+                    elif cumul_inter == 'ABS': # HB: NEW METHOD
+                        R_x = np.sum(np.abs(np.array(l_R_x_j)), axis=0)
+                        part_d_x = np.sum(np.abs(np.array(l_part_d_j)), axis=0)
+                        part_s_x = np.sum(np.abs(np.array(l_part_s_j)), axis=0)
+                        R_prim_x = np.sum(np.abs(np.array(l_R_prim_j)), axis=0)
+                        R_seco_x = np.sum(np.abs(np.array(l_R_seco_j)), axis=0)
+                    elif cumul_inter == 'LINE': # HB: NEW METHOD
+                        R_x = np.sum(np.array(l_R_x_j), axis=0)
+                        part_d_x = np.sum(np.array(l_part_d_j), axis=0)
+                        part_s_x = np.sum(np.array(l_part_s_j), axis=0)
+                        R_prim_x = np.sum(np.array(l_R_prim_j), axis=0)
+                        R_seco_x = np.sum(np.array(l_R_seco_j), axis=0)
+
                 elif len(l_R_x_j) == 1:  # un seul group appui = multi appui correle
                     # combi group_appui not done if one group_appui
                     R_x = l_R_x_j[0]
