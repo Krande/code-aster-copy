@@ -129,7 +129,7 @@ COMB_SISM_MODAL = MACRO(
         b_dsc=BLOC(condition="""equal_to("TYPE", 'DSC') """, DUREE=SIMP(statut="o", typ="R")),
     ),
     # --- regle combinaison des directions
-    COMB_DIRECTION=SIMP(statut="f", typ="TXM", into=("QUAD", "NEWMARK"), defaut="NEWMARK"),
+    COMB_DIRECTION=SIMP(statut="f", typ="TXM", into=("ABS", "QUAD", "NEWMARK"), defaut="NEWMARK"),
     # --- règle combinaison des reponses par appuis
     b_group_appui_corr=BLOC(
         condition="""equal_to("TYPE_ANALYSE", 'MULT_APPUI')""",
