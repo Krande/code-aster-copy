@@ -1,4 +1,5 @@
 EXPORTS
+    PyInit_libaster
 	?$TSS0@?1??enable_dynamic_attributes@detail@pybind11@@YAXPEAU_heaptypeobject@@@Z@4HA 	 DATA
 	?$TSS0@?1??get_local_internals@detail@pybind11@@YAAEAUlocal_internals@12@XZ@4HA 	 DATA
 	??_R0$$BY00D@8 	 DATA

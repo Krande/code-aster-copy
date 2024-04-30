@@ -7,6 +7,7 @@ import shutil
 
 ASTERLIBDIR = pathlib.Path(os.getenv('CONDA_PREFIX')) / "Library" / "lib/aster"
 DLL_DIR = pathlib.Path(os.getenv('CONDA_PREFIX')) / "DLLs"
+BIN_DIR = pathlib.Path(os.getenv('CONDA_PREFIX')) / "Library" / "bin"
 
 
 def create_symlink(source, link_name):
@@ -34,12 +35,17 @@ def create_symlink(source, link_name):
 
 def main():
     extlib = ".so"
+    libs = ["aster", "bibc", "bibcxx", "bibfor"]
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
     libaster = "libaster.so"
     if platform.system() == "Windows":
         extlib = ".pyd"
         mods.append("libaster")
         libaster = "aster.dll"
+    for lib in libs:
+        src = (ASTERLIBDIR / lib).with_suffix('.dll')
+        dst = BIN_DIR / src.name
+        shutil.copy(src, dst)
 
     for submodule in mods:
         src = osp.join(DLL_DIR, submodule + extlib)
@@ -48,6 +54,5 @@ def main():
         shutil.copy(dst, src)
         # self.symlink_as(src, libaster)
 
-
-if __name__ == '__main__':
-    main()
+        if __name__ == '__main__':
+            main()
