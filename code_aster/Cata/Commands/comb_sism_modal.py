@@ -146,6 +146,16 @@ COMB_SISM_MODAL = MACRO(
         condition="""equal_to("TYPE_ANALYSE", 'MULT_APPUI')""",
         COMB_DDS_CORRELE=SIMP(statut="f", typ="TXM", into=("QUAD", "LINE", "ABS"), defaut="ABS"),
     ),
+    # Combination of the contributions of each modal response of support inside a group
+    b_cumul_intra=BLOC(
+        condition="""equal_to("TYPE_ANALYSE", 'MULT_APPUI')""",
+        CUMUL_INTRA=SIMP(statut="f", typ="TXM", into=("QUAD", "LINE", "ABS"), defaut="LINE"),
+    ),
+    # Combination of the contributions of each group of supports
+    b_cumul_inter=BLOC(
+        condition="""equal_to("TYPE_ANALYSE", 'MULT_APPUI')""",
+        CUMUL_INTER=SIMP(statut="f", typ="TXM", into=("QUAD", "LINE", "ABS"), defaut="QUAD"),
+    ),
     # --- grandeurs interets de sortie
     OPTION=SIMP(
         statut="o",
