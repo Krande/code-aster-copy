@@ -5,9 +5,13 @@ import os.path as osp
 import os
 import shutil
 
-ASTERLIBDIR = pathlib.Path(os.getenv('CONDA_PREFIX')) / "Library" / "lib/aster"
-DLL_DIR = pathlib.Path(os.getenv('CONDA_PREFIX')) / "DLLs"
-BIN_DIR = pathlib.Path(os.getenv('CONDA_PREFIX')) / "Library" / "bin"
+from conda.config import TMP_DIR
+
+# SOURCE_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib/aster"
+SOURCE_DIR = TMP_DIR
+LIB_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib"
+DLL_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "DLLs"
+BIN_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "bin"
 
 
 def create_symlink(source, link_name):
@@ -35,24 +39,32 @@ def create_symlink(source, link_name):
 
 def main():
     extlib = ".so"
-    libs = ["aster", "bibc", "bibcxx", "bibfor"]
+    libs = ["aster", "bibc", "bibcxx", "bibfor", "AsterMFrOfficialDebug"]
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
     libaster = "libaster.so"
     if platform.system() == "Windows":
         extlib = ".pyd"
         mods.append("libaster")
         libaster = "aster.dll"
+
     for lib in libs:
-        src = (ASTERLIBDIR / lib).with_suffix('.dll')
-        dst = BIN_DIR / src.name
-        shutil.copy(src, dst)
+        dll_src = (SOURCE_DIR / lib).with_suffix(".dll")
+        lib_src = (SOURCE_DIR / lib).with_suffix(".lib")
+        dll_dst = BIN_DIR / dll_src.name
+        lib_dst = LIB_DIR / lib_src.name
+        print(f"Copying {dll_src} to {dll_dst}")
+        shutil.copy(dll_src, dll_dst)
+        print(f"Copying {lib_src} to {lib_dst}")
+        shutil.copy(lib_src, lib_dst)
 
     for submodule in mods:
         src = osp.join(DLL_DIR, submodule + extlib)
-        dst = osp.join(ASTERLIBDIR, libaster)
+        dst = osp.join(SOURCE_DIR, libaster)
         # result = create_symlink(dst, src)
+        print(f"Copying {dst} to {src}")
         shutil.copy(dst, src)
         # self.symlink_as(src, libaster)
 
-        if __name__ == '__main__':
-            main()
+
+if __name__ == "__main__":
+    main()

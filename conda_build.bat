@@ -2,13 +2,28 @@
 setlocal
 
 
-if "%1" == "--no-color" (
-    echo "Disabling color output"
-    set CLICOLOR_FORCE=0
-) else (
-    echo "Enabling color output"
+set INCLUDE_TESTS=0
+set USE_LOG=0
+set COLOR_ENABLED=1
+
+:parse_args
+if "%~1"=="" goto end_parse_args
+if /i "%~1"=="--install-tests" set INCLUDE_TESTS=1
+if /i "%~1"=="--use-log" set USE_LOG=1
+if /i "%~1"=="--no-color" set COLOR_ENABLED=0
+shift
+goto parse_args
+
+:end_parse_args
+
+if %COLOR_ENABLED%==1 (
+    echo Enabling color output
     set CLICOLOR_FORCE=1
+) else (
+    echo Disabling color output
+    set CLICOLOR_FORCE=0
 )
+
 
 :: TO set the number of cores, use the env variable JOBS
 call conda_env.bat
@@ -84,8 +99,6 @@ set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
 REM Clean the build directory
 waf distclean
 
-set USE_LOG=0
-
 python conda\update_version.py
 
 set BUILD=std
@@ -102,17 +115,15 @@ waf configure ^
   --disable-mpi ^
   --disable-openmp ^
   --disable-mumps ^
-  --install-tests ^
+  %IF %INCLUDE_TESTS%==1 (--install-tests)^
   --maths-libs=auto ^
   --without-hg
 
-REM if USE_LOG is set, then log the output to a file
-
-if "%1" == "--use-log" (
-    REM set a datetime variable down to the minute
-    set CLICOLOR_FORCE=0
-    @call conda_datetime.bat
-    waf install_debug -vvv > install_debug_%datetimeString%.log 2>&1
+REM Conditional log handling
+if %USE_LOG%==1 (
+    set "datetimeString="
+    call conda_datetime.bat
+    waf install_debug -vvv > "install_debug_%datetimeString%.log" 2>&1
 ) else (
     waf install_debug -v
 )

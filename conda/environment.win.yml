@@ -1,5 +1,6 @@
 name: codeaster-deps
 channels:
+  - https://quetz.krande.no/get/code-aster-dev
   - conda-forge
 dependencies:
   - python 3.11

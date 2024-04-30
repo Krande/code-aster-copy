@@ -10,6 +10,7 @@ from config import (
     TMP_DIR,
     ROOT_DIR,
     get_bibaster_compile_files,
+    LIB_RAW_PREFIX,
 )
 from msvc_utils import call_using_env
 
@@ -35,6 +36,24 @@ def get_default_lib_paths(lib_name: str):
     ]
 
 
+SHARED_DEPS = [
+    "esmumps.lib",
+    "scotch.lib",
+    "scotcherr.lib",
+    "metis.lib",
+    "medC.lib",
+    "medfwrap.lib",
+    "hdf5.lib",
+    "pthread.lib",
+    "TFELSystem.lib",
+    "z.lib",
+    "MFrontGenericInterface.lib",
+    "mkl_intel_lp64_dll.lib",
+    "mkl_intel_thread_dll.lib",
+    "mkl_core_dll.lib",
+]
+
+
 def run_link(lib_name: str, bib_objects: Iterable[pathlib.Path], extra_deps: list[str]):
     bib_obj_list_path = get_obj_list_path(lib_name)
     lib_args = get_default_lib_paths(lib_name)
@@ -55,104 +74,85 @@ def run_link(lib_name: str, bib_objects: Iterable[pathlib.Path], extra_deps: lis
         f.write("\n".join(map(str, extra_deps)))
 
     result = call_using_env(args)
-    print(result.stdout)
-    print(result.stderr)
+    return result
 
 
 def bibaster(use_def: bool = False):
-    extra_deps = [
-        "esmumps.lib",
-        "smumps.lib",
-        "scotch.lib",
-        "scotcherr.lib",
-        "metis.lib",
-        "medC.lib",
-        "medfwrap.lib",
-        "hdf5.lib",
-        "pthread.lib",
-        "TFELSystem.lib",
-        "z.lib",
-        "MFrontGenericInterface.lib",
-        "mkl_intel_lp64_dll.lib",
-        "mkl_intel_thread_dll.lib",
-        "mkl_core_dll.lib",
+    core_lib_deps = [
         "_raw_bibfor_nodef.lib",
         "_raw_bibc_nodef.lib",
         "_raw_bibcxx_nodef.lib",
     ]
-    if use_def:
-        extra_deps.append(f"/DEF:{TMP_DIR}/aster_sym.def")
 
-    run_link(lib_name="aster", bib_objects=get_bibaster_compile_files(), extra_deps=extra_deps)
+    extra_deps = SHARED_DEPS + core_lib_deps
+    if use_def:
+        extra_deps.append(f"/DEF:{ROOT_DIR}/bibc/aster_sym.def")
+
+    result = run_link(lib_name="aster", bib_objects=get_bibaster_compile_files(), extra_deps=extra_deps)
+    if result.returncode != 0:
+        print(result.stdout)
+        print(result.stderr)
+        raise ValueError("Error linking aster")
 
 
 def bibcxx(use_def: bool = False):
-    extra_deps = [
-        "esmumps.lib",
-        "scotch.lib",
-        "scotcherr.lib",
-        "metis.lib",
-        "medC.lib",
-        "medfwrap.lib",
-        "hdf5.lib",
-        "pthread.lib",
-        "TFELSystem.lib",
-        "z.lib",
-        "MFrontGenericInterface.lib",
-        "mkl_intel_lp64_dll.lib",
-        "mkl_intel_thread_dll.lib",
-        "mkl_core_dll.lib",
-        "_raw_aster_nodef.lib",
-        "_raw_bibfor_nodef.lib",
-        "_raw_bibc_nodef.lib",
-        "/FORCE:MULTIPLE",
+    core_lib_deps = [
+        "aster.lib",
+        "aster.exp",
+        "bibfor.lib",
+        "bibfor.exp",
+        "bibc.lib",
+        "bibc.exp",
     ]
-    if use_def:
-        extra_deps.append(f"/DEF:{TMP_DIR}/bibcxx_sym.def")
+    for lib in core_lib_deps:
+        lib_path = TMP_DIR / lib
+        if not lib_path.exists():
+            raise FileNotFoundError(f"{lib_path} does not exist")
 
-    run_link(lib_name="bibcxx", bib_objects=get_bibcxx_compile_files(), extra_deps=extra_deps)
+    extra_deps = SHARED_DEPS + core_lib_deps
+
+    if use_def:
+        extra_deps.append(f"/DEF:{ROOT_DIR}/bibcxx/bibcxx_sym.def")
+
+    result = run_link(lib_name="bibcxx", bib_objects=get_bibcxx_compile_files(), extra_deps=extra_deps)
+    if result.returncode != 0:
+        print(result.stdout)
+        print(result.stderr)
+        raise ValueError("Error linking bibcxx")
 
 
 def bibc(use_def: bool = False):
-    extra_deps = [
-        "esmumps.lib",
-        "smumps.lib",
-        "scotch.lib",
-        "scotcherr.lib",
-        "metis.lib",
-        "medC.lib",
-        "hdf5.lib",
-        "pthread.lib",
-        "z.lib",
+    core_lib_deps = [
         "_raw_bibfor_nodef.lib",
         "_raw_bibcxx_nodef.lib",
     ]
-    if use_def:
-        extra_deps.append(f"/DEF:{TMP_DIR}/bibc_sym.def")
 
-    run_link(lib_name="bibc", bib_objects=get_bibc_compile_files(), extra_deps=extra_deps)
+    extra_deps = SHARED_DEPS + core_lib_deps
+
+    if use_def:
+        extra_deps.append(f"/DEF:{ROOT_DIR}/bibc/bibc_sym.def")
+
+    result = run_link(lib_name="bibc", bib_objects=get_bibc_compile_files(), extra_deps=extra_deps)
+    if result.returncode != 0:
+        print(result.stdout)
+        print(result.stderr)
+        raise ValueError("Error linking bibc")
 
 
 def bibfor(use_def: bool = False):
-    extra_deps = [
-        "pthread.lib",
-        "scotch.lib",
-        "scotcherr.lib",
-        "metis.lib",
-        "hdf5.lib",
-        "medC.lib",
-        "medfwrap.lib",
-        "MFrontGenericInterface.lib",
-        "mkl_intel_lp64_dll.lib",
-        "mkl_intel_thread_dll.lib",
-        "mkl_core_dll.lib",
+    core_lib_deps = [
         "_raw_bibc_nodef.lib",
         "_raw_bibcxx_nodef.lib",
     ]
+    extra_deps = SHARED_DEPS + core_lib_deps
     if use_def:
-        extra_deps.append(f"/DEF:{TMP_DIR}/bibfor_sym.def")
+        extra_deps.append(f"/DEF:{ROOT_DIR}/bibfor/bibfor_sym.def")
 
-    run_link(lib_name="bibfor", bib_objects=get_bibfor_compile_files(), extra_deps=extra_deps)
+    result = run_link(lib_name="bibfor", bib_objects=get_bibfor_compile_files(), extra_deps=extra_deps)
+    if result.returncode != 0:
+        print(result.stdout)
+        print(result.stderr)
+        raise ValueError("Error linking bibfor")
 
 
 if __name__ == "__main__":
