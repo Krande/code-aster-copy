@@ -162,6 +162,8 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
 
 
     fclib_task.inputs += bibcxx_lib_task.outputs + clib_task_outputs
+    #fclib_task.after += bibcxx_lib_task.outputs + clib_task_outputs
+    #cxxlib_task.after += clib_task_outputs + fclib_task_outputs + bibaster_task_outputs
     cxxlib_task.inputs += clib_task_outputs + fclib_task_outputs + bibaster_task_outputs
     #aster_task.inputs += bibcxx_lib_task.outputs
 

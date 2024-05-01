@@ -1,6 +1,7 @@
 import pathlib
 from typing import Iterable
 
+from conda.manual_lib import run_lib
 from config import (
     get_obj_list_path,
     get_bibc_compile_files,
@@ -10,7 +11,7 @@ from config import (
     TMP_DIR,
     ROOT_DIR,
     get_bibaster_compile_files,
-    LIB_RAW_PREFIX,
+    LIB_RAW_PREFIX, CAMod, DEFOption,
 )
 from msvc_utils import call_using_env
 
@@ -78,11 +79,12 @@ def run_link(lib_name: str, bib_objects: Iterable[pathlib.Path], extra_deps: lis
 
 
 def bibaster(use_def: bool = False):
-    core_lib_deps = [
-        "_raw_bibfor_nodef.lib",
-        "_raw_bibc_nodef.lib",
-        "_raw_bibcxx_nodef.lib",
-    ]
+    deps = ["bibfor", "bibc", "bibcxx"]
+    # prefix = LIB_RAW_PREFIX
+    prefix = ""
+    # def_type = "_nodef"
+    def_type = ""
+    core_lib_deps = [f"{prefix}{dep}{def_type}.lib" for dep in deps]
 
     extra_deps = SHARED_DEPS + core_lib_deps
     if use_def:
@@ -95,19 +97,26 @@ def bibaster(use_def: bool = False):
         raise ValueError("Error linking aster")
 
 
+def eval_deps(deps):
+    """The pre-check if libs exists or not can be done here."""
+    ...
+
+
 def bibcxx(use_def: bool = False):
-    core_lib_deps = [
-        "aster.lib",
-        "aster.exp",
-        "bibfor.lib",
-        "bibfor.exp",
-        "bibc.lib",
-        "bibc.exp",
-    ]
-    for lib in core_lib_deps:
-        lib_path = TMP_DIR / lib
+    deps = [CAMod.BIBC, CAMod.BIBFOR, CAMod.LIBASTER]
+    prefix = LIB_RAW_PREFIX
+    def_option = DEFOption.NO_DEF
+    def_type = "_nodef"
+    core_lib_deps = [f"{prefix}{dep.value}{def_type}.lib" for dep in deps]
+    for i, dep in enumerate(core_lib_deps):
+        lib_path = TMP_DIR / dep
+        dep = deps[i]
+        dep_core_path = (TMP_DIR / dep.value).with_suffix(".lib")
+        if dep_core_path.with_suffix('.dll').exists():
+            core_lib_deps[i] = dep_core_path.name
+            continue
         if not lib_path.exists():
-            raise FileNotFoundError(f"{lib_path} does not exist")
+            run_lib(dep, def_opt=def_option)
 
     extra_deps = SHARED_DEPS + core_lib_deps
 
@@ -122,11 +131,16 @@ def bibcxx(use_def: bool = False):
 
 
 def bibc(use_def: bool = False):
-    core_lib_deps = [
-        "_raw_bibfor_nodef.lib",
-        "_raw_bibcxx_nodef.lib",
-    ]
-
+    deps = [CAMod.BIBFOR, CAMod.BIBCXX]
+    prefix = LIB_RAW_PREFIX
+    def_option = DEFOption.NO_DEF
+    def_type = f"_nodef"
+    core_lib_deps = [f"{prefix}{dep.value}{def_type}.lib" for dep in deps]
+    for i, dep in enumerate(core_lib_deps):
+        lib_path = TMP_DIR / dep
+        dep = deps[i]
+        if not lib_path.exists():
+            run_lib(dep, def_opt=def_option)
     extra_deps = SHARED_DEPS + core_lib_deps
 
     if use_def:
@@ -140,10 +154,21 @@ def bibc(use_def: bool = False):
 
 
 def bibfor(use_def: bool = False):
-    core_lib_deps = [
-        "_raw_bibc_nodef.lib",
-        "_raw_bibcxx_nodef.lib",
-    ]
+    deps = [CAMod.BIBC, CAMod.BIBCXX]
+    prefix = LIB_RAW_PREFIX
+    def_option = DEFOption.NO_DEF
+    def_type = "_nodef"
+    core_lib_deps = [f"{prefix}{dep.value}{def_type}.lib" for dep in deps]
+    for i, dep in enumerate(core_lib_deps):
+        lib_path = TMP_DIR / dep
+        dep = deps[i]
+        dep_core_path = (TMP_DIR / dep.value).with_suffix(".lib")
+        if dep_core_path.exists():
+            core_lib_deps[i] = dep_core_path.name
+            continue
+        if not lib_path.exists():
+            run_lib(dep, def_opt=def_option)
+
     extra_deps = SHARED_DEPS + core_lib_deps
     if use_def:
         extra_deps.append(f"/DEF:{ROOT_DIR}/bibfor/bibfor_sym.def")
@@ -155,7 +180,7 @@ def bibfor(use_def: bool = False):
         raise ValueError("Error linking bibfor")
 
 
-if __name__ == "__main__":
+def cli():
     import argparse
 
     parser = argparse.ArgumentParser(description="Manually Link Code Aster libraries")
@@ -175,3 +200,15 @@ if __name__ == "__main__":
         bibcxx(args_.use_def)
     if args_.bibaster:
         bibaster(args_.use_def)
+
+
+def manual():
+    bibc(True)
+    bibfor(True)
+    bibcxx(True)
+    bibaster(True)
+
+
+if __name__ == "__main__":
+    # cli()
+    manual()
