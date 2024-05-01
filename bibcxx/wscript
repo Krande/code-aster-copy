@@ -60,6 +60,7 @@ def build(self):
             env=env.derive(),
             use=["BIBCXX", "PYBIND11", "MFRONT", "PYEXT", "CXX"],
         )
+
     extra_config = dict()
     if platform.system() == "Windows":
         extra_config["defs"] = "bibcxx_sym.def"

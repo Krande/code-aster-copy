@@ -7,12 +7,12 @@ import shutil
 
 from conda.config import TMP_DIR
 
-# SOURCE_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib/aster"
-SOURCE_DIR = TMP_DIR
+SOURCE_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib/aster"
+#SOURCE_DIR = TMP_DIR
 LIB_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib"
 DLL_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "DLLs"
 BIN_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "bin"
-
+SP_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Lib" / "site-packages"
 
 def create_symlink(source, link_name):
     """
@@ -46,6 +46,13 @@ def main():
         extlib = ".pyd"
         mods.append("libaster")
         libaster = "aster.dll"
+
+    py_modules = ["code_aster", "run_aster"]
+    for pymod in py_modules:
+        ca_module_dir_src = SOURCE_DIR / pymod
+        ca_module_dir = SP_DIR / pymod
+        if not ca_module_dir.exists():
+            shutil.copytree(ca_module_dir_src, ca_module_dir)
 
     for lib in libs:
         dll_src = (SOURCE_DIR / lib).with_suffix(".dll")

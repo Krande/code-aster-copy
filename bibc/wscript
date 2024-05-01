@@ -180,7 +180,7 @@ def build_libaster(self, env):
     if env.ASTER_PLATFORM_MINGW or env.ASTER_PLATFORM_MSVC64:
         extlib = ".pyd"
         mods.append("libaster")
-        libaster = "aster.dll"
+        libaster = "libaster.dll"
 
     for submodule in mods:
         src = osp.join(env.ASTERLIBDIR, submodule + extlib)
