@@ -1,4 +1,5 @@
 import pathlib
+import shutil
 from typing import Iterable
 
 from conda.manual_lib import run_lib
@@ -11,19 +12,19 @@ from config import (
     TMP_DIR,
     ROOT_DIR,
     get_bibaster_compile_files,
-    LIB_RAW_PREFIX, CAMod, DEFOption,
+    LIB_RAW_PREFIX,
+    CAMod,
+    DEFOption,
+    LIB_DEPENDENCIES,
+    CompileStage,
+    MODS,
 )
 from msvc_utils import call_using_env
 
 
 # https://learn.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170
 def get_default_flags():
-    return [
-        "/nologo",
-        "/MANIFEST",
-        "/subsystem:console",
-        "/DLL",
-    ]
+    return ["/nologo", "/MANIFEST", "/subsystem:console", "/DLL"]
 
 
 def get_default_lib_paths(lib_name: str):
@@ -56,7 +57,7 @@ SHARED_DEPS = [
 
 
 def run_link(lib_name: str, bib_objects: Iterable[pathlib.Path], extra_deps: list[str]):
-    bib_obj_list_path = get_obj_list_path(lib_name)
+    bib_obj_list_path = get_obj_list_path(lib_name, CompileStage.LINK)
     lib_args = get_default_lib_paths(lib_name)
     args = [
         "LINK.exe",
@@ -78,17 +79,31 @@ def run_link(lib_name: str, bib_objects: Iterable[pathlib.Path], extra_deps: lis
     return result
 
 
-def bibaster(use_def: bool = False):
-    deps = ["bibfor", "bibc", "bibcxx"]
-    # prefix = LIB_RAW_PREFIX
-    prefix = ""
-    # def_type = "_nodef"
-    def_type = ""
-    core_lib_deps = [f"{prefix}{dep}{def_type}.lib" for dep in deps]
+def eval_deps(deps):
+    """The pre-check if libs exists or not can be done here."""
+    prefix = LIB_RAW_PREFIX
+    core_lib_deps = []
+    for i, dep_enum in enumerate(deps):
+        dep = f"{prefix}{dep_enum.value}.lib"
+        lib_path = TMP_DIR / dep
+        if not lib_path.exists():
+            run_lib(dep_enum, def_opt=DEFOption.USE_DEF)
+        dep_core_path = (TMP_DIR / dep_enum.value).with_suffix(".lib")
+        # if dep_core_path.with_suffix(".exp").exists():
+        #     # This means that /DEF has been applied on this library
+        #     core_lib_deps.extend([dep_core_path.name])
+        #     continue
+        # else:
+        core_lib_deps.extend([dep])
+
+    return core_lib_deps
+
+
+def bibaster():
+    deps = LIB_DEPENDENCIES.get(CAMod.LIBASTER)
+    core_lib_deps = eval_deps(deps)
 
     extra_deps = SHARED_DEPS + core_lib_deps
-    if use_def:
-        extra_deps.append(f"/DEF:{ROOT_DIR}/bibc/aster_sym.def")
 
     result = run_link(lib_name="aster", bib_objects=get_bibaster_compile_files(), extra_deps=extra_deps)
     if result.returncode != 0:
@@ -97,31 +112,11 @@ def bibaster(use_def: bool = False):
         raise ValueError("Error linking aster")
 
 
-def eval_deps(deps):
-    """The pre-check if libs exists or not can be done here."""
-    ...
-
-
-def bibcxx(use_def: bool = False):
-    deps = [CAMod.BIBC, CAMod.BIBFOR, CAMod.LIBASTER]
-    prefix = LIB_RAW_PREFIX
-    def_option = DEFOption.NO_DEF
-    def_type = "_nodef"
-    core_lib_deps = [f"{prefix}{dep.value}{def_type}.lib" for dep in deps]
-    for i, dep in enumerate(core_lib_deps):
-        lib_path = TMP_DIR / dep
-        dep = deps[i]
-        dep_core_path = (TMP_DIR / dep.value).with_suffix(".lib")
-        if dep_core_path.with_suffix('.dll').exists():
-            core_lib_deps[i] = dep_core_path.name
-            continue
-        if not lib_path.exists():
-            run_lib(dep, def_opt=def_option)
+def bibcxx():
+    deps = LIB_DEPENDENCIES.get(CAMod.BIBCXX)
+    core_lib_deps = eval_deps(deps)
 
     extra_deps = SHARED_DEPS + core_lib_deps
-
-    if use_def:
-        extra_deps.append(f"/DEF:{ROOT_DIR}/bibcxx/bibcxx_sym.def")
 
     result = run_link(lib_name="bibcxx", bib_objects=get_bibcxx_compile_files(), extra_deps=extra_deps)
     if result.returncode != 0:
@@ -130,21 +125,10 @@ def bibcxx(use_def: bool = False):
         raise ValueError("Error linking bibcxx")
 
 
-def bibc(use_def: bool = False):
-    deps = [CAMod.BIBFOR, CAMod.BIBCXX]
-    prefix = LIB_RAW_PREFIX
-    def_option = DEFOption.NO_DEF
-    def_type = f"_nodef"
-    core_lib_deps = [f"{prefix}{dep.value}{def_type}.lib" for dep in deps]
-    for i, dep in enumerate(core_lib_deps):
-        lib_path = TMP_DIR / dep
-        dep = deps[i]
-        if not lib_path.exists():
-            run_lib(dep, def_opt=def_option)
+def bibc():
+    deps = LIB_DEPENDENCIES.get(CAMod.BIBC)
+    core_lib_deps = eval_deps(deps)
     extra_deps = SHARED_DEPS + core_lib_deps
-
-    if use_def:
-        extra_deps.append(f"/DEF:{ROOT_DIR}/bibc/bibc_sym.def")
 
     result = run_link(lib_name="bibc", bib_objects=get_bibc_compile_files(), extra_deps=extra_deps)
     if result.returncode != 0:
@@ -153,25 +137,11 @@ def bibc(use_def: bool = False):
         raise ValueError("Error linking bibc")
 
 
-def bibfor(use_def: bool = False):
-    deps = [CAMod.BIBC, CAMod.BIBCXX]
-    prefix = LIB_RAW_PREFIX
-    def_option = DEFOption.NO_DEF
-    def_type = "_nodef"
-    core_lib_deps = [f"{prefix}{dep.value}{def_type}.lib" for dep in deps]
-    for i, dep in enumerate(core_lib_deps):
-        lib_path = TMP_DIR / dep
-        dep = deps[i]
-        dep_core_path = (TMP_DIR / dep.value).with_suffix(".lib")
-        if dep_core_path.exists():
-            core_lib_deps[i] = dep_core_path.name
-            continue
-        if not lib_path.exists():
-            run_lib(dep, def_opt=def_option)
+def bibfor():
+    deps = LIB_DEPENDENCIES.get(CAMod.BIBFOR)
+    core_lib_deps = eval_deps(deps)
 
     extra_deps = SHARED_DEPS + core_lib_deps
-    if use_def:
-        extra_deps.append(f"/DEF:{ROOT_DIR}/bibfor/bibfor_sym.def")
 
     result = run_link(lib_name="bibfor", bib_objects=get_bibfor_compile_files(), extra_deps=extra_deps)
     if result.returncode != 0:
@@ -193,20 +163,23 @@ def cli():
     args_ = parser.parse_args()
 
     if args_.bibc:
-        bibc(args_.use_def)
+        bibc()
     if args_.bibfor:
-        bibfor(args_.use_def)
+        bibfor()
     if args_.bibcxx:
-        bibcxx(args_.use_def)
+        bibcxx()
     if args_.bibaster:
-        bibaster(args_.use_def)
+        bibaster()
 
 
 def manual():
-    bibc(True)
-    bibfor(True)
-    bibcxx(True)
-    bibaster(True)
+    shutil.rmtree(TMP_DIR, ignore_errors=True)
+    bibc()
+    bibfor()
+    bibcxx()
+    bibaster()
+    for mod in MODS:
+        shutil.copy(TMP_DIR / "aster.dll", (TMP_DIR / mod).with_suffix(".pyd"))
 
 
 if __name__ == "__main__":

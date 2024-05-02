@@ -1,8 +1,23 @@
 # Based on https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2008/kkt2hd12(v=vs.90)?redirectedfrom=MSDN
 # and https://stackoverflow.com/questions/362830/circular-dependencies-between-dlls-with-visual-studio
 
-from config import CAMod, BUILD_DIR, TMP_DIR, THIS_DIR, CONDA_PREFIX_DIR, LIB_RAW_PREFIX, DEFOption, get_obj_list_path, \
-    get_lib_file, get_bibc_compile_files, get_bibaster_compile_files, get_bibcxx_compile_files, get_bibfor_compile_files
+from config import (
+    CAMod,
+    BUILD_DIR,
+    TMP_DIR,
+    THIS_DIR,
+    CONDA_PREFIX_DIR,
+    LIB_RAW_PREFIX,
+    DEFOption,
+    get_obj_list_path,
+    get_lib_file,
+    get_bibc_compile_files,
+    get_bibaster_compile_files,
+    get_bibcxx_compile_files,
+    get_bibfor_compile_files,
+    DEF_FILE_MAP,
+    CompileStage,
+)
 
 from msvc_utils import call_using_env
 
@@ -24,7 +39,7 @@ def run_lib(lib_name: CAMod | str, def_opt: DEFOption, use_wx=False):
     else:
         files = get_bibfor_compile_files()
 
-    txt_file = get_obj_list_path(str(lib_name.value))
+    txt_file = get_obj_list_path(str(lib_name.value), CompileStage.LIB)
     txt_file.parent.mkdir(exist_ok=True, parents=True)
 
     output_lib_file = get_lib_file(str(lib_name.value), def_opt)
@@ -32,29 +47,32 @@ def run_lib(lib_name: CAMod | str, def_opt: DEFOption, use_wx=False):
     if len(files) == 0:
         raise ValueError(f"No files found in {module_dir}")
 
-    with open(txt_file, "w") as f:
-        f.write("\n".join(map(str, files)))
-
     cmd = [
         "LIB.exe",
-        f"/LIBPATH:{CONDA_PREFIX_DIR}/libs",
         f"@{txt_file.as_posix()}",
-        f"/OUT:{output_lib_file.as_posix()}",
+    ]
+    args = [
         "/MACHINE:X64",
         "/VERBOSE",
     ]
     if use_wx:
-        cmd.append("/WX")
+        args.append("/WX")
 
     if def_opt == DEFOption.USE_DEF:
-        def_file = THIS_DIR / f"{lib_name.value}.def"
+        def_file = DEF_FILE_MAP.get(lib_name)
         if not def_file.exists():
             raise FileNotFoundError(f"{def_file} does not exist")
-        cmd.append(f"/DEF:{def_file.as_posix()}")
+        args.append(f"/DEF:{def_file.as_posix()}")
     elif def_opt == DEFOption.USE_BLANK_DEF:
-        cmd.append("/DEF")
+        args.append("/DEF")
 
     print(" ".join(cmd))
+    with open(txt_file, "w") as f:
+        f.write(f"/LIBPATH:{CONDA_PREFIX_DIR}/libs\n")
+        f.write(f"/OUT:{output_lib_file.as_posix()}\n")
+        f.write("\n".join(map(str, args)))
+        f.write("\n")
+        f.write("\n".join(map(str, files)))
 
     result = call_using_env(cmd)
     if result.returncode != 0:
@@ -70,7 +88,7 @@ def main(lib_option: CAMod, def_opt: DEFOption):
         run_lib(lib_name, def_opt)
 
 
-if __name__ == "__main__":
+def cli():
     import argparse
 
     parser = argparse.ArgumentParser(description="Manually Link Code Aster libraries")
@@ -106,3 +124,12 @@ if __name__ == "__main__":
         main(CAMod.LIBASTER, def_option)
     else:
         raise ValueError("Invalid state reached")
+
+
+def manual():
+    main(CAMod.ALL, DEFOption.USE_DEF)
+
+
+if __name__ == "__main__":
+    # cli()
+    manual()

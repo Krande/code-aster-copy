@@ -36,6 +36,7 @@ echo "Setting compiler env vars"
 set "CC=clang-cl.exe"
 set "CXX=clang-cl.exe"
 set "FC=ifx.exe"
+set "LINK=lld-link.exe"
 
 where python
 where "%CC%"

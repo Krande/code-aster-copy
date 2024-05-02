@@ -21,3 +21,6 @@ dependencies:
   - clang=18.1.3
   - clangxx=18.1.3
   - lld=18.1.3
+  - pip
+  - pip:
+      - dlltracer

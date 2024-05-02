@@ -15,6 +15,7 @@ LIB_RAW_PREFIX = "_raw_"
 TMP_DIR.mkdir(exist_ok=True)
 
 CONDA_PREFIX_DIR = pathlib.Path(os.getenv("CONDA_PREFIX"))
+MODS = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
 
 
 class CAMod(str, Enum):
@@ -31,8 +32,31 @@ class DEFOption(str, Enum):
     NO_DEF = "no_def"
 
 
-def get_obj_list_path(lib_name: str) -> pathlib.Path:
-    return TMP_DIR / "inputs" / f"{LIB_RAW_PREFIX}{lib_name}_ofiles.txt"
+LIB_DEPENDENCIES = {
+    CAMod.BIBC: [CAMod.BIBFOR, CAMod.BIBCXX],
+    CAMod.BIBCXX: [CAMod.BIBC, CAMod.BIBFOR, CAMod.LIBASTER],
+    CAMod.BIBFOR: [CAMod.BIBC, CAMod.BIBCXX],
+    CAMod.LIBASTER: [CAMod.BIBC, CAMod.BIBFOR, CAMod.BIBCXX],
+}
+# link passes
+# 1. make .lib files for each module using /DEF:{def_file} option
+# 2. Create bibc.dll from bibc.exp and bibc.lib
+
+DEF_FILE_MAP = {
+    CAMod.BIBC: ROOT_DIR / "bibc/bibc.def",
+    CAMod.BIBCXX: ROOT_DIR / "bibcxx/bibcxx.def",
+    CAMod.BIBFOR: ROOT_DIR / "bibfor/bibfor.def",
+    CAMod.LIBASTER: ROOT_DIR / "bibc/aster.def",
+}
+
+
+class CompileStage(str, Enum):
+    LIB = "lib"
+    LINK = "link"
+
+
+def get_obj_list_path(lib_name: str, cstage: CompileStage) -> pathlib.Path:
+    return TMP_DIR / "inputs" / f"{LIB_RAW_PREFIX}{lib_name}_ofiles_{cstage.value}.txt"
 
 
 def get_obj_sym_file(lib_name: str) -> pathlib.Path:
@@ -41,11 +65,11 @@ def get_obj_sym_file(lib_name: str) -> pathlib.Path:
 
 def get_lib_file(lib_name: str, def_opt: DEFOption) -> pathlib.Path:
     if def_opt == DEFOption.USE_BLANK_DEF:
-        lib_file_name = f"{LIB_RAW_PREFIX}{lib_name}_blankdef"
+        lib_file_name = f"{LIB_RAW_PREFIX}{lib_name}"
     elif def_opt == DEFOption.USE_DEF:
-        lib_file_name = f"{LIB_RAW_PREFIX}{lib_name}_def"
+        lib_file_name = f"{LIB_RAW_PREFIX}{lib_name}"
     else:  # NO_DEF
-        lib_file_name = f"{LIB_RAW_PREFIX}{lib_name}_nodef"
+        lib_file_name = f"{LIB_RAW_PREFIX}{lib_name}"
 
     return (TMP_DIR / lib_file_name).with_suffix(".lib")
 

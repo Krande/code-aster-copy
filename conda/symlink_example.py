@@ -38,14 +38,10 @@ def create_symlink(source, link_name):
 
 
 def main():
-    extlib = ".so"
+    extlib = ".pyd"
     libs = ["aster", "bibc", "bibcxx", "bibfor", "AsterMFrOfficialDebug"]
-    mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
-    libaster = "libaster.so"
-    if platform.system() == "Windows":
-        extlib = ".pyd"
-        mods.append("libaster")
-        libaster = "aster.dll"
+    mods = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
+    libaster = "aster.dll"
 
     py_modules = ["code_aster", "run_aster"]
     for pymod in py_modules:
