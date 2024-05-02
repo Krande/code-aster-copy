@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -87,6 +87,8 @@ class Closer(ExecuteCommand):
         if keywords.get("PROC0") == "OUI":
             self._options |= FinalizeOptions.OnlyProc0
         super().exec_(keywords)
+        # restore excepthook
+        sys.excepthook = sys.__excepthook__
 
     def _call_oper(self, dummy):
         """Save objects that exist in the context of the caller.

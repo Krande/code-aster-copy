@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,14 +31,33 @@ The functions are exposed as class-method in the :py:class:`Mesh` class.
 """
 
 import math
+import traceback
+from functools import wraps
 
-from .medctoaster import MEDCouplingMeshHelper
-
+from ..Messages import UTMESS
 from ..Utilities import medcoupling as medc
+from .medctoaster import MEDCouplingMeshHelper
 
 MEDCTOL = 1.0e-12
 
 
+def check_medc_error(func):
+    """Decorator to highlight medcoupling exceptions as user error message."""
+
+    @wraps(func)
+    def wrapper(*args, **kwds):
+        """wrapper"""
+        try:
+            result = func(*args, **kwds)
+        except medc.InterpKernelException:
+            exc = traceback.format_exc()
+            UTMESS("F", "MED_41", valk=exc)
+        return result
+
+    return wrapper
+
+
+@check_medc_error
 def buildFromMedCouplingMesh(mesh, mcmesh, verbose=0):
     """Build mesh from medcoupling mesh.
 
@@ -52,6 +71,7 @@ def buildFromMedCouplingMesh(mesh, mcmesh, verbose=0):
     mreader.buildMesh(mesh, verbose)
 
 
+@check_medc_error
 def buildFromMedFile(mesh, filename, meshname=None, verbose=0):
     """Build mesh from a MED file.
 

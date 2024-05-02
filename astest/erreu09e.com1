@@ -1,0 +1,239 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# ----- LA LOI DE COMPORTEMENT DE TYPE DRUCKER-PRAGER ------------------
+# ----- LA MODELISATION D_PLAN PREND EN COMPTE UN MATERIAU AVEC UN -----
+# ----- ENDOMMAGEMENT AU NIVEAU D'UNE MAILLE QUI SE TRADUIT PAR UNE ----
+# ----- PERTE DE COHESION DE 5% DANS LA MAILLE (M1) EN QUESTION. -------
+# ======================================================================
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+last_iter = U.getIndexes()[-1]
+
+
+U = CALC_CHAMP(reuse=U, CRITERES=("INDL_ELGA"), RESULTAT=U, NUME_ORDRE=(19, last_iter))
+
+############################################################
+# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U,
+#                  NUME_ORDRE = (19,last_iter),
+#                  NOM_CHAM   = ('INDL_ELGA',),),)
+############################################################
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=19,
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=19,
+            POINT=2,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=19,
+            POINT=3,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=19,
+            POINT=4,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=19,
+            POINT=5,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=19,
+            POINT=6,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=19,
+            POINT=7,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=19,
+            POINT=8,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=19,
+            POINT=9,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=19,
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M11",
+        ),
+        _F(
+            NUME_ORDRE=19,
+            TYPE_TEST="SOMM",
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            VALE_CALC=284.94887633337,
+        ),
+        _F(
+            NUME_ORDRE=30,
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=30,
+            POINT=2,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=30,
+            POINT=3,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=30,
+            POINT=4,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=30,
+            POINT=5,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=30,
+            POINT=6,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=30,
+            POINT=7,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=30,
+            POINT=8,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=30,
+            POINT=9,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=30,
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            NOM_CMP="INDICE",
+            VALE_CALC=1.0,
+            GROUP_MA="M11",
+        ),
+        _F(
+            NUME_ORDRE=30,
+            TYPE_TEST="SOMM",
+            RESULTAT=U,
+            NOM_CHAM="INDL_ELGA",
+            VALE_CALC=332.22337579073,
+        ),
+    )
+)
+
+FIN()

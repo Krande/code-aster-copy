@@ -7,4 +7,7 @@ P testlist verification sequential
 
 
 F comm erreu09d.comm D 1
+F comm erreu09d.py D 1
 F mmed erreu09b.mmed D 20
+
+P expected_diag <S>_CPU_LIMIT

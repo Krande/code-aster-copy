@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ The syntax of a ``.export`` file is very simple:
 .. code-block:: none
 
     P parameter-name parameter-value
-    A arg1 arg2
+    A args --arg1 --arg2
     F-or-R type path-to-compressed-input-output-file DRC unit
 
 ``P`` for parameters, supported parameters are (with their type):
@@ -41,7 +41,7 @@ The syntax of a ``.export`` file is very simple:
 .. code-block:: none
 
     actions: list[str]          - for GUI, "make_env" for "--env"
-    expected_diag: list[str]    - for testcases that should fail
+    expected_diag: list[str]    - for testcases that may fail
     hide-command: bool          - do not show the command file before execution
     interact: bool              - for GUI, same as "--interactive"
     memory_limit: float         - memory limit in MB

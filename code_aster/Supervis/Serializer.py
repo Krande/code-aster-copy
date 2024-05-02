@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,6 @@ class FinalizeOptions:
 
 
 class Serializer:
-
     """This class manages 'save & reload' feature.
 
     Arguments:
@@ -252,10 +251,21 @@ class Serializer:
 
 
 def saveObjects(level=1, delete=True, options=0):
-    """Save objects of the caller context in a file.
+    """Save objects of the caller context.
 
     Arguments:
         level (int): Number of frames to go back to find the user context.
+        delete (bool): If *True* the saved objects are deleted from the context.
+        options (*FinalizeOptions*): Options for finalization.
+    """
+    saveObjectsFromContext(get_caller_context(level), delete, options)
+
+
+def saveObjectsFromContext(context, delete=True, options=0):
+    """Save objects of the given context.
+
+    Arguments:
+        context (dict): Context to be saved.
         delete (bool): If *True* the saved objects are deleted from the context.
         options (*FinalizeOptions*): Options for finalization.
     """
@@ -266,8 +276,6 @@ def saveObjects(level=1, delete=True, options=0):
         logger.info("Objects not saved on processor #%d", rank)
         libaster.jeveux_finalize(FinalizeOptions.OnlyProc0)
         return
-
-    context = get_caller_context(level)
 
     if options & FinalizeOptions.InfoResu:
         for name, obj in context.items():

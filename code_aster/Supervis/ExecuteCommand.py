@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,6 +62,7 @@ import inspect
 import linecache
 import re
 import sys
+import traceback
 from collections import namedtuple
 from contextlib import contextmanager
 
@@ -87,7 +88,7 @@ from ..Utilities.outputs import command_text, decorate_name
 from .code_file import track_coverage
 from .CommandSyntax import CommandSyntax
 from .ctopy import check_ds_object
-from .Serializer import saveObjects
+from .Serializer import saveObjectsFromContext
 
 
 @contextmanager
@@ -100,7 +101,6 @@ def command_execution():
 
 
 class ExecuteCommand:
-
     """This class implements an executor of commands.
 
     Commands executors are defined by subclassing this class and overloading
@@ -214,38 +214,32 @@ class ExecuteCommand:
             )
 
         self.print_syntax(keywords)
-        stop = False
-        try:
-            if not self._op and self.command_name not in ("DEBUT", "POURSUITE"):
-                # for commands that do not call any operator, do initializations
-                libaster.call_oper_init()
-            with command_execution():
-                self.exec_(keywords)
-        except libaster.AsterError as exc:
-            self._exc = exc
-            # try to push the result in the user context
-            valid = "VALID" in libaster.onFatalError()
-            if valid and hasattr(self._result, "userName"):
-                publish_in(self._caller["context"], {self._result.userName: self._result})
-            stop = (
-                isinstance(self._exc, libaster.TimeLimitError)
-                and not ExecutionParameter().option & Options.SlaveMode
-            )
-            if not stop:
+        with ExceptHookManager.wraps(self):
+            try:
+                if self._op is None and self.command_name not in ("DEBUT", "POURSUITE"):
+                    # for commands that do not call any operator, do initializations
+                    libaster.call_oper_init()
+                with command_execution():
+                    self.exec_(keywords)
+            except libaster.AsterError as exc:
+                self._exc = exc
+                self.publish_result()
                 raise
-        finally:
-            self.post_exec_(keywords)
-            ExecuteCommand.level -= 1
-        # Interrupt execution in case of TimeLimitError
-        if stop:
-            # "<S>" in the message for diagnostic
-            if isinstance(self._exc, libaster.TimeLimitError):
-                UTMESS("I", "SUPERVIS_98")
-            else:
-                UTMESS("I", "SUPERVIS_95")
-            saveObjects(level=3)
-            raise SystemExit(1)
+            finally:
+                self.post_exec_(keywords)
+                ExecuteCommand.level -= 1
         return self._result
+
+    def publish_result(self):
+        """Publish the result in the caller context."""
+        if not hasattr(self._result, "userName"):
+            return
+        publish_in(self.caller_context, {self._result.userName: self._result})
+
+    @property
+    def caller_context(self):
+        """dict: The context from which the command has be called."""
+        return self._caller["context"]
 
     @property
     def exception(self):
@@ -628,7 +622,6 @@ HELP_LEGACY_MODE = """
 
 
 class ExecuteMacro(ExecuteCommand):
-
     """This implements an executor of *legacy* macro-commands.
 
     The OPS function of *legacy* macro-commands returns a return code and
@@ -709,7 +702,7 @@ class ExecuteMacro(ExecuteCommand):
                 )
                 self._result.userName = user_name
             if self._add_results:
-                publish_in(self._caller["context"], self._add_results)
+                publish_in(self.caller_context, self._add_results)
             return
 
         if not self._sdprods:
@@ -814,7 +807,6 @@ def UserMacro(name, cata, ops):
 
 
 class CO(PyDataStructure):
-
     """Object that identify an auxiliary result of a Macro-Command."""
 
     _name = None
@@ -984,3 +976,67 @@ def command_time(counter, cpu, system, elapsed):
         str: String representation.
     """
     return MessageLog.GetText("I", "SUPERVIS2_75", vali=counter, valr=(cpu, system, elapsed))
+
+
+class ExceptHookManager:
+    """Object to manager the definition of the *excepthook*."""
+
+    _current_cmd = None
+
+    @classmethod
+    def enter(cls, command):
+        """Assign the excepthook when entering in a command."""
+        # keep the outer command
+        if not cls._current_cmd:
+            cls._current_cmd = command
+
+    @classmethod
+    def exit(cls, command):
+        """Called when exiting a command."""
+        if command is cls._current_cmd:
+            cls._current_cmd = None
+
+    @classmethod
+    def init(cls):
+        """Assign the basic hook."""
+        sys.excepthook = cls.excepthook
+
+    @classmethod
+    def excepthook(cls, type, value, traceb):
+        """Hook called on uncaught exceptions raised during the execution of a command.
+
+        Args:
+            command (ExecuteCommand): The current command.
+            type (type): Exception type.
+            value (BaseException): Exception instance.
+            traceb (traceback): Exception traceback.
+        """
+        traceback.print_exception(type, value, traceb, file=sys.stderr)
+        sys.stderr.flush()
+        try:
+            assert sys.flags.interactive or "__IPYTHON__" in globals()
+            print("An exception occurred! Return to interactive session.")
+            return
+        except AssertionError:
+            pass
+        if cls._current_cmd:
+            print("\nException: Trying to close the database after an uncaught exception...\n")
+            print(
+                f"\nPublishing the result of the current command {cls._current_cmd.name}...\n",
+                flush=True,
+            )
+            cls._current_cmd.publish_result()
+            saveObjectsFromContext(cls._current_cmd.caller_context)
+        else:
+            sys.__excepthook__(type, value, traceb)
+
+    @classmethod
+    @contextmanager
+    def wraps(cls, command):
+        """Context manager used to enable a specific hook during a command execution."""
+        cls.enter(command)
+        yield
+        cls.exit(command)
+
+
+ExceptHookManager.init()
