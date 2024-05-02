@@ -89,12 +89,14 @@ def eval_deps(deps):
         if not lib_path.exists():
             run_lib(dep_enum, def_opt=DEFOption.USE_DEF)
         dep_core_path = (TMP_DIR / dep_enum.value).with_suffix(".lib")
+        exp_file = lib_path.with_suffix(".exp")
         # if dep_core_path.with_suffix(".exp").exists():
         #     # This means that /DEF has been applied on this library
         #     core_lib_deps.extend([dep_core_path.name])
         #     continue
         # else:
         core_lib_deps.extend([dep])
+
 
     return core_lib_deps
 
@@ -178,6 +180,7 @@ def manual():
     bibfor()
     bibcxx()
     bibaster()
+    # Run linking again
     for mod in MODS:
         shutil.copy(TMP_DIR / "aster.dll", (TMP_DIR / mod).with_suffix(".pyd"))
 
