@@ -39,7 +39,7 @@ from ..Utilities import ExecutionParameter, value_is_sequence
 try:
     import matplotlib
 
-    # matplotlib.use("Agg")
+    matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
     HAS_MATPLOTLIB = True
