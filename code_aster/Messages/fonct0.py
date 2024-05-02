@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -193,9 +193,6 @@ Un problème d'interpolation a été rencontré.
   -> Risque & Conseil :
       Vérifier les valeurs fournies derrière le mot-clé 'INTERPOL' lors
       de la création de cette(ces) fonction(s).
-
-  -> Débogage :
-      %(k2)s
 """
     ),
     28: _(
@@ -210,9 +207,6 @@ Vous ne pouvez pas faire la transformée de Fourier inverse d'une fonction dont 
   -> Risque & Conseil :
       Vérifier la valeur fournie derrière les mots-clés 'NOM_PARA'/'NOM_RESU' lors
       de la création de cette(ces) fonction(s).
-
-  -> Débogage :
-      %(k2)s
 """
     ),
     29: _(
@@ -223,9 +217,6 @@ Un problème concernant le prolongement de la (des) fonction(s) a été rencontr
   -> Risque & Conseil :
       Vérifier la valeur fournie derrière les mots-clés 'PROL_GAUCHE'/'PROL_DROITE'
       lors de la création de cette(ces) fonction(s).
-
-  -> Débogage :
-      %(k2)s
 """
     ),
     30: _(

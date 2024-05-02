@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,18 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
+from math import sqrt, exp
 import numpy as np
+
+from code_aster.Commands import *
+from code_aster import CA
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 from zzzz100g import MACRO_TEST
+
+test = CA.TestCase()
 
 form = MACRO_TEST(VALE=3.0)
 
@@ -181,6 +186,21 @@ bet = np.std(np.log(FM))
 print("X2D: mean median E vari", moy, med, bet)
 # X2D: mean median log std E vari 18148893896.2 18046666092.3 0.176371239856
 
+# check for extrapolations controls
+# x in [-200, 200]
+# y in [100, 100]
+
+with test.assertRaisesRegex(CA.AsterError, "FONCT0_29"):
+    F_vari2(xmin - 1.0, ymax)
+
+with test.assertRaisesRegex(CA.AsterError, "FONCT0_29"):
+    F_vari2(xmax + 1.0, ymax)
+
+with test.assertRaisesRegex(CA.AsterError, "FONCT0_29"):
+    F_vari2(0.0, ymax + 1.0)
+
+with test.assertRaisesRegex(CA.AsterError, "FONCT0_29"):
+    F_vari2(0.0, ymax - 1.0)
 
 # -------------- FONCTION 2D avec selection de N termes les plus energétiques------------
 
@@ -472,5 +492,6 @@ IMPR_RESU(FORMAT='MED',
 
 """
 
+test.printSummary()
 
 FIN()
