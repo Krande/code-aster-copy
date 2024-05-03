@@ -1,13 +1,11 @@
 # Based on https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2008/kkt2hd12(v=vs.90)?redirectedfrom=MSDN
 # and https://stackoverflow.com/questions/362830/circular-dependencies-between-dlls-with-visual-studio
+import shutil
 
 from config import (
     CAMod,
     BUILD_DIR,
-    TMP_DIR,
-    THIS_DIR,
     CONDA_PREFIX_DIR,
-    LIB_RAW_PREFIX,
     DEFOption,
     get_obj_list_path,
     get_lib_file,
@@ -51,10 +49,7 @@ def run_lib(lib_name: CAMod | str, def_opt: DEFOption, use_wx=False):
         "LIB.exe",
         f"@{txt_file.as_posix()}",
     ]
-    args = [
-        "/MACHINE:X64",
-        "/VERBOSE",
-    ]
+    args = ["/MACHINE:X64", "/SUBSYSTEM:CONSOLE"]
     if use_wx:
         args.append("/WX")
 

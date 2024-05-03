@@ -1,6 +1,8 @@
 @echo off
 setlocal
 
+SET PARENT_DIR=%~dp0
+SET PARENT_DIR=%PARENT_DIR:\=/%
 
 set INCLUDE_TESTS=0
 set USE_LOG=0
@@ -26,7 +28,7 @@ if %COLOR_ENABLED%==1 (
 
 
 :: TO set the number of cores, use the env variable JOBS
-call conda_env.bat
+call %PARENT_DIR%\conda_env.bat
 
 if defined JOBS (
     echo "Using %JOBS% cores"
@@ -36,14 +38,13 @@ echo "Setting compiler env vars"
 set "CC=clang-cl.exe"
 set "CXX=clang-cl.exe"
 set "FC=ifx.exe"
-set "LINK=lld-link.exe"
+REM set "LINK=link.exe"
 
 where python
 where "%CC%"
 where "%FC%"
+REM where "%LINK%"
 
-SET PARENT_DIR=%~dp0
-SET PARENT_DIR=%PARENT_DIR:\=/%
 
 SET OUTPUT_DIR=%PARENT_DIR%/build/std
 SET OUTPUT_DIR=%OUTPUT_DIR:\=/%
@@ -93,6 +94,8 @@ set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin 
     pthread.lib libomp.lib medfwrap.lib hdf5.lib metis.lib ^
     MFrontGenericInterface.lib scotch.lib scotcherr.lib ^
     mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib
+
+set LINKFLAGS_CXXLIB=/WHOLEARCHIVE:bibcxx.lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 

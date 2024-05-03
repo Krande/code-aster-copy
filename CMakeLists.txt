@@ -6,6 +6,7 @@ OPTION(BUILD_BIBCXX "Build the bibcxx library" OFF)
 OPTION(BUILD_BIBC "Build the bibc library" OFF)
 OPTION(BUILD_BIBFOR "Build the bibfor library" OFF)
 OPTION(BUILD_ASTER "Build the aster library" OFF)
+OPTION(BUILD_MFRONT "Build the mfront library" OFF)
 
 set(INCL_DIRS
         bibcxx/include bibcxx bibc/include bibfor/include $ENV{CONDA_PREFIX}/include $ENV{CONDA_PREFIX}/Library/include extern/include $ENV{CONDA_PREFIX}/Lib/site-packages/numpy/core/include build/std/debug
@@ -24,6 +25,8 @@ set(DEP_LIBS
 if (BUILD_BIBCXX)
     # Find all .cxx files recursively in the subdirectory bibcxx
     file(GLOB_RECURSE bibcxx_SOURCES "bibcxx/*.cxx")
+    list(REMOVE_ITEM bibcxx_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/bibcxx/MFront/MFrontBehaviour.cxx")
+
     # Create a shared library from the sources
     add_library(bibcxx_shared SHARED ${bibcxx_SOURCES})
 
@@ -47,6 +50,32 @@ if (BUILD_BIBCXX)
             WINDOWS_EXPORT_ALL_SYMBOLS TRUE
     )
 endif (BUILD_BIBCXX)
+
+# MFRONT
+if (BUILD_MFRONT)
+    # Find all .cxx files recursively in the subdirectory mfront
+    file(GLOB_RECURSE mfront_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/bibcxx/MFront/*.cxx")
+
+    # Create a shared library from the sources
+    add_library(mfront_shared SHARED ${mfront_SOURCES})
+
+    # Add /std:c++17 to the compiler flags
+    target_compile_options(mfront_shared PRIVATE /std:c++17 /nologo /DTFEL_ARCH64)
+
+    # Add lib path to the linker flags
+    target_link_options(mfront_shared PRIVATE ${DEP_PATHS})
+
+    # Add .lib files to the linker flags
+    target_link_libraries(mfront_shared PRIVATE ${DEP_LIBS})
+
+    # Include the headers located at mfront/include
+    target_include_directories(mfront_shared PUBLIC ${INCL_DIRS})
+
+    # use the WINDOWS_EXPORT_ALL_SYMBOLS to create a .def file
+    set_target_properties(mfront_shared PROPERTIES
+            WINDOWS_EXPORT_ALL_SYMBOLS TRUE
+    )
+endif (BUILD_MFRONT)
 
 # BIBC
 if (BUILD_BIBC)

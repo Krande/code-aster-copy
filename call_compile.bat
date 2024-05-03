@@ -1,7 +1,9 @@
 @echo off
 setlocal
 
-call conda_env.bat
+set PARENT_DIR=%~dp0
+
+call %PARENT_DIR%\conda_env.bat
 
 %*
 

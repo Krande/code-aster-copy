@@ -11,7 +11,7 @@ ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent
 THIS_DIR = pathlib.Path(__file__).resolve().parent
 BUILD_DIR = ROOT_DIR / "build" / "std" / "debug"
 TMP_DIR = THIS_DIR / "temp"
-LIB_RAW_PREFIX = "_raw_"
+LIB_RAW_PREFIX = ""
 TMP_DIR.mkdir(exist_ok=True)
 
 CONDA_PREFIX_DIR = pathlib.Path(os.getenv("CONDA_PREFIX"))
@@ -23,6 +23,7 @@ class CAMod(str, Enum):
     BIBFOR = "bibfor"
     BIBCXX = "bibcxx"
     LIBASTER = "aster"
+    MFRONT = "mfront"
     ALL = "all"
 
 
@@ -34,9 +35,10 @@ class DEFOption(str, Enum):
 
 LIB_DEPENDENCIES = {
     CAMod.BIBC: [CAMod.BIBFOR, CAMod.BIBCXX],
-    CAMod.BIBCXX: [CAMod.BIBC, CAMod.BIBFOR, CAMod.LIBASTER],
     CAMod.BIBFOR: [CAMod.BIBC, CAMod.BIBCXX],
+    CAMod.BIBCXX: [CAMod.BIBC, CAMod.BIBFOR, CAMod.LIBASTER],
     CAMod.LIBASTER: [CAMod.BIBC, CAMod.BIBFOR, CAMod.BIBCXX],
+    CAMod.MFRONT: [CAMod.BIBCXX],
 }
 # link passes
 # 1. make .lib files for each module using /DEF:{def_file} option
@@ -56,7 +58,7 @@ class CompileStage(str, Enum):
 
 
 def get_obj_list_path(lib_name: str, cstage: CompileStage) -> pathlib.Path:
-    return TMP_DIR / "inputs" / f"{LIB_RAW_PREFIX}{lib_name}_ofiles_{cstage.value}.txt"
+    return TMP_DIR / "inputs" / f"{LIB_RAW_PREFIX}{lib_name}_{cstage.value}.txt"
 
 
 def get_obj_sym_file(lib_name: str) -> pathlib.Path:
@@ -74,15 +76,14 @@ def get_lib_file(lib_name: str, def_opt: DEFOption) -> pathlib.Path:
     return (TMP_DIR / lib_file_name).with_suffix(".lib")
 
 
-def get_bibc_compile_files(skip_pythonc=True):
+def get_bibc_compile_files():
     files = list((BUILD_DIR / "bibc").rglob("*.o"))
-    if skip_pythonc:
-        # remove the python.o file
-        files_clean = set([x for x in files if "python.c" not in x.stem])
-        diff_files = set(files).difference(files_clean)
-        if len(diff_files) == 0:
-            raise ValueError(f"Removed too many files {diff_files}")
-        files = files_clean
+    # remove the python.o file
+    files_clean = set([x for x in files if "python.c" not in x.stem])
+    diff_files = set(files).difference(files_clean)
+    if len(diff_files) == 0:
+        raise ValueError(f"Removed too many files {diff_files}")
+    files = files_clean
     return files
 
 
@@ -92,7 +93,16 @@ def get_bibaster_compile_files() -> Iterable[pathlib.Path]:
 
 def get_bibcxx_compile_files():
     files = list((BUILD_DIR / "bibcxx").rglob("*.o"))
+    files_clean = set([x for x in files if "MFrontBehaviour.cxx" not in x.stem])
+    diff_files = set(files).difference(files_clean)
+    if len(diff_files) == 0:
+        raise ValueError(f"Removed too many files {diff_files}")
+    files = files_clean
     return files
+
+
+def get_mfront_compile_files():
+    return list((BUILD_DIR / "bibcxx" / "MFront").rglob("*.o"))
 
 
 def get_bibfor_compile_files():

@@ -1,18 +1,17 @@
-import pathlib
-import platform
-import os.path as osp
-
 import os
+import os.path as osp
+import pathlib
 import shutil
 
-from conda.config import TMP_DIR
+from config import TMP_DIR
 
-SOURCE_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib/aster"
-#SOURCE_DIR = TMP_DIR
+# SOURCE_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib/aster"
+SOURCE_DIR = TMP_DIR
 LIB_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib"
 DLL_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "DLLs"
 BIN_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "bin"
 SP_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Lib" / "site-packages"
+
 
 def create_symlink(source, link_name):
     """
@@ -37,7 +36,7 @@ def create_symlink(source, link_name):
         return False
 
 
-def main():
+def main(use_symlink: bool):
     extlib = ".pyd"
     libs = ["aster", "bibc", "bibcxx", "bibfor", "AsterMFrOfficialDebug"]
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
@@ -63,11 +62,30 @@ def main():
     for submodule in mods:
         src = osp.join(DLL_DIR, submodule + extlib)
         dst = osp.join(SOURCE_DIR, libaster)
-        # result = create_symlink(dst, src)
-        print(f"Copying {dst} to {src}")
-        shutil.copy(dst, src)
-        # self.symlink_as(src, libaster)
+        if use_symlink:
+            result = create_symlink(dst, src)
+            if not result:
+                raise ValueError(f"Failed to create symlink: {src} -> {dst}")
+        else:
+            print(f"Copying {dst} to {src}")
+            shutil.copy(dst, src)
+
+
+def cli():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Manually Link Code Aster libraries")
+    parser.add_argument(
+        "--symlink",
+        action="store_true",
+        help="Create symlinks for the Code Aster libraries. Alternatively, copy the files.",
+    )
+
+
+def manual():
+    main(False)
 
 
 if __name__ == "__main__":
-    main()
+    # manual()
+    cli()

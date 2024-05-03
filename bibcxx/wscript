@@ -61,10 +61,6 @@ def build(self):
             use=["BIBCXX", "PYBIND11", "MFRONT", "PYEXT", "CXX"],
         )
 
-    extra_config = dict()
-    if platform.system() == "Windows":
-        extra_config["defs"] = "bibcxx_sym.def"
-
     self(
         features="cxx cxxshlib",
         name="asterbibcxx",
@@ -83,8 +79,7 @@ def build(self):
             "SCOTCH",
         ],
         env=env.derive(),
-        install_path=env.ASTERLIBDIR,
-        **extra_config
+        install_path=env.ASTERLIBDIR
     )
 
 
@@ -172,6 +167,7 @@ def check_optimization_cxxflags_msvc(self):
     if self.options.enable_asan:
         flags.extend(["/fsanitize=address"])
         self.env.append_unique("LINKFLAGS", ["/fsanitize=address"])
+
     self.env.append_unique("CXXFLAGS", flags)
     self.end_msg(flags)
 

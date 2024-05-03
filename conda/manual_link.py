@@ -24,7 +24,7 @@ from msvc_utils import call_using_env
 
 # https://learn.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170
 def get_default_flags():
-    return ["/nologo", "/MANIFEST", "/subsystem:console", "/DLL"]
+    return ["/nologo", "/MANIFEST", "/subsystem:console", "/DLL", "/MACHINE:X64", "/DEBUG", "/WX"]
 
 
 def get_default_lib_paths(lib_name: str):
@@ -59,14 +59,16 @@ SHARED_DEPS = [
 def run_link(lib_name: str, bib_objects: Iterable[pathlib.Path], extra_deps: list[str]):
     bib_obj_list_path = get_obj_list_path(lib_name, CompileStage.LINK)
     lib_args = get_default_lib_paths(lib_name)
+
     args = [
-        "LINK.exe",
         f"/IMPLIB:{TMP_DIR}/{lib_name}.lib",
         f"/OUT:{TMP_DIR}/{lib_name}.dll",
-        f"@{bib_obj_list_path}",
     ]
+
     bib_obj_list_path.parent.mkdir(exist_ok=True, parents=True)
     with open(bib_obj_list_path, "w") as f:
+        f.write("\n".join(map(str, args)))
+        f.write("\n")
         f.write("\n".join(map(str, get_default_flags())))
         f.write("\n")
         f.write("\n".join(map(str, lib_args)))
@@ -75,7 +77,12 @@ def run_link(lib_name: str, bib_objects: Iterable[pathlib.Path], extra_deps: lis
         f.write("\n")
         f.write("\n".join(map(str, extra_deps)))
 
-    result = call_using_env(args)
+    result = call_using_env(["LINK.exe", f"@{bib_obj_list_path}"])
+    if result.returncode != 0:
+        print(result.stdout)
+        print(result.stderr)
+        raise ValueError(f"Error linking {lib_name}")
+
     return result
 
 
@@ -97,7 +104,6 @@ def eval_deps(deps):
         # else:
         core_lib_deps.extend([dep])
 
-
     return core_lib_deps
 
 
@@ -105,51 +111,53 @@ def bibaster():
     deps = LIB_DEPENDENCIES.get(CAMod.LIBASTER)
     core_lib_deps = eval_deps(deps)
 
-    extra_deps = SHARED_DEPS + core_lib_deps
-
-    result = run_link(lib_name="aster", bib_objects=get_bibaster_compile_files(), extra_deps=extra_deps)
-    if result.returncode != 0:
-        print(result.stdout)
-        print(result.stderr)
-        raise ValueError("Error linking aster")
+    extra_deps = SHARED_DEPS + ["/WHOLEARCHIVE:aster.lib"]
+    extra_deps += core_lib_deps + ["aster.exp"]
+    run_link(lib_name="aster", bib_objects=get_bibaster_compile_files(), extra_deps=extra_deps)
 
 
 def bibcxx():
     deps = LIB_DEPENDENCIES.get(CAMod.BIBCXX)
     core_lib_deps = eval_deps(deps)
 
-    extra_deps = SHARED_DEPS + core_lib_deps
+    extra_deps = SHARED_DEPS + ["/WHOLEARCHIVE:bibcxx.lib"]
+    extra_deps += core_lib_deps + ["bibcxx.exp"]
 
-    result = run_link(lib_name="bibcxx", bib_objects=get_bibcxx_compile_files(), extra_deps=extra_deps)
-    if result.returncode != 0:
-        print(result.stdout)
-        print(result.stderr)
-        raise ValueError("Error linking bibcxx")
+    run_link(lib_name="bibcxx", bib_objects=get_bibcxx_compile_files(), extra_deps=extra_deps)
 
 
 def bibc():
     deps = LIB_DEPENDENCIES.get(CAMod.BIBC)
     core_lib_deps = eval_deps(deps)
-    extra_deps = SHARED_DEPS + core_lib_deps
 
-    result = run_link(lib_name="bibc", bib_objects=get_bibc_compile_files(), extra_deps=extra_deps)
-    if result.returncode != 0:
-        print(result.stdout)
-        print(result.stderr)
-        raise ValueError("Error linking bibc")
+    extra_deps = SHARED_DEPS + ["/WHOLEARCHIVE:bibc.lib"]
+    extra_deps += core_lib_deps + ["bibc.exp"]
+
+    run_link(lib_name="bibc", bib_objects=get_bibc_compile_files(), extra_deps=extra_deps)
 
 
 def bibfor():
     deps = LIB_DEPENDENCIES.get(CAMod.BIBFOR)
     core_lib_deps = eval_deps(deps)
 
-    extra_deps = SHARED_DEPS + core_lib_deps
+    extra_deps = SHARED_DEPS + ["/WHOLEARCHIVE:bibfor.lib"]
+    extra_deps += core_lib_deps + ["bibfor.exp"]
+    run_link(lib_name="bibfor", bib_objects=get_bibfor_compile_files(), extra_deps=extra_deps)
 
-    result = run_link(lib_name="bibfor", bib_objects=get_bibfor_compile_files(), extra_deps=extra_deps)
-    if result.returncode != 0:
-        print(result.stdout)
-        print(result.stderr)
-        raise ValueError("Error linking bibfor")
+
+def aster_lib_complete():
+    """Link all the libraries into a single dll"""
+    core_lib_deps = eval_deps(deps)
+
+    extra_deps = SHARED_DEPS + core_lib_deps + ["bibfor.exp"]
+    extra_deps += [
+        # "/WHOLEARCHIVE:aster.lib",
+        # "/WHOLEARCHIVE:bibcxx.lib",
+        # "/WHOLEARCHIVE:bibc.lib",
+        "/WHOLEARCHIVE:bibfor.lib",
+    ]
+
+    run_link(lib_name="aster", bib_objects=get_bibfor_compile_files(), extra_deps=extra_deps)
 
 
 def cli():
@@ -176,10 +184,14 @@ def cli():
 
 def manual():
     shutil.rmtree(TMP_DIR, ignore_errors=True)
-    bibc()
+    for mod in [CAMod.BIBCXX, CAMod.BIBFOR, CAMod.BIBC, CAMod.LIBASTER]:
+        run_lib(mod, DEFOption.USE_DEF)
+
     bibfor()
+    bibc()
     bibcxx()
     bibaster()
+
     # Run linking again
     for mod in MODS:
         shutil.copy(TMP_DIR / "aster.dll", (TMP_DIR / mod).with_suffix(".pyd"))

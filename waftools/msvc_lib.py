@@ -2,7 +2,7 @@ import pathlib
 import shutil
 from dataclasses import dataclass
 
-from waflib import Logs, TaskGen, Task, Errors, ConfigSet
+from waflib import Logs, TaskGen, Task, Errors
 
 from waftools.clangdb import build_clang_compilation_db
 
@@ -16,22 +16,34 @@ class msvclibgen(Task.Task):
         """Execute the command"""
         output_fp = pathlib.Path(self.outputs[0].abspath())
         output_fp.parent.mkdir(parents=True, exist_ok=True)
+        obld = self.generator.bld
+        root_path = pathlib.Path(obld.root.abspath()).resolve().absolute()
 
         clean_name = output_fp.stem.replace("_gen", "")
-
-        opts = ["/NOLOGO", "/MACHINE:X64"]
-
-        cmd = cmd[:2] + opts + cmd[2:]
-
-        ret = super().exec_command(cmd, **kw)
         # This is a hack to copy the generated lib to the build directory
+        destination = None
         if clean_name == "astertmp":
             destination = output_fp.parent.parent / "bibc" / "aster.lib"
             destination.parent.mkdir(parents=True, exist_ok=True)
+            def_file = root_path / "bibc" / "aster.def"
         else:
-            destination = (output_fp.parent / clean_name).with_suffix(".lib")
+            def_file = root_path / clean_name / f"{clean_name}.def"
 
-        # shutil.copy(output_fp, destination)
+        # Location of python 3.11 libs
+        libs_dir = pathlib.Path(self.env.PREFIX).resolve().absolute().parent / "libs"
+        opts = ["/NOLOGO", "/MACHINE:X64", "/SUBSYSTEM:CONSOLE", f"/LIBPATH:{libs_dir}", f"/DEF:{def_file}"]
+
+        cmd = cmd[:2] + opts + cmd[2:]
+        # write a copy of the inputs to a file
+        with open(output_fp.with_name(f"{output_fp.stem}_in.txt"), "w") as f:
+            f.write("\n".join([str(x) for x in cmd]))
+
+        ret = super().exec_command(cmd, **kw)
+        if clean_name == "astertmp" and destination is not None:
+            src_exp_file = output_fp.with_suffix(".exp")
+            dst_exp_file = destination.with_suffix(".exp")
+            shutil.copy(output_fp, destination)
+            shutil.copy(src_exp_file, dst_exp_file)
         return ret
 
 
@@ -107,7 +119,7 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     # the task takes in the outputs of all C tasks
     # it's outputs are bibc.lib and bibc.exp located in the build directory
     bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
-    lib_output_file_path = bld_path / lib_name / f"{lib_name}_gen.lib"
+    lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
 
     Logs.info(f"{lib_output_file_path=}")
 
@@ -117,7 +129,6 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     msvc_libgen_task = self.create_task("msvclibgen")
     msvc_libgen_task.inputs = input_tasks
     msvc_libgen_task.env = self.env
-    msvc_libgen_task.MSVC_LIBGEN_LIB_PATH = lib_output_file_path.as_posix()
     msvc_libgen_task.dep_nodes = input_tasks
     msvc_libgen_task.outputs = [bib_lib_output_file_node]
 
@@ -130,6 +141,17 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     cxxlib_task = task_obj.asterbibcxx.libtask
     fclib_task = task_obj.asterbibfor.libtask
     aster_task = task_obj.asterlib.libtask
+
+    clib_task.env.append_unique("LINKFLAGS_CLIB", ["/WHOLEARCHIVE:bibc.lib"])
+    aster_task.env.append_unique("LINKFLAGS_CXXLIB", ["/WHOLEARCHIVE:aster.lib"])
+    cxxlib_task.env.append_unique("LINKFLAGS_CXXLIB", ["/WHOLEARCHIVE:bibcxx.lib"])
+    fclib_task.env.append_unique("LINKFLAGS_FCLIB", ["/WHOLEARCHIVE:bibfor.lib"])
+
+    # Lib files are created by MSVC lib generation, so will remove these from the shlib outputs
+    clib_task.outputs = [o for o in clib_task.outputs if o.suffix() != ".lib"]
+    cxxlib_task.outputs = [o for o in cxxlib_task.outputs if o.suffix() != ".lib"]
+    fclib_task.outputs = [o for o in fclib_task.outputs if o.suffix() != ".lib"]
+    aster_task.outputs = [o for o in aster_task.outputs if o.suffix() != ".lib"]
 
     c_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterbibc.tasks]
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.asterbibcxx.tasks]
@@ -160,12 +182,9 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     Logs.info(f"{fclib_task_outputs=}")
     Logs.info(f"{bibaster_task_outputs=}")
 
-
     fclib_task.inputs += bibcxx_lib_task.outputs + clib_task_outputs
-    #fclib_task.after += bibcxx_lib_task.outputs + clib_task_outputs
-    #cxxlib_task.after += clib_task_outputs + fclib_task_outputs + bibaster_task_outputs
     cxxlib_task.inputs += clib_task_outputs + fclib_task_outputs + bibaster_task_outputs
-    #aster_task.inputs += bibcxx_lib_task.outputs
+    # aster_task.inputs += bibcxx_lib_task.outputs
 
     # Add .exp files to the outputs
     # fclib_task.outputs +=
