@@ -38,8 +38,8 @@ from .logger import WARNING, logger
 from .status import StateOptions, Status, get_status
 from .timer import Timer
 from .utils import (
-    RUNASTER_ROOT,
     RUNASTER_PLATFORM,
+    RUNASTER_ROOT,
     cmd_abspath,
     compress,
     copy,
