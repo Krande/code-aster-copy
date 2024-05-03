@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,12 @@ def options(self):
         dest="procstatus",
         action="store_false",
         help="disable control of used memory with VmSize",
+    )
+    group.add_option(
+        "--use-srun",
+        dest="use_srun",
+        action="store_true",
+        help="use 'srun' to start processes instead of 'mpiexec' (default: False)",
     )
     group.add_option(
         "--enable-ccache",

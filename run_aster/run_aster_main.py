@@ -385,7 +385,11 @@ def main(argv=None):
                 argv_i.append(fexp)
                 cmd = f"{run_aster} {' '.join(argv_i)}"
                 if need_mpiexec:
-                    args_cmd = dict(mpi_nbcpu=export.get("mpi_nbcpu", 1), program=cmd)
+                    args_cmd = dict(
+                        mpi_nbcpu=export.get("mpi_nbcpu", 1),
+                        ncpus=export.get("ncpus", 1),
+                        program=cmd,
+                    )
                     cmd = CFG.get("mpiexec").format(**args_cmd)
                 logger.info("Running: %s", cmd)
                 proc = run(cmd, shell=True, check=False)
