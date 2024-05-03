@@ -180,37 +180,36 @@
 !        type of external state variables
 !
 #define ELTSIZE1  1
-#define ELTSIZE2  2
-#define XXXXXXXX  3
-#define GRADVELO  4
-#define HYGR      5
-#define NEUT1     6
-#define NEUT2     7
-#define TEMP      8
-#define DTX       9
-#define DTY       10
-#define DTZ       11
-#define X         12
-#define Y         13
-#define Z         14
-#define SECH      15
-#define HYDR      16
-#define CORR      17
-#define IRRA      18
-#define EPSAXX    19
-#define EPSAYY    20
-#define EPSAZZ    21
-#define EPSAXY    22
-#define EPSAXZ    23
-#define EPSAYZ    24
-#define ZFERRITE  25
-#define ZPERLITE  26
-#define ZBAINITE  27
-#define ZMARTENS  28
-#define ZALPHPUR  29
-#define ZALPHBET  30
-#define TIME      31
-#define TEMPREFE  32
+#define XXXXXXXX  2
+#define GRADVELO  3
+#define HYGR      4
+#define NEUT1     5
+#define NEUT2     6
+#define TEMP      7
+#define DTX       8
+#define DTY       9
+#define DTZ       10
+#define X         11
+#define Y         12
+#define Z         13
+#define SECH      14
+#define HYDR      15
+#define CORR      16
+#define IRRA      17
+#define EPSAXX    18
+#define EPSAYY    19
+#define EPSAZZ    20
+#define EPSAXY    21
+#define EPSAXZ    22
+#define EPSAYZ    23
+#define ZFERRITE  24
+#define ZPERLITE  25
+#define ZBAINITE  26
+#define ZMARTENS  27
+#define ZALPHPUR  28
+#define ZALPHBET  29
+#define TIME      30
+#define TEMPREFE  31
 !
 ! --------------------------------------------------------------------------------------------------
 !

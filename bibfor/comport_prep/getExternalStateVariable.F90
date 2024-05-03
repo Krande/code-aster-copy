@@ -59,13 +59,13 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_exte, i_exte, idummy1, idummy2, i_exte_list
-    integer, parameter :: nb_exte_list = 32
+    integer, parameter :: nb_exte_list = 31
     character(len=64) :: name_exte(EXTE_ESVA_NBMAXI)
     character(len=8) :: varc_aster
 
     integer :: tabcod(60)
     character(len=8), parameter :: name_varc(nb_exte_list) = (/ &
-                                   'ELTSIZE1', 'ELTSIZE2', 'COORGA  ', &
+                                   'ELTSIZE1', 'COORGA  ', &
                                    'GRADVELO', 'HYGR    ', 'NEUT1   ', &
                                    'NEUT2   ', 'TEMP    ', 'DTX     ', &
                                    'DTY     ', 'DTZ     ', 'X       ', &
@@ -76,7 +76,7 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
                                    'PFERRITE', 'PPERLITE', 'PBAINITE', &
                                    'PMARTENS', 'ALPHPUR ', 'ALPHBET ', &
                                    'TIME    ', 'TEMPREFE'/)
-    aster_logical, parameter :: l_allow_mfront(nb_exte_list) = (/.true., .false., .false., &
+    aster_logical, parameter :: l_allow_mfront(nb_exte_list) = (/.true., .false., &
                                                                  .false., .true., .true., &
                                                                  .true., .true., .true., &
                                                                  .true., .true., .true., &
