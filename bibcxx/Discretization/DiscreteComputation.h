@@ -212,27 +212,23 @@ class DiscreteComputation {
                                          const ASTERDOUBLE time_curr,
                                          const bool assembly = true ) const;
 
-    /**
-     * @brief Compute nodal forces
-     */
+    /** @brief Compute nodal forces */
     std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
-    getMechanicalNodalForces( const FieldOnNodesRealPtr disp, const FieldOnCellsRealPtr stress,
+    getMechanicalNodalForces( const FieldOnCellsRealPtr stress,
+                              const FieldOnNodesRealPtr disp = nullptr,
                               const ASTERINTEGER modeFourier = 0,
                               const FieldOnCellsRealPtr varc_curr = nullptr,
                               const ConstantFieldOnCellsChar16Ptr behaviourMap = nullptr,
                               const VectorString &groupOfCells = VectorString(),
                               const bool assembly = true ) const;
 
-    /**
-     * @brief Compute reaction forces
-     */
-    FieldOnNodesRealPtr
-    getMechanicalReactionForces( const FieldOnNodesRealPtr disp, const FieldOnCellsRealPtr stress,
-                                 const ASTERDOUBLE time_prev = 0.0,
-                                 const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE theta = 1.0,
-                                 const ASTERINTEGER modeFourier = 0,
-                                 const FieldOnCellsRealPtr varc_curr = nullptr,
-                                 const ConstantFieldOnCellsChar16Ptr behaviourMap = nullptr ) const;
+    /** @brief Compute reaction forces */
+    FieldOnNodesRealPtr getMechanicalReactionForces(
+        const FieldOnCellsRealPtr stress, const FieldOnNodesRealPtr disp = nullptr,
+        const ASTERDOUBLE time_prev = 0.0, const ASTERDOUBLE time_curr = 0.0,
+        const ASTERDOUBLE theta = 1.0, const ASTERINTEGER modeFourier = 0,
+        const FieldOnCellsRealPtr varc_curr = nullptr,
+        const ConstantFieldOnCellsChar16Ptr behaviourMap = nullptr ) const;
 
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
