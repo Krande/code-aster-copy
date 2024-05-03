@@ -286,7 +286,7 @@ def check_win_cores(self):
     import subprocess
     try:
         nproc = int(subprocess.check_output("WMIC CPU Get NumberOfCores /Value", shell=True).strip().split(b'=')[1])
-    except Errors.ConfigurationError:
+    except (Errors.ConfigurationError, ValueError):
         nproc = 1
     else:
         self.end_msg(nproc)

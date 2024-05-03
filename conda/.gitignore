@@ -1,1 +1,3 @@
-./lib_symbol*.json
+bootstrapper.*.log
+installer.*.log
+w_fortran-compiler*.exe

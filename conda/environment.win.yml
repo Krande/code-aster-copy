@@ -1,6 +1,5 @@
 name: codeaster-deps
 channels:
-  - https://quetz.krande.no/get/code-aster-dev
   - conda-forge
 dependencies:
   - python 3.11
@@ -14,7 +13,7 @@ dependencies:
   - scotch=7.0.4
   - metis=5.1.0
 #  - mumps-seq=5.6.2
-  - waf
+  - waf=2.0.27
   - pyyaml
   - python-dotenv
   - intel-fortran-rt=2024.0
