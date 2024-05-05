@@ -159,7 +159,8 @@ subroutine nmcomp(BEHinteg, &
     l_defo_meca = defo_ldc .eq. 'MECANIQUE'
     l_czm = typmod(2) .eq. 'ELEMJOIN'
     l_grad_vari = typmod(2) .eq. 'GRADVARI'
-    l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP'
+    l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP' &
+              .or. defo_comp .eq. 'GREEN_LAGRANGE'
     l_deborst = compor(PLANESTRESS) (1:7) .eq. 'DEBORST'
 
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,8 +55,8 @@ subroutine getExternalStrainModel(defo_comp, strain_model)
         defo_comp .eq. 'PETIT_REAC' .or. &
         defo_comp .eq. 'GDEF_LOG') then
         strain_model = MFRONT_STRAIN_SMALL
-    else if ( defo_comp .eq. 'GREEN_LAGRANGE' ) then
-        strain_model = MFRONT_STRAIN_F            
+    else if (defo_comp .eq. 'GREEN_LAGRANGE') then
+        strain_model = MFRONT_STRAIN_F
     else
         ASSERT(ASTER_FALSE)
     end if

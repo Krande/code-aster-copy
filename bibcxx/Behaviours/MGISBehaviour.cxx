@@ -412,8 +412,8 @@ void convertTensorToMgis( const ASTERDOUBLE *src, const int insize, VectorReal &
         dest[0] = src[0]; // 0, 0
         dest[1] = src[4]; // 1, 1
         dest[2] = src[8]; // 2, 2
-        dest[3] = src[1]; // 0, 1
-        dest[4] = src[3]; // 1, 0
+        dest[3] = src[3]; // 0, 1
+        dest[4] = src[1]; // 1, 0
         break;
     case 3:
     case 4:

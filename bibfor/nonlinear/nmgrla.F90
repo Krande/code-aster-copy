@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -173,8 +173,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 ! ----- Check if the behavior law is MFRONT
         if (compor(RELA_NAME) == 'MFRONT') then
 ! --------- Compute the increment of f for MFRONT
-            fIncr = fCurr - fPrev
-
+            fIncr = fCurr-fPrev
             call nmcomp(BEHinteg, &
                         FEQuad%fami, kpg, 1, ndim, typmod, &
                         imate, compor, carcri, instam, instap, &
@@ -184,7 +183,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
                         cod(kpg), mult_comp)
         else
 ! --------- Original behavior
-            epsgIncr = epsgCurr - epsgPrev
+            epsgIncr = epsgCurr-epsgPrev
 
             call nmcomp(BEHinteg, &
                         FEQuad%fami, kpg, 1, ndim, typmod, &
@@ -193,8 +192,8 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
                         vim(1, kpg), option, angmas, &
                         sigmPost, vip(1, kpg), 36, dsidep, &
                         cod(kpg), mult_comp)
-        endif
-    
+        end if
+
         if (cod(kpg) .eq. 1) goto 999
 !        write (6,*) 'option = ',option
 !        write (6,*) 'epsm   = ',epsgPrev
@@ -215,6 +214,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
             call lcdetf(ndim, fCurr, detfCurr)
             call pk2sig(ndim, fCurr, detfCurr, sigmPost, sigmCurr(1, kpg), 1)
         end if
+        !ASSERT(.false.)
     end do
 !
 999 continue

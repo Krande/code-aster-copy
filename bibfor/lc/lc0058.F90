@@ -111,11 +111,11 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
     integer, parameter :: s0 = 0, s1 = 1
     real(kind=8) :: drot(3, 3), dstran(9)
     real(kind=8) :: time(2)
-    real(kind=8) :: ddsdde(54)
+    real(kind=8) :: ddsdde(36)
     real(kind=8) :: stran(9)
     real(kind=8) :: dtime, pnewdt
     character(len=16) :: rela_comp, defo_comp, extern_addr
-    aster_logical :: l_greenlag, l_czm, l_pred
+    aster_logical :: l_greenlag, l_czm
     real(kind=8) :: sigp_loc(6), vi_loc(nvi), dsidep_loc(6, 6)
     integer, parameter :: npropmax = 197
     real(kind=8) :: props(npropmax)
@@ -148,7 +148,6 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
     codret = 0
     rela_comp = compor(RELA_NAME)
     defo_comp = compor(DEFO)
-    l_pred = option(1:9) .eq. 'RIGI_MECA'
 !
 ! - Finite element
 !
@@ -160,11 +159,11 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
     strain_model = nint(carcri(EXTE_STRAIN))
 
     l_greenlag = defo_comp .eq. 'GREEN_LAGRANGE'
-
-    if (ndim == 2) then
-        nstran = 5
-    else if (ndim == 3) then
-        nstran = 9
+!
+    if (l_greenlag) then
+        nstran = neps
+    else
+        nstran = 2*ndim
     end if
 !
 ! - Pointer to MGISBehaviour
@@ -180,8 +179,7 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
 !
 ! - Prepare strains
 !
-    call mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
-                             stran, dstran)
+    call mfrontPrepareStrain(l_greenlag, neps, epsm, deps, stran, dstran)
 !
 ! - Number of internal state variables
 !
