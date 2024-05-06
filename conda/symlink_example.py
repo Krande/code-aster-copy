@@ -81,6 +81,8 @@ def cli():
         action="store_true",
         help="Create symlinks for the Code Aster libraries. Alternatively, copy the files.",
     )
+    args = parser.parse_args()
+    main(args.symlink)
 
 
 def manual():
@@ -88,5 +90,6 @@ def manual():
 
 
 if __name__ == "__main__":
-    manual()
-    # cli()
+    # if no args, use manual mode
+    # manual()
+    cli()
