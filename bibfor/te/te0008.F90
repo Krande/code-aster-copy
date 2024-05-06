@@ -15,111 +15,99 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0008(option, nomte)
 !
-!
     implicit none
-#include "jeveux.h"
+!
 #include "asterfort/assert.h"
 #include "asterfort/bsigmc.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
+#include "MeshTypes_type.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
+#include "jeveux.h"
 !
-    character(len=16) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ELEMENTS ISOPARAMETRIQUES 2D ET 3D
 !
 ! CALCUL DES OPTIONS FORC_NODA ET REFE_FORC_NODA
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  OPTION : OPTION DE CALCUL
 ! IN  NOMTE  : NOM DU TYPE ELEMENT
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    real(kind=8) :: zero, sigref
-    real(kind=8) :: nharm, bsigm(81), geo(81), sigtmp(162), ftemp(81)
-    integer :: nbsig, ndim, nno, nnos, npg1
-    integer :: ipoids, ivf, idfde, jgano
+    real(kind=8) :: sigref, sigtmp(6*MT_NNOMAX)
+    real(kind=8) :: nharm, bsigm(3*MT_NNOMAX), geo(3*MT_NNOMAX), ftemp(3*MT_NNOMAX)
+    integer :: nbsig, ndim, nno, npg
+    integer :: ipoids, ivf, idfde
     integer :: igeom, ivectu
     integer :: jvDisp, jvSief, jvCompor
-    integer :: i, j, nbinco, iretc
+    integer :: i, j, nbinco, iretCompor, iretDisp
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
-! --- INITIALISATIONS
-!
-    zero = 0.d0
-    nharm = zero
+    call elrefe_info(fami='RIGI', &
+                     ndim=ndim, nno=nno, npg=npg, &
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
+
+! - Initializations
+    nharm = 0.d0
     nbinco = nno*ndim
-    ASSERT(nbinco .le. 81)
-!
-! --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
-!
+    ASSERT(nbinco .le. 3*MT_NNOMAX)
     nbsig = nbsigm()
-!
-! --- PARAMETRE EN SORTIE: VECTEUR DES FORCES INTERNES (BT*SIGMA)
-!
+    ASSERT(nbsig .le. 6)
+
+! - Output vector
     call jevech('PVECTUR', 'E', ivectu)
-!
-! --- PARAMETRE EN ENTREE: GEOMETRIE
-!
+
+! - Get input field
     call jevech('PGEOMER', 'L', igeom)
     call dcopy(nbinco, zr(igeom), 1, geo, 1)
-!
+
+! - Compute
     if (option .eq. 'FORC_NODA') then
         call jevech('PSIEFR', 'L', jvSief)
-        call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=jvCompor)
-        if (iretc .eq. 0) then
+        call tecach('ONO', 'PCOMPOR', 'L', iretCompor, iad=jvCompor)
+        if (iretCompor .eq. 0) then
             if (zk16(jvCompor+2) (1:6) .ne. 'PETIT ') then
-                call jevech('PDEPLAR', 'L', jvDisp)
-                call daxpy(nbinco, 1.d0, zr(jvDisp), 1, geo, 1)
+                call tecach('ONO', 'PDEPLAR', 'L', iretDisp, iad=jvDisp)
+                if (iretDisp .eq. 0) then
+                    call jevech('PDEPLAR', 'L', jvDisp)
+                    call daxpy(nbinco, 1.d0, zr(jvDisp), 1, geo, 1)
+                end if
             end if
         end if
-        call bsigmc(nno, ndim, nbsig, npg1, ipoids, &
+        call bsigmc(nno, ndim, nbsig, npg, ipoids, &
                     ivf, idfde, geo, nharm, zr(jvSief), &
                     bsigm)
         call dcopy(nbinco, bsigm, 1, zr(ivectu), 1)
 !
     else if (option .eq. 'REFE_FORC_NODA') then
-!
         call terefe('SIGM_REFE', 'MECA_ISO', sigref)
-!
-        call r8inir(nbsig*npg1, 0.d0, sigtmp, 1)
-        call r8inir(nbinco, 0.d0, ftemp, 1)
-!
-        do i = 1, nbsig*npg1
-!
+        sigtmp = 0.d0
+        ftemp = 0.d0
+        do i = 1, nbsig*npg
             sigtmp(i) = sigref
-            call bsigmc(nno, ndim, nbsig, npg1, ipoids, &
+            call bsigmc(nno, ndim, nbsig, npg, ipoids, &
                         ivf, idfde, geo, nharm, sigtmp, &
                         bsigm)
-!
             do j = 1, nbinco
                 ftemp(j) = ftemp(j)+abs(bsigm(j))
             end do
-!
             sigtmp(i) = 0.d0
-!
         end do
-!
-        call daxpy(nbinco, 1.d0/npg1, ftemp, 1, zr(ivectu), 1)
-!
+        call daxpy(nbinco, 1.d0/npg, ftemp, 1, zr(ivectu), 1)
     end if
 !
 end subroutine
