@@ -1,5 +1,5 @@
 import pathlib
-import shutil
+import platform
 from dataclasses import dataclass
 
 from waflib import Logs, TaskGen, Task, Errors
@@ -21,10 +21,7 @@ class msvclibgen(Task.Task):
 
         clean_name = output_fp.stem.replace("_gen", "")
         # This is a hack to copy the generated lib to the build directory
-        destination = None
-        if clean_name == "astertmp":
-            destination = output_fp.parent.parent / "bibc" / "aster.lib"
-            destination.parent.mkdir(parents=True, exist_ok=True)
+        if clean_name == "aster":
             def_file = root_path / "bibc" / "aster.def"
         else:
             def_file = root_path / clean_name / f"{clean_name}.def"
@@ -39,11 +36,6 @@ class msvclibgen(Task.Task):
             f.write("\n".join([str(x) for x in cmd]))
 
         ret = super().exec_command(cmd, **kw)
-        if clean_name == "astertmp" and destination is not None:
-            src_exp_file = output_fp.with_suffix(".exp")
-            dst_exp_file = destination.with_suffix(".exp")
-            shutil.copy(output_fp, destination)
-            shutil.copy(src_exp_file, dst_exp_file)
         return ret
 
 
@@ -119,18 +111,23 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     # the task takes in the outputs of all C tasks
     # it's outputs are bibc.lib and bibc.exp located in the build directory
     bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
-    lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
-
-    Logs.info(f"{lib_output_file_path=}")
+    if lib_name == "astertmp":
+        lib_output_file_path = bld_path / "bibc" / "aster.lib"
+    else:
+        lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
+    exp_output_file_path = lib_output_file_path.with_suffix(".exp")
 
     # create nodes for the output files
     bib_lib_output_file_node = self.bld.bldnode.make_node(lib_output_file_path.relative_to(bld_path).as_posix())
+    bib_exp_output_file_node = self.bld.bldnode.make_node(exp_output_file_path.relative_to(bld_path).as_posix())
 
     msvc_libgen_task = self.create_task("msvclibgen")
     msvc_libgen_task.inputs = input_tasks
     msvc_libgen_task.env = self.env
     msvc_libgen_task.dep_nodes = input_tasks
     msvc_libgen_task.outputs = [bib_lib_output_file_node]
+
+    Logs.info(f"{msvc_libgen_task.outputs=}")
 
     return msvc_libgen_task
 
@@ -142,16 +139,15 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     fclib_task = task_obj.asterbibfor.libtask
     aster_task = task_obj.asterlib.libtask
 
-    clib_task.env.append_unique("LINKFLAGS_CLIB", ["/WHOLEARCHIVE:bibc.lib"])
-    aster_task.env.append_unique("LINKFLAGS_CXXLIB", ["/WHOLEARCHIVE:aster.lib"])
-    cxxlib_task.env.append_unique("LINKFLAGS_CXXLIB", ["/WHOLEARCHIVE:bibcxx.lib"])
-    fclib_task.env.append_unique("LINKFLAGS_FCLIB", ["/WHOLEARCHIVE:bibfor.lib"])
+    Logs.info(f"Before removal: {clib_task.outputs=}")
 
     # Lib files are created by MSVC lib generation, so will remove these from the shlib outputs
     clib_task.outputs = [o for o in clib_task.outputs if o.suffix() != ".lib"]
     cxxlib_task.outputs = [o for o in cxxlib_task.outputs if o.suffix() != ".lib"]
     fclib_task.outputs = [o for o in fclib_task.outputs if o.suffix() != ".lib"]
     aster_task.outputs = [o for o in aster_task.outputs if o.suffix() != ".lib"]
+
+    Logs.info(f"After removal: {clib_task.outputs=}")
 
     c_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterbibc.tasks]
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.asterbibcxx.tasks]
@@ -162,29 +158,30 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     if len(aster_input_tasks) == 0:
         raise Errors.WafError("Failed MSVC lib generation: No aster input tasks found")
 
-    create_msvclibgen_task(self, "bibc", c_input_tasks)
+    clib_lib_task = create_msvclibgen_task(self, "bibc", c_input_tasks)
     bibcxx_lib_task = create_msvclibgen_task(self, "bibcxx", cxx_input_tasks)
     bibfor_lib_task = create_msvclibgen_task(self, "bibfor", fc_input_tasks)
     bibaster_lib_task = create_msvclibgen_task(self, "astertmp", aster_input_tasks)
 
-    clib_task.inputs += bibfor_lib_task.outputs + bibcxx_lib_task.outputs
-
-    Logs.info(f"{clib_task.outputs=}")
+    Logs.info(f"{clib_lib_task.outputs=}")
     Logs.info(f"{fclib_task.outputs=}")
     Logs.info(f"{bibaster_lib_task.outputs=}")
 
     # filter out all non-lib files
-    clib_task_outputs = [x for x in clib_task.outputs if x.suffix() == ".lib"]
-    fclib_task_outputs = [x for x in fclib_task.outputs if x.suffix() == ".lib"]
+    clib_task_outputs = [x for x in clib_lib_task.outputs if x.suffix() == ".lib"]
+    fclib_task_outputs = [x for x in bibfor_lib_task.outputs if x.suffix() == ".lib"]
     bibaster_task_outputs = [x for x in bibaster_lib_task.outputs if x.suffix() == ".lib"]
+    bibcxx_task_outputs = [x for x in bibcxx_lib_task.outputs if x.suffix() == ".lib"]
 
     Logs.info(f"{clib_task_outputs=}")
     Logs.info(f"{fclib_task_outputs=}")
     Logs.info(f"{bibaster_task_outputs=}")
+    Logs.info(f"{bibcxx_task_outputs=}")
 
-    fclib_task.inputs += bibcxx_lib_task.outputs + clib_task_outputs
+    clib_task.inputs += bibcxx_task_outputs + fclib_task_outputs
+    fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs
     cxxlib_task.inputs += clib_task_outputs + fclib_task_outputs + bibaster_task_outputs
-    # aster_task.inputs += bibcxx_lib_task.outputs
+    aster_task.inputs += bibcxx_task_outputs + fclib_task_outputs + clib_task_outputs
 
     # Add .exp files to the outputs
     # fclib_task.outputs +=
@@ -195,6 +192,34 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
 _task_obj = None
 _task_done = False
 _compiler_map = {"asterpre": "cxx", "asterbibc": "c", "asterbibfor": "fc", "asterbibcxx": "cxx"}
+
+
+@TaskGen.feature("cxxshlib", "fcshlib", "cshlib")
+@TaskGen.after_method("apply_link", "propagate_uselib_vars")
+def set_flags(self) -> None:
+    if platform.system() != "Windows":
+        return
+    name = self.get_name()
+    if name == "asterbibc":
+        archive_name = "bibc"
+    elif name == "asterbibcxx":
+        archive_name = "bibcxx"
+    elif name == "asterbibfor":
+        archive_name = "bibfor"
+    elif name == "asterlib":
+        archive_name = "aster"
+    else:
+        Logs.info(f"Skipping {name=}")
+        return None
+    bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
+    archive_dir = bld_path / archive_name
+    args = [
+        f"/LIBPATH:{archive_dir.as_posix()}",
+        f"/WHOLEARCHIVE:{archive_name}.lib",
+        f"{archive_name}.exp"
+    ]
+    Logs.info(f"Setting flags {args} for {name=}")
+    self.link_task.env.append_unique("LINKFLAGS", args)
 
 
 @TaskGen.feature("cxxshlib", "fcshlib", "cshlib", "cxx")

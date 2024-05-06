@@ -5,8 +5,8 @@ import shutil
 
 from config import TMP_DIR
 
-# SOURCE_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib/aster"
-SOURCE_DIR = TMP_DIR
+SOURCE_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib/aster"
+# SOURCE_DIR = TMP_DIR
 LIB_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib"
 DLL_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "DLLs"
 BIN_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "bin"
@@ -87,5 +87,5 @@ def manual():
 
 
 if __name__ == "__main__":
-    # manual()
-    cli()
+    manual()
+    # cli()
