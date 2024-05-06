@@ -18,15 +18,15 @@
 ! aslint: disable=W1306
 !
 module Behaviour_module
-    ! =======================================================================
+! =======================================================================
     use Behaviour_type
     use calcul_module, only: ca_jvcnom_, ca_nbcvrc_
-    ! =======================================================================
+! =======================================================================
     implicit none
-    ! =======================================================================
+! =======================================================================
     private :: varcIsGEOM, relaIsExte, &
                initElem, initElga, initESVA, initExte, &
-               prepEltSize1, prepGradVelo, prepEltSize2, prepHygrometry, &
+               prepEltSize1, prepGradVelo, prepHygrometry, &
                getESVA, computeStrainESVA, computeStrainMeca, &
                getESVAPtot, getListUserESVA
 
@@ -35,7 +35,7 @@ module Behaviour_module
                behaviourPrepStrain, behaviourPredictionStress, &
                behaviourPrepESVA, behaviourPrepESVAExte, &
                behaviourOption, getAsterVariableName, getMFrontVariableName
-    ! =======================================================================
+! =======================================================================
     private
 #include "asterc/indik8.h"
 #include "asterc/mgis_get_esvs.h"
@@ -60,18 +60,18 @@ module Behaviour_module
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
-    ! =======================================================================
+! =======================================================================
 contains
-    ! =======================================================================
-    ! -----------------------------------------------------------------------
-    !
-    ! behaviourInit
-    !
-    ! Initialisation of behaviour datastructure
-    !
-    ! Out BEHinteg         : parameters for integration of behaviour
-    !
-    ! -----------------------------------------------------------------------
+! =======================================================================
+! -----------------------------------------------------------------------
+!
+! behaviourInit
+!
+! Initialisation of behaviour datastructure
+!
+! Out BEHinteg         : parameters for integration of behaviour
+!
+! -----------------------------------------------------------------------
     subroutine behaviourInit(BEHinteg)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -89,15 +89,15 @@ contains
         call initExte(BEHinteg%exte)
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! initElem
-    !
-    ! Initialisation of parameters on element
-    !
-    ! Out BEHelem          : parameters on element
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! initElem
+!
+! Initialisation of parameters on element
+!
+! Out BEHelem          : parameters on element
+!
+! -----------------------------------------------------------------------
     subroutine initElem(BEHelem)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -105,19 +105,18 @@ contains
         !   -----------------------------------------------------------------------
         BEHelem%coor_elga = r8nnem()
         BEHelem%eltsize1 = r8nnem()
-        BEHelem%eltsize2 = r8nnem()
         BEHelem%gradvelo = r8nnem()
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! initElga
-    !
-    ! Initialisation of parameters on Gauss points
-    !
-    ! Out BEHelga          : parameters on Gauss points
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! initElga
+!
+! Initialisation of parameters on Gauss points
+!
+! Out BEHelga          : parameters on Gauss points
+!
+! -----------------------------------------------------------------------
     subroutine initElga(BEHelga)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -130,15 +129,15 @@ contains
         BEHelga%r = r8nnem()
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! initESVA
-    !
-    ! Initialization of parameters for external state variables
-    !
-    ! Out BEHesva          : parameters for external state variables
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! initESVA
+!
+! Initialization of parameters for external state variables
+!
+! Out BEHesva          : parameters for external state variables
+!
+! -----------------------------------------------------------------------
     subroutine initESVA(BEHesva)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -179,15 +178,15 @@ contains
         BEHesva%epsth_metap = r8nnem()
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! initExte
-    !
-    ! Initialisation of parameters for external solver
-    !
-    ! Out BEHexte          : parameters for external solver
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! initExte
+!
+! Initialisation of parameters for external solver
+!
+! Out BEHexte          : parameters for external solver
+!
+! -----------------------------------------------------------------------
     subroutine initExte(BEHexte)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -198,16 +197,16 @@ contains
         BEHexte%dpred = r8nnem()
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! behaviourInitPoint
-    !
-    ! Initialisation of behaviour datastructure - Special for SIMU_POINT_MAT
-    !
-    ! In  carcri           : parameters for comportment
-    ! IO  BEHinteg         : parameters for integration of behaviour
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! behaviourInitPoint
+!
+! Initialisation of behaviour datastructure - Special for SIMU_POINT_MAT
+!
+! In  carcri           : parameters for comportment
+! IO  BEHinteg         : parameters for integration of behaviour
+!
+! -----------------------------------------------------------------------
     subroutine behaviourInitPoint(carcri, rela_comp, BEHinteg)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -231,12 +230,6 @@ contains
             call utmess('A', 'COMPOR2_39')
             BEHinteg%elem%gradvelo = 0.d0
         end if
-        !
-        ! - Don't use some external state variables for SIMU_POINT_MAT
-        !
-        if (BEHinteg%tabcod(ELTSIZE2) .eq. 1) then
-            call utmess('F', 'COMPOR2_12')
-        end if
 
         if (BEHinteg%tabcod(ELTSIZE1) .eq. 1) then
             if (rela_comp .ne. 'BETON_DOUBLE_DP') then
@@ -245,16 +238,16 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! getListUserESVA
-    !
-    ! Get list of external state variables from user (AFFE_VARC)
-    !
-    ! In  carcri           : parameters for comportment
-    ! Out tabcod           : list of integers to detect external state variables
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! getListUserESVA
+!
+! Get list of external state variables from user (AFFE_VARC)
+!
+! In  carcri           : parameters for comportment
+! Out tabcod           : list of integers to detect external state variables
+!
+! -----------------------------------------------------------------------
     subroutine getListUserESVA(carcri, tabcod)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -270,26 +263,26 @@ contains
         variextecode(2) = jvariext2
         call isdeco(variextecode, tabcod, 60)
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! behaviourPrepESVAElem
-    !
-    ! Prepare external state variables - For element
-    !
-    ! In  carcri           : parameters for comportment
-    ! In  typmod           : type of modelisation
-    ! In  nno              : number of nodes
-    ! In  npg              : number of Gauss points
-    ! In  ndim             : dimension of problem (2 or 3)
-    ! In  jv_poids         : JEVEUX adress for weight of Gauss points
-    ! In  jv_func          : JEVEUX adress for shape functions
-    ! In  jv_dfunc         : JEVEUX adress for derivative of shape functions
-    ! In  geom             : initial coordinates of nodes
-    ! IO  BEHinteg         : parameters for integration of behaviour
-    ! In  deplm            : displacements of nodes at beginning of time step
-    ! In  ddepl            : displacements of nodes since beginning of time step
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! behaviourPrepESVAElem
+!
+! Prepare external state variables - For element
+!
+! In  carcri           : parameters for comportment
+! In  typmod           : type of modelisation
+! In  nno              : number of nodes
+! In  npg              : number of Gauss points
+! In  ndim             : dimension of problem (2 or 3)
+! In  jv_poids         : JEVEUX adress for weight of Gauss points
+! In  jv_func          : JEVEUX adress for shape functions
+! In  jv_dfunc         : JEVEUX adress for derivative of shape functions
+! In  geom             : initial coordinates of nodes
+! IO  BEHinteg         : parameters for integration of behaviour
+! In  deplm            : displacements of nodes at beginning of time step
+! In  ddepl            : displacements of nodes since beginning of time step
+!
+! -----------------------------------------------------------------------
     subroutine behaviourPrepESVAElem(carcri, typmod, &
                                      nno, npg, ndim, &
                                      jv_poids, jv_func, jv_dfunc, &
@@ -318,14 +311,7 @@ contains
                               jv_poids, jv_func, jv_dfunc, &
                               geom, typmod, BEHinteg%elem)
         end if
-        !
-        ! - Element size 2
-        !
-        if (BEHinteg%tabcod(ELTSIZE2) .eq. 1) then
-            call prepEltSize2(nno, npg, ndim, &
-                              jv_dfunc, &
-                              geom, typmod, BEHinteg%elem)
-        end if
+
         !
         ! - Gradient of velocity
         !
@@ -345,23 +331,23 @@ contains
                            jv_func, geom, BEHinteg%elem)
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! behaviourPrepESVAGauss
-    !
-    ! Prepare external state variables at Gauss point
-    !
-    ! In  carcri           : parameters for comportment
-    ! In  defo_ldc         : model for non-mechanical strains
-    ! In  imate            : coded material address
-    ! In  fami             : Gauss family for integration point rule
-    ! In  kpg              : current point gauss
-    ! In  ksp              : current "sous-point" gauss
-    ! In  neps             : number of components of strains
-    ! In  time_curr        : current time
-    ! IO  BEHinteg         : parameters for integration of behaviour
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! behaviourPrepESVAGauss
+!
+! Prepare external state variables at Gauss point
+!
+! In  carcri           : parameters for comportment
+! In  defo_ldc         : model for non-mechanical strains
+! In  imate            : coded material address
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  neps             : number of components of strains
+! In  time_curr        : current time
+! IO  BEHinteg         : parameters for integration of behaviour
+!
+! -----------------------------------------------------------------------
     subroutine behaviourPrepESVAGauss(carcri, defo_ldc, imate, &
                                       fami, kpg, ksp, &
                                       neps, time_curr, BEHinteg)
@@ -413,16 +399,16 @@ contains
                                BEHinteg%esva)
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! getMFrontVariableName
-    !
-    ! Get MFront glossary or entry name from Code_Aster command variable name
-    !
-    ! In  name                          : Code_Aster variable name
-    ! Out  getMFrontVariableNameAlias   : MFront alias if exist, else name
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! getMFrontVariableName
+!
+! Get MFront glossary or entry name from Code_Aster command variable name
+!
+! In  name                          : Code_Aster variable name
+! Out  getMFrontVariableNameAlias   : MFront alias if exist, else name
+!
+! -----------------------------------------------------------------------
     character(len=64) function getMFrontVariableName(name)
         ! - Parameters
         character(len=64), intent(in) :: name
@@ -434,16 +420,16 @@ contains
         end do
         !
     end function
-    ! -----------------------------------------------------------------------
-    !
-    ! getAsterVariableName
-    !
-    ! Get Aster name from MFront variable name
-    !
-    ! In  name                          : MFront variable name
-    ! Out getAsterVariableName          : code_aster variable name if exist, else name
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! getAsterVariableName
+!
+! Get Aster name from MFront variable name
+!
+! In  name                          : MFront variable name
+! Out getAsterVariableName          : code_aster variable name if exist, else name
+!
+! -----------------------------------------------------------------------
     character(len=8) function getAsterVariableName(name)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -459,16 +445,16 @@ contains
         getAsterVariableName = aster_name(1:8)
         !   -----------------------------------------------------------------------
     end function
-    ! -----------------------------------------------------------------------
-    !
-    ! checkUmatBehaviour
-    !
-    ! Log if l_umat is false
-    !
-    ! In  l_umat    : logical for umat behaviour
-    ! In  var_name  : variable name
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! checkUmatBehaviour
+!
+! Log if l_umat is false
+!
+! In  l_umat    : logical for umat behaviour
+! In  var_name  : variable name
+!
+! -----------------------------------------------------------------------
     subroutine checkUmatBehaviour(l_umat, var_name)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -481,15 +467,15 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! logUndefinedVariable
-    !
-    ! Log the lack of definition of var_name
-    !
-    ! In  var_name  : variable name
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! logUndefinedVariable
+!
+! Log the lack of definition of var_name
+!
+! In  var_name  : variable name
+!
+! -----------------------------------------------------------------------
     subroutine logUndefinedVariable(var_name)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -509,23 +495,23 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! behaviourPrepESVAExte
-    !
-    ! Prepare external state variables for external solvers (UMAT/MFRONT)
-    !
-    ! In  compor           : parameters for comportment
-    ! In  defo_ldc         : model for non-mechanical strains
-    ! In  imate            : coded material address
-    ! In  fami             : Gauss family for integration point rule
-    ! In  kpg              : current point gauss
-    ! In  ksp              : current "sous-point" gauss
-    ! In  neps             : number of components of strains
-    ! In  time_curr        : current time
-    ! IO  BEHinteg         : parameters for integration of behaviour
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! behaviourPrepESVAExte
+!
+! Prepare external state variables for external solvers (UMAT/MFRONT)
+!
+! In  compor           : parameters for comportment
+! In  defo_ldc         : model for non-mechanical strains
+! In  imate            : coded material address
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  neps             : number of components of strains
+! In  time_curr        : current time
+! IO  BEHinteg         : parameters for integration of behaviour
+!
+! -----------------------------------------------------------------------
     subroutine behaviourPrepESVAExte(compor, fami, kpg, ksp, BEHinteg)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -585,7 +571,7 @@ contains
             select case (varc_mfront)
 
                 ! Raise an error for unsupported external variables
-            case ('ELTSIZE2', 'GRADVELO')
+            case ('GRADVELO')
                 call utmess('F', 'COMPOR4_25', sk=varc_aster)
 
             CASE ('ConcreteDrying')
@@ -659,18 +645,18 @@ contains
         end do
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! getESVAPtot
-    !
-    ! Get external state variable PTOT (specific)
-    !
-    ! In  fami             : Gauss family for integration point rule
-    ! In  kpg              : current point gauss
-    ! In  ksp              : current "sous-point" gauss
-    ! IO  BEHesva          : parameters for external state variables
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! getESVAPtot
+!
+! Get external state variable PTOT (specific)
+!
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! IO  BEHesva          : parameters for external state variables
+!
+! -----------------------------------------------------------------------
     subroutine getESVAPtot(fami, kpg, ksp, BEHesva)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -689,19 +675,19 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! getESVA
-    !
-    ! Get external state variables
-    !
-    ! In  fami             : Gauss family for integration point rule
-    ! In  kpg              : current point gauss
-    ! In  ksp              : current "sous-point" gauss
-    ! In  imate            : coded material address
-    ! IO  BEHesva          : parameters for external state variables
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! getESVA
+!
+! Get external state variables
+!
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  imate            : coded material address
+! IO  BEHesva          : parameters for external state variables
+!
+! -----------------------------------------------------------------------
     subroutine getESVA(fami, kpg, ksp, imate, neps, BEHesva)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -805,23 +791,23 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! behaviourPrepESVA
-    !
-    ! Prepare external state variables (from user / AFFE_VARC)
-    !
-    ! In  defo_ldc         : model for non-mechanical strains
-    ! In  imate            : coded material address
-    ! In  fami             : Gauss family for integration point rule
-    ! In  kpg              : current point gauss
-    ! In  ksp              : current "sous-point" gauss
-    ! In  neps             : number of components of strains
-    ! In  l_mfront         : logical for mfront behaviour
-    ! In  l_umat           : logical for umat behaviour
-    ! IO  BEHesva          : parameters for external state variables
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! behaviourPrepESVA
+!
+! Prepare external state variables (from user / AFFE_VARC)
+!
+! In  defo_ldc         : model for non-mechanical strains
+! In  imate            : coded material address
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  neps             : number of components of strains
+! In  l_mfront         : logical for mfront behaviour
+! In  l_umat           : logical for umat behaviour
+! IO  BEHesva          : parameters for external state variables
+!
+! -----------------------------------------------------------------------
     subroutine behaviourPrepESVA(defo_ldc, imate, &
                                  fami, kpg, ksp, &
                                  neps, l_mfront, l_umat, &
@@ -845,29 +831,29 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! behaviourPrepStrain
-    !
-    ! Prepare input strains for the behaviour law
-    !    -> If defo_ldc = 'MECANIQUE', prepare mechanical strain
-    !    -> If defo_ldc = 'TOTALE' or 'OLD', keep total strain
-    !
-    ! In  l_czm            : flag for CZM models
-    ! In  l_large          : flag for large strain models
-    ! In  l_defo_meca      : flag for defo_ldc .eq. 'MECANIQUE'
-    ! In  imate            : coded material address
-    ! In  fami             : Gauss family for integration point rule
-    ! In  kpg              : current point gauss
-    ! In  ksp              : current "sous-point" gauss
-    ! In  neps             : number of components of strains
-    ! IO  epsm             : In : total strains at beginning of current step time
-    !                        Out : mechanical strains at beginning of current step time
-    ! IO  deps             : In : increment of total strains during current step time
-    !                        Out : increment of mechanical strains during current step time
-    ! IO  BEHesva          : parameters for external state variables
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! behaviourPrepStrain
+!
+! Prepare input strains for the behaviour law
+!    -> If defo_ldc = 'MECANIQUE', prepare mechanical strain
+!    -> If defo_ldc = 'TOTALE' or 'OLD', keep total strain
+!
+! In  l_czm            : flag for CZM models
+! In  l_large          : flag for large strain models
+! In  l_defo_meca      : flag for defo_ldc .eq. 'MECANIQUE'
+! In  imate            : coded material address
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  neps             : number of components of strains
+! IO  epsm             : In : total strains at beginning of current step time
+!                        Out : mechanical strains at beginning of current step time
+! IO  deps             : In : increment of total strains during current step time
+!                        Out : increment of mechanical strains during current step time
+! IO  BEHesva          : parameters for external state variables
+!
+! -----------------------------------------------------------------------
     subroutine behaviourPrepStrain(l_czm, l_large, l_defo_meca, &
                                    l_grad_vari, imate, fami, kpg, ksp, &
                                    neps, BEHesva, epsm, deps)
@@ -898,17 +884,17 @@ contains
         !   -----------------------------------------------------------------------
     end subroutine
 
-    ! -----------------------------------------------------------------------
-    !
-    ! behaviourPredictionStress
-    !
-    ! Compute the contribution of the "thermal stress increment" in prediction
-    !
-    ! in  BEHesva          : parameters for external state variables
-    ! in  dsidep           : tangent operator in prediction
-    ! IO  sig              : stress (Taylor term of order 0)
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! behaviourPredictionStress
+!
+! Compute the contribution of the "thermal stress increment" in prediction
+!
+! in  BEHesva          : parameters for external state variables
+! in  dsidep           : tangent operator in prediction
+! IO  sig              : stress (Taylor term of order 0)
+!
+! -----------------------------------------------------------------------
     subroutine behaviourPredictionStress(BEHesva, dsidep, sig)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -929,23 +915,23 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! prepEltSize1
-    !
-    ! Compute intrinsic external state variables - Size of element (ELTSIZE1)
-    !
-    ! In  nno              : number of nodes
-    ! In  npg              : number of Gauss points
-    ! In  ndim             : dimension of problem (2 or 3)
-    ! In  jv_poids         : JEVEUX adress for weight of Gauss points
-    ! In  jv_func          : JEVEUX adress for shape functions
-    ! In  jv_dfunc         : JEVEUX adress for derivative of shape functions
-    ! In  typmod           : type of modelization (TYPMOD2)
-    ! In  geom             : initial coordinates of nodes
-    ! IO  BEHelem          : parameters on element
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! prepEltSize1
+!
+! Compute intrinsic external state variables - Size of element (ELTSIZE1)
+!
+! In  nno              : number of nodes
+! In  npg              : number of Gauss points
+! In  ndim             : dimension of problem (2 or 3)
+! In  jv_poids         : JEVEUX adress for weight of Gauss points
+! In  jv_func          : JEVEUX adress for shape functions
+! In  jv_dfunc         : JEVEUX adress for derivative of shape functions
+! In  typmod           : type of modelization (TYPMOD2)
+! In  geom             : initial coordinates of nodes
+! IO  BEHelem          : parameters on element
+!
+! -----------------------------------------------------------------------
     subroutine prepEltSize1(nno, npg, ndim, &
                             jv_poids, jv_func, jv_dfunc, &
                             geom, typmod, BEHelem)
@@ -1012,94 +998,25 @@ contains
         BEHelem%eltsize1 = lc
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! prepEltSize2
-    !
-    ! Compute intrinsic external state variables - Size of element (ELTSIZE2)
-    !
-    ! In  nno              : number of nodes
-    ! In  npg              : number of Gauss points
-    ! In  ndim             : dimension of problem (2 or 3)
-    ! In  jv_dfunc         : JEVEUX adress for derivative of shape functions
-    ! In  typmod2          : type of modelization (TYPMOD2)
-    ! In  geom             : initial coordinates of nodes
-    ! IO  BEHelem          : parameters on element
-    !
-    ! -----------------------------------------------------------------------
-    subroutine prepEltSize2(nno, npg, ndim, &
-                            jv_dfunc, geom, typmod, &
-                            BEHelem)
-        !   -----------------------------------------------------------------------
-        ! - Parameters
-        integer, intent(in) :: nno, npg, ndim
-        integer, intent(in) :: jv_dfunc
-        character(len=8), intent(in) :: typmod(2)
-        real(kind=8), intent(in) :: geom(ndim, nno)
-        type(Behaviour_Elem), intent(inout) :: BEHelem
-        ! - Local
-        integer :: kpg, i, j, k, jj, iret
-        real(kind=8) :: l(3, 3)
-        real(kind=8) :: inv(3, 3), det, de, dn, dk
-        !   -----------------------------------------------------------------------
-        if (LDC_PREP_DEBUG .eq. 1) then
-            WRITE (6, *) '<DEBUG>  Compute ELTSIZE2'
-        end if
-        if (typmod(1) (1:2) .eq. '3D') then
-            do kpg = 1, npg
-                do i = 1, 3
-                    l(1, i) = 0.d0
-                    l(2, i) = 0.d0
-                    l(3, i) = 0.d0
-                    do j = 1, nno
-                        k = 3*nno*(kpg-1)
-                        jj = 3*(j-1)
-                        de = zr(jv_dfunc-1+k+jj+1)
-                        dn = zr(jv_dfunc-1+k+jj+2)
-                        dk = zr(jv_dfunc-1+k+jj+3)
-                        l(1, i) = l(1, i)+de*geom(i, j)
-                        l(2, i) = l(2, i)+dn*geom(i, j)
-                        l(3, i) = l(3, i)+dk*geom(i, j)
-                    end do
-                end do
-                ! --------- inversion de la matrice l
-                iret = 0
-                det = 0.d0
-                inv = 0.d0
-                do i = 1, 3
-                    inv(i, i) = 1.d0
-                end do
-                call mgauss('NCVP', l, inv, 3, 3, &
-                            3, det, iret)
-                do i = 1, 3
-                    do j = 1, 3
-                        BEHelem%eltsize2(3*(i-1)+j) = inv(i, j)
-                    end do
-                end do
-            end do
-        else
-            BEHelem%eltsize2 = r8vide()
-        end if
-        !   -----------------------------------------------------------------------
-    end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! prepGradVelo
-    !
-    ! Compute intrinsic external state variables - Gradient of velocity (GRADVELO)
-    !
-    ! In  nno              : number of nodes
-    ! In  npg              : number of Gauss points
-    ! In  ndim             : dimension of problem (2 or 3)
-    ! In  jv_poids         : JEVEUX adress for weight of Gauss points
-    ! In  jv_func          : JEVEUX adress for shape functions
-    ! In  jv_dfunc         : JEVEUX adress for derivative of shape functions
-    ! In  geom             : initial coordinates of nodes
-    ! In  deplm            : displacements of nodes at beginning of time step
-    ! In  ddepl            : displacements of nodes since beginning of time step
-    ! IO  BEHelem          : parameters on element
-    !
-    ! -----------------------------------------------------------------------
+
+! -----------------------------------------------------------------------
+!
+! prepGradVelo
+!
+! Compute intrinsic external state variables - Gradient of velocity (GRADVELO)
+!
+! In  nno              : number of nodes
+! In  npg              : number of Gauss points
+! In  ndim             : dimension of problem (2 or 3)
+! In  jv_poids         : JEVEUX adress for weight of Gauss points
+! In  jv_func          : JEVEUX adress for shape functions
+! In  jv_dfunc         : JEVEUX adress for derivative of shape functions
+! In  geom             : initial coordinates of nodes
+! In  deplm            : displacements of nodes at beginning of time step
+! In  ddepl            : displacements of nodes since beginning of time step
+! IO  BEHelem          : parameters on element
+!
+! -----------------------------------------------------------------------
     subroutine prepGradVelo(nno, npg, ndim, &
                             jv_poids, jv_func, jv_dfunc, &
                             geom, deplm, ddepl, &
@@ -1148,20 +1065,20 @@ contains
         end do
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! prepCoorGauss
-    !
-    ! Compute intrinsic external state variables - Coordinates of Gauss points
-    !
-    ! In  nno              : number of nodes
-    ! In  npg              : number of Gauss points
-    ! In  ndim             : dimension of problem (2 or 3)
-    ! In  jv_func          : JEVEUX adress for shape functions
-    ! In  geom             : initial coordinates of nodes
-    ! IO  BEHelem          : parameters on element
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! prepCoorGauss
+!
+! Compute intrinsic external state variables - Coordinates of Gauss points
+!
+! In  nno              : number of nodes
+! In  npg              : number of Gauss points
+! In  ndim             : dimension of problem (2 or 3)
+! In  jv_func          : JEVEUX adress for shape functions
+! In  geom             : initial coordinates of nodes
+! IO  BEHelem          : parameters on element
+!
+! -----------------------------------------------------------------------
     subroutine prepCoorGauss(nno, npg, ndim, &
                              jv_func, geom, BEHelem)
         !   -----------------------------------------------------------------------
@@ -1189,19 +1106,19 @@ contains
         end do
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! prepHygrometry
-    !
-    ! Compute intrinsic external state variables - Hygrometry
-    !
-    ! In  fami             : Gauss family for integration point rule
-    ! In  kpg              : current point gauss
-    ! In  ksp              : current "sous-point" gauss
-    ! In  imate            : coded material address
-    ! IO  BEHesva          : parameters for external state variables
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! prepHygrometry
+!
+! Compute intrinsic external state variables - Hygrometry
+!
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  imate            : coded material address
+! IO  BEHesva          : parameters for external state variables
+!
+! -----------------------------------------------------------------------
     subroutine prepHygrometry(fami, kpg, ksp, imate, BEHesva)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -1242,21 +1159,21 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! computeStrainESVA
-    !
-    ! Precompute strains from external state variables
-    !
+! -----------------------------------------------------------------------
+!
+! computeStrainESVA
+!
+! Precompute strains from external state variables
+!
 
-    ! In  fami             : Gauss family for integration point rule
-    ! In  kpg              : current point gauss
-    ! In  ksp              : current "sous-point" gauss
-    ! In  imate            : coded material address
-    ! In  neps             : number of components of strains
-    ! IO  BEHesva          : parameters for external state variables
-    !
-    ! -----------------------------------------------------------------------
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  imate            : coded material address
+! In  neps             : number of components of strains
+! IO  BEHesva          : parameters for external state variables
+!
+! -----------------------------------------------------------------------
     subroutine computeStrainESVA(fami, kpg, ksp, imate, neps, BEHesva)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -1431,21 +1348,21 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! computeStrainMeca
-    !
-    ! Prepare strains (substracting "thermic" strains to total strains to get mechanical part)
-    !
-    ! In  l_czm            : flag for CZM models
-    ! In  neps             : number of components of strains
-    ! In  BEHesva           : parameters for external state variables
-    ! IO  epsm             : In : total strains at beginning of current step time
-    !                        Out : mechanical strains at beginning of current step time
-    ! IO  deps             : In : increment of total strains during current step time
-    !                        Out : increment of mechanical strains during current step time
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! computeStrainMeca
+!
+! Prepare strains (substracting "thermic" strains to total strains to get mechanical part)
+!
+! In  l_czm            : flag for CZM models
+! In  neps             : number of components of strains
+! In  BEHesva           : parameters for external state variables
+! IO  epsm             : In : total strains at beginning of current step time
+!                        Out : mechanical strains at beginning of current step time
+! IO  deps             : In : increment of total strains during current step time
+!                        Out : increment of mechanical strains during current step time
+!
+! -----------------------------------------------------------------------
     subroutine computeStrainMeca(l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -1502,15 +1419,15 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! varcIsGEOM
-    !
-    ! Detect 'GEOM' in external state variables
-    !
-    ! Out l_varext_geom    : flag for GEOM in external state variables (AFFE_VARC)
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! varcIsGEOM
+!
+! Detect 'GEOM' in external state variables
+!
+! Out l_varext_geom    : flag for GEOM in external state variables (AFFE_VARC)
+!
+! -----------------------------------------------------------------------
     subroutine varcIsGEOM(l_varext_geom)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -1534,17 +1451,17 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! relaIsExte
-    !
-    ! Detect if external solver (MFront, UMAT) is used
-    !
-    ! In  carcri           : parameters for comportment
-    ! Out l_mfront         : logical for mfront behaviour
-    ! Out l_umat           : logical for umat behaviour
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! relaIsExte
+!
+! Detect if external solver (MFront, UMAT) is used
+!
+! In  carcri           : parameters for comportment
+! Out l_mfront         : logical for mfront behaviour
+! Out l_umat           : logical for umat behaviour
+!
+! -----------------------------------------------------------------------
     subroutine relaIsExte(carcri, l_mfront, l_umat)
         !   -----------------------------------------------------------------------
         ! - Parameters
@@ -1564,21 +1481,21 @@ contains
         end if
         !   -----------------------------------------------------------------------
     end subroutine
-    ! -----------------------------------------------------------------------
-    !
-    ! behaviourOption
-    !
-    ! Select objects to construct from option name
-    !
-    ! In  option           : name of option to compute
-    ! In  compor           : name of comportment definition (field)
-    ! Out lMatr            : flag when tangent matrix
-    ! Out lVect            : flag when internal forces vector
-    ! Out lVari            : flag when internal state variables
-    ! Out lSigm            : flag when stress and return code error
-    ! Out codret           : return code when integrate behaviour
-    !
-    ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+! behaviourOption
+!
+! Select objects to construct from option name
+!
+! In  option           : name of option to compute
+! In  compor           : name of comportment definition (field)
+! Out lMatr            : flag when tangent matrix
+! Out lVect            : flag when internal forces vector
+! Out lVari            : flag when internal state variables
+! Out lSigm            : flag when stress and return code error
+! Out codret           : return code when integrate behaviour
+!
+! -----------------------------------------------------------------------
     subroutine behaviourOption(option, compor, &
                                lMatr, lVect, &
                                lVari, lSigm, &
@@ -1611,5 +1528,5 @@ contains
             codret_ = codret
         end if
     end subroutine
-    !
+!
 end module Behaviour_module
