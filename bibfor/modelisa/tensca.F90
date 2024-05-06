@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,9 +112,11 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0, &
 !
 ! VARIABLES LOCALES
 ! -----------------
+    real(kind=8), parameter:: prec = 1.d-6
+
     integer :: ibid, idecno, ino, ipara, jabsc, jalph, jf, nblign
     integer :: nbpara, n1, irt, jtabx, jtaby, nbval
-    real(kind=8) :: df, flim, krelax, fi, f2
+    real(kind=8) :: df, flim, krelax, fi, f2, lg_ref
     complex(kind=8) :: cbid
     aster_logical :: trouv1, trouv2, exi1, exi2
     character(len=3) :: k3b
@@ -219,9 +221,17 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0, &
             call utmess('F', 'CABLE0_10')
         end if
 !     ON VERIFIE A MINIMA QUE LES ABSCISSES CURVILIGNES SONT IDENTIQUES
-!     (MAIS PAS LES COORDONNES EXACTES)
+!     (MAIS PAS LES COORDONNEES EXACTES)
         do ino = 1, nbnoca
-            if (zr(jtabx+ino-1)-zr(jabsc+ino-1) .ge. r8prem()) then
+            ! longueur de reference des mailles attachees aux noeuds courant
+            if (ino .eq. 1) then
+                lg_ref = abs(zr(jabsc+ino+1-1)-zr(jabsc+ino-1))
+            else if (ino .eq. nbnoca) then
+                lg_ref = abs(zr(jabsc+ino-1)-zr(jabsc+ino-1-1))
+            else
+                lg_ref = 0.5d0*(abs(zr(jabsc+ino+1-1)-zr(jabsc+ino-1-1)))
+            end if
+            if (zr(jtabx+ino-1)-zr(jabsc+ino-1) .ge. prec*lg_ref) then
                 call utmess('F', 'CABLE0_11')
             end if
         end do
