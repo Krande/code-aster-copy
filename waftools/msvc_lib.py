@@ -180,8 +180,8 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
 
     clib_task.inputs += bibcxx_task_outputs + fclib_task_outputs
     fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs
-    cxxlib_task.inputs += clib_task_outputs + fclib_task_outputs + bibaster_task_outputs
-    aster_task.inputs += bibcxx_task_outputs + fclib_task_outputs + clib_task_outputs
+    cxxlib_task.inputs += bibaster_task_outputs + clib_task_outputs + fclib_task_outputs
+    aster_task.inputs += fclib_task_outputs + clib_task_outputs + bibcxx_task_outputs
 
     # Add .exp files to the outputs
     # fclib_task.outputs +=

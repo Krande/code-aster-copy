@@ -117,7 +117,7 @@ waf configure ^
   --disable-mpi ^
   --disable-openmp ^
   --disable-mumps ^
-  %IF %INCLUDE_TESTS%==1 (--install-tests)^
+  --install-tests ^
   --maths-libs=auto ^
   --without-hg
 

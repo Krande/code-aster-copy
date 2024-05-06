@@ -35,6 +35,7 @@ Build some data files (dest: share/aster)
 """
 
 import getpass
+import pathlib
 import json
 import os
 import os.path as osp
@@ -236,7 +237,7 @@ def build(self):
     except:
         Logs.error("ASTER_ENVIRON not found. Please run 'waf configure...'")
         raise Errors.BuildError
-    dict_conv["BASE_PREFIX"] = osp.basename(self.env.PREFIX)
+    dict_conv["BASE_PREFIX"] = pathlib.Path(osp.basename(self.env.PREFIX)).as_posix()
     dict_conv["PROGRAMS_YAML"] = to_cfg(cfgext, self.env["EXTERNAL_PROGRAMS"])
     dict_conv["CONFIG_YAML"] = to_cfg(cfgext, self.env["CONFIG_PARAMETERS"])
     change_tests(dict_conv, self.env.install_tests)
@@ -486,7 +487,7 @@ def check_config(self):
     cfg["addmem"] = addmem
     cfg["version_tag"] = ".".join([str(i) for i in self.env.ASTER_VERSION[0]])
     cfg["version_sha1"] = self.env.ASTER_VERSION[1]
-    cfg["python"] = "python3"
+    cfg["python"] = "python"
     _check_prog(self, "IPYTHON", ["ipython3", "ipython"], mandatory=False, var_prefix="")
     cfg["python_interactive"] = (
         osp.basename(self.env.IPYTHON[0]) if self.env.IPYTHON else cfg["python"]

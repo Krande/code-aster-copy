@@ -91,6 +91,7 @@ See ``bin/run_aster --help`` for the available options.
 import argparse
 import os
 import os.path as osp
+import platform
 import shutil
 import sys
 import tempfile
@@ -276,6 +277,19 @@ def parse_args(argv):
     return args
 
 
+def check_compiler():
+    import pathlib
+
+    config_txt = pathlib.Path(os.getenv('ASTER_ROOT')) / "Library/share/aster/config.txt"
+
+    if 'ASTER_PLATFORM_MSVC64' in config_txt.read_text():
+        return "MSVC"
+    else:
+        if platform.system() == "Linux":
+            return "MinGW/MSYS2"
+        else:
+            return "MinGW/MSYS2"
+
 def main(argv=None):
     """Entry point for code_aster runner.
 
@@ -405,7 +419,12 @@ def main(argv=None):
         opts = {}
         opts["test"] = args.test
         opts["env"] = make_env
-        opts["tee"] = not args.only_proc0 or procid == 0
+        sys_conf = check_compiler()
+        if sys_conf == "MSVC":
+            opts["tee"] = False
+        else:  # its unix based
+            print(f"Unix based system detected {sys_conf}.")
+            opts["tee"] = not args.only_proc0 or procid == 0
         opts["interactive"] = args.interactive
         if args.exectool:
             wrapper = CFG.get("exectool", {}).get(args.exectool)

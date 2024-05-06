@@ -8,7 +8,8 @@ from config import TMP_DIR
 SOURCE_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib/aster"
 # SOURCE_DIR = TMP_DIR
 LIB_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib"
-DLL_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "DLLs"
+# DLL_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "DLLs"
+DLL_DIR = SOURCE_DIR
 BIN_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "bin"
 SP_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Lib" / "site-packages"
 
@@ -49,15 +50,15 @@ def main(use_symlink: bool):
         if not ca_module_dir.exists():
             shutil.copytree(ca_module_dir_src, ca_module_dir)
 
-    for lib in libs:
-        dll_src = (SOURCE_DIR / lib).with_suffix(".dll")
-        lib_src = (SOURCE_DIR / lib).with_suffix(".lib")
-        dll_dst = BIN_DIR / dll_src.name
-        lib_dst = LIB_DIR / lib_src.name
-        print(f"Copying {dll_src} to {dll_dst}")
-        shutil.copy(dll_src, dll_dst)
-        print(f"Copying {lib_src} to {lib_dst}")
-        shutil.copy(lib_src, lib_dst)
+    # for lib in libs:
+    #     dll_src = (SOURCE_DIR / lib).with_suffix(".dll")
+    #     lib_src = (SOURCE_DIR / lib).with_suffix(".lib")
+    #     dll_dst = BIN_DIR / dll_src.name
+    #     lib_dst = LIB_DIR / lib_src.name
+    #     print(f"Copying {dll_src} to {dll_dst}")
+    #     shutil.copy(dll_src, dll_dst)
+    #     print(f"Copying {lib_src} to {lib_dst}")
+    #     shutil.copy(lib_src, lib_dst)
 
     for submodule in mods:
         src = osp.join(DLL_DIR, submodule + extlib)
