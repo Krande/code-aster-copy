@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
 
 MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
@@ -382,5 +382,57 @@ TEST_RESU(
     )
 )
 
+# 1-2 AVEC LIAISON_MAIL : pour Tester TAUTOLOGIE EN MASSIF
+# -------------------
+DETRUIRE(NOM=MO)
+
+DETRUIRE(NOM=CH0)
+
+DETRUIRE(NOM=MAT)
+
+DETRUIRE(NOM=CHMAT)
+
+
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+
+MAT = DEFI_MATERIAU(ELAS=_F(E=10.0, NU=0.0))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
+
+CH12T = AFFE_CHAR_MECA(
+    MODELE=MO,
+    INFO=2,
+    LIAISON_MAIL=_F(GROUP_MA_MAIT=("Q1", "Q2"), GROUP_NO_ESCL=("E", "E2"), DISTANCE_MAX=1.0e-6),
+)
+
+CH0 = AFFE_CHAR_MECA(
+    INFO=2,
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO=("A",), DZ=0.0),
+        _F(GROUP_NO=("A", "A2"), DX=0.0, DY=0.0),
+        _F(GROUP_NO=("D", "D2"), DX=0.0),
+    ),
+    FORCE_NODALE=_F(GROUP_NO=("F", "F2"), FY=2.0),
+)
+
+
+MEST12T = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CH0), _F(CHARGE=CH12T)))
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=MEST12T,
+            NOM_CHAM="DEPL",
+            GROUP_NO="F",
+            NOM_CMP="DY",
+            VALE_CALC=10.199999999999996,
+            VALE_REFE=10.199999999999996,
+            PRECISION=1.0e-12,
+        ),
+    )
+)
 FIN()
 #
