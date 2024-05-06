@@ -101,19 +101,20 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         ),
     )
 
-    LOAD_ff = FORMULE(VALE=dir_plaque, NOM_PARA=[dir_plaque])
+    LOAD_ff_xx = FORMULE(VALE=f"1.0 * {dir_plaque}", NOM_PARA=[dir_plaque])
+    LOAD_ff_xy = FORMULE(VALE=f"0.5 * {dir_plaque}", NOM_PARA=[dir_plaque])
 
     CHAR11_mm = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXX=-1.0))
 
     CHAR22_mm = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPYY=-1.0))
 
-    CHAR12_mm = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXY=-1.0))
+    CHAR12_mm = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXY=-0.5))
 
-    CHAR11_ff = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXX=LOAD_ff))
+    CHAR11_ff = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXX=LOAD_ff_xx))
 
-    CHAR22_ff = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPYY=LOAD_ff))
+    CHAR22_ff = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPYY=LOAD_ff_xx))
 
-    CHAR12_ff = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXY=LOAD_ff))
+    CHAR12_ff = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXY=LOAD_ff_xy))
 
     elas_fields = ElasticResultDict()
     ther_fields = ThermalResultDict()
@@ -263,49 +264,47 @@ def calc_tabpara_plaque(
 
     for i, rank_meca in enumerate(ranks_meca):
 
-        enerpot_meca_11_11_mm = utilities.combine_enerpot(
+        work_meca_11_11_mm = utilities.cross_work(
             CORR_MECA11_MEMB, CORR_MECA11_MEMB, rank_meca, ls_group_ma
         )
-        enerpot_meca_22_22_mm = utilities.combine_enerpot(
+        work_meca_22_22_mm = utilities.cross_work(
             CORR_MECA22_MEMB, CORR_MECA22_MEMB, rank_meca, ls_group_ma
         )
-        enerpot_meca_11_22_mm = utilities.combine_enerpot(
+        work_meca_11_22_mm = utilities.cross_work(
             CORR_MECA11_MEMB, CORR_MECA22_MEMB, rank_meca, ls_group_ma
         )
-        enerpot_meca_12_12_mm = utilities.combine_enerpot(
+        work_meca_12_12_mm = utilities.cross_work(
             CORR_MECA12_MEMB, CORR_MECA12_MEMB, rank_meca, ls_group_ma
         )
 
-        enerpot_meca_11_11_ff = utilities.combine_enerpot(
+        work_meca_11_11_ff = utilities.cross_work(
             CORR_MECA11_FLEX, CORR_MECA11_FLEX, rank_meca, ls_group_ma
         )
-        enerpot_meca_22_22_ff = utilities.combine_enerpot(
+        work_meca_22_22_ff = utilities.cross_work(
             CORR_MECA22_FLEX, CORR_MECA22_FLEX, rank_meca, ls_group_ma
         )
-        enerpot_meca_11_22_ff = utilities.combine_enerpot(
+        work_meca_11_22_ff = utilities.cross_work(
             CORR_MECA11_FLEX, CORR_MECA22_FLEX, rank_meca, ls_group_ma
         )
-        enerpot_meca_12_12_ff = utilities.combine_enerpot(
+        work_meca_12_12_ff = utilities.cross_work(
             CORR_MECA12_FLEX, CORR_MECA12_FLEX, rank_meca, ls_group_ma
         )
 
-        C1111_hom = (2 * h / volume_ver) * (
-            (loimel["LAME1_mm"][i] + 2 * loimel["LAME2_mm"][i]) - 2 * enerpot_meca_11_11_mm
-        )
-        C2222_hom = (2 * h / volume_ver) * (
-            (loimel["LAME1_mm"][i] + 2 * loimel["LAME2_mm"][i]) - 2 * enerpot_meca_22_22_mm
-        )
-        C1122_hom = (2 * h / volume_ver) * (loimel["LAME1_mm"][i] - 1 * enerpot_meca_11_22_mm)
-        C1212_hom = (2 * h / volume_ver) * (loimel["LAME2_mm"][i] - 0.5 * enerpot_meca_12_12_mm)
+        lambda_meca_mm = loimel["LAME1_mm"][i]
+        mu_meca_mm = loimel["LAME2_mm"][i]
 
-        D1111_hom = (2 * h / volume_ver) * (
-            (loimel["LAME1_ff"][i] + 2 * loimel["LAME2_ff"][i]) - 2 * enerpot_meca_11_11_ff
-        )
-        D2222_hom = (2 * h / volume_ver) * (
-            (loimel["LAME1_ff"][i] + 2 * loimel["LAME2_ff"][i]) - 2 * enerpot_meca_22_22_ff
-        )
-        D1122_hom = (2 * h / volume_ver) * (loimel["LAME1_ff"][i] - 1 * enerpot_meca_11_22_ff)
-        D1212_hom = (2 * h / volume_ver) * (loimel["LAME2_ff"][i] - 0.5 * enerpot_meca_12_12_ff)
+        C1111_hom = (2 * h / volume_ver) * ((lambda_meca_mm + 2 * mu_meca_mm) - work_meca_11_11_mm)
+        C2222_hom = (2 * h / volume_ver) * ((lambda_meca_mm + 2 * mu_meca_mm) - work_meca_22_22_mm)
+        C1122_hom = (2 * h / volume_ver) * (lambda_meca_mm - work_meca_11_22_mm)
+        C1212_hom = (2 * h / volume_ver) * (mu_meca_mm - work_meca_12_12_mm)
+
+        lambda_meca_ff = loimel["LAME1_ff"][i]
+        mu_meca_ff = loimel["LAME2_ff"][i]
+
+        D1111_hom = (2 * h / volume_ver) * ((lambda_meca_ff + 2 * mu_meca_ff) - work_meca_11_11_ff)
+        D2222_hom = (2 * h / volume_ver) * ((lambda_meca_ff + 2 * mu_meca_ff) - work_meca_22_22_ff)
+        D1122_hom = (2 * h / volume_ver) * (lambda_meca_ff - work_meca_11_22_ff)
+        D1212_hom = (2 * h / volume_ver) * (mu_meca_ff - work_meca_12_12_ff)
 
         G11_hom = 0.0
         G22_hom = 0.0

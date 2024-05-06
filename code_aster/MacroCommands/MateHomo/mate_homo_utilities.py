@@ -281,16 +281,17 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
     return DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_alpha_calc
 
 
-def combine_enerpot(RESU1, RESU2, N_ORDRE, ls_group_tout):
+def cross_work(RESU1, RESU2, N_ORDRE, ls_group_tout):
     """
-    Cette fonction sert à effectuer le calcul de l'énergie potentielle d'un correcteur
-    ou de leur combinaison
+    Cette fonction sert à effectuer le calcul du travail croisé des correcteurs au travers
+    d'un calcul de l'énergie potentielle d'un correcteur ou de leur combinaison
     """
 
     ASSERT(RESU1.getMesh() is RESU2.getMesh())
     ASSERT(RESU1.getModel() is RESU2.getModel())
     ASSERT(RESU1.getMaterialField() is RESU2.getMaterialField())
     ASSERT(RESU1.getType() == RESU2.getType())
+    epot = 0
 
     RESU_TYPE = RESU1.getType()
     ASSERT(RESU_TYPE in ("EVOL_ELAS", "EVOL_THER"))
@@ -314,7 +315,7 @@ def combine_enerpot(RESU1, RESU2, N_ORDRE, ls_group_tout):
     epot_ch1 = abs(sum(EPOT_CH1.EXTR_TABLE().values()["TOTALE"]))
 
     if RESU1 is RESU2:
-        return epot_ch1
+        work = 2 * epot_ch1
 
     else:
         CH2 = CREA_CHAMP(
@@ -335,4 +336,6 @@ def combine_enerpot(RESU1, RESU2, N_ORDRE, ls_group_tout):
         )
         epot_chsomme = abs(sum(EPOT_SOMME.EXTR_TABLE().values()["TOTALE"]))
 
-        return epot_chsomme - epot_ch1 - epot_ch2
+        work = epot_chsomme - epot_ch1 - epot_ch2
+
+    return work
