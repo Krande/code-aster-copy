@@ -303,6 +303,8 @@ def main(argv=None):
         )
     if args.mpi_nbcpu:
         export.set("mpi_nbcpu", args.mpi_nbcpu)
+    if export.get("no-mpi"):
+        args.auto_mpiexec = False
     need_mpiexec = procid < 0 and args.auto_mpiexec
     if need_mpiexec and export.get("mpi_nbcpu", 1) == 1 and not CFG.get("require_mpiexec", False):
         need_mpiexec = False
@@ -352,8 +354,6 @@ def main(argv=None):
         export.set_time_limit(86400.0)
     if args.memory_limit:
         export.set_memory_limit(args.memory_limit)
-    if export.get("no-mpi"):
-        args.auto_mpiexec = False
     export.check()
 
     if args.only_proc0 is None:
@@ -385,7 +385,11 @@ def main(argv=None):
                 argv_i.append(fexp)
                 cmd = f"{run_aster} {' '.join(argv_i)}"
                 if need_mpiexec:
-                    args_cmd = dict(mpi_nbcpu=export.get("mpi_nbcpu", 1), program=cmd)
+                    args_cmd = dict(
+                        mpi_nbcpu=export.get("mpi_nbcpu", 1),
+                        ncpus=export.get("ncpus", 1),
+                        program=cmd,
+                    )
                     cmd = CFG.get("mpiexec").format(**args_cmd)
                 logger.info("Running: %s", cmd)
                 proc = run(cmd, shell=True, check=False)
