@@ -13,7 +13,7 @@ ASTER_DIR = CONDA_PREFIX / "Library" / "lib" / "aster"
 BIN_DIR = CONDA_PREFIX / "Library" / "bin"
 
 
-def main():
+def individual_test():
     pre_reqs = ["medC.dll", "medfwrap.dll"]
     for pre_req in pre_reqs:
         pre_req_path = BIN_DIR / pre_req
@@ -32,6 +32,8 @@ def main():
             print(f"Failed to load {dll}: {e}")
             raise e
 
+
+def trace_test():
     # sys.path.insert(0, TMP_DIR.as_posix())
     sys.path.insert(0, ASTER_DIR.as_posix())
     with dlltracer.Trace(out=sys.stdout):
@@ -39,5 +41,20 @@ def main():
         from code_aster import CA
 
 
+def cli():
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--trace", action="store_true")
+    parser.add_argument("--individual", action="store_true")
+
+    args = parser.parse_args()
+    if args.trace:
+        trace_test()
+
+    if args.individual:
+        individual_test()
+
+
 if __name__ == "__main__":
-    main()
+    cli()

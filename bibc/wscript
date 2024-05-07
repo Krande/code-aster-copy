@@ -113,10 +113,6 @@ def build(self):
     build_libbibc(self, env)
     build_libaster(self, env)
 
-    if platform.system() == "Windows":
-        Logs.info(f"{self.variant=}")
-        compile_dummy_aster(self, env)
-
     self.add_group()
     # install headers
     self.install_files(env.ASTERINCLUDEDIR, get_srcs("include/*.h"))
@@ -175,21 +171,6 @@ def build_libaster(self, env):
     for submodule in mods:
         src = osp.join(env.ASTERLIBDIR, submodule + extlib)
         self.symlink_as(src, libaster)
-
-
-def compile_dummy_aster(self: Build.InstallContext, env):
-    src = self.path.find_node(PYMAIN)
-    bibc_incl = self.env.INCLUDES + self.env.INCLUDES_BIBC
-    self(
-        features="cxx",
-        name="asterpre",
-        source=src,
-        defines="_MAIN_=_unused_main_",  # 'ASTER_WITHOUT_PYMOD',
-        target="astertmp",
-        env=env,
-        includes=bibc_incl,
-        install_path=env.ASTERLIBDIR,
-    )
 
 
 @Configure.conf

@@ -68,8 +68,6 @@ def build(self):
     get_srcs = self.path.get_src().ant_glob
 
     use = ["BIBFOR", "PETSC", "MUMPS", "MATH", "NUMPY"]
-    if platform.system() == "Windows":
-        use.extend(["SCOTCH", "METIS", "MED", "HDF5", "MFRONT", "medfwrap", "MFrontGenericInterface"])
 
     if self.env.BUILD_OPENMP:
         use.append("OPENMP")

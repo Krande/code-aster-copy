@@ -50,15 +50,12 @@ class TaskObject:
 @dataclass
 class LibTask:
     asterbibc: TaskObject
-    asterpre: TaskObject
     asterbibcxx: TaskObject
     asterbibfor: TaskObject
-    asterlib: TaskObject = None
+    asterlib: TaskObject
 
     def all_tasks_ready(self) -> bool:
         for key, task in self.__dict__.items():
-            if key == "asterlib":
-                continue
             if len(task.tasks) == 0:
                 Logs.error(f"No tasks found for {task.task_gen.get_name()=}")
                 return False
@@ -67,8 +64,6 @@ class LibTask:
     def get_missing_tasks(self) -> list[str]:
         missing_tasks = []
         for key, task in self.__dict__.items():
-            if key == "asterlib":
-                continue
             if len(task.tasks) == 0:
                 missing_tasks.append(task.task_gen.get_name())
 
@@ -99,11 +94,11 @@ def extract_main_tasks(self: TaskGen.task_gen) -> LibTask:
 
     bld = self.bld
     c_task_object = get_task_object(bld, "asterbibc", "c")
-    cxx_aster_object = get_task_object(bld, "asterpre", "cxx")
     cxx_task_object = get_task_object(bld, "asterbibcxx", "cxx")
     fc_task_object = get_task_object(bld, "asterbibfor", "fc")
+    cxx_aster_object = get_task_object(bld, "asterlib", "cxx")
 
-    return LibTask(c_task_object, cxx_aster_object, cxx_task_object, fc_task_object)
+    return LibTask(c_task_object, cxx_task_object, fc_task_object, cxx_aster_object)
 
 
 def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
@@ -111,7 +106,7 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     # the task takes in the outputs of all C tasks
     # it's outputs are bibc.lib and bibc.exp located in the build directory
     bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
-    if lib_name == "astertmp":
+    if lib_name == "aster":
         lib_output_file_path = bld_path / "bibc" / "aster.lib"
     else:
         lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
@@ -148,11 +143,14 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     aster_task.outputs = [o for o in aster_task.outputs if o.suffix() != ".lib"]
 
     Logs.info(f"After removal: {clib_task.outputs=}")
+    Logs.info(f"After removal: {fclib_task.outputs=}")
+    Logs.info(f"After removal: {cxxlib_task.outputs=}")
+    Logs.info(f"After removal: {aster_task.outputs=}")
 
     c_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterbibc.tasks]
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.asterbibcxx.tasks]
     fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor.tasks]
-    aster_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterpre.tasks if ctask.outputs[0].suffix() == ".o"]
+    aster_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterlib.tasks if ctask.outputs[0].suffix() == ".o"]
     Logs.info(f"{aster_input_tasks=}")
 
     if len(aster_input_tasks) == 0:
@@ -161,7 +159,7 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     clib_lib_task = create_msvclibgen_task(self, "bibc", c_input_tasks)
     bibcxx_lib_task = create_msvclibgen_task(self, "bibcxx", cxx_input_tasks)
     bibfor_lib_task = create_msvclibgen_task(self, "bibfor", fc_input_tasks)
-    bibaster_lib_task = create_msvclibgen_task(self, "astertmp", aster_input_tasks)
+    bibaster_lib_task = create_msvclibgen_task(self, "aster", aster_input_tasks)
 
     Logs.info(f"{clib_lib_task.outputs=}")
     Logs.info(f"{fclib_task.outputs=}")
@@ -191,7 +189,7 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
 
 _task_obj = None
 _task_done = False
-_compiler_map = {"asterpre": "cxx", "asterbibc": "c", "asterbibfor": "fc", "asterbibcxx": "cxx"}
+_compiler_map = {"asterlib": "cxx", "asterbibc": "c", "asterbibfor": "fc", "asterbibcxx": "cxx"}
 
 
 @TaskGen.feature("cxxshlib", "fcshlib", "cshlib")
@@ -222,7 +220,7 @@ def set_flags(self) -> None:
     self.link_task.env.append_unique("LINKFLAGS", args)
 
 
-@TaskGen.feature("cxxshlib", "fcshlib", "cshlib", "cxx")
+@TaskGen.feature("cxxshlib", "fcshlib", "cshlib")
 @TaskGen.after_method("apply_link")
 def make_msvc_modifications(self: TaskGen.task_gen):
     name = self.get_name()
@@ -234,38 +232,33 @@ def make_msvc_modifications(self: TaskGen.task_gen):
         Logs.info("Task already done")
         return
 
-    if name not in _compiler_map.keys():
-        Logs.info(f"Skipping {name=}")
-        if name == "asterlib":
-            aster_object = get_task_object(self.bld, name, "cxx")
-            setattr(_task_obj, name, aster_object)
-        return
-
     if _task_obj is None:
-        task_obj = extract_main_tasks(self)
-        _task_obj = task_obj
-    else:
-        task_obj = _task_obj
-        if not task_obj.all_tasks_ready():
-            missing_task_names = task_obj.get_missing_tasks()
-            Logs.error(f"Missing tasks before: {missing_task_names}")
-            aster_object = get_task_object(self.bld, name, _compiler_map[name])
-            if name == "asterpre":
-                aster_object.tasks = self.tasks
+        _task_obj = extract_main_tasks(self)
+    task_obj = _task_obj
 
-            setattr(task_obj, name, aster_object)
+    if name in _compiler_map.keys():
+        Logs.info(f"setting {name=}")
+        aster_object = get_task_object(self.bld, name, _compiler_map[name])
+        if name == "asterlib":
+            aster_object.tasks = self.tasks
 
-    if not task_obj.all_tasks_ready():
+        setattr(task_obj, name, aster_object)
+
+    are_tasks_ready = task_obj.all_tasks_ready()
+    Logs.info(f"{are_tasks_ready=}")
+
+    if are_tasks_ready is False:
         missing_task_names = task_obj.get_missing_tasks()
         Logs.error(f"Missing tasks @{name} after: {missing_task_names}")
-    else:
-        Logs.info("All tasks are ready")
-        run_mvsc_lib_gen(self, task_obj)
+        return
 
-        build_clang_compilation_db(
-            self,
-            task_obj.asterbibc.tasks,
-            task_obj.asterbibcxx.tasks,
-            task_obj.asterbibfor.tasks,
-        )
-        _task_done = True
+    Logs.info("All tasks are ready")
+    run_mvsc_lib_gen(self, task_obj)
+
+    build_clang_compilation_db(
+        self,
+        task_obj.asterbibc.tasks,
+        task_obj.asterbibcxx.tasks,
+        task_obj.asterbibfor.tasks,
+    )
+    _task_done = True

@@ -9,7 +9,13 @@ OPTION(BUILD_ASTER "Build the aster library" OFF)
 OPTION(BUILD_MFRONT "Build the mfront library" OFF)
 
 set(INCL_DIRS
-        bibcxx/include bibcxx bibc/include bibfor/include $ENV{CONDA_PREFIX}/include $ENV{CONDA_PREFIX}/Library/include extern/include $ENV{CONDA_PREFIX}/Lib/site-packages/numpy/core/include build/std/debug
+        bibcxx/include
+        bibcxx bibc/include
+        bibfor/include
+        build/std/debug
+        $ENV{CONDA_PREFIX}/include
+        $ENV{CONDA_PREFIX}/Library/include extern/include
+        $ENV{CONDA_PREFIX}/Lib/site-packages/numpy/core/include build/std/debug
 )
 
 set(DEP_PATHS

@@ -4,6 +4,7 @@ This modules defines some utilities shared by several *wscript* files.
 
 import os
 import os.path as osp
+import platform
 from subprocess import check_output
 
 from waflib import Context, Errors, Logs, Utils
@@ -22,6 +23,8 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     python = list(env.PYTHON)[0]
 
     python_ld_path = env.ASTERLIBDIR
+    Logs.info("PYTHONPATH: %s" % python_ld_path)
+
     add_to_env_paths(environ, "PYTHONPATH", python_ld_path)
     add_to_env_paths(environ, "LD_LIBRARY_PATH", python_ld_path)
 
@@ -60,7 +63,10 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         Logs.warn("stdout: %s" % err.stdout)
         Logs.warn("stderr: %s" % err.stderr)
         Logs.info("To run manually, use:")
-        Logs.info('. "%s/profile.sh"' % env["ASTERDATADIR"])
+        if platform.system() == "Windows":
+            Logs.info(". %s\\profile.bat" % env["ASTERDATADIR"])
+        else:
+            Logs.info('. "%s/profile.sh"' % env["ASTERDATADIR"])
         Logs.info(" ".join(cmdprefix + cmdexe))
         raise
 

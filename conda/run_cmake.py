@@ -4,9 +4,11 @@ CMAKE_BUILD_DIR = ROOT_DIR / "build-cmake"
 if not CMAKE_BUILD_DIR.exists():
     CMAKE_BUILD_DIR.mkdir()
 
+include_dirs = ROOT_DIR / "build" / "std" / "debug"
+
 
 def main():
-    cmd = ["cmake", "..", "-G", "Ninja", "-DBUILD_BIBCXX=ON", "-DCMAKE_BUILD_TYPE=Release", "--fresh"]
+    cmd = ["cmake", "..", "-G", "Ninja", "-DBUILD_ASTER=ON", "-DCMAKE_BUILD_TYPE=Release", "--fresh"]
     result = call_using_env(cmd, cwd=CMAKE_BUILD_DIR)
     if result.returncode != 0:
         print(result.stderr)

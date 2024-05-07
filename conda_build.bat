@@ -115,7 +115,6 @@ waf configure ^
   --out=%OUTPUT_DIR% ^
   --embed-aster ^
   --disable-mpi ^
-  --disable-openmp ^
   --disable-mumps ^
   --install-tests ^
   --maths-libs=auto ^
