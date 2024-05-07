@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/utmess.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -106,6 +107,7 @@ subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
         nb_node = 9
         nb_dim = 3
     else
+        call utmess('F', 'CONTACT2_10', sk=elem_type_name)
         ASSERT(.false.)
     end if
 !
