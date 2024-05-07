@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
     integer :: iaux, jaux, kaux, fieldScalar
     integer :: adsvxx, adslxx
     integer :: ino, ima, nrcmp, nrcmpr, nrpg, nrsp
-    integer :: ifm, niv, jindcm, poscmp
+    integer :: ifm, niv, jindcm, poscmp, cntcmp
     aster_logical :: logaux, lprolz
     real(kind=8) :: end, start
 !
@@ -248,10 +248,12 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
 !            AUTANT DE FOIS QUE DE COMPOSANTES A TRANSFERER. AU-DELA, CE
 !            SERAIT AUTANT DE FOIS QUE DE MAILLES, DONC COUTEUX
 !
+        cntcmp = 0
         do nrcmp = 1, ncmpve
             poscmp = zi(jindcm+nrcmp-1)
             if (poscmp .eq. 0) cycle
-            nrcmpr = numcmp(nrcmp)
+            cntcmp = cntcmp+1
+            nrcmpr = numcmp(cntcmp)
             jaux = 0
             if (logaux) then
                 nrsp = 1
