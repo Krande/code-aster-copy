@@ -16,10 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
+import platform
 import time
 from functools import wraps
-from resource import RUSAGE_SELF, getrusage
+if platform.system() == "Linux":
+    from resource import RUSAGE_SELF, getrusage
+else:
+    import psutil
 
 from .logger import logger
 
@@ -48,7 +51,12 @@ class Profiler:
             result = func(*args, **kwargs)
             delta = time.perf_counter() - start
             self._elaps[key] += delta
-            mem_used = int(getrusage(RUSAGE_SELF).ru_maxrss / 1024)
+            if platform.system() == "Linux":
+                mem_used = int(getrusage(RUSAGE_SELF).ru_maxrss / 1024)
+            else:
+                # Use psutil to get memory usage on Windows
+                mem_used = int(psutil.Process().memory_info().peak_wset / 1024 / 1024)
+
             logger.debug("function '%s' has run in %f s (VmPeak %d MB)", key, delta, mem_used)
             return result
 

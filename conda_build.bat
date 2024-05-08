@@ -97,7 +97,7 @@ set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin 
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
-set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
+set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
 REM Clean the build directory
 waf distclean
 
@@ -113,12 +113,12 @@ waf configure ^
   --med-libs=medC ^
   --prefix=%LIB_PATH_ROOT% ^
   --out=%OUTPUT_DIR% ^
-  --embed-aster ^
   --disable-mpi ^
   --disable-mumps ^
-  --install-tests ^
   --maths-libs=auto ^
   --without-hg
+
+REM   --install-tests ^
 
 REM Conditional log handling
 if %USE_LOG%==1 (

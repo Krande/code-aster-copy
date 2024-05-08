@@ -64,13 +64,7 @@ static void windows_dlclose(void *handle) {
 void DEF0(DLLCLS, dllcls) {
     /* Unload all components */
     dll_init();
-#ifdef ASTER_PLATFORM_WINDOWS
-    // Use the Windows-specific dlclose equivalent
-    libsymb_apply_on_all(DLL_DICT, (FUNC_PTR)windows_dlclose, 1);
-#else
-    // Original Unix-like implementation
     libsymb_apply_on_all( DLL_DICT, (FUNC_PTR)dlclose, 1 );
-#endif
-    Py_DECREF(DLL_DICT);
+    Py_DECREF( DLL_DICT );
     DLL_DICT = NULL;
 }

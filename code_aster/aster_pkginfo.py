@@ -1,0 +1,1 @@
+pkginfo =((17, 0, 99), "n/a", "n/a", "08/05/2024", "n/a", 1, ["no source repository"],)

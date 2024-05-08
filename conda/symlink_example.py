@@ -39,10 +39,14 @@ def create_symlink(source, link_name):
 
 def main(use_symlink: bool):
     extlib = ".pyd"
-    libs = ["aster", "bibc", "bibcxx", "bibfor", "AsterMFrOfficialDebug"]
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
-    libaster = "aster.dll"
-
+    symlink_map = {
+        "libaster": "bibcxx.dll",
+        "aster": "bibc.dll",
+        "aster_core": "bibc.dll",
+        "aster_fonctions": "bibc.dll",
+        "med_aster": "bibc.dll",
+    }
     py_modules = ["code_aster", "run_aster"]
     for pymod in py_modules:
         ca_module_dir_src = SOURCE_DIR / pymod
@@ -62,7 +66,8 @@ def main(use_symlink: bool):
 
     for submodule in mods:
         src = osp.join(DLL_DIR, submodule + extlib)
-        dst = osp.join(SOURCE_DIR, libaster)
+        dst_dll = symlink_map.get(submodule)
+        dst = osp.join(SOURCE_DIR, dst_dll)
         if use_symlink:
             result = create_symlink(dst, src)
             if not result:

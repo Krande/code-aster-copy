@@ -96,9 +96,9 @@ def extract_main_tasks(self: TaskGen.task_gen) -> LibTask:
     c_task_object = get_task_object(bld, "asterbibc", "c")
     cxx_task_object = get_task_object(bld, "asterbibcxx", "cxx")
     fc_task_object = get_task_object(bld, "asterbibfor", "fc")
-    cxx_aster_object = get_task_object(bld, "asterlib", "cxx")
+    c_aster_object = get_task_object(bld, "asterlib", "cxx")
 
-    return LibTask(c_task_object, cxx_task_object, fc_task_object, cxx_aster_object)
+    return LibTask(c_task_object, cxx_task_object, fc_task_object, c_aster_object)
 
 
 def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
@@ -110,11 +110,9 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
         lib_output_file_path = bld_path / "bibc" / "aster.lib"
     else:
         lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
-    exp_output_file_path = lib_output_file_path.with_suffix(".exp")
 
     # create nodes for the output files
     bib_lib_output_file_node = self.bld.bldnode.make_node(lib_output_file_path.relative_to(bld_path).as_posix())
-    bib_exp_output_file_node = self.bld.bldnode.make_node(exp_output_file_path.relative_to(bld_path).as_posix())
 
     msvc_libgen_task = self.create_task("msvclibgen")
     msvc_libgen_task.inputs = input_tasks
@@ -181,9 +179,6 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     cxxlib_task.inputs += bibaster_task_outputs + clib_task_outputs + fclib_task_outputs
     aster_task.inputs += fclib_task_outputs + clib_task_outputs + bibcxx_task_outputs
 
-    # Add .exp files to the outputs
-    # fclib_task.outputs +=
-
     Logs.info("Successfully ran MSVC lib generation")
 
 
@@ -239,9 +234,11 @@ def make_msvc_modifications(self: TaskGen.task_gen):
     if name in _compiler_map.keys():
         Logs.info(f"setting {name=}")
         aster_object = get_task_object(self.bld, name, _compiler_map[name])
-        if name == "asterlib":
-            aster_object.tasks = self.tasks
-
+        if name == "asterlib" and len(aster_object.tasks) == 0:
+            # For some reason the asterlib compile tasks are forced to be compiled with the c compiler despite it
+            # being assigned cxx compiler in the wscript
+            aster_object_c = get_task_object(self.bld, name, "c")
+            aster_object.tasks = aster_object_c.tasks
         setattr(task_obj, name, aster_object)
 
     are_tasks_ready = task_obj.all_tasks_ready()
@@ -254,11 +251,10 @@ def make_msvc_modifications(self: TaskGen.task_gen):
 
     Logs.info("All tasks are ready")
     run_mvsc_lib_gen(self, task_obj)
-
     build_clang_compilation_db(
         self,
         task_obj.asterbibc.tasks,
-        task_obj.asterbibcxx.tasks,
+        task_obj.asterbibcxx.tasks + task_obj.asterlib.tasks,
         task_obj.asterbibfor.tasks,
     )
     _task_done = True

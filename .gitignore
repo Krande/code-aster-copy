@@ -4,7 +4,7 @@
 *.bak
 *.orig
 *.gcov
-
+logs/*
 build/
 .waf?-*/
 .lock-*
