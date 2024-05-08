@@ -162,6 +162,14 @@ def build_libaster(self, env):
     )
     extlib = ".so"
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
+    symlink_map = {
+        "libaster": "bibcxx.dll",
+        "aster": "bibc.dll",
+        "aster_core": "bibc.dll",
+        "aster_fonctions": "bibc.dll",
+        "med_aster": "bibc.dll",
+    }
+
     libaster = "libaster.so"
     if env.ASTER_PLATFORM_MINGW or env.ASTER_PLATFORM_MSVC64:
         extlib = ".pyd"
@@ -169,6 +177,8 @@ def build_libaster(self, env):
         libaster = "aster.dll"
 
     for submodule in mods:
+        if env.ASTER_PLATFORM_MSVC64:
+            libaster = symlink_map.get(submodule)
         src = osp.join(env.ASTERLIBDIR, submodule + extlib)
         self.symlink_as(src, libaster)
 
