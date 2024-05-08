@@ -19,7 +19,6 @@
 
 import os.path as osp
 import pathlib
-import platform
 import sys
 
 from waflib import Configure, TaskGen, Utils, Logs, Build
@@ -180,7 +179,7 @@ def build_libaster(self, env):
         if env.ASTER_PLATFORM_MSVC64:
             libaster = symlink_map.get(submodule)
         src = osp.join(env.ASTERLIBDIR, submodule + extlib)
-        self.symlink_as(src, libaster)
+        self.symlink_as(src, libaster)  # For some reason this does not work on Windows?
 
 
 @Configure.conf

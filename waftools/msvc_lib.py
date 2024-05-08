@@ -1,5 +1,7 @@
+import os
 import pathlib
 import platform
+import shutil
 from dataclasses import dataclass
 
 from waflib import Logs, TaskGen, Task, Errors
@@ -37,6 +39,44 @@ class msvclibgen(Task.Task):
 
         ret = super().exec_command(cmd, **kw)
         return ret
+
+
+def create_symlink(source, link_name):
+    """
+    Attempts to create a symbolic link on Windows.
+
+    Args:
+    source (str): The path to the target file or directory.
+    link_name (str): The path where the symbolic link should be created.
+
+    Returns:
+    bool: True if the symlink was created successfully, False otherwise.
+    """
+    try:
+        os.symlink(source, link_name)
+        print(f"Symlink created successfully: {link_name} -> {source}")
+        return True
+    except OSError as e:
+        print(f"Failed to create symlink: {e}")
+        return False
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return False
+
+
+class msvc_symlink_installer(Task.Task):
+    ext_in = "install"
+
+    def run(self):
+        for i, in_file in enumerate(self.inputs):
+            in_file_fp = pathlib.Path(in_file.abspath())
+            output_fp = pathlib.Path(self.outputs[i].abspath())
+            Logs.info(f"Creating symlink: {in_file_fp} -> {output_fp}")
+            result = create_symlink(in_file_fp, output_fp)
+            if not result:
+                shutil.copy(in_file_fp, output_fp)
+                Logs.info(f"Failed to create symlink: {in_file_fp} -> {output_fp}, therefore copying file instead")
+        return 0
 
 
 @dataclass
@@ -179,10 +219,40 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     cxxlib_task.inputs += bibaster_task_outputs + clib_task_outputs + fclib_task_outputs
     aster_task.inputs += fclib_task_outputs + clib_task_outputs + bibcxx_task_outputs
 
+    bibc_dll = [o for o in clib_task.outputs if o.suffix() == ".dll"][0]
+    bibcxx_dll = [o for o in cxxlib_task.outputs if o.suffix() == ".dll"][0]
+    Logs.info(f"{type(bibc_dll)=}{bibc_dll=}")
+    Logs.info(f"{type(bibcxx_dll)=}{bibcxx_dll=}")
+
+    mods = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
+    symlink_map = {
+        "libaster": bibcxx_dll,
+        "aster": bibc_dll,
+        "aster_core": bibc_dll,
+        "aster_fonctions": bibc_dll,
+        "med_aster": bibc_dll,
+    }
+
+    aster_lib_dir = pathlib.Path(self.env.ASTERLIBDIR).resolve().absolute()
+    input_nodes = []
+    output_nodes = []
+    for submodule in mods:
+        dll_src_node = symlink_map.get(submodule)
+        dest = submodule + ".pyd"
+        pyd_node = self.bld.bldnode.make_node(dest)
+        input_nodes.append(dll_src_node)
+        output_nodes.append(pyd_node)
+        Logs.info(f"Created symlink: {dll_src_node} -> {pyd_node}")
+
+    msvc_sym_task = self.create_task("msvc_symlink_installer")
+    msvc_sym_task.inputs = input_nodes
+    msvc_sym_task.outputs = output_nodes
+    msvc_sym_task.env = self.env
+
     Logs.info("Successfully ran MSVC lib generation")
 
 
-_task_obj = None
+_lib_task_obj: LibTask | None = None
 _task_done = False
 _compiler_map = {"asterlib": "cxx", "asterbibc": "c", "asterbibfor": "fc", "asterbibcxx": "cxx"}
 
@@ -206,11 +276,7 @@ def set_flags(self) -> None:
         return None
     bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
     archive_dir = bld_path / archive_name
-    args = [
-        f"/LIBPATH:{archive_dir.as_posix()}",
-        f"/WHOLEARCHIVE:{archive_name}.lib",
-        f"{archive_name}.exp"
-    ]
+    args = [f"/LIBPATH:{archive_dir.as_posix()}", f"/WHOLEARCHIVE:{archive_name}.lib", f"{archive_name}.exp"]
     Logs.info(f"Setting flags {args} for {name=}")
     self.link_task.env.append_unique("LINKFLAGS", args)
 
@@ -221,15 +287,15 @@ def make_msvc_modifications(self: TaskGen.task_gen):
     name = self.get_name()
     Logs.info(f"task: {name=}")
 
-    global _task_obj
+    global _lib_task_obj
     global _task_done
     if _task_done:
         Logs.info("Task already done")
         return
 
-    if _task_obj is None:
-        _task_obj = extract_main_tasks(self)
-    task_obj = _task_obj
+    if _lib_task_obj is None:
+        _lib_task_obj = extract_main_tasks(self)
+    lib_task_obj = _lib_task_obj
 
     if name in _compiler_map.keys():
         Logs.info(f"setting {name=}")
@@ -239,22 +305,23 @@ def make_msvc_modifications(self: TaskGen.task_gen):
             # being assigned cxx compiler in the wscript
             aster_object_c = get_task_object(self.bld, name, "c")
             aster_object.tasks = aster_object_c.tasks
-        setattr(task_obj, name, aster_object)
+        setattr(lib_task_obj, name, aster_object)
 
-    are_tasks_ready = task_obj.all_tasks_ready()
+    are_tasks_ready = lib_task_obj.all_tasks_ready()
     Logs.info(f"{are_tasks_ready=}")
 
     if are_tasks_ready is False:
-        missing_task_names = task_obj.get_missing_tasks()
+        missing_task_names = lib_task_obj.get_missing_tasks()
         Logs.error(f"Missing tasks @{name} after: {missing_task_names}")
         return
 
     Logs.info("All tasks are ready")
-    run_mvsc_lib_gen(self, task_obj)
+    run_mvsc_lib_gen(self, lib_task_obj)
     build_clang_compilation_db(
         self,
-        task_obj.asterbibc.tasks,
-        task_obj.asterbibcxx.tasks + task_obj.asterlib.tasks,
-        task_obj.asterbibfor.tasks,
+        lib_task_obj.asterbibc.tasks,
+        lib_task_obj.asterbibcxx.tasks + lib_task_obj.asterlib.tasks,
+        lib_task_obj.asterbibfor.tasks,
     )
     _task_done = True
+
