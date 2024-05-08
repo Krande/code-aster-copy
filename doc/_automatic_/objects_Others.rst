@@ -30,6 +30,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ConstantFieldValuesReal` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ConstantFieldValuesReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ContactAlgo` object
 ********************************************************************************
 
