@@ -3,12 +3,8 @@ import os.path as osp
 import pathlib
 import shutil
 
-from config import TMP_DIR
-
 SOURCE_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib/aster"
-# SOURCE_DIR = TMP_DIR
 LIB_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib"
-# DLL_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "DLLs"
 DLL_DIR = SOURCE_DIR
 BIN_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "bin"
 SP_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Lib" / "site-packages"

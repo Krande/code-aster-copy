@@ -71,15 +71,15 @@ class msvc_symlink_installer(Task.Task):
         for i, in_file in enumerate(self.inputs):
             in_file_fp = pathlib.Path(in_file.abspath())
             output_fp = pathlib.Path(self.outputs[i].abspath())
-            Logs.info(f"Creating symlink: {in_file_fp} -> {output_fp}")
-            result = create_symlink(in_file_fp, output_fp)
-            if result is False:
-                if output_fp.exists():
-                    output_fp.unlink()
-                shutil.copy(in_file_fp, output_fp)
-                Logs.info(f"Failed to create symlink: {in_file_fp} -> {output_fp}, therefore copying file instead")
-            else:
-                Logs.info(f"Successfully created symlink: {in_file_fp} -> {output_fp}")
+            #Logs.info(f"Creating symlink: {in_file_fp} -> {output_fp}")
+            #result = create_symlink(in_file_fp, output_fp)
+            #if result is False:
+            if output_fp.exists():
+                output_fp.unlink()
+            shutil.copy(in_file_fp, output_fp)
+            Logs.info(f"Failed to create symlink: {in_file_fp} -> {output_fp}, therefore copying file instead")
+            #else:
+            #    Logs.info(f"Successfully created symlink: {in_file_fp} -> {output_fp}")
         return 0
 
 

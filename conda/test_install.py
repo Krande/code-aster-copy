@@ -32,7 +32,7 @@ def individual_test():
             raise FileNotFoundError(f"{pre_req_path} does not exist")
         ctypes.CDLL(pre_req_path.as_posix())
 
-    dll_order = ["bibcxx.dll", "aster.dll", "AsterMFrOfficialDebug.dll", "bibc.dll", "bibfor.dll"]
+    dll_order = ["AsterMFrOfficialDebug.dll", "bibfor.dll", "bibc.dll",  "bibcxx.dll", "aster.dll"]
     for dll_o in dll_order:
         dll = ASTER_DIR / dll_o
         if not dll.exists():
@@ -49,7 +49,6 @@ def individual_test():
 
 
 def trace_test():
-    # sys.path.insert(0, TMP_DIR.as_posix())
     import ctypes
     ctypes.CDLL(rf"{os.getenv('CONDA_PREFIX')}\Library\lib\aster\bibcxx.dll")
     sys.path.insert(0, ASTER_DIR.as_posix())
