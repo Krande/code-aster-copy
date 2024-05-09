@@ -739,6 +739,13 @@ void Result::printMedFile( const std::string fileName, std::string medName, bool
         a.openFile( fileName, Binary, New );
         retour = a.getLogicalUnit();
     }
+
+#ifdef ASTER_HAVE_MPI
+    if ( getMesh()->isParallel() && !local ) {
+        AsterMPI::barrier();
+    }
+
+#endif /* ASTER_HAVE_MPI */
     CommandSyntax cmdSt( "IMPR_RESU" );
 
     SyntaxMapContainer dict;

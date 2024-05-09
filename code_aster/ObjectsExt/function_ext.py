@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,10 +106,7 @@ class ExtendedFunction:
     def __call__(self, val, tol=1.0e-6):
         """Evaluate a function at 'val'. If provided, 'tol' is a relative
         tolerance to match an abscissa value."""
-        try:
-            val = val.valeur
-        except AttributeError:
-            val = float(val)
+        val = float(val)
         __ff = self.convert()
         return __ff(val, tol=tol)
 

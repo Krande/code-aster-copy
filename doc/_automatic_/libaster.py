@@ -1420,8 +1420,8 @@ class DiscreteComputation:
 
     def getMechanicalNodalForces(
         self,
-        disp,
         stress,
+        disp=None,
         modeFourier=0,
         varc_curr=None,
         behaviourMap=None,
@@ -1431,8 +1431,8 @@ class DiscreteComputation:
         """Return the elementary mechanical nodal forces vector
 
         Arguments:
-              disp (FieldOnNodes): displacement field
               stress (FieldOnCells): field of stresses
+              disp (FieldOnNodes): displacement field (required for large strains hypothesis)
               modeFourier (int) : fourier mode
               varc_curr (FieldOnCellsReal): external state variables
               behaviourMap (FieldOnCellsReal): map for non-linear behaviour
@@ -1457,8 +1457,8 @@ class DiscreteComputation:
         """Return the reaction forces
 
         Arguments:
-              disp(FieldOnNodes): displacement field
-              stress (FieldOnCells): field of stresse
+              stress (FieldOnCells): field of stresses
+              disp (FieldOnNodes): displacement field (required for large strains hypothesis)
               time_prev (float): time at begin of the step
               time_curr (float): time at end of the step
               theta (float): Theta parameter for time-integration

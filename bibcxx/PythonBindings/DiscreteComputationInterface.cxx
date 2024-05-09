@@ -860,8 +860,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Return the elementary mechanical nodal forces vector
 
       Arguments:
-            disp (FieldOnNodes): displacement field
             stress (FieldOnCells): field of stresses
+            disp (FieldOnNodes): displacement field (required for large strains hypothesis)
             modeFourier (int) : fourier mode
             varc_curr (FieldOnCellsReal): external state variables
             behaviourMap (FieldOnCellsReal): map for non-linear behaviour
@@ -871,7 +871,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Returns:
             ElementaryVectorDisplacementReal: elementary Neumann forces vector
         )",
-              py::arg( "disp" ), py::arg( "stress" ), py::arg( "modeFourier" ) = 0,
+              py::arg( "stress" ), py::arg( "disp" ) = nullptr, py::arg( "modeFourier" ) = 0,
               py::arg( "varc_curr" ) = nullptr, py::arg( "behaviourMap" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "assembly" ) = true )
 
@@ -897,8 +897,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Return the reaction forces
 
       Arguments:
-            disp(FieldOnNodes): displacement field
-            stress (FieldOnCells): field of stresse
+            stress (FieldOnCells): field of stresses
+            disp (FieldOnNodes): displacement field (required for large strains hypothesis)
             time_prev (float): time at begin of the step
             time_curr (float): time at end of the step
             theta (float): Theta parameter for time-integration

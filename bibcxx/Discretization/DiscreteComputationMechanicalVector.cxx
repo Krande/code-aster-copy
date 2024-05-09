@@ -653,12 +653,10 @@ FieldOnNodesRealPtr DiscreteComputation::getContactForces(
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
 }
 
-/**
- * @brief Compute nodal forces
- */
+/**  @brief Compute nodal forces  */
 std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
-DiscreteComputation::getMechanicalNodalForces( const FieldOnNodesRealPtr disp,
-                                               const FieldOnCellsRealPtr stress,
+DiscreteComputation::getMechanicalNodalForces( const FieldOnCellsRealPtr stress,
+                                               const FieldOnNodesRealPtr disp,
                                                const ASTERINTEGER modeFourier,
                                                const FieldOnCellsRealPtr varc_curr,
                                                const ConstantFieldOnCellsChar16Ptr behaviourMap,
@@ -735,7 +733,9 @@ DiscreteComputation::getMechanicalNodalForces( const FieldOnNodesRealPtr disp,
     }
 
     // Set current physical state
-    calcul->addInputField( "PDEPLAR", disp );
+    if ( disp != nullptr ) {
+        calcul->addInputField( "PDEPLAR", disp );
+    }
     calcul->addInputField( "PSIEFR", stress );
     // calcul->addInputField( "PSTRXMR", strx );
 
@@ -794,17 +794,15 @@ DiscreteComputation::getMechanicalForces( const ASTERDOUBLE time_curr, const AST
     return vectAsse;
 };
 
-/**
- * @brief Compute reaction forces
- */
+/** @brief Compute reaction forces */
 FieldOnNodesRealPtr DiscreteComputation::getMechanicalReactionForces(
-    const FieldOnNodesRealPtr disp, const FieldOnCellsRealPtr stress, const ASTERDOUBLE time_prev,
+    const FieldOnCellsRealPtr stress, const FieldOnNodesRealPtr disp, const ASTERDOUBLE time_prev,
     const ASTERDOUBLE time_curr, const ASTERDOUBLE theta, const ASTERINTEGER modeFourier,
     const FieldOnCellsRealPtr varc_curr, const ConstantFieldOnCellsChar16Ptr behaviourMap ) const {
 
     const FieldOnNodesRealPtr nodalForces =
         std::get< FieldOnNodesRealPtr >( DiscreteComputation::getMechanicalNodalForces(
-            disp, stress, modeFourier, varc_curr, behaviourMap ) );
+            stress, disp, modeFourier, varc_curr, behaviourMap ) );
 
     const ASTERDOUBLE time_step = time_curr - time_prev;
 

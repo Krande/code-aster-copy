@@ -136,7 +136,7 @@ TEST_RESU(
 # Get fields from result
 sief_elga = resultTrac.getField("SIEF_ELGA", para="INST", value=timeToTest)
 disp = resultTrac.getField("DEPL", para="INST", value=timeToTest)
-behaviourMap = resultTrac.getField("COMPORTEMENT", para="INST", value=timeToTest)
+
 
 # Create the physical problem
 phys_pb = CA.PhysicalProblem(model, materialFieldTrac)
@@ -153,11 +153,13 @@ disc_comp = CA.DiscreteComputation(phys_pb)
 varc_curr = phys_pb.getExternalStateVariables(timeToTest)
 
 # Compute nodal forces
-forc_noda = disc_comp.getMechanicalNodalForces(disp, sief_elga, varc_curr=varc_curr)
+forc_noda = disc_comp.getMechanicalNodalForces(sief_elga, disp, varc_curr=varc_curr)
 
 
+# Compute nodal forces with given map
+behaviourMap = resultTrac.getField("COMPORTEMENT", para="INST", value=timeToTest)
 forc_noda2 = disc_comp.getMechanicalNodalForces(
-    disp, sief_elga, varc_curr=varc_curr, behaviourMap=behaviourMap
+    sief_elga, disp, varc_curr=varc_curr, behaviourMap=behaviourMap
 )
 
 
@@ -227,7 +229,7 @@ TEST_RESU(
 
 # Compute forces
 reac_noda = disc_comp.getMechanicalReactionForces(
-    disp, sief_elga, time_curr=timeToTest, varc_curr=varc_curr
+    sief_elga, disp, time_curr=timeToTest, varc_curr=varc_curr
 )
 
 # # ORDRE_GRANDEUR n'existe pas pour TEST_RESU/CHAM_NO.

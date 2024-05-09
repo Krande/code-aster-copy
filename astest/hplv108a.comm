@@ -21,7 +21,7 @@ import os
 import json
 import tempfile
 import os.path as osp
-
+from math import pi
 
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
@@ -39,7 +39,13 @@ UN = DEFI_CONSTANTE(VALE=1.0)
 POISSON = DEFI_CONSTANTE(VALE=0.3)
 ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-MATEUNI = DEFI_MATERIAU(ELAS_FO=_F(E=UN, NU=POISSON), THER_FO=_F(LAMBDA=UN))
+MATEUNI = DEFI_MATERIAU(
+    ELAS_FO=_F(E=UN, NU=POISSON, ALPHA=UN, TEMP_DEF_ALPHA=20.0), THER_FO=_F(LAMBDA=UN, RHO_CP=UN)
+)
+
+side = 32.54
+diam = 22.6
+ratio = 1 - (pi / 4 * diam**2) / (side**2)
 
 TAB_HOMO = CALC_MATE_HOMO(
     MAILLAGE=MA,
@@ -64,6 +70,10 @@ testrefe = {
     "K11": 0.447967,
     "K22": 0.447967,
     "K33": 0.62115,
+    "ALPHA_T": 1.0,
+    "ALPHA_N": 1.0,
+    "ALPHA_L": 1.0,
+    "RHO_CP": 1.0 * ratio,
 }
 
 
