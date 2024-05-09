@@ -111,9 +111,10 @@ extern void DEFPPP( ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *, MPI_Fint *, MP
 // This fails with cl.exe and raises a conflict with the system header
 // C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\ucrt\corecrt_terminate.h
 // However, clang-cl.exe does not seem to have a problem with it.
-#ifndef ASTER_PLATFORM_MSVC64
-extern void terminate( void );
+#if !defined(ASTER_PLATFORM_MSVC64) || defined(__clang__)
+    extern void terminate(void);
 #endif
+
 
 #define CALL_ASABRT( a ) CALLP( ASABRT, asabrt, a )
 extern void DEFP( ASABRT, asabrt, _IN ASTERINTEGER * );
