@@ -63,7 +63,7 @@ def cli():
     parser = argparse.ArgumentParser()
     parser.add_argument("--simple", action="store_true")
     parser.add_argument("--trace", action="store_true")
-    parser.add_argument("--individual", action="store_true")
+    parser.add_argument("--seq", action="store_true")
 
     args = parser.parse_args()
 
@@ -73,7 +73,7 @@ def cli():
     if args.trace:
         trace_test()
 
-    if args.individual:
+    if args.seq:
         individual_test()
 
 
