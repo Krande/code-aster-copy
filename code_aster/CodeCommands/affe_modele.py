@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import Model
+from ..Objects import Model, getModelings, Physics, SyntaxSaver
 from ..Supervis import ExecuteCommand
 
 
@@ -60,6 +60,43 @@ class ModelAssignment(ExecuteCommand):
 
         FED = self._result.getFiniteElementDescriptor()
         FED.build()
+
+        allModelings = getModelings()
+        for key in keywords:
+            value = keywords[key]
+            if key == "AFFE":
+                for item in value:
+                    phenom = None
+                    model = None
+                    grpma = []
+                    for keyAffe in item:
+                        value2 = item[keyAffe]
+                        if keyAffe == "PHENOMENE":
+                            if value2 == "MECANIQUE":
+                                phenom = Physics.Mechanics
+                            elif value2 == "THERMIQUE":
+                                phenom = Physics.Thermal
+                            elif value2 == "ACOUSTIQUE":
+                                phenom = Physics.Acoustic
+                            else:
+                                assert False
+                        elif keyAffe == "MODELISATION":
+                            model = allModelings[value2]
+                        elif keyAffe == "TOUT":
+                            grpma = -1
+                        elif keyAffe == "GROUP_MA":
+                            grpma = value2
+                    if grpma == -1:
+                        self._result.addModelingOnMesh(phenom, model)
+                    else:
+                        assert grpma != []
+                        for grpName in grpma:
+                            try:
+                                self._result.addModelingOnGroupOfCells(phenom, model, grpName)
+                            except:
+                                self._result.banBalancing()
+            elif key == "AFFE_SOUS_STRUC":
+                self._result.banBalancing()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

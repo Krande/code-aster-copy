@@ -3,7 +3,7 @@
  * @brief Implementation de MaterialField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -43,6 +43,13 @@ MaterialField::MaterialField( const std::string &name, const BaseMeshPtr &mesh )
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
       _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
       _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ) {};
+
+MaterialField::MaterialField( const BaseMeshPtr &mesh, MaterialFieldPtr mater )
+    : MaterialField( ResultNaming::getNewResultName(), mesh ) {
+    _materialsOnMeshEntities = mater->_materialsOnMeshEntities;
+    _behaviourOnMeshEntities = mater->_behaviourOnMeshEntities;
+    _extStateVariablesOnMeshEntities = mater->_extStateVariablesOnMeshEntities;
+};
 
 listOfMaterials MaterialField::getVectorOfMaterial() const {
     listOfMaterials toReturn;
@@ -135,7 +142,7 @@ void MaterialField::addMultipleMaterialOnMesh( std::vector< MaterialPtr > curMat
 }
 
 void MaterialField::addMaterialOnMesh( MaterialPtr &curMater ) {
-    addMultipleMaterialOnMesh( std::vector< MaterialPtr > {curMater} );
+    addMultipleMaterialOnMesh( std::vector< MaterialPtr > { curMater } );
 }
 
 void MaterialField::addMultipleMaterialOnGroupOfCells( std::vector< MaterialPtr > curMaters,
@@ -151,7 +158,7 @@ void MaterialField::addMultipleMaterialOnGroupOfCells( std::vector< MaterialPtr 
 }
 
 void MaterialField::addMaterialOnGroupOfCells( MaterialPtr &curMater, VectorString namesOfGroup ) {
-    addMultipleMaterialOnGroupOfCells( std::vector< MaterialPtr > {curMater}, namesOfGroup );
+    addMultipleMaterialOnGroupOfCells( std::vector< MaterialPtr > { curMater }, namesOfGroup );
 }
 
 void MaterialField::addExternalStateVariable( ExternalStateVariablePtr &currExte ) {

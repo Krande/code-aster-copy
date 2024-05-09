@@ -3,7 +3,7 @@
  * @brief Implementation de MeshConnectionGraph
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -185,6 +185,15 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
                                   " nodes from your mesh or reduce MPI process number." );
     }
     _vertices[nbVert] = posInEdges;
+};
+
+void MeshConnectionGraph::buildFromIncompleteMeshWithVertexWeights( const IncompleteMeshPtr &mesh,
+                                                                    const VectorLong &weights ) {
+    buildFromIncompleteMesh( mesh );
+    if ( weights.size() != _vertices.size() ) {
+        throw std::runtime_error( "Number of vertices in mesh and weight size are inconsistent" );
+    }
+    _vertexWeights = weights;
 };
 
 bool MeshConnectionGraph::debugCheck() const {

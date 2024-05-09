@@ -3,7 +3,7 @@
  * @brief Interface python de Model
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,9 +53,27 @@ void exportModelToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< Model, BaseMeshPtr, bool > ) )
         .def( py::init( &initFactoryPtr< Model, std::string, FiniteElementDescriptorPtr > ) )
         .def( py::init( &initFactoryPtr< Model, std::string, FiniteElementDescriptorPtr, bool > ) )
-        .def( "addModelingOnMesh", &Model::addModelingOnMesh )
-        .def( "addModelingOnGroupOfCells", &Model::addModelingOnGroupOfCells )
-        .def( "addModelingOnGroupOfNodes", &Model::addModelingOnGroupOfNodes )
+        .def( "addModelingOnMesh", &Model::addModelingOnMesh, R"(
+Add modeling on all mesh
+
+Arguments:
+    physics (Physics): Physics
+    modeling (Modelings): Modeling
+    formulation (Formulation): Formulation (optional)
+        )",
+              py::arg( "physics" ), py::arg( "modeling" ),
+              py::arg( "formulation" ) = NoFormulation )
+        .def( "addModelingOnGroupOfCells", &Model::addModelingOnGroupOfCells, R"(
+Add modeling on all mesh
+
+Arguments:
+    physics (Physics): Physics
+    modeling (Modelings): Modeling
+    grpma (str): Name of element group
+    formulation (Formulation): Formulation (optional)
+        )",
+              py::arg( "physics" ), py::arg( "modeling" ), py::arg( "grpma" ),
+              py::arg( "formulation" ) = NoFormulation )
         .def( "build", &Model::build )
         .def( "existsThm", &Model::existsThm )
         .def( "existsHHO", &Model::existsHHO )
@@ -127,6 +145,9 @@ void exportModelToPython( py::module_ &mod ) {
         .def( "getGraphPartitioner", &Model::getGraphPartitioner )
         .def( "setSaneModel", &Model::setSaneModel )
         .def( "xfemPreconditioningEnable", &Model::xfemPreconditioningEnable )
+        .def( "banBalancing", &Model::banBalancing, R"(
+            Prohibit model balancing
+            )" )
         .def( "setSplittingMethod", py::overload_cast< ModelSplitingMethod, GraphPartitioner >(
                                         &Model::setSplittingMethod ) )
         .def( "setSplittingMethod",

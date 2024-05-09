@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelMechanicalLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -39,7 +39,15 @@ void exportParallelMechanicalLoadToPython( py::module_ &mod ) {
                                          ParallelFiniteElementDescriptorPtr, ModelPtr > ) )
         .def( "getFiniteElementDescriptor",
               &ParallelMechanicalLoadReal::getFiniteElementDescriptor )
-        .def( "getModel", &ParallelMechanicalLoadReal::getModel );
+        .def( "getModel", &ParallelMechanicalLoadReal::getModel )
+        .def( "setRebuildParameters", &ParallelMechanicalLoadReal::setRebuildParameters, R"(
+Set parameters to be able to rebuild object in case of balancing
+
+Arguments:
+    syntax (SyntaxSaver): syntax used to build object
+    grpNo (list of strings): list of node groups
+    grpMa (list of strings): list of cell groups)",
+              py::arg( "syntax" ), py::arg( "grpNo" ), py::arg( "grpMa" ) );
 
     py::class_< ParallelMechanicalLoadFunction,
                 ParallelMechanicalLoadFunction::ParallelMechanicalLoadPtr, DataStructure >(

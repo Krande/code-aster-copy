@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -501,12 +501,16 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
         ++i;
     }
 
-    ( *_globalCellIds ) = globalCellIds;
+    const auto nbCells = getNumberOfCells();
+    if ( globalCellIds.size() == 0 ) {
+        _globalCellIds->allocate( nbCells, -1 );
+    } else {
+        ( *_globalCellIds ) = globalCellIds;
+    }
     _nodesOwner->updateValuePointer();
     CALLO_LRM_CLEAN_JOINT( getName(), _nodesOwner->getDataPtr() );
     _joints->build();
 
-    auto nbCells = getNumberOfCells();
     _cellsOwners->allocate( nbCells, LONG_MAX );
     const auto &connecExp = getConnectivityExplorer();
     for ( int i = 0; i < nbCells; ++i ) {

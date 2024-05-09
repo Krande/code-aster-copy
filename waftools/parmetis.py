@@ -87,7 +87,9 @@ def check_parmetis(self):
 @Configure.conf
 def check_parmetis_libs(self):
     opts = self.options
-    check_ = partial(self.check_cc, uselib_store="PARMETIS", use="PARMETIS METIS M", mandatory=True)
+    check_ = partial(
+        self.check_cc, uselib_store="PARMETIS", use="PARMETIS METIS GKLIB M", mandatory=True
+    )
     if opts.embed_all or opts.embed_parmetis:
         check = lambda lib: check_(stlib=lib)
     else:
@@ -108,7 +110,11 @@ int main(void) {
     self.start_msg("Checking parmetis version")
     try:
         ret = self.check_cc(
-            fragment=fragment, use="PARMETIS METIS M", mandatory=True, execute=True, define_ret=True
+            fragment=fragment,
+            use="PARMETIS METIS GKLIB M",
+            mandatory=True,
+            execute=True,
+            define_ret=True,
         )
         mat5 = re.search(r"PARMETISVER: *(?P<vers>[0-9]+\.[0-9]+\.\w+)", ret)
         vers = mat5 and mat5.group("vers")

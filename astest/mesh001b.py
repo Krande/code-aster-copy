@@ -377,7 +377,7 @@ cellsRanks = mesh.getCellsRanks()
 test.assertSequenceEqual([x[0] for x in cellsRanks], cellsRankRef[rank])
 
 local_map = mesh.getLocalToGlobalCellIds()
-test.assertEqual(len(local_map), 0)
+test.assertEqual(len(local_map), [59, 54, 75][rank])
 
 
 def inter(list1, list2):

@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -19,19 +19,62 @@
 
 #include "ParallelUtilities/TemplateVectorTools.h"
 
-#ifdef ASTER_HAVE_MED
-int getSize( const MedVector::ElementValue &in ) { return in.getComponentNumber(); };
+int getSize( const MedVector< double >::ElementValue &in ) { return in.getComponentNumber(); };
 
-int getTotalSize( const MedVector &toCopy ) { return toCopy.totalSize(); };
+int getTotalSize( const MedVector< double > &toCopy ) { return toCopy.totalSize(); };
 
-void allocate( MedVector &in, const int &size1, const int &size2 ) {
+void allocate( MedVector< double > &in, const int &size1, const int &size2 ) {
     in.setSize( size1 );
     in.setTotalSize( size2 );
 };
 
-void update( MedVector::ElementValue in ) {};
+void update( MedVector< double >::ElementValue in ) {};
 
-void allocateOccurence( MedVector &in, const int &pos, const int &size ) {
+void allocateOccurence( MedVector< double > &in, const int &pos, const int &size ) {
     in.setElement( pos, size );
 };
-#endif
+
+int getSize( const MedVector< long int >::ElementValue &in ) { return in.getComponentNumber(); };
+
+int getTotalSize( const MedVector< long int > &toCopy ) { return toCopy.totalSize(); };
+
+void allocate( MedVector< long int > &in, const int &size1, const int &size2 ) {
+    in.setSize( size1 );
+    in.setTotalSize( size2 );
+};
+
+void update( MedVector< long int >::ElementValue in ) {};
+
+void allocateOccurence( MedVector< long int > &in, const int &pos, const int &size ) {
+    in.setElement( pos, size );
+};
+
+int getSize( const ArrayWrapper< JeveuxVectorReal >::ElementValue &in ) {
+    return in.getComponentNumber();
+};
+
+void update( typename ArrayWrapper< JeveuxVectorReal >::ElementValue in ) {};
+
+int getSize( const ArrayWrapper< JeveuxVectorLogical >::ElementValue &in ) {
+    return in.getComponentNumber();
+};
+
+void update( typename ArrayWrapper< JeveuxVectorLogical >::ElementValue in ) {};
+
+int getSize( const ArrayWrapper< JeveuxVectorLong >::ElementValue &in ) {
+    return in.getComponentNumber();
+};
+
+void update( typename ArrayWrapper< JeveuxVectorLong >::ElementValue in ) {};
+
+int getSize( const ArrayWrapper< VectorReal >::ElementValue &in ) {
+    return in.getComponentNumber();
+};
+
+void update( typename ArrayWrapper< VectorReal >::ElementValue in ) {};
+
+int getSize( const ArrayWrapper< VectorLong >::ElementValue &in ) {
+    return in.getComponentNumber();
+};
+
+void update( typename ArrayWrapper< VectorLong >::ElementValue in ) {};

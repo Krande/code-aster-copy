@@ -6,7 +6,7 @@
  * @brief Header of an object balancer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,6 +53,8 @@ class ObjectBalancer {
     std::set< int > _toKeep;
     /** @brief Set of elements to send */
     std::set< int > _toSend;
+    /** @brief Set of elements to delete */
+    std::set< int > _toDelete;
     /** @brief Size delta */
     int _sizeDelta;
     /** @brief Graph to browse */
@@ -176,6 +178,14 @@ class ObjectBalancer {
         const double reverse( const double &valueIn ) const { return valueIn; };
     };
 
+    template < typename Type >
+    struct DummyMaskType {
+      public:
+        const Type apply( const Type &valueIn ) const { return valueIn; };
+
+        const Type reverse( const Type &valueIn ) const { return valueIn; };
+    };
+
   private:
     template < typename T, typename Mask = ObjectBalancer::DummyMask >
     void balanceObjectOverProcesses3( const T &, T &, const Mask &mask = Mask() ) const;
@@ -225,6 +235,17 @@ class ObjectBalancer {
         }
     };
 
+    /**
+     * @brief Set list of elements to delete on local process
+     * @param toDelete vector of index to delete
+     */
+    void setElementsToDelete( const VectorInt &toDelete ) {
+        for ( const auto &id : toDelete ) {
+            if ( _toKeep.find( id ) == _toKeep.end() )
+                this->_toDelete.insert( id );
+        }
+    };
+
     /** @brief Prepare communications (send and receive comm sizes) */
     void prepareCommunications();
 
@@ -252,9 +273,14 @@ class ObjectBalancer {
                                       std::vector< std::vector< T > > &,
                                       const Mask &mask = Mask() ) const;
 
-#ifdef ASTER_HAVE_MED
-    MedVectorPtr balanceMedVectorOverProcessesWithRenumbering( const MedVectorPtr & ) const;
-#endif
+    template < typename TypeName = double >
+    std::shared_ptr< MedVector< TypeName > > balanceMedVectorOverProcessesWithRenumbering(
+        const std::shared_ptr< MedVector< TypeName > > & ) const;
+
+    template < typename TypeName = double >
+    void
+    balanceArrayOverProcessesWithRenumbering( const std::shared_ptr< ArrayWrapper< TypeName > > &,
+                                              std::shared_ptr< ArrayWrapper< TypeName > > & ) const;
 
     VectorLong getRenumbering() const { return _renumbering; };
 
@@ -277,8 +303,9 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
         for ( int iPos = 0; iPos < curSize; ++iPos ) {
             for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
                 const auto vecPos = nbCmp * curSendList[iPos] + iCmp;
-                if ( vecPos >= sizeIn )
+                if ( vecPos >= sizeIn ) {
                     throw std::runtime_error( "Index to send grower than vector size" );
+                }
                 if ( sizeToKeep == 0 ) {
                     toKeep[vecPos] = false;
                 } else {
@@ -286,6 +313,12 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
                         toKeep[vecPos] = false;
                 }
             }
+        }
+    }
+    for ( const auto &id : _toDelete ) {
+        for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
+            const auto vecPos = nbCmp * id + iCmp;
+            toKeep[vecPos] = false;
         }
     }
     // Copy of elements to keep in output vector
@@ -369,7 +402,7 @@ template < typename T, int nbCmp >
 void ObjectBalancer::balanceObjectOverProcesses( const T &in, T &out ) const {
     if ( !_isOk )
         throw std::runtime_error( "ObjectBalancer not prepared" );
-    const auto vecSize = getSize< typename ValueType< T >::value_type >( in );
+    const auto vecSize = getSize< typename ValueType< T >::value_type >( (const T &)in );
 
     resize< typename ValueType< T >::value_type >( out, vecSize + _sizeDelta );
     balanceSimpleVectorOverProcesses< typename ValueType< T >::value_type, nbCmp >(
@@ -453,6 +486,9 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             AsterMPI::send( tmp, proc, tag );
         }
     }
+    for ( const auto &id : _toDelete ) {
+        toKeep[id] = false;
+    }
 
     allocate( out, sizeIn + _sizeDelta, totalSize - toRemoveCum + toReceiveCum );
     int cmpt = start;
@@ -465,7 +501,7 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             allocateOccurence( out, cmpt, sizetoCopy );
             auto &newObj = out[cmpt];
             for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
-                newObj[curPos2] = mask.reverse( toCopy[curPos2] );
+                newObj[curPos2] = mask.reverse( mask.apply( toCopy[curPos2] ) );
             }
             ++cmpt;
         }
@@ -545,6 +581,96 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
                     }
                 }
                 AsterMPI::send( tmp, proc, tag );
+            }
+        }
+    }
+};
+
+template < typename TypeName >
+std::shared_ptr< MedVector< TypeName > >
+ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering(
+    const std::shared_ptr< MedVector< TypeName > > &vecIn ) const {
+    std::shared_ptr< MedVector< TypeName > > vecOut( new MedVector< TypeName >() );
+    balanceObjectOverProcesses3( *vecIn, *vecOut, DummyMaskDouble() );
+    vecOut->setComponentNumber( vecIn->getComponentNumber() );
+    vecOut->setComponentName( vecIn->getComponentName() );
+    if ( _renumbering.size() == 0 ) {
+        return vecOut;
+    }
+    const auto size = vecOut->size();
+    std::shared_ptr< MedVector< TypeName > > vecOut2( new MedVector< TypeName >() );
+    vecOut2->setComponentNumber( vecOut->getComponentNumber() );
+    vecOut2->setComponentName( vecOut->getComponentName() );
+    vecOut2->setSize( size );
+    if ( _renumbering.size() != size )
+        throw std::runtime_error( "Sizes not matching" );
+    for ( int i = 0; i < size; ++i ) {
+        const auto newId = _renumbering[i] - 1;
+        vecOut2->setElement( newId, vecOut->getElement( i ) );
+    }
+    vecOut2->endDefinition();
+    for ( int i = 0; i < size; ++i ) {
+        const auto newId = _renumbering[i] - 1;
+        const auto nbCmp = vecOut->getElement( i );
+        const auto &elInR = ( *vecOut )[i];
+        auto &elOutR = ( *vecOut2 )[newId];
+        for ( int j = 0; j < nbCmp; ++j ) {
+            elOutR[j] = elInR[j];
+        }
+    }
+    return vecOut2;
+};
+
+template < typename TypeName >
+void ObjectBalancer::balanceArrayOverProcessesWithRenumbering(
+    const std::shared_ptr< ArrayWrapper< TypeName > > &vecIn,
+    std::shared_ptr< ArrayWrapper< TypeName > > &vecOut ) const {
+    typedef typename ArrayWrapper< TypeName >::value_type ValueType;
+    // typedef typename std::shared_ptr< TypeName > TypeNamePtr;
+    // std::shared_ptr< ArrayWrapper< TypeName > > vecOut( new ArrayWrapper< TypeName >() );
+    balanceObjectOverProcesses3( *vecIn, *vecOut, DummyMaskType< ValueType >() );
+    vecOut->setComponentNumber( vecIn->getComponentNumber() );
+    vecOut->setComponentName( vecIn->getComponentName() );
+    if ( _renumbering.size() != 0 ) {
+        const auto size = vecOut->size();
+        std::vector< ValueType > tmpVec;
+        ArrayWrapper< std::vector< ValueType > > tmpArray =
+            ArrayWrapper< std::vector< ValueType > >( tmpVec, vecOut->getComponentNumber() );
+        tmpArray.setComponentNumber( vecOut->getComponentNumber() );
+        tmpArray.setComponentName( vecOut->getComponentName() );
+        tmpArray.setSize( size );
+        if ( _renumbering.size() != size )
+            throw std::runtime_error( "Sizes not matching" );
+        for ( int i = 0; i < size; ++i ) {
+            const auto newId = _renumbering[i] - 1;
+            tmpArray.setElement( newId, vecOut->getElement( i ) );
+        }
+        tmpArray.endDefinition();
+        for ( int i = 0; i < size; ++i ) {
+            const auto newId = _renumbering[i] - 1;
+            const auto nbCmp = vecOut->getElement( i );
+            const auto &elInR = ( *vecOut )[i];
+            auto &elOutR = tmpArray[newId];
+            for ( int j = 0; j < nbCmp; ++j ) {
+                elOutR[j] = elInR[j];
+            }
+        }
+        vecOut->deallocate();
+        vecOut->setComponentNumber( tmpArray.getComponentNumber() );
+        vecOut->setComponentName( tmpArray.getComponentName() );
+        vecOut->setSize( tmpArray.size() );
+        for ( int i = 0; i < size; ++i ) {
+            const auto newId = i;
+            vecOut->setElement( newId, tmpArray.getElement( i ) );
+        }
+        vecOut->endDefinition();
+        for ( int i = 0; i < size; ++i ) {
+            const auto newId = i;
+            const auto nbCmp = tmpArray.getElement( i );
+            const auto &elInR = tmpArray[i];
+            auto &elOutR = ( *vecOut )[newId];
+            for ( int j = 0; j < nbCmp; ++j ) {
+                elOutR[j] = elInR[j];
             }
         }
     }

@@ -3,7 +3,7 @@
  * @brief Interface python de MeshConnectionGraph
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -45,6 +45,15 @@ Arguments:
     mesh: IncompleteMesh.
         )",
               py::arg( "mesh" ) )
+        .def( "buildFromIncompleteMeshWithVertexWeights",
+              &MeshConnectionGraph::buildFromIncompleteMeshWithVertexWeights, R"(
+Create the graph corresponding to given IncompleteMesh to be used by PtScotchPartitioner
+
+Arguments:
+    mesh: IncompleteMesh.
+    weights: vertex weights.
+        )",
+              py::arg( "mesh" ), py::arg( "weights" ) )
         .def( "debugCheck", &MeshConnectionGraph::debugCheck, R"(Check graph)" );
 };
 
