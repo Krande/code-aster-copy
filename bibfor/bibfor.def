@@ -6053,7 +6053,6 @@ EXPORTS
 	behaviour_module_mp_getlistuseresva_
 	behaviour_module_mp_behaviourprepesvaelem_
 	behaviour_module_mp_prepeltsize1_
-	behaviour_module_mp_prepeltsize2_
 	behaviour_module_mp_prepgradvelo_
 	behaviour_module_mp_prepcoorgauss_
 	behaviour_module_mp_behaviourprepesvagauss_
