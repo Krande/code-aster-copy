@@ -72,6 +72,8 @@ resu = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=stepping),
 )
 
+resu = CALC_CHAMP(reuse=resu, RESULTAT=resu, CONTRAINTE=("SIEF_NOEU",))
+
 with shared_tmpdir("zzzz503t_") as tmpdir:
     medfile = osp.join(tmpdir, "resu_new.med")
     DEFI_FICHIER(UNITE=87, FICHIER=medfile, TYPE="BINARY")

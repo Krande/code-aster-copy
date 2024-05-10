@@ -159,11 +159,13 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
 ! 2.1. ==> POUR LES NOEUDS : ON PREND TOUT CE QUI FRANCHIT LE FILTRE
 !
     if (tymast .eq. 0) then
+        cntcmp = 0
         do nrcmp = 1, ncmpve
             poscmp = zi(jindcm+nrcmp-1)
             if (poscmp .eq. 0) cycle
-            adsvxx = adsv-1+numcmp(nrcmp)-ncmprf
-            adslxx = adsl-1+numcmp(nrcmp)-ncmprf
+            cntcmp = cntcmp+1
+            adsvxx = adsv-1+numcmp(cntcmp)-ncmprf
+            adslxx = adsl-1+numcmp(cntcmp)-ncmprf
             jaux = 0
             do iaux = ideb, ifin
                 ino = profas(iaux)
