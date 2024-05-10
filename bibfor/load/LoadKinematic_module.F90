@@ -1310,6 +1310,12 @@ contains
                     nodeMastNume = pjefNu(shiftNodeMast+iNodeMastDisp)
                     nodeMastCoef = ff(iNodeMastDisp)
                     call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    if (nodeMastNume .eq. nodeSlavNume) then
+                        if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
+                            call utmess('A', 'CHARGES7_1')
+                            goto 295
+                        end if
+                    end if
                     kineListRela%nodeName(iTerm) = nodeMastName
                     kineListRela%dofName(iTerm) = dofName
                     kineListRela%coefMultReal(iTerm) = nodeMastCoef
@@ -1336,6 +1342,8 @@ contains
 
 ! --------- Affect linear relation
                 call kineListRelaSave(title, nbTerm, kineListRela)
+
+295             continue
 
             end do
 ! ----- Next master node
