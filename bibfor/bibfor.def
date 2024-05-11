@@ -1,3 +1,4 @@
+LIBRARY bibfor
 EXPORTS
 	xtest_code_
 	xnbddl_

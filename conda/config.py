@@ -32,11 +32,19 @@ class DEFOption(str, Enum):
     NO_DEF = "no_def"
 
 
+SYMLINK_MAP = {
+    "libaster": "bibcxx.dll",
+    "aster": "bibc.dll",
+    "aster_core": "bibc.dll",
+    "aster_fonctions": "bibc.dll",
+    "med_aster": "bibc.dll",
+}
+
 LIB_DEPENDENCIES = {
-    CAMod.BIBC: [CAMod.BIBFOR, CAMod.BIBCXX],
-    CAMod.BIBFOR: [CAMod.BIBC, CAMod.BIBCXX],
-    CAMod.BIBCXX: [CAMod.BIBC, CAMod.BIBFOR, CAMod.LIBASTER],
-    CAMod.LIBASTER: [CAMod.BIBC, CAMod.BIBFOR, CAMod.BIBCXX],
+    CAMod.BIBC: [CAMod.BIBCXX, CAMod.BIBFOR ],
+    CAMod.BIBFOR: [CAMod.BIBC, CAMod.BIBCXX ],
+    CAMod.BIBCXX: [CAMod.LIBASTER, CAMod.BIBC, CAMod.BIBFOR],
+    CAMod.LIBASTER: [CAMod.BIBCXX, CAMod.BIBC, CAMod.BIBFOR],
     CAMod.MFRONT: [CAMod.BIBCXX],
 }
 # link passes

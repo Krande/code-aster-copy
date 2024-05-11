@@ -1,4 +1,5 @@
-EXPORTS 
+LIBRARY mfront
+EXPORTS
 	??_R0?AVbad_alloc@std@@@8 	 DATA
 	??_R0?AVbad_array_new_length@std@@@8 	 DATA
 	??_R0?AVexception@std@@@8 	 DATA

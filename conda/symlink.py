@@ -3,6 +3,8 @@ import os.path as osp
 import pathlib
 import shutil
 
+from config import SYMLINK_MAP
+
 SOURCE_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib/aster"
 LIB_DIR = pathlib.Path(os.getenv("CONDA_PREFIX")) / "Library" / "lib"
 DLL_DIR = SOURCE_DIR
@@ -36,13 +38,7 @@ def create_symlink(source, link_name):
 def main(use_symlink: bool):
     extlib = ".pyd"
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
-    symlink_map = {
-        "libaster": "bibcxx.dll",
-        "aster": "bibc.dll",
-        "aster_core": "bibc.dll",
-        "aster_fonctions": "bibc.dll",
-        "med_aster": "bibc.dll",
-    }
+
     py_modules = ["code_aster", "run_aster"]
     for pymod in py_modules:
         ca_module_dir_src = SOURCE_DIR / pymod
@@ -52,7 +48,7 @@ def main(use_symlink: bool):
 
     for submodule in mods:
         src = osp.join(DLL_DIR, submodule + extlib)
-        dst_dll = symlink_map.get(submodule)
+        dst_dll = SYMLINK_MAP.get(submodule)
         dst = osp.join(SOURCE_DIR, dst_dll)
         if use_symlink:
             result = create_symlink(dst, src)

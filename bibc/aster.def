@@ -1,2 +1,3 @@
+LIBRARY aster
 EXPORTS
 	initAsterModules
