@@ -71,12 +71,11 @@ class msvc_symlink_installer(Task.Task):
         for i, in_file in enumerate(self.inputs):
             in_file_fp = pathlib.Path(in_file.abspath())
             output_fp = pathlib.Path(self.outputs[i].abspath())
-            #Logs.info(f"Creating symlink: {in_file_fp} -> {output_fp}")
-            #result = create_symlink(in_file_fp, output_fp)
-            #if result is False:
-            if output_fp.exists():
-                output_fp.unlink()
-            shutil.copy(in_file_fp, output_fp)
+            if not output_fp.exists():
+                Logs.info(f"Creating symlink: {in_file_fp} -> {output_fp}")
+                result = create_symlink(in_file_fp, output_fp)
+                # if result is False:
+                #     shutil.copy(in_file_fp, output_fp)
             Logs.info(f"Failed to create symlink: {in_file_fp} -> {output_fp}, therefore copying file instead")
             #else:
             #    Logs.info(f"Successfully created symlink: {in_file_fp} -> {output_fp}")
@@ -246,7 +245,7 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
         pyd_node = self.bld.bldnode.make_node(dest)
         input_nodes.append(dll_src_node)
         output_nodes.append(pyd_node)
-        self.bld.install_as((aster_lib_dir / dest).as_posix(), pyd_node)
+        # self.bld.install_as((aster_lib_dir / dest).as_posix(), pyd_node)
         Logs.info(f"Created symlink: {dll_src_node} -> {pyd_node}")
 
     msvc_sym_task = self.create_task("msvc_symlink_installer")
