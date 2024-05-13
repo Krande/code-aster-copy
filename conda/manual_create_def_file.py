@@ -18,19 +18,41 @@ def create_symbols_file(module_name: str, def_option: DEFOption) -> None:
 
 
 def iter_symbol_names(symbol_file: pathlib.Path | str):
+    # Based on postgres https://github.com/postgres/postgres/blob/master/src/tools/msvc_gendef.pl
     written_symbols = set()
+    header_passed = False
     with open(symbol_file) as f:
         for line in f:
             if "UNDEF" in line:
                 continue
-            if "SECT1" not in line:
+            if "COFF SYMBOL TABLE" in line:
+                header_passed = True
                 continue
-            if "()" not in line:
+            if not header_passed:
                 continue
+            # if "SECT1" not in line:
+            #     continue
+            # if "()" not in line:
+            #     continue
             if 'Static' in line:
                 continue
+            if '|' not in line:
+                continue
+
             symbol_name = line.split("|")[-1].strip()
+            if "(`string')" in symbol_name:
+                continue
             if symbol_name in written_symbols:
+                continue
+            if symbol_name.startswith("@"):
+                continue
+            if symbol_name.startswith(r"\("):
+                continue
+            if symbol_name.startswith("__real"):
+                continue
+            if symbol_name.startswith("__xmm"):
+                continue
+            if symbol_name.startswith("__imp"):
                 continue
             written_symbols.add(symbol_name)
             yield symbol_name
@@ -54,7 +76,7 @@ def create_symbol_def(module_name: str, def_option: DEFOption):
 
 
 if __name__ == "__main__":
-    create_symbol_def("bibc", DEFOption.NO_DEF)
+    # create_symbol_def("bibc", DEFOption.NO_DEF)
     create_symbol_def("bibcxx", DEFOption.NO_DEF)
-    create_symbol_def("bibfor", DEFOption.NO_DEF)
-    create_symbol_def("aster", DEFOption.NO_DEF)
+    # create_symbol_def("bibfor", DEFOption.NO_DEF)
+    # create_symbol_def("aster", DEFOption.NO_DEF)
