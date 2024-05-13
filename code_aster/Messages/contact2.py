@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,14 @@ cata_msg = {
         """
   Toutes vos zones de contact sont en mode RESOLUTION='NON'.
   Le mode ALGO_RESO_GEOM = 'POINT_FIXE' est forcé.
+"""
+    ),
+    10: _(
+        """
+Au moins une des mailles de contact que vous avez définies est de type < %(k1)s > , or les types attendus sont POI1,
+SEG2, SEG3, TRIA3, TRIA6, TRIA7, QUAD4, QUAD8, QUAD9
+Conseil :
+Vérifiez votre AFFE_MODELE et le type de vos mailles dans la définition des surfaces de contact.
 """
     ),
     11: _(
