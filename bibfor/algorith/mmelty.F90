@@ -108,7 +108,6 @@ subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
         nb_dim = 3
     else
         call utmess('F', 'CONTACT2_10', sk=elem_type_name)
-        ASSERT(.false.)
     end if
 !
     if (present(elem_type_)) then
