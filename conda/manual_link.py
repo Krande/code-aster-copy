@@ -24,7 +24,7 @@ from msvc_utils import call_using_env
 
 # https://learn.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170
 def get_default_flags():
-    return ["/nologo", "/subsystem:console", "/DLL", "/MACHINE:X64", "/DEBUG", "/WX"]
+    return ["/nologo", "/subsystem:console", "/DLL", "/MACHINE:X64", "/DEBUG"]
 
 
 def get_default_lib_paths(lib_name: str):
@@ -147,17 +147,25 @@ def bibfor():
 
 def aster_lib_complete():
     """Link all the libraries into a single dll"""
+    deps = LIB_DEPENDENCIES.get(CAMod.ALL)
     core_lib_deps = eval_deps(deps)
 
-    extra_deps = SHARED_DEPS + core_lib_deps + ["bibfor.exp"]
+    extra_deps = SHARED_DEPS + core_lib_deps
+    # extra_deps += ["aster.exp", "bibc.exp", "bibcxx.exp", "bibfor.exp"]
     extra_deps += [
         # "/WHOLEARCHIVE:aster.lib",
         # "/WHOLEARCHIVE:bibcxx.lib",
         # "/WHOLEARCHIVE:bibc.lib",
-        "/WHOLEARCHIVE:bibfor.lib",
+        # "/WHOLEARCHIVE:bibfor.lib",
+        "/FORCE:MULTIPLE",
     ]
 
-    run_link(lib_name="aster", bib_objects=get_bibfor_compile_files(), extra_deps=extra_deps)
+    object_files = get_bibfor_compile_files()
+    object_files += get_bibc_compile_files()
+    object_files += get_bibcxx_compile_files()
+    object_files += get_bibaster_compile_files()
+
+    run_link(lib_name="astermain", bib_objects=object_files, extra_deps=extra_deps)
 
 
 def cli():
@@ -168,6 +176,7 @@ def cli():
     parser.add_argument("--bibcxx", action="store_true", help="Link the bibcxx library")
     parser.add_argument("--bibfor", action="store_true", help="Link the bibfor library")
     parser.add_argument("--bibaster", action="store_true", help="Link the bibaster library")
+    parser.add_argument("--complete", action="store_true", help="Link all library into a single dll")
     parser.add_argument("--use-def", action="store_true", help="Use a .def file to export symbols")
 
     args_ = parser.parse_args()
@@ -180,6 +189,8 @@ def cli():
         bibcxx()
     if args_.bibaster:
         bibaster()
+    if args_.complete:
+        aster_lib_complete()
 
 
 def manual():
@@ -187,15 +198,17 @@ def manual():
     for mod in [CAMod.BIBCXX, CAMod.BIBFOR, CAMod.BIBC, CAMod.LIBASTER]:
         run_lib(mod, DEFOption.USE_DEF)
 
-    bibfor()
-    bibc()
-    bibcxx()
-    bibaster()
+    aster_lib_complete()
+
+    # bibfor()
+    # bibc()
+    # bibcxx()
+    # bibaster()
 
     # Run linking again
-    for mod in MODS:
-        dll_name = SYMLINK_MAP.get(mod)
-        shutil.copy(TMP_DIR / dll_name, (TMP_DIR / mod).with_suffix(".pyd"))
+    # for mod in MODS:
+    #     dll_name = SYMLINK_MAP.get(mod)
+    #     shutil.copy(TMP_DIR / dll_name, (TMP_DIR / mod).with_suffix(".pyd"))
 
 
 if __name__ == "__main__":

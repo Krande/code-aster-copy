@@ -46,6 +46,7 @@ LIB_DEPENDENCIES = {
     CAMod.BIBCXX: [CAMod.LIBASTER, CAMod.BIBC, CAMod.BIBFOR],
     CAMod.LIBASTER: [CAMod.BIBCXX, CAMod.BIBC, CAMod.BIBFOR],
     CAMod.MFRONT: [CAMod.BIBCXX],
+    CAMod.ALL: [CAMod.BIBC, CAMod.BIBCXX, CAMod.BIBFOR, CAMod.LIBASTER],
 }
 # link passes
 # 1. make .lib files for each module using /DEF:{def_file} option
