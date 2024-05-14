@@ -36,9 +36,7 @@ EXPORTS
 	_new_try
 	_reset_tpmax
 	_search_id
-	_snprintf
 	_vfprintf_l
-	_vsnprintf
 	_vsnprintf_l
 	_vsprintf_l
 	append_etape
@@ -266,6 +264,5 @@ EXPORTS
 	utprin_
 	uttcsm_
 	uttrst_
-	vsprintf
 	writdr_
 	xfini_

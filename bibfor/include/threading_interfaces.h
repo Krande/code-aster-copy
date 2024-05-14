@@ -22,15 +22,15 @@
 !
 interface
 #ifdef ASTER_HAVE_OPENMP
-    subroutine omp_set_num_threads(a)
+    subroutine omp_set_num_threads(a) bind(C, name="omp_set_num_threads")
         integer, intent(in) :: a
     end subroutine
 
-    function omp_get_max_threads()
+    function omp_get_max_threads() bind(C, name="omp_get_max_threads")
         integer :: omp_get_max_threads
     end function
 
-    function omp_get_thread_num()
+    function omp_get_thread_num() bind(C, name="omp_get_thread_num")
         integer :: omp_get_thread_num
     end function
 #endif
