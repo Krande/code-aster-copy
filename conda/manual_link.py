@@ -147,10 +147,10 @@ def bibfor():
 
 def aster_lib_complete():
     """Link all the libraries into a single dll"""
-    deps = LIB_DEPENDENCIES.get(CAMod.ALL)
-    core_lib_deps = eval_deps(deps)
+    ca_module_deps = LIB_DEPENDENCIES.get(CAMod.ALL)
+    lib_deps = eval_deps(ca_module_deps)
 
-    extra_deps = SHARED_DEPS + core_lib_deps
+    extra_deps = SHARED_DEPS + lib_deps
     # extra_deps += ["aster.exp", "bibc.exp", "bibcxx.exp", "bibfor.exp"]
     extra_deps += [
         # "/WHOLEARCHIVE:aster.lib",

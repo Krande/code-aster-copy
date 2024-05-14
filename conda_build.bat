@@ -95,11 +95,14 @@ set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin 
     MFrontGenericInterface.lib scotch.lib scotcherr.lib ^
     mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib /MACHINE:X64 /DEBUG
 
+:: Add mumps libs
+@REM set LDFLAGS=%LDFLAGS% dmumps_seq.lib zmumps_seq.lib smumps_seq.lib cmumps_seq.lib mumps_common_seq.lib pord.lib
+
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
 REM Clean the build directory
-REM waf distclean
+waf distclean
 
 python conda\update_version.py
 
@@ -114,11 +117,12 @@ waf configure ^
   --prefix=%LIB_PATH_ROOT% ^
   --out=%OUTPUT_DIR% ^
   --disable-mpi ^
-  --disable-mumps ^
   --maths-libs=auto ^
   --without-hg
+@REM   --disable-openmp ^
+@REM   --install-tests ^
+@REM   --disable-mumps ^
 
-REM   --install-tests ^
 
 REM Conditional log handling
 if %USE_LOG%==1 (

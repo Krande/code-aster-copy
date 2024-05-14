@@ -1,8 +1,8 @@
 :: created by waf using data/wscript
 
-:: IF ASTER_ROOT is not defined and CONDA_PREFIX is defined, use CONDA_PREFIX
+:: IF CONDA_PREFIX is defined, use CONDA_PREFIX
 
-if not defined ASTER_ROOT if defined CONDA_PREFIX set ASTER_ROOT=%CONDA_PREFIX%
+if defined CONDA_PREFIX set ASTER_ROOT=%CONDA_PREFIX%
 
 set PYTHONPATH=%ASTER_ROOT%\@BASE_PREFIX@\lib\aster;%ASTER_ROOT%\lib\site-packages;%PYTHONPATH%
 

@@ -39,7 +39,7 @@ for LLVM Flang (which is supported on conda-forge).
 | MED         | 4.1.0   | VS2022     | VS2022       | Intel OneAPI Fortran 2024.0 (^1) |
 | MEDCOUPLING | 9.10.0  | VS2022     | VS2022       | N/A                              |
 | MFront      | 4.2.0   | CLANG-CL   | CLANG-CL     | LLVM Flang                       |
-| MGIS        | 2.2.0   | VS2022     | VS2022       | LLVM Flang                       |
+| MGIS        | 2.2.0   | VS2019     | VS2019       | LLVM Flang                       |
 | METIS       | 5.1.0   | VS2022     | VS2022       | N/A                              |
 | SCOTCH      | 7.0.4   | VS2022     | VS2022       | LLVM Flang                       |
 | MUMPS       | 5.7.0   | VS2022     | VS2022       | LLVM Flang                       |
