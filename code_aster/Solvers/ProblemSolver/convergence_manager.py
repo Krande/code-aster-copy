@@ -204,16 +204,18 @@ class ConvergenceManager(SolverFeature):
 
         def isConverged(self):
             """The number of iteration is not a convergence criteria.
-                but it can nullify the convergence if < _minValue(=1)
+            but it can nullify the convergence if it is less than a minimal value.
+
             Returns:
                 bool: *True*.
             """
+
             if not self.hasRef() or not self.isSet() or not self.minSet():
                 return True
             return self._minValue <= self._value
 
         def isPrediction(self):
-            """Return True is self._value<=1
+            """Return True if self._value<1
 
             Returns:
                 bool: *True*.
@@ -460,10 +462,10 @@ class ConvergenceManager(SolverFeature):
 
     def isPrediction(self):
         """Tell if the current Nuewton iteration is the prediction
-           iteration.
+        iteration.
 
         Returns:
-            bool: *True* if predction, *False* otherwise.
+            bool: *True* if prediction, *False* otherwise.
         """
         name = "ITER_GLOB_MAXI"
         para = self._param[name]

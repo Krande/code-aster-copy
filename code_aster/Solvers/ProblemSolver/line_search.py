@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from ...Supervis import ConvergenceError
-from ...Utilities import no_new_attributes, profile
+from ...Utilities import no_new_attributes, profile, logger
 from ..Basics import SolverFeature
 from ..Basics import SolverOptions as SOP
 
@@ -126,7 +126,7 @@ class LineSearch(SolverFeature):
                     iteropt = iter
                     # converged ?
                     if abs(f) < fcvg:
-                        print(
+                        logger.info(
                             "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iter, rho, f)
                         )
                         return rhoopt * solution
@@ -140,10 +140,11 @@ class LineSearch(SolverFeature):
                 else:
                     rho = self.param["RHO_MAX"]
 
-                # print("Iteration-%d, rho2 = %0.6f and f(rho2) = %0.6f" % (iter, rho, f))
                 rhom = rhotmp
                 fm = f
-            print("Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iteropt, rhoopt, fopt))
+            logger.info(
+                "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iteropt, rhoopt, fopt)
+            )
             return rhoopt * solution
 
         return solution
