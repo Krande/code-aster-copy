@@ -27,7 +27,8 @@ The parameters and files used by the study are defined in a ``.export`` file
 (see :py:mod:`~run_aster.export` for description of the syntax of the
 ``.export``).
 
-For parallel executions, these two forms are equivalent:
+For parallel executions, these two forms are equivalent (if the ``.export``
+contains ``P mpi_nbcpu 4``):
 
 .. code-block:: sh
 
@@ -42,6 +43,19 @@ or:
 Using the first syntax, ``bin/run_aster`` re-runs itself with ``mpiexec`` using
 the second syntax (``mpiexec`` syntax is provided by the configuration, see
 :py:mod:`~run_aster.config`).
+
+If the version has been configured with ``--use-srun``, you *must* use:
+
+.. code-block:: sh
+
+    bin/run_aster --srun path/to/file.export
+
+or:
+
+.. code-block:: sh
+
+    srun -n 4 [options] bin/run_aster path/to/file.export
+
 
 ``bin/run_aster`` can also directly execute a Python file (``.py`` or ``.comm``
 extension is expected) with code_aster commands.
@@ -60,7 +74,7 @@ For the parallel version:
 
 .. code-block:: sh
 
-    mpirun -n 2 bin/run_aster --only-proc0 path/to/file.py
+    mpiexec -n 2 bin/run_aster --only-proc0 path/to/file.py
 
 or:
 
@@ -299,7 +313,8 @@ def main(argv=None):
     if need_split and (CFG.get("parallel", 0) and procid >= 0):
         logger.error(
             "Can not execute several comm files under MPI runner. "
-            "Let run_aster split the export file or change the export file."
+            "Let run_aster split the export file or change the export file to "
+            "execute only one comm file."
         )
     if args.mpi_nbcpu:
         export.set("mpi_nbcpu", args.mpi_nbcpu)
