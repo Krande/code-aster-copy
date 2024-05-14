@@ -3509,7 +3509,11 @@ class ConstantFieldValuesReal:
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getValues(self):
-        pass
+        """Return the field values
+
+        Returns:
+            list[float]: List of values
+        """
 
 
 # class ConstantFieldOnCellsReal in libaster
@@ -3539,13 +3543,21 @@ class ConstantFieldOnCellsReal(DataField):
         pass
 
     def getValues(self, arg0):
-        pass
+        """Return the field values
+
+        Returns:
+            list[float]: List of values
+        """
 
     def setValueOnCells(self, arg0, arg1, arg2):
         pass
 
     def size(self):
-        pass
+        """Return the size of field
+
+        Returns:
+            int: size of field
+        """
 
 
 # class ConstantFieldOnCellsChar16 in libaster
@@ -10420,7 +10432,11 @@ class Crack(DataStructure):
         """
 
     def getCrackFrontNodeBasis(self):
-        pass
+        """Return the basis at each crack front node
+
+        Returns:
+            FieldOnNodesReal: field of the crack front basis
+        """
 
     def getCrackFrontNodes(self):
         """Return the crack front nodes
@@ -10437,31 +10453,67 @@ class Crack(DataStructure):
         """
 
     def getCrackFrontRadius(self):
-        pass
+        """Return the crack front Radius
+
+        Returns:
+            float: the crack front Radius
+        """
 
     def getCrackTipCellsType(self):
-        pass
+        """Return the crack front cell type
+
+        Returns:
+            str: the crack front cell type
+        """
 
     def getLowerLipGroupName(self):
-        pass
+        """Return the group name used to define lower side of cracklip
+
+        Returns:
+            str: group name
+        """
 
     def getLowerNormNodes(self):
-        pass
+        """Return the names for nodes on the lower side of cracklip
+
+        Returns:
+            list[str]: node names
+        """
 
     def getLowerNormNodes2(self):
-        pass
+        """Return the names for nodes on the lower side of cracklip (for POST_JMOD)
+
+        Returns:
+            list[str]: node names
+        """
 
     def getNormal(self):
-        pass
+        """Return vector normal of the crack surface
+
+        Returns:
+            list[float]: normal to the crack surface
+        """
 
     def getUpperLipGroupName(self):
-        pass
+        """Return the group name used to define upper side of cracklip
+
+        Returns:
+            str: group name
+        """
 
     def getUpperNormNodes(self):
-        pass
+        """Return the names for nodes on the upper side of cracklip
+
+        Returns:
+            list[str]: node names
+        """
 
     def getUpperNormNodes2(self):
-        pass
+        """Return the names for nodes on the upper side of cracklip (for POST_JMOD)
+
+        Returns:
+            list[str]: node names
+        """
 
     def isSymmetric(self):
         """Return true if crack is symeric"""

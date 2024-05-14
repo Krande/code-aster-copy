@@ -48,16 +48,66 @@ void exportCrackToPython( py::module_ &mod ) {
             Returns:
                 list[float]: the crack front Position
         )" )
-        .def( "getCrackFrontNodeBasis", &Crack::getCrackFrontNodeBasis )
-        .def( "getCrackFrontRadius", &Crack::getCrackFrontRadius )
-        .def( "getCrackTipCellsType", &Crack::getCrackTipCellsType )
-        .def( "getLowerLipGroupName", &Crack::getLowerLipGroupName )
-        .def( "getUpperLipGroupName", &Crack::getUpperLipGroupName )
-        .def( "getLowerNormNodes", &Crack::getLowerNormNodes )
-        .def( "getUpperNormNodes", &Crack::getUpperNormNodes )
-        .def( "getLowerNormNodes2", &Crack::getLowerNormNodes2 )
-        .def( "getUpperNormNodes2", &Crack::getUpperNormNodes2 )
-        .def( "getNormal", &Crack::getNormal )
+        .def( "getCrackFrontNodeBasis", &Crack::getCrackFrontNodeBasis, R"(
+            Return the basis at each crack front node
+
+            Returns:
+                FieldOnNodesReal: field of the crack front basis
+        )" )
+        .def( "getCrackFrontRadius", &Crack::getCrackFrontRadius, R"(
+            Return the crack front Radius
+
+            Returns:
+                float: the crack front Radius
+        )" )
+        .def( "getCrackTipCellsType", &Crack::getCrackTipCellsType, R"(
+            Return the crack front cell type 
+
+            Returns:
+                str: the crack front cell type 
+        )" )
+        .def( "getLowerLipGroupName", &Crack::getLowerLipGroupName, R"(
+            Return the group name used to define lower side of cracklip
+
+            Returns:
+                str: group name
+        )" )
+        .def( "getUpperLipGroupName", &Crack::getUpperLipGroupName, R"(
+            Return the group name used to define upper side of cracklip
+
+            Returns:
+                str: group name
+        )" )
+        .def( "getLowerNormNodes", &Crack::getLowerNormNodes, R"(
+            Return the names for nodes on the lower side of cracklip
+
+            Returns:
+                list[str]: node names
+        )" )
+        .def( "getUpperNormNodes", &Crack::getUpperNormNodes, R"(
+            Return the names for nodes on the upper side of cracklip
+
+            Returns:
+                list[str]: node names
+        )" )
+        .def( "getLowerNormNodes2", &Crack::getLowerNormNodes2, R"(
+            Return the names for nodes on the lower side of cracklip (for POST_JMOD)
+
+            Returns:
+                list[str]: node names
+        )" )
+        .def( "getUpperNormNodes2", &Crack::getUpperNormNodes2, R"(
+            Return the names for nodes on the upper side of cracklip (for POST_JMOD)
+
+            Returns:
+                list[str]: node names
+        )" )
+        .def( "getNormal", &Crack::getNormal, R"(
+            Return vector normal of the crack surface
+
+            Returns:
+                list[float]: normal to the crack surface
+        )" )
         .def( "isSymmetric", &Crack::isSymmetric, R"(
             Return true if crack is symeric
         )" )

@@ -35,9 +35,11 @@ class ExtendedGeneralizedAssemblyVectorComplex:
     cata_sdj = "SD.sd_cham_gene.sd_cham_gene"
 
     def EXTR_VECT_GENE(self):
+        """return the vector values as `numpy.array`"""
         return numpy.array(self.getValues())
 
     def RECU_VECT_GENE(self, vecteur):
+        """set the vector values"""
         self.setValues(vecteur)
 
 
@@ -46,7 +48,9 @@ class ExtendedGeneralizedAssemblyVectorReal:
     cata_sdj = "SD.sd_cham_gene.sd_cham_gene"
 
     def EXTR_VECT_GENE(self):
+        """return the vector values as `numpy.array`"""
         return numpy.array(self.getValues())
 
     def RECU_VECT_GENE(self, vecteur):
+        """set the vector values"""
         self.setValues(vecteur)
