@@ -199,18 +199,30 @@ def parse_args(argv):
         help="only processor #0 is writing on stdout",
     )
     parser.add_argument(
+        "--mpi",
+        dest="rerun_mpi",
+        action="store_const",
+        const=True,
+        default="auto",
+        help="restart run_aster with 'mpiexec -n MPI_NBCPU run_aster ...' "
+        "(it uses mpiexec or srun depending on the configuration of the version). "
+        "By default, it is done only if necessary",
+    )
+    parser.add_argument(
         "--no-mpi",
-        dest="auto_mpiexec",
-        action="store_false",
-        help="if '%(prog)s' is executed with a parallel version but not under 'mpiexec', it is "
-        "automatically restart with 'mpiexec -n N %(prog)s ...'; use '--no-mpi' to not do it",
+        dest="rerun_mpi",
+        action="store_const",
+        const=False,
+        default="auto",
+        help="do not restart run_aster with 'mpiexec -n MPI_NBCPU run_aster ...' "
+        "even if it seems necessary",
     )
     parser.add_argument("-t", "--test", action="store_true", help="execution of a testcase")
     parser.add_argument(
         "--ctest",
         action="store_true",
         help="testcase execution inside ctest (implies '--test'), the 'code' file is saved into "
-        "the current directory (which is '--resutest' directory for 'run_ctest').",
+        "the current directory (which is '--resutest' directory for 'run_ctest')",
     )
     parser.add_argument(
         "-n",
@@ -239,7 +251,7 @@ def parse_args(argv):
         dest="no_comm",
         action="store_true",
         help="do not execute the `.comm` files but start an interactive Python session. "
-        "`CA.init()` or `DEBUT()` should be executed to copy data files.",
+        "`CA.init()` or `DEBUT()` should be executed to copy data files",
     )
     parser.add_argument(
         "--gdb",
@@ -271,7 +283,7 @@ def parse_args(argv):
         nargs="?",
         help="Export file (.export) defining the calculation or "
         "Python file (.py|.comm). "
-        "Without file, it starts an interactive Python session.",
+        "Without file, it starts an interactive Python session",
     )
 
     args = parser.parse_args(argv)
@@ -300,7 +312,7 @@ def main(argv=None):
     args = parse_args(argv)
 
     procid = 0
-    if CFG.get("parallel", 0):
+    if CFG.get("parallel", False):
         procid = get_procid()
 
     direct = args.file and osp.splitext(args.file)[-1] in (".py", ".comm")
@@ -309,22 +321,34 @@ def main(argv=None):
     )
     args.test = args.test or export.get("service") == "testcase"
     make_env = args.env or "make_env" in export.get("actions", [])
+    if export.get("no-mpi"):
+        args.rerun_mpi = False
+    logger.debug("parallel: %s, procid: %d", CFG.get("parallel", False), procid)
+    logger.debug("nbcomm: %d", len(export.commfiles))
     need_split = len(export.commfiles) > 1
-    if need_split and (CFG.get("parallel", 0) and procid >= 0):
-        logger.error(
-            "Can not execute several comm files under MPI runner. "
-            "Let run_aster split the export file or change the export file to "
-            "execute only one comm file."
+    need_mpiexec = args.rerun_mpi
+    if need_split and CFG.get("parallel", False) and procid >= 0:
+        # disable this warning if `CFG.get("use_srun") is True` ?
+        need_mpiexec = True
+        logger.warning(
+            "\n ------------------------------------------------------------"
+            "\n This study contains several comm files. "
+            "Each comm file must be executed under MPI runner separately. "
+            "\n The export file will be automatically splitted and run separately. "
+            "\n If this instance of run_aster has already been run with mpiexec or srun "
+            "\n it may fail (or block)."
+            "\n ------------------------------------------------------------"
         )
     if args.mpi_nbcpu:
         export.set("mpi_nbcpu", args.mpi_nbcpu)
-    if export.get("no-mpi"):
-        args.auto_mpiexec = False
-    need_mpiexec = procid < 0 and args.auto_mpiexec
-    if need_mpiexec and export.get("mpi_nbcpu", 1) == 1 and not CFG.get("require_mpiexec", False):
-        need_mpiexec = False
-    logger.debug("parallel: %s, procid: %d", CFG.get("parallel", False), procid)
-    logger.debug("nbcomm: %d", len(export.commfiles))
+    if need_mpiexec == "auto":
+        need_mpiexec = procid < 0
+        if (
+            need_mpiexec
+            and export.get("mpi_nbcpu", 1) == 1
+            and not CFG.get("require_mpiexec", False)
+        ):
+            need_mpiexec = False
     if args.debugpy_runner and procid == args.debugpy_rank and not (need_split or need_mpiexec):
         debugpy.listen(("localhost", args.debugpy_runner))
         print("Waiting for debugger attach")
@@ -392,11 +416,13 @@ def main(argv=None):
             for exp_i in split_export(export):
                 fexp = osp.join(expdir, basn + "." + str(exp_i.get("step")))
                 exp_i.write_to(fexp)
-                argv_i = [i for i in argv if i != args.file]
+                argv_i = [i for i in argv if i not in (args.file, "--mpi")]
                 if not args.wrkdir:
                     argv_i.append("--wrkdir")
                     argv_i.append(wrkdir)
                 argv_i.extend(["--status-file", statfile])
+                if "--no-mpi" not in argv_i:
+                    argv_i.append("--no-mpi")
                 argv_i.append(fexp)
                 cmd = f"{run_aster} {' '.join(argv_i)}"
                 if need_mpiexec:

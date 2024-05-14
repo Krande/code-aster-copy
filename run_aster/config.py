@@ -269,8 +269,8 @@ class Config:
         else:
             params = content
         for key, value in params.items():
-            logger.debug("+ %s: %s", key, value)
             self._storage.set(key, value)
+            logger.debug("+ %s: %s", key, self._storage.get(key))
 
     @staticmethod
     def filter(content, section, filter_key, filter_value):
