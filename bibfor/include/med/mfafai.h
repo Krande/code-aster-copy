@@ -20,8 +20,14 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mfafai(fid, maa, ind, fam, num,&
                       gro, cret) BIND(C, name='MFAFAI')
+#else
+    subroutine mfafai(fid, maa, ind, fam, num,&
+                      gro, cret)
+#endif
         med_idt :: fid
         character(len=*) :: maa
         med_int :: ind

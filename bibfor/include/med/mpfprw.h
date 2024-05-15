@@ -20,7 +20,12 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mpfprw(fid, pname, psize, profil, cret) BIND(C, name='MPFPRW')
+#else
+    subroutine mpfprw(fid, pname, psize, profil, cret)
+#endif
         med_idt :: fid
         character(len=*) :: pname
         med_int :: psize

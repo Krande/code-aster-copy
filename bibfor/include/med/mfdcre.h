@@ -20,8 +20,14 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mfdcre(fid, fname, ftype, ncomp, cname,&
                       cunit, dtunit, mname, cret) BIND(C, name='MFDCRE')
+#else
+    subroutine mfdcre(fid, fname, ftype, ncomp, cname,&
+                      cunit, dtunit, mname, cret)
+#endif
         med_idt :: fid
         character(len=*) :: fname
         med_int :: ftype

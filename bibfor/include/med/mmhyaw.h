@@ -20,9 +20,16 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mmhyaw(fid, name, numdt, numit, dt,&
                       entype, geotype, cmode, filter, con,&
                       cret) BIND(C, name='MMHYAW')
+#else
+    subroutine mmhyaw(fid, name, numdt, numit, dt,&
+                      entype, geotype, cmode, filter, con,&
+                      cret)
+#endif
         med_idt :: fid
         character(len=*) :: name
         med_int :: numdt

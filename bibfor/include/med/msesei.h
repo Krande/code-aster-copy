@@ -20,9 +20,16 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine msesei(fid, it, mname, mgtype, mdim,&
                       smname, setype, snnode, sncell, sgtype,&
                       ncatt, ap, nvatt, cret) BIND(C, name='MSESEI')
+#else
+    subroutine msesei(fid, it, mname, mgtype, mdim,&
+                      smname, setype, snnode, sncell, sgtype,&
+                      ncatt, ap, nvatt, cret)
+#endif
         med_idt :: fid
         med_int :: it
         character(len=*) :: mname

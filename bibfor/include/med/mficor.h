@@ -20,7 +20,12 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mficor(fid, cmt, cret) BIND(C, name='MFICOR')
+#else
+    subroutine mficor(fid, cmt, cret)
+#endif
         med_idt :: fid
         character(len=*) :: cmt
         med_int :: cret

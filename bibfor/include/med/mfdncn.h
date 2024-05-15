@@ -20,7 +20,12 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mfdncn(fid, fname, n, cret) BIND(C, name='MFDNCN')
+#else
+    subroutine mfdncn(fid, fname, n, cret)
+#endif
         med_idt :: fid
         character(len=*) :: fname
         med_int :: n

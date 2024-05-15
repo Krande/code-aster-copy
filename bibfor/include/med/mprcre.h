@@ -20,7 +20,12 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mprcre(fid, nopara, typ, des, dtunit, cret) BIND(C, name='MPRCRE')
+#else
+    subroutine mprcre(fid, nopara, typ, des, dtunit, cret)
+#endif
         med_idt :: fid
         med_int :: typ
         character(len=*) :: nopara, des, dtunit

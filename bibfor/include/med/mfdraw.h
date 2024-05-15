@@ -20,9 +20,16 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mfdraw(fid, fname, numdt, numit, dt,&
                       etype, gtype, lname, filter, val,&
                       cret) BIND(C, name='MFDRAW')
+#else
+    subroutine mfdraw(fid, fname, numdt, numit, dt,&
+                      etype, gtype, lname, filter, val,&
+                      cret)
+#endif
         med_idt :: fid
         character(len=*) :: fname
         med_int :: numdt

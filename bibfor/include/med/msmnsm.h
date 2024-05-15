@@ -20,7 +20,12 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine msmnsm(fid, n, cret) BIND(C, name='MSMNSM')
+#else
+    subroutine msmnsm(fid, n, cret)
+#endif
         med_idt :: fid
         med_int :: n
         med_int :: cret

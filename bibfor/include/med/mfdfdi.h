@@ -20,9 +20,16 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mfdfdi(fid, it, fname, mname, lmesh,&
                       type, cname, cunit, dtunit, nc,&
                       cret) BIND(C, name='MFDFDI')
+#else
+    subroutine mfdfdi(fid, it, fname, mname, lmesh,&
+                      type, cname, cunit, dtunit, nc,&
+                      cret)
+#endif
         med_idt :: fid
         med_int :: it
         character(len=*) :: fname

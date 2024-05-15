@@ -15,7 +15,12 @@ def add_bind_c_directive(code: str) -> str:
         subroutine_name = match.group(2).upper()  # Subroutine name, e.g., mfafai
         # Return the modified subroutine declaration
         print(f"Found subroutine: {subroutine_name}")
-        return f"{subroutine_declaration} BIND(C, name='{subroutine_name}')"
+        return f"""
+#ifdef _WIN32
+    {subroutine_declaration} BIND(C, name='{subroutine_name}')
+#else
+    {subroutine_declaration}
+#endif"""
 
     # Apply the regular expression to add BIND(C) to all subroutine declarations
     updated_code = re.sub(regex, replacer, code, flags=re.DOTALL)

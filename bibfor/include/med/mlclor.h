@@ -20,8 +20,14 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mlclor(fid, lname, swm, ecoo, ipcoo,&
                       wght, cret) BIND(C, name='MLCLOR')
+#else
+    subroutine mlclor(fid, lname, swm, ecoo, ipcoo,&
+                      wght, cret)
+#endif
         med_idt :: fid
         character(len=*) :: lname
         med_int :: swm

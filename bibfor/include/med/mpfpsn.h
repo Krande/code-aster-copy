@@ -20,7 +20,12 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mpfpsn(fid, pname, psize, cret) BIND(C, name='MPFPSN')
+#else
+    subroutine mpfpsn(fid, pname, psize, cret)
+#endif
         med_idt :: fid
         character(len=*) :: pname
         med_int :: psize

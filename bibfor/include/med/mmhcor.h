@@ -20,8 +20,14 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mmhcor(fid, name, numdt, numit, swm,&
                       coo, cret) BIND(C, name='MMHCOR')
+#else
+    subroutine mmhcor(fid, name, numdt, numit, swm,&
+                      coo, cret)
+#endif
         med_idt :: fid
         character(len=*) :: name
         med_int :: numdt

@@ -1,9 +1,8 @@
 name: codeaster-deps
-channels:
-  - conda-forge
 dependencies:
   - python 3.11
   - mfront=4.2.0
+  - hdf5=1.14.4.2
   - mgis=2.2
   - libmed=4.1.1
   - medcoupling=9.12.0

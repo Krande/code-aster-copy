@@ -20,7 +20,12 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mfrall(nflt, flt, cret) BIND(C, name='MFRALL')
+#else
+    subroutine mfrall(nflt, flt, cret)
+#endif
         med_int :: nflt
         aster_int :: flt(*)
         med_int :: cret

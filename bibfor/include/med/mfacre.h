@@ -20,8 +20,14 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mfacre(fid, name, fname, fnum, ngro,&
                       gname, cret) BIND(C, name='MFACRE')
+#else
+    subroutine mfacre(fid, name, fname, fnum, ngro,&
+                      gname, cret)
+#endif
         med_idt :: fid
         character(len=*) :: name
         character(len=*) :: fname

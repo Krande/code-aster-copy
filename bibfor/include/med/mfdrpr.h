@@ -20,9 +20,16 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mfdrpr(fid, fname, numdt, numit, etype,&
                       gtype, stm, pname, swm, cs,&
                       val, cret) BIND(C, name='MFDRPR')
+#else
+    subroutine mfdrpr(fid, fname, numdt, numit, etype,&
+                      gtype, stm, pname, swm, cs,&
+                      val, cret)
+#endif
         med_idt :: fid
         character(len=*) :: fname
         med_int :: numdt

@@ -20,8 +20,14 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine mmhgnw(fid, nomail, numdt, numo, typent,&
                       typgeo, n, tblogl, cret) BIND(C, name='MMHGNW')
+#else
+    subroutine mmhgnw(fid, nomail, numdt, numo, typent,&
+                      typgeo, n, tblogl, cret)
+#endif
         med_idt :: fid
         med_int :: typent, typgeo, cret, numdt, numo, n
         med_int :: tblogl(*)

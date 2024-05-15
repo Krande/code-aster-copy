@@ -20,8 +20,14 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine msevac(fid, mname, aname, atype, anc,&
                       cret) BIND(C, name='MSEVAC')
+#else
+    subroutine msevac(fid, mname, aname, atype, anc,&
+                      cret)
+#endif
         med_idt :: fid
         character(len=*) :: mname
         character(len=*) :: aname

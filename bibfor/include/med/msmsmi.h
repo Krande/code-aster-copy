@@ -20,8 +20,14 @@
 !
 interface
 #include "asterf_types.h"
+    
+#ifdef _WIN32
     subroutine msmsmi(fid, it, name, sdim, mdim,&
                       desc, atype, aname, aunit, cret) BIND(C, name='MSMSMI')
+#else
+    subroutine msmsmi(fid, it, name, sdim, mdim,&
+                      desc, atype, aname, aunit, cret)
+#endif
         med_idt :: fid
         med_int :: it
         character(len=*) :: name
