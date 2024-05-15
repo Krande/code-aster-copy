@@ -90,19 +90,29 @@ set FCFLAGS=%FCFLAGS% /names:lowercase /assume:underscore /assume:nobscc
 
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
-set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs ^
-    pthread.lib libomp.lib medfwrap.lib hdf5.lib metis.lib ^
-    MFrontGenericInterface.lib scotch.lib scotcherr.lib ^
-    mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib /MACHINE:X64 /DEBUG
+:: Add lib paths
+set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
+
+:: Add Math libs
+set LDFLAGS=%LDFLAGS% mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib
+
+:: Add threading libs
+set LDFLAGS=%LDFLAGS% pthread.lib
+
+:: Add hdf5 libs
+@REM set LDFLAGS=%LDFLAGS% hdf5.lib hdf5_hl.lib
 
 :: Add mumps libs
 @REM set LDFLAGS=%LDFLAGS% dmumps_seq.lib zmumps_seq.lib smumps_seq.lib cmumps_seq.lib mumps_common_seq.lib pord.lib
+
+:: Add libmed libs
+set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
 REM Clean the build directory
-@REM waf distclean
+waf distclean
 
 python conda\update_version.py
 
@@ -113,7 +123,7 @@ waf configure ^
   --safe ^
   --check-fortran-compiler=ifort ^
   --use-config-dir=%PARENT_DIR%/config/ ^
-  --med-libs=medC ^
+  --med-libs="med medC medfwrap medimport" ^
   --prefix=%LIB_PATH_ROOT% ^
   --out=%OUTPUT_DIR% ^
   --disable-mpi ^
