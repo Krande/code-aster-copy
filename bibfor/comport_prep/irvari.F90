@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 #include "asterfort/cesexi.h"
 #include "asterfort/cescrm.h"
 #include "asterfort/cescel.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -42,6 +43,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/irceme.h"
+#include "asterfort/impres_component_hpc.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
@@ -101,6 +103,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     integer :: nt_vari, codret_dummy, nbCmpDyna
     integer :: posit, iret, affe_type, affe_indx, nume_elem
     integer :: jv_elga_cesd, jv_elga_cesl, jv_elgr_cesd, jv_elgr_cesl, jv_elga, jv_elgr
+    integer :: ncmpvl, jicmp, poscmp
     character(len=7) :: saux07
     character(len=8) :: saux08
     character(len=8), parameter :: base_name = '&&IRVARI'
@@ -126,6 +129,8 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     integer, pointer :: comporInfoInfo(:) => null()
     integer, pointer :: comporInfoZone(:) => null()
     character(len=16) :: field_type
+    character(len=24)  :: indcmp
+    character(len=32)  :: nomgd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -157,9 +162,25 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     end if
     call jeveuo(comporInfo(1:19)//'.ZONE', 'L', vi=comporInfoZone)
 !
+! - Transform VARI_ELGA in VARI_ELGA_S
+!
+    call celces(vari_elga, 'V', vari_elga_s)
+    call jeveuo(vari_elga_s//'.CESD', 'L', jv_elga_cesd)
+    call jeveuo(vari_elga_s//'.CESL', 'L', jv_elga_cesl)
+    call jeveuo(vari_elga_s//'.CESV', 'L', vr=v_elga_cesv)
+!
 ! - Create list of internal variables and link to zone in <CARTE> COMPOR
 !
     call comp_meca_uvar(comporInfo, base_name, vari_redu, nb_vari_redu, codret)
+
+    call dismoi('NOM_GD', vari_elga_s, 'CHAMP', repk=nomgd)
+    indcmp = '&&IRVARI.CMPINDIR'
+!
+! - Create component list in parallel context
+!
+    call impres_component_hpc(nomgd, vari_redu, ncmpvl, nb_vari_redu, indcmp)
+    call jeveuo(indcmp, 'L', jicmp)
+
     call jeveuo(vari_redu, 'L', vk16=v_vari_redu)
 ! - Behaviours that cannot give name of internal state variables
     if (codret .eq. 200) then
@@ -176,13 +197,6 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     call jeveuo(compor//'.DESC', 'L', vi=v_compor_desc)
     call jeveuo(jexnum(compor//'.LIMA', 1), 'L', vi=v_compor_lima)
     call jeveuo(jexatr(compor//'.LIMA', 'LONCUM'), 'L', vi=v_compor_lima_lc)
-!
-! - Transform VARI_ELGA in VARI_ELGA_S
-!
-    call celces(vari_elga, 'V', vari_elga_s)
-    call jeveuo(vari_elga_s//'.CESD', 'L', jv_elga_cesd)
-    call jeveuo(vari_elga_s//'.CESL', 'L', jv_elga_cesl)
-    call jeveuo(vari_elga_s//'.CESV', 'L', vr=v_elga_cesv)
 !
 ! - Prepare objects to reduced list of internal variables
 !
@@ -247,13 +261,15 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
                 do i_pt = 1, nb_pt
                     do i_spt = 1, nb_spt
                         do i_vari = 1, nb_vari
+                            poscmp = zi(jicmp+i_vari-1)
+                            if (poscmp .eq. 0) cycle
                             call cesexi('C', jv_elga_cesd, jv_elga_cesl, nume_elem, i_pt, &
                                         i_spt, i_vari, jv_elga)
                             if (jv_elga .gt. 0 .and. i_vari .le. nb_vari_zone) then
                                 i_vari_redu = v_vari_link(i_vari)
                                 if (i_vari_redu .ne. 0) then
                                     call cesexi('C', jv_elgr_cesd, jv_elgr_cesl, nume_elem, i_pt, &
-                                                i_spt, i_vari_redu, jv_elgr)
+                                                i_spt, poscmp, jv_elgr)
                                     ASSERT(jv_elgr .ne. 0)
                                     jv_elgr = abs(jv_elgr)
                                     v_elgr_cesv(jv_elgr) = v_elga_cesv(jv_elga)
@@ -297,6 +313,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     call jedetr(vari_redu)
     call jedetr(label_vxx)
     call jedetr(label_med)
+    call jedetr(indcmp)
     do iMapZone = 1, nbMapZone
         call codent(iMapZone, 'G', saux08)
         vari_link = base_name//saux08

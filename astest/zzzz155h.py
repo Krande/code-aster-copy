@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
+import os, numpy as np
 
 from code_aster.Commands import *
 from code_aster import CA
@@ -50,7 +50,7 @@ def buildCompleteFieldOnCells(field):
     nbSPt = field.getMaxNumberOfSubPoints()
     cWComps = field.getCellsWithComponents()
 
-    completeSief = [[]] * (maxCells + 1)
+    completeSief = np.zeros((maxCells + 1, nbCmp * nbPt * nbSPt))
     cmpt = 0
     for idCell in cWComps:
         if idCell in innerCellsSet:
@@ -58,7 +58,7 @@ def buildCompleteFieldOnCells(field):
             toAdd = []
             for iCmp in range(nbCmp):
                 toAdd += list(values[cmpt * nbPt * nbSPt : (cmpt + 1) * nbPt * nbSPt, iCmp])
-            completeSief[globCellId] = toAdd
+            completeSief[globCellId] = np.array(toAdd)
         cmpt += 1
 
     return MPI.ASTER_COMM_WORLD.allreduce(completeSief, MPI.SUM)
@@ -84,7 +84,7 @@ def buildCompleteFieldOnNodes(field):
     nbNode = field.getNumberOfNodes()
     nbCmp = field.getNumberOfComponents()
 
-    completeField = [[]] * (maxNodes + 1)
+    completeField = np.zeros((maxNodes + 1, nbCmp))
     cmpt = 0
     for idNode in range(nbNode):
         if idNode in innerNodesSet:
@@ -92,7 +92,7 @@ def buildCompleteFieldOnNodes(field):
             toAdd = []
             for iCmp in range(nbCmp):
                 toAdd.append(values[idNode, iCmp])
-            completeField[globNodeId] = toAdd
+            completeField[globNodeId] = np.array(toAdd)
         cmpt += 1
 
     return MPI.ASTER_COMM_WORLD.allreduce(completeField, MPI.SUM)
