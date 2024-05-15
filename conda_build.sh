@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+# if env variable PREREQUISITES_DIR is not defined, run script conda_build_prereq.sh
+if [ -z "${PREREQUISITES_DIR}" ]; then
+  echo "PREREQUISITES_DIR is not defined"
+  ./conda_build_prereq.sh
+fi
+
+
 which python
 # set unbuffered output
 export PYTHONUNBUFFERED=1
