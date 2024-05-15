@@ -7,10 +7,11 @@ dependencies:
   - libmed=4.1.1
   - medcoupling=9.12.0
   - scotch=7.0.4
+  - numpy=1.23
   - metis=5.1.0
   - mumps-seq=5.6.2
   - sysroot_linux-64=2.17
-  - waf
+  - waf=2.0.27
   - cmake
   - gdb
   - pyyaml

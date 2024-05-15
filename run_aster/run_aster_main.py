@@ -279,16 +279,19 @@ def parse_args(argv):
 
 def check_compiler():
     import pathlib
+    if platform.system() == "Linux":
+        return "MinGW/MSYS2"
+
+    if not os.getenv("CONDA_PREFIX"):
+        return "MinGW/MSYS2"
 
     config_txt = pathlib.Path(os.getenv('ASTER_ROOT')) / "Library/share/aster/config.txt"
 
     if 'ASTER_PLATFORM_MSVC64' in config_txt.read_text():
         return "MSVC"
     else:
-        if platform.system() == "Linux":
-            return "MinGW/MSYS2"
-        else:
-            return "MinGW/MSYS2"
+        return "MinGW/MSYS2"
+
 
 def main(argv=None):
     """Entry point for code_aster runner.
