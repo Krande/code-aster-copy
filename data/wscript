@@ -605,7 +605,7 @@ def check_mpiexec(self):
 
 @Configure.conf
 def check_mpi_get_rank(self):
-    vars = ("OMPI_COMM_WORLD_RANK", "PMI_RANK", "PMIX_RANK", "SLURM_PROCID")
+    vars = ("OMPI_COMM_WORLD_RANK", "PMI_RANK")
     expr = ""
     for var in reversed(vars):
         if not expr:

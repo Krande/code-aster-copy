@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,9 @@ module LoadKinematic_module
 ! ==================================================================================================
     public :: kineLoadGlueMeshMeca, kineLoadGlueMeshTher
     public :: kineLoadLinkProj
-   private :: kineLoadMeshProjVoVo, kineLoadMeshProjShVo, kineLoadMeshProjShSh, kineLoadMeshProjVoSh
-   private :: kineLoadMeshLinkVoVo, kineLoadMeshLinkShVo, kineLoadMeshLinkShSh, kineLoadMeshLinkVoSh
+    private :: kineLoadMeshProjVoVo, kineLoadMeshProjShVo, kineLoadMeshProjShSh
+    private :: kineLoadMeshProjVoSh, kineLoadMeshLinkVoSh
+    private :: kineLoadMeshLinkVoVo, kineLoadMeshLinkShVo, kineLoadMeshLinkShSh
     private :: kineLoadGlueMeshMecaPara, kineLoadGlueMeshMecaLine
     private :: kineLoadGlueMeshTherPara, kineLoadGlueMeshTherLine
     private :: kineLoadLinkProjPara
@@ -1148,10 +1149,16 @@ contains
 ! ------------- Coefficients for master nodes
                     dofMastName = dofLinkName(iEqua, 1)
                     do iNodeMast = 1, nbNodeMast
-                        iTerm = iTerm+1
                         nodeMastNume = pjefNu(shifNodeMast+iNodeMast)
                         nodeMastCoef = pjefCf(shifNodeMast+iNodeMast)
                         call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                        if (nodeMastNume .eq. nodeSlavNume) then
+                            if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
+                                call utmess('A', 'CHARGES7_1')
+                                goto 294
+                            end if
+                        end if
+                        iTerm = iTerm+1
                         kineListRela%nodeName(iTerm) = nodeMastName
                         kineListRela%coefMultReal(iTerm) = nodeMastCoef
                         kineListRela%dofName(iTerm) = dofMastName
@@ -1161,6 +1168,7 @@ contains
 ! ------------- Affect linear relation
                     call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_=ASTER_TRUE)
 
+294                 continue
                 end do
             end do
 
@@ -1302,6 +1310,12 @@ contains
                     nodeMastNume = pjefNu(shiftNodeMast+iNodeMastDisp)
                     nodeMastCoef = ff(iNodeMastDisp)
                     call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    if (nodeMastNume .eq. nodeSlavNume) then
+                        if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
+                            call utmess('A', 'CHARGES7_1')
+                            goto 295
+                        end if
+                    end if
                     kineListRela%nodeName(iTerm) = nodeMastName
                     kineListRela%dofName(iTerm) = dofName
                     kineListRela%coefMultReal(iTerm) = nodeMastCoef
@@ -1328,6 +1342,8 @@ contains
 
 ! --------- Affect linear relation
                 call kineListRelaSave(title, nbTerm, kineListRela)
+
+295             continue
 
             end do
 ! ----- Next master node
