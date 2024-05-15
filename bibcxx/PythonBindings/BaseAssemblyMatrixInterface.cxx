@@ -132,7 +132,10 @@ Returns:
         // -----------------------------------------------------------------------------------------
         .def( "getCalculOption", &BaseAssemblyMatrix::getCalculOption,
               R"(
-            Return the option of CALCUL
+            Return the option of CALCUL.
+
+            Returns:
+                str: Name of the option.
             )" )
         // -----------------------------------------------------------------------------------------
         .def( "transpose", &BaseAssemblyMatrix::transpose )

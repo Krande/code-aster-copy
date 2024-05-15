@@ -35,11 +35,18 @@ class ExtendedGeneralizedAssemblyVectorComplex:
     cata_sdj = "SD.sd_cham_gene.sd_cham_gene"
 
     def EXTR_VECT_GENE(self):
-        """return the vector values as `numpy.array`"""
+        """Return the vector values as `numpy.array`.
+
+        Returns:
+           numpy.array: vector values associated at each generalized dof
+        """
         return numpy.array(self.getValues())
 
     def RECU_VECT_GENE(self, vecteur):
-        """set the vector values"""
+        """Set the vector values.
+
+        Arguments:
+           vecteur (list[complex]): values associated at each generalized dof"""
         self.setValues(vecteur)
 
 
@@ -48,9 +55,16 @@ class ExtendedGeneralizedAssemblyVectorReal:
     cata_sdj = "SD.sd_cham_gene.sd_cham_gene"
 
     def EXTR_VECT_GENE(self):
-        """return the vector values as `numpy.array`"""
+        """Return the vector values as `numpy.array`.
+
+        Returns:
+           numpy.array: vector values associated at each generalized dof
+        """
         return numpy.array(self.getValues())
 
     def RECU_VECT_GENE(self, vecteur):
-        """set the vector values"""
+        """Set the vector values.
+
+        Arguments:
+           vecteur (list[float]): values associated at each generalized dof"""
         self.setValues(vecteur)

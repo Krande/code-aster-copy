@@ -668,7 +668,6 @@ def verif_resxfem(self, RESULTAT):
 
     MODEL = RESULTAT.getModel()
     xcont = MODEL.getXfemContact()
-    print(xcont)
     return (xcont, MODEL)
 
 

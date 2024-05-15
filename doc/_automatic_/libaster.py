@@ -6233,7 +6233,11 @@ class BaseAssemblyMatrix(DataStructure):
         """
 
     def getCalculOption(self):
-        """Return the option of CALCUL"""
+        """Return the option of CALCUL.
+
+        Returns:
+            str: Name of the option.
+        """
 
     def getDOFNumbering(self):
         pass
@@ -7719,7 +7723,7 @@ class GeneralizedAssemblyVectorReal(GeneralizedAssemblyVector):
         """Set values of vector.
 
         Arguments:
-            values [list[float]]: set vector.
+            values (list[float]): set vector.
         """
 
 
@@ -7757,7 +7761,7 @@ class GeneralizedAssemblyVectorComplex(GeneralizedAssemblyVector):
         """Set values of vector.
 
         Arguments:
-            values [list[complex]]: set vector.
+            values (list[complex]): set vector.
         """
 
 

@@ -27,15 +27,15 @@ from ..Supervis.ExecuteCommand import _get_object_repr
 
 
 def get_nodes(MAILLAGE, GROUP_NO=None):
-    """Get number of noeud
+    """Get the number of nodes.
 
     Arguments:
-        NOEUD: list name of nodes (banded from aster)
-        GROUP_NO: list name of groups of nodes
+        MAILLAGE (Mesh): list name of nodes
+        GROUP_NO (list[str]): list name of groups of nodes
 
     Returns:
-        nodes_num: list of number of nodes
-        nodes_name: list of name of nodes
+        tuple: Tuple containing the list of number of nodes and the list of
+        the nodes name for each group.
     """
 
     nodes_num = []

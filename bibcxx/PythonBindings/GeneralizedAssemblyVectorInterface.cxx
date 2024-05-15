@@ -50,7 +50,7 @@ void exportGeneralizedAssemblyVectorToPython( py::module_ &mod ) {
             Set values of vector.
         
             Arguments:
-                values [list[float]]: set vector.
+                values (list[float]): set vector.
             )" );
 
     py::class_< GeneralizedAssemblyVectorComplex, GeneralizedAssemblyVectorComplexPtr,
@@ -69,6 +69,6 @@ void exportGeneralizedAssemblyVectorToPython( py::module_ &mod ) {
             Set values of vector.
         
             Arguments:
-                values [list[complex]]: set vector.
+                values (list[complex]): set vector.
             )" );
 };
