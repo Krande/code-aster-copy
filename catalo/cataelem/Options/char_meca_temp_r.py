@@ -102,7 +102,7 @@ CHAR_MECA_TEMP_R = Option(
         PPINTTO,
         PPMILTO,
         PSTANO,
-        SP.PTEMPSR,
+        SP.PINSTR,
         PVARCPR,
         SP.PVARCRR,
     ),

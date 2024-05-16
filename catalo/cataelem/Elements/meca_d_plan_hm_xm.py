@@ -282,7 +282,7 @@ class HM_DPTR6_XH1(Element):
                 (OP.CHAR_MECA_PRES_F.PPINTER, E26NEUTR),
                 (SP.PPRESSF, CPRESSF),
                 (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

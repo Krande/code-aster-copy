@@ -1183,16 +1183,16 @@ PTEMPER = InputParameter(
 
 PTEMPIR = InputParameter(phys=PHY.TEMP_R, comment="""""")
 
-PTEMPSR = InputParameter(
+PINSTR = InputParameter(
     phys=PHY.INST_R,
     container="VOLA!&&CCPARA.CH_INST_R",
-    comment="""  PTEMPSR :  INSTANT ACTUEL
+    comment="""  PINSTR :  INSTANT ACTUEL
  TIME
   PSTEMPSR :
-  PTEMPSR : INSTANT ACTUEL
-  PTEMPSR :  INSTANT ACTUEL
- PTEMPSR: INSTANT ACTUEL
-  PTEMPSR :  TIME
+  PINSTR : INSTANT ACTUEL
+  PINSTR :  INSTANT ACTUEL
+ PINSTR: INSTANT ACTUEL
+  PINSTR :  TIME
 """,
 )
 

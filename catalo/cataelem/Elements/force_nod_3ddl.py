@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ class FORCE_NOD_3DDL(Element):
     calculs = (
         OP.CHAR_MECA_FORC_F(
             te=1,
-            para_in=((SP.PFORNOF, MFORCEF), (SP.PGEOMER, MGEOMER), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_in=((SP.PFORNOF, MFORCEF), (SP.PGEOMER, MGEOMER), (SP.PINSTR, LC.MTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FORC_R(

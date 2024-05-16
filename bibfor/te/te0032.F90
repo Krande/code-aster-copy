@@ -123,7 +123,7 @@ subroutine te0032(option, nomte)
 !              ------------------------------
         call jevech('PPRESSF', 'L', jpres)
         if (zk8(jpres) .eq. '&FOZERO') goto 999
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
         valpar(4) = zr(itemps)
         nompar(4) = 'INST'
         nompar(1) = 'X'
@@ -147,7 +147,7 @@ subroutine te0032(option, nomte)
     else if (option .eq. 'CHAR_MECA_FFCO3D') then
 !              ------------------------------
         call jevech('PFFCO3D', 'L', jpres)
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
         valpar(4) = zr(itemps)
         nompar(4) = 'INST'
         nompar(1) = 'X'

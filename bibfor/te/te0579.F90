@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -161,11 +161,11 @@ subroutine te0579(option, nomte)
 !
     if (pre1 .and. (option .eq. 'CHAR_MECA_FLUX_R')) then
         call jevecd('PFLUXR', iflux, 0.d0)
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
         deltat = zr(itemps+1)
     else if (pre1 .and. (option .eq. 'CHAR_MECA_FLUX_F')) then
         call jevech('PFLUXF', 'L', ifluxf)
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
         tplus = zr(itemps)
         deltat = zr(itemps+1)
         nompar(1) = 'X'

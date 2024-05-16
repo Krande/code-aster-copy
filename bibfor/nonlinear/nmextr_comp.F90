@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -127,7 +127,7 @@ subroutine nmextr_comp(field, field_disc, field_type, meshz, modelz, &
     lchin(2) = disp_curr(1:19)
     lpain(3) = 'PMATERC'
     lchin(3) = ds_material%mateco(1:19)
-    lpain(4) = 'PTEMPSR'
+    lpain(4) = 'PINSTR'
     lchin(4) = chtime(1:19)
     lpain(5) = 'PVARCPR'
     lchin(5) = varc_curr(1:19)

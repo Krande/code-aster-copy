@@ -143,7 +143,7 @@ subroutine vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
     lchin(2) = temp_iter(1:19)
     lpain(3) = 'PMATERC'
     lchin(3) = mateco(1:19)
-    lpain(4) = 'PTEMPSR'
+    lpain(4) = 'PINSTR'
     lchin(4) = time(1:19)
     lpain(5) = 'PCACOQU'
     lchin(5) = chcara(7) (1:19)

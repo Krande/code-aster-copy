@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE CO
 
 
 CHAR_MECA_PTOT_R = Option(
-    para_in=(SP.PCAMASS, SP.PGEOMER, SP.PMATERC, SP.PTEMPSR, PVARCPR, SP.PVARCRR),
+    para_in=(SP.PCAMASS, SP.PGEOMER, SP.PMATERC, SP.PINSTR, PVARCPR, SP.PVARCRR),
     para_out=(SP.PVECTUR,),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.DIM_COOR_MODELI, "2"))),),
     comment=""" CHAR_MECA_PTOT_R : CALCUL DU SECOND

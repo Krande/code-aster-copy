@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem, &
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
-    lpain(2) = 'PTEMPSR'
+    lpain(2) = 'PINSTR'
     lchin(2) = chtime
     lpain(3) = 'PMATERC'
     lchin(3) = mateco(1:19)

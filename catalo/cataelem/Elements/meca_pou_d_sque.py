@@ -285,7 +285,7 @@ class MECA_POU_D_SQUE(Element):
                 (OP.CHAR_MECA_FF1D1D.PCAORIE, CCAORIE),
                 (SP.PFF1D1D, CFORCEF),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

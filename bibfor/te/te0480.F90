@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,7 +105,7 @@ subroutine te0480(option, nomte)
 !
     if (option .eq. 'CHAR_ECHA_THM_R') then
         iopt = 1
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
         deltat = zr(itemps+1)
         call jevech('PDEPLMR', 'L', idepm)
         p1m = zr(idepm+ndim+1)
@@ -122,7 +122,7 @@ subroutine te0480(option, nomte)
         p2ext = zr(iech+5)
     else if (option .eq. 'CHAR_ECHA_THM_F') then
         iopt = 2
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
         deltat = zr(itemps+1)
         call jevech('PDEPLMR', 'L', idepm)
         p1m = zr(idepm+ndim+1)

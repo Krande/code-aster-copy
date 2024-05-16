@@ -101,7 +101,7 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar, &
                 ncmp=1, nomcmp='INST   ', sr=instap)
     call mecact('V', '&PHI2M.VEC', 'MODELE', ligrmo, 'TEMP_R  ', &
                 ncmp=1, nomcmp='TEMP   ', sr=0.d0)
-    lpain(2) = 'PTEMPSR'
+    lpain(2) = 'PINSTR'
     lchin(2) = chtime
     lpain(3) = 'PACCELR'
     lchin(3) = accel

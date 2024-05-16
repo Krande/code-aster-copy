@@ -210,7 +210,7 @@ class MEAXTR3_XHC(Element):
                 (OP.CHAR_MECA_PRES_F.PPINTER, LC.E14NEUTR),
                 (SP.PPRESSF, CPRESSF),
                 (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ PMATTTR = OutputParameter(phys=PHY.MTNS_R, type="RESL")
 
 
 RIGI_THER_CONV = Option(
-    para_in=(SP.PGEOMER, SP.PMATERC, SP.PTEMPEI, SP.PTEMPSR, SP.PVITESR),
+    para_in=(SP.PGEOMER, SP.PMATERC, SP.PTEMPEI, SP.PINSTR, SP.PVITESR),
     para_out=(PMATTTR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

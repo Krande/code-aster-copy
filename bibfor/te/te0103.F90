@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ subroutine te0103(option, nomte)
 ! --- POUR RESOUDRE L'EQUATION DIFFERENTIELLE EN TEMPS DE LA
 ! --- TEMPERATURE (EN STATIONNAIRE THETA =1 ) :
 !     ---------------------------------------
-    call jevech('PTEMPSR', 'L', itemps)
+    call jevech('PINSTR', 'L', itemps)
 !
 ! --- ON RAPPELLE QUE NOMPAR(4) = 'INST' :
 !     ----------------------------------

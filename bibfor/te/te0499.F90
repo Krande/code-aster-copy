@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ subroutine te0499(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PONDPLA', 'L', ionde)
     call jevech('PONDPLR', 'L', iondc)
-    call jevech('PTEMPSR', 'L', jinst)
+    call jevech('PINSTR', 'L', jinst)
     call jevech('PVECTUR', 'E', ivectu)
 !
     if (zk8(ionde) (1:7) .eq. '&FOZERO') goto 99

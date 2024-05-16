@@ -197,7 +197,7 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
     lchin(16) = chcara(13) (1:19)
     lpain(17) = 'PCAGEPO'
     lchin(17) = chcara(5) (1:19)
-    lpain(18) = 'PTEMPSR'
+    lpain(18) = 'PINSTR'
     lchin(18) = chtime(1:19)
     lpain(19) = 'PCINFDI'
     lchin(19) = chcara(15) (1:19)

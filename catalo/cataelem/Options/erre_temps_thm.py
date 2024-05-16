@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ PERREUR = OutputParameter(
 
 
 ERRE_TEMPS_THM = Option(
-    para_in=(SP.PCONTGM, SP.PCONTGP, SP.PGEOMER, SP.PGRDCA, SP.PMATERC, SP.PTEMPSR),
+    para_in=(SP.PCONTGM, SP.PCONTGP, SP.PGEOMER, SP.PGRDCA, SP.PMATERC, SP.PINSTR),
     para_out=(PERREUR,),
     condition=(
         CondCalcul(

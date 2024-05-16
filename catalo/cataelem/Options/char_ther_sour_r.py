@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ import cataelem.Commons.attributes as AT
 
 
 CHAR_THER_SOUR_R = Option(
-    para_in=(SP.PGEOMER, SP.PSOURCR, SP.PTEMPSR),
+    para_in=(SP.PGEOMER, SP.PSOURCR, SP.PINSTR),
     para_out=(SP.PVECTTR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

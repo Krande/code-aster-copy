@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ class THER_XH_HEXA8(Element):
                 (OP.CHAR_THER_EVOL.PPINTTO, E33NEUTR),
                 (OP.CHAR_THER_EVOL.PSTANO, STANO_I),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (OP.CHAR_THER_EVOL.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
@@ -110,7 +110,7 @@ class THER_XH_HEXA8(Element):
                 (OP.CHAR_THER_PARO_F.PPINTER, LC.E120NEUT),
                 (OP.CHAR_THER_PARO_F.PSTANO, STANO_I),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -129,7 +129,7 @@ class THER_XH_HEXA8(Element):
                 (OP.CHAR_THER_PARO_R.PPINTER, LC.E120NEUT),
                 (OP.CHAR_THER_PARO_R.PSTANO, STANO_I),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -156,7 +156,7 @@ class THER_XH_HEXA8(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (OP.MASS_THER.PPINTTO, E33NEUTR),
                 (OP.MASS_THER.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (OP.MASS_THER.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
@@ -175,7 +175,7 @@ class THER_XH_HEXA8(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_THER.PPINTTO, E33NEUTR),
                 (OP.RIGI_THER.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (OP.RIGI_THER.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
@@ -194,7 +194,7 @@ class THER_XH_HEXA8(Element):
                 (OP.RIGI_THER_PARO_F.PLST, LC.N1NEUT_R),
                 (OP.RIGI_THER_PARO_F.PPINTER, LC.E120NEUT),
                 (OP.RIGI_THER_PARO_F.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((OP.RIGI_THER_PARO_F.PMATTTR, MMATTTR),),
         ),
@@ -212,7 +212,7 @@ class THER_XH_HEXA8(Element):
                 (OP.RIGI_THER_PARO_R.PLST, LC.N1NEUT_R),
                 (OP.RIGI_THER_PARO_R.PPINTER, LC.E120NEUT),
                 (OP.RIGI_THER_PARO_R.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((OP.RIGI_THER_PARO_R.PMATTTR, MMATTTR),),
         ),

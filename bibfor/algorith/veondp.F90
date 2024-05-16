@@ -122,7 +122,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
     lchin(1) = chgeom(1:19)
     lpain(2) = 'PMATERC'
     lchin(2) = mateco(1:19)
-    lpain(3) = 'PTEMPSR'
+    lpain(3) = 'PINSTR'
     lchin(3) = chinst(1:19)
     lpain(4) = 'PONDPLA'
     lpain(5) = 'PONDPLR'

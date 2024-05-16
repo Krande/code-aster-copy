@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -153,7 +153,7 @@ class HM_DPSE3_XH1(Element):
                 (OP.CHAR_MECA_FLUX_F.PPINTTO, E8NEUTR),
                 (OP.CHAR_MECA_FLUX_F.PPMILTO, E10NEUTR),
                 (OP.CHAR_MECA_FLUX_F.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
@@ -172,7 +172,7 @@ class HM_DPSE3_XH1(Element):
                 (OP.CHAR_MECA_FLUX_R.PPINTTO, E8NEUTR),
                 (OP.CHAR_MECA_FLUX_R.PPMILTO, E10NEUTR),
                 (OP.CHAR_MECA_FLUX_R.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
@@ -192,7 +192,7 @@ class HM_DPSE3_XH1(Element):
                 (OP.CHAR_MECA_PRES_F.PPMILTO, E10NEUTR),
                 (SP.PPRESSF, CPRESSF),
                 (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
@@ -212,7 +212,7 @@ class HM_DPSE3_XH1(Element):
                 (OP.CHAR_MECA_PRES_R.PPMILTO, E10NEUTR),
                 (SP.PPRESSR, EPRESNO),
                 (OP.CHAR_MECA_PRES_R.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

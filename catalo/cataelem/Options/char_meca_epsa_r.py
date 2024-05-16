@@ -30,7 +30,7 @@ PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE CO
 
 
 CHAR_MECA_EPSA_R = Option(
-    para_in=(SP.PGEOMER, SP.PMATERC, SP.PTEMPSR, PVARCPR, SP.PVARCRR),
+    para_in=(SP.PGEOMER, SP.PMATERC, SP.PINSTR, PVARCPR, SP.PVARCRR),
     para_out=(SP.PVECTUR,),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment=""" CHAR_MECA_EPSA_R (MOT-CLE: EPSA_CALCULEE): CALCUL DU SECOND

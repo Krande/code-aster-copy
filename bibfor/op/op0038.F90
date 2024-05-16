@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -141,7 +141,7 @@ subroutine op0038()
         lchin(5) = chtemp
         lpain(5) = 'PTEMPER'
         lchin(6) = chtime
-        lpain(6) = 'PTEMPSR'
+        lpain(6) = 'PINSTR'
         lchin(7) = chharm
         lpain(7) = 'PHARMON'
         lchin(8) = ' '

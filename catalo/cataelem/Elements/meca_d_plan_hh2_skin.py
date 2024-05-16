@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,12 +90,12 @@ class HH2_DPSE3(Element):
     calculs = (
         OP.CHAR_MECA_FLUX_F(
             te=472,
-            para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FLUX_R(
             te=472,
-            para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_ECHA_THM_F(
@@ -104,7 +104,7 @@ class HH2_DPSE3(Element):
                 (SP.PFLUXF, CFLUXF),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PCHTHMF, CCOECHF),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (SP.PDEPLMR, DDL_MECA),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
@@ -115,7 +115,7 @@ class HH2_DPSE3(Element):
                 (SP.PFLUXR, EFLUXE),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PECHTHM, CCOECH),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (SP.PDEPLMR, DDL_MECA),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),

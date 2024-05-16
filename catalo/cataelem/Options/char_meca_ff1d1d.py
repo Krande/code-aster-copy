@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ PCAORIE = InputParameter(
 
 
 CHAR_MECA_FF1D1D = Option(
-    para_in=(SP.PCAGEPO, SP.PCAGNPO, PCAORIE, SP.PFF1D1D, SP.PGEOMER, PNBSP_I, SP.PTEMPSR),
+    para_in=(SP.PCAGEPO, SP.PCAGNPO, PCAORIE, SP.PFF1D1D, SP.PGEOMER, PNBSP_I, SP.PINSTR),
     para_out=(SP.PVECTUR,),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.DIM_TOPO_MODELI, "1"))),),
     comment=""" CHAR_MECA_FF1D1D (MOT-CLE : FORCE_POUTRE): CALCUL DU SECOND

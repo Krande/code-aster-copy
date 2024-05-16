@@ -78,7 +78,7 @@ class MESSHELL_SB9(Element):
             para_in=(
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTR, LC.MTEMPSR),
                 (SP.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
@@ -86,7 +86,7 @@ class MESSHELL_SB9(Element):
         ),
         OP.CHAR_MECA_FF3D3D(
             te=125,
-            para_in=((SP.PFF3D3D, LC.CFOR3DF), (SP.PGEOMER, LC.EGEOM3D), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_in=((SP.PFF3D3D, LC.CFOR3DF), (SP.PGEOMER, LC.EGEOM3D), (SP.PINSTR, LC.MTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FR3D3D(
@@ -99,7 +99,7 @@ class MESSHELL_SB9(Element):
             para_in=(
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTR, LC.MTEMPSR),
                 (SP.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
@@ -126,7 +126,7 @@ class MESSHELL_SB9(Element):
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PCOMPOR, LC.CCOMPOR),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTR, LC.MTEMPSR),
                 (SP.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
@@ -137,7 +137,7 @@ class MESSHELL_SB9(Element):
             para_in=(
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTR, LC.MTEMPSR),
                 (SP.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ PHYDRPR = OutputParameter(
 
 
 HYDR_ELGA = Option(
-    para_in=(PTEMPMR, PTEMPPR, PHYDRMR, SP.PTEMPSR, PCOMPOR, SP.PMATERC, SP.PGEOMER),
+    para_in=(PTEMPMR, PTEMPPR, PHYDRMR, SP.PINSTR, PCOMPOR, SP.PMATERC, SP.PGEOMER),
     para_out=(PHYDRPR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
     comment="""  HYDR_ELGA : CALCUL DU HYDR AUX NOEUDS PAR ELEMENT """,
