@@ -400,7 +400,7 @@ def test_fonction_ops(self, **args):
             if lafonc.getType() == "FONCTION_SDASTER" and intervalle is not None:
                 # XXX il faut utiliser lafonc.Parametres() !
                 # XXX ne sert à rien, CALC_FONCTION prend les paramètres de la fonction normalement
-                fctProl = lafonc.sdj.PROL.get()
+                fctProl = lafonc.getProperties()
                 prolG = "rien"
                 if fctProl[4][0:1] == "C":
                     prolG = "CONSTANT"
@@ -489,7 +489,7 @@ def test_fonction_ops(self, **args):
                 typeFct = lafonc.getType()
                 # XXX il faut utiliser lafonc.Parametres() !
                 # Recuperation du .PROL de la fonction
-                fct_prol = lafonc.sdj.PROL.get_stripped()
+                fct_prol = lafonc.getProperties()
                 if fct_prol is None:
                     UTMESS("F", "PREPOST3_93")
 
@@ -614,14 +614,14 @@ def test_fonction_ops(self, **args):
             ref = dres["REFERENCE"]
             ver = None
             fonction = dres["FONCTION"]
-            fctProl = fonction.sdj.PROL.get_stripped()
+            fctProl = fonction.getProperties()
             typeFct = fctProl[0]
             para = dres["PARA"]
-            fctPara = fonction.sdj.PARA.get()
 
             pos = 0
             # Cas particulier d'une nappe qui a 2 dimensions
             if typeFct == "NAPPE":
+                fctPara = fonction.getParameters()
                 if para is not None:
                     # Recherche de la fonction liee a para
                     precPara = dres["PREC_PARA"]

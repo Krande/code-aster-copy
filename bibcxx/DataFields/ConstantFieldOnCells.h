@@ -359,6 +359,7 @@ class ConstantFieldOnCells : public DataField {
         ASTERINTEGER gdeur = ( *_descriptor )[0];
         const auto name1 = PhysicalQuantityManager::getPhysicalQuantityName( gdeur );
         ASTERINTEGER nec = PhysicalQuantityManager::getNumberOfEncodedInteger( gdeur );
+        ASTERINTEGER ndim = PhysicalQuantityManager::getNumberOfComponents( gdeur );
         const auto &compNames = PhysicalQuantityManager::getComponentNames( gdeur );
         const ASTERINTEGER nbCmpMax = compNames.size();
         VectorString cmpToReturn;
@@ -367,8 +368,8 @@ class ConstantFieldOnCells : public DataField {
         valToReturn.reserve( 30 * nec );
         for ( int i = 0; i < nec; ++i ) {
             ASTERINTEGER encodedInt = ( *_descriptor )[3 + 2 * nbZoneMax + position * nec + i];
-            VectorLong vecOfComp( 30, -1 );
-            CALL_ISDECO( &encodedInt, vecOfComp.data(), &nec );
+            VectorLong vecOfComp( ndim, -1 );
+            CALL_ISDECO( &encodedInt, vecOfComp.data(), &ndim );
             ASTERINTEGER pos = 0;
             for ( const auto &val : vecOfComp ) {
                 if ( val == 1 ) {
@@ -392,6 +393,7 @@ class ConstantFieldOnCells : public DataField {
         ASTERINTEGER gdeur = ( *_descriptor )[0];
         auto size = ( *_descriptor )[2];
         ASTERINTEGER nec = PhysicalQuantityManager::getNumberOfEncodedInteger( gdeur );
+        ASTERINTEGER ndim = PhysicalQuantityManager::getNumberOfComponents( gdeur );
         const auto &compNames = PhysicalQuantityManager::getComponentNames( gdeur );
         const ASTERINTEGER nbCmpMax = compNames.size();
 
@@ -405,8 +407,8 @@ class ConstantFieldOnCells : public DataField {
             valToReturn.reserve( 30 * nec );
             for ( int i = 0; i < nec; ++i ) {
                 ASTERINTEGER encodedInt = ( *_descriptor )[3 + 2 * nbZoneMax + position * nec + i];
-                VectorLong vecOfComp( 30, -1 );
-                CALL_ISDECO( &encodedInt, vecOfComp.data(), &nec );
+                VectorLong vecOfComp( ndim, -1 );
+                CALL_ISDECO( &encodedInt, vecOfComp.data(), &ndim );
                 ASTERINTEGER pos = 0;
                 for ( const auto &val : vecOfComp ) {
                     if ( val == 1 ) {

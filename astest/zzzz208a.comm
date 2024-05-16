@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -118,8 +118,8 @@ FDIAGC = PROJ_VECT_BASE(BASE=MODES, NUME_DDL_GENE=NUMDIAG, VECT_ASSE=FASC, TYPE_
 KPYD = KDIAG.toNumpy()
 KPYDC = KDIAGC.toNumpy()
 MPYD = MDIAG.toNumpy()
-FPYD = FDIAG.EXTR_VECT_GENE_R()
-FPYDC = FDIAGC.EXTR_VECT_GENE_C()
+FPYD = FDIAG.EXTR_VECT_GENE()
+FPYDC = FDIAGC.EXTR_VECT_GENE()
 
 # MODIFICATION DES MATRICES & VECTEURS GENERALISES DANS PYTHON
 # -------------------------------------------------------------
@@ -132,7 +132,7 @@ FPYDC2 = FPYDC * 0.5
 # On ecrase donc les anciennes valeurs !!
 KDIAG.fromNumpy(KPYD2)
 KDIAGC.fromNumpy(KPYDC2)
-FDIAGC.RECU_VECT_GENE_C(FPYDC2)
+FDIAGC.RECU_VECT_GENE(FPYDC2)
 
 # CALCULS ASTER SUR MATRICES & VECTEURS MODIFIES DANS PYTHON
 # -----------------------------------------------------------
@@ -398,8 +398,8 @@ DYNPLEIN = DYNA_VIBRA(
 KPYP = KPLEIN.toNumpy()
 KPYPC = KPLEINC.toNumpy()
 MPYP = MPLEIN.toNumpy()
-FPYP = FPLEIN.EXTR_VECT_GENE_R()
-FPYPC = FPLEINC.EXTR_VECT_GENE_C()
+FPYP = FPLEIN.EXTR_VECT_GENE()
+FPYPC = FPLEINC.EXTR_VECT_GENE()
 
 # MODIFICATION DES MATRICES & VECTEURS GENERALISES DANS PYTHON
 # -------------------------------------------------------------
@@ -412,7 +412,7 @@ FPYPC2 = FPYPC * 0.5
 # On ecrase donc les anciennes valeurs !!
 KPLEIN.fromNumpy(KPYP2)
 KPLEINC.fromNumpy(KPYPC2)
-FPLEINC.RECU_VECT_GENE_C(FPYPC2)
+FPLEINC.RECU_VECT_GENE(FPYPC2)
 
 # CALCULS ASTER SUR MATRICES & VECTEURS MODIFIES DANS PYTHON
 # -----------------------------------------------------------

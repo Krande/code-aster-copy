@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ MAT_G_RA = DEFI_GLRC(
     INFO=2,
 )
 
-matph = MAT_G_RA.sdj.NOMRC.get()
+matph = MAT_G_RA.getMaterialNames()
 phenom = None
 ind = 0
 for cmpt in matph:
@@ -136,7 +136,7 @@ TEST_TABLE(
 DETRUIRE(NOM=(TAB_G_RA))
 
 
-matph = MAT_G_RA.sdj.NOMRC.get()
+matph = MAT_G_RA.getMaterialNames()
 phenom = None
 ind = 0
 for cmpt in matph:
@@ -214,7 +214,7 @@ MAT_G_PA = DEFI_GLRC(
     AMOR_BETA=4.0,
     INFO=2,
 )
-matph = MAT_G_PA.sdj.NOMRC.get()
+matph = MAT_G_PA.getMaterialNames()
 phenom = None
 ind = 0
 for cmpt in matph:
@@ -293,7 +293,7 @@ TEST_TABLE(
 )
 
 DETRUIRE(NOM=(TAB_G_PA))
-matph = MAT_G_PA.sdj.NOMRC.get()
+matph = MAT_G_PA.getMaterialNames()
 phenom = None
 ind = 0
 for cmpt in matph:
@@ -366,7 +366,7 @@ MAT_G_UT = DEFI_GLRC(
     PENTE=_F(TRACTION="UTIL", FLEXION="UTIL", EPSI_MEMB=0.002, KAPPA_FLEX=0.03),
     INFO=2,
 )
-matph = MAT_G_UT.sdj.NOMRC.get()
+matph = MAT_G_UT.getMaterialNames()
 phenom = None
 ind = 0
 for cmpt in matph:
@@ -445,7 +445,7 @@ TEST_TABLE(
 )
 
 DETRUIRE(NOM=(TAB_G_UT))
-matph = MAT_G_UT.sdj.NOMRC.get()
+matph = MAT_G_UT.getMaterialNames()
 phenom = None
 ind = 0
 for cmpt in matph:
@@ -520,7 +520,7 @@ MAT_G_CI = DEFI_GLRC(
     CISAIL="OUI",
     INFO=2,
 )
-matph = MAT_G_CI.sdj.NOMRC.get()
+matph = MAT_G_CI.getMaterialNames()
 phenom = None
 ind = 0
 for cmpt in matph:
@@ -604,7 +604,7 @@ TEST_TABLE(
 
 DETRUIRE(NOM=(TAB_G_CI))
 
-matph = MAT_G_CI.sdj.NOMRC.get()
+matph = MAT_G_CI.getMaterialNames()
 phenom = None
 ind = 0
 for cmpt in matph:

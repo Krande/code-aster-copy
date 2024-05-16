@@ -370,7 +370,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
                 mcsimp["FISS_PROP"] = fiss
 
-                Coorfo = fiss.sdj.FONDFISS.get()
+                Coorfo = fiss.getCrackTipCoords()
                 nb_pt_fiss = len(Coorfo) // 4
 
                 TABLE_BETA = nb_pt_fiss * [0.0]
@@ -536,7 +536,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                     UTMESS("F", "XFEM2_70", valk=fiss0.getName())
 
             # Recuperation du nombre de fonds de fissure
-            Fondmult = fiss0.sdj.FONDMULT.get()
+            Fondmult = fiss0.getCrackTipMultiplicity()
             Nbfond = len(Fondmult) // 2
 
             if (
@@ -839,7 +839,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
         else:
             calc_gamma = False
         for numfis, Fiss in enumerate(Fissures):
-            Coorfo = Fiss["FISS_ACTUELLE"].sdj.FONDFISS.get()
+            Coorfo = Fiss["FISS_ACTUELLE"].getCrackTipCoords()
 
             #     Si NB_POINT_FOND: calcul de beta et Da/Dt aux points "physiques"
             if Fiss.get("NB_POINT_FOND") is not None:
@@ -851,7 +851,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
                 NbPointFond = Fiss["NB_POINT_FOND"]
 
-                Fondmult = Fiss["FISS_ACTUELLE"].sdj.FONDMULT.get()
+                Fondmult = Fiss["FISS_ACTUELLE"].getCrackTipMultiplicity()
                 Nbfond = len(Fondmult) // 2
 
                 if len(Fiss["NB_POINT_FOND"]) != Nbfond:
@@ -930,7 +930,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             #       Si 2D: verification de l'orientation du repere (VNOR,VDIR)
             if OPERATION != "DETECT_COHESIF":
                 if (not "K3" in __tabsif.para) and (not CRITERE_ANGLE == "ANGLE_IMPO_BETA_GAMMA"):
-                    Basefond = Fiss["FISS_ACTUELLE"].sdj.BASEFOND.get()
+                    Basefond = Fiss["FISS_ACTUELLE"].getCrackTipBasis()
                     for fond in range(len(Basefond) // 4):
                         VNOR = (Basefond[4 * fond + 0], Basefond[4 * fond + 1])
                         VDIR = (Basefond[4 * fond + 2], Basefond[4 * fond + 3])
@@ -1004,9 +1004,9 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             if dime == 3:
                 # Recuperation des informations sur le maillage
                 nbno = MAIL_FISS1.getNumberOfNodes()
-                Fondmult = fiss0.sdj.FONDMULT.get()
+                Fondmult = fiss0.getCrackTipMultiplicity()
                 Nbfond = len(Fondmult) // 2
-                Coorfo = fiss0.sdj.FONDFISS.get()
+                Coorfo = fiss0.getCrackTipCoords()
 
                 # Recuperation de la liste des noeuds du fond
                 connex = MAIL_FISS1.getConnectivity()
@@ -1115,8 +1115,8 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 nbno += nbnofo
 
                 # Recuperation des informations importantes pour la propagation
-                Basefo = fiss0.sdj.BASEFOND.get()
-                Listfo = fiss0.sdj.FONDFISS.get()
+                Basefo = fiss0.getCrackTipBasis()
+                Listfo = fiss0.getCrackTipCoords()
 
                 # Boucle sur le fond : calcul des coordonnees des points propages
                 A = [0, 0, 0]
@@ -1276,7 +1276,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 node = connex[cells[0]][0]
                 Xf, Yf = coords[node].getValues()
 
-                VPVNi = fiss0.sdj.BASEFOND.get()
+                VPVNi = fiss0.getCrackTipBasis()
                 Vloc = NBCYCLE * tab_VIT[numfis][1][0][1]
                 beta = tab_BETA[numfis][1][0][1]
                 Xf2 = Xf + (VPVNi[2] * cos(beta) + VPVNi[0] * sin(beta)) * Vloc

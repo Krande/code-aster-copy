@@ -3,7 +3,7 @@
  * @brief Interface python de ConstantFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,11 +31,37 @@
 #include "PythonBindings/DataStructureInterface.h"
 
 void exportConstantFieldOnCellsToPython( py::module_ &mod ) {
+
+    py::class_< ConstantFieldValues< double >, std::shared_ptr< ConstantFieldValues< double > > >(
+        mod, "ConstantFieldValuesReal" )
+        // fake initFactoryPtr
+        // fake initFactoryPtr
+        .def( "getValues", &ConstantFieldValues< double >::getValues, R"(
+            Return the field values
+
+            Returns:
+                list[float]: List of values
+        )" );
+
     py::class_< ConstantFieldOnCellsReal, ConstantFieldOnCellsRealPtr, DataField >(
         mod, "ConstantFieldOnCellsReal" )
         .def( py::init( &initFactoryPtr< ConstantFieldOnCellsReal, BaseMeshPtr > ) )
         .def( py::init( &initFactoryPtr< ConstantFieldOnCellsReal, std::string, BaseMeshPtr > ) )
         .def( "getMesh", &ConstantFieldOnCellsReal::getMesh )
+        .def( "size", &ConstantFieldOnCellsReal::size, R"(
+            Return the size of field
+
+            Returns:
+                int: size of field
+        )" )
+        .def( "getValues",
+              py::overload_cast< const int & >( &ConstantFieldOnCellsReal::getValues, py::const_ ),
+              R"(
+            Return the field values
+
+            Returns:
+                list[float]: List of values
+        )" )
         .def( "setValueOnCells", &ConstantFieldOnCellsReal::setValueOnCells );
 
     py::class_< ConstantFieldOnCellsChar16, ConstantFieldOnCellsChar16Ptr, DataField >(

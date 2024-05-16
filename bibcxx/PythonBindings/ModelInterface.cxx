@@ -103,6 +103,7 @@ Arguments:
                 str: partition method
             )" )
         .def( "isXfem", &Model::isXfem )
+        .def( "getXfemContact", &Model::getXfemContact )
         .def( "existsMultiFiberBeam", &Model::existsMultiFiberBeam )
         .def( "getSaneModel", &Model::getSaneModel )
         .def( "getMesh", &Model::getMesh, R"(

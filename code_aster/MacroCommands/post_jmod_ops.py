@@ -26,7 +26,6 @@ import sys
 import math
 from ..Cata.Syntax import _F
 from ..Cata.DataStructure import mode_meca
-from ..SD.sd_mater import sd_compor1
 from ..Objects.table_py import Table, merge
 from ..Messages import UTMESS, MasquerAlarme
 from ..Utilities.misc import get_titre_concept
@@ -186,10 +185,9 @@ def display_node_inst(FOND_FISS, iNP, inst, NB_COUCHES, NP, closedCrack):
     Display node and instant being processed
     """
 
-    NOFF = FOND_FISS.sdj.FOND_NOEU.get()
+    NOFF = FOND_FISS.getCrackFrontNodes()
     if NOFF is None:
         UTMESS("F", "RUPTURE0_11")
-    NOFF = list(NOFF)
 
     if closedCrack == "OUI":
         del NOFF[-1]
@@ -240,10 +238,9 @@ def no_fond_fiss(self, FOND_FISS):
     Store nodes in dict type
     """
 
-    fond_fiss_no = FOND_FISS.sdj.FOND_NOEU.get()
+    fond_fiss_no = FOND_FISS.getCrackFrontNodes()
     if fond_fiss_no is None:
         UTMESS("F", "RUPTURE0_11")
-    fond_fiss_no = list(map(lambda x: x.rstrip(), fond_fiss_no))
 
     if fond_fiss_no[0] != fond_fiss_no[-1]:
         closedCrack = "NON"
@@ -271,26 +268,22 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, is_symmetric, closedCrack):
 
     if NB_COUCHES < 10:
         nodeNum = 100
-        lip_sup_nodes = FOND_FISS.sdj.SUPNORM_NOEU2.get()
+        lip_sup_nodes = FOND_FISS.getUpperNormNodes2()
     else:
         nodeNum = 100
-        lip_sup_nodes = FOND_FISS.sdj.SUPNORM_NOEU2.get()
+        lip_sup_nodes = FOND_FISS.getUpperNormNodes2()
 
     if lip_sup_nodes is None:
         UTMESS("F", "RUPTURE0_11")
 
-    lip_sup_nodes = list(map(lambda x: x.rstrip(), lip_sup_nodes))
-
     if not is_symmetric:
         if NB_COUCHES < 10:
-            lip_inf_nodes = FOND_FISS.sdj.INFNORM_NOEU2.get()
+            lip_inf_nodes = FOND_FISS.getLowerNormNodes2()
         else:
-            lip_inf_nodes = FOND_FISS.sdj.INFNORM_NOEU2.get()
+            lip_inf_nodes = FOND_FISS.getLowerNormNodes2()
 
         if lip_sup_nodes is None:
             UTMESS("F", "RUPTURE0_11")
-
-        lip_inf_nodes = list(map(lambda x: x.rstrip(), lip_inf_nodes))
 
     for i in range(NP):
         TLIPSUPX = lip_sup_nodes[nodeNum * i : nodeNum * (i + 1)]
@@ -336,10 +329,9 @@ def na_poinsf(self, FOND_FISS, is_symmetric, elemType):
     Store in node name
     """
 
-    lip_sup_nodes = FOND_FISS.sdj.SUPNORM_NOEU2.get()
+    lip_sup_nodes = FOND_FISS.getUpperNormNodes2()
     if lip_sup_nodes is None:
         UTMESS("F", "RUPTURE0_11")
-    lip_sup_nodes = list(map(lambda x: x.rstrip(), lip_sup_nodes))
 
     if is_symmetric:
         if elemType == "SEG2":
@@ -347,10 +339,9 @@ def na_poinsf(self, FOND_FISS, is_symmetric, elemType):
         else:
             poinsf_na = lip_sup_nodes[2]
     else:
-        lip_inf_nodes = FOND_FISS.sdj.INFNORM_NOEU2.get()
+        lip_inf_nodes = FOND_FISS.getLowerNormNodes2()
         if lip_inf_nodes is None:
             UTMESS("F", "RUPTURE0_11")
-        lip_inf_nodes = list(map(lambda x: x.rstrip(), lip_inf_nodes))
 
         if elemType == "SEG2":
             poinsf_na = (lip_sup_nodes[1], lip_inf_nodes[1])
@@ -370,8 +361,8 @@ def na_lips(self, MAIL__, FOND_FISS, is_symmetric):
 
     lipSupName = FOND_FISS.getUpperLipGroupName()
 
-    ListmaS = FOND_FISS.sdj.LEVRESUP_MAIL.get()
-    if not ListmaS:
+    gr_maS = FOND_FISS.getUpperLipGroupName()
+    if not gr_maS:
         UTMESS("F", "RUPTURE0_19")
 
     lipInfName = None
@@ -379,8 +370,8 @@ def na_lips(self, MAIL__, FOND_FISS, is_symmetric):
     if not is_symmetric:
         lipInfName = FOND_FISS.getLowerLipGroupName()
 
-        ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
-        if not ListmaI:
+        gr_maI = FOND_FISS.getLowerLipGroupName()
+        if not gr_maI:
             UTMESS("F", "RUPTURE0_19")
 
     return (lipSupName, lipInfName)
@@ -2236,7 +2227,6 @@ def post_jmod_ops(
         if FOND_FISS is not None:
             nom_fiss = FOND_FISS.getName()
         assert nom_fiss != ""
-        # matph = MA.sdj.NOMRC.get()
         # si le MCS MATER n'est pas renseigne, on considere le materiau
         # present dans la sd_resultat. Si MATER est renseigne, on ecrase
         # le materiau et on emet une alarme.
@@ -2266,25 +2256,8 @@ def post_jmod_ops(
             bid, MODELISATION = aster.postkutil(0, RESULTAT.getName(), nom_fiss)
             UTMESS("A", "RUPTURE0_1", valk=[MATER.getName()])
 
-        matph = MATER.sdj.NOMRC.get()
-        phenom = None
-        ind = 0
-        for cmpt in matph:
-            ind = ind + 1
-            if cmpt[:4] == "ELAS":
-                phenom = cmpt
-                break
-        if phenom is None:
-            UTMESS("F", "RUPTURE0_5")
-        ns = "{:06d}".format(ind)
-
-        compor = sd_compor1("%-8s.CPT.%s" % (MATER.getName(), ns))
-        valk = [s.strip() for s in compor.VALK.get()]
-        valr = compor.VALR.get()
-        dicmat = dict(list(zip(valk, valr)))
-
-        e = dicmat["E"]
-        nu = dicmat["NU"]
+        e = MATER.getValueReal("ELAS", "E")
+        nu = MATER.getValueReal("ELAS", "NU")
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # DIRECTION OF VIRTUAL CRACK PROPAGATION
@@ -2292,14 +2265,13 @@ def post_jmod_ops(
 
         # get crack tip
 
-        Pfiss = FOND_FISS.sdj.FOND_NOEU.get()
-        Pfiss = list(map(lambda x: x.rstrip(), Pfiss))
+        Pfiss = FOND_FISS.getCrackFrontNodes()
         Nfiss = len(Pfiss)
 
         # get crack edges
 
-        PropadirSup = FOND_FISS.sdj.SUPNORM_NOEU2.get()
-        PropadirInf = FOND_FISS.sdj.INFNORM_NOEU2.get()
+        PropadirSup = FOND_FISS.getUpperNormNodes2()
+        PropadirInf = FOND_FISS.getLowerNormNodes2()
 
         if (PropadirSup is None) and (PropadirInf is None):
             UTMESS("F", "RUPTURE4_10")
@@ -2307,7 +2279,6 @@ def post_jmod_ops(
         if PropadirSup is not None:
             # determine top edge nodes
 
-            PropadirSup = list(map(lambda x: x.rstrip(), PropadirSup))
             del PropadirSup[2:]
 
             PropadirSup = [[Pfiss[i], PropadirSup[i * 2 : (i + 1) * 2]] for i in range(0, Nfiss)]
@@ -2342,7 +2313,6 @@ def post_jmod_ops(
             zsfisSup = np.zeros(nbtfisSup)
 
             nsfisSup = tcoorfisSup["NOEUD"].values()["NOEUD"][:nbtfisSup]
-            nsfisSup = list(map(lambda x: x.rstrip(), nsfisSup))
 
             l_coorfisSup = [
                 [nsfisSup[i], xsfisSup[i], ysfisSup[i], zsfisSup[i]] for i in range(nbtfisSup)
@@ -2364,7 +2334,6 @@ def post_jmod_ops(
         if PropadirInf is not None:
             # determine bottom edge nodes
 
-            PropadirInf = list(map(lambda x: x.rstrip(), PropadirInf))
             del PropadirInf[2:]
 
             PropadirInf = [[Pfiss[i], PropadirInf[i * 2 : (i + 1) * 2]] for i in range(0, Nfiss)]
@@ -2399,7 +2368,6 @@ def post_jmod_ops(
             zsfisInf = np.zeros(nbtfisInf)
 
             nsfisInf = tcoorfisInf["NOEUD"].values()["NOEUD"][:nbtfisInf]
-            nsfisInf = list(map(lambda x: x.rstrip(), nsfisInf))
 
             l_coorfisInf = [
                 [nsfisInf[i], xsfisInf[i], ysfisInf[i], zsfisInf[i]] for i in range(nbtfisInf)
@@ -2461,7 +2429,7 @@ def post_jmod_ops(
         DEFI_GROUP(
             reuse=MAIL,
             MAILLAGE=MAIL,
-            CREA_GROUP_NO=(_F(NOM="NBOUGER", NOEUD=FOND_FISS.sdj.FOND_NOEU.get()),),
+            CREA_GROUP_NO=(_F(NOM="NBOUGER", NOEUD=FOND_FISS.getCrackFrontNodes()),),
         )
 
         DEFI_GROUP(
@@ -2503,7 +2471,7 @@ def post_jmod_ops(
             DEFI_GROUP(
                 reuse=MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=(_F(NOM="NBOUGER_IMPR", NOEUD=FOND_FISS.sdj.FOND_NOEU.get()),),
+                CREA_GROUP_NO=(_F(NOM="NBOUGER_IMPR", NOEUD=FOND_FISS.getCrackFrontNodes()),),
             )
 
             DEFI_GROUP(

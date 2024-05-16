@@ -62,6 +62,7 @@ void exportGeneralizedResultToPython( py::module_ &mod ) {
         .def( "setDOFNumbering", &HarmoGeneralizedResult::setDOFNumbering )
         .def( "getDOFNumbering", &HarmoGeneralizedResult::getDOFNumbering )
         .def( "setDisplacement", &HarmoGeneralizedResult::setDisplacement )
+        .def( "getDisplacement", &HarmoGeneralizedResult::getDisplacement )
         .def( "setVelocity", &HarmoGeneralizedResult::setVelocity )
         .def( "setAcceleration", &HarmoGeneralizedResult::setAcceleration );
 };

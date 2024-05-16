@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -108,8 +108,16 @@ class Crack : public DataStructure {
     std::string getCrackTipCellsType();
     std::string getUpperLipGroupName();
     std::string getLowerLipGroupName();
+    const VectorString getCrackFrontNodes();
+    const VectorString getLowerNormNodes();
+    const VectorString getUpperNormNodes();
+    const VectorString getLowerNormNodes2();
+    const VectorString getUpperNormNodes2();
     const JeveuxVectorReal getCrackFrontBasis();
     const JeveuxVectorReal getCrackFrontPosition();
+    const FieldOnNodesRealPtr getCrackFrontNodeBasis();
+    const JeveuxVectorReal getCrackFrontRadius();
+    const JeveuxVectorReal getNormal();
     bool isSymmetric();
     std::string getConfigInit();
 };

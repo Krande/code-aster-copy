@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -96,7 +96,8 @@ Il ne faut pas imprimer ce champ ou faire deux IMPR_RESU différents.
     ),
     13: _(
         """
-On ignore le CARA_ELEM du type d'élément %(k1)s pour le champ %(k2)s
+Aucun élément de structure de type COQUE, GRILLE, TUYAU ou PMF contenant des sous-points
+pour le champ %(k1)s. Le CARA_ELEM est ignoré.
 
     Conseil : Supprimer le mot-clé CARA_ELEM sous le mot clé facteur RESU.
     """

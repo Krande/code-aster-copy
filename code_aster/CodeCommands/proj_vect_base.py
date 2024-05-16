@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,7 +19,11 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import GeneralizedAssemblyVectorReal
+from ..Objects import (
+    GeneralizedAssemblyVectorReal,
+    GeneralizedAssemblyVectorComplex,
+    FieldOnNodesComplex,
+)
 from ..Supervis import ExecuteCommand
 
 
@@ -34,7 +38,13 @@ class ProjVectBase(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = GeneralizedAssemblyVectorReal()
+        if "VECT_ASSE_GENE" in keywords:
+            self._result = type(keywords["VECT_ASSE_GENE"])()
+        else:
+            if type(keywords["VECT_ASSE"]) == FieldOnNodesComplex:
+                self._result = GeneralizedAssemblyVectorComplex()
+            else:
+                self._result = GeneralizedAssemblyVectorReal()
 
 
 PROJ_VECT_BASE = ProjVectBase.run
