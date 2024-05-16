@@ -2,10 +2,10 @@
 set -e
 
 # if env variable PREREQUISITES_DIR is not defined, run script conda_build_prereq.sh
-if [ -z "${PREREQUISITES_DIR}" ]; then
-  echo "PREREQUISITES_DIR is not defined"
-  ./conda_build_prereq.sh
-fi
+#if [ -z "${PREREQUISITES_DIR}" ]; then
+#  echo "PREREQUISITES_DIR is not defined"
+#  ./conda_build_prereq.sh
+#fi
 
 
 which python
@@ -45,7 +45,7 @@ export LIBPATH_METIS=${PREFIX}/lib
 export INCLUDES_METIS=${PREFIX}/include
 
 export LIBPATH_MUMPS=${PREFIX}/lib
-export INCLUDES_MUMPS="${PREFIX}/include ${PREFIX}/include/mumps_seq"
+export INCLUDES_MUMPS="${PREFIX}/include ${PREFIX}/include_seq"
 
 export LIBPATH_SCOTCH=${PREFIX}/lib
 export INCLUDES_SCOTCH=${PREFIX}/include
@@ -74,9 +74,7 @@ python conda/update_version.py
      --enable-hdf5 \
      --enable-med \
      --med-libs="med medC medfwrap medimport" \
-     --mumps-libs="dmumps_seq zmumps_seq smumps_seq cmumps_seq mumps_common_seq pord_seq" \
      --install-tests \
-     --maths-libs="cblas lapack" \
      --disable-mpi \
      --without-hg \
      --without-repo \
