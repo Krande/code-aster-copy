@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -189,14 +189,12 @@ def AngleCyl(GROUP_MA, MAILLAGE, CENTRE, AXE, LISTE_CARA, **args):
     Produit une liste de commandes pour orienter les éléments par AFFE_CARA_ELEM/MASSIF
     """
     import numpy as NP
-    import copy
 
     # On recupere la connectivite, les noms des mailles,
     # les coordonnees et le groupes de mailles GROUP_MA
-    coordo = MAILLAGE.sdj.COORDO.VALE.get()
-    connex = MAILLAGE.sdj.CONNEX.get()
-    nommai = MAILLAGE.sdj.NOMMAI.get()
-    groupma = MAILLAGE.sdj.GROUPEMA.get()[GROUP_MA.ljust(24)]
+    coordo = MAILLAGE.getCoordinates().getValues()
+    connex = MAILLAGE.getConnectivity()
+    groupma = MAILLAGE.getCells(GROUP_MA)
     # On met en forme les coordonnees : matrice 3 colonnes
     coordo = NP.reshape(coordo, [len(coordo) // 3, 3])
     # On recupere chacune des coordonnees
@@ -208,10 +206,6 @@ def AngleCyl(GROUP_MA, MAILLAGE, CENTRE, AXE, LISTE_CARA, **args):
     vex = NP.array([1.0, 0, 0])
     for ima in groupma:
         lnoeud = connex[ima]
-        # ATTENTION : dans Python, les tableaux commencent a 0
-        # mais dans la connectivite, les noeuds commencent a 1!
-        un = NP.ones(len(lnoeud), dtype="int")
-        lnoeud = lnoeud - un
         xg = NP.mean(X[lnoeud])
         yg = NP.mean(Y[lnoeud])
         zg = NP.mean(Z[lnoeud])
@@ -224,8 +218,7 @@ def AngleCyl(GROUP_MA, MAILLAGE, CENTRE, AXE, LISTE_CARA, **args):
 
         alpha, beta, gamma = AngleNaut(repere)
 
-        # Meme remarque que precedemment sur les listes Python
-        nom_maille = nommai[ima - 1]
+        nom_maille = MAILLAGE.getCellName(ima)
         nom_grma = "CELL_" + str(int(nom_maille[1:]) - 500)
         mon_dico = {}
         mon_dico["GROUP_MA"] = nom_grma

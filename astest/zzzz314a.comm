@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ FISS0 = DEFI_FOND_FISS(
 import numpy as np
 
 nb_comp_basloc = 6
-basloc = FISS0.sdj.BASLOC.VALE.get()
+basloc = FISS0.getCrackFrontNodeBasis().getValues()
 basloc = np.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, 2:]
 index_by_nodename = {M.getNodeName(i): i for i in M.getNodes()}
-lnoff = FISS0.sdj.FOND_NOEU.get()
-basefond0 = basloc[[index_by_nodename[nodename.strip()] for nodename in lnoff], :].flatten()
+lnoff = FISS0.getCrackFrontNodes()
+basefond0 = basloc[[index_by_nodename[nodename] for nodename in lnoff], :].flatten()
 
 ndfon = []
 vnorX = []

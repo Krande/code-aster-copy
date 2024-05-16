@@ -1037,6 +1037,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.MechanicalLoadDescriptionReal` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MechanicalLoadDescriptionReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.MechanicalLoadFunction` object
 ********************************************************************************
 

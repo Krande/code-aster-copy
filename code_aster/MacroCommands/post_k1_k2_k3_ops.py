@@ -40,7 +40,6 @@ from ..CodeCommands import (
 from ..Messages import UTMESS
 from ..Objects import ModeResult
 from ..Objects.table_py import Table, merge
-from ..SD.sd_mater import sd_compor1
 from ..Utilities.misc import get_titre_concept
 from .Fracture.post_k_varc import POST_K_VARC
 
@@ -289,10 +288,9 @@ def get_displacement_name(result):
 
 def get_noeud_fond_fiss(FOND_FISS):
     """retourne la liste des noeuds de FOND_FISS"""
-    Lnoff = FOND_FISS.sdj.FOND_NOEU.get()
+    Lnoff = FOND_FISS.getCrackFrontNodes()
     if Lnoff is None:
         UTMESS("F", "RUPTURE0_11")
-    Lnoff = list(map(lambda x: x.rstrip(), Lnoff))
     return Lnoff
 
 
@@ -400,7 +398,7 @@ def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
 
     # On récupère ces informations dans BASELOC
     # Attendtion à l'odre des veccteurs dans BASELOC
-    basloc = FOND_FISS.sdj.BASLOC.VALE.get()
+    basloc = FOND_FISS.getCrackFrontNodeBasis().getValues()
 
     # extraction, à partir de baseloc, un objet basefon reduit aux noeud
     # du fonr tde fissure.
@@ -448,8 +446,8 @@ def get_tab_dep(
     dicVDIR,
     RESULTAT,
     MODEL,
-    ListmaS,
-    ListmaI,
+    gr_maS,
+    gr_maI,
     NB_NOEUD_COUPE,
     hmax,
     is_symmetric,
@@ -479,7 +477,7 @@ def get_tab_dep(
         RESULTAT=RESULTAT,
         NOM_CHAM=get_displacement_name(RESULTAT),
         MODELE=MODEL,
-        VIS_A_VIS=_F(MAILLE_1=ListmaS),
+        VIS_A_VIS=_F(GROUP_MA_1=gr_maS),
         LIGN_COUPE=mcfact,
     )
 
@@ -488,7 +486,7 @@ def get_tab_dep(
             RESULTAT=RESULTAT,
             NOM_CHAM=get_displacement_name(RESULTAT),
             MODELE=MODEL,
-            VIS_A_VIS=_F(MAILLE_1=ListmaI),
+            VIS_A_VIS=_F(GROUP_MA_1=gr_maI),
             LIGN_COUPE=mcfact,
         )
         result = __TlibI.EXTR_TABLE()
@@ -504,13 +502,12 @@ def get_tab_dep(
 def get_dico_levres(lev, FOND_FISS, ndim, Lnoff, Nnoff):
     "retourne ???" ""
     if lev == "sup":
-        Nnorm = FOND_FISS.sdj.SUPNORM_NOEU.get()
+        Nnorm = FOND_FISS.getUpperNormNodes()
         if not Nnorm:
             UTMESS("F", "RUPTURE0_19")
     elif lev == "inf":
-        Nnorm = FOND_FISS.sdj.INFNORM_NOEU.get()
+        Nnorm = FOND_FISS.getLowerNormNodes()
 
-    Nnorm = list(map(lambda x: x.rstrip(), Nnorm))
     # pourquoi modifie t-on Nnoff dans ce cas, alors que rien n'est fait pour
     # les maillages libres ?
     if Lnoff[0] == Lnoff[-1] and ndim == 3:
@@ -670,7 +667,7 @@ def verif_resxfem(self, RESULTAT):
     """verifie que le resultat est bien compatible avec X-FEM et renvoie xcont et MODEL"""
 
     MODEL = RESULTAT.getModel()
-    xcont = MODEL.sdj.xfem.XFEM_CONT.get()
+    xcont = MODEL.getXfemContact()
     return (xcont, MODEL)
 
 
@@ -680,11 +677,11 @@ def verif_resxfem(self, RESULTAT):
 def get_resxfem(self, xcont, RESULTAT, MODELISATION, MODEL):
     """retourne le resultat"""
 
-    if xcont[0] != 3:
+    if xcont != 3:
         __RESX = RESULTAT
 
     #     XFEM + contact : il faut reprojeter sur le maillage lineaire
-    elif xcont[0] == 3:
+    elif xcont == 3:
         __mail1 = RESULTAT.getModel().getMesh()
         __mail2 = CREA_MAILLAGE(MAILLAGE=__mail1, QUAD_LINE=_F(TOUT="OUI"))
 
@@ -713,15 +710,15 @@ def get_resxfem(self, xcont, RESULTAT, MODELISATION, MODEL):
 def get_coor_xfem(args, FISSURE, ndim):
     """retourne la liste des coordonnees des points du fond, la base locale en fond et le nombre de points"""
 
-    Listfo = FISSURE.sdj.FONDFISS.get()
-    Basefo = FISSURE.sdj.BASEFOND.get()
+    Listfo = FISSURE.getCrackTipCoords()
+    Basefo = FISSURE.getCrackTipBasis()
     NB_POINT_FOND = args.get("NB_POINT_FOND")
 
     #     Traitement des fonds fermés
-    TypeFond = FISSURE.sdj.INFO.get()[2]
+    TypeFond = FISSURE.getTipType()
 
     #     Traitement du cas fond multiple
-    Fissmult = FISSURE.sdj.FONDMULT.get()
+    Fissmult = FISSURE.getCrackTipMultiplicity()
     Nbfiss = len(Fissmult) // 2
     Numfiss = args.get("NUME_FOND")
     if Numfiss <= Nbfiss and (Nbfiss > 1 or TypeFond == "FERME"):
@@ -889,7 +886,7 @@ def get_liste_inst(tabsup, args):
         if args.get("NUME_ORDRE") is not None:
             l_ord = args.get("NUME_ORDRE")
         elif args.get("LIST_ORDRE") is not None:
-            l_ord = args.get("LIST_ORDRE").sdj.VALE.get()
+            l_ord = args.get("LIST_ORDRE").getValues()
         l_inst = []
         for ord in l_ord:
             if ord in l_ord_tab:
@@ -946,7 +943,7 @@ def get_liste_freq(tabsup, args):
         if args.get("NUME_ORDRE") is not None:
             l_ord = list(args.get("NUME_ORDRE"))
         elif args.get("LIST_ORDRE") is not None:
-            l_ord = args.get("LIST_ORDRE").sdj.VALE.get()
+            l_ord = args.get("LIST_ORDRE").getValues()
         l_freq = []
         for ord in l_ord:
             if ord in l_ord_tab:
@@ -964,7 +961,7 @@ def get_liste_freq(tabsup, args):
         if args.get("NUME_MODE") is not None:
             l_mod = args.get("NUME_MODE")
         elif args.get("LIST_MODE") is not None:
-            l_mod = args.get("LIST_MODE").sdj.VALE.get()
+            l_mod = args.get("LIST_MODE").getValues()
         l_freq = []
         for mod in l_mod:
             if mod in l_mod_tab:
@@ -1155,8 +1152,8 @@ def get_propmat_varc_xfem(
     #  - FISSURE.FONDFISS (coords des points du fond)
     #  - FISSURE.NOFACPTFON (numeros des noeuds des faces des elements
     #    parents qui contiennent les points du fond de fissure
-    Listfo = FISSURE.sdj.FONDFISS.get()
-    L_NoFacPtFon = FISSURE.sdj.NOFACPTFON.get()
+    Listfo = FISSURE.getCrackTipCoords()
+    L_NoFacPtFon = FISSURE.getCrackTipNodeFacesField()
     assert len(Listfo) % 4 == 0
     assert len(Listfo) == len(L_NoFacPtFon)
 
@@ -1176,10 +1173,10 @@ def get_propmat_varc_xfem(
         ValeVrc_Listfo.append(vale)
 
     # Traitement des fonds fermés
-    TypeFond = FISSURE.sdj.INFO.get()[2]
+    TypeFond = FISSURE.getTipType()
 
     # Traitement du cas fond multiple
-    Fissmult = FISSURE.sdj.FONDMULT.get()
+    Fissmult = FISSURE.getCrackTipMultiplicity()
     Nbfiss = len(Fissmult) // 2
     Numfiss = args.get("NUME_FOND")
     if Numfiss <= Nbfiss and (Nbfiss > 1 or TypeFond == "FERME"):
@@ -1965,9 +1962,9 @@ def post_k1_k2_k3_ops(
         #     Recuperation de la liste des mailles de la lèvre supérieure
         #     ------------------------------------------------------------
 
-        ListmaS = FOND_FISS.sdj.LEVRESUP_MAIL.get()
+        gr_maS = FOND_FISS.getUpperLipGroupName()
 
-        if not ListmaS:
+        if not gr_maS:
             UTMESS("F", "RUPTURE0_19")
 
         #     Verification de la presence de symetrie
@@ -1979,7 +1976,7 @@ def post_k1_k2_k3_ops(
         #     ----------------------------------------------------------------------
 
         if not ABSC_CURV_MAXI:
-            list_tail = FOND_FISS.sdj.FOND_TAILLE_R.get()
+            list_tail = FOND_FISS.getCrackFrontRadius()
             tailmax = max(list_tail)
             hmax = tailmax * 4
             UTMESS("I", "RUPTURE0_32", valr=hmax)
@@ -1996,9 +1993,9 @@ def post_k1_k2_k3_ops(
         #     creation des directions normales et macr_lign_coup
         if TYPE_MAILLAGE == "LIBRE":
             if not is_symmetric:
-                ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
+                gr_maI = FOND_FISS.getLowerLipGroupName()
             else:
-                ListmaI = None
+                gr_maI = None
 
             #        Dictionnaire des coordonnees des noeuds du fond
             d_coor = get_coor_libre(self, Lnoff, RESULTAT, ndim)
@@ -2021,8 +2018,8 @@ def post_k1_k2_k3_ops(
                 dicVDIR,
                 RESULTAT,
                 MODEL,
-                ListmaS,
-                ListmaI,
+                gr_maS,
+                gr_maI,
                 NB_NOEUD_COUPE,
                 hmax,
                 is_symmetric,
@@ -2070,7 +2067,7 @@ def post_k1_k2_k3_ops(
     elif FISSURE:
         #     Recuperation de la liste des tailles de maille en chaque noeud du fond
         if not ABSC_CURV_MAXI:
-            list_tail = FISSURE.sdj.FOND_TAILLE_R.get()
+            list_tail = FISSURE.getCrackFrontRadius()
             tailmax = max(list_tail)
             hmax = tailmax * 5
             UTMESS("I", "RUPTURE0_32", valr=hmax)
@@ -2084,7 +2081,7 @@ def post_k1_k2_k3_ops(
 
         (xcont, MODEL) = verif_resxfem(self, RESULTAT)
         # incohérence entre le modèle et X-FEM
-        if not xcont:
+        if xcont == -1:
             UTMESS("F", "RUPTURE0_4")
 
         #     Recuperation du resultat

@@ -49,7 +49,7 @@ class THFOQU4(Element):
         OP.CARA_TORSION(te=-1),
         OP.CHAR_THER_SOUR_F(
             te=264,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PSOURCF, LC.CSOURCF), (SP.PTEMPSR, LC.CTIMETR)),
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PSOURCF, LC.CSOURCF), (SP.PINSTR, LC.CTIMETR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_SOUR_R(
@@ -74,7 +74,7 @@ class THFOQU4(Element):
                 (SP.PHARMON, LC.CHARMON),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, LC.CTIMETR),
+                (SP.PINSTR, LC.CTIMETR),
             ),
             para_out=((OP.FLUX_ELGA.PFLUXPG, LC.EFLUX3R),),
         ),
@@ -115,7 +115,7 @@ class THFOQU4(Element):
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PHARMON, LC.CHARMON),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, LC.CTIMETR),
+                (SP.PINSTR, LC.CTIMETR),
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
         ),

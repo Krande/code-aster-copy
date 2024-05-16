@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
-from cataelem.Tools.base_objects import Calcul, Element
+from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes
+from cataelem.Tools.base_objects import Element
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.located_components as LC
 import cataelem.Commons.parameters as SP
@@ -177,7 +177,6 @@ for cmp in (
     name = "D_DEPL_RS" + cmp
 
     class TempClass(Element):
-
         """Please document this element"""
 
         _name = name
@@ -203,7 +202,7 @@ for cmp in (
             ),
             OP.MECA_DDLI_F(
                 te=330,
-                para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER), (SP.PTEMPSR, LC.MTEMPSR)),
+                para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER), (SP.PINSTR, LC.MTEMPSR)),
                 para_out=((SP.PVECTUR, MVECTUR),),
             ),
             OP.MECA_DDLI_R(
@@ -219,5 +218,5 @@ for cmp in (
             ),
         )
 
-    exec(name + " = TempClass")
+    globals()[name] = TempClass
     del TempClass

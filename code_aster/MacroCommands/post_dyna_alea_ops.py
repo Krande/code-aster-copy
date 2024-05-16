@@ -86,7 +86,7 @@ def post_dyna_alea_ops(self, INFO, **args):
     if "FRAGILITE" in args:
         FRAGILITE = args["FRAGILITE"][0]
         if FRAGILITE["LIST_PARA"] is not None:
-            liste_a = FRAGILITE["LIST_PARA"].sdj.VALE.get()
+            liste_a = FRAGILITE["LIST_PARA"].getValues()
         elif FRAGILITE["VALE"] is not None:
             liste_a = FRAGILITE["VALE"]
 

@@ -214,7 +214,7 @@ class MECXSE3(Element):
         ),
         OP.CHAR_MECA_FFCO2D(
             te=224,
-            para_in=((SP.PFFCO2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFFCO2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FRCO2D(
@@ -240,7 +240,7 @@ class MECXSE3(Element):
         ),
         OP.CHAR_MECA_PRES_F(
             te=397,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_PRES_R(

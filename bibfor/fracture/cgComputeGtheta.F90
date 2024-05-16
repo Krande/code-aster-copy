@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -329,7 +329,7 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
         if (opti .eq. 'CALC_G_F' .or. opti .eq. 'CALC_K_G_F') then
             call mecact('V', chtime, 'MODELE', modelLigrel, 'INST_R', &
                         ncmp=1, nomcmp='INST', sr=cgStudy%time)
-            lpain(nchin+1) = 'PTEMPSR'
+            lpain(nchin+1) = 'PINSTR'
             lchin(nchin+1) = chtime
             nchin = nchin+1
         end if
@@ -521,7 +521,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g2th, g2s)
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g3th, g3s)
 !
-           if (cgTheta%milieu .and. cgTheta%nb_point_fond .eq. 0 .and. cgTheta%nnof/2-1 .gt. 0) then
+            if (cgTheta%milieu .and. cgTheta%nb_point_fond .eq. 0 &
+                .and. cgTheta%nnof/2-1 .gt. 0) then
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, gs)
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, k1s)
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, k2s)

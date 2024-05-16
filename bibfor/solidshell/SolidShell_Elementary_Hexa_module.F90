@@ -711,7 +711,7 @@ contains
 
 ! ----- Get input fields
             call jevech('PFF3D3D', 'L', jvForc)
-            call jevech('PTEMPSR', 'L', jvTime)
+            call jevech('PINSTR', 'L', jvTime)
             paraVale(4) = zr(jvTime)
 
 ! ----- Loop on Gauss points

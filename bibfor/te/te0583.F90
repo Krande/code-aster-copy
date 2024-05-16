@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -184,7 +184,7 @@ subroutine te0583(option, nomte)
             end do
         else if (option(15:16) .eq. '_F') then
             call jevech('PPRESSF', 'L', ipres)
-            call jevech('PTEMPSR', 'L', itemps)
+            call jevech('PINSTR', 'L', itemps)
             valpar(4) = zr(itemps)
             nompar(4) = 'INST'
             nompar(1) = 'X'
@@ -423,7 +423,7 @@ subroutine te0583(option, nomte)
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
-        call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('NNO', 'PINSTR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             time = zr(itemps)
             valpar(4) = time

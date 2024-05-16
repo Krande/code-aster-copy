@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedAssemblyVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -66,24 +66,6 @@ class GeneralizedAssemblyVector : public GenericGeneralizedAssemblyVector {
     /** @brief Objet Jeveux '.VALE' */
     JeveuxVector< ValueType > _vale;
 
-    /**
-     * @brief definir le type
-     */
-    template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, void >::type
-    setVectorType() {
-        setType( "VECT_ASSE_GENE" );
-    };
-
-    /**
-     * @brief definir le type
-     */
-    template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, ASTERCOMPLEX >::value, void >::type
-    setVectorType() {
-        setType( "VECT_ASSE_GENE_C" );
-    };
-
   public:
     /**
      * @typedef GeneralizedAssemblyVectorPtr
@@ -102,15 +84,18 @@ class GeneralizedAssemblyVector : public GenericGeneralizedAssemblyVector {
 
     GeneralizedAssemblyVector( const std::string name )
         : GenericGeneralizedAssemblyVector( name ),
-          _vale( JeveuxVector< ValueType >( getName() + ".VALE" ) ) {
-        GeneralizedAssemblyVector< ValueType >::setVectorType();
-    };
+          _vale( JeveuxVector< ValueType >( getName() + ".VALE" ) ) {};
 
     /**
      * @brief Get values of the field
      *
      */
     const JeveuxVector< ValueType > &getValues() const { return _vale; }
+
+    void setValues( const std::vector< ValueType > &values ) {
+        AS_ASSERT( values.size() == _vale->size() );
+        *_vale = values;
+    };
 };
 
 /** @typedef Definition d'une matrice assemblee généralisée de double */

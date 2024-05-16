@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE CO
 
 
 MASS_THER_RESI = Option(
-    para_in=(PCOMPOR, SP.PGEOMER, PHYDRPR, SP.PMATERC, SP.PTEMPEI, SP.PTEMPSR, PVARCPR),
+    para_in=(PCOMPOR, SP.PGEOMER, PHYDRPR, SP.PMATERC, SP.PTEMPEI, SP.PINSTR, PVARCPR),
     para_out=(SP.PRESIDU,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

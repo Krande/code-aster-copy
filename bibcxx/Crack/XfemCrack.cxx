@@ -3,7 +3,7 @@
  * @brief Implementation de Material
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -83,6 +83,33 @@ XfemCrack::XfemCrack( const std::string name, MeshPtr mesh )
 };
 
 XfemCrack::XfemCrack( MeshPtr mesh ) : XfemCrack( ResultNaming::getNewResultName(), mesh ) {};
+
+const JeveuxVectorReal XfemCrack::getCrackTipCoords() {
+    _crackTipCoords->updateValuePointer();
+    return _crackTipCoords;
+};
+
+const JeveuxVectorReal XfemCrack::getCrackTipBasis() {
+    _crackTipBasis->updateValuePointer();
+    return _crackTipBasis;
+};
+
+const JeveuxVectorLong XfemCrack::getCrackTipMultiplicity() {
+    _crackTipMultiplicity->updateValuePointer();
+    return _crackTipMultiplicity;
+};
+
+const std::string XfemCrack::getTipType() {
+    _info->updateValuePointer();
+    return ( *_info )[2].toString();
+};
+
+const JeveuxVectorLong XfemCrack::getCrackTipNodeFacesField() {
+    _crackTipNodeFacesField->updateValuePointer();
+    return _crackTipNodeFacesField;
+};
+
+const JeveuxVectorReal XfemCrack::getCrackFrontRadius() { return _elementSize; };
 
 bool XfemCrack::build() {
     CommandSyntax cmdSt( "DEFI_FISS_XFEM" );

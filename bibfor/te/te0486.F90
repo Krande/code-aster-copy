@@ -177,7 +177,7 @@ subroutine te0486(option, nomte)
 !
         else if (option(10:16) .eq. '_SFCO3D') then
             call jevech('PFFCO3D', 'L', ifco3d)
-            call jevech('PTEMPSR', 'L', itemps)
+            call jevech('PINSTR', 'L', itemps)
             valpar(4) = zr(itemps)
             nompar(4) = 'INST'
             nompar(1) = 'X'
@@ -227,7 +227,7 @@ subroutine te0486(option, nomte)
             end do
 !
         else if (option(10:16) .eq. '_PRSU_F') then
-            call jevech('PTEMPSR', 'L', itemps)
+            call jevech('PINSTR', 'L', itemps)
             valpar(4) = zr(itemps)
             nompar(4) = 'INST'
             nompar(1) = 'X'

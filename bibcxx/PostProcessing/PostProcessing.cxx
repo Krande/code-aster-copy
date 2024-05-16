@@ -1,7 +1,7 @@
 
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -46,7 +46,7 @@ FieldOnCellsRealPtr PostProcessing::computeHydration( const FieldOnNodesRealPtr 
     // Add Input Field
     calcul->addInputField( "PCOMPOR", currBehav->getBehaviourField() );
     calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-    calcul->addTimeField( "PTEMPSR", time_curr, time_curr - time_prev, -1.0 );
+    calcul->addTimeField( "PINSTR", time_curr, time_curr - time_prev, -1.0 );
     calcul->addInputField( "PTEMPMR", temp_prev );
     calcul->addInputField( "PTEMPPR", temp_curr );
     calcul->addInputField( "PHYDRMR", hydr_prev );

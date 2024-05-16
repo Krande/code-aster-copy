@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,12 +48,12 @@ class THER3DQU9_HHO1_F(Element):
     calculs = (
         OP.CHAR_THER_FLUN_F(
             te=461,
-            para_in=((SP.PFLUXNF, LC.CFLUXNF), (SP.PGEOMER, LC.EGEOM3D), (SP.PTEMPSR, LC.CTIMETR)),
+            para_in=((SP.PFLUXNF, LC.CFLUXNF), (SP.PGEOMER, LC.EGEOM3D), (SP.PINSTR, LC.CTIMETR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUN_R(
             te=461,
-            para_in=((SP.PFLUXNR, LC.CFLUXNR), (SP.PGEOMER, LC.EGEOM3D), (SP.PTEMPSR, LC.CTIMETR)),
+            para_in=((SP.PFLUXNR, LC.CFLUXNR), (SP.PGEOMER, LC.EGEOM3D), (SP.PINSTR, LC.CTIMETR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUNL(
@@ -62,7 +62,7 @@ class THER3DQU9_HHO1_F(Element):
                 (SP.PFLUXNL, LC.CFLUXNF),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, LC.CTIMETR),
+                (SP.PINSTR, LC.CTIMETR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -72,7 +72,7 @@ class THER3DQU9_HHO1_F(Element):
                 (SP.PCOEFHF, LC.CHECHPF),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, LC.CTIMETR),
+                (SP.PINSTR, LC.CTIMETR),
                 (SP.PT_EXTF, LC.CTEMPEF),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
@@ -83,7 +83,7 @@ class THER3DQU9_HHO1_F(Element):
                 (SP.PCOEFHR, LC.CHECHPR),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, LC.CTIMETR),
+                (SP.PINSTR, LC.CTIMETR),
                 (SP.PT_EXTR, LC.ET_EXTR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
@@ -94,7 +94,7 @@ class THER3DQU9_HHO1_F(Element):
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PRAYONF, LC.CRAYONF),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, LC.CTIMETR),
+                (SP.PINSTR, LC.CTIMETR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -104,18 +104,18 @@ class THER3DQU9_HHO1_F(Element):
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PRAYONR, LC.CRAYONR),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, LC.CTIMETR),
+                (SP.PINSTR, LC.CTIMETR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.RIGI_THER_ECHA_F(
             te=457,
-            para_in=((SP.PCOEFHF, LC.CHECHPF), (SP.PGEOMER, LC.EGEOM3D), (SP.PTEMPSR, LC.CTIMETR)),
+            para_in=((SP.PCOEFHF, LC.CHECHPF), (SP.PGEOMER, LC.EGEOM3D), (SP.PINSTR, LC.CTIMETR)),
             para_out=((OP.RIGI_THER_ECHA_F.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_ECHA_R(
             te=457,
-            para_in=((SP.PCOEFHR, LC.CHECHPR), (SP.PGEOMER, LC.EGEOM3D), (SP.PTEMPSR, LC.CTIMETR)),
+            para_in=((SP.PCOEFHR, LC.CHECHPR), (SP.PGEOMER, LC.EGEOM3D), (SP.PINSTR, LC.CTIMETR)),
             para_out=((OP.RIGI_THER_ECHA_R.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_FLUXNL(
@@ -124,7 +124,7 @@ class THER3DQU9_HHO1_F(Element):
                 (SP.PFLUXNL, LC.CFLUXNF),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, LC.CTIMETR),
+                (SP.PINSTR, LC.CTIMETR),
             ),
             para_out=((OP.MTAN_THER_FLUXNL.PMATTTR, MMATTTR),),
         ),
@@ -134,7 +134,7 @@ class THER3DQU9_HHO1_F(Element):
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PRAYONF, LC.CRAYONF),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, LC.CTIMETR),
+                (SP.PINSTR, LC.CTIMETR),
             ),
             para_out=((OP.MTAN_THER_RAYO_F.PMATTTR, MMATTTR),),
         ),
@@ -144,7 +144,7 @@ class THER3DQU9_HHO1_F(Element):
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PRAYONR, LC.CRAYONR),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, LC.CTIMETR),
+                (SP.PINSTR, LC.CTIMETR),
             ),
             para_out=((OP.MTAN_THER_RAYO_R.PMATTTR, MMATTTR),),
         ),
@@ -173,6 +173,7 @@ class THER3DQU9_HHO1_F(Element):
             ),
         ),
     )
+
 
 # --------------------------------------------------------------------------------------------------
 class THER3DTR7_HHO1_F(THER3DQU9_HHO1_F):

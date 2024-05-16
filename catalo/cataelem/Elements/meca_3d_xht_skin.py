@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -158,7 +158,7 @@ class MECA_XHT_FACE3(Element):
                 (OP.CHAR_MECA_FF2D3D.PPINTTO, LC.E12NEUTR),
                 (OP.CHAR_MECA_FF2D3D.PPMILTO, E33NEUTR),
                 (OP.CHAR_MECA_FF2D3D.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.CHAR_MECA_FF2D3D.PBASLOR, LC.N9NEUT_R),
             ),
@@ -199,7 +199,7 @@ class MECA_XHT_FACE3(Element):
                 (OP.CHAR_MECA_PRES_F.PPMILTO, E33NEUTR),
                 (SP.PPRESSF, CPRESSF),
                 (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (OP.CHAR_MECA_PRES_F.PBASLOR, LC.N9NEUT_R),
                 (SP.PMATERC, LC.CMATERC),
             ),

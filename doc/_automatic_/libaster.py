@@ -3492,6 +3492,30 @@ class FieldOnNodesChar8(DataField):
         pass
 
 
+# class ConstantFieldValuesReal in libaster
+
+
+class ConstantFieldValuesReal:
+    pass
+
+    # Method resolution order:
+    #     ConstantFieldValuesReal
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def getValues(self):
+        """Return the field values
+
+        Returns:
+            list[float]: List of values
+        """
+
+
 # class ConstantFieldOnCellsReal in libaster
 
 
@@ -3518,8 +3542,22 @@ class ConstantFieldOnCellsReal(DataField):
     def getMesh(self):
         pass
 
+    def getValues(self, arg0):
+        """Return the field values
+
+        Returns:
+            list[float]: List of values
+        """
+
     def setValueOnCells(self, arg0, arg1, arg2):
         pass
+
+    def size(self):
+        """Return the size of field
+
+        Returns:
+            int: size of field
+        """
 
 
 # class ConstantFieldOnCellsChar16 in libaster
@@ -6194,6 +6232,13 @@ class BaseAssemblyMatrix(DataStructure):
             clean (bool) : Clean elementary matrices after building (default = true)
         """
 
+    def getCalculOption(self):
+        """Return the option of CALCUL.
+
+        Returns:
+            str: Name of the option.
+        """
+
     def getDOFNumbering(self):
         pass
 
@@ -7674,6 +7719,13 @@ class GeneralizedAssemblyVectorReal(GeneralizedAssemblyVector):
             list[float]: List of values.
         """
 
+    def setValues(self, arg0):
+        """Set values of vector.
+
+        Arguments:
+            values (list[float]): set vector.
+        """
+
 
 # class GeneralizedAssemblyVectorComplex in libaster
 
@@ -7702,7 +7754,14 @@ class GeneralizedAssemblyVectorComplex(GeneralizedAssemblyVector):
         """Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
         Returns:
-            list[float]: List of values.
+            list[complex]: List of values.
+        """
+
+    def setValues(self, arg0):
+        """Set values of vector.
+
+        Arguments:
+            values (list[complex]): set vector.
         """
 
 
@@ -8338,6 +8397,9 @@ class MechanicalLoadReal(DataStructure):
     def getFiniteElementDescriptor(self):
         pass
 
+    def getMechanicalLoadDescription(self):
+        pass
+
     def getMesh(self):
         pass
 
@@ -8454,6 +8516,27 @@ class MechanicalLoadComplex(DataStructure):
         pass
 
     def updateValuePointers(self):
+        pass
+
+
+# class MechanicalLoadDescriptionReal in libaster
+
+
+class MechanicalLoadDescriptionReal(DataStructure):
+    pass
+
+    # Method resolution order:
+    #     MechanicalLoadDescriptionReal
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, arg0, arg1):
+        pass
+
+    def getConstantLoadField(self, arg0):
         pass
 
 
@@ -10100,6 +10183,15 @@ class DynamicMacroElement(DataStructure):
     def getDampingMatrix(self):
         pass
 
+    def getGeneralizedDampingMatrix(self):
+        pass
+
+    def getGeneralizedMassMatrix(self):
+        pass
+
+    def getGeneralizedStiffnessMatrix(self):
+        pass
+
     def getImpedanceDampingMatrix(self):
         pass
 
@@ -10343,6 +10435,20 @@ class Crack(DataStructure):
             list[float]: the crack front basis
         """
 
+    def getCrackFrontNodeBasis(self):
+        """Return the basis at each crack front node
+
+        Returns:
+            FieldOnNodesReal: field of the crack front basis
+        """
+
+    def getCrackFrontNodes(self):
+        """Return the crack front nodes
+
+        Returns:
+            list[str]: the crack nodes
+        """
+
     def getCrackFrontPosition(self):
         """Return the crack front Position
 
@@ -10350,14 +10456,68 @@ class Crack(DataStructure):
             list[float]: the crack front Position
         """
 
+    def getCrackFrontRadius(self):
+        """Return the crack front Radius
+
+        Returns:
+            float: the crack front Radius
+        """
+
     def getCrackTipCellsType(self):
-        pass
+        """Return the crack front cell type
+
+        Returns:
+            str: the crack front cell type
+        """
 
     def getLowerLipGroupName(self):
-        pass
+        """Return the group name used to define lower side of cracklip
+
+        Returns:
+            str: group name
+        """
+
+    def getLowerNormNodes(self):
+        """Return the names for nodes on the lower side of cracklip
+
+        Returns:
+            list[str]: node names
+        """
+
+    def getLowerNormNodes2(self):
+        """Return the names for nodes on the lower side of cracklip (for POST_JMOD)
+
+        Returns:
+            list[str]: node names
+        """
+
+    def getNormal(self):
+        """Return vector normal of the crack surface
+
+        Returns:
+            list[float]: normal to the crack surface
+        """
 
     def getUpperLipGroupName(self):
-        pass
+        """Return the group name used to define upper side of cracklip
+
+        Returns:
+            str: group name
+        """
+
+    def getUpperNormNodes(self):
+        """Return the names for nodes on the upper side of cracklip
+
+        Returns:
+            list[str]: node names
+        """
+
+    def getUpperNormNodes2(self):
+        """Return the names for nodes on the upper side of cracklip (for POST_JMOD)
+
+        Returns:
+            list[str]: node names
+        """
 
     def isSymmetric(self):
         """Return true if crack is symeric"""
@@ -11246,6 +11406,9 @@ class Model(DataStructure):
             Table: Table stored with the given identifier.
         """
 
+    def getXfemContact(self):
+        pass
+
     def isAcoustic(self):
         """To know if the model is acoustic or not
 
@@ -11369,13 +11532,28 @@ class XfemCrack(DataStructure):
     def getCohesiveCrackTipForPropagation(self):
         pass
 
+    def getCrackFrontRadius(self):
+        pass
+
     def getCrackLipsEntity(self):
         pass
 
     def getCrackShape(self):
         pass
 
+    def getCrackTipBasis(self):
+        pass
+
+    def getCrackTipCoords(self):
+        pass
+
     def getCrackTipEntity(self):
+        pass
+
+    def getCrackTipMultiplicity(self):
+        pass
+
+    def getCrackTipNodeFacesField(self):
         pass
 
     def getDiscontinuityType(self):
@@ -11425,6 +11603,9 @@ class XfemCrack(DataStructure):
         pass
 
     def getTangentialLevelSetFunction(self):
+        pass
+
+    def getTipType(self):
         pass
 
     def insertJunctingCracks(self, arg0):
@@ -12881,6 +13062,9 @@ class HarmoGeneralizedResult(GeneralizedResultComplex):
         """
 
     def getDOFNumbering(self):
+        pass
+
+    def getDisplacement(self):
         pass
 
     def getGeneralizedDOFNumbering(self):

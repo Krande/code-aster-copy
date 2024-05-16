@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine te0577(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PTEMPER', 'L', itemp)
-    call jevech('PTEMPSR', 'L', itps)
+    call jevech('PINSTR', 'L', itps)
 !     CHAMPS IN X-FEM
     call jevech('PSTANO', 'L', jstno)
     call jevech('PPINTTO', 'L', jpintt)

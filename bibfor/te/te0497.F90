@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,7 @@ subroutine te0497(option, nomte)
 !--------------------------------------------------------------------
 ! 1. EVENTUELS PARAMETRES TEMPORELS
 !--------------------------------------------------------------------
-    call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itab(1))
+    call tecach('ONO', 'PINSTR', 'L', iret, iad=itab(1))
     if (iret .eq. 0) then
         instpm(1) = zr(itab(1))
         deltat = zr(itab(1)+1)

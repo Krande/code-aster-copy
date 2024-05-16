@@ -112,3 +112,8 @@ bool BaseAssemblyMatrix::isSymmetric() {
     _description->updateValuePointer();
     return strip( ( *_description )[8].toString() ).substr( 0, 2 ) == "MS";
 };
+
+std::string BaseAssemblyMatrix::getCalculOption() {
+    _description->updateValuePointer();
+    return strip( ( *_description )[3].toString() );
+}

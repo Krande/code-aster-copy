@@ -178,7 +178,7 @@
    * - :py:class:`~code_aster.Objects.GeneralizedAssemblyVector`
      - 
    * - :py:class:`~code_aster.Objects.GeneralizedAssemblyVectorComplex`
-     - ``vect_asse_gene_c``
+     - ``vect_asse_gene``
    * - :py:class:`~code_aster.Objects.GeneralizedAssemblyVectorReal`
      - ``vect_asse_gene``
    * - :py:class:`~code_aster.Objects.GeneralizedDOFNumbering`
@@ -238,6 +238,8 @@
    * - :py:class:`~code_aster.Objects.MechanicalDirichletBC`
      - 
    * - :py:class:`~code_aster.Objects.MechanicalLoadComplex`
+     - 
+   * - :py:class:`~code_aster.Objects.MechanicalLoadDescriptionReal`
      - 
    * - :py:class:`~code_aster.Objects.MechanicalLoadFunction`
      - 

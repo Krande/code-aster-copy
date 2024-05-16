@@ -97,7 +97,7 @@ subroutine fsurf(option, nomte, xi, nb1, vecl, &
 ! --- CAS DES CHARGEMENTS DE FORME FONCTION
     else if (option .eq. 'CHAR_MECA_FFCO3D') then
         call jevech('PFFCO3D', 'L', jpres)
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
         valpar(4) = zr(itemps)
         nompar(4) = 'INST'
         nompar(1) = 'X'

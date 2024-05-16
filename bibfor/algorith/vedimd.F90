@@ -134,7 +134,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
-    lpain(2) = 'PTEMPSR'
+    lpain(2) = 'PINSTR'
     lchin(2) = chtime
 !
 ! --- LISTE DES INDEX DES CHARGES

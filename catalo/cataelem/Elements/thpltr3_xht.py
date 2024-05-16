@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ class THPLTR3_XHT(Element):
                 (OP.CHAR_THER_EVOL.PPINTTO, LC.E6NEUTR),
                 (OP.CHAR_THER_EVOL.PSTANO, STANO_I),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (OP.CHAR_THER_EVOL.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
@@ -109,7 +109,7 @@ class THPLTR3_XHT(Element):
                 (OP.CHAR_THER_PARO_F.PPINTER, LC.E14NEUTR),
                 (OP.CHAR_THER_PARO_F.PSTANO, STANO_I),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -128,7 +128,7 @@ class THPLTR3_XHT(Element):
                 (OP.CHAR_THER_PARO_R.PPINTER, LC.E14NEUTR),
                 (OP.CHAR_THER_PARO_R.PSTANO, STANO_I),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -155,7 +155,7 @@ class THPLTR3_XHT(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (OP.MASS_THER.PPINTTO, LC.E6NEUTR),
                 (OP.MASS_THER.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (OP.MASS_THER.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
@@ -174,7 +174,7 @@ class THPLTR3_XHT(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_THER.PPINTTO, LC.E6NEUTR),
                 (OP.RIGI_THER.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (OP.RIGI_THER.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
@@ -193,7 +193,7 @@ class THPLTR3_XHT(Element):
                 (OP.RIGI_THER_PARO_F.PLST, LC.N1NEUT_R),
                 (OP.RIGI_THER_PARO_F.PPINTER, LC.E14NEUTR),
                 (OP.RIGI_THER_PARO_F.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((OP.RIGI_THER_PARO_F.PMATTTR, MMATTTR),),
         ),
@@ -211,7 +211,7 @@ class THPLTR3_XHT(Element):
                 (OP.RIGI_THER_PARO_R.PLST, LC.N1NEUT_R),
                 (OP.RIGI_THER_PARO_R.PPINTER, LC.E14NEUTR),
                 (OP.RIGI_THER_PARO_R.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((OP.RIGI_THER_PARO_R.PMATTTR, MMATTTR),),
         ),

@@ -3,7 +3,7 @@
  * @brief Implementation de Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -77,10 +77,61 @@ const JeveuxVectorReal Crack::getCrackFrontBasis() {
     return _basNof;
 };
 
+const VectorString Crack::getCrackFrontNodes() {
+    VectorString crackFrontNodes;
+    _fondNoeu->updateValuePointer();
+    crackFrontNodes.reserve( _fondNoeu->size() );
+    for ( auto &node : _fondNoeu )
+        crackFrontNodes.push_back( strip( node ) );
+    return crackFrontNodes;
+};
+
+const VectorString Crack::getLowerNormNodes() {
+    VectorString lowerNormNodes;
+    _infNormNoeud->updateValuePointer();
+    lowerNormNodes.reserve( _infNormNoeud->size() );
+    for ( auto &node : _infNormNoeud )
+        lowerNormNodes.push_back( strip( node ) );
+    return lowerNormNodes;
+};
+
+const VectorString Crack::getUpperNormNodes() {
+    VectorString upperNormNodes;
+    _supNormNoeu->updateValuePointer();
+    upperNormNodes.reserve( _supNormNoeu->size() );
+    for ( auto &node : _supNormNoeu )
+        upperNormNodes.push_back( strip( node ) );
+    return upperNormNodes;
+};
+
+const VectorString Crack::getLowerNormNodes2() {
+    VectorString lowerNormNodes;
+    _infNormNoeud2->updateValuePointer();
+    lowerNormNodes.reserve( _infNormNoeud2->size() );
+    for ( auto &node : _infNormNoeud2 )
+        lowerNormNodes.push_back( strip( node ) );
+    return lowerNormNodes;
+};
+
+const VectorString Crack::getUpperNormNodes2() {
+    VectorString upperNormNodes;
+    _supNormNoeu2->updateValuePointer();
+    upperNormNodes.reserve( _supNormNoeu2->size() );
+    for ( auto &node : _supNormNoeu2 )
+        upperNormNodes.push_back( strip( node ) );
+    return upperNormNodes;
+};
+
 const JeveuxVectorReal Crack::getCrackFrontPosition() {
     this->updateValuePointers();
     return _coorfond;
 };
+
+const FieldOnNodesRealPtr Crack::getCrackFrontNodeBasis() { return _basLoc; };
+
+const JeveuxVectorReal Crack::getCrackFrontRadius() { return _fondTailleR; };
+
+const JeveuxVectorReal Crack::getNormal() { return _normale; };
 
 bool Crack::isSymmetric() {
     this->updateValuePointers();

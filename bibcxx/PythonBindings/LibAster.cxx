@@ -110,6 +110,7 @@
 #include "PythonBindings/MaterialInterface.h"
 #include "PythonBindings/MatrixStorageInterface.h"
 #include "PythonBindings/MatrixToPetscInterface.h"
+#include "PythonBindings/MechanicalLoadDescriptionInterface.h"
 #include "PythonBindings/MechanicalLoadInterface.h"
 #include "PythonBindings/MedCouplingConversionInterface.h"
 #include "PythonBindings/MedFamilyInterface.h"
@@ -249,6 +250,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportAcousticLoadToPython( mod );
     exportDirichletBCToPython( mod );
     exportMechanicalLoadToPython( mod );
+    exportMechanicalLoadDescriptionToPython( mod );
     exportUnitaryMechanicalLoadToPython( mod );
     exportPhysicalQuantityToPython( mod );
     exportThermalLoadToPython( mod );

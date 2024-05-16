@@ -169,7 +169,7 @@ def force_iss_vari(
             ISSF=ISSF,
             FREQ_EXTR=freqk,
         )
-        #    on cree __fosi  pour  RECU_VECT_GENE_C   plus loin
+        #    on cree __fosi  pour  RECU_VECT_GENE   plus loin
 
         __fosi = LIRE_FORC_MISS(
             BASE=resultat,
@@ -187,7 +187,7 @@ def force_iss_vari(
         KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
 
         # -------------- force sismique-------------------------------
-        FSISM = __fosi.EXTR_VECT_GENE_C()
+        FSISM = __fosi.EXTR_VECT_GENE()
         FS0 = FSISM[nbmodd:nbmodt][:]  #  extraction de la partie modes interface
         U0 = NP.dot(linalg.inv(KRS), FS0)
         # projection pour obtenir UO en base physique

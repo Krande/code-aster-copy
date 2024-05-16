@@ -163,7 +163,7 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
         lchin(1) = mate(1:19)
         lpain(2) = 'PCOMPOR'
         lchin(2) = compor(1:19)
-        lpain(3) = 'PTEMPSR'
+        lpain(3) = 'PINSTR'
         lchin(3) = time(1:19)
         lpain(4) = 'PTEMPMR'
         lchin(4) = temp_prev(1:19)

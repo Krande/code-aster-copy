@@ -493,13 +493,13 @@ class GeneratorTRANS(Generator):
         #  extraction de la partie modes interface
         KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
         #  CALCUL FORCE SISMIQUE
-        FSISM = __fosi.EXTR_VECT_GENE_C()
+        FSISM = __fosi.EXTR_VECT_GENE()
         #  extraction de la partie modes interface
         FS = 0.0
         for k1 in range(dict_modes["nbpod"]):
             FS = FS + compute_force_vari(self, dict_modes, VEC[k1], KRS)
         FSISM[nbmodd:nbmodt][:] = FS
-        __fosi.RECU_VECT_GENE_C(FSISM)
+        __fosi.RECU_VECT_GENE(FSISM)
         # CALCUL ISS
         if self.mat_gene_params["MATR_AMOR"] is not None:
             __dyge = DYNA_VIBRA(
@@ -521,7 +521,7 @@ class GeneratorTRANS(Generator):
                 EXCIT=_F(VECT_ASSE_GENE=__fosi, COEF_MULT=1.0),
             )
         #  recuperer le vecteur modal depl calcule par dyge
-        RS = NP.array(__dyge.sdj.DEPL.get())
+        RS = NP.array(__dyge.getDisplacement())
         VECRES = self.append_Vec(RS, k, RESU)
         return VECRES
 
@@ -584,14 +584,14 @@ class GeneratorSPEC(Generator):
         #  extraction de la partie modes interface
         KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
         #  CALCUL FORCE SISMIQUE AVEC VARIABILITE
-        FSISM = __fosi.EXTR_VECT_GENE_C()
+        FSISM = __fosi.EXTR_VECT_GENE()
         SP = NP.zeros((nbmodt, nbmodt))
         for k1 in range(dict_modes["nbpod"]):
             #  calcul de la force sismique mode POD par mode POD
             FS = compute_force_vari(self, dict_modes, VEC[k1], KRS)
             FSISM[nbmodd:nbmodt][:] = FS
             #  Calcul harmonique
-            __fosi.RECU_VECT_GENE_C(FSISM)
+            __fosi.RECU_VECT_GENE(FSISM)
             if self.mat_gene_params["MATR_AMOR"] is not None:
                 __dyge = DYNA_VIBRA(
                     TYPE_CALCUL="HARM",
@@ -612,7 +612,7 @@ class GeneratorSPEC(Generator):
                     EXCIT=_F(VECT_ASSE_GENE=__fosi, COEF_MULT=1.0),
                 )
             #  recuperer le vecteur modal depl calcule par dyge
-            RS = NP.array(__dyge.sdj.DEPL.get())
+            RS = NP.array(__dyge.getDisplacement())
             # stockage des matrices résultats: sum(s_q s_q* )
             SP = SP + RS * NP.conj(RS[:, NP.newaxis])
         SPEC = self.append_Vec(SP, k, RESU)

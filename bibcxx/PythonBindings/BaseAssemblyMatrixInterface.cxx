@@ -130,6 +130,14 @@ Returns:
             Return True if matrix is symmetric
             )" )
         // -----------------------------------------------------------------------------------------
+        .def( "getCalculOption", &BaseAssemblyMatrix::getCalculOption,
+              R"(
+            Return the option of CALCUL.
+
+            Returns:
+                str: Name of the option.
+            )" )
+        // -----------------------------------------------------------------------------------------
         .def( "transpose", &BaseAssemblyMatrix::transpose )
         // -----------------------------------------------------------------------------------------
         .def( "assemble", &BaseAssemblyMatrix::assemble, R"(

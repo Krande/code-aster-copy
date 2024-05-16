@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ subroutine te0110(option, nomte)
 ! --- POUR RESOUDRE L'EQUATION DIFFERENTIELLE EN TEMPS DE LA
 ! --- TEMPERATURE (EN STATIONNAIRE THETA =1 ) :
 !     ---------------------------------------
-    call jevech('PTEMPSR', 'L', itemps)
+    call jevech('PINSTR', 'L', itemps)
 !
 ! --- RECUPERATION DU CHAMP DE TEMPERATURE A L'INSTANT PRECEDENT :
 !     ----------------------------------------------------------
@@ -663,9 +663,10 @@ subroutine te0110(option, nomte)
                 do gj = 1, gi
                     do pi = 1, 3
                         do pj = 1, pi
-                          pk = a(pi, pj, 1, 1)*dfdx(gi)*dfdx(gj)+a(pi, pj, 2, 2)*dfdy(gi)*dfdy(gj) &
-                                  &+a(pi, pj, 1, 2)*dfdx(gi)*dfdy(gj)+a(pi, pj, 1, 2)*dfdy(gi)*dfdx&
-                                   &(gj)
+                            pk = a(pi, pj, 1, 1)*dfdx(gi)*dfdx(gj) &
+                                 +a(pi, pj, 2, 2)*dfdy(gi)*dfdy(gj) &
+                                 +a(pi, pj, 1, 2)*dfdx(gi)*dfdy(gj) &
+                                 +a(pi, pj, 1, 2)*dfdy(gi)*dfdx(gj)
 !
                             if ((pi .ne. pj) .and. (gi .ne. gj)) then
                                 i = 3*(gi-1)+pj

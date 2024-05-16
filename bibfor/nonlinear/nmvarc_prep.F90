@@ -177,7 +177,7 @@ subroutine nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
 ! - Computation of elementary vectors - Previous
     if (type_comp .eq. '-') then
         nbin = nbin+1
-        lpain(nbin) = 'PTEMPSR'
+        lpain(nbin) = 'PINSTR'
         lchin(nbin) = time_prev
         nbin = nbin+1
         lpain(nbin) = 'PVARCPR'
@@ -185,7 +185,7 @@ subroutine nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
 ! - Computation of elementary vectors - Current
     else if (type_comp .eq. '+') then
         nbin = nbin+1
-        lpain(nbin) = 'PTEMPSR'
+        lpain(nbin) = 'PINSTR'
         lchin(nbin) = time_curr
         nbin = nbin+1
         lpain(nbin) = 'PVARCPR'

@@ -313,7 +313,7 @@ class HM_HEXA20_XH1(Element):
                 (OP.CHAR_MECA_PRES_F.PPINTER, E204NEUT),
                 (SP.PPRESSF, CPRESSF),
                 (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

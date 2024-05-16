@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine te0001(option, nomte)
         nompar(3) = 'Z'
         nompar(4) = 'INST'
         call jevech('PGEOMER', 'L', jgeom)
-        call jevech('PTEMPSR', 'L', jtime)
+        call jevech('PINSTR', 'L', jtime)
         call jevech('PVECTUR', 'E', jvec)
         valpar(1) = zr(jgeom-1+1)
         valpar(2) = zr(jgeom-1+2)

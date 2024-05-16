@@ -12,6 +12,7 @@
    * - Class name
    * - :py:class:`~code_aster.Objects.CodedMaterial`
    * - :py:class:`~code_aster.Objects.CommGraph`
+   * - :py:class:`~code_aster.Objects.ConstantFieldValuesReal`
    * - :py:class:`~code_aster.Objects.ContactAlgo`
    * - :py:class:`~code_aster.Objects.ContactComputation`
    * - :py:class:`~code_aster.Objects.ContactParameter`

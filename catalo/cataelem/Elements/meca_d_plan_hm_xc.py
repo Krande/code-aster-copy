@@ -263,7 +263,7 @@ class TemplateElement(Element):
             para_in=(
                 (SP.PFLUXF, CFLUXF),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PTEMPSR, CTEMPSC),
+                (SP.PINSTR, CTEMPSC),
                 (OP.CHAR_MECA_FLUX_F.PLST, LC.N1NEUT_R),
                 (OP.CHAR_MECA_FLUX_F.PLSN, LC.N1NEUT_R),
             ),

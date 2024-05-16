@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -119,14 +119,13 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
     integer :: adcaii, adcaik, nbgrf, nbmaect, nbimprl(1), jindir
     integer :: nbgrf2, nbtcou2, nbqcou2, nbsec2, nbfib2, ima2, nbimprt
     integer :: igrfi, imafib, rang, nbproc, jma, jnbma, ityp, nbmal, iaux
-    character(len=16) :: nomfpg, nomtef
-    character(len=16) :: valk(2)
+    character(len=16) :: nomfpg
     character(len=64) :: noprof
     aster_logical :: exicar, grfidt, elga_sp, okgrcq, oktuy
     character(len=16), pointer :: fpg_name(:) => null()
     character(len=16), pointer :: nofpgma(:) => null()
     mpi_int :: mrank, msize, mpicou, taille
-    aster_logical :: lficUniq, lnbmal, lnbmaec
+    aster_logical :: lficUniq, lnbmal, lnbmaec, cara_ele_used
     real(kind=8) :: start_time, end_time
 !
 ! --------------------------------------------------------------------------------------------------
@@ -253,6 +252,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
         exicar = .true.
     end if
     !
+    cara_ele_used = .false.
     do i_fpg = 1, nb_fpg
         ima = profas(i_fpg)
         nrefma = tyefma(ima)
@@ -420,13 +420,8 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
                     call utmess('F', 'MED2_12', sk=field_type)
                 end if
             end if
+            cara_ele_used = .true.
         else
-            if (exicar .and. nbsp .eq. 1 .and. typech(1:4) .eq. 'ELGA') then
-                call jenuno(jexnum('&CATA.TE.NOMTE', nrefma), nomtef)
-                valk(1) = nomtef
-                valk(2) = field_type
-                call utmess('A', 'MED2_13', nk=2, valk=valk)
-            end if
             zi(jaux+3) = 0
             zi(jaux+4) = 0
         end if
@@ -451,6 +446,11 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
         jaux = adcaii+10*(nrimpr-1)+6
         zi(jaux) = zi(jaux)+1
     end do
+
+    if (exicar .and. .not. cara_ele_used) then
+        call utmess('A', 'MED2_13', sk=field_type)
+    end if
+
     !
     if (typech(1:4) .eq. 'ELGA') then
         AS_DEALLOCATE(vk16=fpg_name)

@@ -26,35 +26,26 @@ from ..Objects import MultipleElasticResult
 from ..Supervis.ExecuteCommand import _get_object_repr
 
 
-def get_nodes(MAILLAGE, NOEUD=None, GROUP_NO=None):
-    """Get number of noeud
+def get_nodes(MAILLAGE, GROUP_NO=None):
+    """Get the number of nodes.
 
     Arguments:
-        NOEUD: list name of nodes (banded from aster)
-        GROUP_NO: list name of groups of nodes
+        MAILLAGE (Mesh): list name of nodes
+        GROUP_NO (list[str]): list name of groups of nodes
 
     Returns:
-        nodes_num: list of number of nodes
-        nodes_name: list of name of nodes
+        tuple: Tuple containing the list of number of nodes and the list of
+        the nodes name for each group.
     """
-    # get all group_no in the mesh
-    d_group_no = {grp.strip(): items for grp, items in (MAILLAGE.sdj.GROUPENO.get() or {}).items()}
-    # get all node numbers in the mesh
-    all_node_nums = MAILLAGE.sdj.NOMNOE.get_stripped()
+
     nodes_num = []
     nodes_name = []
-    # cas of GROUP_NO
     if GROUP_NO is not None:
         # for each group_no  by user
         for group_no in GROUP_NO:
-            num_no_in_grno = [node - 1 for node in d_group_no[group_no]]
+            num_no_in_grno = MAILLAGE.getNodes(group_no)
             nodes_num.extend(num_no_in_grno)
             nodes_name.extend([MAILLAGE.getNodeName(i) for i in num_no_in_grno])
-    # case of NOEUD  (banded in aster)
-    if NOEUD is not None:
-        nodes_num.extend([all_node_nums.index(name) for name in NOEUD])
-        nodes_name.extend(NOEUD)
-    # return
     return nodes_num, nodes_name
 
 
@@ -196,10 +187,8 @@ def get_appuis(appuis_in, MAILLAGE):
         # get group_no to build APPUI
         group_no = appuis_in[i].get("GROUP_NO")
         l_group_no_all.append(group_no)
-        # get no to build APPUI
-        no = appuis_in[i].get("APPUI_PAR_NOEUD")  # obsolète
         # get information on nodes to build APPUI
-        l_nodes_num, l_nodes_name = get_nodes(MAILLAGE, NOEUD=no, GROUP_NO=group_no)
+        l_nodes_num, l_nodes_name = get_nodes(MAILLAGE, GROUP_NO=group_no)
         # save list of all node numbers
         l_nodes_num_all.append(l_nodes_num)
         # save list of all node names
@@ -274,10 +263,10 @@ def get_amor_reduit(mode_meca, l_nume_ordre, amor_reduit, list_amor, amor_gene):
     # get values of damping coefficient
     if list_amor is not None:
         # get values of damping in list_amor
-        amor_reduit = list_amor.sdj.VALE.get()
+        amor_reduit = list_amor.getValues()
     elif amor_gene is not None:
         # computing damping coefficient from generalized damping matrix
-        l_amors = amor_gene.sdj.VALM.get()[1]
+        l_amors = amor_gene.getUpperValues()
         amor_reduit = []
         for amor, frq, ordre, mass in zip(
             l_amors, list_para["FREQ"], list_para["NUME_ORDRE"], list_para["MASS_GENE"]
@@ -346,10 +335,10 @@ def filter_ordre_freq(
     NUME_ORDRE = NUME_ORDRE if NUME_ORDRE is not None else []
     # selecting mode by list of nume_ordre
     if LIST_ORDRE is not None:
-        NUME_ORDRE = LIST_ORDRE.sdj.VALE.get()
+        NUME_ORDRE = LIST_ORDRE.getValues()
     # selecting mode by list of frequencies
     elif LIST_FREQ is not None:
-        FREQ = LIST_FREQ.sdj.VALE.get()
+        FREQ = LIST_FREQ.getValues()
     # filtering frequencies
     if FREQ is not None:
         freqs = np.array(FREQ)
@@ -729,7 +718,7 @@ def corr_pseudo_mode_mult(
         S_r_freq_coup = S_r_freq_coup
     # searche for index (NUME_CMP) in MODE_STATIQUE / PSEUDO_MODE
     # list of node_num and node_name in group_no
-    nodes_num_per_grno, nodes_name_per_grno = get_nodes(MAILLAGE, NOEUD=None, GROUP_NO=l_group_no)
+    nodes_num_per_grno, nodes_name_per_grno = get_nodes(MAILLAGE, GROUP_NO=l_group_no)
     # list of all noeud_cmp
     l_noeud_cmp = []
     for i_node in range(len(nodes_num_per_grno)):

@@ -155,7 +155,7 @@ class MECA_POU_D_T_GD(Element):
         ),
         OP.CHAR_MECA_FF1D1D(
             te=161,
-            para_in=((SP.PFF1D1D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFF1D1D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FR1D1D(
@@ -181,7 +181,7 @@ class MECA_POU_D_T_GD(Element):
                 (SP.PDEPLPR, DDL_MECA),
                 (SP.PFF1D1D, CFORCEF),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

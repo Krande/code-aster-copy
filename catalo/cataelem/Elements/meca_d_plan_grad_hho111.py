@@ -304,7 +304,7 @@ class MECA_DGVQ_HHO111(Element):
     calculs = (
         OP.CHAR_MECA_FF2D2D(
             te=476,
-            para_in=((SP.PFF2D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFF2D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTLR),),
         ),
         OP.CHAR_MECA_FR2D2D(

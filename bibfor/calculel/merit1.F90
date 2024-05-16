@@ -108,7 +108,7 @@ subroutine merit1(modele, nchar, lchar, mate, mateco, &
         lchin(2) = mateco(1:24)
         lpain(3) = 'PCACOQU'
         lchin(3) = chcara(7)
-        lpain(4) = 'PTEMPSR'
+        lpain(4) = 'PINSTR'
         lchin(4) = time
         lpain(5) = 'PHARMON'
         lchin(5) = chharm

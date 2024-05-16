@@ -3,7 +3,7 @@
  * @brief Interface python de DynamicMacroElement
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -42,6 +42,9 @@ void exportDynamicMacroElementToPython( py::module_ &mod ) {
         .def( "getStiffnessMatrixComplex", &DynamicMacroElement::getStiffnessMatrixComplex )
         .def( "getStiffnessMatrixReal", &DynamicMacroElement::getStiffnessMatrixReal )
         .def( "getMechanicalMode", &DynamicMacroElement::getMechanicalMode )
+        .def( "getGeneralizedStiffnessMatrix", &DynamicMacroElement::getGeneralizedStiffnessMatrix )
+        .def( "getGeneralizedMassMatrix", &DynamicMacroElement::getGeneralizedMassMatrix )
+        .def( "getGeneralizedDampingMatrix", &DynamicMacroElement::getGeneralizedDampingMatrix )
         .def( "setDampingMatrix", &DynamicMacroElement::setDampingMatrix )
         .def( "setImpedanceDampingMatrix", &DynamicMacroElement::setImpedanceDampingMatrix )
         .def( "setImpedanceMatrix", &DynamicMacroElement::setImpedanceMatrix )

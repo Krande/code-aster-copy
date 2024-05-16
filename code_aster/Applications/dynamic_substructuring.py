@@ -160,7 +160,7 @@ def import_array(np_array, reference_matrix=None):
         aster_object = PROJ_VECT_BASE(
             BASE=_modes, NUME_DDL_GENE=_numgen, VECT_ASSE=_field, TYPE_VECT="FORC"
         )
-        aster_object.RECU_VECT_GENE_C(np_array)
+        aster_object.RECU_VECT_GENE(np_array)
     else:
         # use RIGI_MECA because MASS_MECA is always symmetric!
         option = "RIGI_MECA"

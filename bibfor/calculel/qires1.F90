@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -478,7 +478,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad, &
     lchin(2) = mateco
     lpain(3) = 'PVOISIN'
     lchin(3) = chvois
-    lpain(4) = 'PTEMPSR'
+    lpain(4) = 'PINSTR'
     lchin(4) = chtime
     lpain(5) = 'PCONTNOP'
     lchin(5) = sigmap

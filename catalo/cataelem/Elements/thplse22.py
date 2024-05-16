@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ class THPLSE22(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHECHPF, LC.CHECHPF),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -70,13 +70,13 @@ class THPLSE22(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHECHPR, LC.EHECHPR),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.MTAN_THER_PARO_F(
             te=387,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF), (SP.PINSTR, CTEMPSR)),
             para_out=((OP.MTAN_THER_PARO_F.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_PARO_R(
@@ -86,7 +86,7 @@ class THPLSE22(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHECHPR, LC.EHECHPR),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((OP.MTAN_THER_PARO_R.PMATTTR, MMATTTR),),
         ),
@@ -96,7 +96,7 @@ class THPLSE22(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHECHPF, LC.CHECHPF),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
@@ -106,13 +106,13 @@ class THPLSE22(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHECHPR, LC.EHECHPR),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RIGI_THER_PARO_F(
             te=212,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF), (SP.PINSTR, CTEMPSR)),
             para_out=((OP.RIGI_THER_PARO_F.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_PARO_R(
@@ -121,7 +121,7 @@ class THPLSE22(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHECHPR, LC.EHECHPR),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((OP.RIGI_THER_PARO_R.PMATTTR, MMATTTR),),
         ),

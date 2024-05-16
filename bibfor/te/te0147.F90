@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -205,7 +205,7 @@ subroutine te0147(option, nomte)
     if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_K_G_F' .or. option .eq. 'CALC_KJ_G_F') then
         fonc = ASTER_TRUE
         call jevech('PPRESSF', 'L', ipref)
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
         if (reeldim .eq. 3) then
             call jevech('PFF2D3D', 'L', iforf)
             nompar(1) = 'X'

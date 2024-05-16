@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine te0091(option, nomte)
     if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PTEMPSR', 'L', itemps)
+    call jevech('PINSTR', 'L', itemps)
     call jevech('PVECTUR', 'E', ivectu)
 !
     nompar(1) = 'X'

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DynamicMacroElement
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -67,19 +67,19 @@ class DynamicMacroElement : public DataStructure {
     /** @brief Objet Jeveux '.MAEL_RAID_REFE' */
     JeveuxVectorChar24 _maelRaidRefe;
     /** @brief Objet Jeveux '.MAEL_RAID_VALE' */
-    JeveuxVectorReal _maelRaidVale;
+    JeveuxCollectionReal _maelRaidVale;
     /** @brief Objet Jeveux '.MAEL_MASS_DESC' */
     JeveuxVectorLong _maelMassDesc;
     /** @brief Objet Jeveux '.MAEL_MASS_REFE' */
     JeveuxVectorChar24 _maelMassRefe;
     /** @brief Objet Jeveux '.MAEL_MASS_VALE' */
-    JeveuxVectorReal _maelMassVale;
+    JeveuxCollectionReal _maelMassVale;
     /** @brief Objet Jeveux '.MAEL_AMOR_DESC' */
     JeveuxVectorLong _maelAmorDesc;
     /** @brief Objet Jeveux '.MAEL_AMOR_REFE' */
     JeveuxVectorChar24 _maelAmorRefe;
     /** @brief Objet Jeveux '.MAEL_AMOR_VALE' */
-    JeveuxVectorReal _maelAmorVale;
+    JeveuxCollectionReal _maelAmorVale;
     /** @brief Objet Jeveux '.MAEL_INER_REFE' */
     JeveuxVectorChar24 _maelInerRefe;
     /** @brief Objet Jeveux '.MAEL_INER_VALE' */
@@ -128,13 +128,13 @@ class DynamicMacroElement : public DataStructure {
           _lica( JeveuxCollectionReal( getName() + ".LICA" ) ),
           _maelRaidDesc( JeveuxVectorLong( getName() + ".MAEL_RAID_DESC" ) ),
           _maelRaidRefe( JeveuxVectorChar24( getName() + ".MAEL_RAID_REFE" ) ),
-          _maelRaidVale( JeveuxVectorReal( getName() + ".MAEL_RAID_VALE" ) ),
+          _maelRaidVale( JeveuxCollectionReal( getName() + ".MAEL_RAID_VALE" ) ),
           _maelMassDesc( JeveuxVectorLong( getName() + ".MAEL_MASS_DESC" ) ),
           _maelMassRefe( JeveuxVectorChar24( getName() + ".MAEL_MASS_REFE" ) ),
-          _maelMassVale( JeveuxVectorReal( getName() + ".MAEL_MASS_VALE" ) ),
+          _maelMassVale( JeveuxCollectionReal( getName() + ".MAEL_MASS_VALE" ) ),
           _maelAmorDesc( JeveuxVectorLong( getName() + ".MAEL_AMOR_DESC" ) ),
           _maelAmorRefe( JeveuxVectorChar24( getName() + ".MAEL_AMOR_REFE" ) ),
-          _maelAmorVale( JeveuxVectorReal( getName() + ".MAEL_AMOR_VALE" ) ),
+          _maelAmorVale( JeveuxCollectionReal( getName() + ".MAEL_AMOR_VALE" ) ),
           _maelInerRefe( JeveuxVectorChar24( getName() + ".MAEL_INER_REFE" ) ),
           _maelInterVale( JeveuxVectorReal( getName() + ".MAEL_INER_VALE" ) ),
           _mechanicalMode( nullptr ),
@@ -281,6 +281,12 @@ class DynamicMacroElement : public DataStructure {
         _rigidityCMatrix = nullptr;
         return true;
     };
+
+    JeveuxCollectionReal getGeneralizedStiffnessMatrix() { return _maelRaidVale; }
+
+    JeveuxCollectionReal getGeneralizedMassMatrix() { return _maelMassVale; }
+
+    JeveuxCollectionReal getGeneralizedDampingMatrix() { return _maelAmorVale; }
 };
 
 /**

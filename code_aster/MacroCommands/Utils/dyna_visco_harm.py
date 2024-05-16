@@ -73,21 +73,14 @@ def dyna_visco_harm(
 
     mc_force_nodale = []
     for i in range(0, len(charge)):
-        ddl = charge[i].sdj.CHME.FORNO.VALE.get()
-
-        if (
-            ddl is not None
-        ):  # if no nodal force is found, one does not achieve the following treatment
+        if charge[i].hasLoadField("FORNO"):
+            # if no nodal force is found, one does not achieve the following treatment
             l_force_nodale = True
-            no_force = charge[i].sdj.CHME.LIGRE.NEMA.get()
-
-            for j in list(no_force.keys()):
-                if not (
-                    len(no_force[j]) == 2 and no_force[j][1] == 1
-                ):  # in the dictionary no_force, an imposed nodal force presents as
-                    # an entry (a key) having this shape: (node_number, 1)
-                    # so one deletes all entries having a different shape
-                    no_force.pop(j)
+            # if no nodal force is found, one does not achieve the following treatment
+            forno = charge[i].getMechanicalLoadDescription().getConstantLoadField("FORNO")
+            no_force = charge[i].getFiniteElementDescriptor().getVirtualCellsDescriptor()
+            # take imposed nodal force having this shape: (node_number, 1)
+            no_force = [x for x in no_force if len(x) == 2 and x[1] == 1]
 
             model = __num.getModel()
             maillage = None
@@ -97,11 +90,9 @@ def dyna_visco_harm(
                 raise NameError("No mesh")
 
             direction = array(
-                [
-                    tuple(array(ddl[i * 12 : (i + 1) * 12]).nonzero()[0])
-                    for i in range(0, len(ddl) // 12)
-                ]
+                [array(forno.getValues(i).getValues()).nonzero()[0] for i in range(forno.size())]
             )
+
             # array which contains, for each node having an imposed force, the list of the imposed directions
             # (rq : "/12" because each node has 12 DoF)
             # the values are 0 if FX imposed, 1 if FY, and 2 if FZ
@@ -123,9 +114,9 @@ def dyna_visco_harm(
                     elif direction[i_nf][j] == 5:
                         ddl_phys[i_nf].append("DRZ")
 
-            for i in range(1, len(no_force) + 1):
+            for i in range(len(no_force)):
                 mc_composante = {}
-                mc_composante["AVEC_CMP"] = tuple(ddl_phys[i - 1])
+                mc_composante["AVEC_CMP"] = tuple(ddl_phys[i])
 
                 mc_force_nodale.append(
                     _F(NOEUD=(maillage.getNodeName(no_force[i][0] - 1)), **mc_composante)

@@ -149,7 +149,7 @@ class T10_3D(Element):
     calculs = (
         OP.CHAR_MECA_FF3D3D(
             te=17,
-            para_in=((SP.PFF3D3D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFF3D3D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTDR),),
         ),
         OP.CHAR_MECA_FR3D3D(

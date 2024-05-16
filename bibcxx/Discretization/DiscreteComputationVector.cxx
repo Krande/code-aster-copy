@@ -207,7 +207,7 @@ FieldOnNodesRealPtr DiscreteComputation::getExternalStateVariablesForces(
                 calcul->addElementaryCharacteristicsField( currElemChara );
             }
 
-            calcul->addTimeField( "PTEMPSR", time_curr );
+            calcul->addTimeField( "PINSTR", time_curr );
             if ( currExternVarRefe ) {
                 calcul->addInputField( "PVARCRR", currExternVarRefe );
             }

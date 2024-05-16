@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -200,7 +200,7 @@ subroutine load_neut_spec(type_ther, type_calc, model, time_curr, time, &
 ! ----- Select time for ECHANGE_PAROI load
 !
         i_field_in = i_field_in+1
-        lpain(i_field_in) = 'PTEMPSR'
+        lpain(i_field_in) = 'PINSTR'
         lchin(i_field_in) = time
         if (load_keyw .eq. 'ECHANGE_PAROI') then
             if (type_ther .eq. 'MOVE') then

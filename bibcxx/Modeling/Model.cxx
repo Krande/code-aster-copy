@@ -308,6 +308,8 @@ int Model::getPhysics( void ) const { return _ligrel->getPhysics(); }
 
 bool Model::isXfem() const { return _xfemModel != nullptr; };
 
+ASTERINTEGER Model::getXfemContact() const { return isXfem() ? _xfemModel->getContact() : -1; };
+
 #ifdef ASTER_HAVE_MPI
 bool Model::setFrom( const ModelPtr model ) {
     // "the mesh associated to finiteElementDescriptor is not a partial mesh"

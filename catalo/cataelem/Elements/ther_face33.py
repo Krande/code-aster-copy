@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ class THER_FACE33(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHECHPF, LC.CHECHPF),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -67,18 +67,18 @@ class THER_FACE33(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHECHPR, LC.CHECHPR),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.MTAN_THER_PARO_F(
             te=389,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF), (SP.PINSTR, CTEMPSR)),
             para_out=((OP.MTAN_THER_PARO_F.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_PARO_R(
             te=388,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.CHECHPR), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.CHECHPR), (SP.PINSTR, CTEMPSR)),
             para_out=((OP.MTAN_THER_PARO_R.PMATTTR, MMATTTR),),
         ),
         OP.RESI_THER_PARO_F(
@@ -87,7 +87,7 @@ class THER_FACE33(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHECHPF, LC.CHECHPF),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
@@ -97,18 +97,18 @@ class THER_FACE33(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHECHPR, LC.CHECHPR),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RIGI_THER_PARO_F(
             te=302,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF), (SP.PINSTR, CTEMPSR)),
             para_out=((OP.RIGI_THER_PARO_F.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_PARO_R(
             te=301,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.CHECHPR), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.CHECHPR), (SP.PINSTR, CTEMPSR)),
             para_out=((OP.RIGI_THER_PARO_R.PMATTTR, MMATTTR),),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),

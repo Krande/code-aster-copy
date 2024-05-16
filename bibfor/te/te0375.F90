@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -144,7 +144,7 @@ subroutine te0375(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVOISIN', 'L', ivois)
 !
-    call jevech('PTEMPSR', 'L', jtime)
+    call jevech('PINSTR', 'L', jtime)
     inst = zr(jtime-1+1)
 !
     call jevech('PERREUR', 'E', ierr)
@@ -372,8 +372,9 @@ subroutine te0375(option, nomte)
                             elrefb)
 !GN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
 ! --- CARACTERISTIQUES DES FACES DE BORD DE LA FAMILLE 1 ---------------
-                call elrefe_info(elrefe=elreff, fami='NOEU', ndim=ndimf, nno=nnof, nnos=nnosf, &
-                                 npg=npgf, jpoids=ipoidf, jvf=ivff, jdfde=idfdxf, jgano=jganof)
+                call elrefe_info(elrefe=elreff, fami='NOEU', ndim=ndimf, &
+                                 nno=nnof, nnos=nnosf, npg=npgf, jpoids=ipoidf, &
+                                 jvf=ivff, jdfde=idfdxf, jgano=jganof)
 !GN      WRITE(IFM,2000) 'NDIMF',NDIMF
 !GN      WRITE(IFM,2000) 'NNOSF,NNOF,NPGF',NNOSF,NNOF,NPGF
 !GN      WRITE(IFM,1000) 'IPOIDF', (ZR(IPOIDF+IFA),IFA=0,NPGF-1)
@@ -382,8 +383,10 @@ subroutine te0375(option, nomte)
 ! --- MAILLES DE BORD (PENTAEDRE, PYRAMIDE) ---
 !
                 if (elrefb(1:1) .ne. ' ') then
-                    call elrefe_info(elrefe=elrefb, fami='NOEU', ndim=ndimf, nno=nno2, nnos=nnos2, &
-                                     npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfdx2, jgano=jgano2)
+                    call elrefe_info(elrefe=elrefb, fami='NOEU', ndim=ndimf, &
+                                     nno=nno2, nnos=nnos2, &
+                                     npg=npg2, jpoids=ipoid2, &
+                                     jvf=ivf2, jdfde=idfdx2, jgano=jgano2)
 !GN       WRITE(IFM,2000) 'NDIMF,NNO2',NDIMF,NNO2
 !GN       WRITE(IFM,2000) 'NNOS2,NPG2',NNOS2,NPG2
 !GN       WRITE(IFM,1000) 'IPOID2', (ZR(IPOID2+IFA),IFA=0,NPG2-1)
@@ -415,7 +418,8 @@ subroutine te0375(option, nomte)
 ! --- IL FAUT REMPLACER LES CARACTERISTIQUES DE LA FAMILLE 1         ---
 ! --- PAR CELLES DE LA FAMILLE 2                                     ---
 !
-                    if ((tymvol .eq. 2 .and. ifa .ge. 3) .or. (tymvol .eq. 4 .and. ifa .ge. 5)) then
+                        if ((tymvol .eq. 2 .and. ifa .ge. 3) .or. &
+                            (tymvol .eq. 4 .and. ifa .ge. 5)) then
 !
                             nnof = nno2
                             npgf = npg2
@@ -445,7 +449,8 @@ subroutine te0375(option, nomte)
 ! --------------- LE BORD VOISIN EST UN VOLUME -------------------------
 ! ----------------------------------------------------------------------
 !
-                    if (typmav(1:4) .eq. 'HEXA' .or. typmav(1:4) .eq. 'PENT' .or. typmav(1:4) .eq. &
+                        if (typmav(1:4) .eq. 'HEXA' .or. typmav(1:4) .eq. 'PENT' &
+                            .or. typmav(1:4) .eq. &
                             'TETR' .or. typmav(1:4) .eq. 'PYRA') then
 !
 ! ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS ------------------

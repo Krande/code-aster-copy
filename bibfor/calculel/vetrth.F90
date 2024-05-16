@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate, &
     lchin(1) = chgeom
     lpain(2) = 'PMATERC'
     lchin(2) = mate
-    lpain(3) = 'PTEMPSR'
+    lpain(3) = 'PINSTR'
     lchin(3) = inst
     lpain(4) = 'PTEMPER'
     lchin(4) = chtn

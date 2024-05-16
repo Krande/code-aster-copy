@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -128,12 +128,12 @@ class MECA_2D_HHO1_F(Element):
         ),
         OP.CHAR_MECA_FF1D2D(
             te=459,
-            para_in=((SP.PFF1D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFF1D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_PRES_F(
             te=459,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_PRES_R(
