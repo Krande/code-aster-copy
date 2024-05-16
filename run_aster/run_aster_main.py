@@ -328,27 +328,33 @@ def main(argv=None):
     need_split = len(export.commfiles) > 1
     need_mpiexec = args.rerun_mpi
     if need_split and CFG.get("parallel", False) and procid >= 0:
-        # disable this warning if `CFG.get("use_srun") is True` ?
-        need_mpiexec = True
-        logger.warning(
+        # keep as warning in case mpiexec is badly detected
+        funclog = logger.error if need_mpiexec == "auto" else logger.warning
+        funclog(
             "\n ------------------------------------------------------------"
-            "\n This study contains several comm files. "
-            "Each comm file must be executed under MPI runner separately. "
-            "\n The export file will be automatically splitted and run separately. "
-            "\n If this instance of run_aster has already been run with mpiexec or srun "
-            "\n it may fail (or block)."
+            "\n This study contains several comm files."
+            "\n Each comm file must be separately executed under MPI runner"
+            "\n because MPI can not be restarted after a finalization."
+            "\n This instance of run_aster seems to be already run with mpiexec or srun."
+            "\n It will probably fail or block."
+            "\n Let run_aster automatically split and run each comm file separately"
+            "\n or execute each comm file one by one."
+            "\n Add '--mpi' or '--no-mpi' option to change this error into a warning."
             "\n ------------------------------------------------------------"
         )
     if args.mpi_nbcpu:
         export.set("mpi_nbcpu", args.mpi_nbcpu)
     if need_mpiexec == "auto":
-        need_mpiexec = procid < 0
-        if (
-            need_mpiexec
-            and export.get("mpi_nbcpu", 1) == 1
-            and not CFG.get("require_mpiexec", False)
-        ):
-            need_mpiexec = False
+        need_mpiexec = export.get("mpi_nbcpu", 1) > 1 or CFG.get("require_mpiexec", False)
+        if need_mpiexec and procid >= 0:
+            logger.warning(
+                "\n ------------------------------------------------------------"
+                "\n run_aster will be restarted under MPI runner."
+                "\n Use '--no-mpi' option if you do not want to use 'mpi_nbcpu' from the export file."
+                "\n ------------------------------------------------------------"
+            )
+    logger.debug("need_split: %s / need_mpiexec: %s", need_split, need_mpiexec)
+
     if args.debugpy_runner and procid == args.debugpy_rank and not (need_split or need_mpiexec):
         debugpy.listen(("localhost", args.debugpy_runner))
         print("Waiting for debugger attach")

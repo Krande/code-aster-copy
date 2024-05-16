@@ -608,7 +608,7 @@ def check_mpi_get_rank(self):
         return
     # srun vs mpiexec
     if self.options.use_srun:
-        rank_id = "echo ${SLURM_PROCID}"
+        rank_id = 'test ! -z "${SLURM_STEPID}" && echo ${SLURM_PROCID}'
     else:
         # default to openmpi
         out = self.cmd_and_log(self.env["base_mpiexec"] + ["env"])
