@@ -198,7 +198,9 @@ class StorageManager(SolverFeature):
         #     self._result.setTime(kwargs["time"], idx)
 
     @profile
-    def storeState(self, idx, time, phys_pb, phys_state, param=None, ignore_policy=False):
+    def storeState(
+        self, idx, time, phys_pb, phys_state, param=None, ignore_policy=False, is_final_time=False
+    ):
         """Store a new state.
 
         Arguments:
@@ -209,6 +211,7 @@ class StorageManager(SolverFeature):
             phys_state (PhysicalState): Physical state.
             param (dict, optional): Dict of parameters to be stored.
             ignore_policy (bool): ignore storing-policy.
+            is_final_time (bool) : *True* if time is the final time to compute
 
         Returns:
             bool: *True* if it has been stored, *False* otherwise.
@@ -236,6 +239,8 @@ class StorageManager(SolverFeature):
                 compor = "COMPORTEMENT"
             slot.fields[compor] = behav.getBehaviourField()
         self._buffer.append(slot)
+        if is_final_time:
+            self._excl_fields = set()
         self._store()
         return True
 
