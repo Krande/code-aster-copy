@@ -439,7 +439,10 @@ class ConvergenceManager(SolverFeature):
         diag = sqrt(pow(x_diag, 2) + pow(y_diag, 2) + pow(z_diag, 2))
 
         resi_geom = self.setdefault("RESI_GEOM")
-        resi_geom.value = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
+        if diag == 0.0:
+            resi_geom.value = -1.0
+        else:
+            resi_geom.value = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
 
     # @with_loglevel()
     def isConverged(self):
