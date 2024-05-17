@@ -79,6 +79,10 @@ def calc_precont_ops(
     # a tort
     MasquerAlarme("COMPOR4_70")
 
+    # on verifie que le champ de materiau ne comporte pas de variables de commande
+    if CHAM_MATER.hasExternalStateVariableWithReference():
+        UTMESS("F", "CABLE0_27")
+
     # -------------------------------------------------------------
     # 1. CREATION DES MOTS-CLES ET CONCEPTS POUR LES STAT_NON_LINE
     # ------------------------------------------------------------

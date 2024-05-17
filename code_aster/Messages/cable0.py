@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -142,6 +142,13 @@ Erreur de mise en donnée
     26: _(
         """
 La loi de comportement  %(k1)s n'est pas utilisable pour CABLE_GAINE; elle n'existe pas en format unidimensionnel.
+"""
+    ),
+    27: _(
+        """
+Le champ de matériaux fourni à CALC_PRECONT ne doit pas contenir de variables de commandes.
+Conseils :
+Dupliquer votre champ de matériaux en retirant le mot-clé AFFE_VARC pour l'appel à CALC_PRECONT.
 """
     ),
 }
