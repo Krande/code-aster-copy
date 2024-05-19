@@ -40,6 +40,10 @@
     character(len=24)                         :: zk24
     character(len=32)                                  :: zk32
     character(len=80)                                           :: zk80
+#ifdef _WIN32
     common  / kvarje / zk8(1), zk16(25), zk24(1), zk32(1), zk80(1)
+#else
+    common  / kvarje / zk8(1), zk16(1), zk24(1), zk32(1), zk80(1)
+#endif
 !---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
 #endif

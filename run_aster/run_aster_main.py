@@ -430,7 +430,6 @@ def main(argv=None):
         if sys_conf == "MSVC":
             opts["tee"] = False
         else:  # its unix based
-            print(f"Unix based system detected {sys_conf}.")
             opts["tee"] = not args.only_proc0 or procid == 0
         opts["interactive"] = args.interactive
         if args.exectool:
