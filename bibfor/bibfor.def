@@ -1394,7 +1394,6 @@ EXPORTS
 	sigusr_
 	sigcpu_
 	settco_
-	putcon_
 	parameters_module._
 	op9999_
 	onerrf_
