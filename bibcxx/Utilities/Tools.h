@@ -44,10 +44,15 @@ std::string remove_brackets( const std::string &in_str );
 std::string to_string( const int varInt, const int stringSize );
 
 // wrapper arround dismoi;
+#ifdef ASTER_PLATFORM_MSVC64
 std::tuple< bool, ASTERINTEGER, std::string > dismoi_wrap( const std::string &question,
                                                       const std::string &name,
                                                       const std::string &type, const bool stop );
-
+#else
+std::tuple< bool, ASTERINTEGER, std::string > dismoi( const std::string &question,
+                                                      const std::string &name,
+                                                      const std::string &type, const bool stop );
+#endif
 /**
  * @brief irange Create a vector of integer from begin to end (included).
  *      for exemple {-1, 0, 1, 2, 3}

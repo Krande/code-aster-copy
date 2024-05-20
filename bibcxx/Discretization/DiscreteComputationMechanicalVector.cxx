@@ -316,7 +316,11 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
                     .toString();
 
             const std::string typeco( "CHAMP" );
+        #ifdef ASTER_PLATFORM_MSVC64
             auto [ok, repi, retour] = dismoi_wrap( "DOCU", pre_sgm_name, typeco, true );
+        #else
+            auto [ok, repi, retour] = dismoi( "DOCU", pre_sgm_name, typeco, true );
+        #endif
 
             if ( retour == "CHML" ) {
                 auto pre_sigm = std::make_shared< FieldOnCellsReal >();

@@ -54,9 +54,13 @@ extern void DEFSSSPSSP( DISMOI, dismoi, const char *, STRING_SIZE, const char *,
 extern void DEFSSSSS( CARCHA, carcha, const char *, STRING_SIZE, const char *, STRING_SIZE,
                       const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                       STRING_SIZE );
-
+#ifdef ASTER_PLATFORM_MSVC64
 #define CALL_FCLOSE( a ) CALLP( FORT_FCLOSE, fort_fclose, a )
 extern void DEFP( FORT_FCLOSE, fort_fclose, ASTERINTEGER * );
+#else
+#define CALL_FCLOSE( a ) CALLP( FCLOSE, fclose, a )
+extern void DEFP( FCLOSE, fclose, ASTERINTEGER * );
+#endif
 
 #define CALL_INFMAJ_EXT( a ) CALLP( INFMAJ_EXT, infmaj_ext, a )
 extern void DEFP( INFMAJ_EXT, infmaj_ext, const ASTERINTEGER *const );

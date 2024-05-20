@@ -38,7 +38,7 @@ def options(self):
         dest="maths_libs",
         default=None,
         help="Math librairies to link with like blas and lapack. "
-             'Use None or "auto" to search them automatically.',
+        'Use None or "auto" to search them automatically.',
     )
     group.add_option(
         "--embed-maths",
@@ -210,9 +210,9 @@ def detect_math_lib(self):
         """Check blacs"""
         libs = list(BLACS)
         libs = (
-                libs
-                + ["".join(n) for n in product(libs, ["mpi", "-mpi", "openmpi", "-openmpi"])]
-                + ["".join(n) for n in product(["mpi", "mpi-", "openmpi", "openmpi-"], libs)]
+            libs
+            + ["".join(n) for n in product(libs, ["mpi", "-mpi", "openmpi", "-openmpi"])]
+            + ["".join(n) for n in product(["mpi", "mpi-", "openmpi", "openmpi-"], libs)]
         )  # check the 3 blacs libs together: Cinit, F77init, ''
         ins = []
         for i in libs:

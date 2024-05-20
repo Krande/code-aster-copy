@@ -104,7 +104,6 @@ def check_numpy_headers(self):
                     parts[i] = "Lib"
             numpy_includes.append(PureWindowsPath(*parts).as_posix())
 
-
     # check the given includes dirs
     self.check(
         feature="c",

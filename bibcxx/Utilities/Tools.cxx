@@ -70,10 +70,15 @@ std::string remove_brackets( const std::string &in_str ) {
 }
 
 // wrapper arround dismoi;
+#ifdef ASTER_PLATFORM_MSVC64
 std::tuple< bool, ASTERINTEGER, std::string > dismoi_wrap( const std::string &question,
                                                       const std::string &name,
                                                       const std::string &type, const bool stop ) {
-
+#else
+std::tuple< bool, ASTERINTEGER, std::string > dismoi( const std::string &question,
+                                                      const std::string &name,
+                                                      const std::string &type, const bool stop ) {
+#endif
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
     std::string arret( "C" );

@@ -151,9 +151,11 @@ class Model : public DataStructure, public ListOfTables {
      * @return booleen indiquant que la construction s'est bien deroulee
      */
     bool buildWithSyntax( SyntaxMapContainer & );
-
+#ifdef ASTER_PLATFORM_MSVC64
     const std::string dismoi_method( const std::string &, bool stop = true ) const;
-
+#else
+    const std::string dismoi( const std::string &, bool stop = true ) const;
+#endif
   public:
     Model( const std::string name, const bool is_xfem = false );
 
