@@ -1,3 +1,4 @@
 bootstrapper.*.log
 installer.*.log
 w_fortran-compiler*.exe
+Miniforge3-*.exe
