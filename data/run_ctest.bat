@@ -1,18 +1,22 @@
-echo OFF
+@echo OFF
+
 setlocal
 set PYTHONIOENCODING=UTF-8
 chcp 65001
+
 :: If not CONDA_PREFIX is defined, set these variables
-if not defined CONDA_PREFIX (
-    set RUNASTER_ROOT=%~dp0..
-    set ASTER_ROOT=%RUNASTER_ROOT%\..
-    set OUTILS=%ASTER_ROOT%\outils
-    set PYTHONHOME=%ASTER_ROOT%
-    set PYTHONPATH=%ASTER_ROOT%\lib\site-packages;%RUNASTER_ROOT%\lib\aster
-    set PATH=%PYTHONHOME%;%OUTILS%;%PATH%
-    call "%RUNASTER_ROOT%\share\aster\profile.bat
+if defined CONDA_PREFIX (
+    call "%CONDA_PREFIX%\Library\share\aster\profile.bat"
 ) else (
-    call "%CONDA_PREFIX%\Library\share\aster\profile.bat
+    set "RUNASTER_ROOT=%~dp0.."
+    set "ASTER_ROOT=%RUNASTER_ROOT%\.."
+    set "OUTILS=%ASTER_ROOT%\outils"
+    set "PYTHONHOME=%ASTER_ROOT%"
+    set "PYTHONPATH=%ASTER_ROOT%\lib\site-packages;%RUNASTER_ROOT%\lib\aster"
+    set "PATH=%PYTHONHOME%;%OUTILS%;%PATH%"
+    call "%RUNASTER_ROOT%\share\aster\profile.bat"
 )
 
 python -m run_aster.run_ctest_main %*
+
+endlocal

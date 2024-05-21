@@ -39,7 +39,7 @@ void hancpu( int sig );
 #include <ucontext.h>
 void hanfpe( int sig, siginfo_t *sip, ucontext_t *uap );
 
-#elif defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
+#elif defined ASTER_PLATFORM_WINDOWS
 #include <float.h>
 void hanfpe( int sig );
 void sigsegv( int sig );

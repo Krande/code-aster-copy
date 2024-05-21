@@ -19,13 +19,7 @@
 !
 !
 interface
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine fort_fclose(unit)
-        integer :: unit
-    end subroutine fort_fclose
-#else
     subroutine fclose(unit)
         integer :: unit
     end subroutine fclose
-#endif
 end interface

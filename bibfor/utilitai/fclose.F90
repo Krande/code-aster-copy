@@ -15,11 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#ifdef ASTER_PLATFORM_MSVC64
-subroutine fort_fclose(unit)
-#else
+
 subroutine fclose(unit)
-#endif
 ! aslint: disable=
     implicit none
 #include "asterfort/utmess.h"

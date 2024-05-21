@@ -112,7 +112,7 @@ set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
 REM Clean the build directory
-waf distclean
+@REM waf distclean
 
 python conda\update_version.py
 
@@ -128,9 +128,10 @@ waf configure ^
   --out=%OUTPUT_DIR% ^
   --disable-mpi ^
   --maths-libs=auto ^
+  --install-tests ^
   --without-hg
 
-@REM   --install-tests ^
+
 @REM   --disable-openmp ^
 @REM   --disable-mumps ^
 

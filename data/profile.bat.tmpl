@@ -1,12 +1,17 @@
 :: created by waf using data/wscript
+@echo off
 
-:: IF CONDA_PREFIX is defined, use CONDA_PREFIX
+if defined CONDA_PREFIX (
+    set "ASTER_ROOT=%CONDA_PREFIX%"
+    set "RUNASTER_ROOT=%CONDA_PREFIX%\Library"
+    echo ASTER_ROOT is set to %ASTER_ROOT%
+) else (
+    echo CONDA_PREFIX is not defined
+)
 
-if defined CONDA_PREFIX set ASTER_ROOT=%CONDA_PREFIX%
+set "PYTHONPATH=%ASTER_ROOT%\@BASE_PREFIX@\lib\aster;%ASTER_ROOT%\lib\site-packages;%PYTHONPATH%"
 
-set PYTHONPATH=%ASTER_ROOT%\@BASE_PREFIX@\lib\aster;%ASTER_ROOT%\lib\site-packages;%PYTHONPATH%
-
-set ASTER_DATADIR=%ASTER_ROOT%\@BASE_PREFIX@\share\aster
-set ASTER_LIBDIR=%ASTER_ROOT%\@BASE_PREFIX@\lib\aster
-set ASTER_LOCALEDIR=%ASTER_ROOT%\@BASE_PREFIX@\share\locale\aster
-set ASTER_ELEMENTSDIR=%ASTER_ROOT%\@BASE_PREFIX@\lib\aster
+set "ASTER_DATADIR=%ASTER_ROOT%\@BASE_PREFIX@\share\aster"
+set "ASTER_LIBDIR=%ASTER_ROOT%\@BASE_PREFIX@\lib\aster"
+set "ASTER_LOCALEDIR=%ASTER_ROOT%\@BASE_PREFIX@\share\locale\aster"
+set "ASTER_ELEMENTSDIR=%ASTER_ROOT%\@BASE_PREFIX@\lib\aster"

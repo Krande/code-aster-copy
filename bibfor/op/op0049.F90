@@ -86,11 +86,7 @@ subroutine op0049()
     if (ulisop(nfigi, k16nom) .ne. 0) then
         call ulopen(-nfigi, ' ', ' ', 'NEW', 'O')
     end if
-#ifdef ASTER_PLATFORM_MSVC64
-    call fort_fclose(nfias)
-#else
     call fclose(nfias)
-#endif
 !
     goto 99999
 !
