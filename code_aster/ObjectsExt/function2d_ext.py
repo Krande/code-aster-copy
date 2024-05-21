@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,11 +101,7 @@ class ExtendedFunction2D:
     def __call__(self, val1, val2, tol=1.0e-6):
         """Evaluate a function at 'val'. If provided, 'tol' is a relative
         tolerance to match an abscissa value."""
-        # Pour EFICAS : substitution de l'instance de classe
-        # parametre par sa valeur
-        if isinstance(val1, DataStructure):
-            val1 = val1.valeur
-        if isinstance(val2, DataStructure):
-            val2 = val2.valeur
+        val1 = float(val1)
+        val2 = float(val2)
         __ff = self.convert()
         return __ff(val1, val2, tol=tol)

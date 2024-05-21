@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,6 +78,10 @@ def calc_precont_ops(
     # alarme de STAT_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes
     # a tort
     MasquerAlarme("COMPOR4_70")
+
+    # on verifie que le champ de materiau ne comporte pas de variables de commande
+    if CHAM_MATER.hasExternalStateVariableWithReference():
+        UTMESS("F", "CABLE0_27")
 
     # -------------------------------------------------------------
     # 1. CREATION DES MOTS-CLES ET CONCEPTS POUR LES STAT_NON_LINE

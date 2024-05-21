@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ import numpy as NP
 import numpy.fft as FFT
 
 from libaster import AsterError
-from ..Utilities import is_complex, is_float, is_float_or_int, is_number, is_sequence
+from ..Utilities import is_complex, is_float_or_int, is_number, is_sequence
 
 
 # -----------------------------------------------------------------------------
@@ -70,7 +70,6 @@ def is_ordo(liste):
 
 
 class t_fonction:
-
     """Classe pour fonctions réelles, équivalent au type aster = fonction_sdaster"""
 
     def __init__(self, vale_x, vale_y, para, nom=""):
@@ -181,7 +180,7 @@ class t_fonction:
         if n == 1:
             # Utilisation abusive de la tolérance relative mais ce cas est
             # particulier
-            if (val - self.vale_x[0]) <= tol * abs(self.vale_x[0]):
+            if abs(val - self.vale_x[0]) <= tol * abs(self.vale_x[0]):
                 return self.vale_y[0]
             elif val > self.vale_x[0]:
                 if (self.para["PROL_DROITE"] == "CONSTANT") or (
@@ -523,10 +522,10 @@ class t_fonction:
                 raise_function_error("fonction réelle : FFT : la fonction doit etre à pas constant")
         n = get_len_puis2(self.vale_x)
         if methode == "TRONCATURE":
-            vale_y = self.vale_y[: 2 ** n]
+            vale_y = self.vale_y[: 2**n]
         elif methode == "PROL_ZERO":
             vale_y = self.vale_y
-            if len(self.vale_y) > 2 ** n:
+            if len(self.vale_y) > 2**n:
                 vale_y = NP.array(self.vale_y)
                 vale_y = NP.concatenate((vale_y, NP.zeros(2 ** (n + 1) - len(self.vale_x))))
         elif methode == "COMPLET":
@@ -540,7 +539,6 @@ class t_fonction:
 
 # -----------------------------------------------------------------------------
 class t_fonction_c(t_fonction):
-
     """Classe pour fonctions complexes, équivalent au type aster = fonction_c"""
 
     @property
@@ -626,12 +624,12 @@ class t_fonction_c(t_fonction):
         else:
             if methode == "PROL_ZERO":
                 fonc_temp = self.vale_y
-                if len(self.vale_y) > 2 ** n:
+                if len(self.vale_y) > 2**n:
                     fonc_temp = NP.concatenate(
                         (self.vale_y, NP.zeros(2 ** (n + 1) - len(self.vale_x)))
                     )
             elif methode == "TRONCATURE":
-                fonc_temp = self.vale_y[: 2 ** n]
+                fonc_temp = self.vale_y[: 2**n]
             elif methode == "COMPLET":
                 fonc_temp = self.vale_y
             part1 = fonc_temp.tolist()
@@ -676,7 +674,6 @@ class t_fonction_c(t_fonction):
 
 
 class t_nappe:
-
     """Classe pour nappes, équivalent au type aster = nappe_sdaster"""
 
     def __init__(self, vale_para, l_fonc, para, nom=""):
@@ -739,7 +736,7 @@ class t_nappe:
         if n == 1:
             # Utilisation abusive de la tolérance relative mais ce cas est
             # particulier
-            if (val1 - self.vale_para[0]) <= tol * abs(self.vale_para[0]):
+            if abs(val1 - self.vale_para[0]) <= tol * abs(self.vale_para[0]):
                 return self.l_fonc[0](val2)
             elif val1 > self.vale_para[0]:
                 if (self.para["PROL_DROITE"] == "CONSTANT") or (
