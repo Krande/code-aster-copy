@@ -1,0 +1,453 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+# --------------------------------------------------------------------------------
+# TEST V7.22.140
+# ESSAI DE DILATOMETRIE (CHARGEMENT THERMIQUE CYCLIQUE) SUR UN TUBE - ACIER 316L
+# LOI ELASTOPLASTIQUE DE VON MISES A ECROUISSAGE ISOTROPE LINEAIRE
+# CALCUL 2D AXI-SYMETRIQUE
+# MAILLAGE QUAD4
+# --------------------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+#  MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
+
+# IMPR_RESU(RESU=_F(MAILLAGE=MAIL, INFO_MAILLAGE='OUI'), UNITE=80)
+
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
+
+# IMPR_RESU(RESU=_F(MAILLAGE=MAIL), UNITE=21, FORMAT="ASTER")
+
+# On ajoute un element 0D sur le noeud 1
+MESH = CREA_MAILLAGE(CREA_POI1=_F(GROUP_NO=("NO1",), NOM_GROUP_MA=("NO1",)), MAILLAGE=MAIL)
+
+#
+# Chargement thermique
+#
+
+TEMP1 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(
+        # cycle 1
+        0.0,
+        20.0,
+        100,
+        1125.0,
+        200,
+        21.0,
+        # cycle 2
+        300,
+        932.0,
+        400,
+        22.0,
+        # cycle 3
+        500,
+        685.0,
+        600,
+        22.0,
+        # cycle 4
+        700,
+        473.0,
+        800,
+        21.0,
+    ),
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+)
+
+LLPAS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=800.0, NOMBRE=800))
+L_INST1 = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LLPAS))
+#
+CHTH = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_F",
+    MAILLAGE=MESH,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TEMP1),
+)
+#
+THER1 = CREA_RESU(
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=_F(CHAM_GD=CHTH, NOM_CHAM="TEMP", LIST_INST=LLPAS)
+)
+#
+# Calcul Mecanique
+#
+
+# On ajoute un element 0D
+MOMECA1 = AFFE_MODELE(
+    MAILLAGE=MESH,
+    AFFE=(
+        _F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"),
+        _F(GROUP_MA=("NO1",), PHENOMENE="MECANIQUE", MODELISATION="2D_DIS_T"),
+    ),
+)
+
+# On affecte cara_elem au nouveau element 0D
+CARA = AFFE_CARA_ELEM(
+    MODELE=MOMECA1, DISCRET=_F(CARA="K_T_D_N", GROUP_MA=("NO1"), VALE=(5.0, 0.0, 0.0))
+)
+
+CHMECA1 = AFFE_CHAR_MECA(
+    MODELE=MOMECA1, DDL_IMPO=(_F(GROUP_NO=("NO1", "NO2", "NO3", "NO4"), DY=0.0))
+)
+
+E = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        20.0,
+        195600.0e6,
+        100.0,
+        191200.0e6,
+        200.0,
+        185700.0e6,
+        300.0,
+        179600.0e6,
+        400.0,
+        172600.0e6,
+        500.0,
+        164500.0e6,
+        600.0,
+        155000.0e6,
+        700.0,
+        144100.0e6,
+        800.0,
+        131400.0e6,
+        900.0,
+        116800.0e6,
+        1000.0,
+        100000.0e6,
+        1100.0,
+        80000.0e6,
+        1200.0,
+        57000.0e6,
+        1300.0,
+        30000.0e6,
+        1400.0,
+        2000.0e6,
+        1500.0,
+        1000.0e6,
+    ),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="LINEAIRE",
+)
+
+
+NU = DEFI_CONSTANTE(VALE=0.3)
+
+
+SIGM = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        20.0,
+        286.0e6,
+        200.0,
+        212.0e6,
+        400.0,
+        180.0e6,
+        600.0,
+        137.0e6,
+        800.0,
+        139.0e6,
+        1000.0,
+        70.0e6,
+        1100.0,
+        35.0e6,
+        1200.0,
+        16.0e6,
+        1300.0,
+        10.0e6,
+        1500.0,
+        10.0e6,
+    ),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+DSDE = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        20.0,
+        2.400e9,
+        700.0,
+        2.400e9,
+        800.0,
+        2.350e9,
+        900.0,
+        1.500e9,
+        1000.0,
+        0.800e9,
+        1100.0,
+        0.725e9,
+        1200.0,
+        0.150e9,
+        1300.0,
+        0.010e9,
+    ),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="LINEAIRE",
+)
+
+ALPHA = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        20.0,
+        14.56e-6,
+        100.0,
+        15.39e-6,
+        200.0,
+        16.21e-6,
+        300.0,
+        16.86e-6,
+        400.0,
+        17.37e-6,
+        500.0,
+        17.78e-6,
+        600.0,
+        18.12e-6,
+        700.0,
+        18.43e-6,
+        800.0,
+        18.72e-6,
+        900.0,
+        18.99e-6,
+        1000.0,
+        19.27e-6,
+        1100.0,
+        19.53e-6,
+        1200.0,
+        19.79e-6,
+        1300.0,
+        20.02e-6,
+        1600.0,
+        20.02e-6,
+    ),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+
+#
+# PARAMETRES DE RESTAURATION D'ECROUISSAGE
+#
+Tdebut = 600.0
+# Temperature de debut de restauration
+Tfin = 1200.0
+# Temperature de restauration complete
+#
+# Valeurs du coefficient alpha en fonction de la temperature
+L_alpha = [
+    680.0,
+    1.154,
+    750.0,
+    1.335,
+    825.0,
+    1.308,
+    900.0,
+    1.165,
+    1000.0,
+    0.181,
+    1075.0,
+    0.687,
+    1150.0,
+    0.408,
+]
+#
+# Valeurs du coefficient tau_infini en fonction de la temperature
+L_tauinf = [
+    Tdebut,
+    1.0,
+    680.0,
+    0.877,
+    750.0,
+    0.767,
+    825.0,
+    0.682,
+    900.0,
+    0.576,
+    1000.0,
+    0.071,
+    1075.0,
+    0.052,
+    1150.0,
+    0.045,
+    Tfin,
+    0.0,
+]
+# ------------------------------------------------
+COEF1 = DEFI_FONCTION(
+    NOM_PARA="TEMP", VALE=(L_alpha), PROL_DROITE="CONSTANT", PROL_GAUCHE="LINEAIRE"
+)
+#
+TAU1 = DEFI_FONCTION(
+    NOM_PARA="TEMP", VALE=(L_tauinf), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
+#
+ACIERME0 = DEFI_MATERIAU(
+    ELAS_FO=_F(E=E, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=20.00),
+    ECRO_LINE_FO=_F(D_SIGM_EPSI=DSDE, SY=SIGM),
+    REST_ECRO=_F(COEF_ECRO=COEF1, TAU_INF=TAU1, TEMP_MINI=Tdebut, TEMP_MAXI=Tfin),
+)
+
+CHMATM0 = AFFE_MATERIAU(
+    MAILLAGE=MESH,
+    AFFE=_F(TOUT="OUI", MATER=ACIERME0),
+    AFFE_VARC=_F(TOUT="OUI", EVOL=THER1, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=20.0),
+)
+
+U1 = STAT_NON_LINE(
+    MODELE=MOMECA1,
+    CHAM_MATER=CHMATM0,
+    CARA_ELEM=CARA,
+    EXCIT=_F(CHARGE=CHMECA1),
+    COMPORTEMENT=(
+        _F(
+            RELATION="VMIS_ISOT_LINE",
+            DEFORMATION="PETIT_REAC",
+            GROUP_MA="FACE",
+            POST_INCR="REST_ECRO",
+        ),
+    ),
+    INCREMENT=_F(LIST_INST=L_INST1, NUME_INST_FIN=800),
+    NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=5),
+    CONVERGENCE=_F(RESI_GLOB_RELA=5.0e-05, ITER_GLOB_MAXI=50, ARRET="OUI"),
+)
+
+#
+# Post traitement
+#
+
+U1 = CALC_CHAMP(
+    reuse=U1,
+    MODELE=MOMECA1,
+    CHAM_MATER=CHMATM0,
+    CONTRAINTE=("SIEF_NOEU"),
+    VARI_INTERNE=("VARI_NOEU"),
+    RESULTAT=U1,
+)
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=100.0,
+            RESULTAT=U1,
+            NOM_CHAM="VARI_NOEU",
+            GROUP_NO="NO1",
+            NOM_CMP="V1",
+            VALE_CALC=0.00022590685508989025,
+            VALE_REFE=0.00022,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.25,
+        ),
+        _F(
+            INST=100.0,
+            RESULTAT=U1,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="FACE",
+            POINT=1,
+            NOM_CMP="V1",
+            VALE_CALC=0.00045181371018,
+            VALE_REFE=0.00044,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.25,
+        ),
+        _F(
+            INST=100.0,
+            RESULTAT=U1,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="FACE",
+            POINT=2,
+            NOM_CMP="V1",
+            VALE_CALC=0.00045181371018,
+            VALE_REFE=0.00044,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.25,
+        ),
+        _F(
+            INST=100.0,
+            RESULTAT=U1,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="FACE",
+            POINT=3,
+            NOM_CMP="V1",
+            VALE_CALC=0.00045181371018,
+            VALE_REFE=0.00044,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.25,
+        ),
+        _F(
+            INST=100.0,
+            RESULTAT=U1,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="FACE",
+            POINT=4,
+            NOM_CMP="V1",
+            VALE_CALC=0.00045181371018,
+            VALE_REFE=0.00044,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.25,
+        ),
+        _F(
+            INST=200.0,
+            RESULTAT=U1,
+            NOM_CHAM="SIEF_NOEU",
+            GROUP_NO="NO1",
+            NOM_CMP="SIYY",
+            VALE_CALC=331292179.717,
+            VALE_REFE=303.0e06,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.25,
+        ),
+        _F(
+            INST=400.0,
+            RESULTAT=U1,
+            NOM_CHAM="SIEF_NOEU",
+            GROUP_NO="NO1",
+            NOM_CMP="SIYY",
+            VALE_CALC=348833490.911,
+            VALE_REFE=316.0e06,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.25,
+        ),
+        _F(
+            INST=600.0,
+            RESULTAT=U1,
+            NOM_CHAM="SIEF_NOEU",
+            GROUP_NO="NO1",
+            NOM_CMP="SIYY",
+            VALE_CALC=381695579.874,
+            VALE_REFE=325.0e06,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.25,
+        ),
+        _F(
+            INST=800.0,
+            RESULTAT=U1,
+            NOM_CHAM="SIEF_NOEU",
+            GROUP_NO="NO1",
+            NOM_CMP="SIYY",
+            VALE_CALC=403220958.609,
+            VALE_REFE=327.0e06,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.25,
+        ),
+    )
+)
+
+FIN()

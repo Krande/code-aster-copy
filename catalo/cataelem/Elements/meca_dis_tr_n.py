@@ -427,6 +427,7 @@ class MECA_DIS_TR_N(Element):
             para_in=((OP.REPERE_LOCAL.PCAORIE, CCAORIE),),
             para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D), (SP.PREPLO3, LC.CGEOM3D)),
         ),
+        OP.REST_ECRO(te=99, para_out=((OP.REST_ECRO.PVARIPR, ZVARIPG),)),
         OP.RIGI_FLUI_STRU(
             te=41,
             para_in=(
