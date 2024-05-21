@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -363,6 +363,7 @@ class MECA_2D_DIS_TR_N(Element):
             para_in=((SP.PCINFDI, LC.CCINFDI), (SP.PREFCO, LC.CRESEFM)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
+        OP.REST_ECRO(te=99, para_out=((OP.REST_ECRO.PVARIPR, ZVARIPG),)),
         OP.RIGI_MECA(
             te=41,
             para_in=(
