@@ -17,7 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os, numpy as np
+import os
+import numpy as np
 
 from code_aster.Commands import *
 from code_aster import CA
@@ -57,7 +58,7 @@ def buildCompleteFieldOnCells(field):
             globCellId = lTGC[idCell]
             toAdd = []
             for iCmp in range(nbCmp):
-                toAdd += list(values[cmpt * nbPt * nbSPt : (cmpt + 1) * nbPt * nbSPt, iCmp])
+                toAdd.extend(list(values[cmpt * nbPt * nbSPt : (cmpt + 1) * nbPt * nbSPt, iCmp]))
             completeSief[globCellId] = np.array(toAdd)
         cmpt += 1
 
