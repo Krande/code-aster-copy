@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe SimpleFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -209,7 +209,7 @@ class SimpleFieldOnCells : public DataField {
 
         const std::string base = "G";
         ASTERINTEGER nbComp = comp.size();
-        ASTERINTEGER _npg = nbPG;
+        ASTERINTEGER _npg = -nbPG;
         ASTERINTEGER _nsp = nbSP;
         ASTERLOGICAL _zero = zero;
 
@@ -217,6 +217,33 @@ class SimpleFieldOnCells : public DataField {
 
         CALL_CESCRE_WRAP( base.c_str(), getName().c_str(), loc.c_str(), _mesh->getName().c_str(),
                           quantity.c_str(), &nbComp, tabNames, &_npg, &_nsp, &nbComp, &_zero );
+
+        FreeStr( tabNames );
+
+        build();
+    }
+
+    SimpleFieldOnCells( const BaseMeshPtr mesh, const std::string &loc, const std::string &quantity,
+                        const VectorString &comp, const VectorInt &nbPG, const ASTERINTEGER &nbSP,
+                        bool zero = false )
+        : SimpleFieldOnCells( mesh ) {
+
+        VectorLong nbPgTmp;
+        nbPgTmp.reserve( nbPG.size() );
+        for ( const auto &val : nbPG ) {
+            nbPgTmp.push_back( val );
+        }
+
+        const std::string base = "G";
+        ASTERINTEGER nbComp = comp.size();
+        ASTERINTEGER _nsp = nbSP;
+        ASTERLOGICAL _zero = zero;
+
+        char *tabNames = vectorStringAsFStrArray( comp, 8 );
+
+        CALL_CESCRE_WRAP( base.c_str(), getName().c_str(), loc.c_str(), _mesh->getName().c_str(),
+                          quantity.c_str(), &nbComp, tabNames, nbPgTmp.data(), &_nsp, &nbComp,
+                          &_zero );
 
         FreeStr( tabNames );
 
@@ -431,8 +458,8 @@ class SimpleFieldOnCells : public DataField {
 
         PyObject *resu_tuple = PyTuple_New( 2 );
 
-        npy_intp dims[2] = {_values->size() / this->getNumberOfComponents(),
-                            this->getNumberOfComponents()};
+        npy_intp dims[2] = { _values->size() / this->getNumberOfComponents(),
+                             this->getNumberOfComponents() };
 
         PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
                                                       _values->getDataPtr() );

@@ -38,6 +38,9 @@ void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::init(
             &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string, std::string,
                              VectorString, ASTERINTEGER, ASTERINTEGER, bool > ) )
+        .def( py::init(
+            &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string, std::string,
+                             VectorString, const VectorInt &, ASTERINTEGER, bool > ) )
         .def( "__getitem__",
               +[]( const SimpleFieldOnCellsReal &v, const VectorLong &i ) {
                   return v.operator()( i[0], i[1], i[2], i[3] );

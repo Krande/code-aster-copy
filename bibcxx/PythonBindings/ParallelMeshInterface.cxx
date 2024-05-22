@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -295,7 +295,12 @@ Arguments:
 Returns:
     ParallelMesh: the quadratic mesh.
         )",
-              py::arg( "info" ) = 1 );
+              py::arg( "info" ) = 1 )
+        .def( "getAllMedCellsTypes", &ParallelMesh::getAllMedCellsTypes, R"(
+Return all Med types available in mesh (for all processors).
+
+Returns:
+    list[int]: List of Med types.)" );
 };
 
 #endif /* ASTER_HAVE_MPI */
