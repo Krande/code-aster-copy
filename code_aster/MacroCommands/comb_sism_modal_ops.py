@@ -484,29 +484,25 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
                 l_abs_R_r[-1] += np.abs(r_r)
         R_m2 = sum(r_x**2 for r_x in l_abs_R_r)
 
-    elif type_comb in ("NRC_GROUPING", "NRC_ALL"):
-
-        if type_comb == "NRC_ALL":  # = All
-            groups = [list(range(len(freqs)))]
-        else:
-            # Create the modal group list by analyzing the frequencies
-            # **bottom-up** as required by RG 1.92 Rev.1
-            groups = []
-            for fidx, ff in enumerate(freqs):
-                if fidx == 0:
-                    # Initialize first group with the first mode
-                    groups.append([fidx])
-                    continue
-                #
-                # "Current" group reference frequency
-                ff_ref = freqs[groups[-1][0]]
-                #
-                if (ff-ff_ref)/ff_ref > 0.1:
-                    # Start a new group if the 10% is exceeded
-                    groups.append([fidx])
-                else:
-                    # Else, just append the mode index to the preceding group
-                    groups[-1].append(fidx)
+    elif type_comb == "NRC_GROUPING":
+        # Create the modal group list by analyzing the frequencies
+        # **bottom-up** as required by RG 1.92 Rev.1
+        groups = []
+        for fidx, ff in enumerate(freqs):
+            if fidx == 0:
+                # Initialize first group with the first mode
+                groups.append([fidx])
+                continue
+            #
+            # "Current" group reference frequency
+            ff_ref = freqs[groups[-1][0]]
+            #
+            if (ff-ff_ref)/ff_ref > 0.1:
+                # Start a new group if the 10% is exceeded
+                groups.append([fidx])
+            else:
+                # Else, just append the mode index to the preceding group
+                groups[-1].append(fidx)
 
         # The regular Squared-Sum contribution (no correlation part)
         sum_rk_sq = np.sum(R_mi**2, axis=0)
@@ -520,17 +516,8 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
             for ii in range(0, nbmodes-1):
                 rl = R_mi[group[ii]]
                 for jj in range(ii+1, nbmodes):
-                    # print(ii, jj)
                     rm = R_mi[group[jj]]
                     sum_rl_rm += 2.*np.abs(rl*rm)
-
-        print('---------------------------------------------')
-        print('Modal combination')
-        print('---------------------------------------------')
-        print('Grouping info          :', groups)
-        print('Uncorrelated part (max):', max(sum_rk_sq))
-        print('Correlated part   (max):', max(sum_rl_rm))
-        print('---------------------------------------------')
 
         R_m2 = sum_rk_sq + sum_rl_rm
 
@@ -1929,11 +1916,6 @@ def comb_sism_modal_ops(self, **args):
                 list_para = mode_meca.LIST_PARA()
                 # shown_name
                 show_name, show_type = _get_object_repr(mode_meca)
-                # info of mode_meca
-                dict_args = dict(
-                    valk=(show_name, comb_mode["TYPE"], str(args["OPTION"])), vali=len(freqs)
-                )
-                UTMESS("I", "SEISME_15", **dict_args)
                 # info for modal basis to be considered/combined
                 for direction in ["OX", "OY", "OZ"]:
                     if "OX" in direction:
@@ -1946,13 +1928,6 @@ def comb_sism_modal_ops(self, **args):
                         fact_partici = l_fact_partici[2]
                         masse_effe = l_masse_effe[2]
                     UTMESS("I", "SEISME_48")
-                    for i_freq in range(len(freqs)):
-                        dict_args = dict(
-                            vali=nume_modes[i_freq],
-                            valr=(freqs[i_freq], fact_partici[i_freq], masse_effe[i_freq]),
-                            valk=direction,
-                        )
-                        UTMESS("I", "SEISME_49", **dict_args)
                 # about spectra
                 for i_dir in range(len(spectres[0])):
                     # Spectrum information
@@ -2268,10 +2243,6 @@ def comb_sism_modal_ops(self, **args):
                     # pour dds: rule definied in COMB_DDS_CORRELE
                     # response of oscillator by group_appui
 
-                    print('OSC /   Corr. group combi. according to ', cumul_intra)
-                    print('OSC / Decorr. group combi. according to ', cumul_inter)
-                    print('DDS /   Corr. group combi. according to ', comb_dds_correle)
-
                     R_m_group_appui = comb_appui_corr(cumul_intra, R_m_j)
                     # response of pseudo-mode by group_appui
                     R_c_group_appui = comb_appui_corr(cumul_intra, R_c_j)
@@ -2429,11 +2400,6 @@ def comb_sism_modal_ops(self, **args):
                 list_para = mode_meca.LIST_PARA()
                 # shown_name
                 show_name, show_type = _get_object_repr(mode_meca)
-                # info of mode_meca
-                dict_args = dict(
-                    valk=(show_name, comb_mode["TYPE"], str(args["OPTION"])), vali=len(freqs)
-                )
-                UTMESS("I", "SEISME_15", **dict_args)
                 # info for modal basis to be considered/combined
                 for direction in ["OX", "OY", "OZ"]:
                     if "OX" in direction:
@@ -2446,13 +2412,6 @@ def comb_sism_modal_ops(self, **args):
                         fact_partici = l_fact_partici[2]
                         masse_effe = l_masse_effe[2]
                     UTMESS("I", "SEISME_48")
-                    for i_freq in range(len(freqs)):
-                        dict_args = dict(
-                            vali=nume_modes[i_freq],
-                            valr=(freqs[i_freq], fact_partici[i_freq], masse_effe[i_freq]),
-                            valk=direction,
-                        )
-                        UTMESS("I", "SEISME_49", **dict_args)
                 # about spectra
                 for i_dir in range(max(len(dir_all), len(D_e_dirs_all))):
                     direction = dir_all[i_dir]
