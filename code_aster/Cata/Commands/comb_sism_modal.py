@@ -119,7 +119,8 @@ COMB_SISM_MODAL = MACRO(
         statut="o",
         max=1,
         TYPE=SIMP(
-            statut="f", typ="TXM", into=("SRSS", "CQC", "DSC", "ABS", "DPC", "GUPTA"), defaut="CQC"
+            statut="f", typ="TXM", into=("SRSS", "CQC", "DSC", "ABS", "DPC", "GUPTA",
+                                         "NRC_GROUPING", "NRC_DSA"), defaut="CQC"
         ),
         b_gupta=BLOC(
             condition="""equal_to("TYPE", 'GUPTA') """,
@@ -127,6 +128,7 @@ COMB_SISM_MODAL = MACRO(
             FREQ_2=SIMP(statut="o", typ="R"),
         ),
         b_dsc=BLOC(condition="""equal_to("TYPE", 'DSC') """, DUREE=SIMP(statut="o", typ="R")),
+        b_nrc_dsa=BLOC(condition="""equal_to("TYPE", 'NRC_DSA') """, DUREE=SIMP(statut="o", typ="R")),
     ),
     # --- regle combinaison des directions
     COMB_DIRECTION=SIMP(statut="f", typ="TXM", into=("ABS", "QUAD", "NEWMARK"), defaut="NEWMARK"),
