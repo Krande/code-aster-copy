@@ -494,25 +494,38 @@ class FieldOnCells : public DataField {
     }
 
     VectorString getComponents() const {
-
         JeveuxVectorChar8 cmp( "&CMP" );
         ASTERINTEGER ncmp;
-
-        CALL_UTNCMP( getName().c_str(), &ncmp, cmp->getName().c_str() );
-
-        cmp->updateValuePointer();
-
         VectorString cmps;
-        cmps.reserve( cmp->size() );
 
-        for ( auto &cm : cmp ) {
-            cmps.push_back( strip( cm.toString() ) );
+        if ( getPhysicalQuantity() == "VARI_R" ) {
+            ncmp = ( *_descriptor )[3];
+            cmps.reserve( ncmp );
+            for ( auto icmp = 0; icmp < ncmp; icmp++ ) {
+                cmps.push_back( "V" + std::to_string( icmp + 1 ) );
+            }
+        } else {
+            CALL_UTNCMP( getName().c_str(), &ncmp, cmp->getName().c_str() );
+
+            cmp->updateValuePointer();
+
+            cmps.reserve( cmp->size() );
+
+            for ( auto &cm : cmp ) {
+                cmps.push_back( strip( cm.toString() ) );
+            }
         }
 
         return cmps;
     }
 
-    ASTERINTEGER getNumberOfComponents() const { return getComponents().size(); }
+    ASTERINTEGER getNumberOfComponents() const {
+        if ( getPhysicalQuantity() == "VARI_R" ) {
+            return ( *_descriptor )[3];
+        } else {
+            return getComponents().size();
+        }
+    }
 
     ASTERINTEGER getNumberOfGroupOfElements() const {
         _descriptor->updateValuePointer();
