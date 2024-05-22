@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -155,9 +155,6 @@ Vous risquez d'avoir des résultats inattendus, si vous ne renseignez ni :
     ),
     14: _(
         """Vous utilisez un élément de type multifibre. Il faut que sous COMPORTEMENT le mot clef RELATION soit 'MULTIFIBRE'."""
-    ),
-    15: _(
-        """La raideur tangente de la section de la poutre est nulle. Vérifier votre matériau, vous avez peut être défini un matériau élastoplastique parfait. Mettre un léger écrouissage peut permettre de passer cette difficulté."""
     ),
     16: _(
         """Vous utilisez un élément de type multifibre avec DEFORMATION='%(k1)s'. L'option RIGI_GEOM='OUI' n'est pas autorisée dans ce cas."""

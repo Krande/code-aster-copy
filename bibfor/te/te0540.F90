@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -346,7 +346,8 @@ subroutine te0540(option, nomte)
         end do
 !
         if (abs(hv) .le. r8prem()) then
-            call utmess('F', 'POUTRE0_15')
+            codret = 1
+            goto 999
         end if
 !       Correction de la position du noeud bulle
         dalico = dalico-he/hv
