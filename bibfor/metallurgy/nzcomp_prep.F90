@@ -60,6 +60,8 @@ subroutine nzcomp_prep(jvMaterCode, metaType, metaPara)
         call metaSteelTemperGetParameters(jvMaterCode, metaSteelPara)
     elseif (metaType .eq. 'ZIRC') then
 ! ----- Depending on temperature: too early here !
+    elseif (metaType .eq. 'VIDE') then
+! ----- Nothing
     else
         ASSERT(ASTER_FALSE)
     end if
