@@ -824,8 +824,7 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix(
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
     // Nécessaire également pour Deborst
-    auto vari_iter = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "VARI_R", currBehaviour,
-                                                            currElemChara );
+
     calcul->addInputField( "PVARIMP", internVar );
 
     // Create output matrix
