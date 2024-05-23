@@ -103,7 +103,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     integer :: nt_vari, codret_dummy, nbCmpDyna
     integer :: posit, iret, affe_type, affe_indx, nume_elem
     integer :: jv_elga_cesd, jv_elga_cesl, jv_elgr_cesd, jv_elgr_cesl, jv_elga, jv_elgr
-    integer :: ncmpvl, jicmp, poscmp
+    integer :: ncmpvl, jicmp, poscmp, iCmp
     character(len=7) :: saux07
     character(len=8) :: saux08
     character(len=8), parameter :: base_name = '&&IRVARI'
@@ -178,8 +178,17 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 !
 ! - Create component list in parallel context
 !
-    call impres_component_hpc(nomgd, vari_redu, ncmpvl, nb_vari_redu, indcmp)
-    call jeveuo(indcmp, 'L', jicmp)
+    if (lfichUniq) then
+        call impres_component_hpc(nomgd, vari_redu, ncmpvl, nb_vari_redu, indcmp)
+        call jeveuo(indcmp, 'L', jicmp)
+    else
+        if (nb_vari_redu .ne. 0) then
+            call wkvect(indcmp, 'V V I', nb_vari_redu, jicmp)
+            do iCmp = 1, nb_vari_redu
+                zi(jicmp+iCmp-1) = iCmp
+            end do
+        end if
+    end if
 
     call jeveuo(vari_redu, 'L', vk16=v_vari_redu)
 ! - Behaviours that cannot give name of internal state variables
