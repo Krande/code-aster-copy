@@ -103,31 +103,33 @@ subroutine impres_component_hpc(nomgd, ntncmp, ncmpvl, ncmpve, indcmp)
     do icmp1 = 1, ncmpve
         zk16(jnocmp+icmp1-1) = zk16(jnocm1+icmp1-1)
     end do
-    call wkvect('&&IRCAME.NOMFAG', 'V V K16', nb_cmp_tot, vk16=v_nomcmp)
-    call wkvect('&&IRCAME.NOMFA2', 'V V K16', nb_cmp_tot, vk16=v_nomcm2)
-    call jedetr(ntncmp)
-    call wkvect(ntncmp, 'V V K16', nb_cmp_tot, jnocm1)
-    call wkvect(indcmp, 'V V I', nb_cmp_tot, jindir)
-    taille = to_mpi_int(ncmpve)
-    call asmpi_allgatherv_char16(zk16(jnocmp), taille, v_nomcmp, v_count, v_displ, world)
-    call asmpi_allgatherv_char16(zk16(jnocm3), taille, v_nomcm2, v_count, v_displ, world)
-    call jecreo('&&IRCAME.PTRNOM', 'V N K16')
-    call jeecra('&&IRCAME.PTRNOM', 'NOMMAX', nb_cmp_tot)
-    cmpt = 0
-    do icmp1 = 1, nb_cmp_tot
-        call jenonu(jexnom('&&IRCAME.PTRNOM', v_nomcmp(icmp1)), numcmp)
-        if (numcmp .eq. 0) then
-            call jecroc(jexnom('&&IRCAME.PTRNOM', v_nomcmp(icmp1)))
-            cmpt = cmpt+1
-            zk16(jnocm1+cmpt-1) = v_nomcmp(icmp1)
-            if (ncmpve .ne. 0) then
-                call jenonu(jexnom('&&IRCAME.CMPLOC', v_nomcmp(icmp1)), numcmp)
-                if (numcmp .ne. 0) then
-                    zi(jindir+icmp1-1) = cmpt
+    if (nb_cmp_tot .ne. 0) then
+        call wkvect('&&IRCAME.NOMFAG', 'V V K16', nb_cmp_tot, vk16=v_nomcmp)
+        call wkvect('&&IRCAME.NOMFA2', 'V V K16', nb_cmp_tot, vk16=v_nomcm2)
+        call jedetr(ntncmp)
+        call wkvect(ntncmp, 'V V K16', nb_cmp_tot, jnocm1)
+        call wkvect(indcmp, 'V V I', nb_cmp_tot, jindir)
+        taille = to_mpi_int(ncmpve)
+        call asmpi_allgatherv_char16(zk16(jnocmp), taille, v_nomcmp, v_count, v_displ, world)
+        call asmpi_allgatherv_char16(zk16(jnocm3), taille, v_nomcm2, v_count, v_displ, world)
+        call jecreo('&&IRCAME.PTRNOM', 'V N K16')
+        call jeecra('&&IRCAME.PTRNOM', 'NOMMAX', nb_cmp_tot)
+        cmpt = 0
+        do icmp1 = 1, nb_cmp_tot
+            call jenonu(jexnom('&&IRCAME.PTRNOM', v_nomcmp(icmp1)), numcmp)
+            if (numcmp .eq. 0) then
+                call jecroc(jexnom('&&IRCAME.PTRNOM', v_nomcmp(icmp1)))
+                cmpt = cmpt+1
+                zk16(jnocm1+cmpt-1) = v_nomcmp(icmp1)
+                if (ncmpve .ne. 0) then
+                    call jenonu(jexnom('&&IRCAME.CMPLOC', v_nomcmp(icmp1)), numcmp)
+                    if (numcmp .ne. 0) then
+                        zi(jindir+icmp1-1) = cmpt
+                    end if
                 end if
             end if
-        end if
-    end do
+        end do
+    end if
     call jedetr('&&IRCAME.TEST')
     call jedetr('&&IRCAME.COUNT')
     call jedetr('&&IRCAME.DISPL')

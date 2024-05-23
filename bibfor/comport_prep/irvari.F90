@@ -180,7 +180,6 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 !
     if (lfichUniq) then
         call impres_component_hpc(nomgd, vari_redu, ncmpvl, nb_vari_redu, indcmp)
-        call jeveuo(indcmp, 'L', jicmp)
     else
         if (nb_vari_redu .ne. 0) then
             call wkvect(indcmp, 'V V I', nb_vari_redu, jicmp)
@@ -200,6 +199,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
         codret = 300
         goto 999
     end if
+    call jeveuo(indcmp, 'L', jicmp)
 !
 ! - Access to <CARTE> COMPOR
 !
@@ -270,13 +270,13 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
                 do i_pt = 1, nb_pt
                     do i_spt = 1, nb_spt
                         do i_vari = 1, nb_vari
-                            poscmp = zi(jicmp+i_vari-1)
-                            if (poscmp .eq. 0) cycle
                             call cesexi('C', jv_elga_cesd, jv_elga_cesl, nume_elem, i_pt, &
                                         i_spt, i_vari, jv_elga)
                             if (jv_elga .gt. 0 .and. i_vari .le. nb_vari_zone) then
                                 i_vari_redu = v_vari_link(i_vari)
                                 if (i_vari_redu .ne. 0) then
+                                    poscmp = zi(jicmp+i_vari_redu-1)
+                                    if (poscmp .eq. 0) cycle
                                     call cesexi('C', jv_elgr_cesd, jv_elgr_cesl, nume_elem, i_pt, &
                                                 i_spt, poscmp, jv_elgr)
                                     ASSERT(jv_elgr .ne. 0)
