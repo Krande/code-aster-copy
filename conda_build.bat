@@ -103,7 +103,7 @@ set LDFLAGS=%LDFLAGS% pthread.lib
 @REM set LDFLAGS=%LDFLAGS% hdf5.lib hdf5_hl.lib
 
 :: Add mumps libs
-@REM set LDFLAGS=%LDFLAGS% dmumps_seq.lib zmumps_seq.lib smumps_seq.lib cmumps_seq.lib mumps_common_seq.lib pord.lib
+set LDFLAGS=%LDFLAGS% mpiseq.lib scotch.lib scotcherr.lib metis.lib pord.lib esmumps.lib esmumps_seq.lib
 
 :: Add libmed libs
 set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
@@ -126,6 +126,7 @@ waf configure ^
   --med-libs="med medC medfwrap medimport" ^
   --prefix=%LIB_PATH_ROOT% ^
   --out=%OUTPUT_DIR% ^
+  --embed-mumps ^
   --disable-mpi ^
   --maths-libs=auto ^
   --install-tests ^

@@ -2,15 +2,15 @@ name: codeaster-deps
 dependencies:
   - python 3.11.9
   - vswhere
-  - libblas=*=*netlib
+  - libblas=*=*mkl
   - mfront=4.2.0
   - mgis=2.2
-  - mkl-devel=2024.0
+  - mkl-devel=2024.1
   - libmed=4.1.1
   - medcoupling=9.12.0
   - scotch=7.0.4
   - metis=5.1.0
-  - mumps-seq=5.6.2=*hc7c8101_5*
+  - mumps=5.6.2
   - waf=2.0.27
   - pybind11
   - numpy=1.23
@@ -18,7 +18,7 @@ dependencies:
   - python-dotenv
   - cmake
   - psutil
-  - intel-fortran-rt=2024.0
+  - intel-fortran-rt=2024.1
   - clang=18.1.5
   - clangxx=18.1.5
   - lld=18.1.5

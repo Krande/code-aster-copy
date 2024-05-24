@@ -19,7 +19,11 @@
 !
 #ifdef ASTER_HAVE_MUMPS
 interface
+#ifdef ASTER_PLATFORM_MSVC64
+    subroutine zmumps(cmpsk) bind(C, name='ZMUMPS')
+#else
     subroutine zmumps(cmpsk)
+#endif
 #       include "zmumps_struc.h"
         type (zmumps_struc) :: cmpsk
     end subroutine zmumps
