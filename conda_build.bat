@@ -1,5 +1,6 @@
 @echo off
-setlocal
+
+setlocal enabledelayedexpansion
 
 SET PARENT_DIR=%~dp0
 SET PARENT_DIR=%PARENT_DIR:\=/%
