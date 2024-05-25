@@ -10,6 +10,11 @@ set PREFIX=%CONDA_ROOT%\envs\%PYTHON_ENV_NAME%
 set LIBRARY_PREFIX=%PREFIX%\Library
 
 REM Activate python env, env variables for VS Cl (or clang-cl) and Intel fortran compiler
+REM if env var DONOT_ACTIVATE is set, we can just exit from this batch script now
+if defined DONOT_ACTIVATE_CONDA_ENV (
+    echo "DONOT_ACTIVATE_CONDA_ENV is set, exiting"
+    exit /b
+)
 @call "%CONDA_ROOT%\Scripts\activate.bat" %PYTHON_ENV_NAME%
 call "%VS_VARS_PATH%\vcvars64.bat"
 @call "%INTEL_VARS_PATH%\vars.bat" -arch intel64 vs2022
