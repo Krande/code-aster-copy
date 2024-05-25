@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from ...Supervis import ConvergenceError
-from ...Utilities import no_new_attributes, profile
+from ...Utilities import no_new_attributes, profile, logger
 from ..Basics import SolverFeature
 from ..Basics import SolverOptions as SOP
 
@@ -100,6 +100,7 @@ class LineSearch(SolverFeature):
             fopt = np.finfo("float64").max
             tiny = np.finfo("float64").tiny
             fcvg = abs(self.param["RESI_LINE_RELA"] * f0)
+            iteropt = -1
 
             assert method in ("CORDE", "MIXTE"), method
             if method == "CORDE":
@@ -109,7 +110,7 @@ class LineSearch(SolverFeature):
             elif method == "MIXTE":
                 raise NotImplementedError()
 
-            for iter in range(self.param["ITER_LINE_MAXI"]):
+            for iter in range(self.param["ITER_LINE_MAXI"] + 1):
                 try:
                     f = _f(rho)
                 except Exception as e:
@@ -118,15 +119,14 @@ class LineSearch(SolverFeature):
                         return rhoopt * solution
                     else:
                         raise e
-
                 # keep best rho
-                if abs(f) < fopt:
+                if abs(f) <= fopt:
                     rhoopt = rho
                     fopt = abs(f)
-
+                    iteropt = iter
                     # converged ?
                     if abs(f) < fcvg:
-                        print(
+                        logger.info(
                             "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iter, rho, f)
                         )
                         return rhoopt * solution
@@ -140,11 +140,12 @@ class LineSearch(SolverFeature):
                 else:
                     rho = self.param["RHO_MAX"]
 
-                # print("Iteration-%d, rho2 = %0.6f and f(rho2) = %0.6f" % (iter, rho, f))
                 rhom = rhotmp
                 fm = f
-
-            raise ConvergenceError()
+            logger.info(
+                "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iteropt, rhoopt, fopt)
+            )
+            return rhoopt * solution
 
         return solution
 

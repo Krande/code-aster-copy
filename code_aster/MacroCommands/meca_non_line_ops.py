@@ -74,14 +74,6 @@ def _keywords_check(keywords):
     if keywords["METHODE"] not in ["NEWTON", "SNES"]:
         raise RuntimeError("unsupported value in METHODE")
 
-    if "COMPORTEMENT" in keywords:
-        if "RELATION" in keywords["COMPORTEMENT"]:
-            if keywords["COMPORTEMENT"]["RELATION"] != "ELAS":
-                raise RuntimeError("unsupported value in RELATION")
-        if "DEFORMATION" in keywords["COMPORTEMENT"]:
-            if keywords["COMPORTEMENT"]["DEFORMATION"] != "PETIT":
-                raise RuntimeError("unsupported value in DEFORMATION")
-
 
 def meca_non_line_ops(self, **args):
     """Execute the command.

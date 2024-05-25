@@ -495,6 +495,7 @@ def check_config(self):
     cfg["python_interactive_is_wrapped"] = int(is_python_wrapped(cfg["python_interactive"]))
     cfg["parallel"] = int(self.get_define("ASTER_HAVE_MPI") or 0)
     cfg["require_mpiexec"] = 0
+    cfg["use_srun"] = int(bool(self.options.use_srun))
     cfg["only-proc0"] = 0
     self.env["base_mpiexec"] = ["mpiexec"]
     if cfg["parallel"]:
@@ -519,6 +520,7 @@ def check_config(self):
         "mpi_get_rank",
         "only-proc0",
         "require_mpiexec",
+        "use_srun",
         "exectool",
     ):
         verbose = param != "require_mpiexec" and cfg.get(param) is not None
@@ -605,21 +607,21 @@ def check_mpiexec(self):
 
 @Configure.conf
 def check_mpi_get_rank(self):
-    vars = ("OMPI_COMM_WORLD_RANK", "PMI_RANK")
-    expr = ""
-    for var in reversed(vars):
-        if not expr:
-            expr = f"${{{var}}}"
-        else:
-            expr = f"${{{var}:-{expr}}}"
-    # expr: ${OMPI_COMM_WORLD_RANK:-${PMI_RANK:-${PMIX_RANK:-${SLURM_PROCID}}}}
     self.start_msg("Check for MPI rank variable")
     if self.env["mpi_get_rank"]:
         self.end_msg(self.env["mpi_get_rank"])
         self.env["CFGJS_mpi_get_rank"] = [self.env["mpi_get_rank"]]
         return
-    # default expression
-    self.env["CFGJS_mpi_get_rank"] = [f"echo {expr}"]
+    # srun vs mpiexec
+    if self.options.use_srun:
+        rank_id = 'test ! -z "${SLURM_STEPID}" && echo ${SLURM_PROCID}'
+    else:
+        # default to openmpi
+        out = self.cmd_and_log(self.env["base_mpiexec"] + ["env"])
+        rank_id = "echo ${OMPI_COMM_WORLD_RANK}"
+        if "PMI_RANK" in out:
+            rank_id = "echo ${PMI_RANK}"
+    self.env["CFGJS_mpi_get_rank"] = [rank_id]
     self.end_msg(self.env["CFGJS_mpi_get_rank"][0])
 
 

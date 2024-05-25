@@ -46,6 +46,7 @@ The list of the supported *version parameters* are (with their type):
     mpi_get_rank: str       - command line to get the mpi rank
     only-proc0: bool        - true to limit output to proc #0, false to show all
     require_mpiexec: bool   - tell if mpiexec is required even with one process
+    use_srun: bool          - true if processes are started with srun
     FC: str                 - fortran compiler
     FCFLAGS: list[str]      - flags for fortran compiler
     exectool: dict[str]     - command lines for execution wrappers
@@ -168,6 +169,7 @@ VERSION_PARAMS = {
     "mpiexec": "str",
     "mpi_get_rank": "str",
     "require_mpiexec": "bool",
+    "use_srun": "bool",
     "only-proc0": "bool",
     "FC": "str",
     "FCFLAGS": "list[str]",
@@ -267,8 +269,8 @@ class Config:
         else:
             params = content
         for key, value in params.items():
-            logger.debug("+ %s: %s", key, value)
             self._storage.set(key, value)
+            logger.debug("+ %s: %s", key, self._storage.get(key))
 
     @staticmethod
     def filter(content, section, filter_key, filter_value):
