@@ -69,7 +69,7 @@ set LIBPATH_METIS=%LIB_PATH_ROOT%/lib
 set INCLUDES_METIS=%LIB_PATH_ROOT%/include
 
 set LIBPATH_MUMPS=%LIB_PATH_ROOT%/lib
-set "INCLUDES_MUMPS=%LIB_PATH_ROOT%/include %LIB_PATH_ROOT%/include/mumps_seq"
+set "INCLUDES_MUMPS=%LIB_PATH_ROOT%/include"
 
 set LIBPATH_SCOTCH=%LIB_PATH_ROOT%/lib
 set INCLUDES_SCOTCH=%LIB_PATH_ROOT%/include
@@ -104,7 +104,7 @@ set LDFLAGS=%LDFLAGS% pthread.lib
 @REM set LDFLAGS=%LDFLAGS% hdf5.lib hdf5_hl.lib
 
 :: Add mumps libs
-set LDFLAGS=%LDFLAGS% mpiseq.lib scotch.lib scotcherr.lib metis.lib pord.lib esmumps.lib esmumps_seq.lib
+set LDFLAGS=%LDFLAGS% mpiseq.lib scotch.lib scotcherr.lib metis.lib pord.lib esmumps.lib
 
 :: Add libmed libs
 set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
