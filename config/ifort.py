@@ -206,6 +206,7 @@ echo LIB=%%LIB%%;%%LIBPATH%%
         sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()])
     except Exception as e:
         Logs.error('ifort: %r' % e)
+        return
     batfile.delete()
     lines = sout.splitlines()
     if not lines[0]:

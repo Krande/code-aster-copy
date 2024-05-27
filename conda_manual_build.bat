@@ -39,7 +39,7 @@ echo "Setting compiler env vars"
 set "CC=clang-cl.exe"
 set "CXX=clang-cl.exe"
 set "FC=ifx.exe"
-REM set "LINK=link.exe"
+set "LINK=link.exe"
 
 where python
 where "%CC%"
@@ -97,6 +97,9 @@ set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin 
 :: Add Math libs
 set LDFLAGS=%LDFLAGS% mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib
 
+:: Add windows libs
+set LDFLAGS=%LDFLAGS% kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
+
 :: Add threading libs
 set LDFLAGS=%LDFLAGS% pthread.lib
 
@@ -113,7 +116,7 @@ set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
 REM Clean the build directory
-@REM waf distclean
+waf distclean
 
 python conda\update_version.py
 
