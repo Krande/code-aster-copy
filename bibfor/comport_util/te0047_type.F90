@@ -97,7 +97,6 @@ module te0047_type
     public :: getDiscretInformations, te0047_dscr_write
 !
     private
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/infted.h"
@@ -105,6 +104,8 @@ module te0047_type
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
+#include "jeveux.h"
 !
 ! -------------------------------------------------------------------------------------------------
 !&<
@@ -127,11 +128,11 @@ contains
         integer       :: icompo, itype, ideplm, ideplp, jtempsm, jtempsp, ii
         integer       :: imate, codret, cod_res(1), igeom
         real(kind=8)  :: temp_moins, temp_plus, temp_refe, val_res(1), xl2
-        aster_logical :: IsOk
+        aster_logical :: isOk, isNonLin
         !
-        IsOk = (D%nomte .ne. '') .and. (D%option .ne. '') .and. &
+        isOk = (D%nomte .ne. '') .and. (D%option .ne. '') .and. &
                ((D%syme .eq. 1) .or. (D%syme .eq. 2))
-        ASSERT(IsOk)
+        ASSERT(isOk)
         !
         call infted(D%nomte, D%syme, D%nbt, D%nno, D%nc, D%ndim, itype)
         !
@@ -143,10 +144,17 @@ contains
         !     type_comp   zk16(icompo-1+INCRELAS)    COMP_ELAS   COMP_INCR
         !
         ! Properties of behaviour
-        call jevech('PCOMPOR', 'L', icompo)
-        D%rela_comp = zk16(icompo-1+RELA_NAME)
-        D%defo_comp = zk16(icompo-1+DEFO)
-        D%type_comp = zk16(icompo-1+INCRELAS)
+        call tecach('ONO', 'PCOMPOR', 'L', codret, iad=icompo)
+        isNonLin = codret .eq. 0
+        if (isNonLin) then
+            D%rela_comp = zk16(icompo-1+RELA_NAME)
+            D%defo_comp = zk16(icompo-1+DEFO)
+            D%type_comp = zk16(icompo-1+INCRELAS)
+        else
+            D%rela_comp = "ELAS"
+            D%defo_comp = "PETIT"
+            D%type_comp = "COMP_ELAS"
+        endif
         !
         ! Si c'est ELAS on calcule la dilatation thermique :
         !   Dilatation       = alpha*( T+ - Tref )*xl
@@ -156,20 +164,24 @@ contains
         if ( D%nno .eq. 1 ) goto 100
         if ( D%rela_comp.eq.'ELAS' ) then
             ! Température
-            !   Si une température n'existe pas ==> pas de dilatation
+            !   Si la température courante ou de référence n'existe pas : pas de dilatation
             call rcvarc(' ', 'TEMP', '+',   'RIGI', 1, 1, temp_plus,  codret)
-            if ( codret.ne.0 ) goto 100
-            call rcvarc(' ', 'TEMP', '-',   'RIGI', 1, 1, temp_moins, codret)
             if ( codret.ne.0 ) goto 100
             call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1, 1, temp_refe,  codret)
             if ( codret.ne.0 ) goto 100
+            !   Si la température en t- n'existe pas : pas d'incrémental
+            !   pas de dilatation en non-linéaire
+            call rcvarc(' ', 'TEMP', '-',   'RIGI', 1, 1, temp_moins, codret)
+            if ( codret.ne.0 ) then
+                if ( isNonLin ) goto 100
+                call utmess( "F", "DISCRETS_67" )
+            endif
             ! Matériau
             !   Il peut ne pas exister sur les discrets
             call tecach('ONN', 'PMATERC', 'L', codret, iad=imate)
             if ( codret .ne.0 ) goto 100
             call rcvalb('RIGI', 1, 1, '+', zi(imate), ' ', 'ELAS', &
                         0, ' ', [0.0d0], 1, 'ALPHA', val_res, cod_res, 0)
-            !
             if ( cod_res(1).ne.0 ) goto 100
             call jevech('PGEOMER', 'L', igeom)
             igeom = igeom-1

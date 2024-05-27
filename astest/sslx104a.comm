@@ -246,122 +246,296 @@ Rstnl = CALC_CHAMP(
     CONTRAINTE=("EFGE_ELNO",),
     FORCE=("REAC_NODA",),
 )
-#
+
 # --------------------------------------------------------------------------------------------------
-# fmt: off
 InstPost = 3.0
 # Déplacement dû à l'effort, à InstPost
-SoluDepl  = depl*InstPost
-SoluDeplX = SoluDepl*cos(be)*cos(al)
-SoluDeplY = SoluDepl*cos(be)*sin(al)
-SoluDeplZ = SoluDepl*sin(be)
+SoluDepl = depl * InstPost
+SoluDeplX = SoluDepl * cos(be) * cos(al)
+SoluDeplY = SoluDepl * cos(be) * sin(al)
+SoluDeplZ = SoluDepl * sin(be)
 # Déplacement dû à la température, à InstPost
-SoluTemp  = Alpha*(Temper[int(InstPost)]-Tref)*Long
-SoluTempX = SoluTemp*cos(be)*cos(al)
-SoluTempY = SoluTemp*cos(be)*sin(al)
-SoluTempZ = SoluTemp*sin(be)
-#
+SoluTemp = Alpha * (Temper[int(InstPost)] - Tref) * Long
+SoluTempX = SoluTemp * cos(be) * cos(al)
+SoluTempY = SoluTemp * cos(be) * sin(al)
+SoluTempZ = SoluTemp * sin(be)
+
 # DÉPLACEMENT : Poutre & Discret, à InstPost
-DeplSolu  = SoluDepl  + SoluTemp
+DeplSolu = SoluDepl + SoluTemp
 DeplSoluX = SoluDeplX + SoluTempX
 DeplSoluY = SoluDeplY + SoluTempY
 DeplSoluZ = SoluDeplZ + SoluTempZ
-#
+
 TEST_RESU(
     RESU=(
-        _F(RESULTAT=Rstnl, NOM_CHAM="DEPL", INST=InstPost,
-           GROUP_NO="NA2", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DX",   VALE_CALC=DeplSolu, VALE_REFE=DeplSolu, ),
-        _F(RESULTAT=Rstnl, NOM_CHAM="DEPL", INST=InstPost,
-           GROUP_NO="DA2", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DX",   VALE_CALC=DeplSolu, VALE_REFE=DeplSolu, ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="DEPL",
+            INST=InstPost,
+            GROUP_NO="NA2",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DX",
+            VALE_CALC=DeplSolu,
+            VALE_REFE=DeplSolu,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="DEPL",
+            INST=InstPost,
+            GROUP_NO="DA2",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DX",
+            VALE_CALC=DeplSolu,
+            VALE_REFE=DeplSolu,
+        ),
         #
-        _F(RESULTAT=Rstnl, NOM_CHAM="DEPL", INST=InstPost,
-           GROUP_NO="NB2", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DX",   VALE_CALC=DeplSoluX, VALE_REFE=DeplSoluX, ),
-        _F(RESULTAT=Rstnl, NOM_CHAM="DEPL", INST=InstPost,
-           GROUP_NO="NB2", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DY",   VALE_CALC=DeplSoluY, VALE_REFE=DeplSoluY, ),
-        _F(RESULTAT=Rstnl, NOM_CHAM="DEPL", INST=InstPost,
-           GROUP_NO="NB2", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DZ",   VALE_CALC=DeplSoluZ, VALE_REFE=DeplSoluZ, ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="DEPL",
+            INST=InstPost,
+            GROUP_NO="NB2",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DX",
+            VALE_CALC=DeplSoluX,
+            VALE_REFE=DeplSoluX,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="DEPL",
+            INST=InstPost,
+            GROUP_NO="NB2",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DY",
+            VALE_CALC=DeplSoluY,
+            VALE_REFE=DeplSoluY,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="DEPL",
+            INST=InstPost,
+            GROUP_NO="NB2",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DZ",
+            VALE_CALC=DeplSoluZ,
+            VALE_REFE=DeplSoluZ,
+        ),
         #
-        _F(RESULTAT=Rstnl, NOM_CHAM="DEPL", INST=InstPost,
-           GROUP_NO="DB2", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DX",   VALE_CALC=DeplSoluX, VALE_REFE=DeplSoluX, ),
-        _F(RESULTAT=Rstnl, NOM_CHAM="DEPL", INST=InstPost,
-           GROUP_NO="DB2", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DY",   VALE_CALC=DeplSoluY, VALE_REFE=DeplSoluY, ),
-        _F(RESULTAT=Rstnl, NOM_CHAM="DEPL", INST=InstPost,
-           GROUP_NO="DB2", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DZ",   VALE_CALC=DeplSoluZ, VALE_REFE=DeplSoluZ, ),
-    ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="DEPL",
+            INST=InstPost,
+            GROUP_NO="DB2",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DX",
+            VALE_CALC=DeplSoluX,
+            VALE_REFE=DeplSoluX,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="DEPL",
+            INST=InstPost,
+            GROUP_NO="DB2",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DY",
+            VALE_CALC=DeplSoluY,
+            VALE_REFE=DeplSoluY,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="DEPL",
+            INST=InstPost,
+            GROUP_NO="DB2",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DZ",
+            VALE_CALC=DeplSoluZ,
+            VALE_REFE=DeplSoluZ,
+        ),
+    )
 )
-#
+
 # EFGE_ELNO : Poutre & Discret, à InstPost
 TEST_RESU(
     RESU=(
-        _F(RESULTAT=Rstnl,   NOM_CHAM="EFGE_ELNO", INST=InstPost,
-           GROUP_MA="POUTA", POINT=1, REFERENCE="ANALYTIQUE",
-           NOM_CMP="N",      VALE_CALC=FimpoAx*InstPost, VALE_REFE=FimpoAx*InstPost, ),
-        _F(RESULTAT=Rstnl,   NOM_CHAM="EFGE_ELNO", INST=InstPost,
-           GROUP_MA="POUTA", POINT=2, REFERENCE="ANALYTIQUE",
-           NOM_CMP="N",      VALE_CALC=FimpoAx*InstPost, VALE_REFE=FimpoAx*InstPost, ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="EFGE_ELNO",
+            INST=InstPost,
+            GROUP_MA="POUTA",
+            POINT=1,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="N",
+            VALE_CALC=FimpoAx * InstPost,
+            VALE_REFE=FimpoAx * InstPost,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="EFGE_ELNO",
+            INST=InstPost,
+            GROUP_MA="POUTA",
+            POINT=2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="N",
+            VALE_CALC=FimpoAx * InstPost,
+            VALE_REFE=FimpoAx * InstPost,
+        ),
         #
-        _F(RESULTAT=Rstnl,   NOM_CHAM="EFGE_ELNO", INST=InstPost,
-           GROUP_MA="POUTB", POINT=1, REFERENCE="ANALYTIQUE",
-           NOM_CMP="N",      VALE_CALC=FimpoAx*InstPost, VALE_REFE=FimpoAx*InstPost, ),
-        _F(RESULTAT=Rstnl,   NOM_CHAM="EFGE_ELNO", INST=InstPost,
-           GROUP_MA="POUTB", POINT=2, REFERENCE="ANALYTIQUE",
-           NOM_CMP="N",      VALE_CALC=FimpoAx*InstPost, VALE_REFE=FimpoAx*InstPost, ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="EFGE_ELNO",
+            INST=InstPost,
+            GROUP_MA="POUTB",
+            POINT=1,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="N",
+            VALE_CALC=FimpoAx * InstPost,
+            VALE_REFE=FimpoAx * InstPost,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="EFGE_ELNO",
+            INST=InstPost,
+            GROUP_MA="POUTB",
+            POINT=2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="N",
+            VALE_CALC=FimpoAx * InstPost,
+            VALE_REFE=FimpoAx * InstPost,
+        ),
         #
-        _F(RESULTAT=Rstnl,   NOM_CHAM="EFGE_ELNO", INST=InstPost,
-           GROUP_MA="DISCA", POINT=1, REFERENCE="ANALYTIQUE",
-           NOM_CMP="N",      VALE_CALC=FimpoAx*InstPost, VALE_REFE=FimpoAx*InstPost, ),
-        _F(RESULTAT=Rstnl,   NOM_CHAM="EFGE_ELNO", INST=InstPost,
-           GROUP_MA="DISCA", POINT=2, REFERENCE="ANALYTIQUE",
-           NOM_CMP="N",      VALE_CALC=FimpoAx*InstPost, VALE_REFE=FimpoAx*InstPost, ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="EFGE_ELNO",
+            INST=InstPost,
+            GROUP_MA="DISCA",
+            POINT=1,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="N",
+            VALE_CALC=FimpoAx * InstPost,
+            VALE_REFE=FimpoAx * InstPost,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="EFGE_ELNO",
+            INST=InstPost,
+            GROUP_MA="DISCA",
+            POINT=2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="N",
+            VALE_CALC=FimpoAx * InstPost,
+            VALE_REFE=FimpoAx * InstPost,
+        ),
         #
-        _F(RESULTAT=Rstnl,   NOM_CHAM="EFGE_ELNO", INST=InstPost,
-           GROUP_MA="DISCB", POINT=1, REFERENCE="ANALYTIQUE",
-           NOM_CMP="N",      VALE_CALC=FimpoAx*InstPost, VALE_REFE=FimpoAx*InstPost, ),
-        _F(RESULTAT=Rstnl,   NOM_CHAM="EFGE_ELNO", INST=InstPost,
-           GROUP_MA="DISCB", POINT=2, REFERENCE="ANALYTIQUE",
-           NOM_CMP="N",      VALE_CALC=FimpoAx*InstPost, VALE_REFE=FimpoAx*InstPost, ),
-    ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="EFGE_ELNO",
+            INST=InstPost,
+            GROUP_MA="DISCB",
+            POINT=1,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="N",
+            VALE_CALC=FimpoAx * InstPost,
+            VALE_REFE=FimpoAx * InstPost,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="EFGE_ELNO",
+            INST=InstPost,
+            GROUP_MA="DISCB",
+            POINT=2,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="N",
+            VALE_CALC=FimpoAx * InstPost,
+            VALE_REFE=FimpoAx * InstPost,
+        ),
+    )
 )
-#
+
 # REAC_NODA : Poutre & Discret, à InstPost
 TEST_RESU(
     RESU=(
-        _F(RESULTAT=Rstnl, NOM_CHAM="REAC_NODA", INST=InstPost,
-           GROUP_NO="NA1", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DX",   VALE_CALC=-FimpoAx*InstPost, VALE_REFE=-FimpoAx*InstPost, ),
-        _F(RESULTAT=Rstnl, NOM_CHAM="REAC_NODA", INST=InstPost,
-           GROUP_NO="DA1", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DX",   VALE_CALC=-FimpoAx*InstPost, VALE_REFE=-FimpoAx*InstPost, ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="REAC_NODA",
+            INST=InstPost,
+            GROUP_NO="NA1",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DX",
+            VALE_CALC=-FimpoAx * InstPost,
+            VALE_REFE=-FimpoAx * InstPost,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="REAC_NODA",
+            INST=InstPost,
+            GROUP_NO="DA1",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DX",
+            VALE_CALC=-FimpoAx * InstPost,
+            VALE_REFE=-FimpoAx * InstPost,
+        ),
         #
-        _F(RESULTAT=Rstnl, NOM_CHAM="REAC_NODA", INST=InstPost,
-           GROUP_NO="NB1", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DX",   VALE_CALC=-FimpoBx*InstPost, VALE_REFE=-FimpoBx*InstPost, ),
-        _F(RESULTAT=Rstnl, NOM_CHAM="REAC_NODA", INST=InstPost,
-           GROUP_NO="NB1", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DY",   VALE_CALC=-FimpoBy*InstPost, VALE_REFE=-FimpoBy*InstPost, ),
-        _F(RESULTAT=Rstnl, NOM_CHAM="REAC_NODA", INST=InstPost,
-           GROUP_NO="NB1", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DZ",   VALE_CALC=-FimpoBz*InstPost, VALE_REFE=-FimpoBz*InstPost, ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="REAC_NODA",
+            INST=InstPost,
+            GROUP_NO="NB1",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DX",
+            VALE_CALC=-FimpoBx * InstPost,
+            VALE_REFE=-FimpoBx * InstPost,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="REAC_NODA",
+            INST=InstPost,
+            GROUP_NO="NB1",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DY",
+            VALE_CALC=-FimpoBy * InstPost,
+            VALE_REFE=-FimpoBy * InstPost,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="REAC_NODA",
+            INST=InstPost,
+            GROUP_NO="NB1",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DZ",
+            VALE_CALC=-FimpoBz * InstPost,
+            VALE_REFE=-FimpoBz * InstPost,
+        ),
         #
-        _F(RESULTAT=Rstnl, NOM_CHAM="REAC_NODA", INST=InstPost,
-           GROUP_NO="DB1", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DX",   VALE_CALC=-FimpoBx*InstPost, VALE_REFE=-FimpoBx*InstPost, ),
-        _F(RESULTAT=Rstnl, NOM_CHAM="REAC_NODA", INST=InstPost,
-           GROUP_NO="DB1", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DY",   VALE_CALC=-FimpoBy*InstPost, VALE_REFE=-FimpoBy*InstPost, ),
-        _F(RESULTAT=Rstnl, NOM_CHAM="REAC_NODA", INST=InstPost,
-           GROUP_NO="DB1", REFERENCE="ANALYTIQUE",
-           NOM_CMP="DZ",   VALE_CALC=-FimpoBz*InstPost, VALE_REFE=-FimpoBz*InstPost, ),
-    ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="REAC_NODA",
+            INST=InstPost,
+            GROUP_NO="DB1",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DX",
+            VALE_CALC=-FimpoBx * InstPost,
+            VALE_REFE=-FimpoBx * InstPost,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="REAC_NODA",
+            INST=InstPost,
+            GROUP_NO="DB1",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DY",
+            VALE_CALC=-FimpoBy * InstPost,
+            VALE_REFE=-FimpoBy * InstPost,
+        ),
+        _F(
+            RESULTAT=Rstnl,
+            NOM_CHAM="REAC_NODA",
+            INST=InstPost,
+            GROUP_NO="DB1",
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="DZ",
+            VALE_CALC=-FimpoBz * InstPost,
+            VALE_REFE=-FimpoBz * InstPost,
+        ),
+    )
 )
-# fmt: on
 
 FIN()
