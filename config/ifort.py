@@ -184,7 +184,7 @@ def setup_ifort(conf, versiondict):
                 return compiler, revision, cfg.bindirs, cfg.incdirs, cfg.libdirs, cfg.cpu
 
     conf.fatal('ifort: Impossible to find a valid architecture for building %r - %r' % (
-    desired_versions, list(versiondict.keys())))
+        desired_versions, list(versiondict.keys())))
 
 
 @conf
@@ -202,12 +202,7 @@ echo PATH=%%PATH%%
 echo INCLUDE=%%INCLUDE%%
 echo LIB=%%LIB%%;%%LIBPATH%%
 """ % (vcvars, target))
-    try:
-        sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()])
-    except Exception as e:
-        Logs.error('ifort: %r' % e)
-        raise Errors.ConfigurationError('ifort: Cannot run the Intel compiler')
-
+    sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()])
     batfile.delete()
     lines = sout.splitlines()
     if not lines[0]:
