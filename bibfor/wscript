@@ -635,7 +635,9 @@ def check_optimization_fcflags_msvc(self):
     else:
         self.end_msg(res)
     if "-fno-frontend-optimize" not in optflag:
-        self.check_fortran_compiler_options("-finline-matmul-limit=6")
+        # self.check_fortran_compiler_options("-finline-matmul-limit=6")
+        # If necessary, then what is the equivalent of -finline-matmul-limit=6 in MSVC?
+        pass
     self.start_msg("Setting Fortran optimization flags")
     self.env.append_unique("FCFLAGS", optflag)
     self.end_msg(optflag)

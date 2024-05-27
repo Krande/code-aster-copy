@@ -36,9 +36,6 @@ EXPORTS
 	_new_try
 	_reset_tpmax
 	_search_id
-	_vfprintf_l
-	_vsnprintf_l
-	_vsprintf_l
 	append_etape
 	asabrt_
 	asmpi_allgather_char8_
