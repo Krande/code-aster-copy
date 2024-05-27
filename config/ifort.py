@@ -202,7 +202,10 @@ echo PATH=%%PATH%%
 echo INCLUDE=%%INCLUDE%%
 echo LIB=%%LIB%%;%%LIBPATH%%
 """ % (vcvars, target))
-    sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()])
+    try:
+        sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()])
+    except Exception as e:
+        Logs.error('ifort: %r' % e)
     batfile.delete()
     lines = sout.splitlines()
     if not lines[0]:
