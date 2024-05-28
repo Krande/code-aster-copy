@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -406,6 +406,7 @@ class MECA_DIS_T_N(Element):
             para_in=((OP.REPERE_LOCAL.PCAORIE, CCAORIE),),
             para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D), (SP.PREPLO3, LC.CGEOM3D)),
         ),
+        OP.REST_ECRO(te=99, para_out=((OP.REST_ECRO.PVARIPR, ZVARIPG),)),
         OP.RIGI_FLUI_STRU(
             te=41,
             para_in=(
