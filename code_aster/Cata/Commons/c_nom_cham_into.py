@@ -326,7 +326,12 @@ class NomChamIntoGenerator:
                 ("lin", "nonlin", "dyna"),
                 tr("Variables de commande aux points de Gauss"),
             ),
-            "VARI_ELNO": (("nonlin", "dyna"), tr("Variables internes aux noeuds pas élément")),
+            "VARC_ELNO": (
+                ("lin", "nonlin", "dyna"),
+                tr("Variables de commande aux noeuds par élément"),
+            ),
+            "VARC_NOEU": (("lin", "nonlin", "dyna"), tr("Variables de commande aux noeuds")),
+            "VARI_ELNO": (("nonlin", "dyna"), tr("Variables internes aux noeuds par élément")),
             "VARI_NOEU": (("nonlin", "dyna"), tr("Variables internes aux noeuds")),
         },
         Phenomenon.HYDRAULIQUE: {

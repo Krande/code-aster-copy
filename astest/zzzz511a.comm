@@ -42,7 +42,7 @@ NU = 0.3
 ALPHA = 1.0e-5
 
 
-ma_me = LIRE_MAILLAGE()
+ma_me = LIRE_MAILLAGE(INFO=2)
 
 
 mo_me = AFFE_MODELE(
@@ -251,12 +251,31 @@ ctrl = RECU_TABLE(CO=evol_me, NOM_TABLE="OBSERVATION")
 
 CALC_CHAMP(reuse=evol_me, RESULTAT=evol_me, VARI_INTERNE="VARC_ELGA", TOUT_ORDRE="OUI")
 
+CALC_CHAMP(
+    reuse=evol_me,
+    RESULTAT=evol_me,
+    VARI_INTERNE=("VARC_ELNO"),
+    TOUT_ORDRE="OUI",
+    GROUP_MA=("massif", "grille", "barre", "ressort", "coque"),
+)
+
+CALC_CHAMP(
+    reuse=evol_me,
+    RESULTAT=evol_me,
+    VARI_INTERNE=("VARC_NOEU"),
+    TOUT_ORDRE="OUI",
+    GROUP_MA=("massif", "grille", "barre", "ressort"),
+)
+
 
 resu_sp = POST_CHAMP(
     RESULTAT=evol_me,
     TOUT_ORDRE="OUI",
     GROUP_MA="coque",
-    MIN_MAX_SP=_F(NOM_CHAM="VARC_ELGA", NOM_CMP="TEMP", TYPE_MAXI="MAXI", NUME_CHAM_RESU=1),
+    MIN_MAX_SP=(
+        _F(NOM_CHAM="VARC_ELGA", NOM_CMP="TEMP", TYPE_MAXI="MAXI", NUME_CHAM_RESU=1),
+        _F(NOM_CHAM="VARC_ELNO", NOM_CMP="TEMP", TYPE_MAXI="MAXI", NUME_CHAM_RESU=1),
+    ),
 )
 
 
@@ -387,6 +406,19 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             INST=1,
             RESULTAT=evol_me,
+            NOM_CHAM="VARC_ELNO",
+            NOM_CMP="TEMP",
+            GROUP_MA="coque",
+            POINT=1,
+            SOUS_POINT=3,
+            VALE_REFE=TIMP,
+            VALE_CALC=100.0,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            INST=1,
+            RESULTAT=evol_me,
             NOM_CHAM="VARC_ELGA",
             NOM_CMP="TEMP",
             GROUP_MA="barre",
@@ -422,6 +454,43 @@ TEST_RESU(
     )
 )
 
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            INST=1,
+            RESULTAT=evol_me,
+            NOM_CHAM="VARC_NOEU",
+            NOM_CMP="TEMP",
+            GROUP_NO="no_massif",
+            VALE_REFE=TIMP,
+            VALE_CALC=100.0,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            INST=1,
+            RESULTAT=evol_me,
+            NOM_CHAM="VARC_NOEU",
+            NOM_CMP="TEMP",
+            GROUP_NO="ressort",
+            VALE_REFE=TIMP,
+            VALE_CALC=100.0,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            INST=1,
+            RESULTAT=evol_me,
+            NOM_CHAM="VARC_NOEU",
+            NOM_CMP="TEMP",
+            GROUP_NO="barre_s",
+            VALE_REFE=TIMP,
+            VALE_CALC=100.0,
+            CRITERE="RELATIF",
+        ),
+    )
+)
 
 # Test des itérations
 

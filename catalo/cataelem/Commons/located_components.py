@@ -1365,6 +1365,12 @@ EVARC_R = LocatedComponents(
     components=("TEMP", "HYDR", "SECH", "IRRA", "CORR", "PTOT", "NEUT[2]"),
 )
 
+EVARCNR = LocatedComponents(
+    phys=PHY.VARC_R,
+    type="ELNO",
+    components=("TEMP", "HYDR", "SECH", "IRRA", "CORR", "PTOT", "NEUT[2]"),
+)
+
 
 G27NEUTR = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[27]",))
 
