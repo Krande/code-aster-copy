@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,8 +55,6 @@ operator using the functions:
 
 """
 
-import random
-
 from ..Cata import Commands
 from ..Cata.SyntaxChecker import CheckerError, SyntaxCheckerVisitor
 from ..Objects import DataStructure
@@ -83,7 +81,7 @@ class CommandSyntax:
     with the fortran code that use the legacy supervisor.
     """
 
-    _currentCommand = _random = None
+    _currentCommand = None
 
     @classmethod
     def setCurrentCommand(cls, command):
@@ -253,7 +251,7 @@ class CommandSyntax:
             return None
         try:
             return dictDef[occurrence]
-        except:
+        except Exception:
             return None
 
     def _getDefinition(self, factName, occurrence):
@@ -484,7 +482,7 @@ class CommandSyntax:
         """
         values = self.getValue(factName, occurrence, simpName)
         if len(values) > 0:
-            if type(values[0]) is str:
+            if isinstance(values[0], str):
                 values = (values,)
             toReturn = []
             for value in values:
@@ -611,29 +609,6 @@ class CommandSyntax:
                 raise TypeError("unsupported type: {0!r} {1}".format(obj, type(obj)))
             types.append(typ)
         return kws, types
-
-    @classmethod
-    def iniran(cls, jump=0):
-        """Initialize the generator of random numbers.
-
-        Arguments:
-            jump (int): Non-negative integer to change the state of the
-                numbers generator.
-        """
-        cls._random = random.Random(100)
-        gen = cls._random
-        gen.seed(jump)
-
-    @classmethod
-    def getran(cls):
-        """Returns a random number between 0 and 1.
-
-        Returns:
-            float: Random number.
-        """
-        if not cls._random:
-            cls.iniran()
-        return (cls._random.random(),)
 
     def getmat(self):
         raise NotImplementedError("'getmat' is not yet supported.")

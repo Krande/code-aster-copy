@@ -38,12 +38,10 @@ from functools import partial
 
 import aster_core
 import libaster
-
 from run_aster.run import copy_datafiles
 
 from ..Behaviours import catalc
 from ..Cata.Syntax import tr
-from ..Cata.SyntaxUtils import remove_none
 from ..Helpers import LogicalUnitFile
 from ..Messages import UTMESS, MessageLog
 from ..Supervis import CommandSyntax, ExecuteCommand, Serializer, loadObjects
@@ -51,6 +49,7 @@ from ..Supervis.code_file import track_coverage
 from ..Supervis.ctopy import checksd, print_header
 from ..Supervis.TestResult import testresu_print
 from ..Utilities import MPI, ExecutionParameter, Options, import_object, logger
+from ..Utilities.general import Random
 from ..Utilities.i18n import localization
 from ..Utilities.rc import rc
 
@@ -85,12 +84,14 @@ class ExecutionStarter:
             return False
         params = cls.params = ExecutionParameter()
         params.parse_args(argv)
-        params.catalc = catalc
-        params.logical_unit = LogicalUnitFile
-        params.syntax = CommandSyntax
-        params.print_header = print_header
-        params.checksd = checksd
-        params.testresu_print = testresu_print
+        params.register_global_object("catalc", catalc)
+        params.register_global_object("logical_unit", LogicalUnitFile)
+        params.register_global_object("syntax", CommandSyntax)
+        params.register_global_object("print_header", print_header)
+        params.register_global_object("checksd", checksd)
+        params.register_global_object("testresu_print", testresu_print)
+        params.register_global_object("iniran", Random.initialize)
+        params.register_global_object("getran", Random.get_number)
         copy_datafiles(params.export.datafiles)
         aster_core.register(params, MessageLog)
         libaster.jeveux_init(fcomm)
