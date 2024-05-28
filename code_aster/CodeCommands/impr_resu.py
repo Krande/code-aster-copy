@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -54,7 +54,7 @@ class ImprResu(ExecuteCommand):
                     return
                 resu["NOM_RESU_MED"] = resu_name
         if resu.get("CHAM_GD"):
-            field_name = resu["CHAM_GD"].userName[0:8]
+            field_name = resu["CHAM_GD"].userName
             if not field_name:
                 UTMESS("A", "MED3_2", valk=resu["CHAM_GD"].getName())
                 return
