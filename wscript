@@ -224,7 +224,7 @@ def all_components(self):
 
 def configure(self):
     if platform.system() == "Windows" and os.getenv('WAFDIR') is None:
-        print("Loading 'ifort' and 'msvc' toolchains")
+        print("Loading custom 'ifort' and 'msvc' toolchains")
         self.load("ifort", tooldir="config")
 
     opts = self.options
