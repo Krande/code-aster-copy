@@ -38,4 +38,4 @@ if config.get("ASTER_HAVE_MPI") and config.get("ASTER_HAVE_MED"):
 else:
     MedFileReader = IncompleteMesh = MeshBalancer = MeshConnectionGraph = PtScotchPartitioner = None
     FieldCharacteristics = SimpleFieldOnNodesReal = Result = SimpleFieldOnCellsReal = None
-    MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = MedFileAccessType = None
+    MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = MedFileAccessType = toAsterGeoType = None
