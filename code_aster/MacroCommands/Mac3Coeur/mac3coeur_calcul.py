@@ -232,6 +232,10 @@ class Mac3CoeurCalcul:
         return self.keyw.get("TYPE_COEUR").startswith("LIGNE")
 
     @property
+    def lock_grid_rotation(self):
+        return self.keyw.get("ROTATION_GRILLE").startswith("NON")
+
+    @property
     def niv_fluence(self):
         """Return the fluence level"""
         return self._niv_fluence
@@ -424,9 +428,12 @@ class Mac3CoeurCalcul:
     def rigid_load(self):
         """Compute the rigid body loading"""
 
-        grid_lock = AFFE_CHAR_MECA(
-            MODELE=self.model, LIAISON_SOLIDE=self.coeur.cl_rigidite_grille()
-        )
+        rigid_loads = self.coeur.cl_rigidite_grille()
+        if self.coeur.is_multi_rod:
+            rigid_loads.extend(self.coeur.cl_rigidite_embouts())
+
+        grid_lock = AFFE_CHAR_MECA(MODELE=self.model, LIAISON_SOLIDE=rigid_loads)
+
         return [_F(CHARGE=grid_lock)]
 
     @property
@@ -532,9 +539,14 @@ class Mac3CoeurCalcul:
             kddl["GROUP_MA" if grma else "GROUP_NO"] = grma or grno
             return kddl
 
+        if self.lock_grid_rotation:
+            ddl_lock_grid = ["DRX", "DRY", "DRZ"]
+        else:
+            ddl_lock_grid = ["DRX"]
+
         ddl_impo = [
             block(grma="CRAYON", ddl=["DRX"]),
-            block(grno="LISPG", ddl=["DRX", "DRY", "DRZ"]),
+            block(grno="LISPG", ddl=ddl_lock_grid),
             block(grma=("EBOSUP", "EBOINF"), ddl=["DRX", "DRY", "DRZ"]),
         ]
         _excit = AFFE_CHAR_CINE(MODELE=self.model, MECA_IMPO=ddl_impo)
