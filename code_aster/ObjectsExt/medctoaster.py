@@ -234,6 +234,8 @@ class MEDCouplingMeshHelper:
         asterType = [-1] * max(ASTER_TYPES)
         tmpConnex = []
         tmpType = []
+        globNumBuilder = []
+        globNumByLevel = {}
 
         # Loop sur les niveaux
         for level in sorted(non_empty_levels):
@@ -241,6 +243,8 @@ class MEDCouplingMeshHelper:
 
             # Loop sur toutes les types du niveau
             types_at_level = mesh_level.getAllGeoTypesSorted()
+            currentShift = 0
+            curGlobNum = []
             for medcoupling_cell_type in types_at_level:
                 # Cells du meme type
                 cells_current_type = mesh_level.giveCellsWithType(medcoupling_cell_type)
@@ -272,13 +276,33 @@ class MEDCouplingMeshHelper:
                 connectivity_current_type += 1
 
                 # Sauvegarde de la connectivité aster au km
-                # self._connectivity_aster.extend(connectivity_current_type)
                 tmpConnex.append(connectivity_current_type)
                 # Sauvegarde du type med
-                # self._cell_types.extend([med_current_type] * mesh_current_type.getNumberOfCells())
                 tmpType.append([med_current_type] * mesh_current_type.getNumberOfCells())
                 asterType[toAsterGeoType(med_current_type)] = len(tmpConnex) - 1
+                globNumBuilder.append([level, mesh_current_type.getNumberOfCells(), currentShift])
+                currentShift += mesh_current_type.getNumberOfCells()
+                curGlobNum.extend([i for i in range(mesh_current_type.getNumberOfCells())])
 
+            globNumByLevel[level] = curGlobNum
+
+            # Shift pour numeroration globale
+            level_shift += mesh_level.getNumberOfCells()
+
+        curShift = 1
+        for i in asterType:
+            if i != -1:
+                self._connectivity_aster.extend(tmpConnex[i])
+                self._cell_types.extend(tmpType[i])
+                curLevel = globNumBuilder[i][0]
+                cellNb = globNumBuilder[i][1]
+                posInNum = globNumBuilder[i][2]
+                for val in range(posInNum, posInNum + cellNb):
+                    globNumByLevel[curLevel][val] += curShift
+                curShift += len(tmpType[i])
+
+        for level in sorted(non_empty_levels):
+            curGlobNum = globNumByLevel[level]
             # Groupes de cells au niveau
             with self._timer(". store groups of cells"):
                 groups = mesh.getGroupsOnSpecifiedLev(level)
@@ -289,18 +313,12 @@ class MEDCouplingMeshHelper:
                     group_cells = mesh.getGroupArr(level, group).deepCopy()
                     if not group_cells:
                         continue
-                    group_cells += 1
-                    group_cells += level_shift
+                    newGrp = []
+                    for iCell in group_cells.toNumPyArray():
+                        newGrp.append(curGlobNum[iCell])
                     self._groups_of_cells.setdefault(group, [])
-                    self._groups_of_cells[group].extend(group_cells.toNumPyArray())
-
-            # Shift pour numeroration globale
-            level_shift += mesh_level.getNumberOfCells()
-
-        for i in asterType:
-            if i != -1:
-                self._connectivity_aster.extend(tmpConnex[i])
-                self._cell_types.extend(tmpType[i])
+                    grp = np.array(newGrp)
+                    self._groups_of_cells[group].extend(grp)
 
         # Groupes de noeuds
         with self._timer(". store groups of nodes"):
