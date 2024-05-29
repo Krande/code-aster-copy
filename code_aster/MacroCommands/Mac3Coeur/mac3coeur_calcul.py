@@ -502,8 +502,9 @@ class Mac3CoeurCalcul:
     def kinematic_cond(self):
         """Define the kinematic conditions from displacement"""
 
-        red_resu = self.restrict_displacement(self.char_init, cmps=["DY", "DZ"], grps=None)
-
+        red_resu = self.restrict_displacement(
+            self.char_init, cmps=["DY", "DZ"], grps=["UNLINKED_LOCAL"]
+        )
         kine_load = AFFE_CHAR_CINE(MODELE=self.model, EVOL_IMPO=red_resu, NOM_CMP=("DY", "DZ"))
         kine_load_cine = [_F(CHARGE=kine_load)]
 
@@ -850,6 +851,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                 + self.vessel_head_load
                 + self.vessel_dilatation_load
                 + self.kinematic_cond
+                + self.rigid_load
                 + self.thyc_load[0]
             )
             logger.debug(
@@ -1268,10 +1270,11 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
             + self.vessel_head_load
             + self.vessel_dilatation_load
             + self.periodic_cond
+            + self.rigid_load
         )
 
         loads_lame_damac = loads_lame_base + self.damac_load
-        loads_lame_thyc = loads_lame_base + self.rigid_load + self.thyc_load[0] + self.thyc_load[1]
+        loads_lame_thyc = loads_lame_base + self.thyc_load[0] + self.thyc_load[1]
         logger.debug("<MAC3_CALCUL><LAME>: Finish computing boundary conditions.")
 
         logger.debug("<MAC3_CALCUL><LAME>: Start computing DAMAC load.")

@@ -122,6 +122,7 @@ class Coeur:
 
     _time = ("T0", "T0b", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8b", "T9")
     _subtime = ("N0", "N0b", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N8b", "N9")
+    _type_coeur = None
 
     @property
     def type_coeur(self):
@@ -569,6 +570,33 @@ class Coeur:
         return _F_EMBO
 
     def affectation_maillage(self, MA0):
+
+        gno_names = MA0.getGroupsOfNodes()
+
+        # Noeuds en liaison solide
+        linked_total_nodes_names = [
+            i for i in gno_names if i.startswith(("G_", "CREIBAS_", "TGBAS_", "TGHAUT_"))
+        ]
+        linked_total_nodes = set(MA0.getNodes(linked_total_nodes_names))
+
+        # Noeuds avec déplacement imposé
+        load_nodes_names = [i for i in gno_names if i.startswith("P_")]
+        load_nodes = set(MA0.getNodes(load_nodes_names))
+
+        # Ensemble des noeuds en liaison moins ceux avec déplacement imposé
+        linked_local_nodes = linked_total_nodes - load_nodes
+
+        # Creation des groupes complementaires des noeuds qui ne sont pas en liaison
+        gno_all = set(range(MA0.getNumberOfNodes()))
+        unlinked_total = gno_all - linked_total_nodes
+        unlinked_local = gno_all - linked_local_nodes
+
+        if "UNLINKED_TOTAL" not in gno_names:
+            MA0.setGroupOfNodes("UNLINKED_TOTAL", tuple(unlinked_total))
+
+        if "UNLINKED_LOCAL" not in gno_names:
+            MA0.setGroupOfNodes("UNLINKED_LOCAL", tuple(unlinked_local))
+
         LISGRIL = []
         LISGRILI = []
         LISGRILE = []
