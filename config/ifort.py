@@ -101,7 +101,6 @@ all_ifort_platforms = [('intel64', 'amd64'), ('em64t', 'amd64'), ('ia32', 'x86')
 def gather_ifort_versions(conf, versions):
     ifort_batch_file = pathlib.Path(os.getenv("INTEL_VARS_PATH")+'\\vars.bat')
     if ifort_batch_file.exists():
-        # Logs.info(f"Ifort env var batch found at {ifort_batch_file=}")
         arch = 'amd64'
         version = '192.49896'
         target = 'intel64'
@@ -195,12 +194,21 @@ def get_ifort_version_win32(conf, compiler, version, target, vcvars):
         conf.msvc_cnt = 1
     batfile = conf.bldnode.make_node('waf-print-msvc-%d.bat' % conf.msvc_cnt)
     batfile.write("""@echo off
-set INCLUDE=
-set LIB=
-call "%s" %s
+setlocal enabledelayedexpansion
+:: if SETVARS_CALL is defined, then the script is being called from another script
+:: and we should not set the environment variables
+if not defined SETVARS_COMPLETED (
+    set INCLUDE=
+    set LIB=
+    call "%s" %s
+) else (
+    echo Environment variables already set
+)
+
 echo PATH=%%PATH%%
 echo INCLUDE=%%INCLUDE%%
 echo LIB=%%LIB%%;%%LIBPATH%%
+endlocal
 """ % (vcvars, target))
     sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()])
     batfile.delete()
