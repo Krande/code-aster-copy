@@ -423,29 +423,41 @@ ASTERINTEGER Result::getFirstIndex() const {
 
 FieldOnCellsRealPtr Result::getFieldOnCellsReal( const std::string name,
                                                  const ASTERINTEGER storageIndex ) const {
-    return _dictOfMapOfFieldOnCellsReal.at( name ).at( storageIndex );
+    FieldOnCellsRealPtr result = _dictOfMapOfFieldOnCellsReal.at( name ).at( storageIndex );
+    result->updateValuePointers();
+    return result;
 };
 
 FieldOnCellsComplexPtr Result::getFieldOnCellsComplex( const std::string name,
                                                        const ASTERINTEGER storageIndex ) const {
-    return _dictOfMapOfFieldOnCellsComplex.at( name ).at( storageIndex );
+    FieldOnCellsComplexPtr result = _dictOfMapOfFieldOnCellsComplex.at( name ).at( storageIndex );
+    result->updateValuePointers();
+    return result;
 };
 
 FieldOnCellsLongPtr Result::getFieldOnCellsLong( const std::string name,
                                                  const ASTERINTEGER storageIndex ) const {
-    return _dictOfMapOfFieldOnCellsLong.at( name ).at( storageIndex );
+    FieldOnCellsLongPtr result = _dictOfMapOfFieldOnCellsLong.at( name ).at( storageIndex );
+    result->updateValuePointers();
+    return result;
 };
 
 ConstantFieldOnCellsChar16Ptr
 Result::getConstantFieldOnCellsChar16( const std::string name,
                                        const ASTERINTEGER storageIndex ) const {
-    return _dictOfMapOfConstantFieldOnCellsChar16.at( name ).at( storageIndex );
+    ConstantFieldOnCellsChar16Ptr result =
+        _dictOfMapOfConstantFieldOnCellsChar16.at( name ).at( storageIndex );
+    result->updateValuePointers();
+    return result;
 };
 
 ConstantFieldOnCellsRealPtr
 Result::getConstantFieldOnCellsReal( const std::string name,
                                      const ASTERINTEGER storageIndex ) const {
-    return _dictOfMapOfConstantFieldOnCellsReal.at( name ).at( storageIndex );
+    ConstantFieldOnCellsRealPtr result =
+        _dictOfMapOfConstantFieldOnCellsReal.at( name ).at( storageIndex );
+    result->updateValuePointers();
+    return result;
 };
 
 py::dict Result::getAccessParameters() const {
@@ -633,13 +645,16 @@ VectorString Result::getGeneralizedVectorComplexNames() const {
 
 FieldOnNodesRealPtr Result::getFieldOnNodesReal( const std::string name,
                                                  const ASTERINTEGER storageIndex ) const {
-
-    return _dictOfMapOfFieldOnNodesReal.at( name ).at( storageIndex );
+    FieldOnNodesRealPtr result = _dictOfMapOfFieldOnNodesReal.at( name ).at( storageIndex );
+    result->updateValuePointers();
+    return result;
 };
 
 FieldOnNodesComplexPtr Result::getFieldOnNodesComplex( const std::string name,
                                                        const ASTERINTEGER storageIndex ) const {
 
+    FieldOnNodesComplexPtr result = _dictOfMapOfFieldOnNodesComplex.at( name ).at( storageIndex );
+    result->updateValuePointers();
     return _dictOfMapOfFieldOnNodesComplex.at( name ).at( storageIndex );
 };
 
