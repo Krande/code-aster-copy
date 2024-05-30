@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    use MGIS_module
     implicit none
 !
 #include "asterf_types.h"
@@ -323,6 +324,9 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
             AS_DEALLOCATE(vi=listStore)
 
 ! --------- Get name of internal state variables
+            if (hasMFront(compor)) then
+                call utmess('F', "COMPOR6_6")
+            end if
             call varinonu(model, compor, &
                           nbma, zi(jlma), &
                           nbVari, variName, cmpName)
