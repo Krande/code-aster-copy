@@ -100,6 +100,9 @@ set LDFLAGS=%LDFLAGS% mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_d
 :: Add threading libs
 set LDFLAGS=%LDFLAGS% pthread.lib
 
+:: Add mumps libs
+set LDFLAGS=%LDFLAGS% mpiseq.lib esmumps.lib scotch.lib scotcherr.lib scotcherrexit.lib
+
 :: Add metis libs
 set LDFLAGS=%LDFLAGS% metis.lib
 
@@ -118,7 +121,6 @@ set BUILD=std
 
 REM Install for standard sequential
 waf configure ^
-  --safe ^
   --check-fortran-compiler=ifort ^
   --use-config-dir=%PARENT_DIR%/config/ ^
   --med-libs="med medC medfwrap medimport" ^
@@ -126,7 +128,6 @@ waf configure ^
   --out=%OUTPUT_DIR% ^
   --disable-mpi ^
   --maths-libs=auto ^
-  --install-tests ^
   --without-hg
 
 

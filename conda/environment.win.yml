@@ -20,7 +20,10 @@ dependencies:
   - cmake
   - psutil
 #  - intel-fortran-rt=2024.1  # This was the root cause of the __atomic issues!
+# However, we still need it for the fortran runtime. It's likely some kind of conflict with the mkl package.
   - clang=18.1.6
-  - clangxx=18.1.6
 #  - lld=18.1.6
 #  - lldb=18.1.6
+#  - pip
+#  - pip:
+#      - dlltracer

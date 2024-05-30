@@ -75,7 +75,7 @@ def individual_test():
 
 def trace_test():
     import ctypes
-    ctypes.CDLL(rf"{os.getenv('CONDA_PREFIX')}\Library\lib\aster\bibcxx.dll")
+    # ctypes.CDLL(rf"{os.getenv('CONDA_PREFIX')}\Library\lib\aster\bibcxx.dll")
     sys.path.insert(0, ASTER_DIR.as_posix())
     with dlltracer.Trace(out=sys.stdout):
         import code_aster

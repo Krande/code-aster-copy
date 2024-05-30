@@ -10,7 +10,7 @@ set export=%1
 for /F %%i in ("%export%") do set base=%%~ni
 
 set RUNASTER_ROOT=%~dp0..\..
-
+echo RUNASTER_ROOT=%RUNASTER_ROOT%
 cmd /c %RUNASTER_ROOT%\bin\run_aster.bat --ctest %export% > %base%.mess 2>&1
 set iret=%ERRORLEVEL%
 

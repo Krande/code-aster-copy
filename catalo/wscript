@@ -74,8 +74,10 @@ class printcata(Task.Task):
         """Execute the command"""
         environ = os.environ.copy()
         # add src/code_aster + catalo in PYTHONPATH
+        # add_to_env_paths(environ, "PYTHONPATH", r"C:\Program Files (x86)\Intel\oneAPI\compiler\2024.1\bin")
         add_to_env_paths(environ, "PYTHONPATH", self.env["CODEASTERPATH"])
         add_to_env_paths(environ, "PYTHONPATH", self.env["CATALOPATH"])
+        # Logs.info("PYTHONPATH: %s" % environ["PYTHONPATH"])
         exec_pyaster(
             self.generator.bld,
             osp.join(self.env["CATALOPATH"], "build_cata.py"),
