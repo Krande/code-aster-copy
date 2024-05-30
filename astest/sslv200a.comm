@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -946,21 +946,21 @@ TEST_RESU(
             NUME_ORDRE=1,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=943309157.34906,
+            VALE_CALC=936556882.9680672,
         ),
         _F(
             NOM_CHAM="EPSI_ELNO",
             NUME_ORDRE=2,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=956410928.42294,
+            VALE_CALC=949566017.3245416,
         ),
         _F(
             NOM_CHAM="EPSI_ELNO",
             NUME_ORDRE=3,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=969512009.94195,
+            VALE_CALC=962574499.9538062,
         ),
         _F(
             NOM_CHAM="EPSI_NOEU",
@@ -988,21 +988,21 @@ TEST_RESU(
             NUME_ORDRE=1,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=1549862226.664,
+            VALE_CALC=1567774495.0110598,
         ),
         _F(
             NOM_CHAM="SIGM_ELNO",
             NUME_ORDRE=2,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=1571492512.5743,
+            VALE_CALC=1589655243.9766285,
         ),
         _F(
             NOM_CHAM="SIGM_ELNO",
             NUME_ORDRE=3,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=1593123813.0355,
+            VALE_CALC=1611537013.5946774,
         ),
         _F(
             NOM_CHAM="SIGM_NOEU",
@@ -1030,21 +1030,21 @@ TEST_RESU(
             NUME_ORDRE=1,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=5048206812.011,
+            VALE_CALC=5109875428.344264,
         ),
         _F(
             NOM_CHAM="SIEQ_ELNO",
             NUME_ORDRE=2,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=5118684344.086,
+            VALE_CALC=5181217151.124962,
         ),
         _F(
             NOM_CHAM="SIEQ_ELNO",
             NUME_ORDRE=3,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=5189163955.1924,
+            VALE_CALC=5252561036.244462,
         ),
         _F(
             NOM_CHAM="SIEQ_NOEU",
@@ -1072,21 +1072,21 @@ TEST_RESU(
             NUME_ORDRE=1,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=1724431969.7753,
+            VALE_CALC=1714291586.1222482,
         ),
         _F(
             NOM_CHAM="EPEQ_ELNO",
             NUME_ORDRE=2,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=1748387487.1749,
+            VALE_CALC=1738107078.7636464,
         ),
         _F(
             NOM_CHAM="EPEQ_ELNO",
             NUME_ORDRE=3,
             RESULTAT=MSLINP,
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=1772341309.9387,
+            VALE_CALC=1761920912.5833468,
         ),
         _F(
             NOM_CHAM="EPEQ_NOEU",
