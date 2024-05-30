@@ -107,6 +107,7 @@ result = CA.ElasticResult()
 result.resize(1)
 result.setField(fieldToAdd, "SIEF_ELGA", 1)
 result.setTime(0.0, 1)
+result.userName = "MONRESU1"
 
 medfile = ""
 with shared_tmpdir("zzzz155j_") as tmpdir:
@@ -146,7 +147,7 @@ with shared_tmpdir("zzzz155j_") as tmpdir:
     )
     # Split field
     resultCheck = splitMedFileToResults(
-        medfile, {"00000006SIEF_ELGA": "SIEF_ELGA"}, CA.ElasticResult, model2
+        medfile, {"MONRESU1SIEF_ELGA": "SIEF_ELGA"}, CA.ElasticResult, model2
     )
 
     fieldCheck = resultCheck.getField("SIEF_ELGA", 1)
