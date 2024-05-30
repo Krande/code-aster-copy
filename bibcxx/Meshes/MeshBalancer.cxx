@@ -300,6 +300,7 @@ void MeshBalancer::sortCells( JeveuxVectorLong &typeIn, JeveuxCollectionLong &co
         numCell[count] = num;
         ++count;
     }
+
     for ( int i = 1; i < 30; ++i ) {
         nbCellByType[i] = nbCellByType[i] + nbCellByType[i - 1];
     }

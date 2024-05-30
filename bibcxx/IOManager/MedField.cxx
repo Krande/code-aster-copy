@@ -3,7 +3,7 @@
  * @brief Implementation de MedField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -88,7 +88,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
         throw std::runtime_error( "Sequential read not yet implemented" );
     }
     const med_entity_type entitype = MED_CELL;
-    const med_entity_type entitypes[2] = {MED_CELL, MED_NODE_ELEMENT};
+    const med_entity_type entitypes[2] = { MED_CELL, MED_NODE_ELEMENT };
     const int csit = _numdtNumitToSeq.at( numdt ).at( numit );
     med_int numdt2, numit2, meshnumdt, meshnumit;
     med_float dt;
@@ -98,8 +98,8 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
     const auto nbProcs = getMPISize();
     int cumulatedElem = 0;
     std::vector< int > nbElems, starts;
-    for ( int i = 0; i < medTypes.size(); ++i ) {
-        const med_geometry_type geotype = medTypes[i];
+    for ( int i = 0; i < medTypesList.size(); ++i ) {
+        const med_geometry_type geotype = medTypesList[i];
         const auto nbElemT =
             _mesh->getCellNumberForGeometricTypeAtSequence( meshnumdt, meshnumit, geotype );
         const auto pair = splitEntitySet( nbElemT, rank, nbProcs );
@@ -125,10 +125,10 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
         const med_entity_type entitype = entitypes[entIndex];
         bool foundSomething = false;
         cumulatedElem = 0;
-        for ( int i = 0; i < medTypes.size(); ++i ) {
+        for ( int i = 0; i < medTypesList.size(); ++i ) {
             char profilename[MED_NAME_SIZE + 1] = "";
             char localizationname[MED_NAME_SIZE + 1] = "";
-            const med_geometry_type geotype = medTypes[i];
+            const med_geometry_type geotype = medTypesList[i];
             auto nbProf = MEDfieldnProfile( _filePtr.getFileId(), _name.c_str(), numdt, numit,
                                             entitype, geotype, profilename, localizationname );
 
@@ -155,7 +155,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
                             throw std::runtime_error( "Unexpected value" );
                         medV->setElements( cumulatedElem, nbCells, _nbCmp * nintegrationpoint );
                         profs.emplace_back( 0 );
-                        indirection.push_back( {nbElems[i], starts[i]} );
+                        indirection.push_back( { nbElems[i], starts[i] } );
                         profsPtr.push_back( MedProfilePtr( nullptr ) );
                     } else {
                         const auto profSize =
@@ -176,7 +176,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
                                 ++taille;
                             }
                         }
-                        indirection.push_back( {taille, deb} );
+                        indirection.push_back( { taille, deb } );
                         profsPtr.push_back( _profiles[_mapProfileNameRank.at( profName )] );
                     }
                 }
@@ -287,7 +287,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnNodes( int numdt, int numit ) const 
                     throw std::runtime_error( "Unexpected value" );
                 medV->setElements( 0, nbNodes, _nbCmp * nintegrationpoint );
                 profs.emplace_back( 0 );
-                indirection.push_back( {pair.first, pair.second} );
+                indirection.push_back( { pair.first, pair.second } );
                 profsPtr.push_back( MedProfilePtr( nullptr ) );
             } else {
                 const auto profSize = MEDprofileSizeByName( _filePtr.getFileId(), profilename );
@@ -303,7 +303,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnNodes( int numdt, int numit ) const 
                         ++taille;
                     }
                 }
-                indirection.push_back( {taille, deb} );
+                indirection.push_back( { taille, deb } );
                 profsPtr.push_back( _profiles[_mapProfileNameRank.at( profName )] );
             }
         }

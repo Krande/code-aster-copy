@@ -3640,6 +3640,8 @@ class SimpleFieldOnCellsReal(DataField):
         2. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
 
         3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: List[str], arg4: int, arg5: int, arg6: bool) -> None
+
+        4. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: List[str], arg4: List[int], arg5: int, arg6: bool) -> None
         """
 
     def __setitem__(self, arg0, arg1):
@@ -13477,6 +13479,13 @@ class ParallelMesh(BaseMesh):
 
         Returns:
             ParallelMesh: the quadratic mesh.
+        """
+
+    def getAllMedCellsTypes(self):
+        """Return all Med types available in mesh (for all processors).
+
+        Returns:
+            list[int]: List of Med types.
         """
 
     def getCells(self, *args, **kwargs):

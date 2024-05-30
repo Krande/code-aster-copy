@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -143,3 +143,17 @@ MYMED2ASTER_CONNECT = {
         26,
     ],
 }
+
+
+def toAsterGeoType(medfile_type):
+    """Convert a med mesh type to a code_aster type.
+
+    Arguments:
+        medfile_type (int): med type.
+
+    Returns:
+        int: code_aster type (index in '&CATA.TM.NOMTM').
+    """
+    if not hasattr(toAsterGeoType, "cache_dict"):
+        toAsterGeoType.cache_dict = dict(zip(MED_TYPES, ASTER_TYPES))
+    return toAsterGeoType.cache_dict[medfile_type]

@@ -590,4 +590,24 @@ void ParallelMesh::endDefinition() {
     AS_ASSERT( updateGlobalGroupOfCells() );
 }
 
+const VectorLong ParallelMesh::getAllMedCellsTypes() const {
+    auto result = getMedCellsTypes();
+    auto resultV = result->toVector();
+    auto savedType = -999;
+    SetLong toGather;
+    for ( const auto &type : resultV ) {
+        if ( type != savedType ) {
+            toGather.insert( type );
+            savedType = type;
+        }
+    }
+    SetLong out1;
+    AsterMPI::all_gather( toGather, out1 );
+    VectorLong out2;
+    for ( const auto &tmp : out1 ) {
+        out2.push_back( tmp );
+    }
+    return out2;
+}
+
 #endif /* ASTER_HAVE_MPI */

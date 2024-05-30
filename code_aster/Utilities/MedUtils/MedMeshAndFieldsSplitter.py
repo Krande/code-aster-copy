@@ -22,6 +22,7 @@ from . import MedFileAccessType
 from . import FieldCharacteristics, SimpleFieldOnNodesReal, Result
 from . import SimpleFieldOnCellsReal
 from . import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
+from . import toAsterGeoType
 
 
 def splitMeshAndFieldsFromMedFile(
@@ -55,17 +56,9 @@ def splitMeshAndFieldsFromMedFile(
 
     outMesh = bMesh.applyBalancingStrategy(scotchPart, outMesh)
 
-    medCellTypes = outMesh.getMedCellsTypes()
-    oldType = -999
-    sortedTypes = []
-    checkDict = {}
-    for type in medCellTypes:
-        if oldType != type:
-            sortedTypes.append(type)
-            oldType = type
-            if checkDict.get(type) is not None:
-                raise RuntimeError("Cells are not sorted by type")
-            checkDict[type] = 1
+    cellTypes = outMesh.getAllMedCellsTypes()
+    asterTypes = [toAsterGeoType(item) for item in cellTypes]
+    cellTypes = [x for _, x in sorted(zip(asterTypes, cellTypes))]
 
     nBalancer = bMesh.getNodeObjectBalancer()
     cBalancer = bMesh.getCellObjectBalancer()
@@ -90,7 +83,7 @@ def splitMeshAndFieldsFromMedFile(
                 fieldDict[curField.getName()][curSeq[0]] = out
             else:
                 valuesVec = curField.getValuesAtSequenceOnCellTypesList(
-                    curSeq[0], curSeq[1], sortedTypes
+                    curSeq[0], curSeq[1], cellTypes
                 )
                 out = cBalancer.balanceMedVectorOverProcessesWithRenumbering(valuesVec)
                 fieldDict[curField.getName()][curSeq[0]] = out
@@ -172,15 +165,15 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
                 cumSizes = curField.getCumulatedSizesVector()
                 cmpNb = len(compName)
                 fieldCmps = curField.getComponentVector()
-                maxNbGPNb = -1
+                gPList = []
                 for iCell, curCmpNum in enumerate(fieldCmps):
                     gPNb = curCmpNum / cmpNb
                     if int(gPNb) == gPNb:
                         gPNb = int(gPNb)
                     else:
                         raise NameError("Inconsistent Gauss point number")
-                    maxNbGPNb = max(gPNb, maxNbGPNb)
-                sFOC = SimpleFieldOnCellsReal(mesh, loc, qt, compName, maxNbGPNb, 1, True)
+                    gPList.append(gPNb)
+                sFOC = SimpleFieldOnCellsReal(mesh, loc, qt, compName, gPList, 1, True)
                 # Copy values in field
                 if loc == "ELNO":
                     assert len(fieldCmps) == mesh.getNumberOfCells()
@@ -193,7 +186,7 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
                         for iPt in range(gPNb):
                             newPos = MYMED2ASTER_CONNECT[medType][iPt]
                             for iCmp in range(cmpNb):
-                                sFOC[iCell, iCmp, newPos, 0] = fieldValues[posInNew + j]
+                                sFOC.setValue(iCell, iCmp, newPos, 0, fieldValues[posInNew + j])
                                 j += 1
                 else:
                     for iCell, curCmpNum in enumerate(fieldCmps):
@@ -202,7 +195,7 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
                         posInNew = cumSizes[iCell]
                         for iPt in range(gPNb):
                             for iCmp in range(cmpNb):
-                                sFOC[iCell, iCmp, iPt, 0] = fieldValues[posInNew + j]
+                                sFOC.setValue(iCell, iCmp, iPt, 0, fieldValues[posInNew + j])
                                 j += 1
                 fED = model.getFiniteElementDescriptor()
                 # Convert SimpleFieldOnells to FieldOnCells
