@@ -20,9 +20,9 @@
 # This test checks elga field writing in a med file
 # with re-reading of this field
 
-from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster import CA
+from code_aster.CA import MPI
 import os.path as osp
 
 from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMedFileToResults
