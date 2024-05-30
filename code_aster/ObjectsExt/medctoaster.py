@@ -231,7 +231,7 @@ class MEDCouplingMeshHelper:
         # groups = mesh.getGroupsNames()
         # NB: `mesh.getGroupsOnSpecifiedLev()` is necessary to avoid segfault
         #     without group of nodes/cells
-        asterType = [-1] * max(ASTER_TYPES)
+        asterType = [-1] * (max(ASTER_TYPES) + 1)
         tmpConnex = []
         tmpType = []
         globNumBuilder = []
