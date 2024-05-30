@@ -136,6 +136,11 @@ Contactez le support technique.
   la méthode de Mac-Neal ne fonctionne pas en présence de modes de corps rigide
 """
     ),
+    41: _(
+        """
+ Le changement de repère %(k2)s n'est pas disponible pour les éléments %(k1)s.
+"""
+    ),
     42: _(
         """
  le mot-clé  %(k1)s est incompatible avec le champ %(k2)s
