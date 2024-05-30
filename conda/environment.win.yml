@@ -2,7 +2,9 @@ name: codeaster-deps
 dependencies:
   - python 3.11.9
   - vswhere
+  - libboost-devel=1.84
   - libblas=*=*mkl
+  - liblapack=*=*mkl
   - mfront=4.2.0
   - mgis=2.2
   - mkl-devel=2024.1
@@ -12,17 +14,13 @@ dependencies:
   - metis=5.1.0
   - mumps=5.6.2
   - waf=2.0.27
-  - pybind11
   - numpy=1.23
   - pyyaml
   - python-dotenv
   - cmake
   - psutil
-  - intel-fortran-rt=2024.1
-  - clang=18.1.5
-  - clangxx=18.1.5
-  - lld=18.1.5
-  - lldb=18.1.5
-  - pip
-  - pip:
-      - dlltracer
+#  - intel-fortran-rt=2024.1  # This was the root cause of the __atomic issues!
+  - clang=18.1.6
+  - clangxx=18.1.6
+#  - lld=18.1.6
+#  - lldb=18.1.6

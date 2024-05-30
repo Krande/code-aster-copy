@@ -100,8 +100,8 @@ set LDFLAGS=%LDFLAGS% mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_d
 :: Add threading libs
 set LDFLAGS=%LDFLAGS% pthread.lib
 
-:: Add mumps libs
-set LDFLAGS=%LDFLAGS% scotch.lib scotcherr.lib metis.lib
+:: Add metis libs
+set LDFLAGS=%LDFLAGS% metis.lib
 
 :: Add libmed libs
 set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
@@ -124,8 +124,6 @@ waf configure ^
   --med-libs="med medC medfwrap medimport" ^
   --prefix=%LIB_PATH_ROOT% ^
   --out=%OUTPUT_DIR% ^
-  --embed-scotch ^
-  --embed-mumps ^
   --disable-mpi ^
   --maths-libs=auto ^
   --install-tests ^
