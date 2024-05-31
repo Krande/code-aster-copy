@@ -91,6 +91,10 @@ set FCFLAGS=%FCFLAGS% /names:lowercase /assume:underscore /assume:nobscc
 
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
+:: Create dll debug pdb
+
+set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
+
 :: Add lib paths
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 
@@ -127,6 +131,7 @@ waf configure ^
   --prefix=%LIB_PATH_ROOT% ^
   --out=%OUTPUT_DIR% ^
   --disable-mpi ^
+  --install-tests ^
   --maths-libs=auto ^
   --without-hg
 

@@ -242,6 +242,7 @@ def check_optimization_cflags_msvc(self):
     self.start_msg("Setting C debug flags for MSVC")
     self.remove_optflags("CFLAGS")
     debug_flags = ["/Zi", "/Od"]  # Debug information and no optimization
+    self.env.append_unique("LINKFLAGS", ["/DEBUG:FULL", "/INCREMENTAL:NO"])
     self.env.append_unique("CFLAGS", debug_flags)
     if self.options.enable_coverage:
         # Note: MSVC does not have a direct --coverage equivalent

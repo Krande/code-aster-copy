@@ -3,8 +3,8 @@ dependencies:
   - python 3.11.9
   - vswhere
   - libboost-devel=1.84
-  - libblas=*=*mkl
-  - liblapack=*=*mkl
+  - libblas=*=*netlib
+  - liblapack=*=*netlib
   - mfront=4.2.0
   - mgis=2.2
   - mkl-devel=2024.1
@@ -19,8 +19,10 @@ dependencies:
   - python-dotenv
   - cmake
   - psutil
-#  - intel-fortran-rt=2024.1  # This was the root cause of the __atomic issues!
-# However, we still need it for the fortran runtime. It's likely some kind of conflict with the mkl package.
+  - intel-fortran-rt=2024.1  # This was the root cause of the __atomic issues!
+# It appears that it relies on llvm-openmp which overrides the intel-openmp package.
+# However, we still need it for the fortran runtime. One can either re-compile mkl using the llvm-openmp package.
+# Or try to compile intel-fortran-rt with the intel-openmp package.
   - clang=18.1.6
 #  - lld=18.1.6
 #  - lldb=18.1.6
