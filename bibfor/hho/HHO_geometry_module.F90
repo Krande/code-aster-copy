@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,9 +42,56 @@ module HHO_geometry_module
 !
     public  :: barycenter, hhoNormalFace, hhoFaceInitCoor, hhoGeomBasis, hhoGeomDerivBasis
     public  :: hhoLocalBasisFace, hhoNormalFace2, hhoNormalFace3, hhoNormalFaceQP
-    private :: hhoNormalFace2d, well_oriented, hhoNormalFace1d, prod_vec
+    private :: hhoNormalFace2d, well_oriented, hhoNormalFace1d, prod_vec, find_lowest_vertex
 !
 contains
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function find_lowest_vertex(v1, v2) result(ind)
+!
+        implicit none
+!
+        real(kind=8), dimension(3), intent(in) :: v1, v2
+        integer :: ind
+!
+! --------------------------------------------------------------------------------------------------
+! Find the nodes at bottom left between two nodes
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8), parameter :: prec = 1.d-10
+        real(kind=8) :: norm, v(3)
+! --------------------------------------------------------------------------------------------------
+!
+
+        norm = max(max(norm2(v1), norm2(v2)), 1.d0)
+        v = (v1-v2)/norm
+
+        if (abs(v(1)) > prec) then
+            if (v(1) > 0.d0) then
+                ind = 1
+            else
+                ind = 2
+            end if
+        elseif (abs(v(2)) > prec) then
+            if (v(2) > 0.d0) then
+                ind = 1
+            else
+                ind = 2
+            end if
+        elseif (abs(v(3)) > prec) then
+            if (v(3) > 0.d0) then
+                ind = 1
+            else
+                ind = 2
+            end if
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+    end function
 !
 !===================================================================================================
 !
@@ -396,15 +443,14 @@ contains
 !
 !===================================================================================================
 !
-    function hhoFaceInitCoor(coorno, numnodes, nbnodes, ndimF, numsorted_) result(nodes_face)
+    function hhoFaceInitCoor(coorno, nbnodes, ndimF, numsorted_) result(nodes_face)
 !
         implicit none
 !
         integer, intent(in)                         :: ndimF
-        real(kind=8), dimension(3, 4), intent(in)    :: coorno
-        integer, dimension(4), intent(in)           :: numnodes
+        real(kind=8), dimension(3, 4), intent(in)   :: coorno
         integer, intent(in)                         :: nbnodes
-        real(kind=8), dimension(3, 4)                :: nodes_face
+        real(kind=8), dimension(3, 4)               :: nodes_face
         integer, intent(out), optional              ::  numsorted_(4)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -413,44 +459,60 @@ contains
 !  In HHO_Face           :: face HHO
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ino, minnum, numsorted(4)
+        integer :: ino, minnum1, minnum2, numsorted(4), ind, candidate(2)
 !
         numsorted(:) = 0
 !
         if (ndimF == 1) then
             ASSERT(nbnodes == 2)
+            ind = find_lowest_vertex(coorno(:, 1), coorno(:, 2))
 !
-            if (numnodes(1) < numnodes(2)) then
+            if (ind == 1) then
                 numsorted(1:2) = (/1, 2/)
-            else if (numnodes(2) < numnodes(1)) then
+            else if (ind == 2) then
                 numsorted(1:2) = (/2, 1/)
             else
                 ASSERT(ASTER_FALSE)
             end if
         else if (ndimF == 2) then
-            minnum = minloc(numnodes(1:nbnodes), 1)
+            minnum1 = 1
+            candidate = (/2, nbnodes/)
+            do ino = 2, nbnodes
+                ind = find_lowest_vertex(coorno(:, minnum1), coorno(:, ino))
+                if (ind == 2) then
+                    minnum1 = ino
+                    if (ino == nbnodes) then
+                        candidate = (/ino-1, 1/)
+                    else
+                        candidate = (/ino-1, ino+1/)
+                    end if
+                end if
+            end do
+!
+            minnum2 = candidate(find_lowest_vertex(coorno(:, candidate(1)), &
+                                                   coorno(:, candidate(2))))
 !
             if (nbnodes == 3) then
-                if (minnum == 1) then
-                    if (numnodes(2) < numnodes(3)) then
+                if (minnum1 == 1) then
+                    if (minnum2 == 2) then
                         numsorted(1:3) = (/1, 2, 3/)
-                    else if (numnodes(3) < numnodes(2)) then
+                    else if (minnum2 == 3) then
                         numsorted(1:3) = (/1, 3, 2/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-                elseif (minnum == 2) then
-                    if (numnodes(1) < numnodes(3)) then
+                elseif (minnum1 == 2) then
+                    if (minnum2 == 1) then
                         numsorted(1:3) = (/2, 1, 3/)
-                    else if (numnodes(3) < numnodes(1)) then
+                    else if (minnum2 == 3) then
                         numsorted(1:3) = (/2, 3, 1/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-                elseif (minnum == 3) then
-                    if (numnodes(1) < numnodes(2)) then
+                elseif (minnum1 == 3) then
+                    if (minnum2 == 1) then
                         numsorted(1:3) = (/3, 1, 2/)
-                    else if (numnodes(2) < numnodes(1)) then
+                    else if (minnum2 == 2) then
                         numsorted(1:3) = (/3, 2, 1/)
                     else
                         ASSERT(ASTER_FALSE)
@@ -459,34 +521,34 @@ contains
                     ASSERT(ASTER_FALSE)
                 end if
             else if (nbnodes == 4) then
-                if (minnum == 1) then
-                    if (numnodes(2) < numnodes(4)) then
+                if (minnum1 == 1) then
+                    if (minnum2 == 2) then
                         numsorted(1:4) = (/1, 2, 3, 4/)
-                    else if (numnodes(4) < numnodes(2)) then
+                    else if (minnum2 == 4) then
                         numsorted(1:4) = (/1, 4, 3, 2/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-                elseif (minnum == 2) then
-                    if (numnodes(1) < numnodes(3)) then
+                elseif (minnum1 == 2) then
+                    if (minnum2 == 1) then
                         numsorted(1:4) = (/2, 1, 4, 3/)
-                    else if (numnodes(3) < numnodes(1)) then
+                    else if (minnum2 == 3) then
                         numsorted(1:4) = (/2, 3, 4, 1/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-                elseif (minnum == 3) then
-                    if (numnodes(2) < numnodes(4)) then
+                elseif (minnum1 == 3) then
+                    if (minnum2 == 2) then
                         numsorted(1:4) = (/3, 2, 1, 4/)
-                    else if (numnodes(4) < numnodes(2)) then
+                    else if (minnum2 == 4) then
                         numsorted(1:4) = (/3, 4, 1, 2/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-                elseif (minnum == 4) then
-                    if (numnodes(1) < numnodes(3)) then
+                elseif (minnum1 == 4) then
+                    if (minnum2 == 1) then
                         numsorted(1:4) = (/4, 1, 2, 3/)
-                    else if (numnodes(3) < numnodes(1)) then
+                    else if (minnum2 == 3) then
                         numsorted(1:4) = (/4, 3, 2, 1/)
                     else
                         ASSERT(ASTER_FALSE)
