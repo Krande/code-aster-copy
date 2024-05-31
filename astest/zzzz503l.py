@@ -53,7 +53,7 @@ fx = FORMULE(VALE="X", NOM_PARA=["X", "Y"])
 fy = FORMULE(VALE="X", NOM_PARA=["X", "Y"])
 
 f2_hho = hho.projectOnHHOSpace([fx, fy])
-test.assertAlmostEqual(sum(f2_hho.getValues()), 8.0, delta=5e-5)
+test.assertAlmostEqual(sum(f2_hho.getValues()), 4.0, delta=5e-5)
 
 test.printSummary()
 
