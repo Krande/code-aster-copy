@@ -98,16 +98,18 @@ class PostHHO:
 
     def __init__(self) -> None:
         self._enabled = None
+        self._hho = None
 
     def __call__(self, nl_solver):
         """Hook to compute HHO_DEPL"""
         if self._enabled is None:
             self._enabled = nl_solver.phys_pb.getModel().existsHHO()
+            self._hho = HHO(nl_solver.phys_pb)
         if not self._enabled:
             return
 
         current = nl_solver.phys_state
-        hho_field = HHO(nl_solver.phys_pb).projectOnLagrangeSpace(current.primal_curr)
+        hho_field = self._hho.projectOnLagrangeSpace(current.primal_curr)
         current.set(self._field_name, hho_field)
 
 
