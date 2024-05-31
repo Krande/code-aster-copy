@@ -21,4 +21,4 @@
 PostProcessings definition.
 """
 
-from .hooks import Annealing, ComputeDisplFromHHO, ComputeTempFromHHO
+from .hooks import Annealing, ComputeDisplFromHHO, ComputeHydr, ComputeTempFromHHO

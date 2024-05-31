@@ -19,12 +19,11 @@
 
 
 from ..Cata.Syntax import _F
+from ..Helpers.syntax_adapters import adapt_increment_init
 from ..Objects import (
-    HHO,
     ParallelThermalLoadFunction,
     ParallelThermalLoadReal,
     PhysicalProblem,
-    PostProcessing,
     ThermalDirichletBC,
     ThermalLoadFunction,
     ThermalLoadReal,
@@ -33,10 +32,9 @@ from ..Objects import (
 from ..Solvers import NonLinearSolver, ProblemSolver
 from ..Solvers import ProblemType as PBT
 from ..Solvers import SolverOptions as SOP
-from ..Solvers import TimeStepper
+from ..Solvers.Post import ComputeHydr, ComputeTempFromHHO
 from ..Utilities import force_list, print_stats, reset_stats
 from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
-from ..Helpers.syntax_adapters import adapt_increment_init
 
 
 def use_fortran(keywords):
@@ -147,51 +145,9 @@ def ther_non_line_ops(self, **args):
 
     solver.setKeywords(**param)
 
-    class PostHookHydr:
-        """Hook to compute HYDR_ELGA."""
-
-        provide = SOP.PostStepHook
-
-        def __call__(self, nl_solver):
-            """Hook to compute HYDR_ELGA"""
-
-            compor = phys_pb.getBehaviourProperty()
-
-            if compor.hasBehaviour("THER_HYDR"):
-                post = PostProcessing(nl_solver.phys_pb)
-
-                phys_state = nl_solver.phys_state
-
-                if phys_state._size == 1:
-                    hydr_curr = phys_state.createFieldOnCells(nl_solver.phys_pb, "ELGA", "HYDR_R")
-                else:
-                    hydr_curr = post.computeHydration(
-                        phys_state.primal_prev,
-                        phys_state.primal_curr,
-                        phys_state.time_prev,
-                        phys_state.time_curr,
-                        phys_state.getState(-1).auxiliary["HYDR_ELGA"],
-                    )
-
-                phys_state.set("HYDR_ELGA", hydr_curr)
-
-    class PostHookHHO:
-        """Hook to compute HHO_TEMP."""
-
-        provide = SOP.PostStepHook
-
-        def __call__(self, nl_solver):
-            """Hook to compute HHO_TEMP"""
-
-            if nl_solver.phys_pb.getModel().existsHHO():
-                hho_field = HHO(nl_solver.phys_pb).projectOnLagrangeSpace(
-                    nl_solver.phys_state.primal_curr
-                )
-
-                nl_solver.phys_state.set("HHO_TEMP", hho_field)
-
-    solver.use(PostHookHydr())
-    solver.use(PostHookHHO())
+    # Register hooks
+    solver.use(ComputeHydr())
+    solver.use(ComputeTempFromHHO())
 
     # Run computation
     solver.run()

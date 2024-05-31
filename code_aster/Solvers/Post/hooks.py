@@ -60,8 +60,38 @@ class Annealing:
         current.internVar = internVar_anneal
 
 
+class ComputeHydr:
+    """Hook to compute HYDR_ELGA."""
+
+    provide = SOP.PostStepHook
+
+    def __init__(self) -> None:
+        self._enabled = None
+
+    def __call__(self, nl_solver):
+        if self._enabled is None:
+            self._enabled = nl_solver.phys_pb.getBehaviourProperty().hasBehaviour("THER_HYDR")
+        if not self._enabled:
+            return
+
+        current = nl_solver.phys_state
+        post = PostProcessing(nl_solver.phys_pb)
+        try:
+            hydr_prev = current.getState(-1).auxiliary["HYDR_ELGA"]
+            hydr_curr = post.computeHydration(
+                current.primal_prev,
+                current.primal_curr,
+                current.time_prev,
+                current.time_curr,
+                hydr_prev,
+            )
+        except IndexError:
+            hydr_curr = current.createFieldOnCells(nl_solver.phys_pb, "ELGA", "HYDR_R")
+        current.set("HYDR_ELGA", hydr_curr)
+
+
 class PostHHO:
-    """Compute the HHO primal field as hook."""
+    """Compute the true primal field from HHO unknowns."""
 
     provide = SOP.PostStepHook
     _field_name = None
