@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...Objects import PostProcessing
+from ...Objects import HHO, PostProcessing
 from ..Basics import SolverOptions as SOP
 
 
@@ -37,7 +37,15 @@ class Annealing:
     provide = SOP.PostStepHook
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
 
+    def __init__(self) -> None:
+        self._enabled = None
+
     def __call__(self, nl_solver):
+        if self._enabled is None:
+            self._enabled = nl_solver.phys_pb.getBehaviourProperty().hasAnnealing()
+        if not self._enabled:
+            return
+
         previous = nl_solver.phys_state.getState(-1)
         current = nl_solver.phys_state
         post_process = PostProcessing(nl_solver.phys_pb)
@@ -50,3 +58,36 @@ class Annealing:
         )
         current.set("VARI_ELGA", internVar_anneal)
         current.internVar = internVar_anneal
+
+
+class PostHHO:
+    """Compute the HHO primal field as hook."""
+
+    provide = SOP.PostStepHook
+    _field_name = None
+
+    def __init__(self) -> None:
+        self._enabled = None
+
+    def __call__(self, nl_solver):
+        """Hook to compute HHO_DEPL"""
+        if self._enabled is None:
+            self._enabled = nl_solver.phys_pb.getModel().existsHHO()
+        if not self._enabled:
+            return
+
+        current = nl_solver.phys_state
+        hho_field = HHO(nl_solver.phys_pb).projectOnLagrangeSpace(current.primal_curr)
+        current.set(self._field_name, hho_field)
+
+
+class ComputeDisplFromHHO(PostHHO):
+    """Compute the displacement field from HHO unknowns."""
+
+    _field_name = "HHO_DEPL"
+
+
+class ComputeTempFromHHO(PostHHO):
+    """Compute the temperature field from HHO unknowns."""
+
+    _field_name = "HHO_TEMP"
