@@ -166,7 +166,6 @@ def meca_non_line_ops(self, **args):
 
         def __call__(self, nl_solver):
             """Hook to compute HHO_DEPL"""
-
             if nl_solver.phys_pb.getModel().existsHHO():
                 hho_field = HHO(nl_solver.phys_pb).projectOnLagrangeSpace(
                     nl_solver.phys_state.primal_curr

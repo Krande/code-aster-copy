@@ -38,11 +38,15 @@ class Annealing:
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
 
     def __call__(self, nl_solver):
-        previous = nl_solver.phys_state.getState(-2)
-        last = nl_solver.phys_state.getState(-1)
+        previous = nl_solver.phys_state.getState(-1)
+        current = nl_solver.phys_state
         post_process = PostProcessing(nl_solver.phys_pb)
         internVar_anneal = post_process.computeAnnealing(
-            last.internVar, previous.time_curr, last.time_curr, previous.externVar, last.externVar
+            current.internVar,
+            previous.time_curr,
+            current.time_curr,
+            previous.externVar,
+            current.externVar,
         )
-        last.set("VARI_ELGA", internVar_anneal)
-        nl_solver.phys_state.internVar = internVar_anneal
+        current.set("VARI_ELGA", internVar_anneal)
+        current.internVar = internVar_anneal

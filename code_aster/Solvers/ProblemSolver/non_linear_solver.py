@@ -288,10 +288,10 @@ class NonLinearSolver(SolverFeature):
                     # + reset current_matrix to None (REAC_INCR)
                     self.phys_state.revert()
                     continue
+                self.post_hooks()
                 self.phys_state.commit()
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
-                self.post_hooks()
                 self.step_rank += 1
                 last_stored = self._storeState(self.phys_state)
         # ensure that last step was stored
