@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine debca1(nin)
 
     use calcul_module, only: ca_caindz_, ca_calvoi_, ca_iadsgd_, &
-                             ca_iainel_, ca_ialiel_, ca_iamaco_, ca_iamloc_, ca_ianulg_, &
+                             ca_iainel_, ca_ialiel_, ca_iamaco_, ca_iamloc_, &
                              ca_iamsco_, ca_ianoop_, ca_ianote_, ca_iaobtr_, ca_iaopds_, &
                              ca_iaopmo_, ca_iaopno_, ca_iaoppa_, ca_iaoptt_, &
                              ca_icaeli_, ca_icaelk_, ca_illiel_, ca_ilmaco_, ca_ilmloc_, &
@@ -128,11 +128,6 @@ subroutine debca1(nin)
     if (iret .gt. 0) then
         call jeveuo(ma//'.CONNEX', 'L', ca_iamaco_)
         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ca_ilmaco_)
-    end if
-    if (isParallelMesh(ma)) then
-        call jeveuo(ma//'.NUNOLG', 'L', ca_ianulg_)
-    else
-        ca_ianulg_ = -1
     end if
     call jeexin(ca_ligrel_//'.NEMA', iret)
     if (iret .gt. 0) then
