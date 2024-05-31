@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine xxbsig(elrefp, elrese, ndim, coorse,&
                       igeom, he, nfh, ddlc, ddlm,&
                       nfe, basloc, nnop, npg, sigma,&
-                      compor, idepl, lsn, lst, nfiss,&
+                      lsn, lst, nfiss,&
                       heavn, jstno, codopt, ivectu, imate)
         integer :: codopt
         integer :: nfiss
@@ -41,8 +41,6 @@ interface
         integer :: ddlm
         real(kind=8) :: basloc(3*ndim*nnop)
         real(kind=8) :: sigma(codopt*(2*ndim-1)+1, codopt*(npg-1)+1)
-        character(len=16) :: compor(4)
-        integer :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         integer :: heavn(nnop, 5)

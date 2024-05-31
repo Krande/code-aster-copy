@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
                   he, nfh, ddlc, ddlm, nfe, &
                   basloc, nnop, npg, idecpg, typmod, &
-                  imate, compor, idepl, lsn, lst, &
+                  imate, idepl, lsn, lst, &
                   nfiss, heavn, jstno, sig)
 !
 ! aslint: disable=W1306,W1504
@@ -45,7 +45,6 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
     integer :: ndim, igeom, imate, nnop, npg, idepl, idecpg
     integer :: nfh, ddlc, nfe, nfiss, heavn(nnop, 5), jstno
     character(len=8) :: elrefp, elrese, typmod(*)
-    character(len=16) :: compor(4)
     real(kind=8) :: basloc(6*nnop), he(nfiss), coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(4, npg)
 !
@@ -69,7 +68,6 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
 ! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ELEMENT
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  IMATE   : MATERIAU CODE
-! IN  COMPOR  : COMPORTEMENT
 ! IN  IDEPL   : ADRESSE DU DEPLACEMENT A PARTIR DE LA CONF DE REF
 ! IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
@@ -86,7 +84,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
     integer :: nno, nnos, npgbis, ddls, ddld, ddlm, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, nbsig
     integer :: singu
-    aster_logical :: grdepl, axi
+    aster_logical :: axi
     real(kind=8) :: f(3, 3), eps(6)
     real(kind=8) :: instan, rac2
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop)
@@ -121,14 +119,10 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
     call elrefe_info(fami='RIGI', nnos=nnops)
 !
 ! - INITIALISATION
-    grdepl = compor(3) .eq. 'GROT_GDEP'
     axi = typmod(1) .eq. 'AXIS'
 !
 !
     k2bid = ' '
-    if (grdepl) then
-        call utmess('F', 'XFEM2_2')
-    end if
 !
     call elrefe_info(elrefe=elrese, fami='XINT', ndim=ndimb, nno=nno, nnos=nnos, &
                      npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde, &
@@ -182,7 +176,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
 !
 !       CALCUL DES DEFORMATIONS EPS
 !
-        call xcinem(axi, igeom, nnop, nnops, idepl, grdepl, &
+        call xcinem(axi, igeom, nnop, nnops, idepl, &
                     ndim, he, &
                     nfiss, nfh, singu, ddls, ddlm, &
                     fk, dkdgl, ff, dfdi, f, &

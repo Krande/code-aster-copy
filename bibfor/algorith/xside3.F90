@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
                   he, nfh, ddlc, ddlm, nfe, &
                   basloc, nnop, npg, idecpg, imate, &
-                  compor, idepl, lsn, lst, nfiss, &
+                  idepl, lsn, lst, nfiss, &
                   heavn, jstno, sig)
 !
 ! aslint: disable=W1306,W1504
@@ -45,7 +45,6 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
     integer :: ndim, igeom, imate, nnop, npg, nfh, ddlc, ddls, nfe
     integer :: nfiss, idepl, idecpg, heavn(nnop, 5), jstno
     character(len=8) :: elrefp, elrese
-    character(len=16) :: compor(4)
     real(kind=8) :: basloc(9*nnop), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop)
     real(kind=8) :: sig(6, npg), coorse(*)
@@ -69,7 +68,6 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 ! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ÉLÉMENT
 ! IN  IMATE   : MATERIAU CODE
-! IN  COMPOR  : COMPORTEMENT
 ! IN  DEPL    : DEPLACEMENT A PARTIR DE LA CONF DE REF
 ! IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
@@ -87,7 +85,6 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
     integer :: nbsig, nnops, hea_se
     integer :: singu
-    aster_logical :: grdepl
     real(kind=8) :: f(3, 3), eps(6)
     real(kind=8) :: instan, rac2
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop)
@@ -118,12 +115,6 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
 !
     k2bid = '  '
     zero = 0.0d0
-!
-    grdepl = compor(3) .eq. 'GROT_GDEP'
-    if (grdepl) then
-        call utmess('F', 'XFEM2_2')
-    end if
-!
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
     nbsig = nbsigm()
@@ -169,7 +160,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
         end if
 !
 !       CALCUL DES DEFORMATIONS EPS
-        call xcinem(.false._1, igeom, nnop, nnops, idepl, grdepl, &
+        call xcinem(.false._1, igeom, nnop, nnops, idepl, &
                     ndim, he, &
                     nfiss, nfh, singu, ddls, ddlm, &
                     fk, dkdgl, ff, dfdi, f, &

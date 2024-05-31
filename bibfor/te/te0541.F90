@@ -107,9 +107,9 @@ subroutine te0541(option, nomte)
 !
 !     CALCUL DU VECTEUR \INT BT*SIGMA_THERMIQUE
     call xbsig(ndim, nno, nfh, nfe, ddlc, &
-               ddlm, igeom, compor, jpintt, zi(jcnset), &
+               ddlm, igeom, jpintt, zi(jcnset), &
                zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontt), nbsig, &
-               ibid, zr(jlsn), zr(jlst), ivectu, jpmilt, &
+               zr(jlsn), zr(jlst), ivectu, jpmilt, &
                nfiss, jheavn, jstno, imate)
 !
 !     POUR LES DDLS HEAVISIDE ENRICHIS A TORT

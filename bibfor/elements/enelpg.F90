@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,8 +104,9 @@ subroutine enelpg(fami, iadmat, instan, igau, repere, &
         mu = e/(2.d0*(1.d0+nu))
         troisk = e/(1.d0-2.d0*nu)
 !
-       jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2))-f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2))+f(&
-               &3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
+        jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2)) &
+              -f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2)) &
+              +f(3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
 !
 ! ---    CALCUL DE TAU TEL QUE TAU=JAC*SIGMA
 !
@@ -202,7 +203,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere, &
 ! --- E_ELAS = 1/2*SIGMA*1/D*SIGMA :
 !
 ! --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
-    elseif ((compor(3) (1:5) .eq. 'PETIT') .or. (compor(3) .eq. 'GROT_GDEP')) then
+    elseif (compor(3) (1:5) .eq. 'PETIT') then
 !
 !  --    CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
 !  --    POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)

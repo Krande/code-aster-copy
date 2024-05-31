@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -204,9 +204,9 @@ subroutine compMecaChckStrain(iComp, &
 ! --------- Generic checks
             if (modelTypeIret .eq. 0) then
                 if (modelType .eq. 'C_PLAN') then
-                    if (defoComp .eq. 'GROT_GDEP' .and. relaComp .eq. 'ELAS' &
-                        .and. .not. lShell) then
-                        call utmess('F', 'COMPOR1_15')
+                    if (defoComp .eq. 'GROT_GDEP' .and. .not. lShell) then
+                        call utmess('F', 'COMPOR5_22', si=iComp, &
+                                    sk=elemTypeName)
                     else
                         call lctest(defoCompPY, 'MODELISATION', 'C_PLAN', lctestIret)
                         if (lctestIret .eq. 0) then
@@ -218,8 +218,13 @@ subroutine compMecaChckStrain(iComp, &
                 elseif (modelType .eq. '3D') then
                     call lctest(defoCompPY, 'MODELISATION', '3D', lctestIret)
                     if (lctestIret .eq. 0) then
-                        call utmess('F', 'COMPOR5_23', si=iComp, &
-                                    nk=2, valk=[defoComp, elemTypeName])
+                        if (defoComp .eq. 'GROT_GDEP') then
+                            call utmess('F', 'COMPOR5_22', si=iComp, &
+                                        sk=elemTypeName)
+                        else
+                            call utmess('F', 'COMPOR5_23', si=iComp, &
+                                        nk=2, valk=[defoComp, elemTypeName])
+                        end if
                     end if
 
                 else if (modelType .eq. '1D') then
@@ -246,8 +251,13 @@ subroutine compMecaChckStrain(iComp, &
                     call lctest(defoCompPY, 'MODELISATION', modelType, lctestIret)
                     if (modelType .ne. '0D') then
                         if (lctestIret .eq. 0) then
-                            call utmess('F', 'COMPOR5_23', si=iComp, &
-                                        nk=2, valk=[defoComp, elemTypeName])
+                            if (defoComp .eq. 'GROT_GDEP') then
+                                call utmess('F', 'COMPOR5_22', si=iComp, &
+                                            sk=elemTypeName)
+                            else
+                                call utmess('F', 'COMPOR5_23', si=iComp, &
+                                            nk=2, valk=[defoComp, elemTypeName])
+                            end if
                         end if
                     end if
 

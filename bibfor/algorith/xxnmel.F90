@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,27 +110,20 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
     integer :: ddld, ddls, nno, npgbis, cpt, ndimb, dec(nnop)
     integer :: idfde, ipoids, ivf, hea_se
     integer :: singu, alp, ii, jj
-    real(kind=8) :: dsidep(6, 6), eps(6), sigma(6), ftf, detf
-    real(kind=8) :: tmp1, tmp2, sigp(6, 3*(1+nfh+nfe*ndim)), rbid33(3, 3)
+    real(kind=8) :: dsidep(6, 6), eps(6), sigma(6)
+    real(kind=8) :: tmp2, sigp(6, 3*(1+nfh+nfe*ndim)), rbid33(3, 3)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3)
-    real(kind=8) :: pff(6, nnop, nnop)
     real(kind=8) :: def(6, ndim*(1+nfh+ndim), nnop)
     real(kind=8) :: r
     real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
     integer :: nbsig
     real(kind=8) :: bary(3), repere(7), d(36), instan
-    aster_logical :: grdepl, axi, cplan
+    aster_logical :: axi, cplan
     type(Behaviour_Integ) :: BEHinteg
     real(kind=8) :: angmas(3)
     real(kind=8):: vim(lgpg), zero6(6)
-    integer, parameter :: indi(6) = (/1, 2, 3, 1, 1, 2/)
-    integer, parameter :: indj(6) = (/1, 2, 3, 2, 3, 3/)
     real(kind=8), parameter :: rac2 = 1.4142135623731d0
-    real(kind=8), parameter :: rind(6) = (/0.5d0, 0.5d0, &
-                                           0.5d0, 0.70710678118655d0, &
-                                           0.70710678118655d0, 0.70710678118655d0/)
-
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -150,13 +143,8 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 !
 ! - Type of finite element
 !
-    grdepl = compor(DEFO) .eq. 'GROT_GDEP'
     axi = typmod(1) .eq. 'AXIS'
     cplan = typmod(1) .eq. 'C_PLAN'
-!
-    if (grdepl) then
-        call utmess('F', 'XFEM2_2')
-    end if
 !
 !     ADRESSE DES COORD DU SOUS ELT EN QUESTION
     fami_se = 'XINT'
@@ -235,7 +223,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
         if (l_nonlin) then
-            call xcinem(axi, igeom, nnop, nnops, idepl, grdepl, ndim, he, &
+            call xcinem(axi, igeom, nnop, nnops, idepl, ndim, he, &
                         nfiss, nfh, singu, ddls, ddlm, &
                         fk, dkdgl, ff, dfdi, f, eps, rbid33, heavn)
         else if (l_line) then
@@ -284,7 +272,8 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
                 end do
 !               TERME DE CORRECTION (3,3) A PORTER SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                def(3, 1+ndim*ig, n) = f(3, 3)*ff(n)/r*xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
+                    def(3, 1+ndim*ig, n) = f(3, 3)*ff(n)/r &
+                                           *xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
                 end if
 !
             end do
@@ -328,25 +317,6 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
         end if
         if (axi) then
             jac = jac*r
-        end if
-!       CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
-        if (l_nonlin .and. grdepl) then
-            do n = 1, nnop
-                do m = 1, n
-                    pff(1, m, n) = dfdi(n, 1)*dfdi(m, 1)
-                    pff(2, m, n) = dfdi(n, 2)*dfdi(m, 2)
-                    pff(3, m, n) = 0.d0
-                    pff(4, m, n) = (dfdi(n, 1)*dfdi(m, 2)+dfdi(n, 2)*dfdi(m, &
-                                                                          1))/rac2
-                    if (ndim .eq. 3) then
-                        pff(3, m, n) = dfdi(n, 3)*dfdi(m, 3)
-                        pff(5, m, n) = (dfdi(n, 1)*dfdi(m, 3)+dfdi(n, 3)* &
-                                        dfdi(m, 1))/rac2
-                        pff(6, m, n) = (dfdi(n, 2)*dfdi(m, 3)+dfdi(n, 3)* &
-                                        dfdi(m, 2))/rac2
-                    end if
-                end do
-            end do
         end if
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE POUR L'OPTION RIGI_MECA
@@ -467,14 +437,6 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
                                 j1 = ddld
                             end if
 !
-!                 RIGIDITE GEOMETRIQUE
-                            tmp1 = 0.d0
-                            if (grdepl .and. i .eq. j) then
-                                tmp1 = 0.d0
-                                do l = 1, 2*ndim
-                                    tmp1 = tmp1+pff(l, m, n)*sigma(l)
-                                end do
-                            end if
 !
 !                 RIGIDITE ELASTIQUE
                             tmp2 = 0.d0
@@ -484,7 +446,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                             if (jj .le. j1) then
-                                matuu(kkd+mn+jj) = matuu(kkd+mn+jj)+(tmp1+tmp2)*jac
+                                matuu(kkd+mn+jj) = matuu(kkd+mn+jj)+(tmp2)*jac
                             end if
 !
                         end do
@@ -506,32 +468,13 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
         end if
 ! ----- Stress
         if (lSigm) then
-            if (grdepl) then
-!               CONVERSION LAGRANGE -> CAUCHY
-                if (cplan) f(3, 3) = sqrt(abs(2.d0*eps(3)+1.d0))
-                detf = f(3, 3)*(f(1, 1)*f(2, 2)-f(1, 2)*f(2, 1))
-                if (ndim .eq. 3) then
-                    detf = detf-f(2, 3)*(f(1, 1)*f(3, 2)-f(3, 1)*f(1, 2))+ &
-                           f(1, 3)*(f(2, 1)*f(3, 2)-f(3, 1)*f(2, 2))
-                end if
-                do i = 1, 2*ndim
-                    sig(i, kpg) = 0.d0
-                    do l = 1, 2*ndim
-                        ftf = (f(indi(i), indi(l))*f(indj(i), indj(l))+ &
-                               f(indi(i), indj(l))*f(indj(i), indi(l)))*rind(l)
-                        sig(i, kpg) = sig(i, kpg)+ftf*sigma(l)
-                    end do
-                    sig(i, kpg) = sig(i, kpg)/detf
-                end do
-            else
-                do l = 1, 3
-                    sig(l, kpg) = sigma(l)
-                end do
-                sig(4, kpg) = sigma(4)/rac2
-                if (ndim .eq. 3) then
-                    sig(5, kpg) = sigma(5)/rac2
-                    sig(6, kpg) = sigma(6)/rac2
-                end if
+            do l = 1, 3
+                sig(l, kpg) = sigma(l)
+            end do
+            sig(4, kpg) = sigma(4)/rac2
+            if (ndim .eq. 3) then
+                sig(5, kpg) = sigma(5)/rac2
+                sig(6, kpg) = sigma(6)/rac2
             end if
         end if
 999     continue
