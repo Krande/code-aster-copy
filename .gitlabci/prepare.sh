@@ -2,15 +2,11 @@
 
 env
 
-echo "+ downloading the runner image..."
+echo "+ checking for requirements..."
 source env.d/version.sh
-URL_SIF=${MINIO_URL}/codeaster/sif/ci/codeaster-prerequisites-${VERSION}-debian-10.sif
-if [ ! -z ${SIF} ]; then
-    if [ -z "${DEBUG_CI}" ] || [ ! -f ${ORIG_HOME}/containers/$(basename ${URL_SIF}) ]; then
-        wget --no-check-certificate -O ${SIF} ${URL_SIF}
-    else
-        cp ${ORIG_HOME}/containers/$(basename ${URL_SIF}) ${SIF}
-    fi
+if [ "${VERSION}" != "${PREREQ_VERSION}" ]; then
+    echo "Docker image (${PREREQ_VERSION}) and prerequisites version (${VERSION}) are inconsistent"
+    exit 1
 fi
 
 echo "+ downloading devtools..."
@@ -30,3 +26,6 @@ git clone ${DATA_URL} data-src
     git checkout ${branch}
     git rev-parse --verify ${branch}
 )
+
+# give ownership to the default user used by the docker image
+chown -R 1000:1000 .
