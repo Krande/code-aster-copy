@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,8 @@
 ! --------------------------------------------------------------------
 !
 subroutine w155mx(resultOut, resultIn, nbStore, listStore)
+!
+    use MGIS_module
 !
     implicit none
 !
@@ -88,6 +90,7 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
         fieldSupp = fieldName(6:9)
         ASSERT(fieldSupp .eq. 'ELNO' .or. fieldSupp .eq. 'ELGA')
         call getvtx(keywFact, 'NOM_CMP', iocc=iocc, scal=cmpName, nbret=n1)
+
         if (n1 .eq. 0) then
             ASSERT(fieldName(1:7) .eq. 'VARI_EL')
             call getvtx(keywFact, 'NOM_VARI', iocc=iocc, scal=variName, nbret=nbVari)
@@ -95,7 +98,6 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
 
 ! --------- Get list of cells
             call dismoi('NOM_MAILLA', resultIn, 'RESULTAT', repk=mesh)
-
             call getvtx(' ', 'TOUT', iocc=iocc, scal=cmpName, nbret=n1)
             call getvtx(' ', 'GROUP_MA', iocc=iocc, scal=cmpName, nbret=n2)
             call getvtx(' ', 'MAILLE', iocc=iocc, scal=cmpName, nbret=n3)
@@ -107,9 +109,7 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
                 call getelem(mesh, ' ', iocc, 'F', listCell, &
                              nbCell)
             end if
-
             call jeveuo(listCell, 'L', vi=cellNume)
-            call wkvect(listVariNume, 'V V K8', nbCell*nbVari, jcmp)
 
 ! --------- Get behaviour (only one !)
             call rsGetOneBehaviourFromResult(resultIn, nbStore, listStore, compor)
@@ -127,6 +127,10 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
             end if
 
 ! --------- Get name of internal state variables
+            if (hasMFront(compor)) then
+                call utmess('F', "COMPOR6_6")
+            end if
+            call wkvect(listVariNume, 'V V K8', nbCell*nbVari, jcmp)
             call varinonu(model, compor, &
                           nbCell, cellNume, &
                           nbVari, variName, zk8(jcmp))

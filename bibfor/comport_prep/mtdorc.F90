@@ -31,6 +31,9 @@ subroutine mtdorc(factorKeyword, model, comporMeta)
 #include "asterfort/comp_meta_read.h"
 #include "asterfort/comp_meta_save.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/nocart.h"
+#include "asterfort/jeveuo.h"
 !
     character(len=16), intent(in) :: factorKeyword
     character(len=8), intent(in) :: model
@@ -54,6 +57,7 @@ subroutine mtdorc(factorKeyword, model, comporMeta)
     character(len=8) :: mesh
     character(len=19), parameter :: comporMetaInfo = '&&MTDORC.INFO'
     type(META_PrepBehaviour) :: metaPrepBehaviour
+    character(len=16), pointer :: comporValv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,6 +68,18 @@ subroutine mtdorc(factorKeyword, model, comporMeta)
 
 ! - Create COMPOR <CARTE>
     call comp_init(mesh, comporMeta, 'V', nbCmp)
+
+! - Access to map
+    call jeveuo(comporMeta(1:19)//'.VALV', 'E', vk16=comporValv)
+
+! - Init <CARTE>
+    comporValv(1) = "VIDE"
+    comporValv(2) = '0'
+    comporValv(3) = "VIDE"
+    comporValv(4) = '0'
+
+! - Create <CARTE>
+    call nocart(comporMeta, 1, nbCmp)
 
 ! - Read informations from command file
     call comp_meta_read(metaPrepBehaviour)

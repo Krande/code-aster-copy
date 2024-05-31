@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 subroutine dbrInitAlgoPod(base, paraPod)
 !
     use Rom_Datastructure_type
+    use MGIS_module
 !
     implicit none
 !
@@ -82,6 +83,9 @@ subroutine dbrInitAlgoPod(base, paraPod)
         do iCell = 1, nbCell
             listCell(iCell) = iCell
         end do
+        if (hasMFront(compor)) then
+            call utmess('F', "COMPOR6_6")
+        end if
         call wkvect(listVariNume, 'V V K8', nbCell*nbVari, vk8=variNume)
         call varinonu(model, compor, &
                       nbCell, listCell, &

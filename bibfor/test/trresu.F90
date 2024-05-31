@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 !
 subroutine trresu(ific, nocc)
 !
+    use MGIS_module
     implicit none
 !
 #include "asterf_types.h"
@@ -525,6 +526,9 @@ subroutine trresu(ific, nocc)
                         call jenonu(jexnom(mesh//'.NOMMAI', cellName), cellNume)
 
 ! --------------------- Get name of internal state variables
+                        if (hasMFront(compor)) then
+                            call utmess('F', "COMPOR6_6")
+                        end if
                         nbVari = 1
                         call varinonu(model, compor, &
                                       1, [cellNume], &

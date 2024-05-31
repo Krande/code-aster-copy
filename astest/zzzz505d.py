@@ -64,24 +64,31 @@ study = CA.PhysicalProblem(model, mater)
 study.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="VMIS_ISOT_LINE", TOUT="OUI"),))
 behav = study.getBehaviourProperty()
 # Build testfield with model and compor
-testfield1 = CA.FieldOnCellsReal(model, "ELGA", "SIEF_R")
-testfield1.setValues(value)
+fieldSIEF = CA.FieldOnCellsReal(model, "ELGA", "SIEF_R")
+fieldSIEF.setValues(value)
 
-testfield2 = CA.FieldOnCellsReal(model, "ELGA", "VARI_R", behav)
-testfield2.setValues(value)
+fieldVARI = CA.FieldOnCellsReal(model, "ELGA", "VARI_R", behav)
+fieldVARI.setValues(value)
+
 
 # Test
-test.assertAlmostEqual(len(refe1.getValues()), len(testfield1.getValues()))
-test.assertAlmostEqual(len(refe2.getValues()), len(testfield2.getValues()))
-test.assertAlmostEqual(refe1.getValues(), testfield1.getValues())
-test.assertAlmostEqual(refe2.getValues(), testfield2.getValues())
+test.assertAlmostEqual(len(refe1.getValues()), len(fieldSIEF.getValues()))
+test.assertAlmostEqual(len(refe2.getValues()), len(fieldVARI.getValues()))
+test.assertAlmostEqual(refe1.getValues(), fieldSIEF.getValues())
+test.assertAlmostEqual(refe2.getValues(), fieldVARI.getValues())
+test.assertEqual(fieldSIEF.getNumberOfComponents(), 6)
+test.assertEqual(fieldVARI.getNumberOfComponents(), 2)
+test.assertSequenceEqual(
+    ["SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"], fieldSIEF.getComponents()
+)
+test.assertSequenceEqual(["V1", "V2"], fieldVARI.getComponents())
 
-fno = testfield1.toFieldOnNodes()
-fsno = testfield1.toSimpleFieldOnNodes()
-felno = testfield1.changeLocalization("ELNO")
+fno = fieldSIEF.toFieldOnNodes()
+fsno = fieldSIEF.toSimpleFieldOnNodes()
+felno = fieldSIEF.changeLocalization("ELNO")
 
 
-sf2 = testfield2.toSimpleFieldOnCells()
+sf2 = fieldVARI.toSimpleFieldOnCells()
 test.assertSequenceEqual(["V1", "V2"], sf2.getComponents())
 test.assertEqual(sf2.getPhysicalQuantity(), "VARI_R")
 test.assertEqual(sf2.getLocalization(), "ELGA")
@@ -139,10 +146,10 @@ study = CA.PhysicalProblem(MODELE, CHMAT, CAREL)
 
 study.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="VMIS_ISOT_LINE", TOUT="OUI"),))
 behav = study.getBehaviourProperty()
-testfield1 = CA.FieldOnCellsReal(MODELE, "ELGA", "SIEF_R", behav, CAREL)
+fieldSIEF = CA.FieldOnCellsReal(MODELE, "ELGA", "SIEF_R", behav, CAREL)
 
 # TEST LENGTH EQUALITY
-test.assertAlmostEqual(len(refe1.getValues()), len(testfield1.getValues()))
+test.assertAlmostEqual(len(refe1.getValues()), len(fieldSIEF.getValues()))
 
 test.printSummary()
 CA.close()

@@ -169,6 +169,15 @@
 !       Strain model for (MFRONT only)
 #define EXTE_STRAIN             21
 
+! --------------------------------------------------------------------------------------------------
+!
+! For external state variables
+!
+! --------------------------------------------------------------------------------------------------
+
+! Maximum number of differents types of external state variables for MFront
+#define ESVA_EXTE_MFRONT_NBMAXI     11
+
 !
 ! --------------------------------------------------------------------------------------------------
 !

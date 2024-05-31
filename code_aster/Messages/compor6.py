@@ -58,6 +58,9 @@ Le nombre de variables internes n'est pas le même. On ne peut faire ce changeme
 Ce n'est pas le cas ici. Pour avoir la liste des mailles et les relations de comportement concernées, relancer le calcul en utilisant INFO=2.
 """
     ),
+    6: _(
+        """La présence d'un comportement de type MFront ne permet pas d'utiliser NOM_VARI, utilisez NOM_CMP."""
+    ),
     10: _(
         """Maille: %(k1)-8s - Cette maille appartient aux groupes de mailles suivants : %(k2)s %(k2)s %(k3)s %(k3)s."""
     ),

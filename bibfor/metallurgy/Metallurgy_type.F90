@@ -45,6 +45,8 @@ module Metallurgy_type
         integer :: nbOption = 0
         character(len=16), pointer :: listOption(:) => null()
 ! ----- Main parameters
+        character(len=24) :: metaLigrel = "&&OP0194.METALIGREL"
+        character(len=24) :: modelLigrel = " "
         character(len=8) :: model = " "
         character(len=8) :: materialField = " "
         character(len=24) :: materialCoding = " "

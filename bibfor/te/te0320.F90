@@ -103,6 +103,10 @@ subroutine te0320(option, nomte)
 
 ! ----- Check transition time
         call metaInitCheckTransitionTime(nbPhase, jvPhaseIn)
+
+    else if (metaType .eq. 'VIDE') then
+        phase_tot = 1.d0
+
     else
         WRITE (6, *) "METATYPE: ", metaType
         ASSERT(ASTER_FALSE)
@@ -121,6 +125,9 @@ subroutine te0320(option, nomte)
     else if (metaType .eq. 'ZIRC') then
         call metatInitZircSetField(nbPhase, nbNode, nbVari, MT_NNOMAX2D, nbVariZirc, &
                                    jvTemp, jvPhaseIn, jvPhaseOut)
+
+    else if (metaType .eq. 'VIDE') then
+
     else
         ASSERT(ASTER_FALSE)
     end if
