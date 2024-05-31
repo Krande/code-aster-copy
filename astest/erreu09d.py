@@ -19,10 +19,16 @@
 
 from code_aster.Commands import *
 from code_aster import CA
+from run_aster.config import CFG
 
 CA.init("--test")
 
 test = CA.TestCase()
+
+if CFG.get("require_mpiexec"):
+    print("INFO: This testcase can not be run under mpiexec.")
+    # because it would exit before saving the database
+    CA.exit()
 
 nbsteps = RESU.getLastIndex()
 
