@@ -1,0 +1,3 @@
+LIBRARY med_aster
+EXPORTS
+    PyInit_med_aster

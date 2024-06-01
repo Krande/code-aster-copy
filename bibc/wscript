@@ -140,18 +140,44 @@ def build_libbibc(self, env):
         "PYEXT",
     ]
     get_srcs = self.path.get_src().ant_glob
+    excl_files = [PYMAIN]
+    if self.env.ASTER_PLATFORM_MSVC64:
+        excl_files.append("supervis/aster_module.c")
+        excl_files.append("supervis/aster_core_module.c")
+        excl_files.append("supervis/aster_fonctions_module.c")
+        excl_files.append("supervis/med_aster_module.c")
 
     # compile *.c
     self(
         features="c cshlib",
         name="asterbibc",
-        source=get_srcs("**/*.c", excl=[PYMAIN]),
+        source=get_srcs("**/*.c", excl=excl_files),
         target="bibc",
         defines="",
         use=use,
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
     )
+    if self.env.ASTER_PLATFORM_MSVC64:
+        name_map = {
+            "aster_module.c": "aster_module",
+            "aster_core_module.c": "coremodule",
+            "aster_fonctions_module.c": "asterfonctions",
+            "med_aster_module.c": "medaster",
+        }
+        for f in excl_files[1:]:
+            name = name_map.get(f.split("/")[-1])
+            use += ["BIBC"]
+            self(
+                features="c cshlib",
+                name=name,
+                source=get_srcs(f),
+                target=f"main{name}",
+                defines="",
+                use=use,
+                env=env.derive(),
+                install_path=env.ASTERLIBDIR,
+            )
 
 
 def build_libaster(self, env):

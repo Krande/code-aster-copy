@@ -1,0 +1,4 @@
+LIBRARY aster_core
+EXPORTS
+    PyInit_aster
+	GetJdcAttr

@@ -1,0 +1,3 @@
+LIBRARY aster_module
+EXPORTS
+    PyInit_aster

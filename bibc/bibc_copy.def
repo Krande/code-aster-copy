@@ -1,5 +1,6 @@
 LIBRARY bibc
 EXPORTS
+	CODEASTER_ARRAY_API 	 DATA
 	gErrFlg 	 DATA
 	gExcEnv 	 DATA
 	gExcLvl 	 DATA
@@ -8,7 +9,7 @@ EXPORTS
 	CopyCStrToFStr
 	FStrlen
 	FreeStr
-
+	GetJdcAttr
 	MakeBlankFStr
 	MakeCStrFromFStr
 	MakeFStrFromCStr
@@ -21,6 +22,10 @@ EXPORTS
 	MakeTupleString
 	NULL_FUNCTION
 	PRE_myabort
+	PyInit_aster
+	PyInit_aster_core
+	PyInit_aster_fonctions
+	PyInit_med_aster
 	SetTabFStr
 	TraiteMessageErreur
 	__local_stdio_printf_options
