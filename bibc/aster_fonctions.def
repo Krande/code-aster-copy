@@ -1,3 +1,11 @@
 LIBRARY aster_fonctions
 EXPORTS
-    PyInit_aster_fonctions
+	sprintf
+	vsprintf
+	_snprintf
+	_vsnprintf
+	_vsprintf_l
+	_vsnprintf_l
+	__local_stdio_printf_options
+	PyInit_aster_fonctions
+	CODEASTER_ARRAY_API

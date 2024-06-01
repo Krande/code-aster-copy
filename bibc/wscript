@@ -142,10 +142,13 @@ def build_libbibc(self, env):
     get_srcs = self.path.get_src().ant_glob
     excl_files = [PYMAIN]
     if self.env.ASTER_PLATFORM_MSVC64:
-        excl_files.append("supervis/aster_module.c")
-        excl_files.append("supervis/aster_core_module.c")
-        excl_files.append("supervis/aster_fonctions_module.c")
-        excl_files.append("supervis/med_aster_module.c")
+        split_files = [
+            "supervis/aster_module.c",
+            "supervis/aster_core_module.c",
+            "supervis/aster_fonctions_module.c",
+            "supervis/med_aster_module.c"
+        ]
+        excl_files.extend(split_files)
 
     # compile *.c
     self(

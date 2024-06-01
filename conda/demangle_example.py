@@ -2,8 +2,8 @@ import pathlib
 
 from cpp_demangle import demangle
 
-from conda.manual_create_def_file import iter_symbol_names
-from conda.msvc_utils import call_using_env
+from def_utils import iter_symbol_names
+from msvc_utils import call_using_env
 
 
 def main():

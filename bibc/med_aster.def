@@ -1,3 +1,11 @@
 LIBRARY med_aster
 EXPORTS
-    PyInit_med_aster
+	sprintf
+	vsprintf
+	_snprintf
+	_vsnprintf
+	_vsprintf_l
+	_vsnprintf_l
+	__local_stdio_printf_options
+	PyInit_med_aster
+	.file
