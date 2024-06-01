@@ -89,6 +89,11 @@ class ParallelMesh : public BaseMesh {
     ParallelMesh( const std::string &name );
 
     /**
+     * @brief Return the MED type for each cell
+     */
+    const VectorLong getAllMedCellsTypes() const;
+
+    /**
      * @brief Get the JeveuxVector for outer subdomain nodes
      * @return _nodesOwner
      */

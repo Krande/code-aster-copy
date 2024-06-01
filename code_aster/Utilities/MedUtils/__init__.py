@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@ if config.get("ASTER_HAVE_MPI") and config.get("ASTER_HAVE_MED"):
     from ...Objects import PtScotchPartitioner
     from ...Objects import FieldCharacteristics, SimpleFieldOnNodesReal, Result
     from ...Objects import SimpleFieldOnCellsReal
-    from .medtoasterconnectivity import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
+    from .medtoasterconnectivity import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES, toAsterGeoType
 else:
     MedFileReader = IncompleteMesh = MeshBalancer = MeshConnectionGraph = PtScotchPartitioner = None
     FieldCharacteristics = SimpleFieldOnNodesReal = Result = SimpleFieldOnCellsReal = None
-    MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = MedFileAccessType = None
+    MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = MedFileAccessType = toAsterGeoType = None

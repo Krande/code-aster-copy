@@ -7,6 +7,10 @@ variables:
   GIT_SSL_NO_VERIFY: "true"
   reg_debugging: '/^debugci.*/'
 
+default:
+  tags:
+    - docker-lame-1
+
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID

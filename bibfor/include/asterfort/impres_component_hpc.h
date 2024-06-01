@@ -15,15 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
 interface
-    subroutine cescre_wrap(basez, cesz, typcez, maz, nomgdz, &
-        ncmpg, licmp, npg, nspt, ncmp, undf0)
-        character(len=*) :: maz, nomgdz, cesz, basez, typcez
-    integer :: npg(*)
-    integer :: nspt, ncmp
-    character(len=8) :: licmp(*)
-    aster_logical, intent(in) :: undf0
-    end subroutine cescre_wrap
+    subroutine impres_component_hpc(nomgd, ntncmp, ncmpvl, ncmpve, indcmp)
+        character(len=32), intent(in)  :: nomgd
+        character(len=*), intent(in)  :: ntncmp
+        integer, intent(inout) :: ncmpvl, ncmpve
+        character(len=24), intent(in)  :: indcmp
+    end subroutine impres_component_hpc
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,11 @@ subroutine cescre_wrap(basez, cesz, typcez, maz, nomgdz, &
 #include "jeveux.h"
 #include "asterfort/cescre.h"
     character(len=*) :: maz, nomgdz, cesz, basez, typcez
-    integer :: npg, nspt, ncmp, ncmpg
+    integer :: npg(*)
+    integer :: nspt, ncmp, ncmpg
     character(len=8) :: licmp(*)
     aster_logical, intent(in) :: undf0
 
     call cescre(basez, cesz, typcez, maz, nomgdz, &
-                ncmpg, licmp, [-npg], [-nspt], [-ncmp], undf0)
+                ncmpg, licmp, npg, [-nspt], [-ncmp], undf0)
 end subroutine

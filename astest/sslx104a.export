@@ -6,3 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit verification sequential
 
 F comm sslx104a.comm D 1
+F comm sslx104a.com1 D 1

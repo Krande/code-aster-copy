@@ -436,4 +436,12 @@ Condition non respectée :: <%(i1)d>
     %(k3)s
 """
     ),
+    67: _(
+        """
+La dilatation n'est pas prise en compte sur les éléments discrets en linéaire.
+
+Conseil:
+    Vous pouvez utiliser STAT_NON_LINE avec un comportement élastique.
+"""
+    ),
 }
