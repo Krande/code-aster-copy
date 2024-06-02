@@ -147,7 +147,12 @@ def options(self):
         action="store_false",
         help="disable address sanitizer in debug mode",
     )
-
+    group.add_option(
+        "--msvc-entry",
+        dest="msvc_entry",
+        action="store_false",
+        help="rewrites pybind11 entry points for MSVC to skip symlink",
+    )
     group = self.add_option_group("code_aster options")
 
     self.load("parallel", tooldir="waftools")

@@ -8,4 +8,3 @@ EXPORTS
 	_vsnprintf_l
 	__local_stdio_printf_options
 	PyInit_med_aster
-	.file

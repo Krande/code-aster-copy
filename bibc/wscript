@@ -141,7 +141,8 @@ def build_libbibc(self, env):
     ]
     get_srcs = self.path.get_src().ant_glob
     excl_files = [PYMAIN]
-    if self.env.ASTER_PLATFORM_MSVC64:
+    extra_use = []
+    if self.env.ASTER_PLATFORM_MSVC64 and self.options.msvc_entry:
         split_files = [
             "supervis/aster_module.c",
             "supervis/aster_core_module.c",
@@ -149,6 +150,7 @@ def build_libbibc(self, env):
             "supervis/med_aster_module.c"
         ]
         excl_files.extend(split_files)
+        extra_use.extend(["aster_module", "aster_core", "aster_fonctions", "med_aster"])
 
     # compile *.c
     self(
@@ -157,25 +159,25 @@ def build_libbibc(self, env):
         source=get_srcs("**/*.c", excl=excl_files),
         target="bibc",
         defines="",
-        use=use,
+        use=use+extra_use,
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
     )
-    if self.env.ASTER_PLATFORM_MSVC64:
+    if self.env.ASTER_PLATFORM_MSVC64 and self.options.msvc_entry:
         name_map = {
             "aster_module.c": "aster_module",
-            "aster_core_module.c": "coremodule",
-            "aster_fonctions_module.c": "asterfonctions",
-            "med_aster_module.c": "medaster",
+            "aster_core_module.c": "aster_core",
+            "aster_fonctions_module.c": "aster_fonctions",
+            "med_aster_module.c": "med_aster",
         }
         for f in excl_files[1:]:
-            name = name_map.get(f.split("/")[-1])
+            target_name = name_map.get(f.split("/")[-1])
             use += ["BIBC"]
             self(
                 features="c cshlib",
-                name=name,
+                name=f"aster_{target_name}",
                 source=get_srcs(f),
-                target=f"main{name}",
+                target=target_name,
                 defines="",
                 use=use,
                 env=env.derive(),
@@ -185,6 +187,9 @@ def build_libbibc(self, env):
 
 def build_libaster(self, env):
     use = ["LIBASTER", "asterbibfor", "asterbibc", "asterbibcxx"]
+    if self.env.ASTER_PLATFORM_MSVC64 and self.options.msvc_entry:
+        use.extend(["aster_module", "aster_core", "aster_fonctions", "med_aster"])
+
     if env.BUILD_MFRONT:
         use.append("astermfront")
 

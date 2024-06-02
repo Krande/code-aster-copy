@@ -1,5 +1,6 @@
 LIBRARY bibc
 EXPORTS
+	CODEASTER_ARRAY_API 	 DATA
 	gErrFlg 	 DATA
 	gExcEnv 	 DATA
 	gExcLvl 	 DATA
@@ -8,6 +9,7 @@ EXPORTS
 	CopyCStrToFStr
 	FStrlen
 	FreeStr
+	GetJdcAttr
 	MakeBlankFStr
 	MakeCStrFromFStr
 	MakeFStrFromCStr
@@ -19,12 +21,20 @@ EXPORTS
 	MakeTupleInt
 	MakeTupleString
 	NULL_FUNCTION
+	PRE_myabort
+	PyInit_aster
+	PyInit_aster_core
+	PyInit_aster_fonctions
+	PyInit_med_aster
 	SetTabFStr
+	TraiteMessageErreur
+	__local_stdio_printf_options
 	_check_string_length
 	_end_try
 	_libsymb_get_object
 	_libsymb_to_key
 	_new_try
+	_reset_tpmax
 	_search_id
 	append_etape
 	asabrt_
@@ -89,7 +99,14 @@ EXPORTS
 	aster_set_current_comm
 	aster_set_mpi_barrier
 	aster_split_comm
+	asterc_getopt
+	asterc_getopt_double
+	asterc_getopt_long
+	asterc_getopt_string
+	asterc_matfpe
 	calc_SPEC_OSCI
+	cheksd_
+	chkmsg_
 	closdr_
 	clrusr_
 	conv_un_c8
@@ -106,13 +123,33 @@ EXPORTS
 	etausr_
 	fetsco_
 	fprintf
+	gcecdu_
+	gcncon2_
 	get_dll_register_dict
 	get_node_by_id
 	get_sh_etape
 	get_sh_jeveux_status
 	get_sh_msglog
 	get_sh_params
+	get_tpmax
+	getexm_
+	getfac_
+	getltx_
+	getmat_
+	getmjm_
+	getran_
+	getres_
+	getvc8_wrap_
+	getvid_wrap_
+	getvis_wrap_
+	getvpy
+	getvr8_wrap_
+	getvtx_wrap_
 	gpmetis_aster_
+	gtalrm_
+	gtopti_
+	gtoptk_
+	gtoptr_
 	hancpu
 	hanfpe
 	hdfcld_
@@ -132,14 +169,31 @@ EXPORTS
 	ind_fac
 	indiceNbName
 	indik8_
+	iniran_
 	inisig_
 	init_etape_stack
 	isbaem_
+	isjvup_
 	ismaem_
 	isnnem_
 	ispbem_
+	jdcget_
+	jdcset_
 	kloklo_
 	lbisem_
+	lcalgo_
+	lccree_
+	lcdeformldc_
+	lcdiscard_
+	lcextevari_
+	lcinfo_
+	lckitread_
+	lcreguvisc_
+	lcsymb_
+	lcsymm_
+	lctest_
+	lctype_
+	lcvari_
 	libsymb_apply_on_all
 	libsymb_get_handle
 	libsymb_get_symbol
@@ -164,7 +218,11 @@ EXPORTS
 	open_fac
 	opendr_
 	pop_etape
+	prhead_
 	print_trace_
+	printf
+	putvir_
+	putvrr_
 	r4maem_
 	r4miem_
 	r8baem_
@@ -179,6 +237,7 @@ EXPORTS
 	r8rddg_
 	r8t0_
 	r8vide_
+	rdtmax_
 	readdr_
 	register_sh_etape
 	register_sh_jeveux_status
@@ -190,12 +249,17 @@ EXPORTS
 	rmfile_
 	rminem_
 	rmirem_
+	sprintf
 	stpusr1
 	strmov_
 	terminate
+	testresu_print_
 	umat_get_function_
 	umatwp_
+	utalrm_
 	utflsh_
+	utprin_
 	uttcsm_
 	uttrst_
 	writdr_
+	xfini_

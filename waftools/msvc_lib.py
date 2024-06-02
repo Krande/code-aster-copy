@@ -25,6 +25,8 @@ class msvclibgen(Task.Task):
         # This is a hack to copy the generated lib to the build directory
         if clean_name == "aster":
             def_file = root_path / "bibc" / "aster.def"
+        elif clean_name == "bibc" and self.generator.bld.options.msvc_entry:
+            def_file = root_path / "bibc" / "bibc_alt.def"
         else:
             def_file = root_path / clean_name / f"{clean_name}.def"
 
