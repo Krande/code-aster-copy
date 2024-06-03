@@ -9,7 +9,7 @@ export PREREQ_PATH=/opt/public/${VERSION}/gcc-openblas-ompi
 export PYPATH_MPI4PY="$(find ${PREREQ_PATH}/mpi4py-*/lib/python* -name site-packages)"
 export PYTHONPATH="${PYPATH_MPI4PY}:${PYTHONPATH}"
 
-jobs=$(( ${NPROC_MAX} / 2 ))
+jobs=$(( ${NPROC_MAX} / 4 ))
 export BUILD=debug
 
 # mpi build

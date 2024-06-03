@@ -10,7 +10,7 @@ variables:
 
 default:
   tags:
-    - docker-lame-2
+    - docker-executor
 
 workflow:
   rules:
@@ -124,7 +124,7 @@ minimal_test:
 
 verification_test:
   stage: test
-  needs: ["prepare", "compile", "minimal_build", "minimal_test", "check_source", "doc_html"]
+  needs: ["prepare", "compile", "minimal_test", "check_source", "doc_html"]
   script:
     - .gitlabci/test.sh
         -L verification
@@ -142,7 +142,6 @@ verification_test:
       junit: results/run_testcases.xml
   rules:
     - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
-  resource_group: testing_verification
 
 known_failures_test:
   stage: test
