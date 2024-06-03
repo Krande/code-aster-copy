@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,6 +81,7 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
 #include "blas/dscal.h"
+#include "asterfort/isParallelMatrix.h"
 
     integer(kind=4) :: ip(*), ippc(*)
     integer :: m, in(m), inpc(m), irep, niter, perm(m)
@@ -94,13 +95,13 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
     integer :: ifm, niv, jcri, jcrr, jcrk, iter, ier, vali, pcpiv, redmpi
     character(len=24) :: precon, solvbd, usersm, renum
     character :: prec, rank
-    character(len=3) :: mathpc
     complex(kind=8) :: cbid
     integer, pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     real(kind=8), pointer :: xtrav(:) => null()
     real(kind=8), pointer :: ytrav(:) => null()
+    aster_logical :: l_parallel_matrix
 ! -----------------------------------------------------------------
 !
     cbid = (0.d0, 0.d0)
@@ -113,8 +114,8 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
     call infniv(ifm, niv)
 !
 ! --- GCPC interdit avec un ParallelMesh
-    call dismoi('MATR_HPC', matas, 'MATR_ASSE', repk=mathpc)
-    if (mathpc == "OUI") then
+    l_parallel_matrix = isParallelMatrix(matas)
+    if (l_parallel_matrix) then
         call utmess('F', 'ALGELINE4_44')
     end if
 !

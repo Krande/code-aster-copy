@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,8 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 #include "mumps/cmumps.h"
+#include "asterfort/isParallelMatrix.h"
+
     character(len=*) :: action
     character(len=14) :: impr
     character(len=19) :: vcine, nosolv
@@ -93,7 +95,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
     character(len=24) :: kmonit(12), k24aux, posttrait
     real(kind=8) :: epsmax, valr(2), rctdeb, rbid(1), temps(6), epsmat
     aster_logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
-    aster_logical :: lopfac, lmhpc, lbloc
+    aster_logical :: lopfac, l_parallel_matrix, lbloc
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
@@ -136,8 +138,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
     lmd = matd .eq. 'OUI'
 !
 ! --- MATRICE ASTER HPC ?
-    call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc .eq. 'OUI'
+    l_parallel_matrix = isParallelMatrix(nomat)
 !
     lquali = .false.
 !
@@ -148,7 +149,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 ! ---   ANALYSE PAR BLOCS
 !       PAS ENCORE ETENDU AU MODE DISTRIBUE
         lbloc = (((slvk(5) (1:3) .eq. 'FR+') .or. (slvk(5) (1:3) .eq. 'LR+') .or. &
-                  (slvk(5) (1:4) .eq. 'AUTO')) .and. (.not. lmhpc) .and. (.not. lmd))
+                  (slvk(5) (1:4) .eq. 'AUTO')) .and. (.not. l_parallel_matrix) .and. (.not. lmd))
     end if
 !
     if (action(1:5) .ne. 'DETR_') then
@@ -211,7 +212,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 !       ------------------------------------------------
 !        INITIALISATION DE L'OCCURENCE MUMPS KXMPS:
 !       ------------------------------------------------
-        call amumpi(0, lquali, ldist, kxmps, type, lmhpc, lbid)
+        call amumpi(0, lquali, ldist, kxmps, type, l_parallel_matrix, lbid)
         call cmumps(cmpsk)
         rang = cmpsk%myid
         nbproc = cmpsk%nprocs
@@ -219,7 +220,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 !       --------------------------------------------------------------
 !        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (ANALYSE+FACTO):
 !       --------------------------------------------------------------
-        call amumpi(2, lquali, ldist, kxmps, type, lmhpc, lbloc)
+        call amumpi(2, lquali, ldist, kxmps, type, l_parallel_matrix, lbloc)
 !
 !       -----------------------------------------------------
 !       CALCUL DU DETERMINANT PART I ?
@@ -243,7 +244,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
                     rctdeb, ldist)
         call amumpm(ldist, kxmps, kmonit, impr, ifmump, &
                     klag2, type, lmd, epsmat, ktypr, &
-                    lpreco, lmhpc, lbloc)
+                    lpreco, l_parallel_matrix, lbloc)
 !
 !       -----------------------------------------------------
 !       CONSERVE-T-ON LES FACTEURS OU NON ?
@@ -457,9 +458,9 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 !
 !       ON SOULAGE LA MEMOIRE JEVEUX DES QUE POSSIBLE D'OBJETS MUMPS
 !       INUTILES
-        if (((rang .eq. 0) .and. (.not. ldist)) .or. (ldist) .or. (lmhpc)) then
+        if (((rang .eq. 0) .and. (.not. ldist)) .or. (ldist) .or. (l_parallel_matrix)) then
             if (.not. (lquali) .and. (posttrait(1:4) .ne. 'MINI') .and. .not. lopfac) then
-                if (ldist .or. lmhpc) then
+                if (ldist .or. l_parallel_matrix) then
                     deallocate (cmpsk%a_loc, stat=ibid)
                     deallocate (cmpsk%irn_loc, stat=ibid)
                     deallocate (cmpsk%jcn_loc, stat=ibid)
@@ -485,12 +486,12 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
                     rctdeb, ldist)
         call amumpp(0, nbsol, kxmps, ldist, type, &
                     impr, ifmump, lbis, rbid, csolu, &
-                    vcine, prepos, lpreco, lmhpc)
+                    vcine, prepos, lpreco, l_parallel_matrix)
 !
 !       --------------------------------------------------------------
 !        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (SOLVE):
 !       --------------------------------------------------------------
-        call amumpi(3, lquali, ldist, kxmps, type, lmhpc, lbid)
+        call amumpi(3, lquali, ldist, kxmps, type, l_parallel_matrix, lbid)
 !
 !       ------------------------------------------------
 !        RESOLUTION MUMPS :
@@ -542,7 +543,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 !       ------------------------------------------------
         call amumpp(2, nbsol, kxmps, ldist, type, &
                     impr, ifmump, lbis, rbid, csolu, &
-                    vcine, prepos, lpreco, lmhpc)
+                    vcine, prepos, lpreco, l_parallel_matrix)
 !
 !       ------------------------------------------------
 !        AFFICHAGE DU MONITORING :
@@ -561,8 +562,8 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 !        MENAGE ASTER ET MUMPS:
 !       ------------------------------------------------
         if (nomats(kxmps) .ne. ' ') then
-            if (((rang .eq. 0) .and. (.not. ldist)) .or. (ldist) .or. (lmhpc)) then
-                if (ldist .or. lmhpc) then
+            if (((rang .eq. 0) .and. (.not. ldist)) .or. (ldist) .or. (l_parallel_matrix)) then
+                if (ldist .or. l_parallel_matrix) then
                     deallocate (cmpsk%a_loc, stat=ibid)
                     deallocate (cmpsk%irn_loc, stat=ibid)
                     deallocate (cmpsk%jcn_loc, stat=ibid)

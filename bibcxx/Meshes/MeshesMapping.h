@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MeshesMapping
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -79,7 +79,7 @@ class MeshesMapping : public DataStructure {
      */
     MeshesMapping( const std::string name = ResultNaming::getNewResultName() );
 
-    bool setFirstMesh( MeshPtr &currentMesh ) {
+    bool setFirstMesh( BaseMeshPtr &currentMesh ) {
         if ( currentMesh->isEmpty() ) {
             AS_ABORT( "Mesh is empty" );
         }
@@ -87,7 +87,7 @@ class MeshesMapping : public DataStructure {
         return true;
     };
 
-    bool setSecondMesh( MeshPtr &currentMesh ) {
+    bool setSecondMesh( BaseMeshPtr &currentMesh ) {
         if ( currentMesh->isEmpty() ) {
             AS_ABORT( "Mesh is empty" );
         }

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,8 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
 #include "asterfort/lisnch.h"
 #include "asterfort/lisnnb.h"
 #include "asterfort/utmess.h"
+#include "asterfort/isParallelMatrix.h"
+#include "asterfort/asmpi_any.h"
 !
     character(len=*), intent(in) :: matrRigiz, matrMassz, matrDampz, listLoadz
     aster_logical, intent(in) :: lDamp
@@ -54,6 +56,7 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
     character(len=8) :: answer, kineLoadName
     character(len=8) :: matrRigiMesh, matrMassMesh, matrDampMesh, kineLoadMesh
     aster_logical :: lKineLoadInRigi, lKineLoadInMass, lKineLoadInDamp, lKineLoad, lTransient
+    aster_logical :: l_parallel_matrix, lKineLoadGlobal
     integer :: matrRigiNbEqua, matrMassNbEqua, matrDampNbEqua
     integer :: iLoad, nbLoad, iLoadKine, genrec
     integer, pointer :: listLoadInfo(:) => null()
@@ -112,8 +115,14 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
             call lislch(listLoad, iLoadKine, kineLoadName)
         end if
     end if
+! - One subdomain (at least) has a kinematic load
+    lKineLoadGlobal = asmpi_any(lKineLoad, ASTER_TRUE)
 
 ! - Some parameters from matrices
+    l_parallel_matrix = isParallelMatrix(matrRigi)
+    ASSERT(l_parallel_matrix .eqv. isParallelMatrix(matrMass))
+    ASSERT(l_parallel_matrix .eqv. isParallelMatrix(matrDamp))
+!
     lKineLoadInDamp = ASTER_FALSE
     matrDampMesh = ' '
     matrDampNbEqua = 0
@@ -194,8 +203,10 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
 ! - Check consistency between kinematic load and kinematic load in matrices
 ! - Consistency between load from user and load in matrix
     if (lKineLoadInRigi) then
-        if (lKineLoad) then
-            if (kineLoadMesh .ne. matrRigiMesh) then
+        ! There is at least one subdomain with a kinematic load
+        if (lKineLoadGlobal) then
+            ! Check the supporting mesh on the subdomain with a kinematic load
+            if (lKineLoad .and. kineLoadMesh .ne. matrRigiMesh) then
                 call utmess('F', 'DYNALINE2_7')
             end if
         else

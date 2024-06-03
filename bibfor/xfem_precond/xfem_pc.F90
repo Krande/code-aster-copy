@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,8 @@ subroutine xfem_pc(matass, base)
 #include "asterfort/xfem_count_no.h"
 #include "asterfort/xfem_calc_diag.h"
 #include "asterfort/xfem_store_pc.h"
+#include "asterfort/isParallelMatrix.h"
+!
 !-----------------------------------------------------------------------
     character(len=*) :: matass
     character(len=1) :: base
@@ -67,11 +69,10 @@ subroutine xfem_pc(matass, base)
     integer, pointer :: iglob_ddl(:) => null()
     integer, pointer :: ieq_loc(:) => null()
     aster_logical, pointer :: is_xfem(:) => null()
-    aster_logical lmhpc
     integer :: nuno, neq, ieq, jcmp, jdeeq
     integer :: jdime, nbnomax, nbnoxfem, maxi_ddl, nvale, niv, ifm
     real(kind=8) :: kmin, kmax, coef, scal
-    aster_logical :: lmd
+    aster_logical :: lmd, l_parallel_matrix
     parameter(pc_1='&&XFEM_PC_1')
 !-----------------------------------------------------------------------
 !
@@ -137,9 +138,8 @@ subroutine xfem_pc(matass, base)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! CALCUL COEFFICIENT MISE A ECHELLE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    call dismoi('MATR_HPC', matass, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc .eq. 'OUI'
-    call echmat(matas1, lmd, lmhpc, kmin, kmax)
+    l_parallel_matrix = isParallelMatrix(matass)
+    call echmat(matas1, lmd, l_parallel_matrix, kmin, kmax)
     coef = (kmin+kmax)/2.d0
     scal = dsqrt(coef)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,6 +54,7 @@ module aster_fieldsplit_module
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/isParallelMatrix.h"
 !
     public :: mfield_setup
 !
@@ -341,7 +342,7 @@ contains
         integer :: nloc, ndprop
         integer :: il, iga_f, igp_f
         real(kind=8) :: val
-        aster_logical :: lmd, lmhpc
+        aster_logical :: lmd, l_parallel_matrix
 !
 !  Determine the rigid body modes
         call asmpi_info(rank=rang, size=nbproc)
@@ -355,9 +356,8 @@ contains
         nomat = nomat_courant
         call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
         lmd = (matd == 'OUI')
-        call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=matd)
-        lmhpc = (matd == 'OUI')
-        ASSERT(.not. (lmd .and. lmhpc))
+        l_parallel_matrix = isParallelMatrix(nomat)
+        ASSERT(.not. (lmd .and. l_parallel_matrix))
 !
 !
         call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
@@ -371,7 +371,7 @@ contains
         ASSERT(ierr == 0)
         call VecSetBlockSize(coords, bs, ierr)
         ASSERT(ierr == 0)
-        if (lmd .or. lmhpc) then
+        if (lmd .or. l_parallel_matrix) then
             if (lmd) then
                 call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
                 call jeveuo(nonu//'.NUML.PDDL', 'L', vi=prddl)
@@ -397,7 +397,7 @@ contains
 !           * REMPLISSAGE DU VECTEUR
 !             coords: vecteur PETSc des coordonnées des noeuds du maillage,
 !             dans l'ordre de la numérotation PETSc des équations
-        if (lmd .or. lmhpc) then
+        if (lmd .or. l_parallel_matrix) then
             if (lmd) then
                 call jeveuo(nonu//'.NUML.NULG', 'L', vi=nulg)
                 call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
@@ -602,7 +602,7 @@ contains
         PetscInt, intent(in) :: blocksize
 !
 ! Local variables
-        aster_logical :: lmatd, lproc, lmhpc
+        aster_logical :: lmatd, lproc, l_parallel_matrix
         mpi_int :: rang, nbproc, mpicomm
         PetscErrorCode :: ierr
         PetscInt :: low, high, ndl
@@ -638,8 +638,7 @@ contains
         lmatd = (kmatd == 'OUI')
 !  Est-ce que la matrice est distribuée dans asterxx?
         nomat = nomat_courant
-        call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=kmatd)
-        lmhpc = (kmatd == 'OUI')
+        l_parallel_matrix = isParallelMatrix(nomat)
 !  correspondance numérotation locale/ globale aster/globale PETSc
         if (lmatd) then
             call jeveuo(nonu//'.NUML.NULG', 'L', vi=nulg)
@@ -647,7 +646,7 @@ contains
             call jeveuo(nonu//'.NUML.PDDL', 'L', vi=pddl)
             call jeveuo(nonu//'.NUML.NEQU', 'L', vi=nequl)
             neql = nequl(1)
-        else if (lmhpc) then
+        else if (l_parallel_matrix) then
             call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
             call jeveuo(nonu//'.NUME.PDDL', 'L', vi=pddl)
             call jeveuo(nonu//'.NUME.NEQU', 'L', vi=nequl)
@@ -677,7 +676,7 @@ contains
 ! si la matrice est distribuée, c'est pddl qui contient l'info, sinon
 ! on se réfère au résultat de MatGetOwnerShipRange.
 ! lproc : est-ce que le processeur rang est propriétaire de ce dl ?
-                if (lmatd .or. lmhpc) then
+                if (lmatd .or. l_parallel_matrix) then
                     lproc = (rang == pddl(ieql))
                 else
                     lproc = (ieqg-1 >= low) .and. (ieqg-1 <= high-1)
@@ -694,7 +693,7 @@ contains
 ! Indice global PETSc du dl local ieql
                     if (lmatd) then
                         ieqgp = nlgp(ieql)
-                    else if (lmhpc) then
+                    else if (l_parallel_matrix) then
 ! attention numerotation C, donc on ajoute "+1"
                         ieqgp = nulg(ieql)+1
                     else
