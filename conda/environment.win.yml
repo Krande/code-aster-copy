@@ -3,8 +3,8 @@ dependencies:
   - python 3.11.9
   - vswhere
   - libboost-devel=1.84
-  - libblas=*=*netlib
-  - liblapack=*=*netlib
+  - libblas=*=*mkl
+  - liblapack=*=*mkl
   - mfront=4.2.0
   - mgis=2.2
   - mkl-devel=2024.1
