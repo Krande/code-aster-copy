@@ -5,7 +5,7 @@
 | Test     | Issue                                                 | Uses Mumps? |
 |----------|-------------------------------------------------------|-------------|
 | comp008e | OverflowError: can't convert negative int to unsigned | No          |
-| cont005e | Memory usage spikes                                   | Yes         |
+| cont005e | Memory usage spikes when calling mumps                | Yes         |
 
 
 
