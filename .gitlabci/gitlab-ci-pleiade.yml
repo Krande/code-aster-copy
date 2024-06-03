@@ -1,15 +1,17 @@
 variables:
   ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
-  MINIO_URL: https://minio.retd.edf.fr
-  SIF: runner.sif
+  PREREQ_VERSION: 20240327
+  IMAGE_URL: nexus.retd.edf.fr:5075/codeaster-prerequisites:${PREREQ_VERSION}-debian-10
   BUILD: mpi
   REFREV: main
   GIT_SSL_NO_VERIFY: "true"
+  NPROC_MAX: 16
   reg_debugging: '/^debugci.*/'
+  FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: "true"
 
 default:
   tags:
-    - docker-lame-1
+    - docker-executor
 
 workflow:
   rules:
@@ -24,8 +26,7 @@ stages:
   - test
 
 image:
-  name: nexus.retd.edf.fr/singularity/singularity:v3.7.3
-  entrypoint: ["/bin/sh", "-c"]
+  name: ${IMAGE_URL}
 
 prepare:
   stage: setup
@@ -33,7 +34,6 @@ prepare:
     - .gitlabci/prepare.sh
   artifacts:
     paths:
-      - ${SIF}
       - devtools/*
       - data-src/*
     expire_in: 6 hours
@@ -42,7 +42,7 @@ compile:
   stage: build
   needs: ["prepare"]
   script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/compile.sh
+    - .gitlabci/compile.sh
   artifacts:
     paths:
       - .lock*
@@ -68,7 +68,7 @@ doc_html:
   stage: build
   needs: ["prepare", "compile"]
   script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/doc_html.sh
+    - .gitlabci/doc_html.sh
   artifacts:
     paths:
       - install/share/doc/html/*
@@ -80,7 +80,7 @@ minimal_build:
   stage: build
   needs: ["prepare", "compile"]
   script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/compile_minimal.sh
+    - .gitlabci/compile_minimal.sh
   rules:
     - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
 
@@ -88,7 +88,7 @@ check_source:
   stage: test
   needs: ["prepare", "compile"]
   script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/check_source.sh
+    - .gitlabci/check_source.sh
   artifacts:
     paths:
       - list_issues.txt
@@ -100,7 +100,7 @@ check_issues:
   stage: test
   needs: ["prepare", "check_source"]
   script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/check_issues.sh
+    - .gitlabci/check_issues.sh
   rules:
     - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_NAME !~ $reg_debugging
 
@@ -108,10 +108,9 @@ minimal_test:
   stage: test
   needs: ["prepare", "compile"]
   script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
-        .gitlabci/test.sh
-          -R "(asrun0|mumps02b|supv002|vocab0|zzzz503n)"
-          --resutest=results_mini
+    - .gitlabci/test.sh
+        -R "(asrun0|mumps02b|supv002|vocab0|zzzz503n)"
+        --resutest=results_mini
   artifacts:
     when: always
     paths:
@@ -126,14 +125,13 @@ minimal_test:
 
 verification_test:
   stage: test
-  needs: ["prepare", "compile", "minimal_build", "minimal_test", "check_source", "doc_html"]
+  needs: ["prepare", "compile", "minimal_test", "check_source", "doc_html"]
   script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
-        .gitlabci/test.sh
-          -L verification
-          --only-failed-results
-          --exclude-testlist .gitlabci/known_failures-pleiade.list
-          --resutest=results
+    - .gitlabci/test.sh
+        -L verification
+        --only-failed-results
+        --exclude-testlist .gitlabci/known_failures-pleiade.list
+        --resutest=results
   artifacts:
     when: always
     paths:
@@ -145,16 +143,14 @@ verification_test:
       junit: results/run_testcases.xml
   rules:
     - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
-  resource_group: testing_verification
 
 known_failures_test:
   stage: test
   needs: ["prepare", "compile", "minimal_test"]
   script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
-        .gitlabci/test.sh
-          --testlist .gitlabci/known_failures-pleiade.list
-          --resutest=results_failures
+    - .gitlabci/test.sh
+        --testlist .gitlabci/known_failures-pleiade.list
+        --resutest=results_failures
   allow_failure: true
   artifacts:
     when: always
@@ -172,10 +168,9 @@ debugging_test:
   stage: test
   needs: ["prepare", "compile"]
   script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
-        .gitlabci/test.sh
-          --testlist .gitlabci/debugging.list
-          --resutest=results_debugging
+    - .gitlabci/test.sh
+        --testlist .gitlabci/debugging.list
+        --resutest=results_debugging
   allow_failure: true
   artifacts:
     when: always
@@ -188,3 +183,13 @@ debugging_test:
       junit: results_debugging/run_testcases.xml
   rules:
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
+
+# debugging_permissions:
+#   stage: debugging
+#   script:
+#   - whoami
+#   - groups
+#   - echo "${CI_PROJECT_DIR}"
+#   - ls -lart "${CI_PROJECT_DIR}"
+#   - ls -lart "${CI_PROJECT_DIR}/../"
+#   - git status
