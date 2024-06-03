@@ -9,7 +9,7 @@ if [ $# -eq 0 ]; then
     args=( "--all" )
 fi
 
-installdir=${PREFIX_ROOT:-..}
+installdir=${PREFIX_ROOT:-../install}
 ln -sf ../devtools .
 ln -sf ${installdir}/mpi install
 trap "rm -f devtools install" EXIT
