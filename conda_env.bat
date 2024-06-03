@@ -19,6 +19,9 @@ if defined DONOT_ACTIVATE_CONDA_ENV (
 call "%VS_VARS_PATH%\vcvars64.bat"
 @call "%INTEL_VARS_PATH%\vars.bat" -arch intel64 vs2022
 
+:: Add the bin path for Intel compiler to PATH
+set PATH=%PATH%;%ONEAPI_ROOT%\compiler\latest\bin
+
 REM if variable "print" is passed, call printenv
 if "%1" == "print" (
     set
