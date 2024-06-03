@@ -6,6 +6,7 @@ variables:
   GIT_SSL_NO_VERIFY: "true"
   NPROC_MAX: 16
   reg_debugging: '/^debugci.*/'
+  FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: "true"
 
 default:
   tags:
@@ -28,10 +29,6 @@ image:
 
 prepare:
   stage: setup
-  image:
-    name: ${IMAGE_URL}
-    docker:
-      user: root
   script:
     - .gitlabci/prepare.sh
   artifacts:
@@ -186,3 +183,13 @@ debugging_test:
       junit: results_debugging/run_testcases.xml
   rules:
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
+
+# debugging_permissions:
+#   stage: debugging
+#   script:
+#   - whoami
+#   - groups
+#   - echo "${CI_PROJECT_DIR}"
+#   - ls -lart "${CI_PROJECT_DIR}"
+#   - ls -lart "${CI_PROJECT_DIR}/../"
+#   - git status

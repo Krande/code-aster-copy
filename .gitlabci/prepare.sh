@@ -26,6 +26,3 @@ git clone ${DATA_URL} data-src
     git checkout ${branch}
     git rev-parse --verify ${branch}
 )
-
-# give ownership to the default user used by the docker image
-chown -R 1000:1000 .
