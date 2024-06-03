@@ -165,6 +165,7 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
 !   Initialisations
     ndimsi = 2*ndim
     iret = 0
+    epsicplan = 0.d0
 !
 !   mise au format des contraintes de rappel
     if (iepsq .ne. 0) then
@@ -264,7 +265,7 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
     rpm = rprim*pm+sigyp
 !
 !   CALCUL DE DEPSMO ET DEPSDV
-    epsicplan(:) = epsm(1:ndimsi)+deps(1:ndimsi)
+    epsicplan(1:ndimsi) = epsm(1:ndimsi)+deps(1:ndimsi)
     deps(3) = -nup/(1.0-nup)*(deps(1)+deps(2))+(1.0+nup)/(1.0-nup)*epsthe
     epsicplan(3) = -nup/(1.0-nup)*(epsicplan(1)+epsicplan(2))
     depsmo = 0.0

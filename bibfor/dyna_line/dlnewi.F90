@@ -199,6 +199,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     impe = ' '
     resu_type = 'R'
     nomddl = ' '
+    lastarch = 0.d0
 
 ! - Modal damping
     call getfac(modDampFactorKeyword, nmodam)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,6 +91,7 @@ contains
         real(kind=8), pointer :: dampValeTemp(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
+        answer = ' '
         lReacVite = ASTER_FALSE
         call getvtx(factorKeyword, 'REAC_VITE', iocc=1, scal=answer, nbret=iret)
         if (answer .eq. 'OUI') then

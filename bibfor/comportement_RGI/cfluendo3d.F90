@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,21 +134,22 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
     codret = 0
 !
 !
-    sig03d(:) = 0.d0
-    sigf3d(:) = 0.d0
-    var03d(:) = 0.d0
-    varf3d(:) = 0.d0
-    varf(:) = 0.d0
-    depsc(:) = 0.d0
-    epsmc(:) = 0.d0
-    xmat(:) = 0.d0
-    var0(:) = 0.d0
-    sig0(:) = 0.d0
-    sigf(:) = 0.d0
-    depst3d(:) = 0.d0
-    valres1(:) = 0.d0
-    valres(:) = 0.d0
-    matdech(:, :) = 0.d0
+    sig03d = 0.d0
+    sigf3d = 0.d0
+    var03d = 0.d0
+    varf3d = 0.d0
+    varf = 0.d0
+    depsc = 0.d0
+    epsc = 0.d0
+    epsmc = 0.d0
+    xmat = 0.d0
+    var0 = 0.d0
+    sig0 = 0.d0
+    sigf = 0.d0
+    depst3d = 0.d0
+    valres1 = 0.d0
+    valres = 0.d0
+    matdech = 0.d0
 !
     iteflumaxi = int(carcri(ITER_INTE_MAXI))
 !
