@@ -34,6 +34,7 @@ function asmpi_any(ibool, test) result(obool)
 !
 !   IN:
 !     ibool   : local input boolean
+!     test    : value to test
 !
 !   OUT:
 !     obool   : gloab output boolean

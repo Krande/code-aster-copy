@@ -121,7 +121,9 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
 ! - Some parameters from matrices
     l_parallel_matrix = isParallelMatrix(matrRigi)
     ASSERT(l_parallel_matrix .eqv. isParallelMatrix(matrMass))
-    ASSERT(l_parallel_matrix .eqv. isParallelMatrix(matrDamp))
+    if (lDamp) then
+        ASSERT(l_parallel_matrix .eqv. isParallelMatrix(matrDamp))
+    end if
 !
     lKineLoadInDamp = ASTER_FALSE
     matrDampMesh = ' '
