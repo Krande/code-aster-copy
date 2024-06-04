@@ -122,7 +122,7 @@ def detect_mkl(self):
     if os.environ.get("MKLROOT") is None:
         return False
     self.start_msg("Detecting MKL libraries")
-    suffix = "_lp64" if "64" in self.env.DEST_CPU else ""
+    suffix = "_ilp64" if "64" in self.env.DEST_CPU else ""
     scalapack = ""
     blacs = []
     thread = "mkl_sequential"

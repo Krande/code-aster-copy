@@ -22,7 +22,7 @@
 !
 interface
 #ifdef ASTER_HAVE_OPENMP
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine omp_set_num_threads(a) bind(C, name="omp_set_num_threads")
 #else
     subroutine omp_set_num_threads(a)
@@ -30,7 +30,7 @@ interface
         integer, intent(in) :: a
     end subroutine
 
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     function omp_get_max_threads() bind(C, name="omp_get_max_threads")
 #else
     function omp_get_max_threads()
@@ -38,7 +38,7 @@ interface
         integer :: omp_get_max_threads
     end function
 
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     function omp_get_thread_num() bind(C, name="omp_get_thread_num")
 #else
     function omp_get_thread_num()

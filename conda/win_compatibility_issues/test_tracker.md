@@ -1,17 +1,58 @@
 # Test tracker
 
-# Failing
+*sequential*
+
+`run_ctest --resutest=temp\seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 6`
+
+# Date 2024.06.04
+
+Updated mumps to use MKL64 (previously used "MKL" which was 32 bits MKL) and enabled OpenMP. 
+
+**45 % of all tests are passing**
+
+* Overflow errors: 1038 [85.08%]
+* Unknown errors: 182 [14.92%]
+
+<details>
+  <summary>Details</summary>
+
+Total passing tests: 44.65% [984/2204]
+
+Overflow errors: 1038 [85.08%]
+```
+adlv100a|ahlv100a|ahlv100t|asrun01a|comp008e|comp009a|comp009d|comp012c|cont002a|cont002b|cont002c|cont002d|cont002o|cont005a|cont005b|cont005e|cont009a|distr01a|erreu02b|erreu05a|erreu07a|erreu08a|erreu09a|erreu09c|erreu09e|erreu10a|erreu11a|erreu13a|forma00a|forma01a|forma01b|forma01c|forma02c|forma03a|forma05b|forma05c|forma06a|forma11a|forma12a|forma30a|forma40b|forma42a|forma42b|hpla100b|hpla100e|hpla100f|hpla100k|hpla311a|hpla311b|hplp100a|hplp101a|hplp311a|hplp311b|hplp311c|hplp311d|hplp311e|hplp311f|hplp311g|hplv101b|hplv102a|hplv106a|hplv106b|hplv106c|hplv108a|hplv108b|hplv108c|hsll100a|hsls01a|hsls01b|hslv304a|hsna105a|hsna106a|hsna106b|hsns102a|hsns102b|hsns102c|hsns102d|hsnv100a|hsnv100b|hsnv100c|hsnv100e|hsnv100f|hsnv100g|hsnv100h|hsnv100i|hsnv100j|hsnv100k|hsnv100l|hsnv100m|hsnv100n|hsnv100o|hsnv100p|hsnv100q|hsnv100r|hsnv100s|hsnv100t|hsnv100u|hsnv100v|hsnv100w|hsnv100x|hsnv100y|hsnv121a|hsnv121b|hsnv121c|hsnv121e|hsnv124a|hsnv124b|hsnv124e|hsnv124f|hsnv129a|hsnv129b|hsnv133a|hsnv133b|hsnv135a|hsnv136d|hsnv140j|mumps02a|pynl01a|pynl01b|pynl02a|pynl04a|pynl04b|sdld106a|sdld110a|sdld24a|sdld27e|sdld301b|sdld301c|sdld313c|sdld33a|sdld33b|sdld33c|sdll03a|sdll07a|sdll108a|sdll108b|sdll112a|sdll112b|sdll113b|sdll137e|sdll146a|sdll147a|sdll149a|sdll149b|sdll149d|sdll14a|sdll14b|sdll14c|sdll17a|sdll23a|sdll23b|sdll23c|sdll401a|sdls01b|sdls01c|sdls106a|sdls106b|sdls106c|sdls106e|sdls115a|sdls115b|sdls120a|sdls120c|sdls122a|sdls123a|sdls123b|sdlx02a|sdlx300a|sdlx302a|sdnd102e|sdnd102f|sdnd106a|sdnd108a|sdnd111a|sdnl100a|sdnl138a|sdnl138b|sdnl138c|sdnl140c|sdnl142a|sdns106c|sdnv103d|ssla100a|ssla100b|ssla100c|ssla103a|ssla103b|ssla103c|ssla103e|ssla103f|ssla103g|ssla103h|ssla310a|ssll01a|ssll02a|ssll03a|ssll04a|ssll05a|ssll06a|ssll07a|ssll08a|ssll09a|ssll100b|ssll101e|ssll102c|ssll102h|ssll104b|ssll104c|ssll105d|ssll105e|ssll105h|ssll106f|ssll107d|ssll108a|ssll109a|ssll10a|ssll111a|ssll111b|ssll117a|ssll117b|ssll118a|ssll118b|ssll11b|ssll11f|ssll12a|ssll12b|ssll14a|ssll15a|ssll16a|ssll17a|sslp01a|sslp100c|sslp101c|sslp102a|sslp102b|sslp102c|sslp102d|sslp102e|sslp102f|sslp102g|sslp102h|sslp102m|sslp103b|sslp106a|sslp106b|sslp109a|sslp113a|sslp113b|sslp304b|sslp304d|sslp305a|sslp314e|sslp318a|sslp318b|sslp318c|ssls09b|ssls09c|ssls101e|ssls101m|ssls101n|ssls101o|ssls108i|ssls111a|ssls111b|ssls111j|ssls111k|ssls111m|ssls111n|ssls111o|ssls113a|ssls118d|ssls118s|ssls118t|ssls118u|ssls118v|ssls11a|ssls120a|ssls120e|ssls122b|ssls126a|ssls126b|ssls126c|ssls126d|ssls127a|ssls127b|ssls127c|ssls127d|ssls130a|ssls132a|ssls132b|ssls132c|ssls132d|ssls132e|ssls132f|ssls132g|ssls132h|ssls134a|ssls135a|ssls136a|ssls136b|ssls137b|ssls137c|ssls137d|ssls137e|ssls137f|ssls138a|ssls138b|ssls138c|ssls138d|ssls139a|ssls143a|ssls144a|ssls200a|ssls200b|ssls27b|sslv04k|sslv07d|sslv100d|sslv104a|sslv109a|sslv109f|sslv111a|sslv113a|sslv115b|sslv115c|sslv120a|sslv131a|sslv134c|sslv134k|sslv140a|sslv146a|sslv146b|sslv157a|sslv159a|sslv159b|sslv159c|sslv160a|sslv160b|sslv303e|sslv306b|sslx100a|sslx100b|sslx100c|sslx100e|sslx102e|sslx104a|sslx201a|sslx201b|sslx201c|sslx300a|sslx300b|sslx300c|sslx300d|sslx300e|sslx300g|sslx300i|ssna01a|ssna102a|ssna102d|ssna102h|ssna102i|ssna103a|ssna106a|ssna107a|ssna122a|ssna122c|ssna123a|ssna123b|ssna123c|ssna125a|ssna125b|ssna125c|ssna125d|ssna302c|ssnd101b|ssnd101c|ssnd103a|ssnd103b|ssnd103c|ssnd106d|ssnd116a|ssnd116b|ssnd116c|ssnd118a|ssnd122a|ssnl100a|ssnl100b|ssnl101a|ssnl102a|ssnl103a|ssnl105a|ssnl106b|ssnl106g|ssnl106h|ssnl106i|ssnl107b|ssnl107c|ssnl107d|ssnl111a|ssnl111b|ssnl112b|ssnl112c|ssnl112d|ssnl112e|ssnl112f|ssnl112g|ssnl112h|ssnl112i|ssnl112j|ssnl112k|ssnl112l|ssnl114a|ssnl114b|ssnl115a|ssnl118a|ssnl118b|ssnl119a|ssnl119c|ssnl119e|ssnl122a|ssnl123a|ssnl124a|ssnl125a|ssnl126a|ssnl130a|ssnl130b|ssnl130c|ssnl130d|ssnl130e|ssnl136a|ssnl137a|ssnl139a|ssnl139b|ssnl139c|ssnl141a|ssnl141b|ssnl501b|ssnl504a|ssnp107a|ssnp108a|ssnp108b|ssnp109a|ssnp111a|ssnp116b|ssnp118a|ssnp118d|ssnp118e|ssnp118f|ssnp118g|ssnp118h|ssnp118i|ssnp118j|ssnp118k|ssnp118l|ssnp118p|ssnp118q|ssnp118r|ssnp118s|ssnp118t|ssnp118u|ssnp121a|ssnp121b|ssnp121c|ssnp121d|ssnp121e|ssnp121f|ssnp121g|ssnp121h|ssnp121i|ssnp121j|ssnp121k|ssnp121l|ssnp121m|ssnp121p|ssnp121s|ssnp123a|ssnp125a|ssnp125b|ssnp130a|ssnp130b|ssnp130c|ssnp130d|ssnp142c|ssnp143a|ssnp143b|ssnp143c|ssnp143d|ssnp143e|ssnp143f|ssnp143g|ssnp143h|ssnp144l|ssnp14b|ssnp14c|ssnp14d|ssnp14e|ssnp14f|ssnp14g|ssnp154c|ssnp154e|ssnp156a|ssnp159a|ssnp159b|ssnp15c|ssnp15d|ssnp15e|ssnp15k|ssnp161a|ssnp161b|ssnp161c|ssnp161d|ssnp162d|ssnp162e|ssnp167a|ssnp167b|ssnp167d|ssnp167f|ssnp169a|ssnp169e|ssnp169f|ssnp170a|ssnp170b|ssnp170c|ssnp170d|ssnp170e|ssnp170f|ssnp170g|ssnp170h|ssnp170i|ssnp170j|ssnp170k|ssnp170l|ssnp170m|ssnp170n|ssnp170o|ssnp170p|ssnp170q|ssnp170r|ssnp170t|ssnp170w|ssnp170x|ssnp173a|ssnp173b|ssnp178a|ssnp178b|ssnp302a|ssnp501a|ssnp501b|ssnp501d|ssnp503a|ssnp503c|ssnp503e|ssnp503g|ssnp503i|ssnp503m|ssnp504a|ssnp504c|ssns100a|ssns100b|ssns100c|ssns100d|ssns100e|ssns100f|ssns100g|ssns100h|ssns105a|ssns105b|ssns105c|ssns107a|ssns107c|ssns110a|ssns110b|ssns115a|ssnv101a|ssnv101b|ssnv101d|ssnv102b|ssnv102c|ssnv103a|ssnv104a|ssnv104g|ssnv104h|ssnv104i|ssnv104j|ssnv108b|ssnv112a|ssnv112c|ssnv112d|ssnv112e|ssnv112f|ssnv112h|ssnv112i|ssnv112j|ssnv112k|ssnv112m|ssnv112n|ssnv112o|ssnv115a|ssnv115b|ssnv115c|ssnv115d|ssnv118a|ssnv118b|ssnv121a|ssnv121b|ssnv122a|ssnv122b|ssnv124a|ssnv124b|ssnv124c|ssnv127d|ssnv127f|ssnv127h|ssnv128c|ssnv128m|ssnv128p|ssnv128q|ssnv128r|ssnv128w|ssnv128x|ssnv129a|ssnv129d|ssnv129e|ssnv133a|ssnv133b|ssnv133c|ssnv135a|ssnv137a|ssnv143a|ssnv143b|ssnv146a|ssnv147b|ssnv147c|ssnv147d|ssnv147e|ssnv147f|ssnv147i|ssnv147j|ssnv149a|ssnv149b|ssnv150a|ssnv151a|ssnv152a|ssnv153a|ssnv158b|ssnv158c|ssnv163a|ssnv163b|ssnv163c|ssnv163d|ssnv163e|ssnv167a|ssnv167b|ssnv167c|ssnv167d|ssnv167e|ssnv167f|ssnv167g|ssnv170a|ssnv170b|ssnv170c|ssnv171c|ssnv172b|ssnv173k|ssnv176a|ssnv176b|ssnv176c|ssnv176d|ssnv177a|ssnv178a|ssnv178b|ssnv179a|ssnv181a|ssnv181b|ssnv182d|ssnv182e|ssnv182f|ssnv182i|ssnv182j|ssnv182k|ssnv182l|ssnv185v|ssnv186b|ssnv186c|ssnv186d|ssnv186e|ssnv186f|ssnv186g|ssnv186h|ssnv186i|ssnv186j|ssnv186k|ssnv187a|ssnv193a|ssnv194d|ssnv195b|ssnv195c|ssnv196a|ssnv196b|ssnv196c|ssnv200a|ssnv201a|ssnv204c|ssnv204d|ssnv205a|ssnv209a|ssnv217a|ssnv223a|ssnv223b|ssnv228a|ssnv234a|ssnv245a|ssnv245c|ssnv246a|ssnv247a|ssnv247b|ssnv259a|ssnv267a|ssnv268a|ssnv400a|ssnv400b|ssnv400c|ssnv400d|ssnv401d|ssnv501b|ssnv503c|ssnv503h|ssnv503j|ssnv508a|ssnv508b|ssnv508d|ssnv508e|ssnv509a|ssnv509b|ssnv510a|ssnv510b|ssnv510c|ssnv510g|ssnv510h|ssnv510i|ssnv511e|ssnv511f|ssnv512f|ssnv512g|ssnv512j|ssnv513e|ssnv513f|ssnv513g|ssnv513h|ssnv515b|ssnv515c|ssnv515d|ssnx101a|supv003i|szlz110a|tpll01h|tplp107a|tplp107b|tplp305a|tplp305b|tplp305c|tplp305d|tplp305e|tplp305f|tplp305g|tplp305h|tplp305i|tplp305j|tplv07a|tplv100a|ttla203a|ttlp101a|ttlp101b|ttlp101c|wtna100a|wtna100b|wtna101b|wtna101c|wtna102a|wtna106b|wtna106c|wtna106d|wtna107a|wtna107b|wtna107c|wtna109a|wtna109b|wtna112a|wtna113a|wtna113b|wtna113c|wtna113d|wtnl100b|wtnl100c|wtnl100d|wtnl100f|wtnl100i|wtnl101a|wtnl101b|wtnl101c|wtnp102a|wtnp102c|wtnp102d|wtnp105a|wtnp105c|wtnp106a|wtnp106b|wtnp110a|wtnp112a|wtnp112b|wtnp112e|wtnp115a|wtnp115b|wtnp118a|wtnp118b|wtnp118c|wtnp121g|wtnp121h|wtnp127a|wtnp127b|wtnp127c|wtnp127d|wtnp127e|wtnp127f|wtnv100a|wtnv100c|wtnv101a|wtnv109a|wtnv109b|wtnv109c|wtnv109d|wtnv111a|wtnv111b|wtnv111c|wtnv112a|wtnv112b|wtnv112c|wtnv112d|wtnv112e|wtnv113a|wtnv113b|wtnv113c|wtnv113d|wtnv113e|wtnv113f|wtnv113g|wtnv113h|wtnv113i|wtnv113j|wtnv113k|wtnv114a|wtnv114b|wtnv114c|wtnv114d|wtnv114e|wtnv114f|wtnv114g|wtnv114i|wtnv121a|wtnv121b|wtnv122a|wtnv122c|wtnv122d|wtnv125a|wtnv125b|wtnv127a|wtnv127b|wtnv130a|wtnv130b|wtnv130c|wtnv130d|wtnv134b|wtnv145a|wtnv145b|wtnv149a|zzzz104a|zzzz104b|zzzz105a|zzzz110a|zzzz111a|zzzz112b|zzzz114a|zzzz115a|zzzz115b|zzzz115c|zzzz116a|zzzz116b|zzzz121d|zzzz121e|zzzz122a|zzzz126a|zzzz130a|zzzz131a|zzzz132a|zzzz137a|zzzz137b|zzzz161a|zzzz162b|zzzz164b|zzzz175b|zzzz176a|zzzz185a|zzzz189b|zzzz189d|zzzz191a|zzzz213b|zzzz215a|zzzz215b|zzzz215c|zzzz222a|zzzz230a|zzzz234b|zzzz234c|zzzz234d|zzzz234e|zzzz237b|zzzz249a|zzzz253a|zzzz258a|zzzz264b|zzzz264c|zzzz268a|zzzz268b|zzzz274a|zzzz274b|zzzz274c|zzzz274d|zzzz274e|zzzz274f|zzzz284a|zzzz291a|zzzz291b|zzzz291c|zzzz292a|zzzz293a|zzzz293b|zzzz293c|zzzz293d|zzzz294a|zzzz294c|zzzz295a|zzzz297a|zzzz297b|zzzz297c|zzzz297d|zzzz297e|zzzz297f|zzzz305a|zzzz305b|zzzz318e|zzzz319a|zzzz319b|zzzz322a|zzzz323a|zzzz323b|zzzz323e|zzzz326a|zzzz326b|zzzz328a|zzzz328b|zzzz328c|zzzz328d|zzzz328e|zzzz330c|zzzz336a|zzzz336c|zzzz340a|zzzz341a|zzzz341b|zzzz341c|zzzz342a|zzzz342b|zzzz342c|zzzz347a|zzzz347b|zzzz347d|zzzz347g|zzzz350a|zzzz353a|zzzz356a|zzzz359b|zzzz360a|zzzz365a|zzzz366a|zzzz366b|zzzz366c|zzzz366d|zzzz383a|zzzz383b|zzzz383c|zzzz383e|zzzz383f|zzzz385a|zzzz386a|zzzz389a|zzzz392a|zzzz393a|zzzz393b|zzzz393c|zzzz393d|zzzz393e|zzzz393f|zzzz393g|zzzz394a|zzzz394b|zzzz394c|zzzz395a|zzzz395b|zzzz395c|zzzz395d|zzzz395e|zzzz395f|zzzz395g|zzzz395h|zzzz395i|zzzz395j|zzzz395k|zzzz395m|zzzz395o|zzzz395p|zzzz395q|zzzz395r|zzzz395s|zzzz395t|zzzz399a|zzzz400a|zzzz406a|zzzz409a|zzzz413a|zzzz505e|zzzz506d|zzzz506e|zzzz506f|zzzz506i|zzzz506j|zzzz506k|zzzz506z|zzzz509h
+```
+Unknown errors: 182 [14.92%]
+```
+adlv100p|ahlv302g|asrun01b|comp005c|comp005d|comp010i|comp012b|comp012f|comp012g|comp012h|cont001a|erreu12a|fdlv106a|forma02a|forma05a|forma05d|forma10a|forma10b|forma30b|func01e|hplp100b|hsna102e|hsnv132a|mesh001i|mfron02j|sdld102d|sdld110b|sdld27a|sdld27f|sdll123d|sdls106g|sdls118a|sdls501b|sdls505a|sdls505c|sdls505d|sdlv126e|sdlv126f|sdnd107e|shll101d|ssll107a|ssll107f|ssll107g|ssll107h|ssll107i|ssll107j|ssll13a|sslp116a|sslp116b|sslp116c|sslp116d|sslp117a|sslp117b|ssls04d|ssls106a|ssls147a|ssls148a|ssls20d|sslv100c|sslv110a|sslv146c|sslv146d|sslv153a|sslx300h|ssna110a|ssna119a|ssnp121q|ssnp121r|ssnp123g|ssnp162g|ssnp162i|ssnp162j|ssnp162l|ssnp162p|ssnp178d|ssnp178k|ssnp179d|ssnp179k|ssnp307a|ssns107b|ssns107d|ssnv112b|ssnv112g|ssnv112l|ssnv129c|ssnv133d|ssnv133e|ssnv137b|ssnv138f|ssnv138h|ssnv138i|ssnv187b|ssnv187v|ssnv191d|ssnv203c|ssnv203d|ssnv205b|ssnv205c|ssnv220a|ssnv228b|ssnv232c|ssnv245b|ssnv245d|ssnv246b|supv004a|tpla07a|tpll01b|tpll01j|tpls102a|tpls102b|tplv304a|tpna01a|tpna01b|tpna01d|tpna01e|tpnv01c|ttll01o|ttll01p|ttll01q|ttll01r|ttll01s|ttll01t|ttll100b|ttlp301c|ttlp301d|ttlv100b|vocab01b|wtna112c|wtnp102b|wtnp102e|wtnp102f|wtnp107a|wtnp107b|wtnp114a|wtnv114h|wtnv140b|wtnv140c|wtnv143a|wtnv143b|wtnv143c|wtnv143d|wtnv143e|wtnv143f|wtnv144c|wtnv144d|wtnv146a|zzzz106b|zzzz121c|zzzz136c|zzzz205a|zzzz206a|zzzz238b|zzzz238c|zzzz257a|zzzz257b|zzzz257c|zzzz306a|zzzz306c|zzzz306d|zzzz306e|zzzz323c|zzzz323d|zzzz359a|zzzz361a|zzzz361b|zzzz361c|zzzz361d|zzzz361e|zzzz361f|zzzz361g|zzzz381a|zzzz406b|zzzz407a|zzzz503j|zzzz503k|zzzz503p|zzzz503q|zzzz503s|zzzz505b|zzzz506h|zzzz509d|zzzz509f
+```
+
+    
+
+</details>
+
+## Failing
+
+| Test     | Issue                                                 | Uses Mumps? |
+|----------|-------------------------------------------------------|-------------|
+| comp008e | OverflowError: can't convert negative int to unsigned | No          |
+| cont005e | OverflowError: can't convert negative int to unsigned | Yes         |
+
+# Date 2024.06.03
+
+**14 % of all tests are passing**
+
+## Failing
 
 | Test     | Issue                                                 | Uses Mumps? |
 |----------|-------------------------------------------------------|-------------|
 | comp008e | OverflowError: can't convert negative int to unsigned | No          |
 | cont005e | Memory usage spikes when calling mumps                | Yes         |
 
+## Passing
 
-
-# Passing
-| Test     | Issue                                                 | Uses Mumps? |
-|----------|-------------------------------------------------------|-------------|
-| comp008b |                                                       | No          |
-| comp008o |                                                       | No          |
-| comp010i |                                                       | No          |
+| Test     | Issue | Uses Mumps? |
+|----------|-------|-------------|
+| comp008b |       | No          |
+| comp008o |       | No          |
+| comp010i |       | No          |

@@ -2,6 +2,7 @@
 
 setlocal enabledelayedexpansion
 
+SET CONFIG_PARAMETERS_addmem=5000
 SET PARENT_DIR=%~dp0
 SET PARENT_DIR=%PARENT_DIR:\=/%
 
@@ -84,22 +85,22 @@ set LIBPATH=%PREF_ROOT%/libs %LIBPATH%
 
 REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
 
-set CFLAGS=%CFLAGS% /FS /MD
-set CXXFLAGS=%CXXFLAGS% /MD
+set CFLAGS=%CFLAGS% /FS /MD /DMKL_ILP64
+set CXXFLAGS=%CXXFLAGS% /MD /DMKL_ILP64
+
 set FCFLAGS=%FCFLAGS% /fpp /MD
-set FCFLAGS=%FCFLAGS% /names:lowercase /assume:underscore /assume:nobscc
+set FCFLAGS=%FCFLAGS% /4I8 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc
 
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 :: Create dll debug pdb
-
 set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
 
 :: Add lib paths
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 
 :: Add Math libs
-set LDFLAGS=%LDFLAGS% mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib
+set LDFLAGS=%LDFLAGS% mkl_intel_ilp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib
 
 :: Add threading libs
 set LDFLAGS=%LDFLAGS% pthread.lib
@@ -115,9 +116,9 @@ set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
-set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
+set DEFINES=H5_BUILT_AS_DYNAMIC_LIB H5_USE_110_API PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
 REM Clean the build directory
-REM waf distclean
+waf distclean
 
 python conda\update_version.py
 
@@ -125,17 +126,25 @@ set BUILD=std
 
 REM Install for standard sequential
 waf configure ^
+  --python=%PYTHON% ^
   --check-fortran-compiler=ifort ^
   --use-config-dir=%PARENT_DIR%/config/ ^
   --med-libs="med medC medfwrap medimport" ^
   --prefix=%LIB_PATH_ROOT% ^
   --out=%OUTPUT_DIR% ^
-  --disable-openmp ^
-  --disable-mumps ^
+  --enable-med ^
+  --enable-hdf5 ^
+  --enable-metis ^
+  --enable-scotch ^
+  --embed-scotch ^
   --disable-mpi ^
+  --disable-petsc ^
   --install-tests ^
   --maths-libs=auto ^
-  --without-hg
+  --without-hg ^
+  --without-repo
+
+REM --disable-openmp ^
 
 REM Conditional log handling
 if %USE_LOG%==1 (

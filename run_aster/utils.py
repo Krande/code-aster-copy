@@ -172,6 +172,7 @@ def _waitstatus_to_exitcode(status):
     if RUNASTER_PLATFORM == "win":
         # https://stackoverflow.com/questions/10931134
         #   /return-value-of-system-function-call-in-c-used-to-run-a-python-program
+        print(status)
         return status >> 8
     if os.WIFSIGNALED(status):
         returncode = -os.WTERMSIG(status)

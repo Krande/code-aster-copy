@@ -63,8 +63,13 @@ from .version import get_version_desc
 try:
     from .aster_pkginfo import version_info
 except ImportError:
-    version_info = ()
+    from collections import namedtuple
 
+    version_info = namedtuple('aster_version_info', [
+        'version', 'parentid', 'branch', 'date', 'from_branch', 'changes', 'uncommitted'
+    ])(
+        (17, 0, 99), 0, '', 'live dev', '', 'development', 0
+    )
 
 DEFAULT_MEMORY_LIMIT = 2047 if "32" in platform.architecture()[0] else 4096
 DEFAULT_TIME_LIMIT = 86400
@@ -296,7 +301,7 @@ class ExecutionParameter(metaclass=Singleton):
             const=1,
             default=0,
             help="abort execution in case of error (testcase mode, by default "
-            "raise an exception)",
+                 "raise an exception)",
         )
         parser.add_argument(
             "--test",
@@ -347,7 +352,7 @@ class ExecutionParameter(metaclass=Singleton):
             type=float,
             default=DEFAULT_MEMORY_LIMIT,
             help="memory limit in MB used for code_aster objects "
-            "(default: {0} MB)".format(DEFAULT_MEMORY_LIMIT),
+                 "(default: {0} MB)".format(DEFAULT_MEMORY_LIMIT),
         )
         parser.add_argument(
             "--memjeveux", dest="memory", action=MemoryAction, type=float, help=SUPPRESS
@@ -359,7 +364,7 @@ class ExecutionParameter(metaclass=Singleton):
             type=float,
             default=DEFAULT_TIME_LIMIT,
             help="time limit of the execution in seconds "
-            "(default: {0} s)".format(DEFAULT_TIME_LIMIT),
+                 "(default: {0} s)".format(DEFAULT_TIME_LIMIT),
         )
         parser.add_argument(
             "--maxbase",
@@ -383,7 +388,7 @@ class ExecutionParameter(metaclass=Singleton):
             metavar="DIR",
             default=RCDIR,
             help="directory containing resources (material properties, "
-            "additional data files...). Defaults to {0}".format(RCDIR),
+                 "additional data files...). Defaults to {0}".format(RCDIR),
         )
         parser.add_argument(
             "--rep_mat", dest="repmat", action="store", metavar="DIR", default=".", help=SUPPRESS

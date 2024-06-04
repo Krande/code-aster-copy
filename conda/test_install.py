@@ -3,21 +3,26 @@ import os
 import pathlib
 import shutil
 
-import dlltracer
 import sys
 import ctypes
 
 from config import ROOT_DIR
 
 CONDA_PREFIX = pathlib.Path(os.environ["CONDA_PREFIX"])
-ASTER_DIR = CONDA_PREFIX / "Library" / "lib" / "aster"
 ASTEST_DIR = ROOT_DIR / "astest"
 BIN_DIR = CONDA_PREFIX / "Library" / "bin"
 
-os.environ["ASTER_DATADIR"] = (CONDA_PREFIX / "Library" / "share" / "aster").as_posix()
-os.environ["ASTER_LIBDIR"] = ASTER_DIR.as_posix()
-os.environ["ASTER_LOCALEDIR"] = (CONDA_PREFIX / "Library" / "share" / "locale" / "aster").as_posix()
-os.environ["ASTER_ELEMENTSDIR"] = ASTER_DIR.as_posix()
+
+def init_env():
+    ASTER_DIR = CONDA_PREFIX / "Library" / "lib" / "aster"
+
+    os.environ["ASTER_DATADIR"] = (CONDA_PREFIX / "Library" / "share" / "aster").as_posix()
+    os.environ["ASTER_LIBDIR"] = ASTER_DIR.as_posix()
+    os.environ["ASTER_LOCALEDIR"] = (CONDA_PREFIX / "Library" / "share" / "locale" / "aster").as_posix()
+    os.environ["ASTER_ELEMENTSDIR"] = ASTER_DIR.as_posix()
+
+
+init_env()
 
 init_str = """
 from math import *
@@ -40,6 +45,9 @@ def run_specific_test(test_name: str):
         shutil.copy(mmed_file, "fort.20")
 
     test_file = init_str + comm_file.read_text()
+    with open("test_file.py", "w") as f:
+        f.write("from test_install import init_env\ninit_env()\n")
+        f.write(test_file)
     exec(test_file)
 
 
@@ -74,6 +82,7 @@ def individual_test():
 
 
 def trace_test():
+    import dlltracer
     import ctypes
     # ctypes.CDLL(rf"{os.getenv('CONDA_PREFIX')}\Library\lib\aster\bibcxx.dll")
     sys.path.insert(0, ASTER_DIR.as_posix())
