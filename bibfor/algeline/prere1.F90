@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,7 @@ subroutine prere1(solvez, base, iret, matpre, matass, &
 #include "asterfort/tldlg3.h"
 #include "asterfort/jelira.h"
 #include "asterfort/utmess.h"
+#include "asterfort/isParallelMatrix.h"
 !
     integer :: npvneg, istop, iret
     character(len=1) :: base
@@ -81,9 +82,9 @@ subroutine prere1(solvez, base, iret, matpre, matass, &
     integer :: istopz, iretgc, n1
     character(len=24) :: metres, precon
     character(len=19) :: matas, maprec, matas1, solveu
-    character(len=8) :: renum, kmpic, kmatd, ksym, khpc
+    character(len=8) :: renum, kmpic, kmatd, ksym
     character(len=24), pointer :: refa(:) => null()
-    aster_logical :: dbg
+    aster_logical :: dbg, l_parallel_matrix
 !
 !----------------------------------------------------------------------
     call jemarq()
@@ -120,7 +121,7 @@ subroutine prere1(solvez, base, iret, matpre, matass, &
 
     call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
     call dismoi('MATR_DISTR', matas, 'MATR_ASSE', repk=kmatd)
-    call dismoi('MATR_HPC', matas, 'MATR_ASSE', repk=khpc)
+    l_parallel_matrix = isParallelMatrix(matas)
     if (niv == 2) then
         call dismoi('TYPE_MATRICE', matas, 'MATR_ASSE', repk=ksym)
         select case (ksym(1:7))
@@ -140,7 +141,7 @@ subroutine prere1(solvez, base, iret, matpre, matass, &
     end if
 !
 !
-    if (khpc == "OUI") then
+    if (l_parallel_matrix) then
         if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT') then
             call utmess('F', 'FACTOR_93')
         end if

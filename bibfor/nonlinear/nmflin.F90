@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine nmflin(ds_posttimestep, matass, freqr, linsta)
 #include "asterfort/echmat.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "asterfort/isParallelMatrix.h"
 !
     type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
     character(len=19) :: matass
@@ -52,7 +53,7 @@ subroutine nmflin(ds_posttimestep, matass, freqr, linsta)
 !
 !
 !
-    aster_logical :: valtst, ldist, l_geom_matr, lmhpc
+    aster_logical :: valtst, ldist, l_geom_matr, l_parallel_matrix
     real(kind=8) :: freqr0, prec, minmat, maxmat
     character(len=3) :: mathpc
     character(len=16) :: sign
@@ -81,9 +82,8 @@ subroutine nmflin(ds_posttimestep, matass, freqr, linsta)
             call utmess('F', 'MECANONLINE6_13')
         end if
         ldist = ASTER_FALSE
-        call dismoi('MATR_HPC', matass, 'MATR_ASSE', repk=mathpc)
-        lmhpc = mathpc .eq. 'OUI'
-        call echmat(matass, ldist, lmhpc, minmat, maxmat)
+        l_parallel_matrix = isParallelMatrix(matass)
+        call echmat(matass, ldist, l_parallel_matrix, minmat, maxmat)
         if (((freqr0*freqr) .lt. 0.d0) .or. (abs(freqr) .lt. (prec*minmat))) then
             linsta = ASTER_TRUE
         end if

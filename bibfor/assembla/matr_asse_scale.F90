@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
 #include "asterfort/jelira.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/isParallelMatrix.h"
 
     character(len=*), intent(in) :: matasz
     real(kind=8), intent(in) :: lvect(*), rvect(*)
@@ -42,7 +43,7 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
 !
 !-----------------------------------------------------------------------
 
-    aster_logical :: lmhpc, lmd, lsym
+    aster_logical :: l_parallel_matrix, lmd, lsym
     character(len=1) :: ktyp
     character(len=3) :: mathpc
     character(len=14) :: nonu
@@ -68,8 +69,7 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
 !
     lmd = (refa(11) .eq. 'MATR_DISTR')
 !
-    call dismoi('MATR_HPC', matass, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc .eq. 'OUI'
+    l_parallel_matrix = isParallelMatrix(matass)
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
@@ -81,7 +81,7 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
     else
         call jelira(nonu//'.NUME.DELG', 'LONMAX', n1)
         jnlogl = 0
-        if (lmhpc) then
+        if (l_parallel_matrix) then
             call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
         end if
     end if

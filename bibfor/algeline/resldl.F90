@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu, &
 #include "asterfort/rldlg3.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
+#include "asterfort/isParallelMatrix.h"
 !
     character(len=*) :: nommat, vcine
     integer :: nsecm
@@ -65,6 +66,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu, &
     complex(kind=8) :: cbid
     integer :: k, kdeb, idvalc, lmat, neq, nimpo
     character(len=24), pointer :: slvk(:) => null()
+    aster_logical :: l_parallel_matrix
     cbid = dcmplx(0.d0, 0.d0)
 !     ------------------------------------------------------------------
 !
@@ -75,8 +77,8 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu, &
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     metres = slvk(1) (1:16)
 !
-    call dismoi('MATR_HPC', nomma2, 'MATR_ASSE', repk=khpc)
-    if (khpc == "OUI") then
+    l_parallel_matrix = isParallelMatrix(nomma2)
+    if (l_parallel_matrix) then
         call utmess('F', 'FACTOR_93')
     end if
 !
