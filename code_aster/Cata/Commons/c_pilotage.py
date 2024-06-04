@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,11 +49,23 @@ def C_PILOTAGE():
         ETA_PILO_R_MAX=SIMP(statut="f", typ="R"),
         ETA_PILO_R_MIN=SIMP(statut="f", typ="R"),
         PROJ_BORNES=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
-        SELECTION=SIMP(
-            statut="f",
-            typ="TXM",
-            defaut="NORM_INCR_DEPL",
-            into=("RESIDU", "MIXTE", "ANGL_INCR_DEPL", "NORM_INCR_DEPL"),
+        b_long_arc=BLOC(
+            condition="""equal_to("TYPE", 'LONG_ARC')""",
+            SELECTION=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="NORM_INCR_DEPL",
+                into=("RESIDU", "MIXTE", "ANGL_INCR_DEPL", "NORM_INCR_DEPL"),
+            ),
+        ),
+        b_other=BLOC(
+            condition="""not equal_to("TYPE", 'LONG_ARC')""",
+            SELECTION=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="NORM_INCR_DEPL",
+                into=("RESIDU", "MIXTE", "NORM_INCR_DEPL"),
+            ),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
