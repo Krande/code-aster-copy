@@ -125,6 +125,8 @@ minimal_test:
 
 verification_test:
   stage: test
+  tags:
+    - hulk
   needs: ["prepare", "compile", "minimal_test", "check_source", "doc_html"]
   script:
     - .gitlabci/test.sh
