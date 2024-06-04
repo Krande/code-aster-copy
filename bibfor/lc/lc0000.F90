@@ -327,7 +327,7 @@ subroutine lc0000(BEHinteg, &
     end if
 
 ! - Copy internal states variables
-    if (lAnnealing) then
+    if (lVari .and. lAnnealing) then
         vip(nvi_all) = vim(nvi_all)
     end if
 
