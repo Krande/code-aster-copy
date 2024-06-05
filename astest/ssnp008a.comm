@@ -1,0 +1,73 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
+
+rho_1 = 1700
+
+c_1 = 4e3
+
+phi_1 = 20
+
+rho_2 = 1800
+
+c_2 = 8e3
+
+phi_2 = 25
+
+rho_w = 1e3
+
+g = 9.81
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+MODE1 = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
+
+mat1 = DEFI_MATERIAU(
+    ELAS=_F(ALPHA=0.0, E=1e8, NU=0.3, RHO=rho_1),
+    MOHR_COULOMB=_F(ANGDIL=phi_1, PHI=phi_1, COHESION=c_1),
+)
+
+mat2 = DEFI_MATERIAU(
+    ELAS=_F(ALPHA=0.0, E=1e8, NU=0.3, RHO=rho_2),
+    MOHR_COULOMB=_F(ANGDIL=phi_2, PHI=phi_2, COHESION=c_2),
+)
+
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=mesh, AFFE=(_F(MATER=mat1, GROUP_MA="upper"), _F(MATER=mat2, GROUP_MA="lower"))
+)
+
+TABPIEZO = CREA_TABLE(
+    LISTE=(
+        _F(LISTE_R=[0.0, 16.0, 24.0, 40.0], PARA="COOR_X"),
+        _F(LISTE_R=[10.0, 8.0, 7.0, 7.0], PARA="HEAD"),
+    )
+)
+
+f_pres = DEFI_FONCTION(
+    VALE=(0.0, rho_w * g * 7.0, 7.0, 0.0),
+    NOM_PARA="Y",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+
+FIN()

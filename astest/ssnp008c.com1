@@ -1,0 +1,62 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
+
+RESTAB = LIRE_TABLE(UNITE=33)
+
+RESTABMP = CALC_STAB_PENTE(
+    CHAM_MATER=CHMAT,
+    METHODE_STAB="LEM",
+    METHODE_LEM="MORGENSTERN_PRICE",
+    ALGO_EFWA=_F(A=120, N=1, ITER_MAXI=0, ETAT_INIT=RESTAB),
+    GROUP_MA="range_pente",
+    NB_TRANCHE=15,
+    SUCCION="OUI",
+    PHI_B=_F(TOUT="OUI", VALE=10.0),
+    LIGN_PHREA=_F(INDIC_PIEZO=[1, 2], TABLE=TABPIEZO, TOUT="OUI"),
+    FONC_PRES=f_pres,
+    RAFF_MAIL=_F(NB_RAFF_MAXI=2, RAFF_CRIT_STAB=1e-3),
+    X1_MINI=7.6,
+    X1_MAXI=7.6,
+    X2_MINI=30.8,
+    X2_MAXI=30.8,
+    INFO_TABLE=2,
+)
+
+# TEST DE NON_REGRESSION
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=0),
+    NOM_PARA="FS",
+    TABLE=RESTABMP,
+    VALE_CALC=(1.3249916873364396,),
+)
+
+# VERIFICATION
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=2),
+    NOM_PARA="FS",
+    TABLE=RESTABMP,
+    VALE_CALC=(1.3733975959945124,),
+    VALE_REFE=(1.369),
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=1e-2,
+)
+
+FIN()

@@ -42,8 +42,8 @@ CALC_STAB_PENTE = MACRO(
     compat_syntax=compat_syntax,
     sd_prod=calc_stab_pente_prod,
     reentrant="n",
-    docu="U4.xx.xx",
-    fr=tr("Calculer le facteur de sécurité d'une slope par méthode de réduction de la résistance"),
+    docu="U4.84.47",
+    fr=tr("Analyser la stabilité en statique d'une pente en géomatériau"),
     CHAM_MATER=SIMP(statut="o", typ=cham_mater),
     METHODE_STAB=SIMP(
         statut="f",
@@ -124,6 +124,100 @@ CALC_STAB_PENTE = MACRO(
             fr=tr("Groupe des éléments 1D représentant le profil de la pente"),
         ),
         NB_TRANCHE=SIMP(statut="f", typ="I", defaut=10, fr=tr("Nombre des tranches")),
+        INFO_TABLE=SIMP(
+            statut="f", typ="I", into=(1, 2), defaut=1, fr=tr("Imprimer les détails des résultats")
+        ),
+        # Equivalent PHI-C
+        PHI_C_EQUI=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("OUI",),
+            fr=tr("Calculer phi-c équivalents sur la base des tranches"),
+        ),
+        # Distance tolerance
+        TOLE_DIST=SIMP(
+            statut="f",
+            typ="R",
+            fr=tr(
+                "Tolérance de distance entre deux points de matériaux différents pour calculer phi-c équivalents"
+            ),
+        ),
+        b_succion=BLOC(
+            regles=(UN_PARMI("CHAM_PRES", "LIGN_PHREA", "COEF_RU"),),
+            condition="""exists("CHAM_PRES") or exists("LIGN_PHREA")""",
+            SUCCION=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            b_phi_b=BLOC(
+                condition="""equal_to("SUCCION", "OUI")""",
+                PHI_B=FACT(
+                    statut="f",
+                    max="**",
+                    regles=UN_PARMI("TOUT", "GROUP_MA"),
+                    TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+                    GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                    VALE=SIMP(statut="o", typ="R", fr=tr("Valeur de phi_b en degrée")),
+                ),
+            ),
+        ),
+        CHAM_PRES=FACT(
+            statut="f",
+            max=1,
+            regles=(UN_PARMI("INST", "NUME_ORDRE")),
+            RESULTAT=SIMP(statut="o", typ=evol_noli, fr=tr("Résultat du calcul hydraulique")),
+            INST=SIMP(statut="f", typ="R", fr=tr("L'instant où on extrait le champ de pression")),
+            NUME_ORDRE=SIMP(
+                statut="f", typ="I", fr=tr("Numéro d'instant où on extrait le champ de pression")
+            ),
+            PRECISION=SIMP(statut="f", typ="R", defaut=1e-6),
+            ALGO_PRES=SIMP(
+                statut="f",
+                typ="TXM",
+                into=("INVERSE", "PROJECTION"),
+                defaut="PROJECTION",
+                fr=tr("Algorithm d'interpolation du champ de pression"),
+            ),
+        ),
+        LIGN_PHREA=FACT(
+            statut="f",
+            max="**",
+            regles=UN_PARMI("TOUT", "GROUP_MA"),
+            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            INDIC_PIEZO=SIMP(statut="o", typ="I", min=2, max=2),
+            TABLE=SIMP(statut="o", typ=table_sdaster, fr=tr("Table de la ligne piezométrique")),
+            PRES_MAX=SIMP(statut="f", typ="R", fr=tr("Maximum pression de succion")),
+        ),
+        COEF_RU=FACT(
+            statut="f",
+            max="**",
+            regles=UN_PARMI("TOUT", "GROUP_MA"),
+            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            VALE=SIMP(statut="f", typ="R", fr=tr("Coefficient de pression interstitielle")),
+        ),
+        # Pressure hydrostatique
+        FONC_PRES=SIMP(
+            statut="f",
+            typ=(fonction_sdaster, formule),
+            fr=tr("Fonction de la pression appliquée sur la pente"),
+        ),
+        # Coefficient d'accélération
+        ACCE=FACT(
+            statut="f",
+            max=1,
+            regles=(
+                UN_PARMI("CALC_KC", "COEF_ACCE"),
+                PRESENT_ABSENT("CALC_KC", "DIRECTION"),
+                PRESENT_PRESENT("COEF_ACCE", "DIRECTION"),
+            ),
+            CALC_KC=SIMP(
+                statut="f",
+                typ="TXM",
+                into=("OUI",),
+                fr=tr("Calculer le coefficient d'accélération critique"),
+            ),
+            COEF_ACCE=SIMP(statut="f", typ="R", fr=tr("Coefficient d'accélération")),
+            DIRECTION=SIMP(statut="f", typ="R", max=2, min=2, fr=tr("Direction d'accélération")),
+        ),
         # Paramètres raffinement du maillage
         RAFF_MAIL=FACT(
             statut="d",
@@ -135,8 +229,8 @@ CALC_STAB_PENTE = MACRO(
         ),
         X1_MINI=SIMP(statut="o", typ="R", fr=tr("Limite inférieure de la bande gauche")),
         X1_MAXI=SIMP(statut="o", typ="R", fr=tr("Limite supérieure de la bande gauche")),
-        X2_MINI=SIMP(statut="o", typ="R", fr=tr("Limite inférieure de la bande gauche")),
-        X2_MAXI=SIMP(statut="o", typ="R", fr=tr("Limite supérieure de la bande gauche")),
+        X2_MINI=SIMP(statut="o", typ="R", fr=tr("Limite inférieure de la bande droite")),
+        X2_MAXI=SIMP(statut="o", typ="R", fr=tr("Limite supérieure de la bande droite")),
         # Cas de surface circulaire
         b_circ=BLOC(
             condition="""(equal_to("METHODE_LEM", "BISHOP"))or(equal_to("METHODE_LEM", "FELLENIUS"))""",
@@ -154,6 +248,9 @@ CALC_STAB_PENTE = MACRO(
             ),
             Y_MINI=SIMP(statut="f", typ="R", fr=tr("Limite inférieure de la droite tangentielle")),
             Y_MAXI=SIMP(statut="f", typ="R", fr=tr("Limite supérieure de la droite tangentielle")),
+            NB_RAYON=SIMP(
+                statut="f", typ="I", defaut=15, fr=tr("Nombre de discrétisation du rayon")
+            ),
         ),
         # Cas de surface non-circulaire
         b_noncirc=BLOC(
@@ -167,9 +264,11 @@ CALC_STAB_PENTE = MACRO(
                     fr=tr("Table des résultat issu de CALC_STAB_PENTE"),
                 ),
                 ITER_MAXI=SIMP(
-                    statut="f", typ="I", defaut=1e4, fr=tr("Nombre maximum d'itération EFWA")
+                    statut="f", typ="I", defaut=50, fr=tr("Nombre maximum d'itération EFWA")
                 ),
                 A=SIMP(statut="o", typ="R"),
+                A_INIT=SIMP(statut="f", typ="R"),
+                A_FINAL=SIMP(statut="f", typ="R"),
                 N=SIMP(statut="f", typ="I", defaut=5),
                 M=SIMP(statut="f", typ="I", defaut=40),
                 MG=SIMP(statut="f", typ="I", defaut=5),
@@ -180,7 +279,6 @@ CALC_STAB_PENTE = MACRO(
                 MARGE_PENTE=SIMP(
                     statut="f",
                     typ="R",
-                    defaut=0.1,
                     fr=tr("Marge évitant que la surface soit trop proche du profil de la pente"),
                 ),
             ),
