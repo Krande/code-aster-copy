@@ -3037,13 +3037,15 @@ class FieldOnNodesReal(DataField):
     def copy(self):
         pass
 
-    def copyUsingDescription(self, desc):
+    def copyUsingDescription(self, desc, raiseError=True):
         """Return a new field using the description.
-        Be carefull, Lagrange DOFs are setted to zero. Moreover, components that are
-        not present in the field are also setted to zero in the output field.
+        Be careful, Lagrange DOFs are set to zero. Moreover, components that are
+        not present in the field are also set to zero in the output field.
 
         Arguments:
             desc [EquationNumbering]: description of equations
+            raiseError [bool]: If set to true, raises an error if the copy fails.
+            Otherwise, nothing happens. Defaults to true.
 
         Returns:
             FieldOnNodesReal: field using new description.

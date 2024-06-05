@@ -179,7 +179,7 @@ class NonLinearSolver(SolverFeature):
                 para, value = _extract_param(init_state, resu)
                 phys_state.primal_curr = resu.getField(
                     "DEPL", para=para, value=value
-                ).copyUsingDescription(nume_equa)
+                ).copyUsingDescription(nume_equa, False)
                 _msginit("DEPL", resu.userName)
                 if phys_state.pb_type == PBT.MecaDyna:
                     phys_state.current.dU = resu.getField(
@@ -204,7 +204,9 @@ class NonLinearSolver(SolverFeature):
             if "CHAM_NO" in init_state:
                 phys_state.primal_curr = init_state.get("CHAM_NO").copyUsingDescription(nume_equa)
             if "DEPL" in init_state:
-                phys_state.primal_curr = init_state.get("DEPL").copyUsingDescription(nume_equa)
+                phys_state.primal_curr = init_state.get("DEPL").copyUsingDescription(
+                    nume_equa, False
+                )
                 _msginit("DEPL")
             if "SIGM" in init_state:
                 phys_state.stress = init_state.get("SIGM")
