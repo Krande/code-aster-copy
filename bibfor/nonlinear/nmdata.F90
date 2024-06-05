@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -106,6 +106,8 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
     character(len=16) :: k16bid, nomcmd
     aster_logical :: l_etat_init, l_sigm
     character(len=24) :: typco
+
+    character(len=8) :: stin_evol, cara_elem_in
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -133,15 +135,29 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
     call nmlect(result, model, mater, mateco, cara_elem, list_load, solver)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
-! --- VERIFICATION DE CARA_ELEM : COEF_RIGI_DRZ INTERDIT EN NON-LINEAIRE
+!   ------------------------------------------------------------------------------------------------
+!   VERIFICATION OF CARA_ELEM
 !
+!   COEF_RIGI_DRZ prohibited in non-linear
     if (nomcmd(6:13) .eq. 'NON_LINE' .and. cara_elem .ne. ' ') then
         call gettco(cara_elem, typco)
         if (typco .eq. 'CARA_ELEM') then
             call verif_affe(model, cara_elem, non_lin=ASTER_TRUE)
         end if
     end if
-!
+!   IF exist ETAT_INIT/EVOL_NOLI : Is cara_elem in ETAT_INIT same as curent ?
+    if (ds_inout%l_stin_evol) then
+        stin_evol = ds_inout%stin_evol
+        ! Get cara_elem of stin_evol
+        call dismoi('CARA_ELEM', stin_evol, 'RESULTAT', repk=cara_elem_in)
+        if (cara_elem_in(1:6) .ne. "#AUCUN") then
+            if (cara_elem .ne. cara_elem_in) then
+                call utmess('A', 'MECANONLINE_1')
+            end if
+        end if
+    end if
+!   ------------------------------------------------------------------------------------------------
+
 ! - Read parameters for algorithm management
 !
     call nmdomt(ds_algopara, ds_algorom)
