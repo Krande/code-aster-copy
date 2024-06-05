@@ -2,7 +2,9 @@
 
 *sequential*
 
-`run_ctest --resutest=temp\seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 6`
+```
+run_ctest --resutest=temp\seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 6
+```
 
 # Date 2024.06.04
 
