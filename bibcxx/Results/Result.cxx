@@ -655,7 +655,7 @@ FieldOnNodesComplexPtr Result::getFieldOnNodesComplex( const std::string name,
 
     FieldOnNodesComplexPtr result = _dictOfMapOfFieldOnNodesComplex.at( name ).at( storageIndex );
     result->updateValuePointers();
-    return _dictOfMapOfFieldOnNodesComplex.at( name ).at( storageIndex );
+    return result;
 };
 
 void Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
