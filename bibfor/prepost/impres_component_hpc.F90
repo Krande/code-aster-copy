@@ -62,6 +62,7 @@ subroutine impres_component_hpc(nomgd, ntncmp, ncmpvl, ncmpve, indcmp)
 !
     call jemarq()
 !
+    cmpt = 0
     if (ncmpve .ne. 0) then
         call jeveuo(ntncmp, 'L', jnocm1)
         call jecreo('&&IRCAME.CMPLOC', 'V N K16')
