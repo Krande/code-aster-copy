@@ -591,6 +591,7 @@ class TestPhysicalState(unittest.TestCase):
         phys.commit()
         self.assertEqual(phys.primal_prev.value, 100.0)
         self.assertIsNotNone(phys.primal_step)
+        self.assertEqual(phys.primal_step.value, 0.0)
         # [phys_t0]
         self.assertEqual(len(phys._stack), 1)
 

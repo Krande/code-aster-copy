@@ -42,7 +42,6 @@ For example for the displacement field and a Newton solver.
   displacement (displ_step)
 """
 
-
 from ...Messages import MessageLog
 from ...Objects import NonLinearResult, ThermalResult
 from ...Supervis import ConvergenceError, IntegrationError, SolverError
@@ -50,7 +49,6 @@ from ...Utilities import DEBUG, logger, no_new_attributes, profile
 from ..Basics import ProblemType as PBT
 from ..Basics import SolverFeature
 from ..Basics import SolverOptions as SOP
-from ..Post import Annealing
 
 
 class NonLinearSolver(SolverFeature):
@@ -134,9 +132,6 @@ class NonLinearSolver(SolverFeature):
         phys_pb.computeDOFNumbering()
         if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
             phys_pb.computeReferenceExternalStateVariables()
-        # Add some hooks
-        if phys_pb.getBehaviourProperty().hasAnnealing():
-            self.use(Annealing())
         self.step_rank = 0
         self.setInitialState()
         self._storeState(self.phys_state)
@@ -288,10 +283,10 @@ class NonLinearSolver(SolverFeature):
                     # + reset current_matrix to None (REAC_INCR)
                     self.phys_state.revert()
                     continue
+                self.post_hooks()
                 self.phys_state.commit()
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
-                self.post_hooks()
                 self.step_rank += 1
                 last_stored = self._storeState(self.phys_state)
         # ensure that last step was stored

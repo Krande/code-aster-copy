@@ -22,12 +22,18 @@
 # ----- ENDOMMAGEMENT AU NIVEAU D'UNE MAILLE QUI SE TRADUIT PAR UNE ----
 # ----- PERTE DE COHESION DE 5% DANS LA MAILLE (M1) EN QUESTION. -------
 # ======================================================================
-
+from code_aster.Commands import *
+from code_aster import CA
+from run_aster.config import CFG
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
-last_iter = U.getIndexes()[-1]
+if CFG.get("require_mpiexec"):
+    print("INFO: This testcase can not be run under mpiexec.")
+    # because it would exit before saving the database
+    CA.exit()
 
+last_iter = U.getIndexes()[-1]
 
 U = CALC_CHAMP(reuse=U, CRITERES=("INDL_ELGA"), RESULTAT=U, NUME_ORDRE=(19, last_iter))
 

@@ -679,7 +679,7 @@ class PhysicalState(BaseFeature):
         """
         return self.current.as_dict()
 
-    def debugPrint(self, label=""):
+    def debugPrint(self, label="", recursive=False):
         """Print a representation of the object."""
         print(
             f"*** {label}Stack contains states for t =",
@@ -687,3 +687,7 @@ class PhysicalState(BaseFeature):
             f"+ current (t = {self.current.time_curr})",
             flush=True,
         )
+        if recursive:
+            for state in self._stack:
+                state.debugPrint(label)
+            self.current.debugPrint(label)
