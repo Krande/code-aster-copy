@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1944,7 +1944,7 @@ FREQC = CREA_TABLE(LISTE=_F(LISTE_R=LIFREQC.getValues(), PARA="FREQ"))
 LIFREQD = DEFI_LIST_FREQ(
     DEBUT=5.0,
     INTERVALLE=_F(JUSQU_A=40.0, NOMBRE=70),
-    RAFFINEMENT=_F(LIST_RAFFINE=lfreq, CRITERE="ABSOLU", NB_POINTS=7, DISPERSION=0.01),
+    RAFFINEMENT=(_F(LIST_RAFFINE=lfreq, CRITERE="ABSOLU", NB_POINTS=7, DISPERSION=0.01),),
 )
 
 FREQD = CREA_TABLE(LISTE=_F(LISTE_R=LIFREQD.getValues(), PARA="FREQ"))
