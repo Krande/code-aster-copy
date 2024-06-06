@@ -5,7 +5,7 @@ args=( "--clean" "--timefactor=4.0" "--jobs=${jobs}" "$@" )
 # to be directly readable in the browser
 export MESS_EXT="mess.txt"
 
-refrev=v16
+refrev=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
 
 if [ ! -z "${GITLAB_CI}" ]; then
     echo "+ fetching '${refrev}' branch..."

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-refrev=v16
+refrev=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
 
 if [ ! -z "${GITLAB_CI}" ]; then
     echo "+ fetching '${refrev}' branch..."
