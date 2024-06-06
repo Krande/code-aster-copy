@@ -562,7 +562,7 @@ def check_optimization_fcflags_msvc(self):
     self.setenv("debug")
     self.start_msg("Setting Fortran debug flags for IFort")
     self.remove_optflags("FCFLAGS")
-    flags = ["/debug:full", "/Od"] + Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
+    flags = ["/Zi", "/debug:full", "/Od"] + Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
     # Note: IFort uses different tools for memory checking and code coverage.
     self.env.append_unique("FCFLAGS", flags)
     self.end_msg(flags)

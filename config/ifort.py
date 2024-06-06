@@ -348,11 +348,11 @@ def apply_flags_ifort(self):
         flags = is_static and 'ARFLAGS' or 'LINKFLAGS'
         self.env.append_value(flags, subsystem)
 
-    # Logs.info(f"{is_static=}, {self.link_task.outputs=}")
     if not is_static:
         for f in self.env.LINKFLAGS:
             d = f.lower()
-            if d[1:] == 'debug':
+            if d[1:].startswith('debug'):
+                Logs.info(f"Exporting bibfor to pdb")
                 pdbnode = self.link_task.outputs[0].change_ext('.pdb')
                 self.link_task.outputs.append(pdbnode)
                 if getattr(self, 'install_task', None):

@@ -144,8 +144,6 @@ waf configure ^
   --without-hg ^
   --without-repo
 
-REM --disable-openmp ^
-
 REM Conditional log handling
 if %USE_LOG%==1 (
     set "datetimeString="
