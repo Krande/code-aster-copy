@@ -1239,6 +1239,7 @@ class DiscreteComputation:
         displ_step,
         stress,
         internVar,
+        internVarIter,
         time_prev,
         time_step,
         varc_prev=None,
@@ -1252,6 +1253,8 @@ class DiscreteComputation:
             displ_step (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
             internVar (FieldOnCells): field of internal state variables at begin of current time
+            internVarIter (FieldOnCells): field of internal state variables at begin of
+                                          current newton iteration
             time_prev (float): time at begin of the step
             time_step (float): delta time between begin and end of the step
             varc_prev (FieldOnCells): external state variables at begin of current time
@@ -1587,6 +1590,7 @@ class DiscreteComputation:
         displ_step,
         stress,
         internVar,
+        internVarIter,
         time_prev,
         time_step,
         varc_prev=None,
@@ -1600,6 +1604,8 @@ class DiscreteComputation:
             displ_step (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
             internVar (FieldOnCells): internal state variables at begin of current time
+            internVarIter (FieldOnCells): field of internal state variables
+                                          at begin of current newton iteration
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
             varc_prev (FieldOnCellsReal): external state variables at begin of current time

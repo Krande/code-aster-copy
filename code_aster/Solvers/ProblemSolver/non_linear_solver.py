@@ -118,7 +118,7 @@ class NonLinearSolver(SolverFeature):
             state.time_curr,
             self.phys_pb,
             state,
-            is_final_time=self.isFinished,
+            is_final_time=self.isFinished(),
             ignore_policy=ignore_policy,
         )
 

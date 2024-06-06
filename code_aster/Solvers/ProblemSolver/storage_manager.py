@@ -239,7 +239,7 @@ class StorageManager(SolverFeature):
                 compor = "COMPORTEMENT"
             slot.fields[compor] = behav.getBehaviourField()
         self._buffer.append(slot)
-        if is_final_time:
+        if is_final_time and self._result.getType() != "EVOL_THER":
             self._excl_fields = set()
         self._store()
         return True
