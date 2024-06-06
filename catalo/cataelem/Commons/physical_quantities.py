@@ -1873,19 +1873,19 @@ FTHM_R = PhysicalQuantity(
 
 ETHM_R = PhysicalQuantity(
     type="R",
-    components=("COEF[4]", "PRE[2]"),
+    components=("COEF[6]", "PRE[3]"),
     comment="""  ETHM_R Type:R Coef Echange (modelisation THM)
-       COEF :C11 C12 C21 C22
-       PRE : PRE1 ext et PRE2 ext
+       COEF :C11 C12 C21 C22 ou ALPHA et PVAP_SAT
+       PRE : PRE1 ext et PRE2 ext ou HR_EXT
 
 """,
 )
 ETHM_F = PhysicalQuantity(
     type="K8",
-    components=("COEF[4]", "PRE[2]"),
+    components=("COEF[6]", "PRE[3]"),
     comment="""  ETHM_F Type:F Coef Echange (modelisation THM)
-       COEF :C11 C12 C21 C22
-       PRE : PRE1 ext et PRE2 ext
+       COEF :C11 C12 C21 C22 ou ALPHA  PVAP_SAT et T_EXT
+       PRE : PRE1 ext et PRE2 ext ou HR_EXT
 
 """,
 )

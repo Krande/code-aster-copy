@@ -343,13 +343,16 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         nbCmp(1) = 1
         cmpName(1, 1) = 'PRES'
     else if (loadType .eq. 'ECHANGE_THM') then
-        nbCmp(1) = 6
+        nbCmp(1) = 9
         cmpName(1, 1) = 'COEF1'
         cmpName(1, 2) = 'COEF2'
         cmpName(1, 3) = 'COEF3'
         cmpName(1, 4) = 'COEF4'
-        cmpName(1, 5) = 'PRE1'
-        cmpName(1, 6) = 'PRE2'
+        cmpName(1, 5) = 'COEF5'
+        cmpName(1, 6) = 'COEF6'
+        cmpName(1, 7) = 'PRE1'
+        cmpName(1, 8) = 'PRE2'
+        cmpName(1, 9) = 'PRE3'
     else if (loadType .eq. 'PRES_REP') then
         nbCmp(1) = 2
         cmpName(1, 1) = 'PRES'
