@@ -50,7 +50,7 @@ def C_PILOTAGE():
         ETA_PILO_R_MIN=SIMP(statut="f", typ="R"),
         PROJ_BORNES=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
         b_long_arc=BLOC(
-            condition="""equal_to("TYPE", 'LONG_ARC')""",
+            condition="""equal_to("TYPE", 'LONG_ARC') or equal_to("TYPE", 'SAUT_LONG_ARC')""",
             SELECTION=SIMP(
                 statut="f",
                 typ="TXM",
@@ -59,7 +59,7 @@ def C_PILOTAGE():
             ),
         ),
         b_other=BLOC(
-            condition="""not equal_to("TYPE", 'LONG_ARC')""",
+            condition="""not equal_to("TYPE", 'LONG_ARC') and not equal_to("TYPE", 'SAUT_LONG_ARC')""",
             SELECTION=SIMP(
                 statut="f",
                 typ="TXM",
