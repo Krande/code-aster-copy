@@ -25,12 +25,14 @@ import aster
 from ..Cata.Syntax import _F
 from ..Commands import (
     AFFE_CHAR_MECA,
+    AFFE_MATERIAU,
     AFFE_MODELE,
     CALC_CHAMP,
     CREA_CHAMP,
     DEFI_FONCTION,
     DEFI_LIST_INST,
     DEFI_LIST_REEL,
+    DEFI_MATERIAU,
     RECU_TABLE,
     STAT_NON_LINE,
 )
@@ -79,9 +81,12 @@ def calc_precont_ops(
     # a tort
     MasquerAlarme("COMPOR4_70")
 
-    # on verifie que le champ de materiau ne comporte pas de variables de commande
-    if CHAM_MATER.hasExternalStateVariableWithReference():
-        UTMESS("F", "CABLE0_27")
+    # champ de materiau fictif pour le premier appel à STAT_NON_LINE
+    # on s'assure ainsi qu'il n'y a pas de variables de commandes pouvant
+    # induire des déformations anélastiques
+
+    MATFIC = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.0))
+    CHMATFIC = AFFE_MATERIAU(MODELE=MODELE, AFFE=_F(TOUT="OUI", MATER=MATFIC))
 
     # -------------------------------------------------------------
     # 1. CREATION DES MOTS-CLES ET CONCEPTS POUR LES STAT_NON_LINE
@@ -384,17 +389,34 @@ def calc_precont_ops(
         #     recuperation des _F_CAs aux noeuds
         #     on travaile entre tmin et tmax
         # -------------------------------------------------------------------
-        __EV1 = STAT_NON_LINE(
-            MODELE=__M_CA,
-            CHAM_MATER=CHAM_MATER,
-            CARA_ELEM=CARA_ELEM,
-            EXCIT=(_F(CHARGE=_B_CA), _F(CHARGE=_C_CN)),
-            COMPORTEMENT=dComp_incrElas,
-            INCREMENT=_F(LIST_INST=__LST0),
-            SOLVEUR=dSolveur,
-            INFO=INFO,
-            TITRE=TITRE,
-        )
+        if __GROUP_MA_A_SEG3 != []:
+            # on verifie que le champ de materiau ne comporte pas de variables de commande
+            if CHAM_MATER.hasExternalStateVariableWithReference():
+                UTMESS("F", "CABLE0_27")
+            __EV1 = STAT_NON_LINE(
+                MODELE=__M_CA,
+                CHAM_MATER=CHAM_MATER,
+                CARA_ELEM=CARA_ELEM,
+                EXCIT=(_F(CHARGE=_B_CA), _F(CHARGE=_C_CN)),
+                COMPORTEMENT=dComp_incrElas,
+                INCREMENT=_F(LIST_INST=__LST0),
+                SOLVEUR=dSolveur,
+                INFO=INFO,
+                TITRE=TITRE,
+            )
+
+        else:
+            __EV1 = STAT_NON_LINE(
+                MODELE=__M_CA,
+                CHAM_MATER=CHMATFIC,
+                CARA_ELEM=CARA_ELEM,
+                EXCIT=(_F(CHARGE=_B_CA), _F(CHARGE=_C_CN)),
+                COMPORTEMENT=dComp_incrElas,
+                INCREMENT=_F(LIST_INST=__LST0),
+                SOLVEUR=dSolveur,
+                INFO=INFO,
+                TITRE=TITRE,
+            )
         __EV1 = CALC_CHAMP(
             reuse=__EV1,
             RESULTAT=__EV1,
