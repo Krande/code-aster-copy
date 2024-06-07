@@ -23,5 +23,5 @@ interface
         integer :: cmpid
         character(len=*) :: nume19
         character(len=8) :: cmpname
-    end subroutine utncmp
+    end subroutine numeddl_get_component_name
 end interface
