@@ -89,7 +89,7 @@ set CFLAGS=%CFLAGS% /FS /MD /DMKL_ILP64
 set CXXFLAGS=%CXXFLAGS% /MD /DMKL_ILP64
 
 set FCFLAGS=%FCFLAGS% /fpp /MD
-set FCFLAGS=%FCFLAGS% /4I8 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc
+set FCFLAGS=%FCFLAGS% /4I8 /double-size:64 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc
 
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
@@ -134,9 +134,10 @@ waf configure ^
   --out=%OUTPUT_DIR% ^
   --enable-med ^
   --enable-hdf5 ^
+  --enable-mumps ^
+  --enable-openmp ^
   --enable-metis ^
   --enable-scotch ^
-  --embed-scotch ^
   --disable-mpi ^
   --disable-petsc ^
   --install-tests ^
