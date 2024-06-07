@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/fiintf.h"
 #include "asterfort/focoli.h"
 #include "asterfort/fointn.h"
@@ -113,7 +114,7 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
         nomf = zk24(jpro+5) (1:19)
 !
     else
-        call utmess('F', 'CALCULEL6_61', sk=zk24(jpro))
+        ASSERT(ASTER_FALSE)
     end if
 !
     do i = 1, nbpara
@@ -129,7 +130,11 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
             valk(2) = nompf(i)
             call tecael(iadzi, iazk24)
             valk(3) = zk24(iazk24-1+3)
-            call utmess('F', 'CALCULEL6_62', nk=3, valk=valk)
+            if (valk(2) .eq. 'X' .or. valk(2) .eq. 'Y' .or. valk(2) .eq. 'Z') then
+                call utmess('F', 'CALCULEL6_65', sk=nomf)
+            else
+                call utmess('F', 'CALCULEL6_62', nk=3, valk=valk)
+            end if
         end if
     end do
 !
