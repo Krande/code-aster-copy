@@ -42,7 +42,7 @@ For example for the displacement field and a Newton solver.
   displacement (displ_step)
 """
 
-from ...Messages import MessageLog
+from ...Messages import MessageLog, UTMESS
 from ...Objects import NonLinearResult, ThermalResult
 from ...Supervis import ConvergenceError, IntegrationError, SolverError
 from ...Utilities import DEBUG, logger, no_new_attributes, profile
@@ -173,53 +173,104 @@ class NonLinearSolver(SolverFeature):
                     para, value = "INST", extract_time
                 return para, value
 
+            def _raise_elga_error():
+                """Raise an error to make sure that initial_state model and
+                field model are the same."""
+                UTMESS("F", "MECANONLINE_9")
+
+            def _extract_resu_field_and_check_model(resu, para, val, name_field, model):
+                """Extract the field from the result, then check that the model
+                of the field is the same as the model given in parameter.
+
+                Returns the extracted field if the model is the same"""
+                field = resu.getField(name_field, para=para, value=val)
+                if model is field.getModel():
+                    return field
+                else:
+                    _raise_elga_error()
+
+            def _get_field_and_check_model(state, name_field, model):
+                """Extract the field from the initial state, then check that
+                the model of the field is the same as the model given in parameter.
+
+                Returns the field if the model is the same"""
+                field = state.get(name_field)
+                if model is field.getModel():
+                    return field
+                else:
+                    _raise_elga_error()
+
+            model = self.phys_pb.getModel()
+
             if "EVOL_NOLI" in init_state:
                 resu = init_state.get("EVOL_NOLI")
                 assert isinstance(resu, NonLinearResult), resu
                 para, value = _extract_param(init_state, resu)
+
                 phys_state.primal_curr = resu.getField(
                     "DEPL", para=para, value=value
                 ).copyUsingDescription(nume_equa, False)
                 _msginit("DEPL", resu.userName)
+
                 if phys_state.pb_type == PBT.MecaDyna:
                     phys_state.current.dU = resu.getField(
                         "VITE", para=para, value=value
                     ).copyUsingDescription(nume_equa)
                     _msginit("VITE", resu.userName)
+
                     phys_state.current.d2U = resu.getField(
                         "ACCE", para=para, value=value
                     ).copyUsingDescription(nume_equa)
                     _msginit("ACCE", resu.userName)
-                phys_state.stress = resu.getField("SIEF_ELGA", para=para, value=value)
+
+                phys_state.stress = _extract_resu_field_and_check_model(
+                    resu=resu, para=para, val=value, name_field="SIEF_ELGA", model=model
+                )
                 _msginit("SIEF_ELGA", resu.userName)
-                phys_state.internVar = resu.getField("VARI_ELGA", para=para, value=value)
+
+                phys_state.internVar = _extract_resu_field_and_check_model(
+                    resu=resu, para=para, val=value, name_field="VARI_ELGA", model=model
+                )
                 _msginit("VARI_ELGA", resu.userName)
+
             if "EVOL_THER" in init_state:
                 resu = init_state.get("EVOL_THER")
                 assert isinstance(resu, ThermalResult), resu
                 para, value = _extract_param(init_state, resu)
+
                 phys_state.primal_curr = resu.getField(
                     "TEMP", para=para, value=value
                 ).copyUsingDescription(nume_equa)
+
             if "CHAM_NO" in init_state:
                 phys_state.primal_curr = init_state.get("CHAM_NO").copyUsingDescription(nume_equa)
+
             if "DEPL" in init_state:
                 phys_state.primal_curr = init_state.get("DEPL").copyUsingDescription(
                     nume_equa, False
                 )
                 _msginit("DEPL")
+
             if "SIGM" in init_state:
-                phys_state.stress = init_state.get("SIGM")
+                phys_state.stress = _get_field_and_check_model(
+                    state=init_state, name_field="SIGM", model=model
+                )
                 _msginit("SIEF_ELGA")
+
             if "VARI" in init_state:
-                phys_state.internVar = init_state.get("VARI")
+                phys_state.internVar = _get_field_and_check_model(
+                    state=init_state, name_field="VARI", model=model
+                )
                 _msginit("VARI_ELGA")
+
             if "VITE" in init_state:
                 phys_state.current.dU = init_state.get("VITE").copyUsingDescription(nume_equa)
                 _msginit("VITE")
+
             if "ACCE" in init_state:
                 phys_state.current.d2U = init_state.get("ACCE").copyUsingDescription(nume_equa)
                 _msginit("ACCE")
+
             if "VALE" in init_state:
                 phys_state.primal_curr = phys_state.createPrimal(
                     self.phys_pb, value={"TEMP": init_state.get("VALE")}
