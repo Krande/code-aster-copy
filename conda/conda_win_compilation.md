@@ -57,7 +57,7 @@ for LLVM Flang (which is supported on conda-forge).
 If you encounter a large spike in memory usage, it is likely caused by the calculation of `omp_get_max_threads` in
 `bibfor/supervis/superv_module.F90`. If you look at `Nombre de processus OpenMP utilisés : 1` in the Code Aster
 output, you can see that the number of threads is set to 1. However, when a large spike of memory is observed,
-the number of OpenMP threads was a much higher number. 
+the number of OpenMP threads is likely a much higher number. 
 
 The actual culprit for this error is still not 100% clear, but it is likely related to the calculation of the number
 of threads in the `bibfor/supervis/superv_module.F90` file.

@@ -3,16 +3,17 @@ from dataclasses import dataclass
 from enum import Enum
 
 
-class FailCause(str, Enum):
-    OverflowInt = "OverflowInt"
-    Unknown = "Unknown"
+class TestResult(str, Enum):
+    ErrOverflowInt = "OverflowInt"
+    ErrUnknown = "Unknown"
+    Passing = "Passing"
 
 
 @dataclass
 class TestStats:
     name: str
     mess_file_path: pathlib.Path
-    error_reason: FailCause
+    error_reason: TestResult
 
 
 def check_mess_file(mess_file: str | pathlib.Path) -> TestStats:
@@ -20,9 +21,9 @@ def check_mess_file(mess_file: str | pathlib.Path) -> TestStats:
         data = f.read()
 
     if "OverflowError: can't convert negative int to unsigned" in data:
-        error_reason = FailCause.OverflowInt
+        error_reason = TestResult.ErrOverflowInt
     else:
-        error_reason = FailCause.Unknown
+        error_reason = TestResult.ErrUnknown
 
     return TestStats(
         name=mess_file.stem,
@@ -50,7 +51,7 @@ def eval_tests(test_dir: str | pathlib.Path):
         error_map[error_data.error_reason].append(error_data)
 
     print(f"Total passing tests: {perc_passing:.2f}% [{tot_passing}/{tot_seq_files}]")
-    overflow_errors = error_map.get(FailCause.OverflowInt)
+    overflow_errors = error_map.get(TestResult.ErrOverflowInt)
     if overflow_errors:
         perc_overflow = len(overflow_errors) / tot_failed * 100
         print(f"Overflow errors: {len(overflow_errors)} [{perc_overflow:.2f}%]")
@@ -58,7 +59,7 @@ def eval_tests(test_dir: str | pathlib.Path):
     else:
         print("No overflow errors")
 
-    unknown_errors = error_map.get(FailCause.Unknown)
+    unknown_errors = error_map.get(TestResult.ErrUnknown)
     if unknown_errors:
         perc_unknown = len(unknown_errors) / tot_failed * 100
         print(f"Unknown errors: {len(unknown_errors)} [{perc_unknown:.2f}%]")

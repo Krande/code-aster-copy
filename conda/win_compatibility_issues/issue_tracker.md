@@ -1,5 +1,11 @@
 # Issue Tracker
 
+## 24.08.06: Unsigned int
+
+Likely caused by misconfiguration in `bibc/utilitai/inisig.c`.
+
+Will have to investigate further.
+
 ## 24.05.31: Issue with Windows Compatibility
 
 When compiling the code on Windows, the following error message is displayed:
