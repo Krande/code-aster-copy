@@ -38,20 +38,65 @@ conda_build.bat
 Conda forge currently does not support Intel OneAPI fortran. Consequently, focus is shifted to adding support
 for LLVM Flang (which is supported on conda-forge). 
 
-| Dependency  | version | C compiler | C++ compiler | Fortran compiler                 | 
-|-------------|---------|------------|--------------|----------------------------------|
-| HDF5        | 1.10.7  | VS2022     | VS2022       | Intel OneAPI Fortran 2024.0 (^1) |
-| MED         | 4.1.0   | VS2022     | VS2022       | Intel OneAPI Fortran 2024.0 (^1) |
-| MEDCOUPLING | 9.10.0  | VS2022     | VS2022       | N/A                              |
-| MFront      | 4.2.0   | CLANG-CL   | CLANG-CL     | LLVM Flang                       |
-| MGIS        | 2.2.0   | VS2019     | VS2019       | LLVM Flang                       |
-| METIS       | 5.1.0   | VS2022     | VS2022       | N/A                              |
-| SCOTCH      | 7.0.4   | VS2022     | VS2022       | LLVM Flang                       |
-| MUMPS       | 5.7.0   | VS2022     | VS2022       | LLVM Flang                       |
-| Code Aster  | 17.0.10 | VS2022     | VS2022       | Intel OneAPI Fortran 2024.0 (^1) |
+| Dependency  | version  | C compiler | C++ compiler | Fortran compiler                 | 
+|-------------|----------|------------|--------------|----------------------------------|
+| HDF5        | 1.14.4.2 | VS2022     | VS2022       | Intel OneAPI Fortran 2024.0 (^1) |
+| MED         | 4.1.0    | VS2022     | VS2022       | Intel OneAPI Fortran 2024.0 (^1) |
+| MEDCOUPLING | 9.10.0   | VS2022     | VS2022       | N/A                              |
+| MFront      | 4.2.0    | CLANG-CL   | CLANG-CL     | LLVM Flang                       |
+| MGIS        | 2.2.0    | VS2019     | VS2019       | LLVM Flang                       |
+| METIS       | 5.1.0    | VS2022     | VS2022       | N/A                              |
+| SCOTCH      | 7.0.4    | VS2022     | VS2022       | LLVM Flang                       |
+| MUMPS       | 5.7.0    | VS2022     | VS2022       | LLVM Flang                       |
+| Code Aster  | 17.0.10  | VS2022     | VS2022       | Intel OneAPI Fortran 2024.0 (^1) |
 
 ^1: Awaiting LLVM Flang fix -> https://github.com/llvm/llvm-project/issues/89403 
 
+## OpenMP error related to calculation of `omp_get_max_threads`
+
+If you encounter a large spike in memory usage, it is likely caused by the calculation of `omp_get_max_threads` in
+`bibfor/supervis/superv_module.F90`. If you look at `Nombre de processus OpenMP utilisés : 1` in the Code Aster
+output, you can see that the number of threads is set to 1. However, when a large spike of memory is observed,
+the number of OpenMP threads was a much higher number. 
+
+The actual culprit for this error is still not 100% clear, but it is likely related to the calculation of the number
+of threads in the `bibfor/supervis/superv_module.F90` file.
+
+Originally I thought I had solved this issue for good when I changed MUMPS to use MKL64 and enable OpenMP, but that
+might not be the case.
+
+It might be related to the PATH environment variable and the Intel oneAPI vars set globally. Removing the paths and 
+restarting the computer seemed to have worked last time I encountered this issue.
+
+
+
+
+```
+                       -- CODE_ASTER -- VERSION : DÉVELOPPEMENT (unstable) --                       
+                               Version 17.0.99 modifiée le 07/06/2024                               
+                                    révision n/a - branche 'n/a'                                    
+                                   Copyright EDF R&D 1991 - 2024                                    
+                                                                                                    
+                              Exécution du : Sat Jun  8 10:02:55 2024                               
+                                        Nom de la machine :                                         
+                                          DESKTOP-NJ4G2LS                                           
+                                        Architecture : 64bit                                        
+                                     Type de processeur : AMD64                                     
+                                      Système d'exploitation :                                      
+                                     Windows-10-10.0.22631-SP0                                      
+                                 Langue des messages : nb (cp1252)                                  
+                                     Version de Python : 3.11.9                                     
+                                     Version de NumPy : 1.23.5                                      
+                                     Parallélisme MPI : inactif                                     
+                                    Parallélisme OpenMP : actif                                     
+                              Nombre de processus OpenMP utilisés : 1                               
+                               Version de la librairie HDF5 : 1.14.4                                
+                                Version de la librairie MED : 4.1.1                                 
+                               Version de la librairie MFront : 4.2.0                               
+                               Version de la librairie MUMPS : 5.6.2                                
+                                  Librairie PETSc : non disponible                                  
+                               Version de la librairie SCOTCH : 7.0.4  
+```
 
 ## Debugging
 
