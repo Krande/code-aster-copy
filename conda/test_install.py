@@ -34,7 +34,7 @@ from code_aster import CA
 """
 
 
-# run_ctest --resutest=temp\seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 6
+# run_ctest --resutest=temp\seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 4
 # run_ctest --resutest=temp/seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 1
 # run_ctest --resutest=temp\mpi -L submit -LE need_data --timefactor=5.0 --only-failed-results -j 6
 
