@@ -544,7 +544,7 @@ class ExtendedDiscreteComputation:
         return contact_forces
 
     @profile
-    def getResidual(self, phys_state, contact_manager=None, scaling=1.0, prediction=False):
+    def getResidual(self, phys_state, contact_manager=None, scaling=1.0):
         """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
 
         This is not the true residual but the opposite.
