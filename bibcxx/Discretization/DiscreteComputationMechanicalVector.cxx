@@ -170,6 +170,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FR1D3D", "F1D3D", "PFR1D3D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FR1D2D", "F1D2D", "PFR1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FLUX_R", "FLUX", "PFLUXR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EFON_R", "EFOND", "PEFOND", model_FEDesc,
               { { "PPREFFR", load->getConstantLoadField( "PREFF" ) } } );
         iload++;
@@ -184,6 +185,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FF1D3D", "F1D3D", "PFF1D3D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FF1D2D", "F1D2D", "PFF1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FLUX_F", "FLUX", "PFLUXF", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EFON_F", "EFOND", "PEFOND", model_FEDesc,
               { { "PPREFFF", load->getConstantLoadField( "PREFF" ) } } );
 

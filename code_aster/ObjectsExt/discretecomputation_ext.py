@@ -493,7 +493,9 @@ class ExtendedDiscreteComputation:
                 phys_state.primal_curr, phys_state.time_curr
             )
         elif self.getPhysicalProblem().isMechanical():
-            resi_ext = self.getNeumannForces(phys_state.time_curr, varc_curr=phys_state.externVar)
+            resi_ext = self.getNeumannForces(
+                phys_state.time_curr, time_step=phys_state.time_step, varc_curr=phys_state.externVar
+            )
 
             resi_ext += self.getVolumetricForces(
                 phys_state.time_curr, varc_curr=phys_state.externVar
