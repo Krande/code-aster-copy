@@ -35,14 +35,23 @@ subroutine expass(jxvrf)
 !     --- VARIABLES LOCALES --------------------------------------------
     character(len=8) :: nomres
     character(len=16) :: concep, nomcmd
-!
+
+    print *, "Inside expass: jxvrf =", jxvrf
     call jemarq()
-!
+    print *, "After jemarq"
+
     call execop()
+    print *, "After execop"
+
     if (jxvrf .eq. 1) then
+        print *, "jxvrf equals 1, calling getres"
         call getres(nomres, concep, nomcmd)
+        print *, "After getres"
         call jxveri()
+        print *, "After jxveri"
     end if
-!
+
     call jedema()
+    print *, "After jedema"
 end subroutine
+
