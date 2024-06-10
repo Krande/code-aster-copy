@@ -30,6 +30,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(S
 
 if CFG.get("require_mpiexec"):
     print("INFO: This testcase can not be run under mpiexec.")
+    test = CA.TestCase()
+    test.assertTrue(True)
+    test.printSummary()
     # because it would exit before saving the database
     CA.exit()
 
