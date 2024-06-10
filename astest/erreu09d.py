@@ -27,6 +27,8 @@ test = CA.TestCase()
 
 if CFG.get("require_mpiexec"):
     print("INFO: This testcase can not be run under mpiexec.")
+    test.assertTrue(True)
+    test.printSummary()
     # because it would exit before saving the database
     CA.exit()
 
