@@ -102,10 +102,6 @@ test.assertEqual(len(kws), 4)
 test.assertSequenceEqual(kws, ["IGNORE_ALARM", "IMPR_MACRO", "INFO", "MODE"])
 test.assertSequenceEqual(types, ["TX", "TX", "IS", "TX"])
 
-rand = syntax.getran()
-test.assertGreaterEqual(rand[0], 0.0)
-test.assertLessEqual(rand[0], 1.0)
-
 syntax.free()
 
 # some more complex cases (factor keywords under conditional blocks)

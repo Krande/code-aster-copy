@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@
 
 import builtins
 import math
+import random
 
 
 # This function exists in AsterStudy - keep consistency.
@@ -41,3 +42,32 @@ def initial_context():
         if not func.startswith("_"):
             context[func] = getattr(math, func)
     return context
+
+
+class Random:
+    """Wrapper on random functions to be called from fortran operator."""
+
+    _random = None
+
+    @classmethod
+    def initialize(cls, jump=0):
+        """Initialize the generator of random numbers.
+
+        Arguments:
+            jump (int): Non-negative integer to change the state of the
+                numbers generator.
+        """
+        cls._random = random.Random(100)
+        gen = cls._random
+        gen.seed(jump)
+
+    @classmethod
+    def get_number(cls):
+        """Returns a random number between 0 and 1.
+
+        Returns:
+            float: Random number.
+        """
+        if not cls._random:
+            cls.initialize()
+        return (cls._random.random(),)
