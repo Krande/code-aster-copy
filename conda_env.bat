@@ -17,7 +17,10 @@ if defined DONOT_ACTIVATE_CONDA_ENV (
 )
 @call "%CONDA_ROOT%\Scripts\activate.bat" %PYTHON_ENV_NAME%
 call "%VS_VARS_PATH%\vcvars64.bat"
-@call "%INTEL_VARS_PATH%\vars.bat" -arch intel64 vs2022
+if "%FC%" == "ifx.exe" (
+    echo "Activating Intel Fortran compiler"
+    @call "%INTEL_VARS_PATH%\vars.bat" -arch intel64
+)
 
 REM if variable "print" is passed, call printenv
 if "%1" == "print" (

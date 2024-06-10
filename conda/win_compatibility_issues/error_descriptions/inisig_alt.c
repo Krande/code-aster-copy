@@ -53,7 +53,6 @@ void stpusr1( int sig );
 #include <float.h>
 #include <excpt.h>
 void hanfpe(int sig);
-void handle_exception(unsigned int code, struct _EXCEPTION_POINTERS* ep);
 #endif
 
 #if defined ASTER_PLATFORM_LINUX
@@ -100,10 +99,25 @@ void DEF0( INISIG, inisig ) {
 
     signal( SIGFPE, hanfpe );
 #elif defined ASTER_PLATFORM_MSVC64
+    errno_t err;
     _clearfp(); // Clear any pending floating-point exceptions.
-    cw = _controlfp(0, 0); // Get the current control word.
-    cw &= ~(_EM_OVERFLOW | _EM_ZERODIVIDE | _EM_INVALID);
-    _controlfp(cw, _MCW_EM); // Set the control word to trap exceptions.
+    // Get the current control word
+    err = _controlfp_s(&cwOrig, 0, 0);
+    if (err != 0) {
+        fprintf(stderr, "Failed to get the control word\n");
+        abort(); // Handle the error as appropriate
+    }
+
+    // Modify the control word to trap exceptions
+    cw = cwOrig & ~(_EM_OVERFLOW | _EM_ZERODIVIDE | _EM_INVALID);
+
+    // Set the new control word
+    err = _controlfp_s(NULL, cw, _MCW_EM);
+    if (err != 0) {
+        fprintf(stderr, "Failed to set the control word\n");
+        abort(); // Handle the error as appropriate
+    }
+
     signal(SIGFPE, hanfpe);
 #else
     signal( SIGFPE, hanfpe );

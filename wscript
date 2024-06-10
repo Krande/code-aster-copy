@@ -230,7 +230,10 @@ def all_components(self):
 def configure(self):
     if platform.system() == "Windows" and os.getenv('WAFDIR') is None:
         print("Loading custom 'ifort' and 'msvc' toolchains")
-        self.load("ifort", tooldir="config")
+        if os.getenv('FC', '').lower().startswith('ifx'):
+            self.load("ifort", tooldir="config")
+        elif os.getenv('FC', '').lower().startswith('flang'):
+            self.load("flang", tooldir="config")
         self.load("msvc", tooldir="config")
 
     opts = self.options

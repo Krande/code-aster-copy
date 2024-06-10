@@ -24,7 +24,7 @@ dependencies:
 # However, we still need it for the fortran runtime. One can either re-compile mkl using the llvm-openmp package.
 # Or try to compile intel-fortran-rt with the intel-openmp package.
 # Temp fix is to do mamba remove llvm-openmp intel-openmp --force && mamba install intel-openmp
-  - clang=18.1.6
+  - clang=18.1.7
 #  - lld=18.1.6
 #  - lldb=18.1.6
 #  - pip

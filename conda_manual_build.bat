@@ -29,18 +29,18 @@ if %COLOR_ENABLED%==1 (
 )
 
 
+echo "Setting compiler env vars"
+set "CC=clang-cl.exe"
+set "CXX=clang-cl.exe"
+set "FC=ifx.exe"
+@REM set "LINK=link.exe"
+
 :: TO set the number of cores, use the env variable JOBS
 call %PARENT_DIR%\conda_env.bat
 
 if defined JOBS (
     echo "Using %JOBS% cores"
 )
-
-echo "Setting compiler env vars"
-set "CC=clang-cl.exe"
-set "CXX=clang-cl.exe"
-set "FC=ifx.exe"
-@REM set "LINK=link.exe"
 
 where python
 where "%CC%"
@@ -88,16 +88,23 @@ REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on mul
 set CFLAGS=%CFLAGS% /FS /MD /DMKL_ILP64
 set CXXFLAGS=%CXXFLAGS% /MD /DMKL_ILP64
 
-set FCFLAGS=%FCFLAGS% /fpp /MD
-set FCFLAGS=%FCFLAGS% /4I8 /double-size:64 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc
-
+if "%FC%" == "ifx.exe" (
+    echo "Using Intel Fortran LLVM IFX compiler"
+    set FC_SEARCH=ifort
+    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /double-size:64 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc
+    :: Add lib paths
+    set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
+) else (
+    echo "Using LLVM Flang Fortran compiler"
+    set FC_SEARCH=flang
+    set FCFLAGS=%FCFLAGS% -cpp --dependent-lib=msvcrt -fdefault-double-8 -fdefault-integer-8 -fdefault-real-8 -funderscoring
+    :: Add lib paths
+    set LDFLAGS=%LDFLAGS% -L %LIB_PATH_ROOT%/lib -L %LIB_PATH_ROOT%/bin -L %PREF_ROOT%/libs
+)
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 :: Create dll debug pdb
 set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
-
-:: Add lib paths
-set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 
 :: Add Math libs
 set LDFLAGS=%LDFLAGS% mkl_intel_ilp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib
@@ -116,7 +123,7 @@ set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
-set DEFINES=H5_BUILT_AS_DYNAMIC_LIB H5_USE_110_API PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
+set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
 REM Clean the build directory
 waf distclean
 
@@ -127,7 +134,7 @@ set BUILD=std
 REM Install for standard sequential
 waf configure ^
   --python=%PYTHON% ^
-  --check-fortran-compiler=ifort ^
+  --check-fortran-compiler=%FC_SEARCH% ^
   --use-config-dir=%PARENT_DIR%/config/ ^
   --med-libs="med medC medfwrap medimport" ^
   --prefix=%LIB_PATH_ROOT% ^

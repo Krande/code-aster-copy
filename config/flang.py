@@ -1,367 +1,112 @@
 #! /usr/bin/env python
 # encoding: utf-8
-# WARNING! Do not edit! https://waf.io/book/index.html#_obtaining_the_waf_file
+# Detection of the flang Fortran compiler
 
-import os
-import pathlib
 import re
-import traceback
-
-from waflib import Utils, Logs, Errors
+from waflib.Tools import fc,fc_config,fc_scan
 from waflib.Configure import conf
-from waflib.TaskGen import after_method, feature
-from waflib.Tools import fc_config, ccroot
-
+from waflib.Tools.compiler_fc import fc_compiler
+fc_compiler['linux'].append('fc_flang')
 
 @conf
 def find_flang(conf):
-    fc = conf.find_program(['flang-new'], var='FC')
-    conf.get_flang_version(fc)
-    conf.env.FC_NAME = 'LLVMFLANG'
-
-
-@conf
-def flang_modifier_win32(self):
-    v = self.env
-    v.flang_WIN32 = True
-    v.FCSTLIB_MARKER = ''
-    v.FCSHLIB_MARKER = ''
-    v.FCLIB_ST = v.FCSTLIB_ST = '%s.lib'
-    v.FCLIBPATH_ST = v.STLIBPATH_ST = '/LIBPATH:%s'
-    v.FCINCPATH_ST = '/I%s'
-    v.FCDEFINES_ST = '/D%s'
-    v.fcprogram_PATTERN = v.fcprogram_test_PATTERN = '%s.exe'
-    v.fcshlib_PATTERN = '%s.dll'
-    v.fcstlib_PATTERN = v.implib_PATTERN = '%s.lib'
-    v.FCLNK_TGT_F = '/out:'
-    v.FC_TGT_F = ['/c', '/o', '']
-    v.FCFLAGS_fcshlib = ''
-    v.LINKFLAGS_fcshlib = '/DLL'
-    v.AR_TGT_F = '/out:'
-    v.IMPLIB_ST = '/IMPLIB:%s'
-    v.append_value('LINKFLAGS', '/subsystem:console')
-    if v.flang_MANIFEST:
-        v.append_value('LINKFLAGS', ['/MANIFEST'])
-
+    fc = conf.find_program(['flang'], var='FC')
+    conf.get_nfort_version(fc)
+    conf.env.FC_NAME = 'FLANG'
+    conf.env.FC_MOD_CAPITALIZATION = 'lower'
 
 @conf
-def flang_modifier_darwin(conf):
-    fc_config.fortran_modifier_darwin(conf)
-
-
-@conf
-def flang_modifier_platform(conf):
-    dest_os = conf.env.DEST_OS or Utils.unversioned_sys_platform()
-    flang_modifier_func = getattr(conf, 'flang_modifier_' + dest_os, None)
-    if flang_modifier_func:
-        flang_modifier_func()
-
+def flang_flags(conf):
+    v = conf.env
+    v['_FCMODOUTFLAGS'] = []
+    v['FCFLAGS_DEBUG'] = []
+    v['FCFLAGS_fcshlib'] = []
+    v['LINKFLAGS_fcshlib'] = []
+    v['FCSTLIB_MARKER'] = ''
+    v['FCSHLIB_MARKER'] = ''
 
 @conf
 def get_flang_version(conf, fc):
-    version_re = re.compile(r"\bIntel\b.*\bVersion\s*(?P<major>\d*)\.(?P<minor>\d*)", re.I).search
-    if Utils.is_win32:
-        cmd = fc
+    cmd = fc + ['-dM', '-E', '-']
+    env = conf.env.env or None
+
+    try:
+        out, err = conf.cmd_and_log(cmd, output=0, input='\n'.encode(), env=env)
+    except Errors.WafError:
+        conf.fatal('Could not determine the FLANG compiler version for %r' % cmd)
+    if out.find('__clang__') < 0:
+        conf.fatal('Not a flang compiler')
+
+    k = {}
+    out = out.splitlines()
+    for line in out:
+        lst = shlex.split(line)
+        if len(lst)>2:
+            key = lst[1]
+            val = lst[2]
+            k[key] = val
+
+    def isD(var):
+        return var in k
+
+    # Some documentation is available at http://predef.sourceforge.net
+    # The names given to DEST_OS must match what Utils.unversioned_sys_platform() returns.
+    if not conf.env.DEST_OS:
+        conf.env.DEST_OS = ''
+    for i in MACRO_TO_DESTOS:
+        if isD(i):
+            conf.env.DEST_OS = MACRO_TO_DESTOS[i]
+            break
     else:
-        cmd = fc + ['-logo']
-    out, err = fc_config.getoutput(conf, cmd, stdin=False)
-    match = version_re(out) or version_re(err)
+        if isD('__APPLE__') and isD('__MACH__'):
+            conf.env.DEST_OS = 'darwin'
+        elif isD('__unix__'): # unix must be tested last as it's a generic fallback
+            conf.env.DEST_OS = 'generic'
+
+    if isD('__ELF__'):
+        conf.env.DEST_BINFMT = 'elf'
+    elif isD('__WINNT__') or isD('__CYGWIN__') or isD('_WIN32'):
+        conf.env.DEST_BINFMT = 'pe'
+        if not conf.env.IMPLIBDIR:
+            conf.env.IMPLIBDIR = conf.env.LIBDIR # for .lib or .dll.a files
+        conf.env.LIBDIR = conf.env.BINDIR
+    elif isD('__APPLE__'):
+        conf.env.DEST_BINFMT = 'mac-o'
+
+    if not conf.env.DEST_BINFMT:
+        # Infer the binary format from the os name.
+        conf.env.DEST_BINFMT = Utils.destos_to_binfmt(conf.env.DEST_OS)
+
+    for i in MACRO_TO_DEST_CPU:
+        if isD(i):
+            conf.env.DEST_CPU = MACRO_TO_DEST_CPU[i]
+            break
+
+    Logs.debug('fc_flang: dest platform: ' + ' '.join([conf.env[x] or '?' for x in ('DEST_OS', 'DEST_BINFMT', 'DEST_CPU')]))
+    conf.env.FC_VERSION = (k['__clang_major__'], k['__clang_minor__'], k['__clang_patchlevel__'])
+
+    return k
+
+@conf
+def get_nfort_version(conf,fc):
+    version_re=re.compile(r"nfort\s*\(NFORT\)\s*(?P<major>\d+)\.(?P<minor>\d+)\.",re.I).search
+    cmd=fc+['--version']
+    out,err=fc_config.getoutput(conf,cmd,stdin=False)
+    if out:
+        match=version_re(out)
+    else:
+        match=version_re(err)
     if not match:
-        conf.fatal('cannot determine flang version.')
-    k = match.groupdict()
-    conf.env.FC_VERSION = (k['major'], k['minor'])
+        return(False)
+        conf.fatal('Could not determine the NEC NFORT Fortran compiler version.')
+    else:
+        k=match.groupdict()
+        conf.env['FC_VERSION']=(k['major'],k['minor'])
 
 
 def configure(conf):
-    if Utils.is_win32:
-        compiler, version, path, includes, libdirs, arch = conf.detect_flang()
-        v = conf.env
-        v.DEST_CPU = arch
-        v.PATH = path
-        v.INCLUDES = includes
-        v.LIBPATH = libdirs
-        v.MSVC_COMPILER = compiler
-        try:
-            v.MSVC_VERSION = float(version)
-        except ValueError:
-            v.MSVC_VERSION = float(version[:-3])
-        conf.find_flang_win32()
-        conf.flang_modifier_win32()
-    else:
-        conf.find_flang()
-        conf.find_program('xiar', var='AR')
-        conf.find_ar()
-        conf.fc_flags()
-        conf.fc_add_flags()
-        conf.flang_modifier_platform()
-
-
-all_flang_platforms = [('intel64', 'amd64'), ('em64t', 'amd64'), ('ia32', 'x86'), ('Itanium', 'ia64')]
-
-
-@conf
-def gather_flang_versions(conf, versions):
-    flang_batch_file = pathlib.Path(os.getenv("INTEL_VARS_PATH")+'\\vars.bat')
-    if flang_batch_file.exists():
-        # Logs.info(f"flang env var batch found at {flang_batch_file=}")
-        arch = 'amd64'
-        version = '192.49896'
-        target = 'intel64'
-        targets = dict(intel64=target_compiler(conf, 'intel', arch, version, target, flang_batch_file.as_posix()))
-        major = version[0:2]
-        versions['intel ' + major] = targets
-        return
-
-    version_pattern = re.compile(r'^...?.?\....?.?')
-    try:
-        all_versions = Utils.winreg.OpenKey(Utils.winreg.HKEY_LOCAL_MACHINE,
-                                            'SOFTWARE\\Wow6432node\\Intel\\Compilers\\Fortran')
-    except OSError:
-        try:
-            all_versions = Utils.winreg.OpenKey(Utils.winreg.HKEY_LOCAL_MACHINE, 'SOFTWARE\\Intel\\Compilers\\Fortran')
-        except OSError:
-            return
-    index = 0
-    while 1:
-        try:
-            version = Utils.winreg.EnumKey(all_versions, index)
-        except OSError:
-            break
-        index += 1
-        if not version_pattern.match(version):
-            continue
-        targets = {}
-
-        for target, arch in all_flang_platforms:
-            if target == 'intel64':
-                targetDir = 'EM64T_NATIVE'
-            else:
-                targetDir = target
-            try:
-                Utils.winreg.OpenKey(all_versions, version + '\\' + targetDir)
-                icl_version = Utils.winreg.OpenKey(all_versions, version)
-                path, type = Utils.winreg.QueryValueEx(icl_version, 'ProductDir')
-            except OSError:
-                pass
-            else:
-                batch_file = os.path.join(path, 'bin', 'flangvars.bat')
-                if os.path.isfile(batch_file):
-                    targets[target] = target_compiler(conf, 'intel', arch, version, target, batch_file)
-                else:
-                    batch_file = os.path.join(path, 'env', 'vars.bat')
-                    if os.path.isfile(batch_file):
-                        Logs.info(f"{conf=}, {arch=}, {version=}, {target=}, {batch_file=}")
-                        targets[target] = target_compiler(conf, 'intel', arch, version, target, batch_file)
-        for target, arch in all_flang_platforms:
-            try:
-                icl_version = Utils.winreg.OpenKey(all_versions, version + '\\' + target)
-                path, type = Utils.winreg.QueryValueEx(icl_version, 'ProductDir')
-            except OSError:
-                continue
-            else:
-                batch_file = os.path.join(path, 'bin', 'flangvars.bat')
-                if os.path.isfile(batch_file):
-                    targets[target] = target_compiler(conf, 'intel', arch, version, target, batch_file)
-        major = version[0:2]
-        versions['intel ' + major] = targets
-
-
-@conf
-def setup_flang(conf, versiondict):
-    platforms = Utils.to_list(conf.env.MSVC_TARGETS) or [i for i, j in all_flang_platforms]
-    desired_versions = conf.env.MSVC_VERSIONS or list(reversed(list(versiondict.keys())))
-    for version in desired_versions:
-        try:
-            targets = versiondict[version]
-        except KeyError:
-            continue
-        for arch in platforms:
-            try:
-                cfg = targets[arch]
-            except KeyError:
-                continue
-            cfg.evaluate()
-            if cfg.is_valid:
-                compiler, revision = version.rsplit(' ', 1)
-                return compiler, revision, cfg.bindirs, cfg.incdirs, cfg.libdirs, cfg.cpu
-
-    conf.fatal('flang: Impossible to find a valid architecture for building %r - %r' % (
-    desired_versions, list(versiondict.keys())))
-
-
-@conf
-def get_flang_version_win32(conf, compiler, version, target, vcvars):
-    try:
-        conf.msvc_cnt += 1
-    except AttributeError:
-        conf.msvc_cnt = 1
-    batfile = conf.bldnode.make_node('waf-print-msvc-%d.bat' % conf.msvc_cnt)
-    batfile.write("""@echo off
-set INCLUDE=
-set LIB=
-call "%s" %s
-echo PATH=%%PATH%%
-echo INCLUDE=%%INCLUDE%%
-echo LIB=%%LIB%%;%%LIBPATH%%
-""" % (vcvars, target))
-    sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()])
-    batfile.delete()
-    lines = sout.splitlines()
-    if not lines[0]:
-        lines.pop(0)
-    MSVC_PATH = MSVC_INCDIR = MSVC_LIBDIR = None
-    for line in lines:
-        if line.startswith('PATH='):
-            path = line[5:]
-            MSVC_PATH = path.split(';')
-        elif line.startswith('INCLUDE='):
-            MSVC_INCDIR = [i for i in line[8:].split(';') if i]
-        elif line.startswith('LIB='):
-            MSVC_LIBDIR = [i for i in line[4:].split(';') if i]
-    if None in (MSVC_PATH, MSVC_INCDIR, MSVC_LIBDIR):
-        conf.fatal('flang: Could not find a valid architecture for building (get_flang_version_win32)')
-    env = dict(os.environ)
-    env.update(PATH=path)
-    compiler_name, linker_name, lib_name = _get_prog_names(conf, compiler)
-    fc = conf.find_program(compiler_name, path_list=MSVC_PATH)
-    if 'CL' in env:
-        del (env['CL'])
-    try:
-        conf.cmd_and_log(fc + ['/help'], env=env)
-    except UnicodeError:
-        st = traceback.format_exc()
-        if conf.logger:
-            conf.logger.error(st)
-        conf.fatal('flang: Unicode error - check the code page?')
-    except Exception as e:
-        Logs.debug('flang: get_flang_version: %r %r %r -> failure %s', compiler, version, target, str(e))
-        conf.fatal('flang: cannot run the compiler in get_flang_version (run with -v to display errors)')
-    else:
-        Logs.debug('flang: get_flang_version: %r %r %r -> OK', compiler, version, target)
-    finally:
-        conf.env[compiler_name] = ''
-    return (MSVC_PATH, MSVC_INCDIR, MSVC_LIBDIR)
-
-
-class target_compiler(object):
-    def __init__(self, ctx, compiler, cpu, version, bat_target, bat, callback=None):
-        self.conf = ctx
-        self.name = None
-        self.is_valid = False
-        self.is_done = False
-        self.compiler = compiler
-        self.cpu = cpu
-        self.version = version
-        self.bat_target = bat_target
-        self.bat = bat
-        self.callback = callback
-
-    def evaluate(self):
-        if self.is_done:
-            return
-        self.is_done = True
-        try:
-            vs = self.conf.get_flang_version_win32(self.compiler, self.version, self.bat_target, self.bat)
-        except Errors.ConfigurationError:
-            self.is_valid = False
-            return
-        if self.callback:
-            vs = self.callback(self, vs)
-        self.is_valid = True
-        (self.bindirs, self.incdirs, self.libdirs) = vs
-
-    def __str__(self):
-        return str((self.bindirs, self.incdirs, self.libdirs))
-
-    def __repr__(self):
-        return repr((self.bindirs, self.incdirs, self.libdirs))
-
-
-@conf
-def detect_flang(self):
-    return self.setup_flang(self.get_flang_versions(False))
-
-
-@conf
-def get_flang_versions(self, eval_and_save=True):
-    dct = {}
-    self.gather_flang_versions(dct)
-    return dct
-
-
-def _get_prog_names(self, compiler):
-    if compiler == 'intel':
-        compiler_name = 'flang'
-        linker_name = 'XILINK'
-        lib_name = 'LIB'
-    else:
-        compiler_name = 'CL'
-        linker_name = 'LINK'
-        lib_name = 'LIB'
-    return compiler_name, linker_name, lib_name
-
-
-@conf
-def find_flang_win32(conf):
-    v = conf.env
-    path = v.PATH
-    compiler = v.MSVC_COMPILER
-    version = v.MSVC_VERSION
-    compiler_name, linker_name, lib_name = _get_prog_names(conf, compiler)
-    v.flang_MANIFEST = (compiler == 'intel' and version >= 11)
-    fc = conf.find_program(compiler_name, var='FC', path_list=path)
-    env = dict(conf.environ)
-    if path:
-        env.update(PATH=';'.join(path))
-    if not conf.cmd_and_log(fc + ['/nologo', '/help'], env=env):
-        conf.fatal('not intel fortran compiler could not be identified')
-    v.FC_NAME = 'flang'
-    if not v.LINK_FC:
-        conf.find_program(linker_name, var='LINK_FC', path_list=path, mandatory=True)
-    if not v.AR:
-        conf.find_program(lib_name, path_list=path, var='AR', mandatory=True)
-        v.ARFLAGS = ['/nologo']
-    if v.flang_MANIFEST:
-        conf.find_program('MT', path_list=path, var='MT')
-        v.MTFLAGS = ['/nologo']
-    try:
-        conf.load('winres')
-    except Errors.WafError:
-        Logs.warn('Resource compiler not found. Compiling resource file is disabled')
-
-
-@after_method('apply_link')
-@feature('fc')
-def apply_flags_flang(self):
-    if not self.env.flang_WIN32 or not getattr(self, 'link_task', None):
-        return
-    is_static = isinstance(self.link_task, ccroot.stlink_task)
-    subsystem = getattr(self, 'subsystem', '')
-    if subsystem:
-        subsystem = '/subsystem:%s' % subsystem
-        flags = is_static and 'ARFLAGS' or 'LINKFLAGS'
-        self.env.append_value(flags, subsystem)
-
-    # Logs.info(f"{is_static=}, {self.link_task.outputs=}")
-    if not is_static:
-        for f in self.env.LINKFLAGS:
-            d = f.lower()
-            if d[1:] == 'debug':
-                pdbnode = self.link_task.outputs[0].change_ext('.pdb')
-                self.link_task.outputs.append(pdbnode)
-                if getattr(self, 'install_task', None):
-                    self.pdb_install_task = self.add_install_files(install_to=self.install_task.install_to,
-                                                                   install_from=pdbnode)
-                break
-
-
-@feature('fcprogram', 'fcshlib', 'fcprogram_test')
-@after_method('apply_link')
-def apply_manifest_flang(self):
-    if self.env.flang_WIN32 and getattr(self, 'link_task', None):
-        self.link_task.env.FC = self.env.LINK_FC
-    if self.env.flang_WIN32 and self.env.flang_MANIFEST and getattr(self, 'link_task', None):
-        out_node = self.link_task.outputs[0]
-        man_node = out_node.parent.find_or_declare(out_node.name + '.manifest')
-        self.link_task.outputs.append(man_node)
-        self.env.DO_MANIFEST = True
+    conf.find_flang()
+    #conf.find_ar()
+    conf.fc_flags()
+    conf.fc_add_flags()
+    conf.flang_flags()
