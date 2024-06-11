@@ -159,11 +159,18 @@ subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user, &
 !
 ! - Get number of contact ligrel for loads datastructure
 !
-    if (present(ligrel_slav) .and. ligrel_slav .ne. ' ') then
-        nb_load_cont = nb_load_cont+1
+    ! Had to check for the presence of ligrel_slav and ligrel_cont before utilizing them. It
+    ! was causing a segmentation fault on MSVC when they were not present.
+    if (present(ligrel_slav)) then
+        if (ligrel_slav .ne. ' ') then
+            nb_load_cont = nb_load_cont + 1
+        end if
     end if
-    if (present(ligrel_cont) .and. ligrel_cont .ne. ' ') then
-        nb_load_cont = nb_load_cont+1
+
+    if (present(ligrel_cont)) then
+        if (ligrel_cont .ne. ' ') then
+            nb_load_cont = nb_load_cont + 1
+        end if
     end if
 !
 ! - Create "zero-load" list of loads datastructure
