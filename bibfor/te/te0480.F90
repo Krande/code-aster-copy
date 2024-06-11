@@ -34,7 +34,6 @@ subroutine te0480(option, nomte)
 #include "asterfort/thmGetElemInfo.h"
 #include "asterfort/rcvala.h"
 
-#include "asterfort/tecael.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -66,7 +65,7 @@ subroutine te0480(option, nomte)
     real(kind=8) :: valres(3)
     integer :: icodre(1)
     integer :: idepm,imate
-! modif provisoire en dur pour terme dechange en pvap
+! 
     real(kind=8) :: hrext, tm,mamolv,rgp,rhol, coefvap,rhovs,pvs,alpha,text
     aster_logical :: HRCL
 
@@ -107,11 +106,12 @@ subroutine te0480(option, nomte)
     rgp = valres(2)
     rhol = valres(3)
     coefvap=mamolv/rhol/rgp
-#
+!
     nompar(1) = 'PCAP'
     nompar(2) = 'INST'
     nompar(3) = 'TEMP'
-    valpar = 0.
+! initialisation par défaut
+    valpar(3) = 20.
 !
 ! - Get model of finite element
 !
@@ -140,7 +140,7 @@ subroutine te0480(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ires)
 
-! Prevoir terme d echange dans tous les cas de figure ou pas HHM HV etc que fait on quand il n y a pas de thermique. 
+! 
 
     if (option .eq. 'CHAR_ECHA_THM_R') then
         iopt = 1
@@ -151,6 +151,7 @@ subroutine te0480(option, nomte)
         p2m = zr(idepm+ndim+2)
         if (ds_thm%ds_elem%l_dof_ther) then
           tm = zr(idepm+ndim+3)
+          valpar = 20.
         endif
 !
 ! Recuperation des informations sur le flux
@@ -167,6 +168,8 @@ subroutine te0480(option, nomte)
 !
     else if (option .eq. 'CHAR_ECHA_THM_F') then
         iopt = 2
+        valpar(1) = p1m  ! on garde ?
+        valpar(2) = zr(itemps)
         call jevech('PINSTR', 'L', itemps)
         deltat = zr(itemps+1)
         call jevech('PDEPLMR', 'L', idepm)
@@ -174,9 +177,9 @@ subroutine te0480(option, nomte)
         p2m = zr(idepm+ndim+2)
         if (ds_thm%ds_elem%l_dof_ther) then
           tm = zr(idepm+ndim+3)
+          valpar(3) = tm
         endif
-        valpar(1) = p1m
-        valpar(2) = zr(itemps)
+
 ! Recuperation des informations sur le flux
         call jevech('PCHTHMF', 'L', iechf)
         call fointe('FM', zk8(iechf), 1, nompar(2), valpar(2), c11, iret)
@@ -189,7 +192,6 @@ subroutine te0480(option, nomte)
         call fointe('FM', zk8(iechf+6), 1, nompar(2), valpar(2), hrext, iret)
         call fointe('FM', zk8(iechf+7), 1, nompar(2), valpar(2), alpha, iret)
         call fointe('FM', zk8(iechf+8), 1, nompar(3), valpar(3), pvs, iret)
-!        call fointe('FM', zk8(iechf+9), 1, nompar(2), valpar(2), text, iret)
         
 !
     else
@@ -198,7 +200,7 @@ subroutine te0480(option, nomte)
 !    
 ! Selection des Conditions d'echange en pression ou en densité (HR)
 !
-    if (hrext .gt. 0) then
+    if (hrext .ge. 0) then
       HRCL = .TRUE.
     endif    
 ! ======================================================================
@@ -244,8 +246,7 @@ subroutine te0480(option, nomte)
         fluth = 0.
         flu1 = c11*(p1m-p1ext)+c12*(p2m-p2ext)
         flu2 = c21*(p1m-p1ext)+c22*(p2m-p2ext)
-! provisoire
-! attention l utilisateur doit renseigner rhovapsat*alpha pour c11
+!
 !
 
         if (HRCL) then

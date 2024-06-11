@@ -36,10 +36,10 @@ DDL_MECA = LocatedComponents(
 
 
 CCOECH = LocatedComponents(
-    phys=PHY.ETHM_R, type="ELGA", location="RIGI", components=("COEF[4]", "PRE[2]")
+    phys=PHY.ETHM_R, type="ELGA", location="RIGI", components=("COEF[6]", "PRE[3]")
 )
 CCOECHF = LocatedComponents(
-    phys=PHY.ETHM_F, type="ELGA", location="RIGI", components=("COEF[4]", "PRE[2]")
+    phys=PHY.ETHM_F, type="ELGA", location="RIGI", components=("COEF[6]", "PRE[3]")
 )
 
 EFLHN = LocatedComponents(
@@ -112,6 +112,7 @@ class THH2_FACE8(Element):
                 (SP.PECHTHM, CCOECH),
                 (SP.PINSTR, CTEMPSR),
                 (SP.PDEPLMR, DDL_MECA),
+                (SP.PMATERC, LC.CMATERC),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
@@ -123,6 +124,7 @@ class THH2_FACE8(Element):
                 (SP.PCHTHMF, CCOECHF),
                 (SP.PINSTR, CTEMPSR),
                 (SP.PDEPLMR, DDL_MECA),
+                (SP.PMATERC, LC.CMATERC),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

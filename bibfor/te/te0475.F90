@@ -30,6 +30,7 @@ subroutine te0475(option, nomte)
 #include "asterfort/thmGetElemModel.h"
 #include "asterfort/thmGetElemRefe.h"
 #include "asterfort/thmGetElemInfo.h"
+#include "asterfort/rcvala.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -45,13 +46,19 @@ subroutine te0475(option, nomte)
     integer :: i, j, l, ires, itemps, iopt, ndlnm, iech
     integer :: idfdy, iret, ndlno, igeom, natemp, iechf, ipg, npi
     integer :: idec, jdec, kdec, ldec, ldec2, ino, jno
-    real(kind=8) :: nx, ny, nz, valpar(2), deltat
+    real(kind=8) :: nx, ny, nz, valpar(3), deltat
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9), jac
     real(kind=8) :: flu1, flu2, fluth
     real(kind=8) :: c11, c12, c21, c22, p1ext, p2ext, p1m, p2m
-    character(len=8) :: nompar(2), elrefe, elref2
+    character(len=8) :: nompar(3), elrefe, elref2
+    character(len=8) :: nomres(3)
+    real(kind=8) :: valres(3)
+    integer :: icodre(1)
+    integer :: idepm,imate
+! 
+    real(kind=8) :: hrext, tm,mamolv,rgp,rhol, coefvap,rhovs,pvs,alpha,text
+    aster_logical :: HRCL
 !
-    integer :: idepm
 !
 !
     type(THM_DS) :: ds_thm
@@ -64,8 +71,33 @@ subroutine te0475(option, nomte)
     c22 = 0.D0
     p1ext = 0.D0
     p2ext = 0.D0
+    text = 0.D0
+    HRCL = .FALSE.
+! intialisation
+    hrext=-1.
+    rhovs = 0.
+    pvs = 0.
+! Recuperation des donnees matériaux
+    call jevech('PMATERC', 'L', imate)
+    nomres(1) = 'MASS_MOL'
+    nomres(2) = 'R_GAZ'
+    nomres(3) = 'RHO'
+    call rcvala(zi(imate), ' ', 'THM_VAPE_GAZ', 0, ' ', &
+                    [0.d0], 1, nomres(1), valres(1), icodre, 1)
+    call rcvala(zi(imate), ' ', 'THM_DIFFU', 0, ' ', &
+                    [0.d0], 1, nomres(2), valres(2), icodre, 1)
+    call rcvala(zi(imate), ' ', 'THM_LIQU', 0, ' ', &
+                    [0.d0], 1, nomres(3), valres(3), icodre, 1)
+    mamolv = valres(1)
+    rgp = valres(2)
+    rhol = valres(3)
+    coefvap=mamolv/rhol/rgp
+
     nompar(1) = 'PCAP'
     nompar(2) = 'INST'
+    nompar(3) = 'TEMP'
+! initialisation par défaut
+    valpar(3) = 20.
 !
 ! - Get model of finite element
 !
@@ -100,6 +132,10 @@ subroutine te0475(option, nomte)
         call jevech('PDEPLMR', 'L', idepm)
         p1m = zr(idepm+ndim+1)
         p2m = zr(idepm+ndim+2)
+        if (ds_thm%ds_elem%l_dof_ther) then
+          tm = zr(idepm+ndim+3)
+          valpar = 20.
+        endif
 !
 ! Recuperation des info sur le flux
         call jevech('PECHTHM', 'L', iech)
@@ -109,6 +145,9 @@ subroutine te0475(option, nomte)
         c22 = zr(iech+3)
         p1ext = zr(iech+4)
         p2ext = zr(iech+5)
+        hrext = zr(iech+6)
+        alpha = zr(iech+7)
+        pvs = zr(iech+8)
     else if (option .eq. 'CHAR_ECHA_THM_F') then
         iopt = 2
         call jevech('PINSTR', 'L', itemps)
@@ -117,6 +156,10 @@ subroutine te0475(option, nomte)
         call jevech('PDEPLMR', 'L', idepm)
         p1m = zr(idepm+ndim+1)
         p2m = zr(idepm+ndim+2)
+        if (ds_thm%ds_elem%l_dof_ther) then
+          tm = zr(idepm+ndim+3)
+          valpar(3) = tm
+        endif
         valpar(1) = p1m
         valpar(2) = zr(itemps)
 !
@@ -128,9 +171,19 @@ subroutine te0475(option, nomte)
         call fointe('FM', zk8(iechf+3), 1, nompar(1), valpar(1), c22, iret)
         call fointe('FM', zk8(iechf+4), 1, nompar(2), valpar(2), p1ext, iret)
         call fointe('FM', zk8(iechf+5), 1, nompar(2), valpar(2), p2ext, iret)
+        
+        call fointe('FM', zk8(iechf+6), 1, nompar(2), valpar(2), hrext, iret)
+        call fointe('FM', zk8(iechf+7), 1, nompar(2), valpar(2), alpha, iret)
+        call fointe('FM', zk8(iechf+8), 1, nompar(3), valpar(3), pvs, iret)
     else
         ASSERT(ASTER_FALSE)
     end if
+!    
+! Selection des Conditions d'echange en pression ou en densité (HR)
+!
+    if (hrext .ge. 0) then
+      HRCL = .TRUE.
+    endif    
 
 ! ======================================================================
 !
@@ -186,6 +239,12 @@ subroutine te0475(option, nomte)
         fluth = 0.d0
         flu1 = c11*(p1m-p1ext)+c12*(p2m-p2ext)
         flu2 = c21*(p1m-p1ext)+c22*(p2m-p2ext)
+!
+        if (HRCL) then
+          rhovs = pvs*coefvap 
+          flu1 = +alpha*rhovs*(hrext-exp(-coefvap*p1m/(tm+273)))
+          flu2 = 0.
+        endif
         if (iopt .eq. 1 .or. iopt .eq. 2) then
 !
 ! --------- Temp-Meca-Hydr1(2)-Hydr2(1,2)
