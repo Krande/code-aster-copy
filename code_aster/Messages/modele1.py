@@ -57,9 +57,6 @@ Parfois, cela empêche de faire le "bon choix". Cette alarme risque de se transf
         ),
         "flags": "DECORATED",
     },
-    16: _(
-        """Il n'est pas possible de vérifier la planéité des plaques sur un maillage parallèle."""
-    ),
     20: _(""" Modélisation     Formulation      Type maille  Élément fini     Nombre"""),
     21: _(""" %(k1)-16s %(k2)-16s %(k3)-12s %(k4)-16s %(i1)d"""),
     38: _("""%(k1)-8s %(k2)-8s %(k3)-8s %(k4)-8s %(k5)-8s %(k6)-8s %(k7)-8s %(k8)-8s"""),
