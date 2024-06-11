@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -573,9 +573,14 @@ subroutine op0167()
         keywfact = 'MODI_MAILLE'
         AS_ALLOCATE(vi=modiCellNume, size=nbCellIn)
         AS_ALLOCATE(vi=modiCellType, size=nbCellIn)
-        AS_ALLOCATE(vk8=creaNodeName, size=nbCellIn)
-        AS_ALLOCATE(vi=creaNodeNume, size=nbCellIn)
-
+        AS_ALLOCATE(vk8=creaNodeName, size=nbCellIn+1)
+        AS_ALLOCATE(vi=creaNodeNume, size=nbCellIn+1)
+! Init
+        modiCellNume = -1
+        modiCellType = -1
+        creaNodeName = ' '
+        creaNodeNume = -1
+!
         iad = 1
         do iocc = 1, nbOccModiMaille
 ! --------- How to transform cell ?

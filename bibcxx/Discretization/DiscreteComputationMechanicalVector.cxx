@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -172,7 +172,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FLUX_R", "FLUX", "PFLUXR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EFON_R", "EFOND", "PEFOND", model_FEDesc,
-              {{"PPREFFR", load->getConstantLoadField( "PREFF" )}} );
+              { { "PPREFFR", load->getConstantLoadField( "PREFF" ) } } );
         iload++;
     }
 
@@ -187,7 +187,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FLUX_F", "FLUX", "PFLUXF", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EFON_F", "EFOND", "PEFOND", model_FEDesc,
-              {{"PPREFFF", load->getConstantLoadField( "PREFF" )}} );
+              { { "PPREFFF", load->getConstantLoadField( "PREFF" ) } } );
 
         iload++;
     }
@@ -325,14 +325,14 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
                 std::string base = "G";
                 CALLO_COPISD( typeco, base, pre_sgm_name, pre_sigm->getName() );
                 impl( load, iload, "FORC_NODA", "SIINT", "", model_FEDesc,
-                      {{"PCONTMR", pre_sigm}} );
+                      { { "PCONTMR", pre_sigm } } );
             } else if ( retour == "CART" ) {
                 auto pre_sigm =
                     std::make_shared< ConstantFieldOnCellsReal >( currModel->getMesh() );
                 std::string base = "G";
                 CALLO_COPISD( typeco, base, pre_sgm_name, pre_sigm->getName() );
                 impl( load, iload, "FORC_NODA", "SIINT", "", model_FEDesc,
-                      {{"PCONTMR", pre_sigm}} );
+                      { { "PCONTMR", pre_sigm } } );
             } else {
                 AS_ABORT( "Error: " + retour );
             }
@@ -381,7 +381,7 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FF1D1D", "F1D1D", "PFF1D1D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EPSI_F", "EPSIN", "PEPSINF", model_FEDesc );
         impl( load, iload, "ONDE_PLAN", "ONDPL", "PONDPLA", model_FEDesc,
-              {{"PONDPLR", load->getConstantLoadField( "ONDPR" )}} );
+              { { "PONDPLR", load->getConstantLoadField( "ONDPR" ) } } );
 
         iload++;
     }
