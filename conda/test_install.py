@@ -40,10 +40,30 @@ from code_aster import CA
 
 def run_specific_test(test_name: str):
     comm_file = ASTEST_DIR / f"{test_name}.comm"
+    export_file = ASTEST_DIR / f"{test_name}.export"
     mmed_file = ASTEST_DIR / f"{test_name}.mmed"
-    if mmed_file.exists():
-        shutil.copy(mmed_file, "fort.20")
+    mmed_num = 20
+    datg_file = ASTEST_DIR / f"{test_name}.datg"
+    datg_num = 16
 
+
+    if export_file.exists():
+        export = export_file.read_text(encoding="utf-8")
+        for line in export.split("\n"):
+            if not line.startswith("F"):
+                continue
+            line_split = line.split(" ")
+            if line_split[1] == "mmed":
+                mmed_file = ASTEST_DIR / line_split[2]
+                mmed_num = int(line_split[-1])
+            if line_split[1] == "datg":
+                datg_file = ASTEST_DIR / line_split[2]
+                datg_num = int(line_split[-1])
+
+    if mmed_file.exists():
+        shutil.copy(mmed_file, f"fort.{mmed_num}")
+    if datg_file.exists():
+        shutil.copy(datg_file, f"fort.{datg_num}")
     test_file = init_str + comm_file.read_text()
     with open("test_file.py", "w") as f:
         f.write("from test_install import init_env\ninit_env()\n")
@@ -121,7 +141,8 @@ def cli():
 
 def manual():
     # run_specific_test("comp010i")
-    run_specific_test('adlv100a')
+    # run_specific_test('adlv100a')
+    run_specific_test('adlv100p')
 
 
 if __name__ == "__main__":
