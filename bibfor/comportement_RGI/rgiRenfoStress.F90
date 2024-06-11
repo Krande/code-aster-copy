@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,6 +80,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6, &
     sigrf33(:, :) = 0.d0
     errr = ASTER_FALSE
     ierr1 = 0
+    rhor = 0.d0
 
 !   nombre de renforts anisotropes reparties (min 0, max 5)
     nrenf00 = int(xmat(NREN))

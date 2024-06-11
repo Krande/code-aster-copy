@@ -66,6 +66,8 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, l_mfront_proto, l_kit_t
 !
     iret_r = 0
     iret_i = 0
+    value_i = 0
+    value_r = 0.d0
     if (keyword .eq. 'RESI_INTE') then
         call getvr8(keywordfact, keyword, iocc=iocc, scal=value_r, nbret=iret_r)
         ASSERT(l_mfront_proto .and. .not. l_kit_thm .or. iret_r .gt. 0)

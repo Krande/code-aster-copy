@@ -89,6 +89,7 @@ subroutine te0576(option, nomte)
     deux = 2.0d0
     nharm = zero
     enelem = zero
+    instan = 0.d0
 !
     do i = 1, nbnomx
         enerpg(i) = zero

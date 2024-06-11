@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,6 +113,8 @@ subroutine dtmprep_noli_galet(sd_dtm_, sd_nl_, icomp)
 !
     sd_dtm = sd_dtm_
     sd_nl = sd_nl_
+    dist_no1 = 0.d0
+    dist_no2 = 0.d0
 !
     lnoeu2 = .false.
     one = 1.d0

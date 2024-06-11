@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,27 +68,21 @@ subroutine te0554(nomopt, nomte)
 !        VNO = VECTEUR NORMAL A L'ELEMENT
 !
 !     INITIALISATION
-    do i = 1, 3
-        vt1(i) = 0.d0
-        vt2(i) = 0.d0
-        vno(i) = 0.d0
-        do j = i, 3
-            sigg(i, j) = 0.d0
-        end do
-    end do
+    vt1 = 0.d0
+    vt2 = 0.d0
+    vno = 0.d0
+    sigg = 0.d0
 !
 ! --- ------------------------------------------------------------------
 ! --- BOUCLE SUR LES NOEUDS DE L'ELEMENT
     do ino = 1, nnop
 !
-        do i = 1, 3
-            vtan1(i) = 0.d0
-            vtan2(i) = 0.d0
-        end do
+        vtan1 = 0.d0
+        vtan2 = 0.d0
 !
         do ifonc = 1, nnop
             iaux1 = igeom-1+2*(ifonc-1)
-            iaux2 = (ino-1)*nnop*2+ifonc
+            iaux2 = (ino-1)*(nnop-1)*2+ifonc
             vtan1(1) = vtan1(1)+zr(iaux1+1)*dff(iaux2)
             vtan1(2) = vtan1(2)+zr(iaux1+2)*dff(iaux2)
             vtan2(3) = 1.d0
