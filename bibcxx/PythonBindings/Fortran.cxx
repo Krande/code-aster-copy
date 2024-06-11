@@ -52,30 +52,22 @@ void jeveux_finalize( const ASTERINTEGER options ) {
     register_sh_jeveux_status( 0 );
 }
 
-void call_oper(py::object &syntax, int jxveri) {
+void call_oper( py::object &syntax, int jxveri ) {
     ASTERINTEGER jxvrf = jxveri;
 
     // Add the new syntax object on the stack
-    register_sh_etape(append_etape(syntax.ptr()));
+    register_sh_etape( append_etape( syntax.ptr() ) );
 
     try {
-        std::cout << "Before CALL_EXPASS: jxvrf = " << jxvrf << std::endl;
-        CALL_EXPASS(&jxvrf);
-        std::cout << "After CALL_EXPASS" << std::endl;
+        CALL_EXPASS( &jxvrf );
 
-    } catch (const std::exception &e) {
-        std::cerr << "Exception: " << e.what() << std::endl;
+    } catch ( ... ) {
         // unstack the syntax object
-        register_sh_etape(pop_etape());
-        throw;
-    } catch (...) {
-        std::cerr << "Unknown exception caught" << std::endl;
-        // unstack the syntax object
-        register_sh_etape(pop_etape());
+        register_sh_etape( pop_etape() );
         throw;
     }
     // unstack the syntax object
-    register_sh_etape(pop_etape());
+    register_sh_etape( pop_etape() );
 }
 
 void call_oper_init() {

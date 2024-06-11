@@ -29,3 +29,7 @@ med_aster_module.c.1.dll.manifest
 tmp_blink.bat
 build*/
 temp/
+.vs
+*pick.code_aster*
+code_aster/pkginfo.py
+conda/test_file.py
