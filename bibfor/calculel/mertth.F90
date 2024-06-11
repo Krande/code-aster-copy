@@ -71,9 +71,9 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
     character(len=6) :: nomchp(nbchmx)
     character(len=7) :: nompar(nbchmx), nompaf(nbchmx)
 !
-    character(len=8) :: lpain(6), lpaout(1), load_name
+    character(len=8) :: lpain(5), lpaout(1), load_name
     character(len=16) :: option, nomopr(nbchmx), nomopf(nbchmx)
-    character(len=24) :: ligrel(2), lchin(6), lchout(1)
+    character(len=24) :: ligrel(2), lchin(5), lchout(1)
     character(len=24) :: chgeom, chcara(18)
     integer :: iret, nb_load, i_load, ilires, k, load_nume
     aster_logical :: load_empty
@@ -120,14 +120,14 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
         lchin(2) = mateco
         lpain(3) = 'PCACOQU'
         lchin(3) = chcara(7)
-        lpain(5) = 'PTEMPER'
-        lchin(5) = temp_prev
-        lpain(6) = 'PTEMPEI'
-        lchin(6) = temp_iter
+        lpain(4) = 'PTEMPER'
+        lchin(4) = temp_prev
+        lpain(5) = 'PTEMPEI'
+        lchin(5) = temp_iter
         option = 'RIGI_THER_TRANS'
         ilires = ilires+1
         call codent(ilires, 'D0', lchout(1) (12:14))
-        call calcul('S', option, ligrel(1), 6, lchin, &
+        call calcul('S', option, ligrel(1), 5, lchin, &
                     lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
         call reajre(matr_elem, lchout(1), 'V')
