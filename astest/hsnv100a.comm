@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -465,14 +465,10 @@ DEP = CREA_CHAMP(TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=U, NOM_CHAM
 #
 
 SI1 = CREA_CHAMP(
-    TYPE_CHAM="CART_SIEF_R",
+    TYPE_CHAM="ELGA_SIEF_R",
     OPERATION="AFFE",
-    MAILLAGE=MAIL,
-    AFFE=_F(
-        TOUT="OUI",
-        NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIYZ", "SIXZ"),
-        VALE=(0.0, -133.332, 0.0, 0.0, 0.0, 0.0),
-    ),
+    MODELE=MOMECA,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY"), VALE=(0.0, -133.332, 0.0, 0.0)),
 )
 
 L_INST1 = DEFI_LIST_REEL(

@@ -434,8 +434,9 @@ class DiscreteComputation {
     getInternalMechanicalForces( const FieldOnNodesRealPtr displ_prev,
                                  const FieldOnNodesRealPtr displ_step,
                                  const FieldOnCellsRealPtr stress,
-                                 const FieldOnCellsRealPtr internVar, const ASTERDOUBLE &time_prev,
-                                 const ASTERDOUBLE &time_step,
+                                 const FieldOnCellsRealPtr internVar,
+                                 const FieldOnCellsRealPtr internVarIter,
+                                 const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
                                  const FieldOnCellsRealPtr &varc_prev = nullptr,
                                  const FieldOnCellsRealPtr &varc_curr = nullptr,
                                  const VectorString &groupOfCells = VectorString() ) const;
@@ -478,8 +479,9 @@ class DiscreteComputation {
     getTangentStiffnessMatrix( const FieldOnNodesRealPtr displ_prev,
                                const FieldOnNodesRealPtr displ_step,
                                const FieldOnCellsRealPtr stress,
-                               const FieldOnCellsRealPtr internVar, const ASTERDOUBLE &time_prev,
-                               const ASTERDOUBLE &time_step,
+                               const FieldOnCellsRealPtr internVar,
+                               const FieldOnCellsRealPtr internVarIter,
+                               const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
                                const FieldOnCellsRealPtr &varc_prev = nullptr,
                                const FieldOnCellsRealPtr &varc_curr = nullptr,
                                const VectorString &groupOfCells = VectorString() ) const;

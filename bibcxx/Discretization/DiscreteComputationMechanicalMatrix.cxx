@@ -703,9 +703,9 @@ std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealP
 DiscreteComputation::getTangentStiffnessMatrix(
     const FieldOnNodesRealPtr displ_prev, const FieldOnNodesRealPtr displ_step,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr internVar,
-    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
-    const FieldOnCellsRealPtr &externVarPrev, const FieldOnCellsRealPtr &externVarCurr,
-    const VectorString &groupOfCells ) const {
+    const FieldOnCellsRealPtr internVarIter, const ASTERDOUBLE &time_prev,
+    const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr &externVarPrev,
+    const FieldOnCellsRealPtr &externVarCurr, const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
     // Get main parameters
@@ -732,9 +732,8 @@ DiscreteComputation::getTangentStiffnessMatrix(
     calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
-    auto vari_iter = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "VARI_R", currBehaviour,
-                                                            currElemChara );
-    calcul->addInputField( "PVARIMP", internVar );
+    // Nécessaire également pour Deborst
+    calcul->addInputField( "PVARIMP", internVarIter );
 
     // Create output matrix
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
@@ -824,9 +823,9 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix(
     calcul->addInputField( "PVARIMR", internVar );
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
-    auto vari_iter = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "VARI_R", currBehaviour,
-                                                            currElemChara );
-    calcul->addInputField( "PVARIMP", vari_iter );
+    // Nécessaire également pour Deborst
+
+    calcul->addInputField( "PVARIMP", internVar );
 
     // Create output matrix
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(

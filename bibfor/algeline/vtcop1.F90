@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -252,7 +252,11 @@ subroutine vtcop1(chin, chout, kstop, codret)
                 valk(1) = zk8(jcmpgd+nucp2-1)
                 call jenuno(jexnum(mesh2//'.NOMNOE', nuno2), valk(2))
                 valk(3) = ch1
-                call utmess('A', 'ALGELINE7_20', nk=3, valk=valk)
+                if (kstop .eq. 'F') then
+                    call utmess('F', 'ALGELINE7_20', nk=3, valk=valk)
+                else
+                    call utmess('A', 'ALGELINE7_20', nk=3, valk=valk)
+                end if
                 codret = 1
                 exit
             end if

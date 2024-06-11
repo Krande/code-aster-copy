@@ -114,7 +114,12 @@ class NonLinearSolver(SolverFeature):
         """
         storage_manager = self.get_feature(SOP.Storage)
         return storage_manager.storeState(
-            self.step_rank, state.time_curr, self.phys_pb, state, ignore_policy=ignore_policy
+            self.step_rank,
+            state.time_curr,
+            self.phys_pb,
+            state,
+            is_final_time=self.isFinished(),
+            ignore_policy=ignore_policy,
         )
 
     @profile
