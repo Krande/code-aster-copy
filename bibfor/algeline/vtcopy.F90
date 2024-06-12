@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine vtcopy(chin, chout, kstop, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !     RECOPIE LES VALEURS DU CHAM_NO CHIN DANS LE CHAM_NO CHOUT
 !     CETTE ROUTINE PERMET DE CHANGER LA NUMEROTATION D'UN CHAM_NO
-!     SI KSTOP.EQ.' ' EN ENTREE ET QUE CODRET != 0 EN SORTIE, ALORS
+!     SI KSTOP.NE.'F' EN ENTREE ET QUE CODRET != 0 EN SORTIE, ALORS
 !     DES COMPOSANTES DU CHAMP CHIN N'ONT PAS PU ETRE RECOPIEES ET
 !     ONT ETE MISES A ZERO
 !
