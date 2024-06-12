@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
-                      igeom, typmod, imate, compor, jpintt,&
+                      igeom, typmod, imate, jpintt,&
                       cnset, heavt, lonch, basloc, idepl,&
                       lsn, lst, sig, jpmilt, nfiss,&
                       jheavn, jstno)
@@ -33,7 +33,6 @@ interface
         integer :: igeom
         character(len=8) :: typmod(*)
         integer :: imate
-        character(len=16) :: compor(4)
         integer :: jpintt
         integer :: cnset(128)
         integer :: heavt(*)

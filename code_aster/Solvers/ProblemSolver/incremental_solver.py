@@ -104,6 +104,9 @@ class IncrementalSolver(SolverFeature, EventSource):
             diriBCs = disc_comp.getIncrementalDirichletBC(
                 self.phys_state.time_curr, self.phys_state.primal_curr
             )
+            # import pdb
+
+            # pdb.set_trace()
 
             # Solve linear system
             linear_solver = self.get_feature(SOP.LinearSolver)

@@ -1,6 +1,6 @@
  TITRE
-  FICHIER GENERE PAR L'INTERFACE ALIBABA                                        
-  LE  ME-30-SEPT-92 15:30:13                                                    
+  FICHIER GENERE PAR L'INTERFACE ALIBABA
+  LE  ME-30-SEPT-92 15:30:13
  FINSF
  %
  COOR_2D
@@ -19,116 +19,121 @@
  N13       0.00000000000000E+00  1.99999988079070E-01
  FINSF
  %
- QUAD8   
- M1       N13      N12      N8       N7       N11      N10      N6      
-          N9      
- M2       N7       N8       N5       N4       N6       N3       N2      
-          N1      
+ QUAD8
+ M1       N13      N12      N8       N7       N11      N10      N6
+          N9
+ M2       N7       N8       N5       N4       N6       N3       N2
+          N1
  FINSF
  %
- SEG3    
- M3       N13      N12      N11     
- M4       N12      N8       N10     
- M5       N7       N13      N9      
- M6       N8       N5       N3      
- M7       N5       N4       N2      
- M8       N4       N7       N1      
- FINSF
- %
- GROUP_NO
- GRNM1                   
- N1       N4       N7       N9       N13     
+ SEG3
+ M3       N13      N12      N11
+ M4       N12      N8       N10
+ M5       N7       N13      N9
+ M6       N8       N5       N3
+ M7       N5       N4       N2
+ M8       N4       N7       N1
  FINSF
  %
  GROUP_NO
- GRNM2                   
- N2       N3       N4       N5       N8       N10      N11     
- N12      N13     
+ GRNM1
+ N1       N4       N7       N9       N13
  FINSF
  %
  GROUP_NO
- GRNO1                   
- N1       N4       N5       N7       N9       N12      N13     
+ GRNM2
+ N2       N3       N4       N5       N8       N10      N11
+ N12      N13
  FINSF
  %
  GROUP_NO
- GRNO2                   
- N2       N3       N8       N10      N11     
+ GRNO1
+ N1       N4       N5       N7       N9       N12      N13
  FINSF
  %
  GROUP_NO
- N7                      
- N7      
+ GRNO2
+ N2       N3       N8       N10      N11
  FINSF
  %
  GROUP_NO
- N11                     
- N11     
+ N7
+ N7
  FINSF
  %
  GROUP_NO
- N12                     
- N12     
+ N11
+ N11
  FINSF
  %
  GROUP_NO
- N10                     
- N10     
+ N12
+ N12
  FINSF
  %
  GROUP_NO
- N2                      
- N2      
+ N10
+ N10
  FINSF
  %
  GROUP_NO
- N4                      
- N4      
+ N2
+ N2
  FINSF
  %
  GROUP_NO
- N5                      
- N5      
+ N4
+ N4
  FINSF
  %
  GROUP_NO
- N9                      
- N9      
+ N5
+ N5
  FINSF
  %
  GROUP_NO
- N8                      
- N8      
+ N9
+ N9
  FINSF
  %
  GROUP_NO
- N6                      
- N6      
+ N8
+ N8
  FINSF
  %
  GROUP_NO
- N13                     
- N13     
+ N6
+ N6
+ FINSF
+ %
+ GROUP_NO
+ N13
+ N13
  FINSF
  %
  GROUP_MA
- GRMA1                   
- M5       M8      
+ GRMA1
+ M5       M8
  FINSF
  %
  GROUP_MA
- GRMA2                   
- M3       M4       M6       M7      
+ GRMA2
+ M3       M4       M6       M7
  FINSF
  %
  GROUP_MA
- M3                      
- M3      
+ M3
+ M3
  FINSF
  %
  GROUP_MA
- M1                      
- M1      
+ M1
+ M1
+ FINSF
+  %
+ GROUP_MA
+ M2
+ M2
  FINSF
  %
  FIN

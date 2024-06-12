@@ -23,5 +23,5 @@ interface
         integer :: ncmp, maxcmp, nodeid
         character(len=*) :: nume19, allorone
         character(len=8) :: stringarray(maxcmp)
-    end subroutine utncmp
+    end subroutine numeddl_get_components
 end interface

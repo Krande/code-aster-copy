@@ -184,7 +184,7 @@ Non Linear Solver for Mechanical Analyses
    :members:
    :special-members: __init__
 
-.. automodule:: code_aster.Solvers.Post.annealing
+.. automodule:: code_aster.Solvers.Post.hooks
    :show-inheritance:
    :members:
    :special-members: __init__

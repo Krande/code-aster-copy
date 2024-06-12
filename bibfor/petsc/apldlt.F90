@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,7 @@ subroutine apldlt(kptsc, action, prepost, rsolu, vcine, nbsol)
 #include "asterfort/ldlt_matr.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/isParallelMatrix.h"
 
     integer, intent(in) :: kptsc
     character(len=*), intent(in) :: action, prepost
@@ -63,6 +64,7 @@ subroutine apldlt(kptsc, action, prepost, rsolu, vcine, nbsol)
     character(len=24) :: precon, kperm
     character(len=19) :: matas2, nosolv, vcin2, vcine_avant
     character(len=3) :: matd
+    aster_logical :: l_parallel_matrix
     character(len=24), dimension(:), pointer :: slvk => null()
     real(kind=8), dimension(:), pointer :: tempor => null()
     real(kind=8), dimension(:), pointer :: vciv1 => null()
@@ -92,8 +94,8 @@ subroutine apldlt(kptsc, action, prepost, rsolu, vcine, nbsol)
     if (matd == 'OUI') then
         call utmess('F', 'PETSC_17')
     end if
-    call dismoi('MATR_HPC', nomat_courant, 'MATR_ASSE', repk=matd)
-    if (matd == 'OUI') then
+    l_parallel_matrix = isParallelMatrix(nomat_courant)
+    if (l_parallel_matrix) then
         call utmess('F', 'PETSC_25')
     end if
 

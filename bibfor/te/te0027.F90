@@ -156,7 +156,7 @@ subroutine te0027(option, nomte)
     do i = 1, 4
         compor(i) = zk16(icomp+i-1)
     end do
-    grand = compor(3) .eq. 'GROT_GDEP'
+    grand = ASTER_FALSE
     incr = compor(4) (1:9) .eq. 'COMP_INCR'
     if (incr) then
         call jevech('PCONTRR', 'L', isigm)

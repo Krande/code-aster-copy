@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,8 @@ subroutine appcrs(kptsc, lmd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "asterfort/isParallelMatrix.h"
+!
     integer :: kptsc
     aster_logical :: lmd
 !----------------------------------------------------------------
@@ -63,7 +65,7 @@ subroutine appcrs(kptsc, lmd)
     character :: prec, rank
     character(len=3)  :: kmatd
     real(kind=8) :: fillin, blreps
-    aster_logical :: lmhpc
+    aster_logical :: l_parallel_matrix
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -104,8 +106,7 @@ subroutine appcrs(kptsc, lmd)
     nbproc = to_aster_int(msize)
 
 !  Est-ce que la matrice est distribuee dans asterxx?
-    call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=kmatd)
-    lmhpc = (kmatd == 'OUI')
+    l_parallel_matrix = isParallelMatrix(nomat)
 !
 !     -- CAS PARTICULIER (LDLT_INC/SOR)
 !     -- CES PC NE SONT PAS PARALLELISES
@@ -166,7 +167,7 @@ subroutine appcrs(kptsc, lmd)
         end if
         call crsvfm(spsomu, nomat, prec, rank, pcpiv, usersm, blreps, renum, redmpi)
 !        CREATION DES VECTEURS TEMPORAIRES UTILISES DANS LDLT_SP
-        if (lmd .or. lmhpc) then
+        if (lmd .or. l_parallel_matrix) then
             if (lmd) then
                 call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
                 call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)

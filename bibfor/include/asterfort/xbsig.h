@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 interface
     subroutine xbsig(ndim, nnop, nfh, nfe,&
-                     ddlc, ddlm, igeom, compor, jpintt,&
+                     ddlc, ddlm, igeom, jpintt,&
                      cnset, heavt, lonch, basloc, sigma,&
-                     nbsig, idepl, lsn, lst, ivectu,&
+                     nbsig, lsn, lst, ivectu,&
                      jpmilt, nfiss, jheavn, jstno, imate)
         integer :: nfiss
         integer :: nnop
@@ -32,7 +32,6 @@ interface
         integer :: ddlm
         integer :: igeom
         integer :: imate
-        character(len=16) :: compor(*)
         integer :: jpintt
         integer :: cnset(128)
         integer :: heavt(*)
@@ -40,7 +39,6 @@ interface
         real(kind=8) :: basloc(*)
         real(kind=8) :: sigma(*)
         integer :: nbsig
-        integer :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         integer :: ivectu

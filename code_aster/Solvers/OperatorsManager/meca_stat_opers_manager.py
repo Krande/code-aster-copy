@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,9 @@ class MecaStatOperatorsManager(BaseOperatorsManager):
             Tuple with residuals, internal state variables (VARI_ELGA),
             Cauchy stress tensor (SIEF_ELGA).
         """
-        resi_state, internVar, stress = super().getResidual(scaling=scaling)
+        resi_state, internVar, stress = super().getResidual(
+            scaling=scaling, temp_internVar=self._temp_internVar
+        )
         self._temp_stress = stress
         self._temp_internVar = internVar
         return resi_state
@@ -93,6 +95,8 @@ class MecaStatOperatorsManager(BaseOperatorsManager):
             jacobian = self._first_jacobian
             self._first_jacobian = None
         else:
-            jacobian = super().getStiffnessJacobian(matrix_type)
+            jacobian = super().getStiffnessJacobian(
+                matrix_type, temp_internVar=self._temp_internVar
+            )
             self._lagr_scaling = jacobian.getLagrangeScaling()
         return jacobian

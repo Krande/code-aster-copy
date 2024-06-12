@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ base_p = LIRE_RESU(
     MODELE=model,
     UNITE=70,
     FORMAT_MED=_F(NOM_CHAM_MED="base_p__TEMP", NOM_CHAM="TEMP"),
-    TOUT_ORDRE="OUI",
+    NUME_ORDRE=(1, 2),
 )
 
 
@@ -45,7 +45,7 @@ base_d = LIRE_RESU(
     MODELE=model,
     UNITE=71,
     FORMAT_MED=_F(NOM_CHAM_MED="base_d__FLUX_NOEU", NOM_CHAM="FLUX_NOEU"),
-    TOUT_ORDRE="OUI",
+    NUME_ORDRE=(1, 2, 3),
 )
 
 TEST_RESU(
@@ -100,8 +100,8 @@ TEST_RESU(
         NOM_GROUP_MA="RID",
         REFERENCE="ANALYTIQUE",
         CRITERE="ABSOLU",
-        VALE_REFE_I=65,
-        VALE_CALC_I=65,
+        VALE_REFE_I=71,
+        VALE_CALC_I=71,
     )
 )
 
@@ -112,8 +112,8 @@ TEST_RESU(
         NOM_GROUP_NO="INF",
         REFERENCE="ANALYTIQUE",
         CRITERE="ABSOLU",
-        VALE_REFE_I=26,
-        VALE_CALC_I=26,
+        VALE_REFE_I=28,
+        VALE_CALC_I=28,
     )
 )
 

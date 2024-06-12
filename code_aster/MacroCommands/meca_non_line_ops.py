@@ -20,9 +20,9 @@
 
 from ..Cata.Syntax import _F
 from ..Helpers import adapt_for_mgis_behaviour
+from ..Helpers.syntax_adapters import adapt_increment_init
 from ..Messages import UTMESS
 from ..Objects import (
-    HHO,
     FrictionType,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
@@ -34,9 +34,8 @@ from ..Objects import (
 )
 from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver
 from ..Solvers import ProblemType as PBT
-from ..Solvers import SolverOptions as SOP
+from ..Solvers.Post import Annealing, ComputeDisplFromHHO
 from ..Utilities import print_stats, reset_stats
-from ..Helpers.syntax_adapters import adapt_increment_init
 
 
 def _contact_check(CONTACT):
@@ -155,25 +154,11 @@ def meca_non_line_ops(self, **args):
         contact_manager = ContactManager(definition, phys_pb)
         fed_defi = definition.getFiniteElementDescriptor()
         phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
-
     solver.use(contact_manager)
 
-    # Add Hook
-    class PostHookHHO:
-        """User object to be used as a PostStepHook."""
-
-        provide = SOP.PostStepHook
-
-        def __call__(self, nl_solver):
-            """Hook to compute HHO_DEPL"""
-
-            if nl_solver.phys_pb.getModel().existsHHO():
-                hho_field = HHO(nl_solver.phys_pb).projectOnLagrangeSpace(
-                    nl_solver.phys_state.primal_curr
-                )
-                nl_solver.phys_state.set("HHO_DEPL", hho_field)
-
-    solver.use(PostHookHHO())
+    # Register hooks
+    solver.use(Annealing())
+    solver.use(ComputeDisplFromHHO())
 
     # Run computation
     solver.run()

@@ -97,8 +97,17 @@ class ExecutionParameter(metaclass=Singleton):
     _singleton_id = "Utilities.ExecutionParameter"
     _argv = _args = _bool = None
     _timer = _export = _command_counter = None
-    _catalc = _unit = _syntax = None
-    _print_header = _checksd = _testresu_print = None
+    _global = {}
+    global_objects = (
+        "catalc",
+        "logical_unit",
+        "syntax",
+        "print_header",
+        "checksd",
+        "testresu_print",
+        "iniran",
+        "getran",
+    )
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -530,62 +539,54 @@ class ExecutionParameter(metaclass=Singleton):
         return self._command_counter
 
     # register objects callable from libaster
+    def register_global_object(self, key, obj):
+        """Register an object to be callable from libaster.
+
+        Arguments:
+            key (str): Access key.
+            obj (*misc*): Registered object, usually a class or a function.
+        """
+        self._global[key] = obj
+
     @property
     def catalc(self):
         """Attribute that holds the catalog of behavior."""
-        return self._catalc
-
-    @catalc.setter
-    def catalc(self, catalc):
-        """Setter of `_catalc`."""
-        self._catalc = catalc
+        return self._global["catalc"]
 
     @property
     def logical_unit(self):
         """Attribute that holds the logical units manager."""
-        return self._unit
-
-    @logical_unit.setter
-    def logical_unit(self, klass):
-        """Setter of `_unit`."""
-        self._unit = klass
+        return self._global["logical_unit"]
 
     @property
     def syntax(self):
         """Attribute that holds the command syntax class."""
-        return self._syntax
-
-    @syntax.setter
-    def syntax(self, klass):
-        """Setter of `_syntax`."""
-        self._syntax = klass
+        return self._global["syntax"]
 
     @property
     def print_header(self):
         """func: Attribute that holds the 'print_header' function."""
-        return self._print_header
-
-    @print_header.setter
-    def print_header(self, func):
-        self._print_header = func
+        return self._global["print_header"]
 
     @property
     def checksd(self):
         """func: Attribute that holds the 'checksd' property."""
-        return self._checksd
-
-    @checksd.setter
-    def checksd(self, func):
-        self._checksd = func
+        return self._global["checksd"]
 
     @property
     def testresu_print(self):
         """func: Attribute that holds the 'testresu_print' property."""
-        return self._testresu_print
+        return self._global["testresu_print"]
 
-    @testresu_print.setter
-    def testresu_print(self, func):
-        self._testresu_print = func
+    @property
+    def iniran(self):
+        """func: Attribute that holds the 'iniran' function."""
+        return self._global["iniran"]
+
+    @property
+    def getran(self):
+        """func: Attribute that holds the 'getran' function."""
+        return self._global["getran"]
 
 
 class MemoryAction(Action):

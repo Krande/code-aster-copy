@@ -39,6 +39,7 @@ from ..Objects import (
 from ..Utilities import SearchList, logger, print_stats, profile, reset_stats
 from ..Solvers import PhysicalState, StorageManager, TimeStepper
 from ..Solvers import ProblemType as PBT
+from ..Solvers.Post import ComputeTempFromHHO
 
 
 def _checkArgs(args):
@@ -297,6 +298,20 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
     return rhs
 
 
+class SolverMockup:
+    """Simulate a ProblemSolver object."""
+
+    def __init__(self, phys_pb, phys_state) -> None:
+        self.phys_pb = phys_pb
+        self.phys_state = phys_state
+
+
+def _post_hooks(solver, hooks):
+    """Call hooks"""
+    for hook in hooks:
+        hook(solver)
+
+
 def ther_lineaire_ops(self, **args):
     """Execute the command THER_LINEAIRE.
 
@@ -306,7 +321,6 @@ def ther_lineaire_ops(self, **args):
     Returns:
         ThermalResult: result for linear thermal problem
     """
-
     logger.debug("<THER_LINEAIRE>: Initialization")
     logger.debug("<THER_LINEAIRE>: Args : %s" % args)
 
@@ -376,6 +390,8 @@ def ther_lineaire_ops(self, **args):
     # Define main objects
     phys_state = PhysicalState(PBT.Thermal)
     disc_comp = DiscreteComputation(phys_pb)
+    solver = SolverMockup(phys_pb, phys_state)
+    hooks = [ComputeTempFromHHO()]
 
     # we define the matrix before to have an unique name
     # because of a bug with LDLT_SP
@@ -422,11 +438,8 @@ def ther_lineaire_ops(self, **args):
             diriBCs = disc_comp.getDirichletBC(phys_state.time_curr)
             phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
 
+        _post_hooks(solver, hooks)
         phys_state.commit()
-
-        if model.existsHHO():
-            hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
-            phys_state.set("HHO_TEMP", hho_field)
 
         if save_initial_state:
             storage_manager.storeState(
@@ -476,13 +489,10 @@ def ther_lineaire_ops(self, **args):
         diriBCs = disc_comp.getDirichletBC(phys_state.time_curr)
         phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
 
+        _post_hooks(solver, hooks)
         phys_state.commit()
+
         step_rank += 1
-
-        if model.existsHHO():
-            hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
-            phys_state.set("HHO_TEMP", hho_field)
-
         storage_manager.storeState(
             step_rank, phys_state.time_curr, phys_pb, phys_state, param={"PARM_THETA": time_theta}
         )

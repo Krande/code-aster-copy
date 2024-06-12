@@ -1,0 +1,184 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+# person_in_charge: mickael.abbas at edf.fr
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+
+# Tests bases
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=base_p,
+            NUME_ORDRE=1,
+            NOM_CHAM="TEMP",
+            GROUP_NO="N27",
+            NOM_CMP="TEMP",
+            VALE_CALC=(-0.140634433078, 0.140634433078),
+        ),
+        _F(
+            RESULTAT=base_p,
+            NUME_ORDRE=2,
+            NOM_CHAM="TEMP",
+            GROUP_NO="N27",
+            NOM_CMP="TEMP",
+            VALE_CALC=(-0.188084836492, 0.188084836492),
+        ),
+        _F(
+            RESULTAT=base_p,
+            NUME_ORDRE=3,
+            NOM_CHAM="TEMP",
+            GROUP_NO="N27",
+            NOM_CMP="TEMP",
+            VALE_CALC=(0.08511581471258887, -0.08511581471258887),
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=base_d,
+            NUME_ORDRE=1,
+            NOM_CHAM="FLUX_NOEU",
+            GROUP_NO="N27",
+            NOM_CMP="FLUX",
+            VALE_CALC=(-0.00013191348405093377, 0.00013191348405093377),
+        ),
+        _F(
+            RESULTAT=base_d,
+            NUME_ORDRE=1,
+            NOM_CHAM="FLUX_NOEU",
+            GROUP_NO="N27",
+            NOM_CMP="FLUY",
+            VALE_CALC=(-0.0002646850897625292, 0.0002646850897625292),
+        ),
+        _F(
+            RESULTAT=base_d,
+            NUME_ORDRE=2,
+            NOM_CHAM="FLUX_NOEU",
+            GROUP_NO="N27",
+            NOM_CMP="FLUX",
+            VALE_CALC=(0.002103221447032097, -0.002103221447032097),
+        ),
+        _F(
+            RESULTAT=base_d,
+            NUME_ORDRE=2,
+            NOM_CHAM="FLUX_NOEU",
+            GROUP_NO="N27",
+            NOM_CMP="FLUY",
+            VALE_CALC=(0.0042246022968538575, -0.0042246022968538575),
+        ),
+        _F(
+            RESULTAT=base_d,
+            NUME_ORDRE=3,
+            NOM_CHAM="FLUX_NOEU",
+            GROUP_NO="N27",
+            NOM_CMP="FLUX",
+            VALE_CALC=(0.005401735835572968, -0.005401735835572968),
+        ),
+        _F(
+            RESULTAT=base_d,
+            NUME_ORDRE=3,
+            NOM_CHAM="FLUX_NOEU",
+            GROUP_NO="N27",
+            NOM_CMP="FLUY",
+            VALE_CALC=(0.010855090212220041, -0.010855090212220041),
+        ),
+    )
+)
+
+
+# Tests reduced coordinates
+TEST_TABLE(
+    VALE_CALC=(7673.69355304, -7673.69355304),
+    NOM_PARA="COOR_REDUIT",
+    TABLE=coorredp,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_SNAP", VALE_I=11),
+    ),
+)
+TEST_TABLE(
+    VALE_CALC=(879.130655319, -879.130655319),
+    NOM_PARA="COOR_REDUIT",
+    TABLE=coorredp,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_SNAP", VALE_I=5),
+    ),
+)
+TEST_TABLE(
+    VALE_CALC=(0.13587872576612592, -0.13587872576612592),
+    NOM_PARA="COOR_REDUIT",
+    TABLE=coorredp,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=3),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_SNAP", VALE_I=5),
+    ),
+)
+TEST_TABLE(
+    VALE_CALC=(0.056336626887834515, -0.056336626887834515),
+    NOM_PARA="COOR_REDUIT",
+    TABLE=coorredp,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=3),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_SNAP", VALE_I=11),
+    ),
+)
+#
+
+TEST_TABLE(
+    VALE_CALC=(5.0105246154713505, -5.0105246154713505),
+    NOM_PARA="COOR_REDUIT",
+    TABLE=coorredd,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_SNAP", VALE_I=11),
+    ),
+)
+TEST_TABLE(
+    VALE_CALC=(2.3667100854, -2.3667100854),
+    NOM_PARA="COOR_REDUIT",
+    TABLE=coorredd,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_SNAP", VALE_I=5),
+    ),
+)
+TEST_TABLE(
+    VALE_CALC=(0.011273605456269237, -0.011273605456269237),
+    NOM_PARA="COOR_REDUIT",
+    TABLE=coorredd,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=4),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_SNAP", VALE_I=5),
+    ),
+)
+TEST_TABLE(
+    VALE_CALC=(0.006323429484445531, -0.006323429484445531),
+    NOM_PARA="COOR_REDUIT",
+    TABLE=coorredd,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=4),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_SNAP", VALE_I=11),
+    ),
+)
+
+FIN()

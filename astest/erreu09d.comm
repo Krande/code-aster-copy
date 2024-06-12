@@ -23,10 +23,16 @@
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.Utilities import ExecutionParameter
+from run_aster.config import CFG
 
 params = ExecutionParameter()
 
 CA.init("--test", "--slave")
+
+if CFG.get("require_mpiexec"):
+    print("INFO: This testcase can not be run under mpiexec.")
+    # because it would exit before saving the database
+    CA.exit()
 
 MA = LIRE_MAILLAGE(FORMAT="MED")
 

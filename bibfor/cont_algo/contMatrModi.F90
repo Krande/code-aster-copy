@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine contMatrModi(modelZ, ds_contact, matrAsse)
 #include "asterfort/cfdisl.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/echmat.h"
+#include "asterfort/isParallelMatrix.h"
 !
     character(len=*), intent(in) :: modelZ
     type(NL_DS_Contact), intent(inout) :: ds_contact
@@ -44,8 +45,7 @@ subroutine contMatrModi(modelZ, ds_contact, matrAsse)
 !
     character(len=3) :: mathpc
     character(len=19) :: partit
-    aster_logical :: l_contact_adapt, lmhpc
-    aster_logical :: ldist
+    aster_logical :: l_contact_adapt, ldist, l_parallel_matrix
     real(kind=8) :: minmat, maxmat, exponent_val
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,11 +62,10 @@ subroutine contMatrModi(modelZ, ds_contact, matrAsse)
 !   -- a la premiere iteration on ne passe pas par mmalgo
     l_contact_adapt = cfdisl(ds_contact%sdcont_defi, 'EXIS_ADAP')
     if ((nint(ds_contact%update_init_coefficient) .eq. 0) .and. l_contact_adapt) then
-        call dismoi('MATR_HPC', matrAsse, 'MATR_ASSE', repk=mathpc)
-        lmhpc = mathpc .eq. 'OUI'
+        l_parallel_matrix = isParallelMatrix(matrAsse)
         call dismoi('PARTITION', modelZ, 'MODELE', repk=partit)
         ldist = partit .ne. ' '
-        call echmat(matrAsse, ldist, lmhpc, minmat, maxmat)
+        call echmat(matrAsse, ldist, l_parallel_matrix, minmat, maxmat)
         ds_contact%max_coefficient = maxmat
         if (abs(log(minmat)) .ge. r8prem()) then
             if (abs(log(maxmat))/abs(log(minmat)) .lt. 4.0d0) then

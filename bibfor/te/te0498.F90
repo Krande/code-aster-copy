@@ -91,13 +91,9 @@ subroutine te0498(option, nomte)
 !
     if (zk8(ionde) (1:7) .eq. '&FOZERO') goto 99
 !
-!     --- INITIALISATION DE SIGMA
+!     --- INITIALISATION
 !
-    do i = 1, 3
-        do j = 1, 3
-            sigma(i, j) = 0.d0
-        end do
-    end do
+    sigma = 0.d0
 !
     mater = zi(imate)
     fami = 'RIGI'

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -112,6 +112,13 @@ avec ce comportement, on va utiliser l'algorithme %(k1)s.
         """
 Sur certaines mailles, aucun comportement n'a été donné, on a défini par défaut
 un comportement élastique en petites déformations.
+"""
+    ),
+    22: _(
+        """
+L'occurrence numéro %(i1)d du mot-clé COMPORTEMENT affecte le modèle de
+déformation GROT_GDEP sur une modélisation %(k1)s. Ce n'est pas possible.
+Vous pouvez essayer avec le modèle de déformation GREEN_LAGRANGE.
 """
     ),
     23: _(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,8 @@ function lcdp_material(fami, kpg, ksp, imate, resi) result(mat)
     poum = merge('+', '-', resi)
 
 !  Elasticity
-   call rcvalb(fami, kpg, ksp, poum, imate, ' ', 'ELAS', 0, ' ', [0.d0], nbel, nomel, valel, iok, 2)
+    call rcvalb(fami, kpg, ksp, poum, imate, ' ', 'ELAS', 0, ' ', [0.d0], &
+                nbel, nomel, valel, iok, 2)
     mat%lambda = valel(1)*valel(2)/((1+valel(2))*(1-2*valel(2)))
     mat%deuxmu = valel(1)/(1+valel(2))
     mat%troismu = 1.5d0*mat%deuxmu
@@ -72,29 +73,37 @@ function lcdp_material(fami, kpg, ksp, imate, resi) result(mat)
         mat%a = valdpli(4)
         mat%b0 = valdpli(5)
         mat%troisa = 3*mat%a
+        mat%syultm = 0.d0
+        mat%bultm = 0.d0
+        mat%kac = 0.d0
         mat%type_dp = nint(ltyped(1))
 !  Parabolique
     else if (nint(ltyped(1)) .eq. 2) then
         call rcvalb(fami, kpg, ksp, poum, imate, ' ', 'DRUCK_PRAGER', 0, ' ', [0.d0], &
                     nbdpqua, nomdpqua, valdpqua, iok, 2)
         mat%sy = valdpqua(1)
+        mat%h = 0.d0
         mat%kau = valdpqua(2)
-        mat%syultm = valdpqua(3)
         mat%a = valdpqua(4)
         mat%b0 = valdpqua(5)
         mat%troisa = 3*mat%a
+        mat%syultm = valdpqua(3)
+        mat%bultm = 0.d0
+        mat%kac = 0.d0
         mat%type_dp = nint(ltyped(1))
 ! Exponentiel
     else if (nint(ltyped(1)) .eq. 3) then
         call rcvalb(fami, kpg, ksp, poum, imate, ' ', 'DRUCK_PRAGER', 0, ' ', [0.d0], &
                     nbdpexp, nomdpexp, valdpexp, iok, 2)
         mat%sy = valdpexp(1)
-        mat%kac = valdpexp(2)
-        mat%syultm = valdpexp(3)
-        mat%bultm = valdpexp(4)
+        mat%h = 0.d0
+        mat%kau = 0.d0
         mat%a = valdpexp(5)
         mat%b0 = valdpexp(6)
         mat%troisa = 3*mat%a
+        mat%syultm = valdpexp(3)
+        mat%bultm = valdpexp(4)
+        mat%kac = valdpexp(2)
         mat%type_dp = nint(ltyped(1))
     else
         ASSERT(.false.)

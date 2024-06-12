@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                       he, nfh, ddlc, ddlm, nfe,&
                       basloc, nnop, npg, idecpg, typmod,&
-                      imate, compor, idepl, lsn, lst,&
+                      imate, idepl, lsn, lst,&
                       nfiss, heavn, jstno, sig)
         integer :: nfiss
         integer :: npg
@@ -41,7 +41,6 @@ interface
         integer :: idecpg
         character(len=8) :: typmod(*)
         integer :: imate
-        character(len=16) :: compor(4)
         integer :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)

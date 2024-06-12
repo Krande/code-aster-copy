@@ -181,7 +181,7 @@ subroutine te0096(option, nomte)
 !
 !
 !   LOI DE COMPORTEMENT
-    grand = compor(3) .eq. 'GROT_GDEP'
+    grand = ASTER_FALSE
     incr = compor(4) (1:9) .eq. 'COMP_INCR'
     if (incr) then
         call jevech('PCONTRR', 'L', isigm)

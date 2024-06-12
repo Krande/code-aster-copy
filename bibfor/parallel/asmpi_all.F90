@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,38 +18,43 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-function isParallelMesh(mesh) result(l_parallel_mesh)
+function asmpi_all(ibool, test) result(obool)
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/gettco.h"
+#include "asterfort/asmpi_comm_vect.h"
 !
-    character(len=*), intent(in) :: mesh
-    aster_logical                :: l_parallel_mesh
+    aster_logical, intent(in) :: ibool, test
+    aster_logical             :: obool
 !
 !---------------------------------------------------------------------------------------------------
 !   But :
-!     To know if the mesh is parallel_mesh
+!     To know if the boolean is true or false on all processes
 !
 !   IN:
-!     mesh      : name of the mesh
+!     ibool   : local input boolean
+!     test    : value to check
 !
 !   OUT:
-!     l_parallel_mesh : the mesh is a parallel_mesh ?
+!     obool   : gloab output boolean
 !
 !---------------------------------------------------------------------------------------------------
-    character(len=16) :: mesh_type
-    character(len=8) :: meshz
+    integer :: iint
 !-----------------------------------------------------------------------
 !
-    meshz = mesh
-    call gettco(meshz, mesh_type)
-!
-    if (mesh_type .eq. 'MAILLAGE_P') then
-        l_parallel_mesh = ASTER_TRUE
+    if (ibool .eqv. test) then
+        iint = 0
     else
-        l_parallel_mesh = ASTER_FALSE
+        iint = 1
+    end if
+!
+    call asmpi_comm_vect('MPI_MAX', 'I', sci=iint)
+
+    if (iint == 0) then
+        obool = ASTER_TRUE
+    else
+        obool = ASTER_FALSE
     end if
 !
 end function

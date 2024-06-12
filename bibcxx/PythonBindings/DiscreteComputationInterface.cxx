@@ -708,6 +708,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 displ_step (FieldOnNodes): field of increment of displacement
                 stress (FieldOnCells): field of stress at begin of current time
                 internVar (FieldOnCells): field of internal state variables at begin of current time
+                internVarIter (FieldOnCells): field of internal state variables at begin of 
+                                              current newton iteration
                 time_prev (float): time at begin of the step
                 time_step (float): delta time between begin and end of the step
                 varc_prev (FieldOnCells): external state variables at begin of current time
@@ -722,9 +724,9 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 field of internal forces (FieldOnNodesReal),
         )",
               py::arg( "displ_prev" ), py::arg( "displ_step" ), py::arg( "stress" ),
-              py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
-              py::arg( "varc_prev" ) = nullptr, py::arg( "varc_curr" ) = nullptr,
-              py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "internVar" ), py::arg( "internVarIter" ), py::arg( "time_prev" ),
+              py::arg( "time_step" ), py::arg( "varc_prev" ) = nullptr,
+              py::arg( "varc_curr" ) = nullptr, py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getInternalThermalForces", &DiscreteComputation::getInternalThermalForces,
               R"(
@@ -773,6 +775,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 displ_step (FieldOnNodes): field of increment of displacement
                 stress (FieldOnCells): field of stress at begin of current time
                 internVar (FieldOnCells): internal state variables at begin of current time
+                internVarIter (FieldOnCells): field of internal state variables 
+                                              at begin of current newton iteration
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
                 varc_prev (FieldOnCellsReal): external state variables at begin of current time
@@ -785,9 +789,9 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 elementary tangent matrix (ElementaryMatrixDisplacementReal)
         )",
               py::arg( "displ_prev" ), py::arg( "displ_step" ), py::arg( "stress" ),
-              py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
-              py::arg( "varc_prev" ) = nullptr, py::arg( "varc_curr" ) = nullptr,
-              py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "internVar" ), py::arg( "internVarIter" ), py::arg( "time_prev" ),
+              py::arg( "time_step" ), py::arg( "varc_prev" ) = nullptr,
+              py::arg( "varc_curr" ) = nullptr, py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getPredictionTangentStiffnessMatrix",
               &DiscreteComputation::getPredictionTangentStiffnessMatrix, R"(

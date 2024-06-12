@@ -70,6 +70,7 @@ subroutine assmam(jvBase, matrAsseZ, &
 #include "asterfort/zerobj.h"
 #include "asterfort/nbddlMaxMa.h"
 #include "asterfort/getDistributionParameters.h"
+#include "asterfort/isParallelMatrix.h"
 !
     character(len=1), intent(in) :: jvBase
     integer, intent(in) :: nbMatrElem
@@ -109,7 +110,7 @@ subroutine assmam(jvBase, matrAsseZ, &
     character(len=1) :: matsym
     character(len=3) :: matd, answer
     real(kind=8) :: c1, temps(7)
-    aster_logical :: acreer, cumul, ldistme, lmatd, lmhpc
+    aster_logical :: acreer, cumul, ldistme, lmatd, l_parallel_matrix
     aster_logical :: lmasym, lmesym, ldgrel, lparallel_mesh
     integer :: admodl, i, nbi1mx
     integer :: jdesc
@@ -538,15 +539,14 @@ subroutine assmam(jvBase, matrAsseZ, &
         end do
     end if
 
-    call dismoi('MATR_HPC', mat19, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc .eq. 'OUI'
+    l_parallel_matrix = isParallelMatrix(mat19)
 !   -- il faut communiquer ellagr entre les procs :
-    if (ldistme .or. lmhpc) then
+    if (ldistme .or. l_parallel_matrix) then
         call asmpi_comm_vect('MPI_MAX', 'I', sci=ellagr)
     end if
 
 !   -- mise a l'echelle des coef. de lagrange si necessaire :
-    if (ellagr .gt. 0) call assma1(mat19, ldistme, lmhpc)
+    if (ellagr .gt. 0) call assma1(mat19, ldistme, l_parallel_matrix)
 
     if (.not. ldistme) then
         zk24(jrefa-1+11) = 'MPI_COMPLET'

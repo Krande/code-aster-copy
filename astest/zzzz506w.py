@@ -80,7 +80,7 @@ timeEndStep = 1.0
 
 # Compute tangent prediction matrix
 res = disc_comp.getTangentStiffnessMatrix(
-    disp, disp_incr, stress, internVar, timeBeginStep, timeEndStep
+    disp, disp_incr, stress, internVar, internVar, timeBeginStep, timeEndStep
 )
 matrElem = res[2]
 
@@ -95,11 +95,25 @@ fieldResuRefe = RESOUDRE(MATR=matrAsseRef, CHAM_NO=zero, CHAM_CINE=kinematicFiel
 
 # Compute tangent prediction matrices
 res1 = disc_comp.getTangentStiffnessMatrix(
-    disp, disp_incr, stress, internVar, timeBeginStep, timeEndStep, groupOfCells=["CoucheHaut"]
+    disp,
+    disp_incr,
+    stress,
+    internVar,
+    internVar,
+    timeBeginStep,
+    timeEndStep,
+    groupOfCells=["CoucheHaut"],
 )
 matrElem1 = res1[2]
 res2 = disc_comp.getTangentStiffnessMatrix(
-    disp, disp_incr, stress, internVar, timeBeginStep, timeEndStep, groupOfCells=["CoucheBas"]
+    disp,
+    disp_incr,
+    stress,
+    internVar,
+    internVar,
+    timeBeginStep,
+    timeEndStep,
+    groupOfCells=["CoucheBas"],
 )
 matrElem2 = res2[2]
 

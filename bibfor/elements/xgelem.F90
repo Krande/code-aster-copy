@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -102,7 +102,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
     real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu2
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4)
-    aster_logical :: grdepl, cp, axi, l_temp_noeu
+    aster_logical :: cp, axi, l_temp_noeu
     integer :: irese, ddli, nnoi, indeni, nnops, ifiss
     integer :: iret1, iret2, iret3
     type(Behaviour_Integ) :: BEHinteg
@@ -129,8 +129,6 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
     ASSERT(ndim .le. mxstac)
     ASSERT(nnop .le. mxstac)
     ASSERT(nfiss .le. mxstac)
-!
-    grdepl = .false.
 !
     if (.not. iselli(elrefp)) then
         irese = 3
@@ -370,7 +368,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
         end do
 !
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
-        call xcinem(axi, igeom, nnop, nnos, idepl, grdepl, &
+        call xcinem(axi, igeom, nnop, nnos, idepl, &
                     ndim, he, &
                     nfiss, nfh, singu, ddls, ddlm, &
                     fk, dkdgl, ff, dfdi, f, &

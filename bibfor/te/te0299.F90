@@ -176,9 +176,6 @@ subroutine te0299(option, nomte)
         compor(i) = zk16(icomp+i-1)
     end do
 !
-    if (compor(3) .eq. 'GROT_GDEP') then
-        call utmess('F', 'RUPTURE1_24')
-    end if
     if ((compor(1) .ne. 'ELAS') .or. (compor(4) .eq. 'COMP_INCR')) then
         if (compor(1) .ne. 'ELAS') then
             call utmess('F', 'RUPTURE1_24')

@@ -30,10 +30,10 @@ module MetallurgyOperator_module
 ! ==================================================================================================
     private
 #include "jeveux.h"
-#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/r8nnem.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcop.h"
@@ -43,6 +43,7 @@ module MetallurgyOperator_module
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exlima.h"
 #include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -56,12 +57,12 @@ module MetallurgyOperator_module
 #include "asterfort/Metallurgy_type.h"
 #include "asterfort/mtdorc.h"
 #include "asterfort/rcadme.h"
-#include "asterfort/rslesd.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rs_get_liststore.h"
 #include "asterfort/rs_getnume.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
+#include "asterfort/rslesd.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -144,13 +145,11 @@ contains
         character(len=8), pointer :: materVale(:) => null()
         integer :: nbhist, icodre
         character(len=8) :: materPara
-        character(len=24) :: modelLigrel
         integer, parameter :: nbPara = 2
         character(len=8), parameter :: paraName(nbPara) = (/'I1  ', 'I2  '/)
         integer :: iadtrc(nbPara), adrsJv(nbPara)
 !   ------------------------------------------------------------------------------------------------
 !
-        call dismoi('NOM_LIGREL', metaParaOperator%model, 'MODELE', repk=modelLigrel)
 
 ! ----- Get access to material field
         call jeveuo(metaParaOperator%materialField(1:8)//'.CHAMP_MAT .VALE', 'E', vk8=materVale)
@@ -175,7 +174,8 @@ contains
             call wkvect('&&SMEVOL_TRC', 'V V R', 15*nbhist, adrsJv(2))
             call jeveut('&&SMEVOL_FTRC', "E", adrsJv(1))
             call jeveut('&&SMEVOL_TRC', "E", adrsJv(2))
-            call mecact('V', metaParaOperator%TRCField, 'LIGREL', modelLigrel, 'ADRSJEVN', &
+            call mecact('V', metaParaOperator%TRCField, 'LIGREL', &
+                        metaParaOperator%modelLigrel, 'ADRSJEVN', &
                         ncmp=nbPara, lnomcmp=paraName, vi=adrsJv)
         end if
 !
@@ -207,12 +207,10 @@ contains
         integer, parameter :: nbout = 1, nbInMax = 4
         character(len=8) :: lpaout(nbout), lpain(nbInMax)
         character(len=24) :: lchin(nbInMax)
-        character(len=24) :: modelLigrel
         character(len=1), parameter :: base = "V"
         character(len=16), parameter :: option = "META_INIT_ELNO"
 !   ------------------------------------------------------------------------------------------------
 !
-        call dismoi('NOM_LIGREL', metaParaOperator%model, 'MODELE', repk=modelLigrel)
         lpain(1) = 'PMATERC'
         lchin(1) = metaParaOperator%materialCoding
         lpain(2) = 'PCOMPME'
@@ -222,7 +220,7 @@ contains
         lpain(4) = 'PPHASII'
         lchin(4) = metaInitUser
         lpaout(1) = 'PPHASOUT'
-        call calcul('S', option, modelLigrel, nbInMax, lchin, &
+        call calcul('S', option, metaParaOperator%modelLigrel, nbInMax, lchin, &
                     lpain, nbout, metaInit, lpaout, base, &
                     'OUI')
 !
@@ -319,7 +317,6 @@ contains
         integer, parameter :: nbOutMax = 2, nbInMax = 9
         character(len=8) :: lpaout(nbOutMax), lpain(nbInMax)
         character(len=24) :: lchin(nbInMax), lchout(nbOutMax)
-        character(len=24) :: modelLigrel
         integer :: nbOut, nbIn
         character(len=1), parameter :: base = "V"
         character(len=16), parameter :: option = "META_ELNO"
@@ -331,7 +328,6 @@ contains
         real(kind=8) :: delta01, delta12
 !   ------------------------------------------------------------------------------------------------
 !
-        call dismoi('NOM_LIGREL', metaParaOperator%model, 'MODELE', repk=modelLigrel)
         metaOut = "&&SMEVOL.PHAS_META3"
         lpain = " "
         lpaout = " "
@@ -347,7 +343,7 @@ contains
         timeParaVale(1) = time_1
         timeParaVale(2) = delta01
         timeParaVale(3) = delta12
-        call mecact('V', chtime, 'MODELE', modelLigrel, 'INST_R  ', &
+        call mecact('V', chtime, 'MODELE', metaParaOperator%model, 'INST_R  ', &
                     ncmp=nbTimePara, lnomcmp=timeParaName, vr=timeParaVale)
 
 ! ----- Input fields
@@ -395,7 +391,7 @@ contains
         end if
 
 ! ----- Compute
-        call calcul('S', option, modelLigrel, &
+        call calcul('S', option, metaParaOperator%modelLigrel, &
                     nbIn, lchin, lpain, &
                     nbOut, lchout, lpaout, &
                     base, 'OUI')
@@ -419,16 +415,14 @@ contains
         integer, intent(in) :: numphi
 ! ----- Local
         aster_logical, parameter :: forTemper = ASTER_FALSE
-        character(len=24) :: modelLigrel, resultField
+        character(len=24) :: resultField
         integer :: iStore, jvPara, iret
-        character(len=24) :: chftrc
         character(len=24) :: metaIn, metaOut
         integer :: numeStore_0, numeStore_1, numeStore_2
         character(len=24) :: temp_0, temp_1, temp_2
         real(kind=8) :: time_0, time_1, time_2
 !   ------------------------------------------------------------------------------------------------
 !
-        call dismoi('NOM_LIGREL', metaParaOperator%model, 'MODELE', repk=modelLigrel)
 
 ! ----- Main loop to compute
         do iStore = 1, metaParaOperator%nbStore-2
@@ -480,7 +474,6 @@ contains
 ! ----- Cleaning
         call jedetr('&&SMEVOL_FTRC')
         call jedetr('&&SMEVOL_TRC')
-        call detrsd('CARTE', chftrc)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -499,7 +492,7 @@ contains
         type(META_ParaOperator), intent(in) :: metaParaOperator
 ! ----- Local
         aster_logical, parameter :: forTemper = ASTER_TRUE
-        character(len=24) :: modelLigrel, resultField
+        character(len=24) :: resultField
         integer :: iStore, jvPara, iret
         character(len=24) :: metaIn, metaOut, metaPrev
         integer :: numeStore_1, numeStore_2
@@ -507,7 +500,6 @@ contains
         real(kind=8) :: time_1, time_2
 !   ------------------------------------------------------------------------------------------------
 !
-        call dismoi('NOM_LIGREL', metaParaOperator%model, 'MODELE', repk=modelLigrel)
 
 ! ----- Main loop to compute
         do iStore = 1, metaParaOperator%nbStore-1
@@ -666,14 +658,18 @@ contains
 ! ----- Parameters
         type(META_ParaOperator), intent(inout) :: metaParaOperator
 ! ----- Local
-        character(len=24) :: metaInitUser, modelLigrel
+        character(len=24) :: metaInitUser
         integer :: numeFieldInit
         character(len=16), parameter :: factorKeyword = "COMPORTEMENT"
         character(len=16), parameter :: factorKeywordTemper = "REVENU"
         integer :: numphi, numeStore_1, numeStore_2, iStore
 !   ------------------------------------------------------------------------------------------------
 !
-        call dismoi('NOM_LIGREL', metaParaOperator%model, 'MODELE', repk=modelLigrel)
+        call dismoi('NOM_LIGREL', metaParaOperator%model, 'MODELE', &
+                    repk=metaParaOperator%modelLigrel)
+
+! ----- Create list of cells to compute
+        ! call exlima(factorKeyword, 1, "V", metaParaOperator%model, metaParaOperator%metaLigrel)
 
 ! ----- Get initial state
         call metaGetInitialState(metaParaOperator%resultName, metaInitUser, numeFieldInit)
@@ -683,7 +679,8 @@ contains
 
 ! ----- Prepare dynamic field from behaviour
         call detrsd('CHAM_ELEM_S', metaParaOperator%comporMeta)
-        call cesvar(' ', metaParaOperator%comporMeta, modelLigrel, metaParaOperator%comporMeta)
+        call cesvar(' ', metaParaOperator%comporMeta, &
+                    metaParaOperator%modelLigrel, metaParaOperator%comporMeta)
 
 ! ----- Prepare field to manage TRC curves in elementary computation
         call metaPrepTRCWorkingField(metaParaOperator)
@@ -715,7 +712,7 @@ contains
 
 ! --------- Prepare dynamic field from behaviour
             call detrsd('CHAM_ELEM_S', metaParaOperator%comporMetaTemper)
-            call cesvar(' ', metaParaOperator%comporMetaTemper, modelLigrel, &
+            call cesvar(' ', metaParaOperator%comporMetaTemper, metaParaOperator%modelLigrel, &
                         metaParaOperator%comporMetaTemper)
 
 ! --------- Apply tempering

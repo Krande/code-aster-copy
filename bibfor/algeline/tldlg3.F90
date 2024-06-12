@@ -90,6 +90,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb, &
 #include "asterfort/tldur8.h"
 #include "asterfort/ualfcr.h"
 #include "asterfort/utmess.h"
+#include "asterfort/isParallelMatrix.h"
 
     character(len=1) :: codmes
     character(len=19) :: noma19, stolci
@@ -106,7 +107,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb, &
     integer :: ieq3, isingu, ieq, ndeci, jdigs, npivot
     integer :: ndeci1, ndeci2, ieq4, nzero, vali(6), ipiv
     real(kind=8) :: eps, dmax, dmin, d1
-    aster_logical :: lmhpc
+    aster_logical :: l_parallel_matrix
     complex(kind=8) :: cbid
     integer, pointer :: schc(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -160,10 +161,9 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb, &
     end if
 !
 !   -- EST-ON EN HPC :
-    call dismoi('MATR_HPC', noma19, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc .eq. 'OUI'
+    l_parallel_matrix = isParallelMatrix(noma19)
     neqg = -1
-    if (lmhpc) then
+    if (l_parallel_matrix) then
         call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
         neqg = zi(jnequ+1)
     end if
@@ -289,7 +289,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb, &
 !                   -- AU MOINS UNE SINGULARITE
                     iretz = 1
                     isingu = zi(ipiv+2)
-                    if (lmhpc) then
+                    if (l_parallel_matrix) then
                         ASSERT(isingu .gt. 0 .and. isingu .le. neqg)
                     else
                         ASSERT(isingu .gt. 0 .and. isingu .le. neq)
@@ -414,7 +414,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb, &
     end if
     if (isingu .gt. 0) then
         if (refa(20) == '') then
-            if (lmhpc) then
+            if (l_parallel_matrix) then
                 call utmess('I', 'FACTOR2_7')
             else
                 call rgndas(nu, isingu, l_print=.true.)

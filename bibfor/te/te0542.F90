@@ -47,7 +47,7 @@ subroutine te0542(option, nomte)
 !
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jvSief, jlsn, jlst
-    integer :: jpmilt, ddlm, nfiss, jfisno, jvDisp, icompo, jheavn
+    integer :: jpmilt, ddlm, nfiss, jfisno, jheavn
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno, imate
     integer :: contac, nnom, singu
     aster_logical :: lbid
@@ -72,14 +72,6 @@ subroutine te0542(option, nomte)
     nbsig = nbsigm()
 !
     call jevech('PGEOMER', 'L', igeom)
-    if (option .eq. "FORC_NODA") then
-        call jevech('PDEPLAR', 'L', jvDisp)
-    elseif (option .eq. "REFE_FORC_NODA") then
-        call jevech('PDEPLMR', 'L', jvDisp)
-    else
-        ASSERT(ASTER_FALSE)
-    end if
-    call jevech('PCOMPOR', 'L', icompo)
     call jevech('PVECTUR', 'E', ivectu)
 !
 !     PARAMÈTRES PROPRES À X-FEM
@@ -107,9 +99,9 @@ subroutine te0542(option, nomte)
         end if
 !       CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
         call xbsig(ndim, nno, nfh, nfe, ddlc, &
-                   ddlm, igeom, zk16(icompo), jpintt, zi(jcnset), &
+                   ddlm, igeom, jpintt, zi(jcnset), &
                    zi(jheavt), zi(jlonch), zr(jbaslo), zr(jvSief), nbsig, &
-                   jvDisp, zr(jlsn), zr(jlst), ivectu, jpmilt, &
+                   zr(jlsn), zr(jlst), ivectu, jpmilt, &
                    nfiss, jheavn, jstno, imate)
 !
         call xteddl(ndim, nfh, nfe, ddls, nddl, &
@@ -130,9 +122,9 @@ subroutine te0542(option, nomte)
 ! --- ON COMMENCE PAR CALCULER LES CONTRIBUTIONS VOLUMIQUES
 !
         call xbsir(ndim, nno, nfh, nfe, ddlc, &
-                   ddlm, igeom, zk16(icompo), jpintt, zi(jcnset), &
+                   ddlm, igeom, jpintt, zi(jcnset), &
                    zi(jheavt), zi(jlonch), zr(jbaslo), sigref, nbsig, &
-                   jvDisp, zr(jlsn), zr(jlst), ivectu, jpmilt, &
+                   zr(jlsn), zr(jlst), ivectu, jpmilt, &
                    nfiss, jheavn, jstno)
 !
 ! --- SI ELEMENT DE CONTACT, ON Y AJOUTE LES CONTRIBUTIONS SURFACIQUES

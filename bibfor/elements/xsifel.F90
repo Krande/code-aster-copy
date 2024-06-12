@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,7 +112,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
     integer :: icodre(4)
     character(len=16) :: nomres(4)
     character(len=8) :: elrese(6), fami(6), fami_se
-    aster_logical :: lcour, grdepl, axi, l_temp_noeu, l_not_zero
+    aster_logical :: lcour, axi, l_temp_noeu, l_not_zero
     integer :: irese, nnops, indenn, mxstac
     parameter(mxstac=1000)
 !
@@ -125,8 +125,6 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
 !
     ASSERT(nnop .le. mxstac)
     ASSERT((3*ndim*nnop) .le. mxstac)
-!
-    grdepl = .false.
 !
     rac2 = sqrt(2.d0)
 !
@@ -394,7 +392,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
 !
         call xcinem(axi, igeom, nnop, nnops, idepl, &
-                    grdepl, ndim, he, nfiss, nfh, &
+                    ndim, he, nfiss, nfh, &
                     singu, ddls, ddlm, fk, dkdgl, &
                     ff, dfdi, f, eps, grad, &
                     heavn)

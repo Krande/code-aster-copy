@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ cata_msg = {
     1: _(
         """On ne peut pas faire propager une interface. Seules les fissures (possédant un fond de fissure) peuvent être propagées."""
     ),
-    2: _("""GROT_GDEP n'est pas disponible pour un comportement élastique non linéaire."""),
     3: _(
         """On ne peut pas définir du contact X-FEM sur un maillage contenant à la fois des mailles linéaires et quadratiques."""
     ),

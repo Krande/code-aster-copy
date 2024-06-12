@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,6 +88,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"
+#include "asterfort/isParallelMatrix.h"
 !
 #ifdef ASTER_HAVE_PETSC
 !----------------------------------------------------------------
@@ -109,7 +110,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
     real(kind=8), dimension(:), pointer :: slvr => null()
     complex(kind=8) :: cbid
 !
-    aster_logical :: lmd, lmhpc, lap2foi
+    aster_logical :: lmd, l_parallel_matrix, lap2foi
     aster_logical, parameter :: dbg = .false.
 !
 !----------------------------------------------------------------
@@ -156,9 +157,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
             algo = slvk(6)
             call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
             lmd = matd .eq. 'OUI'
-            call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=matd)
-            lmhpc = matd .eq. 'OUI'
-            ASSERT(.not. (lmd .and. lmhpc))
+            l_parallel_matrix = isParallelMatrix(nomat)
+            ASSERT(.not. (lmd .and. l_parallel_matrix))
         end if
 !
     end if
@@ -170,7 +170,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !        1.1 CREATION ET PREALLOCATION DE LA MATRICE PETSc :
 !        ---------------------------------------------------
 !
-        if (.not. lmhpc) then
+        if (.not. l_parallel_matrix) then
             if (lmd) then
                 call apalmd(kptsc)
             else
@@ -183,7 +183,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !        1.2 COPIE DE LA MATRICE ASTER VERS LA MATRICE PETSc :
 !        -----------------------------------------------------
 !
-        if (.not. lmhpc) then
+        if (.not. l_parallel_matrix) then
             if (lmd) then
                 call apmamd(kptsc)
             else
@@ -272,7 +272,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !        2.2 CREATION DU VECTEUR SECOND MEMBRE PETSc :
 !        ---------------------------------------------
 !
-        if (.not. lmhpc) then
+        if (.not. l_parallel_matrix) then
             call apvsmb(kptsc, lmd, rsolu)
         else
             call apvsmbh(kptsc, rsolu)
@@ -455,7 +455,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !
 !        2.6 RECOPIE DE LA SOLUTION :
 !        ----------------------------
-        if (.not. lmhpc) then
+        if (.not. l_parallel_matrix) then
             call apsolu(kptsc, lmd, rsolu)
         else
             call VecGetOwnershipRange(x, low, high, ierr)

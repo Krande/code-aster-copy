@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine lcejtu(BEHinteg, &
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8nnem.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
@@ -39,7 +38,7 @@ subroutine lcejtu(BEHinteg, &
 #include "blas/dcopy.h"
     type(Behaviour_Integ), intent(in) :: BEHinteg
     integer, intent(in) :: imate, ndim, kpg, ksp
-    real(kind=8), intent(in) :: epsm(ndim), deps(ndim), sigm(6), vim(*)
+    real(kind=8), intent(in) :: epsm(6), deps(6), sigm(6), vim(*)
     real(kind=8), intent(in) :: instam, instap
     character(len=8), intent(in) :: typmod(*)
     character(len=16), intent(in) :: option
@@ -65,7 +64,7 @@ subroutine lcejtu(BEHinteg, &
     character(len=16) :: nom(nbpa)
     real(kind=8) :: val(nbpa)
     integer :: i, j, diss, cass
-    real(kind=8) :: inst, delta(ndim), ddelta(ndim)
+    real(kind=8) :: inst, delta(3), ddelta(3)
     real(kind=8) :: k, c, eta, crit
     real(kind=8) :: delta_N_0, delta_T_0
     real(kind=8) :: delta_N_f, delta_T_f
@@ -100,8 +99,8 @@ subroutine lcejtu(BEHinteg, &
     elas = .false.
     l_lambda0 = .false.
     inst = 0.d0
-    call r8inir(3, 0.d0, delta, 1)
-    call r8inir(3, 0.d0, ddelta, 1)
+    delta = 0.d0
+    ddelta = 0.d0
     delta_N_pos = 0.d0
     delta_T = 0.d0
     delta_0 = 0.d0
@@ -110,11 +109,11 @@ subroutine lcejtu(BEHinteg, &
     delta_f_T = 0.d0
     diss = 0.d0
     cass = 0.d0
-    call r8inir(6, 0.d0, sigp, 1)
-    call r8inir(6*6, 0.d0, dsidep, 1)
+    sigp = 0.d0
+    dsidep = 0.d0
     quot = 0.d0
-    call r8inir(6*6, 0.d0, a, 1)
-    call r8inir(6*6, 0.d0, aa, 1)
+    a = 0.d0
+    aa = 0.d0
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
     resi = option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'

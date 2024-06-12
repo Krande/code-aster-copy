@@ -170,6 +170,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FR1D3D", "F1D3D", "PFR1D3D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FR1D2D", "F1D2D", "PFR1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FLUX_R", "FLUX", "PFLUXR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EFON_R", "EFOND", "PEFOND", model_FEDesc,
               { { "PPREFFR", load->getConstantLoadField( "PREFF" ) } } );
         iload++;
@@ -184,6 +185,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FF1D3D", "F1D3D", "PFF1D3D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FF1D2D", "F1D2D", "PFF1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FLUX_F", "FLUX", "PFLUXF", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EFON_F", "EFOND", "PEFOND", model_FEDesc,
               { { "PPREFFF", load->getConstantLoadField( "PREFF" ) } } );
 
@@ -412,9 +414,9 @@ std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCells
 DiscreteComputation::getInternalMechanicalForces(
     const FieldOnNodesRealPtr displ_prev, const FieldOnNodesRealPtr displ_step,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr internVar,
-    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
-    const FieldOnCellsRealPtr &varc_prev, const FieldOnCellsRealPtr &varc_curr,
-    const VectorString &groupOfCells ) const {
+    const FieldOnCellsRealPtr internVarIter, const ASTERDOUBLE &time_prev,
+    const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr &varc_prev,
+    const FieldOnCellsRealPtr &varc_curr, const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -442,9 +444,8 @@ DiscreteComputation::getInternalMechanicalForces(
     calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
-    auto vari_iter = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "VARI_R", currBehaviour,
-                                                            currElemChara );
-    calcul->addInputField( "PVARIMP", vari_iter );
+    // Nécessaire également pour Deborst
+    calcul->addInputField( "PVARIMP", internVarIter );
 
     // Create output vector
     auto elemVect = std::make_shared< ElementaryVectorReal >(

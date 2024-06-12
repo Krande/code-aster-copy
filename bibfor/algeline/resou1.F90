@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,6 +89,7 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm, &
 #include "asterfort/utmess.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/isParallelMatrix.h"
     character(len=*) :: matass, matpre, solveu, chcine
     integer :: nsecm
     character(len=*) :: chsecm, chsolu, base
@@ -109,7 +110,7 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm, &
     integer :: jtrav, jval2, imd, istopz
     real(kind=8) :: epsi
     complex(kind=8) :: cbid
-    aster_logical :: dbg
+    aster_logical :: dbg, l_parallel_matrix
     character(len=1), parameter :: ftype(2) = ['R', 'C']
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -220,8 +221,8 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm, &
 !
     if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT') then
 !     ----------------------------------------------------
-        call dismoi('MATR_HPC', matr19, 'MATR_ASSE', repk=khpc)
-        if (khpc == "OUI") then
+        l_parallel_matrix = isParallelMatrix(matr19)
+        if (l_parallel_matrix) then
             call utmess('F', 'FACTOR_93')
         end if
         if (nsecm .gt. 0) then

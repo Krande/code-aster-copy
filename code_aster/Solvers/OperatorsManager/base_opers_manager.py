@@ -57,7 +57,7 @@ class BaseOperatorsManager(SolverFeature):
 
     @profile
     @SolverFeature.check_once
-    def getResidual(self, scaling=1.0):
+    def getResidual(self, scaling=1.0, temp_internVar=None):
         """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
 
         This is not the true residual but the opposite.
@@ -75,12 +75,15 @@ class BaseOperatorsManager(SolverFeature):
         contact_manager = self.get_feature(SOP.Contact, optional=True)
 
         return disc_comp.getResidual(
-            self.phys_state, contact_manager=contact_manager, scaling=scaling
+            self.phys_state,
+            contact_manager=contact_manager,
+            scaling=scaling,
+            temp_internVar=temp_internVar,
         )
 
     @profile
     @SolverFeature.check_once
-    def getStiffnessJacobian(self, matrix_type):
+    def getStiffnessJacobian(self, matrix_type, temp_internVar=None):
         """Compute K(u) = d(Rint(u) - Rext(u)) / du
 
         Arguments:
@@ -93,5 +96,9 @@ class BaseOperatorsManager(SolverFeature):
         contact_manager = self.get_feature(SOP.Contact, optional=True)
 
         return disc_comp.getTangentMatrix(
-            self.phys_state, matrix_type=matrix_type, contact_manager=contact_manager, assemble=True
+            self.phys_state,
+            matrix_type=matrix_type,
+            contact_manager=contact_manager,
+            assemble=True,
+            temp_internVar=temp_internVar,
         )

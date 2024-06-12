@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,8 @@ subroutine compMecaChckModel(iComp, &
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
-#include "asterfort/asmpi_comm_logical.h"
+#include "asterfort/asmpi_any.h"
+#include "asterfort/asmpi_all.h"
 !
     integer, intent(in) :: iComp
     character(len=8), intent(in) :: model
@@ -219,11 +220,11 @@ subroutine compMecaChckModel(iComp, &
 !
 ! - Comm for MPI
 !
-    call asmpi_comm_logical("MPI_LAND", scl=lAllCellAreBound)
-    call asmpi_comm_logical("MPI_LOR", scl=lAtOneCellAffect)
-    call asmpi_comm_logical("MPI_LOR", scl=lNeedDeborst)
-    call asmpi_comm_logical("MPI_LOR", scl=lElasByDefault)
-    call asmpi_comm_logical("MPI_LOR", scl=lPlStressFuncNu)
+    lAllCellAreBound = asmpi_all(lAllCellAreBound, ASTER_TRUE)
+    lAtOneCellAffect = asmpi_any(lAtOneCellAffect, ASTER_TRUE)
+    lNeedDeborst = asmpi_any(lNeedDeborst, ASTER_TRUE)
+    lElasByDefault = asmpi_any(lElasByDefault, ASTER_TRUE)
+    lPlStressFuncNu = asmpi_any(lPlStressFuncNu, ASTER_TRUE)
 !
 ! - Error when nothing is affected by the behavior
 !

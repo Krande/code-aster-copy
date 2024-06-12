@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,6 +85,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "mumps/dmumps.h"
+#include "asterfort/isParallelMatrix.h"
+
     character(len=*) :: action, matasz, vcinez, solvez
     integer :: iret, nbsol
     real(kind=8) :: rsolu(*)
@@ -101,9 +103,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
     type(zmumps_struc), pointer :: zmpsk => null()
     integer :: k, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
     integer :: nprec, iretz, pcentp(2), ipiv, iretp
-    aster_logical :: lpreco, limpr_matsing
+    aster_logical :: lpreco, limpr_matsing, l_parallel_matrix
     character(len=1) :: rouc, prec
-    character(len=3) :: mathpc
     character(len=4) :: etam
     character(len=14) :: nonu, nu, impr
     character(len=19) :: matas, vcine, nomat, nosolv, solveu
@@ -196,8 +197,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
     if (ibid /= 0) then
         call jelira(nu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     end if
-    call dismoi('MATR_HPC', matas, 'MATR_ASSE', repk=mathpc)
-    if (mathpc .eq. 'OUI') then
+    l_parallel_matrix = isParallelMatrix(matas)
+    if (l_parallel_matrix) then
         call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequ)
         nsmdi = nequ(2)
     end if

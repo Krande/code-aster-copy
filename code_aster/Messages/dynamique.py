@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -191,12 +191,6 @@ cata_msg = {
 Les intervalles de raffinement entourant ces deux valeurs se chevauchent.
 Si une valeur du premier intervalle est trop proche d'une valeur du deuxième
 intervalle (écart inférieur à PAS_MINI), l'une des deux sera supprimée de la liste.
-"""
-    ),
-    27: _(
-        """
- L'écart entre les fréquences %(r1)f Hz et %(r2)f Hz est inférieur à PAS_MINI. Toutefois on conserve
-ces deux valeurs car l'une d'elles peut correspondre à une fréquence de résonance"
 """
     ),
     28: _(

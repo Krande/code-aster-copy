@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,8 @@ subroutine appcpr(kptsc)
 #include "asterfort/PCHPDDMDumpAuxiliaryMat.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/isParallelMatrix.h"
+!
     integer :: kptsc
 !----------------------------------------------------------------
 !
@@ -86,7 +88,7 @@ subroutine appcpr(kptsc)
     real(kind=8), dimension(:), pointer :: coordo => null()
     real(kind=8), dimension(:), pointer :: slvr => null()
     !
-    aster_logical :: lmd, lmhpc, lmp_is_active
+    aster_logical :: lmd, l_parallel_matrix, lmp_is_active
 !
 !----------------------------------------------------------------
 !   Variables PETSc
@@ -126,9 +128,8 @@ subroutine appcpr(kptsc)
     niremp = slvi(4)
     call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
     lmd = matd == 'OUI'
-    call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=matd)
-    lmhpc = matd .eq. 'OUI'
-    ASSERT(.not. (lmd .and. lmhpc))
+    l_parallel_matrix = isParallelMatrix(nomat)
+    ASSERT(.not. (lmd .and. l_parallel_matrix))
 !
     lmp_is_active = slvk(6) == 'GMRES_LMP'
     if (lmp_is_active .and. precon /= 'LDLT_SP') then
@@ -215,7 +216,7 @@ subroutine appcpr(kptsc)
                 !
                 call VecSetSizes(coords, to_petsc_int(ndprop), to_petsc_int(neqg), ierr)
                 ! la matrice est issue d'un ParallelMesh
-            else if (lmhpc) then
+            else if (l_parallel_matrix) then
                 call jeveuo(nonu//'.NUME.PDDL', 'L', vi=prddl)
                 call jeveuo(nonu//'.NUME.NEQU', 'L', jnequl)
                 nloc = zi(jnequl)
@@ -263,7 +264,7 @@ subroutine appcpr(kptsc)
                 call VecAssemblyEnd(coords, ierr)
                 ASSERT(ierr == 0)
                 ! la matrice est issue d'un ParallelMesh
-            else if (lmhpc) then
+            else if (l_parallel_matrix) then
                 call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
                 do il = 1, nloc
                     if (prddl(il) == rang) then
@@ -482,7 +483,7 @@ subroutine appcpr(kptsc)
 !-----------------------------------------------------------------------
     else if (precon == 'HPDDM') then
 !     HPDDM works only in hpc mode
-        if (.not. lmhpc) call utmess('F', 'PETSC_23')
+        if (.not. l_parallel_matrix) call utmess('F', 'PETSC_23')
 !     Set HPPDM pc
         call PCSetType(pc, PCHPDDM, ierr)
         ASSERT(ierr == 0)

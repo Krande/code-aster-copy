@@ -1,6 +1,6 @@
 #!/bin/bash
 
-jobs=$(( $(nproc) * 7 / 8 ))
+jobs=${NPROC_MAX}
 args=( "--clean" "--timefactor=4.0" "--jobs=${jobs}" "$@" )
 # to be directly readable in the browser
 export MESS_EXT="mess.txt"

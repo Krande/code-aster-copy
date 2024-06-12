@@ -23,8 +23,12 @@ subroutine modelCheckPlaneity(mesh, model)
     implicit none
 !
 #include "asterf_types.h"
+#include "asterc/asmpi_barrier_wrap.h"
+#include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_split_comm.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/dismoi.h"
@@ -68,6 +72,7 @@ subroutine modelCheckPlaneity(mesh, model)
     character(len=8), parameter :: cmpName(nbCmp) = (/"X1", "X2"/)
     real(kind=8) :: cmpVale(nbCmp)
     character(len=24), parameter :: codret = '&&OP0018.CODRET', indicr = '&&OP0018.INDICR'
+    mpi_int :: world, newcom, color, key, ierror
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,15 +81,27 @@ subroutine modelCheckPlaneity(mesh, model)
     lparallel_mesh = answer .eq. 'OUI'
 
 ! - Get list of cells with plate model
+    nbCellPlate = 0
     call getPlateCell(model, nbCellPlate, cellPlate)
+
+! - Split MPI communicator
+    call asmpi_comm('GET', world)
+    if (nbCellPlate .ne. 0) then
+! ----- Plate case
+        color = 1
+        key = 1
+        call asmpi_split_comm(world, color, key, "TMPCOMM", newcom)
+        call asmpi_comm('SET', newcom)
+    else
+! ----- No plate case
+        color = 0
+        key = 0
+        call asmpi_split_comm(world, color, key, "TMPCOMM", newcom)
+        call asmpi_comm('SET', newcom)
+    end if
 
 ! - Check planeity of quadrangles
     if (nbCellPlate .ne. 0) then
-
-        if (lparallel_mesh) then
-            call utmess("F", "MODELE1_16")
-        end if
-
 ! ----- Create LIGREL for cells with plate model
         call exlim2(cellPlate, nbCellPlate, modelLigrel, base, plateLigrel)
 
@@ -115,6 +132,13 @@ subroutine modelCheckPlaneity(mesh, model)
         if (tabret(0)) then
             call utmess('A', 'PLATE1_81')
         end if
+    end if
+!
+! - Unsplit MPI communicator
+    call asmpi_barrier_wrap(world, ierror)
+    call asmpi_comm('SET', world)
+    if (newcom .ne. 0) then
+        call asmpi_comm('FREE', newcom)
     end if
 !
     AS_DEALLOCATE(vi=cellPlate)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -198,11 +198,6 @@ Conseils :
  "sous-points" différents (COQUE_NCOU, TUYAU_NCOU, ...) ?
 """
     ),
-    61: _(
-        """
-    Le type de la fonction est invalide : %(k1)s
-"""
-    ),
     62: _(
         """
 Erreur lors de l'interpolation de la fonction %(k1)s sur la maille %(k3)s, il manque le paramètre %(k2)s
@@ -219,6 +214,12 @@ Erreur lors de l'interpolation de la fonction %(k1)s sur la maille %(k3)s, il ma
  Variables internes en nombre différent aux instants '+' et '-' pour la maille %(k1)s
  Instant '-' : %(i1)d
  Instant '+' : %(i2)d
+"""
+    ),
+    65: _(
+        """
+Erreur lors de l'interpolation de la fonction %(k1)s, il manque la géométrie.
+Votre matériau en dépend, il faut définir la variable de commande GEOM dans AFFE_MATERIAU.
 """
     ),
     68: _(

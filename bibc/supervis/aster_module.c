@@ -259,9 +259,10 @@ void DEFP( GETRAN, getran, _OUT ASTERDOUBLE *rval ) {
     */
     PyObject *res = (PyObject *)0;
     PyObject *val = (PyObject *)0;
+    PyObject *func = GetJdcAttr( "getran" );
     int ok = 0;
 
-    res = PyObject_CallMethod( get_sh_etape(), "getran", "" );
+    res = PyObject_CallFunction( func, "" );
     /*  si le retour est NULL : exception Python a transferer
         normalement a l appelant mais FORTRAN ??? */
     if ( res == NULL )
@@ -273,6 +274,7 @@ void DEFP( GETRAN, getran, _OUT ASTERDOUBLE *rval ) {
 
     *rval = (ASTERDOUBLE)PyFloat_AsDouble( val );
 
+    Py_DECREF( func );
     Py_DECREF( res ); /*  decrement sur le refcount du retour */
     return;
 }
@@ -285,8 +287,10 @@ void DEFP( INIRAN, iniran, _IN ASTERINTEGER *jump ) {
       avec un shift eventuel de jump termes
     */
     PyObject *res = (PyObject *)0;
+    PyObject *func = GetJdcAttr( "iniran" );
 
-    res = PyObject_CallMethod( get_sh_etape(), "iniran", "i", (int)*jump );
+    res = PyObject_CallFunction( func, "i", (int)*jump );
+    Py_DECREF( func );
     Py_DECREF( res ); /*  decrement sur le refcount du retour */
     return;
 }

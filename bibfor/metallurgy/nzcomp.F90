@@ -67,6 +67,8 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
 !
     select case (numeComp)
 !
+    case (0)
+! ----- Empty behaviour
     case (1)
         call zedgar(jvMaterCode, nbPhase, &
                     temp1, temp2, &

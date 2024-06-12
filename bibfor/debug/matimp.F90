@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine matimp(matz, ific, typimz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/isParallelMatrix.h"
 !
     character(len=*) :: matz, typimz
     integer :: ific
@@ -54,7 +55,7 @@ subroutine matimp(matz, ific, typimz)
     character(len=1) :: ktyp
     character(len=3) :: mathpc
     character(len=19) :: mat19
-    aster_logical :: ltypr, lsym, lmd, lmhpc
+    aster_logical :: ltypr, lsym, lmd, l_parallel_matrix
     real(kind=8) :: dble, dimag
     integer, pointer :: deeq(:) => null()
     integer, pointer :: smdi(:) => null()
@@ -75,8 +76,7 @@ subroutine matimp(matz, ific, typimz)
 !
     lmd = (refa(11) .eq. 'MATR_DISTR')
 !
-    call dismoi('MATR_HPC', mat19, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc .eq. 'OUI'
+    l_parallel_matrix = isParallelMatrix(mat19)
     localOrGhost = ' '
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
@@ -91,7 +91,7 @@ subroutine matimp(matz, ific, typimz)
         call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
         call jelira(nonu//'.NUME.DELG', 'LONMAX', n1)
         jnlogl = 0
-        if (lmhpc) then
+        if (l_parallel_matrix) then
             call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
             call asmpi_info(rank=mrank, size=msize)
             rang = to_aster_int(mrank)
@@ -138,8 +138,9 @@ subroutine matimp(matz, ific, typimz)
         write (ific, *) 'MATRICE A COEEFICIENTS REELS :', ltypr
         write (ific, *) 'MATRICE SYMETRIQUE :', lsym
         write (ific, *) 'MATRICE DISTRIBUEE :', lmd
-        write (ific, *) 'MATRICE HPC :', lmhpc
-        if (lmhpc) write (ific, *) 'NUMEROTATION LOCALE AU PROCESSUS :', rang, ' / ', nbproc
+        write (ific, *) 'MATRICE HPC :', l_parallel_matrix
+        if (l_parallel_matrix) write (ific, *) 'NUMEROTATION LOCALE AU PROCESSUS :', &
+         &rang, ' / ', nbproc
         write (ific, *) ' '
 !     --- ENTETE FORMAT MATLAB
     else if (typimp .eq. 'MATLAB') then
@@ -230,7 +231,7 @@ subroutine matimp(matz, ific, typimz)
         do k = 1, n
             nuno = deeq(2*(k-1)+1)
             nucmp = deeq(2*(k-1)+2)
-            if (lmhpc) then
+            if (l_parallel_matrix) then
                 if (zi(jprddl-1+k) .eq. rang) then
                     localOrGhost = 'DDL_LOCAL'
                 else

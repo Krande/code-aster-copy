@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -144,6 +144,8 @@ subroutine irchml(fileUnit, &
     fieldName = fieldNameZ
     fieldType = fieldTypeZ
     lMeshCoor = ASTER_FALSE
+    cmpVariNb = 0
+
     if (present(lMeshCoor_)) then
         lMeshCoor = lMeshCoor_
     end if
@@ -251,8 +253,7 @@ subroutine irchml(fileUnit, &
 !
 ! - Select list of components (for VARI_R)
 !
-    cmpVariNb = 0
-    !
+!
     if ((quantityName .eq. 'VARI_R') .and. (fieldSupport(1:2) .eq. 'EL')) then
         if (cmpUserNb .ne. 0) then
             cmpVariNb = cmpUserNb

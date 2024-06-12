@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
                   he, nfh, ddlc, ddlm, nfe, &
-                  basloc, nnop, npg, sigma, compor, &
-                  idepl, lsn, lst, nfiss, heavn, jstno, &
+                  basloc, nnop, npg, sigma, &
+                  lsn, lst, nfiss, heavn, jstno, &
                   codopt, ivectu, imate)
 !
 ! aslint: disable=W1306,W1504
@@ -43,12 +43,11 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
     integer :: ndim, nfe, nfh, nfiss, nnop, npg
     integer :: ddlc, ddlm, heavn(nnop, 5), jstno
     integer, optional :: imate
-    integer :: codopt, idepl, igeom, ivectu
+    integer :: codopt, igeom, ivectu
     real(kind=8) :: basloc(3*ndim*nnop), coorse(*), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop)
     real(kind=8) :: sigma(codopt*(2*ndim-1)+1, codopt*(npg-1)+1)
     character(len=8) :: elrefp, elrese
-    character(len=16) :: compor(4)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -70,8 +69,6 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 ! IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ÉLÉMENT
 ! IN  SIGMA   : CONTRAINTES DE CAUCHY
-! IN  COMPOR  : COMPORTEMENT
-! IN  IDEPL   : ADRESSE DU DEPLACEMENT A PARTIR DE LA CONF DE REF
 ! IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
 ! IN  CODOPT  : CODE DE L OPTION, POUR DIMENSIONNER LE TABLEAU SIGMA
@@ -86,26 +83,22 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
     integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se, i_dim
     integer :: singu, alp, ii
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
-    real(kind=8) :: rbid6(6), rbid33(3, 3)
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+ndim)), voigt(2*ndim)
     real(kind=8) :: r
     real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
-    aster_logical :: grdepl, axi
+    aster_logical :: axi
 !
     real(kind=8) :: rac2
     data rac2/1.4142135623731d0/
 !--------------------------------------------------------------------
 !
-!     ATTENTION, EN 3D, ZR(IDEPL) ET ZR(VECTU) SONT DIMENSIONNÉS DE
+!     ATTENTION, EN 3D, ZR(VECTU) EST DIMENSIONNÉ DE
 !     TELLE SORTE QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES
 !     NOEUDS MILIEU
 !
 !     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
     call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
-!
-!     MODELE H.P.P ou GROT_GDEP ?
-    grdepl = compor(3) .eq. 'GROT_GDEP'
 !
 !     RECUPERATION DU NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT PARENT
     call elrefe_info(fami='RIGI', nnos=nnops)
@@ -172,20 +165,10 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
-        if (grdepl) then
-            call xcinem(axi, igeom, nnop, nnops, idepl, .true._1, &
-                        ndim, he, &
-                        nfiss, nfh, nfe, ddls, ddlm, &
-                        fk, dkdgl, ff, dfdi, f, &
-                        rbid6, rbid33, heavn)
-        else
-!           cas H.P.P (en particulier pour le calcul de CHAR_MECA_TEMP_R,
-!                      l'adresse idepl est un argument bidon...)
-            f(:, :) = 0.d0
-            do i = 1, 3
-                f(i, i) = 1.d0
-            end do
-        end if
+        f(:, :) = 0.d0
+        do i = 1, 3
+            f(i, i) = 1.d0
+        end do
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
@@ -227,7 +210,8 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
 !
 !   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                def(3, n, 1+ndim*ig) = f(3, 3)*ff(n)/r*xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
+                    def(3, n, 1+ndim*ig) = f(3, 3)*ff(n)/r &
+                                           *xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
                 end if
 !
             end do

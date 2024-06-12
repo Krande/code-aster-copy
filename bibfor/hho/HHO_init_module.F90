@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ module HHO_init_module
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "asterfort/tenonulg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/rcvala.h"
 #include "blas/dsyr.h"
@@ -64,12 +63,11 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGeomData(nodes_coor, numnodes, nbnodes, typma, elem_dim)
+    subroutine hhoGeomData(nodes_coor, nbnodes, typma, elem_dim)
 !
         implicit none
 !
         real(kind=8), dimension(3, 27), intent(out)  :: nodes_coor
-        integer, dimension(27), intent(out)         :: numnodes
         integer, intent(out)                        :: nbnodes
         character(len=8), intent(out)               :: typma
         integer, intent(out)                        :: elem_dim
@@ -83,7 +81,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! Out nodes_coor        : coordinates of the nodes
-! Out numnodes          : global id of the nodes in the mesh
 ! Out nbnodes           : number of nodes
 ! Out typma             : type of the element
 ! Out elem_dim          : dimension of the element
@@ -96,7 +93,6 @@ contains
 !
 ! --- Init
         nodes_coor = 0.d0
-        numnodes = 0
         nbnodes = 0
         typma = ''
         elem_dim = 0
@@ -153,10 +149,6 @@ contains
             end do
         end do
 !
-! --- Get global nodes id
-!
-        call tenonulg(numnodes)
-!
         if (l_debug) then
             write (6, *) "hhoGeomData debug"
             write (6, *) "typma: ", typma
@@ -173,12 +165,11 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGeomFace(nodes_coor, numnodes, nbnodes, typma, elem_dim)
+    subroutine hhoGeomFace(nodes_coor, nbnodes, typma, elem_dim)
 !
         implicit none
 !
-        real(kind=8), dimension(3, 9), intent(out)   :: nodes_coor
-        integer, dimension(9), intent(out)          :: numnodes
+        real(kind=8), dimension(3, 9), intent(out)  :: nodes_coor
         integer, intent(out)                        :: nbnodes
         character(len=8), intent(out)               :: typma
         integer, intent(out)                        :: elem_dim
@@ -203,7 +194,6 @@ contains
 !
 ! --- Init
         nodes_coor = 0.d0
-        numnodes = 0
         nbnodes = 0
         typma = ''
         elem_dim = 0
@@ -240,10 +230,6 @@ contains
             end do
         end do
 !
-! --- Get global nodes id
-!
-        call tenonulg(numnodes)
-!
         if (l_debug) then
             write (6, *) "hhoGeomFace debug"
             write (6, *) "typma: ", typma
@@ -260,7 +246,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFaceInit(hhoFace, typma, ndim, nbnodes, nodes_coor, numnodes, &
+    subroutine hhoFaceInit(hhoFace, typma, ndim, nbnodes, nodes_coor, &
                            barycenter_cell, num_nodes_loc)
 !
         implicit none
@@ -268,7 +254,6 @@ contains
         character(len=8), intent(in)                    :: typma
         integer, intent(in)                             :: ndim
         real(kind=8), dimension(3, 4), intent(in)        :: nodes_coor
-        integer, dimension(4), intent(in)               :: numnodes
         integer, intent(in)                             :: nbnodes
         real(kind=8), dimension(3), optional, intent(in):: barycenter_cell
         integer, dimension(4), optional, intent(in)     :: num_nodes_loc
@@ -286,7 +271,6 @@ contains
 ! In ndim               : dimension of the element
 ! In nodes_coor         : coordinates of nodes
 ! In nbnodes            : number of nodes
-! In numnodes           : global id of the nodes in the mesh
 ! In barycenter_cell    : barycenter of the cell
 ! Out hhoFace           : a HHO Face
 ! --------------------------------------------------------------------------------------------------
@@ -299,7 +283,7 @@ contains
         hhoFace%typema = typma
         hhoFace%nbnodes = nbnodes
         hhoFace%ndim = ndim
-        hhoFace%coorno = hhoFaceInitCoor(nodes_coor, numnodes, nbnodes, ndim, numsorted)
+        hhoFace%coorno = hhoFaceInitCoor(nodes_coor, nbnodes, ndim, numsorted)
         hhoFace%barycenter = barycenter(hhoFace%coorno, hhoFace%nbnodes)
         if (present(barycenter_cell)) then
             hhoFace%normal = hhoNormalFace3(hhoFace, barycenter_cell)
@@ -322,13 +306,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoCellInit(typma, nodes_coor, numnodes, hhoCell)
+    subroutine hhoCellInit(typma, nodes_coor, hhoCell)
 !
         implicit none
 !
         character(len=8), intent(in)                :: typma
         real(kind=8), dimension(3, 27), intent(in)   :: nodes_coor
-        integer, dimension(27), intent(in)          :: numnodes
         type(HHO_Cell), intent(out)                 :: hhoCell
 !
 ! --------------------------------------------------------------------------------------------------
@@ -351,7 +334,6 @@ contains
         integer, dimension(max_faces)           :: nbnodes_faces
         character(len=8), dimension(max_faces)  :: type_faces
         real(kind=8), dimension(3, max_nodes)    :: coor_face
-        integer, dimension(max_nodes)           :: numnodes_face
         integer :: i_face, i_node
 ! --------------------------------------------------------------------------------------------------
 ! --- Init
@@ -359,7 +341,6 @@ contains
         nbnodes_faces = 0
         type_faces = ' '
         coor_face = 0.d0
-        numnodes_face = 0
 !
         if (typma == 'HEXA27') then
             hhoCell%typema = 'HEXA8'
@@ -537,10 +518,9 @@ contains
             coor_face = 0.d0
             do i_node = 1, nbnodes_faces(i_face)
                 coor_face(1:3, i_node) = hhoCell%coorno(1:3, nodes_faces(i_node, i_face))
-                numnodes_face(i_node) = numnodes(nodes_faces(i_node, i_face))
             end do
             call hhoFaceInit(hhoCell%faces(i_face), type_faces(i_face), hhoCell%ndim-1, &
-                             nbnodes_faces(i_face), coor_face, numnodes_face, &
+                             nbnodes_faces(i_face), coor_face, &
                              hhoCell%barycenter, nodes_faces(:, i_face))
         end do
 !
@@ -649,7 +629,7 @@ contains
 !   In npg (optional)      : number of quadrature point for the face
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: numnodes(27), nbnodes, elem_dim
+        integer :: nbnodes, elem_dim
         character(len=8) :: typma
         real(kind=8) :: coor(3, 27)
         aster_logical :: laxis
@@ -658,11 +638,11 @@ contains
 !
 ! --- Get HHO informations
 !
-        call hhoGeomData(coor, numnodes, nbnodes, typma, elem_dim)
+        call hhoGeomData(coor, nbnodes, typma, elem_dim)
         call hhoDataInit(hhoData)
 !
 ! --- Initialize HHO Cell
-        call hhoCellInit(typma, coor, numnodes, hhoCell)
+        call hhoCellInit(typma, coor, hhoCell)
 !
 ! --- Get quadrature (optional)
 !
@@ -705,20 +685,20 @@ contains
 !   In npg (optional)      : number of quadrature point for the face
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: nbnodes, elem_dim, numnodes(9)
+        integer :: nbnodes, elem_dim
         real(kind=8) :: nodes_coor(3, 9)
         character(len=8) :: typma
         aster_logical :: laxis
 !
 ! --- Get HHO informations
 !
-        call hhoGeomFace(nodes_coor, numnodes, nbnodes, typma, elem_dim)
+        call hhoGeomFace(nodes_coor, nbnodes, typma, elem_dim)
         ASSERT(elem_dim == 1 .or. elem_dim == 2)
         call hhoDataInit(hhoData)
 !
 ! --- Initialize HHO Face
 !
-        call hhoFaceInit(hhoFace, typma, elem_dim, nbnodes, nodes_coor, numnodes(1:4))
+        call hhoFaceInit(hhoFace, typma, elem_dim, nbnodes, nodes_coor)
 !
 ! --- Get quadrature (optional)
 !

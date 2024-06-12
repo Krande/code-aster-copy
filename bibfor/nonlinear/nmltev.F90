@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine nmltev(sderro, typevt, loopName, eventFlag)
     implicit none
     !
 #include "asterf_types.h"
-#include "asterfort/asmpi_comm_logical.h"
+#include "asterfort/asmpi_any.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/NonLinear_type.h"
 !
@@ -90,6 +90,6 @@ subroutine nmltev(sderro, typevt, loopName, eventFlag)
     end do
 
 ! - Share error for HPC
-    call asmpi_comm_logical('MPI_LOR', scl=eventFlag)
+    eventFlag = asmpi_any(eventFlag, ASTER_TRUE)
 !
 end subroutine
