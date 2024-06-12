@@ -596,14 +596,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
                                           const bool raiseError = true ) {
         auto field = std::make_shared< FieldOnNodes< ValueType > >( desc );
 
-        const std::string kstop = "F";
+        const std::string kstop = raiseError ? "F" : " ";
         ASTERINTEGER iret = -1;
         CALLO_VTCOPY( getName(), field->getName(), kstop, &iret );
-
-        if ( raiseError && iret > 0 ) {
-            raiseAsterError( "Failed to change EquationNumbering" );
-        }
-
         return field;
     }
 
