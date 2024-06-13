@@ -41,6 +41,9 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !     APPELLE PAR LA ROUTINE CHAPEAU VTCOPY
 !     RECOPIE LES VALEURS DU CHAM_NO CHIN DANS LE CHAM_NO CHOUT
 !     CETTE ROUTINE PERMET DE CHANGER LA NUMEROTATION D'UN CHAM_NO
+!     SI KSTOP.NE.'F' EN ENTREE ET QUE CODRET != 0 EN SORTIE, ALORS
+!     DES COMPOSANTES DU CHAMP CHIN N'ONT PAS PU ETRE RECOPIEES ET
+!     ONT ETE MISES A ZERO (ON ARRETE LA ROUTINE SI KSTOP .EQ. 'F')
 !
 !     PRECAUTIONS D'EMPLOI :
 !     - LES CHAM_NOS DOIVENT EXISTER.
@@ -246,18 +249,16 @@ subroutine vtcop1(chin, chout, kstop, codret)
         nucp2 = deeq2(2*(ieq2-1)+2)
 !       NUCP2.NE.ICMP == GLUTE POUR LA SOUS-STRUCTURATION STATIQUE
         if (nucp2 .gt. 0 .and. nucp2 .ne. icmp .and. .not. trav2(ieq2)) then
+
+            valk(1) = zk8(jcmpgd+nucp2-1)
+            call jenuno(jexnum(mesh2//'.NOMNOE', nuno2), valk(2))
+            valk(3) = ch1
+            codret = 1
+
             if (kstop .eq. 'F') then
-                ASSERT(.false.)
+                call utmess('F', 'ALGELINE7_20', nk=3, valk=valk)
             else
-                valk(1) = zk8(jcmpgd+nucp2-1)
-                call jenuno(jexnum(mesh2//'.NOMNOE', nuno2), valk(2))
-                valk(3) = ch1
-                if (kstop .eq. 'F') then
-                    call utmess('F', 'ALGELINE7_20', nk=3, valk=valk)
-                else
-                    call utmess('A', 'ALGELINE7_20', nk=3, valk=valk)
-                end if
-                codret = 1
+                call utmess('A', 'ALGELINE7_20', nk=3, valk=valk)
                 exit
             end if
         end if

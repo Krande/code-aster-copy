@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1299,7 +1299,7 @@ CHARGE2 = AFFE_CHAR_CINE(
 )
 ############## Calcul pour HR = 0.804 avec THH2MS
 
-RESU1 = STAT_NON_LINE(
+RESU1 = MECA_NON_LINE(
     CHAM_MATER=fieldmat,
     COMPORTEMENT=_F(
         RELATION="KIT_THH2M", RELATION_KIT=("HYDR_TABBAL", "LIQU_AD_GAZ", "ELAS"), TOUT="OUI"
@@ -1316,7 +1316,7 @@ RESU1 = STAT_NON_LINE(
 
 ############## Calcul pour HR = 0.804 avec THH2MD
 
-RESU2 = STAT_NON_LINE(
+RESU2 = MECA_NON_LINE(
     CHAM_MATER=fieldmat,
     COMPORTEMENT=_F(
         RELATION="KIT_THH2M", RELATION_KIT=("HYDR_TABBAL", "LIQU_AD_GAZ", "ELAS"), TOUT="OUI"

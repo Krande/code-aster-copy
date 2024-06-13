@@ -3,7 +3,7 @@
  * @brief Python interface for FieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -107,16 +107,18 @@ Returns:
         .def( "copyUsingDescription", &FieldOnNodesReal::copyUsingDescription,
               R"(
             Return a new field using the description.
-            Be carefull, Lagrange DOFs are setted to zero. Moreover, components that are
-            not present in the field are also setted to zero in the output field.
+            Be careful, Lagrange DOFs are set to zero. Moreover, components that are
+            not present in the field are also set to zero in the output field.
 
             Arguments:
                 desc [EquationNumbering]: description of equations
+                raiseError [bool]: If set to true, raises an error if the copy fails.
+                Otherwise, nothing happens. Defaults to true.
 
             Returns:
                 FieldOnNodesReal: field using new description.
             )",
-              py::arg( "desc" ) )
+              py::arg( "desc" ), py::arg( "raiseError" ) = true )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
         .def( "getComponents", &FieldOnNodesReal::getComponents, R"(
             Get list of components
