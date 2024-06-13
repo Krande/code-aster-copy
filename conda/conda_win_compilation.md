@@ -23,7 +23,10 @@ Example `.env` file:
 ```
 CONDA_ROOT=C:\work\miniforge3
 INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env
+# BUILD TOOLS PATH
 VS_VARS_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build
+# VS2022 Professional PATH
+#VS_VARS_PATH=C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build
 PYTHON_ENV_NAME=codeaster-deps
 ```
 
