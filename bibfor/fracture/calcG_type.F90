@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -397,10 +397,12 @@ contains
         character(len=16) :: k16bid
         character(len=19) :: lisopt
         character(len=8)  :: modele, mater
+        character(len=8)  :: templist(NB_MAX_OPT)
         integer, pointer :: v_nume(:) => null()
         real(kind=8) :: start, finish
 !
         call cpu_time(start)
+        templist = ' '
 !
         call jemarq()
 !
@@ -436,15 +438,17 @@ contains
 ! --- Remove option G* if option KJ* exists
 !
             if (any('G' == this%list_option) .and. any('KJ' == this%list_option)) then
+                templist = ' '
                 this%nb_option = this%nb_option-1
-                this%list_option = pack(this%list_option, this%list_option .ne. 'G')
+                templist = pack(this%list_option, this%list_option .ne. 'G')
+                this%list_option = templist
             end if
-
             if (any('G_EPSI' == this%list_option) .and. any('KJ_EPSI' == this%list_option)) then
+                templist = ' '
                 this%nb_option = this%nb_option-1
-                this%list_option = pack(this%list_option, this%list_option .ne. 'G_EPSI')
+                templist = pack(this%list_option, this%list_option .ne. 'G_EPSI')
+                this%list_option = templist
             end if
-
         end if
 !
 ! --- Level of information
