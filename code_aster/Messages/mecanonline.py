@@ -20,6 +20,11 @@
 from ..Utilities import _
 
 cata_msg = {
+    1: _(
+        """
+ Le CARA_ELEM de l'évolution sous ETAT_INIT/EVOL_NOLI est différent du CARA_ELEM courant.
+ """
+    ),
     2: _(
         """
  Lors de la recopie du champ %(k1)s donné dans ETAT_INIT de la commande
