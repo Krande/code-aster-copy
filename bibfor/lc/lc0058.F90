@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -213,11 +213,8 @@ subroutine lc0058(BEHinteg, &
 !
 ! - Call MFront
 !
-!   TODO: sqrt(2) should be removed, same convention seems to be in used in MGIS/MFront
     pnewdt = 1.d0
-    sigp_loc = sigm
-    ! sigp_loc(1:2*ndim) = sigm(1:2*ndim)
-    ! sigp_loc(4:6)      = sigp_loc(4:6)*usrac2
+    sigp_loc(1:nsig) = sigm(1:nsig)
     vi_loc(1:nstatv) = vim(1:nstatv)
 
     ! nstatv must be equal to the value returned by mgis_get_sizeof_isvs
