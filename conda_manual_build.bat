@@ -127,7 +127,7 @@ set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
 REM Clean the build directory
 @REM waf distclean
 
-python conda\update_version.py
+python conda\scripts\update_version.py
 
 set BUILD=std
 

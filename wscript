@@ -235,6 +235,9 @@ def configure(self):
         elif os.getenv('FC', '').lower().startswith('flang'):
             self.load("flang", tooldir="config")
         self.load("msvc", tooldir="config")
+        if self.options.msvc_entry:
+            self.define("ASTER_WITHOUT_PYMOD", 1)
+            self.recurse("conda")
 
     opts = self.options
     self.setenv("default")
