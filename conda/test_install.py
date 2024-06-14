@@ -141,9 +141,10 @@ def cli():
 
 def manual():
     # run_specific_test("comp010i")
-    run_specific_test('adlv100a')
+    # run_specific_test('adlv100a')
     # run_specific_test('adlv100p')
-    # run_specific_test('adlv100p')
+    # run_specific_test('ahlv100a')
+    run_specific_test('ahlv100t')
 
 
 if __name__ == "__main__":

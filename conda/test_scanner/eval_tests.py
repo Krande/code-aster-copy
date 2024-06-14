@@ -1,5 +1,7 @@
+import os
 import pathlib
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 
 
@@ -50,23 +52,29 @@ def eval_tests(test_dir: str | pathlib.Path):
             error_map[error_data.error_reason] = []
         error_map[error_data.error_reason].append(error_data)
 
-    print(f"Total passing tests: {perc_passing:.2f}% [{tot_passing}/{tot_seq_files}]")
     overflow_errors = error_map.get(TestResult.ErrOverflowInt)
+    err_str = f"Total passing tests: {perc_passing:.2f}% [{tot_passing}/{tot_seq_files}]\n"
     if overflow_errors:
         perc_overflow = len(overflow_errors) / tot_failed * 100
-        print(f"Overflow errors: {len(overflow_errors)} [{perc_overflow:.2f}%]")
-        print('|'.join([f"{err.name}" for err in overflow_errors]))
+        err_str += f"Overflow errors: {len(overflow_errors)} [{perc_overflow:.2f}%]\n"
+        err_str += '|'.join([f"{err.name}" for err in overflow_errors]) + '\n'
     else:
-        print("No overflow errors")
+        err_str += "No overflow errors\n"
 
     unknown_errors = error_map.get(TestResult.ErrUnknown)
     if unknown_errors:
         perc_unknown = len(unknown_errors) / tot_failed * 100
-        print(f"Unknown errors: {len(unknown_errors)} [{perc_unknown:.2f}%]")
-        print('|'.join([f"{err.name}" for err in unknown_errors]))
+        err_str += f"Overflow errors: {len(overflow_errors)} [{perc_unknown:.2f}%]\n"
+        err_str += '|'.join([f"{err.name}" for err in overflow_errors]) + '\n'
     else:
-        print("No unknown errors")
+        err_str += "No unknown errors\n"
+
+    # save to file with todays date
+    os.makedirs('results', exist_ok=True)
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    with open(f"results/{today_str}.txt", "w") as f:
+        f.write(err_str)
 
 
 if __name__ == '__main__':
-    eval_tests("../../temp/seq")
+    eval_tests("../../temp/seq-debug")
