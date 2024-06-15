@@ -150,7 +150,7 @@ def options(self):
     group.add_option(
         "--msvc-entry",
         dest="msvc_entry",
-        action="store_false",
+        action="store_true",
         help="rewrites pybind11 entry points for MSVC to skip symlink",
     )
     group = self.add_option_group("code_aster options")
@@ -235,9 +235,7 @@ def configure(self):
         elif os.getenv('FC', '').lower().startswith('flang'):
             self.load("flang", tooldir="config")
         self.load("msvc", tooldir="config")
-        if self.options.msvc_entry:
-            self.define("ASTER_WITHOUT_PYMOD", 1)
-            self.recurse("conda")
+
 
     opts = self.options
     self.setenv("default")
@@ -304,6 +302,12 @@ def configure(self):
     if self.get_define("ASTER_HAVE_MPI"):
         self.env.ASRUN_MPI_VERSION = 1
 
+    if self.options.msvc_entry:
+        self.define("ASTER_WITHOUT_PYMOD", 1)
+        self.recurse("conda")
+    else:
+        Logs.info("Configuring without MSVC entrypoints")
+
     # bib* configure functions may add options required by prerequisites
     self.recurse("bibfor")
     self.recurse("bibcxx")
@@ -352,7 +356,7 @@ def build(self):
         )
 
     self.load("ext_aster", tooldir="waftools")
-    # Need to remove Windows Kits includes from INCLUDES
+
     if self.env.CC_NAME == "msvc":
         msvc_build_init(self)
 

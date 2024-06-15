@@ -26,46 +26,25 @@ from waflib import Configure, TaskGen, Utils, Logs, Build
 
 def options(self):
     self.load("compiler_c")
-    group = self.get_option_group("code_aster options")
-    group.add_option(
-        "--msvc-entry",
-        dest="msvc_entry",
-        action="store_false",
-        help="rewrites pybind11 entry points for MSVC to skip symlink",
-    )
 
 
 def configure(self):
+    Logs.info("Configuring MSVC entrypoints")
     self.load("compiler_c")
 
     opts = self.options
     # preserve symbols in the dyn table for stdcallsspo
-    if sys.platform == "darwin":
-        # '--export-dynamic' is '-export_dynamic' in OS X linker
-        # http://stackoverflow.com/questions/21279036/what-is-clangs-equivalent-to-rdynamic-gcc-flag
-        self.env.append_unique("LINKFLAGS", ["-Wl,-export_dynamic"])
-        # prefer memory usage over speed
-        self.env.append_unique("LINKFLAGS", ["-Wl,--no-keep-memory"])
-        self.env.append_unique("LINKFLAGS_LIBASTER", ["-Wl,--no-as-needed"])
-    elif sys.platform == "win32":
-        pass
-    else:
-        self.env.append_unique("LINKFLAGS", ["-Wl,--export-dynamic"])
-
-        # prefer memory usage over speed
-        self.env.append_unique("LINKFLAGS", ["-Wl,--no-keep-memory"])
-        self.env.append_unique("LINKFLAGS_LIBASTER", ["-Wl,--no-as-needed"])
 
     incpath = osp.join(self.path.get_src().abspath(), "include")
-    self.env.append_value("INCLUDES_BIBC", incpath)
+    self.env.append_value("INCLUDES_ASTERENTRY", incpath)
 
     top_dir = pathlib.Path(self.path.get_bld().abspath()).parent.parent
 
     bibfor_incldir = osp.join(top_dir, "bibfor", "include")
-    self.env.append_value("INCLUDES_BIBC", bibfor_incldir)
+    self.env.append_value("INCLUDES_ASTERENTRY", bibfor_incldir)
 
     bibcxx_incldir = osp.join(top_dir, "bibcxx", "include")
-    self.env.append_value("INCLUDES_BIBC", bibcxx_incldir)
+    self.env.append_value("INCLUDES_ASTERENTRY", bibcxx_incldir)
 
     if "ifort" in self.env.FC_NAME.lower():
         self.env.append_value("LINKFLAGS_fcprogram", ["-nofor-main"])
@@ -77,17 +56,21 @@ def configure(self):
 
 
 def build(self):
+    Logs.info("Building MSVC entrypoints")
+    get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
     use = ["BIBC"]
 
     # Build aster.pyd
     self(
         features="c cshlib",
-        name=f"aster",
+        name="aster_entry",
         source="c_entrypoints/entry_aster.c",
-        target="aster_pyd",
+        target="aster.pyd",
         defines="",
         use=use,
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
     )
+
+    self.install_files(env.ASTERINCLUDEDIR, get_srcs("include/*.h"))

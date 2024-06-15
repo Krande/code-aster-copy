@@ -149,7 +149,7 @@ def build_libbibc(self, env):
         source=get_srcs("**/*.c", excl=excl_files),
         target="bibc",
         defines="",
-        use=use+extra_use,
+        use=use + extra_use,
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
     )
@@ -160,14 +160,16 @@ def build_libaster(self, env):
 
     if env.BUILD_MFRONT:
         use.append("astermfront")
-
+    defines = ["_MAIN_=_unused_main_"]
+    if self.options.msvc_entry:
+        defines.extend(['ASTER_WITHOUT_PYMOD'])
     # {bibfor, bibc, bibcxx}/*.o
     self(
         features="cxx cxxshlib",
         name="asterlib",
         target="aster",
         source=PYMAIN,
-        defines="_MAIN_=_unused_main_",  # 'ASTER_WITHOUT_PYMOD',
+        defines=defines,
         env=env.derive(),
         use=use,
         install_path=env.ASTERLIBDIR,
