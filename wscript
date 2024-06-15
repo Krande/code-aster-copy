@@ -354,29 +354,7 @@ def build(self):
     self.load("ext_aster", tooldir="waftools")
     # Need to remove Windows Kits includes from INCLUDES
     if self.env.CC_NAME == "msvc":
-        self.load("msvc_lib", tooldir="waftools")
-        # Logs.info(f"{self.env}")
-        pops = []
-        for i, lib in enumerate(self.env.LIBPATH):
-            if "Windows" in lib or 'Microsoft' in lib or 'oneAPI' in lib:
-                pops.append(lib)
-
-        for inc_to_be_removed in pops:
-            i = self.env.LIBPATH.index(inc_to_be_removed)
-            self.env.LIBPATH.pop(i)
-
-        pops = []
-        for i, inc in enumerate(self.env.INCLUDES):
-            if "Windows" in inc or 'Microsoft' in inc or 'oneAPI' in inc:
-                pops.append(inc)
-        for inc_to_be_removed in pops:
-            i = self.env.INCLUDES.index(inc_to_be_removed)
-            self.env.INCLUDES.pop(i)
-
-        # Add the python include dir
-        py_incl = pathlib.Path(os.environ["PREFIX"]) / "include"
-        self.env.INCLUDES.append(py_incl.as_posix())
-        # Logs.info(f"INCLUDES: {self.env.INCLUDES}")
+        msvc_build_init(self)
 
     self.recurse("bibfor")
     self.recurse("code_aster")
@@ -421,9 +399,34 @@ def init(self):
 
     # default to release
     for y in _all:
-
         class tmp(y):
             variant = os.environ.get("WAF_DEFAULT_VARIANT") or "release"
+
+
+def msvc_build_init(self):
+    self.load("msvc_lib", tooldir="waftools")
+    # Logs.info(f"{self.env}")
+    pops = []
+    for i, lib in enumerate(self.env.LIBPATH):
+        if "Windows" in lib or 'Microsoft' in lib or 'oneAPI' in lib:
+            pops.append(lib)
+
+    for inc_to_be_removed in pops:
+        i = self.env.LIBPATH.index(inc_to_be_removed)
+        self.env.LIBPATH.pop(i)
+
+    pops = []
+    for i, inc in enumerate(self.env.INCLUDES):
+        if "Windows" in inc or 'Microsoft' in inc or 'oneAPI' in inc:
+            pops.append(inc)
+    for inc_to_be_removed in pops:
+        i = self.env.INCLUDES.index(inc_to_be_removed)
+        self.env.INCLUDES.pop(i)
+
+    # Add the python include dir
+    py_incl = pathlib.Path(os.environ["PREFIX"]) / "include"
+    self.env.INCLUDES.append(py_incl.as_posix())
+    # Logs.info(f"INCLUDES: {self.env.INCLUDES}")
 
 
 def all(self):
