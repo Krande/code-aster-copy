@@ -64,8 +64,8 @@ def eval_tests(test_dir: str | pathlib.Path):
     unknown_errors = error_map.get(TestResult.ErrUnknown)
     if unknown_errors:
         perc_unknown = len(unknown_errors) / tot_failed * 100
-        err_str += f"Overflow errors: {len(overflow_errors)} [{perc_unknown:.2f}%]\n"
-        err_str += '|'.join([f"{err.name}" for err in overflow_errors]) + '\n'
+        err_str += f"Unknown errors: {len(unknown_errors)} [{perc_unknown:.2f}%]\n"
+        err_str += '|'.join([f"{err.name}" for err in unknown_errors]) + '\n'
     else:
         err_str += "No unknown errors\n"
 
