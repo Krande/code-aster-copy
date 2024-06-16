@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,6 +58,7 @@ subroutine getvid(motfac, motcle, iocc, nbval, vect, &
         call getvid_wrap(motfac, motcle, uioc, umax, vect, unbret)
     else if (present(scal)) then
         ASSERT(len(scal) .le. maxlen)
+        uvect = ' '
         call getvid_wrap(motfac, motcle, uioc, umax, uvect, unbret)
         if (unbret .ne. 0) then
             scal = uvect(1) (1:len(scal))
