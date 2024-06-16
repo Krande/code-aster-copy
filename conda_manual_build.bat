@@ -150,7 +150,6 @@ waf configure ^
   --install-tests ^
   --maths-libs=auto ^
   --without-hg ^
-  --msvc-entry ^
   --without-repo
 
 REM Conditional log handling
