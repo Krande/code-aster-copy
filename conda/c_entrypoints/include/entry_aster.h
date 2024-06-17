@@ -9,12 +9,4 @@
 #include "aster_pybind.h"
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-// export to dll extern PyObject *PyInit_aster( void );
-extern PyObject *PyInit_aster( void );
-
-} // extern "C"
-
 #endif  // ASTER_ENTRY_ASTER_H_

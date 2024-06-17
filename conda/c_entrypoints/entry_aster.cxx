@@ -1,4 +1,9 @@
-#include "entry_aster.h"
+#include "Windows.h"
+#include "astercxx.h"
+
+#include "aster_init.h"
+#include "aster_numpy.h"
+#include "aster_pybind.h"
 
 
 namespace py = pybind11;
