@@ -13,6 +13,7 @@ class msvclibgen(Task.Task):
     run_str = "LIB.exe /OUT:${TGT} ${SRC}"
     color = "BLUE"
     before = ["cshlib", "cxxshlib", "fcshlib"]
+    use_msvc_entry = False
 
     def exec_command(self, cmd, **kw):
         """Execute the command"""
@@ -22,17 +23,23 @@ class msvclibgen(Task.Task):
         root_path = pathlib.Path(obld.root.abspath()).resolve().absolute()
 
         clean_name = output_fp.stem.replace("_gen", "")
-        # This is a hack to copy the generated lib to the build directory
-        if clean_name == "aster":
-            def_file = root_path / "bibc" / "aster.def"
-        elif clean_name == "bibc" and self.generator.bld.options.msvc_entry:
-            def_file = root_path / "bibc" / "bibc_alt.def"
-        else:
-            def_file = root_path / clean_name / f"{clean_name}.def"
-
         # Location of python 3.11 libs
         libs_dir = pathlib.Path(self.env.PREFIX).resolve().absolute().parent / "libs"
-        opts = ["/NOLOGO", "/MACHINE:X64", "/SUBSYSTEM:CONSOLE", f"/LIBPATH:{libs_dir}", f"/DEF:{def_file}"]
+        # This is a hack to copy the generated lib to the build directory
+        opts = ["/NOLOGO", "/MACHINE:X64", "/SUBSYSTEM:CONSOLE", f"/LIBPATH:{libs_dir}"]
+        def_file = root_path / clean_name / f"{clean_name}.def"
+        if clean_name == "aster":
+            def_file = root_path / "bibc" / "aster.def"
+            opts += [f"/DEF:{def_file}"]
+        elif clean_name == "bibc":
+            Logs.info(f"defines: {self.env.defines}")
+            Logs.info(f"self.use_msvc_entry: {self.use_msvc_entry}")
+            if "ASTER_WITHOUT_PYMOD" in self.env.defines:
+                Logs.info("Using bibc_rewrite.def")
+                def_file = root_path / "bibc" / "bibc_rewrite.def"
+            opts += [f"/DEF:{def_file}"]
+        else:
+            opts += [f"/DEF:{def_file}"]
 
         cmd = cmd[:2] + opts + cmd[2:]
         # write a copy of the inputs to a file
@@ -79,7 +86,7 @@ class msvc_symlink_installer(Task.Task):
                 if result is False:
                     shutil.copy(in_file_fp, output_fp)
             Logs.info(f"Failed to create symlink: {in_file_fp} -> {output_fp}, therefore copying file instead")
-            #else:
+            # else:
             #    Logs.info(f"Successfully created symlink: {in_file_fp} -> {output_fp}")
         return 0
 
@@ -164,6 +171,7 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     msvc_libgen_task.env = self.env
     msvc_libgen_task.dep_nodes = input_tasks
     msvc_libgen_task.outputs = [bib_lib_output_file_node]
+    #msvc_libgen_task.use_msvc_entry = self.get_define("ASTER_WITHOUT_PYMOD")
 
     Logs.info(f"{msvc_libgen_task.outputs=}")
 

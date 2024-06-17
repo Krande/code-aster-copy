@@ -150,7 +150,7 @@ def options(self):
     group.add_option(
         "--msvc-entry",
         dest="msvc_entry",
-        action="store_false",
+        action="store_true",
         help="rewrites pybind11 entry points for MSVC to skip symlink",
     )
     group = self.add_option_group("code_aster options")
@@ -236,6 +236,7 @@ def configure(self):
             self.load("flang", tooldir="config")
         self.load("msvc", tooldir="config")
 
+
     opts = self.options
     self.setenv("default")
     self.load("official_platforms", tooldir="waftools")
@@ -301,6 +302,12 @@ def configure(self):
     if self.get_define("ASTER_HAVE_MPI"):
         self.env.ASRUN_MPI_VERSION = 1
 
+    if self.options.msvc_entry:
+        self.define("ASTER_WITHOUT_PYMOD", 1)
+        self.recurse("conda")
+    else:
+        Logs.info("Configuring without MSVC entrypoints")
+
     # bib* configure functions may add options required by prerequisites
     self.recurse("bibfor")
     self.recurse("bibcxx")
@@ -349,31 +356,9 @@ def build(self):
         )
 
     self.load("ext_aster", tooldir="waftools")
-    # Need to remove Windows Kits includes from INCLUDES
+
     if self.env.CC_NAME == "msvc":
-        self.load("msvc_lib", tooldir="waftools")
-        # Logs.info(f"{self.env}")
-        pops = []
-        for i, lib in enumerate(self.env.LIBPATH):
-            if "Windows" in lib or 'Microsoft' in lib or 'oneAPI' in lib:
-                pops.append(lib)
-
-        for inc_to_be_removed in pops:
-            i = self.env.LIBPATH.index(inc_to_be_removed)
-            self.env.LIBPATH.pop(i)
-
-        pops = []
-        for i, inc in enumerate(self.env.INCLUDES):
-            if "Windows" in inc or 'Microsoft' in inc or 'oneAPI' in inc:
-                pops.append(inc)
-        for inc_to_be_removed in pops:
-            i = self.env.INCLUDES.index(inc_to_be_removed)
-            self.env.INCLUDES.pop(i)
-
-        # Add the python include dir
-        py_incl = pathlib.Path(os.environ["PREFIX"]) / "include"
-        self.env.INCLUDES.append(py_incl.as_posix())
-        # Logs.info(f"INCLUDES: {self.env.INCLUDES}")
+        msvc_build_init(self)
 
     self.recurse("bibfor")
     self.recurse("code_aster")
@@ -418,9 +403,34 @@ def init(self):
 
     # default to release
     for y in _all:
-
         class tmp(y):
             variant = os.environ.get("WAF_DEFAULT_VARIANT") or "release"
+
+
+def msvc_build_init(self):
+    self.load("msvc_lib", tooldir="waftools")
+    # Logs.info(f"{self.env}")
+    pops = []
+    for i, lib in enumerate(self.env.LIBPATH):
+        if "Windows" in lib or 'Microsoft' in lib or 'oneAPI' in lib:
+            pops.append(lib)
+
+    for inc_to_be_removed in pops:
+        i = self.env.LIBPATH.index(inc_to_be_removed)
+        self.env.LIBPATH.pop(i)
+
+    pops = []
+    for i, inc in enumerate(self.env.INCLUDES):
+        if "Windows" in inc or 'Microsoft' in inc or 'oneAPI' in inc:
+            pops.append(inc)
+    for inc_to_be_removed in pops:
+        i = self.env.INCLUDES.index(inc_to_be_removed)
+        self.env.INCLUDES.pop(i)
+
+    # Add the python include dir
+    py_incl = pathlib.Path(os.environ["PREFIX"]) / "include"
+    self.env.INCLUDES.append(py_incl.as_posix())
+    # Logs.info(f"INCLUDES: {self.env.INCLUDES}")
 
 
 def all(self):

@@ -6,7 +6,7 @@ THIS_DIR = pathlib.Path(__file__).parent
 
 
 def main():
-    src_dir = THIS_DIR / '..'
+    src_dir = THIS_DIR.parent.parent
     # Commit hash and branch name set to n/a for now
     chash = 'n/a'
     bname = 'n/a'

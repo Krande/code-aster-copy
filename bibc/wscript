@@ -142,16 +142,6 @@ def build_libbibc(self, env):
     get_srcs = self.path.get_src().ant_glob
     excl_files = [PYMAIN]
     extra_use = []
-    if self.env.ASTER_PLATFORM_MSVC64 and self.options.msvc_entry:
-        split_files = [
-            "supervis/aster_module.c",
-            "supervis/aster_core_module.c",
-            "supervis/aster_fonctions_module.c",
-            "supervis/med_aster_module.c"
-        ]
-        excl_files.extend(split_files)
-        extra_use.extend(["aster_module", "aster_core", "aster_fonctions", "med_aster"])
-
     # compile *.c
     self(
         features="c cshlib",
@@ -159,47 +149,27 @@ def build_libbibc(self, env):
         source=get_srcs("**/*.c", excl=excl_files),
         target="bibc",
         defines="",
-        use=use+extra_use,
+        use=use + extra_use,
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
     )
-    if self.env.ASTER_PLATFORM_MSVC64 and self.options.msvc_entry:
-        name_map = {
-            "aster_module.c": "aster_module",
-            "aster_core_module.c": "aster_core",
-            "aster_fonctions_module.c": "aster_fonctions",
-            "med_aster_module.c": "med_aster",
-        }
-        for f in excl_files[1:]:
-            target_name = name_map.get(f.split("/")[-1])
-            use += ["BIBC"]
-            self(
-                features="c cshlib",
-                name=f"aster_{target_name}",
-                source=get_srcs(f),
-                target=target_name,
-                defines="",
-                use=use,
-                env=env.derive(),
-                install_path=env.ASTERLIBDIR,
-            )
 
 
 def build_libaster(self, env):
     use = ["LIBASTER", "asterbibfor", "asterbibc", "asterbibcxx"]
-    if self.env.ASTER_PLATFORM_MSVC64 and self.options.msvc_entry:
-        use.extend(["aster_module", "aster_core", "aster_fonctions", "med_aster"])
 
     if env.BUILD_MFRONT:
         use.append("astermfront")
-
+    defines = ["_MAIN_=_unused_main_"]
+    if self.options.msvc_entry:
+        defines.extend(['ASTER_WITHOUT_PYMOD'])
     # {bibfor, bibc, bibcxx}/*.o
     self(
         features="cxx cxxshlib",
         name="asterlib",
         target="aster",
         source=PYMAIN,
-        defines="_MAIN_=_unused_main_",  # 'ASTER_WITHOUT_PYMOD',
+        defines=defines,
         env=env.derive(),
         use=use,
         install_path=env.ASTERLIBDIR,

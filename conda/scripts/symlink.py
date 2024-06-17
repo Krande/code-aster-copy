@@ -35,7 +35,7 @@ def create_symlink(source, link_name):
         return False
 
 
-def main(use_symlink: bool):
+def main(copy_files: bool):
     extlib = ".pyd"
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
 
@@ -50,13 +50,13 @@ def main(use_symlink: bool):
         src = osp.join(DLL_DIR, submodule + extlib)
         dst_dll = SYMLINK_MAP.get(submodule)
         dst = osp.join(SOURCE_DIR, dst_dll)
-        if use_symlink:
+        if copy_files:
+            print(f"Copying {dst} to {src}")
+            shutil.copy(dst, src)
+        else:
             result = create_symlink(dst, src)
             if not result:
                 raise ValueError(f"Failed to create symlink: {src} -> {dst}")
-        else:
-            print(f"Copying {dst} to {src}")
-            shutil.copy(dst, src)
 
 
 def cli():
@@ -64,12 +64,12 @@ def cli():
 
     parser = argparse.ArgumentParser(description="Manually Link Code Aster libraries")
     parser.add_argument(
-        "--symlink",
+        "--copy",
         action="store_true",
         help="Create symlinks for the Code Aster libraries. Alternatively, copy the files.",
     )
     args = parser.parse_args()
-    main(args.symlink)
+    main(args.copy)
 
 
 def manual():
