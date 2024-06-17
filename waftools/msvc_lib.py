@@ -31,6 +31,9 @@ class msvclibgen(Task.Task):
         if clean_name == "aster":
             def_file = root_path / "bibc" / "aster.def"
             opts += [f"/DEF:{def_file}"]
+        elif clean_name.endswith("entry"):
+            def_file = root_path / "conda/c_entrypoints" / f"{clean_name}.def"
+            opts += [f"/DEF:{def_file}"]
         else:
             opts += [f"/DEF:{def_file}"]
 
@@ -153,6 +156,9 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
     if lib_name == "aster":
         lib_output_file_path = bld_path / "bibc" / "aster.lib"
+    elif lib_name.endswith("entry"):
+        Logs.info(f"input_tasks: {input_tasks=}")
+        lib_output_file_path = bld_path / "conda" / f"{lib_name}.lib"
     else:
         lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
 
@@ -164,7 +170,7 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     msvc_libgen_task.env = self.env
     msvc_libgen_task.dep_nodes = input_tasks
     msvc_libgen_task.outputs = [bib_lib_output_file_node]
-    #msvc_libgen_task.use_msvc_entry = self.get_define("ASTER_WITHOUT_PYMOD")
+    # msvc_libgen_task.use_msvc_entry = self.get_define("ASTER_WITHOUT_PYMOD")
 
     Logs.info(f"{msvc_libgen_task.outputs=}")
 
@@ -263,6 +269,19 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
 _lib_task_obj: LibTask | None = None
 _task_done = False
 _compiler_map = {"asterlib": "cxx", "asterbibc": "c", "asterbibfor": "fc", "asterbibcxx": "cxx"}
+
+
+@TaskGen.feature("cxxshlib")
+@TaskGen.after_method("apply_link", "propagate_uselib_vars")
+def make_libs_for_entrypoints(self) -> None:
+    if platform.system() != "Windows":
+        return
+    name = self.get_name()
+    if not name.endswith("entry"):
+        return
+    aster_object = get_task_object(self.bld, name, "cxx")
+    c_input_tasks = [ctask.outputs[0] for ctask in aster_object.tasks]
+    create_msvclibgen_task(self, name, c_input_tasks)
 
 
 @TaskGen.feature("cxxshlib", "fcshlib", "cshlib")

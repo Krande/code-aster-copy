@@ -12,7 +12,7 @@ namespace py = pybind11;
 typedef PyObject* (*PyInitFunc)();
 
 // Load the original DLL and get the initialization function pointer
-extern "C" __declspec(dllexport) PyObject* PyInit_aster_core() {
+extern "C" __declspec(dllexport) PyObject* PyInit_aster_fonctions() {
     static HMODULE originalModule = LoadLibrary("bibc.dll");
     if (!originalModule) {
         PyErr_SetString(PyExc_ImportError, "Could not load original module");
