@@ -136,6 +136,11 @@ class THER3DH27_HHO222(Element):
             para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PTMPCHF, DDL_THER)),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),
+        OP.HHO_CINE_R_THER(
+            te=492,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (OP.HHO_CINE_R_THER.PCMPVALE, TEMPHHO)),
+            para_out=((OP.HHO_CINE_R_THER.PCINE, DDL_THER),),
+        ),
         OP.MASS_THER(
             te=449,
             para_in=(

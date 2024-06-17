@@ -358,6 +358,11 @@ class MECA_DPQ9_HHO111(Element):
             ),
             para_out=((OP.HHO_CINE_F_MECA.PCINE, DDL_MECA),),
         ),
+        OP.HHO_CINE_R_MECA(
+            te=458,
+            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLHHO)),
+            para_out=((OP.HHO_CINE_R_MECA.PCINE, DDL_MECA),),
+        ),
         OP.HHO_PROJ_MECA(
             te=473,
             para_in=(

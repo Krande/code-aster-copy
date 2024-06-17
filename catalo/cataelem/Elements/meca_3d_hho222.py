@@ -431,6 +431,11 @@ class MECA3DH27_HHO222(Element):
             ),
             para_out=((OP.HHO_CINE_F_MECA.PCINE, DDL_MECA),),
         ),
+        OP.HHO_CINE_R_MECA(
+            te=458,
+            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLHHO)),
+            para_out=((OP.HHO_CINE_R_MECA.PCINE, DDL_MECA),),
+        ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))
         ),

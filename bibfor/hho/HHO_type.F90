@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -106,8 +106,9 @@ module HHO_type
         real(kind=8), dimension(3, 2) :: axes = 0.d0
 ! ----- Longueur de la boite englobante (orientee ou non) de la cellule
         real(kind=8), dimension(2)  :: length_box = 0.d0
-! ----- Index locale des noeuds de la cellule
+! ----- Index locale des noeuds de la face
         integer, dimension(4)       :: nodes_loc = 0
+        integer                     :: node_bar_loc = 0
 ! ----- member function
     contains
         procedure, public, pass :: print => print_face
@@ -142,6 +143,8 @@ module HHO_type
         integer                     :: nbfaces = 0
 ! ----- Donnees sur les faces (max 6 faces pour hexa)
         type(HHO_Face), dimension(6):: faces
+! ----- Index locale des noeuds de la cellule
+        integer                     :: node_bar_loc = 0
 ! ----- member function
     contains
         procedure, public, pass :: print => print_cell

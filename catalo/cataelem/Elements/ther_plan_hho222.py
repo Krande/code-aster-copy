@@ -115,6 +115,11 @@ class THER2DQ9_HHO222(Element):
             para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PTMPCHF, DDL_THER)),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),
+        OP.HHO_CINE_R_THER(
+            te=492,
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (OP.HHO_CINE_R_THER.PCMPVALE, TEMPHHO)),
+            para_out=((OP.HHO_CINE_R_THER.PCINE, DDL_THER),),
+        ),
         OP.HHO_PROJ_THER(
             te=473,
             para_in=(

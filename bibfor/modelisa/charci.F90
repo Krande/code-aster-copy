@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,10 @@ subroutine charci(chcine, mfact, mo, valeType)
 #include "asterfort/reliem.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
 #include "asterfort/rs_getfirst.h"
 #include "asterfort/getKinematicValues.h"
+#include "asterfort/getKinematicForHHO.h"
 !
     character(len=*) :: chcine, mfact, mo
     character(len=1) :: valeType
@@ -70,16 +72,17 @@ subroutine charci(chcine, mfact, mo, valeType)
     integer :: ifm, niv, icmp, cmp, ier, ino, userNodeNb, nuno
     integer :: ioc, jcnsv, jcnsl, idino, userDOFNb
     integer :: idnddl, idvddl, nbddl, iddl, i, idprol
-    integer :: nbcmp, jcmp, noc, n1, iret
-    integer :: jnoxfl, nlicmp, icmpmx, nume_first
+    integer :: nbcmp, jcmp, noc, n1, iret, icorres
+    integer :: jcnshhov, jcnshhod, jcnshhoc, i_cmp_chmx, i_cmp_hho
+    integer :: jnoxfl, nlicmp, icmpmx, nume_first, nb_cmp_chmx
     integer, parameter :: mxcmp = 100
-    character(len=8) :: k8b, mesh, nomgd, nogdsi, gdcns, answer
+    character(len=8) :: k8b, mesh, nomgd, nogdsi, gdcns, answer, gdhho
     character(len=8) :: evoim, licmp(20), chcity(mxcmp)
     character(len=16), parameter :: motcle(4) = (/'GROUP_MA', &
                                                   'GROUP_NO', 'NOEUD   ', &
                                                   'TOUT    '/)
     character(len=16) :: keywordFact, phenom, typco, userDOFName(mxcmp)
-    character(len=19) :: chci, cns, cns2, depla, noxfem
+    character(len=19) :: chci, cns, cns2, depla, noxfem, cnshho, corres
     character(len=24) :: userNodeName, cnuddl, cvlddl, nprol
     character(len=80) :: titre
     aster_logical :: lxfem, l_hho
@@ -101,7 +104,10 @@ subroutine charci(chcine, mfact, mo, valeType)
     call dismoi('NOM_GD_SI', nomgd, 'GRANDEUR', repk=nogdsi)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', jcmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', nbcmp)
+!
+    corres = '&&CHARCI.COR'
     cns = '&&CHARCI.CNS'
+    cnshho = '&&CHARCI.CNSHHO'
 !
 !    --------------------------------------------------------
 !    MODELE X-FEM
@@ -200,6 +206,26 @@ subroutine charci(chcine, mfact, mo, valeType)
     call cnscre(mesh, gdcns, icmpmx, zk8(jcmp), 'V', &
                 cns)
 !
+    if (l_hho .and. valeType .eq. 'R') then
+        ! Precompute values to apply
+        call getKinematicForHHO(valeType, mo, keywordFact, cnshho)
+        call dismoi('NOM_GD', cnshho, 'CHAM_NO_S', repk=gdhho, arret="F")
+        ASSERT(gdhho == gdcns)
+!
+        call jeveuo(cnshho//'.CNSD', 'L', jcnshhod)
+        call jeveuo(cnshho//'.CNSC', 'L', jcnshhoc)
+        call jeveuo(cnshho//'.CNSV', 'L', jcnshhov)
+
+        nb_cmp_chmx = zi(jcnshhod+1)
+!
+        call wkvect(corres, ' V V I', nbcmp, icorres)
+!
+        do i_cmp_chmx = 1, nb_cmp_chmx
+            icmp = indik8(zk8(jcmp), zk8(jcnshhoc-1+i_cmp_chmx), 1, nbcmp)
+            zi(icorres-1+icmp) = i_cmp_chmx
+        end do
+    end if
+!
 !
 ! --- REMPLISSAGE DU CHAM_NO_S
     call jeveuo(cns//'.CNSV', 'E', jcnsv)
@@ -255,11 +281,22 @@ subroutine charci(chcine, mfact, mo, valeType)
             do cmp = 1, nbddl
                 k8b = zk8(idnddl-1+cmp)
                 icmp = indik8(zk8(jcmp), k8b, 1, nbcmp)
-                do ino = 1, userNodeNb
-                    nuno = zi(idino-1+ino)
-                    zr(jcnsv+(nuno-1)*icmpmx+icmp-1) = zr(idvddl-1+cmp)
-                    zl(jcnsl+(nuno-1)*icmpmx+icmp-1) = .true.
-                end do
+                if (l_hho) then
+                    i_cmp_hho = zi(icorres-1+icmp)
+                    do ino = 1, userNodeNb
+                        nuno = zi(idino-1+ino)
+                        zr(jcnsv+(nuno-1)*icmpmx+icmp-1) = &
+                            zr(jcnshhov+(nuno-1)*nb_cmp_chmx+i_cmp_hho-1)
+                        zl(jcnsl+(nuno-1)*icmpmx+icmp-1) = .true.
+                    end do
+                else
+                    do ino = 1, userNodeNb
+                        nuno = zi(idino-1+ino)
+                        zr(jcnsv+(nuno-1)*icmpmx+icmp-1) = zr(idvddl-1+cmp)
+                        zl(jcnsl+(nuno-1)*icmpmx+icmp-1) = .true.
+                    end do
+                end if
+
             end do
         else if (valeType .eq. 'C') then
             do cmp = 1, nbddl
@@ -301,6 +338,8 @@ subroutine charci(chcine, mfact, mo, valeType)
 !   -- creation de la sd affe_char_cine
     call chcsur(chci, cns, valeType, mo, nogdsi)
     call detrsd('CHAMP', cns)
+    call detrsd('CHAMP', cnshho)
+    call jedetr(corres)
 !
 !   -- si evol_impo : il ne faut pas utiliser les valeurs de chci :
     if (evoim .ne. ' ') call jedetr(chci//'.AFCV')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ module HHO_Dirichlet_module
     use HHO_type
     use HHO_utils_module, only: hhoGetTypeFromModel
     use HHO_eval_module, only: hhoFuncFScalEvalQp
-    use HHO_L2proj_module, only: hhoL2ProjFaceVec, hhoL2ProjCellVec
+    use HHO_L2proj_module
 !
     implicit none
 !
@@ -68,6 +68,7 @@ module HHO_Dirichlet_module
 #include "blas/dscal.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
+#include "asterfort/elrefe_info.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,6 +80,7 @@ module HHO_Dirichlet_module
 !
     public :: hhoDiriFuncPrepare, hhoDiriFuncCompute, hhoDiriFuncApply, hhoDiriMecaProjFunc
     public :: hhoGetKinematicValues, hhoDiriReadNameFunc, hhoDiriOffset
+    public :: hhoDiriMecaProjReal, hhoDiriTherProjReal
     private :: hhoDiriNum, hhoDiriNodeType
 !
 contains
@@ -853,6 +855,173 @@ contains
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
+        call dcopy(cbs, rhs_cell, 1, rhs_cine(ind), 1)
+        ind = ind+cbs
+        ASSERT(ind-1 == total_dofs)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoDiriMecaProjReal(hhoCell, hhoData, r_vale, rhs_cine)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)   :: hhoCell
+        type(HHO_Data), intent(in)   :: hhoData
+        real(kind=8), intent(in)     :: r_vale(*)
+        real(kind=8), intent(out)    :: rhs_cine(MSIZE_TDOFS_VEC)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - AFFE_CHAR_CINE_R
+!
+!   Project Dirichlet loads
+!
+!   In hhoCell         : a HHO Cell
+!   In hhoData         : information on HHO methods
+!   In r_vale          : value at nddes
+!   Out nomFunc        : table with the name of the function
+!
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_Face) :: hhoFace
+        type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
+        integer :: cbs, fbs, total_dofs, idim, iFace, ind, ndim
+        real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
+        real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! --- Initialisation
+!
+        rhs_cine = 0.d0
+!
+        call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        ndim = hhoCell%ndim
+!
+! --- Loop on faces
+!
+        ind = 1
+        do iFace = 1, hhoCell%nbfaces
+            hhoFace = hhoCell%faces(iFace)
+!
+! ----- get quadrature
+!
+            call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
+!
+! --- Loop on directions
+!
+            FuncValuesQp = 0.d0
+            do idim = 1, ndim
+                FuncValuesQP(idim, 1:hhoQuadFace%nbQuadPoints) = &
+                    r_vale(ndim*(hhoFace%node_bar_loc-1)+idim)
+!
+            end do
+!
+! -------------- Compute L2 projection
+!
+            call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
+                                  rhs_face)
+            call dcopy(fbs, rhs_face, 1, rhs_cine(ind), 1)
+            ind = ind+fbs
+        end do
+!
+! --- On cell
+!
+        call hhoQuadCell%GetQuadCell(hhoCell, 2*hhoData%cell_degree()+1)
+!
+! -------------- Value of the function at the quadrature point
+!
+        FuncValuesCellQP = 0.d0
+        do idim = 1, ndim
+            FuncValuesCellQP(idim, 1:hhoQuadCell%nbQuadPoints) = &
+                r_vale(ndim*(hhoCell%node_bar_loc-1)+idim)
+        end do
+!
+        call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
+                              rhs_cell)
+        call dcopy(cbs, rhs_cell, 1, rhs_cine(ind), 1)
+        ind = ind+cbs
+        ASSERT(ind-1 == total_dofs)
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoDiriTherProjReal(hhoCell, hhoData, r_vale, rhs_cine)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)   :: hhoCell
+        type(HHO_Data), intent(in)   :: hhoData
+        real(kind=8), intent(in)     :: r_vale(*)
+        real(kind=8), intent(out)    :: rhs_cine(MSIZE_TDOFS_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - AFFE_CHAR_CINE_R
+!
+!   Project Dirichlet loads
+!
+!   In hhoCell         : a HHO Cell
+!   In hhoData         : information on HHO methods
+!   In r_vale          : value at nddes
+!   Out nomFunc        : table with the name of the function
+!
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_Face) :: hhoFace
+        type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
+        integer :: cbs, fbs, total_dofs, iFace, ind
+        real(kind=8) :: FuncValuesQP(MAX_QP_FACE), FuncValuesCellQP(MAX_QP_CELL)
+        real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! --- Initialisation
+!
+        rhs_cine = 0.d0
+!
+        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+!
+! --- Loop on faces
+!
+        ind = 1
+        do iFace = 1, hhoCell%nbfaces
+            hhoFace = hhoCell%faces(iFace)
+!
+! ----- get quadrature
+!
+            call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
+!
+! --- Loop on directions
+!
+            FuncValuesQp = 0.d0
+            FuncValuesQP(1:hhoQuadFace%nbQuadPoints) = r_vale(hhoFace%node_bar_loc)
+!
+! -------------- Compute L2 projection
+!
+            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
+                                   rhs_face)
+            call dcopy(fbs, rhs_face, 1, rhs_cine(ind), 1)
+            ind = ind+fbs
+        end do
+!
+! --- On cell
+!
+        call hhoQuadCell%GetQuadCell(hhoCell, 2*hhoData%cell_degree()+1)
+!
+! -------------- Value of the function at the quadrature point
+!
+        FuncValuesCellQP = 0.d0
+        FuncValuesCellQP(1:hhoQuadCell%nbQuadPoints) = r_vale(hhoCell%node_bar_loc)
+!
+        call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
+                               rhs_cell)
         call dcopy(cbs, rhs_cell, 1, rhs_cine(ind), 1)
         ind = ind+cbs
         ASSERT(ind-1 == total_dofs)

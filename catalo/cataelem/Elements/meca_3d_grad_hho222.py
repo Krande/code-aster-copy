@@ -42,7 +42,7 @@ DDL_MECA = LocatedComponents(
 )
 
 
-DDL_LOAD = LocatedComponents(
+DDL_DEPL = LocatedComponents(
     phys=PHY.DEPL_R,
     type="ELNO",
     diff=True,
@@ -352,18 +352,8 @@ PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[21]",))
 
 PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[4]",))
 
-HHOCINE = LocatedComponents(
-    phys=PHY.DEPL_R,
-    type="ELNO",
-    diff=True,
-    components=(
-        ("EN1", ("HHO_DX[6]", "HHO_DY[6]", "HHO_DZ[6]")),
-        ("EN2", ()),
-        ("EN3", ("HHO_DX[10]", "HHO_DY[10]", "HHO_DZ[10]")),
-    ),
-)
 
-MVECTLR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_LOAD)
+MVECTLR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_DEPL)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
@@ -507,7 +497,12 @@ class MECA3DGVH_HHO222(Element):
                 (SP.PINSTPR, CTEMPSR),
                 (OP.HHO_CINE_F_MECA.PFONC, PFONC),
             ),
-            para_out=((OP.HHO_CINE_F_MECA.PCINE, HHOCINE),),
+            para_out=((OP.HHO_CINE_F_MECA.PCINE, DDL_DEPL),),
+        ),
+        OP.HHO_CINE_R_MECA(
+            te=458,
+            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLHHO)),
+            para_out=((OP.HHO_CINE_R_MECA.PCINE, DDL_DEPL),),
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))
