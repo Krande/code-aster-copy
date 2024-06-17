@@ -23,6 +23,8 @@ import sys
 
 from waflib import Configure, TaskGen, Utils, Logs, Build
 
+_MODULE_NAMES = ["aster", "aster_core", "aster_fonctions", "med_aster"]
+
 
 def options(self):
     self.load("compiler_c")
@@ -32,45 +34,129 @@ def configure(self):
     Logs.info("Configuring MSVC entrypoints")
     self.load("compiler_c")
 
-    opts = self.options
-    # preserve symbols in the dyn table for stdcallsspo
+    incpath = osp.join(self.path.get_src().abspath(),"c_entrypoints", "include")
+    Logs.info(f"Adding {incpath} to include path")
 
-    incpath = osp.join(self.path.get_src().abspath(), "include")
-    self.env.append_value("INCLUDES_ASTERENTRY", incpath)
+    top_dir = pathlib.Path(self.path.get_bld().abspath()).parent.parent.parent
 
-    top_dir = pathlib.Path(self.path.get_bld().abspath()).parent.parent
+    include_name = "INCLUDES_ASTERPROXY"
+    self.env.append_value(include_name, incpath)
 
     bibfor_incldir = osp.join(top_dir, "bibfor", "include")
-    self.env.append_value("INCLUDES_ASTERENTRY", bibfor_incldir)
+    self.env.append_value(include_name, bibfor_incldir)
+
+    bibc_incldir = osp.join(top_dir, "bibc", "include")
+    self.env.append_value(include_name, bibc_incldir)
 
     bibcxx_incldir = osp.join(top_dir, "bibcxx", "include")
-    self.env.append_value("INCLUDES_ASTERENTRY", bibcxx_incldir)
+    self.env.append_value(include_name, bibcxx_incldir)
 
-    if "ifort" in self.env.FC_NAME.lower():
-        self.env.append_value("LINKFLAGS_fcprogram", ["-nofor-main"])
-        if opts.embed_all or opts.embed_aster:
-            self.env.append_value("LINKFLAGS_fcprogram", ["-static-intel"])
-            if self.get_define("ASTER_HAVE_MPI"):
-                self.env.append_value("LINKFLAGS_fcprogram", ["-static-mpi"])
+    bibcxx_incldir = osp.join(top_dir, "bibcxx")
+    self.env.append_value(include_name, bibcxx_incldir)
+
+    extern_incldir = osp.join(top_dir, "extern", "include")
+    self.env.append_value(include_name, extern_incldir)
+
+    py_incl_dir = pathlib.Path(self.env.PREFIX).resolve().absolute().parent / "include"
+    self.env.append_value(include_name, py_incl_dir.as_posix())
+
     self.check_c_compiler_flags()
 
 
 def build(self):
     Logs.info("Building MSVC entrypoints")
-    get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
-    use = ["BIBC"]
+    env_conf = env.derive()
+    Logs.info(f"using {env_conf=}")
+    Logs.info(f"using {env['INCLUDES_ASTERPROXY']=}")
+    env_conf["INCLUDES"] = env["INCLUDES_ASTERPROXY"]
+    use = ["PYBIND11", "PYEXT", "NUMPY"]
 
     # Build aster.pyd
-    self(
-        features="c cshlib",
-        name="aster_entry",
-        source="c_entrypoints/entry_aster.c",
-        target="aster.pyd",
-        defines="",
-        use=use,
-        env=env.derive(),
-        install_path=env.ASTERLIBDIR,
-    )
+    for mod in _MODULE_NAMES:
+        self(
+            features="cxx cxxshlib",
+            name=f"{mod}_entry",
+            source=f"c_entrypoints/entry_{mod}.cxx",
+            target=f"{mod}_proxy",
+            defines="",
+            use=use,
+            env=env_conf,
+            install_path=env.ASTERLIBDIR,
+        )
 
-    self.install_files(env.ASTERINCLUDEDIR, get_srcs("include/*.h"))
+
+def post_build(bld):
+    # Rename the output to .pyd
+    for mod in _MODULE_NAMES:
+        output = bld.path.find_or_declare(f'build/std/{bld.variant}/conda/{mod}_proxy.dll')
+        output.rename(output.parent.find_or_declare(f'build/std/{bld.variant}/conda/{mod}.pyd'))
+
+
+@Configure.conf
+def check_c_compiler_flags(self):
+    if self.env.CXX_NAME != 'msvc':
+        self.check_c_compiler_options("-fPIC")
+    self.start_msg("C compiler flags")
+    self.end_msg(self.env["CFLAGS"])
+
+
+@Configure.conf
+def check_c_compiler_options(self, options):
+    """Check C compiler options"""
+    if type(options) not in (list, tuple):
+        options = [options]
+    self.start_msg("Checking for C option")
+    if self.check_cc(cflags=options, mandatory=False):
+        self.env.append_unique("CFLAGS", options)
+        self.end_msg("yes (%s)" % " ".join(options))
+    else:
+        self.end_msg("no (%s)" % " ".join(options), "YELLOW")
+
+
+@Configure.conf
+def check_optimization_cflags(self):
+    self.setenv("debug")
+    self.start_msg("Setting C debug flags")
+    self.remove_optflags("CFLAGS")
+    flags = ["-g", "-O0"] + Utils.to_list(self.env["CFLAGS_ASTER_DEBUG"])
+    if self.options.enable_coverage:
+        flags.append("--coverage")
+        self.env.append_unique("LINKFLAGS", "--coverage")
+    if self.options.enable_asan:
+        flags.extend(["-fsanitize=address", "-fno-omit-frame-pointer"])
+        self.env.append_unique("LINKFLAGS", ["-fsanitize=address", "-fno-omit-frame-pointer"])
+    self.env.append_unique("CFLAGS", flags)
+    self.end_msg(flags)
+
+    self.setenv("release")
+    self.start_msg("Setting C optimization flags")
+    flags = ["-O2"]
+    self.env.append_unique("CFLAGS", flags)
+    self.end_msg(flags)
+
+
+@Configure.conf
+def check_optimization_cflags_msvc(self):
+    self.setenv("debug")
+    self.start_msg("Setting C debug flags for MSVC")
+    self.remove_optflags("CFLAGS")
+    debug_flags = ["/Zi", "/Od"]  # Debug information and no optimization
+    self.env.append_unique("LINKFLAGS", ["/DEBUG:FULL", "/INCREMENTAL:NO"])
+    self.env.append_unique("CFLAGS", debug_flags)
+    if self.options.enable_coverage:
+        # Note: MSVC does not have a direct --coverage equivalent
+        # You may need to use external tools or Visual Studio features for coverage
+        pass
+    if self.options.enable_asan:
+        # Enable Address Sanitizer (available in recent MSVC versions)
+        asan_flags = ["/fsanitize=address"]
+        self.env.append_unique("CFLAGS", asan_flags)
+        self.env.append_unique("LINKFLAGS", asan_flags)
+    self.end_msg(debug_flags)
+
+    self.setenv("release")
+    self.start_msg("Setting C optimization flags for MSVC")
+    optimization_flags = ["/O2"]  # Maximize speed
+    self.env.append_unique("CFLAGS", optimization_flags)
+    self.end_msg(optimization_flags)

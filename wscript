@@ -236,7 +236,6 @@ def configure(self):
             self.load("flang", tooldir="config")
         self.load("msvc", tooldir="config")
 
-
     opts = self.options
     self.setenv("default")
     self.load("official_platforms", tooldir="waftools")
@@ -302,16 +301,16 @@ def configure(self):
     if self.get_define("ASTER_HAVE_MPI"):
         self.env.ASRUN_MPI_VERSION = 1
 
-    if self.options.msvc_entry:
-        self.define("ASTER_WITHOUT_PYMOD", 1)
-        self.recurse("conda")
-    else:
-        Logs.info("Configuring without MSVC entrypoints")
-
     # bib* configure functions may add options required by prerequisites
     self.recurse("bibfor")
     self.recurse("bibcxx")
     self.recurse("bibc")
+
+    if self.options.msvc_entry:
+        self.env["ASTER_WITH_MSVC64_ENTRY"] = True
+        self.recurse("conda")
+    else:
+        Logs.info("Configuring without MSVC entrypoints")
 
     self.load("mathematics", tooldir="waftools")
     self.load("med_cfg", tooldir="waftools")
@@ -337,6 +336,8 @@ def configure(self):
 
 
 def build(self):
+    env = self.env.derive()
+
     fc._use_custom_sig = self.options.custom_fc_sig
     # shared the list of dependencies between bibc/bibfor
     # the order may be important
@@ -365,6 +366,12 @@ def build(self):
     self.recurse("run_aster")
     self.recurse("bibcxx")
     self.recurse("bibc")
+
+    if env.ASTER_WITH_MSVC64_ENTRY:
+        self.recurse("conda")
+    else:
+        Logs.info("Building without MSVC entrypoints")
+
     self.recurse("mfront")
     self.recurse("i18n")
     self.recurse("catalo")
@@ -409,7 +416,6 @@ def init(self):
 
 def msvc_build_init(self):
     self.load("msvc_lib", tooldir="waftools")
-    # Logs.info(f"{self.env}")
     pops = []
     for i, lib in enumerate(self.env.LIBPATH):
         if "Windows" in lib or 'Microsoft' in lib or 'oneAPI' in lib:

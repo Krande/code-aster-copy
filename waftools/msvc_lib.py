@@ -31,13 +31,6 @@ class msvclibgen(Task.Task):
         if clean_name == "aster":
             def_file = root_path / "bibc" / "aster.def"
             opts += [f"/DEF:{def_file}"]
-        elif clean_name == "bibc":
-            Logs.info(f"defines: {self.env.defines}")
-            Logs.info(f"self.use_msvc_entry: {self.use_msvc_entry}")
-            if "ASTER_WITHOUT_PYMOD" in self.env.defines:
-                Logs.info("Using bibc_rewrite.def")
-                def_file = root_path / "bibc" / "bibc_rewrite.def"
-            opts += [f"/DEF:{def_file}"]
         else:
             opts += [f"/DEF:{def_file}"]
 
@@ -237,32 +230,32 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     Logs.info(f"{type(bibc_dll)=}{bibc_dll=}")
     Logs.info(f"{type(bibcxx_dll)=}{bibcxx_dll=}")
 
-    mods = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
-    symlink_map = {
-        "libaster": bibcxx_dll,
-        "aster": bibc_dll,
-        "aster_core": bibc_dll,
-        "aster_fonctions": bibc_dll,
-        "med_aster": bibc_dll,
-    }
-
-    input_nodes = []
-    output_nodes = []
-    aster_lib_dir = pathlib.Path(self.env.ASTERLIBDIR).resolve().absolute()
-    for submodule in mods:
-        dll_src_node = symlink_map.get(submodule)
-        dest = submodule + ".pyd"
-        pyd_node = self.bld.bldnode.make_node(dest)
-        input_nodes.append(dll_src_node)
-        output_nodes.append(pyd_node)
-        # self.bld.install_as((aster_lib_dir / dest).as_posix(), pyd_node)
-        Logs.info(f"Created symlink: {dll_src_node} -> {pyd_node}")
-
-    msvc_sym_task = self.create_task("msvc_symlink_installer")
-    msvc_sym_task.inputs = input_nodes
-    msvc_sym_task.dep_nodes = input_nodes
-    msvc_sym_task.outputs = output_nodes
-    msvc_sym_task.env = self.env
+    # mods = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
+    # symlink_map = {
+    #     "libaster": bibcxx_dll,
+    #     "aster": bibc_dll,
+    #     "aster_core": bibc_dll,
+    #     "aster_fonctions": bibc_dll,
+    #     "med_aster": bibc_dll,
+    # }
+    #
+    # input_nodes = []
+    # output_nodes = []
+    # aster_lib_dir = pathlib.Path(self.env.ASTERLIBDIR).resolve().absolute()
+    # for submodule in mods:
+    #     dll_src_node = symlink_map.get(submodule)
+    #     dest = submodule + ".pyd"
+    #     pyd_node = self.bld.bldnode.make_node(dest)
+    #     input_nodes.append(dll_src_node)
+    #     output_nodes.append(pyd_node)
+    #     # self.bld.install_as((aster_lib_dir / dest).as_posix(), pyd_node)
+    #     Logs.info(f"Created symlink: {dll_src_node} -> {pyd_node}")
+    #
+    # msvc_sym_task = self.create_task("msvc_symlink_installer")
+    # msvc_sym_task.inputs = input_nodes
+    # msvc_sym_task.dep_nodes = input_nodes
+    # msvc_sym_task.outputs = output_nodes
+    # msvc_sym_task.env = self.env
 
     Logs.info("Successfully ran MSVC lib generation")
 

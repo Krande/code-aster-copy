@@ -124,9 +124,9 @@ set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
-set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
+set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS
 REM Clean the build directory
-@REM waf distclean
+waf distclean
 
 python conda\scripts\update_version.py
 
@@ -148,10 +148,12 @@ waf configure ^
   --enable-scotch ^
   --disable-mpi ^
   --disable-petsc ^
-  --install-tests ^
   --maths-libs=auto ^
   --without-hg ^
+  --msvc-entry ^
   --without-repo
+
+REM   --install-tests ^
 
 REM Conditional log handling
 if %USE_LOG%==1 (
