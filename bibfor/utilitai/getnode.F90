@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -67,7 +68,7 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node, &
 ! In  iocc         : factor keyword index
 ! In  stop_void    : if nb_node == 0
 !                      'F' - Error
-!                      'A' - Error
+!                      'A' - Alarm
 !                      ' ' - Nothing
 ! In  list_node    : list of nodes read
 ! Out nb_node      : number of nodes read
@@ -89,7 +90,7 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node, &
     integer :: nb_mocl
     integer :: nb_lect, nb_excl, nb_elim
     integer :: nume_lect, nume_excl
-    integer :: i_lect, i_excl, i_node
+    integer :: i_lect, i_excl, i_node, nb_node_gl
     aster_logical :: l_read_elem
 !
 ! --------------------------------------------------------------------------------------------------
@@ -210,8 +211,12 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node, &
 !
 ! - If no nodes
 !
-    if (stop_void .ne. ' ' .and. nb_node .eq. 0) then
-        call utmess(stop_void, 'UTILITY_4', sk=keywordfact)
+    if (stop_void .ne. ' ') then
+        nb_node_gl = nb_node
+        call asmpi_comm_vect('MPI_MAX', 'I', nbval=1, sci=nb_node_gl)
+        if (nb_node_gl .eq. 0) then
+            call utmess(stop_void, 'UTILITY_4', sk=keywordfact)
+        end if
     end if
 !
     call jedetr(list_lect)
