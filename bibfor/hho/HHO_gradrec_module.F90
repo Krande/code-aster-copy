@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -129,15 +129,15 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval face basis function at the quadrature point
-                call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), &
+                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%face_degree(), BSFEval)
 !
 ! --------- Eval derivative of cell basis function at the quadrature point
-                call hhoBasisCell%BSEvalGrad(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEvalGrad(hhoQuad%points(1:3, ipg), &
                                              1, hhoData%face_degree()+1, BSCGradEval)
 !
 ! --------  Compute grad *normal
@@ -328,15 +328,15 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval face basis function at the quadrature point
-                call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), &
+                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%face_degree(), BSFEval)
 !
 ! --------- Eval grad cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%grad_degree(), BSGEval)
 !
                 normal = hhoNormalFaceQP(hhoFace, hhoQuad%points_param(1:2, ipg))
@@ -365,11 +365,11 @@ contains
 ! - Loop on quadrature point
         do ipg = 1, hhoQuadCell%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuadCell%points(1:3, ipg), &
+            call hhoBasisCell%BSEval(hhoQuadCell%points(1:3, ipg), &
                                      0, hhoData%grad_degree(), BSGEval)
 !
 ! ----- Eval derivative of cell basis function at the quadrature point
-            call hhoBasisCell%BSEvalGrad(hhoCell, hhoQuadCell%points(1:3, ipg), &
+            call hhoBasisCell%BSEvalGrad(hhoQuadCell%points(1:3, ipg), &
                                          0, hhoData%cell_degree(), BSCGradEval)
 !
 ! ------ Loop on the dimension
@@ -606,11 +606,11 @@ contains
 ! -- Loop on quadrature point
         do ipg = 1, hhoQuadCell%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuadCell%points(1:3, ipg), &
+            call hhoBasisCell%BSEval(hhoQuadCell%points(1:3, ipg), &
                                      0, hhoData%grad_degree(), BSGEval)
 !
 ! ----- Eval symmetric derivative of cell basis function at the quadrature point
-            call hhoBasisCell%BVEvalSymGrad(hhoCell, hhoQuadCell%points(1:3, ipg), &
+            call hhoBasisCell%BVEvalSymGrad(hhoQuadCell%points(1:3, ipg), &
                                             0, hhoData%cell_degree(), BVCSGradEval)
 !
 ! ------ Loop on diagonal terms
@@ -658,15 +658,15 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval face basis function at the quadrature point
-                call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), &
+                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%face_degree(), BSFEval)
 !
 ! --------- Eval grad cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%grad_degree(), BSGEval)
 !
                 normal = hhoNormalFaceQP(hhoFace, hhoQuad%points_param(1:2, ipg))
@@ -952,7 +952,7 @@ contains
         do ipg = 1, hhoQuadCell%nbQuadPoints
 !
 ! ----- Eval derivative of cell basis function at the quadrature point
-            call hhoBasisCell%BSEvalGrad(hhoCell, hhoQuadCell%points(1:3, ipg), &
+            call hhoBasisCell%BSEvalGrad(hhoQuadCell%points(1:3, ipg), &
                                          1, hhoData%face_degree()+1, BSCGradEval)
             do j = 1, dimMG_cmp
                 if (hhoCell%ndim == 2) then
@@ -1022,15 +1022,15 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval face basis function at the quadrature point
-                call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), &
+                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%face_degree(), BSFEval)
 !
 ! --------- Eval symetric derivative of cell basis function at the quadrature point
-                call hhoBasisCell%BVEvalSymGrad(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BVEvalSymGrad(hhoQuad%points(1:3, ipg), &
                                                 1, hhoData%face_degree()+1, BVCGradEval)
 !
 ! --------  Compute grad_s *normal

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -161,13 +161,13 @@ subroutine te0448(nomopt, nomte)
 !
 ! --------- Eval basis function at the quadrature point
 !
-        call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+        call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
         if (l_largestrains) then
-            G_curr = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+            G_curr = hhoEvalMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                     coorpg(1:3), G_curr_coeff, gbs)
         else
-            E_curr = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+            E_curr = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                        coorpg(1:3), G_curr_coeff, gbs_sym)
             zr(idefo-1+(ipg-1)*nsig+1:idefo-1+ipg*nsig) = E_curr(1:nsig)
         end if

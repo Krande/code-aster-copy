@@ -293,7 +293,6 @@ contains
         hhoFace%measure = hhoMeasureFace(hhoFace)
         hhoFace%diameter = hhoDiameterFace(hhoFace)
         hhoFace%axes = hhoLocalAxesFace(hhoFace)
-        hhoFace%length_box = hhoLengthBoundingBoxFace(hhoFace)
         if (present(num_nodes_loc)) then
             do ino = 1, hhoFace%nbnodes
                 hhoFace%nodes_loc(ino) = num_nodes_loc(numsorted(ino))
@@ -523,8 +522,6 @@ contains
         hhoCell%diameter = hhoDiameterCell(hhoCell)
 !
         hhoCell%axes = hhoLocalAxesCell(hhoCell)
-!
-        hhoCell%length_box = hhoLengthBoundingBoxCell(hhoCell)
 !
 ! ----- Init faces
 !

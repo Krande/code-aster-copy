@@ -105,7 +105,7 @@ mySolver = CA.MumpsSolver()
 mySolver.factorize(lhs)
 solution = mySolver.solve(rhs, diriBCs)
 
-sol_ref = 28.544813405889784
+sol_ref = 18.647406146636595
 test.assertAlmostEqual((solution.norm("NORM_2") - sol_ref) / sol_ref, 0.0, delta=1e-4)
 
 # project HHO solution
@@ -136,7 +136,7 @@ for i in range(100):
     du_hho = mySolver.solve(-Resi, diriBCs)
     u_hho += du_hho
 
-u_hho_ref = 27.931912612339957
+u_hho_ref = 18.241524798118935
 test.assertAlmostEqual((u_hho.norm("NORM_2") - u_hho_ref) / u_hho_ref, 0.0, delta=1e-4)
 
 # test projection

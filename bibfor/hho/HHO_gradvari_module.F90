@@ -271,15 +271,15 @@ contains
 !
 ! --------- Eval basis function at the quadrature point
 !
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEvalG)
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEvalG)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval gradient at T- and T+
 !
             if (hhoComporState%l_largestrain) then
-                G_prev = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                G_prev = hhoEvalMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                         coorpg(1:3), G_prev_coeff, mk_gbs)
-                G_curr = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                G_curr = hhoEvalMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                         coorpg(1:3), G_curr_coeff, mk_gbs)
 !
 ! --------- Eval gradient of the deformation at T- and T+
@@ -298,25 +298,25 @@ contains
                 cod(ipg) = merge(1, 0, jac_curr .le. r8prem())
                 if (cod(ipg) .ne. 0) goto 999
             else
-                Eps_prev = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                Eps_prev = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                              coorpg(1:3), G_prev_coeff, mk_gbs_sym)
-                Eps_curr = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                Eps_curr = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                              coorpg(1:3), G_curr_coeff, mk_gbs_sym)
             end if
 !
-            GV_prev = hhoEvalVecCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+            GV_prev = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
                                      coorpg(1:3), GV_prev_coeff, gv_gbs)
-            GV_curr = hhoEvalVecCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+            GV_curr = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
                                      coorpg(1:3), GV_curr_coeff, gv_gbs)
 !
-            var_prev = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            var_prev = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                        coorpg(1:3), hhoGVState%vari_prev, gv_cbs)
-            var_curr = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            var_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                        coorpg(1:3), hhoGVState%vari_curr, gv_cbs)
 !
-            lag_prev = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            lag_prev = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                        coorpg(1:3), hhoGVState%lagv_prev, gv_cbs)
-            lag_curr = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            lag_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                        coorpg(1:3), hhoGVState%lagv_curr, gv_cbs)
 !
 ! ------- Compute behavior

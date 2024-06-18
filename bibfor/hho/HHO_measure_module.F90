@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -470,15 +470,17 @@ contains
 !
 !===================================================================================================
 !
-    function hhoLengthBoundingBoxCell(hhocell) result(length)
+    function hhoLengthBoundingBoxCell(hhoCell, axes) result(length)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)    :: hhocell
+        type(HHO_Cell), intent(in)    :: hhoCell
+        real(kind=8), intent(in)    :: axes(3, 3)
         real(kind=8), dimension(3)    :: length
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Cell              :: cell HHO
+!  In axes                  :: axes to use
 !  Out length               :: length of the boundix box of the cell
 ! --------------------------------------------------------------------------------------------------
         real(kind=8), dimension(3) :: xmin, xmax, pt
@@ -491,7 +493,7 @@ contains
         xmin = r8maem()
         xmax = -r8maem()
         pt = 0.d0
-        rotmat = transpose(hhocell%axes)
+        rotmat = transpose(axes)
 !
         do inode = 1, hhoCell%nbnodes
             pt = matmul(rotmat, hhoCell%coorno(1:3, inode))
@@ -511,15 +513,17 @@ contains
 !
 !===================================================================================================
 !
-    function hhoLengthBoundingBoxFace(hhoFace) result(length)
+    function hhoLengthBoundingBoxFace(hhoFace, axes) result(length)
 !
         implicit none
 !
         type(HHO_Face), intent(in)    :: hhoFace
+        real(kind=8), intent(in)    :: axes(3, 2)
         real(kind=8), dimension(2)    :: length
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face              :: face HHO
+!  In axes                  :: axes to use
 !  Out length               :: length of the boundix box of the face
 ! --------------------------------------------------------------------------------------------------
         real(kind=8) :: xmin(2), xmax(2), pt(2)
@@ -532,7 +536,7 @@ contains
         if (ndim == 1) then
             length(1) = hhoDiameterFace(hhoFace)
         else
-            rotmat = transpose(hhoFace%axes)
+            rotmat = transpose(axes)
             xmin = r8maem()
             xmax = -r8maem()
             pt = 0.d0

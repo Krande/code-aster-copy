@@ -130,16 +130,16 @@ subroutine te0487(nomopt, nomte)
 !
 ! --------- Eval basis function at the quadrature point
 !
-        call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+        call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
 ! --------- Eval gradient at T+
 !
-        G_curr = hhoEvalVecCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+        G_curr = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
                                 coorpg(1:3), G_curr_coeff, gbs)
 !
 ! --------- Eval temperature at T+
 !
-        temp_eval_curr = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+        temp_eval_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                          coorpg(1:3), temp_curr, cbs)
 !
 ! ------- Compute behavior

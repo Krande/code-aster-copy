@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ contains
 ! -- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
-            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), 0, degree, BSFEval)
+            call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), 0, degree, BSFEval)
 !
 ! ---- rhs = rhs + weight * BSFEval
             coeff = hhoQuad%weights(ipg)*ValuesQP(ipg)
@@ -189,7 +189,7 @@ contains
 ! -- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), 0, degree, BSCEval)
+            call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, degree, BSCEval)
 !
 ! ---- rhs = rhs + weight * BSCEval
             coeff = hhoQuad%weights(ipg)*ValuesQP(ipg)

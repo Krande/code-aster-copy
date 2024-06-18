@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,11 +54,10 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalScalCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                  :: hhoCell
         type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
         integer, intent(in)                         :: order
         real(kind=8), dimension(3), intent(in)      :: pt
@@ -69,7 +68,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a scalar function at a point pt
-!   In hhoCell      : a HHo cell
 !   In hhoBasisCell : basis cell
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -82,7 +80,7 @@ contains
         eval = 0.d0
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisCell%BSEval(hhoCell, pt, 0, order, BSCEval)
+        call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
         eval = ddot(size_coeff, coeff, 1, BSCEval, 1)
 !
@@ -92,11 +90,10 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalFace(hhoFace, hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalScalFace(hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Face), intent(in)                  :: hhoFace
         type(HHO_basis_face), intent(inout)         :: hhoBasisFace
         integer, intent(in)                         :: order
         real(kind=8), dimension(3), intent(in)      :: pt
@@ -107,7 +104,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a scalar at a point pt
-!   In hhoFace      : a HHo Face
 !   In hhoBasisFace : basis Face
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -120,7 +116,7 @@ contains
         eval = 0.d0
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisFace%BSEval(hhoFace, pt, 0, order, BSFEval)
+        call hhoBasisFace%BSEval(pt, 0, order, BSFEval)
 !
         eval = ddot(size_coeff, coeff, 1, BSFEval, 1)
 !
@@ -130,11 +126,10 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalVecCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                  :: hhoCell
         type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
         integer, intent(in)                         :: order
         real(kind=8), dimension(3), intent(in)      :: pt
@@ -145,7 +140,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a vector at a point pt
-!   In hhoCell      : a HHo cell
 !   In hhoBasisCell : basis cell
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -157,13 +151,13 @@ contains
         integer :: i, size_cmp, deca
 !
         eval = 0.d0
-        size_cmp = size_coeff/hhoCell%ndim
+        size_cmp = size_coeff/hhoBasisCell%ndim
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisCell%BSEval(hhoCell, pt, 0, order, BSCEval)
+        call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
         deca = 0
-        do i = 1, hhoCell%ndim
+        do i = 1, hhoBasisCell%ndim
             eval(i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
             deca = deca+size_cmp
         end do
@@ -174,11 +168,10 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecFace(hhoFace, hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalVecFace(hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Face), intent(in)                  :: hhoFace
         type(HHO_basis_face), intent(inout)         :: hhoBasisFace
         integer, intent(in)                         :: order
         real(kind=8), dimension(3), intent(in)      :: pt
@@ -189,7 +182,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a vector at a point pt
-!   In hhoFace      : a HHo Face
 !   In hhoBasisFace : basis Face
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -201,13 +193,13 @@ contains
         integer :: i, size_cmp, deca
 !
         eval = 0.d0
-        size_cmp = size_coeff/(hhoFace%ndim+1)
+        size_cmp = size_coeff/(hhoBasisFace%ndim+1)
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisFace%BSEval(hhoFace, pt, 0, order, BSFEval)
+        call hhoBasisFace%BSEval(pt, 0, order, BSFEval)
 !
         deca = 0
-        do i = 1, (hhoFace%ndim+1)
+        do i = 1, (hhoBasisFace%ndim+1)
             eval(i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSFEval, 1)
             deca = deca+size_cmp
         end do
@@ -218,11 +210,10 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalMatCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalMatCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                  :: hhoCell
         type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
         integer, intent(in)                         :: order
         real(kind=8), dimension(3), intent(in)      :: pt
@@ -233,7 +224,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a matrix at a point pt
-!   In hhoCell      : a HHo cell
 !   In hhoBasisCell : basis cell
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -245,14 +235,14 @@ contains
         integer :: i, j, size_cmp, deca
 !
         eval = 0.d0
-        size_cmp = size_coeff/(hhoCell%ndim*hhoCell%ndim)
+        size_cmp = size_coeff/(hhoBasisCell%ndim*hhoBasisCell%ndim)
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisCell%BSEval(hhoCell, pt, 0, order, BSCEval)
+        call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
         deca = 0
-        do i = 1, hhoCell%ndim
-            do j = 1, hhoCell%ndim
+        do i = 1, hhoBasisCell%ndim
+            do j = 1, hhoBasisCell%ndim
                 eval(i, j) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
                 deca = deca+size_cmp
             end do
@@ -264,11 +254,10 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalSymMatCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalSymMatCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                  :: hhoCell
         type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
         integer, intent(in)                         :: order
         real(kind=8), dimension(3), intent(in)      :: pt
@@ -279,7 +268,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a symetrix matrix at a point pt
-!   In hhoCell      : a HHo cell
 !   In hhoBasisCell : basis cell
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -292,26 +280,26 @@ contains
         real(kind=8) :: mat(3, 3)
         integer :: i, j, size_cmp, deca
 !
-        if (hhoCell%ndim == 2) then
+        if (hhoBasisCell%ndim == 2) then
             size_cmp = size_coeff/3
-        else if (hhoCell%ndim == 3) then
+        else if (hhoBasisCell%ndim == 3) then
             size_cmp = size_coeff/6
         else
             ASSERT(ASTER_FALSE)
         end if
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisCell%BSEval(hhoCell, pt, 0, order, BSCEval)
+        call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
         deca = 0
         mat = 0.d0
-        do i = 1, hhoCell%ndim
+        do i = 1, hhoBasisCell%ndim
             mat(i, i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
             deca = deca+size_cmp
         end do
 !
-        do i = 1, hhoCell%ndim
-            do j = i+1, hhoCell%ndim
+        do i = 1, hhoBasisCell%ndim
+            do j = i+1, hhoBasisCell%ndim
                 mat(i, j) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
                 mat(j, i) = mat(i, j)
                 deca = deca+size_cmp

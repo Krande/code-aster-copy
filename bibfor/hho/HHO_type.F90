@@ -100,12 +100,8 @@ module HHO_type
         real(kind=8)                :: measure = 0.d0
 ! ----- Normale sortante au barycentre
         real(kind=8), dimension(3)  :: normal = 0.d0
-! ----- Utilisation du repere inertiel local
-        aster_logical               :: use_inertia = ASTER_TRUE
 ! ----- Axes locaux de la cellule
         real(kind=8), dimension(3, 2) :: axes = 0.d0
-! ----- Longueur de la boite englobante (orientee ou non) de la cellule
-        real(kind=8), dimension(2)  :: length_box = 0.d0
 ! ----- Index locale des noeuds de la face
         integer, dimension(4)       :: nodes_loc = 0
         integer                     :: node_bar_loc = 0
@@ -131,12 +127,8 @@ module HHO_type
         real(kind=8), dimension(3)  :: barycenter = 0.d0
 ! ----- Diametre de la cellule
         real(kind=8)                :: diameter = 0.d0
-! ----- Utilisation du repere inertiel local
-        aster_logical               :: use_inertia = ASTER_TRUE
 ! ----- Axes locaux de la cellule
         real(kind=8), dimension(3, 3) :: axes = 0.d0
-! ----- Longueur de la boite englobante (orientee ou non) de la cellule
-        real(kind=8), dimension(3)  :: length_box = 0.d0
 ! ----- Volume ou Surface de la cellule
         real(kind=8)                :: measure = 0.d0
 ! ----- Nombre de faces de la cellule
@@ -433,7 +425,6 @@ contains
         if (this%ndim > 1) then
             write (6, *) "    a2: ", this%axes(1:3, 2)
         end if
-        write (6, *) "Length box: ", this%length_box(1:this%ndim)
 !
     end subroutine
 !
@@ -476,7 +467,6 @@ contains
                 write (6, *) "    a3: ", this%axes(1:3, 3)
             end if
         end if
-        write (6, *) "Length box: ", this%length_box(1:this%ndim)
         write (6, *) "Number of face: ", this%nbfaces
         do iface = 1, this%nbfaces
             write (6, *) "    face", iface, ": "

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), min_order, max_order,&
+            call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), min_order, max_order,&
                               & basisScalEval)
 ! --------  Eval massMat
             call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, 1, massMat, MSIZE_CELL_SCAL)
@@ -148,7 +148,7 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), min_order, &
+            call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), min_order, &
                                     & max_order, basisScalEval)
 ! --------  Eval massMat
             call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, 1, massMat, MSIZE_FACE_SCAL)
