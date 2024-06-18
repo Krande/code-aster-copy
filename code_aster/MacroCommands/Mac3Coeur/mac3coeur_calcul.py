@@ -351,6 +351,17 @@ class Mac3CoeurCalcul:
         """Return the `cara_elem` object"""
         return self.coeur.definition_cara_coeur(self.model, self.geofib)
 
+    @carael.setter
+    def carael(self, value):
+        """Setter method that ensure that the attribute is NULL"""
+        assert self._carael is NULL, "attribute must be set only once or resetted"
+        self._carael = value
+
+    @carael.deleter
+    def carael(self):
+        """Reset the attribute"""
+        self._carael = NULL
+
     @property
     @cached_property
     def times(self):
@@ -793,6 +804,25 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             model = super().model
         return model
 
+    @property
+    @cached_property
+    def carael(self):
+        """Return the `cara_elem` object"""
+
+        if self.char_init:
+            resu_init = None
+        else:
+            resu_init = self.mcf["RESU_INIT"]
+        if resu_init:
+            assert resu_init.getElementaryCharacteristics() is not None
+            carael = resu_init.getElementaryCharacteristics()
+        elif self.char_init:
+            assert self.char_init.getElementaryCharacteristics() is not None
+            carael = self.char_init.getElementaryCharacteristics()
+        else:
+            carael = super().carael
+        return carael
+
     def vessel_head_unload(self, RESU):
         CALC_CHAMP(
             reuse=RESU,
@@ -1177,6 +1207,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         self._init_properties()
         self.mesh = resu.getModel().getMesh()
         self.model = resu.getModel()
+        self.carael = resu.getElementaryCharacteristics()
 
         # initializations
         self.coeur.init_from_mesh(self.mesh)
@@ -1231,6 +1262,8 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                     INST=_pdt_ini_out,
                     PRECISION=1.0e-08,
                     MODELE=self.model,
+                    CARA_ELEM=self.carael,
+                    CHAM_MATER=self.cham_mater_free,
                 ),
                 _F(
                     NOM_CHAM="DEPL",
@@ -1238,6 +1271,8 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                     INST=_pdt_fin_out,
                     PRECISION=1.0e-08,
                     MODELE=self.model,
+                    CARA_ELEM=self.carael,
+                    CHAM_MATER=self.cham_mater_free,
                 ),
             ),
         )

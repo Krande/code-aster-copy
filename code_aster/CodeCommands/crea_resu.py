@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -107,6 +107,12 @@ class ResultCreator(ExecuteCommand):
                     if mesh is not None:
                         self._result.setMesh(mesh)
                         break
+
+        # find caraelem
+        for occ in fkw:
+            if occ.get("CARA_ELEM"):
+                self._result.setElementaryCharacteristics(occ["CARA_ELEM"])
+                break
 
         # find ligrel and nume_equa
         feds = []
