@@ -24,7 +24,7 @@ import sys
 
 from waflib import Configure, TaskGen, Utils, Logs, Build
 
-_MODULE_NAMES = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
+_MODULE_NAMES = ["aster", "aster_core" ]#, "aster_fonctions", "med_aster", "libaster"]
 
 
 def options(self):

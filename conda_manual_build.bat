@@ -149,6 +149,7 @@ waf configure ^
   --disable-mpi ^
   --disable-petsc ^
   --maths-libs=auto ^
+  --msvc-entry ^
   --without-hg ^
   --without-repo
 

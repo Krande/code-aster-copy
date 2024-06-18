@@ -1,3 +1,4 @@
+#include <Python.h>
 #include "Windows.h"
 #include "astercxx.h"
 
@@ -6,30 +7,39 @@
 #include "aster_pybind.h"
 
 
-namespace py = pybind11;
+// wrapper.c
 
-// Function pointer type for the original initialization function
-typedef PyObject* (*PyInitFunc)();
 
-// Global variable to store the original module's handle and function pointer
-static HMODULE originalModule = nullptr;
-static PyInitFunc pyInitFunc = nullptr;
+typedef PyObject* (*PyInit_aster_t)(void);
 
-// Proxy function to initialize the module
-extern "C" __declspec(dllexport) PyObject* PyInit_aster() {
-    if (!originalModule) {
-        originalModule = LoadLibrary("bibc.dll");
-        if (!originalModule) {
-            PyErr_SetString(PyExc_ImportError, "Could not load original module");
-            return nullptr;
-        }
+// Pointer to the original PyInit_aster function
+PyInit_aster_t original_PyInit_aster = NULL;
 
-        pyInitFunc = (PyInitFunc)GetProcAddress(originalModule, "PyInit_aster");
-        if (!pyInitFunc) {
-            PyErr_SetString(PyExc_ImportError, "Could not find PyInit_aster in original module");
-            return nullptr;
-        }
+// Function to load the original bibc.dll and get the PyInit_aster function
+void load_bibc_dll() {
+    HMODULE hBibcDll = LoadLibrary("bibc.dll");
+    if (!hBibcDll) {
+        PyErr_SetString(PyExc_ImportError, "Could not load bibc.dll");
+        return;
     }
 
-    return pyInitFunc();
+    original_PyInit_aster = (PyInit_aster_t)GetProcAddress(hBibcDll, "PyInit_aster");
+    if (!original_PyInit_aster) {
+        PyErr_SetString(PyExc_ImportError, "Could not find PyInit_aster in bibc.dll");
+        return;
+    }
 }
+
+// The wrapper function that calls the original PyInit_aster
+PyObject* PyInit_aster() {
+    if (!original_PyInit_aster) {
+        load_bibc_dll();
+    }
+
+    if (original_PyInit_aster) {
+        return original_PyInit_aster();
+    }
+
+    return NULL;
+}
+
