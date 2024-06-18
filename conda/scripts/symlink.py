@@ -35,7 +35,7 @@ def create_symlink(source, link_name):
         return False
 
 
-def main(copy_files: bool):
+def main(copy_files: bool, force: bool):
     extlib = ".pyd"
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
 
@@ -55,7 +55,7 @@ def main(copy_files: bool):
             shutil.copy(dst, src)
         else:
             result = create_symlink(dst, src)
-            if not result:
+            if not result and force is False:
                 raise ValueError(f"Failed to create symlink: {src} -> {dst}")
 
 
@@ -68,8 +68,13 @@ def cli():
         action="store_true",
         help="Create symlinks for the Code Aster libraries. Alternatively, copy the files.",
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Continues even if the destination file exists. This will NOT overwrite the file.",
+    )
     args = parser.parse_args()
-    main(args.copy)
+    main(args.copy, args.force)
 
 
 def manual():

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent
+ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent.parent
 THIS_DIR = pathlib.Path(__file__).resolve().parent
 BUILD_DIR = ROOT_DIR / "build" / "std" / "debug"
 TMP_DIR = THIS_DIR / "temp"
