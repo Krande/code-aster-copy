@@ -31,7 +31,7 @@ class msvclibgen(Task.Task):
         if clean_name == "aster":
             def_file = root_path / "bibc" / "aster.def"
             opts += [f"/DEF:{def_file}"]
-        elif clean_name.endswith("entry"):
+        elif clean_name.endswith("proxy"):
             def_file = root_path / "conda/c_entrypoints" / f"{clean_name}.def"
             opts += [f"/DEF:{def_file}"]
         else:
@@ -156,7 +156,7 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
     if lib_name == "aster":
         lib_output_file_path = bld_path / "bibc" / "aster.lib"
-    elif lib_name.endswith("entry"):
+    elif lib_name.endswith("proxy"):
         Logs.info(f"input_tasks: {input_tasks=}")
         lib_output_file_path = bld_path / "conda" / f"{lib_name}.lib"
     else:
@@ -170,7 +170,6 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     msvc_libgen_task.env = self.env
     msvc_libgen_task.dep_nodes = input_tasks
     msvc_libgen_task.outputs = [bib_lib_output_file_node]
-    # msvc_libgen_task.use_msvc_entry = self.get_define("ASTER_WITHOUT_PYMOD")
 
     Logs.info(f"{msvc_libgen_task.outputs=}")
 
@@ -236,39 +235,14 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     Logs.info(f"{type(bibc_dll)=}{bibc_dll=}")
     Logs.info(f"{type(bibcxx_dll)=}{bibcxx_dll=}")
 
-    # mods = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
-    # symlink_map = {
-    #     "libaster": bibcxx_dll,
-    #     "aster": bibc_dll,
-    #     "aster_core": bibc_dll,
-    #     "aster_fonctions": bibc_dll,
-    #     "med_aster": bibc_dll,
-    # }
-    #
-    # input_nodes = []
-    # output_nodes = []
-    # aster_lib_dir = pathlib.Path(self.env.ASTERLIBDIR).resolve().absolute()
-    # for submodule in mods:
-    #     dll_src_node = symlink_map.get(submodule)
-    #     dest = submodule + ".pyd"
-    #     pyd_node = self.bld.bldnode.make_node(dest)
-    #     input_nodes.append(dll_src_node)
-    #     output_nodes.append(pyd_node)
-    #     # self.bld.install_as((aster_lib_dir / dest).as_posix(), pyd_node)
-    #     Logs.info(f"Created symlink: {dll_src_node} -> {pyd_node}")
-    #
-    # msvc_sym_task = self.create_task("msvc_symlink_installer")
-    # msvc_sym_task.inputs = input_nodes
-    # msvc_sym_task.dep_nodes = input_nodes
-    # msvc_sym_task.outputs = output_nodes
-    # msvc_sym_task.env = self.env
-
     Logs.info("Successfully ran MSVC lib generation")
 
 
 _lib_task_obj: LibTask | None = None
 _task_done = False
 _compiler_map = {"asterlib": "cxx", "asterbibc": "c", "asterbibfor": "fc", "asterbibcxx": "cxx"}
+
+_proxy_tasks = set()
 
 
 @TaskGen.feature("cxxshlib")
@@ -277,11 +251,28 @@ def make_libs_for_entrypoints(self) -> None:
     if platform.system() != "Windows":
         return
     name = self.get_name()
-    if not name.endswith("entry"):
+    if not name.endswith("proxy"):
         return
+    global _proxy_tasks
+    if name in _proxy_tasks:
+        return
+    _proxy_tasks.add(name)
+
     aster_object = get_task_object(self.bld, name, "cxx")
     c_input_tasks = [ctask.outputs[0] for ctask in aster_object.tasks]
-    create_msvclibgen_task(self, name, c_input_tasks)
+    clib_task = aster_object.libtask
+
+    Logs.info(f"{name=},{c_input_tasks=}, {clib_task.outputs=}")
+
+    clib_task.outputs = [o for o in clib_task.outputs if o.suffix() != ".lib"]
+    Logs.info(f"{clib_task.outputs=} after removal")
+
+    aster_msvc_lib_task = create_msvclibgen_task(self, name, c_input_tasks)
+
+    clib_task_outputs = [x for x in aster_msvc_lib_task.outputs if x.suffix() == ".lib"]
+
+    clib_task.inputs += clib_task_outputs
+    Logs.info(f"{clib_task.inputs=}")
 
 
 @TaskGen.feature("cxxshlib", "fcshlib", "cshlib")
@@ -290,6 +281,8 @@ def set_flags(self) -> None:
     if platform.system() != "Windows":
         return
     name = self.get_name()
+    args = []
+    bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
     if name == "asterbibc":
         archive_name = "bibc"
     elif name == "asterbibcxx":
@@ -298,12 +291,16 @@ def set_flags(self) -> None:
         archive_name = "bibfor"
     elif name == "asterlib":
         archive_name = "aster"
+    elif name.endswith("proxy"):
+        archive_name = name
+        conda_dir = bld_path / "conda"
+        args += [f"/LIBPATH:{conda_dir.as_posix()}",]
     else:
         Logs.info(f"Skipping {name=}")
         return None
-    bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
+
     archive_dir = bld_path / archive_name
-    args = [f"/LIBPATH:{archive_dir.as_posix()}", f"/WHOLEARCHIVE:{archive_name}.lib", f"{archive_name}.exp"]
+    args += [f"/LIBPATH:{archive_dir.as_posix()}", f"/WHOLEARCHIVE:{archive_name}.lib", f"{archive_name}.exp"]
     # if archive_name == "bibfor":
     #     all_mumps = ["mpiseq.lib", "esmumps.lib", "scotch.lib", "scotcherr.lib", "scotcherrexit.lib"]
     #     for lib in all_mumps:

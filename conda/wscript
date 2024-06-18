@@ -19,11 +19,12 @@
 
 import os.path as osp
 import pathlib
+import shutil
 import sys
 
 from waflib import Configure, TaskGen, Utils, Logs, Build
 
-_MODULE_NAMES = ["aster", "aster_core", "aster_fonctions", "med_aster"]
+_MODULE_NAMES = ["aster", "aster_core", "aster_fonctions", "med_aster", "libaster"]
 
 
 def options(self):
@@ -34,7 +35,7 @@ def configure(self):
     Logs.info("Configuring MSVC entrypoints")
     self.load("compiler_c")
 
-    incpath = osp.join(self.path.get_src().abspath(),"c_entrypoints", "include")
+    incpath = osp.join(self.path.get_src().abspath(), "c_entrypoints", "include")
     Logs.info(f"Adding {incpath} to include path")
 
     top_dir = pathlib.Path(self.path.get_bld().abspath()).parent.parent.parent
@@ -66,17 +67,17 @@ def configure(self):
 def build(self):
     Logs.info("Building MSVC entrypoints")
     env = self.all_envs[self.variant]
-    env_conf = env.derive()
-    Logs.info(f"using {env_conf=}")
-    Logs.info(f"using {env['INCLUDES_ASTERPROXY']=}")
-    env_conf["INCLUDES"] = env["INCLUDES_ASTERPROXY"]
     use = ["PYBIND11", "PYEXT", "NUMPY"]
 
     # Build aster.pyd
     for mod in _MODULE_NAMES:
+        env_conf = env.derive()
+        Logs.info(f"using {env_conf=}")
+        Logs.info(f"using {env['INCLUDES_ASTERPROXY']=}")
+        env_conf["INCLUDES"] = env["INCLUDES_ASTERPROXY"]
         self(
             features="cxx cxxshlib",
-            name=f"{mod}_entry",
+            name=f"{mod}_proxy",
             source=f"c_entrypoints/entry_{mod}.cxx",
             target=f"{mod}_proxy",
             defines="",
@@ -84,13 +85,21 @@ def build(self):
             env=env_conf,
             install_path=env.ASTERLIBDIR,
         )
+        self.add_post_fun(PostBuild(mod))
 
 
-def post_build(bld):
-    # Rename the output to .pyd
-    for mod in _MODULE_NAMES:
-        output = bld.path.find_or_declare(f'build/std/{bld.variant}/conda/{mod}_proxy.dll')
-        output.rename(output.parent.find_or_declare(f'build/std/{bld.variant}/conda/{mod}.pyd'))
+class PostBuild:
+    def __init__(self, mod):
+        self.mod = mod
+
+    def __call__(self, bld):
+        top_dir = pathlib.Path(bld.top_dir).resolve().absolute()
+        library_prefix_ = pathlib.Path(bld.env.PREFIX)
+        prefix_ = library_prefix_.parent
+        src = top_dir / f'build/std/{bld.variant}/conda/{self.mod}_proxy.dll'
+        dst = library_prefix_ / f'lib/aster/{self.mod}.pyd'
+        # use shutil to copy the file to the right location
+        shutil.copy(src, dst)
 
 
 @Configure.conf
