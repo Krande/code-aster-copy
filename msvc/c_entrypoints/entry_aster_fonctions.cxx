@@ -1,29 +1,19 @@
-#include "Windows.h"
-#include "astercxx.h"
+#include "entry_helpers.h"
 
-#include "aster_init.h"
-#include "aster_numpy.h"
-#include "aster_pybind.h"
+PyInit_func_t original_PyInit_aster_fonctions = NULL;
 
-
-namespace py = pybind11;
-
-// Function pointer type for the original initialization function
-typedef PyObject* (*PyInitFunc)();
-
-// Load the original DLL and get the initialization function pointer
-extern "C" __declspec(dllexport) PyObject* PyInit_aster_fonctions() {
-    static HMODULE originalModule = LoadLibrary("bibc.dll");
-    if (!originalModule) {
-        PyErr_SetString(PyExc_ImportError, "Could not load original module");
-        return nullptr;
+extern "C" PyObject* PyInit_aster_fonctions()
+{
+    if (!original_PyInit_aster_fonctions)
+    {
+        LoadDllAndGetFunction("bibc.dll", "PyInit_aster_fonctions", original_PyInit_aster_fonctions);
     }
 
-    static PyInitFunc pyInitFunc = (PyInitFunc)GetProcAddress(originalModule, "PyInit_aster_fonctions");
-    if (!pyInitFunc) {
-        PyErr_SetString(PyExc_ImportError, "Could not find PyInit_aster_fonctions in original module");
-        return nullptr;
+    if (original_PyInit_aster_fonctions)
+    {
+        std::cout << "Calling original PyInit_aster_fonctions" << std::endl;
+        return original_PyInit_aster_fonctions();
     }
-
-    return pyInitFunc();
+    std::cout << "Returning NULL" << std::endl;
+    return NULL;
 }

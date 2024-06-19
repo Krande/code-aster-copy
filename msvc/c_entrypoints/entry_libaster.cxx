@@ -1,30 +1,19 @@
-#include "Windows.h"
-#include "astercxx.h"
+#include "entry_helpers.h"
 
-#include "aster_init.h"
-#include "aster_numpy.h"
-#include "aster_pybind.h"
+PyInit_func_t original_PyInit_libaster = NULL;
 
-
-namespace py = pybind11;
-
-// Function pointer type for the original initialization function
-typedef PyObject* (*PyInitFunc)();
-
-// Proxy function to initialize the module
-extern "C" __declspec(dllexport) PyObject* PyInit_libaster() {
-    static HMODULE originalModule = LoadLibrary("bibcxx.dll");
-
-    if (!originalModule) {
-        PyErr_SetString(PyExc_ImportError, "Could not load original module");
-        return nullptr;
+extern "C" PyObject* PyInit_libaster()
+{
+    if (!original_PyInit_libaster)
+    {
+        LoadDllAndGetFunction("bibcxx.dll", "PyInit_libaster", original_PyInit_libaster);
     }
 
-    static PyInitFunc pyInitFunc = (PyInitFunc)GetProcAddress(originalModule, "PyInit_libaster");
-    if (!pyInitFunc) {
-        PyErr_SetString(PyExc_ImportError, "Could not find PyInit_libaster in original module");
-        return nullptr;
+    if (original_PyInit_libaster)
+    {
+        std::cout << "Calling original PyInit_libaster" << std::endl;
+        return original_PyInit_libaster();
     }
-
-    return pyInitFunc();
+    std::cout << "Returning NULL" << std::endl;
+    return NULL;
 }
