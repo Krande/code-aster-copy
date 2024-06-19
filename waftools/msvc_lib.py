@@ -32,7 +32,7 @@ class msvclibgen(Task.Task):
             def_file = root_path / "bibc" / "aster.def"
             opts += [f"/DEF:{def_file}"]
         elif clean_name.endswith("proxy"):
-            def_file = root_path / "conda/c_entrypoints" / f"{clean_name}.def"
+            def_file = root_path / "msvc/c_entrypoints" / f"{clean_name}.def"
             opts += [f"/DEF:{def_file}"]
         else:
             opts += [f"/DEF:{def_file}"]
@@ -158,7 +158,7 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
         lib_output_file_path = bld_path / "bibc" / "aster.lib"
     elif lib_name.endswith("proxy"):
         Logs.info(f"input_tasks: {input_tasks=}")
-        lib_output_file_path = bld_path / "conda" / f"{lib_name}.lib"
+        lib_output_file_path = bld_path / "msvc" / f"{lib_name}.lib"
     else:
         lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
 
@@ -293,7 +293,7 @@ def set_flags(self) -> None:
         archive_name = "aster"
     elif name.endswith("proxy"):
         archive_name = name
-        conda_dir = bld_path / "conda"
+        conda_dir = bld_path / "msvc"
         args += [f"/LIBPATH:{conda_dir.as_posix()}",]
     else:
         Logs.info(f"Skipping {name=}")

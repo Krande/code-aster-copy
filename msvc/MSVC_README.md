@@ -1,8 +1,8 @@
-# Conda Windows Compilation
+# MSVC Windows Compilation
 
-You'll need to install MSVC toolchain,
+In order to compile Code Aster for MSVC Windows you'll need to install MSVC toolchain.
 
-for example by doing `winget install --id=Microsoft.VisualStudio.2022.BuildTools  -e` and add c++ desktop 
+You can either do `winget install --id=Microsoft.VisualStudio.2022.BuildTools  -e` and add c++ desktop 
 development, and specify the MSVC c++ 14.38 SDK for x86 type processors.
 
 In order to compile Code Aster using conda dependencies for windows, you need to perform the following steps:

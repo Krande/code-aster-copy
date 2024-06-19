@@ -308,7 +308,7 @@ def configure(self):
 
     if self.options.msvc_entry:
         self.env["ASTER_WITH_MSVC64_ENTRY"] = True
-        self.recurse("conda")
+        self.recurse("msvc")
     else:
         Logs.info("Configuring without MSVC entrypoints")
 
@@ -368,7 +368,7 @@ def build(self):
     self.recurse("bibc")
 
     if env.ASTER_WITH_MSVC64_ENTRY:
-        self.recurse("conda")
+        self.recurse("msvc")
     else:
         Logs.info("Building without MSVC entrypoints")
 

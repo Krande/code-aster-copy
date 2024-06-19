@@ -20,11 +20,38 @@
 import os.path as osp
 import pathlib
 import shutil
-import sys
+from dataclasses import dataclass
+from enum import Enum
 
 from waflib import Configure, TaskGen, Utils, Logs, Build
 
-_MODULE_NAMES = ["aster", "aster_core" ]#, "aster_fonctions", "med_aster", "libaster"]
+
+class Module(str, Enum):
+    ASTER = "aster"
+    ASTER_CORE = "aster_core"
+    ASTER_FONCTIONS = "aster_fonctions"
+    MED_ASTER = "med_aster"
+    LIBASTER = "libaster"
+
+
+class ModuleAction(str, Enum):
+    COPY = "copy"
+    CUSTOM = "custom"
+
+
+@dataclass
+class ModuleTask:
+    module: Module
+    action: ModuleAction
+
+
+_MODULE_TASKS = [
+    ModuleTask(Module.ASTER, ModuleAction.COPY),
+    ModuleTask(Module.ASTER_CORE, ModuleAction.COPY),
+    ModuleTask(Module.ASTER_FONCTIONS, ModuleAction.COPY),
+    ModuleTask(Module.MED_ASTER, ModuleAction.COPY),
+    ModuleTask(Module.LIBASTER, ModuleAction.COPY),
+]
 
 
 def options(self):
@@ -70,34 +97,44 @@ def build(self):
     use = ["PYBIND11", "PYEXT", "NUMPY"]
 
     # Build aster.pyd
-    for mod in _MODULE_NAMES:
+    for mod_task in _MODULE_TASKS:
+        mod_name = mod_task.module.value
         env_conf = env.derive()
         Logs.info(f"using {env_conf=}")
         Logs.info(f"using {env['INCLUDES_ASTERPROXY']=}")
         env_conf["INCLUDES"] = env["INCLUDES_ASTERPROXY"]
-        self(
-            features="cxx cxxshlib",
-            name=f"{mod}_proxy",
-            source=f"c_entrypoints/entry_{mod}.cxx",
-            target=f"{mod}_proxy",
-            defines="",
-            use=use,
-            env=env_conf,
-            install_path=env.ASTERLIBDIR,
-        )
-        self.add_post_fun(PostBuild(mod))
+        if mod_task.action == ModuleAction.CUSTOM:
+            self(
+                features="cxx cxxshlib",
+                name=f"{mod_name}_proxy",
+                source=f"c_entrypoints/entry_{mod_name}.cxx",
+                target=f"{mod_name}_proxy",
+                defines="",
+                use=use,
+                env=env_conf,
+                install_path=env.ASTERLIBDIR,
+            )
+        self.add_post_fun(PostBuild(mod_task))
 
 
 class PostBuild:
-    def __init__(self, mod):
-        self.mod = mod
+    def __init__(self, mod_task: ModuleTask):
+        self.mod_task = mod_task
 
     def __call__(self, bld):
         top_dir = pathlib.Path(bld.top_dir).resolve().absolute()
         library_prefix_ = pathlib.Path(bld.env.PREFIX)
-        prefix_ = library_prefix_.parent
-        src = top_dir / f'build/std/{bld.variant}/conda/{self.mod}_proxy.dll'
-        dst = library_prefix_ / f'lib/aster/{self.mod}.pyd'
+        if self.mod_task.action == ModuleAction.CUSTOM:
+            src = top_dir / f'build/std/{bld.variant}/msvc/{self.mod_task.module.value}_proxy.dll'
+        elif self.mod_task.action == ModuleAction.COPY:
+            if self.mod_task.module.value == "libaster":
+                lib_dir_name = "bibcxx"
+            else:
+                lib_dir_name = "bibc"
+            src = top_dir / f'build/std/{bld.variant}/{lib_dir_name}/{lib_dir_name}.dll'
+        else:
+            raise ValueError(f"Unknown action {self.mod_task.action}")
+        dst = library_prefix_ / f'lib/aster/{self.mod_task.module.value}.pyd'
         # use shutil to copy the file to the right location
         shutil.copy(src, dst)
 

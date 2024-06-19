@@ -22,6 +22,32 @@ def init_env():
     os.environ["ASTER_ELEMENTSDIR"] = ASTER_DIR.as_posix()
 
 
+def openmp_debugging():
+    import os
+    # Set these
+    # set KMP_VERSION=1
+    # set KMP_AFFINITY=verbose,none
+    # set KMP_SETTINGS=1
+    # set OMP_DISPLAY_ENV=TRUE
+    # set MKL_VERBOSE=1
+    # set MKL_DEBUG_CPU_TYPE=5
+    # set OMP_NUM_THREADS=1
+    # set MKL_NUM_THREADS=1
+    # set MKL_DYNAMIC=FALSE
+    # set MKL_THREADING_LAYER=INTEL
+    os.environ['KMP_VERSION'] = '1'
+    os.environ['KMP_AFFINITY'] = 'verbose,none'
+    os.environ['KMP_SETTINGS'] = '1'
+    os.environ['OMP_DISPLAY_ENV'] = 'TRUE'
+    os.environ['MKL_VERBOSE'] = '1'
+    os.environ['MKL_DEBUG_CPU_TYPE'] = '5'
+    os.environ['OMP_NUM_THREADS'] = '1'
+    os.environ['MKL_NUM_THREADS'] = '1'
+    os.environ['MKL_DYNAMIC'] = 'FALSE'
+    os.environ['MKL_THREADING_LAYER'] = 'INTEL'
+    num_threads = os.getenv('OMP_NUM_THREADS')
+
+
 init_env()
 
 init_str = """
@@ -34,7 +60,7 @@ from code_aster import CA
 """
 
 
-# run_ctest --resutest=temp\seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 4
+# run_ctest --resutest=temp\seq-debug -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 4
 # run_ctest --resutest=temp/seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 1
 # run_ctest --resutest=temp\mpi -L submit -LE need_data --timefactor=5.0 --only-failed-results -j 6
 
@@ -45,7 +71,6 @@ def run_specific_test(test_name: str):
     mmed_num = 20
     datg_file = ASTEST_DIR / f"{test_name}.datg"
     datg_num = 16
-
 
     if export_file.exists():
         export = export_file.read_text(encoding="utf-8")
@@ -66,7 +91,7 @@ def run_specific_test(test_name: str):
         shutil.copy(datg_file, f"fort.{datg_num}")
     test_file = init_str + comm_file.read_text()
     with open("test_file.py", "w") as f:
-        f.write("from test_install import init_env\ninit_env()\n")
+        f.write("from test_install import init_env, openmp_debugging\nopenmp_debugging()\ninit_env()\n")
         f.write(test_file)
     exec(test_file)
 

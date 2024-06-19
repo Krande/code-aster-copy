@@ -168,8 +168,8 @@ PyObject *asterc_getopt( _IN char *option ) {
      *      iret = 4 : option inexistante, type incorrect.
      */
     PyObject *res;
-
-    res = PyObject_CallMethod( get_sh_params(), "get_option", "s", option );
+    PyObject *r = get_sh_params();
+    res = PyObject_CallMethod(r, "get_option", "s", option );
     if ( !res )
         MYABORT( "erreur lors de l'appel a la methode CoreOptions.get_option" );
 
