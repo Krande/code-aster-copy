@@ -32,7 +32,7 @@ from glob import glob
 from pathlib import Path
 from subprocess import PIPE, run
 
-from .command_files import add_import_commands, file_changed, stop_at_end
+from .command_files import add_import_commands, change_procdir, file_changed, stop_at_end
 from .config import CFG
 from .logger import WARNING, logger
 from .status import StateOptions, Status, get_status
@@ -192,10 +192,14 @@ class RunAster:
                 self.export.get("step") + 1, self.export.get("nbsteps")
             )
         )
-        comm = change_comm_file(comm, interact=self._interact, show=self._show_comm)
+        comm = self._change_comm_file(comm)
         status.update(self._exec_one(comm, timeout - status.times[-1]))
         self._coredump_analysis()
         return status
+
+    def _change_comm_file(self, comm):
+        """Change the comm file."""
+        return change_comm_file(comm, interact=self._interact, show=self._show_comm)
 
     def _exec_one(self, comm, timeout):
         """Show instructions for a command file.
@@ -413,6 +417,12 @@ class RunOnlyEnv(RunAster):
             logger.info("    ulimit -t %.0f", timeout)
         return super().execute_study()
 
+    def _change_comm_file(self, comm):
+        """Change the comm file for manual run."""
+        return change_comm_file(
+            comm, interact=self._interact, use_procdir=True, show=self._show_comm
+        )
+
     def _exec_one(self, comm, timeout):
         """Show instructions for a command file.
 
@@ -422,17 +432,15 @@ class RunOnlyEnv(RunAster):
         """
         idx = self.export.get("step")
         cmd = []
-        if self._parallel:
-            cmd.append("#!/bin/bash")
-            cmd.append("cd proc.$({0})".format(CFG.get("mpi_get_rank")))
-        cmd.append(" ".join(self._get_cmdline_exec(comm, idx)))
+        cmd.append("#!/bin/bash")
+        cmd.append(" ".join(self._get_cmdline_exec("proc.0/" + comm, idx)))
         cmd.append("")
         shell = f"cmd{idx}.sh"
         with open(shell, "w") as fobj:
             fobj.write("\n".join(cmd))
         os.chmod(f"cmd{idx}.sh", 0o755)
         if not self._parallel:
-            logger.info(cmd[0])
+            logger.info(cmd[1])
         elif self._procid == 0:
             args_cmd = dict(mpi_nbcpu=self.export.get("mpi_nbcpu", 1), program="proc.0/" + shell)
             cmd = CFG.get("mpiexec").format(**args_cmd)
@@ -466,13 +474,17 @@ def get_nbcores():
     return os.cpu_count()
 
 
-def change_comm_file(comm, interact=False, wrkdir=None, show=False):
+def change_comm_file(comm, interact=False, use_procdir=None, dstdir=None, show=False):
     """Change a command file.
 
     Arguments:
         comm (str): Command file name.
-        wrkdir (str, optional): Working directory to write the changed file
-            if necessary (defaults: current working directory).
+        interact (bool, optional): Add a stop at the end of the file for
+            interactive modifications.
+        use_procdir (bool, optional): Change to the 'proc.N' directory at the
+            beginning of the file.
+        dstdir (str, optional): Directory to write the changed file
+            if necessary (defaults: ".").
         show (bool): Show file content if *True*.
 
     Returns:
@@ -480,7 +492,10 @@ def change_comm_file(comm, interact=False, wrkdir=None, show=False):
     """
     with open(comm, "rb") as fobj:
         text_init = fobj.read().decode(errors="replace")
-    text = add_import_commands(text_init)
+    text = text_init
+    if use_procdir:
+        text = change_procdir(text)
+    text = add_import_commands(text)
     if interact:
         text = stop_at_end(text)
     changed = text.strip() != text_init.strip()
@@ -491,7 +506,9 @@ def change_comm_file(comm, interact=False, wrkdir=None, show=False):
     if not changed:
         return comm
 
-    filename = osp.join(wrkdir or ".", osp.basename(comm) + ".changed.py")
+    filename = osp.basename(comm) + ".changed.py"
+    if dstdir:
+        filename = osp.join(dstdir, filename)
     with open(filename, "wb") as fobj:
         fobj.write(text.encode())
     return filename

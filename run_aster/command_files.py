@@ -121,3 +121,26 @@ __file__ = r"{original}"
 
 """
     return add + text
+
+
+def change_procdir(text):
+    """Insert command to change into the 'proc.N' directory with N the rank of
+    the MPI process.
+
+    Arguments:
+        text (str): Text of a command file.
+
+    Returns:
+        str: Changed content.
+    """
+    add = "\n".join(
+        [
+            "import os",
+            "from mpi4py import MPI",
+            "",
+            # do not use 'CA.MPI' that would start 'CA.init()'
+            """os.chdir(f"proc.{MPI.COMM_WORLD.Get_rank()}")""",
+            "",
+        ]
+    )
+    return add + text
