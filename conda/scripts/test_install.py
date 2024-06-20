@@ -64,7 +64,7 @@ from code_aster import CA
 # run_ctest --resutest=temp/seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 1
 # run_ctest --resutest=temp\mpi -L submit -LE need_data --timefactor=5.0 --only-failed-results -j 6
 
-def run_specific_test(test_name: str):
+def run_specific_test(test_name: str, debug_openmp=False):
     comm_file = ASTEST_DIR / f"{test_name}.comm"
     export_file = ASTEST_DIR / f"{test_name}.export"
     mmed_file = ASTEST_DIR / f"{test_name}.mmed"
@@ -89,10 +89,19 @@ def run_specific_test(test_name: str):
         shutil.copy(mmed_file, f"fort.{mmed_num}")
     if datg_file.exists():
         shutil.copy(datg_file, f"fort.{datg_num}")
+
     test_file = init_str + comm_file.read_text()
+
     with open("test_file.py", "w") as f:
-        f.write("from test_install import init_env, openmp_debugging\nopenmp_debugging()\ninit_env()\n")
+        f.write("from test_install import init_env")
+        if debug_openmp:
+            f.write(", openmp_debugging\n")
+            f.write("openmp_debugging()\n")
+        else:
+            f.write("\n")
+        f.write("init_env()\n")
         f.write(test_file)
+
     exec(test_file)
 
 
@@ -166,10 +175,10 @@ def cli():
 
 def manual():
     # run_specific_test("comp010i")
-    # run_specific_test('adlv100a')
+    run_specific_test('adlv100a')
     # run_specific_test('adlv100p')
     # run_specific_test('ahlv100a')
-    run_specific_test('ahlv100t')
+    # run_specific_test('ahlv100t')
 
 
 if __name__ == "__main__":

@@ -47,29 +47,6 @@ std::vector<std::string> SplitPaths(const std::string &paths, char delimiter)
     return pathList;
 }
 
-void AddEnvPathsToDllSearch(const std::vector<std::string>& envVars)
-{
-    for (const std::string& envVar : envVars)
-    {
-        char envPaths[32767];  // Adjust the buffer size as needed
-        DWORD result = GetEnvironmentVariable(envVar.c_str(), envPaths, 32767);
-        if (result > 0 && result < 32767)
-        {
-            // Split the environment variable into individual paths and add them to the DLL search path
-            std::vector<std::string> paths = SplitPaths(envPaths);
-            for (const std::string& path : paths)
-            {
-                std::cout << "Adding to DLL search path: " << path << std::endl;
-                SetDllDirectory(path.c_str());
-            }
-        }
-        else
-        {
-            std::cerr << "Failed to retrieve " << envVar << " or buffer size exceeded." << std::endl;
-        }
-    }
-}
-
 HMODULE LoadDllAndGetFunction(const std::string& dllName, const std::string& funcName, PyInit_func_t& funcPtr)
 {
     std::string dllDirectory = GetDllDirectory();
@@ -82,12 +59,8 @@ HMODULE LoadDllAndGetFunction(const std::string& dllName, const std::string& fun
     // Add the DLL directory to the search path
     SetDllDirectory(dllDirectory.c_str());
 
-    // List of environment variables to check for additional DLL paths
-    std::vector<std::string> envVars = {"PYTHONPATH", "PATH"}; // Add more as needed
-    AddEnvPathsToDllSearch(envVars);
-
     // Load the DLL
-    HMODULE hDll = LoadLibrary(dllName.c_str());
+    HMODULE hDll = LoadLibrary(dllPath);
     if (!hDll) {
         DWORD error = GetLastError();
         LPVOID lpMsgBuf;
