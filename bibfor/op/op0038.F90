@@ -18,6 +18,8 @@
 !
 subroutine op0038()
 !
+    use HHO_precalc_module, only: hhoAddInputField
+!
     implicit none
 !
 #include "asterf_types.h"
@@ -51,17 +53,17 @@ subroutine op0038()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ierd, iret, nh, nbRet
+    integer :: ierd, iret, nh, nbRet, nbin
     real(kind=8) :: time, rundf
     character(len=1), parameter :: base = 'G'
     character(len=2) :: chdret
     character(len=8) :: model, caraElem, temp, mesh, kmpic, chmate
-    character(len=8) :: lpain(8), lpaout(1)
+    character(len=8) :: lpain(10), lpaout(1)
     character(len=16) :: type, oper, option, phenom
     character(len=19) :: chelem, press, ligrel
     character(len=24) :: chgeom, chcara(18), chharm, mateco
     character(len=24) :: chtemp, chtime, chflug, chpres, chvarc
-    character(len=24) :: lchin(8), lchout(1)
+    character(len=24) :: lchin(10), lchout(1)
     aster_logical :: exitim, l_ther
     parameter(chvarc='&&OP0038.CHVARC')
 !
@@ -146,9 +148,13 @@ subroutine op0038()
         lpain(7) = 'PHARMON'
         lchin(8) = ' '
         lpain(8) = 'PVARCPR'
+        nbin = 8
+
+        call hhoAddInputField(model, 10, lchin, lpain, nbin)
+
         lchout(1) = chflug
         lpaout(1) = 'PFLUXPG'
-        call calcul('S', 'FLUX_ELGA', ligrel, 8, lchin, &
+        call calcul('S', 'FLUX_ELGA', ligrel, nbin, lchin, &
                     lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
         if (option .eq. 'FLUX_ELNO') then

@@ -88,6 +88,10 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMat
         calcul->addXFEMField( currXfemModel );
     }
 
+    if ( currModel->existsHHO() ) {
+        calcul->addHHOField( currModel->getHHOModel() );
+    }
+
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
 
@@ -161,6 +165,10 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentConductivityMa
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
         calcul->addXFEMField( currXfemModel );
+    }
+
+    if ( currModel->existsHHO() ) {
+        calcul->addHHOField( currModel->getHHOModel() );
     }
 
     // Current Thermal Field

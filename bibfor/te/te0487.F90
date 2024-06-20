@@ -90,7 +90,12 @@ subroutine te0487(nomopt, nomte)
 !
 ! --- Compute Operators
 !
-    call hhoCalcOpTher(hhoCell, hhoData, gradrec)
+    if (hhoData%precompute()) then
+!
+        call hhoReloadPreCalcTher(hhoCell, hhoData, gradrec)
+    else
+        call hhoCalcOpTher(hhoCell, hhoData, gradrec)
+    end if
 !
 ! --- Get input fields
 !

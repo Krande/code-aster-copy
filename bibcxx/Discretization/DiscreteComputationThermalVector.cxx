@@ -935,6 +935,11 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
         XfemModelPtr currXfemModel = currModel->getXfemModel();
         calcul->addXFEMField( currXfemModel );
     }
+
+    if ( currModel->existsHHO() ) {
+        calcul->addHHOField( currModel->getHHOModel() );
+    }
+
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
 
@@ -1006,6 +1011,10 @@ DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_pr
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
         calcul->addXFEMField( currXfemModel );
+    }
+
+    if ( currModel->existsHHO() ) {
+        calcul->addHHOField( currModel->getHHOModel() );
     }
 
     // Add Thermal Field

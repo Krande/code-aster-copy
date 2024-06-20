@@ -63,6 +63,10 @@ PLSN = InputParameter(phys=PHY.NEUT_R)
 
 PLST = InputParameter(phys=PHY.NEUT_R)
 
+# For HHO
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
+
+PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
 
 CHAR_THER_EVOL = Option(
     para_in=(
@@ -84,6 +88,8 @@ CHAR_THER_EVOL = Option(
         SP.PTEMPER,
         SP.PINSTR,
         PVARCPR,
+        PCHHOGT,
+        PCHHOST,
     ),
     para_out=(SP.PVECTTR,),
     condition=(

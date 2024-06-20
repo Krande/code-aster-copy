@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,12 @@ subroutine te0454(nomopt, nomte)
 !
 ! --- Compute Operators
 !
-    call hhoCalcOpTher(hhoCell, hhoData, gradfull, stab)
+    if (hhoData%precompute()) then
+!
+        call hhoReloadPreCalcTher(hhoCell, hhoData, gradfull, stab)
+    else
+        call hhoCalcOpTher(hhoCell, hhoData, gradfull, stab)
+    end if
 !
 ! --- Compute local contribution
 !

@@ -189,6 +189,7 @@ contains
 !
 ! -------- Reload gradient
             call readMatrix('PCHHOGT', gbs, total_dofs, ASTER_FALSE, gradfullvec)
+            gradfull = 0.d0
             call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradfullvec, gradfull)
         else
 !
