@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
                   ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                   fonact, ds_print, ds_measure, ds_algorom, sddisc, &
-                  sdnume, sderro, numins, valinc, solalg, hhoField, &
+                  sdnume, sderro, numins, valinc, solalg, &
                   matass, maprec, ds_contact, &
                   sddyna, nlDynaDamping, &
                   meelem, measse, veelem, veasse, lerrit)
@@ -29,7 +29,6 @@ subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
     use NonLinearDyna_type
-    use HHO_type
 !
     implicit none
 !
@@ -58,7 +57,6 @@ subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=24) :: modele, carele
     character(len=24) :: numedd, numfix
-    type(HHO_Field), intent(in) :: hhoField
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(NL_DS_System), intent(in) :: ds_system
     character(len=24) :: sderro
@@ -134,7 +132,7 @@ subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
         call nmprta(mesh, modele, numedd, numfix, ds_material, carele, &
                     ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                     fonact, ds_print, ds_measure, ds_algorom, sddisc, &
-                    numins, valinc, solalg, hhoField, matass, maprec, &
+                    numins, valinc, solalg, matass, maprec, &
                     sddyna, nlDynaDamping, &
                     ds_contact, meelem, measse, veelem, &
                     veasse, sdnume, ldccvg, faccvg, &

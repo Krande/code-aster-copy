@@ -160,6 +160,12 @@ void Calcul::addBehaviourField( const BehaviourPropertyPtr behaviour ) {
     addInputField( "PMULCOM", behaviour->getMultipleBehaviourField() );
 }
 
+/** @brief Create and add input fields for HHO */
+void Calcul::addHHOField( const HHOModelPtr HHOModel ) {
+    addInputField( "PCHHOGT", HHOModel->getGradient() );
+    addInputField( "PCHHOST", HHOModel->getStabilization() );
+}
+
 /** @brief Compute option */
 void Calcul::compute() {
 

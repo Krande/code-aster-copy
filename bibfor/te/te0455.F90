@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,11 +62,11 @@ subroutine te0455(nomopt, nomte)
 !
     integer :: cbs, fbs, total_dofs
     integer :: jmatt, npg
-    integer :: jcret, jgrad, jstab
+    integer :: jcret
     aster_logical :: l_largestrains, lMatr, lVect, lSigm, lVari, matsym
     character(len=4), parameter :: fami = 'RIGI'
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC)
-    real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)  :: lhs
+    real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC) :: lhs
 !
 ! --- Get HHO informations
 !
@@ -116,10 +116,8 @@ subroutine te0455(nomopt, nomte)
 ! --- Compute Operators
 !
     if (hhoData%precompute()) then
-        call jevech('PCHHOGT', 'L', jgrad)
-        call jevech('PCHHOST', 'L', jstab)
 !
-        call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab), &
+        call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, &
                                   hhoMecaState%grad, hhoMecaState%stab)
     else
         call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, hhoMecaState%stab)

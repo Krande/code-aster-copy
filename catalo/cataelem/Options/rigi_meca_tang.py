@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ PCACO3D = OutputParameter(
 # For HHO
 PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
 
-PCHHOST = InputParameter(phys=PHY.N2448R, comment=""" HHO - matrice de la stabilisation locale""")
+PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
 
 PVARIPR = OutputParameter(phys=PHY.VARI_R, type="ELGA", comment=""" VARIABLES INTERNES POUR T+ """)
 

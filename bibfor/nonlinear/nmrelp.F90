@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
                   sddyna_)
 !
     use NonLin_Datastructure_type
-    use HHO_type
 !
     implicit none
 !

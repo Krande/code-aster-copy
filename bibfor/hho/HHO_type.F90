@@ -37,10 +37,6 @@ module HHO_type
     type HHO_Field
 !
         aster_logical      :: l_debug = ASTER_FALSE
-! ----- Inconnues sur la cellule - Precalcul gradient (matrice)
-        character(len=19)  :: fieldOUT_cell_GT = ''
-! ----- Inconnues sur la cellule - Precalcul stabilisation (matrice)
-        character(len=19)  :: fieldOUT_cell_ST = ''
 ! ----- Fields for Dirichlet loads
         aster_logical      :: l_cine_f = ASTER_FALSE
         character(len=19)  :: fieldCineFunc = ''

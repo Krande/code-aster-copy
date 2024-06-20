@@ -59,6 +59,7 @@ module HHO_GV_module
 #include "asterfort/rcvalb.h"
 #include "asterfort/deflg4.h"
 #include "asterfort/prodmt.h"
+#include "asterfort/readMatrix.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dsymv.h"
@@ -1252,27 +1253,17 @@ contains
 ! Out stab            : stabilization for mechanics
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: jgrad, jstab, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, j
+        integer :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs
 !
         if (ASTER_FALSE) then
-            call jevech('PCHHOGT', 'L', jgrad)
-            call jevech('PCHHOST', 'L', jstab)
 !
-            call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab), &
+            call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, &
                                       hhoMecaState%grad, hhoMecaState%stab)
 
             call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
-            if (l_largestrains) then
-                do j = 1, gv_total_dofs
-                    call dcopy(gv_gbs, zr(jgrad+(j-1)*gv_gbs), 1, hhoGVState%grad(1, j), 1)
-                end do
-            else
-                call hhoCalcOpTher(hhoCell, hhoData, hhoGVState%grad)
-            end if
-            do j = 1, gv_total_dofs
-                call dcopy(gv_total_dofs, zr(jstab+(j-1)*gv_total_dofs), 1, &
-                           hhoGVState%stab(1, j), 1)
-            end do
+            call readMatrix('PCHHOGT', gv_gbs, gv_total_dofs, ASTER_FALSE, hhoGVState%grad)
+            call readMatrix('PCHHOST', gv_total_dofs, gv_total_dofs, ASTER_TRUE, hhoGVState%stab)
+
         else
             call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, &
                                hhoMecaState%grad, hhoMecaState%stab)

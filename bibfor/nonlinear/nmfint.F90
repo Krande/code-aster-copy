@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,10 @@
 subroutine nmfint(model, cara_elem, &
                   ds_material, ds_constitutive, &
                   list_func_acti, iter_newt, ds_measure, ds_system, &
-                  hval_incr, hval_algo, hhoField, &
+                  hval_incr, hval_algo, &
                   ldccvg, sddynz_)
 !
     use NonLin_Datastructure_type
-    use HHO_type
 !
     implicit none
 !
@@ -44,7 +43,6 @@ subroutine nmfint(model, cara_elem, &
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-    type(HHO_Field), intent(in) :: hhoField
     integer, intent(out) :: ldccvg
     character(len=*), optional, intent(in) :: sddynz_
 !
@@ -67,7 +65,6 @@ subroutine nmfint(model, cara_elem, &
 ! In  ds_system        : datastructure for non-linear system management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
-! In  hhoField         : datastructure for HHO
 ! Out ldccvg           : indicator from integration of behaviour
 !                -1 : PAS D'INTEGRATION DU COMPORTEMENT
 !                 0 : CAS DE FONCTIONNEMENT NORMAL
@@ -77,7 +74,7 @@ subroutine nmfint(model, cara_elem, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: l_xfem, l_macr_elem, l_hho
+    aster_logical :: l_xfem, l_macr_elem
     character(len=1) :: base
     character(len=16) :: option
     character(len=19) :: sddyna
@@ -103,7 +100,6 @@ subroutine nmfint(model, cara_elem, &
 !
     l_xfem = isfonc(list_func_acti, 'XFEM')
     l_macr_elem = isfonc(list_func_acti, 'MACR_ELEM_STAT')
-    l_hho = isfonc(list_func_acti, 'HHO')
 !
 ! - Launch timer
 !
@@ -113,10 +109,10 @@ subroutine nmfint(model, cara_elem, &
 ! - Computation
 !
     call merimo(base, &
-                l_xfem, l_macr_elem, l_hho, &
+                l_xfem, l_macr_elem, &
                 model, cara_elem, iter_newt+1, &
                 ds_constitutive, ds_material, ds_system, &
-                hval_incr, hval_algo, hhoField, &
+                hval_incr, hval_algo, &
                 option, ldccvg, sddyna)
 !
 ! - End timer

@@ -443,6 +443,10 @@ DiscreteComputation::getInternalMechanicalForces(
     // Nécessaire également pour Deborst
     calcul->addInputField( "PVARIMP", internVarIter );
 
+    if ( currModel->existsHHO() ) {
+        calcul->addHHOField( currModel->getHHOModel() );
+    }
+
     // Create output vector
     auto elemVect = std::make_shared< ElementaryVectorReal >(
         _phys_problem->getModel(), _phys_problem->getMaterialField(),
@@ -715,6 +719,10 @@ DiscreteComputation::getMechanicalNodalForces( const FieldOnCellsRealPtr stress,
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
         calcul->addXFEMField( currXfemModel );
+    }
+
+    if ( currModel->existsHHO() ) {
+        calcul->addHHOField( currModel->getHHOModel() );
     }
 
     // Add Fourier field

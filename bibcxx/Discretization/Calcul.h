@@ -31,6 +31,7 @@
 #include "Discretization/ElementaryCharacteristics.h"
 #include "MemoryManager/JeveuxObject.h"
 #include "Modeling/FiniteElementDescriptor.h"
+#include "Modeling/HHOModel.h"
 #include "Modeling/Model.h"
 #include "Modeling/XfemModel.h"
 
@@ -178,6 +179,9 @@ class Calcul {
 
     /** @brief Create and add input fields for XFEM */
     void addXFEMField( const XfemModelPtr xfemModel );
+
+    /** @brief Create and add input fields for HHO */
+    void addHHOField( const HHOModelPtr hhoModel );
 
     /** @brief Add input fields for non-linear behaviours */
     void addBehaviourField( const BehaviourPropertyPtr behaviour );

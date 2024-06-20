@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine merimp(l_xfem, l_dyna, l_hho, &
+subroutine merimp(l_xfem, l_dyna, &
                   model, cara_elem, sddyna, iter_newt, &
                   ds_constitutive, ds_material, &
-                  hval_incr, hval_algo, hhoField, caco3d, &
+                  hval_incr, hval_algo, caco3d, &
                   mxchin, lpain, lchin, nbin)
 !
     use NonLin_Datastructure_type
-    use HHO_type
+    use HHO_precalc_module, only: hhoAddInputField
 !
     implicit none
 !
@@ -42,14 +42,13 @@ subroutine merimp(l_xfem, l_dyna, l_hho, &
 #include "asterfort/nmvcex.h"
 #include "asterfort/xajcin.h"
 !
-    aster_logical, intent(in) :: l_xfem, l_dyna, l_hho
+    aster_logical, intent(in) :: l_xfem, l_dyna
     character(len=24), intent(in) :: model, cara_elem
     character(len=19), intent(in) :: sddyna
     integer, intent(in) :: iter_newt
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-    type(HHO_Field), intent(in) :: hhoField
     character(len=24), intent(in) :: caco3d
     integer, intent(in) :: mxchin
     character(len=8), intent(inout) :: lpain(mxchin)
@@ -305,13 +304,6 @@ subroutine merimp(l_xfem, l_dyna, l_hho, &
 !
 ! - HHO
 !
-    if (l_hho) then
-        nbin = nbin+1
-        lpain(nbin) = 'PCHHOGT'
-        lchin(nbin) = hhoField%fieldOUT_cell_GT
-        nbin = nbin+1
-        lpain(nbin) = 'PCHHOST'
-        lchin(nbin) = hhoField%fieldOUT_cell_ST
-    end if
+    call hhoAddInputField(model, mxchin, lchin, lpain, nbin)
 !
 end subroutine

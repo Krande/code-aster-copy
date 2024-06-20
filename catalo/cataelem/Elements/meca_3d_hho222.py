@@ -278,7 +278,7 @@ ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", compo
 
 CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[1380]",))
 
-CHHOST = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[2116]",))
+CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[1081]",))
 
 DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
@@ -368,6 +368,8 @@ class MECA3DH27_HHO222(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PVARCPR, LC.ZVARCPG),
+                (OP.FORC_NODA.PCHHOGT, CHHOGT),
+                (OP.FORC_NODA.PCHHOST, CHHOST),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
@@ -403,10 +405,10 @@ class MECA3DH27_HHO222(Element):
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
-        OP.HHO_PRECALC_MECA(
+        OP.HHO_PRECALC_OP(
             te=460,
-            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PRECALC_MECA.PCOMPOR, LC.CCOMPOR)),
-            para_out=((OP.HHO_PRECALC_MECA.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_MECA.PCHHOST, CHHOST)),
+            para_in=((SP.PGEOMER, NGEOMER),),
+            para_out=((OP.HHO_PRECALC_OP.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_OP.PCHHOST, CHHOST)),
         ),
         OP.HHO_PROJ_MECA(
             te=473,

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine nmflma(matrType, mod45, &
                   matrAsse, matrGeom)
 !
     use NonLin_Datastructure_type
-    use HHO_type
     use NonLinearElem_module, only: elemSuper
     use NonLinear_module, only: updateLoadBCMatrix, compElemGeom, getOption
 !
@@ -140,7 +139,6 @@ subroutine nmflma(matrType, mod45, &
     character(len=19) :: massElem, geomElem
     character(len=19) :: depplu, vitplu, accplu, sigplu, varplu, hval_incrCopy(zvalin)
     integer :: nmax, ldccvg
-    type(HHO_Field) :: hhoField
     character(len=24) :: superElem
 !
 ! --------------------------------------------------------------------------------------------------
@@ -207,7 +205,7 @@ subroutine nmflma(matrType, mod45, &
                     ds_material, ds_constitutive, &
                     listFuncActi, iterNewtPred, &
                     sddyna, ds_measure, ds_system, &
-                    hval_incrCopy, hval_algo, hhoField, &
+                    hval_incrCopy, hval_algo, &
                     nonLinearOption, ldccvg)
         ASSERT(ldccvg .eq. 0)
     end if

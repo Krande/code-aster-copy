@@ -25,7 +25,6 @@
 module NonLinearElem_module
 ! ==================================================================================================
     use NonLin_Datastructure_type
-    use HHO_type
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
@@ -289,7 +288,6 @@ contains
         character(len=16), parameter :: optionElas = "RIGI_MECA"
         integer :: ifm, niv
         integer, parameter :: iterNewtPred = 0
-        type(HHO_Field) :: hhoField
         integer :: ldccvg
 !   ------------------------------------------------------------------------------------------------
 !
@@ -300,7 +298,7 @@ contains
         call nmrigi(model, caraElem, &
                     ds_material, ds_constitutive, &
                     listFuncActi, iterNewtPred, sddyna, ds_measure, ds_system, &
-                    hval_incr, hval_algo, hhoField, &
+                    hval_incr, hval_algo, &
                     optionElas, ldccvg)
         if (ldccvg .ne. 0) then
             call utmess('I', 'DAMPING1_1')

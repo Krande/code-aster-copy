@@ -93,7 +93,7 @@ PCACO3D = OutputParameter(phys=PHY.CACO3D, type="ELEM", comment=""" NE SERT QUE 
 # For HHO
 PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
 
-PCHHOST = InputParameter(phys=PHY.N2448R, comment=""" HHO - matrice de la stabilisation locale""")
+PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
 
 PVARIPR = OutputParameter(phys=PHY.VARI_R, type="ELGA", comment=""" VARIABLES INTERNES POUR T+ """)
 

@@ -37,6 +37,10 @@ DDL_THER = LocatedComponents(
 
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
+CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[66]",))
+
+CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[66]",))
+
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
@@ -109,6 +113,11 @@ class THER2DQ9_HHO111(Element):
             te=4,
             para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX2R),),
             para_out=((SP.PFLUXNO, LC.NFLUX2R),),
+        ),
+        OP.HHO_PRECALC_OP(
+            te=460,
+            para_in=((SP.PGEOMER, LC.EGEOM2D),),
+            para_out=((OP.HHO_PRECALC_OP.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_OP.PCHHOST, CHHOST)),
         ),
         OP.HHO_PROJ_THER(
             te=473,

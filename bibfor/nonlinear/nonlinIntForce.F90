@@ -24,12 +24,11 @@ subroutine nonlinIntForce(phaseType, &
                           ds_system, ds_measure, &
                           hval_incr, hval_algo, &
                           ldccvg, &
-                          hhoField_, sddyna_, &
+                          sddyna_, &
                           ds_algorom_)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
-    use HHO_type
     use NonLinear_module, only: inteForceGetOption
 !
     implicit none
@@ -53,7 +52,6 @@ subroutine nonlinIntForce(phaseType, &
     integer, intent(in) :: iter_newt
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
     integer, intent(out) :: ldccvg
-    type(HHO_Field), optional, intent(in) :: hhoField_
     character(len=19), optional, intent(in) :: sddyna_
     type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
@@ -80,7 +78,6 @@ subroutine nonlinIntForce(phaseType, &
 ! In  iter_newt        : index of current Newton iteration
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
-! In  hhoField         : datastructure for HHO
 ! In  ds_algorom       : datastructure for ROM parameters
 ! Out ldccvg           : indicator from integration of behaviour
 !                -1 : PAS D'INTEGRATION DU COMPORTEMENT
@@ -91,7 +88,6 @@ subroutine nonlinIntForce(phaseType, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: sddyna
-    type(HHO_Field) :: hhoField
     type(ROM_DS_AlgoPara) :: ds_algorom
     aster_logical :: lNodeComp, lInteComp
     integer :: typeAsse
@@ -101,9 +97,6 @@ subroutine nonlinIntForce(phaseType, &
     sddyna = ' '
     if (present(sddyna_)) then
         sddyna = sddyna_
-    end if
-    if (present(hhoField_)) then
-        hhoField = hhoField_
     end if
     if (present(ds_algorom_)) then
         ds_algorom = ds_algorom_
@@ -133,7 +126,7 @@ subroutine nonlinIntForce(phaseType, &
         call nmfint(model, cara_elem, &
                     ds_material, ds_constitutive, &
                     list_func_acti, iter_newt, ds_measure, ds_system, &
-                    hval_incr, hval_algo, hhoField, &
+                    hval_incr, hval_algo, &
                     ldccvg, sddyna)
     end if
 !

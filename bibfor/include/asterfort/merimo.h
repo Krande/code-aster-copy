@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,22 +19,20 @@
 !
 interface
     subroutine merimo(base           ,&
-                      l_xfem         , l_macr_elem, l_hho    ,&
+                      l_xfem         , l_macr_elem, &
                       model          , cara_elem  , iter_newt,&
                       ds_constitutive, ds_material, ds_system,&
-                      hval_incr      , hval_algo  , hhoField ,&
+                      hval_incr      , hval_algo  , &
                       optioz         , ldccvg     , sddynz_)
         use NonLin_Datastructure_type
-        use HHO_type
         character(len=1), intent(in) :: base
-        aster_logical, intent(in) :: l_xfem, l_macr_elem, l_hho
+        aster_logical, intent(in) :: l_xfem, l_macr_elem
         character(len=24), intent(in) :: model, cara_elem
         integer, intent(in) :: iter_newt
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-        type(HHO_Field), intent(in) :: hhoField
         character(len=*), intent(in) :: optioz
         integer, intent(out) :: ldccvg
         character(len=*), optional, intent(in) :: sddynz_

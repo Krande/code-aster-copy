@@ -117,7 +117,12 @@ subroutine te0450(nomopt, nomte)
 !
 ! --- Compute Operators
 !
-    call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, hhoMecaState%stab)
+    if (hhoData%precompute()) then
+        call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, &
+                                  hhoMecaState%grad, hhoMecaState%stab)
+    else
+        call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, hhoMecaState%stab)
+    end if
 !
 ! ----- init basis
 !

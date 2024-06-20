@@ -23,19 +23,18 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
-PCOMPOR = InputParameter(phys=PHY.COMPOR, comment="""  Informations for non-linear comportment """)
 
 PCHHOGT = OutputParameter(
     phys=PHY.N1920R, type="ELEM", comment=""" HHO - matrice du gradient local"""
 )
 
 PCHHOST = OutputParameter(
-    phys=PHY.N2448R, type="ELEM", comment=""" HHO - matrice la stabilisation locale"""
+    phys=PHY.N1360R, type="ELEM", comment=""" HHO - matrice la stabilisation locale"""
 )
 
 
-HHO_PRECALC_MECA = Option(
-    para_in=(SP.PGEOMER, PCOMPOR),
+HHO_PRECALC_OP = Option(
+    para_in=(SP.PGEOMER,),
     para_out=(PCHHOGT, PCHHOST),
-    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
+    condition=(CondCalcul("+", ((AT.BORD, "0"),)),),
 )

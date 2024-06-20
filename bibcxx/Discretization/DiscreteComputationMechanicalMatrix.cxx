@@ -95,6 +95,10 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getElasticStiffnessMatr
         calcul->addXFEMField( currXfemModel );
     }
 
+    if ( currModel->existsHHO() ) {
+        calcul->addHHOField( currModel->getHHOModel() );
+    }
+
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
     calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
@@ -727,6 +731,10 @@ DiscreteComputation::getTangentStiffnessMatrix(
     calcul->addInputField( "PCONTMR", stress );
     calcul->addInputField( "PVARIMR", internVar );
 
+    if ( currModel->existsHHO() ) {
+        calcul->addHHOField( currModel->getHHOModel() );
+    }
+
     // Coded Material
     auto currCodedMater = _phys_problem->getCodedMaterial();
     calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -826,6 +834,10 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix(
     // Nécessaire également pour Deborst
 
     calcul->addInputField( "PVARIMP", internVar );
+
+    if ( currModel->existsHHO() ) {
+        calcul->addHHOField( currModel->getHHOModel() );
+    }
 
     // Create output matrix
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
