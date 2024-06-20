@@ -23,9 +23,6 @@ std::string GetDllDirectory();
 // Split paths in environment variables
 std::vector<std::string> SplitPaths(const std::string &paths, char delimiter = ';');
 
-// Add directories from environment variables to DLL search path
-void AddEnvPathsToDllSearch(const std::vector<std::string>& envVars);
-
 // Load the specified DLL and retrieve the function pointer
 HMODULE LoadDllAndGetFunction(const std::string& dllName, const std::string& funcName, PyInit_func_t& funcPtr);
 

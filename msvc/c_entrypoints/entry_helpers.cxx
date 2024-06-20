@@ -1,4 +1,5 @@
 #include "entry_helpers.h"
+#include <filesystem>
 
 std::string GetDllPath()
 {
@@ -47,6 +48,36 @@ std::vector<std::string> SplitPaths(const std::string &paths, char delimiter)
     return pathList;
 }
 
+
+std::string SearchEnvPathsForDll(const std::vector<std::string>& envVars, const std::string& dllName)
+{
+    for (const std::string& envVar : envVars)
+    {
+        char envPaths[32767];  // Adjust the buffer size as needed
+        DWORD result = GetEnvironmentVariable(envVar.c_str(), envPaths, 32767);
+        if (result > 0 && result < 32767)
+        {
+            // Split the environment variable into individual paths and search for the DLL
+            std::vector<std::string> paths = SplitPaths(envPaths);
+            for (const std::string& path : paths)
+            {
+                std::filesystem::path fullPath = std::filesystem::path(path) / dllName;
+                // print
+                std::cout << "Searching for " << fullPath << std::endl;
+                if (std::filesystem::exists(fullPath))
+                {
+                    return fullPath.string();
+                }
+            }
+        }
+        else
+        {
+            std::cerr << "Failed to retrieve " << envVar << " or buffer size exceeded." << std::endl;
+        }
+    }
+    return "";
+}
+
 HMODULE LoadDllAndGetFunction(const std::string& dllName, const std::string& funcName, PyInit_func_t& funcPtr)
 {
     std::string dllDirectory = GetDllDirectory();
@@ -56,24 +87,32 @@ HMODULE LoadDllAndGetFunction(const std::string& dllName, const std::string& fun
     // Print the path to the console
     printf("Loading %s from %s\n", dllName.c_str(), dllPath);
 
-    // Add the DLL directory to the search path
-    SetDllDirectory(dllDirectory.c_str());
-
-    // Load the DLL
-    HMODULE hDll = LoadLibrary(dllPath);
+    // Load the DLL with altered search path
+    HMODULE hDll = LoadLibraryEx(dllName.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
     if (!hDll) {
-        DWORD error = GetLastError();
-        LPVOID lpMsgBuf;
-        FormatMessage(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL,
-            error,
-            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPTSTR)&lpMsgBuf,
-            0, NULL);
-        std::cerr << "Could not load " << dllName << ". Error: " << (char *)lpMsgBuf << std::endl;
-        LocalFree(lpMsgBuf);
-        return nullptr;
+        // If not found, search in environment paths
+        std::vector<std::string> envVars = {"PYTHONPATH", "PATH"}; // Add more as needed
+        std::string envDllPath = SearchEnvPathsForDll(envVars, dllName);
+        if (!envDllPath.empty())
+        {
+            printf("Loading %s from %s\n", dllName.c_str(), envDllPath.c_str());
+            hDll = LoadLibraryEx(envDllPath.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+        }
+
+        if (!hDll) {
+            DWORD error = GetLastError();
+            LPVOID lpMsgBuf;
+            FormatMessage(
+                FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                NULL,
+                error,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                (LPTSTR)&lpMsgBuf,
+                0, NULL);
+            std::cerr << "Could not load " << dllName << ". Error: " << (char *)lpMsgBuf << std::endl;
+            LocalFree(lpMsgBuf);
+            return nullptr;
+        }
     }
 
     // Get the function pointer
