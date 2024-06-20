@@ -140,13 +140,19 @@ class PostBuild:
         dst = library_prefix_ / f'lib/aster/{self.mod_task.module.value}.pyd'
         if self.mod_task.action == ModuleAction.CUSTOM:
             src = top_dir / f'build/std/{bld.variant}/msvc/{self.mod_task.module.value}_proxy.dll'
-            shutil.move(src, dst)
-            if not self.keep_msvc_files:
-                os.remove(src.with_suffix(".lib"))
-                os.remove(src.with_suffix(".exp"))
-                os.remove(src.with_suffix(".pdb"))
-                os.remove(src.with_name(src.stem + "_in.txt"))
-
+            shutil.copy(src, dst)
+            if self.keep_msvc_files is True:
+                Logs.info(f"Keeping MSVC files for {self.mod_task.module.value}")
+            else:
+                Logs.info(f"Removing MSVC files for {self.mod_task.module.value}")
+                dst_dll_path = dst.with_name(dst.stem + "_proxy.dll")
+                self._safe_delete(src, dst_dll_path, ".dll")
+                self._safe_delete(src, dst_dll_path, ".lib")
+                self._safe_delete(src, dst_dll_path, ".exp")
+                if bld.variant == "debug":
+                    self._safe_delete(src, dst_dll_path, ".pdb")
+                self._safe_delete(src, dst_dll_path, "_in.txt")
+                self._safe_delete(src, dst_dll_path, ".dll.manifest")
         elif self.mod_task.action == ModuleAction.COPY:
             if self.mod_task.module.value == "libaster":
                 lib_dir_name = "bibcxx"
@@ -156,6 +162,25 @@ class PostBuild:
             shutil.copy(src, dst)
         else:
             raise ValueError(f"Unknown action {self.mod_task.action}")
+
+    def _safe_delete(self, src, dst, suffix):
+        if not suffix.startswith('.'):
+            src_path = src.with_name(src.stem + suffix)
+            dst_path = dst.with_name(dst.stem + suffix)
+
+        else:
+            src_path = src.with_suffix(suffix)
+            dst_path = dst.with_suffix(suffix)
+
+        if src_path.exists():
+            os.remove(src_path)
+        else:
+            Logs.warn(f"File {src_path} does not exist")
+
+        if dst_path.exists():
+            os.remove(dst_path)
+        else:
+            Logs.warn(f"File {dst_path} does not exist")
 
 
 @Configure.conf

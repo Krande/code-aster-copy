@@ -9,6 +9,8 @@ SET PARENT_DIR=%PARENT_DIR:\=/%
 set INCLUDE_TESTS=0
 set USE_LOG=0
 set COLOR_ENABLED=1
+:: BUILD_TYPE can be either debug or release
+set BUILD_TYPE=debug
 
 :parse_args
 if "%~1"=="" goto end_parse_args
@@ -105,7 +107,9 @@ if "%FC%" == "ifx.exe" (
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 :: Create dll debug pdb
-set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
+if %BUILD_TYPE% == "debug" (
+    set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
+)
 
 :: Add Math libs
 set LDFLAGS=%LDFLAGS% mkl_intel_ilp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib
@@ -126,7 +130,7 @@ set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS
 REM Clean the build directory
-waf distclean
+@REM waf distclean
 
 python conda\scripts\update_version.py
 
@@ -161,7 +165,11 @@ if %USE_LOG%==1 (
     call conda_datetime.bat
     waf install_debug -vvv > "install_debug_%datetimeString%.log" 2>&1
 ) else (
-    waf install_debug -v
+    if "%BUILD_TYPE%" == "debug" (
+        waf install_debug -v
+    ) else (
+        waf install -v
+    )
 )
 
 endlocal
