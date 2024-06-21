@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ module HHO_utils_module
     public :: hhoGetTypeFromModel, MatScal2Vec, hhoRenumMecaVecInv, MatCellScal2Vec
     public :: SigVec2Mat, hhoGetMatrElem, CellNameL2S, CellNameS2L
     public :: hhoRenumTherVec, hhoRenumTherMat, hhoRenumTherVecInv
+    public :: hhoIsIdentityMat, hhoIdentityMat
 !    private  ::
 !
 contains
@@ -869,6 +870,68 @@ contains
         mat((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
 ! ---- K_TT
         mat((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoIsIdentityMat(mat, size) result(id)
+!
+        implicit none
+!
+        real(kind=8), dimension(:, :), intent(in)    :: mat
+        integer, intent(in)                          :: size
+        aster_logical                                :: id
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Return True if the matrix is Identity
+!   In mat   : matrix to evaluate
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i, j
+!
+        id = ASTER_TRUE
+        do j = 1, size
+            if (abs(mat(j, j)-1.d0) .ge. 1.d-12) then
+                id = ASTER_FALSE
+                exit
+            end if
+            do i = 1, j-1
+                if (abs(mat(i, j)) .ge. 1.d-14) then
+                    id = ASTER_FALSE
+                    exit
+                end if
+            end do
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoIdentityMat(mat, size)
+!
+        implicit none
+!
+        real(kind=8), dimension(:, :), intent(inout) :: mat
+        integer, intent(in)                          :: size
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Return the matrix is Identity
+!   In mat   : matrix to evaluate
+! --------------------------------------------------------------------------------------------------
+!
+        integer ::  j
+!
+        mat(:, :) = 0.d0
+        do j = 1, size
+            mat(j, j) = 1.d0
+        end do
 !
     end subroutine
 !

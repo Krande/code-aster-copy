@@ -1284,7 +1284,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: nb_ortho = 2
+        integer, parameter :: nb_ortho = 1
         integer :: i, j, k, ipg, npg, i_ortho
         real(kind=8) :: r(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
 !

@@ -62,11 +62,9 @@ subroutine readMatrix(name, nrows, ncols, l_sym, mat)
             end do
         end do
     else
-        do j = 1, ncols
-            do i = 1, nrows
-                ij = j+(i-1)*ncols
-                mat(i, j) = zr(jv_matr_out+ij-1)
-            end do
+        do i = 1, nrows
+            ij = (i-1)*ncols
+            call dcopy(ncols, zr(jv_matr_out+ij), 1, mat(i, :), 1)
         end do
     end if
 !

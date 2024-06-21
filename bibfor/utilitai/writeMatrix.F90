@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,11 +59,9 @@ subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
             call dcopy(j, mat(:, j), 1, zr(jv_matr_out+ij), 1)
         end do
     else
-        do j = 1, ncols
-            do i = 1, nrows
-                ij = j+(i-1)*ncols
-                zr(jv_matr_out+ij-1) = mat(i, j)
-            end do
+        do i = 1, nrows
+            ij = (i-1)*ncols
+            call dcopy(ncols, mat(i, :), 1, zr(jv_matr_out+ij), 1)
         end do
     end if
 !
