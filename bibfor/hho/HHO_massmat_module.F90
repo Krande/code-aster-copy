@@ -74,19 +74,13 @@ contains
         type(HHO_quadrature)  :: hhoQuad
         real(kind=8), dimension(MSIZE_CELL_SCAL):: basisScalEval
         integer :: dimMat, ipg
-        aster_logical :: dbg
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
-        dbg = ASTER_FALSE
 ! ----- dimension of massMat
         dimMat = hhoBasisCell%BSSize(min_order, max_order)
         massMat = 0.d0
-!
-#ifdef ASTER_DEBUG_ALL
-        dbg = ASTER_TRUE
-#endif
 !
 ! ----- get quadrature
         call hhoQuad%GetQuadCell(hhoCell, 2*max_order)
@@ -103,13 +97,13 @@ contains
 ! ----- Copy the lower part
 !
         call hhoCopySymPartMat('U', massMat(1:dimMat, 1:dimMat))
-!    call hhoPrintMat(massMat(1:dimMat, 1:dimMat))
+        ! call hhoPrintMat(massMat(1:dimMat, 1:dimMat))
 !
         if (present(mbs)) then
             mbs = dimMat
         end if
 !
-#ifdef ASTER_DEBUG_ALL
+#ifdef ASTER_DEBUG_CXX
         ASSERT(hhoIsIdentityMat(massMat, dimMat))
 #endif
 !
@@ -145,7 +139,6 @@ contains
         type(HHO_quadrature)  :: hhoQuad
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
         integer :: dimMat, ipg
-        aster_logical :: dbg
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- init basis
@@ -153,11 +146,6 @@ contains
 ! ----- dimension of massMat
         dimMat = hhoBasisFace%BSSize(min_order, max_order)
         massMat = 0.d0
-!
-        dbg = ASTER_FALSE
-#ifdef ASTER_DEBUG_ALL
-        dbg = ASTER_TRUE
-#endif
 !
 ! ----- get quadrature
         call hhoQuad%GetQuadFace(hhoFace, 2*max_order)
@@ -174,14 +162,14 @@ contains
 ! ----- Copy the lower part
 !
         call hhoCopySymPartMat('U', massMat(1:dimMat, 1:dimMat))
-!        call hhoPrintMat(massMat)
+        ! call hhoPrintMat(massMat)
 !
         if (present(mbs)) then
             mbs = dimMat
         end if
 !
-#ifdef ASTER_DEBUG_ALL
-        ASSERT(hhoIdentityMat(massMat, dimMat))
+#ifdef ASTER_DEBUG_CXX
+        ASSERT(hhoIsIdentityMat(massMat, dimMat))
 #endif
 !
     end subroutine

@@ -1284,9 +1284,11 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: nb_ortho = 1
+        integer, parameter :: nb_ortho = 2
         integer :: i, j, k, ipg, npg, i_ortho
-        real(kind=8) :: r(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
+        real(kind=8) :: rp(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL), rc(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
+        real(kind=8) :: ra(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
+        real(kind=8) :: ri(MSIZE_CELL_SCAL)
 !
         ASSERT(nb_basis <= MSIZE_CELL_SCAL)
 !
@@ -1308,57 +1310,75 @@ contains
         else
 !           Ortho-normalisation with modified Gramm-Schmidt
 !
+            coeff_shift(1) = 1
+            do i = 2, nb_basis+1
+                coeff_shift(i) = coeff_shift(i-1)+i-1
+            end do
+!
             npg = hhoQuad%nbQuadPoints
 !
+            rp = 0.d0
             do i_ortho = 1, nb_ortho
-                r = 0.d0
+                rc = 0.d0
+                ra = 0.d0
 
                 do i = 1, nb_basis
 !
+                    ri = 0.d0
                     do j = 1, i-1
 !
 ! --------------------- Compute r_ij = (phi_i, phi_j)_T
 !
                         do ipg = 1, npg
-                            r(i, j) = r(i, j)+hhoQuad%weights(ipg)* &
-                                      basisIpg(i, ipg)*basisIpg(j, ipg)
+                            ri(j) = ri(j)+hhoQuad%weights(ipg)* &
+                                    basisIpg(i, ipg)*basisIpg(j, ipg)
                         end do
 !
 ! --------------------- Update phi_i
 !
                         do ipg = 1, npg
-                            basisIpg(i, ipg) = basisIpg(i, ipg)-r(i, j)*basisIpg(j, ipg)
+                            basisIpg(i, ipg) = basisIpg(i, ipg)-ri(j)*basisIpg(j, ipg)
                         end do
                     end do
 !
 ! ------------------ Compute normalization
 !
                     do ipg = 1, npg
-                        r(i, i) = r(i, i)+hhoQuad%weights(ipg)*basisIpg(i, ipg)*basisIpg(i, ipg)
+                        ri(i) = ri(i)+hhoQuad%weights(ipg)*basisIpg(i, ipg)*basisIpg(i, ipg)
                     end do
 !
 ! ------------------ Rescale coefficient
 !
-                    r(i, i) = sqrt(r(i, i))
-                    r(i, 1:i-1) = r(i, 1:i-1)/r(i, i)
-                    basisIpg(i, 1:npg) = basisIpg(i, 1:npg)/r(i, i)
-                end do
-            end do
+                    ri(i) = 1.d0/sqrt(ri(i))
+                    ri(1:i-1) = ri(1:i-1)*ri(i)
+                    basisIpg(i, 1:npg) = basisIpg(i, 1:npg)*ri(i)
 !
 ! ------------- Compute coefficient of orthogonal basis function
 !
-            coeff_shift(1) = 1
-            do i = 2, nb_basis+1
-                coeff_shift(i) = coeff_shift(i-1)+i-1
-            end do
-!
-            do i = 1, nb_basis
-                coeff_mono(coeff_shift(i)+i-1) = 1.d0/r(i, i)
-                do j = 1, i-1
-                    do k = 1, j
-                        coeff_mono(coeff_shift(i)+k-1) = coeff_mono(coeff_shift(i)+k-1)- &
-                                                         r(i, j)*coeff_mono(coeff_shift(j)+k-1)
+                    rc(i, i) = ri(i)
+                    do j = 1, i-1
+                        do k = 1, j
+                            rc(i, k) = rc(i, k)-ri(j)*rc(j, k)
+                        end do
                     end do
+
+                    if (i_ortho == 1) then
+                        ra(i, 1:i) = rc(i, 1:i)
+                    else
+                        do j = 1, i
+                            do k = j, i
+                                ra(i, j) = ra(i, j)+rc(i, k)*rp(k, j)
+                            end do
+                        end do
+                    end if
+                end do
+                rp(1:nb_basis, 1:nb_basis) = ra(1:nb_basis, 1:nb_basis)
+            end do
+
+            do i = 1, nb_basis
+                coeff_mono(coeff_shift(i)+i-1) = ra(i, i)
+                do j = 1, i-1
+                    coeff_mono(coeff_shift(i)+j-1) = ra(i, j)
                 end do
             end do
 !

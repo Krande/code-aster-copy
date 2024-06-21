@@ -900,7 +900,7 @@ contains
                 exit
             end if
             do i = 1, j-1
-                if (abs(mat(i, j)) .ge. 1.d-14) then
+                if (abs(mat(i, j)) .ge. 1.d-13) then
                     id = ASTER_FALSE
                     exit
                 end if
