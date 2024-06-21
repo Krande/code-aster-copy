@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: jessica.haelewyn at edf.fr
-
 
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
@@ -26,34 +24,11 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PCOMPOR = InputParameter(phys=PHY.COMPOR)
+PCHHOBO = OutputParameter(
+    phys=PHY.N480_R, type="ELNO", comment=""" HHO - coefficient base locale"""
+)
 
 
-PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
-
-# For HHO
-PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
-
-PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
-
-PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
-
-PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
-
-
-RIGI_THER_TANG = Option(
-    para_in=(
-        PCOMPOR,
-        SP.PGEOMER,
-        SP.PCAMASS,
-        SP.PMATERC,
-        SP.PTEMPEI,
-        SP.PTMPCHF,
-        PVARCPR,
-        PCHHOGT,
-        PCHHOST,
-        PCHHOBS,
-    ),
-    para_out=(PMATTTR,),
-    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
+HHO_PRECALC_BS = Option(
+    para_in=(SP.PGEOMER,), para_out=(PCHHOBO,), condition=(CondCalcul("+", ((AT.BORD, "0"),)),)
 )

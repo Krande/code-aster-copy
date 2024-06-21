@@ -101,6 +101,8 @@ module HHO_type
 ! ----- Index locale des noeuds de la face
         integer, dimension(4)       :: nodes_loc = 0
         integer                     :: node_bar_loc = 0
+! ----- Index locale de la face pour une cellule
+        integer                     :: face_loc = 0
 ! ----- member function
     contains
         procedure, public, pass :: print => print_face

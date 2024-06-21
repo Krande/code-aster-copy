@@ -256,10 +256,16 @@ CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[216]",))
 
 CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[171]",))
 
+CHHOBS = LocatedComponents(
+    phys=PHY.N480_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
+)
+
 DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[10]",))
-
 
 MVECTLR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_DEPL)
 
@@ -322,6 +328,7 @@ class MECA_DGVQ_HHO222(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (OP.FORC_NODA.PCHHOGT, CHHOGT),
                 (OP.FORC_NODA.PCHHOST, CHHOST),
+                (OP.FORC_NODA.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
@@ -346,6 +353,7 @@ class MECA_DGVQ_HHO222(Element):
                 (OP.FULL_MECA.PVARIMR, ZVARIPG),
                 (OP.FULL_MECA.PCHHOGT, CHHOGT),
                 (OP.FULL_MECA.PCHHOST, CHHOST),
+                (OP.FULL_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=(
                 (SP.PCODRET, LC.ECODRET),
@@ -356,9 +364,14 @@ class MECA_DGVQ_HHO222(Element):
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
+        OP.HHO_PRECALC_BS(
+            te=494,
+            para_in=((SP.PGEOMER, NGEOMER),),
+            para_out=((OP.HHO_PRECALC_BS.PCHHOBO, CHHOBS),),
+        ),
         OP.HHO_PRECALC_OP(
             te=460,
-            para_in=((SP.PGEOMER, NGEOMER),),
+            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PRECALC_OP.PCHHOBS, CHHOBS)),
             para_out=((OP.HHO_PRECALC_OP.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_OP.PCHHOST, CHHOST)),
         ),
         OP.HHO_DEPL_MECA(
@@ -435,6 +448,7 @@ class MECA_DGVQ_HHO222(Element):
                 (OP.RAPH_MECA.PVARIMR, ZVARIPG),
                 (OP.RAPH_MECA.PCHHOGT, CHHOGT),
                 (OP.RAPH_MECA.PCHHOST, CHHOST),
+                (OP.RAPH_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=(
                 (SP.PCODRET, LC.ECODRET),
@@ -463,6 +477,7 @@ class MECA_DGVQ_HHO222(Element):
                 (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG),
                 (OP.RIGI_MECA_TANG.PCHHOGT, CHHOGT),
                 (OP.RIGI_MECA_TANG.PCHHOST, CHHOST),
+                (OP.RIGI_MECA_TANG.PCHHOBS, CHHOBS),
             ),
             para_out=(
                 (SP.PMATUNS, MMATUNS),

@@ -26,6 +26,7 @@
 
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataFields/FieldOnCells.h"
+#include "DataFields/FieldOnNodes.h"
 
 /** @brief Constructor */
 Calcul::Calcul( const std::string &option )
@@ -164,6 +165,7 @@ void Calcul::addBehaviourField( const BehaviourPropertyPtr behaviour ) {
 void Calcul::addHHOField( const HHOModelPtr HHOModel ) {
     addInputField( "PCHHOGT", HHOModel->getGradient() );
     addInputField( "PCHHOST", HHOModel->getStabilization() );
+    addInputField( "PCHHOBS", HHOModel->getBasis() );
 }
 
 /** @brief Compute option */

@@ -43,6 +43,13 @@ CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[216]",))
 
 CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[171]",))
 
+CHHOBS = LocatedComponents(
+    phys=PHY.N480_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
+)
+
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
@@ -76,6 +83,7 @@ class THER2DQ9_HHO222(Element):
                 (OP.CHAR_THER_EVOL.PVARCPR, LC.ZVARCPG),
                 (OP.CHAR_THER_EVOL.PCHHOGT, CHHOGT),
                 (OP.CHAR_THER_EVOL.PCHHOST, CHHOST),
+                (OP.CHAR_THER_EVOL.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -118,6 +126,11 @@ class THER2DQ9_HHO222(Element):
             para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX2R),),
             para_out=((SP.PFLUXNO, LC.NFLUX2R),),
         ),
+        OP.HHO_PRECALC_BS(
+            te=494,
+            para_in=((SP.PGEOMER, LC.EGEOM2D),),
+            para_out=((OP.HHO_PRECALC_BS.PCHHOBO, CHHOBS),),
+        ),
         OP.HHO_TEMP_THER(
             te=456,
             para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PTMPCHF, DDL_THER)),
@@ -130,7 +143,7 @@ class THER2DQ9_HHO222(Element):
         ),
         OP.HHO_PRECALC_OP(
             te=460,
-            para_in=((SP.PGEOMER, LC.EGEOM2D),),
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (OP.HHO_PRECALC_OP.PCHHOBS, CHHOBS)),
             para_out=((OP.HHO_PRECALC_OP.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_OP.PCHHOST, CHHOST)),
         ),
         OP.HHO_PROJ_THER(
@@ -183,6 +196,7 @@ class THER2DQ9_HHO222(Element):
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
                 (OP.RAPH_THER.PCHHOGT, CHHOGT),
                 (OP.RAPH_THER.PCHHOST, CHHOST),
+                (OP.RAPH_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, LC.EFLUX2R)),
         ),
@@ -196,6 +210,7 @@ class THER2DQ9_HHO222(Element):
                 (OP.RIGI_THER.PVARCPR, LC.ZVARCPG),
                 (OP.RIGI_THER.PCHHOGT, CHHOGT),
                 (OP.RIGI_THER.PCHHOST, CHHOST),
+                (OP.RIGI_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
         ),
@@ -210,6 +225,7 @@ class THER2DQ9_HHO222(Element):
                 (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
                 (OP.RIGI_THER_TANG.PCHHOGT, CHHOGT),
                 (OP.RIGI_THER_TANG.PCHHOST, CHHOST),
+                (OP.RIGI_THER_TANG.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.RIGI_THER_TANG.PMATTTR, MMATTTR),),
         ),

@@ -110,9 +110,8 @@ PCACO3D = OutputParameter(
 
 # For HHO
 PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
-
 PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
-
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
 
 FULL_MECA = Option(
     para_in=(
@@ -171,6 +170,7 @@ FULL_MECA = Option(
         SP.PVITPLU,
         PCHHOGT,
         PCHHOST,
+        PCHHOBS,
     ),
     para_out=(
         PCACO3D,

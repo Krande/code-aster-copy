@@ -247,16 +247,17 @@ contains
 !===================================================================================================
 !
     subroutine hhoFaceInit(hhoFace, typma, ndim, nbnodes, nodes_coor, &
-                           barycenter_cell, num_nodes_loc)
+                           num_nodes_loc, num_face_loc, barycenter_cell)
 !
         implicit none
 !
         character(len=8), intent(in)                    :: typma
         integer, intent(in)                             :: ndim
-        real(kind=8), dimension(3, 4), intent(in)        :: nodes_coor
+        real(kind=8), dimension(3, 4), intent(in)       :: nodes_coor
         integer, intent(in)                             :: nbnodes
+        integer, dimension(5), intent(in)               :: num_nodes_loc
+        integer, intent(in)                             :: num_face_loc
         real(kind=8), dimension(3), optional, intent(in):: barycenter_cell
-        integer, dimension(5), optional, intent(in)     :: num_nodes_loc
         type(HHO_Face), intent(out)                     :: hhoFace
 !
 ! --------------------------------------------------------------------------------------------------
@@ -293,13 +294,12 @@ contains
         hhoFace%measure = hhoMeasureFace(hhoFace)
         hhoFace%diameter = hhoDiameterFace(hhoFace)
         hhoFace%axes = hhoLocalAxesFace(hhoFace)
-        if (present(num_nodes_loc)) then
-            do ino = 1, hhoFace%nbnodes
-                hhoFace%nodes_loc(ino) = num_nodes_loc(numsorted(ino))
-            end do
-            ! Last node is the index of barycenter
-            hhoFace%node_bar_loc = num_nodes_loc(hhoFace%nbnodes+1)
-        end if
+        hhoFace%face_loc = num_face_loc
+        do ino = 1, hhoFace%nbnodes
+            hhoFace%nodes_loc(ino) = num_nodes_loc(numsorted(ino))
+        end do
+        ! Last node is the index of barycenter
+        hhoFace%node_bar_loc = num_nodes_loc(hhoFace%nbnodes+1)
 !
     end subroutine
 !
@@ -531,8 +531,8 @@ contains
                 coor_face(1:3, i_node) = hhoCell%coorno(1:3, nodes_faces(i_node, i_face))
             end do
             call hhoFaceInit(hhoCell%faces(i_face), type_faces(i_face), hhoCell%ndim-1, &
-                             nbnodes_faces(i_face), coor_face, &
-                             hhoCell%barycenter, nodes_faces(:, i_face))
+                             nbnodes_faces(i_face), coor_face, nodes_faces(:, i_face), &
+                             i_face, hhoCell%barycenter)
         end do
 !
         if (l_debug) then
@@ -719,7 +719,7 @@ contains
 !
 ! --- Initialize HHO Face
 !
-        call hhoFaceInit(hhoFace, typma, elem_dim, nbnodes, nodes_coor, num_nodes_loc=numnodes)
+        call hhoFaceInit(hhoFace, typma, elem_dim, nbnodes, nodes_coor, numnodes, 1)
 
 ! --- Get quadrature (optional)
 !

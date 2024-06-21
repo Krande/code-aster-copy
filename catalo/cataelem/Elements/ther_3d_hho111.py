@@ -41,6 +41,13 @@ CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[264]",))
 
 CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[253]",))
 
+CHHOBS = LocatedComponents(
+    phys=PHY.N480_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[250]"))),
+)
+
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
@@ -78,6 +85,7 @@ class THER3DH27_HHO111(Element):
                 (OP.CHAR_THER_EVOL.PVARCPR, LC.ZVARCPG),
                 (OP.CHAR_THER_EVOL.PCHHOGT, CHHOGT),
                 (OP.CHAR_THER_EVOL.PCHHOST, CHHOST),
+                (OP.CHAR_THER_EVOL.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -120,9 +128,14 @@ class THER3DH27_HHO111(Element):
             para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX3R),),
             para_out=((SP.PFLUXNO, LC.NFLUX3R),),
         ),
+        OP.HHO_PRECALC_BS(
+            te=494,
+            para_in=((SP.PGEOMER, LC.EGEOM3D),),
+            para_out=((OP.HHO_PRECALC_BS.PCHHOBO, CHHOBS),),
+        ),
         OP.HHO_PRECALC_OP(
             te=460,
-            para_in=((SP.PGEOMER, LC.EGEOM3D),),
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (OP.HHO_PRECALC_OP.PCHHOBS, CHHOBS)),
             para_out=((OP.HHO_PRECALC_OP.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_OP.PCHHOST, CHHOST)),
         ),
         OP.HHO_PROJ_THER(
@@ -180,6 +193,7 @@ class THER3DH27_HHO111(Element):
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
                 (OP.RAPH_THER.PCHHOGT, CHHOGT),
                 (OP.RAPH_THER.PCHHOST, CHHOST),
+                (OP.RAPH_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, LC.EFLUX3R)),
         ),
@@ -193,6 +207,7 @@ class THER3DH27_HHO111(Element):
                 (OP.RIGI_THER.PVARCPR, LC.ZVARCPG),
                 (OP.RIGI_THER.PCHHOGT, CHHOGT),
                 (OP.RIGI_THER.PCHHOST, CHHOST),
+                (OP.RIGI_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
         ),
@@ -207,6 +222,7 @@ class THER3DH27_HHO111(Element):
                 (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
                 (OP.RIGI_THER_TANG.PCHHOGT, CHHOGT),
                 (OP.RIGI_THER_TANG.PCHHOST, CHHOST),
+                (OP.RIGI_THER_TANG.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.RIGI_THER_TANG.PMATTTR, MMATTTR),),
         ),

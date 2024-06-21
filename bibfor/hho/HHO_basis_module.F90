@@ -30,9 +30,11 @@ module HHO_basis_module
     private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/binomial.h"
 #include "asterfort/HHO_basis_module.h"
 #include "asterfort/HHO_size_module.h"
-#include "asterfort/binomial.h"
+#include "asterfort/readVector.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 ! --------------------------------------------------------------------------------------------------
 !
@@ -160,7 +162,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idim, size_basis_scal, ipg
+        integer :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, size_face
         real(kind=8) :: axes(3, 3), length_box(3)
         real(kind=8), dimension(MSIZE_CELL_SCAL, MAX_QP_CELL) :: basisOrthoIpg
         type(HHO_basis_cell) :: hhoBasisIner
@@ -196,24 +198,39 @@ contains
 !
             call hhoBasisIner%initialize(hhoCell, BASIS_INERTIAL)
             size_basis_scal = hhoBasisIner%BSSize(0, MAX_DEGREE_CELL)
-            basisOrthoIpg = 0.d0
 !
-            if (this%ndim > 1) then
+            call tecach('NNO', 'PCHHOBS', 'L', iret, nval=1, itab=jtab)
+!
+            if (iret == 0) then
+                this%coeff_shift(1) = 1
+                do ib = 1, size_basis_scal
+                    this%coeff_shift(ib+1) = this%coeff_shift(ib)+ib
+                end do
+                size_face = binomial(MAX_DEGREE_FACE+this%ndim-1, MAX_DEGREE_FACE)
+                offset = hhoCell%nbfaces*(size_face*(size_face+1)/2)
+                call readVector('PCHHOBS', maxval(this%coeff_shift)-1, &
+                                this%coeff_mono, offset)
+            else
+!
+                basisOrthoIpg = 0.d0
+!
+                if (this%ndim > 1) then
 !               Ortho-normalisation with modified Gramm-Schmidt
 !
-                call hhoQuad%GetQuadCell(hhoCell, 2*MAX_DEGREE_CELL)
+                    call hhoQuad%GetQuadCell(hhoCell, 2*MAX_DEGREE_CELL)
 !
 ! --------------------- Initialize phi_i
 !
-                do ipg = 1, hhoQuad%nbQuadPoints
-                    call hhoBasisIner%BSEval(hhoQuad%points(1:3, ipg), &
-                                             0, MAX_DEGREE_CELL, basisOrthoIpg(1, ipg))
-                end do
+                    do ipg = 1, hhoQuad%nbQuadPoints
+                        call hhoBasisIner%BSEval(hhoQuad%points(1:3, ipg), &
+                                                 0, MAX_DEGREE_CELL, basisOrthoIpg(1, ipg))
+                    end do
+                end if
+!
+                call orthonormalization(hhoQuad, basisOrthoIpg, size_basis_scal, this%ndim, &
+                                        hhoCell%measure, this%coeff_shift, this%coeff_mono)
+!
             end if
-!
-            call orthonormalization(hhoQuad, basisOrthoIpg, size_basis_scal, this%ndim, &
-                                    hhoCell%measure, this%coeff_shift, this%coeff_mono)
-!
         end if
 !
     end subroutine
@@ -240,7 +257,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idim, size_basis_scal, ipg
+        integer :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset
         real(kind=8) :: axes(3, 2), length_box(2)
         real(kind=8), dimension(MSIZE_CELL_SCAL, MAX_QP_FACE) :: basisOrthoIpg
         type(HHO_basis_face) :: hhoBasisIner
@@ -274,22 +291,37 @@ contains
             call hhoBasisIner%initialize(hhoFace, BASIS_INERTIAL)
 !
             size_basis_scal = hhoBasisIner%BSSize(0, MAX_DEGREE_FACE)
-            basisOrthoIpg = 0.d0
 !
-            if (this%ndim > 1) then
+            call tecach('NNO', 'PCHHOBS', 'L', iret, nval=1, itab=jtab)
 !
-                call hhoQuad%GetQuadFace(hhoFace, 2*MAX_DEGREE_FACE)
+            if (iret == 0) then
+                this%coeff_shift(1) = 1
+                do ib = 1, size_basis_scal
+                    this%coeff_shift(ib+1) = this%coeff_shift(ib)+ib
+                end do
+                offset = (hhoFace%face_loc-1)*(maxval(this%coeff_shift)-1)
+                call readVector('PCHHOBS', maxval(this%coeff_shift)-1, &
+                                this%coeff_mono, offset)
+
+            else
+!
+                basisOrthoIpg = 0.d0
+!
+                if (this%ndim > 1) then
+!
+                    call hhoQuad%GetQuadFace(hhoFace, 2*MAX_DEGREE_FACE)
 !
 ! --------------------- Initialize phi_i
 !
-                do ipg = 1, hhoQuad%nbQuadPoints
-                    call hhoBasisIner%BSEval(hhoQuad%points(1:3, ipg), &
-                                             0, MAX_DEGREE_FACE, basisOrthoIpg(1, ipg))
-                end do
-            end if
+                    do ipg = 1, hhoQuad%nbQuadPoints
+                        call hhoBasisIner%BSEval(hhoQuad%points(1:3, ipg), &
+                                                 0, MAX_DEGREE_FACE, basisOrthoIpg(1, ipg))
+                    end do
+                end if
 !
-            call orthonormalization(hhoQuad, basisOrthoIpg, size_basis_scal, this%ndim, &
-                                    hhoFace%measure, this%coeff_shift, this%coeff_mono)
+                call orthonormalization(hhoQuad, basisOrthoIpg, size_basis_scal, this%ndim, &
+                                        hhoFace%measure, this%coeff_shift, this%coeff_mono)
+            end if
         end if
 !
     end subroutine
