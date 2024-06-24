@@ -175,10 +175,13 @@ def cli():
 
 def manual():
     # run_specific_test("comp010i")
-    run_specific_test('adlv100a')
+    # run_specific_test('adlv100a')
     # run_specific_test('adlv100p')
     # run_specific_test('ahlv100a')
     # run_specific_test('ahlv100t')
+    # run_specific_test('hsna106a')  # related to verification of <F> <MODELISA_1> Mesh file issue
+    # run_specific_test('zzzz111a')
+    run_specific_test('zzzz395s')
 
 
 if __name__ == "__main__":
