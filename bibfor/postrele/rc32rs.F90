@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -186,12 +186,12 @@ subroutine rc32rs(lfat, lefat)
         do k = 1, 3
             valer(10+k) = zr(jmax-1+8+k)
         end do
-        valer(16) = zr(jmax+12)
         if (lefat) then
             call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
             if (n5 .eq. 0 .or. abs(fenint) .lt. 1e-8) call utmess('F', 'POSTRCCM_54')
             fenglobal = 0.d0
             if (abs(zr(jmax+10)) .gt. 1e-8) fenglobal = zr(jmax+12)/zr(jmax+10)
+            valer(16) = zr(jmax+10)
             if (fenglobal .gt. fenint) valer(16) = zr(jmax+12)/fenint
             valer(14) = fenglobal
             valer(15) = fenint
