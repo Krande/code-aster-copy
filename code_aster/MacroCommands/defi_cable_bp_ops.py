@@ -51,7 +51,7 @@ from .Utils.defi_cable_op import DEFI_CABLE_OP
 #  - INFO               1 / 2
 #
 # ===========================================================================
-def verif_table(tabin, analy):
+def verif_table(tabin):
     """verification que l'on a le bon nombre de colonnes et les bons noms"""
 
     nbcab = len(tabin)
@@ -72,8 +72,6 @@ def defi_cable_bp_ops(
     GROUP_MA_BETON,
     ADHERENT,
     TYPE_ANCRAGE,
-    TENSION_INIT,
-    RECUL_ANCRAGE,
     TYPE_RELAX,
     INFO,
     CONE=None,
@@ -124,7 +122,7 @@ def defi_cable_bp_ops(
                     del dDEFI_CABLE[-1][i]
             if "TABL_CABLE" in j:
                 __TAB = j["TABL_CABLE"].EXTR_TABLE()
-                nbcab = verif_table(__TAB, ANALY)
+                nbcab = verif_table(__TAB)
                 for ic in range(nbcab):
                     __gma = __TAB.GROUP_MA.values()[ic]
                     __gno1 = __TAB.GROUP_NO1.values()[ic]
@@ -321,8 +319,8 @@ def defi_cable_bp_ops(
         GROUP_MA_BETON=GROUP_MA_BETON,
         ADHERENT=ADHERENT,
         TYPE_ANCRAGE=TYPE_ANCRAGE,
-        TENSION_INIT=TENSION_INIT,
-        RECUL_ANCRAGE=RECUL_ANCRAGE,
+        TENSION_INIT=args.get("TENSION_INIT", None),
+        RECUL_ANCRAGE=args.get("RECUL_ANCRAGE", None),
         TYPE_RELAX=TYPE_RELAX,
         ANALYSE=ANALY,
         INFO=INFO,
