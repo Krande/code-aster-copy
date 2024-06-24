@@ -84,6 +84,7 @@ subroutine modelCheckPlaneity(mesh, model)
     nbCellPlate = 0
     call getPlateCell(model, nbCellPlate, cellPlate)
 
+#ifdef ASTER_HAVE_MPI
 ! - Split MPI communicator
     call asmpi_comm('GET', world)
     if (nbCellPlate .ne. 0) then
@@ -99,6 +100,7 @@ subroutine modelCheckPlaneity(mesh, model)
         call asmpi_split_comm(world, color, key, "TMPCOMM", newcom)
         call asmpi_comm('SET', newcom)
     end if
+#endif
 
 ! - Check planeity of quadrangles
     if (nbCellPlate .ne. 0) then
@@ -135,11 +137,13 @@ subroutine modelCheckPlaneity(mesh, model)
     end if
 !
 ! - Unsplit MPI communicator
+#ifdef ASTER_HAVE_MPI
     call asmpi_barrier_wrap(world, ierror)
     call asmpi_comm('SET', world)
     if (newcom .ne. 0) then
         call asmpi_comm('FREE', newcom)
     end if
+#endif
 !
     AS_DEALLOCATE(vi=cellPlate)
 !

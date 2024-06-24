@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -129,7 +129,11 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
             ASSERT(.false.)
         end if
 !
-        if (xous .eq. 'X' .and. stock .ne. 'CONTIG') call jelibe(jexnum(nomjev, iobj))
+        if (xous .eq. 'X') then
+            if (stock .ne. 'CONTIG') then
+                call jelibe(jexnum(nomjev, iobj))
+            end if
+        end if
 10      continue
     end do
 !
