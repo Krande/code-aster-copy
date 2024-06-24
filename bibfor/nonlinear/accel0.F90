@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -139,7 +139,7 @@ subroutine accel0(model, numeDof, listFuncActi, listLoad, &
                                     hval_veelem, hval_veasse)
 
 ! - Evaluate second member for initial acceleration
-    call nmassi(listFuncActi, sddyna, ds_system, hval_veasse, cndonn)
+    call nmassi(listFuncActi, sddyna, nlDynaDamping, ds_system, hval_incr, hval_veasse, cndonn)
 
 ! --- POUR LE CALCUL DE DDEPLA, IL FAUT METTRE CNCINE A ZERO
 
@@ -170,6 +170,7 @@ subroutine accel0(model, numeDof, listFuncActi, listLoad, &
         write (ifm, *) '<MECANONLINE> ...... ACCMOI : '
         call nmdebg('VECT', acce_prev, ifm)
     end if
+
 !
 ! --- MENAGE
 !

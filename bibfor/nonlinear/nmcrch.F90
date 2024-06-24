@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
     character(len=19) :: cnfext
     character(len=19) :: cnfedo, cnfsdo, cndidi
     character(len=19) :: cndido, cncine, cndiri
-    character(len=19) :: cnondp, cnviss, cnfint
+    character(len=19) :: cnondp, cnviss, cnhyst, cnfint
     character(len=19) :: cnsstf, cnsstr
     character(len=19) :: cnimpe
     character(len=19) :: cnfepi, cndipi, cnrefe, cneltc, cneltf
@@ -268,6 +268,8 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
     if (ldyna) then
         call nmchex(hval_veasse, 'VEASSE', 'CNDYNA', cndyna)
         call vtcreb(cndyna, 'V', 'R', nume_ddlz=numeDof)
+        call nmchex(hval_veasse, 'VEASSE', 'CNHYST', cnhyst)
+        call vtcreb(cnhyst, 'V', 'R', nume_ddlz=numeDof)
         if (lmpas) then
             call ndynkk(sddyna, 'OLDP_CNFEDO', cnfedo)
             call vtcreb(cnfedo, 'V', 'R', nume_ddlz=numeDof)

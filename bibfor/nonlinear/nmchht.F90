@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: phaseType = CORR_NEWTON
-    integer, parameter:: zveass = 18, zveelm = 12
+    integer, parameter:: zveass = 19, zveelm = 12
     character(len=19) :: hval_veelem(zveelm)
     character(len=19) :: hval_veasse(zveass)
     aster_logical :: l_didi, l_comp_mstp, l_macr
