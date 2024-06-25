@@ -29,7 +29,7 @@ subroutine te0013(option, nomte)
 #include "asterfort/metau1.h"
 #include "asterfort/metau2.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/sigtmc.h"
 #include "asterfort/tecach.h"
 !
@@ -48,8 +48,7 @@ subroutine te0013(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=4) :: fami
-    real(kind=8) :: bsigma(81), sigth(162), angl_naut(3), time, nharm, bary(3)
-    integer :: idim
+    real(kind=8) :: bsigma(81), sigth(162), angl_naut(3), time, nharm
     integer :: i, idfde, igeom, imate, ipoids, itemps, ivectu, iret
     integer :: ivf, nbsig, ndim, nno, npg
     real(kind=8) :: zero
@@ -64,7 +63,6 @@ subroutine te0013(option, nomte)
     fami = 'RIGI'
     sigth(:) = zero
     bsigma(:) = zero
-    bary(:) = 0.d0
 !
 !
 ! - Finite element informations
@@ -99,12 +97,7 @@ subroutine te0013(option, nomte)
 !
 ! - Orthotropic parameters
 !
-    do i = 1, nno
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call rcangm(ndim, bary, angl_naut)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! - Get time
 !

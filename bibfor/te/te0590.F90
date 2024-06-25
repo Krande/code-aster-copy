@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine te0590(option, nomte)
 #include "asterfort/nifism.h"
 #include "asterfort/niinit.h"
 #include "asterfort/nmtstm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tgverm.h"
 #include "asterfort/utmess.h"
@@ -63,13 +63,13 @@ subroutine te0590(option, nomte)
     integer :: ndim, nno1, nno2, nno3, npg, nb_elrefe
     integer :: icoret, codret, iret
     integer :: iw, ivf1, ivf2, ivf3, idf1, idf2
-    integer :: jtab(7), lgpg, i, idim
+    integer :: jtab(7), lgpg
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
     integer :: igeom, imate, icontm, ivarim
     integer :: iinstm, iinstp, iddlm, iddld, icompo, icarcr, ivarix
     integer :: ivectu, icontp, ivarip, imatuu
     integer :: idbg, nddl, ia, ja
-    real(kind=8) :: angl_naut(7), bary(3)
+    real(kind=8) :: angl_naut(3)
     character(len=8) :: list_elrefe(10), typmod(2)
     aster_logical :: matsym
     character(len=16) :: defo_comp, rela_comp, type_comp
@@ -145,18 +145,9 @@ subroutine te0590(option, nomte)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
-! - Compute barycentric center
-!
-    bary(:) = 0.d0
-    do i = 1, nno1
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno1
-        end do
-    end do
-!
 ! - Get orientation
 !
-    call rcangm(ndim, bary, angl_naut)
+    call getElemOrientation(ndim, nno1, igeom, angl_naut)
 !
 ! - Select objects to construct from option name
 !

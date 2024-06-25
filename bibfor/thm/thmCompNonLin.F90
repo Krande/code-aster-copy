@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine thmCompNonLin(option, ds_thm)
 #include "asterfort/assert.h"
 #include "asterfort/assthm.h"
 #include "asterfort/thmGetElemPara.h"
-#include "asterfort/thmGetParaOrientation.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/jevech.h"
 #include "asterfort/Behaviour_type.h"
 !
@@ -121,8 +121,7 @@ subroutine thmCompNonLin(option, ds_thm)
 
 !
 ! - Get frame orientation for anisotropy
-!
-    call thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
+    call getElemOrientation(ndim, nno, jv_geom, angl_naut)
 
 !
 ! - Number of (total) internal variables

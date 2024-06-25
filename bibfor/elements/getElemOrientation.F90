@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
+subroutine getElemOrientation(ndim, nno, jv_geom, angl_naut)
 !
     use Behaviour_type
 !
@@ -33,9 +33,8 @@ subroutine thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! THM
 !
-! Get frame orientation for anisotropy
+! Get element frame orientation for anisotropy
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -27,7 +27,7 @@ subroutine te0220(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
@@ -52,7 +52,7 @@ subroutine te0220(option, nomte)
     character(len=32) :: phenom
     real(kind=8) :: valres(2), valpar(ca_nbcvrc_+1)
     real(kind=8) :: dfdx(9), dfdy(9), poids, flux, fluy, epot
-    real(kind=8) :: angmas(3), rbid(3), fluglo(2), fluloc(2), p(2, 2)
+    real(kind=8) :: angmas(3), fluglo(2), fluloc(2), p(2, 2)
     integer :: ndim, nno, nnos, npg, kp, j, itempe, itemp, iener
     integer :: ipoids, ivf, idfde, jgano, igeom, imate, iret, nbpar, ipar
     aster_logical :: aniso
@@ -102,8 +102,7 @@ subroutine te0220(option, nomte)
                     ' ', 'THER_ORTH', nbpar, nompar, [valpar], &
                     2, nomres, valres, icodre, 1)
         aniso = .true.
-!       pas de repere cylindrique en 2d -> rbid
-        call rcangm(ndim, rbid, angmas)
+        call getElemOrientation(ndim, nno, igeom, angmas)
         p(1, 1) = cos(angmas(1))
         p(2, 1) = sin(angmas(1))
         p(1, 2) = -sin(angmas(1))

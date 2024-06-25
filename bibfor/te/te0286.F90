@@ -26,7 +26,7 @@ subroutine te0286(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/simtep.h"
 #include "asterfort/tecach.h"
 !
@@ -45,8 +45,7 @@ subroutine te0286(option, nomte)
 !
     character(len=4) :: fami
     real(kind=8) :: sigma(162), bsigma(81), angl_naut(3)
-    real(kind=8) :: instan, nharm, bary(3)
-    integer :: idim
+    real(kind=8) :: instan, nharm
 !
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
@@ -96,17 +95,7 @@ subroutine te0286(option, nomte)
 !
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 !      ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim2
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim2*(i-1)-1)/nno
-        end do
-    end do
-    call rcangm(ndim2, bary, angl_naut)
+    call getElemOrientation(ndim2, nno, igeom, angl_naut)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !      --------------------------------------------------

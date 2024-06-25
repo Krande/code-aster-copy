@@ -27,7 +27,7 @@ subroutine te0576(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmgeom.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
@@ -54,14 +54,14 @@ subroutine te0576(option, nomte)
 !.......................................................................
 !
     integer :: jgano, ndim, nno, i, nnos, ipoids, ivf, nbnomx, nbcont, npg1
-    integer :: nbsig, igau, isig, igeom, idim, itemps, nbvari, imate, idener
+    integer :: nbsig, igau, isig, igeom, itemps, nbvari, imate, idener
     integer :: idfde, idepl, ideplm, idepmm, idvari, idsig, idsigm, mxcmel, iret
     integer :: idenem, jtab(7)
     parameter(nbnomx=27)
     parameter(nbcont=6)
     parameter(mxcmel=162)
     real(kind=8) :: epsi(nbcont), angl_naut(3), instan, zero, undemi, enelem
-    real(kind=8) :: enerpg(nbnomx), xyz(3)
+    real(kind=8) :: enerpg(nbnomx)
     real(kind=8) :: nharm, deux, integ1, integ2, integ, r
     real(kind=8) :: epsim(nbcont), delta(nbcont), epss(mxcmel)
     real(kind=8) :: epssm(mxcmel), sigmm(nbcont), sigma(nbcont), f(3, 3)
@@ -107,16 +107,7 @@ subroutine te0576(option, nomte)
 !
 ! ----   RECUPERATION  DES DONNEES RELATIVES AU REPERE D'ORTHOTROPIE
 !        -----------------------------------------------------------
-!        COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-        xyz(1) = zero
-        xyz(2) = zero
-        xyz(3) = zero
-        do i = 1, nno
-            do idim = 1, ndim
-                xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-            end do
-        end do
-        call rcangm(ndim, xyz, angl_naut)
+        call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
 !        --------------------------------------------------------

@@ -31,7 +31,7 @@ subroutine te0560(option, nomte)
 #include "asterfort/massup.h"
 #include "asterfort/nmgvno.h"
 #include "asterfort/nmtstm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
@@ -58,15 +58,14 @@ subroutine te0560(option, nomte)
 !
     aster_logical :: matsym
     integer :: nb_DOF
-    integer :: nnoQ, npg, i, imatuu, lgpg, lgpg1, ndim
+    integer :: nnoQ, npg, imatuu, lgpg, lgpg1, ndim
     integer :: jv_poids, jv_vfQ, jv_dfdeQ, igeom, imate
     integer :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
     integer :: icontm, ivarim
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip, nnos, jv_ganoQ
-    integer :: ivarix, idim, iret
+    integer :: ivarix, iret
     integer :: jtab(7), jcret, codret
-    real(kind=8) :: xyz(3)
     real(kind=8) :: angmas(3)
     integer :: icodr1(1)
     character(len=8) :: typmod(2)
@@ -138,16 +137,7 @@ subroutine te0560(option, nomte)
         lgpg = lgpg1
 !
 !     ORIENTATION DU MASSIF
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-        xyz = 0.d0
-!
-        do i = 1, nnoQ
-            do idim = 1, ndim
-                xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nnoQ
-            end do
-        end do
-        call rcangm(ndim, xyz, angmas)
+        call getElemOrientation(ndim, nnoQ, igeom, angmas)
 !
 !     VARIABLES DE COMMANDE
 !

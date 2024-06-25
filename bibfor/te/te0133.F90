@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine te0133(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/matrot.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 !
     character(len=16) :: option, nomte
 !----------------------------------------------------------------------
@@ -39,10 +39,10 @@ subroutine te0133(option, nomte)
 !
     integer :: jgeom, jrepl1, jrepl2, jrepl3
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: i, j
+    integer :: i
     real(kind=8) :: pgl(3, 3)
     real(kind=8) :: ux(3), uy(3), uz(3)
-    real(kind=8) :: ang(7), bary(3)
+    real(kind=8) :: ang(3)
     aster_logical :: interf
 !
 !
@@ -58,20 +58,8 @@ subroutine te0133(option, nomte)
     call jevech('PREPLO2', 'E', jrepl2)
     if (ndim .eq. 3) call jevech('PREPLO3', 'E', jrepl3)
 !
-!
-!     CALCUL DU BARYCENTRE (CAS DES REPERES CYLINDRYQUES)
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do i = 1, nnos
-        do j = 1, ndim
-            bary(j) = bary(j)+zr(jgeom+j+ndim*(i-1)-1)/nnos
-        end do
-    end do
-!
-!
 !     CALCUL DES ANGLES NAUTIQUES
-    call rcangm(ndim, bary, ang)
+    call getElemOrientation(ndim, nnos, jgeom, ang)
 !     CALCUL DE LA MATRICE DE PASSAGE GLOBAL->LOCAL
     call matrot(ang, pgl)
 !

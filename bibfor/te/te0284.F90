@@ -25,7 +25,7 @@ subroutine te0284(option, nomte)
 #include "asterfort/epsimc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/sigimc.h"
 #include "asterfort/tecach.h"
 !
@@ -40,7 +40,7 @@ subroutine te0284(option, nomte)
 !
     character(len=4) :: fami
     real(kind=8) :: sigi(162), epsi(162), bsigma(81), angl_naut(3)
-    real(kind=8) :: instan, nharm, xyz(81), bary(3)
+    real(kind=8) :: instan, nharm, xyz(81)
     integer :: dimcoo, idim
 !
 !
@@ -112,17 +112,7 @@ subroutine te0284(option, nomte)
 !
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 !      ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, dimcoo
-            bary(idim) = bary(idim)+zr(igeom+idim+dimcoo*(i-1)-1)/nno
-        end do
-    end do
-    call rcangm(dimcoo, bary, angl_naut)
+    call getElemOrientation(dimcoo, nno, igeom, angl_naut)
 !
 !
 ! ---- RECUPERATION DE L'INSTANT

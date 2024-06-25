@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 
 interface
-    subroutine thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
+    subroutine getElemOrientation(ndim, nno, jv_geom, angl_naut)
         integer, intent(in) :: ndim, nno
         integer, intent(in) :: jv_geom
         real(kind=8), intent(out) :: angl_naut(3)
-    end subroutine thmGetParaOrientation
+    end subroutine getElemOrientation
 end interface

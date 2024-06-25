@@ -28,7 +28,7 @@ subroutine te0190(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/get_elas_id.h"
 !
 !
@@ -48,9 +48,8 @@ subroutine te0190(option, nomte)
     integer :: k, nbinco, nbsig, nh
     character(len=4) :: fami
     real(kind=8) :: b(486), btdb(81, 81), d(36), jacgau
-    real(kind=8) :: angl_naut(3), instan, nharm, bary(3)
+    real(kind=8) :: angl_naut(3), instan, nharm
     integer :: ndim, nno, nnos, npg1, ipoids, ivf, idfde, dimmod
-    integer :: idim
     integer :: elas_id
 !
 ! --------------------------------------------------------------------------------------------------
@@ -72,7 +71,6 @@ subroutine te0190(option, nomte)
     nbinco = dimmod*nno
     nharm = 0.d0
     btdb(:, :) = 0.d0
-    bary(:) = 0.d0
 !
 ! - Number of stress components
 !
@@ -92,12 +90,7 @@ subroutine te0190(option, nomte)
 !
 ! - Orthotropic parameters
 !
-    do i = 1, nno
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call rcangm(ndim, bary, angl_naut)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! - Harmonic coefficient
 !

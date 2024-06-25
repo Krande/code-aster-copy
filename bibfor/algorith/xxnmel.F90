@@ -43,7 +43,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 #include "asterfort/elrefe_info.h"
 #include "asterfort/indent.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xcinem.h"
@@ -119,7 +119,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
     real(kind=8) :: r
     real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
     integer :: nbsig
-    real(kind=8) :: bary(3), angl_naut(3), d(36), instan
+    real(kind=8) :: angl_naut(3), d(36), instan
     aster_logical :: grdepl, axi, cplan
     type(Behaviour_Integ) :: BEHinteg
     real(kind=8) :: angmas(3)
@@ -186,15 +186,9 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 !
 !   calcul du repère d'othotropie, pour calculer la matrice de Hooke
 !   dans le cas de l'option RIGI_MECA
-    bary = 0.d0
     angl_naut = 0.d0
     if (l_line) then
-        do n = 1, nnop
-            do i = 1, ndim
-                bary(i) = bary(i)+zr(igeom-1+ndim*(n-1)+i)/nnop
-            end do
-        end do
-        call rcangm(ndim, bary, angl_naut)
+        call getElemOrientation(ndim, nnop, igeom, angl_naut)
     end if
 !
 !  - Loop on Gauss points

@@ -28,7 +28,7 @@ subroutine te0097(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/elref2.h"
 #include "asterfort/niinit.h"
 #include "asterfort/sigvmc.h"
@@ -53,7 +53,6 @@ subroutine te0097(option, nomte)
     integer :: kpg, isig, iNodeDisp, iNodePres, iOSGS
     integer :: nbNodeDisp, nbNodePres, nbNodeGonf
     real(kind=8) :: sigmDisp(npgMax*6), angl_naut(3), instan, nharm, sigmTrac(npgMax)
-    real(kind=8) :: bary(3)
     real(kind=8) :: presGaus(npgMax), dispU(3*nbNodeMax), dispP(nbNodeMax)
     integer :: vu(3, nbNodeMax), vg(nbNodeMax), vp(nbNodeMax), vpi(3, nbNodeMax)
     integer :: nbElrefe, iRefePres, iRefeGonf
@@ -135,16 +134,8 @@ subroutine te0097(option, nomte)
     call jevech('PMATERC', 'L', jvMate)
     call jevech('PDEPLAR', 'L', jvDisp)
 
-! - Compute barycentric center
-    bary = 0.d0
-    do iNodeDisp = 1, nbNodeDisp
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(jvGeom+idim+ndim*(iNodeDisp-1)-1)/nbNodeDisp
-        end do
-    end do
-
 ! - Construct local anisotropic basis
-    call rcangm(ndim, bary, angl_naut)
+    call getElemOrientation(ndim, nbNodeDisp, jvGeom, angl_naut)
 
 ! - Get displacements for u, v, w
     dispU = 0.d0

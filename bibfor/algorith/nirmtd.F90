@@ -27,7 +27,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
 #include "asterfort/bmatmc.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "blas/dscal.h"
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
     integer :: mate
@@ -62,14 +62,14 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
     integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
     integer :: os, kk
     integer :: vuiana, vgra, vpsa
-    integer :: nbsig, idim
+    integer :: nbsig
     real(kind=8) :: w
     real(kind=8) :: dsidep(2*ndim, 2*ndim)
     real(kind=8) :: b(2*ndim, 81), def(2*ndim, nno1, ndim), deftr(nno1, ndim)
     real(kind=8) :: ddev(2*ndim, 2*ndim), devd(2*ndim, 2*ndim)
     real(kind=8) :: dddev(2*ndim, 2*ndim)
     real(kind=8) :: iddid, devdi(2*ndim), iddev(2*ndim)
-    real(kind=8) :: bary(3), angl_naut(3)
+    real(kind=8) :: angl_naut(3)
     real(kind=8) :: t1, rac2, notime
     real(kind=8) :: idev(6, 6), idev2(4, 4), kr(6), kd(6)
 !
@@ -95,16 +95,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
     end do
 !
 ! - RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
-! - COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do ia = 1, nno1
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(ia-1)-1)/nno1
-        end do
-    end do
-    call rcangm(ndim, bary, angl_naut)
+    call getElemOrientation(ndim, nno1, igeom, angl_naut)
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
     do g = 1, npg
