@@ -277,10 +277,11 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     call ndpred(sddyna, valinc, solalg)
 !
 ! --- COEFFICIENTS POUR SCHEMAS A PLUSIEURS PAS
-! --- COEEXT: COEF. DE PONDERATION DES FORCES EXTERNES
-! --- COEINT: COEF. DE PONDERATION DES FORCES INTERNES
-! --- COEEQU: COEF. PERMETTANT DE RESPECTER L'EQUILIBRE SU RLES AUTRES
-!             TERMES NON PONDERES
+! --- COEEXT: COEF. DE PONDERATION DES FORCES EXTERNES AU PAS PRECEDENT
+! --- COEINT: COEF. DE PONDERATION DES FORCES INTERNES AU PAS PRECEDENT
+! --- COEXT2: COEF. DE PONDERATION DES FORCES EXTERNES AU PAS COURANT
+! --- COEAM0: COEF. DE PONDERATION DES FORCES D'AMORTISSEMENT AU PAS PRECEDENT
+! --- COEEQU: COEF. PERMETTANT DE RESPECTER L'EQUILIBRE SUR LES AUTRES TERMES NON PONDERES
 !
     if (lmpas) then
         if (lhhtc) then
@@ -334,8 +335,11 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
 ! --- COEFFICIENTS DEVANT MATRICE POUR TERME DE RAPPEL DYNAMIQUE
 !
     coerma = un
-    coeram = un*(un+alpha)
+    coeram = un
     coerri = un
+    if (lmpas) then
+        coeram = coeram*(un+alpha)
+    end if
     coef_sch(21) = coerma
     coef_sch(22) = coeram
     coef_sch(23) = coerri

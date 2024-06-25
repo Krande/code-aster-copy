@@ -71,6 +71,7 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
     character(len=19) :: cnffdo, cndfdo, cnfvdo, olhyst, cnhyst
     aster_logical :: l_wave
     aster_logical :: lDampMatrix
+    aster_logical :: l_mstp
     type(NL_DS_VectComb) :: ds_vectcomb
     real(kind=8), pointer :: vale_cnhyst(:) => null()
     !
@@ -88,6 +89,7 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
     if (l_wave) then
         call utmess('A', 'MECANONLINE_23')
     end if
+    l_mstp = ndynlo(sddyna, 'MULTI_PAS')
     !
     ! - Initializations
     !
@@ -119,8 +121,10 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
         call nonlinDSVectCombAddAny(cnhyst, -1.d0, ds_vectcomb)
 
         ! Save second member for multi-step methods
-        call ndynkk(sddyna, 'OLDP_CNHYST', olhyst)
-        call copisd('CHAMP_GD', 'V', cnhyst, olhyst)
+        if (l_mstp) then
+            call ndynkk(sddyna, 'OLDP_CNHYST', olhyst)
+            call copisd('CHAMP_GD', 'V', cnhyst, olhyst)
+        end if
     end if
     !
     ! - Add internal forces to second member

@@ -102,7 +102,7 @@ subroutine nmforc_pred(list_func_acti, &
     character(len=19) :: cndyna, cnsstr, cnhyst
     character(len=19) :: dispCurr, dispPrev
     real(kind=8) :: timePrev, timeCurr
-    aster_logical :: l_dyna, l_impe, lDampModal, lDampMatrix, lSuperElement
+    aster_logical :: l_dyna, l_impe, l_mstp, lDampModal, lDampMatrix, lSuperElement
     real(kind=8), pointer :: vale_cnhyst(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -120,6 +120,7 @@ subroutine nmforc_pred(list_func_acti, &
 ! - Active functionnalities
     l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
     l_impe = ndynlo(sddyna, 'IMPE_ABSO')
+    l_mstp = ndynlo(sddyna, 'MULTI_PAS')
     lDampModal = nlDynaDamping%lDampModal
     lDampMatrix = nlDynaDamping%hasMatrDamp
     lSuperElement = isfonc(list_func_acti, 'MACR_ELEM_STAT')
@@ -153,7 +154,7 @@ subroutine nmforc_pred(list_func_acti, &
 
 ! - Compute effect of damping (C \cdot \dot{u})
     if (l_dyna) then
-        if (lDampMatrix) then
+        if (lDampMatrix .and. l_mstp) then
             call nmchex(hval_veasse, 'VEASSE', 'CNHYST', cnhyst)
             call compViteForce(nlDynaDamping, hval_incr, 'VITPLU', cnhyst)
         end if
