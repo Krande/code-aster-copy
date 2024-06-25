@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -139,9 +139,9 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
         call nmcomp(BEHinteg, &
                     'RIGI', kpg, 1, 2, typmod, &
                     mate, compor, carcri, tm, tp, &
-                    2, sum, dsu, 1, sigmo(1, kpg), &
-                    vim(1, kpg), option, angmas, &
-                    sigmPost, vip(1, kpg), 36, dsidep, cod(kpg))
+                    2, sum, dsu, 1, sigmo(:, kpg), &
+                    vim(:, kpg), option, angmas, &
+                    sigmPost, vip(:, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) goto 900
 
         if (lSigm) then
