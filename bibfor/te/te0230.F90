@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine te0230(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/pmfmats.h"
 #include "asterfort/rcvalb.h"
@@ -58,7 +58,7 @@ subroutine te0230(option, nomte)
 !
     real(kind=8) :: b(486), jacgau
     real(kind=8) :: btdbi(81, 81), di(36), eta
-    real(kind=8) :: repere(7), xyzgau(3), instan, nharm
+    real(kind=8) :: angl_naut(3), instan, nharm
     real(kind=8) :: bary(3)
     real(kind=8) :: valres(nbres)
 !
@@ -82,7 +82,6 @@ subroutine te0230(option, nomte)
     nbinco = ndim*nno
     nharm = 0.d0
     btdbi(:, :) = 0.d0
-    xyzgau(:) = 0.d0
     bary(:) = 0.d0
 !
 ! - Number of stress components
@@ -112,7 +111,7 @@ subroutine te0230(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
         end do
     end do
-    call ortrep(ndim, bary, repere)
+    call rcangm(ndim, bary, angl_naut)
 !
     nompar(1) = 'X'
     nompar(2) = 'Y'
@@ -140,7 +139,7 @@ subroutine te0230(option, nomte)
             ! ---------- Compute Hooke matrix [D]
             !
             call dmatmc(fami, zi(imate), instan, '+', &
-                        igau, 1, repere, xyzgau, nbsig, &
+                        igau, 1, angl_naut, nbsig, &
                         di_=di)
             !
             ! --------- Compute rigidity matrix [K] = [B]Tx[D]x[B]

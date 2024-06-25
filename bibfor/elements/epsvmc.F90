@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
                   j_poids, j_vf, j_dfde, xyz, disp, &
-                  time, repere, nharm, option, epsi)
+                  time, angl_naut, nharm, option, epsi)
 !
     implicit none
 !
@@ -45,7 +45,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
     real(kind=8), intent(in) :: xyz(1)
     real(kind=8), intent(in) :: disp(1)
     real(kind=8), intent(in) :: time
-    real(kind=8), intent(in) :: repere(7)
+    real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), intent(in) :: nharm
     character(len=16), intent(in) :: option
     real(kind=8), intent(out) :: epsi(1)
@@ -70,7 +70,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
 ! In  disp         : displacements of element
 ! In  time         : current time
 ! In  j_mater      : coded material address
-! In  repere       : definition of basis (for non-isotropic materials)
+! In  angl_naut    : nautical angles (for non-isotropic materials)
 ! In  nharm        : Fourier mode
 ! In  option       : name of option to compute
 ! Out epsi         : mechanical strains or total strains
@@ -78,7 +78,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: epsi_varc(162), epsi_tota_g(162), epsi_tota(162)
-    real(kind=8) :: xyzgau(3), d(4, 4)
+    real(kind=8) :: d(4, 4)
     real(kind=8) :: zero, un, deux
     integer :: i, kpg, imate
     aster_logical :: l_modi_cp
@@ -125,7 +125,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
     if (option(1:4) .eq. 'EPME' .or. option(1:4) .eq. 'EPMG' .or. lteatt('C_PLAN', 'OUI')) then
         call jevech('PMATERC', 'L', imate)
         call epthmc(fami, nno, ndim, nbsig, npg, &
-                    zr(j_vf), xyz, repere, time, zi(imate), &
+                    zr(j_vf), angl_naut, time, zi(imate), &
                     option, epsi_varc)
     end if
 !
@@ -145,12 +145,6 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
 !
         do kpg = 1, npg
 !
-! --------- Real coordinates of Gauss point
-!
-            xyzgau(1) = zero
-            xyzgau(2) = zero
-            xyzgau(3) = zero
-!
 ! --------- il s'agit de calculer EPS33 : pour cela il faut donner la
 ! --------- condition SIG33=0 dans l'expression complete de la loi de
 ! --------- Hooke c'est à dire avec la loi 3D :
@@ -164,7 +158,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
 ! --------- Hooke matrix for iso-parametric elements
 !
             call dmatmc(fami, zi(imate), time, '+', kpg, &
-                        1, repere, xyzgau, nbsig, d, &
+                        1, angl_naut, nbsig, d, &
                         l_modi_cp)
 !
             if (option(1:4) .eq. 'EPME' .or. option(1:4) .eq. 'EPMG') then

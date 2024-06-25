@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
 #include "asterfort/bmatmc.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "blas/dscal.h"
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
     integer :: mate
@@ -63,14 +63,13 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
     integer :: os, kk
     integer :: vuiana, vgra, vpsa
     integer :: nbsig, idim
-    integer :: idecpg, idecno
     real(kind=8) :: w
     real(kind=8) :: dsidep(2*ndim, 2*ndim)
     real(kind=8) :: b(2*ndim, 81), def(2*ndim, nno1, ndim), deftr(nno1, ndim)
     real(kind=8) :: ddev(2*ndim, 2*ndim), devd(2*ndim, 2*ndim)
     real(kind=8) :: dddev(2*ndim, 2*ndim)
     real(kind=8) :: iddid, devdi(2*ndim), iddev(2*ndim)
-    real(kind=8) :: xyzgau(3), bary(3), repere(7)
+    real(kind=8) :: bary(3), angl_naut(3)
     real(kind=8) :: t1, rac2, notime
     real(kind=8) :: idev(6, 6), idev2(4, 4), kr(6), kd(6)
 !
@@ -105,24 +104,10 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(ia-1)-1)/nno1
         end do
     end do
-    call ortrep(ndim, bary, repere)
+    call rcangm(ndim, bary, angl_naut)
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
     do g = 1, npg
-        idecpg = nno1*(g-1)-1
-!
-! - COORDONNEES AU POINT D'INTEGRATION COURANT
-        xyzgau(1) = 0.d0
-        xyzgau(2) = 0.d0
-        xyzgau(3) = 0.d0
-        if (ndim .eq. 3) then
-            do ia = 1, nno1
-                idecno = 3*(ia-1)-1
-                xyzgau(1) = xyzgau(1)+zr(ivf1+ia+idecpg)*zr(igeom+1+idecno)
-                xyzgau(2) = xyzgau(2)+zr(ivf1+ia+idecpg)*zr(igeom+2+idecno)
-                xyzgau(3) = xyzgau(3)+zr(ivf1+ia+idecpg)*zr(igeom+3+idecno)
-            end do
-        end if
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 ! - CALCUL DE DFDI,F,EPS,R(EN AXI) ET POIDS
@@ -146,7 +131,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
 ! - CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 ! - ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
         notime = r8vide()
-        call dmatmc('RIGI', mate, notime, '+', g, 1, repere, xyzgau, nbsig, dsidep)
+        call dmatmc('RIGI', mate, notime, '+', g, 1, angl_naut, nbsig, dsidep)
 !
         call dscal(2*ndim-3, rac2, dsidep(4, 1), 1)
         call dscal(2*ndim-3, rac2, dsidep(4, 2), 1)

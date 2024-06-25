@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine te0565(nomopt, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/rctype.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
@@ -86,7 +86,7 @@ subroutine te0565(nomopt, nomte)
     real(kind=8) :: un, undemi, untier, welas, wtotal
     real(kind=8) :: zero
     real(kind=8) :: sigma(nbsgm)
-    real(kind=8) :: repere(7), instan
+    real(kind=8) :: angl_naut(3), instan
     real(kind=8) :: xyz(3)
     real(kind=8) :: f(3, 3), r
     character(len=16) :: compor(3)
@@ -173,7 +173,7 @@ subroutine te0565(nomopt, nomte)
         end do
     end do
 !
-    call ortrep(ndim, xyz, repere)
+    call rcangm(ndim, xyz, angl_naut)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
 !
@@ -313,8 +313,8 @@ subroutine te0565(nomopt, nomte)
                 f(i, i) = 1.d0
             end do
 !
-            call enelpg('XFEM', zi(imate), instan, kpg, repere, &
-                        xyz, compor, f, sigma, nbvari, &
+            call enelpg('XFEM', zi(imate), instan, kpg, angl_naut, &
+                        compor, f, sigma, nbvari, &
                         zr(idvari+idebv+(kpg-1)*nbvari), enelas)
 !
             welas = welas+enelas*jac

@@ -1022,12 +1022,11 @@ contains
         character(len=4) :: inteFami
         integer, parameter :: kspg = 1
         integer :: nbIntePoint, kpg
-        real(kind=8) :: xyzgau(3), epsiExteStatVari(SSH_SIZE_TENS), timeCurr
+        real(kind=8) :: epsiExteStatVari(SSH_SIZE_TENS), timeCurr
 !   ------------------------------------------------------------------------------------------------
 !
         nbIntePoint = elemProp%elemInte%nbIntePoint
         inteFami = elemProp%elemInte%inteFami
-        xyzgau = 0.d0
         siefElga = 0.d0
 
 ! - Non-sense ! To suppress (see issue30887)
@@ -1039,7 +1038,7 @@ contains
 ! ----- Compute strains from external state variables
             call epstmc(inteFami, SSH_NDIM, timeCurr, &
                         '+', kpg, kspg, &
-                        xyzgau, matePara%mateBase, matePara%jvMater, &
+                        matePara%mateBase, matePara%jvMater, &
                         option, epsiExteStatVari)
 
 ! ----- Shear components with sqrt(2)
@@ -1076,12 +1075,11 @@ contains
         character(len=4) :: inteFami
         integer, parameter :: kspg = 1
         integer :: nbIntePoint, kpg
-        real(kind=8) :: xyzgau(3), epsiExteStatVari(SSH_SIZE_TENS), timeCurr
+        real(kind=8) :: epsiExteStatVari(SSH_SIZE_TENS), timeCurr
 !   ------------------------------------------------------------------------------------------------
 !
         nbIntePoint = elemProp%elemInte%nbIntePoint
         inteFami = elemProp%elemInte%inteFami
-        xyzgau = 0.d0
         epvcElga = 0.d0
 
 ! - Non-sense ! To suppress (see issue30887)
@@ -1093,7 +1091,7 @@ contains
 ! ----- Compute strains from external state variables
             call epstmc(inteFami, SSH_NDIM, timeCurr, &
                         '+', kpg, kspg, &
-                        xyzgau, matePara%mateBase, matePara%jvMater, &
+                        matePara%mateBase, matePara%jvMater, &
                         option, epsiExteStatVari)
 
 ! ----- Shear components with sqrt(2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine hujori(sens, nmat, reorie, angl, vec,&
+    subroutine hujori(sens, nmat, reorie, angl_naut, vec,&
                       mat)
         character(len=5) :: sens
         integer :: nmat
         aster_logical :: reorie
-        real(kind=8) :: angl(3)
+        real(kind=8) :: angl_naut(3)
         real(kind=8) :: vec(6)
         real(kind=8) :: mat(6, 6)
     end subroutine hujori

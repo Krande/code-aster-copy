@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine te0011(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/tecach.h"
 !
@@ -44,11 +44,11 @@ subroutine te0011(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, idecno, idecpg, igau, imate, imatuu, j
+    integer :: i, igau, imate, imatuu, j
     integer :: k, nbinco, nbsig, ndim, nno
     integer :: nnos, npg1
     real(kind=8) :: b(486), btdb(81, 81), d(36), jacgau
-    real(kind=8) :: repere(7), xyzgau(3), instan, nharm
+    real(kind=8) :: angl_naut(3), instan, nharm
     real(kind=8) :: bary(3)
     integer :: igeom, ipoids, ivf, idfde, idim
     character(len=4) :: fami
@@ -69,7 +69,6 @@ subroutine te0011(option, nomte)
     nbinco = ndim*nno
     nharm = 0.d0
     btdb(:, :) = 0.d0
-    xyzgau(:) = 0.d0
     bary(:) = 0.d0
 !
 ! - Number of stress components
@@ -102,23 +101,11 @@ subroutine te0011(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
         end do
     end do
-    call ortrep(ndim, bary, repere)
+    call rcangm(ndim, bary, angl_naut)
 !
 ! - Compute RIGI_MECA
 !
     do igau = 1, npg1
-!
-        idecpg = nno*(igau-1)-1
-!
-! ----- Coordinates for current Gauss point
-!
-        xyzgau(:) = 0.d0
-        do i = 1, nno
-            idecno = 3*(i-1)-1
-            xyzgau(1) = xyzgau(1)+zr(ivf+i+idecpg)*zr(igeom+1+idecno)
-            xyzgau(2) = xyzgau(2)+zr(ivf+i+idecpg)*zr(igeom+2+idecno)
-            xyzgau(3) = xyzgau(3)+zr(ivf+i+idecpg)*zr(igeom+3+idecno)
-        end do
 !
 ! ----- Compute matrix [B]: displacement -> strain (first order)
 !
@@ -128,7 +115,7 @@ subroutine te0011(option, nomte)
 ! ----- Compute Hooke matrix [D]
 !
         call dmatmc(fami, zi(imate), instan, '+', &
-                    igau, 1, repere, xyzgau, nbsig, &
+                    igau, 1, angl_naut, nbsig, &
                     d)
 !
 ! ----- Compute rigidity matrix [K] = [B]Tx[D]x[B]

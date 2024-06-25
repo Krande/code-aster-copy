@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine sigtmc(fami, nno, ndim, nbsig, npg, &
-                  ni, xyz, instan, mater, repere, &
+subroutine sigtmc(fami, ndim, nbsig, npg, &
+                  instan, mater, angl_naut, &
                   option, sigma)
 !.======================================================================
     implicit none
@@ -27,17 +27,14 @@ subroutine sigtmc(fami, nno, ndim, nbsig, npg, &
 !                  POUR LES ELEMENTS ISOPARAMETRIQUES
 !
 !   ARGUMENT        E/S  TYPE         ROLE
-!    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
 !    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
 !    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
 !                                   A L'ELEMENT
 !    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
 !                                   DE L'ELEMENT
-!    NI(1)          IN     R        FONCTIONS DE FORME
-!    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
 !    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 !    MATER          IN     I        MATERIAU
-!    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
+!    ANGL_NAUT(3)   IN     R        ANGLES NAUTIQUES DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE
 !    OPTION         IN     K16      OPTION DE CALCUL
 !    SIGMA(1)       OUT    R        CONTRAINTES THERMIQUES
@@ -50,11 +47,11 @@ subroutine sigtmc(fami, nno, ndim, nbsig, npg, &
 #include "asterfort/epstmc.h"
 #include "asterfort/lteatt.h"
     character(len=16) :: option
-    real(kind=8) :: ni(1), xyz(1), repere(7), sigma(1)
+    real(kind=8) :: angl_naut(3), sigma(1)
     real(kind=8) :: instan
     character(len=*) :: fami
 ! -----  VARIABLES LOCALES
-    real(kind=8) :: d(36), xyzgau(3), epsth(6)
+    real(kind=8) :: d(36), epsth(6)
     integer :: iepsv
     character(len=2) :: k2bid
 !.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -62,8 +59,8 @@ subroutine sigtmc(fami, nno, ndim, nbsig, npg, &
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, idim, igau, j, mater, nbsig, ndim
-    integer :: ndim2, nno, npg
+    integer :: i, igau, j, mater, nbsig, ndim
+    integer :: ndim2, npg
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     k2bid = '  '
@@ -81,27 +78,15 @@ subroutine sigtmc(fami, nno, ndim, nbsig, npg, &
 !      -----------------------------------
     do igau = 1, npg
 !
-!  --      COORDONNEES ET TEMPERATURE AU POINT D'INTEGRATION
-!  --      COURANT
-!          -------
-        xyzgau(1) = zero
-        xyzgau(2) = zero
-        xyzgau(3) = zero
-!
 !       REM : HYDRATATION ET SECHAGE ACTIVES POUR CALCUL DU SECOND
 !        MEMBRE CHAR_MECA_* OU CALCUL DES CONTRAINTES VRAIES (SIGVMC.F)
 !
-        do i = 1, nno
-            do idim = 1, ndim2
-                xyzgau(idim) = xyzgau(idim)+ni(i+nno*(igau-1))*xyz(idim+ndim2*(i-1))
-            end do
-        end do
 !
 !  --      CALCUL DES DEFORMATIONS THERMIQUES/HYDRIQUE/DE SECHAGE
 !  --      AU POINT D'INTEGRATION COURANT
 !          ------------------------------
         call epstmc(fami, ndim, instan, '+', igau, &
-                    1, xyzgau, repere, mater, option, &
+                    1, angl_naut, mater, option, &
                     epsth)
 !
 ! TEST DE LA NULLITE DES DEFORMATIONS DUES AUX VARIABLES DE COMMANDE
@@ -123,7 +108,7 @@ subroutine sigtmc(fami, nno, ndim, nbsig, npg, &
 !  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !          -------------------------------------------------
             call dmatmc(fami, mater, instan, '+', igau, &
-                        1, repere, xyzgau, nbsig, d)
+                        1, angl_naut, nbsig, d)
 !
 !  --      CONTRAINTES THERMIQUES/HYDRIQUE/DE SECHAGE AU POINT
 !  --      D'INTEGRATION COURANT

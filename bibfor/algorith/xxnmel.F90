@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 #include "asterfort/elrefe_info.h"
 #include "asterfort/indent.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xcinem.h"
@@ -119,7 +119,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
     real(kind=8) :: r
     real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
     integer :: nbsig
-    real(kind=8) :: bary(3), repere(7), d(36), instan
+    real(kind=8) :: bary(3), angl_naut(3), d(36), instan
     aster_logical :: grdepl, axi, cplan
     type(Behaviour_Integ) :: BEHinteg
     real(kind=8) :: angmas(3)
@@ -187,14 +187,14 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 !   calcul du repère d'othotropie, pour calculer la matrice de Hooke
 !   dans le cas de l'option RIGI_MECA
     bary = 0.d0
-    repere = 0.d0
+    angl_naut = 0.d0
     if (l_line) then
         do n = 1, nnop
             do i = 1, ndim
                 bary(i) = bary(i)+zr(igeom-1+ndim*(n-1)+i)/nnop
             end do
         end do
-        call ortrep(ndim, bary, repere)
+        call rcangm(ndim, bary, angl_naut)
     end if
 !
 !  - Loop on Gauss points
@@ -359,7 +359,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
             nbsig = 2*ndim
 !
             call dmatmc('XFEM', imate, instan, '+', &
-                        ipg, 1, repere, xg, nbsig, d)
+                        ipg, 1, angl_naut, nbsig, d)
 !
 !           Calcul du tenseur de comportement tangent [D']
 !              {sxx, syy, szz, sqrt(2)*sxy, sqrt(2)*sxz, sqrt(2)*syz}^T =

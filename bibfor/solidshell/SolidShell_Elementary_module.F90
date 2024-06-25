@@ -334,13 +334,10 @@ contains
         type(SSH_ELEM_INTE), intent(in)    :: elemInte
         real(kind=8), intent(in)           :: timeCurr
         type(SSH_MATE_PARA), intent(inout) :: matePara
-! - Local
-        real(kind=8) :: xyzgau(3)
 !   ------------------------------------------------------------------------------------------------
 !
-        xyzgau = 0.d0
         call dmat3d(elemInte%inteFami, matePara%jvMater, timeCurr, '+', 1, &
-                    1, matePara%mateBase, xyzgau, matePara%elemHookeMatrix)
+                    1, matePara%mateBase, matePara%elemHookeMatrix)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

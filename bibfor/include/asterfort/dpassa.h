@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,9 @@
 !
 !
 interface
-    subroutine dpassa(repere, irep, matr_tran, xyzgau_)
-        real(kind=8), intent(in) :: repere(7)
+    subroutine dpassa(angl, irep, matr_tran)
+        real(kind=8), intent(in) :: angl(3)
         integer, intent(out) :: irep
         real(kind=8), intent(out) :: matr_tran(6, 6)
-        real(kind=8), optional, intent(in) :: xyzgau_(3)
     end subroutine dpassa
 end interface
