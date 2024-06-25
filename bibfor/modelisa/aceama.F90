@@ -20,6 +20,7 @@ subroutine aceama(nomu, noma, lmax, nbocc)
     implicit none
 #include "jeveux.h"
 #include "asterfort/alcart.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/eulnau.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
@@ -51,7 +52,7 @@ subroutine aceama(nomu, noma, lmax, nbocc)
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
 !-----------------------------------------------------------------------
     integer :: i, ioc, jdcc, jdls, jdvc, naxe, neul
-    integer :: ng, nm, norig, nrep, jdls2, ncham
+    integer :: ng, nm, norig, nrep, jdls2, ncham, ndim
 !-----------------------------------------------------------------------
     call jemarq()
     cartma = nomu//'.CARMASSI'
@@ -101,6 +102,8 @@ subroutine aceama(nomu, noma, lmax, nbocc)
 !
         call nocart(cartma, 1, 7)
 !
+        call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
+!
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTMA
         do ioc = 1, nbocc
             ang(1) = 0.d0
@@ -119,6 +122,11 @@ subroutine aceama(nomu, noma, lmax, nbocc)
                         nbret=neul)
             call getvr8('MASSIF', 'ANGL_AXE', iocc=ioc, nbval=2, vect=ang(1), &
                         nbret=naxe)
+            if (ndim .eq. 3 .and. naxe .eq. 0) then
+                call utmess('F', 'MODELISA10_2')
+            elseif (ndim .eq. 2 .and. naxe .ne. 0) then
+                call utmess('F', 'MODELISA10_3')
+            end if
             call getvr8('MASSIF', 'ORIG_AXE', iocc=ioc, nbval=3, vect=orig(1), &
                         nbret=norig)
 !
@@ -139,14 +147,17 @@ subroutine aceama(nomu, noma, lmax, nbocc)
                 zr(jdvc+4) = 0.d0
                 zr(jdvc+5) = 0.d0
                 zr(jdvc+6) = 0.d0
-            else
+            else if (norig .ne. 0) then
                 zr(jdvc) = -1.d0
+                ! pas d'angle en 2D
                 zr(jdvc+1) = ang(1)
                 zr(jdvc+2) = ang(2)
-                zr(jdvc+3) = ang(2)
+                zr(jdvc+3) = 0.d0
                 zr(jdvc+4) = orig(1)
                 zr(jdvc+5) = orig(2)
                 zr(jdvc+6) = orig(3)
+            else
+                ASSERT(.false.)
             end if
 !
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES

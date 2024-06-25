@@ -21,6 +21,7 @@ subroutine rcangm(ndim, coor, angl_naut)
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8nnem.h"
+#include "asterfort/angvx.h"
 #include "asterfort/angvxy.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
@@ -37,7 +38,7 @@ subroutine rcangm(ndim, coor, angl_naut)
 ! ......................................................................
     integer :: icamas, iret, i
     real(kind=8) :: p(3, 3), xg(3), yg(3), orig(3), dire(3)
-    real(kind=8) :: alpha, beta
+    real(kind=8) :: alpha, beta, xu, yu, xnorm
 !     ------------------------------------------------------------------
 !
     call tecach('NNO', 'PCAMASS', 'L', iret, iad=icamas)
@@ -54,17 +55,14 @@ subroutine rcangm(ndim, coor, angl_naut)
         else if (abs(zr(icamas)+1.d0) .lt. 1.d-3) then
 !
 ! ON TRANSFORME LA DONNEE DU REPERE CYLINDRIQUE EN ANGLE NAUTIQUE
-! (EN 3D, EN 2D ON MET A 0)
 !
+            orig(1:ndim) = zr(icamas+3+1:icamas+3+ndim)
             if (ndim .eq. 3) then
                 alpha = zr(icamas+1)*r8dgrd()
                 beta = zr(icamas+2)*r8dgrd()
                 dire(1) = cos(alpha)*cos(beta)
                 dire(2) = sin(alpha)*cos(beta)
                 dire(3) = -sin(beta)
-                orig(1) = zr(icamas+4)
-                orig(2) = zr(icamas+5)
-                orig(3) = zr(icamas+6)
                 call utrcyl(coor, dire, orig, p)
                 do i = 1, 3
                     xg(i) = p(1, i)
@@ -72,7 +70,20 @@ subroutine rcangm(ndim, coor, angl_naut)
                 end do
                 call angvxy(xg, yg, angl_naut)
             else
-                call utmess('F', 'ELEMENTS2_38')
+                xu = coor(1)-orig(1)
+                yu = coor(2)-orig(2)
+                xnorm = sqrt(xu**2+yu**2)
+                xu = xu/xnorm
+                yu = yu/xnorm
+                p(1, 1) = xu
+                p(2, 1) = yu
+                p(1, 2) = -yu
+                p(2, 2) = xu
+                xg(1) = xu
+                xg(2) = yu
+                xg(3) = 0.d0
+                call angvx(xg, alpha, beta)
+                angl_naut(1) = alpha
             end if
         end if
     end if

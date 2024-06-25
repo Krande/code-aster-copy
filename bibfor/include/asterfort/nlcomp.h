@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, tp, Kglo, dtp_, fluglo_)
+    subroutine nlcomp(phenom, imate, ndim, coorpg, time, tp, Kglo, dtp_, fluglo_)
         character(len=16), intent(in) :: phenom
-        integer, intent(in) :: imate, icamas, ndim
+        integer, intent(in) :: imate, ndim
         real(kind=8), intent(in) :: coorpg(3), time, tp
         real(kind=8), intent(out) :: Kglo(3, 3)
         real(kind=8), optional, intent(out) :: dtp_(3), fluglo_(3)
