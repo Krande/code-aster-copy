@@ -88,7 +88,7 @@ set LIBPATH=%PREF_ROOT%/libs %LIBPATH%
 
 REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
 
-set CFLAGS=%CFLAGS% /FS /MD /DMKL_ILP64
+set CFLAGS=%CFLAGS% /FS /MD /DMKL_ILP64 -Wno-visibility
 set CXXFLAGS=%CXXFLAGS% /MD /DMKL_ILP64
 
 if "%FC%" == "ifx.exe" (
@@ -154,6 +154,7 @@ waf configure ^
   --disable-petsc ^
   --maths-libs=auto ^
   --msvc-entry ^
+  --install-tests ^
   --without-hg ^
   --without-repo
 
@@ -171,6 +172,9 @@ if %USE_LOG%==1 (
         waf install -v
     )
 )
+
+REM wait for 2 seconds because some processes are still running and holding some of the files
+REM timeout /t 2
 
 call conda_rearrange.bat
 

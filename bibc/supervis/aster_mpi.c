@@ -1246,7 +1246,31 @@ void DEFP( ASABRT, asabrt, _IN ASTERINTEGER *iret ) {
 #endif
     return;
 }
-
+#ifdef ASTER_PLATFORM_MSVC64
+void aster_terminate( void ) {
+    /*! Function registered using atexit() in main.
+     */
+    ASTERINTEGER dummy = 0;
+    printf( "End of the Code_Aster execution\n" );
+#ifdef ASTER_HAVE_MPI
+    int isdone;
+    if ( gErrFlg == 0 ) {
+        /* see help of asabrt */
+        printf( "Code_Aster MPI exits normally\n" );
+        MPI_Finalized( &isdone );
+        if ( !isdone ) {
+            CALL_ASMPI_CHECK( &dummy );
+            MPI_Errhandler_free( &errhdlr );
+            MPI_Finalize();
+        }
+    } else {
+        printf( "Code_Aster MPI exits with errors\n" );
+    }
+#endif
+    printf( "Exited\n" );
+    return;
+}
+#else
 void terminate( void ) {
     /*! Function registered using atexit() in main.
      */
@@ -1270,7 +1294,7 @@ void terminate( void ) {
     printf( "Exited\n" );
     return;
 }
-
+#endif
 /*
  *   PRIVATE FUNCTIONS
  *

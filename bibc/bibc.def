@@ -252,7 +252,7 @@ EXPORTS
 	sprintf
 	stpusr1
 	strmov_
-	terminate
+	aster_terminate
 	testresu_print_
 	umat_get_function_
 	umatwp_
