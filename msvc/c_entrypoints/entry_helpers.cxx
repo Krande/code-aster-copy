@@ -78,14 +78,54 @@ std::string SearchEnvPathsForDll(const std::vector<std::string>& envVars, const 
     return "";
 }
 
+// Function to set environment variables in Windows
+void set_env_var(const char* var, const std::string& value, bool force) {
+    const char* current_value = std::getenv(var);
+    if (force || current_value == nullptr) {
+		// print the value
+		std::cout << "Setting " << var << " to " << value << std::endl;
+        _putenv_s(var, value.c_str());
+    }
+}
+
+void init_env(bool force = false) {
+    const char* conda_prefix = std::getenv("CONDA_PREFIX");
+    if (conda_prefix != nullptr) {
+        std::filesystem::path CONDA_PREFIX(conda_prefix);
+        std::filesystem::path ASTER_DIR = CONDA_PREFIX / "Library" / "lib" / "aster";
+
+        std::filesystem::path ASTER_DATADIR = CONDA_PREFIX / "Library" / "share" / "aster";
+        std::filesystem::path ASTER_LIBDIR = ASTER_DIR;
+        std::filesystem::path ASTER_LOCALEDIR = CONDA_PREFIX / "Library" / "share" / "locale" / "aster";
+        std::filesystem::path ASTER_ELEMENTSDIR = ASTER_DIR;
+
+        set_env_var("ASTER_DATADIR", ASTER_DATADIR.string(), force);
+        set_env_var("ASTER_LIBDIR", ASTER_LIBDIR.string(), force);
+        set_env_var("ASTER_LOCALEDIR", ASTER_LOCALEDIR.string(), force);
+        set_env_var("ASTER_ELEMENTSDIR", ASTER_ELEMENTSDIR.string(), force);
+		#ifdef _DEBUG
+        std::cout << "Environment variables set based on CONDA_PREFIX.\n";
+		#endif
+    } else {
+		#ifdef _DEBUG
+        std::cerr << "CONDA_PREFIX environment variable is not set.\n";
+		#endif
+    }
+}
+
 HMODULE LoadDllAndGetFunction(const std::string& dllName, const std::string& funcName, PyInit_func_t& funcPtr)
 {
     std::string dllDirectory = GetDllDirectory();
     char dllPath[MAX_PATH];
     snprintf(dllPath, MAX_PATH, "%s\\%s", dllDirectory.c_str(), dllName.c_str());
 
+	// Set the environemnt variables relevant for a conda environment
+	init_env();
+
     // Print the path to the console
+#ifdef _DEBUG
     printf("Loading %s from %s\n", dllName.c_str(), dllPath);
+#endif
 
     // Load the DLL with altered search path
     HMODULE hDll = LoadLibraryEx(dllName.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);

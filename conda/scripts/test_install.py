@@ -20,6 +20,8 @@ def init_env():
     os.environ["ASTER_LIBDIR"] = ASTER_DIR.as_posix()
     os.environ["ASTER_LOCALEDIR"] = (CONDA_PREFIX / "Library" / "share" / "locale" / "aster").as_posix()
     os.environ["ASTER_ELEMENTSDIR"] = ASTER_DIR.as_posix()
+    os.environ["OMP_DYNAMIC"] = "TRUE"
+    os.environ["OMP_NUM_THREADS"] = "1"
 
 
 def openmp_debugging():

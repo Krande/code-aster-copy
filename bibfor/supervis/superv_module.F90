@@ -25,6 +25,10 @@ module superv_module
 ! warning on dummy argument (W0104) may occur because of ifdef
 
     use calcul_module, only: calcul_init
+#ifdef ASTER_PLATFORM_MSVC64
+    use omp_lib, only: omp_get_num_threads, omp_get_dynamic, &
+                       omp_get_schedule, omp_get_proc_bind, omp_get_nested
+#endif
     implicit none
     private
 
@@ -136,8 +140,56 @@ contains
     function asthread_getmax()
         implicit none
         integer :: asthread_getmax
+        integer :: asthread_getnum
+        integer :: omp_num_threads
+        logical :: omp_dynamic
+        character(len=30) :: omp_schedule
+        integer :: omp_proc_bind
+        logical :: omp_nested
+        integer :: omp_get_num_threads
+        logical :: omp_get_dynamic
+        integer :: omp_get_proc_bind
+        logical :: omp_get_nested
+        character(len=255) :: env_var
+        integer :: status
+
 #ifdef ASTER_HAVE_OPENMP
+        ! Get and print the OpenMP library environment variables
+        call getenv('OMP_NUM_THREADS', env_var)
+        print *, 'OMP_NUM_THREADS = ', trim(env_var)
+
+        call getenv('OMP_DYNAMIC', env_var)
+        print *, 'OMP_DYNAMIC = ', trim(env_var)
+
+        call getenv('OMP_SCHEDULE', env_var)
+        print *, 'OMP_SCHEDULE = ', trim(env_var)
+
+        call getenv('OMP_PROC_BIND', env_var)
+        print *, 'OMP_PROC_BIND = ', trim(env_var)
+
+        call getenv('OMP_NESTED', env_var)
+        print *, 'OMP_NESTED = ', trim(env_var)
+
         asthread_getmax = omp_get_max_threads()
+            ! If > 1, print all relevant env variables
+
+        if (asthread_getmax .gt. 1) then
+            print *, 'OpenMP max threads > 1, check environment variables'
+        end if
+
+        print *, 'OpenMP environment variables:'
+        omp_num_threads = omp_get_num_threads()
+        omp_dynamic = omp_get_dynamic()
+        call omp_get_schedule(omp_schedule)
+        omp_proc_bind = omp_get_proc_bind()
+        omp_nested = omp_get_nested()
+
+        print *, 'OMP_MAX_THREADS = ', asthread_getmax
+        print *, 'OMP_NUM_THREADS = ', omp_num_threads
+        print *, 'OMP_DYNAMIC = ', omp_dynamic
+        print *, 'OMP_SCHEDULE = ', omp_schedule
+        print *, 'OMP_PROC_BIND = ', omp_proc_bind
+        print *, 'OMP_NESTED = ', omp_nested
 #else
         asthread_getmax = 1
 #endif
