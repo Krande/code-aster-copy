@@ -35,7 +35,7 @@ subroutine te0595(option, nomte)
 #include "asterfort/nofipd.h"
 #include "asterfort/nufilg.h"
 #include "asterfort/nufipd.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/Behaviour_type.h"
@@ -63,13 +63,13 @@ subroutine te0595(option, nomte)
     integer :: ndim, nnod, nnop, npg, ntrou
     integer :: icoret, codret, iret
     integer :: iw, ivfd, ivfp, idfd
-    integer :: jtab(7), lgpg, i, idim
+    integer :: jtab(7), lgpg
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
     integer :: igeom, imate, icontm, ivarim
     integer :: iinstm, iinstp, iddlm, iddld, icompo, icarcr
     integer :: ivectu, icontp, ivarip, imatuu
     integer :: nddl, ibid
-    real(kind=8) :: angmas(3), bary(3)
+    real(kind=8) :: angmas(3)
     character(len=8) :: lielrf(10), typmod(2), alias8
     character(len=16) :: defo_comp
     aster_logical :: lMatr, lVect, lVari, lSigm
@@ -130,18 +130,9 @@ subroutine te0595(option, nomte)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
-! - Compute barycentric center
-!
-    bary = 0.d0
-    do i = 1, nnod
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nnod
-        end do
-    end do
-!
 ! - Get orientation
 !
-    call rcangm(ndim, bary, angmas)
+    call getElemOrientation(ndim, nnod, igeom, angmas)
 !
 ! - Select objects to construct from option name
 !

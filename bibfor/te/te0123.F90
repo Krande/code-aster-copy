@@ -31,7 +31,7 @@ subroutine te0123(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/massup.h"
 #include "asterfort/nmplgs.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
@@ -66,8 +66,8 @@ subroutine te0123(option, nomte)
     integer :: ivectu, icontp, ivarip
     integer :: ivarix
     integer :: jtab(7), iadzi, iazk24, icoret, codret
-    integer :: ndim, iret, ntrou, idim, i, vali(2)
-    real(kind=8) :: angl_naut(3), bary(3)
+    integer :: ndim, iret, ntrou, vali(2)
+    real(kind=8) :: angl_naut(3)
     character(len=16) :: codvoi
     integer :: nvoima, nscoma, nbvois
     parameter(nvoima=12, nscoma=4)
@@ -168,15 +168,8 @@ subroutine te0123(option, nomte)
                              lMatr, lVect, &
                              lVari, lSigm, &
                              codret)
-! ----- Compute barycentric center
-        bary = 0.d0
-        do i = 1, nno
-            do idim = 1, ndim
-                bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-            end do
-        end do
 ! ----- Get orientation
-        call rcangm(ndim, bary, angl_naut)
+        call getElemOrientation(ndim, nno, igeom, angl_naut)
 ! ----- Get output fields
         if (lMatr) then
             call jevech('PMATUNS', 'E', imatuu)

@@ -32,7 +32,7 @@ subroutine te0392(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/invjac.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
@@ -58,10 +58,10 @@ subroutine te0392(option, nomte)
 !
     aster_logical :: calbn
     integer :: i, ino, j, k, proj, nbpg2, ipg, ispg
-    integer :: ndim, nnos, kp, idim
+    integer :: ndim, nnos, kp
     real(kind=8) :: d(6, 6), s
     real(kind=8) :: poipg2(8), b(6, 81), b0(6, 3, 8)
-    real(kind=8) :: jac, invja(3, 3), bi(3, 8), hx(3, 4), bary(3)
+    real(kind=8) :: jac, invja(3, 3), bi(3, 8), hx(3, 4)
     real(kind=8) :: gam(4, 8), coopg2(24), h(8, 4), dh(4, 24)
     real(kind=8) :: bn(6, 3, 8)
     real(kind=8) :: dfdx(8), dfdy(8), dfdz(8)
@@ -85,7 +85,6 @@ subroutine te0392(option, nomte)
 !
     instan = r8vide()
     b(:, :) = 0.d0
-    bary(:) = 0.d0
 !
 ! - Number of stress components
 !
@@ -105,12 +104,7 @@ subroutine te0392(option, nomte)
 !
 ! - Orthotropic parameters
 !
-    do i = 1, nno
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call rcangm(ndim, bary, angl_naut)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
     call jevech('PMATUUR', 'E', imatuu)
     do i = 1, 300

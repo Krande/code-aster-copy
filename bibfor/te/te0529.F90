@@ -23,7 +23,7 @@ subroutine te0529(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/epstmc.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 !
@@ -48,10 +48,9 @@ subroutine te0529(option, nomte)
 !.......................................................................
 !
     integer :: jgano, ndim, nno, i, nnos, npg, ipoids, ivf, idfde, igau, isig
-    integer :: igeom, itemps, idefo, imate, iret, nbcmp, idim
+    integer :: igeom, itemps, idefo, imate, iret, nbcmp
     real(kind=8) :: epvc(162), angl_naut(3)
     real(kind=8) :: instan, epsse(6), epsth(6), epshy(6), epspt(6)
-    real(kind=8) :: xyz(3)
     character(len=4) :: fami
     character(len=16) :: optio2
 ! DEB ------------------------------------------------------------------
@@ -76,16 +75,7 @@ subroutine te0529(option, nomte)
 !
 ! --- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
 !     ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPERE CYLINDRIQUE )
-    xyz(1) = 0.d0
-    xyz(2) = 0.d0
-    xyz(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call rcangm(ndim, xyz, angl_naut)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL :
 !      -----------------------------------

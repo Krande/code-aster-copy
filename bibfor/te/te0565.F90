@@ -68,7 +68,7 @@ subroutine te0565(nomopt, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/rctype.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
@@ -79,7 +79,7 @@ subroutine te0565(nomopt, nomte)
     integer :: idfde, idsig, idvari, igeom, imate, itemps
     integer :: ipoids, ivf
     integer :: nbsgm, nbsig, nbvari, ndim, nno
-    integer :: npg, iret, idim, i, jtab(7)
+    integer :: npg, iret, i, jtab(7)
     parameter(nbsgm=6)
     real(kind=8) :: enelas
     real(kind=8) :: deux, trois
@@ -87,7 +87,6 @@ subroutine te0565(nomopt, nomte)
     real(kind=8) :: zero
     real(kind=8) :: sigma(nbsgm)
     real(kind=8) :: angl_naut(3), instan
-    real(kind=8) :: xyz(3)
     real(kind=8) :: f(3, 3), r
     character(len=16) :: compor(3)
     integer :: jpintt, jpmilt, jcnset, jlonch
@@ -162,18 +161,7 @@ subroutine te0565(nomopt, nomte)
         call jevech('PPMILTO', 'L', jpmilt)
 !
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-    xyz(1) = 0.d0
-    xyz(2) = 0.d0
-    xyz(3) = 0.d0
-    do i = 1, nnop
-        do idim = 1, ndim
-            xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nnop
-        end do
-    end do
-!
-    call rcangm(ndim, xyz, angl_naut)
+    call getElemOrientation(ndim, nnop, igeom, angl_naut)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
 !

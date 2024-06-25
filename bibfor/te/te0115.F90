@@ -34,16 +34,16 @@ subroutine te0115(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/sigvmc.h"
 !
     character(len=16) :: option, nomte
     character(len=4) :: fami
     real(kind=8) :: sigma(54), angl_naut(3), instan, nharm
-    real(kind=8) :: r8bid1(9), bary(3)
+    real(kind=8) :: r8bid1(9)
     integer :: ndim, nno, nnos, npg1, ipoids, ivf, dimmod
-    integer :: idfde, jgano, idim
+    integer :: idfde, jgano
 !
 !
 !-----------------------------------------------------------------------
@@ -81,17 +81,7 @@ subroutine te0115(option, nomte)
 !
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 !      ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call rcangm(ndim, bary, angl_naut)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !      --------------------------------------------------

@@ -29,7 +29,7 @@ subroutine thmCompNonLin(option, ds_thm)
 #include "asterfort/assert.h"
 #include "asterfort/assthm.h"
 #include "asterfort/thmGetElemPara.h"
-#include "asterfort/thmGetParaOrientation.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/jevech.h"
 #include "asterfort/Behaviour_type.h"
 !
@@ -131,7 +131,7 @@ subroutine thmCompNonLin(option, ds_thm)
     end if
 
 ! - Get frame orientation for anisotropy
-    call thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
+    call getElemOrientation(ndim, nno, jv_geom, angl_naut)
 
 ! - Number of (total) internal variables
     read (compor_copy(NVAR), '(I16)') nbvari
