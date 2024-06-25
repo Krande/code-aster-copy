@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -86,7 +86,7 @@ TEST_RESU = PROC(
         NOM_CAS=SIMP(statut="f", typ="TXM"),
         ANGLE=SIMP(statut="f", typ="R"),
         PARA=SIMP(statut="f", typ="TXM"),
-        NOM_CHAM=SIMP(statut="f", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),
+        NOM_CHAM=SIMP(statut="f", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO_EGRU()),
         NOM_CMP=SIMP(statut="f", typ="TXM", max=1),
         NOM_VARI=SIMP(statut="f", typ="TXM", max=1),
         GROUP_MA=SIMP(statut="f", typ=grma),

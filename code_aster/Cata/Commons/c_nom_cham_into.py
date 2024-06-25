@@ -50,12 +50,6 @@ class NOM_CHAM_INTO:  # COMMUN#
                 ("lin", "nonlin", "dyna"),
                 tr("Efforts généralisés aux noeuds par élément"),
             ),
-            "EGRU_ELNO": (
-                ("lin", "nonlin", "dyna"),
-                tr(
-                    "Efforts généralisés aux noeuds par élément calculés dans le repère utilisateur"
-                ),
-            ),
             "EFGE_NOEU": (("lin", "nonlin", "dyna"), tr("Efforts généralisés aux noeuds")),
             "SIEF_ELGA": (("lin",), tr("Contraintes et efforts aux points de Gauss")),
             "SIEF_ELNO": (
@@ -531,10 +525,8 @@ class NOM_CHAM_INTO:  # COMMUN#
 
     def __init__(self):
         self.Tous()
-        # check les doublons (fonctionnalite developpeur permettant de detecter les doublons dans les champs)
-        if 1:
-            self.CheckPhenom()
-            self.CheckField()
+        self.CheckPhenom()
+        self.CheckField()
 
     def __call__(self, *l_typ_cham, **kwargs):
         """Cette fonction retourne la liste des "into" possibles pour le mot-clé NOM_CHAM.
@@ -554,4 +546,20 @@ class NOM_CHAM_INTO:  # COMMUN#
             return self.Filtre(*l_typ_cham, **kwargs)
 
 
+class NOM_CHAM_INTO_EGRU(NOM_CHAM_INTO):
+    """NOM_CHAM_INTO avec un EGRU_ELNO dans le catalogue des noms de champs."""
+
+    def __init__(self):
+
+        # Appel du init de NOM_CHAM_INTO
+        super().__init__()
+
+        # Ajout de EGRU_ELNO dans le catalogue
+        self.d_all["CONTRAINTE"]["EGRU_ELNO"] = (
+            ("lin", "nonlin", "dyna"),
+            tr("Efforts généralisés aux noeuds par élément calculés dans le repère utilisateur"),
+        )
+
+
 C_NOM_CHAM_INTO = NOM_CHAM_INTO()
+C_NOM_CHAM_INTO_EGRU = NOM_CHAM_INTO_EGRU()
