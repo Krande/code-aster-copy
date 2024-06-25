@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,17 +51,6 @@ cata_msg = {
     34: _(
         """
  les vecteurs sont au nombre de 1 ou 2
-"""
-    ),
-    38: _(
-        """
-  ->  L'option ANGL_AXE n'est pas prise en compte en 2D mais seulement
-      en 3D.
-  -> Risque & Conseil :
-     Ce mot clé utilisé dans l'opérateur AFFE_CARA_ELEM (MASSIF), permet
-     de définir des axes locaux pour lesquels on utilise une propriété de
-     symétrie de révolution, ou d'isotropie transverse. En 2D, on peut définir
-     un repère d'orthotropie via ANGL_REP.
 """
     ),
     39: _(
