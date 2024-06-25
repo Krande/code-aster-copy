@@ -114,8 +114,8 @@ subroutine rc32rs(lfat, lefat)
      &            'NOM_SIT2', 'NUM_SIT2', 'NOCC_SIT2', 'GROUP_SIT2', 'SN',&
      &            'INST_SN_1', 'INST_SN_2', 'SN*', 'INST_SN*_1',&
      &            'INST_SN*_2', 'KE_MECA', 'KE_THER', 'SP(MECA)', 'SP(THER)', 'SP',&
-     &            'INST_SALT_1', 'INST_SALT_2', 'SALT', 'FU_UNIT_SS_CYCL', 'FU_UNIT', 'NOCC_PRIS', &
-                  'FU_PARTIEL', 'FEN', 'FEN_ELAS', 'FUEN_PARTIEL'/
+     &            'INST_SALT_1', 'INST_SALT_2', 'SALT', 'FU_UNIT_SS_CYCL', 'FU_UNIT', &
+                   'NOCC_PRIS', 'FU_PARTIEL', 'FEN', 'FEN_ELAS', 'FUEN_PARTIEL'/
     data typar4/'K8', 'K8', 'K8',&
      &            'K16', 'I', 'I', 'I',&
      &            'K16', 'I', 'I', 'I', 'R',&
@@ -385,10 +385,8 @@ subroutine rc32rs(lfat, lefat)
                         valer(k) = r8vide()
                     end do
 !
-                    valer(13) = zr( &
-                                jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)-zr(jresucomb+25*nb*&
-                                &(iocc1-1)+25*(iocc2-1)-1+18 &
-                                )
+                    valer(13) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)- &
+                                zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
                     valer(14) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
                     valer(15) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)
                     valer(16) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+10)
@@ -403,10 +401,8 @@ subroutine rc32rs(lfat, lefat)
                     valek(4) = 'FICTIF2'
                     valek(5) = 'FICTIF2'
 !
-                    valer(13) = zr( &
-                                jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)-zr(jresucomb+25*nb&
-                                                                     &*(iocc1-1)+25*(iocc2-1)-1+19 &
-                                                                                )
+                    valer(13) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)- &
+                                zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
                     valer(14) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
                     valer(15) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)
                     valer(16) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+14)
@@ -471,10 +467,8 @@ subroutine rc32rs(lfat, lefat)
                     do k = 1, 12
                         valer(k) = r8vide()
                     end do
-                    valer(13) = zr( &
-                                jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)-zr(jresucombs+25*n&
-                                &b*(iocc1-1)+25*(iocc2-1)-1+18 &
-                                )
+                    valer(13) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)- &
+                                zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
                     valer(14) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
                     valer(15) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)
                     valer(16) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+10)
@@ -489,10 +483,8 @@ subroutine rc32rs(lfat, lefat)
                     valek(4) = 'FICTIF2'
                     valek(5) = 'FICTIF2'
 !
-                    valer(13) = zr( &
-                                jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)-zr(jresucombs+25*&
-                                &nb*(iocc1-1)+25*(iocc2-1)-1+19 &
-                                )
+                    valer(13) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)- &
+                                zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
                     valer(14) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
                     valer(15) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)
                     valer(16) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+14)
@@ -654,10 +646,8 @@ subroutine rc32rs(lfat, lefat)
                 valer(i) = r8vide()
             end do
 !
-            valer(9) = zr( &
-                       ind2+25*nb*(num1-1)+25*(num2-1)-1+9)-zr(ind2+25*nb*(num1-1)+25*(num2-1)-&
-                       &1+18 &
-                       )
+            valer(9) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+9)- &
+                       zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+18)
             valer(10) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+18)
             valer(11) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+9)
             valer(12) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+10)
@@ -677,10 +667,8 @@ subroutine rc32rs(lfat, lefat)
             valek(5) = 'FICTIF2'
 !
 !
-            valer(9) = zr( &
-                       ind2+25*nb*(num1-1)+25*(num2-1)-1+13)-zr(ind2+25*nb*(num1-1)+25*(num2-1)&
-                       &-1+19 &
-                       )
+            valer(9) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+13)- &
+                       zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+19)
             valer(10) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+19)
             valer(11) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+13)
             valer(12) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+14)
