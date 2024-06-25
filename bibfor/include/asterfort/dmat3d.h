@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,14 @@
 !
 interface
     subroutine dmat3d(fami, mater , time  , poum, ipg,&
-                      ispg, repere, xyzgau, dr_, di_)
+                      ispg, angl, dr_, di_)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: mater
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: poum
         integer, intent(in) :: ipg
         integer, intent(in) :: ispg
-        real(kind=8), intent(in) :: repere(7)
-        real(kind=8), intent(in) :: xyzgau(3)
+        real(kind=8), intent(in) :: angl(3)
         real(kind=8), optional, intent(out) :: dr_(6, 6)
         real(kind=8), optional, intent(out) :: di_(6, 6)
     end subroutine dmat3d

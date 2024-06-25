@@ -24,7 +24,7 @@ subroutine te0198(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/sigtmc.h"
 #include "asterfort/tecach.h"
 !
@@ -40,7 +40,7 @@ subroutine te0198(option, nomte)
 ! ......................................................................
 !
     character(len=4) :: fami
-    real(kind=8) :: bsigma(81), sigth(162), repere(7)
+    real(kind=8) :: bsigma(81), sigth(162), angl_naut(3)
     real(kind=8) :: nharm, instan, bary(3)
     integer :: ndim, nno, nnos, npg1, ipoids, ivf, idfde, jgano
     integer :: dimmod, idim
@@ -94,7 +94,7 @@ subroutine te0198(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
         end do
     end do
-    call ortrep(ndim, bary, repere)
+    call rcangm(ndim, bary, angl_naut)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
@@ -110,8 +110,8 @@ subroutine te0198(option, nomte)
 ! ---- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 ! ---- DE L'ELEMENT :
 !      ------------
-    call sigtmc(fami, nno, dimmod, nbsig, npg1, &
-                zr(ivf), zr(igeom), instan, zi(imate), repere, &
+    call sigtmc(fami, dimmod, nbsig, npg1, &
+                instan, zi(imate), angl_naut, &
                 option, sigth)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE

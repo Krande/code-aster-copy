@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine d1macp(fami, mater, instan, poum, kpg, &
-                  ksp, repere, d1)
+                  ksp, angl, d1)
 !.======================================================================
     implicit none
 !
@@ -33,7 +33,7 @@ subroutine d1macp(fami, mater, instan, poum, kpg, &
 !    POUM           IN     K        TEMPERATURE +/-
 !    KPG            IN     I        POINT DE GAUSS
 !    KSP            IN     I        SOUS-POINT DE GAUSS
-!    REPERE(3)      IN     R        VALEURS DEFINISSANT LE REPERE
+!    ANGL           IN     R        ANGLE DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE
 !    D1(4,4)        OUT    R        INVERSE DE LA MATRICE DE HOOKE
 !
@@ -49,7 +49,7 @@ subroutine d1macp(fami, mater, instan, poum, kpg, &
 #include "asterfort/utmess.h"
     character(len=*) :: fami, poum
     integer :: kpg, ksp
-    real(kind=8) :: repere(7), d1(4, *), instan
+    real(kind=8) :: angl, d1(4, *), instan
 ! -----  VARIABLES LOCALES
 !-----------------------------------------------------------------------
     integer :: i, irep, j, mater, nbres, nbv
@@ -146,7 +146,7 @@ subroutine d1macp(fami, mater, instan, poum, kpg, &
 ! ----   CALCUL DE LA MATRICE DE PASSAGE DU REPERE D'ORTHOTROPIE AU
 ! ----   REPERE GLOBAL POUR L'INVERSE DE LA MATRICE DE HOOKE
 !        ---------------------------------------------------
-        call d1pa2d(repere, irep, passag)
+        call d1pa2d(angl, irep, passag)
 !
 ! ----   'INVERSE' DU TENSEUR D'ELASTICITE DANS LE REPERE GLOBAL :
 ! ----    D1_GLOB = PASSAG_T * D1_ORTH * PASSAG

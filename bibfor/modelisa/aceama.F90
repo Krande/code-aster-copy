@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,16 +36,16 @@ subroutine aceama(nomu, noma, lmax, nbocc)
     integer :: lmax, nbocc
     character(len=8) :: nomu, noma
 !     AFFE_CARA_ELEM
-!     AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT COQUE
+!     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS MASSIF
 ! ----------------------------------------------------------------------
 ! IN  : NOMU   : NOM UTILISATEUR DE LA COMMANDE
 ! IN  : NOMA   : NOM DU MAILLAGE
 ! IN  : LMAX   : LONGUEUR
-! IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE COQUE
+! IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE MASSIF
 ! ----------------------------------------------------------------------
     real(kind=8) :: ang(3), orig(3), angeul(3)
     character(len=19) :: cartma, chorie
-    character(len=24) :: tmpnma, tmpvma, chdef
+    character(len=24) :: tmpnma, tmpvma
 !     ------------------------------------------------------------------
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
@@ -132,13 +132,13 @@ subroutine aceama(nomu, noma, lmax, nbocc)
                 zr(jdvc+6) = 0.d0
             else if (neul .ne. 0) then
                 call eulnau(angeul, ang)
-                zr(jdvc) = 2.d0
+                zr(jdvc) = 1.d0
                 zr(jdvc+1) = ang(1)
                 zr(jdvc+2) = ang(2)
                 zr(jdvc+3) = ang(3)
-                zr(jdvc+4) = angeul(1)
-                zr(jdvc+5) = angeul(2)
-                zr(jdvc+6) = angeul(3)
+                zr(jdvc+4) = 0.d0
+                zr(jdvc+5) = 0.d0
+                zr(jdvc+6) = 0.d0
             else
                 zr(jdvc) = -1.d0
                 zr(jdvc+1) = ang(1)

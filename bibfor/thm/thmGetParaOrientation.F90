@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,8 @@ subroutine thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcangm.h"
-#include "asterfort/eulnau.h"
 !
     integer, intent(in) :: ndim, nno
     integer, intent(in) :: jv_geom
@@ -48,14 +46,12 @@ subroutine thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: angmas(7), coor(3), angleu(3)
+    real(kind=8) :: coor(3)
     integer :: i_node, i_dim
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    angmas(:) = 0.d0
     coor(:) = 0.d0
-    angleu(:) = 0.d0
     angl_naut(:) = 0.d0
 !
 ! - Compute barycentric center
@@ -66,29 +62,8 @@ subroutine thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
         end do
     end do
 !
-! - Get ANGLE_MASSIF
+! - Get nautical angles
 !
-    call rcangm(ndim, coor, angmas)
-!
-! - Convert all in nautical angles
-!
-    if (abs(angmas(4)-2.d0) .lt. 1.d-3) then
-        if (ndim .eq. 3) then
-            angleu(1) = angmas(5)
-            angleu(2) = angmas(6)
-            angleu(3) = angmas(7)
-        else
-            angleu(1) = angmas(5)
-        end if
-        call eulnau(angleu/r8dgrd(), angl_naut/r8dgrd())
-    else
-        if (ndim .eq. 3) then
-            angl_naut(1) = angmas(1)
-            angl_naut(2) = angmas(2)
-            angl_naut(3) = angmas(3)
-        else
-            angl_naut(1) = angmas(1)
-        end if
-    end if
+    call rcangm(ndim, coor, angl_naut)
 !
 end subroutine

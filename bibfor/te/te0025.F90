@@ -24,7 +24,7 @@ subroutine te0025(option, nomte)
 #include "asterfort/epsvmc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
 !
     character(len=16) :: option, nomte
@@ -44,7 +44,7 @@ subroutine te0025(option, nomte)
 !
     integer :: jgano, ndim, nno, i, nnos, npg, ipoids, ivf, idfde, nbsig, igau
     integer :: isig, igeom, idepl, itemps, idefo, iret, idim
-    real(kind=8) :: epsm(162), repere(7), bary(3)
+    real(kind=8) :: epsm(162), angl_naut(3), bary(3)
     real(kind=8) :: nharm, instan, zero
 ! DEB ------------------------------------------------------------------
 !
@@ -106,11 +106,11 @@ subroutine te0025(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
         end do
     end do
-    call ortrep(ndim, bary, repere)
+    call rcangm(ndim, bary, angl_naut)
 !
     call epsvmc('RIGI', nno, ndim, nbsig, npg, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, repere, nharm, option, epsm)
+                instan, angl_naut, nharm, option, epsm)
 !
 !         --------------------
 ! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX

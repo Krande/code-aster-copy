@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine xsigth(ndim, lonch, inst, nbsig, sigth)
 !
 ! ----------------------------------------------------------------------
 !
-    real(kind=8) :: r8bi7(7), r8bi3(3), epsth(6), d(36)
+    real(kind=8) :: r8bi3(3), epsth(6), d(36)
     integer :: nse, idecpg, idebs, iret, ipg, i, ise, npg, j
     integer :: imate, irese, nno, ibid, kpg
     character(len=8) :: elrefp, elrese(6), fami(6)
@@ -67,7 +67,6 @@ subroutine xsigth(ndim, lonch, inst, nbsig, sigth)
     call elref1(elrefp)
 !
 !     INITIALISATION DES VECTEURS BIDONS
-    r8bi7(:) = 0.d0
     r8bi3(:) = 0.d0
 !
 !     ON AUTORISE UNIQUEMENT L'ISOTROPIE
@@ -76,7 +75,6 @@ subroutine xsigth(ndim, lonch, inst, nbsig, sigth)
     ASSERT(iret .eq. 0 .and. phenom .eq. 'ELAS')
     call tecach('ONO', 'PCAMASS', 'L', iret, iad=ibid)
     ASSERT(iret .ne. 0)
-    r8bi7(1) = 1.d0
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO ET NPG
     if (.not. iselli(elrefp)) then
@@ -111,13 +109,13 @@ subroutine xsigth(ndim, lonch, inst, nbsig, sigth)
 !         CALCUL DES DEFORMATIONS THERMIQUES EPSTH
             epsth(:) = 0.d0
             call epstmc('XFEM', ndim, inst, '+', ipg, &
-                        1, r8bi3, r8bi7, zi(imate), option, &
+                        1, r8bi3, zi(imate), option, &
                         epsth)
 !
 !         CALCUL DE LA MATRICE DE HOOKE (MATERIAU ISOTROPE)
             d(:) = 0.d0
             call dmatmc('XFEM', zi(imate), inst, '+', &
-                        ipg, 1, r8bi7, r8bi3, nbsig, &
+                        ipg, 1, r8bi3, nbsig, &
                         d)
 !
 !         CONTRAINTES THERMIQUES AU PG COURANT

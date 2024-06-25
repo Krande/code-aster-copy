@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,13 +34,13 @@ subroutine te0115(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/sigvmc.h"
 !
     character(len=16) :: option, nomte
     character(len=4) :: fami
-    real(kind=8) :: sigma(54), repere(7), instan, nharm
+    real(kind=8) :: sigma(54), angl_naut(3), instan, nharm
     real(kind=8) :: r8bid1(9), bary(3)
     integer :: ndim, nno, nnos, npg1, ipoids, ivf, dimmod
     integer :: idfde, jgano, idim
@@ -91,7 +91,7 @@ subroutine te0115(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
         end do
     end do
-    call ortrep(ndim, bary, repere)
+    call rcangm(ndim, bary, angl_naut)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !      --------------------------------------------------
@@ -113,7 +113,7 @@ subroutine te0115(option, nomte)
 !      ------------------------------------
     call sigvmc(fami, nno, dimmod, nbsig, npg1, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, repere, zi(imate), nharm, sigma)
+                instan, angl_naut, zi(imate), nharm, sigma)
 !
 ! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES CONTRAINTES AUX
 ! ---- POINTS D'INTEGRATION

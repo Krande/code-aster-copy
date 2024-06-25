@@ -25,7 +25,7 @@ subroutine te0284(option, nomte)
 #include "asterfort/epsimc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/sigimc.h"
 #include "asterfort/tecach.h"
 !
@@ -39,7 +39,7 @@ subroutine te0284(option, nomte)
 ! ......................................................................
 !
     character(len=4) :: fami
-    real(kind=8) :: sigi(162), epsi(162), bsigma(81), repere(7)
+    real(kind=8) :: sigi(162), epsi(162), bsigma(81), angl_naut(3)
     real(kind=8) :: instan, nharm, xyz(81), bary(3)
     integer :: dimcoo, idim
 !
@@ -122,7 +122,7 @@ subroutine te0284(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+dimcoo*(i-1)-1)/nno
         end do
     end do
-    call ortrep(dimcoo, bary, repere)
+    call rcangm(dimcoo, bary, angl_naut)
 !
 !
 ! ---- RECUPERATION DE L'INSTANT
@@ -140,7 +140,7 @@ subroutine te0284(option, nomte)
 ! ---- D'INTEGRATION
 !      -------------
     call sigimc(fami, nno, ndim, nbsig, npg, &
-                zr(ivf), xyz, instan, zi(imate), repere, &
+                instan, zi(imate), angl_naut, &
                 epsi, sigi)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES DUES AUX CONTRAINTES INITIALES

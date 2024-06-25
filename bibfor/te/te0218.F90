@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine te0218(option, nomte)
 #include "asterfort/ethdst.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/simtep.h"
 !
     character(len=16) :: option, nomte
@@ -42,7 +42,7 @@ subroutine te0218(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    real(kind=8) :: sigma(162), bsigma(81), repere(7)
+    real(kind=8) :: sigma(162), bsigma(81), angl_naut(3)
     real(kind=8) :: instan, nharm, bary(3)
     integer :: idim
 !
@@ -98,7 +98,7 @@ subroutine te0218(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
         end do
     end do
-    call ortrep(ndim, bary, repere)
+    call rcangm(ndim, bary, angl_naut)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !      --------------------------------------------------
@@ -109,7 +109,7 @@ subroutine te0218(option, nomte)
 !      ------------------------------------
     call simtep('RIGI', nno, ndim, nbsig, npg1, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, repere, zi(imate), nharm, sigma)
+                instan, angl_naut, zi(imate), nharm, sigma)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
 !      ------------------------------------------------
@@ -121,7 +121,7 @@ subroutine te0218(option, nomte)
 !      -------------------------------
     call ethdst('RIGI', nno, ndim, nbsig, npg1, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, repere, zi(imate), option, enthth)
+                instan, angl_naut, zi(imate), option, enthth)
 !
 ! ---- CALCUL DE L'ENERGIE POTENTIELLE :
 ! ----        1/2*UT*K*U - UT*FTH + 1/2*EPSTHT*D*EPSTH :

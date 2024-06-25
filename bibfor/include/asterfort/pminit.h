@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 !
 interface
     subroutine pminit(imate, nbvari, ndim, typmod, table,&
-                      nbpar, iforta, nompar, typpar, ang,&
+                      nbpar, iforta, nompar, typpar, angl_naut,&
                       pgl, irota, epsm, sigm, vim,&
                       vip, vr, defimp, coef, indimp,&
                       fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara,&
@@ -37,7 +37,7 @@ interface
         integer :: iforta
         character(len=16) :: nompar(*)
         character(len=8) :: typpar(*)
-        real(kind=8) :: ang(7)
+        real(kind=8) :: angl_naut(3)
         real(kind=8) :: pgl(3, 3)
         integer :: irota
         real(kind=8) :: epsm(9)

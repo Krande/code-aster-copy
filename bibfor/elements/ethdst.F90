@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine ethdst(fami, nno, ndim, nbsig, npg, &
                   ipoids, ivf, idfde, xyz, depl, &
-                  instan, repere, mater, option, enthth)
+                  instan, angl_naut, mater, option, enthth)
     implicit none
 !
 !      ETHDST   -- CALCUL DU TERME EPSTHT*D*EPSTH RENTRANT
@@ -41,7 +41,7 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg, &
 !    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR
 !                                   L'ELEMENT
 !    INSTAN         IN     R        INSTANT DE CALCUL
-!    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
+!    ANGL_NAUT(3)   IN     R        ANGLES NAUTIQUES DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE
 !    MATER          IN     I        MATERIAU
 !    OPTION         IN     K16      OPTION DE CALCUL
@@ -59,7 +59,7 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg, &
     integer :: ipoids, ivf, idfde
     character(len=16) :: option
     character(len=*) :: fami
-    real(kind=8) :: xyz(*), depl(*), repere(7)
+    real(kind=8) :: xyz(*), depl(*), angl_naut(3)
     real(kind=8) :: instan, enthth
 ! -----  VARIABLES LOCALES
     integer :: i, mater, nbsig, ndim, nno, npg, k, igau
@@ -79,13 +79,13 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg, &
 ! --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
 !      ---------------------------------------------------------
     call epthmc(fami, nno, ndim, nbsig, npg, &
-                zr(ivf), xyz, repere, instan, mater, &
+                zr(ivf), angl_naut, instan, mater, &
                 option, epsith)
 !
 ! --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 !      ---------------------------------------------------------
-    call sigtmc(fami, nno, ndim, nbsig, npg, &
-                zr(ivf), xyz, instan, mater, repere, &
+    call sigtmc(fami, ndim, nbsig, npg, &
+                instan, mater, angl_naut, &
                 k16bid, sigth)
 !
 ! --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION

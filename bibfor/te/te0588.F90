@@ -80,7 +80,7 @@ subroutine te0588(option, nomte)
     real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(25, 52*20)
     real(kind=8) :: drds(25, 11+5), drdsr(25, 11+5), dsde(11+5, 25)
     real(kind=8) :: r(25), sigbar(25), c(25), ck(25), cs(25)
-    real(kind=8) :: angmas(7), coor(3), angnau(3), angleu(3)
+    real(kind=8) :: angnau(3), coor(3)
     real(kind=8) :: work1(11+5, 52*20), work2(25, 52*20)
     character(len=3) :: modint
     character(len=8) :: typmod(2)
@@ -155,10 +155,8 @@ subroutine te0588(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    angmas = 0.d0
-    coor = 0.d0
-    angleu = 0.d0
     angnau = 0.d0
+    coor = 0.d0
     imatuu = ismaem()
     ivectu = ismaem()
     icontp = ismaem()
@@ -244,29 +242,7 @@ subroutine te0588(option, nomte)
                 coor(idim) = coor(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
             end do
         end do
-        call rcangm(ndim, coor, angmas)
-!# ANGMAS : donne par affe_cara_elem en degre et ici en fourni en radian
-!# CAS OU AFFE_CARA_ELEM EST EN ANGLE D EULER => On CONVERTIT EN NAUTIQUE
-        if (abs(angmas(4)-2.d0) .lt. 1.d-3) then
-            if (ndim .eq. 3) then
-                angleu(1) = angmas(5)
-                angleu(2) = angmas(6)
-                angleu(3) = angmas(7)
-            else
-                angleu(1) = angmas(5)
-            end if
-            call eulnau(angleu/r8dgrd(), angnau/r8dgrd())
-!
-!# CAS OU AFFE_CARA_ELEM EST EN ANGLE NAUTIQUE (OK PAS DE CONVERSION)
-        else
-            if (ndim .eq. 3) then
-                angnau(1) = angmas(1)
-                angnau(2) = angmas(2)
-                angnau(3) = angmas(3)
-            else
-                angnau(1) = angmas(1)
-            end if
-        end if
+        call rcangm(ndim, coor, angnau)
 ! ----- Select objects to construct from option name
         call behaviourOption(option, compor_copy, &
                              lMatr, lVect, &

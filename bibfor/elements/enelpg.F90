@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine enelpg(fami, iadmat, instan, igau, repere, &
-                  xyzgau, compor, f, sigma, nbvari, &
+subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
+                  compor, f, sigma, nbvari, &
                   vari, enelas)
 !.......................................................................
     implicit none
@@ -62,7 +62,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere, &
     integer :: nbsig, nbvari, nsol, i, iadmat, igau, icodre(2), isig, jsig
     real(kind=8) :: c1, c2, deux, vari(*), enelas, trt, un, undemi, zero
     real(kind=8) :: sol(3), sigma(6), jzero, uzero, mzero, instan, epsi(6)
-    real(kind=8) :: mjac, ujac, wbe, be(6), e, nu, f(3, 3), repere(7), xyzgau(3)
+    real(kind=8) :: mjac, ujac, wbe, be(6), e, nu, f(3, 3), angl_naut(3)
     real(kind=8) :: mu, troisk, jac, tau(6), trtau, eqtau, dvtau(6), tlog(6)
     real(kind=8) :: trbe, epsthe, kr(6), pdtsca(6), d1(36), valres(2)
     character(len=4) :: fami
@@ -209,7 +209,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere, &
 !  --    POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !        ---------------------------------------------------------
         call d1mamc(fami, iadmat, instan, '+', igau, &
-                    1, repere, xyzgau, nbsig, d1)
+                    1, angl_naut, nbsig, d1)
 !
 !  --    DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT
 !  --    D'INTEGRATION COURANT

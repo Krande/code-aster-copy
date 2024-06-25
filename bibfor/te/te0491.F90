@@ -134,7 +134,7 @@ subroutine te0491(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmgeom.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/rcfonc.h"
 #include "asterfort/rctrac.h"
 #include "asterfort/rctype.h"
@@ -164,7 +164,7 @@ subroutine te0491(option, nomte)
     real(kind=8) :: epsel(nbsgm), epspla(nbsgm), x(nbsgm)
     real(kind=8) :: epsim(nbsgm), sigmm(nbsgm), delta(nbsgm)
     real(kind=8) :: epsi(nbsgm), epssm(mxcmel), epss(mxcmel)
-    real(kind=8) :: repere(7), instan, nharm, integ, integ1
+    real(kind=8) :: angl_naut(3), instan, nharm, integ, integ1
     real(kind=8) :: epsm(mxcmel), integ2, nu, k, indigl, xyz(3)
     real(kind=8) :: f(3, 3), r, para_vale, epsbid(6), dfdbid(27*3)
     character(len=4) :: fami
@@ -226,7 +226,7 @@ subroutine te0491(option, nomte)
         end do
     end do
 !
-    call ortrep(ndim, xyz, repere)
+    call rcangm(ndim, xyz, angl_naut)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
 !
@@ -327,7 +327,7 @@ subroutine te0491(option, nomte)
     optio2 = 'EPME_ELGA'
     call epsvmc(fami, nno, ndim, nbsig, npg1, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, repere, nharm, optio2, epsm)
+                instan, angl_naut, nharm, optio2, epsm)
 !
 !                      ===========================
 !                      =                         =
@@ -364,8 +364,8 @@ subroutine te0491(option, nomte)
 !
 ! --- CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
 !
-            call enelpg(fami, zi(imate), instan, igau, repere, &
-                        xyz, compor, f, sigma, nbvari, &
+            call enelpg(fami, zi(imate), instan, igau, angl_naut, &
+                        compor, f, sigma, nbvari, &
                         zr(idvari+(igau-1)*nbvari), enelas)
 !
 !

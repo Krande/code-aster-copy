@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dmatmc(fami, mater, time, poum, ipg, &
-                  ispg, repere, xyzgau, nbsig, dr_, &
+                  ispg, angl_naut, nbsig, dr_, &
                   l_modi_cp, di_)
     implicit none
 !
@@ -34,8 +34,7 @@ subroutine dmatmc(fami, mater, time, poum, ipg, &
     character(len=*), intent(in) :: poum
     integer, intent(in) :: ipg
     integer, intent(in) :: ispg
-    real(kind=8), intent(in) :: repere(7)
-    real(kind=8), intent(in) :: xyzgau(3)
+    real(kind=8), intent(in) :: angl_naut(3)
     integer, intent(in) :: nbsig
     real(kind=8), optional, intent(out) :: dr_(nbsig, nbsig)
     real(kind=8), optional, intent(out) :: di_(nbsig, nbsig)
@@ -56,8 +55,7 @@ subroutine dmatmc(fami, mater, time, poum, ipg, &
 ! In  poum      : '-' or '+' for parameters evaluation (previous or current temperature)
 ! In  ipg       : current point gauss
 ! In  ispg      : current "sous-point" gauss
-! In  repere    : definition of basis for orthotropic elasticity
-! In  xyzgau    : coordinates for current Gauss point
+! In  angl_naut : nautical angles for definition of basis for orthotropic elasticity
 ! In  nbsig     : number of components for stress
 ! Out dr        : real Hooke matrix
 ! Out di        : imaginary Hooke matrix
@@ -72,21 +70,21 @@ subroutine dmatmc(fami, mater, time, poum, ipg, &
         ASSERT(nbsig .eq. 6)
         if (present(di_)) then
             call dmat3d(fami, mater, time, poum, ipg, &
-                        ispg, repere, xyzgau, di_=di)
+                        ispg, angl_naut, di_=di)
         end if
         if (present(dr_)) then
             call dmat3d(fami, mater, time, poum, ipg, &
-                        ispg, repere, xyzgau, dr_=dr)
+                        ispg, angl_naut, dr_=dr)
         end if
     else if (lteatt('FOURIER', 'OUI')) then
         ASSERT(nbsig .eq. 6)
         if (present(di_)) then
             call dmat3d(fami, mater, time, poum, ipg, &
-                        ispg, repere, xyzgau, di_=di)
+                        ispg, angl_naut, di_=di)
         end if
         if (present(dr_)) then
             call dmat3d(fami, mater, time, poum, ipg, &
-                        ispg, repere, xyzgau, dr_=dr)
+                        ispg, angl_naut, dr_=dr)
         end if
     else if (lteatt('C_PLAN', 'OUI')) then
         ASSERT(nbsig .eq. 4)
@@ -94,31 +92,31 @@ subroutine dmatmc(fami, mater, time, poum, ipg, &
             ASSERT(l_modi_cp)
             if (present(di_)) then
                 call dmatdp(fami, mater, time, poum, ipg, &
-                            ispg, repere, di_=di)
+                            ispg, angl_naut, di_=di)
             end if
             if (present(dr_)) then
                 call dmatdp(fami, mater, time, poum, ipg, &
-                            ispg, repere, dr_=dr)
+                            ispg, angl_naut, dr_=dr)
             end if
         else
             if (present(di_)) then
                 call dmatcp(fami, mater, time, poum, ipg, &
-                            ispg, repere, di_=di)
+                            ispg, angl_naut, di_=di)
             end if
             if (present(dr_)) then
                 call dmatcp(fami, mater, time, poum, ipg, &
-                            ispg, repere, dr_=dr)
+                            ispg, angl_naut, dr_=dr)
             end if
         end if
     else if (lteatt('D_PLAN', 'OUI') .or. lteatt('AXIS', 'OUI')) then
         ASSERT(nbsig .eq. 4)
         if (present(di_)) then
             call dmatdp(fami, mater, time, poum, ipg, &
-                        ispg, repere, di_=di)
+                        ispg, angl_naut, di_=di)
         end if
         if (present(dr_)) then
             call dmatdp(fami, mater, time, poum, ipg, &
-                        ispg, repere, dr_=dr)
+                        ispg, angl_naut, dr_=dr)
         end if
     else
         ASSERT(.false.)

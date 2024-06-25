@@ -126,7 +126,7 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
     if (cplan) then
         epse = 0.d0
         if (lCorr) then
-            call d1macp(fami, mate, instp, '+', kpg, 1, angmas, d1)
+            call d1macp(fami, mate, instp, '+', kpg, 1, angmas(1), d1)
             do i = 1, 4
                 do j = 1, 4
                     epse(i) = epse(i)+d1(i, j)*tlogCurr(j)
@@ -134,7 +134,7 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
             end do
             epse(3) = d1(1, 2)*(tlogCurr(1)+tlogCurr(2))
         else
-            call d1macp(fami, mate, instp, '-', kpg, 1, angmas, d1)
+            call d1macp(fami, mate, instp, '-', kpg, 1, angmas(1), d1)
             do i = 1, 4
                 do j = 1, 4
                     epse(i) = epse(i)+d1(i, j)*tlogPrev(j)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
     integer :: nhsr
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), hook(6, 6)
     real(kind=8) :: hsr(nsg, nsg, nhsr)
-    real(kind=8) :: repere(7), xyz(3), kooh(6, 6), tbsysg
+    real(kind=8) :: kooh(6, 6), tbsysg
     real(kind=8) :: epsi, angmas(3), pgl(3, 3), hookf(6, 6)
     real(kind=8) :: valres(nmat), ms(6), ng(3), q(3, 3), lg(3)
     character(len=8) :: mod, nomc(14)
@@ -363,17 +363,13 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
         materf(nmat, 1) = 0
 !
     else if (phenom .eq. 'ELAS_ORTH') then
-        repere(1) = 1
-        do i = 1, 3
-            repere(i+1) = angmas(i)
-        end do
 ! -    ELASTICITE ORTHOTROPE
 ! -     MATRICE D'ELASTICITE ET SON INVERSE A TEMPD(T)
 !
         call dmat3d(fami, imat, r8vide(), '-', kpg, &
-                    ksp, repere, xyz, hook)
+                    ksp, angmas, hook)
         call d1ma3d(fami, imat, r8vide(), '-', kpg, &
-                    ksp, repere, xyz, kooh)
+                    ksp, angmas, kooh)
 !
 !         termes  SQRT(2) qui ne sont pas mis dans DMAT3D
         do j = 4, 6
@@ -415,9 +411,9 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
 !
 ! -     MATRICE D'ELASTICITE ET SON INVERSE A A TEMPF (T+DT)
         call dmat3d(fami, imat, r8vide(), '+', kpg, &
-                    ksp, repere, xyz, hookf)
+                    ksp, angmas, hookf)
         call d1ma3d(fami, imat, r8vide(), '+', kpg, &
-                    ksp, repere, xyz, kooh)
+                    ksp, angmas, kooh)
 !       termes  SQRT(2) qui ne sont pas mis dans DMAT3D
         do j = 4, 6
             do i = 1, 6

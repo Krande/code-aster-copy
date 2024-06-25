@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nmorth(fami, kpg, ksp, ndim, phenom, &
                   imate, poum, deps, sigm, option, &
-                  angmas, sigp, dsidep)
+                  angl_naut, sigp, dsidep)
     implicit none
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -45,7 +45,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom, &
     real(kind=8), intent(in)      :: deps(2*ndim)
     real(kind=8), intent(in)      :: sigm(2*ndim)
     character(len=16), intent(in):: option
-    real(kind=8), intent(in)      :: angmas(3)
+    real(kind=8), intent(in)      :: angl_naut(3)
     real(kind=8), intent(out)     :: sigp(2*ndim)
     real(kind=8), intent(out)     :: dsidep(2*ndim, 2*ndim)
 !
@@ -63,14 +63,14 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom, &
 !  IN    DESPS  : INCREMENT DE DEFORMATION
 !  IN    SIGM   : CONTRAINTE A L INSTANT T-
 !  IN    OPTION : OPTION A CALCULER
-!  IN    ANGMAS : ANGLE DU REPERE LOCAL D ORTHOTROPIE
+!  IN    ANGL_NAUT : ANGLE DU REPERE LOCAL D ORTHOTROPIE
 !  OUT   SIGP   : CONTRAINTE A L INSTANT T+
 !                 CAR IL EN EXISTE FORCEMENT UNE)
 !  OUT   DSIDEP : MATRICE DE RIGIDITE TANGENTE
 !
 ! --------------------------------------------------------------------
     real(kind=8) :: p(3, 3)
-    real(kind=8) :: rbid, repere(7), hookf(36), mkooh(36), xyzgau(3)
+    real(kind=8) :: rbid, hookf(36), mkooh(36)
     real(kind=8) :: depstr(6)
     real(kind=8) :: epsth_anis(3), deplth(6), depgth(6)
     real(kind=8) :: depghy, depgse, depgepsa(6)
@@ -102,25 +102,18 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom, &
         end do
     end if
 !
-    if (angmas(1) .eq. r8vide()) then
+    if (angl_naut(1) .eq. r8vide()) then
         call utmess('F', 'ALGORITH8_20')
     end if
-!
-    repere(1) = 1.d0
-    repere(2) = angmas(1)
 !
 ! - VERIFICATION DE L'ELEMENT
 !
     vrai = .false.
     if (fami .eq. 'PMAT') then
 !        ON VIENT DE OP0033
-        repere(3) = angmas(2)
-        repere(4) = angmas(3)
         vrai = .true.
     else
         if (lteatt('DIM_TOPO_MAILLE', '3')) then
-            repere(3) = angmas(2)
-            repere(4) = angmas(3)
             vrai = .true.
         else if (lteatt('C_PLAN', 'OUI')) then
             vrai = .true.
@@ -141,23 +134,23 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom, &
 !        ON VIENT DE OP0033
         if (option .eq. 'RIGI_MECA_TANG') then
             call dmat3d(fami, imate, rbid, '-', kpg, &
-                        ksp, repere, xyzgau, hookf)
+                        ksp, angl_naut, hookf)
         else
             call d1ma3d(fami, imate, rbid, '-', kpg, &
-                        ksp, repere, xyzgau, mkooh)
+                        ksp, angl_naut, mkooh)
             call dmat3d(fami, imate, rbid, '+', kpg, &
-                        ksp, repere, xyzgau, hookf)
+                        ksp, angl_naut, hookf)
         end if
 !
     else
         if (option .eq. 'RIGI_MECA_TANG') then
             call dmatmc(fami, imate, rbid, '-', kpg, &
-                        ksp, repere, xyzgau, ndimsi, hookf)
+                        ksp, angl_naut, ndimsi, hookf)
         else
             call d1mamc(fami, imate, rbid, '-', kpg, &
-                        ksp, repere, xyzgau, ndimsi, mkooh)
+                        ksp, angl_naut, ndimsi, mkooh)
             call dmatmc(fami, imate, rbid, '+', kpg, &
-                        ksp, repere, xyzgau, ndimsi, hookf)
+                        ksp, angl_naut, ndimsi, hookf)
         end if
     end if
 !
@@ -199,7 +192,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom, &
 !
 !       RECUPERATION DE LA MATRICE DE PASSAGE
 !
-        call matrot(angmas, p)
+        call matrot(angl_naut, p)
 !
 !       PASSAGE DU TENSEUR DES DEFORMATIONS THERMIQUES DANS LE REPERE GLOBAL
 !

@@ -25,7 +25,7 @@ subroutine te0049(option, nomte)
 #include "asterfort/epsimc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/sigimc.h"
 #include "asterfort/tecach.h"
     character(len=16) :: option, nomte
@@ -40,7 +40,7 @@ subroutine te0049(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    real(kind=8) :: sigi(162), epsi(162), bsigma(81), repere(7)
+    real(kind=8) :: sigi(162), epsi(162), bsigma(81), angl_naut(3)
     real(kind=8) :: instan, nharm, bary(3)
     integer :: idim
 !
@@ -95,7 +95,7 @@ subroutine te0049(option, nomte)
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
         end do
     end do
-    call ortrep(ndim, bary, repere)
+    call rcangm(ndim, bary, angl_naut)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
@@ -112,7 +112,7 @@ subroutine te0049(option, nomte)
 ! ---- D'INTEGRATION
 !      -------------
     call sigimc('RIGI', nno, ndim, nbsig, npg1, &
-                zr(ivf), zr(igeom), instan, zi(imate), repere, &
+                instan, zi(imate), angl_naut, &
                 epsi, sigi)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES DUES AUX CONTRAINTES INITIALES

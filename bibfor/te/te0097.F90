@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine te0097(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/elref2.h"
 #include "asterfort/niinit.h"
 #include "asterfort/sigvmc.h"
@@ -52,7 +52,7 @@ subroutine te0097(option, nomte)
     integer :: jvSigm, jvDisp, jvGeom, jvMate, nbsig
     integer :: kpg, isig, iNodeDisp, iNodePres, iOSGS
     integer :: nbNodeDisp, nbNodePres, nbNodeGonf
-    real(kind=8) :: sigmDisp(npgMax*6), repere(7), instan, nharm, sigmTrac(npgMax)
+    real(kind=8) :: sigmDisp(npgMax*6), angl_naut(3), instan, nharm, sigmTrac(npgMax)
     real(kind=8) :: bary(3)
     real(kind=8) :: presGaus(npgMax), dispU(3*nbNodeMax), dispP(nbNodeMax)
     integer :: vu(3, nbNodeMax), vg(nbNodeMax), vp(nbNodeMax), vpi(3, nbNodeMax)
@@ -144,7 +144,7 @@ subroutine te0097(option, nomte)
     end do
 
 ! - Construct local anisotropic basis
-    call ortrep(ndim, bary, repere)
+    call rcangm(ndim, bary, angl_naut)
 
 ! - Get displacements for u, v, w
     dispU = 0.d0
@@ -164,7 +164,7 @@ subroutine te0097(option, nomte)
     sigmDisp = 0.d0
     call sigvmc('RIGI', nbNodeDisp, ndim, nbsig, npg, &
                 jvWeightDisp, jvShapeDisp, jvDShapeDisp, zr(jvGeom), dispU, &
-                instan, repere, zi(jvMate), nharm, sigmDisp)
+                instan, angl_naut, zi(jvMate), nharm, sigmDisp)
 
     do kpg = 1, npg
         presGaus(kpg) = 0.d0

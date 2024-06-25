@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,7 +86,7 @@ subroutine op0033()
     character(len=16) :: mult_comp, type_comp, defo_ldc, rela_comp
     character(len=19) :: codi, sddisc, k19b, sdcrit
     character(len=24) :: sderro
-    real(kind=8) :: instam, instap, ang(7), r8b, carcri(CARCRI_SIZE), fem(9)
+    real(kind=8) :: instam, instap, angl_naut(3), r8b, carcri(CARCRI_SIZE), fem(9)
     real(kind=8) :: deps(9), sigm(6), sigp(6), epsm(9), vr(ntamax)
     real(kind=8) :: valimp(9), r(12), rini(12), dy(12), ddy(12), y(12), rac2
     real(kind=8) :: dsidep(6, 9), drdy(12, 12), kel(6, 6), cimpo(6, 12), ym(12)
@@ -173,7 +173,7 @@ subroutine op0033()
 !     INITIALISATIONS SD
 !
     call pminit(imate, nbvari, ndim, typmod, table, &
-                nbpar, iforta, nompar, typpar, ang, &
+                nbpar, iforta, nompar, typpar, angl_naut, &
                 pgl, irota, epsm, sigm, zr(lvim), &
                 zr(lvip), vr, defimp, coef, indimp, &
                 fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara, &
@@ -270,7 +270,7 @@ subroutine op0033()
                     fami, kpg, ksp, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
                     ncmp, epsm, deps, 6, sigm, &
-                    zr(lvim2), opt2, ang, &
+                    zr(lvim2), opt2, angl_naut, &
                     sigp, zr(lvip), 6*ncmp, dsidep, iret, mult_comp)
         if (compor(DEFO) .eq. 'SIMO_MIEHE') then
             call dscal(2*ndim, 1.d0/jp, sigp, 1)
@@ -301,7 +301,7 @@ subroutine op0033()
                     fami, kpg, ksp, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
                     6, epsm, deps, 6, sigm, &
-                    zr(lsvip), opt2, ang, &
+                    zr(lsvip), opt2, angl_naut, &
                     ssigp, zr(lsvip), 36, dsidep, iret, mult_comp)
         if (iret .ne. 0) then
             pred = 0
@@ -368,7 +368,7 @@ subroutine op0033()
                 fami, kpg, ksp, ndim, typmod, &
                 imate, compor, carcri, instam, instap, &
                 6, epsm, deps, 6, sigm, &
-                zr(lvim2), option, ang, &
+                zr(lvim2), option, angl_naut, &
                 sigp, zr(lvip), 36, dsidep, iret, mult_comp)
 !
     call pmimpr(1, instap, indimp, valimp, &

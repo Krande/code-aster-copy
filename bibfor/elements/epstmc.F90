@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine epstmc(fami, ndim, instan, poum, kpg, &
-                  ksp, xyzgau, repere, j_mater, option, &
+                  ksp, angl_naut, j_mater, option, &
                   epsi_varc)
 !
     implicit none
@@ -39,8 +39,7 @@ subroutine epstmc(fami, ndim, instan, poum, kpg, &
     integer, intent(in) :: kpg
     integer, intent(in) :: ksp
     integer, intent(in) :: j_mater
-    real(kind=8), intent(in) :: xyzgau(3)
-    real(kind=8), intent(in) :: repere(7)
+    real(kind=8), intent(in) :: angl_naut(3)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: instan
     real(kind=8), intent(out) :: epsi_varc(6)
@@ -62,8 +61,7 @@ subroutine epstmc(fami, ndim, instan, poum, kpg, &
 ! In  kpg          : current point gauss
 ! In  ksp          : current "sous-point" gauss
 ! In  j_mater      : coded material address
-! In  xyzgau       : coordinates of current Gauss point
-! In  repere       : definition of basis (for non-isotropic materials)
+! In  angl_naut    : nautical angles (for non-isotropic materials)
 ! In  instan       : current time
 ! In  option       : name of option to compute
 ! Out epsi_varc    : command variables strains
@@ -84,7 +82,8 @@ subroutine epstmc(fami, ndim, instan, poum, kpg, &
     real(kind=8) :: hydr, sech, sref, ptot
     integer :: k, iret
     character(len=16) :: elas_keyword
-    character(len=6), parameter :: epsa(6)=(/'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ','EPSAYZ'/)
+    character(len=6), parameter :: epsa(6) = (/'EPSAXX', 'EPSAYY', 'EPSAZZ', &
+                                               'EPSAXY', 'EPSAXZ', 'EPSAYZ'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -194,7 +193,7 @@ subroutine epstmc(fami, ndim, instan, poum, kpg, &
 ! ----- Thermic strains
 !
         call calc_epth_elga(fami, ndim, poum, kpg, ksp, &
-                            j_mater, xyzgau, repere, epsi_varc)
+                            j_mater, angl_naut, epsi_varc)
     end if
 !
 end subroutine

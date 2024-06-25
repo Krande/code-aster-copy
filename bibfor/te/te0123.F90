@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine te0123(option, nomte)
     integer :: ivarix
     integer :: jtab(7), iadzi, iazk24, icoret, codret
     integer :: ndim, iret, ntrou, idim, i, vali(2)
-    real(kind=8) :: angmas(7), bary(3)
+    real(kind=8) :: angl_naut(3), bary(3)
     character(len=16) :: codvoi
     integer :: nvoima, nscoma, nbvois
     parameter(nvoima=12, nscoma=4)
@@ -176,7 +176,7 @@ subroutine te0123(option, nomte)
             end do
         end do
 ! ----- Get orientation
-        call rcangm(ndim, bary, angmas)
+        call rcangm(ndim, bary, angl_naut)
 ! ----- Get output fields
         if (lMatr) then
             call jevech('PMATUNS', 'E', imatuu)
@@ -215,7 +215,7 @@ subroutine te0123(option, nomte)
         call nmplgs(ndim, nno, zr(ivf), idfde, nnob, &
                     zr(ivfb), idfdeb, npg, ipoids, zr(igeom), &
                     typmod, option, zi(imate), zk16(icompo), zr(icarcr), &
-                    zr(iinstm), zr(iinstp), angmas, zr(idplgm), zr(iddplg), &
+                    zr(iinstm), zr(iinstp), angl_naut, zr(idplgm), zr(iddplg), &
                     zr(icontm), lgpg, zr(ivarim), zr(icontp), zr(ivarip), &
                     zr(imatuu), zr(ivectu), codret, livois, &
                     nbvois, numa, lisoco, nbsoco, &
