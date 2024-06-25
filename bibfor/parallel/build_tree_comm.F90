@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -146,23 +146,25 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
                 do i_dom = 1, v_nbdist(i_proc)
                     ind = v_deca(i_proc)+i_dom
                     dom2 = v_dist(ind)
-                    if (dom2 .ne. -1 .and. v_proc(dom2)) then
-                        nb_comm = nb_comm+1
-                        v_proc(dom1+1) = ASTER_FALSE
-                        v_proc(dom2+1) = ASTER_FALSE
-                        v_rest(i_proc) = v_rest(i_proc)-1
-                        v_dist(ind) = -1
-                        if (dom1 == rank) then
-                            nb_comm_loc = nb_comm_loc+1
-                            tag(nb_comm_loc) = nb_comm
-                            comm(nb_comm_loc) = dom2
-                        elseif (dom2 == rank) then
-                            nb_comm_loc = nb_comm_loc+1
-                            tag(nb_comm_loc) = nb_comm
-                            comm(nb_comm_loc) = dom1
+                    if (dom2 .ne. -1) then
+                        if (v_proc(dom2)) then
+                            nb_comm = nb_comm+1
+                            v_proc(dom1+1) = ASTER_FALSE
+                            v_proc(dom2+1) = ASTER_FALSE
+                            v_rest(i_proc) = v_rest(i_proc)-1
+                            v_dist(ind) = -1
+                            if (dom1 == rank) then
+                                nb_comm_loc = nb_comm_loc+1
+                                tag(nb_comm_loc) = nb_comm
+                                comm(nb_comm_loc) = dom2
+                            elseif (dom2 == rank) then
+                                nb_comm_loc = nb_comm_loc+1
+                                tag(nb_comm_loc) = nb_comm
+                                comm(nb_comm_loc) = dom1
+                            end if
+                            !if(rank == 0) print*, dom1, dom2, v_rest(i_proc)
+                            exit
                         end if
-                        !if(rank == 0) print*, dom1, dom2, v_rest(i_proc)
-                        exit
                     end if
                 end do
             end if
