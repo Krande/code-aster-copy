@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -133,27 +133,27 @@ contains
         real(kind=8), dimension(:), intent(in) :: v
         type(csc_store), intent(inout)         :: cs
 !
-        integer :: ii, kk, nnz, off, pass
+        integer :: ii, jj, kk, nnz, off
 !
         do kk = 1, nv
-        do pass = 1, 2
-            ASSERT(jcol(kk) > 0)
-            nnz = 0
-            off = ldv*(kk-1)
-            do ii = 1, ldv
-                if (abs(v(off+ii)) > 0.d0) then
-                    nnz = nnz+1
-                    if (pass == 2) then
-                        cs%pcol(jcol(kk))%values(nnz) = v(off+ii)
-                        cs%pcol(jcol(kk))%rowind(nnz) = int(ii, 4)
-                        cs%nnz = cs%nnz+nnz
+            do jj = 1, 2
+                ASSERT(jcol(kk) > 0)
+                nnz = 0
+                off = ldv*(kk-1)
+                do ii = 1, ldv
+                    if (abs(v(off+ii)) > 0.d0) then
+                        nnz = nnz+1
+                        if (jj == 2) then
+                            cs%pcol(jcol(kk))%values(nnz) = v(off+ii)
+                            cs%pcol(jcol(kk))%rowind(nnz) = int(ii, 4)
+                        end if
                     end if
+                end do
+                if (jj == 1) then
+                    call create_dyn_column(nnz, cs%pcol(jcol(kk)))
+                    cs%nnz = cs%nnz+nnz
                 end if
             end do
-            if (pass == 1) then
-                call create_dyn_column(nnz, cs%pcol(jcol(kk)))
-            end if
-        end do
         end do
 !
     end subroutine put_to_csc_store

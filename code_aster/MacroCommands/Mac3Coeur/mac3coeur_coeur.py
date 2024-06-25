@@ -56,7 +56,7 @@ from ...CodeCommands import (
 )
 from .mac3coeur_assemblage import ACFactory
 from .mac3coeur_factory import Mac3Factory
-from .mac3coeur_commons import flat_list
+from .mac3coeur_commons import CollectionMAC3, flat_list
 
 
 class Coeur:
@@ -122,6 +122,7 @@ class Coeur:
 
     _time = ("T0", "T0b", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8b", "T9")
     _subtime = ("N0", "N0b", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N8b", "N9")
+    _type_coeur = None
 
     @property
     def type_coeur(self):
@@ -130,32 +131,32 @@ class Coeur:
     @property
     def nb_nodes_grid(self):
         """Number of nodes of a grid"""
-        assert len(self.collAC) > 0, "Parameter not set"
-        ls_items = list(set((ac.nb_nodes_grid for ac in self.collAC.values())))
+        assert self.collAC.size > 0, "Parameter not set"
+        ls_items = list(set((ac.nb_nodes_grid for ac in self.collAC)))
         assert len(ls_items) == 1, "Invalid mesh"
         return ls_items[0]
 
     @property
     def nb_cr_mesh(self):
         """Number of rods in mesh"""
-        assert len(self.collAC) > 0, "Parameter not set"
-        ls_items = list(set((ac.nb_cr_mesh for ac in self.collAC.values())))
+        assert self.collAC.size > 0, "Parameter not set"
+        ls_items = list(set((ac.nb_cr_mesh for ac in self.collAC)))
         assert len(ls_items) == 1, "Invalid mesh"
         return ls_items[0]
 
     @property
     def nb_tg_mesh(self):
         """Number of tubes in mesh"""
-        assert len(self.collAC) > 0, "Parameter not set"
-        ls_items = list(set((ac.nb_tg_mesh for ac in self.collAC.values())))
+        assert self.collAC.size > 0, "Parameter not set"
+        ls_items = list(set((ac.nb_tg_mesh for ac in self.collAC)))
         assert len(ls_items) == 1, "Invalid mesh"
         return ls_items[0]
 
     @property
     def NBGR(self):
         """Number of tubes in mesh"""
-        assert len(self.collAC) > 0, "Parameter not set"
-        ls_items = list(set((ac.NBGR for ac in self.collAC.values())))
+        assert self.collAC.size > 0, "Parameter not set"
+        ls_items = list(set((ac.NBGR for ac in self.collAC)))
         assert len(ls_items) == 1, "Invalid mesh"
         return ls_items[0]
 
@@ -165,8 +166,7 @@ class Coeur:
         self._type_coeur = type_coeur
         self.NBAC = 0
         self.factory = ACFactory(datg)
-        self.collAC = {}
-        self.nameAC = {}
+        self.collAC = CollectionMAC3("AC")
         self._mateAC = {}
         self.temps_simu = {}.fromkeys(self._time)
         self.temps_archiv = None
@@ -231,11 +231,9 @@ class Coeur:
             l = len(self.ALPHA_MAC)
         return l
 
-    def get_letter(self, index):
-        return self.ALPHA_MAC[index]
-
-    def get_index(self, letter):
-        return self.ALPHA_MAC.index(letter)
+    def get_pos_index(self, pos_aster):
+        dir1, dir2 = pos_aster.split("_")
+        return (self.ALPHA_MAC.index(dir1), self.ALPHA_MAC.index(dir2))
 
     def init_from_table(self, damactab):
         """Initialise le coeur à partir d'une table."""
@@ -258,11 +256,10 @@ class Coeur:
             ac.post_definition()
             ac.check()
             self.collAC[idAC] = ac
-            self.nameAC[ac.name] = ac.pos_aster
 
     def load_materials(self, update_materials={}):
         assert not self._mateAC
-        for ac in self.collAC.values():
+        for ac in self.collAC:
             ac.materiau = self._mateAC.setdefault(
                 ac.typeAC, MateriauAC(ac.typeAC, update_materials)
             )
@@ -270,7 +267,7 @@ class Coeur:
     ### CARAC
     def mcf_geom_fibre(self):
         """Retourne les mots-clés facteurs pour DEFI_GEOM_FIBRE."""
-        return flat_list([ac.mcf_geom_fibre() for ac in self.collAC.values()])
+        return flat_list([ac.mcf_geom_fibre() for ac in self.collAC])
 
     def definition_geom_fibre(self):
         _GFF = DEFI_GEOM_FIBRE(FIBRE=self.mcf_geom_fibre())
@@ -278,23 +275,23 @@ class Coeur:
 
     def mcf_cara_multifibre(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/MULTIFIBRE."""
-        return flat_list([ac.mcf_cara_multifibre() for ac in self.collAC.values()])
+        return flat_list([ac.mcf_cara_multifibre() for ac in self.collAC])
 
     def mcf_cara_barre(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/BARRE."""
-        return flat_list([ac.mcf_cara_barre() for ac in self.collAC.values()])
+        return flat_list([ac.mcf_cara_barre() for ac in self.collAC])
 
     def mcf_cara_poutre(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/POUTRE."""
-        return flat_list([ac.mcf_cara_poutre() for ac in self.collAC.values()])
+        return flat_list([ac.mcf_cara_poutre() for ac in self.collAC])
 
     def mcf_cara_discret(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/DISCRET."""
-        return flat_list([ac.mcf_cara_discret() for ac in self.collAC.values()])
+        return flat_list([ac.mcf_cara_discret() for ac in self.collAC])
 
     def mcf_deform_impo(self):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_CINE/MECA_IMPO."""
-        return flat_list([ac.mcf_deform_impo() for ac in self.collAC.values()])
+        return flat_list([ac.mcf_deform_impo() for ac in self.collAC])
 
     def affe_char_lame(self, MODELE):
         _AF_CIN = AFFE_CHAR_CINE(MODELE=MODELE, MECA_IMPO=self.mcf_deform_impo())
@@ -302,7 +299,7 @@ class Coeur:
 
     def mcf_archimede_nodal(self):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA/FORCE_NODALE."""
-        return flat_list([ac.mcf_archimede_nodal() for ac in self.collAC.values()])
+        return flat_list([ac.mcf_archimede_nodal() for ac in self.collAC])
 
     def definition_archimede_nodal(self, MODELE):
         _ARCH_1 = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=self.mcf_archimede_nodal())
@@ -310,7 +307,7 @@ class Coeur:
 
     def mcf_archimede_poutre(self):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE."""
-        return flat_list([ac.mcf_archimede_poutre() for ac in self.collAC.values()])
+        return flat_list([ac.mcf_archimede_poutre() for ac in self.collAC])
 
     def definition_archimede_poutre(self, MODELE):
         _FOARCH_1 = AFFE_CHAR_MECA_F(MODELE=MODELE, FORCE_POUTRE=self.mcf_archimede_poutre())
@@ -569,13 +566,40 @@ class Coeur:
         return _F_EMBO
 
     def affectation_maillage(self, MA0):
+
+        gno_names = MA0.getGroupsOfNodes()
+
+        # Noeuds en liaison solide
+        linked_total_nodes_names = [
+            i for i in gno_names if i.startswith(("G_", "CREIBAS_", "TGBAS_", "TGHAUT_"))
+        ]
+        linked_total_nodes = set(MA0.getNodes(linked_total_nodes_names))
+
+        # Noeuds avec déplacement imposé
+        load_nodes_names = [i for i in gno_names if i.startswith("P_")]
+        load_nodes = set(MA0.getNodes(load_nodes_names))
+
+        # Ensemble des noeuds en liaison moins ceux avec déplacement imposé
+        linked_local_nodes = linked_total_nodes - load_nodes
+
+        # Creation des groupes complementaires des noeuds qui ne sont pas en liaison
+        gno_all = set(range(MA0.getNumberOfNodes()))
+        unlinked_total = gno_all - linked_total_nodes
+        unlinked_local = gno_all - linked_local_nodes
+
+        if "UNLINKED_TOTAL" not in gno_names:
+            MA0.setGroupOfNodes("UNLINKED_TOTAL", tuple(unlinked_total))
+
+        if "UNLINKED_LOCAL" not in gno_names:
+            MA0.setGroupOfNodes("UNLINKED_LOCAL", tuple(unlinked_local))
+
         LISGRIL = []
         LISGRILI = []
         LISGRILE = []
         LISG = []
         LIS_PG = []
         nbgrmax = 0
-        for ac in list(self.collAC.values()):
+        for ac in self.collAC:
             nbgrmax = max(nbgrmax, ac.NBGR)
             LIS_GNO = []
             for igr in range(ac.NBGR):
@@ -632,12 +656,12 @@ class Coeur:
         # --- recuperation de donnees géometriques ---
         # nombre d'assemblages dans le coeur
 
-        self.NBAC = len(list(self.collAC.values()))
+        self.NBAC = self.collAC.size
         coords_x = MAILL.getCoordinates().toNumpy().T[0].copy()
         gcells = MAILL.getGroupsOfCells()
         gnodes = MAILL.getGroupsOfNodes()
 
-        for pos_damac, ac in self.collAC.items():
+        for ac in self.collAC:
             id_cr = "CR_%s" % ac.pos_aster
             grp_cr = [i for i in gcells if (i.startswith(id_cr) and i != id_cr)]
             ac.nb_cr_mesh = max(1, len(grp_cr))
@@ -694,7 +718,7 @@ class Coeur:
     def cl_rigidite_grille(self):
         return [
             _F(GROUP_NO="G_%s_%d" % (ac.pos_aster, igr + 1))
-            for ac in self.collAC.values()
+            for ac in self.collAC
             for igr in range(ac._para["NBGR"])
         ]
 
@@ -901,7 +925,7 @@ class Coeur:
         mcfm = []
         mcf0 = []
         mcf1 = []
-        for ac in list(self.collAC.values()):
+        for ac in self.collAC:
             (lgma, cyc) = ac.liste_gma_fluence()
             # pour calcul lame : on prend le nombre de cycle (e.g. assemblage neuf : 0)
             # pour calcul deformation : le nombre de cycle est celui donne
@@ -1014,7 +1038,7 @@ class Coeur:
         mcf = []
         groups_ma_tini = []
 
-        for ac in self.collAC.values():
+        for ac in self.collAC:
             # boucle sur les grilles
             try:
                 _alpha = ac._para["AL_DIL"]
@@ -1308,7 +1332,7 @@ class Coeur:
         )
         mcf.extend(_VARCIRR)
 
-        for ac in self.collAC.values():
+        for ac in self.collAC:
             try:
                 _alpha = ac._para["AL_DIL"]
                 _dilatbu = ac._para["dilatBU"]
@@ -1336,7 +1360,7 @@ class Coeur:
 
     def mcf_compor_fibre(self, GFF):
         mcf = []
-        for ac in list(self.collAC.values()):
+        for ac in self.collAC:
             _CMPC = DEFI_COMPOR(
                 GEOM_FIBRE=GFF,
                 MATER_SECT=ac.materiau["CR"],
@@ -1376,7 +1400,7 @@ class Coeur:
         mtmp = (_F(GROUP_MA="RES_TOT", MATER=_M_RES),)
         mcf.extend(mtmp)
 
-        for ac in list(self.collAC.values()):
+        for ac in self.collAC:
             mcf.extend(ac.mcf_AC_mater())
             mtmp = (
                 _F(GROUP_MA=("GT_%s_M" % ac.pos_aster, "GT_%s_E" % ac.pos_aster), MATER=_MAT_BID),

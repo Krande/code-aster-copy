@@ -20,8 +20,6 @@
 # person_in_charge: francesco.bettonte at edf.fr
 
 import os.path as osp
-from collections import OrderedDict
-
 import numpy as np
 
 from ...Cata.Syntax import _F
@@ -29,41 +27,21 @@ from ...CodeCommands import CREA_TABLE
 from ...Objects.table_py import Table
 from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
-from .mac3coeur_commons import MAC3_ROUND
+from .mac3coeur_commons import MAC3_ROUND, CollectionMAC3
 
 
-class CollectionDiscretChoc:
-    @property
-    def keys(self):
-        return self._collection.keys()
-
+class CollectionDiscretChoc(CollectionMAC3):
     @property
     def values(self):
-        return np.array(
-            tuple(
-                item
-                for j, item in self._collection.items()
-                if any(key in j for key in ("RES", "CU_"))
-            )
-        )
+        return np.array(self.filter(("RES", "CU_")))
 
     @property
     def values_internal(self):
-        return np.array(tuple(item for j, item in self._collection.items() if "RES" in j))
+        return np.array(self.filter("RES"))
 
     @property
     def values_external(self):
-        return np.array(tuple(item for j, item in self._collection.items() if "CU_" in j))
-
-    def __init__(self, label):
-        self._collection = OrderedDict()
-        self.label = label
-
-    def __getitem__(self, key):
-        return self._collection[key]
-
-    def __setitem__(self, key, item):
-        self._collection[key] = item
+        return np.array(self.filter("CU_"))
 
     def analysis(self):
         quantiles = (70, 80, 90, 95, 99)
@@ -111,14 +89,9 @@ class CollectionDiscretChoc:
         return Table(listdic, listpara, listtype)
 
 
-class CollectionPostAC:
-    @property
-    def keys(self):
-        return self._collection.keys()
-
+class CollectionPostAC(CollectionMAC3):
     def __init__(self, label):
-        self._collection = OrderedDict()
-        self.label = label
+        super().__init__(label)
 
         self.maxRho = 0.0
         self.maxGravite = 0.0
@@ -133,12 +106,6 @@ class CollectionPostAC:
         self.maxGraviteParType = {}
         self.moyenneRhoParType = {}
         self.moyenneGraviteParType = {}
-
-    def __getitem__(self, key):
-        return self._collection[key]
-
-    def __setitem__(self, key, item):
-        self._collection[key] = item
 
     def analysis(self):
         for pos_damac in sorted(self.keys):
@@ -157,41 +124,29 @@ class CollectionPostAC:
                     self.maxDeplGrille[g] = AC["NormF"][g]
                     self.locMaxDeplGrille[g] = pos_damac
 
-        self.moyenneRho = np.mean(tuple(AC["Rho"] for AC in self._collection.values()))
-        self.moyenneGravite = np.mean(tuple(AC["Gravite"] for AC in self._collection.values()))
+        self.moyenneRho = np.mean(tuple(AC["Rho"] for AC in self))
+        self.moyenneGravite = np.mean(tuple(AC["Gravite"] for AC in self))
 
         self.sigmaGravite = np.sqrt(
-            np.mean(
-                (
-                    np.array(tuple(AC["Gravite"] for AC in self._collection.values()))
-                    - self.moyenneGravite
-                )
-                ** 2
-            )
+            np.mean((np.array(tuple(AC["Gravite"] for AC in self)) - self.moyenneGravite) ** 2)
         )
 
-        types = set((AC["TypeAC"] for AC in self._collection.values()))
+        types = set((AC["TypeAC"] for AC in self))
         self.maxRhoParType = {
-            i: max((AC["Rho"] for AC in self._collection.values() if i == AC["TypeAC"]))
-            for i in types
+            i: max((AC["Rho"] for AC in self if i == AC["TypeAC"])) for i in types
         }
         self.maxGraviteParType = {
-            i: max((AC["Gravite"] for AC in self._collection.values() if i == AC["TypeAC"]))
-            for i in types
+            i: max((AC["Gravite"] for AC in self if i == AC["TypeAC"])) for i in types
         }
         self.moyenneRhoParType = {
-            i: np.mean(tuple(AC["Rho"] for AC in self._collection.values() if i == AC["TypeAC"]))
-            for i in types
+            i: np.mean(tuple(AC["Rho"] for AC in self if i == AC["TypeAC"])) for i in types
         }
         self.moyenneGraviteParType = {
-            i: np.mean(
-                tuple(AC["Gravite"] for AC in self._collection.values() if i == AC["TypeAC"])
-            )
-            for i in types
+            i: np.mean(tuple(AC["Gravite"] for AC in self if i == AC["TypeAC"])) for i in types
         }
 
     def extr_table(self):
-        listdic = [AC.get_fleche_props(self.label) for pos, AC in sorted(self._collection.items())]
+        listdic = [AC.get_fleche_props(self.label) for pos, AC in sorted(self.items())]
         listpara, listtype = PostAC.fleche_parameters_types(self.label)
         return Table(listdic, listpara, listtype)
 
@@ -457,7 +412,7 @@ def post_mac3coeur_ops(self, **args):
 
     elif TYPE_CALCUL in ("DEFORMATION",):
         collection = CollectionPostAC(label_calcul)
-        for AC in core_mac3.collAC.values():
+        for AC in core_mac3.collAC:
             TMP = CREA_TABLE(
                 RESU=_F(
                     RESULTAT=RESU,
