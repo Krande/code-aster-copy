@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -400,10 +400,12 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod, &
     depsmo = 0.d0
     do k = 1, 3
         depsth(k) = deps(k)-coef-(defap(k)-defam(k))
-        depsth(k+3) = deps(k+3)-(defap(k+3)-defam(k+3))
         depsmo = depsmo+depsth(k)
     end do
     depsmo = depsmo/3.d0
+    do k = 4, ndimsi
+        depsth(k) = deps(k)-(defap(k)-defam(k))
+    end do
     do k = 1, ndimsi
         depsdv(k) = depsth(k)-depsmo*kron(k)*co
     end do
