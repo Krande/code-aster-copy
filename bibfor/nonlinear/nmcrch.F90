@@ -289,6 +289,8 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
             call vtcreb(cncine, 'V', 'R', nume_ddlz=numeDof)
             call ndynkk(sddyna, 'OLDP_CNVISS', cnviss)
             call vtcreb(cnviss, 'V', 'R', nume_ddlz=numeDof)
+            call ndynkk(sddyna, 'OLDP_CNHYST', cnhyst)
+            call vtcreb(cnhyst, 'V', 'R', nume_ddlz=numeDof)
             call ndynkk(sddyna, 'OLDP_CNSSTR', cnsstr)
             call vtcreb(cnsstr, 'V', 'R', nume_ddlz=numeDof)
             call ndynkk(sddyna, 'OLDP_CNELTC', cneltc)

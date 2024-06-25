@@ -43,6 +43,7 @@ subroutine accel0(model, numeDof, listFuncActi, listLoad, &
 #include "asterfort/nmreso.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtzero.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/nonlinLoadDirichletCompute.h"
 !
     character(len=19), intent(in) :: solveu, maprec, listLoad

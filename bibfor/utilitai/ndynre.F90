@@ -109,18 +109,20 @@ function ndynre(sddyna, chaine)
         ndynre = coef_sch(18)
     else if (chaine .eq. 'COEF_MPAS_FEXT_COUR') then
         ndynre = coef_sch(19)
+    else if (chaine .eq. 'COEF_MPAS_FAMO_PREC') then
+        ndynre = coef_sch(20)
 !
     else if (chaine .eq. 'COEF_FDYN_MASSE') then
-        ndynre = coef_sch(20)
-    else if (chaine .eq. 'COEF_FDYN_AMORT') then
         ndynre = coef_sch(21)
-    else if (chaine .eq. 'COEF_FDYN_RIGID') then
+    else if (chaine .eq. 'COEF_FDYN_AMORT') then
         ndynre = coef_sch(22)
+    else if (chaine .eq. 'COEF_FDYN_RIGID') then
+        ndynre = coef_sch(23)
 !
     else if (chaine .eq. 'COEF_FORC_INER') then
-        ndynre = coef_sch(23)
-    else if (chaine .eq. 'INST_PREC') then
         ndynre = coef_sch(24)
+    else if (chaine .eq. 'INST_PREC') then
+        ndynre = coef_sch(25)
 !
     else
         ASSERT(.false.)

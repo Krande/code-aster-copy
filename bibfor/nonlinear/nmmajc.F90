@@ -41,6 +41,7 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd, &
 #include "asterfort/nmmaji.h"
 #include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
     integer :: fonact(*)
@@ -209,6 +210,7 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd, &
 !
 ! --- AFFICHAGE
 !
+
 999 continue
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_57')

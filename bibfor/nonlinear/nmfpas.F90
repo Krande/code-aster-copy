@@ -147,7 +147,7 @@ subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter, &
     if (ldyna) then
         cfsc = sddyna(1:15)//'.COEF_SCH'
         call jeveuo(cfsc, 'E', vr=coef_sch)
-        coef_sch(24) = diinst(sddisc, numins-1)
+        coef_sch(25) = diinst(sddisc, numins-1)
     end if
 !
 ! - Progress bar

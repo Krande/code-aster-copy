@@ -34,6 +34,9 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
 #include "asterfort/nmacva.h"
 #include "asterfort/nmdebg.h"
 #include "asterfort/nmchex.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/copisd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nonlinDSVectCombCompute.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
@@ -65,10 +68,11 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
     ! --------------------------------------------------------------------------------------------------
     !
     integer :: ifm, niv
-    character(len=19) :: cnffdo, cndfdo, cnfvdo, cnhyst
+    character(len=19) :: cnffdo, cndfdo, cnfvdo, olhyst, cnhyst
     aster_logical :: l_wave
     aster_logical :: lDampMatrix
     type(NL_DS_VectComb) :: ds_vectcomb
+    real(kind=8), pointer :: vale_cnhyst(:) => null()
     !
     ! --------------------------------------------------------------------------------------------------
     !
@@ -113,6 +117,10 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
         call nmchex(hval_veasse, 'VEASSE', 'CNHYST', cnhyst)
         call compViteForce(nlDynaDamping, hval_incr, 'VITMOI', cnhyst)
         call nonlinDSVectCombAddAny(cnhyst, -1.d0, ds_vectcomb)
+
+        ! Save second member for multi-step methods
+        call ndynkk(sddyna, 'OLDP_CNHYST', olhyst)
+        call copisd('CHAMP_GD', 'V', cnhyst, olhyst)
     end if
     !
     ! - Add internal forces to second member

@@ -99,13 +99,13 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     character(len=19) :: cdfedo, cdfsdo, cddidi, cdfint
     character(len=19) :: cddido, cdcine
     character(len=19) :: cdondp, cdeltc, cdeltf
-    character(len=19) :: cdsstf, cdviss, cdsstr
+    character(len=19) :: cdsstf, cdviss, cdhyst, cdsstr
     character(len=19) :: depent, vitent, accent
     character(len=19) :: depabs, vitabs, accabs
 !
     data cdfedo, cdfsdo/'&&NDLECT.CNFEDO', '&&NDLECT.CNFSDO'/
     data cddido, cddidi/'&&NDLECT.CNDIDO', '&&NDLECT.CNDIDI'/
-    data cdfint, cdviss/'&&NDLECT.CNFINT', '&&NDLECT.CNVISS'/
+    data cdfint, cdviss, cdhyst/'&&NDLECT.CNFINT', '&&NDLECT.CNVISS', '&&NDLECT.CNHYST'/
     data cdondp/'&&NDLECT.CNONDP'/
     data cdcine, cdsstf/'&&NDLECT.CNCINE', '&&NDLECT.CNSSTF'/
     data cdsstr/'&&NDLECT.CNSSTR'/
@@ -354,9 +354,10 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
         zk24(jvaol+8-1) = cdsstf
         zk24(jvaol+9-1) = cdcine
         zk24(jvaol+10-1) = cdviss
-        zk24(jvaol+11-1) = cdsstr
-        zk24(jvaol+12-1) = cdeltc
-        zk24(jvaol+13-1) = cdeltf
+        zk24(jvaol+11-1) = cdhyst
+        zk24(jvaol+12-1) = cdsstr
+        zk24(jvaol+13-1) = cdeltc
+        zk24(jvaol+14-1) = cdeltf
     end if
 !
 ! --- CARTE FLUID DAMPING

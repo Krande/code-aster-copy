@@ -37,6 +37,7 @@ subroutine ndfdyn(sddyna, nlDynaDamping, &
 #include "asterfort/utmess.h"
 #include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
+#include "asterfort/jeveuo.h"
 !
     character(len=19), intent(in) :: sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping

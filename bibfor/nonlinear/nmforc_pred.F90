@@ -30,6 +30,7 @@ subroutine nmforc_pred(list_func_acti, &
 !
     use NonLin_Datastructure_type
     use NonLinearDyna_type
+    use NonLinearDyna_module, only: compViteForce
 !
     implicit none
 !
@@ -49,6 +50,7 @@ subroutine nmforc_pred(list_func_acti, &
 #include "asterfort/nonlinRForceCompute.h"
 #include "asterfort/nonlinSubStruCompute.h"
 #include "asterfort/utmess.h"
+#include "asterfort/jeveuo.h"
 !
     integer, intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: model, cara_elem, nume_dof
@@ -97,10 +99,11 @@ subroutine nmforc_pred(list_func_acti, &
 !
     integer, parameter :: phaseType = PRED_EULER
     integer :: ifm, niv
-    character(len=19) :: cndyna, cnsstr
+    character(len=19) :: cndyna, cnsstr, cnhyst
     character(len=19) :: dispCurr, dispPrev
     real(kind=8) :: timePrev, timeCurr
-    aster_logical :: l_dyna, l_impe, lDampModal, lSuperElement
+    aster_logical :: l_dyna, l_impe, lDampModal, lDampMatrix, lSuperElement
+    real(kind=8), pointer :: vale_cnhyst(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,6 +121,7 @@ subroutine nmforc_pred(list_func_acti, &
     l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
     l_impe = ndynlo(sddyna, 'IMPE_ABSO')
     lDampModal = nlDynaDamping%lDampModal
+    lDampMatrix = nlDynaDamping%hasMatrDamp
     lSuperElement = isfonc(list_func_acti, 'MACR_ELEM_STAT')
 
 ! - Get hat variables
@@ -145,6 +149,14 @@ subroutine nmforc_pred(list_func_acti, &
         call ndfdyn(sddyna, nlDynaDamping, &
                     hval_incr, hval_measse, ds_measure, &
                     cndyna)
+    end if
+
+! - Compute effect of damping (C \cdot \dot{u})
+    if (l_dyna) then
+        if (lDampMatrix) then
+            call nmchex(hval_veasse, 'VEASSE', 'CNHYST', cnhyst)
+            call compViteForce(nlDynaDamping, hval_incr, 'VITPLU', cnhyst)
+        end if
     end if
 
 ! - Compute modal damping

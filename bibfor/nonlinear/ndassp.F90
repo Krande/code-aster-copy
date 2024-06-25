@@ -39,6 +39,7 @@ subroutine ndassp(listFuncActi, ds_contact, ds_system, &
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nmdebg.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/nonlinDSVectCombCompute.h"
 #include "asterfort/nonlinDSVectCombAddAny.h"
@@ -157,5 +158,6 @@ subroutine ndassp(listFuncActi, ds_contact, ds_system, &
     if (niv .ge. 2) then
         call nmdebg('VECT', cndonn, 6)
     end if
+
 !
 end subroutine

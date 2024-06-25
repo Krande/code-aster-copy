@@ -80,7 +80,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     aster_logical :: ldepl, lvite, lacce
     aster_logical :: lnewma
     real(kind=8) :: coerig, coeamo, coemas
-    real(kind=8) :: coeext, coeint, coeequ, coeex2
+    real(kind=8) :: coeext, coeint, coeequ, coeex2, coeam0
     integer :: imode
     integer :: neq, nbmodp
     real(kind=8) :: coefd(3), coefv(3), coefa(3)
@@ -163,7 +163,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
             ASSERT(.false.)
         end if
         if (lhhtc) then
-            coeamo = coeamo/(un+alpha)
+            coeamo = coeamo
             coemas = coemas/(un+alpha)
         end if
     else
@@ -288,6 +288,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
             coeint = -alpha/(un+alpha)
             coeequ = un/(un+alpha)
             coeex2 = un
+            coeam0 = -alpha
         else
             ASSERT(.false.)
         end if
@@ -296,11 +297,13 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
         coeint = zero
         coeequ = un
         coeex2 = un
+        coeam0 = zero
     end if
     coef_sch(16) = coeext
     coef_sch(17) = coeequ
     coef_sch(18) = coeint
     coef_sch(19) = coeex2
+    coef_sch(20) = coeam0
 !
     if (lmpas) then
         if (niv .ge. 2) then
@@ -322,7 +325,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     else
         coiner = un/deltat
     end if
-    coef_sch(23) = coiner
+    coef_sch(24) = coiner
     if (niv .ge. 2) then
         write (ifm, *) '<MECANONLINE> ... COEF. FORC. INERTIE REF: ', &
             coiner
@@ -331,11 +334,11 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
 ! --- COEFFICIENTS DEVANT MATRICE POUR TERME DE RAPPEL DYNAMIQUE
 !
     coerma = un
-    coeram = un
+    coeram = un*(un+alpha)
     coerri = un
-    coef_sch(20) = coerma
-    coef_sch(21) = coeram
-    coef_sch(22) = coerri
+    coef_sch(21) = coerma
+    coef_sch(22) = coeram
+    coef_sch(23) = coerri
 !
     if (niv .ge. 2) then
         write (ifm, *) '<MECANONLINE> ... COEF. FDYNA RIGI: ', coerri
@@ -345,7 +348,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
 !
 ! - Save previous time
 !
-    coef_sch(24) = instam
+    coef_sch(25) = instam
 !
 ! --- INITIALISATION DES CHAMPS D'ENTRAINEMENT EN MULTI-APPUI
 !

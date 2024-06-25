@@ -60,6 +60,8 @@ subroutine nmprma(listFuncActi, &
 #include "asterfort/nmrigi.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/utmess.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 !
     integer, intent(in) :: listFuncActi(*)
     character(len=8), intent(in) :: mesh
