@@ -6,7 +6,7 @@
  * @brief Header of class for FieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -156,14 +156,14 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( fed->getMesh()->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
             auto dofNume = std::make_shared< ParallelDOFNumbering >();
-            dofNume->computeNumbering( {fed}, localMode );
+            dofNume->computeNumbering( { fed }, localMode );
 
             _dofDescription = dofNume->getEquationNumbering();
 #endif
         } else {
             auto dofNume = std::make_shared< DOFNumbering >();
 
-            dofNume->computeNumbering( {fed}, localMode );
+            dofNume->computeNumbering( { fed }, localMode );
 
             _dofDescription = dofNume->getEquationNumbering();
         }
