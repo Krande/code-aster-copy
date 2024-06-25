@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,8 @@ cata_msg = {
         """On n'a pas trouvé d'élément fluide en regard de l'élément d'interaction fluide-structure. On ne peut donc pas vérifier les normales."""
     ),
     4: _(
-        """Certaines normales entre fluide et structure ne sont pas orientées dans le bon sens."""
+        """Certaines normales entre fluide et structure ne sont pas orientées dans le bon sens,
+l'orientation des normales doit être sortante du fluide vers la structure."""
     ),
     5: _(
         """Le paramètre %(k1)s ne peut pas être supérieure ou égale à 1. Si vous ne voulez pas insérer une condition d'absorption fluide,
