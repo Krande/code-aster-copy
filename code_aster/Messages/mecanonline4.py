@@ -65,4 +65,11 @@ cata_msg = {
  Changer l'option de PILOTAGE (utilisez NORM_INCR_DEPL) ou refaites le premier calcul pour enrichir la structure de données résultat (modifiez vos options du mot-clé ARCHIVAGE).
 """
     ),
+    50: _(
+        """
+La spécification d'un champ de contrainte initial (via le mot-clé SIGM) 
+dans le cas d'un schéma multi-pas n'est pas autorisée.
+Il est nécessaire de spécifier un état initial via le mot-clé EVOL_NOLI.
+"""
+    ),
 }
