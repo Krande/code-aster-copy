@@ -1,0 +1,318 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import numpy as np
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+
+### Model parameters
+omega = 2 * np.pi  # [rad/s]
+m = 1.0  # [kg]
+k = omega**2 * m  # [N/m]
+
+### Time integration parameters
+dt = 5e-3  # [s]
+t0 = 0  # [s]
+tf = 1.0  # [s]
+
+### Initial conditions
+u0 = 1.0  # [m]
+v0 = 1.0  # [m/s]
+
+### HHT algorithm parameter
+alpha_hht = -0.3
+
+### Mesh
+MA0 = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MA = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=(_F(NOM_GROUP_MA="MB", GROUP_NO="B"),))
+
+### Model
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA=("RESSORTS"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA=("MB"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
+
+### Elementary characteristics
+CARA_ELE = AFFE_CARA_ELEM(
+    MODELE=MO,
+    DISCRET_2D=(
+        _F(CARA="K_T_D_L", GROUP_MA="K1", VALE=(k, k)),
+        _F(CARA="M_T_D_N", GROUP_MA="MB", VALE=m),
+    ),
+)
+
+### Material
+MATER = DEFI_MATERIAU(ELAS=_F(E=1.0, RHO=1.0, NU=0.25))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA="RESSORTS", MATER=MATER))
+
+### Boundary conditions
+LIAISON = AFFE_CHAR_MECA(
+    MODELE=MO, DDL_IMPO=(_F(TOUT="OUI", DY=0.0, DZ=0.0), _F(GROUP_NO="A", DX=0.0))
+)
+
+CI_U0 = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=(_F(GROUP_NO="B", DX=u0),))
+
+### Initial conditions
+DEPL_INIT = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    MODELE=MO,
+    AFFE=(
+        _F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0, 0, 0)),
+        _F(GROUP_NO="B", NOM_CMP=("DX"), VALE=(u0,)),
+    ),
+)
+
+VITE_INIT = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    MODELE=MO,
+    AFFE=(
+        _F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0, 0, 0)),
+        _F(GROUP_NO="B", NOM_CMP=("DX"), VALE=(v0,)),
+    ),
+)
+
+### Time discretization
+L_INST = DEFI_LIST_REEL(DEBUT=t0 - 2 * dt, INTERVALLE=(_F(JUSQU_A=tf, PAS=dt),))
+
+### Solve transient problem
+# Initial state
+RESU_INIT = STAT_NON_LINE(
+    MODELE=MO,
+    CARA_ELEM=CARA_ELE,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=CI_U0)),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_INST, INST_INIT=t0 - 2 * dt, INST_FIN=t0),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1e-8, ITER_GLOB_MAXI=10),
+    INFO=1,
+)
+
+# DYNA_NON_LINE arguments
+dict_dyna_non_line = _F(
+    MODELE=MO,
+    CARA_ELEM=CARA_ELE,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=LIAISON),),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_INST, INST_INIT=t0, INST_FIN=tf),
+    ETAT_INIT=_F(VITE=VITE_INIT, EVOL_NOLI=RESU_INIT, INST=t0),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    CONVERGENCE=_F(ARRET="OUI", RESI_GLOB_MAXI=1e-6, ITER_GLOB_MAXI=0),
+    INFO=1,
+)
+
+# Solve transient problem
+RESU_HHTd = DYNA_NON_LINE(
+    SCHEMA_TEMPS=_F(SCHEMA="HHT", FORMULATION="DEPLACEMENT", ALPHA=alpha_hht, MODI_EQUI="OUI"),
+    **dict_dyna_non_line
+)
+
+RESU_HHTa = DYNA_NON_LINE(
+    SCHEMA_TEMPS=_F(SCHEMA="HHT", FORMULATION="ACCELERATION", ALPHA=alpha_hht, MODI_EQUI="OUI"),
+    **dict_dyna_non_line
+)
+
+# RESU_NEWMARKnld = DYNA_NON_LINE(
+#     SCHEMA_TEMPS=_F(
+#         SCHEMA="NEWMARK",
+#         FORMULATION="DEPLACEMENT",
+#     ),
+#     **dict_dyna_non_line
+# )
+
+# RESU_NEWMARKnla = DYNA_NON_LINE(
+#     SCHEMA_TEMPS=_F(
+#         SCHEMA="NEWMARK",
+#         FORMULATION="ACCELERATION",
+#     ),
+#     **dict_dyna_non_line
+# )
+
+# RESU_NEWMARKl = DYNA_LINE(
+#     TYPE_CALCUL="TRAN",
+#     BASE_CALCUL="PHYS",
+#     MODELE=MO,
+#     CARA_ELEM=CARA_ELE,
+#     CHAM_MATER=CHMAT,
+#     CHARGE=LIAISON,
+#     ETAT_INIT=_F(DEPL=DEPL_INIT, VITE=VITE_INIT),
+#     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
+#     INCREMENT=_F(PAS=dt, INST_INIT=t0, INST_FIN=tf),
+# )
+
+### Analytical solution
+xi = 0.0
+om = np.sqrt(k / m)
+omd = np.sqrt(1 - xi**2) * om
+
+
+def depl_ref(t):
+    return np.exp(-xi * om * t) * (
+        u0 * np.cos(omd * t) + (v0 + xi * om * u0) / omd * np.sin(omd * t)
+    )
+
+
+def vite_ref(t):
+
+    return -xi * om * np.exp(-xi * om * t) * (
+        u0 * np.cos(omd * t) + (v0 + xi * om * u0) / omd * np.sin(omd * t)
+    ) + np.exp(-xi * om * t) * (-omd * u0 * np.sin(omd * t) + (v0 + xi * om * u0) * np.cos(omd * t))
+
+
+def acce_ref(t):
+    return (
+        -xi * om * vite_ref(t)
+        - xi
+        * om
+        * np.exp(-xi * om * t)
+        * (-u0 * omd * np.sin(omd * t) + (v0 + xi * om * u0) * np.cos(omd * t))
+        + np.exp(-xi * om * t)
+        * (-u0 * omd**2 * np.cos(omd * t) - omd * (v0 + xi * om * u0) * np.sin(omd * t))
+    )
+
+
+### Tests
+
+
+##
+def testResultsAtTimeSteps(resu, inst_test, depl_calc, vite_calc, acce_calc, prec):
+    r"""Test results at given time steps
+
+    Args:
+        resu (:class:`libaster.NonLinearResult`): result
+
+        inst_test (:class:`list`): time steps
+
+        depl_calc (:class:`list`): calculated displacements
+
+        vite_calc (:class:`list`): calculated velocities
+
+        acce_calc (:class:`list`): calculated accelerations
+
+        prec (:class:`dict`): tests precisions
+    """
+    vale_calc = {"DEPL": depl_calc, "VITE": vite_calc, "ACCE": acce_calc}
+    func_refe = {"DEPL": depl_ref, "VITE": vite_ref, "ACCE": acce_ref}
+    l_nom_cham = ["DEPL", "VITE", "ACCE"]
+    assert len(prec) == len(l_nom_cham)
+    #
+    for nom_cham in l_nom_cham:
+        # Check lists lengths
+        assert len(inst_test) == len(vale_calc[nom_cham])
+        # Test results
+        TEST_RESU(
+            RESU=[
+                _F(
+                    GROUP_NO="B",
+                    INST=inst,
+                    REFERENCE="ANALYTIQUE",
+                    RESULTAT=resu,
+                    NOM_CHAM=nom_cham,
+                    NOM_CMP="DX",
+                    VALE_CALC=vale,
+                    VALE_REFE=func_refe[nom_cham](inst),
+                    PRECISION=prec[nom_cham],
+                )
+                for (inst, vale) in zip(inst_test, vale_calc[nom_cham])
+            ]
+        )
+
+
+## Results tested
+l_resu = [RESU_HHTd, RESU_HHTa]
+
+## Test time steps
+inst_test = [0.0, dt, 2 * dt, 0.5, 1.0]
+
+# ------------------------------------------------------------------------------
+# HHT - FORMULATION="DEPLACEMENT"
+
+# Calculated values (non regression testing)
+depl_calc = [
+    1.0,
+    1.0045052047397398,
+    1.008019128521673,
+    -0.9999368760796572,
+    0.9998734041357835,
+]  # displacements at test time steps
+vite_calc = [
+    1.0,
+    0.802109908586709,
+    0.6034934586792312,
+    -1.0023595131565914,
+    1.0047838889068827,
+]  # velocities at test time steps
+acce_calc = [
+    -39.47841760435743,
+    -39.60291845223344,
+    -39.75338286381111,
+    39.41074199654577,
+    -39.40809306829601,
+]  # accelerations at test time steps
+
+# Tests precisions
+prec = {"DEPL": 5e-3, "VITE": 5e-3, "ACCE": 1e-2}
+
+# Run tests
+testResultsAtTimeSteps(RESU_HHTd, inst_test, depl_calc, vite_calc, acce_calc, prec)
+
+# ------------------------------------------------------------------------------
+# HHT - FORMULATION="ACCELERATION"
+
+# Calculated values (non regression testing)
+depl_calc = [
+    1.0,
+    1.0045052047397398,
+    1.008019128521673,
+    -0.9999368760796447,
+    0.9998734041357552,
+]  # displacements at test time steps
+vite_calc = [
+    1.0,
+    0.8021099085867088,
+    0.6034934586792309,
+    -1.0023595131565848,
+    1.0047838889068608,
+]  # velocities at test time steps
+acce_calc = [
+    -39.47841760435743,
+    -39.60291845223343,
+    -39.75338286381113,
+    39.41074199654525,
+    -39.40809306829488,
+]  # accelerations at test time steps
+
+# Tests precisions
+prec = {"DEPL": 5e-3, "VITE": 5e-3, "ACCE": 1e-2}
+
+# Run tests
+testResultsAtTimeSteps(RESU_HHTa, inst_test, depl_calc, vite_calc, acce_calc, prec)
+
+
+# ------------------------------------------------------------------------------
+###
+FIN()
