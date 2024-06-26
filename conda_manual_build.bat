@@ -94,7 +94,7 @@ set CXXFLAGS=%CXXFLAGS% /MD /DMKL_ILP64
 if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"
     set FC_SEARCH=ifort
-    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /double-size:64 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64 /assume:byterecl
+    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /double-size:64 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64 /check
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 ) else (
@@ -128,7 +128,10 @@ set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
-set DEFINES=H5_BUILT_AS_DYNAMIC_LIB H5_USE_110_API PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS
+set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS
+if "%build_type%" == "debug" (
+    set DEFINES=%DEFINES% ASTER_DEBUG_ALL
+)
 REM Clean the build directory
 @REM waf distclean
 
@@ -172,9 +175,6 @@ if %USE_LOG%==1 (
         waf install -v
     )
 )
-
-REM wait for 2 seconds because some processes are still running and holding some of the files
-REM timeout /t 2
 
 call conda_rearrange.bat
 

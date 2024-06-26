@@ -1,3 +1,5 @@
+@echo off
+
 setlocal enabledelayedexpansion
 
 if not defined SP_DIR (
@@ -15,17 +17,21 @@ if not defined LIBRARY_LIB (
 )
 
 REM Move code_aster and run_aster directories (including subdirectories)
+echo Moving code_aster and run_aster directories...
 move "%LIBRARY_PREFIX%\lib\aster\code_aster" "%SP_DIR%\code_aster"
 move "%LIBRARY_PREFIX%\lib\aster\run_aster" "%SP_DIR%\run_aster"
 
 REM Move all .pyd files to %SP_DIR%
+echo Moving .pyd files...
 for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.pyd") do move "%%f" "%SP_DIR%"
 
 REM Move all dll/pdb files to %LIBRARY_BIN%
+echo Moving .dll and .pdb files...
 for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.dll") do move "%%f" "%LIBRARY_BIN%"
 for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.pdb") do move "%%f" "%LIBRARY_BIN%"
 
 REM Move all lib files to %LIBRARY_DIR%
+echo Moving .lib files...
 for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.lib") do move "%%f" "%LIBRARY_LIB%"
 
 echo Files moved successfully.
