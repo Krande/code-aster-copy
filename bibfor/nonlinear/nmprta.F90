@@ -186,6 +186,7 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
                 solveu, ds_system, &
                 maprec, matass, &
                 faccvg, ldccvg)
+
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
@@ -206,12 +207,17 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
                      hval_veelem, hval_veasse, &
                      hval_measse)
 !
+
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
     if (leltc) then
         call nmfocc('PREDICTION', model, ds_material, nume_dof, list_func_acti, &
                     ds_contact, ds_measure, hval_algo, hval_incr, ds_constitutive)
     end if
+!
+! --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
+!
+    call nmdep0('OFF', hval_algo)
 !
 ! - Compute internal forces
 !
@@ -234,10 +240,6 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
                 sddyna, nlDynaDamping, &
                 ds_system, ds_contact, hval_veasse, &
                 cnpilo, cndonn)
-!
-! --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
-!
-    call nmdep0('OFF', hval_algo)
 !
 ! --- RESOLUTION K.DU = DF
 !
