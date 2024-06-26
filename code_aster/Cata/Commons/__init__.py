@@ -36,7 +36,7 @@ from .c_etat_init import C_ETAT_INIT
 from .c_increment import C_INCREMENT
 from .c_mesure import C_MESURE
 from .c_newton import C_NEWTON
-from .c_nom_cham_into import C_NOM_CHAM_INTO, C_NOM_CHAM_INTO_EGRU
+from .c_nom_cham_into import C_NOM_CHAM_INTO, Phenomenon
 from .c_nom_grandeur import C_NOM_GRANDEUR
 from .c_observation import C_OBSERVATION
 from .c_para_fonction import C_PARA_FONCTION

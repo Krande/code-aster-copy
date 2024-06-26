@@ -86,7 +86,12 @@ TEST_RESU = PROC(
         NOM_CAS=SIMP(statut="f", typ="TXM"),
         ANGLE=SIMP(statut="f", typ="R"),
         PARA=SIMP(statut="f", typ="TXM"),
-        NOM_CHAM=SIMP(statut="f", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO_EGRU()),
+        NOM_CHAM=SIMP(
+            statut="f",
+            typ="TXM",
+            validators=NoRepeat(),
+            into=C_NOM_CHAM_INTO(additional_fields=("EGRU_ELNO",)),
+        ),
         NOM_CMP=SIMP(statut="f", typ="TXM", max=1),
         NOM_VARI=SIMP(statut="f", typ="TXM", max=1),
         GROUP_MA=SIMP(statut="f", typ=grma),

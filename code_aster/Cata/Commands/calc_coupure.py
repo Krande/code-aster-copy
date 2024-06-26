@@ -28,7 +28,9 @@ CALC_COUPURE = MACRO(
     sd_prod=table_sdaster,
     fr=tr("Calcul du torseur résultant"),
     RESULTAT=SIMP(statut="o", typ=resultat_sdaster),
-    FORCE=SIMP(statut="f", typ="TXM", defaut="REAC_NODA", into=C_NOM_CHAM_INTO(phenomene="FORCE")),
+    FORCE=SIMP(
+        statut="f", typ="TXM", defaut="REAC_NODA", into=C_NOM_CHAM_INTO(phenomene=Phenomenon.FORCE)
+    ),
     MODAL_SPECTRAL=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
     b_modspec=BLOC(
         condition="equal_to('MODAL_SPECTRAL', 'OUI')",
