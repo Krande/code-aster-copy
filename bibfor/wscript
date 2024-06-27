@@ -103,27 +103,6 @@ def check_fortran_compiler_flags(self):
 
     if "ifort" in self.env.FC_NAME.lower():
         self.check_fortran_compiler_options(["/nologo"])
-        if self.env.CC_NAME.lower() == "msvc":
-            self.check_fortran_compiler_options(["/fpe:0", "/traceback"])
-        else:
-            self.check_fortran_compiler_options(["-fpe0", "-traceback"])
-        if "64" in self.env.DEST_CPU:
-            if self.env.CC_NAME.lower() == "msvc":
-                # self.check_fortran_compiler_options(["/real-size:64", "/double-size:64", "/4R8", "/4I8", "/integer-size:64"])
-                pass
-            else:
-                self.check_fortran_compiler_options(["-i8", "-r8"])
-
-        # Check if intel CPU
-        cpu_vendor = get_cpu_vendor()
-        Logs.info(f"Using {cpu_vendor} CPU")
-        if cpu_vendor == 'Intel':
-            # self.check_fortran_compiler_options(["/QxCORE-AVX2"])
-            pass
-        # all Intel specific features must use:
-        #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx
-        # this marker must be specified on command line (using -D)
-        # because it must not be enabled by aslint
         self.env.append_unique("DEFINES", "ASTER_HAVE_INTEL_IFORT")
     self.start_msg("Fortran compiler flags")
     self.end_msg(self.env["FCFLAGS"])
@@ -562,7 +541,7 @@ def check_optimization_fcflags_msvc(self):
     self.setenv("debug")
     self.start_msg("Setting Fortran debug flags for IFort")
     self.remove_optflags("FCFLAGS")
-    flags = ["/Zi", "/debug:full", "/Od"] + Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
+    flags = ["/Zi", "/debug:full", "/Od", "/debug-parameters:all", "/traceback"] + Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
     # Note: IFort uses different tools for memory checking and code coverage.
     self.env.append_unique("FCFLAGS", flags)
     self.end_msg(flags)
@@ -572,75 +551,6 @@ def check_optimization_fcflags_msvc(self):
     flags = ["/O2"]
     self.env.append_unique("FCFLAGS", flags)
     self.end_msg(flags)
-
-    # Additional checks and configurations specific to your application's needs
-    # IFort-specific settings for loop optimization and other considerations
-    # can be added here, following IFort documentation and best practices.
-    self.start_msg("Checking loop optimization with LOC")
-    testit = partial(self.check_fc, mandatory=False, compile_filename="snippet.f", execute=True)
-    flags = [f for f in self.env.FCFLAGS if (f.startswith("/O") and f[-1].isdigit()) or f == "-g"]
-    # remove existing optimization flags
-    list(map(self.env.FCFLAGS.remove, flags))
-    if not flags:
-        flags = ["-O2"]
-    # Loop optimization error using LOC function in gfortran
-    # GCC bug: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51267
-    # Check if it must be fixed using the 'VOLATILE' statement.
-    # different cases to check
-    # '-fno-tree-dse' is a workaround that works with gfortran 4.6
-    last_ressort = ["-O0"]
-    cases = [
-        (fragment_without_volatile, (flags, flags + ["-fno-tree-dse"])),
-        (fragment_with_volatile, (flags, flags + ["-fno-tree-dse"], last_ressort)),
-    ]
-    optflag = ""
-    legend = "failed"
-    for code, all_opts in cases:
-        for opts in all_opts:
-            if testit(fcflags=opts, fragment=code, mandatory=opts is last_ressort):
-                optflag = opts
-                if code is fragment_with_volatile:
-                    # should be used in jeveux*.h in future
-                    legend = "VOLATILE is required"
-                    self.define("ASTER_USE_VOLATILE_COMMON", 1)
-                else:
-                    legend = "VOLATILE not required"
-                break
-        if optflag:
-            break
-    self.end_msg(legend)
-
-    # GCC bug: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100227
-    self.start_msg("Checking implicit loop in write")
-    res = None
-    for flag in ("", "-fno-frontend-optimize"):
-        out = self.check_fc(
-            fcflags=optflag + [flag],
-            compile_filename="test.F90",
-            fragment=fragment_write_loop,
-            execute=True,
-            mandatory=False,
-            define_ret=True,
-        )
-        try:
-            values = [int(float(i)) for i in out.split()]
-            if values == [2, 4, 6]:
-                res = "%s is required" % repr(flag) if flag else "ok"
-                optflag.append(flag)
-                break
-        except ValueError:
-            pass
-    if res is None:
-        self.end_msg("failed", "YELLOW")
-    else:
-        self.end_msg(res)
-    if "-fno-frontend-optimize" not in optflag:
-        # self.check_fortran_compiler_options("-finline-matmul-limit=6")
-        # If necessary, then what is the equivalent of -finline-matmul-limit=6 in MSVC?
-        pass
-    self.start_msg("Setting Fortran optimization flags")
-    self.env.append_unique("FCFLAGS", optflag)
-    self.end_msg(optflag)
 
 
 @Configure.conf

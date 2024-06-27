@@ -94,7 +94,7 @@ set CXXFLAGS=%CXXFLAGS% /MD /DMKL_ILP64
 if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"
     set FC_SEARCH=ifort
-    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /double-size:64 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64 /check
+    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /double-size:64 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 ) else (
@@ -107,8 +107,9 @@ if "%FC%" == "ifx.exe" (
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 :: Create dll debug pdb
-if %BUILD_TYPE% == "debug" (
-    set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
+if "%BUILD_TYPE%" == "debug" (
+    set FCFLAGS_ASTER_DEBUG=%FCFLAGS_ASTER_DEBUG% /fpe:0
+    REM /check:all
 )
 
 :: Add Math libs
@@ -163,6 +164,8 @@ waf configure ^
 
 REM   --install-tests ^
 
+if errorlevel 1 exit 1
+
 REM Conditional log handling
 if %USE_LOG%==1 (
     set "datetimeString="
@@ -176,6 +179,10 @@ if %USE_LOG%==1 (
     )
 )
 
+if errorlevel 1 exit 1
+
 call conda_rearrange.bat
+
+if errorlevel 1 exit 1
 
 endlocal
