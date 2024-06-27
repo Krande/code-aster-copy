@@ -305,10 +305,10 @@ class FieldOnCells : public DataField {
             PyObject *res = PyObject_CallFunction( func.ptr(), "d", ( *_values )[i] );
             if ( PyFloat_Check( res ) ) {
                 tmp[i] = (ASTERDOUBLE)PyFloat_AsDouble( res );
+            } else if ( PyLong_Check( res ) ) {
+                tmp[i] = (ASTERDOUBLE)PyLong_AsDouble( res );
             } else {
-                PyErr_Format( PyExc_ValueError, "Returned value of \
-                    type different from ASTERDOUBLE" );
-                PyErr_Print();
+                raiseAsterError( "Invalid function return type. Expected ASTERDOUBLE." );
             }
             Py_XDECREF( res );
         }
@@ -339,11 +339,8 @@ class FieldOnCells : public DataField {
                 ASTERDOUBLE im = (ASTERDOUBLE)PyComplex_ImagAsDouble( res );
                 tmp[i] = {re, im};
             } else {
-                PyErr_Format( PyExc_ValueError, "Returned value of \
-                    type different from ASTERCOMPLEX" );
-                PyErr_Print();
+                raiseAsterError( "Invalid function return type. Expected ASTERCOMPLEX." );
             }
-            // Py_DECREF(res);
             Py_XDECREF( res );
         }
         return tmp;
