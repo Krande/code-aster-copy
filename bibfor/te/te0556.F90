@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine te0556(option, nomte)
     integer :: nfh, ddld, ddlm, ddlp, ddlc, nddls, nddlm
     integer :: nnop, nnops, nnopm, dimuel, jheavn, ncompn
     integer :: lact(16), vstnc(32), jstno, nlact(2), algocr
-    integer :: ndim, nbspg, contac, ibid, iadzi, iazk24, pos(16)
+    integer :: ndim, nbspg, contac, ibid1, ibid2, iadzi, iazk24, pos(16)
     integer :: igeom, idepm, idepd, jheafa, ncomph, jfisco
     integer :: jptint, jaint, jcface, jlonch, jbasec, jdonco
     integer :: iinstm, iinstp, icompo, icarcr, jmate, jcohes
@@ -175,7 +175,7 @@ subroutine te0556(option, nomte)
     call elref1(elrefp)
 !   ... AINSI QUE L'ELEMENT LINEAIRE ASSOCIE, POUR LE CONTACT P2P1
     if (contac .ge. 2) then
-        call elelin(contac, elrefp, elrefc, ibid, ibid)
+        call elelin(contac, elrefp, elrefc, ibid1, ibid2)
     else
         ASSERT(.false.)
     end if
@@ -268,7 +268,7 @@ subroutine te0556(option, nomte)
         algocr = nint(zr(jdonco-1+(ifiss-1)*ncompd+6))
 !
         if (algocr .eq. 3) then
-            call teattr('S', 'XFEM', enr, ibid, typel=nomte)
+            call teattr('S', 'XFEM', enr, ibid1, typel=nomte)
             ASSERT(enr(3:3) .eq. 'C' .or. enr(4:4) .eq. 'C')
             rela = zr(jdonco-1+(ifiss-1)*ncompd+10)
             if (contac .eq. 3) then

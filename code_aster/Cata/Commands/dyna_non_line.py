@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ DYNA_NON_LINE = OPER(
         SUPER_MAILLE=SIMP(statut="f", typ=ma, validators=NoRepeat(), max="**"),
         FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
-    AMOR_RAYL_RIGI=SIMP(statut="f", typ="TXM", defaut="TANGENTE", into=("TANGENTE", "ELASTIQUE")),
+    AMOR_RAYL_RIGI=SIMP(statut="f", typ="TXM", defaut="ELASTIQUE", into=("TANGENTE", "ELASTIQUE")),
     VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
     AMOR_MODAL=FACT(
         statut="f",

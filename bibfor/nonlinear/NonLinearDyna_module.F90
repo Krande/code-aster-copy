@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,9 +113,6 @@ contains
         if (answer .eq. "OUI") then
             lDampContact = ASTER_TRUE
         end if
-        if (lDampContact) then
-            lDampRayleigh = ASTER_TRUE
-        end if
 
 ! ----- Update Damping matrix
         lDampRayleighTang = ASTER_FALSE
@@ -199,14 +196,14 @@ contains
         aster_logical, intent(in) :: l_renumber
         aster_logical, intent(out) :: lDampMatrUpdate
 ! - Local
-        aster_logical :: lDampRayleighTang, lDampMatrix
+        aster_logical :: lDampMatrix, lDampRayleighTang
 !   ------------------------------------------------------------------------------------------------
 !
         lDampMatrUpdate = ASTER_FALSE
         lDampMatrix = nlDynaDamping%hasMatrDamp
         lDampRayleighTang = nlDynaDamping%lDampRayleighTang
         if (lDampMatrix) then
-            if (l_renumber .or. lDampRayleighTang) then
+            if (l_renumber .or. lDampRayleighTang .or. nlDynaDamping%lDampContact) then
                 lDampMatrUpdate = ASTER_TRUE
             end if
         end if

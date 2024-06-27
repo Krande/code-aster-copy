@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -131,6 +131,7 @@ subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user, &
 ! - Get model
 !
     model = ' '
+    n1 = 0
     if (nomcmd .ne. 'CREA_RESU') then
         call getvid(' ', 'MODELE', scal=model, nbret=n1)
     end if

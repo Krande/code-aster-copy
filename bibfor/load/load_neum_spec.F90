@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -132,7 +132,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         'No_Load         ', 'No_Load         ', 'CHAR_MECA_SR1D1D', 'CHAR_MECA_PESA_R', &
         'CHAR_MECA_ROTA_R', 'CHAR_MECA_PRSU_R', 'No_Load         ', 'CHAR_MECA_SRCO3D', &
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
-        'No_Load         ', 'CHAR_MECA_EFON_R', 'CHAR_ECHA_THM_R'/
+        'No_Load         ', 'CHAR_MECA_EFSU_R', 'CHAR_ECHA_THM_R'/
 !
 ! - Name of option for undead load matrix (real coefficient)
 !
@@ -140,7 +140,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
         'RIGI_MECA_RO    ', 'RIGI_MECA_PRSU_R', 'No_Load         ', 'RIGI_MECA_SRCO3D', &
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
-        'No_Load         ', 'RIGI_MECA_EFON_R', 'No_Load         '/
+        'No_Load         ', 'RIGI_MECA_EFSU_R', 'No_Load         '/
 !
 ! - Name of input parameter field (function coefficient)
 !
@@ -164,7 +164,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         'No_Load         ', 'No_Load         ', 'CHAR_MECA_SF1D1D', 'No_Load         ', &
         'No_Load         ', 'CHAR_MECA_PRSU_F', 'No_Load         ', 'CHAR_MECA_SFCO3D', &
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
-        'No_Load         ', 'CHAR_MECA_EFON_F', 'CHAR_ECHA_THM_F'/
+        'No_Load         ', 'CHAR_MECA_EFSU_F', 'CHAR_ECHA_THM_F'/
 !
 ! - Name of option for undead load matrix (function coefficient)
 !
@@ -172,7 +172,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
         'No_Load         ', 'RIGI_MECA_PRSU_F', 'No_Load         ', 'RIGI_MECA_SFCO3D', &
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
-        'No_Load         ', 'RIGI_MECA_EFON_F', 'No_Load         '/
+        'No_Load         ', 'RIGI_MECA_EFSU_F', 'No_Load         '/
 !
 ! - Flag if load can been undead load type
 !
@@ -196,7 +196,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         '       ', '       ', '       ', '       ', &
         'PMATUUR', 'PMATUNS', '       ', 'PMATUNS', &
         '       ', '       ', '       ', '       ', &
-        '       ', 'PMATUUR', '       '/
+        '       ', 'PMATUNS', '       '/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -309,6 +309,14 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFR'
                 lchin(i_field_in) = load_name//'.CHME.PREFF'
+            else if (load_option .eq. 'CHAR_MECA_EFSU_R') then
+                i_field_in = i_field_in+1
+                lpain(i_field_in) = 'PPREFFR'
+                lchin(i_field_in) = load_name//'.CHME.PREFF'
+            else if (load_option .eq. 'RIGI_MECA_EFSU_R') then
+                i_field_in = i_field_in+1
+                lpain(i_field_in) = 'PPREFFR'
+                lchin(i_field_in) = load_name//'.CHME.PREFF'
             else if (load_option .eq. 'CHAR_ECHA_THM_R') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PDEPLMR'
@@ -323,6 +331,16 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
             lpain(i_field_in) = para_f(i_type_neum)
             lchin(i_field_in) = name_input(1:19)
             if (load_option .eq. 'CHAR_MECA_EFON_F') then
+                i_field_in = i_field_in+1
+                lpain(i_field_in) = 'PPREFFF'
+                lchin(i_field_in) = load_name//'.CHME.PREFF'
+            end if
+            if (load_option .eq. 'CHAR_MECA_EFSU_F') then
+                i_field_in = i_field_in+1
+                lpain(i_field_in) = 'PPREFFF'
+                lchin(i_field_in) = load_name//'.CHME.PREFF'
+            end if
+            if (load_option .eq. 'RIGI_MECA_EFSU_F') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFF'
                 lchin(i_field_in) = load_name//'.CHME.PREFF'

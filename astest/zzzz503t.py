@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,8 @@ resu = STAT_NON_LINE(
     EXCIT=_F(CHARGE=FIXA_1),
     INCREMENT=_F(LIST_INST=stepping),
 )
+
+resu = CALC_CHAMP(reuse=resu, RESULTAT=resu, CONTRAINTE=("SIEF_NOEU",))
 
 with shared_tmpdir("zzzz503t_") as tmpdir:
     medfile = osp.join(tmpdir, "resu_new.med")

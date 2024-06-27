@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -501,7 +501,9 @@ class ExtendedDiscreteComputation:
 
             resi_ext += self.getThermalExchangeForces(phys_state.primal_curr, phys_state.time_curr)
         elif self.getPhysicalProblem().isMechanical():
-            resi_ext = self.getNeumannForces(phys_state.time_curr, varc_curr=phys_state.externVar)
+            resi_ext = self.getNeumannForces(
+                phys_state.time_curr, time_step=phys_state.time_step, varc_curr=phys_state.externVar
+            )
 
             resi_ext += self.getVolumetricForces(
                 phys_state.time_curr, varc_curr=phys_state.externVar

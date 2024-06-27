@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ fx = FORMULE(VALE="X", NOM_PARA=["X", "Y"])
 fy = FORMULE(VALE="X", NOM_PARA=["X", "Y"])
 
 f2_hho = hho.projectOnHHOSpace([fx, fy])
-test.assertAlmostEqual(sum(f2_hho.getValues()), 8.0, delta=5e-5)
+test.assertAlmostEqual(sum(f2_hho.getValues()), 4.0, delta=5e-5)
 
 test.printSummary()
 

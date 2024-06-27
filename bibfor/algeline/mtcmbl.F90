@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez, &
     character(len=24) :: valk(2)
     integer :: jrefar, jrefai, ier, ier1
     integer :: i, lres, nbloc, lgbloc
-    aster_logical :: reutil, symr, symi, matd, nosymr
+    aster_logical :: reutil, symr, symi, matd
     character(len=24) :: kxfem
     character(len=24), pointer :: refa1(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -142,8 +142,6 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez, &
             ASSERT(nbloc .eq. 1)
         else
             ASSERT(nbloc .eq. 2)
-            nosymr = .not. symr
-            ASSERT(nosymr)
         end if
         call dismoi('XFEM', mati, 'MATR_ASSE', repk=kxfem)
         if (kxfem .eq. 'XFEM_PRECOND') call utmess('F', 'XFEMPRECOND_3', nk=1, valk=mati)

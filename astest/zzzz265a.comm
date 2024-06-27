@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -178,6 +178,7 @@ DNL = DYNA_NON_LINE(
     MODELE=MODELE,
     CHAM_MATER=MAT,
     CARA_ELEM=CARA,
+    AMOR_RAYL_RIGI="TANGENTE",
     EXCIT=(_F(CHARGE=BC), _F(CHARGE=LOAD, FONC_MULT=FSIN)),
     COMPORTEMENT=(
         _F(RELATION="ELAS", DEFORMATION="PETIT", GROUP_MA=("DIS", "TOTAL")),

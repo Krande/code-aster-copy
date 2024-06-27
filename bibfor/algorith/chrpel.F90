@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,8 +110,9 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
     integer, dimension(6)   :: permvec
     real(kind=8)                    :: valr, xnormr, tmp
     real(kind=8), dimension(3)      :: xbary, angnot
-    real(kind=8), dimension(3)      :: orig, axez, vectx, vecty, angrep
-    real(kind=8), dimension(3, 3)    :: pgl, pgcyl, pgu, pglelem
+    real(kind=8), dimension(3)      :: orig, axez, vectx, vecty
+    real(kind=8), dimension(9)      :: valecarte
+    real(kind=8), dimension(3, 3)   :: pgl, pgcyl, pgu, pglelem
     real(kind=8), dimension(3, nptmax), target :: xno, xpg
     character(len=3)    :: tsca
     integer, parameter  :: nbCmpMax = 8
@@ -548,14 +549,14 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
 !
 !       GENERATION D UN CHAMP D'ANGLES (CARTE CONSTANTE)
         carte = '&&CHRPEL.ANGL_REP'
-        angrep(:) = 0.0d0
+        valecarte(:) = 0.0d0
 !
         if (repere .eq. 'COQUE_INTR_UTIL') then
-            angrep(3) = 1.d0
+            valecarte(3) = 1.d0
         else if (repere .eq. 'COQUE_UTIL_INTR') then
-            angrep(3) = 2.d0
+            valecarte(3) = 2.d0
         else if (repere .eq. 'COQUE_UTIL_CYL') then
-            angrep(3) = 3.d0
+            valecarte(3) = 3.d0
         end if
         licmp(1) = 'ALPHA'
         licmp(2) = 'BETA'
@@ -566,7 +567,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
         licmp(7) = 'O_X'
         licmp(8) = 'O_Y'
         licmp(9) = 'O_Z'
-        call mecact('V', carte, 'MODELE', model, 'CAORIE', ncmp=9, lnomcmp=licmp, vr=angrep)
+        call mecact('V', carte, 'MODELE', model, 'CAORIE', ncmp=9, lnomcmp=licmp, vr=valecarte)
 !
 !       CREATION D UN CHAM_ELEM D'ANGLES EN LISANT LES ANGL_REP
         changl = '&&CHRPEL.ANGL'

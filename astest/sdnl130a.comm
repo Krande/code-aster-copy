@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -165,6 +165,7 @@ LINST = DEFI_LIST_INST(
 # CALCUL DYNAMIQUE NON LINEAIRE
 RERE = DYNA_NON_LINE(
     MODELE=MOPOU,
+    AMOR_RAYL_RIGI="TANGENTE",
     CHAM_MATER=CHMAT,
     CARA_ELEM=POUCA,
     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),

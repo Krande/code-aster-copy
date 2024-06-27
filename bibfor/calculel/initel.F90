@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,10 @@ subroutine initel(ligrel, l_calc_rigi)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+! Initialisation de l'argument optionnel si present
+    if (present(l_calc_rigi)) then
+        l_calc_rigi = .false.
+    end if
 !
     call dismoi('EXI_ELEM', ligrel, 'LIGREL', repk=exiele)
     if (exiele(1:3) .eq. 'OUI') then

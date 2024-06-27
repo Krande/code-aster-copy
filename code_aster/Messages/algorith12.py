@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -198,6 +198,11 @@ Contactez le support technique.
   arrêt problème de factorisation:
   présence probable de modes de corps rigide
   la méthode de Mac-Neal ne fonctionne pas en présence de modes de corps rigide
+"""
+    ),
+    41: _(
+        """
+ Le changement de repère %(k2)s n'est pas disponible pour les éléments %(k1)s.
 """
     ),
     42: _(

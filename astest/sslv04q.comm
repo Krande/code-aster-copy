@@ -1,0 +1,115 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# CYLINDRE CREUX EN CONTRAINTES PLANES ET EFFET DE FOND
+# AVEC PRESSION VARIABLE AU COURS DU TEMPS
+#
+# MODELISATION : ELEMENTS MECANIQUE 3D (PENTA6 HEXA8)
+#
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+M = LIRE_MAILLAGE(FORMAT="MED")
+
+M = DEFI_GROUP(
+    reuse=M,
+    MAILLAGE=M,
+    CREA_GROUP_NO=(
+        _F(NOM="DIRI", GROUP_MA="DIRI"),
+        _F(NOM="SB", GROUP_MA="SB"),
+        _F(NOM="DIRY", GROUP_MA="DIRY"),
+    ),
+    CREA_GROUP_MA=_F(NOM="AE8", UNION=("AE6", "AE5")),
+)
+
+MO = AFFE_MODELE(MAILLAGE=M, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+
+M = MODI_MAILLAGE(reuse=M, MAILLAGE=M, ORIE_PEAU=_F(GROUP_MA_PEAU="SH"))
+
+TA = POST_ELEM(MODELE=MO, AIRE_INTERNE=(_F(GROUP_MA_BORD="AE7"), _F(GROUP_MA_BORD="AE8")))
+
+MA = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3, ALPHA=0.0))
+
+CM = AFFE_MATERIAU(MAILLAGE=M, AFFE=_F(TOUT="OUI", MATER=MA))
+
+CL = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(_F(GROUP_NO="DIRI", DY=0.0), _F(GROUP_NO="SB", DZ=0.0), _F(GROUP_NO="DIRY", DX=0.0)),
+    FACE_IMPO=_F(GROUP_MA="DNOR", DNOR=0.0),
+)
+
+FPRESINT = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="LINEAIRE", PROL_GAUCHE="LINEAIRE", VALE=(1.0, 60.0, 2.0, 120.0)
+)
+
+CH = AFFE_CHAR_MECA_F(
+    MODELE=MO,
+    INFO=2,
+    PRES_REP=_F(GROUP_MA="PRE7", PRES=FPRESINT),
+    EFFE_FOND=(
+        _F(GROUP_MA_INT="AE7", GROUP_MA="SH", PRES=FPRESINT),
+        _F(GROUP_MA_INT="AE8", GROUP_MA="SH", PRES=FPRESINT),
+    ),
+)
+
+LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=2.0, NOMBRE=2))
+
+RESU = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    EXCIT=(_F(CHARGE=CL), _F(CHARGE=CH, TYPE_CHARGE="SUIV")),
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GDEF_LOG"),
+    INCREMENT=_F(LIST_INST=LINST),
+)
+
+
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE="SIGM_NOEU")
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="F",
+            INST=2.0,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIZZ",
+            VALE_CALC=40.014429878745545,
+            VALE_REFE=40.0,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="F",
+            INST=2.0,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIXY",
+            VALE_CALC=-40.07859017940102,
+            VALE_REFE=-40.0,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+FIN()
+#

@@ -5,7 +5,7 @@
  * @file MechanicalLoadDescription.h
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -101,6 +101,8 @@ class MechanicalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _preff;
     /** @brief Carte '.PRESS' */
     ConstantFieldOnCellsTypePtr _press;
+    /** @brief Carte '.FLUX' */
+    ConstantFieldOnCellsTypePtr _flux;
     /** @brief Carte '.ROTAT' */
     ConstantFieldOnCellsTypePtr _rotat;
     /** @brief Carte '.SIGIN' */
@@ -155,6 +157,7 @@ class MechanicalLoadDescription : public DataStructure {
           _pesan( std::make_shared< ConstantFieldOnCellsType >( getName() + ".PESAN", _FEDesc ) ),
           _preff( std::make_shared< ConstantFieldOnCellsType >( getName() + ".PREFF", _FEDesc ) ),
           _press( std::make_shared< ConstantFieldOnCellsType >( getName() + ".PRESS", _FEDesc ) ),
+          _flux( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUX", _FEDesc ) ),
           _rotat( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ROTAT", _FEDesc ) ),
           _sigin( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SIGIN", _FEDesc ) ),
           _siint( std::make_shared< ConstantFieldOnCellsChar8 >( getName() + ".SIINT", _FEDesc ) ),
@@ -214,6 +217,8 @@ class MechanicalLoadDescription : public DataStructure {
             return ( _preff && _preff->exists() );
         } else if ( load_name == "PRESS" ) {
             return ( _press && _press->exists() );
+        } else if ( load_name == "FLUX" ) {
+            return ( _flux && _flux->exists() );
         } else if ( load_name == "ROTAT" ) {
             return ( _rotat && _rotat->exists() );
         } else if ( load_name == "SIGIN" ) {
@@ -274,6 +279,8 @@ class MechanicalLoadDescription : public DataStructure {
             return _preff;
         } else if ( load_name == "PRESS" ) {
             return _press;
+        } else if ( load_name == "FLUX" ) {
+            return _flux;
         } else if ( load_name == "ROTAT" ) {
             return _rotat;
         } else if ( load_name == "SIGIN" ) {
@@ -346,6 +353,7 @@ class MechanicalLoadDescription : public DataStructure {
         _imped->updateValuePointers();
         _pesan->updateValuePointers();
         _press->updateValuePointers();
+        _flux->updateValuePointers();
         _sigin->updateValuePointers();
         _rotat->updateValuePointers();
         _siint->updateValuePointers();
