@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -67,6 +67,11 @@ class FieldCreator(ExecuteCommand):
 
         if mesh is None:
             for comb in force_list(keywords.get("COMB", [])):
+                mesh = comb["CHAM_GD"].getMesh()
+                if mesh:
+                    break
+        if mesh is None:
+            for comb in force_list(keywords.get("ASSE", [])):
                 mesh = comb["CHAM_GD"].getMesh()
                 if mesh:
                     break
