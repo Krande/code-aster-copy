@@ -24,34 +24,25 @@ MAIL = LIRE_MAILLAGE(FORMAT="MED", VERI_MAIL=_F(VERIF="OUI"))
 
 MODMECA = AFFE_MODELE(
     MAILLAGE=MAIL,
-    AFFE=_F(GROUP_MA=("CHARGE", "VIROLE"), PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"),
+    AFFE=_F(GROUP_MA=("CHARGE", "VIROLE"), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
 )
 
 MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, ORIE_PEAU=_F(GROUP_MA_PEAU=("CHARGE")))
 
 
-EL = 4.0e10
+EL = 4.0e11
 ET = 2.1e11
 EN = 2.1e11
-GLT = 0.45e10
-GTN = 0.35e10
+GLT = 0.35e10
+GTN = 0.45e10
 GLN = 0.45e10
-NULT = 0.0142857143
-NULN = 0.0142857143
+NULT = 0.075
+NULN = 0.075
 NUTN = 0.075
 
 ACIER = DEFI_MATERIAU(
     ELAS_ORTH=_F(
-        E_L=EL,
-        E_T=ET,
-        E_N=EN,
-        G_LT=GLT,
-        G_TN=GTN,
-        G_LN=GLN,
-        NU_LT=NULT,
-        NU_LN=NULN,
-        NU_TN=NUTN,
-        #    E_L=EL, E_T=EL, E_N=EL, G_LT=GLT, G_TN=GLT, G_LN=GLT, NU_LT=NULT, NU_LN=NULT, NU_TN=NULT,
+        E_L=EL, E_T=ET, E_N=EN, G_LT=GLT, G_TN=GTN, G_LN=GLN, NU_LT=NULT, NU_LN=NULN, NU_TN=NUTN
     ),
     # ELAS=_F(E=EL, NU=NULT)
 )
@@ -62,7 +53,7 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(GROUP_MA="VIROLE", MATER=ACIER))
 CARAELE = AFFE_CARA_ELEM(MODELE=MODMECA, MASSIF=_F(GROUP_MA="VIROLE", ORIG_AXE=(0.0, 0.0)))
 
 BLOCAGE = AFFE_CHAR_MECA(
-    MODELE=MODMECA, DDL_IMPO=(_F(GROUP_NO="SYME", DY=0.0), _F(GROUP_NO="PM", DX=0.0))
+    MODELE=MODMECA, DDL_IMPO=(_F(GROUP_NO="SYME", DY=0.0), _F(GROUP_NO="SYME2", DX=0.0))
 )
 
 
@@ -79,19 +70,19 @@ ELAS = MECA_STATIQUE(
     EXCIT=(_F(CHARGE=BLOCAGE), _F(CHARGE=PH)),
 )
 
+# Mean radius of the pipe
 R = 5.7
 
-L = 16.0
-
+# Thickness of the pipe
 h = 0.04
 
+# Applied pressure
 P = 15000.0
 
-Nuthetaz = NULT * ET / EL
 Etheta = ET
-Er = EN
-DZMAX = (-(Nuthetaz) * P * R * L) / Etheta / h / 2.0
-DXMAX = P * R**2 / (h * Er)
+
+# Expected radial displacement (analytical)
+DXMAX = P * R**2 / (h * Etheta)
 
 
 TEST_RESU(
@@ -102,8 +93,8 @@ TEST_RESU(
         RESULTAT=ELAS,
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
-        VALE_CALC=5.71369058e-05,
-        VALE_REFE=5.8017857142857149e-05,
+        VALE_CALC=5.753973378736953e-05,
+        VALE_REFE=DXMAX,
         PRECISION=0.02,
     )
 )
@@ -116,8 +107,8 @@ TEST_RESU(
         RESULTAT=ELAS,
         NOM_CHAM="DEPL",
         NOM_CMP="DX",
-        VALE_CALC=5.71369111e-05,
-        VALE_REFE=5.8017857142857149e-05,
+        VALE_CALC=5.7539658708247174e-05,
+        VALE_REFE=DXMAX,
         PRECISION=0.02,
     )
 )
@@ -145,8 +136,8 @@ TEST_RESU(
         RESULTAT=ELAS2,
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
-        VALE_CALC=5.71369090e-05,
-        VALE_REFE=5.8017857142857149e-05,
+        VALE_CALC=5.7539657750380806e-05,
+        VALE_REFE=DXMAX,
         PRECISION=0.02,
     )
 )
@@ -159,8 +150,8 @@ TEST_RESU(
         RESULTAT=ELAS2,
         NOM_CHAM="DEPL",
         NOM_CMP="DX",
-        VALE_CALC=5.71369081e-05,
-        VALE_REFE=5.8017857142857149e-05,
+        VALE_CALC=5.7539735910953967e-05,
+        VALE_REFE=DXMAX,
         PRECISION=0.02,
     )
 )
