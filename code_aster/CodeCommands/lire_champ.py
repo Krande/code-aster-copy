@@ -76,10 +76,8 @@ class FieldReader(ExecuteCommand):
             self._result.build(keywords["MAILLAGE"])
         elif location[:2] == "EL":
             model = keywords.get("MODELE")
-            fed = []
-            if model:
-                fed = model.getFiniteElementDescriptor()
-
+            assert model, "MODELE is required!"
+            fed = model.getFiniteElementDescriptor()
             self._result.build([fed])
 
 
