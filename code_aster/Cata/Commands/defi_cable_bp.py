@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,12 @@ DEFI_CABLE_BP = MACRO(
     CARA_ELEM=SIMP(statut="o", typ=cara_elem),
     GROUP_MA_BETON=SIMP(statut="o", typ=grma, max="**"),
     TYPE_ANCRAGE=SIMP(statut="o", typ="TXM", min=2, max=2, into=("ACTIF", "PASSIF")),
-    TENSION_INIT=SIMP(statut="o", typ="R", val_min=0.0e0),
-    RECUL_ANCRAGE=SIMP(statut="o", typ="R", val_min=0.0e0),
     ADHERENT=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
+    b_donnees_tension=BLOC(
+        condition="""not exists("MODI_CABLE_RUPT")""",
+        TENSION_INIT=SIMP(statut="o", typ="R", val_min=0.0e0),
+        RECUL_ANCRAGE=SIMP(statut="o", typ="R", val_min=0.0e0),
+    ),
     b_adherent=BLOC(
         condition="""(equal_to("ADHERENT", 'OUI'))""",
         regles=(
