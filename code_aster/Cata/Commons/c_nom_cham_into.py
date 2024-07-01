@@ -19,42 +19,63 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 
+from typing import Dict, Tuple, Union
+from enum import Enum
+
 from ..Language.Syntax import tr
 
 
-class NOM_CHAM_INTO:  # COMMUN#
-    """ """
+class Phenomenon(Enum):
+    """Liste tous les phénomènes possibles"""
 
-    def Tous(self):
-        """Tous les champs"""
-        self.all_phenomenes = (
-            "CONTRAINTE",
-            "DEFORMATION",
-            "ENERGIE",
-            "CRITERES",
-            "VARI_INTERNE",
-            "HYDRAULIQUE",
-            "THERMIQUE",
-            "ACOUSTIQUE",
-            "FORCE",
-            "ERREUR",
-            "DEPLACEMENT",
-            "METALLURGIE",
-            "AUTRES",
-            "PROPRIETES",
-        )
-        d = {}
-        d["CONTRAINTE"] = {
+    CONTRAINTE = 1
+    DEFORMATION = 2
+    ENERGIE = 3
+    CRITERES = 4
+    VARI_INTERNE = 5
+    HYDRAULIQUE = 6
+    THERMIQUE = 7
+    ACOUSTIQUE = 8
+    FORCE = 9
+    ERREUR = 10
+    DEPLACEMENT = 11
+    METALLURGIE = 12
+    PROPRIETES = 13
+    AUTRES = 14
+
+    @classmethod
+    def check_value_iterable(cls, phenomena: Tuple["Phenomenon"]) -> None:
+        """Renvoie une erreur si l'itérable en argument a au moins un phénomènes
+        qui n'est pas contenu dans l'énumératio
+
+        Args:
+            phenomena (Tuple[Phenomenon]): Itérable de phénomènes
+
+        Raises:
+            ValueError: Si au moins un phénomène de l'itérable ne correspond pas
+        """
+        for p in phenomena:
+            if not p in Phenomenon:
+                raise ValueError(f"Unrecognized phenomenon: {p}")
+
+
+class NomChamIntoGenerator:
+    """Classe contenant l'information sur les champs et permettant de récupérer
+    les informations sur les champs, et de filtrer les champs.
+
+    nom_cham_into (Dict[str, Dict[str, Tuple[Tuple, Tuple]]]) : Structure
+        contenant toutes les informations relatives aux champs
+
+    nom_cham_to_phenomenon (Dict[str,str]) : Mapping des noms des champs avec
+        les phénomènes associés.
+    """
+
+    nom_cham_into: Dict[Phenomenon, Dict[str, Tuple[Tuple, Tuple]]] = {
+        Phenomenon.CONTRAINTE: {
             "EFGE_ELGA": (("lin", "nonlin", "dyna"), tr("Efforts généralisés aux points de Gauss")),
             "EFGE_ELNO": (
                 ("lin", "nonlin", "dyna"),
                 tr("Efforts généralisés aux noeuds par élément"),
-            ),
-            "EGRU_ELNO": (
-                ("lin", "nonlin", "dyna"),
-                tr(
-                    "Efforts généralisés aux noeuds par élément calculés dans le repère utilisateur"
-                ),
             ),
             "EFGE_NOEU": (("lin", "nonlin", "dyna"), tr("Efforts généralisés aux noeuds")),
             "SIEF_ELGA": (("lin",), tr("Contraintes et efforts aux points de Gauss")),
@@ -87,8 +108,8 @@ class NOM_CHAM_INTO:  # COMMUN#
                 ("lin",),
                 tr("Efforts généralisés à partir des déplacements en linéaire aux points de Gauss"),
             ),
-        }
-        d["DEFORMATION"] = {
+        },
+        Phenomenon.DEFORMATION: {
             "DEGE_ELGA": (
                 ("lin", "nonlin", "dyna"),
                 tr("Déformations généralisées aux points de Gauss"),
@@ -185,8 +206,8 @@ class NOM_CHAM_INTO:  # COMMUN#
                 tr("Déformations logarithmiques aux noeuds par élément"),
             ),
             "EPSL_NOEU": (("lin", "nonlin", "dyna"), tr("Déformations logarithmiques aux noeuds")),
-        }
-        d["ENERGIE"] = {
+        },
+        Phenomenon.ENERGIE: {
             "DISS_ELEM": (("lin", "nonlin", "dyna"), tr("Énergie de dissipation par élément")),
             "DISS_ELGA": (
                 ("lin", "nonlin", "dyna"),
@@ -232,8 +253,8 @@ class NOM_CHAM_INTO:  # COMMUN#
                 ("lin", "nonlin", "dyna"),
                 tr("Incrément de densité d'énergie de déformation totale aux noeuds"),
             ),
-        }
-        d["CRITERES"] = {
+        },
+        Phenomenon.CRITERES: {
             "DERA_ELGA": (
                 ("nonlin", "dyna"),
                 tr("Indicateur local de décharge et de perte de radialité aux points de Gauss"),
@@ -299,19 +320,19 @@ class NOM_CHAM_INTO:  # COMMUN#
                 tr("Contraintes équivalentes aux noeuds par élément"),
             ),
             "SIEQ_NOEU": (("lin", "nonlin", "dyna"), tr("Contraintes équivalentes aux noeuds")),
-        }
-        d["VARI_INTERNE"] = {
+        },
+        Phenomenon.VARI_INTERNE: {
             "VARC_ELGA": (
                 ("lin", "nonlin", "dyna"),
                 tr("Variables de commande aux points de Gauss"),
             ),
             "VARI_ELNO": (("nonlin", "dyna"), tr("Variables internes aux noeuds pas élément")),
             "VARI_NOEU": (("nonlin", "dyna"), tr("Variables internes aux noeuds")),
-        }
-        d["HYDRAULIQUE"] = {
+        },
+        Phenomenon.HYDRAULIQUE: {
             "FLHN_ELGA": (("nonlin", "dyna"), tr("Flux hydrauliques aux points de Gauss"))
-        }
-        d["THERMIQUE"] = {
+        },
+        Phenomenon.THERMIQUE: {
             "TEMP_ELGA": ((), tr("Température aux points de Gauss")),
             "FLUX_ELGA": ((), tr("Flux thermique aux points de Gauss")),
             "FLUX_ELNO": ((), tr("Flux thermique aux noeuds par élément")),
@@ -322,19 +343,19 @@ class NOM_CHAM_INTO:  # COMMUN#
             "SOUR_ELGA": ((), tr("Source de chaleur à partir d'un potentiel électrique")),
             "ETHE_ELEM": ((), tr("Énergie dissipée thermiquement")),
             "HHO_TEMP": ((), tr("Temparature reconstruite aux noeuds pour la modélisation HHO")),
-        }
-        d["ACOUSTIQUE"] = {
+        },
+        Phenomenon.ACOUSTIQUE: {
             "PRAC_ELNO": ((), tr("Pression acoustique aux noeuds par élément")),
             "PRAC_NOEU": ((), tr("Pression acoustique aux noeuds")),
             "PRME_ELNO": ((), tr("Pression aux noeuds par élément pour les éléments FLUIDE")),
             "INTE_ELNO": ((), tr("Intensité acoustique aux noeuds par élément")),
             "INTE_NOEU": ((), tr("Intensité acoustique aux noeuds")),
-        }
-        d["FORCE"] = {
+        },
+        Phenomenon.FORCE: {
             "FORC_NODA": ((), tr("Forces nodales")),
             "REAC_NODA": ((), tr("Réactions nodales")),
-        }
-        d["ERREUR"] = {
+        },
+        Phenomenon.ERREUR: {
             "SIZ1_NOEU": ((), tr("Contraintes lissées de Zhu-Zienkiewicz version 1 aux noeuds")),
             "ERZ1_ELEM": ((), tr("Indicateur d'erreur de Zhu-Zienkiewicz version 1 par élément")),
             "SIZ2_NOEU": ((), tr("Contraintes lissées de Zhu-Zienkiewicz version 2 aux noeuds")),
@@ -377,14 +398,14 @@ class NOM_CHAM_INTO:  # COMMUN#
                 tr("Indicateur d'erreur en résidu en thermique aux noeuds par élément"),
             ),
             "ERTH_NOEU": ((), tr("Indicateur d'erreur en résidu en thermique aux noeuds")),
-        }
-        d["METALLURGIE"] = {
+        },
+        Phenomenon.METALLURGIE: {
             "DURT_ELNO": ((), tr("Dureté aux noeuds par élément")),
             "DURT_NOEU": ((), tr("Dureté aux noeuds")),
             "META_ELNO": ((), tr("Proportion de phases métallurgiques aux noeuds par élément")),
             "META_NOEU": ((), tr("Proportion de phases métallurgiques aux noeuds")),
-        }
-        d["DEPLACEMENT"] = {
+        },
+        Phenomenon.DEPLACEMENT: {
             "ACCE": ((), tr("Accélération aux noeuds")),
             "ACCE_ABSOLU": ((), tr("Accélération absolue aux noeuds")),
             "DEPL": ((), tr("Déplacements aux noeuds")),
@@ -398,8 +419,18 @@ class NOM_CHAM_INTO:  # COMMUN#
             "VARI_ELGA": ((), tr("Variables internes aux points de Gauss")),
             "VITE_ABSOLU": ((), tr("Vitesse absolue aux noeuds")),
             "DEPL_ELGA": ((), tr("Déplacements aux sous-points")),
-        }
-        d["AUTRES"] = {
+        },
+        Phenomenon.PROPRIETES: {
+            "MATE_ELGA": (
+                ("lin", "nonlin", "dyna"),
+                tr("Valeurs des paramètres matériaux élastiques aux points de Gauss"),
+            ),
+            "MATE_ELEM": (
+                ("lin", "nonlin", "dyna"),
+                tr("Valeurs des paramètres matériaux élastiques par élément"),
+            ),
+        },
+        Phenomenon.AUTRES: {
             "COHE_ELEM": (("nonlin", "dyna"), tr("Variables internes cohésives XFEM")),
             "COMPORTEMENT": ((), tr("Carte de comportement mécanique")),
             "COMPORTHER": ((), tr("Carte de comportement thermique")),
@@ -425,133 +456,109 @@ class NOM_CHAM_INTO:  # COMMUN#
             "RESI_RELA_NOEU": ((), tr("Residus relatifs aux noeuds")),
             "SISE_ELNO": ((), tr("Contraintes aux noeuds par sous-élément")),
             "VITE_VENT": ((), tr("Chargement vitesse du vent")),
-        }
-        d["PROPRIETES"] = {
-            "MATE_ELGA": (
-                ("lin", "nonlin", "dyna"),
-                tr("Valeurs des paramètres matériaux élastiques aux points de Gauss"),
-            ),
-            "MATE_ELEM": (
-                ("lin", "nonlin", "dyna"),
-                tr("Valeurs des paramètres matériaux élastiques par élément"),
-            ),
-        }
+            **{
+                f"UT{str(i).zfill(2)}_{typ}": ((), tr(f"Champ utilisateur numéro {i}_{typ}"))
+                for typ in ("ELGA", "ELNO", "ELEM", "NOEU", "CART")
+                for i in range(1, 11)
+            },
+        },
+    }
 
-        for typ in ("ELGA", "ELNO", "ELEM", "NOEU", "CART"):
-            for i in range(1, 11):
-                d["AUTRES"]["UT%02d_%s" % (i, typ)] = (
-                    (),
-                    tr("Champ utilisateur numéro %02d_%s" % (i, typ)),
-                )
-        self.d_all = d
-        return
+    nom_cham_to_phenomenon: Dict[str, str] = {
+        cham: pheno for pheno, cham_data in nom_cham_into.items() for cham in cham_data
+    }
 
-    def CheckPhenom(self):
-        """Vérification de la cohérence entre les phenomènes et les clés"""
-        l_keys = list(self.d_all.keys())
-        l_phen = list(self.all_phenomenes)
-        uniq_keys = set(l_keys)
-        uniq_phen = set(l_phen)
-        if len(l_keys) != len(uniq_keys) or len(l_phen) != len(uniq_phen):
-            for i in uniq_keys:
-                l_keys.remove(i)
-            assert len(l_keys) == 0, "Keys must be unique: %s" % l_keys
-            for i in uniq_phen:
-                l_phen.remove(i)
-            assert len(l_phen) == 0, "Phenomenon must be unique: %s" % l_phen
-        if len(l_keys) > len(l_phen):
-            for i in l_phen:
-                l_keys.remove(i)
-            assert len(l_keys) == 0, "Key %s not listed in the list of phenomenons" % l_keys
-        if len(l_keys) < len(l_phen):
-            for i in l_keys:
-                l_phen.remove(i)
-            assert len(l_phen) == 0, "Phenomenon %s not known as a key" % l_phen
+    @classmethod
+    def filter(
+        cls,
+        phenomena: Tuple[Phenomenon],
+        category: Union[str, None],
+        type_cham: Union[Tuple[str], None],
+    ) -> Tuple[str]:
+        """Effectue un filtre de tous les champs possibles en fonction des
+        arguments fournis.
 
-    def CheckField(self):
-        """Vérification des doublons dans les noms des champs"""
-        l_cham = []
-        for phen in self.all_phenomenes:
-            l_cham.extend(list(self.d_all[phen].keys()))
-        uniq = set(l_cham)
-        if len(l_cham) != len(uniq):
-            for i in uniq:
-                l_cham.remove(i)
-            assert len(l_cham) == 0, "Field names must be unique: %s" % l_cham
+        Args:
+            phenomena (Tuple[Phenomenon]): Phénomènes qui seront retenus dans le résultat.
+            category (str | None): Catégorie surlaquelle il faut faire le filtre.
+                Si elle vaut None, aucun filtre n'est fait.
+            type_cham (Tuple[str] | None): Type de champs surlesquels il faut
+                faire le filtre. Si la séquence est comprise dans le nom du
+                champ, le champ est retenu. Si vaut None, aucun filtre n'est fait.
 
-    def InfoChamps(self, l_nom_cham):
-        """on renvoie juste les informations relatives au(x) champ(s)"""
-        d_cham = {}.fromkeys(l_nom_cham, ("", "", ""))
-        for nom_cham in l_nom_cham:
-            for phen in self.all_phenomenes:
-                for cham in list(self.d_all[phen].keys()):
-                    if nom_cham == cham:
-                        cate = self.d_all[phen][cham][0]
-                        helptxt = self.d_all[phen][cham][1]
-                        d_cham[nom_cham] = (phen, cate, helptxt)
-        return d_cham
-
-    def Filtre(self, *l_typ_cham, **kwargs):
-        """Check des doublons"""
-        phenomene = kwargs.get("phenomene")
-        categorie = kwargs.get("categorie")
-        # Construction de la liste des champs en tenant compte des eventuels filtre (phenomene, categorie, l_typ_cham)
-        # ------------------------------------------------------------------------------------------------------------
-        l_cham = []
-        # Filtre par phenomene
-        if phenomene is None:
-            l_phen = self.all_phenomenes
-        else:
-            l_phen = [phenomene]
-        for phen in l_phen:
-            # parcours de tous les champs
-            for cham in list(self.d_all[phen].keys()):
-                isok = True
-                # Filtre par categorie
-                if categorie is not None:
-                    lcat = self.d_all[phen][cham][0]
-                    if type(lcat) not in (tuple, list):
-                        lcat = [lcat]
-                    if categorie in lcat:
-                        isok = True
-                    else:
-                        isok = False
-                if isok:
-                    l_cham.append(cham)
-        l_cham.sort()
-        # Filtre sur les types de champs
-        if len(l_typ_cham) == 0:
-            return tuple(l_cham)
-        l_ncham = []
-        for typ in l_typ_cham:
-            for cham in l_cham:
-                if typ in cham.split("_"):
-                    l_ncham.append(cham)
-        return tuple(l_ncham)
-
-    def __init__(self):
-        self.Tous()
-        # check les doublons (fonctionnalite developpeur permettant de detecter les doublons dans les champs)
-        if 1:
-            self.CheckPhenom()
-            self.CheckField()
-
-    def __call__(self, *l_typ_cham, **kwargs):
-        """Cette fonction retourne la liste des "into" possibles pour le mot-clé NOM_CHAM.
-        C'est à dire les noms de champs des SD RESULTAT (DATA de la routine RSCRSD).
-        l_typ_cham : rien ou un ou plusieurs parmi 'ELGA', 'ELNO', 'NOEU', 'ELEM'.
-        kwargs : un dictionnaire de mot-cles, les cles parmis :
-          'phenomene'  : retourne la liste des champs en filtrant par le phenomene (eventuellement mixe avec le suivant)
-          'categorie'  : retourne la liste des champs en filtrant par le phenomene (eventuellement mixe avec le precedent)
-          'l_nom_cham' : (une liste ou un string) retourne uniqement les informations relatives au champ precise en argument
+        Returns:
+            Tuple[str]: Ensemble des champs qui correspondent à tous les filtres
         """
-        l_nom_cham = kwargs.get("l_nom_cham")
-        if type(l_nom_cham) == str:
-            l_nom_cham = [l_nom_cham]
-        if l_nom_cham:
-            return self.InfoChamps(l_nom_cham)
-        else:
-            return self.Filtre(*l_typ_cham, **kwargs)
+
+        # Filtre sur les phénomènes et les catégories
+        l_cham = []
+        for phen in phenomena:
+            for cham in cls.nom_cham_into.get(phen):
+                if not category or (category in cls.nom_cham_into.get(phen).get(cham)[0]):
+                    l_cham.append(cham)
+
+        l_cham = tuple(sorted(l_cham))
+
+        # Filtre sur les type de champs
+        if not type_cham:
+            return l_cham
+
+        return tuple(
+            cham for cham in l_cham if any([t_cham in cham.split("_") for t_cham in type_cham])
+        )
 
 
-C_NOM_CHAM_INTO = NOM_CHAM_INTO()
+def C_NOM_CHAM_INTO(
+    phenomene: Union[Phenomenon, Tuple[Phenomenon]] = None,
+    categorie: str = None,
+    type_cham: Union[str, Tuple[str]] = None,
+    additional_fields: Tuple[str] = None,
+) -> Tuple[str]:
+    """Renvoie un iterable de tous les "into" possibles pour le mot-clé NOM_CHAM
+    C'est-à-dire les noms des champs des SD RESULTAT (DATA de la routine RSCRSD).
+    Il est possible de filtrer les résultats.
+
+    Args:
+        phenomene (Phenomenon | Tuple[Phenomenon], optional): Phénomènes surlequels
+        il faut faire un filtre. Si None est passé ou que la liste est vide,
+        aucun filtre n'est fait. Defaults to None.
+
+        categorie (str, optional): Une catégorie surlaquelle il faut faire un filtre.
+        Si None est passé, aucun filtre n'est fait. Defaults to None.
+
+        type_cham (Tuple[str], optional): Type de champs surlesquels il faut
+        faire le filtre. Si la séquence est comprise dans le nom du champ, le
+        champ est retenu. Si vaut None, aucun filtre n'est fait. Defaults to None.
+
+        additional_fields (Tuple[str], optional): Champs supplémentaires à fournir
+        dans le "into". Si None est passé, aucun champ n'est ajouté. Defaults to None.
+
+    Returns:
+        Tuple[str] | Dict[str, Tuple[str, Tuple[str], str]]:
+            Résultat de la fonction en fonction du mode de fonctionnement demandé
+    """
+
+    # --------- Gestion / Vérification des arguments ----------------------------
+
+    # On vérifie que les phénomènes sont cohérents. Si aucun n'est donné, on
+    #   les prends tous.
+    if phenomene:
+        _phenomena = (phenomene,) if isinstance(phenomene, Phenomenon) else phenomene
+        Phenomenon.check_value_iterable(phenomena=_phenomena)
+    else:
+        _phenomena = tuple(Phenomenon)
+
+    # Cast de type_cham dans un tuple
+    _type_cham = (type_cham,) if isinstance(type_cham, str) else type_cham
+
+    # ---------------------------- Filtrer les champs  -------------------------
+
+    filtered_cham = NomChamIntoGenerator.filter(
+        phenomena=_phenomena, category=categorie, type_cham=_type_cham
+    )
+
+    if not additional_fields:
+        return filtered_cham
+
+    # Renvoie les champs filtrés + les champs additionels s'ils existent
+    return tuple(set(filtered_cham + tuple(nom_cham for nom_cham in additional_fields)))

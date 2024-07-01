@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de contraintes et efforts generalises"),
-            into=C_NOM_CHAM_INTO(phenomene="CONTRAINTE", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.CONTRAINTE, categorie="lin"),
         ),
         DEFORMATION=SIMP(
             statut="f",
@@ -121,7 +121,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de deformations"),
-            into=C_NOM_CHAM_INTO(phenomene="DEFORMATION", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.DEFORMATION, categorie="lin"),
         ),
         ENERGIE=SIMP(
             statut="f",
@@ -129,7 +129,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul d'energies"),
-            into=C_NOM_CHAM_INTO(phenomene="ENERGIE", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.ENERGIE, categorie="lin"),
         ),
         CRITERES=SIMP(
             statut="f",
@@ -137,7 +137,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de criteres"),
-            into=C_NOM_CHAM_INTO(phenomene="CRITERES", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.CRITERES, categorie="lin"),
         ),
         VARI_INTERNE=SIMP(
             statut="f",
@@ -145,7 +145,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de variables internes"),
-            into=C_NOM_CHAM_INTO(phenomene="VARI_INTERNE", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.VARI_INTERNE, categorie="lin"),
         ),
         PROPRIETES=SIMP(
             statut="f",
@@ -153,7 +153,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de propriétés"),
-            into=C_NOM_CHAM_INTO(phenomene="PROPRIETES", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.PROPRIETES, categorie="lin"),
         ),
         FORCE=SIMP(
             statut="f",
@@ -161,7 +161,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour des forces nodales et des reactions nodales"),
-            into=C_NOM_CHAM_INTO(phenomene="FORCE"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.FORCE),
         ),
         EXCIT=FACT(
             statut="f",
@@ -226,7 +226,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de contraintes et efforts generalises"),
-            into=C_NOM_CHAM_INTO(phenomene="CONTRAINTE", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.CONTRAINTE, categorie="lin"),
         ),
         DEFORMATION=SIMP(
             statut="f",
@@ -234,7 +234,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de deformations"),
-            into=C_NOM_CHAM_INTO(phenomene="DEFORMATION", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.DEFORMATION, categorie="lin"),
         ),
         ENERGIE=SIMP(
             statut="f",
@@ -242,7 +242,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul d'energies"),
-            into=C_NOM_CHAM_INTO(phenomene="ENERGIE", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.ENERGIE, categorie="lin"),
         ),
         CRITERES=SIMP(
             statut="f",
@@ -250,7 +250,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de criteres"),
-            into=C_NOM_CHAM_INTO(phenomene="CRITERES", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.CRITERES, categorie="lin"),
         ),
         VARI_INTERNE=SIMP(
             statut="f",
@@ -258,7 +258,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de variables internes"),
-            into=C_NOM_CHAM_INTO(phenomene="VARI_INTERNE", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.VARI_INTERNE, categorie="lin"),
         ),
         PROPRIETES=SIMP(
             statut="f",
@@ -266,7 +266,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de propriétés"),
-            into=C_NOM_CHAM_INTO(phenomene="PROPRIETES", categorie="lin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.PROPRIETES, categorie="lin"),
         ),
         ACOUSTIQUE=SIMP(
             statut="f",
@@ -274,7 +274,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de champs en acoustique"),
-            into=C_NOM_CHAM_INTO(phenomene="ACOUSTIQUE"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.ACOUSTIQUE),
         ),
         FORCE=SIMP(
             statut="f",
@@ -282,7 +282,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour des forces nodales et des reactions nodales"),
-            into=C_NOM_CHAM_INTO(phenomene="FORCE"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.FORCE),
         ),
         EXCIT=FACT(
             statut="f",
@@ -361,7 +361,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de contraintes et efforts generalises"),
-            into=C_NOM_CHAM_INTO(phenomene="CONTRAINTE", categorie="nonlin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.CONTRAINTE, categorie="nonlin"),
         ),
         DEFORMATION=SIMP(
             statut="f",
@@ -369,7 +369,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de deformations"),
-            into=C_NOM_CHAM_INTO(phenomene="DEFORMATION", categorie="nonlin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.DEFORMATION, categorie="nonlin"),
         ),
         ENERGIE=SIMP(
             statut="f",
@@ -377,7 +377,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul d'energies"),
-            into=C_NOM_CHAM_INTO(phenomene="ENERGIE", categorie="nonlin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.ENERGIE, categorie="nonlin"),
         ),
         CRITERES=SIMP(
             statut="f",
@@ -385,7 +385,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de criteres"),
-            into=C_NOM_CHAM_INTO(phenomene="CRITERES", categorie="nonlin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.CRITERES, categorie="nonlin"),
         ),
         VARI_INTERNE=SIMP(
             statut="f",
@@ -393,7 +393,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de variables internes"),
-            into=C_NOM_CHAM_INTO(phenomene="VARI_INTERNE", categorie="nonlin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.VARI_INTERNE, categorie="nonlin"),
         ),
         PROPRIETES=SIMP(
             statut="f",
@@ -401,7 +401,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de propriétés"),
-            into=C_NOM_CHAM_INTO(phenomene="PROPRIETES", categorie="nonlin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.PROPRIETES, categorie="nonlin"),
         ),
         HYDRAULIQUE=SIMP(
             statut="f",
@@ -409,7 +409,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de flux hydraulique"),
-            into=C_NOM_CHAM_INTO(phenomene="HYDRAULIQUE", categorie="nonlin"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.HYDRAULIQUE, categorie="nonlin"),
         ),
         FORCE=SIMP(
             statut="f",
@@ -417,7 +417,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour des forces nodales et des reactions nodales"),
-            into=C_NOM_CHAM_INTO(phenomene="FORCE"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.FORCE),
         ),
         EXCIT=FACT(
             statut="f",
@@ -475,7 +475,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de champs en thermique"),
-            into=C_NOM_CHAM_INTO(phenomene="THERMIQUE"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.THERMIQUE),
         ),
         EXCIT=FACT(
             statut="f",
@@ -528,7 +528,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de champs en acoustique"),
-            into=C_NOM_CHAM_INTO(phenomene="ACOUSTIQUE"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.ACOUSTIQUE),
         ),
         EXCIT=FACT(
             statut="f",

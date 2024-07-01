@@ -89,7 +89,7 @@ from ..Commons.c_comportement import compat_syntax
 
 
 def l_nom_cham_pas_elga():
-    return list(set(C_NOM_CHAM_INTO()) - set(C_NOM_CHAM_INTO("ELGA")))
+    return list(set(C_NOM_CHAM_INTO()) - set(C_NOM_CHAM_INTO(type_cham="ELGA")))
 
 
 LIRE_RESU = OPER(
