@@ -21,8 +21,8 @@
 # Here, it's run in slave mode to enable to catch TimeLimitError.
 
 import code_aster
-from code_aster import TimeLimitError
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Utilities import ExecutionParameter
 from run_aster.config import CFG
 
