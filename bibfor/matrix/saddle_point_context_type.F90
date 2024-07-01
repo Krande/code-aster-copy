@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -228,7 +228,7 @@ contains
         !
         ! Local variables
         !
-        Mat, dimension(2) :: submat
+        Mat, dimension(3) :: submat
         PetscInt :: nsub
         !
         ASSERT((ctxt%data_model == distributed_data) .or. (ctxt%data_model == replicated_data))
@@ -244,7 +244,7 @@ contains
             nsub = to_petsc_int(1)
             call MatCreateSubMatrices(a_mat, nsub, &
                                       ctxt%is_phys, ctxt%is_phys, MAT_INITIAL_MATRIX, &
-                                      submat, ierr)
+                                      submat(1), ierr)
             ASSERT(ierr == 0)
             call MatConvert(submat(1), MATSAME, MAT_INITIAL_MATRIX, &
                             ctxt%k_mat, ierr)
@@ -264,9 +264,9 @@ contains
             nsub = to_petsc_int(1)
             call MatCreateSubMatrices(ak_mat, nsub, &
                                       ctxt%is_lag1, ctxt%is_phys, MAT_INITIAL_MATRIX, &
-                                      submat, ierr)
+                                      submat(2), ierr)
             ASSERT(ierr == 0)
-            call MatConvert(submat(1), MATSAME, MAT_INITIAL_MATRIX, &
+            call MatConvert(submat(2), MATSAME, MAT_INITIAL_MATRIX, &
                             ctxt%c_mat, ierr)
             ASSERT(ierr == 0)
         end if
@@ -279,9 +279,9 @@ contains
             nsub = to_petsc_int(1)
             call MatCreateSubMatrices(ak_mat, nsub, &
                                       ctxt%is_lag2, ctxt%is_phys, MAT_INITIAL_MATRIX, &
-                                      submat, ierr)
+                                      submat(3), ierr)
             ASSERT(ierr == 0)
-            call MatConvert(submat(1), MATSAME, MAT_INITIAL_MATRIX, &
+            call MatConvert(submat(3), MATSAME, MAT_INITIAL_MATRIX, &
                             ctxt%d_mat, ierr)
             ASSERT(ierr == 0)
         end if
@@ -289,7 +289,9 @@ contains
         if (ctxt%data_model == replicated_data) then
             call MatDestroy(submat(1), ierr)
             ASSERT(ierr == 0)
-            call MatDestroy(submat(1), ierr)
+            call MatDestroy(submat(2), ierr)
+            ASSERT(ierr == 0)
+            call MatDestroy(submat(3), ierr)
             ASSERT(ierr == 0)
         end if
         ctxt%data_setup = .true.
