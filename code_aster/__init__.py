@@ -40,7 +40,6 @@ For convenience the objects are direcly available here:
     >>> import code_aster
     >>> mymesh = code_aster.Mesh()
 
-
 Here is the diagram of the package organization:
 
 .. image:: ../../img/diagr_code_aster.png
@@ -52,9 +51,8 @@ Here is the diagram of the package organization:
 #   diagr_import --pkg --grp -g doc/img/diagr_code_aster.png \
 #       code_aster/**/*.py
 
-# discourage import *
-__all__ = []
-
+# importing cmath may raise a fpe, maybe due to mkl...
+import cmath
 import os
 
 try:
@@ -87,3 +85,5 @@ except ImportError:
     # So, the exception is only raised during the building process.
     if os.environ.get("WAFLOCK"):
         raise
+
+del cmath, os
