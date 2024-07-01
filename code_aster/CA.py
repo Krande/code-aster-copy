@@ -23,6 +23,7 @@
 This modules provides a compatibility module to emulate
 """
 
+from functools import partial
 from .Commands import *
 from .Commands.debut import init
 from .Commands.fin import FIN as close
@@ -43,5 +44,7 @@ from .Utilities.version import version_info
 
 # may happen when building the doc
 __version__ = get_version() if version_info else ""
+
+exit = partial(close, exit=True)
 
 del get_version, version_info
