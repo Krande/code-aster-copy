@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 MAILLA1 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 #
 MAILLA2 = CREA_MAILLAGE(MAILLAGE=MAILLA1, CREA_POI1=_F(NOM_GROUP_MA="POI1", GROUP_NO="Q"))
+
+MAILLA2 = MODI_MAILLAGE(
+    reuse=MAILLA2,
+    MAILLAGE=MAILLA2,
+    ORIE_PEAU=_F(GROUP_MA_PEAU="IFLUSTRU", GROUP_MA_INTERNE=("FLUID1", "FLUID2", "FACELATE")),
+)
+
 #
 # -----------------------------------------------------------------------------------
 #
