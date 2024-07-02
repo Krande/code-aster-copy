@@ -50,7 +50,7 @@ The lower level user interface is used as:
     >>> mesh.readMedFile(...)
 
 See :py:mod:`code_aster.rc` object to adjust the initialization parameters.
-        
+
 Here is the diagram of the package organization:
 
 .. image:: ../../img/diagr_code_aster.png
@@ -62,6 +62,8 @@ Here is the diagram of the package organization:
 #   diagr_import --pkg --grp -g doc/img/diagr_code_aster.png \
 #       code_aster/**/*.py
 
+# importing cmath may raise a fpe, maybe due to mkl...
+import cmath
 import os
 
 try:
@@ -85,5 +87,4 @@ except ImportError:
     if os.environ.get("WAFLOCK"):
         raise
 
-
-del os
+del cmath, os

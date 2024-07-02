@@ -69,11 +69,14 @@ class ExecutionStarter:
     params = _is_initialized = None
 
     @classmethod
-    def init(cls, argv=None, fcomm=0):
+    def init(cls, set_args_callback, argv=None, fcomm=0):
         """Initialization of class attributes.
 
         Attributes:
-            argv (list[str]): List of command line arguments.
+            set_args_callback (func): Callback to assign parameters values after
+                parsing arguments (but before the libaster initialization).
+            argv (list[str], None): List of command line arguments
+                (defaults to sys.argv).
             fcomm (int, optional): Id of the MPI communicator.
 
         Returns:
@@ -84,6 +87,8 @@ class ExecutionStarter:
             return False
         params = cls.params = ExecutionParameter()
         params.parse_args(argv)
+        if set_args_callback:
+            set_args_callback(params)
         params.register_global_object("catalc", catalc)
         params.register_global_object("logical_unit", LogicalUnitFile)
         params.register_global_object("syntax", CommandSyntax)
@@ -112,7 +117,24 @@ class Starter(ExecuteCommand):
         Arguments:
             keywords (dict): User keywords
         """
-        init_args = keywords.pop("init_args", ())
+        init_args = list(keywords.pop("init_args", ()))
+        if init_args:
+            pass_cbck = init_args[0]
+        else:
+            pass_cbck = None
+            init_args = [None]
+
+        def callback(params):
+            if pass_cbck:
+                pass_cbck(params)
+            mem = params.get_option("memory")
+            if mem > 1024.0:
+                kwmem = keywords.get("RESERVE_MEMOIRE", {})
+                mem -= kwmem.get("VALE", mem * kwmem.get("POURCENTAGE", 0.1))
+                params.set_option("memory", mem)
+                logger.info(f"setting '--memory' value to {mem:.2f} MB (keyword RESERVE_MEMOIRE)")
+
+        init_args[0] = callback
         if not ExecutionStarter.init(*init_args):
             return
 
@@ -254,18 +276,22 @@ def init(*argv, **kwargs):
         MPI.ASTER_COMM_WORLD = comm
     else:
         fcomm = 0
+    debug = kwargs.pop("debug", False)
+    port = kwargs.pop("debugpy", None)
 
-    if kwargs.pop("debug", False):
-        ExecutionParameter().enable(Options.Debug)
+    def callback(params):
+        """Set parameters after parsing arguments"""
+        if debug:
+            params.enable(Options.Debug)
+        if port and HAS_DEBUGPY:
+            # add 10 hours for debugging
+            tpmax = params.get_option("tpmax")
+            params.set_option("tpmax", tpmax + 36000)
 
-    if kwargs.get("debugpy") and HAS_DEBUGPY:
-        debugpy.listen(("localhost", kwargs["debugpy"]))
-        print("Waiting for debugger attach")
+    if port and HAS_DEBUGPY:
+        debugpy.listen(("localhost", port))
+        logger.info("Waiting for debugger attach")
         debugpy.wait_for_client()
         debugpy.breakpoint()
-        # add 10 hours for debugging
-        tpmax = ExecutionParameter().get_option("tpmax")
-        ExecutionParameter().set_option("tpmax", tpmax + 36000)
-    kwargs.pop("debugpy", None)
 
-    Starter.run("init", init_args=(argv, fcomm), **kwargs)
+    Starter.run("init", init_args=(callback, argv, fcomm), **kwargs)
