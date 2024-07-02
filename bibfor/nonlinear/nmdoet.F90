@@ -303,7 +303,7 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
             l_read = ds_inout%field(i_field)%init_type .eq. 'READ'
             if ((field_type .eq. 'SIEF_ELGA') .and. (.not. l_stin_evol)) then
                 if (l_acti .and. l_read) then
-                    call utmess('F', 'MECANONLINE4_50')
+                    call utmess('A', 'MECANONLINE4_50')
                 end if
             end if
         end do

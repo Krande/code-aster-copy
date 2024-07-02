@@ -68,8 +68,10 @@ cata_msg = {
     50: _(
         """
 La spécification d'un champ de contrainte initial (via le mot-clé SIGM) 
-dans le cas d'un schéma multi-pas n'est pas autorisée.
-Il est nécessaire de spécifier un état initial via le mot-clé EVOL_NOLI.
+dans le cas d'un schéma multi-pas est fortement déconseillée. En effet, 
+l'accélération initiale sera calculée sans tenir compte de ce champ de contrainte 
+initial, ce qui peut conduire à des résultats faux ! 
+Il est donc recommandé de spécifier un état initial via le mot-clé EVOL_NOLI.
 """
     ),
 }
