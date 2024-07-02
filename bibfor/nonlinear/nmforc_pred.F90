@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,6 @@ subroutine nmforc_pred(list_func_acti, &
     character(len=19) :: dispCurr, dispPrev
     real(kind=8) :: timePrev, timeCurr
     aster_logical :: l_dyna, l_impe, l_mstp, lDampModal, lDampMatrix, lSuperElement
-    real(kind=8), pointer :: vale_cnhyst(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

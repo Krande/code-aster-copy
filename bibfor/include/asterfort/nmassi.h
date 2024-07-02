@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, hval_veasse, cndonn)
+    subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, &
+                      hval_incr, hval_veasse, cndonn)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
         integer, intent(in) :: list_func_acti(*)

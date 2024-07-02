@@ -42,41 +42,40 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
 #include "asterfort/nonlinDSVectCombAddHat.h"
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/nonlinDSVectCombAddAny.h"
-    !
+!
     integer, intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: sddyna, hval_incr(*), hval_veasse(*)
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: cndonn
-    !
-    ! --------------------------------------------------------------------------------------------------
-    !
-    ! MECA_NON_LINE - Algorithm
-    !
-    ! Evaluate second member for initial acceleration
-    !
-    ! --------------------------------------------------------------------------------------------------
-    !
-    ! In  list_func_acti   : list of active functionnalities
-    ! In  sddyna           : datastructure for dynamic
-    ! In  nlDynaDamping    : damping parameters
-    ! In  hval_incr        : hat-variable for incremental values fields
-    ! In  hval_veasse      : hat-variable for vectors (nodal fields)
-    ! In  ds_system        : datastructure for non-linear system management
-    ! In  cndonn           : name of nodal field for "given" forces
-    !
-    ! --------------------------------------------------------------------------------------------------
-    !
+!
+! --------------------------------------------------------------------------------------------------
+!
+! MECA_NON_LINE - Algorithm
+!
+! Evaluate second member for initial acceleration
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  list_func_acti   : list of active functionnalities
+! In  sddyna           : datastructure for dynamic
+! In  nlDynaDamping    : damping parameters
+! In  hval_incr        : hat-variable for incremental values fields
+! In  hval_veasse      : hat-variable for vectors (nodal fields)
+! In  ds_system        : datastructure for non-linear system management
+! In  cndonn           : name of nodal field for "given" forces
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: ifm, niv
     character(len=19) :: cnffdo, cndfdo, cnfvdo, olhyst, cnhyst
     aster_logical :: l_wave
     aster_logical :: lDampMatrix
     aster_logical :: l_mstp
     type(NL_DS_VectComb) :: ds_vectcomb
-    real(kind=8), pointer :: vale_cnhyst(:) => null()
-    !
-    ! --------------------------------------------------------------------------------------------------
-    !
+!
+! --------------------------------------------------------------------------------------------------
+!
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_17')
