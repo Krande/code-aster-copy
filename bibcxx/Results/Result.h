@@ -388,13 +388,16 @@ class Result : public DataStructure, public ListOfTables {
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
     FieldOnCellsRealPtr getFieldOnCellsReal( const std::string name,
-                                             const ASTERINTEGER storageIndex ) const;
+                                             const ASTERINTEGER storageIndex,
+                                             const bool updatePtr = true ) const;
 
     FieldOnCellsComplexPtr getFieldOnCellsComplex( const std::string name,
-                                                   const ASTERINTEGER storageIndex ) const;
+                                                   const ASTERINTEGER storageIndex,
+                                                   const bool updatePtr = true ) const;
 
     FieldOnCellsLongPtr getFieldOnCellsLong( const std::string name,
-                                             const ASTERINTEGER storageIndex ) const;
+                                             const ASTERINTEGER storageIndex,
+                                             const bool updatePtr = true ) const;
 
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
@@ -402,11 +405,13 @@ class Result : public DataStructure, public ListOfTables {
      * @param storageIndex numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
-    ConstantFieldOnCellsChar16Ptr
-    getConstantFieldOnCellsChar16( const std::string name, const ASTERINTEGER storageIndex ) const;
+    ConstantFieldOnCellsChar16Ptr getConstantFieldOnCellsChar16( const std::string name,
+                                                                 const ASTERINTEGER storageIndex,
+                                                                 const bool updatePtr ) const;
 
-    ConstantFieldOnCellsRealPtr
-    getConstantFieldOnCellsReal( const std::string name, const ASTERINTEGER storageIndex ) const;
+    ConstantFieldOnCellsRealPtr getConstantFieldOnCellsReal( const std::string name,
+                                                             const ASTERINTEGER storageIndex,
+                                                             const bool updatePtr ) const;
 
     /**
      * @brief Ajouter un champ par éléments réel à partir de son nom et de son numéro d'ordre
@@ -482,10 +487,12 @@ class Result : public DataStructure, public ListOfTables {
      * @return FieldOnNodesRealPtr pointant vers le champ
      */
     FieldOnNodesRealPtr getFieldOnNodesReal( const std::string name,
-                                             const ASTERINTEGER storageIndex ) const;
+                                             const ASTERINTEGER storageIndex,
+                                             const bool updatePtr = true ) const;
 
     FieldOnNodesComplexPtr getFieldOnNodesComplex( const std::string name,
-                                                   const ASTERINTEGER storageIndex ) const;
+                                                   const ASTERINTEGER storageIndex,
+                                                   const bool updatePtr = true ) const;
 
     /**
      * @brief Ajouter un champ aux noeuds réel à partir de son nom et de son numéro d'ordre

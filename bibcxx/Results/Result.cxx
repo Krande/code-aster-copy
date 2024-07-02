@@ -422,41 +422,49 @@ ASTERINTEGER Result::getFirstIndex() const {
 };
 
 FieldOnCellsRealPtr Result::getFieldOnCellsReal( const std::string name,
-                                                 const ASTERINTEGER storageIndex ) const {
+                                                 const ASTERINTEGER storageIndex,
+                                                 const bool updatePtr ) const {
     FieldOnCellsRealPtr result = _dictOfMapOfFieldOnCellsReal.at( name ).at( storageIndex );
-    result->updateValuePointers();
+    if ( updatePtr )
+        result->updateValuePointers();
     return result;
 };
 
 FieldOnCellsComplexPtr Result::getFieldOnCellsComplex( const std::string name,
-                                                       const ASTERINTEGER storageIndex ) const {
+                                                       const ASTERINTEGER storageIndex,
+                                                       const bool updatePtr ) const {
     FieldOnCellsComplexPtr result = _dictOfMapOfFieldOnCellsComplex.at( name ).at( storageIndex );
-    result->updateValuePointers();
+    if ( updatePtr )
+        result->updateValuePointers();
     return result;
 };
 
 FieldOnCellsLongPtr Result::getFieldOnCellsLong( const std::string name,
-                                                 const ASTERINTEGER storageIndex ) const {
+                                                 const ASTERINTEGER storageIndex,
+                                                 const bool updatePtr ) const {
     FieldOnCellsLongPtr result = _dictOfMapOfFieldOnCellsLong.at( name ).at( storageIndex );
-    result->updateValuePointers();
+    if ( updatePtr )
+        result->updateValuePointers();
     return result;
 };
 
 ConstantFieldOnCellsChar16Ptr
-Result::getConstantFieldOnCellsChar16( const std::string name,
-                                       const ASTERINTEGER storageIndex ) const {
+Result::getConstantFieldOnCellsChar16( const std::string name, const ASTERINTEGER storageIndex,
+                                       const bool updatePtr ) const {
     ConstantFieldOnCellsChar16Ptr result =
         _dictOfMapOfConstantFieldOnCellsChar16.at( name ).at( storageIndex );
-    result->updateValuePointers();
+    if ( updatePtr )
+        result->updateValuePointers();
     return result;
 };
 
-ConstantFieldOnCellsRealPtr
-Result::getConstantFieldOnCellsReal( const std::string name,
-                                     const ASTERINTEGER storageIndex ) const {
+ConstantFieldOnCellsRealPtr Result::getConstantFieldOnCellsReal( const std::string name,
+                                                                 const ASTERINTEGER storageIndex,
+                                                                 const bool updatePtr ) const {
     ConstantFieldOnCellsRealPtr result =
         _dictOfMapOfConstantFieldOnCellsReal.at( name ).at( storageIndex );
-    result->updateValuePointers();
+    if ( updatePtr )
+        result->updateValuePointers();
     return result;
 };
 
@@ -644,17 +652,21 @@ VectorString Result::getGeneralizedVectorComplexNames() const {
 };
 
 FieldOnNodesRealPtr Result::getFieldOnNodesReal( const std::string name,
-                                                 const ASTERINTEGER storageIndex ) const {
+                                                 const ASTERINTEGER storageIndex,
+                                                 const bool updatePtr ) const {
     FieldOnNodesRealPtr result = _dictOfMapOfFieldOnNodesReal.at( name ).at( storageIndex );
-    result->updateValuePointers();
+    if ( updatePtr )
+        result->updateValuePointers();
     return result;
 };
 
 FieldOnNodesComplexPtr Result::getFieldOnNodesComplex( const std::string name,
-                                                       const ASTERINTEGER storageIndex ) const {
+                                                       const ASTERINTEGER storageIndex,
+                                                       const bool updatePtr ) const {
 
     FieldOnNodesComplexPtr result = _dictOfMapOfFieldOnNodesComplex.at( name ).at( storageIndex );
-    result->updateValuePointers();
+    if ( updatePtr )
+        result->updateValuePointers();
     return result;
 };
 
