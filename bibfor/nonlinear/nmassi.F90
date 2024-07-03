@@ -70,7 +70,7 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
     integer :: ifm, niv
     character(len=19) :: cnffdo, cndfdo, cnfvdo, olhyst, cnhyst
     aster_logical :: l_wave
-    aster_logical :: lDampMatrix
+    aster_logical :: lDampMatrix, lElemDampFromUser
     aster_logical :: l_mstp
     type(NL_DS_VectComb) :: ds_vectcomb
 !
@@ -84,6 +84,7 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
     ! - Active functionnalities
     !
     lDampMatrix = nlDynaDamping%hasMatrDamp
+    lElemDampFromUser = nlDynaDamping%lElemDampFromUser
     l_wave = ndynlo(sddyna, 'ONDE_PLANE')
     if (l_wave) then
         call utmess('A', 'MECANONLINE_23')
@@ -115,14 +116,18 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
     ! - Compute force induced by damping (C \cdot \dot{u}_{0})
     !
     if (lDampMatrix) then
-        call nmchex(hval_veasse, 'VEASSE', 'CNHYST', cnhyst)
-        call compViteForce(nlDynaDamping, hval_incr, 'VITMOI', cnhyst)
-        call nonlinDSVectCombAddAny(cnhyst, -1.d0, ds_vectcomb)
+        if (lElemDampFromUser) then
+            call utmess('I', 'MECANONLINE_80')
+        else
+            call nmchex(hval_veasse, 'VEASSE', 'CNHYST', cnhyst)
+            call compViteForce(nlDynaDamping, hval_incr, 'VITMOI', cnhyst)
+            call nonlinDSVectCombAddAny(cnhyst, -1.d0, ds_vectcomb)
 
-        ! Save second member for multi-step methods
-        if (l_mstp) then
-            call ndynkk(sddyna, 'OLDP_CNHYST', olhyst)
-            call copisd('CHAMP_GD', 'V', cnhyst, olhyst)
+            ! Save second member for multi-step methods
+            if (l_mstp) then
+                call ndynkk(sddyna, 'OLDP_CNHYST', olhyst)
+                call copisd('CHAMP_GD', 'V', cnhyst, olhyst)
+            end if
         end if
     end if
     !
