@@ -71,10 +71,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine dampGetParameters(model, materialField, caraElem, &
                                  nlDynaDamping)
-! - Parameters
+        ! - Parameters
         character(len=24), intent(in) :: model, materialField, caraElem
         type(NLDYNA_DAMPING), intent(out) :: nlDynaDamping
-! - Local
+        ! - Local
         character(len=16), parameter :: factorKeyword = 'AMOR_MODAL'
         character(len=16) :: answer
         integer :: iret, nbOcc
@@ -87,9 +87,9 @@ contains
         aster_logical :: lDampModal, lDampModalReacVite
         type(MODAL_DAMPING) :: modalDamping
 !   ------------------------------------------------------------------------------------------------
-!
+        !
 
-! - Damping - Rayleigh
+        ! - Damping - Rayleigh
         lDampRayleigh = ASTER_FALSE
         call dismoi('EXI_AMOR_ALPHA', materialField, 'CHAM_MATER', repk=answer)
         if (answer .eq. "OUI") then
@@ -103,7 +103,7 @@ contains
             call utmess('I', 'MECANONLINE5_7')
         end if
 
-! - Damping - From contact/friction (DIS_CONTACT, JOINT)
+        ! - Damping - From contact/friction (DIS_CONTACT, JOINT)
         lDampContact = ASTER_FALSE
         call dismoi('EXI_AMOR_NOR', materialField, 'CHAM_MATER', repk=answer)
         if (answer .eq. "OUI") then
@@ -114,7 +114,7 @@ contains
             lDampContact = ASTER_TRUE
         end if
 
-! ----- Update Damping matrix
+        ! ----- Update Damping matrix
         lDampRayleighTang = ASTER_FALSE
         if (lDampRayleigh) then
             call getvtx(' ', 'AMOR_RAYL_RIGI', scal=answer, nbret=iret)
@@ -123,21 +123,21 @@ contains
             end if
         end if
 
-! - Damping - From super-elements or FLUI_ABSO Elements
+        ! - Damping - From super-elements or FLUI_ABSO Elements
         lDampFEModel = ASTER_FALSE
         call dismoi('EXI_AMOR', model, 'MODELE', repk=answer)
         if (answer .eq. "OUI") then
             lDampFEModel = ASTER_TRUE
         end if
 
-! - Damping - From DIS_T elements
+        ! - Damping - From DIS_T elements
         lDampDiscret = ASTER_FALSE
         call dismoi('EXI_AMOR', caraElem, 'CARA_ELEM', repk=answer)
         if (answer .eq. "OUI") then
             lDampDiscret = ASTER_TRUE
         end if
 
-! - Damping - From user
+        ! - Damping - From user
         call getvid(' ', 'MATR_ELEM_AMOR', scal=dampElem, nbret=iret)
         lElemDampFromUser = ASTER_FALSE
         if (iret .eq. 1) then
@@ -145,7 +145,7 @@ contains
             dampFromUser = dampElem
         end if
 
-! - Modal damping
+        ! - Modal damping
         lDampModalReacVite = ASTER_FALSE
         call getfac(factorKeyword, nbOcc)
         lDampModal = nbOcc .gt. 0
@@ -154,13 +154,13 @@ contains
             call dampModalPreparation(modalDamping)
         end if
 
-! - Which cases damping is matrix or vector ?
+        ! - Which cases damping is matrix or vector ?
         lElemDampToCompute = lDampRayleigh .or. lDampContact .or. lDampFEModel .or. lDampDiscret
         hasMatrDamp = lElemDampToCompute .or. lElemDampFromUser
         hasVectDamp = lDampModal
         hasDamp = hasMatrDamp .or. hasVectDamp
 
-! - Save parameters
+        ! - Save parameters
         nlDynaDamping%hasDamp = hasDamp
         nlDynaDamping%hasMatrDamp = hasMatrDamp
         nlDynaDamping%hasVectDamp = hasVectDamp
@@ -196,9 +196,9 @@ contains
         aster_logical, intent(in) :: l_renumber
         aster_logical, intent(out) :: lDampMatrUpdate
 ! - Local
-        aster_logical :: lDampMatrix, lDampRayleighTang
+        aster_logical :: lDampRayleighTang, lDampMatrix
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         lDampMatrUpdate = ASTER_FALSE
         lDampMatrix = nlDynaDamping%hasMatrDamp
         lDampRayleighTang = nlDynaDamping%lDampRayleighTang
@@ -347,7 +347,7 @@ contains
         character(len=14), intent(in) :: numeDof, numeDofFix
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
         character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
-! - Local
+        ! - Local
         integer :: ifm, niv
         aster_logical :: lElas, lVarc, lExpl, lWithDirichlet
         aster_logical :: lDampMatrix
@@ -361,18 +361,18 @@ contains
             call utmess('I', 'MECANONLINE13_22')
         end if
 
-! - Initial tome
+        ! - Initial tome
         timeInit = diinst(sddisc, numeInstInit)
 
-! - Active functionnalities
+        ! - Active functionnalities
         lVarc = isfonc(listFuncActi, 'EXI_VARC')
         lExpl = ndynlo(sddyna, 'EXPLICITE')
         lDampMatrix = nlDynaDamping%hasMatrDamp
 
-! - Compute elementary matrices for elasticity ?
+        ! - Compute elementary matrices for elasticity ?
         call needElasMatrix(nlDynaDamping, lElas)
 
-! - Compute elementary matrices for elasticity
+        ! - Compute elementary matrices for elasticity
         if (lElas) then
             if (lVarc) then
                 call utmess('F', 'MECANONLINE3_2')
@@ -385,7 +385,7 @@ contains
                           hval_incr, hval_algo)
         end if
 
-! - Compute mass matrix
+        ! - Compute mass matrix
         call massGetType(sddyna, massOption)
         lWithDirichlet = lExpl
         call compMassMatrix(model, caraElem, &
@@ -395,7 +395,7 @@ contains
                             hval_meelem, hval_measse, &
                             massOption, lWithDirichlet)
 
-! - Compute damping matrix
+        ! - Compute damping matrix
         if (lDampMatrix) then
             call compDampMatrix(model, caraElem, &
                                 ds_material, ds_constitutive, &
@@ -448,7 +448,7 @@ contains
         dampAsse = nlDynaDamping%dampAsse
         call detrsd('MATR_ASSE', dampAsse)
 
-! - Compute damping matrix from elementary matrices
+        ! - Compute damping matrix from elementary matrices
         if (nlDynaDamping%lElemDampToCompute) then
             call nmchex(hval_meelem, 'MEELEM', 'MEMASS', massElem)
             rigiElem = ds_system%merigi
@@ -461,7 +461,7 @@ contains
                                    dampAsse, sddyna)
         end if
 
-! - Get damping matrix from user
+        ! - Get damping matrix from user
         if (nlDynaDamping%lElemDampFromUser) then
             dampElem = nlDynaDamping%dampFromUser
             if (nlDynaDamping%lElemDampToCompute) then
@@ -527,7 +527,7 @@ contains
             lWithDirichlet = lWithDirichlet_
         end if
 
-! - Compute elementary matrices for mass
+        ! - Compute elementary matrices for mass
         call nmchex(hval_meelem, 'MEELEM', 'MEMASS', massElem)
         call elemMass(massOption, &
                       model, caraElem, &
@@ -535,7 +535,7 @@ contains
                       ds_constitutive%compor, &
                       time, massElem)
 
-! - Assemble elementary matrices for mass
+        ! - Assemble elementary matrices for mass
         diriElem = " "
         if (lWithDirichlet) then
             call nmchex(hval_meelem, 'MEELEM', 'MEDIRI', diriElem)
@@ -662,11 +662,11 @@ contains
         lExpl = ndynlo(sddyna, 'EXPLICITE')
         lShiftMass = ndynlo(sddyna, 'COEF_MASS_SHIFT')
 
-! - Get name of matrices
+        ! - Get name of matrices
         call nmchex(hval_measse, 'MEASSE', 'MERIGI', rigiAsse)
         call nmchex(hval_measse, 'MEASSE', 'MEMASS', massAsse)
 
-! - To combine
+        ! - To combine
         coefType(1) = 'R'
         coefType(2) = 'R'
         coefVale(1) = 1.d0
@@ -674,7 +674,7 @@ contains
         matrName(1) = massAsse
         matrName(2) = rigiAsse
 
-! - Combination
+        ! - Combination
         if (lShiftMass .and. lFirstStep) then
             if (lExpl) then
                 call mtcmbl(2, coefType, coefVale, matrName, massAsse, ' ', ' ', 'ELIM=')
@@ -710,16 +710,16 @@ contains
 !
         call vtzero(acceForce)
 
-! - Get name of matrices and vectors
+        ! - Get name of matrices and vectors
         call nmchex(hval_measse, 'MEASSE', 'MEMASS', massAsse)
         call nmchex(hval_incr, 'VALINC', 'ACCPLU', acceCurr)
 
-! - Get access
+        ! - Get access
         call jeveuo(acceCurr(1:19)//'.VALE', 'L', vr=acce)
         call jeveuo(massAsse(1:19)//'.&INT', 'L', jvMass)
         call jeveuo(acceForce(1:19)//'.VALE', 'E', vr=force)
 
-! - Compute
+        ! - Compute
         call mrmult('ZERO', jvMass, acce, force, 1, ASTER_TRUE)
 !
 !   -----------------------------------------------------------------------------------------------
@@ -732,14 +732,16 @@ contains
 !
 ! In  nlDynaDamping    : damping parameters
 ! In  hval_incr        : hat-variable for incremental values fields
+! In  name_vite        : name of speed hat-variable ('VITMOI', 'VITPLU')
 ! In  viteForce        : name of field for force (damping effect)
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine compViteForce(nlDynaDamping, hval_incr, viteForce)
+    subroutine compViteForce(nlDynaDamping, hval_incr, name_vite, viteForce)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=19), intent(in) :: hval_incr(*)
+        character(len=6), intent(in) :: name_vite
         character(len=19), intent(in) :: viteForce
 ! - Local
         character(len=19) :: dampAsse, viteCurr
@@ -750,16 +752,16 @@ contains
 !
         call vtzero(viteForce)
 
-! - Get name of matrices and vectors
+        ! - Get name of matrices and vectors
         dampAsse = nlDynaDamping%dampAsse
-        call nmchex(hval_incr, 'VALINC', 'VITPLU', viteCurr)
+        call nmchex(hval_incr, 'VALINC', name_vite, viteCurr)
 
-! - Get access
+        ! - Get access
         call jeveuo(viteCurr(1:19)//'.VALE', 'L', vr=vite)
         call jeveuo(dampAsse(1:19)//'.&INT', 'L', jvDamp)
         call jeveuo(viteForce(1:19)//'.VALE', 'E', vr=force)
 
-! - Compute
+        ! - Compute
         call mrmult('ZERO', jvDamp, vite, force, 1, ASTER_TRUE)
 !
 !   -----------------------------------------------------------------------------------------------
@@ -789,16 +791,16 @@ contains
 !
         call vtzero(resiForce)
 
-! - Get name of matrices and vectors
+        ! - Get name of matrices and vectors
         call nmchex(hval_measse, 'MEASSE', 'MEMASS', massAsse)
         call nmchex(hval_incr, 'VALINC', 'VITPLU', viteCurr)
 
-! - Get access
+        ! - Get access
         call jeveuo(viteCurr(1:19)//'.VALE', 'L', vr=vite)
         call jeveuo(massAsse(1:19)//'.&INT', 'L', jvMass)
         call jeveuo(resiForce(1:19)//'.VALE', 'E', vr=force)
 
-! - Compute
+        ! - Compute
         call mrmult('ZERO', jvMass, vite, force, 1, ASTER_TRUE)
 !
 !   -----------------------------------------------------------------------------------------------

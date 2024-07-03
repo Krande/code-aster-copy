@@ -233,7 +233,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="A2",
             NOM_CMP="DX",
-            VALE_CALC=3.52808307e-05,
+            VALE_CALC=3.528083066084335e-05,
             VALE_REFE=3.5195652396428836e-05,
             PRECISION=5.0e-3,
         ),
@@ -244,7 +244,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="A2",
             NOM_CMP="DX",
-            VALE_CALC=3.51955426e-05,
+            VALE_CALC=3.5195551380879984e-05,
             VALE_REFE=3.5195652396428836e-05,
             PRECISION=5.0e-4,
         ),
@@ -254,7 +254,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="A2",
             NOM_CMP="DX",
-            VALE_CALC=3.7156833589729e-05,
+            VALE_CALC=3.6977148797837924e-05,
         ),
     )
 )

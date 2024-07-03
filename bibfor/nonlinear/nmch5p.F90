@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,26 +18,26 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmch5p(veasse)
-!
+    !
     implicit none
-!
+    !
 #include "asterfort/nmcha0.h"
-!
+    !
     character(len=19) :: veasse(*)
-!
-! ----------------------------------------------------------------------
-!
-! ROUTINE MECA_NON_LINE (INITIALISATION)
-!
-! CREATION DES VARIABLES CHAPEAUX - VEASSE
-!
-! ----------------------------------------------------------------------
-!
-!
-! OUT VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
-!
-! ----------------------------------------------------------------------
-!
+    !
+    ! ----------------------------------------------------------------------
+    !
+    ! ROUTINE MECA_NON_LINE (INITIALISATION)
+    !
+    ! CREATION DES VARIABLES CHAPEAUX - VEASSE
+    !
+    ! ----------------------------------------------------------------------
+    !
+    !
+    ! OUT VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
+    !
+    ! ----------------------------------------------------------------------
+    !
     character(len=19) :: cnfedo, cnfepi, cnfsdo, cndidi
     character(len=19) :: cndido, cndipi, cncine, cndiri
     character(len=19) :: cnbudi, cnsstr, cnondp
@@ -46,7 +46,8 @@ subroutine nmch5p(veasse)
     character(len=19) :: cndyna, cnamod
     character(len=19) :: cnfext
     character(len=19) :: cnimpe, cnviss
-!
+    character(len=19) :: cnhyst
+    !
     data cnfedo, cnfsdo/'&&NMCH5P.CNFEDO', '&&NMCH5P.CNFSDO'/
     data cndido, cnfepi/'&&NMCH5P.CNDIDO', '&&NMCH5P.CNFEPI'/
     data cndipi/'&&NMCH5P.CNDIPI'/
@@ -61,9 +62,10 @@ subroutine nmch5p(veasse)
     data cnfext/'&&NMCH5P.CNFEXT'/
     data cnimpe/'&&NMCH5P.CNIMPE'/
     data cnviss/'&&NMCH5P.CNVISS'/
-!
-! ----------------------------------------------------------------------
-!
+    data cnhyst/'&&NMCH5P.CNHYST'/
+    !
+    ! ----------------------------------------------------------------------
+    !
     call nmcha0('VEASSE', 'ALLINI', ' ', veasse)
     call nmcha0('VEASSE', 'CNDIRI', cndiri, veasse)
     call nmcha0('VEASSE', 'CNBUDI', cnbudi, veasse)
@@ -77,14 +79,15 @@ subroutine nmch5p(veasse)
     call nmcha0('VEASSE', 'CNDIDI', cndidi, veasse)
     call nmcha0('VEASSE', 'CNSSTF', cnsstf, veasse)
     call nmcha0('VEASSE', 'CNREFE', cnrefe, veasse)
-!
-! --- SANS VECT_ELEM POUR CONSTRUIRE
-!
+    !
+    ! --- SANS VECT_ELEM POUR CONSTRUIRE
+    !
     call nmcha0('VEASSE', 'CNCINE', cncine, veasse)
     call nmcha0('VEASSE', 'CNSSTR', cnsstr, veasse)
     call nmcha0('VEASSE', 'CNDYNA', cndyna, veasse)
     call nmcha0('VEASSE', 'CNAMOD', cnamod, veasse)
     call nmcha0('VEASSE', 'CNFEXT', cnfext, veasse)
     call nmcha0('VEASSE', 'CNVISS', cnviss, veasse)
-!
+    call nmcha0('VEASSE', 'CNHYST', cnhyst, veasse)
+    !
 end subroutine

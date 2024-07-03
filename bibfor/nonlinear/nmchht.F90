@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,14 +88,14 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: phaseType = CORR_NEWTON
-    integer, parameter:: zveass = 18, zveelm = 12
+    integer, parameter:: zveass = 19, zveelm = 12
     character(len=19) :: hval_veelem(zveelm)
     character(len=19) :: hval_veasse(zveass)
     aster_logical :: l_didi, l_comp_mstp, l_macr
     character(len=19) :: vefint, vedido
     character(len=19) :: vefedo, veondp, vedidi, vesstf
     character(len=19) :: cnfedo, cndidi, cnfint
-    character(len=19) :: cndido, cncine, cnviss
+    character(len=19) :: cndido, cncine, cnviss, cnhyst
     character(len=19) :: cnondp, cnsstf, cnsstr
     character(len=19) :: disp_prev
     character(len=19) :: varc_prev, varc_curr, time_prev, time_curr
@@ -163,6 +163,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
         call ndynkk(sddyna, 'OLDP_CNONDP', cnondp)
         call ndynkk(sddyna, 'OLDP_CNCINE', cncine)
         call ndynkk(sddyna, 'OLDP_CNVISS', cnviss)
+        call ndynkk(sddyna, 'OLDP_CNHYST', cnhyst)
         call ndynkk(sddyna, 'OLDP_CNSSTF', cnsstf)
         call ndynkk(sddyna, 'OLDP_CNSSTR', cnsstr)
 ! ----- New hat variables
@@ -179,6 +180,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
         call nmcha0('VEASSE', 'CNONDP', cnondp, hval_veasse)
         call nmcha0('VEASSE', 'CNCINE', cncine, hval_veasse)
         call nmcha0('VEASSE', 'CNVISS', cnviss, hval_veasse)
+        call nmcha0('VEASSE', 'CNHYST', cnhyst, hval_veasse)
         call nmcha0('VEASSE', 'CNSSTF', cnsstf, hval_veasse)
         call nmcha0('VEASSE', 'CNSSTR', cnsstr, hval_veasse)
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,9 +55,9 @@ subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
 !
 !
     character(len=19) :: olfedo, olfsdo, oldido, oldidi, olfint
-    character(len=19) :: olondp, olcine, olviss, olsstf
+    character(len=19) :: olondp, olcine, olviss, olhyst, olsstf
     character(len=19) :: cnfedo, cnfsdo, cndido, cndidi, cnfint
-    character(len=19) :: cnondp, cncine, cnviss, cnsstf
+    character(len=19) :: cnondp, cncine, cnviss, cnhyst, cnsstf
     character(len=19) :: olsstr, cnsstr
     character(len=19) :: oleltc, oleltf
     aster_logical :: londe, ldidi, lviss, lsstf, l_macr
@@ -84,6 +84,7 @@ subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
     call ndynkk(sddyna, 'OLDP_CNONDP', olondp)
     call ndynkk(sddyna, 'OLDP_CNCINE', olcine)
     call ndynkk(sddyna, 'OLDP_CNVISS', olviss)
+    call ndynkk(sddyna, 'OLDP_CNHYST', olhyst)
     call ndynkk(sddyna, 'OLDP_CNSSTF', olsstf)
     call ndynkk(sddyna, 'OLDP_CNSSTR', olsstr)
     call ndynkk(sddyna, 'OLDP_CNELTC', oleltc)
@@ -99,6 +100,7 @@ subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
     call nmchex(veasse, 'VEASSE', 'CNONDP', cnondp)
     call nmchex(veasse, 'VEASSE', 'CNCINE', cncine)
     call nmchex(veasse, 'VEASSE', 'CNVISS', cnviss)
+    call nmchex(veasse, 'VEASSE', 'CNHYST', cnhyst)
     call nmchex(veasse, 'VEASSE', 'CNSSTF', cnsstf)
     call nmchex(veasse, 'VEASSE', 'CNSSTR', cnsstr)
 !
@@ -118,6 +120,7 @@ subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
     if (lviss) then
         call copisd('CHAMP_GD', 'V', cnviss, olviss)
     end if
+    call copisd('CHAMP_GD', 'V', cnhyst, olhyst)
     if (lsstf) then
         call copisd('CHAMP_GD', 'V', cnsstf, olsstf)
     end if
