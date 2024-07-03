@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine as_mmhcow(fid, maa, coo, modcoo, n, &
-                     cret)
+                     cret) BIND(C, NAME='as_mmhcow_')
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
@@ -28,9 +28,9 @@ subroutine as_mmhcow(fid, maa, coo, modcoo, n, &
 #include "med/mmhcow.h"
     character(len=*) :: maa
     real(kind=8) :: coo(*)
-    med_idt :: fid
-    aster_int :: n, cret, modcoo, mdnont, mdnoit
-    real(kind=8) :: mdnodt
+    integer :: fid
+    integer :: n, cret, modcoo, mdnont, mdnoit
+    real(kind=8) :: mdnodt, i
 #ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
@@ -53,6 +53,17 @@ subroutine as_mmhcow(fid, maa, coo, modcoo, n, &
     mdnont = -1
     mdnoit = -1
     mdnodt = -1.d0
+    print *, "Inside as_mmhcow:"
+    print *, "FID:", fid
+    print *, "Address of MAA (maa):", LOC(maa)
+    print *, "MAA:", maa
+    print *, "MODCOO:", modcoo
+    print *, "N:", n
+    print *, "CRET:", cret
+    print *, "First few elements of COO:"
+    do i = 1, min(n, 10)
+        print *, "COO(", i, "):", coo(i)
+    end do
     call mmhcow(fid, maa, mdnont, mdnoit, mdnodt, &
                 modcoo, n, coo, cret)
 #endif

@@ -11,12 +11,14 @@ set USE_LOG=0
 set COLOR_ENABLED=1
 :: BUILD_TYPE can be either debug or release
 set BUILD_TYPE=debug
+set CLEAN_BUILD=0
 
 :parse_args
 if "%~1"=="" goto end_parse_args
 if /i "%~1"=="--install-tests" set INCLUDE_TESTS=1
 if /i "%~1"=="--use-log" set USE_LOG=1
 if /i "%~1"=="--no-color" set COLOR_ENABLED=0
+if /i "%~1"=="--clean" set CLEAN_BUILD=1
 shift
 goto parse_args
 
@@ -95,6 +97,7 @@ if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"
     set FC_SEARCH=ifort
     set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /double-size:64 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64
+    set FCFLAGS=%FCFLAGS% /assume:byterecl,aligned_dummy_args,dummy_aliases,writeable_strings
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 ) else (
@@ -134,34 +137,41 @@ if "%build_type%" == "debug" (
     set DEFINES=%DEFINES% ASTER_DEBUG_ALL
 )
 REM Clean the build directory
-@REM waf distclean
+if %CLEAN_BUILD%==1 (
+    waf distclean
+)
 
+REM Update version
 python conda\scripts\update_version.py
 
 set BUILD=std
+set EXTRA_ARGS=
+if "%INCLUDE_TESTS%" == "1" (
+    set "EXTRA_ARGS=--install-tests"
+)
 
 REM Install for standard sequential
-waf configure ^
-  --python=%PYTHON% ^
-  --check-fortran-compiler=%FC_SEARCH% ^
-  --use-config-dir=%PARENT_DIR%/config/ ^
-  --med-libs="med medC medfwrap medimport" ^
-  --prefix=%LIB_PATH_ROOT% ^
-  --out=%OUTPUT_DIR% ^
-  --enable-med ^
-  --enable-hdf5 ^
-  --enable-mumps ^
-  --enable-openmp ^
-  --enable-metis ^
-  --enable-scotch ^
-  --disable-mpi ^
-  --disable-petsc ^
-  --maths-libs=auto ^
-  --msvc-entry ^
-  --install-tests ^
-  --without-hg ^
-  --without-repo
-
+if %CLEAN_BUILD%==1 (
+    waf configure ^
+      --python=%PYTHON% ^
+      --check-fortran-compiler=%FC_SEARCH% ^
+      --use-config-dir=%PARENT_DIR%/config/ ^
+      --med-libs="med medC medfwrap medimport" ^
+      --prefix=%LIB_PATH_ROOT% ^
+      --out=%OUTPUT_DIR% ^
+      --enable-med ^
+      --enable-hdf5 ^
+      --enable-mumps ^
+      --enable-openmp ^
+      --enable-metis ^
+      --enable-scotch ^
+      --disable-mpi ^
+      --disable-petsc ^
+      --maths-libs=auto ^
+      --msvc-entry ^
+      --without-hg ^
+      --without-repo %EXTRA_ARGS%
+)
 REM   --install-tests ^
 
 if errorlevel 1 exit 1
