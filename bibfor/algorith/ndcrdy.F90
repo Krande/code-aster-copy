@@ -93,7 +93,7 @@ subroutine ndcrdy(result, sddyna)
         call wkvect(tcha, 'V V K24', 4, jtcha)
         call wkvect(ncha, 'V V I', 5, jncha)
         call wkvect(veol, 'V V K24', 15, jveol)
-        call wkvect(vaol, 'V V K24', 16, jvaol)
+        call wkvect(vaol, 'V V K24', 15, jvaol)
         call wkvect(vecent, 'V V K24', 3, jvecen)
         call wkvect(vecabs, 'V V K24', 3, jvecab)
     else

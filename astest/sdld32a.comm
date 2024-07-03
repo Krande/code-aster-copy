@@ -136,34 +136,6 @@ RESU_HHTa = DYNA_NON_LINE(
     **dict_dyna_non_line
 )
 
-# RESU_NEWMARKnld = DYNA_NON_LINE(
-#     SCHEMA_TEMPS=_F(
-#         SCHEMA="NEWMARK",
-#         FORMULATION="DEPLACEMENT",
-#     ),
-#     **dict_dyna_non_line
-# )
-
-# RESU_NEWMARKnla = DYNA_NON_LINE(
-#     SCHEMA_TEMPS=_F(
-#         SCHEMA="NEWMARK",
-#         FORMULATION="ACCELERATION",
-#     ),
-#     **dict_dyna_non_line
-# )
-
-# RESU_NEWMARKl = DYNA_LINE(
-#     TYPE_CALCUL="TRAN",
-#     BASE_CALCUL="PHYS",
-#     MODELE=MO,
-#     CARA_ELEM=CARA_ELE,
-#     CHAM_MATER=CHMAT,
-#     CHARGE=LIAISON,
-#     ETAT_INIT=_F(DEPL=DEPL_INIT, VITE=VITE_INIT),
-#     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
-#     INCREMENT=_F(PAS=dt, INST_INIT=t0, INST_FIN=tf),
-# )
-
 ### Analytical solution
 xi = 0.0
 om = np.sqrt(k / m)
@@ -215,7 +187,7 @@ def testResultsAtTimeSteps(resu, inst_test, depl_calc, vite_calc, acce_calc, pre
 
         prec (:class:`dict`): tests precisions
     """
-    vale_calc = {"DEPL": depl_calc, "VITE": vite_calc, "ACCE": acce_calc}
+    vale_calc = {"DEPL": depl_calc, "VITE": vite_calc, "AveolCCE": acce_calc}
     func_refe = {"DEPL": depl_ref, "VITE": vite_ref, "ACCE": acce_ref}
     l_nom_cham = ["DEPL", "VITE", "ACCE"]
     assert len(prec) == len(l_nom_cham)

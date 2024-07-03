@@ -140,34 +140,6 @@ RESU_HHTa = DYNA_NON_LINE(
     **dict_dyna_non_line
 )
 
-# RESU_NEWMARKnld = DYNA_NON_LINE(
-#     SCHEMA_TEMPS=_F(
-#         SCHEMA="NEWMARK",
-#         FORMULATION="DEPLACEMENT",
-#     ),
-#     **dict_dyna_non_line
-# )
-
-# RESU_NEWMARKnla = DYNA_NON_LINE(
-#     SCHEMA_TEMPS=_F(
-#         SCHEMA="NEWMARK",
-#         FORMULATION="ACCELERATION",
-#     ),
-#     **dict_dyna_non_line
-# )
-
-# RESU_NEWMARKl = DYNA_LINE(
-#     TYPE_CALCUL="TRAN",
-#     BASE_CALCUL="PHYS",
-#     MODELE=MO,
-#     CARA_ELEM=CARA_ELE,
-#     CHAM_MATER=CHMAT,
-#     CHARGE=LIAISON,
-#     ETAT_INIT=_F(DEPL=DEPL_INIT, VITE=VITE_INIT),
-#     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
-#     AMORTISSEMENT=_F(TYPE_AMOR="RAYLEIGH"),
-#     INCREMENT=_F(PAS=dt, INST_INIT=t0, INST_FIN=tf),
-# )
 
 ### Analytical solution
 om = np.sqrt(k / m)
