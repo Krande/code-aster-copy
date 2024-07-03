@@ -61,6 +61,9 @@ Ce n'est pas le cas ici. Pour avoir la liste des mailles et les relations de com
     6: _(
         """La présence d'un comportement de type MFront ne permet pas d'utiliser NOM_VARI, utilisez NOM_CMP."""
     ),
+    7: _(
+        """La présence d'un comportement de type MFront ne permet pas d'utiliser IMPR_NOM_VARI."""
+    ),
     10: _(
         """Maille: %(k1)-8s - Cette maille appartient aux groupes de mailles suivants : %(k2)s %(k2)s %(k3)s %(k3)s."""
     ),

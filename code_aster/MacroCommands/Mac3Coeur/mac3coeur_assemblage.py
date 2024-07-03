@@ -607,7 +607,7 @@ class Assemblage:
         for igr in range(1, self.NBGR + 1):
             mcf.append(
                 _F(
-                    GROUP_NO="G_%s_%d" % (self.pos_aster, igr),
+                    GROUP_NO="P_%s_%d" % (self.pos_aster, igr),
                     DY=self.bow["DY%d" % igr],
                     DZ=self.bow["DZ%d" % igr],
                 )

@@ -168,9 +168,19 @@ DEBUT = MACRO(
         statut="d",
         max=1,
         regles=(EXCLUS("VALE", "POURCENTAGE"),),
-        #          par défaut VALE fixée à 10. dans le FORTRAN si CODE présent
+        # la valeur par défaut est fixée à VALE=10. si CODE présent (cas-tests)
         VALE=SIMP(statut="f", typ="I", val_min=0),
-        #          par défaut 10% dans le FORTRAN
+        # ou POURCENTAGE=0.1 (10%) sinon
+        POURCENTAGE=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0),
+    ),
+    RESERVE_MEMOIRE=FACT(
+        fr=tr("réserve de mémoire pour les bibliothèques externes"),
+        statut="d",
+        max=1,
+        regles=(EXCLUS("VALE", "POURCENTAGE"),),
+        # if VALE is provided, use it, otherwise take a POURCENTAGE of the initial memory
+        # Default value is assigned in debut.py (before syntax checkings).
+        VALE=SIMP(statut="f", typ="I", val_min=0),
         POURCENTAGE=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0),
     ),
     IGNORE_ALARM=SIMP(

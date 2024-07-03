@@ -39,7 +39,7 @@ CALC_META = OPER(
         typ="TXM",
         validators=NoRepeat(),
         max="**",
-        into=C_NOM_CHAM_INTO(phenomene="METALLURGIE"),
+        into=C_NOM_CHAM_INTO(phenomene=Phenomenon.METALLURGIE),
     ),
     TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
     GROUP_MA=SIMP(

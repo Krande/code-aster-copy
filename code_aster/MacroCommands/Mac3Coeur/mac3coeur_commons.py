@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,46 @@
 # person_in_charge: francesco.bettonte at edf.fr
 
 import numpy as np
+from collections import OrderedDict
+from ...Utilities import force_list
 
 MAC3_ROUND = 14
+
+
+class CollectionMAC3:
+    @property
+    def size(self):
+        return len(self._collection)
+
+    @property
+    def keys(self):
+        return list(self._collection.keys())
+
+    def __init__(self, label):
+        self._collection = OrderedDict()
+        self.label = label
+
+    def __getitem__(self, key):
+        return self._collection[key]
+
+    def __setitem__(self, key, item):
+        self._collection[key] = item
+
+    def __iter__(self):
+        yield from self._collection.values()
+
+    def items(self):
+        return self._collection.items()
+
+    def filter(self, keys):
+        """
+        Get all items with key matching args
+        """
+        return tuple(
+            item
+            for key, item in self._collection.items()
+            if any(w in key for w in force_list(keys))
+        )
 
 
 def flat_list(list_of_list):

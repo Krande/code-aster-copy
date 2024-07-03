@@ -22,6 +22,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
                   nume_store, nbmaec, limaec, result, cara_elem, &
                   carael, lfichUniq, codret)
 !
+    use MGIS_module
     implicit none
 !
 #include "jeveux.h"
@@ -47,6 +48,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 #include "asterfort/rsexch.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
+#include "asterfort/utmess.h"
 !
     integer, intent(in) :: ifi
     character(len=64), intent(in) :: field_med
@@ -144,6 +146,12 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 ! - Get name of <CARTE> COMPOR
 !
     call rsexch('F', result, 'COMPORTEMENT', nume_store, compor, iret)
+    if (iret .ne. 0) then
+        call utmess('F', 'RESULT1_5')
+    end if
+    if (hasMFront(compor)) then
+        call utmess('F', "COMPOR6_7")
+    end if
 !
 ! - Prepare informations about internal variables
 !

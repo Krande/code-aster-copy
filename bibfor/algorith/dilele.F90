@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -233,9 +233,9 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
         sigm1g = 0.0d0
         sigm1g(1:2*ndim) = siefm(1+(g-1)*dimdef:2*ndim+(g-1)*dimdef)*vrac2(1:2*ndim)
         if (ds_dil%inco) then
-            sigm1g(1:2*ndim) = sigm1g+(siefm(dimdef*(g-1)+2*ndim+2) &
-                                       -siefm(dimdef*(g-1)+2*ndim+1)+epefpm(1) &
-                                       +rpena*(epefum(2*ndim+1)-epefgm(1)))*kr
+            sigm1g(1:2*ndim) = sigm1g(1:2*ndim)+(siefm(dimdef*(g-1)+2*ndim+2) &
+                                                 -siefm(dimdef*(g-1)+2*ndim+1)+epefpm(1) &
+                                                 +rpena*(epefum(2*ndim+1)-epefgm(1)))*kr
         end if
 
         sigp1g = 0.0d0

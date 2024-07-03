@@ -6,7 +6,7 @@
  * @brief Definition d'une chaine a la maniere Fortran (sans \0 a la fin)
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,7 +29,6 @@
 #include <stdexcept>
 #include <string>
 
-#include <assert.h>
 #include <string.h>
 
 /**
@@ -49,6 +48,8 @@ class JeveuxString {
      * @param chaine Taille de la chaine a recopier
      */
     inline void safeCopyFromChar( const char *chaine, const int size ) {
+        if ( size < 1 )
+            return;
         if ( size < lengthT ) {
             memset( &currentValue, ' ', sizeof( char ) * lengthT );
             memcpy( &currentValue, chaine, sizeof( char ) * size );

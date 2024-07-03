@@ -142,7 +142,7 @@ contains
         end if
         if (nbDampVale .lt. nbMode) then
             AS_ALLOCATE(vr=dampValeTemp, size=nbMode)
-            dampValeTemp(1:nbMode) = dampVale(1:nbMode)
+            dampValeTemp(1:nbDampVale) = dampVale(1:nbDampVale)
             do iMode = nbDampVale+1, nbMode
                 dampValeTemp(iMode) = dampVale(nbDampVale)
             end do

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ CALC_ERREUR = OPER(
         typ="TXM",
         validators=NoRepeat(),
         max="**",
-        into=C_NOM_CHAM_INTO(phenomene="ERREUR"),
+        into=C_NOM_CHAM_INTO(phenomene=Phenomenon.ERREUR),
     ),
     b_erre_qi=BLOC(
         condition="""is_in('OPTION', ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM','QIRE_ELNO','QIRE_NOEU'))""",

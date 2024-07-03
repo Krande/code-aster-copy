@@ -3,7 +3,7 @@
  * @brief Interface python de Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -398,11 +398,12 @@ Get a FieldOnNodesReal from result.
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
     index (int): index to set the field
+    updatePtr (bool, optional): update pointer on values (default: True)
 
 Returns:
     FieldOnNodesReal: field to get
         )",
-              py::arg( "name" ), py::arg( "index" ) )
+              py::arg( "name" ), py::arg( "index" ), py::arg( "updatePtr" ) = true )
         .def( "_getFieldOnCellsReal", &Result::getFieldOnCellsReal, R"(
 Get a FieldOnCellsReal from result.
 * For internal use only - prefer to use getField() *
@@ -410,11 +411,12 @@ Get a FieldOnCellsReal from result.
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
     index (int): index to set the field
+    updatePtr (bool, optional): update pointer on values (default: True)
 
 Returns:
     FieldOnCellsReal: field to get
         )",
-              py::arg( "name" ), py::arg( "index" ) )
+              py::arg( "name" ), py::arg( "index" ), py::arg( "updatePtr" ) = true )
         .def( "_getFieldOnNodesComplex", &Result::getFieldOnNodesComplex, R"(
 Get a FieldOnNodesComplex from result.
 * For internal use only - prefer to use getField() *
@@ -422,11 +424,12 @@ Get a FieldOnNodesComplex from result.
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
     index (int): index to set the field
+    updatePtr (bool, optional): update pointer on values (default: True)
 
 Returns:
     FieldOnNodesComplex: field to get
         )",
-              py::arg( "name" ), py::arg( "index" ) )
+              py::arg( "name" ), py::arg( "index" ), py::arg( "updatePtr" ) = true )
         .def( "_getFieldOnCellsComplex", &Result::getFieldOnCellsComplex, R"(
 Get a FieldOnCellsComplex from result.
 * For internal use only - prefer to use getField() *
@@ -434,11 +437,12 @@ Get a FieldOnCellsComplex from result.
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
     index (int): index to set the field
+    updatePtr (bool, optional): update pointer on values (default: True)
 
 Returns:
     FieldOnCellsComplex: field to get
         )",
-              py::arg( "name" ), py::arg( "index" ) )
+              py::arg( "name" ), py::arg( "index" ), py::arg( "updatePtr" ) = true )
         .def( "_getFieldOnCellsLong", &Result::getFieldOnCellsLong, R"(
 Get a FieldOnCellsLong from result.
 * For internal use only - prefer to use getField() *
@@ -446,11 +450,12 @@ Get a FieldOnCellsLong from result.
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
     index (int): index to set the field
+    updatePtr (bool, optional): update pointer on values (default: True)
 
 Returns:
     FieldOnCellsLong: field to get
         )",
-              py::arg( "name" ), py::arg( "index" ) )
+              py::arg( "name" ), py::arg( "index" ), py::arg( "updatePtr" ) = true )
         .def( "_getConstantFieldOnCellsChar16", &Result::getConstantFieldOnCellsChar16, R"(
 Get a ConstantFieldOnCellsChar16 from result.
 * For internal use only - prefer to use getField() *
@@ -458,11 +463,12 @@ Get a ConstantFieldOnCellsChar16 from result.
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'COMPORTEMENT', ...)
     index (int): index to set the field
+    updatePtr (bool, optional): update pointer on values (default: True)
 
 Returns:
     ConstantFieldOnCellsChar16: field to get
         )",
-              py::arg( "name" ), py::arg( "index" ) )
+              py::arg( "name" ), py::arg( "index" ), py::arg( "updatePtr" ) = true )
         .def( "_getConstantFieldOnCellsReal", &Result::getConstantFieldOnCellsReal, R"(
 Get a ConstantFieldOnCellsReal from result.
 * For internal use only - prefer to use getField() *
@@ -470,11 +476,12 @@ Get a ConstantFieldOnCellsReal from result.
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
     index (int): index to set the field
+    updatePtr (bool, optional): update pointer on values (default: True)
 
 Returns:
     ConstantFieldOnCellsReal: field to get
         )",
-              py::arg( "name" ), py::arg( "index" ) )
+              py::arg( "name" ), py::arg( "index" ), py::arg( "updatePtr" ) = true )
         .def( "printMedFile", &Result::printMedFile,
               R"(
 Print the result in a MED file.

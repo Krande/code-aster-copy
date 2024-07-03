@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -245,7 +245,11 @@ CREA_MAILLAGE = OPER(
         SHRINK=SIMP(statut="f", typ="R", defaut=0.9, fr=tr("Facteur de réduction")),
         TAILLE_MIN=SIMP(statut="f", typ="R", defaut=0.0, fr=tr("Taille minimale d'un coté")),
         NOM_CHAM=SIMP(
-            statut="o", typ="TXM", validators=NoRepeat(), max="**", into=C_NOM_CHAM_INTO("ELGA")
+            statut="o",
+            typ="TXM",
+            validators=NoRepeat(),
+            max="**",
+            into=C_NOM_CHAM_INTO(type_cham="ELGA"),
         ),
     ),
     TITRE=SIMP(statut="f", typ="TXM"),

@@ -39,7 +39,7 @@ class ResultStateBuilder(InternalStateBuilder):
         for i in indexes:
             for fieldName in fieldNames:
                 try:
-                    curField = result.getField(fieldName, i)
+                    curField = result.getField(fieldName, i, updatePtr=False)
                     self._st["fields"][i][fieldName] = curField
                 except:
                     pass
@@ -294,20 +294,23 @@ class ExtendedResult:
         indexes = [idx for idx in indexes if idx >= 0]
         return indexes
 
-    def getField(self, name, value=None, para="NUME_ORDRE", crit="RELATIF", prec=1.0e-6):
-        """Get the specified field. This is an overlay to existing methods
-        for each type of field.
+    def getField(
+        self, name, value=None, para="NUME_ORDRE", crit="RELATIF", prec=1.0e-6, updatePtr=True
+    ):
+        """Get the specified field by its name and a parameter access.
 
         Arguments:
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            value (float|int|str) : value of the access parameter
-            para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
-            crit (str) : search criterion ABSOLU or RELATIF
-            prec (float) : precision for the search criterion
+            value (float|int|str): value of the access parameter
+            para (str): name of the access parameter (NUME_ORDRE, INST, etc..)
+            crit (str): search criterion ABSOLU or RELATIF
+            prec (float): precision for the search criterion
+            updatePtr (bool): update the pointer on the field values if *True* (default).
+                The argument should not be disabled by the user, mainly for internal use.
 
         Returns:
-            Field***: field to get whit type in (FieldOnNodes***/FieldOnCells***/
-            ConstantFieldOnCell***)
+            FieldXXX: field to get with type in (FieldOnNodesXXX/FieldOnCellsXXX/
+            ConstantFieldOnCellXXX)
         """
         assert crit in ("ABSOLU", "RELATIF")
 
@@ -321,31 +324,31 @@ class ExtendedResult:
 
         names = self.getFieldsOnNodesRealNames()
         if name in names:
-            return self._getFieldOnNodesReal(name, storageIndex)
+            return self._getFieldOnNodesReal(name, storageIndex, updatePtr=updatePtr)
 
         names = self.getFieldsOnNodesComplexNames()
         if name in names:
-            return self._getFieldOnNodesComplex(name, storageIndex)
+            return self._getFieldOnNodesComplex(name, storageIndex, updatePtr=updatePtr)
 
         names = self.getFieldsOnCellsRealNames()
         if name in names:
-            return self._getFieldOnCellsReal(name, storageIndex)
+            return self._getFieldOnCellsReal(name, storageIndex, updatePtr=updatePtr)
 
         names = self.getFieldsOnCellsComplexNames()
         if name in names:
-            return self._getFieldOnCellsComplex(name, storageIndex)
+            return self._getFieldOnCellsComplex(name, storageIndex, updatePtr=updatePtr)
 
         names = self.getFieldsOnCellsLongNames()
         if name in names:
-            return self._getFieldOnCellsLong(name, storageIndex)
+            return self._getFieldOnCellsLong(name, storageIndex, updatePtr=updatePtr)
 
         names = self.getConstantFieldsOnCellsRealNames()
         if name in names:
-            return self._getConstantFieldOnCellsReal(name, storageIndex)
+            return self._getConstantFieldOnCellsReal(name, storageIndex, updatePtr=updatePtr)
 
         names = self.getConstantFieldsOnCellsChar16Names()
         if name in names:
-            return self._getConstantFieldOnCellsChar16(name, storageIndex)
+            return self._getConstantFieldOnCellsChar16(name, storageIndex, updatePtr=updatePtr)
 
         names = self.getGeneralizedVectorRealNames()
         if name in names:

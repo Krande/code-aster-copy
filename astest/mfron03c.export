@@ -7,6 +7,5 @@ P testlist verification sequential
 
 F comm mfron03c.comm D 1
 F comm mfron03c.com1 D 1
-F comm mfron03c.py D 1
 F mmed mfron03c.mmed D 20
 F libr MonoCrystal_CFC.mfront D 38

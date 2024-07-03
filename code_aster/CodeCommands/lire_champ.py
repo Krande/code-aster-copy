@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -74,6 +74,11 @@ class FieldReader(ExecuteCommand):
 
         if location == "NOEU":
             self._result.build(keywords["MAILLAGE"])
+        elif location[:2] == "EL":
+            model = keywords.get("MODELE")
+            assert model, "MODELE is required!"
+            fed = model.getFiniteElementDescriptor()
+            self._result.build([fed])
 
 
 LIRE_CHAMP = FieldReader.run

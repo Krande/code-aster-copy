@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,8 +114,8 @@ subroutine rc32rs(lfat, lefat)
      &            'NOM_SIT2', 'NUM_SIT2', 'NOCC_SIT2', 'GROUP_SIT2', 'SN',&
      &            'INST_SN_1', 'INST_SN_2', 'SN*', 'INST_SN*_1',&
      &            'INST_SN*_2', 'KE_MECA', 'KE_THER', 'SP(MECA)', 'SP(THER)', 'SP',&
-     &            'INST_SALT_1', 'INST_SALT_2', 'SALT', 'FU_UNIT_SS_CYCL', 'FU_UNIT', 'NOCC_PRIS', &
-                  'FU_PARTIEL', 'FEN', 'FEN_ELAS', 'FUEN_PARTIEL'/
+     &            'INST_SALT_1', 'INST_SALT_2', 'SALT', 'FU_UNIT_SS_CYCL', 'FU_UNIT', &
+                   'NOCC_PRIS', 'FU_PARTIEL', 'FEN', 'FEN_ELAS', 'FUEN_PARTIEL'/
     data typar4/'K8', 'K8', 'K8',&
      &            'K16', 'I', 'I', 'I',&
      &            'K16', 'I', 'I', 'I', 'R',&
@@ -186,12 +186,12 @@ subroutine rc32rs(lfat, lefat)
         do k = 1, 3
             valer(10+k) = zr(jmax-1+8+k)
         end do
-        valer(16) = zr(jmax+12)
         if (lefat) then
             call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
             if (n5 .eq. 0 .or. abs(fenint) .lt. 1e-8) call utmess('F', 'POSTRCCM_54')
             fenglobal = 0.d0
             if (abs(zr(jmax+10)) .gt. 1e-8) fenglobal = zr(jmax+12)/zr(jmax+10)
+            valer(16) = zr(jmax+10)
             if (fenglobal .gt. fenint) valer(16) = zr(jmax+12)/fenint
             valer(14) = fenglobal
             valer(15) = fenint
@@ -385,10 +385,8 @@ subroutine rc32rs(lfat, lefat)
                         valer(k) = r8vide()
                     end do
 !
-                    valer(13) = zr( &
-                                jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)-zr(jresucomb+25*nb*&
-                                &(iocc1-1)+25*(iocc2-1)-1+18 &
-                                )
+                    valer(13) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)- &
+                                zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
                     valer(14) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
                     valer(15) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)
                     valer(16) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+10)
@@ -403,10 +401,8 @@ subroutine rc32rs(lfat, lefat)
                     valek(4) = 'FICTIF2'
                     valek(5) = 'FICTIF2'
 !
-                    valer(13) = zr( &
-                                jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)-zr(jresucomb+25*nb&
-                                                                     &*(iocc1-1)+25*(iocc2-1)-1+19 &
-                                                                                )
+                    valer(13) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)- &
+                                zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
                     valer(14) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
                     valer(15) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)
                     valer(16) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+14)
@@ -471,10 +467,8 @@ subroutine rc32rs(lfat, lefat)
                     do k = 1, 12
                         valer(k) = r8vide()
                     end do
-                    valer(13) = zr( &
-                                jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)-zr(jresucombs+25*n&
-                                &b*(iocc1-1)+25*(iocc2-1)-1+18 &
-                                )
+                    valer(13) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)- &
+                                zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
                     valer(14) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
                     valer(15) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)
                     valer(16) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+10)
@@ -489,10 +483,8 @@ subroutine rc32rs(lfat, lefat)
                     valek(4) = 'FICTIF2'
                     valek(5) = 'FICTIF2'
 !
-                    valer(13) = zr( &
-                                jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)-zr(jresucombs+25*&
-                                &nb*(iocc1-1)+25*(iocc2-1)-1+19 &
-                                )
+                    valer(13) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)- &
+                                zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
                     valer(14) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
                     valer(15) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)
                     valer(16) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+14)
@@ -654,10 +646,8 @@ subroutine rc32rs(lfat, lefat)
                 valer(i) = r8vide()
             end do
 !
-            valer(9) = zr( &
-                       ind2+25*nb*(num1-1)+25*(num2-1)-1+9)-zr(ind2+25*nb*(num1-1)+25*(num2-1)-&
-                       &1+18 &
-                       )
+            valer(9) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+9)- &
+                       zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+18)
             valer(10) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+18)
             valer(11) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+9)
             valer(12) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+10)
@@ -677,10 +667,8 @@ subroutine rc32rs(lfat, lefat)
             valek(5) = 'FICTIF2'
 !
 !
-            valer(9) = zr( &
-                       ind2+25*nb*(num1-1)+25*(num2-1)-1+13)-zr(ind2+25*nb*(num1-1)+25*(num2-1)&
-                       &-1+19 &
-                       )
+            valer(9) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+13)- &
+                       zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+19)
             valer(10) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+19)
             valer(11) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+13)
             valer(12) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+14)

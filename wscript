@@ -67,7 +67,7 @@ def options(self):
                 "  CFLAGS         : extra C compilation options",
                 "  CXXFLAGS       : extra C++ compilation options",
                 "  FCFLAGS        : extra Fortran compilation options",
-                "  {C,CXX,FC}FLAGS_ASTER_DEBUG may be used to add options only in debug mode"
+                "  {C,CXX,FC}FLAGS_ASTER_DEBUG may be used to add options only in debug mode",
                 '  LIBPATH_x, LIB_x, INCLUDES_x, PYPATH_x : paths for component "x" for libs, '
                 "includes, python modules",
                 "  CONFIG_PARAMETERS_name=value: extra configuration parameters "
