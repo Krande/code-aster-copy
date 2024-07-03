@@ -107,6 +107,8 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         nbMap = 1
     else if (loadType .eq. 'ECHANGE_THM') then
         nbMap = 1
+    else if (loadType .eq. 'ECHANGE_THM_HR') then
+        nbMap = 1
     else if (loadType .eq. 'PRES_REP') then
         nbMap = 1
     else if (loadType .eq. 'FORCE_TUYAU') then
@@ -135,6 +137,8 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         map(1) = obje_pref(1:13)//'.ONDE'
     else if (loadType .eq. 'ECHANGE_THM') then
         map(1) = obje_pref(1:13)//'.ETHM'
+    else if (loadType .eq. 'ECHANGE_THM_HR') then
+        map(1) = obje_pref(1:13)//'.ETHMH'
     else if (loadType .eq. 'PRES_REP') then
         map(1) = obje_pref(1:13)//'.PRESS'
     else if (loadType .eq. 'FORCE_TUYAU') then
@@ -184,6 +188,14 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
             physQuantity(1) = 'ETHM_R'
         else if (valeType .eq. 'FONC') then
             physQuantity(1) = 'ETHM_F'
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+    else if (loadType .eq. 'ECHANGE_THM_HR') then
+        if (valeType .eq. 'REEL') then
+            physQuantity(1) = 'ETHMH_R'
+        else if (valeType .eq. 'FONC') then
+            physQuantity(1) = 'ETHMH_F'
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -267,6 +279,14 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         else
             ASSERT(ASTER_FALSE)
         end if
+    else if (loadType .eq. 'ECHANGE_THM_HR') then
+        if (valeType .eq. 'REEL') then
+            mapType(1) = 'R'
+        else if (valeType .eq. 'FONC') then
+            mapType(1) = 'K8'
+        else
+            ASSERT(ASTER_FALSE)
+        end if
     else if (loadType .eq. 'PRES_REP') then
         if (valeType .eq. 'REEL') then
             mapType(1) = 'R'
@@ -343,16 +363,18 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         nbCmp(1) = 1
         cmpName(1, 1) = 'PRES'
     else if (loadType .eq. 'ECHANGE_THM') then
-        nbCmp(1) = 9
+        nbCmp(1) = 6
         cmpName(1, 1) = 'COEF1'
         cmpName(1, 2) = 'COEF2'
         cmpName(1, 3) = 'COEF3'
         cmpName(1, 4) = 'COEF4'
-        cmpName(1, 5) = 'COEF5'
-        cmpName(1, 6) = 'COEF6'
-        cmpName(1, 7) = 'PRE1'
-        cmpName(1, 8) = 'PRE2'
-        cmpName(1, 9) = 'PRE3'
+        cmpName(1, 5) = 'PRE1'
+        cmpName(1, 6) = 'PRE2'
+    else if (loadType .eq. 'ECHANGE_THM_HR') then
+        nbCmp(1) = 3
+        cmpName(1, 1) = 'COEF1'
+        cmpName(1, 2) = 'COEF2'
+        cmpName(1, 3) = 'HR1'
     else if (loadType .eq. 'PRES_REP') then
         nbCmp(1) = 2
         cmpName(1, 1) = 'PRES'
@@ -387,19 +409,18 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         ASSERT(ASTER_FALSE)
     end if
 
-! - Creation of the <CARTE>
+! - Creation of the <CARTE>         
     if (createMap) then
-        do iMap = 1, nbMap
-            call exisd('CARTE', map(iMap), iret)
+        do iMap = 1, nbMap       
+            call exisd('CARTE', map(iMap), iret)   
             if (iret .eq. 0) then
                 call alcart('G', map(iMap), mesh, physQuantity(iMap))
                 l_init(iMap) = ASTER_TRUE
             else
                 l_init(iMap) = ASTER_FALSE
-            end if
+            end if   
         end do
-    end if
-
+    end if   
 ! - Initialization of the <CARTE>
     if (createMap) then
         do iMap = 1, nbMap

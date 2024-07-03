@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine caethm(load, mesh, model, valeType)
+subroutine caethr(load, mesh, model, valeType)
 !
     implicit none
 !
@@ -54,10 +54,10 @@ subroutine caethm(load, mesh, model, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16), parameter :: keywordfact = 'ECHANGE_THM'
-    character(len=24), parameter :: listCell = '&&CAETHM.LIST_ELEM'
+    character(len=16), parameter :: keywordfact = 'ECHANGE_THM_HR'
+    character(len=24), parameter :: listCell = '&&CAETHR.LIST_ELEM'
     integer :: jnfis, jvalv, jvCell
-    integer :: nbCell, nbOcc(6), nfiss, nech
+    integer :: nbCell, nbOcc(3), nfiss, nech
     integer :: iret, iocc
     character(len=19) :: map(LOAD_MAP_NBMAX)
     integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
@@ -84,7 +84,7 @@ subroutine caethm(load, mesh, model, valeType)
 ! - Creation and initialization to zero of <CARTE>
 !
     call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType, &
-                        nbMap, map, nbCmp)
+                        nbMap, map, nbCmp)       
     ASSERT(nbMap .eq. 1)
     call jeveuo(map(1)//'.VALV', 'E', jvalv)
 !
@@ -95,20 +95,14 @@ subroutine caethm(load, mesh, model, valeType)
         call getelem(mesh, keywordfact, iocc, 'A', listCell, nbCell)
 
         if (nbCell .ne. 0) then
-            if (valeType .eq. 'REEL') then
-                call getvr8(keywordFact, 'COEF_11', iocc=iocc, scal=zr(jvalv), nbret=nbOcc(1))
-                call getvr8(keywordFact, 'COEF_12', iocc=iocc, scal=zr(jvalv+1), nbret=nbOcc(2))
-                call getvr8(keywordFact, 'COEF_21', iocc=iocc, scal=zr(jvalv+2), nbret=nbOcc(3))
-                call getvr8(keywordFact, 'COEF_22', iocc=iocc, scal=zr(jvalv+3), nbret=nbOcc(4))
-                call getvr8(keywordFact, 'PRE1_EXT', iocc=iocc, scal=zr(jvalv+4), nbret=nbOcc(5))
-                call getvr8(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zr(jvalv+5), nbret=nbOcc(6))        
-            elseif (valeType .eq. 'FONC') then
-                call getvid(keywordFact, 'COEF_11', iocc=iocc, scal=zk8(jvalv), nbret=nbOcc(1))
-                call getvid(keywordFact, 'COEF_12', iocc=iocc, scal=zk8(jvalv+1), nbret=nbOcc(2))
-                call getvid(keywordFact, 'COEF_21', iocc=iocc, scal=zk8(jvalv+2), nbret=nbOcc(3))
-                call getvid(keywordFact, 'COEF_22', iocc=iocc, scal=zk8(jvalv+3), nbret=nbOcc(4))
-                call getvid(keywordFact, 'PRE1_EXT', iocc=iocc, scal=zk8(jvalv+4), nbret=nbOcc(5))
-                call getvid(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zk8(jvalv+5), nbret=nbOcc(6))   
+            if (valeType .eq. 'REEL') then   
+                call getvr8(keywordFact, 'ALPHA'    , iocc=iocc, scal=zr(jvalv), nbret=nbOcc(1))                                 
+                call getvr8(keywordFact, 'PVAP_SAT' , iocc=iocc, scal=zr(jvalv+1), nbret=nbOcc(2))   
+                call getvr8(keywordFact, 'HR_EXT'   , iocc=iocc, scal=zr(jvalv+2), nbret=nbOcc(3))      
+            elseif (valeType .eq. 'FONC') then                                 
+                call getvid(keywordFact, 'ALPHA'   , iocc=iocc, scal=zk8(jvalv), nbret=nbOcc(1))                                 
+                call getvid(keywordFact, 'PVAP_SAT', iocc=iocc, scal=zk8(jvalv+1), nbret=nbOcc(2))  
+                call getvid(keywordFact, 'HR_EXT'  , iocc=iocc, scal=zk8(jvalv+2), nbret=nbOcc(3)) 
             else
                 ASSERT(ASTER_FALSE)
             end if

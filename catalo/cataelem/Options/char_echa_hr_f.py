@@ -26,9 +26,9 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-CHAR_ECHA_THM_R = Option(
-    para_in=(SP.PECHTHM, SP.PFLUXR, SP.PGEOMER, SP.PDEPLMR, SP.PINSTR, SP.PMATERC),
+CHAR_ECHA_HR_F = Option(
+    para_in=(SP.HCHTHMF, SP.PFLUXF, SP.PGEOMER, SP.PDEPLMR, SP.PINSTR,SP.PMATERC),
     para_out=(SP.PVECTUR,),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "THM"), (AT.BORD, "-1"))),),
-    comment=""" CHAR_ECHA_THM_R """,
+    comment=""" CHAR_ECHA_HR_F """,
 )

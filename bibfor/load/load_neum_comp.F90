@@ -77,7 +77,7 @@ subroutine load_neum_comp(stop, i_load, load_name, load_nume, load_type, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter(nb_type_neum=19)
+    parameter(nb_type_neum=20)
 !
     integer :: iexist, i_type_neum, nb_in_add
     character(len=16) :: load_option

@@ -36,10 +36,16 @@ DDL_MECA = LocatedComponents(
 
 
 CCOECH = LocatedComponents(
-    phys=PHY.ETHM_R, type="ELGA", location="RIGI", components=("COEF[6]", "PRE[3]")
+    phys=PHY.ETHM_R, type="ELGA", location="RIGI", components=("COEF[4]", "PRE[2]")
 )
 CCOECHF = LocatedComponents(
-    phys=PHY.ETHM_F, type="ELGA", location="RIGI", components=("COEF[6]", "PRE[3]")
+    phys=PHY.ETHM_F, type="ELGA", location="RIGI", components=("COEF[4]", "PRE[2]")
+)
+CCOECHH = LocatedComponents(
+    phys=PHY.ETHMH_R, type="ELGA", location="RIGI", components=("COEF[2]", "HR[1]")
+)
+CCOECHHF = LocatedComponents(
+    phys=PHY.ETHMH_F, type="ELGA", location="RIGI", components=("COEF[2]", "HR[1]")
 )
 
 
@@ -97,7 +103,19 @@ class HH2_DPSE3(Element):
             te=472,
             para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
-        ),
+        ), 
+        OP.CHAR_ECHA_THM_R(
+            te=480,
+            para_in=(
+                (SP.PFLUXR, EFLUXE),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PECHTHM, CCOECH),
+                (SP.PINSTR, CTEMPSR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),  
         OP.CHAR_ECHA_THM_F(
             te=480,
             para_in=(
@@ -109,13 +127,25 @@ class HH2_DPSE3(Element):
                 (SP.PMATERC, LC.CMATERC),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
-        ),
-        OP.CHAR_ECHA_THM_R(
+        ), 
+        OP.CHAR_ECHA_HR_R(
             te=480,
             para_in=(
                 (SP.PFLUXR, EFLUXE),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PECHTHM, CCOECH),
+                (SP.HECHTHM, CCOECHH,),
+                (SP.PINSTR, CTEMPSR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),    
+        OP.CHAR_ECHA_HR_F(
+            te=480,
+            para_in=(
+                (SP.PFLUXF, CFLUXF),
+                (SP.PGEOMER, NGEOMER),
+                (SP.HCHTHMF, CCOECHHF,),
                 (SP.PINSTR, CTEMPSR),
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PMATERC, LC.CMATERC),
