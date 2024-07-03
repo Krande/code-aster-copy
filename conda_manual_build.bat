@@ -96,8 +96,7 @@ set CXXFLAGS=%CXXFLAGS% /MD /DMKL_ILP64
 if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"
     set FC_SEARCH=ifort
-    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /double-size:64 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64
-    set FCFLAGS=%FCFLAGS% /assume:byterecl,aligned_dummy_args,dummy_aliases,writeable_strings
+    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /double-size:64 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64 /assume:byterecl,aligned_dummy_args,dummy_aliases,writeable_strings
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 ) else (
@@ -112,7 +111,7 @@ if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 :: Create dll debug pdb
 if "%BUILD_TYPE%" == "debug" (
     set FCFLAGS_ASTER_DEBUG=%FCFLAGS_ASTER_DEBUG% /fpe:0
-    REM /check:all
+    REM set FCFLAGS_ASTER_DEBUG=%FCFLAGS_ASTER_DEBUG% /check:all
 )
 
 :: Add Math libs
@@ -138,6 +137,7 @@ if "%build_type%" == "debug" (
 )
 REM Clean the build directory
 if %CLEAN_BUILD%==1 (
+    echo "Cleaning build directory"
     waf distclean
 )
 
