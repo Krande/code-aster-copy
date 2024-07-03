@@ -187,7 +187,7 @@ def testResultsAtTimeSteps(resu, inst_test, depl_calc, vite_calc, acce_calc, pre
 
         prec (:class:`dict`): tests precisions
     """
-    vale_calc = {"DEPL": depl_calc, "VITE": vite_calc, "AveolCCE": acce_calc}
+    vale_calc = {"DEPL": depl_calc, "VITE": vite_calc, "ACCE": acce_calc}
     func_refe = {"DEPL": depl_ref, "VITE": vite_ref, "ACCE": acce_ref}
     l_nom_cham = ["DEPL", "VITE", "ACCE"]
     assert len(prec) == len(l_nom_cham)
