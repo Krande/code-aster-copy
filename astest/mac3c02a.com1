@@ -1,0 +1,292 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="ALARME"))
+
+IMPR_RESU(
+    FORMAT="MED",
+    UNITE=81,
+    RESU=_F(
+        RESULTAT=RESU,
+        IMPR_NOM_VARI="NON",
+        NOM_CHAM=("DEPL", "SIEF_ELGA", "VARI_ELGA"),
+        VISU_SP="NON",
+        INST=t4,
+    ),
+)
+
+RELOAD = LIRE_RESU(
+    TYPE_RESU="EVOL_NOLI",
+    CARA_ELEM=RESU.getElementaryCharacteristics(),
+    CHAM_MATER=RESU.getMaterialField(1),
+    COMPORTEMENT=(
+        _F(
+            DEFORMATION="PETIT",
+            GROUP_MA=("CRAYON", "T_GUIDE"),
+            ITER_CPLAN_MAXI=10,
+            ITER_INTE_MAXI=20,
+            ITER_INTE_PAS=0,
+            PARM_THETA=0.5,
+            REGU_VISC="NON",
+            RELATION="MULTIFIBRE",
+            RESI_CPLAN_RELA=1e-06,
+            RESI_INTE=1e-06,
+            RIGI_GEOM="OUI",
+        ),
+        _F(
+            DEFORMATION="PETIT",
+            GROUP_MA="ELA",
+            ITER_CPLAN_MAXI=10,
+            ITER_INTE_MAXI=20,
+            ITER_INTE_PAS=0,
+            PARM_THETA=1.0,
+            REGU_VISC="NON",
+            RELATION="DIS_GRICRA",
+            RESI_CPLAN_RELA=1e-06,
+            RESI_INTE=1e-06,
+        ),
+        _F(
+            DEFORMATION="PETIT",
+            GROUP_MA=("CREIC", "RES_TOT"),
+            ITER_CPLAN_MAXI=10,
+            ITER_INTE_MAXI=20,
+            ITER_INTE_PAS=0,
+            PARM_THETA=1.0,
+            REGU_VISC="NON",
+            RELATION="DIS_CHOC",
+            RESI_CPLAN_RELA=1e-06,
+            RESI_INTE=1e-06,
+        ),
+        _F(
+            DEFORMATION="PETIT",
+            GROUP_MA=("GRIL_I", "GRIL_E", "ELAP", "CREI", "EBOINF", "EBOSUP", "RIG", "DIL"),
+            ITER_CPLAN_MAXI=10,
+            ITER_INTE_MAXI=20,
+            ITER_INTE_PAS=0,
+            PARM_THETA=1.0,
+            REGU_VISC="NON",
+            RELATION="ELAS",
+            RESI_CPLAN_RELA=1e-06,
+            RESI_INTE=1e-06,
+        ),
+        _F(
+            DEFORMATION="PETIT",
+            GROUP_MA="MAINTIEN",
+            ITER_CPLAN_MAXI=10,
+            ITER_INTE_MAXI=20,
+            ITER_INTE_PAS=0,
+            PARM_THETA=1.0,
+            REGU_VISC="NON",
+            RELATION="VMIS_ISOT_TRAC",
+            RESI_CPLAN_RELA=1e-06,
+            RESI_INTE=1e-06,
+        ),
+    ),
+    FORMAT="MED",
+    MODELE=RESU.getModel(),
+    TOUT_ORDRE="OUI",
+    UNITE=81,
+    FORMAT_MED=(
+        _F(NOM_RESU="RESU", NOM_CHAM="DEPL"),
+        _F(NOM_RESU="RESU", NOM_CHAM="SIEF_ELGA"),
+        _F(NOM_RESU="RESU", NOM_CHAM="VARI_ELGA"),
+    ),
+)
+
+
+TABP1 = POST_MAC3COEUR(
+    RESULTAT=RELOAD,
+    TYPE_COEUR="TEST",
+    INST=t4,
+    TABLE=DATAMAC,
+    TYPE_CALCUL="LAME",
+    OPERATION="ANALYSE",
+)
+
+TABP3 = POST_MAC3COEUR(
+    RESULTAT=RELOAD,
+    TYPE_COEUR="TEST",
+    INST=t4,
+    TABLE=DATAMAC,
+    TYPE_CALCUL="FORCE_CONTACT",
+    OPERATION="ANALYSE",
+)
+
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_AC_G4_70",
+    VALE_CALC=2.2225102109633301,
+    VALE_REFE=2.2225102109633301,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_AC_G4_80",
+    VALE_CALC=2.7871110147202298,
+    VALE_REFE=2.7871110147202298,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_AC_G4_90",
+    VALE_CALC=3.3517118184771300,
+    VALE_REFE=3.3517118184771300,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_AC_G4_95",
+    VALE_CALC=3.6340122203555798,
+    VALE_REFE=3.6340122203555798,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_AC_G4_99",
+    VALE_CALC=3.8598525418583400,
+    VALE_REFE=3.8598525418583400,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_CU_G4_70",
+    VALE_CALC=1.8704339866240101,
+    VALE_REFE=1.8704339866240101,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_CU_G4_80",
+    VALE_CALC=1.8704339866240101,
+    VALE_REFE=1.8704339866240101,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_CU_G4_90",
+    VALE_CALC=1.8704339866240300,
+    VALE_REFE=1.8704339866240300,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_CU_G4_95",
+    VALE_CALC=1.9388715837935899,
+    VALE_REFE=1.9388715837935899,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_CU_G4_99",
+    VALE_CALC=2.0057883454704899,
+    VALE_REFE=2.0057883454704899,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_CU_G5_70",
+    VALE_CALC=1.8682126060819599,
+    VALE_REFE=1.8682126060819599,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_G4_70",
+    VALE_CALC=1.8704339866240201,
+    VALE_REFE=1.8704339866240201,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_G4_80",
+    VALE_CALC=2.0225175358897101,
+    VALE_REFE=2.0225175358897101,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_G4_90",
+    VALE_CALC=2.0335629116468401,
+    VALE_REFE=2.0335629116468401,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_G4_95",
+    VALE_CALC=2.5048106128417800,
+    VALE_REFE=2.5048106128417800,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP1,
+    NOM_PARA="QuanLE_G4_99",
+    VALE_CALC=3.6340122203555798,
+    VALE_REFE=3.6340122203555798,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP3,
+    NOM_PARA="QuanN_AC_G6_99",
+    VALE_CALC=159.0860545161573043,
+    VALE_REFE=159.0860545161573043,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP3,
+    NOM_PARA="QuanN_CU_G5_99",
+    VALE_CALC=238.6053860660020405,
+    VALE_REFE=238.6053860660020405,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP3,
+    NOM_PARA="QuanN_G4_99",
+    VALE_CALC=107.3934946667809243,
+    VALE_REFE=107.3934946667809243,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+TEST_TABLE(
+    TABLE=TABP3,
+    NOM_PARA="QuanN_G5_99",
+    VALE_CALC=228.9799117990140473,
+    VALE_REFE=228.9799117990140473,
+    REFERENCE="AUTRE_ASTER",
+    CRITERE="ABSOLU",
+)
+
+FIN()
