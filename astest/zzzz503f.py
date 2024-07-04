@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster import CA
 import numpy as np
 
 code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
@@ -65,6 +66,7 @@ U2 = MECA_STATIQUE(
 ###                 de FieldsOnCells class                    ###
 
 
+fieldOnNode1 = U2.getField("DEPL", 32)
 fieldOnElem1 = U2.getField("SIEF_ELGA", 32)
 fieldOnElem2 = U2.getField("SIEF_ELGA", 31)
 
@@ -114,8 +116,24 @@ def myfunc(x):
     return math.sin(x)
 
 
+def myfuncMax(x):
+    return min(1.0, max(0, x))
+
+
+def myfuncErr(x):
+    return str(x)
+
+
 fieldOnElem4 = fieldOnElem3.transform(myfunc)
 test.assertAlmostEqual(fieldOnElem4[0], math.sin(100))
+
+fieldOnNode2 = fieldOnNode1.transform(myfuncMax)
+test.assertAlmostEqual(fieldOnNode2[0], 0.0)
+test.assertAlmostEqual(fieldOnNode2[1], 1.0)
+
+with test.assertRaises(CA.AsterError):
+    fieldOnNode3 = fieldOnNode1.transform(myfuncErr)
+    fieldOnElem5 = fieldOnElem3.transform(myfuncErr)
 
 # norms
 

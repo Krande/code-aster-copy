@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc32env(lieu, futotenv)
+subroutine rc32env(lieu, futotenv, fuseis_in)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -28,7 +28,7 @@ subroutine rc32env(lieu, futotenv)
 #include "asterfort/wkvect.h"
 !
     character(len=4) :: lieu
-    real(kind=8) :: futotenv
+    real(kind=8) :: futotenv, fuseis_in
 !
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200 et ZE200
 !     AFFICHAGE DES RESULTATS DANS LA TABLE DE SORTIE
@@ -76,7 +76,7 @@ subroutine rc32env(lieu, futotenv)
         call jeveuo('&&RC3200.SITUS_RESU.'//lieu, 'L', ind1)
         call jeveuo('&&RC3200.COMBS_RESU.'//lieu, 'L', ind2)
 !
-        fuseism = zr(jmax+11)
+        fuseism = fuseis_in
     end if
     if (zi(jfact+6*k+5) .eq. 1) then
 !-------- le séisme n'intervient pas dans cette combinaison

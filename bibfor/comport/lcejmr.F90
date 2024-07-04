@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -354,8 +354,6 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
     do i = 2, ndim
         if (rt .gt. 0.d0) then
 !           sigma(i) = sigmo(i) + rt*ddelta(i) ! version incrementale
-!          ligne de code inutile pour eviter dummy input de sigmo
-            sigma(i) = sigmo(i)
             sigma(i) = rt*delta(i)
         else
             sigma(i) = 0.d0

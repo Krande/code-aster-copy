@@ -3146,6 +3146,16 @@ class FieldOnNodesReal(DataField):
             SimpleFieldOnNodesReal: field converted
         """
 
+    def transform(self, func):
+        """Apply a function to each value of the object.
+
+        Arguments:
+            func (*callable*): Callable Python object
+
+        Returns:
+            FieldOnNodesReal: New FieldOnNodes object with the transformed values
+        """
+
     def updateValuePointers(self):
         pass
 
@@ -3331,6 +3341,16 @@ class FieldOnNodesComplex(DataField):
 
         Returns:
             SimpleFieldOnNodesComplex: field converted
+        """
+
+    def transform(self, func):
+        """Apply a function to each value of the object.
+
+        Arguments:
+            func (*callable*): Callable Python object
+
+        Returns:
+            FieldOnNodesComplex: New FieldOnNodes object with the transformed values
         """
 
     def updateValuePointers(self):

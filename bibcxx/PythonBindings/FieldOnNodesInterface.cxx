@@ -3,7 +3,7 @@
  * @brief Python interface for FieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -157,6 +157,16 @@ Returns:
             Returns:
                 int: number of element in the field
             )" )
+        .def( "transform", &FieldOnNodesReal::transform< ASTERDOUBLE >, R"(
+            Apply a function to each value of the object.
+
+            Arguments:
+                func (*callable*): Callable Python object
+
+            Returns:
+                FieldOnNodesReal: New FieldOnNodes object with the transformed values
+            )",
+              py::arg( "func" ) )
         .def( "scale", &FieldOnNodesReal::scale, R"(
             Scale in-place the field by a diagonal matrix stored as an array
 
@@ -355,6 +365,16 @@ Returns:
             Returns:
                 int: number of components
             )" )
+        .def( "transform", &FieldOnNodesComplex::transform< ASTERCOMPLEX >, R"(
+            Apply a function to each value of the object.
+
+            Arguments:
+                func (*callable*): Callable Python object
+
+            Returns:
+                FieldOnNodesComplex: New FieldOnNodes object with the transformed values
+            )",
+              py::arg( "func" ) )
         .def( "scale", &FieldOnNodesComplex::scale, R"(
             Scale in-place the field by a diagonal matrix stored as an array
 
