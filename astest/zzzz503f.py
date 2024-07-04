@@ -19,6 +19,7 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster import CA
 import numpy as np
 
 code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
