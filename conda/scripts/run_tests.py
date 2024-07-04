@@ -20,8 +20,9 @@ def init_env():
     os.environ["ASTER_LIBDIR"] = ASTER_DIR.as_posix()
     os.environ["ASTER_LOCALEDIR"] = (CONDA_PREFIX / "Library" / "share" / "locale" / "aster").as_posix()
     os.environ["ASTER_ELEMENTSDIR"] = ASTER_DIR.as_posix()
-    os.environ["OMP_DYNAMIC"] = "TRUE"
-    os.environ["OMP_NUM_THREADS"] = "1"
+
+    # os.environ["OMP_DYNAMIC"] = "TRUE"
+    # os.environ["OMP_NUM_THREADS"] = "1"
 
 
 def openmp_debugging():
@@ -95,13 +96,13 @@ def run_specific_test(test_name: str, debug_openmp=False):
     test_file = init_str + comm_file.read_text()
 
     with open("test_file.py", "w") as f:
-        f.write("from test_install import init_env")
+        f.write("from run_tests import init_env")
         if debug_openmp:
             f.write(", openmp_debugging\n")
             f.write("openmp_debugging()\n")
         else:
             f.write("\n")
-        f.write("init_env()\n")
+        f.write("#init_env()\n")
         f.write(test_file)
 
     exec(test_file)
@@ -176,12 +177,12 @@ def cli():
 
 
 def manual():
-    # run_specific_test("comp010i")
+    run_specific_test("comp010i")
     # run_specific_test('adlv100a')
     # run_specific_test('adlv100p')
     # run_specific_test('ahlv100a')
     # run_specific_test('ahlv100t')
-    run_specific_test('hsna106a')  # related to verification of <F> <MODELISA_1> Mesh file issue
+    # run_specific_test('hsna106a')  # related to verification of <F> <MODELISA_1> Mesh file issue
     # run_specific_test('zzzz111a')
     # run_specific_test('zzzz395s')
 
