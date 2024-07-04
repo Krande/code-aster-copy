@@ -153,14 +153,15 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
                 zr(jcoord+ndim*iaux+jaux) = coordo(3*iaux+jaux+1)
             end do
         end do
-        print *, "Calling as_mmhcow with:"
-        print *, "IDFIMD (fid):", idfimd
-        print *, "Address of NOMAMD (maa):", LOC(nomamd)
-        print *, "NOMAMD (maa):", nomamd
-        print *, "ZR(JCOORD) (coo):", zr(jcoord)
-        print *, "EDFUIN (modcoo):", edfuin
-        print *, "NBNOT (n):", nbnoeu
-        print *, "CODRET (cret):", codret
+
+!        print *, "Calling as_mmhcow with:"
+!        print *, "IDFIMD (fid):", idfimd
+!        print *, "Address of NOMAMD (maa):", LOC(nomamd)
+!        print *, "NOMAMD (maa):", nomamd
+!        print *, "ZR(JCOORD) (coo):", zr(jcoord)
+!        print *, "EDFUIN (modcoo):", edfuin
+!        print *, "NBNOT (n):", nbnoeu
+!        print *, "CODRET (cret):", codret
         call as_mmhcow(idfimd, nomamd, zr(jcoord), edfuin, nbnoeu, &
                        codret)
     end if
