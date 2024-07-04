@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,8 +92,8 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
     character(len=24) :: champ1, champ2, dep2, dep1
     integer :: jv_para
     aster_logical :: l_pilo, lpiarc, l_cont_cont
-    aster_logical :: l_expl_gene, l_reuse, l_erre_thm
-    aster_logical :: l_zero, l_acti, l_ener, verbose
+    aster_logical :: l_expl_gene, l_reuse, l_erre_thm, l_mstp
+    aster_logical :: l_zero, l_acti, l_ener, l_read, verbose
     real(kind=8) :: coefav, init_time
     real(kind=8), pointer :: plir(:) => null()
     character(len=24), pointer :: pltk(:) => null()
@@ -137,6 +137,7 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
     l_reuse = isfonc(list_func_acti, 'REUSE')
     l_erre_thm = isfonc(list_func_acti, 'ERRE_TEMPS_THM')
     l_ener = isfonc(list_func_acti, 'ENERGIE')
+    l_mstp = ndynlo(sddyna, 'MULTI_PAS')
 !
 ! - Get previous displacement field
 !
@@ -291,6 +292,23 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
             end if
         end if
     end do
+
+!
+!   Check initial stress state for multi-step schemes
+!
+    if (l_mstp) then
+        do i_field = 1, nb_field
+            field_type = ds_inout%field(i_field)%type
+            l_acti = ds_inout%l_field_acti(i_field)
+            l_read = ds_inout%field(i_field)%init_type .eq. 'READ'
+            if ((field_type .eq. 'SIEF_ELGA') .and. (.not. l_stin_evol)) then
+                if (l_acti .and. l_read) then
+                    call utmess('A', 'MECANONLINE4_50')
+                end if
+            end if
+        end do
+    end if
+
 !
 ! - PROJECTION MODALE EN EXPLICITE
 !

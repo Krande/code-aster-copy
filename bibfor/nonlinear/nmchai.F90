@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,59 +18,59 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmchai(tychap, tyvarz, vali, tychap_out)
-!
+    !
     implicit none
-!
+    !
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
-!
+    !
     character(len=6), intent(in) :: tychap
     character(len=*), intent(in) :: tyvarz
     integer :: vali
     character(len=6), optional, intent(out) :: tychap_out
-!
-! ----------------------------------------------------------------------
-!
-! ROUTINE MECA_NON_LINE (CALCUL - UTILITAIRE)
-!
-! INDEX OU EST STOCKE LE NOM DE LA VARIABLE DANS UNE VARIABLE CHAPEAU
-!
-! ----------------------------------------------------------------------
-!
-!
-! IN  TYCHAP : TYPE DE VARIABLE CHAPEAU
-!                MEELEM - NOMS DES MATR_ELEM
-!                MEASSE - NOMS DES MATR_ASSE
-!                VEELEM - NOMS DES VECT_ELEM
-!                VEASSE - NOMS DES VECT_ASSE
-!                SOLALG - NOMS DES CHAM_NO SOLUTIONS
-!                VALINC - VALEURS SOLUTION INCREMENTALE
-! IN  TYVARI : TYPE DE LA VARIABLE
-!                OU  LONUTI - NOMBRE DE VAR. STOCKEES
-! OUT VALI   : INDEX OU EST STOCKE LE NOM DE LA VARIABLE DANS UNE
-!              VARIABLE CHAPEAU
-!                OU NOMBRE DE VAR. STOCKEES
-!
-! ----------------------------------------------------------------------
-!
+    !
+    ! ----------------------------------------------------------------------
+    !
+    ! ROUTINE MECA_NON_LINE (CALCUL - UTILITAIRE)
+    !
+    ! INDEX OU EST STOCKE LE NOM DE LA VARIABLE DANS UNE VARIABLE CHAPEAU
+    !
+    ! ----------------------------------------------------------------------
+    !
+    !
+    ! IN  TYCHAP : TYPE DE VARIABLE CHAPEAU
+    !                MEELEM - NOMS DES MATR_ELEM
+    !                MEASSE - NOMS DES MATR_ASSE
+    !                VEELEM - NOMS DES VECT_ELEM
+    !                VEASSE - NOMS DES VECT_ASSE
+    !                SOLALG - NOMS DES CHAM_NO SOLUTIONS
+    !                VALINC - VALEURS SOLUTION INCREMENTALE
+    ! IN  TYVARI : TYPE DE LA VARIABLE
+    !                OU  LONUTI - NOMBRE DE VAR. STOCKEES
+    ! OUT VALI   : INDEX OU EST STOCKE LE NOM DE LA VARIABLE DANS UNE
+    !              VARIABLE CHAPEAU
+    !                OU NOMBRE DE VAR. STOCKEES
+    !
+    ! ----------------------------------------------------------------------
+    !
     integer, parameter :: zmeelm = 8
     integer, parameter :: zmeass = 4
     integer, parameter :: zveelm = 12
-    integer, parameter :: zveass = 18
+    integer, parameter :: zveass = 19
     integer, parameter :: zsolal = 17
     integer, parameter :: zvalin = 28
-!
+    !
     character(len=8) :: lmeelm(zmeelm), lmeass(zmeass)
     character(len=8) :: lveelm(zveelm), lveass(zveass)
     character(len=8) :: lsolal(zsolal)
     character(len=8) :: lvalin(zvalin)
-!
+    !
     character(len=8) :: tyvari
-!
+    !
     data lmeelm/'MEDIRI', 'MEMASS', 'MEAMOR', 'MESUIV',&
      &             'MESSTR', 'MEGEOM', 'MEELTC', 'MEELTF'/
     data lmeass/'MERIGI', 'MEMASS', 'MEAMOR', 'MESSTR'/
-!
+    !
     data lveelm/'CNDIRI', 'CNBUDI', 'CNDIDO',&
      &             'CNDIPI', 'CNFEDO', 'CNFEPI', 'CNONDP',&
      &             'CNFSDO', 'CNIMPE', 'CNDIDI', 'CNSSTF',&
@@ -81,22 +81,22 @@ subroutine nmchai(tychap, tyvarz, vali, tychap_out)
      &             'CNREFE',&
      &             'CNCINE', 'CNSSTR', 'CNDYNA',&
      &             'CNAMOD', 'CNFEXT',&
-     &             'CNVISS'/
-!
+     &             'CNVISS', 'CNHYST'/
+    !
     data lsolal/'DDEPLA', 'DEPDEL', 'DEPOLD', 'DEPPR1', 'DEPPR2',&
      &             'DVITLA', 'VITDEL', 'VITOLD', 'VITPR1', 'VITPR2',&
      &             'DACCLA', 'ACCDEL', 'ACCOLD', 'ACCPR1', 'ACCPR2',&
      &             'DEPSO1', 'DEPSO2'/
-!
+    !
     data lvalin/'DEPMOI', 'SIGMOI', 'VARMOI', 'VITMOI', 'ACCMOI',&
      &             'COMMOI', 'DEPPLU', 'SIGPLU', 'VARPLU', 'VITPLU',&
      &             'ACCPLU', 'COMPLU', 'SIGEXT', 'DEPKM1', 'VITKM1',&
      &             'ACCKM1', 'ROMKM1', 'ROMK', 'STRMOI', 'STRPLU',&
      &             'FEXMOI', 'FEXPLU', 'FAMMOI', 'FAMPLU', 'FLIMOI',&
      &             'FLIPLU', 'FNOMOI', 'FNOPLU'/
-!
-! ----------------------------------------------------------------------
-!
+    !
+    ! ----------------------------------------------------------------------
+    !
     tyvari = tyvarz
     if (present(tychap_out)) then
         ASSERT(tychap .eq. 'VEASSE')
@@ -107,7 +107,7 @@ subroutine nmchai(tychap, tyvarz, vali, tychap_out)
         goto 99
     end if
     vali = -1
-!
+    !
     if (tychap .eq. 'MEELEM') then
         if (tyvari .eq. 'LONMAX') then
             vali = zmeelm
@@ -147,9 +147,9 @@ subroutine nmchai(tychap, tyvarz, vali, tychap_out)
     else
         ASSERT(ASTER_FALSE)
     end if
-!
+    !
 99  continue
-!
+    !
     ASSERT(vali .gt. 0)
-!
+    !
 end subroutine

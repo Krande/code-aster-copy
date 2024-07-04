@@ -1107,7 +1107,7 @@ TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     PRECISION=2.0e-2,
     #          Variabilité expliquee ci-dessus :
-    VALE_CALC=1.888023285632875,
+    VALE_CALC=1.8696263978948173,
     VALE_REFE=1.8628625511053,
     NOM_PARA="RMS",
     TABLE=TAB_INF1,
@@ -1117,7 +1117,7 @@ TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     PRECISION=2.0e-1,
     #          Variabilité expliquee ci-dessus :
-    VALE_CALC=1.2706401447470175,
+    VALE_CALC=1.2498577579928738,
     VALE_REFE=1.107501776192,
     NOM_PARA="RMS",
     TABLE=TAB_INF2,
@@ -1127,7 +1127,7 @@ TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     PRECISION=1.0e-1,
     #          Variabilité expliquee ci-dessus :
-    VALE_CALC=2.2223669293756343,
+    VALE_CALC=2.2031981263024654,
     VALE_REFE=2.4097094098975,
     NOM_PARA="RMS",
     TABLE=TAB_INF3,
@@ -1142,7 +1142,7 @@ MAXSP = INFO_FONCTION(MAX=_F(FONCTION=SPOSCI))
 TEST_FONCTION(
     VALEUR=_F(
         #                          Variabilité non-expliquee :
-        VALE_CALC=0.89062230519879,
+        VALE_CALC=0.88249328340275,
         VALE_REFE=8.798585602334655e-01,
         VALE_PARA=(0.02, 2.5),
         REFERENCE="AUTRE_ASTER",
@@ -1278,7 +1278,7 @@ TEST_TABLE(
     TYPE_TEST="MAX",
     VALE_ABS="OUI",
     #          Variabilité non-expliquee :
-    VALE_CALC=0.17487671803304172,
+    VALE_CALC=0.17413800196941068,
     # Reference: Mod. HM adimensionnee et raffinee
     REFERENCE="AUTRE_ASTER",
     CRITERE="ABSOLU",
@@ -1292,7 +1292,7 @@ TEST_TABLE(
     TYPE_TEST="MAX",
     VALE_ABS="OUI",
     #          Variabilité non-expliquee :
-    VALE_CALC=0.030774300853571634,
+    VALE_CALC=0.03298857581849707,
     # Reference: Mod. HM adimensionnee et raffinee
     REFERENCE="AUTRE_ASTER",
     CRITERE="ABSOLU",
@@ -1319,7 +1319,7 @@ TEST_TABLE(
     TYPE_TEST="MAX",
     VALE_ABS="OUI",
     #          Variabilité non-expliquee :
-    VALE_CALC=0.21520903014225257,
+    VALE_CALC=0.21599511563102924,
     # Reference: Mod. HM adimensionnee et raffinee
     REFERENCE="AUTRE_ASTER",
     CRITERE="ABSOLU",

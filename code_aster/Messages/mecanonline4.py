@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,15 @@ cata_msg = {
  Vous faites une reprise de calcul avec PILOTAGE en longueur d'arc et avec l'option ANGL_INCR_DEPL mais il n'y pas assez d'informations dans
  la structure de données résultat. Il vous faut en effet au moins les deux derniers champs déplacements solutions.
  Changer l'option de PILOTAGE (utilisez NORM_INCR_DEPL) ou refaites le premier calcul pour enrichir la structure de données résultat (modifiez vos options du mot-clé ARCHIVAGE).
+"""
+    ),
+    50: _(
+        """
+La spécification d'un champ de contrainte initial (via le mot-clé SIGM) 
+dans le cas d'un schéma multi-pas est fortement déconseillée. En effet, 
+l'accélération initiale sera calculée sans tenir compte de ce champ de contrainte 
+initial, ce qui peut conduire à des résultats faux ! 
+Il est donc recommandé de spécifier un état initial via le mot-clé EVOL_NOLI.
 """
     ),
 }

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ subroutine ndcrdy(result, sddyna)
         call wkvect(losd, 'V V L', 16, jlosd)
         call wkvect(nosd, 'V V K24', 8, jnosd)
         call wkvect(tfor, 'V V I', 2, jtfor)
-        call wkvect(cfsc, 'V V R', 24, jcfsc)
+        call wkvect(cfsc, 'V V R', 25, jcfsc)
         call wkvect(tcha, 'V V K24', 4, jtcha)
         call wkvect(ncha, 'V V I', 5, jncha)
         call wkvect(veol, 'V V K24', 15, jveol)

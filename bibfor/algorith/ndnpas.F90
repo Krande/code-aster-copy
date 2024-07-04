@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     aster_logical :: ldepl, lvite, lacce
     aster_logical :: lnewma
     real(kind=8) :: coerig, coeamo, coemas
-    real(kind=8) :: coeext, coeint, coeequ, coeex2
+    real(kind=8) :: coeext, coeint, coeequ, coeex2, coeam0
     integer :: imode
     integer :: neq, nbmodp
     real(kind=8) :: coefd(3), coefv(3), coefa(3)
@@ -163,7 +163,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
             ASSERT(.false.)
         end if
         if (lhhtc) then
-            coeamo = coeamo/(un+alpha)
+            coeamo = coeamo
             coemas = coemas/(un+alpha)
         end if
     else
@@ -277,10 +277,11 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     call ndpred(sddyna, valinc, solalg)
 !
 ! --- COEFFICIENTS POUR SCHEMAS A PLUSIEURS PAS
-! --- COEEXT: COEF. DE PONDERATION DES FORCES EXTERNES
-! --- COEINT: COEF. DE PONDERATION DES FORCES INTERNES
-! --- COEEQU: COEF. PERMETTANT DE RESPECTER L'EQUILIBRE SU RLES AUTRES
-!             TERMES NON PONDERES
+! --- COEEXT: COEF. DE PONDERATION DES FORCES EXTERNES AU PAS PRECEDENT
+! --- COEINT: COEF. DE PONDERATION DES FORCES INTERNES AU PAS PRECEDENT
+! --- COEXT2: COEF. DE PONDERATION DES FORCES EXTERNES AU PAS COURANT
+! --- COEAM0: COEF. DE PONDERATION DES FORCES D'AMORTISSEMENT AU PAS PRECEDENT
+! --- COEEQU: COEF. PERMETTANT DE RESPECTER L'EQUILIBRE SUR LES AUTRES TERMES NON PONDERES
 !
     if (lmpas) then
         if (lhhtc) then
@@ -288,6 +289,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
             coeint = -alpha/(un+alpha)
             coeequ = un/(un+alpha)
             coeex2 = un
+            coeam0 = -alpha
         else
             ASSERT(.false.)
         end if
@@ -296,11 +298,13 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
         coeint = zero
         coeequ = un
         coeex2 = un
+        coeam0 = zero
     end if
     coef_sch(16) = coeext
     coef_sch(17) = coeequ
     coef_sch(18) = coeint
     coef_sch(19) = coeex2
+    coef_sch(20) = coeam0
 !
     if (lmpas) then
         if (niv .ge. 2) then
@@ -322,7 +326,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     else
         coiner = un/deltat
     end if
-    coef_sch(23) = coiner
+    coef_sch(24) = coiner
     if (niv .ge. 2) then
         write (ifm, *) '<MECANONLINE> ... COEF. FORC. INERTIE REF: ', &
             coiner
@@ -333,9 +337,12 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     coerma = un
     coeram = un
     coerri = un
-    coef_sch(20) = coerma
-    coef_sch(21) = coeram
-    coef_sch(22) = coerri
+    if (lmpas) then
+        coeram = coeram*(un+alpha)
+    end if
+    coef_sch(21) = coerma
+    coef_sch(22) = coeram
+    coef_sch(23) = coerri
 !
     if (niv .ge. 2) then
         write (ifm, *) '<MECANONLINE> ... COEF. FDYNA RIGI: ', coerri
@@ -345,7 +352,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
 !
 ! - Save previous time
 !
-    coef_sch(24) = instam
+    coef_sch(25) = instam
 !
 ! --- INITIALISATION DES CHAMPS D'ENTRAINEMENT EN MULTI-APPUI
 !

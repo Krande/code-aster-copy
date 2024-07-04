@@ -168,4 +168,11 @@ Erreur utilisateur :
    On peut ensuite reprendre en poursuite avec un schéma moins dissipatif si besoin est.
 """
     ),
+    80: _(
+        """
+ Les matrices d'amortissement élémentaires sont spécifiées par l'utilisateur. Il 
+ n'est actuellement pas possible de calculer les forces d'amortissement dans le 
+ cadre du calcul de l'accélération initiale. 
+"""
+    ),
 }

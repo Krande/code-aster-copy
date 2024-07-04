@@ -118,7 +118,7 @@ IMPR_FONCTION(UNITE=8, COURBE=_F(FONCTION=DXN11))
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-1.020977833528e-3,
+            VALE_CALC=-1.020976840324e-03,
             VALE_REFE=-1.0e-3,
             CRITERE="RELATIF",
             VALE_PARA=0.2656,
@@ -127,7 +127,7 @@ TEST_FONCTION(
             FONCTION=DXN11,
         ),
         _F(
-            VALE_CALC=-1.014419776203e-3,
+            VALE_CALC=-1.014419776203e-03,
             VALE_REFE=-1.0e-3,
             CRITERE="RELATIF",
             VALE_PARA=0.44,
@@ -136,7 +136,7 @@ TEST_FONCTION(
             FONCTION=DXN11,
         ),
         _F(
-            VALE_CALC=1.397448170262e-9,
+            VALE_CALC=1.397448170735e-09,
             VALE_REFE=0.0,
             CRITERE="ABSOLU",
             VALE_PARA=0.8,
@@ -145,7 +145,7 @@ TEST_FONCTION(
             FONCTION=DXN11,
         ),
         _F(
-            VALE_CALC=-5.061047602253e-8,
+            VALE_CALC=-3.747230261690e-08,
             VALE_REFE=0.0,
             CRITERE="ABSOLU",
             VALE_PARA=0.2656,
@@ -188,7 +188,7 @@ IMPR_FONCTION(UNITE=8, COURBE=_F(FONCTION=DXNB11))
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-1.021021935704e-3,
+            VALE_CALC=-1.020976840324e-03,
             VALE_REFE=-1.0e-3,
             CRITERE="RELATIF",
             VALE_PARA=0.2656,
@@ -197,7 +197,7 @@ TEST_FONCTION(
             FONCTION=DXNB11,
         ),
         _F(
-            VALE_CALC=-1.014457202297e-3,
+            VALE_CALC=-1.014414612944e-03,
             VALE_REFE=-1.0e-3,
             CRITERE="RELATIF",
             VALE_PARA=0.44,

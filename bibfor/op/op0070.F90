@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine op0070()
     integer, parameter :: zmeelm = 8
     integer, parameter :: zmeass = 4
     integer, parameter :: zveelm = 12
-    integer, parameter :: zveass = 18
+    integer, parameter :: zveass = 19
     integer, parameter :: zsolal = 17
     integer, parameter :: zvalin = 28
 !

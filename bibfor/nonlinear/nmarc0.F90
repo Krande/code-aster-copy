@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,9 +112,12 @@ subroutine nmarc0(result, modele, ds_material, carele, fonact, &
 !
     if (ldyna) then
         time_prev = ndynre(sddyna, 'INST_PREC')
-        call rsadpa(result, 'E', 1, 'INST_PREC', numarc, 0, sjv=jv_para)
-        zr(jv_para) = time_prev
+    else
+        time_prev = time_curr
     end if
+
+    call rsadpa(result, 'E', 1, 'INST_PREC', numarc, 0, sjv=jv_para)
+    zr(jv_para) = time_prev
 !
 ! --- ARCHIVAGE DU MODELE, MATERIAU, CARA_ELEM ET DE LA SD CHARGE
 !

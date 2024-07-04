@@ -1,0 +1,49 @@
+ TITRE
+  SYSTEME MASSE-RESSORT A 1 DEGRE DE LIBERTE                                   
+ FINSF
+ %
+ COOR_3D
+ A         0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ B         1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ K1       A        B       
+ FINSF
+ %
+ GROUP_NO
+ ENCAS                   
+ A       
+ FINSF
+ %
+ GROUP_NO
+ APPUIS                  
+ B              
+ FINSF
+ %
+ GROUP_NO
+ MASSE                   
+ B              
+ FINSF
+ %
+ GROUP_NO
+ A                       
+ A       
+ FINSF
+ %
+ GROUP_NO
+ B                       
+ B       
+ FINSF
+ %
+ GROUP_MA
+ RESSORTS                 
+ K1             
+ FINSF
+ %
+ GROUP_MA
+ K1                   
+ K1      
+ FINSF
+ %
+ FIN

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,7 @@ subroutine nmrepl(modele, numedd, ds_material, carele, ds_system, &
     integer :: ifm, niv
     integer, parameter :: zsolal = 17, zvalin = 28
     character(len=19) :: solalt(zsolal), valint(zvalin, 2)
-    integer, parameter :: zveass = 18
+    integer, parameter :: zveass = 19
     character(len=19) :: veasst(zveass)
     aster_logical :: exopt, mieux, irecli
     integer :: itrlmx, iterho, act, opt

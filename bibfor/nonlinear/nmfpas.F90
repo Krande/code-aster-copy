@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -147,7 +147,7 @@ subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter, &
     if (ldyna) then
         cfsc = sddyna(1:15)//'.COEF_SCH'
         call jeveuo(cfsc, 'E', vr=coef_sch)
-        coef_sch(24) = diinst(sddisc, numins-1)
+        coef_sch(25) = diinst(sddisc, numins-1)
     end if
 !
 ! - Progress bar
