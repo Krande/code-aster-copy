@@ -71,6 +71,32 @@ might not be the case.
 It might be related to the PATH environment variable and the Intel oneAPI vars set globally. Removing the paths and 
 restarting the computer seemed to have worked last time I encountered this issue.
 
+The actual spike in memory happens in `bibfor/mumps/amumpd.F90` at line 346 the `call dmumps(dmpsk)`
+
+```fortran
+!       ------------------------------------------------
+!        FACTORISATION NUMERIQUE MUMPS:
+!       ------------------------------------------------
+!
+! --- SI GESTION_MEMOIRE='AUTO'
+! --- ON TENTE PLUSIEURS (PCENTP(1)) FACTORISATIONS NUMERIQUES EN
+! --- MULTIPLIANT, A CHAQUE ECHEC, L'ANCIEN PCENT_PIVOT PAR PCENTP(2)
+! --- VOIRE EN PASSANT EN OOC (EN DERNIER RESSORT).
+! --- AUTO-ADAPTATION DU PARAMETRAGE SOLVEUR/PCENT_PIVOT:
+! --- ON MODIFIE LE PARAMETRE DANS LA SD_SOLVEUR A LA VOLEE POUR NE
+! --- PAS PERDRE DE TEMPS LA PROCHAINE FOIS. CETTE VALEUR N'EST VALABLE
+! --- QUE DANS L'OPERATEUR CONSIDERE.
+! --- ON FAIT LA MEME CHOSE EN CAS DE PB D'ALLOCATION MEMOIRE (INFOG=-13
+! --- CELA PEUT ETRE DU A UN ICNTL(23) MAL ESTIME
+!
+        dmpsk%job = 2
+        if (lresol) then
+            pcpi = dmpsk%icntl(14)
+            do ifact = 1, ifactm
+                call dmumps(dmpsk)
+                iaux = dmpsk%infog(1)
+!
+```
 
 
 
