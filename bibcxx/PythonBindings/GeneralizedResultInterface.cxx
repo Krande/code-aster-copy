@@ -51,7 +51,15 @@ void exportGeneralizedResultToPython( py::module_ &mod ) {
         .def( "getDOFNumbering", &TransientGeneralizedResult::getDOFNumbering )
         .def( "getNumberOfModes", &TransientGeneralizedResult::getNumberOfModes )
         .def( "getTimes", &TransientGeneralizedResult::getTimes )
-        .def( "getIndexes", &TransientGeneralizedResult::getIndexes );
+        .def( "getIndexes", &TransientGeneralizedResult::getIndexes )
+        .def( "getDisplacementValues", &TransientGeneralizedResult::getDisplacementValues )
+        .def( "getVelocityValues", &TransientGeneralizedResult::getVelocityValues )
+        .def( "getAccelerationValues", &TransientGeneralizedResult::getAccelerationValues )
+        .def( "getDisplacementValuesAtIndex",
+              &TransientGeneralizedResult::getDisplacementValuesAtIndex )
+        .def( "getVelocityValuesAtIndex", &TransientGeneralizedResult::getVelocityValuesAtIndex )
+        .def( "getAccelerationValuesAtIndex",
+              &TransientGeneralizedResult::getAccelerationValuesAtIndex );
 
     py::class_< HarmoGeneralizedResult, HarmoGeneralizedResultPtr, GeneralizedResultComplex >(
         mod, "HarmoGeneralizedResult" )

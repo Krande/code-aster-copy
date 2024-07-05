@@ -303,6 +303,68 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
             return result;
         }
     }
+
+    int getBlockFromIndex( int idx ) const {
+        int iout = 0;
+        if ( _bloc.exists() ) {
+            std::vector< long int > blocks = _blo2->toVector();
+            for ( int i = 0; i < _blo2->size(); ++i ) {
+                if ( idx <= blocks[i] ) {
+                    iout = i;
+                    break;
+                }
+            }
+        }
+        return iout;
+    }
+
+    VectorReal getValuesAtIndex( std::vector< JeveuxVectorReal > jvec, int idx ) const {
+        int nmod = getNumberOfModes();
+        VectorReal out;
+        out.reserve( nmod );
+        if ( _bloc.exists() ) {
+            VectorLong blocks = _blo2->toVector();
+            int iblo = getBlockFromIndex( idx );
+            int idx0 = 0;
+            if ( iblo != 0 ) {
+                idx0 = blocks[iblo - 1];
+            }
+            VectorReal vect = jvec[iblo]->toVector();
+            out = VectorReal( vect.begin() + ( idx - idx0 ) * nmod,
+                              vect.begin() + ( idx - idx0 + 1 ) * nmod );
+        }
+        return out;
+    }
+
+    VectorReal getDisplacementValuesAtIndex( int idx ) const {
+        return getValuesAtIndex( _depl, idx );
+    }
+    VectorReal getVelocityValuesAtIndex( int idx ) const { return getValuesAtIndex( _vite, idx ); }
+    VectorReal getAccelerationValuesAtIndex( int idx ) const {
+        return getValuesAtIndex( _acce, idx );
+    }
+
+    VectorReal getValues( std::vector< JeveuxVectorReal > jvec ) const {
+        VectorReal out;
+        int nmod = getNumberOfModes();
+        int size = jvec[0]->size();
+        for ( int i = 1; i < jvec.size(); ++i ) {
+            size += jvec[i]->size() - nmod;
+        }
+        out.reserve( size );
+
+        VectorReal vect0 = jvec[0]->toVector();
+        out.insert( out.end(), vect0.begin(), vect0.end() );
+        for ( int i = 1; i < jvec.size(); ++i ) {
+            VectorReal vect = jvec[i]->toVector();
+            out.insert( out.end(), vect.begin() + nmod, vect.end() );
+        }
+        return out;
+    }
+
+    VectorReal getDisplacementValues() const { return getValues( _depl ); }
+    VectorReal getVelocityValues() const { return getValues( _vite ); }
+    VectorReal getAccelerationValues() const { return getValues( _acce ); }
 };
 typedef std::shared_ptr< TransientGeneralizedResult > TransientGeneralizedResultPtr;
 
