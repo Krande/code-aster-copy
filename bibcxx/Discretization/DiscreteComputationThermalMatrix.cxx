@@ -67,7 +67,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMat
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
 
-    calcul->addHHOField( currModel->getHHOModel() );
+    calcul->addHHOField( currModel );
 
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -87,14 +87,9 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMat
     calcul->addFourierModeField( modeFourier );
     calcul->addTimeField( "PINSTR", time_curr, 0.0, 0.0 );
 
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
 
-    if ( currModel->existsHHO() ) {
-        calcul->addHHOField( currModel->getHHOModel() );
-    }
+    calcul->addHHOField( currModel );
 
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
@@ -166,14 +161,9 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentConductivityMa
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
 
-    if ( currModel->existsHHO() ) {
-        calcul->addHHOField( currModel->getHHOModel() );
-    }
+    calcul->addHHOField( currModel );
 
     // Current Thermal Field
     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
@@ -226,7 +216,7 @@ DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time_curr,
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    calcul->addHHOField( currModel->getHHOModel() );
+    calcul->addHHOField( currModel );
     // Set to -1 because not used.
     calcul->addTimeField( "PINSTR", time_curr, 0.0, 0.0 );
 
@@ -245,10 +235,7 @@ DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time_curr,
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
 
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
@@ -295,7 +282,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentCapacityMatrix
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    calcul->addHHOField( currModel->getHHOModel() );
+    calcul->addHHOField( currModel );
 
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -316,10 +303,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentCapacityMatrix
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
 
     // Current Thermal Field
     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
@@ -450,7 +434,7 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
             calcul->addInputField( "PGEOMER",
                                    _phys_problem->getModel()->getMesh()->getCoordinates() );
             calcul->addInputField( "PCOEFHR", evol_exchange_field );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, 1.0 );
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
@@ -468,7 +452,7 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
             calcul->addInputField( "PGEOMER",
                                    _phys_problem->getModel()->getMesh()->getCoordinates() );
             calcul->addInputField( "PCOEFHR", exchange_field );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, 1.0 );
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
@@ -492,7 +476,7 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
             calcul->addInputField( "PGEOMER",
                                    _phys_problem->getModel()->getMesh()->getCoordinates() );
             calcul->addInputField( "PHECHPR", wall_exchange_field );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, 1.0 );
 
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
@@ -517,7 +501,7 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
             calcul->addInputField( "PGEOMER",
                                    _phys_problem->getModel()->getMesh()->getCoordinates() );
             calcul->addInputField( "PCOEFHF", exchange_field );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, 1.0 );
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
@@ -541,7 +525,7 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
             calcul->addInputField( "PGEOMER",
                                    _phys_problem->getModel()->getMesh()->getCoordinates() );
             calcul->addInputField( "PHECHPF", wall_exchange_field );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, 1.0 );
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
@@ -587,7 +571,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getThermalTangentNonLine
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPEI", temp_curr );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
 
             if ( currMater && currMater->hasExternalStateVariable() ) {
                 if ( !varc_curr || !varc_curr->exists() ) {

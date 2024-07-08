@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -44,8 +44,8 @@ DiscreteComputation::createTimeField( const ASTERDOUBLE time_value, const ASTERD
     if ( _phys_problem->getModel()->isThermal() )
         sz = 6;
 
-    VectorString para_names = {"INST", "DELTAT", "THETA", "KHI", "R", "RHO"};
-    VectorReal para_values = {time_value, time_delta, time_theta, 0., 0., 0.};
+    VectorString para_names = { "INST", "DELTAT", "THETA", "KHI", "R", "RHO" };
+    VectorReal para_values = { time_value, time_delta, time_theta, 0., 0., 0. };
 
     VectorString reduced_names = VectorString( para_names.begin(), para_names.begin() + sz );
     VectorReal reduced_values = VectorReal( para_values.begin(), para_values.begin() + sz );
@@ -123,10 +123,7 @@ CalculPtr DiscreteComputation::createCalculForNonLinear( const std::string optio
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
     calcul->addBehaviourField( currBehaviour );
 
     return calcul;
@@ -136,8 +133,8 @@ ConstantFieldOnCellsLongPtr
 DiscreteComputation::createDampingFluidField( const ASTERINTEGER damping,
                                               const ASTERINTEGER onde_flui ) const {
 
-    VectorString para_names = {"X1", "X2"};
-    VectorLong para_values = {damping, onde_flui};
+    VectorString para_names = { "X1", "X2" };
+    VectorLong para_values = { damping, onde_flui };
 
     // Get mesh
     auto mesh = _phys_problem->getMesh();
@@ -157,8 +154,8 @@ DiscreteComputation::createDampingFluidField( const ASTERINTEGER damping,
 ConstantFieldOnCellsLongPtr
 DiscreteComputation::createWaveTypeFluidField( const ASTERINTEGER onde_flui ) const {
 
-    VectorString para_names = {"X1"};
-    VectorLong para_values = {onde_flui};
+    VectorString para_names = { "X1" };
+    VectorLong para_values = { onde_flui };
 
     // Get mesh
     auto mesh = _phys_problem->getMesh();

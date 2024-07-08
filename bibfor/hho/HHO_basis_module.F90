@@ -261,7 +261,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset
+        integer :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, nb_coeff
         real(kind=8) :: axes(3, 2), length_box(2)
         real(kind=8), dimension(MSIZE_CELL_SCAL, MAX_QP_FACE) :: basisOrthoIpg
         type(HHO_basis_face) :: hhoBasisIner
@@ -303,13 +303,14 @@ contains
                 do ib = 1, size_basis_scal
                     this%coeff_shift(ib+1) = this%coeff_shift(ib)+ib
                 end do
-                offset = (hhoFace%face_loc-1)*(maxval(this%coeff_shift)-1)
-                call readVector('PCHHOBS', maxval(this%coeff_shift)-1, &
-                                this%coeff_mono, offset)
-
+!
+                nb_coeff = this%coeff_shift(size_basis_scal+1)-1
+                offset = (hhoFace%face_loc-1)*nb_coeff
+                call readVector('PCHHOBS', nb_coeff, this%coeff_mono, offset)
+!
             else
 !
-! ------------ If you have this error - add the basis field as an input of you option
+! ------------ If you have this error - add the basis field as an input of your option
                 call jevech('PCHHOBO', 'E', iret)
 !
                 basisOrthoIpg = 0.d0

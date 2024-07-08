@@ -154,6 +154,13 @@ void Calcul::addXFEMField( const XfemModelPtr xfemModel ) {
     addInputField( "PBASECO", xfemModel->getField( "BASECO" ) );
 }
 
+/** @brief Create and add input fields for HHO */
+void Calcul::addXFEMField( const ModelPtr model ) {
+    if ( model->existsXfem() ) {
+        addXFEMField( model->getXfemModel() );
+    }
+}
+
 /** @brief Add input fields for non-linear behaviours */
 void Calcul::addBehaviourField( const BehaviourPropertyPtr behaviour ) {
     addInputField( "PCOMPOR", behaviour->getBehaviourField() );
@@ -166,6 +173,13 @@ void Calcul::addHHOField( const HHOModelPtr HHOModel ) {
     addInputField( "PCHHOGT", HHOModel->getGradient() );
     addInputField( "PCHHOST", HHOModel->getStabilization() );
     addInputField( "PCHHOBS", HHOModel->getBasis() );
+}
+
+/** @brief Create and add input fields for HHO */
+void Calcul::addHHOField( const ModelPtr model ) {
+    if ( model->existsHHO() ) {
+        addHHOField( model->getHHOModel() );
+    }
 }
 
 /** @brief Compute option */

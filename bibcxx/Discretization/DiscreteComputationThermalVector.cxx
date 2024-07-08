@@ -75,7 +75,7 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PFLUXNR", flow_xyz_field );
             calcul->clearOutputs();
@@ -94,7 +94,7 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PFLUXVR", flow_nor_field );
             calcul->clearOutputs();
@@ -118,7 +118,7 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PFLUXNF", flow_xyz_field );
             calcul->clearOutputs();
@@ -137,7 +137,7 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PFLUXVF", flow_nor_field );
             calcul->clearOutputs();
@@ -211,7 +211,7 @@ DiscreteComputation::getThermalVolumetricForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PSOURCR", source_field );
 
@@ -237,7 +237,7 @@ DiscreteComputation::getThermalVolumetricForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PSOURCR", computed_source_field );
 
@@ -264,7 +264,7 @@ DiscreteComputation::getThermalVolumetricForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
@@ -297,7 +297,7 @@ DiscreteComputation::getThermalVolumetricForces( const ASTERDOUBLE time_curr,
             calcul->setOption( "CHAR_THER_SOUR_F" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PSOURCF", source_field );
 
@@ -324,7 +324,7 @@ DiscreteComputation::getThermalVolumetricForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
 
             if ( currMater ) {
@@ -413,7 +413,7 @@ DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_cu
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPER", temp_curr );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PCOEFHR", exchange_field );
             calcul->addInputField( "PT_EXTR", ext_temp_field );
@@ -440,7 +440,7 @@ DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_cu
             }
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPER", temp_curr );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PHECHPR", wall_exchange_field );
             calcul->clearOutputs();
@@ -467,7 +467,7 @@ DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_cu
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPER", temp_curr );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->addInputField( "PCOEFHF", exchange_field );
@@ -495,7 +495,7 @@ DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_cu
             }
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPER", temp_curr );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PHECHPF", wall_exchange_field );
             calcul->clearOutputs();
@@ -565,7 +565,7 @@ DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr
             calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPER", temp_curr );
-            calcul->addHHOField( currModel->getHHOModel() );
+            calcul->addHHOField( currModel );
 
             calcul->addInputField( param, load->getConstantLoadField( name ) );
 
@@ -930,7 +930,7 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     calcul->addTimeField( "PINSTR", time_curr, time_step, theta );
     calcul->addInputField( "PTEMPER", previousPrimalField );
-    calcul->addHHOField( currModel->getHHOModel() );
+    calcul->addHHOField( currModel );
 
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -946,14 +946,9 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
 
-    if ( currModel->existsHHO() ) {
-        calcul->addHHOField( currModel->getHHOModel() );
-    }
+    calcul->addHHOField( currModel );
 
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
@@ -1023,14 +1018,9 @@ DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_pr
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
 
-    if ( currModel->existsHHO() ) {
-        calcul->addHHOField( currModel->getHHOModel() );
-    }
+    calcul->addHHOField( currModel );
 
     // Add Thermal Field
     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
@@ -1110,10 +1100,7 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
 
     // Current Thermal Field
     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );

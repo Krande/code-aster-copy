@@ -895,12 +895,12 @@ contains
 !
         id = ASTER_TRUE
         do j = 1, size
-            if (abs(mat(j, j)-1.d0) .ge. 1.d-12) then
+            if (abs(mat(j, j)-1.d0) .ge. 1.d-10) then
                 id = ASTER_FALSE
                 exit
             end if
             do i = 1, j-1
-                if (abs(mat(i, j)) .ge. 1.d-13) then
+                if (abs(mat(i, j)) .ge. 1.d-11) then
                     id = ASTER_FALSE
                     exit
                 end if

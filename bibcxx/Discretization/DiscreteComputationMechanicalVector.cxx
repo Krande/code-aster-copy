@@ -111,8 +111,6 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         }
     }
 
-    auto isXfem = currModel->existsXfem();
-
     auto calcul = std::make_unique< Calcul >( calcul_option );
 
     auto impl = [&]( auto load, const ASTERINTEGER &load_i, const std::string &option,
@@ -136,9 +134,9 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );
             }
-            if ( isXfem ) {
-                calcul->addXFEMField( currModel->getXfemModel() );
-            }
+
+            calcul->addXFEMField( currModel );
+            calcul->addHHOField( currModel );
 
             if ( !param.empty() ) {
                 calcul->addInputField( param, load->getConstantLoadField( name ) );
@@ -246,8 +244,6 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
         }
     }
 
-    auto isXfem = currModel->existsXfem();
-
     auto calcul = std::make_unique< Calcul >( calcul_option );
 
     auto impl = [&]( auto load, const ASTERINTEGER &load_i, const std::string &option,
@@ -271,9 +267,9 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );
             }
-            if ( isXfem ) {
-                calcul->addXFEMField( currModel->getXfemModel() );
-            }
+
+            calcul->addXFEMField( currModel );
+            calcul->addHHOField( currModel );
 
             if ( !param.empty() ) {
                 calcul->addInputField( param, load->getConstantLoadField( name ) );
@@ -443,9 +439,7 @@ DiscreteComputation::getInternalMechanicalForces(
     // Nécessaire également pour Deborst
     calcul->addInputField( "PVARIMP", internVarIter );
 
-    if ( currModel->existsHHO() ) {
-        calcul->addHHOField( currModel->getHHOModel() );
-    }
+    calcul->addHHOField( currModel );
 
     // Create output vector
     auto elemVect = std::make_shared< ElementaryVectorReal >(
@@ -716,14 +710,9 @@ DiscreteComputation::getMechanicalNodalForces( const FieldOnCellsRealPtr stress,
     }
 
     // Add input fields: for XFEM
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
 
-    if ( currModel->existsHHO() ) {
-        calcul->addHHOField( currModel->getHHOModel() );
-    }
+    calcul->addHHOField( currModel );
 
     // Add Fourier field
     calcul->addFourierModeField( modeFourier );
