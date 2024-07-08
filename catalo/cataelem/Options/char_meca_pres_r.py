@@ -26,6 +26,9 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+
+
 PNBSP_I = InputParameter(
     phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """
 )
@@ -126,6 +129,7 @@ CHAR_MECA_PRES_R = Option(
         SP.PINSTR,
         SP.PMATERC,
         PBASLOR,
+        PCHHOBS,
     ),
     para_out=(SP.PVECTUR,),
     condition=(

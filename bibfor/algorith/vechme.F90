@@ -78,7 +78,7 @@ subroutine vechme(stop, modelz, lload_namez, lload_infoz, inst, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_in_maxi, nbout
-    parameter(nb_in_maxi=45, nbout=1)
+    parameter(nb_in_maxi=48, nbout=1)
     character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
 !

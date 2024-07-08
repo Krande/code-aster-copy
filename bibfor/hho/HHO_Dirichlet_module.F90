@@ -435,7 +435,7 @@ contains
         character(len=16) :: option
         character(len=19) :: ligrel_model
         character(len=1) :: base
-        integer, parameter :: nbin = 3
+        integer, parameter :: nbin = 4
         integer, parameter :: nbout = 1
         character(len=8) :: lpain(nbin), lpaout(nbout)
         character(len=19) :: lchin(nbin), lchout(nbout)
@@ -477,6 +477,8 @@ contains
         lchin(2) = chtime(1:19)
         lpain(3) = 'PFONC'
         lchin(3) = hhoField%fieldCineFunc(1:19)
+        lpain(4) = 'PCHHOBS'
+        lchin(4) = model(1:8)//'.HHO.BASE'
 !
 ! --- Output fields
 !

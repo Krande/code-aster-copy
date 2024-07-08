@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,9 @@ from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option,
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
+
+
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
 
 
 PCOMPOR = InputParameter(phys=PHY.COMPOR, comment="""  Informations for non-linear comportment """)
@@ -77,6 +80,7 @@ RIGI_MECA_ELAS = Option(
         SP.PVARCRR,
         SP.PVARIMP,
         PVARIMR,
+        PCHHOBS,
     ),
     para_out=(PCACO3D, SP.PMATUNS, SP.PMATUUR),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),

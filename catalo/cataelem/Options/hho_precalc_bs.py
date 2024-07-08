@@ -23,11 +23,9 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
-
 PCHHOBO = OutputParameter(
     phys=PHY.N480_R, type="ELNO", comment=""" HHO - coefficient base locale"""
 )
-
 
 HHO_PRECALC_BS = Option(
     para_in=(SP.PGEOMER,), para_out=(PCHHOBO,), condition=(CondCalcul("+", ((AT.BORD, "0"),)),)

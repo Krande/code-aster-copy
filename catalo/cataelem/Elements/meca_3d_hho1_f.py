@@ -38,6 +38,12 @@ DDL_MECA = LocatedComponents(
     components=(("EN1", ("HHO_DX[3]", "HHO_DY[3]", "HHO_DZ[3]")), ("EN2", ())),
 )
 
+CHHOBS = LocatedComponents(
+    phys=PHY.N480_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[250]"))),
+)
 
 EDEPLPG = LocatedComponents(
     phys=PHY.DEPL_R, type="ELGA", location="RIGI", components=("DX", "DY", "DZ")
@@ -127,22 +133,40 @@ class MECA3DQU9_HHO1_F(Element):
     calculs = (
         OP.CHAR_MECA_PRES_F(
             te=459,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF), (SP.PINSTR, CTEMPSR)),
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PPRESSF, CPRESSF),
+                (SP.PINSTR, CTEMPSR),
+                (OP.CHAR_MECA_PRES_F.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_PRES_R(
             te=459,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSR, EPRESNO)),
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PPRESSR, EPRESNO),
+                (OP.CHAR_MECA_PRES_R.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FF2D3D(
             te=459,
-            para_in=((SP.PFF2D3D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
+            para_in=(
+                (SP.PFF2D3D, CFORCEF),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PINSTR, CTEMPSR),
+                (OP.CHAR_MECA_FF2D3D.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FR2D3D(
             te=459,
-            para_in=((SP.PFR2D3D, NFORCER), (SP.PGEOMER, NGEOMER)),
+            para_in=(
+                (SP.PFR2D3D, NFORCER),
+                (SP.PGEOMER, NGEOMER),
+                (OP.CHAR_MECA_FR2D3D.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.COOR_ELGA(

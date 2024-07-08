@@ -160,7 +160,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ifm, niv
-        integer, parameter :: nbin = 2
+        integer, parameter :: nbin = 3
         integer, parameter :: nbout = 1
         character(len=8) :: lpain(nbin), lpaout(nbout)
         character(len=19) :: lchin(nbin), lchout(nbout)
@@ -199,6 +199,8 @@ contains
         lchin(1) = chgeom(1:19)
         lpain(2) = 'PDEPLPR'
         lchin(2) = disp(1:19)
+        lpain(3) = 'PCHHOBS'
+        lchin(3) = model_hho(1:8)//'.HHO.BASE'
 !
 ! ---- Output fields
 !

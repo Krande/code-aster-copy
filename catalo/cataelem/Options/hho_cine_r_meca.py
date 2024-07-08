@@ -23,6 +23,7 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
 
 PCMPVALE = InputParameter(
     phys=PHY.DEPL_R, comment=""" HHO - Valeurs des déplacements AFFE_CHAR_CINE"""
@@ -31,7 +32,7 @@ PCMPVALE = InputParameter(
 PCINE = OutputParameter(phys=PHY.DEPL_R, type="ELNO")
 
 HHO_CINE_R_MECA = Option(
-    para_in=(SP.PGEOMER, PCMPVALE),
+    para_in=(SP.PGEOMER, PCMPVALE, PCHHOBS),
     para_out=(PCINE,),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
 )

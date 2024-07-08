@@ -26,8 +26,11 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+
+
 CHAR_MECA_FF3D3D = Option(
-    para_in=(SP.PFF3D3D, SP.PGEOMER, SP.PINSTR),
+    para_in=(SP.PFF3D3D, SP.PGEOMER, SP.PINSTR, PCHHOBS),
     para_out=(SP.PVECTUR,),
     condition=(
         # L'attribut INTERFACE='OUI' designe les elements "ecrases".

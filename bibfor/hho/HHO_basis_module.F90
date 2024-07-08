@@ -36,6 +36,7 @@ module HHO_basis_module
 #include "asterfort/readVector.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/jevech.h"
 ! --------------------------------------------------------------------------------------------------
 !
 ! HHO - generic
@@ -212,6 +213,9 @@ contains
                                 this%coeff_mono, offset)
             else
 !
+! ------------ If you have this error - add the basis field as an input of you option
+                call jevech('PCHHOBO', 'E', iret)
+
                 basisOrthoIpg = 0.d0
 !
                 if (this%ndim > 1) then
@@ -304,6 +308,9 @@ contains
                                 this%coeff_mono, offset)
 
             else
+!
+! ------------ If you have this error - add the basis field as an input of you option
+                call jevech('PCHHOBO', 'E', iret)
 !
                 basisOrthoIpg = 0.d0
 !

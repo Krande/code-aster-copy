@@ -21,6 +21,8 @@ subroutine load_neum_prep(model, cara_elem, mate, mateco, load_type, inst_prev, 
                           lpain, varc_curr, disp_prev, disp_cumu_inst, compor, &
                           nharm, strx_prev_, vite_curr_, acce_curr_)
 !
+    use HHO_precalc_module, only: hhoAddInputField
+!
     implicit none
 !
 #include "asterfort/dismoi.h"
@@ -179,6 +181,8 @@ subroutine load_neum_prep(model, cara_elem, mate, mateco, load_type, inst_prev, 
     lpain(15) = 'PCINFDI'
     lchin(15) = chcara(15) (1:19)
     nb_in_prep = 15
+    call hhoAddInputField(model, nb_in_maxi, lchin, lpain, nb_in_prep)
+!
     if (present(nharm)) then
         nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PHARMON'

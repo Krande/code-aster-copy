@@ -301,6 +301,7 @@ DiscreteComputation::getMechanicalMassMatrix( const bool diagonal,
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addHHOField( currModel->getHHOModel() );
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );

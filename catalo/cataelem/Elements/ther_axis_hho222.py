@@ -56,6 +56,7 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
 
+
 # --------------------------------------------------------------------------------------------------
 class THERAXQ9_HHO222(Element):
     """Thermics - HHO_QUAD - PLAN - QUAD"""
@@ -97,12 +98,18 @@ class THERAXQ9_HHO222(Element):
                 (SP.PSOURCF, LC.CSOURCF),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.CHAR_THER_SOUR_F.PVARCPR, LC.ZVARCPG),
+                (OP.CHAR_THER_SOUR_F.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_SOUR_R(
             te=465,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PSOURCR, LC.ESOURCR), (SP.PINSTR, LC.CTIMETR)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PSOURCR, LC.ESOURCR),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.CHAR_THER_SOUR_R.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.COOR_ELGA(
@@ -145,27 +152,44 @@ class THERAXQ9_HHO222(Element):
                 (SP.PGEOMER, LC.EGEOM2D),
                 (OP.HHO_PROJ_THER.PFUNC_R, PFONC),
                 (SP.PINSTPR, LC.MTEMPSR),
+                (OP.HHO_PROJ_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
         ),
         OP.HHO_PROJ2_THER(
             te=484,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (OP.HHO_PROJ2_THER.PH1TP_R, TEMPHHO)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.HHO_PROJ2_THER.PH1TP_R, TEMPHHO),
+                (OP.HHO_PROJ2_THER.PCHHOBS, CHHOBS),
+            ),
             para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
         ),
         OP.HHO_PROJ3_THER(
             te=484,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (OP.HHO_PROJ3_THER.PQPTP_R, LC.ETEMPPG)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.HHO_PROJ3_THER.PQPTP_R, LC.ETEMPPG),
+                (OP.HHO_PROJ3_THER.PCHHOBS, CHHOBS),
+            ),
             para_out=((OP.HHO_PROJ3_THER.PTEMP_R, DDL_THER),),
         ),
         OP.HHO_TEMP_THER(
             te=456,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PTMPCHF, DDL_THER)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PTMPCHF, DDL_THER),
+                (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
+            ),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),
         OP.HHO_CINE_R_THER(
             te=492,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (OP.HHO_CINE_R_THER.PCMPVALE, TEMPHHO)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.HHO_CINE_R_THER.PCMPVALE, TEMPHHO),
+                (OP.HHO_CINE_R_THER.PCHHOBS, CHHOBS),
+            ),
             para_out=((OP.HHO_CINE_R_THER.PCINE, DDL_THER),),
         ),
         OP.MASS_THER(
@@ -175,6 +199,7 @@ class THERAXQ9_HHO222(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.MASS_THER.PVARCPR, LC.ZVARCPG),
+                (OP.MASS_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
         ),
@@ -229,7 +254,11 @@ class THERAXQ9_HHO222(Element):
         ),
         OP.TEMP_ELGA(
             te=456,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PTEMPER, DDL_THER)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PTEMPER, DDL_THER),
+                (OP.TEMP_ELGA.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PTEMP_R, LC.ETEMPPG),),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),

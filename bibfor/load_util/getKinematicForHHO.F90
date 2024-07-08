@@ -18,6 +18,8 @@
 !
 subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
 !
+    use HHO_precalc_module, only: hhoAddInputField
+!
     implicit none
 !
 #include "asterc/getfac.h"
@@ -66,7 +68,7 @@ subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
     character(len=24) :: modelLigrel
     integer :: iocc, nocc, nbret, iad, nncp, iret, modelDime, ibid, cmpNume
     integer :: iCell, iNode, iCellNode, iKeywordLieu, iUserDOF
-    integer :: userNodeNb, userDOFNb
+    integer :: userNodeNb, userDOFNb, nbin
     integer :: cellTypeNume, cellDime, cellNume, cellNbNode
     integer :: nodeNume, nodeNbCell, nodeNumeLoca, nbCmpVale
     integer, pointer :: userNodeNume(:) => null()
@@ -85,10 +87,10 @@ subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
                                                                    'GROUP_NO', 'NOEUD   ', &
                                                                    'TOUT    '/)
     character(len=16) :: option
-    integer, parameter :: nbin = 2
-    integer, parameter :: nbout = 1
-    character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=24) :: lchout(nbout), lchin(nbin)
+    integer, parameter :: nbxin = 5
+    integer, parameter :: nbxout = 1
+    character(len=8) :: lpaout(nbxout), lpain(nbxin)
+    character(len=24) :: lchout(nbxout), lchin(nbxin)
     character(len=24) :: chgeom
     character(len=24), parameter :: elnoHHO = "&HHOELNO.CINE"
     character(len=24), parameter :: elnoHHOS = "&HHOELNS.CINE"
@@ -231,10 +233,13 @@ subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
     lchin(1) = chgeom
     lpain(2) = paraNameVale
     lchin(2) = elnoVale
+    nbin = 2
+    call hhoAddInputField(model, nbxin, lchin, lpain, nbin)
+!
     lpaout(1) = "PCINE"
     lchout(1) = elnoHHO
     call calcul('S', option, modelLigrel, nbin, lchin, &
-                lpain, nbout, lchout, lpaout, "V", &
+                lpain, nbxout, lchout, lpaout, "V", &
                 'OUI')
 !
 !
