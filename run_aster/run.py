@@ -32,7 +32,13 @@ from glob import glob
 from pathlib import Path
 from subprocess import PIPE, run
 
-from .command_files import add_import_commands, change_procdir, file_changed, stop_at_end
+from .command_files import (
+    add_coding_line,
+    add_import_commands,
+    change_procdir,
+    file_changed,
+    stop_at_end,
+)
 from .config import CFG
 from .logger import WARNING, logger
 from .status import StateOptions, Status, get_status
@@ -40,6 +46,7 @@ from .timer import Timer
 from .utils import (
     RUNASTER_PLATFORM,
     RUNASTER_ROOT,
+    PercTemplate,
     cmd_abspath,
     compress,
     copy,
@@ -430,22 +437,28 @@ class RunOnlyEnv(RunAster):
             comm (str): Command file name.
             timeout (float): Remaining time.
         """
+        is_ok = Status(StateOptions.Ok, exitcode=0)
+        if self._procid != 0:
+            return is_ok
+
         idx = self.export.get("step")
-        cmd = []
-        cmd.append("#!/bin/bash")
-        cmd.append(" ".join(self._get_cmdline_exec("proc.0/" + comm, idx)))
-        cmd.append("")
-        shell = f"cmd{idx}.sh"
-        with open(shell, "w") as fobj:
-            fobj.write("\n".join(cmd))
-        os.chmod(f"cmd{idx}.sh", 0o755)
+        base_cmd = self._get_cmdline_exec("proc.0/" + comm, idx)
         if not self._parallel:
-            logger.info(cmd[1])
-        elif self._procid == 0:
-            args_cmd = dict(mpi_nbcpu=self.export.get("mpi_nbcpu", 1), program="proc.0/" + shell)
-            cmd = CFG.get("mpiexec").format(**args_cmd)
-            logger.info(cmd)
-        return Status(StateOptions.Ok, exitcode=0)
+            logger.info(" ".join(base_cmd))
+            return is_ok
+
+        _gen_cmd_file(f"cmd{idx}.sh", [" ".join(base_cmd)])
+        shell = f"cmd{idx}.sh"
+        args_cmd = dict(mpi_nbcpu=self.export.get("mpi_nbcpu", 1), program="proc.0/" + shell)
+        cmd = CFG.get("mpiexec").format(**args_cmd)
+        logger.info("    " + cmd)
+
+        shell = f"ddt_cmd{idx}.sh"
+        _gen_ddt_template(shell, cmd, idx)
+        logger.info("Run with DDT using:")
+        logger.info("    " + "proc.0/" + shell)
+
+        return is_ok
 
     def ending_execution(self, _):
         """Nothing to do in this case."""
@@ -501,6 +514,7 @@ def change_comm_file(comm, interact=False, use_procdir=None, dstdir=None, show=F
     changed = text.strip() != text_init.strip()
     if changed:
         text = file_changed(text, comm)
+    text = add_coding_line(text)
     if show:
         logger.info("\nContent of the file to execute:\n%s\n", text)
     if not changed:
@@ -602,3 +616,22 @@ def _ls(*paths):
     else:
         proc = run(["dir"] + list(paths), stdout=PIPE, universal_newlines=True, shell=True)
     return proc.stdout
+
+
+def _gen_cmd_file(filename, lines):
+    cmd = []
+    cmd.append("#!/bin/bash")
+    cmd.append("\n".join(lines))
+    cmd.append("")
+    with open(filename, "w") as fobj:
+        fobj.write("\n".join(cmd))
+    os.chmod(filename, 0o755)
+
+
+def _gen_ddt_template(filename, cmd, idx):
+    redir = ">" if idx == 0 else ">>"
+    with open(Path(RUNASTER_ROOT) / "share" / "aster" / "ddt_wrapper.tmpl") as ftmpl:
+        script = PercTemplate(ftmpl.read()).substitute(command=cmd, redirect_to=redir)
+    with open(filename, "w") as fobj:
+        fobj.write(script)
+    os.chmod(filename, 0o755)

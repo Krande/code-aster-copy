@@ -33,8 +33,7 @@ import unittest
 from glob import glob
 
 from code_aster.Utilities import config
-
-from run_aster.command_files import add_import_commands, stop_at_end
+from run_aster.command_files import add_coding_line, add_import_commands, stop_at_end
 from run_aster.config import CFG, Config
 from run_aster.ctest2junit import XUnitReport
 from run_aster.export import PARAMS_TYPE, Export, ExportParameter, File, split_export
@@ -475,12 +474,11 @@ class TestCommandFiles(unittest.TestCase):
 
     def test_import(self):
         text = ""
-        res = add_import_commands(text)
+        res = add_coding_line(text)
         self.assertEqual(res, "# coding=utf-8\n")
 
         text = "DEBUT()"
         res = add_import_commands(text)
-        self.assertIn("# coding=utf-8", res)
         self.assertIn("import code_aster", res)
         self.assertIn("from code_aster.Commands import *", res)
         self.assertIn("from math import *", res)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ import os.path as osp
 import shutil
 import stat
 from glob import glob
+from string import Template
 
 try:
     from os import waitstatus_to_exitcode
@@ -205,3 +206,9 @@ def cmd_abspath(prog):
                 prog = osp.join(path, prog)
                 break
     return prog
+
+
+class PercTemplate(Template):
+    """Template with '%' as delimiter."""
+
+    delimiter = "%"
