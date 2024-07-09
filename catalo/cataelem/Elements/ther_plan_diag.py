@@ -197,6 +197,20 @@ class THPLQL4(Element):
             para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX2R),),
             para_out=((SP.PFLUXNO, LC.NFLUX2R),),
         ),
+        OP.GRAT_ELGA(
+            te=52,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PTEMPER, DDL_THER),
+                (OP.GRAT_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.GRAT_ELGA.PGRATPG, LC.EGRAT2R),),
+        ),
+        OP.GRAT_ELNO(
+            te=4,
+            para_in=((OP.GRAT_ELNO.PGRATPG, LC.EGRAT2R),),
+            para_out=((SP.PGRATNO, LC.NGRAT2R),),
+        ),
         OP.HYDR_ELGA(
             te=385,
             para_in=(

@@ -195,6 +195,20 @@ class THER_HEXA8_D(Element):
             para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX3R),),
             para_out=((SP.PFLUXNO, LC.NFLUX3R),),
         ),
+        OP.GRAT_ELGA(
+            te=52,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PTEMPER, DDL_THER),
+                (OP.GRAT_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.GRAT_ELGA.PGRATPG, LC.EGRAT3R),),
+        ),
+        OP.GRAT_ELNO(
+            te=4,
+            para_in=((OP.GRAT_ELNO.PGRATPG, LC.EGRAT3R),),
+            para_out=((SP.PGRATNO, LC.NGRAT3R),),
+        ),
         OP.HYDR_ELGA(
             te=385,
             para_in=(

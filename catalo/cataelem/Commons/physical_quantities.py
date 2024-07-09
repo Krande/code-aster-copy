@@ -1944,6 +1944,15 @@ G_DEPL_R = PhysicalQuantity(
 """,
 )
 
+GRAT_R = PhysicalQuantity(
+    type="R",
+    components=("GRAT_X", "GRAT_Y", "GRAT_Z"),
+    comment="""  GRAT Type:R
+       GRAT_X :
+       GRAT_Y :
+       GRAT_Z :
+""",
+)
 
 HARMON = PhysicalQuantity(
     type="I",
