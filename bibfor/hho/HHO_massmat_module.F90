@@ -96,6 +96,7 @@ contains
         type(HHO_quadrature)  :: hhoQuad
         real(kind=8), dimension(MSIZE_CELL_SCAL):: basisScalEval
         integer :: dimMat, ipg, i
+        aster_logical :: dbg
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- init basis
@@ -106,8 +107,14 @@ contains
         this%nrows = dimMat
         this%ncols = dimMat
 !
-        if (hhoBasisCell%isOrthonormal() .and. &
-            (hhoCell%typema .ne. 'PYRAM5')) then
+#ifdef ASTER_DEBUG_FC
+        dbg = ASTER_TRUE
+#else
+        dbg = ASTER_FALSE
+#endif
+!
+        if (hhoBasisCell%isOrthonormal() .and. .not. dbg .and. &
+            (hhoCell%typema .eq. 'TETRA4' .or. hhoCell%ndim .eq. 2)) then
             do i = 1, dimMat
                 this%m(i, i) = 1.d0
             end do
@@ -131,9 +138,13 @@ contains
 !
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
-#ifdef ASTER_DEBUG_CXX
-            ASSERT(hhoIsIdentityMat(this%m, dimMat))
+            if (hhoBasisCell%isOrthonormal()) then
+                this%isIdentity = hhoIsIdentityMat(this%m, dimMat)
+#ifdef ASTER_DEBUG_FC
+                ASSERT(this%isIdentity)
 #endif
+            end if
+
         end if
         ! call hhoPrintMat(this%m(1:dimMat, 1:dimMat))
 !
@@ -166,6 +177,7 @@ contains
         type(HHO_quadrature)  :: hhoQuad
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
         integer :: dimMat, ipg, i
+        aster_logical :: dbg
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- init basis
@@ -177,7 +189,13 @@ contains
         this%nrows = dimMat
         this%ncols = dimMat
 !
-        if (hhoBasisFace%isOrthonormal()) then
+#ifdef ASTER_DEBUG_FC
+        dbg = ASTER_TRUE
+#else
+        dbg = ASTER_FALSE
+#endif
+!
+        if (hhoBasisFace%isOrthonormal() .and. .not. dbg) then
             do i = 1, dimMat
                 this%m(i, i) = 1.d0
             end do
@@ -201,9 +219,12 @@ contains
 !
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
-#ifdef ASTER_DEBUG_CXX
-            ASSERT(hhoIsIdentityMat(this%m, dimMat))
+            if (hhoBasisFace%isOrthonormal()) then
+                this%isIdentity = hhoIsIdentityMat(this%m, dimMat)
+#ifdef ASTER_DEBUG_FC
+                ASSERT(this%isIdentity)
 #endif
+            end if
         end if
 !
         ! call hhoPrintMat(this%m)
