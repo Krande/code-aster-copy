@@ -191,6 +191,12 @@ TEMP_STAT = THER_LINEAIRE(
     EXCIT=(_F(CHARGE=CHAR1), _F(CHARGE=SYME_THER_11)),
 )
 
+TEMP_STAT = CALC_CHAMP(
+    reuse=TEMP_STAT,
+    RESULTAT=TEMP_STAT,
+    THERMIQUE=("FLUX_ELGA", "GRAT_ELGA", "GRAT_ELNO", "GRAT_NOEU"),
+)
+
 norm_diff_depl_t0 = (DEPL31_FONC.getField("DEPL", 1) - DEPL31_TEMP0.getField("DEPL", 1)).norm(
     "NORM_2"
 )
@@ -208,6 +214,13 @@ norm_diff_stat_t1 = (TEMP_STAT.getField("TEMP", 2) - TEMP_TEMP1.getField("TEMP",
 test_field = DEPL31_FONC.getField("DEPL", 1)
 ma_mod = MODI_MAILLAGE(MAILLAGE=MA, DEFORME=_F(OPTION="TRAN", DEPL=test_field))
 
+grad = TEMP_STAT.getField("GRAT_ELGA", 1)
+flux = TEMP_STAT.getField("FLUX_ELGA", 1)
+sgrad = grad.toSimpleFieldOnNodes()
+sflux = flux.toSimpleFieldOnNodes()
+vgrad, _ = sgrad.getValues(True)
+vflux, _ = sflux.getValues(True)
+
 test = CA.TestCase()
 
 nbplaces = 10
@@ -217,6 +230,7 @@ test.assertAlmostEqual(norm_diff_temp_t0, 0, places=nbplaces, msg="NORM_DIFF_TEM
 test.assertAlmostEqual(norm_diff_temp_t1, 0, places=nbplaces, msg="NORM_DIFF_TEMP_TEMP1")
 test.assertAlmostEqual(norm_diff_stat_t0, 0, places=nbplaces, msg="NORM_DIFF_STAT_TEMP0")
 test.assertAlmostEqual(norm_diff_stat_t1, 0, places=nbplaces, msg="NORM_DIFF_STAT_TEMP1")
+test.assertTrue((vflux == -vgrad).all(), msg="GRAD_VS_FLUX")
 test.printSummary()
 
 FIN()
