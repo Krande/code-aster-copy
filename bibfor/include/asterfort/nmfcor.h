@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,10 @@ interface
                       iter_newt      , ds_measure , sddisc        ,&
                       sddyna, nlDynaDamping,&
                       sdnume   ,  sderro         , ds_contact ,&
-                      hval_incr     , hval_algo, hhoField,&
+                      hval_incr     , hval_algo, &
                       hval_veelem , hval_veasse, hval_measse   , matass   ,&
                       lerrit)
         use NonLin_Datastructure_type
-        use HHO_type
         use NonLinearDyna_type
         integer :: list_func_acti(*)
         integer :: iter_newt, nume_inst
@@ -45,7 +44,6 @@ interface
         character(len=19) :: hval_veelem(*)
         character(len=19) :: hval_measse(*), hval_veasse(*)
         character(len=19) :: hval_algo(*), hval_incr(*)
-        type(HHO_Field), intent(in) :: hhoField
         type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical :: lerrit
     end subroutine nmfcor

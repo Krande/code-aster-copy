@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine te0458(nomopt, nomte)
     use HHO_type
     use HHO_size_module, only: hhoMecaDofs
     use HHO_init_module, only: hhoInfoInitCell
-    use HHO_Dirichlet_module, only: hhoDiriReadNameFunc, hhoDiriMecaProjFunc, hhoDiriOffset
+    use HHO_Dirichlet_module
 !
     implicit none
 !
@@ -31,7 +31,6 @@ subroutine te0458(nomopt, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/writeVector.h"
 #include "asterfort/HHO_size_module.h"
-#include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO - Mechanics
@@ -47,24 +46,39 @@ subroutine te0458(nomopt, nomte)
     real(kind=8) :: rhs_cine(MSIZE_TDOFS_VEC)
     integer :: j_func, j_time, cbs, fbs, total_dofs
     character(len=8) :: nomfunct(3, 7)
-!
-    ASSERT(nomopt .eq. 'HHO_CINE_F_MECA')
+    real(kind=8), pointer :: r_vale(:) => null()
 !
 ! --- Retrieve HHO informations
 !
     call hhoInfoInitCell(hhoCell, hhoData)
 !
+    if (nomopt .eq. 'HHO_CINE_F_MECA') then
+!
 ! --- Read Name of function
 !
-    call jevech('PFONC', 'L', j_func)
-    call hhoDiriReadNameFunc(hhoCell, zk8(j_func), nomfunct)
+        call jevech('PFONC', 'L', j_func)
+        call hhoDiriReadNameFunc(hhoCell, zk8(j_func), nomfunct)
 !
 ! -- Get current time
-    call jevech('PINSTPR', 'L', j_time)
+        call jevech('PINSTPR', 'L', j_time)
 !
 ! --- Projection of the boundary conditions
 !
-    call hhoDiriMecaProjFunc(hhoCell, hhoData, nomfunct, zr(j_time), rhs_cine)
+        call hhoDiriMecaProjFunc(hhoCell, hhoData, nomfunct, zr(j_time), rhs_cine)
+!
+    elseif (nomopt .eq. 'HHO_CINE_R_MECA') then
+!
+! --- Read Name of field
+!
+        call jevech('PCMPVALE', 'L', vr=r_vale)
+!
+! --- Projection of the boundary conditions
+!
+        call hhoDiriMecaProjReal(hhoCell, hhoData, r_vale, rhs_cine)
+!
+    else
+        ASSERT(ASTER_FALSE)
+    end if
 !
 ! -- Save
 !

@@ -25,7 +25,7 @@ subroutine nmprma(listFuncActi, &
                   sddisc, numeTime, &
                   ds_algopara, ds_contact, ds_algorom, &
                   ds_print, ds_measure, &
-                  hval_incr, hval_algo, hhoField, &
+                  hval_incr, hval_algo, &
                   hval_meelem, hval_measse, &
                   numeDof, numeDofFixe, &
                   solveu, ds_system, &
@@ -35,7 +35,6 @@ subroutine nmprma(listFuncActi, &
     use NonLin_Datastructure_type
     use NonLinearDyna_type
     use Rom_Datastructure_type
-    use HHO_type
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
                                 isRigiMatrCompute, &
                                 factorSystem, updateLoadBCMatrix
@@ -79,7 +78,6 @@ subroutine nmprma(listFuncActi, &
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
-    type(HHO_Field), intent(in) :: hhoField
     character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
     character(len=24), intent(inout) :: numeDof
     character(len=24), intent(in) :: numeDofFixe
@@ -118,7 +116,6 @@ subroutine nmprma(listFuncActi, &
 ! In  numeTime        : index of current time step
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! In  hhoField         : datastructure for HHO
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
 ! OUT LFINT  : .TRUE. SI FORCES INTERNES CALCULEES
@@ -215,7 +212,7 @@ subroutine nmprma(listFuncActi, &
         call nmrigi(modelz, caraElem, &
                     ds_material, ds_constitutive, &
                     listFuncActi, iterNewtPred, sddyna, ds_measure, ds_system, &
-                    hval_incr, hval_algo, hhoField, &
+                    hval_incr, hval_algo, &
                     nonLinearOption, ldccvg)
         if (lRigiAssemble) then
             call nmchex(hval_measse, 'MEASSE', 'MERIGI', rigid)

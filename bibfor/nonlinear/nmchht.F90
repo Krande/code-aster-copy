@@ -23,7 +23,6 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
                   hval_incr, hval_algo, hval_measse, ds_inout)
 !
     use NonLin_Datastructure_type
-    use HHO_type
 !
     implicit none
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,7 @@ contains
         do idim = 1, ndim
             sol_T_dim(1:comp_dim) = sol_T(1+(idim-1)*comp_dim:idim*comp_dim)
             do ino = 1, nbnodes
-                post_sol(idim, ino) = hhoEvalScalCell(hhoCell, hhoBasisCell, &
+                post_sol(idim, ino) = hhoEvalScalCell(hhoBasisCell, &
                                                     & hhoData%cell_degree(),&
                                                     & hhoCell%coorno(1:3, ino), sol_T_dim, comp_dim)
             end do
@@ -160,7 +160,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ifm, niv
-        integer, parameter :: nbin = 2
+        integer, parameter :: nbin = 3
         integer, parameter :: nbout = 1
         character(len=8) :: lpain(nbin), lpaout(nbout)
         character(len=19) :: lchin(nbin), lchout(nbout)
@@ -199,6 +199,8 @@ contains
         lchin(1) = chgeom(1:19)
         lpain(2) = 'PDEPLPR'
         lchin(2) = disp(1:19)
+        lpain(3) = 'PCHHOBS'
+        lchin(3) = model_hho(1:8)//'.HHO.BASE'
 !
 ! ---- Output fields
 !
@@ -337,7 +339,7 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do ino = 1, nbnodes
-            post_sol(ino) = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            post_sol(ino) = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                             hhoCell%coorno(1:3, ino), sol_T, cbs)
         end do
 !
@@ -390,7 +392,7 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do ipg = 1, hhoQuad%nbQuadPoints
-            post_sol(ipg) = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            post_sol(ipg) = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                             hhoQuad%points(1:3, ipg), sol_T, cbs)
         end do
 !

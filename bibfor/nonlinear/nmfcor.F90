@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,11 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
                   iter_newt, ds_measure, sddisc, &
                   sddyna, nlDynaDamping, &
                   sdnume, sderro, ds_contact, &
-                  hval_incr, hval_algo, hhoField, &
+                  hval_incr, hval_algo, &
                   hval_veelem, hval_veasse, hval_measse, matass, &
                   lerrit)
 !
     use NonLin_Datastructure_type
-    use HHO_type
     use NonLinearDyna_type
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
                                 isInteVectCompute
@@ -71,7 +70,6 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
     character(len=19) :: hval_veelem(*)
     character(len=19) :: hval_measse(*), hval_veasse(*)
     character(len=19) :: hval_algo(*), hval_incr(*)
-    type(HHO_Field), intent(in) :: hhoField
     type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical :: lerrit
 !
@@ -104,7 +102,6 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
 ! In  ds_contact       : datastructure for contact management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
-! In  hhoField         : datastructure for HHO
 ! In  hval_veelem      : hat-variable for elementary vectors
 ! In  hval_veasse      : hat-variable for vectors (node fields)
 ! In  hval_measse      : hat-variable for matrix
@@ -202,7 +199,7 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
             call nmrigi(model, cara_elem, &
                         ds_material, ds_constitutive, &
                         list_func_acti, iter_newt, sddyna, ds_measure, ds_system, &
-                        hval_incr, hval_algo, hhoField, &
+                        hval_incr, hval_algo, &
                         nonLinearOption, ldccvg)
             if (ldccvg .ne. 1) then
                 call nonlinIntForceAsse(INTE_FORCE_INTE, list_func_acti, sdnume, &
@@ -216,7 +213,6 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
                                 ds_system, ds_measure, &
                                 hval_incr, hval_algo, &
                                 ldccvg, &
-                                hhoField_=hhoField, &
                                 sddyna_=sddyna)
         end if
     end if

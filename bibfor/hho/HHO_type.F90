@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,10 +37,6 @@ module HHO_type
     type HHO_Field
 !
         aster_logical      :: l_debug = ASTER_FALSE
-! ----- Inconnues sur la cellule - Precalcul gradient (matrice)
-        character(len=19)  :: fieldOUT_cell_GT = ''
-! ----- Inconnues sur la cellule - Precalcul stabilisation (matrice)
-        character(len=19)  :: fieldOUT_cell_ST = ''
 ! ----- Fields for Dirichlet loads
         aster_logical      :: l_cine_f = ASTER_FALSE
         character(len=19)  :: fieldCineFunc = ''
@@ -100,14 +96,13 @@ module HHO_type
         real(kind=8)                :: measure = 0.d0
 ! ----- Normale sortante au barycentre
         real(kind=8), dimension(3)  :: normal = 0.d0
-! ----- Utilisation du repere inertiel local
-        aster_logical               :: use_inertia = ASTER_TRUE
 ! ----- Axes locaux de la cellule
         real(kind=8), dimension(3, 2) :: axes = 0.d0
-! ----- Longueur de la boite englobante (orientee ou non) de la cellule
-        real(kind=8), dimension(2)  :: length_box = 0.d0
-! ----- Index locale des noeuds de la cellule
+! ----- Index locale des noeuds de la face
         integer, dimension(4)       :: nodes_loc = 0
+        integer                     :: node_bar_loc = 0
+! ----- Index locale de la face pour une cellule
+        integer                     :: face_loc = 0
 ! ----- member function
     contains
         procedure, public, pass :: print => print_face
@@ -130,18 +125,16 @@ module HHO_type
         real(kind=8), dimension(3)  :: barycenter = 0.d0
 ! ----- Diametre de la cellule
         real(kind=8)                :: diameter = 0.d0
-! ----- Utilisation du repere inertiel local
-        aster_logical               :: use_inertia = ASTER_TRUE
 ! ----- Axes locaux de la cellule
         real(kind=8), dimension(3, 3) :: axes = 0.d0
-! ----- Longueur de la boite englobante (orientee ou non) de la cellule
-        real(kind=8), dimension(3)  :: length_box = 0.d0
 ! ----- Volume ou Surface de la cellule
         real(kind=8)                :: measure = 0.d0
 ! ----- Nombre de faces de la cellule
         integer                     :: nbfaces = 0
 ! ----- Donnees sur les faces (max 6 faces pour hexa)
         type(HHO_Face), dimension(6):: faces
+! ----- Index locale des noeuds de la cellule
+        integer                     :: node_bar_loc = 0
 ! ----- member function
     contains
         procedure, public, pass :: print => print_cell
@@ -430,7 +423,6 @@ contains
         if (this%ndim > 1) then
             write (6, *) "    a2: ", this%axes(1:3, 2)
         end if
-        write (6, *) "Length box: ", this%length_box(1:this%ndim)
 !
     end subroutine
 !
@@ -473,7 +465,6 @@ contains
                 write (6, *) "    a3: ", this%axes(1:3, 3)
             end if
         end if
-        write (6, *) "Length box: ", this%length_box(1:this%ndim)
         write (6, *) "Number of face: ", this%nbfaces
         do iface = 1, this%nbfaces
             write (6, *) "    face", iface, ": "

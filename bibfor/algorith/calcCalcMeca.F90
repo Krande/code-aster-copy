@@ -28,7 +28,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
                         l_pred)
 !
     use NonLin_Datastructure_type
-    use HHO_type
 !
     implicit none
 !
@@ -98,7 +97,7 @@ subroutine calcCalcMeca(nb_option, list_option, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_matr, l_nonl, l_varc_prev, l_varc_curr, l_forc_noda
-    aster_logical :: l_lagr, l_hho
+    aster_logical :: l_lagr
     character(len=16) :: option
     character(len=24), parameter :: disp = "&&OP0026.DISP"
     character(len=19) :: varc_curr, disp_curr, sigm_curr, vari_curr
@@ -107,8 +106,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
     aster_logical :: l_meta_zirc, l_meta_acier, l_xfem, l_macr_elem
     integer :: ldccvg
     character(len=19) :: ligrmo, caco3d
-    character(len=32) :: answer
-    type(HHO_Field) :: hhoField
     character(len=1) :: base
 !
 ! --------------------------------------------------------------------------------------------------
@@ -127,8 +124,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
     l_xfem = ixfem .ne. 0
     call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nb_subs_stat)
     l_macr_elem = nb_subs_stat .gt. 0
-    call dismoi('EXI_HHO', model, 'MODELE', repk=answer)
-    l_hho = (answer == 'OUI')
 !
 ! - Name of variables
 !
@@ -202,10 +197,10 @@ subroutine calcCalcMeca(nb_option, list_option, &
     if (l_nonl .or. l_matr) then
         iter_newt = 1
         call merimo(base, &
-                    l_xfem, l_macr_elem, l_hho, &
+                    l_xfem, l_macr_elem, &
                     model, cara_elem, iter_newt, &
                     ds_constitutive, ds_material, ds_system, &
-                    hval_incr, hval_algo, hhoField, &
+                    hval_incr, hval_algo, &
                     option, ldccvg)
         call detrsd('CHAMP', caco3d)
     end if

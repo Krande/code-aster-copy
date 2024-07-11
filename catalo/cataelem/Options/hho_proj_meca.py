@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,9 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+
+
 PDEPL_R = OutputParameter(
     phys=PHY.DEPL_R, type="ELNO", comment=""" HHO - degres de liberte de la cellule"""
 )
@@ -32,7 +35,7 @@ PFUNC_R = InputParameter(phys=PHY.NEUT_K8, comment=""" Value to project""")
 
 
 HHO_PROJ_MECA = Option(
-    para_in=(SP.PGEOMER, PFUNC_R, SP.PINSTPR),
+    para_in=(SP.PGEOMER, PFUNC_R, SP.PINSTPR, PCHHOBS),
     para_out=(PDEPL_R,),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
 )

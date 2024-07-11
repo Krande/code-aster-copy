@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
     use NonLinearDyna_type
-    use HHO_type
 !
     implicit none
 !
@@ -144,7 +143,6 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
     integer, pointer :: delg(:) => null()
     real(kind=8), pointer :: v_gamma(:) => null()
     real(kind=8), pointer :: v_vect(:) => null()
-    type(HHO_Field) :: hhoField
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -178,7 +176,7 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
                 sddisc, numins, &
                 ds_algopara, ds_contact, ds_algorom, &
                 ds_print, ds_measure, &
-                valinc, solalg, hhoField, &
+                valinc, solalg, &
                 meelem, measse, &
                 numedd, numfix, &
                 solveu, ds_system, &

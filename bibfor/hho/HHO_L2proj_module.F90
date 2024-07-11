@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,8 +75,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: faceMass(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL)
-        integer :: info, mbs
+        type(HHO_massmat_face) :: faceMass
+        integer :: info
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
@@ -86,20 +86,24 @@ contains
 !
 ! ----- Compute face mass matrix
 !
-        call hhoMassMatFaceScal(hhoFace, 0, degree, faceMass, mbs)
+        call faceMass%compute(hhoFace, 0, degree)
 !
 ! ---- Compute rhs
 !
         call hhoMakeRhsFaceScal(hhoFace, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
+
+        if (.not. faceMass%isIdentity) then
 !
 ! ---- Solve the system
 !
-        call dposv('U', mbs, 1, faceMass, MSIZE_FACE_SCAL, coeff_L2Proj, MSIZE_FACE_SCAL, info)
+            call dposv('U', faceMass%nrows, 1, faceMass%m, faceMass%max_nrows, &
+                       coeff_L2Proj, faceMass%max_nrows, info)
 !
 ! ---- Sucess ?
 !
-        if (info .ne. 0) then
-            call utmess('F', 'HHO1_4')
+            if (info .ne. 0) then
+                call utmess('F', 'HHO1_4')
+            end if
         end if
 !
     end subroutine
@@ -130,8 +134,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: faceMass(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL)
-        integer :: info, mbs
+        type(HHO_massmat_face) :: faceMass
+        integer :: info
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -142,20 +146,25 @@ contains
 !
 ! ----- Compute face mass matrix
 !
-        call hhoMassMatFaceScal(hhoFace, 0, degree, faceMass, mbs)
+        call faceMass%compute(hhoFace, 0, degree)
 !
 ! ---- Compute rhs
 !
         call hhoMakeRhsFaceVec(hhoFace, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
 !
+        if (.not. faceMass%isIdentity) then
+
+!
 ! ---- Solve the system
 !
-        call dposv('U', mbs, hhoFace%ndim+1, faceMass, MSIZE_FACE_SCAL, coeff_L2Proj, mbs, info)
+            call dposv('U', faceMass%nrows, hhoFace%ndim+1, faceMass%m, &
+                       faceMass%max_nrows, coeff_L2Proj, faceMass%nrows, info)
 !
 ! ---- Sucess ?
 !
-        if (info .ne. 0) then
-            call utmess('F', 'HHO1_4')
+            if (info .ne. 0) then
+                call utmess('F', 'HHO1_4')
+            end if
         end if
 !
     end subroutine
@@ -186,8 +195,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: cellMass(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-        integer :: info, mbs
+        type(HHO_massmat_cell) :: cellMass
+        integer :: info
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
@@ -197,20 +206,24 @@ contains
 !
 ! ----- Compute Cell mass matrix
 !
-        call hhoMassMatCellScal(hhoCell, 0, degree, cellMass, mbs)
+        call cellMass%compute(hhoCell, 0, degree)
 !
 ! ---- Compute rhs
 !
         call hhoMakeRhsCellScal(hhoCell, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
 !
+        if (.not. cellMass%isIdentity) then
+!
 ! ---- Solve the system
 !
-        call dposv('U', mbs, 1, cellMass, MSIZE_CELL_SCAL, coeff_L2Proj, MSIZE_CELL_SCAL, info)
+            call dposv('U', cellMass%nrows, 1, cellMass%m, &
+                       cellMass%max_nrows, coeff_L2Proj, cellMass%max_nrows, info)
 !
 ! ---- Sucess ?
 !
-        if (info .ne. 0) then
-            call utmess('F', 'HHO1_4')
+            if (info .ne. 0) then
+                call utmess('F', 'HHO1_4')
+            end if
         end if
 !
     end subroutine
@@ -241,8 +254,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: cellMass(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-        integer :: info, mbs
+        type(HHO_massmat_cell) :: cellMass
+        integer :: info
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -253,20 +266,24 @@ contains
 !
 ! ----- Compute cell mass matrix
 !
-        call hhoMassMatCellScal(hhoCell, 0, degree, cellMass, mbs)
+        call cellMass%compute(hhoCell, 0, degree)
 !
 ! ---- Compute rhs
 !
         call hhoMakeRhsCellVec(hhoCell, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
 !
+        if (.not. cellMass%isIdentity) then
+!
 ! ---- Solve the system
 !
-        call dposv('U', mbs, hhoCell%ndim, cellMass, MSIZE_CELL_SCAL, coeff_L2Proj, mbs, info)
+            call dposv('U', cellMass%nrows, hhoCell%ndim, cellMass%m, &
+                       cellMass%max_nrows, coeff_L2Proj, cellMass%nrows, info)
 !
 ! ---- Sucess ?
 !
-        if (info .ne. 0) then
-            call utmess('F', 'HHO1_4')
+            if (info .ne. 0) then
+                call utmess('F', 'HHO1_4')
+            end if
         end if
 !
     end subroutine

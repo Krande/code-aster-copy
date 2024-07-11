@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine vrdesc(objet1, objet2, ier)
-        character(len=*) :: objet1
-        character(len=*) :: objet2
-        integer :: ier
-    end subroutine vrdesc
+    subroutine readMatrix(name, nrows, ncols, l_sym, mat)
+        character(len=*), intent(in)              :: name
+        integer, intent(in)                       :: nrows, ncols
+        aster_logical, intent(in)                 :: l_sym
+        real(kind=8), dimension(:,:), intent(inout)  :: mat
+    end subroutine readMatrix
 end interface

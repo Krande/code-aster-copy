@@ -105,7 +105,7 @@ mySolver = CA.MumpsSolver()
 mySolver.factorize(lhs)
 solution = mySolver.solve(rhs, diriBCs)
 
-sol_ref = 28.544813405889784
+sol_ref = 8.295095432273415
 test.assertAlmostEqual((solution.norm("NORM_2") - sol_ref) / sol_ref, 0.0, delta=1e-4)
 
 # project HHO solution
@@ -136,7 +136,7 @@ for i in range(100):
     du_hho = mySolver.solve(-Resi, diriBCs)
     u_hho += du_hho
 
-u_hho_ref = 27.931912612339957
+u_hho_ref = 7.941673756996146
 test.assertAlmostEqual((u_hho.norm("NORM_2") - u_hho_ref) / u_hho_ref, 0.0, delta=1e-4)
 
 # test projection
@@ -171,7 +171,7 @@ hho_elga = hho.evaluateAtQuadraturePoints(f_hho)
 test.assertAlmostEqual(max(hho_elga.getValues()), 1.8957, delta=1e-2)
 
 f_proj = hho.projectOnHHOCellSpace(hho_elga)
-test.assertAlmostEqual(f_proj.norm("NORM_2"), 6.376190569410008, delta=1e-2)
+test.assertAlmostEqual(f_proj.norm("NORM_2"), 0.7888089182740082, delta=1e-2)
 f3_lagr = hho.projectOnLagrangeSpace(f2_hho)
 diff = f_lagr - f3_lagr
 test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=1e-4)

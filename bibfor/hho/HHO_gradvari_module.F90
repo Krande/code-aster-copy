@@ -59,6 +59,7 @@ module HHO_GV_module
 #include "asterfort/rcvalb.h"
 #include "asterfort/deflg4.h"
 #include "asterfort/prodmt.h"
+#include "asterfort/readMatrix.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dsymv.h"
@@ -271,15 +272,15 @@ contains
 !
 ! --------- Eval basis function at the quadrature point
 !
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEvalG)
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEvalG)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval gradient at T- and T+
 !
             if (hhoComporState%l_largestrain) then
-                G_prev = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                G_prev = hhoEvalMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                         coorpg(1:3), G_prev_coeff, mk_gbs)
-                G_curr = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                G_curr = hhoEvalMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                         coorpg(1:3), G_curr_coeff, mk_gbs)
 !
 ! --------- Eval gradient of the deformation at T- and T+
@@ -298,25 +299,25 @@ contains
                 cod(ipg) = merge(1, 0, jac_curr .le. r8prem())
                 if (cod(ipg) .ne. 0) goto 999
             else
-                Eps_prev = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                Eps_prev = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                              coorpg(1:3), G_prev_coeff, mk_gbs_sym)
-                Eps_curr = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                Eps_curr = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                              coorpg(1:3), G_curr_coeff, mk_gbs_sym)
             end if
 !
-            GV_prev = hhoEvalVecCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+            GV_prev = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
                                      coorpg(1:3), GV_prev_coeff, gv_gbs)
-            GV_curr = hhoEvalVecCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+            GV_curr = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
                                      coorpg(1:3), GV_curr_coeff, gv_gbs)
 !
-            var_prev = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            var_prev = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                        coorpg(1:3), hhoGVState%vari_prev, gv_cbs)
-            var_curr = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            var_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                        coorpg(1:3), hhoGVState%vari_curr, gv_cbs)
 !
-            lag_prev = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            lag_prev = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                        coorpg(1:3), hhoGVState%lagv_prev, gv_cbs)
-            lag_curr = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            lag_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                        coorpg(1:3), hhoGVState%lagv_curr, gv_cbs)
 !
 ! ------- Compute behavior
@@ -1252,27 +1253,17 @@ contains
 ! Out stab            : stabilization for mechanics
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: jgrad, jstab, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, j
+        integer :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs
 !
         if (ASTER_FALSE) then
-            call jevech('PCHHOGT', 'L', jgrad)
-            call jevech('PCHHOST', 'L', jstab)
 !
-            call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab), &
+            call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, &
                                       hhoMecaState%grad, hhoMecaState%stab)
 
             call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
-            if (l_largestrains) then
-                do j = 1, gv_total_dofs
-                    call dcopy(gv_gbs, zr(jgrad+(j-1)*gv_gbs), 1, hhoGVState%grad(1, j), 1)
-                end do
-            else
-                call hhoCalcOpTher(hhoCell, hhoData, hhoGVState%grad)
-            end if
-            do j = 1, gv_total_dofs
-                call dcopy(gv_total_dofs, zr(jstab+(j-1)*gv_total_dofs), 1, &
-                           hhoGVState%stab(1, j), 1)
-            end do
+            call readMatrix('PCHHOGT', gv_gbs, gv_total_dofs, ASTER_FALSE, hhoGVState%grad)
+            call readMatrix('PCHHOST', gv_total_dofs, gv_total_dofs, ASTER_TRUE, hhoGVState%stab)
+
         else
             call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, &
                                hhoMecaState%grad, hhoMecaState%stab)

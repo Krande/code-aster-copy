@@ -90,10 +90,9 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getElasticStiffnessMatr
     }
     calcul->addFourierModeField( modeFourier );
     calcul->addTimeField( "PINSTR", time_curr );
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
+
+    calcul->addHHOField( currModel );
 
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
@@ -173,10 +172,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getGeometricStiffnessMa
 
     calcul->addFourierModeField( modeFourier );
 
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
 
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
@@ -297,6 +293,7 @@ DiscreteComputation::getMechanicalMassMatrix( const bool diagonal,
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addHHOField( currModel );
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
@@ -313,10 +310,7 @@ DiscreteComputation::getMechanicalMassMatrix( const bool diagonal,
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
+    calcul->addXFEMField( currModel );
 
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
@@ -727,6 +721,8 @@ DiscreteComputation::getTangentStiffnessMatrix(
     calcul->addInputField( "PCONTMR", stress );
     calcul->addInputField( "PVARIMR", internVar );
 
+    calcul->addHHOField( currModel );
+
     // Coded Material
     auto currCodedMater = _phys_problem->getCodedMaterial();
     calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -826,6 +822,8 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix(
     // Nécessaire également pour Deborst
 
     calcul->addInputField( "PVARIMP", internVar );
+
+    calcul->addHHOField( currModel );
 
     // Create output matrix
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(

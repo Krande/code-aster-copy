@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,25 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+!
+! HHO Basis module : Parameters <-> integer definitions
+! -------------------------------------------------------------------------
+!
+! - Static size - HHO methods - General
+!
+! --- type of basis
+#define BASIS_CARTESIAN 1
+#define BASIS_INERTIAL  2
+#define BASIS_ORTHO     3
 
-!
-!
-#include "asterf_types.h"
-!
-interface
-    subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
-                      corfre, ndir, valspe, asyspe, nopara,&
-                      nordr)
-        integer :: nbmode
-        character(len=*) :: motfac
-        integer :: nbocc
-        character(len=*) :: momec
-        real(kind=8) :: amort(*)
-        aster_logical :: corfre
-        integer :: ndir(*)
-        real(kind=8) :: valspe(3, *)
-        real(kind=8) :: asyspe(*)
-        character(len=24) :: nopara(*)
-        integer :: nordr(*)
-    end subroutine asexc1
-end interface
+! ---- maximal number of coefficient
+#define MAX_FACE_COEF 21
+#define MAX_CELL_COEF 250

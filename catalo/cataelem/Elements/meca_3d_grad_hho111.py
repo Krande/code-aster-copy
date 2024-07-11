@@ -41,7 +41,7 @@ DDL_MECA = LocatedComponents(
     ),
 )
 
-DDL_LOAD = LocatedComponents(
+DDL_DEPL = LocatedComponents(
     phys=PHY.DEPL_R,
     type="ELNO",
     diff=True,
@@ -341,7 +341,14 @@ ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", compo
 
 CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[264]",))
 
-CHHOST = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[484]",))
+CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[253]",))
+
+CHHOBS = LocatedComponents(
+    phys=PHY.N480_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[250]"))),
+)
 
 DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
@@ -349,18 +356,7 @@ PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[21]",))
 
 PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[4]",))
 
-HHOCINE = LocatedComponents(
-    phys=PHY.DEPL_R,
-    type="ELNO",
-    diff=True,
-    components=(
-        ("EN1", ("HHO_DX[3]", "HHO_DY[3]", "HHO_DZ[3]")),
-        ("EN2", ()),
-        ("EN3", ("HHO_DX[4]", "HHO_DY[4]", "HHO_DZ[4]")),
-    ),
-)
-
-MVECTLR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_LOAD)
+MVECTLR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_DEPL)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
@@ -401,12 +397,21 @@ class MECA3DGVH_HHO111(Element):
         ),
         OP.CHAR_MECA_FF3D3D(
             te=476,
-            para_in=((SP.PFF3D3D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
+            para_in=(
+                (SP.PFF3D3D, CFORCEF),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PINSTR, CTEMPSR),
+                (OP.CHAR_MECA_FF3D3D.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PVECTUR, MVECTLR),),
         ),
         OP.CHAR_MECA_FR3D3D(
             te=476,
-            para_in=((SP.PFR3D3D, NFORCER), (SP.PGEOMER, NGEOMER)),
+            para_in=(
+                (SP.PFR3D3D, NFORCER),
+                (SP.PGEOMER, NGEOMER),
+                (OP.CHAR_MECA_FR3D3D.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PVECTUR, MVECTLR),),
         ),
         OP.COOR_ELGA(
@@ -414,7 +419,12 @@ class MECA3DGVH_HHO111(Element):
         ),
         OP.EPSI_ELGA(
             te=448,
-            para_in=((SP.PCAMASS, LC.CCAMA3D), (SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, NGEOMER)),
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PDEPLAR, DDL_MECA),
+                (SP.PGEOMER, NGEOMER),
+                (OP.EPSI_ELGA.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PDEFOPC, EDEFOPC), (OP.EPSI_ELGA.PDEFOPG, EDEFOPG)),
         ),
         OP.EPSI_ELNO(
@@ -443,6 +453,9 @@ class MECA3DGVH_HHO111(Element):
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
+                (OP.FORC_NODA.PCHHOGT, CHHOGT),
+                (OP.FORC_NODA.PCHHOST, CHHOST),
+                (OP.FORC_NODA.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
@@ -468,6 +481,7 @@ class MECA3DGVH_HHO111(Element):
                 (OP.FULL_MECA.PVARIMR, ZVARIPG),
                 (OP.FULL_MECA.PCHHOGT, CHHOGT),
                 (OP.FULL_MECA.PCHHOST, CHHOST),
+                (OP.FULL_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=(
                 (SP.PCODRET, LC.ECODRET),
@@ -478,10 +492,15 @@ class MECA3DGVH_HHO111(Element):
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
-        OP.HHO_PRECALC_MECA(
+        OP.HHO_PRECALC_BS(
+            te=494,
+            para_in=((SP.PGEOMER, NGEOMER),),
+            para_out=((OP.HHO_PRECALC_BS.PCHHOBO, CHHOBS),),
+        ),
+        OP.HHO_PRECALC_OP(
             te=460,
-            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PRECALC_MECA.PCOMPOR, LC.CCOMPOR)),
-            para_out=((OP.HHO_PRECALC_MECA.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_MECA.PCHHOST, CHHOST)),
+            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PRECALC_OP.PCHHOBS, CHHOBS)),
+            para_out=((OP.HHO_PRECALC_OP.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_OP.PCHHOST, CHHOST)),
         ),
         OP.HHO_PROJ_MECA(
             te=473,
@@ -489,12 +508,17 @@ class MECA3DGVH_HHO111(Element):
                 (SP.PGEOMER, NGEOMER),
                 (OP.HHO_PROJ_MECA.PFUNC_R, PFONCR),
                 (SP.PINSTPR, CTEMPSR),
+                (OP.HHO_PROJ_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_MECA),),
         ),
         OP.HHO_DEPL_MECA(
             te=456,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PDEPLPR, DDL_MECA)),
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PDEPLPR, DDL_MECA),
+                (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
+            ),
             para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DEPLHHO),),
         ),
         OP.HHO_CINE_F_MECA(
@@ -503,8 +527,18 @@ class MECA3DGVH_HHO111(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PINSTPR, CTEMPSR),
                 (OP.HHO_CINE_F_MECA.PFONC, PFONC),
+                (OP.HHO_CINE_F_MECA.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.HHO_CINE_F_MECA.PCINE, HHOCINE),),
+            para_out=((OP.HHO_CINE_F_MECA.PCINE, DDL_DEPL),),
+        ),
+        OP.HHO_CINE_R_MECA(
+            te=458,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLHHO),
+                (OP.HHO_CINE_R_MECA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_CINE_R_MECA.PCINE, DDL_DEPL),),
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))
@@ -515,6 +549,7 @@ class MECA3DGVH_HHO111(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.MASS_MECA.PVARCPR, LC.ZVARCPG),
+                (OP.MASS_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
@@ -562,6 +597,7 @@ class MECA3DGVH_HHO111(Element):
                 (OP.RAPH_MECA.PVARIMR, ZVARIPG),
                 (OP.RAPH_MECA.PCHHOGT, CHHOGT),
                 (OP.RAPH_MECA.PCHHOST, CHHOST),
+                (OP.RAPH_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=(
                 (SP.PCODRET, LC.ECODRET),
@@ -578,6 +614,7 @@ class MECA3DGVH_HHO111(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
                 (SP.PINSTR, CTEMPSR),
+                (OP.RIGI_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
@@ -599,6 +636,7 @@ class MECA3DGVH_HHO111(Element):
                 (OP.RIGI_MECA_ELAS.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.RIGI_MECA_ELAS.PVARIMR, ZVARIPG),
+                (OP.RIGI_MECA_ELAS.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR)),
         ),
@@ -623,6 +661,7 @@ class MECA3DGVH_HHO111(Element):
                 (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG),
                 (OP.RIGI_MECA_TANG.PCHHOGT, CHHOGT),
                 (OP.RIGI_MECA_TANG.PCHHOST, CHHOST),
+                (OP.RIGI_MECA_TANG.PCHHOBS, CHHOBS),
             ),
             para_out=(
                 (SP.PMATUNS, MMATUNS),

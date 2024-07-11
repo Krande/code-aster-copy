@@ -24,7 +24,6 @@ subroutine op0070()
     use Rom_Datastructure_type
     use NonLinearDyna_module
     use HHO_type
-    use HHO_Meca_module, only: hhoPreCalcMeca
 !
     implicit none
 !
@@ -124,8 +123,7 @@ subroutine op0070()
     type(NL_DS_ErrorIndic)   :: ds_errorindic
     type(NL_DS_System)       :: ds_system
     type(HHO_Field)          :: hhoField
-    type(NLDYNA_DAMPING) :: nlDynaDamping
-    aster_logical            :: l_hho
+    type(NLDYNA_DAMPING)     :: nlDynaDamping
 !
 ! --- VARIABLES CHAPEAUX
 !
@@ -143,7 +141,6 @@ subroutine op0070()
     call inidbg()
 !
     fonact(:) = 0
-    l_hho = ASTER_FALSE
     solver = '&&OP0070.SOLVEUR'
     list_load = '&&OP0070.LISCHA'
     maprec = '&&OP0070.MAPREC'
@@ -199,13 +196,6 @@ subroutine op0070()
     limpl = ndynlo(sddyna, 'IMPLICITE')
     lexpl = ndynlo(sddyna, 'EXPLICITE')
     lstat = ndynlo(sddyna, 'STATIQUE')
-!
-! --- Si formulation HHO: On precalcule des opérateurs
-!
-    l_hho = isfonc(fonact, 'HHO')
-    if (l_hho) then
-        call hhoPreCalcMeca(model, hhoField, ds_constitutive, ds_measure)
-    end if
 !
 ! ======================================================================
 !  DEBUT DU PAS DE TEMPS

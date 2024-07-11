@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,13 @@ interface
     subroutine nmprta(mesh, model          , nume_dof , numfix     , ds_material, cara_elem,&
                       ds_constitutive, list_load, ds_algopara, solveu     , ds_system,&
                       list_func_acti , ds_print , ds_measure , ds_algorom , sddisc,&
-                      nume_inst      , hval_incr, hval_algo  , hhoField, matass     , maprec,&
+                      nume_inst      , hval_incr, hval_algo  , matass     , maprec,&
                       sddyna, nlDynaDamping,&
                       ds_contact     , hval_meelem, hval_measse, hval_veelem,&
                       hval_veasse    , sdnume   , ldccvg     , faccvg,&
                       rescvg)
         use NonLin_Datastructure_type
         use ROM_Datastructure_type
-        use HHO_type
         use NonLinearDyna_type
         character(len=8), intent(in) :: mesh
         integer :: list_func_acti(*)
@@ -39,7 +38,6 @@ interface
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_System), intent(in) :: ds_system
-        type(HHO_Field), intent(in) :: hhoField
         character(len=19) :: matass, maprec
         character(len=19) :: list_load, solveu, sddisc, sdnume
         character(len=19), intent(in) :: sddyna

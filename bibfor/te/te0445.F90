@@ -87,7 +87,12 @@ subroutine te0445(nomopt, nomte)
 !
 ! --- Compute Operators
 !
-    call hhoCalcOpTher(hhoCell, hhoData, gradfull, stab)
+    if (hhoData%precompute()) then
+!
+        call hhoReloadPreCalcTher(hhoCell, hhoData, gradfull, stab)
+    else
+        call hhoCalcOpTher(hhoCell, hhoData, gradfull, stab)
+    end if
 !
 ! --- Compute local rigidity contribution
 !

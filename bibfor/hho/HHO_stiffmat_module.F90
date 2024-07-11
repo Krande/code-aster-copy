@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-            call hhoBasisCell%BSEvalGrad(hhoCell, hhoQuad%points(1:3, ipg), &
+            call hhoBasisCell%BSEvalGrad(hhoQuad%points(1:3, ipg), &
                                         & min_order, max_order, BSGradEval)
 !
 ! --------  Eval stiffMat
@@ -146,7 +146,7 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval basis function at the quadrature point
-            call hhoBasisCell%BVEvalSymGrad(hhoCell, hhoQuad%points(1:3, ipg), &
+            call hhoBasisCell%BVEvalSymGrad(hhoQuad%points(1:3, ipg), &
                                             & min_order, max_order, BVGradEval)
 !
 ! --------  Eval stiffMat

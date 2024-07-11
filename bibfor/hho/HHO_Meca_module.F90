@@ -55,6 +55,7 @@ module HHO_Meca_module
 #include "asterfort/nmtime.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/readMatrix.h"
 #include "asterfort/readVector.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
@@ -74,7 +75,7 @@ module HHO_Meca_module
 !
 !
     public :: HHO_Meca_State
-    public :: hhoMecaInit, hhoPreCalcMeca, hhoLocalContribMeca, hhoCalcStabCoeffMeca
+    public :: hhoMecaInit, hhoLocalContribMeca, hhoCalcStabCoeffMeca
     public :: hhoCalcOpMeca, hhoReloadPreCalcMeca
     public :: YoungModulus, hhoLocalMassMeca
 !
@@ -139,15 +140,11 @@ contains
             call utmess('I', 'HHO2_8')
         end if
 !
-! --- Prepare fields for algorithm
-!
-        hhoField%fieldOUT_cell_GT = '&&HHOMECA.OU.CELLGT'
-        hhoField%fieldOUT_cell_ST = '&&HHOMECA.OU.CELLST'
-!
 ! --- Prepare fields for Dirichlet loads
 !
         hhoField%fieldCineFunc = '&&HHOMEC.CINEFUNC'
         hhoField%fieldCineVale = '&&HHOMEC.CINEVALE'
+!
         if (isfonc(list_func_acti, 'DIRI_CINE')) then
             call hhoDiriFuncPrepare(model, list_load, hhoField)
         end if
@@ -158,87 +155,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoPreCalcMeca(model, hhoField, ds_constitutive, ds_measure)
-!
-        implicit none
-!
-        character(len=24), intent(in)           :: model
-        type(HHO_Field), intent(in)             :: hhoField
-        type(NL_DS_Constitutive), intent(in)    :: ds_constitutive
-        type(NL_DS_Measure), intent(inout)      :: ds_measure
-!
-! --------------------------------------------------------------------------------------------------
-!
-! HHO - Mechanics
-!
-! Precomputation of the operators
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  model            : name of model
-! In  hhoField         : fields for HHO
-! In  ds_constitutive  : datastructure for constitutive laws management
-! IO  ds_measure       : datastructure for measure and statistics management
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer, parameter :: nbin = 2
-        integer, parameter :: nbout = 2
-        character(len=8)  :: lpain(nbin), lpaout(nbout)
-        character(len=19) :: lchin(nbin), lchout(nbout)
-        character(len=19) :: ligrel_model
-        character(len=16) :: option
-        character(len=1)  :: base
-        character(len=24) :: chgeom
-!
-! --------------------------------------------------------------------------------------------------
-!
-        base = 'V'
-        option = 'HHO_PRECALC_MECA'
-        ligrel_model = model(1:8)//'.MODELE'
-!
-! - Timer
-!
-        call nmtime(ds_measure, 'Init', 'HHO_Prep')
-        call nmtime(ds_measure, 'Launch', 'HHO_Prep')
-!
-! --- Init fields
-!
-        call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
-!
-! --- Geometry field
-!
-        call megeom(model, chgeom)
-!
-! --- Input fields
-!
-        lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom(1:19)
-        lpain(2) = 'PCOMPOR'
-        lchin(2) = ds_constitutive%compor(1:19)
-!
-! --- Output fields
-!
-        lpaout(1) = 'PCHHOGT'
-        lchout(1) = hhoField%fieldOUT_cell_GT
-        lpaout(2) = 'PCHHOST'
-        lchout(2) = hhoField%fieldOUT_cell_ST
-!
-! - Compute
-!
-        call calcul('S', option, ligrel_model, nbin, lchin, &
-                    lpain, nbout, lchout, lpaout, base, &
-                    'OUI')
-!
-        call nmtime(ds_measure, 'Stop', 'HHO_Prep')
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, gradsav, stabsav, &
+    subroutine hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, &
                                     gradfull, stab)
 !
         implicit none
@@ -246,8 +163,6 @@ contains
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Cell), intent(in) :: hhoCell
         aster_logical, intent(in) :: l_largestrains
-        real(kind=8), intent(in) :: gradsav(*)
-        real(kind=8), intent(in) :: stabsav(*)
         real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC), intent(out)   :: gradfull
         real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC), intent(out)  :: stab
 !
@@ -258,66 +173,34 @@ contains
 ! In  hhoCell         : hho Cell
 ! In hhoData          : information about the HHO formulation
 ! In l_largestrains   : large strains ?
-! In gradsav          : full gradient for mechanics (precomputed)
-! In stabsav          : stabilization for mechanics (precomputed)
 ! Out gradfull        : full gradient for mechanics
 ! Out stab            : stabilization for mechanics
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- Local variables
 !
-        integer :: cbs, fbs, total_dofs, gbs, gbs_sym, gbs2, j
+        integer :: cbs, fbs, total_dofs, gbs
         real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)  :: gradfullvec
         real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL):: stabvec
 !
-        if (hhoCell%ndim == 2) then
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
 !
-! ---- if ndim = 2, we save the full operator
+        if (l_largestrains) then
 !
-            call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+! -------- Reload gradient
+            call readMatrix('PCHHOGT', gbs, total_dofs, ASTER_FALSE, gradfullvec)
             gradfull = 0.d0
-!
-            if (l_largestrains) then
-                gbs2 = gbs
-            else
-                gbs2 = gbs_sym
-            end if
-!
-            do j = 1, total_dofs
-                call dcopy(gbs2, gradsav((j-1)*gbs2+1), 1, gradfull(1, j), 1)
-            end do
-!
-        elseif (hhoCell%ndim == 3) then
-!
-! ---- if ndim = 3, we save the scalar operator for large_strain (not for small strains)
-!
-            call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs2)
-!
-            if (l_largestrains) then
-                gradfullvec = 0.d0
-!
-                do j = 1, total_dofs
-                    call dcopy(gbs2, gradsav((j-1)*gbs2+1), 1, gradfullvec(1, j), 1)
-                end do
-!
-! ------- Compute vectoriel Gradient reconstruction
-                call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradfullvec, gradfull)
-!
-            else
-! -------- Compute Operators
-                call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, gradfull)
-            end if
+            call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradfullvec, gradfull)
         else
-            ASSERT(ASTER_FALSE)
+!
+! -------- Compute symetric gradient
+            call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, gradfull)
         end if
 !
 ! -------- Reload stabilization
         stab = 0.d0
         stabvec = 0.d0
-        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs2)
-        do j = 1, total_dofs
-            call dcopy(total_dofs, stabsav((j-1)*total_dofs+1), 1, stabvec(1, j), 1)
-        end do
+        call readMatrix('PCHHOST', total_dofs, total_dofs, ASTER_TRUE, stabvec)
         call MatScal2Vec(hhoCell, hhoData, stabvec, stab)
 !
     end subroutine
@@ -716,7 +599,7 @@ contains
 !
 ! --------- Eval basis function at the quadrature point
 !
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
 !
 ! -------- Compute behavior
 !

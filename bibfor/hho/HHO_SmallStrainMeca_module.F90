@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -180,13 +180,13 @@ contains
             BEHinteg%elem%coor_elga(ipg, 1:3) = coorpg(1:3)
             weight = hhoQuadCellRigi%weights(ipg)
 ! --------- Eval basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
 ! --------- Eval deformations
-            E_prev = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+            E_prev = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                        coorpg(1:3), E_prev_coeff, gbs_sym)
 !
-            E_incr = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+            E_incr = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
                                        coorpg(1:3), E_incr_coeff, gbs_sym)
 !
 ! -------- tranform sigm in symmetric form
@@ -323,7 +323,7 @@ contains
             coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
             weight = hhoQuadCellRigi%weights(ipg)
 ! --------- Eval basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
 ! --------- Compute behaviour
 !

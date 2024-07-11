@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,9 +76,11 @@ contains
 !
         type(HHO_Face)  :: hhoFace
         type(HHO_basis_cell) :: hhoBasisCell
+        type(HHO_massmat_cell) :: massMat
+        type(HHO_massmat_face) :: faceMass
         real(kind=8) :: invH
-        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: massMat, M1, M2
-        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: faceMass, piKF
+        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: M1, M2
+        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: proj1
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, MR2, traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj2, proj3, TMP
@@ -93,8 +95,8 @@ contains
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
 ! -- compute cell mass matrix
-        dimMassMat = hhoBasisCell%BSSize(0, hhoData%face_degree()+1)
-        call hhoMassMatCellScal(hhoCell, 0, hhoData%face_degree()+1, massMat)
+        call massMat%compute(hhoCell, 0, hhoData%face_degree()+1)
+        dimMassMat = massMat%nrows
 !
 ! -- Range
         call hhoBasisCell%BSRange(0, hhoData%cell_degree(), ifromM1, itoM1)
@@ -104,11 +106,11 @@ contains
 !
 ! -- extract M1:
         M1 = 0.d0
-        M1(1:dimM1, 1:dimM1) = massMat(ifromM1:itoM1, ifromM1:itoM1)
+        M1(1:dimM1, 1:dimM1) = massMat%m(ifromM1:itoM1, ifromM1:itoM1)
 !
 ! -- extract M2:
         M2 = 0.d0
-        M2(1:dimM1, 1:colsM2) = massMat(ifromM1:itoM1, ifromM2:itoM2)
+        M2(1:dimM1, 1:colsM2) = massMat%m(ifromM1:itoM1, ifromM2:itoM2)
 !
 ! -- Verif size
         ASSERT(MSIZE_CELL_SCAL >= colsM2 .and. MSIZE_TDOFS_SCAL >= dimM1)
@@ -123,14 +125,17 @@ contains
         call dgemm('N', 'N', dimM1, total_dofs, colsM2, -1.d0, M2, MSIZE_CELL_SCAL, &
                    gradrec, MSIZE_CELL_SCAL, 0.d0, proj1, MSIZE_CELL_SCAL)
 !
+        if (.not. massMat%isIdentity) then
 ! -- Solve proj1 = M1^-1 * proj1
 ! -- Verif strange bug if info neq 0 in entry
-        info = 0
-        call dposv('U', dimM1, total_dofs, M1, MSIZE_CELL_SCAL, proj1, MSIZE_CELL_SCAL, info)
+            info = 0
+            call dposv('U', dimM1, total_dofs, M1, MSIZE_CELL_SCAL, proj1, MSIZE_CELL_SCAL, info)
 !
 ! - Sucess ?
-        if (info .ne. 0) then
-            call utmess('F', 'HHO1_4')
+            if (info .ne. 0) then
+                call utmess('F', 'HHO1_4')
+            end if
+
         end if
 !
 ! --  Step 2: v_T - \pi_T^k p_T^k v (first term minus third term)
@@ -150,22 +155,25 @@ contains
             toFace = offset_face+fbs-1
 !
 ! ----- Compute face mass matrix
-            call hhoMassMatFaceScal(hhoFace, 0, hhoData%face_degree(), faceMass)
+            call faceMass%compute(hhoFace, 0, hhoData%face_degree())
 !
 ! ----- Compute trace mass matrix
             call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, &
                                  hhoFace, 0, hhoData%face_degree(), traceMat)
 !
+            if (.not. faceMass%isIdentity) then
+!
 ! ---- Factorize face Mass
-            piKF = 0.d0
-            piKF(1:fbs, 1:fbs) = faceMass(1:fbs, 1:fbs)
+                piKF = 0.d0
+                piKF(1:fbs, 1:fbs) = faceMass%m(1:fbs, 1:fbs)
 ! ---- Verif strange bug if info neq 0 in entry
-            info = 0
-            call dpotrf('U', fbs, piKF, MSIZE_FACE_SCAL, info)
+                info = 0
+                call dpotrf('U', fbs, piKF, MSIZE_FACE_SCAL, info)
 !
 ! --- Sucess ?
-            if (info .ne. 0) then
-                call utmess('F', 'HHO1_4')
+                if (info .ne. 0) then
+                    call utmess('F', 'HHO1_4')
+                end if
             end if
 !
 ! ----  Step 3a: \pi_F^k( v_F - p_T^k v )
@@ -177,14 +185,18 @@ contains
             call dgemm('N', 'N', fbs, total_dofs, colsM2, 1.d0, MR1, MSIZE_FACE_SCAL, &
                        gradrec, MSIZE_CELL_SCAL, 0.d0, proj2, MSIZE_FACE_SCAL)
 !
+            if (.not. faceMass%isIdentity) then
+!
 ! ---- Solve proj2 = pikF^-1 * proj2
 ! ---- Verif strange bug if info neq 0 in entry
-            info = 0
-            call dpotrs('U', fbs, total_dofs, piKF, MSIZE_FACE_SCAL, proj2, MSIZE_FACE_SCAL, info)
+                info = 0
+                call dpotrs('U', fbs, total_dofs, piKF, MSIZE_FACE_SCAL, &
+                            proj2, MSIZE_FACE_SCAL, info)
 !
 ! --- Sucess ?
-            if (info .ne. 0) then
-                call utmess('F', 'HHO1_4')
+                if (info .ne. 0) then
+                    call utmess('F', 'HHO1_4')
+                end if
             end if
 !
 ! ---- Compute proj2 -= I_F
@@ -204,23 +216,32 @@ contains
             call dgemm('N', 'N', fbs, total_dofs, dimM1, 1.d0, MR2, MSIZE_FACE_SCAL, &
                        proj1, MSIZE_CELL_SCAL, 0.d0, proj3, MSIZE_FACE_SCAL)
 !
+            if (.not. faceMass%isIdentity) then
+
 ! ---- Solve proj3 = pikF^-1 * proj3
-            info = 0
-            call dpotrs('U', fbs, total_dofs, piKF, MSIZE_FACE_SCAL, proj3, MSIZE_FACE_SCAL, info)
+                info = 0
+                call dpotrs('U', fbs, total_dofs, piKF, MSIZE_FACE_SCAL, &
+                            proj3, MSIZE_FACE_SCAL, info)
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
-            if (info .ne. 0) then
-                call utmess('F', 'HHO1_4')
+                if (info .ne. 0) then
+                    call utmess('F', 'HHO1_4')
+                end if
             end if
 !
 ! ---- proj3 = proj3 + proj2
             proj3(1:fbs, 1:total_dofs) = proj3(1:fbs, 1:total_dofs)+proj2(1:fbs, 1:total_dofs)
 !
+            if (.not. faceMass%isIdentity) then
+!
 ! ---- Compute TMP = faceMass * proj3
-            TMP = 0.d0
-            call dgemm('N', 'N', fbs, total_dofs, fbs, 1.d0, faceMass, MSIZE_FACE_SCAL, &
-                       proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
+                TMP = 0.d0
+                call dgemm('N', 'N', fbs, total_dofs, fbs, 1.d0, faceMass%m, MSIZE_FACE_SCAL, &
+                           proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
+            else
+                TMP(1:fbs, 1:total_dofs) = proj3(1:fbs, 1:total_dofs)
+            end if
 !
 ! ---- Compute stab += invH * proj3**T * TMP
             call dgemm('T', 'N', total_dofs, total_dofs, fbs, invH, proj3, MSIZE_FACE_SCAL, &
@@ -292,9 +313,11 @@ contains
 !
         type(HHO_Face)  :: hhoFace
         type(HHO_basis_cell) :: hhoBasisCell
+        type(HHO_massmat_cell) :: massMat
+        type(HHO_massmat_face) :: faceMass
         real(kind=8) :: invH
-        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: massMat, M1, M2
-        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: faceMass, piKF
+        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: M1, M2
+        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
         real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC) :: proj1
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, MR2, traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_VEC) :: proj2, proj3, TMP
@@ -314,8 +337,8 @@ contains
         faces_dofs_comp = faces_dofs/hhoCell%ndim
 !
 ! -- compute cell mass matrix
-        dimMassMat = hhoBasisCell%BSSize(0, hhoData%face_degree()+1)
-        call hhoMassMatCellScal(hhoCell, 0, hhoData%face_degree()+1, massMat)
+        call massMat%compute(hhoCell, 0, hhoData%face_degree()+1)
+        dimMassMat = massMat%nrows
 !
 ! -- Range
         call hhoBasisCell%BSRange(0, hhoData%cell_degree(), ifromM1, itoM1)
@@ -325,7 +348,7 @@ contains
 !
 ! -- extract M1:
         M1 = 0.d0
-        M1(1:dimM1, 1:dimM1) = massMat(ifromM1:itoM1, ifromM1:itoM1)
+        M1(1:dimM1, 1:dimM1) = massMat%m(ifromM1:itoM1, ifromM1:itoM1)
 !
 ! -- factorize M1
         info = 0
@@ -338,7 +361,7 @@ contains
 !
 ! -- extract M2:
         M2 = 0.d0
-        M2(1:dimM1, 1:colsM2) = massMat(ifromM1:itoM1, ifromM2:itoM2)
+        M2(1:dimM1, 1:colsM2) = massMat%m(ifromM1:itoM1, ifromM2:itoM2)
 !
 ! -- Verif size
         ASSERT(MSIZE_CELL_SCAL >= colsM2 .and. MSIZE_TDOFS_SCAL >= dimM1)
@@ -362,15 +385,17 @@ contains
                        gradrec(ifromGrad:itoGrad, 1:total_dofs), colsM2, 0.d0, &
                        proj1(ifromProj:itoProj, 1:total_dofs), dimM1)
 !
+            if (.not. massMat%isIdentity) then
 ! -- Solve proj1 = M1^-1 * proj1
 ! -- Verif strange bug if info neq 0 in entry
-            info = 0
-            call dpotrs('U', dimM1, total_dofs, M1, MSIZE_CELL_SCAL, &
-                        proj1(ifromProj:itoProj, 1:total_dofs), dimM1, info)
+                info = 0
+                call dpotrs('U', dimM1, total_dofs, M1, MSIZE_CELL_SCAL, &
+                            proj1(ifromProj:itoProj, 1:total_dofs), dimM1, info)
 !
 ! -- Sucess ?
-            if (info .ne. 0) then
-                call utmess('F', 'HHO1_4')
+                if (info .ne. 0) then
+                    call utmess('F', 'HHO1_4')
+                end if
             end if
 !
         end do
@@ -389,22 +414,25 @@ contains
             invH = 1.d0/hhoFace%diameter
 !
 ! ----- Compute face mass matrix
-            call hhoMassMatFaceScal(hhoFace, 0, hhoData%face_degree(), faceMass)
+            call faceMass%compute(hhoFace, 0, hhoData%face_degree())
 !
 ! ----- Compute trace mass matrix
             call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, &
                                  hhoFace, 0, hhoData%face_degree(), traceMat)
 !
+            if (.not. faceMass%isIdentity) then
+!
 ! ---- Factorize face Mass
-            piKF = 0.d0
-            piKF(1:fbs_comp, 1:fbs_comp) = faceMass(1:fbs_comp, 1:fbs_comp)
+                piKF = 0.d0
+                piKF(1:fbs_comp, 1:fbs_comp) = faceMass%m(1:fbs_comp, 1:fbs_comp)
 ! ---- Verif strange bug if info neq 0 in entry
-            info = 0
-            call dpotrf('U', fbs_comp, piKF, MSIZE_FACE_SCAL, info)
+                info = 0
+                call dpotrf('U', fbs_comp, piKF, MSIZE_FACE_SCAL, info)
 !
 ! --- Sucess ?
-            if (info .ne. 0) then
-                call utmess('F', 'HHO1_4')
+                if (info .ne. 0) then
+                    call utmess('F', 'HHO1_4')
+                end if
             end if
 !
 ! ----  Step 3a: \pi_F^k( v_F - p_T^k v )
@@ -427,15 +455,18 @@ contains
                            gradrec(ifromGrad:itoGrad, 1:total_dofs), colsM2, &
                            0.d0, proj2, MSIZE_FACE_SCAL)
 !
+                if (.not. faceMass%isIdentity) then
+!
 ! ---- Solve proj2 = pikF^-1 * proj2
 ! ---- Verif strange bug if info neq 0 in entry
-                info = 0
-                call dpotrs('U', fbs_comp, total_dofs, piKF, MSIZE_FACE_SCAL, &
-                            proj2, MSIZE_FACE_SCAL, info)
+                    info = 0
+                    call dpotrs('U', fbs_comp, total_dofs, piKF, MSIZE_FACE_SCAL, &
+                                proj2, MSIZE_FACE_SCAL, info)
 !
 ! --- Sucess ?
-                if (info .ne. 0) then
-                    call utmess('F', 'HHO1_4')
+                    if (info .ne. 0) then
+                        call utmess('F', 'HHO1_4')
+                    end if
                 end if
 !
 ! ---- Compute proj2 -= I_F
@@ -457,25 +488,33 @@ contains
                            proj1(ifromProj:itoProj, 1:total_dofs), dimM1, &
                            0.d0, proj3, MSIZE_FACE_SCAL)
 !
+                if (.not. faceMass%isIdentity) then
+!
 ! ---- Solve proj3 = pikF^-1 * proj3
-                info = 0
-                call dpotrs('U', fbs_comp, total_dofs, piKF, MSIZE_FACE_SCAL, &
-                            proj3, MSIZE_FACE_SCAL, info)
+                    info = 0
+                    call dpotrs('U', fbs_comp, total_dofs, piKF, MSIZE_FACE_SCAL, &
+                                proj3, MSIZE_FACE_SCAL, info)
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
-                if (info .ne. 0) then
-                    call utmess('F', 'HHO1_4')
+                    if (info .ne. 0) then
+                        call utmess('F', 'HHO1_4')
+                    end if
                 end if
 !
 ! ---- proj3 = proj3 + proj2
                 proj3(1:fbs_comp, 1:total_dofs) = proj3(1:fbs_comp, 1:total_dofs) &
                                                   +proj2(1:fbs_comp, 1:total_dofs)
 !
+                if (.not. faceMass%isIdentity) then
+
 ! ---- Compute TMP = faceMass * proj3
-                TMP = 0.d0
-                call dgemm('N', 'N', fbs_comp, total_dofs, fbs_comp, 1.d0, faceMass, &
-                           MSIZE_FACE_SCAL, proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
+                    TMP = 0.d0
+                    call dgemm('N', 'N', fbs_comp, total_dofs, fbs_comp, 1.d0, faceMass%m, &
+                               MSIZE_FACE_SCAL, proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
+                else
+                    TMP(1:fbs_comp, 1:total_dofs) = proj3(1:fbs_comp, 1:total_dofs)
+                end if
 !
 ! ---- Compute stab += invH * proj3**T * TMP
                 call dgemm('T', 'N', total_dofs, total_dofs, fbs_comp, invH, proj3, &
@@ -510,8 +549,9 @@ contains
 !
         type(HHO_Face)  :: hhoFace
         type(HHO_basis_cell) :: hhoBasisCell
+        type(HHO_massmat_face) :: faceMass
         real(kind=8) :: invH
-        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: faceMass, piKF
+        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: proj1
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) ::  traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj3, TMP
@@ -544,37 +584,41 @@ contains
             toFace = offset_face+fbs-1
 !
 ! ----- Compute face mass matrix
-            call hhoMassMatFaceScal(hhoFace, 0, hhoData%face_degree(), faceMass)
+            call faceMass%compute(hhoFace, 0, hhoData%face_degree())
 !
 ! ----- Compute trace mass matrix
             call hhoTraceMatScal(hhoCell, 0, hhoData%cell_degree(), &
                                  hhoFace, 0, hhoData%face_degree(), traceMat)
-!
-! ---- Factorize face Mass
-            piKF = 0.d0
-            piKF(1:fbs, 1:fbs) = faceMass(1:fbs, 1:fbs)
-! ---- Verif strange bug if info neq 0 in entry
-            info = 0
-            call dpotrf('U', fbs, piKF, MSIZE_FACE_SCAL, info)
-!
-! --- Sucess ?
-            if (info .ne. 0) then
-                call utmess('F', 'HHO1_4')
-            end if
 !
 ! ---- Compute proj3 = traceMat * proj1
             proj3 = 0.d0
             call dgemm('N', 'N', fbs, total_dofs, cbs, 1.d0, traceMat, MSIZE_FACE_SCAL, &
                        proj1, MSIZE_CELL_SCAL, 0.d0, proj3, MSIZE_FACE_SCAL)
 !
+            if (.not. faceMass%isIdentity) then
+!
+! ---- Factorize face Mass
+                piKF = 0.d0
+                piKF(1:fbs, 1:fbs) = faceMass%m(1:fbs, 1:fbs)
+! ---- Verif strange bug if info neq 0 in entry
+                info = 0
+                call dpotrf('U', fbs, piKF, MSIZE_FACE_SCAL, info)
+!
+! --- Sucess ?
+                if (info .ne. 0) then
+                    call utmess('F', 'HHO1_4')
+                end if
+!
 ! ---- Solve proj3 = pikF^-1 * proj3
-            info = 0
-            call dpotrs('U', fbs, total_dofs, piKF, MSIZE_FACE_SCAL, proj3, MSIZE_FACE_SCAL, info)
+                info = 0
+                call dpotrs('U', fbs, total_dofs, piKF, MSIZE_FACE_SCAL, &
+                            proj3, MSIZE_FACE_SCAL, info)
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
-            if (info .ne. 0) then
-                call utmess('F', 'HHO1_4')
+                if (info .ne. 0) then
+                    call utmess('F', 'HHO1_4')
+                end if
             end if
 !
 ! ---- Compute proj3 -= I_F
@@ -586,7 +630,7 @@ contains
 !
 ! ---- Compute TMP = faceMass * proj3
             TMP = 0.d0
-            call dgemm('N', 'N', fbs, total_dofs, fbs, 1.d0, faceMass, MSIZE_FACE_SCAL, &
+            call dgemm('N', 'N', fbs, total_dofs, fbs, 1.d0, faceMass%m, MSIZE_FACE_SCAL, &
                        proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
 !
 ! ---- Compute stab += invH * proj3**T * TMP

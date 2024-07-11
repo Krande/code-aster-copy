@@ -67,6 +67,7 @@ Model::Model( const std::string name, const bool is_xfem )
       _splitMethod( SubDomain ),
       _graphPartitioner( MetisPartitioner ),
       _ligrel( nullptr ),
+      _hhoModel( std::make_shared< HHOModel >( getName() ) ),
       _xfemModel( nullptr ) {
 #ifdef ASTER_HAVE_MPI
     _connectionMesh = nullptr;
@@ -246,6 +247,11 @@ void Model::setXfemModel() {
     const std::string modelName = getName();
     _xfemModel = std::make_shared< XfemModel >( modelName );
 };
+
+/**
+ * @brief Get the HHO model
+ */
+HHOModelPtr Model::getHHOModel() const { return _hhoModel; };
 
 int Model::getGeometricDimension( void ) const {
     ASTERINTEGER nb_dim_;

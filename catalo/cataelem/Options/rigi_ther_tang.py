@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,12 +31,29 @@ PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
+# For HHO
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
+
+PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
+
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
 
 PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
 
 
 RIGI_THER_TANG = Option(
-    para_in=(PCOMPOR, SP.PGEOMER, SP.PCAMASS, SP.PMATERC, SP.PTEMPEI, SP.PTMPCHF, PVARCPR),
+    para_in=(
+        PCOMPOR,
+        SP.PGEOMER,
+        SP.PCAMASS,
+        SP.PMATERC,
+        SP.PTEMPEI,
+        SP.PTMPCHF,
+        PVARCPR,
+        PCHHOGT,
+        PCHHOST,
+        PCHHOBS,
+    ),
     para_out=(PMATTTR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

@@ -38,6 +38,7 @@ module HHO_Ther_module
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/readMatrix.h"
 #include "asterfort/readVector.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
@@ -62,6 +63,7 @@ module HHO_Ther_module
     public :: hhoLocalRigiTher, hhoCalcStabCoeffTher, hhoLocalMassTher
     public :: hhoCalcOpTher, hhoComputeRhsRigiTher, hhoComputeLhsRigiTher
     public :: hhoComputeLhsMassTher, hhoComputeRhsMassTher, hhoComputeBehaviourTher
+    public :: hhoReloadPreCalcTher
     private :: hhoComputeAgphi
     private :: LambdaMax, hhoComputeRhoCpTher
 !
@@ -187,16 +189,16 @@ contains
 !
 ! --------- Eval basis function at the quadrature point
 !
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
 ! --------- Eval gradient at T+
 !
-            G_curr = hhoEvalVecCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+            G_curr = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
                                     coorpg(1:3), G_curr_coeff, gbs)
 !
 ! --------- Eval temperature at T+
 !
-            temp_eval_curr = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            temp_eval_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                              coorpg(1:3), temp_curr, cbs)
 !
 ! ------- Compute behavior
@@ -340,11 +342,11 @@ contains
 !
 ! --------- Eval basis function at the quadrature point
 !
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval gradient at T+
 !
-            temp_eval = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+            temp_eval = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
                                         coorpg, temp_T_curr, cbs)
 !
 ! -------- Compute behavior
@@ -370,6 +372,47 @@ contains
 ! ----- Copy the lower part
 !
         if (l_lhs) call hhoCopySymPartMat('U', lhs(1:cbs, 1:cbs))
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoReloadPreCalcTher(hhoCell, hhoData, gradfull, stab)
+!
+        implicit none
+!
+        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL), intent(out)  :: gradfull
+        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL), optional, intent(out) :: stab
+!
+! --------------------------------------------------------------------------------------------------
+!  HHO
+!  Thermics - Reload Precomputation of operators
+!
+! In  hhoCell         : hho Cell
+! In hhoData          : information about the HHO formulation
+! Out gradfull        : full gradient
+! Out stab            : stabilization
+! --------------------------------------------------------------------------------------------------
+!
+! --- Local variables
+!
+        integer :: cbs, fbs, total_dofs, gbs
+!
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
+!
+! -------- Reload gradient
+        gradfull = 0.d0
+        call readMatrix('PCHHOGT', gbs, total_dofs, ASTER_FALSE, gradfull)
+!
+! -------- Reload stabilization
+        if (present(stab)) then
+            stab = 0.d0
+            call readMatrix('PCHHOST', total_dofs, total_dofs, ASTER_TRUE, stab)
+        end if
 !
     end subroutine
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -129,15 +129,15 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval face basis function at the quadrature point
-                call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), &
+                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%face_degree(), BSFEval)
 !
 ! --------- Eval derivative of cell basis function at the quadrature point
-                call hhoBasisCell%BSEvalGrad(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEvalGrad(hhoQuad%points(1:3, ipg), &
                                              1, hhoData%face_degree()+1, BSCGradEval)
 !
 ! --------  Compute grad *normal
@@ -291,7 +291,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_basis_face) :: hhoBasisFace
         type(HHO_quadrature)  :: hhoQuad, hhoQuadCell
-        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: MassMat
+        type(HHO_massmat_cell) :: massMat
         real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: BG
         real(kind=8), dimension(MSIZE_CELL_SCAL, 3*MSIZE_TDOFS_SCAL) :: SOL
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSCGradEval
@@ -300,7 +300,7 @@ contains
         real(kind=8) :: normal(3)
         integer :: cbs, fbs, total_dofs, gbs, dimMassMat
         integer :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, info
-        integer ::  iface, fromFace, toFace
+        integer :: iface, fromFace, toFace
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -309,8 +309,8 @@ contains
         call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
 !
 ! -- compute mass matrix of P^k_d(T;R)
-        dimMassMat = hhoBasisCell%BSSize(0, hhoData%grad_degree())
-        call hhoMassMatCellScal(hhoCell, 0, hhoData%grad_degree(), MassMat)
+        call massMat%compute(hhoCell, 0, hhoData%grad_degree())
+        dimMassMat = massMat%nrows
 !
         toFace = cbs
         BG = 0.d0
@@ -328,15 +328,15 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval face basis function at the quadrature point
-                call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), &
+                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%face_degree(), BSFEval)
 !
 ! --------- Eval grad cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%grad_degree(), BSGEval)
 !
                 normal = hhoNormalFaceQP(hhoFace, hhoQuad%points_param(1:2, ipg))
@@ -365,11 +365,11 @@ contains
 ! - Loop on quadrature point
         do ipg = 1, hhoQuadCell%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuadCell%points(1:3, ipg), &
+            call hhoBasisCell%BSEval(hhoQuadCell%points(1:3, ipg), &
                                      0, hhoData%grad_degree(), BSGEval)
 !
 ! ----- Eval derivative of cell basis function at the quadrature point
-            call hhoBasisCell%BSEvalGrad(hhoCell, hhoQuadCell%points(1:3, ipg), &
+            call hhoBasisCell%BSEvalGrad(hhoQuadCell%points(1:3, ipg), &
                                          0, hhoData%cell_degree(), BSCGradEval)
 !
 ! ------ Loop on the dimension
@@ -384,35 +384,40 @@ contains
             end do
         end do
 !
+        if (massMat%isIdentity) then
+            gradrec(1:gbs, 1:total_dofs) = BG(1:gbs, 1:total_dofs)
+
+        else
 ! - Solve the system gradrec =(MG)^-1 * BG
-        SOL = 0.d0
-        do idim = 1, hhoCell%ndim
-            ibeginBG = (idim-1)*dimMassMat+1
-            iendBG = ibeginBG+dimMassMat-1
-            ibeginSOL = (idim-1)*total_dofs+1
-            iendSOL = ibeginSOL+total_dofs-1
-            SOL(1:dimMassMat, ibeginSOL:iendSOL) = BG(ibeginBG:iendBG, 1:total_dofs)
-        end do
+            SOL = 0.d0
+            do idim = 1, hhoCell%ndim
+                ibeginBG = (idim-1)*dimMassMat+1
+                iendBG = ibeginBG+dimMassMat-1
+                ibeginSOL = (idim-1)*total_dofs+1
+                iendSOL = ibeginSOL+total_dofs-1
+                SOL(1:dimMassMat, ibeginSOL:iendSOL) = BG(ibeginBG:iendBG, 1:total_dofs)
+            end do
 !
 ! - Verif strange bug if info neq 0 in entry
-        info = 0
-        call dposv('U', dimMassMat, hhoCell%ndim*total_dofs, MassMat, MSIZE_CELL_SCAL, &
-                   SOL, MSIZE_CELL_SCAL, info)
+            info = 0
+            call dposv('U', dimMassMat, hhoCell%ndim*total_dofs, massMat%m, MSIZE_CELL_SCAL, &
+                       SOL, MSIZE_CELL_SCAL, info)
 !
 ! - Sucess ?
-        if (info .ne. 0) then
-            call utmess('F', 'HHO1_4')
-        end if
+            if (info .ne. 0) then
+                call utmess('F', 'HHO1_4')
+            end if
 !
 ! -- decompress solution
-        gradrec = 0.d0
-        do idim = 1, hhoCell%ndim
-            ibeginBG = (idim-1)*dimMassMat+1
-            iendBG = ibeginBG+dimMassMat-1
-            ibeginSOL = (idim-1)*total_dofs+1
-            iendSOL = ibeginSOL+total_dofs-1
-            gradrec(ibeginBG:iendBG, 1:total_dofs) = SOL(1:dimMassMat, ibeginSOL:iendSOL)
-        end do
+            gradrec = 0.d0
+            do idim = 1, hhoCell%ndim
+                ibeginBG = (idim-1)*dimMassMat+1
+                iendBG = ibeginBG+dimMassMat-1
+                ibeginSOL = (idim-1)*total_dofs+1
+                iendSOL = ibeginSOL+total_dofs-1
+                gradrec(ibeginBG:iendBG, 1:total_dofs) = SOL(1:dimMassMat, ibeginSOL:iendSOL)
+            end do
+        end if
 !
         if (present(lhs)) then
             lhs = 0.d0
@@ -564,7 +569,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_basis_face) :: hhoBasisFace
         type(HHO_quadrature)  :: hhoQuad, hhoQuadCell
-        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: MassMat
+        type(HHO_massmat_cell) :: massMat
         real(kind=8), dimension(6*MSIZE_CELL_SCAL, MSIZE_TDOFS_VEC) :: BG
         real(kind=8), dimension(MSIZE_CELL_SCAL, 6*MSIZE_TDOFS_VEC) :: SOL
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVCSGradEval
@@ -594,8 +599,8 @@ contains
         fbs_comp = fbs/hhoCell%ndim
 !
 ! -- compute mass matrix of P^k_d(T;R)
-        dimMassMat = hhoBasisCell%BSSize(0, hhoData%grad_degree())
-        call hhoMassMatCellScal(hhoCell, 0, hhoData%grad_degree(), MassMat)
+        call massMat%compute(hhoCell, 0, hhoData%grad_degree())
+        dimMassMat = massMat%nrows
 !
         BG = 0.d0
 !
@@ -606,11 +611,11 @@ contains
 ! -- Loop on quadrature point
         do ipg = 1, hhoQuadCell%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuadCell%points(1:3, ipg), &
+            call hhoBasisCell%BSEval(hhoQuadCell%points(1:3, ipg), &
                                      0, hhoData%grad_degree(), BSGEval)
 !
 ! ----- Eval symmetric derivative of cell basis function at the quadrature point
-            call hhoBasisCell%BVEvalSymGrad(hhoCell, hhoQuadCell%points(1:3, ipg), &
+            call hhoBasisCell%BVEvalSymGrad(hhoQuadCell%points(1:3, ipg), &
                                             0, hhoData%cell_degree(), BVCSGradEval)
 !
 ! ------ Loop on diagonal terms
@@ -658,15 +663,15 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval face basis function at the quadrature point
-                call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), &
+                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%face_degree(), BSFEval)
 !
 ! --------- Eval grad cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%grad_degree(), BSGEval)
 !
                 normal = hhoNormalFaceQP(hhoFace, hhoQuad%points_param(1:2, ipg))
@@ -798,35 +803,39 @@ contains
 !
         end do
 !
+        if (massMat%isIdentity) then
+            gradrec(1:gbs_sym, 1:total_dofs) = BG(1:gbs_sym, 1:total_dofs)
+        else
 ! - Solve the system gradrec =(MG)^-1 * BG
-        SOL = 0.d0
-        do idim = 1, nbdimMat
-            ibeginBG = (idim-1)*dimMassMat+1
-            iendBG = ibeginBG+dimMassMat-1
-            ibeginSOL = (idim-1)*total_dofs+1
-            iendSOL = ibeginSOL+total_dofs-1
-            SOL(1:dimMassMat, ibeginSOL:iendSOL) = BG(ibeginBG:iendBG, 1:total_dofs)
-        end do
+            SOL = 0.d0
+            do idim = 1, nbdimMat
+                ibeginBG = (idim-1)*dimMassMat+1
+                iendBG = ibeginBG+dimMassMat-1
+                ibeginSOL = (idim-1)*total_dofs+1
+                iendSOL = ibeginSOL+total_dofs-1
+                SOL(1:dimMassMat, ibeginSOL:iendSOL) = BG(ibeginBG:iendBG, 1:total_dofs)
+            end do
 !
 ! - Verif strange bug if info neq 0 in entry
-        info = 0
-        call dposv('U', dimMassMat, nbdimMat*total_dofs, MassMat, MSIZE_CELL_SCAL, &
-                   SOL, MSIZE_CELL_SCAL, info)
+            info = 0
+            call dposv('U', dimMassMat, nbdimMat*total_dofs, massMat%m, MSIZE_CELL_SCAL, &
+                       SOL, MSIZE_CELL_SCAL, info)
 !
 ! - Sucess ?
-        if (info .ne. 0) then
-            call utmess('F', 'HHO1_4')
-        end if
+            if (info .ne. 0) then
+                call utmess('F', 'HHO1_4')
+            end if
 !
 ! -- decompress solution
-        gradrec = 0.d0
-        do idim = 1, nbdimMat
-            ibeginBG = (idim-1)*dimMassMat+1
-            iendBG = ibeginBG+dimMassMat-1
-            ibeginSOL = (idim-1)*total_dofs+1
-            iendSOL = ibeginSOL+total_dofs-1
-            gradrec(ibeginBG:iendBG, 1:total_dofs) = SOL(1:dimMassMat, ibeginSOL:iendSOL)
-        end do
+            gradrec = 0.d0
+            do idim = 1, nbdimMat
+                ibeginBG = (idim-1)*dimMassMat+1
+                iendBG = ibeginBG+dimMassMat-1
+                ibeginSOL = (idim-1)*total_dofs+1
+                iendSOL = ibeginSOL+total_dofs-1
+                gradrec(ibeginBG:iendBG, 1:total_dofs) = SOL(1:dimMassMat, ibeginSOL:iendSOL)
+            end do
+        end if
 !
         if (present(lhs)) then
             lhs = 0.d0
@@ -952,7 +961,7 @@ contains
         do ipg = 1, hhoQuadCell%nbQuadPoints
 !
 ! ----- Eval derivative of cell basis function at the quadrature point
-            call hhoBasisCell%BSEvalGrad(hhoCell, hhoQuadCell%points(1:3, ipg), &
+            call hhoBasisCell%BSEvalGrad(hhoQuadCell%points(1:3, ipg), &
                                          1, hhoData%face_degree()+1, BSCGradEval)
             do j = 1, dimMG_cmp
                 if (hhoCell%ndim == 2) then
@@ -1022,15 +1031,15 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval face basis function at the quadrature point
-                call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), &
+                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), &
                                          0, hhoData%face_degree(), BSFEval)
 !
 ! --------- Eval symetric derivative of cell basis function at the quadrature point
-                call hhoBasisCell%BVEvalSymGrad(hhoCell, hhoQuad%points(1:3, ipg), &
+                call hhoBasisCell%BVEvalSymGrad(hhoQuad%points(1:3, ipg), &
                                                 1, hhoData%face_degree()+1, BVCGradEval)
 !
 ! --------  Compute grad_s *normal

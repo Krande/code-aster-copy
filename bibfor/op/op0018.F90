@@ -18,6 +18,8 @@
 !
 subroutine op0018()
 !
+    use HHO_precalc_module, only: hhoPreCalc
+!
     implicit none
 !
 #include "asterf_types.h"
@@ -446,6 +448,14 @@ subroutine op0018()
         if (kdis(1:5) .eq. 'MAIL_') call utmess('F', 'MODELE1_13')
         call crevge(ligrel, 'G')
     end if
+!
+! - Precomputation for HHO
+!
+    call dismoi('EXI_HHO', ligrel, 'LIGREL', repk=repk)
+    if (repk == "OUI") then
+        call hhoPreCalc(model)
+    end if
+!
 !
     call jedema()
 end subroutine

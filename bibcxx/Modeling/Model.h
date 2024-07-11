@@ -37,6 +37,7 @@
 #include "Meshes/Skeleton.h"
 #include "Modeling/ElementaryModeling.h"
 #include "Modeling/FiniteElementDescriptor.h"
+#include "Modeling/HHOModel.h"
 #include "Modeling/XfemModel.h"
 #include "Supervis/ResultNaming.h"
 #include "Utilities/SyntaxDictionary.h"
@@ -121,6 +122,8 @@ class Model : public DataStructure, public ListOfTables {
     ModelPtr _saneModel;
     /** @brief Model with XFEM */
     XfemModelPtr _xfemModel;
+    /** @brief Field for HHO  */
+    HHOModelPtr _hhoModel;
     /** @brief To know if model is balanceable */
     bool _isBalanceable = true;
 
@@ -276,6 +279,11 @@ class Model : public DataStructure, public ListOfTables {
      * @brief Get the Xfem model
      */
     XfemModelPtr getXfemModel() const;
+
+    /**
+     * @brief Get the HHO model
+     */
+    HHOModelPtr getHHOModel() const;
 
     /**
      * @brief Obtention de la methode de partition
