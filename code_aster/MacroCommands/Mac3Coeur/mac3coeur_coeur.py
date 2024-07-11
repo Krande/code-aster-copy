@@ -123,6 +123,11 @@ class Coeur:
     _time = ("T0", "T0b", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8b", "T9")
     _subtime = ("N0", "N0b", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N8b", "N9")
     _type_coeur = None
+    _is_multi_rod = False
+
+    @property
+    def is_multi_rod(self):
+        return self._is_multi_rod
 
     @property
     def type_coeur(self):
@@ -660,6 +665,7 @@ class Coeur:
         coords_x = MAILL.getCoordinates().toNumpy().T[0].copy()
         gcells = MAILL.getGroupsOfCells()
         gnodes = MAILL.getGroupsOfNodes()
+        self._is_multi_rod = len([i for i in gnodes if i.startswith("CREIBAS_")]) > 0
 
         for ac in self.collAC:
             id_cr = "CR_%s" % ac.pos_aster
@@ -721,6 +727,25 @@ class Coeur:
             for ac in self.collAC
             for igr in range(ac._para["NBGR"])
         ]
+
+    def cl_rigidite_embouts(self):
+
+        rigi_einf = [
+            _F(
+                GROUP_NO=(
+                    "CREIBAS_%s" % (ac.pos_aster),
+                    "TGBAS_%s" % (ac.pos_aster),
+                    "PI_%s" % (ac.pos_aster),
+                )
+            )
+            for ac in self.collAC
+        ]
+
+        rigi_esup = [
+            _F(GROUP_NO=("TGHAUT_%s" % ac.pos_aster, "PS_%s" % ac.pos_aster)) for ac in self.collAC
+        ]
+
+        return rigi_einf + rigi_esup
 
     def affectation_modele(self, MAILLAGE):
         _MODELE = AFFE_MODELE(
