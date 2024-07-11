@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     character(len=24) :: modelLigrel
     mpi_int :: nbCPU, mpiCurr
     aster_logical :: lElasByDefault, lNeedDeborst, lMfront, lDistParallel
-    aster_logical :: lIncoUpo, lExistVarc,exis_temp,exis_sech
+    aster_logical :: lIncoUpo, lExistVarc, exis_temp, exis_sech
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -177,10 +177,10 @@ subroutine comp_meca_chck(model, mesh, chmate, &
         if (relaComp .eq. 'BETON_BURGER') then
             call nmvcd2('TEMP', chmate, exis_temp)
             call nmvcd2('SECH', chmate, exis_sech)
-            if  (.not.(exis_temp)) then
+            if (.not. (exis_temp)) then
                 call utmess('F', 'COMPOR6_8')
             end if
-            if  (.not.(exis_sech)) then
+            if (.not. (exis_sech)) then
                 call utmess('F', 'COMPOR6_9')
             end if
         end if
