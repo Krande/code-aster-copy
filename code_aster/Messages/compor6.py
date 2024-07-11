@@ -64,6 +64,12 @@ Ce n'est pas le cas ici. Pour avoir la liste des mailles et les relations de com
     7: _(
         """La présence d'un comportement de type MFront ne permet pas d'utiliser IMPR_NOM_VARI."""
     ),
+    8: _(
+        """Un champ de température doit être associé au matériau utilisant BETON_BURGER."""
+    ),
+    9: _(
+        """Un champ de séchage/humidité doit être associé au matériau utilisant BETON_BURGER."""
+    ),
     10: _(
         """Maille: %(k1)-8s - Cette maille appartient aux groupes de mailles suivants : %(k2)s %(k2)s %(k3)s %(k3)s."""
     ),

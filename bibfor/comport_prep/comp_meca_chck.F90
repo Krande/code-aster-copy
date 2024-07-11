@@ -36,6 +36,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
+#include "asterfort/nmvcd2.h"
 !
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
@@ -73,7 +74,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     character(len=24) :: modelLigrel
     mpi_int :: nbCPU, mpiCurr
     aster_logical :: lElasByDefault, lNeedDeborst, lMfront, lDistParallel
-    aster_logical :: lIncoUpo, lExistVarc
+    aster_logical :: lIncoUpo, lExistVarc,exis_temp,exis_sech
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -169,6 +170,18 @@ subroutine comp_meca_chck(model, mesh, chmate, &
         if (relaComp .eq. 'ENDO_HETEROGENE') then
             if (lDistParallel) then
                 call utmess('F', 'COMPOR5_25')
+            end if
+        end if
+
+! ----- Temperature and drying with_BETON_BURGER
+        if (relaComp .eq. 'BETON_BURGER') then
+            call nmvcd2('TEMP', chmate, exis_temp)
+            call nmvcd2('SECH', chmate, exis_sech)
+            if  (.not.(exis_temp)) then
+                call utmess('F', 'COMPOR6_8')
+            end if
+            if  (.not.(exis_sech)) then
+                call utmess('F', 'COMPOR6_9')
             end if
         end if
 
