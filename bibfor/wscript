@@ -342,14 +342,11 @@ def check_sizeof_string_size(self):
     """Check fortran string length size"""
     self.start_msg("Setting type for fortran string length")
     # prefer use ISO_C_BINDING
+    # ref: https://gcc.gnu.org/onlinedocs/gfortran/Argument-passing-conventions.html
     # ref: http://gcc.gnu.org/onlinedocs/gfortran/Interoperability-with-C.html
-    if self.env.CC_NAME.lower() in ("icc", "clang"):
-        typ = "size_t"
-    else:
-        typ = "unsigned int"
-    # because win64
-    if self.env.ASTER_PLATFORM_MINGW:
-        typ = "size_t"
+    typ = "size_t"
+    if self.env.FC_NAME.lower() == "gfortran" and int(self.env.FC_VERSION[0] or 0) <= 7:
+        typ = "int"
     self.define("ASTER_C_STRING_SIZE", typ, quote=False)
     self.end_msg(typ)
 
