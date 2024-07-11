@@ -116,12 +116,14 @@ contains
         ASSERT(self%pred .or. self%resi)
 
         ! Elasticity material parameters for the plastic branch
-   call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', 0, ' ', [0.d0], nbel, nomel, valel, okel, 2)
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', 0, ' ', [0.d0], &
+                    nbel, nomel, valel, okel, 2)
         self%mat%deuxmup = valel(1)/(1+valel(2))
         self%mat%troiskp = valel(1)/(1.d0-2.d0*valel(2))
 
         ! Other parameters
-        call rcvalb(fami,kpg,ksp,'+',imate,' ','KICHENIN_NL',0,' ',[0.d0],nbki,nomki,valki,okki,2)
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'KICHENIN_NL', 0, ' ', [0.d0], &
+                    nbki, nomki, valki, okki, 2)
         self%mat%sc = valki(1)
         self%mat%prag = valki(2)
         self%mat%deuxmuv = valki(3)/(1+valki(4))
@@ -320,14 +322,15 @@ contains
         real(kind=8)      :: sign_h, sign_d(self%ndimsi)
         real(kind=8)      :: a1, a2, b0, b1, b2
         real(kind=8)      :: dev(self%ndimsi)
-        real(kind=8)      :: xmin, xmax, x, xg, equ, xm, xp, xgm, xgp, equm, equp
-        real(kind=8)      :: dx_xg, dxg_equ, dx_equ
+        real(kind=8)      :: xmin, xgmin, xmax, x, xg, equ, xm, xp, xgm, xgp, equm, equp
+        real(kind=8)      :: equmin, equmax, dx_xg, dxg_equ, dx_equ
         integer           :: ite
         type(newton_state):: mem
         integer           :: matr
-      real(kind=8)      :: c_v_sign(self%ndimsi), h(self%ndimsi), ca1(self%ndimsi), ca2(self%ndimsi)
+        real(kind=8)      :: c_v_sign(self%ndimsi), h(self%ndimsi)
+        real(kind=8)      :: ca1(self%ndimsi), ca2(self%ndimsi)
         real(kind=8)      :: cb0(self%ndimsi), cb1(self%ndimsi), cb2(self%ndimsi)
-        real(kind=8)      :: coef0, coef1(self%ndimsi), cx(self%ndimsi)
+        real(kind=8)      :: coef0, coef1(self%ndimsi), cx(self%ndimsi), num, den
 ! --------------------------------------------------------------------------------------------------
 
 !   Initialisation
@@ -386,8 +389,29 @@ contains
             !   Resolution de l'equation scalaire
             xmin = sqrt(a1/(1+b1)**2+a2/(1+b2)**2)
             xmax = 1.d0
-            x = merge(xmin, xmax, self%mat%ga .lt. 2)
 
+            ! On teste si la borne x=1 est solution
+            if (abs(xmax-xmin) .le. self%cvuser) then
+                x = 0.5d0*(xmin+xmax)
+                goto 100
+            end if
+            xm = 1.d0-self%cvuser
+            xgm = xm**(self%mat%ga-1)
+            equm = a1/(1+b1*xgm)**2+a2/(1+b2*xgm)**2-xm**2
+            if (equm .ge. 0) then
+                x = (xm+1.d0)*0.5d0
+                goto 100
+            end if
+
+            ! Conditions de robustesse numérique
+            xgmin = xmin**(self%mat%ga-1)
+            equmax = a1/(1+b1)**2+a2/(1+b2)**2-1.d0
+            equmin = a1/(1+b1*xgmin)**2+a2/(1+b2*xgmin)**2-xmin**2
+            ASSERT(xmax-xmin > self%cvuser)
+            ASSERT(equmax .lt. 0.d0)
+            ASSERT(equmin .gt. 0.d0)
+
+            x = merge(xmin, xmax, self%mat%ga .lt. 2)
             do ite = 1, self%itemax
                 xg = x**(self%mat%ga-1)
                 equ = a1/(1+b1*xg)**2+a2/(1+b2*xg)**2-x**2
@@ -409,7 +433,14 @@ contains
 
                 ! Convergence
                 if (equm*equp .le. 0) then
-                    x = (xm*equp-xp*equm)/(equp-equm)
+                    ! Estimation robuste par une corde
+                    num = (xm*equp-xp*equm)
+                    den = equp-equm
+                    if (abs(den) .le. abs(num)*self%small) then
+                        x = (xm+xp)*0.5d0
+                    else
+                        x = num/den
+                    end if
                     goto 100
                 end if
 
@@ -466,7 +497,8 @@ contains
             cb1 = c_h*v_h*cb0
             cb2 = c_d*v_d*cb0
 
-           coef0 = (2*a1*(1+b1*self%mat%ga*xg)/(1+b1*xg)**3+2*a2*(1+b2*self%mat%ga*xg)/(1+b2*xg)**3)
+            coef0 = (2*a1*(1+b1*self%mat%ga*xg)/(1+b1*xg)**3 &
+                     +2*a2*(1+b2*self%mat%ga*xg)/(1+b2*xg)**3)
             coef1 = ((1+b1*xg)*ca1-2*a1*xg*cb1)/(1+b1*xg)**3 &
                     +((1+b2*xg)*ca2-2*a2*xg*cb2)/(1+b2*xg)**3
             cx = coef1/coef0
