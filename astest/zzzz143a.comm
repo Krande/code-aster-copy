@@ -221,6 +221,23 @@ sflux = flux.toSimpleFieldOnNodes()
 vgrad, _ = sgrad.getValues(True)
 vflux, _ = sflux.getValues(True)
 
+coords_p0 = [(0.2, 0.1, 0.05)]
+MP0 = CA.Mesh.buildPointCloud(coords_p0)
+
+temp_p0 = PROJ_CHAMP(
+    CHAM_GD=TEMP_FONC.getField("TEMP", 1),
+    ALARME="NON",
+    MAILLAGE_1=TEMP_FONC.getMesh(),
+    MAILLAGE_2=MP0,
+)
+
+dz_p0 = PROJ_CHAMP(
+    CHAM_GD=DEPL31_FONC.getField("DEPL", 2),
+    ALARME="NON",
+    MAILLAGE_1=DEPL31_FONC.getMesh(),
+    MAILLAGE_2=MP0,
+)
+
 test = CA.TestCase()
 
 nbplaces = 10
@@ -231,6 +248,8 @@ test.assertAlmostEqual(norm_diff_temp_t1, 0, places=nbplaces, msg="NORM_DIFF_TEM
 test.assertAlmostEqual(norm_diff_stat_t0, 0, places=nbplaces, msg="NORM_DIFF_STAT_TEMP0")
 test.assertAlmostEqual(norm_diff_stat_t1, 0, places=nbplaces, msg="NORM_DIFF_STAT_TEMP1")
 test.assertTrue((vflux == -vgrad).all(), msg="GRAD_VS_FLUX")
+test.assertAlmostEqual(temp_p0[0], -0.06038595679164906, places=nbplaces, msg="TEMP_P0")
+test.assertAlmostEqual(dz_p0[2], -0.12077191358329917, places=nbplaces, msg="DEPL_Z_P0")
 test.printSummary()
 
 FIN()
