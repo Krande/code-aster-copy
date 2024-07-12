@@ -30,15 +30,16 @@ subroutine te0465(option, nomte)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
+#include "asterfort/fointe.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/jevech.h"
 #include "asterfort/readVector.h"
 #include "asterfort/writeVector.h"
-#include "blas/dcopy.h"
 #include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -67,9 +68,10 @@ subroutine te0465(option, nomte)
     real(kind=8), dimension(MSIZE_CELL_SCAL) :: rhs_T
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs
     real(kind=8) :: NeumValuesQP(MAX_QP_CELL)
-    real(kind=8) :: theta, time_curr
+    real(kind=8) :: theta, time_curr, tg
+    real(kind=8), pointer :: temp(:) => null()
     integer :: fbs, nbpara, npg, faces_dofs, cbs, total_dofs
-    integer :: j_time, j_sour
+    integer :: j_time, j_sour, ipg, iret
 !
 !
 ! -- Get number of Gauss points
@@ -130,6 +132,24 @@ subroutine te0465(option, nomte)
 !
         call hhoFuncFScalEvalQp(hhoQuadCell, zk8(j_sour), nbpara, nompar, valpar, &
                                 hhoCell%ndim, NeumValuesQP)
+!
+    elseif (option .eq. 'CHAR_THER_SOURNL') then
+        call jevech('PSOURNL', 'L', j_sour)
+        call jevech('PTEMPER', 'L', vr=temp)
+!
+! ----- Loop on quadrature point
+!
+        do ipg = 1, hhoQuadCell%nbQuadPoints
+!
+! --------- Evaluate temperature
+!
+            tg = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
+                                 hhoQuadCell%points(1:3, ipg), temp, cbs)
+!
+! --------- Evaluate source
+!
+            call fointe('FM', zk8(j_sour), 1, ['TEMP'], [tg], NeumValuesQP(ipg), iret)
+        end do
 !
     else
         ASSERT(ASTER_FALSE)

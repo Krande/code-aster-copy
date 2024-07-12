@@ -90,6 +90,17 @@ class THER3DH27_HHO111(Element):
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
+        OP.CHAR_THER_SOURNL(
+            te=465,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PSOURNL, LC.CSOURCF),
+                (SP.PTEMPER, DDL_THER),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.CHAR_THER_SOURNL.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PVECTTR, MVECTTR),),
+        ),
         OP.CHAR_THER_SOUR_F(
             te=465,
             para_in=(
