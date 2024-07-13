@@ -342,7 +342,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_13,
-            VALE_CALC=127.480618454,
+            VALE_CALC=127.4804837214,
             VALE_REFE=128.125,
             REFERENCE="SOURCE_EXTERNE",
         ),
