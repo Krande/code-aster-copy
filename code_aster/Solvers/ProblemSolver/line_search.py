@@ -77,7 +77,7 @@ class LineSearch(SolverFeature):
                 opersManager = self.get_feature(SOP.OperatorsManager)
                 resi_state = opersManager.getResidual(scaling)
                 self.phys_state.primal_step -= rho * solution
-                return resi_state.resi.dot(solution)
+                return -resi_state.resi.dot(solution)
 
             def _proj(rho, param=self.param):
                 rhotmp = rho
@@ -100,16 +100,23 @@ class LineSearch(SolverFeature):
             iteropt = -1
 
             assert method in ("CORDE", "MIXTE"), method
-            if method == "CORDE":
-                rhom, rho = 0.0, 1.0
-                rhoopt = rho
-                fm = f0
-            elif method == "MIXTE":
-                raise NotImplementedError()
+            rhom, rho = 0.0, 1.0
+            rhoopt = rho
+            fm = f0
+            if method == "MIXTE":
+                if f0 <= 0.0:
+                    sens = 1.0
+                else:
+                    sens = -1.0
+                rhoneg = 0.0
+                fneg = sens * f0
+                bpos = False
+            else:
+                sens = 1.0
 
             for iter in range(self.param["ITER_LINE_MAXI"] + 1):
                 try:
-                    f = _f(rho)
+                    f = _f(sens * rho)
                 except Exception as e:
                     # do we already have an rhoopt ?
                     if iter > 0:
@@ -117,6 +124,7 @@ class LineSearch(SolverFeature):
                     else:
                         raise e
                 # keep best rho
+                # zbopti
                 if abs(f) <= fopt:
                     rhoopt = rho
                     fopt = abs(f)
@@ -129,14 +137,59 @@ class LineSearch(SolverFeature):
                         return rhoopt * solution
 
                 rhotmp = rho
-                if abs(f - fm) > tiny:
-                    rho = (f * rhom - fm * rho) / (f - fm)
-                    rho = _proj(rho)
-                elif f * (rho - rhom) * (f - fm) <= 0.0:
-                    rho = self.param["RHO_MAX"]
-                else:
-                    rho = self.param["RHO_MIN"]
-
+                if method == "CORDE":
+                    if abs(f - fm) > tiny:
+                        rho = (f * rhom - fm * rho) / (f - fm)
+                        rho = _proj(rho)
+                    elif f * (rho - rhom) * (f - fm) <= 0.0:
+                        rho = self.param["RHO_MAX"]
+                    else:
+                        rho = self.param["RHO_MIN"]
+                elif method == "MIXTE":
+                    # zbborn
+                    if np.sign(f) == np.sign(f0):
+                        rhoneg = rho
+                    else:
+                        rhopos = rho
+                        bpos = True
+                    if not bpos:
+                        rhom = rho
+                        rho = 3 * rhom
+                    else:
+                        # zbroot
+                        if abs(f) >= abs(fm):
+                            # en cas de non pertinence des iteres : dichotomie
+                            rho = 0.5 * (rhoneg + rhopos)
+                        else:
+                            # interpolation lineaire
+                            if abs(rho - rhom) > tiny:
+                                p1 = (f - fm) / (rho - rhom)
+                                p0 = fm - p1 * rhom
+                                if abs(p1) <= abs(fm) / (rhopos + rhom):
+                                    rho = 0.5 * (rhoneg + rhopos)
+                                else:
+                                    rho = -p0 / p1
+                            else:
+                                logger.info(
+                                    "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f"
+                                    % (iteropt, rhoopt, fopt)
+                                )
+                                return rhoopt * solution
+                    # zbproj
+                    if rho < rhoneg:
+                        if bpos:
+                            print("ici ici")
+                            rho = 0.5 * (rhoneg + rhopos)
+                        else:
+                            logger.info(
+                                "LinesearchB: iter = %d, rho = %0.6f and f(rho) = %0.6f"
+                                % (iteropt, rhoopt, fopt)
+                            )
+                            return rhoopt * solution
+                    if bpos and rho > rhopos:
+                        rho = 0.5 * (rhoneg + rhopos)
+                    # zbinte
+                    rho = sens * _proj(sens * rho)
                 rhom = rhotmp
                 fm = f
             logger.info(
