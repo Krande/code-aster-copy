@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,7 @@ subroutine xmele2(mesh, model, ds_contact, ligrel, nfiss, &
 ! --- CREATION DU CHAM_ELEM_S
 !
     call cescre('V', chelsi, 'ELEM', mesh, 'XCONTAC', &
-                nbcmp, licmp, [-1], nbsp, [-nbcmp])
+                nbcmp, licmp, [-1], nbsp, [-nbcmp], ASTER_TRUE)
 !
 ! --- ACCES AU CHAM_ELEM_S
 !

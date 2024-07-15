@@ -135,6 +135,7 @@ subroutine rc32rs(lfat, lefat)
 !
     ibid = 0
     rbid = 0.d0
+    valer = 0.d0
     c16b = (0.d0, 0.d0)
     call getvtx(' ', 'TYPE_RESU', scal=typtab, nbret=n1)
     call getvtx(' ', 'SOUS_CYCL', scal=sscyc, nbret=n1)
