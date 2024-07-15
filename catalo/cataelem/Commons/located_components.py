@@ -915,6 +915,12 @@ NFLUX2R = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "F
 # Field for flux in thermic (3D - real)
 NFLUX3R = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY", "FLUZ"))
 
+# Field for gradient in thermic (2D - real)
+NGRAT2R = LocatedComponents(phys=PHY.GRAT_R, type="ELNO", components=("GRAT_X", "GRAT_Y"))
+
+# Field for gradient in thermic (3D - real)
+NGRAT3R = LocatedComponents(phys=PHY.GRAT_R, type="ELNO", components=("GRAT_X", "GRAT_Y", "GRAT_Z"))
+
 # For body source in thermic
 NSOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELNO", components=("SOUR",))
 
@@ -1248,6 +1254,16 @@ EFLUX2R = LocatedComponents(
 # Field for flux in thermic (3D - real)
 EFLUX3R = LocatedComponents(
     phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY", "FLUZ")
+)
+
+# Field for gradient in thermic (2D - real)
+EGRAT2R = LocatedComponents(
+    phys=PHY.GRAT_R, type="ELGA", location="RIGI", components=("GRAT_X", "GRAT_Y")
+)
+
+# Field for gradient in thermic (3D - real)
+EGRAT3R = LocatedComponents(
+    phys=PHY.GRAT_R, type="ELGA", location="RIGI", components=("GRAT_X", "GRAT_Y", "GRAT_Z")
 )
 
 # Field for hydratation

@@ -221,6 +221,44 @@ class ExtendedMesh:
         """
         return cls.buildTube(height=height, rint=0, rext=radius, refine=refine, info=info)
 
+    @classmethod
+    def buildPointCloud(cls, coordlist, groups=False, info=1):
+        """Build the mesh of a point cloud from a set of coordinates.
+
+        Arguments:
+            coordlist list[float] : list of points coordinates (1D, 2D, 3D).
+            groups [bool] : if True, creates a group for each point,(default False).
+            info [int] : verbosity mode (1 or 2), (default 1).
+        """
+        assert info in (0, 1, 2), "Invalid parameter"
+
+        mcmesh = mesh_builder.pointcloud(coordlist=coordlist, groups=groups)
+
+        # Convert to aster mesh
+        mesh = cls()
+        mesh.buildFromMedCouplingMesh(mcmesh, verbose=info)
+
+        return mesh
+
+    @classmethod
+    def buildSpline1D(cls, coordlist, groups=False, info=1):
+        """Build the mesh of a 1D spline from a set of coordinates.
+
+        Arguments:
+            coordlist list[float] : list of points coordinates (1D, 2D, 3D).
+            groups [bool] : if True, creates a group for each point,(default False).
+            info [int] : verbosity mode (1 or 2), (default 1).
+        """
+        assert info in (0, 1, 2), "Invalid parameter"
+
+        mcmesh = mesh_builder.spline1d(coordlist=coordlist, groups=groups)
+
+        # Convert to aster mesh
+        mesh = cls()
+        mesh.buildFromMedCouplingMesh(mcmesh, verbose=info)
+
+        return mesh
+
     def LIST_GROUP_NO(self):
         """Retourne la liste des groupes de noeuds sous la forme :
         [ (gno1, nb noeuds  gno1), ...]"""

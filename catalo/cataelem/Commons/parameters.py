@@ -1651,6 +1651,14 @@ PGESCLA = OutputParameter(phys=PHY.N816_R, type="ELEM", comment="""""")
 
 PGTHETA = OutputParameter(phys=PHY.RUPT_R, type="ELEM", comment="""""")
 
+PGRATNO = OutputParameter(
+    phys=PHY.GRAT_R,
+    type="ELNO",
+    comment="""  PGRATNO : GRADIENT DE T AUX NOEUDS PAR ELEMENT
+""",
+)
+
+
 PHYDMAT = OutputParameter(phys=PHY.HYDR_R, type="ELGA", comment="""""")
 
 PHYDRPP = OutputParameter(phys=PHY.HYDR_R, type="ELGA", comment="""""")

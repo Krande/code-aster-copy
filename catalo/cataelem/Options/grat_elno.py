@@ -17,26 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster.Commands import *
-from code_aster import CA
-
-POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
-
-import tempfile
-
-test_export = CA.TestCase()
-
-# export to medcoupling result
-medresu_temp = TEMP_STAT.createMedCouplingResult()
-with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
-    medresu_temp.write(f.name, 2)
-
-test_export.assertSequenceEqual(medresu_temp.getFields().getFieldsNames(), ("GRAT_R", "TEMP_R"))
-test_export.assertEqual(len(medresu_temp.getMeshes()), 1)
-
-medresu_depl = DEPL31_FONC.createMedCouplingResult()
-test_export.assertSequenceEqual(medresu_depl.getFields().getFieldsNames(), ("DEPL_R",))
-test_export.printSummary()
+# person_in_charge: jessica.haelewyn at edf.fr
 
 
-FIN()
+from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
+import cataelem.Commons.physical_quantities as PHY
+import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
+
+
+PGRATPG = InputParameter(
+    phys=PHY.GRAT_R,
+    container="RESU!GRAT_ELGA!N",
+    comment="""  PGRATPG : GRADIENT DE T AUX POINTS DE GAUSS """,
+)
+
+
+GRAT_ELNO = Option(
+    para_in=(PGRATPG,),
+    para_out=(SP.PGRATNO,),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
+    comment="""  GRAT_ELNO : CALCUL DU GRADIENT DE T AUX NOEUDS PAR ELEMENT """,
+)

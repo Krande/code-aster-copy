@@ -513,3 +513,81 @@ def tube(rmin, rmax, zmin, zmax, no, nr, nz):
     mcmesh.setGroupsAtLevel(-1, [surfint, surfext, top, bottom])
 
     return mcmesh
+
+
+def pointcloud(coordlist, groups=False):
+    """Build the mesh of a point cloud from a set of coordinates.
+
+    Arguments:
+        coordlist list[float] : list of points coordinates (1D, 2D, 3D).
+        groups [bool] : if True, creates a group for each point, (default False).
+    """
+
+    assert len(coordlist) > 0, "Invalid parameter"
+    assert len(set(len(c) for c in (coordlist))) == 1, "Invalid parameter"
+
+    coords = medc.DataArrayDouble(coordlist)
+    meshU = medc.MEDCouplingUMesh.Build0DMeshFromCoords(coords)
+    meshU.setName("CLOUD")
+
+    grp_points = []
+    grp_p_all = medc.DataArrayInt.Range(0, meshU.getNumberOfNodes(), 1)
+    grp_p_all.setName("NODES")
+    grp_points.append(grp_p_all)
+
+    if groups:
+        for i in range(meshU.getNumberOfNodes()):
+            grp_i = medc.DataArrayInt([i])
+            grp_i.setName("N%d" % (i + 1))
+            grp_points.append(grp_i)
+
+    mcmesh = medc.MEDFileUMesh()
+    mcmesh[0] = meshU
+    mcmesh.setGroupsAtLevel(0, grp_points)
+    mcmesh.setGroupsAtLevel(1, grp_points)
+
+    return mcmesh
+
+
+def spline1d(coordlist, groups=False):
+    """Build the mesh of a 1D spline from a set of coordinates.
+
+    Arguments:
+        coordlist list[float] : list of points coordinates (1D, 2D, 3D).
+        groups [bool] : if True, creates a group for each point, (default False).
+    """
+
+    assert len(coordlist) > 1, "Invalid parameter"
+    assert len(set(len(c) for c in (coordlist))) == 1, "Invalid parameter"
+
+    coords = medc.DataArrayDouble(coordlist)
+    meshU = medc.MEDCouplingUMesh.Build1DMeshFromCoords(coords)
+    meshU.setName("LINE")
+
+    grp_points = []
+    grp_p_all = medc.DataArrayInt.Range(0, meshU.getNumberOfNodes(), 1)
+    grp_p_all.setName("NODES")
+    grp_points.append(grp_p_all)
+
+    grp_cells = []
+    grp_s_all = medc.DataArrayInt.Range(0, meshU.getNumberOfCells(), 1)
+    grp_s_all.setName("LINE")
+    grp_cells.append(grp_s_all)
+
+    if groups:
+        for i in range(meshU.getNumberOfNodes()):
+            grp_i = medc.DataArrayInt([i])
+            grp_i.setName("N%d" % (i + 1))
+            grp_points.append(grp_i)
+
+        for i in range(meshU.getNumberOfCells()):
+            grp_i = medc.DataArrayInt([i])
+            grp_i.setName("S%d" % (i + 1))
+            grp_cells.append(grp_i)
+
+    mcmesh = medc.MEDFileUMesh()
+    mcmesh[0] = meshU
+    mcmesh.setGroupsAtLevel(0, grp_cells)
+    mcmesh.setGroupsAtLevel(1, grp_points)
+
+    return mcmesh
