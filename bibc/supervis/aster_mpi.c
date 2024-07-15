@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -238,8 +238,9 @@ void aster_free_comm( aster_comm_t *node ) {
  * Do not check returncode because all errors raise
  */
 void DEFP( ASMPI_BARRIER_WRAP, asmpi_barrier_wrap, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     aster_comm_t *node;
     mpicom = MPI_Comm_f2c( *comm );
     node = get_node_by_id( &mpicom );
@@ -502,8 +503,9 @@ void DEFPPP( ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *comm, MPI_Fint *rank, M
  */
 void DEFPPPPP( ASMPI_SEND_R, asmpi_send_r, ASTERDOUBLE *buf, ASTERINTEGER4 *count,
                ASTERINTEGER4 *dest, ASTERINTEGER4 *tag, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Send: send %d double values to proc #%d ...\n", *count, *dest );
     double start = MPI_Wtime();
@@ -516,8 +518,9 @@ void DEFPPPPP( ASMPI_SEND_R, asmpi_send_r, ASTERDOUBLE *buf, ASTERINTEGER4 *coun
 
 void DEFPPPPP( ASMPI_SEND_I, asmpi_send_i, ASTERINTEGER *buf, ASTERINTEGER4 *count,
                ASTERINTEGER4 *dest, ASTERINTEGER4 *tag, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Send: send %d integer8 values to proc #%d ...\n", *count, *dest );
     double start = MPI_Wtime();
@@ -530,8 +533,9 @@ void DEFPPPPP( ASMPI_SEND_I, asmpi_send_i, ASTERINTEGER *buf, ASTERINTEGER4 *cou
 
 void DEFPPPPP( ASMPI_SEND_I4, asmpi_send_i4, ASTERINTEGER4 *buf, ASTERINTEGER4 *count,
                ASTERINTEGER4 *dest, ASTERINTEGER4 *tag, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Send: send %d integer4 values to proc #%d ...\n", *count, *dest );
     double start = MPI_Wtime();
@@ -548,8 +552,9 @@ void DEFPPPPP( ASMPI_SEND_I4, asmpi_send_i4, ASTERINTEGER4 *buf, ASTERINTEGER4 *
  */
 void DEFPPPPP( ASMPI_RECV_R, asmpi_recv_r, ASTERDOUBLE *buf, ASTERINTEGER4 *count,
                ASTERINTEGER4 *source, ASTERINTEGER4 *tag, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Recv: recieve %d double values from proc #%d ...\n", *count, *source );
     double start = MPI_Wtime();
@@ -563,8 +568,9 @@ void DEFPPPPP( ASMPI_RECV_R, asmpi_recv_r, ASTERDOUBLE *buf, ASTERINTEGER4 *coun
 
 void DEFPPPPP( ASMPI_RECV_I, asmpi_recv_i, ASTERINTEGER *buf, ASTERINTEGER4 *count,
                ASTERINTEGER4 *source, ASTERINTEGER4 *tag, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Recv: recieve %d integer8 values from proc #%d ...\n", *count, *source );
     double start = MPI_Wtime();
@@ -578,8 +584,9 @@ void DEFPPPPP( ASMPI_RECV_I, asmpi_recv_i, ASTERINTEGER *buf, ASTERINTEGER4 *cou
 
 void DEFPPPPP( ASMPI_RECV_I4, asmpi_recv_i4, ASTERINTEGER4 *buf, ASTERINTEGER4 *count,
                ASTERINTEGER4 *source, ASTERINTEGER4 *tag, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Recv: recieve %d integer4 values from proc #%d ...\n", *count, *source );
     double start = MPI_Wtime();
@@ -601,6 +608,7 @@ void DEFPPPPPPPPP( ASMPI_SENDRECV_R, asmpi_sendrecv_r, ASTERDOUBLE *buffer_send,
                    ASTERINTEGER4 *tag_recv, MPI_Fint *comm ) {
 #ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_SendRecv: send/recv %d double values to proc #%d ...\n",
                *count_send + *count_recv, *recipient );
@@ -620,6 +628,7 @@ void DEFPPPPPPPPP( ASMPI_SENDRECV_I, asmpi_sendrecv_i, ASTERINTEGER *buffer_send
                    ASTERINTEGER4 *tag_recv, MPI_Fint *comm ) {
 #ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_SendRecv: send/recv %d integer values to proc #%d ...\n",
                *count_send + *count_recv, *recipient );
@@ -639,6 +648,7 @@ void DEFPPPPPPPPP( ASMPI_SENDRECV_I4, asmpi_sendrecv_i4, ASTERINTEGER4 *buffer_s
                    ASTERINTEGER4 *tag_recv, MPI_Fint *comm ) {
 #ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_SendRecv: send/recv %d short integer values to proc #%d ...\n",
                *count_send + *count_recv, *recipient );
@@ -658,9 +668,10 @@ void DEFPPPPPPPPP( ASMPI_SENDRECV_I4, asmpi_sendrecv_i4, ASTERINTEGER4 *buffer_s
  */
 void DEFPPPPPP( ASMPI_ISEND_I, asmpi_isend_i, ASTERINTEGER *buf, ASTERINTEGER4 *count,
                 ASTERINTEGER4 *dest, ASTERINTEGER4 *tag, MPI_Fint *comm, MPI_Fint *request ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Request mpireq;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Isend: isend %d integer8 values to proc #%d ...\n", *count, *dest );
     double start = MPI_Wtime();
@@ -678,9 +689,10 @@ void DEFPPPPPP( ASMPI_ISEND_I, asmpi_isend_i, ASTERINTEGER *buf, ASTERINTEGER4 *
  */
 void DEFPPPPPP( ASMPI_IRECV_I, asmpi_irecv_i, ASTERINTEGER *buf, ASTERINTEGER4 *count,
                 ASTERINTEGER4 *source, ASTERINTEGER4 *tag, MPI_Fint *comm, MPI_Fint *request ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Request mpireq;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Irecv: irecieve %d integer8 values from proc #%d ...\n", *count, *source );
     double start = MPI_Wtime();
@@ -698,9 +710,10 @@ void DEFPPPPPP( ASMPI_IRECV_I, asmpi_irecv_i, ASTERINTEGER *buf, ASTERINTEGER4 *
  */
 void DEFPPPPPP( ASMPI_ISEND_I4, asmpi_isend_i4, ASTERDOUBLE *buf, ASTERINTEGER4 *count,
                 ASTERINTEGER4 *dest, ASTERINTEGER4 *tag, MPI_Fint *comm, MPI_Fint *request ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Request mpireq;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Isend: isend %d integer4 values to proc #%d ...\n", *count, *dest );
     double start = MPI_Wtime();
@@ -718,9 +731,10 @@ void DEFPPPPPP( ASMPI_ISEND_I4, asmpi_isend_i4, ASTERDOUBLE *buf, ASTERINTEGER4 
  */
 void DEFPPPPPP( ASMPI_IRECV_I4, asmpi_irecv_i4, ASTERDOUBLE *buf, ASTERINTEGER4 *count,
                 ASTERINTEGER4 *source, ASTERINTEGER4 *tag, MPI_Fint *comm, MPI_Fint *request ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Request mpireq;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Irecv: irecieve %d integer4 values from proc #%d ...\n", *count, *source );
     double start = MPI_Wtime();
@@ -737,9 +751,10 @@ void DEFPPPPPP( ASMPI_IRECV_I4, asmpi_irecv_i4, ASTERDOUBLE *buf, ASTERINTEGER4 
  * Do not check returncode because all errors raise
  */
 void DEFPP( ASMPI_TEST, asmpi_test, MPI_Fint *request, ASTERINTEGER4 *flag ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Request mpireq;
     int iflag;
-#ifdef ASTER_HAVE_MPI
+
     mpireq = MPI_Request_f2c( *request );
     DEBUG_MPI( "MPI_Test: Test %d communication request %s \n", mpireq, " " );
     AS_MPICHECK( MPI_Test( &mpireq, &iflag, MPI_STATUS_IGNORE ) );
@@ -754,8 +769,9 @@ void DEFPP( ASMPI_TEST, asmpi_test, MPI_Fint *request, ASTERINTEGER4 *flag ) {
  * Do not check returncode because all errors raise
  */
 void DEFP( ASMPI_CANCEL, asmpi_cancel, MPI_Fint *request ) {
-    MPI_Request mpireq;
 #ifdef ASTER_HAVE_MPI
+    MPI_Request mpireq;
+
     mpireq = MPI_Request_f2c( *request );
     DEBUG_MPI( "MPI_Cancel: cancel %d communication request %s \n", mpireq, " " );
     AS_MPICHECK( MPI_Cancel( &mpireq ) );
@@ -781,9 +797,10 @@ ASTERDOUBLE DEF0( ASMPI_WTIME, asmpi_wtime ) {
  */
 void DEFPPPPPP( ASMPI_REDUCE_R, asmpi_reduce_r, ASTERDOUBLE *sendbuf, ASTERDOUBLE *recvbuf,
                 ASTERINTEGER4 *count, MPI_Fint *op, ASTERINTEGER4 *root, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI( "MPI_Reduce: %d double reduced values by all ...%s\n", *count, " " );
@@ -798,9 +815,10 @@ void DEFPPPPPP( ASMPI_REDUCE_R, asmpi_reduce_r, ASTERDOUBLE *sendbuf, ASTERDOUBL
 
 void DEFPPPPPP( ASMPI_REDUCE_C, asmpi_reduce_c, ASTERDOUBLE *sendbuf, ASTERDOUBLE *recvbuf,
                 ASTERINTEGER4 *count, MPI_Fint *op, ASTERINTEGER4 *root, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI( "MPI_Reduce: %d double complex reduced values by all ...%s\n", *count, " " );
@@ -815,9 +833,10 @@ void DEFPPPPPP( ASMPI_REDUCE_C, asmpi_reduce_c, ASTERDOUBLE *sendbuf, ASTERDOUBL
 
 void DEFPPPPPP( ASMPI_REDUCE_I, asmpi_reduce_i, ASTERINTEGER *sendbuf, ASTERINTEGER *recvbuf,
                 ASTERINTEGER4 *count, MPI_Fint *op, ASTERINTEGER4 *root, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI( "MPI_Reduce: %d integer8 reduced values by all ...%s\n", *count, " " );
@@ -832,9 +851,10 @@ void DEFPPPPPP( ASMPI_REDUCE_I, asmpi_reduce_i, ASTERINTEGER *sendbuf, ASTERINTE
 
 void DEFPPPPPP( ASMPI_REDUCE_I4, asmpi_reduce_i4, ASTERINTEGER4 *sendbuf, ASTERINTEGER4 *recvbuf,
                 ASTERINTEGER4 *count, MPI_Fint *op, ASTERINTEGER4 *root, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI( "MPI_Reduce: %d integer4 reduced values by all ...%s\n", *count, " " );
@@ -853,9 +873,10 @@ void DEFPPPPPP( ASMPI_REDUCE_I4, asmpi_reduce_i4, ASTERINTEGER4 *sendbuf, ASTERI
  */
 void DEFPPPPP( ASMPI_ALLREDUCE_R, asmpi_allreduce_r, ASTERDOUBLE *sendbuf, ASTERDOUBLE *recvbuf,
                ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI( "MPI_Allreduce: %d double reduced values by all ...%s\n", *count, " " );
@@ -870,9 +891,10 @@ void DEFPPPPP( ASMPI_ALLREDUCE_R, asmpi_allreduce_r, ASTERDOUBLE *sendbuf, ASTER
 
 void DEFPPPPP( ASMPI_ALLREDUCE_C, asmpi_allreduce_c, ASTERDOUBLE *sendbuf, ASTERDOUBLE *recvbuf,
                ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI( "MPI_Allreduce: %d double complex reduced values by all ...%s\n", *count, " " );
@@ -887,9 +909,10 @@ void DEFPPPPP( ASMPI_ALLREDUCE_C, asmpi_allreduce_c, ASTERDOUBLE *sendbuf, ASTER
 
 void DEFPPPPP( ASMPI_ALLREDUCE_I, asmpi_allreduce_i, ASTERINTEGER *sendbuf, ASTERINTEGER *recvbuf,
                ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI( "MPI_Allreduce: %d integer8 reduced values by all ...%s\n", *count, " " );
@@ -904,9 +927,10 @@ void DEFPPPPP( ASMPI_ALLREDUCE_I, asmpi_allreduce_i, ASTERINTEGER *sendbuf, ASTE
 
 void DEFPPPPP( ASMPI_ALLREDUCE_I4, asmpi_allreduce_i4, ASTERINTEGER4 *sendbuf,
                ASTERINTEGER4 *recvbuf, ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI( "MPI_Allreduce: %d integer4 reduced values by all ...%s\n", *count, " " );
@@ -925,8 +949,9 @@ void DEFPPPPP( ASMPI_ALLREDUCE_I4, asmpi_allreduce_i4, ASTERINTEGER4 *sendbuf,
  */
 void DEFPPPP( ASMPI_BCAST_R, asmpi_bcast_r, ASTERDOUBLE *buffer, ASTERINTEGER4 *count,
               ASTERINTEGER4 *root, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Bcast: send %d double values from proc #%d ...\n", *count, *root );
     double start = MPI_Wtime();
@@ -939,8 +964,9 @@ void DEFPPPP( ASMPI_BCAST_R, asmpi_bcast_r, ASTERDOUBLE *buffer, ASTERINTEGER4 *
 
 void DEFPPPP( ASMPI_BCAST_C, asmpi_bcast_c, ASTERDOUBLE *buffer, ASTERINTEGER4 *count,
               ASTERINTEGER4 *root, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Bcast: send %d double complex values from proc #%d ...\n", *count, *root );
     double start = MPI_Wtime();
@@ -953,8 +979,9 @@ void DEFPPPP( ASMPI_BCAST_C, asmpi_bcast_c, ASTERDOUBLE *buffer, ASTERINTEGER4 *
 
 void DEFPPPP( ASMPI_BCAST_I, asmpi_bcast_i, ASTERINTEGER *buffer, ASTERINTEGER4 *count,
               ASTERINTEGER4 *root, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Bcast: send %d integer8 values from proc #%d ...\n", *count, *root );
     double start = MPI_Wtime();
@@ -967,8 +994,9 @@ void DEFPPPP( ASMPI_BCAST_I, asmpi_bcast_i, ASTERINTEGER *buffer, ASTERINTEGER4 
 
 void DEFPPPP( ASMPI_BCAST_I4, asmpi_bcast_i4, ASTERINTEGER4 *buffer, ASTERINTEGER4 *count,
               ASTERINTEGER4 *root, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Bcast: send %d integer4 values from proc #%d ...\n", *count, *root );
     double start = MPI_Wtime();
@@ -981,8 +1009,9 @@ void DEFPPPP( ASMPI_BCAST_I4, asmpi_bcast_i4, ASTERINTEGER4 *buffer, ASTERINTEGE
 
 void DEFSPPP( ASMPI_BCAST_CHAR80, asmpi_bcast_char80, char *buffer, STRING_SIZE lbuff,
               ASTERINTEGER4 *count, ASTERINTEGER4 *root, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Bcast: send %d char80 values from proc #%d ...\n", *count, *root );
     double start = MPI_Wtime();
@@ -999,8 +1028,9 @@ void DEFSPPP( ASMPI_BCAST_CHAR80, asmpi_bcast_char80, char *buffer, STRING_SIZE 
  */
 void DEFPPPPP( ASMPI_ALLGATHER_I, asmpi_allgather_i, ASTERINTEGER *sendbuf, ASTERINTEGER4 *sendcnt,
                ASTERINTEGER *recvbuf, ASTERINTEGER4 *recvcnt, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Allgather: %d gather integer values by all ...%s\n", *sendcnt, " " );
     double start = MPI_Wtime();
@@ -1018,8 +1048,9 @@ void DEFPPPPP( ASMPI_ALLGATHER_I, asmpi_allgather_i, ASTERINTEGER *sendbuf, ASTE
  */
 void DEFPPPPP( ASMPI_ALLGATHER_R, asmpi_allgather_r, ASTERDOUBLE *sendbuf, ASTERINTEGER4 *sendcnt,
                ASTERDOUBLE *recvbuf, ASTERINTEGER4 *recvcnt, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Allgather: %d gather integer values by all ...%s\n", *sendcnt, " " );
     double start = MPI_Wtime();
@@ -1038,8 +1069,9 @@ void DEFPPPPP( ASMPI_ALLGATHER_R, asmpi_allgather_r, ASTERDOUBLE *sendbuf, ASTER
 void DEFSPSPP( ASMPI_ALLGATHER_CHAR8, asmpi_allgather_char8, char *sendbuf, STRING_SIZE sbuff,
                ASTERINTEGER4 *sendcnt, char *recvbuf, STRING_SIZE rbuff, ASTERINTEGER4 *recvcnt,
                MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Allgather: %d gather integer values by all ...%s\n", *sendcnt, " " );
     double start = MPI_Wtime();
@@ -1058,8 +1090,9 @@ void DEFSPSPP( ASMPI_ALLGATHER_CHAR8, asmpi_allgather_char8, char *sendbuf, STRI
 void DEFPPPPPP( ASMPI_ALLGATHERV_I, asmpi_allgatherv_i, ASTERINTEGER *sendbuf,
                 ASTERINTEGER4 *sendcnt, ASTERINTEGER *recvbuf, ASTERINTEGER4 *recvcnt,
                 ASTERINTEGER4 *displs, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Allgatherv: %d gather integer values by all ...%s\n", *sendcnt, " " );
     double start = MPI_Wtime();
@@ -1075,8 +1108,9 @@ void DEFPPPPPP( ASMPI_ALLGATHERV_I, asmpi_allgatherv_i, ASTERINTEGER *sendbuf,
 void DEFPPPPPP( ASMPI_ALLGATHERV_R, asmpi_allgatherv_r, ASTERDOUBLE *sendbuf,
                 ASTERINTEGER4 *sendcnt, ASTERDOUBLE *recvbuf, ASTERINTEGER4 *recvcnt,
                 ASTERINTEGER4 *displs, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Allgatherv: %d gather double values by all ...%s\n", *sendcnt, " " );
     double start = MPI_Wtime();
@@ -1092,8 +1126,9 @@ void DEFPPPPPP( ASMPI_ALLGATHERV_R, asmpi_allgatherv_r, ASTERDOUBLE *sendbuf,
 void DEFSPSPPP( ASMPI_ALLGATHERV_CHAR16, asmpi_allgatherv_char16, char *sendbuf, STRING_SIZE sbuff,
                 ASTERINTEGER4 *sendcnt, char *recvbuf, STRING_SIZE rbuff, ASTERINTEGER4 *recvcnt,
                 ASTERINTEGER4 *displs, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Allgatherv: %d gather char16 values by all ...%s\n", *sendcnt, " " );
     double start = MPI_Wtime();
@@ -1125,8 +1160,9 @@ void DEFSPSPPP( ASMPI_ALLGATHERV_CHAR16, asmpi_allgatherv_char16, char *sendbuf,
 void DEFSPSPPP( ASMPI_ALLGATHERV_CHAR80, asmpi_allgatherv_char80, char *sendbuf, STRING_SIZE sbuff,
                 ASTERINTEGER4 *sendcnt, char *recvbuf, STRING_SIZE rbuff, ASTERINTEGER4 *recvcnt,
                 ASTERINTEGER4 *displs, MPI_Fint *comm ) {
-    MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+
     mpicom = MPI_Comm_f2c( *comm );
     DEBUG_MPI( "MPI_Allgatherv: %d gather char80 values by all ...%s\n", *sendcnt, " " );
     double start = MPI_Wtime();
@@ -1161,9 +1197,10 @@ void DEFSPSPPP( ASMPI_ALLGATHERV_CHAR80, asmpi_allgatherv_char80, char *sendbuf,
  */
 void DEFPPPPP( ASMPI_SCAN_R, asmpi_scan_r, ASTERDOUBLE *sendbuf, ASTERDOUBLE *recvbuf,
                ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     AS_MPICHECK(
@@ -1174,9 +1211,10 @@ void DEFPPPPP( ASMPI_SCAN_R, asmpi_scan_r, ASTERDOUBLE *sendbuf, ASTERDOUBLE *re
 
 void DEFPPPPP( ASMPI_SCAN_C, asmpi_scan_c, ASTERDOUBLE *sendbuf, ASTERDOUBLE *recvbuf,
                ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     AS_MPICHECK(
@@ -1187,9 +1225,10 @@ void DEFPPPPP( ASMPI_SCAN_C, asmpi_scan_c, ASTERDOUBLE *sendbuf, ASTERDOUBLE *re
 
 void DEFPPPPP( ASMPI_SCAN_I, asmpi_scan_i, ASTERINTEGER *sendbuf, ASTERINTEGER *recvbuf,
                ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     AS_MPICHECK(
@@ -1200,9 +1239,10 @@ void DEFPPPPP( ASMPI_SCAN_I, asmpi_scan_i, ASTERINTEGER *sendbuf, ASTERINTEGER *
 
 void DEFPPPPP( ASMPI_SCAN_I4, asmpi_scan_i4, ASTERINTEGER4 *sendbuf, ASTERINTEGER4 *recvbuf,
                ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm ) {
+#ifdef ASTER_HAVE_MPI
     MPI_Comm mpicom;
     MPI_Op mpiop;
-#ifdef ASTER_HAVE_MPI
+
     mpicom = MPI_Comm_f2c( *comm );
     mpiop = MPI_Op_f2c( *op );
     AS_MPICHECK(
@@ -1250,10 +1290,10 @@ void DEFP( ASABRT, asabrt, _IN ASTERINTEGER *iret ) {
 void terminate( void ) {
     /*! Function registered using atexit() in main.
      */
-    ASTERINTEGER dummy = 0;
     printf( "End of the Code_Aster execution\n" );
 #ifdef ASTER_HAVE_MPI
     int isdone;
+    ASTERINTEGER dummy = 0;
     if ( gErrFlg == 0 ) {
         /* see help of asabrt */
         printf( "Code_Aster MPI exits normally\n" );

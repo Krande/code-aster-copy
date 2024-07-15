@@ -32,7 +32,13 @@ from glob import glob
 from pathlib import Path
 from subprocess import PIPE, run
 
-from .command_files import add_import_commands, file_changed, stop_at_end
+from .command_files import (
+    add_coding_line,
+    add_import_commands,
+    change_procdir,
+    file_changed,
+    stop_at_end,
+)
 from .config import CFG
 from .logger import WARNING, logger
 from .status import StateOptions, Status, get_status
@@ -40,6 +46,7 @@ from .timer import Timer
 from .utils import (
     RUNASTER_PLATFORM,
     RUNASTER_ROOT,
+    PercTemplate,
     cmd_abspath,
     compress,
     copy,
@@ -192,10 +199,14 @@ class RunAster:
                 self.export.get("step") + 1, self.export.get("nbsteps")
             )
         )
-        comm = change_comm_file(comm, interact=self._interact, show=self._show_comm)
+        comm = self._change_comm_file(comm)
         status.update(self._exec_one(comm, timeout - status.times[-1]))
         self._coredump_analysis()
         return status
+
+    def _change_comm_file(self, comm):
+        """Change the comm file."""
+        return change_comm_file(comm, interact=self._interact, show=self._show_comm)
 
     def _exec_one(self, comm, timeout):
         """Show instructions for a command file.
@@ -413,6 +424,12 @@ class RunOnlyEnv(RunAster):
             logger.info("    ulimit -t %.0f", timeout)
         return super().execute_study()
 
+    def _change_comm_file(self, comm):
+        """Change the comm file for manual run."""
+        return change_comm_file(
+            comm, interact=self._interact, use_procdir=True, show=self._show_comm
+        )
+
     def _exec_one(self, comm, timeout):
         """Show instructions for a command file.
 
@@ -420,24 +437,28 @@ class RunOnlyEnv(RunAster):
             comm (str): Command file name.
             timeout (float): Remaining time.
         """
+        is_ok = Status(StateOptions.Ok, exitcode=0)
+        if self._procid != 0:
+            return is_ok
+
         idx = self.export.get("step")
-        cmd = []
-        if self._parallel:
-            cmd.append("#!/bin/bash")
-            cmd.append("cd proc.$({0})".format(CFG.get("mpi_get_rank")))
-        cmd.append(" ".join(self._get_cmdline_exec(comm, idx)))
-        cmd.append("")
-        shell = f"cmd{idx}.sh"
-        with open(shell, "w") as fobj:
-            fobj.write("\n".join(cmd))
-        os.chmod(f"cmd{idx}.sh", 0o755)
+        base_cmd = self._get_cmdline_exec("proc.0/" + comm, idx)
         if not self._parallel:
-            logger.info(cmd[0])
-        elif self._procid == 0:
-            args_cmd = dict(mpi_nbcpu=self.export.get("mpi_nbcpu", 1), program="proc.0/" + shell)
-            cmd = CFG.get("mpiexec").format(**args_cmd)
-            logger.info(cmd)
-        return Status(StateOptions.Ok, exitcode=0)
+            logger.info(" ".join(base_cmd))
+            return is_ok
+
+        _gen_cmd_file(f"cmd{idx}.sh", [" ".join(base_cmd)])
+        shell = f"cmd{idx}.sh"
+        args_cmd = dict(mpi_nbcpu=self.export.get("mpi_nbcpu", 1), program="proc.0/" + shell)
+        cmd = CFG.get("mpiexec").format(**args_cmd)
+        logger.info("    " + cmd)
+
+        shell = f"ddt_cmd{idx}.sh"
+        _gen_ddt_template(shell, cmd, idx)
+        logger.info("Run with DDT using:")
+        logger.info("    " + "proc.0/" + shell)
+
+        return is_ok
 
     def ending_execution(self, _):
         """Nothing to do in this case."""
@@ -466,13 +487,17 @@ def get_nbcores():
     return os.cpu_count()
 
 
-def change_comm_file(comm, interact=False, wrkdir=None, show=False):
+def change_comm_file(comm, interact=False, use_procdir=None, dstdir=None, show=False):
     """Change a command file.
 
     Arguments:
         comm (str): Command file name.
-        wrkdir (str, optional): Working directory to write the changed file
-            if necessary (defaults: current working directory).
+        interact (bool, optional): Add a stop at the end of the file for
+            interactive modifications.
+        use_procdir (bool, optional): Change to the 'proc.N' directory at the
+            beginning of the file.
+        dstdir (str, optional): Directory to write the changed file
+            if necessary (defaults: ".").
         show (bool): Show file content if *True*.
 
     Returns:
@@ -480,18 +505,24 @@ def change_comm_file(comm, interact=False, wrkdir=None, show=False):
     """
     with open(comm, "rb") as fobj:
         text_init = fobj.read().decode(errors="replace")
-    text = add_import_commands(text_init)
+    text = text_init
+    if use_procdir:
+        text = change_procdir(text)
+    text = add_import_commands(text)
     if interact:
         text = stop_at_end(text)
     changed = text.strip() != text_init.strip()
     if changed:
         text = file_changed(text, comm)
+    text = add_coding_line(text)
     if show:
         logger.info("\nContent of the file to execute:\n%s\n", text)
     if not changed:
         return comm
 
-    filename = osp.join(wrkdir or ".", osp.basename(comm) + ".changed.py")
+    filename = osp.basename(comm) + ".changed.py"
+    if dstdir:
+        filename = osp.join(dstdir, filename)
     with open(filename, "wb") as fobj:
         fobj.write(text.encode())
     return filename
@@ -585,3 +616,22 @@ def _ls(*paths):
     else:
         proc = run(["dir"] + list(paths), stdout=PIPE, universal_newlines=True, shell=True)
     return proc.stdout
+
+
+def _gen_cmd_file(filename, lines):
+    cmd = []
+    cmd.append("#!/bin/bash")
+    cmd.append("\n".join(lines))
+    cmd.append("")
+    with open(filename, "w") as fobj:
+        fobj.write("\n".join(cmd))
+    os.chmod(filename, 0o755)
+
+
+def _gen_ddt_template(filename, cmd, idx):
+    redir = ">" if idx == 0 else ">>"
+    with open(Path(RUNASTER_ROOT) / "share" / "aster" / "ddt_wrapper.tmpl") as ftmpl:
+        script = PercTemplate(ftmpl.read()).substitute(command=cmd, redirect_to=redir)
+    with open(filename, "w") as fobj:
+        fobj.write(script)
+    os.chmod(filename, 0o755)
