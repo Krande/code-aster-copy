@@ -13067,6 +13067,24 @@ class TransientGeneralizedResult(GeneralizedResultReal):
     def setGeneralizedDOFNumbering(self, arg0):
         pass
 
+    def getDisplacementValues(self):
+        pass
+
+    def getVelocityValues(self):
+        pass
+
+    def getAccelerationValues(self):
+        pass
+
+    def getDisplacementValuesAtIndex(self, arg0):
+        pass
+
+    def getVelocityValuesAtIndex(self, arg0):
+        pass
+
+    def getAccelerationValuesAtIndex(self, arg0):
+        pass
+
 
 # class HarmoGeneralizedResult in libaster
 
