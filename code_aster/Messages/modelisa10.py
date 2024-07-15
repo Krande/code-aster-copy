@@ -40,7 +40,7 @@ mot-clé facteur MASSIF. En 3D, il faut également fournir le mot-clé ANGL_AXE 
     3: _(
         """
 AFFE_CARA_ELEM :
-Vous souhaitez affecter une orientation de type rèpere cylindrique sur des éléments massifs 2D. 
+Vous souhaitez affecter une orientation de type repère cylindrique sur des éléments massifs 2D. 
 En 2D, ANGL_AXE ne doit pas être fourni, seul ORIG_AXE est demandé.
 """
     ),
