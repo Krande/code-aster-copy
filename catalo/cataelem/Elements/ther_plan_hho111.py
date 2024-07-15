@@ -211,6 +211,42 @@ class THER2DQ9_HHO111(Element):
             ),
             para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
         ),
+        OP.MASS_THER_TANG(
+            te=429,
+            para_in=(
+                (OP.MASS_THER_TANG.PCOMPOR, LC.CCOMPOT),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTEMPEI, DDL_THER),
+                (OP.MASS_THER_TANG.PVARCPR, LC.ZVARCPG),
+                (OP.MASS_THER_TANG.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.MASS_THER_TANG.PMATTTR, MMATTTR),),
+        ),
+        OP.MASS_THER_RESI(
+            te=429,
+            para_in=(
+                (OP.MASS_THER_RESI.PCOMPOR, LC.CCOMPOT),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.MASS_THER_RESI.PHYDRPR, LC.EHYDRR),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTEMPEI, DDL_THER),
+                (OP.MASS_THER_RESI.PVARCPR, LC.ZVARCPG),
+                (OP.MASS_THER_RESI.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PRESIDU, MVECTTR),),
+        ),
+        OP.MTAN_THER_SOURNL(
+            te=437,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PSOURNL, LC.CSOURCF),
+                (SP.PTEMPEI, DDL_THER),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.MTAN_THER_SOURNL.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.MTAN_THER_SOURNL.PMATTTR, MMATTTR),),
+        ),
         OP.NSPG_NBVA(
             te=496,
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),

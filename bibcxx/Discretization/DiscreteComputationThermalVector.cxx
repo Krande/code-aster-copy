@@ -1103,6 +1103,7 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
     }
 
     calcul->addXFEMField( currModel );
+    calcul->addHHOField( currModel );
 
     // Current Thermal Field
     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );

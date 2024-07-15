@@ -36,7 +36,9 @@ module HHO_Ther_module
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
+#include "asterfort/ntfcma.h"
 #include "asterfort/rccoma.h"
+#include "asterfort/rcfode.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/readMatrix.h"
 #include "asterfort/readVector.h"
@@ -63,9 +65,9 @@ module HHO_Ther_module
     public :: hhoLocalRigiTher, hhoCalcStabCoeffTher, hhoLocalMassTher
     public :: hhoCalcOpTher, hhoComputeRhsRigiTher, hhoComputeLhsRigiTher
     public :: hhoComputeLhsMassTher, hhoComputeRhsMassTher, hhoComputeBehaviourTher
-    public :: hhoReloadPreCalcTher
+    public :: hhoReloadPreCalcTher, hhoLocalMassTherNL
     private :: hhoComputeAgphi
-    private :: LambdaMax, hhoComputeRhoCpTher
+    private :: LambdaMax, hhoComputeRhoCpTher, hhoComputeBetaTher
 !
 contains
 !
@@ -300,7 +302,7 @@ contains
         integer :: jmate, ipg, icodre(3), jtemps
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_T_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8) :: coorpg(3), weight, time_curr, cp, temp_eval
+        real(kind=8) :: coorpg(3), weight, time_curr, cp, temp_eval, beta
         character(len=8) :: poum
         aster_logical :: l_rhs, l_lhs
 !
@@ -356,7 +358,8 @@ contains
 ! -------- Compute rhs
 !
             if (l_rhs) then
-                call hhoComputeRhsMassTher(temp_eval, cp, weight, BSCEval, cbs, &
+                beta = cp*temp_eval
+                call hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, &
                                            rhs(1:MSIZE_CELL_SCAL))
             end if
 !
@@ -364,6 +367,124 @@ contains
 !
             if (l_lhs) then
                 call hhoComputeLhsMassTher(cp, weight, BSCEval, cbs, &
+                                           lhs(1:MSIZE_CELL_SCAL, 1:MSIZE_CELL_SCAL))
+            end if
+!
+        end do
+!
+! ----- Copy the lower part
+!
+        if (l_lhs) call hhoCopySymPartMat('U', lhs(1:cbs, 1:cbs))
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoLocalMassTherNL(hhoCell, hhoData, hhoQuadCellMass, lhs, rhs)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)      :: hhoCell
+        type(HHO_Data), intent(inout)   :: hhoData
+        type(HHO_Quadrature), intent(in):: hhoQuadCellMass
+        real(kind=8), intent(out), optional :: lhs(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out), optional :: rhs(MSIZE_TDOFS_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - thermics
+!
+!   Compute the nonlinear local mass contribution for thermics
+!   RHS = (beta(T) * uT, vT)_T
+!   LHS = (dbeta(T)_dT * duT, vT)_T
+!   In hhoCell      : the current HHO Cell
+!   In hhoData       : information on HHO methods
+!   In hhoQuadCellMas : quadrature rules from the rigidity family
+!   In fami         : familly of quadrature points (of hhoQuadCellRigi)
+!   Out lhs         : local contribution (lhs)
+!   Out rhs         : local contribution (rhs)
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_basis_cell) :: hhoBasisCell
+        character(len=32) :: phenom
+        integer:: cbs, fbs, total_dofs, faces_dofs, gbs
+        integer :: jmate, ipg, icodre(3), jcomp, ifon(6)
+        real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_T_curr
+        real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8) :: coorpg(3), weight, temp_eval, beta, dbeta
+        character(len=16) :: comp
+        aster_logical :: l_rhs, l_lhs, aniso
+!
+        l_lhs = present(lhs)
+        l_rhs = present(rhs)
+!
+! --- Get input fields
+!
+        call jevech('PMATERC', 'L', jmate)
+        call jevech('PCOMPOR', 'L', jcomp)
+!
+        comp = zk16(jcomp)
+        if (comp(1:5) .eq. 'THER_') then
+!
+            call rccoma(zi(jmate), 'THER', 1, phenom, icodre(1))
+            aniso = ASTER_FALSE
+            if (phenom(1:12) .eq. 'THER_NL_ORTH') then
+                aniso = ASTER_TRUE
+            end if
+            call ntfcma(comp, zi(jmate), aniso, ifon)
+            if (comp(1:9) .eq. 'THER_HYDR') then
+                ASSERT(ASTER_FALSE)
+            end if
+        end if
+!
+! --- number of dofs
+!
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
+        faces_dofs = total_dofs-cbs
+!
+! -- initialization
+!
+        if (l_lhs) lhs = 0.d0
+        if (l_rhs) rhs = 0.d0
+!
+        call hhoBasisCell%initialize(hhoCell)
+!
+! --- compute temp in T+
+!
+        temp_T_curr = 0.d0
+        call readVector('PTEMPEI', cbs, temp_T_curr, total_dofs-cbs)
+!
+! ----- Loop on quadrature point
+!
+        do ipg = 1, hhoQuadCellMass%nbQuadPoints
+            coorpg(1:3) = hhoQuadCellMass%points(1:3, ipg)
+            weight = hhoQuadCellMass%weights(ipg)
+!
+! --------- Eval basis function at the quadrature point
+!
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
+!
+! --------- Eval gradient at T+
+!
+            temp_eval = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
+                                        coorpg, temp_T_curr, cbs)
+!
+! -------- Compute behavior
+!
+            call hhoComputeBetaTher(comp, ifon(1), temp_eval, beta, dbeta)
+!
+! -------- Compute rhs
+!
+            if (l_rhs) then
+                call hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, &
+                                           rhs(1:MSIZE_CELL_SCAL))
+            end if
+!
+! -------- Compute lhs
+!
+            if (l_lhs) then
+                call hhoComputeLhsMassTher(dbeta, weight, BSCEval, cbs, &
                                            lhs(1:MSIZE_CELL_SCAL, 1:MSIZE_CELL_SCAL))
             end if
 !
@@ -509,11 +630,11 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeRhsMassTher(temp_curr, cp, weight, BSCEval, cbs, rhs)
+    subroutine hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, rhs)
 !
         implicit none
 !
-        real(kind=8), intent(in)        :: temp_curr, cp
+        real(kind=8), intent(in)        :: beta
         real(kind=8), intent(in)        :: weight
         real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
         integer, intent(in)             :: cbs
@@ -522,7 +643,7 @@ contains
 ! ------------------------------------------------------------------------------------------
 !   HHO - thermics
 !
-!   Compute the scalar product rhs += (rho_cp * temp, vT)_T at a quadrature point
+!   Compute the scalar product rhs += (beta, vT)_T at a quadrature point
 !   In weight       : quadrature weight
 !   In BSCEval      : Basis of one composant gphi
 !   In cbs          : number of rows of bT
@@ -532,7 +653,7 @@ contains
         real(kind=8) :: qp_temp
 ! --------------------------------------------------------------------------------------------------
 !
-        qp_temp = weight*cp*temp_curr
+        qp_temp = weight*beta
         call daxpy(cbs, qp_temp, BSCEval, 1, rhs, 1)
 !
     end subroutine
@@ -840,6 +961,7 @@ contains
             sig_curr = lambda*g_curr
         end if
     end subroutine
+!
 !===================================================================================================
 !
 !===================================================================================================
@@ -882,6 +1004,41 @@ contains
         end if
 !
         cp = cp_(1)
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoComputeBetaTher(comp, ifon, temp, beta, dbeta)
+!
+        implicit none
+!
+        character(len=16), intent(in) :: comp
+        integer, intent(in) :: ifon
+        real(kind=8), intent(in) :: temp
+        real(kind=8), intent(out) :: beta, dbeta
+!
+! --------------------------------------------------------------------------------------------------
+!  HHO
+!  Thermics - Compute beta and d_beta
+!
+! --------------------------------------------------------------------------------------------------
+!
+! --- Eval beta and derivative
+!
+        if (comp(1:5) .eq. 'THER_') then
+            call rcfode(ifon, temp, beta, dbeta)
+            if (comp(1:9) .eq. 'THER_HYDR') then
+                ASSERT(ASTER_FALSE)
+            end if
+        else if (comp(1:5) .eq. 'SECH_') then
+            beta = temp
+            dbeta = 1.d0
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
     end subroutine
 !
 end module

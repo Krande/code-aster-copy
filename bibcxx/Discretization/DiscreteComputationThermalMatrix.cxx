@@ -637,6 +637,8 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getThermalTangentNonLine
 
             calcul->addInputField( "PSOURNL", load->getConstantLoadField( "SOUNL" ) );
 
+            calcul->addHHOField( currModel );
+
             calcul->clearOutputs();
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
