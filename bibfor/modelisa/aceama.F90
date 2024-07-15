@@ -122,11 +122,6 @@ subroutine aceama(nomu, noma, lmax, nbocc)
                         nbret=neul)
             call getvr8('MASSIF', 'ANGL_AXE', iocc=ioc, nbval=2, vect=ang(1), &
                         nbret=naxe)
-            if (ndim .eq. 3 .and. naxe .eq. 0) then
-                call utmess('F', 'MODELISA10_2')
-            elseif (ndim .eq. 2 .and. naxe .ne. 0) then
-                call utmess('F', 'MODELISA10_3')
-            end if
             call getvr8('MASSIF', 'ORIG_AXE', iocc=ioc, nbval=3, vect=orig(1), &
                         nbret=norig)
 !
@@ -148,6 +143,11 @@ subroutine aceama(nomu, noma, lmax, nbocc)
                 zr(jdvc+5) = 0.d0
                 zr(jdvc+6) = 0.d0
             else if (norig .ne. 0) then
+                if (ndim .eq. 3 .and. naxe .eq. 0) then
+                    call utmess('F', 'MODELISA10_2')
+                elseif (ndim .eq. 2 .and. naxe .ne. 0) then
+                    call utmess('F', 'MODELISA10_3')
+                end if
                 zr(jdvc) = -1.d0
                 ! pas d'angle en 2D
                 zr(jdvc+1) = ang(1)
