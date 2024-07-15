@@ -21,7 +21,7 @@ import numpy as np
 
 from ..Cata.Syntax import _F
 from ..Cata.SyntaxUtils import remove_none
-from ..CodeCommands import DEFI_LIST_REEL
+from ..CodeCommands import DEFI_LIST_REEL, INFO_MODE, CREA_TABLE
 from ..Messages import UTMESS
 from ..Utilities import no_new_attributes
 
@@ -136,15 +136,256 @@ class Refinement:
         return result
 
 
+class BinnedDataCumulativeDistributionFunction(object):
+    r"""Cumulative distribution function (CDF) for binned data.
+
+    Given :math:`m \ge 1` bins with ends :math:`([y_{i-1}, y_{i}[)_{1 \le i \le m}` (:math:`y_0 < y_1 < \dots < y_m`)
+    and counts :math:`(n_i)_{1 \le i \le m}` (i.e. there are :math:`n_i` values in :math:`[y_{i-1},y_{i}[`),
+    defines the function :math:`\hat{F} : [y_{0}, y_{m}] \longrightarrow [0,1]` given by:
+
+    .. math::
+        \hat{F}(x) = \frac{1}{N} \sum_{i=1}^{m},
+
+    where :math:`N = \sum_{i=1}^m n_i`.
+
+    The generalized inverse of :math:`\hat{F}` is the function :math:`\hat{F}^{(-1)} : [0,1] \longrightarrow [y_0, y_m]` defined by:
+
+    .. math::
+        \hat{F}^{(-1)}(q) = \inf\left\{ x \in [y_0, y_m] \ \vert \ \hat{F}(x) \ge q \right\}.
+    """
+
+    def __init__(self, bins, counts):
+        r"""Constructor
+
+        Args:
+            bins (:class:`list` [:math:`m+1`]): bins ends :math:`(y_i)_{0 \le i \le m}`
+
+            counts (:class:`list` [:math:`m`]): bins counts :math:`(n_i)_{1 \le i \le m}`
+        """
+        self.bins = np.atleast_1d(bins)
+        self.counts = np.atleast_1d(counts)
+        #
+        if len(counts) != len(bins) - 1:
+            raise ValueError(
+                "The number of bins ends is not consistent with the number of bins counts."
+            )
+        #
+        self.N = np.sum(self.counts)
+        self.values = np.concatenate(([0], np.cumsum(self.counts) / self.N))
+
+    def evaluate(self, x):
+        r"""Evaluate CDF :math:`\hat{F}` at :math:`x`
+
+        Args:
+            x (:class:`numpy.ndarray` [:math:`n`]): evaluation points :math:`x`
+
+        Returns:
+            (:class:`numpy.ndarray` [:math:`n`]): CDV output values
+        """
+        x = np.atleast_1d(x)
+        out = np.zeros(x.shape[0])
+        for i in range(out.shape[0]):
+            idx = np.max(np.where(self.bins <= x[i])[0])
+            out[i] = self.values[idx]
+        return out
+
+    def inverse(self, q):
+        r"""Evaluate generalized inverse :math:`\hat{F}^{(-1)}` at :math:`q`
+
+        Args:
+            q (:class:`numpy.ndarray` [:math:`n`]): evaluation points :math:`q`
+
+        Returns:
+            (:class:`numpy.ndarray` [:math:`n`]): generalized inverse output values
+        """
+        q = np.atleast_1d(q)
+        out = np.zeros(q.shape[0])
+        for i in range(out.shape[0]):
+            idx = np.min(np.where(self.values >= q[i])[0])
+            out[i] = self.bins[idx]
+        return out
+
+    def count(self, bins):
+        r"""Returns counts associated to given bins
+
+        Args:
+            bins (:class:`numpy.ndarray` [:math:`p`]): bins
+
+        Returns:
+            (:class:`numpy.ndarray` [:math:`p-1`]): bins counts
+        """
+        return (np.diff(self.evaluate(bins)) * self.N).astype(int)
+
+
+class FrequencyBandOptimizationAlgorithm(object):
+    r"""Frequency band optimization algorithm.
+
+    Given a standard generalized eigenvalue problem of the form :math:`\mathbf{A}\mathbf{u} = \lambda \mathbf{B}\mathbf{u}`
+    with (real) eigenfrequencies :math:`x_1 \le \dots \le x_N`, find the ends of :math:`B \ge 1` frequency bands
+    :math:`([y_{i-1}, y_{i}[)_{1 \le i \le B}` such that each band contains a comparable number of eigenfrequencies.
+    """
+
+    def __init__(self, args):
+        r"""Constructor
+
+        Args:
+            args (:class:`dict`): algorithm arguments
+        """
+        # Parse algorithm mode (matrix-based or list-based)
+        self.hasMatrices = args["TYPE_SAISIE"] == "MATR_ASSE"
+        if self.hasMatrices:
+            self.matr_rigi = args["MATR_RIGI"]
+            self.matr_mass = args["MATR_MASS"]
+        else:
+            self.list_freq = sorted(args["LIST_FREQ"])
+        self.freq_min = args["FREQ_MIN"]
+        self.freq_max = args["FREQ_MAX"]
+        # Parse algorithm parameters
+        algo_options = args.pop("EQUILIBRAGE", [None])[0]
+        self.tol = algo_options["TOLERANCE"]
+        self.n_init = algo_options["NB_POINTS_INIT"]
+        self.n_supp = algo_options["NB_POINTS_SUPP"]
+        self.iter_maxi = algo_options["ITER_MAXI"]
+        self.n_modes = algo_options["NB_MODES"]
+
+    def run(self):
+        r"""Run algorithm
+
+        Returns:
+            (:class:`numpy.ndarray` [:math:`B`]): balanced frequency bands
+        """
+        ### Initialization
+        bins = np.linspace(self.freq_min, self.freq_max, self.n_init + 1)  # initial bins
+        bins_info = bins.copy()  # inputs bins of INFO_MODE operator
+
+        ### Frequency band optimization procedure
+        for n in range(self.iter_maxi):
+            # Call INFO_MODE operator (on new bins only)
+            counts_info = self._countFrequencies(bins_info)  # counts obtained with INFO_MODE
+
+            if n == 0:
+                # Initialize variables after first INFO_MODE call
+                counts = counts_info.copy()
+                N = np.sum(counts)
+                Nb = int(N / self.n_modes) + 1  # number of bands
+                q_tar = np.linspace(0, 1, Nb + 1)  # target quantiles
+            else:
+                # Update counts values with new values obtained from INFO_MODE
+                counts = np.insert(np.delete(counts, idx), idx, counts_info)
+                bins = np.insert(bins, idx + 1, bins_info[1:-1])  # associated bins
+
+            # Build CDF approximation from binned data
+            G = BinnedDataCumulativeDistributionFunction(bins, counts)
+
+            # Compute bins from target quantiles
+            bins_tar = G.inverse(q_tar)
+
+            # Estimate error on target bins counts
+            counts_tar = G.count(bins_tar)
+            n_tar = int(G.N / Nb)  # target number of modes per band
+            err = (counts_tar - n_tar) / G.N  # counts relative error
+
+            # Refine frequency grid in the band with the largest error
+            imax = np.argmax(err)
+            l_idx = np.where((bins >= bins_tar[imax]) * (bins <= bins_tar[imax + 1]))[0][
+                :-1
+            ]  # indices of sub-intervals in the imax-th band
+            idx = l_idx[-1]  # choose the sub-interval at the right boundary
+            bins_info = np.linspace(bins[idx], bins[idx + 1], self.n_supp + 2)
+
+            # Stopping criterion
+            if np.max(np.abs(err)) < self.tol:
+                UTMESS("I", "DYNAMIQUE1_4", valr=np.max(err), vali=n + 1)
+                break
+            else:
+                if n + 1 == self.iter_maxi:
+                    UTMESS("A", "DYNAMIQUE1_3")
+        #
+        return bins_tar
+
+    def _countFrequencies(self, bins):
+        r"""Returns the number of eigenfrequencies in given bins
+
+        Args:
+            bins (:class:`numpy.ndarray` [:math:`m`]): bins
+
+        Returns:
+            (:class:`numpy.ndarray` [:math:`m-1`]): bins counts
+        """
+        # Call INFO_MODE operator if assembly matrices are specified
+        if self.hasMatrices:
+            return self._countFrequenciesFromMatrices(bins)
+        # Else, mock INFO_MODE operator through direct counting in a list
+        else:
+            return self._countFrequenciesFromList(bins)
+
+    def _countFrequenciesFromList(self, bins):
+        r"""Returns the number of eigenfrequencies in given bins, for a
+        given list of eigenfrequencies
+
+        Args:
+            bins (:class:`numpy.ndarray` [:math:`m`]): bins
+
+        Returns:
+            (:class:`numpy.ndarray` [:math:`m-1`]): bins counts
+        """
+        m = len(bins)
+        out = np.zeros(m - 1)
+        for b in range(m - 1):
+            out[b] = np.sum((self.list_freq >= bins[b]) * (self.list_freq <= bins[b + 1]))
+        return out.astype(int)
+
+    def _countFrequenciesFromMatrices(self, bins):
+        r"""Returns the number of eigenfrequencies in frequency bins given
+        assembly stiffness and mass matrices, through a call to INFO_MODE operator
+
+        Args:
+            bins (:class:`numpy.ndarray` [:math:`m`]): bins
+
+        Returns:
+            (:class:`numpy.ndarray` [:math:`m-1`]): bins counts
+        """
+        # Call INFO_MODE operator
+        tab_info = INFO_MODE(
+            TYPE_MODE="DYNAMIQUE",
+            MATR_RIGI=self.matr_rigi,
+            MATR_MASS=self.matr_mass,
+            FREQ=bins,
+            COMPTAGE=_F(METHODE="AUTO"),
+        )
+        val_info = tab_info.EXTR_TABLE().values()
+
+        # Extract bins and counts from result table
+        counts = np.array(val_info["NB_MODE"])
+        if len(counts) != len(bins) - 1:
+            raise RuntimeError(
+                "The number of obtained counts is not consistent"
+                + " with the number of input bins."
+            )
+
+        return counts
+
+
 def defi_list_freq_ops(self, **args):
     """Definition of a list of frequencies."""
     args = _F(args)
     remove_none(args)
+
+    # RAFFINEMENT
     refine_args = args.pop("RAFFINEMENT", [None])[0]
+    if refine_args is not None:
+        listr = DEFI_LIST_REEL(**args)
+        list_init = listr.getValues()
+        builder = Refinement(refine_args)
+        refined_list = builder.refine(list_init)
 
-    listr = DEFI_LIST_REEL(**args)
-    list_init = listr.getValues()
-    builder = Refinement(refine_args)
-    refined_list = builder.refine(list_init)
+        return DEFI_LIST_REEL(VALE=refined_list)
 
-    return DEFI_LIST_REEL(VALE=refined_list)
+    # EQUI_MODES
+    equi_args = args.pop("EQUI_MODES", [None])[0]
+    if equi_args is not None:
+        # Run algorithm
+        algo = FrequencyBandOptimizationAlgorithm(equi_args)
+        freq = algo.run()
+
+        return freq.tolist()

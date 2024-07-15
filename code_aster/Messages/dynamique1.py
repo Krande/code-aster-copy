@@ -28,4 +28,12 @@ On doit être soit en élasticité, soit utiliser un comportement de type DIS_CO
         """On ne peut pas utiliser ACCELERATION_MPI en parallélisme distribué : on force
 ACCELERATION_MPI='NON'."""
     ),
+    3: _(
+        """Le nombre maximal d'itérations de l'algorithme d'équilibrage de bandes de fréquence est atteint.
+        Il n'a pas été possible d'équilibrer les bandes de fréquence à la tolérance souhaitée."""
+    ),
+    4: _(
+        """Convergence de l'algorithme d'équilibrage de bandes de fréquence atteinte. 
+    Erreur relative maximale :%(r1)12.5e. Nombre d'itérations : %(i1)i"""
+    ),
 }
