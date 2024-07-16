@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 ! aslint: disable=W1504
 !
 subroutine nminit(mesh, model, mater, mateco, cara_elem, &
-                  list_load, &
-                  numedd, numfix, ds_algopara, ds_constitutive, maprec, &
+                  list_load, numedd, numfix, ds_algopara, &
+                  ds_constitutive, maprec, &
                   solver, numins, sddisc, sdnume, sdcrit, &
                   ds_material, listFuncActi, sdpilo, ds_print, &
                   sddyna, nlDynaDamping, &
@@ -233,7 +233,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 ! - Check compatibility of some functionnalities
 !
     call exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
-                sddyna, nlDynaDamping, &
+                ds_constitutive, sddyna, nlDynaDamping, &
                 mater, model)
     lpilo = isfonc(listFuncActi, 'PILOTAGE')
     lmpas = ndynlo(sddyna, 'MULTI_PAS')
