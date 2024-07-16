@@ -278,7 +278,8 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
                 end do
 !               TERME DE CORRECTION (3,3) A PORTER SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                def(3, 1+ndim*ig, n) = f(3, 3)*ff(n)/r*xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
+                    def(3, 1+ndim*ig, n) = f(3, 3)*ff(n) &
+                                           /r*xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
                 end if
 !
             end do

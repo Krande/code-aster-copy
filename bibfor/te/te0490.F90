@@ -682,8 +682,8 @@ subroutine te0490(option, nomte)
                 epsel(2) = c1*sigma(2)-c2*trsig
                 epsel(3) = -c2*trsig
 !
-                epsm(3+(igau-1)*nbsig) = epsel(3)+epsthe-epsm(1+( &
-                                                   igau-1)*nbsig)+epsel(1)-epsm(2+(igau-1)*nbsig)+ &
+                epsm(3+(igau-1)*nbsig) = epsel(3)+epsthe-epsm(1+(igau-1)*nbsig) &
+                                         +epsel(1)-epsm(2+(igau-1)*nbsig)+ &
                                          epsel(2)
             end if
 !

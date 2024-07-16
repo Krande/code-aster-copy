@@ -104,8 +104,9 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
         mu = e/(2.d0*(1.d0+nu))
         troisk = e/(1.d0-2.d0*nu)
 !
-       jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2))-f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2))+f(&
-                 &3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
+        jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2)) &
+              -f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2)) &
+              +f(3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
 !
 ! ---    CALCUL DE TAU TEL QUE TAU=JAC*SIGMA
 !
