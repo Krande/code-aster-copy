@@ -17,14 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# Thermique non linéaire plane avec propriétés orthotropes
+# Thermique non linéaire 3D avec propriétés orthotropes
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
-MAIL = LIRE_MAILLAGE(FORMAT="MED")
+MAIL0 = LIRE_MAILLAGE(FORMAT="MED")
+
+MAIL = CREA_MAILLAGE(MAILLAGE=MAIL0, MODI_HHO=_F(TOUT="OUI"))
+
 
 MAIL = DEFI_GROUP(
-    reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_MA=_F(NOM="MASSIF", TYPE_MAILLE="2D", TOUT="OUI")
+    reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_MA=_F(NOM="MASSIF", TYPE_MAILLE="3D", TOUT="OUI")
 )
 
 #
@@ -55,27 +58,27 @@ CONDUK = DEFI_FONCTION(
     PROL_GAUCHE="LINEAIRE",
 )
 
-ENTHAL = DEFI_FONCTION(
+CHALVOL = DEFI_FONCTION(
     NOM_PARA="TEMP",
-    NOM_RESU="CP",
-    VALE=(0.0, 0.0, 500.0, 4000.0e6),
-    PROL_DROITE="LINEAIRE",
-    PROL_GAUCHE="LINEAIRE",
+    NOM_RESU="RHOCP",
+    VALE=(0.0, 8.0e6, 500.0, 8.0e6),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
 )
 
 MATERO = DEFI_MATERIAU(
-    THER_NL_ORTH=_F(LAMBDA_L=CONDUC, LAMBDA_T=CONDUK, LAMBDA_N=CONDUK, BETA=ENTHAL)
+    THER_NL_ORTH=_F(LAMBDA_L=CONDUC, LAMBDA_T=CONDUK, LAMBDA_N=CONDUK, RHO_CP=CHALVOL)
 )
 
 #
 # AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ----------------------
 #
 
-MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="PLAN", PHENOMENE="THERMIQUE"))
+MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="3D_HHO", PHENOMENE="THERMIQUE"))
 
-CHTHG = AFFE_CHAR_CINE(MODELE=MOTH, THER_IMPO=(_F(GROUP_NO="NOE_GAU", TEMP=1.0),))
+CHTHG = AFFE_CHAR_CINE(MODELE=MOTH, THER_IMPO=(_F(GROUP_MA="GMA_GAU", TEMP=1.0),))
 
-CHTHD = AFFE_CHAR_CINE(MODELE=MOTH, THER_IMPO=(_F(GROUP_NO="NOE_DRO", TEMP=1.0)))
+CHTHD = AFFE_CHAR_CINE(MODELE=MOTH, THER_IMPO=(_F(GROUP_MA="GMA_DRO", TEMP=1.0)))
 
 CHMATO = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATERO))
 
@@ -111,11 +114,11 @@ TEMPEO = THER_NON_LINE(
 )
 
 TEMPO_10 = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="TEMP", RESULTAT=TEMPEO, INST=10.0
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPEO, INST=10.0
 )
 
 TEMPO_13 = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="TEMP", RESULTAT=TEMPEO, INST=13.0
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPEO, INST=13.0
 )
 
 #
@@ -125,30 +128,21 @@ TEMPO_13 = CREA_CHAMP(
 TEST_RESU(
     CHAM_NO=(
         _F(
-            GROUP_NO="N103",
+            GROUP_NO="N18",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
-            VALE_CALC=100.00909933531703,
-            VALE_REFE=100.00909933531703,
+            VALE_CALC=180.88615650072987,
+            VALE_REFE=181.13390582720243,
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            GROUP_NO="N15",
+            GROUP_NO="N27",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
-            VALE_CALC=181.390103228356,
-            VALE_REFE=181.390103228356,
-            REFERENCE="NON_DEFINI",
-        ),
-        _F(
-            GROUP_NO="N25",
-            NOM_CMP="TEMP",
-            PRECISION=1.0e-2,
-            CHAM_GD=TEMPO_10,
-            VALE_CALC=156.52854081119065,
-            VALE_REFE=156.52878801189075,
+            VALE_CALC=155.43071451795896,
+            VALE_REFE=156.63616859886153,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -156,67 +150,89 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
-            VALE_CALC=117.21686051279606,
-            VALE_REFE=117.21686051279606,
+            VALE_CALC=116.28480574580885,
+            VALE_REFE=117.1664584502401,
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            GROUP_NO="N65",
+            GROUP_NO="N63",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
-            VALE_CALC=102.7612871293338,
-            VALE_REFE=102.7612871293338,
-            REFERENCE="NON_DEFINI",
-        ),
-        _F(GROUP_NO="N201", NOM_CMP="TEMP", CHAM_GD=TEMPO_10, VALE_CALC=100.0),
-        _F(GROUP_NO="N202", NOM_CMP="TEMP", CHAM_GD=TEMPO_10, VALE_CALC=100.0),
-        _F(GROUP_NO="N203", NOM_CMP="TEMP", CHAM_GD=TEMPO_10, VALE_CALC=100.0),
-        _F(GROUP_NO="N204", NOM_CMP="TEMP", CHAM_GD=TEMPO_10, VALE_CALC=100.0),
-        _F(GROUP_NO="N205", NOM_CMP="TEMP", CHAM_GD=TEMPO_10, VALE_CALC=100.0),
-        _F(
-            GROUP_NO="N103",
-            NOM_CMP="TEMP",
-            PRECISION=1.0e-2,
-            CHAM_GD=TEMPO_13,
-            VALE_CALC=100.05029403843157,
-            VALE_REFE=100.05029403843157,
+            VALE_CALC=102.52561448980309,
+            VALE_REFE=102.50020746178329,
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            GROUP_NO="N15",
+            GROUP_NO="N81",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
-            CHAM_GD=TEMPO_13,
-            VALE_CALC=125.67244033080593,
-            VALE_REFE=125.67244033080593,
+            CHAM_GD=TEMPO_10,
+            VALE_CALC=100.2233941813411,
+            VALE_REFE=100.13926682078663,
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            GROUP_NO="N25",
+            GROUP_NO="N99",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
+            CHAM_GD=TEMPO_10,
+            VALE_CALC=100.0125914185079,
+            VALE_REFE=99.9991966909595,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N18",
+            NOM_CMP="TEMP",
+            PRECISION=3.0e-2,
             CHAM_GD=TEMPO_13,
-            VALE_CALC=141.96145732339798,
-            VALE_REFE=141.96145732339798,
+            VALE_CALC=129.95885363828384,
+            VALE_REFE=126.5279083207481,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N27",
+            NOM_CMP="TEMP",
+            PRECISION=2.0e-2,
+            CHAM_GD=TEMPO_13,
+            VALE_CALC=143.7315575435321,
+            VALE_REFE=141.9329519108161,
             REFERENCE="NON_DEFINI",
         ),
         _F(
             GROUP_NO="N45",
             NOM_CMP="TEMP",
-            PRECISION=0.02,
+            PRECISION=1.0e-2,
             CHAM_GD=TEMPO_13,
-            VALE_CALC=122.83572986165665,
-            VALE_REFE=122.83572986165665,
+            VALE_CALC=122.1071476330203,
+            VALE_REFE=123.12802159795734,
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            GROUP_NO="N65",
+            GROUP_NO="N63",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_13,
-            VALE_CALC=105.53708087563487,
-            VALE_REFE=105.53708087563487,
+            VALE_CALC=105.19276899422579,
+            VALE_REFE=105.3459954143371,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N81",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-2,
+            CHAM_GD=TEMPO_13,
+            VALE_CALC=100.74125914503351,
+            VALE_REFE=100.64923603908152,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N99",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-2,
+            CHAM_GD=TEMPO_13,
+            VALE_CALC=100.06967667670575,
+            VALE_REFE=100.03329926749144,
             REFERENCE="NON_DEFINI",
         ),
     )

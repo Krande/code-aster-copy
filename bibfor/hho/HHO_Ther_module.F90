@@ -36,6 +36,7 @@ module HHO_Ther_module
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
+#include "asterfort/matrRotLGTher.h"
 #include "asterfort/ntfcma.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcfode.h"
@@ -112,7 +113,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         character(len=32) :: phenom
         integer:: cbs, fbs, total_dofs, j, faces_dofs, gbs
-        integer :: jmate, ipg, icodre(3), jtemps, ndim
+        integer :: jmate, ipg, icodre(3), jtemps, ndim, jcamas
         real(kind=8), dimension(MSIZE_CELL_VEC) :: bT, G_curr_coeff
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
@@ -121,7 +122,6 @@ contains
         real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3)
         real(kind=8) :: coorpg(3), weight, time_curr, temp_eval_curr
         real(kind=8), pointer :: flux(:) => null()
-        character(len=8) :: poum
         aster_logical :: l_rhs, l_lhs, l_nl, l_flux
 !
         l_lhs = present(lhs)
@@ -140,6 +140,7 @@ contains
 ! --- Get input fields
 !
         call jevech('PMATERC', 'L', jmate)
+        call jevech('PCAMASS', 'L', jcamas)
 !
         call rccoma(zi(jmate), 'THER', 1, phenom, icodre(1))
 !
@@ -175,7 +176,6 @@ contains
             call readVector('PTEMPER', total_dofs, temp_curr)
             call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
         end if
-        poum = "+"
         ndim = hhoCell%ndim
 !
 ! ----- compute G_curr = gradrec * temp_curr
@@ -205,7 +205,8 @@ contains
 !
 ! ------- Compute behavior
 !
-            call hhoComputeBehaviourTher(phenom, fami, poum, ipg, ndim, time_curr, jmate, &
+            call hhoComputeBehaviourTher(phenom, fami, ipg, ndim, time_curr, jmate, &
+                                         jcamas, coorpg, &
                                          temp_eval_curr, G_curr, sig_curr, module_tang)
 !
 ! ------- Compute rhs
@@ -832,7 +833,6 @@ contains
                 lambda = valres(1)
                 coeff = coeff+lambda
             else if (phenom .eq. 'THER_ORTH') then
-                ASSERT(ASTER_FALSE)
                 nomres(1) = 'LAMBDA_L'
                 nomres(2) = 'LAMBDA_T'
                 nomres(3) = 'LAMBDA_N'
@@ -841,7 +841,21 @@ contains
                             ndim, nomres, valres, icodre, 1)
                 lambor(1) = valres(1)
                 lambor(2) = valres(2)
+                lambor(3) = 0.d0
                 if (ndim == 3) lambor(3) = valres(3)
+                coeff = coeff+maxval(lambor)
+            else if (phenom .eq. 'THER_NL_ORTH') then
+                nomres(1) = 'LAMBDA_L'
+                nomres(2) = 'LAMBDA_T'
+                nomres(3) = 'LAMBDA_N'
+                call rcvalb(fami, ipg, spt, '+', zi(imate), &
+                            ' ', phenom, 1, 'TEMP', [temp_eval], &
+                            ndim, nomres, valres, icodre, 1)
+                lambor(1) = valres(1)
+                lambor(2) = valres(2)
+                lambor(3) = 0.d0
+                if (ndim == 3) lambor(3) = valres(3)
+                coeff = coeff+maxval(lambor)
             else
                 call utmess('F', 'ELEMENTS2_63')
             end if
@@ -888,16 +902,16 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeBehaviourTher(phenom, fami, poum, kpg, ndim, time, imate, &
-                                       temp_eval, g_curr, sig_curr, module_tang)
+    subroutine hhoComputeBehaviourTher(phenom, fami, kpg, ndim, time, imate, icamas, coorpg, &
+                                       temp, dtemp, fluxglo, Kglo)
 !
         implicit none
 !
         character(len=32), intent(in) :: phenom
-        character(len=8), intent(in) :: fami, poum
-        integer, intent(in) :: imate, ndim, kpg
-        real(kind=8), intent(in) :: time, g_curr(3), temp_eval
-        real(kind=8), intent(out) :: sig_curr(3), module_tang(3, 3)
+        character(len=8), intent(in) :: fami
+        integer, intent(in) :: imate, ndim, kpg, icamas
+        real(kind=8), intent(in) :: time, dtemp(3), temp, coorpg(3)
+        real(kind=8), intent(out) :: fluxglo(3), Kglo(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -908,15 +922,17 @@ contains
 !
 ! --- Local variables
 !
+        integer, parameter :: spt = 1
+        character(len=8), parameter :: poum = "+"
         character(len=16) :: nomres(3)
         real(kind=8) :: valres(3)
         integer :: icodre(3), idim
-        integer, parameter :: spt = 1
         aster_logical :: aniso
         real(kind=8) :: lambda, lambor(3)
+        real(kind=8) ::  p(3, 3), Kloc(3, 3)
 !
-        sig_curr = 0.d0
-        module_tang = 0.d0
+        fluxglo = 0.d0
+        Kglo = 0.d0
 !
 ! --- Eval lambda
 !
@@ -930,7 +946,7 @@ contains
         elseif (phenom .eq. 'THER_NL') then
             nomres(1) = 'LAMBDA'
             call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                        ' ', phenom, 1, 'TEMP', [temp_eval], &
+                        ' ', phenom, 1, 'TEMP', [temp], &
                         1, nomres, valres, icodre, 1)
             lambda = valres(1)
             aniso = ASTER_FALSE
@@ -945,6 +961,17 @@ contains
             lambor(2) = valres(2)
             if (ndim == 3) lambor(3) = valres(3)
             aniso = ASTER_TRUE
+        else if (phenom .eq. 'THER_NL_ORTH') then
+            nomres(1) = 'LAMBDA_L'
+            nomres(2) = 'LAMBDA_T'
+            nomres(3) = 'LAMBDA_N'
+            call rcvalb('FPG1', kpg, spt, poum, zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [temp], &
+                        ndim, nomres, valres, icodre, 1)
+            lambor(1) = valres(1)
+            lambor(2) = valres(2)
+            if (ndim == 3) lambor(3) = valres(3)
+            aniso = ASTER_TRUE
         else
             call utmess('F', 'ELEMENTS2_63')
         end if
@@ -952,13 +979,36 @@ contains
 ! --- Rotation of local axis
 !
         if (aniso) then
-            ASSERT(ASTER_FALSE)
-        else
+            call matrRotLGTher(aniso, icamas, ndim, coorpg, p)
+            Kloc = transpose(p)
             do idim = 1, ndim
-                module_tang(idim, idim) = lambda
+                Kloc(idim, 1:3) = lambor(idim)*Kloc(idim, 1:3)
             end do
+            Kglo = matmul(p, Kloc)
+            if (ndim == 3) then
+                fluxglo(1) = Kglo(1, 1)*dtemp(1)+Kglo(1, 2)*dtemp(2)+Kglo(1, 3)*dtemp(3)
+                fluxglo(2) = Kglo(2, 1)*dtemp(1)+Kglo(2, 2)*dtemp(2)+Kglo(2, 3)*dtemp(3)
+                fluxglo(3) = Kglo(3, 1)*dtemp(1)+Kglo(3, 2)*dtemp(2)+Kglo(3, 3)*dtemp(3)
+            else
+                fluxglo(1) = Kglo(1, 1)*dtemp(1)+Kglo(1, 2)*dtemp(2)
+                fluxglo(2) = Kglo(2, 1)*dtemp(1)+Kglo(2, 2)*dtemp(2)
+            end if
+        else
+            if (ndim == 3) then
+                Kglo(1, 1) = lambda
+                Kglo(2, 2) = lambda
+                Kglo(3, 3) = lambda
 !
-            sig_curr = lambda*g_curr
+                fluxglo(1) = lambda*dtemp(1)
+                fluxglo(2) = lambda*dtemp(2)
+                fluxglo(3) = lambda*dtemp(3)
+            else
+                Kglo(1, 1) = lambda
+                Kglo(2, 2) = lambda
+!
+                fluxglo(1) = lambda*dtemp(1)
+                fluxglo(2) = lambda*dtemp(2)
+            end if
         end if
     end subroutine
 !
