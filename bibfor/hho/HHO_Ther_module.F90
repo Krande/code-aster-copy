@@ -18,6 +18,7 @@
 !
 module HHO_Ther_module
 !
+    use FE_algebra_module
     use HHO_basis_module
     use HHO_Dirichlet_module
     use HHO_eval_module
@@ -48,7 +49,6 @@ module HHO_Ther_module
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
-#include "blas/dcopy.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
 #include "blas/dger.h"
@@ -629,7 +629,7 @@ contains
 ! -------- (RAPPEL: the composents of the gradient are saved by rows)
         deca = 0
         do i = 1, hhoCell%ndim
-            call daxpy(gbs_cmp, qp_stress(i), BSCEval, 1, bT(deca+1), 1)
+            call daxpy_1(gbs_cmp, qp_stress(i), BSCEval, bT(deca+1))
             deca = deca+gbs_cmp
         end do
 !
@@ -663,7 +663,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         qp_temp = weight*beta
-        call daxpy(cbs, qp_temp, BSCEval, 1, rhs, 1)
+        call daxpy_1(cbs, qp_temp, BSCEval, rhs)
 !
     end subroutine
 !
@@ -706,7 +706,7 @@ contains
         col = 1
         do i = 1, hhoCell%ndim
             do k = 1, gbs_cmp
-                call daxpy(gbs, BSCEval(k), qp_Agphi(:, i), 1, AT(:, col), 1)
+                call daxpy_1(gbs, BSCEval(k), qp_Agphi(:, i), AT(:, col))
                 col = col+1
             end do
         end do

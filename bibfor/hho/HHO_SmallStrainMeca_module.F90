@@ -28,6 +28,7 @@ module HHO_SmallStrainMeca_module
     use HHO_eval_module
     use Behaviour_type
     use Behaviour_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -381,7 +382,7 @@ contains
 ! -------- (RAPPEL: the composents of the gradient are saved by G11, G22, G33, G12, G13, G23)
         deca = 0
         do i = 1, hhoCell%ndim
-            call daxpy(gbs_cmp, qp_stress(i), BSCEval, 1, bT(deca+1), 1)
+            call daxpy_1(gbs_cmp, qp_stress(i), BSCEval, bT(deca+1))
             deca = deca+gbs_cmp
         end do
 !
@@ -389,11 +390,11 @@ contains
         select case (hhoCell%ndim)
         case (3)
             do i = 1, 3
-                call daxpy(gbs_cmp, qp_stress(3+i), BSCEval, 1, bT(deca+1), 1)
+                call daxpy_1(gbs_cmp, qp_stress(3+i), BSCEval, bT(deca+1))
                 deca = deca+gbs_cmp
             end do
         case (2)
-            call daxpy(gbs_cmp, qp_stress(4), BSCEval, 1, bT(deca+1), 1)
+            call daxpy_1(gbs_cmp, qp_stress(4), BSCEval, bT(deca+1))
             deca = deca+gbs_cmp
         case default
             ASSERT(ASTER_FALSE)
@@ -519,7 +520,7 @@ contains
         case (3)
             do i = 1, 6
                 do k = 1, gbs_cmp
-                    call daxpy(6, BSCEval(k), qp_C(1, i), 1, Cgphi(1, col), 1)
+                    call daxpy_1(6, BSCEval(k), qp_C(1, i), Cgphi(1, col))
                     col = col+1
                 end do
             end do

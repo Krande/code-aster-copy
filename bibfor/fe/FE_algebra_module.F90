@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ module FE_algebra_module
     private
 #include "asterf_types.h"
 #include "blas/dgemv.h"
+#include "blas/daxpy.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -34,6 +35,7 @@ module FE_algebra_module
 !
     public :: dgemv_T_2xn, dgemv_T_3xn, dgemv_T_4xn, dgemv_T_6xn
     public :: dgemv_2x2, dgemv_3x3, dgemv_T_4x4, dgemv_T_6x6
+    public :: daxpy_1
 !
 contains
 !
@@ -513,6 +515,60 @@ contains
             do icol = 1, ncol
                 y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)
             end do
+        end select
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine daxpy_1(n, alpha, x, y)
+!
+        implicit none
+!
+        real(kind=8), intent(in)     :: alpha
+        real(kind=8), intent(in)     :: x(*)
+        real(kind=8), intent(inout)  :: y(*)
+        integer, intent(in)          :: n
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dgemv product with given size
+!   y += y * alpha*x
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+#ifdef FE_USE_BLAS
+        call daxpy(n, alpha, x, 1, y, 1)
+#else
+
+        select case (n)
+        case (1)
+            y(1) = y(1)+alpha*x(1)
+        case (2)
+            y(1) = y(1)+alpha*x(1)
+            y(2) = y(2)+alpha*x(2)
+        case (3)
+            y(1) = y(1)+alpha*x(1)
+            y(2) = y(2)+alpha*x(2)
+            y(3) = y(3)+alpha*x(3)
+        case (4)
+            y(1) = y(1)+alpha*x(1)
+            y(2) = y(2)+alpha*x(2)
+            y(3) = y(3)+alpha*x(3)
+            y(4) = y(4)+alpha*x(4)
+        case (6)
+            y(1) = y(1)+alpha*x(1)
+            y(2) = y(2)+alpha*x(2)
+            y(3) = y(3)+alpha*x(3)
+            y(4) = y(4)+alpha*x(4)
+            y(5) = y(5)+alpha*x(5)
+            y(6) = y(6)+alpha*x(6)
+        case default
+            call daxpy(n, alpha, x, 1, y, 1)
         end select
 #endif
 !

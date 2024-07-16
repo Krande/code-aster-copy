@@ -27,6 +27,7 @@ module HHO_LargeStrainMeca_module
     use HHO_eval_module
     use Behaviour_type
     use Behaviour_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -49,7 +50,6 @@ module HHO_LargeStrainMeca_module
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
 #include "asterfort/utmess.h"
-#include "blas/daxpy.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
 #include "blas/dger.h"
@@ -351,7 +351,7 @@ contains
         deca = 0
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
-                call daxpy(gbs_cmp, qp_stress(i, j), BSCEval, 1, bT(deca+1), 1)
+                call daxpy_1(gbs_cmp, qp_stress(i, j), BSCEval, bT(deca+1))
                 deca = deca+gbs_cmp
             end do
         end do
@@ -400,7 +400,7 @@ contains
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
                 do k = 1, gbs_cmp
-                    call daxpy(gbs, BSCEval(k), qp_Agphi(:, deca), 1, AT(:, col), 1)
+                    call daxpy_1(gbs, BSCEval(k), qp_Agphi(:, deca), AT(:, col))
                     col = col+1
                 end do
                 deca = deca+1
@@ -521,8 +521,8 @@ contains
             do j = 1, hhoCell%ndim
 ! ------------- Extract and transform the tangent moduli
                 qp_mod_vec = transfo_A(hhoCell%ndim, qp_module_tang, i, j)
-                call dger(gbs_cmp, dim2, 1.d0, BSCEval, 1, qp_mod_vec, 1,&
-                           & Agphi(row:(row+gbs_cmp-1), 1:dim2), gbs_cmp)
+                call dger(gbs_cmp, dim2, 1.d0, BSCEval, 1, qp_mod_vec, 1, &
+                          Agphi(row:(row+gbs_cmp-1), 1:dim2), gbs_cmp)
                 row = row+gbs_cmp
             end do
         end do

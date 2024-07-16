@@ -23,6 +23,7 @@ module HHO_rhs_module
     use HHO_quadrature_module
     use HHO_size_module
     use HHO_type
+    use FE_algebra_module
 !
     implicit none
 !
@@ -93,7 +94,7 @@ contains
 !
 ! ---- rhs = rhs + weight * BSFEval
             coeff = hhoQuad%weights(ipg)*ValuesQP(ipg)
-            call daxpy(size, coeff, BSFEval, 1, rhs, 1)
+            call daxpy_1(size, coeff, BSFEval, rhs)
         end do
 !
     end subroutine
@@ -193,7 +194,7 @@ contains
 !
 ! ---- rhs = rhs + weight * BSCEval
             coeff = hhoQuad%weights(ipg)*ValuesQP(ipg)
-            call daxpy(size, coeff, BSCEval, 1, rhs, 1)
+            call daxpy_1(size, coeff, BSCEval, rhs)
         end do
 !
     end subroutine
