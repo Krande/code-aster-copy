@@ -65,7 +65,7 @@
 #endif
 
 ! print hho
-#define ASTER_DEBUG_TIMER
+! #define ASTER_DEBUG_TIMER
 ! print localization
 #ifdef ASTER_DEBUG_TIMER
 #   define DEBUG_TIME(a, b) print *, MARKER, a, ':', b, " sec"
