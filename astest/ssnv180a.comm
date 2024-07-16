@@ -64,15 +64,8 @@ ALPHA = DEFI_FONCTION(
 )
 
 BETON = DEFI_MATERIAU(
-    ELAS_FO=_F(
-        E=E,
-        NU=NU,
-        ALPHA=ALPHA,
-        TEMP_DEF_ALPHA=20.0,
-        K_DESSIC=10.0e-6,
-        B_ENDOGE=60.0e-6,
-        FONC_DESORP=FONC1,
-    ),
+    ELAS_FO=_F(E=E, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=20.0, K_DESSIC=10.0e-6, B_ENDOGE=60.0e-6),
+    BETON_DESORP=_F(FONC_DESORP=FONC1),
     BETON_UMLV=_F(
         K_RS=1.20e05,
         ETA_RS=2.21e10,

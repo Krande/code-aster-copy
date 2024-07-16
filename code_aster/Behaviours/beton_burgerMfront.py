@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ loi = LoiComportementMFront(
     num_lc=58,
     nb_vari=0,
     nom_vari=None,
-    mc_mater=None,
+    mc_mater=("ELAS","BETON_DESORP","BETON_BURGER"),
     modelisation=("3D", "AXIS", "D_PLAN"),
     deformation=("PETIT", "PETIT_REAC", "GDEF_LOG"),
     algo_inte=("NEWTON_PERT",),

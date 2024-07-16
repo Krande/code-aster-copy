@@ -121,6 +121,8 @@ DEFI_MATERIAU = MACRO(
         PRESENT_PRESENT("ELAS_GLRC", "GLRC_DM"),
         EXCLUS("HAYHURST", "HAYHURST_FO"),
         EXCLUS("POST_ROCHE", "POST_ROCHE_FO"),
+        PRESENT_PRESENT("BETON_BURGER", "BETON_DESORP"),
+        PRESENT_PRESENT("BETON_BURGER_FO", "BETON_DESORP"),
         AU_MOINS_UN(
             "TABLE",
             "ELAS",
@@ -400,7 +402,6 @@ DEFI_MATERIAU = MACRO(
         AMOR_HYST=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         K_DESSIC=SIMP(statut="f", typ="R", defaut=0.0),
         B_ENDOGE=SIMP(statut="f", typ="R", defaut=0.0),
-        FONC_DESORP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         LONG_CARA=SIMP(statut="f", typ="R", val_min=0.0),
         COEF_AMOR=SIMP(statut="f", typ="R", defaut=1.0),
     ),
@@ -1861,6 +1862,9 @@ DEFI_MATERIAU = MACRO(
         ETA_RD=SIMP(statut="o", typ="R"),
         ETA_ID=SIMP(statut="o", typ="R"),
         ETA_FD=SIMP(statut="f", typ="R"),
+    ),
+    BETON_DESORP=FACT(
+        statut="f", FONC_DESORP=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule))
     ),
     BETON_RAG=FACT(
         statut="f",

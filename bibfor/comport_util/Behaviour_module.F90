@@ -1130,6 +1130,7 @@ contains
         integer  :: codret(nbPara)
         real(kind=8) :: paraVale(nbPara)
         character(len=16), parameter :: paraName(nbPara) = (/'FONC_DESORP'/)
+        character(len=16) :: phenom
         real(kind=8) :: funcDesorpPrev, funcDesorpCurr
         aster_logical :: exist
 !   ------------------------------------------------------------------------------------------------
@@ -1142,22 +1143,26 @@ contains
         funcDesorpPrev = 0.d0
         funcDesorpCurr = 0.d0
         exist = ASTER_FALSE
+        call rccoma(imate, 'BETON_DESORP', 0, phenom, codret(1))
+        if (codret(1) .ne. 0) then
+            call utmess('F', 'COMPOR2_94')
+        end if
         call rcvalb(fami, kpg, ksp, '-', imate, &
-                    ' ', 'ELAS', 0, ' ', [0.d0], &
+                    ' ', 'BETON_DESORP', 0, ' ', [0.d0], &
                     nbPara, paraName, paraVale, codret, 0)
         if (codret(1) .eq. 0) then
             funcDesorpPrev = paraVale(1)
         else
-            call utmess('F', 'COMPOR2_94')
+            call utmess('F', 'COMPOR2_95')
         end if
         call rcvalb(fami, kpg, ksp, '+', imate, &
-                    ' ', 'ELAS', 0, ' ', [0.d0], &
+                    ' ', 'BETON_DESORP', 0, ' ', [0.d0], &
                     nbPara, paraName, paraVale, codret, 0)
         if (codret(1) .eq. 0) then
             exist = ASTER_TRUE
             funcDesorpCurr = paraVale(1)
         else
-            call utmess('F', 'COMPOR2_94')
+            call utmess('F', 'COMPOR2_95')
         end if
 
 ! ----- Save values

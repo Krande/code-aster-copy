@@ -33,6 +33,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/lcumvi.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/sigela.h"
@@ -212,7 +213,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
     character(len=16) :: option2
     real(kind=8) :: det
     integer :: iret
-    character(len=16) :: nomres(16)
+    character(len=16) :: nomres(16), phenbid
     integer :: icodre(16)
     real(kind=8) :: cfps, cfpd
     integer :: i, j, k, l, nstrs, ifou, isph
@@ -397,17 +398,22 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
 !
 !  ------- CARACTERISTIQUES HYGROMETRIE H
 !
+    call rccoma(imate, 'BETON_DESORP', 0, phenbid, icodre(1))
+    if (icodre(1) .ne. 0) then
+        call utmess('F', 'ALGORITH4_93')
+    end if
+
     nomres(1) = 'FONC_DESORP'
     call rcvalb(fami, kpg, ksp, '-', imate, &
-                ' ', 'ELAS', 0, ' ', [rbid], &
-                1, nomres(1), valres(1), icodre(1), 2)
+                ' ', 'BETON_DESORP', 0, ' ', [rbid], &
+                1, nomres(1), valres(1), icodre(1), 0)
     if (icodre(1) .ne. 0) then
         call utmess('F', 'ALGORITH4_94')
     end if
     hygrm = valres(1)
     call rcvalb(fami, kpg, ksp, '+', imate, &
-                ' ', 'ELAS', 0, ' ', [rbid], &
-                1, nomres(1), valres(1), icodre(1), 2)
+                ' ', 'BETON_DESORP', 0, ' ', [rbid], &
+                1, nomres(1), valres(1), icodre(1), 0)
     if (icodre(1) .ne. 0) then
         call utmess('F', 'ALGORITH4_94')
     end if

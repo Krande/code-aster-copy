@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -298,7 +298,12 @@ On a affiché ci-dessus la liste des mailles pour lesquelles le nombre de sous-p
     ),
     94: _(
         """
-Il faut déclarer FONC_DESORP sous ELAS_FO pour calculer l'hygrométrie.
+Il faut fournir le mot-clé BETON_DESORP à DEFI_MATERIAU pour calculer l'hygrométrie.
+"""
+    ),
+    95: _(
+        """
+Il faut obligatoirement fournir FONC_DESORP sous BETON_DESORP  pour calculer l'hygrométrie.
 """
     ),
 }
