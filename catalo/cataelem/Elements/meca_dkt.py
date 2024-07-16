@@ -614,6 +614,7 @@ class MEDKQU4(Element):
             para_out=(
                 (SP.PCODRET, LC.ECODRET),
                 (OP.FULL_MECA.PCONTPR, LC.EGIG3DR),
+                (SP.PMATUNS, MMATUNS),
                 (SP.PMATUUR, MMATUUR),
                 (OP.FULL_MECA.PVARIPR, ZVARIPG),
                 (SP.PVECTUR, MVECTUR),
@@ -907,6 +908,7 @@ class MEDKQU4(Element):
                 (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG),
             ),
             para_out=(
+                (SP.PMATUNS, MMATUNS),
                 (SP.PMATUUR, MMATUUR),
                 (SP.PVECTUR, MVECTUR),
                 (OP.RIGI_MECA_TANG.PCONTPR, LC.EGIG3DR),

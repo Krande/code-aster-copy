@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,10 @@ subroutine dktnli(option, &
 #include "asterfort/dktbf.h"
 #include "asterfort/dxqbm.h"
 #include "asterfort/dxqloc.h"
+#include "asterfort/dxqloc2.h"
 #include "asterfort/dxtbm.h"
 #include "asterfort/dxtloc.h"
+#include "asterfort/dxtloc2.h"
 #include "asterfort/dsxhft.h"
 #include "asterfort/dkttxy.h"
 #include "asterfort/dkqtxy.h"
@@ -55,7 +57,7 @@ subroutine dktnli(option, &
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: xyzl(3, 4), uml(6, 4), dul(6, 4)
     real(kind=8), intent(in) :: pgl(3, 3)
-    real(kind=8), intent(out) :: ktan(300), btsig(6, 4)
+    real(kind=8), intent(out) :: ktan(576), btsig(6, 4)
     integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -173,7 +175,7 @@ subroutine dktnli(option, &
     real(kind=8) :: depfel(3*nbNodeMaxi)
     real(kind=8) :: hft2el(2, 6)
     real(kind=8) ::   t2iuel(4), t2uiel(4), t1veel(9)
-    aster_logical :: coupmfel
+    aster_logical :: coupmfel, l_matr_symm
     integer :: multicel
     integer :: lg_varip
     real(kind=8), allocatable:: varip(:)
@@ -232,6 +234,10 @@ subroutine dktnli(option, &
     instp = zr(iinstp)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PCACOQU', 'L', icacoq)
+    l_matr_symm = .true.
+    if (nint(zr(icarcr-1+CARCRI_MATRSYME)) .gt. 0) then
+        l_matr_symm = .false.
+    end if
 !
 ! - Properties of behaviour
 !
@@ -488,9 +494,17 @@ subroutine dktnli(option, &
 !
     if (lMatr) then
         if (dkt) then
-            call dxtloc(flex, memb, mefl, ctor, ktan)
+            if (l_matr_symm) then
+                call dxtloc(flex, memb, mefl, ctor, ktan)
+            else
+                call dxtloc2(flex, memb, mefl, ctor, ktan)
+            end if
         elseif (dkq) then
-            call dxqloc(flex, memb, mefl, ctor, ktan)
+            if (l_matr_symm) then
+                call dxqloc(flex, memb, mefl, ctor, ktan)
+            else
+                call dxqloc2(flex, memb, mefl, ctor, ktan)
+            end if
         else
             ASSERT(ASTER_FALSE)
         end if
