@@ -134,7 +134,7 @@ subroutine te0491(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmgeom.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/rcfonc.h"
 #include "asterfort/rctrac.h"
 #include "asterfort/rctype.h"
@@ -148,7 +148,7 @@ subroutine te0491(option, nomte)
     integer :: idfde, idsig, idsigm, idvari, igau, igeom, imate, icodre(5)
     integer :: ipoids, ivf, jgano, jprol, jvale, mxcmel, nbsgm, itemps
     integer :: nbsig, nbsig2, nbval, nbvari, ndim, nno, nnos, npg1
-    integer :: iret, iret1, idim
+    integer :: iret, iret1
     integer :: i, jtab(7)
     parameter(mxcmel=162)
     parameter(nbsgm=6)
@@ -164,8 +164,8 @@ subroutine te0491(option, nomte)
     real(kind=8) :: epsel(nbsgm), epspla(nbsgm), x(nbsgm)
     real(kind=8) :: epsim(nbsgm), sigmm(nbsgm), delta(nbsgm)
     real(kind=8) :: epsi(nbsgm), epssm(mxcmel), epss(mxcmel)
-    real(kind=8) :: repere(7), instan, nharm, integ, integ1
-    real(kind=8) :: epsm(mxcmel), integ2, nu, k, indigl, xyz(3)
+    real(kind=8) :: angl_naut(3), instan, nharm, integ, integ1
+    real(kind=8) :: epsm(mxcmel), integ2, nu, k, indigl
     real(kind=8) :: f(3, 3), r, para_vale, epsbid(6), dfdbid(27*3)
     character(len=4) :: fami
     character(len=16) :: nomres(5)
@@ -215,18 +215,7 @@ subroutine te0491(option, nomte)
     call jevech('PMATERC', 'L', imate)
 !
 ! ----RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-    xyz(1) = 0.d0
-    xyz(2) = 0.d0
-    xyz(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-!
-    call ortrep(ndim, xyz, repere)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
 !
@@ -327,7 +316,7 @@ subroutine te0491(option, nomte)
     optio2 = 'EPME_ELGA'
     call epsvmc(fami, nno, ndim, nbsig, npg1, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, repere, nharm, optio2, epsm)
+                instan, angl_naut, nharm, optio2, epsm)
 !
 !                      ===========================
 !                      =                         =
@@ -364,8 +353,8 @@ subroutine te0491(option, nomte)
 !
 ! --- CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
 !
-            call enelpg(fami, zi(imate), instan, igau, repere, &
-                        xyz, compor, f, sigma, nbvari, &
+            call enelpg(fami, zi(imate), instan, igau, angl_naut, &
+                        compor, f, sigma, nbvari, &
                         zr(idvari+(igau-1)*nbvari), enelas)
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine d1pa2d(repere, irep, passag)
+subroutine d1pa2d(angl, irep, passag)
 !.======================================================================
     implicit none
 !
@@ -25,34 +25,32 @@ subroutine d1pa2d(repere, irep, passag)
 !                 DE LA MATRICE DE HOOKE EN 2D
 !
 !   ARGUMENT        E/S  TYPE         ROLE
-!    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
+!    ANGL           IN     R        ANGLE NAUTIQUE DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE
 !    IREP           OUT    I        = 0
 !                                     SI LE CHANGEMENT DE REPERE EST
 !                                     TRIVIAL (I.E. PASSAG = IDENTITE)
 !                                   = 1 SINON
-!    PASSAG(6,6)    OUT    R        MATRICE DE PASSAGE DU REPERE
+!    PASSAG(4,4)    OUT    R        MATRICE DE PASSAGE DU REPERE
 !                                   D'ORTHOTROPIE AU REPERE GLOBAL
 !                                   POUR L'INVERSE DE LA MATRICE DE
 !                                   HOOKE
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    real(kind=8) :: repere(7), passag(4, 4)
+    real(kind=8) :: angl, passag(4, 4)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
     integer :: irep
-    real(kind=8) :: angl, cosa, deux, sina, un, zero
+    real(kind=8) :: cosa, deux, sina, un, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0
     un = 1.0d0
     deux = 2.0d0
     irep = 0
-!
-    angl = repere(2)
 !
     if (angl .eq. zero) then
 !

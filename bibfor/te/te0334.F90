@@ -58,7 +58,7 @@ subroutine te0334(option, nomte)
     integer :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, idefp, itemps
     integer :: imate, nbvari, ivari, jtab(7), iret
     real(kind=8) :: c1, c2, trsig
-    real(kind=8) :: repere(7), nharm, e, nu, zero, un, time
+    real(kind=8) :: angl_naut(3), nharm, e, nu, zero, un, time
     integer :: elas_id
     character(len=16) :: optio2, kit_comp_2, rela_comp, elas_keyword
     aster_logical :: l_creep
@@ -89,7 +89,7 @@ subroutine te0334(option, nomte)
 !
 ! - Orthotropic parameters: cannot use => zero
 !
-    repere(1:7) = 0.d0
+    angl_naut(:) = 0.d0
 !
 ! - Current time
 !
@@ -141,7 +141,7 @@ subroutine te0334(option, nomte)
     optio2 = 'EPME_ELGA'
     call epsvmc('RIGI', nno, ndim, nbsig, npg, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                time, repere, nharm, optio2, epsi_meca)
+                time, angl_naut, nharm, optio2, epsi_meca)
 !
 ! - Creep strains: epsi_creep
 !

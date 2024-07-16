@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine epthmc(fami      , nno      , ndim  , nbsig, npg    ,&
-                      shape_func, xyz      , repere, time , j_mater,&
+                      shape_func, angl_naut, time , j_mater,&
                       option    , epsi_varc)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: nno
@@ -28,8 +28,7 @@ interface
         integer, intent(in) :: nbsig
         integer, intent(in) :: npg
         real(kind=8), intent(in) :: shape_func(1)
-        real(kind=8), intent(in) :: xyz(*)
-        real(kind=8), intent(in) :: repere(7)
+        real(kind=8), intent(in) :: angl_naut(3)
         real(kind=8), intent(in) :: time
         integer, intent(in) :: j_mater
         character(len=16), intent(in) :: option

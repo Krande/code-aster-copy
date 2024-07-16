@@ -53,7 +53,7 @@ subroutine tanbul(option, ndim, g, mate, compor, &
     integer :: k, nbpar
     integer :: icodre(2), itemps, iret, iepsv
     real(kind=8) :: e, nu, valres(2), valpar
-    real(kind=8) :: xyzgau(3), repere(7), epsth(6)
+    real(kind=8) :: angl_naut(3), epsth(6)
     real(kind=8) :: coef, coef1, coef2, coef3
     character(len=4) :: fami
     character(len=16) :: nomres(2)
@@ -63,8 +63,7 @@ subroutine tanbul(option, ndim, g, mate, compor, &
 !
 ! - INITIALISATION
     call r8inir(2*ndim*2*ndim, 0.d0, dsbdep, 1)
-    call r8inir(3, 0.d0, xyzgau, 1)
-    call r8inir(7, 0.d0, repere, 1)
+    call r8inir(3, 0.d0, angl_naut, 1)
     call r8inir(6, 0.d0, epsth, 1)
 !
     nompar = 'INST'
@@ -72,7 +71,7 @@ subroutine tanbul(option, ndim, g, mate, compor, &
 !
 ! - LA FORMULATION INCO A 2 CHAMPS UP NE FONCTIONNE QU AVEC ELAS OU VMIS
 ! - POUR L INSTANT.
-! - POUR L ANISOTROPIE IL FAUDRAIT CALCULER XYZGAU ET REPERE
+! - POUR L ANISOTROPIE IL FAUDRAIT CALCULER ANGL_NAUT
     if (.not. (compor(1:4) .eq. 'ELAS' .or. compor(1:9) .eq. 'VMIS_ISOT')) then
         call utmess('F', 'ELEMENTSINCO_1')
     end if
@@ -126,7 +125,7 @@ subroutine tanbul(option, ndim, g, mate, compor, &
 !
     if (resi) then
         call epstmc(fami, ndim, valpar, '+', g, &
-                    1, xyzgau, repere, mate, option, &
+                    1, angl_naut, mate, option, &
                     epsth)
 !
 ! - TEST DE LA NULLITE DES DEFORMATIONS DUES AUX VARIABLES DE COMMANDE

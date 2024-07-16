@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine te0407(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmas3d.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
@@ -60,10 +60,10 @@ subroutine te0407(option, nomte)
     integer :: icontm, ivarim, jv_mult_comp
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip
-    integer :: ivarix, iret, idim
+    integer :: ivarix, iret
     integer :: jtab(7), jcret, codret
     real(kind=8) :: def(6, 3, 8), dfdi(8, 3)
-    real(kind=8) :: angl_naut(7), bary(3)
+    real(kind=8) :: angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,18 +100,9 @@ subroutine te0407(option, nomte)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
-! - Compute barycentric center
-!
-    bary = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-!
 ! - Get orientation
 !
-    call rcangm(ndim, bary, angl_naut)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! - Select objects to construct from option name
 !

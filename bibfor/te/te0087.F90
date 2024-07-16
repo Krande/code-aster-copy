@@ -24,7 +24,7 @@ subroutine te0087(option, nomte)
 #include "asterfort/epsvmc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 !
     character(len=16) :: option, nomte
@@ -43,12 +43,12 @@ subroutine te0087(option, nomte)
 ! ......................................................................
 !
     integer :: nbsig, nbsig1, nbsig2, ndim, nno, i
-    integer :: nnos, npg, ipoids, ivf, idfde, idim
+    integer :: nnos, npg, ipoids, ivf, idfde
     integer :: igau, isig, igeom, idepl, iret
     integer :: itemps, idefo
     integer :: jgano
 !
-    real(kind=8) :: epsm(54), repere(7), bary(3)
+    real(kind=8) :: epsm(54), angl_naut(3)
     real(kind=8) :: nharm, instan, zero
 !
     character(len=4) :: fami
@@ -83,17 +83,7 @@ subroutine te0087(option, nomte)
 !
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
 !      ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call ortrep(ndim, bary, repere)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT :
 !      --------------------------------------------------
@@ -118,7 +108,7 @@ subroutine te0087(option, nomte)
 !      ---------------------------------------
     call epsvmc(fami, nno, ndim, nbsig1, npg, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, repere, nharm, option, epsm)
+                instan, angl_naut, nharm, option, epsm)
 !
 !      --------------------
 ! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX

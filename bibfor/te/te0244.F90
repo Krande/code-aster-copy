@@ -67,7 +67,7 @@ subroutine te0244(option, nomte)
     real(kind=8) :: resi_mp(MAX_BS), resi_p(MAX_BS)
     real(kind=8) ::  deltat, theta, chal(1), diff, Kglo(3, 3)
     real(kind=8) :: beta, dbeta, tpg, dtpg(3), tpsec, flux(3)
-    integer :: kp, imate, icamas, icomp, ifon(6), itemps
+    integer :: kp, imate, icomp, ifon(6), itemps
     aster_logical :: lhyd, aniso
     real(kind=8), pointer :: tempi(:) => null()
     real(kind=8), pointer :: sechf(:) => null()
@@ -102,9 +102,6 @@ subroutine te0244(option, nomte)
             aniso = ASTER_TRUE
         end if
         call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
-        if (aniso) then
-            call jevech('PCAMASS', 'L', icamas)
-        end if
     end if
 !
     resi_f = 0.d0
@@ -114,7 +111,7 @@ subroutine te0244(option, nomte)
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp), BGSEval)
 !
         if (zk16(icomp) (1:5) .eq. 'THER_') then
-            call ntcomp(icomp, icamas, FECell%ndim, tpg, dtpg, &
+            call ntcomp(icomp, FECell%ndim, tpg, dtpg, &
                         FEQuadRigi%points(1:3, kp), aniso, ifon, flux, Kglo)
         else if (zk16(icomp) (1:5) .eq. 'SECH_') then
             tpsec = FEEvalFuncScal(FEBasis, sechf, FEQuadRigi%points_param(1:3, kp))

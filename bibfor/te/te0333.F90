@@ -35,7 +35,7 @@ subroutine te0333(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/granvi.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/Behaviour_type.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -60,9 +60,8 @@ subroutine te0333(option, nomte)
     integer :: i, ndim, nno, nbsig, idsig
     integer :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, itemps, imate
     integer :: idefp, icompo, nbvari, ivari, nvi, nvif, ibid, jtab(7), iret, ibid2
-    integer :: idim
-    real(kind=8) :: c1, c2, trsig, xyz(3)
-    real(kind=8) :: repere(7), nharm, e, nu, zero, un, tempg, time
+    real(kind=8) :: c1, c2, trsig
+    real(kind=8) :: angl_naut(3), nharm, e, nu, zero, un, tempg, time
     character(len=8) :: mod3d
     integer :: elas_id
     character(len=16) :: optio2, kit_comp_1, kit_comp_2, rela_comp, elas_keyword
@@ -94,16 +93,7 @@ subroutine te0333(option, nomte)
     call jevech('PMATERC', 'L', imate)
 !
 ! - Orthotropic parameters
-!
-    xyz(1) = 0.d0
-    xyz(2) = 0.d0
-    xyz(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call ortrep(ndim, xyz, repere)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! - Current time
 !
@@ -146,7 +136,7 @@ subroutine te0333(option, nomte)
     optio2 = 'EPME_ELGA'
     call epsvmc('RIGI', nno, ndim, nbsig, npg, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                time, repere, nharm, optio2, epsi_meca)
+                time, angl_naut, nharm, optio2, epsi_meca)
 !
 ! - Creep strains: epsi_creep
 !

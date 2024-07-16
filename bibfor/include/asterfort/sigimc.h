@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,18 +20,16 @@
 !
 interface
     subroutine sigimc(fami, nno, ndim, nbsig, npg,&
-                      ni, xyz, instan, mater, repere,&
+                      instan, mater, angl_naut,&
                       epsini, sigma)
         character(len=4) :: fami
         integer :: nno
         integer :: ndim
         integer :: nbsig
         integer :: npg
-        real(kind=8) :: ni(1)
-        real(kind=8) :: xyz(1)
         real(kind=8) :: instan
         integer :: mater
-        real(kind=8) :: repere(7)
+        real(kind=8) :: angl_naut(3)
         real(kind=8) :: epsini(1)
         real(kind=8) :: sigma(1)
     end subroutine sigimc

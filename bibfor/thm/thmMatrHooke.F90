@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,18 +46,11 @@ subroutine thmMatrHooke(ds_thm, angl_naut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: repere(7)
     real(kind=8) :: h(6), hi(6), g, e, nu
     real(kind=8) :: e1i, e2i, e3i, gi
     real(kind=8) :: nu12i, nu13i, nu23i, nui
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    repere(:) = 0.d0
-    repere(1) = 1.d0
-    repere(2) = angl_naut(1)
-    repere(3) = angl_naut(2)
-    repere(4) = angl_naut(3)
 !
 ! - Prepare Hook matrix coefficient
 !
@@ -83,7 +76,7 @@ subroutine thmMatrHooke(ds_thm, angl_naut)
 !
 ! - Compute matrix
 !
-    call matrHooke3d(ds_thm%ds_material%elas%id, repere, &
+    call matrHooke3d(ds_thm%ds_material%elas%id, angl_naut, &
                      h=h, g=g, &
                      g1=ds_thm%ds_material%elas%g_lt, &
                      g2=ds_thm%ds_material%elas%g_ln, &

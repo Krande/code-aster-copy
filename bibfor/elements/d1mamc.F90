@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine d1mamc(fami, mater, instan, poum, kpg, &
-                  ksp, repere, xyzgau, nbsig, d1)
+                  ksp, angl, nbsig, d1)
 !.======================================================================
     implicit none
 !
@@ -28,9 +28,8 @@ subroutine d1mamc(fami, mater, instan, poum, kpg, &
 !   ARGUMENT        E/S  TYPE         ROLE
 !    MATER          IN     I        MATERIAU
 !    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
-!    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
+!    ANGL(3)        IN     R        ANGLES NAUTIQUE DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE
-!    XYZGAU(3)      IN     R        COORDONNEES DU POINT D'INTEGRATION
 !    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE A
 !                                   L'ELEMENT
 !    D1(NBSIG,1)    OUT    R        MATRICE DE HOOKE
@@ -47,7 +46,7 @@ subroutine d1mamc(fami, mater, instan, poum, kpg, &
     character(len=*) :: fami, poum
     integer :: kpg, ksp
     integer :: mater, nbsig
-    real(kind=8) :: repere(7), xyzgau(*), d1(nbsig, 1), instan
+    real(kind=8) :: angl(3), d1(nbsig, 1), instan
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -59,7 +58,7 @@ subroutine d1mamc(fami, mater, instan, poum, kpg, &
     if (lteatt('DIM_TOPO_MAILLE', '3') .or. lteatt('FOURIER', 'OUI')) then
 !
         call d1ma3d(fami, mater, instan, poum, kpg, &
-                    ksp, repere, xyzgau, d1)
+                    ksp, angl, d1)
 !
 !       ----------------------------------------
 ! ----  CAS DEFORMATIONS PLANES ET AXISYMETRIQUE
@@ -68,7 +67,7 @@ subroutine d1mamc(fami, mater, instan, poum, kpg, &
         then
 !
         call d1madp(fami, mater, instan, poum, kpg, &
-                    ksp, repere, d1)
+                    ksp, angl(1), d1)
 !
 !       ----------------------
 ! ----  CAS CONTRAINTES PLANES
@@ -76,7 +75,7 @@ subroutine d1mamc(fami, mater, instan, poum, kpg, &
     else if (lteatt('C_PLAN', 'OUI')) then
 !
         call d1macp(fami, mater, instan, poum, kpg, &
-                    ksp, repere, d1)
+                    ksp, angl(1), d1)
 !
     else
         call utmess('F', 'ELEMENTS_11')

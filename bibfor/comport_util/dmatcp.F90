@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dmatcp(fami, mater, time, poum, ipg, &
-                  ispg, repere, dr_, di_)
+                  ispg, angl_naut, dr_, di_)
 !
     implicit none
 !
@@ -34,7 +34,7 @@ subroutine dmatcp(fami, mater, time, poum, ipg, &
     character(len=*), intent(in) :: poum
     integer, intent(in) :: ipg
     integer, intent(in) :: ispg
-    real(kind=8), intent(in) :: repere(7)
+    real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), optional, intent(out) :: dr_(4, 4)
     real(kind=8), optional, intent(out) :: di_(4, 4)
 !
@@ -52,7 +52,7 @@ subroutine dmatcp(fami, mater, time, poum, ipg, &
 ! In  poum   : '-' or '+' for parameters evaluation (previous or current temperature)
 ! In  ipg    : current point gauss
 ! In  ispg   : current "sous-point" gauss
-! In  repere : local basis for orthotropic elasticity
+! In  angl_naut : local basis for orthotropic elasticity (nautical angles)
 ! Out dr     : real Hooke matrix
 ! Out di     : imaginary Hooke matrix
 !
@@ -98,13 +98,13 @@ subroutine dmatcp(fami, mater, time, poum, ipg, &
 ! - Compute Hooke matrix
 !
     if (present(di_)) then
-        call matrHookePlaneStress(elas_id, repere, &
+        call matrHookePlaneStress(elas_id, angl_naut, &
                                   hi, gi, g1i, &
                                   di)
         di_ = di
     end if
     if (present(dr_)) then
-        call matrHookePlaneStress(elas_id, repere, &
+        call matrHookePlaneStress(elas_id, angl_naut, &
                                   hr, gr, g1r, &
                                   dr)
         dr_ = dr

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dmat3d(fami, mater, time, poum, ipg, &
-                  ispg, repere, xyzgau, dr_, di_)
+                  ispg, angl, dr_, di_)
 !
     implicit none
 !
@@ -34,8 +34,7 @@ subroutine dmat3d(fami, mater, time, poum, ipg, &
     character(len=*), intent(in) :: poum
     integer, intent(in) :: ipg
     integer, intent(in) :: ispg
-    real(kind=8), intent(in) :: repere(7)
-    real(kind=8), intent(in) :: xyzgau(3)
+    real(kind=8), intent(in) :: angl(3)
     real(kind=8), optional, intent(out) :: dr_(6, 6)
     real(kind=8), optional, intent(out) :: di_(6, 6)
 !
@@ -53,8 +52,7 @@ subroutine dmat3d(fami, mater, time, poum, ipg, &
 ! In  poum   : '-' or '+' for parameters evaluation (previous or current temperature)
 ! In  ipg    : current point gauss
 ! In  ispg   : current "sous-point" gauss
-! In  repere : local basis for orthotropic elasticity
-! In  xyzgau : coordinate for current Gauss point
+! In  angl   : nautical angles
 ! Out dr     : real Hooke matrix
 ! Out di     : imaginary Hooke matrix
 !
@@ -100,15 +98,15 @@ subroutine dmat3d(fami, mater, time, poum, ipg, &
 ! - Compute Hooke matrix
 !
     if (present(di_)) then
-        call matrHooke3d(elas_id, repere, &
+        call matrHooke3d(elas_id, angl, &
                          hi, gi, g1i, g2i, g3i, &
-                         di, xyzgau)
+                         di)
         di_ = di
     end if
     if (present(dr_)) then
-        call matrHooke3d(elas_id, repere, &
+        call matrHooke3d(elas_id, angl, &
                          hr, gr, g1r, g2r, g3r, &
-                         dr, xyzgau)
+                         dr)
         dr_ = dr
     end if
 !

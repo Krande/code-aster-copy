@@ -148,7 +148,9 @@ CCAMA3D = LocatedComponents(
 )
 
 # Field for material orientation in 2D (ANGLE_MASSIF)
-CCAMA2D = LocatedComponents(phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA"))
+CCAMA2D = LocatedComponents(
+    phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
+)
 
 # Field for RESI_REFE_RELA/EFFORT
 CRESEFF = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EFFORT",))

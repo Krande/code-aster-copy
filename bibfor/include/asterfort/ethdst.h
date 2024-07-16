@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine ethdst(fami, nno, ndim, nbsig, npg,&
                       ipoids, ivf, idfde, xyz, depl,&
-                      instan, repere, mater, option, enthth)
+                      instan, angl_naut, mater, option, enthth)
         character(len=*) :: fami
         integer :: nno
         integer :: ndim
@@ -33,7 +33,7 @@ interface
         real(kind=8) :: xyz(*)
         real(kind=8) :: depl(*)
         real(kind=8) :: instan
-        real(kind=8) :: repere(7)
+        real(kind=8) :: angl_naut(3)
         integer :: mater
         character(len=16) :: option
         real(kind=8) :: enthth
