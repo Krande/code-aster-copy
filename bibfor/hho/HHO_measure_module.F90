@@ -23,10 +23,11 @@ module HHO_measure_module
     implicit none
 !
     private
+#include "asterc/r8maem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "MeshTypes_type.h"
 #include "blas/ddot.h"
-#include "asterc/r8maem.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -321,17 +322,17 @@ contains
 !
         measure = 0.d0
 !
-        if (cell%typema == 'HEXA8') then
+        if (cell%typema == MT_HEXA8) then
             measure = hho_vol_hexa(cell%coorno(1:3, 1:8))
-        elseif (cell%typema == 'TETRA4') then
+        elseif (cell%typema == MT_TETRA4) then
             measure = hho_vol_tetra(cell%coorno(1:3, 1:4))
-        elseif (cell%typema == 'PYRAM5') then
+        elseif (cell%typema == MT_PYRAM5) then
             measure = hho_vol_pyram(cell%coorno(1:3, 1:5))
-        elseif (cell%typema == 'PENTA6') then
+        elseif (cell%typema == MT_PENTA6) then
             measure = hho_vol_prism(cell%coorno(1:3, 1:6))
-        elseif (cell%typema == 'QUAD4') then
+        elseif (cell%typema == MT_QUAD4) then
             measure = hho_surface_quad(cell%coorno(1:3, 1:4))
-        elseif (cell%typema == 'TRIA3') then
+        elseif (cell%typema == MT_TRIA3) then
             measure = hho_surface_tri(cell%coorno(1:3, 1:3))
         else
             ASSERT(ASTER_FALSE)
@@ -357,11 +358,11 @@ contains
 !
         measure = 0.d0
 !
-        if (face%typema(1:5) == 'QUAD4') then
+        if (face%typema == MT_QUAD4) then
             measure = hho_surface_quad(face%coorno(1:3, 1:4))
-        elseif (face%typema(1:5) == 'TRIA3') then
+        elseif (face%typema == MT_TRIA3) then
             measure = hho_surface_tri(face%coorno(1:3, 1:3))
-        elseif (face%typema(1:4) == 'SEG2') then
+        elseif (face%typema == MT_SEG2) then
             measure = hho_length_edge(face%coorno(1:3, 1:2))
         else
             ASSERT(ASTER_FALSE)
@@ -419,17 +420,17 @@ contains
 !
         measure = 0.d0
 !
-        if (cell%typema == 'HEXA8') then
+        if (cell%typema == MT_HEXA8) then
             measure = hhoDiameter(cell%coorno(1:3, 1:8), 8)
-        elseif (cell%typema == 'TETRA4') then
+        elseif (cell%typema == MT_TETRA4) then
             measure = hhoDiameter(cell%coorno(1:3, 1:4), 4)
-        elseif (cell%typema == 'PYRAM5') then
+        elseif (cell%typema == MT_PYRAM5) then
             measure = hhoDiameter(cell%coorno(1:3, 1:5), 5)
-        elseif (cell%typema == 'PENTA6') then
+        elseif (cell%typema == MT_PENTA6) then
             measure = hhoDiameter(cell%coorno(1:3, 1:6), 6)
-        elseif (cell%typema == 'QUAD4') then
+        elseif (cell%typema == MT_QUAD4) then
             measure = hhoDiameter(cell%coorno(1:3, 1:4), 4)
-        elseif (cell%typema == 'TRIA3') then
+        elseif (cell%typema == MT_TRIA3) then
             measure = hhoDiameter(cell%coorno(1:3, 1:3), 3)
         else
             ASSERT(ASTER_FALSE)
@@ -454,11 +455,11 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         measure = 0.d0
-        if (face%typema == 'QUAD4') then
+        if (face%typema == MT_QUAD4) then
             measure = hhoDiameter(face%coorno(1:3, 1:4), 4)
-        elseif (face%typema == 'TRIA3') then
+        elseif (face%typema == MT_TRIA3) then
             measure = hhoDiameter(face%coorno(1:3, 1:3), 3)
-        elseif (face%typema == 'SEG2') then
+        elseif (face%typema == MT_SEG2) then
             measure = hhoDiameter(face%coorno(1:3, 1:2), 2)
         else
             ASSERT(ASTER_FALSE)

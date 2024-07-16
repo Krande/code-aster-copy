@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,6 +62,21 @@
 #   define DEBUG_LOC(label, a, b) write(6,"(1X,A,A,'@',A,':',I4)") MARKER, label, a, b
 #else
 #   define DEBUG_LOC(label, a, b) continue
+#endif
+
+! print hho
+#define ASTER_DEBUG_TIMER
+! print localization
+#ifdef ASTER_DEBUG_TIMER
+#   define DEBUG_TIME(a, b) print *, MARKER, a, ':', b, " sec"
+#else
+#   define DEBUG_TIME(a, b) continue
+#endif
+
+#ifdef ASTER_DEBUG_TIMER
+#   define DEBUG_TIMER(a) call cpu_time(a)
+#else
+#   define DEBUG_TIMER(a) continue
 #endif
 
 #endif

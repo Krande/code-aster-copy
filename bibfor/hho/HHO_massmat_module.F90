@@ -32,6 +32,7 @@ module HHO_massmat_module
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/dsyr.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,7 +119,7 @@ contains
 #endif
 !
         if (hhoBasisCell%isOrthonormal() .and. .not. dbg .and. &
-            (hhoCell%typema .eq. 'TETRA4' .or. hhoCell%ndim .eq. 2)) then
+            (hhoCell%typema .eq. MT_TETRA4 .or. hhoCell%ndim .eq. 2)) then
             do i = 1, dimMat
                 this%m(i, i) = 1.d0
             end do

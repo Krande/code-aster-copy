@@ -35,6 +35,7 @@ module HHO_utils_module
 #include "asterfort/getResuElem.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -157,7 +158,7 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)                :: long
+        integer, intent(in)                :: long
         character(len=8), intent(out)                :: short
 !
 ! --------------------------------------------------------------------------------------------------
@@ -170,15 +171,15 @@ contains
 !
 !
         select case (long)
-        case ("HEXA8")
+        case (MT_HEXA8)
             short = "HE8"
-        case ("TETRA4")
+        case (MT_TETRA4)
             short = "TE4"
-        case ("QUAD4")
+        case (MT_QUAD4)
             short = "QU4"
-        case ("TRIA3")
+        case (MT_TRIA3)
             short = "TR3"
-        case ("SEG2")
+        case (MT_SEG2)
             short = "SE2"
         case default
             ASSERT(ASTER_FALSE)

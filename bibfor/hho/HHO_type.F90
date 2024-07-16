@@ -83,7 +83,7 @@ module HHO_type
 ! ----- Dimension topologique
         integer                     :: ndim = 0
 ! ----- Type maille
-        character(len=8)            :: typema = ''
+        integer                     :: typema = 0
 ! ----- Nombre de noeuds
         integer                     :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 4 noeuds pour quad)
@@ -116,7 +116,7 @@ module HHO_type
 ! ----- Dimension topologique
         integer                     :: ndim = 0
 ! ----- Type maille
-        character(len=8)            :: typema = ''
+        integer                     :: typema = 0
 ! ----- Nombre de noeuds
         integer                     :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)

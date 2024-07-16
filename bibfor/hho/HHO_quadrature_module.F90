@@ -35,6 +35,7 @@ module HHO_quadrature_module
 #include "asterfort/utmess.h"
 #include "blas/dnrm2.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -119,7 +120,7 @@ contains
 !
         integer, intent(in)                             :: nbnodes
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
-        character(len=8), intent(in)                    :: typema
+        integer, intent(in)                             :: typema
         real(kind=8), dimension(3), intent(in)          :: coorref
         real(kind=8), dimension(3), intent(out)         :: coorac
         real(kind=8), intent(out)                       :: jacob
@@ -254,7 +255,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        character(len=8), parameter :: typema = 'QUAD4'
+        integer, parameter :: typema = MT_QUAD4
         real(kind=8), dimension(8) :: basis
         real(kind=8), dimension(3, 8) :: dbasis
         real(kind=8), dimension(2, 2) :: jaco
@@ -404,7 +405,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 8, "HEXA8   ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 8, MT_HEXA8, (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -459,7 +460,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             coorac = 0.d0
-            call hhoGeomBasis("TRIA3   ", (/x, y, 0.d0/), basis)
+            call hhoGeomBasis(MT_TRIA3, (/x, y, 0.d0/), basis)
             do ino = 1, 3
                 coorac(1:3) = coorac(1:3)+coorno(1:3, ino)*basis(ino)
             end do
@@ -515,7 +516,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 4, "TETRA4  ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 4, MT_TETRA4, (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac
             this%weights(ipg) = jaco*poidpg(ipg)
@@ -569,7 +570,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 5, "PYRAM5  ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 5, MT_PYRAM5, (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -623,7 +624,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 6, "PENTA6  ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 6, MT_PENTA6, (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -662,21 +663,22 @@ contains
 !
         this%order = order
 !
-        if (hhoCell%typema == 'HEXA8') then
+        select case (hhoCell%typema)
+        case (MT_HEXA8)
             call this%hho_hexa_rules(hhoCell%coorno(1:3, 1:8))
-        elseif (hhoCell%typema == 'TETRA4') then
+        case (MT_TETRA4)
             call this%hho_tetra_rules(hhoCell%coorno(1:3, 1:4))
-        elseif (hhoCell%typema == 'PYRAM5') then
+        case (MT_PYRAM5)
             call this%hho_pyram_rules(hhoCell%coorno(1:3, 1:5))
-        elseif (hhoCell%typema == 'PENTA6') then
+        case (MT_PENTA6)
             call this%hho_prism_rules(hhoCell%coorno(1:3, 1:6))
-        elseif (hhoCell%typema == 'QUAD4') then
+        case (MT_QUAD4)
             call this%hho_quad_rules(hhoCell%coorno(1:3, 1:4), 2)
-        elseif (hhoCell%typema == 'TRIA3') then
+        case (MT_TRIA3)
             call this%hho_tri_rules(hhoCell%coorno(1:3, 1:3), hhoCell%measure)
-        else
+        case default
             ASSERT(ASTER_FALSE)
-        end if
+        end select
 !
         if (present(axis)) then
             if (axis) then
@@ -722,15 +724,16 @@ contains
 !
         this%order = order
 !
-        if (hhoFace%typema(1:5) == 'QUAD4') then
+        select case (hhoFace%typema)
+        case (MT_QUAD4)
             call this%hho_quad_rules(hhoFace%coorno(1:3, 1:4), 3)
-        elseif (hhoFace%typema(1:5) == 'TRIA3') then
+        case (MT_TRIA3)
             call this%hho_tri_rules(hhoFace%coorno(1:3, 1:3), hhoFace%measure)
-        elseif (hhoFace%typema(1:4) == 'SEG2') then
+        case (MT_SEG2)
             call this%hho_edge_rules(hhoFace%coorno(1:3, 1:2), hhoFace%measure, hhoFace%barycenter)
-        else
+        case default
             ASSERT(ASTER_FALSE)
-        end if
+        end select
 !
         if (present(axis)) then
             if (axis) then
@@ -753,7 +756,7 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)  :: typema
+        integer, intent(in)  :: typema
         integer, intent(in)           :: npg
         integer, intent(out)          :: order
 !
@@ -769,7 +772,8 @@ contains
 !
         order = 0
 !
-        if (typema == 'HEXA8') then
+        select case (typema)
+        case (MT_HEXA8)
             select case (npg)
             case (1)
                 order = 1
@@ -782,7 +786,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'PENTA6') then
+        case (MT_PENTA6)
             select case (npg)
             case (1)
                 order = 0
@@ -797,7 +801,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'PYRAM5') then
+        case (MT_PYRAM5)
             select case (npg)
             case (1)
                 order = 1
@@ -816,7 +820,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'TETRA4') then
+        case (MT_TETRA4)
             select case (npg)
             case (1)
                 order = 1
@@ -833,7 +837,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'QUAD4') then
+        case (MT_QUAD4)
             select case (npg)
             case (1)
                 order = 1
@@ -846,7 +850,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'TRIA3') then
+        case (MT_TRIA3)
             select case (npg)
             case (1)
                 order = 1
@@ -867,7 +871,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'SEG2') then
+        case (MT_SEG2)
             select case (npg)
             case (1)
                 order = 1
@@ -880,9 +884,9 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        else
+        case default
             ASSERT(ASTER_FALSE)
-        end if
+        end select
 !
     end subroutine
 !

@@ -26,6 +26,7 @@ module HHO_geometry_module
     private
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
+#include "MeshTypes_type.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
@@ -316,11 +317,11 @@ contains
 ! --------------------------------------------------------------------------------------------------
         normal = 0.d0
 !
-        if (hhoFace%typema(1:5) == 'QUAD4') then
+        if (hhoFace%typema == MT_QUAD4) then
             normal = hhoNormalFaceQP(hhoFace, qp_param)
-        elseif (hhoFace%typema(1:5) == 'TRIA3') then
+        elseif (hhoFace%typema == MT_TRIA3) then
             normal = hhoFace%normal
-        elseif (hhoFace%typema(1:4) == 'SEG2') then
+        elseif (hhoFace%typema == MT_SEG2) then
             normal = hhoFace%normal
         else
             ASSERT(ASTER_FALSE)
@@ -350,11 +351,11 @@ contains
 ! --------------------------------------------------------------------------------------------------
         normal = 0.d0
 !
-        if (hhoFace%typema(1:5) == 'QUAD4') then
+        if (hhoFace%typema == MT_QUAD4) then
             normal = hhoNormalFace2d(hhoFace%coorno, 4, hhoFace%barycenter, barycenter_cell)
-        elseif (hhoFace%typema(1:5) == 'TRIA3') then
+        elseif (hhoFace%typema == MT_TRIA3) then
             normal = hhoNormalFace2d(hhoFace%coorno, 3, hhoFace%barycenter, barycenter_cell)
-        elseif (hhoFace%typema(1:4) == 'SEG2') then
+        elseif (hhoFace%typema == MT_SEG2) then
             normal = hhoNormalFace1d(hhoFace%coorno, hhoFace%barycenter, barycenter_cell)
         else
             ASSERT(ASTER_FALSE)
@@ -370,9 +371,9 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)                    :: typma
-        real(kind=8), dimension(3, 4), intent(in)        :: nodes_coor
-        real(kind=8), dimension(3)                      :: normal
+        integer, intent(in)                        :: typma
+        real(kind=8), dimension(3, 4), intent(in)  :: nodes_coor
+        real(kind=8), dimension(3)                 :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In typma              :: type of face
@@ -384,11 +385,11 @@ contains
 ! --------------------------------------------------------------------------------------------------
         normal = 0.d0
 !
-        if (typma(1:5) == 'QUAD4') then
+        if (typma == MT_QUAD4) then
             normal = hhoNormalFace2d(nodes_coor, 4)
-        elseif (typma(1:5) == 'TRIA3') then
+        elseif (typma == MT_TRIA3) then
             normal = hhoNormalFace2d(nodes_coor, 3)
-        elseif (typma(1:4) == 'SEG2') then
+        elseif (typma == MT_SEG2) then
             normal = hhoNormalFace1d(nodes_coor)
         else
             ASSERT(ASTER_FALSE)
@@ -584,7 +585,7 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)  :: typema
+        integer, intent(in)           :: typema
         real(kind=8), intent(in)      :: pt(3)
         real(kind=8), intent(out)     :: basis(8)
 !
@@ -600,19 +601,19 @@ contains
         basis = 0.d0
 !
         select case (typema)
-        case ('SE2')
+        case (MT_SEG2)
             call elrfvf('SE2', pt, basis)
-        case ('TRIA3')
+        case (MT_TRIA3)
             call elrfvf('TR3', pt, basis)
-        case ('QUAD4')
+        case (MT_QUAD4)
             call elrfvf('QU4', pt, basis)
-        case ('TETRA4')
+        case (MT_TETRA4)
             call elrfvf('TE4', pt, basis)
-        case ('PYRAM5')
+        case (MT_PYRAM5)
             call elrfvf('PY5', pt, basis)
-        case ('HEXA8')
+        case (MT_HEXA8)
             call elrfvf('HE8', pt, basis)
-        case ('PENTA6')
+        case (MT_PENTA6)
             call elrfvf('PE6', pt, basis)
         case default
             ASSERT(ASTER_FALSE)
@@ -628,7 +629,7 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)  :: typema
+        integer, intent(in)           :: typema
         real(kind=8), intent(in)      :: pt(3)
         real(kind=8), intent(out)     :: dbasis(3, 8)
 !
@@ -645,19 +646,19 @@ contains
         dbasis = 0.d0
 !
         select case (typema)
-        case ('SE2')
+        case (MT_SEG2)
             call elrfdf('SE2', pt, dbasis)
-        case ('TRIA3')
+        case (MT_TRIA3)
             call elrfdf('TR3', pt, dbasis)
-        case ('QUAD4')
+        case (MT_QUAD4)
             call elrfdf('QU4', pt, dbasis)
-        case ('TETRA4')
+        case (MT_TETRA4)
             call elrfdf('TE4', pt, dbasis)
-        case ('PYRAM5')
+        case (MT_PYRAM5)
             call elrfdf('PY5', pt, dbasis)
-        case ('HEXA8')
+        case (MT_HEXA8)
             call elrfdf('HE8', pt, dbasis)
-        case ('PENTA6')
+        case (MT_PENTA6)
             call elrfdf('PE6', pt, dbasis)
         case default
             ASSERT(ASTER_FALSE)
