@@ -32,6 +32,7 @@ module HHO_Ther_module
     implicit none
 !
     private
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
@@ -124,6 +125,9 @@ contains
         real(kind=8) :: coorpg(3), weight, time_curr, temp_eval_curr
         real(kind=8), pointer :: flux(:) => null()
         aster_logical :: l_rhs, l_lhs, l_nl, l_flux
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
         l_lhs = present(lhs)
         l_rhs = present(rhs)
@@ -262,6 +266,9 @@ contains
                 call daxpy(total_dofs, hhoData%coeff_stab(), stab(1, j), 1, lhs(1, j), 1)
             end do
         end if
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoLocalRigiTher ("//option//")", end-start)
 !
     end subroutine
 !

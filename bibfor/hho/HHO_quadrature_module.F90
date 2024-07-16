@@ -26,6 +26,7 @@ module HHO_quadrature_module
     implicit none
 !
     private
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraga.h"
@@ -58,8 +59,8 @@ module HHO_quadrature_module
         procedure, private, pass :: hho_hexa_rules
         procedure, private, pass :: hho_pyram_rules
         procedure, private, pass :: hho_prism_rules
-        procedure, public, pass :: GetQuadCell => hhoGetQuadCell
-        procedure, public, pass :: GetQuadFace => hhoGetQuadFace
+        procedure, public, pass :: getQuadCell => hhoGetQuadCell
+        procedure, public, pass :: getQuadFace => hhoGetQuadFace
         procedure, public, pass :: print => hhoQuadPrint
         procedure, public, pass :: initCell => hhoinitCellFamiQ
         procedure, public, pass :: initFace => hhoinitFaceFamiQ
@@ -473,12 +474,11 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hho_tetra_rules(this, coorno, measure)
+    subroutine hho_tetra_rules(this, coorno)
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)        :: coorno
-        real(kind=8), intent(in)                        :: measure
+        real(kind=8), dimension(3, 4), intent(in)       :: coorno
         class(HHO_quadrature), intent(inout)            :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -486,7 +486,6 @@ contains
 !
 !   Get the quadrature rules for a tetrahedra
 !   In coorno       : coordinates of the nodes
-!   In measure      : volume of the tetrahedra
 !   Out this        : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
@@ -657,13 +656,16 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ipg
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
         this%order = order
 !
         if (hhoCell%typema == 'HEXA8') then
             call this%hho_hexa_rules(hhoCell%coorno(1:3, 1:8))
         elseif (hhoCell%typema == 'TETRA4') then
-            call this%hho_tetra_rules(hhoCell%coorno(1:3, 1:4), hhoCell%measure)
+            call this%hho_tetra_rules(hhoCell%coorno(1:3, 1:4))
         elseif (hhoCell%typema == 'PYRAM5') then
             call this%hho_pyram_rules(hhoCell%coorno(1:3, 1:5))
         elseif (hhoCell%typema == 'PENTA6') then
@@ -683,6 +685,9 @@ contains
                 end do
             end if
         end if
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoGetQuadCell", end-start)
 !
     end subroutine
 !
@@ -711,6 +716,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ipg
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
         this%order = order
 !
@@ -731,6 +739,9 @@ contains
                 end do
             end if
         end if
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoGetQuadFace", end-start)
 !
     end subroutine
 !
@@ -900,6 +911,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
         integer :: order, ipg
         aster_logical :: laxis
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
@@ -920,6 +934,9 @@ contains
                 end do
             end if
         end if
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoinitCellFamiQ", end-start)
 !
     end subroutine
 !
@@ -949,6 +966,9 @@ contains
 !
         integer :: order
         aster_logical :: laxis
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
@@ -961,6 +981,9 @@ contains
         call hhoSelectOrder(hhoFace%typema, npg, order)
 !
         call hhoGetQuadFace(this, hhoFace, order, laxis)
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoinitFaceFamiQ", end-start)
 !
     end subroutine
 !

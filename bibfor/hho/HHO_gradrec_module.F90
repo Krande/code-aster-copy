@@ -31,6 +31,7 @@ module HHO_gradrec_module
     implicit none
 !
     private
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
@@ -90,6 +91,9 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL), normal(3)
         integer :: ipg, dimStiffMat, ifromMG, itoMG, ifromBG, itoBG, dimMG
         integer :: cbs, fbs, total_dofs, iface, info, fromFace, toFace
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -178,6 +182,9 @@ contains
                        gradrec, MSIZE_CELL_SCAL, 0.d0, lhs, MSIZE_TDOFS_SCAL)
         end if
 !
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoGradRecVec", end-start)
+!
     end subroutine
 !
 !===================================================================================================
@@ -211,6 +218,9 @@ contains
         integer :: gradrec_scal_row, cbs_comp, fbs_comp, faces_dofs, cbs, fbs
         integer :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
         integer :: total_dofs, iFace, jbeginVec, jendVec
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
 ! -- number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
@@ -261,6 +271,9 @@ contains
             call MatScal2Vec(hhoCell, hhoData, lhs_scal, lhs)
         end if
 !
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoGradRecMat", end-start)
+!
     end subroutine
 !
 !===================================================================================================
@@ -301,6 +314,9 @@ contains
         integer :: cbs, fbs, total_dofs, gbs, dimMassMat
         integer :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, info
         integer :: iface, fromFace, toFace
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -427,6 +443,9 @@ contains
                        BG, MSIZE_CELL_VEC, gradrec, MSIZE_CELL_VEC, 0.d0, lhs, MSIZE_TDOFS_SCAL)
         end if
 !
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoGradRecFullVec", end-start)
+!
     end subroutine
 !
 !===================================================================================================
@@ -528,6 +547,9 @@ contains
 ! ----- Local variables
         real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs_scal
         real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradrec_scal
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
 ! -- computation of the gradient reconstruction of a scalar function
         if (present(lhs)) then
@@ -538,6 +560,9 @@ contains
             call hhoGradRecFullVec(hhoCell, hhoData, gradrec_scal)
             call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradrec_scal, gradrec)
         end if
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoGradRecFullMat", end-start)
 !
     end subroutine
 !
@@ -579,6 +604,9 @@ contains
         integer :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat, cbs_comp, fbs_comp, gbs_sym
         integer :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, info, j, iface
         integer :: jbegCell, jendCell, jbegFace, jendFace
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -845,6 +873,9 @@ contains
                        gradrec, MSIZE_CELL_MAT, 0.d0, lhs, MSIZE_TDOFS_VEC)
         end if
 !
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoGradRecSymFullMat", end-start)
+!
     end subroutine
 !
 !===================================================================================================
@@ -892,6 +923,9 @@ contains
         integer :: row_deb_MG, row_fin_MG, col_deb_MG, col_fin_MG, col_deb_BG, col_fin_BG
         integer :: row_deb_ST, row_fin_ST, col_deb_ST, col_fin_ST
         real(kind=8) :: qp_dphi_ss, normal(3)
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -1094,6 +1128,9 @@ contains
             call dgemm('T', 'N', total_dofs, total_dofs, dimMG, 1.d0, BG, MSIZE_CELL_VEC+3, &
                        gradrec, MSIZE_CELL_VEC, 0.d0, lhs, MSIZE_TDOFS_VEC)
         end if
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoGradRecSymMat", end-start)
 !
     end subroutine
 !

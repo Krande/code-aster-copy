@@ -28,6 +28,7 @@ module HHO_massmat_module
 !
     private
 #include "asterf_types.h"
+#include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/dsyr.h"
@@ -97,7 +98,10 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL):: basisScalEval
         integer :: dimMat, ipg, i
         aster_logical :: dbg
+        real(kind=8) :: start, end
 ! --------------------------------------------------------------------------------------------------
+!
+        DEBUG_TIMER(start)
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
@@ -148,6 +152,9 @@ contains
         end if
         ! call hhoPrintMat(this%m(1:dimMat, 1:dimMat))
 !
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoMassMatCellScal", end-start)
+!
     end subroutine
 !
 !===================================================================================================
@@ -178,7 +185,9 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
         integer :: dimMat, ipg, i
         aster_logical :: dbg
+        real(kind=8) :: start, end
 ! --------------------------------------------------------------------------------------------------
+        DEBUG_TIMER(start)
 !
 ! ----- init basis
         call hhoBasisFace%initialize(hhoFace)
@@ -228,6 +237,8 @@ contains
         end if
 !
         ! call hhoPrintMat(this%m)
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoMassMatFaceScal", end-start)
 !
     end subroutine
 !
