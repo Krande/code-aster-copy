@@ -99,9 +99,13 @@ subroutine te0487(nomopt, nomte)
 ! --- Get input fields
 !
     call jevech('PMATERC', 'L', jmate)
-    call jevech('PCAMASS', 'L', jcamas)
 !
     call rccoma(zi(jmate), 'THER', 1, phenom, icodre(1))
+    if (phenom .eq. 'THER_ORTH' .or. phenom .eq. 'THER_NL_ORTH') then
+        call jevech('PCAMASS', 'L', jcamas)
+    else
+        jcamas = 0
+    end if
 !
     call jevech('PINSTR', 'L', jtemps)
     time_curr = zr(jtemps)

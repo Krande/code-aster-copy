@@ -145,9 +145,13 @@ contains
 ! --- Get input fields
 !
         call jevech('PMATERC', 'L', jmate)
-        call jevech('PCAMASS', 'L', jcamas)
 !
         call rccoma(zi(jmate), 'THER', 1, phenom, icodre(1))
+        if (phenom .eq. 'THER_ORTH' .or. phenom .eq. 'THER_NL_ORTH') then
+            call jevech('PCAMASS', 'L', jcamas)
+        else
+            jcamas = 0
+        end if
 !
         time_curr = 0.d0
         if (.not. l_nl) then
