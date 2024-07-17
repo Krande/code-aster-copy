@@ -601,6 +601,9 @@ class Mac3CoeurCalcul:
     def snl(self, **kwds):
         """Return the common keywords for STAT_NON_LINE
         All keywords can be overridden using `kwds`."""
+
+        # FIXME issue33947, issue33519
+        nprec = -1 if self.coeur.is_multi_rod else 8
         keywords = {
             "MODELE": self.model,
             "CARA_ELEM": self.carael,
@@ -626,7 +629,7 @@ class Mac3CoeurCalcul:
             ),
             "NEWTON": _F(MATRICE="TANGENTE", REAC_ITER=1),
             "CONVERGENCE": _F(ITER_GLOB_MAXI=10, RESI_GLOB_MAXI=1.0e-2, RESI_GLOB_RELA=1.0e-6),
-            "SOLVEUR": _F(METHODE="MUMPS", PRETRAITEMENTS="AUTO"),
+            "SOLVEUR": _F(METHODE="MUMPS", PRETRAITEMENTS="AUTO", NPREC=nprec),
             "ARCHIVAGE": _F(LIST_INST=self.times_arch, PRECISION=1.0e-08),
             "AFFICHAGE": _F(INFO_RESIDU="OUI"),
             "INFO": 1,
