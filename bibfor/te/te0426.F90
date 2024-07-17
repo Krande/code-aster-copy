@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine te0426(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/sigimc.h"
 #include "asterfort/tecach.h"
@@ -43,9 +43,8 @@ subroutine te0426(option, nomte)
 !
     character(len=4) :: fami
 !
-    real(kind=8) :: sigi(162), epsi(162), bsigma(81), repere(7)
-    real(kind=8) :: instan, nharm, xyz(3)
-    integer :: idim
+    real(kind=8) :: sigi(162), epsi(162), bsigma(81), angl_naut(3)
+    real(kind=8) :: instan, nharm
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
@@ -89,17 +88,7 @@ subroutine te0426(option, nomte)
 !
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 !      ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-    xyz(1) = 0.d0
-    xyz(2) = 0.d0
-    xyz(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call ortrep(ndim, xyz, repere)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
@@ -145,7 +134,7 @@ subroutine te0426(option, nomte)
 ! ---- D'INTEGRATION
 !      -------------
     call sigimc(fami, nno, ndim, nbsig, npg1, &
-                zr(ivf), zr(igeom), instan, zi(imate), repere, &
+                instan, zi(imate), angl_naut, &
                 epsi, sigi)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES DUES AUX CONTRAINTES ANELASTIQUES

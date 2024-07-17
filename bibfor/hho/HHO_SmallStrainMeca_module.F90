@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ module HHO_SmallStrainMeca_module
 #include "asterfort/dmatmc.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/ortrep.h"
 #include "blas/daxpy.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
@@ -327,7 +326,7 @@ contains
 !
 ! --------- Compute behaviour
 !
-            call dmatmc(fami, imate, time_curr, '+', ipg, 1, angmas, coorpg, nb_sig, dsidep)
+            call dmatmc(fami, imate, time_curr, '+', ipg, 1, angmas, nb_sig, dsidep)
 !
             call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, gbs_sym, gbs_cmp, AT)
         end do

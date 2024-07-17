@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine te0529(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/epstmc.h"
 #include "asterfort/jevech.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 !
@@ -48,10 +48,9 @@ subroutine te0529(option, nomte)
 !.......................................................................
 !
     integer :: jgano, ndim, nno, i, nnos, npg, ipoids, ivf, idfde, igau, isig
-    integer :: igeom, itemps, idefo, imate, iret, nbcmp, idim
-    real(kind=8) :: epvc(162), repere(7)
+    integer :: igeom, itemps, idefo, imate, iret, nbcmp
+    real(kind=8) :: epvc(162), angl_naut(3)
     real(kind=8) :: instan, epsse(6), epsth(6), epshy(6), epspt(6)
-    real(kind=8) :: xyzgau(3), xyz(3)
     character(len=4) :: fami
     character(len=16) :: optio2
 ! DEB ------------------------------------------------------------------
@@ -76,16 +75,7 @@ subroutine te0529(option, nomte)
 !
 ! --- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
 !     ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPERE CYLINDRIQUE )
-    xyz(1) = 0.d0
-    xyz(2) = 0.d0
-    xyz(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call ortrep(ndim, xyz, repere)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL :
 !      -----------------------------------
@@ -105,34 +95,25 @@ subroutine te0529(option, nomte)
 !
     do igau = 1, npg
 !
-!      CALCUL AU POINT DE GAUSS DE LA TEMPERATURE ET
-!       DU REPERE D'ORTHOTROPIE
+!      CALCUL AU POINT DE GAUSS DE LA TEMPERATURE
 ! ------------------------------------------
-        xyzgau(1) = 0.d0
-        xyzgau(2) = 0.d0
-        xyzgau(3) = 0.d0
-        do idim = 1, ndim
-            xyzgau(idim) = xyzgau(idim)+zr(ivf+idim-1+nno*(igau-1))*zr(igeom+idim-1+ndim*(idim&
-                           &-1))
-        end do
-!
 !
         optio2 = 'EPVC_ELGA_TEMP'
 !
         call epstmc(fami, ndim, instan, '+', igau, &
-                    1, xyzgau, repere, zi(imate), optio2, &
+                    1, angl_naut, zi(imate), optio2, &
                     epsth)
         optio2 = 'EPVC_ELGA_SECH'
         call epstmc(fami, ndim, instan, '+', igau, &
-                    1, xyzgau, repere, zi(imate), optio2, &
+                    1, angl_naut, zi(imate), optio2, &
                     epsse)
         optio2 = 'EPVC_ELGA_HYDR'
         call epstmc(fami, ndim, instan, '+', igau, &
-                    1, xyzgau, repere, zi(imate), optio2, &
+                    1, angl_naut, zi(imate), optio2, &
                     epshy)
         optio2 = 'EPVC_ELGA_PTOT'
         call epstmc(fami, ndim, instan, '+', igau, &
-                    1, xyzgau, repere, zi(imate), optio2, &
+                    1, angl_naut, zi(imate), optio2, &
                     epspt)
         do i = 1, 3
             epvc(i+nbcmp*(igau-1)) = epsth(i)

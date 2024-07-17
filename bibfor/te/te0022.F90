@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,15 +35,13 @@ subroutine te0022(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/sigvmc.h"
 !
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
-    integer :: idim
     integer :: i, icont, idepl, igeom, imate, nbsig
 !
-    real(kind=8) :: sigma(162), repere(7), instan, nharm
-    real(kind=8) :: bary(3)
+    real(kind=8) :: sigma(162), angl_naut(3), instan, nharm
     real(kind=8) :: zero
 !
 !-----------------------------------------------------------------------
@@ -75,17 +73,7 @@ subroutine te0022(option, nomte)
 !
 ! - RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 !   ------------------------------------------------------------
-!   COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call ortrep(ndim, bary, repere)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !      --------------------------------------------------
@@ -93,7 +81,7 @@ subroutine te0022(option, nomte)
 !
     call sigvmc('RIGI', nno, ndim, nbsig, npg, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, repere, zi(imate), nharm, sigma)
+                instan, angl_naut, zi(imate), nharm, sigma)
 !
 !
 ! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE

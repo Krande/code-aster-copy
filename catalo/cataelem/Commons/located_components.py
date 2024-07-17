@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -148,7 +148,9 @@ CCAMA3D = LocatedComponents(
 )
 
 # Field for material orientation in 2D (ANGLE_MASSIF)
-CCAMA2D = LocatedComponents(phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA"))
+CCAMA2D = LocatedComponents(
+    phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
+)
 
 # Field for RESI_REFE_RELA/EFFORT
 CRESEFF = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EFFORT",))

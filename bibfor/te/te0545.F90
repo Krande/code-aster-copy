@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine te0545(option, nomte)
 #include "asterfort/nglgic.h"
 #include "asterfort/ngvlog.h"
 #include "asterfort/nmgvmb.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "blas/dcopy.h"
@@ -65,15 +65,14 @@ subroutine te0545(option, nomte)
     integer :: imate, icontm, ivarim, iinstm, iinstp, ideplm, ideplp, icompo
     integer :: ivectu, icontp, ivarip, imatuu, icarcr, ivarix, igeom, icoret
     integer :: iret, nnos, jv_ganoQ, jv_ganoL, itab(7)
-    integer :: i, codret
-    real(kind=8) :: xyz(3), angmas(7)
+    integer :: codret
+    real(kind=8) :: angmas(3)
     real(kind=8), allocatable:: b(:, :, :), w(:, :), ni2ldc(:, :)
     aster_logical :: lMatr, lVect, lSigm, lVari
 !
 ! --------------------------------------------------------------------------------------------------
 !
     matsym = ASTER_FALSE
-    xyz = 0.d0
     ivectu = 1
     icontp = 1
     ivarip = 1
@@ -144,11 +143,8 @@ subroutine te0545(option, nomte)
         zr(ivarip:ivarip-1+npg*lgpg) = zr(ivarix:ivarix-1+npg*lgpg)
     end if
 !
-!    BARYCENTRE ET ORIENTATION DU MASSIF
-    do i = 1, ndim
-        xyz(i) = sum(zr(igeom-1+i:igeom-1+(nnoQ-1)*ndim+i:ndim))/nnoQ
-    end do
-    call rcangm(ndim, xyz, angmas)
+!    ORIENTATION DU MASSIF
+    call getElemOrientation(ndim, nnoQ, igeom, angmas)
 !
 ! - CALCUL DES FORCES INTERIEURES ET MATRICES TANGENTES
 !

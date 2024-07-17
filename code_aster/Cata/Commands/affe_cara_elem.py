@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1045,17 +1045,9 @@ AFFE_CARA_ELEM = OPER(
         max="**",
         regles=(
             UN_PARMI("GROUP_MA", "TOUT"),
-            UN_PARMI("ANGL_REP", "ANGL_AXE", "ANGL_EULER", "CHAM_ORIE"),
-            EXCLUS("GROUP_MA", "TOUT"),
-            EXCLUS("ANGL_REP", "ANGL_EULER"),
-            EXCLUS("ANGL_REP", "ANGL_AXE"),
-            EXCLUS("ANGL_REP", "ORIG_AXE"),
-            EXCLUS("ANGL_REP", "CHAM_ORIE"),
-            EXCLUS("ANGL_AXE", "CHAM_ORIE"),
-            EXCLUS("ANGL_EULER", "CHAM_ORIE"),
-            EXCLUS("ANGL_EULER", "ANGL_AXE"),
+            UN_PARMI("ANGL_REP", "ORIG_AXE", "ANGL_EULER", "CHAM_ORIE"),
             PRESENT_PRESENT("ANGL_AXE", "ORIG_AXE"),
-            PRESENT_PRESENT("TOUT", "CHAM_ORIE"),
+            ENSEMBLE("TOUT", "CHAM_ORIE"),
         ),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         TOUT=SIMP(statut="f", typ="TXM", validators=NoRepeat(), into=("OUI",)),

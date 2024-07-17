@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ module HHO_LargeStrainMeca_module
 #include "asterfort/lagmodtonommod.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/ortrep.h"
 #include "asterfort/pk2sig.h"
 #include "asterfort/pk2topk1.h"
 #include "asterfort/poslog.h"

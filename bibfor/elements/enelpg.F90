@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine enelpg(fami, iadmat, instan, igau, repere, &
-                  xyzgau, compor, f, sigma, nbvari, &
+subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
+                  compor, f, sigma, nbvari, &
                   vari, enelas)
 !.......................................................................
     implicit none
@@ -62,7 +62,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere, &
     integer :: nbsig, nbvari, nsol, i, iadmat, igau, icodre(2), isig, jsig
     real(kind=8) :: c1, c2, deux, vari(*), enelas, trt, un, undemi, zero
     real(kind=8) :: sol(3), sigma(6), jzero, uzero, mzero, instan, epsi(6)
-    real(kind=8) :: mjac, ujac, wbe, be(6), e, nu, f(3, 3), repere(7), xyzgau(3)
+    real(kind=8) :: mjac, ujac, wbe, be(6), e, nu, f(3, 3), angl_naut(3)
     real(kind=8) :: mu, troisk, jac, tau(6), trtau, eqtau, dvtau(6), tlog(6)
     real(kind=8) :: trbe, epsthe, kr(6), pdtsca(6), d1(36), valres(2)
     character(len=4) :: fami
@@ -104,8 +104,9 @@ subroutine enelpg(fami, iadmat, instan, igau, repere, &
         mu = e/(2.d0*(1.d0+nu))
         troisk = e/(1.d0-2.d0*nu)
 !
-       jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2))-f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2))+f(&
-               &3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
+        jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2)) &
+              -f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2)) &
+              +f(3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
 !
 ! ---    CALCUL DE TAU TEL QUE TAU=JAC*SIGMA
 !
@@ -208,7 +209,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere, &
 !  --    POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !        ---------------------------------------------------------
         call d1mamc(fami, iadmat, instan, '+', igau, &
-                    1, repere, xyzgau, nbsig, d1)
+                    1, angl_naut, nbsig, d1)
 !
 !  --    DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT
 !  --    D'INTEGRATION COURANT

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ subroutine aceama(nomu, noma, lmax, nbocc)
     implicit none
 #include "jeveux.h"
 #include "asterfort/alcart.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/eulnau.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
@@ -36,22 +37,22 @@ subroutine aceama(nomu, noma, lmax, nbocc)
     integer :: lmax, nbocc
     character(len=8) :: nomu, noma
 !     AFFE_CARA_ELEM
-!     AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT COQUE
+!     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS MASSIF
 ! ----------------------------------------------------------------------
 ! IN  : NOMU   : NOM UTILISATEUR DE LA COMMANDE
 ! IN  : NOMA   : NOM DU MAILLAGE
 ! IN  : LMAX   : LONGUEUR
-! IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE COQUE
+! IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE MASSIF
 ! ----------------------------------------------------------------------
     real(kind=8) :: ang(3), orig(3), angeul(3)
     character(len=19) :: cartma, chorie
-    character(len=24) :: tmpnma, tmpvma, chdef
+    character(len=24) :: tmpnma, tmpvma
 !     ------------------------------------------------------------------
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
 !-----------------------------------------------------------------------
     integer :: i, ioc, jdcc, jdls, jdvc, naxe, neul
-    integer :: ng, nm, norig, nrep, jdls2, ncham
+    integer :: ng, nm, norig, nrep, jdls2, ncham, ndim
 !-----------------------------------------------------------------------
     call jemarq()
     cartma = nomu//'.CARMASSI'
@@ -101,6 +102,8 @@ subroutine aceama(nomu, noma, lmax, nbocc)
 !
         call nocart(cartma, 1, 7)
 !
+        call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
+!
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTMA
         do ioc = 1, nbocc
             ang(1) = 0.d0
@@ -132,21 +135,29 @@ subroutine aceama(nomu, noma, lmax, nbocc)
                 zr(jdvc+6) = 0.d0
             else if (neul .ne. 0) then
                 call eulnau(angeul, ang)
-                zr(jdvc) = 2.d0
+                zr(jdvc) = 1.d0
                 zr(jdvc+1) = ang(1)
                 zr(jdvc+2) = ang(2)
                 zr(jdvc+3) = ang(3)
-                zr(jdvc+4) = angeul(1)
-                zr(jdvc+5) = angeul(2)
-                zr(jdvc+6) = angeul(3)
-            else
+                zr(jdvc+4) = 0.d0
+                zr(jdvc+5) = 0.d0
+                zr(jdvc+6) = 0.d0
+            else if (norig .ne. 0) then
+                if (ndim .eq. 3 .and. naxe .eq. 0) then
+                    call utmess('F', 'MODELISA10_2')
+                elseif (ndim .eq. 2 .and. naxe .ne. 0) then
+                    call utmess('F', 'MODELISA10_3')
+                end if
                 zr(jdvc) = -1.d0
+                ! pas d'angle en 2D
                 zr(jdvc+1) = ang(1)
                 zr(jdvc+2) = ang(2)
-                zr(jdvc+3) = ang(2)
+                zr(jdvc+3) = 0.d0
                 zr(jdvc+4) = orig(1)
                 zr(jdvc+5) = orig(2)
                 zr(jdvc+6) = orig(3)
+            else
+                ASSERT(.false.)
             end if
 !
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES

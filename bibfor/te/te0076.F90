@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0076(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: icamas, kp, imate, itemps
+    integer :: kp, imate, itemps
     integer :: icodre(1)
     character(len=32) :: phenom
     real(kind=8) ::   time
@@ -62,13 +62,10 @@ subroutine te0076(option, nomte)
     time = zr(itemps)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
-    if (phenom .eq. 'THER_ORTH') then
-        call jevech('PCAMASS', 'L', icamas)
-    end if
 !
     valQPK = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
-        call nlcomp(phenom, imate, icamas, FECell%ndim, FEQuadCell%points(1:3, kp), time, &
+        call nlcomp(phenom, imate, FECell%ndim, FEQuadCell%points(1:3, kp), time, &
                     0.d0, valQPK(1:3, 1:3, kp))
     end do
 !

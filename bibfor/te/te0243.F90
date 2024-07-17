@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine te0243(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: icamas, nbres
+    integer :: nbres
     parameter(nbres=3)
     integer :: icodre(nbres)
     character(len=32) :: phenom
@@ -94,9 +94,6 @@ subroutine te0243(option, nomte)
             aniso = ASTER_TRUE
         end if
         call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
-        if (aniso) then
-            call jevech('PCAMASS', 'L', icamas)
-        end if
     end if
 !
     resi = 0.0
@@ -107,7 +104,7 @@ subroutine te0243(option, nomte)
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp), BGSEval)
 !
         if (zk16(icomp) (1:5) .eq. 'THER_') then
-            call ntcomp(icomp, icamas, FECell%ndim, tpg, dtpg, &
+            call ntcomp(icomp, FECell%ndim, tpg, dtpg, &
                         FEQuadCell%points(1:3, kp), aniso, ifon, fluglo, Kglo)
             if (l_rhs) then
                 flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)

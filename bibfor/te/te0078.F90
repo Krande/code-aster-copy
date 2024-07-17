@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine te0078(option, nomte)
     real(kind=8) :: valQPM(MAX_QP), tpg, dtpg(3), flux(3), BGSEval(3, MAX_BS)
     real(kind=8) :: resi_f(MAX_BS), resi_m(MAX_BS), resi(MAX_BS)
     real(kind=8) :: cp, valres(1), Kglo(3, 3), time, deltat, theta
-    integer :: kp, imate, icamas, itemps
+    integer :: kp, imate, itemps
     real(kind=8), pointer :: temp(:) => null()
 !
     call FECell%init()
@@ -79,17 +79,13 @@ subroutine te0078(option, nomte)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
-    if (phenom == "THER_ORTH") then
-        call jevech('PCAMASS', 'L', icamas)
-    end if
-!
     resi_f = 0.d0
     do kp = 1, FEQuadRigi%nbQuadPoints
         BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp), FEQuadRigi%jacob(1:3, 1:3, kp))
 !
         dtpg = FEEvalGradVec(FEBasis, temp, FEQuadRigi%points_param(1:3, kp), BGSEval)
 !
-        call nlcomp(phenom, imate, icamas, FECell%ndim, FEQuadRigi%points(1:3, kp), time, &
+        call nlcomp(phenom, imate, FECell%ndim, FEQuadRigi%points(1:3, kp), time, &
                     0.d0, Kglo, dtp_=dtpg, fluglo_=flux)
 !
         call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)

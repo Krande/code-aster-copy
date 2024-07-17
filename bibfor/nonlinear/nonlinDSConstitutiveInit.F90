@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,6 +82,10 @@ subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
     call nmcpqu(ds_constitutive%compor, 'C_PLAN', 'DEBORST', ds_constitutive%l_deborst)
     call nmcpqu(ds_constitutive%compor, 'RELCOM', 'DIS_CHOC', ds_constitutive%l_dis_choc)
     call nmcpqu(ds_constitutive%compor, 'POSTINCR', 'REST_ECRO', ds_constitutive%lAnnealing)
+    call nmcpqu(ds_constitutive%compor, 'RELCOM', 'JOINT_MECA_FROT', ds_constitutive%lJoiFrot)
+    call nmcpqu(ds_constitutive%compor, 'RELCOM', 'JOINT_MECA_RUPT', ds_constitutive%lJoiRupt)
+    call nmcpqu(ds_constitutive%compor, 'RELCOM', 'JOINT_MECA_ENDO', ds_constitutive%lJoiEndo)
+
 !
 ! - Look if geometric matrix is included in global tangent matrix
 !

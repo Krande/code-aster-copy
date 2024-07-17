@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine epsvmc(fami   , nno    , ndim  , nbsig, npg   ,&
                       j_poids, j_vf   , j_dfde, xyz  , disp  ,&
-                      time   , repere, nharm, option,  epsi   )
+                      time   , angl_naut, nharm, option,  epsi   )
         character(len=*), intent(in) :: fami
         integer, intent(in) :: nno
         integer, intent(in) :: ndim
@@ -33,7 +33,7 @@ interface
         real(kind=8), intent(in) :: xyz(1)
         real(kind=8), intent(in) :: disp(1)
         real(kind=8), intent(in) :: time
-        real(kind=8), intent(in) :: repere(7)
+        real(kind=8), intent(in) :: angl_naut(3)
         real(kind=8), intent(in) :: nharm
         character(len=16), intent(in) :: option
         real(kind=8), intent(out) :: epsi(1)

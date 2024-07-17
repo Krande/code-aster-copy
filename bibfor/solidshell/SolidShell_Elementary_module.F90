@@ -53,7 +53,7 @@ module SolidShell_Elementary_module
 #include "asterfort/dmat3d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
 ! ==================================================================================================
@@ -297,23 +297,14 @@ contains
         type(SSH_CELL_GEOM), intent(in)    :: cellGeom
         type(SSH_MATE_PARA), intent(inout) :: matePara
 ! - Local
-        real(kind=8) :: bary(3)
-        integer :: iNode, iDime, nno, jvGeom
+        integer :: nno, jvGeom
 !   ------------------------------------------------------------------------------------------------
 !
         nno = elemProp%nbNodeGeom
         jvGeom = cellGeom%jvGeom
 
-! - Compute barycentric center
-        bary = 0.d0
-        do iNode = 1, nno
-            do iDime = 1, SSH_NDIM
-                bary(iDime) = bary(iDime)+zr(jvGeom+iDime+SSH_NDIM*(iNode-1)-1)/nno
-            end do
-        end do
-
 ! - Get orientation
-        call rcangm(SSH_NDIM, bary, matePara%mateBase)
+        call getElemOrientation(SSH_NDIM, nno, jvGeom, matePara%mateBase)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -334,13 +325,10 @@ contains
         type(SSH_ELEM_INTE), intent(in)    :: elemInte
         real(kind=8), intent(in)           :: timeCurr
         type(SSH_MATE_PARA), intent(inout) :: matePara
-! - Local
-        real(kind=8) :: xyzgau(3)
 !   ------------------------------------------------------------------------------------------------
 !
-        xyzgau = 0.d0
         call dmat3d(elemInte%inteFami, matePara%jvMater, timeCurr, '+', 1, &
-                    1, matePara%mateBase, xyzgau, matePara%elemHookeMatrix)
+                    1, matePara%mateBase, matePara%elemHookeMatrix)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

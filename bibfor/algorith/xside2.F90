@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -191,12 +191,12 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH
         epsth(:) = 0.d0
         call epstmc('XFEM', ndim, instan, '+', ipg, &
-                    1, r8bi3, r8bi7, imate, 'CHAR_MECA_TEMP_R', &
+                    1, r8bi3, imate, 'CHAR_MECA_TEMP_R', &
                     epsth)
 !
 !       CALCUL DE LA MATRICE DE HOOKE (MATERIAU ISOTROPE)
         call dmatmc('XFEM', imate, instan, '+', ipg, &
-                    1, r8bi7, r8bi3, nbsig, d)
+                    1, r8bi3, nbsig, d)
 !
 !       VECTEUR DES CONTRAINTES
         do i = 1, nbsig

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine calc_epth_elga(fami, ndim, poum, kpg, ksp, &
-                          j_mater, xyzgau, repere, epsi_ther)
+                          j_mater, angl_naut, epsi_ther)
 !
     implicit none
 !
@@ -36,8 +36,7 @@ subroutine calc_epth_elga(fami, ndim, poum, kpg, ksp, &
     integer, intent(in) :: kpg
     integer, intent(in) :: ksp
     integer, intent(in) :: j_mater
-    real(kind=8), intent(in) :: xyzgau(3)
-    real(kind=8), intent(in) :: repere(7)
+    real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), intent(out) :: epsi_ther(6)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,16 +56,14 @@ subroutine calc_epth_elga(fami, ndim, poum, kpg, ksp, &
 ! In  kpg          : current point gauss
 ! In  ksp          : current "sous-point" gauss
 ! In  j_mater      : coded material address
-! In  xyzgau       : coordinates of current Gauss point
-! In  repere       : definition of basis (for non-isotropic materials)
+! In  angl_naut    : nautical angles (for non-isotropic materials)
 ! Out epsi_ther    : thermal strain tensor
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: elas_keyword
     integer :: elas_id
-    real(kind=8) :: angl(3)
-    real(kind=8) :: dire(3), orig(3), p_glob_loca(3, 3), epsi_ther_vect(6)
+    real(kind=8) :: p_glob_loca(3, 3), epsi_ther_vect(6)
     real(kind=8) :: epsth, epsth_anis(3)
     real(kind=8) :: vepst1(6), vepst2(6)
 !
@@ -82,20 +79,7 @@ subroutine calc_epth_elga(fami, ndim, poum, kpg, ksp, &
 ! - Non-isotropic elasticity: prepare basis
 !
     if (elas_id .gt. 1) then
-        if (repere(1) .gt. 0.d0) then
-            angl(1) = repere(2)
-            angl(2) = repere(3)
-            angl(3) = repere(4)
-            call matrot(angl, p_glob_loca)
-        else
-            dire(1) = repere(2)
-            dire(2) = repere(3)
-            dire(3) = repere(4)
-            orig(1) = repere(5)
-            orig(2) = repere(6)
-            orig(3) = repere(7)
-            call utrcyl(xyzgau, dire, orig, p_glob_loca)
-        end if
+        call matrot(angl_naut, p_glob_loca)
     end if
 !
 ! - Compute (local) thermic strains

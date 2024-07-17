@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine te0013(option, nomte)
 #include "asterfort/metau1.h"
 #include "asterfort/metau2.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/sigtmc.h"
 #include "asterfort/tecach.h"
 !
@@ -48,8 +48,7 @@ subroutine te0013(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=4) :: fami
-    real(kind=8) :: bsigma(81), sigth(162), repere(7), time, nharm, bary(3)
-    integer :: idim
+    real(kind=8) :: bsigma(81), sigth(162), angl_naut(3), time, nharm
     integer :: i, idfde, igeom, imate, ipoids, itemps, ivectu, iret
     integer :: ivf, nbsig, ndim, nno, npg
     real(kind=8) :: zero
@@ -64,7 +63,6 @@ subroutine te0013(option, nomte)
     fami = 'RIGI'
     sigth(:) = zero
     bsigma(:) = zero
-    bary(:) = 0.d0
 !
 !
 ! - Finite element informations
@@ -99,12 +97,7 @@ subroutine te0013(option, nomte)
 !
 ! - Orthotropic parameters
 !
-    do i = 1, nno
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call ortrep(ndim, bary, repere)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! - Get time
 !
@@ -115,8 +108,8 @@ subroutine te0013(option, nomte)
 !
 ! - Compute thermal stresses {SIGTH}
 !
-    call sigtmc('RIGI', nno, ndim, nbsig, npg, &
-                zr(ivf), zr(igeom), time, zi(imate), repere, &
+    call sigtmc('RIGI', ndim, nbsig, npg, &
+                time, zi(imate), angl_naut, &
                 option, sigth)
 !
 ! - Compute CHAR_MECA_TEMP_R: [B]Tx{SIGTH}

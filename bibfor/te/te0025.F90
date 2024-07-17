@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine te0025(option, nomte)
 #include "asterfort/epsvmc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 !
     character(len=16) :: option, nomte
@@ -43,8 +43,8 @@ subroutine te0025(option, nomte)
 !.......................................................................
 !
     integer :: jgano, ndim, nno, i, nnos, npg, ipoids, ivf, idfde, nbsig, igau
-    integer :: isig, igeom, idepl, itemps, idefo, iret, idim
-    real(kind=8) :: epsm(162), repere(7), bary(3)
+    integer :: isig, igeom, idepl, itemps, idefo, iret
+    real(kind=8) :: epsm(162), angl_naut(3)
     real(kind=8) :: nharm, instan, zero
 ! DEB ------------------------------------------------------------------
 !
@@ -96,21 +96,11 @@ subroutine te0025(option, nomte)
 !
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
 !      ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-    call ortrep(ndim, bary, repere)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
     call epsvmc('RIGI', nno, ndim, nbsig, npg, &
                 ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, repere, nharm, option, epsm)
+                instan, angl_naut, nharm, option, epsm)
 !
 !         --------------------
 ! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 !
 subroutine pminit(imate, nbvari, ndim, typmod, table, &
-                  nbpar, iforta, nompar, typpar, ang, &
+                  nbpar, iforta, nompar, typpar, angl_naut, &
                   pgl, irota, epsm, sigm, vim, &
                   vip, vr, defimp, coef, indimp, &
                   fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara, &
@@ -78,7 +78,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 ! OUT  TABLE  : TABLE RESULTAT
 ! OUT  NBPAR  : NOMBRE DE PARAMETRES DE LA TABLE RESULTAT
 ! OUT  NOMPAR : NOMS DES PARAMETRES DE LA TABLE RESULTAT
-! OUT  ANG    : ANGLES DU MOT-CLE MASSIF
+! OUT  ANGL_NAUT : ANGLES DU MOT-CLE MASSIF
 ! OUT  PGL    : MATRICE DE ROTATION AUTOUR DE Z
 ! OUT  IROTA  : =1 SI ROTATION AUTOUR DE Z
 ! OUT  EPSM   : DEFORMATIONS INITIALES
@@ -118,10 +118,10 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     character(len=16) :: option, nompar(*), predic, matric, fortab
     character(len=19) :: lisins, sddisc, solveu
     character(len=24) :: sderro
-    real(kind=8) :: instam, ang(7), sigm(6), epsm(9), vale, rac2
+    real(kind=8) :: instam, angl_naut(3), sigm(6), epsm(9), vale, rac2
     real(kind=8) :: vim(nbvari), vip(nbvari), vr(*)
-    real(kind=8) :: sigi, rep(7), kel(6, 6), cimpo(6, 12)
-    real(kind=8) :: angd(3), ang1(1), pgl(3, 3), xyzgau(3), coef, instin
+    real(kind=8) :: sigi, kel(6, 6), cimpo(6, 12)
+    real(kind=8) :: angd(3), ang1(1), pgl(3, 3), coef, instin
     real(kind=8) :: angeul(3), dsidep(36)
     real(kind=8) :: sigini(6), epsini(6), valimp(9)
     aster_logical :: limpex
@@ -236,34 +236,28 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 !     ----------------------------------------
 !     TRAITEMENT DES ANGLES
 !     ----------------------------------------
-    call r8inir(7, 0.d0, ang, 1)
+    angl_naut(:) = 0.d0
     call r8inir(3, 0.d0, angeul, 1)
-    call r8inir(3, 0.d0, xyzgau, 1)
-    call getvr8('MASSIF', 'ANGL_REP', iocc=1, nbval=3, vect=ang(1), &
+    call getvr8('MASSIF', 'ANGL_REP', iocc=1, nbval=3, vect=angl_naut, &
                 nbret=n1)
     call getvr8('MASSIF', 'ANGL_EULER', iocc=1, nbval=3, vect=angeul, &
                 nbret=n2)
 !
     if (n1 .gt. 0) then
-        ang(1) = ang(1)*r8dgrd()
+        angl_naut(1) = angl_naut(1)*r8dgrd()
         if (ndim .eq. 3) then
-            ang(2) = ang(2)*r8dgrd()
-            ang(3) = ang(3)*r8dgrd()
+            angl_naut(2) = angl_naut(2)*r8dgrd()
+            angl_naut(3) = angl_naut(3)*r8dgrd()
         end if
-        ang(4) = 1.d0
 !
 !     ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
     else if (n2 .gt. 0) then
         call eulnau(angeul, angd)
-        ang(1) = angd(1)*r8dgrd()
-        ang(5) = angeul(1)*r8dgrd()
+        angl_naut(1) = angd(1)*r8dgrd()
         if (ndim .eq. 3) then
-            ang(2) = angd(2)*r8dgrd()
-            ang(3) = angd(3)*r8dgrd()
-            ang(6) = angeul(2)*r8dgrd()
-            ang(7) = angeul(3)*r8dgrd()
+            angl_naut(2) = angd(2)*r8dgrd()
+            angl_naut(3) = angd(3)*r8dgrd()
         end if
-        ang(4) = 2.d0
     end if
     if (ncmp .eq. 6) then
         call r8inir(9, 0.d0, epsm, 1)
@@ -323,9 +317,6 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     end if
     kpg = 1
     ksp = 1
-    call r8inir(7, 0.d0, rep, 1)
-    rep(1) = 1.d0
-    call dcopy(3, ang, 1, rep(2), 1)
     instam = 0.d0
 !     ----------------------------------------
 !     CHARGEMENT
@@ -512,7 +503,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 !     MATRICE ELASTIQUE ET COEF POUR ADIMENSIONNALISER
 !     ----------------------------------------
     call dmat3d('PMAT', imate, instam, '+', kpg, &
-                ksp, rep, xyzgau, kel)
+                ksp, angl_naut, kel)
 !     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
     coef = max(kel(1, 1), kel(2, 2), kel(3, 3))
     do j = 4, 6

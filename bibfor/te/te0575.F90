@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine te0575(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmgeom.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
@@ -64,12 +64,12 @@ subroutine te0575(option, nomte)
     parameter(mxcmel=162)
     parameter(nbnomx=27)
     parameter(nbcont=6)
-    integer :: iharmo, nh, idim, iret
+    integer :: iharmo, nh, iret
     integer :: idenem
     real(kind=8) :: epsi(nbcont), epsim(nbcont), delta(nbcont)
-    real(kind=8) :: nharm, repere(7), instan
+    real(kind=8) :: nharm, angl_naut(3), instan
     real(kind=8) :: enerpg(nbnomx), epss(mxcmel), r
-    real(kind=8) :: xyzgau(3), bary(3), f(3, 3)
+    real(kind=8) :: f(3, 3)
     real(kind=8) :: epssm(mxcmel), sigmm(nbcont), sigma(nbcont)
     real(kind=8) :: integ1, integ2, integ, epsbid(6), dfdbid(27*3)
     character(len=4) :: fami
@@ -112,18 +112,7 @@ subroutine te0575(option, nomte)
 !
 ! ----   RECUPERATION  DES DONNEES RELATIVES AU REPERE D'ORTHOTROPIE
 !         -----------------------------------------------------------
-!        COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-        bary(1) = 0.d0
-        bary(2) = 0.d0
-        bary(3) = 0.d0
-        do i = 1, nno
-            do idim = 1, ndim
-                bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-            end do
-        end do
-!
-        call ortrep(ndim, bary, repere)
+        call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
 !        --------------------------------------------------------
@@ -259,22 +248,6 @@ subroutine te0575(option, nomte)
             epsi(isig) = zero
         end do
 !
-!  --      COORDONNEES ET TEMPERATURE AU POINT D'INTEGRATION
-!  --      COURANT
-!          -------
-        xyzgau(1) = zero
-        xyzgau(2) = zero
-        xyzgau(3) = zero
-!
-        do i = 1, nno
-!
-            do idim = 1, ndim
-                xyzgau(idim) = xyzgau(idim)+zr(ivf+i+nno*(igau-1)-1)*zr(igeom-1+idim+ndim*(i-&
-                               &1))
-            end do
-!
-        end do
-!
 !  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE THERMOELASTIQUE :
 !        ==========================================================
         if (option(1:4) .eq. 'ENEL') then
@@ -294,8 +267,8 @@ subroutine te0575(option, nomte)
 !
 ! ---     CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
 !
-            call enelpg(fami, zi(imate), instan, igau, repere, &
-                        xyzgau, compor, f, sigma, nbvari, &
+            call enelpg(fami, zi(imate), instan, igau, angl_naut, &
+                        compor, f, sigma, nbvari, &
                         zr(idvari+(igau-1)*nbvari), enerpg(igau))
 !
 !

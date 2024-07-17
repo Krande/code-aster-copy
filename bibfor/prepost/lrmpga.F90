@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -109,9 +109,10 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
     integer :: nbTypeCellInField, iElem
     integer :: jngaok
     integer :: ipg, ipgm, jperm
-    integer :: npr, nbValues, l_iprof, l_fapg
+    integer :: npr, nbValues, l_fapg
     integer :: iopt, imod, jvModeLoc, igrd, jvDescrigd, nec, nbsp
-    integer :: typeCellNume
+    integer :: typeCellNume, jadproa, jtypma, jmedtoaster, ima, imed
+    character(len=8) :: typma
     integer, parameter :: MEDIterMesh = 1
 !
     character(len=1) :: fileState
@@ -336,6 +337,23 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
 
             l_fapg = len(trim(adjustl(fapg)))
 
+            call jeveuo(nomaas(1:8)//'.TYPMAIL', 'L', jtypma)
+
+            call wkvect('&&LRMPGA.MED_TO_ASTER', 'V V I', nbcell, jmedtoaster)
+            imed = 0
+            do ima = 1, nbcell
+                call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma+ima-1)), typma)
+                if (typma .eq. typeCellName) then
+                    imed = imed+1
+                    do iElem = 1, nbElem
+                        if (zi(jvGrel+iElem-1) .eq. ima) then
+                            zi(jmedtoaster+imed-1) = ima
+                            exit
+                        end if
+                    end do
+                end if
+            end do
+
 ! --------- Looking for MED cell
             do iTypeCellInField = 1, nbTypeCellInField
                 if (asterCellType(iTypeCellInField) .eq. typeCellName) then
@@ -353,9 +371,6 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
 ! ----------------- Acces to number of integration points for these profiles
                     nlnbpg = zk80(jnoloc+2*iTypeCellInField-1) (1:24)
                     call jeveuo(nlnbpg, 'L', jnonpg)
-
-                    ! initialiser le cumul des mailles du meme type d'element
-                    l_iprof = 0
 
                     do iProfile = 1, nbProfile
 ! --------------------- Acces to number of integration points for these profiles
@@ -381,20 +396,22 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
                             if (profileName .ne. ' ') then
                                 call lrcmpr(MEDFileIden, profileName, '&&LRMPGA.TMP', lgproa, &
                                             codre2)
-                                do iElem = 1, min(lgproa, nbElem)
-                                    ASSERT(zi(jvGrel+iElem-1+l_iprof) .le. nbCell)
-                                    pgmail(zi(jvGrel+iElem-1+l_iprof)) = AsterNbPg
-                                    pgmmil(zi(jvGrel+iElem-1+l_iprof)) = MEDNbPg
-                                    spmmil(zi(jvGrel+iElem-1+l_iprof)) = nbsp
+                                call jeveuo('&&LRMPGA.TMP', 'L', jadproa)
+                                do i = 1, lgproa
+                                    imed = zi(jadproa+i-1)
+                                    ima = zi(jmedtoaster+imed-1)
+                                    if (ima .gt. 0) then
+                                        pgmail(ima) = AsterNbPg
+                                        pgmmil(ima) = MEDNbPg
+                                        spmmil(ima) = nbsp
+                                    end if
                                 end do
-                                ! mettre à jour le cumul
-                                l_iprof = l_iprof+min(lgproa, nbElem)
                                 call jedetr('&&LRMPGA.TMP')
                             else
                                 do iElem = 1, nbElem
-                                    pgmail(zi(jvGrel+iElem-1+l_iprof)) = AsterNbPg
-                                    pgmmil(zi(jvGrel+iElem-1+l_iprof)) = MEDNbPg
-                                    spmmil(zi(jvGrel+iElem-1+l_iprof)) = nbsp
+                                    pgmail(zi(jvGrel+iElem-1)) = AsterNbPg
+                                    pgmmil(zi(jvGrel+iElem-1)) = MEDNbPg
+                                    spmmil(zi(jvGrel+iElem-1)) = nbsp
                                 end do
                             end if
                         else
@@ -444,6 +461,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
                     call jedetr('&&LRMPGA_PERMUT')
                 end if
             end do
+            call jedetr('&&LRMPGA.MED_TO_ASTER')
         end if
     end do
 !

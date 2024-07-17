@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,87 +16,76 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcangm(ndim, coor, angmas)
+subroutine rcangm(ndim, coor, angl_naut)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8nnem.h"
+#include "asterfort/angvx.h"
 #include "asterfort/angvxy.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utrcyl.h"
     integer :: ndim
-    real(kind=8) :: angmas(7), coor(3)
+    real(kind=8) :: angl_naut(3), coor(3)
 ! ......................................................................
 !    - ORIENTATION DU MASSIF
 !
 !   IN      NDIM    I      : DIMENSION DU PROBLEME
 !   IN      COOR    R        COORDONNEE DU POINT
 !                            (CAS CYLINDRIQUE)
-!   OUT     ANGMAS  R      : ANGLE NAUTIQUE ( OU EULERIEN )
+!   OUT     ANGL_NAUT R    : ANGLE NAUTIQUE
 ! ......................................................................
     integer :: icamas, iret, i
     real(kind=8) :: p(3, 3), xg(3), yg(3), orig(3), dire(3)
-    real(kind=8) :: alpha, beta
+    real(kind=8) :: alpha, beta, xu, yu, xnorm
 !     ------------------------------------------------------------------
 !
     call tecach('NNO', 'PCAMASS', 'L', iret, iad=icamas)
-    call r8inir(7, 0.d0, angmas, 1)
+    angl_naut(:) = 0.d0
 !
     if (iret .eq. 0) then
-        call r8inir(7, 0.d0, angmas, 1)
         if (zr(icamas) .gt. 0.d0) then
-            angmas(1) = zr(icamas+1)*r8dgrd()
+            angl_naut(1) = zr(icamas+1)*r8dgrd()
             if (ndim .eq. 3) then
-                angmas(2) = zr(icamas+2)*r8dgrd()
-                angmas(3) = zr(icamas+3)*r8dgrd()
-                angmas(4) = 1.d0
-            end if
-!           ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
-            if (abs(zr(icamas)-2.d0) .lt. 1.d-3) then
-                if (ndim .eq. 3) then
-                    angmas(5) = zr(icamas+4)*r8dgrd()
-                    angmas(6) = zr(icamas+5)*r8dgrd()
-                    angmas(7) = zr(icamas+6)*r8dgrd()
-                else
-                    angmas(5) = zr(icamas+1)*r8dgrd()
-                end if
-                angmas(4) = 2.d0
+                angl_naut(2) = zr(icamas+2)*r8dgrd()
+                angl_naut(3) = zr(icamas+3)*r8dgrd()
             end if
 !
         else if (abs(zr(icamas)+1.d0) .lt. 1.d-3) then
 !
 ! ON TRANSFORME LA DONNEE DU REPERE CYLINDRIQUE EN ANGLE NAUTIQUE
-! (EN 3D, EN 2D ON MET A 0)
 !
+            orig(1:ndim) = zr(icamas+3+1:icamas+3+ndim)
             if (ndim .eq. 3) then
                 alpha = zr(icamas+1)*r8dgrd()
                 beta = zr(icamas+2)*r8dgrd()
                 dire(1) = cos(alpha)*cos(beta)
                 dire(2) = sin(alpha)*cos(beta)
                 dire(3) = -sin(beta)
-                orig(1) = zr(icamas+4)
-                orig(2) = zr(icamas+5)
-                orig(3) = zr(icamas+6)
                 call utrcyl(coor, dire, orig, p)
                 do i = 1, 3
                     xg(i) = p(1, i)
                     yg(i) = p(2, i)
                 end do
-                call angvxy(xg, yg, angmas)
+                call angvxy(xg, yg, angl_naut)
             else
-                call utmess('F', 'ELEMENTS2_38')
-                call r8inir(7, 0.d0, angmas, 1)
+                xu = coor(1)-orig(1)
+                yu = coor(2)-orig(2)
+                xnorm = sqrt(xu**2+yu**2)
+                xu = xu/xnorm
+                yu = yu/xnorm
+                p(1, 1) = xu
+                p(2, 1) = yu
+                p(1, 2) = -yu
+                p(2, 2) = xu
+                xg(1) = xu
+                xg(2) = yu
+                xg(3) = 0.d0
+                call angvx(xg, alpha, beta)
+                angl_naut(1) = alpha
             end if
         end if
-!
-    else if (iret .eq. 1) then
-        call r8inir(7, r8nnem(), angmas, 1)
-!
-    else if (iret .eq. 2) then
-        call r8inir(7, 0.d0, angmas, 1)
-!
     end if
 !
 end subroutine

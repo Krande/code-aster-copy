@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,6 +58,8 @@ Le nombre de variables internes n'est pas le même. On ne peut faire ce changeme
 Ce n'est pas le cas ici. Pour avoir la liste des mailles et les relations de comportement concernées, relancer le calcul en utilisant INFO=2.
 """
     ),
+    8: _("""Un champ de température doit être associé au matériau utilisant BETON_BURGER."""),
+    9: _("""Un champ de séchage/humidité doit être associé au matériau utilisant BETON_BURGER."""),
     10: _(
         """Maille: %(k1)-8s - Cette maille appartient aux groupes de mailles suivants : %(k2)s %(k2)s %(k3)s %(k3)s."""
     ),

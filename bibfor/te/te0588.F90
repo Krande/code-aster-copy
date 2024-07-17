@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine te0588(option, nomte)
 #include "asterfort/iselli.h"
 #include "asterc/ismaem.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/teattr.h"
@@ -69,18 +69,18 @@ subroutine te0588(option, nomte)
     integer :: nno, imatuu, ndim, imate, iinstm, jcret
     integer :: dimmat, npi, npg, li, ibid, yaenrm
     integer :: codret, iretp, iretm, icodre(1)
-    integer :: ipoids, ivf, idfde, igeom, idim
+    integer :: ipoids, ivf, idfde, igeom
     integer :: iinstp, ideplm, ideplp, icompo, icarcr, ipesa
     integer :: icontm, ivarip, ivarim, ivectu, icontp
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
     integer :: dimdef, dimcon, nbvari, nddls, nddlm
-    integer :: nmec, np1, np2, i, nnos
+    integer :: nmec, np1, np2, nnos
     integer :: nnom
     real(kind=8) :: defgep(13), defgem(13)
     real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(25, 52*20)
     real(kind=8) :: drds(25, 11+5), drdsr(25, 11+5), dsde(11+5, 25)
     real(kind=8) :: r(25), sigbar(25), c(25), ck(25), cs(25)
-    real(kind=8) :: angmas(7), coor(3), angnau(3), angleu(3)
+    real(kind=8) :: angnau(3)
     real(kind=8) :: work1(11+5, 52*20), work2(25, 52*20)
     character(len=3) :: modint
     character(len=8) :: typmod(2)
@@ -152,9 +152,6 @@ subroutine te0588(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    angmas = 0.d0
-    coor = 0.d0
-    angleu = 0.d0
     angnau = 0.d0
     imatuu = ismaem()
     ivectu = ismaem()
@@ -225,34 +222,7 @@ subroutine te0588(option, nomte)
 ! --- CONVERSION DES ANGLES NAUTIQUES EN ANGLES D'EULER
 ! =====================================================================
 !
-        do i = 1, nno
-            do idim = 1, ndim
-                coor(idim) = coor(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-            end do
-        end do
-        call rcangm(ndim, coor, angmas)
-!# ANGMAS : donne par affe_cara_elem en degre et ici en fourni en radian
-!# CAS OU AFFE_CARA_ELEM EST EN ANGLE D EULER => On CONVERTIT EN NAUTIQUE
-        if (abs(angmas(4)-2.d0) .lt. 1.d-3) then
-            if (ndim .eq. 3) then
-                angleu(1) = angmas(5)
-                angleu(2) = angmas(6)
-                angleu(3) = angmas(7)
-            else
-                angleu(1) = angmas(5)
-            end if
-            call eulnau(angleu/r8dgrd(), angnau/r8dgrd())
-!
-!# CAS OU AFFE_CARA_ELEM EST EN ANGLE NAUTIQUE (OK PAS DE CONVERSION)
-        else
-            if (ndim .eq. 3) then
-                angnau(1) = angmas(1)
-                angnau(2) = angmas(2)
-                angnau(3) = angmas(3)
-            else
-                angnau(1) = angmas(1)
-            end if
-        end if
+        call getElemOrientation(ndim, nno, igeom, angnau)
 ! ----- Select objects to construct from option name
         call behaviourOption(option, zk16(icompo), &
                              lMatr, lVect, &
