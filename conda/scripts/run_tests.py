@@ -95,14 +95,15 @@ def run_specific_test(test_name: str, debug_openmp=False):
 
     test_file = init_str + comm_file.read_text()
 
-    with open("test_file.py", "w") as f:
-        f.write("from run_tests import init_env")
+    with open("main_test_file.py", "w") as f:
+        f.write(f"#{test_name}\n")
+        #f.write("from run_tests import init_env")
         if debug_openmp:
             f.write(", openmp_debugging\n")
             f.write("openmp_debugging()\n")
         else:
             f.write("\n")
-        f.write("#init_env()\n")
+        #f.write("#init_env()\n")
         f.write(test_file)
 
     exec(test_file)
@@ -159,32 +160,36 @@ def cli():
     parser.add_argument("--manual", action="store_true")
 
     args = parser.parse_args()
-
+    no_args = True
     if args.simple:
         simple()
+        no_args = False
 
     if args.trace:
         trace_test()
+        no_args = False
 
     if args.seq:
         individual_test()
+        no_args = False
 
     if args.test_file:
         run_specific_test(args.test_file)
+        no_args = False
 
-    if args.manual:
+    if args.manual or no_args:
         manual()
 
 
 def manual():
-    run_specific_test("comp010i")
+    # run_specific_test("comp010i")
     # run_specific_test('adlv100a')
     # run_specific_test('adlv100p')
     # run_specific_test('ahlv100a')
     # run_specific_test('ahlv100t')
     # run_specific_test('hsna106a')  # related to verification of <F> <MODELISA_1> Mesh file issue
     # run_specific_test('zzzz111a')
-    # run_specific_test('zzzz395s')
+    run_specific_test('zzzz395s')
 
 
 if __name__ == "__main__":
