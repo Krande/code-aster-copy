@@ -40,9 +40,10 @@ module HHO_measure_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public   :: hhoMeasureCell, hhoMeasureFace, hhoDiameterCell, hhoDiameterFace, hho_surface_tri
+    public   :: hhoMeasureCell, hhoMeasureFace, hhoDiameterCell, hhoDiameterFace
     public   :: hhoLengthBoundingBoxCell, hhoLengthBoundingBoxFace
-    private  :: hho_vol_hexa, hho_vol_tetra, hho_surface_quad, hho_length_edge
+    public   :: hho_vol_tetra, hho_surface_tri
+    private  :: hho_vol_hexa, hho_surface_quad, hho_length_edge
     private  :: hho_vol_prism, hho_vol_pyram
     private  :: hhoDiameter, prod_vec
 !
@@ -70,7 +71,7 @@ contains
         v2(1) = v0(2)*v1(3)-v0(3)*v1(2)
         v2(2) = -(v0(1)*v1(3)-v0(3)*v1(1))
         v2(3) = v0(1)*v1(2)-v0(2)*v1(1)
-        !
+!
     end function
 !
 !===================================================================================================
@@ -94,12 +95,12 @@ contains
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
-! --- split the hexa in 5 tets
+! --- split the hexa in 5 tets - see hhoSplitSimplex
         tets(1:4, 1) = (/1, 2, 4, 5/)
         tets(1:4, 2) = (/2, 3, 4, 7/)
-        tets(1:4, 3) = (/2, 7, 5, 6/)
-        tets(1:4, 4) = (/4, 5, 7, 8/)
-        tets(1:4, 5) = (/2, 4, 5, 7/)
+        tets(1:4, 3) = (/2, 4, 5, 7/)
+        tets(1:4, 4) = (/2, 5, 6, 7/)
+        tets(1:4, 5) = (/4, 5, 7, 8/)
 !
         vol = 0.d0
         do i = 1, 5
@@ -132,7 +133,7 @@ contains
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
-! --- split the hexa in 3 tets
+! --- split the prsim in 3 tets - see hhoSplitSimplex
         tets(1:4, 1) = (/1, 2, 3, 4/)
         tets(1:4, 2) = (/2, 3, 4, 5/)
         tets(1:4, 3) = (/3, 4, 5, 6/)
@@ -168,7 +169,7 @@ contains
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
-! --- split the pyramid in 2 tets
+! --- split the pyramid in 2 tets - see hhoSplitSimplex
         tets(1:4, 1) = (/1, 2, 3, 5/)
         tets(1:4, 2) = (/1, 3, 4, 5/)
 !

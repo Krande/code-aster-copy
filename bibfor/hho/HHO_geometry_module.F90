@@ -43,6 +43,7 @@ module HHO_geometry_module
 !
     public  :: barycenter, hhoNormalFace, hhoFaceInitCoor, hhoGeomBasis, hhoGeomDerivBasis
     public  :: hhoLocalBasisFace, hhoNormalFace2, hhoNormalFace3, hhoNormalFaceQP
+    public  :: hhoSplitSimplex
     private :: hhoNormalFace2d, well_oriented, hhoNormalFace1d, prod_vec, find_lowest_vertex
 !
 contains
@@ -660,6 +661,62 @@ contains
             call elrfdf('HE8', pt, dbasis)
         case (MT_PENTA6)
             call elrfdf('PE6', pt, dbasis)
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoSplitSimplex(typema, n_simpl, indice_simpl)
+!
+        implicit none
+!
+        integer, intent(in)      :: typema
+        integer, intent(out)     :: n_simpl
+        integer, intent(out)     :: indice_simpl(6, 4)
+!
+! ---------------------------------------------------------------------------------
+!  HHO - geometrie
+!  Split an element in simplexe
+!
+! In typema : type of element
+! ---------------------------------------------------------------------------------
+!
+!
+        n_simpl = 0
+        indice_simpl = 0
+!
+        select case (typema)
+        case (MT_TRIA3)
+            n_simpl = 1
+            indice_simpl(1, 1:3) = [1, 2, 3]
+        case (MT_QUAD4)
+            n_simpl = 2
+            indice_simpl(1, 1:3) = [1, 2, 3]
+            indice_simpl(2, 1:3) = [1, 3, 4]
+        case (MT_TETRA4)
+            n_simpl = 1
+            indice_simpl(1, 1:4) = [1, 2, 3, 4]
+        case (MT_PYRAM5)
+            n_simpl = 2
+            indice_simpl(1, 1:4) = [1, 2, 3, 5]
+            indice_simpl(2, 1:4) = [1, 3, 4, 5]
+        case (MT_HEXA8)
+            n_simpl = 5
+            indice_simpl(1, 1:4) = [1, 2, 4, 5]
+            indice_simpl(2, 1:4) = [2, 3, 4, 7]
+            indice_simpl(3, 1:4) = [2, 4, 5, 7]
+            indice_simpl(4, 1:4) = [2, 5, 6, 7]
+            indice_simpl(5, 1:4) = [4, 5, 7, 8]
+        case (MT_PENTA6)
+            n_simpl = 3
+            indice_simpl(1, 1:4) = [1, 2, 3, 4]
+            indice_simpl(2, 1:4) = [2, 3, 4, 5]
+            indice_simpl(3, 1:4) = [3, 4, 5, 6]
         case default
             ASSERT(ASTER_FALSE)
         end select

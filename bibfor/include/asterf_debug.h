@@ -73,10 +73,7 @@
 #   define DEBUG_TIME(a, b) continue
 #endif
 
-#ifdef ASTER_DEBUG_TIMER
-#   define DEBUG_TIMER(a) call cpu_time(a)
-#else
-#   define DEBUG_TIMER(a) continue
-#endif
+#define DEBUG_TIMER(a) call cpu_time(a)
+
 
 #endif
