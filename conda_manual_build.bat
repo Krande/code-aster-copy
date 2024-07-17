@@ -162,7 +162,7 @@ if %CLEAN_BUILD%==1 (
       --enable-med ^
       --enable-hdf5 ^
       --enable-mumps ^
-      --enable-openmp ^
+      --disable-openmp ^
       --enable-metis ^
       --enable-scotch ^
       --disable-mpi ^

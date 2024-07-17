@@ -284,7 +284,12 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
             end if
         end if
 !
-        nbomp = omp_get_max_threads()
+#ifdef ASTER_HAVE_OPENMP
+    nbomp = omp_get_max_threads()
+#else
+    nbomp = 1
+#endif
+
 ! POUR PRENDRE POTENTIEL IMPACT REDUCTION_MPI
         if (icntl(17) > 1) then
             nbomp = nbomp*icntl(17)
