@@ -305,9 +305,11 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
     }
 
     int getBlockFromIndex( int idx ) const {
+        CALL_JEMARQ();
         int iout = 0;
+        _blo2->updateValuePointer();
         if ( _bloc.exists() ) {
-            std::vector< long int > blocks = _blo2->toVector();
+            VectorLong blocks = _blo2->toVector();
             for ( int i = 0; i < _blo2->size(); ++i ) {
                 if ( idx <= blocks[i] ) {
                     iout = i;
@@ -315,24 +317,29 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
                 }
             }
         }
+        CALL_JEDEMA();
         return iout;
     }
 
     VectorReal getValuesAtIndex( std::vector< JeveuxVectorReal > jvec, int idx ) const {
+        CALL_JEMARQ();
         int nmod = getNumberOfModes();
         VectorReal out;
         out.reserve( nmod );
         if ( _bloc.exists() ) {
-            VectorLong blocks = _blo2->toVector();
             int iblo = getBlockFromIndex( idx );
             int idx0 = 0;
+            _blo2->updateValuePointer();
+            VectorLong blocks = _blo2->toVector();
             if ( iblo != 0 ) {
                 idx0 = blocks[iblo - 1];
             }
+            jvec[iblo]->updateValuePointer();
             VectorReal vect = jvec[iblo]->toVector();
             out = VectorReal( vect.begin() + ( idx - idx0 ) * nmod,
                               vect.begin() + ( idx - idx0 + 1 ) * nmod );
         }
+        CALL_JEDEMA();
         return out;
     }
 
@@ -346,9 +353,12 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
 
     VectorReal getValues( std::vector< JeveuxVectorReal > jvec ) const {
         VectorReal out;
+        CALL_JEMARQ();
         int nmod = getNumberOfModes();
+        jvec[0]->updateValuePointer();
         int size = jvec[0]->size();
         for ( int i = 1; i < jvec.size(); ++i ) {
+            jvec[i]->updateValuePointer();
             size += jvec[i]->size() - nmod;
         }
         out.reserve( size );
@@ -359,6 +369,7 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
             VectorReal vect = jvec[i]->toVector();
             out.insert( out.end(), vect.begin() + nmod, vect.end() );
         }
+        CALL_JEDEMA();
         return out;
     }
 

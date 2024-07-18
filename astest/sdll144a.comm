@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -335,8 +335,7 @@ TRANGEN = DYNA_VIBRA(
     EXCIT=(_F(VECT_ASSE_GENE=BXGE, FONC_MULT=forx), _F(VECT_ASSE_GENE=BYGE, FONC_MULT=fory)),
 )
 
-TRANGEN = DYNA_VIBRA(
-    reuse=TRANGEN,
+TRANGEN2 = DYNA_VIBRA(
     TYPE_CALCUL="TRAN",
     BASE_CALCUL="GENE",
     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
@@ -354,13 +353,13 @@ TRANGEN = DYNA_VIBRA(
 )
 
 DX_GED2 = RECU_FONCTION(
-    RESU_GENE=TRANGEN, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="N_DIS2", INTERPOL="LIN"
+    RESU_GENE=TRANGEN2, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="N_DIS2", INTERPOL="LIN"
 )
 
 DX2_GED2 = CALC_FONCTION(PUISSANCE=_F(FONCTION=DX_GED2, EXPOSANT=2))
 
 DY_GED2 = RECU_FONCTION(
-    RESU_GENE=TRANGEN, NOM_CHAM="DEPL", NOM_CMP="DY", GROUP_NO="N_DIS2", INTERPOL="LIN"
+    RESU_GENE=TRANGEN2, NOM_CHAM="DEPL", NOM_CMP="DY", GROUP_NO="N_DIS2", INTERPOL="LIN"
 )
 
 DY2_GED2 = CALC_FONCTION(PUISSANCE=_F(FONCTION=DY_GED2, EXPOSANT=2))

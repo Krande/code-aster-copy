@@ -43,6 +43,7 @@ void exportGeneralizedResultToPython( py::module_ &mod ) {
         mod, "TransientGeneralizedResult" )
         .def( py::init( &initFactoryPtr< TransientGeneralizedResult > ) )
         .def( py::init( &initFactoryPtr< TransientGeneralizedResult, std::string > ) )
+        .def( "build", &TransientGeneralizedResult::build )
         .def( "setGeneralizedDOFNumbering",
               &TransientGeneralizedResult::setGeneralizedDOFNumbering )
         .def( "getGeneralizedDOFNumbering",

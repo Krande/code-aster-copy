@@ -13046,7 +13046,22 @@ class TransientGeneralizedResult(GeneralizedResultReal):
         2. __init__(self: libaster.TransientGeneralizedResult, arg0: str) -> None
         """
 
+    def build(self):
+        pass
+
+    def getAccelerationValues(self):
+        pass
+
+    def getAccelerationValuesAtIndex(self, arg0):
+        pass
+
     def getDOFNumbering(self):
+        pass
+
+    def getDisplacementValues(self):
+        pass
+
+    def getDisplacementValuesAtIndex(self, arg0):
         pass
 
     def getGeneralizedDOFNumbering(self):
@@ -13061,28 +13076,16 @@ class TransientGeneralizedResult(GeneralizedResultReal):
     def getTimes(self):
         pass
 
-    def setDOFNumbering(self, arg0):
-        pass
-
-    def setGeneralizedDOFNumbering(self, arg0):
-        pass
-
-    def getDisplacementValues(self):
-        pass
-
     def getVelocityValues(self):
-        pass
-
-    def getAccelerationValues(self):
-        pass
-
-    def getDisplacementValuesAtIndex(self, arg0):
         pass
 
     def getVelocityValuesAtIndex(self, arg0):
         pass
 
-    def getAccelerationValuesAtIndex(self, arg0):
+    def setDOFNumbering(self, arg0):
+        pass
+
+    def setGeneralizedDOFNumbering(self, arg0):
         pass
 
 
