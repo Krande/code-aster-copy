@@ -227,7 +227,8 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FieldOnNodesRealPtr h1_field )
 
     // Output fields
     auto hho_elno = std::make_shared< FieldOnCellsReal >( model );
-    calcul->addOutputField( "PTEMP_R", hho_elno );
+    const std::string pname = model->isThermal() ? "PTEMP_R" : "PDEPL_R";
+    calcul->addOutputField( pname, hho_elno );
 
     // Compute
     if ( model->existsFiniteElement() ) {
@@ -252,7 +253,8 @@ FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const FieldOnCellsRealPtr field_
 
     // Output fields
     auto hho_elno = std::make_shared< FieldOnCellsReal >( model );
-    calcul->addOutputField( "PTEMP_R", hho_elno );
+    const std::string pname = model->isThermal() ? "PTEMP_R" : "PDEPL_R";
+    calcul->addOutputField( pname, hho_elno );
 
     // Compute
     if ( model->existsFiniteElement() ) {
@@ -277,7 +279,8 @@ FieldOnCellsRealPtr HHO::evaluateAtQuadraturePoints( const FieldOnNodesRealPtr h
 
     // Output fields
     auto hho_elga = std::make_shared< FieldOnCellsReal >( model );
-    calcul->addOutputField( "PTEMP_R", hho_elga );
+    const std::string pname = model->isThermal() ? "PTEMP_R" : "PDEPL_R";
+    calcul->addOutputField( pname, hho_elga );
 
     // Compute
     if ( model->existsFiniteElement() ) {

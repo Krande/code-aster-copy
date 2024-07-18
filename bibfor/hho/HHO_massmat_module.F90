@@ -132,8 +132,8 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), min_order, max_order,&
-                                  & basisScalEval)
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), min_order, max_order, &
+                                         basisScalEval)
 ! --------  Eval massMat
                 call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, &
                           1, this%m, this%max_nrows)
@@ -219,7 +219,7 @@ contains
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
                 call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), min_order, &
-                                        & max_order, basisScalEval)
+                                         max_order, basisScalEval)
 ! --------  Eval massMat
                 call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, &
                           1, this%m, this%max_nrows)

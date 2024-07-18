@@ -175,6 +175,10 @@ contains
             short = "HE8"
         case (MT_TETRA4)
             short = "TE4"
+        case (MT_PYRAM5)
+            short = "PY5"
+        case (MT_PENTA6)
+            short = "PE6"
         case (MT_QUAD4)
             short = "QU4"
         case (MT_TRIA3)
@@ -311,8 +315,8 @@ contains
         do i = 1, 3
             do k = 1, 3
                 write (6, '(50F14.7)') tens(i, 1, k, 1), tens(i, 1, k, 2), tens(i, 1, k, 3), &
-                                    &   tens(i, 2, k, 1), tens(i, 2, k, 2), tens(i, 2, k, 3), &
-                                    &   tens(i, 3, k, 1), tens(i, 3, k, 2), tens(i, 3, k, 3)
+                    tens(i, 2, k, 1), tens(i, 2, k, 2), tens(i, 2, k, 3), &
+                    tens(i, 3, k, 1), tens(i, 3, k, 2), tens(i, 3, k, 3)
             end do
         end do
 !

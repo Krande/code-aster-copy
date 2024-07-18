@@ -73,10 +73,10 @@ contains
 !===================================================================================================
 !
     subroutine hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
-                                    & fami, typmod, imate, compor, option, carcri, lgpg, ncomp,&
-                                    & time_prev, time_curr, depl_prev, depl_curr, &
-                                    & sig_prev, vi_prev, angmas, mult_comp, cplan, &
-                                    & lhs, rhs, sig_curr, vi_curr, codret)
+                                    fami, typmod, imate, compor, option, carcri, lgpg, ncomp, &
+                                    time_prev, time_curr, depl_prev, depl_curr, &
+                                    sig_prev, vi_prev, angmas, mult_comp, cplan, &
+                                    lhs, rhs, sig_curr, vi_curr, codret)
 !
         implicit none
 !

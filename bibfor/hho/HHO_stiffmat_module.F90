@@ -89,11 +89,11 @@ contains
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
             call hhoBasisCell%BSEvalGrad(hhoQuad%points(1:3, ipg), &
-                                        & min_order, max_order, BSGradEval)
+                                         min_order, max_order, BSGradEval)
 !
 ! --------  Eval stiffMat
             call dsyrk('U', 'T', dimMat, ndim, hhoQuad%weights(ipg), BSGradEval, 3, &
-                        & 1.d0, stiffMat, MSIZE_CELL_SCAL)
+                       1.d0, stiffMat, MSIZE_CELL_SCAL)
         end do
 !
 ! ----- Copy the lower part
@@ -147,11 +147,11 @@ contains
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval basis function at the quadrature point
             call hhoBasisCell%BVEvalSymGrad(hhoQuad%points(1:3, ipg), &
-                                            & min_order, max_order, BVGradEval)
+                                            min_order, max_order, BVGradEval)
 !
 ! --------  Eval stiffMat
             call dsyrk('U', 'T', dimMat, 6, hhoQuad%weights(ipg), BVGradEval, 6, &
-                        & 1.d0, stiffMat, MSIZE_CELL_VEC)
+                       1.d0, stiffMat, MSIZE_CELL_VEC)
         end do
 !
 ! ----- Copy the lower part

@@ -32,7 +32,7 @@ module HHO_Meca_module
     use HHO_utils_module
     use HHO_basis_module
     use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat, &
-                                 & hhoGradRecSymMat, hhoGradRecFullMatFromVec
+                                  hhoGradRecSymMat, hhoGradRecFullMatFromVec
 !
     implicit none
 !

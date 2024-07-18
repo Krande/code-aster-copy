@@ -48,7 +48,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoTraceMatScal(hhoCell, min_order_cell, max_order_cell, &
-                                & hhoFace, min_order_face, max_order_face, traceMat)
+                               hhoFace, min_order_face, max_order_face, traceMat)
 !
         implicit none
 !

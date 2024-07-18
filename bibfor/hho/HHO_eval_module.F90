@@ -325,8 +325,8 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara, ndim, FuncValuesQp,&
-                                    & coeff_mult)
+    subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara, ndim, FuncValuesQp, &
+                                  coeff_mult)
 !
         implicit none
 

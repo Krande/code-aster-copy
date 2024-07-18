@@ -22,6 +22,7 @@ module HHO_quadrature_module
     use HHO_type
     use HHO_measure_module
     use HHO_geometry_module, only: hhoGeomBasis, hhoGeomDerivBasis, hhoSplitSimplex
+    use HHO_utils_module, only: CellNameL2S
 !
     implicit none
 !
@@ -33,6 +34,7 @@ module HHO_quadrature_module
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
+#include "asterfort/reereg.h"
 #include "blas/dnrm2.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
@@ -481,11 +483,11 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hho_subtri_rules(this, typema, coorno)
+    subroutine hho_subtri_rules(this, typema, ndim, nbnode, coorno)
 !
         implicit none
 !
-        integer, intent(in)                             :: typema
+        integer, intent(in)                             :: typema, nbnode, ndim
         real(kind=8), dimension(3, 4), intent(in)       :: coorno
         class(HHO_quadrature), intent(inout)            :: this
 !
@@ -502,13 +504,15 @@ contains
         real(kind=8), dimension(3) ::  coorac
         integer, parameter :: max_order = 8
         integer, parameter :: max_pg = 16
-        character(len=8), dimension(0:max_order) ::rules
-        integer :: dimp, nbpg, ipg, ino
+        character(len=8), dimension(0:max_order) :: rules
+        character(len=8) :: typma_s
+        integer :: dimp, nbpg, ipg, ino, iret
         integer :: itri, n_simp, ind_simp(6, 4)
-        real(kind=8) :: coor_tri(3, 3)
+        real(kind=8) :: coor_tri(3, 3), xe(3)
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
 !
 ! ----- split into tetra
+        call cellNameL2S(typema, typma_s)
         call hhoSplitSimplex(typema, n_simp, ind_simp)
         ASSERT(n_simp <= 2)
 !
@@ -539,8 +543,10 @@ contains
                 do ino = 1, 3
                     coorac(1:3) = coorac(1:3)+coor_tri(1:3, ino)*basis(ino)
                 end do
-                this%points_param(1:2, this%nbQuadPoints+ipg) = (/x, y/)
                 this%points(1:3, this%nbQuadPoints+ipg) = coorac
+                call reereg("S", typma_s, nbnode, coorno, coorac, ndim, &
+                            xe, iret, 1.d-8, 3)
+                this%points_param(1:2, this%nbQuadPoints+ipg) = xe(1:2)
                 this%weights(this%nbQuadPoints+ipg) = jaco*poidpg(ipg)
             end do
             this%nbQuadPoints = this%nbQuadPoints+nbpg
@@ -608,11 +614,11 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hho_subtetra_rules(this, typema, coorno)
+    subroutine hho_subtetra_rules(this, typema, nbnode, coorno)
 !
         implicit none
 !
-        integer, intent(in)                             :: typema
+        integer, intent(in)                             :: typema, nbnode
         real(kind=8), dimension(3, 8), intent(in)       :: coorno
         class(HHO_quadrature), intent(inout)            :: this
 !
@@ -629,12 +635,14 @@ contains
         integer, parameter :: max_order = 6
         integer, parameter :: max_pg = 23
         character(len=8), dimension(0:max_order) :: rules
-        integer :: dimp, nbpg, ipg, ino
+        character(len=8) :: typma_s
+        integer :: dimp, nbpg, ipg, ino, iret
         integer :: itet, n_simp, ind_simp(6, 4)
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z, jaco
-        real(kind=8) :: coor_tet(3, 4)
+        real(kind=8) :: coor_tet(3, 4), xe(3)
 !
 ! ----- split into tetra
+        call cellNameL2S(typema, typma_s)
         call hhoSplitSimplex(typema, n_simp, ind_simp)
         ASSERT(n_simp <= 6)
 !
@@ -662,8 +670,10 @@ contains
                 y = coorpg(dimp*(ipg-1)+2)
                 z = coorpg(dimp*(ipg-1)+3)
                 call hho_transfo_3d(coor_tet, 4, MT_TETRA4, (/x, y, z/), coorac)
-                this%points_param(1:3, this%nbQuadPoints+ipg) = (/x, y, z/)
                 this%points(1:3, this%nbQuadPoints+ipg) = coorac
+                call reereg("S", typma_s, nbnode, coorno, coorac, 3, &
+                            xe, iret, 1.d-8, 3)
+                this%points_param(1:3, this%nbQuadPoints+ipg) = xe(1:3)
                 this%weights(this%nbQuadPoints+ipg) = jaco*poidpg(ipg)
             end do
             this%nbQuadPoints = this%nbQuadPoints+nbpg
@@ -826,16 +836,15 @@ contains
         end if
 !
         !TODO:
-        ! PYRAM
-        ! OPTIM
         ! DETECT AUTO
-        ! zzzz503j
 !
         if (split_simpl) then
             if (hhoCell%ndim == 3) then
-                call this%hho_subtetra_rules(hhoCell%typema, hhoCell%coorno(1:3, 1:8))
+                call this%hho_subtetra_rules(hhoCell%typema, hhoCell%nbnodes, &
+                                             hhoCell%coorno(1:3, 1:8))
             elseif (hhoCell%ndim == 2) then
-                call this%hho_subtri_rules(hhoCell%typema, hhoCell%coorno(1:3, 1:4))
+                call this%hho_subtri_rules(hhoCell%typema, 2, hhoCell%nbnodes, &
+                                           hhoCell%coorno(1:3, 1:4))
             else
                 ASSERT(ASTER_FALSE)
             end if
@@ -918,11 +927,9 @@ contains
         end if
 !
         if (split_simpl) then
-            if (hhoFace%ndim == 1) then
-                call this%hho_edge_rules(hhoFace%coorno(1:3, 1:2), hhoFace%measure, &
-                                         hhoFace%barycenter)
-            elseif (hhoFace%ndim == 2) then
-                call this%hho_subtri_rules(hhoFace%typema, hhoFace%coorno(1:3, 1:4))
+            if (hhoFace%ndim == 2) then
+                call this%hho_subtri_rules(hhoFace%typema, 3, hhoFace%nbnodes, &
+                                           hhoFace%coorno(1:3, 1:4))
             else
                 ASSERT(ASTER_FALSE)
             end if
