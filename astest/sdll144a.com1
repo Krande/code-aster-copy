@@ -59,9 +59,9 @@ ug1 = np.zeros((Nt, Nmod))
 vg1 = np.zeros((Nt, Nmod))
 ag1 = np.zeros((Nt, Nmod))
 for i, idx in enumerate(idxt):
-    ug1[i, :] = TRANGEN2.getDisplacementValuesAtIndex(idx)
-    vg1[i, :] = TRANGEN2.getVelocityValuesAtIndex(idx)
-    ag1[i, :] = TRANGEN2.getAccelerationValuesAtIndex(idx)
+    ug1[i, :] = TRANGEN2.getDisplacementValues(idx)
+    vg1[i, :] = TRANGEN2.getVelocityValues(idx)
+    ag1[i, :] = TRANGEN2.getAccelerationValues(idx)
 
 
 ## Pythonized restitution on physical basis

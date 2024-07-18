@@ -43,24 +43,119 @@ void exportGeneralizedResultToPython( py::module_ &mod ) {
         mod, "TransientGeneralizedResult" )
         .def( py::init( &initFactoryPtr< TransientGeneralizedResult > ) )
         .def( py::init( &initFactoryPtr< TransientGeneralizedResult, std::string > ) )
-        .def( "build", &TransientGeneralizedResult::build )
-        .def( "setGeneralizedDOFNumbering",
-              &TransientGeneralizedResult::setGeneralizedDOFNumbering )
-        .def( "getGeneralizedDOFNumbering",
-              &TransientGeneralizedResult::getGeneralizedDOFNumbering )
-        .def( "setDOFNumbering", &TransientGeneralizedResult::setDOFNumbering )
-        .def( "getDOFNumbering", &TransientGeneralizedResult::getDOFNumbering )
-        .def( "getNumberOfModes", &TransientGeneralizedResult::getNumberOfModes )
-        .def( "getTimes", &TransientGeneralizedResult::getTimes )
-        .def( "getIndexes", &TransientGeneralizedResult::getIndexes )
-        .def( "getDisplacementValues", &TransientGeneralizedResult::getDisplacementValues )
-        .def( "getVelocityValues", &TransientGeneralizedResult::getVelocityValues )
-        .def( "getAccelerationValues", &TransientGeneralizedResult::getAccelerationValues )
-        .def( "getDisplacementValuesAtIndex",
-              &TransientGeneralizedResult::getDisplacementValuesAtIndex )
-        .def( "getVelocityValuesAtIndex", &TransientGeneralizedResult::getVelocityValuesAtIndex )
-        .def( "getAccelerationValuesAtIndex",
-              &TransientGeneralizedResult::getAccelerationValuesAtIndex );
+        .def( "build", &TransientGeneralizedResult::build, R"(
+Builds C++ arguments associated to attributes stored by blocks of time indices
+        )" )
+        .def( "setGeneralizedDOFNumbering", &TransientGeneralizedResult::setGeneralizedDOFNumbering,
+              R"(
+Set generalized DOF numbering
+
+Arguments:
+    dofg[GeneralizedDOFNumbering]: generalized DOF numbering
+              )" )
+        .def( "getGeneralizedDOFNumbering", &TransientGeneralizedResult::getGeneralizedDOFNumbering,
+              R"(
+Get generalized DOF numbering
+
+Returns:
+    GeneralizedDOFNumbering: generalized DOF numbering
+              )" )
+        .def( "setDOFNumbering", &TransientGeneralizedResult::setDOFNumbering, R"(
+Set DOF numbering 
+
+Arguments:
+    dofn[DOFNumbering]: DOF numbering
+        )" )
+        .def( "getDOFNumbering", &TransientGeneralizedResult::getDOFNumbering, R"(
+Get DOF numbering 
+
+Returns:
+    DOFNumbering: DOF numbering
+        )" )
+        .def( "getNumberOfModes", &TransientGeneralizedResult::getNumberOfModes, R"(
+Returns the number of vectors in the generalized basis 
+
+Returns:
+    int: number of vectors in the generalized basis
+        )" )
+        .def( "getTimes", &TransientGeneralizedResult::getTimes, R"(
+Returns values of instants of the transient calculation
+
+Returns:
+    list[float]: instants values
+        )" )
+        .def( "getIndexes", &TransientGeneralizedResult::getIndexes, R"(
+Returns time indices of the transient calculation
+
+Returns:
+    list[int]: time indices
+        )" )
+
+        .def( "getDisplacementValues",
+              py::overload_cast<>( &TransientGeneralizedResult::getDisplacementValues, py::const_ ),
+              R"(
+Return generalized displacements values for all time indices.
+
+Returns:
+    list[double]: generalized displacements values.
+        )" )
+
+        .def( "getDisplacementValues",
+              py::overload_cast< ASTERINTEGER >( &TransientGeneralizedResult::getDisplacementValues,
+                                                 py::const_ ),
+              R"(
+Return generalized displacements values at a given time index.
+
+Arguments 
+    int: time index
+
+Returns:
+    list[double]: generalized displacements values.
+        )" )
+
+        .def( "getVelocityValues",
+              py::overload_cast<>( &TransientGeneralizedResult::getVelocityValues, py::const_ ),
+              R"(
+Return generalized velocities values for all time indices.
+
+Returns:
+    list[double]: generalized velocities values.
+        )" )
+
+        .def( "getVelocityValues",
+              py::overload_cast< ASTERINTEGER >( &TransientGeneralizedResult::getVelocityValues,
+                                                 py::const_ ),
+              R"(
+Return generalized velocities values at a given time index.
+
+Arguments 
+    int: time index
+
+Returns:
+    list[double]: generalized velocities values.
+        )" )
+
+        .def( "getAccelerationValues",
+              py::overload_cast<>( &TransientGeneralizedResult::getAccelerationValues, py::const_ ),
+              R"(
+Return generalized accelerations values for all time indices.
+
+Returns:
+    list[double]: generalized accelerations values.
+        )" )
+
+        .def( "getAccelerationValues",
+              py::overload_cast< ASTERINTEGER >( &TransientGeneralizedResult::getAccelerationValues,
+                                                 py::const_ ),
+              R"(
+Return generalized accelerations values at a given time index.
+
+Arguments 
+    int: time index
+
+Returns:
+    list[double]: generalized accelerations values.
+        )" );
 
     py::class_< HarmoGeneralizedResult, HarmoGeneralizedResultPtr, GeneralizedResultComplex >(
         mod, "HarmoGeneralizedResult" )

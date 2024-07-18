@@ -227,6 +227,9 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
           _displExcitFunction( JeveuxVectorChar8( getName() + ".FDEP" ) ),
           _ipsd( JeveuxVectorLong( getName() + ".IPSD" ) ) {};
 
+    /**
+     * @brief Build result attributes stored by blocks of time indices
+     */
     bool build() {
         if ( _bloc.exists() ) {
             _bloc->updateValuePointer();
@@ -264,6 +267,10 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
         return true;
     }
 
+    /**
+     * @brief Get values of instants of the transient result
+     *
+     */
     VectorReal getTimes() const {
         if ( not _bloc.exists() ) {
             _abscissasOfSamples->updateValuePointer();
@@ -284,6 +291,10 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
         }
     }
 
+    /**
+     * @brief Get time indices of the transient result
+     *
+     */
     VectorLong getIndexes() const {
         if ( not _bloc.exists() ) {
             _indicesOfSamples->updateValuePointer();
@@ -304,9 +315,14 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
         }
     }
 
-    int getBlockFromIndex( int idx ) const {
+    /**
+     * @brief Get the index of a block associated to a given time index
+     * @param idx time index
+     *
+     */
+    ASTERINTEGER getBlockFromIndex( ASTERINTEGER idx ) const {
         CALL_JEMARQ();
-        int iout = 0;
+        ASTERINTEGER iout = 0;
         _blo2->updateValuePointer();
         if ( _bloc.exists() ) {
             VectorLong blocks = _blo2->toVector();
@@ -321,14 +337,20 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
         return iout;
     }
 
-    VectorReal getValuesAtIndex( std::vector< JeveuxVectorReal > jvec, int idx ) const {
+    /**
+     * @brief Return values of generalized coordinates at a given time index
+     * @param jvec generalized coordinates
+     * @param idx time index
+     *
+     */
+    VectorReal getValuesAtIndex( std::vector< JeveuxVectorReal > jvec, ASTERINTEGER idx ) const {
         CALL_JEMARQ();
-        int nmod = getNumberOfModes();
+        ASTERINTEGER nmod = getNumberOfModes();
         VectorReal out;
         out.reserve( nmod );
         if ( _bloc.exists() ) {
-            int iblo = getBlockFromIndex( idx );
-            int idx0 = 0;
+            ASTERINTEGER iblo = getBlockFromIndex( idx );
+            ASTERINTEGER idx0 = 0;
             _blo2->updateValuePointer();
             VectorLong blocks = _blo2->toVector();
             if ( iblo != 0 ) {
@@ -343,20 +365,44 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
         return out;
     }
 
-    VectorReal getDisplacementValuesAtIndex( int idx ) const {
+    /**
+     * @brief Return values of generalized displacements at a given time index
+     * @param idx time index
+     *
+     */
+    VectorReal getDisplacementValues( ASTERINTEGER idx ) const {
         return getValuesAtIndex( _depl, idx );
     }
-    VectorReal getVelocityValuesAtIndex( int idx ) const { return getValuesAtIndex( _vite, idx ); }
-    VectorReal getAccelerationValuesAtIndex( int idx ) const {
+
+    /**
+     * @brief Return values of generalized velocities for all time indices
+     * @param idx time index
+     *
+     */
+    VectorReal getVelocityValues( ASTERINTEGER idx ) const {
+        return getValuesAtIndex( _vite, idx );
+    }
+
+    /**
+     * @brief Return values of generalized accelerations for all time indices
+     * @param idx time index
+     *
+     */
+    VectorReal getAccelerationValues( ASTERINTEGER idx ) const {
         return getValuesAtIndex( _acce, idx );
     }
 
+    /**
+     * @brief Return values of generalized coordinates for all time indices
+     * @param jvec generalized coordinates
+     *
+     */
     VectorReal getValues( std::vector< JeveuxVectorReal > jvec ) const {
         VectorReal out;
         CALL_JEMARQ();
-        int nmod = getNumberOfModes();
+        ASTERINTEGER nmod = getNumberOfModes();
         jvec[0]->updateValuePointer();
-        int size = jvec[0]->size();
+        ASTERINTEGER size = jvec[0]->size();
         for ( int i = 1; i < jvec.size(); ++i ) {
             jvec[i]->updateValuePointer();
             size += jvec[i]->size() - nmod;
@@ -373,8 +419,22 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
         return out;
     }
 
+    /**
+     * @brief Return values of generalized displacements for all time indices
+     *
+     */
     VectorReal getDisplacementValues() const { return getValues( _depl ); }
+
+    /**
+     * @brief Return values of generalized velocities for all time indices
+     *
+     */
     VectorReal getVelocityValues() const { return getValues( _vite ); }
+
+    /**
+     * @brief Return values of generalized accelerations for all time indices
+     *
+     */
     VectorReal getAccelerationValues() const { return getValues( _acce ); }
 };
 typedef std::shared_ptr< TransientGeneralizedResult > TransientGeneralizedResultPtr;
