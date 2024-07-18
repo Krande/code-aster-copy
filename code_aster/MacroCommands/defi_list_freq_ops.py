@@ -214,7 +214,7 @@ class BinnedDataCumulativeDistributionFunction(object):
         Returns:
             (:class:`numpy.ndarray` [:math:`p-1`]): bins counts
         """
-        return (np.diff(self.evaluate(bins)) * self.N).astype(int)
+        return np.round(np.diff(self.evaluate(bins)) * self.N).astype(int)
 
 
 class FrequencyBandOptimizationAlgorithm(object):
@@ -232,14 +232,17 @@ class FrequencyBandOptimizationAlgorithm(object):
             args (:class:`dict`): algorithm arguments
         """
         # Parse algorithm mode (matrix-based or list-based)
+        self.freq_min = args["FREQ_MIN"]
+        self.freq_max = args["FREQ_MAX"]
         self.hasMatrices = args["TYPE_SAISIE"] == "MATR_ASSE"
         if self.hasMatrices:
+            # Check if matrices are symmetric
+            if (not args["MATR_RIGI"].isSymmetric()) or (not args["MATR_MASS"].isSymmetric()):
+                UTMESS("F", "DYNAMIQUE1_5")
             self.matr_rigi = args["MATR_RIGI"]
             self.matr_mass = args["MATR_MASS"]
         else:
             self.list_freq = sorted(args["LIST_FREQ"])
-        self.freq_min = args["FREQ_MIN"]
-        self.freq_max = args["FREQ_MAX"]
         # Parse algorithm parameters
         algo_options = args.pop("EQUILIBRAGE", [None])[0]
         self.tol = algo_options["TOLERANCE"]
@@ -252,7 +255,7 @@ class FrequencyBandOptimizationAlgorithm(object):
         r"""Run algorithm
 
         Returns:
-            (:class:`numpy.ndarray` [:math:`B`]): balanced frequency bands
+            (:class:`libaster.Table`): result table
         """
         ### Initialization
         bins = np.linspace(self.freq_min, self.freq_max, self.n_init + 1)  # initial bins
@@ -282,8 +285,7 @@ class FrequencyBandOptimizationAlgorithm(object):
 
             # Estimate error on target bins counts
             counts_tar = G.count(bins_tar)
-            n_tar = int(G.N / Nb)  # target number of modes per band
-            err = (counts_tar - n_tar) / G.N  # counts relative error
+            err = (counts_tar - self.n_modes) / G.N  # counts relative error
 
             # Refine frequency grid in the band with the largest error
             imax = np.argmax(err)
@@ -294,14 +296,27 @@ class FrequencyBandOptimizationAlgorithm(object):
             bins_info = np.linspace(bins[idx], bins[idx + 1], self.n_supp + 2)
 
             # Stopping criterion
-            if np.max(np.abs(err)) < self.tol:
-                UTMESS("I", "DYNAMIQUE1_4", valr=np.max(err), vali=n + 1)
+            err_max = np.max(np.abs(err))
+            if err_max < self.tol:
+                UTMESS("I", "DYNAMIQUE1_4", valr=err_max, vali=n + 1)
                 break
             else:
                 if n + 1 == self.iter_maxi:
                     UTMESS("A", "DYNAMIQUE1_3")
-        #
-        return bins_tar
+        # Return result table
+        return CREA_TABLE(
+            TITRE="RESU_EQUI_MODES",
+            LISTE=(
+                _F(PARA="NUME_BANDE", LISTE_I=np.arange(1, Nb + 1)),
+                _F(PARA="FREQ_MIN", LISTE_R=bins_tar[:-1]),
+                _F(PARA="FREQ_MAX", LISTE_R=bins_tar[1:]),
+                _F(PARA="NB_MODES", LISTE_I=counts_tar),
+                _F(PARA="NB_CIBLE", LISTE_I=[self.n_modes] * Nb),
+                _F(PARA="ERR_REL", LISTE_R=np.abs(err)),
+                _F(PARA="NB_ITER", LISTE_I=[n + 1] * Nb),
+                _F(PARA="ITER_MAX", LISTE_I=[self.iter_maxi] * Nb),
+            ),
+        )
 
     def _countFrequencies(self, bins):
         r"""Returns the number of eigenfrequencies in given bins
@@ -386,6 +401,6 @@ def defi_list_freq_ops(self, **args):
     if equi_args is not None:
         # Run algorithm
         algo = FrequencyBandOptimizationAlgorithm(equi_args)
-        freq = algo.run()
+        tab = algo.run()
 
-        return freq.tolist()
+        return tab

@@ -21,8 +21,8 @@
 #
 
 import numpy as np
-from code_aster import CA
 from code_aster.Commands import *
+from code_aster import CA
 
 ###
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
@@ -163,9 +163,11 @@ list_freq = np.array(
         37.51754006,
     ]
 )  # [Hz]
-
 fmin = 18.0  # [Hz]
 fmax = 455.0  # [Hz]
+N = np.sum(
+    (list_freq >= fmin) * (list_freq <= fmax)
+)  # number of eigenfrequencies between fmin and fmax [-]
 
 ## Build matrices such that eigenfrequencies of the corresponding GEP are those of list_freq
 DISCRET_args = [_F(GROUP_MA="POI1", CARA="M_T_D_N", VALE=(1.0,))]
@@ -197,70 +199,57 @@ Nb = 40  # number of desired modes per band [-]
 tol = 5e-2  # balancing tolerance [-]
 
 # List-based balancing (given frequencies)
-RES_LIST = (
-    DEFI_LIST_FREQ(
-        EQUI_MODES=_F(
-            TYPE_SAISIE="LISTE",
-            FREQ_MIN=fmin,
-            FREQ_MAX=fmax,
-            LIST_FREQ=list_freq.tolist(),
-            EQUILIBRAGE=_F(TOLERANCE=tol, NB_MODES=Nb),
-        )
-    ),
+RES_LIST = DEFI_LIST_FREQ(
+    EQUI_MODES=_F(
+        TYPE_SAISIE="LISTE",
+        FREQ_MIN=fmin,
+        FREQ_MAX=fmax,
+        LIST_FREQ=list_freq.tolist(),
+        EQUILIBRAGE=_F(TOLERANCE=tol, NB_MODES=Nb),
+    )
 )
 
 # Matrix-based balancing
-RES_MATR = (
-    DEFI_LIST_FREQ(
-        EQUI_MODES=_F(
-            TYPE_SAISIE="MATR_ASSE",
-            FREQ_MIN=fmin,
-            FREQ_MAX=fmax,
-            MATR_RIGI=RIGI,
-            MATR_MASS=MASS,
-            EQUILIBRAGE=_F(TOLERANCE=tol, NB_MODES=Nb),
-        )
-    ),
+RES_MATR = DEFI_LIST_FREQ(
+    EQUI_MODES=_F(
+        TYPE_SAISIE="MATR_ASSE",
+        FREQ_MIN=fmin,
+        FREQ_MAX=fmax,
+        MATR_RIGI=RIGI,
+        MATR_MASS=MASS,
+        EQUILIBRAGE=_F(TOLERANCE=tol, NB_MODES=Nb),
+    )
 )
 
-## Check frequencies counts with INFO_MODE operator
-INFO_LIST = INFO_MODE(
-    TYPE_MODE="DYNAMIQUE",
-    MATR_RIGI=RIGI,
-    MATR_MASS=MASS,
-    FREQ=RES_LIST[0],
-    COMPTAGE=_F(METHODE="AUTO"),
-)
-counts_LIST = np.array(INFO_LIST.EXTR_TABLE().values()["NB_MODE"])
 
-INFO_MATR = INFO_MODE(
-    TYPE_MODE="DYNAMIQUE",
-    MATR_RIGI=RIGI,
-    MATR_MASS=MASS,
-    FREQ=RES_MATR[0],
-    COMPTAGE=_F(METHODE="AUTO"),
+## Extract results
+eps_LIST = np.array(RES_LIST.EXTR_TABLE().values()["ERR_REL"])
+freq_LIST = np.array(
+    [RES_LIST.EXTR_TABLE().values()["FREQ_MIN"][0]] + RES_LIST.EXTR_TABLE().values()["FREQ_MAX"]
 )
-counts_MATR = np.array(INFO_MATR.EXTR_TABLE().values()["NB_MODE"])
+counts_LIST = np.array(RES_LIST.EXTR_TABLE().values()["NB_MODES"])
 
-## Compute frequency bands balancing error
-N = np.sum(
-    (list_freq >= fmin) * (list_freq <= fmax)
-)  # number of eigenfrequencies between fmin and fmax [-]
-eps_LIST = abs(counts_LIST - Nb) / N
-eps_MATR = abs(counts_MATR - Nb) / N
+eps_MATR = np.array(RES_MATR.EXTR_TABLE().values()["ERR_REL"])
+freq_MATR = np.array(
+    [RES_MATR.EXTR_TABLE().values()["FREQ_MIN"][0]] + RES_MATR.EXTR_TABLE().values()["FREQ_MAX"]
+)
+counts_MATR = np.array(RES_MATR.EXTR_TABLE().values()["NB_MODES"])
 
 ## Test frequency bands balancing
 test = CA.TestCase()
 
+# Check results
 test.assertTrue(np.max(eps_LIST) < tol)
 test.assertTrue(np.max(eps_MATR) < tol)
-test.assertEqual(np.sum(counts_LIST), N)
-test.assertEqual(np.sum(counts_MATR), N)
-test.assertTrue(np.allclose(RES_LIST[0], RES_MATR[0]))
+test.assertEqual(counts_LIST.sum(), N)
+test.assertEqual(counts_MATR.sum(), N)
+test.assertTrue(np.allclose(freq_LIST, freq_MATR))
 
 # Non regression testing
-test.assertTrue(np.allclose(RES_LIST[0], [18.0, 110.86250000000001, 192.8, 455.0]))
-test.assertTrue(np.allclose(RES_MATR[0], [18.0, 110.86250000000001, 192.8, 455.0]))
+test.assertTrue(np.allclose(freq_LIST, [18.0, 110.86250000000001, 192.8, 455.0]))
+test.assertTrue(np.allclose(freq_MATR, [18.0, 110.86250000000001, 192.8, 455.0]))
+
+test.printSummary()
 
 ###
 FIN()

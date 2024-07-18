@@ -23,10 +23,18 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
+
+def defi_list_freq_prod(self, **args):
+    if args.get("EQUI_MODES", None) is not None:
+        return table_sdaster
+    else:
+        return listr8_sdaster
+
+
 DEFI_LIST_FREQ = MACRO(
     nom="DEFI_LIST_FREQ",
     op=OPS("code_aster.MacroCommands.defi_list_freq_ops.defi_list_freq_ops"),
-    sd_prod=listr8_sdaster,
+    sd_prod=defi_list_freq_prod,
     fr=tr("Définir une liste de fréquences strictement croissante"),
     reentrant="n",
     regles=(
@@ -67,7 +75,7 @@ DEFI_LIST_FREQ = MACRO(
     ),
     EQUI_MODES=FACT(
         statut="f",
-        TYPE_SAISIE=SIMP(statut="o", typ="TXM", defaut="LISTE", into=("LISTE", "MATR_ASSE")),
+        TYPE_SAISIE=SIMP(statut="f", typ="TXM", defaut="LISTE", into=("LISTE", "MATR_ASSE")),
         FREQ_MIN=SIMP(statut="o", typ="R"),
         FREQ_MAX=SIMP(statut="o", typ="R"),
         b_matr_asse=BLOC(
