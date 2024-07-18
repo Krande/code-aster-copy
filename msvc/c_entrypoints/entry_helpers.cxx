@@ -3,6 +3,25 @@
 #include <filesystem>
 
 
+bool is_aster_debug() {
+    const char *env_var = get_env_var("ASTER_DEBUG" );
+    if ( env_var != nullptr ) {
+        return true;
+    }
+    return false;
+}
+bool is_aster_silent_mode() {
+    const char *env_var = get_env_var("ASTER_SILENT" );
+    if ( env_var != nullptr ) {
+        return true;
+    }
+    return false;
+}
+
+bool IS_ASTER_DEBUG = is_aster_debug();
+bool IS_ASTER_SILENT = is_aster_silent_mode();
+
+
 std::string GetDllPath() {
     HMODULE hModule = nullptr;
     char path[MAX_PATH];
@@ -81,11 +100,12 @@ const char* get_env_var(const std::string& var_name) {
 }
 
 // Function to set environment variables in Windows
-void set_env_var( const char *var, const std::string &value, bool force ) {
+void set_env_var( const char *var, const std::string &value, bool force, bool silent=false ) {
     const char *current_value = get_env_var(var );
     if ( force || current_value == nullptr ) {
-        // print the value
-        std::cout << "Setting " << var << " to " << value << std::endl;
+        if ( !silent ) {
+            std::cout << "Setting " << var << " to " << value << std::endl;
+        }
         _putenv_s( var, value.c_str() );
     }
 }
@@ -99,15 +119,6 @@ void print_env_var( const char *var ) {
     }
 }
 
-bool is_aster_debug() {
-    const char *env_var = get_env_var("ASTER_DEBUG" );
-    if ( env_var != nullptr ) {
-        return true;
-    }
-    return false;
-}
-
-bool IS_ASTER_DEBUG = is_aster_debug();
 
 void init_env( bool force = false ) {
     const char *conda_prefix = get_env_var("CONDA_PREFIX" );
@@ -121,10 +132,27 @@ void init_env( bool force = false ) {
             CONDA_PREFIX / "Library" / "share" / "locale" / "aster";
         std::filesystem::path ASTER_ELEMENTSDIR = ASTER_DIR;
 
-        set_env_var( "ASTER_DATADIR", ASTER_DATADIR.string(), force );
-        set_env_var( "ASTER_LIBDIR", ASTER_LIBDIR.string(), force );
-        set_env_var( "ASTER_LOCALEDIR", ASTER_LOCALEDIR.string(), force );
-        set_env_var( "ASTER_ELEMENTSDIR", ASTER_ELEMENTSDIR.string(), force );
+        set_env_var( "ASTER_DATADIR", ASTER_DATADIR.string(), force, IS_ASTER_SILENT );
+        set_env_var( "ASTER_LIBDIR", ASTER_LIBDIR.string(), force, IS_ASTER_SILENT );
+        set_env_var( "ASTER_LOCALEDIR", ASTER_LOCALEDIR.string(), force, IS_ASTER_SILENT );
+        set_env_var( "ASTER_ELEMENTSDIR", ASTER_ELEMENTSDIR.string(), force, IS_ASTER_SILENT );
+
+        // if ASTER_ELEMENTSDIR path is not in PATH env variable, append it
+        //const char *path = get_env_var("PATH" );
+        //if ( path != nullptr ) {
+        //    std::string path_str( path );
+        //    if ( path_str.find( ASTER_ELEMENTSDIR.string() ) == std::string::npos ) {
+        //        std::string new_path = path_str + ";" + ASTER_ELEMENTSDIR.string();
+        //        set_env_var( "PATH", new_path, true, true);
+        //    }
+        //    else {
+        //        std::cout << "ASTER_ELEMENTSDIR is already in PATH.\n";
+        //        // std::cout << "PATH = " << path << std::endl;
+        //    }
+        //}
+        //else {
+        //    std::cout << "PATH is not set.\n";
+        //}
 
         if ( IS_ASTER_DEBUG ) {
             // Print out all OPENMP environment variables
@@ -135,9 +163,13 @@ void init_env( bool force = false ) {
             print_env_var( "OMP_STACKSIZE" );
             print_env_var( "OMP_THREAD_LIMIT" );
         }
-        std::cout << "Environment variables set based on CONDA_PREFIX.\n";
+        if ( !IS_ASTER_SILENT ) {
+            std::cout << "Environment variables set based on CONDA_PREFIX.\n";
+        }
     } else {
-        std::cerr << "CONDA_PREFIX environment variable is not set.\n";
+        if ( !IS_ASTER_SILENT ) {
+            std::cerr << "CONDA_PREFIX environment variable is not set.\n";
+        }
     }
 }
 
@@ -147,7 +179,7 @@ HMODULE LoadDllAndGetFunction( const std::string &dllName, const std::string &fu
     char dllPath[MAX_PATH];
     snprintf( dllPath, MAX_PATH, "%s\\%s", dllDirectory.c_str(), dllName.c_str() );
 
-    // Set the environemnt variables relevant for a conda environment
+    // Set the environment variables relevant for a conda environment
     init_env();
 
     // Print the path to the console

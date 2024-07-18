@@ -96,7 +96,7 @@ set CXXFLAGS=%CXXFLAGS% /MD /DMKL_ILP64
 if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"
     set FC_SEARCH=ifort
-    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /4R8 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64 /assume:byterecl,aligned_dummy_args,dummy_aliases,writeable_strings /check:stack /fpe:0
+    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /4R8 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64 /check:stack /fpe:0
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 ) else (
@@ -131,7 +131,7 @@ set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
-set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS
+set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN
 if "%build_type%" == "debug" (
 @REM     set DEFINES=%DEFINES% ASTER_DEBUG_ALL
 )
