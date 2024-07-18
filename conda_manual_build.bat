@@ -10,7 +10,7 @@ set INCLUDE_TESTS=0
 set USE_LOG=0
 set COLOR_ENABLED=1
 :: BUILD_TYPE can be either debug or release
-set BUILD_TYPE=debug
+set BUILD_TYPE=release
 set CLEAN_BUILD=0
 
 :parse_args
@@ -96,9 +96,10 @@ set CXXFLAGS=%CXXFLAGS% /MD /DMKL_ILP64
 if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"
     set FC_SEARCH=ifort
-    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /4R8 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64 /check:stack /fpe:0
+    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /4R8 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64 /fpe:0
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
+
 ) else (
     echo "Using LLVM Flang Fortran compiler"
     set FC_SEARCH=flang
@@ -106,13 +107,20 @@ if "%FC%" == "ifx.exe" (
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% -L %LIB_PATH_ROOT%/lib -L %LIB_PATH_ROOT%/bin -L %PREF_ROOT%/libs
 )
-if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 :: Create dll debug pdb
 if "%BUILD_TYPE%" == "debug" (
-    set FCFLAGS_ASTER_DEBUG=%FCFLAGS_ASTER_DEBUG% /fpe:0
-    REM set FCFLAGS_ASTER_DEBUG=%FCFLAGS_ASTER_DEBUG% /check:all
+    set FCFLAGS=%FCFLAGS% /check:stack
+    set CFLAGS=%CFLAGS% /Zi
+    set CXXFLAGS=%CXXFLAGS% /Zi
+) else (
+    REM set the equivalent of RelWithDebInfo
+    set FCFLAGS=%FCFLAGS% /debug:full /debug-parameters:all /traceback
+    set CFLAGS=%CFLAGS% /Z7
+    set CXXFLAGS=%CXXFLAGS% /Z7
 )
+
+if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 :: Add Math libs
 set LDFLAGS=%LDFLAGS% mkl_intel_ilp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib

@@ -3,15 +3,28 @@
 #include <filesystem>
 
 
+const char *get_env_var( const std::string &var_name ) {
+    char *buffer = nullptr;
+    size_t size = 0;
+
+    errno_t err = _dupenv_s( &buffer, &size, var_name.c_str() );
+
+    if ( err == 0 && buffer != nullptr ) {
+        return buffer; // Returning the allocated buffer
+    } else {
+        return nullptr;
+    }
+}
+
 bool is_aster_debug() {
-    const char *env_var = get_env_var("ASTER_DEBUG" );
+    const char *env_var = get_env_var( "ASTER_DEBUG" );
     if ( env_var != nullptr ) {
         return true;
     }
     return false;
 }
 bool is_aster_silent_mode() {
-    const char *env_var = get_env_var("ASTER_SILENT" );
+    const char *env_var = get_env_var( "ASTER_SILENT" );
     if ( env_var != nullptr ) {
         return true;
     }
@@ -20,7 +33,6 @@ bool is_aster_silent_mode() {
 
 bool IS_ASTER_DEBUG = is_aster_debug();
 bool IS_ASTER_SILENT = is_aster_silent_mode();
-
 
 std::string GetDllPath() {
     HMODULE hModule = nullptr;
@@ -86,22 +98,9 @@ std::string SearchEnvPathsForDll( const std::vector< std::string > &envVars,
     return "";
 }
 
-const char* get_env_var(const std::string& var_name) {
-    char* buffer = nullptr;
-    size_t size = 0;
-
-    errno_t err = _dupenv_s(&buffer, &size, var_name.c_str());
-
-    if (err == 0 && buffer != nullptr) {
-        return buffer; // Returning the allocated buffer
-    } else {
-        return nullptr;
-    }
-}
-
 // Function to set environment variables in Windows
-void set_env_var( const char *var, const std::string &value, bool force, bool silent=false ) {
-    const char *current_value = get_env_var(var );
+void set_env_var( const char *var, const std::string &value, bool force, bool silent = false ) {
+    const char *current_value = get_env_var( var );
     if ( force || current_value == nullptr ) {
         if ( !silent ) {
             std::cout << "Setting " << var << " to " << value << std::endl;
@@ -111,7 +110,7 @@ void set_env_var( const char *var, const std::string &value, bool force, bool si
 }
 
 void print_env_var( const char *var ) {
-    const char *value = get_env_var(var );
+    const char *value = get_env_var( var );
     if ( value != nullptr ) {
         std::cout << var << " = " << value << std::endl;
     } else {
@@ -119,9 +118,8 @@ void print_env_var( const char *var ) {
     }
 }
 
-
 void init_env( bool force = false ) {
-    const char *conda_prefix = get_env_var("CONDA_PREFIX" );
+    const char *conda_prefix = get_env_var( "CONDA_PREFIX" );
     if ( conda_prefix != nullptr ) {
         std::filesystem::path CONDA_PREFIX( conda_prefix );
         std::filesystem::path ASTER_DIR = CONDA_PREFIX / "Library" / "lib" / "aster";
@@ -138,8 +136,8 @@ void init_env( bool force = false ) {
         set_env_var( "ASTER_ELEMENTSDIR", ASTER_ELEMENTSDIR.string(), force, IS_ASTER_SILENT );
 
         // if ASTER_ELEMENTSDIR path is not in PATH env variable, append it
-        //const char *path = get_env_var("PATH" );
-        //if ( path != nullptr ) {
+        // const char *path = get_env_var("PATH" );
+        // if ( path != nullptr ) {
         //    std::string path_str( path );
         //    if ( path_str.find( ASTER_ELEMENTSDIR.string() ) == std::string::npos ) {
         //        std::string new_path = path_str + ";" + ASTER_ELEMENTSDIR.string();
@@ -150,7 +148,7 @@ void init_env( bool force = false ) {
         //        // std::cout << "PATH = " << path << std::endl;
         //    }
         //}
-        //else {
+        // else {
         //    std::cout << "PATH is not set.\n";
         //}
 
