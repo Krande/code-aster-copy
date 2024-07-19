@@ -290,8 +290,7 @@ class FieldOnCells : public DataField {
      *         avec les valeurs transformées
      */
     template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value,
-                             FieldOnCells< ValueType > >::type
+    std::enable_if_t< std::is_same_v< T, ASTERDOUBLE >, FieldOnCells< ValueType > >
     transform( py::object &func ) const {
         if ( !PyCallable_Check( func.ptr() ) )
             raiseAsterError( "Input parameter to the transform \
@@ -317,8 +316,7 @@ class FieldOnCells : public DataField {
     };
 
     template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERCOMPLEX >::value,
-                             FieldOnCells< ValueType > >::type
+    std::enable_if_t< std::is_same_v< T, ASTERCOMPLEX >, FieldOnCells< ValueType > >
     transform( py::object &func ) const {
         if ( !PyCallable_Check( func.ptr() ) )
             raiseAsterError( "Input parameter to the transform \
@@ -601,7 +599,7 @@ class FieldOnCells : public DataField {
      * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
      */
     template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value, ASTERDOUBLE >::type
+    std::enable_if_t< std::is_same_v< T, ASTERDOUBLE >, ASTERDOUBLE >
     norm( const std::string normType ) const {
         AS_ASSERT( normType == "NORM_1" || normType == "NORM_2" || normType == "NORM_INFINITY" );
 
@@ -689,7 +687,7 @@ class FieldOnCells : public DataField {
      * @param tmp object FieldOnCellsPtr
      */
     template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value, ASTERDOUBLE >::type
+    std::enable_if_t< std::is_same_v< T, ASTERDOUBLE >, ASTERDOUBLE >
     dot( const FieldOnCellsPtr &tmp ) const {
         tmp->updateValuePointers();
         _values->updateValuePointer();
