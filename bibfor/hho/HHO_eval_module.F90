@@ -416,6 +416,7 @@ contains
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
         ASSERT(npg <= MAX_QP_FACE)
+        ASSERT(hhoQuad%l_point_param)
 !
         ff = 0.d0
         do ipg = 1, npg
@@ -465,6 +466,7 @@ contains
         npg = hhoQuad%nbQuadPoints
         celldim = hhoFace%ndim+1
         ASSERT(npg <= MAX_QP_FACE)
+        ASSERT(hhoQuad%l_point_param)
         call cellNameL2S(hhoFace%typema, typma)
 !
         do ipg = 1, npg
@@ -517,6 +519,7 @@ contains
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
         ASSERT(npg <= MAX_QP_CELL)
+        ASSERT(hhoQuad%l_point_param)
         call cellNameL2S(hhoCell%typema, typma)
 !
         do ipg = 1, npg
@@ -569,6 +572,7 @@ contains
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
         ASSERT(npg <= MAX_QP_CELL)
+        ASSERT(hhoQuad%l_point_param)
         call cellNameL2S(hhoCell%typema, typma)
 !
         ff = 0.d0

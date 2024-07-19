@@ -48,9 +48,10 @@ module HHO_quadrature_module
     type HHO_Quadrature
         integer                             :: order = 0
         integer                             :: nbQuadPoints = 0
-        real(kind=8), dimension(3, MAX_QP)   :: points = 0.d0
+        real(kind=8), dimension(3, MAX_QP)  :: points = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights = 0.d0
-        real(kind=8), dimension(3, MAX_QP)   :: points_param = 0.d0
+        real(kind=8), dimension(3, MAX_QP)  :: points_param = 0.d0
+        aster_logical                       :: l_point_param = ASTER_TRUE
 ! ----- member functions
     contains
         procedure, private, pass :: hho_edge_rules
@@ -343,12 +344,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hho_subtri_rules(this, typema, ndim, nbnode, coorno)
+    subroutine hho_subtri_rules(this, typema, ndim, nbnode, coorno, param)
 !
         implicit none
 !
         integer, intent(in)                             :: typema, nbnode, ndim
         real(kind=8), dimension(3, 4), intent(in)       :: coorno
+        aster_logical, intent(in)                       :: param
         class(HHO_quadrature), intent(inout)            :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -389,6 +391,7 @@ contains
 ! ----- fill hhoQuad
         ASSERT(n_simp*nbpg <= MAX_QP)
         this%nbQuadPoints = 0
+        this%l_point_param = param
 !
         do itri = 1, n_simp
             do ino = 1, 3
@@ -404,10 +407,12 @@ contains
                     coorac(1:3) = coorac(1:3)+coor_tri(1:3, ino)*basis(ino)
                 end do
                 this%points(1:3, this%nbQuadPoints+ipg) = coorac
-                call reereg("S", typma_s, nbnode, coorno, coorac, ndim, &
-                            xe, iret, 1.d-8, 3)
-                this%points_param(1:2, this%nbQuadPoints+ipg) = xe(1:2)
                 this%weights(this%nbQuadPoints+ipg) = jaco*poidpg(ipg)
+                if (param) then
+                    call reereg("S", typma_s, nbnode, coorno, coorac, ndim, &
+                                xe, iret, 1.d-8, 3)
+                    this%points_param(1:2, this%nbQuadPoints+ipg) = xe(1:2)
+                end if
             end do
             this%nbQuadPoints = this%nbQuadPoints+nbpg
         end do
@@ -474,12 +479,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hho_subtetra_rules(this, typema, nbnode, coorno)
+    subroutine hho_subtetra_rules(this, typema, nbnode, coorno, param)
 !
         implicit none
 !
         integer, intent(in)                             :: typema, nbnode
         real(kind=8), dimension(3, 8), intent(in)       :: coorno
+        aster_logical, intent(in)                       :: param
         class(HHO_quadrature), intent(inout)            :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -519,6 +525,7 @@ contains
 ! ----- fill hhoQuad
         ASSERT(n_simp*nbpg <= MAX_QP)
         this%nbQuadPoints = 0
+        this%l_point_param = param
 !
         do itet = 1, n_simp
             do ino = 1, 4
@@ -531,10 +538,12 @@ contains
                 z = coorpg(dimp*(ipg-1)+3)
                 call hho_transfo_3d(coor_tet, 4, MT_TETRA4, (/x, y, z/), coorac)
                 this%points(1:3, this%nbQuadPoints+ipg) = coorac
-                call reereg("S", typma_s, nbnode, coorno, coorac, 3, &
-                            xe, iret, 1.d-8, 3)
-                this%points_param(1:3, this%nbQuadPoints+ipg) = xe(1:3)
                 this%weights(this%nbQuadPoints+ipg) = jaco*poidpg(ipg)
+                if (param) then
+                    call reereg("S", typma_s, nbnode, coorno, coorac, 3, &
+                                xe, iret, 1.d-8, 3)
+                    this%points_param(1:3, this%nbQuadPoints+ipg) = xe(1:3)
+                end if
             end do
             this%nbQuadPoints = this%nbQuadPoints+nbpg
         end do
@@ -653,13 +662,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGetQuadCell(this, hhoCell, order, axis, split)
+    subroutine hhoGetQuadCell(this, hhoCell, order, axis, split, param)
 !
         implicit none
 !
         type(HHO_cell), intent(in)            :: hhoCell
         integer, intent(in)                   :: order
-        aster_logical, intent(in), optional   :: axis, split
+        aster_logical, intent(in), optional   :: axis, split, param
         class(HHO_quadrature), intent(out)    :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -675,7 +684,7 @@ contains
 !
         integer :: ipg
         real(kind=8) :: start, end
-        aster_logical :: split_simpl
+        aster_logical :: split_simpl, param_
 !
         DEBUG_TIMER(start)
 !
@@ -691,16 +700,20 @@ contains
             split_simpl = ASTER_FALSE
         end if
 !
-        !TODO:
-        ! PARAM in option
-!
         if (split_simpl) then
+            !
+            if (present(param)) then
+                param_ = param
+            else
+                param_ = ASTER_FALSE
+            end if
+!
             if (hhoCell%ndim == 3) then
                 call this%hho_subtetra_rules(hhoCell%typema, hhoCell%nbnodes, &
-                                             hhoCell%coorno(1:3, 1:8))
+                                             hhoCell%coorno(1:3, 1:8), param_)
             elseif (hhoCell%ndim == 2) then
                 call this%hho_subtri_rules(hhoCell%typema, 2, hhoCell%nbnodes, &
-                                           hhoCell%coorno(1:3, 1:4))
+                                           hhoCell%coorno(1:3, 1:4), param_)
             else
                 ASSERT(ASTER_FALSE)
             end if
@@ -740,13 +753,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGetQuadFace(this, hhoFace, order, axis, split)
+    subroutine hhoGetQuadFace(this, hhoFace, order, axis, split, param)
 !
         implicit none
 !
         type(HHO_face), intent(in)          :: hhoFace
         integer, intent(in)                 :: order
-        aster_logical, intent(in), optional :: axis, split
+        aster_logical, intent(in), optional :: axis, split, param
         class(HHO_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -762,7 +775,7 @@ contains
 !
         integer :: ipg
         real(kind=8) :: start, end
-        aster_logical :: split_simpl
+        aster_logical :: split_simpl, param_
 !
         DEBUG_TIMER(start)
 !
@@ -779,9 +792,16 @@ contains
         end if
 !
         if (split_simpl) then
+            !
+            if (present(param)) then
+                param_ = param
+            else
+                param_ = ASTER_FALSE
+            end if
+!
             if (hhoFace%ndim == 2) then
                 call this%hho_subtri_rules(hhoFace%typema, 3, hhoFace%nbnodes, &
-                                           hhoFace%coorno(1:3, 1:4))
+                                           hhoFace%coorno(1:3, 1:4), param_)
             else
                 ASSERT(ASTER_FALSE)
             end if

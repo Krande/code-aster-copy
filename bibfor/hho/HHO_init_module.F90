@@ -683,7 +683,8 @@ contains
             if (present(npg)) then
                 call hhoQuad%initCell(hhoCell, npg, laxis)
             else
-                call hhoQuad%getQuadCell(hhoCell, 2*hhoData%cell_degree(), laxis)
+                call hhoQuad%getQuadCell(hhoCell, 2*hhoData%cell_degree(), &
+                                         laxis, param=ASTER_TRUE)
             end if
         end if
 !
@@ -752,7 +753,8 @@ contains
             if (present(npg)) then
                 call hhoQuadFace%initFace(hhoFace, npg, laxis)
             else
-                call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree(), laxis)
+                call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree(), &
+                                             laxis, param=ASTER_TRUE)
             end if
         end if
 !

@@ -128,7 +128,8 @@ contains
             call hhoBasisFace%initialize(hhoFace)
 ! ----- get quadrature
             call hhoQuad%GetQuadFace(hhoface, hhoData%face_degree()+max(hhoData%face_degree(), &
-                                                                        hhoData%cell_degree())+1)
+                                                                        hhoData%cell_degree())+1, &
+                                     param=ASTER_TRUE)
 !
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
@@ -339,7 +340,8 @@ contains
             call hhoBasisFace%initialize(hhoFace)
 ! ----- get quadrature
             call hhoQuad%GetQuadFace(hhoface, hhoData%grad_degree()+max(hhoData%face_degree(), &
-                                                                        hhoData%cell_degree())+1)
+                                                                        hhoData%cell_degree())+1, &
+                                     param=ASTER_TRUE)
 !
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
@@ -686,7 +688,8 @@ contains
             call hhoBasisFace%initialize(hhoFace)
 ! ----- get quadrature
             call hhoQuad%GetQuadFace(hhoface, hhoData%grad_degree()+max(hhoData%face_degree(), &
-                                                                        hhoData%cell_degree())+1)
+                                                                        hhoData%cell_degree())+1, &
+                                     param=ASTER_TRUE)
 !
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
@@ -1060,7 +1063,8 @@ contains
             call hhoBasisFace%initialize(hhoFace)
 ! ----- get quadrature
             call hhoQuad%GetQuadFace(hhoface, hhoData%face_degree()+max(hhoData%face_degree(), &
-                                                                        hhoData%cell_degree()))
+                                                                        hhoData%cell_degree()), &
+                                     param=ASTER_TRUE)
 !
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
