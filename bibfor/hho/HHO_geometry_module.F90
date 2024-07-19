@@ -26,11 +26,14 @@ module HHO_geometry_module
     private
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
-#include "MeshTypes_type.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
-#include "asterfort/elrfvf.h"
 #include "asterfort/elrfdf.h"
+#include "asterfort/elrfno.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/provec.h"
+#include "blas/dnrm2.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,7 +46,8 @@ module HHO_geometry_module
 !
     public  :: barycenter, hhoNormalFace, hhoFaceInitCoor, hhoGeomBasis, hhoGeomDerivBasis
     public  :: hhoLocalBasisFace, hhoNormalFace2, hhoNormalFace3, hhoNormalFaceQP
-    public  :: hhoSplitSimplex
+    public  :: hhoSplitSimplex, hho_transfo_3d, hho_transfo_quad, hhoIsJacobCst
+    private :: hho_jaco_cst_quad, hho_jaco_cst_3d
     private :: hhoNormalFace2d, well_oriented, hhoNormalFace1d, prod_vec, find_lowest_vertex
 !
 contains
@@ -224,7 +228,7 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)            :: coorno
+        real(kind=8), dimension(3, 4), intent(in)           :: coorno
         integer, intent(in)                                 :: nbnodes
         real(kind=8), dimension(3), optional, intent(in)    :: barycenter_face
         real(kind=8), dimension(3), optional, intent(in)    :: barycenter_cell
@@ -722,5 +726,272 @@ contains
         end select
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hho_transfo_3d(coorno, nbnodes, typema, coorref, coorac, jacob)
+!
+        implicit none
+!
+        integer, intent(in)                             :: nbnodes
+        real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
+        integer, intent(in)                             :: typema
+        real(kind=8), dimension(3), intent(in)          :: coorref
+        real(kind=8), dimension(3), optional, intent(out) :: coorac
+        real(kind=8), optional, intent(out)             :: jacob
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   From reference element to current element
+!   In coorno       : coordinates of the nodes
+!   In coorref      : coordinates in the reference conf
+!   Out coorac      : coordinates in the current conf
+!   Out jacob       : determiant of the jacobienne of the transformation
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8), dimension(8) :: basis
+        real(kind=8), dimension(3, 8) :: dbasis
+        real(kind=8), dimension(3, 3) :: jaco
+        integer :: i
+!
+        if (present(coorac)) then
+!
+! ----- shape function
+!
+            call hhoGeomBasis(typema, coorref, basis)
+!
+            coorac = 0.d0
+!
+            do i = 1, nbnodes
+                coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
+            end do
+        end if
+!
+        if (present(jacob)) then
+!
+! ----- derivative of shape function
+!
+            call hhoGeomDerivBasis(typema, coorref, dbasis)
+!
+! ---  Compute the jacobienne
+            jaco = 0.d0
+            do i = 1, nbnodes
+                jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
+                jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
+                jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
+            end do
+!
+            jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
+                    +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
+                    -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
+        end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hho_transfo_quad(coorno, coorref, ndim, coorac, jacob)
+!
+        implicit none
+!
+        real(kind=8), dimension(3, 4), intent(in)            :: coorno
+        real(kind=8), dimension(2), intent(in)              :: coorref
+        integer, intent(in)                                 :: ndim
+        real(kind=8), optional, intent(out)                 :: jacob
+        real(kind=8), dimension(3), intent(out), optional   :: coorac
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   From reference element to current element
+!   In coorno       : coordinates of the nodes
+!   In coorref      : coordinates in the reference conf
+!   In ndim         : topological dimenison (space where live the quad)
+!   Out coorac      : coordinates in the current conf
+!   Out jacob       : determiant of the jacobienne of the transformation
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer, parameter :: typema = MT_QUAD4
+        real(kind=8), dimension(8) :: basis
+        real(kind=8), dimension(3, 8) :: dbasis
+        real(kind=8), dimension(2, 2) :: jaco
+        real(kind=8), dimension(3) :: da, db, normal
+        integer :: i
+!
+        if (present(coorac)) then
+!
+! ----      shape function
+!
+            call hhoGeomBasis(typema, (/coorref(1), coorref(2), 0.d0/), basis)
+!
+            coorac = 0.d0
+!
+            do i = 1, 4
+                coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
+            end do
+        end if
+!
+        if (present(jacob)) then
+!
+!       derivative of shape function
+!
+            call hhoGeomDerivBasis(typema, (/coorref(1), coorref(2), 0.d0/), dbasis)
+!
+! ---  Compute the jacobienne
+            jacob = 0.d0
+            select case (ndim)
+            case (2)
+                jaco = 0.d0
+                do i = 1, 4
+                    jaco(1:2, 1) = jaco(1:2, 1)+coorno(1, i)*dbasis(1:2, i)
+                    jaco(1:2, 2) = jaco(1:2, 2)+coorno(2, i)*dbasis(1:2, i)
+                end do
+!
+                jacob = jaco(1, 1)*jaco(2, 2)-jaco(1, 2)*jaco(2, 1)
+            case (3)
+                da = 0.d0
+                db = 0.d0
+                do i = 1, 4
+                    da(1:3) = da(1:3)+coorno(1:3, i)*dbasis(1, i)
+                    db(1:3) = db(1:3)+coorno(1:3, i)*dbasis(2, i)
+                end do
+                call provec(da, db, normal)
+                jacob = dnrm2(3, normal, 1)
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+        end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hho_jaco_cst_quad(coorno, ndim) result(l_cst)
+!
+        implicit none
+!
+        real(kind=8), dimension(3, 4), intent(in)           :: coorno
+        integer, intent(in)                                 :: ndim
+        aster_logical :: l_cst
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Return True if the jacobienne is constant on cell
+!   In coorno       : coordinates of the nodes
+!   In ndim         : topological dimenison (space where live the quad)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        real(kind=8) :: coor_nno(3, MT_NNOMAX), jac1, jac, tole
+        integer :: i_node
+!
+        l_cst = ASTER_TRUE
+        call elrfno('QU4', nodeCoor=coor_nno)
+!
+        call hho_transfo_quad(coorno, coor_nno(1:2, 1), ndim, jacob=jac1)
+        tole = 1.d-8*abs(jac1)
+        do i_node = 2, 4
+            call hho_transfo_quad(coorno, coor_nno(1:2, i_node), ndim, jacob=jac)
+            if (abs(jac-jac1) > tole) then
+                l_cst = ASTER_FALSE
+                exit
+            end if
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hho_jaco_cst_3d(typema, coorno) result(l_cst)
+!
+        implicit none
+!
+        real(kind=8), dimension(3, 8), intent(in)           :: coorno
+        integer, intent(in)                                 :: typema
+        aster_logical :: l_cst
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Return True if the jacobienne is constant on cell
+!   In coorno       : coordinates of the nodes
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        real(kind=8) :: coor_nno(3, MT_NNOMAX), jac1, jac, tole
+        character(len=8) :: sname
+        integer :: i_node, nno
+!
+        l_cst = ASTER_TRUE
+        call CellNameL2S(typema, sname)
+        call elrfno(sname, nno=nno, nodeCoor=coor_nno)
+!
+        call hho_transfo_3d(coorno, nno, typema, coor_nno(1:3, 1), jacob=jac1)
+        tole = 1.d-8*abs(jac1)
+        do i_node = 2, nno
+            call hho_transfo_3d(coorno, nno, typema, coor_nno(1:3, i_node), jacob=jac)
+            if (abs(jac-jac1) > tole) then
+                l_cst = ASTER_FALSE
+                exit
+            end if
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoIsJacobCst(typema, coorno, ndim) result(l_cst)
+!
+        implicit none
+!
+        real(kind=8), dimension(3, *), intent(in)           :: coorno
+        integer, intent(in)                                 :: typema, ndim
+        aster_logical :: l_cst
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Return True if the jacobienne is constant on cell
+!   In coorno       : coordinates of the nodes
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        select case (typema)
+        case (MT_SEG2)
+            l_cst = ASTER_TRUE
+        case (MT_TRIA3)
+            l_cst = ASTER_TRUE
+        case (MT_QUAD4)
+            l_cst = hho_jaco_cst_quad(coorno, ndim)
+        case (MT_TETRA4)
+            l_cst = ASTER_TRUE
+        case (MT_HEXA8)
+            l_cst = hho_jaco_cst_3d(typema, coorno)
+        case (MT_PYRAM5)
+            l_cst = hho_jaco_cst_3d(typema, coorno)
+        case (MT_PENTA6)
+            l_cst = hho_jaco_cst_3d(typema, coorno)
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end function
 !
 end module

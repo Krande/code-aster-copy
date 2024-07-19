@@ -21,7 +21,7 @@ module HHO_quadrature_module
 !
     use HHO_type
     use HHO_measure_module
-    use HHO_geometry_module, only: hhoGeomBasis, hhoGeomDerivBasis, hhoSplitSimplex
+    use HHO_geometry_module
     use HHO_utils_module, only: CellNameL2S
 !
     implicit none
@@ -32,10 +32,8 @@ module HHO_quadrature_module
 #include "asterfort/assert.h"
 #include "asterfort/elraga.h"
 #include "asterfort/HHO_size_module.h"
-#include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/reereg.h"
-#include "blas/dnrm2.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
@@ -77,7 +75,6 @@ module HHO_quadrature_module
 !
     public   :: HHO_Quadrature
     private  :: hho_edge_rules, hho_hexa_rules, hho_tri_rules, hho_tetra_rules, &
-                hho_transfo_3d, hho_transfo_quad, &
                 hho_prism_rules, hho_pyram_rules, hho_subtetra_rules, hho_subtri_rules, &
                 hho_quad_rules, hhoGetQuadCell, hhoGetQuadFace, hhoQuadPrint, &
                 hhoinitCellFamiQ, hhoinitFaceFamiQ, check_order, hhoSelectOrder
@@ -113,68 +110,7 @@ contains
         end if
 !
     end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hho_transfo_3d(coorno, nbnodes, typema, coorref, coorac, jacob)
-!
-        implicit none
-!
-        integer, intent(in)                             :: nbnodes
-        real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
-        integer, intent(in)                             :: typema
-        real(kind=8), dimension(3), intent(in)          :: coorref
-        real(kind=8), dimension(3), intent(out)         :: coorac
-        real(kind=8), optional, intent(out)             :: jacob
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   From reference element to current element
-!   In coorno       : coordinates of the nodes
-!   In coorref      : coordinates in the reference conf
-!   Out coorac      : coordinates in the current conf
-!   Out jacob       : determiant of the jacobienne of the transformation
-!
-! --------------------------------------------------------------------------------------------------
-!
-        real(kind=8), dimension(8) :: basis
-        real(kind=8), dimension(3, 8) :: dbasis
-        real(kind=8), dimension(3, 3) :: jaco
-        integer :: i
-!
-! ----- shape function
-!
-        call hhoGeomBasis(typema, coorref, basis)
-!
-        coorac = 0.d0
-!
-        do i = 1, nbnodes
-            coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
-        end do
-!
-        if (present(jacob)) then
-!
-! ----- derivative of shape function
-!
-            call hhoGeomDerivBasis(typema, coorref, dbasis)
-!
-! ---  Compute the jacobienne
-            jaco = 0.d0
-            do i = 1, nbnodes
-                jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
-                jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
-                jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
-            end do
-!
-            jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
-                    +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
-                    -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
-        end if
-!
-    end subroutine
+
 !
 !===================================================================================================
 !
@@ -240,82 +176,6 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hho_transfo_quad(coorno, coorref, ndim, jacob, coorac)
-!
-        implicit none
-!
-        real(kind=8), dimension(3, 4), intent(in)            :: coorno
-        real(kind=8), dimension(2), intent(in)              :: coorref
-        integer, intent(in)                                 :: ndim
-        real(kind=8), intent(out)                           :: jacob
-        real(kind=8), dimension(3), intent(out), optional   :: coorac
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   From reference element to current element
-!   In coorno       : coordinates of the nodes
-!   In coorref      : coordinates in the reference conf
-!   In ndim         : topological dimenison (space where live the quad)
-!   Out coorac      : coordinates in the current conf
-!   Out jacob       : determiant of the jacobienne of the transformation
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer, parameter :: typema = MT_QUAD4
-        real(kind=8), dimension(8) :: basis
-        real(kind=8), dimension(3, 8) :: dbasis
-        real(kind=8), dimension(2, 2) :: jaco
-        real(kind=8), dimension(3) :: da, db, normal
-        integer :: i
-!
-        if (present(coorac)) then
-!
-! ----      shape function
-!
-            call hhoGeomBasis(typema, (/coorref(1), coorref(2), 0.d0/), basis)
-!
-            coorac = 0.d0
-!
-            do i = 1, 4
-                coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
-            end do
-        end if
-!
-!       derivative of shape function
-!
-        call hhoGeomDerivBasis(typema, (/coorref(1), coorref(2), 0.d0/), dbasis)
-!
-! ---  Compute the jacobienne
-        jacob = 0.d0
-        select case (ndim)
-        case (2)
-            jaco = 0.d0
-            do i = 1, 4
-                jaco(1:2, 1) = jaco(1:2, 1)+coorno(1, i)*dbasis(1:2, i)
-                jaco(1:2, 2) = jaco(1:2, 2)+coorno(2, i)*dbasis(1:2, i)
-            end do
-!
-            jacob = jaco(1, 1)*jaco(2, 2)-jaco(1, 2)*jaco(2, 1)
-        case (3)
-            da = 0.d0
-            db = 0.d0
-            do i = 1, 4
-                da(1:3) = da(1:3)+coorno(1:3, i)*dbasis(1, i)
-                db(1:3) = db(1:3)+coorno(1:3, i)*dbasis(2, i)
-            end do
-            call provec(da, db, normal)
-            jacob = dnrm2(3, normal, 1)
-        case default
-            ASSERT(ASTER_FALSE)
-        end select
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
     subroutine hho_quad_rules(this, coorno, ndim)
 !
         implicit none
@@ -358,7 +218,7 @@ contains
         do ipg = 1, nbpg
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
-            call hho_transfo_quad(coorno, (/x, y/), ndim, jaco, coorpgglo)
+            call hho_transfo_quad(coorno, (/x, y/), ndim, coorpgglo, jaco)
             this%points_param(1:2, ipg) = (/x, y/)
             this%points(1:3, ipg) = coorpgglo
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -824,19 +684,15 @@ contains
         if (present(split)) then
             split_simpl = split
         else
-#ifdef SPLIT_SIMPLEX
             split_simpl = ASTER_TRUE
-#else
-            split_simpl = ASTER_FALSE
-#endif
         end if
 !
-        if (hhoCell%typema == MT_TETRA4 .or. hhoCell%typema == MT_TRIA3) then
+        if (hhoCell%l_jaco_cst) then
             split_simpl = ASTER_FALSE
         end if
 !
         !TODO:
-        ! DETECT AUTO
+        ! PARAM in option
 !
         if (split_simpl) then
             if (hhoCell%ndim == 3) then
@@ -915,14 +771,10 @@ contains
         if (present(split)) then
             split_simpl = split
         else
-#ifdef SPLIT_SIMPLEX
             split_simpl = ASTER_TRUE
-#else
-            split_simpl = ASTER_FALSE
-#endif
         end if
 !
-        if (hhoFace%typema == MT_TRIA3 .or. hhoFace%typema == MT_SEG2) then
+        if (hhoFace%l_jaco_cst) then
             split_simpl = ASTER_FALSE
         end if
 !

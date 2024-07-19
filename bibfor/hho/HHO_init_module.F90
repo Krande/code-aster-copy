@@ -30,21 +30,20 @@ module HHO_init_module
 !
     private
 #include "asterf_types.h"
-#include "asterfort/Behaviour_type.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/HHO_size_module.h"
-#include "MeshTypes_type.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/rcvala.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/rcvala.h"
-#include "blas/dsyr.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -301,6 +300,7 @@ contains
         end do
         ! Last node is the index of barycenter
         hhoFace%node_bar_loc = num_nodes_loc(hhoFace%nbnodes+1)
+        hhoFace%l_jaco_cst = hhoIsJacobCst(hhoFace%typema, hhoFace%coorno, hhoFace%ndim+1)
 !
     end subroutine
 !
@@ -337,6 +337,7 @@ contains
         integer, dimension(max_faces)           :: type_faces
         real(kind=8), dimension(3, max_nodes)    :: coor_face
         integer :: i_face, i_node
+        aster_logical :: l_jaco
 ! --------------------------------------------------------------------------------------------------
 ! --- Init
         nodes_faces = 0
@@ -535,6 +536,25 @@ contains
                              nbnodes_faces(i_face), coor_face, nodes_faces(:, i_face), &
                              i_face, hhoCell%barycenter)
         end do
+!
+! ----- Jacobienne
+!
+        if (hhoCell%typema == MT_TETRA4 .or. hhoCell%typema == MT_TRIA3) then
+            hhoCell%l_jaco_cst = ASTER_TRUE
+        else
+            hhoCell%l_jaco_cst = ASTER_TRUE
+            l_jaco = ASTER_TRUE
+            do i_face = 1, hhoCell%nbfaces
+                if (.not. hhoCell%faces(i_face)%l_jaco_cst) then
+                    hhoCell%l_jaco_cst = ASTER_FALSE
+                    l_jaco = ASTER_FALSE
+                    exit
+                end if
+            end do
+            if (l_jaco) then
+                hhoCell%l_jaco_cst = hhoIsJacobCst(hhoCell%typema, hhoCell%coorno, hhoCell%ndim)
+            end if
+        end if
 !
         if (l_debug) then
             call hhoCell%print()

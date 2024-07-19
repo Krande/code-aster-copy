@@ -66,21 +66,9 @@
 ! --- Maximum number of componants for matrix cell function (order=3 and dim=3)
 #define MSIZE_CELL_MAT 180
 !
-! ---- split cell into simplicial for quadrature
-#define SPLIT_SIMPLEX
-!
-#ifdef SPLIT_SIMPLEX
 ! --- maximum number of quadrature points
 #define MAX_QP 115
 ! --- maximum number of quadrature points on a face QUAD = 16
 #define MAX_QP_FACE 32
 ! --- maximum number of quadrature points on a cell HEXA = 64
 #define MAX_QP_CELL 115
-#else
-! --- maximum number of quadrature points
-#define MAX_QP 64
-! --- maximum number of quadrature points on a face QUAD = 16
-#define MAX_QP_FACE 16
-! --- maximum number of quadrature points on a cell HEXA = 64
-#define MAX_QP_CELL 64
-#endif
