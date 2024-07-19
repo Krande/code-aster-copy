@@ -3,7 +3,7 @@
  * @brief Implementation de FieldOnNodes vide car FieldOnNodes est un template
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,4 +23,54 @@
 
 #include "DataFields/FieldOnNodes.h"
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
+template <>
+FieldOnNodesReal FieldOnNodesReal::transform( py::object &func ) const {
+    if ( !PyCallable_Check( func.ptr() ) )
+        raiseAsterError( "Input parameter to the transform "
+                         "method should be a callable Python object" );
+
+    FieldOnNodesReal tmp( *this );
+    updateValuePointers();
+
+    ASTERINTEGER size = _values->size();
+    for ( auto i = 0; i < size; i++ ) {
+        PyObject *res = PyObject_CallFunction( func.ptr(), "d", ( *_values )[i] );
+        if ( PyFloat_Check( res ) ) {
+            tmp[i] = (ASTERDOUBLE)PyFloat_AsDouble( res );
+        } else if ( PyLong_Check( res ) ) {
+            tmp[i] = (ASTERDOUBLE)PyLong_AsDouble( res );
+        } else {
+            raiseAsterError( "Invalid function return type. Expected ASTERDOUBLE." );
+        }
+        Py_XDECREF( res );
+    }
+    return tmp;
+};
+
+template <>
+FieldOnNodesComplex FieldOnNodesComplex::transform( py::object &func ) const {
+    if ( !PyCallable_Check( func.ptr() ) )
+        raiseAsterError( "Input parameter to the transform "
+                         "method should be a callable Python object" );
+
+    FieldOnNodesComplex tmp( *this );
+    _values->updateValuePointer();
+
+    ASTERINTEGER size = _values->size();
+
+    Py_complex val;
+    for ( auto i = 0; i < size; i++ ) {
+        val.real = ( *_values )[i].real();
+        val.imag = ( *_values )[i].imag();
+        PyObject *res = PyObject_CallFunction( func.ptr(), "D", val );
+        if ( PyComplex_Check( res ) ) {
+            ASTERDOUBLE re = (ASTERDOUBLE)PyComplex_RealAsDouble( res );
+            ASTERDOUBLE im = (ASTERDOUBLE)PyComplex_ImagAsDouble( res );
+            tmp[i] = { re, im };
+        } else {
+            raiseAsterError( "Invalid function return type. Expected ASTERCOMPLEX." );
+        }
+        Py_XDECREF( res );
+    }
+    return tmp;
+};

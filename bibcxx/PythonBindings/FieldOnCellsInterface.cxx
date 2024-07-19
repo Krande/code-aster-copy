@@ -3,7 +3,7 @@
  * @brief Python interface for FieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -145,7 +145,7 @@ Returns:
             Returns:
                 int: number of element in the field
             )" )
-        .def( "transform", &FieldOnCellsReal::transform< ASTERDOUBLE >, R"(
+        .def( "transform", &FieldOnCellsReal::transform, R"(
             Apply a function to each value of the object.
 
             Arguments:
@@ -191,7 +191,7 @@ Returns:
                 bool: *True* if succeeds, *False* otherwise.
             )",
               py::arg( "filename" ), py::arg( "local" ) = true )
-        .def( "norm", &FieldOnCellsReal::norm< ASTERDOUBLE >, R"(
+        .def( "norm", &FieldOnCellsReal::norm, R"(
             Return the euclidean norm of the field
 
             Arguments:
@@ -200,7 +200,7 @@ Returns:
             Returns:
                 float: euclidean norm
             )" )
-        .def( "dot", &FieldOnCellsReal::dot< ASTERDOUBLE >, R"(
+        .def( "dot", &FieldOnCellsReal::dot, R"(
             Return the dot product of two fields
 
             Arguments:
@@ -307,7 +307,7 @@ Returns:
             Returns:
                 int: number of element in the field
             )" )
-        .def( "transform", &FieldOnCellsComplex::transform< ASTERCOMPLEX >, R"(
+        .def( "transform", &FieldOnCellsComplex::transform, R"(
             Apply a function to each value of the object.
 
             Arguments:
