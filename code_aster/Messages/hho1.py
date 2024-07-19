@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,16 @@ Vous voulez une base de degré négatif %(i1)d ce qui inférieur au minimum auto
         """
 Quadratures HHO:
 Vous voulez une quadrature d'ordre supérieur au maximum autorisé par votre quadrature
+"""
+    ),
+    13: _(
+        """
+Face HHO:
+Vous utilisez un maillage dont au moins une cellule à une face non-plane.
+
+Le coefficient de non-planéité suivant (%(r1)f) n'est pas nul.
+
+Cela n'est pas autorisé. Il faut retravailler le maillage.
 """
     ),
 }
