@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,19 +47,19 @@ DEFLIST = DEFI_LIST_INST(
 
 coor1 = [0.0, 1.53224, 3.2689, 3.80797, 4.40378, 5.0]
 
-Test1 = [233.432428374]
+Test1 = [233.4311830250259]
 
-Test2 = [258.856776487]
+Test2 = [258.8564753045225]
 
-Test3 = [297.261282303]
+Test3 = [297.23134456660006]
 
-Test4 = [265.841456549]
+Test4 = [265.832744456039]
 
-Test5 = [189.00026172]
+Test5 = [188.96502958022185]
 
-Test6 = [422.973924462]
+Test6 = [422.9685985288313]
 
-Test7 = [-0.0820213381475]
+Test7 = [-0.08149192102755581]
 
 
 MO = AFFE_MODELE(
@@ -202,7 +202,7 @@ TEST_RESU(
         NOM_CHAM="SIGM_ELNO",
         GROUP_NO="N5",
         NOM_CMP="SIYY",
-        VALE_CALC=422.97391963561745,
+        VALE_CALC=422.9685985287921,
         CRITERE="RELATIF",
         GROUP_MA="M1294",
     )
@@ -215,7 +215,7 @@ TEST_RESU(
         NOM_CHAM="SIGM_ELNO",
         GROUP_NO="N5",
         NOM_CMP="SIXX",
-        VALE_CALC=-0.08202114583787917,
+        VALE_CALC=-0.08149192025227253,
         CRITERE="RELATIF",
         GROUP_MA="M1294",
     )

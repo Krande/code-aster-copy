@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,11 +53,11 @@ DEFLIST = DEFI_LIST_INST(
     ),
 )
 
-Test1 = [233.66619961614904]
-Test2 = [241.6651400368948]
-Test3 = [297.40222373104456]
-Test4 = [447.65589165846535]
-Test5 = [-3.7932177658570727]
+Test1 = [234.75590086559]
+Test2 = [241.81189220207858]
+Test3 = [297.83780685856505]
+Test4 = [440.9184609503591]
+Test5 = [-0.4439605532245161]
 
 MO = AFFE_MODELE(
     MAILLAGE=MA,
