@@ -118,8 +118,7 @@ contains
         dbg = ASTER_FALSE
 #endif
 !
-        if (hhoBasisCell%isOrthonormal() .and. .not. dbg .and. &
-            (hhoCell%typema .eq. MT_TETRA4 .or. hhoCell%ndim .eq. 2)) then
+        if (hhoBasisCell%isOrthonormal() .and. .not. dbg) then
             do i = 1, dimMat
                 this%m(i, i) = 1.d0
             end do
@@ -144,9 +143,8 @@ contains
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
             if (hhoBasisCell%isOrthonormal()) then
-                this%isIdentity = hhoIsIdentityMat(this%m, dimMat)
 #ifdef ASTER_DEBUG_FC
-                ASSERT(this%isIdentity)
+                ASSERT(hhoIsIdentityMat(this%m, dimMat))
 #endif
             end if
 
@@ -230,9 +228,8 @@ contains
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
             if (hhoBasisFace%isOrthonormal()) then
-                this%isIdentity = hhoIsIdentityMat(this%m, dimMat)
 #ifdef ASTER_DEBUG_FC
-                ASSERT(this%isIdentity)
+                ASSERT(hhoIsIdentityMat(this%m, dimMat))
 #endif
             end if
         end if
