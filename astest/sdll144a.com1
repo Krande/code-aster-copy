@@ -86,5 +86,6 @@ test.assertTrue(np.allclose(u1, u_ref))
 test.assertTrue(np.allclose(v1, v_ref))
 test.assertTrue(np.allclose(a1, a_ref))
 
+test.printSummary()
 
 FIN()

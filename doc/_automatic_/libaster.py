@@ -13061,13 +13061,13 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             list[double]: generalized accelerations values.
 
 
-        2. getAccelerationValues(self: libaster.TransientGeneralizedResult, arg0: int) -> List[float]
+        2. getAccelerationValues(self: libaster.TransientGeneralizedResult, idx: int) -> List[float]
 
 
         Return generalized accelerations values at a given time index.
 
         Arguments
-            int: time index
+            idx (int): time index
 
         Returns:
             list[double]: generalized accelerations values.
@@ -13092,13 +13092,13 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             list[double]: generalized displacements values.
 
 
-        2. getDisplacementValues(self: libaster.TransientGeneralizedResult, arg0: int) -> List[float]
+        2. getDisplacementValues(self: libaster.TransientGeneralizedResult, idx: int) -> List[float]
 
 
         Return generalized displacements values at a given time index.
 
         Arguments
-            int: time index
+            idx (int): time index
 
         Returns:
             list[double]: generalized displacements values.
@@ -13144,30 +13144,30 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             list[double]: generalized velocities values.
 
 
-        2. getVelocityValues(self: libaster.TransientGeneralizedResult, arg0: int) -> List[float]
+        2. getVelocityValues(self: libaster.TransientGeneralizedResult, idx: int) -> List[float]
 
 
         Return generalized velocities values at a given time index.
 
         Arguments
-            int: time index
+            idx (int): time index
 
         Returns:
             list[double]: generalized velocities values.
         """
 
-    def setDOFNumbering(self, arg0):
+    def setDOFNumbering(self, dofn):
         """Set DOF numbering
 
         Arguments:
-            dofn[DOFNumbering]: DOF numbering
+            dofn (DOFNumbering): DOF numbering
         """
 
-    def setGeneralizedDOFNumbering(self, arg0):
+    def setGeneralizedDOFNumbering(self, dofg):
         """Set generalized DOF numbering
 
         Arguments:
-            dofg[GeneralizedDOFNumbering]: generalized DOF numbering
+            dofg (GeneralizedDOFNumbering): generalized DOF numbering
         """
 
 

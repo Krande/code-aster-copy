@@ -51,8 +51,9 @@ Builds C++ arguments associated to attributes stored by blocks of time indices
 Set generalized DOF numbering
 
 Arguments:
-    dofg[GeneralizedDOFNumbering]: generalized DOF numbering
-              )" )
+    dofg (GeneralizedDOFNumbering): generalized DOF numbering
+              )",
+              py::arg( "dofg" ) )
         .def( "getGeneralizedDOFNumbering", &TransientGeneralizedResult::getGeneralizedDOFNumbering,
               R"(
 Get generalized DOF numbering
@@ -61,19 +62,20 @@ Returns:
     GeneralizedDOFNumbering: generalized DOF numbering
               )" )
         .def( "setDOFNumbering", &TransientGeneralizedResult::setDOFNumbering, R"(
-Set DOF numbering 
+Set DOF numbering
 
 Arguments:
-    dofn[DOFNumbering]: DOF numbering
-        )" )
+    dofn (DOFNumbering): DOF numbering
+        )",
+              py::arg( "dofn" ) )
         .def( "getDOFNumbering", &TransientGeneralizedResult::getDOFNumbering, R"(
-Get DOF numbering 
+Get DOF numbering
 
 Returns:
     DOFNumbering: DOF numbering
         )" )
         .def( "getNumberOfModes", &TransientGeneralizedResult::getNumberOfModes, R"(
-Returns the number of vectors in the generalized basis 
+Returns the number of vectors in the generalized basis
 
 Returns:
     int: number of vectors in the generalized basis
@@ -106,12 +108,13 @@ Returns:
               R"(
 Return generalized displacements values at a given time index.
 
-Arguments 
-    int: time index
+Arguments
+    idx (int): time index
 
 Returns:
     list[double]: generalized displacements values.
-        )" )
+        )",
+              py::arg( "idx" ) )
 
         .def( "getVelocityValues",
               py::overload_cast<>( &TransientGeneralizedResult::getVelocityValues, py::const_ ),
@@ -128,12 +131,13 @@ Returns:
               R"(
 Return generalized velocities values at a given time index.
 
-Arguments 
-    int: time index
+Arguments
+    idx (int): time index
 
 Returns:
     list[double]: generalized velocities values.
-        )" )
+        )",
+              py::arg( "idx" ) )
 
         .def( "getAccelerationValues",
               py::overload_cast<>( &TransientGeneralizedResult::getAccelerationValues, py::const_ ),
@@ -150,12 +154,13 @@ Returns:
               R"(
 Return generalized accelerations values at a given time index.
 
-Arguments 
-    int: time index
+Arguments
+    idx (int): time index
 
 Returns:
     list[double]: generalized accelerations values.
-        )" );
+        )",
+              py::arg( "idx" ) );
 
     py::class_< HarmoGeneralizedResult, HarmoGeneralizedResultPtr, GeneralizedResultComplex >(
         mod, "HarmoGeneralizedResult" )
