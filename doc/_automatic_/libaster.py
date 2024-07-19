@@ -13046,26 +13046,129 @@ class TransientGeneralizedResult(GeneralizedResultReal):
         2. __init__(self: libaster.TransientGeneralizedResult, arg0: str) -> None
         """
 
+    def build(self):
+        """Builds C++ arguments associated to attributes stored by blocks of time indices"""
+
+    def getAccelerationValues(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getAccelerationValues(self: libaster.TransientGeneralizedResult) -> List[float]
+
+
+        Return generalized accelerations values for all time indices.
+
+        Returns:
+            list[double]: generalized accelerations values.
+
+
+        2. getAccelerationValues(self: libaster.TransientGeneralizedResult, idx: int) -> List[float]
+
+
+        Return generalized accelerations values at a given time index.
+
+        Arguments
+            idx (int): time index
+
+        Returns:
+            list[double]: generalized accelerations values.
+        """
+
     def getDOFNumbering(self):
-        pass
+        """Get DOF numbering
+
+        Returns:
+            DOFNumbering: DOF numbering
+        """
+
+    def getDisplacementValues(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getDisplacementValues(self: libaster.TransientGeneralizedResult) -> List[float]
+
+
+        Return generalized displacements values for all time indices.
+
+        Returns:
+            list[double]: generalized displacements values.
+
+
+        2. getDisplacementValues(self: libaster.TransientGeneralizedResult, idx: int) -> List[float]
+
+
+        Return generalized displacements values at a given time index.
+
+        Arguments
+            idx (int): time index
+
+        Returns:
+            list[double]: generalized displacements values.
+        """
 
     def getGeneralizedDOFNumbering(self):
-        pass
+        """Get generalized DOF numbering
+
+        Returns:
+            GeneralizedDOFNumbering: generalized DOF numbering
+        """
 
     def getIndexes(self):
-        pass
+        """Returns time indices of the transient calculation
+
+        Returns:
+            list[int]: time indices
+        """
 
     def getNumberOfModes(self):
-        pass
+        """Returns the number of vectors in the generalized basis
+
+        Returns:
+            int: number of vectors in the generalized basis
+        """
 
     def getTimes(self):
-        pass
+        """Returns values of instants of the transient calculation
 
-    def setDOFNumbering(self, arg0):
-        pass
+        Returns:
+            list[float]: instants values
+        """
 
-    def setGeneralizedDOFNumbering(self, arg0):
-        pass
+    def getVelocityValues(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getVelocityValues(self: libaster.TransientGeneralizedResult) -> List[float]
+
+
+        Return generalized velocities values for all time indices.
+
+        Returns:
+            list[double]: generalized velocities values.
+
+
+        2. getVelocityValues(self: libaster.TransientGeneralizedResult, idx: int) -> List[float]
+
+
+        Return generalized velocities values at a given time index.
+
+        Arguments
+            idx (int): time index
+
+        Returns:
+            list[double]: generalized velocities values.
+        """
+
+    def setDOFNumbering(self, dofn):
+        """Set DOF numbering
+
+        Arguments:
+            dofn (DOFNumbering): DOF numbering
+        """
+
+    def setGeneralizedDOFNumbering(self, dofg):
+        """Set generalized DOF numbering
+
+        Arguments:
+            dofg (GeneralizedDOFNumbering): generalized DOF numbering
+        """
 
 
 # class HarmoGeneralizedResult in libaster

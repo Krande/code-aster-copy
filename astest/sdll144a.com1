@@ -1,0 +1,91 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# person_in_charge: donatien.rossat at edf.fr
+#
+import numpy as np
+from code_aster.Commands import *
+from code_aster import CA
+
+POURSUITE(CODE="OUI")
+
+
+## Extract reference displacements/velocities/accelerations on physical basis
+# Restitute results on physical basis
+idxt = np.arange(5000)
+TRANPHY = REST_GENE_PHYS(RESU_GENE=TRANGEN2, TOUT_CHAM="OUI", NUME_ORDRE=idxt.tolist())
+
+# Extract results in numpy format
+dofs = np.array(NUMEDDL.getPhysicalDOFs())
+Ndof = len(dofs)
+Nt = len(idxt)
+Nmod = TRANGEN2.getNumberOfModes()
+u_ref = np.zeros((Nt, Ndof))
+v_ref = np.zeros((Nt, Ndof))
+a_ref = np.zeros((Nt, Ndof))
+for i, idx in enumerate(idxt):
+    u_ref[i, :] = np.array(TRANPHY.getField("DEPL", idx).getValues())[dofs]
+    v_ref[i, :] = np.array(TRANPHY.getField("VITE", idx).getValues())[dofs]
+    a_ref[i, :] = np.array(TRANPHY.getField("ACCE", idx).getValues())[dofs]
+
+## Extract modal basis in numpy format
+Phi = np.zeros((Ndof, Nmod))
+for j in range(Nmod):
+    Phi[:, j] = np.array(MODES.getField("DEPL", j + 1).getValues())[dofs]
+
+## Extract coordinates from generalized result - "Full extraction"
+ug = np.array(TRANGEN2.getDisplacementValues()).reshape((-1, Nmod))[idxt, :]
+vg = np.array(TRANGEN2.getVelocityValues()).reshape((-1, Nmod))[idxt, :]
+ag = np.array(TRANGEN2.getAccelerationValues()).reshape((-1, Nmod))[idxt, :]
+
+## Extract coordinates from generalized result - "Index-wise extraction"
+ug1 = np.zeros((Nt, Nmod))
+vg1 = np.zeros((Nt, Nmod))
+ag1 = np.zeros((Nt, Nmod))
+for i, idx in enumerate(idxt):
+    ug1[i, :] = TRANGEN2.getDisplacementValues(idx)
+    vg1[i, :] = TRANGEN2.getVelocityValues(idx)
+    ag1[i, :] = TRANGEN2.getAccelerationValues(idx)
+
+
+## Pythonized restitution on physical basis
+# "Full extraction"
+u = ug.dot(Phi.T)
+v = vg.dot(Phi.T)
+a = ag.dot(Phi.T)
+
+# "Index-wise extraction"
+u1 = ug1.dot(Phi.T)
+v1 = vg1.dot(Phi.T)
+a1 = ag1.dot(Phi.T)
+
+## Test results
+test = CA.TestCase()
+
+test.assertTrue(np.allclose(u, u_ref))
+test.assertTrue(np.allclose(v, v_ref))
+test.assertTrue(np.allclose(a, a_ref))
+
+test.assertTrue(np.allclose(u1, u_ref))
+test.assertTrue(np.allclose(v1, v_ref))
+test.assertTrue(np.allclose(a1, a_ref))
+
+test.printSummary()
+
+FIN()
