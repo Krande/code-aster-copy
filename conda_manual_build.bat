@@ -115,9 +115,9 @@ if "%BUILD_TYPE%" == "debug" (
     set CXXFLAGS=%CXXFLAGS% /Zi
 ) else (
     REM set the equivalent of RelWithDebInfo
-    set FCFLAGS=%FCFLAGS% /debug:full /debug-parameters:all /traceback
-    set CFLAGS=%CFLAGS% /Z7
-    set CXXFLAGS=%CXXFLAGS% /Z7
+@REM     set FCFLAGS=%FCFLAGS% /debug:full /debug-parameters:all /traceback
+@REM     set CFLAGS=%CFLAGS% /Zi
+@REM     set CXXFLAGS=%CXXFLAGS% /Zi
 )
 
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
