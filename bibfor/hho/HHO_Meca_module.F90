@@ -23,6 +23,7 @@ module HHO_Meca_module
     use NonLin_Datastructure_type
     use HHO_compor_module
     use HHO_Dirichlet_module
+    use HHO_eval_module
     use HHO_LargeStrainMeca_module
     use HHO_quadrature_module
     use HHO_size_module
@@ -58,10 +59,12 @@ module HHO_Meca_module
 #include "asterfort/readMatrix.h"
 #include "asterfort/readVector.h"
 #include "asterfort/tecach.h"
+#include "asterfort/sigtopk1.h"
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dsymv.h"
+#include "blas/dgemv.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !
@@ -76,7 +79,7 @@ module HHO_Meca_module
 !
     public :: HHO_Meca_State
     public :: hhoMecaInit, hhoLocalContribMeca, hhoCalcStabCoeffMeca
-    public :: hhoCalcOpMeca, hhoReloadPreCalcMeca
+    public :: hhoCalcOpMeca, hhoReloadPreCalcMeca, hhoLocalForcNoda
     public :: YoungModulus, hhoLocalMassMeca
 !
 ! --------------------------------------------------------------------------------------------------
@@ -619,6 +622,105 @@ contains
         call hhoCopySymPartMat('U', mass_scal(1:dimMatScal, 1:dimMatScal))
         call MatCellScal2Vec(hhoCell, hhoData, mass_scal, mass_vec)
         mass(1:cbs, 1:cbs) = mass_vec(1:cbs, 1:cbs)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoLocalForcNoda(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, &
+                                hhoCS, stress, rhs)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)      :: hhoCell
+        type(HHO_Data), intent(inout)   :: hhoData
+        type(HHO_Quadrature), intent(in):: hhoQuadCellRigi
+        type(HHO_Meca_State), intent(in) :: hhoMecaState
+        type(HHO_Compor_State), intent(in) :: hhoCS
+        real(kind=8), intent(in)        :: stress(*)
+        real(kind=8), intent(out)       :: rhs(MSIZE_TDOFS_VEC)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the local residual for a given state
+!   In hhoCell      : the current HHO Cell
+!   In hhoData       : information on HHO methods
+!   In hhoQuadCellRigi : quadrature rules from the rigidity family
+!   In fami         : familly of quadrature points (of hhoQuadCellRigi)
+!   Out rhs         : local contribution (rhs)
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_basis_cell) :: hhoBasisCell
+        integer:: cbs, fbs, total_dofs, gbs, gbs_sym
+        integer :: ipg, ncomp, gbs_curr, gbs_cmp
+        real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8) :: coorpg(3), weight
+        real(kind=8) :: Cauchy_curr(6), PK1_curr(3, 3), G_curr(3, 3), F_curr(3, 3)
+        real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_curr_coeff
+!
+        rhs = 0.d0
+        ncomp = hhoCS%nbsigm
+!
+! ----- init basis
+!
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+        call hhoBasisCell%initialize(hhoCell)
+!
+! --- Compute local contribution
+!
+        if (hhoCS%l_largestrain) then
+            call dgemv('N', gbs, total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
+                       hhoMecaState%depl_curr, 1, 0.d0, G_curr_coeff, 1)
+            gbs_curr = gbs
+        else
+            gbs_curr = gbs_sym
+        end if
+!
+! ----- Loop on quadrature point
+!
+        do ipg = 1, hhoQuadCellRigi%nbQuadPoints
+            coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
+            weight = hhoQuadCellRigi%weights(ipg)
+!
+! -------- tranform sigm in symmetric form
+!
+            call tranfoMatToSym(hhoCell%ndim, stress((ipg-1)*ncomp+1:ipg*ncomp), Cauchy_curr)
+!
+! --------- Eval basis function at the quadrature point
+!
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+!
+! --------- Eval gradient at T- and T+
+!
+            if (hhoCS%l_largestrain) then
+                G_curr = hhoEvalMatCell(hhoBasisCell, hhoData%grad_degree(), &
+                                        coorpg(1:3), G_curr_coeff, gbs)
+!
+! --------- Eval gradient of the deformation at T- and T+
+!
+                call hhoCalculF(hhoCell%ndim, G_curr, F_curr)
+!
+                call sigtopk1(hhoCell%ndim, Cauchy_curr, F_curr, PK1_curr)
+!
+                call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs, bT)
+            else
+!
+                call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
+            end if
+        end do
+!
+        call dgemv('T', gbs_curr, total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
+                   bT, 1, 1.d0, rhs, 1)
+!
+! --- add stabilization
+!
+        call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, 0.d0, hhoQuadCellRigi)
+!
+        call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC, &
+                   hhoMecaState%depl_curr, 1, 1.d0, rhs, 1)
 !
     end subroutine
 !
