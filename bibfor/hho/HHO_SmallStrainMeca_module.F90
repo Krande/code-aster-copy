@@ -57,6 +57,7 @@ module HHO_SmallStrainMeca_module
     public :: hhoSmallStrainLCMeca, tranfoMatToSym, hhoMatrElasMeca
     public :: hhoComputeRhsSmall, hhoComputeLhsSmall
     public :: hhoComputeCgphi, tranfoSymToMat
+    private :: tranfoTensToSym
 !
 contains
 !
@@ -293,7 +294,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        real(kind=8) :: dsidep(6, 6)
+        real(kind=8) :: dsidep(6, 6), dsidep3D(6, 6)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
@@ -328,8 +329,9 @@ contains
 ! --------- Compute behaviour
 !
             call dmatmc(fami, imate, time_curr, '+', ipg, 1, angmas, nb_sig, dsidep)
+            call tranfoTensToSym(nb_sig, dsidep, dsidep3D)
 !
-            call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, gbs_sym, gbs_cmp, AT)
+            call hhoComputeLhsSmall(hhoCell, dsidep3D, weight, BSCEval, gbs_sym, gbs_cmp, AT)
         end do
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
@@ -615,6 +617,55 @@ contains
         case (2)
             mat(1:3) = mat_sym(1:3)
             mat(4) = mat_sym(4)/rac2
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine tranfoTensToSym(nb_sig, dsidep, dsidep3D)
+!
+        implicit none
+!
+        integer, intent(in)             :: nb_sig
+        real(kind=8), intent(in)        :: dsidep(nb_sig, nb_sig)
+        real(kind=8), intent(out)       :: dsidep3D(6, 6)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   tranform a tensor from nb_sig to 6 and add symetric notation
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i, j
+        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+!
+        select case (nb_sig)
+        case (6)
+            dsidep3D(1:3, 1:3) = dsidep(1:3, 1:3)
+            do i = 4, 6
+                do j = 1, 3
+                    dsidep3D(i, j) = dsidep(i, j)*rac2
+                    dsidep3D(j, i) = dsidep(j, i)*rac2
+                end do
+                do j = 4, 6
+                    dsidep3D(i, j) = dsidep(i, j)*2.d0
+                    dsidep3D(j, i) = dsidep(j, i)*2.d0
+                end do
+            end do
+        case (4)
+            dsidep3D(1:3, 1:3) = dsidep(1:3, 1:3)
+            do j = 1, 3
+                dsidep3D(4, j) = dsidep(4, j)*rac2
+                dsidep3D(j, 4) = dsidep(j, 4)*rac2
+            end do
+            dsidep3D(4, 4) = dsidep(4, 4)*2.d0
+            dsidep3D(5:6, 1:6) = 0.d0
+            dsidep3D(1:6, 5:6) = 0.d0
         case default
             ASSERT(ASTER_FALSE)
         end select
