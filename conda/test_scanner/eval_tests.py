@@ -14,6 +14,11 @@ class TestResult(str, Enum):
     MED_mfiope = "MED_mfiope"
     JEVEUX1_55 = "JEVEUX1_55"
     FLOAT_INT_ERROR = "FLOAT_INT_ERROR"
+    PERMISSION_ERROR = "PERMISSION_ERROR"
+    LAPACK_ERROR = "LAPACK_ERROR"
+    CALC_ESSAI_GEOMECA_PERM_ERROR = "CALC_ESSAI_GEOMECA"
+    CALC_ESSAI_GEOMECA_ACCESS_ERROR = "CALC_ESSAI_GEOMECA_ACCESS_ERROR"
+    CALC_ESSAI_GEOMECA_INDEX_ERROR = "CALC_ESSAI_GEOMECA_INDEX_ERROR"
 
 
 @dataclass
@@ -42,6 +47,19 @@ def advanced_categorize(test_name: str, data: str) -> TestResult:
             raise ValueError(f"Unknown JEVEUX1_55 error in {test_name}")
     elif "TypeError: 'float' object cannot be interpreted as an integer" in data:
         return TestResult.FLOAT_INT_ERROR
+    elif "PermissionError: [WinError 32]" in data:
+        return TestResult.PERMISSION_ERROR
+    elif "erreur LAPACK (ou BLAS) au niveau de la routine  DLASWP" in data:
+        return TestResult.LAPACK_ERROR
+    elif "CALC_ESSAI_GEOMECA" in data:
+        if "PermissionError" in data:
+            return TestResult.CALC_ESSAI_GEOMECA_PERM_ERROR
+        elif "Windows fatal exception: access violation" in data:
+            return TestResult.CALC_ESSAI_GEOMECA_ACCESS_ERROR
+        elif "IndexError" in data:
+            return TestResult.CALC_ESSAI_GEOMECA_INDEX_ERROR
+        else:
+            raise ValueError(f"Unknown CALC_ESSAI_GEOMECA error in {test_name}")
     else:
         return TestResult.ErrUnknown
 
