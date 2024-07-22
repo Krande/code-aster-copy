@@ -12,13 +12,25 @@ class TestResult(str, Enum):
     MED_mpfprw = "MED_mpfprw"
     MED_mlclow = "MED_mlclow"
     MED_mfiope = "MED_mfiope"
+    MED_ACCESS_ERROR = "MED_ACCESS_ERROR"
+    CALC_MATE_HOMO_ACCESS_ERROR = "CALC_MATE_HOMO_ACCESS_ERROR"
+    CATANESS_3_ALGELINE_1 = "CATANESS_3_ALGELINE_1"
     JEVEUX1_55 = "JEVEUX1_55"
+    JEVEUX_26_ORDR = "JEVEUX_26_ORDR"
+    FACTOR_55_MUMPS = "FACTOR_55_MUMPS"
     FLOAT_INT_ERROR = "FLOAT_INT_ERROR"
-    PERMISSION_ERROR = "PERMISSION_ERROR"
+    PERMISSION_ERROR_WIN32 = "PERMISSION_ERROR_WIN32"
+    PERMISSION_ERROR_macr_lign_coupe_ops = "PERMISSION_ERROR_macr_lign_coupe_ops"
     LAPACK_ERROR = "LAPACK_ERROR"
-    CALC_ESSAI_GEOMECA_PERM_ERROR = "CALC_ESSAI_GEOMECA"
+    CALC_ESSAI_GEOMECA_PERM_ERROR = "CALC_ESSAI_GEOMECA_PERM_ERROR"
     CALC_ESSAI_GEOMECA_ACCESS_ERROR = "CALC_ESSAI_GEOMECA_ACCESS_ERROR"
     CALC_ESSAI_GEOMECA_INDEX_ERROR = "CALC_ESSAI_GEOMECA_INDEX_ERROR"
+    DVP1_jxveri = "DVP1_jxveri"
+    DEFI_CONT_OPS = "DEFI_CONT_OPS"
+    PROC_NA = "PROC_NA"
+
+    NA_XMGRACE = "NA_XMGRACE"
+    NA_HOMARD = "NA_HOMARD"
 
 
 @dataclass
@@ -40,7 +52,7 @@ def advanced_categorize(test_name: str, data: str) -> TestResult:
             return TestResult.MED_mfiope
         else:
             raise ValueError(f"Unknown MED error in {test_name}")
-    elif "<F> <JEVEUX1_55>" in data:
+    elif "<JEVEUX1_55>" in data:
         if "Un écrasement aval est détecté, la zone mémoire" in data:
             return TestResult.JEVEUX1_55
         else:
@@ -48,7 +60,7 @@ def advanced_categorize(test_name: str, data: str) -> TestResult:
     elif "TypeError: 'float' object cannot be interpreted as an integer" in data:
         return TestResult.FLOAT_INT_ERROR
     elif "PermissionError: [WinError 32]" in data:
-        return TestResult.PERMISSION_ERROR
+        return TestResult.PERMISSION_ERROR_WIN32
     elif "erreur LAPACK (ou BLAS) au niveau de la routine  DLASWP" in data:
         return TestResult.LAPACK_ERROR
     elif "CALC_ESSAI_GEOMECA" in data:
@@ -60,6 +72,28 @@ def advanced_categorize(test_name: str, data: str) -> TestResult:
             return TestResult.CALC_ESSAI_GEOMECA_INDEX_ERROR
         else:
             raise ValueError(f"Unknown CALC_ESSAI_GEOMECA error in {test_name}")
+    elif "<EXCEPTION> <DVP_1>" in data and "jxveri.F90, ligne 98" in data:
+        return TestResult.DVP1_jxveri
+    elif "defi_cont_ops.py" in data and "ABORT - exit code 17" in data:
+        return TestResult.DEFI_CONT_OPS
+    elif "<EXCEPTION> <JEVEUX_26>" in data and "Objet inexistant dans les bases ouvertes : 0000000a           .ORDR" in data:
+        return TestResult.JEVEUX_26_ORDR
+    elif "<FACTOR_55>" in data and "Problème ou alarme dans le solveur MUMPS" in data:
+        return TestResult.FACTOR_55_MUMPS
+    elif "PermissionError: [Errno 13] Permission denied" in data and "macr_lign_coupe_ops.py" in data:
+        return TestResult.PERMISSION_ERROR_macr_lign_coupe_ops
+    elif "Windows fatal exception: access violation" in data and "Création du fichier au format MED 3.3.1" in data:
+        return TestResult.MED_ACCESS_ERROR
+    elif "Le fichier xmgrace n'existe pas." in data:
+        return TestResult.NA_XMGRACE
+    elif "Le fichier homard est inconnu" in data:
+        return TestResult.NA_HOMARD
+    elif "<CATAMESS_3>" in data and "L'alarme ALGELINE_1 est aggravée en erreur" in data:
+        return TestResult.CATANESS_3_ALGELINE_1
+    elif "No such file or directory: '/proc/23436/status'" in data:
+        return TestResult.PROC_NA
+    elif "CALC_MATE_HOMO" in data and "Windows fatal exception: access violation" in data:
+        return TestResult.CALC_MATE_HOMO_ACCESS_ERROR
     else:
         return TestResult.ErrUnknown
 

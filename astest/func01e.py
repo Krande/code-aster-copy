@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import os
+import platform
 
 from code_aster.Commands import *
 from code_aster import CA
@@ -51,11 +52,24 @@ test = CA.TestCase()
 
 def get_mem():
     """return memory consumption in kB"""
+    if platform.system() == "Windows":
+        return get_mem_msvc()
     pid = os.getpid()
     proc_status_file = "/proc/%d/status" % pid
     with open(proc_status_file, "r") as f:
         status = f.read()
     return int(status[status.index("VmSize") :].split()[1])
+
+
+def get_mem_msvc():
+    """Return memory consumption in kB."""
+    import psutil
+    pid = os.getpid()
+    process = psutil.Process(pid)
+    memory_info = process.memory_info()
+    # Convert the memory usage to kB
+    memory_kb = memory_info.vms // 1024
+    return memory_kb
 
 
 fonc = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 20.0, 1.0, 30.0, 2.0, 40.0), VERIF="CROISSANT")

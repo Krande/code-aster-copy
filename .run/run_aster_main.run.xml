@@ -24,7 +24,7 @@
       </ENTRIES>
     </EXTENSION>
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_aster/run_aster_main.py" />
-    <option name="PARAMETERS" value="--ctest $PyInterpreterDirectory$/Library/share/aster/tests/erreu02b.export" />
+    <option name="PARAMETERS" value="--ctest $PyInterpreterDirectory$/Library/share/aster/tests/func01e.export" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
