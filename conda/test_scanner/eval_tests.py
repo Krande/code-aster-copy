@@ -9,6 +9,11 @@ class TestResult(str, Enum):
     ErrOverflowInt = "OverflowInt"
     ErrUnknown = "Unknown"
     Passing = "Passing"
+    MED_mpfprw = "MED_mpfprw"
+    MED_mlclow = "MED_mlclow"
+    MED_mfiope = "MED_mfiope"
+    JEVEUX1_55 = "JEVEUX1_55"
+    FLOAT_INT_ERROR = "FLOAT_INT_ERROR"
 
 
 @dataclass
@@ -18,14 +23,37 @@ class TestStats:
     error_reason: TestResult
 
 
+def advanced_categorize(test_name: str, data: str) -> TestResult:
+    if "OverflowError: can't convert negative int to unsigned" in data:
+        return TestResult.ErrOverflowInt
+    elif "Erreur signalée dans la bibliothèque MED" in data:
+        if "nom de l'utilitaire : mpfprw" in data:
+            return TestResult.MED_mpfprw
+        elif "nom de l'utilitaire : mlclow" in data:
+            return TestResult.MED_mlclow
+        elif "nom de l'utilitaire : mfiope" in data:
+            return TestResult.MED_mfiope
+        else:
+            raise ValueError(f"Unknown MED error in {test_name}")
+    elif "<F> <JEVEUX1_55>" in data:
+        if "Un écrasement aval est détecté, la zone mémoire" in data:
+            return TestResult.JEVEUX1_55
+        else:
+            raise ValueError(f"Unknown JEVEUX1_55 error in {test_name}")
+    elif "TypeError: 'float' object cannot be interpreted as an integer" in data:
+        return TestResult.FLOAT_INT_ERROR
+    else:
+        return TestResult.ErrUnknown
+
+
 def check_mess_file(mess_file: str | pathlib.Path) -> TestStats:
-    with open(mess_file, "r", errors='replace') as f:
+    if isinstance(mess_file, str):
+        mess_file = pathlib.Path(mess_file)
+
+    with open(mess_file, "r", errors='replace', encoding='utf-8') as f:
         data = f.read()
 
-    if "OverflowError: can't convert negative int to unsigned" in data:
-        error_reason = TestResult.ErrOverflowInt
-    else:
-        error_reason = TestResult.ErrUnknown
+    error_reason = advanced_categorize(mess_file.stem, data)
 
     return TestStats(
         name=mess_file.stem,
@@ -69,6 +97,14 @@ def eval_tests(test_dir: str | pathlib.Path):
         err_str += '|'.join([f"{err.name}" for err in unknown_errors]) + '\n'
     else:
         err_str += "No unknown errors\n"
+
+    err_str += "Specific errors:\n"
+    for key, value in error_map.items():
+        if not value or key in [TestResult.ErrOverflowInt, TestResult.ErrUnknown]:
+            continue
+        perc_err = len(value) / tot_failed * 100
+        files = '|'.join([f"{err.name}" for err in value])
+        err_str += f"{key.value}: {len(value)} [{perc_err:.2f}%] | {files}\n"
 
     # save to file with todays date
     os.makedirs('results', exist_ok=True)
