@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,6 +62,7 @@ MACR_CARA_POUTRE = MACRO(
         defaut=(0.0e0, 0.0e0),
         fr=tr("Point par rapport auquel sont calculées les inerties"),
     ),
+    QUADRANT=SIMP(statut="f", typ="I", into=(1, 2, 3, 4)),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
     TABLE_CARA=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
     SYME_Y=SIMP(statut="f", typ="TXM", into=("OUI",), fr=tr("demi maillage par rapport a y=0")),
