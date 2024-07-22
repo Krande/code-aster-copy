@@ -112,13 +112,13 @@ import tempfile
 from pathlib import Path
 from subprocess import run
 
-from .command_files import AUTO_START, NOINIT_START
-from .config import CFG
-from .export import Export, File, split_export
-from .logger import DEBUG, WARNING, logger
-from .run import RunAster, create_temporary_dir, get_procid
-from .status import Status
-from .utils import RUNASTER_ROOT
+from run_aster.command_files import AUTO_START, NOINIT_START
+from run_aster.config import CFG
+from run_aster.export import Export, File, split_export
+from run_aster.logger import DEBUG, WARNING, logger
+from run_aster.run import RunAster, create_temporary_dir, get_procid
+from run_aster.status import Status
+from run_aster.utils import RUNASTER_ROOT
 
 try:
     import debugpy

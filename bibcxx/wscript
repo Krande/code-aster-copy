@@ -111,7 +111,7 @@ def check_cxx_compiler_flags(self):
         # Enable unwind semantics for C++ exceptions
         self.check_cxx_compiler_options("/EHs")
         # extern "C" defaults to nothrow
-        self.check_cxx_compiler_options("/EHc")
+        # self.check_cxx_compiler_options("/EHc")
         # Enable strict conformance to the C++ Standard
         self.check_cxx_compiler_options("/permissive-")
         # Disable language extensions

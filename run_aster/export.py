@@ -227,6 +227,8 @@ class File:
         self._dir = isdir
         self.path = path
         self._typ = filetype
+        if isinstance(unit, str) and '"' in unit:
+            unit = unit.replace('"', "")
         self._unit = int(unit)
         self._data = data or not resu
         self._resu = resu

@@ -76,10 +76,10 @@ import tempfile
 from glob import glob
 from subprocess import run
 
-from .config import CFG
-from .ctest2junit import XUnitReport
-from .run import get_nbcores
-from .utils import RUNASTER_ROOT, RUNASTER_PLATFORM
+from run_aster.config import CFG
+from run_aster.ctest2junit import XUnitReport
+from run_aster.run import get_nbcores
+from run_aster.utils import RUNASTER_ROOT, RUNASTER_PLATFORM
 
 USAGE = """
     run_ctest [options] [ctest-options] [other arguments...]

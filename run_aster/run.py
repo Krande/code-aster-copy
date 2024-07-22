@@ -27,6 +27,7 @@ data files, execute code_aster and copy the result files.
 
 import os
 import os.path as osp
+import platform
 import tempfile
 from glob import glob
 from pathlib import Path
@@ -194,7 +195,12 @@ class RunAster:
         )
         comm = change_comm_file(comm, interact=self._interact, show=self._show_comm)
         status.update(self._exec_one(comm, timeout - status.times[-1]))
-        self._coredump_analysis()
+        if platform.system() == "Windows":
+            import pathlib
+            # Intel fortran ifx automatically prints traceback on errors when compiled with /traceback.
+            print(pathlib.Path(self._output).read_text(encoding='utf-8', errors='replace'))
+        else:
+            self._coredump_analysis()
         return status
 
     def _exec_one(self, comm, timeout):

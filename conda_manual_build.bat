@@ -10,7 +10,7 @@ set INCLUDE_TESTS=0
 set USE_LOG=0
 set COLOR_ENABLED=1
 :: BUILD_TYPE can be either debug or release
-set BUILD_TYPE=release
+set BUILD_TYPE=debug
 set CLEAN_BUILD=0
 
 :parse_args

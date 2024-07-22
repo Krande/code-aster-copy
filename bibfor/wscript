@@ -549,7 +549,7 @@ def check_optimization_fcflags_msvc(self):
 
     self.setenv("release")
     self.start_msg("Setting Fortran optimization flags for IFort")
-    flags = ["/Od"]
+    flags = ["/Od"]  # Intel Fortran on Windows can't handle optimizations
     self.env.append_unique("FCFLAGS", flags)
     self.end_msg(flags)
 

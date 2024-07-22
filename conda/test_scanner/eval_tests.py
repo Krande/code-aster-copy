@@ -19,7 +19,7 @@ class TestStats:
 
 
 def check_mess_file(mess_file: str | pathlib.Path) -> TestStats:
-    with open(mess_file, "r") as f:
+    with open(mess_file, "r", errors='replace') as f:
         data = f.read()
 
     if "OverflowError: can't convert negative int to unsigned" in data:
@@ -54,6 +54,7 @@ def eval_tests(test_dir: str | pathlib.Path):
 
     overflow_errors = error_map.get(TestResult.ErrOverflowInt)
     err_str = f"Total passing tests: {perc_passing:.2f}% [{tot_passing}/{tot_seq_files}]\n"
+    err_str += f"Total failed tests: {tot_failed} of {tot_seq_files}\n"
     if overflow_errors:
         perc_overflow = len(overflow_errors) / tot_failed * 100
         err_str += f"Overflow errors: {len(overflow_errors)} [{perc_overflow:.2f}%]\n"
@@ -77,4 +78,4 @@ def eval_tests(test_dir: str | pathlib.Path):
 
 
 if __name__ == '__main__':
-    eval_tests("../../temp/seq-debug")
+    eval_tests("../../temp/seq-debug2")
