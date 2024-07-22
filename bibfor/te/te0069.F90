@@ -48,6 +48,7 @@ subroutine te0069(option, nomte)
     real(kind=8) :: time, Kglo(3, 3), fluglo(3), dtpg(3), tpg
     real(kind=8), pointer :: flux(:) => null()
     real(kind=8), pointer :: tempi(:) => null()
+    character(len=8), parameter :: famiR = "RIGI"
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,7 +68,7 @@ subroutine te0069(option, nomte)
     do kp = 1, FEQuadCell%nbQuadPoints
         tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
-        call nlcomp(phenom, imate, FECell%ndim, FEQuadCell%points(1:3, kp), time, &
+        call nlcomp(phenom, famiR, kp, imate, FECell%ndim, FEQuadCell%points(1:3, kp), time, &
                     tpg, Kglo, dtpg, fluglo)
         flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
     end do
