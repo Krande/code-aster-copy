@@ -43,7 +43,9 @@ class THPLQL4(Element):
     meshType = MT.QUAD4
     elrefe = (
         ElrefeLoc(
-            MT.QU4, gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.QU4,
+            gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
+            mater=("FPG1", "RIGI"),
         ),
     )
     calculs = (
@@ -437,7 +439,9 @@ class THPLTL3(THPLQL4):
     meshType = MT.TRIA3
     elrefe = (
         ElrefeLoc(
-            MT.TR3, gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.TR3,
+            gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
+            mater=("FPG1", "RIGI"),
         ),
     )
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))

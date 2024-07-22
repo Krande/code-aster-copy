@@ -47,7 +47,7 @@ subroutine te0076(option, nomte)
     type(FE_basis) :: FEBasis
 !
     character(len=8), parameter :: famiR = "RIGI"
-    integer :: icamas, kp, imate, itemps
+    integer :: kp, imate, itemps
     integer :: icodre(1)
     character(len=32) :: phenom
     real(kind=8) ::   time
@@ -66,7 +66,7 @@ subroutine te0076(option, nomte)
 !
     valQPK = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
-        call nlcomp(phenom, famiR, kp, imate, icamas, FECell%ndim, FEQuadCell%points(1:3, kp), &
+        call nlcomp(phenom, famiR, kp, imate, FECell%ndim, FEQuadCell%points(1:3, kp), &
                     time, 0.d0, valQPK(1:3, 1:3, kp))
     end do
 !

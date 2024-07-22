@@ -58,7 +58,7 @@ subroutine te0487(nomopt, nomte)
     type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_Quadrature) :: hhoQuadCellRigi
     integer :: cbs, fbs, total_dofs, npg, deca, gbs
-    integer :: ipg, icodre(3), jtemps, jmate, jcamas
+    integer :: ipg, icodre(3), jtemps, jmate
     character(len=8), parameter :: fami = 'RIGI'
     character(len=32) :: phenom
     real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradrec
@@ -101,11 +101,6 @@ subroutine te0487(nomopt, nomte)
     call jevech('PMATERC', 'L', jmate)
 !
     call rccoma(zi(jmate), 'THER', 1, phenom, icodre(1))
-    if (phenom .eq. 'THER_ORTH' .or. phenom .eq. 'THER_NL_ORTH') then
-        call jevech('PCAMASS', 'L', jcamas)
-    else
-        jcamas = 0
-    end if
 !
     call jevech('PINSTR', 'L', jtemps)
     time_curr = zr(jtemps)
@@ -153,7 +148,7 @@ subroutine te0487(nomopt, nomte)
 ! ------- Compute behavior
 !
         call hhoComputeBehaviourTher(phenom, fami, ipg, hhoCell%ndim, time_curr, jmate, &
-                                     jcamas, coorpg, temp_eval_curr, G_curr, sig_curr, module_tang)
+                                     coorpg, temp_eval_curr, G_curr, sig_curr, module_tang)
 !
         flux(deca:deca+hhoCell%ndim) = -sig_curr(1:hhoCell%ndim)
         deca = deca+hhoCell%ndim

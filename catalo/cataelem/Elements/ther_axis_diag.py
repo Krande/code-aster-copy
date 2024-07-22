@@ -43,7 +43,9 @@ class THAXTL3(Element):
     meshType = MT.TRIA3
     elrefe = (
         ElrefeLoc(
-            MT.TR3, gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.TR3,
+            gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
+            mater=("FPG1", "RIGI"),
         ),
     )
     calculs = (
@@ -437,6 +439,8 @@ class THAXQL4(THAXTL3):
     meshType = MT.QUAD4
     elrefe = (
         ElrefeLoc(
-            MT.QU4, gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.QU4,
+            gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
+            mater=("FPG1", "RIGI"),
         ),
     )

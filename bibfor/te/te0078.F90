@@ -61,7 +61,7 @@ subroutine te0078(option, nomte)
     real(kind=8) :: valQPM(MAX_QP), tpg, dtpg(3), flux(3), BGSEval(3, MAX_BS)
     real(kind=8) :: resi_f(MAX_BS), resi_m(MAX_BS), resi(MAX_BS)
     real(kind=8) :: cp, valres(1), Kglo(3, 3), time, deltat, theta
-    integer :: kp, imate, itemps, icamas
+    integer :: kp, imate, itemps
     real(kind=8), pointer :: temp(:) => null()
     character(len=8), parameter :: famiR = "RIGI"
 !
@@ -79,11 +79,6 @@ subroutine te0078(option, nomte)
     theta = zr(itemps+2)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
-    if (phenom .eq. 'THER_ORTH' .or. phenom .eq. 'THER_NL_ORTH') then
-        call jevech('PCAMASS', 'L', icamas)
-    else
-        icamas = 0
-    end if
 !
     resi_f = 0.d0
     do kp = 1, FEQuadRigi%nbQuadPoints
@@ -91,7 +86,7 @@ subroutine te0078(option, nomte)
 !
         dtpg = FEEvalGradVec(FEBasis, temp, FEQuadRigi%points_param(1:3, kp), BGSEval)
 !
-        call nlcomp(phenom, famiR, kp, imate, icamas, FECell%ndim, FEQuadRigi%points(1:3, kp), &
+        call nlcomp(phenom, famiR, kp, imate, FECell%ndim, FEQuadRigi%points(1:3, kp), &
                     time, 0.d0, Kglo, dtp_=dtpg, fluglo_=flux)
 !
         call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nlcomp(phenom, fami, kpg, imate, icamas, ndim, coorpg, time, tp, Kglo, dtp_, fluglo_)
+subroutine nlcomp(phenom, fami, kpg, imate, ndim, coorpg, time, tp, Kglo, dtp_, fluglo_)
 !.
     implicit none
 !
@@ -29,7 +29,7 @@ subroutine nlcomp(phenom, fami, kpg, imate, icamas, ndim, coorpg, time, tp, Kglo
 !
     character(len=16), intent(in) :: phenom
     character(len=8), intent(in) :: fami
-    integer, intent(in) :: imate, icamas, ndim, kpg
+    integer, intent(in) :: imate, ndim, kpg
     real(kind=8), intent(in) :: coorpg(3), time, tp
     real(kind=8), intent(out) :: Kglo(3, 3)
     real(kind=8), optional, intent(in) :: dtp_(3)
@@ -50,7 +50,7 @@ subroutine nlcomp(phenom, fami, kpg, imate, icamas, ndim, coorpg, time, tp, Kglo
 ! ------- EVALUATION DE LA CONDUCTIVITE LAMBDA
 !
     if (phenom .eq. 'THER') then
-        call rcvalb('FPG1', kpg, spt, poum, zi(imate), &
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
                     ' ', phenom, 1, 'INST', [time], &
                     1, 'LAMBDA', valres, icodre, 1)
         lambda = valres(1)
@@ -59,12 +59,12 @@ subroutine nlcomp(phenom, fami, kpg, imate, icamas, ndim, coorpg, time, tp, Kglo
         nomres(1) = 'LAMBDA_L'
         nomres(2) = 'LAMBDA_T'
         nomres(3) = 'LAMBDA_N'
-        call rcvalb('FPG1', kpg, spt, poum, zi(imate), &
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
                     ' ', phenom, 1, 'INST', [time], &
                     3, nomres, lambor, icodre, 1)
         aniso = ASTER_TRUE
     else if (phenom .eq. 'THER_NL') then
-        call rcvalb('FPG1', kpg, spt, poum, zi(imate), &
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
                     ' ', phenom, 1, 'TEMP', [tp], &
                     1, 'LAMBDA', valres, icodre, 1)
         lambda = valres(1)
@@ -73,7 +73,7 @@ subroutine nlcomp(phenom, fami, kpg, imate, icamas, ndim, coorpg, time, tp, Kglo
         nomres(1) = 'LAMBDA_L'
         nomres(2) = 'LAMBDA_T'
         nomres(3) = 'LAMBDA_N'
-        call rcvalb('FPG1', kpg, spt, poum, zi(imate), &
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
                     ' ', phenom, 1, 'TEMP', [tp], &
                     3, nomres, lambor, icodre, 1)
         aniso = ASTER_TRUE

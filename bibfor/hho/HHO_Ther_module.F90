@@ -115,7 +115,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         character(len=32) :: phenom
         integer:: cbs, fbs, total_dofs, j, faces_dofs, gbs
-        integer :: jmate, ipg, icodre(3), jtemps, ndim, jcamas
+        integer :: jmate, ipg, icodre(3), jtemps, ndim
         real(kind=8), dimension(MSIZE_CELL_VEC) :: bT, G_curr_coeff
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
@@ -147,11 +147,6 @@ contains
         call jevech('PMATERC', 'L', jmate)
 !
         call rccoma(zi(jmate), 'THER', 1, phenom, icodre(1))
-        if (phenom .eq. 'THER_ORTH' .or. phenom .eq. 'THER_NL_ORTH') then
-            call jevech('PCAMASS', 'L', jcamas)
-        else
-            jcamas = 0
-        end if
 !
         time_curr = 0.d0
         if (.not. l_nl) then
@@ -214,8 +209,7 @@ contains
 !
 ! ------- Compute behavior
 !
-            call hhoComputeBehaviourTher(phenom, fami, ipg, ndim, time_curr, jmate, &
-                                         jcamas, coorpg, &
+            call hhoComputeBehaviourTher(phenom, fami, ipg, ndim, time_curr, jmate, coorpg, &
                                          temp_eval_curr, G_curr, sig_curr, module_tang)
 !
 ! ------- Compute rhs
@@ -914,14 +908,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeBehaviourTher(phenom, fami, kpg, ndim, time, imate, icamas, coorpg, &
+    subroutine hhoComputeBehaviourTher(phenom, fami, kpg, ndim, time, imate, coorpg, &
                                        temp, dtemp, fluxglo, Kglo)
 !
         implicit none
 !
         character(len=32), intent(in) :: phenom
         character(len=8), intent(in) :: fami
-        integer, intent(in) :: imate, ndim, kpg, icamas
+        integer, intent(in) :: imate, ndim, kpg
         real(kind=8), intent(in) :: time, dtemp(3), temp, coorpg(3)
         real(kind=8), intent(out) :: fluxglo(3), Kglo(3, 3)
 !
@@ -930,7 +924,7 @@ contains
 !  Thermics - Integrate behaviour - Fluxes and derivative
 ! --------------------------------------------------------------------------------------------------
 !
-        call nlcomp(phenom, fami, kpg, imate, icamas, ndim, coorpg, time, &
+        call nlcomp(phenom, fami, kpg, imate, ndim, coorpg, time, &
                     temp, Kglo, dtp_=dtemp, fluglo_=fluxglo)
     end subroutine
 !
