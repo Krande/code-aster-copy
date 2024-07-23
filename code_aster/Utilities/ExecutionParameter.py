@@ -612,7 +612,11 @@ def get_program_path(program):
     """
     if getattr(get_program_path, "_cache", None) is None:
         prog_cfg = {}
-        fname = osp.join(os.environ["ASTER_DATADIR"], "external_programs.yaml")
+        conda_prefix = os.getenv('CONDA_PREFX')
+        if conda_prefix:
+            fname = osp.join(conda_prefix, "Library", "share", "aster", "external_programs.json")
+        else:
+            fname = osp.join(os.environ["ASTER_DATADIR"], "external_programs.yaml")
         if not osp.isfile(fname) or not yaml:
             fname = osp.splitext(fname)[0] + ".json"
         if osp.isfile(fname):

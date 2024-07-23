@@ -63,35 +63,28 @@ from code_aster import CA
 """
 
 
-# run_ctest --resutest=temp\seq-debug -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 4
-# run_ctest --resutest=temp/seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results -j 1
-# run_ctest --resutest=temp\mpi -L submit -LE need_data --timefactor=5.0 --only-failed-results -j 6
+# run_ctest --resutest=temp\seq-debug -L submit -L sequential -LE need_data --timefactor=10.0 --only-failed-results -j 4
+# run_ctest --resutest=temp/seq -L submit -L sequential -LE need_data --timefactor=10.0 --only-failed-results -j 1
+# run_ctest --resutest=temp\mpi -L submit -LE need_data --timefactor=10.0 --only-failed-results -j 6
 
 def run_specific_test(test_name: str, debug_openmp=False):
     comm_file = ASTEST_DIR / f"{test_name}.comm"
     export_file = ASTEST_DIR / f"{test_name}.export"
-    mmed_file = ASTEST_DIR / f"{test_name}.mmed"
-    mmed_num = 20
-    datg_file = ASTEST_DIR / f"{test_name}.datg"
-    datg_num = 16
 
-    if export_file.exists():
-        export = export_file.read_text(encoding="utf-8")
-        for line in export.split("\n"):
-            if not line.startswith("F"):
-                continue
-            line_split = line.split(" ")
-            if line_split[1] == "mmed":
-                mmed_file = ASTEST_DIR / line_split[2]
-                mmed_num = int(line_split[-1])
-            if line_split[1] == "datg":
-                datg_file = ASTEST_DIR / line_split[2]
-                datg_num = int(line_split[-1])
+    if not export_file.exists():
+        raise FileNotFoundError(f"{export_file} does not exist")
 
-    if mmed_file.exists():
-        shutil.copy(mmed_file, f"fort.{mmed_num}")
-    if datg_file.exists():
-        shutil.copy(datg_file, f"fort.{datg_num}")
+    export = export_file.read_text(encoding="utf-8", errors="replace")
+
+    for line in export.split("\n"):
+        if not line.startswith("F"):
+            continue
+        line_split = line.split(" ")
+        ffname = line_split[2]
+        ffnum = int(line_split[-1])
+        fpath = ASTEST_DIR / ffname
+        if fpath.exists():
+            shutil.copy(fpath, f"fort.{ffnum}")
 
     test_file = init_str + comm_file.read_text()
 
@@ -185,7 +178,8 @@ def manual():
     # run_specific_test("comp010i")
     # run_specific_test('adlv100a')
     # run_specific_test('adlv100p')
-    run_specific_test('ahlv100a')
+    # run_specific_test('ahlv100a')
+    run_specific_test('forma01c')
     # run_specific_test('ahlv100t')
     # run_specific_test('hsna106a')  # related to verification of <F> <MODELISA_1> Mesh file issue
     # run_specific_test('zzzz111a')
