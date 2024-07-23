@@ -58,13 +58,13 @@ module HHO_Meca_module
 #include "asterfort/rcvalb.h"
 #include "asterfort/readMatrix.h"
 #include "asterfort/readVector.h"
-#include "asterfort/tecach.h"
 #include "asterfort/sigtopk1.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-#include "blas/dsymv.h"
 #include "blas/dgemv.h"
+#include "blas/dsymv.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !
@@ -478,7 +478,8 @@ contains
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
 !
         if (hhoComporState%option .ne. "RIGI_MECA" .and. &
-            hhoComporState%option .ne. "FORC_NODA") then
+            hhoComporState%option .ne. "FORC_NODA" .and. &
+            hhoComporState%option .ne. "REFE_FORC_NODA") then
             call jevech('PINSTMR', 'L', iinstm)
             call jevech('PINSTPR', 'L', iinstp)
             this%time_curr = zr(iinstp)
@@ -534,6 +535,10 @@ contains
         elseif (hhoComporState%option == "FORC_NODA") then
             call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
             call readVector('PDEPLAR', mk_total_dofs, this%depl_curr)
+            call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_curr)
+        elseif (hhoComporState%option == "REFE_FORC_NODA") then
+            call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
+            call readVector('PDEPLMR', mk_total_dofs, this%depl_curr)
             call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_curr)
         else
             ASSERT(ASTER_FALSE)
@@ -662,11 +667,13 @@ contains
         real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_curr_coeff
 !
         rhs = 0.d0
+        bT = 0.d0
         ncomp = hhoCS%nbsigm
 !
 ! ----- init basis
 !
         call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+        gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
         call hhoBasisCell%initialize(hhoCell)
 !
 ! --- Compute local contribution

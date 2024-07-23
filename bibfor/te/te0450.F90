@@ -35,6 +35,7 @@ subroutine te0450(nomopt, nomte)
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/terefe.h"
 #include "asterfort/writeVector.h"
 #include "jeveux.h"
 !
@@ -55,19 +56,16 @@ subroutine te0450(nomopt, nomte)
     type(HHO_Cell) :: hhoCell
     type(HHO_Meca_State) :: hhoMecaState
 !
-    integer :: cbs, fbs, total_dofs, npg
+    integer :: cbs, fbs, total_dofs, npg, i, isig, cbs_cmp, j, fbs_cmp, ipg
     aster_logical :: l_largestrains
     character(len=4), parameter :: fami = "RIGI"
-    real(kind=8) :: rhs(MSIZE_TDOFS_VEC)
+    real(kind=8) :: rhs(MSIZE_TDOFS_VEC), refe_rhs(MSIZE_TDOFS_VEC)
+    real(kind=8) :: stress(6*MAX_QP_CELL), sigm_refe, val_refe(3)
 !
 ! --- Get HHO informations
 !
     call elrefe_info(fami=fami, npg=npg)
     call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellRigi)
-!
-! --- Get element parameters
-!
-    rhs = 0.d0
 !
 ! --- Number of dofs
     call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
@@ -94,7 +92,38 @@ subroutine te0450(nomopt, nomte)
         call hhoLocalForcNoda(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, &
                               hhoCS, hhoCS%sig_prev, rhs)
     elseif (nomopt == "REFE_FORC_NODA") then
-        ASSERT(ASTER_FALSE)
+        call terefe('SIGM_REFE', 'MECA_ISO', sigm_refe)
+        stress = 0.d0
+        refe_rhs = 0.d0
+        do isig = 1, hhoCS%nbsigm
+            do ipg = 1, hhoQuadCellRigi%nbQuadPoints
+                stress((ipg-1)*hhoCS%nbsigm+isig) = sigm_refe
+            end do
+            call hhoLocalForcNoda(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, &
+                                  hhoCS, stress, rhs)
+            do i = 1, total_dofs
+                refe_rhs(i) = refe_rhs(i)+abs(rhs(i))
+            end do
+            do ipg = 1, hhoQuadCellRigi%nbQuadPoints
+                stress((ipg-1)*hhoCS%nbsigm+isig) = 0.d0
+            end do
+        end do
+        cbs_cmp = cbs/hhoCell%ndim
+        fbs_cmp = fbs/hhoCell%ndim
+        ! Set mean value
+        do i = 1, hhoCell%ndim
+            val_refe(i) = refe_rhs((i-1)*cbs_cmp+1)
+            do j = 1, hhoCell%nbfaces
+                val_refe(i) = max(val_refe(i), refe_rhs(cbs+(j-1)*fbs+(i-1)*fbs_cmp+1))
+            end do
+        end do
+        rhs = 0.d0
+        do i = 1, hhoCell%ndim
+            rhs((i-1)*cbs_cmp+1:i*cbs_cmp) = val_refe(i)
+            do j = 1, hhoCell%nbfaces
+                rhs(cbs+(j-1)*fbs+(i-1)*fbs_cmp+1:cbs+(j-1)*fbs+i*fbs_cmp) = val_refe(i)
+            end do
+        end do
     else
         ASSERT(ASTER_FALSE)
     end if

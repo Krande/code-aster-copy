@@ -20,6 +20,7 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
                   ds_conv, valinc, veelem, veasse)
 !
     use NonLin_Datastructure_type
+    use HHO_precalc_module, only: hhoAddInputField
 !
     implicit none
 !
@@ -72,7 +73,7 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 1
-    integer, parameter :: nb_in_maxi = 26
+    integer, parameter :: nb_in_maxi = 29
     character(len=8) :: lpaout(nbout), lpain(nb_in_maxi)
     character(len=19) :: lchout(nbout), lchin(nb_in_maxi)
 !
@@ -167,6 +168,8 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
         call xajcin(model, 'REFE_FORC_NODA', nb_in_maxi, lchin, lpain, &
                     nb_in_prep)
     end if
+
+    call hhoAddInputField(model, nb_in_maxi, lchin, lpain, nb_in_prep)
 !
 ! - Output fields
 !

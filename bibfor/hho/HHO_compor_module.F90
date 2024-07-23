@@ -113,7 +113,8 @@ contains
         call jevech('PMATERC', 'L', jmate)
         this%imater = zi(jmate-1+1)
 !
-        if (this%option .ne. "RIGI_MECA" .and. this%option .ne. "FORC_NODA") then
+        if (this%option .ne. "RIGI_MECA" .and. this%option .ne. "FORC_NODA" &
+            .and. this%option .ne. "REFE_FORC_NODA") then
             call jevech('PCOMPOR', 'L', vk16=this%compor)
             call jevech('PCARCRI', 'L', vr=this%carcri)
             call jevech('PCONTMR', 'L', vr=this%sig_prev)
@@ -130,6 +131,9 @@ contains
             this%l_largestrain = ASTER_FALSE
             if (this%option == "FORC_NODA") then
                 call jevech('PSIEFR', 'L', vr=this%sig_prev)
+                call jevech('PCOMPOR', 'L', vk16=this%compor)
+                this%l_largestrain = isLargeStrain(this%compor(DEFO))
+            elseif (this%option == "REFE_FORC_NODA") then
                 call jevech('PCOMPOR', 'L', vk16=this%compor)
                 this%l_largestrain = isLargeStrain(this%compor(DEFO))
             end if
