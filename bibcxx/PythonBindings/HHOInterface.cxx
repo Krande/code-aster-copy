@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,7 +28,13 @@ void exportHHOToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< HHO, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
         .def( define_pickling< HHO >() )
+        .def( "getModel", &HHO::getModel,
+              R"(
+      Get Model.
 
+      Returns:
+            Model: model used for HHO.
+        )" )
         .def( "evaluateAtQuadraturePoints", &HHO::evaluateAtQuadraturePoints,
               R"(
       Evaluate HHO-field at quadrature points

@@ -14988,6 +14988,13 @@ class HHO:
               FieldOnCellsReal: HHO field evaluated at quadrature points (ELGA)
         """
 
+    def getModel(self):
+        """Get Model.
+
+        Returns:
+              Model: model used for HHO.
+        """
+
     def projectOnHHOCellSpace(self, *args, **kwargs):
         """Overloaded function.
 
