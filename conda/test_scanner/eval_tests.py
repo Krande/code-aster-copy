@@ -17,8 +17,7 @@ def check_mess_file(mess_file: str | pathlib.Path) -> TestStats:
     if isinstance(mess_file, str):
         mess_file = pathlib.Path(mess_file)
 
-    with open(mess_file, "r", errors='replace', encoding='utf-8') as f:
-        data = f.read()
+    data = mess_file.read_text(errors='replace', encoding='utf-8')
 
     error_pattern = find_error_pattern(data)
 
@@ -64,4 +63,4 @@ def eval_tests(test_dir: str | pathlib.Path):
 
 
 if __name__ == '__main__':
-    eval_tests("../../temp/seq-debug2")
+    eval_tests("../../temp/seq-debug")

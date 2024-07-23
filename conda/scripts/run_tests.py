@@ -175,15 +175,12 @@ def cli():
 
 
 def manual():
-    # run_specific_test("comp010i")
-    # run_specific_test('adlv100a')
-    # run_specific_test('adlv100p')
-    # run_specific_test('ahlv100a')
-    run_specific_test('forma01c')
-    # run_specific_test('ahlv100t')
-    # run_specific_test('hsna106a')  # related to verification of <F> <MODELISA_1> Mesh file issue
-    # run_specific_test('zzzz111a')
-    # run_specific_test('zzzz395s')
+    # get the current process id
+    pid = os.getpid()
+    # attach the visual studio debugger to the process
+    os.system(f"vsjitdebugger -p {pid}")
+    # run the test
+    run_specific_test('forma06a')
 
 
 if __name__ == "__main__":

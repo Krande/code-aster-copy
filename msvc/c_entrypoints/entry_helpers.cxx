@@ -24,8 +24,8 @@ bool is_aster_debug() {
     return false;
 }
 bool is_aster_silent_mode() {
-    const char *env_var = get_env_var( "ASTER_SILENT" );
-    if ( env_var != nullptr ) {
+    const char *env_var = get_env_var( "ASTER_NOT_SILENT" );
+    if ( env_var == nullptr ) {
         return true;
     }
     return false;
@@ -176,6 +176,10 @@ HMODULE LoadDllAndGetFunction( const std::string &dllName, const std::string &fu
     std::string dllDirectory = GetDllDirectory();
     char dllPath[MAX_PATH];
     snprintf( dllPath, MAX_PATH, "%s\\%s", dllDirectory.c_str(), dllName.c_str() );
+
+    if ( !IS_ASTER_SILENT) {
+        std::cout << "Calling original " << funcName << std::endl;
+    }
 
     // Set the environment variables relevant for a conda environment
     init_env();

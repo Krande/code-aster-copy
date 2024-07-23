@@ -11,7 +11,6 @@ extern "C" PyObject* PyInit_med_aster()
 
     if (original_PyInit_med_aster)
     {
-        std::cout << "Calling original PyInit_med_aster" << std::endl;
         return original_PyInit_med_aster();
     }
     std::cout << "Returning NULL" << std::endl;

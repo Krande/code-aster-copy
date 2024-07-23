@@ -11,7 +11,6 @@ extern "C" PyObject* PyInit_libaster()
 
     if (original_PyInit_libaster)
     {
-        std::cout << "Calling original PyInit_libaster" << std::endl;
         return original_PyInit_libaster();
     }
     std::cout << "Returning NULL" << std::endl;

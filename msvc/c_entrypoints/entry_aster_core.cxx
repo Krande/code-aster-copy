@@ -11,7 +11,6 @@ extern "C" PyObject* PyInit_aster_core()
 
     if (original_PyInit_aster_core)
     {
-        std::cout << "Calling original PyInit_aster_core" << std::endl;
         return original_PyInit_aster_core();
     }
     std::cout << "Returning NULL" << std::endl;
