@@ -42,8 +42,8 @@ mater = DEFI_MATERIAU(ELAS=_F(E=210000000000.0, NU=0.3, RHO=7800.0))
 fieldmat = AFFE_MATERIAU(AFFE=_F(GROUP_MA=("Beam",), MATER=(mater,)), MODELE=model)
 
 # -- vecteur d'instants pour l'integration temporelle
-Dt = 0.0001
-Tfin = 5.0
+Dt = 0.00001
+Tfin = 2
 temps = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=Tfin, PAS=Dt))
 
 t_arch = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=Tfin, PAS=0.0001))
@@ -148,16 +148,7 @@ Stat = MODE_STATIQUE(
 
 BaMo_0 = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=(modes, Stat)),), NUME_REF=NUME)
 
-# --
-# --
-# -- Base concatenee et orthonormee par rapport a la masse
-# --
-# --
-
-# --  Cet appel la conduit a une erreur dans la suite
-# -- Sur la restitution sur base physique et sur les post traitement
-# -- POST_GENE_PHYS et POST_RELEVE_T
-BaMo_1 = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=modes), _F(MODE_INTF=Stat)), ORTHO="OUI", MATRICE=MASS)
+BaMo_1 = DEFI_BASE_MODALE(ORTHO_BASE=_F(BASE=BaMo_0, MATRICE=MASS))
 
 
 PROJ_BASE(
@@ -189,6 +180,98 @@ Tab1 = POST_GENE_PHYS(
     RESU_GENE=ResPhys1, OBSERVATION=_F(NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO="N4")
 )
 
-# TODO: ajouter un TEST_TABLE ici
+# For debug
+# IMPR_TABLE(UNITE=8, TABLE=Tab1)
+
+
+# --
+# --
+# -- Base concatenee et orthonormee par rapport a la masse
+# --
+# --
+
+# --  Cet appel la conduit a une erreur dans la suite
+# -- Sur la restitution sur base physique et sur les post traitement
+# -- POST_GENE_PHYS et POST_RELEVE_T
+
+BaMo_2 = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=modes), _F(MODE_INTF=Stat)), ORTHO="OUI", MATRICE=MASS)
+
+
+PROJ_BASE(
+    BASE=BaMo_2,
+    STOCKAGE="PLEIN",
+    MATR_ASSE_GENE=(
+        _F(MATRICE=CO("MASS_GE1"), MATR_ASSE=MASS),
+        _F(MATRICE=CO("RAID_GE1"), MATR_ASSE=RAID),
+    ),
+    VECT_ASSE_GENE=(_F(VECTEUR=CO("Force1"), TYPE_VECT="FORC", VECT_ASSE=FORC),),
+)
+
+
+ResPhys2 = DYNA_VIBRA(
+    TYPE_CALCUL="TRAN",
+    BASE_CALCUL="GENE",
+    EXCIT=_F(FONC_MULT=pulse, VECT_ASSE_GENE=Force1),
+    # INCREMENT=_F(LIST_INST=temps),
+    INCREMENT=_F(PAS=Dt, INST_FIN=Tfin),
+    ARCHIVAGE=_F(LIST_INST=t_arch),
+    MATR_MASS=MASS_GE1,
+    MATR_RIGI=RAID_GE1,
+    AMOR_MODAL=_F(AMOR_REDUIT=(0.000)),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
+    SOLVEUR=_F(METHODE="MUMPS", NPREC=11),
+)
+
+
+Tab2 = POST_GENE_PHYS(
+    RESU_GENE=ResPhys2, OBSERVATION=_F(NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO="N4")
+)
+
+# for debug
+# IMPR_TABLE(UNITE=9, TABLE=Tab2)
+
+
+# --
+# --
+# -- Test de Comparaisaon des Bases aux instants t1 et t2
+# --
+# --
+
+
+t1 = Tfin / 2
+t2 = Tfin
+
+
+Tab1_t1 = POST_GENE_PHYS(
+    RESU_GENE=ResPhys2, OBSERVATION=_F(NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO="N4", INST=t1)
+)
+
+
+Tab1_t2 = POST_GENE_PHYS(
+    RESU_GENE=ResPhys1, OBSERVATION=_F(NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO="N4", INST=t2)
+)
+
+Res1_dzt1 = Tab1_t1["VALE_R", 1]
+Res1_dzt2 = Tab1_t2["VALE_R", 1]
+
+
+TEST_TABLE(
+    TABLE=Tab2,
+    NOM_PARA="VALE_R",
+    FILTRE=(_F(NOM_PARA="INST", VALE=t1, PRECISION=1e-5)),
+    REFERENCE="AUTRE_ASTER",
+    VALE_CALC=Res1_dzt1,
+    VALE_REFE=Res1_dzt1,
+)
+
+TEST_TABLE(
+    TABLE=Tab2,
+    NOM_PARA="VALE_R",
+    FILTRE=(_F(NOM_PARA="INST", VALE=t2, PRECISION=1e-5)),
+    REFERENCE="AUTRE_ASTER",
+    VALE_CALC=Res1_dzt2,
+    VALE_REFE=Res1_dzt2,
+)
+
 
 FIN()
