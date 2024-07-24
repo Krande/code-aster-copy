@@ -202,6 +202,7 @@ class THER3DH27_HHO222(Element):
             ),
             para_out=((OP.HHO_CINE_R_THER.PCINE, DDL_THER),),
         ),
+        OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),
         OP.MASS_THER(
             te=449,
             para_in=(
