@@ -177,10 +177,10 @@ def cli():
 def manual():
     # get the current process id
     pid = os.getpid()
-    # attach the visual studio debugger to the process
+    # attach a running visual studio (with the code-aster project loaded) debugger to this process
     os.system(f"vsjitdebugger -p {pid}")
     # run the test
-    run_specific_test('forma06a')
+    run_specific_test('zzzz185a')
 
 
 if __name__ == "__main__":

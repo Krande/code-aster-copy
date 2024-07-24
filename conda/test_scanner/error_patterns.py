@@ -40,6 +40,10 @@ ERROR_PATTERNS = [
         ("présence du champ demandé dans le fichier", "MEDfieldnComponentByName.c", "Erreur à l'ouverture du groupe")
     ),
     ErrorPattern(
+        "MED_57_LRVEMA",
+        ("<MED_57>", "lrvema.F90")
+    ),
+    ErrorPattern(
         "DYNA_VIBRA_TYPE_ERROR_FLOAT_INT",
         (
             re.compile(
@@ -316,7 +320,15 @@ ERROR_PATTERNS = [
     ),
     ErrorPattern(
         "NO_TEST_RESU",
-        ("DIAGNOSTIC JOB : NO_TEST_RESU","Table.destr")
+        ("DIAGNOSTIC JOB : NO_TEST_RESU", "Table.destr")
+    ),
+    ErrorPattern(
+        "PROC_ERROR",
+        ("No such file or directory: '/proc/6980/status'",)
+    ),
+    ErrorPattern(
+        "DEFI_BASE_REDUITE_WIN_FATAL",
+        ("DEFI_BASE_REDUITE", "Windows fatal exception: access violation"),
     )
 ]
 

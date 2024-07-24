@@ -1,0 +1,173 @@
+Total passing tests: 84.17% [1855/2204]
+Total failed tests: 349 of 2204
+ASRUN_PERMISSION_ERROR_WIN32 (''):
+  1 [0.29%]
+  asrun01b
+ASTERERROR_MATERIALFIELD_EMPTY (''):
+  5 [1.43%]
+  sdld102d|sdld25a|sdld27e|sdld313c|sdnd107e
+CALC_ESSAI_GEOMECA_ACCESS_ERROR ('Access violation error in CALC_ESSAI_GEOMECA'):
+  2 [0.57%]
+  comp012c|erreu09c
+CALC_ESSAI_GEOMECA_INDEX_ERROR ('Index error in CALC_ESSAI_GEOMECA'):
+  3 [0.86%]
+  comp012f|comp012g|comp012h
+CALC_ESSAI_GEOMECA_PERM_ERROR ('Permission denied error in CALC_ESSAI_GEOMECA'):
+  1 [0.29%]
+  comp012b
+CALC_FERRAILLAGE_TYPE_ERROR_FLOAT_INT (''):
+  1 [0.29%]
+  ssll13a
+CALC_FERRAILLAGE_WIN_FATAL (''):
+  1 [0.29%]
+  ssls134a
+CALC_MATE_HOMO_ACCESS_ERROR ('Access violation error in CALC_MATE_HOMO'):
+  6 [1.72%]
+  hplv106a|hplv106b|hplv106c|hplv108a|hplv108b|hplv108c
+CATANESS_3_ALGELINE_1 ('ALGELINE_1 error in CATAMESS_3'):
+  6 [1.72%]
+  forma12a|sdld103b|sdld34a|sdll150a|sdls505b|sslv139a
+CREA_MAILLAGE_EXIT_17 ('Abort error in crea_maillage'):
+  1 [0.29%]
+  zzzz381a
+DEFI_BASE_REDUITE_WIN_FATAL (''):
+  1 [0.29%]
+  zzzz395k
+DEFI_CONT_OPS_EXIT_17 ('Abort error in defi_cont_ops'):
+  1 [0.29%]
+  cont001a
+DVP1_indlia (''):
+  5 [1.43%]
+  sdls106a|sdls106b|sdls106c|sdls106e|sdls106g
+DVP1_jxveri ('DVP_1 jxveri exception'):
+  1 [0.29%]
+  erreu02b
+FACTOR_11_MECA_STATIQUE (''):
+  1 [0.29%]
+  sdls505a
+FACTOR_55_MUMPS ('FACTOR_55 MUMPS problem or alarm'):
+  2 [0.57%]
+  fdlv106a|zzzz253a
+FILE_EXISTS_WIN183 (''):
+  1 [0.29%]
+  sdld110a
+JEVEUX1_55_AFFE_CARA_ELEM ('JEVEUX1_55 error in AFFE_CARA_ELEM'):
+  1 [0.29%]
+  sdls501b
+JEVEUX1_55_AFFE_CHAR_CINE ('JEVEUX1_55 error in AFFE_CHAR_CINE'):
+  18 [5.16%]
+  sslp116c|sslp116d|ssls106a|ssls148a|ssls20d|ssnp307a|ssnv133d|ssnv133e|ssnv220a|ttll01o|ttll01p|ttll01q|ttll01r|ttll01s|ttll01t|zzzz503j|zzzz503k|zzzz506h
+JEVEUX1_55_AFFE_CHAR_MECA ('JEVEUX1_55 error in AFFE_CHAR_MECA'):
+  8 [2.29%]
+  comp005c|comp005d|forma05d|hplp100b|ssls147a|ssna119a|ssnv187b|zzzz406b
+JEVEUX1_55_AFFE_CHAR_THER ('JEVEUX1_55 error in AFFE_CHAR_THER'):
+  7 [2.01%]
+  tplv304a|tpnv01c|ttll100b|ttlp301c|ttlp301d|ttlv100b|zzzz503q
+JEVEUX1_55_AFFE_MATERIAU ('JEVEUX1_55 error in AFFE_MATERIAU'):
+  5 [1.43%]
+  hsna102e|sslv146c|sslv146d|ssns107b|ssns107d
+JEVEUX1_55_AFFE_MODELE ('JEVEUX1_55 error in AFFE_MODELE'):
+  9 [2.58%]
+  hsnv132a|sdls505c|sdls505d|ssnv137b|zzzz306a|zzzz306c|zzzz306d|zzzz306e|zzzz323d
+JEVEUX1_55_CREA_MAILLAGE ('JEVEUX1_55 error in CREA_MAILLAGE'):
+  11 [3.15%]
+  shll101d|ssls04d|sslx300h|ssnp121r|ssnp123g|ssnp162p|ssnv129c|tpll01j|zzzz238c|zzzz323c|zzzz503p
+JEVEUX1_55_DEFI_GROUP ('JEVEUX1_55 error in DEFI_GROUP'):
+  37 [10.60%]
+  ssnp121q|ssnp162i|ssnp162j|ssnv112b|ssnv112g|ssnv112l|ssnv138f|ssnv138h|ssnv138i|ssnv203c|ssnv203d|ssnv245b|ssnv245d|ssnv246b|tpla07a|wtnl100c|wtnp102b|wtnp102e|wtnp102f|wtnp107a|wtnp107b|wtnv140b|wtnv140c|wtnv143a|wtnv143b|wtnv143c|wtnv143d|wtnv143e|wtnv144c|wtnv144d|wtnv146a|zzzz106b|zzzz238b|zzzz257a|zzzz257b|zzzz257c|zzzz503s
+JEVEUX1_55_IMPR_RESU ('JEVEUX1_55 error in IMPR_RESU'):
+  2 [0.57%]
+  ssnv128p|zzzz206a
+JEVEUX1_55_MODI_MAILLAGE ('JEVEUX1_55 error in MODI_MAILLAGE'):
+  20 [5.73%]
+  adlv100p|erreu12a|forma05a|mesh001i|mfron02j|sslv153a|ssnp162g|ssnp162l|ssnp178d|ssnp178k|ssnp179d|ssnp179k|ssnv187v|ssnv191d|wtna112c|wtnp114a|wtnv114h|wtnv143f|zzzz121c|zzzz359a
+JEVEUX1_55_POST_ELEM ('JEVEUX1_55 error in POST_ELEM'):
+  1 [0.29%]
+  zzzz205a
+JEVEUX1_55_POST_MAIL_XFEM ('JEVEUX1_55 error in POST_MAIL_XFEM'):
+  7 [2.01%]
+  zzzz361a|zzzz361b|zzzz361c|zzzz361d|zzzz361e|zzzz361f|zzzz361g
+JEVEUX_26_ORDR (''):
+  8 [2.29%]
+  erreu11a|hsna106a|hsnv135a|hsnv136d|ssnv163d|ssnv163e|ssnv181b|wtnv122d
+LAPACK_DLASWP_ERROR (''):
+  3 [0.86%]
+  comp010i|ssnv118a|ssnv118b
+LAPACK_ZUNMQR_ERROR (''):
+  2 [0.57%]
+  sdld27a|sdld27f
+MECA_STATIQUE_WIN_FATAL (''):
+  11 [3.15%]
+  ssla311d|ssll10a|ssll11b|ssll12a|sslp113a|sslp113b|sslp314e|ssls108i|ssls136a|ssls139a|sslv157a
+MED_18_SANS_PARTITIONNEUR (''):
+  1 [0.29%]
+  zzzz505b
+MED_57_LRVEMA (''):
+  5 [1.43%]
+  zzzz185a|zzzz322a|zzzz366b|zzzz366c|zzzz366d
+MED_57_MEDFIELDN_C (''):
+  2 [0.57%]
+  zzzz323b|zzzz323e
+MED_57_RESU_READ_MED_F90 (''):
+  15 [4.30%]
+  ssnv259a|zzzz132a|zzzz215c|zzzz264b|zzzz264c|zzzz389a|zzzz395a|zzzz395b|zzzz395f|zzzz395g|zzzz395h|zzzz395j|zzzz395m|zzzz395r|zzzz395t
+MED_ACCESS_ERROR ('Access violation error in MED file creation'):
+  39 [11.17%]
+  forma02c|forma06a|sdll113b|sdll14a|sdll14b|sdll14c|ssla103f|sslp318a|sslp318b|sslp318c|ssls101n|ssls111a|ssls113a|ssls135a|sslv120a|ssnl123a|ssnl504a|ssnp118q|ssnp118r|ssnp118s|ssnp156a|ssnp178a|ssnv185v|ssnv200a|ttlp101b|ttlp101c|zzzz114a|zzzz137b|zzzz161a|zzzz162b|zzzz237b|zzzz258a|zzzz323a|zzzz340a|zzzz353a|zzzz366a|zzzz400a|zzzz413a|zzzz506d
+MED_mfiope (''):
+  1 [0.29%]
+  ssnv129a
+MED_mpfprw (''):
+  5 [1.43%]
+  forma05c|forma40b|zzzz175b|zzzz326a|zzzz326b
+MISSING_ASRUN (''):
+  2 [0.57%]
+  ssna110a|ssnv228b
+MISSING_HOMARD ('Missing homard'):
+  12 [3.44%]
+  forma01b|forma01c|forma11a|ssnv173k|ssnv509b|tplp107b|tplp305d|zzzz121d|zzzz121e|zzzz319a|zzzz319b|zzzz356a
+MISSING_MISS3D (''):
+  1 [0.29%]
+  sdls118a
+MISSING_SCIPY (''):
+  1 [0.29%]
+  sdld110b
+MISSING_XMGRACE ('Missing xmgrace'):
+  3 [0.86%]
+  forma10a|forma10b|forma30b
+MODI_MAILLAGE_WIN_FATAL (''):
+  15 [4.30%]
+  ssla310a|ssls118d|ssnp170k|ssnp170l|ssnv204c|ssnv204d|wtnp127a|wtnp127b|wtnp127c|wtnp127d|wtnp127e|wtnp127f|zzzz291a|zzzz291c|zzzz360a
+NOOK_TEST_RESU (''):
+  9 [2.58%]
+  ahlv302g|sdld101a|sdll104a|sdll137e|sdlv126e|sdlv126f|ssll04a|supv004a|vocab01b
+NO_TEST_RESU (''):
+  2 [0.57%]
+  zzzz506z|zzzz509f
+PERMISSION_ERROR_macr_lign_coupe_ops ('Permission denied error in macr_lign_coupe_ops'):
+  24 [6.88%]
+  forma02a|ssll107a|ssll107f|ssll107g|ssll107h|ssll107i|ssll107j|sslp116a|sslp116b|sslp117a|sslp117b|sslv100c|sslv110a|ssnl125a|ssnp123a|tpll01b|tpls102a|tpls102b|tpna01a|tpna01b|tpna01d|tpna01e|zzzz136c|zzzz407a
+POST_ELEM_WIN_FATAL (''):
+  11 [3.15%]
+  sslp305a|sslv104a|sslv115b|sslv115c|sslv140a|tplv07a|wtnv130d|zzzz105a|zzzz249a|zzzz284a|zzzz291b
+PROC_ERROR (''):
+  1 [0.29%]
+  func01e
+REST_SPEC_PHYS (''):
+  1 [0.29%]
+  sdlx302a
+SIMU_POINT_MAT_INDEX_ERROR (''):
+  3 [0.86%]
+  ssnv205b|ssnv205c|ssnv232c
+SIMU_POINT_MAT_WIN_FATAL (''):
+  2 [0.57%]
+  ssnv205a|wtnv134b
+UMAT_NO_WIN_SUPPORT (''):
+  1 [0.29%]
+  zzzz409a
+Unknown ('Unknown error pattern'):
+  1 [0.29%]
+  zzzz509d
+WIN_FATAL_CODE (''):
+  3 [0.86%]
+  zzzz395e|zzzz395q|zzzz395s
