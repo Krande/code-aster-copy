@@ -12595,21 +12595,21 @@ class PhysicalProblem:
         """Return the behaviour properties
 
         Returns:
-            BehaviourPropertyPtr: a pointer to the behaviour properties
+            BehaviourProperty: a pointer to the behaviour properties
         """
 
     def getCodedMaterial(self):
         """Return the coded material
 
         Returns:
-            CodedMaterialPtr: a pointer to the coded material
+            CodedMaterial: a pointer to the coded material
         """
 
     def getDOFNumbering(self):
         """Return the DOF numbering
 
         Returns:
-            BaseDOFNumberingPtr: a pointer to the DOF numbering
+            BaseDOFNumbering: a pointer to the DOF numbering
         """
 
     def getDirichletBCDOFs(self):
@@ -12626,7 +12626,7 @@ class PhysicalProblem:
         """Return the elementary charateristics
 
         Returns:
-            ElementaryCharacteristicsPtr: a pointer to the elementary charateristics
+            ElementaryCharacteristics: a pointer to the elementary charateristics
         """
 
     def getExternalStateVariables(self, time):
@@ -12636,42 +12636,42 @@ class PhysicalProblem:
             time [float] : time value to evaluate values
 
         Returns:
-            FieldOnCellsRealPtr : external values
+            FieldOnCellsReal : external values
         """
 
     def getListOfLoads(self):
         """Return list of loads.
 
         Returns:
-            ListOfLoadsPtr: a pointer to list of loads
+            ListOfLoads: a pointer to list of loads
         """
 
     def getMaterialField(self):
         """Return the material field
 
         Returns:
-            MaterialFieldPtr: a pointer to the material field
+            MaterialField: a pointer to the material field
         """
 
     def getMesh(self):
         """Return the mesh
 
         Returns:
-            MeshPtr: a pointer to the mesh
+            Mesh: a pointer to the mesh
         """
 
     def getModel(self):
         """Return the model
 
         Returns:
-            ModelPtr: a pointer to the model
+            Model: a pointer to the model
         """
 
     def getReferenceExternalStateVariables(self):
         """Get the field of reference values for external state variables
 
         Returns:
-            FieldOnCellsRealPtr : field of reference values
+            FieldOnCellsReal : field of reference values
         """
 
     def isAcoustic(self):
@@ -12699,7 +12699,14 @@ class PhysicalProblem:
         """Set the DOF numbering
 
         Arguments:
-            dofNum (BaseDOFNumberingPtr): a pointer to the DOF numbering
+            dofNum (BaseDOFNumbering): a pointer to the DOF numbering
+        """
+
+    def setListOfLoads(self, loads):
+        """Set list of loads
+
+        Arguments:
+            loads (ListOfLoads): a pointer to the list of loads
         """
 
     def zeroDirichletBCDOFs(self, arg0):
