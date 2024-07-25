@@ -181,5 +181,18 @@ Returns:
             Returns:
                 SimpleFieldOnCellsReal: field restricted.
             )",
-              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() );
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() )
+        .def( "changePhysicalQuantity", &SimpleFieldOnCellsReal::changePhysicalQuantity,
+              R"(
+            Return a new field with a new physical quantity and renamed components.
+
+            Arguments:
+                physQuantity [str]: name of the new physical quantity
+                map_cmps[dict[str, str]]: dict to rename components
+                (only renamed component will be keeped)
+
+            Returns:
+                SimpleFieldOnCellsReal: field with name physical quantity.
+            )",
+              py::arg( "physQuantity" ), py::arg( "map_cmps" ) );
 };

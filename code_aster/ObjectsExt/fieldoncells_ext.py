@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,6 +93,28 @@ class ExtendedFieldOnCellsReal:
         else:
             cells = mesh.getCells()
         return self.toSimpleFieldOnCells().getValuesWithDescription(cells, component)
+
+    def changePhysicalQuantity(self, physQuantity, map_cmps, fed=None):
+        """Return a new field with a new physical quantity and renamed components.
+
+        Arguments:
+            physQuantity [str]: name of the new physical quantity
+            map_cmps[dict[str, str]]: dict to rename components
+            (only renamed component will be keeped)
+            fed [FiniteElementDescriptor] : FED used to convert the field if the one present
+             in the field is not appropriate (default: None)
+
+        Returns:
+            FieldOnCellsReal: field with name physical quantity.
+        """
+
+        fcs = self.toSimpleFieldOnCells().changePhysicalQuantity(physQuantity, map_cmps)
+
+        ligrel = self.getDescription()
+        if fed:
+            ligrel = fed
+
+        return fcs.toFieldOnCells(ligrel)
 
     @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
     def EXTR_COMP(self, comp, lgma=[], topo=0):

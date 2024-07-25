@@ -76,6 +76,7 @@ test.assertAlmostEqual(len(refe1.getValues()), len(fieldSIEF.getValues()))
 test.assertAlmostEqual(len(refe2.getValues()), len(fieldVARI.getValues()))
 test.assertAlmostEqual(refe1.getValues(), fieldSIEF.getValues())
 test.assertAlmostEqual(refe2.getValues(), fieldVARI.getValues())
+test.assertEqual(fieldSIEF.getLocalization(), "ELGA")
 test.assertEqual(fieldSIEF.getNumberOfComponents(), 6)
 test.assertEqual(fieldVARI.getNumberOfComponents(), 2)
 test.assertSequenceEqual(
@@ -87,6 +88,19 @@ fno = fieldSIEF.toFieldOnNodes()
 fsno = fieldSIEF.toSimpleFieldOnNodes()
 felno = fieldSIEF.changeLocalization("ELNO")
 
+test.assertEqual(felno.getLocalization(), "ELNO")
+test.assertSequenceEqual(["SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"], felno.getComponents())
+
+
+fs0 = fieldSIEF.toSimpleFieldOnCells()
+fneuts = fs0.changePhysicalQuantity("DEPL_R", {"SIXX": "DZ", "SIXZ": "DX"})
+test.assertSequenceEqual(["DZ", "DX"], fneuts.getComponents())
+test.assertEqual(fneuts.getPhysicalQuantity(), "DEPL_R")
+test.assertEqual(fneuts.getLocalization(), "ELGA")
+
+fneut = fieldSIEF.changePhysicalQuantity("DEPL_R", {"SIXX": "DZ", "SIXZ": "DX"})
+test.assertEqual(fneut.getPhysicalQuantity(), "DEPL_R")
+test.assertEqual(fneut.getLocalization(), "ELGA")
 
 sf2 = fieldVARI.toSimpleFieldOnCells()
 test.assertSequenceEqual(["V1", "V2"], sf2.getComponents())
@@ -98,6 +112,17 @@ test.assertSequenceEqual(["V1"], sfr2.getComponents())
 test.assertEqual(sfr2.getPhysicalQuantity(), "VARI_R")
 test.assertEqual(sfr2.getLocalization(), "ELGA")
 test.assertAlmostEqual(sf2.getValue(0, 0, 0, 0), sfr2.getValue(0, 0, 0, 0))
+
+sfr3 = sf2.changePhysicalQuantity("NEUT_R", {"V1": "X2"})
+test.assertSequenceEqual(["X2"], sfr3.getComponents())
+test.assertEqual(sfr3.getPhysicalQuantity(), "NEUT_R")
+test.assertEqual(sfr3.getLocalization(), "ELGA")
+test.assertAlmostEqual(sfr2.getValue(0, 0, 0, 0), sfr3.getValue(0, 0, 0, 0))
+
+fn3 = fno.changePhysicalQuantity("TEMP_R", {"SIYY": "TEMP"})
+test.assertSequenceEqual(["TEMP"], fn3.getComponents())
+test.assertEqual(fn3.getPhysicalQuantity(), "TEMP_R")
+test.assertEqual(fn3.getLocalization(), "NOEU")
 
 # Test constructeur avec le caraelem
 

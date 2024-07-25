@@ -19,10 +19,10 @@
 !
 !
 interface
-    subroutine verigd(nomgdz, lcmp, ncmp, iret)
+    subroutine verigd_wrap(nomgdz, lcmp, ncmp, iret)
         integer :: ncmp
         character(len=*) :: nomgdz
-        character(len=*) :: lcmp(ncmp)
+        character(len=8) :: lcmp(ncmp)
         integer :: iret
-    end subroutine verigd
+    end subroutine verigd_wrap
 end interface

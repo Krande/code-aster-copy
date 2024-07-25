@@ -560,6 +560,9 @@ class FieldOnCells : public DataField {
             return std::make_shared< FieldOnCells< ValueType > >( *this );
         }
 
+        auto cham_model = std::make_shared< FieldOnCells< ValueType > >( _dofDescription, loc,
+                                                                         getPhysicalQuantity() );
+
         auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
 
         std::string base = "G";
@@ -569,7 +572,8 @@ class FieldOnCells : public DataField {
             model = getModel()->getName();
         }
 
-        CALLO_CHPCHD( getName(), loc, getName(), prol, base, cham_elem->getName(), model );
+        CALLO_CHPCHD( getName(), loc, cham_model->getName(), prol, base, cham_elem->getName(),
+                      model );
 
         cham_elem->build( { _dofDescription } );
 

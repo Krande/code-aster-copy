@@ -406,6 +406,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return lhs;
     };
 
+    std::string getLocalization() const { return "NOEU"; };
+
     VectorString getComponents() const { return _dofDescription->getComponents(); };
 
     ASTERINTEGER getNumberOfComponents() const { return getComponents().size(); }
@@ -581,6 +583,15 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         auto simpField = toSimpleFieldOnNodes( *this );
         auto simpFieldRest = simpField->restrict( cmps, groupsOfNodes, same_rank );
+
+        return toFieldOnNodes( simpFieldRest );
+    };
+
+    FieldOnNodesPtr changePhysicalQuantity( const std::string physQuant,
+                                            const MapString &map_cmps ) const {
+
+        auto simpField = toSimpleFieldOnNodes( *this );
+        auto simpFieldRest = simpField->changePhysicalQuantity( physQuant, map_cmps );
 
         return toFieldOnNodes( simpFieldRest );
     };

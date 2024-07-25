@@ -42,566 +42,649 @@
  * @brief Cette classe template permet de definir un champ aux éléments Aster
  * @author Nicolas Sellenet
  */
-template < class ValueType >
-class SimpleFieldOnCells : public DataField {
-  private:
-    /** @brief Vecteur Jeveux '.CESK' */
-    JeveuxVectorChar8 _descriptor;
-    /** @brief Vecteur Jeveux '.CESD' */
-    JeveuxVectorLong _size;
-    /** @brief Vecteur Jeveux '.CESC' */
-    JeveuxVectorChar8 _component;
-    /** @brief Vecteur Jeveux '.CESV' */
-    JeveuxVector< ValueType > _values;
-    /** @brief Vecteur Jeveux '.CESL' */
-    JeveuxVectorLogical _allocated;
-    /** @brief Mesh */
-    BaseMeshPtr _mesh;
-    /** @brief Nombre de éléments */
-    ASTERINTEGER _nbCells;
-    /** @brief Nombre de composantes */
-    ASTERINTEGER _nbComp;
-    /** @brief Number of points */
-    ASTERINTEGER _nbPt;
-    /** @brief Number of subpoints */
-    ASTERINTEGER _nbSpt;
+template <class ValueType> class SimpleFieldOnCells : public DataField {
+private:
+  /** @brief Vecteur Jeveux '.CESK' */
+  JeveuxVectorChar8 _descriptor;
+  /** @brief Vecteur Jeveux '.CESD' */
+  JeveuxVectorLong _size;
+  /** @brief Vecteur Jeveux '.CESC' */
+  JeveuxVectorChar8 _component;
+  /** @brief Vecteur Jeveux '.CESV' */
+  JeveuxVector<ValueType> _values;
+  /** @brief Vecteur Jeveux '.CESL' */
+  JeveuxVectorLogical _allocated;
+  /** @brief Mesh */
+  BaseMeshPtr _mesh;
+  /** @brief Nombre de éléments */
+  ASTERINTEGER _nbCells;
+  /** @brief Nombre de composantes */
+  ASTERINTEGER _nbComp;
+  /** @brief Number of points */
+  ASTERINTEGER _nbPt;
+  /** @brief Number of subpoints */
+  ASTERINTEGER _nbSpt;
 
-    std::map< std::string, ASTERINTEGER > _name2Index;
+  std::map<std::string, ASTERINTEGER> _name2Index;
 
-    /**
-     * Some unsafe functions to access values without checking dimension
-     * Their public version add an if statement
-     */
+  /**
+   * Some unsafe functions to access values without checking dimension
+   * Their public version add an if statement
+   */
 
-    void _buildComponentsName2Index() {
-        if ( _name2Index.empty() ) {
+  void _buildComponentsName2Index() {
+    if (_name2Index.empty()) {
 
-            auto nbCmp = this->getNumberOfComponents();
-            for ( ASTERINTEGER i = 0; i < nbCmp; i++ ) {
-                _name2Index[this->getComponent( i )] = i;
+      auto nbCmp = this->getNumberOfComponents();
+      for (ASTERINTEGER i = 0; i < nbCmp; i++) {
+        _name2Index[this->getComponent(i)] = i;
+      }
+    }
+  }
+
+  ASTERINTEGER _ptCell(const ASTERINTEGER &ima) const {
+    return (*_size)[4 + 4 * ima + 1];
+  }
+  ASTERINTEGER _sptCell(const ASTERINTEGER &ima) const {
+    return (*_size)[4 + 4 * ima + 2];
+  }
+  ASTERINTEGER _cmpsSptCell(const ASTERINTEGER &ima) const {
+    return (*_size)[4 + 4 * ima + 3];
+  }
+  ASTERINTEGER _shiftCell(const ASTERINTEGER &ima) const {
+    return (*_size)[4 + 4 * ima + 4];
+  }
+
+  std::string _nameCmp(const ASTERINTEGER &icmp) const {
+    return strip((*_component)[icmp].toString());
+  }
+
+  /**
+   * Calculate the position of value in CESV array
+   */
+  ASTERINTEGER _positionInArray(const ASTERINTEGER &icmp,
+                                const ASTERINTEGER &ima,
+                                const ASTERINTEGER &ipt,
+                                const ASTERINTEGER &ispt) const {
+
+    ASTERINTEGER npt = this->_ptCell(ima);
+    ASTERINTEGER nspt = this->_sptCell(ima);
+    ASTERINTEGER ncmp = this->_cmpsSptCell(ima);
+    ASTERINTEGER decal = this->_shiftCell(ima);
+    return decal + ipt * nspt * ncmp + ispt * ncmp + icmp;
+  };
+
+  /**
+   * Calculate the size of CESV array
+   */
+  ASTERINTEGER _nbValArray() const {
+    ASTERINTEGER nbVal = 0;
+    ASTERINTEGER ncmp_max = this->getNumberOfComponents();
+    for (ASTERINTEGER ima = 0; ima < this->getNumberOfCells(); ima++) {
+      ASTERINTEGER npt = this->_ptCell(ima);
+      ASTERINTEGER nspt = this->_sptCell(ima);
+      ASTERINTEGER ncmp = this->_cmpsSptCell(ima);
+      if (ncmp > 0)
+        AS_ASSERT(ncmp == ncmp_max);
+      nbVal = nbVal + npt * nspt * ncmp;
+    }
+    AS_ASSERT(nbVal > 0);
+    return nbVal;
+  }
+
+  /**
+   * Functions to check an out-of-range condition
+   */
+  void _checkCellOOR(const ASTERINTEGER &ima) const {
+    ASTERINTEGER nbCells = this->getNumberOfCells();
+    if (ima < 0 || ima >= nbCells) {
+      throw std::runtime_error("Cell index '" + std::to_string(ima) +
+                               "' is out of range");
+    };
+  }
+
+  void _checkPtOOR(const ASTERINTEGER &ima, const ASTERINTEGER &ipt) const {
+    ASTERINTEGER npt = this->_ptCell(ima);
+    if (ipt < 0 || ipt >= npt) {
+      throw std::runtime_error("Point     '" + std::to_string(ipt) +
+                               "' is out of range for cell '" +
+                               std::to_string(ima) + "'");
+    }
+  }
+
+  void _checkSptOOR(const ASTERINTEGER &ima, const ASTERINTEGER &ispt) const {
+    ASTERINTEGER nspt = this->_sptCell(ima);
+    if (ispt < 0 || ispt >= nspt) {
+      throw std::runtime_error("SubPoint  '" + std::to_string(ispt) +
+                               "' is out of range for cell '" +
+                               std::to_string(ima) + "'");
+    }
+  }
+
+  void _checkCmpAtCellOOR(const ASTERINTEGER &ima,
+                          const ASTERINTEGER &icmp) const {
+    ASTERINTEGER ncmp = this->_cmpsSptCell(ima);
+    if (icmp < 0 || icmp >= ncmp) {
+      throw std::runtime_error("Component '" + std::to_string(icmp) +
+                               "' is out of range for cell '" +
+                               std::to_string(ima) + "'");
+    }
+  }
+
+  void _checkCmpOOR(const ASTERINTEGER &icmp) const {
+    ASTERINTEGER ncmp = this->getNumberOfComponents();
+    if (icmp < 0 || icmp >= ncmp) {
+      throw std::runtime_error("Component '" + std::to_string(icmp) +
+                               "' is out of range");
+    }
+  }
+
+public:
+  /**
+   * @typedef SimpleFieldOnCellsPtr
+   * @brief Pointeur intelligent vers un SimpleFieldOnCells
+   */
+  typedef std::shared_ptr<SimpleFieldOnCells> SimpleFieldOnCellsPtr;
+
+  /**
+   * @brief Constructeur
+   * @param name Nom Jeveux du champ aux éléments
+   */
+  SimpleFieldOnCells(const std::string name)
+      : DataField(name, "CHAM_ELEM_S"),
+        _descriptor(JeveuxVectorChar8(getName() + ".CESK")),
+        _size(JeveuxVectorLong(getName() + ".CESD")),
+        _component(JeveuxVectorChar8(getName() + ".CESC")),
+        _values(JeveuxVector<ValueType>(getName() + ".CESV")),
+        _allocated(JeveuxVectorLogical(getName() + ".CESL")), _nbCells(0),
+        _nbComp(0), _nbPt(0), _nbSpt(0){};
+
+  /**
+   * @brief Constructeur
+
+   */
+  SimpleFieldOnCells()
+      : SimpleFieldOnCells(DataStructureNaming::getNewName(19)){};
+
+  SimpleFieldOnCells(const BaseMeshPtr mesh) : SimpleFieldOnCells() {
+    _mesh = mesh;
+  };
+
+  SimpleFieldOnCells(const BaseMeshPtr mesh, const std::string &loc,
+                     const std::string &quantity, const VectorString &comp,
+                     const ASTERINTEGER &nbPG, const ASTERINTEGER &nbSP,
+                     bool zero = false)
+      : SimpleFieldOnCells(mesh) {
+
+    const std::string base = "G";
+    ASTERINTEGER nbComp = comp.size();
+    ASTERINTEGER _npg = -nbPG;
+    ASTERINTEGER _nsp = nbSP;
+    ASTERLOGICAL _zero = zero;
+
+    char *tabNames = vectorStringAsFStrArray(comp, 8);
+
+    CALL_CESCRE_WRAP(base.c_str(), getName().c_str(), loc.c_str(),
+                     _mesh->getName().c_str(), quantity.c_str(), &nbComp,
+                     tabNames, &_npg, &_nsp, &nbComp, &_zero);
+
+    FreeStr(tabNames);
+
+    build();
+  }
+
+  SimpleFieldOnCells(const BaseMeshPtr mesh, const std::string &loc,
+                     const std::string &quantity, const VectorString &comp,
+                     const VectorInt &nbPG, const ASTERINTEGER &nbSP,
+                     bool zero = false)
+      : SimpleFieldOnCells(mesh) {
+
+    VectorLong nbPgTmp;
+    nbPgTmp.reserve(nbPG.size());
+    for (const auto &val : nbPG) {
+      nbPgTmp.push_back(val);
+    }
+
+    const std::string base = "G";
+    ASTERINTEGER nbComp = comp.size();
+    ASTERINTEGER _nsp = nbSP;
+    ASTERLOGICAL _zero = zero;
+
+    char *tabNames = vectorStringAsFStrArray(comp, 8);
+
+    CALL_CESCRE_WRAP(base.c_str(), getName().c_str(), loc.c_str(),
+                     _mesh->getName().c_str(), quantity.c_str(), &nbComp,
+                     tabNames, nbPgTmp.data(), &_nsp, &nbComp, &_zero);
+
+    FreeStr(tabNames);
+
+    build();
+  }
+
+  BaseMeshPtr getMesh() const { return _mesh; };
+
+  /**
+   * @brief Surcharge de l'operateur []
+   * @param i Indice dans le tableau Jeveux
+   * @return la valeur du tableau Jeveux a la position i
+   */
+  ValueType &operator[](const ASTERINTEGER &i) {
+    return _values->operator[](i);
+  };
+
+  inline const ValueType &operator[](const ASTERINTEGER &i) const {
+    return _values->operator[](i);
+  };
+
+  ValueType &operator()(const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                        const ASTERINTEGER &ipt, const ASTERINTEGER &ispt) {
+#ifdef ASTER_DEBUG_CXX
+    if (this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0)
+      throw std::runtime_error(
+          "First call of updateValuePointers is mandatory");
+#endif
+
+    ASTERINTEGER position = this->_positionInArray(icmp, ima, ipt, ispt);
+
+    (*_allocated)[position] = true;
+    return this->operator[](position);
+  };
+
+  const ValueType &operator()(const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                              const ASTERINTEGER &ipt,
+                              const ASTERINTEGER &ispt) const {
+#ifdef ASTER_DEBUG_CXX
+    if (this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0)
+      throw std::runtime_error(
+          "First call of updateValuePointers is mandatory");
+#endif
+
+    ASTERINTEGER position = this->_positionInArray(icmp, ima, ipt, ispt);
+
+    if (!(*_allocated)[position]) {
+      std::string mess = "DEBUG: Position (" + std::to_string(icmp) + ", " +
+                         std::to_string(ima) + ", " + std::to_string(ipt) +
+                         ", " + std::to_string(ispt) +
+                         ") is valid but not allocated!";
+      raiseAsterError(mess);
+    };
+
+    return this->operator[](position);
+  };
+
+  /**
+   * @brief Access to the (icmp) component of the (ima) cell
+            at the (ipt) point, at the (ispt) sub-point.
+  */
+  ValueType const &getValue(const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                            const ASTERINTEGER &ipt,
+                            const ASTERINTEGER &ispt) const {
+
+#ifdef ASTER_DEBUG_CXX
+    if (this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0)
+      throw std::runtime_error(
+          "First call of updateValuePointers is mandatory");
+#endif
+
+    ASTERINTEGER position = this->_positionInArray(icmp, ima, ipt, ispt);
+
+#ifdef ASTER_DEBUG_CXX
+    bool allocated = (*_allocated)[position];
+    if (!allocated) {
+      std::cout << "DEBUG: Position (" + std::to_string(icmp) + ", " +
+                       std::to_string(ima) + ", " + std::to_string(ipt) + ", " +
+                       std::to_string(ispt) + ") is valid but not allocated!"
+                << std::endl;
+    };
+#endif
+
+    return (*_values)[position];
+  }
+
+  void setValue(const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                const ASTERINTEGER &ipt, const ASTERINTEGER &ispt,
+                const ValueType &val) {
+
+#ifdef ASTER_DEBUG_CXX
+    if (this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0)
+      throw std::runtime_error(
+          "First call of updateValuePointers is mandatory");
+#endif
+
+    ASTERINTEGER position = this->_positionInArray(icmp, ima, ipt, ispt);
+
+    (*_allocated)[position] = true;
+
+    (*_values)[position] = val;
+  }
+
+  /**
+   * @brief tell if value exists for (icmp) component of the (ima) cell
+            at the (ipt) point, at the (ispt) sub-point.
+  */
+  bool hasValue(const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                const ASTERINTEGER &ipt, const ASTERINTEGER &ispt) const {
+
+    ASTERINTEGER position = this->_positionInArray(icmp, ima, ipt, ispt);
+
+#ifdef ASTER_DEBUG_CXX
+    if (this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0)
+      throw std::runtime_error(
+          "First call of updateValuePointers is mandatory");
+
+    this->_checkCellOOR(ima);
+    this->_checkPtOOR(ima, ipt);
+    this->_checkSptOOR(ima, ispt);
+    this->_checkCmpAtCellOOR(ima, icmp);
+#endif
+
+    return (*_allocated)[position];
+  }
+
+  /**
+   * @brief Get number of points of the i-th cell
+   */
+  ASTERINTEGER getNumberOfPointsOfCell(const ASTERINTEGER &ima) const {
+    this->_checkCellOOR(ima);
+    return this->_ptCell(ima);
+  }
+
+  /**
+   * @brief Get number of sub-points of the i-th cell
+   */
+  ASTERINTEGER getNumberOfSubPointsOfCell(const ASTERINTEGER &ima) const {
+    this->_checkCellOOR(ima);
+    return this->_sptCell(ima);
+  }
+
+  /**
+   * @brief Get number of components of the i-th cell
+   */
+  ASTERINTEGER
+  getNumberOfComponentsForSubpointsOfCell(const ASTERINTEGER &ima) const {
+    this->_checkCellOOR(ima);
+    return this->_cmpsSptCell(ima);
+  }
+
+  /**
+   * @brief Get number of components
+   */
+  ASTERINTEGER getNumberOfComponents() const { return _nbComp; }
+
+  /**
+   * @brief Get number of nodes
+   */
+  ASTERINTEGER getNumberOfCells() const { return _nbCells; }
+
+  /**
+   * @brief Get number of points
+   */
+  ASTERINTEGER getMaxNumberOfPoints() const { return _nbPt; }
+
+  /**
+   * @brief Get number of sub-points
+   */
+  ASTERINTEGER getMaxNumberOfSubPoints() const { return _nbSpt; }
+
+  /**
+   * @brief Get the name of the i-th component
+   */
+  std::string getComponent(const ASTERINTEGER &icmp) const {
+
+    if (icmp < 0 || icmp >= this->getNumberOfComponents()) {
+      throw std::runtime_error("Component '" + std::to_string(icmp) +
+                               "' is out of range");
+    };
+    return this->_nameCmp(icmp);
+  };
+
+  /**
+   * @Brief Get the names of all the components
+   */
+  VectorString getComponents() const {
+
+    ASTERINTEGER size = this->getNumberOfComponents();
+    VectorString names;
+    names.reserve(size);
+    for (ASTERINTEGER icmp = 0; icmp < size; icmp++) {
+      names.push_back(this->_nameCmp(icmp));
+    }
+    return names;
+  }
+
+  /**
+   * @brief Get physical quantity
+   */
+  std::string getPhysicalQuantity() const {
+    return strip((*_descriptor)[1].toString());
+  }
+
+  /**
+   * @brief Get field location
+   */
+  std::string getLocalization() const {
+    return strip((*_descriptor)[2].toString());
+  }
+
+  /**
+   * @brief Get cells holding components
+   */
+  VectorLong getCellsWithComponents() const {
+    VectorLong values;
+    for (ASTERINTEGER ima = 0; ima < this->getNumberOfCells(); ima++) {
+      if (this->_cmpsSptCell(ima) > 0)
+        values.push_back(ima);
+    }
+    return values;
+  }
+
+  /**
+   * @brief Get values on cells holding components, with mask
+   */
+  py::object toNumpy() {
+
+    PyObject *resu_tuple = PyTuple_New(2);
+
+    npy_intp dims[2] = {_values->size() / this->getNumberOfComponents(),
+                        this->getNumberOfComponents()};
+
+    PyObject *values = PyArray_SimpleNewFromData(
+        2, dims, npy_type<ValueType>::value, _values->getDataPtr());
+    PyObject *mask =
+        PyArray_SimpleNewFromData(2, dims, NPY_BOOL, _allocated->getDataPtr());
+    AS_ASSERT(values != NULL);
+    AS_ASSERT(mask != NULL);
+
+    PyArray_CLEARFLAGS((PyArrayObject *)values, NPY_ARRAY_OWNDATA);
+    PyArray_CLEARFLAGS((PyArrayObject *)mask, NPY_ARRAY_OWNDATA);
+    PyTuple_SetItem(resu_tuple, 0, values);
+    PyTuple_SetItem(resu_tuple, 1, mask);
+
+    py::object tuple = py::reinterpret_steal<py::object>(resu_tuple);
+    tuple.inc_ref();
+    return tuple;
+  }
+
+  std::pair<std::vector<ValueType>,
+            std::tuple<VectorLong, VectorLong, VectorLong>>
+  getValuesWithDescription(VectorLong cells, std::string cmp) {
+
+    std::vector<ValueType> values;
+    VectorLong v_cells;
+    VectorLong points;
+    VectorLong subpoints;
+
+    ASTERINTEGER ncmp = getNumberOfComponents();
+    ASTERINTEGER icmp;
+    for (icmp = 0; icmp < ncmp; icmp++) {
+      if (getComponent(icmp) == cmp) {
+        break;
+      }
+    }
+
+    if (icmp != ncmp) {
+
+      ASTERINTEGER size =
+          cells.size() * getMaxNumberOfPoints() * getMaxNumberOfSubPoints();
+      v_cells.reserve(size);
+      values.reserve(size);
+      points.reserve(size);
+      subpoints.reserve(size);
+
+      for (ASTERINTEGER cell : cells) {
+        if (icmp >= getNumberOfComponentsForSubpointsOfCell(cell))
+          continue;
+
+        ASTERINTEGER npt = getNumberOfPointsOfCell(cell);
+        ASTERINTEGER nspt = getNumberOfSubPointsOfCell(cell);
+
+        for (ASTERINTEGER ipt = 0; ipt < npt; ipt++) {
+          for (ASTERINTEGER ispt = 0; ispt < nspt; ispt++) {
+            if (hasValue(cell, icmp, ipt, ispt)) {
+              v_cells.push_back(cell);
+              values.push_back(getValue(cell, icmp, ipt, ispt));
+              points.push_back(ipt);
+              subpoints.push_back(ispt);
             }
+          }
         }
+      }
     }
 
-    ASTERINTEGER _ptCell( const ASTERINTEGER &ima ) const { return ( *_size )[4 + 4 * ima + 1]; }
-    ASTERINTEGER _sptCell( const ASTERINTEGER &ima ) const { return ( *_size )[4 + 4 * ima + 2]; }
-    ASTERINTEGER _cmpsSptCell( const ASTERINTEGER &ima ) const {
-        return ( *_size )[4 + 4 * ima + 3];
-    }
-    ASTERINTEGER _shiftCell( const ASTERINTEGER &ima ) const { return ( *_size )[4 + 4 * ima + 4]; }
+    return make_pair(values, make_tuple(v_cells, points, subpoints));
+  }
 
-    std::string _nameCmp( const ASTERINTEGER &icmp ) const {
-        return strip( ( *_component )[icmp].toString() );
-    }
+  /**
+   * @brief Mise a jour des pointeurs Jeveux
+   * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
+   */
+  void updateValuePointers() const {
+    _descriptor->updateValuePointer();
+    _size->updateValuePointer();
+    _component->updateValuePointer();
+    _values->updateValuePointer();
+    _allocated->updateValuePointer();
+  }
 
-    /**
-     * Calculate the position of value in CESV array
-     */
-    ASTERINTEGER _positionInArray( const ASTERINTEGER &icmp, const ASTERINTEGER &ima,
-                                   const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) const {
+  bool build() {
+    updateValuePointers();
 
-        ASTERINTEGER npt = this->_ptCell( ima );
-        ASTERINTEGER nspt = this->_sptCell( ima );
-        ASTERINTEGER ncmp = this->_cmpsSptCell( ima );
-        ASTERINTEGER decal = this->_shiftCell( ima );
-        return decal + ipt * nspt * ncmp + ispt * ncmp + icmp;
-    };
+    _buildComponentsName2Index();
 
-    /**
-     * Calculate the size of CESV array
-     */
-    ASTERINTEGER _nbValArray() const {
-        ASTERINTEGER nbVal = 0;
-        ASTERINTEGER ncmp_max = this->getNumberOfComponents();
-        for ( ASTERINTEGER ima = 0; ima < this->getNumberOfCells(); ima++ ) {
-            ASTERINTEGER npt = this->_ptCell( ima );
-            ASTERINTEGER nspt = this->_sptCell( ima );
-            ASTERINTEGER ncmp = this->_cmpsSptCell( ima );
-            if ( ncmp > 0 )
-                AS_ASSERT( ncmp == ncmp_max );
-            nbVal = nbVal + npt * nspt * ncmp;
+    _nbCells = (*_size)[0];
+    _nbComp = (*_size)[1];
+    _nbPt = (*_size)[2];
+    _nbSpt = (*_size)[3];
+
+    AS_ASSERT(_values->size() == this->_nbValArray());
+
+    return true;
+  };
+
+  SimpleFieldOnCellsPtr restrict(const VectorString &cmps = {},
+                                 const VectorString &groupsOfCells = {}) const {
+
+    this->updateValuePointers();
+
+    VectorString list_cmp;
+    auto list_cmp_in = this->getComponents();
+    if (cmps.empty()) {
+      list_cmp = list_cmp_in;
+    } else {
+      auto set_cmps = toSet(cmps);
+
+      for (auto &cmp : list_cmp_in) {
+        if (set_cmps.count(cmp) > 0) {
+          list_cmp.push_back(cmp);
         }
-        AS_ASSERT( nbVal > 0 );
-        return nbVal;
+      }
     }
 
-    /**
-     * Functions to check an out-of-range condition
-     */
-    void _checkCellOOR( const ASTERINTEGER &ima ) const {
-        ASTERINTEGER nbCells = this->getNumberOfCells();
-        if ( ima < 0 || ima >= nbCells ) {
-            throw std::runtime_error( "Cell index '" + std::to_string( ima ) +
-                                      "' is out of range" );
-        };
+    if (list_cmp.empty()) {
+      raiseAsterError("Restriction on list of components is empty");
     }
 
-    void _checkPtOOR( const ASTERINTEGER &ima, const ASTERINTEGER &ipt ) const {
-        ASTERINTEGER npt = this->_ptCell( ima );
-        if ( ipt < 0 || ipt >= npt ) {
-            throw std::runtime_error( "Point     '" + std::to_string( ipt ) +
-                                      "' is out of range for cell '" + std::to_string( ima ) +
-                                      "'" );
-        }
+    auto ret = std::make_shared<SimpleFieldOnCells<ValueType>>(getMesh());
+
+    VectorLong cells = _mesh->getCells(groupsOfCells);
+    for (auto &cell : cells) {
+      cell += 1;
     }
 
-    void _checkSptOOR( const ASTERINTEGER &ima, const ASTERINTEGER &ispt ) const {
-        ASTERINTEGER nspt = this->_sptCell( ima );
-        if ( ispt < 0 || ispt >= nspt ) {
-            throw std::runtime_error( "SubPoint  '" + std::to_string( ispt ) +
-                                      "' is out of range for cell '" + std::to_string( ima ) +
-                                      "'" );
-        }
+    if (cells.empty()) {
+      raiseAsterError("Restriction on list of cells is empty");
     }
 
-    void _checkCmpAtCellOOR( const ASTERINTEGER &ima, const ASTERINTEGER &icmp ) const {
-        ASTERINTEGER ncmp = this->_cmpsSptCell( ima );
-        if ( icmp < 0 || icmp >= ncmp ) {
-            throw std::runtime_error( "Component '" + std::to_string( icmp ) +
-                                      "' is out of range for cell '" + std::to_string( ima ) +
-                                      "'" );
-        }
+    char *tabNames = vectorStringAsFStrArray(list_cmp, 8);
+    ASTERINTEGER nbCells = cells.size(), nbCmp = list_cmp.size();
+    const std::string base = "G";
+
+    CALL_CESRED_WRAP(getName().c_str(), &nbCells, cells.data(), &nbCmp,
+                     tabNames, base.c_str(), ret->getName().c_str());
+
+    FreeStr(tabNames);
+
+    ret->build();
+    return ret;
+  };
+
+  SimpleFieldOnCellsPtr
+  changePhysicalQuantity(const std::string physQuant,
+                         const MapString &map_cmps) const {
+
+    if (map_cmps.empty()) {
+      raiseAsterError("Map to rename components is empty");
     }
 
-    void _checkCmpOOR( const ASTERINTEGER &icmp ) const {
-        ASTERINTEGER ncmp = this->getNumberOfComponents();
-        if ( icmp < 0 || icmp >= ncmp ) {
-            throw std::runtime_error( "Component '" + std::to_string( icmp ) +
-                                      "' is out of range" );
-        }
+    VectorString cmps;
+    cmps.reserve(map_cmps.size());
+
+    for (auto const &[key, val] : map_cmps) {
+      cmps.push_back(key);
     }
 
-  public:
-    /**
-     * @typedef SimpleFieldOnCellsPtr
-     * @brief Pointeur intelligent vers un SimpleFieldOnCells
-     */
-    typedef std::shared_ptr< SimpleFieldOnCells > SimpleFieldOnCellsPtr;
+    auto new_field = this->restrict(cmps, {});
 
-    /**
-     * @brief Constructeur
-     * @param name Nom Jeveux du champ aux éléments
-     */
-    SimpleFieldOnCells( const std::string name )
-        : DataField( name, "CHAM_ELEM_S" ),
-          _descriptor( JeveuxVectorChar8( getName() + ".CESK" ) ),
-          _size( JeveuxVectorLong( getName() + ".CESD" ) ),
-          _component( JeveuxVectorChar8( getName() + ".CESC" ) ),
-          _values( JeveuxVector< ValueType >( getName() + ".CESV" ) ),
-          _allocated( JeveuxVectorLogical( getName() + ".CESL" ) ),
-          _nbCells( 0 ),
-          _nbComp( 0 ),
-          _nbPt( 0 ),
-          _nbSpt( 0 ) {};
-
-    /**
-     * @brief Constructeur
-
-     */
-    SimpleFieldOnCells() : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ) ) {};
-
-    SimpleFieldOnCells( const BaseMeshPtr mesh ) : SimpleFieldOnCells() { _mesh = mesh; };
-
-    SimpleFieldOnCells( const BaseMeshPtr mesh, const std::string &loc, const std::string &quantity,
-                        const VectorString &comp, const ASTERINTEGER &nbPG,
-                        const ASTERINTEGER &nbSP, bool zero = false )
-        : SimpleFieldOnCells( mesh ) {
-
-        const std::string base = "G";
-        ASTERINTEGER nbComp = comp.size();
-        ASTERINTEGER _npg = -nbPG;
-        ASTERINTEGER _nsp = nbSP;
-        ASTERLOGICAL _zero = zero;
-
-        char *tabNames = vectorStringAsFStrArray( comp, 8 );
-
-        CALL_CESCRE_WRAP( base.c_str(), getName().c_str(), loc.c_str(), _mesh->getName().c_str(),
-                          quantity.c_str(), &nbComp, tabNames, &_npg, &_nsp, &nbComp, &_zero );
-
-        FreeStr( tabNames );
-
-        build();
+    if (this->getPhysicalQuantity().back() != physQuant.back()) {
+      raiseAsterError("Scalar type are differents");
     }
 
-    SimpleFieldOnCells( const BaseMeshPtr mesh, const std::string &loc, const std::string &quantity,
-                        const VectorString &comp, const VectorInt &nbPG, const ASTERINTEGER &nbSP,
-                        bool zero = false )
-        : SimpleFieldOnCells( mesh ) {
+    // Change names of components
+    (*new_field->_descriptor)[1] = physQuant;
 
-        VectorLong nbPgTmp;
-        nbPgTmp.reserve( nbPG.size() );
-        for ( const auto &val : nbPG ) {
-            nbPgTmp.push_back( val );
-        }
+    ASTERINTEGER nbCmp = new_field->getNumberOfComponents();
+    auto list_cmps = new_field->getComponents();
 
-        const std::string base = "G";
-        ASTERINTEGER nbComp = comp.size();
-        ASTERINTEGER _nsp = nbSP;
-        ASTERLOGICAL _zero = zero;
+    VectorString list_new_cmps;
+    list_new_cmps.reserve(nbCmp);
 
-        char *tabNames = vectorStringAsFStrArray( comp, 8 );
-
-        CALL_CESCRE_WRAP( base.c_str(), getName().c_str(), loc.c_str(), _mesh->getName().c_str(),
-                          quantity.c_str(), &nbComp, tabNames, nbPgTmp.data(), &_nsp, &nbComp,
-                          &_zero );
-
-        FreeStr( tabNames );
-
-        build();
+    for (auto const &cmp : list_cmps) {
+      list_new_cmps.push_back(map_cmps.at(cmp));
     }
 
-    BaseMeshPtr getMesh() const { return _mesh; };
+    char *tabNames = vectorStringAsFStrArray(list_new_cmps, 8);
+    ASTERINTEGER iret;
 
-    /**
-     * @brief Surcharge de l'operateur []
-     * @param i Indice dans le tableau Jeveux
-     * @return la valeur du tableau Jeveux a la position i
-     */
-    ValueType &operator[]( const ASTERINTEGER &i ) { return _values->operator[]( i ); };
+    CALL_VERIGD_WRAP(physQuant.c_str(), tabNames, &nbCmp, &iret);
 
-    inline const ValueType &operator[]( const ASTERINTEGER &i ) const {
-        return _values->operator[]( i );
-    };
+    FreeStr(tabNames);
 
-    ValueType &operator()( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
-                           const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) {
-#ifdef ASTER_DEBUG_CXX
-        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
-            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
-#endif
-
-        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
-
-        ( *_allocated )[position] = true;
-        return this->operator[]( position );
-    };
-
-    const ValueType &operator()( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
-                                 const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) const {
-#ifdef ASTER_DEBUG_CXX
-        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
-            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
-#endif
-
-        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
-
-        if ( !( *_allocated )[position] ) {
-            std::string mess = "DEBUG: Position (" + std::to_string( icmp ) + ", " +
-                               std::to_string( ima ) + ", " + std::to_string( ipt ) + ", " +
-                               std::to_string( ispt ) + ") is valid but not allocated!";
-            raiseAsterError( mess );
-        };
-
-        return this->operator[]( position );
-    };
-
-    /**
-     * @brief Access to the (icmp) component of the (ima) cell
-              at the (ipt) point, at the (ispt) sub-point.
-    */
-    ValueType const &getValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
-                               const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) const {
-
-#ifdef ASTER_DEBUG_CXX
-        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
-            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
-#endif
-
-        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
-
-#ifdef ASTER_DEBUG_CXX
-        bool allocated = ( *_allocated )[position];
-        if ( !allocated ) {
-            std::cout << "DEBUG: Position (" + std::to_string( icmp ) + ", " +
-                             std::to_string( ima ) + ", " + std::to_string( ipt ) + ", " +
-                             std::to_string( ispt ) + ") is valid but not allocated!"
-                      << std::endl;
-        };
-#endif
-
-        return ( *_values )[position];
+    if (iret != 0) {
+      raiseAsterError("Some components are not in the new PhysicalQuantity");
     }
 
-    void setValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp, const ASTERINTEGER &ipt,
-                   const ASTERINTEGER &ispt, const ValueType &val ) {
-
-#ifdef ASTER_DEBUG_CXX
-        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
-            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
-#endif
-
-        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
-
-        ( *_allocated )[position] = true;
-
-        ( *_values )[position] = val;
+    for (int i = 0; i < nbCmp; i++) {
+      (*new_field->_component)[i] = list_new_cmps[i];
     }
 
-    /**
-     * @brief tell if value exists for (icmp) component of the (ima) cell
-              at the (ipt) point, at the (ispt) sub-point.
-    */
-    bool hasValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp, const ASTERINTEGER &ipt,
-                   const ASTERINTEGER &ispt ) const {
-
-        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
-
-#ifdef ASTER_DEBUG_CXX
-        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
-            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
-
-        this->_checkCellOOR( ima );
-        this->_checkPtOOR( ima, ipt );
-        this->_checkSptOOR( ima, ispt );
-        this->_checkCmpAtCellOOR( ima, icmp );
-#endif
-
-        return ( *_allocated )[position];
-    }
-
-    /**
-     * @brief Get number of points of the i-th cell
-     */
-    ASTERINTEGER getNumberOfPointsOfCell( const ASTERINTEGER &ima ) const {
-        this->_checkCellOOR( ima );
-        return this->_ptCell( ima );
-    }
-
-    /**
-     * @brief Get number of sub-points of the i-th cell
-     */
-    ASTERINTEGER getNumberOfSubPointsOfCell( const ASTERINTEGER &ima ) const {
-        this->_checkCellOOR( ima );
-        return this->_sptCell( ima );
-    }
-
-    /**
-     * @brief Get number of components of the i-th cell
-     */
-    ASTERINTEGER getNumberOfComponentsForSubpointsOfCell( const ASTERINTEGER &ima ) const {
-        this->_checkCellOOR( ima );
-        return this->_cmpsSptCell( ima );
-    }
-
-    /**
-     * @brief Get number of components
-     */
-    ASTERINTEGER getNumberOfComponents() const { return _nbComp; }
-
-    /**
-     * @brief Get number of nodes
-     */
-    ASTERINTEGER getNumberOfCells() const { return _nbCells; }
-
-    /**
-     * @brief Get number of points
-     */
-    ASTERINTEGER getMaxNumberOfPoints() const { return _nbPt; }
-
-    /**
-     * @brief Get number of sub-points
-     */
-    ASTERINTEGER getMaxNumberOfSubPoints() const { return _nbSpt; }
-
-    /**
-     * @brief Get the name of the i-th component
-     */
-    std::string getComponent( const ASTERINTEGER &icmp ) const {
-
-        if ( icmp < 0 || icmp >= this->getNumberOfComponents() ) {
-            throw std::runtime_error( "Component '" + std::to_string( icmp ) +
-                                      "' is out of range" );
-        };
-        return this->_nameCmp( icmp );
-    };
-
-    /**
-     * @Brief Get the names of all the components
-     */
-    VectorString getComponents() const {
-
-        ASTERINTEGER size = this->getNumberOfComponents();
-        VectorString names;
-        names.reserve( size );
-        for ( ASTERINTEGER icmp = 0; icmp < size; icmp++ ) {
-            names.push_back( this->_nameCmp( icmp ) );
-        }
-        return names;
-    }
-
-    /**
-     * @brief Get physical quantity
-     */
-    std::string getPhysicalQuantity() const { return strip( ( *_descriptor )[1].toString() ); }
-
-    /**
-     * @brief Get field location
-     */
-    std::string getLocalization() const { return strip( ( *_descriptor )[2].toString() ); }
-
-    /**
-     * @brief Get cells holding components
-     */
-    VectorLong getCellsWithComponents() const {
-        VectorLong values;
-        for ( ASTERINTEGER ima = 0; ima < this->getNumberOfCells(); ima++ ) {
-            if ( this->_cmpsSptCell( ima ) > 0 )
-                values.push_back( ima );
-        }
-        return values;
-    }
-
-    /**
-     * @brief Get values on cells holding components, with mask
-     */
-    py::object toNumpy() {
-
-        PyObject *resu_tuple = PyTuple_New( 2 );
-
-        npy_intp dims[2] = { _values->size() / this->getNumberOfComponents(),
-                             this->getNumberOfComponents() };
-
-        PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
-                                                      _values->getDataPtr() );
-        PyObject *mask = PyArray_SimpleNewFromData( 2, dims, NPY_BOOL, _allocated->getDataPtr() );
-        AS_ASSERT( values != NULL );
-        AS_ASSERT( mask != NULL );
-
-        PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_OWNDATA );
-        PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_OWNDATA );
-        PyTuple_SetItem( resu_tuple, 0, values );
-        PyTuple_SetItem( resu_tuple, 1, mask );
-
-        py::object tuple = py::reinterpret_steal< py::object >( resu_tuple );
-        tuple.inc_ref();
-        return tuple;
-    }
-
-    std::pair< std::vector< ValueType >, std::tuple< VectorLong, VectorLong, VectorLong > >
-    getValuesWithDescription( VectorLong cells, std::string cmp ) {
-
-        std::vector< ValueType > values;
-        VectorLong v_cells;
-        VectorLong points;
-        VectorLong subpoints;
-
-        ASTERINTEGER ncmp = getNumberOfComponents();
-        ASTERINTEGER icmp;
-        for ( icmp = 0; icmp < ncmp; icmp++ ) {
-            if ( getComponent( icmp ) == cmp ) {
-                break;
-            }
-        }
-
-        if ( icmp != ncmp ) {
-
-            ASTERINTEGER size = cells.size() * getMaxNumberOfPoints() * getMaxNumberOfSubPoints();
-            v_cells.reserve( size );
-            values.reserve( size );
-            points.reserve( size );
-            subpoints.reserve( size );
-
-            for ( ASTERINTEGER cell : cells ) {
-                if ( icmp >= getNumberOfComponentsForSubpointsOfCell( cell ) )
-                    continue;
-
-                ASTERINTEGER npt = getNumberOfPointsOfCell( cell );
-                ASTERINTEGER nspt = getNumberOfSubPointsOfCell( cell );
-
-                for ( ASTERINTEGER ipt = 0; ipt < npt; ipt++ ) {
-                    for ( ASTERINTEGER ispt = 0; ispt < nspt; ispt++ ) {
-                        if ( hasValue( cell, icmp, ipt, ispt ) ) {
-                            v_cells.push_back( cell );
-                            values.push_back( getValue( cell, icmp, ipt, ispt ) );
-                            points.push_back( ipt );
-                            subpoints.push_back( ispt );
-                        }
-                    }
-                }
-            }
-        }
-
-        return make_pair( values, make_tuple( v_cells, points, subpoints ) );
-    }
-
-    /**
-     * @brief Mise a jour des pointeurs Jeveux
-     * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
-     */
-    void updateValuePointers() const {
-        _descriptor->updateValuePointer();
-        _size->updateValuePointer();
-        _component->updateValuePointer();
-        _values->updateValuePointer();
-        _allocated->updateValuePointer();
-    }
-
-    bool build() {
-        updateValuePointers();
-
-        _buildComponentsName2Index();
-
-        _nbCells = ( *_size )[0];
-        _nbComp = ( *_size )[1];
-        _nbPt = ( *_size )[2];
-        _nbSpt = ( *_size )[3];
-
-        AS_ASSERT( _values->size() == this->_nbValArray() );
-
-        return true;
-    };
-
-    SimpleFieldOnCellsPtr restrict( const VectorString &cmps = {},
-                                    const VectorString &groupsOfCells = {} ) const {
-
-        this->updateValuePointers();
-
-        VectorString list_cmp;
-        auto list_cmp_in = this->getComponents();
-        if ( cmps.empty() ) {
-            list_cmp = list_cmp_in;
-        } else {
-            auto set_cmps = toSet( cmps );
-
-            for ( auto &cmp : list_cmp_in ) {
-                if ( set_cmps.count( cmp ) > 0 ) {
-                    list_cmp.push_back( cmp );
-                }
-            }
-        }
-
-        if ( list_cmp.empty() ) {
-            raiseAsterError( "Restriction on list of components is empty" );
-        }
-
-        auto ret = std::make_shared< SimpleFieldOnCells< ValueType > >( getMesh() );
-
-        VectorLong cells = _mesh->getCells( groupsOfCells );
-        for ( auto &cell : cells ) {
-            cell += 1;
-        }
-
-        if ( cells.empty() ) {
-            raiseAsterError( "Restriction on list of cells is empty" );
-        }
-
-        char *tabNames = vectorStringAsFStrArray( list_cmp, 8 );
-        ASTERINTEGER nbCells = cells.size(), nbCmp = list_cmp.size();
-        const std::string base = "G";
-
-        CALL_CESRED_WRAP( getName().c_str(), &nbCells, cells.data(), &nbCmp, tabNames, base.c_str(),
-                          ret->getName().c_str() );
-
-        FreeStr( tabNames );
-
-        ret->build();
-        return ret;
-    };
+    new_field->build();
+    return new_field;
+  };
 };
 
-using SimpleFieldOnCellsReal = SimpleFieldOnCells< ASTERDOUBLE >;
-using SimpleFieldOnCellsRealPtr = std::shared_ptr< SimpleFieldOnCellsReal >;
-using SimpleFieldOnCellsLong = SimpleFieldOnCells< ASTERINTEGER >;
-using SimpleFieldOnCellsLongPtr = std::shared_ptr< SimpleFieldOnCellsLong >;
+using SimpleFieldOnCellsReal = SimpleFieldOnCells<ASTERDOUBLE>;
+using SimpleFieldOnCellsRealPtr = std::shared_ptr<SimpleFieldOnCellsReal>;
+using SimpleFieldOnCellsLong = SimpleFieldOnCells<ASTERINTEGER>;
+using SimpleFieldOnCellsLongPtr = std::shared_ptr<SimpleFieldOnCellsLong>;
 
 #endif /* SIMPLEFIELDONCELLS_H_ */
