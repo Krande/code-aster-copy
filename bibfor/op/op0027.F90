@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,9 +61,6 @@ subroutine op0027()
     call cgTheta%initialize(cgStat)
     call cgTable%initialize(cgField, cgTheta, cgStat)
     call cgStudy%initialize(cgField%result_in, cgField%list_nume(1), cgStat)
-!
-!-- Alarme INCO + plasticité
-    if (cgField%l_incr .and. cgStudy%l_exi_inco) call utmess('A', 'RUPTURE3_14')
 !
 !-- Calcul de la courbure
     if (cgField%ndim == 3) then

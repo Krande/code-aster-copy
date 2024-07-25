@@ -83,14 +83,14 @@ subroutine te0222(option, nomte)
     integer           :: ipoids, ivf, idfde, jgano
     integer           :: ndim, nno, nnos, npg, compt
     integer           :: ivites, iaccel, ithet, igthet, icour, ipuls
-    integer           :: icomp, igeom, idepl, imate, matcod
+    integer           :: icomp, igeom, idepl, imate, matcod, ideplinco
     integer           :: iforf, itemps, iepsf, iforc, iepsr
     integer           :: irota, ipesa, isigi, isigm
     integer           :: iret, ireth, ibalo, ideg, ilag
     real(kind=8)      :: tcla, tthe, tfor, tini, thet, poids, f(3, 3)
     real(kind=8)      :: der(4), energi(2), divt, mu
     real(kind=8)      :: epsi, valpar(4), accele(3), dsigin(6, 3)
-    real(kind=8)      :: e, ecin, tpg(27), tref, absno
+    real(kind=8)      :: e, ecin, tpg(27), tref, absno, gonf, pres
     real(kind=8)      :: prod, prod1, prod2, prod3, prod4, puls
     real(kind=8)      :: dtdm(3, 4), dfdm(3, 4), dudm(3, 4), dvdm(3, 4)
     real(kind=8)      :: rbid, rho, om, omo, epsref(6), depsin(6, 3), u1(2), u2(2)
@@ -106,7 +106,7 @@ subroutine te0222(option, nomte)
     character(len=4)  :: fami
     character(len=16) :: nomte, option, compor(4), phenom
 !
-    aster_logical :: axi, cp, fonc, epsini, grand, incr, notelas, lcour, l_not_zero, epsaini
+    aster_logical :: axi, cp, fonc, epsini, grand, incr, notelas, lcour, l_not_zero, epsaini, inco
 !
     real(kind=8), pointer :: fno(:) => null()
     real(kind=8), pointer :: epsino(:) => null()
@@ -178,6 +178,15 @@ subroutine te0222(option, nomte)
             typmod(1) = 'D_PLAN'
         end if
     end if
+!   Cas des éléments incompressibles
+    inco = lteatt('INCO', 'C3')
+    if (inco) then
+        typmod(2) = 'INCO'
+        call jevech('PDEPLA', 'L', ideplinco)
+    else if (lteatt('INCO', 'C2') .or. lteatt('INCO', 'C20') .or. lteatt('INCO', 'C5GV')) then
+        call utmess('F', 'RUPTURE1_90')
+    end if
+
 !
 ! =====================================================================
 !                       CALCUL DE THETA
@@ -492,6 +501,8 @@ subroutine te0222(option, nomte)
         guv2 = 0.d0
         guv3 = 0.d0
         ttrgv = 0.d0
+        gonf = 0.d0
+        pres = 0.d0
 !
         ! ===========================================
         !       CALCUL DES ELEMENTS GEOMETRIQUES
@@ -537,7 +548,17 @@ subroutine te0222(option, nomte)
             end do
         end do
 !
-!------ Calcul de theta et de son gadient aux points de gauss : DTDM
+        if (inco) then
+            do i = 1, nnos
+                gonf = gonf+zr(ivf+l+i-1)*zr(ideplinco-1+(ndim+2)*i)
+            end do
+
+            do i = 1, nnos
+                pres = pres+zr(ivf+l+i-1)*zr(ideplinco-1+(ndim+2)*(i-1)+ndim+1)
+            end do
+        end if
+!
+!------ Calcul de theta et de son gradient aux points de gauss : DTDM
         if (ndim == 2) then
 !
             call thetapdg(ndim, nno, discr, &
@@ -643,7 +664,7 @@ subroutine te0222(option, nomte)
             call nmelnl(BEHinteg, &
                         fami, kp, 1, &
                         ndim, typmod, matcod, compor, &
-                        eps, sigl, energi)
+                        eps, gonf, pres, sigl, energi)
             call tecach('NNO', 'PCONTGR', 'L', iret, iad=isigm)
             if (iret == 0) then
                 call jevech('PCONTGR', 'L', isigm)
