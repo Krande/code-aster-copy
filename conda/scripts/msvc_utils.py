@@ -4,7 +4,7 @@ import subprocess
 from config import TMP_DIR
 
 THIS_DIR = pathlib.Path(__file__).resolve().parent
-ROOT_DIR = THIS_DIR.parent
+ROOT_DIR = THIS_DIR.parent.parent
 BAT_CALL_FILE = ROOT_DIR / "call_compile.bat"
 
 

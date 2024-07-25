@@ -1,6 +1,7 @@
+cmake_minimum_required(VERSION 3.28)
+
 project(bibcxx_dummy LANGUAGES CXX C Fortran)
 
-cmake_minimum_required(VERSION 3.28)
 # I use these to generate the .def file(s) for the shared libraries
 OPTION(BUILD_BIBCXX "Build the bibcxx library" OFF)
 OPTION(BUILD_BIBC "Build the bibc library" OFF)
@@ -14,7 +15,7 @@ set(INCL_DIRS
         bibfor/include
         build/std/debug
         $ENV{CONDA_PREFIX}/include
-        $ENV{CONDA_PREFIX}/Library/include extern/include
+        $ENV{CONDA_PREFIX}/Library/include
         $ENV{CONDA_PREFIX}/Lib/site-packages/numpy/core/include build/std/debug
 )
 
@@ -23,8 +24,9 @@ set(DEP_PATHS
 )
 # create a list
 set(DEP_LIBS
-        pthread.lib libomp.lib medfwrap.lib hdf5.lib metis.lib MFrontGenericInterface.lib scotch.lib scotcherr.lib
-        mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib
+        pthread.lib medfwrap.lib hdf5.lib metis.lib MFrontGenericInterface.lib
+        scotch.lib scotcherr.lib
+        mkl_intel_ilp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib
 )
 
 # BIBCXX
@@ -37,7 +39,7 @@ if (BUILD_BIBCXX)
     add_library(bibcxx_shared SHARED ${bibcxx_SOURCES})
 
     # Add /std:c++17 to the compiler flags
-    target_compile_options(bibcxx_shared PRIVATE /std:c++17 /nologo /FS /EHsc /permissive- /Zi /0d /DTFEL_ARCH64 /DASTER_HAVE_INTEL_IFORT /DH5_BUILT_AS_DYNAMIC_LIB)
+    target_compile_options(bibcxx_shared PRIVATE /std:c++17 /nologo /FS /EHs /permissive- /Zi /0d /DTFEL_ARCH64 /DASTER_HAVE_INTEL_IFORT /DH5_BUILT_AS_DYNAMIC_LIB)
 
     # Add lib path to the linker flags
     target_link_options(bibcxx_shared PRIVATE ${DEP_PATHS})

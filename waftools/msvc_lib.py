@@ -301,10 +301,6 @@ def set_flags(self) -> None:
 
     archive_dir = bld_path / archive_name
     args += [f"/LIBPATH:{archive_dir.as_posix()}", f"/WHOLEARCHIVE:{archive_name}.lib", f"{archive_name}.exp"]
-    # if archive_name == "bibfor":
-    #     all_mumps = ["mpiseq.lib", "esmumps.lib", "scotch.lib", "scotcherr.lib", "scotcherrexit.lib"]
-    #     for lib in all_mumps:
-    #         args.extend([f"{lib}"])
 
     Logs.info(f"Setting flags {args} for {name=}")
     self.link_task.env.append_unique("LINKFLAGS", args)

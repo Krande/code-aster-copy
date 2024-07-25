@@ -18,8 +18,13 @@
 # --------------------------------------------------------------------
 
 import os.path as osp
+from waflib import Logs
 
 
 def configure(self):
+    # if INCLUDES_PYBIND11 exists as an env var, use that instead
+    if "INCLUDES_PYBIND11" in self.env:
+        Logs.info(f"Using INCLUDES_PYBIND11 from environment: {self.env['INCLUDES_PYBIND11']=}")
+        return
     extpath = self.path.get_src().abspath()
     self.env.append_value("INCLUDES_PYBIND11", osp.join(extpath, "include"))

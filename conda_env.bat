@@ -1,9 +1,10 @@
 rem "INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env"
 rem "VS_VARS_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build"
 rem "CONDA_ROOT=C:\Work\miniconda3"
-
+SET PARENT_DIR=%~dp0
+SET PARENT_DIR=%PARENT_DIR:\=/%
 REM set the local path variables, INTEL_VARS_PATH, VS_VARS_PATH and CONDA_ROOT from .env file
-for /f "tokens=*" %%a in (.env) do set %%a
+for /f "tokens=*" %%a in (%PARENT_DIR%/.env) do set %%a
 
 rem Set the python library prefix
 set PREFIX=%CONDA_ROOT%\envs\%PYTHON_ENV_NAME%

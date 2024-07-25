@@ -1,3 +1,5 @@
+import os
+
 from msvc_utils import call_using_env, ROOT_DIR
 
 CMAKE_BUILD_DIR = ROOT_DIR / "build-cmake"
@@ -6,6 +8,7 @@ if not CMAKE_BUILD_DIR.exists():
 
 
 def run_cmake(module_name: str):
+    os.environ["FC"] = "ifx.exe"
     cmd = ["cmake", "..", "-G", "Ninja", f"-DBUILD_{module_name.upper()}=ON", "-DCMAKE_BUILD_TYPE=release", "--fresh"]
     result = call_using_env(cmd, cwd=CMAKE_BUILD_DIR)
     if result.returncode != 0:
@@ -31,7 +34,9 @@ def cli():
     parser = argparse.ArgumentParser(description="Run CMake and Ninja")
     parser.add_argument("--module-name", type=str, help="Name of the module")
     args = parser.parse_args()
-    run_cmake(args.module_name)
+    #run_cmake(args.module_name)
+    #run_cmake("bibc")
+    run_cmake("bibcxx")
 
 
 if __name__ == "__main__":
