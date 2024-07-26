@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine angvxy(gx, gn, angl)
+subroutine angvxz(gx, gn, angl)
     implicit none
 !
     real(kind=8) :: gx(3), gn(3), angl(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!   Calcul des 3 angles nautiques à partir du vecteur Gx et d'un vecteur Gn dont la projection
-!   normale sur le plan normal a Gx donne le vecteur Gy
+!   Calcul des 3 angles nautiques a partir du vecteur Gx et d'un vecteur Gn dont la projection
+!   normale sur le plan normal a Gx donne le vecteur Gz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -34,11 +34,12 @@ subroutine angvxy(gx, gn, angl)
 ! --------------------------------------------------------------------------------------------------
 !
 #include "asterc/r8miem.h"
+#include "asterc/r8pi.h"
 #include "asterfort/angvx.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmavec.h"
 !
-    real(kind=8) :: mro(3, 3), gy(3)
+    real(kind=8) :: mro(3, 3), gz(3)
     real(kind=8) :: alpha, beta, tst
 !-----------------------------------------------------------------------
     tst = r8miem()
@@ -48,11 +49,11 @@ subroutine angvxy(gx, gn, angl)
     angl(2) = beta
     angl(3) = 0.d0
     call matrot(angl, mro)
-    call pmavec('ZERO', 3, mro, gn, gy)
-    if ((abs(gy(3)) .le. tst) .and. (abs(gy(2)) .le. tst)) then
-        angl(3) = 0.d0
+    call pmavec('ZERO', 3, mro, gn, gz)
+    if ((abs(gz(3)) .le. tst) .and. (abs(gz(2)) .le. tst)) then
+        angl(3) = r8pi()/2.0
     else
-        angl(3) = atan2(gy(3), gy(2))
+        angl(3) = atan2(-gz(2), gz(3))
     end if
 !
 end subroutine

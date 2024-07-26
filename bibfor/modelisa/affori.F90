@@ -40,6 +40,7 @@ subroutine affori(typ, nomt, cara, val, jad, &
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/angvxy.h"
+#include "asterfort/angvxz.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
 !
@@ -231,6 +232,29 @@ subroutine affori(typ, nomt, cara, val, jad, &
 !           Impression message si surcharge
             call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
                                gamma)
+!           Affectation de gamma
+            zr(jad+2) = gamma
+            zi(jin+2) = zi(jin+2)+1
+        else
+!           Noeud : pas d'affectation sur un POI1 <F>
+            call utmess('F', 'MODELISA_89', nk=2, valk=vmessk)
+        end if
+! --------------------------------------------------------------------------------------------------
+    else if (affcar .eq. 'VECT_Z') then
+        if (typ(1:6) .eq. 'MAILLE') then
+!           Si Maille : si ce n'est pas un SEG2 <F>
+            if (nutyma .ne. ntseg) then
+                call utmess('F', 'MODELISA_91', nk=2, valk=vmessk)
+            end if
+!           si longueur(SEG2)=0
+            if (longnulle .or. sousseuil) then
+                call utmess('F', 'MODELISA_88', nk=2, valk=vmessk)
+            end if
+!           si longueur(SEG2)<>0
+            call angvxz(x3, val(1), angl)
+            gamma = angl(3)
+!           Impression message si surcharge
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), gamma)
 !           Affectation de gamma
             zr(jad+2) = gamma
             zi(jin+2) = zi(jin+2)+1

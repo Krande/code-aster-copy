@@ -323,13 +323,33 @@ AFFE_CARA_ELEM = OPER(
             ),
             b_constant=BLOC(
                 condition="""equal_to("VARI_SECT", 'CONSTANT')""",
-                regles=(
-                    PRESENT_ABSENT("TABLE_CARA", "CARA"),
-                    PRESENT_PRESENT("TABLE_CARA", "NOM_SEC"),
-                    PRESENT_PRESENT("CARA", "VALE"),
-                ),
+                regles=(PRESENT_ABSENT("TABLE_CARA", "CARA"), PRESENT_PRESENT("CARA", "VALE")),
                 TABLE_CARA=SIMP(statut="f", typ=table_sdaster),
-                NOM_SEC=SIMP(statut="f", typ="TXM"),
+                b_table_cara=BLOC(
+                    condition="""exists("TABLE_CARA")""",
+                    regles=(PRESENT_ABSENT("VECT_GEOM_Y", "VECT_GEOM_Z"),),
+                    NOM_SEC=SIMP(statut="o", typ="TXM"),
+                    VECT_GEOM_Y=SIMP(
+                        statut="f",
+                        typ="R",
+                        max=3,
+                        min=3,
+                        fr=tr(
+                            """Vecteur dont la projection sur le plan normal à l'axe X local
+                                 donne l'axe y du maillage de la section."""
+                        ),
+                    ),
+                    VECT_GEOM_Z=SIMP(
+                        statut="f",
+                        typ="R",
+                        max=3,
+                        min=3,
+                        fr=tr(
+                            """Vecteur dont la projection sur le plan normal à l'axe X local
+                                 donne l'axe z du maillage de la section."""
+                        ),
+                    ),
+                ),
                 CARA=SIMP(
                     statut="f",
                     typ="TXM",
@@ -1001,7 +1021,7 @@ AFFE_CARA_ELEM = OPER(
         CARA=SIMP(
             statut="o",
             typ="TXM",
-            into=("VECT_Y", "ANGL_VRIL", "VECT_X_Y", "ANGL_NAUT", "GENE_TUYAU"),
+            into=("VECT_Y", "VECT_Z", "ANGL_VRIL", "VECT_X_Y", "ANGL_NAUT", "GENE_TUYAU"),
         ),
         b_cara_vect_y=BLOC(
             condition="""(equal_to("CARA", 'VECT_Y'))""",
@@ -1013,15 +1033,32 @@ AFFE_CARA_ELEM = OPER(
                 max=3,
                 min=3,
                 fr=tr(
-                    "Vecteur dont la projection sur le plan normal à l'axe X local donne Y local."
+                    "Vecteur dont la projection sur le plan normal à l'axe X local donne l'axe Y local."
                 ),
             ),
             PRECISION=SIMP(
                 statut="f",
                 typ="R",
+                fr=tr("valeur en-dessous de laquelle la maille est considérée de longueur nulle"),
+            ),
+        ),
+        b_cara_vect_z=BLOC(
+            condition="""(equal_to("CARA", 'VECT_Z'))""",
+            fr=tr("Maille de longueur non nulle."),
+            GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
+            VALE=SIMP(
+                statut="o",
+                typ="R",
+                max=3,
+                min=3,
                 fr=tr(
-                    "valeur en-dessous de laquelle la maille est considérée comme de longueur nulle"
+                    "Vecteur dont la projection sur le plan normal à l'axe X local donne l'axe Z local."
                 ),
+            ),
+            PRECISION=SIMP(
+                statut="f",
+                typ="R",
+                fr=tr("valeur en-dessous de laquelle la maille est considérée de longueur nulle"),
             ),
         ),
         b_cara_angl_vril=BLOC(
