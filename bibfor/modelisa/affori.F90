@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
-subroutine affori(typ, nomt, cara, val, jad, &
-                  jin, jdno, jdco, nutyma, ntseg, &
-                  lseuil, nbseuil)
-!
+
+subroutine affori(typ, nomt, cara, val, jad, jin, &
+                  jdno, jdco, nutyma, ntseg, &
+                  lseuil, nbseuil, alphayz)
 !
     implicit none
     integer :: nutyma, ntseg, jad, jin, jdno, jdco
     character(len=*) :: typ, nomt, cara
     real(kind=8) :: val(6)
-    real(kind=8), intent(in), optional :: lseuil
-    integer, intent(inout), optional :: nbseuil
+    real(kind=8), intent(in), optional  :: lseuil
+    integer, intent(inout), optional    :: nbseuil
+    real(kind=8), intent(in), optional  :: alphayz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,8 +112,7 @@ subroutine affori(typ, nomt, cara, val, jad, &
                 call utmess('F', 'MODELISA_88', nk=2, valk=vmessk)
             end if
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
-                               gamma)
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), gamma)
 !           Affectation de gamma
             zr(jad+2) = gamma
             zi(jin+2) = zi(jin+2)+1
@@ -136,12 +135,9 @@ subroutine affori(typ, nomt, cara, val, jad, &
                 nbseuil = nbseuil+1
             end if
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), &
-                               alpha)
-            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), &
-                               beta)
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
-                               gamma)
+            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), alpha)
+            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), beta)
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), gamma)
 !           Affectation des angles
             zr(jad) = alpha
             zr(jad+1) = beta
@@ -151,12 +147,9 @@ subroutine affori(typ, nomt, cara, val, jad, &
             zi(jin+2) = zi(jin+2)+1
         else
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), &
-                               alpha)
-            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), &
-                               beta)
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
-                               gamma)
+            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), alpha)
+            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), beta)
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), gamma)
 !           Affectation des angles
             zr(jad) = alpha
             zr(jad+1) = beta
@@ -182,12 +175,9 @@ subroutine affori(typ, nomt, cara, val, jad, &
             beta = angl(2)
             gamma = angl(3)
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), &
-                               alpha)
-            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), &
-                               beta)
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
-                               gamma)
+            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), alpha)
+            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), beta)
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), gamma)
 !           Affectation des 3 angles
             zr(jad) = alpha
             zr(jad+1) = beta
@@ -202,12 +192,9 @@ subroutine affori(typ, nomt, cara, val, jad, &
             beta = angl(2)
             gamma = angl(3)
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), &
-                               alpha)
-            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), &
-                               beta)
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
-                               gamma)
+            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), alpha)
+            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), beta)
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), gamma)
             zr(jad) = alpha
             zr(jad+1) = beta
             zr(jad+2) = gamma
@@ -216,7 +203,7 @@ subroutine affori(typ, nomt, cara, val, jad, &
             zi(jin+2) = zi(jin+2)+1
         end if
 ! --------------------------------------------------------------------------------------------------
-    else if (affcar .eq. 'VECT_Y') then
+    else if ((affcar .eq. 'VECT_Y') .or. (affcar .eq. 'VECT_Z')) then
         if (typ(1:6) .eq. 'MAILLE') then
 !           Si Maille : si ce n'est pas un SEG2 <F>
             if (nutyma .ne. ntseg) then
@@ -227,11 +214,14 @@ subroutine affori(typ, nomt, cara, val, jad, &
                 call utmess('F', 'MODELISA_88', nk=2, valk=vmessk)
             end if
 !           si longueur(SEG2)<>0
-            call angvxy(x3, val(1), angl)
+            if (affcar .eq. 'VECT_Y') then
+                call angvxy(x3, val(1), angl)
+            else
+                call angvxz(x3, val(1), angl)
+            end if
             gamma = angl(3)
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
-                               gamma)
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), gamma)
 !           Affectation de gamma
             zr(jad+2) = gamma
             zi(jin+2) = zi(jin+2)+1
@@ -240,7 +230,7 @@ subroutine affori(typ, nomt, cara, val, jad, &
             call utmess('F', 'MODELISA_89', nk=2, valk=vmessk)
         end if
 ! --------------------------------------------------------------------------------------------------
-    else if (affcar .eq. 'VECT_Z') then
+    else if ((affcar .eq. 'VECT_GEOM_Y') .or. (affcar .eq. 'VECT_GEOM_Z')) then
         if (typ(1:6) .eq. 'MAILLE') then
 !           Si Maille : si ce n'est pas un SEG2 <F>
             if (nutyma .ne. ntseg) then
@@ -251,12 +241,16 @@ subroutine affori(typ, nomt, cara, val, jad, &
                 call utmess('F', 'MODELISA_88', nk=2, valk=vmessk)
             end if
 !           si longueur(SEG2)<>0
-            call angvxz(x3, val(1), angl)
+            if (affcar .eq. 'VECT_GEOM_Y') then
+                call angvxy(x3, val(1), angl)
+            else
+                call angvxz(x3, val(1), angl)
+            end if
             gamma = angl(3)
 !           Impression message si surcharge
             call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), gamma)
 !           Affectation de gamma
-            zr(jad+2) = gamma
+            zr(jad+2) = gamma+alphayz*r8dgrd()
             zi(jin+2) = zi(jin+2)+1
         else
 !           Noeud : pas d'affectation sur un POI1 <F>
@@ -268,8 +262,7 @@ subroutine affori(typ, nomt, cara, val, jad, &
 !
 ! ==================================================================================================
 contains
-    subroutine messsurcharge(kk1, kk2, kk3, ii1, rr1, &
-                             rr2)
+    subroutine messsurcharge(kk1, kk2, kk3, ii1, rr1, rr2)
         character(len=*) :: kk1, kk2, kk3
         integer :: ii1
         real(kind=8) :: rr1, rr2
@@ -286,8 +279,7 @@ contains
             vmessk(3) = kk3
             vmessr(1) = rr1*r8rddg()
             vmessr(2) = rr2*r8rddg()
-            call utmess('A', 'MODELISA2_7', nk=3, valk=vmessk, nr=2, &
-                        valr=vmessr)
+            call utmess('A', 'MODELISA2_7', nk=3, valk=vmessk, nr=2, valr=vmessr)
         end if
     end subroutine messsurcharge
 !

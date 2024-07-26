@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine affori(typ, nomt, cara, val, jad, jin,&
                       jdno, jdco, nutyma, ntseg,&
-                      lseuil, nbseuil)
+                      lseuil, nbseuil, alphayz)
         character(len=*) :: typ
         character(len=*) :: nomt
         character(len=*) :: cara
@@ -34,5 +34,6 @@ interface
         integer :: ntseg
         real(kind=8), intent(in), optional :: lseuil
         integer, intent(inout), optional :: nbseuil
+        real(kind=8), intent(in), optional :: alphayz
     end subroutine affori
 end interface

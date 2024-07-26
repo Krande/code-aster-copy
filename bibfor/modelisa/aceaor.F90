@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
-subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, &
-                  nomele, ivr, nbocc)
+
+subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -46,8 +45,10 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, &
 #include "asterfort/affori.h"
 #include "asterfort/alcart.h"
 #include "asterfort/angvx.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -76,11 +77,20 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, &
     integer :: nval
     parameter(nbval=6)
 ! --------------------------------------------------------------------------------------------------
+    integer :: ntab, nnosec, nbcolo, nblign, itabl, iisec, ivect
+    character(len=8)    :: nomsec
+    character(len=19)   :: tabcar
+    character(len=24)   :: typca
+    character(len=24)   :: vmessk(2)
+!
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
+! --------------------------------------------------------------------------------------------------
     real(kind=8) :: val(nbval), x1(3), x2(3), x3(3), longseg, longseuil
     real(kind=8) :: rddg, alpha, beta, gamma
     character(len=4) :: exituy
     character(len=8) :: nomu
-    character(len=10) :: oricara
+    character(len=16) :: oricara
     character(len=16) :: concep, cmd, nunomel
     character(len=19) :: cartor
     character(len=24) :: tmpnor, tmpvor, tmpori, tmpini
@@ -170,20 +180,71 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, &
     if (nbocc(ACE_ORIENTATION) .ne. 0) then
         nbalarme = 0
         do ioc = 1, nbocc(ACE_ORIENTATION)
-!           Pour les MAILLES
-            call getvem(noma, 'GROUP_MA', 'ORIENTATION', 'GROUP_MA', ioc, &
-                        lmax, zk24(jdls), ng)
-!           Seuil correspondant à la longueur nulle pour une maille :
-!               si seglong .LT. longseuil ==> maille de taille nulle
+            ! Pour les MAILLES
+            call getvem(noma, 'GROUP_MA', 'ORIENTATION', 'GROUP_MA', ioc, lmax, zk24(jdls), ng)
+            ! Seuil correspondant à la longueur nulle pour une maille :
+            !   si seglong .LT. longseuil ==> maille de taille nulle
             call getvr8('ORIENTATION', 'PRECISION', iocc=ioc, scal=longseuil, nbret=nbid)
             if (nbid .ne. 1) longseuil = -1.0d0
-!           Pour les NOEUDS
             call getvtx('ORIENTATION', 'CARA', iocc=ioc, scal=oricara, nbret=ncar)
-            call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=nbval, vect=val, &
-                        nbret=nval)
-!           Dans le catalogue, si oricara == GENE_TUYAU c'est GROUP_NO ou NOEUD ==> Tuyaux
+            call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=nbval, vect=val, nbret=nval)
+            ! Dans le catalogue, si oricara == GENE_TUYAU c'est GROUP_NO ou NOEUD ==> Tuyaux
             if (ng .gt. 0) then
-!               GROUP_MA = toutes les mailles possibles de la liste des groupes de mailles
+                Alpha = 0.0d0
+                ! Si oricara = VECT_GEOM_Y VECT_GEOM_Z, on va lire TABLE_CARA, NOM_SEC
+                if ((oricara .eq. "VECT_GEOM_Y") .or. (oricara .eq. "VECT_GEOM_Z")) then
+                    call getvid('ORIENTATION', 'TABLE_CARA', iocc=ioc, scal=tabcar, nbret=ntab)
+                    call getvtx('ORIENTATION', 'NOM_SEC', iocc=ioc, scal=nomsec, nbret=nnosec)
+                    !
+                    ! on recherche nomsec dans la 1ere colonne
+                    !   nombre de colonnes, de lignes
+                    call jeveuo(tabcar//'.TBNP', 'L', vi=tbnp)
+                    nbcolo = tbnp(1)
+                    nblign = tbnp(2)
+                    !
+                    call jeveuo(tabcar//'.TBLP', 'L', vk24=tblp)
+                    typca = tblp(2)
+                    if (typca(1:2) .ne. 'K8' .and. typca(1:3) .ne. 'K24') then
+                        call utmess('F', 'MODELISA8_17', sk=tabcar)
+                    end if
+                    call jeveuo(tblp(3), 'L', itabl)
+                    iisec = 0
+                    if (typca .eq. 'K8') then
+                        do ii = 1, nblign
+                            if (zk8(itabl-1+ii) .eq. nomsec) then
+                                iisec = ii
+                                goto 97
+                            end if
+                        end do
+                    else
+                        do ii = 1, nblign
+                            if (zk24(itabl-1+ii) (1:8) .eq. nomsec) then
+                                iisec = ii
+                                goto 97
+                            end if
+                        end do
+                    end if
+                    vmessk(1) = tabcar
+                    vmessk(2) = nomsec
+                    call utmess('F', 'MODELISA8_18', nk=2, valk=vmessk)
+97                  continue
+                    !
+                    ! On recupère ALPHA
+                    jj = 0; Alpha = 0.0d0
+                    cii1: do ii = 1, nbcolo-1
+                        if (tblp(1+4*ii+1) .ne. 'R') cycle cii1
+                        if (tblp(1+4*ii) .eq. 'ALPHA') then
+                            jj = jj+1
+                            call jeveuo(tblp(1+4*ii+2), 'L', ivect)
+                            Alpha = zr(ivect-1+iisec)
+                            exit cii1
+                        end if
+                    end do cii1
+                    ASSERT(jj .eq. 1)
+                    !
+                end if
+                !
+                ! GROUP_MA = toutes les mailles possibles de la liste des groupes de mailles
                 do ii = 1, ng
                     call jeveuo(jexnom(mlggma, zk24(jdls+ii-1)), 'L', jdgm)
                     call jelira(jexnom(mlggma, zk24(jdls+ii-1)), 'LONUTI', nbmagr)
@@ -195,9 +256,9 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, &
                         jad = jdori+(nummai-1)*3
                         jin = jinit+(nummai-1)*3
                         if ((nutyma .ne. ntseg3) .and. (nutyma .ne. ntseg4)) then
-                            call affori('MAILLE', nommai, oricara, val, jad, &
-                                        jin, jdno, jdco, nutyma, ntseg, &
-                                        lseuil=longseuil, nbseuil=nbalarme)
+                            call affori('MAILLE', nommai, oricara, val, jad, jin, &
+                                        jdno, jdco, nutyma, ntseg, &
+                                        lseuil=longseuil, nbseuil=nbalarme, alphayz=Alpha)
                         end if
                     end do
                 end do
@@ -250,19 +311,20 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, &
                 if (nutyel .eq. ntyele(jj)) then
 !                   Récupération des numéros des noms des éléments
                     call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunomel)
-! Pas de carte d'orientation sur les :
-!   TUYAUX                  : MET3SEG3 MET3SEG4 MET6SEG3
-!   "meca_plate_skin"       : MEBODKT  MEBODST  MEBOQ4G
-!   "meca_coque_3d_skin"    : MEBOCQ3
+                    ! Pas de carte d'orientation sur les :
+                    !   TUYAUX                  : MET3SEG3 MET3SEG4 MET6SEG3
+                    !   "meca_plate_skin"       : MEBODKT  MEBODST  MEBOQ4G
+                    !   "meca_coque_3d_skin"    : MEBOCQ3
                     if ((nunomel .ne. 'MET3SEG3') .and. (nunomel .ne. 'MET3SEG4') .and. &
-                        (nunomel .ne. 'MET6SEG3') .and. (nunomel .ne. 'MEBODKT') .and. &
-                        (nunomel .ne. 'MEBODST') .and. (nunomel .ne. 'MEBOQ4G') .and. &
+                        (nunomel .ne. 'MET6SEG3') .and. &
+                        (nunomel .ne. 'MEBODKT') .and. (nunomel .ne. 'MEBODST') .and. &
+                        (nunomel .ne. 'MEBOQ4G') .and. &
                         (nunomel .ne. 'MEBOCQ3')) then
-                        zr(jdvlvo) = zr(jdori+nummai*3-3)
-                        zr(jdvlvo+1) = zr(jdori+nummai*3-2)
-                        zr(jdvlvo+2) = zr(jdori+nummai*3-1)
-                        call nocart(cartor, 3, 3, mode='NUM', nma=1, &
-                                    limanu=[nummai])
+                        jad = jdori+(nummai-1)*3
+                        zr(jdvlvo) = zr(jad)
+                        zr(jdvlvo+1) = zr(jad+1)
+                        zr(jdvlvo+2) = zr(jad+2)
+                        call nocart(cartor, 3, 3, mode='NUM', nma=1, limanu=[nummai])
                         cycle cnum2
                     end if
                 end if
@@ -274,8 +336,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, &
 !   Affectation des elements tuyaux
     call dismoi('EXI_TUYAU', nomo, 'MODELE', repk=exituy)
     if (exituy .eq. 'OUI') then
-        call aceatu(noma, nomo, nbepo, ntyele, ivr, &
-                    nbocc)
+        call aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
     end if
 ! --------------------------------------------------------------------------------------------------
 !

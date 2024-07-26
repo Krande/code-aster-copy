@@ -51,7 +51,7 @@ subroutine angvxz(gx, gn, angl)
     call matrot(angl, mro)
     call pmavec('ZERO', 3, mro, gn, gz)
     if ((abs(gz(3)) .le. tst) .and. (abs(gz(2)) .le. tst)) then
-        angl(3) = r8pi()/2.0
+        angl(3) = r8pi()/2.0d0
     else
         angl(3) = atan2(-gz(2), gz(3))
     end if
