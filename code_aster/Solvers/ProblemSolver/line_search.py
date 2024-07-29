@@ -130,7 +130,7 @@ class LineSearch(SolverFeature):
                 elif f * (rho - rhom) * (f - fm) <= 0.0:
                     rho = self.param["RHO_MAX"]
                 else:
-                    rho = self.param["RHO_MAX"]
+                    rho = self.param["RHO_MIN"]
 
                 # print("Iteration-%d, rho2 = %0.6f and f(rho2) = %0.6f" % (iter, rho, f))
                 rhom = rhotmp
