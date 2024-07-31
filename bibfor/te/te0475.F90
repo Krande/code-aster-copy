@@ -273,7 +273,7 @@ subroutine te0475(option, nomte)
           flu2 = c21*(p1m-p1ext)+c22*(p2m-p2ext)
         else if (option .eq. 'CHAR_ECHA_HR_R'.OR. &
           option .eq. 'CHAR_ECHA_HR_F') then
-          rhovs = pvs*coefvap 
+          rhovs = pvs*coefvap/tm
           flu1 = +alpha*rhovs*(hrext-exp(-coefvap*p1m/(tm)))
           flu2 = 0.
         else

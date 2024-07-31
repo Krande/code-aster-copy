@@ -140,7 +140,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
         'RIGI_MECA_RO    ', 'RIGI_MECA_PRSU_R', 'No_Load         ', 'RIGI_MECA_SRCO3D', &
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
-        'No_Load         ', 'RIGI_MECA_EFSU_R', 'No_Load         '/
+        'No_Load         ', 'RIGI_MECA_EFSU_R', 'No_Load         ', 'No_Load         '/
 !
 ! - Name of input parameter field (function coefficient)
 !

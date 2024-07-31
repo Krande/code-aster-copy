@@ -257,7 +257,7 @@ subroutine te0480(option, nomte)
         end if
 
 ! ======================================================================
-! --- FLUTH REPRESENTE LE FLUX THERMIQUE -------------------------------
+! --- FLUTH REPRESENTE LE FLUX THERMIQUE (nul pour le moment)  ----------
 ! --- FLU1 REPRESENTE LE FLUX ASSOCIE A PRE1 ---------------------------
 ! --- FLU2 REPRESENTE LE FLUX ASSOCIE A PRE2 ---------------------------
 ! ======================================================================
@@ -268,7 +268,7 @@ subroutine te0480(option, nomte)
           flu2 = c21*(p1m-p1ext)+c22*(p2m-p2ext)
         else if (option .eq. 'CHAR_ECHA_HR_R'.OR. &
           option .eq. 'CHAR_ECHA_HR_F') then
-          rhovs = pvs*coefvap 
+          rhovs = pvs*coefvap/tm
           flu1 = +alpha*rhovs*(hrext-exp(-coefvap*p1m/(tm)))
           flu2 = 0.
         else
