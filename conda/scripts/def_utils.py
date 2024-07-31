@@ -1,5 +1,5 @@
 import pathlib
-
+from config import LIB_RAW_PREFIX
 
 def iter_symbol_names(symbol_file: pathlib.Path | str):
     # Based on postgres https://github.com/postgres/postgres/blob/master/src/tools/msvc_gendef.pl
