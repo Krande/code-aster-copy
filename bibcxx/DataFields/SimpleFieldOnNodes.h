@@ -35,6 +35,7 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NumpyAccess.h"
 #include "Meshes/BaseMesh.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
@@ -393,7 +394,14 @@ public:
 
     VectorLong nodes = _mesh->getNodes(groupsOfNodes, true, same_rank);
 
-    if (nodes.empty()) {
+    ASTERINTEGER nbNodesGl = nodes.size();
+#ifdef ASTER_HAVE_MPI
+    if (_mesh->isParallel()) {
+      nbNodesGl = AsterMPI::max(nbNodesGl);
+    }
+#endif
+
+    if (nbNodesGl == 0) {
       raiseAsterError("Restriction on list of nodes is empty");
     }
 

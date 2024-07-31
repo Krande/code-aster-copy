@@ -34,6 +34,7 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NumpyAccess.h"
 #include "Modeling/FiniteElementDescriptor.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
@@ -611,7 +612,14 @@ public:
       cell += 1;
     }
 
-    if (cells.empty()) {
+    ASTERINTEGER nbCellsGl = cells.size();
+#ifdef ASTER_HAVE_MPI
+    if (_mesh->isParallel()) {
+      nbCellsGl = AsterMPI::max(nbCellsGl);
+    }
+#endif
+
+    if (nbCellsGl == 0) {
       raiseAsterError("Restriction on list of cells is empty");
     }
 
