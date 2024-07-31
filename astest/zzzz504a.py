@@ -124,6 +124,12 @@ with shared_tmpdir("zzzz504a_") as tmpdir:
     medfile = osp.join(tmpdir, f"resu_new_{rank}.med")
     resu.printMedFile(medfile, local=True)
 
+# print single files
+depl = resu.getField("DEPL", 1.0, "INST")
+with shared_tmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir, f"depl.med")
+    depl.printMedFile(medfile, local=False)
+
 # if (parallel):
 # rank = MPI.ASTER_COMM_WORLD.Get_rank()
 # myFile='par.txt'
