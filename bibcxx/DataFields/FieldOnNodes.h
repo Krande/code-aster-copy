@@ -658,9 +658,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( this->getMesh()->isParallel() ) {
             ASTERDOUBLE norm2 = norme;
             if ( normType == "NORM_1" || normType == "NORM_2" )
-                AsterMPI::all_reduce( norm2, norme, MPI_SUM );
+                norme = AsterMPI::sum( norm2 );
             else
-                AsterMPI::all_reduce( norm2, norme, MPI_MAX );
+                norme = AsterMPI::max( norm2 );
         }
 #endif
 
@@ -704,8 +704,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
 #ifdef ASTER_HAVE_MPI
         if ( this->getMesh()->isParallel() ) {
-            ValueType ret2 = ret;
-            AsterMPI::all_reduce( ret2, ret, MPI_SUM );
+            ret = AsterMPI::sum( ret );
         }
 #endif
         CALL_JEDEMA();

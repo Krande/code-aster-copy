@@ -779,7 +779,7 @@ DiscreteComputation::getTangentStiffnessMatrix(
 
 #ifdef ASTER_HAVE_MPI
     ASTERINTEGER exitCodeLocal = exitCode;
-    AsterMPI::all_reduce( exitCodeLocal, exitCode, MPI_MAX );
+    exitCode = AsterMPI::max( exitCodeLocal );
 #endif
 
     return std::make_tuple( exitField, exitCode, elemMatr );
@@ -870,8 +870,7 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix(
     ASTERINTEGER exitCode = 0;
     CALLO_GETERRORCODE( exitFieldName, &exitCode );
 #ifdef ASTER_HAVE_MPI
-    ASTERINTEGER exitCodeLocal = exitCode;
-    AsterMPI::all_reduce( exitCodeLocal, exitCode, MPI_MAX );
+    exitCode = AsterMPI::max( exitCode );
 #endif
 
     return std::make_tuple( exitField, exitCode, elemMatr );

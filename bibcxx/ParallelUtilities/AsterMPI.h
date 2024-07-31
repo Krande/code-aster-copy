@@ -118,6 +118,21 @@ public:
   template <typename T>
   static void all_reduce(const T in_value, T &out_value, MPI_Op op,
                          aster_comm_t *_commCurrent = aster_get_current_comm());
+  template <typename T>
+  static T all_reduce(const T in_value, MPI_Op op,
+                      aster_comm_t *_commCurrent = aster_get_current_comm());
+
+  /// AllReduce values for given OP, one value from each process
+  /// (MPI_AllReduce).
+  template <typename T>
+  static T max(const T in_value,
+               aster_comm_t *_commCurrent = aster_get_current_comm());
+  template <typename T>
+  static T min(const T in_value,
+               aster_comm_t *_commCurrent = aster_get_current_comm());
+  template <typename T>
+  static T sum(const T in_value,
+               aster_comm_t *_commCurrent = aster_get_current_comm());
 
   /// Broadcast one value from root
   template <typename T>
@@ -453,6 +468,29 @@ void AsterMPI::all_reduce(const T in_value, T &out_value, MPI_Op op,
                           aster_comm_t *_commCurrent) {
   aster_mpi_allreduce(const_cast<T *>(&in_value), static_cast<T *>(&out_value),
                       1, mpi_type<T>(), op, _commCurrent);
+}
+template <typename T>
+T AsterMPI::all_reduce(const T in_value, MPI_Op op,
+                       aster_comm_t *_commCurrent) {
+  T out_value;
+  AsterMPI::all_reduce(in_value, out_value, MPI_MAX, _commCurrent);
+
+  return out_value;
+}
+//---------------------------------------------------------------------------
+template <typename T>
+T AsterMPI::max(const T in_value, aster_comm_t *_commCurrent) {
+  return AsterMPI::all_reduce(in_value, MPI_MAX, _commCurrent);
+}
+//---------------------------------------------------------------------------
+template <typename T>
+T AsterMPI::min(const T in_value, aster_comm_t *_commCurrent) {
+  return AsterMPI::all_reduce(in_value, MPI_MIN, _commCurrent);
+}
+//---------------------------------------------------------------------------
+template <typename T>
+T AsterMPI::sum(const T in_value, aster_comm_t *_commCurrent) {
+  return AsterMPI::all_reduce(in_value, MPI_SUM, _commCurrent);
 }
 //---------------------------------------------------------------------------
 template <typename T>

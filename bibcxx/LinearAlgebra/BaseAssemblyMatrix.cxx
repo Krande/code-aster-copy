@@ -80,7 +80,7 @@ ASTERDOUBLE BaseAssemblyMatrix::getLagrangeScaling() const {
         ASTERDOUBLE scaling0, scaling;
 #ifdef ASTER_HAVE_MPI
         CALLO_CONLAG( getName(), &scaling0 );
-        AsterMPI::all_reduce( scaling0, scaling, MPI_MIN );
+        scaling = AsterMPI::min( scaling0 );
 #endif
         return scaling;
     } else {
