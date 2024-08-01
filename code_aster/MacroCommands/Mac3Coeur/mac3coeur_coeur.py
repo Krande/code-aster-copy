@@ -124,10 +124,15 @@ class Coeur:
     _subtime = ("N0", "N0b", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N8b", "N9")
     _type_coeur = None
     _is_multi_rod = False
+    _len_mnt = 1.0
 
     @property
     def is_multi_rod(self):
         return self._is_multi_rod
+
+    @property
+    def len_mnt(self):
+        return self._len_mnt
 
     @property
     def type_coeur(self):
@@ -191,6 +196,7 @@ class Coeur:
             "GC_ME": self.nb_cr_mesh,
             "GC_EB": self.nb_cr_mesh,
             "GC_EH": self.nb_cr_mesh,
+            "MNT": self.len_mnt,
         }
 
         self.load_materials(update_materials)
@@ -665,6 +671,14 @@ class Coeur:
         coords_x = MAILL.getCoordinates().toNumpy().T[0].copy()
         gcells = MAILL.getGroupsOfCells()
         gnodes = MAILL.getGroupsOfNodes()
+
+        # Mailles MNT
+        mnt_names = [i for i in gcells if i.startswith("MNT_")]
+        mnt_nodes = MAILL.getNodesFromCells(mnt_names)
+        mnt_x = set(coords_x[mnt_nodes])
+        assert len(mnt_x) == 2, "Invalid mesh"
+        self._len_mnt = round(max(mnt_x) - min(mnt_x), 8)
+
         self._is_multi_rod = len([i for i in gnodes if i.startswith("CREIBAS_")]) > 0
 
         for ac in self.collAC:
@@ -1745,7 +1759,7 @@ class MateriauAC:
 
         for typ in self._types:
             cmult = update_values.get(typ, 1.0)
-
+            logger.debug("<MAC3_COEUR>: Loading material %s with CMULT %s" % (typ, cmult))
             self._mate[typ] = INCLUDE_MATERIAU(
                 NOM_AFNOR="%s_%s" % (self.typeAC, typ),
                 TYPE_MODELE="REF",
