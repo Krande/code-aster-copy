@@ -215,6 +215,8 @@ def _add_assert_methods(cls):
         "assertTrue",
         "assertTupleEqual",
     ]:
+        if not hasattr(unittest.TestCase, meth):
+            continue
         setattr(cls, meth, addSuccess(getattr(unittest.TestCase, meth)))
 
 

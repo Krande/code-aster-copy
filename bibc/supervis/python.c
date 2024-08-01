@@ -46,14 +46,17 @@
 #endif
 
 void initAsterModules() {
-    PyImport_AppendInittab( "aster_core", PyInit_aster_core );
-    PyImport_AppendInittab( "aster", PyInit_aster );
+    // Python 3.12 raises an error if PyImport_AppendInittab is called after Py_Initialize
+    if (!Py_IsInitialized()) {
+        PyImport_AppendInittab( "aster_core", PyInit_aster_core );
+        PyImport_AppendInittab( "aster", PyInit_aster );
 
-    /* Module définissant des opérations sur les objets fonction_sdaster */
-    PyImport_AppendInittab( "aster_fonctions", PyInit_aster_fonctions );
-#ifdef ASTER_HAVE_MED
-    PyImport_AppendInittab( "med_aster", PyInit_med_aster );
-#endif
+        /* Module définissant des opérations sur les objets fonction_sdaster */
+        PyImport_AppendInittab( "aster_fonctions", PyInit_aster_fonctions );
+    #ifdef ASTER_HAVE_MED
+        PyImport_AppendInittab( "med_aster", PyInit_med_aster );
+    #endif
+    }
 }
 
 int _MAIN_( int argc, char **argv ) {

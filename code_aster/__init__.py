@@ -66,10 +66,6 @@ Here is the diagram of the package organization:
 import cmath
 import os
 
-# get the current process id
-pid = os.getpid()
-# attach a running visual studio (with the code-aster project loaded) debugger to this process
-os.system(f"vsjitdebugger -p {pid}")
 
 try:
     # embedded modules must be imported before libaster
