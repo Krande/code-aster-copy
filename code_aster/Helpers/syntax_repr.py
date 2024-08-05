@@ -266,13 +266,13 @@ class SimpKwdLine(KwdLine):
                 value = _var(self._typ)
             except AttributeError:
                 raise TypeError(self._name, self._typ)
-            if self._default:
+            if self._default is not None:
                 value += f" (défaut: {self._repr_value(self._default)})"
             value = [value]
         else:
             if len(self._into) == 1:
                 value = [self._repr_value(self._into[0])]
-                if not self._default:
+                if self._default is None:
                     value[-1] += " (ou non renseigné)"
             else:
                 value = []
