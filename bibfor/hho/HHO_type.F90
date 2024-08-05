@@ -83,7 +83,7 @@ module HHO_type
 ! ----- Dimension topologique
         integer                     :: ndim = 0
 ! ----- Type maille
-        character(len=8)            :: typema = ''
+        integer                     :: typema = 0
 ! ----- Nombre de noeuds
         integer                     :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 4 noeuds pour quad)
@@ -103,6 +103,8 @@ module HHO_type
         integer                     :: node_bar_loc = 0
 ! ----- Index locale de la face pour une cellule
         integer                     :: face_loc = 0
+! ----- Jacobien is constant
+        aster_logical               :: l_jaco_cst = ASTER_FALSE
 ! ----- member function
     contains
         procedure, public, pass :: print => print_face
@@ -116,7 +118,7 @@ module HHO_type
 ! ----- Dimension topologique
         integer                     :: ndim = 0
 ! ----- Type maille
-        character(len=8)            :: typema = ''
+        integer                     :: typema = 0
 ! ----- Nombre de noeuds
         integer                     :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
@@ -135,6 +137,8 @@ module HHO_type
         type(HHO_Face), dimension(6):: faces
 ! ----- Index locale des noeuds de la cellule
         integer                     :: node_bar_loc = 0
+! ----- Jacobien is constant
+        aster_logical               :: l_jaco_cst = ASTER_FALSE
 ! ----- member function
     contains
         procedure, public, pass :: print => print_cell
@@ -418,6 +422,7 @@ contains
         write (6, *) "Normal: ", this%normal
         write (6, *) "Measure: ", this%measure
         write (6, *) "Diameter: ", this%diameter
+        write (6, *) "Cst Jacobien: ", this%l_jaco_cst
         write (6, *) "Local axis: "
         write (6, *) "    a1: ", this%axes(1:3, 1)
         if (this%ndim > 1) then
@@ -457,6 +462,7 @@ contains
         write (6, *) "Barycenter: ", this%barycenter
         write (6, *) "Measure: ", this%measure
         write (6, *) "Diameter: ", this%diameter
+        write (6, *) "Cst Jacobien: ", this%l_jaco_cst
         write (6, *) "Local axis: "
         write (6, *) "    a1: ", this%axes(1:3, 1)
         if (this%ndim > 1) then

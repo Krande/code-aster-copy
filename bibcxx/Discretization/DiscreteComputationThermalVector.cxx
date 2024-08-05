@@ -647,9 +647,11 @@ DiscreteComputation::getThermalNonLinearVolumetricForces( const FieldOnNodesReal
             calcul->setFiniteElementDescriptor( FED );
 
             calcul->clearInputs();
-            calcul->addTimeField( "PINSTR", time_curr, 0.0, 0.0 );
+            calcul->addTimeField( "PINSTR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPER", temp_curr );
+
+            calcul->addHHOField( currModel );
 
             calcul->addInputField( param, load->getConstantLoadField( name ) );
 
@@ -1101,6 +1103,7 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
     }
 
     calcul->addXFEMField( currModel );
+    calcul->addHHOField( currModel );
 
     // Current Thermal Field
     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );

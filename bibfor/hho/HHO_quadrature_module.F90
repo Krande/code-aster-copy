@@ -21,19 +21,21 @@ module HHO_quadrature_module
 !
     use HHO_type
     use HHO_measure_module
-    use HHO_geometry_module, only: hhoGeomBasis, hhoGeomDerivBasis
+    use HHO_geometry_module
+    use HHO_utils_module, only: CellNameL2S
 !
     implicit none
 !
     private
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraga.h"
 #include "asterfort/HHO_size_module.h"
-#include "asterfort/provec.h"
 #include "asterfort/utmess.h"
-#include "blas/dnrm2.h"
+#include "asterfort/reereg.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,9 +48,10 @@ module HHO_quadrature_module
     type HHO_Quadrature
         integer                             :: order = 0
         integer                             :: nbQuadPoints = 0
-        real(kind=8), dimension(3, MAX_QP)   :: points = 0.d0
+        real(kind=8), dimension(3, MAX_QP)  :: points = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights = 0.d0
-        real(kind=8), dimension(3, MAX_QP)   :: points_param = 0.d0
+        real(kind=8), dimension(3, MAX_QP)  :: points_param = 0.d0
+        aster_logical                       :: l_point_param = ASTER_TRUE
 ! ----- member functions
     contains
         procedure, private, pass :: hho_edge_rules
@@ -58,8 +61,10 @@ module HHO_quadrature_module
         procedure, private, pass :: hho_hexa_rules
         procedure, private, pass :: hho_pyram_rules
         procedure, private, pass :: hho_prism_rules
-        procedure, public, pass :: GetQuadCell => hhoGetQuadCell
-        procedure, public, pass :: GetQuadFace => hhoGetQuadFace
+        procedure, private, pass :: hho_subtetra_rules
+        procedure, private, pass :: hho_subtri_rules
+        procedure, public, pass :: getQuadCell => hhoGetQuadCell
+        procedure, public, pass :: getQuadFace => hhoGetQuadFace
         procedure, public, pass :: print => hhoQuadPrint
         procedure, public, pass :: initCell => hhoinitCellFamiQ
         procedure, public, pass :: initFace => hhoinitFaceFamiQ
@@ -71,8 +76,7 @@ module HHO_quadrature_module
 !
     public   :: HHO_Quadrature
     private  :: hho_edge_rules, hho_hexa_rules, hho_tri_rules, hho_tetra_rules, &
-                hho_transfo_3d, hho_transfo_quad, &
-                hho_prism_rules, hho_pyram_rules, &
+                hho_prism_rules, hho_pyram_rules, hho_subtetra_rules, hho_subtri_rules, &
                 hho_quad_rules, hhoGetQuadCell, hhoGetQuadFace, hhoQuadPrint, &
                 hhoinitCellFamiQ, hhoinitFaceFamiQ, check_order, hhoSelectOrder
 !
@@ -107,65 +111,7 @@ contains
         end if
 !
     end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hho_transfo_3d(coorno, nbnodes, typema, coorref, coorac, jacob)
-!
-        implicit none
-!
-        integer, intent(in)                             :: nbnodes
-        real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
-        character(len=8), intent(in)                    :: typema
-        real(kind=8), dimension(3), intent(in)          :: coorref
-        real(kind=8), dimension(3), intent(out)         :: coorac
-        real(kind=8), intent(out)                       :: jacob
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   From reference element to current element
-!   In coorno       : coordinates of the nodes
-!   In coorref      : coordinates in the reference conf
-!   Out coorac      : coordinates in the current conf
-!   Out jacob       : determiant of the jacobienne of the transformation
-!
-! --------------------------------------------------------------------------------------------------
-!
-        real(kind=8), dimension(8) :: basis
-        real(kind=8), dimension(3, 8) :: dbasis
-        real(kind=8), dimension(3, 3) :: jaco
-        integer :: i
-!
-! ----- shape function
-!
-        call hhoGeomBasis(typema, coorref, basis)
-!
-! ----- derivative of shape function
-!
-        call hhoGeomDerivBasis(typema, coorref, dbasis)
-!
-        coorac = 0.d0
-!
-        do i = 1, nbnodes
-            coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
-        end do
-!
-! ---  Compute the jacobienne
-        jaco = 0.d0
-        do i = 1, nbnodes
-            jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
-            jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
-            jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
-        end do
-!
-        jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
-                +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
-                -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
-!
-    end subroutine
+
 !
 !===================================================================================================
 !
@@ -231,82 +177,6 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hho_transfo_quad(coorno, coorref, ndim, jacob, coorac)
-!
-        implicit none
-!
-        real(kind=8), dimension(3, 4), intent(in)            :: coorno
-        real(kind=8), dimension(2), intent(in)              :: coorref
-        integer, intent(in)                                 :: ndim
-        real(kind=8), intent(out)                           :: jacob
-        real(kind=8), dimension(3), intent(out), optional   :: coorac
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   From reference element to current element
-!   In coorno       : coordinates of the nodes
-!   In coorref      : coordinates in the reference conf
-!   In ndim         : topological dimenison (space where live the quad)
-!   Out coorac      : coordinates in the current conf
-!   Out jacob       : determiant of the jacobienne of the transformation
-!
-! --------------------------------------------------------------------------------------------------
-!
-        character(len=8), parameter :: typema = 'QUAD4'
-        real(kind=8), dimension(8) :: basis
-        real(kind=8), dimension(3, 8) :: dbasis
-        real(kind=8), dimension(2, 2) :: jaco
-        real(kind=8), dimension(3) :: da, db, normal
-        integer :: i
-!
-        if (present(coorac)) then
-!
-! ----      shape function
-!
-            call hhoGeomBasis(typema, (/coorref(1), coorref(2), 0.d0/), basis)
-!
-            coorac = 0.d0
-!
-            do i = 1, 4
-                coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
-            end do
-        end if
-!
-!       derivative of shape function
-!
-        call hhoGeomDerivBasis(typema, (/coorref(1), coorref(2), 0.d0/), dbasis)
-!
-! ---  Compute the jacobienne
-        jacob = 0.d0
-        select case (ndim)
-        case (2)
-            jaco = 0.d0
-            do i = 1, 4
-                jaco(1:2, 1) = jaco(1:2, 1)+coorno(1, i)*dbasis(1:2, i)
-                jaco(1:2, 2) = jaco(1:2, 2)+coorno(2, i)*dbasis(1:2, i)
-            end do
-!
-            jacob = jaco(1, 1)*jaco(2, 2)-jaco(1, 2)*jaco(2, 1)
-        case (3)
-            da = 0.d0
-            db = 0.d0
-            do i = 1, 4
-                da(1:3) = da(1:3)+coorno(1:3, i)*dbasis(1, i)
-                db(1:3) = db(1:3)+coorno(1:3, i)*dbasis(2, i)
-            end do
-            call provec(da, db, normal)
-            jacob = dnrm2(3, normal, 1)
-        case default
-            ASSERT(ASTER_FALSE)
-        end select
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
     subroutine hho_quad_rules(this, coorno, ndim)
 !
         implicit none
@@ -349,7 +219,7 @@ contains
         do ipg = 1, nbpg
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
-            call hho_transfo_quad(coorno, (/x, y/), ndim, jaco, coorpgglo)
+            call hho_transfo_quad(coorno, (/x, y/), ndim, coorpgglo, jaco)
             this%points_param(1:2, ipg) = (/x, y/)
             this%points(1:3, ipg) = coorpgglo
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -403,7 +273,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 8, "HEXA8   ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 8, MT_HEXA8, (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -438,7 +308,7 @@ contains
         integer, parameter :: max_pg = 16
         character(len=8), dimension(0:max_order) ::rules
         integer :: dimp, nbpg, ipg, ino
-        real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8)
+        real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
 !
 ! ----- check order of integration
         call check_order(this%order, max_order)
@@ -453,18 +323,98 @@ contains
 ! ----- fill hhoQuad
         ASSERT(nbpg <= MAX_QP)
         this%nbQuadPoints = nbpg
+        jaco = 2.d0*measure
 !
         do ipg = 1, nbpg
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             coorac = 0.d0
-            call hhoGeomBasis("TRIA3   ", (/x, y, 0.d0/), basis)
+            call hhoGeomBasis(MT_TRIA3, (/x, y, 0.d0/), basis)
             do ino = 1, 3
                 coorac(1:3) = coorac(1:3)+coorno(1:3, ino)*basis(ino)
             end do
             this%points_param(1:2, ipg) = (/x, y/)
             this%points(1:3, ipg) = coorac
-            this%weights(ipg) = 2.d0*measure*poidpg(ipg)
+            this%weights(ipg) = jaco*poidpg(ipg)
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hho_subtri_rules(this, typema, ndim, nbnode, coorno, param)
+!
+        implicit none
+!
+        integer, intent(in)                             :: typema, nbnode, ndim
+        real(kind=8), dimension(3, 4), intent(in)       :: coorno
+        aster_logical, intent(in)                       :: param
+        class(HHO_quadrature), intent(inout)            :: this
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Get the quadrature rules for a atriangle
+!   In coorno       : coordinates of the nodes
+!   In measure      : surface of the triangle
+!   Out this        : hho quadrature
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8), dimension(3) ::  coorac
+        integer, parameter :: max_order = 8
+        integer, parameter :: max_pg = 16
+        character(len=8), dimension(0:max_order) :: rules
+        character(len=8) :: typma_s
+        integer :: dimp, nbpg, ipg, ino, iret
+        integer :: itri, n_simp, ind_simp(6, 4)
+        real(kind=8) :: coor_tri(3, 3), xe(3)
+        real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
+!
+! ----- split into tetra
+        call cellNameL2S(typema, typma_s)
+        call hhoSplitSimplex(typema, n_simp, ind_simp)
+        ASSERT(n_simp <= 2)
+!
+! ----- check order of integration
+        call check_order(this%order, max_order)
+!
+        rules = (/'FPG1 ', 'FPG1 ', 'FPG3 ', 'FPG4 ', 'FPG6 ', 'FPG7 ', 'FPG12', 'FPG13', 'FPG16'/)
+!
+!------ get quadrature points
+        coorpg = 0.d0
+        poidpg = 0.d0
+        call elraga('TR3', rules(this%order), dimp, nbpg, coorpg, poidpg)
+!
+! ----- fill hhoQuad
+        ASSERT(n_simp*nbpg <= MAX_QP)
+        this%nbQuadPoints = 0
+        this%l_point_param = param
+!
+        do itri = 1, n_simp
+            do ino = 1, 3
+                coor_tri(1:3, ino) = coorno(1:3, ind_simp(itri, ino))
+            end do
+            jaco = 2.d0*hho_surface_tri(coor_tri)
+            do ipg = 1, nbpg
+                x = coorpg(dimp*(ipg-1)+1)
+                y = coorpg(dimp*(ipg-1)+2)
+                coorac = 0.d0
+                call hhoGeomBasis(MT_TRIA3, (/x, y, 0.d0/), basis)
+                do ino = 1, 3
+                    coorac(1:3) = coorac(1:3)+coor_tri(1:3, ino)*basis(ino)
+                end do
+                this%points(1:3, this%nbQuadPoints+ipg) = coorac
+                this%weights(this%nbQuadPoints+ipg) = jaco*poidpg(ipg)
+                if (param) then
+                    call reereg("S", typma_s, nbnode, coorno, coorac, ndim, &
+                                xe, iret, 1.d-8, 3)
+                    this%points_param(1:2, this%nbQuadPoints+ipg) = xe(1:2)
+                end if
+            end do
+            this%nbQuadPoints = this%nbQuadPoints+nbpg
         end do
 !
     end subroutine
@@ -477,7 +427,7 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)        :: coorno
+        real(kind=8), dimension(3, 4), intent(in)       :: coorno
         real(kind=8), intent(in)                        :: measure
         class(HHO_quadrature), intent(inout)            :: this
 !
@@ -486,7 +436,7 @@ contains
 !
 !   Get the quadrature rules for a tetrahedra
 !   In coorno       : coordinates of the nodes
-!   In measure      : volume of the tetrahedra
+!   In measure      : measure of the cell
 !   Out this        : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
@@ -511,15 +461,91 @@ contains
 ! ----- fill hhoQuad
         ASSERT(nbpg <= MAX_QP)
         this%nbQuadPoints = nbpg
+        jaco = 6.d0*measure
 !
         do ipg = 1, nbpg
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 4, "TETRA4  ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 4, MT_TETRA4, (/x, y, z/), coorac)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac
             this%weights(ipg) = jaco*poidpg(ipg)
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hho_subtetra_rules(this, typema, nbnode, coorno, param)
+!
+        implicit none
+!
+        integer, intent(in)                             :: typema, nbnode
+        real(kind=8), dimension(3, 8), intent(in)       :: coorno
+        aster_logical, intent(in)                       :: param
+        class(HHO_quadrature), intent(inout)            :: this
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Get the quadrature rules for a tetrahedra
+!   In coorno       : coordinates of the nodes
+!   Out this        : hho quadrature
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8), dimension(3) ::  coorac
+        integer, parameter :: max_order = 6
+        integer, parameter :: max_pg = 23
+        character(len=8), dimension(0:max_order) :: rules
+        character(len=8) :: typma_s
+        integer :: dimp, nbpg, ipg, ino, iret
+        integer :: itet, n_simp, ind_simp(6, 4)
+        real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z, jaco
+        real(kind=8) :: coor_tet(3, 4), xe(3)
+!
+! ----- split into tetra
+        call cellNameL2S(typema, typma_s)
+        call hhoSplitSimplex(typema, n_simp, ind_simp)
+        ASSERT(n_simp <= 6)
+!
+! ----- check order of integration
+        call check_order(this%order, max_order)
+!
+        rules = (/'FPG1 ', 'FPG1 ', 'FPG4 ', 'FPG5 ', 'FPG11', 'FPG15', 'FPG23'/)
+!
+!------ get quadrature points
+        coorpg = 0.d0
+        poidpg = 0.d0
+        call elraga('TE4', rules(this%order), dimp, nbpg, coorpg, poidpg)
+!
+! ----- fill hhoQuad
+        ASSERT(n_simp*nbpg <= MAX_QP)
+        this%nbQuadPoints = 0
+        this%l_point_param = param
+!
+        do itet = 1, n_simp
+            do ino = 1, 4
+                coor_tet(1:3, ino) = coorno(1:3, ind_simp(itet, ino))
+            end do
+            jaco = 6.d0*hho_vol_tetra(coor_tet)
+            do ipg = 1, nbpg
+                x = coorpg(dimp*(ipg-1)+1)
+                y = coorpg(dimp*(ipg-1)+2)
+                z = coorpg(dimp*(ipg-1)+3)
+                call hho_transfo_3d(coor_tet, 4, MT_TETRA4, (/x, y, z/), coorac)
+                this%points(1:3, this%nbQuadPoints+ipg) = coorac
+                this%weights(this%nbQuadPoints+ipg) = jaco*poidpg(ipg)
+                if (param) then
+                    call reereg("S", typma_s, nbnode, coorno, coorac, 3, &
+                                xe, iret, 1.d-8, 3)
+                    this%points_param(1:3, this%nbQuadPoints+ipg) = xe(1:3)
+                end if
+            end do
+            this%nbQuadPoints = this%nbQuadPoints+nbpg
         end do
 !
     end subroutine
@@ -570,7 +596,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 5, "PYRAM5  ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 5, MT_PYRAM5, (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -624,7 +650,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 6, "PENTA6  ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 6, MT_PENTA6, (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -636,13 +662,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGetQuadCell(this, hhoCell, order, axis)
+    subroutine hhoGetQuadCell(this, hhoCell, order, axis, split, param)
 !
         implicit none
 !
         type(HHO_cell), intent(in)            :: hhoCell
         integer, intent(in)                   :: order
-        aster_logical, intent(in), optional   :: axis
+        aster_logical, intent(in), optional   :: axis, split, param
         class(HHO_quadrature), intent(out)    :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -657,23 +683,57 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ipg
+        real(kind=8) :: start, end
+        aster_logical :: split_simpl, param_
+!
+        DEBUG_TIMER(start)
 !
         this%order = order
 !
-        if (hhoCell%typema == 'HEXA8') then
-            call this%hho_hexa_rules(hhoCell%coorno(1:3, 1:8))
-        elseif (hhoCell%typema == 'TETRA4') then
-            call this%hho_tetra_rules(hhoCell%coorno(1:3, 1:4), hhoCell%measure)
-        elseif (hhoCell%typema == 'PYRAM5') then
-            call this%hho_pyram_rules(hhoCell%coorno(1:3, 1:5))
-        elseif (hhoCell%typema == 'PENTA6') then
-            call this%hho_prism_rules(hhoCell%coorno(1:3, 1:6))
-        elseif (hhoCell%typema == 'QUAD4') then
-            call this%hho_quad_rules(hhoCell%coorno(1:3, 1:4), 2)
-        elseif (hhoCell%typema == 'TRIA3') then
-            call this%hho_tri_rules(hhoCell%coorno(1:3, 1:3), hhoCell%measure)
+        if (present(split)) then
+            split_simpl = split
         else
-            ASSERT(ASTER_FALSE)
+            split_simpl = ASTER_TRUE
+        end if
+!
+        if (hhoCell%l_jaco_cst) then
+            split_simpl = ASTER_FALSE
+        end if
+!
+        if (split_simpl) then
+            !
+            if (present(param)) then
+                param_ = param
+            else
+                param_ = ASTER_FALSE
+            end if
+!
+            if (hhoCell%ndim == 3) then
+                call this%hho_subtetra_rules(hhoCell%typema, hhoCell%nbnodes, &
+                                             hhoCell%coorno(1:3, 1:8), param_)
+            elseif (hhoCell%ndim == 2) then
+                call this%hho_subtri_rules(hhoCell%typema, 2, hhoCell%nbnodes, &
+                                           hhoCell%coorno(1:3, 1:4), param_)
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        else
+            select case (hhoCell%typema)
+            case (MT_HEXA8)
+                call this%hho_hexa_rules(hhoCell%coorno(1:3, 1:8))
+            case (MT_TETRA4)
+                call this%hho_tetra_rules(hhoCell%coorno(1:3, 1:4), hhoCell%measure)
+            case (MT_PYRAM5)
+                call this%hho_pyram_rules(hhoCell%coorno(1:3, 1:5))
+            case (MT_PENTA6)
+                call this%hho_prism_rules(hhoCell%coorno(1:3, 1:6))
+            case (MT_QUAD4)
+                call this%hho_quad_rules(hhoCell%coorno(1:3, 1:4), 2)
+            case (MT_TRIA3)
+                call this%hho_tri_rules(hhoCell%coorno(1:3, 1:3), hhoCell%measure)
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
         end if
 !
         if (present(axis)) then
@@ -684,19 +744,22 @@ contains
             end if
         end if
 !
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoGetQuadCell", end-start)
+!
     end subroutine
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-    subroutine hhoGetQuadFace(this, hhoFace, order, axis)
+    subroutine hhoGetQuadFace(this, hhoFace, order, axis, split, param)
 !
         implicit none
 !
         type(HHO_face), intent(in)          :: hhoFace
         integer, intent(in)                 :: order
-        aster_logical, intent(in), optional :: axis
+        aster_logical, intent(in), optional :: axis, split, param
         class(HHO_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -711,17 +774,49 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ipg
+        real(kind=8) :: start, end
+        aster_logical :: split_simpl, param_
+!
+        DEBUG_TIMER(start)
 !
         this%order = order
 !
-        if (hhoFace%typema(1:5) == 'QUAD4') then
-            call this%hho_quad_rules(hhoFace%coorno(1:3, 1:4), 3)
-        elseif (hhoFace%typema(1:5) == 'TRIA3') then
-            call this%hho_tri_rules(hhoFace%coorno(1:3, 1:3), hhoFace%measure)
-        elseif (hhoFace%typema(1:4) == 'SEG2') then
-            call this%hho_edge_rules(hhoFace%coorno(1:3, 1:2), hhoFace%measure, hhoFace%barycenter)
+        if (present(split)) then
+            split_simpl = split
         else
-            ASSERT(ASTER_FALSE)
+            split_simpl = ASTER_TRUE
+        end if
+!
+        if (hhoFace%l_jaco_cst) then
+            split_simpl = ASTER_FALSE
+        end if
+!
+        if (split_simpl) then
+            !
+            if (present(param)) then
+                param_ = param
+            else
+                param_ = ASTER_FALSE
+            end if
+!
+            if (hhoFace%ndim == 2) then
+                call this%hho_subtri_rules(hhoFace%typema, 3, hhoFace%nbnodes, &
+                                           hhoFace%coorno(1:3, 1:4), param_)
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        else
+            select case (hhoFace%typema)
+            case (MT_QUAD4)
+                call this%hho_quad_rules(hhoFace%coorno(1:3, 1:4), 3)
+            case (MT_TRIA3)
+                call this%hho_tri_rules(hhoFace%coorno(1:3, 1:3), hhoFace%measure)
+            case (MT_SEG2)
+                call this%hho_edge_rules(hhoFace%coorno(1:3, 1:2), hhoFace%measure, &
+                                         hhoFace%barycenter)
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
         end if
 !
         if (present(axis)) then
@@ -731,6 +826,9 @@ contains
                 end do
             end if
         end if
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoGetQuadFace", end-start)
 !
     end subroutine
 !
@@ -742,7 +840,7 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)  :: typema
+        integer, intent(in)  :: typema
         integer, intent(in)           :: npg
         integer, intent(out)          :: order
 !
@@ -758,7 +856,8 @@ contains
 !
         order = 0
 !
-        if (typema == 'HEXA8') then
+        select case (typema)
+        case (MT_HEXA8)
             select case (npg)
             case (1)
                 order = 1
@@ -771,7 +870,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'PENTA6') then
+        case (MT_PENTA6)
             select case (npg)
             case (1)
                 order = 0
@@ -786,7 +885,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'PYRAM5') then
+        case (MT_PYRAM5)
             select case (npg)
             case (1)
                 order = 1
@@ -805,7 +904,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'TETRA4') then
+        case (MT_TETRA4)
             select case (npg)
             case (1)
                 order = 1
@@ -822,7 +921,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'QUAD4') then
+        case (MT_QUAD4)
             select case (npg)
             case (1)
                 order = 1
@@ -835,7 +934,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'TRIA3') then
+        case (MT_TRIA3)
             select case (npg)
             case (1)
                 order = 1
@@ -856,7 +955,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'SEG2') then
+        case (MT_SEG2)
             select case (npg)
             case (1)
                 order = 1
@@ -869,9 +968,9 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        else
+        case default
             ASSERT(ASTER_FALSE)
-        end if
+        end select
 !
     end subroutine
 !
@@ -900,6 +999,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
         integer :: order, ipg
         aster_logical :: laxis
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
@@ -911,7 +1013,7 @@ contains
 !
         call hhoSelectOrder(hhoCell%typema, npg, order)
 !
-        call hhoGetQuadCell(this, hhoCell, order, laxis)
+        call hhoGetQuadCell(this, hhoCell, order, laxis, ASTER_FALSE)
 !
         if (present(axis)) then
             if (axis) then
@@ -920,6 +1022,9 @@ contains
                 end do
             end if
         end if
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoinitCellFamiQ", end-start)
 !
     end subroutine
 !
@@ -949,6 +1054,9 @@ contains
 !
         integer :: order
         aster_logical :: laxis
+        real(kind=8) :: start, end
+!
+        DEBUG_TIMER(start)
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
@@ -960,7 +1068,10 @@ contains
 !
         call hhoSelectOrder(hhoFace%typema, npg, order)
 !
-        call hhoGetQuadFace(this, hhoFace, order, laxis)
+        call hhoGetQuadFace(this, hhoFace, order, laxis, ASTER_FALSE)
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoinitFaceFamiQ", end-start)
 !
     end subroutine
 !

@@ -555,10 +555,13 @@ class FieldOnCells : public DataField {
 
     bool printMedFile( const std::string fileName, bool local = true ) const;
 
-    FieldOnCellsPtr changeLocalization( const std::string &loc ) const {
+    FieldOnCellsPtr setLocalization( const std::string &loc ) const {
         if ( loc == getLocalization() ) {
             return std::make_shared< FieldOnCells< ValueType > >( *this );
         }
+
+        auto cham_model = std::make_shared< FieldOnCells< ValueType > >( _dofDescription, loc,
+                                                                         getPhysicalQuantity() );
 
         auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
 
@@ -569,7 +572,8 @@ class FieldOnCells : public DataField {
             model = getModel()->getName();
         }
 
-        CALLO_CHPCHD( getName(), loc, getName(), prol, base, cham_elem->getName(), model );
+        CALLO_CHPCHD( getName(), loc, cham_model->getName(), prol, base, cham_elem->getName(),
+                      model );
 
         cham_elem->build( { _dofDescription } );
 

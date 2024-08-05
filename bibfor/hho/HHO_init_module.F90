@@ -30,20 +30,20 @@ module HHO_init_module
 !
     private
 #include "asterf_types.h"
-#include "asterfort/Behaviour_type.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/rcvala.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/rcvala.h"
-#include "blas/dsyr.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -251,7 +251,7 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)                    :: typma
+        integer, intent(in)                             :: typma
         integer, intent(in)                             :: ndim
         real(kind=8), dimension(3, 4), intent(in)       :: nodes_coor
         integer, intent(in)                             :: nbnodes
@@ -300,6 +300,7 @@ contains
         end do
         ! Last node is the index of barycenter
         hhoFace%node_bar_loc = num_nodes_loc(hhoFace%nbnodes+1)
+        hhoFace%l_jaco_cst = hhoIsJacobCst(hhoFace%typema, hhoFace%coorno, hhoFace%ndim+1)
 !
     end subroutine
 !
@@ -333,18 +334,19 @@ contains
         integer, parameter                      :: max_nodes = 5
         integer, dimension(max_nodes, max_faces) :: nodes_faces
         integer, dimension(max_faces)           :: nbnodes_faces
-        character(len=8), dimension(max_faces)  :: type_faces
+        integer, dimension(max_faces)           :: type_faces
         real(kind=8), dimension(3, max_nodes)    :: coor_face
         integer :: i_face, i_node
+        aster_logical :: l_jaco
 ! --------------------------------------------------------------------------------------------------
 ! --- Init
         nodes_faces = 0
         nbnodes_faces = 0
-        type_faces = ' '
+        type_faces = 0
         coor_face = 0.d0
 !
         if (typma == 'HEXA27') then
-            hhoCell%typema = 'HEXA8'
+            hhoCell%typema = MT_HEXA8
             hhoCell%nbnodes = 8
             hhoCell%ndim = 3
             hhoCell%nbfaces = 6
@@ -355,30 +357,30 @@ contains
 ! ----- Face 1 -> N21
             nodes_faces(1:5, 1) = (/1, 4, 3, 2, 21/)
             nbnodes_faces(1) = 4
-            type_faces(1) = 'QUAD4'
+            type_faces(1) = MT_QUAD4
 ! ----- Face 2 -> N22
             nodes_faces(1:5, 2) = (/1, 2, 6, 5, 22/)
             nbnodes_faces(2) = 4
-            type_faces(2) = 'QUAD4'
+            type_faces(2) = MT_QUAD4
 ! ----- Face 3 -> N23
             nodes_faces(1:5, 3) = (/2, 3, 7, 6, 23/)
             nbnodes_faces(3) = 4
-            type_faces(3) = 'QUAD4'
+            type_faces(3) = MT_QUAD4
 ! ----- Face 4 -> N24
             nodes_faces(1:5, 4) = (/3, 4, 8, 7, 24/)
             nbnodes_faces(4) = 4
-            type_faces(4) = 'QUAD4'
+            type_faces(4) = MT_QUAD4
 ! ----- Face 5 -> N25
             nodes_faces(1:5, 5) = (/1, 5, 8, 4, 25/)
             nbnodes_faces(5) = 4
-            type_faces(5) = 'QUAD4'
+            type_faces(5) = MT_QUAD4
 ! ----- Face 6 -> N26
             nodes_faces(1:5, 6) = (/5, 6, 7, 8, 26/)
             nbnodes_faces(6) = 4
-            type_faces(6) = 'QUAD4'
+            type_faces(6) = MT_QUAD4
 !
         else if (typma == 'TETRA15') then
-            hhoCell%typema = 'TETRA4'
+            hhoCell%typema = MT_TETRA4
             hhoCell%nbnodes = 4
             hhoCell%ndim = 3
             hhoCell%nbfaces = 4
@@ -389,22 +391,22 @@ contains
 ! ----- Face 1 -> N11
             nodes_faces(1:4, 1) = (/1, 3, 2, 11/)
             nbnodes_faces(1) = 3
-            type_faces(1) = 'TRIA3'
+            type_faces(1) = MT_TRIA3
 ! ----- Face 2 -> N12
             nodes_faces(1:4, 2) = (/1, 2, 4, 12/)
             nbnodes_faces(2) = 3
-            type_faces(2) = 'TRIA3'
+            type_faces(2) = MT_TRIA3
 ! ----- Face 3 -> N13
             nodes_faces(1:4, 3) = (/1, 4, 3, 13/)
             nbnodes_faces(3) = 3
-            type_faces(3) = 'TRIA3'
+            type_faces(3) = MT_TRIA3
 ! ----- Face 4 -> N14
             nodes_faces(1:4, 4) = (/2, 3, 4, 14/)
             nbnodes_faces(4) = 3
-            type_faces(4) = 'TRIA3'
+            type_faces(4) = MT_TRIA3
 !
         else if (typma == 'PYRAM19') then
-            hhoCell%typema = 'PYRAM5'
+            hhoCell%typema = MT_PYRAM5
             hhoCell%nbnodes = 5
             hhoCell%ndim = 3
             hhoCell%nbfaces = 5
@@ -415,26 +417,26 @@ contains
 ! ----- Face 1 -> N14
             nodes_faces(1:5, 1) = (/1, 4, 3, 2, 14/)
             nbnodes_faces(1) = 4
-            type_faces(1) = 'QUAD4'
+            type_faces(1) = MT_QUAD4
 ! ----- Face 2 -> N15
             nodes_faces(1:4, 2) = (/1, 2, 5, 15/)
             nbnodes_faces(2) = 3
-            type_faces(2) = 'TRIA3'
+            type_faces(2) = MT_TRIA3
 ! ----- Face 3 -> N16
             nodes_faces(1:4, 3) = (/2, 3, 5, 16/)
             nbnodes_faces(3) = 3
-            type_faces(3) = 'TRIA3'
+            type_faces(3) = MT_TRIA3
 ! ----- Face 4 -> N17
             nodes_faces(1:4, 4) = (/3, 4, 5, 17/)
             nbnodes_faces(4) = 3
-            type_faces(4) = 'TRIA3'
+            type_faces(4) = MT_TRIA3
 ! ----- Face 5 -> N18
             nodes_faces(1:4, 5) = (/4, 1, 5, 18/)
             nbnodes_faces(5) = 3
-            type_faces(5) = 'TRIA3'
+            type_faces(5) = MT_TRIA3
 !
         else if (typma == 'PENTA21') then
-            hhoCell%typema = 'PENTA6'
+            hhoCell%typema = MT_PENTA6
             hhoCell%nbnodes = 6
             hhoCell%ndim = 3
             hhoCell%nbfaces = 5
@@ -445,26 +447,26 @@ contains
 ! ----- Face 1 -> N16
             nodes_faces(1:5, 1) = (/1, 2, 5, 4, 16/)
             nbnodes_faces(1) = 4
-            type_faces(1) = 'QUAD4'
+            type_faces(1) = MT_QUAD4
 ! ----- Face 2 -> N17
             nodes_faces(1:5, 2) = (/2, 3, 6, 5, 17/)
             nbnodes_faces(2) = 4
-            type_faces(2) = 'QUAD4'
+            type_faces(2) = MT_QUAD4
 ! ----- Face 3 -> N18
             nodes_faces(1:5, 3) = (/1, 4, 6, 3, 18/)
             nbnodes_faces(3) = 4
-            type_faces(3) = 'QUAD4'
+            type_faces(3) = MT_QUAD4
 ! ----- Face 4 -> N19
             nodes_faces(1:4, 4) = (/1, 3, 2, 19/)
             nbnodes_faces(4) = 3
-            type_faces(4) = 'TRIA3'
+            type_faces(4) = MT_TRIA3
 ! ----- Face 5 -> N20
             nodes_faces(1:4, 5) = (/4, 5, 6, 20/)
             nbnodes_faces(5) = 3
-            type_faces(5) = 'TRIA3'
+            type_faces(5) = MT_TRIA3
 !
         else if (typma == 'QUAD9') then
-            hhoCell%typema = 'QUAD4'
+            hhoCell%typema = MT_QUAD4
             hhoCell%nbnodes = 4
             hhoCell%ndim = 2
             hhoCell%nbfaces = 4
@@ -475,22 +477,22 @@ contains
 ! ----- Face 1 -> N5
             nodes_faces(1:3, 1) = (/1, 2, 5/)
             nbnodes_faces(1) = 2
-            type_faces(1) = 'SEG2'
+            type_faces(1) = MT_SEG2
 ! ----- Face 2 -> N6
             nodes_faces(1:3, 2) = (/2, 3, 6/)
             nbnodes_faces(2) = 2
-            type_faces(2) = 'SEG2'
+            type_faces(2) = MT_SEG2
 ! ----- Face 3 -> N7
             nodes_faces(1:3, 3) = (/3, 4, 7/)
             nbnodes_faces(3) = 2
-            type_faces(3) = 'SEG2'
+            type_faces(3) = MT_SEG2
 ! ----- Face 4 -> N8
             nodes_faces(1:3, 4) = (/4, 1, 8/)
             nbnodes_faces(4) = 2
-            type_faces(4) = 'SEG2'
+            type_faces(4) = MT_SEG2
 !
         else if (typma == 'TRIA7') then
-            hhoCell%typema = 'TRIA3'
+            hhoCell%typema = MT_TRIA3
             hhoCell%nbnodes = 3
             hhoCell%ndim = 2
             hhoCell%nbfaces = 3
@@ -501,15 +503,15 @@ contains
 ! ----- Face 1 -> N4
             nodes_faces(1:3, 1) = (/1, 2, 4/)
             nbnodes_faces(1) = 2
-            type_faces(1) = 'SEG2'
+            type_faces(1) = MT_SEG2
 ! ----- Face 2 -> N5
             nodes_faces(1:3, 2) = (/2, 3, 5/)
             nbnodes_faces(2) = 2
-            type_faces(2) = 'SEG2'
+            type_faces(2) = MT_SEG2
 ! ----- Face 3 -> N6
             nodes_faces(1:3, 3) = (/3, 1, 6/)
             nbnodes_faces(3) = 2
-            type_faces(3) = 'SEG2'
+            type_faces(3) = MT_SEG2
 !
         else
             ASSERT(ASTER_FALSE)
@@ -534,6 +536,25 @@ contains
                              nbnodes_faces(i_face), coor_face, nodes_faces(:, i_face), &
                              i_face, hhoCell%barycenter)
         end do
+!
+! ----- Jacobienne
+!
+        if (hhoCell%typema == MT_TETRA4 .or. hhoCell%typema == MT_TRIA3) then
+            hhoCell%l_jaco_cst = ASTER_TRUE
+        else
+            hhoCell%l_jaco_cst = ASTER_TRUE
+            l_jaco = ASTER_TRUE
+            do i_face = 1, hhoCell%nbfaces
+                if (.not. hhoCell%faces(i_face)%l_jaco_cst) then
+                    hhoCell%l_jaco_cst = ASTER_FALSE
+                    l_jaco = ASTER_FALSE
+                    exit
+                end if
+            end do
+            if (l_jaco) then
+                hhoCell%l_jaco_cst = hhoIsJacobCst(hhoCell%typema, hhoCell%coorno, hhoCell%ndim)
+            end if
+        end if
 !
         if (l_debug) then
             call hhoCell%print()
@@ -662,7 +683,8 @@ contains
             if (present(npg)) then
                 call hhoQuad%initCell(hhoCell, npg, laxis)
             else
-                call hhoQuad%GetQuadCell(hhoCell, 2*hhoData%cell_degree(), laxis)
+                call hhoQuad%getQuadCell(hhoCell, 2*hhoData%cell_degree(), &
+                                         laxis, param=ASTER_TRUE)
             end if
         end if
 !
@@ -696,7 +718,7 @@ contains
 !   In npg (optional)      : number of quadrature point for the face
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: nbnodes, elem_dim, numnodes(5)
+        integer :: nbnodes, elem_dim, numnodes(5), enumf
         real(kind=8) :: nodes_coor(3, 9)
         character(len=8) :: typma
         aster_logical :: laxis
@@ -709,17 +731,20 @@ contains
 !
         if (typma == 'QUAD4') then
             numnodes(1:5) = (/1, 2, 3, 4, 9/)
+            enumf = MT_QUAD4
         else if (typma == 'TRIA3') then
             numnodes(1:4) = (/1, 2, 3, 7/)
+            enumf = MT_TRIA3
         else if (typma == 'SEG2 ') then
             numnodes(1:3) = (/1, 2, 3/)
+            enumf = MT_SEG2
         else
             ASSERT(ASTER_FALSE)
         end if
 !
 ! --- Initialize HHO Face
 !
-        call hhoFaceInit(hhoFace, typma, elem_dim, nbnodes, nodes_coor, numnodes, 1)
+        call hhoFaceInit(hhoFace, enumf, elem_dim, nbnodes, nodes_coor, numnodes, 1)
 
 ! --- Get quadrature (optional)
 !
@@ -728,7 +753,8 @@ contains
             if (present(npg)) then
                 call hhoQuadFace%initFace(hhoFace, npg, laxis)
             else
-                call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree(), laxis)
+                call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree(), &
+                                             laxis, param=ASTER_TRUE)
             end if
         end if
 !

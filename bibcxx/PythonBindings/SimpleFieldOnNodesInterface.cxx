@@ -80,6 +80,19 @@ Returns:
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString(),
               py::arg( "same_rank" ) = PythonBool::None )
+        .def( "setPhysicalQuantity", &SimpleFieldOnNodesReal::setPhysicalQuantity,
+              R"(
+            Return a new field with a new physical quantity and renamed components.
+
+            Arguments:
+                physQuantity [str]: name of the new physical quantity
+                map_cmps [dict[str, str]]: dict to rename components
+                (only renamed component will be keeped)
+
+            Returns:
+                SimpleFieldOnNodesReal: field with name physical quantity.
+            )",
+              py::arg( "physQuantity" ), py::arg( "map_cmps" ) )
         .def( "toNumpy", &SimpleFieldOnNodesReal::toNumpy, R"(
 Returns two numpy arrays with shape ( number_of_components, space_dimension )
 The first array contains the field values while the second one is a mask

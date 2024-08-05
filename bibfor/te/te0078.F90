@@ -63,11 +63,12 @@ subroutine te0078(option, nomte)
     real(kind=8) :: cp, valres(1), Kglo(3, 3), time, deltat, theta
     integer :: kp, imate, itemps
     real(kind=8), pointer :: temp(:) => null()
+    character(len=8), parameter :: famiR = "RIGI"
 !
     call FECell%init()
     call FEBasis%initCell(FECell)
     call FEQuadMass%initCell(FECell, "MASS")
-    call FEQuadRigi%initCell(FECell, "RIGI")
+    call FEQuadRigi%initCell(FECell, famiR)
 !
     call jevech('PMATERC', 'L', imate)
     call jevech('PINSTR', 'L', itemps)
@@ -85,8 +86,8 @@ subroutine te0078(option, nomte)
 !
         dtpg = FEEvalGradVec(FEBasis, temp, FEQuadRigi%points_param(1:3, kp), BGSEval)
 !
-        call nlcomp(phenom, imate, FECell%ndim, FEQuadRigi%points(1:3, kp), time, &
-                    0.d0, Kglo, dtp_=dtpg, fluglo_=flux)
+        call nlcomp(phenom, famiR, kp, imate, FECell%ndim, FEQuadRigi%points(1:3, kp), &
+                    time, 0.d0, Kglo, dtp_=dtpg, fluglo_=flux)
 !
         call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
     end do

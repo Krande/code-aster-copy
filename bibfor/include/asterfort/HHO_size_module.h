@@ -67,8 +67,8 @@
 #define MSIZE_CELL_MAT 180
 !
 ! --- maximum number of quadrature points
-#define MAX_QP 64
+#define MAX_QP 115
 ! --- maximum number of quadrature points on a face QUAD = 16
-#define MAX_QP_FACE 16
+#define MAX_QP_FACE 32
 ! --- maximum number of quadrature points on a cell HEXA = 64
-#define MAX_QP_CELL 64
+#define MAX_QP_CELL 115

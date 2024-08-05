@@ -29,6 +29,7 @@ module HHO_stabilization_module
 !
     implicit none
 !
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
@@ -86,7 +87,10 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj2, proj3, TMP
         integer :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, dimM1, colsM2, i, j
         integer :: cbs, fbs, total_dofs, iface, offset_face, info, fromFace, toFace
+        real(kind=8) :: start, end
 ! --------------------------------------------------------------------------------------------------
+!
+        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -250,6 +254,9 @@ contains
             offset_face = offset_face+fbs
         end do
 !
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoStabScal", end-start)
+!
     end subroutine
 !
 !===================================================================================================
@@ -276,14 +283,20 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
+        real(kind=8) :: start, end
         real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stab_scal
 ! --------------------------------------------------------------------------------------------------
+!
+        DEBUG_TIMER(start)
 !
 ! -- compute scalar stabilization
         call hhoStabScal(hhoCell, hhoData, gradrec_scal, stab_scal)
 !
 ! -- copy the scalar stabilization in the vectorial stabilization
         call MatScal2Vec(hhoCell, hhoData, stab_scal, stab)
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoStabVec", end-start)
 !
     end subroutine
 !
@@ -324,7 +337,10 @@ contains
         integer :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, dimM1, colsM2, i, j, idir
         integer :: cbs, fbs, total_dofs, iface, info, fromFace, toFace
         integer :: ifromGrad, itoGrad, ifromProj, itoProj, fbs_comp, faces_dofs, faces_dofs_comp
+        real(kind=8) :: start, end
 ! --------------------------------------------------------------------------------------------------
+!
+        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -523,6 +539,9 @@ contains
             end do
         end do
 !
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoStabSymVec", end-start)
+!
     end subroutine
 !
 !===================================================================================================
@@ -556,7 +575,10 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) ::  traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj3, TMP
         integer :: cbs, fbs, total_dofs, iface, offset_face, info, fromFace, toFace, i, j
+        real(kind=8) :: start, end
 ! --------------------------------------------------------------------------------------------------
+!
+        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -640,6 +662,9 @@ contains
             offset_face = offset_face+fbs
         end do
 !
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hdgStabScal", end-start)
+!
     end subroutine
 !
 !===================================================================================================
@@ -653,6 +678,7 @@ contains
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
         real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        real(kind=8) :: start, end
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -667,11 +693,16 @@ contains
         real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stab_scal
 ! --------------------------------------------------------------------------------------------------
 !
+        DEBUG_TIMER(start)
+!
 ! -- compute scalar stabilization
         call hdgStabScal(hhoCell, hhoData, stab_scal)
 !
 ! -- copy the scalar stabilization in the vectorial stabilization
         call MatScal2Vec(hhoCell, hhoData, stab_scal, stab)
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hdgStabVec", end-start)
 !
     end subroutine
 !

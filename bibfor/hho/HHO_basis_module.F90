@@ -892,8 +892,8 @@ contains
                 do imono = 1, ifrom-1
                     power(1:2) = this%hhoMono%monomials(1:2, imono)
 !
-                    func(1:2) = (/this%hhoMono%monoEval(1, power(1)),&
-                                & this%hhoMono%monoEval(2, power(2))/)
+                    func(1:2) = (/this%hhoMono%monoEval(1, power(1)), &
+                                  this%hhoMono%monoEval(2, power(2))/)
 !
                     if (power(1) == 0) then
                         dfunc(1) = 0.d0
@@ -916,8 +916,8 @@ contains
                 ind = ind+1
                 power(1:2) = this%hhoMono%monomials(1:2, imono)
 !
-                func(1:2) = (/this%hhoMono%monoEval(1, power(1)),&
-                                & this%hhoMono%monoEval(2, power(2))/)
+                func(1:2) = (/this%hhoMono%monoEval(1, power(1)), &
+                              this%hhoMono%monoEval(2, power(2))/)
 !
                 if (power(1) == 0) then
                     dfunc(1) = 0.d0
@@ -951,9 +951,9 @@ contains
 
                     power(1:3) = this%hhoMono%monomials(1:3, imono)
 !
-                    func(1:3) = (/this%hhoMono%monoEval(1, power(1)),&
-                                & this%hhoMono%monoEval(2, power(2)),&
-                                & this%hhoMono%monoEval(3, power(3))/)
+                    func(1:3) = (/this%hhoMono%monoEval(1, power(1)), &
+                                  this%hhoMono%monoEval(2, power(2)), &
+                                  this%hhoMono%monoEval(3, power(3))/)
 !
                     if (power(1) == 0) then
                         dfunc(1) = 0.d0
@@ -982,9 +982,9 @@ contains
                 ind = ind+1
                 power(1:3) = this%hhoMono%monomials(1:3, imono)
 !
-                func(1:3) = (/this%hhoMono%monoEval(1, power(1)),&
-                            & this%hhoMono%monoEval(2, power(2)),&
-                            & this%hhoMono%monoEval(3, power(3))/)
+                func(1:3) = (/this%hhoMono%monoEval(1, power(1)), &
+                              this%hhoMono%monoEval(2, power(2)), &
+                              this%hhoMono%monoEval(3, power(3))/)
 !
                 if (power(1) == 0) then
                     dfunc(1) = 0.d0

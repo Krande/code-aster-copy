@@ -65,7 +65,7 @@ listTimes = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=timeEnd, NOMBRE=nbSt
 
 # Calcul avec Rayleigh dans le matériau
 DYNA1 = DYNA_NON_LINE(
-    AMOR_RAYL_RIGI="TANGENTE",
+    AMOR_RAYL_RIGI="ELASTIQUE",
     MODELE=model,
     CHAM_MATER=mateRayleigh,
     EXCIT=_F(CHARGE=COND_LIM, FONC_MULT=rampUnit),

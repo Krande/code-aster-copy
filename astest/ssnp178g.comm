@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-mesh0 = LIRE_MAILLAGE(FORMAT="MED")
+mesh0 = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
@@ -52,13 +52,13 @@ times = DEFI_LIST_INST(
 
 FY = FORMULE(NOM_PARA=("X", "Y", "INST"), VALE="0.1125")
 
-AY = [2.115260208616828]
-AX = [-1.6005261414540808]
+AY = [2.1160623951309954]
+AX = [-1.6010800048020917]
 AZ = [6.0673249198e-17]
-AT = [-0.04342414056862312]
-CY = [0.34877128818970926]
-CX = [-0.02416447785362415]
-CT = [0.4227979593021878]
+AT = [-0.045352927043792984]
+CY = [0.34908814820524153]
+CX = [-0.024199625880501063]
+CT = [0.4228246823642784]
 
 
 model = AFFE_MODELE(
@@ -204,7 +204,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="EPSI_ELNO",
         NOM_CMP="EPXY",
-        VALE_CALC=0.014157014605505041,
+        VALE_CALC=0.0138778856200963,
         CRITERE="RELATIF",
     )
 )
@@ -217,7 +217,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="EPSI_ELGA",
         NOM_CMP="EPXY",
-        VALE_CALC=0.016354009650003137,
+        VALE_CALC=0.016474228795231777,
         CRITERE="RELATIF",
     )
 )

@@ -190,5 +190,5 @@ THER_NON_LINE = MACRO(
     OBSERVATION=C_OBSERVATION("THERMIQUE"),
     # -------------------------------------------------------------------
     TITRE=SIMP(statut="f", typ="TXM"),
-    INFO=SIMP(statut="f", typ="I", into=(1, 2)),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2), defaut=1),
 )

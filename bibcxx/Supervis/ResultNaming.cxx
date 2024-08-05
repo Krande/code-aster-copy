@@ -2,7 +2,7 @@
  * @file ResultNaming.cxx
  * @brief Implementation of automatic naming of jeveux objects.
  * @section LICENCE
- * Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ void ResultNaming::initCounter( const unsigned long int initValue ) {
 void ResultNaming::syncCounter() {
 #ifdef ASTER_HAVE_MPI
     unsigned long int current = _number;
-    AsterMPI::all_reduce( current, _number, MPI_MAX );
+    _number = AsterMPI::max( current );
 #endif
 }
 

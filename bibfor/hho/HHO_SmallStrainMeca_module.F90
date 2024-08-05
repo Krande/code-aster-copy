@@ -28,6 +28,7 @@ module HHO_SmallStrainMeca_module
     use HHO_eval_module
     use Behaviour_type
     use Behaviour_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -56,6 +57,7 @@ module HHO_SmallStrainMeca_module
     public :: hhoSmallStrainLCMeca, tranfoMatToSym, hhoMatrElasMeca
     public :: hhoComputeRhsSmall, hhoComputeLhsSmall
     public :: hhoComputeCgphi, tranfoSymToMat
+    private :: tranfoTensToSym
 !
 contains
 !
@@ -292,7 +294,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        real(kind=8) :: dsidep(6, 6)
+        real(kind=8) :: dsidep(6, 6), dsidep3D(6, 6)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
@@ -327,8 +329,9 @@ contains
 ! --------- Compute behaviour
 !
             call dmatmc(fami, imate, time_curr, '+', ipg, 1, angmas, nb_sig, dsidep)
+            call tranfoTensToSym(nb_sig, dsidep, dsidep3D)
 !
-            call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, gbs_sym, gbs_cmp, AT)
+            call hhoComputeLhsSmall(hhoCell, dsidep3D, weight, BSCEval, gbs_sym, gbs_cmp, AT)
         end do
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
@@ -381,7 +384,7 @@ contains
 ! -------- (RAPPEL: the composents of the gradient are saved by G11, G22, G33, G12, G13, G23)
         deca = 0
         do i = 1, hhoCell%ndim
-            call daxpy(gbs_cmp, qp_stress(i), BSCEval, 1, bT(deca+1), 1)
+            call daxpy_1(gbs_cmp, qp_stress(i), BSCEval, bT(deca+1))
             deca = deca+gbs_cmp
         end do
 !
@@ -389,11 +392,11 @@ contains
         select case (hhoCell%ndim)
         case (3)
             do i = 1, 3
-                call daxpy(gbs_cmp, qp_stress(3+i), BSCEval, 1, bT(deca+1), 1)
+                call daxpy_1(gbs_cmp, qp_stress(3+i), BSCEval, bT(deca+1))
                 deca = deca+gbs_cmp
             end do
         case (2)
-            call daxpy(gbs_cmp, qp_stress(4), BSCEval, 1, bT(deca+1), 1)
+            call daxpy_1(gbs_cmp, qp_stress(4), BSCEval, bT(deca+1))
             deca = deca+gbs_cmp
         case default
             ASSERT(ASTER_FALSE)
@@ -519,7 +522,7 @@ contains
         case (3)
             do i = 1, 6
                 do k = 1, gbs_cmp
-                    call daxpy(6, BSCEval(k), qp_C(1, i), 1, Cgphi(1, col), 1)
+                    call daxpy_1(6, BSCEval(k), qp_C(1, i), Cgphi(1, col))
                     col = col+1
                 end do
             end do
@@ -614,6 +617,55 @@ contains
         case (2)
             mat(1:3) = mat_sym(1:3)
             mat(4) = mat_sym(4)/rac2
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine tranfoTensToSym(nb_sig, dsidep, dsidep3D)
+!
+        implicit none
+!
+        integer, intent(in)             :: nb_sig
+        real(kind=8), intent(in)        :: dsidep(nb_sig, nb_sig)
+        real(kind=8), intent(out)       :: dsidep3D(6, 6)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   tranform a tensor from nb_sig to 6 and add symetric notation
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i, j
+        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+!
+        select case (nb_sig)
+        case (6)
+            dsidep3D(1:3, 1:3) = dsidep(1:3, 1:3)
+            do i = 4, 6
+                do j = 1, 3
+                    dsidep3D(i, j) = dsidep(i, j)*rac2
+                    dsidep3D(j, i) = dsidep(j, i)*rac2
+                end do
+                do j = 4, 6
+                    dsidep3D(i, j) = dsidep(i, j)*2.d0
+                    dsidep3D(j, i) = dsidep(j, i)*2.d0
+                end do
+            end do
+        case (4)
+            dsidep3D(1:3, 1:3) = dsidep(1:3, 1:3)
+            do j = 1, 3
+                dsidep3D(4, j) = dsidep(4, j)*rac2
+                dsidep3D(j, 4) = dsidep(j, 4)*rac2
+            end do
+            dsidep3D(4, 4) = dsidep(4, 4)*2.d0
+            dsidep3D(5:6, 1:6) = 0.d0
+            dsidep3D(1:6, 5:6) = 0.d0
         case default
             ASSERT(ASTER_FALSE)
         end select

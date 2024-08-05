@@ -2,7 +2,7 @@
  * @file ContactZone.cxx
  * @brief Implementation de Contact
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -128,8 +128,7 @@ bool ContactZone::build() {
 #ifdef ASTER_HAVE_MPI
     if ( mesh->isParallel() ) {
         ASTERINTEGER size_inter_lc = size_inter_gl;
-        size_inter_gl = 0;
-        AsterMPI::all_reduce( size_inter_lc, size_inter_gl, MPI_SUM );
+        size_inter_gl = AsterMPI::sum( size_inter_lc );
     }
 #endif
 

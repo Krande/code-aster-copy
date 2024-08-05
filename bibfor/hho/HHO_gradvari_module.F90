@@ -362,9 +362,9 @@ contains
 ! ---------- += weight * (sig_gv, g_phi)
                 call hhoComputeRhsRigiTher(hhoCell, sig_gv, weight, BSCEvalG, gv_gbs, gv_bT)
 ! ---------- += weight * (sig_vari, c_phi)
-                call hhoComputeRhsMassTher(1.d0, sig_vari, weight, BSCEval, gv_cbs, rhs_vari)
+                call hhoComputeRhsMassTher(sig_vari, weight, BSCEval, gv_cbs, rhs_vari)
 ! ---------- += weight * (sig_lagv, c_phi)
-                call hhoComputeRhsMassTher(1.d0, sig_lagv, weight, BSCEval, gv_cbs, rhs_lagv)
+                call hhoComputeRhsMassTher(sig_lagv, weight, BSCEval, gv_cbs, rhs_lagv)
             end if
 !
 ! ------- Compute lhs

@@ -540,7 +540,7 @@ contains
 !
 ! ----- get quadrature
 !
-            call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
+            call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1, param=ASTER_TRUE)
 !
 ! -------------- Value of the field at the quadrature point
 !
@@ -560,7 +560,7 @@ contains
 !
 ! --- On cell
 !
-        call hhoQuadCell%GetQuadCell(hhoCell, 2*hhoData%cell_degree()+1)
+        call hhoQuadCell%GetQuadCell(hhoCell, 2*hhoData%cell_degree()+1, param=ASTER_TRUE)
 !
 ! -------------- Value of the field at the quadrature point
 !

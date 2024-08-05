@@ -30,15 +30,16 @@ subroutine te0465(option, nomte)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
+#include "asterfort/fointe.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/jevech.h"
 #include "asterfort/readVector.h"
 #include "asterfort/writeVector.h"
-#include "blas/dcopy.h"
 #include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -65,11 +66,11 @@ subroutine te0465(option, nomte)
     type(HHO_Quadrature) :: hhoQuadCell
     type(HHO_basis_cell) :: hhoBasisCell
     real(kind=8), dimension(MSIZE_CELL_SCAL) :: rhs_T
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs
-    real(kind=8) :: NeumValuesQP(MAX_QP_CELL)
-    real(kind=8) :: theta, time_curr
+    real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs, temp_T_curr
+    real(kind=8) :: VoluValuesQP(MAX_QP_CELL)
+    real(kind=8) :: theta, time_curr, tg
     integer :: fbs, nbpara, npg, faces_dofs, cbs, total_dofs
-    integer :: j_time, j_sour
+    integer :: j_time, j_sour, ipg, iret
 !
 !
 ! -- Get number of Gauss points
@@ -88,7 +89,7 @@ subroutine te0465(option, nomte)
 !
     ASSERT(hhoQuadCell%nbQuadPoints <= MAX_QP_CELL)
 !
-    NeumValuesQP = 0.d0
+    VoluValuesQP = 0.d0
     nompar(:) = 'XXXXXXXX'
     valpar(:) = 0.d0
 !
@@ -104,7 +105,7 @@ subroutine te0465(option, nomte)
 ! ----- Get real value COEF_H
 !
         call jevech('PSOURCR', 'L', j_sour)
-        NeumValuesQP(1:npg) = zr(j_sour-1+1:j_sour-1+npg)
+        VoluValuesQP(1:npg) = zr(j_sour-1+1:j_sour-1+npg)
 !
     elseif (option .eq. 'CHAR_THER_SOUR_F') then
         call jevech('PSOURCF', 'L', j_sour)
@@ -129,20 +130,44 @@ subroutine te0465(option, nomte)
 ! ----- Evaluate the analytical function at T+
 !
         call hhoFuncFScalEvalQp(hhoQuadCell, zk8(j_sour), nbpara, nompar, valpar, &
-                                hhoCell%ndim, NeumValuesQP)
+                                hhoCell%ndim, VoluValuesQP)
+!
+    elseif (option .eq. 'CHAR_THER_SOURNL') then
+        call jevech('PSOURNL', 'L', j_sour)
+        if (zk8(j_sour) (1:7) .eq. '&FOZERO') goto 999
+!
+        temp_T_curr = 0.d0
+        call readVector('PTEMPER', cbs, temp_T_curr, total_dofs-cbs)
+!
+! ----- Loop on quadrature point
+!
+        do ipg = 1, hhoQuadCell%nbQuadPoints
+!
+! --------- Evaluate temperature
+!
+            tg = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
+                                 hhoQuadCell%points(1:3, ipg), temp_T_curr, cbs)
+!
+! --------- Evaluate source
+!
+            call fointe('FM', zk8(j_sour), 1, ['TEMP'], [tg], VoluValuesQP(ipg), iret)
+        end do
 !
     else
         ASSERT(ASTER_FALSE)
     end if
 !
 ! ---- compute surface load
-!$
-    call hhoMakeRhsCellScal(hhoCell, hhoQuadCell, NeumValuesQP, hhoData%cell_degree(), rhs_T)
+!
+    call hhoMakeRhsCellScal(hhoCell, hhoQuadCell, VoluValuesQP, hhoData%cell_degree(), rhs_T)
 !
 ! ---- save result
+!
+999 continue
 !
     rhs = 0.0
     rhs(faces_dofs+1:total_dofs) = rhs_T(1:cbs)
     call writeVector('PVECTTR', total_dofs, rhs)
+!
 !
 end subroutine

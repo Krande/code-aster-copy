@@ -83,7 +83,17 @@ Convert to SimpleFieldOnNodes
 Returns:
     SimpleFieldOnNodesReal: field converted
         )" )
-        .def( "changeLocalization", &FieldOnCellsReal::changeLocalization )
+        .def( "setLocalization", &FieldOnCellsReal::setLocalization,
+              R"(
+            Return a new field interpolated at the given localozation.
+
+            Arguments:
+                loc [str]: name of localization (ELEM, ELNO or ELGA)
+
+            Returns:
+                FieldOnCellsReal: new field with new localization.
+            )",
+              py::arg( "loc" ) )
         .def( "getDescription", &FieldOnCellsReal::getDescription, R"(
             Return the descriptor associated with the FieldOnCellsReal object
 

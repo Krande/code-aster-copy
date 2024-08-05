@@ -72,6 +72,12 @@ Returns:
         .def( "build", &FieldOnNodesReal::build, py::arg( "mesh" ) = nullptr )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
+        .def( "getLocalization", &FieldOnNodesReal::getLocalization, R"(
+            Get localization = NOEU
+
+            Returns:
+                str: "NOEU"
+            )" )
         .def( "_restrict", &FieldOnNodesReal::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given
@@ -90,6 +96,19 @@ Returns:
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString(),
               py::arg( "same_rank" ) = PythonBool::None )
+        .def( "setPhysicalQuantity", &FieldOnNodesReal::setPhysicalQuantity,
+              R"(
+            Return a new field with a new physical quantity and renamed components.
+
+            Arguments:
+                physQuantity [str]: name of the new physical quantity
+                map_cmps[dict[str, str]]: dict to rename components
+                (only renamed component will be keeped)
+
+            Returns:
+                FieldOnNodesReal: field with name physical quantity.
+            )",
+              py::arg( "physQuantity" ), py::arg( "map_cmps" ) )
         .def( "getRealPart", []( const FieldOnNodesReal &f ) { return getRealPart( f ); },
               R"(
 Extract the real part of the real field (the field is duplicated)
@@ -302,6 +321,12 @@ Returns:
         .def( "build", &FieldOnNodesComplex::build, py::arg( "mesh" ) = nullptr )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
+        .def( "getLocalization", &FieldOnNodesComplex::getLocalization, R"(
+            Get localization = NOEU
+
+            Returns:
+                str: "NOEU"
+            )" )
         .def( "_restrict", &FieldOnNodesComplex::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given

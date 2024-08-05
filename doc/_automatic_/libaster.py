@@ -2458,9 +2458,6 @@ class FieldOnCellsReal(DataField):
     def build(self, feds=[]):
         pass
 
-    def changeLocalization(self, arg0):
-        pass
-
     def copy(self):
         """Return a duplicated FieldOnCellsReal as a copy
 
@@ -2566,6 +2563,16 @@ class FieldOnCellsReal(DataField):
 
     def setDescription(self, arg0):
         pass
+
+    def setLocalization(self, loc):
+        """Return a new field interpolated at the given localozation.
+
+        Arguments:
+            loc [str]: name of localization (ELEM, ELNO or ELGA)
+
+        Returns:
+            FieldOnCellsReal: new field with new localization.
+        """
 
     def setValues(self, *args, **kwargs):
         """Overloaded function.
@@ -3086,6 +3093,13 @@ class FieldOnNodesReal(DataField):
             FieldOnNodesReal: imaginary part
         """
 
+    def getLocalization(self):
+        """Get localization = NOEU
+
+        Returns:
+            str: "NOEU"
+        """
+
     def getMesh(self, *args, **kwargs):
         """Overloaded function.
 
@@ -3175,6 +3189,18 @@ class FieldOnNodesReal(DataField):
 
     def setMesh(self, arg0):
         pass
+
+    def setPhysicalQuantity(self, physQuantity, map_cmps):
+        """Return a new field with a new physical quantity and renamed components.
+
+        Arguments:
+            physQuantity [str]: name of the new physical quantity
+            map_cmps[dict[str, str]]: dict to rename components
+            (only renamed component will be keeped)
+
+        Returns:
+            FieldOnNodesReal: field with name physical quantity.
+        """
 
     def setValues(self, *args, **kwargs):
         """Overloaded function.
@@ -3300,6 +3326,13 @@ class FieldOnNodesComplex(DataField):
 
         Returns:
             FieldOnNodesReal: imaginary part
+        """
+
+    def getLocalization(self):
+        """Get localization = NOEU
+
+        Returns:
+            str: "NOEU"
         """
 
     def getMesh(self, *args, **kwargs):
@@ -3772,6 +3805,18 @@ class SimpleFieldOnCellsReal(DataField):
             SimpleFieldOnCellsReal: field restricted.
         """
 
+    def setPhysicalQuantity(self, physQuantity, map_cmps):
+        """Return a new field with a new physical quantity and renamed components.
+
+        Arguments:
+            physQuantity [str]: name of the new physical quantity
+            map_cmps [dict[str, str]]: dict to rename components
+            (only renamed component will be keeped)
+
+        Returns:
+            SimpleFieldOnCellsReal: field with name physical quantity.
+        """
+
     def setValue(self, ima, icmp, ipt, ispt, val):
         """Set the value of the `icmp` component of the field on the `ima` cell,
         at the `ipt` point, at the `ispt` sub-point.
@@ -3884,6 +3929,18 @@ class SimpleFieldOnNodesReal(DataField):
 
     def getPhysicalQuantity(self):
         pass
+
+    def setPhysicalQuantity(self, physQuantity, map_cmps):
+        """Return a new field with a new physical quantity and renamed components.
+
+        Arguments:
+            physQuantity [str]: name of the new physical quantity
+            map_cmps [dict[str, str]]: dict to rename components
+            (only renamed component will be keeped)
+
+        Returns:
+            SimpleFieldOnNodesReal: field with name physical quantity.
+        """
 
     def toFieldOnNodes(self):
         """Convert to FieldOnNodes
@@ -12595,21 +12652,21 @@ class PhysicalProblem:
         """Return the behaviour properties
 
         Returns:
-            BehaviourPropertyPtr: a pointer to the behaviour properties
+            BehaviourProperty: a pointer to the behaviour properties
         """
 
     def getCodedMaterial(self):
         """Return the coded material
 
         Returns:
-            CodedMaterialPtr: a pointer to the coded material
+            CodedMaterial: a pointer to the coded material
         """
 
     def getDOFNumbering(self):
         """Return the DOF numbering
 
         Returns:
-            BaseDOFNumberingPtr: a pointer to the DOF numbering
+            BaseDOFNumbering: a pointer to the DOF numbering
         """
 
     def getDirichletBCDOFs(self):
@@ -12626,7 +12683,7 @@ class PhysicalProblem:
         """Return the elementary charateristics
 
         Returns:
-            ElementaryCharacteristicsPtr: a pointer to the elementary charateristics
+            ElementaryCharacteristics: a pointer to the elementary charateristics
         """
 
     def getExternalStateVariables(self, time):
@@ -12636,42 +12693,42 @@ class PhysicalProblem:
             time [float] : time value to evaluate values
 
         Returns:
-            FieldOnCellsRealPtr : external values
+            FieldOnCellsReal : external values
         """
 
     def getListOfLoads(self):
         """Return list of loads.
 
         Returns:
-            ListOfLoadsPtr: a pointer to list of loads
+            ListOfLoads: a pointer to list of loads
         """
 
     def getMaterialField(self):
         """Return the material field
 
         Returns:
-            MaterialFieldPtr: a pointer to the material field
+            MaterialField: a pointer to the material field
         """
 
     def getMesh(self):
         """Return the mesh
 
         Returns:
-            MeshPtr: a pointer to the mesh
+            Mesh: a pointer to the mesh
         """
 
     def getModel(self):
         """Return the model
 
         Returns:
-            ModelPtr: a pointer to the model
+            Model: a pointer to the model
         """
 
     def getReferenceExternalStateVariables(self):
         """Get the field of reference values for external state variables
 
         Returns:
-            FieldOnCellsRealPtr : field of reference values
+            FieldOnCellsReal : field of reference values
         """
 
     def isAcoustic(self):
@@ -12699,7 +12756,14 @@ class PhysicalProblem:
         """Set the DOF numbering
 
         Arguments:
-            dofNum (BaseDOFNumberingPtr): a pointer to the DOF numbering
+            dofNum (BaseDOFNumbering): a pointer to the DOF numbering
+        """
+
+    def setListOfLoads(self, loads):
+        """Set list of loads
+
+        Arguments:
+            loads (ListOfLoads): a pointer to the list of loads
         """
 
     def zeroDirichletBCDOFs(self, arg0):
@@ -14986,6 +15050,13 @@ class HHO:
 
         Returns:
               FieldOnCellsReal: HHO field evaluated at quadrature points (ELGA)
+        """
+
+    def getModel(self):
+        """Get Model.
+
+        Returns:
+              Model: model used for HHO.
         """
 
     def projectOnHHOCellSpace(self, *args, **kwargs):

@@ -83,7 +83,7 @@ def ther_non_line_ops(self, **args):
 
     adapt_increment_init(args, "EVOL_THER")
 
-    verbosity = args.get("INFO") or 1
+    verbosity = args["INFO"]
 
     # python Version
     if "RESULTAT" in args:
@@ -151,7 +151,7 @@ def ther_non_line_ops(self, **args):
 
     # Run computation
     solver.run()
-    if verbosity:
+    if verbosity > 1:
         print_stats()
     reset_stats()
     return solver.result

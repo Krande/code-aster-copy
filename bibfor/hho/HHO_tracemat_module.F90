@@ -48,7 +48,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoTraceMatScal(hhoCell, min_order_cell, max_order_cell, &
-                                & hhoFace, min_order_face, max_order_face, traceMat)
+                               hhoFace, min_order_face, max_order_face, traceMat)
 !
         implicit none
 !
@@ -98,13 +98,13 @@ contains
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
             call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), &
-                                    & min_order_cell, max_order_cell, BSCellEval)
+                                     min_order_cell, max_order_cell, BSCellEval)
 ! --------- Eval face basis function at the quadrature point
             call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), &
-                                    & min_order_face, max_order_face, BSFaceEval)
+                                     min_order_face, max_order_face, BSFaceEval)
 ! --------  Eval traceMat
             call dger(rowsMat, colsMat, hhoQuad%weights(ipg), BSFaceEval, 1, BSCellEval, 1, &
-                    & traceMat, MSIZE_FACE_SCAL)
+                      traceMat, MSIZE_FACE_SCAL)
         end do
 !
 !        call hhoPrintMat(traceMat)

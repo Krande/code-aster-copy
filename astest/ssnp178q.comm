@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ times = DEFI_LIST_INST(
     DEFI_LIST=_F(LIST_INST=listr), ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR", SUBD_NIVEAU=3)
 )
 
-AY = [2.081811329714383]
-AX = [-1.5764583875721927]
-AT = [0.018862392568654393]
+AY = [2.0852818716154475]
+AX = [-1.5791606260562618]
+AT = [0.020386444344996382]
 
 
 model = AFFE_MODELE(

@@ -5,7 +5,7 @@
  * @file PhysicalProblem.h
  * @brief Fichier entete de la classe PhysicalProblem
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -108,6 +108,9 @@ class PhysicalProblem {
     /** @brief Get list of loads */
     ListOfLoadsPtr getListOfLoads() const { return _listOfLoads; };
 
+    /** @brief Get list of loads */
+    void setListOfLoads( const ListOfLoadsPtr loads );
+
     /** @brief Get behaviour properties */
     BehaviourPropertyPtr getBehaviourProperty() const { return _behavProp; };
 
@@ -115,11 +118,7 @@ class PhysicalProblem {
     BaseDOFNumberingPtr getDOFNumbering() const { return _dofNume; };
 
     /** @brief Get numbering of degrees of freedom */
-    void setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
-        if ( dofNume ) {
-            _dofNume = dofNume;
-        }
-    };
+    void setDOFNumbering( const BaseDOFNumberingPtr dofNume );
 
     /** @brief Create numbering of degrees of freedom */
     bool computeDOFNumbering();

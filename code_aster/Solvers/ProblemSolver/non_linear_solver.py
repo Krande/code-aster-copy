@@ -43,7 +43,7 @@ For example for the displacement field and a Newton solver.
 """
 
 from ...Messages import MessageLog, UTMESS
-from ...Objects import NonLinearResult, ThermalResult
+from ...Objects import NonLinearResult, ThermalResult, HHO
 from ...Supervis import ConvergenceError, IntegrationError, SolverError
 from ...Utilities import DEBUG, logger, no_new_attributes, profile
 from ..Basics import ProblemType as PBT
@@ -272,23 +272,31 @@ class NonLinearSolver(SolverFeature):
                 _msginit("ACCE")
 
             if "VALE" in init_state:
-                phys_state.primal_curr = phys_state.createPrimal(
-                    self.phys_pb, value={"TEMP": init_state.get("VALE")}
-                )
+                if model.existsHHO():
+                    phys_state.primal_curr = HHO(self.phys_pb).projectOnHHOSpace(init_state["VALE"])
+                else:
+                    phys_state.primal_curr = phys_state.createPrimal(
+                        self.phys_pb, value={"TEMP": init_state.get("VALE")}
+                    )
 
         init_time = self.stepper.getInitial()
         self.computeExternalStateVariables(init_time)
         phys_state.time_curr = init_time
 
-        if init_state and init_state.get("STAT") == "OUI":
-            solv = self.get_feature(SOP.StepSolver)
-            solv.initialize()
-            args = {"valr": phys_state.time_curr, "vali": self.stepper.splitting_level}
-            logger.info(MessageLog.GetText("I", "MECANONLINE6_5", **args))
-            solv.solve()
+        if init_state:
+            if init_state.get("STAT") == "OUI":
+                solv = self.get_feature(SOP.StepSolver)
+                solv.initialize()
+                args = {"valr": phys_state.time_curr, "vali": self.stepper.splitting_level}
+                logger.info(MessageLog.GetText("I", "MECANONLINE6_5", **args))
+                solv.solve()
+                if (
+                    self.stepper.size() == 1
+                    and self.stepper.getCurrent() == self.stepper.getPrevious()
+                ):
+                    self.stepper.completed()
+
             self.post_hooks()
-            if self.stepper.size() == 1 and self.stepper.getCurrent() == self.stepper.getPrevious():
-                self.stepper.completed()
 
         phys_state.commit()
 

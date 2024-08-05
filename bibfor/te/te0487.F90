@@ -60,7 +60,6 @@ subroutine te0487(nomopt, nomte)
     integer :: cbs, fbs, total_dofs, npg, deca, gbs
     integer :: ipg, icodre(3), jtemps, jmate
     character(len=8), parameter :: fami = 'RIGI'
-    character(len=8) :: poum
     character(len=32) :: phenom
     real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradrec
     real(kind=8), dimension(3*MAX_QP_CELL) :: flux
@@ -119,7 +118,6 @@ subroutine te0487(nomopt, nomte)
     temp_curr = 0.d0
     call readVector('PTEMPER', total_dofs, temp_curr)
     call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
-    poum = "+"
 !
 ! ----- compute G_curr = gradrec * temp_curr
 !
@@ -149,8 +147,8 @@ subroutine te0487(nomopt, nomte)
 !
 ! ------- Compute behavior
 !
-        call hhoComputeBehaviourTher(phenom, fami, poum, ipg, hhoCell%ndim, time_curr, jmate, &
-                                     temp_eval_curr, G_curr, sig_curr, module_tang)
+        call hhoComputeBehaviourTher(phenom, fami, ipg, hhoCell%ndim, time_curr, jmate, &
+                                     coorpg, temp_eval_curr, G_curr, sig_curr, module_tang)
 !
         flux(deca:deca+hhoCell%ndim) = -sig_curr(1:hhoCell%ndim)
         deca = deca+hhoCell%ndim

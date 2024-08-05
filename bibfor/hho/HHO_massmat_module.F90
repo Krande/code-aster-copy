@@ -28,9 +28,11 @@ module HHO_massmat_module
 !
     private
 #include "asterf_types.h"
+#include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/dsyr.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,7 +99,10 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL):: basisScalEval
         integer :: dimMat, ipg, i
         aster_logical :: dbg
+        real(kind=8) :: start, end
 ! --------------------------------------------------------------------------------------------------
+!
+        DEBUG_TIMER(start)
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
@@ -113,8 +118,7 @@ contains
         dbg = ASTER_FALSE
 #endif
 !
-        if (hhoBasisCell%isOrthonormal() .and. .not. dbg .and. &
-            (hhoCell%typema .eq. 'TETRA4' .or. hhoCell%ndim .eq. 2)) then
+        if (hhoBasisCell%isOrthonormal() .and. .not. dbg) then
             do i = 1, dimMat
                 this%m(i, i) = 1.d0
             end do
@@ -127,8 +131,8 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), min_order, max_order,&
-                                  & basisScalEval)
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), min_order, max_order, &
+                                         basisScalEval)
 ! --------  Eval massMat
                 call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, &
                           1, this%m, this%max_nrows)
@@ -139,14 +143,16 @@ contains
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
             if (hhoBasisCell%isOrthonormal()) then
-                this%isIdentity = hhoIsIdentityMat(this%m, dimMat)
 #ifdef ASTER_DEBUG_FC
-                ASSERT(this%isIdentity)
+                ASSERT(hhoIsIdentityMat(this%m, dimMat))
 #endif
             end if
 
         end if
         ! call hhoPrintMat(this%m(1:dimMat, 1:dimMat))
+!
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoMassMatCellScal", end-start)
 !
     end subroutine
 !
@@ -178,7 +184,9 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
         integer :: dimMat, ipg, i
         aster_logical :: dbg
+        real(kind=8) :: start, end
 ! --------------------------------------------------------------------------------------------------
+        DEBUG_TIMER(start)
 !
 ! ----- init basis
         call hhoBasisFace%initialize(hhoFace)
@@ -209,7 +217,7 @@ contains
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
                 call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), min_order, &
-                                        & max_order, basisScalEval)
+                                         max_order, basisScalEval)
 ! --------  Eval massMat
                 call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, &
                           1, this%m, this%max_nrows)
@@ -220,14 +228,15 @@ contains
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
             if (hhoBasisFace%isOrthonormal()) then
-                this%isIdentity = hhoIsIdentityMat(this%m, dimMat)
 #ifdef ASTER_DEBUG_FC
-                ASSERT(this%isIdentity)
+                ASSERT(hhoIsIdentityMat(this%m, dimMat))
 #endif
             end if
         end if
 !
         ! call hhoPrintMat(this%m)
+        DEBUG_TIMER(end)
+        DEBUG_TIME("Compute hhoMassMatFaceScal", end-start)
 !
     end subroutine
 !

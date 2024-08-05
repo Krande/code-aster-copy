@@ -50,10 +50,11 @@ subroutine te0217(option, nomte)
     type(FE_basis) :: FEBasis
 !
     integer :: icodre(1), kp, igrai, imate, ier, itemps
-    character(len=8) :: nompar(4), grxf, gryf, grzf, fami, poum
+    character(len=8) :: nompar(4), grxf, gryf, grzf
+    character(len=8), parameter :: fami = "RIGI", poum = "+"
 !
     real(kind=8) :: valres(1), valpar(4), lambda
-    real(kind=8) :: grx, gry, grz
+    real(kind=8) :: grx, gry, grz, time
     real(kind=8) :: load(MAX_BS), valQP(3, MAX_QP)
 !
     aster_logical :: fonc
@@ -61,15 +62,9 @@ subroutine te0217(option, nomte)
 !
     call FECell%init()
     call FEBasis%initCell(FECell)
-    call FEQuadCell%initCell(FECell, "RIGI")
+    call FEQuadCell%initCell(FECell, fami)
 !
     call jevech('PMATERC', 'L', imate)
-    fami = 'FPG1'
-    poum = '+'
-    call rcvalb(fami, 1, 1, poum, zi(imate), &
-                ' ', 'THER', 0, ' ', [0.d0], &
-                1, 'LAMBDA', valres, icodre, 1)
-    lambda = valres(1)
 !
     if (option .eq. 'CHAR_THER_GRAI_R') then
         fonc = .false.
@@ -77,6 +72,7 @@ subroutine te0217(option, nomte)
         grx = zr(igrai)
         gry = zr(igrai+1)
         grz = zr(igrai+2)
+        time = 0.d0
     else if (option .eq. 'CHAR_THER_GRAI_F') then
         fonc = .true.
         call jevech('PINSTR', 'L', itemps)
@@ -88,10 +84,16 @@ subroutine te0217(option, nomte)
         nompar(2) = 'Y'
         nompar(3) = 'Z'
         nompar(4) = 'INST'
-        valpar(4) = zr(itemps)
+        time = zr(itemps)
+        valpar(4) = time
     end if
 !
     do kp = 1, FEQuadCell%nbQuadPoints
+!
+        call rcvalb(fami, kp, 1, poum, zi(imate), &
+                    ' ', 'THER', 1, 'INST', [time], &
+                    1, 'LAMBDA', valres, icodre, 1)
+        lambda = valres(1)
 !
         if (fonc) then
             valpar(1:3) = FEQuadCell%points_param(1:3, kp)

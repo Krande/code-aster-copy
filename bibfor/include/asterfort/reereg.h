@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
         integer :: nnop
         character(len=1) :: stop
         character(len=8) :: elrefp
-        real(kind=8) :: coor(ndim*nnop)
+        real(kind=8) :: coor(*)
         real(kind=8) :: xg(ndim)
         real(kind=8) :: xe(ndim)
         integer :: iret

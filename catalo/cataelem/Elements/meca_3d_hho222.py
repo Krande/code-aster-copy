@@ -542,6 +542,20 @@ class MECA3DH27_HHO222(Element):
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
+        OP.REFE_FORC_NODA(
+            te=450,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PREFCO, LC.CRESSIG),
+                (SP.PDEPLMR, DDL_MECA),
+                (OP.REFE_FORC_NODA.PCOMPOR, LC.CCOMPOR),
+                (OP.REFE_FORC_NODA.PCHHOGT, CHHOGT),
+                (OP.REFE_FORC_NODA.PCHHOST, CHHOST),
+                (OP.REFE_FORC_NODA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.RIGI_MECA(
             te=455,
             para_in=(
