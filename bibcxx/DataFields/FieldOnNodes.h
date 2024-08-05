@@ -773,61 +773,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return renvoie un nouvel objet de FieldOnNodes
      *         avec les valeurs transformées
      */
-    template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value,
-                             FieldOnNodes< ValueType > >::type
-    transform( py::object &func ) const {
-        if ( !PyCallable_Check( func.ptr() ) )
-            raiseAsterError( "Input parameter to the transform \
-        method should be a callable Python object" );
-
-        FieldOnNodes< ValueType > tmp( *this );
-        updateValuePointers();
-
-        ASTERINTEGER size = _values->size();
-        for ( auto i = 0; i < size; i++ ) {
-            PyObject *res = PyObject_CallFunction( func.ptr(), "d", ( *_values )[i] );
-            if ( PyFloat_Check( res ) ) {
-                tmp[i] = (ASTERDOUBLE)PyFloat_AsDouble( res );
-            } else if ( PyLong_Check( res ) ) {
-                tmp[i] = (ASTERDOUBLE)PyLong_AsDouble( res );
-            } else {
-                raiseAsterError( "Invalid function return type. Expected ASTERDOUBLE." );
-            }
-            Py_XDECREF( res );
-        }
-        return tmp;
-    };
-
-    template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERCOMPLEX >::value,
-                             FieldOnNodes< ValueType > >::type
-    transform( py::object &func ) const {
-        if ( !PyCallable_Check( func.ptr() ) )
-            raiseAsterError( "Input parameter to the transform \
-        method should be a callable Python object" );
-
-        FieldOnNodes< ValueType > tmp( *this );
-        _values->updateValuePointer();
-
-        ASTERINTEGER size = _values->size();
-
-        Py_complex val;
-        for ( auto i = 0; i < size; i++ ) {
-            val.real = ( *_values )[i].real();
-            val.imag = ( *_values )[i].imag();
-            PyObject *res = PyObject_CallFunction( func.ptr(), "D", val );
-            if ( PyComplex_Check( res ) ) {
-                ASTERDOUBLE re = (ASTERDOUBLE)PyComplex_RealAsDouble( res );
-                ASTERDOUBLE im = (ASTERDOUBLE)PyComplex_ImagAsDouble( res );
-                tmp[i] = { re, im };
-            } else {
-                raiseAsterError( "Invalid function return type. Expected ASTERCOMPLEX." );
-            }
-            Py_XDECREF( res );
-        }
-        return tmp;
-    };
+    FieldOnNodes< ValueType > transform( py::object &func ) const;
 
     friend class FieldBuilder;
 };

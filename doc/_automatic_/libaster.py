@@ -136,7 +136,7 @@ class PythonBool:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -148,7 +148,7 @@ class PythonBool:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -448,7 +448,7 @@ class EntityType:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -460,7 +460,7 @@ class EntityType:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -780,7 +780,7 @@ class Mesh(BaseMesh):
     def getCells(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getCells(self: libaster.Mesh, group_name: str) -> List[int]
+        1. getCells(self: libaster.Mesh, group_name: str) -> list[int]
 
 
         Return the list of the indexes of the cells that belong to a group of cells.
@@ -792,7 +792,7 @@ class Mesh(BaseMesh):
             list[int]: Indexes of the cells of the local group.
 
 
-        2. getCells(self: libaster.Mesh, groups_name: List[str] = []) -> List[int]
+        2. getCells(self: libaster.Mesh, groups_name: list[str] = []) -> list[int]
 
 
         Return the list of the indexes of the cells that belong to the groups of cells.
@@ -1852,7 +1852,7 @@ class EquationNumbering(DataStructure):
     def getNodeAndComponentFromDOF(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getNodeAndComponentFromDOF(self: libaster.EquationNumbering, local: bool = True) -> List[Tuple[int, str]]
+        1. getNodeAndComponentFromDOF(self: libaster.EquationNumbering, local: bool = True) -> list[tuple[int, str]]
 
 
                     Return the list of node id and name of component for each dofs
@@ -1864,7 +1864,7 @@ class EquationNumbering(DataStructure):
                         list[tuple[int, str]] : node id and name of component for each dofs
 
 
-        2. getNodeAndComponentFromDOF(self: libaster.EquationNumbering, dof: int, local: bool = True) -> Tuple[int, str]
+        2. getNodeAndComponentFromDOF(self: libaster.EquationNumbering, dof: int, local: bool = True) -> tuple[int, str]
 
 
                     Return the node id and name of component for given DOF
@@ -1880,7 +1880,7 @@ class EquationNumbering(DataStructure):
     def getNodeAndComponentIdFromDOF(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getNodeAndComponentIdFromDOF(self: libaster.EquationNumbering, local: bool = True) -> List[Tuple[int, int]]
+        1. getNodeAndComponentIdFromDOF(self: libaster.EquationNumbering, local: bool = True) -> list[tuple[int, int]]
 
 
                     Return the list of node id and component id for each dofs
@@ -1892,7 +1892,7 @@ class EquationNumbering(DataStructure):
                         list[tuple[int, int]] : node id and component if for each dofs
 
 
-        2. getNodeAndComponentIdFromDOF(self: libaster.EquationNumbering, dof: int, local: bool = True) -> Tuple[int, int]
+        2. getNodeAndComponentIdFromDOF(self: libaster.EquationNumbering, dof: int, local: bool = True) -> tuple[int, int]
 
 
                     Return the node id and component id for given DOF
@@ -2015,7 +2015,7 @@ class BaseDOFNumbering(DataStructure):
 
         1. computeNumbering(self: libaster.BaseDOFNumbering, arg0: Model, arg1: ListOfLoads) -> bool
 
-        2. computeNumbering(self: libaster.BaseDOFNumbering, arg0: List[Union[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, ElementaryMatrix<double, (PhysicalQuantityEnum)6>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>]]) -> bool
+        2. computeNumbering(self: libaster.BaseDOFNumbering, arg0: list[Union[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, ElementaryMatrix<double, (PhysicalQuantityEnum)6>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>]]) -> bool
         """
 
     def computeRenumbering(self, arg0, arg1):
@@ -2173,7 +2173,7 @@ class DOFNumbering(BaseDOFNumbering):
     def getNodeAndComponentFromDOF(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getNodeAndComponentFromDOF(self: libaster.DOFNumbering, local: bool = False) -> List[Tuple[int, str]]
+        1. getNodeAndComponentFromDOF(self: libaster.DOFNumbering, local: bool = False) -> list[tuple[int, str]]
 
 
         Return the list of node id and name of component for each dofs
@@ -2184,7 +2184,7 @@ class DOFNumbering(BaseDOFNumbering):
             list[tuple[int, str]] : node id and name of component for each dofs
 
 
-        2. getNodeAndComponentFromDOF(self: libaster.DOFNumbering, dof: int, local: bool = False) -> Tuple[int, str]
+        2. getNodeAndComponentFromDOF(self: libaster.DOFNumbering, dof: int, local: bool = False) -> tuple[int, str]
 
 
         Return the node id and name of component for given DOF
@@ -2306,9 +2306,9 @@ class FiniteElementDescriptor(DataStructure):
 
         2. __init__(self: libaster.FiniteElementDescriptor, arg0: str, arg1: libaster.BaseMesh) -> None
 
-        3. __init__(self: libaster.FiniteElementDescriptor, arg0: libaster.FiniteElementDescriptor, arg1: List[str]) -> None
+        3. __init__(self: libaster.FiniteElementDescriptor, arg0: libaster.FiniteElementDescriptor, arg1: list[str]) -> None
 
-        4. __init__(self: libaster.FiniteElementDescriptor, arg0: Model, arg1: List[str]) -> None
+        4. __init__(self: libaster.FiniteElementDescriptor, arg0: Model, arg1: list[str]) -> None
         """
 
     def getListOfGroupsOfElements(self):
@@ -2579,7 +2579,7 @@ class FieldOnCellsReal(DataField):
                         value (float): value to set
 
 
-        2. setValues(self: libaster.FieldOnCellsReal, values: List[float]) -> None
+        2. setValues(self: libaster.FieldOnCellsReal, values: list[float]) -> None
 
 
                     Set values of the field
@@ -2748,7 +2748,7 @@ class FieldOnCellsComplex(DataField):
                         value (complex): value to set
 
 
-        2. setValues(self: libaster.FieldOnCellsComplex, values: List[complex]) -> None
+        2. setValues(self: libaster.FieldOnCellsComplex, values: list[complex]) -> None
 
 
                     Set values of the field
@@ -2889,7 +2889,7 @@ class FieldOnCellsLong(DataField):
                         value (complex): value to set
 
 
-        2. setValues(self: libaster.FieldOnCellsLong, values: List[int]) -> None
+        2. setValues(self: libaster.FieldOnCellsLong, values: list[int]) -> None
 
 
                     Set values of the field
@@ -3123,7 +3123,7 @@ class FieldOnNodesReal(DataField):
                         list[float]: List of values.
 
 
-        2. getValues(self: libaster.FieldOnNodesReal, cmps: List[str] = [], groupsOfNodes: List[str] = []) -> List[float]
+        2. getValues(self: libaster.FieldOnNodesReal, cmps: list[str] = [], groupsOfNodes: list[str] = []) -> list[float]
 
 
                     Return a list of values as (x1, y1, z1, x2, y2, z2...)
@@ -3137,7 +3137,7 @@ class FieldOnNodesReal(DataField):
                         list[double]: List of values.
 
 
-        3. getValues(self: libaster.FieldOnNodesReal, dofs: List[int] = []) -> List[float]
+        3. getValues(self: libaster.FieldOnNodesReal, dofs: list[int] = []) -> list[float]
 
 
                     Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
@@ -3188,7 +3188,7 @@ class FieldOnNodesReal(DataField):
                         value (float): value to set
 
 
-        2. setValues(self: libaster.FieldOnNodesReal, values: List[float]) -> None
+        2. setValues(self: libaster.FieldOnNodesReal, values: list[float]) -> None
 
 
                     Set values of the field
@@ -3197,7 +3197,7 @@ class FieldOnNodesReal(DataField):
                         values (list[float]): list of values to set
 
 
-        3. setValues(self: libaster.FieldOnNodesReal, value: Dict[str, float], groupsOfNodes: List[str] = []) -> None
+        3. setValues(self: libaster.FieldOnNodesReal, value: dict[str, float], groupsOfNodes: list[str] = []) -> None
 
 
                     Set values of the field where components and values are given as a dict.
@@ -3339,7 +3339,7 @@ class FieldOnNodesComplex(DataField):
                         list[complex]: List of values.
 
 
-        2. getValues(self: libaster.FieldOnNodesComplex, cmps: List[str] = [], groupsOfNodes: List[str] = []) -> List[complex]
+        2. getValues(self: libaster.FieldOnNodesComplex, cmps: list[str] = [], groupsOfNodes: list[str] = []) -> list[complex]
 
 
                     Return a list of values as (x1, y1, z1, x2, y2, z2...)
@@ -3353,7 +3353,7 @@ class FieldOnNodesComplex(DataField):
                         list[complex]: List of values.
 
 
-        3. getValues(self: libaster.FieldOnNodesComplex, dofs: List[int] = []) -> List[complex]
+        3. getValues(self: libaster.FieldOnNodesComplex, dofs: list[int] = []) -> list[complex]
 
 
                     Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
@@ -3404,7 +3404,7 @@ class FieldOnNodesComplex(DataField):
                         value (complex): value to set
 
 
-        2. setValues(self: libaster.FieldOnNodesComplex, values: List[complex]) -> None
+        2. setValues(self: libaster.FieldOnNodesComplex, values: list[complex]) -> None
 
 
                     Set values of the field
@@ -3667,9 +3667,9 @@ class SimpleFieldOnCellsReal(DataField):
 
         2. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: List[str], arg4: int, arg5: int, arg6: bool) -> None
+        3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: int, arg5: int, arg6: bool) -> None
 
-        4. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: List[str], arg4: List[int], arg5: int, arg6: bool) -> None
+        4. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: list[int], arg5: int, arg6: bool) -> None
         """
 
     def __setitem__(self, arg0, arg1):
@@ -3844,9 +3844,9 @@ class SimpleFieldOnNodesReal(DataField):
     def __getitem__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __getitem__(self: libaster.SimpleFieldOnNodesReal, arg0: Tuple[int, int]) -> float
+        1. __getitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, int]) -> float
 
-        2. __getitem__(self: libaster.SimpleFieldOnNodesReal, arg0: Tuple[int, str]) -> float
+        2. __getitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, str]) -> float
         """
 
     def __init__(self, *args, **kwargs):
@@ -3856,15 +3856,15 @@ class SimpleFieldOnNodesReal(DataField):
 
         2. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: str) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: List[str], arg3: bool) -> None
+        3. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
         """
 
     def __setitem__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: Tuple[int, int], arg1: float) -> float
+        1. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, int], arg1: float) -> float
 
-        2. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: Tuple[int, str]) -> float
+        2. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, str]) -> float
         """
 
     def getComponent(self, arg0):
@@ -3933,7 +3933,7 @@ class SimpleFieldOnNodesComplex(DataField):
 
         2. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: str) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: libaster.BaseMesh, arg1: str, arg2: List[str], arg3: bool) -> None
+        3. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
         """
 
     def __setitem__(self, arg0, arg1):
@@ -4667,9 +4667,9 @@ class FunctionComplex(BaseFunction):
     def setValues(self, *args, **kwargs):
         """Overloaded function.
 
-        1. setValues(self: libaster.FunctionComplex, arg0: List[float], arg1: List[float]) -> None
+        1. setValues(self: libaster.FunctionComplex, arg0: list[float], arg1: list[float]) -> None
 
-        2. setValues(self: libaster.FunctionComplex, arg0: List[float], arg1: List[complex]) -> None
+        2. setValues(self: libaster.FunctionComplex, arg0: list[float], arg1: list[complex]) -> None
         """
 
     def size(self):
@@ -5031,7 +5031,7 @@ class ContactAlgo:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -5043,7 +5043,7 @@ class ContactAlgo:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -5099,7 +5099,7 @@ class ContactVariant:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -5111,7 +5111,7 @@ class ContactVariant:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -5169,7 +5169,7 @@ class ContactType:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -5181,7 +5181,7 @@ class ContactType:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -5235,7 +5235,7 @@ class FrictionAlgo:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -5247,7 +5247,7 @@ class FrictionAlgo:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -5303,7 +5303,7 @@ class FrictionType:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -5315,7 +5315,7 @@ class FrictionType:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -5373,7 +5373,7 @@ class PairingAlgo:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -5385,7 +5385,7 @@ class PairingAlgo:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -5437,7 +5437,7 @@ class InitialState:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -5449,7 +5449,7 @@ class InitialState:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -7109,7 +7109,7 @@ class ElementaryMatrixDisplacementReal(BaseElementaryMatrix):
 
         1. addElementaryTerm(self: libaster.ElementaryMatrixDisplacementReal, arg0: libaster.ElementaryTermReal) -> None
 
-        2. addElementaryTerm(self: libaster.ElementaryMatrixDisplacementReal, arg0: List[libaster.ElementaryTermReal]) -> None
+        2. addElementaryTerm(self: libaster.ElementaryMatrixDisplacementReal, arg0: list[libaster.ElementaryTermReal]) -> None
         """
 
     def build(self):
@@ -7153,7 +7153,7 @@ class ElementaryMatrixDisplacementComplex(BaseElementaryMatrix):
 
         1. addElementaryTerm(self: libaster.ElementaryMatrixDisplacementComplex, arg0: libaster.ElementaryTermComplex) -> None
 
-        2. addElementaryTerm(self: libaster.ElementaryMatrixDisplacementComplex, arg0: List[libaster.ElementaryTermComplex]) -> None
+        2. addElementaryTerm(self: libaster.ElementaryMatrixDisplacementComplex, arg0: list[libaster.ElementaryTermComplex]) -> None
         """
 
     def build(self):
@@ -7200,7 +7200,7 @@ class ElementaryMatrixTemperatureReal(BaseElementaryMatrix):
 
         1. addElementaryTerm(self: libaster.ElementaryMatrixTemperatureReal, arg0: libaster.ElementaryTermReal) -> None
 
-        2. addElementaryTerm(self: libaster.ElementaryMatrixTemperatureReal, arg0: List[libaster.ElementaryTermReal]) -> None
+        2. addElementaryTerm(self: libaster.ElementaryMatrixTemperatureReal, arg0: list[libaster.ElementaryTermReal]) -> None
         """
 
     def build(self):
@@ -7244,7 +7244,7 @@ class ElementaryMatrixPressureComplex(BaseElementaryMatrix):
 
         1. addElementaryTerm(self: libaster.ElementaryMatrixPressureComplex, arg0: libaster.ElementaryTermComplex) -> None
 
-        2. addElementaryTerm(self: libaster.ElementaryMatrixPressureComplex, arg0: List[libaster.ElementaryTermComplex]) -> None
+        2. addElementaryTerm(self: libaster.ElementaryMatrixPressureComplex, arg0: list[libaster.ElementaryTermComplex]) -> None
         """
 
     def build(self):
@@ -7355,7 +7355,7 @@ class ElementaryVectorReal(BaseElementaryVector):
                         term (ElementaryTermReal): elementary term
 
 
-        2. addElementaryTerm(self: libaster.ElementaryVectorReal, terms: List[libaster.ElementaryTermReal]) -> None
+        2. addElementaryTerm(self: libaster.ElementaryVectorReal, terms: list[libaster.ElementaryTermReal]) -> None
 
 
                     Add vector of elementary term
@@ -7417,7 +7417,7 @@ class ElementaryVectorComplex(BaseElementaryVector):
                         term (ElementaryTermComplex): elementary term
 
 
-        2. addElementaryTerm(self: libaster.ElementaryVectorComplex, terms: List[libaster.ElementaryTermComplex]) -> None
+        2. addElementaryTerm(self: libaster.ElementaryVectorComplex, terms: list[libaster.ElementaryTermComplex]) -> None
 
 
                     Add vector of elementary term
@@ -8167,7 +8167,7 @@ class InterfaceType:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -8179,7 +8179,7 @@ class InterfaceType:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -8324,7 +8324,7 @@ class MechanicalDirichletBC(DirichletBC):
 
         1. addBCOnCells(self: libaster.MechanicalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: str) -> bool
 
-        2. addBCOnCells(self: libaster.MechanicalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: List[str]) -> bool
+        2. addBCOnCells(self: libaster.MechanicalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: list[str]) -> bool
         """
 
     def addBCOnNodes(self, *args, **kwargs):
@@ -8332,7 +8332,7 @@ class MechanicalDirichletBC(DirichletBC):
 
         1. addBCOnNodes(self: libaster.MechanicalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: str) -> bool
 
-        2. addBCOnNodes(self: libaster.MechanicalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: List[str]) -> bool
+        2. addBCOnNodes(self: libaster.MechanicalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: list[str]) -> bool
         """
 
 
@@ -8364,7 +8364,7 @@ class ThermalDirichletBC(DirichletBC):
 
         1. addBCOnCells(self: libaster.ThermalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: str) -> bool
 
-        2. addBCOnCells(self: libaster.ThermalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: List[str]) -> bool
+        2. addBCOnCells(self: libaster.ThermalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: list[str]) -> bool
         """
 
     def addBCOnNodes(self, *args, **kwargs):
@@ -8372,9 +8372,9 @@ class ThermalDirichletBC(DirichletBC):
 
         1. addBCOnNodes(self: libaster.ThermalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: str) -> bool
 
-        2. addBCOnNodes(self: libaster.ThermalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: List[str]) -> bool
+        2. addBCOnNodes(self: libaster.ThermalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: list[str]) -> bool
 
-        3. addBCOnNodes(self: libaster.ThermalDirichletBC, arg0: PhysicalQuantityComponent, arg1: libaster.Function, arg2: List[str]) -> bool
+        3. addBCOnNodes(self: libaster.ThermalDirichletBC, arg0: PhysicalQuantityComponent, arg1: libaster.Function, arg2: list[str]) -> bool
         """
 
 
@@ -8610,7 +8610,7 @@ class Loads:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -8622,7 +8622,7 @@ class Loads:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -9298,7 +9298,7 @@ class PhysicalQuantityComponent:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -9310,7 +9310,7 @@ class PhysicalQuantityComponent:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -9840,7 +9840,7 @@ class Material(DataStructure):
 
         3. __init__(self: libaster.Material, arg0: libaster.Material) -> None
 
-        4. __init__(self: libaster.Material, arg0: libaster.Material, arg1: List[str]) -> None
+        4. __init__(self: libaster.Material, arg0: libaster.Material, arg1: list[str]) -> None
         """
 
     def getFunction(self, materialName, propertyName):
@@ -9918,7 +9918,7 @@ class PartOfMaterialField:
 
         1. __init__(self: libaster.PartOfMaterialField) -> None
 
-        2. __init__(self: libaster.PartOfMaterialField, arg0: List[libaster.Material], arg1: libaster.MeshEntity) -> None
+        2. __init__(self: libaster.PartOfMaterialField, arg0: list[libaster.Material], arg1: libaster.MeshEntity) -> None
         """
 
     def __setstate__(self, arg0):
@@ -10628,7 +10628,7 @@ class Physics:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -10640,7 +10640,7 @@ class Physics:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -10696,7 +10696,7 @@ class Modelings:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -10708,7 +10708,7 @@ class Modelings:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -11126,7 +11126,7 @@ class Formulation:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -11138,7 +11138,7 @@ class Formulation:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -11204,7 +11204,7 @@ class ModelSplitingMethod:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -11216,7 +11216,7 @@ class ModelSplitingMethod:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -11272,7 +11272,7 @@ class GraphPartitioner:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -11284,7 +11284,7 @@ class GraphPartitioner:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -11837,7 +11837,7 @@ class Result(DataStructure):
     def getFieldsNames(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getFieldsNames(self: libaster.Result) -> List[str]
+        1. getFieldsNames(self: libaster.Result) -> list[str]
 
 
         Return the list of names of stored fields
@@ -11846,7 +11846,7 @@ class Result(DataStructure):
             list[str]: List of names of stored fields.
 
 
-        2. getFieldsNames(self: libaster.Result) -> List[str]
+        2. getFieldsNames(self: libaster.Result) -> list[str]
 
 
         Return the list of names of stored fields
@@ -13052,7 +13052,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
     def getAccelerationValues(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getAccelerationValues(self: libaster.TransientGeneralizedResult) -> List[float]
+        1. getAccelerationValues(self: libaster.TransientGeneralizedResult) -> list[float]
 
 
         Return generalized accelerations values for all time indices.
@@ -13061,7 +13061,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             list[double]: generalized accelerations values.
 
 
-        2. getAccelerationValues(self: libaster.TransientGeneralizedResult, idx: int) -> List[float]
+        2. getAccelerationValues(self: libaster.TransientGeneralizedResult, idx: int) -> list[float]
 
 
         Return generalized accelerations values at a given time index.
@@ -13083,7 +13083,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
     def getDisplacementValues(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getDisplacementValues(self: libaster.TransientGeneralizedResult) -> List[float]
+        1. getDisplacementValues(self: libaster.TransientGeneralizedResult) -> list[float]
 
 
         Return generalized displacements values for all time indices.
@@ -13092,7 +13092,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             list[double]: generalized displacements values.
 
 
-        2. getDisplacementValues(self: libaster.TransientGeneralizedResult, idx: int) -> List[float]
+        2. getDisplacementValues(self: libaster.TransientGeneralizedResult, idx: int) -> list[float]
 
 
         Return generalized displacements values at a given time index.
@@ -13135,7 +13135,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
     def getVelocityValues(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getVelocityValues(self: libaster.TransientGeneralizedResult) -> List[float]
+        1. getVelocityValues(self: libaster.TransientGeneralizedResult) -> list[float]
 
 
         Return generalized velocities values for all time indices.
@@ -13144,7 +13144,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             list[double]: generalized velocities values.
 
 
-        2. getVelocityValues(self: libaster.TransientGeneralizedResult, idx: int) -> List[float]
+        2. getVelocityValues(self: libaster.TransientGeneralizedResult, idx: int) -> list[float]
 
 
         Return generalized velocities values at a given time index.
@@ -13622,7 +13622,7 @@ class ParallelMesh(BaseMesh):
     def getCells(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getCells(self: libaster.ParallelMesh, group_name: str) -> List[int]
+        1. getCells(self: libaster.ParallelMesh, group_name: str) -> list[int]
 
 
         Return the list of the indexes of the cells that belong to a group of cells.
@@ -13634,7 +13634,7 @@ class ParallelMesh(BaseMesh):
             list[int]: Indexes of the cells of the local group.
 
 
-        2. getCells(self: libaster.ParallelMesh, groups_name: List[str] = []) -> List[int]
+        2. getCells(self: libaster.ParallelMesh, groups_name: list[str] = []) -> list[int]
 
 
         Return the list of the indexes of the cells that belong to the groups of cells.
@@ -13984,7 +13984,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
     def getNodeAndComponentFromDOF(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getNodeAndComponentFromDOF(self: libaster.ParallelDOFNumbering, local: bool = True) -> List[Tuple[int, str]]
+        1. getNodeAndComponentFromDOF(self: libaster.ParallelDOFNumbering, local: bool = True) -> list[tuple[int, str]]
 
 
         Return the list of node id and name of component for each dofs
@@ -13995,7 +13995,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             list[tuple[int, str]] : node id and name of component for each dofs
 
 
-        2. getNodeAndComponentFromDOF(self: libaster.ParallelDOFNumbering, dof: int, local: bool = True) -> Tuple[int, str]
+        2. getNodeAndComponentFromDOF(self: libaster.ParallelDOFNumbering, dof: int, local: bool = True) -> tuple[int, str]
 
 
         Return the node id and name of component for given DOF
@@ -14272,9 +14272,9 @@ class ConnectionMesh(BaseMesh):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ConnectionMesh, arg0: libaster.ParallelMesh, arg1: List[str], arg2: List[str]) -> None
+        1. __init__(self: libaster.ConnectionMesh, arg0: libaster.ParallelMesh, arg1: list[str], arg2: list[str]) -> None
 
-        2. __init__(self: libaster.ConnectionMesh, arg0: str, arg1: libaster.ParallelMesh, arg2: List[str], arg3: List[str]) -> None
+        2. __init__(self: libaster.ConnectionMesh, arg0: str, arg1: libaster.ParallelMesh, arg2: list[str], arg3: list[str]) -> None
         """
 
     def getCells(self, group_name=""):
@@ -14673,7 +14673,7 @@ class externVarEnumInt:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -14685,7 +14685,7 @@ class externVarEnumInt:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
@@ -15020,7 +15020,7 @@ class HHO:
                     FieldOnNodesReal: HHO field
 
 
-        3. projectOnHHOCellSpace(self: libaster.HHO, func: List[libaster.GenericFunction], time: float = 0.0) -> libaster.FieldOnNodesReal
+        3. projectOnHHOCellSpace(self: libaster.HHO, func: list[libaster.GenericFunction], time: float = 0.0) -> libaster.FieldOnNodesReal
 
 
               Project real function to HHO Cell-space
@@ -15049,7 +15049,7 @@ class HHO:
                     FieldOnNodesReal: HHO field
 
 
-        5. projectOnHHOCellSpace(self: libaster.HHO, value: List[float]) -> libaster.FieldOnNodesReal
+        5. projectOnHHOCellSpace(self: libaster.HHO, value: list[float]) -> libaster.FieldOnNodesReal
 
 
               Project real value to HHO Cell-space
@@ -15091,7 +15091,7 @@ class HHO:
                     FieldOnNodesReal: HHO field
 
 
-        3. projectOnHHOSpace(self: libaster.HHO, func: List[libaster.GenericFunction], time: float = 0.0) -> libaster.FieldOnNodesReal
+        3. projectOnHHOSpace(self: libaster.HHO, func: list[libaster.GenericFunction], time: float = 0.0) -> libaster.FieldOnNodesReal
 
 
               Project real function to HHO-space
@@ -15116,7 +15116,7 @@ class HHO:
                     FieldOnNodesReal: HHO field
 
 
-        5. projectOnHHOSpace(self: libaster.HHO, value: List[float]) -> libaster.FieldOnNodesReal
+        5. projectOnHHOSpace(self: libaster.HHO, value: list[float]) -> libaster.FieldOnNodesReal
 
 
               Project real value to HHO-space
@@ -15216,7 +15216,7 @@ class ObjectBalancer:
     def balanceVectorOverProcesses(self, *args, **kwargs):
         """Overloaded function.
 
-        1. balanceVectorOverProcesses(self: libaster.ObjectBalancer, vector: List[float]) -> List[float]
+        1. balanceVectorOverProcesses(self: libaster.ObjectBalancer, vector: list[float]) -> list[float]
 
 
         Balance a vector of reals over processes
@@ -15228,7 +15228,7 @@ class ObjectBalancer:
             list[real]: balanced vector
 
 
-        2. balanceVectorOverProcesses(self: libaster.ObjectBalancer, vector: List[int]) -> List[int]
+        2. balanceVectorOverProcesses(self: libaster.ObjectBalancer, vector: list[int]) -> list[int]
 
 
         Balance a vector of integers over processes
@@ -15360,7 +15360,7 @@ class PtScotchPartitioner:
     def buildGraph(self, *args, **kwargs):
         """Overloaded function.
 
-        1. buildGraph(self: libaster.PtScotchPartitioner, vertloctab: List[int], edgeloctab: List[int]) -> int
+        1. buildGraph(self: libaster.PtScotchPartitioner, vertloctab: list[int], edgeloctab: list[int]) -> int
 
 
         Build the PtScotch graph from 2 integer vectors (PtScotch format)
@@ -15478,7 +15478,7 @@ class MeshConnectionGraph:
 def applyBalancingStrategy(*args, **kwargs):
     """Overloaded function.
 
-    1. applyBalancingStrategy(result: libaster.ElasticResult, vector: List[int]) -> libaster.ElasticResult
+    1. applyBalancingStrategy(result: libaster.ElasticResult, vector: list[int]) -> libaster.ElasticResult
 
 
     Apply balancing strategy to given result. User must give nodes that local process
@@ -15493,7 +15493,7 @@ def applyBalancingStrategy(*args, **kwargs):
         mesh: PhysicalProblem
 
 
-    2. applyBalancingStrategy(result: libaster.NonLinearResult, vector: List[int]) -> libaster.NonLinearResult
+    2. applyBalancingStrategy(result: libaster.NonLinearResult, vector: list[int]) -> libaster.NonLinearResult
 
 
     Apply balancing strategy to given result. User must give nodes that local process
@@ -15508,7 +15508,7 @@ def applyBalancingStrategy(*args, **kwargs):
         mesh: PhysicalProblem
 
 
-    3. applyBalancingStrategy(result: libaster.ThermalResult, vector: List[int]) -> libaster.ThermalResult
+    3. applyBalancingStrategy(result: libaster.ThermalResult, vector: list[int]) -> libaster.ThermalResult
 
 
     Apply balancing strategy to given result. User must give nodes that local process
@@ -15564,7 +15564,7 @@ class MedFileAccessType:
     def __setstate__(self, state):
         pass
 
-    def name(self):
+    def __str__(self):
         pass
 
     # ----------------------------------------------------------------------
@@ -15576,7 +15576,7 @@ class MedFileAccessType:
 
     @property
     def name(self):
-        """name(self: handle) -> str"""
+        """name(self: object) -> str"""
 
     @property
     def value(self):
