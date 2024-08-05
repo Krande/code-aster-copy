@@ -473,7 +473,7 @@ template <typename T>
 T AsterMPI::all_reduce(const T in_value, MPI_Op op,
                        aster_comm_t *_commCurrent) {
   T out_value;
-  AsterMPI::all_reduce(in_value, out_value, MPI_MAX, _commCurrent);
+  AsterMPI::all_reduce(in_value, out_value, op, _commCurrent);
 
   return out_value;
 }
