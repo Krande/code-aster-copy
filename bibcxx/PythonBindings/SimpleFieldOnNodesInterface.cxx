@@ -80,7 +80,7 @@ Returns:
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString(),
               py::arg( "same_rank" ) = PythonBool::None )
-        .def( "changePhysicalQuantity", &SimpleFieldOnNodesReal::changePhysicalQuantity,
+        .def( "setPhysicalQuantity", &SimpleFieldOnNodesReal::setPhysicalQuantity,
               R"(
             Return a new field with a new physical quantity and renamed components.
 

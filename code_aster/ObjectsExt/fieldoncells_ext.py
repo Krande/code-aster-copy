@@ -94,7 +94,7 @@ class ExtendedFieldOnCellsReal:
             cells = mesh.getCells()
         return self.toSimpleFieldOnCells().getValuesWithDescription(cells, component)
 
-    def changePhysicalQuantity(self, physQuantity, map_cmps, fed=None):
+    def setPhysicalQuantity(self, physQuantity, map_cmps, fed=None):
         """Return a new field with a new physical quantity and renamed components.
 
         Arguments:
@@ -108,7 +108,7 @@ class ExtendedFieldOnCellsReal:
             FieldOnCellsReal: field with name physical quantity.
         """
 
-        fcs = self.toSimpleFieldOnCells().changePhysicalQuantity(physQuantity, map_cmps)
+        fcs = self.toSimpleFieldOnCells().setPhysicalQuantity(physQuantity, map_cmps)
 
         ligrel = self.getDescription()
         if fed:

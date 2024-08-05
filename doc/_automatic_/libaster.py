@@ -2458,9 +2458,6 @@ class FieldOnCellsReal(DataField):
     def build(self, feds=[]):
         pass
 
-    def changeLocalization(self, arg0):
-        pass
-
     def copy(self):
         """Return a duplicated FieldOnCellsReal as a copy
 
@@ -2565,6 +2562,9 @@ class FieldOnCellsReal(DataField):
         """
 
     def setDescription(self, arg0):
+        pass
+
+    def setLocalization(self, arg0):
         pass
 
     def setValues(self, *args, **kwargs):
@@ -3034,18 +3034,6 @@ class FieldOnNodesReal(DataField):
     def build(self, mesh=None):
         pass
 
-    def changePhysicalQuantity(self, physQuantity, map_cmps):
-        """Return a new field with a new physical quantity and renamed components.
-
-        Arguments:
-            physQuantity [str]: name of the new physical quantity
-            map_cmps[dict[str, str]]: dict to rename components
-            (only renamed component will be keeped)
-
-        Returns:
-            FieldOnNodesReal: field with name physical quantity.
-        """
-
     def copy(self):
         pass
 
@@ -3194,6 +3182,18 @@ class FieldOnNodesReal(DataField):
 
     def setMesh(self, arg0):
         pass
+
+    def setPhysicalQuantity(self, physQuantity, map_cmps):
+        """Return a new field with a new physical quantity and renamed components.
+
+        Arguments:
+            physQuantity [str]: name of the new physical quantity
+            map_cmps[dict[str, str]]: dict to rename components
+            (only renamed component will be keeped)
+
+        Returns:
+            FieldOnNodesReal: field with name physical quantity.
+        """
 
     def setValues(self, *args, **kwargs):
         """Overloaded function.
@@ -3701,18 +3701,6 @@ class SimpleFieldOnCellsReal(DataField):
     def __setitem__(self, arg0, arg1):
         pass
 
-    def changePhysicalQuantity(self, physQuantity, map_cmps):
-        """Return a new field with a new physical quantity and renamed components.
-
-        Arguments:
-            physQuantity [str]: name of the new physical quantity
-            map_cmps[dict[str, str]]: dict to rename components
-            (only renamed component will be keeped)
-
-        Returns:
-            SimpleFieldOnCellsReal: field with name physical quantity.
-        """
-
     def getCellsWithComponents(self):
         """Returns the list of cells where the field is defined.
 
@@ -3810,6 +3798,18 @@ class SimpleFieldOnCellsReal(DataField):
             SimpleFieldOnCellsReal: field restricted.
         """
 
+    def setPhysicalQuantity(self, physQuantity, map_cmps):
+        """Return a new field with a new physical quantity and renamed components.
+
+        Arguments:
+            physQuantity [str]: name of the new physical quantity
+            map_cmps[dict[str, str]]: dict to rename components
+            (only renamed component will be keeped)
+
+        Returns:
+            SimpleFieldOnCellsReal: field with name physical quantity.
+        """
+
     def setValue(self, ima, icmp, ipt, ispt, val):
         """Set the value of the `icmp` component of the field on the `ima` cell,
         at the `ipt` point, at the `ispt` sub-point.
@@ -3905,18 +3905,6 @@ class SimpleFieldOnNodesReal(DataField):
         2. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, str]) -> float
         """
 
-    def changePhysicalQuantity(self, physQuantity, map_cmps):
-        """Return a new field with a new physical quantity and renamed components.
-
-        Arguments:
-            physQuantity [str]: name of the new physical quantity
-            map_cmps[dict[str, str]]: dict to rename components
-            (only renamed component will be keeped)
-
-        Returns:
-            SimpleFieldOnNodesReal: field with name physical quantity.
-        """
-
     def getComponent(self, arg0):
         pass
 
@@ -3934,6 +3922,18 @@ class SimpleFieldOnNodesReal(DataField):
 
     def getPhysicalQuantity(self):
         pass
+
+    def setPhysicalQuantity(self, physQuantity, map_cmps):
+        """Return a new field with a new physical quantity and renamed components.
+
+        Arguments:
+            physQuantity [str]: name of the new physical quantity
+            map_cmps[dict[str, str]]: dict to rename components
+            (only renamed component will be keeped)
+
+        Returns:
+            SimpleFieldOnNodesReal: field with name physical quantity.
+        """
 
     def toFieldOnNodes(self):
         """Convert to FieldOnNodes

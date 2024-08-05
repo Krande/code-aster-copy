@@ -418,9 +418,8 @@ public:
     return ret;
   };
 
-  SimpleFieldOnNodesPtr
-  changePhysicalQuantity(const std::string physQuant,
-                         const MapString &map_cmps) const {
+  SimpleFieldOnNodesPtr setPhysicalQuantity(const std::string physQuant,
+                                            const MapString &map_cmps) const {
 
     if (map_cmps.empty()) {
       raiseAsterError("Map to rename components is empty");

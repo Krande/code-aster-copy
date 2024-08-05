@@ -83,7 +83,7 @@ Convert to SimpleFieldOnNodes
 Returns:
     SimpleFieldOnNodesReal: field converted
         )" )
-        .def( "changeLocalization", &FieldOnCellsReal::changeLocalization )
+        .def( "setLocalization", &FieldOnCellsReal::setLocalization )
         .def( "getDescription", &FieldOnCellsReal::getDescription, R"(
             Return the descriptor associated with the FieldOnCellsReal object
 

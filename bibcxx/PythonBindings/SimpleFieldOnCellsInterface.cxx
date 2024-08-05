@@ -182,7 +182,7 @@ Returns:
                 SimpleFieldOnCellsReal: field restricted.
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() )
-        .def( "changePhysicalQuantity", &SimpleFieldOnCellsReal::changePhysicalQuantity,
+        .def( "setPhysicalQuantity", &SimpleFieldOnCellsReal::setPhysicalQuantity,
               R"(
             Return a new field with a new physical quantity and renamed components.
 
