@@ -86,7 +86,7 @@ Returns:
 
             Arguments:
                 physQuantity [str]: name of the new physical quantity
-                map_cmps[dict[str, str]]: dict to rename components
+                map_cmps [dict[str, str]]: dict to rename components
                 (only renamed component will be keeped)
 
             Returns:

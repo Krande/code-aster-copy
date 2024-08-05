@@ -99,7 +99,7 @@ class ExtendedFieldOnCellsReal:
 
         Arguments:
             physQuantity [str]: name of the new physical quantity
-            map_cmps[dict[str, str]]: dict to rename components
+            map_cmps [dict[str, str]]: dict to rename components
             (only renamed component will be keeped)
             fed [FiniteElementDescriptor] : FED used to convert the field if the one present
              in the field is not appropriate (default: None)

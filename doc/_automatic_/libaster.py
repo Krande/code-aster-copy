@@ -2564,8 +2564,15 @@ class FieldOnCellsReal(DataField):
     def setDescription(self, arg0):
         pass
 
-    def setLocalization(self, arg0):
-        pass
+    def setLocalization(self, loc):
+        """Return a new field interpolated at the given localozation.
+
+        Arguments:
+            loc [str]: name of localization (ELEM, ELNO or ELGA)
+
+        Returns:
+            FieldOnCellsReal: new field with new localization.
+        """
 
     def setValues(self, *args, **kwargs):
         """Overloaded function.
@@ -3803,7 +3810,7 @@ class SimpleFieldOnCellsReal(DataField):
 
         Arguments:
             physQuantity [str]: name of the new physical quantity
-            map_cmps[dict[str, str]]: dict to rename components
+            map_cmps [dict[str, str]]: dict to rename components
             (only renamed component will be keeped)
 
         Returns:
@@ -3928,7 +3935,7 @@ class SimpleFieldOnNodesReal(DataField):
 
         Arguments:
             physQuantity [str]: name of the new physical quantity
-            map_cmps[dict[str, str]]: dict to rename components
+            map_cmps [dict[str, str]]: dict to rename components
             (only renamed component will be keeped)
 
         Returns:
