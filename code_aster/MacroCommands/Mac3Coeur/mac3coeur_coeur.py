@@ -639,34 +639,8 @@ class Coeur:
             }
             for ac in self.collAC
         ]
-        dict_elap_m = [
-            {
-                "GROUP_MA": "GC_%s_M" % ac.pos_aster,
-                "NOM": "GCKP_%s_M" % ac.pos_aster,
-                "PREF_MAILLE": "MM",
-            }
-            for ac in self.collAC
-        ]
-        dict_elap_t = [
-            {
-                "GROUP_MA": "GC_%s_T" % ac.pos_aster,
-                "NOM": "GCKP_%s_T" % ac.pos_aster,
-                "PREF_MAILLE": "MM",
-            }
-            for ac in self.collAC
-        ]
-        dict_elap_b = [
-            {
-                "GROUP_MA": "GC_%s_B" % ac.pos_aster,
-                "NOM": "GCKP_%s_B" % ac.pos_aster,
-                "PREF_MAILLE": "MM",
-            }
-            for ac in self.collAC
-        ]
 
-        ls_dict = dict_creic + dict_elap_m + dict_elap_t + dict_elap_b
-
-        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=ls_dict)
+        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=dict_creic)
 
         _MA = DEFI_GROUP(
             reuse=_MA,
@@ -676,7 +650,6 @@ class Coeur:
                 _F(NOM="GRIL_I", UNION=tuple(grids_middle)),
                 _F(NOM="GRIL_E", UNION=tuple(grids_extr)),
                 _F(NOM="CREIC", UNION=[i["NOM"] for i in dict_creic]),
-                _F(NOM="ELAP", UNION=[i["NOM"] for i in dict_elap_m + dict_elap_t + dict_elap_b]),
             ),
             CREA_GROUP_NO=(
                 _F(GROUP_MA=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN")),
@@ -804,7 +777,7 @@ class Coeur:
                 ),
                 _F(GROUP_MA=("ELA", "RIG"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
                 _F(
-                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI", "CREIC", "ELAP"),
+                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI", "CREIC"),
                     PHENOMENE="MECANIQUE",
                     MODELISATION="DIS_T",
                 ),

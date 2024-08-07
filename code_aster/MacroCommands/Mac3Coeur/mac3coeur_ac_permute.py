@@ -128,24 +128,6 @@ def mac3coeur_ac_permute(self, **args):
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
-            _F(
-                GROUP_MA_INIT="GCKP_%s_B" % POS_INIT,
-                GROUP_MA_FINAL="GCKP_%s_B" % POS_FIN,
-                TRAN=VECT,
-                PRECISION=1.0e-10,
-            ),
-            _F(
-                GROUP_MA_INIT="GCKP_%s_T" % POS_INIT,
-                GROUP_MA_FINAL="GCKP_%s_T" % POS_FIN,
-                TRAN=VECT,
-                PRECISION=1.0e-10,
-            ),
-            _F(
-                GROUP_MA_INIT="GCKP_%s_M" % POS_INIT,
-                GROUP_MA_FINAL="GCKP_%s_M" % POS_FIN,
-                TRAN=VECT,
-                PRECISION=1.0e-10,
-            ),
         ),
     )
 
