@@ -98,8 +98,11 @@ class SimpleFieldOnCells : public DataField {
     /**
      * Calculate the position of value in CESV array
      */
-    ASTERINTEGER _positionInArray( const ASTERINTEGER &icmp, const ASTERINTEGER &ima,
+    ASTERINTEGER _positionInArray( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
                                    const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) const {
+#ifdef ASTER_DEBUG_CXX
+        this->_checkAllOOR( ima, icmp, ipt, ispt );
+#endif
 
         ASTERINTEGER npt = this->_ptCell( ima );
         ASTERINTEGER nspt = this->_sptCell( ima );
@@ -133,7 +136,7 @@ class SimpleFieldOnCells : public DataField {
         ASTERINTEGER nbCells = this->getNumberOfCells();
         if ( ima < 0 || ima >= nbCells ) {
             throw std::runtime_error( "Cell index '" + std::to_string( ima ) +
-                                      "' is out of range" );
+                                      "' is out of range  ( " + std::to_string( nbCells ) + "  )" );
         };
     }
 
@@ -141,8 +144,8 @@ class SimpleFieldOnCells : public DataField {
         ASTERINTEGER npt = this->_ptCell( ima );
         if ( ipt < 0 || ipt >= npt ) {
             throw std::runtime_error( "Point     '" + std::to_string( ipt ) +
-                                      "' is out of range for cell '" + std::to_string( ima ) +
-                                      "'" );
+                                      "' is out of range  ( " + std::to_string( npt ) +
+                                      "  ) for cell '" + std::to_string( ima ) + "'" );
         }
     }
 
@@ -150,8 +153,8 @@ class SimpleFieldOnCells : public DataField {
         ASTERINTEGER nspt = this->_sptCell( ima );
         if ( ispt < 0 || ispt >= nspt ) {
             throw std::runtime_error( "SubPoint  '" + std::to_string( ispt ) +
-                                      "' is out of range for cell '" + std::to_string( ima ) +
-                                      "'" );
+                                      "' is out of range ( " + std::to_string( nspt ) +
+                                      "  ) for cell '" + std::to_string( ima ) + "'" );
         }
     }
 
@@ -159,8 +162,8 @@ class SimpleFieldOnCells : public DataField {
         ASTERINTEGER ncmp = this->_cmpsSptCell( ima );
         if ( icmp < 0 || icmp >= ncmp ) {
             throw std::runtime_error( "Component '" + std::to_string( icmp ) +
-                                      "' is out of range for cell '" + std::to_string( ima ) +
-                                      "'" );
+                                      "' is out of range  ( " + std::to_string( ncmp ) +
+                                      "  ) for cell '" + std::to_string( ima ) + "'" );
         }
     }
 
@@ -168,9 +171,17 @@ class SimpleFieldOnCells : public DataField {
         ASTERINTEGER ncmp = this->getNumberOfComponents();
         if ( icmp < 0 || icmp >= ncmp ) {
             throw std::runtime_error( "Component '" + std::to_string( icmp ) +
-                                      "' is out of range" );
+                                      "' is out of range  ( " + std::to_string( ncmp ) + "  )" );
         }
     }
+
+    void _checkAllOOR( const ASTERINTEGER &ima, const ASTERINTEGER &icmp, const ASTERINTEGER &ipt,
+                       const ASTERINTEGER &ispt ) const {
+        this->_checkCellOOR( ima );
+        this->_checkPtOOR( ima, ipt );
+        this->_checkSptOOR( ima, ispt );
+        this->_checkCmpAtCellOOR( ima, icmp );
+    };
 
   public:
     /**
@@ -244,7 +255,7 @@ class SimpleFieldOnCells : public DataField {
             throw std::runtime_error( "First call of updateValuePointers is mandatory" );
 #endif
 
-        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
+        ASTERINTEGER position = this->_positionInArray( ima, icmp, ipt, ispt );
 
         ( *_allocated )[position] = true;
         return this->operator[]( position );
@@ -257,7 +268,7 @@ class SimpleFieldOnCells : public DataField {
             throw std::runtime_error( "First call of updateValuePointers is mandatory" );
 #endif
 
-        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
+        ASTERINTEGER position = this->_positionInArray( ima, icmp, ipt, ispt );
 
         if ( !( *_allocated )[position] ) {
             std::string mess = "DEBUG: Position (" + std::to_string( icmp ) + ", " +
@@ -269,46 +280,37 @@ class SimpleFieldOnCells : public DataField {
         return this->operator[]( position );
     };
 
+    ValueType &operator()( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                           const ASTERINTEGER &ipt ) {
+
+        return ( *this )( ima, icmp, ipt, 0 );
+    };
+
+    const ValueType &operator()( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                                 const ASTERINTEGER &ipt ) const {
+        return ( *this )( ima, icmp, ipt, 0 );
+    };
+
     /**
      * @brief Access to the (icmp) component of the (ima) cell
               at the (ipt) point, at the (ispt) sub-point.
     */
     ValueType const &getValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
-                               const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) const {
+                               const ASTERINTEGER &ipt, const ASTERINTEGER &ispt = 0 ) const {
 
-#ifdef ASTER_DEBUG_CXX
-        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
-            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
-#endif
-
-        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
-
-#ifdef ASTER_DEBUG_CXX
-        bool allocated = ( *_allocated )[position];
-        if ( !allocated ) {
-            std::cout << "DEBUG: Position (" + std::to_string( icmp ) + ", " +
-                             std::to_string( ima ) + ", " + std::to_string( ipt ) + ", " +
-                             std::to_string( ispt ) + ") is valid but not allocated!"
-                      << std::endl;
-        };
-#endif
-
-        return ( *_values )[position];
+        return ( *this )( ima, icmp, ipt, ispt );
     }
 
     void setValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp, const ASTERINTEGER &ipt,
                    const ASTERINTEGER &ispt, const ValueType &val ) {
 
-#ifdef ASTER_DEBUG_CXX
-        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
-            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
-#endif
+        ( *this )( ima, icmp, ipt, ispt ) = val;
+    }
 
-        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
+    void setValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp, const ASTERINTEGER &ipt,
+                   const ValueType &val ) {
 
-        ( *_allocated )[position] = true;
-
-        ( *_values )[position] = val;
+        this->setValue( ima, icmp, ipt, 0, val );
     }
 
     /**
@@ -316,19 +318,34 @@ class SimpleFieldOnCells : public DataField {
               at the (ipt) point, at the (ispt) sub-point.
     */
     bool hasValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp, const ASTERINTEGER &ipt,
-                   const ASTERINTEGER &ispt ) const {
-
-        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
+                   const ASTERINTEGER &ispt = 0 ) const {
 
 #ifdef ASTER_DEBUG_CXX
         if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
             throw std::runtime_error( "First call of updateValuePointers is mandatory" );
-
-        this->_checkCellOOR( ima );
-        this->_checkPtOOR( ima, ipt );
-        this->_checkSptOOR( ima, ispt );
-        this->_checkCmpAtCellOOR( ima, icmp );
 #endif
+
+        const auto nbCells = this->getNumberOfCells();
+        if ( ima < 0 || nbCells == 0 || ima >= nbCells ) {
+            return false;
+        }
+
+        const auto ncmp = this->_cmpsSptCell( ima );
+        if ( icmp < 0 || ncmp == 0 || icmp >= ncmp ) {
+            return false;
+        }
+
+        const auto npt = this->_ptCell( ima );
+        if ( ipt < 0 || npt == 0 || ipt >= npt ) {
+            return false;
+        }
+
+        const auto nspt = this->_sptCell( ima );
+        if ( ispt < 0 || nspt == 0 || ispt >= nspt ) {
+            return false;
+        }
+
+        ASTERINTEGER position = this->_positionInArray( ima, icmp, ipt, ispt );
 
         return ( *_allocated )[position];
     }
