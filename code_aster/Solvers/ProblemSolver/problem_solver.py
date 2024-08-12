@@ -37,6 +37,7 @@ from .incremental_solver import IncrementalSolver
 from .line_search import LineSearch
 from .newton_solver import NewtonSolver
 from .snes_solver import SNESSolver
+from .raspen_solver import RASPENSolver
 from .storage_manager import StorageManager
 from .time_stepper import TimeStepper
 
@@ -239,17 +240,32 @@ class ProblemSolver(SolverFeature):
         logger.debug("+++ get ConvergenceCriteria")
         step_conv_solv = self.get_feature(SOP.ConvergenceCriteria, optional=True)
         args = self.get_feature(SOP.Keywords)
+        use_local_solver = False
         if not step_conv_solv:
-            if args.get("METHODE", "NEWTON") == "NEWTON":
+            method = args.get("METHODE", "NEWTON")
+            if method == "NEWTON":
                 step_conv_solv = NewtonSolver()
-            else:
+            elif method == "SNES":
                 step_conv_solv = SNESSolver()
+            elif method == "RASPEN":
+                step_conv_solv = RASPENSolver()
+                local_solver = SNESSolver(local=True)
+                step_conv_solv.local_solver = local_solver
+                use_local_solver = True
+            else:
+                raiseAsterError(f"Unkwown method {method}")
         # FIXME replace by 'use(*, Keywords)'
         if not step_conv_solv.param:
             step_conv_solv.setParameters(args)
+            if use_local_solver:
+                local_solver.setParameters(args)
         for feat, required in step_conv_solv.undefined():
             step_conv_solv.use(self._get(feat, required))
+            if use_local_solver:
+                local_solver.use(self._get(feat, required))
         self.use(step_conv_solv)
+        if use_local_solver:
+            self.use(local_solver)
         return step_conv_solv
 
     def _get_step_solver(self):

@@ -146,3 +146,4 @@ except ImportError:
         PROD = sum
 
         ASTER_COMM_WORLD = COMM_WORLD = FAKE_COMM_WORLD()
+        ASTER_COMM_SELF = COMM_SELF = FAKE_COMM_WORLD()

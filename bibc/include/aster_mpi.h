@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -103,14 +103,19 @@ extern int aster_mpi_recv( void *, int, MPI_Datatype, int, int, aster_comm_t * )
 extern int aster_mpi_sendrecv( void *, int, MPI_Datatype, int, int, void *, int, MPI_Datatype, int,
                                int, aster_comm_t * );
 
-extern void DEFSP( ASMPI_COMM, asmpi_comm, char *, STRING_SIZE, MPI_Fint * );
+extern void DEFSP( ASMPI_COMM, asmpi_comm, const char *, STRING_SIZE, MPI_Fint * );
 extern void DEFPPPSP( ASMPI_SPLIT_COMM, asmpi_split_comm, MPI_Fint *, MPI_Fint *, MPI_Fint *,
-                      char *, STRING_SIZE, MPI_Fint * );
+                      const char *, STRING_SIZE, MPI_Fint * );
 extern void DEFPPP( ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *, MPI_Fint *, MPI_Fint * );
 extern void terminate( void );
 
 #define CALL_ASABRT( a ) CALLP( ASABRT, asabrt, a )
 extern void DEFP( ASABRT, asabrt, _IN ASTERINTEGER * );
+
+#define CALLO_ASMPI_COMM( a, b ) CALLOP( ASMPI_COMM, asmpi_comm, a, b )
+#define CALL_ASMPI_SPLIT_COMM( a, b, c, d, e )                                                     \
+    CALLPPPOP( ASMPI_SPLIT_COMM, asmpi_split_comm, a, b, c, d, e );
+#define CALL_ASMPI_INFO( a, b, c ) CALLPPP( ASMPI_INFO_WRAP, asmpi_info_wrap, a, b, c )
 
 /* AS_MPICHECK checks the return code of an MPI function */
 #define AS_MPICHECK( code )                                                                        \

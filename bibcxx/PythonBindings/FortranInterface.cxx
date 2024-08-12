@@ -25,6 +25,7 @@
 
 #include "PythonBindings/FortranInterface.h"
 
+#include "aster_mpi.h"
 #include "aster_pybind.h"
 
 void exportFortranToPython( py::module_ &mod ) {
@@ -127,5 +128,45 @@ Set an option value to be used from Fortran operators.
 Arguments:
     option (str): Option name.
     value (float): Option value.
+        )" );
+
+    mod.def( "asmpi_set", &asmpi_set, R"(
+Set the current MPI communicator.
+
+Arguments:
+    comm (int): id of the communicator.
+        )" );
+    mod.def( "asmpi_get", &asmpi_get, R"(
+Get the current MPI communicator.
+
+Returns:
+    comm (int): id of the communicator.
+        )" );
+    mod.def( "asmpi_free", &asmpi_free, R"(
+Free the MPI communicator in argument.
+
+Arguments:
+    comm (int): id of the communicator.
+        )" );
+    mod.def( "asmpi_split", &asmpi_split, R"(
+Split the MPI communicator in argument.
+
+Arguments:
+    comm (int): id of the parent communicator to split.
+    color (int): color to which the calling process will belong.
+    name (str): name of the new communicator.
+
+Returns:
+    comm (int) : id of the communicator.
+        )" );
+    mod.def( "asmpi_info", &asmpi_info, R"(
+Return the rank and size of the MPI communicator.
+
+Arguments:
+    comm (int): id of the communicator.
+
+Returns:
+    rank (int) : rank of the communicator.
+    size (int) : size of the communicator.
         )" );
 };

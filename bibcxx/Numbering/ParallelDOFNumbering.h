@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -140,7 +140,7 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Get Rows owned locally (aka not Ghost)
      */
-    VectorLong getNoGhostDOFs() const;
+    VectorLong getNoGhostDOFs( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof

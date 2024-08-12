@@ -84,30 +84,13 @@ T400_000ANS = 4 * T100_000ANS
 T500_000ANS = 1.5768e13
 TMILLION = 3.1536e13
 
-# TINJ=T500_000ANS
-# FINJ=1.629360000E+13
-# TSIM=TMILLION
-# TFIN=TMILLION
-
-
-# TINJ=T10_000ANS
-# TFIN=T10_000ANS
 
 TINJ = T100_000ANS
 TFIN = T100_000ANS
+TFIN = T500ANS
 
-LISPOST = DEFI_LIST_REEL(
-    VALE=(
-        T1ANS,
-        T10ANS,
-        T100ANS,
-        T1000ANS,
-        T10_000ANS,
-        T100_000ANS,
-        #          T500_000ANS,
-        #          TMILLION,
-    )
-)
+l_inst = (T1ANS, T10ANS, T100ANS, T1000ANS, T10_000ANS, T100_000ANS, T500_000ANS, TMILLION)
+LISPOST = DEFI_LIST_REEL(VALE=[t for t in l_inst if t <= TFIN])
 
 UN = DEFI_CONSTANTE(VALE=1.0)
 ZERO = DEFI_CONSTANTE(VALE=0.0)
@@ -298,8 +281,20 @@ CHIMP = AFFE_CHAR_CINE(
 #     STAT NON LINE
 # *************************************************************
 #
+myOptions = "-pc_type lu -ksp_monitor -pc_factor_mat_solver_type mumps -ksp_type fgmres -prefix_push lsnes_ -snes_monitor -snes_linesearch_type basic -snes_rtol 1.e-10 -snes_atol 1.e-50 -snes_max_it 20 -prefix_pop -prefix_push gsnes_ -snes_linesearch_type basic -snes_rtol 1.e-8 -snes_atol 1.e-12 -snes_max_it 10  -prefix_pop -snes_monitor  "
 
+myOptions = "-pc_type lu -ksp_monitor -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10 -snes_monitor "
+myOptions = "-pc_type lu -ksp_monitor -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic -snes_rtol 1.e-9 -snes_atol 1.e-13 -snes_max_it 5 -snes_monitor "
 myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type preonly -snes_linesearch_type basic  -snes_rtol 1.e-4 -snes_max_it 10  "
+myOptions = (
+    "-ksp_type fgmres  -pc_type lu -ksp_monitor -pc_factor_mat_solver_type mumps "
+    + "-prefix_push lsnes_ "
+    + " -snes_monitor -snes_linesearch_type basic -snes_rtol 1.e-8 -snes_atol 1.e-50 -snes_max_it 5  "
+    + "-prefix_pop "
+    + "-prefix_push gsnes_  "
+    + "-snes_linesearch_type basic -ksp_monitor -ksp_rtol 1.e-7 -ksp_atol 1.e-50  -snes_max_it 20  "
+    + "-prefix_pop "
+)
 
 U1 = MECA_NON_LINE(
     MODELE=MODELE,
@@ -309,8 +304,8 @@ U1 = MECA_NON_LINE(
     ETAT_INIT=_F(DEPL=CHAMNO),
     INCREMENT=_F(LIST_INST=LI, INST_FIN=TFIN),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-    METHODE="SNES",
-    CONVERGENCE=_F(RESI_GLOB_RELA=RESI_GLOB_RELA, ITER_GLOB_MAXI=ITER_GLOB_MAXI),
+    METHODE="RASPEN",
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, RESI_GLOB_MAXI=1.0e-12, ITER_GLOB_MAXI=ITER_GLOB_MAXI),
     SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
     INFO=1,
 )
@@ -385,7 +380,7 @@ IMPR_TABLE(
 # =================PC======================
 TEST_RESU(
     RESU=_F(
-        INST=3.1536000e7,
+        INST=T1ANS,
         REFERENCE="NON_DEFINI",
         RESULTAT=U1,
         NOM_CHAM="DEPL",
@@ -398,38 +393,40 @@ TEST_RESU(
     )
 )
 
-TEST_RESU(
-    RESU=_F(
-        INST=3.1536000000e10,
-        REFERENCE="NON_DEFINI",
-        RESULTAT=U1,
-        NOM_CHAM="DEPL",
-        GROUP_NO="N3",
-        NOM_CMP="PRE1",
-        VALE_CALC=-7.22026680e05,
-        VALE_REFE=-7.22030e5,
-        CRITERE="RELATIF",
-        PRECISION=1.0e-2,
+if TFIN >= T1000ANS:
+    TEST_RESU(
+        RESU=_F(
+            INST=T1000ANS,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=U1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="PRE1",
+            VALE_CALC=-7.22026680e05,
+            VALE_REFE=-7.22030e5,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-2,
+        )
     )
-)
 
-TEST_RESU(
-    RESU=_F(
-        INST=3.1536000000e12,
-        REFERENCE="NON_DEFINI",
-        RESULTAT=U1,
-        NOM_CHAM="DEPL",
-        GROUP_NO="N3",
-        NOM_CMP="PRE1",
-        VALE_CALC=270374.3394703255,
-        VALE_REFE=270374.0,
-        CRITERE="RELATIF",
-        PRECISION=1.0e-2,
+if TFIN >= T100_000ANS:
+    TEST_RESU(
+        RESU=_F(
+            INST=T100_000ANS,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=U1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="PRE1",
+            VALE_CALC=270374.3394703255,
+            VALE_REFE=270374.0,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-2,
+        )
     )
-)
 TEST_RESU(
     RESU=_F(
-        INST=3.1536000e7,
+        INST=T1ANS,
         REFERENCE="NON_DEFINI",
         RESULTAT=U1,
         NOM_CHAM="DEPL",
@@ -442,37 +439,39 @@ TEST_RESU(
     )
 )
 
-TEST_RESU(
-    RESU=_F(
-        INST=3.1536000000e10,
-        REFERENCE="NON_DEFINI",
-        RESULTAT=U1,
-        NOM_CHAM="DEPL",
-        GROUP_NO="N303",
-        NOM_CMP="PRE1",
-        VALE_CALC=-1.00095609e06,
-        VALE_REFE=-1.00000e6,
-        CRITERE="RELATIF",
-        PRECISION=1.0e-2,
+if TFIN >= T1000ANS:
+    TEST_RESU(
+        RESU=_F(
+            INST=T1000ANS,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=U1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N303",
+            NOM_CMP="PRE1",
+            VALE_CALC=-1.00095609e06,
+            VALE_REFE=-1.00000e6,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-2,
+        )
     )
-)
-TEST_RESU(
-    RESU=_F(
-        INST=3.1536000000e12,
-        REFERENCE="NON_DEFINI",
-        RESULTAT=U1,
-        NOM_CHAM="DEPL",
-        GROUP_NO="N303",
-        NOM_CMP="PRE1",
-        VALE_CALC=-30682.781052608072,
-        VALE_REFE=-30683.0,
-        CRITERE="RELATIF",
-        PRECISION=1.0e-2,
+if TFIN >= T100_000ANS:
+    TEST_RESU(
+        RESU=_F(
+            INST=T100_000ANS,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=U1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N303",
+            NOM_CMP="PRE1",
+            VALE_CALC=-30682.781052608072,
+            VALE_REFE=-30683.0,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-2,
+        )
     )
-)
 TEST_RESU(
     RESU=_F(
-        INST=3.1536000e7,
+        INST=T1ANS,
         REFERENCE="NON_DEFINI",
         RESULTAT=U1,
         NOM_CHAM="DEPL",
@@ -485,34 +484,36 @@ TEST_RESU(
     )
 )
 
-TEST_RESU(
-    RESU=_F(
-        INST=3.1536000000e10,
-        REFERENCE="NON_DEFINI",
-        RESULTAT=U1,
-        NOM_CHAM="DEPL",
-        GROUP_NO="N393",
-        NOM_CMP="PRE1",
-        VALE_CALC=-1.00009464e06,
-        VALE_REFE=-1.00000e6,
-        CRITERE="RELATIF",
-        PRECISION=1.0e-2,
+if TFIN >= T1000ANS:
+    TEST_RESU(
+        RESU=_F(
+            INST=T1000ANS,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=U1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N393",
+            NOM_CMP="PRE1",
+            VALE_CALC=-1.00009464e06,
+            VALE_REFE=-1.00000e6,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-2,
+        )
     )
-)
-TEST_RESU(
-    RESU=_F(
-        INST=3.1536000000e12,
-        REFERENCE="NON_DEFINI",
-        RESULTAT=U1,
-        NOM_CHAM="DEPL",
-        GROUP_NO="N393",
-        NOM_CMP="PRE1",
-        VALE_CALC=-923352.8573279586,
-        VALE_REFE=-923353.0,
-        CRITERE="RELATIF",
-        PRECISION=1.0e-2,
+if TFIN >= T100_000ANS:
+    TEST_RESU(
+        RESU=_F(
+            INST=T100_000ANS,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=U1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N393",
+            NOM_CMP="PRE1",
+            VALE_CALC=-923352.8573279586,
+            VALE_REFE=-923353.0,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-2,
+        )
     )
-)
 
 
 FIN()

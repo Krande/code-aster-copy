@@ -51,12 +51,14 @@ class ExtendedMesh:
     internalStateBuilder = MeshStateBuilder
 
     @classmethod
-    def buildRectangle(cls, lx=1.0, ly=1.0, refine=0, info=1):
+    def buildRectangle(cls, lx=1.0, ly=1.0, nx=1, ny=1, refine=0, info=1):
         """Build the quadrilateral mesh of a rectangle.
 
         Arguments:
             lx [float] : length along the x axis (default 1.).
             ly [float] : length along the y axis (default 1.).
+            nx [int] : number of elements along the x axis (default 1).
+            ny [int] : number of elements along the y axis (default 1).
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (0|1|2). (default 1).
         """
@@ -65,8 +67,8 @@ class ExtendedMesh:
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
-        nb_seg_x = 1 * (2**refine)
-        nb_seg_y = 1 * (2**refine)
+        nb_seg_x = nx * (2**refine)
+        nb_seg_y = ny * (2**refine)
 
         mcmesh = mesh_builder.rectangle(
             xmin=0.0, xmax=lx, ymin=0.0, ymax=ly, nx=nb_seg_x, ny=nb_seg_y

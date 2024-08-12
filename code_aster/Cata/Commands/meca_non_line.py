@@ -62,9 +62,9 @@ MECA_NON_LINE = MACRO(
     # -------------------------------------------------------------------
     INCREMENT=C_INCREMENT(),
     # -------------------------------------------------------------------
-    METHODE=SIMP(statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON", "SNES")),
+    METHODE=SIMP(statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON", "SNES", "RASPEN")),
     b_meth_newton=BLOC(
-        condition="""equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'SNES') """,
+        condition="""equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'SNES') or equal_to("METHODE", 'RASPEN') """,
         NEWTON=C_NEWTON("MECA_NON_LINE"),
     ),
     # -------------------------------------------------------------------
@@ -77,6 +77,9 @@ MECA_NON_LINE = MACRO(
     ),
     b_snes_solveur=BLOC(
         condition="""equal_to("METHODE", 'SNES')""", SOLVEUR=C_SOLVEUR("STAT_NON_LINE_SNES")
+    ),
+    b_raspen_solveur=BLOC(
+        condition="""equal_to("METHODE", 'RASPEN')""", SOLVEUR=C_SOLVEUR("STAT_NON_LINE_SNES")
     ),
     # -------------------------------------------------------------------
     SCHEMA_TEMPS=FACT(

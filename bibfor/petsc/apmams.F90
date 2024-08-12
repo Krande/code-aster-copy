@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine apmams(matass, auxMat)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/mtmchc.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/asmpi_info.h"
     !----------------------------------------------------------------
@@ -70,6 +71,7 @@ subroutine apmams(matass, auxMat)
     real(kind=8) :: valm
     integer, pointer :: smdi(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
+    character(len=24), pointer :: refa(:) => null()
     !
     PetscInt, pointer :: v_dxi1(:) => null()
     PetscInt, pointer :: v_dxi2(:) => null()
@@ -105,6 +107,12 @@ subroutine apmams(matass, auxMat)
     else
         ASSERT(.false.)
     end if
+
+!    elimination des ddls (affe_char_cine)
+!   ---------------------------------
+    call jeveuo(matass//'.REFA', 'E', vk24=refa)
+    if (refa(3) .eq. 'ELIML') call mtmchc(matass, 'ELIMF')
+    ASSERT(refa(3) .ne. 'ELIML')
 
 !   les valeurs de la partie triangulaire superieure de la matrice sont stockees
 !   dans valm
