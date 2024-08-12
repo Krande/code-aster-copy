@@ -23,7 +23,7 @@ from code_aster import CA
 
 test = CA.TestCase()
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ERREUR_F="ABORT"))
 
 
 mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", INFO=2)
@@ -95,6 +95,26 @@ ASSEMBLAGE(
     NUME_DDL=CO("NUMEDDL"),
 )
 
+# Résolution classique
+modes = CALC_MODES(
+    CALC_FREQ=_F(FREQ=3.0, NMAX_FREQ=8, NMAX_ITER_SHIFT=3, PREC_SHIFT=0.05, SEUIL_FREQ=0.01),
+    MATR_MASS=mass,
+    MATR_RIGI=rigi,
+    OPTION="CENTRE",
+    VERI_MODE=_F(PREC_SHIFT=0.005, SEUIL=1e-06, STOP_ERREUR="NON", STURM="OUI"),
+)
+
+CALC_CHAMP(reuse=modes, RESULTAT=modes, FORCE="FORC_NODA")
+
+CALC_CHAMP(reuse=modes, RESULTAT=modes, FORCE="REAC_NODA")
+
+IMPR_RESU(
+    FICHIER_UNIQUE="OUI",
+    FORMAT="MED",
+    RESU=_F(NOM_CHAM="DEPL", PARTIE="REEL", RESULTAT=modes),
+    VERSION_MED="3.3.1",
+)
+
 # Résolution avec élimination
 rigi_elim = ELIM_LAGR(MATR_RIGI=rigi)
 mass_elim = ELIM_LAGR(MATR_ASSE=mass, MATR_RIGI=rigi)
@@ -109,6 +129,14 @@ modes_elim = CALC_MODES(
 
 modes_reconstruit = REST_GENE_PHYS(RESU_GENE=modes_elim)
 
+CALC_CHAMP(
+    reuse=modes_reconstruit, RESULTAT=modes_reconstruit, CHAM_MATER=fieldmat, FORCE="FORC_NODA"
+)
+
+CALC_CHAMP(
+    reuse=modes_reconstruit, RESULTAT=modes_reconstruit, CHAM_MATER=fieldmat, FORCE="REAC_NODA"
+)
+
 IMPR_RESU(
     FICHIER_UNIQUE="OUI",
     FORMAT="MED",
@@ -116,21 +144,6 @@ IMPR_RESU(
     VERSION_MED="3.3.1",
 )
 
-
-modes = CALC_MODES(
-    CALC_FREQ=_F(FREQ=3.0, NMAX_FREQ=8, NMAX_ITER_SHIFT=3, PREC_SHIFT=0.05, SEUIL_FREQ=0.01),
-    MATR_MASS=mass,
-    MATR_RIGI=rigi,
-    OPTION="CENTRE",
-    VERI_MODE=_F(PREC_SHIFT=0.005, SEUIL=1e-06, STOP_ERREUR="NON", STURM="OUI"),
-)
-
-IMPR_RESU(
-    FICHIER_UNIQUE="OUI",
-    FORMAT="MED",
-    RESU=_F(NOM_CHAM="DEPL", PARTIE="REEL", RESULTAT=modes),
-    VERSION_MED="3.3.1",
-)
 
 # Comparaison des 2 modes (on utilise des valeurs absolues car les modes
 # peuvent être identiques à Pi près)
@@ -141,6 +154,22 @@ vals_r = v8_r.getValues()
 
 diff = np.max(np.abs(np.abs(vals) - np.abs(vals_r))) / np.max(np.abs(vals))
 test.assertLessEqual(diff, 1.0e-8)
+
+v8 = modes.getField("FORC_NODA", 8)
+v8_r = modes_reconstruit.getField("FORC_NODA", 8)
+vals = v8.getValues()
+vals_r = v8_r.getValues()
+
+diff = np.max(np.abs(np.abs(vals) - np.abs(vals_r))) / np.max(np.abs(vals))
+test.assertLessEqual(diff, 1.0e-6)
+
+v8 = modes.getField("REAC_NODA", 8)
+v8_r = modes_reconstruit.getField("REAC_NODA", 8)
+vals = v8.getValues()
+vals_r = v8_r.getValues()
+
+diff = np.max(np.abs(np.abs(vals) - np.abs(vals_r))) / np.max(np.abs(vals))
+test.assertLessEqual(diff, 1.0e-6)
 
 test.assertEqual(rigi_elim.getType(), "MATR_ASSE_ELIM_R")
 test.assertEqual(mass_elim.getType(), "MATR_ASSE_ELIM_R")
@@ -206,6 +235,46 @@ modesColle = CALC_MODES(
     OPTION="CENTRE",
     VERI_MODE=_F(PREC_SHIFT=0.005, SEUIL=1e-06, STOP_ERREUR="NON", STURM="OUI"),
 )
+CALC_CHAMP(reuse=modesColle, RESULTAT=modesColle, CHAM_MATER=fieldmatColle, FORCE="FORC_NODA")
+CALC_CHAMP(reuse=modesColle, RESULTAT=modesColle, CHAM_MATER=fieldmatColle, FORCE="REAC_NODA")
+
+# Create a new result based on the real part of the solution (the imaginary one is 0)
+mode_r = CREA_CHAMP(
+    MODELE=modelColle,
+    PROL_ZERO="OUI",
+    NUME_DDL=NUMEDDLCOLLE,
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    AFFE=(_F(TOUT="OUI", NOM_CMP="DX", VALE=0.0),),
+)
+mode_r.setValues(modesColle.getField("DEPL", 8).getRealPart().getValues())
+resu_r = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="MULT_ELAS",
+    AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=mode_r, MODELE=modelColle),
+)
+CALC_CHAMP(reuse=resu_r, RESULTAT=resu_r, CHAM_MATER=fieldmatColle, FORCE="FORC_NODA")
+CALC_CHAMP(reuse=resu_r, RESULTAT=resu_r, CHAM_MATER=fieldmatColle, FORCE="REAC_NODA")
+
+
+forc = modesColle.getField("FORC_NODA", 8)
+forc_r = resu_r.getField("FORC_NODA", 1)
+
+vals = forc.getValues()
+vals_r = forc_r.getValues()
+
+diff = np.max(np.abs(np.abs(vals) - np.abs(vals_r))) / np.max(np.abs(vals))
+test.assertLessEqual(diff, 1.0e-7)
+
+forc = modesColle.getField("REAC_NODA", 8)
+forc_r = resu_r.getField("REAC_NODA", 1)
+
+vals = forc.getValues()
+vals_r = forc_r.getValues()
+
+diff = np.max(np.abs(np.abs(vals) - np.abs(vals_r))) / np.max(np.abs(vals))
+test.assertLessEqual(diff, 1.0e-7)
+
 
 # Reference: maillage collé (non_régression)
 freq1Refe = 9.34491e01
