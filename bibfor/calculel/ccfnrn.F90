@@ -38,6 +38,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlima.h"
+#include "asterfort/gettco.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ischar.h"
 #include "asterfort/jedema.h"
@@ -90,19 +91,19 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     character(len=1) :: stop, ktyp, kbid
     character(len=2) :: codret
     character(len=6) :: nompro
-    character(len=8) :: k8bid, kiord, ctyp, nomcmp(3), para, mesh
-    character(len=16) :: typmo, optio2, motfac
-    character(len=19) :: ligrel, chdep2, vebid, k19bid, listLoad, partsd
+    character(len=8) :: k8bid, kiord, ctyp, nomcmp(3), para, mesh, blanc8
+    character(len=16) :: typmo, optio2, motfac, typrep, typmat
+    character(len=19) :: ligrel, chdep2, vebid, k19bid, listLoad, partsd, massgen
     character(len=24) :: numref, fomult, charge, infoch, vechmp, vachmp, cnchmp
     character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono(2)
-    character(len=24) :: carac, cnchmpc
+    character(len=24) :: carac, cnchmpc, rigi
     character(len=24) :: vafono, vreno, vareno, sigma, chdepl, valk(3), nume, chdepk, numk
-    character(len=24) :: mateco, mater, vafonr, vafoni, k24b, numnew
+    character(len=24) :: mateco, mater, vafonr, vafoni, k24b, numnew, basemo
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno, chamnk
     character(len=24) :: strx, vldist, vcnoch, vcham, lisori
     character(len=24) :: bidon, chacce, modele, kstr, modnew
     aster_logical :: exitim, lstr, lstr2, ldist, dbg_ob, dbgv_ob, ltest, lsdpar, lcpu, lbid
-    aster_logical :: lPilo1, lPilo2, l_pmesh
+    aster_logical :: lPilo1, lPilo2, l_pmesh, l_complex
     real(kind=8) :: etan, time, partps(3), omega2, coef(3), raux
     real(kind=8) :: rctfin, rctdeb, rctfini, rctdebi, freq
     real(kind=8), pointer :: cgmp(:) => null()
@@ -120,6 +121,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     integer, pointer :: v_list_store(:) => null()
     real(kind=8), pointer :: prbid(:) => null()
     complex(kind=8), pointer :: pcbid(:) => null()
+    character(len=24), pointer :: refa(:) => null()
     parameter(nompro='CCFNRN')
     data chvarc/'&&CCFNRN.CHVARC'/
     data k24bid/' '/
@@ -130,6 +132,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     call jemarq()
 !
     call infniv(ifm, niv)
+    blanc8 = '        '
 ! SI PARALLELISME EN TEMPS: INITIALISATION CONTEXTE
     call pcptcc(1, ldist, dbg_ob, dbgv_ob, lcpu, &
                 ltest, rang, nbproc, mpicou, nbordr, &
@@ -166,6 +169,15 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
         typmo = ' '
     end if
 !
+! -- LES CHAMPS SONT-ILS DE NATURE COMPLEXE ?
+    l_complex = .false.
+    iordr = zi(jordr)
+    call rsexch(' ', resuin, 'DEPL', iordr, chdepl, iret)
+    if (iret .eq. 0) then
+        call jelira(chdepl(1:19)//'.VALE', 'TYPE', cval=ktyp)
+        l_complex = (ktyp == 'C')
+    end if
+!
 ! - Only one list of loads for REAC_NODA
 !
     if (option .eq. 'REAC_NODA' .and. &
@@ -186,8 +198,10 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
             call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=masse, arret='C')
             if (masse .ne. ' ') then
                 call mtdscr(masse)
-                call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
+                call jeveuo(masse(1:19)//'.&INT', 'L', lmat)
             end if
+        else
+            call dismoi('NUME_DDL', resuin, 'RESU_DYNA', repk=numref)
         end if
         if (resultType .eq. 'DYNA_TRANS') exitim = .true.
     else if (resultType .eq. 'DYNA_HARMO') then
@@ -196,12 +210,29 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
             call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=masse, arret='C')
             if (masse .ne. ' ') then
                 call mtdscr(masse)
-                call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
+                call jeveuo(masse(1:19)//'.&INT', 'L', lmat)
             end if
         end if
     end if
     if (resultType .eq. 'MODE_MECA' .or. resultType .eq. 'DYNA_TRANS') then
-        call dismoi('NUME_DDL', resuin, 'RESU_DYNA', repk=numref)
+        call jeexin(resuin//'           .REFD', iret)
+        if (iret .ne. 0) then
+            call dismoi('BASE_MODALE', resuin, 'RESU_DYNA', repk=basemo, arret='C')
+            call gettco(basemo, typrep)
+            ! --- TRAITEMENT DE ELIM_LAGR
+            if (typrep(1:16) .eq. 'MAILLAGE_SDASTER') then
+                call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=massgen)
+                call gettco(massgen, typmat)
+                if (typmat .eq. 'MATR_ASSE_ELIM_R') then
+                    ! on recupère le nom de la matrice de masse d'origine
+                    call jeveuo(massgen//'.REFA', 'L', vk24=refa)
+                    masse = refa(20) (1:19)
+                    call mtdscr(masse)
+                    call jeveuo(masse(1:19)//'.&INT', 'L', lmat)
+                end if
+            end if
+        end if
+        call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numref)
     end if
     carac = ' '
     charge = ' '
@@ -477,7 +508,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                              compor, partps, nh, ligrel, chvarc, &
                              sigma, strx, chdepl, chdep2, vfono)
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
-            if (resultType .ne. 'DYNA_HARMO') then
+            if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
                 call asasve(vfono(1), nume, 'R', vafono)
             else
 ! creation champ aux noeuds
@@ -532,7 +563,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
             end if
 !
 ! CREATION DES SDS CHAM_NOS SIMPLE OU SIMULTANES
-            if (resultType .ne. 'DYNA_HARMO') then
+            if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
                 ktyp = 'R'
                 if ((ldist) .and. (ideb .ne. ifin)) then
                     call vtcreb(chamno, 'G', 'R', nume_ddlz=nume, nb_equa_outz=neq, &
@@ -571,7 +602,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                         pcbid)
             lonch = lonnew
 !
-            if (resultType .ne. 'DYNA_HARMO') then
+            if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
                 call jeveuo(vafono, 'L', jfo)
                 call jeveuo(zk24(jfo) (1:19)//'.VALE', 'L', vr=fono)
             else
@@ -591,7 +622,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 !
 !       --- STOCKAGE DES FORCES NODALES ---
             if (option .eq. 'FORC_NODA') then
-                if (resultType .ne. 'DYNA_HARMO') then
+                if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
                     b_n = to_blas_int(lonch)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
@@ -617,7 +648,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                     end if
                 end if
 !
-                if (resultType .ne. 'DYNA_HARMO') then
+                if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
                     call vechme(stop, modele, charge, infoch, partps, &
                                 carac, mater, mateco, vechmp, varc_currz=chvarc, &
                                 ligrel_calcz=ligrel, nharm=nh)
@@ -692,13 +723,13 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 !
 ! --- CALCUL DU CHAMNO DE REACTION PAR DIFFERENCE DES FORCES NODALES
 ! --- ET DES FORCES EXTERIEURES MECANIQUES NON SUIVEUSES
-                if (resultType .ne. 'DYNA_HARMO') then
+                if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
                     call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=chmp)
                     call jeveuo(cncgmp(1:19)//'.VALE', 'L', vr=cgmp)
                 else
                     call jeveuo(cnchmpc(1:19)//'.VALE', 'L', vc=chmpc)
                 end if
-                if (resultType .ne. 'DYNA_HARMO') then
+                if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
                     do j = 0, lonch-1
                         noch(1+j) = fono(1+j)-chmp(1+j)-cgmp(1+j)
                     end do
@@ -719,7 +750,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                 end if
             else
 !         --- CALCUL DU CHAMNO DE REACTION PAR RECOPIE DE FORC_NODA
-                if (resultType .ne. 'DYNA_HARMO') then
+                if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
                     b_n = to_blas_int(lonch)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
@@ -733,7 +764,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
             end if
 !
 !       --- TRAITEMENT DES MODE_MECA ---
-            if (resultType .eq. 'MODE_MECA' .and. typmo(1:8) .eq. 'MODE_DYN') then
+            if (resultType .eq. 'MODE_MECA' .and. typmo(1:8) .eq. 'MODE_DYN' &
+                .and. .not. l_complex) then
                 call rsadpa(resuin, 'L', 1, 'OMEGA2', iordr, &
                             0, sjv=jvPara, styp=ctyp)
                 omega2 = zr(jvPara)
@@ -751,7 +783,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                 call jedetr('&&'//nompro//'.TRAV')
 !
 !       --- TRAITEMENT DES MODE_STAT ---
-            else if (resultType .eq. 'MODE_MECA' .and. typmo(1:8) .eq. 'MODE_STA') then
+            elseif (resultType .eq. 'MODE_MECA' .and. typmo(1:8) .eq. 'MODE_STA' &
+                    .and. .not. l_complex) then
                 call rsadpa(resuin, 'L', 1, 'TYPE_DEFO', iordr, &
                             0, sjv=jvPara, styp=ctyp)
                 if (zk16(jvPara) (1:9) .eq. 'FORC_IMPO') then
@@ -818,7 +851,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                 end if
 !
 !       --- TRAITEMENT DE DYNA_HARMO ---
-            else if (resultType .eq. 'DYNA_HARMO') then
+            else if (resultType .eq. 'DYNA_HARMO' .or. &
+                     (resultType .eq. 'MODE_MECA' .and. typmo(1:8) .eq. 'MODE_STA' &
+                      .and. l_complex)) then
                 call rsexch(' ', resuin, 'ACCE', iordr, chacce, &
                             iret)
                 if (iret .eq. 0) then
