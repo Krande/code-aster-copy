@@ -66,6 +66,9 @@ POST_NEWMARK = MACRO(
                 statut="f", typ="I", default=2, val_min=1, fr="Nombre maximal d'itérations"
             ),
             CHAM_MATER=SIMP(statut="f", typ=cham_mater),
+            MAILLAGE_VERI_MASSE=SIMP(
+                statut="f", typ=CO, fr="Maillage utilisé pour vérification de la masse"
+            ),
         ),
     ),
     RESULTAT_PESANTEUR=SIMP(

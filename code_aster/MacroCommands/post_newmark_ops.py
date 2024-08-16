@@ -1219,6 +1219,9 @@ def post_newmark_ops(self, **args):
             elif TYPE == "MAILLAGE":
                 getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2)
 
+            if args["MAILLAGE_VERI_MASSE"] is not None:
+                self.register_result(NewMesh, args["MAILLAGE_VERI_MASSE"])
+
         ##############################################################################
         ##   Method : Mean acceleration obtained as force over mass of the sliding zone
         ##############################################################################
