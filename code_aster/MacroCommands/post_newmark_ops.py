@@ -416,10 +416,11 @@ def slice_array(x, val_min, val_max):
     return filter_array
 
 
-def get_ky_value(FsP, acc):
+def get_ky_value(FsP, acc, nstd=3):
     ## Obtain ky value from dynamic safety factors and mean acceleration
     ## Input : FsP : list of dynamic safety values
-    ##        acc : mean acceleration of sliding zone
+    ##         acc : mean acceleration of sliding zone
+    ##         nstd : number of std for linear regression
     ## Output : ay : limit acceleration leading to unitary safty factor
 
     ## we look at safety factor values around 1
@@ -442,7 +443,7 @@ def get_ky_value(FsP, acc):
         mean_ay = root_linear_function(popt[0], popt[1], y=1)  # y=1 as root for FS=1
         perr = np.sqrt(np.diag(pcov))
         ## ay is chosen 3 sigma lower from the obtained mean regression value
-        ay = root_linear_function(popt[0] - 3 * perr[0], popt[1] - 3 * perr[1], y=1)
+        ay = root_linear_function(popt[0] - nstd * perr[0], popt[1] - nstd * perr[1], y=1)
 
     ky = ay / 9.81
     return ky
@@ -1304,7 +1305,10 @@ def post_newmark_ops(self, **args):
         ## verify if ky is given, otherwise obtain it from dynamic safety factor
         if args["RESULTAT_PESANTEUR"] is not None:
             if args["KY"] is None:
-                ky = get_ky_value(FSp, acc)
+                nstd = args["NB_ECART_TYPE"]
+                aster.affiche("MESSAGE", "NB_ECART_TYPE = " + str(args["NB_ECART_TYPE"]))
+
+                ky = get_ky_value(FSp, acc, nstd)
                 ay = ky * 9.81
 
                 tabini = Table(para=["INST", "KY"], typ=["R", "R"])

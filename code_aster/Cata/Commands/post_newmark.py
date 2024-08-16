@@ -81,6 +81,14 @@ POST_NEWMARK = MACRO(
         CHAM_PHI=SIMP(statut="o", typ=cham_no_sdaster, fr="Champ de phi en dégrées"),
         CHAM_COHESION=SIMP(statut="o", typ=cham_no_sdaster, fr="Champ de cohesion"),
         CHAM_FS=SIMP(statut="f", typ=CO, fr="Champ du facteur de sécurité local"),
+        NB_ECART_TYPE=SIMP(
+            statut="f",
+            typ="R",
+            val_min=0.0,
+            default=3.0,
+            val_max=6.0,
+            fr="Nombre d'écarts-type pour la régression linéaire",
+        ),
         METHODE=SIMP(
             statut="f",
             typ="TXM",
