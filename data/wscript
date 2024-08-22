@@ -481,10 +481,10 @@ def check_config(self):
     cfg["addmem"] = addmem
     cfg["version_tag"] = ".".join([str(i) for i in self.env.ASTER_VERSION[0]])
     cfg["version_sha1"] = self.env.ASTER_VERSION[1]
-    cfg["python"] = "python3"
+    cfg["python"] = pyenv_abspath(self, "python3")
     _check_prog(self, "IPYTHON", ["ipython3", "ipython"], mandatory=False, var_prefix="")
     cfg["python_interactive"] = (
-        osp.basename(self.env.IPYTHON[0]) if self.env.IPYTHON else cfg["python"]
+        pyenv_abspath(self, "ipython3") if self.env.IPYTHON else cfg["python"]
     )
     cfg["python_interactive_is_wrapped"] = int(is_python_wrapped(cfg["python_interactive"]))
     cfg["parallel"] = int(self.get_define("ASTER_HAVE_MPI") or 0)
@@ -723,6 +723,22 @@ def _check_prog(self, name, programs, mandatory=True, add_paths=None, var_prefix
     if not success and mandatory:
         raise Errors.ConfigurationError("not found in $PATH: {0}".format(programs))
 
+def pyenv_abspath(self, program):
+    """Return abspath to program, even if pyenv is used.
+
+    Arguments:
+        self (Context): *Context* object.
+        program (str): Path to program.
+
+    Returns:
+        str: Path to program, eventually expanded by pyenv which.
+    """
+    try:
+        # check_call(["pyenv", "which", osp.basename(program)], stderr=PIPE, stdout=PIPE)
+        program = self.cmd_and_log(["pyenv", "which", osp.basename(program)]).strip()
+    except:
+        pass
+    return program
 
 def is_python_wrapped(interp):
     """Tell if the given python interpreter is a wrapper.
