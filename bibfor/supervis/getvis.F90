@@ -24,8 +24,8 @@ subroutine getvis(motfac, motcle, iocc, nbval, vect, &
     character(len=*), intent(in) :: motcle
     integer, intent(in), optional :: iocc
     integer, intent(in), optional :: nbval
-    integer, intent(out), optional :: vect(*)
-    integer, intent(out), optional :: scal
+    integer, intent(inout), optional :: vect(*)
+    integer, intent(inout), optional :: scal
     integer, intent(out), optional :: nbret
 #include "asterc/getvis_wrap.h"
 #include "asterfort/assert.h"
@@ -55,7 +55,7 @@ subroutine getvis(motfac, motcle, iocc, nbval, vect, &
     if (present(vect)) then
         call getvis_wrap(motfac, motcle, uioc, umax, vect, unbret)
     else if (present(scal)) then
-        uvect = 0
+        uvect(1) = scal
         call getvis_wrap(motfac, motcle, uioc, umax, uvect, unbret)
         if (unbret .ne. 0) then
             scal = uvect(1)
