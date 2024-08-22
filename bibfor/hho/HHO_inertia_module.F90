@@ -144,9 +144,9 @@ contains
                 call dsyev('V', 'U', hhoFace%ndim+1, axes_3d, 3, evalues, work, 50, info)
                 ASSERT(info == 0)
                 ASSERT(minloc(evalues(1:hhoFace%ndim+1), dim=1) == 1)
-            if (abs(evalues(1))/maxval(evalues) > 1.d-10) then
-                call utmess('F', 'HHO1_13', sr=abs(evalues(1))/maxval(evalues))
-            end if
+                if (abs(evalues(1))/maxval(evalues) > 1.d-10) then
+                    call utmess('F', 'HHO1_13', sr=abs(evalues(1))/maxval(evalues))
+                end if
                 axes(1:3, 1:2) = axes_3d(1:3, 2:3)
 !
                 do idim = 1, hhoFace%ndim
