@@ -3,7 +3,7 @@
  * @brief Interface python de BaseMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -166,7 +166,7 @@ Print the mesh in the MED format
 
 Arguments:
     filename (str): Name of the file
-    local (bool=True) : print local values only (relevent for BaseMesh only)
+    local (bool=True) : print local values only (relevant for BaseMesh only)
 
 Returns:
     Bool: True if of

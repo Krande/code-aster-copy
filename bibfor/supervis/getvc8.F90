@@ -24,8 +24,8 @@ subroutine getvc8(motfac, motcle, iocc, nbval, vect, &
     character(len=*), intent(in) :: motcle
     integer, intent(in), optional :: iocc
     integer, intent(in), optional :: nbval
-    complex(kind=8), intent(out), optional :: vect(*)
-    complex(kind=8), intent(out), optional :: scal
+    complex(kind=8), intent(inout), optional :: vect(*)
+    complex(kind=8), intent(inout), optional :: scal
     integer, intent(out), optional :: nbret
 #include "asterc/getvc8_wrap.h"
 #include "asterfort/assert.h"
@@ -55,7 +55,7 @@ subroutine getvc8(motfac, motcle, iocc, nbval, vect, &
     if (present(vect)) then
         call getvc8_wrap(motfac, motcle, uioc, umax, vect, unbret)
     else if (present(scal)) then
-        uvect = dcmplx(0.d0, 0.d0)
+        uvect(1) = scal
         call getvc8_wrap(motfac, motcle, uioc, umax, uvect, unbret)
         if (unbret .ne. 0) then
             scal = uvect(1)

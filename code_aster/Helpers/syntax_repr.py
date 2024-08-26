@@ -89,7 +89,7 @@ def _var(typ):
     name = {"I": "int", "R": "float", "C": "complex", "TXM": "text"}.get(typ)
     if not name:
         names = set([_typ2name(i) for i in force_list(typ)])
-        name = f" {XOR} ".join(names)
+        name = f" {XOR} ".join(sorted(names))
     return name
 
 
@@ -266,20 +266,21 @@ class SimpKwdLine(KwdLine):
                 value = _var(self._typ)
             except AttributeError:
                 raise TypeError(self._name, self._typ)
-            if self._default:
+            if self._default is not None:
                 value += f" (défaut: {self._repr_value(self._default)})"
             value = [value]
         else:
             if len(self._into) == 1:
                 value = [self._repr_value(self._into[0])]
-                if not self._default:
+                if self._default is None:
                     value[-1] += " (ou non renseigné)"
             else:
                 value = []
                 for i in self._into:
                     value.append(f"{XOR} {self._repr_value(i)}")
                     if self._default is not None and i == self._default:
-                        value[-1] += f" (par défaut)"
+                        value[-1] += " (par défaut)"
+        value.sort()
         lines = [prefix + value.pop(0) + ","]
         for remain in value:
             lines.append(" " * len(prefix) + remain + ",")
@@ -324,7 +325,7 @@ class CmdLine(BaseLine):
             all_types = list(chain.from_iterable(all_types))
         except TypeError:
             pass
-        self._results = list(set([_var(typ) for typ in all_types if typ]))
+        self._results = sorted(set([_var(typ) for typ in all_types if typ]))
 
     @staticmethod
     def _get_all_types(defs):
