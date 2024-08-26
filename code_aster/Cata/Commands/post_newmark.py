@@ -87,7 +87,7 @@ POST_NEWMARK = MACRO(
             val_min=0.0,
             default=3.0,
             val_max=6.0,
-            fr="Nombre d'écarts-type pour la régression linéaire",
+            fr="Nombre d'écarts-type pour prise en compte de la dispersion dans la régression linéaire",
         ),
         METHODE=SIMP(
             statut="f",
@@ -99,5 +99,6 @@ POST_NEWMARK = MACRO(
     ),
     KY=SIMP(statut="f", typ="R", fr="Valeur de ky pour le calcul de l'accélération critique"),
     GROUP_MA_CALC=SIMP(statut="o", typ=grma, max="**", fr="GROUP_MA associé au modèle utilisé"),
+    GROUP_MA_ZONE=SIMP(statut="f", typ=grma, max=1, fr="GROUP_MA construit pour calcul de Newmark"),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
 )
