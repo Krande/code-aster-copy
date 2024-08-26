@@ -1,0 +1,169 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# test des éléments DKT pour LdC avec matrice non-symétrique
+# modelisation A : triangles
+# modelisation B : quadrangle
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
+
+NCOU_BETON = 5  # nb de couches DKT
+EP = 0.2  # ep de la dalle
+
+EB = 35220.0e6
+# module de Young
+NUB = 0.2
+# module de Poison
+RHOB = 2500.0
+# rho
+FTM = 3.5e6
+# limite de la contrainte en traction simple
+SYCB = 19.2e6
+# limite de la contrainte en compression simple
+d_fiss_B = 5.0e-2  # distance moyenne inter-fissure (m)
+fcm = 48.0e6  # résistance en compression simple
+gf = 146.5  # énergie de fissuration (N/m)
+p = 2.0  # paramètre d´écrouissage
+TAUB = 0.0  # tau de régularisation visqueuse par endommagement
+KB = 0.01 * EB  # rigidité de la régularisation visqueuse
+
+# Same case for both test on mat_sym = 'OUI'
+rela_ldc = "ENDO_LOCA_TC"
+reg = "NON"
+matrice = "TANGENTE"
+mat_sym1 = "NON"
+
+# ***********************************************************************
+#    MAILLAGE + MODELE
+# ***********************************************************************
+
+MAILLAGE = LIRE_MAILLAGE(FORMAT="MED")
+
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DKT")
+)
+
+# MAILLAGE = MODI_MAILLAGE(reuse=MAILLAGE,MAILLAGE=MAILLAGE,
+#     ORIE_PEAU=_F(GROUP_MA_PEAU=('DEVANT', 'DROIT', 'ARRIERE',
+#                        'GAUCHE', 'BAS', 'HAUT', 'APPUI', 'COTE')),
+#                         )
+
+BETON_E = DEFI_MATER_GC(
+    ENDO_LOCA_TC=_F(
+        DIST_FISSURE=d_fiss_B,
+        E=EB,
+        NU=NUB,
+        FC=fcm,
+        FT=FTM,
+        GF=gf,
+        P=p,
+        REST_RIGI_FC=0.99,
+        SIG0=(fcm / 3),
+        COEF_REDU_SEUIL=0.95,
+        TAU_REGU_VISC=TAUB,
+    ),
+    RHO=RHOB,
+)
+
+BETON_E = DEFI_MATERIAU(reuse=BETON_E, MATER=BETON_E, VISC_ELAS=_F(K=KB, TAU=TAUB))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=BETON_E))
+
+# ***********************************************************************
+#    INCREMENTS DE TEMPS
+# ***********************************************************************
+DEP0 = 3.5e-3
+# déplacement max imposé
+# DEP0 = 2.0E-3;  # déplacement max imposé
+
+# Temps pour la construction des tableaux de charge-décharge
+dt = 0.02
+# pas de temps
+tjusqua = 1  # changer pour diff que t6 sinon éliminer
+
+inst1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tjusqua, PAS=dt))
+
+chf1 = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
+
+# ***********************************************************************
+#    CHARGEMENT MECANIQUE : DDL IMPOSES
+# ***********************************************************************
+
+CHAR_U3 = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    FACE_IMPO=(_F(GROUP_MA="A3A4", DX=DEP0)),
+    LIAISON_UNIF=(_F(GROUP_MA="A3A4", DDL="DY")),
+)
+
+DEPL_1 = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(GROUP_MA="A1A2", DY=0.0, DX=0),
+        # _F(GROUP_MA='A1A3', DX=0.0),
+        _F(GROUP_NO="A1", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    ),
+)
+
+CARAEL = AFFE_CARA_ELEM(
+    MODELE=MODELE,
+    COQUE=_F(
+        GROUP_MA="DALLE",
+        EPAIS=EP,
+        ANGL_REP=(45.0, 0.0),
+        # ANGL_REP=(0.0,0.0,),
+        COQUE_NCOU=NCOU_BETON,
+        INER_ROTA="OUI",
+        MODI_METRIQUE="NON",
+    ),
+)
+
+lisnt1 = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=inst1),
+    ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=10, SUBD_PAS_MINI=0.00001),
+)
+
+U1 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARAEL,
+    EXCIT=(_F(CHARGE=CHAR_U3, FONC_MULT=chf1), _F(CHARGE=DEPL_1)),
+    NEWTON=_F(MATRICE=matrice, MATR_RIGI_SYME=mat_sym1),
+    COMPORTEMENT=(_F(RELATION=rela_ldc, GROUP_MA="DALLE", ITER_CPLAN_MAXI=50, REGU_VISC=reg),),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=20),
+    ARCHIVAGE=_F(LIST_INST=inst1),
+    INCREMENT=_F(LIST_INST=lisnt1, INST_FIN=tjusqua),
+    MESURE=_F(TABLE="OUI"),
+)
+
+# Test des itérations
+iterations = RECU_TABLE(CO=U1, NOM_PARA="ITER_GLOB")
+
+TEST_TABLE(
+    TABLE=iterations,
+    NOM_PARA="ITER_GLOB",
+    TYPE_TEST="MAX",
+    REFERENCE="ANALYTIQUE",
+    VALE_REFE_I=7,
+    VALE_CALC_I=7,
+)
+
+
+FIN()

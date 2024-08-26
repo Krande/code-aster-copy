@@ -43,6 +43,7 @@ subroutine te0031(option, nomte)
 #include "asterfort/dxtpgl.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/nmtstm.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/q4gmas.h"
 #include "asterfort/q4grig.h"
@@ -51,6 +52,7 @@ subroutine te0031(option, nomte)
 #include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
+#include "asterfort/utpslg2.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vecma.h"
@@ -82,7 +84,7 @@ subroutine te0031(option, nomte)
     integer, parameter :: npge = 3
     integer :: ndim, nno, ind
     integer :: multic, codret, jvDisp, jdepr
-    integer :: jvCompor, i1, i2, j, jvect
+    integer :: jvCompor, i1, i2, j, jvect, icarcr
     integer :: k, jcret, jfreq, iacce
     integer :: jgeom, jmatr, jener, i
     integer :: ivect, nddl, nvec, iret, jvSief
@@ -96,11 +98,11 @@ subroutine te0031(option, nomte)
     aster_logical :: lcqhom, l_nonlin
 !     ---> POUR DKT/DST MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 !     ---> POUR DKQ/DSQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
-    real(kind=8) :: matloc(300), rho, epais
+    real(kind=8) :: matloc(576), rho, epais
 !     --->   UML : DEPLACEMENT A L'INSTANT T- (REPERE LOCAL)
 !     --->   DUL : INCREMENT DE DEPLACEMENT   (REPERE LOCAL)
     real(kind=8) :: uml(6, 4), dul(6, 4)
-    aster_logical :: lVect, lMatr, lVari, lSigm
+    aster_logical :: lVect, lMatr, lVari, lSigm, matsym
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -235,6 +237,7 @@ subroutine te0031(option, nomte)
         call jevech('PDEPLMR', 'L', jvDisp)
         call jevech('PDEPLPR', 'L', jdepr)
         call jevech('PCOMPOR', 'L', jvCompor)
+        call jevech('PCARCRI', 'L', icarcr)
 ! ----- Select objects to construct from option name
         call behaviourOption(option, zk16(jvCompor), &
                              lMatr, lVect, &
@@ -275,8 +278,12 @@ subroutine te0031(option, nomte)
         end if
 ! ----- Output fields
         if (lMatr) then
-            call jevech('PMATUUR', 'E', jmatr)
-            call utpslg(nno, 6, pgl, matloc, zr(jmatr))
+            call nmtstm(zr(icarcr), jmatr, matsym)
+            if (matsym) then
+                call utpslg(nno, 6, pgl, matloc, zr(jmatr))
+            else
+                call utpslg2(nno, 6, pgl, matloc, zr(jmatr))
+            end if
         end if
         if (lVect) then
             call jevech('PVECTUR', 'E', jvect)

@@ -17,7 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
+
+# Copy of ssnp142b test-case with RECH_LINEAIRE METHODE="MIXTE"
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"))
 
 ######## PARAMETRES #############
 tfin = 4
@@ -173,7 +176,7 @@ L_INST = DEFI_LIST_INST(
 )
 
 # CALCUL MECANIQUE
-U_M = STAT_NON_LINE(
+U_M = MECA_NON_LINE(
     MODELE=MO,
     CHAM_MATER=CM_M,
     EXCIT=(

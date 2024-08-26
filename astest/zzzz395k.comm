@@ -246,7 +246,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUX",
-            VALE_CALC=(0.00210322144697, -0.00210322144697),
+            VALE_CALC=(0.00210322588, -0.00210322588),
         ),
         _F(
             RESULTAT=base_d,
@@ -254,7 +254,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUY",
-            VALE_CALC=(0.00422460229674, -0.00422460229674),
+            VALE_CALC=(0.004224611148, -0.004224611148),
         ),
         _F(
             RESULTAT=base_d,
@@ -262,7 +262,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUX",
-            VALE_CALC=(0.00540173583501, -0.00540173583501),
+            VALE_CALC=(0.005401764178, -0.005401764178),
         ),
         _F(
             RESULTAT=base_d,
@@ -270,7 +270,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUY",
-            VALE_CALC=(0.010855090211, -0.010855090211),
+            VALE_CALC=(0.0108551477, -0.0108551477),
         ),
     )
 )
@@ -295,7 +295,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(0.135878725766, -0.135878725766),
+    VALE_CALC=(0.13591804636, -0.13591804636),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredp,
     FILTRE=(
@@ -304,7 +304,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(0.0563366268858, -0.0563366268858),
+    VALE_CALC=(0.05635263929, -0.05635263929),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredp,
     FILTRE=(
@@ -324,7 +324,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(2.3667100854, -2.3667100854),
+    VALE_CALC=(2.366710778, -2.366710778),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredd,
     FILTRE=(
@@ -333,7 +333,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(0.0112736054440, -0.0112736054440),
+    VALE_CALC=(0.011273922, -0.011273922),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredd,
     FILTRE=(
@@ -342,7 +342,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(0.00632342949742, -0.00632342949742),
+    VALE_CALC=(0.006323230, -0.006323230),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredd,
     FILTRE=(
