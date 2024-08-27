@@ -210,8 +210,9 @@ Returns:
             Arguments:
                 vec (Vec): The PETSc vector
                 scaling (float) : The scaling of the Lagrange DOFs
+                local (bool) : Only import the dof that are local to the subdomain
             )",
-              py::arg( "vec" ), py::arg( "scaling" ) = 1.0 )
+              py::arg( "vec" ), py::arg( "scaling" ) = 1.0, py::arg( "local" ) = false )
 #endif
         .def( "setValues", py::overload_cast< const ASTERDOUBLE & >( &FieldOnNodesReal::setValues ),
               R"(

@@ -276,6 +276,36 @@ class ExtendedParallelMesh:
             return mesh_p.refine(refine_1, info)
 
     @classmethod
+    def buildRectangle(cls, lx=1, ly=1, nx=1, ny=1, refine=0, info=1, deterministic=False):
+        """Build the quadrilateral mesh of a square.
+
+        Arguments:
+            lx [float] : length along the x axis (default 1.).
+            ly [float] : length along the y axis (default 1.).
+            nx [int] : number of elements along the x axis (default 1).
+            ny [int] : number of elements along the y axis (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+
+        ### Refine some levels on whole mesh, the remaining after partitioning
+        min_level = 6
+        refine_0 = min(min_level, refine)
+        refine_1 = refine - refine_0
+
+        with shared_tmpdir("buildRectangle") as tmpdir:
+            filename = osp.join(tmpdir, "buildRectangle.med")
+            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
+                mesh = Mesh.buildRectangle(lx=lx, ly=ly, nx=nx, ny=ny, refine=refine_0, info=info)
+                mesh.printMedFile(filename)
+            ResultNaming.syncCounter()
+
+            # Mesh creation
+            mesh_p = cls()
+            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            return mesh_p.refine(refine_1, info)
+
+    @classmethod
     def buildCube(cls, l=1, refine=0, info=1, deterministic=False):
         """Build the quadrilateral mesh of a cube.
 

@@ -431,7 +431,8 @@ aster_comm_t *get_node_by_id( MPI_Comm *id ) {
  *  Fortran interfaces - wrappers of the C functions
  *
  */
-void DEFSP( ASMPI_COMM, asmpi_comm, _IN char *action, STRING_SIZE lact, _INOUT MPI_Fint *comm ) {
+void DEFSP( ASMPI_COMM, asmpi_comm, _IN const char *action, STRING_SIZE lact,
+            _INOUT MPI_Fint *comm ) {
     /*! Wrapper around:
      *  aster_get_comm_world:   action = 'GET_WORLD', comm is OUT
      *  aster_get_current_comm: action = 'GET',       comm is OUT
@@ -463,7 +464,7 @@ void DEFSP( ASMPI_COMM, asmpi_comm, _IN char *action, STRING_SIZE lact, _INOUT M
 }
 
 void DEFPPPSP( ASMPI_SPLIT_COMM, asmpi_split_comm, _IN MPI_Fint *parent, _IN MPI_Fint *color,
-               MPI_Fint *key, _IN char *name, STRING_SIZE lname, _OUT MPI_Fint *newcomm ) {
+               MPI_Fint *key, _IN const char *name, STRING_SIZE lname, _OUT MPI_Fint *newcomm ) {
     /*! Wrapper around aster_split_comm */
     MPI_Comm mpicom;
     aster_comm_t *new;

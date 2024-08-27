@@ -56,6 +56,14 @@ module aster_petsc_module
             PetscErrorCode, intent(out) :: ierr
         end subroutine PetscViewerAndFormatCreate
     end interface
+    interface
+        subroutine PetscObjectGetComm(vec, comm, ierr)
+            use petscvecdef
+            Vec, intent(in):: vec
+            PetscMPIInt, intent(out) :: comm
+            PetscErrorCode, intent(out) :: ierr
+        end subroutine PetscObjectGetComm
+    end interface
 !
 ! Vec routines
 !

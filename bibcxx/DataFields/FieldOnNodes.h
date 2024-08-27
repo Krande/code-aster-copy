@@ -435,8 +435,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param scaling The scaling of the Lagrange DOFs
      */
 #ifdef ASTER_HAVE_PETSC
-    FieldOnNodes *fromPetsc( const Vec &vec, const ASTERDOUBLE &scaling = 1.0 ) {
-        CALLO_VECT_ASSE_FROM_PETSC( getName(), _dofDescription->getName(), &vec, &scaling );
+    FieldOnNodes *fromPetsc( const Vec &vec, const ASTERDOUBLE &scaling = 1.0,
+                             bool local = false ) {
+        const ASTERINTEGER local2 = local ? 1 : 0;
+        CALLO_VECT_ASSE_FROM_PETSC( getName(), _dofDescription->getName(), &vec, &scaling,
+                                    &local2 );
         _values->updateValuePointer();
 
         return this;

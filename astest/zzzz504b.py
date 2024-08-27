@@ -150,22 +150,45 @@ asse = ASSEMBLAGE(
 
 K, F = asse.K, asse.F
 
-# Export the parallel matrix and vector
+
+# print helper
+def Print(*args):
+    print(*args, flush=True)
+
+
+# Export the parallel matrix
 pK = K.toPetsc()
-print(f"pK.size={pK.size}", flush=True)
+Print(f"pK.size={pK.size}")
+test.assertEqual(pK.size, (36, 36))
 
-pF = F.toPetsc()
-print(f"pF.size={pF.size}", flush=True)
 
-# Export the local matrix and vector
+# Export the local matrix
 pK_loc = K.toPetsc(local=True)
-print(f"pK_loc.size={pK_loc.size}", flush=True)
+Print(f"pK_loc.size={pK_loc.size}")
+test.assertEqual(pK_loc.size, (26, 26))
+
+# Change values of F and export to PETSc
+F.setValues(1)
+pF = F.toPetsc()
+Print(f"pF.size={pF.size}")
+test.assertEqual(pF.size, 36)
 
 pF_loc = F.toPetsc(local=True)
-print(f"pF_loc.size={pF_loc.size}", flush=True)
+Print(f"pF_loc.size={pF_loc.size}")
+Print(f"pF_loc.comm={pF_loc.comm}")
+Print(f"MPI.ASTER_COMM_SELF={MPI.ASTER_COMM_SELF}")
+test.assertEqual(pF_loc.size, 26)
+if rank == 0:
+    pF *= 2
+    pF_loc *= 2
+pF_loc.view()
+Print(f"F_init={F.getValues()}")
+# Import fro PETSc - use local since pF_loc is a seq vec
+F.fromPetsc(pF_loc, local=True)
+Print(f"F_post={F.getValues()}")
 
 # Assemble the local in a parallel one and check it is the same
-pF2 = PETSc.Vec().create(comm=MPI.COMM_WORLD)
+pF2 = PETSc.Vec().create(comm=MPI.ASTER_COMM_WORLD)
 pF2.setType("mpi")
 globNume = F.getDescription()
 ownedRows = globNume.getNoGhostDOFs()

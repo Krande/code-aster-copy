@@ -45,10 +45,11 @@ void DEFSPPP( MATASS2PETSC, matass2petsc, const char *, STRING_SIZE, const ASTER
 #define CALLO_AP_ON_OFF( a, b ) CALLOO( AP_ON_OFF, ap_on_off, a, b )
 void DEFSS( AP_ON_OFF, ap_on_off, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_VECT_ASSE_FROM_PETSC( a, b, c, d )                                                   \
-    CALLOOPP( VECT_ASSE_FROM_PETSC, vect_asse_from_petsc, a, b, c, d )
-extern void DEFSSPP( VECT_ASSE_FROM_PETSC, vect_asse_from_petsc, const char *, STRING_SIZE,
-                     const char *, STRING_SIZE, const Vec *, const ASTERDOUBLE * );
+#define CALLO_VECT_ASSE_FROM_PETSC( a, b, c, d, e )                                                \
+    CALLOOPPP( VECT_ASSE_FROM_PETSC, vect_asse_from_petsc, a, b, c, d, e )
+extern void DEFSSPPP( VECT_ASSE_FROM_PETSC, vect_asse_from_petsc, const char *, STRING_SIZE,
+                      const char *, STRING_SIZE, const Vec *, const ASTERDOUBLE *,
+                      const ASTERINTEGER * );
 
 #endif
 

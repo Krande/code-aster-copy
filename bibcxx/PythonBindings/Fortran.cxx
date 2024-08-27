@@ -123,3 +123,40 @@ void set_option( const std::string &option, ASTERDOUBLE value ) {
         _reset_tpmax();
     }
 }
+
+int asmpi_get() {
+    const std::string action( "GET" );
+    MPI_Fint comm;
+    CALLO_ASMPI_COMM( action, &comm );
+    return comm;
+}
+
+void asmpi_set( const int comm ) {
+    MPI_Fint fcomm;
+    const std::string action( "SET" );
+    fcomm = MPI_Fint( comm );
+    CALLO_ASMPI_COMM( action, &fcomm );
+}
+
+void asmpi_free( const int comm ) {
+    MPI_Fint fcomm;
+    const std::string action( "FREE" );
+    fcomm = MPI_Fint( comm );
+    CALLO_ASMPI_COMM( action, &fcomm );
+}
+
+VectorInt asmpi_info( const int comm ) {
+    MPI_Fint fcomm;
+    MPI_Fint size, rank;
+    fcomm = MPI_Fint( comm );
+    CALL_ASMPI_INFO( &fcomm, &rank, &size );
+    return VectorInt { rank, size };
+}
+
+int asmpi_split( const int parent, int color, std::string name ) {
+    MPI_Fint fparent, newcomm;
+    int key( 0 );
+    fparent = MPI_Fint( parent );
+    CALL_ASMPI_SPLIT_COMM( &fparent, &color, &key, name, &newcomm );
+    return newcomm;
+}

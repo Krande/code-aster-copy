@@ -56,4 +56,14 @@ std::string onFatalError( const std::string value = "" );
 
 void set_option( const std::string &option, ASTERDOUBLE value );
 
+int asmpi_get();
+
+void asmpi_set( const int comm );
+
+void asmpi_free( const int comm );
+
+VectorInt asmpi_info( const int comm );
+
+int asmpi_split( const int parent, int color, std::string name );
+
 #endif
