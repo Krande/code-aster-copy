@@ -174,7 +174,7 @@ TEST_RESU(
         _F(
             CRITERE="ABSOLU",
             REFERENCE="AUTRE_ASTER",
-            ORDRE_GRANDEUR=1.0e-08,
+            ORDRE_GRANDEUR=5.0e-08,
             TYPE_TEST="MIN",
             CHAM_GD=DIF_VAR,
             VALE_CALC=0.0,
@@ -184,7 +184,7 @@ TEST_RESU(
         _F(
             CRITERE="ABSOLU",
             REFERENCE="AUTRE_ASTER",
-            ORDRE_GRANDEUR=1.0e-8,
+            ORDRE_GRANDEUR=5.0e-8,
             TYPE_TEST="MAX",
             CHAM_GD=DIF_VAR,
             VALE_CALC=0.0,

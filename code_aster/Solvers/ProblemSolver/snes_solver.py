@@ -140,7 +140,7 @@ class SNESSolver(SolverFeature):
         return PETSc.Mat.Structure.SAME_NONZERO_PATTERN
 
     def initSNES(self):
-        if self.snes:
+        if self.snes and self.local:
             return
         self.opers_manager.initialize()
 
