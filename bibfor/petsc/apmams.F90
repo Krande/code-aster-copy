@@ -149,7 +149,8 @@ subroutine apmams(matass, auxMat)
     ASSERT(ierr == 0)
     bs = bs4
     ASSERT(mod(neq2, bs) .eq. 0)
-  call MatSetSizes(auxMat, PETSC_DECIDE, PETSC_DECIDE, to_petsc_int(neq2), to_petsc_int(neq2), ierr)
+    call MatSetSizes(auxMat, PETSC_DECIDE, PETSC_DECIDE, to_petsc_int(neq2), &
+                     to_petsc_int(neq2), ierr)
     ASSERT(ierr .eq. 0)
     call MatSetUp(auxMat, ierr)
     ASSERT(ierr .eq. 0)

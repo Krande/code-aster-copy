@@ -3068,12 +3068,13 @@ class FieldOnNodesReal(DataField):
             float: dot product
         """
 
-    def fromPetsc(self, vec, scaling=1.0):
+    def fromPetsc(self, vec, scaling=1.0, local=False):
         """Import a PETSc vector into the field.
 
         Arguments:
             vec (Vec): The PETSc vector
             scaling (float) : The scaling of the Lagrange DOFs
+            local (bool) : Only import the dof that are local to the subdomain
         """
 
     def getComponents(self):
@@ -4966,6 +4967,70 @@ def set_option(arg0, arg1):
     Arguments:
         option (str): Option name.
         value (float): Option value.
+    """
+
+
+# built-in function asmpi_set in libaster
+
+
+def asmpi_set(arg0):
+    """Set the current MPI communicator.
+
+    Arguments:
+        comm (int): id of the communicator.
+    """
+
+
+# built-in function asmpi_get in libaster
+
+
+def asmpi_get():
+    """Get the current MPI communicator.
+
+    Returns:
+        comm (int): id of the communicator.
+    """
+
+
+# built-in function asmpi_free in libaster
+
+
+def asmpi_free(arg0):
+    """Free the MPI communicator in argument.
+
+    Arguments:
+        comm (int): id of the communicator.
+    """
+
+
+# built-in function asmpi_split in libaster
+
+
+def asmpi_split(arg0, arg1, arg2):
+    """Split the MPI communicator in argument.
+
+    Arguments:
+        comm (int): id of the parent communicator to split.
+        color (int): color to which the calling process will belong.
+        name (str): name of the new communicator.
+
+    Returns:
+        comm (int) : id of the communicator.
+    """
+
+
+# built-in function asmpi_info in libaster
+
+
+def asmpi_info(arg0):
+    """Return the rank and size of the MPI communicator.
+
+    Arguments:
+        comm (int): id of the communicator.
+
+    Returns:
+        rank (int) : rank of the communicator.
+        size (int) : size of the communicator.
     """
 
 
@@ -13908,7 +13973,7 @@ class ParallelEquationNumbering(EquationNumbering):
             int: global number of the DOF.
         """
 
-    def getNoGhostDOFs(self):
+    def getNoGhostDOFs(self, local=True):
         """Returns the indexes of the DOFs owned locally (aka not ghost).
 
         Returns:
@@ -14038,8 +14103,11 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: global number of the DOF.
         """
 
-    def getNoGhostDOFs(self):
+    def getNoGhostDOFs(self, local=True):
         """Returns the indexes of the DOFs owned locally (aka not ghost).
+
+        Arguments:
+            local (bool): local or global numbering
 
         Returns:
             int: indexes of the DOFs owned locally.
