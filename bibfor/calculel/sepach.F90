@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,12 +57,14 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
     integer ::  nbsp
     character(len=8) :: nomgd, nomre
     character(len=4) :: typch
+    character(len=1) :: ktyp
     character(len=19) :: canbva, chin, nume_equa, nume_equa_tmp
     character(len=24) :: ligrel, option, param, valk(2), noojb
     character(len=24), pointer :: celk(:) => null()
     complex(kind=8), pointer :: celv(:) => null()
     real(kind=8), pointer :: celvi(:) => null()
     real(kind=8), pointer :: celvr(:) => null()
+    aster_logical :: l_complex
 !
     call jemarq()
 !
@@ -124,14 +126,23 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 !
         call jelira(chin//'.VALE', 'LONMAX', nbval)
         call jeveuo(chin//'.VALE', 'L', ivale)
+        call jelira(chin//'.VALE', 'TYPE', cval=ktyp)
+        l_complex = (ktyp == 'C')
 !
         call wkvect(chreel//'.VALE', base//' V R', nbval, jvaler)
         call wkvect(chimag//'.VALE', base//' V R', nbval, jvalei)
 !
-        do i = 1, nbval
-            zr(jvaler-1+i) = dble(zc(ivale-1+i))
-            zr(jvalei-1+i) = dimag(zc(ivale-1+i))
-        end do
+        if (l_complex) then
+            do i = 1, nbval
+                zr(jvaler-1+i) = dble(zc(ivale-1+i))
+                zr(jvalei-1+i) = dimag(zc(ivale-1+i))
+            end do
+        else
+            do i = 1, nbval
+                zr(jvaler-1+i) = zr(ivale-1+i)
+                zr(jvalei-1+i) = 0.D0
+            end do
+        end if
 !
 !
 !

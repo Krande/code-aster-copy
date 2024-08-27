@@ -39,6 +39,7 @@ subroutine elim75(nomres, resgen, matgen, massgen)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -215,6 +216,9 @@ subroutine elim75(nomres, resgen, matgen, massgen)
 !
         call jelibe(chamol)
     end do
+
+! --- ENREGISTREMENT DE LA REFERENCE DYNAMIQUE
+    call refdcp(resgen, nomres)
 !
 ! --- MENAGE
     call jedetr('&&ELIM75.NUME')
