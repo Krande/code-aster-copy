@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -119,7 +119,8 @@ subroutine thmGetBehaviourChck(ds_thm)
     end if
 !
     if (.not. ds_thm%ds_elem%l_dof_pre2) then
-        if (ds_thm%ds_behaviour%rela_meca .eq. 'GonfElas') then
+        if (ds_thm%ds_behaviour%rela_meca .eq. 'GonfElas' .or. &
+            ds_thm%ds_behaviour%rela_meca .eq. 'Barcelone') then
             call utmess('F', 'THM1_67')
         end if
     end if

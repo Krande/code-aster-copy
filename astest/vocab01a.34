@@ -252,7 +252,6 @@ ALGO_RESO_GEOM
 ALLU
 ALP
 ALPHA
-ALPHAB
 ALPHAD
 ALPHAHB
 ALPHA_0
@@ -493,7 +492,6 @@ BAINITE_B
 BAINITE_N
 BANDE
 BANDE_ANALYSE
-BARCELONE
 BARRE
 BASCULE_EXPLICITE
 BASE
@@ -588,6 +586,8 @@ B_ENV
 B_N
 B_T
 B_TN
+Barcelone
+Barcelone_FO
 BiotCoef
 Bn
 Bt
@@ -2744,6 +2744,7 @@ F_SER_FO
 F_T
 F_TTLT
 F_TTTT
+FlowCorrection
 FrictionAngle
 G
 G1_0
@@ -3228,9 +3229,11 @@ I_CORP
 I_TUBU
 IncoPlastIndex
 IncompIndex
+InitConsPress
 InitCritPress
 InitPreconsPress
 InitTensionPress
+InitVoidsRatio
 IsoCompElasLim
 IsoTensElasLim
 Iwan
@@ -3282,7 +3285,6 @@ K3
 K8
 KANAI_TAJIMI
 KAPA
-KAPAS
 KAPPA
 KAPPA_FLEX
 KC
@@ -3408,7 +3410,6 @@ LAG_GV
 LAIGLE
 LAMBDA
 LAMBDA0
-LAMBDAS
 LAMBDA_L
 LAMBDA_N
 LAMBDA_T
@@ -4532,7 +4533,6 @@ PAS_SIGM
 PAS_THETA
 PAS_X
 PAS_Y
-PC0_INIT
 PCAP
 PCENT_AUGM
 PCENT_COUP
@@ -4895,6 +4895,10 @@ P_ULTM
 Pa
 PerzynaExpo
 PlastCompIndex
+PlastStrainIndex
+PlastStrainPara1
+PlastStrainPara2
+PlastSuccionIndex
 PoissonRatio
 Q
 Q1
@@ -5248,6 +5252,7 @@ R_ULT
 R_X1
 R_X2
 R_X5
+RefeConsPress
 ReferencePressure
 S
 SA
@@ -5558,6 +5563,8 @@ S_LT
 S_RUP
 S_VP_MELANGE
 ShearModulus
+SuccionIndex
+SuccionModulus
 SwellingIndex
 T
 T1C
@@ -6404,8 +6411,10 @@ Y_CENTRE
 Y_CENTRE2
 Y_MAXI
 Y_MINI
+YieldSuccion
 YieldSurfCapCoef
 YieldSurfLinCoef
+YieldTensSlope
 YoungModulus
 Z
 Z0

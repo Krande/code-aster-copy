@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -234,18 +234,11 @@ Relation 1d sans loi de fluence appropriée
  erreur direction grandissement
 """
     ),
-    61: _(
-        """
- BARCELONE :
- il faut que la contrainte hydrostatique soit supérieure
- à la  pression de cohésion -KC*PC
-"""
-    ),
-    62: _(
-        """
- ITER_INTE_MAXI insuffisant lors du calcul de la borne
-"""
-    ),
+    #     62: _(
+    #         """
+    #  ITER_INTE_MAXI insuffisant lors du calcul de la borne
+    # """
+    # ),
     63: _(
         """
  CAM_CLAY :
