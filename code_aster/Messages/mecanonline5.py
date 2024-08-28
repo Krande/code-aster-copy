@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -124,8 +124,7 @@ en accélération est possible
     ),
     17: _(
         """
- Pour le schéma HHT complet ( SCHEMA='HHT' avec MODI_EQUI = 'OUI'), la valeur de ALPHA ne peut
- pas être -1.
+ Pour le schéma HHT complet, la valeur de ALPHA ne peut pas être -1.
 """
     ),
     20: _(

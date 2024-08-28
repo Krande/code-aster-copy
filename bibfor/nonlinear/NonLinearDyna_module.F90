@@ -175,7 +175,7 @@ contains
         nlDynaDamping%lElemDampFromUser = lElemDampFromUser
         nlDynaDamping%dampFromUser = dampFromUser
         nlDynaDamping%dampAsse = "&&NMCH6P.AMORT"
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -191,11 +191,11 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine isDampMatrUpdate(nlDynaDamping, l_renumber, lDampMatrUpdate)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         aster_logical, intent(in) :: l_renumber
         aster_logical, intent(out) :: lDampMatrUpdate
-! - Local
+        ! - Local
         aster_logical :: lDampRayleighTang, lDampMatrix
 !   ------------------------------------------------------------------------------------------------
         !
@@ -207,7 +207,7 @@ contains
                 lDampMatrUpdate = ASTER_TRUE
             end if
         end if
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -222,20 +222,20 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine isMassMatrAssemble(listFuncActi, l_update_matr, lMassAssemble)
-! - Parameters
+        ! - Parameters
         integer, intent(in) :: listFuncActi(*)
         aster_logical, intent(in) :: l_update_matr
         aster_logical, intent(out) :: lMassAssemble
-! - Local
+        ! - Local
         aster_logical :: lDyna
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         lMassAssemble = ASTER_FALSE
         lDyna = isfonc(listFuncActi, 'DYNAMIQUE')
         if (lDyna .and. l_update_matr) then
             lMassAssemble = ASTER_TRUE
         end if
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -250,20 +250,20 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine needElasMatrix(nlDynaDamping, lElas)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         aster_logical, intent(out) :: lElas
-! - Local
+        ! - Local
         aster_logical :: lDampRayleigh, lDampRayleighTang
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         lElas = ASTER_FALSE
         lDampRayleigh = nlDynaDamping%lDampRayleigh
         lDampRayleighTang = nlDynaDamping%lDampRayleighTang
         if (lDampRayleigh .and. .not. lDampRayleighTang) then
             lElas = ASTER_TRUE
         end if
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -278,13 +278,13 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine massGetType(sddyna, massOption)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         character(len=19), intent(in) :: sddyna
         character(len=16), intent(out) :: massOption
-! - Local
+        ! - Local
         aster_logical :: lexpl
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         massOption = ' '
         lexpl = ndynlo(sddyna, 'EXPLICITE')
         if (lexpl) then
@@ -296,7 +296,7 @@ contains
         else
             massOption = 'MASS_MECA'
         end if
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -334,7 +334,7 @@ contains
                             hval_incr, hval_algo, &
                             hval_meelem, hval_measse)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         integer, intent(in) :: listFuncActi(*)
         character(len=19), intent(in) :: sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
@@ -355,7 +355,7 @@ contains
         real(kind=8) :: timeInit
         character(len=16) :: massOption
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         call infdbg('MECANONLINE', ifm, niv)
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_22')
@@ -402,7 +402,7 @@ contains
                                 timeInit, listLoad, numeDof, nlDynaDamping, &
                                 ds_system, hval_incr, hval_meelem, sddyna)
         end if
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -429,7 +429,7 @@ contains
                               time, listLoad, numeDof, nlDynaDamping, &
                               ds_system, hval_incr, hval_meelem, sddyna)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         character(len=24), intent(in) :: model, caraElem
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -439,12 +439,12 @@ contains
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19), intent(in) :: hval_incr(*), hval_meelem(*)
-! - Local
+        ! - Local
         character(len=1), parameter :: jvBase = "V"
         character(len=24) :: dampAsse, variPrev
         character(len=24) :: massElem, rigiElem, dampElem
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         dampAsse = nlDynaDamping%dampAsse
         call detrsd('MATR_ASSE', dampAsse)
 
@@ -472,7 +472,7 @@ contains
                             listLoad, 'ZERO', jvBase, 1, dampAsse)
             end if
         end if
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -502,7 +502,7 @@ contains
                               hval_meelem, hval_measse, &
                               massOption_, lWithDirichlet_)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         character(len=24), intent(in) :: model, caraElem
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -512,13 +512,13 @@ contains
         character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
         character(len=16), optional, intent(in) :: massOption_
         aster_logical, optional, intent(in) :: lWithDirichlet_
-! - Local
+        ! - Local
         character(len=16) :: massOption
         aster_logical:: lWithDirichlet
         character(len=24) :: massAsse
         character(len=24) :: massElem, diriElem
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         massOption = 'MASS_MECA'
         lWithDirichlet = ASTER_FALSE
         if (present(massOption_)) then
@@ -544,7 +544,7 @@ contains
         call asseMass(lWithDirichlet, listLoad, &
                       numeDof, numeDofFix, &
                       diriElem, massElem, massAsse)
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -564,22 +564,22 @@ contains
                               numeDof, numeDofFix, &
                               hval_meelem, hval_measse)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         character(len=19), intent(in) :: listLoad
         character(len=14), intent(in) :: numeDof, numeDofFix
         character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
-! - Local
+        ! - Local
         aster_logical, parameter :: lWithDirichlet = ASTER_FALSE
         character(len=24), parameter :: diriElem = " "
         character(len=24) :: massAsse, massElem
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         call nmchex(hval_meelem, 'MEELEM', 'MEMASS', massElem)
         call nmchex(hval_measse, 'MEASSE', 'MEMASS', massAsse)
         call asseMass(lWithDirichlet, listLoad, &
                       numeDof, numeDofFix, &
                       diriElem, massElem, massAsse)
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -593,10 +593,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine dampPrintParameters(nlDynaDamping)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         if (nlDynaDamping%hasDamp) then
             call utmess('I', 'MECANONLINE15_30')
             if (nlDynaDamping%hasMatrDamp) then
@@ -628,7 +628,7 @@ contains
         else
             call utmess('I', 'MECANONLINE15_29')
         end if
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -644,11 +644,11 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine shiftMassMatrix(sddyna, numeTime, hval_measse)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         integer, intent(in) :: numeTime
         character(len=19), intent(in) :: sddyna
         character(len=19), intent(in) :: hval_measse(*)
-! - Local
+        ! - Local
         real(kind=8) :: coefVale(3)
         character(len=24) :: matrName(3)
         character(len=4) :: coefType(3)
@@ -656,7 +656,7 @@ contains
         real(kind=8) :: coefShiftMass
         character(len=19) :: rigiAsse, massAsse
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         lFirstStep = numeTime .le. 1
         coefShiftMass = ndynre(sddyna, 'COEF_MASS_SHIFT')
         lExpl = ndynlo(sddyna, 'EXPLICITE')
@@ -682,7 +682,7 @@ contains
                 call mtcmbl(2, coefType, coefVale, matrName, massAsse, 'LAGR', ' ', 'ELIM=')
             end if
         end if
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -698,16 +698,16 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compAcceForce(hval_incr, hval_measse, acceForce)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         character(len=19), intent(in) :: hval_incr(*), hval_measse(*)
         character(len=19), intent(in) :: acceForce
-! - Local
+        ! - Local
         character(len=19) :: massAsse, acceCurr
         integer :: jvMass
         real(kind=8), pointer :: acce(:) => null()
         real(kind=8), pointer :: force(:) => null()
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         call vtzero(acceForce)
 
         ! - Get name of matrices and vectors
@@ -721,7 +721,7 @@ contains
 
         ! - Compute
         call mrmult('ZERO', jvMass, acce, force, 1, ASTER_TRUE)
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -738,18 +738,18 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compViteForce(nlDynaDamping, hval_incr, name_vite, viteForce)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=19), intent(in) :: hval_incr(*)
         character(len=6), intent(in) :: name_vite
         character(len=19), intent(in) :: viteForce
-! - Local
+        ! - Local
         character(len=19) :: dampAsse, viteCurr
         integer :: jvDamp
         real(kind=8), pointer :: vite(:) => null()
         real(kind=8), pointer :: force(:) => null()
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         call vtzero(viteForce)
 
         ! - Get name of matrices and vectors
@@ -763,7 +763,7 @@ contains
 
         ! - Compute
         call mrmult('ZERO', jvDamp, vite, force, 1, ASTER_TRUE)
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -779,16 +779,16 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compResiForce(hval_incr, hval_measse, resiForce)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+        ! - Parameters
         character(len=19), intent(in) :: hval_incr(*), hval_measse(*)
         character(len=19), intent(in) :: resiForce
-! - Local
+        ! - Local
         character(len=19) :: massAsse, viteCurr
         integer :: jvMass
         real(kind=8), pointer :: vite(:) => null()
         real(kind=8), pointer :: force(:) => null()
 !   ------------------------------------------------------------------------------------------------
-!
+        !
         call vtzero(resiForce)
 
         ! - Get name of matrices and vectors
@@ -802,7 +802,7 @@ contains
 
         ! - Compute
         call mrmult('ZERO', jvMass, vite, force, 1, ASTER_TRUE)
-!
+        !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 end module NonLinearDyna_module
