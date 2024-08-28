@@ -326,7 +326,16 @@ subroutine nmcomp(BEHinteg, &
                     if (k .eq. 3) goto 136
                     do l = 1, neps
                         if (l .eq. 3) goto 137
-                        dsidep(k, l) = dsidep(k, l)-dsidep(k, 3)*dsidep(3, l)/dsidep(3, 3)
+                        	if (abs(dsidep(3, 3)).lt.1.d-10) then
+                        		if (abs(dsidep(k, 3)*dsidep(3, l)).lt.1.d-10) then
+                        			dsidep(k, l) = dsidep(k, l)
+                        		else 
+                        			codret_ldc=1 
+                        			goto 901
+                        		endif
+                        	else
+                        		dsidep(k, l) = dsidep(k, l)-dsidep(k, 3)*dsidep(3, l)/dsidep(3, 3)
+                        	endif
 137                     continue
                     end do
 136                 continue
@@ -369,7 +378,7 @@ subroutine nmcomp(BEHinteg, &
 ! Traitement du code retour par ordre de gravite
 
     ! La loi de comportement a echoue (les resultats n'ont pas de signification)
-    if (codret_ldc .eq. 1) then
+901 if (codret_ldc .eq. 1) then
         codret = 1
 
         ! Les contraintes planes n'ont pas converge : le resultat n'est pas acceptable
