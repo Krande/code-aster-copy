@@ -29,6 +29,7 @@ def macr_spectre_ops(self, **args):
     MAILLAGE = args.get("MAILLAGE")
     PLANCHER = args.get("PLANCHER")
     NOM_CHAM = args.get("NOM_CHAM")
+    ENVELOPPE = args.get("ENVELOPPE")
     CALCUL = args.get("CALCUL")
     RESU = args.get("RESU")
     IMPRESSION = args.get("IMPRESSION")
@@ -84,7 +85,10 @@ def macr_spectre_ops(self, **args):
     if NOM_CHAM == "ACCE":
         dico_glob = {}
     if NOM_CHAM == "DEPL":
-        dico_glob = {"DX_max": [], "DY_max": [], "DZ_max": [], "DH_max": []}
+        if ENVELOPPE == "OUI":
+            dico_glob = {"DX_max": [], "DY_max": [], "DZ_max": [], "DH_max": []}
+        else:
+            dico_glob = {"DX_max": [], "DY_max": [], "DZ_max": []}
     #
     # ---------------------------------------------------------------------------------------------
     # boucle 1 sur les planchers
@@ -364,12 +368,14 @@ def macr_spectre_ops(self, **args):
             __snx = CALC_FONCTION(ENVELOPPE=_F(FONCTION=mcslx))
             __sny = CALC_FONCTION(ENVELOPPE=_F(FONCTION=mcsly))
             __snz = CALC_FONCTION(ENVELOPPE=_F(FONCTION=mcslz))
-            __snh = CALC_FONCTION(ENVELOPPE=_F(FONCTION=(__snx, __sny)))
+            if ENVELOPPE == "OUI":
+                __snh = CALC_FONCTION(ENVELOPPE=_F(FONCTION=(__snx, __sny)))
         elif NOM_CHAM == "DEPL":
             DRmX = max([dicDmax[(node, "X")] for node in planch_nodes[plancher]])
             DRmY = max([dicDmax[(node, "Y")] for node in planch_nodes[plancher]])
             DRmZ = max([dicDmax[(node, "Z")] for node in planch_nodes[plancher]])
-            DRmH = max([DRmX, DRmY])
+            if ENVELOPPE == "OUI":
+                DRmH = max([DRmX, DRmY])
         #
         # Renseignement de la table finale des résultats
         if NOM_CHAM == "ACCE":
@@ -379,12 +385,14 @@ def macr_spectre_ops(self, **args):
                 dico_glob["eX_%d_%s" % (i, plancher)] = __snx.Valeurs()[1][i][1]
                 dico_glob["eY_%d_%s" % (i, plancher)] = __sny.Valeurs()[1][i][1]
                 dico_glob["eZ_%d_%s" % (i, plancher)] = __snz.Valeurs()[1][i][1]
-                dico_glob["eH_%d_%s" % (i, plancher)] = __snh.Valeurs()[1][i][1]
+                if ENVELOPPE == "OUI":
+                    dico_glob["eH_%d_%s" % (i, plancher)] = __snh.Valeurs()[1][i][1]
         elif NOM_CHAM == "DEPL":
             dico_glob["DX_max"].append(DRmX)
             dico_glob["DY_max"].append(DRmY)
             dico_glob["DZ_max"].append(DRmZ)
-            dico_glob["DH_max"].append(DRmH)
+            if ENVELOPPE == "OUI":
+                dico_glob["DH_max"].append(DRmH)
         #
         # Etape 5: Impression des courbes
         if NOM_CHAM == "ACCE" and IMPRESSION is not None:
@@ -397,31 +405,51 @@ def macr_spectre_ops(self, **args):
             __snxa = [None] * len(AMOR_SPEC)
             __snya = [None] * len(AMOR_SPEC)
             __snza = [None] * len(AMOR_SPEC)
-            __snha = [None] * len(AMOR_SPEC)
+            if ENVELOPPE == "OUI":
+                __snha = [None] * len(AMOR_SPEC)
             for i in range(nbind):
                 __snxa[i] = RECU_FONCTION(NAPPE=__snx, VALE_PARA_FONC=AMOR_SPEC[i])
                 __snya[i] = RECU_FONCTION(NAPPE=__sny, VALE_PARA_FONC=AMOR_SPEC[i])
                 __snza[i] = RECU_FONCTION(NAPPE=__snz, VALE_PARA_FONC=AMOR_SPEC[i])
-                __snha[i] = RECU_FONCTION(NAPPE=__snh, VALE_PARA_FONC=AMOR_SPEC[i])
+                if ENVELOPPE == "OUI":
+                    __snha[i] = RECU_FONCTION(NAPPE=__snh, VALE_PARA_FONC=AMOR_SPEC[i])
             if IMPRESSION["TRI"] == "AMOR_SPEC":
                 for i in range(nbind):
                     TITRE = (
                         "Spectres moyens / Plancher = " + plancher + " / amor=" + str(AMOR_SPEC[i])
                     )
-                    IMPR_FONCTION(
-                        FORMAT=IMPRESSION["FORMAT"],
-                        UNITE=IMPRESSION["UNITE"],
-                        COURBE=(
-                            _F(FONCTION=__snxa[i], LEGENDE="X"),
-                            _F(FONCTION=__snya[i], LEGENDE="Y"),
-                            _F(FONCTION=__snza[i], LEGENDE="Z"),
-                            _F(FONCTION=__snha[i], LEGENDE="H"),
-                        ),
-                        TITRE=TITRE,
-                        **motscles
-                    )
+                    if ENVELOPPE == "OUI":
+                        IMPR_FONCTION(
+                            FORMAT=IMPRESSION["FORMAT"],
+                            UNITE=IMPRESSION["UNITE"],
+                            COURBE=(
+                                _F(FONCTION=__snxa[i], LEGENDE="X"),
+                                _F(FONCTION=__snya[i], LEGENDE="Y"),
+                                _F(FONCTION=__snza[i], LEGENDE="Z"),
+                                _F(FONCTION=__snha[i], LEGENDE="H"),
+                            ),
+                            TITRE=TITRE,
+                            **motscles
+                        )
+                    else:
+                        IMPR_FONCTION(
+                            FORMAT=IMPRESSION["FORMAT"],
+                            UNITE=IMPRESSION["UNITE"],
+                            COURBE=(
+                                _F(FONCTION=__snxa[i], LEGENDE="X"),
+                                _F(FONCTION=__snya[i], LEGENDE="Y"),
+                                _F(FONCTION=__snza[i], LEGENDE="Z"),
+                            ),
+                            TITRE=TITRE,
+                            **motscles
+                        )
             elif IMPRESSION["TRI"] == "DIRECTION":
-                for dd in ("X", "Y", "Z", "H"):
+                if ENVELOPPE == "OUI":
+                    liste_dir = ("X", "Y", "Z", "H")
+                else:
+                    liste_dir = ("X", "Y", "Z")
+
+                for dd in liste_dir:
                     TITRE = "Spectres moyens / Plancher = " + plancher + " / direction = " + dd
                     legende = "amor=" + str(AMOR_SPEC[i])
                     l_fonc = []
@@ -437,10 +465,11 @@ def macr_spectre_ops(self, **args):
                         l_fonc = [
                             _F(FONCTION=__snza[i], LEGENDE=legende) for i in range(len(AMOR_SPEC))
                         ]
-                    if dd == "H":
-                        l_fonc = [
-                            _F(FONCTION=__snha[i], LEGENDE=legende) for i in range(len(AMOR_SPEC))
-                        ]
+                    if ENVELOPPE == "OUI":
+                        if dd == "H":
+                            l_fonc = [
+                                _F(FONCTION=__snha[i], LEGENDE=legende) for i in range(len(AMOR_SPEC))
+                            ]
                     IMPR_FONCTION(
                         FORMAT=IMPRESSION["FORMAT"],
                         UNITE=IMPRESSION["UNITE"],

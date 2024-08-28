@@ -57,6 +57,7 @@ MACR_SPECTRE = MACRO(
     ),  # fin b_not_maillage
     NOM_CHAM=SIMP(statut="o", typ="TXM", into=("ACCE", "DEPL")),
     CALCUL=SIMP(statut="o", typ="TXM", into=("ABSOLU", "RELATIF")),
+    ENVELOPPE=SIMP(statut="o", typ="TXM", into=("OUI", "NON"), defaut="NON"),
     b_acce_rela=BLOC(
         condition="""equal_to("NOM_CHAM", 'ACCE') and equal_to("CALCUL", 'RELATIF')""",
         regles=(UN_PARMI("LIST_FREQ", "FREQ"),),
