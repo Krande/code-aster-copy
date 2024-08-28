@@ -326,16 +326,16 @@ subroutine nmcomp(BEHinteg, &
                     if (k .eq. 3) goto 136
                     do l = 1, neps
                         if (l .eq. 3) goto 137
-                        	if (abs(dsidep(3, 3)).lt.1.d-10) then
-                        		if (abs(dsidep(k, 3)*dsidep(3, l)).lt.1.d-10) then
-                        			dsidep(k, l) = dsidep(k, l)
-                        		else 
-                        			codret_ldc=1 
-                        			goto 901
-                        		endif
-                        	else
-                        		dsidep(k, l) = dsidep(k, l)-dsidep(k, 3)*dsidep(3, l)/dsidep(3, 3)
-                        	endif
+                        if (abs(dsidep(3, 3)) .lt. 1.d-10) then
+                            if (abs(dsidep(k, 3)*dsidep(3, l)) .lt. 1.d-10) then
+                                dsidep(k, l) = dsidep(k, l)
+                            else
+                                codret_ldc = 1
+                                goto 901
+                            end if
+                        else
+                            dsidep(k, l) = dsidep(k, l)-dsidep(k, 3)*dsidep(3, l)/dsidep(3, 3)
+                        end if
 137                     continue
                     end do
 136                 continue
