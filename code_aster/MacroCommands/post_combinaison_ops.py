@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -137,73 +137,6 @@ def restrain_field(field, model, groups=(), is_node=True):
     return field
 
 
-def values_from_simple_field_on_nodes(field, model, nodes_groups=()):
-    """Extract values from a SimpleFieldOnNodes aster data-structure.
-
-    Arguments:
-        field (SimpleFieldOnNodes): aster data-strucutre with values of all possible
-            components for all nodes.
-        model (sd_model): aster model to be used.
-        nodes_groups (tuple): tuple of groups of nodes in case of restriction.
-
-    Returns:
-        np_array: new array containing values.
-        np_array: the boolean mask of the new array.
-    """
-    field_all_components = np.array(field.getDescription().getNodeAndComponentIdFromDOF())[:, 1]
-    field = restrain_field(field, model, nodes_groups, True)
-    simple_field = field.toSimpleFieldOnNodes()
-    simple_field_values, simple_field_mask = simple_field.getValues()
-    field_mask = field_all_components >= 0
-
-    # The following is unsafe and causes problems in large simulations
-    # done using civil master particularly in modal/spectral calculations
-    # (see Issue# for more details)
-    # -------------------------------------------------------------------------
-    # field_mask[field_mask] = simple_field_mask.flatten().astype(bool)
-    # -------------------------------------------------------------------------
-    # Safe casting is provided below ...
-
-    flattenned_mask = simple_field_mask.flatten().astype(bool)
-
-    nb_dofs_flattenned = len(flattenned_mask)
-    nb_dofs_original = np.count_nonzero(field_mask)
-
-    field_mask[field_mask][:nb_dofs_flattenned] = flattenned_mask[:nb_dofs_original]
-
-    return simple_field_values[simple_field_mask], field_mask
-
-
-def values_from_simple_field_on_cells(field, model, cells_groups=()):
-    """Extract values from a SimpleFieldOnCells aster data-structure.
-
-    Arguments:
-        field (SimpleFieldOnCells): aster data-strucutre with values of all possible
-            components for all cells.
-        model (sd_model): aster model to be used.
-        cells_groups (tuple): tuple of groups of cells in case of restriction.
-
-    Returns:
-        np_array: new array containing values.
-        np_array: the boolean mask of the new array.
-
-    Raises:
-        ValueError: if the field and the simple field don't have the same size.
-
-    """
-    field = restrain_field(field, model, cells_groups, is_node=False)
-    simple_field = field.toSimpleFieldOnCells()
-    field_values_matrix, field_mask = simple_field.getValues()
-    field_values_masked = field_values_matrix[field_mask]
-    flattened_mask = field_mask.astype(bool).flatten()
-    if flattened_mask.shape[0] != field.size():
-        if field.size() == field_values_masked.shape[0]:
-            flattened_mask = np.full(field_values_masked.shape, True)
-        else:
-            raise ValueError("Incoherence between field size and simple field size")
-    return field_values_masked, flattened_mask
-
-
 def extract_results_values_by_field(
     results, orders, field_names, model=None, cells_groups=(), nodes_groups=()
 ):
@@ -222,38 +155,22 @@ def extract_results_values_by_field(
         dict:  masks by field name.
     """
     values_by_field = {}
-    masks_by_field = {}
     for field_name in field_names:
         field = results[0].getField(field_name, 1)
         field_type = field.getType()[:7]
-        if field_type == "CHAM_NO":
-            field_values, field_mask = values_from_simple_field_on_nodes(field, model, nodes_groups)
-        else:
-            field_values, field_mask = values_from_simple_field_on_cells(field, model, cells_groups)
-        masks_by_field[field_name] = field_mask
-
-        # initiate field_array
-        orders_sum = sum([len(order) for order in orders])
-        field_array = np.zeros((orders_sum, field_values.shape[0]), dtype=float)
-
         counter = 0
+        field_array = list()
         for i, order in enumerate(orders):
             for rank in order:
                 field = results[i].getField(field_name, rank)
-                if counter == 0:
-                    field_array[0, :] = field_values
-                elif field_type == "CHAM_NO":
-                    field_array[counter, :], mask = values_from_simple_field_on_nodes(
-                        field, model, nodes_groups
-                    )
+                if field_type == "CHAM_NO":
+                    field_array.append(restrain_field(field, model, nodes_groups, True))
                 else:
-                    field_array[counter, :], _ = values_from_simple_field_on_cells(
-                        field, model, cells_groups
-                    )
+                    field_array.append(restrain_field(field, model, cells_groups, is_node=False))
                 counter += 1
         values_by_field[field_name] = field_array
 
-    return values_by_field, masks_by_field
+    return values_by_field
 
 
 def count_nb_nodes(table, coupure_name):
@@ -360,7 +277,7 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
         nb_orders = np.array([len(result.getIndexes()) for result in results])
         orders_by_result = [result.getIndexes() for result in results]
         # transform all results into a numpy array with 3 dimensions (nb_cases, n_order, nb_fields)
-        results_by_field, masks_by_field = extract_results_values_by_field(
+        results_by_field = extract_results_values_by_field(
             results,
             orders_by_result,
             field_names,
@@ -376,34 +293,37 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
             expanded_combination_names,
             expanded_parameters_names,
         ) = expand_table(coefficients_table, nb_orders)
-        # |------------------------------------|
-        # | 3 - Matrix multiplication          |
-        # |------------------------------------|
+        # |------------------------------------------|
+        # | 3 - multiplication by the coefficients   |
+        # |------------------------------------------|
         combination_results = {}
         for field_name, field_values in results_by_field.items():
-            combination_results[field_name] = np.dot(expanded_coefficients_table, field_values)
+            combination_results[field_name] = []
+            for idx in range(expanded_coefficients_table.shape[0]):
+                count = 0
+                comb_resu = None
+                for k, v in zip(expanded_coefficients_table[idx, :], field_values):
+                    if count == 0:
+                        comb_resu = float(k) * v
+                        count += 1
+                    else:
+                        comb_resu += float(k) * v
+                combination_results[field_name].append(comb_resu)
         # |------------------------------------|
         # | 4 - Build mult_elas  resu          |
         # |------------------------------------|
         # Create fields for the mutl_elas result
         for field_name in combination_results:
-            field_mask = masks_by_field[field_name]
-            field_ref = results[0].getField(field_name, 1)
             # fill field with values
             l_affe = []
-            for rank in range(combination_results[field_name].shape[0]):
+            for rank in range(len(combination_results[field_name])):
                 # Generate empty field
-                if isinstance(field_ref, FieldOnNodesReal):
-                    field = FieldOnNodesReal(field_ref)
-                else:
-                    field = FieldOnCellsReal(
-                        restrain_field(field_ref, model, cells_groups, is_node=False)
-                    )
-                field_values = np.zeros(field.size())
-                field_values[field_mask] = combination_results[field_name][rank]
-                field.setValues(field_values.flatten())
                 l_affe.append(
-                    _F(CHAM_GD=field, NOM_CAS=expanded_combination_names[rank], MODELE=model)
+                    _F(
+                        CHAM_GD=combination_results[field_name][rank],
+                        NOM_CAS=expanded_combination_names[rank],
+                        MODELE=model,
+                    )
                 )
             # Create result for the first field occurence
             kwargs = {
