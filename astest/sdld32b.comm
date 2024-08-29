@@ -140,6 +140,16 @@ RESU_HHTa = DYNA_NON_LINE(
     **dict_dyna_non_line
 )
 
+RESU_NOHHTd = DYNA_NON_LINE(
+    SCHEMA_TEMPS=_F(SCHEMA="NOHHT", FORMULATION="DEPLACEMENT", ALPHA=alpha_hht),
+    **dict_dyna_non_line
+)
+
+RESU_NOHHTa = DYNA_NON_LINE(
+    SCHEMA_TEMPS=_F(SCHEMA="NOHHT", FORMULATION="ACCELERATION", ALPHA=alpha_hht),
+    **dict_dyna_non_line
+)
+
 
 ### Analytical solution
 om = np.sqrt(k / m)
@@ -174,8 +184,24 @@ def acce_ref(t):
 ### Tests
 
 
+### Tests
+
+
 ##
-def testResultsAtTimeSteps(resu, inst_test, depl_calc, vite_calc, acce_calc, prec):
+def testResultsAtTimeSteps(
+    resu,
+    inst_test,
+    d_calc,
+    v_calc,
+    a_calc,
+    d_refe,
+    v_refe,
+    a_refe,
+    prec_d=1e-2,
+    prec_v=1e-2,
+    prec_a=1e-2,
+    reftype="ANALYTIQUE",
+):
     r"""Test results at given time steps
 
     Args:
@@ -183,43 +209,78 @@ def testResultsAtTimeSteps(resu, inst_test, depl_calc, vite_calc, acce_calc, pre
 
         inst_test (:class:`list`): time steps
 
-        depl_calc (:class:`list`): calculated displacements
+        d_calc (:class:`list`): calculated displacements
 
-        vite_calc (:class:`list`): calculated velocities
+        v_calc (:class:`list`): calculated velocities
 
-        acce_calc (:class:`list`): calculated accelerations
+        a_calc (:class:`list`): calculated accelerations
 
-        prec (:class:`dict`): tests precisions
+        d_refe (:class:`list`): reference displacements
+
+        v_refe (:class:`list`): reference velocities
+
+        a_refe (:class:`list`): reference accelerations
+
+        prec_d (:class:`dict`): displacements precision
+
+        prec_v (:class:`dict`): velocities precision
+
+        prec_a (:class:`dict`): accelerations precision
+
+        reftype (:class:`str`): reference type
     """
-    vale_calc = {"DEPL": depl_calc, "VITE": vite_calc, "ACCE": acce_calc}
-    func_refe = {"DEPL": depl_ref, "VITE": vite_ref, "ACCE": acce_ref}
+    vale_calc = {"DEPL": d_calc, "VITE": v_calc, "ACCE": a_calc}
+    vale_refe = {"DEPL": d_refe, "VITE": v_refe, "ACCE": a_refe}
+    prec = {"DEPL": prec_d, "VITE": prec_v, "ACCE": prec_a}
     l_nom_cham = ["DEPL", "VITE", "ACCE"]
     assert len(prec) == len(l_nom_cham)
     #
     for nom_cham in l_nom_cham:
         # Check lists lengths
         assert len(inst_test) == len(vale_calc[nom_cham])
+        assert len(inst_test) == len(vale_refe[nom_cham])
         # Test results
         TEST_RESU(
             RESU=[
                 _F(
                     GROUP_NO="B",
                     INST=inst,
-                    REFERENCE="ANALYTIQUE",
+                    REFERENCE=reftype,
                     RESULTAT=resu,
                     NOM_CHAM=nom_cham,
                     NOM_CMP="DX",
-                    VALE_CALC=vale,
-                    VALE_REFE=func_refe[nom_cham](inst),
+                    VALE_CALC=vc,
+                    VALE_REFE=vr,
                     PRECISION=prec[nom_cham],
                 )
-                for (inst, vale) in zip(inst_test, vale_calc[nom_cham])
+                for (inst, vc, vr) in zip(inst_test, vale_calc[nom_cham], vale_refe[nom_cham])
             ]
         )
 
 
 ## Test time steps
-inst_test = [0.0, dt, 2 * dt, 0.5, 1.0]
+inst_test = [0.0, dt, 2 * dt, 0.5]
+
+## Compute reference solution at test time steps
+depl_refe = [depl_ref(inst) for inst in inst_test]
+vite_refe = [vite_ref(inst) for inst in inst_test]
+acce_refe = [acce_ref(inst) for inst in inst_test]
+
+## Numerical solution (Python implementation)
+# HHT
+depl_hhtpy = [1.0, 1.0044371529811942, 1.0077624745731384, -0.1251431891464712]
+
+vite_hhtpy = [1.0, 0.7746657909195767, 0.5551825777288358, -0.8553567773486472]
+
+acce_hhtpy = [-45.76160291153702, -44.89315154222161, -43.64751541212981, 10.360558900387336]
+
+# NOHHT
+depl_nohhtpy = [1.0, 1.0042678365784428, 1.007428599073194, -0.12567915623856618]
+
+vite_nohhtpy = [1.0, 0.7747189472131579, 0.5553859498855821, -0.854871851629528]
+
+acce_nohhtpy = [-45.76160291153702, -44.676383905123764, -43.43056169034128, 10.330162558105325]
+
 
 # ------------------------------------------------------------------------------
 # HHT - FORMULATION="DEPLACEMENT"
@@ -230,28 +291,50 @@ depl_calc = [
     1.0044371529811944,
     1.007762474573139,
     -0.1251431891464241,
-    0.004260226820825075,
 ]  # displacements at test time steps
 vite_calc = [
     1.0,
     0.7746657909196467,
     0.555182577728913,
     -0.8553567773489089,
-    0.2814519966369715,
 ]  # velocities at test time steps
 acce_calc = [
     -45.76160291153702,
     -44.89315154220412,
     -43.64751541213241,
     10.360558900388071,
-    -1.937919829921725,
 ]  # accelerations at test time steps
 
-# Tests precisions
-prec = {"DEPL": 5e-3, "VITE": 5e-3, "ACCE": 1e-2}
-
 # Run tests
-testResultsAtTimeSteps(RESU_HHTd, inst_test, depl_calc, vite_calc, acce_calc, prec)
+testResultsAtTimeSteps(
+    RESU_HHTd,
+    inst_test,
+    depl_calc,
+    vite_calc,
+    acce_calc,
+    depl_refe,
+    vite_refe,
+    acce_refe,
+    prec_d=5e-3,
+    prec_v=5e-3,
+    prec_a=1e-2,
+    reftype="ANALYTIQUE",
+)
+
+testResultsAtTimeSteps(
+    RESU_HHTd,
+    inst_test,
+    depl_calc,
+    vite_calc,
+    acce_calc,
+    depl_hhtpy,
+    vite_hhtpy,
+    acce_hhtpy,
+    prec_d=1e-6,
+    prec_v=1e-6,
+    prec_a=1e-6,
+    reftype="SOURCE_EXTERNE",
+)
 
 
 # ------------------------------------------------------------------------------
@@ -263,29 +346,160 @@ depl_calc = [
     1.0044371529811944,
     1.007762474573139,
     -0.125143189146421,
-    0.004260226820824986,
 ]  # displacements at test time steps
 vite_calc = [
     1.0,
     0.7746657909196463,
     0.5551825777289121,
     -0.8553567773489081,
-    0.2814519966369691,
 ]  # velocities at test time steps
 acce_calc = [
     -45.76160291153702,
     -44.893151542204194,
     -43.647515412132506,
     10.36055890038789,
-    -1.9379198299216793,
 ]  # accelerations at test time steps
 
-# Tests precisions
-prec = {"DEPL": 5e-3, "VITE": 5e-3, "ACCE": 1e-2}
+# Run tests
+testResultsAtTimeSteps(
+    RESU_HHTa,
+    inst_test,
+    depl_calc,
+    vite_calc,
+    acce_calc,
+    depl_refe,
+    vite_refe,
+    acce_refe,
+    prec_d=5e-3,
+    prec_v=5e-3,
+    prec_a=1e-2,
+    reftype="ANALYTIQUE",
+)
+
+testResultsAtTimeSteps(
+    RESU_HHTa,
+    inst_test,
+    depl_calc,
+    vite_calc,
+    acce_calc,
+    depl_hhtpy,
+    vite_hhtpy,
+    acce_hhtpy,
+    prec_d=1e-6,
+    prec_v=1e-6,
+    prec_a=1e-6,
+    reftype="SOURCE_EXTERNE",
+)
+
+
+# ------------------------------------------------------------------------------
+# NOHHT - FORMULATION="DEPLACEMENT"
+
+# Calculated values (non regression testing)
+depl_calc = [
+    1.0,
+    1.004267836578443,
+    1.0074285990731946,
+    -0.12567915623848688,
+]  # displacements at test time steps
+vite_calc = [
+    1.0,
+    0.7747189472132119,
+    0.5553859498856906,
+    -0.8548718516298838,
+]  # velocities at test time steps
+acce_calc = [
+    -45.76160291153702,
+    -44.67638390510723,
+    -43.430561690333434,
+    10.330162558105712,
+]  # accelerations at test time steps
 
 # Run tests
-testResultsAtTimeSteps(RESU_HHTa, inst_test, depl_calc, vite_calc, acce_calc, prec)
+testResultsAtTimeSteps(
+    RESU_NOHHTd,
+    inst_test,
+    depl_calc,
+    vite_calc,
+    acce_calc,
+    depl_refe,
+    vite_refe,
+    acce_refe,
+    prec_d=5e-3,
+    prec_v=5e-3,
+    prec_a=1e-2,
+    reftype="ANALYTIQUE",
+)
 
+testResultsAtTimeSteps(
+    RESU_NOHHTd,
+    inst_test,
+    depl_calc,
+    vite_calc,
+    acce_calc,
+    depl_nohhtpy,
+    vite_nohhtpy,
+    acce_nohhtpy,
+    prec_d=1e-6,
+    prec_v=1e-6,
+    prec_a=1e-6,
+    reftype="SOURCE_EXTERNE",
+)
+
+
+# ------------------------------------------------------------------------------
+# NOHHT - FORMULATION="ACCELERATION"
+
+# Calculated values (non regression testing)
+depl_calc = [
+    1.0,
+    1.004267836578443,
+    1.0074285990731944,
+    -0.12567915623848466,
+]  # displacements at test time steps
+vite_calc = [
+    1.0,
+    0.774718947213212,
+    0.5553859498856907,
+    -0.8548718516298894,
+]  # velocities at test time steps
+acce_calc = [
+    -45.76160291153702,
+    -44.67638390510715,
+    -43.430561690333484,
+    10.330162558105643,
+]  # accelerations at test time steps
+
+# Run tests
+testResultsAtTimeSteps(
+    RESU_NOHHTa,
+    inst_test,
+    depl_calc,
+    vite_calc,
+    acce_calc,
+    depl_refe,
+    vite_refe,
+    acce_refe,
+    prec_d=5e-3,
+    prec_v=5e-3,
+    prec_a=1e-2,
+    reftype="ANALYTIQUE",
+)
+
+testResultsAtTimeSteps(
+    RESU_NOHHTa,
+    inst_test,
+    depl_calc,
+    vite_calc,
+    acce_calc,
+    depl_nohhtpy,
+    vite_nohhtpy,
+    acce_nohhtpy,
+    prec_d=1e-6,
+    prec_v=1e-6,
+    prec_a=1e-6,
+    reftype="SOURCE_EXTERNE",
+)
 
 # ------------------------------------------------------------------------------
 ###

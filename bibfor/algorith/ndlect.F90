@@ -211,7 +211,12 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
         phi = undemi
         beta = (un-alpha)*(un-alpha)/quatre
         gamma = undemi-alpha
-
+    else if (schema(1:5) .eq. 'NOHHT') then
+        call getvr8('SCHEMA_TEMPS', 'ALPHA', iocc=1, scal=alpha, nbret=n1)
+        zk16(jtsch+5-1) = 'NOHHT'
+        phi = undemi
+        beta = (un-alpha)*(un-alpha)/quatre
+        gamma = (un-alpha)*undemi
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -256,7 +261,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
 ! --- INCOMPATIBILITES SCHEMA/FORMULATION/PARAMETRES
 !
     if ((ndynlo(sddyna, 'NEWMARK')) .or. (ndynlo(sddyna, 'HHT_COMPLET')) .or. &
-        (ndynlo(sddyna, 'HHT'))) then
+        (ndynlo(sddyna, 'NOHHT')) .or. (ndynlo(sddyna, 'HHT'))) then
         if (beta .le. r8prem()) then
             call utmess('F', 'MECANONLINE5_9')
         end if
@@ -269,7 +274,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
             call utmess('F', 'MECANONLINE5_10')
         end if
     end if
-    if (ndynlo(sddyna, 'HHT_COMPLET')) then
+    if ((ndynlo(sddyna, 'HHT_COMPLET')) .or. (ndynlo(sddyna, 'NOHHT'))) then
         if ((alpha+1.d0) .le. r8prem()) then
             call utmess('F', 'MECANONLINE5_17')
         end if
@@ -337,7 +342,8 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
 !
 ! --- SCHEMA MULTIPAS: VECT_* SAUVEGARDES PAS PRECEDENT
 !
-    if (zk16(jtsch+5-1) (1:11) .eq. 'HHT_COMPLET') then
+    if ((zk16(jtsch+5-1) (1:11) .eq. 'HHT_COMPLET') .or. &
+        (zk16(jtsch+5-1) (1:5) .eq. 'NOHHT')) then
         zk24(jveol+1-1) = vefedo
         zk24(jveol+2-1) = vefsdo
         zk24(jveol+3-1) = vedido

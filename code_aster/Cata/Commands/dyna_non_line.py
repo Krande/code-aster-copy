@@ -109,7 +109,11 @@ DYNA_NON_LINE = OPER(
     SCHEMA_TEMPS=FACT(
         statut="o",
         SCHEMA=SIMP(
-            statut="o", min=1, max=1, typ="TXM", into=("DIFF_CENT", "TCHAMWA", "NEWMARK", "HHT")
+            statut="o",
+            min=1,
+            max=1,
+            typ="TXM",
+            into=("DIFF_CENT", "TCHAMWA", "NEWMARK", "HHT", "NOHHT"),
         ),
         COEF_MASS_SHIFT=SIMP(statut="f", typ="R", defaut=0.0e0),
         b_tchamwa=BLOC(
@@ -125,6 +129,10 @@ DYNA_NON_LINE = OPER(
             condition="""equal_to("SCHEMA", 'HHT')""",
             ALPHA=SIMP(statut="f", typ="R", defaut=-0.1),
             MODI_EQUI=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
+        ),
+        b_nohht=BLOC(
+            condition="""equal_to("SCHEMA", 'NOHHT')""",
+            ALPHA=SIMP(statut="f", typ="R", defaut=-0.1),
         ),
         b_explicit=BLOC(
             condition="""equal_to("SCHEMA", 'TCHAMWA') or equal_to("SCHEMA", 'DIFF_CENT')""",

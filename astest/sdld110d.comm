@@ -1,0 +1,138 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#       ON MODELISE UNE BARRE AVEC 2 ELEMENTS DISCRETS 2D
+#       A 2 NOEUDS
+#       ON EXERCE UNE FORCE SINUSOIDALE A UNE EXTREMITE
+#       LE PROBLEME EST SUR BASE PHYSIQUE
+###################################################################
+import numpy as np
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
+MA = CREA_MAILLAGE(MAILLAGE=MA, CREA_POI1=(_F(NOM_GROUP_MA="P", GROUP_NO="P"),))
+
+MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3, RHO=10000.0))
+
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA=("GRMA",), MATER=MATER1))
+
+MOD = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA=("GRMA", "P"), MODELISATION="2D_DIS_T", PHENOMENE="MECANIQUE"))
+)
+
+CARA_ELE = AFFE_CARA_ELEM(
+    MODELE=MOD,
+    VERIF=("MAILLE",),
+    DISCRET_2D=(
+        _F(GROUP_MA="S1", CARA="K_T_D_L", VALE=(1.0e7, 1.0e7)),
+        _F(GROUP_MA="S2", CARA="K_T_D_L", VALE=(1.0, 1.0)),
+        _F(GROUP_MA="P", CARA="M_T_D_N", VALE=1.0),
+    ),
+)
+
+tmax = 9
+npas = 90 * 4
+
+SIN = FORMULE(VALE="sin(2*INST)", NOM_PARA="INST", tmax=tmax, npas=npas)
+
+CHAR_MECA = AFFE_CHAR_MECA(MODELE=MOD, DDL_IMPO=_F(GROUP_NO="P1", DX=1.0, DY=0.0))
+
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=tmax, NOMBRE=npas),))
+
+
+DYNA = DYNA_NON_LINE(
+    MODELE=MOD,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARA_ELE,
+    EXCIT=_F(CHARGE=CHAR_MECA, FONC_MULT=SIN),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    SCHEMA_TEMPS=_F(SCHEMA="NOHHT", FORMULATION="DEPLACEMENT", ALPHA=-0.3),
+    CONVERGENCE=_F(ARRET="OUI", RESI_GLOB_MAXI=1e-6, ITER_GLOB_MAXI=0),
+)
+
+DP3 = RECU_FONCTION(RESULTAT=DYNA, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="P3")
+VP3 = RECU_FONCTION(RESULTAT=DYNA, NOM_CHAM="VITE", NOM_CMP="DX", GROUP_NO="P3")
+
+AP3 = RECU_FONCTION(RESULTAT=DYNA, NOM_CHAM="ACCE", NOM_CMP="DX", GROUP_NO="P3")
+
+
+foncDX = FORMULE(VALE="1./3 *(2 * sin(INST) - sin(2*INST))", NOM_PARA="INST")
+REFDX = CALC_FONC_INTERP(FONCTION=foncDX, NOM_RESU="DEPL", LIST_PARA=L_INST, NOM_PARA="INST")
+
+foncVX = FORMULE(VALE="1./3 *(2 * cos(INST) - 2*cos(2*INST))", NOM_PARA="INST")
+REFVX = CALC_FONC_INTERP(FONCTION=foncVX, NOM_RESU="DEPL", LIST_PARA=L_INST, NOM_PARA="INST")
+
+foncAX = FORMULE(VALE="1./3 *(-2 * sin(INST) + 4*sin(2*INST))", NOM_PARA="INST")
+REFAX = CALC_FONC_INTERP(FONCTION=foncAX, NOM_RESU="DEPL", LIST_PARA=L_INST, NOM_PARA="INST")
+
+
+# ==============================================================================
+# Tests
+
+# DEPL
+formDX = FORMULE(VALE="abs(DP3(INST)-REFDX(INST))", NOM_PARA="INST", DP3=DP3, REFDX=REFDX)
+diffDX = CALC_FONC_INTERP(FONCTION=formDX, NOM_RESU="DEPL", LIST_PARA=L_INST, NOM_PARA="INST")
+maxDX = INFO_FONCTION(MAX=_F(FONCTION=diffDX))
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    VALE_REFE=0.0e00,
+    VALE_CALC=0.0006325528389817814,
+    NOM_PARA="DEPL",
+    TYPE_TEST="SOMM_ABS",
+    TABLE=maxDX,
+)
+
+# VITE
+formVX = FORMULE(VALE="abs(VP3(INST)-REFVX(INST))", NOM_PARA="INST", VP3=VP3, REFVX=REFVX)
+diffVX = CALC_FONC_INTERP(FONCTION=formVX, NOM_RESU="VITE", LIST_PARA=L_INST, NOM_PARA="INST")
+maxVX = INFO_FONCTION(MAX=_F(FONCTION=diffVX))
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    VALE_REFE=0.0e00,
+    VALE_CALC=0.0073248553840352115,
+    PRECISION=1e-2,
+    NOM_PARA="VITE",
+    TYPE_TEST="SOMM_ABS",
+    TABLE=maxVX,
+)
+
+# ACCE
+formAX = FORMULE(VALE="abs(AP3(INST)-REFAX(INST))", NOM_PARA="INST", AP3=AP3, REFAX=REFAX)
+diffAX = CALC_FONC_INTERP(FONCTION=formAX, NOM_RESU="VITE", LIST_PARA=L_INST, NOM_PARA="INST")
+maxAX = INFO_FONCTION(MAX=_F(FONCTION=diffAX))
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    VALE_REFE=0.0e00,
+    PRECISION=5e-2,
+    VALE_CALC=0.02516260161667036,
+    NOM_PARA="VITE",
+    TYPE_TEST="SOMM_ABS",
+    TABLE=maxAX,
+)
+
+
+FIN()

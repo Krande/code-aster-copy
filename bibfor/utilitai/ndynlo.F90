@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,6 +112,7 @@ function ndynlo(sddyna, chainz)
         if ((v_typesch(2) .eq. 'NEWMARK') .or. &
             (v_typesch(7) .eq. 'DIFF_CENTREE') .or. &
             (v_typesch(8) .eq. 'TCHAMWA') .or. &
+            (v_typesch(5) (1:5) .eq. 'NOHHT') .or. &
             (v_typesch(5) .eq. 'HHT_COMPLET') .or. (v_typesch(3) (1:3) .eq. 'HHT')) then
             ndynlo = ASTER_TRUE
         else
@@ -121,12 +122,17 @@ function ndynlo(sddyna, chainz)
         if (v_typesch(5) .eq. 'HHT_COMPLET') then
             ndynlo = ASTER_TRUE
         end if
+    else if (chaine .eq. 'NOHHT') then
+        if (v_typesch(5) (1:5) .eq. 'NOHHT') then
+            ndynlo = ASTER_TRUE
+        end if
     else if (chaine .eq. 'HHT') then
         if (v_typesch(3) (1:3) .eq. 'HHT') then
             ndynlo = ASTER_TRUE
         end if
     else if (chaine .eq. 'IMPLICITE') then
         if (v_typesch(2) .eq. 'NEWMARK' .or. &
+            v_typesch(5) (1:5) .eq. 'NOHHT' .or. &
             v_typesch(5) .eq. 'HHT_COMPLET' .or. &
             v_typesch(3) (1:3) .eq. 'HHT') then
             ndynlo = ASTER_TRUE
@@ -170,7 +176,7 @@ function ndynlo(sddyna, chainz)
             ndynlo = ASTER_FALSE
         end if
     else if (chaine .eq. 'MULTI_PAS') then
-        if (v_typesch(5) .eq. 'HHT_COMPLET') then
+        if ((v_typesch(5) .eq. 'HHT_COMPLET') .or. (v_typesch(5) (1:5) .eq. 'NOHHT')) then
             ndynlo = ASTER_TRUE
         else
             ndynlo = ASTER_FALSE
