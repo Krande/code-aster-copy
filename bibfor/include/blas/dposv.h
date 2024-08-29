@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-!
-!
+#include "asterf_types.h"
+
 interface
     subroutine dposv(uplo, n, nhrs, a, lda, b, ldb, info)
-        character(len=1),intent(in) :: uplo
-        integer,intent(in) :: n
-        integer,intent(in) :: nhrs
-        integer,intent(in) :: lda
-        integer,intent(in) :: ldb
-        integer,intent(out) :: info
-        real(kind=8),intent(inout) :: a(lda,*)
-        real(kind=8),intent(in) :: b(ldb,*)
+        character(len=1), intent(in) :: uplo
+        blas_int, intent(in) :: n
+        blas_int, intent(in) :: nhrs
+        blas_int, intent(in) :: lda
+        blas_int, intent(in) :: ldb
+        blas_int, intent(out) :: info
+        real(kind=8), intent(inout) :: a(lda, *)
+        real(kind=8), intent(in) :: b(ldb, *)
     end subroutine dposv
 end interface

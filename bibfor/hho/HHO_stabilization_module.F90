@@ -86,7 +86,8 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, MR2, traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj2, proj3, TMP
         integer :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, dimM1, colsM2, i, j
-        integer :: cbs, fbs, total_dofs, iface, offset_face, info, fromFace, toFace
+        integer :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
 ! --------------------------------------------------------------------------------------------------
 !
@@ -133,7 +134,11 @@ contains
 ! -- Solve proj1 = M1^-1 * proj1
 ! -- Verif strange bug if info neq 0 in entry
             info = 0
-            call dposv('U', dimM1, total_dofs, M1, MSIZE_CELL_SCAL, proj1, MSIZE_CELL_SCAL, info)
+            b_n = to_blas_int(dimM1)
+            b_nhrs = to_blas_int(total_dofs)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            call dposv('U', b_n, b_nhrs, M1, b_lda, proj1, b_ldb, info)
 !
 ! - Sucess ?
             if (info .ne. 0) then
@@ -172,7 +177,9 @@ contains
                 piKF(1:fbs, 1:fbs) = faceMass%m(1:fbs, 1:fbs)
 ! ---- Verif strange bug if info neq 0 in entry
                 info = 0
-                call dpotrf('U', fbs, piKF, MSIZE_FACE_SCAL, info)
+                b_n = to_blas_int(fbs)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                call dpotrf('U', b_n, piKF, b_lda, info)
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
@@ -194,8 +201,11 @@ contains
 ! ---- Solve proj2 = pikF^-1 * proj2
 ! ---- Verif strange bug if info neq 0 in entry
                 info = 0
-                call dpotrs('U', fbs, total_dofs, piKF, MSIZE_FACE_SCAL, &
-                            proj2, MSIZE_FACE_SCAL, info)
+                b_n = to_blas_int(fbs)
+                b_nhrs = to_blas_int(total_dofs)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, proj2, b_ldb, info)
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
@@ -224,8 +234,11 @@ contains
 
 ! ---- Solve proj3 = pikF^-1 * proj3
                 info = 0
-                call dpotrs('U', fbs, total_dofs, piKF, MSIZE_FACE_SCAL, &
-                            proj3, MSIZE_FACE_SCAL, info)
+                b_n = to_blas_int(fbs)
+                b_nhrs = to_blas_int(total_dofs)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, proj3, b_ldb, info)
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
@@ -335,8 +348,9 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, MR2, traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_VEC) :: proj2, proj3, TMP
         integer :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, dimM1, colsM2, i, j, idir
-        integer :: cbs, fbs, total_dofs, iface, info, fromFace, toFace
+        integer :: cbs, fbs, total_dofs, iface, fromFace, toFace
         integer :: ifromGrad, itoGrad, ifromProj, itoProj, fbs_comp, faces_dofs, faces_dofs_comp
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
 ! --------------------------------------------------------------------------------------------------
 !
@@ -368,7 +382,9 @@ contains
 !
 ! -- factorize M1
         info = 0
-        call dpotrf('U', dimM1, M1, MSIZE_CELL_SCAL, info)
+        b_n = to_blas_int(dimM1)
+        b_lda = to_blas_int(MSIZE_CELL_SCAL)
+        call dpotrf('U', b_n, M1, b_lda, info)
 !
 ! -- Sucess ?
         if (info .ne. 0) then
@@ -405,8 +421,12 @@ contains
 ! -- Solve proj1 = M1^-1 * proj1
 ! -- Verif strange bug if info neq 0 in entry
                 info = 0
-                call dpotrs('U', dimM1, total_dofs, M1, MSIZE_CELL_SCAL, &
-                            proj1(ifromProj:itoProj, 1:total_dofs), dimM1, info)
+                b_n = to_blas_int(dimM1)
+                b_nhrs = to_blas_int(total_dofs)
+                b_lda = to_blas_int(MSIZE_CELL_SCAL)
+                b_ldb = to_blas_int(dimM1)
+                call dpotrs('U', b_n, b_nhrs, M1, b_lda, &
+                            proj1(ifromProj:itoProj, 1:total_dofs), b_ldb, info)
 !
 ! -- Sucess ?
                 if (info .ne. 0) then
@@ -443,7 +463,9 @@ contains
                 piKF(1:fbs_comp, 1:fbs_comp) = faceMass%m(1:fbs_comp, 1:fbs_comp)
 ! ---- Verif strange bug if info neq 0 in entry
                 info = 0
-                call dpotrf('U', fbs_comp, piKF, MSIZE_FACE_SCAL, info)
+                b_n = to_blas_int(fbs_comp)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                call dpotrf('U', b_n, piKF, b_lda, info)
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
@@ -476,8 +498,11 @@ contains
 ! ---- Solve proj2 = pikF^-1 * proj2
 ! ---- Verif strange bug if info neq 0 in entry
                     info = 0
-                    call dpotrs('U', fbs_comp, total_dofs, piKF, MSIZE_FACE_SCAL, &
-                                proj2, MSIZE_FACE_SCAL, info)
+                    b_n = to_blas_int(fbs_comp)
+                    b_nhrs = to_blas_int(total_dofs)
+                    b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                    b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                    call dpotrs('U', b_n, b_nhrs, piKF, b_lda, proj2, b_ldb, info)
 !
 ! --- Sucess ?
                     if (info .ne. 0) then
@@ -508,8 +533,11 @@ contains
 !
 ! ---- Solve proj3 = pikF^-1 * proj3
                     info = 0
-                    call dpotrs('U', fbs_comp, total_dofs, piKF, MSIZE_FACE_SCAL, &
-                                proj3, MSIZE_FACE_SCAL, info)
+                    b_n = to_blas_int(fbs_comp)
+                    b_nhrs = to_blas_int(total_dofs)
+                    b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                    b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                    call dpotrs('U', b_n, b_nhrs, piKF, b_lda, proj3, b_ldb, info)
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
@@ -574,7 +602,8 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: proj1
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) ::  traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj3, TMP
-        integer :: cbs, fbs, total_dofs, iface, offset_face, info, fromFace, toFace, i, j
+        integer :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, i, j
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
 ! --------------------------------------------------------------------------------------------------
 !
@@ -624,7 +653,9 @@ contains
                 piKF(1:fbs, 1:fbs) = faceMass%m(1:fbs, 1:fbs)
 ! ---- Verif strange bug if info neq 0 in entry
                 info = 0
-                call dpotrf('U', fbs, piKF, MSIZE_FACE_SCAL, info)
+                b_n = to_blas_int(fbs)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                call dpotrf('U', b_n, piKF, b_lda, info)
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
@@ -633,8 +664,11 @@ contains
 !
 ! ---- Solve proj3 = pikF^-1 * proj3
                 info = 0
-                call dpotrs('U', fbs, total_dofs, piKF, MSIZE_FACE_SCAL, &
-                            proj3, MSIZE_FACE_SCAL, info)
+                b_n = to_blas_int(fbs)
+                b_nhrs = to_blas_int(total_dofs)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, proj3, b_ldb, info)
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry

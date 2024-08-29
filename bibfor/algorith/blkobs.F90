@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/cntdif.h"
 #include "blas/dpotrf.h"
 #include "asterfort/getvid.h"
@@ -68,11 +69,12 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
     character(len=8) :: baseno, mnorme
     character(len=11) :: bl11
     integer :: idesc, ivale, nvect, nvale, iobfil, iobcol, iobval, ii, jj
-    integer :: indval, info, inwfil, inwcol, inwval, ifile, ntnlmp, diff, kk
+    integer :: indval, inwfil, inwcol, inwval, ifile, ntnlmp, diff, kk
     integer :: valdif(obsdim(3)), ifull, numcol, numfil, nstock, ictcol, linfil(obsdim(1)+1), il1
     integer :: il2, posvec, taivec, nfil1, nfil2, tt, ismde, ismdi, ismhc, ivalm, aa, bb, icolst
     integer :: idiff, istock, ifil
     logical :: isdiag
+    blas_int :: b_n, b_lda, info
     real(kind=8) :: MATCHOL(obsdim(1), obsdim(1)), coeff_alpha
 !
     baseno = '&&OP0066'
@@ -114,7 +116,9 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
     end if
 !     DECOMPOSITION DE CHOLESKY PROPREMENT DITE
     info = 0
-    call dpotrf('U', nvect, MATCHOL, nvect, info)
+    b_n = to_blas_int(nvect)
+    b_lda = to_blas_int(nvect)
+    call dpotrf('U', b_n, MATCHOL, b_lda, info)
     ASSERT(info .eq. 0)
 !
 ! --- RECUPERATION DE LA MATRICE D'OBSERVATION
