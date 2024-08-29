@@ -151,15 +151,23 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     phi = ndynre(sddyna, 'PHI')
     alpha = ndynre(sddyna, 'ALPHA')
     if (lihht) then
+        ! NOHHT coefficients
         eta = -alpha
         delta = eta*0.5d0
         eps = gamma-beta
-        mu = 1-gamma
-    else
+        mu = 1.0d0-gamma
+    else if (lhht) then
+        ! HHT coefficients
         eta = -alpha
         delta = eta
         eps = 0.5d0-beta
         mu = 0.5d0+alpha
+    else
+        ! Newmark coefficients
+        eta = -alpha
+        delta = eta
+        eps = 0.5d0-beta
+        mu = 1.0d0-gamma
     end if
 
 !
