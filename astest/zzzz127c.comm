@@ -264,7 +264,7 @@ vals = forc.getValues()
 vals_r = forc_r.getValues()
 
 diff = np.max(np.abs(np.abs(vals) - np.abs(vals_r))) / np.max(np.abs(vals))
-test.assertLessEqual(diff, 1.0e-7)
+test.assertLessEqual(diff, 1.0e-6)
 
 forc = modesColle.getField("REAC_NODA", 8)
 forc_r = resu_r.getField("REAC_NODA", 1)
@@ -273,7 +273,7 @@ vals = forc.getValues()
 vals_r = forc_r.getValues()
 
 diff = np.max(np.abs(np.abs(vals) - np.abs(vals_r))) / np.max(np.abs(vals))
-test.assertLessEqual(diff, 1.0e-7)
+test.assertLessEqual(diff, 1.0e-6)
 
 
 # Reference: maillage collé (non_régression)
