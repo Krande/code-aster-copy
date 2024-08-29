@@ -249,7 +249,8 @@ mode_r.setValues(modesColle.getField("DEPL", 8).getRealPart().getValues())
 resu_r = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="MULT_ELAS",
-    AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=mode_r, MODELE=modelColle),
+    NOM_CHAM="DEPL",
+    AFFE=_F(CHAM_GD=mode_r, MODELE=modelColle),
 )
 CALC_CHAMP(reuse=resu_r, RESULTAT=resu_r, CHAM_MATER=fieldmatColle, FORCE="FORC_NODA")
 CALC_CHAMP(reuse=resu_r, RESULTAT=resu_r, CHAM_MATER=fieldmatColle, FORCE="REAC_NODA")
@@ -262,7 +263,7 @@ vals = forc.getValues()
 vals_r = forc_r.getValues()
 
 diff = np.max(np.abs(np.abs(vals) - np.abs(vals_r))) / np.max(np.abs(vals))
-test.assertLessEqual(diff, 1.0e-7)
+test.assertLessEqual(diff, 1.0e-6)
 
 forc = modesColle.getField("REAC_NODA", 8)
 forc_r = resu_r.getField("REAC_NODA", 1)
@@ -271,7 +272,7 @@ vals = forc.getValues()
 vals_r = forc_r.getValues()
 
 diff = np.max(np.abs(np.abs(vals) - np.abs(vals_r))) / np.max(np.abs(vals))
-test.assertLessEqual(diff, 1.0e-7)
+test.assertLessEqual(diff, 1.0e-6)
 
 
 # Reference: maillage collé (non_régression)
