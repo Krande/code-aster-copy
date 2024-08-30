@@ -339,6 +339,8 @@ DEFI_MATERIAU = MACRO(
             "MCC_FO",
             "Barcelone",
             "Barcelone_FO",
+            "CSSM",
+            "CSSM_FO",
         ),
     ),
     reuse=SIMP(statut="c", typ=CO),
