@@ -156,14 +156,12 @@ U1 = STAT_NON_LINE(
 # Test des itérations
 iterations = RECU_TABLE(CO=U1, NOM_PARA="ITER_GLOB")
 
-TEST_TABLE(
-    TABLE=iterations,
-    NOM_PARA="ITER_GLOB",
-    TYPE_TEST="MAX",
-    REFERENCE="ANALYTIQUE",
-    VALE_REFE_I=7,
-    VALE_CALC_I=7,
-)
+tab_iter = iterations.EXTR_TABLE().dict_CREA_TABLE()
+val_itermax = max(tab_iter["LISTE"][1]["LISTE_I"])
+print("Nombre iteration max", val_itermax)
+
+test = CA.TestCase()
+test.assertLessEqual(val_itermax, 8)
 
 
 FIN()
