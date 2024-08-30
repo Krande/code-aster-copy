@@ -133,7 +133,12 @@ BARRAGE = DEFI_MATERIAU(
     ELAS=_F(
         E=YOUNG_2, NU=NU_2, RHO=RHO_2, AMOR_ALPHA=alpha, AMOR_BETA=beta, ALPHA=0.0  # AMOR RAYLEIGH
     ),
-    Iwan=_F(YoungModulus=YOUNG_2, PoissonRatio=NU_2, HypDistortion=HypDistortion_2, nHypExponent=HypExponent_2),
+    Iwan=_F(
+        YoungModulus=YOUNG_2,
+        PoissonRatio=NU_2,
+        HypDistortion=HypDistortion_2,
+        HypExponent=HypExponent_2,
+    ),
 )
 
 affe_materiau = [

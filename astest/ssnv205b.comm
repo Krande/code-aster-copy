@@ -42,7 +42,12 @@ HypExponentf = DEFI_CONSTANTE(VALE=HypExponent)
 
 MATE = DEFI_MATERIAU(
     ELAS=_F(E=YOUNG, NU=POISSON),
-    Iwan_FO=_F(YoungModulus=YOUNGf, PoissonRatio=POISSONf, HypDistortion=HypDistortionf, HypExponent=HypExponentf),
+    Iwan_FO=_F(
+        YoungModulus=YOUNGf,
+        PoissonRatio=POISSONf,
+        HypDistortion=HypDistortionf,
+        HypExponent=HypExponentf,
+    ),
 )
 
 TEMPS1 = DEFI_LIST_REEL(

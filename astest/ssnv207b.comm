@@ -37,7 +37,12 @@ POISSON = (3.0 * K - 2.0 * G) / (6.0 * K + 2.0 * G)
 
 MATE = DEFI_MATERIAU(
     ELAS=_F(E=YOUNG, NU=POISSON),
-    Iwan=_F(YoungModulus=YOUNG, PoissonRatio=POISSON, HypDistortion=HypDistortion, HypExponent=HypExponent),
+    Iwan=_F(
+        YoungModulus=YOUNG,
+        PoissonRatio=POISSON,
+        HypDistortion=HypDistortion,
+        HypExponent=HypExponent,
+    ),
 )
 
 TEMPS1 = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=40, NOMBRE=160),))

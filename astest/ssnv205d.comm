@@ -39,92 +39,112 @@ eta = 0.99
 om = 32.0
 gammahyp = 2.0e-4
 nhyp = 0.78
-C = 448.0e3 
+C = 448.0e3
 
-MATER = DEFI_MATERIAU(ELAS=_F(E=9.0*k*mu/(3.0*k+mu), NU=(3.0*k-2.0*mu)/(2.0*(3.0*k+mu)), ALPHA=0.0),
-                      CSSM=_F(BulkModulus=k,
-                              ShearModulus=mu,
-                              InitCritPress=pc0,
-                              CritStateSlope=M,
-                              IncoPlastIndex=bt,
-                              HypExponent=nhyp,
-                              HypDistortion=gammahyp,
-                              MinCritPress=C,
-                              ShearModulusRatio=rho,
-                              IsoHardRatio=eta,
-                              IsoHardIndex=om))
+MATER = DEFI_MATERIAU(
+    ELAS=_F(
+        E=9.0 * k * mu / (3.0 * k + mu), NU=(3.0 * k - 2.0 * mu) / (2.0 * (3.0 * k + mu)), ALPHA=0.0
+    ),
+    CSSM=_F(
+        BulkModulus=k,
+        ShearModulus=mu,
+        InitCritPress=pc0,
+        CritStateSlope=M,
+        IncoPlastIndex=bt,
+        HypExponent=nhyp,
+        HypDistortion=gammahyp,
+        MinCritPress=C,
+        ShearModulusRatio=rho,
+        IsoHardRatio=eta,
+        IsoHardIndex=om,
+    ),
+)
 
 ### >>>>>>>>>>
 ### Time steps
 ### <<<<<<<<<<
 
-LI1 = DEFI_LIST_REEL(DEBUT=-1.0, INTERVALLE=(_F(JUSQU_A=0.0, NOMBRE=5), _F(JUSQU_A=50.0, NOMBRE=200)))
+LI1 = DEFI_LIST_REEL(
+    DEBUT=-1.0, INTERVALLE=(_F(JUSQU_A=0.0, NOMBRE=5), _F(JUSQU_A=50.0, NOMBRE=200))
+)
 
-DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LI1), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO"))
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LI1), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO")
+)
 
 ### >>>>>>>>>>>>>>>>>>>
 ### Boundary conditions
 ### <<<<<<<<<<<<<<<<<<<
 
-CH_SIGM = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(-1.0, 0.0, 0.0, -100.e3))
+CH_SIGM = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(-1.0, 0.0, 0.0, -100.0e3))
 
-CH_EPSI = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(-1.0,0.0,
-                                                                       0.0,0.0,
-                                                                       10.0,-2.e-4,
-                                                                       20.0,0.0,
-                                                                       30.0,+2.e-4,
-                                                                       40.0,0.0,
-                                                                       50.0,-2.e-4))
+CH_EPSI = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    VALE=(-1.0, 0.0, 0.0, 0.0, 10.0, -2.0e-4, 20.0, 0.0, 30.0, +2.0e-4, 40.0, 0.0, 50.0, -2.0e-4),
+)
 
 ### >>>>>>>>
 ### Solution
 ### <<<<<<<<
 
-RESU = SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14),
-                      MATER=MATER,
-                      INCREMENT=_F(LIST_INST=DEFLIST),
-                      NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-8),
-                      SIGM_IMPOSE=_F(SIXX=CH_SIGM, SIYY=CH_SIGM, SIZZ=CH_SIGM),
-                      EPSI_IMPOSE=_F(EPXY=CH_EPSI))
+RESU = SIMU_POINT_MAT(
+    COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14),
+    MATER=MATER,
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-8),
+    SIGM_IMPOSE=_F(SIXX=CH_SIGM, SIYY=CH_SIGM, SIZZ=CH_SIGM),
+    EPSI_IMPOSE=_F(EPXY=CH_EPSI),
+)
 
 ### >>>>>
 ### Tests
 ### <<<<<
 
-TEST_TABLE(TABLE=RESU,
-           NOM_PARA="SIXY",
-           FILTRE=_F(NOM_PARA="INST", VALE=10.0),
-           REFERENCE="SOURCE_EXTERNE",
-           VALE_REFE=-33367.94705923042,
-           VALE_CALC=-33367.947056891695)
+TEST_TABLE(
+    TABLE=RESU,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=10.0),
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=-33367.94705923042,
+    VALE_CALC=-33367.947056891695,
+)
 
-TEST_TABLE(TABLE=RESU,
-           NOM_PARA="SIXY",
-           FILTRE=_F(NOM_PARA="INST", VALE=20.0),
-           REFERENCE="SOURCE_EXTERNE",
-           VALE_REFE=15738.251463030401,
-           VALE_CALC=15738.251463799985)
+TEST_TABLE(
+    TABLE=RESU,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=20.0),
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=15738.251463030401,
+    VALE_CALC=15738.251463799985,
+)
 
-TEST_TABLE(TABLE=RESU,
-           NOM_PARA="SIXY",
-           FILTRE=_F(NOM_PARA="INST", VALE=30.0),
-           REFERENCE="SOURCE_EXTERNE",
-           VALE_REFE=34906.367469118224,
-           VALE_CALC=34906.367470054756)
+TEST_TABLE(
+    TABLE=RESU,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=30.0),
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=34906.367469118224,
+    VALE_CALC=34906.367470054756,
+)
 
-TEST_TABLE(TABLE=RESU,
-           NOM_PARA="SIXY",
-           FILTRE=_F(NOM_PARA="INST", VALE=40.0),
-           REFERENCE="SOURCE_EXTERNE",
-           VALE_REFE=-14665.985829296616,
-           VALE_CALC=-14665.985830390244)
+TEST_TABLE(
+    TABLE=RESU,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=40.0),
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=-14665.985829296616,
+    VALE_CALC=-14665.985830390244,
+)
 
-TEST_TABLE(TABLE=RESU,
-           NOM_PARA="SIXY",
-           FILTRE=_F(NOM_PARA="INST", VALE=50.0),
-           REFERENCE="SOURCE_EXTERNE",
-           VALE_REFE=-35051.77511979153,
-           VALE_CALC=-35051.77511509031)
+TEST_TABLE(
+    TABLE=RESU,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=50.0),
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=-35051.77511979153,
+    VALE_CALC=-35051.77511509031,
+)
 
 FIN()
