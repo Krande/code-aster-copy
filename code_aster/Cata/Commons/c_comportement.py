@@ -69,7 +69,6 @@ def C_COMPORTEMENT(command):
                     "Iwan",
                     "MohrCoulombAS",
                     "GonfElas",
-                    "KH_CSSM",
                     "NLH_CSRM",
                     "MCC",
                     "Barcelone",

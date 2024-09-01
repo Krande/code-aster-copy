@@ -1276,7 +1276,6 @@ C_SY
 C_S_VP
 C_TZTZ
 C_VOLU
-CamClayCSS
 Cohesion
 CritStateSlope
 D
@@ -3234,8 +3233,6 @@ IncoPlastIndex
 IncompIndex
 InitConsPress
 InitCritPress
-InitPreconsPress
-InitTensionPress
 InitVoidsRatio
 IsoCompElasLim
 IsoHardIndex
@@ -3314,10 +3311,6 @@ KFIN_DY
 KFIN_DZ
 KGEL
 KGTEST
-KHIndex
-KHModulus
-KH_CSSM
-KH_CSSM_FO
 KI
 KIC
 KICHENIN_NL
@@ -4901,7 +4894,6 @@ P_ULT
 P_ULTM
 Pa
 PerzynaExpo
-PlastCompIndex
 PlastStrainIndex
 PlastStrainPara1
 PlastStrainPara2
@@ -6421,8 +6413,6 @@ Y_CENTRE2
 Y_MAXI
 Y_MINI
 YieldSuccion
-YieldSurfCapCoef
-YieldSurfLinCoef
 YieldTensSlope
 YoungModulus
 Z
