@@ -76,7 +76,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_massmat_face) :: faceMass
-        integer :: info
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
@@ -96,8 +96,11 @@ contains
 !
 ! ---- Solve the system
 !
-            call dposv('U', faceMass%nrows, 1, faceMass%m, faceMass%max_nrows, &
-                       coeff_L2Proj, faceMass%max_nrows, info)
+            b_n = to_blas_int(faceMass%nrows)
+            b_nhrs = to_blas_int(1)
+            b_lda = to_blas_int(faceMass%max_nrows)
+            b_ldb = to_blas_int(faceMass%max_nrows)
+            call dposv('U', b_n, b_nhrs, faceMass%m, b_lda, coeff_L2Proj, b_ldb, info)
 !
 ! ---- Sucess ?
 !
@@ -135,7 +138,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_massmat_face) :: faceMass
-        integer :: info
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -157,8 +160,11 @@ contains
 !
 ! ---- Solve the system
 !
-            call dposv('U', faceMass%nrows, hhoFace%ndim+1, faceMass%m, &
-                       faceMass%max_nrows, coeff_L2Proj, faceMass%nrows, info)
+            b_n = to_blas_int(faceMass%nrows)
+            b_nhrs = to_blas_int(hhoFace%ndim+1)
+            b_lda = to_blas_int(faceMass%max_nrows)
+            b_ldb = to_blas_int(faceMass%nrows)
+            call dposv('U', b_n, b_nhrs, faceMass%m, b_lda, coeff_L2Proj, b_ldb, info)
 !
 ! ---- Sucess ?
 !
@@ -196,7 +202,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_massmat_cell) :: cellMass
-        integer :: info
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
@@ -216,8 +222,11 @@ contains
 !
 ! ---- Solve the system
 !
-            call dposv('U', cellMass%nrows, 1, cellMass%m, &
-                       cellMass%max_nrows, coeff_L2Proj, cellMass%max_nrows, info)
+            b_n = to_blas_int(cellMass%nrows)
+            b_nhrs = to_blas_int(1)
+            b_lda = to_blas_int(cellMass%max_nrows)
+            b_ldb = to_blas_int(cellMass%max_nrows)
+            call dposv('U', b_n, b_nhrs, cellMass%m, b_lda, coeff_L2Proj, b_ldb, info)
 !
 ! ---- Sucess ?
 !
@@ -255,7 +264,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_massmat_cell) :: cellMass
-        integer :: info
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -276,8 +285,11 @@ contains
 !
 ! ---- Solve the system
 !
-            call dposv('U', cellMass%nrows, hhoCell%ndim, cellMass%m, &
-                       cellMass%max_nrows, coeff_L2Proj, cellMass%nrows, info)
+            b_n = to_blas_int(cellMass%nrows)
+            b_nhrs = to_blas_int(hhoCell%ndim)
+            b_lda = to_blas_int(cellMass%max_nrows)
+            b_ldb = to_blas_int(cellMass%nrows)
+            call dposv('U', b_n, b_nhrs, cellMass%m, b_lda, coeff_L2Proj, b_ldb, info)
 !
 ! ---- Sucess ?
 !

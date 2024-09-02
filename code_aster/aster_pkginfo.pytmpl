@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+# template file:
+# aslint: disable=C4522
+
 from collections import namedtuple
 
 locale_dir = '@ASTERLOCALEDIR@'
 
-version_info = namedtuple('aster_version_info', [
+version_info = namedtuple('version_info', [
 'version', 'parentid', 'branch', 'date', 'from_branch', 'changes', 'uncommitted'
 ])(
 *@VERSION_INFO@

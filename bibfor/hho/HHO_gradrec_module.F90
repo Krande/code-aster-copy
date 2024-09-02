@@ -16,7 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
-!
+
+! 'blas_int' not detected by static checker
+! aslint: disable=C1314
+
 module HHO_gradrec_module
 !
     use HHO_type
@@ -90,7 +93,8 @@ contains
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSCGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL), normal(3)
         integer :: ipg, dimStiffMat, ifromMG, itoMG, ifromBG, itoBG, dimMG
-        integer :: cbs, fbs, total_dofs, iface, info, fromFace, toFace
+        integer :: cbs, fbs, total_dofs, iface, fromFace, toFace
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
 !
         DEBUG_TIMER(start)
@@ -168,7 +172,11 @@ contains
 !
 ! - Verif strange bug if info neq 0 in entry
         info = 0
-        call dposv('U', dimMG, total_dofs, MG, MSIZE_CELL_SCAL, gradrec, MSIZE_CELL_SCAL, info)
+        b_n = to_blas_int(dimMG)
+        b_nhrs = to_blas_int(total_dofs)
+        b_lda = to_blas_int(MSIZE_CELL_SCAL)
+        b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+        call dposv('U', b_n, b_nhrs, MG, b_lda, gradrec, b_ldb, info)
 !
 ! - Sucess ?
         if (info .ne. 0) then
@@ -313,7 +321,8 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
         real(kind=8) :: normal(3)
         integer :: cbs, fbs, total_dofs, gbs, dimMassMat
-        integer :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, info
+        integer :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         integer :: iface, fromFace, toFace
         real(kind=8) :: start, end
 !
@@ -418,8 +427,11 @@ contains
 !
 ! - Verif strange bug if info neq 0 in entry
             info = 0
-            call dposv('U', dimMassMat, hhoCell%ndim*total_dofs, massMat%m, MSIZE_CELL_SCAL, &
-                       SOL, MSIZE_CELL_SCAL, info)
+            b_n = to_blas_int(dimMassMat)
+            b_nhrs = to_blas_int(hhoCell%ndim*total_dofs)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            call dposv('U', b_n, b_nhrs, massMat%m, b_lda, SOL, b_ldb, info)
 !
 ! - Sucess ?
             if (info .ne. 0) then
@@ -604,8 +616,9 @@ contains
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         real(kind=8) :: coeff, normal(3)
         integer :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat, cbs_comp, fbs_comp, gbs_sym
-        integer :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, info, j, iface
+        integer :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, j, iface
         integer :: jbegCell, jendCell, jbegFace, jendFace
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
 !
         DEBUG_TIMER(start)
@@ -849,8 +862,11 @@ contains
 !
 ! - Verif strange bug if info neq 0 in entry
             info = 0
-            call dposv('U', dimMassMat, nbdimMat*total_dofs, massMat%m, MSIZE_CELL_SCAL, &
-                       SOL, MSIZE_CELL_SCAL, info)
+            b_n = to_blas_int(dimMassMat)
+            b_nhrs = to_blas_int(nbdimMat*total_dofs)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            call dposv('U', b_n, b_nhrs, massMat%m, b_lda, SOL, b_ldb, info)
 !
 ! - Sucess ?
             if (info .ne. 0) then
@@ -916,15 +932,15 @@ contains
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVCGradEval
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSCGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL)
-        integer, parameter :: LWORK = (MSIZE_CELL_VEC+3)*MSIZE_TDOFS_VEC
+        blas_int, parameter :: LWORK = (MSIZE_CELL_VEC+3)*MSIZE_TDOFS_VEC
         real(kind=8), dimension(LWORK):: WORK
         blas_int, dimension(MSIZE_CELL_VEC+3) :: IPIV
-        blas_int :: info
         integer :: ipg, dimStiffMat, ifromBG, itoBG, dimMG, nblag, dimMGLag, idir, idir2
         integer :: cbs, fbs, total_dofs, iface, i, cbs_comp, fbs_comp, dimMG_cmp, ind_MG
         integer :: jbeginCell, jendCell, jbeginFace, jendFace, idim, j, dimStiffMat_cmp
         integer :: row_deb_MG, row_fin_MG, col_deb_MG, col_fin_MG, col_deb_BG, col_fin_BG
         integer :: row_deb_ST, row_fin_ST, col_deb_ST, col_fin_ST
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: qp_dphi_ss, normal(3)
         real(kind=8) :: start, end
 !
@@ -1114,8 +1130,11 @@ contains
 !
 ! - Verif strange bug if info neq 0 in entry
         info = 0
-        call dsysv('U', dimMGLag, total_dofs, MG, MSIZE_CELL_VEC+3, IPIV, gradrec2, &
-                   MSIZE_CELL_VEC+3, WORK, LWORK, info)
+        b_n = to_blas_int(dimMGLag)
+        b_nhrs = to_blas_int(total_dofs)
+        b_lda = to_blas_int(MSIZE_CELL_VEC+3)
+        b_ldb = to_blas_int(MSIZE_CELL_VEC+3)
+        call dsysv('U', b_n, b_nhrs, MG, b_lda, IPIV, gradrec2, b_ldb, WORK, LWORK, info)
 !
 ! - Sucess ?
         if (info .ne. 0) then

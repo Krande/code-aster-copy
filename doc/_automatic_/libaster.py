@@ -14869,10 +14869,10 @@ def petscFinalize():
     """Stops the PETSc interface."""
 
 
-# built-in function _petscInitializeWithOptions in libaster
+# built-in function petscInitialize in libaster
 
 
-def _petscInitializeWithOptions(options):
+def petscInitialize(options=""):
     """Starts the PETSc interface with options.
 
     Arguments:
