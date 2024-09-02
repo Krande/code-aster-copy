@@ -49,7 +49,7 @@ module HHO_basis_module
         type(HHO_monomials) :: hhoMono
         integer :: type = BASIS_ORTHO
         integer :: ndim = 0
-        real(kind=8) :: barycenter(3) = 0.d0
+        real(kind=8) :: center(3) = 0.d0
         real(kind=8) :: scaling_factor(3) = 0.d0
         real(kind=8) :: rotmat(3, 3) = 0.d0
         real(kind=8) :: coeff_mono(MAX_CELL_COEF) = 0.d0
@@ -75,7 +75,7 @@ module HHO_basis_module
         type(HHO_monomials) :: hhoMono
         integer :: type = BASIS_ORTHO
         integer :: ndim = 0
-        real(kind=8) :: barycenter(3) = 0.d0
+        real(kind=8) :: center(3) = 0.d0
         real(kind=8) :: scaling_factor(2) = 0.d0
         real(kind=8) :: rotmat(2, 3) = 0.d0
         real(kind=8) :: coeff_mono(MAX_FACE_COEF) = 0.d0
@@ -188,7 +188,7 @@ contains
         this%rotmat = transpose(axes)
         this%ndim = hhoCell%ndim
         this%scaling_factor = 2.d0/length_box
-        this%barycenter = hhoCell%barycenter
+        this%center = hhoCenterBoundingBoxCell(hhoCell, axes)
 !
         do idim = 1, this%ndim
             this%rotmat(idim, :) = &
@@ -283,7 +283,7 @@ contains
         this%ndim = hhoFace%ndim
         this%scaling_factor = 2.d0/length_box
         this%rotmat = transpose(axes)
-        this%barycenter = hhoFace%barycenter
+        this%center = hhoCenterBoundingBoxFace(hhoFace, axes)
 !
         do idim = 1, this%ndim
             this%rotmat(idim, :) = &
@@ -1223,7 +1223,7 @@ contains
 !
         real(kind=8), dimension(3) :: ep
 !
-        ep(1:3) = point(1:3)-this%barycenter(1:3)
+        ep(1:3) = point(1:3)-this%center(1:3)
 !
         proj = matmul(this%rotmat, ep)
         ! if(proj(1) < -1.1d0 .or. proj(1) > 1.1d0) print*, "errorf0: ", proj
@@ -1254,7 +1254,7 @@ contains
 !
         real(kind=8), dimension(3) :: ep
 !
-        ep(1:3) = point(1:3)-this%barycenter(1:3)
+        ep(1:3) = point(1:3)-this%center(1:3)
 !
         proj = matmul(this%rotmat, ep)
         ! if(proj(1) < -1.1d0 .or. proj(1) > 1.1d0) print*, "errorc0: ", proj
