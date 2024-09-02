@@ -46,7 +46,11 @@ class Annealing:
         if not self._enabled:
             return
 
-        previous = nl_solver.phys_state.getState(-1)
+        try:
+            previous = nl_solver.phys_state.getState(-1)
+        except IndexError:
+            # No post-pro at initial step
+            return
         current = nl_solver.phys_state
         post_process = PostProcessing(nl_solver.phys_pb)
         internVar_anneal = post_process.computeAnnealing(
