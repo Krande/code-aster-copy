@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine te0326(option, nomte)
     real(kind=8) :: normn(3, 9), j1n(9), j2n(9), vibarn(2, 9), gphgxn(9)
     integer :: ipoids, ivf, idfdx, idfdy, igeom
     integer :: ndim, nno, ipg, npg1, ivectt, imate
-    integer :: idec, jdec, kdec, ldec, kpg, spt
+    integer :: idec, jdec, kdec, ldec, spt
     integer :: i, j, k, iacce, idim, ii, ino, itemp, jno, nnos, jgano
 !-----------------------------------------------------------------------
 !
@@ -86,13 +86,9 @@ subroutine te0326(option, nomte)
     call jevech('PACCELR', 'L', iacce)
     call jevech('PTEMPER', 'L', itemp)
 !
-    fami = 'FPG1'
-    kpg = 1
+    fami = 'RIGI'
     spt = 1
     poum = '+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                ' ', 'THER', 0, ' ', [0.d0], &
-                1, 'RHO_CP', rho, icodre, 1)
 !
     do i = 1, nno
         acloc(1, i) = 0.0d0
@@ -291,6 +287,11 @@ subroutine te0326(option, nomte)
 !
     do ipg = 1, npg1
         ldec = (ipg-1)*nno
+
+        call rcvalb(fami, ipg, spt, poum, zi(imate), &
+                    ' ', 'THER', 0, ' ', [0.d0], &
+                    1, 'RHO_CP', rho, icodre, 1)
+
         do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1)+rho(1)*jac(ipg)*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
                             & *(flufn(ipg)*divsig(ipg)+gphgxn(ipg))

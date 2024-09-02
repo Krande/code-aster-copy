@@ -619,7 +619,7 @@ class THER_HEXA8_D(THER_HEXA20):
         ElrefeLoc(
             MT.HE8,
             gauss=("RIGI=FPG8", "FPG1=FPG1", "MASS=NOEU_S", "NOEU=NOEU_S"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4")),
     )
@@ -634,7 +634,7 @@ class THER_PENTA6_D(THER_HEXA20):
         ElrefeLoc(
             MT.PE6,
             gauss=("RIGI=FPG6", "FPG1=FPG1", "MASS=NOEU_S", "NOEU=NOEU_S"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4", "NOEU=NOEU")),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3", "NOEU=NOEU")),
@@ -650,6 +650,7 @@ class THER_TETRA4_D(THER_HEXA20):
         ElrefeLoc(
             MT.TE4,
             gauss=("RIGI=FPG4", "FPG1=FPG1", "MASS=NOEU_S", "NOEU=NOEU_S"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3")),
     )
