@@ -42,7 +42,9 @@ class THER_HEXA20(Element):
 
     meshType = MT.HEXA20
     elrefe = (
-        ElrefeLoc(MT.H20, gauss=("RIGI=FPG27", "FPG1=FPG1", "MASS=FPG27"), mater=("FPG1", "RIGI")),
+        ElrefeLoc(
+            MT.H20, gauss=("RIGI=FPG27", "FPG1=FPG1", "MASS=FPG27"), mater=("FPG1", "RIGI", "MASS")
+        ),
         ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9")),
     )
     calculs = (
@@ -439,7 +441,9 @@ class THER_HEXA27(THER_HEXA20):
 
     meshType = MT.HEXA27
     elrefe = (
-        ElrefeLoc(MT.H27, gauss=("RIGI=FPG27", "FPG1=FPG1", "MASS=FPG27"), mater=("FPG1", "RIGI")),
+        ElrefeLoc(
+            MT.H27, gauss=("RIGI=FPG27", "FPG1=FPG1", "MASS=FPG27"), mater=("FPG1", "RIGI", "MASS")
+        ),
         ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9", "MASS=FPG9")),
     )
 
@@ -453,7 +457,7 @@ class THER_HEXA8(THER_HEXA20):
         ElrefeLoc(
             MT.HE8,
             gauss=("RIGI=FPG8", "FPG1=FPG1", "MASS=FPG8", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4")),
     )
@@ -465,7 +469,9 @@ class THER_PENTA15(THER_HEXA20):
 
     meshType = MT.PENTA15
     elrefe = (
-        ElrefeLoc(MT.P15, gauss=("RIGI=FPG21", "FPG1=FPG1", "MASS=FPG21"), mater=("FPG1", "RIGI")),
+        ElrefeLoc(
+            MT.P15, gauss=("RIGI=FPG21", "FPG1=FPG1", "MASS=FPG21"), mater=("FPG1", "RIGI", "MASS")
+        ),
         ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9", "NOEU=NOEU")),
         ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6", "NOEU=NOEU")),
     )
@@ -480,7 +486,7 @@ class THER_PENTA6(THER_HEXA20):
         ElrefeLoc(
             MT.PE6,
             gauss=("RIGI=FPG6", "FPG1=FPG1", "MASS=FPG6", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4", "NOEU=NOEU")),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3", "NOEU=NOEU")),
@@ -493,7 +499,9 @@ class THER_PYRAM13(THER_HEXA20):
 
     meshType = MT.PYRAM13
     elrefe = (
-        ElrefeLoc(MT.P13, gauss=("RIGI=FPG10", "FPG1=FPG1", "MASS=FPG10"), mater=("FPG1", "RIGI")),
+        ElrefeLoc(
+            MT.P13, gauss=("RIGI=FPG10", "FPG1=FPG1", "MASS=FPG10"), mater=("FPG1", "RIGI", "MASS")
+        ),
         ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9")),
         ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6")),
     )
@@ -515,7 +523,9 @@ class THER_PYRAM5(THER_HEXA20):
     meshType = MT.PYRAM5
     elrefe = (
         ElrefeLoc(
-            MT.PY5, gauss=("RIGI=FPG5", "FPG1=FPG1", "MASS=FPG5", "NOEU=NOEU"), mater=("FPG1",)
+            MT.PY5,
+            gauss=("RIGI=FPG5", "FPG1=FPG1", "MASS=FPG5", "NOEU=NOEU"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4")),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3")),
@@ -537,7 +547,9 @@ class THER_TETRA10(THER_HEXA20):
 
     meshType = MT.TETRA10
     elrefe = (
-        ElrefeLoc(MT.T10, gauss=("RIGI=FPG15", "FPG1=FPG1", "MASS=FPG15"), mater=("FPG1", "RIGI")),
+        ElrefeLoc(
+            MT.T10, gauss=("RIGI=FPG15", "FPG1=FPG1", "MASS=FPG15"), mater=("FPG1", "RIGI", "MASS")
+        ),
         ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6")),
     )
 
@@ -551,7 +563,7 @@ class THER_TETRA4(THER_HEXA20):
         ElrefeLoc(
             MT.TE4,
             gauss=("RIGI=FPG4", "FPG1=FPG1", "MASS=FPG4", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3")),
     )

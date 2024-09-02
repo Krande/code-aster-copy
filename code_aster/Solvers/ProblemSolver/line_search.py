@@ -178,7 +178,6 @@ class LineSearch(SolverFeature):
                     # zbproj
                     if rho < rhoneg:
                         if bpos:
-                            print("ici ici")
                             rho = 0.5 * (rhoneg + rhopos)
                         else:
                             logger.info(

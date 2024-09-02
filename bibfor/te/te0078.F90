@@ -64,10 +64,11 @@ subroutine te0078(option, nomte)
     integer :: kp, imate, itemps
     real(kind=8), pointer :: temp(:) => null()
     character(len=8), parameter :: famiR = "RIGI"
+    character(len=8), parameter :: famiM = "MASS"
 !
     call FECell%init()
     call FEBasis%initCell(FECell)
-    call FEQuadMass%initCell(FECell, "MASS")
+    call FEQuadMass%initCell(FECell, famiM)
     call FEQuadRigi%initCell(FECell, famiR)
 !
     call jevech('PMATERC', 'L', imate)
@@ -92,12 +93,12 @@ subroutine te0078(option, nomte)
         call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
     end do
 !
-    call rcvalb('FPG1', 1, 1, '+', zi(imate), &
-                ' ', phenom, 1, 'INST', [time], &
-                1, 'RHO_CP', valres, icodre, 1)
-    cp = valres(1)
-!
     do kp = 1, FEQuadMass%nbQuadPoints
+!
+        call rcvalb(famiM, kp, 1, '+', zi(imate), ' ', phenom, 1, 'INST', [time], &
+                    1, 'RHO_CP', valres, icodre, 1)
+        cp = valres(1)
+!
         tpg = FEEvalFuncScal(FEBasis, temp, FEQuadMass%points_param(1:3, kp))
         ValQPM(kp) = cp*tpg
     end do
