@@ -122,7 +122,7 @@ subroutine nmcomp(BEHinteg, &
     real(kind=8):: epsm_meca(neps), deps_meca(neps), epsm(neps), deps(neps)
     real(kind=8) :: dsidep_cp(merge(nsig, 6, nsig*neps .eq. ndsde), &
                               merge(neps, 6, nsig*neps .eq. ndsde))
-    real(kind=8), allocatable:: vip_cp(:), ka3_max, k3a_max, c_max
+    real(kind=8), allocatable:: vip_cp(:), ka3_min, k3a_min, c_min
     character(len=8)  :: materi
     character(len=8)  :: typmod_cp(2), typ_crit
     character(len=16) :: option_cp, mult_comp, defo_ldc, defo_comp
@@ -274,8 +274,11 @@ subroutine nmcomp(BEHinteg, &
                 if (conv_cp) exit
 
                 ! Reactualisation de la deformation EPZZ en verifiant l'inversibilite
-                invert = ASTER_TRUE
-                if (abs(dsidep_cp(3, 3)) .lt. abs(sigp(3))) then
+                if (abs(dsidep_cp(3, 3)) .eq. 0 .and. abs(sigp(3)) .eq. 0) then
+                    invert = ASTER_FALSE
+                else if (abs(dsidep_cp(3, 3)) .gt. abs(sigp(3))) then
+                    invert = ASTER_TRUE
+                else
                     invert = abs(dsidep_cp(3, 3))/abs(sigp(3)) .gt. 1.d0/r8gaem()
                 end if
 
@@ -313,18 +316,21 @@ subroutine nmcomp(BEHinteg, &
         if (lMatr) then
 
             ! pivot nul -> on ne corrige pas la matrice
-            ka3_max = max(maxval(abs(dsidep(1:2, 3))), maxval(abs(dsidep(4:, 3))))
-            k3a_max = max(maxval(abs(dsidep(3, 1:2))), maxval(abs(dsidep(3, 4:))))
-            c_max = ka3_max*k3a_max
-            invert = ASTER_TRUE
-            if (abs(dsidep(3, 3)) .lt. c_max) then
-                invert = abs(dsidep(3, 3))/c_max .gt. 1.d0/r8gaem()
+            ka3_min = min(minval(abs(dsidep(1:2, 3))), abs(dsidep(4, 3)))
+            k3a_min = min(minval(abs(dsidep(3, 1:2))), abs(dsidep(3, 4)))
+            c_min = ka3_min*k3a_min
+            if (abs(dsidep(3, 3)) .eq. 0 .and. c_min .eq. 0) then
+                invert = ASTER_FALSE
+            else if (abs(dsidep(3, 3)) .gt. c_min) then
+                invert = ASTER_TRUE
+            else
+                invert = abs(dsidep(3, 3))/c_min .gt. 1.d0/r8gaem()
             end if
 
             if (invert) then
-                do k = 1, nsig
+                do k = 1, 4
                     if (k .eq. 3) goto 136
-                    do l = 1, neps
+                    do l = 1, 4
                         if (l .eq. 3) goto 137
                         dsidep(k, l) = dsidep(k, l)-dsidep(k, 3)*dsidep(3, l)/dsidep(3, 3)
 137                     continue
