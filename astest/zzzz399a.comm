@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ TEST_TABLE(
     NOM_PARA="DIFF",
     TYPE_TEST="MAX",
     REFERENCE="ANALYTIQUE",
-    VALE_CALC=3.01524e-04,
+    VALE_CALC=2.562136e-05,
     PRECISION=5e-4,
     VALE_REFE=0.0,
     CRITERE="ABSOLU",
@@ -150,7 +150,7 @@ IMPR_TABLE(UNITE=6, TABLE=TABMODE)
 TEST_TABLE(
     TABLE=TABMODE,
     NOM_PARA="FREQ",
-    VALE_CALC=0.15919913067934227,
+    VALE_CALC=0.1591549591556548,
     FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
 )
 
@@ -225,21 +225,21 @@ TEST_TABLE(
 TEST_TABLE(
     TABLE=TABMODE,
     NOM_PARA="MASS_GENE",
-    VALE_CALC=0.17724552793739665,
+    VALE_CALC=0.17724524669803185,
     FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
 )
 
 TEST_TABLE(
     TABLE=TABMODE,
     NOM_PARA="OMEGA2",
-    VALE_CALC=1.000555354683716,
+    VALE_CALC=1.000000201863165,
     FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
 )
 
 TEST_TABLE(
     TABLE=TABMODE,
     NOM_PARA="RIGI_GENE",
-    VALE_CALC=0.1773439620715138,
+    VALE_CALC=0.177245282477322,
     FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
 )
 
