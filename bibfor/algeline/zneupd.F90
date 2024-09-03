@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !     SUBROUTINE ARPACK CALCULANT LES MODES PROPRES DU PROBLEME
 !     INITIAL.
@@ -371,6 +371,7 @@ subroutine zneupd(rvec, howmny, select, d, z, &
     complex(kind=8) :: rnorm, temp, vl(1)
     real(kind=8) :: rtemp, eps23, eps
     aster_logical :: reord
+    blas_int :: b_ldc, b_lda, b_m, b_n, b_k
 !
 !
 !     %--------------------%
@@ -693,8 +694,13 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !        | NCONV IN WORKL(IUPTRI).                                |
 !        %--------------------------------------------------------%
 !
-        call zunm2r('R', 'N', n, ncv, nconv, &
-                    workl(invsub), ldq, workev, v, ldv, &
+        b_ldc = to_blas_int(ldv)
+        b_lda = to_blas_int(ldq)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(ncv)
+        b_k = to_blas_int(nconv)
+        call zunm2r('R', 'N', b_m, b_n, b_k, &
+                    workl(invsub), b_lda, workev, v, b_ldc, &
                     workd(n+1), ierr4)
         ierr = ierr4
         call zlacpy('A', n, nconv, v, ldv, &
