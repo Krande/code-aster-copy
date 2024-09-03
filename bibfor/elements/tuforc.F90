@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tuforc(option, nomte, nbrddl, b, f, &
                   vin, vout, mat, pass, vtemp)
     implicit none
@@ -75,11 +75,12 @@ subroutine tuforc(option, nomte, nbrddl, b, f, &
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
+    blas_int :: b_incx, b_incy, b_n
     data noms_cara1/'R1', 'EP1'/
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, &
-                     jdfd2=jdfd2, jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2, &
+                     jgano=jgano)
 !
     pi = r8pi()
     deuxpi = 2.d0*pi
@@ -186,8 +187,8 @@ subroutine tuforc(option, nomte, nbrddl, b, f, &
                     call prmave(0, mat, nbrddl, nbrddl, 4, &
                                 sig, 4, vout, nbrddl, iret)
 !  STOCKAGE DU VECTEUR VOUT DANS FI
-                    poids = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)*(l/2.d0)*h*deuxpi/(4.&
-                            &d0*nbcou*nbsec)*r
+                    poids = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)*(l/2.d0)*h*deuxpi/(4.d0*&
+                            &nbcou*nbsec)*r
                     do i = 1, nbrddl
                         f(i) = f(i)+vout(i)*poids
                     end do
@@ -239,8 +240,8 @@ subroutine tuforc(option, nomte, nbrddl, b, f, &
                             mat(j, i) = b(i, j)
                         end do
                     end do
-                    poids = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)*(l/2.d0)*h*deuxpi/(4.&
-                            &d0*nbcou*nbsec)*r
+                    poids = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)*(l/2.d0)*h*deuxpi/(4.d0*&
+                            &nbcou*nbsec)*r
                     iret = 0
 !  POUR CHAQUE CMP DE SIGM_REFE, STOCKAGE DU VECTEUR VOUT DANS F
                     call r8inir(4, 0.d0, sigtmp, 1)
@@ -258,8 +259,11 @@ subroutine tuforc(option, nomte, nbrddl, b, f, &
         end do
 !      ON PREND LA VALEUR MOYENNE DES FORCES NODALES DE REFERENCE
         nval = npg*(2*nbcou+1)*(2*nbsec+1)*4
-        call daxpy(nbrddl, 1.d0/nval, vtemp, 1, f, &
-                   1)
+        b_n = to_blas_int(nbrddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0/nval, vtemp, b_incx, f, &
+                   b_incy)
         call r8inir(nbrddl, 0.d0, vtemp, 1)
 !
 ! PASSAGE DU REPERE LOCAL AU REPERE GLOBAL
@@ -414,22 +418,22 @@ subroutine tuforc(option, nomte, nbrddl, b, f, &
                 cv(1, 2) = -co(3, ih)*si(3, 3)+si(3, ih)*co(3, 3)
                 cv(2, 1) = -cp(1, 2)
                 cv(2, 2) = cp(1, 1)
-                alphaf = hk(ih, 3)*(co(1, ih)*fpg(1, 1)+si(1, ih)*fpg(1, 2))- &
-                         hk(ih, 3)*hk(3, 1)*(cp(1, 1)*fpg(2, 1)+cp(1, 2)*fpg(2, 2))- &
-                         hk(ih, 1)*(co(3, ih)*fpg(3, 1)+si(3, ih)*fpg(3, 2))+ &
-                         hk(ih, 1)*hk(3, 3)*(cv(1, 1)*fpg(2, 1)+cv(1, 2)*fpg(2, 2))
-                betaf = hk(ih, 3)*(-si(1, ih)*fpg(1, 1)+co(1, ih)*fpg(1, 2))- &
-                        hk(ih, 3)*hk(3, 1)*(cp(2, 1)*fpg(2, 1)+cp(2, 2)*fpg(2, 2))- &
-                        hk(ih, 1)*(-si(3, ih)*fpg(3, 1)+co(3, ih)*fpg(3, 2))+ &
-                        hk(ih, 1)*hk(3, 3)*(cv(2, 1)*fpg(2, 1)+cv(2, 2)*fpg(2, 2))
-                alpham = hk(ih, 3)*(co(1, ih)*fpg(1, 4)+si(1, ih)*fpg(1, 5))- &
-                         hk(ih, 3)*hk(3, 1)*(cp(1, 1)*fpg(2, 4)+cp(1, 2)*fpg(2, 5))- &
-                         hk(ih, 1)*(co(3, ih)*fpg(3, 4)+si(3, ih)*fpg(3, 5))+ &
-                         hk(ih, 1)*hk(3, 3)*(cv(1, 1)*fpg(2, 4)+cv(1, 2)*fpg(2, 5))
-                betam = hk(ih, 3)*(-si(1, ih)*fpg(1, 4)+co(1, ih)*fpg(1, 5))- &
-                        hk(ih, 3)*hk(3, 1)*(cp(2, 1)*fpg(2, 4)+cp(2, 2)*fpg(2, 5))- &
-                        hk(ih, 1)*(-si(3, ih)*fpg(3, 4)+co(3, ih)*fpg(3, 5))+ &
-                        hk(ih, 1)*hk(3, 3)*(cv(2, 1)*fpg(2, 4)+cv(2, 2)*fpg(2, 5))
+                alphaf = hk(ih, 3)*(co(1, ih)*fpg(1, 1)+si(1, ih)*fpg(1, 2))-hk(ih, 3)*hk(3, 1)*&
+                         &(cp(1, 1)*fpg(2, 1)+cp(1, 2)*fpg(2, 2))-hk(ih, 1)*(co(3, ih)*fpg(3, 1)&
+                         &+si(3, ih)*fpg(3, 2))+hk(ih, 1)*hk(3, 3)*(cv(1, 1)*fpg(2, 1)+cv(1, 2)*&
+                         &fpg(2, 2))
+                betaf = hk(ih, 3)*(-si(1, ih)*fpg(1, 1)+co(1, ih)*fpg(1, 2))-hk(ih, 3)*hk(3, 1)*&
+                        &(cp(2, 1)*fpg(2, 1)+cp(2, 2)*fpg(2, 2))-hk(ih, 1)*(-si(3, ih)*fpg(3, 1)&
+                        &+co(3, ih)*fpg(3, 2))+hk(ih, 1)*hk(3, 3)*(cv(2, 1)*fpg(2, 1)+cv(2, 2)*f&
+                        &pg(2, 2))
+                alpham = hk(ih, 3)*(co(1, ih)*fpg(1, 4)+si(1, ih)*fpg(1, 5))-hk(ih, 3)*hk(3, 1)*&
+                         &(cp(1, 1)*fpg(2, 4)+cp(1, 2)*fpg(2, 5))-hk(ih, 1)*(co(3, ih)*fpg(3, 4)&
+                         &+si(3, ih)*fpg(3, 5))+hk(ih, 1)*hk(3, 3)*(cv(1, 1)*fpg(2, 4)+cv(1, 2)*&
+                         &fpg(2, 5))
+                betam = hk(ih, 3)*(-si(1, ih)*fpg(1, 4)+co(1, ih)*fpg(1, 5))-hk(ih, 3)*hk(3, 1)*&
+                        &(cp(2, 1)*fpg(2, 4)+cp(2, 2)*fpg(2, 5))-hk(ih, 1)*(-si(3, ih)*fpg(3, 4)&
+                        &+co(3, ih)*fpg(3, 5))+hk(ih, 1)*hk(3, 3)*(cv(2, 1)*fpg(2, 4)+cv(2, 2)*f&
+                        &pg(2, 5))
                 cp(1, 1) = co(1, ih)*co(1, ip)+si(1, ih)*si(1, ip)
                 cp(1, 2) = -co(1, ih)*si(1, ip)+si(1, ih)*co(1, ip)
                 cp(2, 1) = -cp(1, 2)
@@ -444,14 +448,16 @@ subroutine tuforc(option, nomte, nbrddl, b, f, &
                 xd = hk(ip, 1)*hk(ih, 3)*cp(2, 2)-hk(ip, 3)*hk(ih, 1)*cv(2, 2)
                 fno(1) = (xd*alphaf-xb*betaf)/(xa*xd-xb*xc)
                 fno(2) = (-xc*alphaf+xa*betaf)/(xa*xd-xb*xc)
-                fno(3) = (hk(ih, i2)*fpg(i1, 3)-hk(ih, i1)*fpg(i2, 3)- &
-                          fpg(2, 3)*(hk(3, i1)*hk(ih, i2)-hk(3, i2)*hk(ih, i1)))/ &
-                         (hk(1, 1)*hk(2, 3)-hk(1, 3)*hk(2, 1))
+                fno(3) = ( &
+                         hk(ih, i2)*fpg(i1, 3)-hk(ih, i1)*fpg(i2, 3)-fpg(2, 3)*(hk(3, i1)*hk(ih,&
+                         & i2)-hk(3, i2)*hk(ih, i1)))/(hk(1, 1)*hk(2, 3)-hk(1, 3)*hk(2, 1) &
+                         )
                 fno(4) = (xd*alpham-xb*betam)/(xa*xd-xb*xc)
                 fno(5) = (-xc*alpham+xa*betam)/(xa*xd-xb*xc)
-                fno(6) = (hk(ih, i2)*fpg(i1, 6)-hk(ih, i1)*fpg(i2, 6)-fpg(2, 6)* &
-                          (hk(3, i1)*hk(ih, i2)-hk(3, i2)*hk(ih, i1)))/ &
-                         (hk(1, 1)*hk(2, 3)-hk(1, 3)*hk(2, 1))
+                fno(6) = ( &
+                         hk(ih, i2)*fpg(i1, 6)-hk(ih, i1)*fpg(i2, 6)-fpg(2, 6)*(hk(3, i1)*hk(ih,&
+                         & i2)-hk(3, i2)*hk(ih, i1)))/(hk(1, 1)*hk(2, 3)-hk(1, 3)*hk(2, 1) &
+                         )
 380             continue
                 do i = 1, 6
                     vout(6*(ino-1)+i) = fno(i)

@@ -68,6 +68,7 @@ subroutine fornpd(option, nomte)
     real(kind=8) :: zero, zic, zmin, coef, hepa, hic
 !
     character(len=16) :: kmess(2)
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(npge=3)
 ! DEB
@@ -87,7 +88,7 @@ subroutine fornpd(option, nomte)
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
     end if
-
+!
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcara)
     epais = zr(jcara)
@@ -107,7 +108,7 @@ subroutine fornpd(option, nomte)
     else if (option .eq. 'REFE_FORC_NODA') then
         call terefe('SIGM_REFE', 'MECA_COQUE3D', sigref)
     end if
-
+!
     if (option .eq. "FORC_NODA") then
         call jevech('PDEPLAR', 'L', jvDisp)
     else
@@ -224,8 +225,11 @@ subroutine fornpd(option, nomte)
 !
     if (option .eq. 'REFE_FORC_NODA') then
         nval = nbcou*npge*npgsn*5
-        call daxpy(nb1*5, 1.d0/nval, ftemp, 1, effint, &
-                   1)
+        b_n = to_blas_int(nb1*5)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0/nval, ftemp, b_incx, effint, &
+                   b_incy)
     end if
 !
 !

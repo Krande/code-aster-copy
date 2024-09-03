@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !     SUBROUTINE ARPACK OPERANT NP ETAPE D'ARNOLDI A PARTIR D'UNE
 !     FACTORISATION D'ORDRE K.
@@ -301,6 +301,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !     %-----------------------%
 !
     real(kind=8) :: xtemp(2)
+    blas_int :: b_incx, b_incy, b_n
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -681,8 +682,11 @@ subroutine dnaitr(ido, bmat, n, k, np, &
     call dgemv('N', n, j, -one, v, &
                ldv, workd(irj), 1, one, resid, &
                1)
-    call daxpy(j, one, workd(irj), 1, h(1, j), &
-               1)
+    b_n = to_blas_int(j)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, one, workd(irj), b_incx, h(1, j), &
+               b_incy)
 !
     orth2 = .true.
     if (bmat .eq. 'G') then

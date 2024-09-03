@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine te0139(option, nomte)
 #include "blas/dcopy.h"
 #include "FE_module.h"
 #include "jeveux.h"
-
+!
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -89,6 +89,7 @@ subroutine te0139(option, nomte)
     real(kind=8) :: sdepl(3*27), svect(3*27), scont(6*27), smatr(3*27*3*27)
     real(kind=8) :: epsilo, disp_curr(MAX_BV)
     real(kind=8) :: varia(2*3*27*3*27)
+    blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
     icontp = 1
@@ -113,7 +114,8 @@ subroutine te0139(option, nomte)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PMULCOM', 'L', jv_mult_comp)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Properties of behaviour
@@ -129,7 +131,11 @@ subroutine te0139(option, nomte)
 !
     if (defo_comp == "PETIT_REAC") then
         call dcopy(ndim*nno, zr(ideplm), 1, disp_curr, 1)
-        call daxpy(ndim*nno, 1.d0, zr(ideplp), 1, disp_curr, 1)
+        b_n = to_blas_int(ndim*nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, zr(ideplp), b_incx, disp_curr, &
+                   b_incy)
         call FECell%updateCoordinates(disp_curr)
     end if
 !
@@ -163,10 +169,8 @@ subroutine te0139(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Get output fields
 !
@@ -188,66 +192,57 @@ subroutine te0139(option, nomte)
         call jevech('PCONTXR', 'E', icontp)
         call dcopy(npg*sz_tens, zr(icontm), 1, zr(icontp), 1)
     end if
-
+!
 500 continue
-
+!
     if (defo_comp .eq. 'PETIT') then
-        call nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
-                    typmod, option, zi(imate), &
-                    zk16(icompo), mult_comp, lgpg, zr(icarcr), &
-                    zr(iinstm), zr(iinstp), &
-                    zr(ideplm), zr(ideplp), &
-                    angl_naut, zr(icontm), zr(ivarim), &
-                    matsym, zr(icontp), zr(ivarip), &
-                    zr(imatuu), zr(ivectu), codret)
-        if (codret .ne. 0) goto 999
-
-    else if (defo_comp .eq. 'PETIT_REAC') then
-        call nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
-                    typmod, option, zi(imate), &
-                    zk16(icompo), mult_comp, lgpg, zr(icarcr), &
-                    zr(iinstm), zr(iinstp), &
-                    zr(ideplm), zr(ideplp), &
-                    angl_naut, zr(icontm), zr(ivarim), &
-                    matsym, zr(icontp), zr(ivarip), &
-                    zr(imatuu), zr(ivectu), codret)
-        if (codret .ne. 0) goto 999
-
-    else if (defo_comp .eq. 'SIMO_MIEHE') then
-        call nmgpfi(fami, option, typmod, ndim, nno, &
-                    npg, zr(igeom), &
-                    zk16(icompo), zi(imate), mult_comp, lgpg, zr(icarcr), &
-                    angl_naut, zr(iinstm), zr(iinstp), zr(ideplm), zr(ideplp), &
-                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), &
-                    zr(imatuu), codret)
-        if (codret .ne. 0) goto 999
-
-    else if (defo_comp .eq. 'GREEN_LAGRANGE') then
-        call nmgrla(FECell, FEBasis, FEQuad, &
-                    option, typmod, zi(imate), &
-                    ndim, nno, npg, lgpg, &
-                    zk16(icompo), zr(icarcr), mult_comp, &
-                    zr(iinstm), zr(iinstp), &
-                    zr(ideplm), &
-                    zr(ideplp), angl_naut, &
-                    zr(icontm), zr(icontp), &
-                    zr(ivarim), zr(ivarip), &
-                    matsym, zr(imatuu), zr(ivectu), &
+        call nmplxd(FECell, FEBasis, FEQuad, nno, npg, &
+                    ndim, typmod, option, zi(imate), zk16(icompo), &
+                    mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
+                    zr(ideplm), zr(ideplp), angl_naut, zr(icontm), zr(ivarim), &
+                    matsym, zr(icontp), zr(ivarip), zr(imatuu), zr(ivectu), &
                     codret)
         if (codret .ne. 0) goto 999
-
-    else if (defo_comp .eq. 'GDEF_LOG') then
-        call nmdlog(FECell, FEBasis, FEQuad, option, typmod, ndim, nno, npg, &
-                    zk16(icompo), mult_comp, zi(imate), lgpg, &
-                    zr(icarcr), angl_naut, zr(iinstm), zr(iinstp), matsym, &
+!
+    else if (defo_comp .eq. 'PETIT_REAC') then
+        call nmplxd(FECell, FEBasis, FEQuad, nno, npg, &
+                    ndim, typmod, option, zi(imate), zk16(icompo), &
+                    mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
+                    zr(ideplm), zr(ideplp), angl_naut, zr(icontm), zr(ivarim), &
+                    matsym, zr(icontp), zr(ivarip), zr(imatuu), zr(ivectu), &
+                    codret)
+        if (codret .ne. 0) goto 999
+!
+    else if (defo_comp .eq. 'SIMO_MIEHE') then
+        call nmgpfi(fami, option, typmod, ndim, nno, &
+                    npg, zr(igeom), zk16(icompo), zi(imate), mult_comp, &
+                    lgpg, zr(icarcr), angl_naut, zr(iinstm), zr(iinstp), &
                     zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp), &
                     zr(ivarip), zr(ivectu), zr(imatuu), codret)
         if (codret .ne. 0) goto 999
-
+!
+    else if (defo_comp .eq. 'GREEN_LAGRANGE') then
+        call nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
+                    zi(imate), ndim, nno, npg, lgpg, &
+                    zk16(icompo), zr(icarcr), mult_comp, zr(iinstm), zr(iinstp), &
+                    zr(ideplm), zr(ideplp), angl_naut, zr(icontm), zr(icontp), &
+                    zr(ivarim), zr(ivarip), matsym, zr(imatuu), zr(ivectu), &
+                    codret)
+        if (codret .ne. 0) goto 999
+!
+    else if (defo_comp .eq. 'GDEF_LOG') then
+        call nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
+                    ndim, nno, npg, zk16(icompo), mult_comp, &
+                    zi(imate), lgpg, zr(icarcr), angl_naut, zr(iinstm), &
+                    zr(iinstp), matsym, zr(ideplm), zr(ideplp), zr(icontm), &
+                    zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
+                    codret)
+        if (codret .ne. 0) goto 999
+!
     else
         ASSERT(ASTER_FALSE)
     end if
-
+!
 ! ----- Calcul eventuel de la matrice TGTE par PERTURBATION
     call tgveri(option, zr(icarcr), zk16(icompo), nno, zr(igeom), &
                 ndim, ndim*nno, zr(ideplp), sdepl, zr(ivectu), &
@@ -257,7 +252,7 @@ subroutine te0139(option, nomte)
     if (iret .ne. 0) then
         goto 500
     end if
-
+!
 999 continue
 !
 ! - Save return code

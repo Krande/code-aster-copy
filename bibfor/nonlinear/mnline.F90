@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,7 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect, &
     character(len=8), pointer :: type(:) => null()
     integer, pointer :: vneqs(:) => null()
     integer, pointer :: vncmp(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -127,8 +128,7 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect, &
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i = i+1
-                zr(iline-1+(j-1)*nd+i) = zr(ivect2-1+(j-1)*neq+k)/zr( &
-                                         iadim)
+                zr(iline-1+(j-1)*nd+i) = zr(ivect2-1+(j-1)*neq+k)/zr(iadim)
             end if
         end do
     end do
@@ -144,11 +144,17 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect, &
         do j = 1, ncmp
             nddl = vnddl(6*(i-1)+j)
 ! ---       CSTE & COS
-            call daxpy(h+1, jeu, zr(ivect+nd*(2*h+1)+(neqs+j-1)*(2*hf+1)), 1, zr(iline-1+nddl), &
-                       nd)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(nd)
+            call daxpy(b_n, jeu, zr(ivect+nd*(2*h+1)+(neqs+j-1)*(2*hf+1)), b_incx, &
+                       zr(iline-1+nddl), b_incy)
 ! ---       SIN
-            call daxpy(h, jeu, zr(ivect+nd*(2*h+1)+(neqs+j-1)*(2*hf+1)+hf+1), 1, &
-                       zr(iline-1+nd*(h+1)+nddl), nd)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(nd)
+            call daxpy(b_n, jeu, zr(ivect+nd*(2*h+1)+(neqs+j-1)*(2*hf+1)+hf+1), b_incx, &
+                       zr(iline-1+nd*(h+1)+nddl), b_incy)
         end do
         neqs = neqs+vneqs(i)
     end do
@@ -165,36 +171,66 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect, &
             nddl = vnddl(6*(i-1)+1)
 ! ---     F -ETA*XG
 ! ---       -ETA*XG (CSTE & COS)
-            call daxpy(h+1, -eta/jeu, zr(ivect-1+nddl), nd, &
-                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -eta/jeu, zr(ivect-1+nddl), b_incx, &
+                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+1), b_incy)
 ! ---       -ETA*XG (SIN)
-            call daxpy(h, -eta/jeu, zr(ivect-1+nd*(h+1)+nddl), nd, &
-                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+hf+2), 1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -eta/jeu, zr(ivect-1+nd*(h+1)+nddl), b_incx, &
+                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+hf+2), b_incy)
 ! ---      + F
-            call daxpy(2*hf+1, 1.d0, zr(ivect-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1, &
-                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, zr(ivect-1+nd*(2*h+1)+neqs*(2*hf+1)+1), b_incx, &
+                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+1), b_incy)
 ! ---     Z
-            call daxpy(2*hf+1, 1.d0, zr(ivect-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), 1, &
-                       zr(iline-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, zr(ivect-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), b_incx, &
+                       zr(iline-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), b_incy)
         else if (type(i) (1:6) .eq. 'CERCLE') then
             nddlx = vnddl(6*(i-1)+1)
             nddly = vnddl(6*(i-1)+2)
 ! ---     + ORIG1*[FN]
-            call daxpy(2*hf+1, orig(1+3*(i-1))/jeu, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, &
-                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, orig(1+3*(i-1))/jeu, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), b_incx, &
+                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+1), b_incy)
 ! ---     + ORIG2*[FN]
-            call daxpy(2*hf+1, orig(1+3*(i-1)+1)/jeu, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, &
-                       zr(iline-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, orig(1+3*(i-1)+1)/jeu, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), &
+                       b_incx, zr(iline-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), b_incy)
 ! ---     + 2*ORIG1*UX + 2*ORIG2*UY (CSTE & COS)
-            call daxpy(h+1, 2*orig(1+3*(i-1))/jeu**2, zr(ivect-1+nddlx), nd, &
-                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+1), 1)
-            call daxpy(h+1, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+nddly), nd, &
-                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+1), 1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 2*orig(1+3*(i-1))/jeu**2, zr(ivect-1+nddlx), b_incx, &
+                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+1), b_incy)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+nddly), b_incx, &
+                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+1), b_incy)
 ! ---     + 2*ORIG1*UX + 2*ORIG2*UY (SIN)
-            call daxpy(h, 2*orig(1+3*(i-1))/jeu**2, zr(ivect-1+nd*(h+1)+nddlx), nd, &
-                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+hf+2), 1)
-            call daxpy(h, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+nd*(h+1)+nddly), nd, &
-                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+hf+2), 1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 2*orig(1+3*(i-1))/jeu**2, zr(ivect-1+nd*(h+1)+nddlx), b_incx, &
+                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+hf+2), b_incy)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+nd*(h+1)+nddly), b_incx, &
+                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+hf+2), b_incy)
 ! ---     FN
             call dcopy(2*hf+1, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, &
                        zr(iline+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1)

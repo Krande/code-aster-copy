@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gareac(xdm, xdp, dgamma)
     implicit none
 #include "jeveux.h"
@@ -40,6 +40,7 @@ subroutine gareac(xdm, xdp, dgamma)
     real(kind=8) :: ytemp(3), ylocp(3)
     real(kind=8) :: anglp(3), pglp(3, 3)
     real(kind=8) :: pscal, norm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,8 +62,11 @@ subroutine gareac(xdm, xdp, dgamma)
 !
     pscal = ddot(3, xdpnor, 1, xdmnor, 1)
     call dcopy(3, xdpnor, 1, ytr, 1)
-    call daxpy(3, -pscal, xdmnor, 1, ytr, &
-               1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -pscal, xdmnor, b_incx, ytr, &
+               b_incy)
     call normev(ytr, norm)
     if (norm .le. r8miem()) then
         dgamma = 0.d0

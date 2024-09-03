@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate, &
     integer :: cod(4)
     character(len=16) :: nom(4)
     character(len=1) :: poum
+    blas_int :: b_incx, b_incy, b_n
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
@@ -61,8 +62,13 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate, &
 ! CALCUL DU SAUT EN T+
 !
     call dcopy(ndim, am, 1, a, 1)
-    if (resi) call daxpy(ndim, 1.d0, da, 1, a, &
-                         1)
+    if (resi) then
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, da, b_incx, a, &
+                   b_incy)
+    end if
 !
 !
 ! RECUPERATION DES PARAMETRES PHYSIQUES
@@ -191,8 +197,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate, &
         if (a(1) .le. 0.d0) then
 !
             do i = 2, ndim
-                dsidep(i, i) = dsidep(i, i)+sc*coef2/na-coef*coef2*a( &
-                               i)*a(i)
+                dsidep(i, i) = dsidep(i, i)+sc*coef2/na-coef*coef2*a(i)*a(i)
             end do
 !
             if (ndim .eq. 3) then
@@ -203,8 +208,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate, &
         else
 !
             do i = 1, ndim
-                dsidep(i, i) = dsidep(i, i)+sc*coef2/na-coef*coef2*a( &
-                               i)*a(i)
+                dsidep(i, i) = dsidep(i, i)+sc*coef2/na-coef*coef2*a(i)*a(i)
             end do
 !
             do j = 1, ndim-1

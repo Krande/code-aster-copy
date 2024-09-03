@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lcmmre(typmod, nmat, materd, materf, &
-                  nbcomm, cpmono, pgl, nfs, nsg, &
-                  toutms, hsr, nr, nvi, vind, &
-                  itmax, toler, timed, timef, yd, &
-                  yf, deps, dy, r, iret)
+!
+subroutine lcmmre(typmod, nmat, materd, materf, nbcomm, &
+                  cpmono, pgl, nfs, nsg, toutms, &
+                  hsr, nr, nvi, vind, itmax, &
+                  toler, timed, timef, yd, yf, &
+                  deps, dy, r, iret)
 ! aslint: disable=W1306,W1504
     implicit none
 !     MONOCRISTAL  : CALCUL DES RESIDUS DU SYSTEME NL A RESOUDRE = R(DY)
@@ -84,6 +84,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
     character(len=16) :: nomfam
     character(len=24) :: cpmono(5*nmat+1)
     integer :: irr, decirr, nbsyst, decal, gdef
+    blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
     common/tdim/ndt, ndi
@@ -133,9 +134,8 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
 !
         do is = 1, nbsys
 !           CALCUL DE LA SCISSION REDUITE
-            call caltau(ifa, is, sigf, fkooh, &
-                        nfs, nsg, toutms, taus, mus, &
-                        msns)
+            call caltau(ifa, is, sigf, fkooh, nfs, &
+                        nsg, toutms, taus, mus, msns)
 !           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT
             call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
                         hsr, nsfv, nsfa, ifa, nbsys, &
@@ -157,11 +157,17 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
             end if
 !
             if (gdef .eq. 0) then
-                call daxpy(6, dgamma, mus, 1, devi, &
-                           1)
+                b_n = to_blas_int(6)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, dgamma, mus, b_incx, devi, &
+                           b_incy)
             else
-                call daxpy(9, dgamma, msns, 1, gamsns, &
-                           1)
+                b_n = to_blas_int(9)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, dgamma, msns, b_incx, gamsns, &
+                           b_incy)
             end if
         end do
 !

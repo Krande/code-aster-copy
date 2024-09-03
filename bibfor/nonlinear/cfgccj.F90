@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfgccj(resoco, nbliai, conjug)
 !
 !
@@ -62,6 +62,7 @@ subroutine cfgccj(resoco, nbliai, conjug)
     real(kind=8) :: numer, numer2, denom, gamma
     character(len=19) :: sgradm, sgradp, sgrprm, sgrprp, direct
     integer :: jsgram, jsgrap, jsgprm, jsgprp, jdirec
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,8 +98,11 @@ subroutine cfgccj(resoco, nbliai, conjug)
 ! --- MISE A JOUR DIRECTION
 !
     call dscal(nbliai, gamma, zr(jdirec), 1)
-    call daxpy(nbliai, 1.d0, zr(jsgprp), 1, zr(jdirec), &
-               1)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, zr(jsgprp), b_incx, zr(jdirec), &
+               b_incy)
 !
 ! --- AFFICHAGE
 !

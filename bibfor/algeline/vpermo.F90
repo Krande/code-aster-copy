@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp, &
 !-----------------------------------------------------------------------
     integer :: i, iaux1, iaux2, j, neq, ivec
     real(kind=8) :: xseuil, rmin, raux
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()
     xseuil = omecor
@@ -93,8 +94,11 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp, &
             anorm1 = anorm1+raux*raux*excl(j)
         end do
         raux = -valp(i)
-        call daxpy(neq, raux, zr(iaux2), 1, zr(iaux1), &
-                   1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, raux, zr(iaux2), b_incx, zr(iaux1), &
+                   b_incy)
         anorm2 = 0.d0
         do j = 1, neq
             raux = zr(iaux1+j-1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcvali(fami, kpg, ksp, imate, materi, &
                   compor, ndim, epsm, deps, instam, &
                   instap, codret)
@@ -27,7 +27,7 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-
+!
     integer :: imate, kpg, ksp, iret1, iret2, iret3, codret, icodre(4), iret
     integer :: ndim
     integer :: ndimsi
@@ -37,6 +37,7 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
     real(kind=8) :: deps(6), epsm(6), eps(6), valres(4), epsmax, eps2, vepsm
     real(kind=8) :: veps(6)
     real(kind=8) :: veps2, instam, instap, dt, tmax, tmin, temp
+    blas_int :: b_incx, b_incy, b_n
 !
 !     EXAMEN DU DOMAINE DE VALIDITE
     iret1 = 0
@@ -49,14 +50,19 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
     nomres(2) = 'VEPS_MAXI'
     nomres(3) = 'TEMP_MINI'
     nomres(4) = 'TEMP_MAXI'
-    call rcvalb(fami, kpg, ksp, '+', imate, materi, 'VERI_BORNE', &
-                0, ' ', [0.d0], 4, nomres, valres, icodre, 0)
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                materi, 'VERI_BORNE', 0, ' ', [0.d0], &
+                4, nomres, valres, icodre, 0)
 !
 !     TRAITEMENT DE EPSI_MAXI
     if (icodre(1) .eq. 0) then
         epsmax = valres(1)
         call dcopy(ndimsi, epsm, 1, eps, 1)
-        call daxpy(ndimsi, 1.d0, deps, 1, eps, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps, b_incx, eps, &
+                   b_incy)
         eps2 = sqrt(ddot(ndimsi, eps, 1, eps, 1))
         if (eps2 .gt. epsmax) then
             iret1 = 4
@@ -77,7 +83,8 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
     if (icodre(3) .eq. 0) then
         tmin = valres(3)
         tmax = valres(4)
-        call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, temp, iret)
+        call rcvarc(' ', 'TEMP', '+', fami, kpg, &
+                    ksp, temp, iret)
         if (iret .eq. 0) then
             if ((temp .lt. tmin) .or. (temp .gt. tmax)) then
                 iret3 = 4

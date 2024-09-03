@@ -58,11 +58,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)          :: hhoFace
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(MAX_QP_FACE)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: rhs(MSIZE_FACE_SCAL)
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: ValuesQP(MAX_QP_FACE)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: rhs(MSIZE_FACE_SCAL)
 ! --------------------------------------------------------------------------------------------------
 !   HHO
 !
@@ -107,11 +107,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)          :: hhoFace
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(3, MAX_QP_FACE)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: rhs(MSIZE_FACE_VEC)
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: ValuesQP(3, MAX_QP_FACE)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: rhs(MSIZE_FACE_VEC)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -157,11 +157,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(MAX_QP_CELL)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: rhs(MSIZE_CELL_SCAL)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: ValuesQP(MAX_QP_CELL)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: rhs(MSIZE_CELL_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -207,11 +207,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(3, MAX_QP_CELL)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: rhs(MSIZE_CELL_VEC)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: ValuesQP(3, MAX_QP_CELL)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: rhs(MSIZE_CELL_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO

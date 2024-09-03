@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono, &
                   nmat, nvi, sig, detot, epsd, &
                   materf, pgl)
@@ -59,6 +59,7 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono, &
     character(len=16) :: rela_comp, loca, necoul, nomfam
     character(len=24) :: cpmono(5*nmat+1)
     integer :: irr, decirr, nbsyst, decal, gdef
+    blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !
@@ -179,14 +180,20 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono, &
                         1)
 !           LES RACINE(2) ATTENDUES PAR NMCOMP :-)
             call dscal(3, sqrt(2.d0), sig(4), 1)
-            call daxpy(9, -1.d0, id, 1, fe, &
-                       1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, id, b_incx, fe, &
+                       b_incy)
             call dcopy(9, fe, 1, vinf(nvi-3-18+10), 1)
             call lcgrla(fp, devi)
             call dcopy(6, devi, 1, vinf, 1)
             call dscal(3, sqrt(2.d0), devi(4), 1)
-            call daxpy(9, -1.d0, id, 1, fp, &
-                       1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, id, b_incx, fp, &
+                       b_incy)
             call dcopy(9, fp, 1, vinf(nvi-3-18+1), 1)
             epseq = lcnrte(devi)
         else
@@ -230,9 +237,8 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono, &
             indfv = nbcomm(1+iphas, 3)
 !         RECUPERER L'ORIENTATION DE LA PHASE ET LA PROPORTION
             fv = materf(indfv, 2)
-            call lcloca(materf(1, 2), nmat, nbcomm, &
-                        nbphas, sig, vinf, iphas, granb, &
-                        loca, sigg)
+            call lcloca(materf(1, 2), nmat, nbcomm, nbphas, sig, &
+                        vinf, iphas, granb, loca, sigg)
             do i = 1, 6
                 vinf(nuvi+6*(iphas-1)+i) = sigg(i)
             end do
@@ -288,10 +294,8 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono, &
                                 sdp = sdp+dp
                             end if
                         end do
-                        roloop(is) = rhosat+(roloop(is)-rhosat)*exp(-xi* &
-                                                                    sdp)
-                        fivoid(is) = phisat+(fivoid(is)-phisat)*exp(-dz* &
-                                                                    sdp)
+                        roloop(is) = rhosat+(roloop(is)-rhosat)*exp(-xi*sdp)
+                        fivoid(is) = phisat+(fivoid(is)-phisat)*exp(-dz*sdp)
                     end do
                     call dcopy(12, roloop, 1, vinf(decirr+numirr+1), 1)
                     call dcopy(12, fivoid, 1, vinf(decirr+numirr+13), 1)

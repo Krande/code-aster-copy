@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,16 +51,23 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg, &
 !
     integer :: i, j, kpg
     real(kind=8) :: up(nddl), ud(nddl), sup(3), sud(3), b(3, 60), poids
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
 !
 ! DEPLACEMENT U(ETA) = UP + ETA * UD
 !
     call dcopy(nddl, deplm, 1, up, 1)
-    call daxpy(nddl, 1.d0, ddepl, 1, up, &
-               1)
-    call daxpy(nddl, 1.d0, ddepl0, 1, up, &
-               1)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, ddepl, b_incx, up, &
+               b_incy)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, ddepl0, b_incx, up, &
+               b_incy)
     call dcopy(nddl, ddepl1, 1, ud, 1)
 !
 ! BOUCLE SUR LES POINTS DE GAUSS :

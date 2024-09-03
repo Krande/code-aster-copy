@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,7 @@ subroutine cfmajc(resoco, neq, nbliac)
     integer :: jmu, jcm1a, jliac
     character(len=19) :: ddelt
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -75,8 +76,11 @@ subroutine cfmajc(resoco, neq, nbliac)
     do iliac = 1, nbliac
         iliai = zi(jliac-1+iliac)
         call jeveuo(jexnum(cm1a, iliai), 'L', jcm1a)
-        call daxpy(neq, -zr(jmu-1+iliac), zr(jcm1a), 1, vale, &
-                   1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -zr(jmu-1+iliac), zr(jcm1a), b_incx, vale, &
+                   b_incy)
         call jelibe(jexnum(cm1a, iliai))
     end do
 !

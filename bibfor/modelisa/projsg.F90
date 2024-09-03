@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
                   xbar, iproj, excent)
     implicit none
@@ -77,6 +77,7 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
 ! -----------------
     real(kind=8) :: alpha1, alpha2, beta1, beta2, dx12, dx3d(3), dy12, dz12
     real(kind=8) :: epsg, n1n1, n1n2, n2n2, nrm2, plan1(4), plan2(4)
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -213,9 +214,9 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
     beta2 = n1n2*alpha1-n1n1*alpha2
 !
     excent = ( &
-             plan1(1)*beta1+plan2(1)*beta2)*(plan1(1)*beta1+plan2(1)*beta2)+( &
-             &plan1(2)*beta1+plan2(2)*beta2)*(plan1(2)*beta1+plan2(2)*beta2)+(&
-             & plan1(3)*beta1+plan2(3)*beta2)*(plan1(3)*beta1+plan2(3)*beta2 &
+             plan1(1)*beta1+plan2(1)*beta2)*(plan1(1)*beta1+plan2(1)*beta2)+(plan1(2)*beta1+plan&
+             &2(2)*beta2)*(plan1(2)*beta1+plan2(2)*beta2)+(plan1(3)*beta1+plan2(3)*beta2)*(plan1&
+             &(3)*beta1+plan2(3)*beta2 &
              )
     excent = dble(sqrt(excent))/(n1n1*n2n2-n1n2*n1n2)
     dx3d(1) = x3dca(1)-x3d1(1)
@@ -237,8 +238,11 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
         normal(1) = (plan1(1)*beta1+plan2(1)*beta2)/(n1n1*n2n2-n1n2*n1n2)
         normal(2) = (plan1(2)*beta1+plan2(2)*beta2)/(n1n1*n2n2-n1n2*n1n2)
         normal(3) = (plan1(3)*beta1+plan2(3)*beta2)/(n1n1*n2n2-n1n2*n1n2)
-        call daxpy(3, 1.0d0, normal(1), 1, x3dp(1), &
-                   1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.0d0, normal(1), b_incx, x3dp(1), &
+                   b_incy)
         call dscal(3, -1.0d0/excent, normal(1), 1)
     else
         call r8inir(3, 0.0d0, normal(1), 1)

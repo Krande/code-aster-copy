@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm, &
                   cpmono, nmat, mod, nvi, sigd, &
                   sigf, vind, vinf, nbphas, iret)
@@ -53,6 +53,7 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm, &
     character(len=8) :: mod
     common/tdim/ndt, ndi
     integer :: irr, decirr, nbsyst, decal, gdef
+    blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     parameter(maxdom=0.99d0)
     data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
@@ -122,8 +123,11 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm, &
                 ASSERT(ASTER_FALSE)
             end if
             call dcopy(9, vind(nvi-3-18+1), 1, fp, 1)
-            call daxpy(9, 1.d0, id, 1, fp, &
-                       1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, id, b_incx, fp, &
+                       b_incy)
             call dcopy(9, fp, 1, vinf(nvi-3-18+1), 1)
             nvi = nvi-9
         end if

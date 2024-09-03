@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,6 +82,7 @@ subroutine rslsvd(nm, m, n, a, w, &
     integer :: ib, j, rg
     real(kind=8) :: alphaj
     aster_logical :: matuv
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -120,8 +121,11 @@ subroutine rslsvd(nm, m, n, a, w, &
         call r8inir(n, 0.0d0, rvnm(1), 1)
         do j = 1, rg
             alphaj = ddot(m, u(1, j), 1, b(1, ib), 1)/w(j)
-            call daxpy(n, alphaj, v(1, j), 1, rvnm(1), &
-                       1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, alphaj, v(1, j), b_incx, rvnm(1), &
+                       b_incy)
         end do
         call dcopy(n, rvnm(1), 1, b(1, ib), 1)
     end do

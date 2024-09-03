@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vecind(mat, lvec, nbl, nbc, force, &
                   nindep)
     implicit none
@@ -60,7 +60,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
 #include "blas/dgemm.h"
 #include "blas/dgesvd.h"
     integer :: lvec, nbl, nbc, nindep, lwork, lmat, ltrav1
-    integer ::   i1, k1, l1, iret, lcopy, force, indnz
+    integer :: i1, k1, l1, iret, lcopy, force, indnz
     integer(kind=4) :: info
     real(kind=8) :: swork(1), norme, sqrt, rij
     character(len=8) :: ortho
@@ -71,6 +71,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
     real(kind=8), pointer :: trav3_v(:) => null()
     integer, pointer :: vec_ind_nz(:) => null()
     integer, pointer :: deeq(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     ortho = ' '
     iret = 0
@@ -99,13 +100,15 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
             norme = ddot(nbl, zr(ltrav1), 1, zr(lvec+nbl*(i1-1)), 1)
 !
         else
-            norme = ddot(nbl, zr(lvec+nbl*(i1-1)), 1, zr(lvec+nbl*(i1-1)), &
-                         1)
+            norme = ddot(nbl, zr(lvec+nbl*(i1-1)), 1, zr(lvec+nbl*(i1-1)), 1)
         end if
         norme = sqrt(norme)
         if (norme .gt. 1.d-16) then
-            call daxpy(nbl, 1/norme, zr(lvec+nbl*(i1-1)), 1, zr(lcopy+nbl*(i1-1)), &
-                       1)
+            b_n = to_blas_int(nbl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1/norme, zr(lvec+nbl*(i1-1)), b_incx, zr(lcopy+nbl*(i1-1)), &
+                       b_incy)
 !        ELSE
 !          CALL DAXPY(NBL,0.D0,ZR(LVEC+NBL*(I1-1)),1,
 !     &               ZR(LCOPY+NBL*(I1-1)),1)

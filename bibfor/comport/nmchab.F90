@@ -96,6 +96,7 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
      &    qm, qp, ksim, ksip, dt, n1, n2, depsp,&
      &    beta1, beta2, ndimsi, nbvar, visc, memo, idelta
     integer :: ndimsi, i, niter, visc, memo, idelta
+    blas_int :: b_incx, b_incy, b_n
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
     iret = 0
@@ -176,18 +177,23 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
 ! --- CALCUL DE DEPSMO ET DEPSDV :
     depsmo = 0.d0
     call dcopy(ndimsi, deps, 1, depsth, 1)
-    call daxpy(3, -coef, kron, 1, depsth, &
-               1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -coef, kron, b_incx, depsth, &
+               b_incy)
     depsmo = trace(3, depsth)/3.d0
     call dcopy(ndimsi, depsth, 1, depsdv, 1)
-    call daxpy(3, -depsmo, kron, 1, depsdv, &
-               1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -depsmo, kron, b_incx, depsdv, &
+               b_incy)
 !
 !       -------------------------------------------------
     sigmmo = trace(3, sigm)/3.d0
     do i = 1, ndimsi
-        sigmp(i) = deuxmu/deumum*(sigm(i)-sigmmo*kron(i))+troisk/ &
-                   troikm*sigmmo*kron(i)
+        sigmp(i) = deuxmu/deumum*(sigm(i)-sigmmo*kron(i))+troisk/troikm*sigmmo*kron(i)
     end do
 !     SIGMMO A PU CHANGER A CAUSE DE TROISK/TROIKM
     sigmmo = trace(3, sigmp)/3.d0
@@ -224,8 +230,11 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
 !
         if (memo .eq. 1) then
             call dcopy(ndimsi, epspm, 1, epspp, 1)
-            call daxpy(ndimsi, 1.d0, depsp, 1, epspp, &
-                       1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, depsp, b_incx, epspp, &
+                       b_incy)
         end if
 !
         do i = 1, ndimsi
@@ -294,10 +303,16 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
             call dscal(ndimsi, cm/1.5d0, xm, 1)
             call dscal(ndimsi, cp/1.5d0, xp, 1)
             if (nbvar .eq. 2) then
-                call daxpy(ndimsi, c2m/1.5d0, alfa2m, 1, xm, &
-                           1)
-                call daxpy(ndimsi, c2p/1.5d0, alfa2, 1, xp, &
-                           1)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, c2m/1.5d0, alfa2m, b_incx, xm, &
+                           b_incy)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, c2p/1.5d0, alfa2, b_incx, xp, &
+                           b_incy)
             end if
             call radial(ndimsi, sigm, sigp, vim(2), vip(2), &
                         1, xm, xp, radi)

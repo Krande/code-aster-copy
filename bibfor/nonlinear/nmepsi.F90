@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,13 +59,14 @@ subroutine nmepsi(ndim, nno, l_axi, l_large, vff, &
     real(kind=8), parameter :: r2 = sqrt(2.d0)/2.d0
     real(kind=8), parameter :: unity(9) = (/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/)
     real(kind=8), parameter :: kron(3, 3) = reshape(unity, (/3, 3/))
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
     if (present(epsi_)) then
         ASSERT(size(epsi_) .ge. 2*ndim)
     end if
-
+!
     grad(:, :) = 0.d0
 !
 ! - Gradient Grad(U)
@@ -86,7 +87,11 @@ subroutine nmepsi(ndim, nno, l_axi, l_large, vff, &
 !
     call dcopy(9, kron, 1, f, 1)
     if (l_large) then
-        call daxpy(9, 1.d0, grad, 1, f, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, grad, b_incx, f, &
+                   b_incy)
         if (l_axi) then
             f(3, 3) = f(3, 3)+ur/r
         end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mrmult(cumul, lmat, vect, xsol, nbvect, &
                   prepos, lrom)
     implicit none
@@ -64,6 +64,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect, &
     real(kind=8), pointer :: vectmp(:) => null()
     real(kind=8), pointer :: xtemp(:) => null()
     character(len=24), pointer :: refa(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !     ---------------------------------------------------------------
 !
     prepo2 = prepos
@@ -106,8 +107,11 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect, &
         call asmpi_comm_vect('MPI_SUM', 'R', nbval=nbvect*neq, vr=xsol)
 !
         if (cumul .eq. 'CUMU') then
-            call daxpy(nbvect*neq, 1.d0, xtemp, 1, xsol, &
-                       1)
+            b_n = to_blas_int(nbvect*neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, xtemp, b_incx, xsol, &
+                       b_incy)
             AS_DEALLOCATE(vr=xtemp)
         end if
 !

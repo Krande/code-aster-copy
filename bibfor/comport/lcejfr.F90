@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
     character(len=16) :: nom(nbpa)
     character(len=1) :: poum
     aster_logical :: resi, rigi, elas, ifpahm, ifhyme
+    blas_int :: b_incx, b_incy, b_n
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 ! CALCUL DE CONTRAINTE (RESIDU)
@@ -241,8 +242,13 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
 !     A=AM
     call dcopy(ndim, epsm, 1, a, 1)
 !     A=A+DA
-    if (resi) call daxpy(ndim, 1.d0, deps, 1, a, &
-                         1)
+    if (resi) then
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps, b_incx, a, &
+                   b_incy)
+    end if
 !
 ! DANS LE CAS DU SCIAGE
 ! INITIALISATION DU POINT D'EQUILIBRE POUR LA LDC (OFFSET)
@@ -479,8 +485,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
 !       TERME : DW/DGP  (POUR KTAN P P)
         do n = 1, ndim-1
 !
-            dsidep(ndim+n, ndim+n) = -rhof*(max(amin, a(1)+amin))**3/(12* &
-                                                                      visf)
+            dsidep(ndim+n, ndim+n) = -rhof*(max(amin, a(1)+amin))**3/(12*visf)
 !
         end do
 !
@@ -517,8 +522,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
     end do
 ! DSIGMA_T/DDELTA_T
     if (ifplas .eq. 1) then
-        coefhd = -(kappa*lambda+adhe-mu*sigma(1))*kt**2/abstau**3/( &
-                 kt+kappa)
+        coefhd = -(kappa*lambda+adhe-mu*sigma(1))*kt**2/abstau**3/(kt+kappa)
         coefd = kappa*kt/(kt+kappa)-coefhd*abstau**2
         do j = 2, ndim
             do i = j, ndim

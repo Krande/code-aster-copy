@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,6 +85,7 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
     integer, pointer :: vnddl(:) => null()
     character(len=8), pointer :: type(:) => null()
     real(kind=8), pointer :: orig(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 !
@@ -133,15 +134,27 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
         ratio = 4.d0
         do k = 1, h
 ! ---     COS
-            call daxpy(nd, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(iy), &
-                       1)
-            call daxpy(nd, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(idy), &
-                       1)
+            b_n = to_blas_int(nd)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(iy), &
+                       b_incy)
+            b_n = to_blas_int(nd)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(idy), &
+                       b_incy)
 ! ---     SIN
-            call daxpy(nd, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(iy), &
-                       1)
-            call daxpy(nd, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(idy), &
-                       1)
+            b_n = to_blas_int(nd)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(iy), &
+                       b_incy)
+            b_n = to_blas_int(nd)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(idy), &
+                       b_incy)
         end do
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE K*Y ET M*DY

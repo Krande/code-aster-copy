@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,6 +65,7 @@ subroutine cffpm1(resoco, nbliai, ndim, nesmax)
     integer :: jjeux
     character(len=19) :: fro1
     integer :: jfro11, jfro12
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -105,11 +106,17 @@ subroutine cffpm1(resoco, nbliai, ndim, nesmax)
             jdecal = zi(japptr+iliai-1)
             nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
             xmu = zr(jmu+3*nbliai+iliai-1)
-            call daxpy(nbddl, xmu, zr(japcof+jdecal), 1, zr(jfro11), &
-                       1)
+            b_n = to_blas_int(nbddl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, xmu, zr(japcof+jdecal), b_incx, zr(jfro11), &
+                       b_incy)
             if (ndim .eq. 3) then
-                call daxpy(nbddl, xmu, zr(japcof+jdecal+ndlmax*nesmax), 1, zr(jfro12), &
-                           1)
+                b_n = to_blas_int(nbddl)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, xmu, zr(japcof+jdecal+ndlmax*nesmax), b_incx, zr(jfro12), &
+                           b_incy)
             end if
         end if
 !

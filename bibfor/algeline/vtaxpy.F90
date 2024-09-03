@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vtaxpy(alpha, chamna, chamnb)
 !    - FONCTION REALISEE:  ENCAPSULATION DAXPY SUR LES .VALE DES CHAM_NO
 !                          CHAMN1 ET CHAMN2
@@ -40,6 +40,7 @@ subroutine vtaxpy(alpha, chamna, chamnb)
 !
     integer :: neq1, neq2, ival1, ival2
     character(len=24) :: kval1, kval2, chamn1, chamn2
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
     chamn1 = chamna
@@ -52,8 +53,11 @@ subroutine vtaxpy(alpha, chamna, chamnb)
     call jelira(kval1, 'LONMAX', neq1)
     call jelira(kval2, 'LONMAX', neq2)
     ASSERT(neq1 .eq. neq2)
-    call daxpy(neq2, alpha, zr(ival1), 1, zr(ival2), &
-               1)
+    b_n = to_blas_int(neq2)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, alpha, zr(ival1), b_incx, zr(ival2), &
+               b_incy)
 !
 !
     call jedema()

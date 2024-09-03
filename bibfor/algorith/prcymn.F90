@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine prcymn(nomres, soumat, repmat)
     implicit none
 !  P. RICHARD     DATE 11/03/91
@@ -75,8 +75,8 @@ subroutine prcymn(nomres, soumat, repmat)
     integer :: i, ibid, iran, j, k
     integer :: ldk0aa, ldk0ai, ldk0aj, ldk0ii, ldk0ji, ldk0jj, ldkpaa
     integer :: ldkpai, ldkpaj, ldkpja, ldkpji, ldkpjj, ldm0ii, llcham
-    integer ::  llkge, llmge, llnoa, llnod, llnog
-    integer ::   ltcap, ltcdp, ltcgp, ltetax
+    integer :: llkge, llmge, llnoa, llnod, llnog
+    integer :: ltcap, ltcdp, ltcgp, ltetax
     integer :: ltetgd, ltexa, ltexd, ltexg, ltflex, ltmat, ltvec
     integer :: nbdax, nbddr, nbmod, nbnoa, nbnod, nbnog, nbsec
     integer :: nbsma, nbv, neq, ntail, ntrian, numa, numd
@@ -87,6 +87,7 @@ subroutine prcymn(nomres, soumat, repmat)
     character(len=24), pointer :: cycl_refe(:) => null()
     integer, pointer :: cycl_desc(:) => null()
     integer, pointer :: cycl_nbsc(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     data pgc/'PRCYMN'/
 !-----------------------------------------------------------------------
@@ -116,32 +117,32 @@ subroutine prcymn(nomres, soumat, repmat)
 !
 ! --- ALLOCATION DU REPERTOIRE DES NOMS DES SOUS-MATRICES
 !
-
+!
 !-- On a constaté que :
 !--   Si on a des DDL d'axe, le code plante (erreur jeveux - numéro d'objet invalide)
 !--   Si on a 2 ou 4 secteurs, le changement de variable introduit une singularité
 !--
 !-- Compte tenu de la faible utilisation de cette option, on s'arrête en erreur fatale
 !-- dans ces deux cas, et on propose d'utiliser la méthode "CRAIG BAMPTON" à la place.
-
+!
     if (nbdax .gt. 0) then
         call utmess('F', 'ALGORITH14_90')
     end if
-
+!
 !
 ! --- RECUPERATION DU NOMBRE DE SECTEURS
 !
     call jeveuo(nomres//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
     nbsec = cycl_nbsc(1)
     call jelibe(nomres//'.CYCL_NBSC')
-
+!
     if (nbsec .eq. 2) then
         call utmess('F', 'ALGORITH14_92')
     end if
     if (nbsec .eq. 4) then
         call utmess('F', 'ALGORITH14_92')
     end if
-
+!
     if (nbdax .gt. 0) then
         nbsma = 13
     else
@@ -267,7 +268,7 @@ subroutine prcymn(nomres, soumat, repmat)
         call jelira(jexnum(noeint, numa), 'LONMAX', nbnoa)
         call jeveuo(jexnum(noeint, numa), 'L', llnoa)
     end if
-
+!
 !
 ! --- RECUPERATION RANGS DDL INTERFACE DANS VECTEUR ASSEMBLE
 !
@@ -333,8 +334,11 @@ subroutine prcymn(nomres, soumat, repmat)
         call jelibe(chamva)
     end do
 !
-    call daxpy(nbmod*nbddr, -1.d0, zr(ltcdp), 1, zr(ldk0ji), &
-               1)
+    b_n = to_blas_int(nbmod*nbddr)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -1.d0, zr(ltcdp), b_incx, zr(ldk0ji), &
+               b_incy)
     call jedetr('&&'//pgc//'CDPHI')
 !
 ! --- POUR KPLUSJI
@@ -399,8 +403,11 @@ subroutine prcymn(nomres, soumat, repmat)
         call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ltcap), &
                    nbdax, nbmod, 1, zr(ldkpai), nbdax, &
                    nbmod)
-        call daxpy(nbmod*nbdax, -1.d0, zr(ltcap), 1, zr(ldk0ai), &
-                   1)
+        b_n = to_blas_int(nbmod*nbdax)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -1.d0, zr(ltcap), b_incx, zr(ldk0ai), &
+                   b_incy)
         call jedetr('&&'//pgc//'CAPHI')
 !
     end if
@@ -422,8 +429,11 @@ subroutine prcymn(nomres, soumat, repmat)
 !
     call flexib(basmod, nbmod, zr(ltflex), nbddr, nbddr, &
                 numd, numd)
-    call daxpy(nbddr*nbddr, -1.d0, zr(ltflex), 1, zr(ltmat), &
-               1)
+    b_n = to_blas_int(nbddr*nbddr)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -1.d0, zr(ltflex), b_incx, zr(ltmat), &
+               b_incy)
     k = 0
     do j = 1, nbddr
         do i = j, 1, -1
@@ -441,8 +451,11 @@ subroutine prcymn(nomres, soumat, repmat)
                nbddr, nbddr, 1, zr(ltflex), nbddr, &
                nbddr)
     call r8inir(nbddr*nbddr, 0.d0, zr(ltmat), 1)
-    call daxpy(nbddr*nbddr, -1.d0, zr(ltflex), 1, zr(ltmat), &
-               1)
+    b_n = to_blas_int(nbddr*nbddr)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -1.d0, zr(ltflex), b_incx, zr(ltmat), &
+               b_incy)
     k = 0
     do j = 1, nbddr
         do i = j, 1, -1
@@ -476,8 +489,11 @@ subroutine prcymn(nomres, soumat, repmat)
 !
         call flexib(basmod, nbmod, zr(ltflex), nbdax, nbddr, &
                     numa, numd)
-        call daxpy(nbdax*nbddr, -1.d0, zr(ltflex), 1, zr(ldk0aj), &
-                   1)
+        b_n = to_blas_int(nbdax*nbddr)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -1.d0, zr(ltflex), b_incx, zr(ldk0aj), &
+                   b_incy)
         call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ltflex), &
                    nbdax, nbddr, 1, zr(ltmat), nbdax, &
                    nbddr)
@@ -490,8 +506,11 @@ subroutine prcymn(nomres, soumat, repmat)
                    nbddr, nbddr, 1, zr(ltmat), nbdax, &
                    nbddr)
         call r8inir(nbdax*nbddr, 0.d0, zr(ltflex), 1)
-        call daxpy(nbdax*nbddr, -1.d0, zr(ltmat), 1, zr(ltflex), &
-                   1)
+        b_n = to_blas_int(nbdax*nbddr)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -1.d0, zr(ltmat), b_incx, zr(ltflex), &
+                   b_incy)
         call amppr(zr(ldk0aj), nbdax, nbddr, zr(ltflex), nbdax, &
                    nbddr, 1, 1)
 !
@@ -517,8 +536,11 @@ subroutine prcymn(nomres, soumat, repmat)
 !
         call flexib(basmod, nbmod, zr(ltflex), nbdax, nbdax, &
                     numa, numa)
-        call daxpy(nbdax*nbdax, -1.d0, zr(ltflex), 1, zr(ldk0aa), &
-                   1)
+        b_n = to_blas_int(nbdax*nbdax)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -1.d0, zr(ltflex), b_incx, zr(ldk0aa), &
+                   b_incy)
         call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ltflex), &
                    nbdax, nbdax, 1, zr(ltmat), nbdax, &
                    nbdax)
@@ -528,8 +550,11 @@ subroutine prcymn(nomres, soumat, repmat)
                    nbdax, nbdax, 1, zr(ltflex), nbdax, &
                    nbdax)
         call r8inir(nbdax*nbdax, 0.d0, zr(ltmat), 1)
-        call daxpy(nbdax*nbdax, -1.d0, zr(ltflex), 1, zr(ltmat), &
-                   1)
+        b_n = to_blas_int(nbdax*nbdax)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -1.d0, zr(ltflex), b_incx, zr(ltmat), &
+                   b_incy)
         call amppr(zr(ldk0aa), nbdax, nbdax, zr(ltmat), nbdax, &
                    nbdax, 1, 1)
 !

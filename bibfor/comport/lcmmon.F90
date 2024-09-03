@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
                   cpmono, nmat, nvi, vini, x, &
                   dtime, pgl, mod, coeft, neps, &
@@ -78,6 +78,7 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
     integer :: itens, nbfsys, i, nuvi, ifa, nbsys, is, nsfa, nsfv
     common/deps6/depsdt
     integer :: irr, decirr, nbsyst, decal, gdef
+    blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ------------------------------------------------------------------
 ! --  VARIABLES INTERNES
@@ -156,9 +157,8 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
 !           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !           TAU      : SCISSION REDUITE TAU=SIG:MUS
 !
-            call caltau(ifa, is, sigi, fkooh, &
-                        nfs, nsg, toutms, taus, mus, &
-                        msns)
+            call caltau(ifa, is, sigi, fkooh, nfs, &
+                        nsg, toutms, taus, mus, msns)
 !
 !           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT
 !           ECOULEMENT VISCOPLASTIQUE:
@@ -187,11 +187,17 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
             dvin(nuvi) = dp
 !
             if (gdef .eq. 0) then
-                call daxpy(6, dgamma, mus, 1, devi, &
-                           1)
+                b_n = to_blas_int(6)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, dgamma, mus, b_incx, devi, &
+                           b_incy)
             else
-                call daxpy(9, dgamma, msns, 1, gamsns, &
-                           1)
+                b_n = to_blas_int(9)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, dgamma, msns, b_incx, gamsns, &
+                           b_incy)
             end if
         end do
 !

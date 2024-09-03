@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine gcpc(m, in, ip, ac, inpc, perm, &
-                ippc, acpc, bf, xp, r, &
-                rr, p, irep, niter, epsi, &
-                criter, solveu, matas, istop, &
+!
+subroutine gcpc(m, in, ip, ac, inpc, &
+                perm, ippc, acpc, bf, xp, &
+                r, rr, p, irep, niter, &
+                epsi, criter, solveu, matas, istop, &
                 iret)
 !     RESOLUTION D'UN SYSTEME LINEAIRE SYMETRIQUE PAR UNE METHODE DE
 !     GRADIENT CONJUGUE PRECONDITIONNE
@@ -82,13 +82,13 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
 #include "blas/dnrm2.h"
 #include "blas/dscal.h"
 #include "asterfort/isParallelMatrix.h"
-
+!
     integer(kind=4) :: ip(*), ippc(*)
     integer :: m, in(m), inpc(m), irep, niter, perm(m)
     real(kind=8) :: ac(m), acpc(m), bf(m), xp(m), r(m), rr(m), p(m), epsi
     character(len=19) :: criter, matas, solveu
     integer :: istop, iret
-
+!
 ! -----------------------------------------------------------------
     real(kind=8) :: zero, bnorm, anorm, epsix, anormx, rrri, gama, rrrim1
     real(kind=8) :: paraaf, anorxx, rau, valr(2), blreps
@@ -102,6 +102,7 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
     real(kind=8), pointer :: xtrav(:) => null()
     real(kind=8), pointer :: ytrav(:) => null()
     aster_logical :: l_parallel_matrix
+    blas_int :: b_incx, b_incy, b_n
 ! -----------------------------------------------------------------
 !
     cbid = (0.d0, 0.d0)
@@ -152,7 +153,8 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
         rank = 'L'
     end if
     if ((precon == 'LDLT_SP') .or. (precon == 'LDLT_DP')) then
-        call crsvfm(solvbd, matas, prec, rank, pcpiv, usersm, blreps, renum, redmpi)
+        call crsvfm(solvbd, matas, prec, rank, pcpiv, &
+                    usersm, blreps, renum, redmpi)
     end if
 !-----Pour tenir compte de la renumerotation de la matrice de preconditionnement (LDLT):
     if (precon .eq. 'LDLT_INC') then
@@ -182,8 +184,11 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
 !       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
         call gcax(m, in, ip, ac, xp, &
                   r)
-        call daxpy(m, -1.d0, bf, 1, r, &
-                   1)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -1.d0, bf, b_incx, r, &
+                   b_incy)
         anorm = dnrm2(m, r, 1)
         epsix = epsi*anorm
         if (niv .eq. 2) write (ifm, 102) anorm, epsix, epsi
@@ -215,7 +220,8 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
 !                                                   RK <--- R()
 !                                                  ZK <--- RR()
         if (precon .eq. 'LDLT_INC') then
-            call gcldm1(m, inpc, ippc, acpc, r, rr, perm, xtrav, ytrav)
+            call gcldm1(m, inpc, ippc, acpc, r, &
+                        rr, perm, xtrav, ytrav)
         else if ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
             call dcopy(m, r, 1, rr, 1)
 !         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
@@ -235,8 +241,11 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
         if (iter .gt. 1) then
             gama = rrri/rrrim1
             call dscal(m, gama, p, 1)
-            call daxpy(m, 1.d0, rr, 1, p, &
-                       1)
+            b_n = to_blas_int(m)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, rr, b_incx, p, &
+                       b_incy)
         else
             call dcopy(m, rr, 1, p, 1)
         end if
@@ -251,10 +260,16 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
         call gcax(m, in, ip, ac, p, &
                   rr)
         rau = -rrri/ddot(m, p, 1, rr, 1)
-        call daxpy(m, rau, p, 1, xp, &
-                   1)
-        call daxpy(m, rau, rr, 1, r, &
-                   1)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, rau, p, b_incx, xp, &
+                   b_incy)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, rau, rr, b_incx, r, &
+                   b_incy)
 !
 !       ---- CALCUL TEST D'ARRET ET AFFICHAGE
         anorm = dnrm2(m, r, 1)
@@ -277,7 +292,7 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
     end do
 !
 !
-
+!
 !        ---  NON CONVERGENCE
     vali = iter
     valr(1) = anorm/anorxx
@@ -292,7 +307,7 @@ subroutine gcpc(m, in, ip, ac, inpc, perm, &
         case default
             ASSERT(.false.)
         end select
-    elseif (istop == 2) then
+    else if (istop == 2) then
 !            ON CONTINUE EN RETOURNANT UN CODE D'ERREUR IRET=1
         iret = 1
         goto 80

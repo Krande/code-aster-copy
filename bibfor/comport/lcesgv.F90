@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lcesgv(fami, kpg, ksp, ndim, neps, typmod, &
-                  option, mat, lccrma, lcesga, epsm, &
-                  deps, vim, itemax, precvg, sig, &
-                  vip, dsidep, iret)
+!
+subroutine lcesgv(fami, kpg, ksp, ndim, neps, &
+                  typmod, option, mat, lccrma, lcesga, &
+                  epsm, deps, vim, itemax, precvg, &
+                  sig, vip, dsidep, iret)
     implicit none
 #include "asterf_types.h"
 #include "blas/daxpy.h"
@@ -93,6 +93,7 @@ subroutine lcesgv(fami, kpg, ksp, ndim, neps, typmod, &
     common/lcee/lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: pk, pm, pp, pq
+    blas_int :: b_incx, b_incy, b_n
     common/lces/pk, pm, pp, pq
 ! --------------------------------------------------------------------------------------------------
 !
@@ -131,10 +132,16 @@ subroutine lcesgv(fami, kpg, ksp, ndim, neps, typmod, &
     lag = epsm(ndimsi+2)
 !
     if (resi) then
-        call daxpy(ndimsi, 1.d0, deps, 1, eps, &
-                   1)
-        call daxpy(ndim, 1.d0, deps(ndimsi+3), 1, grad, &
-                   1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps, b_incx, eps, &
+                   b_incy)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps(ndimsi+3), b_incx, grad, &
+                   b_incy)
         apg = apg+deps(ndimsi+1)
         lag = lag+deps(ndimsi+2)
     end if
@@ -167,7 +174,7 @@ subroutine lcesgv(fami, kpg, ksp, ndim, neps, typmod, &
     prece = precvg*sigref/yng
     preca = precvg*minval((/1.d0, pk/pr, sigref/max(r8prem(), d1a0*nrmela)/))
     precga = pr*preca/max(r8prem(), d1a0)
-
+!
 !
 !
 ! -- PSEUDO-ENERGIE DE DEFORMATION ET CONTRAINTE ELASTIQUE
@@ -177,9 +184,11 @@ subroutine lcesgv(fami, kpg, ksp, ndim, neps, typmod, &
                 precga, iret)
     if (iret .ne. 0) goto 999
     if (resi) then
-        call lcesel(eps, rigi, elas, prece, sigela, sigelu, dsade, dsude)
+        call lcesel(eps, rigi, elas, prece, sigela, &
+                    sigelu, dsade, dsude)
     else
-        call lcesel(vim(4:9), rigi, elas, prece, sigela, sigelu, dsade, dsude)
+        call lcesel(vim(4:9), rigi, elas, prece, sigela, &
+                    sigelu, dsade, dsude)
     end if
 !
 !
@@ -265,7 +274,7 @@ subroutine lcesgv(fami, kpg, ksp, ndim, neps, typmod, &
     ra = lcesvf(0, a)
     fd = max(ra, rigmin)
     ktg(:, :, 1) = fd*dsade+dsude
-
+!
 !
 !
 ! -- CORRECTION DISSIPATIVE

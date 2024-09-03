@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
                   nbmod, nbint, solveu)
 !
@@ -74,6 +74,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
     integer, pointer :: matrice_mass(:) => null()
     real(kind=8), pointer :: trav_sst(:) => null()
     integer, pointer :: matrice_raid(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
     i1 = numsst
@@ -176,8 +177,11 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
 !--
 !-- CALCUL DU SECOND MEMBRE ET DES ENRICHISSEMENTS
 !--
-        call daxpy(nbeq1, -(pulsa_propres(j1)**2), zr(leff1), 1, mode_sst1_eff2, &
-                   1)
+        b_n = to_blas_int(nbeq1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -(pulsa_propres(j1)**2), zr(leff1), b_incx, mode_sst1_eff2, &
+                   b_incy)
         call zerlag(nbeq1, deeq, vectr=zr(leff1))
         lbid = lsecme
         call lceqvn(nbeq1, zr(leff1), zr(lsecme+nbeq1*(j1-1)))
@@ -192,8 +196,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
                 ibid = zi(llint1+l1-1)
                 if (ibid .gt. 0) then
                     zr(lsecme+nbeq1*(j1-1)+ibid-1) = 0
-                    zr(lsecme+nbeq1*(nbmod+j1-1)+ibid-1) = zr(leff1+ &
-                                                              ibid-1)
+                    zr(lsecme+nbeq1*(nbmod+j1-1)+ibid-1) = zr(leff1+ibid-1)
                 end if
             end do
         end do

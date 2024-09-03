@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -218,6 +218,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !     ..
 !     .. LOCAL ARRAYS ..
     real(kind=8) :: x(2, 2)
+    blas_int :: b_incx, b_incy, b_n
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !
@@ -403,8 +404,11 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !
 !                    UPDATE RIGHT-HAND SIDE
 !
-                        call daxpy(j-1, -x(1, 1), t(1, j), 1, work(1+n), &
-                                   1)
+                        b_n = to_blas_int(j-1)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, -x(1, 1), t(1, j), b_incx, work(1+n), &
+                                   b_incy)
 !
                     else
 !
@@ -435,10 +439,16 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !
 !                    UPDATE RIGHT-HAND SIDE
 !
-                        call daxpy(j-2, -x(1, 1), t(1, j1), 1, work(1+n), &
-                                   1)
-                        call daxpy(j-2, -x(2, 1), t(1, j), 1, work(1+n), &
-                                   1)
+                        b_n = to_blas_int(j-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, -x(1, 1), t(1, j1), b_incx, work(1+n), &
+                                   b_incy)
+                        b_n = to_blas_int(j-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, -x(2, 1), t(1, j), b_incx, work(1+n), &
+                                   b_incy)
                     end if
 60                  continue
                 end do
@@ -538,10 +548,16 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !
 !                    UPDATE THE RIGHT-HAND SIDE
 !
-                        call daxpy(j-1, -x(1, 1), t(1, j), 1, work(1+n), &
-                                   1)
-                        call daxpy(j-1, -x(1, 2), t(1, j), 1, work(1+n2), &
-                                   1)
+                        b_n = to_blas_int(j-1)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, -x(1, 1), t(1, j), b_incx, work(1+n), &
+                                   b_incy)
+                        b_n = to_blas_int(j-1)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, -x(1, 2), t(1, j), b_incx, work(1+n2), &
+                                   b_incy)
 !
                     else
 !
@@ -580,14 +596,26 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !
 !                    UPDATE THE RIGHT-HAND SIDE
 !
-                        call daxpy(j-2, -x(1, 1), t(1, j1), 1, work(1+n), &
-                                   1)
-                        call daxpy(j-2, -x(2, 1), t(1, j), 1, work(1+n), &
-                                   1)
-                        call daxpy(j-2, -x(1, 2), t(1, j1), 1, work(1+n2), &
-                                   1)
-                        call daxpy(j-2, -x(2, 2), t(1, j), 1, work(1+n2), &
-                                   1)
+                        b_n = to_blas_int(j-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, -x(1, 1), t(1, j1), b_incx, work(1+n), &
+                                   b_incy)
+                        b_n = to_blas_int(j-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, -x(2, 1), t(1, j), b_incx, work(1+n), &
+                                   b_incy)
+                        b_n = to_blas_int(j-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, -x(1, 2), t(1, j1), b_incx, work(1+n2), &
+                                   b_incy)
+                        b_n = to_blas_int(j-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, -x(2, 2), t(1, j), b_incx, work(1+n2), &
+                                   b_incy)
                     end if
 90                  continue
                 end do
@@ -715,8 +743,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
                             vcrit = bignum
                         end if
 !
-                        work(j+n) = work(j+n)-ddot(j-ki-1, t(ki+1, j), 1, work(ki+1+n)&
-                                      &, 1)
+                        work(j+n) = work(j+n)-ddot(j-ki-1, t(ki+1, j), 1, work(ki+1+n), 1)
 !
 !                    SOLVE (T(J,J)-WR)'*X = WORK
 !
@@ -747,11 +774,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
                             vcrit = bignum
                         end if
 !
-                        work(j+n) = work(j+n)-ddot(j-ki-1, t(ki+1, j), 1, work(ki+1+n)&
-                                      &, 1)
+                        work(j+n) = work(j+n)-ddot(j-ki-1, t(ki+1, j), 1, work(ki+1+n), 1)
 !
-                        work(j+1+n) = work(j+1+n)-ddot(j-ki-1, t(ki+1, j+1), 1, work(ki&
-                                        &+1+n), 1)
+                        work(j+1+n) = work(j+1+n)-ddot(j-ki-1, t(ki+1, j+1), 1, work(ki+1+n), 1)
 !
 !                    SOLVE
 !                      (T(J,J)-WR   T(J,J+1)     )'* X = SCALE*( WORK1 )
@@ -859,10 +884,8 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
                             vcrit = bignum
                         end if
 !
-                        work(j+n) = work(j+n)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n)&
-                                      &, 1)
-                        work(j+n2) = work(j+n2)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n&
-                                       &2), 1)
+                        work(j+n) = work(j+n)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n), 1)
+                        work(j+n2) = work(j+n2)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n2), 1)
 !
 !                    SOLVE (T(J,J)-(WR-I*WI))*(X11+I*X12)= WK+I*WK2
 !
@@ -898,17 +921,14 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
                             vcrit = bignum
                         end if
 !
-                        work(j+n) = work(j+n)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n)&
-                                      &, 1)
+                        work(j+n) = work(j+n)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n), 1)
 !
-                        work(j+n2) = work(j+n2)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n&
-                                       &2), 1)
+                        work(j+n2) = work(j+n2)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n2), 1)
 !
-                        work(j+1+n) = work(j+1+n)-ddot(j-ki-2, t(ki+2, j+1), 1, work(ki&
-                                        &+2+n), 1)
+                        work(j+1+n) = work(j+1+n)-ddot(j-ki-2, t(ki+2, j+1), 1, work(ki+2+n), 1)
 !
-                        work(j+1+n2) = work(j+1+n2)-ddot(j-ki-2, t(ki+2, j+1), 1, work(&
-                                         & ki+2+n2), 1)
+                        work(j+1+n2) = work(j+1+n2)-ddot(j-ki-2, t(ki+2, j+1), 1, work(ki+2+n2),&
+                                       & 1)
 !
 !                    SOLVE 2-BY-2 COMPLEX LINEAR EQUATION
 !                      ((T(J,J)   T(J,J+1)  )'-(WR-I*WI)*I)*X = SCALE*B
@@ -929,10 +949,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
                         work(j+n2) = x(1, 2)
                         work(j+1+n) = x(2, 1)
                         work(j+1+n2) = x(2, 2)
-                        vmax = max( &
-                               abs(x(1, 1)), abs(x(1, 2)), abs(x(2, 1)), &
-                               abs(x(2, 2)), vmax &
-                               )
+                        vmax = max(abs(x(1, 1)), abs(x(1, 2)), abs(x(2, 1)), abs(x(2, 2)), vmax)
                         vcrit = bignum/vmax
 !
                     end if

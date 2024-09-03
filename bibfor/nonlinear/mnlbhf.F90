@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,6 +79,7 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
     real(kind=8), pointer :: reg(:) => null()
     character(len=8), pointer :: type(:) => null()
     integer, pointer :: vnddl(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -116,8 +117,11 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
         if (type(i) (1:7) .eq. 'BI_PLAN') then
             nddl = vnddl(6*(i-1)+1)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
-            call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1), &
-                       1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
+                       b_incy)
             call mnlbil(zr(idep1), omega, alpha, eta, h, &
                         hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
         else if (type(i) (1:6) .eq. 'CERCLE') then
@@ -136,8 +140,11 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
             call mnlcir(xdep1, xdep2, omega, alpha, eta, &
                         h, hf, nt, xtemp)
 !
-            call daxpy(4*(2*hf+1), -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), 1, zr(itemp), &
-                       1)
+            b_n = to_blas_int(4*(2*hf+1))
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, zr(itemp), &
+                       b_incy)
 !
             nrm = dnrm2(4*(2*hf+1), zr(itemp), 1)
             if (nrm .gt. 0.d0) then
@@ -154,12 +161,18 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
             nddl = vnddl(6*(i-1)+1)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
             call dscal(ninc, 0.d0, zr(itemp), 1)
-            call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1), &
-                       1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
+                       b_incy)
             call mnluil(zr(idep1), omega, alpha, eta, h, &
                         hf, nt, zr(itemp))
-            call daxpy(2*hf+1, -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), 1, zr(itemp), &
-                       1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, zr(itemp), &
+                       b_incy)
             nrm = dnrm2(2*hf+1, zr(itemp), 1)
             if (nrm .gt. 0.d0) then
                 call dscal(2*h+1, 0.d0, tep2, 1)

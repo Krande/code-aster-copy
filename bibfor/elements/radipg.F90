@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia, &
     real(kind=8) :: zernor, tensm(6), tensp(6), indm, indp, xm(6), xp(6)
     real(kind=8) :: coef, cinf, c2inf, mat(50)
     character(len=16) :: compor2(3)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -185,10 +186,16 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia, &
                 call dscal(nbsig, cinf, xp, 1)
                 if (nbvar .eq. 2) then
                     c2inf = mat(9)/1.5d0
-                    call daxpy(nbsig, c2inf, vari1((igau-1)*nvi+9), 1, xm, &
-                               1)
-                    call daxpy(nbsig, c2inf, vari2((igau-1)*nvi+9), 1, xp, &
-                               1)
+                    b_n = to_blas_int(nbsig)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call daxpy(b_n, c2inf, vari1((igau-1)*nvi+9), b_incx, xm, &
+                               b_incy)
+                    b_n = to_blas_int(nbsig)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call daxpy(b_n, c2inf, vari2((igau-1)*nvi+9), b_incx, xp, &
+                               b_incy)
                 end if
                 icine = 1
                 iradi = 1

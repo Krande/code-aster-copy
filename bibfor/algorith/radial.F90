@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ subroutine radial(nbsig, sigm, sigp, indm, indp, &
     real(kind=8) :: tensm(6), tensp(6), normdn, sigm(nbsig), sigp(nbsig)
     real(kind=8) :: zernor, devm(6), devp(6), smeq, speq
     real(kind=8) :: dn1n2(6), ndn, preci, trt1, trt2
+    blas_int :: b_incx, b_incy, b_n
 ! ......................................................................
 !
     if ((nint(indm) .gt. 0.d0) .and. (nint(indp) .gt. 0.d0)) then
@@ -63,10 +64,16 @@ subroutine radial(nbsig, sigm, sigp, indm, indp, &
         zernor = r8prem()
         if (icine .eq. 1) then
 !
-            call daxpy(nbsig, -1.d0, xm, 1, tensm, &
-                       1)
-            call daxpy(nbsig, -1.d0, xp, 1, tensp, &
-                       1)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, xm, b_incx, tensm, &
+                       b_incy)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, xp, b_incx, tensp, &
+                       b_incy)
 !
         end if
 !
@@ -101,8 +108,11 @@ subroutine radial(nbsig, sigm, sigp, indm, indp, &
 !
 !          CALCUL DE LA DIFFERENCE N1 - N2
 !
-            call daxpy(nbsig, -1.d0, n2, 1, dn1n2, &
-                       1)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, n2, b_incx, dn1n2, &
+                       b_incy)
             ndn = sqrt(ddot(nbsig, dn1n2, 1, dn1n2, 1))
             normdn = ndn/2.d0
         end if

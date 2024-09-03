@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcgrla(f, eps)
     implicit none
 !
@@ -27,13 +27,17 @@ subroutine lcgrla(f, eps)
 #include "blas/daxpy.h"
 #include "blas/dscal.h"
     real(kind=8) :: f(3, 3), ft(3, 3), ftf(3, 3), eps(6), id6(6)
+    blas_int :: b_incx, b_incy, b_n
     data id6/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
     ft = transpose(f)
     ftf = matmul(ft, f)
     call tnsvec(3, 3, ftf, eps, 1.d0)
-    call daxpy(6, -1.d0, id6, 1, eps, &
-               1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -1.d0, id6, b_incx, eps, &
+               b_incy)
     call dscal(6, 0.5d0, eps, 1)
 !
 end subroutine

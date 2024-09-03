@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps, &
 !                 10  -> COORY POINTE DE FISSURE (APRES RUPT PROPA)
 ! OUT DSIDPT  : MATRICE TANGENTE
 ! ----------------------------------------------------------------------
-
+!
     character(len=8) :: typmod(*)
     character(len=16) :: option
     integer :: ndim, imate, codret
@@ -79,6 +79,7 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps, &
     real(kind=8) :: valres(2)
 !
     real(kind=8) :: dmax
+    blas_int :: b_incx, b_incy, b_n
     parameter(dmax=0.999999d0)
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
@@ -114,10 +115,16 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps, &
     call dcopy(ndimsi, epsm, 1, eps, 1)
     call dcopy(ndimsi, epsm(7), 1, epsr, 1)
     if (resi) then
-        call daxpy(ndimsi, 1.d0, deps, 1, eps, &
-                   1)
-        call daxpy(ndimsi, 1.d0, deps(7), 1, epsr, &
-                   1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps, b_incx, eps, &
+                   b_incy)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps(7), b_incx, epsr, &
+                   b_incy)
     end if
     do k = 1, ndimsi
         dsidpt(k, k, 1) = 0.d0
@@ -193,8 +200,8 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps, &
                 if (k .ne. 3) then
                     do l = 1, ndimsi
                         if (l .ne. 3) then
-                            dsidpt(k, l, 1) = dsidpt(k, l, 1)-1.d0/dsidpt(3, 3, 1)* &
-                                              dsidpt(k, 3, 1)*dsidpt(3, l, 1)
+                            dsidpt(k, l, 1) = dsidpt(k, l, 1)-1.d0/dsidpt(3, 3, 1)*dsidpt(k, 3, &
+                                              &1)*dsidpt(3, l, 1)
                         end if
                     end do
                 end if

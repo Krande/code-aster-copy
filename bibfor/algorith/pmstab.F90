@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
     real(kind=8) :: vim(*), vip(*), vr(*), equi(17), valimp(9), sigt(6)
     real(kind=8) :: rac2, instam, instap, dsidep(*)
     complex(kind=8) :: cbid
+    blas_int :: b_incx, b_incy, b_n
     data nomeps/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/
     data nomsig/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/
     data nomgrd/'F11', 'F12', 'F13', 'F21', 'F22', 'F23', 'F31', 'F32', 'F33'/
@@ -55,8 +56,11 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
 !     STOCKAGE DE LA SOLUTION DANS LA TABLE
     if (ncmp .eq. 6) then
         call dcopy(ncmp, epsm, 1, epsp, 1)
-        call daxpy(ncmp, 1.d0, deps, 1, epsp, &
-                   1)
+        b_n = to_blas_int(ncmp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps, b_incx, epsp, &
+                   b_incy)
         call dcopy(ncmp, epsp, 1, epsm, 1)
         call dcopy(ncmp, epsp, 1, epst, 1)
         call dscal(3, 1.d0/rac2, epst(4), 1)

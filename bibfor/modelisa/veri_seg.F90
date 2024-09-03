@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno, &
-                    nbmaok, x3dca, iproj, n1, n2, numail)
+                    nbmaok, x3dca, iproj, n1, n2, &
+                    numail)
     implicit none
 !  DESCRIPTION :
 !  -----------
@@ -63,17 +64,18 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno, &
     character(len=24) :: conxma, coorno, tymama
     real(kind=8) :: xyzma(3, 9), normal(3), excent, xbar(3), x3dp(3), prec
     real(kind=8) :: quart, d
+    blas_int :: b_incx, b_incy, b_n
     parameter(prec=1.d-2, quart=0.25d0)
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
 !
-
+!
     AS_ALLOCATE(vi=liseg, size=nbmaok)
     nb_seg = 0
     iproj = -1
-
+!
     conxma = mailla//'.CONNEX'
     call jeveuo(conxma, 'L', jconx1)
     coorno = mailla//'.COORDO    .VALE'
@@ -97,7 +99,7 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno, &
                             iproj = 0
                             goto 999
                         end if
-                    elseif (nn1 .eq. n2) then
+                    else if (nn1 .eq. n2) then
                         if (nn2 .eq. n1) then
                             iproj = 0
                             goto 999
@@ -123,7 +125,7 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno, &
                                 iproj = 0
                                 goto 999
                             end if
-                        elseif (noe .eq. n2) then
+                        else if (noe .eq. n2) then
                             if (inoma .eq. nbcnx) then
                                 noe2 = zi(jconx1-1+zi(jconx2+numail2-1)+1-1)
                             else
@@ -149,7 +151,7 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno, &
     do jseg = 1, nb_seg
         numail = liseg(jseg)
         nbcnx = zi(jconx2+numail)-zi(jconx2-1+numail)
-
+!
         do inoma = 1, nbcnx
             noe = zi(jconx1-1+zi(jconx2+numail-1)+inoma-1)
             xyzma(1, inoma) = zr(jcoor+3*(noe-1))
@@ -160,10 +162,14 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno, &
         ntyma = zi(jtyma+numail-1)
         call canorm(xyzma, normal, 3, ntyma, 1)
 !
-        excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1)) &
-                 +normal(3)*(x3dca(3)-xyzma(3, 1))
+        excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+normal(3)*(x3&
+                 &dca(3)-xyzma(3, 1))
         call dcopy(3, x3dca, 1, x3dp, 1)
-        call daxpy(3, -excent, normal, 1, x3dp, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -excent, normal, b_incx, x3dp, &
+                   b_incy)
 !
         call projtq(nbcnx, xyzma, 1, x3dp, abs(excent), &
                     itria, inoeu, icote, xbar, iproj2)
@@ -174,9 +180,12 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno, &
                 jnoeu = icote+2
                 if (jnoeu .eq. nbcnx+1) jnoeu = 1
                 if (jnoeu .eq. nbcnx+2) jnoeu = 2
-                d = sqrt((xyzma(1, jnoeu)-xyzma(1, inoeu))**2 &
-                         +(xyzma(2, jnoeu)-xyzma(2, inoeu))**2 &
-                         +(xyzma(3, jnoeu)-xyzma(3, inoeu))**2)
+                d = sqrt( &
+                    ( &
+                    xyzma(1, jnoeu)-xyzma(1, inoeu))**2+(xyzma(2, jnoeu)-xyzma(2, inoeu))**2+(x&
+                    &yzma(3, jnoeu)-xyzma(3, inoeu) &
+                    )**2 &
+                    )
                 if (d*abs(xbar(i)) .le. prec*dmax_cable) then
                     iproj = 0
                     goto 999

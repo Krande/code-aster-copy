@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
                   adime, xvecu0, xtang, ninc, nd, &
                   nchoc, h, hf, ordman, xups, &
@@ -95,6 +95,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
     real(kind=8), pointer :: ecar(:) => null()
     real(kind=8), pointer :: fpnl(:) => null()
     real(kind=8), pointer :: ratio(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
@@ -145,8 +146,11 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
                         xvecu2, ninc, nd, nchoc, h, &
                         hf, xqnl)
 !         CALCUL DE FPNL(1:NEQ)=FPNL(1:NEQ)-Q(SYS,UPS(:,R),UPS(:,P-R))
-            call daxpy(ninc-1, -1.d0, zr(iqnl), 1, fpnl, &
-                       1)
+            b_n = to_blas_int(ninc-1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, zr(iqnl), b_incx, fpnl, &
+                       b_incy)
         end do
         fpnl(ninc) = 0.d0
 ! ---   RESOLUTION DU SYSTEME LINEAIRE UPS(:,P) = K\FPNL
@@ -170,11 +174,14 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
     do k = 1, nextr
         call dscal(ninc, 0.d0, zr(ivecu1), 1)
         alpha(k) = ddot(ninc, zr(iups+(ordman-k+2-1)*ninc), 1, zr(iups+(ordman-k+1-1)*ninc), 1)
-        alpha(k) = alpha(k)/ddot(ninc, zr(iups+(ordman-k+2-1)*ninc), &
-                                 1, zr(iups+(ordman-k+2-1)*ninc), 1)
+        alpha(k) = alpha(k)/ddot(ninc, zr(iups+(ordman-k+2-1)*ninc), 1, zr(iups+(ordman-k+2-1)*ni&
+                   &nc), 1)
         call dcopy(ninc, zr(iups+(ordman-k+1-1)*ninc), 1, zr(ivecu1), 1)
-        call daxpy(ninc, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1), &
-                   1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), b_incx, zr(ivecu1), &
+                   b_incy)
         nvec = dnrm2(ninc, zr(ivecu1), 1)
         ratio(k) = nvec/dnrm2(ninc, zr(iups+(ordman-k+1-1)*ninc), 1)
         if (k .gt. 1) then
@@ -192,8 +199,11 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
         call dscal(ninc, ac**ordman, zr(ivecu1), 1)
         nudom = dnrm2(ninc, zr(ivecu1), 1)
         do k = 1, ordman
-            call daxpy(ninc, -((1.d0/ac)**k), zr(ivecu1), 1, zr(iups+k*ninc), &
-                       1)
+            b_n = to_blas_int(ninc)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -((1.d0/ac)**k), zr(ivecu1), b_incx, zr(iups+k*ninc), &
+                       b_incy)
         end do
     end if
 !
@@ -218,8 +228,11 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
                     xvecu2, ninc, nd, nchoc, h, &
                     hf, xqnl)
 !       AJOUT DES DEUX VECTEURS DANS XFPNLA
-        call daxpy(ninc-1, -1.d0, zr(iqnl), 1, zr(ifpnla), &
-                   1)
+        b_n = to_blas_int(ninc-1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -1.d0, zr(iqnl), b_incx, zr(ifpnla), &
+                   b_incy)
     end do
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DES VECTEURS TEMPORAIRES

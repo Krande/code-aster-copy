@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt, &
                   epsman, amax, xus)
     implicit none
@@ -52,7 +52,7 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-
+!
     character(len=14) :: xups, xfpnla, xus
     integer :: ninc, ordman, nbpt
     real(kind=8) :: epsman, amax
@@ -61,6 +61,7 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt, &
 ! ----------------------------------------------------------------------
     integer :: ius, iups, ifpnla, i, k
     real(kind=8) :: norme, a
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -93,8 +94,11 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt, &
     do i = 2, nbpt
         a = amax*dble(i-1)/dble(nbpt-1)
         do k = 0, ordman
-            call daxpy(ninc, a**dble(k), zr(iups+k*ninc), 1, zr(ius+(i-1)*ninc), &
-                       1)
+            b_n = to_blas_int(ninc)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, a**dble(k), zr(iups+k*ninc), b_incx, zr(ius+(i-1)*ninc), &
+                       b_incy)
         end do
     end do
 !

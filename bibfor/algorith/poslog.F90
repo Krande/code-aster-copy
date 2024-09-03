@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine poslog(lCorr, lMatr, lSigm, lVari, &
-                  tlogPrev, tlogCurr, fPrev, &
-                  lgpg, vip, ndim, fCurr, kpg, &
-                  dtde, sigm, cplan, fami, mate, &
-                  instp, angmas, gn, lamb, logl, &
-                  sigmCurr, dsidep, pk2Prev, pk2Curr, codret)
+subroutine poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
+                  tlogCurr, fPrev, lgpg, vip, ndim, &
+                  fCurr, kpg, dtde, sigm, cplan, &
+                  fami, mate, instp, angmas, gn, &
+                  lamb, logl, sigmCurr, dsidep, pk2Prev, &
+                  pk2Curr, codret)
 !
     implicit none
 !
@@ -97,8 +97,8 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
     real(kind=8) :: tl(3, 3, 3, 3), tls(6, 6), epse(4), d1(4, 4)
     real(kind=8) :: feta(4), xi(3, 3), me(3, 3, 3, 3)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    real(kind=8), dimension(6), parameter  :: vrac2 = (/1.d0, 1.d0, 1.d0 &
-                                                        , rac2, rac2, rac2/)
+    real(kind=8), dimension(6), parameter :: vrac2 = (/1.d0, 1.d0, 1.d0, rac2, rac2, rac2/)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,7 +107,7 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
     codret = 0
     sig = 0.d0
     sigmCurr = 0.d0
-
+!
 ! - Get gradient
     if (lCorr) then
         call dcopy(9, fCurr, 1, fr, 1)
@@ -126,7 +126,8 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
     if (cplan) then
         epse = 0.d0
         if (lCorr) then
-            call d1macp(fami, mate, instp, '+', kpg, 1, angmas(1), d1)
+            call d1macp(fami, mate, instp, '+', kpg, &
+                        1, angmas(1), d1)
             do i = 1, 4
                 do j = 1, 4
                     epse(i) = epse(i)+d1(i, j)*tlogCurr(j)
@@ -134,7 +135,8 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
             end do
             epse(3) = d1(1, 2)*(tlogCurr(1)+tlogCurr(2))
         else
-            call d1macp(fami, mate, instp, '-', kpg, 1, angmas(1), d1)
+            call d1macp(fami, mate, instp, '-', kpg, &
+                        1, angmas(1), d1)
             do i = 1, 4
                 do j = 1, 4
                     epse(i) = epse(i)+d1(i, j)*tlogPrev(j)
@@ -144,10 +146,11 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
         end if
         detf = exp(epse(1)+epse(2)+epse(3))
     end if
-
+!
 ! - Tensor to change stress(log) to stress(PK2)
-    call deflg2(gn, lamb, logl, pes, feta, xi, me)
-
+    call deflg2(gn, lamb, logl, pes, feta, &
+                xi, me)
+!
 ! - Tangent matrix
     if (lMatr) then
         dsidep = 0.d0
@@ -157,20 +160,26 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
             call dcopy(6, tlogCurr, 1, tp2, 1)
         else
             sig(1:2*ndim) = sigm(1:2*ndim)
-            call pk2sig(ndim, fPrev, detf, pk2Prev, sig, -1)
+            call pk2sig(ndim, fPrev, detf, pk2Prev, sig, &
+                        -1)
             do kl = 4, 2*ndim
                 pk2Prev(kl) = pk2Prev(kl)*rac2
             end do
             call dcopy(6, tlogPrev, 1, tp2, 1)
-
+!
         end if
 !
-        call deflg3(gn, feta, xi, me, tp2, tl)
+        call deflg3(gn, feta, xi, me, tp2, &
+                    tl)
         call symt46(tl, tls)
-
+!
         dsidep = matmul(matmul(transpose(pes), dtde), pes)
-
-        call daxpy(36, 1.d0, tls, 1, dsidep, 1)
+!
+        b_n = to_blas_int(36)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, tls, b_incx, dsidep, &
+                   b_incy)
 !
     end if
 !
@@ -182,9 +191,10 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
                 pk2Curr(i) = pk2Curr(i)+tlogCurr(j)*pes(j, i)
             end do
         end do
-        call pk2sig(ndim, fCurr, detf, pk2Curr, sigmCurr, 1)
+        call pk2sig(ndim, fCurr, detf, pk2Curr, sigmCurr, &
+                    1)
     end if
-
+!
 ! - On stocke TP comme variable interne
     if (lVari) then
         vip(lgpg-1:lgpg) = 0.d0

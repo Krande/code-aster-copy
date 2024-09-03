@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dnapps(n, kev, np, shiftr, shifti, &
                   v, ldv, h, ldh, resid, &
                   q, ldq, workl, workd)
@@ -221,6 +221,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
     aster_logical :: cconj, first
     real(kind=8) :: c, f, g, h11, h12, h21, h22, h32, r, s, sigmai, sigmar
     real(kind=8) :: smlnum, ulp, unfl, u(3), t, tau, tst1
+    blas_int :: b_incx, b_incy, b_n
 ! DUE TO CRS512      REAL*8 OVFL
 ! DUE TO CRS512      SAVE FIRST, OVFL, SMLNUM, ULP, UNFL
     save first, smlnum, ulp, unfl
@@ -639,8 +640,13 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !     %-------------------------------------%
 !
     call dscal(n, q(kplusp, kev), resid, 1)
-    if (h(kev+1, kev) .gt. zero) call daxpy(n, h(kev+1, kev), v(1, kev+1), 1, resid, &
-                                            1)
+    if (h(kev+1, kev) .gt. zero) then
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, h(kev+1, kev), v(1, kev+1), b_incx, resid, &
+                   b_incy)
+    end if
 !
     if (msglvl .gt. 1) then
         call dvout(logfil, 1, q(kplusp, kev), ndigit, '_NAPPS: SIGMAK = (E_(KEV+P)T*Q)*E_(KEV)')

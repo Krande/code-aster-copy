@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 IFP - MARTIN GUITTON         WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine algogl(ds_measure, sdcont_defi, sdcont_solv, solveu, matass, &
                   noma, ctccvg)
 !
@@ -117,6 +117,7 @@ subroutine algogl(ds_measure, sdcont_defi, sdcont_solv, solveu, matass, &
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddep0(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -199,10 +200,8 @@ subroutine algogl(ds_measure, sdcont_defi, sdcont_solv, solveu, matass, &
 !
 ! ----- CALCUL DE [-A.C-1.AT] COLONNE PAR COLONNE (A PARTIR DE INDFAC)
 !
-        call cfacat(indic, nbliac, ajliai, spliai, &
-                    indfac, &
-                    sdcont_defi, sdcont_solv, solveu, lmat, &
-                    xjvmax)
+        call cfacat(indic, nbliac, ajliai, spliai, indfac, &
+                    sdcont_defi, sdcont_solv, solveu, lmat, xjvmax)
 !
 ! ----- DETECTION DES PIVOTS NULS
 !
@@ -217,8 +216,7 @@ subroutine algogl(ds_measure, sdcont_defi, sdcont_solv, solveu, matass, &
 !
 ! ----- FACTORISATION LDLT DE [-A.C-1.AT]
 !
-        call cffact(ldscon, isto, nbliac, &
-                    indfac, lechec)
+        call cffact(ldscon, isto, nbliac, indfac, lechec)
 !
 ! ----- LA MATRICE DE CONTACT EST-ELLE SINGULIERE ?
 !
@@ -242,12 +240,16 @@ subroutine algogl(ds_measure, sdcont_defi, sdcont_solv, solveu, matass, &
 !
 ! --- VERIFICATION SI L'ENSEMBLE DES LIAISONS SUPPOSEES EST TROP PETIT
 !
-    call cfpeti(sdcont_solv, neq, nbliai, nbliac, &
-                rho, llliai, llliac)
+    call cfpeti(sdcont_solv, neq, nbliai, nbliac, rho, &
+                llliai, llliac)
 !
 ! --- ACTUALISATION DE DDEPLC = DDEPLC + RHO .DDELT
 !
-    call daxpy(neq, rho, vddelt, 1, ddepc, 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, rho, vddelt, b_incx, ddepc, &
+               b_incy)
 !
 ! --- MODIFICATIONS DES LIAISONS
 !
@@ -257,11 +259,9 @@ subroutine algogl(ds_measure, sdcont_defi, sdcont_solv, solveu, matass, &
 ! ----- ON AJOUTE A L'ENSEMBLE DES LIAISONS ACTIVES LA PLUS VIOLEE
 !
         ASSERT(llliai .gt. 0)
-        call cftabl(indic, nbliac, ajliai, spliai, &
-                    sdcont_solv, typeaj, llliac, &
-                    llliai)
-        call cfimp2(sdcont_defi, sdcont_solv, noma, llliai, &
-                    'ACT')
+        call cftabl(indic, nbliac, ajliai, spliai, sdcont_solv, &
+                    typeaj, llliac, llliai)
+        call cfimp2(sdcont_defi, sdcont_solv, noma, llliai, 'ACT')
     else
 !
 ! ----- ON A CONVERGE
