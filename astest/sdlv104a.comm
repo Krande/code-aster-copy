@@ -19,7 +19,8 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
-# -- Mise en donnees initiale --#
+
+# -- Mise en donnees initiale -- #
 
 Tmax = 1 / 100.0  # -- demi largeur de la duree d'impact
 
@@ -27,13 +28,7 @@ Tmax = 1 / 100.0  # -- demi largeur de la duree d'impact
 mesh = LIRE_MAILLAGE(UNITE=20)
 
 model = AFFE_MODELE(
-    AFFE=_F(
-        GROUP_MA=("Beam",),
-        # MODELISATION=('POU_D_E', ),
-        MODELISATION=("3D",),
-        PHENOMENE="MECANIQUE",
-    ),
-    MAILLAGE=mesh,
+    AFFE=_F(GROUP_MA=("Beam",), MODELISATION=("3D",), PHENOMENE="MECANIQUE"), MAILLAGE=mesh
 )
 
 
@@ -50,36 +45,16 @@ t_arch = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=Tfin, PAS=0.0001))
 
 
 # -- Conditions aux limites du "vrai probleme"
-CondLim = AFFE_CHAR_MECA(
-    DDL_IMPO=(
-        _F(
-            # DRX=0.0,
-            # DRY=0.0,
-            # DRZ=0.0,
-            DX=0.0,
-            DY=0.0,
-            DZ=0.0,
-            GROUP_NO=("BC",),
-        ),
-    ),
-    MODELE=model,
-)
+CondLim = AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_NO=("BC",)),), MODELE=model)
 
 
 # -- Conditions aux limites du "probleme reduit",
 # --    pour tester la concatenation des vecteurs
 # --    et l'orthonormalisation des bases
+
 load = AFFE_CHAR_MECA(
     DDL_IMPO=(
-        _F(
-            # DRX=0.0,
-            # DRY=0.0,
-            # DRZ=0.0,
-            DX=0.0,
-            DY=0.0,
-            DZ=0.0,
-            GROUP_NO=("BC",),
-        ),
+        _F(DX=0.0, DY=0.0, DZ=0.0, GROUP_NO=("BC",)),
         _F(DX=0.0, DY=0.0, DZ=0.0, GROUP_NO=("N1", "N2", "N3", "N4")),
     ),
     MODELE=model,
@@ -104,7 +79,6 @@ pulse = DEFI_FONCTION(
 # ------------------------------------------------#
 
 ASSEMBLAGE(
-    # CARA_ELEM=elemprop,
     CHAM_MATER=fieldmat,
     CHARGE=(load,),
     MATR_ASSE=(
@@ -121,7 +95,6 @@ modes = CALC_MODES(
     MATR_MASS=MASS,
     MATR_RIGI=RAID,
     NORM_MODE=_F(NORME="MASS_GENE"),
-    # NORM_MODE=_F(NORME='TRAN_ROTA'),
     OPTION="PLUS_PETITE",
     SOLVEUR=_F(METHODE="MUMPS", NPREC=11),
     SOLVEUR_MODAL=_F(COEF_DIM_ESPACE=3, METHODE="SORENSEN"),
@@ -133,12 +106,12 @@ Stat = MODE_STATIQUE(
     MODE_STAT=_F(GROUP_NO=("N1", "N2", "N3", "N4"), AVEC_CMP=("DX", "DY", "DZ")),
 )
 
+
 # ---------------------------------------------------------------#
 # --                                                           --#
 # -- Construction de differentes bases modales - EQUIVALENTES! --#
 # --                                                           --#
 # ---------------------------------------------------------------#
-
 
 # --
 # --
@@ -146,10 +119,11 @@ Stat = MODE_STATIQUE(
 # --
 # --
 
+# --  Fonctionnement témoin sain -----------------------------------------------
 BaMo_0 = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=(modes, Stat)),), NUME_REF=NUME)
 
 BaMo_1 = DEFI_BASE_MODALE(ORTHO_BASE=_F(BASE=BaMo_0, MATRICE=MASS))
-
+# ------------------------------------------------------------------------------
 
 PROJ_BASE(
     BASE=BaMo_1,
@@ -166,7 +140,6 @@ ResPhys1 = DYNA_VIBRA(
     TYPE_CALCUL="TRAN",
     BASE_CALCUL="GENE",
     EXCIT=_F(FONC_MULT=pulse, VECT_ASSE_GENE=Force1),
-    # INCREMENT=_F(LIST_INST=temps),
     INCREMENT=_F(PAS=Dt, INST_FIN=Tfin),
     ARCHIVAGE=_F(LIST_INST=t_arch),
     MATR_MASS=MASS_GE1,
@@ -180,9 +153,6 @@ Tab1 = POST_GENE_PHYS(
     RESU_GENE=ResPhys1, OBSERVATION=_F(NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO="N4")
 )
 
-# For debug
-# IMPR_TABLE(UNITE=8, TABLE=Tab1)
-
 
 # --
 # --
@@ -190,11 +160,9 @@ Tab1 = POST_GENE_PHYS(
 # --
 # --
 
-# --  Cet appel la conduit a une erreur dans la suite
-# -- Sur la restitution sur base physique et sur les post traitement
-# -- POST_GENE_PHYS et POST_RELEVE_T
-
+# --  Fonctionnement à tester : appel conduisant à une erreur (issue30350) -----
 BaMo_2 = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=modes), _F(MODE_INTF=Stat)), ORTHO="OUI", MATRICE=MASS)
+# ------------------------------------------------------------------------------
 
 
 PROJ_BASE(
@@ -212,7 +180,6 @@ ResPhys2 = DYNA_VIBRA(
     TYPE_CALCUL="TRAN",
     BASE_CALCUL="GENE",
     EXCIT=_F(FONC_MULT=pulse, VECT_ASSE_GENE=Force1),
-    # INCREMENT=_F(LIST_INST=temps),
     INCREMENT=_F(PAS=Dt, INST_FIN=Tfin),
     ARCHIVAGE=_F(LIST_INST=t_arch),
     MATR_MASS=MASS_GE1,
@@ -227,13 +194,11 @@ Tab2 = POST_GENE_PHYS(
     RESU_GENE=ResPhys2, OBSERVATION=_F(NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO="N4")
 )
 
-# for debug
-# IMPR_TABLE(UNITE=9, TABLE=Tab2)
-
 
 # --
 # --
-# -- Test de Comparaisaon des Bases aux instants t1 et t2
+# -- Test de Comparaisaon des résultats de DYNA_VIBRA
+# -- à partir de deux Bases aux instants t1 et t2
 # --
 # --
 
