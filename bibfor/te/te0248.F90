@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,10 +114,8 @@ subroutine te0248(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Properties of behaviour
 !
@@ -248,13 +246,10 @@ subroutine te0248(option, nomte)
     if (rela_comp .eq. 'SANS') then
         goto 999
     end if
-
-    if ((rela_comp .eq. 'ELAS') .or. &
-        (rela_comp .eq. 'VMIS_ISOT_LINE') .or. &
-        (rela_comp .eq. 'VMIS_ISOT_TRAC') .or. &
-        (rela_comp .eq. 'CORR_ACIER') .or. &
-        (rela_comp .eq. 'VMIS_CINE_LINE') .or. &
-        (rela_comp .eq. 'RELAX_ACIER')) then
+!
+    if ((rela_comp .eq. 'ELAS') .or. (rela_comp .eq. 'VMIS_ISOT_LINE') .or. &
+        (rela_comp .eq. 'VMIS_ISOT_TRAC') .or. (rela_comp .eq. 'CORR_ACIER') .or. &
+        (rela_comp .eq. 'VMIS_CINE_LINE') .or. (rela_comp .eq. 'RELAX_ACIER')) then
 !       Récupération des caractéristiques du matériau
         epsm = (uml(4)-uml(1))/xlong0
         call nmiclb(fami, 1, 1, option, rela_comp, &

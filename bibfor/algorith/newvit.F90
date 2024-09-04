@@ -46,7 +46,10 @@ subroutine newvit(neq, c1, c2, v0, a0, &
     integer :: neq
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
-    call dcopy(neq, v0, 1, v1, 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, v0, b_incx, v1, b_incy)
     b_n = to_blas_int(neq)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)

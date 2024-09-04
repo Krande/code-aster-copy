@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 !
 subroutine mdgeph(neq, nbmode, bmodal, xgene, u, &
-                  kacce, kprof, inst, instt, indice, taille, kcham)
+                  kacce, kprof, inst, instt, indice, &
+                  taille, kcham)
 !     CONVERTIT EN BASE PHYSIQUE MODE VECTEUR
 !     REM U EST INITIALISE A 0.
 !     OPTIONNELLEMENT: DIFFERENTES OPTIONS D'ACCELERATION
@@ -103,6 +104,7 @@ subroutine mdgeph(neq, nbmode, bmodal, xgene, u, &
     character(len=24) :: kgemv, kgemmb, kgemmc, kchamno, k24j
     mpi_int :: mpicou, mpicow, mrang, mnbproc
     aster_logical :: ltest
+    blas_int :: b_incx, b_incy, b_n
     data tempst/0.d0/
     save tempst
 !-----------------------------------------------------------------------
@@ -118,16 +120,20 @@ subroutine mdgeph(neq, nbmode, bmodal, xgene, u, &
     if (.not. present(kacce)) then
         kaccl = 'CAS0'
     else
-        ltest = ((kacce .eq. 'CAS0') .or. (kacce .eq. 'CAS1') .or. (kacce .eq. 'CAS2') .or. &
-                 (kacce .eq. 'CAS3'))
+        ltest = ( &
+                (kacce .eq. 'CAS0') .or. (kacce .eq. 'CAS1') .or. (kacce .eq. 'CAS2') .or. &
+                (kacce .eq. 'CAS3') &
+                )
         ASSERT(ltest)
         kaccl = kacce
     end if
     if (.not. present(kprof)) then
         kprol = 'NON'
     else
-        ltest = ((kprof(1:3) .eq. 'OUI') .or. (kprof(1:3) .eq. 'NON') .or. &
-                 (kprof(1:4) .eq. 'OUIA'))
+        ltest = ( &
+                (kprof(1:3) .eq. 'OUI') .or. (kprof(1:3) .eq. 'NON') .or. &
+                (kprof(1:4) .eq. 'OUIA') &
+                )
         ASSERT(ltest)
         kprol = kprof
     end if
@@ -219,16 +225,16 @@ subroutine mdgeph(neq, nbmode, bmodal, xgene, u, &
         call vecini(neq, zero, u)
         borne1 = iaux
         borne2 = iaux+m-1
-!$OMP PARALLEL DO PRIVATE(i,j) COLLAPSE(2)
+        !$OMP PARALLEL DO PRIVATE(i,j) COLLAPSE(2)
         do i = borne1, borne2
             do j = 1, nbmode
                 u(i) = u(i)+bmodal(i, j)*xgene(j)
             end do
         end do
-!$OMP END PARALLEL DO
+        !$OMP END PARALLEL DO
 ! COM MPI que si au moins 1 ddl par processus
         if (m .ne. neq) call asmpi_comm_vect('MPI_SUM', 'R', nbval=neq, vr=u)
-
+!
 !
     else if (kaccl(1:4) .eq. 'CAS2') then
 ! Avec MPI (ddl) x OpenMP (ddl x modal) + avec BLAS2
@@ -238,13 +244,18 @@ subroutine mdgeph(neq, nbmode, bmodal, xgene, u, &
         if (abs(instl) .eq. 1) then
             call wkvect(kgemv, 'V V R', m*nbmode, ja)
             do j = 1, nbmode
-                call dcopy(m, bmodal(iaux, j), 1, zr(ja+(j-1)*m), 1)
+                b_n = to_blas_int(m)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, bmodal(iaux, j), b_incx, zr(ja+(j-1)*m), b_incy)
             end do
         else
             call jeveuo(kgemv, 'L', ja)
         end if
         call vecini(neq, zero, u)
-        call dgemv('N', m, nbmode, 1.d0, zr(ja), m, xgene, 1, zero, u(iaux), 1)
+        call dgemv('N', m, nbmode, 1.d0, zr(ja), &
+                   m, xgene, 1, zero, u(iaux), &
+                   1)
 ! COM MPI que si au moins 1 ddl par processus
         if (m .ne. neq) call asmpi_comm_vect('MPI_SUM', 'R', nbval=neq, vr=u)
 !
@@ -282,7 +293,10 @@ subroutine mdgeph(neq, nbmode, bmodal, xgene, u, &
 ! On rempli le buffer correspondant à bmodal: matrice A
             call wkvect(kgemv, 'V V R', m*nbmode, ja)
             do j = 1, nbmode
-                call dcopy(m, bmodal(iaux, j), 1, zr(ja+(j-1)*m), 1)
+                b_n = to_blas_int(m)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, bmodal(iaux, j), b_incx, zr(ja+(j-1)*m), b_incy)
             end do
             call wkvect(kgemmb, 'V V R', nbmode*nbinst, jb)
             call wkvect(kgemmc, 'V V R', m*nbinst, jc)
@@ -293,20 +307,28 @@ subroutine mdgeph(neq, nbmode, bmodal, xgene, u, &
             call jeveuo(kchamno, 'E', jkchamno)
         end if
         zk24(jkchamno-1+iloc) = kcham
-
+!
 ! On rempli le buffer correspondant à xgene: matrice B
-        call dcopy(nbmode, xgene, 1, zr(jb+(iloc-1)*nbmode), 1)
+        b_n = to_blas_int(nbmode)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, xgene, b_incx, zr(jb+(iloc-1)*nbmode), b_incy)
 !
 ! Calcul effectif
         if (nresti .eq. 0) then
             call jeveuo(kgemmc, 'E', jc)
             call vecini(m*iloc, zero, zr(jc))
-            call dgemm('N', 'N', m, iloc, nbmode, un, zr(ja), m, zr(jb), nbmode, zero, zr(jc), m)
+            call dgemm('N', 'N', m, iloc, nbmode, &
+                       un, zr(ja), m, zr(jb), nbmode, &
+                       zero, zr(jc), m)
             do j = 1, iloc
                 k24j = zk24(jkchamno-1+j)
                 call jeveuo(k24j, 'E', jchamno)
                 call vecini(neq, zero, zr(jchamno))
-                call dcopy(m, zr(jc+(j-1)*m), 1, zr(jchamno-1+iaux), 1)
+                b_n = to_blas_int(m)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(jc+(j-1)*m), b_incx, zr(jchamno-1+iaux), b_incy)
 ! COM MPI que si au moins 1 ddl par processus
                 if (m .ne. neq) call asmpi_comm_vect('MPI_SUM', 'R', nbval=neq, vr=zr(jchamno))
                 call jelibe(k24j)

@@ -104,9 +104,12 @@ subroutine veri_noe(mailla, dmax_cable, lnuma, liproj, nbmaok, &
             ntyma = zi(jtyma+numail-1)
             call canorm(xyzma, normal, 3, ntyma, 1)
             !
-            excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+normal(3)&
-                    &*(x3dca(3)-xyzma(3, 1))
-            call dcopy(3, x3dca, 1, x3dp, 1)
+            excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+normal(3)*&
+                     &(x3dca(3)-xyzma(3, 1))
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, x3dca, b_incx, x3dp, b_incy)
             b_n = to_blas_int(3)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
@@ -133,14 +136,14 @@ subroutine veri_noe(mailla, dmax_cable, lnuma, liproj, nbmaok, &
                     end if
                     d1 = sqrt( &
                          ( &
-                         xyzma(1, jnoeu)-xyzma(1, inoeu))**2+(xyzma(2, jnoeu)-xyzma(2, inoeu))**&
-                         &2+(xyzma(3, jnoeu)-xyzma(3, inoeu) &
+                         xyzma(1, jnoeu)-xyzma(1, inoeu))**2+(xyzma(2, jnoeu)-xyzma(2, inoeu))**2&
+                         &+(xyzma(3, jnoeu)-xyzma(3, inoeu) &
                          )**2 &
                          )
                     d2 = sqrt( &
                          ( &
-                         xyzma(1, knoeu)-xyzma(1, inoeu))**2+(xyzma(2, knoeu)-xyzma(2, inoeu))**&
-                         &2+(xyzma(3, knoeu)-xyzma(3, inoeu) &
+                         xyzma(1, knoeu)-xyzma(1, inoeu))**2+(xyzma(2, knoeu)-xyzma(2, inoeu))**2&
+                         &+(xyzma(3, knoeu)-xyzma(3, inoeu) &
                          )**2 &
                          )
                     d1 = max(d1, d2)

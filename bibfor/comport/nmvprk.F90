@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,11 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmvprk(BEHinteg, &
-                  fami, kpg, ksp, ndim, typmod, &
-                  imat, comp, crit, timed, timef, &
-                  neps, epsdt, depst, sigd, nvi, vind, &
-                  opt, angmas, sigf, vinf, dsde, &
-                  iret, mult_comp_)
+subroutine nmvprk(BEHinteg, fami, kpg, ksp, ndim, &
+                  typmod, imat, comp, crit, timed, &
+                  timef, neps, epsdt, depst, sigd, &
+                  nvi, vind, opt, angmas, sigf, &
+                  vinf, dsde, iret, mult_comp_)
 !
     use Behaviour_type
 !
@@ -126,7 +125,7 @@ subroutine nmvprk(BEHinteg, &
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*) :: fami
-    integer, intent(in):: nvi
+    integer, intent(in) :: nvi
     integer :: imat, ndim, ndt, ndi, nr, kpg, ksp, i, nbphas, itmax
     integer :: nmat, ioptio, idnr, nsg, nfs, nhsr, neps
     integer :: irr, decirr, nbsyst, decal, gdef
@@ -153,6 +152,7 @@ subroutine nmvprk(BEHinteg, &
     character(len=11) :: meting
     character(len=16) :: comp(*), opt, rela_comp, defo_comp, mult_comp
     character(len=24) :: cpmono(5*nmat+1)
+    blas_int :: b_incx, b_incy, b_n
     common/tdim/ndt, ndi
     common/opti/ioptio, idnr
     common/meti/meting
@@ -182,19 +182,25 @@ subroutine nmvprk(BEHinteg, &
 ! --  RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 !                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 !
-    call lcmate(BEHinteg, &
-                fami, kpg, ksp, comp, mod, &
-                imat, nmat, rbid, rbid, rbid, 1, &
-                typma, hsr, materd, materf, matcst, &
-                nbcomm, cpmono, angmas, pgl, 0, &
-                toler, ndt, ndi, nr, crit, &
-                nvi, vind, nfs, nsg, toutms, &
-                nhsr, numhsr, sigd, mult_comp)
+    call lcmate(BEHinteg, fami, kpg, ksp, comp, &
+                mod, imat, nmat, rbid, rbid, &
+                rbid, 1, typma, hsr, materd, &
+                materf, matcst, nbcomm, cpmono, angmas, &
+                pgl, 0, toler, ndt, ndi, &
+                nr, crit, nvi, vind, nfs, &
+                nsg, toutms, nhsr, numhsr, sigd, &
+                mult_comp)
 !
     if (opt(1:9) .eq. 'RIGI_MECA') goto 900
 !
-    call dcopy(neps, depst, 1, detot, 1)
-    call dcopy(neps, epsdt, 1, epsd, 1)
+    b_n = to_blas_int(neps)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, depst, b_incx, detot, b_incy)
+    b_n = to_blas_int(neps)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsdt, b_incx, epsd, b_incy)
 !
     dtime = timef-timed
 !
@@ -250,8 +256,7 @@ subroutine nmvprk(BEHinteg, &
 900 continue
 !
     if (opt(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. rela_comp .eq. 'MONOCRISTAL') then
-        call lcsmelas(epsdt, depst, dsde, &
-                      nmat=nmat, materd_=materd)
+        call lcsmelas(epsdt, depst, dsde, nmat=nmat, materd_=materd)
         iret = 0
         goto 999
     end if

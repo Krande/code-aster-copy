@@ -110,8 +110,14 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1, &
 ! --- EQUATION DE LA DYNAMIQUE
 ! ----------------------------------------------------------------------
 ! --- ON MET XSK PUIS XCK DANS LE VECTEUR QNL
-    call dcopy(nd*h, zr(ivec2+(h+1)*nd), 1, zr(iqnl+nd), 1)
-    call dcopy(nd*h, zr(ivec2+nd), 1, zr(iqnl+nd*(h+1)), 1)
+    b_n = to_blas_int(nd*h)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivec2+(h+1)*nd), b_incx, zr(iqnl+nd), b_incy)
+    b_n = to_blas_int(nd*h)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivec2+nd), b_incx, zr(iqnl+nd*(h+1)), b_incy)
 !     QNL(COS) = -K*GAMA1*XSK
     call dscal(nd*h, -zr(ivec1-1+ninc-3), zr(iqnl+nd), 1)
     do k = 1, h
@@ -371,7 +377,10 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1, &
             b_incy = to_blas_int(1)
             call daxpy(b_n, 1.d0/alpha, zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), b_incx, &
                        zr(ivtp4), b_incy)
-            call dcopy(2*hf+1, zr(ivec2+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, zr(ivtp5), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivec2+nd*(2*h+1)+(neqs+3)*(2*hf+1)), b_incx, zr(ivtp5), b_incy)
             call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl+nd*(2*h+1)+(neqs+3)*(2*hf+1)))
         else if (type(i) (1:4) .eq. 'PLAN') then
             nddl = vnddl(6*(i-1)+1)

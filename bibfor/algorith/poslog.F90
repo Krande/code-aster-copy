@@ -110,9 +110,15 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
 !
 ! - Get gradient
     if (lCorr) then
-        call dcopy(9, fCurr, 1, fr, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fCurr, b_incx, fr, b_incy)
     else
-        call dcopy(9, fPrev, 1, fr, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fPrev, b_incx, fr, b_incy)
     end if
     call lcdetf(ndim, fr, detf)
     if (detf .le. r8prem()) then
@@ -157,7 +163,10 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
 !        POUR LA RIGIDITE GEOMETRIQUE : CALCUL AVEC LES PK2
         tp2 = 0.d0
         if (lCorr) then
-            call dcopy(6, tlogCurr, 1, tp2, 1)
+            b_n = to_blas_int(6)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, tlogCurr, b_incx, tp2, b_incy)
         else
             sig(1:2*ndim) = sigm(1:2*ndim)
             call pk2sig(ndim, fPrev, detf, pk2Prev, sig, &
@@ -165,7 +174,10 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
             do kl = 4, 2*ndim
                 pk2Prev(kl) = pk2Prev(kl)*rac2
             end do
-            call dcopy(6, tlogPrev, 1, tp2, 1)
+            b_n = to_blas_int(6)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, tlogPrev, b_incx, tp2, b_incy)
 !
         end if
 !
@@ -198,7 +210,10 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
 ! - On stocke TP comme variable interne
     if (lVari) then
         vip(lgpg-1:lgpg) = 0.d0
-        call dcopy(2*ndim, tlogCurr/vrac2, 1, vip(lgpg-6+1), 1)
+        b_n = to_blas_int(2*ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tlogCurr/vrac2, b_incx, vip(lgpg-6+1), b_incy)
     end if
 !
 999 continue

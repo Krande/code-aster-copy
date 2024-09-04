@@ -59,6 +59,7 @@ subroutine te0573(option, nomte)
     real(kind=8) :: vect(mxvect), matr(mxmatr), geomCurr(mxvect)
     real(kind=8) :: pres, pres_pg(mxnpg)
     real(kind=8) :: cisa, cisa_pg(mxnpg)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,9 +90,8 @@ subroutine te0573(option, nomte)
 !
 ! - Get element parameters
 !
-    call elrefe_info(fami='RIGI', &
-                     nno=nno, npg=npg, ndim=ndim, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, ndim=ndim, jpoids=ipoids, &
+                     jvf=ivf, jdfde=idfde)
     l_axis = lteatt('AXIS', 'OUI')
     ASSERT(nno .le. mxnoeu)
     ASSERT(npg .le. mxnpg)
@@ -114,10 +114,9 @@ subroutine te0573(option, nomte)
 ! - Evaluation of pressure (and shear) at Gauss points (from nodes)
 !
     do kpg = 1, npg
-        call evalPressure(l_func, l_time, time, &
-                          nno, ndim, kpg, &
-                          ivf, jv_geom, jv_pres, &
-                          pres, cisa, geomCurr)
+        call evalPressure(l_func, l_time, time, nno, ndim, &
+                          kpg, ivf, jv_geom, jv_pres, pres, &
+                          cisa, geomCurr)
         pres_pg(kpg) = pres
         cisa_pg(kpg) = cisa
     end do
@@ -126,17 +125,16 @@ subroutine te0573(option, nomte)
 !
     if (option(1:9) .eq. 'CHAR_MECA') then
         call jevech('PVECTUR', 'E', jv_vect)
-        call nmpr2d(l_axis, nno, npg, &
-                    zr(ipoids), zr(ivf), zr(idfde), &
-                    geomCurr, pres_pg, cisa_pg, &
-                    vect)
-        call dcopy(ndof, vect, 1, zr(jv_vect), 1)
+        call nmpr2d(l_axis, nno, npg, zr(ipoids), zr(ivf), &
+                    zr(idfde), geomCurr, pres_pg, cisa_pg, vect)
+        b_n = to_blas_int(ndof)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vect, b_incx, zr(jv_vect), b_incy)
     else if (option(1:9) .eq. 'RIGI_MECA') then
         call jevech('PMATUNS', 'E', jv_matr)
-        call nmpr2d(l_axis, nno, npg, &
-                    zr(ipoids), zr(ivf), zr(idfde), &
-                    geomCurr, pres_pg, cisa_pg, &
-                    matr_=matr)
+        call nmpr2d(l_axis, nno, npg, zr(ipoids), zr(ivf), &
+                    zr(idfde), geomCurr, pres_pg, cisa_pg, matr_=matr)
         k = 0
         do i = 1, ndof
             do j = 1, ndof

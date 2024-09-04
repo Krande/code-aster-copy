@@ -465,7 +465,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | MACHINE BOUND.                                          |
 !        %---------------------------------------------------------%
 !
-    call dcopy(n, resid, 1, v(1, j), 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, resid, b_incx, v(1, j), b_incy)
     if (rnorm .ge. unfl) then
         temp1 = one/rnorm
         call dscal(n, temp1, v(1, j), 1)
@@ -493,7 +496,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
     step3 = .true.
     nopx = nopx+1
-    call dcopy(n, v(1, j), 1, workd(ivj), 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, v(1, j), b_incx, workd(ivj), b_incy)
     ipntr(1) = ivj
     ipntr(2) = irj
     ipntr(3) = ipj
@@ -518,7 +524,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | PUT ANOTHER COPY OF OP*V_(J) INTO RESID. |
 !        %------------------------------------------%
 !
-    call dcopy(n, workd(irj), 1, resid, 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, workd(irj), b_incx, resid, b_incy)
 !
 !        %---------------------------------------%
 !        | STEP 4:  FINISH EXTENDING THE ARNOLDI |
@@ -538,7 +547,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
         goto 9000
     else if (bmat .eq. 'I') then
-        call dcopy(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
 60  continue
 !
@@ -592,7 +604,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
     orth1 = .true.
     if (bmat .eq. 'G') then
         nbx = nbx+1
-        call dcopy(n, resid, 1, workd(irj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(irj), b_incy)
         ipntr(1) = irj
         ipntr(2) = ipj
         ido = 2
@@ -603,7 +618,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
         goto 9000
     else if (bmat .eq. 'I') then
-        call dcopy(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
 70  continue
 !
@@ -691,7 +709,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
     orth2 = .true.
     if (bmat .eq. 'G') then
         nbx = nbx+1
-        call dcopy(n, resid, 1, workd(irj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(irj), b_incy)
         ipntr(1) = irj
         ipntr(2) = ipj
         ido = 2
@@ -703,7 +724,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
         goto 9000
     else if (bmat .eq. 'I') then
-        call dcopy(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
 90  continue
 !

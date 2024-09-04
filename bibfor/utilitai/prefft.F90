@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,6 +84,7 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
     mpi_int :: mpicou, mpicow, mrang, mnbproc
     integer :: rang, nbproc, nbloc, impi, iaux, jkdist, ndist
     integer :: ifm, niv, nbout, minj, maxj, ndist1, lcham
+    blas_int :: b_incx, b_incy, b_n
 !
 !
     call jemarq()
@@ -314,8 +315,14 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
         else
 !        --- CAS D'UNE TRAN_GENE:
 !              --- REMPLIR L'ABSCISSE DE LA FONCTION PREFFT
-            call dcopy(nbordr, zr(lacce), 1, zr(lvar), 1)
-            call dcopy(nbordr, zr(lval+iddl-1), neq, zr(lfon), 1)
+            b_n = to_blas_int(nbordr)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(lacce), b_incx, zr(lvar), b_incy)
+            b_n = to_blas_int(nbordr)
+            b_incx = to_blas_int(neq)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(lval+iddl-1), b_incx, zr(lfon), b_incy)
         end if
 !
 !
@@ -385,7 +392,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
                 if (zi(jkdist+iddl-1) .eq. rang) then
                     ii = 0
 !              --- REMPLISSAGE ORDONNEES DE LA FONCTION PREFFT
-                    call dcopy(nbordr, zr(lval+iddl-1), neq, zr(lfon), 1)
+                    b_n = to_blas_int(nbordr)
+                    b_incx = to_blas_int(neq)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(lval+iddl-1), b_incx, zr(lfon), b_incy)
 !              --- CALCUL DES FFT
                     call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
                                 nbpts, nout, nbpts2, sym)
@@ -471,7 +481,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
         call vecini(nbout, rzero, zr(npara))
 !        --- REMPLISSAGE AVEC LES PREMIERS RESULTATS POUR IDDL=1
         lfon2 = nout+nbvout
-        call dcopy(nbvout, zr(lfon2), 1, zr(npara+(iddl-1)*nbvout), 1)
+        b_n = to_blas_int(nbvout)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(lfon2), b_incx, zr(npara+(iddl-1)*nbvout), b_incy)
 !
 !        --- BOUCLE DES FFTS INVERSES SUR LES AUTRES DDL'S
 !            REFERER AUX PRECEDENTS COMMENTAIRES POUR + DE DETAILS
@@ -496,7 +509,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
                                 nbpts, nout, nbpts2, sym)
 !             --- SAUVEGARDE DES RESULTATS DANS VECTOT
                     lfon2 = nout+nbvout
-                    call dcopy(nbvout, zr(lfon2), 1, zr(npara+(iddl-1)*nbvout), 1)
+                    b_n = to_blas_int(nbvout)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(lfon2), b_incx, zr(npara+(iddl-1)*nbvout), b_incy)
                 end if
             end do
 !
@@ -529,7 +545,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
                                 nbpts, nout, nbpts2, sym)
 !             --- SAUVEGARDE DES RESULTATS DANS VECTOT
                     lfon2 = nout+nbvout
-                    call dcopy(nbvout, zr(lfon2), 1, zr(npara+(iddl-1)*nbvout), 1)
+                    b_n = to_blas_int(nbvout)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(lfon2), b_incx, zr(npara+(iddl-1)*nbvout), b_incy)
                 end if
             end do
 !
@@ -548,7 +567,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
         end if
 ! On stocke les instants a la fin
 !
-        call dcopy(nbvout, zr(nout), 1, zr(npara+neq*nbvout), 1)
+        b_n = to_blas_int(nbvout)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(nout), b_incx, zr(npara+neq*nbvout), b_incy)
     end if
     if (typres(6:9) .ne. 'GENE') call jelibe(cham19//'.VALE')
 !

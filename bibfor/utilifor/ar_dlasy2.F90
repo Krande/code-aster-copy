@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -150,6 +150,7 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2, &
     aster_logical :: bswpiv(4), xswpiv(4)
     integer :: jpiv(4), locl21(4), locu12(4), locu22(4)
     real(kind=8) :: btmp(4), t16(4, 4), tmp(4), x2(2)
+    blas_int :: b_incx, b_incy, b_n
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -202,10 +203,7 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2, &
 !                                         (TR21 TR22)
 !
         smin = max( &
-               eps*max( &
-               abs(tl(1, 1)), abs(tr(1, 1)), abs(tr(1, 2)), abs(tr(2, 1)), &
-               abs(tr(2, 2)) &
-               ), &
+               eps*max(abs(tl(1, 1)), abs(tr(1, 1)), abs(tr(1, 2)), abs(tr(2, 1)), abs(tr(2, 2))), &
                smlnum &
                )
         tmp(1) = tl(1, 1)+sgn*tr(1, 1)
@@ -226,10 +224,7 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2, &
 !          OP(TL11 TL12)*(X11) + ISGN* (X11)*TR11  = (B11)
 !            (TL21 TL22) (X21)         (X21)         (B21)
         smin = max( &
-               eps*max( &
-               abs(tr(1, 1)), abs(tl(1, 1)), abs(tl(1, 2)), abs(tl(2, 1)), &
-               abs(tl(2, 2)) &
-               ), &
+               eps*max(abs(tr(1, 1)), abs(tl(1, 1)), abs(tl(1, 2)), abs(tl(2, 1)), abs(tl(2, 2))), &
                smlnum &
                )
         tmp(1) = tl(1, 1)+sgn*tr(1, 1)
@@ -254,11 +249,13 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2, &
 !       SET PIVOTS LESS THAN SMIN TO SMIN.
 !
         smin = max(abs(tr(1, 1)), abs(tr(1, 2)), abs(tr(2, 1)), abs(tr(2, 2)))
-        smin = max( &
-               smin, abs(tl(1, 1)), abs(tl(1, 2)), abs(tl(2, 1)), abs(tl(2, 2)))
+        smin = max(smin, abs(tl(1, 1)), abs(tl(1, 2)), abs(tl(2, 1)), abs(tl(2, 2)))
         smin = max(eps*smin, smlnum)
         btmp(1) = zero
-        call dcopy(16, btmp, 0, t16, 1)
+        b_n = to_blas_int(16)
+        b_incx = to_blas_int(0)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, btmp, b_incx, t16, b_incy)
         t16(1, 1) = tl(1, 1)+sgn*tr(1, 1)
         t16(2, 2) = tl(2, 2)+sgn*tr(1, 1)
         t16(3, 3) = tl(1, 1)+sgn*tr(2, 2)
@@ -386,8 +383,8 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2, &
             btmp(2) = btmp(2)-l21*btmp(1)
         end if
         scale = one
-        if ((two*smlnum)*abs(btmp(2)) .gt. abs(u22) .or. &
-            (two*smlnum)*abs(btmp(1)) .gt. abs(u11)) then
+        if ((two*smlnum)*abs(btmp(2)) .gt. abs(u22) .or. (two*smlnum)*abs(btmp(1)) .gt. &
+            abs(u11)) then
             scale = half/max(abs(btmp(1)), abs(btmp(2)))
             btmp(1) = btmp(1)*scale
             btmp(2) = btmp(2)*scale

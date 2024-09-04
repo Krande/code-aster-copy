@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine apcpou(sdcont_defi, i_zone, elem_name, zone_type, &
-                  tau1, tau2)
+!
+subroutine apcpou(sdcont_defi, i_zone, elem_name, zone_type, tau1, &
+                  tau2)
 !
     implicit none
 !
@@ -59,6 +59,7 @@ subroutine apcpou(sdcont_defi, i_zone, elem_name, zone_type, &
 !
     integer :: itype
     real(kind=8) :: vector(3), norme
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,7 +89,10 @@ subroutine apcpou(sdcont_defi, i_zone, elem_name, zone_type, &
         call provec(vector, tau1, tau2)
     else if (itype .eq. 2) then
         call normev(vector, norme)
-        call dcopy(3, vector, 1, tau2, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vector, b_incx, tau2, b_incy)
     else
         ASSERT(.false.)
     end if

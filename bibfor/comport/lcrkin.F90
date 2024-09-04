@@ -102,7 +102,10 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm, &
     end if
 ! --  FIN   TRAITEMENT DE VENDOCHAB --
 !
-    call dcopy(nvi, vind, 1, vinf, 1)
+    b_n = to_blas_int(nvi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vind, b_incx, vinf, b_incy)
 !
     if (rela_comp .eq. 'VENDOCHAB') then
 !        INITIALISATION DE VINF(8) A UNE VALEUR NON NULLE
@@ -122,13 +125,19 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm, &
             if (opt .ne. 'RAPH_MECA') then
                 ASSERT(ASTER_FALSE)
             end if
-            call dcopy(9, vind(nvi-3-18+1), 1, fp, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vind(nvi-3-18+1), b_incx, fp, b_incy)
             b_n = to_blas_int(9)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
             call daxpy(b_n, 1.d0, id, b_incx, fp, &
                        b_incy)
-            call dcopy(9, fp, 1, vinf(nvi-3-18+1), 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, fp, b_incx, vinf(nvi-3-18+1), b_incy)
             nvi = nvi-9
         end if
         if (materf(nbcomm(1, 1), 2) .ge. 4) then

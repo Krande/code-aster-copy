@@ -341,10 +341,10 @@ contains
                                 v_field_valv(i_func) = v_afcv(i_affe_cine)
                                 if (.not. isCellNode) then
                                     hhoField%v_info_cine(3*(i_affe_cine-1)+3) = (dim_cmp-1)*nb_cm&
-                                                                                &p_hho_dir_c+num&
-                                                                                &e_cmp-(dim_cmp-1&
-                                                                                &)*nb_cmp_hho_dir&
-                                                                                &_f
+                                                                                &p_hho_dir_c+nume&
+                                                                                &_cmp-(dim_cmp-1)&
+                                                                                &*nb_cmp_hho_dir_&
+                                                                                &f
                                 end if
                             end if
                         end do
@@ -786,6 +786,7 @@ contains
         integer :: cbs, fbs, total_dofs, idim, iFace, nbpara, ind
         real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
+        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -842,7 +843,10 @@ contains
 !
             call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
                                   rhs_face)
-            call dcopy(fbs, rhs_face, 1, rhs_cine(ind), 1)
+            b_n = to_blas_int(fbs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rhs_face, b_incx, rhs_cine(ind), b_incy)
             ind = ind+fbs
         end do
 !
@@ -863,7 +867,10 @@ contains
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
-        call dcopy(cbs, rhs_cell, 1, rhs_cine(ind), 1)
+        b_n = to_blas_int(cbs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, rhs_cell, b_incx, rhs_cine(ind), b_incy)
         ind = ind+cbs
         ASSERT(ind-1 == total_dofs)
 !
@@ -899,6 +906,7 @@ contains
         integer :: cbs, fbs, total_dofs, idim, iFace, ind, ndim
         real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
+        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -934,7 +942,10 @@ contains
 !
             call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
                                   rhs_face)
-            call dcopy(fbs, rhs_face, 1, rhs_cine(ind), 1)
+            b_n = to_blas_int(fbs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rhs_face, b_incx, rhs_cine(ind), b_incy)
             ind = ind+fbs
         end do
 !
@@ -954,7 +965,10 @@ contains
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
-        call dcopy(cbs, rhs_cell, 1, rhs_cine(ind), 1)
+        b_n = to_blas_int(cbs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, rhs_cell, b_incx, rhs_cine(ind), b_incy)
         ind = ind+cbs
         ASSERT(ind-1 == total_dofs)
 !
@@ -991,6 +1005,7 @@ contains
         integer :: cbs, fbs, total_dofs, iFace, ind
         real(kind=8) :: FuncValuesQP(MAX_QP_FACE), FuncValuesCellQP(MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)
+        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1019,7 +1034,10 @@ contains
 !
             call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
                                    rhs_face)
-            call dcopy(fbs, rhs_face, 1, rhs_cine(ind), 1)
+            b_n = to_blas_int(fbs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rhs_face, b_incx, rhs_cine(ind), b_incy)
             ind = ind+fbs
         end do
 !
@@ -1034,7 +1052,10 @@ contains
 !
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                                rhs_cell)
-        call dcopy(cbs, rhs_cell, 1, rhs_cine(ind), 1)
+        b_n = to_blas_int(cbs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, rhs_cell, b_incx, rhs_cine(ind), b_incy)
         ind = ind+cbs
         ASSERT(ind-1 == total_dofs)
 !

@@ -97,7 +97,7 @@ contains
         if (answer .eq. 'OUI') then
             lReacVite = ASTER_TRUE
         end if
-
+!
 ! - Get modes
         call getvid(factorKeyword, 'MODE_MECA', iocc=1, scal=dampMode, nbret=iret)
         if (iret .eq. 0) then
@@ -113,7 +113,7 @@ contains
                 call utmess('I', 'DAMPING1_30', ni=3, vali=[nbModeDS, nbModeMax, nbMode])
             end if
         end if
-
+!
 ! - Get list of reduced damping values: by vector from Python or by list_r8 datastructure
         call getvr8(factorKeyword, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=nbDampVale)
         nbDampVale = -nbDampVale
@@ -124,11 +124,11 @@ contains
             call utmess('F', 'DAMPING1_21')
         end if
         ASSERT(.not. (lReducedDampPy .and. lReducedDampList))
-
+!
         if (lReducedDampPy) then
             call wkvect(jvListDamp, 'V V R', nbDampVale, vr=dampVale)
-            call getvr8(factorKeyword, 'AMOR_REDUIT', iocc=1, nbval=nbDampVale, &
-                        vect=dampVale, nbret=iret)
+            call getvr8(factorKeyword, 'AMOR_REDUIT', iocc=1, nbval=nbDampVale, vect=dampVale, &
+                        nbret=iret)
         else
             call getvid(factorKeyword, 'LIST_AMOR', iocc=1, scal=listDamp, nbret=iret)
             call jelira(listDamp//'           .VALE', 'LONMAX', ival=nbDampVale)
@@ -136,7 +136,7 @@ contains
             call wkvect(jvListDamp, 'V V R', nbDampVale, vr=dampVale)
             dampVale(1:nbDampVale) = dampValeTemp(1:nbDampVale)
         end if
-
+!
         if (nbDampVale .gt. nbMode) then
             call utmess('A', 'DAMPING1_19')
         end if
@@ -152,7 +152,7 @@ contains
             dampVale(1:nbDampVale) = dampValeTemp(1:nbDampVale)
             AS_DEALLOCATE(vr=dampValeTemp)
         end if
-
+!
 ! - Save parameters
         modalDamping%lReacVite = lReacVite
         modalDamping%dampMode = dampMode
@@ -196,71 +196,76 @@ contains
         nbMode = modalDamping%nbMode
         jvListDamp = modalDamping%jvListDamp
         jvDataDamp = modalDamping%jvDataDamp
-
+!
 ! - List of damping values
         call jeveuo(jvListDamp, 'L', vr=dampVale)
-
+!
 ! - Create modal values
         call wkvect(jvDataDamp(1:19)//'.VALM', 'V V R', 3*nbMode, vr=dataDampVale)
         do iMode = 1, nbMode
-            call rsadpa(dampMode, 'L', 1, 'MASS_GENE', iMode, 0, sjv=jvPara)
+            call rsadpa(dampMode, 'L', 1, 'MASS_GENE', iMode, &
+                        0, sjv=jvPara)
             dataDampVale(3*(iMode-1)+1) = zr(jvPara)
-            call rsadpa(dampMode, 'L', 1, 'FREQ', iMode, 0, sjv=jvPara)
+            call rsadpa(dampMode, 'L', 1, 'FREQ', iMode, &
+                        0, sjv=jvPara)
             dataDampVale(3*(iMode-1)+2) = zr(jvPara)*2.d0*r8pi()
             dataDampVale(3*(iMode-1)+3) = dampVale(iMode)
         end do
-
+!
 ! - Create base
-        call rsexch('F', dampMode, 'DEPL', 1, modeVect, iret)
+        call rsexch('F', dampMode, 'DEPL', 1, modeVect, &
+                    iret)
         call dismoi('NB_EQUA', modeVect, 'CHAM_NO', repi=nbEquaRef)
         call dismoi('NUME_EQUA', modeVect, 'CHAM_NO', repk=numeEquaRef)
-
+!
         call wkvect(jvDataDamp(1:19)//'.BASM', 'V V R', nbMode*nbEquaRef, jvDataDampBase)
         do iMode = 1, nbMode
-            ! - Get parameters from modes
+! - Get parameters from modes
             call mginfo(dampMode, numeDof_=numeDof, nbEqua_=nbEqua, occ_=iMode)
             call jeveuo(numeDof(1:14)//'.NUME.DEEQ', 'L', jvDeeq)
-
-            ! - Allocate temporary vectors
+!
+! - Allocate temporary vectors
             call wkvect('&&DMODAL.VALE', 'V V R', nbEqua, iv)
             tmpcha = '&&DMODAL.TMPCHA'
             tmpchaRef = '&&DMODAL.TMPCHAR'
-
-            ! - Get rigidity matrix
+!
+! - Get rigidity matrix
             call codent(iMode, 'D0', indik4)
-            call dismoi('REF_RIGI_'//indik4, dampMode, 'RESU_DYNA', repk=matrRigi, &
-                        arret='C', ier=ier)
+            call dismoi('REF_RIGI_'//indik4, dampMode, 'RESU_DYNA', repk=matrRigi, arret='C', &
+                        ier=ier)
             if (ier /= 0) call dismoi('REF_RIGI_PREM', dampMode, 'RESU_DYNA', repk=matrRigi)
             call mtdscr(matrRigi(1:8))
             call jeveuo(matrRigi(1:19)//'.&INT', 'L', lmat)
-
-            ! - Converting field into the nume_dof of the stiffness matrix
-            call rsexch('F', dampMode, 'DEPL', iMode, modeVect, iret)
+!
+! - Converting field into the nume_dof of the stiffness matrix
+            call rsexch('F', dampMode, 'DEPL', iMode, modeVect, &
+                        iret)
             call dismoi('NOM_MAILLA', numeDof, 'NUME_DDL', repk=maill2)
             call copy_field_with_numbering(modeVect, tmpcha, maill2, numeDof(1:14)//'.NUME', 'V')
-
-            ! - Perform K \Phi product, with the nume_dof of K
+!
+! - Perform K \Phi product, with the nume_dof of K
             call jeveuo(tmpcha(1:19)//'.VALE', 'E', vr=modeVale)
             call zerlag(nbEqua, zi(jvDeeq), vectr=modeVale)
-            call mrmult('ZERO', lmat, modeVale, zr(iv), 1, ASTER_TRUE)
+            call mrmult('ZERO', lmat, modeVale, zr(iv), 1, &
+                        ASTER_TRUE)
             call zerlag(nbEqua, zi(jvDeeq), vectr=zr(iv))
             do i = 1, nbEqua
                 modeVale(i) = zr(iv-1+i)
             end do
-
-            ! - Convert the K \Phi product back into the reference nume_dof
+!
+! - Convert the K \Phi product back into the reference nume_dof
             call copy_field_with_numbering(tmpcha, tmpchaRef, maill2, numeEquaRef, 'V')
             call jeveuo(tmpchaRef(1:19)//'.VALE', 'E', vr=modeValeRef)
             do i = 1, nbEquaRef
                 zr(jvDataDampBase+(iMode-1)*nbEquaRef-1+i) = modeValeRef(i)
             end do
-
-            ! - Cleaning
+!
+! - Cleaning
             call jedetr('&&DMODAL.VALE')
             call detrsd('CHAMP', tmpcha)
             call detrsd('CHAMP', tmpchaRef)
         end do
-
+!
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -284,12 +289,9 @@ contains
 ! In  dampAsse         : name of assembled matrice for damp
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine dampComputeMatrix(model, caraElem, &
-                                 materialField, materialCoding, &
-                                 behaviourField, &
-                                 vari, time, listLoad, numeDof, &
-                                 rigiElem, massElem, &
-                                 dampAsse, sddyna)
+    subroutine dampComputeMatrix(model, caraElem, materialField, materialCoding, behaviourField, &
+                                 vari, time, listLoad, numeDof, rigiElem, &
+                                 massElem, dampAsse, sddyna)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=24), intent(in) :: model, caraElem
@@ -304,15 +306,12 @@ contains
         character(len=24), parameter :: dampElem = '&&NMCH3P.MEAMOR'
 !   ------------------------------------------------------------------------------------------------
 !
-
+!
 ! - Compute elementary matrices for damp
-        call elemDamp(model, caraElem, &
-                      materialField, materialCoding, &
-                      behaviourField, &
-                      vari, time, &
-                      rigiElem, massElem, &
-                      dampElem, sddyna)
-
+        call elemDamp(model, caraElem, materialField, materialCoding, behaviourField, &
+                      vari, time, rigiElem, massElem, dampElem, &
+                      sddyna)
+!
 ! - Assemble elementary matrices for damp
         call asseDamp(numeDof, listLoad, dampElem, dampAsse)
 !

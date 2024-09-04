@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                     reinteg)
     implicit none
@@ -58,31 +58,31 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
 #include "asterfort/as_deallocate.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*), intent(in)  :: sd_dtm_
-    character(len=*), intent(in)  :: sd_int_
-    integer, pointer              :: buffdtm(:)
-    integer, pointer              :: buffint(:)
-    integer, optional             :: nlcase
-    integer, optional, intent(out):: reinteg
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_int_
+    integer, pointer :: buffdtm(:)
+    integer, pointer :: buffint(:)
+    integer, optional :: nlcase
+    integer, optional, intent(out) :: reinteg
 !
 !   -0.2- Local variables
-    aster_logical    :: mdiag, kdiag, cdiag
-    integer          :: iret, nbmode, exgyro
-    integer          :: exrigi, exrigy, isvvar, im, jm
-    integer          :: ind, lvec, lev, i, j
-    integer          :: nr, ind2, nlcase0, nbdof, ii
-    integer          :: jj, iret2
-    real(kind=8)     :: temps, dt0, vrotin, arotin, df
-    real(kind=8)     :: k_added, epsi, dt, ratio
-    real(kind=8)     :: prec, t2, dotpr, magsq, delta10
-    real(kind=8)     :: delta20, coeff, c_added
+    aster_logical :: mdiag, kdiag, cdiag
+    integer :: iret, nbmode, exgyro
+    integer :: exrigi, exrigy, isvvar, im, jm
+    integer :: ind, lvec, lev, i, j
+    integer :: nr, ind2, nlcase0, nbdof, ii
+    integer :: jj, iret2
+    real(kind=8) :: temps, dt0, vrotin, arotin, df
+    real(kind=8) :: k_added, epsi, dt, ratio
+    real(kind=8) :: prec, t2, dotpr, magsq, delta10
+    real(kind=8) :: delta20, coeff, c_added
     character(len=7) :: casek7
     character(len=8) :: sd_dtm, sd_int, sd_nl, foncv, fonca
-    character(len=24):: kadd_jv, fadd_jv, cadd_jv
+    character(len=24) :: kadd_jv, fadd_jv, cadd_jv
 !
-    integer, pointer      :: buffnl(:) => null()
-    integer, pointer      :: dk_add_ind(:) => null()
-
+    integer, pointer :: buffnl(:) => null()
+    integer, pointer :: dk_add_ind(:) => null()
+!
     real(kind=8), pointer :: amorf(:) => null()
     real(kind=8), pointer :: rigif(:) => null()
     real(kind=8), pointer :: amor(:) => null()
@@ -91,7 +91,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
     real(kind=8), pointer :: rgygen(:) => null()
     real(kind=8), pointer :: kgen(:) => null()
     real(kind=8), pointer :: agen(:) => null()
-
+!
     real(kind=8), pointer :: nlsav1(:) => null()
     real(kind=8), pointer :: nlsav2(:) => null()
     real(kind=8), pointer :: depl2(:) => null()
@@ -116,6 +116,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
     real(kind=8), pointer :: agen0(:) => null()
     real(kind=8), pointer :: fext(:) => null()
     real(kind=8), pointer :: amor_temp(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 #define m0(row,col) mgen0((col-1)*nbmode+row)
 #define k(row,col) kgen((col-1)*nbmode+row)
@@ -126,7 +127,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
 #define c(row,col) agen((col-1)*nbmode+row)
 #define c0(row,col) agen0((col-1)*nbmode+row)
 #define c_a(row,col) c_add((col-1)*nbmode+row)
-
+!
 !
 !   0 - Initializations
 !
@@ -161,48 +162,49 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                 c_add(:) = 0.d0
             end if
         end if
-
+!
         call intget(sd_int, IND_ARCH, iscal=ind, buffer=buffint)
         call intget(sd_int, DEPL, iocc=ind, vr=depl2, buffer=buffint)
         call intget(sd_int, STEP, iocc=ind, rscal=dt0, buffer=buffint)
-        ! write(*,*) 'dt0 = ', dt0
+! write(*,*) 'dt0 = ', dt0
         call intget(sd_int, TIME, iocc=ind, rscal=t2)
         call intget(sd_int, INDEX, iocc=ind, iscal=ind2)
         AS_ALLOCATE(vr=depl1, size=nbmode)
         if (nlcase .gt. 0) then
             call intget(sd_int, VITE, iocc=ind, vr=vite2, buffer=buffint)
             call intget(sd_int, ACCE, iocc=ind, vr=acce2, buffer=buffint)
-
-            call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, 1)
+!
+            call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, &
+                         1)
             call intget(sd_int, FORCE_EX, iocc=ind, vr=fext2, buffer=buffint)
-
+!
             call dtmget(sd_dtm, _NL_SAVES, vr=nlsav1, buffer=buffdtm)
-
+!
             call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl, buffer=buffdtm)
             call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
             call nlget(sd_nl, _INTERNAL_VARS, vr=nlsav2, buffer=buffnl)
             call nlget(sd_nl, _INTERNAL_VARS, rvect=nlsav1, buffer=buffnl)
-
+!
             dt = min(1.d-10, dt0*1.d-4)
-
+!
             AS_ALLOCATE(vr=vite1, size=nbmode)
             AS_ALLOCATE(vr=fext1, size=nbmode)
             AS_ALLOCATE(vr=ddepl, size=nbmode)
             AS_ALLOCATE(vr=dvite, size=nbmode)
-
+!
             call intget(sd_int, DEPL, iocc=ind, rvect=depl1)
             call intget(sd_int, VITE, iocc=ind, rvect=vite1)
             call intget(sd_int, FORCE_EX, iocc=ind, rvect=fext1)
-
+!
             nr = 0
 10          continue
-            ! write(*,*) 'dt=', dt
-
+! write(*,*) 'dt=', dt
+!
             do i = 1, nbmode
                 vite2(i) = vite1(i)+(dt*acce2(i))
                 depl2(i) = depl1(i)+(dt*vite2(i))
             end do
-
+!
 !           --- Insure that the change in displacements and velocities is larger than
 !               the machine's precision
             delta20 = 0.d0
@@ -214,7 +216,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                 nr = nr+1
                 goto 10
             end if
-
+!
             delta20 = 0.d0
             do i = 1, nbmode
                 delta20 = max(delta20, abs(depl2(i)-depl1(i)))
@@ -224,28 +226,35 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                 nr = nr+1
                 goto 10
             end if
-
+!
             do i = 1, nbmode
                 ddepl(i) = depl2(i)-depl1(i)
                 dvite(i) = vite2(i)-vite1(i)
             end do
-
-            ! write(*,*) 'ddepl=', ddepl
-            ! write(*,*) 'dvite=', dvite
-
+!
+! write(*,*) 'ddepl=', ddepl
+! write(*,*) 'dvite=', dvite
+!
 !           --- Calculation of the added stiffness and critical position for the NL
-            call dcopy(nbmode, vite1, 1, vite2, 1)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vite1, b_incx, vite2, b_incy)
             do i = 1, nbmode
 !               --- Increment only mode #i with ddepl
-                call dcopy(nbmode, depl1, 1, depl2, 1)
+                b_n = to_blas_int(nbmode)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, depl1, b_incx, depl2, b_incy)
                 depl2(i) = depl2(i)+ddepl(i)
 !               --- Calculate the resulting force with this incrementation
-                call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, 1)
+                call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, &
+                             1)
 !               --- Determine the gradient matrix : df/dx, the non diagonal terms
 !                   result from a modal coupling due to the non-linearity
                 do j = 1, nbmode
                     df = fext1(j)-fext2(j)
-                    ! write(*,*) 'i=',i,'j=',j,'df=', df
+! write(*,*) 'i=',i,'j=',j,'df=', df
                     if ((abs(df) .gt. 1.d5*epsi) .and. &
                         (min(abs(ddepl(i)), abs(ddepl(j))) .gt. 1.d5*epsi)) then
                         k_added = df/ddepl(i)
@@ -254,8 +263,11 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                         k_a(i, j) = 0.d0
                     end if
                 end do
-                call dcopy(nbmode, nlsav1, 1, nlsav2, 1)
-
+                b_n = to_blas_int(nbmode)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, nlsav1, b_incx, nlsav2, b_incy)
+!
 !               --- Double check linearity for the diagonal terms
                 if (abs(k_a(i, i)) .gt. (1.d5*epsi)) then
                     df = fext1(i)-fext2(i)
@@ -263,25 +275,36 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
 !                       (by decrementing the already incremented state 2)
                     depl2(i) = depl2(i)-0.5d0*ddepl(i)
 !                   --- Calculate the resulting force with this -half- incrementation
-                    call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, 1)
+                    call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, &
+                                 1)
                     ratio = (fext1(i)-fext2(i))/df
-                    ! write(*,*) 'ratio = ', ratio
+! write(*,*) 'ratio = ', ratio
                     if ((ratio .lt. 0.49d0) .or. (ratio .gt. 0.51d0)) then
                         k_a(i, i) = 0.d0
                     end if
                 end if
-                call dcopy(nbmode, nlsav1, 1, nlsav2, 1)
+                b_n = to_blas_int(nbmode)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, nlsav1, b_incx, nlsav2, b_incy)
             end do
             AS_DEALLOCATE(vr=ddepl)
-
+!
 !           --- Calculation of the added damping
-            call dcopy(nbmode, depl1, 1, depl2, 1)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, depl1, b_incx, depl2, b_incy)
             do i = 1, nbmode
 !               --- Increment only mode #i with dvite
-                call dcopy(nbmode, vite1, 1, vite2, 1)
+                b_n = to_blas_int(nbmode)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, vite1, b_incx, vite2, b_incy)
                 vite2(i) = vite2(i)+dvite(i)
 !               --- Calculate the resulting force with this incrementation
-                call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, 1)
+                call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, &
+                             1)
 !               --- Determine the gradient matrix : df/dv, the non diagonal terms
 !                   result from a modal coupling due to the non-linearity
                 do j = 1, nbmode
@@ -294,8 +317,11 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                         c_a(i, j) = 0.d0
                     end if
                 end do
-                call dcopy(nbmode, nlsav1, 1, nlsav2, 1)
-
+                b_n = to_blas_int(nbmode)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, nlsav1, b_incx, nlsav2, b_incy)
+!
 !               --- Double check linearity for the diagonal terms
                 if (abs(c_a(i, i)) .gt. (1.d5*epsi)) then
                     df = fext1(i)-fext2(i)
@@ -303,16 +329,20 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
 !                       (by decrementing the already incremented state 2)
                     vite2(i) = vite2(i)-0.5d0*dvite(i)
 !                   --- Calculate the resulting force with this -half- incrementation
-                    call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, 1)
+                    call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, &
+                                 1)
                     ratio = (fext1(i)-fext2(i))/df
-                    ! write(*,*) 'ratio = ', ratio
+! write(*,*) 'ratio = ', ratio
                     if ((ratio .lt. 0.49d0) .or. (ratio .gt. 0.51d0)) then
                         c_a(i, i) = 0.d0
                     end if
                 end if
-                call dcopy(nbmode, nlsav1, 1, nlsav2, 1)
+                b_n = to_blas_int(nbmode)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, nlsav1, b_incx, nlsav2, b_incy)
             end do
-
+!
 !           --- Remove numerical errors resulting in non symetrical added matrices
             do i = 1, nbmode
                 do j = i+1, nbmode
@@ -344,30 +374,39 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                     end if
                 end do
             end do
-
+!
             call pmavec('ZERO', nbmode, k_add, depl1, f_add)
             call pmavec('CUMU', nbmode, c_add, vite1, f_add)
-
+!
             AS_ALLOCATE(nbmode, vr=fext)
             call dtmfext(sd_dtm, t2, fext, buffdtm)
             do i = 1, nbmode
                 f_add(i) = f_add(i)+fext1(i)-fext(i)
             end do
             AS_DEALLOCATE(vr=fext)
-
-            call dcopy(nbmode, depl1, 1, depl2, 1)
-            call dcopy(nbmode, vite1, 1, vite2, 1)
-            call dcopy(nbmode, fext1, 1, fext2, 1)
-
+!
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, depl1, b_incx, depl2, b_incy)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vite1, b_incx, vite2, b_incy)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, fext1, b_incx, fext2, b_incy)
+!
             AS_DEALLOCATE(vr=dvite)
             AS_DEALLOCATE(vr=vite1)
             AS_DEALLOCATE(vr=fext1)
         end if
-
-        ! write(*,*) 'k_add = ', k_add
-        ! write(*,*) 'f_add = ', f_add
-        ! write(*,*) 'c_add = ', c_add
-
+!
+! write(*,*) 'k_add = ', k_add
+! write(*,*) 'f_add = ', f_add
+! write(*,*) 'c_add = ', c_add
+!
 !       --- Calculate the critical coordinate of the point of non-linearity state change
 !         * Calculate Xc where (K_add-K_add0) x Xc = (F_add-F_add0)
 !         * K_add0 and F_add0 represent the stiffness and static force for the
@@ -376,7 +415,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
         AS_ALLOCATE(vr=depl0, size=nbmode)
         AS_ALLOCATE(vi=dk_add_ind, size=nbmode)
         AS_ALLOCATE(vr=k_add_fact, size=nbmode*nbmode)
-
+!
         call dtmget(sd_dtm, _NL_CASE, iscal=nlcase0, buffer=buffdtm)
         call dtmcase_coder(nlcase0, casek7)
         kadd_jv = sd_dtm//'.ADDED_K.'//casek7
@@ -395,12 +434,12 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             c_add0(:) = 0.d0
             call jelibe(cadd_jv)
         end if
-
+!
         depl0(:) = 0.d0
         nbdof = 0
         do i = 1, nbmode
             df = f_add(i)-f_add0(i)
-            ! write(*,*) 'df=',df
+! write(*,*) 'df=',df
             if ((abs(df) .gt. 100.d0*epsi) .and. &
                 (abs(k_a(i, i)-k_a0(i, i)) .gt. 100.d0*epsi)) then
                 nbdof = nbdof+1
@@ -408,13 +447,13 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                 depl0(i) = df
             end if
         end do
-
+!
 !       --- Special treatment if the origin is the critical point
         if (nbdof .eq. 0) then
             depl1(:) = 0.d0
             goto 20
         end if
-
+!
 !       --- Remove the dof's that do not contribute to this nonlinearity, otherwise
 !           the matrix k_add is extremely badly conditioned and thus non-reversible
         do i = 1, nbdof
@@ -425,13 +464,13 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                 k_a_f(j, i) = k_a(jj, ii)-k_a0(jj, ii)
             end do
         end do
-        ! write(*,*) 'dk_add_ind = ', dk_add_ind
-        ! write(*,*) 'k_add_fact = ', k_add_fact
-
+! write(*,*) 'dk_add_ind = ', dk_add_ind
+! write(*,*) 'k_add_fact = ', k_add_fact
+!
 !       --- Calculate Xc where   (K_add-K_add0) x Xc = (F_add-F_add0)
         call trlds(k_add_fact, nbdof, nbdof, iret)
         call rrlds(k_add_fact, nbdof, nbdof, depl0, 1)
-
+!
 !       --- Reconstruct Xc in full coordinates and save to depl1
         depl1(:) = 0.d0
         do i = 1, nbdof
@@ -439,18 +478,18 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                 depl1(dk_add_ind(i)) = depl0(i)
             end if
         end do
-
+!
 20      continue
         AS_DEALLOCATE(vr=depl0)
         AS_DEALLOCATE(vi=dk_add_ind)
         AS_DEALLOCATE(vr=k_add_fact)
-
+!
         call intget('&&INTBAK', DEPL, iocc=1, vr=depl0)
-
-        ! write(*,*) 'depl2 = ', depl2
-        ! write(*,*) 'depl1 = ', depl1
-        ! write(*,*) 'depl0 = ', depl0
-
+!
+! write(*,*) 'depl2 = ', depl2
+! write(*,*) 'depl1 = ', depl1
+! write(*,*) 'depl0 = ', depl0
+!
 !       --- Calculate the projection of vector (01) on vector (02) in R^(nbmode)
 !       --- First determine a scaling coefficient in order to avoid numerical errors
 !           when manipulating differences in displacements for the projection
@@ -462,7 +501,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             ratio = 1.d0
         else
             coeff = 1.d0/delta10
-
+!
             magsq = 0.d0
             dotpr = 0.d0
             do i = 1, nbmode
@@ -473,36 +512,36 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             end do
             ratio = dotpr/magsq
         end if
-
+!
         if (ratio .gt. 1.d0) ratio = 1.d0
-        ! write(*,*) 'ratio = ', ratio
-
+! write(*,*) 'ratio = ', ratio
+!
         prec = 1.d-2
-        if (((ratio .gt. epsi) .and. (abs(ratio-1.d0) .gt. prec)) &
-            .and. ((dt0*ratio) .gt. 1.d-10)) then
-
+        if (((ratio .gt. epsi) .and. (abs(ratio-1.d0) .gt. prec)) .and. &
+            ((dt0*ratio) .gt. 1.d-10)) then
+!
             call intbackup('&&INTBAK', sd_int)
             call dtmget(sd_dtm, _NL_SAVE0, rvect=nlsav2, buffer=buffdtm)
-
+!
             nullify (buffint)
             call intget(sd_int, IND_ARCH, iscal=lev)
             call intbuff(sd_int, buffint, level=lev)
-
+!
             dt = dt0*ratio
-
+!
             call intsav(sd_int, STEP, 1, iocc=1, rscal=dt)
             call intsav(sd_int, TIME, 1, iocc=1, rscal=t2-dt0)
             call intsav(sd_int, INDEX, 1, iocc=1, iscal=ind2-1)
-
-            ! write(*,*) 'old dt = ', dt0
-            ! write(*,*) 'new dt = ', dt
+!
+! write(*,*) 'old dt = ', dt0
+! write(*,*) 'new dt = ', dt
             reinteg = 1
         end if
-
+!
         AS_DEALLOCATE(vr=depl1)
-
+!
         if (reinteg .eq. 1) goto 999
-
+!
         mdiag = .false.
         call dtmget(sd_dtm, _MASS_FUL, lonvec=iret, buffer=buffdtm)
         if (iret .gt. 0) then
@@ -511,7 +550,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             call dtmget(sd_dtm, _MASS_DIA, vr=mgen0, buffer=buffdtm)
             mdiag = .true.
         end if
-
+!
         kdiag = .false.
         call dtmget(sd_dtm, _RIGI_FUL, lonvec=iret, buffer=buffdtm)
         if (iret .gt. 0) then
@@ -520,7 +559,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             call dtmget(sd_dtm, _RIGI_DIA, vr=kgen0, buffer=buffdtm)
             kdiag = .true.
         end if
-
+!
         cdiag = .false.
         call dtmget(sd_dtm, _AMOR_FUL, lonvec=iret, buffer=buffdtm)
         if (iret .gt. 0) then
@@ -529,7 +568,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             call dtmget(sd_dtm, _AMOR_DIA, vr=agen0, buffer=buffdtm)
             cdiag = .true.
         end if
-
+!
         if (nbmode .eq. 1) then
             call intget(sd_int, RIGI_DIA, iocc=1, vr=kgen, buffer=buffint)
             call intget(sd_int, AMOR_DIA, iocc=1, vr=agen, buffer=buffint)
@@ -542,7 +581,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             else
                 call intget(sd_int, RIGI_FUL, iocc=1, vr=kgen, buffer=buffint)
             end if
-
+!
             call intget(sd_int, AMOR_FUL, iocc=1, lonvec=iret, buffer=buffint)
             if (iret .eq. 0) then
                 call intinivec(sd_int, AMOR_FUL, nbmode*nbmode, iocc=1, vr=agen)
@@ -550,11 +589,11 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             else
                 call intget(sd_int, AMOR_FUL, iocc=1, vr=agen, buffer=buffint)
             end if
-
+!
             nullify (buffint)
             call intget(sd_int, IND_ARCH, iscal=lev)
             call intbuff(sd_int, buffint, level=lev)
-
+!
             if (kdiag) then
                 do i = 1, nbmode
                     k(i, i) = kgen0(i)+k_a(i, i)
@@ -571,7 +610,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                     end do
                 end do
             end if
-
+!
             if (cdiag) then
                 if (mdiag) then
                     do i = 1, nbmode
@@ -590,7 +629,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                         end do
                     end do
                 end if
-
+!
             else
                 do i = 1, nbmode
                     do j = i, nbmode
@@ -600,19 +639,19 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
                 end do
             end if
         end if
-
-        ! write(*,*) 'kgen=', kgen
-        ! write(*,*) 'agen=', agen
-
+!
+! write(*,*) 'kgen=', kgen
+! write(*,*) 'agen=', agen
+!
         call dtmsav(sd_dtm, _NL_CASE, 1, iscal=nlcase)
-
+!
     end if
-
+!
 !   --------------------------------------------------------------------------------------
 !   1 - First determine whether a full update is needed, or just a referral of
 !       the matrices from a preceding step
 !   --------------------------------------------------------------------------------------
-
+!
 !
     call dtmget(sd_dtm, _GYRO_FUL, lonvec=exgyro, buffer=buffdtm)
     if (exgyro .gt. 0) then
@@ -638,7 +677,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             end if
             call dtmbuff(sd_dtm, buffdtm)
         end if
-
+!
 !
 !       --- Renforce the checking on the existence of RIGI_FULL and RIGY_FUL
         call dtmget(sd_dtm, _RIGI_FUL, lonvec=exrigi, buffer=buffdtm)
@@ -648,7 +687,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
         ASSERT(exrigi .gt. 0)
 !
 !       --- Prepare the full damping and stifness matrices in the integration sd
-
+!
         call intget(sd_int, AMOR_FUL, lonvec=iret, buffer=buffint)
         if (iret .eq. 0) then
             call intinivec(sd_int, AMOR_FUL, nbmode*nbmode, iocc=1, vr=amorf)
@@ -659,12 +698,12 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             call intget(sd_int, AMOR_FUL, iocc=1, vr=amorf, buffer=buffint)
             call intget(sd_int, RIGI_FUL, iocc=1, vr=rigif, buffer=buffint)
         end if
-
+!
         call dtmget(sd_dtm, _AMOR_FUL, vr=amor, buffer=buffdtm)
         call dtmget(sd_dtm, _RIGI_FUL, vr=rigi, buffer=buffdtm)
         call dtmget(sd_dtm, _GYRO_FUL, vr=gyogen, buffer=buffdtm)
         call dtmget(sd_dtm, _RIGY_FUL, vr=rgygen, buffer=buffdtm)
-
+!
 !       --- Is the rotation speed variable ?
         call dtmget(sd_dtm, _V_ROT_F, lonvec=isvvar)
         if (isvvar .gt. 0) then
@@ -672,7 +711,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             call dtmget(sd_dtm, _V_ROT_F, kscal=foncv, buffer=buffdtm)
             call dtmget(sd_dtm, _A_ROT_F, kscal=fonca, buffer=buffdtm)
             call intget(sd_int, TIME, iocc=1, rscal=temps)
-
+!
             call fointe('F ', foncv, 1, ['INST'], [temps], &
                         vrotin, iret)
             arotin = 0.d0
@@ -689,14 +728,20 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
             end do
         else
 !           --- If not, then just copy the matrices
-            call dcopy(nbmode*nbmode, amor, 1, amorf, 1)
-            call dcopy(nbmode*nbmode, rigi, 1, rigif, 1)
+            b_n = to_blas_int(nbmode*nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, amor, b_incx, amorf, b_incy)
+            b_n = to_blas_int(nbmode*nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rigi, b_incx, rigif, b_incy)
         end if
-
+!
         call intsav(sd_int, MAT_UPDT, 1, iscal=1, buffer=buffint)
 !
     end if
-
+!
 !   --- Simple calculation with constant matrices, no action required, just
 !       intialize integration sd with the matrices info if ind = INDEX(index)=0
     call intget(sd_int, INDEX, iocc=1, iscal=ind)
@@ -730,11 +775,11 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase, &
         call dtmget(sd_dtm, _AMOR_DIA, lonvec=lvec)
         call intinivec(sd_int, AMOR_DIA, lvec, iocc=1, vr=agen)
         call dtmget(sd_dtm, _AMOR_DIA, rvect=agen)
-
+!
         call intget(sd_int, IND_ARCH, iscal=lev)
         call intbuff(sd_int, buffint, level=lev)
     end if
-
+!
 999 continue
 !
 end subroutine

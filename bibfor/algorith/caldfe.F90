@@ -54,7 +54,10 @@ subroutine caldfe(df, nr, nvi, vind, dfpds, &
 !
     ns = nr-6
 !
-    call dcopy(9, vind(nvi-3-18+10), 1, fem, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vind(nvi-3-18+10), b_incx, fem, b_incy)
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)

@@ -145,7 +145,10 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
                                dispPrev, dispIncr)
 !
 ! - Update configuration
-    call dcopy(nddl, dispPrev, 1, dispCurr, 1)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, dispPrev, b_incx, dispCurr, b_incy)
     if (lCorr) then
         b_n = to_blas_int(nddl)
         b_incx = to_blas_int(1)

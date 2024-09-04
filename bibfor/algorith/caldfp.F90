@@ -57,7 +57,10 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
 !        calcul de dFp/dGamma suivant ANNAND 1996
 !
-        call dcopy(9, gamsns, 1, a, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, gamsns, b_incx, a, b_incy)
 !
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
@@ -94,7 +97,10 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
         call dscal(9, ddetdg, a, 1)
 !
-        call dcopy(9, a, 1, dfpdg, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, a, b_incx, dfpdg, b_incy)
 !
         call dscal(9, -1.d0/3.d0, dfpdg, 1)
 !
@@ -137,7 +143,10 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !        calcul de dFp/dGamma par linearisation directe
 !        de exp(-dgamma.ms x ns)
 !
-        call dcopy(9, gamsns, 1, b, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, gamsns, b_incx, b, b_incy)
         call dscal(9, -1.d0, b, 1)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
@@ -174,7 +183,10 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
         call dscal(9, ddetdg, b, 1)
 !
-        call dcopy(9, b, 1, dfpmdg, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, b, b_incx, dfpmdg, b_incy)
 !
         call dscal(9, -1.d0/3.d0, dfpmdg, 1)
 !

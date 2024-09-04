@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,6 +67,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur, &
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=24) :: klcom, k24buf, k24bus, k24b
+    blas_int :: b_incx, b_incy, b_n
 !      LOGICAL      LCPU
 !
     call jemarq()
@@ -151,7 +152,10 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur, &
 !         --- AUTRES PROCESSUS DE MPICO0.
             call wkvect(k24buf, 'V V R', nconvm*neq, jlbuff)
             call wkvect(k24bus, 'V V R', nconvm*neq, jlbufs)
-            call dcopy(nconvl*neq, vectr, 1, zr(jlbufs), 1)
+            b_n = to_blas_int(nconvl*neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vectr, b_incx, zr(jlbufs), b_incy)
             do i = 1, icom2
                 idecal = 0
                 do j = 1, i-1
@@ -161,9 +165,17 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur, &
                     ASSERT(.false.)
                 end if
                 i8 = neq*zi(jlcom+i-1)
-                if (i .eq. icom1) call dcopy(i8, zr(jlbufs), 1, zr(jlbuff), 1)
+                if (i .eq. icom1) then
+                    b_n = to_blas_int(i8)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(jlbufs), b_incx, zr(jlbuff), b_incy)
+                end if
                 call asmpi_comm_vect('BCAST', 'R', nbval=i8, bcrank=i-1, vr=zr(jlbuff))
-                call dcopy(i8, zr(jlbuff), 1, vectr(1+idecal*neq), 1)
+                b_n = to_blas_int(i8)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(jlbuff), b_incx, vectr(1+idecal*neq), b_incy)
             end do
             call jedetr(k24bus)
             call jedetr(k24buf)

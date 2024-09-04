@@ -246,7 +246,10 @@ subroutine op0061()
     call mnltan(.true._1, imat, numdrv, matdrv, xcdl, &
                 parcho, adime, xvect, ninc, nd, &
                 nchoc, h, hf, xut1)
-    call dcopy(ninc, zr(iut1), 1, zr(iutj), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(iut1), b_incx, zr(iutj), b_incy)
     call getvis('ETAT_INIT', 'DIR_EVOLUTION', iocc=1, scal=prodsci)
     prodsc = dble(prodsci)
     if (prodsc .le. 0.d0) then
@@ -295,7 +298,10 @@ subroutine op0061()
                     epsman, amax, xus)
 ! ---   RECUPERATION DU DERNIER POINT DE LA BRANCHE POUR INITIALISATION
 ! ---   DE LA PROCHAINE BRANCHE
-        call dcopy(ninc, zr(ius+(nbpt-1)*ninc), 1, zr(ivec), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ius+(nbpt-1)*ninc), b_incx, zr(ivec), b_incy)
 ! ---   CORRECTION DE CE POINT
         cor = .true.
         call mnlcor(imat, numdrv, matdrv, xcdl, parcho, &

@@ -319,7 +319,10 @@ subroutine prcymn(nomres, soumat, repmat)
     do i = 1, nbmod
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
-        call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(llcham), b_incx, zr(ltvec), b_incy)
         call zerlag(neq, deeq, vectr=zr(ltvec))
 !
         do j = 1, nbddr
@@ -350,7 +353,10 @@ subroutine prcymn(nomres, soumat, repmat)
     do i = 1, nbmod
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
-        call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(llcham), b_incx, zr(ltvec), b_incy)
         call zerlag(neq, deeq, vectr=zr(ltvec))
 !
         do j = 1, nbddr
@@ -384,7 +390,10 @@ subroutine prcymn(nomres, soumat, repmat)
         do i = 1, nbmod
             call dcapno(basmod, 'DEPL    ', i, chamva)
             call jeveuo(chamva, 'L', llcham)
-            call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(llcham), b_incx, zr(ltvec), b_incy)
             call zerlag(neq, deeq, vectr=zr(ltvec))
 !
             do j = 1, nbdax

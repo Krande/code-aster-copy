@@ -118,7 +118,10 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
 ! --- LE PRECONDITIONNEUR EST INUTILE
 !
     if (nbliac .eq. 0) then
-        call dcopy(nbliai, ssgrad, 1, ssgrpr, 1)
+        b_n = to_blas_int(nbliai)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, ssgrad, b_incx, ssgrpr, b_incy)
         if (niv .ge. 2) then
             write (ifm, *) '<CONTACT><CALC> PAS DE '//&
      &                  'PRECONDITIONNEMENT (PAS DE LIAISONS ACTIVES)'
@@ -189,7 +192,10 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
 !
     if (iterat .eq. 1) then
         numerp = ddot(nbliac, zr(jpcres), 1, zr(jpcres), 1)
-        call dcopy(nbliac, zr(jpcres), 1, zr(jpcdir), 1)
+        b_n = to_blas_int(nbliac)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jpcres), b_incx, zr(jpcdir), b_incy)
     else
         numerm = numerp
         numerp = ddot(nbliac, zr(jpcres), 1, zr(jpcres), 1)

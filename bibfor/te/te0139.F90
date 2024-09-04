@@ -130,7 +130,10 @@ subroutine te0139(option, nomte)
     sz_tens = 2*ndim
 !
     if (defo_comp == "PETIT_REAC") then
-        call dcopy(ndim*nno, zr(ideplm), 1, disp_curr, 1)
+        b_n = to_blas_int(ndim*nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ideplm), b_incx, disp_curr, b_incy)
         b_n = to_blas_int(ndim*nno)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -186,11 +189,17 @@ subroutine te0139(option, nomte)
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*lgpg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
     if (option .eq. 'RIGI_MECA_IMPLEX') then
         call jevech('PCONTXR', 'E', icontp)
-        call dcopy(npg*sz_tens, zr(icontm), 1, zr(icontp), 1)
+        b_n = to_blas_int(npg*sz_tens)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(icontm), b_incx, zr(icontp), b_incy)
     end if
 !
 500 continue

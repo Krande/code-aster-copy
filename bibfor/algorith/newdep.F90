@@ -48,7 +48,10 @@ subroutine newdep(neq, c, dt, d0, v0, &
     integer :: neq
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
-    call dcopy(neq, d0, 1, d1, 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, d0, b_incx, d1, b_incy)
     b_n = to_blas_int(neq)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)

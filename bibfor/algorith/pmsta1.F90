@@ -70,10 +70,16 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip, &
 !
 !     CALCUL DES INCREMENTS POUR NMEVDR
 !
-    call dcopy(ncmp, deps, 1, depst, 1)
+    b_n = to_blas_int(ncmp)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, deps, b_incx, depst, b_incy)
     if (igrad .eq. 0) call dscal(3, 1.d0/rac2, depst(4), 1)
 !
-    call dcopy(6, sigp, 1, dsig, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, sigp, b_incx, dsig, b_incy)
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
@@ -92,15 +98,24 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip, &
 !
 !        VR CONTIENT L'ACCROISSEMENT DE VARIABLES INTERNES
 !        ATTENTION, VR EST LIMITE A  9999 VALEURS
-        call dcopy(nbvita, vip, 1, vr(1+ncmp+6+3), 1)
+        b_n = to_blas_int(nbvita)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vip, b_incx, vr(1+ncmp+6+3), b_incy)
         b_n = to_blas_int(nbvita)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call daxpy(b_n, -1.d0, vim, b_incx, vr(1+ncmp+6+3), &
                    b_incy)
 !
-        call dcopy(ncmp, depst, 1, vr(2), 1)
-        call dcopy(6, dsig, 1, vr(ncmp+2), 1)
+        b_n = to_blas_int(ncmp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, depst, b_incx, vr(2), b_incy)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dsig, b_incx, vr(ncmp+2), b_incy)
         vr(ncmp+8) = equi(16)
         vr(ncmp+9) = equi(1)
 !
@@ -117,7 +132,10 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip, &
         call wkvect('&&OP0033.VARI', 'V V R8', nbvita, jvari)
 !
 !        VR CONTIENT L'ACCROISSEMENT DE VARIABLES INTERNES
-        call dcopy(nbvita, vip, 1, zr(jvari), 1)
+        b_n = to_blas_int(nbvita)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vip, b_incx, zr(jvari), b_incy)
         b_n = to_blas_int(nbvita)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)

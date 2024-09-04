@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 !
 subroutine focrch(nomfon, resu, noeud, parax, paray, &
-                  base, int, intitu, ind, listr, &
+                  base, i0, intitu, ind, listr, &
                   sst, nsst, ier)
-
+!
     use DynaGene_module
-
+!
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -36,7 +36,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    integer :: nsst, int, ind, ier
+    integer :: nsst, i0, ind, ier
     character(len=1) :: base
     character(len=16) :: parax, paray
     character(len=8) :: sst, noeud
@@ -74,6 +74,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     integer, pointer :: vindx(:) => null()
     real(kind=8), pointer :: vr(:) => null()
     type(DynaGene) :: dyna_gene
+    blas_int :: b_incx, b_incy, b_n
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -86,7 +87,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     call jeveuo(resu(1:16)//'.NL.INTI', 'L', vk24=nlname)
 !
     ic = 1
-    if (int .ne. 0) then
+    if (i0 .ne. 0) then
         do inl = 1, nbnoli
             if (nlname((inl-1)*5+1) .eq. intitu) goto 4
         end do
@@ -137,7 +138,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
 !
     call dyna_gene%init(resu(1:8))
     nbinst = dyna_gene%length
-
+!
     if (dyna_gene%n_bloc .eq. 0) then
         call jeveuo(resu(1:16)//'.NL.VINT', 'L', jvint)
     else
@@ -154,11 +155,14 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
             call wkvect('&&FOCRCH.INST', 'V V R', nbinst, jinst)
             do i_bloc = 1, dyna_gene%n_bloc
                 call dyna_gene%get_values(dyna_gene%disc, i_bloc, shift, length, vr=vr)
-                call dcopy(length, vr, 1, zr(jinst+shift), 1)
+                b_n = to_blas_int(length)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, vr, b_incx, zr(jinst+shift), b_incy)
             end do
         end if
     end if
-
+!
     if (parax(1:4) .eq. 'INST') then
         jvalx = jinst
         goto 20
@@ -202,12 +206,18 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     end if
     call wkvect('&&FOCRCH.PARAX', 'V V R', nbinst, jvalx)
     if (dyna_gene%n_bloc .eq. 0) then
-        call dcopy(nbinst, zr(jparx), nbvint, zr(jvalx), 1)
+        b_n = to_blas_int(nbinst)
+        b_incx = to_blas_int(nbvint)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jparx), b_incx, zr(jvalx), b_incy)
     else
         do i_bloc = 1, dyna_gene%n_bloc
             call dyna_gene%get_values(dyna_gene%vint, i_bloc, shift, length, vr=vr)
             vr => vr(1+jparx:)
-            call dcopy(length, vr, nbvint, zr(jvalx+shift), 1)
+            b_n = to_blas_int(length)
+            b_incx = to_blas_int(nbvint)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vr, b_incx, zr(jvalx+shift), b_incy)
         end do
     end if
 20  continue
@@ -255,12 +265,18 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     end if
     call wkvect('&&FOCRCH.PARAY', 'V V R', nbinst, jvaly)
     if (dyna_gene%n_bloc .eq. 0) then
-        call dcopy(nbinst, zr(jpary), nbvint, zr(jvaly), 1)
+        b_n = to_blas_int(nbinst)
+        b_incx = to_blas_int(nbvint)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jpary), b_incx, zr(jvaly), b_incy)
     else
         do i_bloc = 1, dyna_gene%n_bloc
             call dyna_gene%get_values(dyna_gene%vint, i_bloc, shift, length, vr=vr)
             vr => vr(1+jpary:)
-            call dcopy(length, vr, nbvint, zr(jvaly+shift), 1)
+            b_n = to_blas_int(length)
+            b_incx = to_blas_int(nbvint)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vr, b_incx, zr(jvaly+shift), b_incy)
         end do
     end if
 22  continue
@@ -349,8 +365,8 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     end if
     if (parax(1:4) .ne. 'INST') call jedetr('&&FOCRCH.PARAX')
     if (paray(1:4) .ne. 'INST') call jedetr('&&FOCRCH.PARAY')
-    if ((parax(1:4) .eq. 'INST' .or. paray(1:4) .eq. 'INST' .or. ind .ne. 0) &
-        .and. dyna_gene%n_bloc .ne. 0) call jedetr('&&FOCRCH.INST')
+    if ((parax(1:4) .eq. 'INST' .or. paray(1:4) .eq. 'INST' .or. ind .ne. 0) .and. &
+        dyna_gene%n_bloc .ne. 0) call jedetr('&&FOCRCH.INST')
 !
     call dyna_gene%free()
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
                   typmod, option, mate, compor, lgpg, &
                   carcri, instm, instp, ddlm, ddld, &
                   angmas, sigm, vim, sigp, vip, &
-                  lMatr, lVect, lMatrPred, &
-                  vect, matr, codret)
+                  lMatr, lVect, lMatrPred, vect, matr, &
+                  codret)
 !
     use Behaviour_type
     use Behaviour_module
@@ -128,6 +128,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
     real(kind=8) :: id(3, 3)
     real(kind=8) :: am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa
     type(Behaviour_Integ) :: BEHinteg
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(grand=.true._1)
     data vij/1, 4, 5,&
@@ -187,24 +188,33 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
 !
 ! - LONGUEUR CARACTERISTIQUE -> PARAMETRE C
         c(1) = 0.d0
-        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ', [0.d0], 1, 'C_GONF', c(1), k2ret(1), 0)
+        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ', &
+                    [0.d0], 1, 'C_GONF', c(1), k2ret(1), &
+                    0)
         nonloc = k2ret(1) .eq. 0 .and. c(1) .ne. 0.d0
 !
 ! - CALCUL DES DEFORMATIONS
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, deplm, fm)
-        call dfdmip(ndim, nno1, axi, geomm, g, iw, vff1(1, g), idff1, r, wm, dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, depld, fd)
-        call dfdmip(ndim, nno1, axi, geomp, g, iw, vff1(1, g), idff1, r, wp, dff1)
+        call dfdmip(ndim, nno1, axi, geomi, g, &
+                    iw, vff1(1, g), idff1, r, w, &
+                    dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
+                    r, dff1, deplm, fm)
+        call dfdmip(ndim, nno1, axi, geomm, g, &
+                    iw, vff1(1, g), idff1, r, wm, &
+                    dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
+                    r, dff1, depld, fd)
+        call dfdmip(ndim, nno1, axi, geomp, g, &
+                    iw, vff1(1, g), idff1, r, wp, &
+                    dff1)
 !
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1, lij)
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1, &
+                    lij)
 !
-        jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2)) &
-             -fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3, 2)) &
-             +fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
-        jd = fd(1, 1)*(fd(2, 2)*fd(3, 3)-fd(2, 3)*fd(3, 2)) &
-             -fd(2, 1)*(fd(1, 2)*fd(3, 3)-fd(1, 3)*fd(3, 2)) &
-             +fd(3, 1)*(fd(1, 2)*fd(2, 3)-fd(1, 3)*fd(2, 2))
+        jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)&
+                                          &*fm(3, 2))+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
+        jd = fd(1, 1)*(fd(2, 2)*fd(3, 3)-fd(2, 3)*fd(3, 2))-fd(2, 1)*(fd(1, 2)*fd(3, 3)-fd(1, 3)&
+                                          &*fd(3, 2))+fd(3, 1)*(fd(1, 2)*fd(2, 3)-fd(1, 3)*fd(2, 2))
         jp = jm*jd
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT AU POINT DE GAUSS
@@ -217,7 +227,9 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
         pp = pm+pd
 !
 ! - CALCUL DES FONCTIONS A, B,... DETERMINANT LA RELATION LIANT G ET J
-        call nirela(1, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa, iret)
+        call nirela(1, jp, gm, gp, am, &
+                    ap, bp, boa, aa, bb, &
+                    daa, dbb, dboa, d2boa, iret)
 !
 ! - PERTINENCE DES GRANDEURS
         if (iret .ne. 0) then
@@ -235,7 +247,9 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
 !
 ! - CALCUL DU GRADIENT DU GONFLEMENT POUR LA REGULARISATION
         if (nonloc) then
-            call dfdmip(ndim, nno2, axi, geomi, g, iw, vff2(1, g), idff2, r, w, dff2)
+            call dfdmip(ndim, nno2, axi, geomi, g, &
+                        iw, vff2(1, g), idff2, r, w, &
+                        dff2)
             do ia = 1, ndim
                 gradgp(ia) = ddot( &
                              nno2, dff2(1, ia), 1, gonfm, 1)+ddot(nno2, dff2(1, ia), 1, gonfd, 1)
@@ -244,11 +258,17 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
 !
 ! - CALCUL DES DEFORMATIONS ENRICHIES
         corm = (am/jm)**(1.d0/3.d0)
-        call dcopy(9, fm, 1, ftm, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fm, b_incx, ftm, b_incy)
         call dscal(9, corm, ftm, 1)
 !
         cord = (ap/am/jd)**(1.d0/3.d0)
-        call dcopy(9, fd, 1, ftd, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fd, b_incx, ftd, b_incy)
         call dscal(9, cord, ftd, 1)
 !
 ! - APPEL A LA LOI DE COMPORTEMENT
@@ -263,12 +283,11 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
         end do
 !
         taup = 0.d0
-        call nmcomp(BEHinteg, &
-                    'RIGI', g, 1, 3, typmod, &
-                    mate, compor, carcri, instm, instp, &
-                    9, ftm, ftd, 6, sigm_ldc, &
-                    vim(1, g), option, angmas, &
-                    taup, vip(1, g), 54, dsidep, cod(g))
+        call nmcomp(BEHinteg, 'RIGI', g, 1, 3, &
+                    typmod, mate, compor, carcri, instm, &
+                    instp, 9, ftm, ftd, 6, &
+                    sigm_ldc, vim(1, g), option, angmas, taup, &
+                    vip(1, g), 54, dsidep, cod(g))
 !
         if (cod(g) .eq. 1) then
             codret = 1

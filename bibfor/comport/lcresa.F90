@@ -83,15 +83,24 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
     matcst = 'OUI'
 !
 !     CALCUL DE DSIG AVEC THETA
-    call dcopy(ndt, dy, 1, dsig, 1)
-    call dcopy(ndt, yd, 1, smx, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, dy, b_incx, dsig, b_incy)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, yd, b_incx, smx, b_incy)
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call daxpy(b_n, theta, dsig, b_incx, smx, &
                b_incy)
 !
-    call dcopy(nvi, yd(ndt+1), 1, vini, 1)
+    b_n = to_blas_int(nvi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, yd(ndt+1), b_incx, vini, b_incy)
     b_n = to_blas_int(nvi)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
@@ -120,14 +129,20 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
                 deps, nmat, materf(1, 1), sigi)
 !
 !     CALCUL DES RESIDUS AU POINT T+DT
-    call dcopy(ndt, yf, 1, sigf, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, yf, b_incx, sigf, b_incy)
     epsef(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigi(1:ndt))
     h1sigf(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigf(1:ndt))
     r(1:ndt) = epsef(1:ndt)-h1sigf(1:ndt)
 !
 !     CALCUL DES RESIDUS AU POINT T+DT
 !
-    call dcopy(nvi, dvin, 1, r(ndt+1), 1)
+    b_n = to_blas_int(nvi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, dvin, b_incx, r(ndt+1), b_incy)
     b_n = to_blas_int(nvi)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)

@@ -1035,13 +1035,19 @@ contains
             WRITE (6, *) '<DEBUG>  Compute GRADVELO'
         end if
         !
-        call dcopy(nddl, geom, 1, geomm, 1)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, geom, b_incx, geomm, b_incy)
         b_n = to_blas_int(nddl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call daxpy(b_n, 1.d0, deplm, b_incx, geomm, &
                    b_incy)
-        call dcopy(nddl, deplm, 1, deplp, 1)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, deplm, b_incx, deplp, b_incy)
         b_n = to_blas_int(nddl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -1105,8 +1111,8 @@ contains
         do kpg = 1, npg
             do i = 1, ndim
                 do k = 1, nno
-                    BEHelem%coor_elga(kpg, i) = BEHelem%coor_elga(kpg, i)+geom(i, k)*zr(jv_func-&
-                                                &1+nno*(kpg-1)+k)
+                    BEHelem%coor_elga(kpg, i) = BEHelem%coor_elga(kpg, i)+geom(i, k)*zr(jv_func-1&
+                                                &+nno*(kpg-1)+k)
                 end do
             end do
         end do
@@ -1217,8 +1223,8 @@ contains
                     end do
                 else
                     do i_dim = 1, 3
-                        BEHesva%depsi_varc(i_dim) = BEHesva%epsth_anisp(i_dim)-BEHesva%epsth_ani&
-                                                    &sm(i_dim)
+                        BEHesva%depsi_varc(i_dim) = BEHesva%epsth_anisp(i_dim)-BEHesva%epsth_anis&
+                                                    &m(i_dim)
                         BEHesva%epsi_varc(i_dim) = BEHesva%epsth_anism(i_dim)
                     end do
                 end if
@@ -1271,14 +1277,14 @@ contains
             ASSERT(neps .le. 6)
             do k = 1, 3
                 BEHesva%epsi_varc(k) = BEHesva%epsi_varc(k)+BEHesva%anel_prev(k)
-                BEHesva%depsi_varc(k) = BEHesva%depsi_varc(k)+BEHesva%anel_curr(k)-BEHesva%anel_&
-                                        &prev(k)
+                BEHesva%depsi_varc(k) = BEHesva%depsi_varc(k)+BEHesva%anel_curr(k)-BEHesva%anel_p&
+                                        &rev(k)
             end do
 ! ----- Nondiagonal terms of EPSA are rescaled with rac2
             do k = 4, neps
                 BEHesva%epsi_varc(k) = BEHesva%epsi_varc(k)+BEHesva%anel_prev(k)*rac2
-                BEHesva%depsi_varc(k) = BEHesva%depsi_varc(k)+(BEHesva%anel_curr(k)-BEHesva%anel&
-                                        &_prev(k))*rac2
+                BEHesva%depsi_varc(k) = BEHesva%depsi_varc(k)+(BEHesva%anel_curr(k)-BEHesva%anel_&
+                                        &prev(k))*rac2
             end do
         end if
         !
@@ -1330,8 +1336,8 @@ contains
                 BEHesva%epsi_varc(i_dim) = BEHesva%epsi_varc(i_dim &
                                                              )+biotm/troikm*BEHesva%ptot_prev
                 BEHesva%depsi_varc(i_dim) = BEHesva%depsi_varc(i_dim &
-                                            )+biotp/troikp*BEHesva%ptot_curr-biotm/troikm*BEHes&
-                                            &va%ptot_prev
+                                            )+biotp/troikp*BEHesva%ptot_curr-biotm/troikm*BEHesva&
+                                            &%ptot_prev
             end do
         end if
         if (LDC_PREP_DEBUG .eq. 1) then

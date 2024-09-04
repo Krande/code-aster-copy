@@ -64,6 +64,7 @@ subroutine te0407(option, nomte)
     integer :: jtab(7), jcret, codret
     real(kind=8) :: def(6, 3, 8), dfdi(8, 3)
     real(kind=8) :: angl_naut(3)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,8 +76,8 @@ subroutine te0407(option, nomte)
 !
 ! - Get element parameters
 !
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, npg=npg, jpoids=ipoids, &
+                     jvf=ivf, jdfde=idfde)
     ASSERT(nno .eq. 8)
 !
 ! - Type of finite element
@@ -97,7 +98,8 @@ subroutine te0407(option, nomte)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PMULCOM', 'L', jv_mult_comp)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Get orientation
@@ -106,10 +108,8 @@ subroutine te0407(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Properties of behaviour
 !
@@ -133,7 +133,10 @@ subroutine te0407(option, nomte)
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*lgpg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 !
 ! - HYPER-ELASTICITE
@@ -153,10 +156,10 @@ subroutine te0407(option, nomte)
     if (defo_comp(1:5) .eq. 'PETIT') then
         call nmas3d(fami, nno, npg, ipoids, ivf, &
                     idfde, zr(igeom), typmod, option, zi(imate), &
-                    zk16(icompo), mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
-                    zr(ideplm), zr(ideplp), angl_naut, zr(icontm), zr(ivarim), &
-                    dfdi, def, zr(icontp), zr(ivarip), zr(imatuu), &
-                    zr(ivectu), codret)
+                    zk16(icompo), mult_comp, lgpg, zr(icarcr), zr(iinstm), &
+                    zr(iinstp), zr(ideplm), zr(ideplp), angl_naut, zr(icontm), &
+                    zr(ivarim), dfdi, def, zr(icontp), zr(ivarip), &
+                    zr(imatuu), zr(ivectu), codret)
     else
         call utmess('F', 'ELEMENTSSI_1', sk=defo_comp)
     end if

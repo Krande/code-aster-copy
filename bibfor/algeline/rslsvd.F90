@@ -127,7 +127,10 @@ subroutine rslsvd(nm, m, n, a, w, &
             call daxpy(b_n, alphaj, v(1, j), b_incx, rvnm(1), &
                        b_incy)
         end do
-        call dcopy(n, rvnm(1), 1, b(1, ib), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, rvnm(1), b_incx, b(1, ib), b_incy)
     end do
 !
 999 continue

@@ -456,7 +456,10 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !              COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 !
                 if (.not. over) then
-                    call dcopy(ki, work(1+n), 1, vr(1, is), 1)
+                    b_n = to_blas_int(ki)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, work(1+n), b_incx, vr(1, is), b_incy)
 !
                     ii = idamax(ki, vr(1, is), 1)
                     remax = one/abs(vr(ii, is))
@@ -623,8 +626,14 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !              COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 !
                 if (.not. over) then
-                    call dcopy(ki, work(1+n), 1, vr(1, is-1), 1)
-                    call dcopy(ki, work(1+n2), 1, vr(1, is), 1)
+                    b_n = to_blas_int(ki)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, work(1+n), b_incx, vr(1, is-1), b_incy)
+                    b_n = to_blas_int(ki)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, work(1+n2), b_incx, vr(1, is), b_incy)
 !
                     emax = zero
                     do k = 1, ki
@@ -803,7 +812,10 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 !
                 if (.not. over) then
-                    call dcopy(n-ki+1, work(ki+n), 1, vl(ki, is), 1)
+                    b_n = to_blas_int(n-ki+1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, work(ki+n), b_incx, vl(ki, is), b_incy)
 !
                     ii = idamax(n-ki+1, vl(ki, is), 1)+ki-1
                     remax = one/abs(vl(ii, is))
@@ -927,8 +939,8 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !
                         work(j+1+n) = work(j+1+n)-ddot(j-ki-2, t(ki+2, j+1), 1, work(ki+2+n), 1)
 !
-                        work(j+1+n2) = work(j+1+n2)-ddot(j-ki-2, t(ki+2, j+1), 1, work(ki+2+n2),&
-                                       & 1)
+                        work(j+1+n2) = work(j+1+n2)-ddot(j-ki-2, t(ki+2, j+1), 1, work(ki+2+n2), &
+                                       &1)
 !
 !                    SOLVE 2-BY-2 COMPLEX LINEAR EQUATION
 !                      ((T(J,J)   T(J,J+1)  )'-(WR-I*WI)*I)*X = SCALE*B
@@ -959,8 +971,14 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 !
                 if (.not. over) then
-                    call dcopy(n-ki+1, work(ki+n), 1, vl(ki, is), 1)
-                    call dcopy(n-ki+1, work(ki+n2), 1, vl(ki, is+1), 1)
+                    b_n = to_blas_int(n-ki+1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, work(ki+n), b_incx, vl(ki, is), b_incy)
+                    b_n = to_blas_int(n-ki+1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, work(ki+n2), b_incx, vl(ki, is+1), b_incy)
 !
                     emax = zero
                     do k = ki, n

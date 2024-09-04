@@ -110,7 +110,10 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
         if (gdef .eq. 1) then
 ! les 9 variables internes  de 6+3*ns+1 à 6+3*ns+9
 ! REPRESENTENT FE - ID
-            call dcopy(9, vind(nvi-3-18+10), 1, fe, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vind(nvi-3-18+10), b_incx, fe, b_incy)
             b_n = to_blas_int(9)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)

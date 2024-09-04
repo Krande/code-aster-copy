@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dc_monocristal(nboccm, sdcomp)
 !
 ! person_in_charge: jean-luc.flejou at edf.fr
@@ -67,6 +67,7 @@ subroutine dc_monocristal(nboccm, sdcomp)
     integer :: iocc, nbmat, nbecou, nbecro, nbcine, nbelas, nbfasy
     integer :: i, j, nbela1, nbsys, nvi, imk, imi, ipr, itab, itsg, irra, irr2
     integer :: ncprr, ir, irota, iadlr, decal, nbrota, nbsyst, tabdes(13)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -168,7 +169,10 @@ subroutine dc_monocristal(nboccm, sdcomp)
             end if
             zr(ipr+2+2*(nbtbsg-1)) = nbsys
             zr(ipr+2+2*(nbtbsg-1)+1) = decal+1
-            call dcopy(6*nbsys, zr(iadlr+3), 1, zr(ipr+decal), 1)
+            b_n = to_blas_int(6*nbsys)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(iadlr+3), b_incx, zr(ipr+decal), b_incy)
             tabdes(8+iocc) = nbsys
             call detrsd('LISTR8', listr)
 !
@@ -304,7 +308,10 @@ subroutine dc_monocristal(nboccm, sdcomp)
         if (zr(iadlr+1) .ne. nbsyst) then
             call utmess('F', 'COMPOR2_17', si=nbsyst)
         end if
-        call dcopy(nbsyst*nbsyst, zr(iadlr+3), 1, zr(ipr+decal), 1)
+        b_n = to_blas_int(nbsyst*nbsyst)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(iadlr+3), b_incx, zr(ipr+decal), b_incy)
 !        VERIF QUE LA MATRICE EST SYMETRIQUE
         do i = 1, nbsyst
             do j = 1, nbsyst

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,13 +60,17 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm, &
     character(len=16) :: nomfam, necoul, necris
     common/deps6/depsdt
     integer :: irr, decirr, nbsyst, decal, gdef
+    blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !
     seuil = -1.d0
     dt = timef-timed
     nbfsys = nbcomm(nmat, 2)
     call r8inir(nvi, 0.d0, dy, 1)
-    call dcopy(6, deps, 1, depst, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, deps, b_incx, depst, b_incy)
     depsdt = sqrt(ddot(6, depst, 1, depst, 1)/1.5d0)/dt
 !
 !     NSFV : debut de la famille IFA dans les variables internes

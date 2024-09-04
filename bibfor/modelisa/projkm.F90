@@ -292,8 +292,8 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
 !............. EXCENTRICITE DU NOEUD DU CABLE ET COORDONNEES
 !............. DU POINT PROJETE
 !
-                    excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+n&
-                             &ormal(3)*(x3dca(3)-xyzma(3, 1))
+                    excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+no&
+                             &rmal(3)*(x3dca(3)-xyzma(3, 1))
 !               l'excentrement ne peut pas etre plus grand que la distance
 !               au noeud de beton le plus proche
                     if (abs(excent) .gt. exc_max) then
@@ -326,7 +326,10 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
                     end do
                     if (dmax .eq. 0.0d0) dmax = 1.0d0
                     if (dble(abs(excent))/dmax .lt. epsg) excent = 0.0d0
-                    call dcopy(3, x3dca(1), 1, x3dp(1), 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, x3dca(1), b_incx, x3dp(1), b_incy)
                     if (excent .ne. 0.0d0) then
                         b_n = to_blas_int(3)
                         b_incx = to_blas_int(1)
@@ -513,7 +516,10 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
 !
                 excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+normal&
                          &(3)*(x3dca(3)-xyzma(3, 1))
-                call dcopy(3, x3dca, 1, x3dp, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, x3dca, b_incx, x3dp, b_incy)
                 b_n = to_blas_int(3)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)

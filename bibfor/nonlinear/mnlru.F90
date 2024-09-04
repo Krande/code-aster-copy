@@ -87,7 +87,10 @@ subroutine mnlru(imat, xcdl, parcho, adime, xvect, &
     call dscal(ninc-1, 0.d0, zr(ivint), 1)
     call mnlcst(parcho, adime, ninc, nd, nchoc, &
                 h, hf, xvint)
-    call dcopy(ninc-1, zr(ivint), 1, zr(iru), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivint), b_incx, zr(iru), b_incy)
 ! --- CALCUL DE L(XVECT)
     call dscal(ninc-1, 0.d0, zr(ivint), 1)
     call mnline(imat, xcdl, parcho, adime, xvect, &

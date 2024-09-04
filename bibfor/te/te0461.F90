@@ -252,8 +252,8 @@ subroutine te0461(option, nomte)
                              temp_F_curr, fbs &
                              )
 !
-            NeumValuesQP(ipg) = CoeffQP_curr(ipg)*((ParaQP_curr(ipg)+tz0)**4-(temp_eval_curr+tz0&
-                                &)**4)
+            NeumValuesQP(ipg) = CoeffQP_curr(ipg)*((ParaQP_curr(ipg)+tz0)**4-(temp_eval_curr+tz0)&
+                                                  &**4)
         end do
 !
     else if (option(1:15) .eq. 'CHAR_THER_FLUN_') then

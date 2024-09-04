@@ -691,7 +691,10 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
                     end if
                 else if ((option .eq. 'RAPH_MECA') .or. (option .eq. 'FULL_MECA')) then
                     if (nint(vip(23)) .eq. 1) then
-                        call dcopy(nstrs, epsm, 1, eps, 1)
+                        b_n = to_blas_int(nstrs)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call dcopy(b_n, epsm, b_incx, eps, b_incy)
                         b_n = to_blas_int(nstrs)
                         b_incx = to_blas_int(1)
                         b_incy = to_blas_int(1)
@@ -712,8 +715,8 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
                     if (k .ne. 3) then
                         do l = 1, nstrs
                             if (l .ne. 3) then
-                                dsidep(k, l) = dsidep(k, l)-1.d0/dsidep(3, 3)*dsidep(k, 3)*dside&
-                                               &p(3, l)
+                                dsidep(k, l) = dsidep(k, l)-1.d0/dsidep(3, 3)*dsidep(k, 3)*dsidep&
+                                               &(3, l)
                             end if
                         end do
                     end if

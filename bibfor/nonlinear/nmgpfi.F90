@@ -142,13 +142,19 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
 ! - geomPrev = geomInit + dispPrev
 ! - geomCurr = geomPrev + dispIncr
 !
-    call dcopy(nddl, geomInit, 1, geomPrev, 1)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, geomInit, b_incx, geomPrev, b_incy)
     b_n = to_blas_int(nddl)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call daxpy(b_n, 1.d0, dispPrev, b_incx, geomPrev, &
                b_incy)
-    call dcopy(nddl, geomPrev, 1, geomCurr, 1)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, geomPrev, b_incx, geomCurr, b_incy)
     b_n = to_blas_int(nddl)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
@@ -180,12 +186,12 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
         call nmmalu(nno, axi, r, zr(ivf+(kpg-1)*nno), dff, &
                     lij)
 ! ----- Kinematic - Jacobians
-        jacoPrev = fPrev(1, 1)*(fPrev(2, 2)*fPrev(3, 3)-fPrev(2, 3)*fPrev(3, 2))-fPrev(2, 1)*(fP&
-                   &rev(1, 2)*fPrev(3, 3)-fPrev(1, 3)*fPrev(3, 2))+fPrev(3, 1)*(fPrev(1, 2)*fPre&
-                   &v(2, 3)-fPrev(1, 3)*fPrev(2, 2))
-        jacoIncr = fIncr(1, 1)*(fIncr(2, 2)*fIncr(3, 3)-fIncr(2, 3)*fIncr(3, 2))-fIncr(2, 1)*(fI&
-                   &ncr(1, 2)*fIncr(3, 3)-fIncr(1, 3)*fIncr(3, 2))+fIncr(3, 1)*(fIncr(1, 2)*fInc&
-                   &r(2, 3)-fIncr(1, 3)*fIncr(2, 2))
+        jacoPrev = fPrev(1, 1)*(fPrev(2, 2)*fPrev(3, 3)-fPrev(2, 3)*fPrev(3, 2))-fPrev(2, 1)*(fPr&
+                   &ev(1, 2)*fPrev(3, 3)-fPrev(1, 3)*fPrev(3, 2))+fPrev(3, 1)*(fPrev(1, 2)*fPrev(&
+                   &2, 3)-fPrev(1, 3)*fPrev(2, 2))
+        jacoIncr = fIncr(1, 1)*(fIncr(2, 2)*fIncr(3, 3)-fIncr(2, 3)*fIncr(3, 2))-fIncr(2, 1)*(fIn&
+                   &cr(1, 2)*fIncr(3, 3)-fIncr(1, 3)*fIncr(3, 2))+fIncr(3, 1)*(fIncr(1, 2)*fIncr(&
+                   &2, 3)-fIncr(1, 3)*fIncr(2, 2))
         jacoCurr = jacoPrev*jacoIncr
 ! ----- Check jacobian
         if (jacoIncr .le. 1.d-2 .or. jacoIncr .gt. 1.d2) then
@@ -194,7 +200,10 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
         end if
 ! ----- Prepare stresses (for compatibility with behaviour using previous stress)
         sigmPrevComp = 0.d0
-        call dcopy(ndim*2, sigmPrev(1, kpg), 1, sigmPrevComp, 1)
+        b_n = to_blas_int(ndim*2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigmPrev(1, kpg), b_incx, sigmPrevComp, b_incy)
 ! ----- Compute behaviour
         cod(kpg) = 0
         call nmcomp(BEHinteg, fami, kpg, 1, 3, &
@@ -217,7 +226,10 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
         end if
 ! ----- Internal forces and Cauchy stresses
         if (resi) then
-            call dcopy(2*ndim, tauCurr, 1, sigmCurr(1, kpg), 1)
+            b_n = to_blas_int(2*ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, tauCurr, b_incx, sigmCurr(1, kpg), b_incy)
             coef = 1.d0/jacoCurr
             call dscal(2*ndim, coef, sigmCurr(1, kpg), 1)
             do na = 1, nno
@@ -235,7 +247,10 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
 ! ----- Tangent matrix (non-symmetric)
         if (lMatr) then
             if (.not. resi) then
-                call dcopy(2*ndim, sigmPrev(1, kpg), 1, tauCurr, 1)
+                b_n = to_blas_int(2*ndim)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, sigmPrev(1, kpg), b_incx, tauCurr, b_incy)
                 call dscal(2*ndim, jacoPrev, tauCurr, 1)
             end if
             if (ndu .eq. 3) then

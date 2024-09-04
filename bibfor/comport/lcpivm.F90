@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcpivm(fami, kpg, ksp, mate, compor, &
                   carcri, instam, instap, fm, df, &
                   vim, option, taup, vip, dtaudf, &
@@ -112,6 +112,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor, &
     real(kind=8) :: dp, seuil
     real(kind=8) :: rp, pentep, airerp
     real(kind=8) :: em(6), ep(6), trtau, dvbe(6)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -128,7 +129,10 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor, &
 !    LECTURE DES VARIABLES INTERNES (DEFORMATION PLASTIQUE CUMULEE ET
 !                                   -DEFORMATION ELASTIQUE)
     pm = vim(1)
-    call dcopy(6, vim(3), 1, em, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vim(3), b_incx, em, b_incy)
     call dscal(3, rac2, em(4), 1)
 !
 !    CALCUL DES ELEMENTS CINEMATIQUES
@@ -206,7 +210,10 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor, &
 ! 4 - MISE A JOUR DES CHAMPS
 ! 4.1 - CONTRAINTE
 !
-        call dcopy(6, dvbetr, 1, dvbe, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dvbetr, b_incx, dvbe, b_incy)
         if (line .eq. 1) call dscal(6, 1-dp*trbetr/eqbetr, dvbe, 1)
 !
         trtau = (troisk*(jp**2-1)-3.d0*cother*(jp+1.d0/jp))/2.d0
@@ -218,8 +225,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor, &
 ! 4.2 - CORRECTION HYDROSTATIQUE A POSTERIORI
 !
         do ij = 1, 6
-            ep(ij) = (kr(ij)-jp**(2.d0/3.d0)*(dvbe(ij)+trbetr/3.d0*kr( &
-                                              ij)))/2.d0
+            ep(ij) = (kr(ij)-jp**(2.d0/3.d0)*(dvbe(ij)+trbetr/3.d0*kr(ij)))/2.d0
         end do
         call gdsmhy(jp, ep)
 !
@@ -227,7 +233,10 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor, &
 !
         vip(1) = pm+dp
         vip(2) = line
-        call dcopy(6, ep, 1, vip(3), 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, ep, b_incx, vip(3), b_incy)
         call dscal(3, 1.d0/rac2, vip(6), 1)
     end if
 !
@@ -237,7 +246,10 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor, &
         if (.not. resi) then
             dp = 0.d0
             line = nint(vim(2))
-            call dcopy(6, dvbetr, 1, dvbe, 1)
+            b_n = to_blas_int(6)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, dvbetr, b_incx, dvbe, b_incy)
         end if
 !
         if (elas) line = 0

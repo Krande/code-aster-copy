@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmro(BEHinteg, omp, nvi, vind, vinf)
 !
     use Behaviour_type
@@ -25,7 +25,7 @@ subroutine lcmmro(BEHinteg, omp, nvi, vind, vinf)
 #include "asterc/r8miem.h"
 #include "asterfort/r8inir.h"
 #include "blas/dcopy.h"
-
+!
 !     Stockage variables internes rotation reseau
 !     ----------------------------------------------------------------
     type(Behaviour_Integ), intent(in) :: BEHinteg
@@ -33,6 +33,7 @@ subroutine lcmmro(BEHinteg, omp, nvi, vind, vinf)
     real(kind=8) :: omp(3), dtheta, iden(3, 3), nax(3, 3), q(3, 3)
     real(kind=8) :: omegap(3, 3), omegae(3, 3), omega(3, 3), dq(3, 3)
     real(kind=8) :: vind(nvi), vinf(nvi), l(3, 3), qm(3, 3)
+    blas_int :: b_incx, b_incy, b_n
     data iden/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !
 !     LA MATRICE DE ROTATION QM EST STOCKEE DANS VIND (N-19 A N-9)
@@ -68,7 +69,10 @@ subroutine lcmmro(BEHinteg, omp, nvi, vind, vinf)
 !     ANGLE = NORME DU VECTEUR AXIAL
     dtheta = sqrt(omegae(1, 2)**2+omegae(1, 3)**2+omegae(2, 3)**2)
 !
-    call dcopy(9, iden, 1, dq, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, iden, b_incx, dq, b_incy)
     if (dtheta .gt. r8miem()) then
         do i = 1, 3
             do j = 1, 3
@@ -83,8 +87,7 @@ subroutine lcmmro(BEHinteg, omp, nvi, vind, vinf)
         do i = 1, 3
             do j = 1, 3
                 do k = 1, 3
-                    dq(i, j) = dq(i, j)+(1.d0-cos(dtheta))*nax(i, k)*nax(k, &
-                                                                         j)
+                    dq(i, j) = dq(i, j)+(1.d0-cos(dtheta))*nax(i, k)*nax(k, j)
                 end do
             end do
         end do

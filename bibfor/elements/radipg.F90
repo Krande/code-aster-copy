@@ -130,8 +130,14 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia, &
         do igau = 1, npg
 !
             iradi = 0
-            call dcopy(nbsig, sig1(1+(igau-1)*nbsig), 1, tensm, 1)
-            call dcopy(nbsig, sig2(1+(igau-1)*nbsig), 1, tensp, 1)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, sig1(1+(igau-1)*nbsig), b_incx, tensm, b_incy)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, sig2(1+(igau-1)*nbsig), b_incx, tensp, b_incy)
             call dscal(nbsig-3, sqrt(2.d0), tensm(4), 1)
             call dscal(nbsig-3, sqrt(2.d0), tensp(4), 1)
 !
@@ -146,8 +152,14 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia, &
 !           CINEMATIQUE : LA NORMALE DEPEND DE SIG ET X
             elseif ((compor .eq. 'VMIS_ECMI_TRAC') .or. ( &
                     compor .eq. 'VMIS_ECMI_LINE')) then
-                call dcopy(nbsig, vari1((igau-1)*nvi+3), 1, xm, 1)
-                call dcopy(nbsig, vari2((igau-1)*nvi+3), 1, xp, 1)
+                b_n = to_blas_int(nbsig)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, vari1((igau-1)*nvi+3), b_incx, xm, b_incy)
+                b_n = to_blas_int(nbsig)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, vari2((igau-1)*nvi+3), b_incx, xp, b_incy)
                 indm = vari1((igau-1)*nvi+2)
                 indp = vari2((igau-1)*nvi+2)
                 icine = 1
@@ -156,8 +168,14 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia, &
                 call dscal(nbsig-3, sqrt(2.d0), xp(4), 1)
 !
             else if ((compor .eq. 'VMIS_CINE_LINE')) then
-                call dcopy(nbsig, vari1((igau-1)*nvi+1), 1, xm, 1)
-                call dcopy(nbsig, vari2((igau-1)*nvi+1), 1, xp, 1)
+                b_n = to_blas_int(nbsig)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, vari1((igau-1)*nvi+1), b_incx, xm, b_incy)
+                b_n = to_blas_int(nbsig)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, vari2((igau-1)*nvi+1), b_incx, xp, b_incy)
                 indm = vari1((igau-1)*nvi+7)
                 indp = vari2((igau-1)*nvi+7)
                 icine = 1
@@ -180,8 +198,14 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia, &
                 cinf = mat(4)/1.5d0
                 indm = vari1((igau-1)*nvi+2)
                 indp = vari2((igau-1)*nvi+2)
-                call dcopy(nbsig, vari1((igau-1)*nvi+3), 1, xm, 1)
-                call dcopy(nbsig, vari2((igau-1)*nvi+3), 1, xp, 1)
+                b_n = to_blas_int(nbsig)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, vari1((igau-1)*nvi+3), b_incx, xm, b_incy)
+                b_n = to_blas_int(nbsig)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, vari2((igau-1)*nvi+3), b_incx, xp, b_incy)
                 call dscal(nbsig, cinf, xm, 1)
                 call dscal(nbsig, cinf, xp, 1)
                 if (nbvar .eq. 2) then

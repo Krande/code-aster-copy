@@ -68,7 +68,10 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps, &
     rigi = option .eq. 'RIGI_MECA_TANG' .or. option .eq. 'FULL_MECA'
     elas = option .eq. 'RIGI_MECA_ELAS'
 !
-    call dcopy(ndimsi, epsm, 1, eps, 1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, eps, b_incy)
     if (resi) then
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)

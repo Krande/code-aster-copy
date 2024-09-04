@@ -55,38 +55,74 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
 !
 !     STOCKAGE DE LA SOLUTION DANS LA TABLE
     if (ncmp .eq. 6) then
-        call dcopy(ncmp, epsm, 1, epsp, 1)
+        b_n = to_blas_int(ncmp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epsm, b_incx, epsp, b_incy)
         b_n = to_blas_int(ncmp)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call daxpy(b_n, 1.d0, deps, b_incx, epsp, &
                    b_incy)
-        call dcopy(ncmp, epsp, 1, epsm, 1)
-        call dcopy(ncmp, epsp, 1, epst, 1)
+        b_n = to_blas_int(ncmp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epsp, b_incx, epsm, b_incy)
+        b_n = to_blas_int(ncmp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epsp, b_incx, epst, b_incy)
         call dscal(3, 1.d0/rac2, epst(4), 1)
     else
-        call dcopy(ncmp, valimp, 1, epst, 1)
-        call dcopy(ncmp, valimp, 1, epsm, 1)
+        b_n = to_blas_int(ncmp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, valimp, b_incx, epst, b_incy)
+        b_n = to_blas_int(ncmp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, valimp, b_incx, epsm, b_incy)
     end if
-    call dcopy(nbvari, vip, 1, vim, 1)
+    b_n = to_blas_int(nbvari)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vip, b_incx, vim, b_incy)
     instam = instap
-    call dcopy(6, sigp, 1, sigm, 1)
-    call dcopy(6, sigp, 1, sigt, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, sigp, b_incx, sigm, b_incy)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, sigp, b_incx, sigt, b_incy)
     call dscal(3, 1.d0/rac2, sigt(4), 1)
     call fgequi(sigt, 'SIGM_DIR', 3, equi)
 !
     if (iforta .eq. 0) then
 !
-        call dcopy(ncmp, epst, 1, vr(2), 1)
-        call dcopy(6, sigt, 1, vr(ncmp+2), 1)
+        b_n = to_blas_int(ncmp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epst, b_incx, vr(2), b_incy)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigt, b_incx, vr(ncmp+2), b_incy)
         vr(ncmp+8) = equi(16)
         vr(ncmp+9) = equi(1)
-        call dcopy(nbvita, vip, 1, vr(1+ncmp+6+2+1), 1)
+        b_n = to_blas_int(nbvita)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vip, b_incx, vr(1+ncmp+6+2+1), b_incy)
         vr(1) = instap
         vr(nbpar) = iter
 !        ajout KTGT
         if (imptgt .eq. 1) then
-            call dcopy(36, dsidep, 1, vr(1+6+6+3+nbvari), 1)
+            b_n = to_blas_int(36)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, dsidep, b_incx, vr(1+6+6+3+nbvari), b_incy)
         end if
         call tbajli(table, nbpar, nompar, [0], vr, &
                     [cbid], k8b, 0)

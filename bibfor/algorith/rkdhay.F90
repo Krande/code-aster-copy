@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat, &
     real(kind=8) :: sig0, biga, alphad
     real(kind=8) :: trsig, grj2v, grj1, epsi, terme1, shmax, sequi
     real(kind=8) :: equi(17), rmin, sequid
+    blas_int :: b_incx, b_incy, b_n
 !     ----------------------------------------------------------------
     parameter(ze=0.0d0)
     parameter(td=1.5d0)
@@ -105,7 +106,10 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat, &
     h = ecrou(1)+ecrou(2)
 !
 !----------------------------------------------------------------
-    call dcopy(ndt, sigi, 1, smx, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, sigi, b_incx, smx, b_incy)
 !
 !------------CALCUL DES INVARIANTS DE CONTRAINTE  -------
 !     attention FGEQUI ne prend pas en compte les SQRT(2)

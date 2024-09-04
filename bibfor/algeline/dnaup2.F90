@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dnaup2(ido, bmat, n, which, nev, &
                   np, tol, resid, ishift, mxiter, &
                   v, ldv, h, ldh, ritzr, &
@@ -269,6 +269,7 @@ subroutine dnaup2(ido, bmat, n, which, nev, &
 !     %-----------------------%
 !
     integer :: kp(4)
+    blas_int :: b_incx, b_incy, b_n
     save
 !
 !     %-----------%
@@ -486,9 +487,18 @@ subroutine dnaup2(ido, bmat, n, which, nev, &
 !        | BOUNDS OBTAINED FROM DNEIGH.                       |
 !        %----------------------------------------------------%
 !
-    call dcopy(kplusp, ritzr, 1, workl(kplusp**2+1), 1)
-    call dcopy(kplusp, ritzi, 1, workl(kplusp**2+kplusp+1), 1)
-    call dcopy(kplusp, bounds, 1, workl(kplusp**2+2*kplusp+1), 1)
+    b_n = to_blas_int(kplusp)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, ritzr, b_incx, workl(kplusp**2+1), b_incy)
+    b_n = to_blas_int(kplusp)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, ritzi, b_incx, workl(kplusp**2+kplusp+1), b_incy)
+    b_n = to_blas_int(kplusp)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, bounds, b_incx, workl(kplusp**2+2*kplusp+1), b_incy)
 !
 !        %---------------------------------------------------%
 !        | SELECT THE WANTED RITZ VALUES AND THEIR BOUNDS    |
@@ -514,7 +524,10 @@ subroutine dnaup2(ido, bmat, n, which, nev, &
 !        | CONVERGENCE TEST. |
 !        %-------------------%
 !
-    call dcopy(nev, bounds(np+1), 1, workl(2*np+1), 1)
+    b_n = to_blas_int(nev)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, bounds(np+1), b_incx, workl(2*np+1), b_incy)
     call dnconv(nev, ritzr(np+1), ritzi(np+1), workl(2*np+1), tol, &
                 nconv)
 !
@@ -746,8 +759,14 @@ subroutine dnaup2(ido, bmat, n, which, nev, &
 !            | FOR NON-EXACT SHIFT CASE.        |
 !            %----------------------------------%
 !
-        call dcopy(np, workl, 1, ritzr, 1)
-        call dcopy(np, workl(np+1), 1, ritzi, 1)
+        b_n = to_blas_int(np)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workl, b_incx, ritzr, b_incy)
+        b_n = to_blas_int(np)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workl(np+1), b_incx, ritzi, b_incy)
     end if
 !
     if (msglvl .gt. 2) then
@@ -778,7 +797,10 @@ subroutine dnaup2(ido, bmat, n, which, nev, &
     cnorm = .true.
     if (bmat .eq. 'G') then
         nbx = nbx+1
-        call dcopy(n, resid, 1, workd(n+1), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(n+1), b_incy)
         ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
@@ -789,7 +811,10 @@ subroutine dnaup2(ido, bmat, n, which, nev, &
 !
         goto 9000
     else if (bmat .eq. 'I') then
-        call dcopy(n, resid, 1, workd, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd, b_incy)
     end if
 !
 100 continue

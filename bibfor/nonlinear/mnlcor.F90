@@ -118,7 +118,10 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
                xru)
     zr(iru-1+ninc) = 0.d0
     normr = dnrm2(ninc-1, zr(iru), 1)
-    call dcopy(ninc, zr(ivect), 1, zr(itemp), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivect), b_incx, zr(itemp), b_incy)
     normc = normr
 900 format(' Norme erreur iteration Newton numero : ', i2, ' : ', 1pe12.5)
     if (info .eq. 2) then
@@ -163,7 +166,10 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
 ! ---   ON CALCUL LA NORME DE R(NOUVEAU VECTEUR SOLUTION)
         normc = dnrm2(ninc-1, zr(iru), 1)
         normr = normc
-        call dcopy(ninc, zr(itemp), 1, zr(ivect), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(itemp), b_incx, zr(ivect), b_incy)
         if (info .eq. 2) then
             write (ifres, 900) cptr, normc
         end if

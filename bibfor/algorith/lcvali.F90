@@ -57,7 +57,10 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
 !     TRAITEMENT DE EPSI_MAXI
     if (icodre(1) .eq. 0) then
         epsmax = valres(1)
-        call dcopy(ndimsi, epsm, 1, eps, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epsm, b_incx, eps, b_incy)
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -72,7 +75,10 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
     if (icodre(2) .eq. 0) then
         vepsm = valres(2)
         dt = instap-instam
-        call dcopy(ndimsi, deps, 1, veps, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, deps, b_incx, veps, b_incy)
         call dscal(ndimsi, 1.d0/dt, veps, 1)
         veps2 = sqrt(ddot(ndimsi, veps, 1, veps, 1))
         if (veps2 .gt. vepsm) then

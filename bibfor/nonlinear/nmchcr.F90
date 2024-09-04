@@ -159,14 +159,20 @@ function nmchcr(dp)
         rpp = rinf+(r0-rinf)*exp(-b*pp)
     end if
 !
-    call dcopy(ndimsi, norm, 1, depsp, 1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, norm, b_incx, depsp, b_incy)
     call dscal(ndimsi, dp*sqrt(1.5d0), depsp, 1)
 !
     if (memo .eq. 1) then
 !
 ! --- DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES
 !
-        call dcopy(ndimsi, epspm, 1, epspp, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epspm, b_incx, epspp, b_incy)
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)

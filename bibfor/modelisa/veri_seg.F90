@@ -162,9 +162,12 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno, &
         ntyma = zi(jtyma+numail-1)
         call canorm(xyzma, normal, 3, ntyma, 1)
 !
-        excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+normal(3)*(x3&
-                 &dca(3)-xyzma(3, 1))
-        call dcopy(3, x3dca, 1, x3dp, 1)
+        excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+normal(3)*(x3d&
+                 &ca(3)-xyzma(3, 1))
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, x3dca, b_incx, x3dp, b_incy)
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -182,8 +185,8 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno, &
                 if (jnoeu .eq. nbcnx+2) jnoeu = 2
                 d = sqrt( &
                     ( &
-                    xyzma(1, jnoeu)-xyzma(1, inoeu))**2+(xyzma(2, jnoeu)-xyzma(2, inoeu))**2+(x&
-                    &yzma(3, jnoeu)-xyzma(3, inoeu) &
+                    xyzma(1, jnoeu)-xyzma(1, inoeu))**2+(xyzma(2, jnoeu)-xyzma(2, inoeu))**2+(xyz&
+                    &ma(3, jnoeu)-xyzma(3, inoeu) &
                     )**2 &
                     )
                 if (d*abs(xbar(i)) .le. prec*dmax_cable) then

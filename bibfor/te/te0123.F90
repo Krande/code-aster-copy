@@ -78,6 +78,7 @@ subroutine te0123(option, nomte)
     character(len=8) :: typmod(2), lielrf(10), nomail
     character(len=16) :: phenom, rela_comp, defo_comp
     aster_logical :: lVect, lMatr, lVari, lSigm, lMass
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,7 +89,7 @@ subroutine te0123(option, nomte)
     ivarix = 1
     icoret = 1
     codret = 0
-    !trav1(:) = 0.d0
+!trav1(:) = 0.d0
 !
     lMass = option(1:9) .eq. 'MASS_MECA'
 !
@@ -97,16 +98,13 @@ subroutine te0123(option, nomte)
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou .ge. 2)
     if (lMass) then
-        call elrefe_info(elrefe=lielrf(1), fami='MASS', &
-                         ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                         jpoids=ipoids, jvf=ivf, jdfde=idfde)
+        call elrefe_info(elrefe=lielrf(1), fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
+                         npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
     else
-        call elrefe_info(elrefe=lielrf(1), fami='RIGI', &
-                         ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                         jpoids=ipoids, jvf=ivf, jdfde=idfde)
-        call elrefe_info(elrefe=lielrf(2), fami='RIGI', &
-                         ndim=ndim, nno=nnob, nnos=nnos, npg=npg, &
-                         jpoids=ipoids, jvf=ivfb, jdfde=idfdeb)
+        call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                         npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+        call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nnob, nnos=nnos, &
+                         npg=npg, jpoids=ipoids, jvf=ivfb, jdfde=idfdeb)
     end if
 !
 ! - Type of finite element
@@ -150,7 +148,8 @@ subroutine te0123(option, nomte)
         call jevech('PCARCRI', 'L', icarcr)
         call jevech('PINSTMR', 'L', iinstm)
         call jevech('PINSTPR', 'L', iinstp)
-        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                    itab=jtab)
         ASSERT(jtab(1) .eq. ivarim)
         lgpg = max(jtab(6), 1)*jtab(7)
 ! ----- Properties of behaviour
@@ -164,10 +163,8 @@ subroutine te0123(option, nomte)
             call utmess('F', 'ELEMENTS3_16', sk=defo_comp)
         end if
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), &
-                             lMatr, lVect, &
-                             lVari, lSigm, &
-                             codret)
+        call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                             lSigm, codret)
 ! ----- Get orientation
         call getElemOrientation(ndim, nno, igeom, angl_naut)
 ! ----- Get output fields
@@ -178,11 +175,15 @@ subroutine te0123(option, nomte)
             call jevech('PVECTUR', 'E', ivectu)
         end if
         if (lVari) then
-            call tecach('OOO', 'PVARIPR', 'E', iret, nval=7, itab=jtab)
+            call tecach('OOO', 'PVARIPR', 'E', iret, nval=7, &
+                        itab=jtab)
             lgpg2 = max(jtab(6), 1)*jtab(7)
             call jevech('PVARIPR', 'E', ivarip)
             call jevech('PVARIMP', 'L', ivarix)
-            call dcopy(npg*lgpg2, zr(ivarix), 1, zr(ivarip), 1)
+            b_n = to_blas_int(npg*lgpg2)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
         end if
         if (lSigm) then
             call jevech('PCONTPR', 'E', icontp)
@@ -200,7 +201,7 @@ subroutine te0123(option, nomte)
         call tecael(iadzi, iazk24)
         numa = zi(iadzi-1+1)
         codvoi = 'A2'
-
+!
         call voiuti(numa, codvoi, nvoima, nscoma, ca_jrepe_, &
                     ca_jptvoi_, ca_jelvoi_, nbvois, livois, tyvois, &
                     nbnovo, nbsoco, lisoco)
@@ -210,9 +211,9 @@ subroutine te0123(option, nomte)
                     typmod, option, zi(imate), zk16(icompo), zr(icarcr), &
                     zr(iinstm), zr(iinstp), angl_naut, zr(idplgm), zr(iddplg), &
                     zr(icontm), lgpg, zr(ivarim), zr(icontp), zr(ivarip), &
-                    zr(imatuu), zr(ivectu), codret, livois, &
-                    nbvois, numa, lisoco, nbsoco, &
-                    lVari, lSigm, lMatr, lVect)
+                    zr(imatuu), zr(ivectu), codret, livois, nbvois, &
+                    numa, lisoco, nbsoco, lVari, lSigm, &
+                    lMatr, lVect)
 ! ----- Save return code
         if (lSigm) then
             call jevech('PCODRET', 'E', icoret)

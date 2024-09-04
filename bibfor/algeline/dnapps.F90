@@ -615,7 +615,10 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
         call dgemv('N', n, kplusp-i+1, one, v, &
                    ldv, q(1, kev-i+1), 1, zero, workd, &
                    1)
-        call dcopy(n, workd, 1, v(1, kplusp-i+1), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workd, b_incx, v(1, kplusp-i+1), b_incy)
     end do
 !
 !     %-------------------------------------------------%
@@ -629,7 +632,12 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |
 !     %--------------------------------------------------------------%
 !
-    if (h(kev+1, kev) .gt. zero) call dcopy(n, workd(n+1), 1, v(1, kev+1), 1)
+    if (h(kev+1, kev) .gt. zero) then
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workd(n+1), b_incx, v(1, kev+1), b_incy)
+    end if
 !
 !     %-------------------------------------%
 !     | UPDATE THE RESIDUAL VECTOR:         |

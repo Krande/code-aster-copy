@@ -1,5 +1,5 @@
 !--------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,15 +49,15 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 #include "asterfort/vecink.h"
 #include "asterfort/vecint.h"
 #include "asterfort/wkvect.h"
-    integer           :: option, nbordr, i, ipas, lonnew, lonch
-    character(len=1)  :: ktyp
-    character(len=19)  :: lisord, partsd
-    character(len=24)  :: vldist, vcham, lisori, modele, chamno, vcnoch
-    aster_logical      :: ldist, dbg_ob, lsdpar
-    aster_logical      :: dbgv_ob, lcpu, ltest
-    integer            :: rang, nbpas, nbproc, ideb, ifin, irelat
-    integer            :: nbordi
-    mpi_int            :: mpicou
+    integer :: option, nbordr, i, ipas, lonnew, lonch
+    character(len=1) :: ktyp
+    character(len=19) :: lisord, partsd
+    character(len=24) :: vldist, vcham, lisori, modele, chamno, vcnoch
+    aster_logical :: ldist, dbg_ob, lsdpar
+    aster_logical :: dbgv_ob, lcpu, ltest
+    integer :: rang, nbpas, nbproc, ideb, ifin, irelat
+    integer :: nbordi
+    mpi_int :: mpicou
     real(kind=8), pointer :: noch(:)
     complex(kind=8), pointer :: nochc(:)
 ! ---------------------------------------------------------------------
@@ -70,12 +70,13 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
     integer :: lonmax, lonmin, jcnoch, jval
     real(kind=8) :: rzero
     complex(kind=8) :: czero
-    character(len=6)  :: k6
+    character(len=6) :: k6
     character(len=16) :: kmpi
     character(len=24) :: kblanc, k24b
+    blas_int :: b_incx, b_incy, b_n
 !
-    if (((option .ge. 1) .and. (option .le. 8)) .or. (option .eq. 101) .or. (option .eq. 301) &
-        .or. (option .eq. 102)) then
+    if (((option .ge. 1) .and. (option .le. 8)) .or. (option .eq. 101) .or. &
+        (option .eq. 301) .or. (option .eq. 102)) then
 ! Option prévue
     else
         ASSERT(.False.)
@@ -257,8 +258,7 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
             call copisd('PARTITION', 'G', modele(1:8)//'.PARTSD', partsd)
             call detrsd('PARTITION', modele(1:8)//'.PARTSD')
         end if
-        if (dbg_ob) write (ifm, *) &
-            '< ', rang, 'pcptcc> lsdpar/partsd_init= ', lsdpar, partsd
+        if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> lsdpar/partsd_init= ', lsdpar, partsd
 !
     else if ((option .eq. 3) .or. (option .eq. 301)) then
 ! OPTION=3
@@ -294,8 +294,7 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                 call copisd('PARTITION', 'G', '&&PCPTCC.PARTSD', modele(1:8)//'.PARTSD')
                 call detrsd('PARTITION', '&&PCPTCC.PARTSD')
             end if
-            if (dbg_ob) write (ifm, *) '< ', rang, &
-                'pcptcc> lsdpar/partsd_fin= ', lsdpar, partsd
+            if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> lsdpar/partsd_fin= ', lsdpar, partsd
         end if
     else if (option .eq. 4) then
 ! OPTION=4
@@ -317,8 +316,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 ! INDICE RELATIF DANS CE PAQUET
             irelat = i-ideb+1
         end if
-        if (dbg_ob) write (ifm, *) '< ', rang, &
-            'pcptcc> i/ideb/ifin/irelat= ', i, ideb, ifin, irelat
+        if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> i/ideb/ifin/irelat= ', i, ideb, ifin, &
+            irelat
         ASSERT(ideb .ge. 1)
         ASSERT(ifin .ge. 1)
         ASSERT(irelat .ge. 1)
@@ -372,8 +371,10 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
             ASSERT(lonmax .ge. lonnew)
             ASSERT(lonmin .le. lonnew)
             ASSERT(lonmin .le. lonmax)
-            if ((lonmax .ne. lonmin) .or. ((ipas .gt. 1) .and. (lonnew .ne. lonch))) &
-                call utmess('F', 'PREPOST_17')
+            if ((lonmax .ne. lonmin) .or. ((ipas .gt. 1) .and. (lonnew .ne. lonch))) call utmess( &
+                                                                                     'F', &
+                                                                                     'PREPOST_17&
+                                                                                     &')
         end if
 !
     else if (option .eq. 7) then
@@ -405,8 +406,7 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
             else if (ktyp .eq. 'C') then
                 if (ipas .eq. 1) then
                     call wkvect(vcnoch, 'V V C', lonch*nbproc, jcnoch)
-                    if (dbg_ob) write (ifm, *) '< ', rang, &
-                        'pcptcc> creation objet=', vcnoch
+                    if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> creation objet=', vcnoch
                 else
                     call jeveuo(vcnoch, 'E', jcnoch)
                 end if
@@ -420,17 +420,23 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 ! RQ: ASMPI_BARRIER AU CAS OU.
             call jeveuo(vcham, 'E', jvcham)
             if (ktyp .eq. 'R') then
-                call dcopy(lonch, noch, 1, zr(jcnoch+(irelat-1)*lonch), 1)
+                b_n = to_blas_int(lonch)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, noch, b_incx, zr(jcnoch+(irelat-1)*lonch), b_incy)
                 call asmpi_barrier(mpicou)
                 call asmpi_comm_vect('MPI_SUM', 'R', nbval=lonch*nbproc, vr=zr(jcnoch))
-                if (dbg_ob) write (ifm, *) '< ', rang, &
-                    'pcptcc> ALLREDUCE réel longueur=', lonch*nbproc
+                if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> ALLREDUCE réel longueur=', &
+                    lonch*nbproc
                 call asmpi_barrier(mpicou)
                 p = 1
                 do k = ideb, ifin
                     k24b = zk24(jvcham+p-1)
                     call jeveuo(k24b(1:19)//'.VALE', 'E', jval)
-                    call dcopy(lonch, zr(jcnoch+(p-1)*lonch), 1, zr(jval), 1)
+                    b_n = to_blas_int(lonch)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(jcnoch+(p-1)*lonch), b_incx, zr(jval), b_incy)
                     call jelibe(k24b(1:19)//'.VALE')
                     call jelibe(k24b(1:19)//'.REFE')
                     p = p+1
@@ -439,8 +445,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                 call zcopy(lonch, nochc, 1, zc(jcnoch+(irelat-1)*lonch), 1)
                 call asmpi_barrier(mpicou)
                 call asmpi_comm_vect('MPI_SUM', 'C', nbval=lonch*nbproc, vc=zc(jcnoch))
-                if (dbg_ob) write (ifm, *) '< ', rang, &
-                    'pcptcc> ALLREDUCE complexe longueur=', lonch*nbproc
+                if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> ALLREDUCE complexe longueur=', &
+                    lonch*nbproc
                 call asmpi_barrier(mpicou)
                 p = 1
                 do k = ideb, ifin
@@ -474,7 +480,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 !              write(ifm,*)i,zr(jval+i-1)
 !            enddo
 !            call jeimpo(ifm,k24b(1:19)//'.VALE','ccfnrn fin')
-                    call utimsd(ifm, -1, .False._1, .False._1, k24b(1:19), 1, 'G', perm='NON')
+                    call utimsd(ifm, -1, .False._1, .False._1, k24b(1:19), &
+                                1, 'G', perm='NON')
                     p = p+1
                 end do
             else
@@ -485,7 +492,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 !            do i=1,10
 !              write(ifm,*)i,zr(jval+i-1)
 !            enddo
-                call utimsd(ifm, -1, .False._1, .False._1, chamno(1:19), 1, 'G', perm='NON')
+                call utimsd(ifm, -1, .False._1, .False._1, chamno(1:19), &
+                            1, 'G', perm='NON')
             end if
         end if
 !

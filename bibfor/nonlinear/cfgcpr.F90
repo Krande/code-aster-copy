@@ -172,7 +172,10 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai, &
 !
 ! ----- RECOPIE DE LA SPOLUTION SANS CONTACT
 !
-        call dcopy(neq, ddep0, 1, ddepc, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, ddep0, b_incx, ddepc, b_incy)
         alpha = 1.d0
     end if
 !

@@ -72,6 +72,7 @@ subroutine te0560(option, nomte)
     character(len=4) :: fami
     character(len=16) :: elasKeyword, defo_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,12 +89,9 @@ subroutine te0560(option, nomte)
     if (option .eq. 'MASS_MECA') then
         fami = 'MASS'
     end if
-    call elrefv(fami, ndim, &
-                nnoL, nnoQ, nnos, &
-                npg, jv_poids, &
-                jv_vfL, jv_vfQ, &
-                jv_dfdeL, jv_dfdeQ, &
-                jv_ganoL, jv_ganoQ)
+    call elrefv(fami, ndim, nnoL, nnoQ, nnos, &
+                npg, jv_poids, jv_vfL, jv_vfQ, jv_dfdeL, &
+                jv_dfdeQ, jv_ganoL, jv_ganoQ)
     ASSERT(ndim .eq. 2 .or. ndim .eq. 3)
 !
 ! - Input fields
@@ -128,11 +126,11 @@ subroutine te0560(option, nomte)
             call utmess('F', 'ELEMENTS3_16', sk=defo_comp)
         end if
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), &
-                             lMatr, lVect, &
-                             lVari, lSigm)
+        call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                             lSigm)
 !
-        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                    itab=jtab)
         lgpg1 = max(jtab(6), 1)*jtab(7)
         lgpg = lgpg1
 !
@@ -157,17 +155,20 @@ subroutine te0560(option, nomte)
         end if
         if (lSigm) then
             call jevech('PCODRET', 'E', jcret)
-
+!
             call jevech('PCONTPR', 'E', icontp)
         end if
         if (lVari) then
             call jevech('PVARIPR', 'E', ivarip)
             call jevech('PVARIMP', 'L', ivarix)
-            call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+            b_n = to_blas_int(npg*lgpg)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
         end if
 !
-        if (option .eq. 'RIGI_MECA_ELAS' .or. option .eq. 'FULL_MECA_ELAS' .or. &
-            option .eq. 'RAPH_MECA') then
+        if (option .eq. 'RIGI_MECA_ELAS' .or. option .eq. 'FULL_MECA_ELAS' .or. option .eq. &
+            'RAPH_MECA') then
             fami = 'ELAS'
         else
             fami = 'RIGI'

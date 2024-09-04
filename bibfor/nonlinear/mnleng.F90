@@ -124,13 +124,19 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
         call dscal(nd, 0.d0, zr(iky), 1)
 !
         omega = zr(ius-1+ind*ninc)
-        call dcopy(nd*(2*h+1), zr(ius+(ind-1)*ninc), 1, zr(ix), 1)
+        b_n = to_blas_int(nd*(2*h+1))
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ius+(ind-1)*ninc), b_incx, zr(ix), b_incy)
 ! ----------------------------------------------------------------------
 ! --- PASSAGE EN TEMPOREL (t=T/4)
 ! ----------------------------------------------------------------------
 ! ---   PI
         pi = r8pi()
-        call dcopy(nd, zr(ix), 1, zr(iy), 1)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ix), b_incx, zr(iy), b_incy)
         ratio = 4.d0
         do k = 1, h
 ! ---     COS

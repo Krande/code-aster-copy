@@ -232,12 +232,18 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect, &
             call daxpy(b_n, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+nd*(h+1)+nddly), b_incx, &
                        zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+hf+2), b_incy)
 ! ---     FN
-            call dcopy(2*hf+1, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, &
-                       zr(iline+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), b_incx, &
+                       zr(iline+nd*(2*h+1)+(neqs+3)*(2*hf+1)), b_incy)
         else if (type(i) (1:4) .eq. 'PLAN') then
 ! ---     F
-            call dcopy(2*hf+1, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), 1, &
-                       zr(iline+nd*(2*h+1)+neqs*(2*hf+1)), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, &
+                       zr(iline+nd*(2*h+1)+neqs*(2*hf+1)), b_incy)
         end if
         neqs = neqs+vneqs(i)
     end do

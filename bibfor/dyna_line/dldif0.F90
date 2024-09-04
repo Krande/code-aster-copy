@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,6 +103,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi, &
     integer :: iforc1, ieq, alarm
     real(kind=8) :: r8bid
     character(len=19) :: masse1, amort1, rigid1, k19bid
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --- CALCUL DES DEPLACEMENTS ET VITESSES
 !
@@ -176,9 +177,18 @@ subroutine dldif0(result, force1, neq, istoc, iarchi, &
 ! 5. TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
 !====
 !
-    call dcopy(neq, depl1, 1, dep0, 1)
-    call dcopy(neq, vite1, 1, vit0, 1)
-    call dcopy(neq, acce1, 1, acc0, 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, depl1, b_incx, dep0, b_incy)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vite1, b_incx, vit0, b_incy)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, acce1, b_incx, acc0, b_incy)
 !
 !====
 ! 7. ARCHIVAGE EVENTUEL DANS L'OBJET SOLUTION

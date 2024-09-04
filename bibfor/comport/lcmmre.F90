@@ -110,7 +110,10 @@ subroutine lcmmre(typmod, nmat, materd, materf, nbcomm, &
         call lcgrla(deps, depst)
         call dscal(3, sqrt(2.d0), depst(4), 1)
     else
-        call dcopy(6, deps, 1, depst, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, deps, b_incx, depst, b_incy)
     end if
     depsdt = sqrt(ddot(6, depst, 1, depst, 1)/1.5d0)/dt
 !

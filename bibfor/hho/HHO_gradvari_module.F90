@@ -1237,7 +1237,10 @@ contains
 !
 ! --- compute in T+
 !
-        call dcopy(gv_total_dofs, this%vari_prev, 1, this%vari_curr, 1)
+        b_n = to_blas_int(gv_total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, this%vari_prev, b_incx, this%vari_curr, b_incy)
         b_n = to_blas_int(gv_total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -1245,7 +1248,10 @@ contains
                    b_incy)
 !
         if (.not. forc_noda) then
-            call dcopy(gv_cbs, this%lagv_prev, 1, this%lagv_curr, 1)
+            b_n = to_blas_int(gv_cbs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, this%lagv_prev, b_incx, this%lagv_curr, b_incy)
             b_n = to_blas_int(gv_cbs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)

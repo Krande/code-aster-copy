@@ -171,7 +171,10 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum, &
 !
 ! CALCUL DU SAUT EN T+
 !
-    call dcopy(2, sum, 1, su, 1)
+    b_n = to_blas_int(2)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, sum, b_incx, su, b_incy)
     if (resi) then
         b_n = to_blas_int(2)
         b_incx = to_blas_int(1)
@@ -263,9 +266,8 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum, &
 !
 !         ENDOMMAGEMENT EN REGION 1
 !
-            df0t = ( &
-                   sqrt(y0t/yit))*exp(ad1*((sqrt(2.d0/dsidep(2, 2))*(sqrt(yit)-sqrt(y0t)))**bd1) &
-                                      )
+            df0t = (sqrt(y0t/yit))*exp(ad1*((sqrt(2.d0/dsidep(2, 2))*(sqrt(yit)-sqrt(y0t)))**bd1) &
+                                       )
             zf0 = yit-y0t
 !
             if (fd2 .gt. 0.d0) then

@@ -139,7 +139,10 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
 !
 ! SAUT DE DEPLACEMENT EN T- OU T+
 !   Recuperation de delta-
-    call dcopy(ndim, epsm, 1, delta, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, delta, b_incy)
 !   Calcul de delta+
     if (resi) then
         b_n = to_blas_int(ndim)
@@ -739,14 +742,14 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
         An = Bn*((1.d0-alpha)**m1)/(alpha**m2)
         Apn = Bn*((m2-m1)*alpha-m2)*((1-alpha)**(m1-1))/(alpha**(m2+1))
         A2pn = Bn*( &
-               (m1-m2)*(m1-m2-1.)*alpha**2+2.*m2*(m1-m2-1.)*alpha+m2*(m2+1.))*(1.-alpha**(m1-2))&
-               &/alpha**(m2+2 &
+               (m1-m2)*(m1-m2-1.)*alpha**2+2.*m2*(m1-m2-1.)*alpha+m2*(m2+1.))*(1.-alpha**(m1-2))/&
+               &alpha**(m2+2 &
                )
         At = Bt*((1.d0-alpha)**m1)/(alpha**m2)
         Apt = Bt*((m2-m1)*alpha-m2)*((1-alpha)**(m1-1))/(alpha**(m2+1))
         A2pt = Bt*( &
-               (m1-m2)*(m1-m2-1.)*alpha**2+2.*m2*(m1-m2-1.)*alpha+m2*(m2+1.))*(1.-alpha**(m1-2))&
-               &/alpha**(m2+2 &
+               (m1-m2)*(m1-m2-1.)*alpha**2+2.*m2*(m1-m2-1.)*alpha+m2*(m2+1.))*(1.-alpha**(m1-2))/&
+               &alpha**(m2+2 &
                )
 !
         if (ifplas .eq. 1) then
@@ -774,14 +777,14 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
             ptxw = DOT_PRODUCT(plasti(2:ndim), W_vect(:ndim-1))
 !           Calcul du discriminant de l'equation 2.60
             disc = ( &
-                   mu*Apn*plasti(1)+Apt*ptxw/W_norm)**2-(mu**2*Apn+Apt)*(Apn*plasti(1)**2+Apt*pt&
-                   &_norm**2+2.d0*D1 &
+                   mu*Apn*plasti(1)+Apt*ptxw/W_norm)**2-(mu**2*Apn+Apt)*(Apn*plasti(1)**2+Apt*pt_&
+                   &norm**2+2.d0*D1 &
                    )
 !           Calcul de la derivee de delta lambda par rapport a alpha
             ddldalp = ( &
                       -( &
-                      Apt*ptxw/W_norm+mu*Apn*plasti(1))*(mu**2*kn+kt+mu**2*An+At)-(W_norm+mu*kn*&
-                      &(delta(1)-plasti(1))-mu*An*plasti(1)-cbar)*(mu**2*Apn+Apt) &
+                      Apt*ptxw/W_norm+mu*Apn*plasti(1))*(mu**2*kn+kt+mu**2*An+At)-(W_norm+mu*kn*(&
+                      &delta(1)-plasti(1))-mu*An*plasti(1)-cbar)*(mu**2*Apn+Apt) &
                       )/(mu**2*kn+kt+mu**2*An+At &
                       )**2
 !           Calcul de la derivee de F par rapport a delta_n
@@ -789,29 +792,29 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
 !           Calcul de la derivee de F par rapport a delta_t
             do i = 2, ndim
                 dfddt(i-1) = ( &
-                             kt*W_vect(i-1)/W_norm)*(mu**2*Apn+Apt)+(1.d0+(mu*Apn*plasti(1)+Apt*&
-                             &ptxw/W_norm)/sqrt(disc))*(mu**2*kn+kt+mu**2*An+At)*Apt*kt/W_norm* &
-                             &(plasti(i)-DOT_PRODUCT(plasti(2:ndim), W_vect(:ndim-1))*W_vect(i-1&
-                             &)/W_norm**2 &
+                             kt*W_vect(i-1)/W_norm)*(mu**2*Apn+Apt)+(1.d0+(mu*Apn*plasti(1)+Apt*p&
+                             &txw/W_norm)/sqrt(disc))*(mu**2*kn+kt+mu**2*An+At)*Apt*kt/W_norm*(p&
+                             &lasti(i)-DOT_PRODUCT(plasti(2:ndim), W_vect(:ndim-1))*W_vect(i-1)/W&
+                             &_norm**2 &
                              )
             end do
 !           Calcul de la derivee de F par rapport a alpha
             dfdalp = ( &
                      W_norm+mu*kn*( &
-                     delta(1)-plasti(1))-mu*An*plasti(1))*(mu**2*A2pn+A2Pt)+((1.d0+(mu*Apn*plast&
-                     &i(1)+Apt*ptxw/W_norm**mu)/sqrt(disc))*(mu*A2pn*plasti(1)+A2pt*ptxw/W_norm-&
-                     &Apt**2/W_norm*(DOT_PRODUCT(plasti(2:ndim), plasti(2:ndim))-DOT_PRODUCT(pl&
-                     &asti(2:ndim), W_vect(:ndim-1))**2/W_norm**2))-((mu*2*A2pn+A2pt)*(Apn*plast&
-                     &i(1)**2+Apt*pt_norm**2+2.d0*D1)+(mu**2*Apn+Apt)*(A2pn*plasti(1)**2+A2pt*pt&
-                     &_norm**2))/(2.d0*sqrt(disc)))*(kt+mu**2*kn+At+mu**2*An)+sqrt(disc &
+                     delta(1)-plasti(1))-mu*An*plasti(1))*(mu**2*A2pn+A2Pt)+((1.d0+(mu*Apn*plasti&
+                     &(1)+Apt*ptxw/W_norm**mu)/sqrt(disc))*(mu*A2pn*plasti(1)+A2pt*ptxw/W_norm-Ap&
+                     &t**2/W_norm*(DOT_PRODUCT(plasti(2:ndim), plasti(2:ndim))-DOT_PRODUCT(plasti&
+                     &(2:ndim), W_vect(:ndim-1))**2/W_norm**2))-((mu*2*A2pn+A2pt)*(Apn*plasti(1)*&
+                     &*2+Apt*pt_norm**2+2.d0*D1)+(mu**2*Apn+Apt)*(A2pn*plasti(1)**2+A2pt*pt_norm*&
+                     &*2))/(2.d0*sqrt(disc)))*(kt+mu**2*kn+At+mu**2*An)+sqrt(disc &
                      )*(Apt+mu**2*Apn &
                      )
 !           Calcul de la derivee de delta lambda par rapport a delta_n
             ddlddn = (mu*kn/(kt+mu**2*kn+At+mu**2*An))-ddldalp*dfddn*(1.d0/dfdalp)
 !           Calcul de la derivee de delta lambda par rapport a delta_t
             do i = 2, ndim
-                ddlddt(i-1) = W_vect(i-1)*kt/((kt+mu**2*kn+At+mu**2*An)*W_norm)-ddldalp*dfddt(i-&
-                              &1)*(1.d0/dfdalp)
+                ddlddt(i-1) = W_vect(i-1)*kt/((kt+mu**2*kn+At+mu**2*An)*W_norm)-ddldalp*dfddt(i-1&
+                              &)*(1.d0/dfdalp)
             end do
 !           Expression de delta lambda
             d_lambda = ( &
@@ -829,9 +832,9 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
 !           DSIGMA_T/DDELTA_N
             do i = 2, ndim
                 dsidep(i, 1) = -kt*( &
-                               ddlddn*W_vect(i-1)/W_norm+d_lambda*Apt*dfddn/(W_norm*dfdalp)*(pla&
-                               &sti(i)-DOT_PRODUCT(plasti(2:ndim), W_vect(:ndim-1))*W_vect(i-1)/&
-                               &W_norm**2) &
+                               ddlddn*W_vect(i-1)/W_norm+d_lambda*Apt*dfddn/(W_norm*dfdalp)*(plas&
+                               &ti(i)-DOT_PRODUCT(plasti(2:ndim), W_vect(:ndim-1))*W_vect(i-1)/W_&
+                               &norm**2) &
                                )
             end do
 !           DSIGMA_T/DDELTA_T
@@ -843,10 +846,10 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
                         identity = 0
                     end if
                     dsidep(i, j) = kt*( &
-                                   identity-ddlddt(i-1)*W_vect(j-1)/W_norm-d_lambda/W_norm*(iden&
-                                   &tity*kt+plasti(i)*dfddt(j-1)*Apt/dfdalp-W_vect(i-1)*W_vect(j&
-                                   &-1)*kt/W_norm**2-W_vect(i-1)*dfddt(j-1)*DOT_PRODUCT(plasti(2&
-                                   &:ndim), W_vect(:ndim-1))*Apt/(dfdalp*W_norm**2)) &
+                                   identity-ddlddt(i-1)*W_vect(j-1)/W_norm-d_lambda/W_norm*(ident&
+                                   &ity*kt+plasti(i)*dfddt(j-1)*Apt/dfdalp-W_vect(i-1)*W_vect(j-1&
+                                   &)*kt/W_norm**2-W_vect(i-1)*dfddt(j-1)*DOT_PRODUCT(plasti(2:nd&
+                                   &im), W_vect(:ndim-1))*Apt/(dfdalp*W_norm**2)) &
                                    )
                 end do
             end do
@@ -874,9 +877,9 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
             end do
 !           Calcul de la derivee de G par rapport a alpha
             dgdalp = ( &
-                     A2pn*(kn+An)-2.d0*Apn**2)*(mu*kn*delta(1)-cbar)**2/(mu**2*(kn+An)**3)+(A2pt&
-                     &*(kt+At)-2.d0*Apt**2)*(kt*sqrt(DOT_PRODUCT(plasti(2:ndim), plasti(2:ndim))&
-                     &))**2/((kt+At)**3 &
+                     A2pn*(kn+An)-2.d0*Apn**2)*(mu*kn*delta(1)-cbar)**2/(mu**2*(kn+An)**3)+(A2pt*&
+                     &(kt+At)-2.d0*Apt**2)*(kt*sqrt(DOT_PRODUCT(plasti(2:ndim), plasti(2:ndim))))&
+                     &**2/((kt+At)**3 &
                      )
 !           Calcul de la derivee de delta_pn par rapport a delta_n
             ddpnddn = kn/(kn+An)+(mu*kn*delta(1)-cbar)*Apn/(mu*(kn+An)**2)*dgddn/dgdalp

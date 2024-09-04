@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matr_asse_transpose_conjugate(matas)
 ! person_in_charge: nicolas.tardieu at edf.fr
     implicit none
@@ -30,7 +30,7 @@ subroutine matr_asse_transpose_conjugate(matas)
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
-
+!
     character(len=*) :: matas
 !-----------------------------------------------------------------------
 ! But : transposer une matrice assemblee
@@ -41,18 +41,19 @@ subroutine matr_asse_transpose_conjugate(matas)
     character(len=19) :: matas1
     character(len=3) :: tysca
     integer :: n1, neq, jvalm1, jvalm2, jvaltmp, i
+    blas_int :: b_incx, b_incy, b_n
 !-------------------------------------------------------------------
     call jemarq()
     matas1 = matas
-    ! symetrie
+! symetrie
     call jelira(matas1//'.VALM', 'NUTIOC', n1)
     ASSERT(n1 .eq. 1 .or. n1 .eq. 2)
-    ! reelle ou complexe
+! reelle ou complexe
     call jelira(matas1//'.VALM', 'TYPE', cval=tysca)
-    ! taille des vecteurs
+! taille des vecteurs
     call jelira(jexnum(matas1//'.VALM', 1), 'LONMAX', neq)
-    ! matrice symetrique
-    ! ------------------
+! matrice symetrique
+! ------------------
     if (n1 .eq. 1) then
         if (tysca .eq. 'R') then
             goto 999
@@ -65,16 +66,25 @@ subroutine matr_asse_transpose_conjugate(matas)
             ASSERT(.false.)
         end if
     else
-        ! matrice non-symetrique
-        ! ----------------------
+! matrice non-symetrique
+! ----------------------
         call wkvect('&&matr_transpose.VALM', 'V V '//tysca, neq, jvaltmp)
         call jeveuo(jexnum(matas1//'.VALM', 1), 'E', jvalm1)
         call jeveuo(jexnum(matas1//'.VALM', 2), 'E', jvalm2)
         if (tysca .eq. 'R') then
-            call dcopy(neq, zr(jvalm1), 1, zr(jvaltmp), 1)
-            call dcopy(neq, zr(jvalm2), 1, zr(jvalm1), 1)
-            call dcopy(neq, zr(jvaltmp), 1, zr(jvalm2), 1)
-        elseif (tysca .eq. 'C') then
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvalm1), b_incx, zr(jvaltmp), b_incy)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvalm2), b_incx, zr(jvalm1), b_incy)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvaltmp), b_incx, zr(jvalm2), b_incy)
+        else if (tysca .eq. 'C') then
             call zcopy(neq, zc(jvalm1), 1, zc(jvaltmp), 1)
             call zcopy(neq, zc(jvalm2), 1, zc(jvalm1), 1)
             call zcopy(neq, zc(jvaltmp), 1, zc(jvalm2), 1)
@@ -87,7 +97,7 @@ subroutine matr_asse_transpose_conjugate(matas)
         end if
         call jedetr('&&matr_transpose.VALM')
     end if
-
+!
 999 continue
     call jedema()
 end subroutine

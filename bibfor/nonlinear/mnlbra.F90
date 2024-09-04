@@ -87,7 +87,10 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt, &
 ! ----------------------------------------------------------------------
 ! --- ON RECOPIE LE POINT INITIAL
 ! ----------------------------------------------------------------------
-    call dcopy(ninc, zr(iups), 1, zr(ius), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(iups), b_incx, zr(ius), b_incy)
 ! ----------------------------------------------------------------------
 ! --- ON CALCUL LA BRANCHE
 ! ----------------------------------------------------------------------

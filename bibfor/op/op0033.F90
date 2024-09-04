@@ -267,7 +267,10 @@ subroutine op0033()
             call lcdetf(3, deps, jd)
             jp = jm*jd
         end if
-        call dcopy(nbvari, zr(lvim), 1, zr(lvim2), 1)
+        b_n = to_blas_int(nbvari)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(lvim), b_incx, zr(lvim2), b_incy)
         sigp = 0.d0
         call nmcomp(BEHinteg, fami, kpg, ksp, ndim, &
                     typmod, imate, compor, carcri, instam, &
@@ -289,15 +292,24 @@ subroutine op0033()
 !
 !        INITIALISATION DE L'ALGO DE NEWTON
 !
-    call dcopy(6, sigm, 1, ym, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, sigm, b_incx, ym, b_incy)
     call dscal(6, 1.d0/coef, ym, 1)
-    call dcopy(6, epsm, 1, ym(7), 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, ym(7), b_incy)
 !
     if (pred .eq. 1) then
         dy(:) = 0.d0
         deps(:) = 0.d0
         opt2 = 'RIGI_MECA_TANG'
-        call dcopy(nbvari, zr(lvim), 1, zr(lsvip), 1)
+        b_n = to_blas_int(nbvari)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(lvim), b_incx, zr(lsvip), b_incy)
         ssigp = 0.d0
         call nmcomp(BEHinteg, fami, kpg, ksp, ndim, &
                     typmod, imate, compor, carcri, instam, &
@@ -317,7 +329,10 @@ subroutine op0033()
                     sigm, r, drdy)
     end if
 !        SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
-    call dcopy(12, r, 1, rini, 1)
+    b_n = to_blas_int(12)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, r, b_incx, rini, b_incy)
     call pmimpr(0, instap, indimp, valimp, 0, &
                 epsm, sigm, zr(lvim), nbvari, r, &
                 r8b, r8b)
@@ -339,7 +354,10 @@ subroutine op0033()
         call dscal(12, coefextra, dy, 1)
     else
 !
-        call dcopy(12, r, 1, ddy, 1)
+        b_n = to_blas_int(12)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, r, b_incx, ddy, b_incy)
 !
 !      RESOLUTION DE DRDY*DDY = - R(Y)  CARGAU = 'NCSP'
         cargau = 'NCWP'
@@ -360,14 +378,20 @@ subroutine op0033()
 !
     end if
 !
-    call dcopy(6, dy(7), 1, deps, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, dy(7), b_incx, deps, b_incy)
 !
 !           POUR LE CALCUL DE LA MATRICE TANGENTE PAR PERTURBATION
 400 continue
 !
 !           CALCUL DU RESIDU
     liccvg(2) = 0
-    call dcopy(nbvari, zr(lvim), 1, zr(lvim2), 1)
+    b_n = to_blas_int(nbvari)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(lvim), b_incx, zr(lvim2), b_incy)
     sigp = 0.d0
     call nmcomp(BEHinteg, fami, kpg, ksp, ndim, &
                 typmod, imate, compor, carcri, instam, &
@@ -392,7 +416,10 @@ subroutine op0033()
         goto 400
     end if
 !
-    call dcopy(12, ym, 1, y, 1)
+    b_n = to_blas_int(12)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, ym, b_incx, y, b_incy)
     b_n = to_blas_int(12)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)

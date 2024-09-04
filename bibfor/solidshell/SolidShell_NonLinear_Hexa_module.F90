@@ -81,6 +81,7 @@ contains
         integer :: jvGeom, jvMater
         integer :: jvMatr, jvVect, jvSigmP, jvVariP, jvVariX, jvCodret
         integer :: jvTimeM, jvTimeP, jvSigmM, jvVariM, jvDispM, jvDispIncr
+        blas_int :: b_incx, b_incy, b_n
 !   ------------------------------------------------------------------------------------------------
 !
 !
@@ -122,7 +123,10 @@ contains
         if (behaPara%lVari) then
             call jevech('PVARIPR', 'E', jvVariP)
             call jevech('PVARIMP', 'L', jvVariX)
-            call dcopy(nbIntePoint*nbVari, zr(jvVariX), 1, zr(jvVariP), 1)
+            b_n = to_blas_int(nbIntePoint*nbVari)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvVariX), b_incx, zr(jvVariP), b_incy)
         end if
 !
 ! - Compute
@@ -435,6 +439,7 @@ contains
         real(kind=8) :: tPrev(SSH_SIZE_TENS), tCurr(SSH_SIZE_TENS)
         real(kind=8), dimension(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) :: matrMate, matrGeom, matrTang
         real(kind=8), dimension(SSH_SIZE_TENS, SSH_SIZE_TENS) :: dtde, dsidep
+        blas_int :: b_incx, b_incy, b_n
 !   ------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -518,7 +523,10 @@ contains
             epslIncr = kineHexa%epslCurr%vale-kineHexa%epslPrev%vale
 !
 ! ----- Get "logarithmic" stresses from internal state variables at previous time step
-            call dcopy(2*SSH_NDIM, vim(nbVari-6+1, kpg), 1, tPrev, 1)
+            b_n = to_blas_int(2*SSH_NDIM)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vim(nbVari-6+1, kpg), b_incx, tPrev, b_incy)
 !
 ! ----- Get Cauchy stresses
             do iTens = 1, 6
@@ -544,7 +552,10 @@ contains
 !
 ! ----- Save "logarithmic" stresses in internal state variables
             if (lVari) then
-                call dcopy(2*SSH_NDIM, tCurr, 1, vip(nbVari-6+1, kpg), 1)
+                b_n = to_blas_int(2*SSH_NDIM)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, tCurr, b_incx, vip(nbVari-6+1, kpg), b_incy)
             end if
 !
 ! ----- Compute effective shear modulus for stabilization

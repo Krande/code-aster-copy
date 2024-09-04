@@ -109,8 +109,8 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl, &
         call jelira(matk//'.VALM', 'LONMAX', nzmk, kbid)
         call jeexin(matdrv//'.VALM', iret)
         if (iret .eq. 0) then
-            ndrva = (2*h+1)*nzmk+nchoc*(2*hf+1)+3*((nchoc*(2*hf+1))**2)/4+2*nd*(2*h+1)+nchoc*(2*&
-                    &hf+1)*nchoc*(2*h+1)
+            ndrva = (2*h+1)*nzmk+nchoc*(2*hf+1)+3*((nchoc*(2*hf+1))**2)/4+2*nd*(2*h+1)+nchoc*(2*h&
+                    &f+1)*nchoc*(2*h+1)
         else
             call jelira(jexnum(matdrv//'.VALM', 1), 'LONMAX', ndrva, kbid)
             ndrva = 101*ndrva/100
@@ -334,8 +334,14 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl, &
         call jeveuo(jexnum(matdrv//'.VALM', 1), 'E', ival1)
         call jeveuo(jexnum(matdrv//'.VALM', 2), 'E', ival2)
         call wkvect(numdrv//'.SMOS.SMHC', 'V V S', ndrdv, ismhc)
-        call dcopy(ndrdv, zr(ivat1), 1, zr(ival1), 1)
-        call dcopy(ndrdv, zr(ivat2), 1, zr(ival2), 1)
+        b_n = to_blas_int(ndrdv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivat1), b_incx, zr(ival1), b_incy)
+        b_n = to_blas_int(ndrdv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivat2), b_incx, zr(ival2), b_incy)
         do i = 1, ndrdv
             zi4(ismhc-1+i) = zi(ismct-1+i)
         end do
@@ -363,7 +369,10 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl, &
         call jeveuo(jexnum(matdrv//'.VALM', 2), 'E', ival2)
     end if
     zr(ival1-1+zi(ismdi-1+ninc)) = vecplu(ninc)
-    call dcopy(ninc, vecplu, 1, zr(ival2-1+zi(ismdi-1+ninc-1)+1), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vecplu, b_incx, zr(ival2-1+zi(ismdi-1+ninc-1)+1), b_incy)
 ! ----------------------------------------------------------------------
 ! --- FACTORISATION DE LA MATRICE
 ! ----------------------------------------------------------------------

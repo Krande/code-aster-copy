@@ -126,8 +126,14 @@ subroutine lcesgv(fami, kpg, ksp, ndim, neps, &
 ! -- DEFORMATIONS COURANTES
 !
 !    DEFORMATION, ENDOMMAGEMENT, LAGRANGE ET GRADIENT
-    call dcopy(ndimsi, epsm, 1, eps, 1)
-    call dcopy(ndim, epsm(ndimsi+3), 1, grad, 1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, eps, b_incy)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm(ndimsi+3), b_incx, grad, b_incy)
     apg = epsm(ndimsi+1)
     lag = epsm(ndimsi+2)
 !

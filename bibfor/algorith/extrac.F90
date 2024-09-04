@@ -66,13 +66,19 @@ subroutine extrac(interp, prec, crit, nbinst, ti, &
     prec2 = prec
     if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(1)
     if (abs(temps-ti(1)) .le. prec2) then
-        call dcopy(neq, y(1), 1, xtract, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, y(1), b_incx, xtract, b_incy)
         if (present(index)) index = 1
         goto 9999
     end if
     if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(nbinst)
     if (abs(temps-ti(nbinst)) .le. prec2) then
-        call dcopy(neq, y((nbinst-1)*neq+1), 1, xtract, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, y((nbinst-1)*neq+1), b_incx, xtract, b_incy)
         if (present(index)) index = nbinst
         goto 9999
     end if
@@ -92,7 +98,10 @@ subroutine extrac(interp, prec, crit, nbinst, ti, &
             if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(i)
             if (abs(temps-ti(i)) .le. prec2) then
                 if (present(index)) index = i
-                call dcopy(neq, y((i-1)*neq+1), 1, xtract, 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, y((i-1)*neq+1), b_incx, xtract, b_incy)
                 goto 9999
             end if
         end do
@@ -104,7 +113,10 @@ subroutine extrac(interp, prec, crit, nbinst, ti, &
             if (temps .ge. ti(i) .and. temps .lt. ti(i+1)) then
                 if (present(index)) index = i
                 alpha = (temps-ti(i))/(ti(i+1)-ti(i))
-                call dcopy(neq, y((i-1)*neq+1), 1, xtract, 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, y((i-1)*neq+1), b_incx, xtract, b_incy)
                 call dscal(neq, (1.d0-alpha), xtract, 1)
                 b_n = to_blas_int(neq)
                 b_incx = to_blas_int(1)

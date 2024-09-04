@@ -175,7 +175,10 @@ subroutine gcpc(m, in, ip, ac, inpc, &
     if (irep .eq. 0) then
 !       ---- INITIALISATION X1 = 0    ===>   CALCUL DE R1 = A*X0 - B
         call r8inir(m, zero, xp, 1)
-        call dcopy(m, bf, 1, r, 1)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, bf, b_incx, r, b_incy)
         call dscal(m, -1.d0, r, 1)
         anorm = bnorm
         epsix = epsi*anorm
@@ -223,7 +226,10 @@ subroutine gcpc(m, in, ip, ac, inpc, &
             call gcldm1(m, inpc, ippc, acpc, r, &
                         rr, perm, xtrav, ytrav)
         else if ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
-            call dcopy(m, r, 1, rr, 1)
+            b_n = to_blas_int(m)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, r, b_incx, rr, b_incy)
 !         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
             call amumph('RESOUD', solvbd, matas, rr, [cbid], &
                         ' ', 1, ier, .true._1)
@@ -247,7 +253,10 @@ subroutine gcpc(m, in, ip, ac, inpc, &
             call daxpy(b_n, 1.d0, rr, b_incx, p, &
                        b_incy)
         else
-            call dcopy(m, rr, 1, p, 1)
+            b_n = to_blas_int(m)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rr, b_incx, p, b_incy)
         end if
         rrrim1 = rrri
 !

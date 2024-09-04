@@ -58,7 +58,7 @@ module HHO_postpro_module
 ! Post-processing function to vizualize HHO results
 !
 ! --------------------------------------------------------------------------------------------------
-    public  :: hhoPostMeca, hhoPostDeplMeca, hhoPostTher, hhoPostTherElga
+    public :: hhoPostMeca, hhoPostDeplMeca, hhoPostTher, hhoPostTherElga
     private :: hhoPostDeplMecaOP
 !
 contains
@@ -70,9 +70,9 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
-        integer, intent(in)         :: nbnodes
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        integer, intent(in) :: nbnodes
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -114,9 +114,10 @@ contains
         do idim = 1, ndim
             sol_T_dim(1:comp_dim) = sol_T(1+(idim-1)*comp_dim:idim*comp_dim)
             do ino = 1, nbnodes
-                post_sol(idim, ino) = hhoEvalScalCell(hhoBasisCell, &
-                                                      hhoData%cell_degree(), &
-                                                      hhoCell%coorno(1:3, ino), sol_T_dim, comp_dim)
+                post_sol(idim, ino) = hhoEvalScalCell( &
+                                      hhoBasisCell, hhoData%cell_degree(), &
+                                      hhoCell%coorno(1:3, ino), sol_T_dim, comp_dim &
+                                      )
             end do
         end do
 !
@@ -187,7 +188,8 @@ contains
 !
 ! --- Init fields
 !
-        call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
+        call inical(nbin, lpain, lchin, nbout, lpaout, &
+                    lchout)
 !
 ! ---- Geometry field
 !
@@ -210,11 +212,13 @@ contains
 ! --- Compute
 !
         call calcul('S', option, ligrel_model, nbin, lchin, &
-                    lpain, nbout, lchout, lpaout, base, 'OUI')
+                    lpain, nbout, lchout, lpaout, base, &
+                    'OUI')
 !
 ! --- Convert to disp_hho_depl
 !
-        call chpchd(field_elno, 'NOEU', celmod, 'OUI', 'V', field_noeu)
+        call chpchd(field_elno, 'NOEU', celmod, 'OUI', 'V', &
+                    field_noeu)
         call detrsd('CHAMP_GD', disp_hho_depl(1:19))
         call copisd('CHAMP_GD', 'G', field_noeu, disp_hho_depl(1:19))
         call detrsd('CHAMP_GD', field_noeu)
@@ -230,7 +234,7 @@ contains
 !
         character(len=24), intent(in) :: model_hho
         character(len=8), intent(in) :: result_hho
-        integer, intent(in)           :: nume_store
+        integer, intent(in) :: nume_store
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -260,9 +264,11 @@ contains
 !
 ! ----- Get output fields
 !
-        call rsexch(' ', result_hho, 'DEPL', nume_store, cham, iret)
+        call rsexch(' ', result_hho, 'DEPL', nume_store, cham, &
+                    iret)
         ASSERT(iret == 0)
-        call rsexch(' ', result_hho, 'HHO_DEPL', nume_store, cham_hho, iret)
+        call rsexch(' ', result_hho, 'HHO_DEPL', nume_store, cham_hho, &
+                    iret)
         ASSERT(iret == 100)
 !
 ! -----  Compute HHO field at nodes (saved in DEPL)
@@ -272,9 +278,11 @@ contains
 !
 ! -----  Compute HHO field at nodes (saved in VITE) - if exists
 !
-        call rsexch(' ', result_hho, 'VITE', nume_store, cham, iret)
+        call rsexch(' ', result_hho, 'VITE', nume_store, cham, &
+                    iret)
         if (iret == 0) then
-            call rsexch(' ', result_hho, 'HHO_VITE', nume_store, cham_hho, iret)
+            call rsexch(' ', result_hho, 'HHO_VITE', nume_store, cham_hho, &
+                        iret)
             ASSERT(iret == 100)
             call hhoPostDeplMecaOP(model_hho, cham, cham_hho)
             call rsnoch(result_hho, 'HHO_VITE', nume_store)
@@ -282,9 +290,11 @@ contains
 !
 ! -----  Compute HHO field at nodes (saved in ACCE) - if exists
 !
-        call rsexch(' ', result_hho, 'ACCE', nume_store, cham, iret)
+        call rsexch(' ', result_hho, 'ACCE', nume_store, cham, &
+                    iret)
         if (iret == 0) then
-            call rsexch(' ', result_hho, 'HHO_ACCE', nume_store, cham_hho, iret)
+            call rsexch(' ', result_hho, 'HHO_ACCE', nume_store, cham_hho, &
+                        iret)
             ASSERT(iret == 100)
             call hhoPostDeplMecaOP(model_hho, cham, cham_hho)
             call rsnoch(result_hho, 'HHO_ACCE', nume_store)
@@ -301,9 +311,9 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
-        integer, intent(in)         :: nbnodes
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        integer, intent(in) :: nbnodes
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - thermics
@@ -339,8 +349,10 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do ino = 1, nbnodes
-            post_sol(ino) = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                            hhoCell%coorno(1:3, ino), sol_T, cbs)
+            post_sol(ino) = hhoEvalScalCell( &
+                            hhoBasisCell, hhoData%cell_degree(), hhoCell%coorno(1:3, ino), sol_T, &
+                            cbs &
+                            )
         end do
 !
 ! --- Copy of post_sol in PTEMP_R ('OUT' to fill)
@@ -356,8 +368,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
         type(HHO_Quadrature), intent(in) :: hhoQuad
 !
 ! --------------------------------------------------------------------------------------------------
@@ -392,8 +404,10 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do ipg = 1, hhoQuad%nbQuadPoints
-            post_sol(ipg) = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                            hhoQuad%points(1:3, ipg), sol_T, cbs)
+            post_sol(ipg) = hhoEvalScalCell( &
+                            hhoBasisCell, hhoData%cell_degree(), hhoQuad%points(1:3, ipg), sol_T, &
+                            cbs &
+                            )
         end do
 !
 ! --- Copy of post_sol in PTEMP_R ('OUT' to fill)

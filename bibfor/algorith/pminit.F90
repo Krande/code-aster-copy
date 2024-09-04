@@ -21,9 +21,9 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
                   nbpar, iforta, nompar, typpar, angl_naut, &
                   pgl, irota, epsm, sigm, vim, &
                   vip, vr, defimp, coef, indimp, &
-                  fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara, &
-                  pred, matrel, imptgt, option, nomvi, &
-                  nbvita, sderro)
+                  fonimp, cimpo, kel, sddisc, ds_conv, &
+                  ds_algopara, pred, matrel, imptgt, option, &
+                  nomvi, nbvita, sderro)
 !
     use NonLin_Datastructure_type
 !
@@ -109,9 +109,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     character(len=4), parameter :: nomgrd(9) = (/'F11', 'F12', 'F13', &
                                                  'F21', 'F22', 'F23', &
                                                  'F31', 'F32', 'F33'/)
-    real(kind=8), parameter :: id(9) = (/1.d0, 0.d0, 0.d0, &
-                                         0.d0, 1.d0, 0.d0, &
-                                         0.d0, 0.d0, 1.d0/)
+    real(kind=8), parameter :: id(9) = (/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/)
     character(len=4) :: optgt
     character(len=8) :: typmod(2), k8b, table, fonimp(9), fongrd(9), f0, vk8(2)
     character(len=8) :: foneps(6), fonsig(6), typpar(*), valef, nomvi(*)
@@ -125,6 +123,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     real(kind=8) :: angeul(3), dsidep(36)
     real(kind=8) :: sigini(6), epsini(6), valimp(9)
     aster_logical :: limpex
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -136,16 +135,16 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     rac2 = sqrt(2.d0)
     pgl = 0.d0
     valimp = 0.d0
-
+!
 ! - Read parameters for convergence
     call nmdocn(ds_conv)
-
+!
 ! - Read parameters for algorithm management
     call nmdomt(ds_algopara)
-
+!
 ! - Create datastructure for events in algorithm
     call nmcrga(sderro)
-
+!
 ! - Initializations for convergence management
     call nonlinDSConvergenceInit(ds_conv, sderro)
 !
@@ -262,7 +261,10 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     if (ncmp .eq. 6) then
         call r8inir(9, 0.d0, epsm, 1)
     else
-        call dcopy(9, id, 1, epsm, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, id, b_incx, epsm, b_incy)
     end if
     call r8inir(6, 0.d0, sigm, 1)
     call r8inir(nbvari, 0.d0, vim, 1)
@@ -400,11 +402,12 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
         end do
         defimp = -1
     end if
-
+!
 !  RECUPERER LES VALEURS INITIALES DE F "GRAD_IMPOSE"
     if (igrad .eq. 9) then
         do i = 1, 9
-            call fointe('F', fonimp(i), 1, ['INST'], [instam], valimp(i), ier)
+            call fointe('F', fonimp(i), 1, ['INST'], [instam], &
+                        valimp(i), ier)
         end do
     end if
 !
@@ -415,26 +418,41 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 ! CONSTRUCTION DES VECTEURS DE DEFORMATION ET CONTRAINTES
 ! RETIRE LE TERME EN RAC2 SUR COMPOSANTES DE CISAILLEMENT
 ! PUIS RECOPIE DANS LA TABLE DES VECTEURS SIGINI ET EPSINI
-
+!
         if (igrad .eq. 9) then
-            call dcopy(ncmp, valimp, 1, vr(2), 1)
+            b_n = to_blas_int(ncmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, valimp, b_incx, vr(2), b_incy)
         else
             epsini(1:6) = epsm(1:6)
             call dscal(3, 1.d0/rac2, epsini(4), 1)
-            call dcopy(ncmp, epsini, 1, vr(2), 1)
+            b_n = to_blas_int(ncmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, epsini, b_incx, vr(2), b_incy)
         end if
-
+!
         sigini(1:6) = sigm(1:6)
         call dscal(3, 1.d0/rac2, sigini(4), 1)
-        call dcopy(6, sigini, 1, vr(ncmp+2), 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigini, b_incx, vr(ncmp+2), b_incy)
         vr(1+ncmp+6+1) = 0.d0
         vr(1+ncmp+6+2) = 0.d0
-        call dcopy(nbvita, vim, 1, vr(1+ncmp+6+3), 1)
+        b_n = to_blas_int(nbvita)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vim, b_incx, vr(1+ncmp+6+3), b_incy)
         vr(1) = instam
 !        ajout KTGT
         if (imptgt .eq. 1) then
             call r8inir(36, 0.d0, dsidep, 1)
-            call dcopy(36, dsidep, 1, vr(1+6+6+3+nbvari), 1)
+            b_n = to_blas_int(36)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, dsidep, b_incx, vr(1+6+6+3+nbvari), b_incy)
         end if
         vr(nbpar) = 0
         call tbajli(table, nbpar, nompar, [0], vr, &
@@ -445,13 +463,15 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
         do i = 1, ncmp
             vr(2) = epsm(i)
             vk8(2) = nomeps(i)
-            call tbajli(table, nbpar, nompar, [0], vr, [cbid], vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr, &
+                        [cbid], vk8, 0)
         end do
         vk8(1) = 'SIGM'
         do i = 1, ncmp
             vr(2) = sigm(i)
             vk8(2) = nomsig(i)
-            call tbajli(table, nbpar, nompar, [0], vr, [cbid], vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr, &
+                        [cbid], vk8, 0)
         end do
         vk8(1) = 'VARI'
         do i = 1, nbvita
@@ -459,7 +479,8 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
             vk8(2) (1:1) = 'V'
             call codent(i, 'G', vk8(2) (2:8))
             nomvi(i) = vk8(2)
-            call tbajli(table, nbpar, nompar, [0], vr, [cbid], vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr, &
+                        [cbid], vk8, 0)
         end do
     end if
 !     ----------------------------------------
@@ -468,7 +489,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
     instin = r8vide()
     call nmcrli(instin, lisins, sddisc)
-
+!
 !
 !
 !     ----------------------------------------

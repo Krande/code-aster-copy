@@ -111,11 +111,17 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
 ! ----------------------------------------------------------------------
 ! --- ON INSERE LE VECTEUR INITIAL
 ! ----------------------------------------------------------------------
-    call dcopy(ninc, zr(ivecu0), 1, zr(iups), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivecu0), b_incx, zr(iups), b_incy)
 ! ----------------------------------------------------------------------
 ! --- ON INSERE LE VECTEUR CORRESPONDANT AU PREMIER ORDRE DE LA SERIE
 ! ----------------------------------------------------------------------
-    call dcopy(ninc, zr(itang), 1, zr(iups+ninc), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(itang), b_incx, zr(iups+ninc), b_incy)
 ! ----------------------------------------------------------------------
 ! --- ON CALCUL LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
@@ -138,9 +144,15 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
 !       CALCUL DU SECOND MEMBRE
         do r = 1, p-1
 !         VECU1 = UPS(:,R)
-            call dcopy(ninc, zr(iups+r*ninc), 1, zr(ivecu1), 1)
+            b_n = to_blas_int(ninc)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(iups+r*ninc), b_incx, zr(ivecu1), b_incy)
 !         VECUI = UPS(:,P-R)
-            call dcopy(ninc, zr(iups+(p-r)*ninc), 1, zr(ivecu2), 1)
+            b_n = to_blas_int(ninc)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(iups+(p-r)*ninc), b_incx, zr(ivecu2), b_incy)
 !         CALCULE DE Q(UPS(:,R),UPS(:,P-R))
             call mnlqnl(imat, xcdl, parcho, adime, xvecu1, &
                         xvecu2, ninc, nd, nchoc, h, &
@@ -157,7 +169,10 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
         call resoud(matdrv, ' ', solveu, ' ', 1, &
                     ' ', ' ', 'v', fpnl, [cbid], &
                     ' ', .false._1, 0, iret)
-        call dcopy(ninc, fpnl, 1, zr(iups+p*ninc), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fpnl, b_incx, zr(iups+p*ninc), b_incy)
     end do
 ! ----------------------------------------------------------------------
 ! --- REMISE A ZERO DES VECTEURS TEMPORAIRES
@@ -176,7 +191,10 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
         alpha(k) = ddot(ninc, zr(iups+(ordman-k+2-1)*ninc), 1, zr(iups+(ordman-k+1-1)*ninc), 1)
         alpha(k) = alpha(k)/ddot(ninc, zr(iups+(ordman-k+2-1)*ninc), 1, zr(iups+(ordman-k+2-1)*ni&
                    &nc), 1)
-        call dcopy(ninc, zr(iups+(ordman-k+1-1)*ninc), 1, zr(ivecu1), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(iups+(ordman-k+1-1)*ninc), b_incx, zr(ivecu1), b_incy)
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -195,7 +213,10 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
         call dscal(ninc, 0.d0, zr(ivecu1), 1)
         ac = ddot(ninc, zr(iups+ordman*ninc), 1, zr(iups+(ordman-1)*ninc), 1)
         ac = ac/ddot(ninc, zr(iups+ordman*ninc), 1, zr(iups+ordman*ninc), 1)
-        call dcopy(ninc, zr(iups+ordman*ninc), 1, zr(ivecu1), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(iups+ordman*ninc), b_incx, zr(ivecu1), b_incy)
         call dscal(ninc, ac**ordman, zr(ivecu1), 1)
         nudom = dnrm2(ninc, zr(ivecu1), 1)
         do k = 1, ordman
@@ -220,9 +241,15 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
         call dscal(ninc, 0.d0, zr(ivecu1), 1)
         call dscal(ninc, 0.d0, zr(ivecu2), 1)
 ! ---   VECU1 = UPS(:,R+1)
-        call dcopy(ninc, zr(iups+r*ninc), 1, zr(ivecu1), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(iups+r*ninc), b_incx, zr(ivecu1), b_incy)
 ! ---   VECU2 = UPS(:,ORDMAN+2-R)
-        call dcopy(ninc, zr(iups+(ordman+1-r)*ninc), 1, zr(ivecu2), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(iups+(ordman+1-r)*ninc), b_incx, zr(ivecu2), b_incy)
 ! ---   Q(VECU1,VECU2)
         call mnlqnl(imat, xcdl, parcho, adime, xvecu1, &
                     xvecu2, ninc, nd, nchoc, h, &

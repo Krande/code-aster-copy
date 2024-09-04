@@ -73,7 +73,10 @@ subroutine te0008(option, nomte)
 !
 ! - Get input field
     call jevech('PGEOMER', 'L', igeom)
-    call dcopy(nbinco, zr(igeom), 1, geo, 1)
+    b_n = to_blas_int(nbinco)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(igeom), b_incx, geo, b_incy)
 !
 ! - Compute
     if (option .eq. 'FORC_NODA') then
@@ -95,7 +98,10 @@ subroutine te0008(option, nomte)
         call bsigmc(nno, ndim, nbsig, npg, ipoids, &
                     ivf, idfde, geo, nharm, zr(jvSief), &
                     bsigm)
-        call dcopy(nbinco, bsigm, 1, zr(ivectu), 1)
+        b_n = to_blas_int(nbinco)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, bsigm, b_incx, zr(ivectu), b_incy)
 !
     else if (option .eq. 'REFE_FORC_NODA') then
         call terefe('SIGM_REFE', 'MECA_ISO', sigref)

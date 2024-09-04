@@ -359,7 +359,10 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                                                                             iret)
                                                               call vtcopy(cham19, chamn2, 'F', iret)
                                                         call jeveuo(chamn2//'.VALE', 'L', vr=nlval2)
-                                                            call dcopy(neq, nlval1, 1, zr(lvale), 1)
+                                                                b_n = to_blas_int(neq)
+                                                                b_incx = to_blas_int(1)
+                                                                b_incy = to_blas_int(1)
+                                                  call dcopy(b_n, nlval1, b_incx, zr(lvale), b_incy)
                                                          call dscal(neq, (1.d0-alpha), zr(lvale), 1)
                                                                 b_n = to_blas_int(neq)
                                                                 b_incx = to_blas_int(1)
@@ -397,7 +400,10 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                                             end if
 !
                                             if (iinteg .eq. 2) then
-                                                call dcopy(neq, zr(iforc1), 1, zr(iforc2), 1)
+                                                b_n = to_blas_int(neq)
+                                                b_incx = to_blas_int(1)
+                                                b_incy = to_blas_int(1)
+                                             call dcopy(b_n, zr(iforc1), b_incx, zr(iforc2), b_incy)
                                                 call fteta(theta, neq, forc0, zr(iforc1))
                                             end if
 !
@@ -419,7 +425,10 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                                             call copisd('CHAMP_GD', 'V', chsol(1:19), force1(1:19))
                                             call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
                                             call detrsd('CHAMP_GD', chsol)
-                                            call dcopy(neq, zr(iforc1), 1, depl1, 1)
+                                            b_n = to_blas_int(neq)
+                                            b_incx = to_blas_int(1)
+                                            b_incy = to_blas_int(1)
+                                            call dcopy(b_n, zr(iforc1), b_incx, depl1, b_incy)
 !
 !====
 ! 7. CALCUL DES DEPLACEMENTS,VITESSES ET ACCELERATIONS
@@ -465,14 +474,29 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 ! 9. TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
 !====
 !
-                                            call dcopy(neq, depl1, 1, dep0, 1)
-                                            call dcopy(neq, vite1, 1, vit0, 1)
-                                            call dcopy(neq, acce1, 1, acc0, 1)
+                                            b_n = to_blas_int(neq)
+                                            b_incx = to_blas_int(1)
+                                            b_incy = to_blas_int(1)
+                                            call dcopy(b_n, depl1, b_incx, dep0, b_incy)
+                                            b_n = to_blas_int(neq)
+                                            b_incx = to_blas_int(1)
+                                            b_incy = to_blas_int(1)
+                                            call dcopy(b_n, vite1, b_incx, vit0, b_incy)
+                                            b_n = to_blas_int(neq)
+                                            b_incx = to_blas_int(1)
+                                            b_incy = to_blas_int(1)
+                                            call dcopy(b_n, acce1, b_incx, acc0, b_incy)
 !
                                             if (iinteg .eq. 2) then
-                                                call dcopy(neq, zr(iforc2), 1, forc0, 1)
+                                                b_n = to_blas_int(neq)
+                                                b_incx = to_blas_int(1)
+                                                b_incy = to_blas_int(1)
+                                                call dcopy(b_n, zr(iforc2), b_incx, forc0, b_incy)
                                             else
-                                                call dcopy(neq, zr(iforc1), 1, forc0, 1)
+                                                b_n = to_blas_int(neq)
+                                                b_incx = to_blas_int(1)
+                                                b_incy = to_blas_int(1)
+                                                call dcopy(b_n, zr(iforc1), b_incx, forc0, b_incy)
                                             end if
 !
 !

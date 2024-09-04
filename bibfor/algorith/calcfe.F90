@@ -48,8 +48,14 @@ subroutine calcfe(nr, ndt, nvi, vind, df, &
     iret = 0
     iopt = 2
 !
-    call dcopy(9, vind(nvi-3-18+10), 1, fem, 1)
-    call dcopy(9, vind(nvi-3-18+1), 1, fpm, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vind(nvi-3-18+10), b_incx, fem, b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vind(nvi-3-18+1), b_incx, fpm, b_incy)
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
@@ -63,7 +69,10 @@ subroutine calcfe(nr, ndt, nvi, vind, df, &
 !
     dffe = matmul(df, fem)
 !
-    call dcopy(9, gamsns, 1, dfp, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, gamsns, b_incx, dfp, b_incy)
 !
     if (iopt .eq. 1) then
 !
@@ -104,7 +113,10 @@ subroutine calcfe(nr, ndt, nvi, vind, df, &
 !
 !        linearisation directe de exp(-dgamma.ms x ns)
 !
-        call dcopy(9, dfp, 1, dfpm, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dfp, b_incx, dfpm, b_incy)
         call dscal(9, -1.d0, dfpm, 1)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)

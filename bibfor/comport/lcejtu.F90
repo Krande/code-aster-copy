@@ -126,8 +126,14 @@ subroutine lcejtu(BEHinteg, fami, kpg, ksp, ndim, &
     if (resi) inst = instap
 !
 ! SAUT DE DEPLACEMENT A L'INSTANT ACTUEL
-    call dcopy(ndim, epsm, 1, delta, 1)
-    call dcopy(ndim, deps, 1, ddelta, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, delta, b_incy)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, deps, b_incx, ddelta, b_incy)
     if (resi) then
         b_n = to_blas_int(ndim)
         b_incx = to_blas_int(1)
@@ -206,8 +212,8 @@ subroutine lcejtu(BEHinteg, fami, kpg, ksp, ndim, &
             ASSERT(.False.)
         end if
 ! SEUIL DE PROPAGATION DE LA FISSURE A T+ (DE TYPE BK)
-        delta_f = 1/delta_0*( &
-                  delta_N_0*delta_N_f+(delta_T_0*delta_T_f-delta_N_0*delta_N_f)*b**eta)
+        delta_f = 1/delta_0*(delta_N_0*delta_N_f+(delta_T_0*delta_T_f-delta_N_0*delta_N_f)*b**eta &
+                             )
         ASSERT(delta_f .gt. r8prem())
     else
 ! CAS PARTICULIERS SI ON (RE)PASSE PAR UN ETAT DE SAUT NUL :
@@ -283,9 +289,9 @@ subroutine lcejtu(BEHinteg, fami, kpg, ksp, ndim, &
                 sigp(i) = (1-d)*k*delta(i)
             end do
         else if (type_comp .eq. 'COMP_INCR') then
-            sigp(1) = sigm(1)-(d*k*max(0.d0, -delta(1))*delta(1)-vim(3)*k*max(0.d0, -(delta(1)-&
-                      &ddelta(1)))*(delta(1)-ddelta(1)))+(1-d)*k*delta(1)-(1-vim(3))*k*(delta(1)&
-                      &-ddelta(1))
+            sigp(1) = sigm(1)-(d*k*max(0.d0, -delta(1))*delta(1)-vim(3)*k*max(0.d0, -(delta(1)-dd&
+                      &elta(1)))*(delta(1)-ddelta(1)))+(1-d)*k*delta(1)-(1-vim(3))*k*(delta(1)-dd&
+                      &elta(1))
             do i = 2, ndim
                 sigp(i) = sigm(i)+(1-d)*k*delta(i)-(1-vim(3))*k*(delta(i)-ddelta(i))
             end do

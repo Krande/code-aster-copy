@@ -63,7 +63,10 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate, &
 !
 ! CALCUL DU SAUT EN T+
 !
-    call dcopy(ndim, am, 1, a, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, am, b_incx, a, b_incy)
     if (resi) then
         b_n = to_blas_int(ndim)
         b_incx = to_blas_int(1)

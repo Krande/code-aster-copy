@@ -214,9 +214,9 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
     beta2 = n1n2*alpha1-n1n1*alpha2
 !
     excent = ( &
-             plan1(1)*beta1+plan2(1)*beta2)*(plan1(1)*beta1+plan2(1)*beta2)+(plan1(2)*beta1+plan&
-             &2(2)*beta2)*(plan1(2)*beta1+plan2(2)*beta2)+(plan1(3)*beta1+plan2(3)*beta2)*(plan1&
-             &(3)*beta1+plan2(3)*beta2 &
+             plan1(1)*beta1+plan2(1)*beta2)*(plan1(1)*beta1+plan2(1)*beta2)+(plan1(2)*beta1+plan2&
+             &(2)*beta2)*(plan1(2)*beta1+plan2(2)*beta2)+(plan1(3)*beta1+plan2(3)*beta2)*(plan1(3&
+             &)*beta1+plan2(3)*beta2 &
              )
     excent = dble(sqrt(excent))/(n1n1*n2n2-n1n2*n1n2)
     dx3d(1) = x3dca(1)-x3d1(1)
@@ -233,7 +233,10 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
     end if
     if (dble(abs(excent))/nrm2 .lt. epsg) excent = 0.0d0
 !
-    call dcopy(3, x3dca(1), 1, x3dp(1), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, x3dca(1), b_incx, x3dp(1), b_incy)
     if (excent .gt. 0.0d0) then
         normal(1) = (plan1(1)*beta1+plan2(1)*beta2)/(n1n1*n2n2-n1n2*n1n2)
         normal(2) = (plan1(2)*beta1+plan2(2)*beta2)/(n1n1*n2n2-n1n2*n1n2)

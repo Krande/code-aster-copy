@@ -57,7 +57,10 @@ subroutine pipefi(npg, lgpg, mate, geom, vim, &
 !
 ! DEPLACEMENT U(ETA) = UP + ETA * UD
 !
-    call dcopy(8, deplm, 1, up, 1)
+    b_n = to_blas_int(8)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, deplm, b_incx, up, b_incy)
     b_n = to_blas_int(8)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
@@ -68,7 +71,10 @@ subroutine pipefi(npg, lgpg, mate, geom, vim, &
     b_incy = to_blas_int(1)
     call daxpy(b_n, 1.d0, ddepl0, b_incx, up, &
                b_incy)
-    call dcopy(8, ddepl1, 1, ud, 1)
+    b_n = to_blas_int(8)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, ddepl1, b_incx, ud, b_incy)
 ! BOUCLE SUR LES POINTS DE GAUSS :
 !
     do kpg = 1, npg

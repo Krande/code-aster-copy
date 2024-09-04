@@ -881,7 +881,10 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                     call utmess(kmsg, 'ALGELINE5_61', si=vali(1), nr=4, valr=valr)
                 end if
                 zr(lvalpr+im1-decal) = zr(qrar+im1)/zr(qrba+im1)
-                call dcopy(qrn, zr(lvec3+im1*qrn), 1, zr(lvec+(im1-decal)*qrn), 1)
+                b_n = to_blas_int(qrn)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(lvec3+im1*qrn), b_incx, zr(lvec+(im1-decal)*qrn), b_incy)
                 if (lqze) zr(ics1+im1-decal) = zr(icscal+im1)
             else
                 decal = decal+1
@@ -964,7 +967,10 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 end if
             else
                 zr(lvalpr+im1-decal) = zr(lvalpr+im1)
-                call dcopy(qrn, zr(iqrn+im1*qrn), 1, zr(lvec+(im1-decal)*qrn), 1)
+                b_n = to_blas_int(qrn)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(iqrn+im1*qrn), b_incx, zr(lvec+(im1-decal)*qrn), b_incy)
             end if
         end do
     end if
@@ -1030,7 +1036,10 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 if ((vpcour .ge. vpinf) .and. (vpcour .le. vpmax)) then
                     j = j+1
                     zr(lvalpr-1+j) = vpcour
-                    call dcopy(qrn, zr(lvec+(i-1)*qrn), 1, zr(lvec+(j-1)*qrn), 1)
+                    b_n = to_blas_int(qrn)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(lvec+(i-1)*qrn), b_incx, zr(lvec+(j-1)*qrn), b_incy)
                 end if
             end do
             nconv = j

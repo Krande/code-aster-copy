@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine te0239(option, nomte)
     real(kind=8) :: cisail, zic, coef, rhos, rhot, epsx3, gsx3, sgmsx3
     real(kind=8) :: zmin, hic, depsx3
     integer :: itab(8), jnbspi
-    character(len=8) ::  nompar, elrefe
+    character(len=8) :: nompar, elrefe
     real(kind=8) :: tempm
     real(kind=8) :: dfdx(3), zero, un, deux
     real(kind=8) :: test, test2, eps, nu, h, cosa, sina, cour, r
@@ -90,6 +90,7 @@ subroutine te0239(option, nomte)
     data zero, un, deux/0.d0, 1.d0, 2.d0/
     character(len=16) :: defo_comp, rela_comp, rela_cpla
     aster_logical :: lVect, lMatr, lVari, lSigm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,8 +108,8 @@ subroutine te0239(option, nomte)
     call behaviourInit(BEHinteg)
 !
     call elref1(elrefe)
-    call elrefe_info(fami='RIGI', nno=nno, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfdk)
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, jpoids=ipoids, jvf=ivf, &
+                     jdfde=idfdk)
 !
 !       TYPMOD(1) = 'C_PLAN  '
 !       TYPMOD(2) = '        '
@@ -126,7 +127,8 @@ subroutine te0239(option, nomte)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=itab)
 !      LGPG = MAX(ITAB(6),1)*ITAB(7) resultats faux sur Bull avec ifort
     if (itab(6) .le. 1) then
         lgpg = itab(7)
@@ -144,10 +146,8 @@ subroutine te0239(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Properties of behaviour
 !
@@ -194,7 +194,10 @@ subroutine te0239(option, nomte)
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(ndimv, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(ndimv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 !
     call r8inir(81, 0.d0, rtange, 1)
@@ -218,7 +221,8 @@ subroutine te0239(option, nomte)
 !===============================================================
 !     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 !     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-        call moytpg('RIGI', kp, 3, '-', tempm, iret)
+        call moytpg('RIGI', kp, 3, '-', tempm, &
+                    iret)
         nbpar = 1
         nompar = 'TEMP'
         call rcvalb('RIGI', kp, 1, '-', zi(imate), &
@@ -300,11 +304,10 @@ subroutine te0239(option, nomte)
                 end do
 !
 !  APPEL AU COMPORTEMENT
-                call comcq1('RIGI', kp, ksp, zi(imate), &
-                            zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), eps2d, &
-                            deps2d, sigm2d, zr(ivarim+k2), &
-                            option, angmas, sigp2d, zr(ivarip+k2), dsidep, &
-                            cod, BEHinteg)
+                call comcq1('RIGI', kp, ksp, zi(imate), zk16(icompo), &
+                            zr(icarcr), zr(iinstm), zr(iinstp), eps2d, deps2d, &
+                            sigm2d, zr(ivarim+k2), option, angmas, sigp2d, &
+                            zr(ivarip+k2), dsidep, cod, BEHinteg)
                 if (lSigm) then
                     do i = 1, 4
                         zr(icontp+k1+i-1) = sigp2d(i)

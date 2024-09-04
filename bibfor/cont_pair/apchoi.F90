@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine apchoi(dist, dist_mini, elem_indx, elem_indx_mini, tau1, &
                   tau1_mini, tau2, tau2_mini, ksi1, ksi1_mini, &
                   ksi2, ksi2_mini, proj_stat, proj_stat_mini, vect_pm, &
@@ -79,6 +79,7 @@ subroutine apchoi(dist, dist_mini, elem_indx, elem_indx_mini, tau1, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: ecan
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,9 +99,18 @@ subroutine apchoi(dist, dist_mini, elem_indx, elem_indx_mini, tau1, &
         proj_stat_mini = proj_stat
         ksi1_mini = ksi1
         ksi2_mini = ksi2
-        call dcopy(3, tau1, 1, tau1_mini, 1)
-        call dcopy(3, tau2, 1, tau2_mini, 1)
-        call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tau1, b_incx, tau1_mini, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tau2, b_incx, tau2_mini, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vect_pm, b_incx, vect_pm_mini, b_incy)
     else
 ! ----- Next projections
         if (proj_stat_mini .ne. 0) then
@@ -111,9 +121,18 @@ subroutine apchoi(dist, dist_mini, elem_indx, elem_indx_mini, tau1, &
                 proj_stat_mini = proj_stat
                 ksi1_mini = ksi1
                 ksi2_mini = ksi2
-                call dcopy(3, tau1, 1, tau1_mini, 1)
-                call dcopy(3, tau2, 1, tau2_mini, 1)
-                call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, tau1, b_incx, tau1_mini, b_incy)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, tau2, b_incx, tau2_mini, b_incy)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, vect_pm, b_incx, vect_pm_mini, b_incy)
             else
                 if (dist .lt. dist_mini) then
                     dist_mini = dist
@@ -121,9 +140,18 @@ subroutine apchoi(dist, dist_mini, elem_indx, elem_indx_mini, tau1, &
                     proj_stat_mini = proj_stat
                     ksi1_mini = ksi1
                     ksi2_mini = ksi2
-                    call dcopy(3, tau1, 1, tau1_mini, 1)
-                    call dcopy(3, tau2, 1, tau2_mini, 1)
-                    call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, tau1, b_incx, tau1_mini, b_incy)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, tau2, b_incx, tau2_mini, b_incy)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, vect_pm, b_incx, vect_pm_mini, b_incy)
                 end if
             end if
         else
@@ -135,9 +163,18 @@ subroutine apchoi(dist, dist_mini, elem_indx, elem_indx_mini, tau1, &
                     proj_stat_mini = proj_stat
                     ksi1_mini = ksi1
                     ksi2_mini = ksi2
-                    call dcopy(3, tau1, 1, tau1_mini, 1)
-                    call dcopy(3, tau2, 1, tau2_mini, 1)
-                    call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, tau1, b_incx, tau1_mini, b_incy)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, tau2, b_incx, tau2_mini, b_incy)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, vect_pm, b_incx, vect_pm_mini, b_incy)
                 end if
             end if
         end if

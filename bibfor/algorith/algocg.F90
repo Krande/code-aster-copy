@@ -280,9 +280,18 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass, &
 !
 ! --- MISE A JOUR DES GRADIENTS ET DES DIRECTIONS DE RECHERCHE
 !
-    call dcopy(nbliai, zr(jsgrap), 1, zr(jsgram), 1)
-    call dcopy(nbliai, zr(jsgprp), 1, zr(jsgprm), 1)
-    call dcopy(nbliai, zr(jmu), 1, zr(jmum), 1)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jsgrap), b_incx, zr(jsgram), b_incy)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jsgprp), b_incx, zr(jsgprm), b_incy)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jmu), b_incx, zr(jmum), b_incy)
 !
 ! --- ON PASSE A L'ITERATION SUIVANTE
 !

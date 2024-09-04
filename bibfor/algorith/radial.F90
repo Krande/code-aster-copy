@@ -58,8 +58,14 @@ subroutine radial(nbsig, sigm, sigp, indm, indp, &
 !
     if ((nint(indm) .gt. 0.d0) .and. (nint(indp) .gt. 0.d0)) then
 !
-        call dcopy(nbsig, sigm, 1, tensm, 1)
-        call dcopy(nbsig, sigp, 1, tensp, 1)
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigm, b_incx, tensm, b_incy)
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigp, b_incx, tensp, b_incy)
 !
         zernor = r8prem()
         if (icine .eq. 1) then
@@ -82,8 +88,14 @@ subroutine radial(nbsig, sigm, sigp, indm, indp, &
         trt2 = (tensp(1)+tensp(2)+tensp(3))/3.d0
 !        PART DEVIATORIQUE DES CONTRAINTES
 !
-        call dcopy(nbsig, tensm, 1, devm, 1)
-        call dcopy(nbsig, tensp, 1, devp, 1)
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tensm, b_incx, devm, b_incy)
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tensp, b_incx, devp, b_incy)
         do i = 1, 3
             devm(i) = devm(i)-trt1
             devp(i) = devp(i)-trt2
@@ -100,11 +112,20 @@ subroutine radial(nbsig, sigm, sigp, indm, indp, &
         if (smeq .le. preci .or. speq .le. preci) then
             normdn = 0.d0
         else
-            call dcopy(nbsig, devm, 1, n1, 1)
-            call dcopy(nbsig, devp, 1, n2, 1)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, devm, b_incx, n1, b_incy)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, devp, b_incx, n2, b_incy)
             call dscal(nbsig, 1.d0/smeq, n1, 1)
             call dscal(nbsig, 1.d0/speq, n2, 1)
-            call dcopy(nbsig, n1, 1, dn1n2, 1)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, n1, b_incx, dn1n2, b_incy)
 !
 !          CALCUL DE LA DIFFERENCE N1 - N2
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine prcycb(nomres, soumat, repmat)
     implicit none
 !  P. RICHARD     DATE 11/03/91
@@ -107,6 +107,7 @@ subroutine prcycb(nomres, soumat, repmat)
     integer, pointer :: cycl_desc(:) => null()
     character(len=24), pointer :: cycl_refe(:) => null()
     integer, pointer :: cycl_nbsc(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     data pgc/'PRCYCB'/
 !-----------------------------------------------------------------------
@@ -349,25 +350,34 @@ subroutine prcycb(nomres, soumat, repmat)
     do i = 1, nbmod
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
-        call dcopy(neq, zr(llcham), 1, zr(ltveca+(i-1)*neq), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(llcham), b_incx, zr(ltveca+(i-1)*neq), b_incy)
         call jelibe(chamva)
         call zerlag(neq, deeq, vectr=zr(ltveca+(i-1)*neq))
     end do
-
+!
     do i = 1, nbddr
         iord = zi(ltord+i-1)
         call dcapno(basmod, 'DEPL    ', iord, chamva)
         call jeveuo(chamva, 'L', llcham)
-        call dcopy(neq, zr(llcham), 1, zr(ltvecb+(i-1)*neq), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(llcham), b_incx, zr(ltvecb+(i-1)*neq), b_incy)
         call jelibe(chamva)
         call zerlag(neq, deeq, vectr=zr(ltvecb+(i-1)*neq))
     end do
-
+!
     do i = 1, nbddr
         iord = zi(ltorg+i-1)
         call dcapno(basmod, 'DEPL    ', iord, chamva)
         call jeveuo(chamva, 'L', llcham)
-        call dcopy(neq, zr(llcham), 1, zr(ltvecc+(i-1)*neq), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(llcham), b_incx, zr(ltvecc+(i-1)*neq), b_incy)
         call jelibe(chamva)
         call zerlag(neq, deeq, vectr=zr(ltvecc+(i-1)*neq))
     end do
@@ -376,7 +386,10 @@ subroutine prcycb(nomres, soumat, repmat)
             iord = zi(ltora+i-1)
             call dcapno(basmod, 'DEPL    ', iord, chamva)
             call jeveuo(chamva, 'L', llcham)
-            call dcopy(neq, zr(llcham), 1, zr(ltvecd+(i-1)*neq), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(llcham), b_incx, zr(ltvecd+(i-1)*neq), b_incy)
             call jelibe(chamva)
             call zerlag(neq, deeq, vectr=zr(ltvecd+(i-1)*neq))
         end do
@@ -544,7 +557,7 @@ subroutine prcycb(nomres, soumat, repmat)
             zr(ldk0aj+i-1) = 0.D0
             zr(ldm0aj+i-1) = 0.D0
         end do
-
+!
     end if
 !
 ! --- PRODUIT MATRICE DEFORMEES GAUCHES
@@ -737,14 +750,14 @@ subroutine prcycb(nomres, soumat, repmat)
                    nbddr, 1, 1)
 !
         call jedetr('&&'//pgc//'.MAG')
-
-        !-- reinitialiser Kpaj et Mpaj
+!
+!-- reinitialiser Kpaj et Mpaj
         ntail = nbddr*nbdax
         do i = 1, ntail
             zr(ldkpaj+i-1) = 0.D0
             zr(ldmpaj+i-1) = 0.D0
         end do
-
+!
 !
     end if
 !
@@ -871,13 +884,13 @@ subroutine prcycb(nomres, soumat, repmat)
                    nbdax, 1, 1)
 !
         call jedetr('&&'//pgc//'.MAA')
-
-        !-- reinitialiser Kpaa et Mpaa
+!
+!-- reinitialiser Kpaa et Mpaa
         do i = 1, nbdax**2
             zr(ldkpaa+i-1) = 0.D0
             zr(ldmpaa+i-1) = 0.D0
         end do
-
+!
 !
     end if
 !

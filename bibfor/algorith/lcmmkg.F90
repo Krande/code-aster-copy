@@ -50,20 +50,29 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
     ind(2, 3) = 6
     ind(3, 2) = 6
 !
-    call dcopy(9, vind(nvi-3-18+10), 1, fem, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vind(nvi-3-18+10), b_incx, fem, b_incy)
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call daxpy(b_n, 1.d0, id, b_incx, fem, &
                b_incy)
-    call dcopy(9, vinf(nvi-3-18+10), 1, fep, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vinf(nvi-3-18+10), b_incx, fep, b_incy)
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call daxpy(b_n, 1.d0, id, b_incx, fep, &
                b_incy)
 !
-    call dcopy(9, vinf(nvi-3-18+1), 1, fpp, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vinf(nvi-3-18+1), b_incx, fpp, b_incy)
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)

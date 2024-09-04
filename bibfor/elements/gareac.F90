@@ -45,9 +45,15 @@ subroutine gareac(xdm, xdp, dgamma)
 ! ----------------------------------------------------------------------
 !
 ! --- SI L'ORIENTATION N'A PAS CHANGE ==> DGAMMA = 0
-    call dcopy(3, xdm, 1, xdmnor, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, xdm, b_incx, xdmnor, b_incy)
     call normev(xdmnor, normm)
-    call dcopy(3, xdp, 1, xdpnor, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, xdp, b_incx, xdpnor, b_incy)
     call normev(xdpnor, normp)
     dd = xdpnor-xdmnor
     if (abs(ddot(3, dd, 1, dd, 1)) .lt. r8prem()) then
@@ -61,7 +67,10 @@ subroutine gareac(xdm, xdp, dgamma)
 !     ZTR EST NORMAL AU PLAN FORME PAR (XDMNOR,XDPNOR)
 !
     pscal = ddot(3, xdpnor, 1, xdmnor, 1)
-    call dcopy(3, xdpnor, 1, ytr, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, xdpnor, b_incx, ytr, b_incy)
     b_n = to_blas_int(3)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)

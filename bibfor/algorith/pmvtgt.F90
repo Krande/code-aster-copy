@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,6 +67,7 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip, &
     character(len=24) :: matra, matrc
     integer :: ematra, ematrc, exi, i, j, indi, nvar, init, pos
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxeps
+    blas_int :: b_incx, b_incy, b_n
     save init, pos
     data matra/'PYTHON.TANGENT.MATA'/
     data matrc/'PYTHON.TANGENT.MATC'/
@@ -107,11 +108,23 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip, &
         end if
 !
 !      ARCHIVAGE DES VALEURS DE REFERENCE
-        call dcopy(6, deps2, 1, sdeps, 1)
-        call dcopy(6, sigp, 1, ssigp, 1)
-        call dcopy(nbvari, vip, 1, svip, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, deps2, b_incx, sdeps, b_incy)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigp, b_incx, ssigp, b_incy)
+        b_n = to_blas_int(nbvari)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vip, b_incx, svip, b_incy)
 !       ARCHIVAGE DE LA MATRICE TANGENTE COHERENTE
-        call dcopy(36, dsidep, 1, smatr, 1)
+        b_n = to_blas_int(36)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dsidep, b_incx, smatr, b_incy)
 !      PREPARATION DES ITERATIONS
         option = 'RAPH_MECA'
         iret = 1
@@ -128,7 +141,10 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip, &
     nvar = int((pos+1)/2)
 !
     if (nvar .gt. 0) then
-        call dcopy(6, sigp, 1, varia(1+(pos-1)*6), 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigp, b_incx, varia(1+(pos-1)*6), b_incy)
     end if
 !
     pos = pos+1
@@ -136,7 +152,10 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip, &
     indi = 1-2*mod(pos, 2)
 !
     if (nvar .le. 6) then
-        call dcopy(6, sdeps, 1, deps2, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sdeps, b_incx, deps2, b_incy)
         deps2(nvar) = sdeps(nvar)+indi*epsilo
 !
 !      INITIALISATION DES CHAMPS 'E'
@@ -163,20 +182,35 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip, &
     option = 'FULL_MECA'
 !
 !    RETABLISSEMENT DE LA SOLUTION
-    call dcopy(6, sdeps, 1, deps2, 1)
-    call dcopy(6, ssigp, 1, sigp, 1)
-    call dcopy(nbvari, svip, 1, vip, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, sdeps, b_incx, deps2, b_incy)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, ssigp, b_incx, sigp, b_incy)
+    b_n = to_blas_int(nbvari)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, svip, b_incx, vip, b_incy)
 !
 !     PERTURBATION => SAUVEGARDE DE LA MATRICE CALCULEE PAR
 !     DIFFERENCES FINIES COMME MATRICE TANGENTE
 !
     if (abs(carcri(2)-1.d0) .lt. 0.1d0) then
-        call dcopy(36, matper, 1, dsidep, 1)
+        b_n = to_blas_int(36)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, matper, b_incx, dsidep, b_incy)
 !
 !     VERIFICATION
 !
     else if (abs(carcri(2)-2.d0) .lt. 0.1d0) then
-        call dcopy(36, smatr, 1, dsidep, 1)
+        b_n = to_blas_int(36)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, smatr, b_incx, dsidep, b_incy)
 !
 !      CREATION DES OBJETS
 !      CE N'EST PAS LA PREMIERE FOIS QU'ON CALCULE LA MATRICE TANGENTE
@@ -188,8 +222,14 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip, &
         end if
         call wkvect(matra, 'G V R', 36, ematra)
         call wkvect(matrc, 'G V R', 36, ematrc)
-        call dcopy(36, smatr, 1, zr(ematra), 1)
-        call dcopy(36, matper, 1, zr(ematrc), 1)
+        b_n = to_blas_int(36)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, smatr, b_incx, zr(ematra), b_incy)
+        b_n = to_blas_int(36)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, matper, b_incx, zr(ematrc), b_incy)
 !         CALL JELIBE(MATRA)
 !         CALL JELIBE(MATRC)
     end if

@@ -613,8 +613,12 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 !
 !       --- STOCKAGE DES FORCES NODALES ---
             if (option .eq. 'FORC_NODA') then
-                if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) call dcopy(lonch, fono, &
-                                                                                   1, noch, 1)
+                if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
+                    b_n = to_blas_int(lonch)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, fono, b_incx, noch, b_incy)
+                end if
                 goto 270
             end if
 !
@@ -734,8 +738,12 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                 end if
             else
 !         --- CALCUL DU CHAMNO DE REACTION PAR RECOPIE DE FORC_NODA
-                if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) call dcopy(lonch, fono, &
-                                                                                   1, noch, 1)
+                if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
+                    b_n = to_blas_int(lonch)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, fono, b_incx, noch, b_incy)
+                end if
             end if
             if (lcpu) then
                 call cpu_time(rctfin)

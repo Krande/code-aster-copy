@@ -88,8 +88,14 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
     if (typmod(2) .eq. 'ELEMJOIN') ifhyme = .false.
 !
 ! SAUT DE DEPLACEMENT EN T- OU T+
-    call dcopy(ndim, epsm, 1, delta, 1)
-    call dcopy(ndim, deps, 1, ddelta, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, delta, b_incy)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, deps, b_incx, ddelta, b_incy)
     if (resi) then
         b_n = to_blas_int(ndim)
         b_incx = to_blas_int(1)

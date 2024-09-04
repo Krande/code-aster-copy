@@ -89,7 +89,10 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect, &
     if (kmpic .eq. 'NON') then
         if (cumul .eq. 'CUMU') then
             AS_ALLOCATE(vr=xtemp, size=nbvect*neq)
-            call dcopy(nbvect*neq, xsol, 1, xtemp, 1)
+            b_n = to_blas_int(nbvect*neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, xsol, b_incx, xtemp, b_incy)
         end if
 !
         call dismoi('MATR_DISTR', matas, 'MATR_ASSE', repk=kmatd)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,6 +64,7 @@ subroutine mnlldr(ind, imat, neq, ninc, nd, &
     real(kind=8), pointer :: jeumax(:) => null()
     character(len=8), pointer :: type(:) => null()
     real(kind=8), pointer :: orig(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 !
@@ -198,7 +199,10 @@ subroutine mnlldr(ind, imat, neq, ninc, nd, &
         zr(il-1+ninc-2) = 1.d0
     end if
 !
-    call dcopy(ninc-1, zr(il), 1, zr(itemp), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(il), b_incx, zr(itemp), b_incy)
 !
     call jedetr('&&mnlldr.l')
     call jedetr('&&mnlldr.temp1')

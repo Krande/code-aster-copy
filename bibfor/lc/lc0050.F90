@@ -134,6 +134,7 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8) :: temp, dtemp
 !
     integer :: ntens, ndi
+    blas_int :: b_incx, b_incy, b_n
     common/tdim/ntens, ndi
 !
 ! --------------------------------------------------------------------------------------------------
@@ -227,7 +228,10 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
 !
     pnewdt = 1.d0
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        call dcopy(nsig, sigm, 1, stress, 1)
+        b_n = to_blas_int(nsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigm, b_incx, stress, b_incy)
         call dscal(3, usrac2, stress(4), 1)
         statev(1:nstatv) = vim(1:nstatv)
         call umatwp(pfumat, stress, statev, ddsdde, sse, &

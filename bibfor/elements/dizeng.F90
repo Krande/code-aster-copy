@@ -61,7 +61,7 @@ subroutine dizeng(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out)          :: iret
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,8 +75,8 @@ subroutine dizeng(for_discret, iret)
     integer :: nbpara
 !   SOUPL_1  RAIDE_2  SOUPL_3  RAID_VISQ   PUIS_VISQ
     parameter(nbpara=5)
-    real(kind=8)     :: ldcpar(nbpara)
-    integer          :: ldcpai(1)
+    real(kind=8) :: ldcpar(nbpara)
+    integer :: ldcpai(1)
     character(len=8) :: ldcpac(1)
     real(kind=8) :: temps0, temps1, dtemps
 !   équations du système : sigma, epsivis, epsi, puiss
@@ -89,11 +89,12 @@ subroutine dizeng(for_discret, iret)
     parameter(precis=1.0e-08)
 !
 !   paramètres issus de DEFI_MATERIAU
-    integer, parameter  :: nbcar = 8, ie1 = 1, ie2 = 2, ie3 = 3, in3 = 4
-    integer, parameter  :: ia3 = 5, is1 = 6, is2 = 7, is3 = 8
-    character(len=16)   :: nomcar(nbcar)
-    real(kind=8)        :: valcar(nbcar)
-    integer             :: codcar(nbcar)
+    integer, parameter :: nbcar = 8, ie1 = 1, ie2 = 2, ie3 = 3, in3 = 4
+    integer, parameter :: ia3 = 5, is1 = 6, is2 = 7, is3 = 8
+    character(len=16) :: nomcar(nbcar)
+    real(kind=8) :: valcar(nbcar)
+    integer :: codcar(nbcar)
+    blas_int :: b_incx, b_incy, b_n
     data nomcar/'K1', 'K2', 'K3', 'C', 'PUIS_ALPHA', 'UNSUR_K1', 'UNSUR_K2', 'UNSUR_K3'/
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,7 +119,10 @@ subroutine dizeng(for_discret, iret)
         call utmess('I', 'DISCRETS_5', nk=5, valk=messak)
     end if
 !   les caractéristiques sont toujours dans le repère local. on fait seulement une copie
-    call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
+    b_n = to_blas_int(for_discret%nbt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jdc), b_incx, klv, b_incy)
 !   Récupération des termes diagonaux : raide = klv(i,i)
     call diraidklv(for_discret%nomte, raide, klv)
 !   les incréments de déplacement sont nuls
@@ -224,8 +228,9 @@ subroutine dizeng(for_discret, iret)
 !   récupération des variables internes : epsivis  puiss  tangente
     y0(2) = zr(ivarim+1)
     y0(4) = zr(ivarim+2)
-    call rk5adp(nbequa, ldcpar, ldcpai, ldcpac, temps0, dtemps, nbdecp, &
-                errmax, y0, dy0, zengen, resu, iret)
+    call rk5adp(nbequa, ldcpar, ldcpai, ldcpac, temps0, &
+                dtemps, nbdecp, errmax, y0, dy0, &
+                zengen, resu, iret)
 !   resu(1:nbeq)            : variables intégrées
 !   resu(nbeq+1:2*nbeq)     : d(resu)/d(t) a t+dt
     if (iret .ne. 0) goto 999
@@ -252,15 +257,15 @@ subroutine dizeng(for_discret, iret)
     end if
     !
     if (for_discret%lSigm .or. for_discret%lVect) then
-        ! demi-matrice klv transformée en matrice pleine klc
+! demi-matrice klv transformée en matrice pleine klc
         call vecma(klv, for_discret%nbt, klc, neq)
-        ! calcul de fl = klc.dul (incrément d'effort)
+! calcul de fl = klc.dul (incrément d'effort)
         call pmavec('ZERO', neq, klc, for_discret%dul, fl)
     end if
-    ! calcul des efforts généralisés
+! calcul des efforts généralisés
     if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, for_discret%nc
                 zr(icontp-1+ii) = fl(ii)+zr(icontm-1+ii)
@@ -269,17 +274,17 @@ subroutine dizeng(for_discret, iret)
         else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
                 zr(icontp-1+ii) = -fl(ii)+zr(icontm-1+ii)
-                zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
-                                                 zr(icontm-1+ii+for_discret%nc)
+                zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discre&
+                                                 &t%nc)
             end do
             zr(icontp) = resu(1)
             zr(icontp+for_discret%nc) = resu(1)
         end if
     end if
-    ! calcul des forces nodales
+! calcul des forces nodales
     if (for_discret%lVect) then
         call jevech('PVECTUR', 'E', ifono)
-        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, for_discret%nc
                 fl(ii) = fl(ii)+zr(icontm-1+ii)
@@ -288,20 +293,19 @@ subroutine dizeng(for_discret, iret)
         else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
                 fl(ii) = fl(ii)-zr(icontm-1+ii)
-                fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
-                                        zr(icontm-1+ii+for_discret%nc)
+                fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discret%nc)
             end do
             fl(1) = -resu(1)
             fl(1+for_discret%nc) = resu(1)
         end if
-        ! forces nodales aux noeuds 1 et 2 (repère global)
+! forces nodales aux noeuds 1 et 2 (repère global)
         if (for_discret%nc .ne. 2) then
             call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         else
             call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         end if
     end if
-    ! mise à jour des variables internes : sigma  epsivis  puiss tangente
+! mise à jour des variables internes : sigma  epsivis  puiss tangente
     if (for_discret%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         zr(ivarip) = resu(1)

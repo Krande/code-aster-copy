@@ -539,7 +539,10 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
 !
 !      LOI DE COMPORTEMENT
 !
-        call dcopy(ndimsi, sigm(1, g), 1, sigmam, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigm(1, g), b_incx, sigmam, b_incy)
         call dscal(3, rac2, sigmam(4), 1)
         call r8inir(36, 0.d0, p, 1)
         if (nono .gt. 0.d0) then
@@ -592,7 +595,10 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
         end if
 ! ----- Stress
         if (lSigm) then
-            call dcopy(ndimsi, sigma, 1, sigp(1, g), 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, sigma, b_incx, sigp(1, g), b_incy)
             call dscal(ndimsi-3, 1.d0/rac2, sigp(4, g), 1)
         end if
 ! ----- Rigidity matrix

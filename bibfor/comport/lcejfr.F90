@@ -240,7 +240,10 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
 !
 ! CALCUL DU SAUT EN T+ OU T- EN FOCTION DE L'OPTION DE CALCUL
 !     A=AM
-    call dcopy(ndim, epsm, 1, a, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, a, b_incy)
 !     A=A+DA
     if (resi) then
         b_n = to_blas_int(ndim)

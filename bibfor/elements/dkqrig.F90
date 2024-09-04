@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
                   ener)
     implicit none
@@ -73,7 +73,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
     aster_logical :: coupmf, exce, indith
 !
 !   LOCAL VARIABLES FOR COEF_RIGI_DRZ
-
+!
     integer :: j, ii, jj, irot
     integer, parameter :: npgmx = 9
     real(kind=8) :: shp(3, 4, npgmx), shpr1(3, 4, npgmx), shpr2(3, 4, npgmx), bb(12, npgmx)
@@ -82,6 +82,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
     real(kind=8) :: gmemb(4, 4), btgmemb(8, 4), gmefl(4, 12)
     real(kind=8) :: bxb(12, 12)
     aster_logical :: dri
+    blas_int :: b_incx, b_incy, b_n
 !
     df = 0.d0
     dm = 0.d0
@@ -122,7 +123,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
                      jgano=jgano)
 !
     enerth = 0.0d0
-
+!
     call jevech('PCACOQU', 'L', jcoqu)
     ctor = zr(jcoqu+3)
     excent = zr(jcoqu+4)
@@ -151,9 +152,9 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
         call r8inir(12*npgmx, 0.d0, shpr1, 1)
         call r8inir(12*npgmx, 0.d0, shpr2, 1)
         call r8inir(12*npgmx, 0.d0, bb, 1)
-
+!
         dArea = 0.0d0
-
+!
         call r8inir(12, 0.d0, gshp1, 1)
         call r8inir(12, 0.d0, gshp2, 1)
         call r8inir(12, 0.d0, gm, 1)
@@ -161,7 +162,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
         call r8inir(32, 0.d0, btgmemb, 1)
         call r8inir(48, 0.d0, gmefl, 1)
         call r8inir(144, 0.d0, bxb, 1)
-
+!
         epais = zr(jcoqu)
         gam = abs(ctor)*dm(1)
         do ii = 1, npg
@@ -173,7 +174,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
 !        ----- JACOBIAN AND WEIGHT :
             call jquad4(xyzl, qsi, eta, jacob)
             wgt = zr(ipoids+ii-1)*jacob(1)
-
+!
 !
 !        ----- LOOP FOR SHP FUNCTIONS :
 !
@@ -181,9 +182,9 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
             dArea = dArea+wgt
 !
 !        -- COMPUTE LINEAR AND ROTATIONAL SHAPE FUNCTIONS AND DERIVATIVES :
-            call dkqshp(qsi, eta, caraq4, jacob, &
-                        shp(1, 1, ii), shpr1(1, 1, ii), shpr2(1, 1, ii))
-
+            call dkqshp(qsi, eta, caraq4, jacob, shp(1, 1, ii), &
+                        shpr1(1, 1, ii), shpr2(1, 1, ii))
+!
             do j = 1, 4
                 do i = 1, 3
                     gshp1(i, j) = gshp1(i, j)+shpr1(i, j, ii)*wgt
@@ -191,16 +192,16 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
                 end do
             end do
         end do
-
+!
         do ii = 1, npg
-
+!
             do j = 1, 4
                 do i = 1, 3
                     shpr1(i, j, ii) = shpr1(i, j, ii)-gshp1(i, j)/dArea
                     shpr2(i, j, ii) = shpr2(i, j, ii)-gshp2(i, j)/dArea
                 end do
             end do
-
+!
             do i = 1, 4
                 j = 3*(i-1)
                 bb(1+j, ii) = bb(1+j, ii)-shp(2, i, ii)
@@ -209,11 +210,11 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
                 bb(3+j, ii) = bb(3+j, ii)-shpr1(2, i, ii)+shpr2(1, i, ii)
             end do
         end do
-
+!
     end if
 !
     do i = 1, npg
-
+!
         qsi = zr(icoopg-1+ndim*(i-1)+1)
         eta = zr(icoopg-1+ndim*(i-1)+2)
 !        ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE --------------------
@@ -223,7 +224,10 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
 !        -- FLEXION :
         call dkqbf(qsi, eta, jacob(2), caraq4, bf)
 !        ----- CALCUL DU PRODUIT BFT.DF.BF -----------------------------
-        call dcopy(9, df, 1, df2, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, df, b_incx, df2, b_incy)
         call dscal(9, wgt, df2, 1)
         call utbtab('CUMU', 3, 12, df2, bf, &
                     xab1, flex)
@@ -231,7 +235,10 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
 !        -- MEMBRANE :
         call dxqbm(qsi, eta, jacob(2), bm)
 !        ----- CALCUL DU PRODUIT BMT.DM.BM -----------------------------
-        call dcopy(9, dm, 1, dm2, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dm, b_incx, dm2, b_incy)
         call dscal(9, wgt, dm2, 1)
         call utbtab('CUMU', 3, 8, dm2, bm, &
                     xab1, memb)
@@ -246,21 +253,21 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
 !
 !        call dkqnim(shp(1,1,i), shpr1(1,1,i), shpr2(1,1,i), &
 !                          nm1, nm2, gm1, gm2)
-
+!
 !        do i = 1, 8
 !            do j = 1, 8
 !                memb(i,j) = memb(i,j) + nm1(i) * nm1(j) * wgt
 !                memb(i,j) = memb(i,j) + nm2(i) * nm2(j) * wgt
 !            end do
 !        end do
-
+!
 !        do iishp = 1, 4
 !            do jjshp = 1, 4
 !                gmemb(i,j) = gmemb(i,j) + gm1(i) * gm1(j) * wgt
 !                gmemb(i,j) = gmemb(i,j) + gm2(i) * gm2(j) * wgt
 !            end do
 !        end do
-
+!
 !        do iishp = 1, 8
 !            do jjshp = 1, 4
 !                btgmemb(i,j) = btgmemb(i,j) + nm1(i) * gm1(j) * wgt
@@ -269,55 +276,70 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
 !        end do
 !        -- MEMBRANE (DRILLING PART) Gm:
             call dxqgm(shpr1(1, 1, i), shpr2(1, 1, i), gm)
-
+!
 !        ----- CALCUL DU PRODUIT GMT.DM.GM
-            call dcopy(9, dm, 1, dm2, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, dm, b_incx, dm2, b_incy)
             call dscal(9, wgt, dm2, 1)
             call utbtab('CUMU', 3, 4, dm2, gm, &
                         xab1, gmemb)
 !        ----- CALCUL DU PRODUIT BMT.DM.GM
-            call dcopy(9, dm, 1, dm2, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, dm, b_incx, dm2, b_incy)
             call dscal(9, wgt, dm2, 1)
             call utctab('CUMU', 3, 4, 8, dm2, &
                         gm, bm, xab1, btgmemb)
-
+!
 !        ----- CALCUL DU PRODUIT gam/Omega*b(x)b
-
+!
             do irot = 1, 12
                 fact = wgt*gam/dArea*bb(irot, i)
                 do jj = 1, 12
                     bxb(irot, jj) = bxb(irot, jj)+fact*bb(jj, i)
                 end do
             end do
-
+!
         end if
-
+!
 !
 !
 !        -- COUPLAGE :
         if (coupmf .or. exce) then
             if (dri) then
 !           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
-                call dcopy(9, dmf, 1, dmf2, 1)
+                b_n = to_blas_int(9)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, dmf, b_incx, dmf2, b_incy)
                 call dscal(9, wgt, dmf2, 1)
                 call utctab('CUMU', 3, 12, 8, dmf2, &
                             bf, bm, xab1, mefl)
 !
 !   compute product Gmt.Dmf.Bf
 !           ----- CALCUL DU PRODUIT GMT.DMF.BF -------------------------
-                call dcopy(9, dmf, 1, dmf2, 1)
+                b_n = to_blas_int(9)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, dmf, b_incx, dmf2, b_incy)
                 call dscal(9, wgt, dmf2, 1)
                 call utctab('CUMU', 3, 12, 4, dmf2, &
                             bf, gm, xab1, gmefl)
             else if (.not. dri) then
 !           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
-                call dcopy(9, dmf, 1, dmf2, 1)
+                b_n = to_blas_int(9)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, dmf, b_incx, dmf2, b_incy)
                 call dscal(9, wgt, dmf2, 1)
                 call utctab('CUMU', 3, 12, 8, dmf2, &
                             bf, bm, xab1, mefl)
             else
                 ASSERT(ASTER_FALSE)
-
+!
             end if
         end if
     end do
@@ -325,7 +347,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
     if (option .eq. 'RIGI_MECA') then
         if (.not. dri) then
             call dxqloc(flex, memb, mefl, ctor, rig)
-        elseif (dri) then
+        else if (dri) then
 !     Add rotational to stiffness matrix
 !
             ctor = 0.d0
@@ -339,18 +361,18 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
         end if
 !
 !
-
+!
     else if (option .eq. 'EPOT_ELEM') then
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(4, 6, pgl, zr(jdepg), depl)
         if (.not. dri) then
             call dxqloe(flex, memb, mefl, ctor, coupmf, &
                         depl, ener)
-        elseif (dri) then
+        else if (dri) then
 !        call dxqloe(flex, memb, mefl, abs(ctor), coupmf,&
 !                    depl, ener)
-            !     Add rotational to stiffness matrix
-
+!     Add rotational to stiffness matrix
+!
             ctor = 0.d0
             call dxqloc(flex, memb, mefl, ctor, rig)
             call dxqlocdri1(gmemb, rig)

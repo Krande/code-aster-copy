@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmmalu(nno, axi, r, vff, dfdi, &
                   lij)
 !
@@ -29,6 +29,7 @@ subroutine nmmalu(nno, axi, r, vff, dfdi, &
     aster_logical :: axi
     integer :: nno, lij(3, 3)
     real(kind=8) :: dfdi(nno, 4), vff(nno), r
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !                     CALCUL DE LA MATRICE L :  GRAD(U) = L.U
@@ -70,7 +71,10 @@ subroutine nmmalu(nno, axi, r, vff, dfdi, &
     lij(3, 3) = 3
 !
 !    TERME EN N/R : DERIVATION 3,3
-    call dcopy(nno, vff, 1, dfdi(1, 3), 1)
+    b_n = to_blas_int(nno)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vff, b_incx, dfdi(1, 3), b_incy)
     call dscal(nno, 1/r, dfdi(1, 3), 1)
 !
 !    TERME NUL : DERIVATION 1,3  2,3  3,1  3,2

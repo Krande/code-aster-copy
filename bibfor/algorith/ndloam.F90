@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
     integer :: jrestd, jrestv, jresta
     integer :: ifm, niv
     integer :: nocc1, nocc2, nocc3, nocc
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -142,12 +143,30 @@ subroutine ndloam(sddyna, result, evonol, nume)
             call jeveuo(dgen, 'L', jrestd)
             call jeveuo(vgen, 'L', jrestv)
             call jeveuo(agen, 'L', jresta)
-            call dcopy(nbmodp, zr(jrestd), 1, zr(jdepgm), 1)
-            call dcopy(nbmodp, zr(jrestd), 1, zr(jdepgp), 1)
-            call dcopy(nbmodp, zr(jrestv), 1, zr(jvitgm), 1)
-            call dcopy(nbmodp, zr(jrestv), 1, zr(jvitgp), 1)
-            call dcopy(nbmodp, zr(jresta), 1, zr(jaccgm), 1)
-            call dcopy(nbmodp, zr(jresta), 1, zr(jaccgp), 1)
+            b_n = to_blas_int(nbmodp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jrestd), b_incx, zr(jdepgm), b_incy)
+            b_n = to_blas_int(nbmodp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jrestd), b_incx, zr(jdepgp), b_incy)
+            b_n = to_blas_int(nbmodp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jrestv), b_incx, zr(jvitgm), b_incy)
+            b_n = to_blas_int(nbmodp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jrestv), b_incx, zr(jvitgp), b_incy)
+            b_n = to_blas_int(nbmodp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jresta), b_incx, zr(jaccgm), b_incy)
+            b_n = to_blas_int(nbmodp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jresta), b_incx, zr(jaccgp), b_incy)
         else
             call r8inir(nbmodp, 0.d0, zr(jaccgm), 1)
             call r8inir(nbmodp, 0.d0, zr(jaccgp), 1)
@@ -157,18 +176,36 @@ subroutine ndloam(sddyna, result, evonol, nume)
             call r8inir(nbmodp, 0.d0, zr(jdepgp), 1)
             if (nocc1 .ne. 0) then
                 call jeveuo(depgen//'.VALE', 'L', jrestd)
-                call dcopy(nbmodp, zr(jrestd), 1, zr(jdepgm), 1)
-                call dcopy(nbmodp, zr(jrestd), 1, zr(jdepgp), 1)
+                b_n = to_blas_int(nbmodp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(jrestd), b_incx, zr(jdepgm), b_incy)
+                b_n = to_blas_int(nbmodp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(jrestd), b_incx, zr(jdepgp), b_incy)
             end if
             if (nocc2 .ne. 0) then
                 call jeveuo(vitgen//'.VALE', 'L', jrestv)
-                call dcopy(nbmodp, zr(jrestv), 1, zr(jvitgm), 1)
-                call dcopy(nbmodp, zr(jrestv), 1, zr(jvitgp), 1)
+                b_n = to_blas_int(nbmodp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(jrestv), b_incx, zr(jvitgm), b_incy)
+                b_n = to_blas_int(nbmodp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(jrestv), b_incx, zr(jvitgp), b_incy)
             end if
             if (nocc3 .ne. 0) then
                 call jeveuo(accgen//'.VALE', 'L', jresta)
-                call dcopy(nbmodp, zr(jresta), 1, zr(jaccgm), 1)
-                call dcopy(nbmodp, zr(jresta), 1, zr(jaccgp), 1)
+                b_n = to_blas_int(nbmodp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(jresta), b_incx, zr(jaccgm), b_incy)
+                b_n = to_blas_int(nbmodp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(jresta), b_incx, zr(jaccgp), b_incy)
             end if
         end if
     end if

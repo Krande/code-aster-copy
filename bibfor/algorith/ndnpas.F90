@@ -91,6 +91,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     character(len=19) :: depgem, vitgem, accgem, depgep, vitgep, accgep
     integer :: jdepgm, jvitgm, jaccgm, jdepgp, jvitgp, jaccgp
     integer :: ifm, niv
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -151,25 +152,25 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     phi = ndynre(sddyna, 'PHI')
     alpha = ndynre(sddyna, 'ALPHA')
     if (lihht) then
-        ! NOHHT coefficients
+! NOHHT coefficients
         eta = -alpha
         delta = eta*0.5d0
         eps = gamma-beta
         mu = 1.0d0-gamma
     else if (lhht) then
-        ! HHT coefficients
+! HHT coefficients
         eta = -alpha
         delta = eta
         eps = 0.5d0-beta
         mu = 0.5d0+alpha
     else
-        ! Newmark coefficients
+! Newmark coefficients
         eta = -alpha
         delta = eta
         eps = 0.5d0-beta
         mu = 1.0d0-gamma
     end if
-
+!
 !
 ! --- COEFFICIENTS POUR MATRICES
 !
@@ -400,15 +401,24 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
         call jeveuo(vitgep, 'E', jvitgp)
         call jeveuo(depgem, 'E', jdepgm)
         call jeveuo(depgep, 'E', jdepgp)
-        call dcopy(nbmodp, zr(jdepgm), 1, zr(jdepgp), 1)
-        call dcopy(nbmodp, zr(jvitgm), 1, zr(jvitgp), 1)
-        call dcopy(nbmodp, zr(jaccgm), 1, zr(jaccgp), 1)
+        b_n = to_blas_int(nbmodp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jdepgm), b_incx, zr(jdepgp), b_incy)
+        b_n = to_blas_int(nbmodp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jvitgm), b_incx, zr(jvitgp), b_incy)
+        b_n = to_blas_int(nbmodp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jaccgm), b_incx, zr(jaccgp), b_incy)
 !
 ! --- PREDICTION DEPLACEMENT GENERALISE
 !
         do imode = 1, nbmodp
-            zr(jdepgp+imode-1) = zr(jdepgm+imode-1)+coefd(2)*zr(jvitgm+imode-1)+coefd(3)*zr(&
-                                 &jaccgm+imode-1)
+            zr(jdepgp+imode-1) = zr(jdepgm+imode-1)+coefd(2)*zr(jvitgm+imode-1)+coefd(3)*zr(jaccg&
+                                 &m+imode-1)
         end do
         if (niv .ge. 2) then
             write (ifm, *) '<MECANONLINE> ...... PRED. DEPL. GENE'

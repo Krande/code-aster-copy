@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -354,7 +354,8 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
         if (lmonit) call system_clock(ietdeb, ietrat, ietmax)
         numpas = numpas+1
         numloc = iord-(numpas-1)*nbproc
-        if (dbg_ob) write (ifm, *) '< ', rang, 'peepot> iord/numpas/numloc=', iord, numpas, numloc
+        if (dbg_ob) write (ifm, *) '< ', rang, 'peepot> iord/numpas/numloc=', iord, numpas, &
+            numloc
         call jemarq()
         call jerecu('V')
         icheml = 0

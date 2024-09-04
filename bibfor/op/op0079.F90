@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0079()
 !
 !
@@ -56,9 +56,9 @@ subroutine op0079()
 #include "blas/ddot.h"
 !
     integer :: jsmde, nbmode, nbo, ii, iret, nbsym, idbase
-
+!
 !-----------------------------------------------------------------------
-    integer ::   ibid, icod, iadref
+    integer :: ibid, icod, iadref
     integer :: iddeeq, imod, ind, iord, isym
     integer :: jmod, n0, n1, n2, n4
     integer :: nbid, neq, tmod(1)
@@ -82,6 +82,7 @@ subroutine op0079()
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: ordr(:) => null()
     integer, pointer :: nequ(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     data nosyin/'DEPL', 'VITE', 'ACCE'/
     data nosyou/'DEPL', 'VITE', 'ACCE'/
 !
@@ -236,7 +237,10 @@ subroutine op0079()
 !
 ! --------- RECOPIE DU IEME MODE DANS UN VECTEUR TEMP
 !
-                    call dcopy(neq, zr(idbase+(imod-1)*neq), 1, vectasse, 1)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(idbase+(imod-1)*neq), b_incx, vectasse, b_incy)
 !
 ! ------- MISE A ZERO DES DDLS DE LAGRANGE
 !
@@ -264,7 +268,10 @@ subroutine op0079()
 !
 ! ----- RECOPIE DU IEME MODE
 !
-                    call dcopy(neq, zr(idbase+(imod-1)*neq), 1, vectass1, 1)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(idbase+(imod-1)*neq), b_incx, vectass1, b_incy)
 !
 ! ------- MISE A ZERO DES DDLS DE LAGRANGE
 !
@@ -276,7 +283,10 @@ subroutine op0079()
 !
 ! ------- RECOPIE DU JEME MODE
 !
-                        call dcopy(neq, zr(idbase+(jmod-1)*neq), 1, vectass2, 1)
+                        b_n = to_blas_int(neq)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call dcopy(b_n, zr(idbase+(jmod-1)*neq), b_incx, vectass2, b_incy)
 ! --------- MISE A ZERO DES DDLS DE LAGRANGE
 !
                         call zerlag(neq, zi(iddeeq), vectr=vectass2)
@@ -295,7 +305,10 @@ subroutine op0079()
 !
 ! ------- RECOPIE DU IEME MODE
 !
-                    call dcopy(neq, zr(idbase+(imod-1)*neq), 1, vectass1, 1)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(idbase+(imod-1)*neq), b_incx, vectass1, b_incy)
 !
 ! ------- MISE A ZERO DES DDLS DE LAGRANGE
 !
@@ -306,7 +319,7 @@ subroutine op0079()
                     vectass2(imod) = ddot(neq, vectass1, 1, vale, 1)
 !
                 end do
-
+!
 !
 ! ----- FACTORISATION ET RESOLUTION SYSTEME
 !
@@ -316,7 +329,10 @@ subroutine op0079()
                     call utmess('F', 'ALGORITH9_42')
                 end if
                 call rrlds(matrnorm, nbmode, nbmode, vectass2, 1)
-                call dcopy(nbmode, vectass2, 1, zr(ind), 1)
+                b_n = to_blas_int(nbmode)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, vectass2, b_incx, zr(ind), b_incy)
                 AS_DEALLOCATE(vr=vectass1)
                 AS_DEALLOCATE(vr=vectass2)
                 AS_DEALLOCATE(vr=matrnorm)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dkqmas(xyzl, option, pgl, mas, ener)
     implicit none
 #include "blas/dcopy.h"
@@ -67,7 +67,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
     integer, parameter :: ll(16) = [3, 7, 12, 16, 17, 21, 26, 30, 35, 39, 44, 48, 49, 53, 58, 62]
     real(kind=8), parameter :: zero = 0.d0, un = 1.d0, neuf = 9.d0
     real(kind=8), parameter :: douze = 12.d0, unquar = 0.25d0, undemi = 0.5d0
-    integer :: i, j, k, i1, i2, int
+    integer :: i, j, k, i1, i2, i0
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     integer :: jdepg, jcoqu, jvitg, iret
     real(kind=8) :: roe, rho, epais, rof
@@ -86,11 +86,11 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !WARNING BB local variable is not used !
 !   LOCAL VARIABLES FOR COEF_RIGI_DRZ
     integer, parameter :: npgmx = 9
-    integer            :: iishp, jjshp
+    integer :: iishp, jjshp
     real(kind=8) :: shp(3, 4, npgmx), shpr1(3, 4, npgmx), shpr2(3, 4, npgmx), bb(12, npgmx)
     real(kind=8) :: gshp1(3, 4), gshp2(3, 4)
     real(kind=8) :: dArea
-    ! WARNING = BTGMEMB in dkqrig is ntgm in dkqmas
+! WARNING = BTGMEMB in dkqrig is ntgm in dkqmas
     real(kind=8) :: gmemb(4, 4), ntgm(8, 4), gmefl(4, 12)
     real(kind=8) :: nm1(8), nm2(8), gm1(4), gm2(4), gm(3, 4)
     real(kind=8) :: bxb(12, 12), fact, gam
@@ -98,9 +98,10 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: dmf2(9)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9)
-    integer      :: multic, irot
+    integer :: multic, irot
     real(kind=8) :: xab1(3, 12), bf(3, 12), bm(3, 8)
     aster_logical :: dri, coupmf
+    blas_int :: b_incx, b_incy, b_n
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
@@ -184,9 +185,9 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
         call r8inir(12*npg, 0.d0, shpr1, 1)
         call r8inir(12*npg, 0.d0, shpr2, 1)
         call r8inir(12*npgmx, 0.d0, bb, 1)
-
+!
         dArea = 0.0d0
-
+!
         call r8inir(12, 0.d0, gshp1, 1)
         call r8inir(12, 0.d0, gshp2, 1)
         call r8inir(12, 0.d0, gm, 1)
@@ -199,7 +200,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
         call dxmate('RIGI', df, dm, dmf, dc, &
                     dci, dmc, dfc, nno, pgl, &
                     multic, coupmf, t2iu, t2ui, t1ve)
-
+!
         gam = abs(ctor)*dm(1)
         do iishp = 1, npg
 !
@@ -215,8 +216,8 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
             dArea = dArea+wgt
 !
 !        -- COMPUTE LINEAR AND ROTATIONAL SHAPE FUNCTIONS AND DERIVATIVES :
-            call dkqshp(qsi, eta, caraq4, jacob(2), &
-                        shp(1, 1, iishp), shpr1(1, 1, iishp), shpr2(1, 1, iishp))
+            call dkqshp(qsi, eta, caraq4, jacob(2), shp(1, 1, iishp), &
+                        shpr1(1, 1, iishp), shpr2(1, 1, iishp))
 !
             do j = 1, 4
                 do i = 1, 3
@@ -226,17 +227,17 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
             end do
 !
         end do
-
+!
 !
         do iishp = 1, npg
-
+!
             do j = 1, 4
                 do i = 1, 3
                     shpr1(i, j, iishp) = shpr1(i, j, iishp)-gshp1(i, j)/dArea
                     shpr2(i, j, iishp) = shpr2(i, j, iishp)-gshp2(i, j)/dArea
                 end do
             end do
-
+!
             do i = 1, 4
                 j = 3*(i-1)
                 bb(1+j, iishp) = bb(1+j, iishp)-shp(2, i, iishp)
@@ -244,17 +245,17 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
                 bb(3+j, iishp) = bb(3+j, iishp)-2.d0*shp(3, i, iishp)
                 bb(3+j, iishp) = bb(3+j, iishp)-shpr1(2, i, iishp)+shpr2(1, i, iishp)
             end do
-
+!
         end do
-
+!
     end if
-
+!
 !
 ! --- INITIALISATIONS :
 !     ---------------
     mefl(:, :) = zero
     flex(:, :) = zero
-
+!
 !======================================
 ! ---  CALCUL DE LA MATRICE DE MASSE  =
 !======================================
@@ -280,9 +281,9 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     ===================================
-    do int = 1, npg
-        qsi = zr(icoopg-1+ndim*(int-1)+1)
-        eta = zr(icoopg-1+ndim*(int-1)+2)
+    do i0 = 1, npg
+        qsi = zr(icoopg-1+ndim*(i0-1)+1)
+        eta = zr(icoopg-1+ndim*(i0-1)+2)
 !
 !   compute rotational part of membrane B matrix
 !
@@ -291,30 +292,30 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 ! ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE MEMBRANE
 ! ---   EST EGALE A RHO_E = RHO*EPAIS :
 !       -----------------------------
-            wgt = zr(ipoids+int-1)*jacob(1)*roe
+            wgt = zr(ipoids+i0-1)*jacob(1)*roe
 !
 !=====================================================================
 ! ---  CALCUL DE LA PARTIE MEMBRANE DE LA MATRICE DE MASSE =
 ! ---  LES TERMES SONT EN NK*NP                                      =
 !=====================================================================
 !
-            call dkqnim(shp(1, 1, int), shpr1(1, 1, int), shpr2(1, 1, int), &
-                        nm1, nm2, gm1, gm2)
-
+            call dkqnim(shp(1, 1, i0), shpr1(1, 1, i0), shpr2(1, 1, i0), nm1, nm2, &
+                        gm1, gm2)
+!
 !        do i = 1, 8
 !            do j = 1, 8
 !                memb(i,j) = memb(i,j) + nm1(i) * nm1(j) * wgt
 !                memb(i,j) = memb(i,j) + nm2(i) * nm2(j) * wgt
 !            end do
 !        end do
-
+!
             do i = 1, 4
                 do j = 1, 4
                     gmemb(i, j) = gmemb(i, j)+gm1(i)*gm1(j)*wgt
                     gmemb(i, j) = gmemb(i, j)+gm2(i)*gm2(j)*wgt
                 end do
             end do
-
+!
             do i = 1, 8
                 do j = 1, 4
                     ntgm(i, j) = ntgm(i, j)+nm1(i)*gm1(j)*wgt
@@ -323,8 +324,8 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
             end do
 !
 !        -- MEMBRANE (DRILLING PART) Gm:
-!        call dxqgm(shpr1(1,1,int), shpr2(1,1,int), gm)
-
+!        call dxqgm(shpr1(1,1,i0), shpr2(1,1,i0), gm)
+!
 !        ----- CALCUL DU PRODUIT GMT.DM.GM
 !        call dcopy(9, dm, 1, dm2, 1)
 !        call dscal(9, wgt, dm2, 1)
@@ -335,13 +336,13 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !        call dscal(9, wgt, dm2, 1)
 !        call utctab('CUMU', 3, 4, 8, dm2,&
 !                    gm, bm, xab1, ntgm)
-
+!
 !        ----- CALCUL DU PRODUIT gam/Omega*b(x)b
-
+!
             do irot = 1, 12
-                fact = wgt*gam/dArea*bb(irot, int)
+                fact = wgt*gam/dArea*bb(irot, i0)
                 do jjshp = 1, 12
-                    bxb(irot, jjshp) = bxb(irot, jjshp)+fact*bb(jjshp, int)
+                    bxb(irot, jjshp) = bxb(irot, jjshp)+fact*bb(jjshp, i0)
                 end do
             end do
         end if
@@ -363,12 +364,12 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 ! ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION W
 ! ---   EST EGALE A RHO_E = RHO*EPAIS :
 !       -----------------------------
-        wgt = zr(ipoids+int-1)*detj*roe
+        wgt = zr(ipoids+i0-1)*detj*roe
 !
 ! ---   CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE
 ! ---   DUE AUX SEULS TERMES DE LA FLECHE W :
 !       -----------------------------------
-
+!
         do i = 1, 12
             do j = 1, 12
                 flex(i, j) = flex(i, j)+wkq(i)*wkq(j)*wgt
@@ -382,7 +383,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 ! ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION BETA
 ! ---   EST EGALE A RHO_F = RHO*EPAIS**3/12 + D**2*EPAIS*RHO :
 !       ----------------------------------------------------
-        wgtf = zr(ipoids+int-1)*detj*(rof+excent*excent*roe)
+        wgtf = zr(ipoids+i0-1)*detj*(rof+excent*excent*roe)
 !
 ! ---   PRISE EN COMPTE DES TERMES DE FLEXION DUS AUX ROTATIONS :
 !       -------------------------------------------------------
@@ -399,14 +400,20 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
         if (exce) then
             if (dri) then
 !           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
-                call dcopy(9, dmf, 1, dmf2, 1)
+                b_n = to_blas_int(9)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, dmf, b_incx, dmf2, b_incy)
                 call dscal(9, wgt, dmf2, 1)
                 call utctab('CUMU', 3, 12, 8, dmf2, &
                             bf, bm, xab1, mefl)
 !
 !   compute product Gmt.Dmf.Bf
 !           ----- CALCUL DU PRODUIT GMT.DMF.BF -------------------------
-                call dcopy(9, dmf, 1, dmf2, 1)
+                b_n = to_blas_int(9)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, dmf, b_incx, dmf2, b_incy)
                 call dscal(9, wgt, dmf2, 1)
                 call utctab('CUMU', 3, 12, 4, dmf2, &
                             bf, gm, xab1, gmefl)
@@ -424,7 +431,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 ! ---     DE LA MASSE VOLUMIQUE
 ! ---     RHO_MF = D*EPAIS*RHO  :
 !         --------------------
-                wgtmf = zr(ipoids+int-1)*detj*excent*roe
+                wgtmf = zr(ipoids+i0-1)*detj*excent*roe
 !
 ! ---     TERMES DE COUPLAGE MEMBRANE-FLEXION U*BETA : (8x12)
 !         ------------------------------------------
@@ -436,7 +443,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
                         mefl(i2, j) = mefl(i2, j)+nmi(k)*nfy(j)*wgtmf
                     end do
                 end do
-
+!
 ! ---     TERMES DE COUPLAGE MEMBRANE-FLEXION U*BETA : (8x12)
 !         ------------------------------------------
 !            do i = 1, 8
@@ -445,10 +452,10 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !                    mefl(i,j) = mefl(i,j)+nm2(i)*nfy(j)*wgtmf
 !                end do
 !            end do
-
+!
 ! ---     TERMES DE COUPLAGE DRILLING-FLEXION U*BETA: (4x12)
 !         ------------------------------------------
-
+!
 !     if(dri) then
 !            do i = 1, 4
 !                do j = 1, 12
@@ -456,13 +463,13 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !                    gmefl(i,j) = gmefl(i,j)+gm2(i)*nfy(j)*wgtmf
 !                end do
 !            end do
-
+!
 !!        ----- CALCUL DU PRODUIT gam/Omega*b(x)b
-
+!
 !        do iishp = 1, 12
-!          fact = wgt*gam/dArea * bb(iishp,int)
+!          fact = wgt*gam/dArea * bb(iishp,i0)
 !          do jjshp = 1, 12
-!            bxb(iishp,jjshp) = bxb(iishp,jjshp) + fact * bb(jjshp,int)
+!            bxb(iishp,jjshp) = bxb(iishp,jjshp) + fact * bb(jjshp,i0)
 !          end do
 !        end do
 !     endif
@@ -475,7 +482,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
     end do
 ! --- FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 !     ---------------------------------------------
-
+!
 !====================================================================
 ! ---  CAS OU L'ELEMENT EST EXCENTRE                                =
 !====================================================================
@@ -494,7 +501,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 ! ---     DE LA MASSE VOLUMIQUE
 ! ---     RHO_MF = D*EPAIS*RHO  :
 !         --------------------
-!            wgtmf = zr(ipoids+int-1)*detj*excent*roe
+!            wgtmf = zr(ipoids+i0-1)*detj*excent*roe
 !
 ! ---     TERMES DE COUPLAGE MEMBRANE-FLEXION U*BETA : (8x12)
 !         ------------------------------------------
@@ -506,7 +513,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !                    mefl(i2,j) = mefl(i2,j)+nmi(k)*nfy(j)*wgtmf
 !                end do
 !            end do
-
+!
 ! ---     TERMES DE COUPLAGE MEMBRANE-FLEXION U*BETA : (8x12)
 !         ------------------------------------------
 !            do i = 1, 8
@@ -515,10 +522,10 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !                    mefl(i,j) = mefl(i,j)+nm2(i)*nfy(j)*wgtmf
 !                end do
 !            end do
-
+!
 ! ---     TERMES DE COUPLAGE DRILLING-FLEXION U*BETA: (4x12)
 !         ------------------------------------------
-
+!
 !            do i = 1, 4
 !                do j = 1, 12
 !                    gmefl(i,j) = gmefl(i,j)+gm1(i)*nfx(j)*wgtmf
@@ -541,7 +548,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
     if ((option .eq. 'MASS_MECA') .or. (option .eq. 'M_GAMMA')) then
         if (.not. dri) then
             call dxqloc(flex, memb, mefl, ctor, mas)
-        elseif (dri) then
+        else if (dri) then
 !     Add rotational to stiffness matrix
 !
             ctor = 0.d0
@@ -564,7 +571,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
             call utpslg(4, 6, pgl, masloc, masglo)
             call dialum(4, 6, 24, wgt, masglo, &
                         mas)
-        elseif (dri) then
+        else if (dri) then
             ctor = 0.d0
             call dxqloc(flex, memb, mefl, ctor, masloc)
             call dxqlocdri1(gmemb, masloc)

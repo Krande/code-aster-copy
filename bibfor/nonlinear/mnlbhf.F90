@@ -130,10 +130,16 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
             call dscal(2*h+1, 0.d0, zr(idep2), 1)
             call dscal(ninc, 0.d0, zr(itemp), 1)
-            call dcopy(2*h+1, zr(ivect-1+nddlx), nd, zr(idep1), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivect-1+nddlx), b_incx, zr(idep1), b_incy)
             zr(idep1) = zr(idep1)-orig(3*(i-1)+1)
             call dscal(2*h+1, 1.d0/jeu, zr(idep1), 1)
-            call dcopy(2*h+1, zr(ivect-1+nddly), nd, zr(idep2), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivect-1+nddly), b_incx, zr(idep2), b_incy)
             zr(idep2) = zr(idep2)-orig(3*(i-1)+2)
             call dscal(2*h+1, 1.d0/jeu, zr(idep2), 1)
 !
@@ -151,8 +157,14 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
                 nrm = 0.d0
                 do j = 1, 2
                     call dscal(2*h+1, 0.d0, tep2, 1)
-                    call dcopy(h+1, zr(itemp+(j-1)*(2*hf+1)), 1, tep2, 1)
-                    call dcopy(h, zr(itemp+(j-1)*(2*hf+1)+hf+1), 1, tep2, 1)
+                    b_n = to_blas_int(h+1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(itemp+(j-1)*(2*hf+1)), b_incx, tep2, b_incy)
+                    b_n = to_blas_int(h)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(itemp+(j-1)*(2*hf+1)+hf+1), b_incx, tep2, b_incy)
                     nrm = nrm+dnrm2(2*h+1, tep2, 1)
                 end do
                 err = err+nrm/2.d0
@@ -176,8 +188,14 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
             nrm = dnrm2(2*hf+1, zr(itemp), 1)
             if (nrm .gt. 0.d0) then
                 call dscal(2*h+1, 0.d0, tep2, 1)
-                call dcopy(h+1, zr(itemp), 1, tep2, 1)
-                call dcopy(h, zr(itemp+hf+1), 1, tep2, 1)
+                b_n = to_blas_int(h+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(itemp), b_incx, tep2, b_incy)
+                b_n = to_blas_int(h)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(itemp+hf+1), b_incx, tep2, b_incy)
                 err = err+dnrm2(2*h+1, tep2, 1)
             end if
         end if

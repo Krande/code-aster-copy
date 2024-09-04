@@ -85,7 +85,10 @@ subroutine nmepsi(ndim, nno, l_axi, l_large, vff, &
 !
 ! - Compute transformation gradient F = 1 + Grad(U)
 !
-    call dcopy(9, kron, 1, f, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, kron, b_incx, f, b_incy)
     if (l_large) then
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)

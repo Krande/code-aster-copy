@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,7 @@ subroutine postsm(option, fm, df, sigm, sigp, &
      &              0.d0, 0.d0, 1.d0/
 !
     real(kind=8) :: rac2
+    blas_int :: b_incx, b_incy, b_n
     parameter(rac2=sqrt(2.d0))
     data rc/1.d0, 1.d0, 1.d0, rac2, rac2, rac2/
 !
@@ -52,29 +53,36 @@ subroutine postsm(option, fm, df, sigm, sigp, &
     resi = option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL'
     rigi = option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL'
 !
-    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))&
-     &  -fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3, 2))&
-     &  +fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
+    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(&
+         &3, 2))+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
-    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2))&
-     &  -df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(3, 2))&
-     &  +df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
+    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2))-df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(&
+         &3, 2))+df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
 !
     jp = jm*dj
 !
     if (resi) then
         call dscal(6, jp, sigp, 1)
-        call dcopy(6, sigp, 1, tau, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigp, b_incx, tau, b_incy)
         j = jp
     else
-        call dcopy(6, sigm, 1, tau, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigm, b_incx, tau, b_incy)
         call dscal(6, jm, tau, 1)
         j = jm
     end if
 !
 !
     if (rigi) then
-        call dcopy(54, dsidep, 1, mat, 1)
+        b_n = to_blas_int(54)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dsidep, b_incx, mat, b_incy)
         call dscal(54, j, mat, 1)
         do kl = 1, 6
             do p = 1, 3

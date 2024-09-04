@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0039(option, nomte)
 !
     use te0047_type
@@ -58,8 +58,8 @@ subroutine te0039(option, nomte)
     type(te0047_dscr) :: for_discret
 !
 !   Les variables internes
-    integer, parameter  :: nbvari = 9
-    real(kind=8)        :: varmo(nbvari), varpl(nbvari)
+    integer, parameter :: nbvari = 9
+    real(kind=8) :: varmo(nbvari), varpl(nbvari)
 !
     integer :: lorien, lmater, ii, jj
     integer :: ivectu, jvSief, neq
@@ -73,10 +73,11 @@ subroutine te0039(option, nomte)
     real(kind=8) :: forref, momref
     real(kind=8) :: r8bid
 !
-    character(len=8)  :: k8bid
+    character(len=8) :: k8bid
     character(len=16) :: kmess(5)
 !
-    aster_logical, parameter    :: Predic = ASTER_FALSE
+    aster_logical, parameter :: Predic = ASTER_FALSE
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
     infodi = 1
@@ -100,8 +101,8 @@ subroutine te0039(option, nomte)
 !   Récupere les informations sur les elements
     for_discret%option = option
     for_discret%nomte = nomte
-    call infted(for_discret%nomte, infodi, &
-                for_discret%nbt, for_discret%nno, for_discret%nc, for_discret%ndim, itype)
+    call infted(for_discret%nomte, infodi, for_discret%nbt, for_discret%nno, for_discret%nc, &
+                for_discret%ndim, itype)
     neq = for_discret%nno*for_discret%nc
 !
     if (option(1:14) .eq. 'REFE_FORC_NODA') then
@@ -150,25 +151,25 @@ subroutine te0039(option, nomte)
         call jevech('PCOMPOR', 'L', jvCompor)
         call jevech('PMATERC', 'L', lmater)
         if (lteatt('MODELI', 'DTR') .or. lteatt('MODELI', 'DIT')) then
-            !   PARAMETRES EN ENTREE
+!   PARAMETRES EN ENTREE
             call jevech('PCAORIE', 'L', lorien)
             call matrot(zr(lorien), for_discret%pgl)
-            ! DÉPLACEMENTS DANS LE REPÈRE GLOBAL
-            !   UGM = DEPLACEMENT PRECEDENT
-            !   UGP = DEPLACEMENT COURANT
+! DÉPLACEMENTS DANS LE REPÈRE GLOBAL
+!   UGM = DEPLACEMENT PRECEDENT
+!   UGP = DEPLACEMENT COURANT
             do ii = 1, neq
                 ugp(ii) = zr(jvDisp+ii-1)
             end do
-            ! DÉPLACEMENTS DANS LE REPÈRE LOCAL
-            !   ULM = DEPLACEMENT PRECEDENT    = PLG * UGM
-            !   DUL = INCREMENT DE DEPLACEMENT = PLG * DUG
-            !   ULP = DEPLACEMENT COURANT      = PLG * UGP
+! DÉPLACEMENTS DANS LE REPÈRE LOCAL
+!   ULM = DEPLACEMENT PRECEDENT    = PLG * UGM
+!   DUL = INCREMENT DE DEPLACEMENT = PLG * DUG
+!   ULP = DEPLACEMENT COURANT      = PLG * UGP
             if (for_discret%ndim .eq. 3) then
                 call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, ugp, ulp)
             else if (for_discret%ndim .eq. 2) then
                 call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, ugp, ulp)
             end if
-            ! Seul le cas symetrique est traite
+! Seul le cas symetrique est traite
             call infdis('SYMK', iplouf, r8bid, k8bid)
             if (iplouf .ne. 1) then
                 kmess(1) = option
@@ -180,22 +181,28 @@ subroutine te0039(option, nomte)
             !
             call jevech('PCADISK', 'L', jdc)
             call infdis('REPK', irep, r8bid, k8bid)
-            ! irep = 1 = matrice en repère global
+! irep = 1 = matrice en repère global
             if (irep .eq. 1) then
-                ! Matrice dans le repère global
-                call dcopy(for_discret%nbt, zr(jdc), 1, kgv, 1)
-                ! Matrice dans le repère local
+! Matrice dans le repère global
+                b_n = to_blas_int(for_discret%nbt)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(jdc), b_incx, kgv, b_incy)
+! Matrice dans le repère local
                 call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, kgv, klv)
             else
-                ! Matrice dans le repère local
-                call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
-                ! Matrice dans le repère global
+! Matrice dans le repère local
+                b_n = to_blas_int(for_discret%nbt)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(jdc), b_incx, klv, b_incy)
+! Matrice dans le repère global
                 call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, kgv)
             end if
             !
             if (zk16(jvCompor) .eq. 'DIS_CHOC') then
                 varmo(:) = 0.0; dvl(:) = 0.0; dpe(:) = 0.0; dve(:) = 0.0
-                ! Relation de comportement de choc : forces nodales
+! Relation de comportement de choc : forces nodales
                 call jevech('PVECTUR', 'E', ifono)
                 do ii = 1, neq
                     zr(ifono+ii-1) = 0.0
@@ -203,11 +210,14 @@ subroutine te0039(option, nomte)
                 end do
                 !
                 ilogic = 0; force(1:3) = 0.0
-                call discret_sief(for_discret, klv, ulp, sim, ilogic, sip, fono, force)
-                call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, kgv, &
-                                        dvl, dpe, dve, Predic, force, varmo, varpl)
+                call discret_sief(for_discret, klv, ulp, sim, ilogic, &
+                                  sip, fono, force)
+                call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
+                                        kgv, dvl, dpe, dve, Predic, &
+                                        force, varmo, varpl)
                 ilogic = 2
-                call discret_sief(for_discret, klv, ulp, sim, ilogic, sip, zr(ifono), force)
+                call discret_sief(for_discret, klv, ulp, sim, ilogic, &
+                                  sip, zr(ifono), force)
                 do ii = 1, neq
                     zr(ifono+ii-1) = zr(ifono+ii-1)-fono(ii)
                 end do

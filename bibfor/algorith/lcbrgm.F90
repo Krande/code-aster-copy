@@ -112,8 +112,14 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps, &
 !
 ! -- DEFORMATIONS
 !
-    call dcopy(ndimsi, epsm, 1, eps, 1)
-    call dcopy(ndimsi, epsm(7), 1, epsr, 1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, eps, b_incy)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm(7), b_incx, epsr, b_incy)
     if (resi) then
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
@@ -200,8 +206,8 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps, &
                 if (k .ne. 3) then
                     do l = 1, ndimsi
                         if (l .ne. 3) then
-                            dsidpt(k, l, 1) = dsidpt(k, l, 1)-1.d0/dsidpt(3, 3, 1)*dsidpt(k, 3, &
-                                              &1)*dsidpt(3, l, 1)
+                            dsidpt(k, l, 1) = dsidpt(k, l, 1)-1.d0/dsidpt(3, 3, 1)*dsidpt(k, 3, 1&
+                                              &)*dsidpt(3, l, 1)
                         end if
                     end do
                 end if

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0476(option, nomte)
 !
     use HHO_type
@@ -107,7 +107,7 @@ subroutine te0476(option, nomte)
                                     hhocell%ndim, VoluValQP(idim, 1:MAX_QP_CELL))
         end do
 !
-    elseif (option .eq. 'CHAR_MECA_FR2D2D' .or. option .eq. 'CHAR_MECA_FR3D3D') then
+    else if (option .eq. 'CHAR_MECA_FR2D2D' .or. option .eq. 'CHAR_MECA_FR3D3D') then
 !
 ! ---- Get Forces
 !
@@ -126,7 +126,7 @@ subroutine te0476(option, nomte)
         call hhoFuncRVecEvalCellQp(hhoCell, hhoQuadCell, zr(j_forc), VoluValQP)
 !
     else
-
+!
         ASSERT(ASTER_FALSE)
     end if
 !

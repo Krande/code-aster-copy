@@ -51,7 +51,10 @@ subroutine newacc(neq, c1, c2, c3, d0, &
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     scal = -1.d0
-    call dcopy(neq, d1, 1, a1, 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, d1, b_incx, a1, b_incy)
     b_n = to_blas_int(neq)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)

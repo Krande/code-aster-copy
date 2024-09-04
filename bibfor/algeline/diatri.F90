@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,10 +55,14 @@ subroutine diatri(n, d, e, vector, evec, &
 !-----------------------------------------------------------------------
     integer :: i, iter, j, k, l, m
     real(kind=8) :: b, c, f, g, p, r, s, scale, tiny, tol
+    blas_int :: b_incx, b_incy, b_n
 !
     if (n .eq. 1) goto 9000
 !
-    call dcopy(n-1, e(2), 1, e(1), 1)
+    b_n = to_blas_int(n-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, e(2), b_incx, e(1), b_incy)
     e(n) = 0.0d0
 !
     tiny = 100.0d0*r8miem()

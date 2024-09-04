@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tstbar(nbsom, x3d1, x3d2, x3d3, x3d4, &
                   x3dp, xbar, itest)
     implicit none
@@ -92,6 +92,7 @@ subroutine tstbar(nbsom, x3d1, x3d2, x3d3, x3d4, &
 ! -----------------
     integer :: ierr
     real(kind=8) :: a(4, 4), b(4), eps, epsg, s(3), u(4, 4), v(4, 3), work(4)
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -146,7 +147,10 @@ subroutine tstbar(nbsom, x3d1, x3d2, x3d3, x3d4, &
                     u(1, 1), v(1, 1), 1, b(1), eps, &
                     ierr, work(1))
         if (ierr .ne. 0) goto 9999
-        call dcopy(nbsom, b(1), 1, xbar(1), 1)
+        b_n = to_blas_int(nbsom)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, b(1), b_incx, xbar(1), b_incy)
 !
     else
 !
@@ -183,7 +187,8 @@ subroutine tstbar(nbsom, x3d1, x3d2, x3d3, x3d4, &
 ! ---
     if (nbsom .eq. 2) then
 !
-        if ((dble(abs(xbar(1))) .lt. epsg) .or. (dble(abs(xbar(2))) .lt. epsg)) itest = 2
+        if ((dble(abs(xbar(1))) .lt. epsg) .or. (dble(abs(xbar(2))) .lt. epsg)) itest = &
+            2
 !
 ! 3.2 DOMAINE TRIANGLE
 ! ---
@@ -222,8 +227,8 @@ subroutine tstbar(nbsom, x3d1, x3d2, x3d3, x3d4, &
             if (dble(abs(xbar(3))) .lt. epsg) then
                 itest = 111
 !............. COINCIDENCE AVEC LE SOMMET 1 OU LE SOMMET 2
-                if ((dble(abs(xbar(2))) .lt. epsg) .or. (dble(abs(xbar(1))) .lt. epsg)) itest = &
-                    2
+                if ((dble(abs(xbar(2))) .lt. epsg) .or. (dble(abs(xbar(1))) .lt. epsg)) &
+                    itest = 2
 !.......... POINT SUR L'ARETE ( SOMMET 2 , SOMMET 3 )
             else if (dble(abs(xbar(1))) .lt. epsg) then
                 itest = 112

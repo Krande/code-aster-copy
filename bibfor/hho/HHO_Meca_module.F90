@@ -527,7 +527,10 @@ contains
 !
 ! --- compute displacement in T+
 !
-            call dcopy(mk_total_dofs, this%depl_prev, 1, this%depl_curr, 1)
+            b_n = to_blas_int(mk_total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, this%depl_prev, b_incx, this%depl_curr, b_incy)
             b_n = to_blas_int(mk_total_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)

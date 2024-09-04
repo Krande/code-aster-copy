@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
-                  nume, iddl, coef, neq, nbmode, zrmod)
+                  nume, iddl, coef, neq, nbmode, &
+                  zrmod)
     implicit none
 #include "jeveux.h"
 #include "asterfort/ddllag.h"
@@ -70,12 +71,12 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 !-----------------------------------------------------------------------
 !
 !   Right-hand side are passed by batches of ICNTL(27) to MUMPS
-    integer            :: icmpl27
-    real(kind=8)       :: un, zero
-    character(len=8)   :: nomcmp(3)
-    character(len=19)  :: numeq
-    character(len=24)  :: kmumps_sparse(3)
-
+    integer :: icmpl27
+    real(kind=8) :: un, zero
+    character(len=8) :: nomcmp(3)
+    character(len=19) :: numeq
+    character(len=24) :: kmumps_sparse(3)
+!
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ib, ic, ie, ila1, ila2, im, imod, in, ila1o, nblag, jlag
@@ -103,18 +104,19 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
     call jeveuo(numeq//'.DEEQ', 'L', vi=deeq)
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     lrhs_sparse = .false.
-    ! taille de blocs de rhs traites en meme temps: valeur par defaut
+! taille de blocs de rhs traites en meme temps: valeur par defaut
     icmpl27 = min(32, nbmode)
     if (slvk(1) (1:5) .eq. 'MUMPS') then
-        ! si MUMPS: taille de blocs de rhs traites en meme temps, valeur du .comm
+! si MUMPS: taille de blocs de rhs traites en meme temps, valeur du .comm
         call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
-        if ((slvi(8) .lt. 0) .and. ((motcle(1:4) .eq. 'DEPL') .or. (motcle(1:4) .eq. 'FORC'))) then
+        if ((slvi(8) .lt. 0) .and. &
+            ((motcle(1:4) .eq. 'DEPL') .or. (motcle(1:4) .eq. 'FORC'))) then
             lrhs_sparse = .true.
         end if
 ! au cas ou slvi(8) serait mal renseigne
         icmpl27 = min(max(abs(slvi(8)), 1), nbmode)
     end if
-
+!
 ! Pour appel a MUMPS solve en mode sparse
     if (lrhs_sparse) then
         coef_sparse = 0
@@ -127,16 +129,16 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
         kmumps_sparse(1) = '&&MUMPS.SPARSE1'
         kmumps_sparse(2) = '&&MUMPS.SPARSE2'
         kmumps_sparse(3) = '&&MUMPS.SPARSE3'
-        ! objet MUMPS RHS_SPARSE
+! objet MUMPS RHS_SPARSE
         call jeexin(kmumps_sparse(1), iret)
         if (iret .ne. 0) call jedetr(kmumps_sparse(1))
         call wkvect(kmumps_sparse(1), 'V V R', nzrhs_max, js1)
         call vecini(nzrhs_max, un, zr(js1))
-        ! objet MUMPS IRHS_SPARSE
+! objet MUMPS IRHS_SPARSE
         call jeexin(kmumps_sparse(2), iret)
         if (iret .ne. 0) call jedetr(kmumps_sparse(2))
         call wkvect(kmumps_sparse(2), 'V V I', nzrhs_max, js2)
-        ! objet indice premier mode du patch + MUMPS IRHS_PTR
+! objet indice premier mode du patch + MUMPS IRHS_PTR
         call jeexin(kmumps_sparse(3), iret)
         if (iret .ne. 0) call jedetr(kmumps_sparse(3))
         call wkvect(kmumps_sparse(3), 'V V I', nbmode+2, js3)
@@ -151,7 +153,8 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 ! Option ACCE*****************************************************************************
     if (motcle(1:4) .eq. 'ACCE') then
         AS_ALLOCATE(vi=position_ddl, size=3*neq)
-        call pteddl('NUME_DDL', nume, 3, nomcmp, neq, tabl_equa=position_ddl)
+        call pteddl('NUME_DDL', nume, 3, nomcmp, neq, &
+                    tabl_equa=position_ddl)
         call wkvect('&&MODSTA.POSITION_DDR', 'V V R', neq, jddr)
         do im = 1, nbmode
             imod = imod+1
@@ -163,7 +166,8 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
                     zr(jddr+in) = zr(jddr+in)+position_ddl(1+ind+in)*coef(in2+ic)
                 end do
             end do
-            call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1, .true._1)
+            call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1, &
+                        .true._1)
         end do
         call jedetr('&&MODSTA.POSITION_DDR')
         AS_DEALLOCATE(vi=position_ddl)
@@ -173,7 +177,8 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
         do ie = 1, neq
             if (iddl(ie) .eq. 1) then
                 imod = imod+1
-                call ddllag(nume, ie, neq, ila1, ila2, ila1o)
+                call ddllag(nume, ie, neq, ila1, ila2, &
+                            ila1o)
                 ila1o = ila1
                 if (ila1 .eq. 0 .or. ila2 .eq. 0) call utmess('F', 'ALGELINE2_4')
                 zrmod(ila1, imod) = un
@@ -207,15 +212,18 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
         do ie = 1, neq
             if (iddl(ie) .eq. 1) then
                 imod = imod+1
-                call ddllag(nume, ie, neq, ila1, ila2, ila1o)
+                call ddllag(nume, ie, neq, ila1, ila2, &
+                            ila1o)
                 ila1o = ila1
                 if (ila1 .eq. 0 .or. ila2 .eq. 0) call utmess('F', 'ALGELINE2_4')
                 call vecini(neq, zero, zr(jddr))
                 zr(jddr+ila1-1) = un
                 zr(jddr+ila2-1) = un
                 call resoud(matfac, matpre, solveu, ' ', 1, &
-                            ' ', ' ', ' ', zr(jddr), [cbid], ' ', .true._1, 0, iret)
-                call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1, .true._1)
+                            ' ', ' ', ' ', zr(jddr), [cbid], &
+                            ' ', .true._1, 0, iret)
+                call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1, &
+                            .true._1)
             end if
         end do
         call jedetr('&&MODSTA.POSITION_DDR')
@@ -225,7 +233,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 !*****************************************************************************************
 ! Traitement global: resolution par blocs (en mode dense ou sparse avec blocking si MUMPS)
 !*****************************************************************************************
-
+!
 ! Vecteur contenant les indices des Lagranges (au lieu de faire zerlag vecteur par vecteur)
     nblag = 0
     do ib = 1, neq
@@ -253,9 +261,9 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
         do ib = 1, nbatch
             if (ib == nbatch) batch_size = n_last_batch
             if (ib /= nbatch) batch_size = icmpl27
-
+!
             if (lrhs_sparse) then
-                ! Pour appel a MUMPS solve en mode sparse: indice du premier rhs du patch
+! Pour appel a MUMPS solve en mode sparse: indice du premier rhs du patch
                 zi(js3) = icmpl27*(ib-1)+1
                 if (lverbose) then
                     write (6, *) '<modsta> ibatch/batch_size=', icmpl27*(ib-1)+1, batch_size
@@ -267,13 +275,14 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
                     end do
                 end if
             end if
-
+!
             call resoud(matfac, matpre, solveu, ' ', batch_size, &
-                        ' ', ' ', ' ', zrmod(1, icmpl27*(ib-1)+1), [cbid], ' ', .true._1, 0, iret)
-
+                        ' ', ' ', ' ', zrmod(1, icmpl27*(ib-1)+1), [cbid], &
+                        ' ', .true._1, 0, iret)
+!
         end do
     end if
-
+!
 !*****************************************************************************************
 ! Post-traitements
 !*****************************************************************************************

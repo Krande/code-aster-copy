@@ -90,8 +90,14 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
         devi(itens) = 0.d0
     end do
 !
-    call dcopy(nmat, coeft, 1, materf(nmat+1), 1)
-    call dcopy(nmat, coel, 1, materf(1), 1)
+    b_n = to_blas_int(nmat)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, coeft, b_incx, materf(nmat+1), b_incy)
+    b_n = to_blas_int(nmat)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, coel, b_incx, materf(1), b_incy)
 !
 !     CALCUL DU NOMBRE TOTAL DE SYSTEMES DE GLISSEMENT
     nbfsys = nbcomm(nmat, 2)
@@ -133,7 +139,10 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
         call calsig(fami, kpg, ksp, evi, mod, &
                     rela_comp, vini, x, dtime, epsd, &
                     detot, nmat, coel, sigi)
-        call dcopy(6, detot, 1, deps, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, detot, b_incx, deps, b_incy)
     end if
     depsdt = sqrt(ddot(6, deps, 1, deps, 1)/1.5d0)/dtime
     nbfsys = nbcomm(nmat, 2)
@@ -212,9 +221,15 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
         dvin(itens) = devi(itens)
     end do
     if (gdef .eq. 1) then
-        call dcopy(9, vini(nvi-3-18+1), 1, fp, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vini(nvi-3-18+1), b_incx, fp, b_incy)
         fp1 = matmul(gamsns, fp)
-        call dcopy(9, fp1, 1, dvin(nvi-3-18+1), 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fp1, b_incx, dvin(nvi-3-18+1), b_incy)
     end if
 !
 999 continue

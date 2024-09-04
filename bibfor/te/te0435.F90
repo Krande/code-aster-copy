@@ -89,13 +89,12 @@ subroutine te0435(option, nomte)
     aster_logical :: pttdef, grddef
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=16) :: defo_comp, rela_comp
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lNonLine = (option(1:9) .eq. 'FULL_MECA') .or. &
-               (option(1:9) .eq. 'RAPH_MECA') .or. &
-               (option(1:10) .eq. 'RIGI_MECA_') .and. &
-               (option(1:15) .ne. 'RIGI_MECA_PRSU_')
+    lNonLine = (option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA') .or. &
+               (option(1:10) .eq. 'RIGI_MECA_') .and. (option(1:15) .ne. 'RIGI_MECA_PRSU_')
     lLine = option .eq. 'RIGI_MECA'
     cod = 0
 !
@@ -118,8 +117,7 @@ subroutine te0435(option, nomte)
     lSigm = ASTER_FALSE
     lMatr = ASTER_FALSE
     call jevech('PGEOMER', 'L', igeom)
-    if ((option(1:15) .ne. 'RIGI_MECA_PRSU_') .and. &
-        (option .ne. 'CHAR_MECA_PRSU_F')) then
+    if ((option(1:15) .ne. 'RIGI_MECA_PRSU_') .and. (option .ne. 'CHAR_MECA_PRSU_F')) then
         call jevech('PCACOQU', 'L', icacoq)
         call jevech('PMATERC', 'L', imate)
     end if
@@ -142,9 +140,8 @@ subroutine te0435(option, nomte)
 !
     if (lNonLine) then
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), &
-                             lMatr, lVect, &
-                             lVari, lSigm)
+        call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                             lSigm)
 ! ----- Properties of behaviour
         rela_comp = zk16(icompo-1+RELA_NAME)
         defo_comp = zk16(icompo-1+DEFO)
@@ -159,12 +156,12 @@ subroutine te0435(option, nomte)
         grddef = ASTER_FALSE
         lMatr = ASTER_TRUE
     end if
-
+!
 ! - PARAMETRES NECESSAIRE AU CALCUL DE LA MATRICE DE RIGITE POUR PRESSION SUIVEUSE
     if (option .eq. 'RIGI_MECA_PRSU_R') then
         call jevecd('PPRESSR', i_pres, 0.d0)
     end if
-
+!
     if (option(10:16) .eq. '_PRSU_F') then
         call jevech('PPRESSF', 'L', i_pres)
         call jevech('PINSTR', 'L', i_temp)
@@ -192,7 +189,10 @@ subroutine te0435(option, nomte)
     end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-        call dcopy(npg*nvari, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*nvari)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
@@ -202,7 +202,10 @@ subroutine te0435(option, nomte)
     end if
     if (option .eq. 'RIGI_MECA_IMPLEX') then
         call jevech('PCONTXR', 'E', icontx)
-        call dcopy(npg*ncomp, zr(icontm), 1, zr(icontx), 1)
+        b_n = to_blas_int(npg*ncomp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(icontm), b_incx, zr(icontx), b_incy)
     end if
 !
 !
@@ -214,8 +217,7 @@ subroutine te0435(option, nomte)
 ! - EPAISSEUR
 ! - PRECONTRAINTES
 !
-    if ((option(1:15) .ne. 'RIGI_MECA_PRSU_') .and. &
-        (option .ne. 'CHAR_MECA_PRSU_F')) then
+    if ((option(1:15) .ne. 'RIGI_MECA_PRSU_') .and. (option .ne. 'CHAR_MECA_PRSU_F')) then
         alpha = zr(icacoq+1)*r8dgrd()
         beta = zr(icacoq+2)*r8dgrd()
         h = zr(icacoq)
@@ -232,8 +234,9 @@ subroutine te0435(option, nomte)
             dff(2, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
         end do
         if (option .eq. 'RIGI_MECA_PRSU_R') then
-            call nmprmb_matr(nno, npg, kpg, zr(ipoids+kpg), zr(ivf), dff, &
-                             igeom, ideplm, ideplp, i_pres, imatun)
+            call nmprmb_matr(nno, npg, kpg, zr(ipoids+kpg), zr(ivf), &
+                             dff, igeom, ideplm, ideplp, i_pres, &
+                             imatun)
         elseif ((option .eq. 'RIGI_MECA_PRSU_F') .or. &
                 (option .eq. 'CHAR_MECA_PRSU_F')) then
             kdec = (kpg-1)*nno
@@ -262,23 +265,19 @@ subroutine te0435(option, nomte)
             pres_point(kpg) = pres
         else
             if (pttdef) then
-                call mbxnlr(option, fami, &
-                            nddl, nno, ncomp, kpg, &
-                            ipoids, igeom, imate, ideplm, &
-                            ideplp, ivectu, icontp, imatuu, &
-                            dff, alpha, beta, &
-                            lVect, lMatr)
-            elseif (grddef) then
+                call mbxnlr(option, fami, nddl, nno, ncomp, &
+                            kpg, ipoids, igeom, imate, ideplm, &
+                            ideplp, ivectu, icontp, imatuu, dff, &
+                            alpha, beta, lVect, lMatr)
+            else if (grddef) then
                 if (rela_comp(1:14) .eq. 'ELAS_MEMBRANE_') then
                     if ((abs(alpha) .gt. r8prem()) .or. (abs(beta) .gt. r8prem())) then
                         call utmess('A', 'MEMBRANE_6')
                     end if
-                    call mbgnlr(lVect, lMatr, &
-                                nno, ncomp, imate, icompo, &
-                                dff, alpha, beta, h, &
-                                preten, igeom, ideplm, ideplp, &
-                                kpg, fami, ipoids, icontp, &
-                                ivectu, imatuu)
+                    call mbgnlr(lVect, lMatr, nno, ncomp, imate, &
+                                icompo, dff, alpha, beta, h, &
+                                preten, igeom, ideplm, ideplp, kpg, &
+                                fami, ipoids, icontp, ivectu, imatuu)
                 else
                     call utmess('F', 'MEMBRANE_3')
                 end if
@@ -286,14 +285,13 @@ subroutine te0435(option, nomte)
         end if
     end do
 !
-
+!
 ! - Second member
 !
     if (option .eq. 'CHAR_MECA_PRSU_F') then
         call jevech('PVECTUR', 'E', ivectu)
-        call nmpr3d_vect(nno, npg, ndofbynode, &
-                         zr(ipoids), zr(ivf), zr(idfde), &
-                         geom_reac, pres_point, zr(ivectu))
+        call nmpr3d_vect(nno, npg, ndofbynode, zr(ipoids), zr(ivf), &
+                         zr(idfde), geom_reac, pres_point, zr(ivectu))
 !
 ! - Tangent matrix
 !
@@ -310,7 +308,7 @@ subroutine te0435(option, nomte)
         end do
         ASSERT(k .eq. nddl*nno*nddl*nno)
     end if
-
+!
     if (lSigm) then
         call codere(cod, npg, zi(jcret))
     end if
