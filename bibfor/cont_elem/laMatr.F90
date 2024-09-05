@@ -68,6 +68,7 @@ subroutine laMatr(parameters, geom, matr_cont, matr_fric)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), mu_c(MAX_LAGA_DOFS), d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
     real(kind=8) :: mu_f(MAX_LAGA_DOFS, 2)
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+    blas_int :: b_incx, b_incy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,33 +128,53 @@ subroutine laMatr(parameters, geom, matr_cont, matr_fric)
 !        term: (gamma_c*H*D(gap(u))[v], D(gap(u))[du])
 !
             coeff = weight_sl_qp*gamma_c
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, &
-                      dGap, 1, matr_cont, MAX_LAGA_DOFS)
+            b_lda = to_blas_int(MAX_LAGA_DOFS)
+            b_m = to_blas_int(geom%nb_dofs)
+            b_n = to_blas_int(geom%nb_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dger(b_m, b_n, coeff, dGap, b_incx, &
+                      dGap, b_incy, matr_cont, b_lda)
 !
 ! ------ Compute displacement / displacement (slave and master side)
 !        term: (H*[lagr_c + gamma_c * gap(u)]_R-, D2(gap(u))[v, du])
 !
             coeff = weight_sl_qp*projRmVal
             matr_cont(1:geom%nb_dofs, 1:geom%nb_dofs) = matr_cont(1:geom%nb_dofs, 1:geom%nb_dofs)&
-                                                        &+coeff*d2Gap(1:geom%nb_dofs, 1:geom%nb_&
-                                                        &dofs)
+                                                        &+coeff*d2Gap(1:geom%nb_dofs, 1:geom%nb_d&
+                                                        &ofs)
 !
 ! ------ Compute displacement / Lagrange and Lagrange / displacement
 !        term: (H * D(gap(u))[v], dlagr_c) + (H * mu_c,  D(gap(u))[du])
 !
             coeff = weight_sl_qp
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, &
-                      mu_c, 1, matr_cont, MAX_LAGA_DOFS)
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, &
-                      dGap, 1, matr_cont, MAX_LAGA_DOFS)
+            b_lda = to_blas_int(MAX_LAGA_DOFS)
+            b_m = to_blas_int(geom%nb_dofs)
+            b_n = to_blas_int(geom%nb_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dger(b_m, b_n, coeff, dGap, b_incx, &
+                      mu_c, b_incy, matr_cont, b_lda)
+            b_lda = to_blas_int(MAX_LAGA_DOFS)
+            b_m = to_blas_int(geom%nb_dofs)
+            b_n = to_blas_int(geom%nb_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dger(b_m, b_n, coeff, mu_c, b_incx, &
+                      dGap, b_incy, matr_cont, b_lda)
         else
 !
 ! ------ Compute Lagrange / Lagrange (slave side)
 !        term: ((H-1) / gamma_c * mu_c, dlagr_c) = (- mu_c / gamma_c, dlagr_c) since H = 0
 !
             coeff = -weight_sl_qp/gamma_c
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, &
-                      mu_c, 1, matr_cont, MAX_LAGA_DOFS)
+            b_lda = to_blas_int(MAX_LAGA_DOFS)
+            b_m = to_blas_int(geom%nb_dofs)
+            b_n = to_blas_int(geom%nb_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dger(b_m, b_n, coeff, mu_c, b_incx, &
+                      mu_c, b_incy, matr_cont, b_lda)
 !
         end if
 !

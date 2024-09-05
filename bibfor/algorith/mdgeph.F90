@@ -254,9 +254,14 @@ subroutine mdgeph(neq, nbmode, bmodal, xgene, u, &
             call jeveuo(kgemv, 'L', ja)
         end if
         call vecini(neq, zero, u)
-        call dgemv('N', m, nbmode, 1.d0, zr(ja), &
-                   m, xgene, 1, zero, u(iaux), &
-                   1)
+        b_lda = to_blas_int(m)
+        b_m = to_blas_int(m)
+        b_n = to_blas_int(nbmode)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, zr(ja), &
+                   b_lda, xgene, b_incx, zero, u(iaux), &
+                   b_incy)
 ! COM MPI que si au moins 1 ddl par processus
         if (m .ne. neq) call asmpi_comm_vect('MPI_SUM', 'R', nbval=neq, vr=u)
 !

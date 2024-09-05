@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine mlnflm(nb, n, p, frontl, frontu, &
     integer :: m, ll, k, ind, ia, j, restp, npb
     integer :: incx, incy
     character(len=1) :: tra
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
     npb = p/nb
     restp = p-(nb*npb)
     ll = n
@@ -65,12 +66,22 @@ subroutine mlnflm(nb, n, p, frontl, frontu, &
                     tl(l) = frontl(n*(k+l-2)+k+i-1)
                 end do
             end if
-            call dgemv(tra, ll, i-1, alpha, frontl(ia), &
-                       n, tu, incx, beta, frontl(ind), &
-                       incy)
-            call dgemv(tra, ll, i-1, alpha, frontu(ia), &
-                       n, tl, incx, beta, frontu(ind), &
-                       incy)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(ll)
+            b_n = to_blas_int(i-1)
+            b_incx = to_blas_int(incx)
+            b_incy = to_blas_int(incy)
+            call dgemv(tra, b_m, b_n, alpha, frontl(ia), &
+                       b_lda, tu, b_incx, beta, frontl(ind), &
+                       b_incy)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(ll)
+            b_n = to_blas_int(i-1)
+            b_incx = to_blas_int(incx)
+            b_incy = to_blas_int(incy)
+            call dgemv(tra, b_m, b_n, alpha, frontu(ia), &
+                       b_lda, tl, b_incx, beta, frontu(ind), &
+                       b_incy)
             adki = adper(k+i-1)
 !        LA PARTIE INFERIEURE  SEULE EST DIVISEE PAR LE TERME DIAGONAL,
 !        PAS LA PARTIE SUPERIEURE
@@ -112,12 +123,22 @@ subroutine mlnflm(nb, n, p, frontl, frontu, &
                     tl(l) = frontl(n*(k+l-2)+k+i-1)
                 end do
             end if
-            call dgemv(tra, ll, i-1, alpha, frontl(ia), &
-                       n, tu, incx, beta, frontl(ind), &
-                       incy)
-            call dgemv(tra, ll, i-1, alpha, frontu(ia), &
-                       n, tl, incx, beta, frontu(ind), &
-                       incy)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(ll)
+            b_n = to_blas_int(i-1)
+            b_incx = to_blas_int(incx)
+            b_incy = to_blas_int(incy)
+            call dgemv(tra, b_m, b_n, alpha, frontl(ia), &
+                       b_lda, tu, b_incx, beta, frontl(ind), &
+                       b_incy)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(ll)
+            b_n = to_blas_int(i-1)
+            b_incx = to_blas_int(incx)
+            b_incy = to_blas_int(incy)
+            call dgemv(tra, b_m, b_n, alpha, frontu(ia), &
+                       b_lda, tl, b_incx, beta, frontu(ind), &
+                       b_incy)
             adki = adper(k+i-1)
 !              SEUL FRONTL EST DIVISE PAR LE TERME DIAGONAL
             do j = 1, ll

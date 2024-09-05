@@ -89,6 +89,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
     real(kind=8) :: ktgb(0:neps*npg*nddl-1)
     type(Behaviour_Integ) :: BEHinteg
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+    blas_int :: b_incx, b_incy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,12 +105,22 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
 !
 ! - CALCUL DES DEFORMATIONS GENERALISEES
 !
-    call dgemv('N', nepg, nddl, 1.d0, b, &
-               nepg, ddlm, 1, 0.d0, epsm, &
-               1)
-    call dgemv('N', nepg, nddl, 1.d0, b, &
-               nepg, ddld, 1, 0.d0, epsd, &
-               1)
+    b_lda = to_blas_int(nepg)
+    b_m = to_blas_int(nepg)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddlm, b_incx, 0.d0, epsm, &
+               b_incy)
+    b_lda = to_blas_int(nepg)
+    b_m = to_blas_int(nepg)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddld, b_incx, 0.d0, epsd, &
+               b_incy)
 !
 ! - CALCUL DE LA LOI DE COMPORTEMENT
 !
@@ -135,9 +146,14 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
 !      PRISE EN CHARGE DU POIDS DU POINT DE GAUSS
         sigp = sigp*w
 !      FINT = SOMME(G) WG.BT.SIGMA
-        call dgemv('T', nepg, nddl, 1.d0, b, &
-                   nepg, sigp, 1, 0.d0, fint, &
-                   1)
+        b_lda = to_blas_int(nepg)
+        b_m = to_blas_int(nepg)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('T', b_m, b_n, 1.d0, b, &
+                   b_lda, sigp, b_incx, 0.d0, fint, &
+                   b_incy)
     end if
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE (STOCKAGE PAR LIGNES SUCCESSIVES)

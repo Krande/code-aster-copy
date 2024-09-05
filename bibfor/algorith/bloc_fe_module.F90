@@ -41,15 +41,21 @@ contains
         real(kind=8) :: bd(size(b, 1))
 ! -------------------------------------------------------------------------
         integer :: neps, ndim, nno
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 ! -------------------------------------------------------------------------
         neps = size(b, 1)
         ndim = size(b, 2)
         nno = size(b, 3)
         ASSERT(size(d, 1) .eq. ndim)
         ASSERT(size(d, 2) .eq. nno)
-        call dgemv('n', neps, ndim*nno, 1.d0, b, &
-                   neps, d, 1, 0.d0, bd, &
-                   1)
+        b_lda = to_blas_int(neps)
+        b_m = to_blas_int(neps)
+        b_n = to_blas_int(ndim*nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('n', b_m, b_n, 1.d0, b, &
+                   b_lda, d, b_incx, 0.d0, bd, &
+                   b_incy)
     end function prod_bd
 !
     function prod_sb(s, b) result(sb)
@@ -58,14 +64,20 @@ contains
         real(kind=8) :: sb(size(b, 2), size(b, 3))
 ! -------------------------------------------------------------------------
         integer :: ndim, nno, neu
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 ! -------------------------------------------------------------------------
         ndim = size(b, 2)
         nno = size(b, 3)
         neu = size(s)
         ASSERT(neu .eq. size(b, 1))
-        call dgemv('t', neu, ndim*nno, 1.d0, b, &
-                   neu, s, 1, 0.d0, sb, &
-                   1)
+        b_lda = to_blas_int(neu)
+        b_m = to_blas_int(neu)
+        b_n = to_blas_int(ndim*nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('t', b_m, b_n, 1.d0, b, &
+                   b_lda, s, b_incx, 0.d0, sb, &
+                   b_incy)
     end function prod_sb
 !
     function prod_bkb(bin, kinjm, bjm) result(bkb)

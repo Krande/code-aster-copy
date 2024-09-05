@@ -187,9 +187,14 @@ contains
 !
 ! ----- compute G_curr = gradrec * temp_curr
 !
-        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, &
-                   MSIZE_CELL_VEC, temp_curr, 1, 0.d0, G_curr_coeff, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_VEC)
+        b_m = to_blas_int(gbs)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+                   b_lda, temp_curr, b_incx, 0.d0, G_curr_coeff, &
+                   b_incy)
 !
 ! ----- Loop on quadrature point
 !
@@ -238,9 +243,14 @@ contains
 ! ----- compute rhs += Gradrec**T * bT
 !
         if (l_rhs) then
-            call dgemv('T', gbs, total_dofs, 1.d0, gradrec, &
-                       MSIZE_CELL_VEC, bT, 1, 1.d0, rhs, &
-                       1)
+            b_lda = to_blas_int(MSIZE_CELL_VEC)
+            b_m = to_blas_int(gbs)
+            b_n = to_blas_int(total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('T', b_m, b_n, 1.d0, gradrec, &
+                       b_lda, bT, b_incx, 1.d0, rhs, &
+                       b_incy)
         end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
@@ -540,8 +550,8 @@ contains
 !
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Cell), intent(in) :: hhoCell
-        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL), intent(out) :: gradfull
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL), optional, intent(out) :: stab
+        real(kind=8), intent(out) :: gradfull(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
+        real(kind=8), optional, intent(out) :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -582,8 +592,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL), intent(out) :: gradfull
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL), intent(out), optional :: stab
+        real(kind=8), intent(out) :: gradfull(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out), optional ::  stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -808,6 +818,7 @@ contains
 !
         real(kind=8) :: qp_module_tang(3, 3), qp_mod_vec(3)
         integer :: i, row, gbs_cmp, dim
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 ! --------------------------------------------------------------------------------------------------
 !
         Agphi = 0.d0
@@ -818,8 +829,13 @@ contains
         row = 1
         do i = 1, dim
             qp_mod_vec = qp_module_tang(:, i)
-            call dger(gbs_cmp, dim, 1.d0, BSCEval, 1, &
-                      qp_mod_vec, 1, Agphi(row:(row+gbs_cmp-1), 1:dim), gbs_cmp)
+            b_lda = to_blas_int(gbs_cmp)
+            b_m = to_blas_int(gbs_cmp)
+            b_n = to_blas_int(dim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dger(b_m, b_n, 1.d0, BSCEval, b_incx, &
+                      qp_mod_vec, b_incy, Agphi(row:(row+gbs_cmp-1), 1:dim), b_lda)
             row = row+gbs_cmp
         end do
 !

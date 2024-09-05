@@ -249,27 +249,47 @@ contains
 !
 ! ----- compute G_prev = gradrec * depl_prev (sym or not)
 !
-        call dgemv('N', mk_gbs_tot, mk_total_dofs, 1.d0, hhoMecaState%grad, &
-                   MSIZE_CELL_MAT, hhoMecaState%depl_prev, 1, 0.d0, G_prev_coeff, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(mk_gbs_tot)
+        b_n = to_blas_int(mk_total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad, &
+                   b_lda, hhoMecaState%depl_prev, b_incx, 0.d0, G_prev_coeff, &
+                   b_incy)
 !
 ! ----- compute G_curr = gradrec * depl_curr (sym or not)
 !
-        call dgemv('N', mk_gbs_tot, mk_total_dofs, 1.d0, hhoMecaState%grad, &
-                   MSIZE_CELL_MAT, hhoMecaState%depl_curr, 1, 0.d0, G_curr_coeff, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(mk_gbs_tot)
+        b_n = to_blas_int(mk_total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad, &
+                   b_lda, hhoMecaState%depl_curr, b_incx, 0.d0, G_curr_coeff, &
+                   b_incy)
 !
 ! ----- compute GV_prev = gradrec * vari_prev
 !
-        call dgemv('N', gv_gbs, gv_total_dofs, 1.d0, hhoGVState%grad, &
-                   MSIZE_CELL_VEC, hhoGVState%vari_prev, 1, 0.d0, GV_prev_coeff, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_VEC)
+        b_m = to_blas_int(gv_gbs)
+        b_n = to_blas_int(gv_total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, hhoGVState%grad, &
+                   b_lda, hhoGVState%vari_prev, b_incx, 0.d0, GV_prev_coeff, &
+                   b_incy)
 !
 ! ----- compute GV_curr = gradrec * vari_curr
 !
-        call dgemv('N', gv_gbs, gv_total_dofs, 1.d0, hhoGVState%grad, &
-                   MSIZE_CELL_VEC, hhoGVState%vari_curr, 1, 0.d0, GV_curr_coeff, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_VEC)
+        b_m = to_blas_int(gv_gbs)
+        b_n = to_blas_int(gv_total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, hhoGVState%grad, &
+                   b_lda, hhoGVState%vari_curr, b_incx, 0.d0, GV_curr_coeff, &
+                   b_incy)
 !
 ! ----- Loop on quadrature point
 !
@@ -449,16 +469,26 @@ contains
 !
         if (l_rhs) then
 ! ----- compute rhs += Gradrec**T * bT
-            call dgemv('T', mk_gbs_tot, mk_total_dofs, 1.d0, hhoMecaState%grad, &
-                       MSIZE_CELL_MAT, mk_bT, 1, 1.d0, rhs_mk, &
-                       1)
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(mk_gbs_tot)
+            b_n = to_blas_int(mk_total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('T', b_m, b_n, 1.d0, hhoMecaState%grad, &
+                       b_lda, mk_bT, b_incx, 1.d0, rhs_mk, &
+                       b_incy)
 ! ----- compute rhs += stab
             call dsymv('U', mk_total_dofs, mk_stab, hhoMecaState%stab, MSIZE_TDOFS_VEC, &
                        hhoMecaState%depl_curr, 1, 1.d0, rhs_mk, 1)
 ! ----- compute rhs += Gradrec**T * bT
-            call dgemv('T', gv_gbs, gv_total_dofs, 1.d0, hhoGVState%grad, &
-                       MSIZE_CELL_VEC, gv_bT, 1, 1.d0, rhs_vari, &
-                       1)
+            b_lda = to_blas_int(MSIZE_CELL_VEC)
+            b_m = to_blas_int(gv_gbs)
+            b_n = to_blas_int(gv_total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('T', b_m, b_n, 1.d0, hhoGVState%grad, &
+                       b_lda, gv_bT, b_incx, 1.d0, rhs_vari, &
+                       b_incy)
 ! ----- compute rhs += stab
             call dsymv('U', gv_total_dofs, gv_stab, hhoGVState%stab, MSIZE_TDOFS_SCAL, &
                        hhoGVState%vari_curr, 1, 1.d0, rhs_vari, 1)

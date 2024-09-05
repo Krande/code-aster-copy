@@ -61,6 +61,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
     real(kind=8) :: dStress_nn(MAX_NITS_DOFS), dGapRenum(MAX_NITS_DOFS)
     real(kind=8) :: matr_tmp(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
     integer :: dofsMap(54)
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,8 +116,13 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !
             matr_tmp = 0.d0
             coeff = weight_sl_qp*gamma_c
-            call dger(face_dofs, face_dofs, coeff, dGap, 1, &
-                      dGap, 1, matr_tmp, MAX_LAGA_DOFS)
+            b_lda = to_blas_int(MAX_LAGA_DOFS)
+            b_m = to_blas_int(face_dofs)
+            b_n = to_blas_int(face_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dger(b_m, b_n, coeff, dGap, b_incx, &
+                      dGap, b_incy, matr_tmp, b_lda)
 !
 ! ------ Compute displacement / displacement (slave and master side)
 !        term: (H*[stress_nn + gamma_c * gap(u)]_R-, D2(gap(u))[v, du])
@@ -134,8 +140,13 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !
             call remappingVect(geom, dofsMap, dGap, dGapRenum, 1.d0)
             coeff = weight_sl_qp
-            call dger(total_dofs, slav_dofs, coeff, dGapRenum, 1, &
-                      dStress_nn, 1, matr_cont, MAX_NITS_DOFS)
+            b_lda = to_blas_int(MAX_NITS_DOFS)
+            b_m = to_blas_int(total_dofs)
+            b_n = to_blas_int(slav_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dger(b_m, b_n, coeff, dGapRenum, b_incx, &
+                      dStress_nn, b_incy, matr_cont, b_lda)
 !
             if (parameters%vari_cont .ne. CONT_VARI_RAPI) then
 !
@@ -143,8 +154,13 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !        term: \theta * (H * D(stress_nn)[v], D(gap(u))[du])
 !
                 coeff = weight_sl_qp*parameters%vari_cont_coef
-                call dger(slav_dofs, total_dofs, coeff, dStress_nn, 1, &
-                          dGapRenum, 1, matr_cont, MAX_NITS_DOFS)
+                b_lda = to_blas_int(MAX_NITS_DOFS)
+                b_m = to_blas_int(slav_dofs)
+                b_n = to_blas_int(total_dofs)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dger(b_m, b_n, coeff, dStress_nn, b_incx, &
+                          dGapRenum, b_incy, matr_cont, b_lda)
             end if
 !
         else
@@ -154,8 +170,13 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !        term: (theta * (H-1) / gamma_c * D(stress_nn)[v], D(stress_nn)[du])
 !
                 coeff = weight_sl_qp*parameters%vari_cont_coef*gamma_c
-                call dger(slav_dofs, slav_dofs, coeff, dStress_nn, 1, &
-                          dStress_nn, 1, matr_cont, MAX_NITS_DOFS)
+                b_lda = to_blas_int(MAX_NITS_DOFS)
+                b_m = to_blas_int(slav_dofs)
+                b_n = to_blas_int(slav_dofs)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dger(b_m, b_n, coeff, dStress_nn, b_incx, &
+                          dStress_nn, b_incy, matr_cont, b_lda)
             end if
         end if
 !

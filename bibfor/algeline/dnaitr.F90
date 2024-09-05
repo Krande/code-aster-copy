@@ -302,6 +302,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
     real(kind=8) :: xtemp(2)
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -587,18 +588,28 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | WORKD(IPJ:IPJ+N-1) CONTAINS B*OP*V_(J).  |
 !        %------------------------------------------%
 !
-    call dgemv('T', n, j, one, v, &
-               ldv, workd(ipj), 1, zero, h(1, j), &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('T', b_m, b_n, one, v, &
+               b_lda, workd(ipj), b_incx, zero, h(1, j), &
+               b_incy)
 !
 !        %--------------------------------------%
 !        | ORTHOGONALIZE R_(J) AGAINST V_(J).   |
 !        | RESID CONTAINS OP*V_(J). SEE STEP 3. |
 !        %--------------------------------------%
 !
-    call dgemv('N', n, j, -one, v, &
-               ldv, h(1, j), 1, one, resid, &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, -one, v, &
+               b_lda, h(1, j), b_incx, one, resid, &
+               b_incy)
 !
     if (j .gt. 1) h(j, j-1) = betaj
     orth1 = .true.
@@ -686,9 +697,14 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | WORKD(IRJ:IRJ+J-1) = V(:,1:J)'*WORKD(IPJ:IPJ+N-1). |
 !        %----------------------------------------------------%
 !
-    call dgemv('T', n, j, one, v, &
-               ldv, workd(ipj), 1, zero, workd(irj), &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('T', b_m, b_n, one, v, &
+               b_lda, workd(ipj), b_incx, zero, workd(irj), &
+               b_incy)
 !
 !        %---------------------------------------------%
 !        | COMPUTE THE CORRECTION TO THE RESIDUAL:     |
@@ -697,9 +713,14 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | + V(:,1:J)*WORKD(IRJ:IRJ+J-1)*E'_J.         |
 !        %---------------------------------------------%
 !
-    call dgemv('N', n, j, -one, v, &
-               ldv, workd(irj), 1, one, resid, &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, -one, v, &
+               b_lda, workd(irj), b_incx, one, resid, &
+               b_incy)
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)

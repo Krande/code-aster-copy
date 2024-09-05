@@ -677,6 +677,7 @@ contains
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: Cauchy_curr(6), PK1_curr(3, 3), G_curr(3, 3), F_curr(3, 3)
         real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_curr_coeff
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
         rhs = 0.d0
         bT = 0.d0
@@ -692,9 +693,14 @@ contains
 ! --- Compute local contribution
 !
         if (hhoCS%l_largestrain) then
-            call dgemv('N', gbs, total_dofs, 1.d0, hhoMecaState%grad, &
-                       MSIZE_CELL_MAT, hhoMecaState%depl_curr, 1, 0.d0, G_curr_coeff, &
-                       1)
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(gbs)
+            b_n = to_blas_int(total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad, &
+                       b_lda, hhoMecaState%depl_curr, b_incx, 0.d0, G_curr_coeff, &
+                       b_incy)
             gbs_curr = gbs
         else
             gbs_curr = gbs_sym
@@ -735,9 +741,14 @@ contains
             end if
         end do
 !
-        call dgemv('T', gbs_curr, total_dofs, 1.d0, hhoMecaState%grad, &
-                   MSIZE_CELL_MAT, bT, 1, 1.d0, rhs, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(gbs_curr)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('T', b_m, b_n, 1.d0, hhoMecaState%grad, &
+                   b_lda, bT, b_incx, 1.d0, rhs, &
+                   b_incy)
 !
 ! --- add stabilization
 !

@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -167,6 +167,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
     aster_logical :: select(1)
     integer :: i, iconj, msglvl
     real(kind=8) :: temp, vl(1)
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -264,9 +265,14 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
         end if
     end do
 !
-    call dgemv('T', n, n, one, q, &
-               ldq, bounds, 1, zero, workl, &
-               1)
+    b_lda = to_blas_int(ldq)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('T', b_m, b_n, one, q, &
+               b_lda, bounds, b_incx, zero, workl, &
+               b_incy)
 !
     if (msglvl .gt. 1) then
         call dvout(logfil, n, workl, ndigit, '_NEIGH: LAST ROW OF THE EIGENVECTOR MATRIX FOR H')

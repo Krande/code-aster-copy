@@ -1051,6 +1051,7 @@ contains
 !
         real(kind=8) :: norm(3), dNs_n(MAX_LAGA_DOFS), dZetaM_H(MAX_LAGA_DOFS, 2), inv_ns_nm
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+        blas_int :: b_incx, b_incy
 !
         d2Gap_du2 = 0.d0
 !
@@ -1062,16 +1063,31 @@ contains
 ! --- Term: D(n^s[v^s]).n^m/(n^m.n^s)
 !
         dNs_n = 0.d0
-        call dgemv('N', geom%nb_dofs, geom%elem_dime, 1.d0, dNs, &
-                   MAX_LAGA_DOFS, norm, 1, 1.d0, dNs_n, &
-                   1)
+        b_lda = to_blas_int(MAX_LAGA_DOFS)
+        b_m = to_blas_int(geom%nb_dofs)
+        b_n = to_blas_int(geom%elem_dime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, dNs, &
+                   b_lda, norm, b_incx, 1.d0, dNs_n, &
+                   b_incy)
 !
 ! --- Term: -(D gap(u)[v]* D n^s[w^s] + D gap(u)[w]* D n^s[v^s]).n^m/(n^m.n^s)
 !
-        call dger(geom%nb_dofs, geom%nb_dofs, -1.d0, dGap, 1, &
-                  dNs_n, 1, d2Gap_du2, MAX_LAGA_DOFS)
-        call dger(geom%nb_dofs, geom%nb_dofs, -1.d0, dNs_n, 1, &
-                  dGap, 1, d2Gap_du2, MAX_LAGA_DOFS)
+        b_lda = to_blas_int(MAX_LAGA_DOFS)
+        b_m = to_blas_int(geom%nb_dofs)
+        b_n = to_blas_int(geom%nb_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dger(b_m, b_n, -1.d0, dGap, b_incx, &
+                  dNs_n, b_incy, d2Gap_du2, b_lda)
+        b_lda = to_blas_int(MAX_LAGA_DOFS)
+        b_m = to_blas_int(geom%nb_dofs)
+        b_n = to_blas_int(geom%nb_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dger(b_m, b_n, -1.d0, dNs_n, b_incx, &
+                  dGap, b_incy, d2Gap_du2, b_lda)
 !
 ! --- Term: -gap(u) D^2 n^s[v^s, w^s].n^m/(n^m.n^s)
 !
@@ -1238,6 +1254,7 @@ contains
         real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3)
         real(kind=8), intent(in) :: norm_(3)
         real(kind=8) :: jump_norm(MAX_LAGA_DOFS)
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1247,9 +1264,14 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         jump_norm = 0.d0
-        call dgemv("N", geom%nb_dofs, geom%elem_dime, 1.d0, jump_v, &
-                   MAX_LAGA_DOFS, norm_, 1, 0.d0, jump_norm, &
-                   1)
+        b_lda = to_blas_int(MAX_LAGA_DOFS)
+        b_m = to_blas_int(geom%nb_dofs)
+        b_n = to_blas_int(geom%elem_dime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv("N", b_m, b_n, 1.d0, jump_v, &
+                   b_lda, norm_, b_incx, 0.d0, jump_norm, &
+                   b_incy)
 !
     end function
 !

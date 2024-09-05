@@ -222,6 +222,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
     real(kind=8) :: c, f, g, h11, h12, h21, h22, h32, r, s, sigmai, sigmar
     real(kind=8) :: smlnum, ulp, unfl, u(3), t, tau, tst1
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
 ! DUE TO CRS512      REAL*8 OVFL
 ! DUE TO CRS512      SAVE FIRST, OVFL, SMLNUM, ULP, UNFL
     save first, smlnum, ulp, unfl
@@ -602,9 +603,16 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !     | OF H WOULD BE ZERO AS IN EXACT ARITHMETIC.      |
 !     %-------------------------------------------------%
 !
-    if (h(kev+1, kev) .gt. zero) call dgemv('N', n, kplusp, one, v, &
-                                            ldv, q(1, kev+1), 1, zero, workd(n+1), &
-                                            1)
+    if (h(kev+1, kev) .gt. zero) then
+        b_lda = to_blas_int(ldv)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(kplusp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, one, v, &
+                   b_lda, q(1, kev+1), b_incx, zero, workd(n+1), &
+                   b_incy)
+    end if
 !
 !     %----------------------------------------------------------%
 !     | COMPUTE COLUMN 1 TO KEV OF (V*Q) IN BACKWARD ORDER       |
@@ -612,9 +620,14 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !     %----------------------------------------------------------%
 !
     do i = 1, kev
-        call dgemv('N', n, kplusp-i+1, one, v, &
-                   ldv, q(1, kev-i+1), 1, zero, workd, &
-                   1)
+        b_lda = to_blas_int(ldv)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(kplusp-i+1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, one, v, &
+                   b_lda, q(1, kev-i+1), b_incx, zero, workd, &
+                   b_incy)
         b_n = to_blas_int(n)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)

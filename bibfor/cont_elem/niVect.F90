@@ -61,6 +61,7 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
     real(kind=8) :: jump_t(MAX_LAGA_DOFS, 3)
     integer :: dofsMap(54)
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -139,9 +140,14 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
 !
             if (l_fric_qp) then
                 coeff = weight_sl_qp
-                call dgemv('N', total_dofs, geom%elem_dime-1, coeff, jump_t, &
-                           MAX_LAGA_DOFS, projBsVal, 1, 1.d0, vect_fric, &
-                           1)
+                b_lda = to_blas_int(MAX_LAGA_DOFS)
+                b_m = to_blas_int(total_dofs)
+                b_n = to_blas_int(geom%elem_dime-1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dgemv('N', b_m, b_n, coeff, jump_t, &
+                           b_lda, projBsVal, b_incx, 1.d0, vect_fric, &
+                           b_incy)
             end if
         end if
     end do

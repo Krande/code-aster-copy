@@ -193,6 +193,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
     integer :: idist, iseed(4), iter, msglvl, jj
     real(kind=8) :: rnorm0
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
     save first, iseed, inits, iter, msglvl, orth, rnorm0
 !
 !     %-----------%
@@ -345,12 +346,22 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
     orth = .true.
 30  continue
 !
-    call dgemv('T', n, j-1, one, v, &
-               ldv, workd, 1, zero, workd(n+1), &
-               1)
-    call dgemv('N', n, j-1, -one, v, &
-               ldv, workd(n+1), 1, one, resid, &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('T', b_m, b_n, one, v, &
+               b_lda, workd, b_incx, zero, workd(n+1), &
+               b_incy)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, -one, v, &
+               b_lda, workd(n+1), b_incx, one, resid, &
+               b_incy)
 !
 !     %----------------------------------------------------------%
 !     | COMPUTE THE B-NORM OF THE ORTHOGONALIZED STARTING VECTOR |

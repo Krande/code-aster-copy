@@ -97,6 +97,7 @@ contains
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
+        blas_int :: b_incx, b_incy
 !
         DEBUG_TIMER(start)
 !
@@ -154,17 +155,32 @@ contains
 ! --------  Compute grad *normal
                 CGradN = 0.d0
                 normal = hhoNormalFaceQP(hhoFace, hhoQuad%points_param(1:2, ipg))
-                call dgemv('T', hhoCell%ndim, dimMG, hhoQuad%weights(ipg), BSCGradEval, &
-                           3, normal, 1, 0.d0, CGradN, &
-                           1)
+                b_lda = to_blas_int(3)
+                b_m = to_blas_int(hhoCell%ndim)
+                b_n = to_blas_int(dimMG)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dgemv('T', b_m, b_n, hhoQuad%weights(ipg), BSCGradEval, &
+                           b_lda, normal, b_incx, 0.d0, CGradN, &
+                           b_incy)
 !
 ! --------  Compute (vF, grad *normal)
-                call dger(dimMG, fbs, 1.d0, CGradN, 1, &
-                          BSFEval, 1, BG(1:dimMG, fromFace:toFace), dimMG)
+                b_lda = to_blas_int(dimMG)
+                b_m = to_blas_int(dimMG)
+                b_n = to_blas_int(fbs)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dger(b_m, b_n, 1.d0, CGradN, b_incx, &
+                          BSFEval, b_incy, BG(1:dimMG, fromFace:toFace), b_lda)
 !
 ! --------  Compute -(vT, grad *normal)
-                call dger(dimMG, cbs, -1.d0, CGradN, 1, &
-                          BSCEval, 1, BG, MSIZE_CELL_SCAL)
+                b_lda = to_blas_int(MSIZE_CELL_SCAL)
+                b_m = to_blas_int(dimMG)
+                b_n = to_blas_int(cbs)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dger(b_m, b_n, -1.d0, CGradN, b_incx, &
+                          BSCEval, b_incy, BG, b_lda)
 !
             end do
 !
@@ -338,6 +354,7 @@ contains
         integer :: iface, fromFace, toFace
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
+        blas_int :: b_incx, b_incy
 !
         DEBUG_TIMER(start)
 !
@@ -388,12 +405,22 @@ contains
                     iendBG = ibeginBG+dimMassMat-1
 !
 ! ------------  Compute (vF, tau *normal)
-                    call dger(dimMassMat, fbs, hhoQuad%weights(ipg)*normal(idim), BSGEval, 1, &
-                              BSFEval, 1, BG(ibeginBG:iendBG, fromFace:toFace), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(fbs)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(idim), BSGEval, b_incx, &
+                              BSFEval, b_incy, BG(ibeginBG:iendBG, fromFace:toFace), b_lda)
 !
 ! ------------  Compute -(vT, tau *normal)
-                    call dger(dimMassMat, cbs, -hhoQuad%weights(ipg)*normal(idim), BSGEval, 1, &
-                              BSCEval, 1, BG(ibeginBG:iendBG, 1:cbs), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(cbs)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(idim), BSGEval, b_incx, &
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, 1:cbs), b_lda)
 !
                 end do
             end do
@@ -421,8 +448,13 @@ contains
 !
                 VecGrad(1:cbs) = reshape(BSCGradEval(idim, 1:cbs), (/cbs/))
 ! --------  Compute (grad(vT), tau)_T
-                call dger(dimMassMat, cbs, hhoQuadCell%weights(ipg), BSGEval, 1, &
-                          VecGrad, 1, BG(ibeginBG:iendBG, 1:cbs), dimMassMat)
+                b_lda = to_blas_int(dimMassMat)
+                b_m = to_blas_int(dimMassMat)
+                b_n = to_blas_int(cbs)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dger(b_m, b_n, hhoQuadCell%weights(ipg), BSGEval, b_incx, &
+                          VecGrad, b_incy, BG(ibeginBG:iendBG, 1:cbs), b_lda)
             end do
         end do
 !
@@ -774,12 +806,22 @@ contains
                     jendFace = jbegFace+fbs_comp-1
 !
 ! ------------  Compute -(vT, tau *normal)
-                    call dger(dimMassMat, cbs_comp, -hhoQuad%weights(ipg)*normal(idim), BSGEval, &
-                              1, BSCEval, 1, BG(ibeginBG:iendBG, jbegCell:jendCell), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(cbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(idim), BSGEval, b_incx, &
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
 ! ------------  Compute (vF, tau *normal)
-                    call dger(dimMassMat, fbs_comp, hhoQuad%weights(ipg)*normal(idim), BSGEval, &
-                              1, BSFEval, 1, BG(ibeginBG:iendBG, jbegFace:jendFace), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(fbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(idim), BSGEval, b_incx, &
+                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
                 end do
 !
                 if (hhoCell%ndim == 2) then
@@ -788,24 +830,42 @@ contains
                     iendBG = ibeginBG+dimMassMat-1
 !
 ! ------------  Compute -(vT, tau *normal)
-                    call dger(dimMassMat, cbs_comp, -hhoQuad%weights(ipg)*normal(2)/rac2, &
-                              BSGEval, 1, BSCEval, 1, BG(ibeginBG:iendBG, 1:cbs_comp), &
-                              dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(cbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, 1:cbs_comp), b_lda)
 !
-                    call dger(dimMassMat, cbs_comp, -hhoQuad%weights(ipg)*normal(1)/rac2, &
-                              BSGEval, 1, BSCEval, 1, BG(ibeginBG:iendBG, (cbs_comp+1):cbs), &
-                              dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(cbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, (cbs_comp+1):cbs), b_lda)
 !
 ! ------------  Compute (vF, tau *normal)
                     jbegFace = cbs+(iface-1)*fbs+1
                     jendFace = jbegFace+fbs_comp-1
-                    call dger(dimMassMat, fbs_comp, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, &
-                              1, BSFEval, 1, BG(ibeginBG:iendBG, jbegFace:jendFace), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(fbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
+                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = jbegFace+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
-                    call dger(dimMassMat, fbs_comp, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, &
-                              1, BSFEval, 1, BG(ibeginBG:iendBG, jbegFace:jendFace), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(fbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
+                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                 else if (hhoCell%ndim == 3) then
 ! ------ hors diagonal composants term 12
@@ -815,26 +875,44 @@ contains
 ! ------------  Compute -(vT, tau *normal)
                     jbegCell = 1
                     jendCell = jbegCell+cbs_comp-1
-                    call dger(dimMassMat, cbs_comp, -hhoQuad%weights(ipg)*normal(2)/rac2, &
-                              BSGEval, 1, BSCEval, 1, BG(ibeginBG:iendBG, jbegCell:jendCell), &
-                              dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(cbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
-                    call dger(dimMassMat, cbs_comp, -hhoQuad%weights(ipg)*normal(1)/rac2, &
-                              BSGEval, 1, BSCEval, 1, BG(ibeginBG:iendBG, jbegCell:jendCell), &
-                              dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(cbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
 ! ------------  Compute (vF, tau *normal)
                     jbegFace = cbs+(iface-1)*fbs+1
                     jendFace = jbegFace+fbs_comp-1
-                    call dger(dimMassMat, fbs_comp, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, &
-                              1, BSFEval, 1, BG(ibeginBG:iendBG, jbegFace:jendFace), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(fbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
+                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = jbegFace+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
-                    call dger(dimMassMat, fbs_comp, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, &
-                              1, BSFEval, 1, BG(ibeginBG:iendBG, jbegFace:jendFace), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(fbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
+                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 ! ------ extra diagonal composants term 13
                     ibeginBG = 4*dimMassMat+1
                     iendBG = ibeginBG+dimMassMat-1
@@ -842,26 +920,44 @@ contains
 ! ------------  Compute -(vT, tau *normal)
                     jbegCell = 1
                     jendCell = jbegCell+cbs_comp-1
-                    call dger(dimMassMat, cbs_comp, -hhoQuad%weights(ipg)*normal(3)/rac2, &
-                              BSGEval, 1, BSCEval, 1, BG(ibeginBG:iendBG, jbegCell:jendCell), &
-                              dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(cbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_incx, &
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = 2*cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
-                    call dger(dimMassMat, cbs_comp, -hhoQuad%weights(ipg)*normal(1)/rac2, &
-                              BSGEval, 1, BSCEval, 1, BG(ibeginBG:iendBG, jbegCell:jendCell), &
-                              dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(cbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
 ! ------------  Compute (vF, tau *normal)
                     jbegFace = cbs+(iface-1)*fbs+1
                     jendFace = jbegFace+fbs_comp-1
-                    call dger(dimMassMat, fbs_comp, hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, &
-                              1, BSFEval, 1, BG(ibeginBG:iendBG, jbegFace:jendFace), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(fbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_incx, &
+                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = cbs+(iface-1)*fbs+1+2*fbs_comp
                     jendFace = jbegFace+fbs_comp-1
-                    call dger(dimMassMat, fbs_comp, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, &
-                              1, BSFEval, 1, BG(ibeginBG:iendBG, jbegFace:jendFace), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(fbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
+                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 ! ------ extra diagonal composants term 23
                     ibeginBG = 5*dimMassMat+1
                     iendBG = ibeginBG+dimMassMat-1
@@ -869,26 +965,44 @@ contains
 ! ------------  Compute -(vT, tau *normal)
                     jbegCell = cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
-                    call dger(dimMassMat, cbs_comp, -hhoQuad%weights(ipg)*normal(3)/rac2, &
-                              BSGEval, 1, BSCEval, 1, BG(ibeginBG:iendBG, jbegCell:jendCell), &
-                              dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(cbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_incx, &
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = 2*cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
-                    call dger(dimMassMat, cbs_comp, -hhoQuad%weights(ipg)*normal(2)/rac2, &
-                              BSGEval, 1, BSCEval, 1, BG(ibeginBG:iendBG, jbegCell:jendCell), &
-                              dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(cbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
 ! ------------  Compute (vF, tau *normal)
                     jbegFace = cbs+(iface-1)*fbs+1+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
-                    call dger(dimMassMat, fbs_comp, hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, &
-                              1, BSFEval, 1, BG(ibeginBG:iendBG, jbegFace:jendFace), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(fbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_incx, &
+                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = cbs+(iface-1)*fbs+1+2*fbs_comp
                     jendFace = jbegFace+fbs_comp-1
-                    call dger(dimMassMat, fbs_comp, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, &
-                              1, BSFEval, 1, BG(ibeginBG:iendBG, jbegFace:jendFace), dimMassMat)
+                    b_lda = to_blas_int(dimMassMat)
+                    b_m = to_blas_int(dimMassMat)
+                    b_n = to_blas_int(fbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
+                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                 else
                     ASSERT(ASTER_FALSE)
@@ -1003,6 +1117,7 @@ contains
         real(kind=8) :: qp_dphi_ss, normal(3)
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
+        blas_int :: b_incx, b_incy
 !
         DEBUG_TIMER(start)
 !
@@ -1177,14 +1292,24 @@ contains
                     jbeginFace = cbs+(idim-1)*fbs_comp+(iface-1)*fbs+1
                     jendFace = jbeginFace+fbs_comp-1
 !
-                    call dger(dimMG, fbs_comp, 1.d0, CGradN(1:dimMG, idim), 1, &
-                              BSFEval, 1, BG(1:dimMG, jbeginFace:jendFace), dimMG)
+                    b_lda = to_blas_int(dimMG)
+                    b_m = to_blas_int(dimMG)
+                    b_n = to_blas_int(fbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, 1.d0, CGradN(1:dimMG, idim), b_incx, &
+                              BSFEval, b_incy, BG(1:dimMG, jbeginFace:jendFace), b_lda)
 !
 ! ------------  Compute -(vT, grad_s *normal)
                     jbeginCell = (idim-1)*cbs_comp+1
                     jendCell = jbeginCell+cbs_comp-1
-                    call dger(dimMG, cbs_comp, -1.d0, CGradN(1:dimMG, idim), 1, &
-                              BSCEval, 1, BG(1:dimMG, jbeginCell:jendCell), dimMG)
+                    b_lda = to_blas_int(dimMG)
+                    b_m = to_blas_int(dimMG)
+                    b_n = to_blas_int(cbs_comp)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dger(b_m, b_n, -1.d0, CGradN(1:dimMG, idim), b_incx, &
+                              BSCEval, b_incy, BG(1:dimMG, jbeginCell:jendCell), b_lda)
                 end do
 !
             end do

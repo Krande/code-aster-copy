@@ -231,6 +231,7 @@ contains
         real(kind=8), allocatable :: marg(:, :)
         real(kind=8), allocatable :: trv(:, :, :)
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+        blas_int :: b_incx, b_incy
 ! ---------------------------------------------------------------------
 !
         ASSERT(self%calc_matb)
@@ -264,13 +265,23 @@ contains
 !
 ! Terme axi : S(3) * Nn/r * Nm/r (termes i=j=1)
         maax = 0
-        call dger(nno, nno, pk2(3), self%axf, 1, &
-                  self%axf, 1, maax, nno)
+        b_lda = to_blas_int(nno)
+        b_m = to_blas_int(nno)
+        b_n = to_blas_int(nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dger(b_m, b_n, pk2(3), self%axf, b_incx, &
+                  self%axf, b_incy, maax, b_lda)
 !
 ! Terme S(kl).PFF(kl,n,m) (termes i=j)
-        call dgemv('t', ndimsi, nno*nno, 1.d0, self%pff, &
-                   ndimsi, pk2, 1, 0.d0, marg, &
-                   1)
+        b_lda = to_blas_int(ndimsi)
+        b_m = to_blas_int(ndimsi)
+        b_n = to_blas_int(nno*nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('t', b_m, b_n, 1.d0, self%pff, &
+                   b_lda, pk2, b_incx, 0.d0, marg, &
+                   b_incy)
 !
 ! Terme DEFT(ab,i,n):L(ab,kl): DEFT(kl,j,m) = M(j,m,i,n)
         b_ldc = to_blas_int(ndimsi)

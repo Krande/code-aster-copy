@@ -153,6 +153,7 @@ contains
         integer :: cod(27), nbsig
         aster_logical :: l_gdeflog, l_green_lagr, l_lhs, l_rhs
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+        blas_int :: b_incx, b_incy
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -192,15 +193,25 @@ contains
 !
 ! ----- compute G_prev = gradrec * depl_prev
 !
-        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, &
-                   MSIZE_CELL_MAT, depl_prev, 1, 0.d0, G_prev_coeff, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(gbs)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+                   b_lda, depl_prev, b_incx, 0.d0, G_prev_coeff, &
+                   b_incy)
 !
 ! ----- compute G_curr = gradrec * depl_curr
 !
-        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, &
-                   MSIZE_CELL_MAT, depl_curr, 1, 0.d0, G_curr_coeff, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(gbs)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
+                   b_incy)
 !print*, "GT_utf", G_curr_coeff(1:gbs)
 !
 ! ----- Loop on quadrature point
@@ -292,9 +303,14 @@ contains
 ! ----- compute rhs += Gradrec**T * bT
 !
         if (l_rhs) then
-            call dgemv('T', gbs, total_dofs, 1.d0, gradrec, &
-                       MSIZE_CELL_MAT, bT, 1, 1.d0, rhs, &
-                       1)
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(gbs)
+            b_n = to_blas_int(total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('T', b_m, b_n, 1.d0, gradrec, &
+                       b_lda, bT, b_incx, 1.d0, rhs, &
+                       b_incy)
         end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
@@ -534,6 +550,7 @@ contains
 !
         real(kind=8) :: qp_module_tang(3, 3, 3, 3), qp_mod_vec(9)
         integer :: i, j, row, col, gbs_cmp, dim2
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 ! --------------------------------------------------------------------------------------------------
 !
         Agphi = 0.d0
@@ -547,8 +564,13 @@ contains
             do j = 1, hhoCell%ndim
 ! ------------- Extract and transform the tangent moduli
                 qp_mod_vec = transfo_A(hhoCell%ndim, qp_module_tang, i, j)
-                call dger(gbs_cmp, dim2, 1.d0, BSCEval, 1, &
-                          qp_mod_vec, 1, Agphi(row:(row+gbs_cmp-1), 1:dim2), gbs_cmp)
+                b_lda = to_blas_int(gbs_cmp)
+                b_m = to_blas_int(gbs_cmp)
+                b_n = to_blas_int(dim2)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dger(b_m, b_n, 1.d0, BSCEval, b_incx, &
+                          qp_mod_vec, b_incy, Agphi(row:(row+gbs_cmp-1), 1:dim2), b_lda)
                 row = row+gbs_cmp
             end do
         end do
@@ -648,10 +670,10 @@ contains
 !
         if (present(GLvec)) then
             if (ndim == 2) then
-                GLvec = (/GL_(1, 1), GL_(2, 2), 0.d0, GL_(1, 2)*rac2, 0.d0, 0.d0/)
+                GLvec = [GL_(1, 1), GL_(2, 2), 0.d0, GL_(1, 2)*rac2, 0.d0, 0.d0]
             else if (ndim == 3) then
-                GLvec = (/GL_(1, 1), GL_(2, 2), GL_(3, 3), GL_(1, 2)*rac2, GL_(1, 3)*rac2, &
-                          GL_(2, 3)*rac2/)
+                GLvec = [GL_(1, 1), GL_(2, 2), GL_(3, 3), GL_(1, 2)*rac2, GL_(1, 3)*rac2, &
+                         GL_(2, 3)*rac2]
             else
                 ASSERT(ASTER_FALSE)
             end if

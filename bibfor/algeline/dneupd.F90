@@ -403,6 +403,7 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
     aster_logical :: reord
     real(kind=8) :: conds, rnorm, sep, temp, thres, vl(1, 1), temp1, eps23, eps
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
 !
 !     %--------------------%
 !     | EXTERNAL FUNCTIONS |
@@ -861,9 +862,14 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !
             end do
 !
-            call dgemv('T', ncv, nconv, one, workl(invsub), &
-                       ldq, workl(ihbds), 1, zero, workev, &
-                       1)
+            b_lda = to_blas_int(ldq)
+            b_m = to_blas_int(ncv)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('T', b_m, b_n, one, workl(invsub), &
+                       b_lda, workl(ihbds), b_incx, zero, workev, &
+                       b_incy)
 !
             iconj = 0
             do j = 1, nconv
@@ -1177,8 +1183,13 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !        | PURIFY ALL THE RITZ VECTORS TOGETHER. |
 !        %---------------------------------------%
 !
-        call dger(n, nconv, one, resid, 1, &
-                  workev, 1, z, ldz)
+        b_lda = to_blas_int(ldz)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dger(b_m, b_n, one, resid, b_incx, &
+                  workev, b_incy, z, b_lda)
 !
     end if
 !

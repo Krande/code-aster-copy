@@ -68,6 +68,7 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), mu_c(MAX_LAGA_DOFS)
     real(kind=8) :: mu_f(MAX_LAGA_DOFS, 2), jump_t(MAX_LAGA_DOFS, 3)
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -154,9 +155,14 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
             if (l_fric_qp) then
                 coeff = weight_sl_qp
-                call dgemv('N', geom%nb_dofs, geom%elem_dime-1, coeff, jump_t, &
-                           MAX_LAGA_DOFS, projBsVal, 1, 1.d0, vect_fric, &
-                           1)
+                b_lda = to_blas_int(MAX_LAGA_DOFS)
+                b_m = to_blas_int(geom%nb_dofs)
+                b_n = to_blas_int(geom%elem_dime-1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dgemv('N', b_m, b_n, coeff, jump_t, &
+                           b_lda, projBsVal, b_incx, 1.d0, vect_fric, &
+                           b_incy)
             end if
 !
 ! ------ Compute Lagrange (slave side)
@@ -164,9 +170,14 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
             coeff = weight_sl_qp
             term_f = (projBsVal-lagr_f)/gamma_f
-            call dgemv('N', geom%nb_dofs, geom%elem_dime-1, coeff, mu_f, &
-                       MAX_LAGA_DOFS, term_f, 1, 1.d0, vect_fric, &
-                       1)
+            b_lda = to_blas_int(MAX_LAGA_DOFS)
+            b_m = to_blas_int(geom%nb_dofs)
+            b_n = to_blas_int(geom%elem_dime-1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('N', b_m, b_n, coeff, mu_f, &
+                       b_lda, term_f, b_incx, 1.d0, vect_fric, &
+                       b_incy)
         end if
     end do
 !

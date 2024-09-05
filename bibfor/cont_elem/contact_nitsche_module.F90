@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,14 +43,14 @@ module contact_nitsche_module
 !
 !
     type ContactNitsche
-        ! Young modulus
-        real(kind=8)                        :: E = 0.d0
-        ! Poisson ratio
-        real(kind=8)                        :: nu = 0.d0
-
-        ! stress at nodes
+! Young modulus
+        real(kind=8) :: E = 0.d0
+! Poisson ratio
+        real(kind=8) :: nu = 0.d0
+!
+! stress at nodes
         real(kind=8), dimension(3, 3, 9) :: stress_nodes = 0.d0
-
+!
     end type
 !
     public :: ContactNitsche
@@ -83,8 +83,8 @@ contains
 !
         do i_node = 1, geom%nb_node_slav
             do i_elem = 1, geom%elem_dime
-                dofsMapping((i_node-1)*geom%elem_dime+i_elem) = &
-                    (geom%mapVolu2Surf(i_node)-1)*geom%elem_dime+i_elem
+                dofsMapping((i_node-1)*geom%elem_dime+i_elem) = (geom%mapVolu2Surf(i_node)-1 &
+                                                                 )*geom%elem_dime+i_elem
             end do
         end do
 !
@@ -92,8 +92,10 @@ contains
         nb_dofs_volu = geom%nb_node_volu*geom%elem_dime
         do i_node = 1, geom%nb_node_mast
             do i_elem = 1, geom%elem_dime
-                dofsMapping(nb_dofs_slav+(i_node-1)*geom%elem_dime+i_elem) = &
-                    nb_dofs_volu+(i_node-1)*geom%elem_dime+i_elem
+                dofsMapping(nb_dofs_slav+(i_node-1)*geom%elem_dime+i_elem) = nb_dofs_volu+( &
+                                                                             i_node-1 &
+                                                                             )*geom%elem_dime+i_e&
+                                                                             &lem
             end do
         end do
 !
@@ -251,7 +253,8 @@ contains
 !
             coor_qp_vo = 0.d0
             call reereg('S', geom%elem_volu_code, geom%nb_node_volu, geom%coor_volu_curr, &
-                   geom%coor_slav_curr(1:3, i_node), geom%elem_dime, coor_qp_vo, iret, ndim_coor_=3)
+                        geom%coor_slav_curr(1:3, i_node), geom%elem_dime, coor_qp_vo, iret, &
+                        ndim_coor_=3)
 !
 ! ----- Eval shape function and gradient
 !
@@ -290,7 +293,8 @@ contains
 !
         do j = 1, 3
             do i = 1, 3
-                evalStress(i, j) = evalPoly(nb_node_slav, shape_func_sl, nits%stress_nodes(i, j, :))
+                evalStress(i, j) = evalPoly( &
+                                   nb_node_slav, shape_func_sl, nits%stress_nodes(i, j, :))
             end do
         end do
 !
@@ -391,6 +395,7 @@ contains
         real(kind=8) :: dNs_sn(MAX_LAGA_DOFS)
         integer :: total_dofs, face_dofs, slav_dofs, i_dof
         integer :: dofsMap(54), slav_face_dofs
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
         dStress_nn_du = 0.d0
 !
@@ -406,15 +411,21 @@ contains
 ! --- Term: stress(u^s) * N^s * D n^s(u^s)[v^s]
 !
         dNs_sn = 0.d0
-        call dgemv('N', slav_face_dofs, geom%elem_dime, 1.d0, dNs, MAX_LAGA_DOFS, &
-                   stress_n, 1, 1.d0, dNs_sn, 1)
+        b_lda = to_blas_int(MAX_LAGA_DOFS)
+        b_m = to_blas_int(slav_face_dofs)
+        b_n = to_blas_int(geom%elem_dime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, dNs, &
+                   b_lda, stress_n, b_incx, 1.d0, dNs_sn, &
+                   b_incy)
 !
 ! --- Remapping
 !
         dofsMap = dofsMapping(geom)
-        ! do i_dof = 1, slav_face_dofs
-        !     dStress_nn_du(dofsMap(i_dof)) = dStress_nn_du(dofsMap(i_dof)) + dNs_sn(i_dof)
-        ! end do
+! do i_dof = 1, slav_face_dofs
+!     dStress_nn_du(dofsMap(i_dof)) = dStress_nn_du(dofsMap(i_dof)) + dNs_sn(i_dof)
+! end do
 !
     end function
 !

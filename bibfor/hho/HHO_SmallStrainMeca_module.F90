@@ -142,6 +142,7 @@ contains
         integer :: cod(27)
         aster_logical :: l_lhs, l_rhs
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+        blas_int :: b_incx, b_incy
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -169,14 +170,24 @@ contains
         call hhoBasisCell%initialize(hhoCell)
 !
 ! ----- compute E_prev = gradrec_sym * depl_prev
-        call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, &
-                   MSIZE_CELL_MAT, depl_prev, 1, 0.d0, E_prev_coeff, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(gbs_sym)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+                   b_lda, depl_prev, b_incx, 0.d0, E_prev_coeff, &
+                   b_incy)
 !
 ! ----- compute E_incr = gradrec_sym * depl_incr
-        call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, &
-                   MSIZE_CELL_MAT, depl_incr, 1, 0.d0, E_incr_coeff, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(gbs_sym)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+                   b_lda, depl_incr, b_incx, 0.d0, E_incr_coeff, &
+                   b_incy)
 !
 ! ----- Loop on quadrature point
 !
@@ -229,9 +240,14 @@ contains
 !
 ! ----- compute rhs += Gradrec**T * bT
         if (l_rhs) then
-            call dgemv('T', gbs_sym, total_dofs, 1.d0, gradrec, &
-                       MSIZE_CELL_MAT, bT, 1, 1.d0, rhs, &
-                       1)
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(gbs_sym)
+            b_n = to_blas_int(total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('T', b_m, b_n, 1.d0, gradrec, &
+                       b_lda, bT, b_incx, 1.d0, rhs, &
+                       b_incy)
         end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
