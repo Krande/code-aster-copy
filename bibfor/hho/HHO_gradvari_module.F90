@@ -35,7 +35,8 @@ module HHO_GV_module
     use HHO_Ther_module
     use HHO_type
     use HHO_utils_module
-    use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat, hhoGradRecSymMat, hhoGradRecFullMatFromVec
+    use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat
+    use HHO_gradrec_module, only: hhoGradRecSymMat, hhoGradRecFullMatFromVec
 !
     implicit none
 !
@@ -180,6 +181,7 @@ contains
         integer :: cod(27), ipg, j, mk_gbs_tot
         aster_logical :: l_lhs, l_rhs, forc_noda
         blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -476,32 +478,80 @@ contains
 !
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
-            call dgemm('N', 'N', mk_gbs_tot, mk_total_dofs, mk_gbs_tot, &
-                       1.d0, mk_AT, MSIZE_CELL_MAT, hhoMecaState%grad, MSIZE_CELL_MAT, &
-                       0.d0, mk_TMP, MSIZE_CELL_MAT)
-            call dgemm('N', 'N', gv_gbs, gv_total_dofs, gv_gbs, &
-                       1.d0, gv_AT, MSIZE_CELL_VEC, hhoGVState%grad, MSIZE_CELL_VEC, &
-                       0.d0, gv_TMP, MSIZE_CELL_VEC)
+            b_ldc = to_blas_int(MSIZE_CELL_MAT)
+            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(mk_gbs_tot)
+            b_n = to_blas_int(mk_total_dofs)
+            b_k = to_blas_int(mk_gbs_tot)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, mk_AT, b_lda, hhoMecaState%grad, b_ldb, &
+                       0.d0, mk_TMP, b_ldc)
+            b_ldc = to_blas_int(MSIZE_CELL_VEC)
+            b_ldb = to_blas_int(MSIZE_CELL_VEC)
+            b_lda = to_blas_int(MSIZE_CELL_VEC)
+            b_m = to_blas_int(gv_gbs)
+            b_n = to_blas_int(gv_total_dofs)
+            b_k = to_blas_int(gv_gbs)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, gv_AT, b_lda, hhoGVState%grad, b_ldb, &
+                       0.d0, gv_TMP, b_ldc)
 ! ----- step2: lhs += gradrec**T * TMP
-            call dgemm('T', 'N', mk_total_dofs, mk_total_dofs, mk_gbs_tot, &
-                       1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, mk_TMP, MSIZE_CELL_MAT, &
-                       0.d0, lhs_mm, MSIZE_TDOFS_VEC)
-            call dgemm('T', 'N', gv_total_dofs, gv_total_dofs, gv_gbs, &
-                       1.d0, hhoGVState%grad, MSIZE_CELL_VEC, gv_TMP, MSIZE_CELL_VEC, &
-                       1.d0, lhs_vv, MSIZE_TDOFS_SCAL)
+            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(mk_total_dofs)
+            b_n = to_blas_int(mk_total_dofs)
+            b_k = to_blas_int(mk_gbs_tot)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       1.d0, hhoMecaState%grad, b_lda, mk_TMP, b_ldb, &
+                       0.d0, lhs_mm, b_ldc)
+            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_VEC)
+            b_lda = to_blas_int(MSIZE_CELL_VEC)
+            b_m = to_blas_int(gv_total_dofs)
+            b_n = to_blas_int(gv_total_dofs)
+            b_k = to_blas_int(gv_gbs)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       1.d0, hhoGVState%grad, b_lda, gv_TMP, b_ldb, &
+                       1.d0, lhs_vv, b_ldc)
 !
-            call dgemm('T', 'N', mk_total_dofs, gv_cbs, mk_gbs_tot, &
-                       1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, mv_AT, MSIZE_CELL_MAT, &
-                       0.d0, lhs_mv, MSIZE_TDOFS_VEC)
-            call dgemm('T', 'N', mk_total_dofs, gv_cbs, mk_gbs_tot, &
-                       1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, ml_AT, MSIZE_CELL_MAT, &
-                       0.d0, lhs_ml, MSIZE_TDOFS_VEC)
-            call dgemm('N', 'N', gv_cbs, mk_total_dofs, mk_gbs_tot, &
-                       1.d0, vm_AT, MSIZE_CELL_SCAL, hhoMecaState%grad, MSIZE_CELL_MAT, &
-                       0.d0, lhs_vm, MSIZE_TDOFS_SCAL)
-            call dgemm('N', 'N', gv_cbs, mk_total_dofs, mk_gbs_tot, &
-                       1.d0, lm_AT, MSIZE_CELL_SCAL, hhoMecaState%grad, MSIZE_CELL_MAT, &
-                       0.d0, lhs_lm, MSIZE_CELL_SCAL)
+            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(mk_total_dofs)
+            b_n = to_blas_int(gv_cbs)
+            b_k = to_blas_int(mk_gbs_tot)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       1.d0, hhoMecaState%grad, b_lda, mv_AT, b_ldb, &
+                       0.d0, lhs_mv, b_ldc)
+            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(mk_total_dofs)
+            b_n = to_blas_int(gv_cbs)
+            b_k = to_blas_int(mk_gbs_tot)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       1.d0, hhoMecaState%grad, b_lda, ml_AT, b_ldb, &
+                       0.d0, lhs_ml, b_ldc)
+            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            b_m = to_blas_int(gv_cbs)
+            b_n = to_blas_int(mk_total_dofs)
+            b_k = to_blas_int(mk_gbs_tot)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, vm_AT, b_lda, hhoMecaState%grad, b_ldb, &
+                       0.d0, lhs_vm, b_ldc)
+            b_ldc = to_blas_int(MSIZE_CELL_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            b_m = to_blas_int(gv_cbs)
+            b_n = to_blas_int(mk_total_dofs)
+            b_k = to_blas_int(mk_gbs_tot)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, lm_AT, b_lda, hhoMecaState%grad, b_ldb, &
+                       0.d0, lhs_lm, b_ldc)
 ! ----- Add stabilization
 ! ----- += coeff * stab_mk
             do j = 1, mk_total_dofs

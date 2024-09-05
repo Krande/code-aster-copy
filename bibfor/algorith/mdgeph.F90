@@ -105,6 +105,7 @@ subroutine mdgeph(neq, nbmode, bmodal, xgene, u, &
     mpi_int :: mpicou, mpicow, mrang, mnbproc
     aster_logical :: ltest
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
     data tempst/0.d0/
     save tempst
 !-----------------------------------------------------------------------
@@ -318,9 +319,15 @@ subroutine mdgeph(neq, nbmode, bmodal, xgene, u, &
         if (nresti .eq. 0) then
             call jeveuo(kgemmc, 'E', jc)
             call vecini(m*iloc, zero, zr(jc))
-            call dgemm('N', 'N', m, iloc, nbmode, &
-                       un, zr(ja), m, zr(jb), nbmode, &
-                       zero, zr(jc), m)
+            b_ldc = to_blas_int(m)
+            b_ldb = to_blas_int(nbmode)
+            b_lda = to_blas_int(m)
+            b_m = to_blas_int(m)
+            b_n = to_blas_int(iloc)
+            b_k = to_blas_int(nbmode)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       un, zr(ja), b_lda, zr(jb), b_ldb, &
+                       zero, zr(jc), b_ldc)
             do j = 1, iloc
                 k24j = zk24(jkchamno-1+j)
                 call jeveuo(k24j, 'E', jchamno)

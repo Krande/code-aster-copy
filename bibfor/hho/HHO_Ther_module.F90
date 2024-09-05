@@ -127,6 +127,7 @@ contains
         aster_logical :: l_rhs, l_lhs, l_nl, l_flux
         real(kind=8) :: start, end
         blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
 !
         DEBUG_TIMER(start)
 !
@@ -246,15 +247,27 @@ contains
 ! ----- step1: TMP = AT * gradrec
 !
         if (l_lhs) then
-            call dgemm('N', 'N', gbs, total_dofs, total_dofs, &
-                       1.d0, AT, MSIZE_CELL_VEC, gradrec, MSIZE_CELL_VEC, &
-                       0.d0, TMP, MSIZE_CELL_VEC)
+            b_ldc = to_blas_int(MSIZE_CELL_VEC)
+            b_ldb = to_blas_int(MSIZE_CELL_VEC)
+            b_lda = to_blas_int(MSIZE_CELL_VEC)
+            b_m = to_blas_int(gbs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(total_dofs)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, AT, b_lda, gradrec, b_ldb, &
+                       0.d0, TMP, b_ldc)
 !
 ! ----- step2: lhs += gradrec**T * TMP
 !
-            call dgemm('T', 'N', total_dofs, total_dofs, gbs, &
-                       1.d0, gradrec, MSIZE_CELL_VEC, TMP, MSIZE_CELL_VEC, &
-                       1.d0, lhs, MSIZE_TDOFS_SCAL)
+            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_VEC)
+            b_lda = to_blas_int(MSIZE_CELL_VEC)
+            b_m = to_blas_int(total_dofs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(gbs)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       1.d0, gradrec, b_lda, TMP, b_ldb, &
+                       1.d0, lhs, b_ldc)
 !
         end if
 !
@@ -528,8 +541,7 @@ contains
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Cell), intent(in) :: hhoCell
         real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL), intent(out) :: gradfull
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL), optional, intent(out) :: &
-            stab
+        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL), optional, intent(out) :: stab
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -571,8 +583,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL), intent(out) :: gradfull
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL), intent(out), optional :: &
-            stab
+        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL), intent(out), optional :: stab
 !
 ! --------------------------------------------------------------------------------------------------
 !

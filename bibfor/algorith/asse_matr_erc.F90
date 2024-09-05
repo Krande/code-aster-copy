@@ -101,10 +101,8 @@ subroutine asse_matr_erc(nom_matr_erc, nom_nume_erc, dynam1, dynam2, matprod)
 ! --- --- BLOC TRIANGULAIRE SUP IMPEDANCE
         nz_colncour = 0
         do tt = 1, hors_diag_impe+1
-            zr(i_materc_valm+nzfirstblk+cumul_non_zero+tt-1) = zr( &
-                                                               i_dynam2_valm+zi(i_nume_smdi+jj-1 &
-                                                                           )-1-hors_diag_impe+tt-1 &
-                                                               )
+            zr(i_materc_valm+nzfirstblk+cumul_non_zero+tt-1) = &
+                zr(i_dynam2_valm+zi(i_nume_smdi+jj-1)-1-hors_diag_impe+tt-1)
             nz_colncour = nz_colncour+1
             non_zero_impe = non_zero_impe+1
         end do
@@ -120,10 +118,8 @@ subroutine asse_matr_erc(nom_matr_erc, nom_nume_erc, dynam1, dynam2, matprod)
 ! on test si on tombe sur le numero de file correspondant a la colonne reelle en cours
                     if (zi4(i_nume_smhc+ll-1) .eq. jj) then
                         nz_colncour = nz_colncour+1
-                        zr(i_materc_valm-1+nzfirstblk+cumul_non_zero+nz_colncour) = zr( &
-                                                                                    i_dynam2_valm&
-                                                                                    &+ll-1 &
-                                                                                    )
+                        zr(i_materc_valm-1+nzfirstblk+cumul_non_zero+nz_colncour) = &
+                            zr(i_dynam2_valm+ll-1)
 !
                         goto 111
                     end if
@@ -139,10 +135,8 @@ subroutine asse_matr_erc(nom_matr_erc, nom_nume_erc, dynam1, dynam2, matprod)
         do kk = 1, hd_matpro+1
             nz_colncour = nz_colncour+1
             non_zero_matprod = non_zero_matprod+1
-            zr(i_materc_valm-1+nzfirstblk+cumul_non_zero+nz_colncour) = zr( &
-                                                                        i_mprod_valm-1+non_zero_m&
-                                                                        &atprod &
-                                                                        )
+            zr(i_materc_valm-1+nzfirstblk+cumul_non_zero+nz_colncour) = &
+                zr(i_mprod_valm-1+non_zero_matprod)
         end do
         cumul_non_zero = cumul_non_zero+nz_colncour
 !

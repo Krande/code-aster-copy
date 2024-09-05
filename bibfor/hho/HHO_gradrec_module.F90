@@ -96,6 +96,7 @@ contains
         integer :: cbs, fbs, total_dofs, iface, fromFace, toFace
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
+        blas_int :: b_k, b_ldc, b_m
 !
         DEBUG_TIMER(start)
 !
@@ -191,9 +192,15 @@ contains
             lhs = 0.d0
 !
 ! ----- Compute lhs =BG**T * gradrec
-            call dgemm('T', 'N', total_dofs, total_dofs, dimMG, &
-                       1.d0, BG, MSIZE_CELL_SCAL, gradrec, MSIZE_CELL_SCAL, &
-                       0.d0, lhs, MSIZE_TDOFS_SCAL)
+            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            b_m = to_blas_int(total_dofs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(dimMG)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       1.d0, BG, b_lda, gradrec, b_ldb, &
+                       0.d0, lhs, b_ldc)
         end if
 !
         DEBUG_TIMER(end)
@@ -330,6 +337,7 @@ contains
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         integer :: iface, fromFace, toFace
         real(kind=8) :: start, end
+        blas_int :: b_k, b_ldc, b_m
 !
         DEBUG_TIMER(start)
 !
@@ -461,9 +469,15 @@ contains
             lhs = 0.d0
 !
 ! ----- Compute lhs =BG**T * gradrec
-            call dgemm('T', 'N', total_dofs, total_dofs, hhoCell%ndim*dimMassMat, &
-                       1.d0, BG, MSIZE_CELL_VEC, gradrec, MSIZE_CELL_VEC, &
-                       0.d0, lhs, MSIZE_TDOFS_SCAL)
+            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_VEC)
+            b_lda = to_blas_int(MSIZE_CELL_VEC)
+            b_m = to_blas_int(total_dofs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(hhoCell%ndim*dimMassMat)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       1.d0, BG, b_lda, gradrec, b_ldb, &
+                       0.d0, lhs, b_ldc)
         end if
 !
         DEBUG_TIMER(end)
@@ -634,6 +648,7 @@ contains
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
         blas_int :: b_incx, b_incy
+        blas_int :: b_k, b_ldc, b_m
 !
         DEBUG_TIMER(start)
 !
@@ -925,9 +940,15 @@ contains
             lhs = 0.d0
 !
 ! ----- Compute lhs =BG**T * gradrec
-            call dgemm('T', 'N', total_dofs, total_dofs, gbs_sym, &
-                       1.d0, BG, 6*MSIZE_CELL_SCAL, gradrec, MSIZE_CELL_MAT, &
-                       0.d0, lhs, MSIZE_TDOFS_VEC)
+            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(6*MSIZE_CELL_SCAL)
+            b_m = to_blas_int(total_dofs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(gbs_sym)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       1.d0, BG, b_lda, gradrec, b_ldb, &
+                       0.d0, lhs, b_ldc)
         end if
 !
         DEBUG_TIMER(end)
@@ -981,6 +1002,7 @@ contains
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: qp_dphi_ss, normal(3)
         real(kind=8) :: start, end
+        blas_int :: b_k, b_ldc, b_m
 !
         DEBUG_TIMER(start)
 !
@@ -1195,9 +1217,15 @@ contains
             lhs = 0.d0
 !
 ! ----- Compute lhs =BG**T * gradrec
-            call dgemm('T', 'N', total_dofs, total_dofs, dimMG, &
-                       1.d0, BG, MSIZE_CELL_VEC+3, gradrec, MSIZE_CELL_VEC, &
-                       0.d0, lhs, MSIZE_TDOFS_VEC)
+            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+            b_ldb = to_blas_int(MSIZE_CELL_VEC)
+            b_lda = to_blas_int(MSIZE_CELL_VEC+3)
+            b_m = to_blas_int(total_dofs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(dimMG)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       1.d0, BG, b_lda, gradrec, b_ldb, &
+                       0.d0, lhs, b_ldc)
         end if
 !
         DEBUG_TIMER(end)

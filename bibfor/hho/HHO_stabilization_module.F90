@@ -59,10 +59,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(in)    :: gradrec(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        real(kind=8), intent(in) :: gradrec(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -75,7 +75,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        type(HHO_Face)  :: hhoFace
+        type(HHO_Face) :: hhoFace
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_massmat_cell) :: massMat
         type(HHO_massmat_face) :: faceMass
@@ -89,6 +89,7 @@ contains
         integer :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
+        blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
 !
         DEBUG_TIMER(start)
@@ -127,8 +128,15 @@ contains
 ! -- compute proj1: Step 1: compute \pi_T^k p_T^k v (third term).
 !
 ! -- Compute proj1 = -M2 * gradrec
-        call dgemm('N', 'N', dimM1, total_dofs, colsM2, -1.d0, M2, MSIZE_CELL_SCAL, &
-                   gradrec, MSIZE_CELL_SCAL, 0.d0, proj1, MSIZE_CELL_SCAL)
+        b_ldc = to_blas_int(MSIZE_CELL_SCAL)
+        b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+        b_lda = to_blas_int(MSIZE_CELL_SCAL)
+        b_m = to_blas_int(dimM1)
+        b_n = to_blas_int(total_dofs)
+        b_k = to_blas_int(colsM2)
+        call dgemm('N', 'N', b_m, b_n, b_k, &
+                   -1.d0, M2, b_lda, gradrec, b_ldb, &
+                   0.d0, proj1, b_ldc)
 !
         if (.not. massMat%isIdentity) then
 ! -- Solve proj1 = M1^-1 * proj1
@@ -138,13 +146,14 @@ contains
             b_nhrs = to_blas_int(total_dofs)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
             b_ldb = to_blas_int(MSIZE_CELL_SCAL)
-            call dposv('U', b_n, b_nhrs, M1, b_lda, proj1, b_ldb, info)
+            call dposv('U', b_n, b_nhrs, M1, b_lda, &
+                       proj1, b_ldb, info)
 !
 ! - Sucess ?
             if (info .ne. 0) then
                 call utmess('F', 'HHO1_4')
             end if
-
+!
         end if
 !
 ! --  Step 2: v_T - \pi_T^k p_T^k v (first term minus third term)
@@ -167,8 +176,8 @@ contains
             call faceMass%compute(hhoFace, 0, hhoData%face_degree())
 !
 ! ----- Compute trace mass matrix
-            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, &
-                                 hhoFace, 0, hhoData%face_degree(), traceMat)
+            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, hhoFace, 0, &
+                                 hhoData%face_degree(), traceMat)
 !
             if (.not. faceMass%isIdentity) then
 !
@@ -193,8 +202,15 @@ contains
 !
 ! ----  compute proj2 = MR1 * gradrec
             proj2 = 0.d0
-            call dgemm('N', 'N', fbs, total_dofs, colsM2, 1.d0, MR1, MSIZE_FACE_SCAL, &
-                       gradrec, MSIZE_CELL_SCAL, 0.d0, proj2, MSIZE_FACE_SCAL)
+            b_ldc = to_blas_int(MSIZE_FACE_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            b_lda = to_blas_int(MSIZE_FACE_SCAL)
+            b_m = to_blas_int(fbs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(colsM2)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, MR1, b_lda, gradrec, b_ldb, &
+                       0.d0, proj2, b_ldc)
 !
             if (.not. faceMass%isIdentity) then
 !
@@ -205,7 +221,8 @@ contains
                 b_nhrs = to_blas_int(total_dofs)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
                 b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, proj2, b_ldb, info)
+                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, &
+                            proj2, b_ldb, info)
 !
 ! --- Sucess ?
                 if (info .ne. 0) then
@@ -227,18 +244,26 @@ contains
 !
 ! ---- Compute proj3 = MR2 * proj1
             proj3 = 0.d0
-            call dgemm('N', 'N', fbs, total_dofs, dimM1, 1.d0, MR2, MSIZE_FACE_SCAL, &
-                       proj1, MSIZE_CELL_SCAL, 0.d0, proj3, MSIZE_FACE_SCAL)
+            b_ldc = to_blas_int(MSIZE_FACE_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            b_lda = to_blas_int(MSIZE_FACE_SCAL)
+            b_m = to_blas_int(fbs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(dimM1)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, MR2, b_lda, proj1, b_ldb, &
+                       0.d0, proj3, b_ldc)
 !
             if (.not. faceMass%isIdentity) then
-
+!
 ! ---- Solve proj3 = pikF^-1 * proj3
                 info = 0
                 b_n = to_blas_int(fbs)
                 b_nhrs = to_blas_int(total_dofs)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
                 b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, proj3, b_ldb, info)
+                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, &
+                            proj3, b_ldb, info)
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
@@ -254,15 +279,29 @@ contains
 !
 ! ---- Compute TMP = faceMass * proj3
                 TMP = 0.d0
-                call dgemm('N', 'N', fbs, total_dofs, fbs, 1.d0, faceMass%m, MSIZE_FACE_SCAL, &
-                           proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
+                b_ldc = to_blas_int(MSIZE_FACE_SCAL)
+                b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_m = to_blas_int(fbs)
+                b_n = to_blas_int(total_dofs)
+                b_k = to_blas_int(fbs)
+                call dgemm('N', 'N', b_m, b_n, b_k, &
+                           1.d0, faceMass%m, b_lda, proj3, b_ldb, &
+                           0.d0, TMP, b_ldc)
             else
                 TMP(1:fbs, 1:total_dofs) = proj3(1:fbs, 1:total_dofs)
             end if
 !
 ! ---- Compute stab += invH * proj3**T * TMP
-            call dgemm('T', 'N', total_dofs, total_dofs, fbs, invH, proj3, MSIZE_FACE_SCAL, &
-                       TMP, MSIZE_FACE_SCAL, 1.d0, stab, MSIZE_TDOFS_SCAL)
+            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+            b_lda = to_blas_int(MSIZE_FACE_SCAL)
+            b_m = to_blas_int(total_dofs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(fbs)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       invH, proj3, b_lda, TMP, b_ldb, &
+                       1.d0, stab, b_ldc)
 !
             offset_face = offset_face+fbs
         end do
@@ -280,10 +319,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(in)    :: gradrec_scal(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        real(kind=8), intent(in) :: gradrec_scal(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -321,10 +360,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(in)    :: gradrec(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
-        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        real(kind=8), intent(in) :: gradrec(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -337,7 +376,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        type(HHO_Face)  :: hhoFace
+        type(HHO_Face) :: hhoFace
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_massmat_cell) :: massMat
         type(HHO_massmat_face) :: faceMass
@@ -352,6 +391,7 @@ contains
         integer :: ifromGrad, itoGrad, ifromProj, itoProj, fbs_comp, faces_dofs, faces_dofs_comp
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
+        blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
 !
         DEBUG_TIMER(start)
@@ -413,9 +453,15 @@ contains
             ifromProj = (idir-1)*dimM1+1
             itoProj = ifromProj+dimM1-1
 !
-            call dgemm('N', 'N', dimM1, total_dofs, colsM2, -1.d0, M2, MSIZE_CELL_SCAL, &
-                       gradrec(ifromGrad:itoGrad, 1:total_dofs), colsM2, 0.d0, &
-                       proj1(ifromProj:itoProj, 1:total_dofs), dimM1)
+            b_ldc = to_blas_int(dimM1)
+            b_ldb = to_blas_int(colsM2)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            b_m = to_blas_int(dimM1)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(colsM2)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       -1.d0, M2, b_lda, gradrec(ifromGrad:itoGrad, 1:total_dofs), b_ldb, &
+                       0.d0, proj1(ifromProj:itoProj, 1:total_dofs), b_ldc)
 !
             if (.not. massMat%isIdentity) then
 ! -- Solve proj1 = M1^-1 * proj1
@@ -453,8 +499,8 @@ contains
             call faceMass%compute(hhoFace, 0, hhoData%face_degree())
 !
 ! ----- Compute trace mass matrix
-            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, &
-                                 hhoFace, 0, hhoData%face_degree(), traceMat)
+            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, hhoFace, 0, &
+                                 hhoData%face_degree(), traceMat)
 !
             if (.not. faceMass%isIdentity) then
 !
@@ -489,9 +535,15 @@ contains
                 itoGrad = ifromGrad+colsM2-1
 !
 ! ----  compute proj2 = MR1 * gradrec
-                call dgemm('N', 'N', fbs_comp, total_dofs, colsM2, 1.d0, MR1, MSIZE_FACE_SCAL, &
-                           gradrec(ifromGrad:itoGrad, 1:total_dofs), colsM2, &
-                           0.d0, proj2, MSIZE_FACE_SCAL)
+                b_ldc = to_blas_int(MSIZE_FACE_SCAL)
+                b_ldb = to_blas_int(colsM2)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_m = to_blas_int(fbs_comp)
+                b_n = to_blas_int(total_dofs)
+                b_k = to_blas_int(colsM2)
+                call dgemm('N', 'N', b_m, b_n, b_k, &
+                           1.d0, MR1, b_lda, gradrec(ifromGrad:itoGrad, 1:total_dofs), b_ldb, &
+                           0.d0, proj2, b_ldc)
 !
                 if (.not. faceMass%isIdentity) then
 !
@@ -502,7 +554,8 @@ contains
                     b_nhrs = to_blas_int(total_dofs)
                     b_lda = to_blas_int(MSIZE_FACE_SCAL)
                     b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-                    call dpotrs('U', b_n, b_nhrs, piKF, b_lda, proj2, b_ldb, info)
+                    call dpotrs('U', b_n, b_nhrs, piKF, b_lda, &
+                                proj2, b_ldb, info)
 !
 ! --- Sucess ?
                     if (info .ne. 0) then
@@ -525,9 +578,15 @@ contains
                 ifromProj = (idir-1)*dimM1+1
                 itoProj = ifromProj+dimM1-1
 !
-                call dgemm('N', 'N', fbs_comp, total_dofs, dimM1, 1.d0, MR2, MSIZE_FACE_SCAL, &
-                           proj1(ifromProj:itoProj, 1:total_dofs), dimM1, &
-                           0.d0, proj3, MSIZE_FACE_SCAL)
+                b_ldc = to_blas_int(MSIZE_FACE_SCAL)
+                b_ldb = to_blas_int(dimM1)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_m = to_blas_int(fbs_comp)
+                b_n = to_blas_int(total_dofs)
+                b_k = to_blas_int(dimM1)
+                call dgemm('N', 'N', b_m, b_n, b_k, &
+                           1.d0, MR2, b_lda, proj1(ifromProj:itoProj, 1:total_dofs), b_ldb, &
+                           0.d0, proj3, b_ldc)
 !
                 if (.not. faceMass%isIdentity) then
 !
@@ -537,7 +596,8 @@ contains
                     b_nhrs = to_blas_int(total_dofs)
                     b_lda = to_blas_int(MSIZE_FACE_SCAL)
                     b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-                    call dpotrs('U', b_n, b_nhrs, piKF, b_lda, proj3, b_ldb, info)
+                    call dpotrs('U', b_n, b_nhrs, piKF, b_lda, &
+                                proj3, b_ldb, info)
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
@@ -547,22 +607,36 @@ contains
                 end if
 !
 ! ---- proj3 = proj3 + proj2
-                proj3(1:fbs_comp, 1:total_dofs) = proj3(1:fbs_comp, 1:total_dofs) &
-                                                  +proj2(1:fbs_comp, 1:total_dofs)
+                proj3(1:fbs_comp, 1:total_dofs) = proj3(1:fbs_comp, 1:total_dofs)+proj2(1:fbs_co&
+                                                  &mp, 1:total_dofs)
 !
                 if (.not. faceMass%isIdentity) then
-
+!
 ! ---- Compute TMP = faceMass * proj3
                     TMP = 0.d0
-                    call dgemm('N', 'N', fbs_comp, total_dofs, fbs_comp, 1.d0, faceMass%m, &
-                               MSIZE_FACE_SCAL, proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
+                    b_ldc = to_blas_int(MSIZE_FACE_SCAL)
+                    b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                    b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                    b_m = to_blas_int(fbs_comp)
+                    b_n = to_blas_int(total_dofs)
+                    b_k = to_blas_int(fbs_comp)
+                    call dgemm('N', 'N', b_m, b_n, b_k, &
+                               1.d0, faceMass%m, b_lda, proj3, b_ldb, &
+                               0.d0, TMP, b_ldc)
                 else
                     TMP(1:fbs_comp, 1:total_dofs) = proj3(1:fbs_comp, 1:total_dofs)
                 end if
 !
 ! ---- Compute stab += invH * proj3**T * TMP
-                call dgemm('T', 'N', total_dofs, total_dofs, fbs_comp, invH, proj3, &
-                           MSIZE_FACE_SCAL, TMP, MSIZE_FACE_SCAL, 1.d0, stab, MSIZE_TDOFS_VEC)
+                b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+                b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_m = to_blas_int(total_dofs)
+                b_n = to_blas_int(total_dofs)
+                b_k = to_blas_int(fbs_comp)
+                call dgemm('T', 'N', b_m, b_n, b_k, &
+                           invH, proj3, b_lda, TMP, b_ldb, &
+                           1.d0, stab, b_ldc)
 !
             end do
         end do
@@ -580,9 +654,9 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - HDG type stabilisation 1/h_F(v_F - pi^k_F(vT))_F
@@ -594,17 +668,18 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        type(HHO_Face)  :: hhoFace
+        type(HHO_Face) :: hhoFace
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_massmat_face) :: faceMass
         real(kind=8) :: invH
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: proj1
-        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) ::  traceMat
+        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj3, TMP
         integer :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, i, j
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
+        blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
 !
         DEBUG_TIMER(start)
@@ -638,13 +713,20 @@ contains
             call faceMass%compute(hhoFace, 0, hhoData%face_degree())
 !
 ! ----- Compute trace mass matrix
-            call hhoTraceMatScal(hhoCell, 0, hhoData%cell_degree(), &
-                                 hhoFace, 0, hhoData%face_degree(), traceMat)
+            call hhoTraceMatScal(hhoCell, 0, hhoData%cell_degree(), hhoFace, 0, &
+                                 hhoData%face_degree(), traceMat)
 !
 ! ---- Compute proj3 = traceMat * proj1
             proj3 = 0.d0
-            call dgemm('N', 'N', fbs, total_dofs, cbs, 1.d0, traceMat, MSIZE_FACE_SCAL, &
-                       proj1, MSIZE_CELL_SCAL, 0.d0, proj3, MSIZE_FACE_SCAL)
+            b_ldc = to_blas_int(MSIZE_FACE_SCAL)
+            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            b_lda = to_blas_int(MSIZE_FACE_SCAL)
+            b_m = to_blas_int(fbs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(cbs)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, traceMat, b_lda, proj1, b_ldb, &
+                       0.d0, proj3, b_ldc)
 !
             if (.not. faceMass%isIdentity) then
 !
@@ -668,7 +750,8 @@ contains
                 b_nhrs = to_blas_int(total_dofs)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
                 b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, proj3, b_ldb, info)
+                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, &
+                            proj3, b_ldb, info)
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
@@ -686,12 +769,26 @@ contains
 !
 ! ---- Compute TMP = faceMass * proj3
             TMP = 0.d0
-            call dgemm('N', 'N', fbs, total_dofs, fbs, 1.d0, faceMass%m, MSIZE_FACE_SCAL, &
-                       proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
+            b_ldc = to_blas_int(MSIZE_FACE_SCAL)
+            b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+            b_lda = to_blas_int(MSIZE_FACE_SCAL)
+            b_m = to_blas_int(fbs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(fbs)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, faceMass%m, b_lda, proj3, b_ldb, &
+                       0.d0, TMP, b_ldc)
 !
 ! ---- Compute stab += invH * proj3**T * TMP
-            call dgemm('T', 'N', total_dofs, total_dofs, fbs, invH, proj3, MSIZE_FACE_SCAL, &
-                       TMP, MSIZE_FACE_SCAL, 1.d0, stab, MSIZE_TDOFS_SCAL)
+            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+            b_lda = to_blas_int(MSIZE_FACE_SCAL)
+            b_m = to_blas_int(total_dofs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(fbs)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       invH, proj3, b_lda, TMP, b_ldb, &
+                       1.d0, stab, b_ldc)
 !
             offset_face = offset_face+fbs
         end do
@@ -709,9 +806,9 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
         real(kind=8) :: start, end
 !
 ! --------------------------------------------------------------------------------------------------

@@ -211,10 +211,12 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
         call nmmalu(nno1, axi, r, vff1(1, g), dff1, &
                     lij)
 !
-        jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)&
-                                          &*fm(3, 2))+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
-        jd = fd(1, 1)*(fd(2, 2)*fd(3, 3)-fd(2, 3)*fd(3, 2))-fd(2, 1)*(fd(1, 2)*fd(3, 3)-fd(1, 3)&
-                                          &*fd(3, 2))+fd(3, 1)*(fd(1, 2)*fd(2, 3)-fd(1, 3)*fd(2, 2))
+        jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))- &
+             fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3, 2))+ &
+             fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
+        jd = fd(1, 1)*(fd(2, 2)*fd(3, 3)-fd(2, 3)*fd(3, 2))- &
+             fd(2, 1)*(fd(1, 2)*fd(3, 3)-fd(1, 3)*fd(3, 2))+ &
+             fd(3, 1)*(fd(1, 2)*fd(2, 3)-fd(1, 3)*fd(2, 2))
         jp = jm*jd
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT AU POINT DE GAUSS

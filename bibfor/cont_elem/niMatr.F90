@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !
     type(ContactNitsche) :: nits
     aster_logical :: l_cont_qp, l_fric_qp
-    integer ::  i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
+    integer :: i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
@@ -115,15 +115,15 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !
             matr_tmp = 0.d0
             coeff = weight_sl_qp*gamma_c
-            call dger(face_dofs, face_dofs, coeff, dGap, 1, dGap, 1, &
-                      matr_tmp, MAX_LAGA_DOFS)
+            call dger(face_dofs, face_dofs, coeff, dGap, 1, &
+                      dGap, 1, matr_tmp, MAX_LAGA_DOFS)
 !
 ! ------ Compute displacement / displacement (slave and master side)
 !        term: (H*[stress_nn + gamma_c * gap(u)]_R-, D2(gap(u))[v, du])
 !
             coeff = weight_sl_qp*projRmVal
-            matr_tmp(1:face_dofs, 1:face_dofs) = &
-                matr_tmp(1:face_dofs, 1:face_dofs)+coeff*d2Gap(1:face_dofs, 1:face_dofs)
+            matr_tmp(1:face_dofs, 1:face_dofs) = matr_tmp(1:face_dofs, 1:face_dofs)+coeff*d2Gap(1&
+                                                 &:face_dofs, 1:face_dofs)
 !
 ! ------ Renumbering
 !
@@ -134,8 +134,8 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !
             call remappingVect(geom, dofsMap, dGap, dGapRenum, 1.d0)
             coeff = weight_sl_qp
-            call dger(total_dofs, slav_dofs, coeff, dGapRenum, 1, dStress_nn, 1, &
-                      matr_cont, MAX_NITS_DOFS)
+            call dger(total_dofs, slav_dofs, coeff, dGapRenum, 1, &
+                      dStress_nn, 1, matr_cont, MAX_NITS_DOFS)
 !
             if (parameters%vari_cont .ne. CONT_VARI_RAPI) then
 !
@@ -143,10 +143,10 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !        term: \theta * (H * D(stress_nn)[v], D(gap(u))[du])
 !
                 coeff = weight_sl_qp*parameters%vari_cont_coef
-                call dger(slav_dofs, total_dofs, coeff, dStress_nn, 1, dGapRenum, 1, &
-                          matr_cont, MAX_NITS_DOFS)
+                call dger(slav_dofs, total_dofs, coeff, dStress_nn, 1, &
+                          dGapRenum, 1, matr_cont, MAX_NITS_DOFS)
             end if
-
+!
         else
             if (parameters%vari_cont .ne. CONT_VARI_RAPI) then
 !
@@ -154,8 +154,8 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !        term: (theta * (H-1) / gamma_c * D(stress_nn)[v], D(stress_nn)[du])
 !
                 coeff = weight_sl_qp*parameters%vari_cont_coef*gamma_c
-                call dger(slav_dofs, slav_dofs, coeff, dStress_nn, 1, dStress_nn, 1, &
-                          matr_cont, MAX_NITS_DOFS)
+                call dger(slav_dofs, slav_dofs, coeff, dStress_nn, 1, &
+                          dStress_nn, 1, matr_cont, MAX_NITS_DOFS)
             end if
         end if
 !

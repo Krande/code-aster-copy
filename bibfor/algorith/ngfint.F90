@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
                   mat, angmas, lgpg, crit, instam, &
                   instap, ddlm, ddld, ni2ldc, sigmam, &
                   vim, sigmap, vip, fint, matr, &
-                  lMatr, lVect, lSigm, &
-                  codret)
+                  lMatr, lVect, lSigm, codret)
 !
     use Behaviour_type
     use Behaviour_module
@@ -46,8 +45,8 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
     real(kind=8) :: ddlm(nddl), ddld(nddl)
     real(kind=8) :: sigmam(neps, npg), sigmap(neps, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), matr(nddl, nddl), fint(nddl)
-    aster_logical, intent(in)       :: lMatr, lVect, lSigm
-    integer, intent(out)            :: codret
+    aster_logical, intent(in) :: lMatr, lVect, lSigm
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,6 +88,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
     real(kind=8) :: dsidep(neps, neps, npg)
     real(kind=8) :: ktgb(0:neps*npg*nddl-1)
     type(Behaviour_Integ) :: BEHinteg
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,12 +118,11 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
 !
 !    LOI DE COMPORTEMENT EN CHAQUE POINT DE GAUSS
     do g = 1, npg
-        call nmcomp(BEHinteg, &
-                    fami, g, 1, ndim, typmod, &
-                    mat, compor, crit, instam, instap, &
-                    neps, epsm(:, g), epsd(:, g), neps, sigm(:, g), &
-                    vim(1, g), option, angmas, &
-                    sigp(:, g), vip(1, g), neps*neps, dsidep(:, :, g), cod(g))
+        call nmcomp(BEHinteg, fami, g, 1, ndim, &
+                    typmod, mat, compor, crit, instam, &
+                    instap, neps, epsm(:, g), epsd(:, g), neps, &
+                    sigm(:, g), vim(1, g), option, angmas, sigp(:, g), &
+                    vip(1, g), neps*neps, dsidep(:, :, g), cod(g))
         if (cod(g) .eq. 1) goto 900
     end do
 !
@@ -150,14 +149,26 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
         end do
 !      CALCUL DES PRODUITS INTERMEDIAIRES (WG.DSIDEP).B POUR CHAQUE G
         do g = 1, npg
-            call dgemm('N', 'N', neps, nddl, neps, &
-                       1.d0, dsidep(1, 1, g), neps, b(1, g, 1), nepg, &
-                       0.d0, ktgb((g-1)*neps), nepg)
+            b_ldc = to_blas_int(nepg)
+            b_ldb = to_blas_int(nepg)
+            b_lda = to_blas_int(neps)
+            b_m = to_blas_int(neps)
+            b_n = to_blas_int(nddl)
+            b_k = to_blas_int(neps)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, dsidep(1, 1, g), b_lda, b(1, g, 1), b_ldb, &
+                       0.d0, ktgb((g-1)*neps), b_ldc)
         end do
 !      CALCUL DU PRODUIT FINAL SOMME(G) BT. ((WG.DSIDEP).B)  TRANSPOSE
-        call dgemm('T', 'N', nddl, nddl, nepg, &
-                   1.d0, ktgb, nepg, b, nepg, &
-                   0.d0, matr, nddl)
+        b_ldc = to_blas_int(nddl)
+        b_ldb = to_blas_int(nepg)
+        b_lda = to_blas_int(nepg)
+        b_m = to_blas_int(nddl)
+        b_n = to_blas_int(nddl)
+        b_k = to_blas_int(nepg)
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, ktgb, b_lda, b, b_ldb, &
+                   0.d0, matr, b_ldc)
     end if
 !
 ! - SYNTHESE DU CODE RETOUR

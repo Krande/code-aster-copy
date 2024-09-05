@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine mlnfmj(nb, n, p, frontl, frontu, &
     real(kind=8) :: t1(p, nb, *), t2(p, nb, *), alpha, beta
     real(kind=8) :: cl(nb, nb, *), cu(nb, nb, *)
     integer :: i, kb, j, ib, ia, ind, add
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
     m = n-p
     nmb = m/nb
     restm = m-(nb*nmb)
@@ -67,12 +68,24 @@ subroutine mlnfmj(nb, n, p, frontl, frontu, &
         do ib = kb, nmb
             ia = k+nb*(ib-kb)
             it = 1
-            call dgemm(tra, trb, nb, nb, p, &
-                       alpha, frontl(ia), n, t1(it, 1, numprc), p, &
-                       beta, cl(1, 1, numprc), nb)
-            call dgemm(tra, trb, nb, nb, p, &
-                       alpha, frontu(ia), n, t2(it, 1, numprc), p, &
-                       beta, cu(1, 1, numprc), nb)
+            b_ldc = to_blas_int(nb)
+            b_ldb = to_blas_int(p)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(nb)
+            b_n = to_blas_int(nb)
+            b_k = to_blas_int(p)
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, frontl(ia), b_lda, t1(it, 1, numprc), b_ldb, &
+                       beta, cl(1, 1, numprc), b_ldc)
+            b_ldc = to_blas_int(nb)
+            b_ldb = to_blas_int(p)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(nb)
+            b_n = to_blas_int(nb)
+            b_k = to_blas_int(p)
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, frontu(ia), b_lda, t2(it, 1, numprc), b_ldb, &
+                       beta, cu(1, 1, numprc), b_ldc)
 !     RECOPIE
 !
 !
@@ -98,12 +111,24 @@ subroutine mlnfmj(nb, n, p, frontl, frontu, &
             ib = nmb+1
             ia = k+nb*(ib-kb)
             it = 1
-            call dgemm(tra, trb, restm, nb, p, &
-                       alpha, frontl(ia), n, t1(it, 1, numprc), p, &
-                       beta, cl(1, 1, numprc), nb)
-            call dgemm(tra, trb, restm, nb, p, &
-                       alpha, frontu(ia), n, t2(it, 1, numprc), p, &
-                       beta, cu(1, 1, numprc), nb)
+            b_ldc = to_blas_int(nb)
+            b_ldb = to_blas_int(p)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(restm)
+            b_n = to_blas_int(nb)
+            b_k = to_blas_int(p)
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, frontl(ia), b_lda, t1(it, 1, numprc), b_ldb, &
+                       beta, cl(1, 1, numprc), b_ldc)
+            b_ldc = to_blas_int(nb)
+            b_ldb = to_blas_int(p)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(restm)
+            b_n = to_blas_int(nb)
+            b_k = to_blas_int(p)
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, frontu(ia), b_lda, t2(it, 1, numprc), b_ldb, &
+                       beta, cu(1, 1, numprc), b_ldc)
 !     RECOPIE
 !
 !
@@ -141,12 +166,24 @@ subroutine mlnfmj(nb, n, p, frontl, frontu, &
         ib = kb
         ia = k+nb*(ib-kb)
         it = 1
-        call dgemm(tra, trb, restm, restm, p, &
-                   alpha, frontl(ia), n, t1(it, 1, 1), p, &
-                   beta, cl(1, 1, numprc), nb)
-        call dgemm(tra, trb, restm, restm, p, &
-                   alpha, frontu(ia), n, t2(it, 1, 1), p, &
-                   beta, cu(1, 1, numprc), nb)
+        b_ldc = to_blas_int(nb)
+        b_ldb = to_blas_int(p)
+        b_lda = to_blas_int(n)
+        b_m = to_blas_int(restm)
+        b_n = to_blas_int(restm)
+        b_k = to_blas_int(p)
+        call dgemm(tra, trb, b_m, b_n, b_k, &
+                   alpha, frontl(ia), b_lda, t1(it, 1, 1), b_ldb, &
+                   beta, cl(1, 1, numprc), b_ldc)
+        b_ldc = to_blas_int(nb)
+        b_ldb = to_blas_int(p)
+        b_lda = to_blas_int(n)
+        b_m = to_blas_int(restm)
+        b_n = to_blas_int(restm)
+        b_k = to_blas_int(p)
+        call dgemm(tra, trb, b_m, b_n, b_k, &
+                   alpha, frontu(ia), b_lda, t2(it, 1, 1), b_ldb, &
+                   beta, cu(1, 1, numprc), b_ldc)
 !     RECOPIE
 !
 !

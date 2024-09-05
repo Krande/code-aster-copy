@@ -23,7 +23,8 @@ subroutine pielas(BEHinteg, ndim, npg, kpg, compor, &
 !
     use Behaviour_type
 !
-    use endo_loca_module, only: ELE_law => CONSTITUTIVE_LAW, ELE_Init => Init, ELE_PathFollowing => PathFollowing
+    use endo_loca_module, only: ELE_law => CONSTITUTIVE_LAW, ELE_Init => Init
+    use endo_loca_module, only: ELE_PathFollowing => PathFollowing
 !
 !
     implicit none

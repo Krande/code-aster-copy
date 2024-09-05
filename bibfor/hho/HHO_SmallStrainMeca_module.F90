@@ -141,6 +141,7 @@ contains
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
         integer :: cod(27)
         aster_logical :: l_lhs, l_rhs
+        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -239,14 +240,26 @@ contains
 ! ----- Copy symetric part of AT
             call hhoCopySymPartMat('U', AT, gbs_sym)
 ! ----- step1: TMP = AT * gradrec
-            call dgemm('N', 'N', gbs_sym, total_dofs, gbs_sym, &
-                       1.d0, AT, MSIZE_CELL_MAT, gradrec, MSIZE_CELL_MAT, &
-                       0.d0, TMP, MSIZE_CELL_MAT)
+            b_ldc = to_blas_int(MSIZE_CELL_MAT)
+            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(gbs_sym)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(gbs_sym)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, AT, b_lda, gradrec, b_ldb, &
+                       0.d0, TMP, b_ldc)
 !
 ! ----- step2: lhs += gradrec**T * TMP
-            call dgemm('T', 'N', total_dofs, total_dofs, gbs_sym, &
-                       1.d0, gradrec, MSIZE_CELL_MAT, TMP, MSIZE_CELL_MAT, &
-                       1.d0, lhs, MSIZE_TDOFS_VEC)
+            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(total_dofs)
+            b_n = to_blas_int(total_dofs)
+            b_k = to_blas_int(gbs_sym)
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       1.d0, gradrec, b_lda, TMP, b_ldb, &
+                       1.d0, lhs, b_ldc)
         end if
 !
 ! print*, "AT", hhoNorm2Mat(AT(1:gbs_sym,1:gbs_sym))
@@ -306,6 +319,7 @@ contains
         real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
         real(kind=8) :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
+        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 ! --------------------------------------------------------------------------------------------------
 !
 ! ------ number of dofs
@@ -348,14 +362,26 @@ contains
 ! ----- Copy symetric part of AT
         call hhoCopySymPartMat('U', AT, gbs_sym)
 ! ----- step1: TMP = AT * gradrec
-        call dgemm('N', 'N', gbs_sym, total_dofs, total_dofs, &
-                   1.d0, AT, MSIZE_CELL_MAT, gradrec, MSIZE_CELL_MAT, &
-                   0.d0, TMP, MSIZE_CELL_MAT)
+        b_ldc = to_blas_int(MSIZE_CELL_MAT)
+        b_ldb = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(gbs_sym)
+        b_n = to_blas_int(total_dofs)
+        b_k = to_blas_int(total_dofs)
+        call dgemm('N', 'N', b_m, b_n, b_k, &
+                   1.d0, AT, b_lda, gradrec, b_ldb, &
+                   0.d0, TMP, b_ldc)
 !
 ! ----- step2: lhs += gradrec**T * TMP
-        call dgemm('T', 'N', total_dofs, total_dofs, gbs_sym, &
-                   1.d0, gradrec, MSIZE_CELL_MAT, TMP, MSIZE_CELL_MAT, &
-                   1.d0, lhs, MSIZE_TDOFS_VEC)
+        b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+        b_ldb = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(total_dofs)
+        b_n = to_blas_int(total_dofs)
+        b_k = to_blas_int(gbs_sym)
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, gradrec, b_lda, TMP, b_ldb, &
+                   1.d0, lhs, b_ldc)
 !
     end subroutine
 !

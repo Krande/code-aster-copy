@@ -72,6 +72,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
     integer, pointer :: vec_ind_nz(:) => null()
     integer, pointer :: deeq(:) => null()
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
 !
     ortho = ' '
     iret = 0
@@ -204,9 +205,15 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
 !
         call wkvect('&&VECIND.MODE_INTF_DEPL', 'V V R', nbl*nbc, lmat)
 !
-        call dgemm('N', 'N', nbl, nindep, nbc, &
-                   1.d0, zr(lcopy), nbl, trav2_u, nbc, &
-                   0.d0, zr(lvec), nbl)
+        b_ldc = to_blas_int(nbl)
+        b_ldb = to_blas_int(nbc)
+        b_lda = to_blas_int(nbl)
+        b_m = to_blas_int(nbl)
+        b_n = to_blas_int(nindep)
+        b_k = to_blas_int(nbc)
+        call dgemm('N', 'N', b_m, b_n, b_k, &
+                   1.d0, zr(lcopy), b_lda, trav2_u, b_ldb, &
+                   0.d0, zr(lvec), b_ldc)
 !
 !-- INUTILE D'ANNULER DES VECTEURS QUI NE SERVIRONT NUL PART...
 !        DO 540 I1=1,NBL*(NBC-NINDEP)

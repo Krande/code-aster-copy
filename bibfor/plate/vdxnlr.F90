@@ -414,22 +414,16 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         sgmtd(5) = cisail*kappa*gyz/2.d0
 !
                     else if (elasKeyword .eq. 'ELAS_ORTH') then
-                        zr(icontp-1+k1+1) = ( &
-                                            epsi(1)+depsi(1))*matc(1, &
-                                                                   1)+(epsi(2)+depsi(2))*matc(1, &
-                                                                   2)+(epsi(3)+depsi(3))*matc(1, 3 &
-                                                                                                   )
-                        zr(icontp-1+k1+2) = ( &
-                                            epsi(1)+depsi(1))*matc(2, &
-                                                                   1)+(epsi(2)+depsi(2))*matc(2, &
-                                                                   2)+(epsi(3)+depsi(3))*matc(2, 3 &
-                                                                                                   )
+                        zr(icontp-1+k1+1) = (epsi(1)+depsi(1))*matc(1, 1)+ &
+                                            (epsi(2)+depsi(2))*matc(1, 2)+ &
+                                            (epsi(3)+depsi(3))*matc(1, 3)
+                        zr(icontp-1+k1+2) = (epsi(1)+depsi(1))*matc(2, 1)+ &
+                                            (epsi(2)+depsi(2))*matc(2, 2)+ &
+                                            (epsi(3)+depsi(3))*matc(2, 3)
                         zr(icontp-1+k1+3) = 0.d0
-                        zr(icontp-1+k1+4) = ( &
-                                            epsi(1)+depsi(1))*matc(3, &
-                                                                   1)+(epsi(2)+depsi(2))*matc(3, &
-                                                                   2)+(epsi(3)+depsi(3))*matc(3, 3 &
-                                                                                                   )
+                        zr(icontp-1+k1+4) = (epsi(1)+depsi(1))*matc(3, 1)+ &
+                                            (epsi(2)+depsi(2))*matc(3, 2)+ &
+                                            (epsi(3)+depsi(3))*matc(3, 3)
                         zr(icontp-1+k1+5) = matc(4, 4)*gxz+matc(4, 5)*gyz
                         zr(icontp-1+k1+6) = matc(5, 4)*gxz+matc(5, 5)*gyz
 !
