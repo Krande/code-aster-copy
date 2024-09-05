@@ -17,8 +17,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dgetv0(ido, bmat, itry, initv, n, &
-                  j, v, ldv, resid, rnorm, &
+subroutine dgetv0(ido, bmat, itry, initv, n,&
+                  j, v, ldv, resid, rnorm,&
                   ipntr, workd, ierr, alpha)
 !
 !     SUBROUTINE ARPACK GENERANT UN VECTEUR INITIAL DANS IM(OP).
@@ -194,6 +194,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
     real(kind=8) :: rnorm0
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_m
+    blas_int :: b_idist
     save first, iseed, inits, iter, msglvl, orth, rnorm0
 !
 !     %-----------%
@@ -254,7 +255,9 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
             iseed4(2) = int(iseed(2), 4)
             iseed4(3) = int(iseed(3), 4)
             iseed4(4) = int(iseed(4), 4)
-            call dlarnv(idist, iseed4, n, resid)
+            b_idist = to_blas_int(idist)
+            b_n = to_blas_int(n)
+            call dlarnv(b_idist, iseed4, b_n, resid)
             iseed(1) = iseed4(1)
             iseed(2) = iseed4(2)
             iseed(3) = iseed4(3)
@@ -314,7 +317,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
         call dcopy(b_n, resid, b_incx, workd, b_incy)
     end if
 !
-20  continue
+ 20 continue
 !
     first = .false.
     if (bmat .eq. 'G') then
@@ -344,23 +347,23 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
 !     %---------------------------------------------------------------%
 !
     orth = .true.
-30  continue
+ 30 continue
 !
     b_lda = to_blas_int(ldv)
     b_m = to_blas_int(n)
     b_n = to_blas_int(j-1)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('T', b_m, b_n, one, v, &
-               b_lda, workd, b_incx, zero, workd(n+1), &
+    call dgemv('T', b_m, b_n, one, v,&
+               b_lda, workd, b_incx, zero, workd(n+1),&
                b_incy)
     b_lda = to_blas_int(ldv)
     b_m = to_blas_int(n)
     b_n = to_blas_int(j-1)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, -one, v, &
-               b_lda, workd(n+1), b_incx, one, resid, &
+    call dgemv('N', b_m, b_n, -one, v,&
+               b_lda, workd(n+1), b_incx, one, resid,&
                b_incy)
 !
 !     %----------------------------------------------------------%
@@ -384,7 +387,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
         call dcopy(b_n, resid, b_incx, workd, b_incy)
     end if
 !
-40  continue
+ 40 continue
 !
     if (bmat .eq. 'G') then
         rnorm = ddot(n, resid, 1, workd, 1)
@@ -424,10 +427,10 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
         ierr = -1
     end if
 !
-50  continue
+ 50 continue
 !
     if (msglvl .gt. 0) then
-        call dvout(logfil, 1, [rnorm], ndigit, &
+        call dvout(logfil, 1, [rnorm], ndigit,&
                    '_GETV0: B-NORM OF INITIAL / RESTARTED STARTING VECTOR')
     end if
     if (msglvl .gt. 2) then

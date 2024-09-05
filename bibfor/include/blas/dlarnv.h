@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dlarnv(idist, iseed, n, x)
-        integer, intent(in) :: idist
+        blas_int, intent(in) :: idist
         blas_int ,intent(inout) :: iseed(4)
-        integer, intent(in) :: n
-        real(kind=8) ,intent(out) :: x(*)
+        blas_int, intent(in) :: n
+        real(kind=8), intent(out) :: x(*)
     end subroutine dlarnv
 end interface

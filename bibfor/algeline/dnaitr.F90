@@ -212,8 +212,8 @@
 !              SET R_(J) = 0 AND RNORM = 0, GOTO 1)
 !        ENDIF
 !  END DO
-subroutine dnaitr(ido, bmat, n, k, np, &
-                  resid, rnorm, v, ldv, h, &
+subroutine dnaitr(ido, bmat, n, k, np,&
+                  resid, rnorm, v, ldv, h,&
                   ldh, ipntr, workd, info, alpha)
 !
 ! ASTER INFORMATION
@@ -303,6 +303,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
     real(kind=8) :: xtemp(2)
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_m
+    blas_int :: b_kl, b_ku
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -428,18 +429,18 @@ subroutine dnaitr(ido, bmat, n, k, np, &
     betaj = zero
     nrstrt = nrstrt+1
     itry = 1
-20  continue
+ 20 continue
     rstart = .true.
     ido = 0
-30  continue
+ 30 continue
 !
 !           %--------------------------------------%
 !           | IF IN REVERSE COMMUNICATION MODE AND |
 !           | RSTART = .TRUE. FLOW RETURNS HERE.   |
 !           %--------------------------------------%
 !
-    call dgetv0(ido, bmat, itry, .false._1, n, &
-                j, v, ldv, resid, rnorm, &
+    call dgetv0(ido, bmat, itry, .false._1, n,&
+                j, v, ldv, resid, rnorm,&
                 ipntr, workd, ierr, alpha)
     if (ido .ne. 99) goto 9000
     if (ierr .lt. 0) then
@@ -457,7 +458,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
         goto 9000
     end if
 !
-40  continue
+ 40 continue
 !
 !        %---------------------------------------------------------%
 !        | STEP 2:  V_(J) = R_(J-1)/RNORM AND P_(J) = P_(J)/RNORM  |
@@ -482,11 +483,21 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !            %-----------------------------------------%
 !
 ! DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
-        call dlascl('G', i, i, rnorm, one, &
-                    n, 1, v(1, j), n, infol4)
+        b_lda = to_blas_int(n)
+        b_kl = to_blas_int(i)
+        b_ku = to_blas_int(i)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(1)
+        call dlascl('G', b_kl, b_ku, rnorm, one,&
+                    b_m, b_n, v(1, j), b_lda, infol4)
 ! DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
-        call dlascl('G', i, i, rnorm, one, &
-                    n, 1, workd(ipj), n, infol4)
+        b_lda = to_blas_int(n)
+        b_kl = to_blas_int(i)
+        b_ku = to_blas_int(i)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(1)
+        call dlascl('G', b_kl, b_ku, rnorm, one,&
+                    b_m, b_n, workd(ipj), b_lda, infol4)
 !
     end if
 !
@@ -511,7 +522,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        %-----------------------------------%
 !
     goto 9000
-50  continue
+ 50 continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION, |
@@ -553,7 +564,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
         b_incy = to_blas_int(1)
         call dcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
-60  continue
+ 60 continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION, |
@@ -593,8 +604,8 @@ subroutine dnaitr(ido, bmat, n, k, np, &
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('T', b_m, b_n, one, v, &
-               b_lda, workd(ipj), b_incx, zero, h(1, j), &
+    call dgemv('T', b_m, b_n, one, v,&
+               b_lda, workd(ipj), b_incx, zero, h(1, j),&
                b_incy)
 !
 !        %--------------------------------------%
@@ -607,8 +618,8 @@ subroutine dnaitr(ido, bmat, n, k, np, &
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, -one, v, &
-               b_lda, h(1, j), b_incx, one, resid, &
+    call dgemv('N', b_m, b_n, -one, v,&
+               b_lda, h(1, j), b_incx, one, resid,&
                b_incy)
 !
     if (j .gt. 1) h(j, j-1) = betaj
@@ -634,7 +645,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
         b_incy = to_blas_int(1)
         call dcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
-70  continue
+ 70 continue
 !
 !        %---------------------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION IF ORTH1 = .TRUE. |
@@ -683,7 +694,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | GRAM-SCHMIDT USING ALL THE ARNOLDI VECTORS V_(J)  |
 !        %---------------------------------------------------%
 !
-80  continue
+ 80 continue
 !
     if (msglvl .gt. 2) then
         xtemp(1) = wnorm
@@ -702,8 +713,8 @@ subroutine dnaitr(ido, bmat, n, k, np, &
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('T', b_m, b_n, one, v, &
-               b_lda, workd(ipj), b_incx, zero, workd(irj), &
+    call dgemv('T', b_m, b_n, one, v,&
+               b_lda, workd(ipj), b_incx, zero, workd(irj),&
                b_incy)
 !
 !        %---------------------------------------------%
@@ -718,13 +729,13 @@ subroutine dnaitr(ido, bmat, n, k, np, &
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, -one, v, &
-               b_lda, workd(irj), b_incx, one, resid, &
+    call dgemv('N', b_m, b_n, -one, v,&
+               b_lda, workd(irj), b_incx, one, resid,&
                b_incy)
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, one, workd(irj), b_incx, h(1, j), &
+    call daxpy(b_n, one, workd(irj), b_incx, h(1, j),&
                b_incy)
 !
     orth2 = .true.
@@ -750,7 +761,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
         b_incy = to_blas_int(1)
         call dcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
-90  continue
+ 90 continue
 !
 !        %---------------------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION IF ORTH2 = .TRUE. |
@@ -772,7 +783,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
         if (msglvl .gt. 2) then
             xtemp(1) = rnorm
             xtemp(2) = rnorm1
-            call dvout(logfil, 2, xtemp, ndigit, &
+            call dvout(logfil, 2, xtemp, ndigit,&
                        '_NAITR: ITERATIVE REFINEMENT , RNORM AND RNORM1 ARE')
         end if
     end if
@@ -849,7 +860,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
         end do
 !
         if (msglvl .gt. 2) then
-            call dmout(logfil, k+np, k+np, h, ldh, &
+            call dmout(logfil, k+np, k+np, h, ldh,&
                        ndigit, '_NAITR: FINAL UPPER HESSENBERG MATRIX H OF ORDER K+NP')
         end if
 !

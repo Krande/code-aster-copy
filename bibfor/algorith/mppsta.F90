@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mppsta(h, ldh, v, ldv, ddlsta, &
+subroutine mppsta(h, ldh, v, ldv, ddlsta,&
                   n, vectt, ddlexc, indico, proj)
 !-----------------------------------------------------------------------
 !
@@ -64,6 +64,7 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta, &
     real(kind=8) :: temp, epsil, one, zero
     real(kind=8) :: crit2, epsf
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+    blas_int :: b_idist
     parameter(epsil=1.d-15)
     parameter(crit2=1.d-12)
     parameter(nitmax=40000)
@@ -85,8 +86,8 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta, &
         b_n = to_blas_int(ldh)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('T', b_m, b_n, one, v, &
-                   b_lda, vectt, b_incx, zero, zr(x0), &
+        call dgemv('T', b_m, b_n, one, v,&
+                   b_lda, vectt, b_incx, zero, zr(x0),&
                    b_incy)
         temp = dnrm2(ldh, zr(x0), 1)
         call dscal(ldh, one/temp, zr(x0), 1)
@@ -101,7 +102,9 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta, &
     iseed(3) = 5
     iseed(4) = 7
 !
-    call dlarnv(2, iseed, ldh, zr(x0))
+    b_idist = to_blas_int(2)
+    b_n = to_blas_int(ldh)
+    call dlarnv(b_idist, iseed, b_n, zr(x0))
 !
 !     PROJECTION DANS LA BASE INITIALE
 !
@@ -110,8 +113,8 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta, &
     b_n = to_blas_int(ldh)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, one, v, &
-               b_lda, zr(x0), b_incx, zero, vectt, &
+    call dgemv('N', b_m, b_n, one, v,&
+               b_lda, zr(x0), b_incx, zero, vectt,&
                b_incy)
 !
 !     PROJECTION DANS SUR LES DDLS_STAB POSITIFS ET CL
@@ -133,8 +136,8 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta, &
     b_n = to_blas_int(ldh)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('T', b_m, b_n, one, v, &
-               b_lda, vectt, b_incx, zero, zr(x0), &
+    call dgemv('T', b_m, b_n, one, v,&
+               b_lda, vectt, b_incx, zero, zr(x0),&
                b_incy)
 !
 !     ON NORME X0
@@ -155,16 +158,16 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta, &
         b_n = to_blas_int(ldh)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, one, h, &
-                   b_lda, zr(x0), b_incx, zero, zr(x), &
+        call dgemv('N', b_m, b_n, one, h,&
+                   b_lda, zr(x0), b_incx, zero, zr(x),&
                    b_incy)
         b_lda = to_blas_int(ldv)
         b_m = to_blas_int(ldv)
         b_n = to_blas_int(ldh)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, one, v, &
-                   b_lda, zr(x), b_incx, zero, vectt, &
+        call dgemv('N', b_m, b_n, one, v,&
+                   b_lda, zr(x), b_incx, zero, vectt,&
                    b_incy)
         do i = 1, n
             if (ddlsta(i) .eq. 0 .and. proj .eq. 1) then
@@ -182,8 +185,8 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta, &
         b_n = to_blas_int(ldh)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('T', b_m, b_n, one, v, &
-                   b_lda, vectt, b_incx, zero, zr(x), &
+        call dgemv('T', b_m, b_n, one, v,&
+                   b_lda, vectt, b_incx, zero, zr(x),&
                    b_incy)
         temp = dnrm2(ldh, zr(x), 1)
         call dscal(ldh, one/temp, zr(x), 1)

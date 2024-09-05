@@ -15,21 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dlarfx(side, m, n, v, tau,&
                       c, ldc, work)
-        integer, intent(in) :: ldc
-        character(len=1) ,intent(in) :: side
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        real(kind=8) ,intent(in) :: v(*)
-        real(kind=8) ,intent(in) :: tau
-        real(kind=8) ,intent(inout) :: c(ldc, *)
-        real(kind=8) ,intent(out) :: work(*)
+        blas_int, intent(in) :: ldc
+        character(len=1), intent(in) :: side
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        real(kind=8), intent(in) :: v(*)
+        real(kind=8), intent(in) :: tau
+        real(kind=8), intent(inout) :: c(ldc, *)
+        real(kind=8), intent(out) :: work(*)
     end subroutine dlarfx
 end interface

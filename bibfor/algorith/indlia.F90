@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine indlia(modgen, seliai, nindep, nbddl, sst, &
+subroutine indlia(modgen, seliai, nindep, nbddl, sst,&
                   sizlia)
 !    M. CORUS     DATE 25/01/10
 !-----------------------------------------------------------------------
@@ -65,6 +65,7 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst, &
     character(len=24) :: deflia, fprofl, nomsst, nomlia, matlia
     real(kind=8) :: eps, swork(1), x1, x2, x2prev
     blas_int :: b_lda, b_lwork, b_m, b_n
+    blas_int :: b_k
     parameter(eps=2.3d-16)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -233,7 +234,7 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst, &
     b_m = to_blas_int(nbddl)
     b_n = to_blas_int(neq)
     b_lwork = to_blas_int(lwork)
-    call dgeqp3(b_m, b_n, zr(lmalia), b_lda, zi4(jjpvt), &
+    call dgeqp3(b_m, b_n, zr(lmalia), b_lda, zi4(jjpvt),&
                 zr(ltau), swork, b_lwork, info)
     ASSERT(info .eq. 0)
     lwork = int(swork(1))
@@ -245,7 +246,7 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst, &
     b_m = to_blas_int(nbddl)
     b_n = to_blas_int(neq)
     b_lwork = to_blas_int(lwork)
-    call dgeqp3(b_m, b_n, zr(lmalia), b_lda, zi4(jjpvt), &
+    call dgeqp3(b_m, b_n, zr(lmalia), b_lda, zi4(jjpvt),&
                 zr(ltau), zr(jwork), b_lwork, info)
     ASSERT(info .eq. 0)
 !
@@ -293,16 +294,26 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst, &
 !
 !   -- Reconstruction de la matrice q  (dorgqr):
 !   ---------------------------------------------
-    call dorgqr(nbddl, neq, nbddl, zr(lmalia), nbddl, &
-                zr(ltau), swork(1), -1, info)
+    b_lda = to_blas_int(nbddl)
+    b_m = to_blas_int(nbddl)
+    b_n = to_blas_int(neq)
+    b_k = to_blas_int(nbddl)
+    b_lwork = to_blas_int(-1)
+    call dorgqr(b_m, b_n, b_k, zr(lmalia), b_lda,&
+                zr(ltau), swork(1), b_lwork, info)
     ASSERT(info .eq. 0)
     if (swork(1) .gt. lwork) then
         lwork = int(swork(1))
         call jedetr('&&MATR_QR_WORK')
         call wkvect('&&MATR_QR_WORK', 'V V R', lwork, jwork)
     end if
-    call dorgqr(nbddl, neq, nbddl, zr(lmalia), nbddl, &
-                zr(ltau), zr(jwork), lwork, info)
+    b_lda = to_blas_int(nbddl)
+    b_m = to_blas_int(nbddl)
+    b_n = to_blas_int(neq)
+    b_k = to_blas_int(nbddl)
+    b_lwork = to_blas_int(lwork)
+    call dorgqr(b_m, b_n, b_k, zr(lmalia), b_lda,&
+                zr(ltau), zr(jwork), b_lwork, info)
     ASSERT(info .eq. 0)
 !
 !   -- reactivation du test fpe
