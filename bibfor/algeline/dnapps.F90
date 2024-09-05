@@ -593,9 +593,15 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !
     do j = 1, kev
         if (h(j+1, j) .lt. zero) then
-            call dscal(kplusp-j+1, -one, h(j+1, j), ldh)
-            call dscal(min(j+2, kplusp), -one, h(1, j+1), 1)
-            call dscal(min(j+np+1, kplusp), -one, q(1, j+1), 1)
+            b_n = to_blas_int(kplusp-j+1)
+            b_incx = to_blas_int(ldh)
+            call dscal(b_n, -one, h(j+1, j), b_incx)
+            b_n = to_blas_int(min(j+2, kplusp))
+            b_incx = to_blas_int(1)
+            call dscal(b_n, -one, h(1, j+1), b_incx)
+            b_n = to_blas_int(min(j+np+1, kplusp))
+            b_incx = to_blas_int(1)
+            call dscal(b_n, -one, q(1, j+1), b_incx)
         end if
     end do
 !
@@ -681,7 +687,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     |    BETAK = E_(KEV+1)'*H*E_(KEV)     |
 !     %-------------------------------------%
 !
-    call dscal(n, q(kplusp, kev), resid, 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, q(kplusp, kev), resid, b_incx)
     if (h(kev+1, kev) .gt. zero) then
         b_n = to_blas_int(n)
         b_incx = to_blas_int(1)

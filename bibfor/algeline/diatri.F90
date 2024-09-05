@@ -150,7 +150,9 @@ subroutine diatri(n, d, e, vector, evec,&
         do j = 1, n
             i = idamax(n, evec(1, j), 1)
             scale = evec(i, j)
-            call dscal(n, 1.0d0/scale, evec(1, j), 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.0d0/scale, evec(1, j), b_incx)
         end do
     end if
 !

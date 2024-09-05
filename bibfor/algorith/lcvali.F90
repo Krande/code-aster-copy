@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcvali(fami, kpg, ksp, imate, materi, &
-                  compor, ndim, epsm, deps, instam, &
+subroutine lcvali(fami, kpg, ksp, imate, materi,&
+                  compor, ndim, epsm, deps, instam,&
                   instap, codret)
 !
     implicit none
@@ -50,8 +50,8 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
     nomres(2) = 'VEPS_MAXI'
     nomres(3) = 'TEMP_MINI'
     nomres(4) = 'TEMP_MAXI'
-    call rcvalb(fami, kpg, ksp, '+', imate, &
-                materi, 'VERI_BORNE', 0, ' ', [0.d0], &
+    call rcvalb(fami, kpg, ksp, '+', imate,&
+                materi, 'VERI_BORNE', 0, ' ', [0.d0],&
                 4, nomres, valres, icodre, 0)
 !
 !     TRAITEMENT DE EPSI_MAXI
@@ -64,7 +64,7 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, deps, b_incx, eps, &
+        call daxpy(b_n, 1.d0, deps, b_incx, eps,&
                    b_incy)
         eps2 = sqrt(ddot(ndimsi, eps, 1, eps, 1))
         if (eps2 .gt. epsmax) then
@@ -79,7 +79,9 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, deps, b_incx, veps, b_incy)
-        call dscal(ndimsi, 1.d0/dt, veps, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 1.d0/dt, veps, b_incx)
         veps2 = sqrt(ddot(ndimsi, veps, 1, veps, 1))
         if (veps2 .gt. vepsm) then
             iret2 = 4
@@ -89,7 +91,7 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
     if (icodre(3) .eq. 0) then
         tmin = valres(3)
         tmax = valres(4)
-        call rcvarc(' ', 'TEMP', '+', fami, kpg, &
+        call rcvarc(' ', 'TEMP', '+', fami, kpg,&
                     ksp, temp, iret)
         if (iret .eq. 0) then
             if ((temp .lt. tmin) .or. (temp .gt. tmax)) then

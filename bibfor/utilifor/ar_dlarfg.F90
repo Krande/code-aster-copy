@@ -112,6 +112,7 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
 !     .. LOCAL SCALARS ..
     integer :: j, knt
     real(kind=8) :: beta, rsafmn, safmin, xnorm
+    blas_int :: b_incx, b_n
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -143,9 +144,11 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
 !
             rsafmn = one/safmin
             knt = 0
-10          continue
+ 10         continue
             knt = knt+1
-            call dscal(n-1, rsafmn, x, incx)
+            b_n = to_blas_int(n-1)
+            b_incx = to_blas_int(incx)
+            call dscal(b_n, rsafmn, x, b_incx)
             beta = beta*rsafmn
             alpha = alpha*rsafmn
             if (abs(beta) .lt. safmin) goto 10
@@ -155,7 +158,9 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
             xnorm = dnrm2(n-1, x, incx)
             beta = -sign(dlapy2(alpha, xnorm), alpha)
             tau = (beta-alpha)/beta
-            call dscal(n-1, one/(alpha-beta), x, incx)
+            b_n = to_blas_int(n-1)
+            b_incx = to_blas_int(incx)
+            call dscal(b_n, one/(alpha-beta), x, b_incx)
 !
 !           IF ALPHA IS SUBNORMAL, IT MAY LOSE RELATIVE ACCURACY
 !
@@ -165,7 +170,9 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
             end do
         else
             tau = (beta-alpha)/beta
-            call dscal(n-1, one/(alpha-beta), x, incx)
+            b_n = to_blas_int(n-1)
+            b_incx = to_blas_int(incx)
+            call dscal(b_n, one/(alpha-beta), x, b_incx)
             alpha = beta
         end if
     end if

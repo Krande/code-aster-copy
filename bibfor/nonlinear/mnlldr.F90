@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlldr(ind, imat, neq, ninc, nd, &
-                  nchoc, h, hf, parcho, xcdl, &
+subroutine mnlldr(ind, imat, neq, ninc, nd,&
+                  nchoc, h, hf, parcho, xcdl,&
                   adime, xtemp)
     implicit none
 !
@@ -85,15 +85,21 @@ subroutine mnlldr(ind, imat, neq, ninc, nd, &
     call jeveuo(xcdl, 'L', icdl)
     call jeveuo(adime, 'L', iadim)
     call jeveuo(xtemp, 'E', itemp)
-    call dscal(ninc-1, 0.d0, zr(itemp), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(itemp), b_incx)
 ! ----------------------------------------------------------------------
 ! --- INCONNUE DU SYSTEME DYNAMIQUE i.e. 1:ND*(2*H+1)
 ! ----------------------------------------------------------------------
     hind = int((ind-1)/nd)
     ddl = ind-nd*hind
     if (ind .le. nd*(2*h+1)) then
-        call dscal(neq, 0.d0, zr(itemp1), 1)
-        call dscal(neq, 0.d0, zr(itemp2), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(itemp1), b_incx)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(itemp2), b_incx)
         i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
@@ -103,7 +109,7 @@ subroutine mnlldr(ind, imat, neq, ninc, nd, &
                 end if
             end if
         end do
-        call mrmult('ZERO', imat(1), zr(itemp1), zr(itemp2), 1, &
+        call mrmult('ZERO', imat(1), zr(itemp1), zr(itemp2), 1,&
                     .false._1)
         i = 0
         do k = 1, neq

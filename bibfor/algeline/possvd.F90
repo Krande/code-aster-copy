@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine possvd(nm, m, n, w, matu, &
-                  u, matv, v, eps, rg, &
+subroutine possvd(nm, m, n, w, matu,&
+                  u, matv, v, eps, rg,&
                   rv1)
     implicit none
 !
@@ -120,11 +120,13 @@ subroutine possvd(nm, m, n, w, matu, &
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
             call dcopy(b_n, w(1), b_incx, rv1(1), b_incy)
-            call dscal(rgmax, 1.0d0/rv1(1), rv1(1), 1)
+            b_n = to_blas_int(rgmax)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.0d0/rv1(1), rv1(1), b_incx)
             do j = 2, rgmax
                 if (rv1(j) .lt. eps) goto 40
             end do
-40          continue
+ 40         continue
             rg = j-1
         else
             rg = 1

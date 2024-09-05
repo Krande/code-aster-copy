@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
-                  cpmono, nmat, nvi, vini, x, &
-                  dtime, pgl, mod, coeft, neps, &
-                  epsd, detot, coel, dvin, nfs, &
-                  nsg, toutms, hsr, itmax, toler, &
+subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
+                  cpmono, nmat, nvi, vini, x,&
+                  dtime, pgl, mod, coeft, neps,&
+                  epsd, detot, coel, dvin, nfs,&
+                  nsg, toutms, hsr, itmax, toler,&
                   iret)
 ! aslint: disable=W1306,W1504,W1504
     implicit none
@@ -104,7 +104,7 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
     nbsyst = 0
     do ifa = 1, nbfsys
         nomfam = cpmono(5*(ifa-1)+1) (1:16)
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ng, lg, 0, q)
         nbsyst = nbsyst+nbsys
     end do
@@ -131,13 +131,15 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
     end if
 !
     if (gdef .eq. 1) then
-        call lcrksg(rela_comp, nvi, vini, epsd, detot, &
+        call lcrksg(rela_comp, nvi, vini, epsd, detot,&
                     nmat, coel, sigi)
         call lcgrla(detot, deps)
-        call dscal(3, sqrt(2.d0), deps(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, sqrt(2.d0), deps(4), b_incx)
     else
-        call calsig(fami, kpg, ksp, evi, mod, &
-                    rela_comp, vini, x, dtime, epsd, &
+        call calsig(fami, kpg, ksp, evi, mod,&
+                    rela_comp, vini, x, dtime, epsd,&
                     detot, nmat, coel, sigi)
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
@@ -157,7 +159,7 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
 !
         nomfam = cpmono(5*(ifa-1)+1) (1:16)
 !
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ng, lg, 0, q)
 !
         do is = 1, nbsys
@@ -166,7 +168,7 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
 !           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !           TAU      : SCISSION REDUITE TAU=SIG:MUS
 !
-            call caltau(ifa, is, sigi, fkooh, nfs, &
+            call caltau(ifa, is, sigi, fkooh, nfs,&
                         nsg, toutms, taus, mus, msns)
 !
 !           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT
@@ -178,11 +180,11 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
 !           D'OU :
             dt = -1.d0
 !
-            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
-                        hsr, nsfv, nsfa, ifa, nbsys, &
-                        is, dt, nvi, vini, yd, &
-                        dy, itmax, toler, materf, expbp, &
-                        taus, dalpha, dgamma, dp, crit, &
+            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
+                        hsr, nsfv, nsfa, ifa, nbsys,&
+                        is, dt, nvi, vini, yd,&
+                        dy, itmax, toler, materf, expbp,&
+                        taus, dalpha, dgamma, dp, crit,&
                         sgns, rp, iret)
 !
             if (iret .gt. 0) then
@@ -199,13 +201,13 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
                 b_n = to_blas_int(6)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, dgamma, mus, b_incx, devi, &
+                call daxpy(b_n, dgamma, mus, b_incx, devi,&
                            b_incy)
             else
                 b_n = to_blas_int(9)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, dgamma, msns, b_incx, gamsns, &
+                call daxpy(b_n, dgamma, msns, b_incx, gamsns,&
                            b_incy)
             end if
         end do

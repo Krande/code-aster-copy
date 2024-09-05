@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
+subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp,&
                   xbar, iproj, excent)
     implicit none
 !  DESCRIPTION : PROJECTION DU NOEUD CABLE X3DCA(3) SUR UN SEGMENT
@@ -213,10 +213,10 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
     beta1 = -n2n2*alpha1+n1n2*alpha2
     beta2 = n1n2*alpha1-n1n1*alpha2
 !
-    excent = ( &
+    excent = (&
              plan1(1)*beta1+plan2(1)*beta2)*(plan1(1)*beta1+plan2(1)*beta2)+(plan1(2)*beta1+plan2&
              &(2)*beta2)*(plan1(2)*beta1+plan2(2)*beta2)+(plan1(3)*beta1+plan2(3)*beta2)*(plan1(3&
-             &)*beta1+plan2(3)*beta2 &
+             &)*beta1+plan2(3)*beta2&
              )
     excent = dble(sqrt(excent))/(n1n1*n2n2-n1n2*n1n2)
     dx3d(1) = x3dca(1)-x3d1(1)
@@ -244,9 +244,11 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.0d0, normal(1), b_incx, x3dp(1), &
+        call daxpy(b_n, 1.0d0, normal(1), b_incx, x3dp(1),&
                    b_incy)
-        call dscal(3, -1.0d0/excent, normal(1), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -1.0d0/excent, normal(1), b_incx)
     else
         call r8inir(3, 0.0d0, normal(1), 1)
     end if
@@ -256,7 +258,7 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
 !     DES COORDONNEES BARYCENTRIQUES
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    call tstbar(2, x3d1(1), x3d2(1), x3d2(1), x3d2(1), &
+    call tstbar(2, x3d1(1), x3d2(1), x3d2(1), x3d2(1),&
                 x3dp(1), xbar(1), iproj)
 !
 9999 continue

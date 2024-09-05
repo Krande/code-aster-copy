@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlcst(parcho, adime, ninc, nd, nchoc, &
+subroutine mnlcst(parcho, adime, ninc, nd, nchoc,&
                   h, hf, xcst)
     implicit none
 !
@@ -60,6 +60,7 @@ subroutine mnlcst(parcho, adime, ninc, nd, nchoc, &
     real(kind=8), pointer :: vjeu(:) => null()
     integer, pointer :: vneqs(:) => null()
     real(kind=8), pointer :: reg(:) => null()
+    blas_int :: b_incx, b_n
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -67,7 +68,9 @@ subroutine mnlcst(parcho, adime, ninc, nd, nchoc, &
 ! ----------------------------------------------------------------------
     call jeveuo(adime, 'L', iadim)
     call jeveuo(xcst, 'E', icst)
-    call dscal(ninc-1, 0.d0, zr(icst), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(icst), b_incx)
 ! ----------------------------------------------------------------------
 ! --- EQUATION DE LA DYNAMIQUE
 ! ----------------------------------------------------------------------
@@ -89,8 +92,10 @@ subroutine mnlcst(parcho, adime, ninc, nd, nchoc, &
         jeu = vjeu(i)/jeumax(1)
         if (type(i) (1:7) .eq. 'CERCLE') then
 ! ---     -ORIG1^2 - ORIG2^2
-            zr(icst+nd*(2*h+1)+(neqs+2)*(2*hf+1)) = -(orig(1+3*(i-1)) &
-                                                      /jeu)**2-(orig(1+3*(i-1)+1)/jeu)**2
+            zr(icst+nd*(2*h+1)+(neqs+2)*(2*hf+1)) = -(&
+                                                    orig(1+3*(i-1)) /jeu)**2-(orig(1+3*(i-1)+1&
+                                                    )/jeu&
+                                                    )**2
 ! ---     ETA
             zr(icst+nd*(2*h+1)+(neqs+3)*(2*hf+1)) = -eta
         else if (type(i) (1:6) .eq. 'PLAN') then

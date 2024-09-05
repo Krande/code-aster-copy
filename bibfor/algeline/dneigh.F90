@@ -17,8 +17,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dneigh(rnorm, n, h, ldh, ritzr, &
-                  ritzi, bounds, q, ldq, workl, &
+subroutine dneigh(rnorm, n, h, ldh, ritzr,&
+                  ritzi, bounds, q, ldq, workl,&
                   ierr)
 !
 !     SUBROUTINE ARPACK CALCULANT LES MODES PROPRES DE LA MATRICE DE
@@ -189,7 +189,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
     msglvl = mneigh
 !
     if (msglvl .gt. 2) then
-        call dmout(logfil, n, n, h, ldh, &
+        call dmout(logfil, n, n, h, ldh,&
                    ndigit, '_NEIGH: ENTERING UPPER HESSENBERG MATRIX H ')
     end if
 !
@@ -205,9 +205,9 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
     b_lda = to_blas_int(ldh)
     b_m = to_blas_int(n)
     b_n = to_blas_int(n)
-    call dlacpy('A', b_m, b_n, h, b_lda, &
+    call dlacpy('A', b_m, b_n, h, b_lda,&
                 workl, b_ldb)
-    call dlaqrb(.true._1, n, 1, n, workl, &
+    call dlaqrb(.true._1, n, 1, n, workl,&
                 n, ritzr, ritzi, bounds, ierr)
     if (ierr .ne. 0) goto 9000
 !
@@ -225,8 +225,8 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !     | COLUMNS OF Q.                                             |
 !     %-----------------------------------------------------------%
 !
-    call ar_dtrevc('R', 'A', select, n, workl, &
-                   n, vl, n, q, ldq, &
+    call ar_dtrevc('R', 'A', select, n, workl,&
+                   n, vl, n, q, ldq,&
                    n, n, workl(n*n+1), ierr)
 !
     if (ierr .ne. 0) goto 9000
@@ -248,7 +248,9 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !           | REAL EIGENVALUE CASE |
 !           %----------------------%
             temp = dnrm2(n, q(1, i), 1)
-            call dscal(n, one/temp, q(1, i), 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, one/temp, q(1, i), b_incx)
         else
 !
 !           %-------------------------------------------%
@@ -261,8 +263,12 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !
             if (iconj .eq. 0) then
                 temp = dlapy2(dnrm2(n, q(1, i), 1), dnrm2(n, q(1, i+1), 1))
-                call dscal(n, one/temp, q(1, i), 1)
-                call dscal(n, one/temp, q(1, i+1), 1)
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, one/temp, q(1, i), b_incx)
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, one/temp, q(1, i+1), b_incx)
                 iconj = 1
             else
                 iconj = 0
@@ -275,8 +281,8 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
     b_n = to_blas_int(n)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('T', b_m, b_n, one, q, &
-               b_lda, bounds, b_incx, zero, workl, &
+    call dgemv('T', b_m, b_n, one, q,&
+               b_lda, bounds, b_incx, zero, workl,&
                b_incy)
 !
     if (msglvl .gt. 1) then

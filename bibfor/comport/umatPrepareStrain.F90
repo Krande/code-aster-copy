@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine umatPrepareStrain(neps, epsm, deps, stran, dstran, &
+subroutine umatPrepareStrain(neps, epsm, deps, stran, dstran,&
                              dfgrd0, dfgrd1)
 !
     implicit none
@@ -65,8 +65,12 @@ subroutine umatPrepareStrain(neps, epsm, deps, stran, dstran, &
         b_incy = to_blas_int(1)
         call dcopy(b_n, epsm, b_incx, stran, b_incy)
 ! TRAITEMENT DES COMPOSANTES 4,5,6 : DANS UMAT, GAMMAXY,XZ,YZ
-        call dscal(3, rac2, dstran(4), 1)
-        call dscal(3, rac2, stran(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, dstran(4), b_incx)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, stran(4), b_incx)
 ! CAS DES GRANDES DEFORMATIONS : ON VEUT F- ET F+ -> non traité
         call r8inir(9, 0.d0, dfgrd0, 1)
         call r8inir(9, 0.d0, dfgrd1, 1)

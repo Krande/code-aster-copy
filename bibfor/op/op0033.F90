@@ -173,12 +173,12 @@ subroutine op0033()
 !
 !     INITIALISATIONS SD
 !
-    call pminit(imate, nbvari, ndim, typmod, table, &
-                nbpar, iforta, nompar, typpar, angl_naut, &
-                pgl, irota, epsm, sigm, zr(lvim), &
-                zr(lvip), vr, defimp, coef, indimp, &
-                fonimp, cimpo, kel, sddisc, ds_conv, &
-                ds_algopara, pred, matrel, imptgt, option, &
+    call pminit(imate, nbvari, ndim, typmod, table,&
+                nbpar, iforta, nompar, typpar, angl_naut,&
+                pgl, irota, epsm, sigm, zr(lvim),&
+                zr(lvip), vr, defimp, coef, indimp,&
+                fonimp, cimpo, kel, sddisc, ds_conv,&
+                ds_algopara, pred, matrel, imptgt, option,&
                 zk8(lnomvi), nbvita, sderro)
 !
 ! - Message if PETIT_REAC
@@ -216,7 +216,7 @@ subroutine op0033()
     if (defimp .lt. 2) then
         igrad = 0
         do i = 1, 6
-            call fointe('F', fonimp(i), 1, ['INST'], [instap], &
+            call fointe('F', fonimp(i), 1, ['INST'], [instap],&
                         valimp(i), ier)
 !               NORMALISATION DES TERMES EN CONTRAINTES
             if (indimp(i) .eq. 0) then
@@ -228,20 +228,22 @@ subroutine op0033()
         igrad = 1
 !           VALEURS IMPOSEES DE GRADIENTS F
         do i = 1, 9
-            call fointe('F', fonimp(i), 1, ['INST'], [instap], &
+            call fointe('F', fonimp(i), 1, ['INST'], [instap],&
                         valimp(i), ier)
         end do
     end if
 !
     if (irota .eq. 1) then
         call tnsvec(6, ndim, vimp33, valimp, 1.0d0)
-        call utbtab('ZERO', 3, 3, vimp33, pgl, &
+        call utbtab('ZERO', 3, 3, vimp33, pgl,&
                     work, vimp2)
         call tnsvec(3, ndim, vimp2, valimp, 1.0d0)
     end if
 !        CISAILLEMENTS*SQRT(2) POUR NMCOMP
     if (defimp .lt. 2) then
-        call dscal(3, rac2, valimp(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, valimp(4), b_incx)
     end if
 !
 !
@@ -272,16 +274,18 @@ subroutine op0033()
         b_incy = to_blas_int(1)
         call dcopy(b_n, zr(lvim), b_incx, zr(lvim2), b_incy)
         sigp = 0.d0
-        call nmcomp(BEHinteg, fami, kpg, ksp, ndim, &
-                    typmod, imate, compor, carcri, instam, &
-                    instap, ncmp, epsm, deps, 6, &
-                    sigm, zr(lvim2), opt2, angl_naut, sigp, &
+        call nmcomp(BEHinteg, fami, kpg, ksp, ndim,&
+                    typmod, imate, compor, carcri, instam,&
+                    instap, ncmp, epsm, deps, 6,&
+                    sigm, zr(lvim2), opt2, angl_naut, sigp,&
                     zr(lvip), 6*ncmp, dsidep, iret, mult_comp)
         if (compor(DEFO) .eq. 'SIMO_MIEHE') then
-            call dscal(2*ndim, 1.d0/jp, sigp, 1)
+            b_n = to_blas_int(2*ndim)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/jp, sigp, b_incx)
         end if
-        call pmimpr(0, instap, indimp, valimp, 0, &
-                    epsm, sigm, zr(lvim), nbvari, r, &
+        call pmimpr(0, instap, indimp, valimp, 0,&
+                    epsm, sigm, zr(lvim), nbvari, r,&
                     r8b, r8b)
         if (iret .ne. 0) then
             liccvg(2) = 1
@@ -296,7 +300,9 @@ subroutine op0033()
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, sigm, b_incx, ym, b_incy)
-    call dscal(6, 1.d0/coef, ym, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 1.d0/coef, ym, b_incx)
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
@@ -311,21 +317,21 @@ subroutine op0033()
         b_incy = to_blas_int(1)
         call dcopy(b_n, zr(lvim), b_incx, zr(lsvip), b_incy)
         ssigp = 0.d0
-        call nmcomp(BEHinteg, fami, kpg, ksp, ndim, &
-                    typmod, imate, compor, carcri, instam, &
-                    instap, 6, epsm, deps, 6, &
-                    sigm, zr(lsvip), opt2, angl_naut, ssigp, &
+        call nmcomp(BEHinteg, fami, kpg, ksp, ndim,&
+                    typmod, imate, compor, carcri, instam,&
+                    instap, 6, epsm, deps, 6,&
+                    sigm, zr(lsvip), opt2, angl_naut, ssigp,&
                     zr(lsvip), 36, dsidep, iret, mult_comp)
         if (iret .ne. 0) then
             pred = 0
         else
-            call pmdrdy(dsidep, coef, cimpo, valimp, ym, &
+            call pmdrdy(dsidep, coef, cimpo, valimp, ym,&
                         sigm, r, drdy)
         end if
     else if ((pred .eq. 0) .or. ((pred .eq. -1) .and. (nume_inst .eq. 1))) then
         dy(:) = 0.d0
         deps(:) = 0.d0
-        call pmdrdy(kel, coef, cimpo, valimp, ym, &
+        call pmdrdy(kel, coef, cimpo, valimp, ym,&
                     sigm, r, drdy)
     end if
 !        SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
@@ -333,8 +339,8 @@ subroutine op0033()
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, r, b_incx, rini, b_incy)
-    call pmimpr(0, instap, indimp, valimp, 0, &
-                epsm, sigm, zr(lvim), nbvari, r, &
+    call pmimpr(0, instap, indimp, valimp, 0,&
+                epsm, sigm, zr(lvim), nbvari, r,&
                 r8b, r8b)
 !
     iter = 0
@@ -351,7 +357,9 @@ subroutine op0033()
 !   prediction='extrapole'
         coefextra = (instap-instam)/(instam-diinst(sddisc, nume_inst-2))
 !       dy = dy * (ti - ti-1)/(ti-1 - ti-2)
-        call dscal(12, coefextra, dy, 1)
+        b_n = to_blas_int(12)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, coefextra, dy, b_incx)
     else
 !
         b_n = to_blas_int(12)
@@ -361,7 +369,7 @@ subroutine op0033()
 !
 !      RESOLUTION DE DRDY*DDY = - R(Y)  CARGAU = 'NCSP'
         cargau = 'NCWP'
-        call mgauss(cargau, drdy, ddy, 12, 12, &
+        call mgauss(cargau, drdy, ddy, 12, 12,&
                     1, r8b, iret)
         if (iret .ne. 0) then
             liccvg(5) = 1
@@ -373,7 +381,7 @@ subroutine op0033()
         b_n = to_blas_int(12)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, ddy, b_incx, dy, &
+        call daxpy(b_n, 1.d0, ddy, b_incx, dy,&
                    b_incy)
 !
     end if
@@ -393,14 +401,14 @@ subroutine op0033()
     b_incy = to_blas_int(1)
     call dcopy(b_n, zr(lvim), b_incx, zr(lvim2), b_incy)
     sigp = 0.d0
-    call nmcomp(BEHinteg, fami, kpg, ksp, ndim, &
-                typmod, imate, compor, carcri, instam, &
-                instap, 6, epsm, deps, 6, &
-                sigm, zr(lvim2), option, angl_naut, sigp, &
+    call nmcomp(BEHinteg, fami, kpg, ksp, ndim,&
+                typmod, imate, compor, carcri, instam,&
+                instap, 6, epsm, deps, 6,&
+                sigm, zr(lvim2), option, angl_naut, sigp,&
                 zr(lvip), 36, dsidep, iret, mult_comp)
 !
-    call pmimpr(1, instap, indimp, valimp, iter, &
-                deps, sigp, zr(lvip), nbvari, r, &
+    call pmimpr(1, instap, indimp, valimp, iter,&
+                deps, sigp, zr(lvip), nbvari, r,&
                 r8b, r8b)
     if (iret .ne. 0) then
         conver = ASTER_FALSE
@@ -409,8 +417,8 @@ subroutine op0033()
     end if
 !
 !           CALCUL EVENTUEL DE LA MATRICE TGTE PAR PERTURBATION
-    call pmvtgt(option, carcri, deps, sigp, zr(lvip), &
-                nbvari, epsilo, varia, matper, dsidep, &
+    call pmvtgt(option, carcri, deps, sigp, zr(lvip),&
+                nbvari, epsilo, varia, matper, dsidep,&
                 smatr, sdeps, ssigp, zr(lsvip), itgt)
     if (itgt .ne. 0) then
         goto 400
@@ -423,19 +431,19 @@ subroutine op0033()
     b_n = to_blas_int(12)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, dy, b_incx, y, &
+    call daxpy(b_n, 1.d0, dy, b_incx, y,&
                b_incy)
     if (matrel .eq. 1) then
-        call pmdrdy(kel, coef, cimpo, valimp, y, &
+        call pmdrdy(kel, coef, cimpo, valimp, y,&
                     sigp, r, drdy)
     else
-        call pmdrdy(dsidep, coef, cimpo, valimp, y, &
+        call pmdrdy(dsidep, coef, cimpo, valimp, y,&
                     sigp, r, drdy)
     end if
 !
 !           VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
-    call pmconv(r, rini, r1, instap, sigp, &
-                coef, iter, indimp, ds_conv, conver, &
+    call pmconv(r, rini, r1, instap, sigp,&
+                coef, iter, indimp, ds_conv, conver,&
                 itemax)
 !
 !           ENREGISTRE LES RESIDUS A CETTE ITERATION
@@ -443,9 +451,9 @@ subroutine op0033()
 !
 !           VERIFICATION DES EVENT-DRIVEN
 500 continue
-    call pmsta1(sigm, sigp, deps, zr(lvim), zr(lvip), &
-                nbvari, nbvita, iforta, nbpar, nompar, &
-                vr, igrad, typpar, zk8(lnomvi), sddisc, &
+    call pmsta1(sigm, sigp, deps, zr(lvim), zr(lvip),&
+                nbvari, nbvita, iforta, nbpar, nompar,&
+                vr, igrad, typpar, zk8(lnomvi), sddisc,&
                 liccvg, itemax, conver, actite)
 !
 !           ON CONTINUE NEWTON
@@ -458,7 +466,7 @@ subroutine op0033()
 !        GESTION DE LA DECOUPE DU PAS DE TEMPS
 !        EN L'ABSENCE DE CONVERGENCE ON CHERCHE A SUBDIVISER LE PAS
 !        DE TEMPS SI L'UTILISATEUR A FAIT LA DEMANDE
-    call pmactn(sddisc, ds_conv, iter, nume_inst, itemax, &
+    call pmactn(sddisc, ds_conv, iter, nume_inst, itemax,&
                 sderro, liccvg, actite, action)
 !
 ! ---    ACTION
@@ -489,13 +497,13 @@ subroutine op0033()
     if (.not. finpas) call nmadat(sddisc, nume_inst, iter, k19b)
     nume_inst = nume_inst+1
 !        STOCKAGE EFFECTIF DU RESULTAT DANS LA TABLE
-    call pmstab(sigm, sigp, epsm, deps, nbvari, &
-                zr(lvim), zr(lvip), iforta, instam, instap, &
-                iter, nbpar, nompar, table, vr, &
-                igrad, valimp, imptgt, dsidep, zk8(lnomvi), &
+    call pmstab(sigm, sigp, epsm, deps, nbvari,&
+                zr(lvim), zr(lvip), iforta, instam, instap,&
+                iter, nbpar, nompar, table, vr,&
+                igrad, valimp, imptgt, dsidep, zk8(lnomvi),&
                 nbvita)
-    call pmimpr(2, instap, indimp, valimp, iter, &
-                deps, sigp, zr(lvip), nbvari, r, &
+    call pmimpr(2, instap, indimp, valimp, iter,&
+                deps, sigp, zr(lvip), nbvari, r,&
                 r8b, r8b)
 !
 600 continue

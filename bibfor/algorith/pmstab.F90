@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
-                  vim, vip, iforta, instam, instap, &
-                  iter, nbpar, nompar, table, vr, &
-                  igrad, valimp, imptgt, dsidep, nomvi, &
+subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
+                  vim, vip, iforta, instam, instap,&
+                  iter, nbpar, nompar, table, vr,&
+                  igrad, valimp, imptgt, dsidep, nomvi,&
                   nbvita)
 !
 ! aslint: disable=W1504
@@ -62,7 +62,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
         b_n = to_blas_int(ncmp)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, deps, b_incx, epsp, &
+        call daxpy(b_n, 1.d0, deps, b_incx, epsp,&
                    b_incy)
         b_n = to_blas_int(ncmp)
         b_incx = to_blas_int(1)
@@ -72,7 +72,9 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, epsp, b_incx, epst, b_incy)
-        call dscal(3, 1.d0/rac2, epst(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 1.d0/rac2, epst(4), b_incx)
     else
         b_n = to_blas_int(ncmp)
         b_incx = to_blas_int(1)
@@ -96,7 +98,9 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, sigp, b_incx, sigt, b_incy)
-    call dscal(3, 1.d0/rac2, sigt(4), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 1.d0/rac2, sigt(4), b_incx)
     call fgequi(sigt, 'SIGM_DIR', 3, equi)
 !
     if (iforta .eq. 0) then
@@ -124,7 +128,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
             b_incy = to_blas_int(1)
             call dcopy(b_n, dsidep, b_incx, vr(1+6+6+3+nbvari), b_incy)
         end if
-        call tbajli(table, nbpar, nompar, [0], vr, &
+        call tbajli(table, nbpar, nompar, [0], vr,&
                     [cbid], k8b, 0)
 !
     else
@@ -138,7 +142,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
             else
                 vk8(2) = nomgrd(i)
             end if
-            call tbajli(table, nbpar, nompar, [0], vr, &
+            call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
 !
         end do
@@ -146,19 +150,19 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
         do i = 1, 6
             vr(2) = sigt(i)
             vk8(2) = nomsig(i)
-            call tbajli(table, nbpar, nompar, [0], vr, &
+            call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
 !
         end do
         vk8(1) = 'SIEQ'
         vr(2) = equi(1)
         vk8(2) = 'VMIS'
-        call tbajli(table, nbpar, nompar, [0], vr, &
+        call tbajli(table, nbpar, nompar, [0], vr,&
                     [cbid], vk8, 0)
 !
         vr(2) = equi(16)
         vk8(2) = 'TRACE'
-        call tbajli(table, nbpar, nompar, [0], vr, &
+        call tbajli(table, nbpar, nompar, [0], vr,&
                     [cbid], vk8, 0)
 !
         vk8(1) = 'VARI'
@@ -167,7 +171,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
             vk8(2) = nomvi(i)
 !            VK8(2)(1:1)='V'
 !            call codent(I,'G',VK8(2)(2:8))
-            call tbajli(table, nbpar, nompar, [0], vr, &
+            call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
         end do
 !

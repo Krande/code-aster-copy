@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmre(typmod, nmat, materd, materf, nbcomm, &
-                  cpmono, pgl, nfs, nsg, toutms, &
-                  hsr, nr, nvi, vind, itmax, &
-                  toler, timed, timef, yd, yf, &
+subroutine lcmmre(typmod, nmat, materd, materf, nbcomm,&
+                  cpmono, pgl, nfs, nsg, toutms,&
+                  hsr, nr, nvi, vind, itmax,&
+                  toler, timed, timef, yd, yf,&
                   deps, dy, r, iret)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -108,7 +108,9 @@ subroutine lcmmre(typmod, nmat, materd, materf, nbcomm, &
 !     POUR DD_CC
     if (gdef .eq. 1) then
         call lcgrla(deps, depst)
-        call dscal(3, sqrt(2.d0), depst(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, sqrt(2.d0), depst(4), b_incx)
     else
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
@@ -132,19 +134,19 @@ subroutine lcmmre(typmod, nmat, materd, materf, nbcomm, &
         nuecou = nint(materf(nmat+ifl))
         nomfam = cpmono(5*(ifa-1)+1) (1:16)
 !
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ng, lg, 0, q)
 !
         do is = 1, nbsys
 !           CALCUL DE LA SCISSION REDUITE
-            call caltau(ifa, is, sigf, fkooh, nfs, &
+            call caltau(ifa, is, sigf, fkooh, nfs,&
                         nsg, toutms, taus, mus, msns)
 !           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT
-            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
-                        hsr, nsfv, nsfa, ifa, nbsys, &
-                        is, dt, nvi, vind, yd, &
-                        dy, itmax, toler, materf, expbp, &
-                        taus, dalpha, dgamma, dp, crit, &
+            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
+                        hsr, nsfv, nsfa, ifa, nbsys,&
+                        is, dt, nvi, vind, yd,&
+                        dy, itmax, toler, materf, expbp,&
+                        taus, dalpha, dgamma, dp, crit,&
                         sgns, rp, iret)
 !
             if (iret .gt. 0) then
@@ -163,13 +165,13 @@ subroutine lcmmre(typmod, nmat, materd, materf, nbcomm, &
                 b_n = to_blas_int(6)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, dgamma, mus, b_incx, devi, &
+                call daxpy(b_n, dgamma, mus, b_incx, devi,&
                            b_incy)
             else
                 b_n = to_blas_int(9)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, dgamma, msns, b_incx, gamsns, &
+                call daxpy(b_n, dgamma, msns, b_incx, gamsns,&
                            b_incy)
             end if
         end do
@@ -180,7 +182,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, nbcomm, &
     end do
 !
     if (gdef .eq. 1) then
-        call calcfe(nr, ndt, nvi, vind, deps, &
+        call calcfe(nr, ndt, nvi, vind, deps,&
                     gamsns, fe, fp, iret)
         if (iret .gt. 0) then
             goto 999

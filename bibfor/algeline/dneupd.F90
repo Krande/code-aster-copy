@@ -800,8 +800,12 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !           %---------------------------------------------------%
 !
             if (workl(invsub+(j-1)*ldq+j-1) .lt. zero) then
-                call dscal(nconv, -one, workl(iuptri+j-1), ldq)
-                call dscal(nconv, -one, workl(iuptri+(j-1)*ldq), 1)
+                b_n = to_blas_int(nconv)
+                b_incx = to_blas_int(ldq)
+                call dscal(b_n, -one, workl(iuptri+j-1), b_incx)
+                b_n = to_blas_int(nconv)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, -one, workl(iuptri+(j-1)*ldq), b_incx)
             end if
 !
         end do
@@ -848,7 +852,9 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !                 %----------------------%
 !
                     temp = dnrm2(ncv, workl(invsub+(j-1)*ldq), 1)
-                    call dscal(ncv, one/temp, workl(invsub+(j-1)*ldq), 1)
+                    b_n = to_blas_int(ncv)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, one/temp, workl(invsub+(j-1)*ldq), b_incx)
 !
                 else
 !
@@ -865,8 +871,12 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                                dnrm2(ncv, workl(invsub+(j-1)*ldq), 1),&
                                dnrm2(ncv, workl(invsub+j*ldq), 1)&
                                )
-                        call dscal(ncv, one/temp, workl(invsub+(j-1)*ldq), 1)
-                        call dscal(ncv, one/temp, workl(invsub+j*ldq), 1)
+                        b_n = to_blas_int(ncv)
+                        b_incx = to_blas_int(1)
+                        call dscal(b_n, one/temp, workl(invsub+(j-1)*ldq), b_incx)
+                        b_n = to_blas_int(ncv)
+                        b_incx = to_blas_int(1)
+                        call dscal(b_n, one/temp, workl(invsub+j*ldq), b_incx)
                         iconj = 1
                     else
                         iconj = 0
@@ -1000,7 +1010,11 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !
     if (type .eq. 'REGULR') then
 !
-        if (rvec) call dscal(ncv, rnorm, workl(ihbds), 1)
+        if (rvec) then
+            b_n = to_blas_int(ncv)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, rnorm, workl(ihbds), b_incx)
+        endif
 !
     else
 !
@@ -1012,7 +1026,11 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !
         if (type .eq. 'SHIFTI') then
 !
-            if (rvec) call dscal(ncv, rnorm, workl(ihbds), 1)
+            if (rvec) then
+                b_n = to_blas_int(ncv)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, rnorm, workl(ihbds), b_incx)
+            endif
 !
             do k = 1, ncv
                 temp = dlapy2(workl(iheigr+k-1), workl(iheigi+k-1))

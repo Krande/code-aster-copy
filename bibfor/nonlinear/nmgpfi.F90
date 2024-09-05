@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504, W1306
 !
-subroutine nmgpfi(fami, option, typmod, ndim, nno, &
-                  npg, geomInit, compor, imate, mult_comp, &
-                  lgpg, carcri, angmas, instm, instp, &
-                  dispPrev, dispIncr, sigmPrev, vim, sigmCurr, &
+subroutine nmgpfi(fami, option, typmod, ndim, nno,&
+                  npg, geomInit, compor, imate, mult_comp,&
+                  lgpg, carcri, angmas, instm, instp,&
+                  dispPrev, dispIncr, sigmPrev, vim, sigmCurr,&
                   vip, fint, matr, codret)
 !
     use Behaviour_type
@@ -149,7 +149,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     b_n = to_blas_int(nddl)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, dispPrev, b_incx, geomPrev, &
+    call daxpy(b_n, 1.d0, dispPrev, b_incx, geomPrev,&
                b_incy)
     b_n = to_blas_int(nddl)
     b_incx = to_blas_int(1)
@@ -158,7 +158,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     b_n = to_blas_int(nddl)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, dispIncr, b_incx, geomCurr, &
+    call daxpy(b_n, 1.d0, dispIncr, b_incx, geomCurr,&
                b_incy)
 !
 ! - Loop on Gauss points
@@ -168,22 +168,22 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
         tauCurr = 0.d0
         dsidep = 0.d0
 ! ----- Kinematic - Previous strains
-        call dfdmip(ndim, nno, axi, geomInit, kpg, &
-                    iw, zr(ivf+(kpg-1)*nno), idff, r, w, &
+        call dfdmip(ndim, nno, axi, geomInit, kpg,&
+                    iw, zr(ivf+(kpg-1)*nno), idff, r, w,&
                     dff)
-        call nmepsi(ndim, nno, axi, grand, zr(ivf+(kpg-1)*nno), &
+        call nmepsi(ndim, nno, axi, grand, zr(ivf+(kpg-1)*nno),&
                     r, dff, dispPrev, fPrev)
 ! ----- Kinematic - Increment of strains
-        call dfdmip(ndim, nno, axi, geomPrev, kpg, &
-                    iw, zr(ivf+(kpg-1)*nno), idff, r, rbid, &
+        call dfdmip(ndim, nno, axi, geomPrev, kpg,&
+                    iw, zr(ivf+(kpg-1)*nno), idff, r, rbid,&
                     dff)
-        call nmepsi(ndim, nno, axi, grand, zr(ivf+(kpg-1)*nno), &
+        call nmepsi(ndim, nno, axi, grand, zr(ivf+(kpg-1)*nno),&
                     r, dff, dispIncr, fIncr)
 ! ----- LU decomposition of GRAD U
-        call dfdmip(ndim, nno, axi, geomCurr, kpg, &
-                    iw, zr(ivf+(kpg-1)*nno), idff, r, rbid, &
+        call dfdmip(ndim, nno, axi, geomCurr, kpg,&
+                    iw, zr(ivf+(kpg-1)*nno), idff, r, rbid,&
                     dff)
-        call nmmalu(nno, axi, r, zr(ivf+(kpg-1)*nno), dff, &
+        call nmmalu(nno, axi, r, zr(ivf+(kpg-1)*nno), dff,&
                     lij)
 ! ----- Kinematic - Jacobians
         jacoPrev = fPrev(1, 1)*(fPrev(2, 2)*fPrev(3, 3)-fPrev(2, 3)*fPrev(3, 2))-fPrev(2, 1)*(fPr&
@@ -206,23 +206,31 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
         call dcopy(b_n, sigmPrev(1, kpg), b_incx, sigmPrevComp, b_incy)
 ! ----- Compute behaviour
         cod(kpg) = 0
-        call nmcomp(BEHinteg, fami, kpg, 1, 3, &
-                    typmod, imate, compor, carcri, instm, &
-                    instp, 9, fPrev, fIncr, 6, &
-                    sigmPrevComp, vim(1, kpg), option, angmas, tauCurr, &
+        call nmcomp(BEHinteg, fami, kpg, 1, 3,&
+                    typmod, imate, compor, carcri, instm,&
+                    instp, 9, fPrev, fIncr, 6,&
+                    sigmPrevComp, vim(1, kpg), option, angmas, tauCurr,&
                     vip(1, kpg), 54, dsidep, cod(kpg), mult_comp)
         if (cod(kpg) .eq. 1) then
             goto 999
         end if
 ! ----- Conversion from/to Voigt notation
         if (resi) then
-            call dscal(3, 1/rac2, tauCurr(4), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1/rac2, tauCurr(4), b_incx)
         end if
         if (lMatr) then
             coef = 1.d0/rac2
-            call dscal(9, coef, dsidep(4, 1, 1), 6)
-            call dscal(9, coef, dsidep(5, 1, 1), 6)
-            call dscal(9, coef, dsidep(6, 1, 1), 6)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(6)
+            call dscal(b_n, coef, dsidep(4, 1, 1), b_incx)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(6)
+            call dscal(b_n, coef, dsidep(5, 1, 1), b_incx)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(6)
+            call dscal(b_n, coef, dsidep(6, 1, 1), b_incx)
         end if
 ! ----- Internal forces and Cauchy stresses
         if (resi) then
@@ -231,7 +239,9 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
             b_incy = to_blas_int(1)
             call dcopy(b_n, tauCurr, b_incx, sigmCurr(1, kpg), b_incy)
             coef = 1.d0/jacoCurr
-            call dscal(2*ndim, coef, sigmCurr(1, kpg), 1)
+            b_n = to_blas_int(2*ndim)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coef, sigmCurr(1, kpg), b_incx)
             do na = 1, nno
                 do ia = 1, ndu
                     kk = vu(ia, na)
@@ -251,7 +261,9 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, sigmPrev(1, kpg), b_incx, tauCurr, b_incy)
-                call dscal(2*ndim, jacoPrev, tauCurr, 1)
+                b_n = to_blas_int(2*ndim)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, jacoPrev, tauCurr, b_incx)
             end if
             if (ndu .eq. 3) then
                 do na = 1, nno
@@ -271,10 +283,10 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
                                 end do
 ! ----------------------------- Geometric part
                                 do jb = 1, 3
-                                    t1 = t1-dff( &
-                                         na, lij(ia, ib))*dff(nb, &
-                                                              lij(ib, jb))*tauCurr(vij(ia, jb) &
-                                                                                   )
+                                    t1 = t1-dff(&
+                                         na, lij(ia, ib))*dff(nb,&
+                                         lij(ib, jb))*tauCurr(vij(ia, jb)&
+                                         )
                                 end do
                                 matr(kk) = matr(kk)+w*t1
                             end do
@@ -299,10 +311,10 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
                                 end do
 ! ----------------------------- Geometric part
                                 do jb = 1, 2
-                                    t1 = t1-dff( &
-                                         na, lij(ia, ib))*dff(nb, &
-                                                              lij(ib, jb))*tauCurr(vij(ia, jb) &
-                                                                                   )
+                                    t1 = t1-dff(&
+                                         na, lij(ia, ib))*dff(nb,&
+                                         lij(ib, jb))*tauCurr(vij(ia, jb)&
+                                         )
                                 end do
                                 matr(kk) = matr(kk)+w*t1
                             end do
@@ -316,8 +328,8 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
 ! - For POST_ITER='CRIT_RUPT'
 !
     if (carcri(13) .gt. 0.d0) then
-        call crirup(fami, imate, ndim, npg, lgpg, &
-                    option, compor, sigmCurr, vip, vim, &
+        call crirup(fami, imate, ndim, npg, lgpg,&
+                    option, compor, sigmCurr, vip, vim,&
                     instm, instp)
     end if
 !

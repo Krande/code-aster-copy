@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcresa(fami, kpg, ksp, typmod, imat, &
-                  nmat, materd, materf, rela_comp, nr, &
-                  nvi, timed, timef, deps, epsd, &
-                  yf, dy, r, iret, yd, &
+subroutine lcresa(fami, kpg, ksp, typmod, imat,&
+                  nmat, materd, materf, rela_comp, nr,&
+                  nvi, timed, timef, deps, epsd,&
+                  yf, dy, r, iret, yd,&
                   crit)
 !
 ! aslint: disable=W1306,W1504
@@ -94,7 +94,7 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, theta, dsig, b_incx, smx, &
+    call daxpy(b_n, theta, dsig, b_incx, smx,&
                b_incy)
 !
     b_n = to_blas_int(nvi)
@@ -104,16 +104,18 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
     b_n = to_blas_int(nvi)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, theta, dy, b_incx, vini, &
+    call daxpy(b_n, theta, dy, b_incx, vini,&
                b_incy)
 !
 !     CALCUL DES DERIVEES DES VARIABLES INTERNES AU POINT T+THETA*DT
-    call lcdvin(fami, kpg, ksp, rela_comp, typmod, &
-                imat, matcst, nvi, nmat, vini, &
-                materf(1, 2), x, dtime, smx, dvin, &
+    call lcdvin(fami, kpg, ksp, rela_comp, typmod,&
+                imat, matcst, nvi, nmat, vini,&
+                materf(1, 2), x, dtime, smx, dvin,&
                 iret)
 !
-    call dscal(nvi, dtime, dvin, 1)
+    b_n = to_blas_int(nvi)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, dtime, dvin, b_incx)
 !
     do itens = 1, nvi
         vini(itens) = yd(ndt+itens)+dvin(itens)
@@ -124,8 +126,8 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
     end do
 !
 !     CALCUL DES CONTRAINTES AU POINT T+DT
-    call calsig(fami, kpg, ksp, evi, typmod, &
-                rela_comp, vini, x, dtime, epsd, &
+    call calsig(fami, kpg, ksp, evi, typmod,&
+                rela_comp, vini, x, dtime, epsd,&
                 deps, nmat, materf(1, 1), sigi)
 !
 !     CALCUL DES RESIDUS AU POINT T+DT
@@ -146,7 +148,7 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
     b_n = to_blas_int(nvi)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, -1.d0, dy(ndt+1), b_incx, r(ndt+1), &
+    call daxpy(b_n, -1.d0, dy(ndt+1), b_incx, r(ndt+1),&
                b_incy)
 !
 end subroutine

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmmalu(nno, axi, r, vff, dfdi, &
+subroutine nmmalu(nno, axi, r, vff, dfdi,&
                   lij)
 !
 !
@@ -75,7 +75,9 @@ subroutine nmmalu(nno, axi, r, vff, dfdi, &
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, vff, b_incx, dfdi(1, 3), b_incy)
-    call dscal(nno, 1/r, dfdi(1, 3), 1)
+    b_n = to_blas_int(nno)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 1/r, dfdi(1, 3), b_incx)
 !
 !    TERME NUL : DERIVATION 1,3  2,3  3,1  3,2
     call r8inir(nno, 0.d0, dfdi(1, 4), 1)

@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
-                  adime, ninc, nd, nchoc, h, &
+subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
+                  adime, ninc, nd, nchoc, h,&
                   hf, ampl, xvect, lnm, num_ordr)
     implicit none
 !
@@ -124,15 +124,17 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
 ! ----------------------------------------------------------------------
 ! --- INITIALISATION
 ! ----------------------------------------------------------------------
-    call dscal(ninc, 0.d0, zr(ivect), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ivect), b_incx)
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DE LA FREQUENCE PROPRE DU MODE LINEAIRE
 ! ----------------------------------------------------------------------
     if (reprise) then
-        call rsadpa(modini, 'L', 1, 'FREQ', 2, &
+        call rsadpa(modini, 'L', 1, 'FREQ', 2,&
                     0, sjv=ifreq, styp=k16bid)
     else
-        call rsadpa(lnm, 'L', 1, 'FREQ', num_ordr, &
+        call rsadpa(lnm, 'L', 1, 'FREQ', num_ordr,&
                     0, sjv=ifreq, styp=k16bid)
     end if
     omega = r8depi()*zr(ifreq)/zr(iadim-1+3)
@@ -141,14 +143,14 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
 ! ----------------------------------------------------------------------
     clnm = '&&MNLALI.RECUP     '
     if (reprise) then
-        call vprecu(modini, 'DEPL', -1, [0], clnm, &
-                    0, ' ', ' ', ' ', ' ', &
-                    neqv, nbmode, typmod, nbpari, nbparr, &
+        call vprecu(modini, 'DEPL', -1, [0], clnm,&
+                    0, ' ', ' ', ' ', ' ',&
+                    neqv, nbmode, typmod, nbpari, nbparr,&
                     nbpark)
     else
-        call vprecu(lnm, 'DEPL', -1, [0], clnm, &
-                    0, ' ', ' ', ' ', ' ', &
-                    neqv, nbmode, typmod, nbpari, nbparr, &
+        call vprecu(lnm, 'DEPL', -1, [0], clnm,&
+                    0, ' ', ' ', ' ', ' ',&
+                    neqv, nbmode, typmod, nbpari, nbparr,&
                     nbpark)
     end if
     call jeveuo(clnm, 'L', ilnm)
@@ -165,7 +167,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
                     i = i+1
                     if (h .gt. ht .and. j .gt. ht+1) then
                         zr(ivect-1+(h-ht+j-1)*nd+i) = zr(ilnm-1+(j-1)*neq+k)
-                    else if (h .lt. ht .and. j .gt. (h+1) .and. j .le. (2*h+1)) &
+                        else if (h .lt. ht .and. j .gt. (h+1) .and. j .le. (2*h+1)) &
                         then
                         zr(ivect-1+(j-1)*nd+i) = zr(ilnm-1+(ht-h+j-1)*neq+k)
                     else
@@ -187,13 +189,17 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
 ! --- ADIMENSIONNEMENT
 ! ----------------------------------------------------------------------
     if (reprise) then
-        call dscal(nd*(2*h+1), 1.d0/zr(ijmax), zr(ivect), 1)
+        b_n = to_blas_int(nd*(2*h+1))
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 1.d0/zr(ijmax), zr(ivect), b_incx)
     else
 ! --- MISE A L'ECHELLE PAR L'AMPLITUDE DE DEPART
 !        iamax=idamax(nd,zr(ivect+nd),1)
 !        ampref=zr(ivect-1+nd+iamax)
         ampref = 1.d0
-        call dscal(nd, ampl/ampref, zr(ivect+nd), 1)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, ampl/ampref, zr(ivect+nd), b_incx)
     end if
 ! ----------------------------------------------------------------------
 ! --- REMPLISSAGE DES FORCES DE CHOCS ET DES VECTEURS AUXILIAIRES
@@ -213,32 +219,42 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
         jeu = vjeu(i)/zr(ijmax)
         if (type(i) (1:7) .eq. 'BI_PLAN') then
             nddl = vnddl(6*(i-1)+1)
-            call dscal(2*h+1, 0.d0, zr(idep1), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(idep1), b_incx)
             b_n = to_blas_int(2*h+1)
             b_incx = to_blas_int(nd)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1),&
                        b_incy)
-            call mnlbil(zr(idep1), omega, alpha, eta, h, &
+            call mnlbil(zr(idep1), omega, alpha, eta, h,&
                         hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
         else if (type(i) (1:6) .eq. 'CERCLE') then
             nddlx = vnddl(6*(i-1)+1)
             nddly = vnddl(6*(i-1)+2)
-            call dscal(2*h+1, 0.d0, zr(idep1), 1)
-            call dscal(2*h+1, 0.d0, zr(idep2), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(idep1), b_incx)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(idep2), b_incx)
             b_n = to_blas_int(2*h+1)
             b_incx = to_blas_int(nd)
             b_incy = to_blas_int(1)
             call dcopy(b_n, zr(ivect-1+nddlx), b_incx, zr(idep1), b_incy)
             zr(idep1) = zr(idep1)-orig(3*(i-1)+1)
-            call dscal(2*h+1, 1.d0/jeu, zr(idep1), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/jeu, zr(idep1), b_incx)
             b_n = to_blas_int(2*h+1)
             b_incx = to_blas_int(nd)
             b_incy = to_blas_int(1)
             call dcopy(b_n, zr(ivect-1+nddly), b_incx, zr(idep2), b_incy)
             zr(idep2) = zr(idep2)-orig(3*(i-1)+2)
-            call dscal(2*h+1, 1.d0/jeu, zr(idep2), 1)
-            call mnlcir(xdep1, xdep2, omega, alpha, eta, &
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/jeu, zr(idep2), b_incx)
+            call mnlcir(xdep1, xdep2, omega, alpha, eta,&
                         h, hf, nt, xtemp)
             b_n = to_blas_int(4*(2*hf+1))
             b_incx = to_blas_int(1)
@@ -246,13 +262,15 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
             call dcopy(b_n, zr(itemp), b_incx, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incy)
         else if (type(i) (1:4) .eq. 'PLAN') then
             nddl = vnddl(6*(i-1)+1)
-            call dscal(2*h+1, 0.d0, zr(idep1), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(idep1), b_incx)
             b_n = to_blas_int(2*h+1)
             b_incx = to_blas_int(nd)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1),&
                        b_incy)
-            call mnluil(zr(idep1), omega, alpha, eta, h, &
+            call mnluil(zr(idep1), omega, alpha, eta, h,&
                         hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
         end if
         neqs = neqs+vneqs(i)

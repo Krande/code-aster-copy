@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
+subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
                   nd, nchoc, h, nbpt, xeng)
     implicit none
 !
@@ -94,7 +94,9 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
 ! ----------------------------------------------------------------------
     call jeveuo(xus, 'L', ius)
     call jeveuo(xeng, 'E', ieng)
-    call dscal(nbpt-1, 0.d0, zr(ieng), 1)
+    b_n = to_blas_int(nbpt-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ieng), b_incx)
     call jeveuo(xcdl, 'L', icdl)
     call jeveuo(parcho//'.TYPE', 'L', vk8=type)
     call jeveuo(parcho//'.NDDL', 'L', vi=vnddl)
@@ -117,11 +119,21 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
     AS_ALLOCATE(vr=kye, size=neq)
     AS_ALLOCATE(vr=mdye, size=neq)
     do ind = 1, nbpt-1
-        call dscal(nd*(2*h+1), 0.d0, zr(ix), 1)
-        call dscal(nd, 0.d0, zr(iy), 1)
-        call dscal(nd, 0.d0, zr(idy), 1)
-        call dscal(nd, 0.d0, zr(imdy), 1)
-        call dscal(nd, 0.d0, zr(iky), 1)
+        b_n = to_blas_int(nd*(2*h+1))
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(ix), b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(iy), b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(idy), b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(imdy), b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(iky), b_incx)
 !
         omega = zr(ius-1+ind*ninc)
         b_n = to_blas_int(nd*(2*h+1))
@@ -143,32 +155,40 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
             b_n = to_blas_int(nd)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(iy), &
+            call daxpy(b_n, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(iy),&
                        b_incy)
             b_n = to_blas_int(nd)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(idy), &
+            call daxpy(b_n, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(idy),&
                        b_incy)
 ! ---     SIN
             b_n = to_blas_int(nd)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(iy), &
+            call daxpy(b_n, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(iy),&
                        b_incy)
             b_n = to_blas_int(nd)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(idy), &
+            call daxpy(b_n, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(idy),&
                        b_incy)
         end do
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE K*Y ET M*DY
 ! ----------------------------------------------------------------------
-        call dscal(nd, 0.d0, ye, 1)
-        call dscal(nd, 0.d0, dye, 1)
-        call dscal(nd, 0.d0, kye, 1)
-        call dscal(nd, 0.d0, mdye, 1)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, ye, b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, dye, b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, kye, b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, mdye, b_incx)
         i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
@@ -177,12 +197,16 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
                 dye(k) = zr(idy-1+i)
             end if
         end do
-        call mrmult('ZERO', imat(1), ye, kye, 1, &
+        call mrmult('ZERO', imat(1), ye, kye, 1,&
                     .false._1)
-        call mrmult('ZERO', imat(2), dye, mdye, 1, &
+        call mrmult('ZERO', imat(2), dye, mdye, 1,&
                     .false._1)
-        call dscal(nd, 0.d0, zr(iky), 1)
-        call dscal(nd, 0.d0, zr(imdy), 1)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(iky), b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(imdy), b_incx)
         i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then

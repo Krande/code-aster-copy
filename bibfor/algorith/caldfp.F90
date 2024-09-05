@@ -65,7 +65,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, id, b_incx, a, &
+        call daxpy(b_n, 1.d0, id, b_incx, a,&
                    b_incy)
 !
 !        TEST ANALOGUE A SIMO_MIEHE NMGPFI
@@ -95,22 +95,28 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
         ddetdg = ddot(9, amt, 1, msns, 1)
 !
-        call dscal(9, ddetdg, a, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, ddetdg, a, b_incx)
 !
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, a, b_incx, dfpdg, b_incy)
 !
-        call dscal(9, -1.d0/3.d0, dfpdg, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -1.d0/3.d0, dfpdg, b_incx)
 !
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, msns, b_incx, dfpdg, &
+        call daxpy(b_n, 1.d0, msns, b_incx, dfpdg,&
                    b_incy)
 !
-        call dscal(9, coef, dfpdg, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, coef, dfpdg, b_incx)
 !
 ! calcul de dFp-1
         call r8inir(81, 0.d0, dfpmdf, 1)
@@ -125,7 +131,9 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         end do
         coef2 = -deta**(2.d0/3.d0)
 !
-        call dscal(81, coef2, dfpmdf, 1)
+        b_n = to_blas_int(81)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, coef2, dfpmdf, b_incx)
 !
         call r8inir(9, 0.d0, dfpmdg, 1)
         do i = 1, 3
@@ -147,11 +155,13 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, gamsns, b_incx, b, b_incy)
-        call dscal(9, -1.d0, b, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -1.d0, b, b_incx)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, id, b_incx, b, &
+        call daxpy(b_n, 1.d0, id, b_incx, b,&
                    b_incy)
 !
         bmax = 0.d0
@@ -181,22 +191,28 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
         ddetdg = ddot(9, bmt, 1, msns, 1)
 !
-        call dscal(9, ddetdg, b, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, ddetdg, b, b_incx)
 !
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, b, b_incx, dfpmdg, b_incy)
 !
-        call dscal(9, -1.d0/3.d0, dfpmdg, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -1.d0/3.d0, dfpmdg, b_incx)
 !
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, msns, b_incx, dfpmdg, &
+        call daxpy(b_n, 1.d0, msns, b_incx, dfpmdg,&
                    b_incy)
 !
-        call dscal(9, -coef, dfpmdg, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -coef, dfpmdg, b_incx)
 !
 !
     else if (iopt .eq. 3) then

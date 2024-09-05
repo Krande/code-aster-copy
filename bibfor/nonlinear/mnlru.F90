@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlru(imat, xcdl, parcho, adime, xvect, &
-                 ninc, nd, nchoc, h, hf, &
+subroutine mnlru(imat, xcdl, parcho, adime, xvect,&
+                 ninc, nd, nchoc, h, hf,&
                  xru)
     implicit none
 !
@@ -74,7 +74,9 @@ subroutine mnlru(imat, xcdl, parcho, adime, xvect, &
 ! --- RECUPERATION DU POINTEUR DE R(XVECT)
 ! ----------------------------------------------------------------------
     call jeveuo(xru, 'E', iru)
-    call dscal(ninc-1, 0.d0, zr(iru), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(iru), b_incx)
 ! ----------------------------------------------------------------------
 ! --- CREATION D'UN VECTEUR INTERMEDIAIRE
 ! ----------------------------------------------------------------------
@@ -84,33 +86,39 @@ subroutine mnlru(imat, xcdl, parcho, adime, xvect, &
 ! --- CALCUL DE R(XVECT)
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE L0
-    call dscal(ninc-1, 0.d0, zr(ivint), 1)
-    call mnlcst(parcho, adime, ninc, nd, nchoc, &
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ivint), b_incx)
+    call mnlcst(parcho, adime, ninc, nd, nchoc,&
                 h, hf, xvint)
     b_n = to_blas_int(ninc-1)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, zr(ivint), b_incx, zr(iru), b_incy)
 ! --- CALCUL DE L(XVECT)
-    call dscal(ninc-1, 0.d0, zr(ivint), 1)
-    call mnline(imat, xcdl, parcho, adime, xvect, &
-                ninc, nd, nchoc, h, hf, &
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ivint), b_incx)
+    call mnline(imat, xcdl, parcho, adime, xvect,&
+                ninc, nd, nchoc, h, hf,&
                 xvint)
     b_n = to_blas_int(ninc-1)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, zr(ivint), b_incx, zr(iru), &
+    call daxpy(b_n, 1.d0, zr(ivint), b_incx, zr(iru),&
                b_incy)
 ! --- CALCUL DE Q(XVECT,XVECT)
-    call dscal(ninc-1, 0.d0, zr(ivint), 1)
-    call mnlqnl(imat, xcdl, parcho, adime, xvect, &
-                xvect, ninc, nd, nchoc, h, &
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ivint), b_incx)
+    call mnlqnl(imat, xcdl, parcho, adime, xvect,&
+                xvect, ninc, nd, nchoc, h,&
                 hf, xvint)
 ! --- R(XVECT) = L0 + L(XVECT) + Q(XVECT,XVECT)
     b_n = to_blas_int(ninc-1)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, zr(ivint), b_incx, zr(iru), &
+    call daxpy(b_n, 1.d0, zr(ivint), b_incx, zr(iru),&
                b_incy)
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DU VECTEUR INTERMEDIAIRE

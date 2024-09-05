@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpermo(lmasse, lraide, nbprop, vecp, valp, &
+subroutine vpermo(lmasse, lraide, nbprop, vecp, valp,&
                   excl, omecor, ernorm)
     implicit none
 #include "jeveux.h"
@@ -79,14 +79,16 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp, &
 !        --- NON PRISE EN COMPTE DES DDLS EXCLUS
     do i = 1, neq
         raux = excl(i)
-        call dscal(nbprop, raux, vecp(i), neq)
+        b_n = to_blas_int(nbprop)
+        b_incx = to_blas_int(neq)
+        call dscal(b_n, raux, vecp(i), b_incx)
     end do
 !
     do i = 1, nbprop
         ivec = (i-1)*neq+1
-        call mrmult('ZERO', lraide, vecp(ivec), zr(iaux1), 1, &
+        call mrmult('ZERO', lraide, vecp(ivec), zr(iaux1), 1,&
                     .false._1)
-        call mrmult('ZERO', lmasse, vecp(ivec), zr(iaux2), 1, &
+        call mrmult('ZERO', lmasse, vecp(ivec), zr(iaux2), 1,&
                     .false._1)
         anorm1 = 0.d0
         do j = 1, neq
@@ -97,7 +99,7 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp, &
         b_n = to_blas_int(neq)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, raux, zr(iaux2), b_incx, zr(iaux1), &
+        call daxpy(b_n, raux, zr(iaux2), b_incx, zr(iaux1),&
                    b_incy)
         anorm2 = 0.d0
         do j = 1, neq

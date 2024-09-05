@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
-                  imate, compor, crit, instam, instap, &
-                  deps, sigm, vim, option, sigp, &
+subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
+                  imate, compor, crit, instam, instap,&
+                  deps, sigm, vim, option, sigp,&
                   vip, dsidep, iret)
 ! person_in_charge: jean-michel.proix at edf.fr
 !.======================================================================
@@ -100,8 +100,8 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
     iret = 0
-    call nmcham(fami, kpg, ksp, imate, compor, &
-                matel, mat, nbvar, memo, visc, &
+    call nmcham(fami, kpg, ksp, imate, compor,&
+                matel, mat, nbvar, memo, visc,&
                 idelta, coef)
 !
 !     NBVARI=2+6*NBVAR+MEMO*14
@@ -178,13 +178,17 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, vim(3), b_incx, alfam, b_incy)
-    call dscal(ndimsi-3, rac2, alfam(4), 1)
+    b_n = to_blas_int(ndimsi-3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, rac2, alfam(4), b_incx)
     if (nbvar .eq. 2) then
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, vim(9), b_incx, alfa2m, b_incy)
-        call dscal(ndimsi-3, rac2, alfa2m(4), 1)
+        b_n = to_blas_int(ndimsi-3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, alfa2m(4), b_incx)
     else
         call r8inir(6, 0.d0, alfa2m, 1)
     end if
@@ -198,7 +202,7 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
     b_n = to_blas_int(3)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, -coef, kron, b_incx, depsth, &
+    call daxpy(b_n, -coef, kron, b_incx, depsth,&
                b_incy)
     depsmo = trace(3, depsth)/3.d0
     b_n = to_blas_int(ndimsi)
@@ -208,7 +212,7 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
     b_n = to_blas_int(3)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, -depsmo, kron, b_incx, depsdv, &
+    call daxpy(b_n, -depsmo, kron, b_incx, depsdv,&
                b_incy)
 !
 !       -------------------------------------------------
@@ -257,7 +261,7 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
             b_n = to_blas_int(ndimsi)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, depsp, b_incx, epspp, &
+            call daxpy(b_n, 1.d0, depsp, b_incx, epspp,&
                        b_incy)
         end if
 !
@@ -291,10 +295,10 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
 !
 ! ---- CALCUL DE LA MATRICE DE COMPORTEMENT TANGENTE COHERENTE DSIDEP
     if (option(1:14) .eq. 'RIGI_MECA_TANG' .or. option(1:9) .eq. 'FULL_MECA') then
-        call nmchat(matel, mat, nbvar, memo, visc, &
-                    plast, sigmdv, depsdv, pm, dp, &
-                    ndimsi, dt, rpvp, qp, vim, &
-                    idelta, n1, n2, beta1, beta2, &
+        call nmchat(matel, mat, nbvar, memo, visc,&
+                    plast, sigmdv, depsdv, pm, dp,&
+                    ndimsi, dt, rpvp, qp, vim,&
+                    idelta, n1, n2, beta1, beta2,&
                     dsidep)
 !
     end if
@@ -306,13 +310,17 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, alfa, b_incx, vip(3), b_incy)
-        call dscal(ndimsi-3, unrac2, vip(6), 1)
+        b_n = to_blas_int(ndimsi-3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, unrac2, vip(6), b_incx)
         if (nbvar .eq. 2) then
             b_n = to_blas_int(ndimsi)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
             call dcopy(b_n, alfa2, b_incx, vip(9), b_incy)
-            call dscal(ndimsi-3, unrac2, vip(12), 1)
+            b_n = to_blas_int(ndimsi-3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, unrac2, vip(12), b_incx)
         end if
         if (memo .eq. 1) then
             vip(15) = rpvp
@@ -342,21 +350,25 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
             call dcopy(b_n, alfa, b_incx, xp, b_incy)
-            call dscal(ndimsi, cm/1.5d0, xm, 1)
-            call dscal(ndimsi, cp/1.5d0, xp, 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, cm/1.5d0, xm, b_incx)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, cp/1.5d0, xp, b_incx)
             if (nbvar .eq. 2) then
                 b_n = to_blas_int(ndimsi)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, c2m/1.5d0, alfa2m, b_incx, xm, &
+                call daxpy(b_n, c2m/1.5d0, alfa2m, b_incx, xm,&
                            b_incy)
                 b_n = to_blas_int(ndimsi)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, c2p/1.5d0, alfa2, b_incx, xp, &
+                call daxpy(b_n, c2p/1.5d0, alfa2, b_incx, xp,&
                            b_incy)
             end if
-            call radial(ndimsi, sigm, sigp, vim(2), vip(2), &
+            call radial(ndimsi, sigm, sigp, vim(2), vip(2),&
                         1, xm, xp, radi)
 !
             if (radi .gt. crit(10)) then

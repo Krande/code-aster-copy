@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine newacc(neq, c1, c2, c3, d0, &
+subroutine newacc(neq, c1, c2, c3, d0,&
                   v0, a0, d1, a1)
     implicit none
 !
@@ -58,17 +58,19 @@ subroutine newacc(neq, c1, c2, c3, d0, &
     b_n = to_blas_int(neq)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, scal, d0, b_incx, a1, &
-               b_incy)
-    call dscal(neq, c1, a1, 1)
-    b_n = to_blas_int(neq)
-    b_incx = to_blas_int(1)
-    b_incy = to_blas_int(1)
-    call daxpy(b_n, c2, v0, b_incx, a1, &
+    call daxpy(b_n, scal, d0, b_incx, a1,&
                b_incy)
     b_n = to_blas_int(neq)
     b_incx = to_blas_int(1)
+    call dscal(b_n, c1, a1, b_incx)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, c3, a0, b_incx, a1, &
+    call daxpy(b_n, c2, v0, b_incx, a1,&
+               b_incy)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, c3, a0, b_incx, a1,&
                b_incy)
 end subroutine

@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
-                     a, lda, b, ldb, c, &
+subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
+                     a, lda, b, ldb, c,&
                      ldc, scale, info)
 !
 !     SUBROUTINE LAPACK RESOLVANT L'EQUATION DE SYLVESTER.
@@ -157,6 +157,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !     ..
 !     .. LOCAL ARRAYS ..
     real(kind=8) :: dum(1), vec(2, 2), x(2, 2)
+    blas_int :: b_incx, b_n
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -175,7 +176,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
     info = 0
     if (.not. notrna .and. .not. lsame(trana, 'T') .and. .not. lsame(trana, 'C')) then
         info = -1
-    else if (.not. notrnb .and. .not. lsame(tranb, 'T') .and. .not. &
+        else if (.not. notrnb .and. .not. lsame(tranb, 'T') .and. .not. &
              lsame(tranb, 'C')) then
         info = -2
     else if (isgn .ne. 1 .and. isgn .ne. -1) then
@@ -208,8 +209,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
     smlnum = smlnum*dble(m*n)/eps
     bignum = one/smlnum
 !
-    smin = max(smlnum, eps*dlange('M', m, m, a, lda, dum), eps*dlange('M', n, n, b, ldb, dum) &
-               )
+    smin = max(smlnum, eps*dlange('M', m, m, a, lda, dum), eps*dlange('M', n, n, b, ldb, dum) )
 !
     scale = one
     sgn = isgn
@@ -291,7 +291,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -307,15 +309,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l1), 1)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
-                                   a(k1, k1), lda, one, one, vec, &
-                                   2, -sgn*b(l1, l1), zero, x, 2, &
+                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
+                                   a(k1, k1), lda, one, one, vec,&
+                                   2, -sgn*b(l1, l1), zero, x, 2,&
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -332,15 +336,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l2), 1)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
-                                   b(l1, l1), ldb, one, one, vec, &
-                                   2, -sgn*a(k1, k1), zero, x, 2, &
+                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
+                                   b(l1, l1), ldb, one, one, vec,&
+                                   2, -sgn*a(k1, k1), zero, x, 2,&
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -365,15 +371,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l2), 1)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.false._1, .false._1, isgn, 2, 2, &
-                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
-                                   2, scaloc, x, 2, xnorm, &
+                    call ar_dlasy2(.false._1, .false._1, isgn, 2, 2,&
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec,&
+                                   2, scaloc, x, 2, xnorm,&
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -383,10 +391,10 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     c(k2, l2) = x(2, 2)
                 end if
 !
-50              continue
+ 50             continue
             end do
 !
-60          continue
+ 60         continue
         end do
 !
     else if (.not. notrna .and. notrnb) then
@@ -466,7 +474,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -482,15 +492,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l1), 1)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
-                                   a(k1, k1), lda, one, one, vec, &
-                                   2, -sgn*b(l1, l1), zero, x, 2, &
+                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
+                                   a(k1, k1), lda, one, one, vec,&
+                                   2, -sgn*b(l1, l1), zero, x, 2,&
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -507,15 +519,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l2), 1)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
-                                   b(l1, l1), ldb, one, one, vec, &
-                                   2, -sgn*a(k1, k1), zero, x, 2, &
+                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
+                                   b(l1, l1), ldb, one, one, vec,&
+                                   2, -sgn*a(k1, k1), zero, x, 2,&
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -540,15 +554,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l2), 1)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.true._1, .false._1, isgn, 2, 2, &
-                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
-                                   2, scaloc, x, 2, xnorm, &
+                    call ar_dlasy2(.true._1, .false._1, isgn, 2, 2,&
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec,&
+                                   2, scaloc, x, 2, xnorm,&
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -640,7 +656,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -656,15 +674,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
-                                   a(k1, k1), lda, one, one, vec, &
-                                   2, -sgn*b(l1, l1), zero, x, 2, &
+                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
+                                   a(k1, k1), lda, one, one, vec,&
+                                   2, -sgn*b(l1, l1), zero, x, 2,&
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -681,15 +701,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
-                                   b(l1, l1), ldb, one, one, vec, &
-                                   2, -sgn*a(k1, k1), zero, x, 2, &
+                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
+                                   b(l1, l1), ldb, one, one, vec,&
+                                   2, -sgn*a(k1, k1), zero, x, 2,&
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -714,15 +736,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.true._1, .true._1, isgn, 2, 2, &
-                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
-                                   2, scaloc, x, 2, xnorm, &
+                    call ar_dlasy2(.true._1, .true._1, isgn, 2, 2,&
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec,&
+                                   2, scaloc, x, 2, xnorm,&
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -814,7 +838,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -830,15 +856,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
-                                   a(k1, k1), lda, one, one, vec, &
-                                   2, -sgn*b(l1, l1), zero, x, 2, &
+                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
+                                   a(k1, k1), lda, one, one, vec,&
+                                   2, -sgn*b(l1, l1), zero, x, 2,&
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -855,15 +883,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
-                                   b(l1, l1), ldb, one, one, vec, &
-                                   2, -sgn*a(k1, k1), zero, x, 2, &
+                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
+                                   b(l1, l1), ldb, one, one, vec,&
+                                   2, -sgn*a(k1, k1), zero, x, 2,&
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -888,15 +918,17 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                     sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.false._1, .true._1, isgn, 2, 2, &
-                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
-                                   2, scaloc, x, 2, xnorm, &
+                    call ar_dlasy2(.false._1, .true._1, isgn, 2, 2,&
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec,&
+                                   2, scaloc, x, 2, xnorm,&
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if

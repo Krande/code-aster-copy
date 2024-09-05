@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
-                  nchoc, h, hf, parcho, adime, &
+!
+subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
+                  nchoc, h, hf, parcho, adime,&
                   ninc, tabchoc, lcine, solveu)
     implicit none
 !
@@ -99,6 +99,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
     integer, pointer :: indmax(:) => null()
     integer, pointer :: nddl(:) => null()
     integer, pointer :: ncmp(:) => null()
+    blas_int :: b_incx, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
@@ -114,25 +115,25 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
         origx = '&&ORIG_X'
         origy = '&&ORIG_Y'
         origz = '&&ORIG_Z'
-        call tbexve(tabchoc, 'TYPE_CHOC', parcho//'.TYPE', 'V', nchoc, &
+        call tbexve(tabchoc, 'TYPE_CHOC', parcho//'.TYPE', 'V', nchoc,&
                     typval)
-        call tbexve(tabchoc, 'NOEUD_CHOC', parcho//'.NOEU', 'V', nchoc, &
+        call tbexve(tabchoc, 'NOEUD_CHOC', parcho//'.NOEU', 'V', nchoc,&
                     typval)
-        call tbexve(tabchoc, 'NOM_CMP_1', nomcmp1, 'V', nchoc, &
+        call tbexve(tabchoc, 'NOM_CMP_1', nomcmp1, 'V', nchoc,&
                     typval)
-        call tbexve(tabchoc, 'NOM_CMP_2', nomcmp2, 'V', nchoc, &
+        call tbexve(tabchoc, 'NOM_CMP_2', nomcmp2, 'V', nchoc,&
                     typval)
-        call tbexve(tabchoc, 'RIGI_NOR', parcho//'.RAID', 'V', nchoc, &
+        call tbexve(tabchoc, 'RIGI_NOR', parcho//'.RAID', 'V', nchoc,&
                     typval)
-        call tbexve(tabchoc, 'PARA_REGUL', parcho//'.REG', 'V', nchoc, &
+        call tbexve(tabchoc, 'PARA_REGUL', parcho//'.REG', 'V', nchoc,&
                     typval)
-        call tbexve(tabchoc, 'JEU', parcho//'.JEU', 'V', nchoc, &
+        call tbexve(tabchoc, 'JEU', parcho//'.JEU', 'V', nchoc,&
                     typval)
-        call tbexve(tabchoc, 'ORIG_OBST_X', origx, 'V', nchoc, &
+        call tbexve(tabchoc, 'ORIG_OBST_X', origx, 'V', nchoc,&
                     typval)
-        call tbexve(tabchoc, 'ORIG_OBST_Y', origy, 'V', nchoc, &
+        call tbexve(tabchoc, 'ORIG_OBST_Y', origy, 'V', nchoc,&
                     typval)
-        call tbexve(tabchoc, 'ORIG_OBST_Z', origz, 'V', nchoc, &
+        call tbexve(tabchoc, 'ORIG_OBST_Z', origz, 'V', nchoc,&
                     typval)
         call jeveuo(nomcmp1, 'L', icmp1)
         call jeveuo(nomcmp2, 'L', icmp2)
@@ -223,7 +224,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
                 cmp(1) = zk8(icmp1-1+k)
             end if
         else
-            call getvtx('CHOC', 'NOM_CMP', iocc=k, nbval=ncmp(k), vect=cmp, &
+            call getvtx('CHOC', 'NOM_CMP', iocc=k, nbval=ncmp(k), vect=cmp,&
                         nbret=ier)
         end if
         do i = 1, ier
@@ -241,7 +242,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
                 end if
             end if
 ! --- RECUPERATION DU NUMERO D'EQUATION DU NOEUD A LA BONNE COMPOSANTE
-            call posddl('NUME_DDL', numedd, noeud(1), cmp(i), nunoe, &
+            call posddl('NUME_DDL', numedd, noeud(1), cmp(i), nunoe,&
                         pddl)
 ! --- RECUPERATION DE LA POSITION DU NOEUD DANS LA MATRICE AVEC DDLS ACTIFS
             ind = 0
@@ -276,20 +277,22 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
 ! ------------------------------------------------------------------
 ! --- ON RECUPERE KUi (POUR ADIMENSIONNE LA MATRICE DE RAIDEUR)
     zr(iei-1+pdlmax) = 1.d0
-    call preres(solveu, 'V', ier, ' ', matk, &
+    call preres(solveu, 'V', ier, ' ', matk,&
                 ier2, 0)
-    call resoud(matk, ' ', solveu, ' ', 1, &
-                ' ', ' ', 'V', zr(iei), [cbid], &
+    call resoud(matk, ' ', solveu, ' ', 1,&
+                ' ', ' ', 'V', zr(iei), [cbid],&
                 ' ', .false._1, 0, ier)
     zr(iadim-1+1) = 1.d0/zr(iei-1+pdlmax)
 ! --- ON RECUPERE MUi (POUR ADIMENSIONNE LA MATRICE DE MASSE)
     if (lcine) then
-        call preres(solveu, 'V', ier, ' ', matm, &
+        call preres(solveu, 'V', ier, ' ', matm,&
                     ier2, 0)
-        call dscal(neq, 0.d0, zr(iei), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(iei), b_incx)
         zr(iei-1+pdlmax) = 1.d0
-        call resoud(matm, ' ', solveu, ' ', 1, &
-                    ' ', ' ', 'V', zr(iei), [cbid], &
+        call resoud(matm, ' ', solveu, ' ', 1,&
+                    ' ', ' ', 'V', zr(iei), [cbid],&
                     ' ', .false._1, 0, ier)
         zr(iadim-1+2) = 1.d0/zr(iei-1+pdlmax)
     else
@@ -297,8 +300,10 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
             zr(iei-1+k) = 1.d0
         end do
         AS_ALLOCATE(vr=ei2, size=neq)
-        call dscal(neq, 0.d0, ei2, 1)
-        call mrmult('ZERO', imat(2), zr(iei), ei2, 1, &
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, ei2, b_incx)
+        call mrmult('ZERO', imat(2), zr(iei), ei2, 1,&
                     .true._1)
         zr(iadim-1+2) = ddot(neq, zr(iei), 1, ei2, 1)
     end if

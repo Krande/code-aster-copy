@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine caltau(ifa, is, sigf, fkooh, nfs, &
+subroutine caltau(ifa, is, sigf, fkooh, nfs,&
                   nsg, toutms, taus, mus, msns)
     implicit none
 !
@@ -63,11 +63,13 @@ subroutine caltau(ifa, is, sigf, fkooh, nfs, &
 !        CONTRAINTES PK2
 ! Y contient : SIGF=PK2 (sans les SQRT(2) !), puis les alpha_s
         fetfe6 = matmul(fkooh, sigf)
-        call dscal(6, 2.d0, fetfe6, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 2.d0, fetfe6, b_incx)
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, id6, b_incx, fetfe6, &
+        call daxpy(b_n, 1.d0, id6, b_incx, fetfe6,&
                    b_incy)
 !
         do i = 1, 3

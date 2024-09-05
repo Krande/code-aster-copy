@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl, &
-                  parcho, adime, xvect, ninc, nd, &
+subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
+                  parcho, adime, xvect, ninc, nd,&
                   nchoc, h, hf, xtang)
     implicit none
 !
@@ -100,8 +100,8 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl, &
 ! ----------------------------------------------------------------------
 ! --- CALCUL (OU RECUPERATION) DE LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
-    call mnldrv(lcal, imat, numdrv, matdrv, xcdl, &
-                parcho, adime, xvect, zr(ivplu), ninc, &
+    call mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
+                parcho, adime, xvect, zr(ivplu), ninc,&
                 nd, nchoc, h, hf)
 ! ----------------------------------------------------------------------
 ! --- ON CREE UN VECTEUR [0 ... 0 1]
@@ -110,8 +110,8 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl, &
 ! ----------------------------------------------------------------------
 ! --- ON RESOUD TANGENTE=DRDV\[0 ... 0 1]
 ! ----------------------------------------------------------------------
-    call resoud(matdrv, ' ', solveu, ' ', 1, &
-                ' ', ' ', 'v', zr(ib), [cbid], &
+    call resoud(matdrv, ' ', solveu, ' ', 1,&
+                ' ', ' ', 'v', zr(ib), [cbid],&
                 ' ', .false._1, 0, iret)
     b_n = to_blas_int(ninc)
     b_incx = to_blas_int(1)
@@ -121,7 +121,9 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl, &
 ! --- ON NORMALISE LE VECTEUR TANGENT
 ! ----------------------------------------------------------------------
     norme = dnrm2(ninc, zr(itang), 1)
-    call dscal(ninc, -1.d0/norme, zr(itang), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, -1.d0/norme, zr(itang), b_incx)
 ! ----------------------------------------------------------------------
 ! --- ON DETRUIT LE VECTEUR TEMPORAIRE
 ! ----------------------------------------------------------------------

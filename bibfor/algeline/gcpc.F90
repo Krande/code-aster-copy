@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gcpc(m, in, ip, ac, inpc, &
-                perm, ippc, acpc, bf, xp, &
-                r, rr, p, irep, niter, &
-                epsi, criter, solveu, matas, istop, &
+subroutine gcpc(m, in, ip, ac, inpc,&
+                perm, ippc, acpc, bf, xp,&
+                r, rr, p, irep, niter,&
+                epsi, criter, solveu, matas, istop,&
                 iret)
 !     RESOLUTION D'UN SYSTEME LINEAIRE SYMETRIQUE PAR UNE METHODE DE
 !     GRADIENT CONJUGUE PRECONDITIONNE
@@ -153,7 +153,7 @@ subroutine gcpc(m, in, ip, ac, inpc, &
         rank = 'L'
     end if
     if ((precon == 'LDLT_SP') .or. (precon == 'LDLT_DP')) then
-        call crsvfm(solvbd, matas, prec, rank, pcpiv, &
+        call crsvfm(solvbd, matas, prec, rank, pcpiv,&
                     usersm, blreps, renum, redmpi)
     end if
 !-----Pour tenir compte de la renumerotation de la matrice de preconditionnement (LDLT):
@@ -179,18 +179,20 @@ subroutine gcpc(m, in, ip, ac, inpc, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, bf, b_incx, r, b_incy)
-        call dscal(m, -1.d0, r, 1)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -1.d0, r, b_incx)
         anorm = bnorm
         epsix = epsi*anorm
         if (niv .eq. 2) write (ifm, 101) anorm, epsix, epsi
     else
 !       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
-        call gcax(m, in, ip, ac, xp, &
+        call gcax(m, in, ip, ac, xp,&
                   r)
         b_n = to_blas_int(m)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -1.d0, bf, b_incx, r, &
+        call daxpy(b_n, -1.d0, bf, b_incx, r,&
                    b_incy)
         anorm = dnrm2(m, r, 1)
         epsix = epsi*anorm
@@ -223,7 +225,7 @@ subroutine gcpc(m, in, ip, ac, inpc, &
 !                                                   RK <--- R()
 !                                                  ZK <--- RR()
         if (precon .eq. 'LDLT_INC') then
-            call gcldm1(m, inpc, ippc, acpc, r, &
+            call gcldm1(m, inpc, ippc, acpc, r,&
                         rr, perm, xtrav, ytrav)
         else if ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
             b_n = to_blas_int(m)
@@ -231,7 +233,7 @@ subroutine gcpc(m, in, ip, ac, inpc, &
             b_incy = to_blas_int(1)
             call dcopy(b_n, r, b_incx, rr, b_incy)
 !         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
-            call amumph('RESOUD', solvbd, matas, rr, [cbid], &
+            call amumph('RESOUD', solvbd, matas, rr, [cbid],&
                         ' ', 1, ier, .true._1)
         else
             ASSERT(.false.)
@@ -246,11 +248,13 @@ subroutine gcpc(m, in, ip, ac, inpc, &
 !                                                   PK <--- P()
         if (iter .gt. 1) then
             gama = rrri/rrrim1
-            call dscal(m, gama, p, 1)
+            b_n = to_blas_int(m)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, gama, p, b_incx)
             b_n = to_blas_int(m)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, rr, b_incx, p, &
+            call daxpy(b_n, 1.d0, rr, b_incx, p,&
                        b_incy)
         else
             b_n = to_blas_int(m)
@@ -266,18 +270,18 @@ subroutine gcpc(m, in, ip, ac, inpc, &
 !                                      RK+1 = RK + ALPHAK * ZZK
 !                                                 ZZK <--- RR()
 !                                                 XK  <--- XP()
-        call gcax(m, in, ip, ac, p, &
+        call gcax(m, in, ip, ac, p,&
                   rr)
         rau = -rrri/ddot(m, p, 1, rr, 1)
         b_n = to_blas_int(m)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, rau, p, b_incx, xp, &
+        call daxpy(b_n, rau, p, b_incx, xp,&
                    b_incy)
         b_n = to_blas_int(m)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, rau, rr, b_incx, r, &
+        call daxpy(b_n, rau, rr, b_incx, r,&
                    b_incy)
 !
 !       ---- CALCUL TEST D'ARRET ET AFFICHAGE
@@ -309,9 +313,9 @@ subroutine gcpc(m, in, ip, ac, inpc, &
     if (istop == 0) then
 !            ERREUR <F>
         select case (precon)
-        case ('LDLT_INC')
+            case ('LDLT_INC')
             call utmess('F', 'ALGELINE4_3', si=vali, nr=2, valr=valr)
-        case ('LDLT_SP', 'LDLT_DP')
+            case ('LDLT_SP', 'LDLT_DP')
             call utmess('F', 'ALGELINE4_6', si=vali, nr=2, valr=valr)
         case default
             ASSERT(.false.)
@@ -324,22 +328,22 @@ subroutine gcpc(m, in, ip, ac, inpc, &
         ASSERT(.false.)
     end if
 !    -----------
-101 format(/'   * GCPC   NORME DU RESIDU =', d11.4,&
+    101 format(/'   * GCPC   NORME DU RESIDU =', d11.4,&
      &       '  (INITIALISATION PAR X = ZERO)', /,&
      &'   *        NORME DU RESIDU A ATTEINDRE EN ABS/RELA=',&
      &d11.4, d11.4,/)
-102 format(/'   * GCPC   NORME DU RESIDU =', d11.4,&
+    102 format(/'   * GCPC   NORME DU RESIDU =', d11.4,&
      &       '  (INITIALISATION PAR X PRECEDENT)', /,&
      & '   *        NORME DU RESIDU A ATTEINDRE EN ABS/RELA=',&
      & d11.4, d11.4)
-103 format('   * NORME DU RESIDU INITIAL/FINAL/RELATIF=',&
+    103 format('   * NORME DU RESIDU INITIAL/FINAL/RELATIF=',&
      &         d11.4, d11.4, d11.4)
-104 format('   * ITERATION', i5, ' NORME DU RESIDU EN ABS/RELA =',&
+    104 format('   * ITERATION', i5, ' NORME DU RESIDU EN ABS/RELA =',&
      &         d11.4, d11.4)
-105 format(1x, /, 2x, 32('*')/'  * CONVERGENCE EN ', i4,&
+    105 format(1x, /, 2x, 32('*')/'  * CONVERGENCE EN ', i4,&
      &       ' ITERATIONS'/2x, 32('*'),/)
 !    -----------
-80  continue
+ 80 continue
 !
 ! --  DESTRUCTION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
     if ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then

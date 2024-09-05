@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
-                  dmax_cable, nnoeca, x3dca, noebe, numail, &
-                  nbcnx, cxma, xyzma, normal, itria, &
+subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
+                  dmax_cable, nnoeca, x3dca, noebe, numail,&
+                  nbcnx, cxma, xyzma, normal, itria,&
                   xbar, iproj, excent)
     implicit none
 !  DESCRIPTION : TENTATIVE DE PROJECTION D'UN NOEUD CABLE SUR LES
@@ -207,7 +207,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
 !
     call jeveuo(jexatr(mailla//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
-88  continue
+ 88 continue
 !
     do imail = 1, nbmabe
 !
@@ -334,18 +334,20 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
                         b_n = to_blas_int(3)
                         b_incx = to_blas_int(1)
                         b_incy = to_blas_int(1)
-                        call daxpy(b_n, -excent, normal(1), b_incx, x3dp(1), &
+                        call daxpy(b_n, -excent, normal(1), b_incx, x3dp(1),&
                                    b_incy)
                         if (excent .lt. 0.0d0) then
                             excent = dble(abs(excent))
-                            call dscal(3, -1.0d0, normal(1), 1)
+                            b_n = to_blas_int(3)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, -1.0d0, normal(1), b_incx)
                         end if
                     end if
 !
 !............. TEST D'APPARTENANCE DU POINT PROJETE AU DOMAINE
 !............. GEOMETRIQUE DEFINI PAR LA MAILLE
 !
-                    call projtq(nbcnx, xyzma(1, 1), icnx, x3dp(1), excent, &
+                    call projtq(nbcnx, xyzma(1, 1), icnx, x3dp(1), excent,&
                                 itria, inoeu, icote, xbar(1), iproj)
                     if (iproj .ge. 0 .and. iproj .lt. 20) then
                         goto 999
@@ -396,7 +398,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
                 end if
             end do
         end do
-10      continue
+ 10     continue
     end do
 !   recherche elargie si pas déjà fait
 !    if (.false.) then
@@ -423,8 +425,8 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
 !
 !   segments
 !
-    call veri_seg(mailla, dmax_cable, zi(jlnuma), zi(jliproj), zi(jlinoma), &
-                  nbmaok, x3dca, iproj, n1, n2, &
+    call veri_seg(mailla, dmax_cable, zi(jlnuma), zi(jliproj), zi(jlinoma),&
+                  nbmaok, x3dca, iproj, n1, n2,&
                   numail)
     if (iproj .eq. 0) then
 !       on se recolle au cas iproj = 1* pour reci2d
@@ -457,7 +459,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
             if (jno .eq. 3 .or. jno .eq. 4) itria = 2
         end if
 !
-        call projsg(x3dca, xyzma(1, jno), xyzma(1, kno), normal, x3dp, &
+        call projsg(x3dca, xyzma(1, jno), xyzma(1, kno), normal, x3dp,&
                     xbar2, iproj2, excent)
         if (jno .eq. 1 .or. (jno .eq. 3 .and. nbcnx .eq. 4)) then
             xbar(1) = xbar2(1)
@@ -477,7 +479,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
 !   noeuds
     if (iproj .eq. -1) then
 !       on se recolle au cas iproj = 2 pour reci2d
-        call veri_noe(mailla, dmax_cable, zi(jlnuma), zi(jliproj), nbmaok, &
+        call veri_noe(mailla, dmax_cable, zi(jlnuma), zi(jliproj), nbmaok,&
                       x3dca, iproj, noe, numail)
         if (iproj .eq. 0) then
             ASSERT(noe .eq. noebe)
@@ -523,15 +525,15 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
                 b_n = to_blas_int(3)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, -excent, normal, b_incx, x3dp, &
+                call daxpy(b_n, -excent, normal, b_incx, x3dp,&
                            b_incy)
-                call projtq(nbcnx, xyzma(1, 1), icnx, x3dp, abs(excent), &
+                call projtq(nbcnx, xyzma(1, 1), icnx, x3dp, abs(excent),&
                             itria, inoeu, icote, xbar, iproj)
                 if (iproj .ge. 0) then
                     call recu_cara_ma(mailla, carte, numail, 'EP      ', ep_ma)
                     call recu_cara_ma(mailla, carte, numail, 'EXCENT  ', exc_ma)
                     call jenuno(jexnum(nomama, numail), nomma)
-                    call utmess('F', 'MODELISA5_51', nk=2, valk=[nnoeca, nomma], nr=3, &
+                    call utmess('F', 'MODELISA5_51', nk=2, valk=[nnoeca, nomma], nr=3,&
                                 valr=[excent, exc_ma+ep_ma/2, exc_ma-ep_ma/2])
                 end if
             end if

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdxnlr(option, nomte, xi, rig, nb1, &
+subroutine vdxnlr(option, nomte, xi, rig, nb1,&
                   codret)
 !
     use Behaviour_type
@@ -133,7 +133,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PVARIMP', 'L', ivarix)
     call jevech('PCACOQU', 'L', jcara)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=itab)
     if (itab(6) .le. 1) then
         lgpg = itab(7)
@@ -147,7 +147,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari,&
                          lSigm, codret)
 !
 ! - Properties of behaviour
@@ -185,7 +185,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     b_incy = to_blas_int(1)
     call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
 !
-    call vectan(nb1, nb2, xi, zr(lzr), vecta, &
+    call vectan(nb1, nb2, xi, zr(lzr), vecta,&
                 vectn, vectpt)
 !
     call rccoma(zi(imate), 'ELAS', 1, elasKeyword, valret(1))
@@ -196,10 +196,10 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !===============================================================
 !     CALCULS DES 2 DDL INTERNES
 !
-    call trndgl(nb2, vectn, vectpt, zr(ideplm), deplm, &
+    call trndgl(nb2, vectn, vectpt, zr(ideplm), deplm,&
                 rotfcm)
 !
-    call trndgl(nb2, vectn, vectpt, zr(ideplp), deplp, &
+    call trndgl(nb2, vectn, vectpt, zr(ideplp), deplp,&
                 rotfcp)
 !
     kwgt = 0
@@ -221,15 +221,15 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
             do intsr = 1, npgsr
-                call mahsms(0, nb1, xi, ksi3s2, intsr, &
-                            zr(lzr), hic, vectn, vectg, vectt, &
+                call mahsms(0, nb1, xi, ksi3s2, intsr,&
+                            zr(lzr), hic, vectn, vectg, vectt,&
                             hsfm, hss)
 !
-                call hsj1ms(hic, vectg, vectt, hsfm, hss, &
+                call hsj1ms(hic, vectg, vectt, hsfm, hss,&
                             hsj1m, hsj1s)
 !
-                call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr), &
-                            hic, vectpt, hsj1m, hsj1s, btdm, &
+                call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
+                            hic, vectpt, hsj1m, hsj1s, btdm,&
                             btds)
             end do
 !
@@ -239,38 +239,38 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
 !                          (NORMAL) ET DU DETERMINANT DU JACOBIEN
 !
-                call mahsf(1, nb1, xi, ksi3s2, intsn, &
-                           zr(lzr), hic, vectn, vectg, vectt, &
+                call mahsf(1, nb1, xi, ksi3s2, intsn,&
+                           zr(lzr), hic, vectn, vectg, vectt,&
                            hsf)
 !
-                call hsj1f(intsn, zr(lzr), hic, vectg, vectt, &
+                call hsj1f(intsn, zr(lzr), hic, vectg, vectt,&
                            hsf, kwgt, hsj1fx, wgt)
 !
 !     PRODUIT DU POIDS DES PTS DE GAUSS DANS L'EPAISSEUR ET DE WGT
 !
                 wgt = coef*wgt
 !
-                call btdfn(1, nb1, nb2, ksi3s2, intsn, &
+                call btdfn(1, nb1, nb2, ksi3s2, intsn,&
                            zr(lzr), hic, vectpt, hsj1fx, btdf)
 !
 !     CALCUL DE BTDMN, BTDSN
 !     ET
 !     FORMATION DE BTILD
 !
-                call btdmsn(1, nb1, intsn, npgsr, zr(lzr), &
+                call btdmsn(1, nb1, intsn, npgsr, zr(lzr),&
                             btdm, btdf, btds, btild)
 !
 !     CALCULS DES COMPOSANTES DE DEFORMATIONS TRIDIMENSIONNELLES :
 !     EPSXX, EPSYY, EPSXY, EPSXZ, EPSYZ (CE SONT LES COMPOSANTES TILDE)
                 kpgs = kpgs+1
-                call epseff('DEFORM', nb1, deplm, btild, x, &
+                call epseff('DEFORM', nb1, deplm, btild, x,&
                             epsi, wgt, x)
                 eps2d(1) = epsi(1)
                 eps2d(2) = epsi(2)
                 eps2d(3) = 0.d0
                 eps2d(4) = epsi(3)/rac2
 !
-                call epseff('DEFORM', nb1, deplp, btild, x, &
+                call epseff('DEFORM', nb1, deplp, btild, x,&
                             depsi, wgt, x)
                 deps2d(1) = depsi(1)
                 deps2d(2) = depsi(2)
@@ -299,10 +299,10 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !
                 if (elasKeyword .eq. 'ELAS') then
                     sigma = 0.d0
-                    call nmcomp(BEHinteg, 'MASS', intsn, ksp, 2, &
-                                typmod, zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), &
-                                zr(iinstp), 4, eps2d, deps2d, 4, &
-                                sign, zr(ivarim+k2), option, angmas, sigma, &
+                    call nmcomp(BEHinteg, 'MASS', intsn, ksp, 2,&
+                                typmod, zi(imate), zk16(icompo), zr(icarcr), zr(iinstm),&
+                                zr(iinstp), 4, eps2d, deps2d, 4,&
+                                sign, zr(ivarim+k2), option, angmas, sigma,&
                                 zr(ivarip+k2), 36, dsidep, cod)
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 !           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
@@ -313,16 +313,16 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         if (cod .eq. 1) goto 999
                     end if
 !
-                    call rcvalb('MASS', intsn, ksp, '+', zi(imate), &
-                                ' ', elasKeyword, 0, ' ', [0.d0], &
+                    call rcvalb('MASS', intsn, ksp, '+', zi(imate),&
+                                ' ', elasKeyword, 0, ' ', [0.d0],&
                                 nbv, nomres, valres, valret, 1)
 !
                     cisail = valres(1)/(1.d0+valres(2))
 !
                 else if (elasKeyword .eq. 'ELAS_ORTH') then
-                    call moytpg('RIGI', intsn, 3, '+', valpar, &
+                    call moytpg('RIGI', intsn, 3, '+', valpar,&
                                 iret)
-                    call matrc2(1, 'TEMP    ', [valpar], kappa, matc, &
+                    call matrc2(1, 'TEMP    ', [valpar], kappa, matc,&
                                 vectt)
                 end if
 !
@@ -384,9 +384,11 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         ASSERT(ASTER_FALSE)
                     end if
 !
-                    call dscal(25, wgt, dtild, 1)
+                    b_n = to_blas_int(25)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, wgt, dtild, b_incx)
 !
-                    call btkb(5, 42, nddle, dtild, btild, &
+                    call btkb(5, 42, nddle, dtild, btild,&
                               wmatcb, ktildi)
 !
                     do i = 1, nddle
@@ -414,16 +416,22 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         sgmtd(5) = cisail*kappa*gyz/2.d0
 !
                     else if (elasKeyword .eq. 'ELAS_ORTH') then
-                        zr(icontp-1+k1+1) = (epsi(1)+depsi(1))*matc(1, 1)+ &
-                                            (epsi(2)+depsi(2))*matc(1, 2)+ &
-                                            (epsi(3)+depsi(3))*matc(1, 3)
-                        zr(icontp-1+k1+2) = (epsi(1)+depsi(1))*matc(2, 1)+ &
-                                            (epsi(2)+depsi(2))*matc(2, 2)+ &
-                                            (epsi(3)+depsi(3))*matc(2, 3)
+                        zr(icontp-1+k1+1) = (&
+                                            epsi(1)+depsi(1))*matc(1,&
+                                            1)+ (epsi(2)+depsi(2))*matc(1,&
+                                            2)+ (epsi(3)+depsi(3))*matc(1, 3&
+                                            )
+                        zr(icontp-1+k1+2) = (&
+                                            epsi(1)+depsi(1))*matc(2,&
+                                            1)+ (epsi(2)+depsi(2))*matc(2,&
+                                            2)+ (epsi(3)+depsi(3))*matc(2, 3&
+                                            )
                         zr(icontp-1+k1+3) = 0.d0
-                        zr(icontp-1+k1+4) = (epsi(1)+depsi(1))*matc(3, 1)+ &
-                                            (epsi(2)+depsi(2))*matc(3, 2)+ &
-                                            (epsi(3)+depsi(3))*matc(3, 3)
+                        zr(icontp-1+k1+4) = (&
+                                            epsi(1)+depsi(1))*matc(3,&
+                                            1)+ (epsi(2)+depsi(2))*matc(3,&
+                                            2)+ (epsi(3)+depsi(3))*matc(3, 3&
+                                            )
                         zr(icontp-1+k1+5) = matc(4, 4)*gxz+matc(4, 5)*gyz
                         zr(icontp-1+k1+6) = matc(5, 4)*gxz+matc(5, 5)*gyz
 !
@@ -435,7 +443,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         sgmtd(5) = dtild(5, 5)*gyz
                     end if
 !
-                    call epseff('EFFORI', nb1, x, btild, sgmtd, &
+                    call epseff('EFFORI', nb1, x, btild, sgmtd,&
                                 x, wgt, effint)
 !
                 end if
@@ -449,7 +457,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !     EXPANSION DE LA MATRICE : AJOUTER DE LA ROTATION FICTIVE
 !
         nddlet = 6*nb1+3
-        call matrkb(nb1, 42, 51, nddlet, ktild, &
+        call matrkb(nb1, 42, 51, nddlet, ktild,&
                     ctor, rig, crf)
         zr(jcrf) = crf
 !

@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hayres(mod, nmat, materd, materf, timed, &
-                  timef, yd, yf, deps, dy, &
+subroutine hayres(mod, nmat, materd, materf, timed,&
+                  timef, yd, yf, deps, dy,&
                   res, crit, iret)
     implicit none
 !     HAYHURST :
@@ -51,6 +51,7 @@ subroutine hayres(mod, nmat, materd, materf, timed, &
     real(kind=8) :: biga
     real(kind=8) :: trsig, grj2v, grj1, epsi, terme1, shmax, sequi, dddmg, dh1
     real(kind=8) :: dh2, dp
+    blas_int :: b_incx, b_n
 !     ----------------------------------------------------------------
     parameter(ze=0.0d0)
     parameter(td=1.5d0)
@@ -107,10 +108,14 @@ subroutine hayres(mod, nmat, materd, materf, timed, &
 !
 !------------CALCUL DES INVARIANTS DE CONTRAINTE  -------
 !     attention FGEQUI ne prend pas en compte les SQRT(2)
-    call dscal(3, 1.d0/sqrt(2.d0), sigf(4), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 1.d0/sqrt(2.d0), sigf(4), b_incx)
     call fgequi(sigf, 'SIGM_DIR', ndim, equi)
 !     on retablit le tenseur
-    call dscal(3, sqrt(2.d0), sigf(4), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, sqrt(2.d0), sigf(4), b_incx)
     trsig = equi(16)
     grj0 = max(equi(3), equi(4))
     grj0 = max(grj0, equi(5))

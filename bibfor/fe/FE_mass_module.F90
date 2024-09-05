@@ -88,7 +88,7 @@ contains
             else
                 coeff = FEQuad%weights(ipg)
             end if
-            call dsyr('U', FEBasis%size, coeff, BSEval, 1, &
+            call dsyr('U', FEBasis%size, coeff, BSEval, 1,&
                       mass, MAX_BS)
         end do
 !

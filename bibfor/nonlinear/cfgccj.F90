@@ -97,11 +97,13 @@ subroutine cfgccj(resoco, nbliai, conjug)
 !
 ! --- MISE A JOUR DIRECTION
 !
-    call dscal(nbliai, gamma, zr(jdirec), 1)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, gamma, zr(jdirec), b_incx)
     b_n = to_blas_int(nbliai)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, zr(jsgprp), b_incx, zr(jdirec), &
+    call daxpy(b_n, 1.d0, zr(jsgprp), b_incx, zr(jdirec),&
                b_incy)
 !
 ! --- AFFICHAGE
