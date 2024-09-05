@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -266,6 +266,7 @@ subroutine ar_dtrsen(job, compq, select, n, t, &
     aster_logical :: pair, swap, wantbh, wantq, wants, wantsp
     integer :: ierr, k, kase, kk, ks, n1, n2, nn
     real(kind=8) :: est, rnorm, scale
+    blas_int :: b_lda, b_ldb, b_m, b_n
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -384,8 +385,12 @@ subroutine ar_dtrsen(job, compq, select, n, t, &
 !
 !           T11*R - R*T22 = SCALE*T12
 !
-        call dlacpy('F', n1, n2, t(1, n1+1), ldt, &
-                    work, n1)
+        b_ldb = to_blas_int(n1)
+        b_lda = to_blas_int(ldt)
+        b_m = to_blas_int(n1)
+        b_n = to_blas_int(n2)
+        call dlacpy('F', b_m, b_n, t(1, n1+1), b_lda, &
+                    work, b_ldb)
         call ar_dlrsyl('N', 'N', -1, n1, n2, &
                        t, ldt, t(n1+1, n1+1), ldt, work, &
                        n1, scale, ierr)

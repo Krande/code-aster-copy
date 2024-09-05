@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -140,6 +140,7 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q, &
 !     ..
 !     .. LOCAL ARRAYS ..
     real(kind=8) :: d(ldd, 4), u(3), u1(3), u2(3), x(ldx, 2)
+    blas_int :: b_lda, b_ldb, b_m, b_n
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -196,8 +197,12 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q, &
 !
         nd = n1+n2
 ! DUE TO CRP102 CALL DLACPY( 'FULL', ND, ND, T( J1, J1 ), LDT, D, LDD )
-        call dlacpy('F', nd, nd, t(j1, j1), ldt, &
-                    d, ldd)
+        b_ldb = to_blas_int(ldd)
+        b_lda = to_blas_int(ldt)
+        b_m = to_blas_int(nd)
+        b_n = to_blas_int(nd)
+        call dlacpy('F', b_m, b_n, t(j1, j1), b_lda, &
+                    d, b_ldb)
 ! DUE TO CRP102 DNORM = DLANGE( 'MAX', ND, ND, D, LDD, WORK )
         dnorm = dlange('M', nd, nd, d, ldd, work)
 !
@@ -242,8 +247,7 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q, &
 !
 !           TEST WHETHER TO REJECT SWAP.
 !
-            if (max(abs(d(3, 1)), abs(d(3, 2)), abs(d(3, 3)-t11)) .gt. thresh) &
-                goto 50
+            if (max(abs(d(3, 1)), abs(d(3, 2)), abs(d(3, 3)-t11)) .gt. thresh) goto 50
 !
 !           ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 !
@@ -287,8 +291,7 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q, &
 !
 !            TEST WHETHER TO REJECT SWAP.
 !
-            if (max(abs(d(2, 1)), abs(d(3, 1)), abs(d(1, 1)-t33)) .gt. thresh) &
-                goto 50
+            if (max(abs(d(2, 1)), abs(d(3, 1)), abs(d(1, 1)-t33)) .gt. thresh) goto 50
 !
 !            ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 !
@@ -345,7 +348,8 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q, &
 !
 !            TEST WHETHER TO REJECT SWAP.
 !
-            if (max(abs(d(3, 1)), abs(d(3, 2)), abs(d(4, 1)), abs(d(4, 2))) .gt. thresh) goto 50
+            if (max(abs(d(3, 1)), abs(d(3, 2)), abs(d(4, 1)), abs(d(4, 2))) .gt. thresh) &
+                goto 50
 !
 !            ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 !

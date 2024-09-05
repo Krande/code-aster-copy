@@ -168,6 +168,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
     integer :: i, iconj, msglvl
     real(kind=8) :: temp, vl(1)
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+    blas_int :: b_ldb
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -200,8 +201,12 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !     | AND THE LAST COMPONENTS OF THE SCHUR VECTORS IN BOUNDS.   |
 !     %-----------------------------------------------------------%
 ! DUE TO CRP_102 CALL DLACPY ('ALL', N, N, H, LDH, WORKL, N)
-    call dlacpy('A', n, n, h, ldh, &
-                workl, n)
+    b_ldb = to_blas_int(n)
+    b_lda = to_blas_int(ldh)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(n)
+    call dlacpy('A', b_m, b_n, h, b_lda, &
+                workl, b_ldb)
     call dlaqrb(.true._1, n, 1, n, workl, &
                 n, ritzr, ritzi, bounds, ierr)
     if (ierr .ne. 0) goto 9000

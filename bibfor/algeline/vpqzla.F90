@@ -155,6 +155,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
     aster_logical :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
     integer, pointer :: smdi(:) => null()
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_ldb, b_ldvl, b_ldvr, b_lwork
 !
 !-----------------------------------------------------------------------
 !
@@ -632,12 +633,18 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
         call wkvect('&&VPQZLA.QRRCONDE', 'V V R', qrn, ics1)
         if ((lkr) .and. (.not. lc) .and. (.not. lnsr) .and. (.not. lnsm)) then
 ! RECHERCHE DE LA TAILLE OPTIMALE POUR L'ESPACE DE TRAVAIL
-            call dggevx(kbal, 'N', 'V', ksens, qrn, &
-                        zr(iqrn), qrn, zr(lqrn), qrn, zr(qrar), &
-                        zr(qrai), zr(qrba), zr(qrvl), ldvl, zr(lvec3), &
-                        qrn, ilo, ihi, zr(ilscal), zr(irscal), &
+            b_ldvr = to_blas_int(qrn)
+            b_ldvl = to_blas_int(ldvl)
+            b_ldb = to_blas_int(qrn)
+            b_lda = to_blas_int(qrn)
+            b_n = to_blas_int(qrn)
+            b_lwork = to_blas_int(qrlwo)
+            call dggevx(kbal, 'N', 'V', ksens, b_n, &
+                        zr(iqrn), b_lda, zr(lqrn), b_ldb, zr(qrar), &
+                        zr(qrai), zr(qrba), zr(qrvl), b_ldvl, zr(lvec3), &
+                        b_ldvr, ilo, ihi, zr(ilscal), zr(irscal), &
                         abnrm, bbnrm, zr(icscal), zr(ivscal), zr(kqrn), &
-                        qrlwo, zi4(iiscal), bwork, qrinfo)
+                        b_lwork, zi4(iiscal), bwork, qrinfo)
 ! CREATION DU VECTEUR DE TRAVAIL OPTIMALE, DESTRUCTION DU PRECEDENT
 ! ET RESOLUTION
             if (qrinfo .eq. 0) then
@@ -651,12 +658,18 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 ! FIN PATCH
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
-                call dggevx(kbal, 'N', 'V', ksens, qrn, &
-                            zr(iqrn), qrn, zr(lqrn), qrn, zr(qrar), &
-                            zr(qrai), zr(qrba), zr(qrvl), ldvl, zr(lvec3), &
-                            qrn, ilo, ihi, zr(ilscal), zr(irscal), &
+                b_ldvr = to_blas_int(qrn)
+                b_ldvl = to_blas_int(ldvl)
+                b_ldb = to_blas_int(qrn)
+                b_lda = to_blas_int(qrn)
+                b_n = to_blas_int(qrn)
+                b_lwork = to_blas_int(qrlwo)
+                call dggevx(kbal, 'N', 'V', ksens, b_n, &
+                            zr(iqrn), b_lda, zr(lqrn), b_ldb, zr(qrar), &
+                            zr(qrai), zr(qrba), zr(qrvl), b_ldvl, zr(lvec3), &
+                            b_ldvr, ilo, ihi, zr(ilscal), zr(irscal), &
                             abnrm, bbnrm, zr(icscal), zr(ivscal), zr(kqrn2), &
-                            qrlwo, zi4(iiscal), bwork, qrinfo)
+                            b_lwork, zi4(iiscal), bwork, qrinfo)
             end if
         else
             call zggevx(kbal, 'N', 'V', ksens, qrn, &
@@ -701,19 +714,31 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 ! ----  QZ SIMPLE
     else if (typeqz(1:9) .eq. 'QZ_SIMPLE') then
         if ((lkr) .and. (.not. lc) .and. (.not. lnsr) .and. (.not. lnsm)) then
-            call dggev('N', 'V', qrn, zr(iqrn), qrn, &
-                       zr(lqrn), qrn, zr(qrar), zr(qrai), zr(qrba), &
-                       zr(qrvl), ldvl, zr(lvec3), qrn, zr(kqrn), &
-                       qrlwo, qrinfo)
+            b_ldvr = to_blas_int(qrn)
+            b_ldvl = to_blas_int(ldvl)
+            b_ldb = to_blas_int(qrn)
+            b_lda = to_blas_int(qrn)
+            b_n = to_blas_int(qrn)
+            b_lwork = to_blas_int(qrlwo)
+            call dggev('N', 'V', b_n, zr(iqrn), b_lda, &
+                       zr(lqrn), b_ldb, zr(qrar), zr(qrai), zr(qrba), &
+                       zr(qrvl), b_ldvl, zr(lvec3), b_ldvr, zr(kqrn), &
+                       b_lwork, qrinfo)
             if (qrinfo .eq. 0) then
                 qrlwo = int(zr(kqrn))
                 qrlwor = int(zr(kqrn))
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
-                call dggev('N', 'V', qrn, zr(iqrn), qrn, &
-                           zr(lqrn), qrn, zr(qrar), zr(qrai), zr(qrba), &
-                           zr(qrvl), ldvl, zr(lvec3), qrn, zr(kqrn2), &
-                           qrlwo, qrinfo)
+                b_ldvr = to_blas_int(qrn)
+                b_ldvl = to_blas_int(ldvl)
+                b_ldb = to_blas_int(qrn)
+                b_lda = to_blas_int(qrn)
+                b_n = to_blas_int(qrn)
+                b_lwork = to_blas_int(qrlwo)
+                call dggev('N', 'V', b_n, zr(iqrn), b_lda, &
+                           zr(lqrn), b_ldb, zr(qrar), zr(qrai), zr(qrba), &
+                           zr(qrvl), b_ldvl, zr(lvec3), b_ldvr, zr(kqrn2), &
+                           b_lwork, qrinfo)
             end if
         else
             call zggev('N', 'V', qrn, zc(iqrn), qrn, &

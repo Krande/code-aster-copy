@@ -93,6 +93,7 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s, &
     integer :: iret
     real(kind=8), pointer :: v_mode(:) => null()
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+    blas_int :: b_nrhs
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -240,8 +241,12 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s, &
 !
 ! ----- Solve [v]^T [v] {Y} = [v]^T {q} => {Y} are reduced coordinates
         AS_ALLOCATE(vi4=IPIV, size=iAlgoSnap)
-        call dgesv(iAlgoSnap, 1, kv, iAlgoSnap, IPIV, &
-                   kt, iAlgoSnap, info)
+        b_ldb = to_blas_int(iAlgoSnap)
+        b_lda = to_blas_int(iAlgoSnap)
+        b_n = to_blas_int(iAlgoSnap)
+        b_nrhs = to_blas_int(1)
+        call dgesv(b_n, b_nrhs, kv, b_lda, IPIV, &
+                   kt, b_ldb, info)
 !
 ! ----- Compute residu {r} = [v] {Y}
         b_ldc = to_blas_int(nbEqua)

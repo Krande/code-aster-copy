@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,6 +114,7 @@ subroutine ar_dgeqr2(m, n, a, lda, tau, &
 !     .. LOCAL SCALARS ..
     integer :: i, k
     real(kind=8) :: aii
+    blas_int :: b_incv, b_ldc, b_m, b_n
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !
@@ -147,8 +148,12 @@ subroutine ar_dgeqr2(m, n, a, lda, tau, &
 !
             aii = a(i, i)
             a(i, i) = one
-            call dlarf('L', m-i+1, n-i, a(i, i), 1, &
-                       tau(i), a(i, i+1), lda, work)
+            b_ldc = to_blas_int(lda)
+            b_m = to_blas_int(m-i+1)
+            b_n = to_blas_int(n-i)
+            b_incv = to_blas_int(1)
+            call dlarf('L', b_m, b_n, a(i, i), b_incv, &
+                       tau(i), a(i, i+1), b_ldc, work)
             a(i, i) = aii
         end if
     end do

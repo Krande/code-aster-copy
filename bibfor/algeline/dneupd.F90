@@ -404,6 +404,7 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
     real(kind=8) :: conds, rnorm, sep, temp, thres, vl(1, 1), temp1, eps23, eps
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_m
+    blas_int :: b_ldb
 !
 !     %--------------------%
 !     | EXTERNAL FUNCTIONS |
@@ -771,8 +772,12 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
                     workl(invsub), ldq, workev, v, ldv, &
                     workd(n+1), ierr4)
         ierr = ierr4
-        call dlacpy('A', n, nconv, v, ldv, &
-                    z, ldz)
+        b_ldb = to_blas_int(ldz)
+        b_lda = to_blas_int(ldv)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(nconv)
+        call dlacpy('A', b_m, b_n, v, b_lda, &
+                    z, b_ldb)
 !
         do j = 1, nconv
 !

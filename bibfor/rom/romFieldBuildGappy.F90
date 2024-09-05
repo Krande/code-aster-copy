@@ -67,6 +67,7 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
     character(len=24) :: fieldRom, fieldName
     real(kind=8), pointer :: valeField(:) => null(), valeRom(:) => null()
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+    blas_int :: b_nrhs
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -167,8 +168,12 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
                    0.d0, systMatr, b_ldc)
 !
 ! ----- Solve system
-        call dgesv(nbMode, 1, systMatr, nbMode, systPerm, &
-                   systVect, nbMode, systInfo)
+        b_ldb = to_blas_int(nbMode)
+        b_lda = to_blas_int(nbMode)
+        b_n = to_blas_int(nbMode)
+        b_nrhs = to_blas_int(1)
+        call dgesv(b_n, b_nrhs, systMatr, b_lda, systPerm, &
+                   systVect, b_ldb, systInfo)
         if (systInfo .ne. 0) then
             call utmess('F', 'ROM17_9')
         end if

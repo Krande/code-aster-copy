@@ -55,6 +55,7 @@ subroutine romCoefComputeFromField(base, v_field, v_vect)
     real(kind=8), pointer :: v_matr(:) => null()
     integer(kind=4), pointer :: IPIV(:) => null()
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+    blas_int :: b_nrhs
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,8 +91,12 @@ subroutine romCoefComputeFromField(base, v_field, v_vect)
     call dgemm('T', 'N', b_m, b_n, b_k, &
                1.d0, v_matr_phi, b_lda, v_matr_phi, b_ldb, &
                0.d0, v_matr, b_ldc)
-    call dgesv(nbMode, 1, v_matr, nbMode, IPIV, &
-               v_vect, nbMode, info)
+    b_ldb = to_blas_int(nbMode)
+    b_lda = to_blas_int(nbMode)
+    b_n = to_blas_int(nbMode)
+    b_nrhs = to_blas_int(1)
+    call dgesv(b_n, b_nrhs, v_matr, b_lda, IPIV, &
+               v_vect, b_ldb, info)
     if (info .ne. 0) then
         call utmess('F', 'ROM6_32')
     end if

@@ -73,6 +73,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
     integer, pointer :: deeq(:) => null()
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
+    blas_int :: b_ldu, b_ldvt, b_lwork
 !
     ortho = ' '
     iret = 0
@@ -187,15 +188,27 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
 !-- DESACTIVATION DU TEST FPE
         call matfpe(-1)
 !
-        call dgesvd('A', 'N', nbc, nbc, new_stat, &
-                    nbc, zr(ltrav1), trav2_u, nbc, trav3_v, &
-                    nbc, swork, -1, info)
+        b_ldvt = to_blas_int(nbc)
+        b_ldu = to_blas_int(nbc)
+        b_lda = to_blas_int(nbc)
+        b_m = to_blas_int(nbc)
+        b_n = to_blas_int(nbc)
+        b_lwork = to_blas_int(-1)
+        call dgesvd('A', 'N', b_m, b_n, new_stat, &
+                    b_lda, zr(ltrav1), trav2_u, b_ldu, trav3_v, &
+                    b_ldvt, swork, b_lwork, info)
         lwork = int(swork(1))
         AS_ALLOCATE(vr=mat_svd_work, size=lwork)
 !
-        call dgesvd('A', 'N', nbc, nbc, new_stat, &
-                    nbc, zr(ltrav1), trav2_u, nbc, trav3_v, &
-                    nbc, mat_svd_work, lwork, info)
+        b_ldvt = to_blas_int(nbc)
+        b_ldu = to_blas_int(nbc)
+        b_lda = to_blas_int(nbc)
+        b_m = to_blas_int(nbc)
+        b_n = to_blas_int(nbc)
+        b_lwork = to_blas_int(lwork)
+        call dgesvd('A', 'N', b_m, b_n, new_stat, &
+                    b_lda, zr(ltrav1), trav2_u, b_ldu, trav3_v, &
+                    b_ldvt, mat_svd_work, b_lwork, info)
 !
         nindep = 0
         norme = (nbc+0.d0)*zr(ltrav1)*1.d-16

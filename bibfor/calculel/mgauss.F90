@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,6 +95,8 @@ subroutine mgauss(cara, a, b, dim, nordre, &
     character(len=4) :: cara2
     character(len=24) :: valk(2)
     aster_logical :: ltrans, lstop, ldet, lret
+    blas_int :: b_lda, b_ldb, b_n, b_nrhs
+    blas_int :: b_ldaf, b_ldx
 !----------------------------------------------------------------------
     call matfpe(-1)
 !
@@ -134,10 +136,16 @@ subroutine mgauss(cara, a, b, dim, nordre, &
         aa = a
 !
 ! --- RESOLUTION
-        call dgesvx(fact, trans2, n, nrhs, aa, &
-                    lda, af, ldaf, ipiv4, equed, &
-                    r, c, b, ldb, x, &
-                    ldx, rcond, ferr, berr, work, &
+        b_ldx = to_blas_int(ldx)
+        b_ldb = to_blas_int(ldb)
+        b_ldaf = to_blas_int(ldaf)
+        b_lda = to_blas_int(lda)
+        b_n = to_blas_int(n)
+        b_nrhs = to_blas_int(nrhs)
+        call dgesvx(fact, trans2, b_n, b_nrhs, aa, &
+                    b_lda, af, b_ldaf, ipiv4, equed, &
+                    r, c, b, b_ldb, x, &
+                    b_ldx, rcond, ferr, berr, work, &
                     iwork4, inf4)
         iret = inf4
 !
@@ -195,8 +203,12 @@ subroutine mgauss(cara, a, b, dim, nordre, &
         end if
 !
 !       ---   RESOLUTION
-        call dgesv(n, nrhs, af, lda, ipiv4, &
-                   b, ldb, inf4)
+        b_ldb = to_blas_int(ldb)
+        b_lda = to_blas_int(lda)
+        b_n = to_blas_int(n)
+        b_nrhs = to_blas_int(nrhs)
+        call dgesv(b_n, b_nrhs, af, b_lda, ipiv4, &
+                   b, b_ldb, inf4)
         iret = inf4
         if (ldet) then
             det = 1.d0
