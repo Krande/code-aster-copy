@@ -813,12 +813,12 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                     call utmess('I', 'ALGELINE7_13', sr=zr(icscal+im1))
                 end if
                 if (lc) then
-                    write (ifm, 912) i, dble(zc(qrar+im1)), dimag(zc(qrar+ &
-                                                   im1)), dble(zc(qrba+im1)), dimag(zc(qrba+im1)), &
+                    write (ifm, 912) i, dble(zc(qrar+im1)), dimag(zc(qrar+im1)), &
+                        dble(zc(qrba+im1)), dimag(zc(qrba+im1)), &
                         dimag(freq)/depi, -dble(freq)/abs(freq)
                 else
-                    write (ifm, 912) i, dble(zc(qrar+im1)), dimag(zc(qrar+ &
-                                                   im1)), dble(zc(qrba+im1)), dimag(zc(qrba+im1)), &
+                    write (ifm, 912) i, dble(zc(qrar+im1)), dimag(zc(qrar+im1)), &
+                        dble(zc(qrba+im1)), dimag(zc(qrba+im1)), &
                         freqom(dble(freq)), dimag(freq)/(2.d0*dble(freq))
                 end if
             end if
@@ -1202,10 +1202,8 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
             end if
         end do
 921     format('I/FREQ/ERREUR INVERSE ASTER', i4, 1x, e12.5, 1x, e12.5)
-922     format('I/LAMBDA/ERREUR INVERSE ASTER', i4, 1x, e12.5, e12.5, 1x,&
-                     &         e12.5)
-923     format('I/FREQ/ERREUR INVERSE ASTER', i4, 1x, e12.5, e12.5, 1x,&
-                     &         e12.5)
+922     format('I/LAMBDA/ERREUR INVERSE ASTER', i4, 1x, e12.5, e12.5, 1x, e12.5)
+923     format('I/FREQ/ERREUR INVERSE ASTER', i4, 1x, e12.5, e12.5, 1x, e12.5)
         call jedetr('&&VPQZLA.TAMPON.PROV_1')
         call jedetr('&&VPQZLA.TAMPON.PROV_2')
         if (lc) call jedetr('&&VPQZLA.TAMPON.PROV_3')

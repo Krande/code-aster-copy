@@ -371,10 +371,9 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
             ASSERT(lonmax .ge. lonnew)
             ASSERT(lonmin .le. lonnew)
             ASSERT(lonmin .le. lonmax)
-            if ((lonmax .ne. lonmin) .or. ((ipas .gt. 1) .and. (lonnew .ne. lonch))) call utmess( &
-                                                                                     'F', &
-                                                                                     'PREPOST_17&
-                                                                                     &')
+            if ((lonmax .ne. lonmin) .or. ((ipas .gt. 1) .and. (lonnew .ne. lonch))) then
+                call utmess('F', 'PREPOST_17')
+            end if
         end if
 !
     else if (option .eq. 7) then
