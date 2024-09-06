@@ -74,6 +74,7 @@ subroutine te0457(option, nomte)
     real(kind=8) :: sigma(MAX_QP_FACE), epsil(MAX_QP_FACE), rbid, tz0, time_curr
     integer :: fbs, celldim, ipg, nbpara, npg
     integer :: j_time, j_coefh, j_para
+    blas_int :: b_incx, b_lda, b_n
 !
 !
 ! -- Get number of Gauss points
@@ -221,8 +222,11 @@ subroutine te0457(option, nomte)
                                  basisScalEval)
 ! --------  Eval massMat
         coeff = CoeffQP_curr(ipg)*hhoQuadFace%weights(ipg)
-        call dsyr('U', fbs, coeff, basisScalEval, 1, &
-                  lhs, MSIZE_FACE_SCAL)
+        b_n = to_blas_int(fbs)
+        b_incx = to_blas_int(1)
+        b_lda = to_blas_int(MSIZE_FACE_SCAL)
+        call dsyr('U', b_n, coeff, basisScalEval, b_incx, &
+                  lhs, b_lda)
     end do
 !
 ! ----- Copy the lower part

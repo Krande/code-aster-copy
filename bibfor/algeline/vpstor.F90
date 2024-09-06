@@ -292,7 +292,10 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             b_incy = to_blas_int(1)
             call dcopy(b_n, vecpr8(1, kmode), b_incx, zr(lvale), b_incy)
         else if (typ(1:1) .eq. 'C') then
-            call zcopy(neq, vecpc8(1, kmode), 1, zc(lvale), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, vecpc8(1, kmode), b_incx, zc(lvale), b_incy)
         end if
 !       SI LE CHAMP A DEJA ETE NOTE PAR SEMOCO, ON NE LE REFAIT PAS
         if (ier .ne. 0) call rsnoch(modes, nosy, nordr)

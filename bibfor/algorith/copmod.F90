@@ -307,7 +307,10 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
             b_incy = to_blas_int(1)
             call dcopy(b_n, zr(jval), b_incx, bmodr((i-1)*neq+1), b_incy)
         else
-            call zcopy(neq, zc(jval), 1, bmodz((i-1)*neq+1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, zc(jval), b_incx, bmodz((i-1)*neq+1), b_incy)
         end if
 !
 !       3.1.5 - MENAGE ET LIBERATION DE LA MEMOIRE SELON LE BESOIN

@@ -343,7 +343,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
 !
 !        --- REMPLISSAGE AVEC LES PREMIERS RESULTATS POUR IDDL=1
         lfon2 = nout+nbvout
-        call zcopy(nbvout, zc(lfon2), 1, zc(npara+(iddl-1)*nbvout), 1)
+        b_n = to_blas_int(nbvout)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, zc(lfon2), b_incx, zc(npara+(iddl-1)*nbvout), b_incy)
 !
 !        --- BOUCLE DES FFTS SUR LES AUTRES DDL'S
 !            REFERER AUX PRECEDENTS COMMENTAIRES POUR + DE DETAILS
@@ -368,7 +371,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
                                 nbpts, nout, nbpts2, sym)
 !              --- SAUVEGARDE DES RESULTATS DANS VECTOT
                     lfon2 = nout+nbvout
-                    call zcopy(nbvout, zc(lfon2), 1, zc(npara+(iddl-1)*nbvout), 1)
+                    b_n = to_blas_int(nbvout)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(lfon2), b_incx, zc(npara+(iddl-1)*nbvout), b_incy)
                 end if
             end do
 !
@@ -401,7 +407,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
                                 nbpts, nout, nbpts2, sym)
 !              --- SAUVEGARDE DES RESULTATS DANS VECTOT
                     lfon2 = nout+nbvout
-                    call zcopy(nbvout, zc(lfon2), 1, zc(npara+(iddl-1)*nbvout), 1)
+                    b_n = to_blas_int(nbvout)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(lfon2), b_incx, zc(npara+(iddl-1)*nbvout), b_incy)
                 end if
             end do
 !
@@ -420,7 +429,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
         end if
 !
 !        --- STOCKAGE DES INSTANTS A LA FIN DANS VECTOT
-        call zcopy(nbvout, zc(nout), 1, zc(npara+neq*nbvout), 1)
+        b_n = to_blas_int(nbvout)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, zc(nout), b_incx, zc(npara+neq*nbvout), b_incy)
 !
     else if (nsens .eq. -1) then
 !     --- DE FREQUENTIEL EN TEMPOREL : HARM_GENE EN TRAN_GENE

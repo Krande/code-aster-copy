@@ -181,7 +181,10 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal, &
             b_incy = to_blas_int(1)
             call dcopy(b_n, rvect, b_incx, zr(jvect), b_incy)
         else if (partyp(ip) .eq. 'C8') then
-            call zcopy(lonvec, cvect, 1, zc(jvect), 1)
+            b_n = to_blas_int(lonvec)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, cvect, b_incx, zc(jvect), b_incy)
         else if (partyp(ip) .eq. 'I') then
             do i = 1, lonvec
                 zi(jvect+i-1) = ivect(i)

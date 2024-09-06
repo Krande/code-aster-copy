@@ -301,12 +301,20 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2, &
                 end do
             end do
             if (ipsv .ne. i) then
-                call dswap(4, t16(ipsv, 1), 4, t16(i, 1), 4)
+                b_n = to_blas_int(4)
+                b_incx = to_blas_int(4)
+                b_incy = to_blas_int(4)
+                call dswap(b_n, t16(ipsv, 1), b_incx, t16(i, 1), b_incy)
                 temp = btmp(i)
                 btmp(i) = btmp(ipsv)
                 btmp(ipsv) = temp
             end if
-            if (jpsv .ne. i) call dswap(4, t16(1, jpsv), 1, t16(1, i), 1)
+            if (jpsv .ne. i) then
+                b_n = to_blas_int(4)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dswap(b_n, t16(1, jpsv), b_incx, t16(1, i), b_incy)
+            end if
             jpiv(i) = jpsv
             if (abs(t16(i, i)) .lt. smin) then
                 info = 1

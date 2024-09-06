@@ -260,7 +260,10 @@ subroutine op0141()
                 end do
 !
             else
-                call zcopy(neq, zc(idbas1+(i-1)*neq), 1, zc(idvec1), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, zc(idbas1+(i-1)*neq), b_incx, zc(idvec1), b_incy)
             end if
 !
 ! PB AVEC ZDOTC DE BLAS POUR CERTAIN COMPILO -> CALCUL DIRECT
@@ -284,7 +287,10 @@ subroutine op0141()
                     end do
 !
                 else
-                    call zcopy(neq, zc(idbas2+(j-1)*neq), 1, zc(idvec2), 1)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(idbas2+(j-1)*neq), b_incx, zc(idvec2), b_incy)
                 end if
 !
                 ztemp = dcmplx(0.0d0, 0.0d0)

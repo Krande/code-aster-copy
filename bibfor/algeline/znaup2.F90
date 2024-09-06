@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine znaup2(ido, bmat, n, which, nev, &
                   np, tol, resid, ishift, mxiter, &
                   v, ldv, h, ldh, ritz, &
@@ -270,6 +270,7 @@ subroutine znaup2(ido, bmat, n, which, nev, &
 !     %-----------------------%
 !
     integer :: kp(3)
+    blas_int :: b_incx, b_incy, b_n
 !
 !     %--------------------%
 !     | EXTERNAL FUNCTIONS |
@@ -501,8 +502,14 @@ subroutine znaup2(ido, bmat, n, which, nev, &
 !        | RITZ ESTIMATES OBTAINED FROM ZNEIGH .             |
 !        %--------------------------------------------------%
 !
-    call zcopy(kplusp, ritz, 1, workl(kplusp**2+1), 1)
-    call zcopy(kplusp, bounds, 1, workl(kplusp**2+kplusp+1), 1)
+    b_n = to_blas_int(kplusp)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call zcopy(b_n, ritz, b_incx, workl(kplusp**2+1), b_incy)
+    b_n = to_blas_int(kplusp)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call zcopy(b_n, bounds, b_incx, workl(kplusp**2+kplusp+1), b_incy)
 !
 !        %---------------------------------------------------%
 !        | SELECT THE WANTED RITZ VALUES AND THEIR BOUNDS    |
@@ -720,7 +727,10 @@ subroutine znaup2(ido, bmat, n, which, nev, &
 !            | FOR NON-EXACT SHIFT CASE.        |
 !            %----------------------------------%
 !
-        call zcopy(np, workl, 1, ritz, 1)
+        b_n = to_blas_int(np)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, workl, b_incx, ritz, b_incy)
     end if
 !
     if (msglvl .gt. 2) then
@@ -750,7 +760,10 @@ subroutine znaup2(ido, bmat, n, which, nev, &
     cnorm = .true.
     if (bmat .eq. 'G') then
         nbx = nbx+1
-        call zcopy(n, resid, 1, workd(n+1), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, resid, b_incx, workd(n+1), b_incy)
         ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
@@ -761,7 +774,10 @@ subroutine znaup2(ido, bmat, n, which, nev, &
 !
         goto 9000
     else if (bmat .eq. 'I') then
-        call zcopy(n, resid, 1, workd, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, resid, b_incx, workd, b_incy)
     end if
 !
 100 continue

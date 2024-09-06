@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -193,6 +193,8 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
     integer :: i, ii, is, j, k, ki
     integer(kind=4) :: info4
     real(kind=8) :: remax, scale, smin, smlnum, ulp, unfl
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -303,8 +305,10 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
             end do
 !
             if (ki .gt. 1) then
-                call zlatrs('U', 'N', 'N', 'Y', ki-1, &
-                            t, ldt, work(1), scale, rwork, &
+                b_lda = to_blas_int(ldt)
+                b_n = to_blas_int(ki-1)
+                call zlatrs('U', 'N', 'N', 'Y', b_n, &
+                            t, b_lda, work(1), scale, rwork, &
                             info4)
                 work(ki) = scale
             end if
@@ -312,23 +316,37 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
 !           COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 !
             if (.not. over) then
-                call zcopy(ki, work(1), 1, vr(1, is), 1)
+                b_n = to_blas_int(ki)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, work(1), b_incx, vr(1, is), b_incy)
 !
                 ii = izamax(ki, vr(1, is), 1)
                 remax = one/cabs1(vr(ii, is))
-                call zdscal(ki, remax, vr(1, is), 1)
+                b_n = to_blas_int(ki)
+                b_incx = to_blas_int(1)
+                call zdscal(b_n, remax, vr(1, is), b_incx)
 !
                 do k = ki+1, n
                     vr(k, is) = cmzero
                 end do
             else
-                if (ki .gt. 1) call zgemv('N', n, ki-1, cmone, vr, &
-                                          ldvr, work(1), 1, dcmplx(scale), vr(1, ki), &
-                                          1)
+                if (ki .gt. 1) then
+                    b_lda = to_blas_int(ldvr)
+                    b_m = to_blas_int(n)
+                    b_n = to_blas_int(ki-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zgemv('N', b_m, b_n, cmone, vr, &
+                               b_lda, work(1), b_incx, dcmplx(scale), vr(1, ki), &
+                               b_incy)
+                end if
 !
                 ii = izamax(n, vr(1, ki), 1)
                 remax = one/cabs1(vr(ii, ki))
-                call zdscal(n, remax, vr(1, ki), 1)
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                call zdscal(b_n, remax, vr(1, ki), b_incx)
             end if
 !
 !           SET BACK THE ORIGINAL DIAGONAL ELEMENTS OF T.
@@ -371,8 +389,10 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
             end do
 !
             if (ki .lt. n) then
-                call zlatrs('U', 'C', 'N', 'Y', n-ki, &
-                            t(ki+1, ki+1), ldt, work(ki+1), scale, rwork, &
+                b_lda = to_blas_int(ldt)
+                b_n = to_blas_int(n-ki)
+                call zlatrs('U', 'C', 'N', 'Y', b_n, &
+                            t(ki+1, ki+1), b_lda, work(ki+1), scale, rwork, &
                             info4)
                 work(ki) = scale
             end if
@@ -380,23 +400,37 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
 !           COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 !
             if (.not. over) then
-                call zcopy(n-ki+1, work(ki), 1, vl(ki, is), 1)
+                b_n = to_blas_int(n-ki+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, work(ki), b_incx, vl(ki, is), b_incy)
 !
                 ii = izamax(n-ki+1, vl(ki, is), 1)+ki-1
                 remax = one/cabs1(vl(ii, is))
-                call zdscal(n-ki+1, remax, vl(ki, is), 1)
+                b_n = to_blas_int(n-ki+1)
+                b_incx = to_blas_int(1)
+                call zdscal(b_n, remax, vl(ki, is), b_incx)
 !
                 do k = 1, ki-1
                     vl(k, is) = cmzero
                 end do
             else
-                if (ki .lt. n) call zgemv('N', n, n-ki, cmone, vl(1, ki+1), &
-                                          ldvl, work(ki+1), 1, dcmplx(scale), vl(1, ki), &
-                                          1)
+                if (ki .lt. n) then
+                    b_lda = to_blas_int(ldvl)
+                    b_m = to_blas_int(n)
+                    b_n = to_blas_int(n-ki)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zgemv('N', b_m, b_n, cmone, vl(1, ki+1), &
+                               b_lda, work(ki+1), b_incx, dcmplx(scale), vl(1, ki), &
+                               b_incy)
+                end if
 !
                 ii = izamax(n, vl(1, ki), 1)
                 remax = one/cabs1(vl(ii, ki))
-                call zdscal(n, remax, vl(1, ki), 1)
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                call zdscal(b_n, remax, vl(1, ki), b_incx)
             end if
 !
 !           SET BACK THE ORIGINAL DIAGONAL ELEMENTS OF T.

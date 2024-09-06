@@ -725,8 +725,11 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                         noch(1+j) = fono(1+j)-chmp(1+j)-cgmp(1+j)
                     end do
                 else
-                    call zaxpy(lonch, cmun, chmpc, 1, nochc, &
-                               1)
+                    b_n = to_blas_int(lonch)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zaxpy(b_n, cmun, chmpc, b_incx, nochc, &
+                               b_incy)
                 end if
                 if (resultType .eq. 'EVOL_NOLI') then
                     call jeveuo(cnfpip(1:19)//'.VALE', 'L', vr=fpip)
@@ -850,8 +853,11 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                     if (lmat .eq. 0) call utmess('F', 'PREPOST3_81', sk=option)
                     call mcmult('ZERO', lmat, zc(lacce), zc(ltrav), 1, &
                                 .true._1)
-                    call zaxpy(lonch, cun, zc(ltrav), 1, nochc, &
-                               1)
+                    b_n = to_blas_int(lonch)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zaxpy(b_n, cun, zc(ltrav), b_incx, nochc, &
+                               b_incy)
                     call jedetr('&&'//nompro//'.TRAV')
                 else
                     call utmess('A', 'CALCULEL3_1')

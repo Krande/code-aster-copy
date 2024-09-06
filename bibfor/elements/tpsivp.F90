@@ -56,9 +56,14 @@ subroutine tpsivp(p, sigmav)
     ld = 3
     alpha = 1.d0
     beta = 0.d0
-    call dsymm('L', 'L', ld, ld, alpha, &
-               sigma, ld, p, ld, beta, &
-               temp, ld)
+    b_ldc = to_blas_int(ld)
+    b_ldb = to_blas_int(ld)
+    b_lda = to_blas_int(ld)
+    b_m = to_blas_int(ld)
+    b_n = to_blas_int(ld)
+    call dsymm('L', 'L', b_m, b_n, alpha, &
+               sigma, b_lda, p, b_ldb, beta, &
+               temp, b_ldc)
 ! sigma <- P^T*temp
     b_ldc = to_blas_int(3)
     b_ldb = to_blas_int(3)

@@ -188,7 +188,10 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
                     b_incy = to_blas_int(1)
                     call dcopy(b_n, zr(jvect), b_incx, rvect, b_incy)
                 else if (partyp(ip) .eq. 'C16') then
-                    call zcopy(lvec, zc(jvect), 1, cvect, 1)
+                    b_n = to_blas_int(lvec)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(jvect), b_incx, cvect, b_incy)
                 else if (partyp(ip) .eq. 'I') then
                     do i = 1, lvec
                         ivect(i) = zi(jvect+i-1)

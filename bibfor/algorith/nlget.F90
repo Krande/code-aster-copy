@@ -177,7 +177,10 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, zr(addr), b_incx, rvect, b_incy)
             else if (present(cvect)) then
-                call zcopy(lvec, zc(addr), 1, cvect, 1)
+                b_n = to_blas_int(lvec)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, zc(addr), b_incx, cvect, b_incy)
             else if (present(kvect)) then
                 if (partyp(ip) .eq. 'K8 ') then
                     do i = 1, lvec
@@ -284,7 +287,10 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
                 else if (partyp(ip) .eq. 'C') then
                     if (present(cvect)) then
                         call jeveuo(savename, 'L', addr)
-                        call zcopy(lvec, zc(addr), 1, cvect, 1)
+                        b_n = to_blas_int(lvec)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call zcopy(b_n, zc(addr), b_incx, cvect, b_incy)
                     else
                         call jeveuo(savename, 'E', vc=vc)
                     end if

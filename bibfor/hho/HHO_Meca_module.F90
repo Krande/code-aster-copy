@@ -241,6 +241,7 @@ contains
         aster_logical :: l_rigi_meca
         integer :: cbs, fbs, total_dofs, j
         blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_lda
 !
 ! --- Verif compor
 !
@@ -301,8 +302,12 @@ contains
         call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, hhoMecaState%time_curr, hhoQuadCellRigi)
 !
         if (L_VECT(hhoCS%option)) then
-            call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC, &
-                       hhoMecaState%depl_curr, 1, 1.d0, rhs, 1)
+            b_lda = to_blas_int(MSIZE_TDOFS_VEC)
+            b_n = to_blas_int(total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, hhoData%coeff_stab(), hhoMecaState%stab, b_lda, &
+                       hhoMecaState%depl_curr, b_incx, 1.d0, rhs, b_incy)
         end if
 !
         if (L_MATR(hhoCS%option)) then
@@ -590,6 +595,7 @@ contains
         real(kind=8) :: coorpg(3), weight, rho, rho_(1), coeff
         real(kind=8) :: mass_scal(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
         real(kind=8) :: mass_vec(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+        blas_int :: b_incx, b_lda, b_n
 !
 ! --- Get input fields
 !
@@ -629,8 +635,11 @@ contains
 ! -------- Compute lhs
 !
             coeff = rho*weight
-            call dsyr('U', dimMatScal, coeff, BSCEval, 1, &
-                      mass_scal, MSIZE_CELL_SCAL)
+            b_n = to_blas_int(dimMatScal)
+            b_incx = to_blas_int(1)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            call dsyr('U', b_n, coeff, BSCEval, b_incx, &
+                      mass_scal, b_lda)
 !
         end do
 !
@@ -754,8 +763,12 @@ contains
 !
         call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, 0.d0, hhoQuadCellRigi)
 !
-        call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC, &
-                   hhoMecaState%depl_curr, 1, 1.d0, rhs, 1)
+        b_lda = to_blas_int(MSIZE_TDOFS_VEC)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dsymv('U', b_n, hhoData%coeff_stab(), hhoMecaState%stab, b_lda, &
+                   hhoMecaState%depl_curr, b_incx, 1.d0, rhs, b_incy)
 !
     end subroutine
 !

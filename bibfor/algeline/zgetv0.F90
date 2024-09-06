@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zgetv0(ido, bmat, initv, n, j, &
                   v, ldv, resid, rnorm, ipntr, &
                   workd, ierr, alpha)
@@ -192,6 +192,9 @@ subroutine zgetv0(ido, bmat, initv, n, j, &
     integer :: idist, iseed(4), iter, msglvl, jj
     real(kind=8) :: rnorm0
     complex(kind=8) :: cnorm
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
+    blas_int :: b_idist
     save first, iseed, inits, iter, msglvl, orth, rnorm0
 !
 !     %--------------------%
@@ -252,7 +255,9 @@ subroutine zgetv0(ido, bmat, initv, n, j, &
             iseed4(2) = iseed(2)
             iseed4(3) = iseed(3)
             iseed4(4) = iseed(4)
-            call zlarnv(idist, iseed4, n, resid)
+            b_idist = to_blas_int(idist)
+            b_n = to_blas_int(n)
+            call zlarnv(b_idist, iseed4, b_n, resid)
             iseed(1) = iseed4(1)
             iseed(2) = iseed4(2)
             iseed(3) = iseed4(3)
@@ -268,7 +273,10 @@ subroutine zgetv0(ido, bmat, initv, n, j, &
             nopx = nopx+1
             ipntr(1) = 1
             ipntr(2) = n+1
-            call zcopy(n, resid, 1, workd, 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, resid, b_incx, workd, b_incy)
             ido = -1
             goto 9000
         end if
@@ -294,13 +302,19 @@ subroutine zgetv0(ido, bmat, initv, n, j, &
     first = .true.
     if (bmat .eq. 'G') then
         nbx = nbx+1
-        call zcopy(n, workd(n+1), 1, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, workd(n+1), b_incx, resid, b_incy)
         ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
         goto 9000
     else if (bmat .eq. 'I') then
-        call zcopy(n, resid, 1, workd, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, resid, b_incx, workd, b_incy)
     end if
 !
 20  continue
@@ -335,12 +349,22 @@ subroutine zgetv0(ido, bmat, initv, n, j, &
     orth = .true.
 30  continue
 !
-    call zgemv('C', n, j-1, one, v, &
-               ldv, workd, 1, zero, workd(n+1), &
-               1)
-    call zgemv('N', n, j-1, -one, v, &
-               ldv, workd(n+1), 1, one, resid, &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call zgemv('C', b_m, b_n, one, v, &
+               b_lda, workd, b_incx, zero, workd(n+1), &
+               b_incy)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call zgemv('N', b_m, b_n, -one, v, &
+               b_lda, workd(n+1), b_incx, one, resid, &
+               b_incy)
 !
 !     %----------------------------------------------------------%
 !     | COMPUTE THE B-NORM OF THE ORTHOGONALIZED STARTING VECTOR |
@@ -348,13 +372,19 @@ subroutine zgetv0(ido, bmat, initv, n, j, &
 !
     if (bmat .eq. 'G') then
         nbx = nbx+1
-        call zcopy(n, resid, 1, workd(n+1), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, resid, b_incx, workd(n+1), b_incy)
         ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
         goto 9000
     else if (bmat .eq. 'I') then
-        call zcopy(n, resid, 1, workd, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, resid, b_incx, workd, b_incy)
     end if
 !
 40  continue

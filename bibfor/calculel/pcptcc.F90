@@ -441,7 +441,10 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                     p = p+1
                 end do
             else
-                call zcopy(lonch, nochc, 1, zc(jcnoch+(irelat-1)*lonch), 1)
+                b_n = to_blas_int(lonch)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, nochc, b_incx, zc(jcnoch+(irelat-1)*lonch), b_incy)
                 call asmpi_barrier(mpicou)
                 call asmpi_comm_vect('MPI_SUM', 'C', nbval=lonch*nbproc, vc=zc(jcnoch))
                 if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> ALLREDUCE complexe longueur=', &
@@ -451,7 +454,10 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                 do k = ideb, ifin
                     k24b = zk24(jvcham+p-1)
                     call jeveuo(k24b(1:19)//'.VALE', 'E', jval)
-                    call zcopy(lonch, zc(jcnoch+(p-1)*lonch), 1, zc(jval), 1)
+                    b_n = to_blas_int(lonch)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(jcnoch+(p-1)*lonch), b_incx, zc(jval), b_incy)
                     call jelibe(k24b(1:19)//'.VALE')
                     call jelibe(k24b(1:19)//'.REFE')
                     p = p+1

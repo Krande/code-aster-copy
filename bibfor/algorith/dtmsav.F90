@@ -157,7 +157,10 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, rvect, b_incx, zr(addr), b_incy)
             else if (present(cvect)) then
-                call zcopy(lvec, cvect, 1, zc(addr), 1)
+                b_n = to_blas_int(lvec)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, cvect, b_incx, zc(addr), b_incy)
             else if (present(kvect)) then
                 if (partyp(ip) .eq. 'K8 ') then
                     do i = 1, lvec
@@ -225,7 +228,10 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
             b_incy = to_blas_int(1)
             call dcopy(b_n, rvect, b_incx, zr(jvect), b_incy)
         else if (partyp(ip) .eq. 'C') then
-            call zcopy(lonvec, cvect, 1, zc(jvect), 1)
+            b_n = to_blas_int(lonvec)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, cvect, b_incx, zc(jvect), b_incy)
         else if (partyp(ip) .eq. 'I') then
             do i = 1, lonvec
                 zi(jvect+i-1) = ivect(i)

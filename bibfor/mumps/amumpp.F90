@@ -588,7 +588,10 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                     call dcopy(b_n, dmpsk%rhs, b_incx, rsolu2, b_incy)
                     deallocate (dmpsk%rhs)
                 else if (type .eq. 'Z') then
-                    call zcopy(nnbsol, zmpsk%rhs, 1, csolu2, 1)
+                    b_n = to_blas_int(nnbsol)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zmpsk%rhs, b_incx, csolu2, b_incy)
                     deallocate (zmpsk%rhs)
                 else
                     ASSERT(.false.)
