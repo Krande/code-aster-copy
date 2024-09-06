@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -203,7 +203,8 @@ subroutine fonlev(resu, noma, nbnoff)
                     call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
                     call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
                     if ((type(1:5) .ne. 'QUAD8') .and. (type(1:5) .ne. 'TRIA3') .and. &
-                        (type(1:5) .ne. 'QUAD4') .and. (type(1:5) .ne. 'TRIA6')) then
+                        (type(1:5) .ne. 'QUAD4') .and. (type(1:5) .ne. 'TRIA6') .and. &
+                        (type(1:5) .ne. 'QUAD9') .and. (type(1:5) .ne. 'TRIA7')) then
                         valk(1) = type(1:5)
                         valk(2) = motfac
                         call utmess('F', 'RUPTURE0_65', nk=2, valk=valk)
