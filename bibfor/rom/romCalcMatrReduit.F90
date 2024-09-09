@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, &
+subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu,&
                              modeType)
-
+!
     use Rom_Datastructure_type
 !
     implicit none
@@ -68,6 +68,7 @@ subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, 
     complex(kind=8), pointer :: vc_matr_jmode(:) => null()
     real(kind=8), pointer :: vr_matr_mode(:) => null()
     real(kind=8), pointer :: vr_matr_jmode(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,8 +79,9 @@ subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, 
 ! - Get acess to mode_current
 !
     fieldIden = 'DEPL'
-    call rsexch(' ', resultName, fieldIden, modeNume, mode, iret)
-
+    call rsexch(' ', resultName, fieldIden, modeNume, mode,&
+                iret)
+!
     if (modeType .eq. 'R') then
         call jeveuo(mode(1:19)//'.VALE', 'L', vr=vr_mode)
     else if (modeType .eq. 'C') then
@@ -99,7 +101,10 @@ subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, 
                 do iEqua = 1, nbEqua
                     vr_matr_jmode(iEqua) = vr_matr_mode(iEqua+nbEqua*(iMode-1))
                 end do
-                termr = ddot(nbEqua, vr_mode, 1, vr_matr_jmode, 1)
+                b_n = to_blas_int(nbEqua)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                termr = ddot(b_n, vr_mode, b_incx, vr_matr_jmode, b_incy)
                 vr_matr_red(nbModeMaxi*(modeNume-1)+iMode) = termr
                 vr_matr_red(nbModeMaxi*(iMode-1)+modeNume) = termr
                 AS_DEALLOCATE(vr=vr_matr_jmode)

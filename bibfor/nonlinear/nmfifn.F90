@@ -17,7 +17,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmfifn(nno, nddl, npg, wref, vff, &
+subroutine nmfifn(nno, nddl, npg, wref, vff,&
                   dfde, geom, sigma, fint)
 !
 !
@@ -43,6 +43,7 @@ subroutine nmfifn(nno, nddl, npg, wref, vff, &
 !-----------------------------------------------------------------------
     integer :: ni, kpg
     real(kind=8) :: b(3, 60), poids
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
 !
@@ -51,12 +52,15 @@ subroutine nmfifn(nno, nddl, npg, wref, vff, &
 !
     do kpg = 1, npg
 !
-        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg), &
+        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg),&
                     geom, poids, b)
 !
         do ni = 1, nddl
 !
-            fint(ni) = fint(ni)+poids*ddot(3, b(1, ni), 1, sigma(1, kpg), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            fint(ni) = fint(ni)+poids*ddot(b_n, b(1, ni), b_incx, sigma(1, kpg), b_incy)
 !
         end do
 !

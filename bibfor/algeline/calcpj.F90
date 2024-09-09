@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine calcpj(nbmat, mater, gamp, evp, sigd, &
-                  sige, epssig, invare, gamps, evps, &
+!
+subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
+                  sige, epssig, invare, gamps, evps,&
                   invars, b)
 !
     implicit none
@@ -57,6 +57,7 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd, &
     real(kind=8) :: zero, deux, trois, se(6)
     real(kind=8) :: sigii, siie, invar, gamult, k
     character(len=16) :: parecr, parec2
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRE --------------------------------------
 ! ======================================================================
@@ -85,7 +86,10 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd, &
 ! --- CALCUL DES PROJECTIONS AU SOMMET ---------------------------------
 ! ======================================================================
     call lcdevi(sige, se)
-    siie = ddot(ndt, se, 1, se, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    siie = ddot(b_n, se, b_incx, se, b_incy)
     siie = sqrt(siie)
     gamps = gamp+sqrt(deux/trois)*siie/(deux*mu)
     call varecr(gamps, nbmat, mater, zr(jpara))
@@ -104,7 +108,10 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd, &
 ! ======================================================================
 ! --- CAS OU GAMP <= GAMULT(1-EPS) -------------------------------------
 ! ======================================================================
-        sigii = ddot(ndt, sigd, 1, sigd, 1)
+        b_n = to_blas_int(ndt)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        sigii = ddot(b_n, sigd, b_incx, sigd, b_incy)
         if (sigii .lt. epssig) then
             sig(1:ndt) = sige(1:ndt)
         else

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0214(nomopt, nomte)
     implicit none
 #include "asterf_types.h"
@@ -55,6 +55,7 @@ subroutine te0214(nomopt, nomte)
     integer :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     aster_logical :: ljfr
+    blas_int :: b_incx, b_incy, b_n
 !
 !     -- RECUPERATION DES CHAMPS PARAMETRES ET DE LEURS LONGUEURS:
 !     ------------------------------------------------------------
@@ -63,16 +64,16 @@ subroutine te0214(nomopt, nomte)
     if (nomopt .eq. 'AMOR_MECA') then
         call tecach('NNO', 'PRIGIEL', 'L', ins, iad=idrigi(1))
         if (ins .eq. 0) then
-            call tecach('ONO', 'PMATUUR', 'E', iret, nval=5, &
+            call tecach('ONO', 'PMATUUR', 'E', iret, nval=5,&
                         itab=idresu)
         else
-            call tecach('NNO', 'PMATUNS', 'E', irns, nval=5, &
+            call tecach('NNO', 'PMATUNS', 'E', irns, nval=5,&
                         itab=idresu)
-            if (irns .ne. 0) call tecach('ONO', 'PMATUUR', 'E', iret, 5, &
+            if (irns .ne. 0) call tecach('ONO', 'PMATUUR', 'E', iret, 5,&
                                          itab=idresu)
         end if
     else if (nomopt .eq. 'RIGI_MECA_HYST') then
-        call tecach('ONO', 'PMATUUC', 'E', iret, nval=5, &
+        call tecach('ONO', 'PMATUUC', 'E', iret, nval=5,&
                     itab=idresu)
     else
         ASSERT(.false.)
@@ -90,8 +91,8 @@ subroutine te0214(nomopt, nomte)
     valres(2) = 0.d0
     valres(3) = 0.d0
     valres(4) = 0.d0
-    call rcvala(zi(jma), ' ', 'JOINT_MECA_FROT', 0, ' ', &
-                [valpar], 4, nomres, valres, icodre, &
+    call rcvala(zi(jma), ' ', 'JOINT_MECA_FROT', 0, ' ',&
+                [valpar], 4, nomres, valres, icodre,&
                 0)
     if (icodre(1) .eq. 0) then
         ljfr = .true.
@@ -111,7 +112,10 @@ subroutine te0214(nomopt, nomte)
     end do
     c2(1) = x(2)-x(1)
     c2(2) = y(2)-y(1)
-    surf = ddot(2, c2, 1, c2, 1)
+    b_n = to_blas_int(2)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    surf = ddot(b_n, c2, b_incx, c2, b_incy)
     c2(1) = c2(1)/sqrt(surf)
     c2(2) = c2(2)/sqrt(surf)
     surf = sqrt(surf)
@@ -127,15 +131,20 @@ subroutine te0214(nomopt, nomte)
         if (ljfr) then
             if (ins .eq. 0) then
                 call tecach('ONO', 'PRIGINS', 'L', irns, iad=idrigi(1))
-                call tecach('ONO', 'PRIGIEL', 'L', iret, nval=2, itab=idrigi)
+                call tecach('ONO', 'PRIGIEL', 'L', iret, nval=2,&
+                            itab=idrigi)
                 nbddl = int(-1.0d0+sqrt(1.0d0+8.d0*dble(idrigi(2))))/2
                 nbval = idrigi(2)
-                call tecach('ONO', 'PMATUUR', 'E', iret, nval=2, itab=idresu)
+                call tecach('ONO', 'PMATUUR', 'E', iret, nval=2,&
+                            itab=idresu)
             else
-                call tecach('ONO', 'PRIGINS', 'L', iret, nval=2, itab=idrigi)
-                call tecach('NNO', 'PMATUNS', 'E', irns, nval=5, itab=idresu)
+                call tecach('ONO', 'PRIGINS', 'L', iret, nval=2,&
+                            itab=idrigi)
+                call tecach('NNO', 'PMATUNS', 'E', irns, nval=5,&
+                            itab=idresu)
                 if (irns .ne. 0) then
-                    call tecach('ONO', 'PMATUUR', 'E', iret, 5, itab=idresu)
+                    call tecach('ONO', 'PMATUUR', 'E', iret, 5,&
+                                itab=idresu)
                     nbddl = int(-1.0d0+sqrt(1.0d0+8.d0*dble(idresu(2))))/2
                 else
                     nbddl = int(sqrt(dble(idresu(2))))
@@ -169,5 +178,5 @@ subroutine te0214(nomopt, nomte)
             goto 1
         end if
     end if
-1   continue
+  1 continue
 end subroutine

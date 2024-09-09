@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lgldom(nbmat, mater, yf, fiter)
 !
     implicit none
@@ -47,6 +47,7 @@ subroutine lgldom(nbmat, mater, yf, fiter)
     real(kind=8) :: rcos3t, rhlode, rgdev, sigc
     real(kind=8) :: rucpla
     character(len=16) :: parecr
+    blas_int :: b_incx, b_incy, b_n
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
@@ -72,7 +73,10 @@ subroutine lgldom(nbmat, mater, yf, fiter)
 ! =================================================================
 ! --- CALCUL DE G(S) ----------------------------------------------
 ! =================================================================
-    snii = ddot(ndt, sn, 1, sn, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    snii = ddot(b_n, sn, b_incx, sn, b_incy)
     snii = sqrt(snii)
     rcos3t = cos3t(sn, pref, lgleps)
     rhlode = hlode(gamcjs, rcos3t)

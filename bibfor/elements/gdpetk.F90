@@ -43,6 +43,7 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
     integer :: i
     real(kind=8) :: coef1, coef2, coef3, demi, epsil, prosca
     real(kind=8) :: teta1, teta2, un
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     epsil = 1.d-8
     demi = 5.d-1
@@ -50,12 +51,18 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
 !
 !*** PETIK1: VECTEUR BETA (SIMO: 'A THREE-DIMENSIONAL FINITE-STRAIN ROD
 !***                       MODEL-PART 2'.)
-    teta2 = ddot(3, tetag, 1, tetag, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    teta2 = ddot(b_n, tetag, b_incx, tetag, b_incy)
     if (abs(teta2) .lt. epsil) goto 11
     teta1 = sqrt(teta2)
     call provec(tetag, tetapg, v1)
     coef1 = sin(teta1)/teta1
-    prosca = ddot(3, tetag, 1, tetapg, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    prosca = ddot(b_n, tetag, b_incx, tetapg, b_incy)
     coef2 = (un-coef1)*prosca/teta2
     coef3 = demi*(sin(demi*teta1)/(demi*teta1))**2
     do i = 1, 3
@@ -64,21 +71,21 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
     goto 20
 !
 !*** TETAG EST TRES PETIT ET BETA VAUT PRATIQUEMENT TETAPRIM
-11  continue
+ 11 continue
     do i = 1, 3
         petik1(i) = tetapg(i)
     end do
 !
-20  continue
+ 20 continue
 !
 !
     call marota(tetag, amat1)
     call antisy(petikm, un, amat2)
-    call promat(amat1, 3, 3, 3, amat2, &
+    call promat(amat1, 3, 3, 3, amat2,&
                 3, 3, 3, amat3)
-    call transp(amat1, 3, 3, 3, amat2, &
+    call transp(amat1, 3, 3, 3, amat2,&
                 3)
-    call promat(amat3, 3, 3, 3, amat2, &
+    call promat(amat3, 3, 3, 3, amat2,&
                 3, 3, 3, amat1)
     call axial(amat1, petik2)
 !

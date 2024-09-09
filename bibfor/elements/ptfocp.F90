@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ptfocp(itype, option, xl, nno, nc, pgl, fer, fei)
+!
+subroutine ptfocp(itype, option, xl, nno, nc,&
+                  pgl, fer, fei)
 !
 !
 ! ------------------------------------------------------------------------------
@@ -50,6 +51,7 @@ subroutine ptfocp(itype, option, xl, nno, nc, pgl, fer, fei)
     real(kind=8) :: qr(12), qqr(12), qi(12), qqi(12)
     character(len=16) :: ch16
     aster_logical :: global, normal
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ------------------------------------------------------------------------------
 !
@@ -89,42 +91,72 @@ subroutine ptfocp(itype, option, xl, nno, nc, pgl, fer, fei)
         end do
 !
         if (normal) then
-            s = ddot(3, w2, 1, w2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            s = ddot(b_n, w2, b_incx, w2, b_incy)
             s2 = 1.d0/s
             call provec(w2, qr(1), u)
-            s = ddot(3, u, 1, u, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            s = ddot(b_n, u, b_incx, u, b_incy)
             s3 = sqrt(s)
-            s = ddot(3, qr(1), 1, qr(1), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            s = ddot(b_n, qr(1), b_incx, qr(1), b_incy)
             s4 = sqrt(s)
             s5 = s3*sqrt(s2)/s4
             call provec(u, w2, v)
             call pscvec(3, s2, v, u)
             call pscvec(3, s5, u, qr(1))
             call provec(w2, qr(7), u)
-            s = ddot(3, u, 1, u, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            s = ddot(b_n, u, b_incx, u, b_incy)
             s3 = sqrt(s)
-            s = ddot(3, qr(7), 1, qr(7), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            s = ddot(b_n, qr(7), b_incx, qr(7), b_incy)
             s4 = sqrt(s)
             s5 = s3*sqrt(s2)/s4
             call provec(u, w2, v)
             call pscvec(3, s2, v, u)
             call pscvec(3, s5, u, qr(7))
 !
-            s = ddot(3, w2, 1, w2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            s = ddot(b_n, w2, b_incx, w2, b_incy)
             s2 = 1.d0/s
             call provec(w2, qi(1), u)
-            s = ddot(3, u, 1, u, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            s = ddot(b_n, u, b_incx, u, b_incy)
             s3 = sqrt(s)
-            s = ddot(3, qi(1), 1, qi(1), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            s = ddot(b_n, qi(1), b_incx, qi(1), b_incy)
             s4 = sqrt(s)
             s5 = s3*sqrt(s2)/s4
             call provec(u, w2, v)
             call pscvec(3, s2, v, u)
             call pscvec(3, s5, u, qi(1))
             call provec(w2, qi(7), u)
-            s = ddot(3, u, 1, u, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            s = ddot(b_n, u, b_incx, u, b_incy)
             s3 = sqrt(s)
-            s = ddot(3, qi(7), 1, qi(7), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            s = ddot(b_n, qi(7), b_incx, qi(7), b_incy)
             s4 = sqrt(s)
             s5 = s3*sqrt(s2)/s4
             call provec(u, w2, v)
@@ -167,7 +199,9 @@ subroutine ptfocp(itype, option, xl, nno, nc, pgl, fer, fei)
         end do
     end if
 !
-    call ptfop1(itype, nc, coef1, coef2, xl, qqr, fer)
-    call ptfop1(itype, nc, coef1, coef2, xl, qqi, fei)
+    call ptfop1(itype, nc, coef1, coef2, xl,&
+                qqr, fer)
+    call ptfop1(itype, nc, coef1, coef2, xl,&
+                qqi, fei)
 !
 end subroutine

@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eval_erc(baseno, dynam1, vecterc, nommes, matobs, &
-                    obsdim, ifreq, omega, alpha, cout_fon, &
+subroutine eval_erc(baseno, dynam1, vecterc, nommes, matobs,&
+                    obsdim, ifreq, omega, alpha, cout_fon,&
                     terme_uv)
 !
 !
@@ -152,11 +152,14 @@ subroutine eval_erc(baseno, dynam1, vecterc, nommes, matobs, &
         b_n = to_blas_int(nvect_mes)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dspmv('u', b_n, coef_alpha, zr(ivale_norm), zr(iaux1), &
+        call dspmv('u', b_n, coef_alpha, zr(ivale_norm), zr(iaux1),&
                    b_incx, 0.d0, zr(iaux2), b_incy)
     end if
 !   on finalise par le prduit de iaux1 et iaux2 pour avoir le produit final du terme d'obs
-    terme_obs = ddot(nvect_mes, zr(iaux1), 1, zr(iaux2), 1)
+    b_n = to_blas_int(nvect_mes)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    terme_obs = ddot(b_n, zr(iaux1), b_incx, zr(iaux2), b_incy)
 ! --- PRODUIT DU BLOC DYNAM1 AVEC LE CHAMP (u-v)
     call wkvect(baseno//'.EVALF_AUX3.VAL', 'V V R', obsdim(2), iaux3)
     b_n = to_blas_int(obsdim(2))
@@ -166,9 +169,12 @@ subroutine eval_erc(baseno, dynam1, vecterc, nommes, matobs, &
     call wkvect(baseno//'.EVALF_AUX4.VAL', 'V V R', obsdim(2), iaux4)
     call r8inir(obsdim(2), 0.d0, zr(iaux4), 1)
     call jeveuo(dynam1//'.&INT', 'L', lmat)
-    call mrmult('ZERO', lmat, zr(iaux3), zr(iaux4), 1, &
+    call mrmult('ZERO', lmat, zr(iaux3), zr(iaux4), 1,&
                 .false._1)
-    terme_uv = 0.5d0*ddot(obsdim(2), zr(iaux3), 1, zr(iaux4), 1)
+    b_n = to_blas_int(obsdim(2))
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    terme_uv = 0.5d0*ddot(b_n, zr(iaux3), b_incx, zr(iaux4), b_incy)
     cout_fon = terme_uv+terme_obs
 !     NETOYAGE DES OBJETS JEVEUX TEMPORAIRES
     call jedetr(baseno//'.EVALF_AUX1.VAL')

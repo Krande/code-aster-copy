@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, &
-                                ds_algorom, vect_solu, l_update_redu_)
+subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, ds_algorom, vect_solu,&
+                                l_update_redu_)
 !
     use Rom_Datastructure_type
 !
@@ -87,6 +87,7 @@ subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, &
     real(kind=8), pointer :: v_vect_cine(:) => null()
     real(kind=8), pointer :: v_vect_solu(:) => null()
     character(len=24), pointer :: refa(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -122,7 +123,7 @@ subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, &
     call jeveuo(vect_2mbr(1:19)//'.VALE', 'E', vr=v_vect_2mbr)
     call jelira(vect_2mbr(1:19)//'.VALE', 'LONMAX', nbEqua_2mbr)
     ASSERT(nbEqua .eq. nbEqua_2mbr)
-
+!
 ! - Access to matrix
     call jeveuo(matr_asse(1:19)//'.REFA', 'L', vk24=refa)
     if (refa(3) .eq. 'ELIML') then
@@ -135,8 +136,10 @@ subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, &
 ! - Second member correction for AFFE_CHAR_CINE
 !
     call jeveuo(vcine19//'.VALE', 'L', vr=v_vect_cine)
-    call mrconl('MULT', jv_matr, 0, 'R', v_vect_2mbr, 1)
-    call csmbgg(jv_matr, v_vect_2mbr, v_vect_cine, [cbid], [cbid], 'R')
+    call mrconl('MULT', jv_matr, 0, 'R', v_vect_2mbr,&
+                1)
+    call csmbgg(jv_matr, v_vect_2mbr, v_vect_cine, [cbid], [cbid],&
+                'R')
 !
 ! - Truncation of second member
 !
@@ -157,11 +160,16 @@ subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, &
 ! - Compute reduced objects
 !
     do iMode = 1, nbMode
-        call rsexch(' ', resultName, fieldName, iMode, mode, iret)
+        call rsexch(' ', resultName, fieldName, iMode, mode,&
+                    iret)
         call jeveuo(mode(1:19)//'.VALE', 'L', vr=v_mode)
-        term1 = ddot(nbEqua, v_mode, 1, v_vect_2mbr, 1)
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        term1 = ddot(b_n, v_mode, b_incx, v_vect_2mbr, b_incy)
         v_vect_rom(iMode) = term1
-        call mrmult('ZERO', jv_matr, v_mode, v_mrmult, 1, .false._1, l_rom)
+        call mrmult('ZERO', jv_matr, v_mode, v_mrmult, 1,&
+                    .false._1, l_rom)
         if (l_hrom) then
             do iEqua = 1, nbEqua
                 if (ds_algorom%v_equa_int(iEqua) .eq. 1) then
@@ -170,16 +178,21 @@ subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, &
             end do
         end if
         do jMode = 1, nbMode
-            call rsexch(' ', resultName, fieldName, jMode, mode, iret)
+            call rsexch(' ', resultName, fieldName, jMode, mode,&
+                        iret)
             call jeveuo(mode(1:19)//'.VALE', 'L', vr=v_mode)
-            term2 = ddot(nbEqua, v_mode, 1, v_mrmult, 1)
+            b_n = to_blas_int(nbEqua)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            term2 = ddot(b_n, v_mode, b_incx, v_mrmult, b_incy)
             v_matr_rom(nbMode*(iMode-1)+jMode) = term2
         end do
     end do
 !
 ! - Solve system
 !
-    call mgauss('NFSP', v_matr_rom, v_vect_rom, nbMode, nbMode, 1, det, iret)
+    call mgauss('NFSP', v_matr_rom, v_vect_rom, nbMode, nbMode,&
+                1, det, iret)
     if (l_update_redu) then
         v_gamma = v_gamma+v_vect_rom
     end if
@@ -189,11 +202,13 @@ subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, &
     call vtzero(vect_solu)
     do iMode = 1, nbMode
         term = v_vect_rom(iMode)
-        call rsexch(' ', resultName, fieldName, iMode, mode, iret)
+        call rsexch(' ', resultName, fieldName, iMode, mode,&
+                    iret)
         call vtaxpy(term, mode, vect_solu)
     end do
     call jeveuo(vect_solu(1:19)//'.VALE', 'E', vr=v_vect_solu)
-    call mrconl('MULT', jv_matr, 0, 'R', v_vect_solu, 1)
+    call mrconl('MULT', jv_matr, 0, 'R', v_vect_solu,&
+                1)
 !
 ! - Clean
 !

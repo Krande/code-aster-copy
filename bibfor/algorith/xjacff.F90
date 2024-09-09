@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
-                  jinter, ifa, cface, ipg, nnop, &
-                  nnops, igeom, jbasec, xg, jac, ffp, &
-                  ffpc, dfdi, nd, tau1, tau2, dfdic)
+!
+subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
+                  jinter, ifa, cface, ipg, nnop,&
+                  nnops, igeom, jbasec, xg, jac,&
+                  ffp, ffpc, dfdi, nd, tau1,&
+                  tau2, dfdic)
     implicit none
 !
 #include "asterf_types.h"
@@ -69,12 +70,13 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
     integer :: j, k, i, nno, ipoidf, ivff, idfdef, ndimf
     real(kind=8) :: xe(3), coor3d(3*6)
     character(len=8) :: k8bid
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
 !
-    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nno, &
-                     jpoids=ipoidf, jvf=ivff, jdfde=idfdef)
+    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nno, jpoids=ipoidf,&
+                     jvf=ivff, jdfde=idfdef)
 !
     ASSERT(nno .eq. 3 .or. nno .eq. 6)
     ASSERT(ndim .eq. 3)
@@ -105,8 +107,8 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
     end do
 !     CALCUL DE JAC EN 3D
     k = 2*(ipg-1)*nno
-    call dfdm2b(nno, zr(ipoidf-1+ipg), zr(idfdef+k), coor3d, &
-                jac, nd)
+    call dfdm2b(nno, zr(ipoidf-1+ipg), zr(idfdef+k), coor3d, jac,&
+                nd)
 !
 ! --- COORDONNEES REELLES 3D DU POINT DE GAUSS IPG
     xg(:) = 0.d0
@@ -120,16 +122,20 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
 !
     do j = 1, ndim
         do k = 1, nno
-            grln(j) = grln(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ &
-                                                          ndim*ndim*(k-1)+j)
-            grlt(j) = grlt(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ &
-                                                          ndim*ndim*(k-1)+j+ndim)
+            grln(j) = grln(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ ndim*ndim*(k-1)+j)
+            grlt(j) = grlt(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ ndim*ndim*(k-1)+j+ndim)
         end do
     end do
 !
-    ps = ddot(ndim, grln, 1, nd, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    ps = ddot(b_n, grln, b_incx, nd, b_incy)
     if (ps .lt. 0.d0) nd(1:3) = -nd(1:3)
-    ps = ddot(ndim, grlt, 1, nd, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    ps = ddot(b_n, grlt, b_incx, nd, b_incy)
     do j = 1, ndim
         tau1(j) = grlt(j)-ps*nd(j)
     end do
@@ -152,7 +158,8 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
         ASSERT(norm2 .gt. 1.d-12)
     end if
     call provec(nd, tau1, tau2)
-    call reeref(elrefp, nnop, zr(igeom), xg, 3, xe, ffp, dfdi=dfdi)
+    call reeref(elrefp, nnop, zr(igeom), xg, 3,&
+                xe, ffp, dfdi=dfdi)
 !
 !
     if (elrefc .eq. elrefp) goto 999
@@ -161,7 +168,8 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
 !     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
-    call reeref(elrefc, nnoc, zr(igeom), xg, ndim, xe, ffpc, dfdi=dfdic)
+    call reeref(elrefc, nnoc, zr(igeom), xg, ndim,&
+                xe, ffpc, dfdi=dfdic)
 !
 999 continue
 !

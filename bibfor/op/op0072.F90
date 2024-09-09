@@ -94,8 +94,8 @@ subroutine op0072()
 !
 ! --- RECUPERATION DU NB DE MODES
 !
-    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid, &
-                cbid, ebid, 'ABSOLU', tmod, 1, &
+    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
+                cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
     nbmode = tmod(1)
 !
@@ -186,7 +186,7 @@ subroutine op0072()
 !       --- VERIFIER QUE LES MAILLAGES DU CHAMP A PROJETER
 !         - LES DEFORMEES MODALES SONT IDENTIQUES
 !         - 1. MAILLAGE DE REFERENCE POUR LA BASE
-        call rsexch('F', basemo, 'DEPL', 1, nomcha, &
+        call rsexch('F', basemo, 'DEPL', 1, nomcha,&
                     iret)
         call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=maill1)
 !       - 2. MAILLAGE DE REFERENCE POUR LE CHAM_NO
@@ -220,7 +220,10 @@ subroutine op0072()
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
             if (typvec .eq. 'R') then
-                zr(iavale+i-1) = ddot(neq, zr(idvect), 1, zr(iadvec), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(iavale+i-1) = ddot(b_n, zr(idvect), b_incx, zr(iadvec), b_incy)
             else
                 do j = 1, neq
                     zc(idvec3+j-1) = dcmplx(zr(idvect+j-1), zero)
@@ -263,7 +266,10 @@ subroutine op0072()
 !
 ! --------- PRODUIT SCALAIRE MODE(I)*MODE(J)
 !
-                pij = ddot(neq, zr(idvec1), 1, zr(idvec2), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                pij = ddot(b_n, zr(idvec1), b_incx, zr(idvec2), b_incy)
                 zr(iamatr+i+(j-1)*nbmode-1) = pij
                 zr(iamatr+j+(i-1)*nbmode-1) = pij
             end do
@@ -283,7 +289,10 @@ subroutine op0072()
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
             if (typvec .eq. 'R') then
-                zr(idvec2+i-1) = ddot(neq, zr(idvec1), 1, zr(iadvec), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(idvec2+i-1) = ddot(b_n, zr(idvec1), b_incx, zr(iadvec), b_incy)
             else
                 do j = 1, neq
                     zc(idvec3+j-1) = dcmplx(zr(idvec1+j-1), zero)

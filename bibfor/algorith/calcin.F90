@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine calcin(option, max, may, maz, model, &
-                  veprj, modx, mody, modz, i, &
+!
+subroutine calcin(option, max, may, maz, model,&
+                  veprj, modx, mody, modz, i,&
                   j, mij)
     implicit none
 !
@@ -42,7 +42,7 @@ subroutine calcin(option, max, may, maz, model, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
-    integer ::  i, j
+    integer :: i, j
     real(kind=8) :: mij
     character(len=*) :: model, option
     character(len=19) :: modx, mody, modz, veprj, max, may, maz
@@ -50,7 +50,7 @@ subroutine calcin(option, max, may, maz, model, &
 !
 !-----------------------------------------------------------------------
     integer :: imatx, imaty, imatz
-    integer ::   nbpres
+    integer :: nbpres
     real(kind=8) :: rx, ry, rz
     real(kind=8), pointer :: vectx(:) => null()
     real(kind=8), pointer :: vecty(:) => null()
@@ -59,6 +59,7 @@ subroutine calcin(option, max, may, maz, model, &
     real(kind=8), pointer :: vmody(:) => null()
     real(kind=8), pointer :: vmodz(:) => null()
     real(kind=8), pointer :: pres(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(modx//'.VALE', 'L', vr=vmodx)
@@ -80,15 +81,21 @@ subroutine calcin(option, max, may, maz, model, &
 !------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
-    call mrmult('ZERO', imatx, vmodx, vectx, 1, &
+    call mrmult('ZERO', imatx, vmodx, vectx, 1,&
                 .true._1)
-    call mrmult('ZERO', imaty, vmody, vecty, 1, &
+    call mrmult('ZERO', imaty, vmody, vecty, 1,&
                 .true._1)
 !
 !--PRODUITS SCALAIRES VECTEURS PRESSION PAR MAX*MODX ET MAY*MODY
 !
-    rx = ddot(nbpres, pres, 1, vectx, 1)
-    ry = ddot(nbpres, pres, 1, vecty, 1)
+    b_n = to_blas_int(nbpres)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    rx = ddot(b_n, pres, b_incx, vectx, b_incy)
+    b_n = to_blas_int(nbpres)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    ry = ddot(b_n, pres, b_incx, vecty, b_incy)
 !
 !
 !---------------- MENAGE SUR LA VOLATILE ---------------------------
@@ -112,9 +119,12 @@ subroutine calcin(option, max, may, maz, model, &
         AS_ALLOCATE(vr=vectz, size=nbpres)
         call mtdscr(maz)
         call jeveuo(maz(1:19)//'.&INT', 'E', imatz)
-        call mrmult('ZERO', imatz, vmodz, vectz, 1, &
+        call mrmult('ZERO', imatz, vmodz, vectz, 1,&
                     .true._1)
-        rz = ddot(nbpres, pres, 1, vectz, 1)
+        b_n = to_blas_int(nbpres)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rz = ddot(b_n, pres, b_incx, vectz, b_incy)
         AS_DEALLOCATE(vr=vectz)
         call detrsd('CHAM_NO', modz)
         mij = rx+ry+rz

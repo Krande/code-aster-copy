@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calpro(nomres, classe, basmod, nommat)
     implicit none
 ! P. RICHARD     DATE 23/05/91
@@ -76,6 +76,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
     real(kind=8) :: xprod
     complex(kind=8) :: cbid
     integer, pointer :: deeq(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     pgc = 'CALPRO'
@@ -94,7 +95,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! ----VERIFICATION DU TYPE DES VECTEURS PROPRES DANS LA BASE
 !
-    call rsexch('F', basmod, 'DEPL', 1, nomcha, &
+    call rsexch('F', basmod, 'DEPL', 1, nomcha,&
                 iret)
     call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=typ1)
     if (typ1 .eq. 'C') then
@@ -108,12 +109,12 @@ subroutine calpro(nomres, classe, basmod, nommat)
     ntail = nbdef*(nbdef+1)/2
     if (zk24(jrefa-1+9) .eq. 'MS') then
         lsym = .true.
-        call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', &
-                    'CONSTANT', 1)
+        call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', 'CONSTANT',&
+                    1)
     else
         lsym = .false.
-        call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', &
-                    'CONSTANT', 2)
+        call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', 'CONSTANT',&
+                    2)
     end if
     call jeecra(nomres(1:18)//'_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres(1:18)//'_VALE', 1))
@@ -156,13 +157,16 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE
 !
-        call mrmult('ZERO', lmat, zr(idbase+(i-1)*neq), zr(ltvec1), 1, &
+        call mrmult('ZERO', lmat, zr(idbase+(i-1)*neq), zr(ltvec1), 1,&
                     .true._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
 !
 ! ----- CALCUL DES TERMES DIAGONAUX
 !
-        xprod = ddot(neq, zr(ltvec1), 1, zr(idbase+(i-1)*neq), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xprod = ddot(b_n, zr(ltvec1), b_incx, zr(idbase+(i-1)*neq), b_incy)
         iad = i*(i+1)/2
         zr(ldres+iad-1) = xprod
         if (.not. lsym) zr(ldres2+iad-1) = xprod
@@ -174,7 +178,10 @@ subroutine calpro(nomres, classe, basmod, nommat)
 ! ------- CAS SYMETRIQUE
 !
             do j = i+1, nbdef
-                xprod = ddot(neq, zr(ltvec1), 1, zr(idbase+(j-1)*neq), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xprod = ddot(b_n, zr(ltvec1), b_incx, zr(idbase+(j-1)*neq), b_incy)
                 iad = i+(j-1)*j/2
                 zr(ldres+iad-1) = xprod
             end do
@@ -183,7 +190,10 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
         else
             do j = 1, nbdef
-                xprod = ddot(neq, zr(ltvec1), 1, zr(idbase+(j-1)*neq), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xprod = ddot(b_n, zr(ltvec1), b_incx, zr(idbase+(j-1)*neq), b_incy)
                 if (j .gt. i) then
                     iad = i+(j-1)*j/2
                     zr(ldres2+iad-1) = xprod

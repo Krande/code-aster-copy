@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
+!
+subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
                   mxvect, masmod, facpar)
     implicit none
 #include "asterf_types.h"
@@ -61,6 +61,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
     aster_logical :: gene
     character(len=24), pointer :: refn(:) => null()
     real(kind=8) :: rundef
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
     data nomddl/'DX      ', 'DY      ', 'DZ      ',&
      &              'DRX     ', 'DRY     ', 'DRZ     '/
@@ -70,9 +71,9 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
     data posddl/'&&VPPFAC.POSITION.DDL'/
     data vecau1/'&&VPPFAC.VECTEUR.AUX1'/
     data vecau2/'&&VPPFAC.VECTEUR.AUX2'/
-
+!
     rundef = r8vide()
-
+!
 !     ------------------------------------------------------------------
 !     ----------------- CREATION DE VECTEURS DE TRAVAIL ----------------
 !     ------------------------------------------------------------------
@@ -112,19 +113,19 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
     do iddl = 1, 3
         if (gene) then
             do ieq = 1, neq
-                call rsvpar(basemo, 1, nompar(iddl), ibid, rundef, &
+                call rsvpar(basemo, 1, nompar(iddl), ibid, rundef,&
                             k8b, l1)
                 if (l1 .eq. 100) then
                     zr(laux1+ieq-1) = 0.D0
                 else
-                    call rsadpa(basemo, 'L', 1, nompar(iddl), ieq, &
+                    call rsadpa(basemo, 'L', 1, nompar(iddl), ieq,&
                                 0, tjv=iadpar)
                     zr(laux1+ieq-1) = zr(iadpar(1))
                 end if
 ! SECURITE SI ON EST PASSE PAR DES MODES HETERODOXES AVEC FACTEURS DE PARTICIPATIONS HERETIQUES
             end do
         else
-            call pteddl('NUME_DDL', nume, mxddl, nomddl, neq, &
+            call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
                         tabl_equa=zi(lddl))
             ia = (iddl-1)*neq
             do ieq = 1, neq
@@ -135,10 +136,13 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 !     ------------------------------------------------------------------
 !     ----------- CALCUL DE  FREQ * MASSE * UNITAIRE_DIRECTION ---------
 !     ------------------------------------------------------------------
-        call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1, &
+        call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
                     .false._1)
         do ivect = 1, nbvect
-            rval = ddot(neq, vect(1, ivect), 1, zr(laux2), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            rval = ddot(b_n, vect(1, ivect), b_incx, zr(laux2), b_incy)
             raux = masgen(ivect)
             if ((abs(raux) .lt. rmin) .or. (abs(rval) .gt. rmax)) then
                 masmod(ivect, iddl) = rmax

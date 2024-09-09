@@ -230,8 +230,14 @@ function nmchcr(dp)
     n2 = 1.d0
     if (idelta .gt. 0) then
 !        CALCUL DES BETA - N1, N2 - EFFET NON RADIAL
-        beta1 = ddot(ndimsi, alfam, 1, norm, 1)/sqrt(1.5d0)
-        beta2 = ddot(ndimsi, alfa2m, 1, norm, 1)/sqrt(1.5d0)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        beta1 = ddot(b_n, alfam, b_incx, norm, b_incy)/sqrt(1.5d0)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        beta2 = ddot(b_n, alfa2m, b_incx, norm, b_incy)/sqrt(1.5d0)
         if ((idelta .eq. 1) .or. (idelta .eq. 3)) then
             n1 = (1.d0+gammap*delta1*dp-gammap*(1.d0-delta1)*beta1)
             n1 = n1/(1.d0+gammap*dp)

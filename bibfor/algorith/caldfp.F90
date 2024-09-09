@@ -93,7 +93,10 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         call matinv('S', 3, a, am, det2)
         amt = transpose(am)
 !
-        ddetdg = ddot(9, amt, 1, msns, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ddetdg = ddot(b_n, amt, b_incx, msns, b_incy)
 !
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
@@ -189,7 +192,10 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
         bmt = transpose(bm)
 !
-        ddetdg = ddot(9, bmt, 1, msns, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ddetdg = ddot(b_n, bmt, b_incx, msns, b_incy)
 !
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)

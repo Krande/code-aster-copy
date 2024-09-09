@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xdecov(ndim, elp, nnop, nnose, it, &
-                  pintt, cnset, heavt, ncomp, lsn, &
-                  fisco, igeom, nfiss, ifiss, pinter, &
-                  ninter, npts, ainter, nse, cnse, &
+subroutine xdecov(ndim, elp, nnop, nnose, it,&
+                  pintt, cnset, heavt, ncomp, lsn,&
+                  fisco, igeom, nfiss, ifiss, pinter,&
+                  ninter, npts, ainter, nse, cnse,&
                   heav, nfisc, nsemax)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -70,6 +70,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it, &
     character(len=8) :: typma, elrese(3)
     integer :: zxain, mxstac
     aster_logical :: axi
+    blas_int :: b_incx, b_incy, b_n
     parameter(mxstac=1000)
 !
     data elrese/'SEG2', 'TRIA3', 'TETRA4'/
@@ -417,7 +418,10 @@ subroutine xdecov(ndim, elp, nnop, nnose, it, &
             end do
 !
             call provec(ab, ac, vn)
-            ps = ddot(3, vn, 1, ad, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps = ddot(b_n, vn, b_incx, ad, b_incy)
 !
             if (ps .lt. 0) then
 !          MAUVAIS SENS DU TETRA, ON INVERSE LES NOEUDS 3 ET 4
@@ -464,13 +468,12 @@ subroutine xdecov(ndim, elp, nnop, nnose, it, &
 !           CALCUL DES FF
 !
 !
-                call reeref(elp, nnop, zr(igeom), geom, ndim, &
+                call reeref(elp, nnop, zr(igeom), geom, ndim,&
                             rbid2, ff)
 !
                 do j = 1, nnop
                     do i = 1, nfisc
-                        somlsn(i) = somlsn(i)+ff(j)*lsn((j-1)*nfiss+ &
-                                                        fisco(2*i-1))
+                        somlsn(i) = somlsn(i)+ff(j)*lsn((j-1)*nfiss+ fisco(2*i-1))
                     end do
                     somlsn(nfisc+1) = somlsn(nfisc+1)+ff(j)*lsn((j-1)*nfiss+ifiss)
                 end do

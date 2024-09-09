@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lgljpl(mod, nbmat, mater, sig, devg, &
+!
+subroutine lgljpl(mod, nbmat, mater, sig, devg,&
                   devgii, vin, dsde, codret)
 !
     implicit none
@@ -62,6 +62,7 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg, &
     real(kind=8) :: duds(6), dudg, dfds(6), dfdg
     real(kind=8) :: q(6), hook(6, 6)
     character(len=16) :: parecr, derive
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
@@ -95,7 +96,10 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg, &
 ! --- CALCULS INITIAUX DE VARIABLES INTERMEDIAIRES ---------------------
 ! ======================================================================
     call lcdevi(sig, sn)
-    snii = ddot(ndt, sn, 1, sn, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    snii = ddot(b_n, sn, b_incx, sn, b_incy)
     snii = sqrt(snii)
     invn = trace(ndi, sig)
     h0 = hlode(gamcjs, mun)
@@ -125,23 +129,23 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg, &
 ! **********************************************************************
 ! --- CALCUL DE DUDG ---------------------------------------------------
 ! **********************************************************************
-    call drudrg(zr(jpara), zr(jderiv), h0, sigc, gn, &
+    call drudrg(zr(jpara), zr(jderiv), h0, sigc, gn,&
                 invn, dudg)
 ! **********************************************************************
 ! --- CALCUL DE DFDS ---------------------------------------------------
 ! **********************************************************************
-    call drfdrs(q, zr(jpara), h0, sigc, gn, &
+    call drfdrs(q, zr(jpara), h0, sigc, gn,&
                 duds, dfds)
 ! **********************************************************************
 ! --- CALCUL DE DFDG ---------------------------------------------------
 ! **********************************************************************
-    call drfdrg(zr(jpara), zr(jderiv), h0, sigc, gn, &
+    call drfdrg(zr(jpara), zr(jderiv), h0, sigc, gn,&
                 dudg, dfdg)
 ! **********************************************************************
 ! ======================================================================
 ! --- CALCUL DE DSIG/DEPS ----------------------------------------------
 ! ======================================================================
-    call calcds(hook, devg, devgii, dfds, dfdg, &
+    call calcds(hook, devg, devgii, dfds, dfdg,&
                 dsde)
 ! ======================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES --------------------------------

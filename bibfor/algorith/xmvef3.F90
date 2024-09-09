@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmvef3(ndim, nnol, pla, ffc, reac12, &
-                  pb, jac, seuil, tau1, tau2, &
+subroutine xmvef3(ndim, nnol, pla, ffc, reac12,&
+                  pb, jac, seuil, tau1, tau2,&
                   lact, cstafr, mu, vtmp)
 !
     implicit none
@@ -75,6 +75,7 @@ subroutine xmvef3(ndim, nnol, pla, ffc, reac12, &
     integer :: i, k
     integer :: pli, nli
     real(kind=8) :: ffi, metr(2), rpb(3)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,8 +90,14 @@ subroutine xmvef3(ndim, nnol, pla, ffc, reac12, &
         nli = lact(i)
         if (nli .eq. 0) goto 194
 !
-        metr(1) = ddot(ndim, tau1(1), 1, rpb, 1)
-        if (ndim .eq. 3) metr(2) = ddot(ndim, tau2(1), 1, rpb, 1)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        metr(1) = ddot(b_n, tau1(1), b_incx, rpb, b_incy)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        if (ndim .eq. 3) metr(2) = ddot(b_n, tau2(1), b_incx, rpb, b_incy)
         do k = 1, ndim-1
             vtmp(pli+k) = vtmp(pli+k)+mu*seuil/cstafr*metr(k)*ffi*jac
         end do

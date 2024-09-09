@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lglini(yd, nbmat, mater, f0, sigd, &
-                  deps, devg, devgii, traceg, dy, &
+subroutine lglini(yd, nbmat, mater, f0, sigd,&
+                  deps, devg, devgii, traceg, dy,&
                   codret)
 !
     implicit none
@@ -63,6 +63,7 @@ subroutine lglini(yd, nbmat, mater, f0, sigd, &
     real(kind=8) :: q(6), vecn(6), ie
     real(kind=8) :: si(6), invn
     character(len=16) :: parecr, derive
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
@@ -94,7 +95,10 @@ subroutine lglini(yd, nbmat, mater, f0, sigd, &
 ! ======================================================================
 ! --- CALCUL DES VARIABLES ELASTIQUES INITIALES ------------------------
 ! ======================================================================
-    siie = ddot(ndt, se, 1, se, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    siie = ddot(b_n, se, b_incx, se, b_incy)
     siie = sqrt(siie)
     rcos3t = cos3t(se, pref, epssig)
     re = hlode(gamcjs, rcos3t)
@@ -109,10 +113,10 @@ subroutine lglini(yd, nbmat, mater, f0, sigd, &
     if (teste) then
         call lcdevi(sigd, si)
         invn = trace(ndi, sigd)
-        call solrei(gamp, si, invn, zr(jpara), nbmat, &
+        call solrei(gamp, si, invn, zr(jpara), nbmat,&
                     mater, q, vecn, codret)
     else
-        call solrei(gamp, se, ie, zr(jpara), nbmat, &
+        call solrei(gamp, se, ie, zr(jpara), nbmat,&
                     mater, q, vecn, codret)
     end if
     if (codret .ne. 0) goto 100
@@ -123,16 +127,16 @@ subroutine lglini(yd, nbmat, mater, f0, sigd, &
 ! ======================================================================
 ! --- PREMIERE INITIALISATION POUR GAMP = 0 ----------------------------
 ! ======================================================================
-        call lglind(nbmat, mater, zr(jpara), ge, q, &
-                    vecn, deps, devg, devgii, traceg, &
+        call lglind(nbmat, mater, zr(jpara), ge, q,&
+                    vecn, deps, devg, devgii, traceg,&
                     dy)
     else
 ! ======================================================================
 ! --- INITIALISATION DE NEWTON -----------------------------------------
 ! ======================================================================
         call dervar(gamp, nbmat, mater, zr(jpara), zr(jderiv))
-        call lglinn(nbmat, mater, zr(jpara), zr(jderiv), ge, &
-                    ie, q, vecn, f0, delta, &
+        call lglinn(nbmat, mater, zr(jpara), zr(jderiv), ge,&
+                    ie, q, vecn, f0, delta,&
                     devg, devgii, traceg, dy)
     end if
 ! ======================================================================

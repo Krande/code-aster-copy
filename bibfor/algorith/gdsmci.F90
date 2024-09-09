@@ -100,7 +100,10 @@ subroutine gdsmci(fm, df, em)
 !
 !    CALCUL DE BE TRIAL : BETR(AB) = PDF(AB,IJ):BEM(IJ)
     do ij = 1, 6
-        betr(ij) = ddot(6, pdf(ij, 1), 6, bem, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(6)
+        b_incy = to_blas_int(1)
+        betr(ij) = ddot(b_n, pdf(ij, 1), b_incx, bem, b_incy)
     end do
 !
 !
@@ -138,6 +141,9 @@ subroutine gdsmci(fm, df, em)
     do ij = 1, 6
         dvbetr(ij) = betr(ij)-trbetr/3.d0*kr(ij)
     end do
-    eqbetr = sqrt(1.5d0*ddot(6, dvbetr, 1, dvbetr, 1))
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    eqbetr = sqrt(1.5d0*ddot(b_n, dvbetr, b_incx, dvbetr, b_incy))
 !
 end subroutine

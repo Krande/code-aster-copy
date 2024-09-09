@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipeds(ndim, typmod, tau, mate, vim, &
-                  epsm, epspc, epsdc, etamin, etamax, &
+subroutine pipeds(ndim, typmod, tau, mate, vim,&
+                  epsm, epspc, epsdc, etamin, etamax,&
                   a0, a1, a2, a3, etas)
 !
 !
@@ -89,6 +89,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
     real(kind=8) :: x1, y1, z1
     real(kind=8) :: x2, y2, z2
     real(kind=8) :: kron(6)
+    blas_int :: b_incx, b_incy, b_n
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 !----- GET INFO=1,2
@@ -123,8 +124,8 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
     kpg = 1
     spt = 1
     poum = '+'
-    call rcvalb(fami, kpg, spt, poum, mate, &
-                ' ', 'ELAS', 0, ' ', [0.d0], &
+    call rcvalb(fami, kpg, spt, poum, mate,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)
@@ -135,8 +136,8 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
     nomres(1) = 'D_SIGM_EPSI'
     nomres(2) = 'SYT'
     nomres(3) = 'SYC'
-    call rcvalb(fami, kpg, spt, poum, mate, &
-                ' ', 'BETON_ECRO_LINE', 0, ' ', [0.d0], &
+    call rcvalb(fami, kpg, spt, poum, mate,&
+                ' ', 'BETON_ECRO_LINE', 0, ' ', [0.d0],&
                 nbres, nomres, valres, icodre, 0)
     dsigm = valres(1)
     syt = valres(2)
@@ -242,7 +243,10 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
         sigeld(k) = lambda*trepsd*kron(k)+deuxmu*epsd(k)
     end do
 !
-    epsnor = 1.d0/sqrt(0.5d0*ddot(ndimsi, epsd, 1, sigeld, 1))
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    epsnor = 1.d0/sqrt(0.5d0*ddot(b_n, epsd, b_incx, sigeld, b_incy))
 !
     do k = 1, 6
         epsd(k) = epsd(k)*epsnor
@@ -265,12 +269,11 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
 ! pour s'assurer qu'elle ne diverge pas. On fixe une borne tr(eps)<1
     treinf = epsp(1)+epsp(2)+epsp(3)+etainf*(epsd(1)+epsd(2)+epsd(3))
     if (abs(treinf) .gt. 1.d0) then
-        etainf = (treinf/abs(treinf)-(epsp(1)+epsp(2)+epsp(3))) &
-                 /(epsd(1)+epsd(2)+epsd(3))
+        etainf = (treinf/abs(treinf)-(epsp(1)+epsp(2)+epsp(3))) /(epsd(1)+epsd(2)+epsd(3))
     end if
 !
     eta = etainf
-    call critet(epsp, epsd, eta, lambda, deuxmu, &
+    call critet(epsp, epsd, eta, lambda, deuxmu,&
                 fpd, seuil, crit1, critp1)
 !
 !
@@ -279,12 +282,11 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
 !
     tresup = epsp(1)+epsp(2)+epsp(3)+etasup*(epsd(1)+epsd(2)+epsd(3))
     if (abs(tresup) .gt. 1.d0) then
-        etasup = (tresup/abs(tresup)-(epsp(1)+epsp(2)+epsp(3)))/(epsd( &
-                                                                 1)+epsd(2)+epsd(3))
+        etasup = (tresup/abs(tresup)-(epsp(1)+epsp(2)+epsp(3)))/(epsd( 1)+epsd(2)+epsd(3))
     end if
 !
     eta = etasup
-    call critet(epsp, epsd, eta, lambda, deuxmu, &
+    call critet(epsp, epsd, eta, lambda, deuxmu,&
                 fpd, seuil, crit2, critp2)
 !
 !
@@ -309,7 +311,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
 ! on reste au dessus du seuil sur l'intervalle,
 !        on utilise la convexite pour le voir
 !
-    if (((crit1 .gt. 0.d0) .and. (critp1 .gt. (-crit1/linter))) .or. &
+    if (((crit1 .gt. 0.d0) .and. (critp1 .gt. (-crit1/linter))) .or.&
         ((crit2 .gt. 0.d0) .and. (critp2 .lt. (crit2/linter)))) then
         goto 666
     end if
@@ -339,7 +341,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
             call zerod2(x, y, z)
 555         continue
 !
-            call critet(epsp, epsd, x(3), lambda, deuxmu, &
+            call critet(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, y(3), z(3))
 !
         end do
@@ -376,7 +378,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
             call zerod2(x, y, z)
 556         continue
 !
-            call critet(epsp, epsd, x(3), lambda, deuxmu, &
+            call critet(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, y(3), z(3))
         end do
         call utmess('F', 'PILOTAGE_87')
@@ -395,7 +397,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
 !
 ! CAS A 2 OU 0 SOLUTIONS
 !
-    if (((crit1 .gt. 0.d0) .and. (critp1 .lt. (-crit1/linter))) .and. &
+    if (((crit1 .gt. 0.d0) .and. (critp1 .lt. (-crit1/linter))) .and.&
         ((crit2 .gt. 0.d0) .and. (critp2 .gt. (crit2/linter)))) then
 !
 !
@@ -423,7 +425,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
 !
         if (iter .lt. nitmax) then
             xs = (y2-y1+z1*x1-z2*x2)/(z1-z2)
-            call critet(epsp, epsd, xs, lambda, deuxmu, &
+            call critet(epsp, epsd, xs, lambda, deuxmu,&
                         fpd, seuil, ys, zs)
             if (ys .lt. 0.d0) goto 751
 !
@@ -478,7 +480,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
             call zerod2(x, y, z)
 557         continue
 !
-            call critet(epsp, epsd, x(3), lambda, deuxmu, &
+            call critet(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, y(3), z(3))
 !
         end do
@@ -511,7 +513,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
             call zerod2(x, y, z)
 558         continue
 !
-            call critet(epsp, epsd, x(3), lambda, deuxmu, &
+            call critet(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, y(3), z(3))
 !
         end do

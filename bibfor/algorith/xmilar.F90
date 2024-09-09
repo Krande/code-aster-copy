@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
-                  ia, ib, im, ip, ksia, ksib, milara, milarb, &
-                  pintt, pmitt)
+!
+subroutine xmilar(ndim, ndime, elrefp, geom, pinref,&
+                  ia, ib, im, ip, ksia,&
+                  ksib, milara, milarb, pintt, pmitt)
 !
     implicit none
 !
@@ -52,6 +52,7 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
     integer :: nno, j
     real(kind=8) :: x(81), newpt(ndim), pta(ndim), ptb(ndim), ptm(ndim), ff(27)
     real(kind=8) :: ab(ndime), aip(ndime), normab, normaip, s
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------
 !
@@ -64,7 +65,7 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
         do j = 1, ndim
             newpt(j) = pintt(ndim*(ia-1001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim, &
+        call reeref(elrefp, nno, geom, newpt, ndim,&
                     pta, ff)
     end if
     if (ib .lt. 1000) then
@@ -75,7 +76,7 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
         do j = 1, ndim
             newpt(j) = pintt(ndim*(ib-1001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim, &
+        call reeref(elrefp, nno, geom, newpt, ndim,&
                     ptb, ff)
     end if
     if (im .lt. 2000) then
@@ -86,7 +87,7 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
         do j = 1, ndim
             newpt(j) = pmitt(ndim*(im-2001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim, &
+        call reeref(elrefp, nno, geom, newpt, ndim,&
                     ptm, ff)
     end if
 !
@@ -103,16 +104,19 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
         end do
         call xnormv(ndime, ab, normab)
         call xnormv(ndime, aip, normaip)
-        s = normaip/normab*ddot(ndime, ab, 1, aip, 1)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        s = normaip/normab*ddot(b_n, ab, b_incx, aip, b_incy)
         do j = 1, ndime
             ksia(j) = (1.d0-s)*(1.d0-s/2.d0)*pta(j)+s/2.d0*(s-1.d0)*ptb(j)+s*(2.d0-s)*ptm(j)
             ksib(j) = s/2.d0*(s-1.d0)*pta(j)+s/2.d0*(s+1.d0)*ptb(j)+(s+1.d0)*(1.d0-s)*ptm(j)
         end do
     end if
 !
-    call reerel(elrefp, nno, ndim, geom, ksia, &
+    call reerel(elrefp, nno, ndim, geom, ksia,&
                 milara)
-    call reerel(elrefp, nno, ndim, geom, ksib, &
+    call reerel(elrefp, nno, ndim, geom, ksib,&
                 milarb)
 !
 end subroutine

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xtailm(ndim, vecdir, numa, typma, jcoor, &
+subroutine xtailm(ndim, vecdir, numa, typma, jcoor,&
                   jconx1, jconx2, ipt, jtail)
     implicit none
 !
@@ -51,6 +51,7 @@ subroutine xtailm(ndim, vecdir, numa, typma, jcoor, &
     integer :: ar(12, 3)
     integer :: iar, ino1, ino2, k, nbar, nno1, nno2
     real(kind=8) :: arete(3), p
+    blas_int :: b_incx, b_incy, b_n
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -71,7 +72,10 @@ subroutine xtailm(ndim, vecdir, numa, typma, jcoor, &
         end do
 !
 !       PROJECTION DE L'ARETE IAR SUR LE VECTEUR TANGENT
-        p = ddot(ndim, arete, 1, vecdir, 1)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        p = ddot(b_n, arete, b_incx, vecdir, b_incy)
         p = abs(p)
 !
         if (p .gt. zr(jtail-1+ipt)) zr(jtail-1+ipt) = p

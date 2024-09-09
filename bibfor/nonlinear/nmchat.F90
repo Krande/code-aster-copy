@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmchat(matel, mat, nbvar, memo, visc, &
-                  plast, sigmdv, depsdv, pm, dp, &
-                  ndimsi, dt, rpvp, qp, vim, &
-                  idelta, n1, n2, beta1, beta2, &
+subroutine nmchat(matel, mat, nbvar, memo, visc,&
+                  plast, sigmdv, depsdv, pm, dp,&
+                  ndimsi, dt, rpvp, qp, vim,&
+                  idelta, n1, n2, beta1, beta2,&
                   dsidep)
 ! person_in_charge: jean-michel.proix at edf.fr
 !.======================================================================
@@ -51,6 +51,7 @@ subroutine nmchat(matel, mat, nbvar, memo, visc, &
     real(kind=8) :: rpm
     aster_logical :: plasti
     integer :: ndimsi, i, j, l
+    blas_int :: b_incx, b_incy, b_n
 !
     rac2 = sqrt(2.d0)
     plasti = (plast .ge. 0.5d0)
@@ -170,13 +171,13 @@ subroutine nmchat(matel, mat, nbvar, memo, visc, &
             drp = (gqp-rpm)/(1.d0+b*dp)-2.d0*mumem*(gq0-gqmax)*(qp-qm)
             drp = b*drp/(1.d0+b*dp)
         end if
-        dmp = dcp/(1.d0+gammap*dp*delta1)-cp*(dgamap*dp*delta1+gammap*delta1)/(1.d0+gammap*dp&
-                                                                              &*delta1)**2
+        dmp = dcp/(1.d0+gammap*dp*delta1)-cp*(dgamap*dp*delta1+gammap*delta1)/(1.d0+gammap*dp*del&
+              &ta1)**2
 !
         dgam2p = -b*gamm20*(1.d0-ainf)*exp(-b*pp)
         dc2p = -w*c2inf*(k-1.d0)*exp(-w*pp)
-        dm2p = dc2p/(1.d0+gamm2p*dp*delta2)-c2p*(dgam2p*dp*delta2+gamm2p*delta2)/(1.d0+gamm2p&
-                                                                                 &*dp*delta2)**2
+        dm2p = dc2p/(1.d0+gamm2p*dp*delta2)-c2p*(dgam2p*dp*delta2+gamm2p*delta2)/(1.d0+gamm2p*dp*&
+               &delta2)**2
 !
         ap = (rp+vp)/denomi
         ep = -mp
@@ -194,13 +195,22 @@ subroutine nmchat(matel, mat, nbvar, memo, visc, &
         seq = sqrt(1.5d0*seq)
 !
         if (idelta .gt. 0) then
-            sigdsi = ddot(ndimsi, sigma, 1, dsigma, 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            sigdsi = ddot(b_n, sigma, b_incx, dsigma, b_incy)
             do i = 1, ndimsi
                 vbeta(i) = (dsigma(i)-1.5d0*sigdsi*sigma(i)/denomi**2)
             end do
             vbeta(i) = vbeta(i)/denomi
-            dbeta1 = ddot(ndimsi, alfam, 1, vbeta, 1)
-            dbeta2 = ddot(ndimsi, alfa2m, 1, vbeta, 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            dbeta1 = ddot(b_n, alfam, b_incx, vbeta, b_incy)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            dbeta2 = ddot(b_n, alfa2m, b_incx, vbeta, b_incy)
 !
             dn1 = 1.d0+gammap*(delta1+dbeta1*(delta1-1.d0))
             dn1 = dn1+dgamap*(delta1*dp+beta1*(delta1-1.d0))
@@ -210,8 +220,7 @@ subroutine nmchat(matel, mat, nbvar, memo, visc, &
             dn2 = dn2+dgam2p*(delta2*dp+beta2*(delta2-1.d0))
             dn2 = (dn2-n2*(gamm2p+dgam2p*dp))/(1.d0+gamm2p*dp)
 !
-            ddenom = drp+3.d0*mu+mp*n1+m2p*n2+(dmp*n1+dm2p*n2)*dp+dvp &
-                     +dp*mp*dn1+dp*mp*dn2
+            ddenom = drp+3.d0*mu+mp*n1+m2p*n2+(dmp*n1+dm2p*n2)*dp+dvp +dp*mp*dn1+dp*mp*dn2
         else
             ddenom = drp+3.d0*mu+mp+m2p+(dmp+dm2p)*dp+dvp
         end if
@@ -246,12 +255,11 @@ subroutine nmchat(matel, mat, nbvar, memo, visc, &
         do i = 1, ndimsi
             dside(i, i) = -6.d0*mu*mu*dp/denomi
             do j = 1, ndimsi
-                dside(i, j) = dside(i, j)-6.d0*mu*mu*isp*sigedv(i)*sigedv(j)-4.d0*mu*mu*h1a1&
-                             &*alfam(i)*alfam(j)-4.d0*mu*mu*h1a2*alfa2m(i)*alfam(j)-4.d0*mu&
-                             &*mu*h2a1*alfam(i)*alfa2m(j)-4.d0*mu*mu*h2a2*alfa2m(i)*alfa2m(&
-                             &j)-6.d0*mu*mu*iap*alfam(i)*sigedv(j)-6.d0*mu*mu*ia2p*alfa2m&
-                             &(i)*sigedv(j)-4.d0*mu*mu*h1s*sigedv(i)*alfam(j)-4.d0*mu*mu*h&
-                             &2s*sigedv(i)*alfa2m(j)
+                dside(i, j) = dside(i, j)-6.d0*mu*mu*isp*sigedv(i)*sigedv(j)-4.d0*mu*mu*h1a1*alfa&
+                              &m(i)*alfam(j)-4.d0*mu*mu*h1a2*alfa2m(i)*alfam(j)-4.d0*mu*mu*h2a1*a&
+                              &lfam(i)*alfa2m(j)-4.d0*mu*mu*h2a2*alfa2m(i)*alfa2m(j)-6.d0*mu*mu*i&
+                              &ap*alfam(i)*sigedv(j)-6.d0*mu*mu*ia2p*alfa2m(i)*sigedv(j)-4.d0*mu*&
+                              &mu*h1s*sigedv(i)*alfam(j)-4.d0*mu*mu*h2s*sigedv(i)*alfa2m(j)
             end do
         end do
 !

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcg(dfds, vecn, g, devg, traceg, &
+subroutine calcg(dfds, vecn, g, devg, traceg,&
                  devgii)
 !
     implicit none
@@ -39,6 +39,7 @@ subroutine calcg(dfds, vecn, g, devg, traceg, &
 ! ======================================================================
     integer :: ii, ndt, ndi
     real(kind=8) :: fact1
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
     common/tdim/ndt, ndi
 ! ======================================================================
@@ -46,7 +47,10 @@ subroutine calcg(dfds, vecn, g, devg, traceg, &
 ! ======================================================================
 ! --- CALCUL DE G ------------------------------------------------------
 ! ======================================================================
-    fact1 = ddot(ndt, dfds, 1, vecn, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    fact1 = ddot(b_n, dfds, b_incx, vecn, b_incy)
     do ii = 1, ndt
         g(ii) = dfds(ii)-fact1*vecn(ii)
     end do
@@ -54,7 +58,10 @@ subroutine calcg(dfds, vecn, g, devg, traceg, &
 ! --- CALCUL DU DEVIATEUR DE G ET DE SA NORME --------------------------
 ! ======================================================================
     call lcdevi(g, devg)
-    devgii = ddot(ndt, devg, 1, devg, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    devgii = ddot(b_n, devg, b_incx, devg, b_incy)
     devgii = sqrt(devgii)
 ! ======================================================================
 ! --- CALCUL DU PREMIER INVARIANT DE G ---------------------------------

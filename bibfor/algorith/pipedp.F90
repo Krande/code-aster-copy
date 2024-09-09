@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
-                  mate, epsm, sigm, vim, epsp, &
+subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
+                  mate, epsm, sigm, vim, epsp,&
                   epsd, a0, a1)
 !
     use Behaviour_type
@@ -89,6 +89,7 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
     real(kind=8) :: pc, pt, kuc, kut, ke, tbid, rbid, fcp, ftp
     character(len=8) :: mod, fami
     character(len=3) :: matcst
+    blas_int :: b_incx, b_incy, b_n
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 ! ----------------------------------------------------------------------
@@ -105,8 +106,8 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
     tbid = 0.d0
     fami = 'RIGI'
     mod = typmod(1)
-    call betmat(fami, kpg, ksp, mod, mate, &
-                nmat, tbid, tbid, materd, materf, &
+    call betmat(fami, kpg, ksp, mod, mate,&
+                nmat, tbid, tbid, materd, materf,&
                 matcst, ndt, ndi, nr, nvi)
 !
     e = materd(1, 1)
@@ -115,8 +116,8 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
 !
     pc = vim(1)
     pt = vim(2)
-    call betfpp(BEHinteg, materf, nmat, pc, pt, &
-                3, fc, ft, rbid, rbid, &
+    call betfpp(BEHinteg, materf, nmat, pc, pt,&
+                3, fc, ft, rbid, rbid,&
                 kuc, kut, ke)
 !
     fcp = materf(1, 2)
@@ -152,9 +153,18 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
     end do
 !
 !     CRITERE DE TRACTION
-    p0 = d13*ddot(ndimsi, pp, 1, pp, 1)-(d*ft)**2+d23*c*d*ft*trsigp-c**2/neuf*trsigp**2
-    p1 = d13*ddot(ndimsi, pp, 1, dd, 1)+d13*c*d*ft*trsigd-c**2/neuf*trsigp*trsigd
-    p2 = d13*ddot(ndimsi, dd, 1, dd, 1)-c**2/neuf*trsigd**2
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p0 = d13*ddot(b_n, pp, b_incx, pp, b_incy)-(d*ft)**2+d23*c*d*ft*trsigp-c**2/neuf*trsigp**2
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p1 = d13*ddot(b_n, pp, b_incx, dd, b_incy)+d13*c*d*ft*trsigd-c**2/neuf*trsigp*trsigd
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p2 = d13*ddot(b_n, dd, b_incx, dd, b_incy)-c**2/neuf*trsigd**2
 !
     p0 = p0/(d*ftp)**2
     p1 = p1/(d*ftp)**2
@@ -162,9 +172,18 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
 !
 !    CRITERE DE COMPRESSION
 !
-    q0 = d13*ddot(ndimsi, pp, 1, pp, 1)-(b*fc)**2+d23*a*b*fc*trsigp-a**2/neuf*trsigp**2
-    q1 = d13*ddot(ndimsi, pp, 1, dd, 1)+d13*a*b*fc*trsigd-a**2/neuf*trsigp*trsigd
-    q2 = d13*ddot(ndimsi, dd, 1, dd, 1)-a**2/neuf*trsigd**2
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    q0 = d13*ddot(b_n, pp, b_incx, pp, b_incy)-(b*fc)**2+d23*a*b*fc*trsigp-a**2/neuf*trsigp**2
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    q1 = d13*ddot(b_n, pp, b_incx, dd, b_incy)+d13*a*b*fc*trsigd-a**2/neuf*trsigp*trsigd
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    q2 = d13*ddot(b_n, dd, b_incx, dd, b_incy)-a**2/neuf*trsigd**2
 !
     q0 = q0/(b*fcp)**2
     q1 = q1/(b*fcp)**2

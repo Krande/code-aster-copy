@@ -191,14 +191,20 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 ! --- DIRECH=RESIDU+BETA*DIRECH
 !
     if (iterat .eq. 1) then
-        numerp = ddot(nbliac, zr(jpcres), 1, zr(jpcres), 1)
+        b_n = to_blas_int(nbliac)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        numerp = ddot(b_n, zr(jpcres), b_incx, zr(jpcres), b_incy)
         b_n = to_blas_int(nbliac)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, zr(jpcres), b_incx, zr(jpcdir), b_incy)
     else
         numerm = numerp
-        numerp = ddot(nbliac, zr(jpcres), 1, zr(jpcres), 1)
+        b_n = to_blas_int(nbliac)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        numerp = ddot(b_n, zr(jpcres), b_incx, zr(jpcres), b_incy)
         beta = numerp/numerm
         b_n = to_blas_int(nbliac)
         b_incx = to_blas_int(1)
@@ -232,8 +238,14 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 !
 ! --- PAS D'AVANCEMENT
 !
-    numer = ddot(nbliac, zr(jpcres), 1, zr(jpcres), 1)
-    denom = ddot(neq, zr(jddelt), 1, zr(jsecmb), 1)
+    b_n = to_blas_int(nbliac)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    numer = ddot(b_n, zr(jpcres), b_incx, zr(jpcres), b_incy)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    denom = ddot(b_n, zr(jddelt), b_incx, zr(jsecmb), b_incy)
     alpha = numer/denom
 !
     if (alpha .lt. 0.d0) then

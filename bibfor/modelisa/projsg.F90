@@ -203,12 +203,27 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp,&
 !
 ! 1.2 EXCENTRICITE ET COORDONNEES DU POINT PROJETE
 ! ---
-    n1n1 = ddot(3, plan1(1), 1, plan1(1), 1)
-    n1n2 = ddot(3, plan1(1), 1, plan2(1), 1)
-    n2n2 = ddot(3, plan2(1), 1, plan2(1), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    n1n1 = ddot(b_n, plan1(1), b_incx, plan1(1), b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    n1n2 = ddot(b_n, plan1(1), b_incx, plan2(1), b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    n2n2 = ddot(b_n, plan2(1), b_incx, plan2(1), b_incy)
 !
-    alpha1 = ddot(3, plan1(1), 1, x3dca(1), 1)+plan1(4)
-    alpha2 = ddot(3, plan2(1), 1, x3dca(1), 1)+plan2(4)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    alpha1 = ddot(b_n, plan1(1), b_incx, x3dca(1), b_incy)+plan1(4)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    alpha2 = ddot(b_n, plan2(1), b_incx, x3dca(1), b_incy)+plan2(4)
 !
     beta1 = -n2n2*alpha1+n1n2*alpha2
     beta2 = n1n2*alpha1-n1n1*alpha2

@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine pipetu(ndim, mate, sup, sud, vim, &
+!
+subroutine pipetu(ndim, mate, sup, sud, vim,&
                   dtau, copilo)
 !
 !
@@ -53,6 +53,7 @@ subroutine pipetu(ndim, mate, sup, sud, vim, &
     integer :: cod(nbpa), kpg, spt
     character(len=16) :: nom(nbpa)
     character(len=8) :: fami, poum
+    blas_int :: b_incx, b_incy, b_n
 !
     data nom/'K', 'SIGM_C_N', 'SIGM_C_T', 'GC_N', 'GC_T', 'ETA_BK'/
 !
@@ -69,8 +70,8 @@ subroutine pipetu(ndim, mate, sup, sud, vim, &
     poum = '+'
 !
 ! RECUPERATION DES PARAMETRES PHYSIQUES
-    call rcvalb(fami, kpg, spt, poum, mate, &
-                ' ', 'RUPT_TURON', 0, ' ', [0.d0], &
+    call rcvalb(fami, kpg, spt, poum, mate,&
+                ' ', 'RUPT_TURON', 0, ' ', [0.d0],&
                 5, nom, val, cod, 2)
     k = val(1)
     delta_N_0 = val(2)/k
@@ -171,9 +172,18 @@ subroutine pipetu(ndim, mate, sup, sud, vim, &
 !
 !    PORTION EN TRACTION : FEL = (SQR(SU(1)**2 + SU(2)**2) - KA) / KREF
 !
-    p2 = ddot(ndim, sud, 1, sud, 1)
-    p1 = ddot(ndim, sud, 1, sup, 1)
-    p0 = ddot(ndim, sup, 1, sup, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p2 = ddot(b_n, sud, b_incx, sud, b_incy)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p1 = ddot(b_n, sud, b_incx, sup, b_incy)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p0 = ddot(b_n, sup, b_incx, sup, b_incy)
 !
 !    PAS DE SOLUTION
     if (p2 .lt. (1.d0/r8gaem()**0.5d0)) goto 200

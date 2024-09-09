@@ -206,7 +206,7 @@ subroutine vdpnlr(option, nomte, codret)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=itab)
     if (itab(6) .le. 1) then
         lgpg = itab(7)
@@ -216,7 +216,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari,&
                          lSigm, codret)
 !
 ! - Properties of behaviour
@@ -363,7 +363,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !---- REPERE LOCAUX AUX NOEUDS SUR LA CONFIGURATION INITIALE
 !
-    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta, &
+    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta,&
                 vectn, vectpt)
 !
 !---- DEPLACEMENT TOTAL AUX NOEUDS DE SERENDIP
@@ -429,16 +429,16 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !---- TRANSFORMEES NORMALES ET MATRICES DE ROTATION AUX NOEUDS
 !
-    call vectrn(nb2, vectpt, vectn, vecthe, vecnph, &
+    call vectrn(nb2, vectpt, vectn, vecthe, vecnph,&
                 blam)
-    call vectrn(nb2, vectpt, vectn, vecthm, vecphm, &
+    call vectrn(nb2, vectpt, vectn, vecthm, vecphm,&
                 blamm)
 !
 !---- VECTEUR PE DES VARIABLES NODALES TOTALES GENERALISEES
 !
-    call vectpe(nb1, nb2, vecu, vectn, vecnph, &
+    call vectpe(nb1, nb2, vecu, vectn, vecnph,&
                 vecpe)
-    call vectpe(nb1, nb2, vecum, vectn, vecphm, &
+    call vectpe(nb1, nb2, vecum, vectn, vecphm,&
                 vecpem)
 !
 !______________________________________________________________________
@@ -502,61 +502,61 @@ subroutine vdpnlr(option, nomte, codret)
 !
             do intsr = 1, npgsr
 !
-                call vectgt(0, nb1, zr(igeom), ksi3s2, intsr, &
+                call vectgt(0, nb1, zr(igeom), ksi3s2, intsr,&
                             zr(lzr), epais, vectn, vectg, vectt)
 !
-                call jacbm1(epais, vectg, vectt, bid33, jm1, &
+                call jacbm1(epais, vectg, vectt, bid33, jm1,&
                             detj)
 !
 !------------- J1DN1RI ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 0 INCOMPLET
-                call jm1dn1(0, 0, nb1, nb2, zr(lzr), &
+                call jm1dn1(0, 0, nb1, nb2, zr(lzr),&
                             epais, ksi3s2, intsr, jm1, jdn1ri)
 !
 !------------- CALCUL DE    DUDXRI ( 9 ) REDUIT INCOMPLET
 !
-                call promat(jdn1ri, 9, 9, 6*nb1+3, vecpe, &
+                call promat(jdn1ri, 9, 9, 6*nb1+3, vecpe,&
                             6*nb1+3, 6*nb1+3, 1, dudxri)
-                call promat(jdn1ri, 9, 9, 6*nb1+3, vecpem, &
+                call promat(jdn1ri, 9, 9, 6*nb1+3, vecpem,&
                             6*nb1+3, 6*nb1+3, 1, dudrim)
 !
 !+++++++++++++ B1MRI ( 3 , 51 , 4 ) MEMBRANE REDUIT INCOMPLET
 !              B2MRI ( 3 , 51 , 4 )
 !
-                call matbmr(nb1, vectt, dudxri, intsr, jdn1ri, &
+                call matbmr(nb1, vectt, dudxri, intsr, jdn1ri,&
                             b1mri, b2mri)
-                call matbmr(nb1, vectt, dudrim, intsr, jdn1ri, &
+                call matbmr(nb1, vectt, dudrim, intsr, jdn1ri,&
                             b1mrim, b2mrim)
 !
 !------------- J1DN1RC ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn1(0, 1, nb1, nb2, zr(lzr), &
+                call jm1dn1(0, 1, nb1, nb2, zr(lzr),&
                             epais, ksi3s2, intsr, jm1, jdn1rc)
 !
 !------------- CALCUL DE    DUDXRC ( 9 ) REDUIT COMPLET
 !
-                call promat(jdn1rc, 9, 9, 6*nb1+3, vecpe, &
+                call promat(jdn1rc, 9, 9, 6*nb1+3, vecpe,&
                             6*nb1+3, 6*nb1+3, 1, dudxrc)
-                call promat(jdn1rc, 9, 9, 6*nb1+3, vecpem, &
+                call promat(jdn1rc, 9, 9, 6*nb1+3, vecpem,&
                             6*nb1+3, 6*nb1+3, 1, dudrcm)
 !
 !------------- J1DN2RC ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn2(0, 1, nb1, nb2, zr(lzr), &
-                            epais, ksi3s2, intsr, vecnph, jm1, &
+                call jm1dn2(0, 1, nb1, nb2, zr(lzr),&
+                            epais, ksi3s2, intsr, vecnph, jm1,&
                             jdn2rc)
-                call jm1dn2(0, 1, nb1, nb2, zr(lzr), &
-                            epais, ksi3s2, intsr, vecphm, jm1, &
+                call jm1dn2(0, 1, nb1, nb2, zr(lzr),&
+                            epais, ksi3s2, intsr, vecphm, jm1,&
                             jd2rcm)
 !
 !+++++++++++++ B1SRC ( 2 , 51 , 4 ) SHEAR REDUIT COMPLET
 !              B2SRC ( 2 , 51 , 4 )
 !
-                call matbsr(nb1, vectt, dudxrc, intsr, jdn1rc, &
+                call matbsr(nb1, vectt, dudxrc, intsr, jdn1rc,&
                             jdn2rc, b1src, b2src)
-                call matbsr(nb1, vectt, dudrcm, intsr, jdn1rc, &
+                call matbsr(nb1, vectt, dudrcm, intsr, jdn1rc,&
                             jd2rcm, b1srcm, b2srcm)
 !
 !========== FIN 1 ERE BOUCLE NPGSR
@@ -573,79 +573,79 @@ subroutine vdpnlr(option, nomte, codret)
             do intsn = 1, npgsn
 !
 !C
-                call vectgt(1, nb1, zr(igeom), ksi3s2, intsn, &
+                call vectgt(1, nb1, zr(igeom), ksi3s2, intsn,&
                             zr(lzr), epais, vectn, vectg, vectt)
 !
-                call jacbm1(epais, vectg, vectt, bid33, jm1, &
+                call jacbm1(epais, vectg, vectt, bid33, jm1,&
                             detj)
 !
 !------------- J1DN1NC ( 9 , 6 * NB1 + 3 ) INDN = 1 NORMAL
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn1(1, 1, nb1, nb2, zr(lzr), &
+                call jm1dn1(1, 1, nb1, nb2, zr(lzr),&
                             epais, ksi3s2, intsn, jm1, jdn1nc)
 !
 !------------- CALCUL DE     DUDXNC ( 9 ) NORMAL COMPLET
 !
-                call promat(jdn1nc, 9, 9, 6*nb1+3, vecpe, &
+                call promat(jdn1nc, 9, 9, 6*nb1+3, vecpe,&
                             6*nb1+3, 6*nb1+3, 1, dudxnc)
-                call promat(jdn1nc, 9, 9, 6*nb1+3, vecpem, &
+                call promat(jdn1nc, 9, 9, 6*nb1+3, vecpem,&
                             6*nb1+3, 6*nb1+3, 1, dudncm)
 !
 !------------- J1DN2NC ( 9 , 6 * NB1 + 3 ) INDN = 1 NORMAL
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn2(1, 1, nb1, nb2, zr(lzr), &
-                            epais, ksi3s2, intsn, vecnph, jm1, &
+                call jm1dn2(1, 1, nb1, nb2, zr(lzr),&
+                            epais, ksi3s2, intsn, vecnph, jm1,&
                             jdn2nc)
-                call jm1dn2(1, 1, nb1, nb2, zr(lzr), &
-                            epais, ksi3s2, intsn, vecphm, jm1, &
+                call jm1dn2(1, 1, nb1, nb2, zr(lzr),&
+                            epais, ksi3s2, intsn, vecphm, jm1,&
                             jd2ncm)
 !
 !+++++++++++++ B1MNC ( 3 , 51 ) MEMBRANE NORMAL COMPLET
 !              B2MNC ( 3 , 51 )
 !
-                call matbmn(nb1, vectt, dudxnc, jdn1nc, jdn2nc, &
+                call matbmn(nb1, vectt, dudxnc, jdn1nc, jdn2nc,&
                             b1mnc, b2mnc)
-                call matbmn(nb1, vectt, dudncm, jdn1nc, jd2ncm, &
+                call matbmn(nb1, vectt, dudncm, jdn1nc, jd2ncm,&
                             b1mncm, b2mncm)
 !
 !------------- J1DN1NI ( 9 , 6 * NB1 + 3 ) INDN = 1 NORMAL
 !                                          INDC = 0 INCOMPLET
 !
-                call jm1dn1(1, 0, nb1, nb2, zr(lzr), &
+                call jm1dn1(1, 0, nb1, nb2, zr(lzr),&
                             epais, ksi3s2, intsn, jm1, jdn1ni)
 !
 !------------- CALCUL DE     DUDXNI ( 9 ) NORMAL INCOMPLET
 !
-                call promat(jdn1ni, 9, 9, 6*nb1+3, vecpe, &
+                call promat(jdn1ni, 9, 9, 6*nb1+3, vecpe,&
                             6*nb1+3, 6*nb1+3, 1, dudxni)
-                call promat(jdn1ni, 9, 9, 6*nb1+3, vecpem, &
+                call promat(jdn1ni, 9, 9, 6*nb1+3, vecpem,&
                             6*nb1+3, 6*nb1+3, 1, dudnim)
 !
 !+++++++++++++ B1MNI ( 3 , 51 ) MEMBRANE NORMAL INCOMPLET
 !              B2MNI ( 3 , 51 )
 !
-                call matbmn(nb1, vectt, dudxni, jdn1ni, jdn1ni, &
+                call matbmn(nb1, vectt, dudxni, jdn1ni, jdn1ni,&
                             b1mni, b2mni)
-                call matbmn(nb1, vectt, dudnim, jdn1ni, jdn1ni, &
+                call matbmn(nb1, vectt, dudnim, jdn1ni, jdn1ni,&
                             b1mnim, b2mnim)
 !
 !============= B1SU ( 5 , 51 ) SUBSTITUTION TOTAL
 !              B2SU ( 5 , 51 ) SUBSTITUTION DIFFERENTIEL
 !
-                call matbsu(nb1, zr(lzr), npgsr, intsn, b1mnc, &
-                            b2mnc, b1mni, b2mni, b1mri, b2mri, &
+                call matbsu(nb1, zr(lzr), npgsr, intsn, b1mnc,&
+                            b2mnc, b1mni, b2mni, b1mri, b2mri,&
                             b1src, b2src, b1su, b2su)
-                call matbsu(nb1, zr(lzr), npgsr, intsn, b1mncm, &
-                            b2mncm, b1mnim, b2mnim, b1mrim, b2mrim, &
+                call matbsu(nb1, zr(lzr), npgsr, intsn, b1mncm,&
+                            b2mncm, b1mnim, b2mnim, b1mrim, b2mrim,&
                             b1srcm, b2srcm, b1sum, b2sum)
 !
 !------------- LA  DEFORMATION TOTALE  DE GREEN LAGRANGE ETILD ( 5 )
 !
-                call promat(b1su, 5, 5, 6*nb1+3, vecpe, &
+                call promat(b1su, 5, 5, 6*nb1+3, vecpe,&
                             6*nb1+3, 6*nb1+3, 1, etild)
-                call promat(b1sum, 5, 5, 6*nb1+3, vecpem, &
+                call promat(b1sum, 5, 5, 6*nb1+3, vecpem,&
                             6*nb1+3, 6*nb1+3, 1, etildm)
 !
 !
@@ -686,14 +686,14 @@ subroutine vdpnlr(option, nomte, codret)
                 ksp = (icou-1)*npge+inte
 !
                 sigma = 0.d0
-                call nmcomp(BEHinteg, 'MASS', intsn, ksp, 2, &
-                            typmod, zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), &
-                            zr(iinstp), 4, eps2d, deps2d, 4, &
-                            sign, zr(ivarim+k2), option, angmas, sigma, &
+                call nmcomp(BEHinteg, 'MASS', intsn, ksp, 2,&
+                            typmod, zi(imate), zk16(icompo), zr(icarcr), zr(iinstm),&
+                            zr(iinstp), 4, eps2d, deps2d, 4,&
+                            sign, zr(ivarim+k2), option, angmas, sigma,&
                             zr(ivarip+k2), 36, dsidep, cod)
 !
-                call rcvalb('MASS', intsn, ksp, '+', zi(imate), &
-                            ' ', elasKeyword, 0, ' ', [0.d0], &
+                call rcvalb('MASS', intsn, ksp, '+', zi(imate),&
+                            ' ', elasKeyword, 0, ' ', [0.d0],&
                             nbv, nomres, valres, icodre, 1)
 !
                 cisail = valres(1)/(1.d0+valres(2))
@@ -783,7 +783,7 @@ subroutine vdpnlr(option, nomte, codret)
 !              ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * STILD ( 5 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, b2su, stild, &
+                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, b2su, stild,&
                                zr(ivectu))
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -801,8 +801,8 @@ subroutine vdpnlr(option, nomte, codret)
 !
                         do i = 1, 5
 !
-                            stlis(i, kntsr) = stlis(i, kntsr)+zr(lzr-1+702+4*(intsn-1)+kntsr)*s&
-                                              &tild(i)*zr(lzr-1+127+intsn-1)
+                            stlis(i, kntsr) = stlis(i, kntsr)+zr(lzr-1+702+4*(intsn-1)+kntsr)*sti&
+                                              &ld(i)*zr(lzr-1+127+intsn-1)
 !
                         end do
                     end do
@@ -812,7 +812,7 @@ subroutine vdpnlr(option, nomte, codret)
 !                  B2SU ( 5 , 6 * NB1 + 3 )
 !                POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(b2su, matc, zr(lzr-1+127+intsn-1)*detj*coef, 5, 6*nb1+3, &
+                    call btdbma(b2su, matc, zr(lzr-1+127+intsn-1)*detj*coef, 5, 6*nb1+3,&
                                 zr(imatun))
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -829,19 +829,19 @@ subroutine vdpnlr(option, nomte, codret)
 !---------- CALCUL DE
 !           J1DN3( 9 , 3 * NB2 )=JTILDM1( 9 , 9 )*DNDQSI3( 9 , 3 * NB2 )
 !
-                    call jm1dn3(nb2, zr(lzr), epais, ksi3s2, intsn, &
+                    call jm1dn3(nb2, zr(lzr), epais, ksi3s2, intsn,&
                                 jm1, j1dn3)
 !---------- CALCUL DE
 !           BTILD3 ( 5 , 27 ) = HSC ( 5 , 9 ) * J1DN3 ( 9 , 3 * NB2 )
 !
-                    call promat(hsc, 5, 5, 9, j1dn3, &
+                    call promat(hsc, 5, 5, 9, j1dn3,&
                                 9, 9, 3*nb2, btild3)
 !
 !---------- VECZN ( 27 )  =     INTEGRALE  DE
 !           ( BTILD3 ( 5 , 27 ) ) T * STILD ( 5 ) *
 !           POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(3*nb2, 5, zr(lzr-1+127+intsn-1)*detj*coef, btild3, stild, &
+                    call btsig(3*nb2, 5, zr(lzr-1+127+intsn-1)*detj*coef, btild3, stild,&
                                veczn)
 !
 !
@@ -865,7 +865,7 @@ subroutine vdpnlr(option, nomte, codret)
 !           *                               JDN2NC ( 9 , 6 * NB1 + 3 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(jdn2nc, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3, &
+                    call btdbma(jdn2nc, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3,&
                                 vrignc)
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -875,7 +875,7 @@ subroutine vdpnlr(option, nomte, codret)
 !           *                               JDN1NI ( 9 , 6 * NB1 + 3 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(jdn1ni, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3, &
+                    call btdbma(jdn1ni, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3,&
                                 vrigni)
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -892,16 +892,16 @@ subroutine vdpnlr(option, nomte, codret)
 !
                 do intsr = 1, npgsr
 !
-                    call vectgt(0, nb1, zr(igeom), ksi3s2, intsr, &
+                    call vectgt(0, nb1, zr(igeom), ksi3s2, intsr,&
                                 zr(lzr), epais, vectn, vectg, vectt)
 !
-                    call jacbm1(epais, vectg, vectt, bid33, jm1, &
+                    call jacbm1(epais, vectg, vectt, bid33, jm1,&
                                 detj)
 !
 !------------- J1DN1RI ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 0 INCOMPLET
 !
-                    call jm1dn1(0, 0, nb1, nb2, zr(lzr), &
+                    call jm1dn1(0, 0, nb1, nb2, zr(lzr),&
                                 epais, ksi3s2, intsr, jm1, jdn1ri)
 !
 !
@@ -929,7 +929,7 @@ subroutine vdpnlr(option, nomte, codret)
 !------------- PAS D INTEGRATION REDUITE SURFACE MOYENNE
 !DDDDDDDDDDDDD
 !
-                    call btdbma(jdn1ri, bars, detj*coef, 9, 6*nb1+3, &
+                    call btdbma(jdn1ri, bars, detj*coef, 9, 6*nb1+3,&
                                 vrigri)
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -937,8 +937,8 @@ subroutine vdpnlr(option, nomte, codret)
 !------------- J1DN2RC ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 1 COMPLET
 !
-                    call jm1dn2(0, 1, nb1, nb2, zr(lzr), &
-                                epais, ksi3s2, intsr, vecnph, jm1, &
+                    call jm1dn2(0, 1, nb1, nb2, zr(lzr),&
+                                epais, ksi3s2, intsr, vecnph, jm1,&
                                 jdn2rc)
 !
 !------------- ANNULATION DE MEMBRANE FLEXION
@@ -964,7 +964,7 @@ subroutine vdpnlr(option, nomte, codret)
 !------------- PAS D INTEGRATION REDUITE SURFACE MOYENNE
 !DDDDDDDDDDDDD
 !
-                    call btdbma(jdn2rc, bars, detj*coef, 9, 6*nb1+3, &
+                    call btdbma(jdn2rc, bars, detj*coef, 9, 6*nb1+3,&
                                 vrigrc)
 !
 !========== FIN 2 EME BOUCLE NPGSR
@@ -1008,14 +1008,14 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !---------- RIGIDITE NON CLASSIQUE RIGN ( 3 , 3 ) NON SYMETRIQUE
 !
-            call promat(antzi, 3, 3, 3, antni, &
+            call promat(antzi, 3, 3, 3, antni,&
                         3, 3, 3, rignc)
 !
         end do
 !
 !------- ROTATION DE TOUTE LA MATRICE AU REPERE LOCAL
 !
-        call rogllo(nb1, nb2, zr(imatun), blam, ctor, &
+        call rogllo(nb1, nb2, zr(imatun), blam, ctor,&
                     knn)
 !
     else
@@ -1039,7 +1039,10 @@ subroutine vdpnlr(option, nomte, codret)
             theta(ii) = vecthe(in, ii)
         end do
 !
-        thetan = ddot(3, theta, 1, vecni, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        thetan = ddot(b_n, theta, b_incx, vecni, b_incy)
 !
 !+++++++++++ MATRICE T MOIUNS 1 DE THETA
 !
@@ -1047,12 +1050,12 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !+++++++++++ SON TRANSPOSE
 !
-        call transp(tmoin1, 3, 3, 3, tm1t, &
+        call transp(tmoin1, 3, 3, 3, tm1t,&
                     3)
 !
 !+++++++++++ PRODUIT T MOINS 1 T FOIS VECNI
 !
-        call promat(tm1t, 3, 3, 3, vecni, &
+        call promat(tm1t, 3, 3, 3, vecni,&
                     3, 3, 1, term)
 !
 !

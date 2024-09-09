@@ -240,7 +240,10 @@ subroutine gcpc(m, in, ip, ac, inpc,&
         end if
 !
 !                                             RRRI <--- (RK,ZK)
-        rrri = ddot(m, r, 1, rr, 1)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rrri = ddot(b_n, r, b_incx, rr, b_incy)
 !       ---- NOUVELLE DIRECTION DE DESCENTE:
 !                                    BETAK = (RK,ZK)/(RK-1,ZK-1)
 !                                               BETAK <--- GAMA
@@ -272,7 +275,10 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !                                                 XK  <--- XP()
         call gcax(m, in, ip, ac, p,&
                   rr)
-        rau = -rrri/ddot(m, p, 1, rr, 1)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rau = -rrri/ddot(b_n, p, b_incx, rr, b_incy)
         b_n = to_blas_int(m)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)

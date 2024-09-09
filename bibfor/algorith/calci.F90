@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calci(phib24, phi1j, bj, cij1)
     implicit none
 !
@@ -34,16 +34,17 @@ subroutine calci(phib24, phi1j, bj, cij1)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
-    integer ::   imade, nphi1
+    integer :: imade, nphi1
     real(kind=8) :: cij1
     character(len=19) :: phib24, phi1j, bj
 !--------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-
+!
     real(kind=8), pointer :: produit(:) => null()
     real(kind=8), pointer :: barre(:) => null()
     real(kind=8), pointer :: phi1(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(phi1j//'.VALE', 'L', vr=phi1)
@@ -59,13 +60,16 @@ subroutine calci(phib24, phi1j, bj, cij1)
 !
 ! ---PRODUIT MATRICE BJ ET LE VECTEUR POTENTIEL PHI1J
 !
-    call mrmult('ZERO', imade, phi1, produit, 1, &
+    call mrmult('ZERO', imade, phi1, produit, 1,&
                 .true._1)
 !
 !
 !--PRODUITS SCALAIRES VECTEURS  PHI1J PAR LE VECTEUR RESULTAT PRECEDENT
 !
-    cij1 = ddot(nphi1, barre, 1, produit, 1)
+    b_n = to_blas_int(nphi1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cij1 = ddot(b_n, barre, b_incx, produit, b_incy)
 !
 !---------------- MENAGE SUR LA VOLATILE ---------------------------
 !

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
     implicit none
 !
@@ -49,8 +49,8 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
-    character(len=*), intent(in):: sd_dtm_
-    character(len=*), intent(in):: sd_nl_
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_nl_
 !
     aster_logical :: matuv
 !
@@ -69,10 +69,10 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
 !
     complex(kind=8) :: cbid
 !
-    character(len=1)  :: niv
-    character(len=8)  :: sd_dtm, sd_nl, nume, noeu, nume1
-    character(len=8)  :: noeu1, obst_typ, nume2, noeu2
-    character(len=8)  :: rigass, vercho
+    character(len=1) :: niv
+    character(len=8) :: sd_dtm, sd_nl, nume, noeu, nume1
+    character(len=8) :: noeu1, obst_typ, nume2, noeu2
+    character(len=8) :: rigass, vercho
     character(len=19) :: marig, solveu, matpre
     character(len=24) :: solver
 !
@@ -91,8 +91,9 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
     real(kind=8), pointer :: fimpo(:) => null()
     real(kind=8), pointer :: rfimpo(:) => null()
     real(kind=8), pointer :: rfimpx(:) => null()
-
+!
     integer, pointer :: slvi(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 #define bmodal(m,n) zr(jmod-1+(n-1)*neq+m)
 !
@@ -118,7 +119,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
     call dtmget(sd_dtm, _NB_PHYEQ, iscal=neq)
     call nlget(sd_nl, _NB_CHOC, iscal=nbchoc)
     if (nbchoc .eq. 0) goto 999
-
+!
     solveu = solver(1:19)
 !
 !   --- Prepare the rigidity matrix
@@ -130,7 +131,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
     zk24(jrefa-1+7) = solveu
     call mtdscr(marig)
     call jeveuo(marig//'.&INT', 'E', irigi)
-
+!
     AS_ALLOCATE(vr=fimpo, size=neq)
 !
     nbch1 = 1+2*nbchoc
@@ -147,19 +148,19 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
     AS_ALLOCATE(vr=soupl, size=nbmode)
     AS_ALLOCATE(vr=restit, size=2*nbchoc)
     AS_ALLOCATE(vi=indic, size=nbmode)
-
+!
     AS_ALLOCATE(vr=w, size=1+2*nbchoc)
     AS_ALLOCATE(vr=a, size=neq*(1+2*nbchoc))
     AS_ALLOCATE(vr=u, size=neq*(1+2*nbchoc))
     AS_ALLOCATE(vr=v, size=neq*(1+2*nbchoc))
-
+!
 !
     do i = 1, nbnli
         call nlget(sd_nl, _NL_TYPE, iocc=i, iscal=nl_type)
         if (nl_type .eq. NL_CHOC) then
             call nlget(sd_nl, _NUMDDL_1, iocc=i, kscal=nume1)
             call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=noeu1)
-
+!
             call nlget(sd_nl, _OBST_TYP, iocc=i, kscal=obst_typ)
             if (obst_typ(1:2) .eq. 'BI') then
                 call nlget(sd_nl, _NUMDDL_2, iocc=i, kscal=nume2)
@@ -179,21 +180,24 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                 call utmess('I', 'VIDE_1')
                 if (info .ge. 2) call utmess('I', 'SOUSTRUC_85', sk=noeu)
                 call utmess('I', 'VIDE_1')
-
+!
                 fimpo(:) = 0.d0
-                call posddl('NUME_DDL', nume, noeu, 'DX', nunoe, iddlx)
-                call posddl('NUME_DDL', nume, noeu, 'DY', nunoe, iddly)
-                call posddl('NUME_DDL', nume, noeu, 'DZ', nunoe, iddlz)
+                call posddl('NUME_DDL', nume, noeu, 'DX', nunoe,&
+                            iddlx)
+                call posddl('NUME_DDL', nume, noeu, 'DY', nunoe,&
+                            iddly)
+                call posddl('NUME_DDL', nume, noeu, 'DZ', nunoe,&
+                            iddlz)
                 call nlget(sd_nl, _NORMAL_VECTOR, iocc=i, rvect=nvect)
-
+!
                 fimpo(iddlx) = nvect(1)
                 fimpo(iddly) = nvect(2)
                 fimpo(iddlz) = nvect(3)
-
+!
 !               --- Calculation of RFIMPO = K*n
-                call mrmult('ZERO', irigi, fimpo, rfimpo, 1, &
+                call mrmult('ZERO', irigi, fimpo, rfimpo, 1,&
                             .true._1)
-
+!
 !               --- First pass, prepare for K^-1 by calling preres
                 if (ifac .eq. 0) then
                     call dismoi('SOLVEUR', marig, 'MATR_ASSE', repk=solveu)
@@ -201,7 +205,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                     matpre = '&&OP0029.BIDON'
                     istoav = slvi(3)
                     slvi(3) = 2
-                    call preres(solveu, 'V', iret, matpre, marig, &
+                    call preres(solveu, 'V', iret, matpre, marig,&
                                 ibid, -9999)
                     slvi(3) = istoav
                     if (iret .eq. 2) then
@@ -213,20 +217,23 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                     end if
                     ifac = 1
                 end if
-
+!
 !               --- Calculation of FIMPO, static deformation : K^-1 * n
-                call resoud(marig, ' ', solveu, ' ', 1, &
-                            ' ', ' ', ' ', fimpo, [cbid], &
+                call resoud(marig, ' ', solveu, ' ', 1,&
+                            ' ', ' ', ' ', fimpo, [cbid],&
                             ' ', .true._1, 0, iret)
-
+!
 !               --- Calculation of NORMX, square magnitude of K^-1 * n
-                normx = ddot(neq, fimpo, 1, fimpo, 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                normx = ddot(b_n, fimpo, b_incx, fimpo, b_incy)
                 normxx(icolc) = normx
-
+!
                 do k = 1, neq
                     rfimpx(k+neq*(icolc-1)) = fimpo(k)
                 end do
-
+!
                 soup = nvect(1)*fimpo(iddlx)
                 soup = soup+nvect(2)*fimpo(iddly)
                 soup = soup+nvect(3)*fimpo(iddlz)
@@ -234,16 +241,22 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                 fimpo(iddlx) = nvect(1)
                 fimpo(iddly) = nvect(2)
                 fimpo(iddlz) = nvect(3)
-
+!
                 do j = 1, nbmode
                     if (riggen(j) .le. 0.d0) then
                         usr = 0.d0
                     else
                         usr = 1.d0/riggen(j)
                     end if
-
-                    rscf = ddot(neq, bmodal(1, j), 1, rfimpo, 1)
-                    scf = ddot(neq, bmodal(1, j), 1, fimpo, 1)
+!
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    rscf = ddot(b_n, bmodal(1, j), b_incx, rfimpo, b_incy)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    scf = ddot(b_n, bmodal(1, j), b_incx, fimpo, b_incy)
                     cc = scf*rscf*usr
                     cs = scf**2*usr
                     if (info .ge. 2) then
@@ -266,10 +279,10 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                     efloc(j) = cc
                     cef = cef+cc
                 end do
-
+!
 !               --- Save the restitution ratio for this node
                 restit((i-1)*2+jj) = ct
-
+!
 !               --- Print out the flexibilities (souplesses) in increasing order
                 if (info .ge. 2) then
                     call mdtrib(indic, soupl, nbmode)
@@ -281,7 +294,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                         call utmess('I', 'SOUSTRUC_93', si=vali, nr=3, valr=valr)
                     end do
                 end if
-
+!
                 call utmess('I', 'SOUSTRUC_94', sk=noeu, nr=2, valr=[ct, cef])
                 call nlget(sd_nl, _STIF_NORMAL, iocc=i, rscal=kn)
                 call utmess('I', 'SOUSTRUC_95', sr=soup*kn*(1.d0-ct))
@@ -311,7 +324,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
             end do
         end do
 !
-        call calsvd(nm, m, n, a, w, &
+        call calsvd(nm, m, n, a, w,&
                     matuv, u, matuv, v, ierr)
         if (ierr .ne. 0) goto 999
         mmax = 0.d0
@@ -332,7 +345,10 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
         valr(1) = scond
         call utmess('I', 'SOUSTRUC_99', sr=valr(1))
         do jj = 1, nbmode
-            normy(jj) = ddot(neq, bmodal(1, jj), 1, bmodal(1, jj), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            normy(jj) = ddot(b_n, bmodal(1, jj), b_incx, bmodal(1, jj), b_incy)
         end do
 !
         n = icolc+1
@@ -350,7 +366,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                 a(k+neq*(icolc+1-1)) = bmodal(k, j)/sqrt(normy(j))
             end do
 !
-            call calsvd(nm, m, n, a, w, &
+            call calsvd(nm, m, n, a, w,&
                         matuv, u, matuv, v, ierr)
             if (ierr .ne. 0) goto 999
             mmax = 0.d0
@@ -402,7 +418,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
     AS_DEALLOCATE(vr=u)
     AS_DEALLOCATE(vr=v)
     AS_DEALLOCATE(vr=soupl)
-
+!
 !
     call getvr8('VERI_CHOC', 'SEUIL', iocc=1, scal=crit)
     if (seuil .gt. crit) then
@@ -412,7 +428,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
         call utmess('I', 'ALGORITH16_21', sr=seuil)
         call utmess(niv, 'ALGORITH5_66')
     end if
-
+!
 999 continue
 !
 end subroutine

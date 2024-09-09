@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 ! aslint: disable=
     implicit none
@@ -61,7 +61,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !
     integer :: nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j
     integer :: jmail, idlino, idnono, ino1, ino2, ino
-    integer ::  nbnor, irest, nbma
+    integer :: nbnor, irest, nbma
     real(kind=8) :: c1(3), c2(3), nb(3), c1nb(3), c1c2(3), lc1c2, psca, zero
     real(kind=8) :: rfut, rfut2, lfut, lcumul, xc1h, xc2h, r, c2nb(3), lc1nb, x
     real(kind=8) :: y, z, xmin, xmax, lc2nb, c2h(3), ymin, ymax, zmin, zmax
@@ -74,6 +74,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     integer, pointer :: noeuds_trouves(:) => null()
     integer, pointer :: travail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -107,7 +108,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
     typmcl(3) = 'TOUT'
-    call reliem(' ', noma, 'NU_MAILLE', motfac, iocc, &
+    call reliem(' ', noma, 'NU_MAILLE', motfac, iocc,&
                 3, motcle, typmcl, mesmai, nbmb)
     call jeveuo(mesmai, 'L', jmail)
 !
@@ -115,7 +116,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !
     AS_ALLOCATE(vi=travail, size=nbnot)
     AS_ALLOCATE(vi=noeud_beton, size=nbnot)
-    call gmgnre(noma, nbnot, travail, zi(jmail), nbmb, &
+    call gmgnre(noma, nbnot, travail, zi(jmail), nbmb,&
                 noeud_beton, nbnb, 'TOUS')
 !
 ! --- RECUPERATION DES NOEUDS AXE :
@@ -126,11 +127,11 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     typmcl(2) = 'MAILLE'
     prefix = '&&CGNOFU'
     mafour = '&&CGNOFU.MALIGNE'
-    call cgnoor(mafour, noma, motfac, iocc, 2, &
-                motcle, typmcl, ' ', nbma, ndorig, &
+    call cgnoor(mafour, noma, motfac, iocc, 2,&
+                motcle, typmcl, ' ', nbma, ndorig,&
                 ndextr, typm, vecori)
     lisnom = prefix//'.NOEUD'
-    call ornofd(mafour, noma, nbma, lisnom, ndorig, &
+    call ornofd(mafour, noma, nbma, lisnom, ndorig,&
                 ndextr, 'V', vecori)
     call jedetr(mafour)
     call jelira(lisnom, 'LONMAX', nbnc)
@@ -224,7 +225,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
             x = vale(3*(ino-1)+1)
             y = vale(3*(ino-1)+2)
             z = vale(3*(ino-1)+3)
-            if ((x .le. xmax .and. x .ge. xmin) .and. (y .le. ymax .and. y .ge. ymin) .and. &
+            if ((x .le. xmax .and. x .ge. xmin) .and. (y .le. ymax .and. y .ge. ymin) .and.&
                 (z .le. zmax .and. z .ge. zmin)) then
                 nbnor = nbnor+1
                 noeuds_cube(nbnor) = ino
@@ -251,12 +252,18 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
             lc1nb = c1nb(1)*c1nb(1)+c1nb(2)*c1nb(2)+c1nb(3)*c1nb(3)
             lc2nb = c2nb(1)*c2nb(1)+c2nb(2)*c2nb(2)+c2nb(3)*c2nb(3)
 !
-            psca = ddot(3, c1nb, 1, c1c2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            psca = ddot(b_n, c1nb, b_incx, c1c2, b_incy)
             c1h(1) = psca*c1c2(1)/lc1c2
             c1h(2) = psca*c1c2(2)/lc1c2
             c1h(3) = psca*c1c2(3)/lc1c2
             xc1h = c1h(1)*c1h(1)+c1h(2)*c1h(2)+c1h(3)*c1h(3)
-            psca = ddot(3, c2nb, 1, c1c2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            psca = ddot(b_n, c2nb, b_incx, c1c2, b_incy)
             c2h(1) = psca*c1c2(1)/lc1c2
             c2h(2) = psca*c1c2(2)/lc1c2
             c2h(3) = psca*c1c2(3)/lc1c2

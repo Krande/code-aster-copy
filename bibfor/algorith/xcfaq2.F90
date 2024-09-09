@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
-                  nmaabs, pinter, ainter, nface, nptf, &
+subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
+                  nmaabs, pinter, ainter, nface, nptf,&
                   cface, nbtot, nfiss, ifiss)
     implicit none
 !
@@ -83,6 +83,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
     parameter(cridist=1.d-7)
     aster_logical :: cut, ajout, arete
     character(len=8) :: typma, elp, elc
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(ptmax=4, elc='SE3')
 ! --------------------------------------------------------------------
@@ -116,12 +117,13 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
     nbtot = 0
     cut = .false.
     i = 1
-1   continue
+  1 continue
 !     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
     if (zr(jlsn-1+(i-1)*nfiss+ifiss) .ne. 0.d0 .and. i .lt. nno) then
         do k = i+1, nno
 !     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
-            if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut = .true.
+            if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut = &
+                                                                                     .true.
         end do
     else if (i .lt. nno) then
         i = i+1
@@ -141,8 +143,9 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
     if (.not. cut) then
         call conare(typma, ar, nbar)
         do i = 1, nbar
-            lsnabs = abs( &
-                     zr(jlsn-1+(ar(i, 1)-1)*nfiss+ifiss))+abs(zr(jlsn-1+(ar(i, 2)-1)*nfiss+ifiss))
+            lsnabs = abs(&
+                     zr(jlsn-1+(ar(i, 1)-1)*nfiss+ifiss))+abs(zr(jlsn-1+(ar(i, 2)-1)*nfiss+ifiss)&
+                     )
             if (lsnabs .le. cridist*lonref) arete = .true.
         end do
         if (.not. arete) goto 999
@@ -189,24 +192,24 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
             if ((lsna .eq. 0.d0) .and. (lsta .le. prec)) then
 !           ON AJOUTE A LA LISTE LE POINT A
                 if (lsta .ge. 0.d0) then
-                    call xajpin(ndim, pinter, ptmax, ipt, ins, &
-                                a, longar, ainter, 0, 0, &
+                    call xajpin(ndim, pinter, ptmax, ipt, ins,&
+                                a, longar, ainter, 0, 0,&
                                 0.d0, ajout)
                 else
-                    call xajpin(ndim, pinter, ptmax, ipt, ins, &
-                                a, longar, ainter, 0, na, &
+                    call xajpin(ndim, pinter, ptmax, ipt, ins,&
+                                a, longar, ainter, 0, na,&
                                 0.d0, ajout)
                 end if
             end if
             if (lsnb .eq. 0.d0 .and. lstb .le. prec) then
 !           ON AJOUTE A LA LISTE LE POINT B
                 if (lstb .ge. 0.d0) then
-                    call xajpin(ndim, pinter, ptmax, ipt, ins, &
-                                b, longar, ainter, 0, 0, &
+                    call xajpin(ndim, pinter, ptmax, ipt, ins,&
+                                b, longar, ainter, 0, 0,&
                                 0.d0, ajout)
                 else
-                    call xajpin(ndim, pinter, ptmax, ipt, ins, &
-                                b, longar, ainter, 0, nb, &
+                    call xajpin(ndim, pinter, ptmax, ipt, ins,&
+                                b, longar, ainter, 0, nb,&
                                 0.d0, ajout)
                 end if
             end if
@@ -215,17 +218,17 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
 !           ON AJOUTE A LA LISTE LE POINT M
                 alpha = padist(ndim, a, m)
                 if (lstm .ge. 0.d0) then
-                    call xajpin(ndim, pinter, ptmax, ipt, inm, &
-                                m, longar, ainter, 0, 0, &
+                    call xajpin(ndim, pinter, ptmax, ipt, inm,&
+                                m, longar, ainter, 0, 0,&
                                 0.d0, ajout)
                 else
                     if (cut) then
-                        call xajpin(ndim, pinter, ptmax, ipt, inc, &
-                                    m, longar, ainter, ia, 0, &
+                        call xajpin(ndim, pinter, ptmax, ipt, inc,&
+                                    m, longar, ainter, ia, 0,&
                                     alpha, ajout)
                     else if (.not. cut) then
-                        call xajpin(ndim, pinter, ptmax, ipt, inm, &
-                                    m, longar, ainter, 0, nm, &
+                        call xajpin(ndim, pinter, ptmax, ipt, inm,&
+                                    m, longar, ainter, 0, nm,&
                                     alpha, ajout)
                     end if
                 end if
@@ -233,7 +236,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
 !
             if (lsna .ne. 0.d0 .and. lsnb .ne. 0.d0 .and. lsnm .ne. 0) then
 !           INTERPOLATION DES COORDONNÉES DE C
-                call xintar(lsna, lsnb, lsnm, a, b, &
+                call xintar(lsna, lsnb, lsnm, a, b,&
                             m, ndim, c)
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha = padist(ndim, a, c)
@@ -250,12 +253,12 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
                 lstc = ff(1)*lstb+ff(2)*lsta+ff(3)*lstm
                 if (lstc .le. prec) then
                     if (lstc .ge. 0.d0) then
-                        call xajpin(ndim, pinter, ptmax, ipt, inc, &
-                                    c, longar, ainter, 0, 0, &
+                        call xajpin(ndim, pinter, ptmax, ipt, inc,&
+                                    c, longar, ainter, 0, 0,&
                                     0.d0, ajout)
                     else
-                        call xajpin(ndim, pinter, ptmax, ipt, inc, &
-                                    c, longar, ainter, ia, 0, &
+                        call xajpin(ndim, pinter, ptmax, ipt, inc,&
+                                    c, longar, ainter, ia, 0,&
                                     alpha, ajout)
                     end if
                 end if
@@ -266,8 +269,8 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
     end do
 !
 !     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
-    call xcfacf(pinter, ptmax, ipt, ainter, zr(jlsn), &
-                zr(jlst), igeom, nno, ndim, typma, &
+    call xcfacf(pinter, ptmax, ipt, ainter, zr(jlsn),&
+                zr(jlst), igeom, nno, ndim, typma,&
                 noma, nmaabs)
 !
     ninter = ins+inc
@@ -282,8 +285,8 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
 ! TRANSPORTEE PAS N(3)
         ASSERT(ndim .lt. 3)
 !       RECHERCHE POINT MILIEU FISSURE
-        call xmilfi(elp, n, ndim, nno, pinter, &
-                    ndim, igeom, jlsn, 1, 2, &
+        call xmilfi(elp, n, ndim, nno, pinter,&
+                    ndim, igeom, jlsn, 1, 2,&
                     milfi)
         do j = 1, ndim
             coor2d(j) = pinter(j)
@@ -293,8 +296,8 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
         ksi = 0.d0
         call abscvf(ndim, coor2d, ksi, smilfi)
 !       ON AJOUTE A LA LISTE LE POINT MILFI
-        call xajpin(ndim, pinter, ptmax, ipt, nbtot, &
-                    milfi, smilfi*2, ainter, 5, 0, &
+        call xajpin(ndim, pinter, ptmax, ipt, nbtot,&
+                    milfi, smilfi*2, ainter, 5, 0,&
                     smilfi, ajout)
     end if
 !
@@ -329,7 +332,10 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
             abprim(1) = -ab(2)
             abprim(2) = ab(1)
 !
-            if (ddot(2, abprim, 1, nd, 1) .lt. 0.d0) then
+            b_n = to_blas_int(2)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            if (ddot(b_n, abprim, b_incx, nd, b_incy) .lt. 0.d0) then
                 do k = 1, 2
                     tampor(k) = pinter(k)
                     pinter(k) = pinter(2+k)

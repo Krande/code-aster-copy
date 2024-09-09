@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
-                  masse, amort, rigid, fexte, famor, &
-                  fliai, fnoda, fcine, lamort, ldyna, &
+subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
+                  masse, amort, rigid, fexte, famor,&
+                  fliai, fnoda, fcine, lamort, ldyna,&
                   lexpl, ds_energy, schema)
 !
     use NonLin_Datastructure_type
@@ -248,14 +248,20 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
     AS_ALLOCATE(vr=fmoy, size=neq)
     if (ds_energy%command .eq. 'DYNA_VIBRA') then
         AS_ALLOCATE(vr=kumoyz, size=neq)
-        call mrmult('ZERO', irigid, zr(iumoyz), kumoyz, 1, &
+        call mrmult('ZERO', irigid, zr(iumoyz), kumoyz, 1,&
                     .true._1)
-        wint = ddot(neq, zr(iupmuz), 1, kumoyz, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        wint = ddot(b_n, zr(iupmuz), b_incx, kumoyz, b_incy)
     else
         do iaux = 1, neq
             fmoy(iaux) = (fnoda(iaux)+fnoda(iaux+neq))*5.d-1
         end do
-        wint = ddot(neq, zr(iupmuz), 1, fmoy, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        wint = ddot(b_n, zr(iupmuz), b_incx, fmoy, b_incy)
     end if
 ! --------------------------------------------------------------------
 ! ECIN : ENERGIE CINETIQUE
@@ -263,9 +269,12 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
 ! --------------------------------------------------------------------
     if (ldyna) then
         AS_ALLOCATE(vr=mdv, size=neq)
-        call mrmult('ZERO', imasse, vpmvmz, mdv, 1, &
+        call mrmult('ZERO', imasse, vpmvmz, mdv, 1,&
                     .true._1)
-        ecin = ddot(neq, vmoyz, 1, mdv, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ecin = ddot(b_n, vmoyz, b_incx, mdv, b_incy)
     end if
 ! --------------------------------------------------------------------
 ! WEXT : TRAVAIL DES EFFORTS EXTERIEURS
@@ -273,7 +282,10 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
     wext = 0.d0
 ! 1. CONTRIBUTION AFFE_CHAR_CINE (MECA_NON_LINE UNIQUEMENT)
     if (ds_energy%command .eq. 'MECA_NON_LINE') then
-        wext = ddot(neq, fmoy, 1, fcine(1), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        wext = ddot(b_n, fmoy, b_incx, fcine(1), b_incy)
     end if
 ! 2. CONTRIBUTION DE Bt.LAMBDA (DIRICHLETS) POUR COMDLT
     if (ds_energy%command .eq. 'DYNA_VIBRA') then
@@ -281,23 +293,29 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
 ! LAGRANGES PORTES PAR LA MATRICE DE MASSE
             call wkvect('&&ENERCA.MUMOY', 'V V R', neq, imumoy)
             AS_ALLOCATE(vr=mumoyz, size=neq)
-            call mrmult('ZERO', imasse, zr(iumoy), zr(imumoy), 1, &
+            call mrmult('ZERO', imasse, zr(iumoy), zr(imumoy), 1,&
                         .true._1)
-            call mrmult('ZERO', imasse, zr(iumoyz), mumoyz, 1, &
+            call mrmult('ZERO', imasse, zr(iumoyz), mumoyz, 1,&
                         .true._1)
             do iaux = 1, neq
                 fmoy(iaux) = mumoyz(iaux)-zr(imumoy-1+iaux)
             end do
-            wext = wext+ddot(neq, fmoy, 1, zr(iupmuz), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            wext = wext+ddot(b_n, fmoy, b_incx, zr(iupmuz), b_incy)
         else
 ! LAGRANGES PORTES PAR LA MATRICE DE RIGIDITE
             call wkvect('&&ENERCA.KUMOY', 'V V R  ', neq, ikumoy)
-            call mrmult('ZERO', irigid, zr(iumoy), zr(ikumoy), 1, &
+            call mrmult('ZERO', irigid, zr(iumoy), zr(ikumoy), 1,&
                         .true._1)
             do iaux = 1, neq
                 fmoy(iaux) = kumoyz(iaux)-zr(ikumoy-1+iaux)
             end do
-            wext = wext+ddot(neq, fmoy, 1, zr(iupmuz), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            wext = wext+ddot(b_n, fmoy, b_incx, zr(iupmuz), b_incy)
         end if
     end if
 ! 3. CONTRIBUTION DES NEUMANN
@@ -315,7 +333,10 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
             fmoy(iaux) = 0.d0
         end if
     end do
-    wext = wext+ddot(neq, fmoy, 1, zr(iupmuz), 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    wext = wext+ddot(b_n, fmoy, b_incx, zr(iupmuz), b_incy)
 ! --------------------------------------------------------------------
 ! LIAI : ENERGIE DISSIPEE PAR LES LIAISONS
 ! - UNIQUEMENT IMPE_ABSO POUR DYNA_VIBRA
@@ -323,7 +344,10 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
     do iaux = 1, neq
         fmoy(iaux) = (fliai(iaux)+fliai(iaux+neq))*5.d-1
     end do
-    liai = ddot(neq, zr(iupmuz), 1, fmoy, 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    liai = ddot(b_n, zr(iupmuz), b_incx, fmoy, b_incy)
 ! --------------------------------------------------------------------
 ! AMOR : ENERGIE DISSIPEE PAR AMORTISSEMENT
 ! - UNIQUEMENT SI CALCUL DYNAMIQUE
@@ -332,18 +356,27 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
         do iaux = 1, neq
             fmoy(iaux) = (famor(iaux)+famor(iaux+neq))*5.d-1
         end do
-        amor = ddot(neq, zr(iupmuz), 1, fmoy, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        amor = ddot(b_n, zr(iupmuz), b_incx, fmoy, b_incy)
         if (lamort) then
             if (zi(iamort+3) .eq. 1) then
                 call wkvect('&&ENERCA.CVMOYZ', 'V V R', neq, icvmoz)
-                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1, &
+                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1,&
                             .true._1)
-                amor = amor+ddot(neq, zr(iupmuz), 1, zr(icvmoz), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                amor = amor+ddot(b_n, zr(iupmuz), b_incx, zr(icvmoz), b_incy)
             else
                 call wkvect('&&ENERCA.CVMOYZ', 'V V C', neq, icvmoz)
-                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1, &
+                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1,&
                             .true._1)
-                amor = amor+ddot(neq, zr(iupmuz), 1, zr(icvmoz), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                amor = amor+ddot(b_n, zr(iupmuz), b_incx, zr(icvmoz), b_incy)
             end if
         end if
     end if
@@ -447,8 +480,8 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
     call jedetr('&&ENERCA.VPMVM')
     AS_DEALLOCATE(vr=vpmvmz)
 !
-101 format('(', i3, 'A1)')
-102 format('((A1,1X,A15,1X),', i1, '(A1,A13),A1)')
-103 format('((A1,1X,A15,1X),', i1, '(A1,1X,ES11.4,1X),A1)')
+    101 format('(', i3, 'A1)')
+    102 format('((A1,1X,A15,1X),', i1, '(A1,A13),A1)')
+    103 format('((A1,1X,A15,1X),', i1, '(A1,1X,ES11.4,1X),A1)')
     call jedema()
 end subroutine

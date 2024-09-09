@@ -50,19 +50,18 @@ subroutine gdclci(fm, df, em)
 ! ----------------------------------------------------------------------
     integer :: ij, kl, i, j, k, l
     real(kind=8) :: bem(6), pdf(6, 6), betr(6)
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !
 !
 !  CALCUL DES JACOBIENS
 ! ----------------------
 !
-    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))&
-     &  -fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3, 2))&
-     &  +fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
+    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2)) -fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(&
+         &3, 2)) +fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
-    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2))&
-     &  -df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(3, 2))&
-     &  +df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
+    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2)) -df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(&
+         &3, 2)) +df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
 !
     jp = jm*dj
 !
@@ -83,15 +82,17 @@ subroutine gdclci(fm, df, em)
         do kl = 1, 6
             k = ind1(kl)
             l = ind2(kl)
-            pdf(ij, kl) = rc(ij)*rc(kl)*(df(i, k)*df(j, l)+df(j, k)*df(i, l)) &
-                          /2
+            pdf(ij, kl) = rc(ij)*rc(kl)*(df(i, k)*df(j, l)+df(j, k)*df(i, l)) /2
         end do
     end do
 !
 !
 !    CALCUL DE BE TRIAL : BETR(AB) = PDF(AB,IJ):BEM(IJ)  ET  E TRIAL
     do ij = 1, 6
-        betr(ij) = ddot(6, pdf(ij, 1), 6, bem, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(6)
+        b_incy = to_blas_int(1)
+        betr(ij) = ddot(b_n, pdf(ij, 1), b_incx, bem, b_incy)
         etr(ij) = (kr(ij)-betr(ij))/2
     end do
 !
@@ -101,6 +102,9 @@ subroutine gdclci(fm, df, em)
     do ij = 1, 6
         dvetr(ij) = etr(ij)-tretr/3.d0*kr(ij)
     end do
-    eqetr = sqrt(1.5d0*ddot(6, dvetr, 1, dvetr, 1))
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    eqetr = sqrt(1.5d0*ddot(b_n, dvetr, b_incx, dvetr, b_incy))
 !
 end subroutine

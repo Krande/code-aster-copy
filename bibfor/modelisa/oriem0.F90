@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine oriem0(kdim, type, coor, lino1, nbno1, &
-                  lino2, nbno2, lino3, nbno3, ipos, &
+subroutine oriem0(kdim, type, coor, lino1, nbno1,&
+                  lino2, nbno2, lino3, nbno3, ipos,&
                   indmai)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -72,6 +72,7 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1, &
 !
     integer :: ino, n1, n2, n3, ic, indi
     real(kind=8) :: nor1(3), n1n2(3), n1n3(3), ps1, ps2
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -117,7 +118,10 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1, &
         nor1(2) = n1n2(1)
         nor1(3) = 0.d0
     end if
-    ASSERT(ddot(3, nor1, 1, nor1, 1) .gt. 0)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    ASSERT(ddot(b_n, nor1, b_incx, nor1, b_incy) .gt. 0)
 !
 !
 !
@@ -134,13 +138,16 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1, &
             end do
 !           -- ps1 > 0 <=> la normale de la peau est orientee comme la
 !                         la normale exterieure de la maille 1
-            ps1 = ddot(3, n1n2, 1, nor1, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps1 = ddot(b_n, n1n2, b_incx, nor1, b_incy)
             goto 40
 !
         end if
     end do
     ASSERT(.false.)
-40  continue
+ 40 continue
 !
 !
 !   -- position de la maille 2 par rapport a la maille de peau  => ps2
@@ -152,13 +159,16 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1, &
             do ic = 1, 3
                 n1n2(ic) = coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
             end do
-            ps2 = ddot(3, n1n2, 1, nor1, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps2 = ddot(b_n, n1n2, b_incx, nor1, b_incy)
             goto 70
 !
         end if
     end do
     ASSERT(.false.)
-70  continue
+ 70 continue
 !
 !
 !   -- les mailles 1 et 2 sont elles du meme cote par rapport

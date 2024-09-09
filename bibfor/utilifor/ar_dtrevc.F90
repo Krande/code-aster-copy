@@ -804,7 +804,10 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                             vcrit = bignum
                         end if
 !
-                        work(j+n) = work(j+n)-ddot(j-ki-1, t(ki+1, j), 1, work(ki+1+n), 1)
+                        b_n = to_blas_int(j-ki-1)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        work(j+n) = work(j+n)-ddot(b_n, t(ki+1, j), b_incx, work(ki+1+n), b_incy)
 !
 !                    SOLVE (T(J,J)-WR)'*X = WORK
 !
@@ -841,9 +844,16 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                             vcrit = bignum
                         end if
 !
-                        work(j+n) = work(j+n)-ddot(j-ki-1, t(ki+1, j), 1, work(ki+1+n), 1)
+                        b_n = to_blas_int(j-ki-1)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        work(j+n) = work(j+n)-ddot(b_n, t(ki+1, j), b_incx, work(ki+1+n), b_incy)
 !
-                        work(j+1+n) = work(j+1+n)-ddot(j-ki-1, t(ki+1, j+1), 1, work(ki+1+n), 1)
+                        b_n = to_blas_int(j-ki-1)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        work(j+1+n) = work(j+1+n)-ddot(b_n, t(ki+1, j+1), b_incx, work(ki+1+n), b&
+                                      &_incy)
 !
 !                    SOLVE
 !                      (T(J,J)-WR   T(J,J+1)     )'* X = SCALE*( WORK1 )
@@ -973,8 +983,15 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                             vcrit = bignum
                         end if
 !
-                        work(j+n) = work(j+n)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n), 1)
-                        work(j+n2) = work(j+n2)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n2), 1)
+                        b_n = to_blas_int(j-ki-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        work(j+n) = work(j+n)-ddot(b_n, t(ki+2, j), b_incx, work(ki+2+n), b_incy)
+                        b_n = to_blas_int(j-ki-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        work(j+n2) = work(j+n2)-ddot(b_n, t(ki+2, j), b_incx, work(ki+2+n2), b_in&
+                                     &cy)
 !
 !                    SOLVE (T(J,J)-(WR-I*WI))*(X11+I*X12)= WK+I*WK2
 !
@@ -1018,14 +1035,28 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                             vcrit = bignum
                         end if
 !
-                        work(j+n) = work(j+n)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n), 1)
+                        b_n = to_blas_int(j-ki-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        work(j+n) = work(j+n)-ddot(b_n, t(ki+2, j), b_incx, work(ki+2+n), b_incy)
 !
-                        work(j+n2) = work(j+n2)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n2), 1)
+                        b_n = to_blas_int(j-ki-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        work(j+n2) = work(j+n2)-ddot(b_n, t(ki+2, j), b_incx, work(ki+2+n2), b_in&
+                                     &cy)
 !
-                        work(j+1+n) = work(j+1+n)-ddot(j-ki-2, t(ki+2, j+1), 1, work(ki+2+n), 1)
+                        b_n = to_blas_int(j-ki-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        work(j+1+n) = work(j+1+n)-ddot(b_n, t(ki+2, j+1), b_incx, work(ki+2+n), b&
+                                      &_incy)
 !
-                        work(j+1+n2) = work(j+1+n2)-ddot(j-ki-2, t(ki+2, j+1), 1, work(ki+2+n2), &
-                                       &1)
+                        b_n = to_blas_int(j-ki-2)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        work(j+1+n2) = work(j+1+n2)-ddot(b_n, t(ki+2, j+1), b_incx, work(ki+2+n2)&
+                                       &, b_incy)
 !
 !                    SOLVE 2-BY-2 COMPLEX LINEAR EQUATION
 !                      ((T(J,J)   T(J,J+1)  )'-(WR-I*WI)*I)*X = SCALE*B

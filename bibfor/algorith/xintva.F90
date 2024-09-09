@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
+!
+subroutine xintva(name, dekker, ptxx, ndime, intinf,&
+                  intsup)
     implicit none
 !
 #include "jeveux.h"
@@ -48,6 +49,7 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
     real(kind=8) :: norm_ab, norm_bc, norm_ca, eps, tole, d(ndime), bd(ndime)
     real(kind=8) :: norm_n, n(ndime), norm_ad, norm_bd
     integer :: j, cpt
+    blas_int :: b_incx, b_incy, b_n
     parameter(eps=1.d-12)
     parameter(tole=5.d-7)
 !
@@ -97,12 +99,21 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
 !   ON CHERCHE LES INTERSECTIONS DE LA DIRECTION DE RECHERCHE AVEC LES ARETES DE LA FACE TRIA
 !
 !   INTERSECTION SUR L'ARETE AB (ON PROJETTE LE SYSTEME D'EQUATION DANS LE REPERE DE LA FACE)
-        b1 = ddot(ndime, k, 1, ab, 1)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        b1 = ddot(b_n, k, b_incx, ab, b_incy)
         do j = 1, ndime
             ka(j) = a(j)-ptini(j)
         end do
-        c1 = ddot(ndime, k, 1, ka, 1)
-        c2 = ddot(ndime, ka, 1, ab, 1)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        c1 = ddot(b_n, k, b_incx, ka, b_incy)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        c2 = ddot(b_n, ka, b_incx, ab, b_incy)
         det = -1.d0+b1**2
         if (abs(det) .gt. eps) then
             kappa = (-c1+c2*b1)/det
@@ -116,12 +127,21 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
         end if
 !
 !   INTERSECTION SUR L'ARETE BC
-        b1 = ddot(ndime, k, 1, bc, 1)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        b1 = ddot(b_n, k, b_incx, bc, b_incy)
         do j = 1, ndime
             kb(j) = b(j)-ptini(j)
         end do
-        c1 = ddot(ndime, k, 1, kb, 1)
-        c2 = ddot(ndime, kb, 1, bc, 1)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        c1 = ddot(b_n, k, b_incx, kb, b_incy)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        c2 = ddot(b_n, kb, b_incx, bc, b_incy)
         det = -1.d0+b1**2
         if (abs(det) .gt. eps) then
             kappa = (-c1+c2*b1)/det
@@ -135,12 +155,21 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
         end if
 !
 !   INTERSECTION SUR L'ARETE CA
-        b1 = ddot(ndime, k, 1, ca, 1)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        b1 = ddot(b_n, k, b_incx, ca, b_incy)
         do j = 1, ndime
             kc(j) = c(j)-ptini(j)
         end do
-        c1 = ddot(ndime, k, 1, kc, 1)
-        c2 = ddot(ndime, kc, 1, ca, 1)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        c1 = ddot(b_n, k, b_incx, kc, b_incy)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        c2 = ddot(b_n, kc, b_incx, ca, b_incy)
         det = -1.d0+b1**2
         if (abs(det) .gt. eps) then
             kappa = (-c1+c2*b1)/det
@@ -152,7 +181,7 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
                 cpt = cpt+1
             end if
         end if
-    elseif (name .eq. 'XCENFI') then
+    else if (name .eq. 'XCENFI') then
 !   ON CHERCHE LES INTERSECTIONS DE LA DIRECTION DE RECHERCHE AVEC LES FACES DU TETRA
         intinf = -10.d0
         intsup = 10.d0
@@ -161,15 +190,21 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
         call provec(ab, bc, n)
         call xnormv(ndime, n, norm_n)
 !      SI LA DIRECTION DE RECHERCHE EST PARALLELE A LA FACE ON SORT
-        if (abs(ddot(ndime, n, 1, k, 1)) .ge. tole) then
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        if (abs(ddot(b_n, n, b_incx, k, b_incy)) .ge. tole) then
             do j = 1, ndime
                 ka(j) = a(j)-ptini(j)
             end do
-            alpha = ddot(ndime, ka, 1, n, 1)/ddot(ndime, n, 1, k, 1)
+            b_n = to_blas_int(ndime)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            alpha = ddot(b_n, ka, b_incx, n, b_incy)/ddot(b_n, n, b_incx, k, b_incy)
             if (alpha .gt. intinf .and. alpha .lt. 0.d0) then
                 intinf = alpha
                 cpt = cpt+1
-            elseif (alpha .lt. intsup .and. alpha .gt. 0.d0) then
+            else if (alpha .lt. intsup .and. alpha .gt. 0.d0) then
                 intsup = alpha
                 cpt = cpt+1
             end if
@@ -180,15 +215,21 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
         call provec(ab, ad, n)
         call xnormv(ndime, n, norm_n)
 !      SI LA DIRECTION DE RECHERCHE EST PARALLELE A LA FACE ON SORT
-        if (abs(ddot(ndime, n, 1, k, 1)) .ge. tole) then
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        if (abs(ddot(b_n, n, b_incx, k, b_incy)) .ge. tole) then
             do j = 1, ndime
                 ka(j) = a(j)-ptini(j)
             end do
-            alpha = ddot(ndime, ka, 1, n, 1)/ddot(ndime, n, 1, k, 1)
+            b_n = to_blas_int(ndime)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            alpha = ddot(b_n, ka, b_incx, n, b_incy)/ddot(b_n, n, b_incx, k, b_incy)
             if (alpha .gt. intinf .and. alpha .lt. 0.d0) then
                 intinf = alpha
                 cpt = cpt+1
-            elseif (alpha .lt. intsup .and. alpha .gt. 0.d0) then
+            else if (alpha .lt. intsup .and. alpha .gt. 0.d0) then
                 intsup = alpha
                 cpt = cpt+1
             end if
@@ -199,15 +240,21 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
         call provec(ca, ad, n)
         call xnormv(ndime, n, norm_n)
 !      SI LA DIRECTION DE RECHERCHE EST PARALLELE A LA FACE ON SORT
-        if (abs(ddot(ndime, n, 1, k, 1)) .ge. tole) then
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        if (abs(ddot(b_n, n, b_incx, k, b_incy)) .ge. tole) then
             do j = 1, ndime
                 ka(j) = a(j)-ptini(j)
             end do
-            alpha = ddot(ndime, ka, 1, n, 1)/ddot(ndime, n, 1, k, 1)
+            b_n = to_blas_int(ndime)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            alpha = ddot(b_n, ka, b_incx, n, b_incy)/ddot(b_n, n, b_incx, k, b_incy)
             if (alpha .gt. intinf .and. alpha .lt. 0.d0) then
                 intinf = alpha
                 cpt = cpt+1
-            elseif (alpha .lt. intsup .and. alpha .gt. 0.d0) then
+            else if (alpha .lt. intsup .and. alpha .gt. 0.d0) then
                 intsup = alpha
                 cpt = cpt+1
             end if
@@ -218,15 +265,21 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
         call provec(bd, bc, n)
         call xnormv(ndime, n, norm_n)
 !      SI LA DIRECTION DE RECHERCHE EST PARALLELE A LA FACE ON SORT
-        if (abs(ddot(ndime, n, 1, k, 1)) .ge. tole) then
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        if (abs(ddot(b_n, n, b_incx, k, b_incy)) .ge. tole) then
             do j = 1, ndime
                 kb(j) = b(j)-ptini(j)
             end do
-            alpha = ddot(ndime, kb, 1, n, 1)/ddot(ndime, n, 1, k, 1)
+            b_n = to_blas_int(ndime)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            alpha = ddot(b_n, kb, b_incx, n, b_incy)/ddot(b_n, n, b_incx, k, b_incy)
             if (alpha .gt. intinf .and. alpha .lt. 0.d0) then
                 intinf = alpha
                 cpt = cpt+1
-            elseif (alpha .lt. intsup .and. alpha .gt. 0.d0) then
+            else if (alpha .lt. intsup .and. alpha .gt. 0.d0) then
                 intsup = alpha
                 cpt = cpt+1
             end if
@@ -235,7 +288,7 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
 !
     ASSERT(cpt .ge. 2)
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

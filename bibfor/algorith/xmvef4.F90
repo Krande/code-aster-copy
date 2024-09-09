@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmvef4(ndim, nnol, pla, ffc, reac12, &
+subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
                   jac, tau1, tau2, lact, vtmp)
 !
     implicit none
@@ -74,6 +74,7 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12, &
 !
     integer :: i, k, pli, nli
     real(kind=8) :: ffi, tt(3)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,8 +85,14 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12, &
         nli = lact(i)
         if (nli .eq. 0) goto 165
 !
-        tt(1) = ddot(ndim, tau1(1), 1, reac12, 1)
-        if (ndim .eq. 3) tt(2) = ddot(ndim, tau2(1), 1, reac12, 1)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        tt(1) = ddot(b_n, tau1(1), b_incx, reac12, b_incy)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        if (ndim .eq. 3) tt(2) = ddot(b_n, tau2(1), b_incx, reac12, b_incy)
         do k = 1, ndim-1
             vtmp(pli+k) = vtmp(pli+k)+tt(k)*ffi*jac
         end do

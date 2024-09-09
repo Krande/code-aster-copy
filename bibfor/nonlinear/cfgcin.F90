@@ -98,7 +98,10 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
 ! --- INITIALISATION A PARTIR DU CHAMP DE MULTIPLICATEURS INITIAL MU
 ! --- S'IL EST NON-NUL
 !
-    norme2 = ddot(nbliai, zr(jmu), 1, zr(jmu), 1)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    norme2 = ddot(b_n, zr(jmu), b_incx, zr(jmu), b_incy)
 !
     if (norme2 .ne. 0.d0) then
 !
@@ -108,14 +111,14 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
         do iliai = 1, nbliai
             jdecal = zi(japptr+iliai-1)
             nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
-            call calatm(neq, nbddl, zr(jmu+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal), &
+            call calatm(neq, nbddl, zr(jmu+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal),&
                         zr(jsecmb))
         end do
 !
 ! ----- RESOLUTION
 !
-        call resoud(matass, k19bla, solveu, cncin0, 0, &
-                    secmbr, ddelt, 'V', [0.d0], [c16bid], &
+        call resoud(matass, k19bla, solveu, cncin0, 0,&
+                    secmbr, ddelt, 'V', [0.d0], [c16bid],&
                     k19bla, .true._1, 0, iret)
 !
 ! ----- U = U + (-DELTA)
@@ -124,7 +127,7 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
         b_n = to_blas_int(neq)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -1.d0, vddelt, b_incx, ddepc, &
+        call daxpy(b_n, -1.d0, vddelt, b_incx, ddepc,&
                    b_incy)
     end if
 !

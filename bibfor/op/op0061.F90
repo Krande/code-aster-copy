@@ -330,7 +330,10 @@ subroutine op0061()
                         parcho, adime, xvect, ninc, nd,&
                         nchoc, h, hf, xut1)
 ! ---       SENS DE CONTINUATION
-            prodsc = ddot(ninc, zr(iutj), 1, zr(iut1), 1)
+            b_n = to_blas_int(ninc)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            prodsc = ddot(b_n, zr(iutj), b_incx, zr(iut1), b_incy)
             if (prodsc .le. 0.d0) then
                 b_n = to_blas_int(ninc)
                 b_incx = to_blas_int(1)

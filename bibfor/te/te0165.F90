@@ -49,8 +49,8 @@ subroutine te0165(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::          icodre(2)
-    real(kind=8) ::     valres(2)
+    integer :: icodre(2)
+    real(kind=8) :: valres(2)
     character(len=16) :: nomres(2)
     real(kind=8) :: aire, w(9), nx, l1(3), l2(3), l10(3), l20(3)
     real(kind=8) :: e
@@ -62,6 +62,7 @@ subroutine te0165(option, nomte)
     character(len=16) :: defo_comp, rela_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     integer :: codret
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,8 +94,8 @@ subroutine te0165(option, nomte)
 ! - Get material properties
 !
     nomres(1) = 'E'
-    call rcvalb('RIGI', 1, 1, '+', zi(imate), &
-                ' ', 'ELAS', 0, '  ', [0.d0], &
+    call rcvalb('RIGI', 1, 1, '+', zi(imate),&
+                ' ', 'ELAS', 0, '  ', [0.d0],&
                 1, nomres, valres, icodre, 1)
     e = valres(1)
 !
@@ -105,15 +106,13 @@ subroutine te0165(option, nomte)
 !
 ! - Thermal dilation
 !
-    call verift('RIGI', 1, 1, '+', zi(imate), &
+    call verift('RIGI', 1, 1, '+', zi(imate),&
                 epsth_=epsthe)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari,&
+                         lSigm, codret)
 !
 ! - Get output fields
 !
@@ -141,10 +140,22 @@ subroutine te0165(option, nomte)
         l2(kc) = w(3+kc)+zr(igeom+2+kc)-w(6+kc)-zr(igeom+5+kc)
         l20(kc) = zr(igeom+2+kc)-zr(igeom+5+kc)
     end do
-    norml1 = ddot(3, l1, 1, l1, 1)
-    norml2 = ddot(3, l2, 1, l2, 1)
-    norl10 = ddot(3, l10, 1, l10, 1)
-    norl20 = ddot(3, l20, 1, l20, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    norml1 = ddot(b_n, l1, b_incx, l1, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    norml2 = ddot(b_n, l2, b_incx, l2, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    norl10 = ddot(b_n, l10, b_incx, l10, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    norl20 = ddot(b_n, l20, b_incx, l20, b_incy)
     norml1 = sqrt(norml1)
     norml2 = sqrt(norml2)
     norl10 = sqrt(norl10)
@@ -160,11 +171,12 @@ subroutine te0165(option, nomte)
     end if
 !
     if (lMatr) then
-        call kpouli(e, aire, nx, l0, l1, &
+        call kpouli(e, aire, nx, l0, l1,&
                     l2, norml1, norml2, zr(imatuu))
     end if
     if (lVect) then
-        call fpouli(nx, l1, l2, norml1, norml2, zr(ivectu))
+        call fpouli(nx, l1, l2, norml1, norml2,&
+                    zr(ivectu))
     end if
     if (lSigm) then
         zr(icontp) = nx

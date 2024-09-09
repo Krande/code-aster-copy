@@ -17,13 +17,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
-
-subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
-                  vff, dfde, mate, option, geom, &
-                  deplm, ddepl, sigm, sigp, fint, &
-                  ktan, vim, vip, carcri, compor, &
-                  matsym, coopg, tm, tp, lMatr, lVect, lSigm, &
-                  codret)
+!
+subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
+                  vff, dfde, mate, option, geom,&
+                  deplm, ddepl, sigm, sigp, fint,&
+                  ktan, vim, vip, carcri, compor,&
+                  matsym, coopg, tm, tp, lMatr,&
+                  lVect, lSigm, codret)
 !
     use Behaviour_type
     use Behaviour_module
@@ -83,6 +83,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
     real(kind=8) :: angmas(3)
     type(Behaviour_Integ) :: BEHinteg
     character(len=8), parameter :: typmod(2) = (/'3D      ', 'ELEMJOIN'/)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,19 +117,37 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
 ! CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES
 ! DEPLACEMENTS AUX NOEUDS , AINSI QUE LE POIDS DES PG :
 !
-        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg), &
+        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg),&
                     geom, poids, b)
 !
 ! CALCUL DU SAUT DE DEPLACEMENT - : SUM, ET DE L'INCREMENT : DSU
 ! AU POINT DE GAUSS KPG
 !
-        sum(1) = ddot(nddl, b(1, 1), 3, deplm, 1)
-        sum(2) = ddot(nddl, b(2, 1), 3, deplm, 1)
-        sum(3) = ddot(nddl, b(3, 1), 3, deplm, 1)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(3)
+        b_incy = to_blas_int(1)
+        sum(1) = ddot(b_n, b(1, 1), b_incx, deplm, b_incy)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(3)
+        b_incy = to_blas_int(1)
+        sum(2) = ddot(b_n, b(2, 1), b_incx, deplm, b_incy)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(3)
+        b_incy = to_blas_int(1)
+        sum(3) = ddot(b_n, b(3, 1), b_incx, deplm, b_incy)
         if (lVect) then
-            dsu(1) = ddot(nddl, b(1, 1), 3, ddepl, 1)
-            dsu(2) = ddot(nddl, b(2, 1), 3, ddepl, 1)
-            dsu(3) = ddot(nddl, b(3, 1), 3, ddepl, 1)
+            b_n = to_blas_int(nddl)
+            b_incx = to_blas_int(3)
+            b_incy = to_blas_int(1)
+            dsu(1) = ddot(b_n, b(1, 1), b_incx, ddepl, b_incy)
+            b_n = to_blas_int(nddl)
+            b_incx = to_blas_int(3)
+            b_incy = to_blas_int(1)
+            dsu(2) = ddot(b_n, b(2, 1), b_incx, ddepl, b_incy)
+            b_n = to_blas_int(nddl)
+            b_incx = to_blas_int(3)
+            b_incy = to_blas_int(1)
+            dsu(3) = ddot(b_n, b(3, 1), b_incx, ddepl, b_incy)
         end if
 ! ----- Compute behaviour
         sigmo = 0.d0
@@ -139,14 +158,13 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
         BEHinteg%elem%coor_elga(kpg, 1:3) = coopg(1:3, kpg)
 !
         sigma = 0.d0
-        call nmcomp(BEHinteg, &
-                    'RIGI', kpg, 1, 3, typmod, &
-                    mate, compor, carcri, tm, tp, &
-                    3, sum, dsu, 6, sigmo, &
-                    vim(1, kpg), option, angmas, &
-                    sigma, vip(1, kpg), 36, dsidep, cod(kpg))
+        call nmcomp(BEHinteg, 'RIGI', kpg, 1, 3,&
+                    typmod, mate, compor, carcri, tm,&
+                    tp, 3, sum, dsu, 6,&
+                    sigmo, vim(1, kpg), option, angmas, sigma,&
+                    vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) goto 900
-
+!
 ! ----- Stresses
         if (lSigm) then
             do n = 1, 3
@@ -157,7 +175,10 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
         if (lVect) then
             ASSERT(lSigm)
             do ni = 1, nddl
-                fint(ni) = fint(ni)+poids*ddot(3, b(1, ni), 1, sigma, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                fint(ni) = fint(ni)+poids*ddot(b_n, b(1, ni), b_incx, sigma, b_incy)
             end do
         end if
 ! ----- Rigidity matrix

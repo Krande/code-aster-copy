@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ejcine(ndim, axi, nno1, nno2, vff1, &
-                  vff2, wref, dffr2, geom, wg, &
+subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
+                  vff2, wref, dffr2, geom, wg,&
                   kpg, ipg, idf2, rot, b)
 ! person_in_charge: jerome.laverne at edf.fr
 ! aslint: disable=W1306
@@ -56,6 +56,7 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1, &
     real(kind=8) :: ray
     real(kind=8) :: geoloc(ndim, nno2), geotan(ndim-1, nno2)
     real(kind=8) :: dfdis(nno2, ndim-1), wg2
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
     if (ndim .eq. 3) then
@@ -94,18 +95,21 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1, &
         end do
 !
 !       CALCUL DES DERIVEE DES FF DANS LE PLAN TANGENTIEL
-        call dfdm2d(nno2, kpg, ipg, idf2, geotan, &
+        call dfdm2d(nno2, kpg, ipg, idf2, geotan,&
                     wg2, dfdis(1, 1), dfdis(1, 2))
 !
     else if (ndim .eq. 2) then
 !
 !       CALCUL DES DERIVEE DES FF DANS LE PLAN TANGENTIEL
-        call dfdm1d(nno2, wref, dffr2, geom, dfdis(1, 1), &
+        call dfdm1d(nno2, wref, dffr2, geom, dfdis(1, 1),&
                     cour, wg, cosa, sina)
 !
 !       CALCUL DE LA DISTANCE A L'AXE EN AXI, R=RAYON DU PG COURANT
         if (axi) then
-            ray = ddot(nno2, geom, 2, vff2, 1)
+            b_n = to_blas_int(nno2)
+            b_incx = to_blas_int(2)
+            b_incy = to_blas_int(1)
+            ray = ddot(b_n, geom, b_incx, vff2, b_incy)
             wg = ray*wg
         end if
 !

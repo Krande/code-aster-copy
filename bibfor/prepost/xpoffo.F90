@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom, &
+subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
                   co, ff)
 ! aslint: disable=W1306
     implicit none
@@ -55,12 +55,13 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom, &
     real(kind=8) :: an(ndim), coloc(2), xe(3), n(ndim)
     integer :: j, igeolo, ino
     character(len=24) :: geomlo
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 !
 !     CAS DES ELEMENTS PRINCIPAUX : C SIMPLE, ON APPELLE REEREF
     if (ndim .eq. ndime) then
-        call reeref(elrefp, nnop, zr(igeom), co, ndim, &
+        call reeref(elrefp, nnop, zr(igeom), co, ndim,&
                     xe, ff)
 !
 !
@@ -104,17 +105,29 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom, &
                 n(j) = zr(igeom-1+ndim*(ino-1)+j)
                 an(j) = n(j)-a(j)
             end do
-            zr(igeolo-1+ndime*(ino-1)+1) = ddot(ndim, an, 1, ab, 1)
-            if (ndime .eq. 2) zr(igeolo-1+ndime*(ino-1)+2) = ddot(ndim, an, 1, y, 1)
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(igeolo-1+ndime*(ino-1)+1) = ddot(b_n, an, b_incx, ab, b_incy)
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            if (ndime .eq. 2) zr(igeolo-1+ndime*(ino-1)+2) = ddot(b_n, an, b_incx, y, b_incy)
         end do
 !
 !       COORDONNÉES RÉELLES LOCALES DU POINT EN QUESTION : COLOC
         do j = 1, ndim
             an(j) = co(j)-a(j)
         end do
-        coloc(1) = ddot(ndim, an, 1, ab, 1)
-        if (ndime .eq. 2) coloc(2) = ddot(ndim, an, 1, y, 1)
-        call reeref(elrefp, nnop, zr(igeolo), coloc, ndime, &
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        coloc(1) = ddot(b_n, an, b_incx, ab, b_incy)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        if (ndime .eq. 2) coloc(2) = ddot(b_n, an, b_incx, y, b_incy)
+        call reeref(elrefp, nnop, zr(igeolo), coloc, ndime,&
                     xe, ff)
 !
         call jedetr(geomlo)

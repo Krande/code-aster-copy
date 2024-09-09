@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine redrpr(mod, imate, sigp, vip, dsde, &
+!
+subroutine redrpr(mod, imate, sigp, vip, dsde,&
                   icode)
     implicit none
 #include "asterfort/dplitg.h"
@@ -38,6 +38,7 @@ subroutine redrpr(mod, imate, sigp, vip, dsde, &
     real(kind=8) :: pplus, materf(5, 2), hookf(6, 6), dpdeno, dp
     real(kind=8) :: se(6), seq, plas, alpha, phi
     real(kind=8) :: siie, deux, trois
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
     common/tdim/ndt, ndi
 ! =====================================================================
@@ -52,7 +53,7 @@ subroutine redrpr(mod, imate, sigp, vip, dsde, &
 ! =====================================================================
 ! --- RECUPERATION DES DONNEES MATERIAUX ------------------------------
 ! =====================================================================
-    call dpmate(mod, imate, materf, ndt, ndi, &
+    call dpmate(mod, imate, materf, ndt, ndi,&
                 nvi, typedp)
     pplus = vip(1)
     dp = 0.0d0
@@ -81,10 +82,13 @@ subroutine redrpr(mod, imate, sigp, vip, dsde, &
 ! --- INTEGRATION ELASTIQUE : SIGF = HOOKF EPSP -----------------------
 ! =====================================================================
             call lcdevi(sigp, se)
-            siie = ddot(ndt, se, 1, se, 1)
+            b_n = to_blas_int(ndt)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            siie = ddot(b_n, se, b_incx, se, b_incy)
             seq = sqrt(trois*siie/deux)
         end if
-        call dpmata(mod, materf, alpha, dp, dpdeno, &
+        call dpmata(mod, materf, alpha, dp, dpdeno,&
                     pplus, se, seq, plas, dsde)
     end if
 ! =====================================================================

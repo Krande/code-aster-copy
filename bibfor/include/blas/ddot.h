@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     function ddot(n, dx, incx, dy, incy)
-        integer, intent(in) :: n
-        real(kind=8),intent(in) :: dx(*)
-        integer, intent(in) :: incx
-        real(kind=8),intent(in) :: dy(*)
-        integer, intent(in) :: incy
+        blas_int, intent(in) :: n
+        real(kind=8), intent(in) :: dx(*)
+        blas_int, intent(in) :: incx
+        real(kind=8), intent(in) :: dy(*)
+        blas_int, intent(in) :: incy
         real(kind=8) :: ddot
     end function ddot
 end interface

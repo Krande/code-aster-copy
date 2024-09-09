@@ -117,7 +117,10 @@ subroutine lcmmre(typmod, nmat, materd, materf, nbcomm,&
         b_incy = to_blas_int(1)
         call dcopy(b_n, deps, b_incx, depst, b_incy)
     end if
-    depsdt = sqrt(ddot(6, depst, 1, depst, 1)/1.5d0)/dt
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    depsdt = sqrt(ddot(b_n, depst, b_incx, depst, b_incy)/1.5d0)/dt
 !
     nbfsys = nbcomm(nmat, 2)
     iret = 0

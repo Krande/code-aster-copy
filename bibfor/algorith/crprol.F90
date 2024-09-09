@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine crprol()
     implicit none
 !
@@ -58,7 +58,7 @@ subroutine crprol()
     integer :: ibid, ndimf, nbnoi, nbnof, nbinst, iad
     integer :: vali, iret
     integer :: jinst, iord, jcnsvl, jcnsle, nbval
-    integer ::  axyzmf, jtbcor, jtbres
+    integer :: axyzmf, jtbcor, jtbres
     integer :: imin, imax, inoi, inof, indice, jtbpdg
     integer :: jtbnoe, ordef, ino, inomin, inomax
     real(kind=8) :: xnormr, prec, rmin, rmax
@@ -74,6 +74,7 @@ subroutine crprol()
     character(len=24) :: knum, tabl2
     character(len=24) :: valk(2)
     real(kind=8), pointer :: cnsv(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 !
@@ -91,9 +92,9 @@ subroutine crprol()
     call getvid(motfac, 'TABLE', iocc=1, scal=table, nbret=ibid)
     call getvtx(motfac, 'PROL_DROITE', iocc=1, scal=pdroit, nbret=ibid)
     call getvtx(motfac, 'PROL_GAUCHE', iocc=1, scal=pgauch, nbret=ibid)
-    call getvr8(motfac, 'ORIGINE', iocc=1, nbval=3, vect=orig, &
+    call getvr8(motfac, 'ORIGINE', iocc=1, nbval=3, vect=orig,&
                 nbret=ibid)
-    call getvr8(motfac, 'AXE_Z', iocc=1, nbval=3, vect=axez, &
+    call getvr8(motfac, 'AXE_Z', iocc=1, nbval=3, vect=axez,&
                 nbret=ibid)
 !
     call dismoi('NB_NO_MAILLA', nommaf, 'MAILLAGE', repi=nbnof)
@@ -112,7 +113,7 @@ subroutine crprol()
     call normev(axez, xnormr)
 !
     knum = '&&RS1D3D.INSTANT'
-    call tbutnu(motfac, 1, knum, nbinst, table, &
+    call tbutnu(motfac, 1, knum, nbinst, table,&
                 prec, crit)
     call jeveuo(knum, 'L', jinst)
 !
@@ -137,8 +138,8 @@ subroutine crprol()
 ! ------ ON EXTRAIT LA SOUS-TABLE POUR L'INSTANT COURANT
 !
         dinst = zr(jinst+iord-1)
-        call tbextb(table, 'V', tabl2, 1, 'INST', &
-                    'EQ', [ibid], [dinst], [cbid], k8b, &
+        call tbextb(table, 'V', tabl2, 1, 'INST',&
+                    'EQ', [ibid], [dinst], [cbid], k8b,&
                     [prec], crit, iret)
         if (iret .eq. 10) then
             valk(1) = 'INST'
@@ -152,14 +153,14 @@ subroutine crprol()
 !
 ! ------ ON RECUPERE LES COORCONNEES DES NOEUDS POUR L'INSTANT COURANT
 !
-        call tbexve(tabl2, 'COOR_X', tabcor, 'V', nbnoi, &
+        call tbexve(tabl2, 'COOR_X', tabcor, 'V', nbnoi,&
                     k8b)
         call jeveuo(tabcor, 'L', jtbcor)
         call wkvect(tabres, 'V V I', nbnoi, jtbres)
 !
 ! ------ ON RECUPERE LES VALEURS DE TEMPERATURE AUX NOEUDS
 !
-        call tbexve(tabl2, 'TEMP', tabval, 'V', nbval, &
+        call tbexve(tabl2, 'TEMP', tabval, 'V', nbval,&
                     k8b)
         call jeveuo(tabval, 'L', jcnsvl)
 !
@@ -180,17 +181,23 @@ subroutine crprol()
 !
         call tbtri(nbnoi, zi(jtbres), tabchr=zr(jtbcor))
 !
-        prosca = ddot(3, orig, 1, axez, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        prosca = ddot(b_n, orig, b_incx, axez, b_incy)
         axer(1) = orig(1)-prosca*axez(1)
         axer(2) = orig(2)-prosca*axez(2)
         axer(3) = orig(3)-prosca*axez(3)
         call normev(axer, xnormr)
-        rref = ddot(3, orig, 1, axer, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rref = ddot(b_n, orig, b_incx, axer, b_incy)
         rref = abs(rref)
 !
         nomgd = 'TEMP_R'
         licmpr = 'TEMP'
-        call cnscre(nommaf, nomgd, 1, licmpr, 'V', &
+        call cnscre(nommaf, nomgd, 1, licmpr, 'V',&
                     cnsinr)
         call jeveuo(cnsinr//'.CNSV', 'E', vr=cnsv)
         call jeveuo(cnsinr//'.CNSL', 'E', jcnsle)
@@ -201,12 +208,18 @@ subroutine crprol()
             axet(1) = zr(axyzmf+3*(inof-1)-1+1)
             axet(2) = zr(axyzmf+3*(inof-1)-1+2)
             axet(3) = zr(axyzmf+3*(inof-1)-1+3)
-            prosca = ddot(3, axet, 1, axez, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            prosca = ddot(b_n, axet, b_incx, axez, b_incy)
             axer(1) = axet(1)-prosca*axez(1)
             axer(2) = axet(2)-prosca*axez(2)
             axer(3) = axet(3)-prosca*axez(3)
             call normev(axer, xnormr)
-            rpro = ddot(3, axet, 1, axer, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            rpro = ddot(b_n, axet, b_incx, axer, b_incy)
             rval = rpro-rref
             if (rval .lt. 0.0d0) then
                 indice = indice+1
@@ -227,15 +240,14 @@ subroutine crprol()
             zr(jtbpdg-1+indice) = rval
             zi(jtbnoe-1+indice) = inof
             goto 3
-5           continue
+  5         continue
             if ((rmax-rmin) .eq. 0.0d0) then
                 call utmess('F', 'ALGORITH12_70')
             end if
             lambda = (rval-rmin)/(rmax-rmin)
-            cnsv((inof-1)+1) = (1-lambda)*zr(jcnsvl-1+(imin-1)+1) &
-                               +lambda*zr(jcnsvl-1+(imax-1)+1)
+            cnsv((inof-1)+1) = (1-lambda)*zr(jcnsvl-1+(imin-1)+1) +lambda*zr(jcnsvl-1+(imax-1)+1)
             zl(jcnsle-1+(inof-1)+1) = .true.
-3           continue
+  3         continue
         end do
         do ordef = 1, indice
             ino = zi(jtbnoe-1+ordef)
@@ -255,12 +267,10 @@ subroutine crprol()
                     rmin = zr(jtbcor-1+inomin)
                     rmax = zr(jtbcor-1+inomax)
                     lambda = (rmin-rval)/(rmax-rval)
-                    cnsv((ino-1)+1) = ( &
-                                             zr( &
-                                             jcnsvl-1+(inomin-1)+1)-zr(jcnsvl-1+(inomax-1)+1)*l&
-                                             &ambda &
-                                             )/(1-lambda &
-                                             )
+                    cnsv((ino-1)+1) = (&
+                                      zr(jcnsvl-1+(inomin-1)+1)-zr(jcnsvl-1+(inomax-1)+1)*lambda&
+                                      )/(1-lambda&
+                                      )
                     zl(jcnsle-1+(ino-1)+1) = .true.
                 end if
             else
@@ -278,30 +288,28 @@ subroutine crprol()
                     rmin = zr(jtbcor-1+inomin)
                     rmax = zr(jtbcor-1+inomax)
                     lambda = (rmax-rmin)/(rval-rmin)
-                    cnsv((ino-1)+1) = ( &
-                                             zr( &
-                                             jcnsvl-1+(inomax-1)+1)-zr(jcnsvl-1+(inomin-1)+1)*(&
-                                             &1-lambda &
-                                             ) &
-                                             )/lambda
+                    cnsv((ino-1)+1) = (&
+                                      zr(&
+                                      jcnsvl-1+(inomax-1)+1)-zr(jcnsvl-1+(inomin-1)+1)*(1-lambda)&
+                                      )/lambda
                     zl(jcnsle-1+(ino-1)+1) = .true.
                 end if
             end if
         end do
 !
-        call rsexch(' ', resu, 'TEMP', iord, cnoinr, &
+        call rsexch(' ', resu, 'TEMP', iord, cnoinr,&
                     ibid)
         if (ibid .ne. 100) then
             valk(1) = resu
             vali = iord
             call utmess('F', 'ALGORITH12_73', sk=valk(1), si=vali)
         end if
-        call cnscno(cnsinr, ' ', 'NON', 'G', cnoinr, &
+        call cnscno(cnsinr, ' ', 'NON', 'G', cnoinr,&
                     'F', ibid)
         call rsnoch(resu, 'TEMP', iord)
         call detrsd('CHAM_NO_S', cnsinr)
 !
-        call rsadpa(resu, 'E', 1, 'INST', iord, &
+        call rsadpa(resu, 'E', 1, 'INST', iord,&
                     0, sjv=iad, styp=k8b)
         zr(iad) = dinst
 !

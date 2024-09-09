@@ -73,11 +73,12 @@ subroutine te0082(option, nomte)
     aster_logical :: l_axi
     aster_logical, parameter :: l_vf = ASTER_FALSE
     type(THM_DS) :: ds_thm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='MASS', nno=nno, nnos=nnos, &
-                     npg=npg2, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+    call elrefe_info(fami='MASS', nno=nno, nnos=nnos, npg=npg2, jpoids=ipoids,&
+                     jvf=ivf, jdfde=idfde)
     nddl = 2*nno
     nvec = nddl*(nddl+1)/2
 !
@@ -87,8 +88,8 @@ subroutine te0082(option, nomte)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_vf, 2, &
-                    mecani, press1, press2, tempe, second)
+    call thmGetGene(ds_thm, l_vf, 2, mecani, press1,&
+                    press2, tempe, second)
     if (lteatt('TYPMOD2', 'THM')) then
         idec = press1(1)+press2(1)+tempe(1)+second(1)*2
     else
@@ -99,15 +100,15 @@ subroutine te0082(option, nomte)
     call jevech('PMATERC', 'L', imate)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-    call rcvalb('FPG1', 1, 1, '+', zi(imate), &
-                ' ', phenom, 0, ' ', [0.d0], &
+    call rcvalb('FPG1', 1, 1, '+', zi(imate),&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', valres, icodre(1), 1)
 !
     matv(:) = 0.d0
 !
     do kp = 1, npg2
         k = (kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
         if (lteatt('AXIS', 'OUI')) then
             r = 0.0d0
@@ -214,7 +215,10 @@ subroutine te0082(option, nomte)
             call jevech('PENERCR', 'E', iecin)
             call vecma(matv, nvec, matp, nddl)
             call pmavec('ZERO', nddl, matp, zr(ivite), masvit)
-            zr(iecin) = .5d0*ddot(nddl, zr(ivite), 1, masvit, 1)
+            b_n = to_blas_int(nddl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(iecin) = .5d0*ddot(b_n, zr(ivite), b_incx, masvit, b_incy)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=idepl)
             if (iret .eq. 0) then
@@ -222,7 +226,10 @@ subroutine te0082(option, nomte)
                 call jevech('POMEGA2', 'L', ifreq)
                 call vecma(matv, nvec, matp, nddl)
                 call pmavec('ZERO', nddl, matp, zr(idepl), masdep)
-                zr(iecin) = .5d0*ddot(nddl, zr(idepl), 1, masdep, 1)*zr(ifreq)
+                b_n = to_blas_int(nddl)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(iecin) = .5d0*ddot(b_n, zr(idepl), b_incx, masdep, b_incy)*zr(ifreq)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
             end if

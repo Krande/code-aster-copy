@@ -39,6 +39,7 @@ subroutine gdt(teta, amat)
     integer :: i, j
     real(kind=8) :: anor, anors2, coef, deux, epsil1, epsil2
     real(kind=8) :: prosca, un, zero
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     zero = 0.d0
     epsil1 = 1.d-4
@@ -46,7 +47,10 @@ subroutine gdt(teta, amat)
     un = 1.d0
     deux = 2.d0
 !
-    prosca = ddot(3, teta, 1, teta, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    prosca = ddot(b_n, teta, b_incx, teta, b_incy)
     anor = sqrt(prosca)
     anors2 = anor/deux
     if (anors2 .gt. epsil1) then

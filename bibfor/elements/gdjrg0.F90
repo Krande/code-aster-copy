@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gdjrg0(kp, nno, enprim, x00, y0, &
+subroutine gdjrg0(kp, nno, enprim, x00, y0,&
                   ajacob, rot0)
 !
 ! FONCTION: POUR UN ELEMENT DE POUTRE EN GRAND DEPLACEMENT, CALCULE, AUX
@@ -44,6 +44,7 @@ subroutine gdjrg0(kp, nno, enprim, x00, y0, &
 !-----------------------------------------------------------------------
     integer :: ic, kp, ne, nno
     real(kind=8) :: ajacob, zero
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     zero = 0.d0
     do ic = 1, 3
@@ -53,11 +54,14 @@ subroutine gdjrg0(kp, nno, enprim, x00, y0, &
         end do
     end do
 !
-    ajacob = ddot(3, e1, 1, e1, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    ajacob = ddot(b_n, e1, b_incx, e1, b_incy)
     ajacob = sqrt(ajacob)
 !
     call matrot(y0, rot)
-    call transp(rot, 3, 3, 3, rot0, &
+    call transp(rot, 3, 3, 3, rot0,&
                 3)
 !
 end subroutine

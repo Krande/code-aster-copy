@@ -215,8 +215,14 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
                 zr(imdy-1+i) = mdye(k)
             end if
         end do
-        e = ddot(nd, zr(iy), 1, zr(iky), 1)/2
-        e = e+ddot(nd, zr(idy), 1, zr(imdy), 1)/2
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        e = ddot(b_n, zr(iy), b_incx, zr(iky), b_incy)/2
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        e = e+ddot(b_n, zr(idy), b_incx, zr(imdy), b_incy)/2
         do k = 1, nchoc
             alpha = raid(k)
             jeu = vjeu(k)

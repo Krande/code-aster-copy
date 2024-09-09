@@ -51,6 +51,7 @@ subroutine romNormalize(vect_type, vect_vale, nb_equa)
     real(kind=8), pointer :: v_valer(:) => null()
     complex(kind=8) :: normc
     real(kind=8) :: normr
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +61,10 @@ subroutine romNormalize(vect_type, vect_vale, nb_equa)
         v_valec(1:nb_equa) = v_valec(1:nb_equa)/sqrt(normc)
     else if (vect_type .eq. 'R') then
         call jeveuo(vect_vale(1:19)//'.VALE', 'E', vr=v_valer)
-        normr = ddot(nb_equa, v_valer, 1, v_valer, 1)
+        b_n = to_blas_int(nb_equa)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normr = ddot(b_n, v_valer, b_incx, v_valer, b_incy)
         v_valer(1:nb_equa) = v_valer(1:nb_equa)/sqrt(normr)
     else
         ASSERT(.false.)

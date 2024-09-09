@@ -17,9 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romAlgoMGS(nb_mode, nb_equa, syst_type, field_iden, base, &
-                      vr_mode_in, vr_mode_out, &
-                      vc_mode_in, vc_mode_out)
+subroutine romAlgoMGS(nb_mode, nb_equa, syst_type, field_iden, base,&
+                      vr_mode_in, vr_mode_out, vc_mode_in, vc_mode_out)
 !
     implicit none
 !
@@ -62,6 +61,7 @@ subroutine romAlgoMGS(nb_mode, nb_equa, syst_type, field_iden, base, &
     complex(kind=8), pointer :: vc_mode(:) => null()
     character(len=19) :: mode
     integer :: i_mode, iret
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,15 +73,20 @@ subroutine romAlgoMGS(nb_mode, nb_equa, syst_type, field_iden, base, &
     if (syst_type .eq. 'R') then
         vr_mode_out(1:nb_equa) = vr_mode_in(1:nb_equa)
         do i_mode = 1, nb_mode
-            call rsexch(' ', base, field_iden, i_mode, mode, iret)
+            call rsexch(' ', base, field_iden, i_mode, mode,&
+                        iret)
             call jeveuo(mode(1:19)//'.VALE', 'L', vr=vr_mode)
-            term_r = ddot(nb_equa, vr_mode, 1, vr_mode_in, 1)
+            b_n = to_blas_int(nb_equa)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            term_r = ddot(b_n, vr_mode, b_incx, vr_mode_in, b_incy)
             vr_mode_out(1:nb_equa) = vr_mode_out(1:nb_equa)-term_r*vr_mode(1:nb_equa)
         end do
     else if (syst_type .eq. 'C') then
         vc_mode_out(1:nb_equa) = vc_mode_in(1:nb_equa)
         do i_mode = 1, nb_mode
-            call rsexch(' ', base, field_iden, i_mode, mode, iret)
+            call rsexch(' ', base, field_iden, i_mode, mode,&
+                        iret)
             call jeveuo(mode(1:19)//'.VALE', 'L', vc=vc_mode)
             term_c = zdotc(nb_equa, vc_mode, 1, vc_mode_in, 1)
             vc_mode_out(1:nb_equa) = vc_mode_out(1:nb_equa)-term_c*vc_mode(1:nb_equa)

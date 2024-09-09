@@ -100,6 +100,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     integer, pointer :: nddl(:) => null()
     integer, pointer :: ncmp(:) => null()
     blas_int :: b_incx, b_n
+    blas_int :: b_incy
     cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
@@ -305,7 +306,10 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
         call dscal(b_n, 0.d0, ei2, b_incx)
         call mrmult('ZERO', imat(2), zr(iei), ei2, 1,&
                     .true._1)
-        zr(iadim-1+2) = ddot(neq, zr(iei), 1, ei2, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        zr(iadim-1+2) = ddot(b_n, zr(iei), b_incx, ei2, b_incy)
     end if
 ! --- ON RECUPERE OMEGA (POUR ADIMENSIONNE LE TEMPS)
     zr(iadim-1+3) = sqrt(zr(iadim-1+1)/zr(iadim-1+2))

@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
-                  nnose, it, ainter, ip1, ip2, &
-                  pm2, typma, pinref, pmiref, ksi, &
+subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
+                  nnose, it, ainter, ip1, ip2,&
+                  pm2, typma, pinref, pmiref, ksi,&
                   milfa, pintt, pmitt)
     implicit none
 !
@@ -65,6 +65,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
     real(kind=8) :: pta(ndime), cosu, cosv, cosw
     real(kind=8) :: ff(27), t1(ndime), t2(ndime), sinu, rbid, t3(ndime)
     aster_logical :: courbe
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------
     zxain = xxmmvd('ZXAIN')
@@ -106,7 +107,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
         do j = 1, ndim
             newpt(j) = pintt(ndim*(ib-1001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim, &
+        call reeref(elrefp, nno, geom, newpt, ndim,&
                     ptb, ff)
     end if
 !
@@ -118,7 +119,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
         do j = 1, ndim
             newpt(j) = pmitt(ndim*(id-2001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim, &
+        call reeref(elrefp, nno, geom, newpt, ndim,&
                     ptd, ff)
     end if
 !
@@ -130,7 +131,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
         do j = 1, ndim
             newpt(j) = pintt(ndim*(ia-1001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim, &
+        call reeref(elrefp, nno, geom, newpt, ndim,&
                     pta, ff)
     end if
 !
@@ -141,18 +142,27 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
     courbe = .false.
     do i = 1, ndime
         t1(i) = ksi(i)-pinref(ndime*(ip1-1)+i)
-        t2(i) = -1.5d0*pinref( &
+        t2(i) = -1.5d0*pinref(&
                 ndime*(ip1-1)+i)-5.d-1*pinref(ndime*(ip2-1)+i)+2.d0*pmiref(ndime*(pm2-1)+i)
         t3(i) = pta(i)-pinref(ndime*(ip1-1)+i)
     end do
     call xnormv(ndime, t1, rbid)
     call xnormv(ndime, t2, rbid)
     call xnormv(ndime, t3, rbid)
-    cosu = ddot(ndime, t1, 1, t2, 1)
+    b_n = to_blas_int(ndime)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cosu = ddot(b_n, t1, b_incx, t2, b_incy)
     sinu = sqrt(1-cosu**2)
 !   ON CHOISIT UNE CONVENTION DE SIGNE
-    cosv = ddot(ndime, t3, 1, t2, 1)
-    cosw = ddot(ndime, t3, 1, t1, 1)
+    b_n = to_blas_int(ndime)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cosv = ddot(b_n, t3, b_incx, t2, b_incy)
+    b_n = to_blas_int(ndime)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cosw = ddot(b_n, t3, b_incx, t1, b_incy)
     if (cosv .gt. cosw) sinu = -sinu
 !
 !   ON RAJOUTE UNE TOLE POUR EVITER DES DECOUPES TROP POURRIES
@@ -173,6 +183,6 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
         if (ksi(i) .gt. 1.d0) ksi(i) = 1.d0
         if (ksi(i) .lt. -1.d0) ksi(i) = -1.d0
     end do
-    call reerel(elrefp, nno, ndim, geom, ksi, &
+    call reerel(elrefp, nno, ndim, geom, ksi,&
                 milfa)
 end subroutine

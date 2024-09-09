@@ -102,8 +102,14 @@ subroutine radial(nbsig, sigm, sigp, indm, indp,&
         end do
 !         CALL DSCAL(NBSIG-3,SQRT(2.D0),DEVM(4),1)
 !         CALL DSCAL(NBSIG-3,SQRT(2.D0),DEVP(4),1)
-        smeq = sqrt(ddot(nbsig, devm, 1, devm, 1))
-        speq = sqrt(ddot(nbsig, devp, 1, devp, 1))
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        smeq = sqrt(ddot(b_n, devm, b_incx, devm, b_incy))
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        speq = sqrt(ddot(b_n, devp, b_incx, devp, b_incy))
         preci = 1.d3*zernor*max(smeq, speq)
 !
 ! ----      DANS LE CAS OU NORME(TENSM) = 0  OU NORME(DTENSMA) = 0 :
@@ -138,7 +144,10 @@ subroutine radial(nbsig, sigm, sigp, indm, indp,&
             b_incy = to_blas_int(1)
             call daxpy(b_n, -1.d0, n2, b_incx, dn1n2,&
                        b_incy)
-            ndn = sqrt(ddot(nbsig, dn1n2, 1, dn1n2, 1))
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ndn = sqrt(ddot(b_n, dn1n2, b_incx, dn1n2, b_incy))
             normdn = ndn/2.d0
         end if
 !

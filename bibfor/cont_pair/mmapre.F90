@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mmapre(mesh, ds_contact)
 !
     use NonLin_Datastructure_type
@@ -176,8 +176,8 @@ subroutine mmapre(mesh, ds_contact)
 !
 ! ------------- Excluded nodes
 !
-                call mmexcl(typint, typapp, iptm, ndexfr, &
-                            l_node_excl, l_excl_frot)
+                call mmexcl(typint, typapp, iptm, ndexfr, l_node_excl,&
+                            l_excl_frot)
                 zr(jtabf+ztabf*(iptc-1)+18) = 0.d0
                 zr(jtabf+ztabf*(iptc-1)+19) = 0.d0
                 if (l_node_excl) then
@@ -200,11 +200,10 @@ subroutine mmapre(mesh, ds_contact)
 !
 ! --------- SAUVEGARDE APPARIEMENT
 !
-                call mmapma(mesh, ds_contact, ndimg, izone, &
-                            l_excl_frot, typint, aliase, posmae, nummae, &
-                            nnomae, posmam, nummam, ksipr1, ksipr2, &
-                            tau1m, tau2m, iptm, iptc, norm, &
-                            nommam)
+                call mmapma(mesh, ds_contact, ndimg, izone, l_excl_frot,&
+                            typint, aliase, posmae, nummae, nnomae,&
+                            posmam, nummam, ksipr1, ksipr2, tau1m,&
+                            tau2m, iptm, iptc, norm, nommam)
 !
 ! --------- LIAISON DE CONTACT EFFECTIVE
 !
@@ -217,7 +216,7 @@ subroutine mmapre(mesh, ds_contact)
 !
             end do
         end do
-25      continue
+ 25     continue
     end do
 !
 ! --- NOMBRE TOTAL DE NOEUDS EN CONTACT

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr, &
+subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr,&
                                  resi_rela, resi_maxi)
 !
     use Rom_Datastructure_type
@@ -34,7 +34,7 @@ subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr, &
 !
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     character(len=24), intent(in) :: vec2nd, cnvabt, cnresi, cn2mbr
-    real(kind=8), intent(out):: resi_rela, resi_maxi
+    real(kind=8), intent(out) :: resi_rela, resi_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,6 +69,7 @@ subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr, &
     real(kind=8), pointer :: v_cnvabtr(:) => null()
     real(kind=8), pointer :: v_cnresi(:) => null()
     real(kind=8), pointer :: v_cnresir(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,11 +119,21 @@ subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr, &
     AS_ALLOCATE(vr=v_cnresir, size=nbMode)
     AS_ALLOCATE(vr=v_cnvabtr, size=nbMode)
     do iMode = 1, nbMode
-        call rsexch(' ', resultName, fieldName, iMode, mode, iret)
+        call rsexch(' ', resultName, fieldName, iMode, mode,&
+                    iret)
         call jeveuo(mode(1:19)//'.VALE', 'E', vr=v_mode)
-        v_vec2ndr(iMode) = ddot(nbEqua, v_mode, 1, v_vec2nd, 1)
-        v_cnvabtr(iMode) = ddot(nbEqua, v_mode, 1, v_cnvabt, 1)
-        v_cnresir(iMode) = ddot(nbEqua, v_mode, 1, v_cnresi, 1)
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        v_vec2ndr(iMode) = ddot(b_n, v_mode, b_incx, v_vec2nd, b_incy)
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        v_cnvabtr(iMode) = ddot(b_n, v_mode, b_incx, v_cnvabt, b_incy)
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        v_cnresir(iMode) = ddot(b_n, v_mode, b_incx, v_cnresi, b_incy)
     end do
 !
 ! - Compute maximum

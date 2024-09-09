@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine drfnew(devg, devgii, traceg, dfds, dfdg, &
+subroutine drfnew(devg, devgii, traceg, dfds, dfdg,&
                   mu, k, dfdl)
 !
     implicit none
@@ -40,6 +40,7 @@ subroutine drfnew(devg, devgii, traceg, dfds, dfdg, &
 ! ======================================================================
     integer :: ii, ndt, ndi
     real(kind=8) :: vect1(6), scal1, mun, deux, trois
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
@@ -59,7 +60,10 @@ subroutine drfnew(devg, devgii, traceg, dfds, dfdg, &
     do ii = 1, ndi
         vect1(ii) = vect1(ii)+k*traceg
     end do
-    scal1 = ddot(ndt, dfds, 1, vect1, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    scal1 = ddot(b_n, dfds, b_incx, vect1, b_incy)
 ! ======================================================================
 ! --- CALCUL FINAL -----------------------------------------------------
 ! ======================================================================

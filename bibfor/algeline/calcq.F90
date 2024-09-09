@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcq(s, gamcjs, pref, epssig, q, &
+subroutine calcq(s, gamcjs, pref, epssig, q,&
                  codret)
 !
     implicit none
@@ -45,6 +45,7 @@ subroutine calcq(s, gamcjs, pref, epssig, q, &
     real(kind=8) :: sii, t(6), devt(6), invh5, fact1, fact2
     real(kind=8) :: rhlode, rcos3t
     real(kind=8) :: un, deux, cinq, six
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRE --------------------------------------
 ! ======================================================================
@@ -60,7 +61,10 @@ subroutine calcq(s, gamcjs, pref, epssig, q, &
 ! ======================================================================
 ! --- CALCUL DES VARIABLES UTILES --------------------------------------
 ! ======================================================================
-    sii = ddot(ndt, s, 1, s, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    sii = ddot(b_n, s, b_incx, s, b_incy)
     sii = sqrt(sii)
     call cjst(s, t)
     call lcdevi(t, devt)

@@ -218,12 +218,24 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
         jp = jm*jd
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT AU POINT DE GAUSS
-        gm = ddot(nno2, vff2(1, g), 1, gonfm, 1)
-        gd = ddot(nno2, vff2(1, g), 1, gonfd, 1)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        gm = ddot(b_n, vff2(1, g), b_incx, gonfm, b_incy)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        gd = ddot(b_n, vff2(1, g), b_incx, gonfd, b_incy)
         gp = gm+gd
 !
-        pm = ddot(nno3, vff3(1, g), 1, presm, 1)
-        pd = ddot(nno3, vff3(1, g), 1, presd, 1)
+        b_n = to_blas_int(nno3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vff3(1, g), b_incx, presm, b_incy)
+        b_n = to_blas_int(nno3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pd = ddot(b_n, vff3(1, g), b_incx, presd, b_incy)
         pp = pm+pd
 !
 ! - CALCUL DES FONCTIONS A, B,... DETERMINANT LA RELATION LIANT G ET J
@@ -251,8 +263,13 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
                         iw, vff2(1, g), idff2, r, w,&
                         dff2)
             do ia = 1, ndim
+                b_n = to_blas_int(nno2)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
                 gradgp(ia) = ddot(&
-                             nno2, dff2(1, ia), 1, gonfm, 1)+ddot(nno2, dff2(1, ia), 1, gonfd, 1)
+                             b_n, dff2(1, ia), b_incx, gonfm, b_incy)+ddot(b_n, dff2(1, ia),&
+                             b_incx, gonfd, b_incy&
+                             )
             end do
         end if
 !
@@ -357,7 +374,10 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
             if (nonloc) then
                 do ra = 1, nno2
                     kk = vg(ra)
-                    t1 = c(1)*ddot(ndim, gradgp, 1, dff2(ra, 1), nno2)
+                    b_n = to_blas_int(ndim)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(nno2)
+                    t1 = c(1)*ddot(b_n, gradgp, b_incx, dff2(ra, 1), b_incy)
                     vect(kk) = vect(kk)+w*t1
                 end do
             end if
@@ -484,7 +504,10 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
                 if (nonloc) then
                     do rb = 1, nno2
                         kk = os+vg(rb)
-                        t1 = c(1)*ddot(ndim, dff2(ra, 1), nno2, dff2(rb, 1), nno2)
+                        b_n = to_blas_int(ndim)
+                        b_incx = to_blas_int(nno2)
+                        b_incy = to_blas_int(nno2)
+                        t1 = c(1)*ddot(b_n, dff2(ra, 1), b_incx, dff2(rb, 1), b_incy)
                         matr(kk) = matr(kk)+w*t1
                     end do
                 end if

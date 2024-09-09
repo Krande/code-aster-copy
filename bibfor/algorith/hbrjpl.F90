@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hbrjpl(mod, nbmat, materf, sigp, vip, &
+subroutine hbrjpl(mod, nbmat, materf, sigp, vip,&
                   vim, vp, vecp, dsidep)
     implicit none
 #include "asterc/r8pi.h"
@@ -49,6 +49,7 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip, &
     real(kind=8) :: deux, trois, sf(6), seqf
     real(kind=8) :: parame(4), derive(5), gres, grup, detadg, dgdl
     real(kind=8) :: pi, pphi1, pphi2, pphi0
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
     parameter(deux=2.0d0)
     parameter(un=1.0d0)
@@ -82,7 +83,10 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip, &
 ! --- CALCUL DES VALEURS PROPRES --------------------------------------
 ! =====================================================================
     call lcdevi(sigp, sf)
-    seqf = ddot(ndt, sf, 1, sf, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    seqf = ddot(b_n, sf, b_incx, sf, b_incy)
     sigeqe = sqrt(trois*seqf/deux)+trois*mu*dg/(etap+un)
     i1e = trace(ndi, sigp)+9.0d0*k*etap*dg/(etap+un)
     do ii = 1, ndt
@@ -92,21 +96,21 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip, &
 ! --- CALCUL DE LA MATRICE TANGENTE ------------------------------------
 ! ======================================================================
     sig3 = vp(3)*(un-trois*mu*dg/(sigeqe*(etap+un)))+(i1e-neuf*k*etap*dg/(etap+un))/trois
-    call hbderi(gp, nbmat, materf, zero, etap, &
+    call hbderi(gp, nbmat, materf, zero, etap,&
                 parame, derive)
 ! ======================================================================
     if (gp .lt. materf(1, 2)) then
         detadg = 6.0d0*(pphi1-pphi0)*pi*cos(parame(4)*pi)/(grup*(trois+sin(parame(4)*pi))**2)
     else if (gp .lt. materf(2, 2)) then
-        detadg = 6.0d0*(pphi2-pphi1)*pi*cos(parame(4)*pi)/((gres-grup)*(trois+sin(parame(4)*pi&
-                 &))**2)
+        detadg = 6.0d0*(pphi2-pphi1)*pi*cos(parame(4)*pi)/((gres-grup)*(trois+sin(parame(4)*pi))*&
+                 &*2)
     else
         detadg = 0.d0
     end if
     dgdl = etap+un
 ! ======================================================================
-    call hbmata(se, dg, etap, i1e, sigeqe, &
-                vp, vecp, parame, derive, sig3, &
+    call hbmata(se, dg, etap, i1e, sigeqe,&
+                vp, vecp, parame, derive, sig3,&
                 detadg, dgdl, nbmat, materf, dsidep)
 ! ======================================================================
 end subroutine

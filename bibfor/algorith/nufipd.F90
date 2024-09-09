@@ -17,13 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine nufipd(ndim, nno1, nno2, npg, iw, &
-                  vff1, vff2, idff1, vu, vp, &
-                  geomi, typmod, option, mate, compor, &
-                  lgpg, carcri, instm, instp, ddlm, &
-                  ddld, angmas, sigm, vim, sigp, &
-                  vip, mini, vect, &
-                  matr, codret, &
+subroutine nufipd(ndim, nno1, nno2, npg, iw,&
+                  vff1, vff2, idff1, vu, vp,&
+                  geomi, typmod, option, mate, compor,&
+                  lgpg, carcri, instm, instp, ddlm,&
+                  ddld, angmas, sigm, vim, sigp,&
+                  vip, mini, vect, matr, codret,&
                   lSigm, lVect, lMatr)
 !
     use Behaviour_type
@@ -130,6 +129,7 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
                                                       0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0, &
                                                      0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), (/6, 6/))
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -173,19 +173,25 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
         epsm = 0.d0
         deps = 0.d0
 ! ----- Kinematic - Previous strains
-        call dfdmip(ndim, nno1, axi, geomi, kpg, &
-                    iw, vff1(1, kpg), idff1, r, w, &
+        call dfdmip(ndim, nno1, axi, geomi, kpg,&
+                    iw, vff1(1, kpg), idff1, r, w,&
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg), &
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg),&
                     r, dff1, deplm, fm, epsm)
         divum = epsm(1)+epsm(2)+epsm(3)
 ! ----- Kinematic - Increment of strains
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg), &
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg),&
                     r, dff1, depld, fm, deps)
         ddivu = deps(1)+deps(2)+deps(3)
 ! ----- Pressure
-        pm = ddot(nno2, vff2(1, kpg), 1, presm, 1)
-        pd = ddot(nno2, vff2(1, kpg), 1, presd, 1)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vff2(1, kpg), b_incx, presm, b_incy)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pd = ddot(b_n, vff2(1, kpg), b_incx, presd, b_incy)
 ! ----- Kinematic - Product [F].[B]
         if (ndim .eq. 2) then
             do na = 1, nno1
@@ -201,7 +207,7 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
                     def(3, na, 1) = fm(3, 3)*vff1(na, kpg)/r
                 end do
             end if
-        elseif (ndim .eq. 3) then
+        else if (ndim .eq. 3) then
             do na = 1, nno1
                 do ia = 1, ndim
                     def(1, na, ia) = fm(ia, 1)*dff1(na, 1)
@@ -230,25 +236,26 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
         end do
 ! ----- Compute behaviour
         sigma = 0.d0
-        call nmcomp(BEHinteg, &
-                    'RIGI', kpg, 1, ndim, typmod, &
-                    mate, compor, carcri, instm, instp, &
-                    6, epsm, deps, 6, sigmPrep, &
-                    vim(1, kpg), option, angmas, &
-                    sigma, vip(1, kpg), 36, dsidep, cod(kpg))
+        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim,&
+                    typmod, mate, compor, carcri, instm,&
+                    instp, 6, epsm, deps, 6,&
+                    sigmPrep, vim(1, kpg), option, angmas, sigma,&
+                    vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
         end if
 ! ----- Compute "bubble" matrix
-        call tanbul(option, ndim, kpg, mate, rela_comp, &
+        call tanbul(option, ndim, kpg, mate, rela_comp,&
                     lVect, mini, alpha, dsbdep, trepst)
 ! ----- Static condensation (for MINI element)
         rce(1:nno2) = 0.d0
         kce(1:nno2, 1:nno2) = 0.d0
         if (mini) then
-            call calkbb(nno1, ndim, w, def, dsbdep, kbb)
+            call calkbb(nno1, ndim, w, def, dsbdep,&
+                        kbb)
             call calkbp(nno2, ndim, w, dff1, kbp)
-            call calkce(nno1, ndim, kbp, kbb, presm, presd, kce, rce)
+            call calkce(nno1, ndim, kbp, kbb, presm,&
+                        presd, kce, rce)
         end if
 ! ----- Internal forces
         if (lVect) then
@@ -259,7 +266,10 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
             do na = 1, nno1
                 do ia = 1, ndim
                     kk = vu(ia, na)
-                    t1 = ddot(2*ndim, sigma, 1, def(1, na, ia), 1)
+                    b_n = to_blas_int(2*ndim)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    t1 = ddot(b_n, sigma, b_incx, def(1, na, ia), b_incy)
                     vect(kk) = vect(kk)+w*t1
                 end do
             end do

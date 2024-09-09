@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pidefo(ndim, npg, kpg, compor, fm, &
+subroutine pidefo(ndim, npg, kpg, compor, fm,&
                   epsm, epsp, epsd, copilo)
 !
 !
@@ -104,8 +104,14 @@ subroutine pidefo(ndim, npg, kpg, compor, fm, &
 ! --- INCREMENT DE DEFORMATION PROJETE
 !
     epsmno = dnrm2(ndimsi, epsm, 1)
-    copilo(1, kpg) = ddot(ndimsi, epsm, 1, epsp, 1)/epsmno
-    copilo(2, kpg) = ddot(ndimsi, epsm, 1, epsd, 1)/epsmno
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    copilo(1, kpg) = ddot(b_n, epsm, b_incx, epsp, b_incy)/epsmno
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    copilo(2, kpg) = ddot(b_n, epsm, b_incx, epsd, b_incy)/epsmno
 !
 !
 end subroutine

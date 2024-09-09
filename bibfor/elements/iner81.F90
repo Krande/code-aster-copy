@@ -138,7 +138,10 @@ subroutine iner81(nomres, classe, basmod, nommat)
             b_incy = to_blas_int(1)
             call dcopy(b_n, zr(idbase+(i-1)*neq), b_incx, zr(ltvec1), b_incy)
             call zerlag(neq, deeq, vectr=zr(ltvec1))
-            zr(ldres+iad+i-1) = ddot(neq, zr(ltvec1), 1, zr(ltvec2), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(ldres+iad+i-1) = ddot(b_n, zr(ltvec1), b_incx, zr(ltvec2), b_incy)
         end do
 !
     end do

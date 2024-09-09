@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xmmab6(ndim, nnol, pla, ffc, jac, &
+!
+subroutine xmmab6(ndim, nnol, pla, ffc, jac,&
                   tau1, tau2, lact, mmat)
 !
     implicit none
@@ -56,6 +56,7 @@ subroutine xmmab6(ndim, nnol, pla, ffc, jac, &
     integer :: i, j, k, l, nli, nlj
     integer :: pli, plj
     real(kind=8) :: ffi, ffj, metr(2, 2)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,11 +74,23 @@ subroutine xmmab6(ndim, nnol, pla, ffc, jac, &
 !
 ! --- MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
 !
-            metr(1, 1) = ddot(ndim, tau1(1), 1, tau1(1), 1)
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            metr(1, 1) = ddot(b_n, tau1(1), b_incx, tau1(1), b_incy)
             if (ndim .eq. 3) then
-                metr(1, 2) = ddot(ndim, tau1(1), 1, tau2(1), 1)
-                metr(2, 1) = ddot(ndim, tau2(1), 1, tau1(1), 1)
-                metr(2, 2) = ddot(ndim, tau2(1), 1, tau2(1), 1)
+                b_n = to_blas_int(ndim)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                metr(1, 2) = ddot(b_n, tau1(1), b_incx, tau2(1), b_incy)
+                b_n = to_blas_int(ndim)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                metr(2, 1) = ddot(b_n, tau2(1), b_incx, tau1(1), b_incy)
+                b_n = to_blas_int(ndim)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                metr(2, 2) = ddot(b_n, tau2(1), b_incx, tau2(1), b_incy)
             end if
 !
             do k = 1, ndim-1

@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine calcul_cara_maille(coord, noeuds, topologie, surface, centre, normale)
+!
+subroutine calcul_cara_maille(coord, noeuds, topologie, surface, centre,&
+                              normale)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -34,12 +35,12 @@ subroutine calcul_cara_maille(coord, noeuds, topologie, surface, centre, normale
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
-    real(kind=8), intent(in)    :: coord(*)
-    integer, intent(in)         :: noeuds(:)
-    integer, intent(in)         :: topologie
-    real(kind=8), optional, intent(out)   :: surface(*)
-    real(kind=8), optional, intent(out)   :: centre(*)
-    real(kind=8), optional, intent(out)   :: normale(*)
+    real(kind=8), intent(in) :: coord(*)
+    integer, intent(in) :: noeuds(:)
+    integer, intent(in) :: topologie
+    real(kind=8), optional, intent(out) :: surface(*)
+    real(kind=8), optional, intent(out) :: centre(*)
+    real(kind=8), optional, intent(out) :: normale(*)
 !
 #include "asterfort/provec.h"
 #include "blas/ddot.h"
@@ -47,6 +48,7 @@ subroutine calcul_cara_maille(coord, noeuds, topologie, surface, centre, normale
 ! --------------------------------------------------------------------------------------------------
     integer :: ii, pta, ptb, ptc, ptd, inoe, nbnoeu
     real(kind=8) :: cdg(3), vectab(3), vectcd(3), vect(3), surf
+    blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !   centre de gravité de la maille
     cdg(:) = 0.0
@@ -62,7 +64,10 @@ subroutine calcul_cara_maille(coord, noeuds, topologie, surface, centre, normale
         pta = 3*(noeuds(1)-1)
         ptb = 3*(noeuds(2)-1)
         vectab(1:3) = coord(ptb+1:ptb+3)-coord(pta+1:pta+3)
-        surf = ddot(2, vectab, 1, vectab, 1)
+        b_n = to_blas_int(2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        surf = ddot(b_n, vectab, b_incx, vectab, b_incy)
         surf = sqrt(surf)
         vect(1:3) = vectab(1:3)/surf
     else if (topologie .eq. 2) then
@@ -78,7 +83,10 @@ subroutine calcul_cara_maille(coord, noeuds, topologie, surface, centre, normale
         vectab(1:3) = coord(ptb+1:ptb+3)-coord(pta+1:pta+3)
         vectcd(1:3) = coord(ptd+1:ptd+3)-coord(ptc+1:ptc+3)
         call provec(vectab, vectcd, vect)
-        surf = ddot(3, vect, 1, vect, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        surf = ddot(b_n, vect, b_incx, vect, b_incy)
         vect = vect(1:3)/sqrt(surf)
         surf = sqrt(surf)*0.5d0
     end if

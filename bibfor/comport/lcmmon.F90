@@ -146,7 +146,10 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
         b_incy = to_blas_int(1)
         call dcopy(b_n, detot, b_incx, deps, b_incy)
     end if
-    depsdt = sqrt(ddot(6, deps, 1, deps, 1)/1.5d0)/dtime
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    depsdt = sqrt(ddot(b_n, deps, b_incx, deps, b_incy)/1.5d0)/dtime
     nbfsys = nbcomm(nmat, 2)
 !
     nuvi = 6

@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
-                  n, ip1, ip2, pinref, miref, mifis, &
-                  pintt, exit, jonc, u, v)
+!
+subroutine xmifis(ndim, ndime, elrefp, geom, lsn,&
+                  n, ip1, ip2, pinref, miref,&
+                  mifis, pintt, exit, jonc, u,&
+                  v)
     implicit none
 !
 #include "jeveux.h"
@@ -61,6 +62,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     real(kind=8) :: pta(ndime), ptb(ndime), ptc(ndime), newpt(ndime)
     integer :: itemax
     character(len=6) :: name
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------
 !
@@ -86,7 +88,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
             do j = 1, ndim
                 newpt(j) = pintt(ndim*(ia-1001)+j)
             end do
-            call reeref(elrefp, nno, geom, newpt, ndim, &
+            call reeref(elrefp, nno, geom, newpt, ndim,&
                         pta, ff)
         end if
 !
@@ -98,7 +100,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
             do j = 1, ndim
                 newpt(j) = pintt(ndim*(ib-1001)+j)
             end do
-            call reeref(elrefp, nno, geom, newpt, ndim, &
+            call reeref(elrefp, nno, geom, newpt, ndim,&
                         ptb, ff)
         end if
 !
@@ -110,7 +112,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
             do j = 1, ndim
                 newpt(j) = pintt(ndim*(ic-1001)+j)
             end do
-            call reeref(elrefp, nno, geom, newpt, ndim, &
+            call reeref(elrefp, nno, geom, newpt, ndim,&
                         ptc, ff)
         end if
         dekker(:) = 0.d0
@@ -133,9 +135,18 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !   CE SERAIT PRUDENT DE LE REVERIFIER
 !   SI ORTH : BC EST LA NORMALE CHERCHEE
 !   SINON : CALCULER LA NORMALE
-    k = ddot(ndime, ba, 1, bc, 1)
-    k1 = ddot(ndime, ba, 1, ip1ip2, 1)
-    k2 = ddot(ndime, bc, 1, ip1ip2, 1)
+    b_n = to_blas_int(ndime)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    k = ddot(b_n, ba, b_incx, bc, b_incy)
+    b_n = to_blas_int(ndime)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    k1 = ddot(b_n, ba, b_incx, ip1ip2, b_incy)
+    b_n = to_blas_int(ndime)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    k2 = ddot(b_n, bc, b_incx, ip1ip2, b_incy)
     alpha = dsqrt(1/(k1**2+k2**2-2*k*k1*k2))
     do j = 1, ndime
         vect(j) = alpha*(k2*ba(j)-k1*bc(j))
@@ -143,8 +154,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !
     do j = 1, ndime
         ptxx(j) = vect(j)
-        ptxx(j+ndime) = (pinref(ndime*(ip1-1)+j)+ &
-                         pinref(ndime*(ip2-1)+j))/2.d0
+        ptxx(j+ndime) = (pinref(ndime*(ip1-1)+j)+ pinref(ndime*(ip2-1)+j))/2.d0
     end do
 !     CALCUL DES COORDONNEES DE REFERENCE
 !     DU POINT PAR UN ALGO DE NEWTON
@@ -153,22 +163,20 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     ksi(:) = 0.d0
     if ((present(u) .and. present(v)) .or. jonc) then
-        call xnewto(elrefp, name, n, &
-                    ndime, ptxx, ndim, geom, lsn, &
-                    ip1, ip2, itemax, &
-                    epsmax, ksi)
+        call xnewto(elrefp, name, n, ndime, ptxx,&
+                    ndim, geom, lsn, ip1, ip2,&
+                    itemax, epsmax, ksi)
     else
-        call xnewto(elrefp, name, n, &
-                    ndime, ptxx, ndim, geom, lsn, &
-                    ip1, ip2, itemax, &
-                    epsmax, ksi, exit, dekker)
+        call xnewto(elrefp, name, n, ndime, ptxx,&
+                    ndim, geom, lsn, ip1, ip2,&
+                    itemax, epsmax, ksi, exit, dekker)
     end if
     do j = 1, ndime
         miref(j) = ksi(1)*ptxx(j)+ptxx(j+ndime)
     end do
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
-    call reerel(elrefp, nno, ndim, geom, miref, &
+    call reerel(elrefp, nno, ndim, geom, miref,&
                 mifis)
 !
 end subroutine

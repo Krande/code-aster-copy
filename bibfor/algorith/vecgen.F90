@@ -201,7 +201,7 @@ subroutine vecgen(nomres, numeg)
     call wkvect(resval, 'G V R', neqgen, lrval)
     call wkvect(chadsc, 'V V I', 1, lddesc)
 !
-    call jecrec(chalis, 'V V K8', 'NO', 'CONTIG', 'CONSTANT', &
+    call jecrec(chalis, 'V V K8', 'NO', 'CONTIG', 'CONSTANT',&
                 3)
     call jecroc(jexnom(chalis, 'SOUSSTR'))
     call jecroc(jexnom(chalis, 'VECTASS'))
@@ -212,7 +212,7 @@ subroutine vecgen(nomres, numeg)
     call jeveuo(jexnom(chalis, 'VECTASS'), 'E', ldnvec)
     call jeveuo(jexnom(chalis, 'NUMEDDL'), 'E', ldnddl)
 !
-    call jecrec(chaval, 'V V R', 'NO', 'DISPERSE', 'VARIABLE', &
+    call jecrec(chaval, 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbchar)
 !
 !-----------------------------------------------------------------------
@@ -283,7 +283,7 @@ subroutine vecgen(nomres, numeg)
             vali(2) = gd
             valk(1) = sstold
             valk(2) = nomsst
-            call utmess('F+', 'ALGORITH15_73', nk=2, valk=valk, ni=2, &
+            call utmess('F+', 'ALGORITH15_73', nk=2, valk=valk, ni=2,&
                         vali=vali)
         end if
         gd0 = gd
@@ -297,7 +297,7 @@ subroutine vecgen(nomres, numeg)
 !     ON UTILISE LA BASE MODALE, ET ON VERIFIE AU PASSAGE QUE
 !     SON TYPE EST BIEN CELUI D'UNE BASE CLASSIQUE OU DE RITZ.
 !
-        call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid, &
+        call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid,&
                     basmod)
 !
         call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=nubamo)
@@ -349,12 +349,12 @@ subroutine vecgen(nomres, numeg)
         nomddl = zk8(ldnddl+i-1)
 !
 !     RECUPERATION DE LA BASE MODALE ASSOCIEE A LA SOUS-STRUCTURE
-        call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid, &
+        call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid,&
                     basmod)
 !
 !     NOMBRE DE MODES NBMOD DE LA BASE MODALE
-        call rsorac(basmod, 'LONUTI', 0, rbid, kbid, &
-                    cbid, rbid, kbid, tmod, 1, &
+        call rsorac(basmod, 'LONUTI', 0, rbid, kbid,&
+                    cbid, rbid, kbid, tmod, 1,&
                     ibid)
         nbmod = tmod(1)
 !
@@ -391,7 +391,7 @@ subroutine vecgen(nomres, numeg)
         do j = 1, nbmod
 !
 !     EXTRACTION DU CHAMP DE DEPLACEMENTS ASSOCIE AU MODE J
-            call rsexch('F', basmod, 'DEPL', j, nomcha, &
+            call rsexch('F', basmod, 'DEPL', j, nomcha,&
                         iret)
             nomcha = nomcha(1:19)//'.VALE'
             call jeveuo(nomcha, 'L', iadmod)
@@ -406,7 +406,10 @@ subroutine vecgen(nomres, numeg)
             call zerlag(neq, zi(iddeeq), vectr=zr(idvect))
 !
 !     PRODUIT SCALAIRE SECOND MEMBRE ET MODE
-            zr(iavale+j-1) = ddot(neq, zr(idvect), 1, vale, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(iavale+j-1) = ddot(b_n, zr(idvect), b_incx, vale, b_incy)
 !
         end do
         call jedetr('&&'//pgc//'.VECTA')

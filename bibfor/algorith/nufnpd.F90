@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nufnpd(ndim, nno1, nno2, npg, iw, &
-                  vff1, vff2, idff1, vu, vp, &
-                  typmod, mate, compor, geomi, sig, &
+!
+subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
+                  vff1, vff2, idff1, vu, vp,&
+                  typmod, mate, compor, geomi, sig,&
                   ddl, mini, vect)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
@@ -84,6 +84,7 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw, &
     real(kind=8) :: dsbdep(2*ndim, 2*ndim), kbb(ndim, ndim), kbp(ndim, nno2)
     real(kind=8) :: kce(nno2, nno2), rce(nno2)
     character(len=16) :: option
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(grand=.false._1)
 !-----------------------------------------------------------------------
@@ -113,10 +114,10 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw, &
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         call r8inir(6, 0.d0, epsm, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g, &
-                    iw, vff1(1, g), idff1, r, w, &
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
                     r, dff1, deplm, fm, epsm)
 !
         divum = epsm(1)+epsm(2)+epsm(3)
@@ -153,7 +154,10 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw, &
         end if
 !
 ! - CALCUL DE LA PRESSION
-        pm = ddot(nno2, vff2(1, g), 1, presm, 1)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vff2(1, g), b_incx, presm, b_incy)
 !
 ! - CALCUL DES CONTRAINTES MECANIQUES A L'EQUILIBRE
         do ia = 1, 3
@@ -164,15 +168,15 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw, &
         end do
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
-        call tanbul(option, ndim, g, mate, compor(1), &
+        call tanbul(option, ndim, g, mate, compor(1),&
                     .false._1, mini, alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE
         if (mini) then
-            call calkbb(nno1, ndim, w, def, dsbdep, &
+            call calkbb(nno1, ndim, w, def, dsbdep,&
                         kbb)
             call calkbp(nno2, ndim, w, dff1, kbp)
-            call calkce(nno1, ndim, kbp, kbb, presm, &
+            call calkce(nno1, ndim, kbp, kbb, presm,&
                         presd, kce, rce)
         else
             call r8inir(nno2, 0.d0, rce, 1)
@@ -182,7 +186,10 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw, &
         do na = 1, nno1
             do ia = 1, ndim
                 kk = vu(ia, na)
-                t1 = ddot(2*ndim, sigma, 1, def(1, na, ia), 1)
+                b_n = to_blas_int(2*ndim)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                t1 = ddot(b_n, sigma, b_incx, def(1, na, ia), b_incy)
                 vect(kk) = vect(kk)+w*t1
             end do
         end do

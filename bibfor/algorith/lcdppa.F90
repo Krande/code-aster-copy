@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcdppa(mod, nvi, option, materf, compor, &
-                  sigm, deps, vim, vip, sig, &
+subroutine lcdppa(mod, nvi, option, materf, compor,&
+                  sigm, deps, vim, vip, sig,&
                   dsidep, iret)
     implicit none
 #include "asterf_types.h"
@@ -63,6 +63,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor, &
     real(kind=8) :: hookf(6, 6), dkooh(6, 6), plas, psi
     real(kind=8) :: epsp(6), epsm2(6), sige(6), se(6), siie, seq, i1e
     real(kind=8) :: calal
+    blas_int :: b_incx, b_incy, b_n
 ! =====================================================================
     parameter(deux=2.0d0)
     parameter(trois=3.0d0)
@@ -97,7 +98,10 @@ subroutine lcdppa(mod, nvi, option, materf, compor, &
 ! =====================================================================
     sige(1:ndt) = matmul(hookf(1:ndt, 1:ndt), epsp(1:ndt))
     call lcdevi(sige, se)
-    siie = ddot(ndt, se, 1, se, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    siie = ddot(b_n, se, b_incx, se, b_incy)
     seq = sqrt(trois*siie/deux)
     i1e = trace(ndi, sige)
 !
@@ -109,7 +113,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor, &
 ! --- RESOLUTION DU SYSTEME -------------------------------------------
 ! =====================================================================
         calal = alpha
-        call resdp2(materf, seq, i1e, pmoins, dp, &
+        call resdp2(materf, seq, i1e, pmoins, dp,&
                     plas)
         if (plas .eq. 0.0d0) then
             do ii = 1, ndt
@@ -118,7 +122,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor, &
 !            VIP(2) = 0.0D0
         else
             calal = alpha
-            call majsig(materf, se, seq, i1e, calal, &
+            call majsig(materf, se, seq, i1e, calal,&
                         dp, plas, sig)
         end if
 ! =====================================================================
@@ -146,7 +150,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor, &
         if (option(10:14) .eq. '_ELAS') then
             dsidep(1:ndt, 1:ndt) = hookf(1:ndt, 1:ndt)
         else
-            call dpmata(mod, materf, alpha, dp, dpdeno, &
+            call dpmata(mod, materf, alpha, dp, dpdeno,&
                         pplus, se, seq, plas, dsidep)
         end if
     end if

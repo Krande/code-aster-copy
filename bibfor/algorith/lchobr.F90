@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lchobr(toler, itmax, mod, nbmat, materf, &
-                  nr, nvi, depsm, sigm, vim, &
-                  seuil, vp, vecp, icomp, sigp, &
+!
+subroutine lchobr(toler, itmax, mod, nbmat, materf,&
+                  nr, nvi, depsm, sigm, vim,&
+                  seuil, vp, vecp, icomp, sigp,&
                   vip, irtet)
     implicit none
 #include "asterc/r8pi.h"
@@ -77,6 +77,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
     real(kind=8) :: deux, trois
     real(kind=8) :: incrg, gnp, dgnp, etanp, vh, vg
     real(kind=8) :: parame(4), derive(5), pi, fmoins
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
     parameter(deux=2.0d0)
     parameter(trois=3.0d0)
@@ -103,7 +104,10 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
     etam = deux*sin(parame(4)*pi)/(trois+sin(parame(4)*pi))
 ! =====================================================================
     call lcdevi(sigp, se)
-    seq = ddot(ndt, se, 1, se, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    seq = ddot(b_n, se, b_incx, se, b_incy)
     sigeqe = sqrt(trois*seq/deux)
     i1e = trace(ndi, sigp)
 ! ======================================================================
@@ -112,7 +116,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
 ! --- CALCUL DE DELTA GAMMA --------------------------------------------
 ! ======================================================================
     plas = 1.0d0
-    call hbcrel(vp, gm, dg, nbmat, materf, &
+    call hbcrel(vp, gm, dg, nbmat, materf,&
                 sigeqe, i1e, etam, parame, seuil2)
     fmoins = seuil2
 ! ======================================================================
@@ -125,17 +129,17 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
     dgnp = dg
     gnp = gm
     etanp = etam
-    call calcvh(nbmat, materf, etanp, vp, sigeqe, &
+    call calcvh(nbmat, materf, etanp, vp, sigeqe,&
                 vh, vg)
-    call hbderi(gnp, nbmat, materf, vg, etanp, &
+    call hbderi(gnp, nbmat, materf, vg, etanp,&
                 parame, derive)
 ! ======================================================================
 ! --------- PREMIERE ITERATION -----------------------------------------
 ! ======================================================================
-    call hbcalc(seuil2, gnp, dgnp, nbmat, materf, &
-                i1e, sigeqe, vp, etanp, vh, &
+    call hbcalc(seuil2, gnp, dgnp, nbmat, materf,&
+                i1e, sigeqe, vp, etanp, vh,&
                 vg, parame, derive, incrg)
-2   continue
+  2 continue
     gnp = gnp+incrg
     dgnp = dgnp+incrg
 ! ======================================================================
@@ -153,7 +157,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
     end if
     call hbvaec(gnp, nbmat, materf, parame)
     etanp = deux*sin(parame(4)*pi)/(trois+sin(parame(4)*pi))
-    call hbcrel(vp, gnp, dgnp, nbmat, materf, &
+    call hbcrel(vp, gnp, dgnp, nbmat, materf,&
                 sigeqe, i1e, etanp, parame, seuil2)
 ! ======================================================================
 ! ---------- IL Y A CONVERGENCE ----------------------------------------
@@ -176,12 +180,12 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
     else if (iter .lt. itmax) then
         iter = iter+1
         iteri = 0
-        call calcvh(nbmat, materf, etanp, vp, sigeqe, &
+        call calcvh(nbmat, materf, etanp, vp, sigeqe,&
                     vh, vg)
-        call hbderi(gnp, nbmat, materf, vg, etanp, &
+        call hbderi(gnp, nbmat, materf, vg, etanp,&
                     parame, derive)
-        call hbcalc(seuil2, gnp, dgnp, nbmat, materf, &
-                    i1e, sigeqe, vp, etanp, vh, &
+        call hbcalc(seuil2, gnp, dgnp, nbmat, materf,&
+                    i1e, sigeqe, vp, etanp, vh,&
                     vg, parame, derive, incrg)
         goto 2
 ! ======================================================================
@@ -203,7 +207,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
     if (iteri .eq. 1) goto 1
 ! ======================================================================
     etap = etanp
-    call hbmajs(dg, nbmat, materf, se, i1e, &
+    call hbmajs(dg, nbmat, materf, se, i1e,&
                 sigeqe, etap, sigp)
     vip(1) = vim(1)+dg
     vip(2) = vim(2)+trois*etap*dg/(etap+1.0d0)
@@ -211,7 +215,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
 ! ======================================================================
     irtet = 0
     goto 999
-1   continue
+  1 continue
     irtet = 1
 999 continue
 ! ======================================================================

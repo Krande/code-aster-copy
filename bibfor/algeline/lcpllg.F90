@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
-                  nr, nvi, deps, sigd, vind, &
-                  seuil, icomp, sigf, vinf, devg, &
+subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
+                  nr, nvi, deps, sigd, vind,&
+                  seuil, icomp, sigf, vinf, devg,&
                   devgii, irtet)
 !
     implicit none
@@ -71,6 +71,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
     real(kind=8) :: evp, evps
     character(len=10) :: ctol, citer
     character(len=24) :: valk(2)
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRE --------------------------------------
 ! ======================================================================
@@ -89,7 +90,10 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
     evp = vind(2)
     sige(1:ndt) = sigf(1:ndt)
     call lcdevi(sige, se)
-    siie = ddot(ndt, se, 1, se, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    siie = ddot(b_n, se, b_incx, se, b_incy)
     siie = sqrt(siie)
     invare = trace(ndi, sige)
 ! ======================================================================
@@ -103,8 +107,8 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
 ! ======================================================================
 ! --- CALCUL A PRIORI DE LA PROJECTION AU SOMMET -----------------------
 ! ======================================================================
-    call calcpj(nbmat, mater, gamp, evp, sigd, &
-                sige, lgleps, invare, gamps, evps, &
+    call calcpj(nbmat, mater, gamp, evp, sigd,&
+                sige, lgleps, invare, gamps, evps,&
                 invars, b)
 ! ======================================================================
 ! --- FAUT-IL FAIRE UNE PROJECTION AU SOMMET DU DOMAINE ? --------------
@@ -135,12 +139,12 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
 ! ======================================================================
 ! --- CALCUL INITIAL (ITERATION 0) -------------------------------------
 ! ======================================================================
-        call lglini(yd, nbmat, mater, seuil, sigd, &
-                    deps, devg, devgii, traceg, dy, &
+        call lglini(yd, nbmat, mater, seuil, sigd,&
+                    deps, devg, devgii, traceg, dy,&
                     codret)
         if (codret .ne. 0) goto 100
         iter = 0
-1       continue
+  1     continue
 ! ======================================================================
 ! --- ITERATION ITER ---------------------------------------------------
 ! ======================================================================
@@ -217,7 +221,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
 ! ======================================================================
 ! --- NOUVEAU CALCUL PLASTIQUE -----------------------------------------
 ! ======================================================================
-                call lglite(yf, nbmat, mater, fiter, devg, &
+                call lglite(yf, nbmat, mater, fiter, devg,&
                             devgii, traceg, dy, codret)
                 irteti = 1
                 if (codret .ne. 0) goto 100
@@ -259,8 +263,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
                     epsf(1:ndt) = matmul(dkooh(1:ndt, 1:ndt), sigf(1:ndt))
                     if (mod .eq. 'C_PLAN') then
                         sigf(3) = 0.0d0
-                        epsf(3) = dkooh(3, 1)*sigf(1)+dkooh(3, 2)*sigf(2)+dkooh(3, 4)*sigf&
-                                  &(4)
+                        epsf(3) = dkooh(3, 1)*sigf(1)+dkooh(3, 2)*sigf(2)+dkooh(3, 4)*sigf(4)
                     end if
                     vinf(1) = gamps
                     vinf(2) = evp

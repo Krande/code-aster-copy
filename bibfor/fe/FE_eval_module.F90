@@ -46,14 +46,14 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalFuncScal(FEBasis, val_nodes, point) result(func)
+    function FEEvalFuncScal(FEBasis, val_nodes, point) result (func)
 !
         implicit none
 !
-        type(FE_Basis), intent(in)         :: FEBasis
-        real(kind=8), intent(in)           :: val_nodes(*)
-        real(kind=8), intent(in)           :: point(3)
-        real(kind=8)                       :: func
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: val_nodes(*)
+        real(kind=8), intent(in) :: point(3)
+        real(kind=8) :: func
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -66,9 +66,13 @@ contains
 !
 ! ----- Local variables
         real(kind=8) :: funcEF(MAX_BS)
+        blas_int :: b_incx, b_incy, b_n
 !
         funcEF = FEBasis%func(point)
-        func = ddot(FEBasis%size, val_nodes, 1, funcEF, 1)
+        b_n = to_blas_int(FEBasis%size)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        func = ddot(b_n, val_nodes, b_incx, funcEF, b_incy)
 !
     end function
 !
@@ -76,16 +80,16 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalGradVec(FEBasis, val_nodes, point, BGSEval) result(grad)
+    function FEEvalGradVec(FEBasis, val_nodes, point, BGSEval) result (grad)
 !
         implicit none
 !
-        type(FE_Basis), intent(in)         :: FEBasis
-        real(kind=8), intent(in)           :: val_nodes(*)
-        real(kind=8), intent(in)           :: point(3)
-        real(kind=8)                       :: grad(3)
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: val_nodes(*)
+        real(kind=8), intent(in) :: point(3)
+        real(kind=8) :: grad(3)
         real(kind=8), intent(in), optional :: BGSEval(3, MAX_BS)
-
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -118,16 +122,16 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalGradSymMat(FEBasis, val_nodes, point, BGSEval) result(grads)
+    function FEEvalGradSymMat(FEBasis, val_nodes, point, BGSEval) result (grads)
 !
         implicit none
 !
-        type(FE_Basis), intent(in)         :: FEBasis
-        real(kind=8), intent(in)           :: val_nodes(FEBasis%ndim, *)
-        real(kind=8), intent(in)           :: point(3)
-        real(kind=8)                       :: grads(6)
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: val_nodes(FEBasis%ndim, *)
+        real(kind=8), intent(in) :: point(3)
+        real(kind=8) :: grads(6)
         real(kind=8), intent(in), optional :: BGSEval(3, MAX_BS)
-
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -150,21 +154,21 @@ contains
 !
         grads = 0.d0
         select case (FEBasis%ndim)
-        case (2)
-            grads(1) = grad(1, 1)
-            grads(2) = grad(2, 2)
-            grads(3) = grad(3, 3)
-            grads(4) = (grad(2, 1)+grad(1, 2))*rac2_2
-        case (3)
-            grads(1) = grad(1, 1)
-            grads(2) = grad(2, 2)
-            grads(3) = grad(3, 3)
-            grads(4) = (grad(1, 2)+grad(2, 1))*rac2_2
-            grads(5) = (grad(1, 3)+grad(3, 1))*rac2_2
-            grads(6) = (grad(2, 3)+grad(3, 2))*rac2_2
-        case default
-            ASSERT(ASTER_FALSE)
-        end select
+    case (2)
+        grads(1) = grad(1, 1)
+        grads(2) = grad(2, 2)
+        grads(3) = grad(3, 3)
+        grads(4) = (grad(2, 1)+grad(1, 2))*rac2_2
+    case (3)
+        grads(1) = grad(1, 1)
+        grads(2) = grad(2, 2)
+        grads(3) = grad(3, 3)
+        grads(4) = (grad(1, 2)+grad(2, 1))*rac2_2
+        grads(5) = (grad(1, 3)+grad(3, 1))*rac2_2
+        grads(6) = (grad(2, 3)+grad(3, 2))*rac2_2
+    case default
+        ASSERT(ASTER_FALSE)
+    end select
 !
     end function
 !
@@ -173,16 +177,16 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalGradMat(FEBasis, val_nodes, point, BGSEval) result(grad)
+    function FEEvalGradMat(FEBasis, val_nodes, point, BGSEval) result (grad)
 !
         implicit none
 !
-        type(FE_Basis), intent(in)         :: FEBasis
-        real(kind=8), intent(in)           :: val_nodes(*)
-        real(kind=8), intent(in)           :: point(3)
-        real(kind=8)                       :: grad(3, 3)
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: val_nodes(*)
+        real(kind=8), intent(in) :: point(3)
+        real(kind=8) :: grad(3, 3)
         real(kind=8), intent(in), optional :: BGSEval(3, MAX_BS)
-
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -201,44 +205,44 @@ contains
         if (present(BGSEval)) then
             ind = 0
             select case (FEBasis%ndim)
-            case (2)
-                do n = 1, FEBasis%size
-                    do i = 1, 2
-                        grad(i, 1:2) = grad(i, 1:2)+BGSEval(1:2, n)*val_nodes(ind+i)
-                    end do
-                    ind = ind+2
+        case (2)
+            do n = 1, FEBasis%size
+                do i = 1, 2
+                    grad(i, 1:2) = grad(i, 1:2)+BGSEval(1:2, n)*val_nodes(ind+i)
                 end do
-            case (3)
-                do n = 1, FEBasis%size
-                    do i = 1, 3
-                        grad(i, 1:3) = grad(i, 1:3)+BGSEval(1:3, n)*val_nodes(ind+i)
-                    end do
-                    ind = ind+3
+                ind = ind+2
+            end do
+        case (3)
+            do n = 1, FEBasis%size
+                do i = 1, 3
+                    grad(i, 1:3) = grad(i, 1:3)+BGSEval(1:3, n)*val_nodes(ind+i)
                 end do
-            case default
-                ASSERT(ASTER_FALSE)
-            end select
+                ind = ind+3
+            end do
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
         else
             gradEF = FEBasis%grad(point)
             ind = 0
             select case (FEBasis%ndim)
-            case (2)
-                do n = 1, FEBasis%size
-                    do i = 1, 2
-                        grad(i, 1:2) = grad(i, 1:2)+gradEF(1:2, n)*val_nodes(ind+i)
-                    end do
-                    ind = ind+2
+        case (2)
+            do n = 1, FEBasis%size
+                do i = 1, 2
+                    grad(i, 1:2) = grad(i, 1:2)+gradEF(1:2, n)*val_nodes(ind+i)
                 end do
-            case (3)
-                do n = 1, FEBasis%size
-                    do i = 1, 3
-                        grad(i, 1:3) = grad(i, 1:3)+gradEF(1:3, n)*val_nodes(ind+i)
-                    end do
-                    ind = ind+3
+                ind = ind+2
+            end do
+        case (3)
+            do n = 1, FEBasis%size
+                do i = 1, 3
+                    grad(i, 1:3) = grad(i, 1:3)+gradEF(1:3, n)*val_nodes(ind+i)
                 end do
-            case default
-                ASSERT(ASTER_FALSE)
-            end select
+                ind = ind+3
+            end do
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
         end if
 !
         if (FEBasis%l_axis) then

@@ -198,9 +198,18 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         call dscal(b_n, 0.d0, zr(ivecu1), b_incx)
-        alpha(k) = ddot(ninc, zr(iups+(ordman-k+2-1)*ninc), 1, zr(iups+(ordman-k+1-1)*ninc), 1)
-        alpha(k) = alpha(k)/ddot(ninc, zr(iups+(ordman-k+2-1)*ninc), 1, zr(iups+(ordman-k+2-1)*ni&
-                   &nc), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        alpha(k) = ddot(&
+                   b_n, zr(iups+(ordman-k+2-1)*ninc), b_incx, zr(iups+(ordman-k+1-1)*ninc),&
+                   b_incy&
+                   )
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        alpha(k) = alpha(k)/ddot(b_n, zr(iups+(ordman-k+2-1)*ninc), b_incx, zr(iups+(ordman-k+2-1&
+                   &)*ninc), b_incy)
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -223,8 +232,14 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         call dscal(b_n, 0.d0, zr(ivecu1), b_incx)
-        ac = ddot(ninc, zr(iups+ordman*ninc), 1, zr(iups+(ordman-1)*ninc), 1)
-        ac = ac/ddot(ninc, zr(iups+ordman*ninc), 1, zr(iups+ordman*ninc), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ac = ddot(b_n, zr(iups+ordman*ninc), b_incx, zr(iups+(ordman-1)*ninc), b_incy)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ac = ac/ddot(b_n, zr(iups+ordman*ninc), b_incx, zr(iups+ordman*ninc), b_incy)
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)

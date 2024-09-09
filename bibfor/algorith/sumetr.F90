@@ -32,12 +32,16 @@ subroutine sumetr(cova, metr, jac)
 !.......................................................................
 !
     integer :: i, j
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 !    CALCUL DE LA METRIQUE
     do i = 1, 2
         do j = 1, 2
-            metr(i, j) = ddot(3, cova(1, i), 1, cova(1, j), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            metr(i, j) = ddot(b_n, cova(1, i), b_incx, cova(1, j), b_incy)
         end do
     end do
 !

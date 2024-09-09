@@ -223,13 +223,25 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
         end if
 !
 ! ----- Pressure
-        pm = ddot(nnop, vffp(1, kpg), 1, presm, 1)
-        pd = ddot(nnop, vffp(1, kpg), 1, presd, 1)
+        b_n = to_blas_int(nnop)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vffp(1, kpg), b_incx, presm, b_incy)
+        b_n = to_blas_int(nnop)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pd = ddot(b_n, vffp(1, kpg), b_incx, presd, b_incy)
         pp = pm+pd
 !
 ! ----- Gonflement
-        gm = ddot(nnog, vffg(1, kpg), 1, gonfm, 1)
-        gd = ddot(nnog, vffg(1, kpg), 1, gonfd, 1)
+        b_n = to_blas_int(nnog)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        gm = ddot(b_n, vffg(1, kpg), b_incx, gonfm, b_incy)
+        b_n = to_blas_int(nnog)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        gd = ddot(b_n, vffg(1, kpg), b_incx, gonfd, b_incy)
         gp = gm+gd
 !
 ! ----- CALCUL DES FONCTIONS A, B,... DETERMINANT LA RELATION LIANT G ET J

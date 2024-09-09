@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lglite(yf, nbmat, mater, f0, devg, &
+!
+subroutine lglite(yf, nbmat, mater, f0, devg,&
                   devgii, traceg, dy, codret)
 !
     implicit none
@@ -55,6 +55,7 @@ subroutine lglite(yf, nbmat, mater, f0, devg, &
     real(kind=8) :: rcos3t
     real(kind=8) :: dfdl, sn(6), invn, gampn, evpn, deltan, q(6)
     character(len=16) :: parecr, derive
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
@@ -90,7 +91,10 @@ subroutine lglite(yf, nbmat, mater, f0, devg, &
 ! ======================================================================
 ! --- CALCUL DES VARIABLES ELASTIQUES INITIALES ------------------------
 ! ======================================================================
-    snii = ddot(ndt, sn, 1, sn, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    snii = ddot(b_n, sn, b_incx, sn, b_incy)
     snii = sqrt(snii)
     rcos3t = cos3t(sn, pref, epssig)
     rn = hlode(gamcjs, rcos3t)
@@ -103,13 +107,13 @@ subroutine lglite(yf, nbmat, mater, f0, devg, &
 ! ======================================================================
 ! --- CALCUL DES DIFFERENTES DERIVEES ----------------------------------
 ! ======================================================================
-    call calcdr(nbmat, mater, zr(jpara), zr(jderiv), gn, &
-                invn, q, devg, devgii, traceg, &
+    call calcdr(nbmat, mater, zr(jpara), zr(jderiv), gn,&
+                invn, q, devg, devgii, traceg,&
                 dfdl)
 ! ======================================================================
 ! --- CALCUL DES DIFFERENTS INCREMENTS ---------------------------------
 ! ======================================================================
-    call calcdy(mu, k, f0, devg, devgii, &
+    call calcdy(mu, k, f0, devg, devgii,&
                 traceg, dfdl, deltan, dy)
 ! ======================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES --------------------------------

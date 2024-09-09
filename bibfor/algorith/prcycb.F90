@@ -151,7 +151,7 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 ! --- CREATION DE LA FAMILLE DES SOUS-MATRICES
 !
-    call jecrec(soumat, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
+    call jecrec(soumat, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbsma)
 !
 ! --- ALLOCATION DES MATRICES
@@ -308,20 +308,20 @@ subroutine prcycb(nomres, soumat, repmat)
 ! --- RECUPERATION DES DEFORMEES DES NOEUDS DROITE
 !
     kbid = ' '
-    call bmnodi(basmod, kbid, '        ', numd, nbddr, &
+    call bmnodi(basmod, kbid, '        ', numd, nbddr,&
                 zi(ltord), ibid)
 !
 ! --- RECUPERATION DES DEFORMEES DES NOEUDS GAUCHE
 !
     kbid = ' '
-    call bmnodi(basmod, kbid, '        ', numg, nbddr, &
+    call bmnodi(basmod, kbid, '        ', numg, nbddr,&
                 zi(ltorg), ibid)
 !
 ! --- RECUPERATION DES DEFORMEES EVENTUELLES DES NOEUDS D'AXE
 !
     if (nbdax .gt. 0) then
         kbid = ' '
-        call bmnodi(basmod, kbid, '        ', numa, nbdax, &
+        call bmnodi(basmod, kbid, '        ', numa, nbdax,&
                     zi(ltora), ibid)
     end if
 !
@@ -331,7 +331,7 @@ subroutine prcycb(nomres, soumat, repmat)
 !
     ntail = nbddr**2
     call wkvect('&&'//pgc//'.TETGD', 'V V R', ntail, ltetgd)
-    call ctetgd(basmod, numd, numg, nbsec, zr(ltetgd), &
+    call ctetgd(basmod, numd, numg, nbsec, zr(ltetgd),&
                 nbddr)
 !
     if (nbdax .gt. 0) then
@@ -441,21 +441,33 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 ! ----- CALCUL PRODUIT MATRICE  MODES
 !
-        call mrmult('ZERO', lmatk, zr(ltveca+(i-1)*neq), zr(ltvec1), 1, &
+        call mrmult('ZERO', lmatk, zr(ltveca+(i-1)*neq), zr(ltvec1), 1,&
                     .false._1)
-        call mrmult('ZERO', lmatm, zr(ltveca+(i-1)*neq), zr(ltvec3), 1, &
+        call mrmult('ZERO', lmatm, zr(ltveca+(i-1)*neq), zr(ltvec3), 1,&
                     .false._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
         call zerlag(neq, deeq, vectr=zr(ltvec3))
 !
 ! ----- PRODUIT AVEC MODES
 !
-        zr(ldk0ii+ktrian) = ddot(neq, zr(ltvec1), 1, zr(ltveca+(i-1)*neq), 1)
-        zr(ldm0ii+ktrian) = ddot(neq, zr(ltvec3), 1, zr(ltveca+(i-1)*neq), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        zr(ldk0ii+ktrian) = ddot(b_n, zr(ltvec1), b_incx, zr(ltveca+(i-1)*neq), b_incy)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        zr(ldm0ii+ktrian) = ddot(b_n, zr(ltvec3), b_incx, zr(ltveca+(i-1)*neq), b_incy)
         ktrian = ktrian+1
         do j = i-1, 1, -1
-            zr(ldk0ii+ktrian) = ddot(neq, zr(ltvec1), 1, zr(ltveca+(j-1)*neq), 1)
-            zr(ldm0ii+ktrian) = ddot(neq, zr(ltvec3), 1, zr(ltveca+(j-1)*neq), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(ldk0ii+ktrian) = ddot(b_n, zr(ltvec1), b_incx, zr(ltveca+(j-1)*neq), b_incy)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(ldm0ii+ktrian) = ddot(b_n, zr(ltvec3), b_incx, zr(ltveca+(j-1)*neq), b_incy)
             ktrian = ktrian+1
         end do
 !
@@ -486,28 +498,40 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE DROITE
 !
-        call mrmult('ZERO', lmatk, zr(ltvecb+(i-1)*neq), zr(ltvec1), 1, &
+        call mrmult('ZERO', lmatk, zr(ltvecb+(i-1)*neq), zr(ltvec1), 1,&
                     .false._1)
-        call mrmult('ZERO', lmatm, zr(ltvecb+(i-1)*neq), zr(ltvec3), 1, &
+        call mrmult('ZERO', lmatm, zr(ltvecb+(i-1)*neq), zr(ltvec3), 1,&
                     .false._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
         call zerlag(neq, deeq, vectr=zr(ltvec3))
 !
 ! ----- CALCUL TERME DIAGONAL
 !
-        zr(ldk0jj+ktrian) = ddot(neq, zr(ltvec1), 1, zr(ltvecb+(i-1)*neq), 1)
-        zr(ldm0jj+ktrian) = ddot(neq, zr(ltvec3), 1, zr(ltvecb+(i-1)*neq), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        zr(ldk0jj+ktrian) = ddot(b_n, zr(ltvec1), b_incx, zr(ltvecb+(i-1)*neq), b_incy)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        zr(ldm0jj+ktrian) = ddot(b_n, zr(ltvec3), b_incx, zr(ltvecb+(i-1)*neq), b_incy)
 !
 ! ----- MULTIPLICATION PAR MODES PROPRES
 ! ----- NUL SI MODES CONTRAINTS STATIQUES MAIS NON NUL
 ! ----- SI MODES CONTRAINTS HARMONIQUES
 !
         do j = 1, nbmod
-            xprod = ddot(neq, zr(ltvec1), 1, zr(ltveca+(j-1)*neq), 1)
-            call amppr(zr(ldk0ij), nbmod, nbddr, [xprod], 1, &
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xprod = ddot(b_n, zr(ltvec1), b_incx, zr(ltveca+(j-1)*neq), b_incy)
+            call amppr(zr(ldk0ij), nbmod, nbddr, [xprod], 1,&
                        1, j, i)
-            xprod = ddot(neq, zr(ltvec3), 1, zr(ltveca+(j-1)*neq), 1)
-            call amppr(zr(ldm0ij), nbmod, nbddr, [xprod], 1, &
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xprod = ddot(b_n, zr(ltvec3), b_incx, zr(ltveca+(j-1)*neq), b_incy)
+            call amppr(zr(ldm0ij), nbmod, nbddr, [xprod], 1,&
                        1, j, i)
         end do
 !
@@ -515,8 +539,14 @@ subroutine prcycb(nomres, soumat, repmat)
 !
         ktrian = ktrian+1
         do j = i-1, 1, -1
-            zr(ldk0jj+ktrian) = ddot(neq, zr(ltvec1), 1, zr(ltvecb+(j-1)*neq), 1)
-            zr(ldm0jj+ktrian) = ddot(neq, zr(ltvec3), 1, zr(ltvecb+(j-1)*neq), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(ldk0jj+ktrian) = ddot(b_n, zr(ltvec1), b_incx, zr(ltvecb+(j-1)*neq), b_incy)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(ldm0jj+ktrian) = ddot(b_n, zr(ltvec3), b_incx, zr(ltvecb+(j-1)*neq), b_incy)
             ktrian = ktrian+1
         end do
 !
@@ -524,11 +554,17 @@ subroutine prcycb(nomres, soumat, repmat)
 !
         if (nbdax .gt. 0) then
             do j = 1, nbdax
-                xprod = ddot(neq, zr(ltvec1), 1, zr(ltvecd+(j-1)*neq), 1)
-                call amppr(zr(ldk0aj), nbdax, nbddr, [xprod], 1, &
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xprod = ddot(b_n, zr(ltvec1), b_incx, zr(ltvecd+(j-1)*neq), b_incy)
+                call amppr(zr(ldk0aj), nbdax, nbddr, [xprod], 1,&
                            1, j, i)
-                xprod = ddot(neq, zr(ltvec3), 1, zr(ltvecd+(j-1)*neq), 1)
-                call amppr(zr(ldm0aj), nbdax, nbddr, [xprod], 1, &
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xprod = ddot(b_n, zr(ltvec3), b_incx, zr(ltvecd+(j-1)*neq), b_incy)
+                call amppr(zr(ldm0aj), nbdax, nbddr, [xprod], 1,&
                            1, j, i)
             end do
         end if
@@ -543,13 +579,13 @@ subroutine prcycb(nomres, soumat, repmat)
     if (nbdax .gt. 0) then
         call jenonu(jexnom(repmat, 'KPLUSJA'), ibid)
         call jeveuo(jexnum(soumat, ibid), 'E', ldkpja)
-        call pmppr(zr(ldk0aj), nbdax, nbddr, -1, zr(ltetax), &
-                   nbdax, nbdax, 1, zr(ldkpja), nbddr, &
+        call pmppr(zr(ldk0aj), nbdax, nbddr, -1, zr(ltetax),&
+                   nbdax, nbdax, 1, zr(ldkpja), nbddr,&
                    nbdax)
         call jenonu(jexnom(repmat, 'MPLUSJA'), ibid)
         call jeveuo(jexnum(soumat, ibid), 'E', ldmpja)
-        call pmppr(zr(ldm0aj), nbdax, nbddr, -1, zr(ltetax), &
-                   nbdax, nbdax, 1, zr(ldmpja), nbddr, &
+        call pmppr(zr(ldm0aj), nbdax, nbddr, -1, zr(ltetax),&
+                   nbdax, nbdax, 1, zr(ldmpja), nbddr,&
                    nbdax)
 !-- reinitialisation de K0AJ et M0AJ --!
         ntail = nbddr*nbdax
@@ -579,56 +615,80 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE GAUCHE
 !
-        call mrmult('ZERO', lmatk, zr(ltvecc+(i-1)*neq), zr(ltvec1), 1, &
+        call mrmult('ZERO', lmatk, zr(ltvecc+(i-1)*neq), zr(ltvec1), 1,&
                     .false._1)
-        call mrmult('ZERO', lmatm, zr(ltvecc+(i-1)*neq), zr(ltvec3), 1, &
+        call mrmult('ZERO', lmatm, zr(ltvecc+(i-1)*neq), zr(ltvec3), 1,&
                     .false._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
         call zerlag(neq, deeq, vectr=zr(ltvec3))
 !
 ! ----- CALCUL TERME DIAGONAL
 !
-        xprod = ddot(neq, zr(ltvec1), 1, zr(ltvecc+(i-1)*neq), 1)
-        call amppr(zr(ltkgg), nbdga, nbdga, [xprod], 1, &
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xprod = ddot(b_n, zr(ltvec1), b_incx, zr(ltvecc+(i-1)*neq), b_incy)
+        call amppr(zr(ltkgg), nbdga, nbdga, [xprod], 1,&
                    1, i, i)
-        xprod = ddot(neq, zr(ltvec3), 1, zr(ltvecc+(i-1)*neq), 1)
-        call amppr(zr(ltmgg), nbdga, nbdga, [xprod], 1, &
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xprod = ddot(b_n, zr(ltvec3), b_incx, zr(ltvecc+(i-1)*neq), b_incy)
+        call amppr(zr(ltmgg), nbdga, nbdga, [xprod], 1,&
                    1, i, i)
 !
 ! ----- MULTIPLICATION PAR MODES PROPRES
 !
         do j = 1, nbmod
-            xprod = ddot(neq, zr(ltvec1), 1, zr(ltveca+(j-1)*neq), 1)
-            call amppr(zr(ltkig), nbmod, nbdga, [xprod], 1, &
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xprod = ddot(b_n, zr(ltvec1), b_incx, zr(ltveca+(j-1)*neq), b_incy)
+            call amppr(zr(ltkig), nbmod, nbdga, [xprod], 1,&
                        1, j, i)
-            xprod = ddot(neq, zr(ltvec3), 1, zr(ltveca+(j-1)*neq), 1)
-            call amppr(zr(ltmig), nbmod, nbdga, [xprod], 1, &
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xprod = ddot(b_n, zr(ltvec3), b_incx, zr(ltveca+(j-1)*neq), b_incy)
+            call amppr(zr(ltmig), nbmod, nbdga, [xprod], 1,&
                        1, j, i)
         end do
 !
 ! ----- PRODUIT AVEC DEFORMEE DROITE
 !
         do j = 1, nbddr
-            xprod = ddot(neq, zr(ltvec1), 1, zr(ltvecb+(j-1)*neq), 1)
-            call amppr(zr(ltkdg), nbddr, nbddr, [xprod], 1, &
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xprod = ddot(b_n, zr(ltvec1), b_incx, zr(ltvecb+(j-1)*neq), b_incy)
+            call amppr(zr(ltkdg), nbddr, nbddr, [xprod], 1,&
                        1, j, i)
-            xprod = ddot(neq, zr(ltvec3), 1, zr(ltvecb+(j-1)*neq), 1)
-            call amppr(zr(ltmdg), nbddr, nbddr, [xprod], 1, &
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xprod = ddot(b_n, zr(ltvec3), b_incx, zr(ltvecb+(j-1)*neq), b_incy)
+            call amppr(zr(ltmdg), nbddr, nbddr, [xprod], 1,&
                        1, j, i)
         end do
 !
 ! ----- PRODUIT AVEC DEFORMEES GAUCHES (HORS TERMES DIAGONAUX)
 !
         do j = 1, i-1
-            xprod = ddot(neq, zr(ltvec1), 1, zr(ltvecc+(j-1)*neq), 1)
-            call amppr(zr(ltkgg), nbdga, nbdga, [xprod], 1, &
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xprod = ddot(b_n, zr(ltvec1), b_incx, zr(ltvecc+(j-1)*neq), b_incy)
+            call amppr(zr(ltkgg), nbdga, nbdga, [xprod], 1,&
                        1, j, i)
-            call amppr(zr(ltkgg), nbdga, nbdga, [xprod], 1, &
+            call amppr(zr(ltkgg), nbdga, nbdga, [xprod], 1,&
                        1, i, j)
-            xprod = ddot(neq, zr(ltvec3), 1, zr(ltvecc+(j-1)*neq), 1)
-            call amppr(zr(ltmgg), nbdga, nbdga, [xprod], 1, &
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xprod = ddot(b_n, zr(ltvec3), b_incx, zr(ltvecc+(j-1)*neq), b_incy)
+            call amppr(zr(ltmgg), nbdga, nbdga, [xprod], 1,&
                        1, j, i)
-            call amppr(zr(ltmgg), nbdga, nbdga, [xprod], 1, &
+            call amppr(zr(ltmgg), nbdga, nbdga, [xprod], 1,&
                        1, i, j)
         end do
 !
@@ -636,11 +696,17 @@ subroutine prcycb(nomres, soumat, repmat)
 !
         if (nbdax .gt. 0) then
             do j = 1, nbdax
-                xprod = ddot(neq, zr(ltvec1), 1, zr(ltvecd+(j-1)*neq), 1)
-                call amppr(zr(ltkag), nbdax, nbdga, [xprod], 1, &
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xprod = ddot(b_n, zr(ltvec1), b_incx, zr(ltvecd+(j-1)*neq), b_incy)
+                call amppr(zr(ltkag), nbdax, nbdga, [xprod], 1,&
                            1, j, i)
-                xprod = ddot(neq, zr(ltvec3), 1, zr(ltvecd+(j-1)*neq), 1)
-                call amppr(zr(ltmag), nbdax, nbdga, [xprod], 1, &
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xprod = ddot(b_n, zr(ltvec3), b_incx, zr(ltvecd+(j-1)*neq), b_incy)
+                call amppr(zr(ltmag), nbdax, nbdga, [xprod], 1,&
                            1, j, i)
             end do
         end if
@@ -655,16 +721,16 @@ subroutine prcycb(nomres, soumat, repmat)
 !
     call jenonu(jexnom(repmat, 'KPLUSIJ'), ibid)
     call jeveuo(jexnum(soumat, ibid), 'E', ldkpij)
-    call pmppr(zr(ltkig), nbmod, nbddr, 1, zr(ltetgd), &
-               nbddr, nbddr, 1, zr(ldkpij), nbmod, &
+    call pmppr(zr(ltkig), nbmod, nbddr, 1, zr(ltetgd),&
+               nbddr, nbddr, 1, zr(ldkpij), nbmod,&
                nbddr)
 !
     call jedetr('&&'//pgc//'.KIG')
 ! --- POUR MPLUSIJ
     call jenonu(jexnom(repmat, 'MPLUSIJ'), ibid)
     call jeveuo(jexnum(soumat, ibid), 'E', ldmpij)
-    call pmppr(zr(ltmig), nbmod, nbddr, 1, zr(ltetgd), &
-               nbddr, nbddr, 1, zr(ldmpij), nbmod, &
+    call pmppr(zr(ltmig), nbmod, nbddr, 1, zr(ltetgd),&
+               nbddr, nbddr, 1, zr(ldmpij), nbmod,&
                nbddr)
 !
     call jedetr('&&'//pgc//'.MIG')
@@ -673,35 +739,35 @@ subroutine prcycb(nomres, soumat, repmat)
 !
     call jenonu(jexnom(repmat, 'KPLUSJJ'), ibid)
     call jeveuo(jexnum(soumat, ibid), 'E', ldkpjj)
-    call pmppr(zr(ltkdg), nbddr, nbddr, 1, zr(ltetgd), &
-               nbddr, nbddr, 1, zr(ldkpjj), nbddr, &
+    call pmppr(zr(ltkdg), nbddr, nbddr, 1, zr(ltetgd),&
+               nbddr, nbddr, 1, zr(ldkpjj), nbddr,&
                nbddr)
 !
 ! --- POUR K0JJ
 !
-    call pmppr(zr(ltkgg), nbddr, nbddr, 1, zr(ltetgd), &
-               nbddr, nbddr, 1, zr(ltkdg), nbddr, &
+    call pmppr(zr(ltkgg), nbddr, nbddr, 1, zr(ltetgd),&
+               nbddr, nbddr, 1, zr(ltkdg), nbddr,&
                nbddr)
 !
-    call pmppr(zr(ltetgd), nbddr, nbddr, -1, zr(ltkdg), &
-               nbddr, nbddr, 1, zr(ltkgg), nbddr, &
+    call pmppr(zr(ltetgd), nbddr, nbddr, -1, zr(ltkdg),&
+               nbddr, nbddr, 1, zr(ltkgg), nbddr,&
                nbddr)
 !
 !
     call jenonu(jexnom(repmat, 'MPLUSJJ'), ibid)
     call jeveuo(jexnum(soumat, ibid), 'E', ldmpjj)
-    call pmppr(zr(ltmdg), nbddr, nbddr, 1, zr(ltetgd), &
-               nbddr, nbddr, 1, zr(ldmpjj), nbddr, &
+    call pmppr(zr(ltmdg), nbddr, nbddr, 1, zr(ltetgd),&
+               nbddr, nbddr, 1, zr(ldmpjj), nbddr,&
                nbddr)
 !
 ! --- POUR M0JJ
 !
-    call pmppr(zr(ltmgg), nbddr, nbddr, 1, zr(ltetgd), &
-               nbddr, nbddr, 1, zr(ltmdg), nbddr, &
+    call pmppr(zr(ltmgg), nbddr, nbddr, 1, zr(ltetgd),&
+               nbddr, nbddr, 1, zr(ltmdg), nbddr,&
                nbddr)
 !
-    call pmppr(zr(ltetgd), nbddr, nbddr, -1, zr(ltmdg), &
-               nbddr, nbddr, 1, zr(ltmgg), nbddr, &
+    call pmppr(zr(ltetgd), nbddr, nbddr, -1, zr(ltmdg),&
+               nbddr, nbddr, 1, zr(ltmgg), nbddr,&
                nbddr)
 !
     k = 0
@@ -724,29 +790,29 @@ subroutine prcycb(nomres, soumat, repmat)
 !
         call jenonu(jexnom(repmat, 'KPLUSAJ'), ibid)
         call jeveuo(jexnum(soumat, ibid), 'E', ldkpaj)
-        call pmppr(zr(ltkag), nbdax, nbddr, 1, zr(ltetgd), &
-                   nbddr, nbddr, 1, zr(ldkpaj), nbdax, &
+        call pmppr(zr(ltkag), nbdax, nbddr, 1, zr(ltetgd),&
+                   nbddr, nbddr, 1, zr(ldkpaj), nbdax,&
                    nbddr)
 !
-        call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ldkpaj), &
-                   nbdax, nbddr, 1, zr(ltkag), nbdax, &
+        call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ldkpaj),&
+                   nbdax, nbddr, 1, zr(ltkag), nbdax,&
                    nbddr)
 !
-        call amppr(zr(ldk0aj), nbdax, nbddr, zr(ltkag), nbdax, &
+        call amppr(zr(ldk0aj), nbdax, nbddr, zr(ltkag), nbdax,&
                    nbddr, 1, 1)
 !
         call jedetr('&&'//pgc//'.KAG')
         call jenonu(jexnom(repmat, 'MPLUSAJ'), ibid)
         call jeveuo(jexnum(soumat, ibid), 'E', ldmpaj)
-        call pmppr(zr(ltmag), nbdax, nbddr, 1, zr(ltetgd), &
-                   nbddr, nbddr, 1, zr(ldmpaj), nbdax, &
+        call pmppr(zr(ltmag), nbdax, nbddr, 1, zr(ltetgd),&
+                   nbddr, nbddr, 1, zr(ldmpaj), nbdax,&
                    nbddr)
 !
-        call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ldmpaj), &
-                   nbdax, nbddr, 1, zr(ltmag), nbdax, &
+        call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ldmpaj),&
+                   nbdax, nbddr, 1, zr(ltmag), nbdax,&
                    nbddr)
 !
-        call amppr(zr(ldm0aj), nbdax, nbddr, zr(ltmag), nbdax, &
+        call amppr(zr(ldm0aj), nbdax, nbddr, zr(ltmag), nbdax,&
                    nbddr, 1, 1)
 !
         call jedetr('&&'//pgc//'.MAG')
@@ -775,9 +841,9 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 ! ------- CALCUL PROJECTION MATRICE DEFORMEES AXE
 !
-            call mrmult('ZERO', lmatk, zr(ltvecd+(i-1)*neq), zr(ltvec1), 1, &
+            call mrmult('ZERO', lmatk, zr(ltvecd+(i-1)*neq), zr(ltvec1), 1,&
                         .false._1)
-            call mrmult('ZERO', lmatm, zr(ltvecd+(i-1)*neq), zr(ltvec3), 1, &
+            call mrmult('ZERO', lmatm, zr(ltvecd+(i-1)*neq), zr(ltvec3), 1,&
                         .false._1)
             call zerlag(neq, deeq, vectr=zr(ltvec1))
             call zerlag(neq, deeq, vectr=zr(ltvec3))
@@ -785,22 +851,34 @@ subroutine prcycb(nomres, soumat, repmat)
 ! ------- MULTIPLICATION PAR MODES PROPRES
 !
             do j = 1, nbmod
-                xprod = ddot(neq, zr(ltvec1), 1, zr(ltveca+(j-1)*neq), 1)
-                call amppr(zr(ltkia), nbmod, nbdax, [xprod], 1, &
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xprod = ddot(b_n, zr(ltvec1), b_incx, zr(ltveca+(j-1)*neq), b_incy)
+                call amppr(zr(ltkia), nbmod, nbdax, [xprod], 1,&
                            1, j, i)
-                xprod = ddot(neq, zr(ltvec3), 1, zr(ltveca+(j-1)*neq), 1)
-                call amppr(zr(ltmia), nbmod, nbdax, [xprod], 1, &
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xprod = ddot(b_n, zr(ltvec3), b_incx, zr(ltveca+(j-1)*neq), b_incy)
+                call amppr(zr(ltmia), nbmod, nbdax, [xprod], 1,&
                            1, j, i)
             end do
 !
 ! ------- PRODUIT AVEC DEFORMEE AXE
 !
             do j = 1, nbdax
-                xprod = ddot(neq, zr(ltvec1), 1, zr(ltvecd+(j-1)*neq), 1)
-                call amppr(zr(ltkaa), nbdax, nbdax, [xprod], 1, &
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xprod = ddot(b_n, zr(ltvec1), b_incx, zr(ltvecd+(j-1)*neq), b_incy)
+                call amppr(zr(ltkaa), nbdax, nbdax, [xprod], 1,&
                            1, j, i)
-                xprod = ddot(neq, zr(ltvec3), 1, zr(ltvecd+(j-1)*neq), 1)
-                call amppr(zr(ltmaa), nbdax, nbdax, [xprod], 1, &
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xprod = ddot(b_n, zr(ltvec3), b_incx, zr(ltvecd+(j-1)*neq), b_incy)
+                call amppr(zr(ltmaa), nbdax, nbdax, [xprod], 1,&
                            1, j, i)
             end do
         end do
@@ -818,8 +896,8 @@ subroutine prcycb(nomres, soumat, repmat)
 !       call amppr(zr(ldk0ia), nbmod, nbdax, zr(ltkia), nbmod,&
 !                  nbdax, 1, 1)
 !
-        call pmppr(zr(ltkia), nbmod, nbdax, 1, zr(ltetax), &
-                   nbdax, nbdax, 1, zr(ldkpia), nbmod, &
+        call pmppr(zr(ltkia), nbmod, nbdax, 1, zr(ltetax),&
+                   nbdax, nbdax, 1, zr(ldkpia), nbmod,&
                    nbdax)
 !
         call jedetr('&&'//pgc//'.KIA')
@@ -831,19 +909,19 @@ subroutine prcycb(nomres, soumat, repmat)
         call jenonu(jexnom(repmat, 'K0AA'), ibid)
         call jeveuo(jexnum(soumat, ibid), 'E', ldk0aa)
 !
-        call pmppr(zr(ltkaa), nbdax, nbdax, 1, zr(ltetax), &
-                   nbdax, nbdax, 1, zr(ldkpaa), nbdax, &
+        call pmppr(zr(ltkaa), nbdax, nbdax, 1, zr(ltetax),&
+                   nbdax, nbdax, 1, zr(ldkpaa), nbdax,&
                    nbdax)
 !
 !
 !       call amppr(zr(ldk0aa), nbdax, nbdax, zr(ltkaa), nbdax,&
 !                  nbdax, 1, 1)
 !
-        call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ldkpaa), &
-                   nbdax, nbdax, 1, zr(ltkaa), nbdax, &
+        call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ldkpaa),&
+                   nbdax, nbdax, 1, zr(ltkaa), nbdax,&
                    nbdax)
 !
-        call amppr(zr(ldk0aa), nbdax, nbdax, zr(ltkaa), nbdax, &
+        call amppr(zr(ldk0aa), nbdax, nbdax, zr(ltkaa), nbdax,&
                    nbdax, 1, 1)
 !
         call jedetr('&&'//pgc//'.KAA')
@@ -854,8 +932,8 @@ subroutine prcycb(nomres, soumat, repmat)
         call jeveuo(jexnum(soumat, ibid), 'E', ldm0ia)
         call jenonu(jexnom(repmat, 'MPLUSIA'), ibid)
         call jeveuo(jexnum(soumat, ibid), 'E', ldmpia)
-        call pmppr(zr(ltmia), nbmod, nbdax, 1, zr(ltetax), &
-                   nbdax, nbdax, 1, zr(ldmpia), nbmod, &
+        call pmppr(zr(ltmia), nbmod, nbdax, 1, zr(ltetax),&
+                   nbdax, nbdax, 1, zr(ldmpia), nbmod,&
                    nbdax)
 !
 !       call amppr(zr(ldm0ia), nbmod, nbdax, zr(ltmia), nbmod,&
@@ -869,18 +947,18 @@ subroutine prcycb(nomres, soumat, repmat)
         call jenonu(jexnom(repmat, 'M0AA'), ibid)
         call jeveuo(jexnum(soumat, ibid), 'E', ldm0aa)
 !
-        call pmppr(zr(ltmaa), nbdax, nbdax, 1, zr(ltetax), &
-                   nbdax, nbdax, 1, zr(ldmpaa), nbdax, &
+        call pmppr(zr(ltmaa), nbdax, nbdax, 1, zr(ltetax),&
+                   nbdax, nbdax, 1, zr(ldmpaa), nbdax,&
                    nbdax)
 !
 !
 !       call amppr(zr(ldm0aa), nbdax, nbdax, zr(ltmaa), nbdax,&
 !                  nbdax, 1, 1)
 !
-        call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ldmpaa), &
-                   nbdax, nbdax, 1, zr(ltmaa), nbdax, &
+        call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ldmpaa),&
+                   nbdax, nbdax, 1, zr(ltmaa), nbdax,&
                    nbdax)
-        call amppr(zr(ldm0aa), nbdax, nbdax, zr(ltmaa), nbdax, &
+        call amppr(zr(ldm0aa), nbdax, nbdax, zr(ltmaa), nbdax,&
                    nbdax, 1, 1)
 !
         call jedetr('&&'//pgc//'.MAA')

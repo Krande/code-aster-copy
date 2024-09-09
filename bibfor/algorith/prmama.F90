@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine prmama(iprod, amat, na, na1, na2, &
-                  bmat, nb, nb1, nb2, cmat, &
+!
+subroutine prmama(iprod, amat, na, na1, na2,&
+                  bmat, nb, nb1, nb2, cmat,&
                   nc, nc1, nc2, ier)
     implicit none
 ! DESCRIPTION : PRODUITS DE MATRICES PLEINES RECTANGULAIRES
@@ -72,6 +72,7 @@ subroutine prmama(iprod, amat, na, na1, na2, &
 ! -----------------
     integer :: i, j, k
     real(kind=8) :: ctemp, zero
+    blas_int :: b_incx, b_incy, b_n
 !
 ! FONCTIONS EXTERNES
 ! ------------------
@@ -128,7 +129,10 @@ subroutine prmama(iprod, amat, na, na1, na2, &
 !
         do j = 1, nb2
             do i = 1, na2
-                cmat(i, j) = ddot(nb1, amat(1, i), 1, bmat(1, j), 1)
+                b_n = to_blas_int(nb1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                cmat(i, j) = ddot(b_n, amat(1, i), b_incx, bmat(1, j), b_incy)
             end do
         end do
 !

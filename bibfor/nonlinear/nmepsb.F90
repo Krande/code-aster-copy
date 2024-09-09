@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmepsb(ndim, nno, axi, vff, dfdi, &
+subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
                   deplg, epsb, geps)
 !
 !
@@ -45,6 +45,7 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi, &
 ! ----------------------------------------------------------------------
 !
     integer :: kl, i, ndimsi, ndl
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !
 !
@@ -55,9 +56,15 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi, &
     call r8inir(6, 0.d0, epsb, 1)
     call r8inir(18, 0.d0, geps, 1)
     do kl = 1, ndimsi
-        epsb(kl) = ddot(nno, deplg(kl+ndim), ndl, vff, 1)
+        b_n = to_blas_int(nno)
+        b_incx = to_blas_int(ndl)
+        b_incy = to_blas_int(1)
+        epsb(kl) = ddot(b_n, deplg(kl+ndim), b_incx, vff, b_incy)
         do i = 1, ndim
-            geps(kl, i) = ddot(nno, deplg(kl+ndim), ndl, dfdi(1, i), 1)
+            b_n = to_blas_int(nno)
+            b_incx = to_blas_int(ndl)
+            b_incy = to_blas_int(1)
+            geps(kl, i) = ddot(b_n, deplg(kl+ndim), b_incx, dfdi(1, i), b_incy)
         end do
     end do
 !

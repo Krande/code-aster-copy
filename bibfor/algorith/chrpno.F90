@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine chrpno(champ1, repere, nom_cham, type)
 ! aslint: disable=W1501
     implicit none
@@ -62,8 +62,8 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 ! ---------------------------------------------------------------------
 !
     integer :: i, nbno, ino, ibid, nbcmp, ndim_type
-    integer ::  ii, nbma, ipt2, inel
-    integer ::   jcnsv, jconx1, jconx2, nbpt
+    integer :: ii, nbma, ipt2, inel
+    integer :: jcnsv, jconx1, jconx2, nbpt
     integer :: ipt, inot, ndim, licmpu(6), jcnsl
     integer :: nbn, idnoeu, nbnoeu, inoe
     real(kind=8) :: angnot(3), pgl(3, 3), valer(6), valed(6)
@@ -78,13 +78,14 @@ subroutine chrpno(champ1, repere, nom_cham, type)
     character(len=19) :: chams1, chams0
     character(len=24) :: mesnoe
     character(len=24) :: valk
-    integer, parameter  :: nbCmpMax = 8
+    integer, parameter :: nbCmpMax = 8
     character(len=8) :: nom_cmp(nbCmpMax)
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
-    integer iocc, nocc
+    integer :: iocc, nocc
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
     epsi = 1.0d-6
@@ -105,8 +106,9 @@ subroutine chrpno(champ1, repere, nom_cham, type)
     chams1 = '&&CHRPNO.CHAMS1'
     call cnocns(champ1, 'V', chams0)
 !   sélection des composantes :
-    call selectCompN(chams0, nom_cham, type, nbcmp, nom_cmp, ndim_type)
-    call cnsred(chams0, 0, [0], nbcmp, nom_cmp, &
+    call selectCompN(chams0, nom_cham, type, nbcmp, nom_cmp,&
+                     ndim_type)
+    call cnsred(chams0, 0, [0], nbcmp, nom_cmp,&
                 'V', chams1)
     call detrsd('CHAM_NO_S', chams0)
     call jeveuo(chams1//'.CNSK', 'L', vk8=cnsk)
@@ -125,7 +127,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 !
     if (ndim .gt. ndim_type) then
         call utmess('F', 'ALGORITH12_45', sk=type)
-    elseif (ndim .lt. ndim_type) then
+    else if (ndim .lt. ndim_type) then
         call utmess('A', 'ALGORITH12_44', sk=type)
         ndim = 3
     end if
@@ -141,7 +143,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
     do iocc = 1, nocc
 ! Construction de la liste des numéros de noeuds
 ! sélectionnées par les mots-clés GROUP_NO et NOEUD
-        call reliem(' ', ma, 'NU_NOEUD', 'AFFE', iocc, &
+        call reliem(' ', ma, 'NU_NOEUD', 'AFFE', iocc,&
                     4, motcle, typmcl, mesnoe, nbn)
 !
         if (nbn .gt. 0) then
@@ -194,10 +196,10 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 !
         if (repere(1:11) .eq. 'UTILISATEUR') then
 !        SI LE NOUVEAU REPERE EST DONNE VIA DES VECTEURS
-            call getvr8('AFFE', 'VECT_X', iocc=iocc, nbval=3, vect=vectx, &
+            call getvr8('AFFE', 'VECT_X', iocc=iocc, nbval=3, vect=vectx,&
                         nbret=ibid)
             if (ibid .ne. 0) then
-                call getvr8('AFFE', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty, &
+                call getvr8('AFFE', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
                             nbret=ibid)
                 if (ndim .ne. 3) then
                     call utmess('F', 'ALGORITH2_4')
@@ -205,7 +207,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                 call angvxy(vectx, vecty, angnot)
             else
                 if (ndim .eq. 3) then
-                    call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angnot, &
+                    call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angnot,&
                                 nbret=ibid)
                     if (ibid .ne. 3) then
                         call utmess('F', 'ALGORITH2_7')
@@ -289,7 +291,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 !
                     end if
 !
-10                  continue
+ 10                 continue
                 end do
             else
 ! VECTEUR
@@ -337,7 +339,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         end do
 !
                     end if
-13                  continue
+ 13                 continue
                 end do
             end if
         else if (repere(1:5) .eq. 'COQUE') then
@@ -345,18 +347,18 @@ subroutine chrpno(champ1, repere, nom_cham, type)
         else
 ! REPERE CYLINDRIQUE
             if (ndim .eq. 3) then
-                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=3, vect=orig, &
+                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=3, vect=orig,&
                             nbret=ibid)
                 if (ibid .ne. 3) then
                     call utmess('F', 'ALGORITH2_8')
                 end if
-                call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=3, vect=axez, &
+                call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=3, vect=axez,&
                             nbret=ibid)
                 if (ibid .eq. 0) then
                     call utmess('F', 'ALGORITH2_9')
                 end if
             else
-                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=2, vect=orig, &
+                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=2, vect=orig,&
                             nbret=ibid)
                 if (ibid .ne. 2) then
                     call utmess('A', 'ALGORITH2_10')
@@ -393,7 +395,10 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                     else
                         axer(3) = 0.0d0
                     end if
-                    prosca = ddot(3, axer, 1, axez, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    prosca = ddot(b_n, axer, b_incx, axez, b_incy)
                     axer(1) = axer(1)-prosca*axez(1)
                     axer(2) = axer(2)-prosca*axez(2)
                     if (ndim .eq. 3) then
@@ -431,7 +436,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                                     goto 17
                                 end if
                             end do
-17                          continue
+ 17                         continue
                         end do
 !
 !                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
@@ -445,7 +450,10 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         axer(1) = axer(1)-orig(1)
                         axer(2) = axer(2)-orig(2)
                         axer(3) = axer(3)-orig(3)
-                        prosca = ddot(3, axer, 1, axez, 1)
+                        b_n = to_blas_int(3)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        prosca = ddot(b_n, axer, b_incx, axez, b_incy)
                         axer(1) = axer(1)-prosca*axez(1)
                         axer(2) = axer(2)-prosca*axez(2)
                         if (ndim .eq. 3) then
@@ -489,8 +497,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         valer(5) = valet(4)
                         valer(6) = valet(5)
                         do ii = 1, nbcmp
-                            zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(licmpu(ii) &
-                                                                  )
+                            zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(licmpu(ii) )
                         end do
                     else
 ! CHAMP COMPLEXE
@@ -529,7 +536,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         end do
 !
                     end if
-16                  continue
+ 16                 continue
                 end do
             else
 ! VECTEUR
@@ -547,7 +554,10 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                     else
                         axer(3) = 0.0d0
                     end if
-                    prosca = ddot(3, axer, 1, axez, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    prosca = ddot(b_n, axer, b_incx, axez, b_incy)
                     axer(1) = axer(1)-prosca*axez(1)
                     axer(2) = axer(2)-prosca*axez(2)
                     if (ndim .eq. 3) then
@@ -585,7 +595,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                                     goto 24
                                 end if
                             end do
-24                          continue
+ 24                         continue
                         end do
 !                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                         if (ipt2 .eq. 0) then
@@ -597,7 +607,10 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         axer(1) = axer(1)-orig(1)
                         axer(2) = axer(2)-orig(2)
                         axer(3) = axer(3)-orig(3)
-                        prosca = ddot(3, axer, 1, axez, 1)
+                        b_n = to_blas_int(3)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        prosca = ddot(b_n, axer, b_incx, axez, b_incy)
                         axer(1) = axer(1)-prosca*axez(1)
                         axer(2) = axer(2)-prosca*axez(2)
                         if (ndim .eq. 3) then
@@ -658,18 +671,18 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 !
                     end if
 !
-23                  continue
+ 23                 continue
                 end do
             end if
         end if
-
+!
 ! Fin de la boucle sur les occcurrences du mot-clé AFFE
         call jedetr(mesnoe)
     end do
-    call cnscno(chams1, ' ', 'NON', 'G', champ1, &
+    call cnscno(chams1, ' ', 'NON', 'G', champ1,&
                 'F', ibid)
     call detrsd('CHAM_NO_S', chams1)
-
+!
     call jedema()
 !
 end subroutine

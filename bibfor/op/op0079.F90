@@ -113,8 +113,8 @@ subroutine op0079()
 !
 ! --- RECUPERATION DU NB DE MODES
 !
-    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid, &
-                cbid, ebid, 'ABSOLU', tmod, 1, &
+    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
+                cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
     nbmode = tmod(1)
 !
@@ -124,8 +124,8 @@ subroutine op0079()
 !
 ! --- RECUPERATION DU NOMBRE DE NUME_ORDRE DE LA SD_RESU
 !
-    call rsorac(res, 'LONUTI', ibid, bid, k8bid, &
-                cbid, ebid, 'ABSOLU', tmod, 1, &
+    call rsorac(res, 'LONUTI', ibid, bid, k8bid,&
+                cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
     nbo = tmod(1)
     call jeveuo(res//'           .ORDR', 'L', vi=ordr)
@@ -213,7 +213,7 @@ subroutine op0079()
             nosy = nosyou(isym)
 !
 ! --- RECUP DU CHAMP DE LA SDIN CORRESPONDANT AU NUME_ORDR ET ISYM
-            call rsexch(' ', res, nosyin(isym), ordr(iord), nochno, &
+            call rsexch(' ', res, nosyin(isym), ordr(iord), nochno,&
                         iret)
             if (iret .ne. 0) goto 40
             call jeveuo(nochno//'.VALE', 'L', vr=vale)
@@ -249,7 +249,10 @@ subroutine op0079()
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
                     ind = ii-1+(iord-1)*nbmode+imod
-                    zr(ind) = ddot(neq, vectasse, 1, vale, 1)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    zr(ind) = ddot(b_n, vectasse, b_incx, vale, b_incy)
 !
 ! ------- LIBERATION DU VECTEUR TEMP
                 end do
@@ -293,7 +296,10 @@ subroutine op0079()
 !
 ! --------- PRODUIT SCALAIRE MODE(IMOD)*MODE(JMOD)
 !
-                        pij = ddot(neq, vectass1, 1, vectass2, 1)
+                        b_n = to_blas_int(neq)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        pij = ddot(b_n, vectass1, b_incx, vectass2, b_incy)
                         matrnorm(1+imod+(jmod-1)*nbmode-1) = pij
                         matrnorm(1+jmod+(imod-1)*nbmode-1) = pij
                     end do
@@ -316,7 +322,10 @@ subroutine op0079()
 !
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
-                    vectass2(imod) = ddot(neq, vectass1, 1, vale, 1)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    vectass2(imod) = ddot(b_n, vectass1, b_incx, vale, b_incy)
 !
                 end do
 !
@@ -340,7 +349,7 @@ subroutine op0079()
             end if
 !
         end do
-40      continue
+ 40     continue
     end do
 !
     call jedema()

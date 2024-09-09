@@ -76,13 +76,17 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
+        blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
 !
 ! --- Evaluate basis function at pt
         call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
-        eval = ddot(size_coeff, coeff, 1, BSCEval, 1)
+        b_n = to_blas_int(size_coeff)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        eval = ddot(b_n, coeff, b_incx, BSCEval, b_incy)
 !
     end function
 !
@@ -112,13 +116,17 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
+        blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
 !
 ! --- Evaluate basis function at pt
         call hhoBasisFace%BSEval(pt, 0, order, BSFEval)
 !
-        eval = ddot(size_coeff, coeff, 1, BSFEval, 1)
+        b_n = to_blas_int(size_coeff)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        eval = ddot(b_n, coeff, b_incx, BSFEval, b_incy)
 !
     end function
 !
@@ -149,6 +157,7 @@ contains
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
         integer :: i, size_cmp, deca
+        blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
         size_cmp = size_coeff/hhoBasisCell%ndim
@@ -158,7 +167,10 @@ contains
 !
         deca = 0
         do i = 1, hhoBasisCell%ndim
-            eval(i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+            b_n = to_blas_int(size_cmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            eval(i) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_incx, BSCEval, b_incy)
             deca = deca+size_cmp
         end do
 !
@@ -191,6 +203,7 @@ contains
 !
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
         integer :: i, size_cmp, deca
+        blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
         size_cmp = size_coeff/(hhoBasisFace%ndim+1)
@@ -200,7 +213,10 @@ contains
 !
         deca = 0
         do i = 1, (hhoBasisFace%ndim+1)
-            eval(i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSFEval, 1)
+            b_n = to_blas_int(size_cmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            eval(i) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_incx, BSFEval, b_incy)
             deca = deca+size_cmp
         end do
 !
@@ -233,6 +249,7 @@ contains
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
         integer :: i, j, size_cmp, deca
+        blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
         size_cmp = size_coeff/(hhoBasisCell%ndim*hhoBasisCell%ndim)
@@ -243,7 +260,10 @@ contains
         deca = 0
         do i = 1, hhoBasisCell%ndim
             do j = 1, hhoBasisCell%ndim
-                eval(i, j) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+                b_n = to_blas_int(size_cmp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                eval(i, j) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_incx, BSCEval, b_incy)
                 deca = deca+size_cmp
             end do
         end do
@@ -279,6 +299,7 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
         real(kind=8) :: mat(3, 3)
         integer :: i, j, size_cmp, deca
+        blas_int :: b_incx, b_incy, b_n
 !
         if (hhoBasisCell%ndim == 2) then
             size_cmp = size_coeff/3
@@ -294,13 +315,19 @@ contains
         deca = 0
         mat = 0.d0
         do i = 1, hhoBasisCell%ndim
-            mat(i, i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+            b_n = to_blas_int(size_cmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            mat(i, i) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_incx, BSCEval, b_incy)
             deca = deca+size_cmp
         end do
 !
         do i = 1, hhoBasisCell%ndim
             do j = i+1, hhoBasisCell%ndim
-                mat(i, j) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+                b_n = to_blas_int(size_cmp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                mat(i, j) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_incx, BSCEval, b_incy)
                 mat(j, i) = mat(i, j)
                 deca = deca+size_cmp
             end do

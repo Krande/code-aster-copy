@@ -66,7 +66,10 @@ subroutine lcvali(fami, kpg, ksp, imate, materi,&
         b_incy = to_blas_int(1)
         call daxpy(b_n, 1.d0, deps, b_incx, eps,&
                    b_incy)
-        eps2 = sqrt(ddot(ndimsi, eps, 1, eps, 1))
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        eps2 = sqrt(ddot(b_n, eps, b_incx, eps, b_incy))
         if (eps2 .gt. epsmax) then
             iret1 = 4
         end if
@@ -82,7 +85,10 @@ subroutine lcvali(fami, kpg, ksp, imate, materi,&
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
         call dscal(b_n, 1.d0/dt, veps, b_incx)
-        veps2 = sqrt(ddot(ndimsi, veps, 1, veps, 1))
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        veps2 = sqrt(ddot(b_n, veps, b_incx, veps, b_incy))
         if (veps2 .gt. vepsm) then
             iret2 = 4
         end if

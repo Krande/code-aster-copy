@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mamodg(model, stolci, nomres, itxsto, itysto, &
-                  itzsto, iprsto, iadirg, nbmo, max, &
+subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
+                  itzsto, iprsto, iadirg, nbmo, max,&
                   may, maz, nbloc)
     implicit none
 ! ROUTINE NOUVEAU MODELE OPTIMISEE
@@ -76,6 +76,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto, &
     real(kind=8), pointer :: tpx(:) => null()
     real(kind=8), pointer :: tpy(:) => null()
     real(kind=8), pointer :: tpz(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 ! ------------------------------------------------------------------
 !----- ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE ---
 !
@@ -131,16 +132,16 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto, &
             call jeveuo(zk24(itysto+i-1) (1:19)//'.VALE', 'L', vr=tpy)
             if (model .eq. '3D') then
                 call jeveuo(zk24(itzsto+i-1) (1:19)//'.VALE', 'L', vr=tpz)
-                call mrmult('ZERO', imatz, tpz, vectz, 1, &
+                call mrmult('ZERO', imatz, tpz, vectz, 1,&
                             .true._1)
             end if
 !
 !------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
-            call mrmult('ZERO', imatx, tpx, vectx, 1, &
+            call mrmult('ZERO', imatx, tpx, vectx, 1,&
                         .true._1)
-            call mrmult('ZERO', imaty, tpy, vecty, 1, &
+            call mrmult('ZERO', imaty, tpy, vecty, 1,&
                         .true._1)
 !
 ! RANG GENERALISE DU TERME DE MASSE CALCULEE : LIGNE
@@ -162,16 +163,25 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto, &
 !
                 call jeveuo(zk24(iprsto+j-1) (1:19)//'.VALE', 'L', vr=pres)
 !
-                rx = ddot(nbpres, pres, 1, vectx, 1)
-                ry = ddot(nbpres, pres, 1, vecty, 1)
+                b_n = to_blas_int(nbpres)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                rx = ddot(b_n, pres, b_incx, vectx, b_incy)
+                b_n = to_blas_int(nbpres)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                ry = ddot(b_n, pres, b_incx, vecty, b_incy)
 !
                 if (model .eq. '3D') then
-                    rz = ddot(nbpres, pres, 1, vectz, 1)
+                    b_n = to_blas_int(nbpres)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    rz = ddot(b_n, pres, b_incx, vectz, b_incy)
                     mij = rx+ry+rz
                 else
                     mij = rx+ry
                 end if
-50              continue
+ 50             continue
                 if (repon(1:3) .eq. 'NON') then
                     if (indic(j) .ne. 1) mij = 0.d0
                 end if
@@ -201,11 +211,11 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto, &
                     end if
                 end if
             end do
-10          continue
+ 10         continue
         end do
     end do
 !
-350 format(18x, 'M', 2 i 4, 1x, '=', 1x, d 12.5)
+    350 format(18x, 'M', 2 i 4, 1x, '=', 1x, d 12.5)
 !
 !
 !--MENAGE FINAL DES OBJETS DE TRAVAIL

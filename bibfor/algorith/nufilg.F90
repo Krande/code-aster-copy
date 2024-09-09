@@ -220,8 +220,14 @@ subroutine nufilg(ndim, nnod, nnop, npg, iw,&
         end if
 !
 ! ----- Pressure
-        pm = ddot(nnop, vffp(1, kpg), 1, presm, 1)
-        pd = ddot(nnop, vffp(1, kpg), 1, presd, 1)
+        b_n = to_blas_int(nnop)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vffp(1, kpg), b_incx, presm, b_incy)
+        b_n = to_blas_int(nnop)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pd = ddot(b_n, vffp(1, kpg), b_incx, presd, b_incy)
         pp = pm+pd
 !
 ! ----- CALCUL DES DEFORMATIONS ENRICHIES

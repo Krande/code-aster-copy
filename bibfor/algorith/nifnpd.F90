@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nifnpd(ndim, nno1, nno2, nno3, npg, &
-                  iw, vff1, vff2, vff3, idff1, &
-                  vu, vg, vp, typmod, geomi, &
+!
+subroutine nifnpd(ndim, nno1, nno2, nno3, npg,&
+                  iw, vff1, vff2, vff3, idff1,&
+                  vu, vg, vp, typmod, geomi,&
                   sig, ddl, vect)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
@@ -74,6 +74,7 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, &
     real(kind=8) :: epsm(6), sigma(6)
     real(kind=8) :: divum
     real(kind=8) :: t1, t2
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(grand=.false._1)
 !-----------------------------------------------------------------------
@@ -105,10 +106,10 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, &
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         call r8inir(6, 0.d0, epsm, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g, &
-                    iw, vff1(1, g), idff1, r, w, &
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
                     r, dff1, deplm, fm, epsm)
 !
         divum = epsm(1)+epsm(2)+epsm(3)
@@ -145,7 +146,10 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, &
         end if
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT
-        gm = ddot(nno2, vff2(1, g), 1, gonfm, 1)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        gm = ddot(b_n, vff2(1, g), b_incx, gonfm, b_incy)
 !        pm = ddot(nno3,vff3(1,g),1,presm,1)
 !
 ! - CALCUL DES CONTRAINTES MECANIQUES A L'EQUILIBRE
@@ -160,7 +164,10 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, &
         do na = 1, nno1
             do ia = 1, ndim
                 kk = vu(ia, na)
-                t1 = ddot(2*ndim, sigma, 1, def(1, na, ia), 1)
+                b_n = to_blas_int(2*ndim)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                t1 = ddot(b_n, sigma, b_incx, def(1, na, ia), b_incy)
                 vect(kk) = vect(kk)+w*t1
             end do
         end do

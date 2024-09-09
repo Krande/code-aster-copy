@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcdpli(mod, nvi, option, materf, sigm, &
-                  deps, vim, vip, sig, dsidep, &
+subroutine lcdpli(mod, nvi, option, materf, sigm,&
+                  deps, vim, vip, sig, dsidep,&
                   iret)
     implicit none
 #include "asterf_types.h"
@@ -58,6 +58,7 @@ subroutine lcdpli(mod, nvi, option, materf, sigm, &
     real(kind=8) :: trois, deux, dp, dpdeno, alpha, pmoins, pplus
     real(kind=8) :: hookf(6, 6), dkooh(6, 6), plas
     real(kind=8) :: epsp(6), epsm2(6), sige(6), se(6), siie, seq, i1e
+    blas_int :: b_incx, b_incy, b_n
 ! =====================================================================
     parameter(deux=2.0d0)
     parameter(trois=3.0d0)
@@ -86,7 +87,10 @@ subroutine lcdpli(mod, nvi, option, materf, sigm, &
 ! =====================================================================
     sige(1:ndt) = matmul(hookf(1:ndt, 1:ndt), epsp(1:ndt))
     call lcdevi(sige, se)
-    siie = ddot(ndt, se, 1, se, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    siie = ddot(b_n, se, b_incx, se, b_incy)
     seq = sqrt(trois*siie/deux)
     i1e = trace(ndi, sige)
 !
@@ -97,14 +101,14 @@ subroutine lcdpli(mod, nvi, option, materf, sigm, &
 ! =====================================================================
 ! --- RESOLUTION DU SYSTEME -------------------------------------------
 ! =====================================================================
-        call resdp1(materf, seq, i1e, pmoins, dp, &
+        call resdp1(materf, seq, i1e, pmoins, dp,&
                     plas)
         if (plas .eq. 0.0d0) then
             do ii = 1, ndt
                 sig(ii) = sige(ii)
             end do
         else
-            call majsig(materf, se, seq, i1e, alpha, &
+            call majsig(materf, se, seq, i1e, alpha,&
                         dp, plas, sig)
         end if
 !
@@ -133,7 +137,7 @@ subroutine lcdpli(mod, nvi, option, materf, sigm, &
         if (option(10:14) .eq. '_ELAS') then
             dsidep(1:ndt, 1:ndt) = hookf(1:ndt, 1:ndt)
         else
-            call dpmata(mod, materf, alpha, dp, dpdeno, &
+            call dpmata(mod, materf, alpha, dp, dpdeno,&
                         pplus, se, seq, plas, dsidep)
         end if
     end if

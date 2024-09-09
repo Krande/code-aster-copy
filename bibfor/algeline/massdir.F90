@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine massdir(massmat, dir, dmass)
     implicit none
 ! person_in_charge: hassan.berro at edf.fr
@@ -47,19 +47,20 @@ subroutine massdir(massmat, dir, dmass)
 #include "blas/ddot.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*), intent(in)   :: massmat
-    real(kind=8), intent(in)   :: dir(3)
-    real(kind=8), intent(out)  :: dmass
+    character(len=*), intent(in) :: massmat
+    real(kind=8), intent(in) :: dir(3)
+    real(kind=8), intent(out) :: dmass
 !
 !   -0.2- Local variables
-    integer           :: lmatm, neq, ieq, ic, dec, iret
-    real(kind=8)      :: magn, normdir(3)
-    character(len=8)  :: nomcmp(3)
+    integer :: lmatm, neq, ieq, ic, dec, iret
+    real(kind=8) :: magn, normdir(3)
+    character(len=8) :: nomcmp(3)
     character(len=14) :: nume
     character(len=19) :: masse
-    integer, pointer  :: posdof(:) => null()
-    real(kind=8), pointer  :: unitv(:) => null()
-    real(kind=8), pointer  :: mass_utv(:) => null()
+    integer, pointer :: posdof(:) => null()
+    real(kind=8), pointer :: unitv(:) => null()
+    real(kind=8), pointer :: mass_utv(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 !   0 - Initializations
     call jemarq()
@@ -68,7 +69,7 @@ subroutine massdir(massmat, dir, dmass)
     nomcmp(1) = 'DX'
     nomcmp(2) = 'DY'
     nomcmp(3) = 'DZ'
-
+!
 !   1 - Normalisation of the input directional vector
     do ic = 1, 3
         magn = magn+dir(ic)*dir(ic)
@@ -78,21 +79,21 @@ subroutine massdir(massmat, dir, dmass)
     do ic = 1, 3
         normdir(ic) = normdir(ic)/magn
     end do
-
+!
 !   2 - Preparation of the mass matrix for the mrmult call
     call jeexin(masse(1:19)//'.&INT', iret)
     if (iret .eq. 0) then
         call mtdscr(masse)
     end if
     call jeveuo(masse(1:19)//'.&INT', 'E', lmatm)
-
+!
 !   3 - Filling up a directional dof unitary field
     call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
     call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
     AS_ALLOCATE(vi=posdof, size=3*neq)
-    call pteddl('NUME_DDL', nume, 3, nomcmp, neq, &
+    call pteddl('NUME_DDL', nume, 3, nomcmp, neq,&
                 tabl_equa=posdof)
-
+!
     AS_ALLOCATE(vr=unitv, size=neq)
     do ieq = 1, neq
         unitv(ieq) = 0.d0
@@ -103,13 +104,16 @@ subroutine massdir(massmat, dir, dmass)
             unitv(ieq) = unitv(ieq)+posdof(dec+ieq)*normdir(ic)
         end do
     end do
-
+!
 !
 !   4 - Calculate  dmass = Ut*M*U
     AS_ALLOCATE(vr=mass_utv, size=neq)
-    call mrmult('ZERO', lmatm, unitv, mass_utv, 1, &
+    call mrmult('ZERO', lmatm, unitv, mass_utv, 1,&
                 .true._1)
-    dmass = ddot(neq, unitv, 1, mass_utv, 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    dmass = ddot(b_n, unitv, b_incx, mass_utv, b_incy)
 !
 !   5 - Cleanup
     AS_DEALLOCATE(vi=posdof)
@@ -117,5 +121,5 @@ subroutine massdir(massmat, dir, dmass)
     AS_DEALLOCATE(vr=mass_utv)
 !
     call jedema()
-
+!
 end subroutine

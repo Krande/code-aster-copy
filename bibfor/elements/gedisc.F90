@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gedisc(ndim, nno, npg, vff, geom, &
+subroutine gedisc(ndim, nno, npg, vff, geom,&
                   pg)
 !
     implicit none
@@ -34,10 +34,14 @@ subroutine gedisc(ndim, nno, npg, vff, geom, &
 ! OUT PG     COORDONNEES DES POINTS DE GAUSS + POIDS
 ! ----------------------------------------------------------------------
     integer :: g, i
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
     do g = 1, npg
         do i = 1, ndim
-            pg(i, g) = ddot(nno, geom(i, 1), ndim, vff(1, g), 1)
+            b_n = to_blas_int(nno)
+            b_incx = to_blas_int(ndim)
+            b_incy = to_blas_int(1)
+            pg(i, g) = ddot(b_n, geom(i, 1), b_incx, vff(1, g), b_incy)
         end do
         pg(ndim+1, g) = 0.d0
     end do

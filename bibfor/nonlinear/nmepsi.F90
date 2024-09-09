@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmepsi(ndim, nno, l_axi, l_large, vff, &
+subroutine nmepsi(ndim, nno, l_axi, l_large, vff,&
                   r, dfdi, disp, f, epsi_)
 !
     implicit none
@@ -73,14 +73,20 @@ subroutine nmepsi(ndim, nno, l_axi, l_large, vff, &
 !
     do i = 1, ndim
         do j = 1, ndim
-            grad(i, j) = ddot(nno, dfdi(1, j), 1, disp(i, 1), ndim)
+            b_n = to_blas_int(nno)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(ndim)
+            grad(i, j) = ddot(b_n, dfdi(1, j), b_incx, disp(i, 1), b_incy)
         end do
     end do
 !
 ! - Radial displacement
 !
     if (l_axi) then
-        ur = ddot(nno, vff, 1, disp, ndim)
+        b_n = to_blas_int(nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(ndim)
+        ur = ddot(b_n, vff, b_incx, disp, b_incy)
     end if
 !
 ! - Compute transformation gradient F = 1 + Grad(U)
@@ -93,7 +99,7 @@ subroutine nmepsi(ndim, nno, l_axi, l_large, vff, &
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, grad, b_incx, f, &
+        call daxpy(b_n, 1.d0, grad, b_incx, f,&
                    b_incy)
         if (l_axi) then
             f(3, 3) = f(3, 3)+ur/r

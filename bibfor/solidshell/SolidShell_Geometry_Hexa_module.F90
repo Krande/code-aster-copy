@@ -30,7 +30,7 @@ module SolidShell_Geometry_Hexa_module
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
-    public  :: decoJacoMatrHexa, initGeomCellHexa, compAhmadFrame
+    public :: decoJacoMatrHexa, initGeomCellHexa, compAhmadFrame
     private :: compTMatrHexa, decoTMatrHexa, compTMatrElemHexa
 ! ==================================================================================================
     private
@@ -54,29 +54,29 @@ contains
     subroutine initGeomCellHexa(cellGeom, geomHexa, disp_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        type(SSH_CELL_GEOM), intent(in)  :: cellGeom
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
         type(SSH_GEOM_HEXA), intent(out) :: geomHexa
         real(kind=8), optional, intent(in) :: disp_(SSH_NBDOF_HEXA)
 !   ------------------------------------------------------------------------------------------------
 !
         if (SSH_DBG_ELEM) SSH_DBG_STRG('> initGeomCellHexa')
-
+!
 ! - Init
         geomHexa%cellGeom = cellGeom
-
+!
 ! - Set configuration
         geomHexa%geomCurr = geomHexa%cellGeom%geomInit
         if (present(disp_)) then
-            geomHexa%geomCurr(1:SSH_NBDOFG_HEXA) = geomHexa%geomCurr(1:SSH_NBDOFG_HEXA)+ &
-                                                   disp_(1:SSH_NBDOFG_HEXA)
+            geomHexa%geomCurr(1:SSH_NBDOFG_HEXA) = geomHexa%geomCurr(1:SSH_NBDOFG_HEXA)+ disp_(1:&
+                                                   &SSH_NBDOFG_HEXA)
         end if
-
+!
 ! - Compute T matrix (matrix relating the covariant and cartesian frames) for HEXA cell
         call compTMatrHexa(geomHexa)
-
+!
 ! - Decomposition of T matrix
         call decoTMatrHexa(geomHexa)
-
+!
 !
         if (SSH_DBG_ELEM) SSH_DBG_STRG('< initGeomCellHexa')
 !
@@ -100,10 +100,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 !
         geomHexa%T0 = 0.d0
-
+!
 ! - Get parameters
         JacInv0 = geomHexa%cellGeom%JacInv0
-
+!
 ! - Compute T0 matrix
         geomHexa%T0(1, 1) = JacInv0(1, 1)*JacInv0(1, 1)
         geomHexa%T0(1, 2) = JacInv0(2, 1)*JacInv0(2, 1)
@@ -169,13 +169,13 @@ contains
         geomHexa%TXI = 0.d0
         geomHexa%TETA = 0.d0
         geomHexa%TZETA = 0.d0
-
+!
 ! - Get parameters
         JacInv0 = geomHexa%cellGeom%JacInv0
         geomInitX = geomHexa%cellGeom%geomInitX
         geomInitY = geomHexa%cellGeom%geomInitY
         geomInitZ = geomHexa%cellGeom%geomInitZ
-
+!
 ! - Compute
         JXI = 0.d0
         JXI(1, 1) = 0.d0
@@ -272,32 +272,50 @@ contains
         matrTElem(4, 1) = 2.d0*(JacInv0(1, 1)*A(1, 2)+JacInv0(1, 2)*A(1, 1))
         matrTElem(4, 2) = 2.d0*(JacInv0(2, 1)*A(2, 2)+JacInv0(2, 2)*A(2, 1))
         matrTElem(4, 3) = 2.d0*(JacInv0(3, 1)*A(3, 2)+JacInv0(3, 2)*A(3, 1))
-        matrTElem(4, 4) = (JacInv0(1, 2)*A(2, 1)+JacInv0(2, 1)*A(1, 2))+ &
-                          (JacInv0(1, 1)*A(2, 2)+JacInv0(2, 2)*A(1, 1))
-        matrTElem(4, 5) = (JacInv0(1, 2)*A(3, 1)+JacInv0(3, 1)*A(1, 2))+ &
-                          (JacInv0(1, 1)*A(3, 2)+JacInv0(3, 2)*A(1, 1))
-        matrTElem(4, 6) = (JacInv0(2, 2)*A(3, 1)+JacInv0(3, 1)*A(2, 2))+ &
-                          (JacInv0(2, 1)*A(3, 2)+JacInv0(3, 2)*A(2, 1))
+        matrTElem(4, 4) = (&
+                          JacInv0(1, 2)*A(2, 1)+JacInv0(2, 1)*A(1, 2))+ (JacInv0(1, 1)*A(2, 2)+Ja&
+                          &cInv0(2, 2)*A(1, 1)&
+                          )
+        matrTElem(4, 5) = (&
+                          JacInv0(1, 2)*A(3, 1)+JacInv0(3, 1)*A(1, 2))+ (JacInv0(1, 1)*A(3, 2)+Ja&
+                          &cInv0(3, 2)*A(1, 1)&
+                          )
+        matrTElem(4, 6) = (&
+                          JacInv0(2, 2)*A(3, 1)+JacInv0(3, 1)*A(2, 2))+ (JacInv0(2, 1)*A(3, 2)+Ja&
+                          &cInv0(3, 2)*A(2, 1)&
+                          )
 !
         matrTElem(5, 1) = 2.d0*(JacInv0(1, 1)*A(1, 3)+JacInv0(1, 3)*A(1, 1))
         matrTElem(5, 2) = 2.d0*(JacInv0(2, 1)*A(2, 3)+JacInv0(2, 3)*A(2, 1))
         matrTElem(5, 3) = 2.d0*(JacInv0(3, 1)*A(3, 3)+JacInv0(3, 3)*A(3, 1))
-        matrTElem(5, 4) = (JacInv0(1, 3)*A(2, 1)+JacInv0(2, 1)*A(1, 3))+ &
-                          (JacInv0(1, 1)*A(2, 3)+JacInv0(2, 3)*A(1, 1))
-        matrTElem(5, 5) = (JacInv0(1, 3)*A(3, 1)+JacInv0(3, 1)*A(1, 3))+ &
-                          (JacInv0(1, 1)*A(3, 3)+JacInv0(3, 3)*A(1, 1))
-        matrTElem(5, 6) = (JacInv0(2, 3)*A(3, 1)+JacInv0(3, 1)*A(2, 3))+ &
-                          (JacInv0(2, 1)*A(3, 3)+JacInv0(3, 3)*A(2, 1))
+        matrTElem(5, 4) = (&
+                          JacInv0(1, 3)*A(2, 1)+JacInv0(2, 1)*A(1, 3))+ (JacInv0(1, 1)*A(2, 3)+Ja&
+                          &cInv0(2, 3)*A(1, 1)&
+                          )
+        matrTElem(5, 5) = (&
+                          JacInv0(1, 3)*A(3, 1)+JacInv0(3, 1)*A(1, 3))+ (JacInv0(1, 1)*A(3, 3)+Ja&
+                          &cInv0(3, 3)*A(1, 1)&
+                          )
+        matrTElem(5, 6) = (&
+                          JacInv0(2, 3)*A(3, 1)+JacInv0(3, 1)*A(2, 3))+ (JacInv0(2, 1)*A(3, 3)+Ja&
+                          &cInv0(3, 3)*A(2, 1)&
+                          )
 !
         matrTElem(6, 1) = 2.d0*(JacInv0(1, 2)*A(1, 3)+JacInv0(1, 3)*A(1, 2))
         matrTElem(6, 2) = 2.d0*(JacInv0(2, 2)*A(2, 3)+JacInv0(2, 3)*A(2, 2))
         matrTElem(6, 3) = 2.d0*(JacInv0(3, 2)*A(3, 3)+JacInv0(3, 3)*A(3, 2))
-        matrTElem(6, 4) = (JacInv0(1, 3)*A(2, 2)+JacInv0(2, 2)*A(1, 3))+ &
-                          (JacInv0(1, 2)*A(2, 3)+JacInv0(2, 3)*A(1, 2))
-        matrTElem(6, 5) = (JacInv0(1, 3)*A(3, 2)+JacInv0(3, 2)*A(1, 3))+ &
-                          (JacInv0(1, 2)*A(3, 3)+JacInv0(3, 3)*A(1, 2))
-        matrTElem(6, 6) = (JacInv0(2, 3)*A(3, 2)+JacInv0(3, 2)*A(2, 3))+ &
-                          (JacInv0(2, 2)*A(3, 3)+JacInv0(3, 3)*A(2, 2))
+        matrTElem(6, 4) = (&
+                          JacInv0(1, 3)*A(2, 2)+JacInv0(2, 2)*A(1, 3))+ (JacInv0(1, 2)*A(2, 3)+Ja&
+                          &cInv0(2, 3)*A(1, 2)&
+                          )
+        matrTElem(6, 5) = (&
+                          JacInv0(1, 3)*A(3, 2)+JacInv0(3, 2)*A(1, 3))+ (JacInv0(1, 2)*A(3, 3)+Ja&
+                          &cInv0(3, 3)*A(1, 2)&
+                          )
+        matrTElem(6, 6) = (&
+                          JacInv0(2, 3)*A(3, 2)+JacInv0(3, 2)*A(2, 3))+ (JacInv0(2, 2)*A(3, 3)+Ja&
+                          &cInv0(3, 3)*A(2, 2)&
+                          )
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -326,10 +344,9 @@ contains
 ! Out J3XIETA          : decomposed derivatives of the jacobian in the covariant base
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine decoJacoMatrHexa(geomCurr, &
-                                J10, J1ETA, J1ZETA, J1ETAZETA, &
-                                J20, J2XI, J2ZETA, J2XIZETA, &
-                                J30, J3ETA, J3XI, J3XIETA)
+    subroutine decoJacoMatrHexa(geomCurr, J10, J1ETA, J1ZETA, J1ETAZETA,&
+                                J20, J2XI, J2ZETA, J2XIZETA, J30,&
+                                J3ETA, J3XI, J3XIETA)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         real(kind=8), intent(in) :: geomCurr(SSH_NBDOFG_HEXA)
@@ -354,14 +371,14 @@ contains
         J3ETA = 0.d0
         J3XI = 0.d0
         J3XIETA = 0.d0
-
+!
 ! - Get parameters
         do iNodeGeom = 1, nbNodeGeom
             XCurr(iNodeGeom) = geomCurr(3*(iNodeGeom-1)+1)
             YCurr(iNodeGeom) = geomCurr(3*(iNodeGeom-1)+2)
             ZCurr(iNodeGeom) = geomCurr(3*(iNodeGeom-1)+3)
         end do
-
+!
 ! - Compute
         J10(1) = sum(hexaVectG1*XCurr)
         J10(2) = sum(hexaVectG1*YCurr)
@@ -416,7 +433,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         type(SSH_CELL_GEOM), intent(in) :: cellGeom
-        real(kind=8), intent(out)       :: area
+        real(kind=8), intent(out) :: area
 ! - Local
         integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
         integer :: iNodeGeom
@@ -424,30 +441,49 @@ contains
         real(kind=8) :: d, nX, nY, nZ, ps
         real(kind=8) :: U(3), V(3), W(3), vectAhmad2NonNorm(3)
         real(kind=8) :: vectAhmad1(3), vectAhmad2(3), vectAhmad3(3)
+        blas_int :: b_incx, b_incy, b_n
 !   ------------------------------------------------------------------------------------------------
 !
         area = 0.d0
-
+!
 ! - Get parameters
         do iNodeGeom = 1, nbNodeGeom
             XCurr(iNodeGeom) = cellGeom%geomInit(3*(iNodeGeom-1)+1)
             YCurr(iNodeGeom) = cellGeom%geomInit(3*(iNodeGeom-1)+2)
             ZCurr(iNodeGeom) = cellGeom%geomInit(3*(iNodeGeom-1)+3)
         end do
-
+!
 ! - Construct first axis
-        U(1) = ddot(8, XCurr, 1, hexaVectG1*8.d0, 1)
-        U(2) = ddot(8, YCurr, 1, hexaVectG1*8.d0, 1)
-        U(3) = ddot(8, ZCurr, 1, hexaVectG1*8.d0, 1)
+        b_n = to_blas_int(8)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        U(1) = ddot(b_n, XCurr, b_incx, hexaVectG1*8.d0, b_incy)
+        b_n = to_blas_int(8)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        U(2) = ddot(b_n, YCurr, b_incx, hexaVectG1*8.d0, b_incy)
+        b_n = to_blas_int(8)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        U(3) = ddot(b_n, ZCurr, b_incx, hexaVectG1*8.d0, b_incy)
         d = sqrt(U(1)*U(1)+U(2)*U(2)+U(3)*U(3))
         vectAhmad1(1) = U(1)/d
         vectAhmad1(2) = U(2)/d
         vectAhmad1(3) = U(3)/d
-
+!
 ! - Construct second axis
-        V(1) = ddot(8, XCurr, 1, hexaVectG2*8.d0, 1)
-        V(2) = ddot(8, YCurr, 1, hexaVectG2*8.d0, 1)
-        V(3) = ddot(8, ZCurr, 1, hexaVectG2*8.d0, 1)
+        b_n = to_blas_int(8)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        V(1) = ddot(b_n, XCurr, b_incx, hexaVectG2*8.d0, b_incy)
+        b_n = to_blas_int(8)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        V(2) = ddot(b_n, YCurr, b_incx, hexaVectG2*8.d0, b_incy)
+        b_n = to_blas_int(8)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        V(3) = ddot(b_n, ZCurr, b_incx, hexaVectG2*8.d0, b_incy)
         vectAhmad2NonNorm = V
         ps = vectAhmad1(1)*V(1)+vectAhmad1(2)*V(2)+vectAhmad1(3)*V(3)
         V(1) = V(1)-ps*vectAhmad1(1)
@@ -457,7 +493,7 @@ contains
         vectAhmad2(1) = V(1)/d
         vectAhmad2(2) = V(2)/d
         vectAhmad2(3) = V(3)/d
-
+!
 ! - Construct third axis
         W(1) = vectAhmad1(2)*vectAhmad2(3)-vectAhmad1(3)*vectAhmad2(2)
         W(2) = vectAhmad1(3)*vectAhmad2(1)-vectAhmad1(1)*vectAhmad2(3)
@@ -466,7 +502,7 @@ contains
         vectAhmad3(1) = W(1)/d
         vectAhmad3(2) = W(2)/d
         vectAhmad3(3) = W(3)/d
-
+!
 ! - Area
         nX = U(2)*vectAhmad2NonNorm(3)-U(3)*vectAhmad2NonNorm(2)
         nY = U(3)*vectAhmad2NonNorm(1)-U(1)*vectAhmad2NonNorm(3)

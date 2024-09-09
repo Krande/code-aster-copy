@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
     implicit none
 #include "asterf_types.h"
@@ -86,6 +86,7 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
     integer, pointer :: vi_tym(:) => null()
     real(kind=8), pointer :: vr_lts(:) => null()
     real(kind=8), pointer :: vr_coo(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 !   rq : crit est le critere relatif en deca duquel on considere que
 !   norm_p == norm_s (cf "verif 3" plus bas). Le choix de la valeur
@@ -126,14 +127,14 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
     mxval = 0
     nbret = 0
     geofi = ''
-    call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, nbval=mxval, vect=geofi, &
+    call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, nbval=mxval, vect=geofi,&
                 nbret=nbret)
     if (nbret .eq. -1) then
         call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, scal=geofi, nbret=nbret)
         if (geofi .eq. 'SEGMENT') then
-            call getvr8('DEFI_FISS', 'PFON_ORIG', iocc=1, nbval=3, vect=vect1, &
+            call getvr8('DEFI_FISS', 'PFON_ORIG', iocc=1, nbval=3, vect=vect1,&
                         nbret=ibid)
-            call getvr8('DEFI_FISS', 'PFON_EXTR', iocc=1, nbval=3, vect=vect2, &
+            call getvr8('DEFI_FISS', 'PFON_EXTR', iocc=1, nbval=3, vect=vect2,&
                         nbret=ibid)
         else
             ASSERT(.false.)
@@ -151,7 +152,10 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
 !
 !   v_seg : vecteur associe au segment fissure, de norme norm_s
     v_seg(:) = vect2(:)-vect1(:)
-    norm_s = ddot(3, v_seg, 1, v_seg, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    norm_s = ddot(b_n, v_seg, b_incx, v_seg, b_incy)
     norm_s = sqrt(norm_s)
     v_seg(:) = v_seg(:)/norm_s
 !
@@ -166,10 +170,16 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
         do i = 1, 3
             v_are(i) = vr_coo(3*(nunob-1)+i)-vr_coo(3*(nunoa-1)+i)
         end do
-        pscal = ddot(3, v_are, 1, v_seg, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pscal = ddot(b_n, v_are, b_incx, v_seg, b_incy)
 !       v_pro : vecteur projete orthogonal de v_are sur v_seg, de norme norm_p
         v_pro(:) = pscal*v_seg(:)
-        norm_p = ddot(3, v_pro, 1, v_pro, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        norm_p = ddot(b_n, v_pro, b_incx, v_pro, b_incy)
         norm_p = sqrt(norm_p)
 !       ecart relatif entre norm_p et norm_s
         diffe = abs(norm_p-norm_s)/norm_s

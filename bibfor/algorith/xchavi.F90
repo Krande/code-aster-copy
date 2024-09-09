@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit, &
+subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit,&
                   jbeta, ndim, nfonn, sifval)
 !
 ! person_in_charge: patrick.massin at edf.fr
@@ -58,6 +58,7 @@ subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit, &
     real(kind=8) :: sinb, tast(3), vecv(3)
     real(kind=8) :: vitn, vnor, vpnt, linf, lprop, lcalc
     aster_logical :: linter
+    blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------
 !
 !
@@ -113,7 +114,10 @@ subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit, &
             end do
 !
 !           DISTANCE PT PLAN (SIGNEE)
-            vitn = ddot(3, mi, 1, b, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            vitn = ddot(b_n, mi, b_incx, b, b_incy)
 !
 !           CALCUL DU VECTEUR VITESSE DS LE PLAN VECV
 !           ET SA DIRECTION NORMALISEE DIR
@@ -131,12 +135,21 @@ subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit, &
                 linter = .true.
                 poiav = poitot
                 poitot = poitot+poids
-                if ((ddot(3, vecv, 1, t, 1)) .le. lcalc) then
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                if ((ddot(b_n, vecv, b_incx, t, b_incy)) .le. lcalc) then
                     vpnt = vpnt*poiav/poitot
                 else
                     vpnt = vpnt*poiav/poitot+vnor*poids/poitot
-                    sinb = ddot(3, dir, 1, n, 1)
-                    cosb = ddot(3, dir, 1, t, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    sinb = ddot(b_n, dir, b_incx, n, b_incy)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    cosb = ddot(b_n, dir, b_incx, t, b_incy)
                     beta1 = beta1*poiav/poitot+(atan2(sinb, cosb))*poids/poitot
                 end if
             end if

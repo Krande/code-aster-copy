@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xcedge(ndime, pinref, pi1, pi2, pmiref, m12, crit)
+!
+subroutine xcedge(ndime, pinref, pi1, pi2, pmiref,&
+                  m12, crit)
 !
     implicit none
 !
@@ -34,6 +35,7 @@ subroutine xcedge(ndime, pinref, pi1, pi2, pmiref, m12, crit)
 !
     real(kind=8) :: pipk(ndime), pimik(ndime), rbid, cosi
     integer :: i
+    blas_int :: b_incx, b_incy, b_n
 !
     crit = 0.d0
     do i = 1, ndime
@@ -42,7 +44,10 @@ subroutine xcedge(ndime, pinref, pi1, pi2, pmiref, m12, crit)
     end do
     call xnormv(ndime, pipk, rbid)
     call xnormv(ndime, pimik, rbid)
-    cosi = ddot(ndime, pipk, 1, pimik, 1)
+    b_n = to_blas_int(ndime)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cosi = ddot(b_n, pipk, b_incx, pimik, b_incy)
 !    write(6,*)'xcedge: cosi=', cosi
     if (cosi .lt. 1.d0) crit = dacos(cosi)
 !

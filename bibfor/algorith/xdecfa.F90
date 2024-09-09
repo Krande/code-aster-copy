@@ -18,9 +18,10 @@
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! aslint: disable=W1306,W1504
 !
-subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
-                  pinter, pinref, ainter, cooree, cooref, rainter, &
-                  noeud, npts, nintar, lst, lonref, ndim, zxain, &
+subroutine xdecfa(elp, nno, igeom, jlsn, jlst,&
+                  npi, npis, pinter, pinref, ainter,&
+                  cooree, cooref, rainter, noeud, npts,&
+                  nintar, lst, lonref, ndim, zxain,&
                   jgrlsn, mipos)
 !
     implicit none
@@ -87,6 +88,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
     integer :: n(3), kkk, nn(4), exit(2)
     integer :: itemax
     aster_logical :: deja, jonc
+    blas_int :: b_incx, b_incy, b_n
     parameter(cridist=1.d-7)
 !
 ! --------------------------------------------------------------------
@@ -119,7 +121,10 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
     call provec(ab, bc, normfa)
     call xnormv(ndim, normfa, norme)
     call xnormv(ndim, gradlsn, norme)
-    det = ddot(ndim, gradlsn, 1, normfa, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    det = ddot(b_n, gradlsn, b_incx, normfa, b_incy)
     if (det .lt. 0.d0) then
         tempo = lst(2)
         lst(2) = lst(3)
@@ -246,13 +251,15 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
             epsmax = 1.d-8
             itemax = 100
 !      ALGORITHME DE NEWTON POUR TROUVER LE FOND DE FISSURE
-            call xnewto(elp, 'XINTER', n, ndim, ptxx, ndim, &
-                        geom, tabls, ibid, ibid, itemax, epsmax, ksi)
+            call xnewto(elp, 'XINTER', n, ndim, ptxx,&
+                        ndim, geom, tabls, ibid, ibid,&
+                        itemax, epsmax, ksi)
             xref(:) = 0.d0
             do ii = 1, ndim
-                xref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)* &
-                           (1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)* &
-                           ptxx(ii+ndim)
+                xref(ii) = 2.d0*(&
+                           1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)* (1.d0-ksi(1))*ptxx(i&
+                           &i+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)* ptxx(ii+ndim&
+                           )
             end do
             ff(:) = 0.d0
             call elrfvf(elp, xref, ff, nno)
@@ -297,9 +304,10 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
                     ksi(1) = (1.d0+ksi(1))/2.d0
                 end if
                 do ii = 1, ndim
-                    miref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)* &
-                                (1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)* &
-                                ptxx(ii+ndim)
+                    miref(ii) = 2.d0*(&
+                                1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)* (1.d0-ksi(1))*p&
+                                &txx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)* ptxx(ii+ndim&
+                                )
                 end do
                 call elrfvf(elp, miref, ff, nno)
                 mifis(:) = 0.d0
@@ -340,7 +348,8 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
                 do j = 1, ndim
                     newpt(j) = cooree(k+ndim, j)
                 end do
-                call reeref(elp, nno, zr(igeom), newpt, ndim, newptref, ff)
+                call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                            newptref, ff)
 !      VERIF SI DEJA
                 deja = .false.
                 do ii = 1, npi
@@ -374,8 +383,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
     if (.not. iselli(elp)) then
         if (mipos .and. npts .eq. 2) then
             do j = 1, ndim
-                xref(j) = (pinref((noeud(3)-1)*ndim+j)+ &
-                           pinref((noeud(4)-1)*ndim+j))/2.d0
+                xref(j) = (pinref((noeud(3)-1)*ndim+j)+ pinref((noeud(4)-1)*ndim+j))/2.d0
             end do
             x(:) = 0.d0
             call elrfvf(elp, xref, ff, nno)
@@ -387,18 +395,15 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
         else
             if (nintar .eq. 2) then
                 do j = 1, ndim
-                    xref(j) = (pinref((noeud(4)-1)*ndim+j)+ &
-                               pinref((noeud(3)-1)*ndim+j))/2.d0
+                    xref(j) = (pinref((noeud(4)-1)*ndim+j)+ pinref((noeud(3)-1)*ndim+j))/2.d0
                 end do
-            elseif (lst(1) .eq. 0.d0) then
+            else if (lst(1) .eq. 0.d0) then
                 do j = 1, ndim
-                    xref(j) = (pinref((noeud(3)-1)*ndim+j)+ &
-                               pinref((noeud(1)-1)*ndim+j))/2.d0
+                    xref(j) = (pinref((noeud(3)-1)*ndim+j)+ pinref((noeud(1)-1)*ndim+j))/2.d0
                 end do
             else
                 do j = 1, ndim
-                    xref(j) = (pinref((noeud(3)-1)*ndim+j)+ &
-                               pinref((noeud(2)-1)*ndim+j))/2.d0
+                    xref(j) = (pinref((noeud(3)-1)*ndim+j)+ pinref((noeud(2)-1)*ndim+j))/2.d0
                 end do
             end if
 !   ON RECHERCHE SUR LA MEDIATRICE DU SEGMENT IP1IP2 PORTEE PAR GRADLST
@@ -414,8 +419,8 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
                 ptxx(j) = vectn(j)
                 ptxx(ndim+j) = xref(j)
             end do
-            call xnewto(elp, 'XMIFIS', n, ndim, ptxx, &
-                        ndim, geom, tabls, ibid, ibid, &
+            call xnewto(elp, 'XMIFIS', n, ndim, ptxx,&
+                        ndim, geom, tabls, ibid, ibid,&
                         itemax, epsmax, ksi)
             do j = 1, ndim
                 xref(j) = xref(j)+ksi(1)*ptxx(j)
@@ -451,7 +456,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
                 num(6) = noeud(6)
                 num(7) = noeud(8)
                 num(8) = noeud(5)
-            elseif (lst(2) .gt. 0.d0) then
+            else if (lst(2) .gt. 0.d0) then
                 num(1) = noeud(2)
                 num(2) = noeud(1)
                 num(3) = noeud(4)
@@ -473,9 +478,10 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis, &
             nn(1:4) = 0
             jonc = .true.
             exit(1:2) = 0
-            call xcenfi(elp, ndim, ndim, nno, geom, zr(jlsn), &
-                        pinref, pinref, cenref, cenfi, nn, exit, jonc, num)
-            !   ON ARCHIVE CE POINT
+            call xcenfi(elp, ndim, ndim, nno, geom,&
+                        zr(jlsn), pinref, pinref, cenref, cenfi,&
+                        nn, exit, jonc, num)
+!   ON ARCHIVE CE POINT
             npi = npi+1
             do j = 1, ndim
                 pinter(ndim*(npi-1)+j) = cenfi(j)

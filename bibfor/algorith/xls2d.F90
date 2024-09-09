@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
-                 jlnsl, nbno, jcoor, jcoorg, nbmaf, &
+subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
+                 jlnsl, nbno, jcoor, jcoorg, nbmaf,&
                  jdlima, nbsef, jdlise, jconx1, jconx2)
 !
     implicit none
@@ -48,6 +48,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
     integer :: ir, ir2, ir3, jmafit, jmafif, jmaori, nuno1, nuno2, nunoi, ori
     aster_logical :: finfis
     aster_logical, pointer :: is_pt_fond(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(tole=1.d-12)
 !
@@ -80,7 +81,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
         do ir2 = 1, nbmaf
             nuno1 = zi(jconx1-1+zi(jconx2+zi(jdlima+ir2-1)-1)+1-1)
             nuno2 = zi(jconx1-1+zi(jconx2+zi(jdlima+ir2-1)-1)+2-1)
-            if (zi(jdlima+ir2-1) .ne. zi(jmafit+ir-1-1) .and. &
+            if (zi(jdlima+ir2-1) .ne. zi(jmafit+ir-1-1) .and.&
                 (nunoi .eq. nuno1 .or. nunoi .eq. nuno2)) then
                 if (nunoi .eq. nuno1) ori = 1
                 if (nunoi .eq. nuno2) ori = 0
@@ -90,7 +91,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
                 goto 1135
             end if
         end do
-1135    continue
+1135     continue
         if (finfis) goto 1145
     end do
 1145 continue
@@ -109,7 +110,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
         do ir3 = 1, nbmaf
             nuno1 = zi(jconx1-1+zi(jconx2+zi(jdlima+ir3-1)-1)+1-1)
             nuno2 = zi(jconx1-1+zi(jconx2+zi(jdlima+ir3-1)-1)+2-1)
-            if (zi(jdlima+ir3-1) .ne. zi(jmafif+nbmaf-ir2+1) .and. &
+            if (zi(jdlima+ir3-1) .ne. zi(jmafif+nbmaf-ir2+1) .and.&
                 (nunoi .eq. nuno1 .or. nunoi .eq. nuno2)) then
                 if (nunoi .eq. nuno1) ori = 1
                 if (nunoi .eq. nuno2) ori = 0
@@ -119,7 +120,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
                 goto 1165
             end if
         end do
-1165    continue
+1165     continue
         if (finfis) goto 1175
     end do
 1175 continue
@@ -170,12 +171,18 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
 !
 !           CALCUL DE EPS TEL QUE AM=EPS*AB
             norcab = ab(1)*ab(1)+ab(2)*ab(2)
-            ps = ddot(2, ap, 1, ab, 1)
+            b_n = to_blas_int(2)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps = ddot(b_n, ap, b_incx, ab, b_incy)
             eps = ps/norcab
 !
 !           ON RAMENE LES POINTS EN DEHORS DU SEGMENT
 !             > SI LE POINT N EST PAS SUR LA DROITE DIRECTRICE AU SEGMENT
-            if (abs(ddot(2, ap, 1, [-ab(2), ab(1)], 1)) .gt. norcab*tole) then
+            b_n = to_blas_int(2)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            if (abs(ddot(b_n, ap, b_incx, [-ab(2), ab(1)], b_incy)) .gt. norcab*tole) then
                 if (eps .lt. -tole .and. .not. is_pt_fond(nuno(1))) eps = 0.d0
                 if (eps .gt. (1.d0+tole) .and. .not. is_pt_fond(nuno(2))) eps = 1.d0
             end if
@@ -259,8 +266,14 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
                     end do
 !
 !               PROJECTION SUR LE SEGMENT
-                    ps = ddot(2, ap, 1, ab, 1)
-                    ps1 = ddot(2, ab, 1, ab, 1)
+                    b_n = to_blas_int(2)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps = ddot(b_n, ap, b_incx, ab, b_incy)
+                    b_n = to_blas_int(2)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps1 = ddot(b_n, ab, b_incx, ab, b_incy)
                     eps = ps/ps1
 !
 !               CALCUL DE LA DISTANCE PA

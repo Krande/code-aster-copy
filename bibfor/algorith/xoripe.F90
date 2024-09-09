@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xoripe(modele)
     implicit none
 !
@@ -87,6 +87,7 @@ subroutine xoripe(modele)
     integer, pointer :: connex(:) => null()
     character(len=8), pointer :: vfiss(:) => null()
     integer, pointer :: listCellNume(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -138,8 +139,7 @@ subroutine xoripe(modele)
         elfis_heav = '&&'//nompro//'.ELEMFISS.HEAV'
         elfis_ctip = '&&'//nompro//'.ELEMFISS.CTIP'
         elfis_hect = '&&'//nompro//'.ELEMFISS.HECT'
-        call xelfis_lists(fiss, modele, elfis_heav, &
-                          elfis_ctip, elfis_hect)
+        call xelfis_lists(fiss, modele, elfis_heav, elfis_ctip, elfis_hect)
         grp(1) = elfis_heav
         grp(2) = elfis_ctip
         grp(3) = elfis_hect
@@ -180,7 +180,7 @@ subroutine xoripe(modele)
 !
     nomob = '&&XORIPE.NU_MAILLE_3D'
 !
-    call utmasu(noma, kdim, nbmail, listCellNume, nomob, &
+    call utmasu(noma, kdim, nbmail, listCellNume, nomob,&
                 vale, 0, mailvo, .false._1)
     call jeveuo(nomob, 'L', jm3d)
 !
@@ -300,7 +300,7 @@ subroutine xoripe(modele)
 !
 !       RECUPERATION DE LA SUBDIVISION LA MAILLE DE PEAU EN NIT
 !       SOUS-ELEMENTS
-        call cesexi('S', jcesd(3), jcesl(3), numab, 1, &
+        call cesexi('S', jcesd(3), jcesl(3), numab, 1,&
                     1, 1, iad)
         nse = zi(jcesv(3)-1+iad)
 !
@@ -310,7 +310,7 @@ subroutine xoripe(modele)
 !         CO(J,IN) : JEME COORDONNEE DU INEME SOMMET DU SOUS-ELEMENT
             do in = 1, nbnos
                 icmp = nbnose*(ise-1)+in
-                call cesexi('S', jcesd(2), jcesl(2), numab, 1, &
+                call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
                             1, icmp, id(in))
                 ino = zi(jcesv(2)-1+id(in))
                 if (ino .lt. 1000) then
@@ -322,7 +322,7 @@ subroutine xoripe(modele)
                 else if (ino .gt. 1000 .and. ino .lt. 2000) then
                     do j = 1, ndim
                         icmp = ndim*(ino-1000-1)+j
-                        call cesexi('S', jcesd(1), jcesl(1), numab, 1, &
+                        call cesexi('S', jcesd(1), jcesl(1), numab, 1,&
                                     1, icmp, iad)
                         co(j, in) = zr(jcesv(1)-1+iad)
                     end do
@@ -356,7 +356,10 @@ subroutine xoripe(modele)
 !
 !
 !         PRODUIT SCALAIRE DES NORMALES : N2D.NEXT
-            if (ddot(ndim, n2d, 1, next, 1) .lt. 0.d0) then
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            if (ddot(b_n, n2d, b_incx, next, b_incy) .lt. 0.d0) then
 !           ON INVERSE LES SOMMETS S1 ET S2
 !           (ON INVERSE 1 ET 2 EN 2D
                 s1 = ndim-1
@@ -370,10 +373,10 @@ subroutine xoripe(modele)
 !            ON INVERSE LES NOEUDS MILIEUX 4 ET 6 EN 3D)
 !               RECUPERATION DE LA CONNECTIVITE :
                     icmp = nbnose*(ise-1)+4
-                    call cesexi('S', jcesd(2), jcesl(2), numab, 1, &
+                    call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
                                 1, icmp, id4)
                     icmp = nbnose*(ise-1)+6
-                    call cesexi('S', jcesd(2), jcesl(2), numab, 1, &
+                    call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
                                 1, icmp, id6)
 !               INVERSION  DE LA CONNECTIVITE :
                     intemp = zi(jcesv(2)-1+id4)
@@ -386,7 +389,7 @@ subroutine xoripe(modele)
 !         RECUPERATION DE LA VALEUR DE LA FONCTION HEAVISIDE
             do ifiss = 1, nfiss
                 ihe = ise
-                call cesexi('S', jcesd(4), jcesl(4), numab, 1, &
+                call cesexi('S', jcesd(4), jcesl(4), numab, 1,&
                             ifiss, ihe, iad)
                 he = zi(jcesv(4)-1+iad)
                 ASSERT(he .eq. -1 .or. he .eq. 1 .or. he .eq. 0 .or. he .eq. 99)
@@ -394,7 +397,7 @@ subroutine xoripe(modele)
 !             VERIF QUE C'EST NORMAL
                     if ((typbo(1:4) .eq. 'TRIA') .or. (typbo(1:3) .eq. 'SEG')) then
                         ASSERT(nse .eq. 1)
-                    elseif (typbo(1:4) .eq. 'QUAD') then
+                    else if (typbo(1:4) .eq. 'QUAD') then
                         ASSERT(nse .eq. 2)
                     else
                         ASSERT(.false.)
@@ -405,7 +408,7 @@ subroutine xoripe(modele)
                     nsignz = 0
 !             LSN SUR LES NOEUDS SOMMETS DE LA MAILLE PRINCIPALE
                     do ino = 1, nbnott(1)
-                        call cesexi('S', jlsnd, jlsnl, numapr, ino, &
+                        call cesexi('S', jlsnd, jlsnl, numapr, ino,&
                                     ifiss, 1, iad2)
 !                NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAPR-1)+INO-1)
                         lsn = cesv(iad2)
@@ -429,9 +432,9 @@ subroutine xoripe(modele)
     end do
 !
 !     ON SAUVE LES NOUVEAUX CHAM_ELEM MODIFIES A LA PLACE DES ANCIENS
-    call cescel(chs(2), ligrel, 'TOPOSE', 'PCNSETO', 'OUI', &
+    call cescel(chs(2), ligrel, 'TOPOSE', 'PCNSETO', 'OUI',&
                 nncp, 'G', cnseto, 'F', ibid)
-    call cescel(chs(4), ligrel, 'TOPOSE', 'PHEAVTO', 'OUI', &
+    call cescel(chs(4), ligrel, 'TOPOSE', 'PHEAVTO', 'OUI',&
                 nncp, 'G', heav, 'F', ibid)
 !     ------------------------------------------------------------------
 !     FIN

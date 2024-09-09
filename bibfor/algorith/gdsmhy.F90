@@ -35,12 +35,16 @@ subroutine gdsmhy(je, e)
 ! ----------------------------------------------------------------------
     integer :: nrac, i, iopt
     real(kind=8) :: dve(6), eh, eqe2, detdve, p0, p1, p2, rac(3), dismin
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !
 !
 !
     call lcdevi(e, dve)
-    eqe2 = 1.5d0*ddot(6, dve, 1, dve, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    eqe2 = 1.5d0*ddot(b_n, dve, b_incx, dve, b_incy)
     call lcdete(dve, detdve)
     eh = (e(1)+e(2)+e(3))/3.d0
 !

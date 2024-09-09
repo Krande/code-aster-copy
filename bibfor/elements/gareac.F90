@@ -56,7 +56,10 @@ subroutine gareac(xdm, xdp, dgamma)
     call dcopy(b_n, xdp, b_incx, xdpnor, b_incy)
     call normev(xdpnor, normp)
     dd = xdpnor-xdmnor
-    if (abs(ddot(3, dd, 1, dd, 1)) .lt. r8prem()) then
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    if (abs(ddot(b_n, dd, b_incx, dd, b_incy)) .lt. r8prem()) then
         dgamma = 0.d0
         goto 9999
     end if
@@ -66,7 +69,10 @@ subroutine gareac(xdm, xdp, dgamma)
 !     YTR EST NORMAL A XDMNOR DANS LE PLAN FORME PAR (XDMNOR,XDPNOR)
 !     ZTR EST NORMAL AU PLAN FORME PAR (XDMNOR,XDPNOR)
 !
-    pscal = ddot(3, xdpnor, 1, xdmnor, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    pscal = ddot(b_n, xdpnor, b_incx, xdmnor, b_incy)
     b_n = to_blas_int(3)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
@@ -74,7 +80,7 @@ subroutine gareac(xdm, xdp, dgamma)
     b_n = to_blas_int(3)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, -pscal, xdmnor, b_incx, ytr, &
+    call daxpy(b_n, -pscal, xdmnor, b_incx, ytr,&
                b_incy)
     call normev(ytr, norm)
     if (norm .le. r8miem()) then
@@ -98,8 +104,14 @@ subroutine gareac(xdm, xdp, dgamma)
 !     IL S'AGIT DE LA ROTATION AUTOUR DE ZTR
 !     YDPNOR EST NORMAL A XDPNOR DANS LE PLAN NORMAL A ZTR
 !
-    pstrx = ddot(3, xdmnor, 1, xdpnor, 1)
-    pstry = ddot(3, ytr, 1, xdpnor, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    pstrx = ddot(b_n, xdmnor, b_incx, xdpnor, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    pstry = ddot(b_n, ytr, b_incx, xdpnor, b_incy)
 !
     ptrbtr(1, 1) = pstrx
     ptrbtr(1, 2) = -pstry
@@ -122,11 +134,17 @@ subroutine gareac(xdm, xdp, dgamma)
     vtemp(1) = pglm(2, 1)
     vtemp(2) = pglm(2, 2)
     vtemp(3) = pglm(2, 3)
-    pslty = ddot(3, ytr, 1, vtemp, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    pslty = ddot(b_n, ytr, b_incx, vtemp, b_incy)
     vtemp(1) = pglm(3, 1)
     vtemp(2) = pglm(3, 2)
     vtemp(3) = pglm(3, 3)
-    psltz = ddot(3, ytr, 1, vtemp, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    psltz = ddot(b_n, ytr, b_incx, vtemp, b_incy)
 !
     plo2tr(1, 1) = 1.d0
     plo2tr(1, 2) = 0.d0
@@ -144,9 +162,9 @@ subroutine gareac(xdm, xdp, dgamma)
     vtemp(1) = plo2tr(1, 2)
     vtemp(2) = plo2tr(2, 2)
     vtemp(3) = plo2tr(3, 2)
-    call promat(ptrbtr, 3, 3, 3, vtemp, &
+    call promat(ptrbtr, 3, 3, 3, vtemp,&
                 3, 3, 1, ytemp)
-    call promat(ptr2gl, 3, 3, 3, ytemp, &
+    call promat(ptr2gl, 3, 3, 3, ytemp,&
                 3, 3, 1, ylocp)
 !
 ! --- CALCUL DE LA BASE LOCALE A T+ EN CONSIDERANT GAMMA NUL
@@ -158,13 +176,19 @@ subroutine gareac(xdm, xdp, dgamma)
     vtemp(1) = pglp(2, 1)
     vtemp(2) = pglp(2, 2)
     vtemp(3) = pglp(2, 3)
-    pscal = ddot(3, ylocp, 1, vtemp, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    pscal = ddot(b_n, ylocp, b_incx, vtemp, b_incy)
 !
     dgamma = trigom('ACOS', pscal)
     vtemp(1) = pglp(3, 1)
     vtemp(2) = pglp(3, 2)
     vtemp(3) = pglp(3, 3)
-    if (ddot(3, ylocp, 1, vtemp, 1) .lt. 0.d0) then
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    if (ddot(b_n, ylocp, b_incx, vtemp, b_incy) .lt. 0.d0) then
         dgamma = -dgamma
     end if
 !

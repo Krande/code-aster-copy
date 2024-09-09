@@ -89,9 +89,18 @@ subroutine cfgccj(resoco, nbliai, conjug)
 ! --- COEFFICIENT DE DIRECTION
 !
     if (conjug) then
-        numer = ddot(nbliai, zr(jsgrap), 1, zr(jsgprp), 1)
-        numer2 = ddot(nbliai, zr(jsgrap), 1, zr(jsgprm), 1)
-        denom = ddot(nbliai, zr(jsgram), 1, zr(jsgprm), 1)
+        b_n = to_blas_int(nbliai)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        numer = ddot(b_n, zr(jsgrap), b_incx, zr(jsgprp), b_incy)
+        b_n = to_blas_int(nbliai)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        numer2 = ddot(b_n, zr(jsgrap), b_incx, zr(jsgprm), b_incy)
+        b_n = to_blas_int(nbliai)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        denom = ddot(b_n, zr(jsgram), b_incx, zr(jsgprm), b_incy)
         gamma = (numer-numer2)/denom
     end if
 !

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
+subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
                   raideg, vect, neq, nbvect, iddl)
     implicit none
 #include "jeveux.h"
@@ -46,6 +46,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
     real(kind=8) :: rzero
     character(len=24) :: vecaux, vecau1
     integer :: ieq, ivect, laux, laux1
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     data vecaux/'&&VPPGEN.VECTEUR.AUX0'/
     data vecau1/'&&VPPGEN.VECTEUR.AUX1'/
@@ -62,9 +63,12 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
 !     ------------------------------------------------------------------
     if (lmasse .ne. 0) then
         do ivect = 1, nbvect
-            call mrmult('ZERO', lmasse, vect(1, ivect), zr(laux+1), 1, &
+            call mrmult('ZERO', lmasse, vect(1, ivect), zr(laux+1), 1,&
                         .false._1)
-            masseg(ivect) = ddot(neq, vect(1, ivect), 1, zr(laux+1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            masseg(ivect) = ddot(b_n, vect(1, ivect), b_incx, zr(laux+1), b_incy)
         end do
     end if
 !     ------------------------------------------------------------------
@@ -72,9 +76,12 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
 !     ------------------------------------------------------------------
     if (lamor .ne. 0) then
         do ivect = 1, nbvect
-            call mrmult('ZERO', lamor, vect(1, ivect), zr(laux+1), 1, &
+            call mrmult('ZERO', lamor, vect(1, ivect), zr(laux+1), 1,&
                         .false._1)
-            amorg(ivect) = ddot(neq, vect(1, ivect), 1, zr(laux+1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            amorg(ivect) = ddot(b_n, vect(1, ivect), b_incx, zr(laux+1), b_incy)
         end do
     else
         amorg(1:nbvect) = rzero
@@ -87,9 +94,12 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
             do ieq = 1, neq
                 zr(laux1+ieq) = vect(ieq, ivect)*iddl(ieq)
             end do
-            call mrmult('ZERO', lraide, zr(laux1+1), zr(laux+1), 1, &
+            call mrmult('ZERO', lraide, zr(laux1+1), zr(laux+1), 1,&
                         .false._1)
-            raideg(ivect) = ddot(neq, zr(laux+1), 1, zr(laux1+1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            raideg(ivect) = ddot(b_n, zr(laux+1), b_incx, zr(laux1+1), b_incy)
         end do
     end if
 !     ------------------------------------------------------------------

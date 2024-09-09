@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm, &
-                  cpmono, pgl, nvi, hsr, nfs, &
-                  nsg, toutms, timed, timef, deps, &
+subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm,&
+                  cpmono, pgl, nvi, hsr, nfs,&
+                  nsg, toutms, timed, timef, deps,&
                   seuil)
 ! aslint: disable=W1306
     implicit none
@@ -71,7 +71,10 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm, &
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, deps, b_incx, depst, b_incy)
-    depsdt = sqrt(ddot(6, depst, 1, depst, 1)/1.5d0)/dt
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    depsdt = sqrt(ddot(b_n, depst, b_incx, depst, b_incy)/1.5d0)/dt
 !
 !     NSFV : debut de la famille IFA dans les variables internes
     nsfv = 6
@@ -83,7 +86,7 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm, &
         necoul = cpmono(5*(ifa-1)+3)
         necris = cpmono(5*(ifa-1)+4)
 !
-        call lcmmsg(nomfam, nbsys, 0, pgl, ms, &
+        call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
                     ng, lg, 0, q)
 !
         if (nbsys .eq. 0) then
@@ -113,19 +116,19 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm, &
             if (necoul .ne. 'MONO_DD_KR') then
                 iexp = 0
                 if (is .eq. 1) iexp = 1
-                call lcmmfi(materf(nmat+1), ifa, nmat, nbcomm, necris, &
-                            is, nbsys, vin, nsfv, dy(nsfa+1), &
-                            nfs, nsg, hsr, iexp, expbp, &
+                call lcmmfi(materf(nmat+1), ifa, nmat, nbcomm, necris,&
+                            is, nbsys, vin, nsfv, dy(nsfa+1),&
+                            nfs, nsg, hsr, iexp, expbp,&
                             rp)
             end if
 !
 !           ECOULEMENT VISCOPLASTIQUE
 !
             decal = nsfv
-            call lcmmfe(taus, materf(nmat+1), materf, ifa, nmat, &
-                        nbcomm, necoul, is, nbsys, vin, &
-                        dy(nsfa+1), rp, alpham, gammam, dt, &
-                        dalpha, dgamma, dp, crit, sgns, &
+            call lcmmfe(taus, materf(nmat+1), materf, ifa, nmat,&
+                        nbcomm, necoul, is, nbsys, vin,&
+                        dy(nsfa+1), rp, alpham, gammam, dt,&
+                        dalpha, dgamma, dp, crit, sgns,&
                         nfs, nsg, hsr, iret)
 !
             if (iret .gt. 0) then

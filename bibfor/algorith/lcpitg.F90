@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcpitg(compor, df, line, dp, dvbe, &
+subroutine lcpitg(compor, df, line, dp, dvbe,&
                   dtaudf)
 !
 !
@@ -74,6 +74,7 @@ subroutine lcpitg(compor, df, line, dp, dvbe, &
     real(kind=8) :: a2, a3, a4, rb, arg, eqbe
     real(kind=8) :: dtaudj, dtaudb
     real(kind=8) :: dvbbtr(6, 6), dvbedf(6, 3, 3)
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !
 ! 1 - DEFINITION DES COEFFICIENTS UTILES
@@ -84,7 +85,10 @@ subroutine lcpitg(compor, df, line, dp, dvbe, &
         a3 = 0
         a4 = 0
     else
-        eqbe = sqrt(1.5d0*ddot(6, dvbe, 1, dvbe, 1))
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        eqbe = sqrt(1.5d0*ddot(b_n, dvbe, b_incx, dvbe, b_incy))
         a2 = 1/(1+trbetr*dp/eqbe)
 !
         rb = pente
@@ -104,8 +108,10 @@ subroutine lcpitg(compor, df, line, dp, dvbe, &
 !
     do ij = 1, 6
         do kl = 1, 6
-            dvbbtr(ij, kl) = a2*(id(ij, kl)-kr(ij)*kr(kl)/3.d0)+a3* &
-                             dvbe(ij)*dvbe(kl)+a4*dvbe(ij)*kr(kl)
+            dvbbtr(ij, kl) = a2*(&
+                             id(ij, kl)-kr(ij)*kr(kl)/3.d0)+a3* dvbe(ij)*dvbe(kl)+a4*dvbe(ij)*kr(&
+                             &kl&
+                             )
         end do
     end do
 !
@@ -115,7 +121,10 @@ subroutine lcpitg(compor, df, line, dp, dvbe, &
     do ij = 1, 6
         do k = 1, 3
             do l = 1, 3
-                dvbedf(ij, k, l) = ddot(6, dvbbtr(ij, 1), 6, dbtrdf(1, k, l), 1)
+                b_n = to_blas_int(6)
+                b_incx = to_blas_int(6)
+                b_incy = to_blas_int(1)
+                dvbedf(ij, k, l) = ddot(b_n, dvbbtr(ij, 1), b_incx, dbtrdf(1, k, l), b_incy)
             end do
         end do
     end do

@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dfdmip(ndim, nno, axi, geom, g, &
-                  iw, vff, idfde, r, w, &
+!
+subroutine dfdmip(ndim, nno, axi, geom, g,&
+                  iw, vff, idfde, r, w,&
                   dfdi)
 !
 !
@@ -30,6 +30,7 @@ subroutine dfdmip(ndim, nno, axi, geom, g, &
     aster_logical :: axi
     integer :: ndim, nno, g, iw, idfde
     real(kind=8) :: geom(ndim, nno), vff(nno), r, w, dfdi(nno, ndim)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !     CALCUL DES DERIVEES DES FONCTIONS DE FORME ET DU JACOBIEN
@@ -53,17 +54,20 @@ subroutine dfdmip(ndim, nno, axi, geom, g, &
 !
 ! - CALCUL DES DERIVEES DES FONCTIONS DE FORME ET JACOBIEN
     if (ndim .eq. 3) then
-        call dfdm3d(nno, g, iw, idfde, geom, &
+        call dfdm3d(nno, g, iw, idfde, geom,&
                     w, dfdi(1, 1), dfdi(1, 2), dfdi(1, 3))
     else
-        call dfdm2d(nno, g, iw, idfde, geom, &
+        call dfdm2d(nno, g, iw, idfde, geom,&
                     w, dfdi(1, 1), dfdi(1, 2))
     end if
 !
 !
 ! - CALCUL DE LA DISTANCE A L'AXE EN AXI
     if (axi) then
-        r = ddot(nno, vff, 1, geom, 2)
+        b_n = to_blas_int(nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(2)
+        r = ddot(b_n, vff, b_incx, geom, b_incy)
         w = w*r
     end if
 !

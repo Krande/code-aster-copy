@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine apverl(sdappa, mesh, sdcont_defi)
 !
     implicit none
@@ -84,6 +84,7 @@ subroutine apverl(sdappa, mesh, sdcont_defi)
     real(kind=8) :: prosca, angle, angl_old, val
     integer :: inoeu
     aster_logical :: apcald
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -190,7 +191,10 @@ subroutine apverl(sdappa, mesh, sdcont_defi)
 !
 ! ----------------- Compute angle
 !
-                    prosca = ddot(3, norm, 1, normnd, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    prosca = ddot(b_n, norm, b_incx, normnd, b_incy)
                     if (abs(noor1*noor2) .gt. r8prem()) then
                         val = prosca/(noor1*noor2)
                         if (val .gt. 1.d0) then

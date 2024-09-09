@@ -58,6 +58,7 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
     integer, pointer :: lino3(:) => null()
     real(kind=8), pointer :: coor(:) => null()
     character(len=24) :: valk(2)
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 ! ========================= DEBUT DU CODE EXECUTABLE ==================
@@ -99,7 +100,10 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
         nor1(2) = n1n2(1)
         nor1(3) = 0.d0
     end if
-    ASSERT(ddot(3, nor1, 1, nor1, 1) .gt. 0)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    ASSERT(ddot(b_n, nor1, b_incx, nor1, b_incy) .gt. 0)
 !
 !
 !   -- 2. position de la maille numa3d par rapport a la maille de peau  => ps1
@@ -116,13 +120,16 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
             end do
 !           -- ps1 > 0 <=> la normale de la peau est orientee comme la
 !                         la normale exterieure de la maille 1
-            ps1 = ddot(3, n1n2, 1, nor1, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps1 = ddot(b_n, n1n2, b_incx, nor1, b_incy)
             goto 40
 !
         end if
     end do
     ASSERT(.false.)
-40  continue
+ 40 continue
 !
 !
 !   -- si numa3d est degeneree ou du cote "+", on la supprime :

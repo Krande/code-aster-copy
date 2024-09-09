@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine angcou(coor, zk1, izk, icoude, zk2, &
-                  rayon, theta, angl1, angl2, angl3, &
-                  pgl1, pgl2, pgl3, omega, dn1n2, &
+!
+subroutine angcou(coor, zk1, izk, icoude, zk2,&
+                  rayon, theta, angl1, angl2, angl3,&
+                  pgl1, pgl2, pgl3, omega, dn1n2,&
                   epsi, crit, zk3)
     implicit none
 #include "asterc/r8pi.h"
@@ -62,6 +62,7 @@ subroutine angcou(coor, zk1, izk, icoude, zk2, &
 !
     integer :: icoude, i, izk
     real(kind=8) :: test
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
 !     NOEUD 3 = NOEUD MILIEU
@@ -92,7 +93,10 @@ subroutine angcou(coor, zk1, izk, icoude, zk2, &
     call normev(zcoud, normez)
 !
 !     VERIF QUE LE NOEUD MILIEU EST BIEN LE TROISIEME
-    psca = ddot(3, t2, 1, t1, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    psca = ddot(b_n, t2, b_incx, t1, b_incy)
     if (psca .le. 0.d0) then
         call utmess('F', 'ELEMENTS_5')
     end if
@@ -150,7 +154,10 @@ subroutine angcou(coor, zk1, izk, icoude, zk2, &
 !
     else
         icoude = 1
-        costet = ddot(3, t1, 1, t2, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        costet = ddot(b_n, t1, b_incx, t2, b_incy)
         theta = 2.d0*atan2(normez, costet)
         if (theta .gt. themax) then
             valr(1) = theta
@@ -230,25 +237,43 @@ subroutine angcou(coor, zk1, izk, icoude, zk2, &
 !
 !        OMEGA ANGLE ENTRE Z ET ZK1 ET AUSSI ENTRE Z ET ZK2
 !
-        cosome = ddot(3, zcoud, 1, zk1, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        cosome = ddot(b_n, zcoud, b_incx, zk1, b_incy)
         call provec(zk1, zcoud, a)
         if (izk .lt. 0) then
             call normev(x2, nx2)
-            sinome = ddot(3, x2, 1, a, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            sinome = ddot(b_n, x2, b_incx, a, b_incy)
         else
             call normev(x1, nx1)
-            sinome = ddot(3, x1, 1, a, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            sinome = ddot(b_n, x1, b_incx, a, b_incy)
         end if
         omega2 = atan2(sinome, cosome)
 !
-        cosome = ddot(3, zcoud, 1, zk2, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        cosome = ddot(b_n, zcoud, b_incx, zk2, b_incy)
         call provec(zk2, zcoud, a)
         if (izk .gt. 0) then
             call normev(x2, nx2)
-            sinome = ddot(3, x2, 1, a, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            sinome = ddot(b_n, x2, b_incx, a, b_incy)
         else
             call normev(x1, nx1)
-            sinome = ddot(3, x1, 1, a, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            sinome = ddot(b_n, x1, b_incx, a, b_incy)
         end if
         omega = atan2(sinome, cosome)
 !

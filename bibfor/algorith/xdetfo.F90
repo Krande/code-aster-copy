@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
+subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
                   noma, nomfis, resuco)
 !
 ! person_in_charge: patrick.massin at edf.fr
@@ -96,6 +96,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
     character(len=6) :: k6
     character(len=32) :: nomrc
     integer :: irc, nbrc, ianorc
+    blas_int :: b_incx, b_incy, b_n
 ! ------------------------------------------------------------
 !
     call jemarq()
@@ -134,7 +135,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
 !
 ! --- RECUP CHAMP VARIABLES INTERNES COHESIVES
 !
-    call rsexch('F', resuco, 'COHE_ELEM', nume_last, cohee, &
+    call rsexch('F', resuco, 'COHE_ELEM', nume_last, cohee,&
                 iret)
 !
 !   TRANSFO CHAM_ELNO --> CHAM_ELEM_S (EXEMPLE XGRALS)
@@ -148,7 +149,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
 !   POUR CHAQUE NOEUD MOYENNE DES VALEURS QUI EXISTENT
 !   NORMALEMENT CE SONT LES MEMES
     cnsco = '&&XDETFO.CNSCO'
-    call cescns(cesco, ' ', 'V', cnsco, ' ', &
+    call cescns(cesco, ' ', 'V', cnsco, ' ',&
                 ibid)
 !
 !   RECUP PREMIER NUMERO ORDRE
@@ -173,7 +174,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
         else
             goto 1
         end if
-1       continue
+  1     continue
     end do
     call jeveuo(nommat//'.CPT.'//k6//'.VALK', 'L', jvalk)
     call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONMAX', ncmpa)
@@ -187,7 +188,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
     rr = rr*sc*sc/gc
 !
 !   REDUCTION CHAMP VARIABLES INTERNES
-    call cnsred(cnsco, 0, [0], 1, 'X1', &
+    call cnsred(cnsco, 0, [0], 1, 'X1',&
                 'V', cnsco)
 !
 !   ON ENLEVE LES NOEUDS QUI N ONT PAS DE VARIABLE INTERNE
@@ -220,8 +221,8 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
     do i = 1, nbls
         ino = zi(jlisno-1+i)
         zl(jnsdl-1+ino) = .true.
-        zr(jnsdv-1+ino) = &
-            min(zr(jnscov-1+ino)-sc, 0.d0)+(sc*sc/gc)/rr*max(zr(jnscov-1+ino)-sc, 0.d0)
+        zr(jnsdv-1+ino) = min(&
+                          zr(jnscov-1+ino)-sc, 0.d0)+(sc*sc/gc)/rr*max(zr(jnscov-1+ino)-sc, 0.d0)
     end do
 !
 !   ON REPREND UNE PARTIE DE LA STRUCTURE DE XENRCH
@@ -230,7 +231,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
     mafis = '&&XDETFO.MAFIS'
     call wkvect(mafis, 'V V I', nbma, jmafis)
     lismae = nomfis//'.GROUP_MA_ENRI'
-    call xmafis(noma, cnsln, nbma, mafis, nmafis, &
+    call xmafis(noma, cnsln, nbma, mafis, nmafis,&
                 lismae)
 !
     call wkvect('&&XDETFO.MAFOND', 'V V I', nmaco, jmafon)
@@ -314,10 +315,17 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
                     c(k) = a(k)-lsna/(lsnb-lsna)*ab(k)
                     ac(k) = c(k)-a(k)
                 end do
-                ASSERT(ddot(ndim, ab, 1, ab, 1) .gt. 0.d0)
+                b_n = to_blas_int(ndim)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                ASSERT(ddot(b_n, ab, b_incx, ab, b_incy) .gt. 0.d0)
 !
 !               FONCTION DE DETECTION AU POINT D INTERSECTION
-                detc = deta+(detb-deta)*ddot(ndim, ab, 1, ac, 1)/ddot(ndim, ab, 1, ab, 1)
+                b_n = to_blas_int(ndim)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                detc = deta+(detb-deta)*ddot(b_n, ab, b_incx, ac, b_incy)/ddot(b_n, ab, b_incx, a&
+                       &b, b_incy)
 !
 !               ACTUALISATION MIN ET MAX DE LA FONCTION DE DETECTION
                 if (detc .lt. mindet) mindet = detc

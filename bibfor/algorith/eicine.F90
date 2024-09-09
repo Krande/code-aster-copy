@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eicine(ndim, axi, nno1, nno2, vff1, &
-                  vff2, wref, dffr2, geom, ang, &
+subroutine eicine(ndim, axi, nno1, nno2, vff1,&
+                  vff2, wref, dffr2, geom, ang,&
                   wg, b)
 !
 !
@@ -52,6 +52,7 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1, &
     integer :: n, i, j, nang
     real(kind=8) :: cova(3, 3), metr(2, 2), dfdx(9), cour, jac, cosa, sina
     real(kind=8) :: angloc(3), rot(3, 3), r, rmax
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
 !    CALCUL DU JACOBIEN
@@ -61,12 +62,15 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1, &
         call sumetr(cova, metr, jac)
         wg = wref*jac
     else if (ndim .eq. 2) then
-        call dfdm1d(nno2, wref, dffr2, geom, dfdx, &
+        call dfdm1d(nno2, wref, dffr2, geom, dfdx,&
                     cour, wg, cosa, sina)
     end if
 !
     if (axi) then
-        r = ddot(nno2, geom, 2, vff2, 1)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(2)
+        b_incy = to_blas_int(1)
+        r = ddot(b_n, geom, b_incx, vff2, b_incy)
 ! ----------------------------------------------------------------------
 ! POUR LES ELEMENTS AVEC COUPLAGE HM, DANS LE CAS OU R EGAL 0, ON A UN
 ! JACOBIEN NUL EN UN PG. ON PRENDS LE MAX DU RAYON MULTIPLIE PAR 1.E-3
@@ -88,7 +92,10 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1, &
     if (ndim .eq. 3) nang = 3
     call r8inir(3, 0.d0, angloc, 1)
     do i = 1, nang
-        angloc(i) = ddot(nno2, ang(i), nang, vff2, 1)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(nang)
+        b_incy = to_blas_int(1)
+        angloc(i) = ddot(b_n, ang(i), b_incx, vff2, b_incy)
     end do
 !
 !    CALCUL DE LA MATRICE DE ROTATION GLOBAL -> LOCAL

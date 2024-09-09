@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine criteo(epsp, epsd, eta, ba, d, &
-                  lambda, mu, alpha, ecrob, ecrod, &
+subroutine criteo(epsp, epsd, eta, ba, d,&
+                  lambda, mu, alpha, ecrob, ecrod,&
                   seuil, crit, critp)
 !
 !
@@ -66,6 +66,7 @@ subroutine criteo(epsp, epsd, eta, ba, d, &
     real(kind=8) :: tdfbde(6, 6), tdfdde(6), dfde(6)
     real(kind=8) :: rtemp, treb, treps, trem, dcoefd, ene, coupl
     real(kind=8) :: tole, rac2, kron(6)
+    blas_int :: b_incx, b_incy, b_n
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 ! ----------------------------------------------------------------------
@@ -131,10 +132,8 @@ subroutine criteo(epsp, epsd, eta, ba, d, &
         do j = i, 3
             do k = 1, 3
                 do l = 1, 3
-                    eps(t(i, j)) = eps(t(i, j))+vecb(k, i)*epsa(t(k, l))* &
-                                   vecb(l, j)
-                    epsdr(t(i, j)) = epsdr(t(i, j))+vecb(k, i)*epsd(t(k, l)) &
-                                     *vecb(l, j)
+                    eps(t(i, j)) = eps(t(i, j))+vecb(k, i)*epsa(t(k, l))* vecb(l, j)
+                    epsdr(t(i, j)) = epsdr(t(i, j))+vecb(k, i)*epsd(t(k, l)) *vecb(l, j)
                 end do
             end do
         end do
@@ -151,8 +150,7 @@ subroutine criteo(epsp, epsd, eta, ba, d, &
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                cc(t(i, j)) = cc(t(i, j))+b(t(i, k))*eps(t(k, j))+b(t(j, k)) &
-                              *eps(t(k, i))
+                cc(t(i, j)) = cc(t(i, j))+b(t(i, k))*eps(t(k, j))+b(t(j, k)) *eps(t(k, i))
             end do
         end do
     end do
@@ -174,8 +172,7 @@ subroutine criteo(epsp, epsd, eta, ba, d, &
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                cpe(t(i, j)) = cpe(t(i, j))+ccp(t(i, k))*eps(t(k, j))+ &
-                               ccp(t(j, k))*eps(t(k, i))
+                cpe(t(i, j)) = cpe(t(i, j))+ccp(t(i, k))*eps(t(k, j))+ ccp(t(j, k))*eps(t(k, i))
             end do
         end do
     end do
@@ -264,9 +261,9 @@ subroutine criteo(epsp, epsd, eta, ba, d, &
     fbm(5) = rac2*fbm(5)
     fbm(6) = rac2*fbm(6)
 !
-    call dfbde(3, b, eps, 2.d0*mu, lambda, &
+    call dfbde(3, b, eps, 2.d0*mu, lambda,&
                tdfbde)
-    call dfdde(eps, d, 3, lambda, mu, &
+    call dfdde(eps, d, 3, lambda, mu,&
                tdfdde)
 !
 !
@@ -285,7 +282,10 @@ subroutine criteo(epsp, epsd, eta, ba, d, &
         epsdr(i) = epsdr(i)*rac2
     end do
 !
-    critp = ddot(6, dfde, 1, epsdr, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    critp = ddot(b_n, dfde, b_incx, epsdr, b_incy)
 !
 !
 end subroutine

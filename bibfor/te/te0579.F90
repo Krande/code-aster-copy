@@ -105,7 +105,7 @@ subroutine te0579(option, nomte)
     rb3 = 0.d0
     rb4 = 0.d0
 !     RECUPERATION DES CARACTERISTIQUES DES SOUS-ELEMENTS DE REF
-    call elrefe_info(elrefe=elref, fami='RIGI', nno=nno, nnos=nnos, npg=npg, &
+    call elrefe_info(elrefe=elref, fami='RIGI', nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
     pre1 = .false.
@@ -130,13 +130,13 @@ subroutine te0579(option, nomte)
 !
     if (enr(1:2) .eq. 'XH') then
 !     NOMBRE DE FISSURES
-        call tecach('NOO', 'PHEAVTO', 'L', iret, nval=7, &
+        call tecach('NOO', 'PHEAVTO', 'L', iret, nval=7,&
                     itab=jtab)
         ncomp = jtab(2)
         nfiss = jtab(7)
         nfh = 1
         call jevech('PHEA_NO', 'L', jheavn)
-        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                     itab=jtab)
         ncompn = jtab(2)/jtab(3)
         call jevech('PHEA_SE', 'L', jheavs)
@@ -194,8 +194,9 @@ subroutine te0579(option, nomte)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ier)
 !
-    if (ier .eq. 0 .and. (enr(1:2) .eq. 'XH') .and. (.not. iselli(elref))) call jevech('PPMILTO', &
-                                                                                       'L', jpmilt)
+    if (ier .eq. 0 .and. (enr(1:2) .eq. 'XH') .and. (.not. iselli(elref))) call jevech(&
+                                                                           'PPMILTO', 'L',&
+                                                                           jpmilt)
 !
     call jevech('PVECTUR', 'E', ires)
 !
@@ -213,14 +214,11 @@ subroutine te0579(option, nomte)
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino .gt. 1000 .and. ino .lt. 2000) then
-                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000- &
-                                                              1)+j)
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000- 1)+j)
                 else if (ino .gt. 2000 .and. ino .lt. 3000) then
-                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000- &
-                                                              1)+j)
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000- 1)+j)
                 else if (ino .gt. 3000) then
-                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000- &
-                                                              1)+j)
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000- 1)+j)
                 end if
             end do
         end do
@@ -233,11 +231,11 @@ subroutine te0579(option, nomte)
 !         CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
             if (ndime .eq. 1) then
                 kk = (kpg-1)*nno
-                call dfdm1d(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorse, rbid, &
+                call dfdm1d(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorse, rbid,&
                             rb2, poids, rb3, rb4)
             else if (ndime .eq. 2) then
                 kk = 2*(kpg-1)*nno
-                call dfdm2b(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorse, poids, &
+                call dfdm2b(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorse, poids,&
                             nbid)
             end if
 !
@@ -251,7 +249,7 @@ subroutine te0579(option, nomte)
 !
             call xlinhm(elrefp, elrefl)
 !
-            call reeref(elrefl, nnops, zr(igeom), xg, ndim, &
+            call reeref(elrefl, nnops, zr(igeom), xg, ndim,&
                         nbid, ff, dfdi)
 !
 !         CALCUL DES FORCES REPARTIES SUIVANT LES OPTIONS
@@ -288,9 +286,9 @@ subroutine te0579(option, nomte)
                         pos = pos+ndim+1
 !
 !             TERME HEAVISIDE
-                        zr(ires-1+pos) = zr(ires-1+pos)-xcalc_heav(zi(jheavn-1+ncompn*(ino-1)+&
-                                         &ifh), zi(jheavs-1+ise), zi(jheavn-1+ncompn*(ino-1)+ncom&
-                                         &pn))*deltat*flux*poids*ff(ino)
+                        zr(ires-1+pos) = zr(ires-1+pos)-xcalc_heav(zi(jheavn-1+ncompn*(ino-1)+ifh&
+                                         &), zi(jheavs-1+ise), zi(jheavn-1+ncompn*(ino-1)+ncompn)&
+                                         &)*deltat*flux*poids*ff(ino)
                     end do
 !
                 end do
@@ -299,14 +297,14 @@ subroutine te0579(option, nomte)
                     kk = (kpg-1)*nno
                     valpar(1) = xg(1)
                     valpar(2) = xg(2)
-                    call fointe('FM', zk8(ifluxf+0), 3, nompar, valpar, &
+                    call fointe('FM', zk8(ifluxf+0), 3, nompar, valpar,&
                                 flux, iret)
                 else if (ndime .eq. 2) then
                     kk = (kpg-1)*nno
                     valpar(1) = xg(1)
                     valpar(2) = xg(2)
                     valpar(3) = xg(3)
-                    call fointe('FM', zk8(ifluxf+0), 4, nompar, valpar, &
+                    call fointe('FM', zk8(ifluxf+0), 4, nompar, valpar,&
                                 flux, iret)
                 end if
                 pos = 0
@@ -324,9 +322,9 @@ subroutine te0579(option, nomte)
                         pos = pos+ndim+1
 !
 !             TERME HEAVISIDE
-                        zr(ires-1+pos) = zr(ires-1+pos)-xcalc_heav(zi(jheavn-1+ncompn*(ino-1)+&
-                                         &ifh), zi(jheavs-1+ise), zi(jheavn-1+ncompn*(ino-1)+ncom&
-                                         &pn))*deltat*flux*poids*ff(ino)
+                        zr(ires-1+pos) = zr(ires-1+pos)-xcalc_heav(zi(jheavn-1+ncompn*(ino-1)+ifh&
+                                         &), zi(jheavs-1+ise), zi(jheavn-1+ncompn*(ino-1)+ncompn)&
+                                         &)*deltat*flux*poids*ff(ino)
                     end do
                 end do
             else
@@ -347,9 +345,9 @@ subroutine te0579(option, nomte)
     nddl = nnops*nddls+nnopm*nddlm
     contac = 0
 !
-    call xhmddl(ndim, nfh, nddls, nddl, nnop, &
-                nnops, zi(jstno), .false._1, option, nomte, &
-                rb1, zr(ires), nddlm, nfiss, jfisno, &
+    call xhmddl(ndim, nfh, nddls, nddl, nnop,&
+                nnops, zi(jstno), .false._1, option, nomte,&
+                rb1, zr(ires), nddlm, nfiss, jfisno,&
                 .false._1, contac)
 !
 !-----------------------------------------------------------------------

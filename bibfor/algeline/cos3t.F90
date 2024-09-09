@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function cos3t(s, pref, epssig)
 !
     implicit none
@@ -32,6 +32,7 @@ function cos3t(s, pref, epssig)
 ! ======================================================================
     integer :: ndt, ndi
     real(kind=8) :: sii, siirel, dets, un, mun
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
@@ -40,7 +41,10 @@ function cos3t(s, pref, epssig)
 ! ======================================================================
     common/tdim/ndt, ndi
 ! ======================================================================
-    sii = ddot(ndt, s, 1, s, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    sii = ddot(b_n, s, b_incx, s, b_incy)
     sii = sqrt(sii)
     siirel = sii/pref
     if (siirel .gt. epssig) then

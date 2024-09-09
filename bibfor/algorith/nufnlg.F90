@@ -135,7 +135,10 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
              &fm(3, 2))+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
 ! - CALCUL DE LA PRESSION
-        pm = ddot(nno2, vff2(1, g), 1, presm, 1)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vff2(1, g), b_incx, presm, b_incy)
 !
 ! - CONTRAINTE DE KIRCHHOFF
         b_n = to_blas_int(2*ndim)

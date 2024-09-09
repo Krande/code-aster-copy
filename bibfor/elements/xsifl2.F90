@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm, &
-                  ddls, dfdi, ff, idepl, igthet, &
-                  ithet, jac, ndim, nnop, nnos, &
+subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
+                  ddls, dfdi, ff, idepl, igthet,&
+                  ithet, jac, ndim, nnop, nnos,&
                   tau1, tau2, nd, xg)
     implicit none
 !
@@ -71,6 +71,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm, &
     real(kind=8) :: norme, pm(3, 3), ptr(3, 3), theta(3)
     real(kind=8) :: tau1(3), tau2(3), nd(3), temp(3), xg(3)
     real(kind=8) :: ptp(3), vec(3), sens
+    blas_int :: b_incx, b_incy, b_n
 !
 !     BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
 !     DIMENSIONNEMENT A 3 ET NON NDIM POUR POUVOIR UTILISER NORMEV.F
@@ -86,7 +87,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm, &
             pm(3, i) = tau2(i)
         end do
     end if
-    call transp(pm, ndim, ndim, ndim, ptr, &
+    call transp(pm, ndim, ndim, ndim, ptr,&
                 ndim)
     e1(:) = 0.d0
     e2(:) = 0.d0
@@ -149,12 +150,18 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm, &
     end do
 !   Seule modification par rapport à avant :
 !   on va prendre la projection dans le plan
-    cmp_hp = ddot(3, vec, 1, e3, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cmp_hp = ddot(b_n, vec, b_incx, e3, b_incy)
     do i = 1, ndim
         vec(i) = vec(i)-cmp_hp*e3(i)
     end do
     call normev(vec, norme)
-    sens = ddot(3, vec, 1, e2, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    sens = ddot(b_n, vec, b_incx, e2, b_incy)
     if (norme .ne. 0.d0) then
         if (sens .lt. 0.d0) then
             do i = 1, ndim
@@ -180,7 +187,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm, &
             lambl(j) = lambl(j)+zr(idepl-1+ii+ddld+j)*ff(ino)
         end do
     end do
-    call prmave(0, ptr, ndim, ndim, ndim, &
+    call prmave(0, ptr, ndim, ndim, ndim,&
                 lambl, ndim, lamb, ndim, ier)
 !
 !     ---------------------------------------------
@@ -225,9 +232,18 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm, &
             g = g-lamb(j)*grdep(j, l)*theta(l)
         end do
     end do
-    lamb1 = ddot(3, lamb, 1, e1, 1)
-    lamb2 = ddot(3, lamb, 1, e2, 1)
-    lamb3 = ddot(3, lamb, 1, e3, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    lamb1 = ddot(b_n, lamb, b_incx, e1, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    lamb2 = ddot(b_n, lamb, b_incx, e2, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    lamb3 = ddot(b_n, lamb, b_incx, e3, b_incy)
     g1 = -lamb1*grde1
     g2 = -lamb2*grde2
     g3 = -lamb3*grde3

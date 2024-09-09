@@ -45,6 +45,7 @@ subroutine quavro(quater, theta)
     real(kind=8) :: pi
     real(kind=8) :: prosca, anorx
     integer :: i
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !C
@@ -53,7 +54,10 @@ subroutine quavro(quater, theta)
     deux = 2.d0
     pi = r8pi()
 !
-    prosca = ddot(3, quater, 1, quater, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    prosca = ddot(b_n, quater, b_incx, quater, b_incy)
     anorx = sqrt(prosca)
     if (anorx .gt. 1.d0) anorx = 1.d0
     if (anorx .lt. epsil) then

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine critet(epsp, epsd, eta, lambda, deuxmu, &
+subroutine critet(epsp, epsd, eta, lambda, deuxmu,&
                   fpd, seuil, crit, critp)
 !
 !
@@ -56,6 +56,7 @@ subroutine critet(epsp, epsd, eta, lambda, deuxmu, &
     real(kind=8) :: tr(6), vecp(3, 3)
     real(kind=8) :: epm(3), tre, rac2
     real(kind=8) :: treps, sigel(3), ppeps(6), dfde(6)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,7 +88,10 @@ subroutine critet(epsp, epsd, eta, lambda, deuxmu, &
             sigel(k) = sigel(k)+deuxmu*epm(k)
         end if
     end do
-    crit = fpd*0.5d0*ddot(3, epm, 1, sigel, 1)-seuil
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    crit = fpd*0.5d0*ddot(b_n, epm, b_incx, sigel, b_incy)-seuil
 !
     do i = 1, 3
         if (epm(i) .lt. 0.d0) then
@@ -116,7 +120,10 @@ subroutine critet(epsp, epsd, eta, lambda, deuxmu, &
         dfde(i) = deuxmu*fpd*ppeps(i)*rac2
     end do
 !
-    critp = ddot(6, dfde, 1, epsd, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    critp = ddot(b_n, dfde, b_incx, epsd, b_incy)
 !
 !
 end subroutine

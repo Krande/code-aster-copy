@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asgeel(nomres, option, nugene)
 !
     implicit none
@@ -78,7 +78,8 @@ subroutine asgeel(nomres, option, nugene)
     integer, pointer :: pointeurs_macro(:) => null()
     integer, pointer :: pointeurs_macroi(:) => null()
     aster_logical :: lsym
-    aster_logical, pointer ::  syme_macro(:) => null()
+    aster_logical, pointer :: syme_macro(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     data rigopt, masopt, amoopt/'RIGI_GENE',&
      &                        'MASS_GENE', 'AMOR_GENE'/
 !-----------C
@@ -166,7 +167,7 @@ subroutine asgeel(nomres, option, nugene)
         kbid = '        '
         indsst = i1
         call jenonu(jexnom(nomsst, zk8(lsst+i1-1)), indsst)
-        call mgutdm(modgen, kbid, indsst, 'NOM_MACR_ELEM', ibid, &
+        call mgutdm(modgen, kbid, indsst, 'NOM_MACR_ELEM', ibid,&
                     k8bid)
         call jelira(k8bid//adnom//'_VALE', 'NMAXOC', ntria)
         syme_macro(i1) = .true.
@@ -223,16 +224,16 @@ subroutine asgeel(nomres, option, nugene)
     zi(iadesc) = 2
     zi(iadesc+1) = neq
     zi(iadesc+2) = 2
-
+!
 !-- .VALM NE DOIT PAS EXISTER :
     call jeexin(nomres//'           .VALM', iret)
     ASSERT(iret .eq. 0)
 !
 !-- ALLOCATION DE LA MATRICE PROJETEE
-    call jecrec(nomres//'           .VALM', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
+    call jecrec(nomres//'           .VALM', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 ntria)
     call jeecra(nomres//'           .VALM', 'LONMAX', int((neq*(neq+1))/2))
-
+!
     call jecroc(jexnum(nomres//'           .VALM', 1))
     call jeveuo(jexnum(nomres//'           .VALM', 1), 'E', lres)
     if (.not. lsym) then
@@ -273,8 +274,13 @@ subroutine asgeel(nomres, option, nugene)
 !-- ON FAIT K*T
         do i1 = 1, nbddl
             do j1 = 1, neq
-                zr(lproj+(j1-1)*nbddl+i1-1) = ddot(nbddl, zr(ltemp+(i1-1)*nbddl), &
-                                                   1, zr(lselia+(j1-1)*nlt+decal), 1)
+                b_n = to_blas_int(nbddl)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(lproj+(j1-1)*nbddl+i1-1) = ddot(&
+                                              b_n, zr(ltemp+(i1-1)*nbddl), b_incx,&
+                                              zr(lselia+(j1-1)*nlt+decal), b_incy&
+                                              )
             end do
         end do
 !
@@ -282,11 +288,17 @@ subroutine asgeel(nomres, option, nugene)
         do j1 = 1, neq
             do i1 = 1, j1
                 ind = int(((j1-1)*j1)/2)+i1-1
-                zr(lres+ind) = zr(lres+ind)+ddot(nbddl, zr(lproj+(j1-1)*nbddl), &
-                                                 1, zr(lselia+(i1-1)*nlt+decal), 1)
+                b_n = to_blas_int(nbddl)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(lres+ind) = zr(lres+ind)+ddot(b_n, zr(lproj+(j1-1)*nbddl), b_incx, zr(lselia+(&
+                               &i1-1)*nlt+decal), b_incy)
                 if (.not. lsym) then
-                    zr(lresi+ind) = zr(lresi+ind)+ddot(nbddl, zr(lproj+(i1-1)*nbddl), &
-                                                       1, zr(lselia+(j1-1)*nlt+decal), 1)
+                    b_n = to_blas_int(nbddl)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    zr(lresi+ind) = zr(lresi+ind)+ddot(b_n, zr(lproj+(i1-1)*nbddl), b_incx, zr(ls&
+                                    &elia+(j1-1)*nlt+decal), b_incy)
                 end if
             end do
         end do

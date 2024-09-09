@@ -584,7 +584,10 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        %-------------------------------------%
 !
     if (bmat .eq. 'G') then
-        wnorm = ddot(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        wnorm = ddot(b_n, resid, b_incx, workd(ipj), b_incy)
         wnorm = sqrt(abs(wnorm))
     else if (bmat .eq. 'I') then
         wnorm = dnrm2(n, resid, 1)
@@ -663,7 +666,10 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        %------------------------------%
 !
     if (bmat .eq. 'G') then
-        rnorm = ddot(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rnorm = ddot(b_n, resid, b_incx, workd(ipj), b_incy)
         rnorm = sqrt(abs(rnorm))
     else if (bmat .eq. 'I') then
         rnorm = dnrm2(n, resid, 1)
@@ -776,7 +782,10 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        %-----------------------------------------------------%
 !
     if (bmat .eq. 'G') then
-        rnorm1 = ddot(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rnorm1 = ddot(b_n, resid, b_incx, workd(ipj), b_incy)
         rnorm1 = sqrt(abs(rnorm1))
     else if (bmat .eq. 'I') then
         rnorm1 = dnrm2(n, resid, 1)
