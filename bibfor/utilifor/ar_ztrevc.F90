@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_ztrevc(side, howmny, select, n, t, &
-                     ldt, vl, ldvl, vr, ldvr, &
+subroutine ar_ztrevc(side, howmny, select, n, t,&
+                     ldt, vl, ldvl, vr, ldvr,&
                      mm, m, work, rwork, info)
 !  -- LAPACK ROUTINE (VERSION 2.0) --
 !     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
@@ -273,7 +273,9 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
 !
     rwork(1) = zero
     do j = 2, n
-        rwork(j) = dzasum(j-1, t(1, j), 1)
+        b_n = to_blas_int(j-1)
+        b_incx = to_blas_int(1)
+        rwork(j) = dzasum(b_n, t(1, j), b_incx)
     end do
 !
     if (rightv) then
@@ -307,8 +309,8 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
             if (ki .gt. 1) then
                 b_lda = to_blas_int(ldt)
                 b_n = to_blas_int(ki-1)
-                call zlatrs('U', 'N', 'N', 'Y', b_n, &
-                            t, b_lda, work(1), scale, rwork, &
+                call zlatrs('U', 'N', 'N', 'Y', b_n,&
+                            t, b_lda, work(1), scale, rwork,&
                             info4)
                 work(ki) = scale
             end if
@@ -321,7 +323,9 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
                 b_incy = to_blas_int(1)
                 call zcopy(b_n, work(1), b_incx, vr(1, is), b_incy)
 !
-                ii = izamax(ki, vr(1, is), 1)
+                b_n = to_blas_int(ki)
+                b_incx = to_blas_int(1)
+                ii = izamax(b_n, vr(1, is), b_incx)
                 remax = one/cabs1(vr(ii, is))
                 b_n = to_blas_int(ki)
                 b_incx = to_blas_int(1)
@@ -337,12 +341,14 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
                     b_n = to_blas_int(ki-1)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call zgemv('N', b_m, b_n, cmone, vr, &
-                               b_lda, work(1), b_incx, dcmplx(scale), vr(1, ki), &
+                    call zgemv('N', b_m, b_n, cmone, vr,&
+                               b_lda, work(1), b_incx, dcmplx(scale), vr(1, ki),&
                                b_incy)
                 end if
 !
-                ii = izamax(n, vr(1, ki), 1)
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                ii = izamax(b_n, vr(1, ki), b_incx)
                 remax = one/cabs1(vr(ii, ki))
                 b_n = to_blas_int(n)
                 b_incx = to_blas_int(1)
@@ -356,7 +362,7 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
             end do
 !
             is = is-1
-80          continue
+ 80         continue
         end do
     end if
 !
@@ -391,8 +397,8 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
             if (ki .lt. n) then
                 b_lda = to_blas_int(ldt)
                 b_n = to_blas_int(n-ki)
-                call zlatrs('U', 'C', 'N', 'Y', b_n, &
-                            t(ki+1, ki+1), b_lda, work(ki+1), scale, rwork, &
+                call zlatrs('U', 'C', 'N', 'Y', b_n,&
+                            t(ki+1, ki+1), b_lda, work(ki+1), scale, rwork,&
                             info4)
                 work(ki) = scale
             end if
@@ -405,7 +411,9 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
                 b_incy = to_blas_int(1)
                 call zcopy(b_n, work(ki), b_incx, vl(ki, is), b_incy)
 !
-                ii = izamax(n-ki+1, vl(ki, is), 1)+ki-1
+                b_n = to_blas_int(n-ki+1)
+                b_incx = to_blas_int(1)
+                ii = izamax(b_n, vl(ki, is), b_incx)+ki-1
                 remax = one/cabs1(vl(ii, is))
                 b_n = to_blas_int(n-ki+1)
                 b_incx = to_blas_int(1)
@@ -421,12 +429,14 @@ subroutine ar_ztrevc(side, howmny, select, n, t, &
                     b_n = to_blas_int(n-ki)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call zgemv('N', b_m, b_n, cmone, vl(1, ki+1), &
-                               b_lda, work(ki+1), b_incx, dcmplx(scale), vl(1, ki), &
+                    call zgemv('N', b_m, b_n, cmone, vl(1, ki+1),&
+                               b_lda, work(ki+1), b_incx, dcmplx(scale), vl(1, ki),&
                                b_incy)
                 end if
 !
-                ii = izamax(n, vl(1, ki), 1)
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                ii = izamax(b_n, vl(1, ki), b_incx)
                 remax = one/cabs1(vl(ii, ki))
                 b_n = to_blas_int(n)
                 b_incx = to_blas_int(1)

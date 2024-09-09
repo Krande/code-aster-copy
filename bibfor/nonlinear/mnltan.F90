@@ -120,7 +120,9 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- ON NORMALISE LE VECTEUR TANGENT
 ! ----------------------------------------------------------------------
-    norme = dnrm2(ninc, zr(itang), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    norme = dnrm2(b_n, zr(itang), b_incx)
     b_n = to_blas_int(ninc)
     b_incx = to_blas_int(1)
     call dscal(b_n, -1.d0/norme, zr(itang), b_incx)

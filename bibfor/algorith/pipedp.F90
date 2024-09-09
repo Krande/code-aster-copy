@@ -212,8 +212,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
                 eps1(k) = epsp(k)+rac2(1)*epsd(k)-epsm(k)
                 eps2(k) = epsp(k)+rac2(2)*epsd(k)-epsm(k)
             end do
-            d1 = dnrm2(ndimsi, eps1, 1)
-            d2 = dnrm2(ndimsi, eps2, 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            d1 = dnrm2(b_n, eps1, b_incx)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            d2 = dnrm2(b_n, eps2, b_incx)
             if (d1 .le. d2) then
                 eta = rac2(1)
             else
@@ -235,8 +239,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
                 eps1(k) = epsp(k)+rac1(1)*epsd(k)-epsm(k)
                 eps2(k) = epsp(k)+rac1(2)*epsd(k)-epsm(k)
             end do
-            d1 = dnrm2(ndimsi, eps1, 1)
-            d2 = dnrm2(ndimsi, eps2, 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            d1 = dnrm2(b_n, eps1, b_incx)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            d2 = dnrm2(b_n, eps2, b_incx)
             if (d1 .le. d2) then
                 eta = rac1(1)
             else
@@ -264,8 +272,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
                     eps1(k) = epsp(k)+rac1(1)*epsd(k)-epsm(k)
                     eps2(k) = epsp(k)+rac1(2)*epsd(k)-epsm(k)
                 end do
-                d1 = dnrm2(ndimsi, eps1, 1)
-                d2 = dnrm2(ndimsi, eps2, 1)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d1 = dnrm2(b_n, eps1, b_incx)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d2 = dnrm2(b_n, eps2, b_incx)
                 if (d1 .le. d2) then
                     eta1 = rac1(1)
                 else
@@ -294,8 +306,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
                     eps1(k) = epsp(k)+rac2(1)*epsd(k)-epsm(k)
                     eps2(k) = epsp(k)+rac2(2)*epsd(k)-epsm(k)
                 end do
-                d1 = dnrm2(ndimsi, eps1, 1)
-                d2 = dnrm2(ndimsi, eps2, 1)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d1 = dnrm2(b_n, eps1, b_incx)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d2 = dnrm2(b_n, eps2, b_incx)
                 if (d1 .le. d2) then
                     eta2 = rac2(1)
                 else
@@ -320,8 +336,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
                     eps1(k) = epsp(k)+eta1*epsd(k)-epsm(k)
                     eps2(k) = epsp(k)+eta2*epsd(k)-epsm(k)
                 end do
-                d1 = dnrm2(ndimsi, eps1, 1)
-                d2 = dnrm2(ndimsi, eps2, 1)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d1 = dnrm2(b_n, eps1, b_incx)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d2 = dnrm2(b_n, eps2, b_incx)
                 if (d1 .le. d2) then
                     eta = eta1
                     a0 = -p2*eta**2+p0
@@ -346,8 +366,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
                     eps1(k) = epsp(k)+eta1*epsd(k)-epsm(k)
                     eps2(k) = epsp(k)+eta2*epsd(k)-epsm(k)
                 end do
-                d1 = dnrm2(ndimsi, eps1, 1)
-                d2 = dnrm2(ndimsi, eps2, 1)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d1 = dnrm2(b_n, eps1, b_incx)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d2 = dnrm2(b_n, eps2, b_incx)
                 if (d1 .le. d2) then
                     eta = eta1
                     a0 = -p2*eta**2+p0

@@ -92,7 +92,10 @@ subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, l_vect_name, l_vect_type,
                 end do
             else if (vect_type .eq. 'C') then
                 call jeveuo(vect_name(1:8)//'           .VALE', 'L', vc=jv_vect_c)
-                vc_vect_redu(i_mode) = zdotc(nb_equa, vc_mode, 1, jv_vect_c, 1)
+                b_n = to_blas_int(nb_equa)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                vc_vect_redu(i_mode) = zdotc(b_n, vc_mode, b_incx, jv_vect_c, b_incy)
             else
                 ASSERT(ASTER_FALSE)
             end if

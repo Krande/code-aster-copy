@@ -79,7 +79,9 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt,&
 ! --- RECUPERATION DU SECOND MEMBRE SUPPLEMENTAIRE
 ! ----------------------------------------------------------------------
     call jeveuo(xfpnla, 'L', ifpnla)
-    norme = dnrm2(ninc-1, zr(ifpnla), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    norme = dnrm2(b_n, zr(ifpnla), b_incx)
 !
     if (norme .eq. 0.d0) then
         call utmess('F', 'MECANONLINE9_61')

@@ -63,7 +63,9 @@ subroutine chgref(geomi, x, y, bidim)
     iadcoo = iadcoo-1
 !     -- ON TRAITE LE CAS 2D SEPAREMENT POUR OPTIMISER :
     if (bidim) then
-        r1 = dnrm2(2, x, 1)
+        b_n = to_blas_int(2)
+        b_incx = to_blas_int(1)
+        r1 = dnrm2(b_n, x, b_incx)
         if (r1 .gt. prec) then
             x(1) = x(1)/r1
             x(2) = x(2)/r1
@@ -86,8 +88,12 @@ subroutine chgref(geomi, x, y, bidim)
             call utmess('F', 'ALGORITH_96')
         end if
     else
-        r1 = dnrm2(3, x, 1)
-        r2 = dnrm2(3, y, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        r1 = dnrm2(b_n, x, b_incx)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        r2 = dnrm2(b_n, y, b_incx)
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)

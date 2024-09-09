@@ -165,7 +165,9 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !-----CALCULS PRELIMINAIRES
 !
 !      ---- CALCUL DE NORME DE BF
-    bnorm = dnrm2(m, bf, 1)
+    b_n = to_blas_int(m)
+    b_incx = to_blas_int(1)
+    bnorm = dnrm2(b_n, bf, b_incx)
     if (bnorm .eq. zero) then
         call r8inir(m, zero, xp, 1)
 !        WRITE (IFM,*)'>>>>>>> SECOND MEMBRE = 0 DONC SOLUTION = 0 '
@@ -194,7 +196,9 @@ subroutine gcpc(m, in, ip, ac, inpc,&
         b_incy = to_blas_int(1)
         call daxpy(b_n, -1.d0, bf, b_incx, r,&
                    b_incy)
-        anorm = dnrm2(m, r, 1)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(1)
+        anorm = dnrm2(b_n, r, b_incx)
         epsix = epsi*anorm
         if (niv .eq. 2) write (ifm, 102) anorm, epsix, epsi
     end if
@@ -291,7 +295,9 @@ subroutine gcpc(m, in, ip, ac, inpc,&
                    b_incy)
 !
 !       ---- CALCUL TEST D'ARRET ET AFFICHAGE
-        anorm = dnrm2(m, r, 1)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(1)
+        anorm = dnrm2(b_n, r, b_incx)
         if (anorm .le. anormx*paraaf) then
             if (niv .eq. 2) write (*, 104) iter, anorm, anorm/anorxx
             anormx = anorm

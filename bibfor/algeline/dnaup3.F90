@@ -889,7 +889,9 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
         rnorm = ddot(b_n, resid, b_incx, workd, b_incy)
         rnorm = sqrt(abs(rnorm))
     else if (bmat .eq. 'I') then
-        rnorm = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        rnorm = dnrm2(b_n, resid, b_incx)
     end if
     cnorm = .false.
 !

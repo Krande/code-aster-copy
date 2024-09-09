@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zmulmv(trans, m, n, alpha, a, &
-                  lda, x, incx, beta, y, &
+subroutine zmulmv(trans, m, n, alpha, a,&
+                  lda, x, incx, beta, y,&
                   incy)
     implicit none
 #include "asterfort/vecinc.h"
@@ -56,7 +56,7 @@ subroutine zmulmv(trans, m, n, alpha, a, &
     blas_int :: b_incx, b_incy, b_n
 !
     if (m .eq. 0 .or. n .eq. 0 .or. alpha .eq. (0.0d0, 0.0d0) .and. beta .eq. (1.0d0, 0.0d0)) &
-        goto 999
+    goto 999
 !
     if (trans(1:1) .eq. 'N' .or. trans(1:1) .eq. 'n') then
         lenx = n
@@ -92,7 +92,7 @@ subroutine zmulmv(trans, m, n, alpha, a, &
             b_n = to_blas_int(m)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(incy)
-            call zaxpy(b_n, alpha*x(kx), a(lda*(i-1)+1), b_incx, y, &
+            call zaxpy(b_n, alpha*x(kx), a(lda*(i-1)+1), b_incx, y,&
                        b_incy)
             kx = kx+incx
         end do
@@ -100,14 +100,20 @@ subroutine zmulmv(trans, m, n, alpha, a, &
 !
         ky = iy
         do i = 1, n
-            y(ky) = y(ky)+alpha*zdotu(m, a(lda*(i-1)+1), 1, x, incx)
+            b_n = to_blas_int(m)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(incx)
+            y(ky) = y(ky)+alpha*zdotu(b_n, a(lda*(i-1)+1), b_incx, x, b_incy)
             ky = ky+incy
         end do
 !
     else
         ky = iy
         do i = 1, n
-            y(ky) = y(ky)+alpha*zdotc(m, a(lda*(i-1)+1), 1, x, incx)
+            b_n = to_blas_int(m)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(incx)
+            y(ky) = y(ky)+alpha*zdotc(b_n, a(lda*(i-1)+1), b_incx, x, b_incy)
             ky = ky+incy
         end do
     end if

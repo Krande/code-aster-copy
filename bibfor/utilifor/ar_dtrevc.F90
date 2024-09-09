@@ -470,7 +470,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     b_incy = to_blas_int(1)
                     call dcopy(b_n, work(1+n), b_incx, vr(1, is), b_incy)
 !
-                    ii = idamax(ki, vr(1, is), 1)
+                    b_n = to_blas_int(ki)
+                    b_incx = to_blas_int(1)
+                    ii = idamax(b_n, vr(1, is), b_incx)
                     remax = one/abs(vr(ii, is))
                     b_n = to_blas_int(ki)
                     b_incx = to_blas_int(1)
@@ -491,7 +493,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                                    b_incy)
                     end if
 !
-                    ii = idamax(n, vr(1, ki), 1)
+                    b_n = to_blas_int(n)
+                    b_incx = to_blas_int(1)
+                    ii = idamax(b_n, vr(1, ki), b_incx)
                     remax = one/abs(vr(ii, ki))
                     b_n = to_blas_int(n)
                     b_incx = to_blas_int(1)
@@ -889,7 +893,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     b_incy = to_blas_int(1)
                     call dcopy(b_n, work(ki+n), b_incx, vl(ki, is), b_incy)
 !
-                    ii = idamax(n-ki+1, vl(ki, is), 1)+ki-1
+                    b_n = to_blas_int(n-ki+1)
+                    b_incx = to_blas_int(1)
+                    ii = idamax(b_n, vl(ki, is), b_incx)+ki-1
                     remax = one/abs(vl(ii, is))
                     b_n = to_blas_int(n-ki+1)
                     b_incx = to_blas_int(1)
@@ -912,7 +918,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                                    b_incy)
                     end if
 !
-                    ii = idamax(n, vl(1, ki), 1)
+                    b_n = to_blas_int(n)
+                    b_incx = to_blas_int(1)
+                    ii = idamax(b_n, vl(1, ki), b_incx)
                     remax = one/abs(vl(ii, ki))
                     b_n = to_blas_int(n)
                     b_incx = to_blas_int(1)

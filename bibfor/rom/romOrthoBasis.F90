@@ -115,8 +115,14 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
         AS_ALLOCATE(vc=vc_new_mode1, size=nbEqua)
         call romAlgoMGS(nbMode, nbEqua, 'C', fieldIden, resultName,&
                         vc_mode_in=vc_new_mode, vc_mode_out=vc_new_mode1)
-        normc_new_mode = sqrt(zdotc(nbEqua, vc_new_mode, 1, vc_new_mode, 1))
-        normc_new_mode1 = sqrt(zdotc(nbEqua, vc_new_mode1, 1, vc_new_mode1, 1))
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normc_new_mode = sqrt(zdotc(b_n, vc_new_mode, b_incx, vc_new_mode, b_incy))
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normc_new_mode1 = sqrt(zdotc(b_n, vc_new_mode1, b_incx, vc_new_mode1, b_incy))
         if (real(normc_new_mode1) .gt. 0.717*real(normc_new_mode)) then
             vc_new_mode(1:nbEqua) = vc_new_mode1(1:nbEqua)/normc_new_mode1
             AS_DEALLOCATE(vc=vc_new_mode1)
@@ -124,7 +130,10 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
             AS_ALLOCATE(vc=vc_new_mode2, size=nbEqua)
             call romAlgoMGS(nbMode, nbEqua, 'C', fieldIden, resultName,&
                             vc_mode_in=vc_new_mode1, vc_mode_out=vc_new_mode2)
-            normc_new_mode2 = sqrt(zdotc(nbEqua, vc_new_mode2, 1, vc_new_mode2, 1))
+            b_n = to_blas_int(nbEqua)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            normc_new_mode2 = sqrt(zdotc(b_n, vc_new_mode2, b_incx, vc_new_mode2, b_incy))
             if (real(normc_new_mode2) .gt. 0.717*real(normc_new_mode1)) then
                 vc_new_mode(1:nbEqua) = vc_new_mode2(1:nbEqua)/normc_new_mode2
                 AS_DEALLOCATE(vc=vc_new_mode1)

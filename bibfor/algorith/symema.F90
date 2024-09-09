@@ -60,7 +60,9 @@ subroutine symema(geomi, perp, pt)
 !
 !     NORMALISATION DE PERP
     prec = 1.d-14
-    norm = dnrm2(3, perp, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    norm = dnrm2(b_n, perp, b_incx)
     if (norm .lt. prec) then
         call utmess('F', 'ALGORITH10_87')
     end if

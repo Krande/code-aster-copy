@@ -219,14 +219,22 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         b_incy = to_blas_int(1)
         call daxpy(b_n, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), b_incx, zr(ivecu1),&
                    b_incy)
-        nvec = dnrm2(ninc, zr(ivecu1), 1)
-        ratio(k) = nvec/dnrm2(ninc, zr(iups+(ordman-k+1-1)*ninc), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        nvec = dnrm2(b_n, zr(ivecu1), b_incx)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        ratio(k) = nvec/dnrm2(b_n, zr(iups+(ordman-k+1-1)*ninc), b_incx)
         if (k .gt. 1) then
             ecar(k-1) = (alpha(k-1)-alpha(k))/alpha(k-1)
         end if
     end do
-    nratio = dnrm2(nextr, ratio, 1)
-    necar = dnrm2(nextr-1, ecar, 1)
+    b_n = to_blas_int(nextr)
+    b_incx = to_blas_int(1)
+    nratio = dnrm2(b_n, ratio, b_incx)
+    b_n = to_blas_int(nextr-1)
+    b_incx = to_blas_int(1)
+    necar = dnrm2(b_n, ecar, b_incx)
     if (nratio .lt. epsbif .and. necar .lt. epsbif) then
         lbif = .true.
         b_n = to_blas_int(ninc)
@@ -247,7 +255,9 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         call dscal(b_n, ac**ordman, zr(ivecu1), b_incx)
-        nudom = dnrm2(ninc, zr(ivecu1), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        nudom = dnrm2(b_n, zr(ivecu1), b_incx)
         do k = 1, ordman
             b_n = to_blas_int(ninc)
             b_incx = to_blas_int(1)

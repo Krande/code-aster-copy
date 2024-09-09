@@ -228,7 +228,10 @@ subroutine op0072()
                 do j = 1, neq
                     zc(idvec3+j-1) = dcmplx(zr(idvect+j-1), zero)
                 end do
-                zc(iavale+i-1) = zdotc(neq, zc(idvec3), 1, zc(iadvec), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zc(iavale+i-1) = zdotc(b_n, zc(idvec3), b_incx, zc(iadvec), b_incy)
             end if
         end do
     else
@@ -297,7 +300,10 @@ subroutine op0072()
                 do j = 1, neq
                     zc(idvec3+j-1) = dcmplx(zr(idvec1+j-1), zero)
                 end do
-                zc(idvec4+i-1) = zdotc(neq, zc(idvec3), 1, zc(iadvec), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zc(idvec4+i-1) = zdotc(b_n, zc(idvec3), b_incx, zc(iadvec), b_incy)
             end if
         end do
 !

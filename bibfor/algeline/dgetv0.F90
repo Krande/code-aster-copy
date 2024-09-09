@@ -327,7 +327,9 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
         rnorm0 = ddot(b_n, resid, b_incx, workd, b_incy)
         rnorm0 = sqrt(abs(rnorm0))
     else if (bmat .eq. 'I') then
-        rnorm0 = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        rnorm0 = dnrm2(b_n, resid, b_incx)
     end if
     rnorm = rnorm0
 !
@@ -399,7 +401,9 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
         rnorm = ddot(b_n, resid, b_incx, workd, b_incy)
         rnorm = sqrt(abs(rnorm))
     else if (bmat .eq. 'I') then
-        rnorm = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        rnorm = dnrm2(b_n, resid, b_incx)
     end if
 !
 !     %--------------------------------------%

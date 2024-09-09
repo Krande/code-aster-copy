@@ -142,7 +142,9 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !
     end if
 !
-    err = dnrm2(ldv, zr(vectt), 1)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    err = dnrm2(b_n, zr(vectt), b_incx)
     b_n = to_blas_int(ldv)
     b_incx = to_blas_int(1)
     call dscal(b_n, one/err, zr(vectt), b_incx)
@@ -191,7 +193,9 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     call mppsta(zr(b), ldh, v, ldv, ddlsta,&
                 n, zr(vect2), ddlexc, indico, proj)
 !
-    err = dnrm2(ldv, zr(vect2), 1)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    err = dnrm2(b_n, zr(vect2), b_incx)
     b_n = to_blas_int(ldv)
     b_incx = to_blas_int(1)
     call dscal(b_n, one/err, zr(vect2), b_incx)
@@ -226,7 +230,9 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     call mppsta(zr(q), ldh, v, ldv, ddlsta,&
                 n, vectp, ddlexc, indico, proj)
 !
-    err = dnrm2(ldv, vectp, 1)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    err = dnrm2(b_n, vectp, b_incx)
     b_n = to_blas_int(ldv)
     b_incx = to_blas_int(1)
     call dscal(b_n, one/err, vectp, b_incx)

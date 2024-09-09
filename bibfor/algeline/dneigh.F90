@@ -247,7 +247,9 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !           %----------------------%
 !           | REAL EIGENVALUE CASE |
 !           %----------------------%
-            temp = dnrm2(n, q(1, i), 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            temp = dnrm2(b_n, q(1, i), b_incx)
             b_n = to_blas_int(n)
             b_incx = to_blas_int(1)
             call dscal(b_n, one/temp, q(1, i), b_incx)
@@ -262,7 +264,9 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !           %-------------------------------------------%
 !
             if (iconj .eq. 0) then
-                temp = dlapy2(dnrm2(n, q(1, i), 1), dnrm2(n, q(1, i+1), 1))
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                temp = dlapy2(dnrm2(b_n, q(1, i), b_incx), dnrm2(b_n, q(1, i+1), b_incx))
                 b_n = to_blas_int(n)
                 b_incx = to_blas_int(1)
                 call dscal(b_n, one/temp, q(1, i), b_incx)

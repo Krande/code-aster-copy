@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     function izamax(n, zx, incx)
-        integer, intent(in) :: n
-        complex(kind=8),intent(in) :: zx(*)
-        integer, intent(in) :: incx
-        blas_int              :: izamax
+        blas_int, intent(in) :: n
+        complex(kind=8), intent(in) :: zx(*)
+        blas_int, intent(in) :: incx
+        blas_int :: izamax
     end function izamax
 end interface

@@ -125,7 +125,9 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
         goto 1000
     end if
 !
-    xnorm = dnrm2(n-1, x, incx)
+    b_n = to_blas_int(n-1)
+    b_incx = to_blas_int(incx)
+    xnorm = dnrm2(b_n, x, b_incx)
 !
     if (xnorm .eq. zero) then
 !
@@ -155,7 +157,9 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
 !
 !           NEW BETA IS AT MOST 1, AT LEAST SAFMIN
 !
-            xnorm = dnrm2(n-1, x, incx)
+            b_n = to_blas_int(n-1)
+            b_incx = to_blas_int(incx)
+            xnorm = dnrm2(b_n, x, b_incx)
             beta = -sign(dlapy2(alpha, xnorm), alpha)
             tau = (beta-alpha)/beta
             b_n = to_blas_int(n-1)

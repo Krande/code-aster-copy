@@ -103,7 +103,9 @@ subroutine pidefo(ndim, npg, kpg, compor, fm,&
 !
 ! --- INCREMENT DE DEFORMATION PROJETE
 !
-    epsmno = dnrm2(ndimsi, epsm, 1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    epsmno = dnrm2(b_n, epsm, b_incx)
     b_n = to_blas_int(ndimsi)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)

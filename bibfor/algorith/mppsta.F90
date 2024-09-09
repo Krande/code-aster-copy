@@ -89,7 +89,9 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
         call dgemv('T', b_m, b_n, one, v,&
                    b_lda, vectt, b_incx, zero, zr(x0),&
                    b_incy)
-        temp = dnrm2(ldh, zr(x0), 1)
+        b_n = to_blas_int(ldh)
+        b_incx = to_blas_int(1)
+        temp = dnrm2(b_n, zr(x0), b_incx)
         b_n = to_blas_int(ldh)
         b_incx = to_blas_int(1)
         call dscal(b_n, one/temp, zr(x0), b_incx)
@@ -144,7 +146,9 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
 !
 !     ON NORME X0
 !
-    temp = dnrm2(ldh, zr(x0), 1)
+    b_n = to_blas_int(ldh)
+    b_incx = to_blas_int(1)
+    temp = dnrm2(b_n, zr(x0), b_incx)
     b_n = to_blas_int(ldh)
     b_incx = to_blas_int(1)
     call dscal(b_n, one/temp, zr(x0), b_incx)
@@ -192,14 +196,18 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
         call dgemv('T', b_m, b_n, one, v,&
                    b_lda, vectt, b_incx, zero, zr(x),&
                    b_incy)
-        temp = dnrm2(ldh, zr(x), 1)
+        b_n = to_blas_int(ldh)
+        b_incx = to_blas_int(1)
+        temp = dnrm2(b_n, zr(x), b_incx)
         b_n = to_blas_int(ldh)
         b_incx = to_blas_int(1)
         call dscal(b_n, one/temp, zr(x), b_incx)
         do i = 1, ldh
             zr(bounds+i-1) = zr(x0+i-1)-zr(x+i-1)
         end do
-        norm = dnrm2(ldh, zr(bounds), 1)
+        b_n = to_blas_int(ldh)
+        b_incx = to_blas_int(1)
+        norm = dnrm2(b_n, zr(bounds), b_incx)
 !
         do i = 1, ldh
             zr(x0+i-1) = zr(x+i-1)

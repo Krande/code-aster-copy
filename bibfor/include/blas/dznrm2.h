@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     function dznrm2(n, x, incx)
-        integer, intent(in) :: n
-        complex(kind=8),intent(in) :: x(*)
-        integer, intent(in) :: incx
+        blas_int, intent(in) :: n
+        complex(kind=8), intent(in) :: x(*)
+        blas_int, intent(in) :: incx
         real(kind=8) :: dznrm2
     end function dznrm2
 end interface

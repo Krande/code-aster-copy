@@ -25,7 +25,7 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_ztrsen(select, n, t, ldt, q, &
+subroutine ar_ztrsen(select, n, t, ldt, q,&
                      ldq, w, m, info)
 !  -- LAPACK ROUTINE (VERSION 2.0) --
 !     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
@@ -229,13 +229,13 @@ subroutine ar_ztrsen(select, n, t, ldt, q, &
 !
 !           SWAP THE K-TH EIGENVALUE TO POSITION KS.
 !
-            if (k .ne. ks) call ar_ztrexc('V', n, t, ldt, q, &
+            if (k .ne. ks) call ar_ztrexc('V', n, t, ldt, q,&
                                           ldq, k, ks, ierr)
         end if
     end do
 !
 !
-40  continue
+ 40 continue
 !
 !     COPY REORDERED EIGENVALUES TO W.
 !

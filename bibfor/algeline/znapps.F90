@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine znapps(n, kev, np, shift, v, &
-                  ldv, h, ldh, resid, q, &
+subroutine znapps(n, kev, np, shift, v,&
+                  ldv, h, ldh, resid, q,&
                   ldq, workl, workd)
     implicit none
 !
@@ -279,7 +279,7 @@ subroutine znapps(n, kev, np, shift, v, &
     b_lda = to_blas_int(ldq)
     b_m = to_blas_int(kplusp)
     b_n = to_blas_int(kplusp)
-    call zlaset('A', b_m, b_n, zero, one, &
+    call zlaset('A', b_m, b_n, zero, one,&
                 q, b_lda)
 !
 !     %----------------------------------------------%
@@ -303,7 +303,7 @@ subroutine znapps(n, kev, np, shift, v, &
         end if
 !
         istart = 1
-20      continue
+ 20     continue
 !
         do i = istart, kplusp-1
 !
@@ -314,13 +314,15 @@ subroutine znapps(n, kev, np, shift, v, &
 !           %----------------------------------------%
 !
             tst1 = zabs1(h(i, i))+zabs1(h(i+1, i+1))
-            if (tst1 .eq. rzero) tst1 = zlanhs('1', kplusp-jj+1, h, ldh, rbid)
+            b_lda = to_blas_int(ldh)
+            b_n = to_blas_int(kplusp-jj+1)
+            if (tst1 .eq. rzero) tst1 = zlanhs('1', b_n, h, b_lda, rbid)
 !
             if (abs(dble(h(i+1, i))) .le. max(ulp*tst1, smlnum)) then
                 if (msglvl .gt. 0) then
-                    call ivout(logfil, 1, [i], ndigit, &
+                    call ivout(logfil, 1, [i], ndigit,&
                                '_NAPPS: MATRIX SPLITTING AT ROW/COLUMN NO.')
-                    call ivout(logfil, 1, [jj], ndigit, &
+                    call ivout(logfil, 1, [jj], ndigit,&
                                '_NAPPS: MATRIX SPLITTING WITH SHIFT NUMBER.')
                     call zvout(logfil, 1, h(i+1, i), ndigit, '_NAPPS: OFF DIAGONAL ELEMENT.')
                 end if
@@ -330,7 +332,7 @@ subroutine znapps(n, kev, np, shift, v, &
             end if
         end do
         iend = kplusp
-40      continue
+ 40     continue
 !
         if (msglvl .gt. 2) then
             call ivout(logfil, 1, [istart], ndigit, '_NAPPS: START OF CURRENT BLOCK ')
@@ -449,7 +451,9 @@ subroutine znapps(n, kev, np, shift, v, &
 !        %--------------------------------------------%
 !
         tst1 = zabs1(h(i, i))+zabs1(h(i+1, i+1))
-        if (tst1 .eq. rzero) tst1 = zlanhs('1', kev, h, ldh, rbid)
+        b_lda = to_blas_int(ldh)
+        b_n = to_blas_int(kev)
+        if (tst1 .eq. rzero) tst1 = zlanhs('1', b_n, h, b_lda, rbid)
         if (dble(h(i+1, i)) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
     end do
 !
@@ -467,8 +471,8 @@ subroutine znapps(n, kev, np, shift, v, &
         b_n = to_blas_int(kplusp)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call zgemv('N', b_m, b_n, one, v, &
-                   b_lda, q(1, kev+1), b_incx, zero, workd(n+1), &
+        call zgemv('N', b_m, b_n, one, v,&
+                   b_lda, q(1, kev+1), b_incx, zero, workd(n+1),&
                    b_incy)
     end if
 !
@@ -483,8 +487,8 @@ subroutine znapps(n, kev, np, shift, v, &
         b_n = to_blas_int(kplusp-i+1)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call zgemv('N', b_m, b_n, one, v, &
-                   b_lda, q(1, kev-i+1), b_incx, zero, workd, &
+        call zgemv('N', b_m, b_n, one, v,&
+                   b_lda, q(1, kev-i+1), b_incx, zero, workd,&
                    b_incy)
         b_n = to_blas_int(n)
         b_incx = to_blas_int(1)
@@ -500,7 +504,7 @@ subroutine znapps(n, kev, np, shift, v, &
     b_lda = to_blas_int(ldv)
     b_m = to_blas_int(n)
     b_n = to_blas_int(kev)
-    call zlacpy('A', b_m, b_n, v(1, kplusp-kev+1), b_lda, &
+    call zlacpy('A', b_m, b_n, v(1, kplusp-kev+1), b_lda,&
                 v, b_ldb)
 !
 !     %--------------------------------------------------------------%
@@ -527,7 +531,7 @@ subroutine znapps(n, kev, np, shift, v, &
         b_n = to_blas_int(n)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call zaxpy(b_n, h(kev+1, kev), v(1, kev+1), b_incx, resid, &
+        call zaxpy(b_n, h(kev+1, kev), v(1, kev+1), b_incx, resid,&
                    b_incy)
     end if
 !
@@ -536,7 +540,7 @@ subroutine znapps(n, kev, np, shift, v, &
         call zvout(logfil, 1, h(kev+1, kev), ndigit, '_NAPPS: BETAK = E_(KEV+1)T*H*E_(KEV)')
         call ivout(logfil, 1, [kev], ndigit, '_NAPPS: ORDER OF THE FINAL HESSENBERG MATRIX ')
         if (msglvl .gt. 2) then
-            call zmout(logfil, kev, kev, h, ldh, &
+            call zmout(logfil, kev, kev, h, ldh,&
                        ndigit, '_NAPPS: UPDATED HESSENBERG MATRIX H FOR NEXT ITERATION')
         end if
 !

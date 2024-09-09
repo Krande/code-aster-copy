@@ -57,7 +57,10 @@ subroutine romNormalize(vect_type, vect_vale, nb_equa)
 !
     if (vect_type .eq. 'C') then
         call jeveuo(vect_vale(1:19)//'.VALE', 'E', vc=v_valec)
-        normc = zdotc(nb_equa, v_valec, 1, v_valec, 1)
+        b_n = to_blas_int(nb_equa)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normc = zdotc(b_n, v_valec, b_incx, v_valec, b_incy)
         v_valec(1:nb_equa) = v_valec(1:nb_equa)/sqrt(normc)
     else if (vect_type .eq. 'R') then
         call jeveuo(vect_vale(1:19)//'.VALE', 'E', vr=v_valer)
