@@ -56,6 +56,7 @@ om.setEntryName("IsoHardIndex");
 @LocalVariable stress H[Ns-1];         // Corresponding deviatoric kinematic hardening moduli 
 @LocalVariable Stensor depl_iwa[Ns-1]; // Increment of internal variables in the Iwan element
 @LocalVariable real ipp;               // Indicator for the largest plasticity yield criterion consistent with the calibration of the Iwan element
+@LocalVariable real lzt;               // Local zero tolerance
 
 // >>>>>>>>>>>>>>>
 // State variables
@@ -111,7 +112,7 @@ ip.setEntryName("PlasticIndicator");
     for ( unsigned short i = 0; i < Ns; i++ ) {
         R[i] = sqrt(3.)*mu*gamma[i]/(1.+1.*pow(gamma[i]/gammahyp,nhyp));
     }
-    real sum = 1./(max(1.-rho,1.e-12)*mu);
+    real sum = 1./(max(1.-rho,lzt)*mu);
 	ipp = 0;
     for ( unsigned short i = 0; i < Ns-1; i++ ) {
 		H[i] = 2./(1./((R[i+1]-R[i])/(sqrt(3.)*(gamma[i+1]-gamma[i]))-rho*mu)-sum);
@@ -149,6 +150,9 @@ ip.setEntryName("PlasticIndicator");
 			eel_mcc = eel;
 		}
 	}
+
+	// Local zero tolerance (to avoid floating point errors)
+	lzt = 1.e-12;
 }       
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -190,7 +194,7 @@ ip.setEntryName("PlasticIndicator");
 	    sig_mcc = k*trace(eel_mcc+deel_mcc)*id2+2.*rho*mu*deviator(eel_mcc+deel_mcc);
 		const stress pc_mcc = pc0*exp(-bt*(epv_mcc+depv_mcc));
 		const stress S_mcc = pc0*eta*exp(-om*(lam_mcc+dlam_mcc-epv_mcc-depv_mcc));
-		const stress Teq_mcc = sqrt(pow(sigmaeq(sig_mcc/M),2.)+pow(trace(sig_mcc)/3.+pc_mcc-S_mcc,2.));
+		const stress Teq_mcc = max(sqrt(pow(sigmaeq(sig_mcc/M),2.)+pow(trace(sig_mcc)/3.+pc_mcc-S_mcc,2.)),lzt*mu);
 		const stress Rnp = Rn*max(1.,exp(-bt*depv_mcc));
 		const stress f_mcc = Teq_mcc-(Rnp-S_mcc);
 		const Stensor n_mcc = (3.*deviator(sig_mcc)/(2.*pow(M,2.))+(trace(sig_mcc)/3.+pc_mcc-S_mcc)*id2/3.)/Teq_mcc;
@@ -245,7 +249,7 @@ ip.setEntryName("PlasticIndicator");
 
 		sig_iwa = sig-2.*rho*mu*deviator(eel_mcc+deel_mcc);
 		const stress mx = max(trace(sig_iwa)/(3.*C)+1.,0.);
-		const stress Teq_iwa = sqrt(pow(sigmaeq(sig_iwa),2.)+pow(R[ipp]*mx,2.));
+		const stress Teq_iwa = max(sqrt(pow(sigmaeq(sig_iwa),2.)+pow(R[ipp]*mx,2.)),lzt*mu);
 		const stress f_iwa = Teq_iwa-R[ipp];	
 		const Stensor n_iwa = (3.*deviator(sig_iwa)/2.+pow(R[ipp],2.)*mx*id2/(3.*C))/Teq_iwa;
 
@@ -286,7 +290,7 @@ ip.setEntryName("PlasticIndicator");
 	sig_iwa = sig-2.*rho*mu*deviator(eel_mcc+deel_mcc);
 	for (unsigned short i = 0; i < ipp; i++) {
     	const stress mx = max(trace(sig_iwa+Xn[i])/(3.*C)+1.,0.); 
-    	const stress Teqi_iwa = sqrt(pow(sigmaeq(sig_iwa+Xn[i]),2.)+pow(R[i]*mx,2.));
+    	const stress Teqi_iwa = max(sqrt(pow(sigmaeq(sig_iwa+Xn[i]),2.)+pow(R[i]*mx,2.)),lzt*mu);
 		const stress fel_iwa = Teqi_iwa-R[i];
 
 		if (fel_iwa > 0.){
