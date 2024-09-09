@@ -74,14 +74,14 @@ subroutine te0431(option, nomte)
     aster_logical :: lexc, lNonLine, lLine
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=16) :: rela_cpla, rela_comp
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
+!
     lexc = (lteatt('MODELI', 'GRC'))
 !
-    lNonLine = (option(1:9) .eq. 'FULL_MECA') .or. &
-               (option(1:9) .eq. 'RAPH_MECA') .or. &
+    lNonLine = (option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA') .or. &
                (option(1:10) .eq. 'RIGI_MECA_')
     lLine = option .eq. 'RIGI_MECA'
 !
@@ -102,14 +102,15 @@ subroutine te0431(option, nomte)
         rela_comp = ' '
         rela_cpla = ' '
         lMatr = ASTER_TRUE
-    elseif (lNonLine) then
+    else if (lNonLine) then
         call jevech('PMATERC', 'L', imate)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PCARCRI', 'L', icarcr)
         call jevech('PCOMPOR', 'L', icompo)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PDEPLMR', 'L', ideplm)
-        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                    itab=jtab)
         lgpg = max(jtab(6), 1)*jtab(7)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PVARIMP', 'L', ivarix)
@@ -117,12 +118,11 @@ subroutine te0431(option, nomte)
     else
         ASSERT(ASTER_FALSE)
     end if
-
+!
     if (lNonLine) then
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), &
-                             lMatr, lVect, &
-                             lVari, lSigm)
+        call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                             lSigm)
 ! ----- Properties of behaviour
         rela_comp = zk16(icompo-1+RELA_NAME)
         rela_cpla = zk16(icompo-1+PLANESTRESS)
@@ -140,13 +140,19 @@ subroutine te0431(option, nomte)
     end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-        call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*lgpg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 ! - PARAMETRES EN SORTIE SUPPLEMENTAIE POUR LA METHODE IMPLEX
     if (option .eq. 'RIGI_MECA_IMPLEX') then
         call jevech('PCONTXR', 'E', icontx)
 ! ------ INITIALISATION DE LA CONTRAINTE INTERPOLE CONTX=CONTM
-        call dcopy(npg, zr(icontm), 1, zr(icontx), 1)
+        b_n = to_blas_int(npg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(icontm), b_incx, zr(icontx), b_incy)
     end if
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
@@ -206,7 +212,7 @@ subroutine te0431(option, nomte)
 !
 ! --- RAPH_MECA, FULL_MECA*, RIGI_MECA_* : ON PASSE PAR LA LDC 1D
 !
-        elseif (lNonLine) then
+        else if (lNonLine) then
             sigm = zr(icontm+kpg-1)
 !
 !         CALCUL DE LA DEFORMATION DEPS11
@@ -219,9 +225,10 @@ subroutine te0431(option, nomte)
                 end do
             end do
 !
-            call nmco1d(fami, kpg, 1, zi(imate), rela_comp, rela_cpla, &
-                        option, epsm, deps, angmas, sigm, &
-                        zr(ivarim+(kpg-1)*lgpg), sig, zr(ivarip+(kpg-1)*lgpg), rig, cod(kpg))
+            call nmco1d(fami, kpg, 1, zi(imate), rela_comp, &
+                        rela_cpla, option, epsm, deps, angmas, &
+                        sigm, zr(ivarim+(kpg-1)*lgpg), sig, zr(ivarip+(kpg-1)*lgpg), rig, &
+                        cod(kpg))
             if (cod(kpg) .eq. 1) goto 900
 !
             if (lSigm) then
@@ -236,8 +243,10 @@ subroutine te0431(option, nomte)
         if (lVect) then
             do n = 1, nno
                 do i = 1, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i-1)+ &
-                                                b(i, n)*sig*zr(ipoids+kpg-1)*jac*densit
+                    zr(ivectu+(n-1)*nddl+i-1) = zr( &
+                                                ivectu+(n-1)*nddl+i-1)+b(i, &
+                                                                         n)*sig*zr(ipoids+kpg-1 &
+                                                                                   )*jac*densit
                 end do
             end do
         end if

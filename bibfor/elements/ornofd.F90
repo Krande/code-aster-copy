@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,6 +69,7 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
     integer, pointer :: mailles_triee(:) => null()
     integer, pointer :: noeuds_extrem(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !
@@ -213,7 +214,10 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
 !     -- SI VECORI EST RENSEIGNE (I.E. != 0),
 !        IL FAUT EVENTUELLEMENT RETOURNER LA LISTE
 !     ------------------------------------------------------------------
-    ps1 = ddot(3, vecori, 1, vecori, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    ps1 = ddot(b_n, vecori, b_incx, vecori, b_incy)
     if (ps1 .gt. 0.d0) then
         ASSERT(nbno .ge. 3)
         ASSERT(zi(jnoe-1+1) .eq. zi(jnoe-1+nbno))
@@ -224,16 +228,28 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
             vecta(k) = vale(3*(zi(jnoe-1+2)-1)+k)
             vecta(k) = vecta(k)-vale(3*(zi(jnoe-1+1)-1)+k)
         end do
-        ps1 = ddot(3, vecta, 1, vecori, 1)
-        ps1 = ps1/sqrt(ddot(3, vecta, 1, vecta, 1))
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ps1 = ddot(b_n, vecta, b_incx, vecori, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ps1 = ps1/sqrt(ddot(b_n, vecta, b_incx, vecta, b_incy))
 !
 !       PS2 : DDOT(VECORI,(N,N-1))/NORME((N,N-1))
         do k = 1, 3
             vecta(k) = vale(3*(zi(jnoe-1+nbno-1)-1)+k)
             vecta(k) = vecta(k)-vale(3*(zi(jnoe-1+nbno)-1)+k)
         end do
-        ps2 = ddot(3, vecta, 1, vecori, 1)
-        ps2 = ps2/sqrt(ddot(3, vecta, 1, vecta, 1))
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ps2 = ddot(b_n, vecta, b_incx, vecori, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ps2 = ps2/sqrt(ddot(b_n, vecta, b_incx, vecta, b_incy))
 !
 !       -- SI PS2 > PS1 : ON RETOURNE LA LISTE :
         if (ps2 .gt. ps1) then

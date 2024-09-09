@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dlfext(nveca, nchar, temps, neq, liad, &
                   lifo, charge, infoch, fomult, modele, &
                   mate, mateco, carele, numedd, f)
@@ -84,6 +84,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
     character(len=24) :: vechmp, vachmp, cnchmp
     real(kind=8), pointer :: f1(:) => null()
     real(kind=8), pointer :: f2(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,7 +111,8 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
 !
     if (nveca .ne. 0) then
 !
-        call fext(temps, neq, nveca, liad, lifo, f)
+        call fext(temps, neq, nveca, liad, lifo, &
+                  f)
 !
     end if
 !
@@ -130,7 +132,11 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
         call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch)
         call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=f1)
 !
-        call daxpy(neq, 1.d0, f1, 1, f, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, f1, b_incx, f, &
+                   b_incy)
 !
 ! 2.2.2. ==> -- LES DIRICHLETS
 !
@@ -151,7 +157,11 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
             call utmess('F', 'DYNALINE1_20')
         end if
 !
-        call daxpy(lonch, 1.d0, f2, 1, f, 1)
+        b_n = to_blas_int(lonch)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, f2, b_incx, f, &
+                   b_incy)
     end if
 !
     call jedetr(cnchmp)

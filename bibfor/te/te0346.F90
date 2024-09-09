@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0346(option, nomte)
 !
     use Behaviour_module, only: behaviourOption
@@ -123,10 +123,8 @@ subroutine te0346(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Get output fields
 !
@@ -147,7 +145,8 @@ subroutine te0346(option, nomte)
         call jevech('PSTRXMR', 'L', istrxm)
         gamma = zr(istrxm+3-1)
 !       calcul de pgl,xl et angp
-        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom+1), gamma, lVect, pgl, xl, angp)
+        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom+1), &
+                    gamma, lVect, pgl, xl, angp)
 !       sauvegarde des angles nautiques
         if (lVari) then
             call jevech('PSTRXPR', 'E', istrxp)
@@ -202,7 +201,8 @@ subroutine te0346(option, nomte)
             iyr2 = vale_cara(10)
             izr2 = vale_cara(11)
             rgeom(:) = 0.0d0
-            call ptkg20(b, a, xiz, xiy, iyr2, izr2, xl, ey, ez, rgeom)
+            call ptkg20(b, a, xiz, xiy, iyr2, &
+                        izr2, xl, ey, ez, rgeom)
             klv = klv+rgeom
         end if
     end if

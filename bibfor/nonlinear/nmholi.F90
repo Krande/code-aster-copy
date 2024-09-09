@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,6 +58,7 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids, &
     real(kind=8) :: dfdi(27, 3), fbid(3, 3), r
     real(kind=8) :: rac23, val(1)
     integer :: cod(1)
+    blas_int :: b_incx, b_n
 ! ------------------------------------------------------------------
 !
 !
@@ -94,7 +95,9 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids, &
         eps(1) = eps(1)-epsh
         eps(2) = eps(2)-epsh
         eps(3) = eps(3)-epsh
-        epsno = dnrm2(ndimsi, eps, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        epsno = dnrm2(b_n, eps, b_incx)
 !
 ! - CALCUL DES TERME ELEMENTAIRES
 !

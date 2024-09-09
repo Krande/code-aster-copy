@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tran75(nomres, typres, nomin, basemo)
-
+!
     use DynaGene_module
-
+!
     implicit none
 !
 !     ------------------------------------------------------------------
@@ -122,6 +122,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     character(len=8), pointer :: fdep(:) => null()
     type(DynaGene) :: dyna_gene
     character(len=4) :: kacce, kprof, kprofold
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     data blanc/'        '/
     data chamn2/'&&TRAN75.CHAMN2'/
@@ -245,7 +246,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
     else
 !         --- BASE MODALE CALCULEE PAR SOUS-STRUCTURATION
 !
-        call rsexch('F', basemo, 'DEPL', 1, chmod, ir)
+        call rsexch('F', basemo, 'DEPL', 1, chmod, &
+                    ir)
         call dismoi('NOM_GD', chmod, 'CHAM_NO', repk=nomgd)
         call dismoi('NUME_EQUA', chmod, 'CHAM_NO', repk=numeq)
         call dismoi('NOM_MAILLA', chmod, 'CHAM_NO', repk=mailla)
@@ -269,7 +271,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         multap = .true.
         valk = 'MULT_APPUI'
         if (.not. l_multi_app) call utmess('F', 'UTILITAI4_1', sk=valk)
-    elseif (monmot(2) .eq. 'OUI') then
+    else if (monmot(2) .eq. 'OUI') then
         multap = .true.
         valk = 'CORR_STAT'
         if (.not. l_corr_stat) call utmess('F', 'UTILITAI4_1', sk=valk)
@@ -281,7 +283,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !     ---   RECUPERATION DES VECTEURS DEPLACEMENT, VITESSE ET   ---
 !     --- ACCELERATION GENERALISES SUIVANT LES CHAMPS SOUHAITES ---
     call rbph01(trange, nbcham, type, itresu, nfonct, &
-                basem2, typref, typbas, tousno, multap, i_cham)
+                basem2, typref, typbas, tousno, multap, &
+                i_cham)
 !
 !     --- RECUPERATION DES NUMEROS DES NOEUDS ET DES DDLS ASSOCIES ---
 !     ---         DANS LE CAS D'UNE RESTITUTION PARTIELLE          ---
@@ -292,7 +295,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
         objve3 = '&&TRAN75.NB_NEQ      '
         objve4 = '&&TRAN75.NUME_DDL    '
         call rbph02(mailla, numddl, chmod, nomgd, neq, &
-                    nbnoeu, objve1, ncmp, objve2, objve3, objve4)
+                    nbnoeu, objve1, ncmp, objve2, objve3, &
+                    objve4)
         call jeveuo(objve1, 'L', inumno)
         call jeveuo(objve2, 'L', inocmp)
         call jeveuo(objve3, 'L', inoecp)
@@ -337,7 +341,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
     knume = '&&TRAN75.NUM_RANG'
     kinst = '&&TRAN75.INSTANT'
-    call rstran(interp, trange, ' ', 1, kinst, knume, nbinst, irou)
+    call rstran(interp, trange, ' ', 1, kinst, &
+                knume, nbinst, irou)
     if (irou .ne. 0) call utmess('F', 'UTILITAI4_24')
     call jeexin(kinst, ir)
     if (ir .gt. 0) then
@@ -370,13 +375,13 @@ subroutine tran75(nomres, typres, nomin, basemo)
         )) then
         call utmess('F', 'ALGORITH10_95')
     end if
-
+!
     call dyna_gene%init(trange(1:8))
-
+!
     if (interp(1:3) .ne. 'NON') then
         AS_ALLOCATE(vr=vectgene, size=nbmode)
     end if
-
+!
     neq0 = neq
 !
 !******** Boucle sur les champs
@@ -388,7 +393,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !            --- RECUPERATION DES DEFORMEES MODALES ---
 !
         typcha = typbas(ich)
-        call rsexch('F', basemo, typcha, 1, nomcha, ir)
+        call rsexch('F', basemo, typcha, 1, nomcha, &
+                    ir)
         nomcha = nomcha(1:19)//'.VALE'
         call jeexin(nomcha, ibid)
         if (ibid .gt. 0) then
@@ -413,7 +419,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
             tmpcha = '&&TRAN75.CHAMP'
             call dismoi('NB_EQUA', numeq, 'NUME_EQUA', repi=neq1)
             do j = 1, nbmode
-                call rsexch('F', basemo, typcha, j, nomcha, ir)
+                call rsexch('F', basemo, typcha, j, nomcha, &
+                            ir)
                 call jeexin(nomcha(1:19)//'.VALE', iexi)
 !              TOUSNO=.FALSE. => ON NE S'INTERESSE QU'AUX CHAM_NO :
                 ASSERT(iexi .gt. 0)
@@ -475,7 +482,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
             end if
 !
             iarchi = iarchi+1
-            call rsexch(' ', nomres, type(ich), iarchi, chamno, ir)
+            call rsexch(' ', nomres, type(ich), iarchi, chamno, &
+                        ir)
             if (ir .eq. 0) then
                 call utmess('A', 'ALGORITH2_64', sk=chamno)
             else if (ir .eq. 100) then
@@ -511,9 +519,10 @@ subroutine tran75(nomres, typres, nomin, basemo)
             call jeveuo(chamno, 'E', lvale)
 !
             if (leffor .or. .not. tousno) call jelira(chamno, 'LONMAX', neq)
-
+!
             if (interp(1:3) .ne. 'NON') then
-                call dyna_gene%get_values_by_disc(i_cham(ich), zr(jinst+i), length=nbinsg, vr=resu)
+                call dyna_gene%get_values_by_disc(i_cham(ich), zr(jinst+i), length=nbinsg, &
+                                                  vr=resu)
                 call dyna_gene%get_current_bloc(i_cham(ich), i_bloc)
                 call dyna_gene%get_values(dyna_gene%disc, i_bloc, vr=disc)
                 call extrac(interp, epsi, crit, nbinsg, disc, &
@@ -527,21 +536,27 @@ subroutine tran75(nomres, typres, nomin, basemo)
                         taille=taille, kcham=chamno)
             if (multap) then
                 ASSERT(kacce .ne. 'CAS3')
-                if (type(ich) .eq. 'DEPL') &
-                    call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), fdep, zr(lval2), &
-                                kacce=kacce, kprof=kprof, inst=inst, indice=indice1, taille=taille1)
-                if (type(ich) .eq. 'VITE') &
-                    call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), fvit, zr(lval2), &
-                                kacce=kacce, kprof=kprof, inst=inst, indice=indice1, taille=taille1)
-                if (type(ich) .eq. 'ACCE') &
-                    call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), facc, zr(lval2), &
-                                kacce=kacce, kprof=kprof, inst=inst, indice=indice1, taille=taille1)
-                if (type(ich) .eq. 'ACCE_ABSOLU') &
-                    call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), facc, zr(lval2), &
-                                kacce=kacce, kprof=kprof, inst=inst, indice=indice1, taille=taille1)
+                if (type(ich) .eq. 'DEPL') call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), &
+                                                       fdep, zr(lval2), kacce=kacce, kprof=kprof, &
+                                                       inst=inst, indice=indice1, taille=taille1)
+                if (type(ich) .eq. 'VITE') call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), &
+                                                       fvit, zr(lval2), kacce=kacce, kprof=kprof, &
+                                                       inst=inst, indice=indice1, taille=taille1)
+                if (type(ich) .eq. 'ACCE') call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), &
+                                                       facc, zr(lval2), kacce=kacce, kprof=kprof, &
+                                                       inst=inst, indice=indice1, taille=taille1)
+                if (type(ich) .eq. 'ACCE_ABSOLU') call mdgep3(neq, nbexci, zr(lpsdel), &
+                                                              zr(jinst+i), facc, zr(lval2), &
+                                                              kacce=kacce, kprof=kprof, &
+                                                              inst=inst, indice=indice1, &
+                                                              taille=taille1)
 !               --- VERIFICATION AU CAS OU
                 ASSERT((indice .eq. indice1) .and. (taille .eq. taille1))
-                call daxpy(neq, 1.d0, zr(lval2), 1, zr(lvale), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, 1.d0, zr(lval2), b_incx, zr(lvale), &
+                           b_incy)
             end if
 !            --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
 !            --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
@@ -550,7 +565,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 ir = 0
                 coef = 0
                 do ifonct = 1, nfonct
-                    call fointe('F', fonct(ifonct), 1, 'INST', zr(jinst+i), alpha, ier)
+                    call fointe('F', fonct(ifonct), 1, 'INST', zr(jinst+i), &
+                                alpha, ier)
                     coef = coef+alpha*direction(3*(ifonct-1)+1:3*ifonct)
                 end do
 !               --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
@@ -558,9 +574,11 @@ subroutine tran75(nomres, typres, nomin, basemo)
                     call wkvect('&&TRAN75.VECTEUR', 'V V R', neq, jvec)
                     call wkvect('&&TRAN75.VECTEUI', 'V V I', 3*neq, jddl)
                     if (tousno) then
-                        call pteddl('NUME_DDL', numddl, 3, nomcmp, neq, tabl_equa=zi(jddl))
+                        call pteddl('NUME_DDL', numddl, 3, nomcmp, neq, &
+                                    tabl_equa=zi(jddl))
                     else
-                        call pteddl('CHAM_NO', chamno, 3, nomcmp, neq, tabl_equa=zi(jddl))
+                        call pteddl('CHAM_NO', chamno, 3, nomcmp, neq, &
+                                    tabl_equa=zi(jddl))
                     end if
                 else
                     call vecini(neq, zero, zr(jvec))
@@ -576,7 +594,11 @@ subroutine tran75(nomres, typres, nomin, basemo)
 ! COM MPI sur le vecteur auxiliaire zr(jvec) que si au moins 1 ddl par processus
                 if (taille .ne. neq) call asmpi_comm_vect('MPI_SUM', 'R', nbval=neq, vr=zr(jvec))
 ! Somme du vecteur principal, zr(lvale) et du vecteur auxiliaire, zr(jvec)
-                call daxpy(neq, 1.d0, zr(jvec), 1, zr(lvale), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, 1.d0, zr(jvec), b_incx, zr(lvale), &
+                           b_incy)
 !
                 if (i .eq. nbinst-1) then
                     call jedetr('&&TRAN75.VECTEUR')
@@ -585,7 +607,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !            --- FIN PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
             end if
             call rsnoch(nomres, type(ich), iarchi)
-            call rsadpa(nomres, 'E', 1, 'INST', iarchi, 0, sjv=linst, styp=k8b)
+            call rsadpa(nomres, 'E', 1, 'INST', iarchi, &
+                        0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
 !
 !******** Fin boucle sur les instants
@@ -594,19 +617,20 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
 !******** Fin boucle sur les champs
     end do
-
+!
     if (interp(1:3) .ne. 'NON') then
         AS_DEALLOCATE(vr=vectgene)
     end if
-
+!
     call dyna_gene%free()
-
+!
 !
 !
     if (mode .eq. blanc) then
         call refdcp(basemo, nomres)
     else
-        call refdaj(' ', nomres, -1, ' ', 'INIT', ' ', ir)
+        call refdaj(' ', nomres, -1, ' ', 'INIT', &
+                    ' ', ir)
     end if
 !
 ! --- MENAGE

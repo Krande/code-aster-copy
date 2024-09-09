@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,6 +44,7 @@ subroutine symema(geomi, perp, pt)
     character(len=19) :: geomi
     real(kind=8) :: norm, prec, xd, pti(3), pt(3), perp(3), dist
     integer :: i, iadcoo, n1
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,7 +60,9 @@ subroutine symema(geomi, perp, pt)
 !
 !     NORMALISATION DE PERP
     prec = 1.d-14
-    norm = dnrm2(3, perp, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    norm = dnrm2(b_n, perp, b_incx)
     if (norm .lt. prec) then
         call utmess('F', 'ALGORITH10_87')
     end if
@@ -67,14 +70,20 @@ subroutine symema(geomi, perp, pt)
     perp(2) = perp(2)/norm
     perp(3) = perp(3)/norm
 !     LE PLAN PASSE PAR "PT"
-    xd = -ddot(3, perp, 1, pt, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    xd = -ddot(b_n, perp, b_incx, pt, b_incy)
 !
 !     BOUCLE SUR TOUS LES POINTS
     do i = 1, n1
         pti(1) = zr(iadcoo+3*(i-1)+1)
         pti(2) = zr(iadcoo+3*(i-1)+2)
         pti(3) = zr(iadcoo+3*(i-1)+3)
-        dist = ddot(3, perp, 1, pti, 1)+xd
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        dist = ddot(b_n, perp, b_incx, pti, b_incy)+xd
         zr(iadcoo+3*(i-1)+1) = -2.0d0*dist*perp(1)+pti(1)
         zr(iadcoo+3*(i-1)+2) = -2.0d0*dist*perp(2)+pti(2)
         zr(iadcoo+3*(i-1)+3) = -2.0d0*dist*perp(3)+pti(3)

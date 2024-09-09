@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0465(option, nomte)
 !
     use HHO_type
@@ -107,7 +107,7 @@ subroutine te0465(option, nomte)
         call jevech('PSOURCR', 'L', j_sour)
         VoluValuesQP(1:npg) = zr(j_sour-1+1:j_sour-1+npg)
 !
-    elseif (option .eq. 'CHAR_THER_SOUR_F') then
+    else if (option .eq. 'CHAR_THER_SOUR_F') then
         call jevech('PSOURCF', 'L', j_sour)
 !
 ! ---- Get Function Parameters
@@ -132,7 +132,7 @@ subroutine te0465(option, nomte)
         call hhoFuncFScalEvalQp(hhoQuadCell, zk8(j_sour), nbpara, nompar, valpar, &
                                 hhoCell%ndim, VoluValuesQP)
 !
-    elseif (option .eq. 'CHAR_THER_SOURNL') then
+    else if (option .eq. 'CHAR_THER_SOURNL') then
         call jevech('PSOURNL', 'L', j_sour)
         if (zk8(j_sour) (1:7) .eq. '&FOZERO') goto 999
 !
@@ -145,12 +145,15 @@ subroutine te0465(option, nomte)
 !
 ! --------- Evaluate temperature
 !
-            tg = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                 hhoQuadCell%points(1:3, ipg), temp_T_curr, cbs)
+            tg = hhoEvalScalCell( &
+                 hhoBasisCell, hhoData%cell_degree(), hhoQuadCell%points(1:3, ipg), temp_T_curr, &
+                 cbs &
+                 )
 !
 ! --------- Evaluate source
 !
-            call fointe('FM', zk8(j_sour), 1, ['TEMP'], [tg], VoluValuesQP(ipg), iret)
+            call fointe('FM', zk8(j_sour), 1, ['TEMP'], [tg], &
+                        VoluValuesQP(ipg), iret)
         end do
 !
     else

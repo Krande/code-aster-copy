@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dnapps(n, kev, np, shiftr, shifti, &
                   v, ldv, h, ldh, resid, &
                   q, ldq, workl, workd)
@@ -221,6 +221,10 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
     aster_logical :: cconj, first
     real(kind=8) :: c, f, g, h11, h12, h21, h22, h32, r, s, sigmai, sigmar
     real(kind=8) :: smlnum, ulp, unfl, u(3), t, tau, tst1
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
+    blas_int :: b_ldb
+    blas_int :: b_incv, b_ldc
 ! DUE TO CRS512      REAL*8 OVFL
 ! DUE TO CRS512      SAVE FIRST, OVFL, SMLNUM, ULP, UNFL
     save first, smlnum, ulp, unfl
@@ -273,8 +277,11 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !
 ! DUE TO CRP_102 CALL DLASET ('ALL', KPLUSP, KPLUSP, ZERO,
 ! ONE, Q, LDQ)
-    call dlaset('A', kplusp, kplusp, zero, one, &
-                q, ldq)
+    b_lda = to_blas_int(ldq)
+    b_m = to_blas_int(kplusp)
+    b_n = to_blas_int(kplusp)
+    call dlaset('A', b_m, b_n, zero, one, &
+                q, b_lda)
 !
 !     %----------------------------------------------%
 !     | QUICK RETURN IF THERE ARE NO SHIFTS TO APPLY |
@@ -356,7 +363,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !           %----------------------------------------%
 !
             tst1 = abs(h(i, i))+abs(h(i+1, i+1))
-            if (tst1 .eq. zero) tst1 = dlanhs('1', kplusp-jj+1, h, ldh, workl)
+            b_lda = to_blas_int(ldh)
+            b_n = to_blas_int(kplusp-jj+1)
+            if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h, b_lda, workl)
             if (abs(h(i+1, i)) .le. max(ulp*tst1, smlnum)) then
                 if (msglvl .gt. 0) then
                     call ivout(logfil, 1, [i], ndigit, &
@@ -512,8 +521,12 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !              | APPLY THE REFLECTOR TO THE LEFT OF H |
 !              %--------------------------------------%
 ! DUE TO CRP_102 CALL DLARF ('LEFT', NR, KPLUSP-I+1, U, 1, TAU,
-                call dlarf('L', nr, kplusp-i+1, u, 1, &
-                           tau, h(i, i), ldh, workl)
+                b_ldc = to_blas_int(ldh)
+                b_m = to_blas_int(nr)
+                b_n = to_blas_int(kplusp-i+1)
+                b_incv = to_blas_int(1)
+                call dlarf('L', b_m, b_n, u, b_incv, &
+                           tau, h(i, i), b_ldc, workl)
 !
 !              %---------------------------------------%
 !              | APPLY THE REFLECTOR TO THE RIGHT OF H |
@@ -521,16 +534,24 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !
                 ir = min(i+3, iend)
 ! DUE TO CRP_102 CALL DLARF ('RIGHT', IR, NR, U, 1, TAU,
-                call dlarf('R', ir, nr, u, 1, &
-                           tau, h(1, i), ldh, workl)
+                b_ldc = to_blas_int(ldh)
+                b_m = to_blas_int(ir)
+                b_n = to_blas_int(nr)
+                b_incv = to_blas_int(1)
+                call dlarf('R', b_m, b_n, u, b_incv, &
+                           tau, h(1, i), b_ldc, workl)
 !
 !              %-----------------------------------------------------%
 !              | ACCUMULATE THE REFLECTOR IN THE MATRIX Q,  Q <- Q*G |
 !              %-----------------------------------------------------%
 !
 ! DUE TO CRP_102 CALL DLARF ('RIGHT', KPLUSP, NR, U, 1, TAU,
-                call dlarf('R', kplusp, nr, u, 1, &
-                           tau, q(1, i), ldq, workl)
+                b_ldc = to_blas_int(ldq)
+                b_m = to_blas_int(kplusp)
+                b_n = to_blas_int(nr)
+                b_incv = to_blas_int(1)
+                call dlarf('R', b_m, b_n, u, b_incv, &
+                           tau, q(1, i), b_ldc, workl)
 !
 !              %----------------------------%
 !              | PREPARE FOR NEXT REFLECTOR |
@@ -574,9 +595,15 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !
     do j = 1, kev
         if (h(j+1, j) .lt. zero) then
-            call dscal(kplusp-j+1, -one, h(j+1, j), ldh)
-            call dscal(min(j+2, kplusp), -one, h(1, j+1), 1)
-            call dscal(min(j+np+1, kplusp), -one, q(1, j+1), 1)
+            b_n = to_blas_int(kplusp-j+1)
+            b_incx = to_blas_int(ldh)
+            call dscal(b_n, -one, h(j+1, j), b_incx)
+            b_n = to_blas_int(min(j+2, kplusp))
+            b_incx = to_blas_int(1)
+            call dscal(b_n, -one, h(1, j+1), b_incx)
+            b_n = to_blas_int(min(j+np+1, kplusp))
+            b_incx = to_blas_int(1)
+            call dscal(b_n, -one, q(1, j+1), b_incx)
         end if
     end do
 !
@@ -589,7 +616,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !        %--------------------------------------------%
 !
         tst1 = abs(h(i, i))+abs(h(i+1, i+1))
-        if (tst1 .eq. zero) tst1 = dlanhs('1', kev, h, ldh, workl)
+        b_lda = to_blas_int(ldh)
+        b_n = to_blas_int(kev)
+        if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h, b_lda, workl)
         if (h(i+1, i) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
     end do
 !
@@ -601,9 +630,16 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !     | OF H WOULD BE ZERO AS IN EXACT ARITHMETIC.      |
 !     %-------------------------------------------------%
 !
-    if (h(kev+1, kev) .gt. zero) call dgemv('N', n, kplusp, one, v, &
-                                            ldv, q(1, kev+1), 1, zero, workd(n+1), &
-                                            1)
+    if (h(kev+1, kev) .gt. zero) then
+        b_lda = to_blas_int(ldv)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(kplusp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, one, v, &
+                   b_lda, q(1, kev+1), b_incx, zero, workd(n+1), &
+                   b_incy)
+    end if
 !
 !     %----------------------------------------------------------%
 !     | COMPUTE COLUMN 1 TO KEV OF (V*Q) IN BACKWARD ORDER       |
@@ -611,24 +647,41 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !     %----------------------------------------------------------%
 !
     do i = 1, kev
-        call dgemv('N', n, kplusp-i+1, one, v, &
-                   ldv, q(1, kev-i+1), 1, zero, workd, &
-                   1)
-        call dcopy(n, workd, 1, v(1, kplusp-i+1), 1)
+        b_lda = to_blas_int(ldv)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(kplusp-i+1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, one, v, &
+                   b_lda, q(1, kev-i+1), b_incx, zero, workd, &
+                   b_incy)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workd, b_incx, v(1, kplusp-i+1), b_incy)
     end do
 !
 !     %-------------------------------------------------%
 !     |  MOVE V(:,KPLUSP-KEV+1:KPLUSP) INTO V(:,1:KEV). |
 !     %-------------------------------------------------%
 !
-    call dlacpy('A', n, kev, v(1, kplusp-kev+1), ldv, &
-                v, ldv)
+    b_ldb = to_blas_int(ldv)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(kev)
+    call dlacpy('A', b_m, b_n, v(1, kplusp-kev+1), b_lda, &
+                v, b_ldb)
 !
 !     %--------------------------------------------------------------%
 !     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |
 !     %--------------------------------------------------------------%
 !
-    if (h(kev+1, kev) .gt. zero) call dcopy(n, workd(n+1), 1, v(1, kev+1), 1)
+    if (h(kev+1, kev) .gt. zero) then
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workd(n+1), b_incx, v(1, kev+1), b_incy)
+    end if
 !
 !     %-------------------------------------%
 !     | UPDATE THE RESIDUAL VECTOR:         |
@@ -638,9 +691,16 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !     |    BETAK = E_(KEV+1)'*H*E_(KEV)     |
 !     %-------------------------------------%
 !
-    call dscal(n, q(kplusp, kev), resid, 1)
-    if (h(kev+1, kev) .gt. zero) call daxpy(n, h(kev+1, kev), v(1, kev+1), 1, resid, &
-                                            1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, q(kplusp, kev), resid, b_incx)
+    if (h(kev+1, kev) .gt. zero) then
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, h(kev+1, kev), v(1, kev+1), b_incx, resid, &
+                   b_incy)
+    end if
 !
     if (msglvl .gt. 1) then
         call dvout(logfil, 1, q(kplusp, kev), ndigit, '_NAPPS: SIGMAK = (E_(KEV+P)T*Q)*E_(KEV)')

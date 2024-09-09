@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,27 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dgesdd(jobz, m, n, a, lda,&
                       s, u, ldu, vt, ldvt,&
                       work, lwork, iwork, info)
-        integer, intent(in) :: ldvt
-        integer, intent(in) :: ldu
-        integer, intent(in) :: lda
-        character(len=1) ,intent(in) :: jobz
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        real(kind=8) ,intent(inout) :: a(lda, *)
-        real(kind=8) ,intent(out) :: s(*)
-        real(kind=8) ,intent(out) :: u(ldu, *)
-        real(kind=8) ,intent(out) :: vt(ldvt, *)
-        real(kind=8) ,intent(out) :: work(*)
-        integer, intent(in) :: lwork
+        blas_int, intent(in) :: ldvt
+        blas_int, intent(in) :: ldu
+        blas_int, intent(in) :: lda
+        character(len=1), intent(in) :: jobz
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        real(kind=8), intent(inout) :: a(lda, *)
+        real(kind=8), intent(out) :: s(*)
+        real(kind=8), intent(out) :: u(ldu, *)
+        real(kind=8), intent(out) :: vt(ldvt, *)
+        real(kind=8), intent(out) :: work(*)
+        blas_int, intent(in) :: lwork
         blas_int ,intent(out) :: iwork(*)
         blas_int, intent(out) :: info
     end subroutine dgesdd

@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lcmmjg(nmat, nbcomm, cpmono, hsr, &
-                  dt, nvi, vind, yd, dy, &
-                  itmax, toler, materf, sigf, fkooh, &
-                  nfs, nsg, toutms, pgl, msnst, &
-                  gamsns, dfpdga, iret)
+!
+subroutine lcmmjg(nmat, nbcomm, cpmono, hsr, dt, &
+                  nvi, vind, yd, dy, itmax, &
+                  toler, materf, sigf, fkooh, nfs, &
+                  nsg, toutms, pgl, msnst, gamsns, &
+                  dfpdga, iret)
 ! aslint: disable=W1306,W1504
     implicit none
 !     MONOCRISTAL : POUR LE CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE
@@ -64,6 +64,7 @@ subroutine lcmmjg(nmat, nbcomm, cpmono, hsr, &
     real(kind=8) :: expbp(nsg), yd(*), msnst(3, 3, nsg), dalpha, dgamma
     character(len=16) :: nomfam
     character(len=24) :: cpmono(5*nmat+1)
+    blas_int :: b_incx, b_incy, b_n
 !     ----------------------------------------------------------------
 !
 !     NSFA : debut de la famille IFA dans DY et YD, YF
@@ -80,16 +81,19 @@ subroutine lcmmjg(nmat, nbcomm, cpmono, hsr, &
         call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
                     ns, ms, 0, q)
         do is = 1, nbsys
-            call caltau(ifa, is, sigf, fkooh, &
-                        nfs, nsg, toutms, taus, mus, &
-                        msnst(1, 1, is))
+            call caltau(ifa, is, sigf, fkooh, nfs, &
+                        nsg, toutms, taus, mus, msnst(1, 1, is))
             call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
                         hsr, nsfv, nsfa, ifa, nbsys, &
                         is, dt, nvi, vind, yd, &
                         dy, itmax, toler, materf, expbp, &
                         taus, dalpha, dgamma, dp, crit, &
                         sgns, rp, iret)
-            call daxpy(9, dgamma, msnst(1, 1, is), 1, gamsns, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, dgamma, msnst(1, 1, is), b_incx, gamsns, &
+                       b_incy)
         end do
         do is = 1, nbsys
             call caldfp(msnst(1, 1, is), gamsns, dfpdga(1, 1, is), iret)

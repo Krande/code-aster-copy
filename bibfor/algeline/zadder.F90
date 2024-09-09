@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,7 @@ subroutine zadder(uplo, n, alpha, x, incx, &
     complex(kind=8) :: temp, temp1, temp2, temp3, temp4
     aster_logical :: upper
     real(kind=8) :: dble
+    blas_int :: b_incx, b_incy, b_n
 !
     if (n .eq. 0 .or. alpha .eq. 0.0d0) goto 9000
 !
@@ -54,19 +55,31 @@ subroutine zadder(uplo, n, alpha, x, incx, &
         temp = alpha*dconjg(x(ix))
         if (upper) then
             if (incx .ge. 0) then
-                call zaxpy(j-1, temp, x, incx, a(lda*(j-1)+1), &
-                           1)
+                b_n = to_blas_int(j-1)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, temp, x, b_incx, a(lda*(j-1)+1), &
+                           b_incy)
             else
-                call zaxpy(j-1, temp, x(ix-incx), incx, a(lda*(j-1)+1), &
-                           1)
+                b_n = to_blas_int(j-1)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, temp, x(ix-incx), b_incx, a(lda*(j-1)+1), &
+                           b_incy)
             end if
         else
             if (incx .ge. 0) then
-                call zaxpy(n-j, temp, x(ix+incx), incx, a(lda*(j-1)+j+1), &
-                           1)
+                b_n = to_blas_int(n-j)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, temp, x(ix+incx), b_incx, a(lda*(j-1)+j+1), &
+                           b_incy)
             else
-                call zaxpy(n-j, temp, x, incx, a(lda*(j-1)+j+1), &
-                           1)
+                b_n = to_blas_int(n-j)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, temp, x, b_incx, a(lda*(j-1)+j+1), &
+                           b_incy)
             end if
         end if
         temp1 = a(lda*(j-1)+j)

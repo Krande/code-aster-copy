@@ -265,14 +265,14 @@ subroutine te0300(option, nomte)
             yno2 = zr(igeom+3)
             d1 = ( &
                  ( &
-                 xno1-zr(ifond-1+1))*(xno1-zr(ifond-1+1)))+((yno1-zr(ifond-1+2))*(yno1-zr(i&
-                 &fond-1+2) &
+                 xno1-zr(ifond-1+1))*(xno1-zr(ifond-1+1)))+((yno1-zr(ifond-1+2))*(yno1-zr(ifond-1&
+                 &+2) &
                  ) &
                  )
             d2 = ( &
                  ( &
-                 xno2-zr(ifond-1+1))*(xno2-zr(ifond-1+1)))+((yno2-zr(ifond-1+2))*(yno2-zr(i&
-                 &fond-1+2) &
+                 xno2-zr(ifond-1+1))*(xno2-zr(ifond-1+1)))+((yno2-zr(ifond-1+2))*(yno2-zr(ifond-1&
+                 &+2) &
                  ) &
                  )
             if (d2 .gt. d1) then

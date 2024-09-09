@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0445(nomopt, nomte)
 !
     use HHO_type
@@ -59,6 +59,7 @@ subroutine te0445(nomopt, nomte)
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs_rigi, rhs_mass, rhs
     real(kind=8) :: theta, dtime
     aster_logical :: laxis
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --- Get HHO informations
 !
@@ -96,8 +97,8 @@ subroutine te0445(nomopt, nomte)
 !
 ! --- Compute local rigidity contribution
 !
-    call hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, nomopt, gradfull, stab, &
-                          fami_rigi, rhs=rhs_rigi)
+    call hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, nomopt, gradfull, &
+                          stab, fami_rigi, rhs=rhs_rigi)
 !
 ! --- Compute local mass contribution
 !
@@ -110,8 +111,16 @@ subroutine te0445(nomopt, nomte)
     theta = zr(itemps+2)
 !
     rhs = 0.d0
-    call daxpy(cbs, 1.d0/dtime, rhs_mass, 1, rhs, 1)
-    call daxpy(total_dofs, -(1.d0-theta), rhs_rigi, 1, rhs, 1)
+    b_n = to_blas_int(cbs)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0/dtime, rhs_mass, b_incx, rhs, &
+               b_incy)
+    b_n = to_blas_int(total_dofs)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -(1.d0-theta), rhs_rigi, b_incx, rhs, &
+               b_incy)
 !
 ! --- Save rhs
 !

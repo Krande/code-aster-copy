@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lceigv(fami, kpg, ksp, ndim, neps, &
                   imate, epsm, deps, vim, option, &
                   sig, vip, dsidep)
@@ -75,6 +75,7 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps, &
     real(kind=8) :: r, c, grad(ndim), ktg(6, 6, 4), apg, lag, valnl(2)
     character(len=1) :: poum
     character(len=16) :: nomnl(2)
+    blas_int :: b_incx, b_incy, b_n
     parameter(rigmin=1.d-5)
     parameter(told=1.d-6)
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
@@ -115,10 +116,10 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps, &
 !
 ! -- INITIALISATION
 !
-    call lceib1(fami, kpg, ksp, imate, &
-                ndim, epsm, sref, sechm, hydrm, &
-                t, lambda, deuxmu, epsth, kdess, &
-                bendo, gamma, seuil)
+    call lceib1(fami, kpg, ksp, imate, ndim, &
+                epsm, sref, sechm, hydrm, t, &
+                lambda, deuxmu, epsth, kdess, bendo, &
+                gamma, seuil)
 !
     call rcvalb(fami, kpg, ksp, poum, imate, &
                 ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
@@ -138,8 +139,7 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps, &
 !
     if (resi) then
         do k = 1, ndimsi
-            eps(k) = epsm(k)+ &
-                     deps(k)-kron(k)*(epsth(2)-kdess*(sref-sechp)-bendo*hydrp)
+            eps(k) = epsm(k)+deps(k)-kron(k)*(epsth(2)-kdess*(sref-sechp)-bendo*hydrp)
         end do
         apg = epsm(ndimsi+1)+deps(ndimsi+1)
         lag = epsm(ndimsi+2)+deps(ndimsi+2)
@@ -196,7 +196,10 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps, &
             sigel(k) = sigel(k)+deuxmu*epsp(k)
         end if
     end do
-    ener = 0.5d0*ddot(3, epsp, 1, sigel, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    ener = 0.5d0*ddot(b_n, epsp, b_incx, sigel, b_incy)
 !
 !
 ! -- CALCUL (OU RECUPERATION) DE L'ENDOMMAGEMENT
@@ -388,8 +391,8 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps, &
                         rtemp2 = 0.d0
                         do m = 1, 3
                             do n = 1, 3
-                                rtemp2 = rtemp2+vecp(k, m)*vecp(i, n)* &
-                                         vecp(j, n)*vecp(l, m)*dspdep(n, m)
+                                rtemp2 = rtemp2+vecp(k, m)*vecp(i, n)*vecp(j, n)*vecp(l, m)*dspd&
+                                         &ep(n, m)
                             end do
                         end do
                         rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 2)*vecp(k, 1)*vecp(l, 2)*dspdep(4, 4)
@@ -398,8 +401,7 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps, &
                         rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 1)*vecp(k, 3)*vecp(l, 1)*dspdep(5, 5)
                         rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 3)*vecp(k, 2)*vecp(l, 3)*dspdep(6, 6)
                         rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 2)*vecp(k, 3)*vecp(l, 2)*dspdep(6, 6)
-                        ktg(t(i, j), t(k, l), 1) = ktg(t(i, j), t(k, l), 1)+ &
-                                                   rtemp2*rtemp4
+                        ktg(t(i, j), t(k, l), 1) = ktg(t(i, j), t(k, l), 1)+rtemp2*rtemp4
                     end if
                 end do
             end do

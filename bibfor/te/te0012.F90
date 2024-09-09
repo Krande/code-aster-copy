@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0012(option, nomte)
 !
     use THM_type
@@ -74,12 +74,13 @@ subroutine te0012(option, nomte)
     integer :: mecani(5), press1(7), press2(7), tempe(5), second(5), idec
     aster_logical, parameter :: l_vf = ASTER_FALSE
     type(THM_DS) :: ds_thm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
     fami = 'MASS'
-    call elrefe_info(fami=fami, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+    call elrefe_info(fami=fami, nno=nno, nnos=nnos, npg=npg, jpoids=ipoids, &
+                     jvf=ivf, jdfde=idfde)
     nddl = 3*nno
     nvec = nddl*(nddl+1)/2
 !
@@ -89,9 +90,9 @@ subroutine te0012(option, nomte)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_vf, 3, &
-                    mecani, press1, press2, tempe, second)
-
+    call thmGetGene(ds_thm, l_vf, 3, mecani, press1, &
+                    press2, tempe, second)
+!
     if (lteatt('TYPMOD2', 'THM')) then
         idec = press1(1)+press2(1)+tempe(1)
     else
@@ -102,7 +103,7 @@ subroutine te0012(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
-
+!
     a(:, :, :, :) = 0.0d0
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
@@ -298,7 +299,10 @@ subroutine te0012(option, nomte)
             end do
             call vecma(matv, nvec, matp, nddl)
             call pmavec('ZERO', nddl, matp, zr(ivite), masvit)
-            zr(iecin) = .5d0*ddot(nddl, zr(ivite), 1, masvit, 1)
+            b_n = to_blas_int(nddl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(iecin) = .5d0*ddot(b_n, zr(ivite), b_incx, masvit, b_incy)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=idepl)
             if (iret .eq. 0) then
@@ -320,7 +324,10 @@ subroutine te0012(option, nomte)
                 end do
                 call vecma(matv, nvec, matp, nddl)
                 call pmavec('ZERO', nddl, matp, zr(idepl), masdep)
-                zr(iecin) = .5d0*ddot(nddl, zr(idepl), 1, masdep, 1)*zr(ifreq)
+                b_n = to_blas_int(nddl)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(iecin) = .5d0*ddot(b_n, zr(idepl), b_incx, masdep, b_incy)*zr(ifreq)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
             end if

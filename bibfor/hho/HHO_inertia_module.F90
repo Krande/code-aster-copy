@@ -64,10 +64,12 @@ contains
 !   In hhoCell     : the current HHO Cell
 ! ---------------------------------------------------------------------------------
 !
-        type(HHO_quadrature)  :: hhoQuad
+        type(HHO_quadrature) :: hhoQuad
         integer :: ipg, idim
         integer(kind=4) :: info
         real(kind=8) :: coor(3), evalues(3), work(50)
+        blas_int :: b_lda, b_lwork, b_n
+        blas_int :: b_incx
 !
         axes = 0.d0
 !
@@ -78,12 +80,20 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
             coor = hhoCell%barycenter-hhoQuad%points(1:3, ipg)
-            call dsyr('U', hhoCell%ndim, hhoQuad%weights(ipg), coor, 1, axes, 3)
+            b_n = to_blas_int(hhoCell%ndim)
+            b_incx = to_blas_int(1)
+            b_lda = to_blas_int(3)
+            call dsyr('U', b_n, hhoQuad%weights(ipg), coor, b_incx, &
+                      axes, b_lda)
         end do
 !
 ! ----- Compute eigenvector
         evalues = 0.d0
-        call dsyev('V', 'U', hhoCell%ndim, axes, 3, evalues, work, 50, info)
+        b_n = to_blas_int(hhoCell%ndim)
+        b_lda = to_blas_int(3)
+        b_lwork = to_blas_int(50)
+        call dsyev('V', 'U', b_n, axes, b_lda, &
+                   evalues, work, b_lwork, info)
         ASSERT(info == 0)
 !
         do idim = 1, hhoCell%ndim
@@ -110,10 +120,12 @@ contains
 !   In hhoFace     : the current HHO Face
 ! ---------------------------------------------------------------------------------
 !
-        type(HHO_quadrature)  :: hhoQuad
+        type(HHO_quadrature) :: hhoQuad
         integer :: ipg, idim
         integer(kind=4) :: info
         real(kind=8) :: coor(3), evalues(3), work(50), axes_3d(3, 3)
+        blas_int :: b_lda, b_lwork, b_n
+        blas_int :: b_incx
 !
         axes = 0.d0
         axes_3d = 0.d0
@@ -129,12 +141,20 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
                 coor = hhoFace%barycenter-hhoQuad%points(1:3, ipg)
-                call dsyr('U', hhoFace%ndim+1, hhoQuad%weights(ipg), coor, 1, axes_3d, 3)
+                b_n = to_blas_int(hhoFace%ndim+1)
+                b_incx = to_blas_int(1)
+                b_lda = to_blas_int(3)
+                call dsyr('U', b_n, hhoQuad%weights(ipg), coor, b_incx, &
+                          axes_3d, b_lda)
             end do
 !
 ! ----- Compute eigenvector
             evalues = 0.d0
-            call dsyev('V', 'U', hhoFace%ndim+1, axes_3d, 3, evalues, work, 50, info)
+            b_n = to_blas_int(hhoFace%ndim+1)
+            b_lda = to_blas_int(3)
+            b_lwork = to_blas_int(50)
+            call dsyev('V', 'U', b_n, axes_3d, b_lda, &
+                       evalues, work, b_lwork, info)
             ASSERT(info == 0)
             ASSERT(minloc(evalues(1:hhoFace%ndim+1), dim=1) == 1)
             if (abs(evalues(1))/maxval(evalues) > 1.d-10) then

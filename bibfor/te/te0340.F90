@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ subroutine te0340(option, nomte)
     real(kind=8) :: tang(3, 3), a, geom(3, 3)
     character(len=16) :: defo_comp, rela_comp, rela_cpla
     aster_logical :: lVect, lMatr, lVari, lSigm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,12 +81,10 @@ subroutine te0340(option, nomte)
 ! - FONCTIONS DE FORME
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', &
-                     jvf=ivf1, jdfde=idf1)
-    call elrefe_info(elrefe=lielrf(1), fami='NOEU', nno=nno1, &
-                     npg=npgn, jdfde=idf1n)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', nno=nno2, &
-                     npg=npg, jpoids=iw, jvf=ivf2)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', jvf=ivf1, jdfde=idf1)
+    call elrefe_info(elrefe=lielrf(1), fami='NOEU', nno=nno1, npg=npgn, jdfde=idf1n)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', nno=nno2, npg=npg, jpoids=iw, &
+                     jvf=ivf2)
     ndim = 3
     nddl1 = 5
 !
@@ -96,7 +95,7 @@ subroutine te0340(option, nomte)
 !
     typmod(1) = '1D'
     typmod(2) = ' '
-
+!
 !
 ! - Get input fields
 !
@@ -114,10 +113,8 @@ subroutine te0340(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Properties of behaviour
 !
@@ -133,12 +130,13 @@ subroutine te0340(option, nomte)
                 geom(i, ino) = zr(igeom-1+(ino-1)*ndim+i)
             end do
         end do
-    elseif (defo_comp .eq. 'PETIT_REAC') then
+    else if (defo_comp .eq. 'PETIT_REAC') then
         do ino = 1, nno1
             do i = 1, ndim
-                geom(i, ino) = zr(igeom-1+(ino-1)*ndim+i) &
-                               +zr(iddlm-1+(ino-1)*nddl1+i) &
-                               +zr(iddld-1+(ino-1)*nddl1+i)
+                geom(i, ino) = zr( &
+                               igeom-1+(ino-1)*ndim+i)+zr(iddlm-1+(ino-1)*nddl1+i)+zr(iddld-1+(&
+                               &ino-1)*nddl1+i &
+                               )
             end do
         end do
     else
@@ -147,18 +145,21 @@ subroutine te0340(option, nomte)
 !
 !     DEFINITION DES TANGENTES
 !
-    call cgtang(3, nno1, npgn, geom, zr(idf1n), tang)
+    call cgtang(3, nno1, npgn, geom, zr(idf1n), &
+                tang)
 !
 !     SECTION DE LA BARRE
     a = zr(isect)
 !
 ! - ON VERIFIE QUE PVARIMR ET PVARIPR ONT LE MEME NOMBRE DE V.I. :
 !
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     lgpg1 = max(jtab(6), 1)*jtab(7)
 !
     if (lVari) then
-        call tecach('OOO', 'PVARIPR', 'E', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIPR', 'E', iret, nval=7, &
+                    itab=jtab)
         lgpg2 = max(jtab(6), 1)*jtab(7)
         ASSERT(lgpg1 .eq. lgpg2)
     end if
@@ -179,7 +180,10 @@ subroutine te0340(option, nomte)
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*lgpg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 !
 ! - FORCES INTERIEURES ET MATRICE TANGENTE

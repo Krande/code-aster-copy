@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,6 +64,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl, &
     real(kind=8) :: maxi, norm, proj, sens, temp
     real(kind=8) :: normal(3), vdir(3), vdirol(3), vnor(3)
     aster_logical :: change, vecmax
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
     call jemarq()
 !
@@ -82,12 +83,9 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl, &
 !
 !        RECUPERATION DE L'ANCIEN VECTEUR DE DIRECTION DE PROPAGATION
         if (.not. zl(jborl-1+iptbor(i))) then
-            zr(jdirol-1+1+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+ &
-                                                4)
-            zr(jdirol-1+2+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+ &
-                                                5)
-            zr(jdirol-1+3+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+ &
-                                                6)
+            zr(jdirol-1+1+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+4)
+            zr(jdirol-1+2+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+5)
+            zr(jdirol-1+3+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+6)
         end if
 !
         vdirol(1) = zr(jdirol-1+1+3*(iptbor(i)-1))
@@ -111,7 +109,10 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl, &
             normal(3) = vectn(3)
 !
 !          N.VDIROLD
-            proj = ddot(3, normal, 1, vdirol, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            proj = ddot(b_n, normal, b_incx, vdirol, b_incy)
 !
             if (proj .lt. 0) then
                 signe = 0
@@ -137,9 +138,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl, &
             do h = 1, nbfacb
 !            N.VDIROLD
                 proj = vectn( &
-                       1+3*(h-1))*vdirol(1)+vectn(2+3*(h-1))*vdirol(2)+vectn(3+3*(h-1))*vdirol&
-                       &(3 &
-                       )
+                       1+3*(h-1))*vdirol(1)+vectn(2+3*(h-1))*vdirol(2)+vectn(3+3*(h-1))*vdirol(3)
 !
                 if (proj .ge. maxi) then
                     maxi = proj
@@ -164,7 +163,10 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl, &
             call provec(vnor, normal, vdir)
 !
 !          VERIFICATION QUE VDIR EST DANS LE BON SENS
-            proj = ddot(3, vdir, 1, vdirol, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            proj = ddot(b_n, vdir, b_incx, vdirol, b_incy)
 !
             if (proj .lt. 0) sens = -1.d0
 !

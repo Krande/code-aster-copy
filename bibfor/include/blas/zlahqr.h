@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
@@ -24,18 +24,18 @@ interface
     subroutine zlahqr(wantt, wantz, n, ilo, ihi,&
                       h, ldh, w, iloz, ihiz,&
                       z, ldz, info)
-        integer, intent(in) :: ldz
-        integer, intent(in) :: ldh
+        blas_int, intent(in) :: ldz
+        blas_int, intent(in) :: ldh
         aster_logical, intent(in) :: wantt
         aster_logical, intent(in) :: wantz
-        integer, intent(in) :: n
-        integer, intent(in) :: ilo
-        integer, intent(in) :: ihi
-        complex(kind=8) ,intent(inout) :: h(ldh, *)
-        complex(kind=8) ,intent(out) :: w(*)
-        integer, intent(in) :: iloz
-        integer, intent(in) :: ihiz
-        complex(kind=8) ,intent(inout) :: z(ldz, *)
+        blas_int, intent(in) :: n
+        blas_int, intent(in) :: ilo
+        blas_int, intent(in) :: ihi
+        complex(kind=8), intent(inout) :: h(ldh, *)
+        complex(kind=8), intent(out) :: w(*)
+        blas_int, intent(in) :: iloz
+        blas_int, intent(in) :: ihiz
+        complex(kind=8), intent(inout) :: z(ldz, *)
         blas_int, intent(out) :: info
     end subroutine zlahqr
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,6 +86,7 @@ subroutine te0248(option, nomte)
     integer :: i
     character(len=16) :: defo_comp, rela_comp, rela_cpla
     aster_logical :: lVect, lMatr, lVari, lSigm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,10 +115,8 @@ subroutine te0248(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Properties of behaviour
 !
@@ -207,7 +206,10 @@ subroutine te0248(option, nomte)
         call matrot(zr(iorie), pgl)
     end if
 !
-    xlong0 = ddot(3, xd, 1, xd, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    xlong0 = ddot(b_n, xd, b_incx, xd, b_incy)
     xlong0 = sqrt(xlong0)
 !
     if (xlong0 .eq. 0.d0) then
@@ -248,13 +250,10 @@ subroutine te0248(option, nomte)
     if (rela_comp .eq. 'SANS') then
         goto 999
     end if
-
-    if ((rela_comp .eq. 'ELAS') .or. &
-        (rela_comp .eq. 'VMIS_ISOT_LINE') .or. &
-        (rela_comp .eq. 'VMIS_ISOT_TRAC') .or. &
-        (rela_comp .eq. 'CORR_ACIER') .or. &
-        (rela_comp .eq. 'VMIS_CINE_LINE') .or. &
-        (rela_comp .eq. 'RELAX_ACIER')) then
+!
+    if ((rela_comp .eq. 'ELAS') .or. (rela_comp .eq. 'VMIS_ISOT_LINE') .or. &
+        (rela_comp .eq. 'VMIS_ISOT_TRAC') .or. (rela_comp .eq. 'CORR_ACIER') .or. &
+        (rela_comp .eq. 'VMIS_CINE_LINE') .or. (rela_comp .eq. 'RELAX_ACIER')) then
 !       Récupération des caractéristiques du matériau
         epsm = (uml(4)-uml(1))/xlong0
         call nmiclb(fami, 1, 1, option, rela_comp, &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,7 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
                   geomi, typmod, option, mate, compor, &
                   lgpg, carcri, instm, instp, ddlm, &
                   ddld, angmas, sigm, vim, sigp, &
-                  vip, mini, vect, &
-                  matr, codret, &
+                  vip, mini, vect, matr, codret, &
                   lSigm, lVect, lMatr)
 !
     use Behaviour_type
@@ -129,7 +128,9 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
                                                       -1.d0, -1.d0, 2.d0, 0.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0, &
-                                                     0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), (/6, 6/))
+                                                      0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), &
+                                                    (/6, 6/))
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -184,8 +185,14 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
                     r, dff1, depld, fm, deps)
         ddivu = deps(1)+deps(2)+deps(3)
 ! ----- Pressure
-        pm = ddot(nno2, vff2(1, kpg), 1, presm, 1)
-        pd = ddot(nno2, vff2(1, kpg), 1, presd, 1)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vff2(1, kpg), b_incx, presm, b_incy)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pd = ddot(b_n, vff2(1, kpg), b_incx, presd, b_incy)
 ! ----- Kinematic - Product [F].[B]
         if (ndim .eq. 2) then
             do na = 1, nno1
@@ -201,7 +208,7 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
                     def(3, na, 1) = fm(3, 3)*vff1(na, kpg)/r
                 end do
             end if
-        elseif (ndim .eq. 3) then
+        else if (ndim .eq. 3) then
             do na = 1, nno1
                 do ia = 1, ndim
                     def(1, na, ia) = fm(ia, 1)*dff1(na, 1)
@@ -230,12 +237,11 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
         end do
 ! ----- Compute behaviour
         sigma = 0.d0
-        call nmcomp(BEHinteg, &
-                    'RIGI', kpg, 1, ndim, typmod, &
-                    mate, compor, carcri, instm, instp, &
-                    6, epsm, deps, 6, sigmPrep, &
-                    vim(1, kpg), option, angmas, &
-                    sigma, vip(1, kpg), 36, dsidep, cod(kpg))
+        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim, &
+                    typmod, mate, compor, carcri, instm, &
+                    instp, 6, epsm, deps, 6, &
+                    sigmPrep, vim(1, kpg), option, angmas, sigma, &
+                    vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
         end if
@@ -246,9 +252,11 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
         rce(1:nno2) = 0.d0
         kce(1:nno2, 1:nno2) = 0.d0
         if (mini) then
-            call calkbb(nno1, ndim, w, def, dsbdep, kbb)
+            call calkbb(nno1, ndim, w, def, dsbdep, &
+                        kbb)
             call calkbp(nno2, ndim, w, dff1, kbp)
-            call calkce(nno1, ndim, kbp, kbb, presm, presd, kce, rce)
+            call calkce(nno1, ndim, kbp, kbb, presm, &
+                        presd, kce, rce)
         end if
 ! ----- Internal forces
         if (lVect) then
@@ -259,7 +267,10 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
             do na = 1, nno1
                 do ia = 1, ndim
                     kk = vu(ia, na)
-                    t1 = ddot(2*ndim, sigma, 1, def(1, na, ia), 1)
+                    b_n = to_blas_int(2*ndim)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    t1 = ddot(b_n, sigma, b_incx, def(1, na, ia), b_incy)
                     vect(kk) = vect(kk)+w*t1
                 end do
             end do

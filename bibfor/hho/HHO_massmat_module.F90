@@ -46,11 +46,11 @@ module HHO_massmat_module
         integer :: nrows = 0, ncols = 0
         aster_logical :: isIdentity = ASTER_FALSE
         real(kind=8) :: m(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-
+!
 ! ----- member function
     contains
         procedure, pass :: compute => hhoMassMatCellScal
-
+!
     end type
 !
     type HHO_massmat_face
@@ -58,15 +58,15 @@ module HHO_massmat_module
         integer :: nrows = 0, ncols = 0
         aster_logical :: isIdentity = ASTER_FALSE
         real(kind=8) :: m(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL)
-
+!
 ! ----- member function
     contains
         procedure, pass :: compute => hhoMassMatFaceScal
-
+!
     end type
 !
     public :: HHO_massmat_cell, HHO_massmat_face
-    private  :: hhoMassMatCellScal, hhoMassMatFaceScal
+    private :: hhoMassMatCellScal, hhoMassMatFaceScal
 !    private  ::
 !
 contains
@@ -81,8 +81,8 @@ contains
 !
         class(HHO_massmat_cell), intent(inout) :: this
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in)        :: min_order
-        integer, intent(in)        :: max_order
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -95,11 +95,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        type(HHO_quadrature)  :: hhoQuad
-        real(kind=8), dimension(MSIZE_CELL_SCAL):: basisScalEval
+        type(HHO_quadrature) :: hhoQuad
+        real(kind=8), dimension(MSIZE_CELL_SCAL) :: basisScalEval
         integer :: dimMat, ipg, i
         aster_logical :: dbg
         real(kind=8) :: start, end
+        blas_int :: b_incx, b_lda, b_n
 ! --------------------------------------------------------------------------------------------------
 !
         DEBUG_TIMER(start)
@@ -134,8 +135,11 @@ contains
                 call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), min_order, max_order, &
                                          basisScalEval)
 ! --------  Eval massMat
-                call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, &
-                          1, this%m, this%max_nrows)
+                b_n = to_blas_int(dimMat)
+                b_incx = to_blas_int(1)
+                b_lda = to_blas_int(this%max_nrows)
+                call dsyr('U', b_n, hhoQuad%weights(ipg), basisScalEval, b_incx, &
+                          this%m, b_lda)
             end do
 !
 ! ----- Copy the lower part
@@ -147,9 +151,9 @@ contains
                 ASSERT(hhoIsIdentityMat(this%m, dimMat))
 #endif
             end if
-
+!
         end if
-        ! call hhoPrintMat(this%m(1:dimMat, 1:dimMat))
+! call hhoPrintMat(this%m(1:dimMat, 1:dimMat))
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoMassMatCellScal", end-start)
@@ -166,8 +170,8 @@ contains
 !
         class(HHO_massmat_face), intent(inout) :: this
         type(HHO_Face), intent(in) :: hhoFace
-        integer, intent(in)        :: min_order
-        integer, intent(in)        :: max_order
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -180,11 +184,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_face) :: hhoBasisFace
-        type(HHO_quadrature)  :: hhoQuad
+        type(HHO_quadrature) :: hhoQuad
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
         integer :: dimMat, ipg, i
         aster_logical :: dbg
         real(kind=8) :: start, end
+        blas_int :: b_incx, b_lda, b_n
 ! --------------------------------------------------------------------------------------------------
         DEBUG_TIMER(start)
 !
@@ -216,11 +221,14 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), min_order, &
-                                         max_order, basisScalEval)
+                call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), min_order, max_order, &
+                                         basisScalEval)
 ! --------  Eval massMat
-                call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, &
-                          1, this%m, this%max_nrows)
+                b_n = to_blas_int(dimMat)
+                b_incx = to_blas_int(1)
+                b_lda = to_blas_int(this%max_nrows)
+                call dsyr('U', b_n, hhoQuad%weights(ipg), basisScalEval, b_incx, &
+                          this%m, b_lda)
             end do
 !
 ! ----- Copy the lower part
@@ -234,7 +242,7 @@ contains
             end if
         end if
 !
-        ! call hhoPrintMat(this%m)
+! call hhoPrintMat(this%m)
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoMassMatFaceScal", end-start)
 !

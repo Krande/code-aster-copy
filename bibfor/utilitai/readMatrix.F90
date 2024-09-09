@@ -26,10 +26,10 @@ subroutine readMatrix(name, nrows, ncols, l_sym, mat)
 #include "jeveux.h"
 !
 !
-    character(len=*), intent(in)              :: name
-    integer, intent(in)                       :: nrows, ncols
-    aster_logical, intent(in)                 :: l_sym
-    real(kind=8), dimension(:, :), intent(inout)  :: mat
+    character(len=*), intent(in) :: name
+    integer, intent(in) :: nrows, ncols
+    aster_logical, intent(in) :: l_sym
+    real(kind=8), dimension(:, :), intent(inout) :: mat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,6 +47,7 @@ subroutine readMatrix(name, nrows, ncols, l_sym, mat)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jv_matr_out, j, ij, i
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,7 +57,10 @@ subroutine readMatrix(name, nrows, ncols, l_sym, mat)
         ASSERT(ncols == nrows)
         do j = 1, ncols
             ij = (j-1)*j/2
-            call dcopy(j, zr(jv_matr_out+ij), 1, mat(:, j), 1)
+            b_n = to_blas_int(j)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jv_matr_out+ij), b_incx, mat(:, j), b_incy)
             do i = 1, j-1
                 mat(j, i) = mat(i, j)
             end do
@@ -64,7 +68,10 @@ subroutine readMatrix(name, nrows, ncols, l_sym, mat)
     else
         do i = 1, nrows
             ij = (i-1)*ncols
-            call dcopy(ncols, zr(jv_matr_out+ij), 1, mat(i, :), 1)
+            b_n = to_blas_int(ncols)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jv_matr_out+ij), b_incx, mat(i, :), b_incy)
         end do
     end if
 !

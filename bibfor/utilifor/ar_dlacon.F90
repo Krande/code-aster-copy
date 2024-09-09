@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -111,6 +111,7 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 !     .. LOCAL SCALARS ..
     integer :: i, iter, j, jlast, jump
     real(kind=8) :: altsgn, estold, temp
+    blas_int :: b_incx, b_incy, b_n
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -164,7 +165,9 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 !     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY TRANDPOSE(A)*X.
 !
 40  continue
-    j = idamax(n, x, 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    j = idamax(b_n, x, b_incx)
     iter = 2
 !
 !     MAIN LOOP - ITERATIONS 2,3,...,ITMAX.
@@ -182,7 +185,10 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 !     X HAS BEEN OVERWRITTEN BY A*X.
 !
 70  continue
-    call dcopy(n, x, 1, v, 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, x, b_incx, v, b_incy)
     estold = est
     est = ldasum(n, v, 1)
     do i = 1, n
@@ -208,7 +214,9 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 !
 110 continue
     jlast = j
-    j = idamax(n, x, 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    j = idamax(b_n, x, b_incx)
     if ((x(jlast) .ne. abs(x(j))) .and. (iter .lt. itmax)) then
         iter = iter+1
         goto 50
@@ -232,7 +240,10 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 140 continue
     temp = two*(ldasum(n, x, 1)/dble(3*n))
     if (temp .gt. est) then
-        call dcopy(n, x, 1, v, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, x, b_incx, v, b_incy)
         est = temp
     end if
 !

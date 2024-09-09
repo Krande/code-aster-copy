@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine porea2(nno, nc, geom, gamma, pgl, &
                   xl, dispParaNameZ_)
     implicit none
@@ -50,6 +50,7 @@ subroutine porea2(nno, nc, geom, gamma, pgl, &
     real(kind=8) :: utg(14), xug(6), xd(3), xl2, alfa1, beta1
     real(kind=8) :: tet1, tet2, gamma1, ang1(3)
     character(len=16) :: dispParaName
+    blas_int :: b_incx, b_incy, b_n
 !
     ASSERT(nno .eq. 2)
     dispParaName = "PDEPLMR"
@@ -81,10 +82,19 @@ subroutine porea2(nno, nc, geom, gamma, pgl, &
         xd(i) = xug(i+3)-xug(i)
     end do
 !
-    xl2 = ddot(3, xd, 1, xd, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    xl2 = ddot(b_n, xd, b_incx, xd, b_incy)
     xl = sqrt(xl2)
-    tet1 = ddot(3, utg(4), 1, xd, 1)
-    tet2 = ddot(3, utg(nc+4), 1, xd, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    tet1 = ddot(b_n, utg(4), b_incx, xd, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    tet2 = ddot(b_n, utg(nc+4), b_incx, xd, b_incy)
     tet1 = tet1/xl
     tet2 = tet2/xl
     call angvx(xd, alfa1, beta1)

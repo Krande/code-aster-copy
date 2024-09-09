@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg, &
     integer :: i, j, ndt, ndi
     real(kind=8) :: mat(6, 6), tmp(6, 6), num(6, 6), vec(6)
     real(kind=8) :: deux, trois, val, denom
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
@@ -66,7 +67,10 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg, &
 ! --- CALCUL DU DENOMINATEUR -------------------------------------------
 ! ======================================================================
     call lglpmv('ZERO', ndt, hook, devg, vec)
-    val = ddot(ndt, dfds, 1, vec, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    val = ddot(b_n, dfds, b_incx, vec, b_incy)
     denom = sqrt(deux/trois)*dfdg*devgii-val
 ! ======================================================================
 ! --- CALCUL DE DSIG/DEPS (NON SYMETRIQUE) -----------------------------

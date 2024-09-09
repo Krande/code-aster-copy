@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ subroutine tridia(n, a, lda, d, e, &
     real(kind=8) :: bb, delta, dgamma, ratio, rho, root, tol, vr
     complex(kind=8) :: temp1
     complex(kind=8) :: vc
+    blas_int :: b_incx, b_incy, b_n
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -60,7 +61,10 @@ subroutine tridia(n, a, lda, d, e, &
 !  --- REALISATION DE N-2 TRANSFORMATIONS SIMILAIRES ---
     do k = 2, n-1
         tau(k) = 0.0d0
-        vc = zdotc(n-k+1, a(k, k-1), 1, a(k, k-1), 1)
+        b_n = to_blas_int(n-k+1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        vc = zdotc(b_n, a(k, k-1), b_incx, a(k, k-1), b_incy)
         vr = max(abs(dble(vc)), abs(dimag(vc)))
         if (vr .le. dgamma*tol**2) goto 30
         if (dble(a(k, k-1)) .eq. 0.0d0 .and. dimag(a(k, k-1)) .eq. 0.0d0) then
@@ -83,7 +87,10 @@ subroutine tridia(n, a, lda, d, e, &
         call zmvpy('LOWER', n-k+1, (1.0d0, 0.0d0), a(k, k), lda, &
                    a(k, k-1), 1, (0.0d0, 0.0d0), w(k), 1)
 !                                  RHO = U*NV
-        temp1 = zdotc(n-k+1, w(k), 1, tau(k), 1)
+        b_n = to_blas_int(n-k+1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        temp1 = zdotc(b_n, w(k), b_incx, tau(k), b_incy)
         rho = dble(temp1)
         call zader2('LOWER', n-k+1, (-1.0d0, 0.0d0), tau(k), 1, &
                     w(k), 1, a(k, k), lda)

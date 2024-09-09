@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,19 +73,20 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
     integer :: ierr
     character(len=8) :: reuse, dep, vit
     character(len=19) :: champ, cham2
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     lcrea = .true.
-
+!
 ! - Energy management
     call nonlinDSEnergyCreate(ds_energy)
     call getfac('ENERGIE', iret)
     ds_energy%l_comp = iret .gt. 0
     ds_energy%command = 'DYNA_VIBRA'
     call nonlinDSEnergyInit(result, ds_energy)
-
+!
 ! - Reuse or not ?
     call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=reuse, nbret=ndy)
 !
@@ -94,7 +95,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
 !====
 !
     if (ndy .ne. 0) then
-
+!
         call utmess('I', 'DYNAMIQUE_78', sk=reuse)
 !
 !        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
@@ -104,7 +105,10 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
             call utmess('F', 'DYNALINE1_25')
         else
             call jeveuo(champ//'.VALE', 'L', jvale)
-            call dcopy(neq, zr(jvale), 1, depini, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvale), b_incx, depini, b_incy)
         end if
         call rsexch(' ', reuse, 'VITE', nume, champ, &
                     iret)
@@ -112,7 +116,10 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
             call utmess('F', 'DYNALINE1_26')
         else
             call jeveuo(champ//'.VALE', 'L', jvale)
-            call dcopy(neq, zr(jvale), 1, vitini, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvale), b_incx, vitini, b_incy)
         end if
         call rsexch(' ', reuse, 'ACCE', nume, champ, &
                     iret)
@@ -120,25 +127,37 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
             call utmess('F', 'DYNALINE1_27')
         else
             call jeveuo(champ//'.VALE', 'L', jvale)
-            call dcopy(neq, zr(jvale), 1, accini, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvale), b_incx, accini, b_incy)
         end if
         call rsexch(' ', reuse, 'FORC_EXTE', nume, champ, &
                     iret)
         if (iret .eq. 0) then
             call jeveuo(champ//'.VALE', 'L', jvale)
-            call dcopy(neq, zr(jvale), 1, fexini, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvale), b_incx, fexini, b_incy)
         end if
         call rsexch(' ', reuse, 'FORC_AMOR', nume, champ, &
                     iret)
         if (iret .eq. 0) then
             call jeveuo(champ//'.VALE', 'L', jvale)
-            call dcopy(neq, zr(jvale), 1, famini, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvale), b_incx, famini, b_incy)
         end if
         call rsexch(' ', reuse, 'FORC_LIAI', nume, champ, &
                     iret)
         if (iret .eq. 0) then
             call jeveuo(champ//'.VALE', 'L', jvale)
-            call dcopy(neq, zr(jvale), 1, fliini, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvale), b_incx, fliini, b_incy)
         end if
 !
 !        --- CREE-T-ON UNE NOUVELLE STRUCTURE ? ---
@@ -162,12 +181,13 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 1
             cham2 = '&&COMDLT.DEPINI'
-            call vtcreb(cham2, 'V', 'R', &
-                        nume_ddlz=numedd, &
-                        nb_equa_outz=neq)
+            call vtcreb(cham2, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
-            call dcopy(neq, zr(jvale), 1, depini, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvale), b_incx, depini, b_incy)
             dep = champ(1:8)
         else
             dep = 'nul'
@@ -178,30 +198,32 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 1
             cham2 = '&&COMDLT.VITINI'
-            call vtcreb(cham2, 'V', 'R', &
-                        nume_ddlz=numedd, &
-                        nb_equa_outz=neq)
+            call vtcreb(cham2, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
-            call dcopy(neq, zr(jvale), 1, vitini, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvale), b_incx, vitini, b_incy)
             vit = champ(1:8)
         else
             vit = 'nul'
         end if
         call utmess('I', 'DYNAMIQUE_79', nk=2, valk=[dep, vit])
-
+!
 !
         call getvid('ETAT_INIT', 'ACCE', iocc=1, scal=champ, nbret=nai)
         if (nai .gt. 0) then
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 0
             cham2 = '&&COMDLT.ACCINI'
-            call vtcreb(cham2, 'V', 'R', &
-                        nume_ddlz=numedd, &
-                        nb_equa_outz=neq)
+            call vtcreb(cham2, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
-            call dcopy(neq, zr(jvale), 1, accini, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvale), b_incx, accini, b_incy)
             call utmess('I', 'DYNAMIQUE_84', sk=champ)
         else
             call utmess('I', 'DYNAMIQUE_84', sk='calculee')

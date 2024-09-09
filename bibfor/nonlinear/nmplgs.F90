@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
                   typmod, option, mate, compor, carcri, &
                   instam, instap, angmas, ddlm, ddld, &
                   sigm, lgpg, vim, sigp, vip, &
-                  matr, vect, codret, livois, &
-                  nbvois, numa, lisoco, nbsoco, &
-                  lVari, lSigm, lMatr, lVect)
+                  matr, vect, codret, livois, nbvois, &
+                  numa, lisoco, nbsoco, lVari, lSigm, &
+                  lMatr, lVect)
 !
     use Behaviour_type
     use Behaviour_module
@@ -115,6 +115,8 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
     real(kind=8) :: dirr(ndim)
     type(Behaviour_Integ) :: BEHinteg
     aster_logical, intent(in) :: lVari, lSigm, lMatr, lVect
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_ldz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -124,7 +126,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
     nddl = nno1*ndim+nno2*ndimsi
     cod = 0
     dfdi2(:, :) = 0.
-
+!
     epsgm = 0
     epsgd = 0
 !
@@ -165,7 +167,8 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
         do kvois = 1, nbvois
 !
             numav = livois(kvois)
-            call tecach('OOO', 'PVARIMP', 'L', iret, iad=vivois, numa=numav)
+            call tecach('OOO', 'PVARIMP', 'L', iret, iad=vivois, &
+                        numa=numav)
             ASSERT(iret .eq. 0)
 !
             if (nint(zr(vivois-1+5)) .eq. numa) then
@@ -214,7 +217,9 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
                     epsrss(kl) = epsrss(kl)+ddld(ll)/dble(nno2)
                 end do
             end do
-            call dscal(ndimsi-3, 1.d0/rac2, epsrss(4), 1)
+            b_n = to_blas_int(ndimsi-3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/rac2, epsrss(4), b_incx)
         end if
 !
         if (nint(vip(2, 1)) .eq. 1) then
@@ -238,7 +243,9 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
                     epsrss(kl) = epsrss(kl)+(1.0d0-scal(i)/scal(3))*ddld(ll)
                 end do
             end do
-            call dscal(ndimsi-3, 1.d0/rac2, epsrss(4), 1)
+            b_n = to_blas_int(ndimsi-3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/rac2, epsrss(4), b_incx)
         end if
 !
         sigell(1) = epsrss(1)
@@ -248,8 +255,10 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
         sigell(5) = epsrss(6)
         sigell(6) = epsrss(3)
 !
-        call dspev('V', 'U', 3, sigell, w, &
-                   z, 3, work, reuss)
+        b_ldz = to_blas_int(3)
+        b_n = to_blas_int(3)
+        call dspev('V', 'U', b_n, sigell, w, &
+                   z, b_ldz, work, reuss)
 !
         if (nini .eq. 0) then
             do i = 1, ndim
@@ -526,15 +535,24 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
 !
 !      DEFORMATIONS ET ECARTS EN FIN DE PAS DE TEMPS
 !
-        call daxpy(18, 1.d0, gepsm, 1, geps, 1)
+        b_n = to_blas_int(18)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, gepsm, b_incx, geps, &
+                   b_incy)
         do kl = 1, ndimsi
             de(kl) = epsgm(kl, 2)+epsgd(kl, 2)
         end do
 !
 !      LOI DE COMPORTEMENT
 !
-        call dcopy(ndimsi, sigm(1, g), 1, sigmam, 1)
-        call dscal(3, rac2, sigmam(4), 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigm(1, g), b_incx, sigmam, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, sigmam(4), b_incx)
         call r8inir(36, 0.d0, p, 1)
         if (nono .gt. 0.d0) then
             cod(g) = 1
@@ -543,12 +561,11 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
 !
         sigma = 0.d0
         dsidep = 0.d0
-        call nmcomp(BEHinteg, &
-                    'RIGI', g, 1, ndim, typmod, &
-                    mate, compor, carcri, instam, instap, &
-                    12, epsgm, epsgd, 6, sigmam, &
-                    vim(1, g), option, angmas, &
-                    sigma, vip(1, g), 72, dsidep, cod(g))
+        call nmcomp(BEHinteg, 'RIGI', g, 1, ndim, &
+                    typmod, mate, compor, carcri, instam, &
+                    instap, 12, epsgm, epsgd, 6, &
+                    sigmam, vim(1, g), option, angmas, sigma, &
+                    vip(1, g), 72, dsidep, cod(g))
         if (cod(g) .eq. 1) then
             goto 999
         end if
@@ -587,8 +604,13 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
         end if
 ! ----- Stress
         if (lSigm) then
-            call dcopy(ndimsi, sigma, 1, sigp(1, g), 1)
-            call dscal(ndimsi-3, 1.d0/rac2, sigp(4, g), 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, sigma, b_incx, sigp(1, g), b_incy)
+            b_n = to_blas_int(ndimsi-3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/rac2, sigp(4, g), b_incx)
         end if
 ! ----- Rigidity matrix
         if (lMatr) then
@@ -627,8 +649,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
                             kk = os+iu(j, m)
                             t1 = 0
                             do pq = 1, ndimsi
-                                t1 = t1-dsidep(kl, pq, 1)*b(pq, j, m)* &
-                                     vff2(n, g)
+                                t1 = t1-dsidep(kl, pq, 1)*b(pq, j, m)*vff2(n, g)
                             end do
                             matr(kk) = matr(kk)+wg*t1
                         end do

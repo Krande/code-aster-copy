@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,14 @@ subroutine gedisc(ndim, nno, npg, vff, geom, &
 ! OUT PG     COORDONNEES DES POINTS DE GAUSS + POIDS
 ! ----------------------------------------------------------------------
     integer :: g, i
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
     do g = 1, npg
         do i = 1, ndim
-            pg(i, g) = ddot(nno, geom(i, 1), ndim, vff(1, g), 1)
+            b_n = to_blas_int(nno)
+            b_incx = to_blas_int(ndim)
+            b_incy = to_blas_int(1)
+            pg(i, g) = ddot(b_n, geom(i, 1), b_incx, vff(1, g), b_incy)
         end do
         pg(ndim+1, g) = 0.d0
     end do

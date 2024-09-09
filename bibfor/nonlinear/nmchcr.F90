@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,7 @@ function nmchcr(dp)
     real(kind=8) :: pp, cp, gammap, mp, rppmdp, seq, s(6), grjeps, norm(6)
     real(kind=8) :: mumem, valden, kvi, etam, q0mem, qmmem, dr, depsp(6)
     real(kind=8) :: rpp, coef, denom, sdenom(6), beta1, beta2
+    blas_int :: b_incx, b_incy, b_n
     common/fchab/mat, pm, sigedv, epspm, alfam, alfa2m, deuxmu, rm, rp,&
      &    qm, q, ksim, ksi, dt, n1, n2, depsp,&
      &    beta1, beta2, ndimsi, nbvar, visc, memo, idelta
@@ -158,16 +159,27 @@ function nmchcr(dp)
         rpp = rinf+(r0-rinf)*exp(-b*pp)
     end if
 !
-    call dcopy(ndimsi, norm, 1, depsp, 1)
-    call dscal(ndimsi, dp*sqrt(1.5d0), depsp, 1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, norm, b_incx, depsp, b_incy)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, dp*sqrt(1.5d0), depsp, b_incx)
 !
     if (memo .eq. 1) then
 !
 ! --- DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES
 !
-        call dcopy(ndimsi, epspm, 1, epspp, 1)
-        call daxpy(ndimsi, 1.d0, depsp, 1, epspp, &
-                   1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epspm, b_incx, epspp, b_incy)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, depsp, b_incx, epspp, &
+                   b_incy)
 !
         grjeps = 0.0d0
         do i = 1, ndimsi
@@ -218,8 +230,14 @@ function nmchcr(dp)
     n2 = 1.d0
     if (idelta .gt. 0) then
 !        CALCUL DES BETA - N1, N2 - EFFET NON RADIAL
-        beta1 = ddot(ndimsi, alfam, 1, norm, 1)/sqrt(1.5d0)
-        beta2 = ddot(ndimsi, alfa2m, 1, norm, 1)/sqrt(1.5d0)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        beta1 = ddot(b_n, alfam, b_incx, norm, b_incy)/sqrt(1.5d0)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        beta2 = ddot(b_n, alfa2m, b_incx, norm, b_incy)/sqrt(1.5d0)
         if ((idelta .eq. 1) .or. (idelta .eq. 3)) then
             n1 = (1.d0+gammap*delta1*dp-gammap*(1.d0-delta1)*beta1)
             n1 = n1/(1.d0+gammap*dp)

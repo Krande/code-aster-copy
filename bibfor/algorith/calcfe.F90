@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,29 +41,48 @@ subroutine calcfe(nr, ndt, nvi, vind, df, &
     real(kind=8) :: vind(*), id(3, 3), det, coef, dfp(3, 3), expo, fp(3, 3)
     real(kind=8) :: fpm(3, 3), dfpmax, dfpmin, det2
     integer :: nr, ndt, iret, iopt, i, nvi
+    blas_int :: b_incx, b_incy, b_n
     data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !     ----------------------------------------------------------------
 !
     iret = 0
     iopt = 2
 !
-    call dcopy(9, vind(nvi-3-18+10), 1, fem, 1)
-    call dcopy(9, vind(nvi-3-18+1), 1, fpm, 1)
-    call daxpy(9, 1.d0, id, 1, fem, &
-               1)
-    call daxpy(9, 1.d0, id, 1, fpm, &
-               1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vind(nvi-3-18+10), b_incx, fem, b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vind(nvi-3-18+1), b_incx, fpm, b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, id, b_incx, fem, &
+               b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, id, b_incx, fpm, &
+               b_incy)
 !
     dffe = matmul(df, fem)
 !
-    call dcopy(9, gamsns, 1, dfp, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, gamsns, b_incx, dfp, b_incy)
 !
     if (iopt .eq. 1) then
 !
 !        suivant ANNAND 1996
 !
-        call daxpy(9, 1.d0, id, 1, dfp, &
-                   1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, id, b_incx, dfp, &
+                   b_incy)
 !
 !        TEST ANALOGUE A SIMO_MIEHE NMGPFI
         dfpmax = 0.d0
@@ -82,7 +101,9 @@ subroutine calcfe(nr, ndt, nvi, vind, df, &
         if (det .gt. r8prem()) then
             expo = -1.d0/3.d0
             coef = det**expo
-            call dscal(9, coef, dfp, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coef, dfp, b_incx)
         else
             iret = 1
             goto 999
@@ -94,10 +115,18 @@ subroutine calcfe(nr, ndt, nvi, vind, df, &
 !
 !        linearisation directe de exp(-dgamma.ms x ns)
 !
-        call dcopy(9, dfp, 1, dfpm, 1)
-        call dscal(9, -1.d0, dfpm, 1)
-        call daxpy(9, 1.d0, id, 1, dfpm, &
-                   1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dfp, b_incx, dfpm, b_incy)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -1.d0, dfpm, b_incx)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, id, b_incx, dfpm, &
+                   b_incy)
 !
         dfpmax = 0.d0
         dfpmin = 100.d0
@@ -115,7 +144,9 @@ subroutine calcfe(nr, ndt, nvi, vind, df, &
         if (det .gt. r8prem()) then
             expo = -1.d0/3.d0
             coef = det**expo
-            call dscal(9, coef, dfpm, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coef, dfpm, b_incx)
         else
             iret = 1
             goto 999

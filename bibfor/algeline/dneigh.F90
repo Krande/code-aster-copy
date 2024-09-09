@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -167,6 +167,8 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
     aster_logical :: select(1)
     integer :: i, iconj, msglvl
     real(kind=8) :: temp, vl(1)
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+    blas_int :: b_ldb
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -199,8 +201,12 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !     | AND THE LAST COMPONENTS OF THE SCHUR VECTORS IN BOUNDS.   |
 !     %-----------------------------------------------------------%
 ! DUE TO CRP_102 CALL DLACPY ('ALL', N, N, H, LDH, WORKL, N)
-    call dlacpy('A', n, n, h, ldh, &
-                workl, n)
+    b_ldb = to_blas_int(n)
+    b_lda = to_blas_int(ldh)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(n)
+    call dlacpy('A', b_m, b_n, h, b_lda, &
+                workl, b_ldb)
     call dlaqrb(.true._1, n, 1, n, workl, &
                 n, ritzr, ritzi, bounds, ierr)
     if (ierr .ne. 0) goto 9000
@@ -241,8 +247,12 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !           %----------------------%
 !           | REAL EIGENVALUE CASE |
 !           %----------------------%
-            temp = dnrm2(n, q(1, i), 1)
-            call dscal(n, one/temp, q(1, i), 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            temp = dnrm2(b_n, q(1, i), b_incx)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, one/temp, q(1, i), b_incx)
         else
 !
 !           %-------------------------------------------%
@@ -254,9 +264,15 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !           %-------------------------------------------%
 !
             if (iconj .eq. 0) then
-                temp = dlapy2(dnrm2(n, q(1, i), 1), dnrm2(n, q(1, i+1), 1))
-                call dscal(n, one/temp, q(1, i), 1)
-                call dscal(n, one/temp, q(1, i+1), 1)
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                temp = dlapy2(dnrm2(b_n, q(1, i), b_incx), dnrm2(b_n, q(1, i+1), b_incx))
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, one/temp, q(1, i), b_incx)
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, one/temp, q(1, i+1), b_incx)
                 iconj = 1
             else
                 iconj = 0
@@ -264,9 +280,14 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
         end if
     end do
 !
-    call dgemv('T', n, n, one, q, &
-               ldq, bounds, 1, zero, workl, &
-               1)
+    b_lda = to_blas_int(ldq)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('T', b_m, b_n, one, q, &
+               b_lda, bounds, b_incx, zero, workl, &
+               b_incy)
 !
     if (msglvl .gt. 1) then
         call dvout(logfil, n, workl, ndigit, '_NEIGH: LAST ROW OF THE EIGENVECTOR MATRIX FOR H')

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine projmr(matras, nomres, basemo, nugene, nu, &
                   neq, nbmo)
     implicit none
@@ -65,6 +65,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu, &
     integer, pointer :: smde(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
     integer, pointer :: smdi(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !
@@ -166,7 +167,10 @@ subroutine projmr(matras, nomres, basemo, nugene, nu, &
                 do j = nbj, i
 !
 ! ------------ PRODUIT SCALAIRE VECTASS * MODE
-                    pij = ddot(neq, zr(idbase+(j-1)*neq), 1, vectass2, 1)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    pij = ddot(b_n, zr(idbase+(j-1)*neq), b_incx, vectass2, b_incy)
 !
 ! ------------ STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
                     zr(ldblo+smdi(i)+j-i-1) = pij
@@ -199,7 +203,10 @@ subroutine projmr(matras, nomres, basemo, nugene, nu, &
                         .true._1)
             call zerlag(neq, deeq, vectr=vectass2)
             do i = 1, nueq
-                pij = ddot(neq, zr(idbase+(i-1)*neq), 1, vectass2, 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                pij = ddot(b_n, zr(idbase+(i-1)*neq), b_incx, vectass2, b_incy)
                 if (j .ge. i) then
                     zr(ldblo1+smdi(j)-j+i-1) = pij
                 end if

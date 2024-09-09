@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,9 +69,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
 ! VARIABLES LOCALES
     integer :: nconv, nconvg, i, j, idecal, iaux1, izero, idim1, idim2
     integer :: ifm, niv
-    real(kind=8) :: rzero
+    real(kind=8) :: rzero, res
     complex(kind=8) :: czero, dcmplx
     aster_logical :: ldebug
+    blas_int :: b_incx, b_n
 !
 ! --- INIT.
     call jemarq()
@@ -129,7 +130,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         write (ifm, *) 'INITIALISATION***************************'
         if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
+                b_n = to_blas_int(idim1)
+                b_incx = to_blas_int(1)
+                res = dnrm2(b_n, vectr(1, j), b_incx)
+                write (ifm, *) j, res
             end do
         else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
 ! --- ON NE FAIT QU'IMPRIMER LES TERMES CAR CERTAINS SONT EN 1.E+308
@@ -186,7 +190,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         write (ifm, *) 'STEP 1***************************'
         if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
+                b_n = to_blas_int(idim1)
+                b_incx = to_blas_int(1)
+                res = dnrm2(b_n, vectr(1, j), b_incx)
+                write (ifm, *) j, res
             end do
         else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1
@@ -253,7 +260,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         write (ifm, *) 'STEP 2***************************'
         if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
+                b_n = to_blas_int(idim1)
+                b_incx = to_blas_int(1)
+                res = dnrm2(b_n, vectr(1, j), b_incx)
+                write (ifm, *) j, res
             end do
         else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1
@@ -300,7 +310,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         write (ifm, *) 'STEP 3***************************'
         if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
+                b_n = to_blas_int(idim1)
+                b_incx = to_blas_int(1)
+                res = dnrm2(b_n, vectr(1, j), b_incx)
+                write (ifm, *) j, res
             end do
         else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1
@@ -327,7 +340,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         write (ifm, *) 'FINALISATION***************************'
         if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
+                b_n = to_blas_int(idim1)
+                b_incx = to_blas_int(1)
+                res = dnrm2(b_n, vectr(1, j), b_incx)
+                write (ifm, *) j, res
             end do
         else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1

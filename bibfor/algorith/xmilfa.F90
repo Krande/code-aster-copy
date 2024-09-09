@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,6 +65,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
     real(kind=8) :: pta(ndime), cosu, cosv, cosw
     real(kind=8) :: ff(27), t1(ndime), t2(ndime), sinu, rbid, t3(ndime)
     aster_logical :: courbe
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------
     zxain = xxmmvd('ZXAIN')
@@ -148,11 +149,20 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
     call xnormv(ndime, t1, rbid)
     call xnormv(ndime, t2, rbid)
     call xnormv(ndime, t3, rbid)
-    cosu = ddot(ndime, t1, 1, t2, 1)
+    b_n = to_blas_int(ndime)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cosu = ddot(b_n, t1, b_incx, t2, b_incy)
     sinu = sqrt(1-cosu**2)
 !   ON CHOISIT UNE CONVENTION DE SIGNE
-    cosv = ddot(ndime, t3, 1, t2, 1)
-    cosw = ddot(ndime, t3, 1, t1, 1)
+    b_n = to_blas_int(ndime)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cosv = ddot(b_n, t3, b_incx, t2, b_incy)
+    b_n = to_blas_int(ndime)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cosw = ddot(b_n, t3, b_incx, t1, b_incy)
     if (cosv .gt. cosw) sinu = -sinu
 !
 !   ON RAJOUTE UNE TOLE POUR EVITER DES DECOUPES TROP POURRIES

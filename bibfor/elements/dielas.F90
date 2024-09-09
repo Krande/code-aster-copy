@@ -45,13 +45,14 @@ subroutine dielas(DD, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: DD
-    integer, intent(out)          :: iret
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: imat, jdc, irep, neq, ii, jj, ifono, icontp, icontm
     real(kind=8) :: r8bid, klv(78), klc(12, 12), fl(12), dulth(12)
     character(len=8) :: k8bid
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,7 +71,10 @@ subroutine dielas(DD, iret)
             call ut2mgl(DD%nno, DD%nc, DD%pgl, zr(jdc), klv)
         end if
     else
-        call dcopy(DD%nbt, zr(jdc), 1, klv, 1)
+        b_n = to_blas_int(DD%nbt)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jdc), b_incx, klv, b_incy)
     end if
 !   calcul de la matrice tangente
     if (DD%lMatr) then
@@ -84,10 +88,10 @@ subroutine dielas(DD, iret)
     neq = DD%nno*DD%nc
     !
     if (DD%lVect .or. DD%lSigm) then
-        ! demi-matrice klv transformée en matrice pleine klc
+! demi-matrice klv transformée en matrice pleine klc
         call vecma(klv, DD%nbt, klc, neq)
-        ! calcul de fl = klc.dul (incrément d'effort)
-        !   Correction thermique : DeltaDilatation = alpha*(T+ - T-)*xl
+! calcul de fl = klc.dul (incrément d'effort)
+!   Correction thermique : DeltaDilatation = alpha*(T+ - T-)*xl
         fl(:) = 0.0
         if (abs(DD%DeltaDilatation) .gt. r8prem()) then
             dulth(:) = 0.0
@@ -102,10 +106,10 @@ subroutine dielas(DD, iret)
         end if
         call pmavec('CUMU', neq, klc, DD%dul, fl)
     end if
-    ! calcul des efforts généralisés
+! calcul des efforts généralisés
     if (DD%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (DD%nno .eq. 1) then
             do ii = 1, neq
                 zr(icontp-1+ii) = fl(ii)+zr(icontm-1+ii)
@@ -117,10 +121,10 @@ subroutine dielas(DD, iret)
             end do
         end if
     end if
-    ! calcul des forces nodales
+! calcul des forces nodales
     if (DD%lVect) then
         call jevech('PVECTUR', 'E', ifono)
-        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (DD%nno .eq. 1) then
             do ii = 1, neq
                 fl(ii) = fl(ii)+zr(icontm-1+ii)
@@ -131,7 +135,7 @@ subroutine dielas(DD, iret)
                 fl(ii+DD%nc) = fl(ii+DD%nc)+zr(icontm-1+ii+DD%nc)
             end do
         end if
-        ! forces nodales aux noeuds 1 et 2 (repère global)
+! forces nodales aux noeuds 1 et 2 (repère global)
         if (DD%nc .ne. 2) then
             call utpvlg(DD%nno, DD%nc, DD%pgl, fl, zr(ifono))
         else

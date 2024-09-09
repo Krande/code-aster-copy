@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
     integer :: i
     real(kind=8) :: coef1, coef2, coef3, demi, epsil, prosca
     real(kind=8) :: teta1, teta2, un
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     epsil = 1.d-8
     demi = 5.d-1
@@ -50,12 +51,18 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
 !
 !*** PETIK1: VECTEUR BETA (SIMO: 'A THREE-DIMENSIONAL FINITE-STRAIN ROD
 !***                       MODEL-PART 2'.)
-    teta2 = ddot(3, tetag, 1, tetag, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    teta2 = ddot(b_n, tetag, b_incx, tetag, b_incy)
     if (abs(teta2) .lt. epsil) goto 11
     teta1 = sqrt(teta2)
     call provec(tetag, tetapg, v1)
     coef1 = sin(teta1)/teta1
-    prosca = ddot(3, tetag, 1, tetapg, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    prosca = ddot(b_n, tetag, b_incx, tetapg, b_incy)
     coef2 = (un-coef1)*prosca/teta2
     coef3 = demi*(sin(demi*teta1)/(demi*teta1))**2
     do i = 1, 3

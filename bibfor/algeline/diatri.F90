@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,10 +55,14 @@ subroutine diatri(n, d, e, vector, evec, &
 !-----------------------------------------------------------------------
     integer :: i, iter, j, k, l, m
     real(kind=8) :: b, c, f, g, p, r, s, scale, tiny, tol
+    blas_int :: b_incx, b_incy, b_n
 !
     if (n .eq. 1) goto 9000
 !
-    call dcopy(n-1, e(2), 1, e(1), 1)
+    b_n = to_blas_int(n-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, e(2), b_incx, e(1), b_incy)
     e(n) = 0.0d0
 !
     tiny = 100.0d0*r8miem()
@@ -101,8 +105,13 @@ subroutine diatri(n, d, e, vector, evec, &
             d(i+1) = g+p
             g = c*r-b
 !
-            if (vector) call drot(n, evec(1, i+1), 1, evec(1, i), 1, &
-                                  c, s)
+            if (vector) then
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call drot(b_n, evec(1, i+1), b_incx, evec(1, i), b_incy, &
+                          c, s)
+            end if
 !
         end do
 !
@@ -132,16 +141,25 @@ subroutine diatri(n, d, e, vector, evec, &
         if (k .ne. i) then
             d(k) = d(i)
             d(i) = p
-            if (vector) call dswap(n, evec(1, i), 1, evec(1, k), 1)
+            if (vector) then
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dswap(b_n, evec(1, i), b_incx, evec(1, k), b_incy)
+            end if
         end if
 !
     end do
 !          --- NORMALISATION DES VECTEURS PROPRES ---
     if (vector) then
         do j = 1, n
-            i = idamax(n, evec(1, j), 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            i = idamax(b_n, evec(1, j), b_incx)
             scale = evec(i, j)
-            call dscal(n, 1.0d0/scale, evec(1, j), 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.0d0/scale, evec(1, j), b_incx)
         end do
     end if
 !

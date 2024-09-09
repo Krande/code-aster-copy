@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ subroutine nmfifn(nno, nddl, npg, wref, vff, &
 !-----------------------------------------------------------------------
     integer :: ni, kpg
     real(kind=8) :: b(3, 60), poids
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
 !
@@ -56,7 +57,10 @@ subroutine nmfifn(nno, nddl, npg, wref, vff, &
 !
         do ni = 1, nddl
 !
-            fint(ni) = fint(ni)+poids*ddot(3, b(1, ni), 1, sigma(1, kpg), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            fint(ni) = fint(ni)+poids*ddot(b_n, b(1, ni), b_incx, sigma(1, kpg), b_incy)
 !
         end do
 !

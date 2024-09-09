@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
-                  vu, vg, vp, igeom, mate, matr)
+!
+subroutine nirmtd(ndim, nno1, nno2, nno3, npg, &
+                  iw, vff2, vff3, ivf1, idff1, &
+                  vu, vg, vp, igeom, mate, &
+                  matr)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
     implicit none
@@ -72,6 +74,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
     real(kind=8) :: angl_naut(3)
     real(kind=8) :: t1, rac2, notime
     real(kind=8) :: idev(6, 6), idev2(4, 4), kr(6), kd(6)
+    blas_int :: b_incx, b_n
 !
     data kr/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
     data idev2/2.d0, -1.d0, -1.d0, 0.d0,&
@@ -102,7 +105,8 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 ! - CALCUL DE DFDI,F,EPS,R(EN AXI) ET POIDS
-        call bmatmc(g, nbsig, zr(igeom), iw, ivf1, idff1, nno1, 0.d0, w, b)
+        call bmatmc(g, nbsig, zr(igeom), iw, ivf1, &
+                    idff1, nno1, 0.d0, w, b)
 !
         do ia = 1, 2*ndim
             do ja = 1, nno1
@@ -122,18 +126,37 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
 ! - CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 ! - ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
         notime = r8vide()
-        call dmatmc('RIGI', mate, notime, '+', g, 1, angl_naut, nbsig, dsidep)
+        call dmatmc('RIGI', mate, notime, '+', g, &
+                    1, angl_naut, nbsig, dsidep)
 !
-        call dscal(2*ndim-3, rac2, dsidep(4, 1), 1)
-        call dscal(2*ndim-3, rac2, dsidep(4, 2), 1)
-        call dscal(2*ndim-3, rac2, dsidep(4, 3), 1)
-        call dscal(3, rac2, dsidep(1, 4), 1)
-        call dscal(2*ndim-3, 2.d0, dsidep(4, 4), 1)
+        b_n = to_blas_int(2*ndim-3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, dsidep(4, 1), b_incx)
+        b_n = to_blas_int(2*ndim-3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, dsidep(4, 2), b_incx)
+        b_n = to_blas_int(2*ndim-3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, dsidep(4, 3), b_incx)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, dsidep(1, 4), b_incx)
+        b_n = to_blas_int(2*ndim-3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 2.d0, dsidep(4, 4), b_incx)
         if (ndim .eq. 3) then
-            call dscal(3, rac2, dsidep(1, 5), 1)
-            call dscal(3, rac2, dsidep(1, 6), 1)
-            call dscal(3, 2.d0, dsidep(4, 5), 1)
-            call dscal(3, 2.d0, dsidep(4, 6), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, rac2, dsidep(1, 5), b_incx)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, rac2, dsidep(1, 6), b_incx)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 2.d0, dsidep(4, 5), b_incx)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 2.d0, dsidep(4, 6), b_incx)
         end if
 !
         devd(:, :) = 0.d0

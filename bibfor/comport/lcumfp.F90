@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
                   imate, compor, tinstm, tinstp, epsm, &
                   deps, sigm, vim, option, rela_plas, &
@@ -233,7 +233,8 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
     real(kind=8) :: tmaxp, tmaxm, younm, xnum
     real(kind=8) :: sigelm(6), sigelp(6), epsel(6)
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
-
+    blas_int :: b_incx, b_incy, b_n
+!
 !
 !   CALCUL DE L'INTERVALLE DE TEMPS
 !
@@ -261,8 +262,8 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
 !
 ! - Get temperatures
 !
-    call get_varc(fami, kpg, ksp, 'T', &
-                  tm, tp, tref)
+    call get_varc(fami, kpg, ksp, 'T', tm, &
+                  tp, tref)
 !
 !
 !  ------- LECTURE DES CARACTERISTIQUES ELASTIQUES
@@ -532,9 +533,8 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
 !
         if (rela_plas .eq. 'ENDO_ISOT_BETON') then
 !    MATRICE ELASTO-ENDOMMAGEE ET MISE A JOUR DE L ENDOMMAGEMENT
-            call lcldsb(fami, kpg, ksp, ndim, &
-                        imate, epsm, deps, vim(22), &
-                        'RAPH_COUP       ', tbid, &
+            call lcldsb(fami, kpg, ksp, ndim, imate, &
+                        epsm, deps, vim(22), 'RAPH_COUP       ', tbid, &
                         vip(22), dep)
         else
 !    MATRICE D ELASTICITE DE HOOKE POUR MAZARS ET UMLV SANS COUPLAGE
@@ -600,8 +600,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
             option2 = 'RAPH_COUP'
             call lcmaza(fami, kpg, ksp, ndim, typmod, &
                         imate, compor, epsm, deps, vim(22), &
-                        option2, sigp, &
-                        vip, tbid)
+                        option2, sigp, vip, tbid)
         end if
     end if
 !
@@ -621,15 +620,13 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
             end if
             call lcmaza(fami, kpg, ksp, ndim, typmod, &
                         imate, compor, epsm, deps, vim(22), &
-                        option2, tbid, &
-                        vip, dsidep)
+                        option2, tbid, vip, dsidep)
         else
             option2 = 'RIGI_COUP'
             if (option(1:9) .eq. 'RIGI_MECA') then
                 if (rela_plas .eq. 'ENDO_ISOT_BETON') then
-                    call lcldsb(fami, kpg, ksp, ndim, &
-                                imate, epsm, tbid, vim(22), &
-                                option2, tbid, &
+                    call lcldsb(fami, kpg, ksp, ndim, imate, &
+                                epsm, tbid, vim(22), option2, tbid, &
                                 tbid, dep)
                 else
                     call lcumme(youn, xnu, ifou, dep)
@@ -694,9 +691,15 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
                     end if
                 else if ((option .eq. 'RAPH_MECA') .or. (option .eq. 'FULL_MECA')) then
                     if (nint(vip(23)) .eq. 1) then
-                        call dcopy(nstrs, epsm, 1, eps, 1)
-                        call daxpy(nstrs, 1.d0, deps, 1, eps, &
-                                   1)
+                        b_n = to_blas_int(nstrs)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call dcopy(b_n, epsm, b_incx, eps, b_incy)
+                        b_n = to_blas_int(nstrs)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, 1.d0, deps, b_incx, eps, &
+                                   b_incy)
                         do i = 1, nstrs
                             epse(i) = epsm(i)+deps(i)-epsrp*kron(i)
                         end do
@@ -712,8 +715,8 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
                     if (k .ne. 3) then
                         do l = 1, nstrs
                             if (l .ne. 3) then
-                                dsidep(k, l) = dsidep(k, l)-1.d0/dsidep(3, 3)* &
-                                               dsidep(k, 3)*dsidep(3, l)
+                                dsidep(k, l) = dsidep(k, l)-1.d0/dsidep(3, 3)*dsidep(k, 3)*dsidep&
+                                               &(3, l)
                             end if
                         end do
                     end if

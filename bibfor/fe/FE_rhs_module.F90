@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,10 +53,10 @@ contains
 !
         implicit none
 !
-        type(FE_Quadrature), intent(in)     :: FEQuad
-        type(FE_Basis), intent(in)          :: FEBasis
-        real(kind=8), intent(in)            :: ValuesQP(MAX_QP)
-        real(kind=8), intent(out)           :: rhs(MAX_BS)
+        type(FE_Quadrature), intent(in) :: FEQuad
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: ValuesQP(MAX_QP)
+        real(kind=8), intent(out) :: rhs(MAX_BS)
 ! --------------------------------------------------------------------------------------------------
 !   HHO
 !
@@ -72,6 +72,7 @@ contains
         integer :: ipg
         real(kind=8), dimension(MAX_BS) :: BSEval
         real(kind=8) :: coeff
+        blas_int :: b_incx, b_incy, b_n
 !
         rhs = 0.d0
 !
@@ -82,7 +83,11 @@ contains
 !
 ! ---- rhs = rhs + weight * BSEval
             coeff = FEQuad%weights(ipg)*ValuesQP(ipg)
-            call daxpy(FEBasis%size, coeff, BSEval, 1, rhs, 1)
+            b_n = to_blas_int(FEBasis%size)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, coeff, BSEval, b_incx, rhs, &
+                       b_incy)
         end do
 !
     end subroutine

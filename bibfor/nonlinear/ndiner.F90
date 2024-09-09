@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,7 @@ subroutine ndiner(nbEqua, sddyna, hval_incr, hval_measse, cniner)
     integer :: ifm, niv
     real(kind=8) :: coefIner
     real(kind=8), pointer :: inerVale(:) => null()
+    blas_int :: b_incx, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,15 +64,17 @@ subroutine ndiner(nbEqua, sddyna, hval_incr, hval_measse, cniner)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_32')
     end if
-
+!
 ! - Coefficient
     coefIner = ndynre(sddyna, 'COEF_FORC_INER')
-
+!
 ! - Compute
     call compResiForce(hval_incr, hval_measse, cniner)
     call jeveuo(cniner(1:19)//'.VALE', 'E', vr=inerVale)
-    call dscal(nbEqua, coefIner, inerVale, 1)
-
+    b_n = to_blas_int(nbEqua)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, coefIner, inerVale, b_incx)
+!
 ! - Debug
     if (niv .ge. 2) then
         call nmdebg('VECT', cniner, ifm)

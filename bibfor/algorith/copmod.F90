@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine copmod(base, bmodr, bmodz, champ, &
-                  numer, nbmodes, nequa)
+!
+subroutine copmod(base, bmodr, bmodz, champ, numer, &
+                  nbmodes, nequa)
     implicit none
 !
 !                              Function
@@ -104,6 +104,7 @@ subroutine copmod(base, bmodr, bmodz, champ, &
     character(len=19) :: nomcha, tmpcha
     character(len=24) :: maill1, maill2, valk(4), valcha
     character(len=24), pointer :: refe(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 !     0.3 - ACTUALISATION DE LA VALEUR DE LA MARQUE COURANTE
 !
@@ -120,11 +121,11 @@ subroutine copmod(base, bmodr, bmodz, champ, &
     champ2 = 'DEPL'
     if (present(champ)) champ2 = champ
     !
-    ! Determine if input "numer" is a nume_ddl (14 caracters) or a nume_equa_user (19 caracters)
-    ! Retrieve the underlying nume_equa_user: "nume_equa_user"
+! Determine if input "numer" is a nume_ddl (14 caracters) or a nume_equa_user (19 caracters)
+! Retrieve the underlying nume_equa_user: "nume_equa_user"
     nume_equa_user = ' '
     is_nume_equa_user = .false.
-
+!
     if (present(numer)) then
         call jeexin(numer(1:14)//'.NUME.NEQU', iret)
         if (iret .ne. 0) then
@@ -144,15 +145,15 @@ subroutine copmod(base, bmodr, bmodz, champ, &
 !   --- 1. CHAMP AUX NOEUDS : PAR RAPPORT A L'INFORMATION DANS LE NUME_DDL
     if (chnoeud) then
         !
-        ! If optional argument nequa is given, dimension should be checked
-        ! Check with reference nume_ddl if provided
+! If optional argument nequa is given, dimension should be checked
+! Check with reference nume_ddl if provided
         if (present(numer)) then
             call dismoi('NB_EQUA', nume_equa_user, 'NUME_EQUA', repi=neq)
             if (present(nequa)) then
                 ASSERT(nequa .eq. neq)
             end if
         else
-            ! Check with nume_ddl in resu_dyna (meant to be reference) otherwise
+! Check with nume_ddl in resu_dyna (meant to be reference) otherwise
             call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=nume_ddl_field, arret='C', &
                         ier=iret)
             if (iret .eq. 0) then
@@ -192,7 +193,8 @@ subroutine copmod(base, bmodr, bmodz, champ, &
 !
 !     1.1.1 - RECUPERER LE NOM DE CHAMP DU 1ER NUMERO ORDRE
 !
-    call rsexch('F', base, champ2, 1, nomcha, iret)
+    call rsexch('F', base, champ2, 1, nomcha, &
+                iret)
     valcha = nomcha//'.VALE'
     call jeexin(nomcha//'.VALE', iret)
     if (iret .le. 0) valcha = nomcha//'.CELV'
@@ -212,7 +214,7 @@ subroutine copmod(base, bmodr, bmodz, champ, &
 !     1.2 - EXTRAIRE LE NOM DE MAILLAGE .REFE[1] ET DU NUME_DDL .REFE[2]
 !
     call dismoi('DOCU', nomcha, 'CHAMP', repk=docu)
-
+!
     if (docu == "CHNO") then
         call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=maill1)
         call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=nume_equa_field)
@@ -300,9 +302,15 @@ subroutine copmod(base, bmodr, bmodz, champ, &
 !
 !       3.1.4 - COPIER LES VALEURS DU CHAMP DANS LE VECTEUR DE SORTIE
         if (typc .ne. 'C') then
-            call dcopy(neq, zr(jval), 1, bmodr((i-1)*neq+1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jval), b_incx, bmodr((i-1)*neq+1), b_incy)
         else
-            call zcopy(neq, zc(jval), 1, bmodz((i-1)*neq+1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, zc(jval), b_incx, bmodz((i-1)*neq+1), b_incy)
         end if
 !
 !       3.1.5 - MENAGE ET LIBERATION DE LA MEMOIRE SELON LE BESOIN

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
                         dt, invm_c, op_h1, op_h2, invm_k)
     implicit none
@@ -29,18 +29,19 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
 #include "asterfort/rrlds.h"
 #include "asterfort/trlds.h"
 #include "blas/dcopy.h"
-
+!
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)           :: nbequ
-    real(kind=8), intent(in)           :: par(:)
-    real(kind=8), pointer  :: mgen(:), kgen(:), agen(:)
-    real(kind=8), intent(in)           :: dt
+    integer, intent(in) :: nbequ
+    real(kind=8), intent(in) :: par(:)
+    real(kind=8), pointer :: mgen(:), kgen(:), agen(:)
+    real(kind=8), intent(in) :: dt
     real(kind=8), pointer :: invm_c(:), op_h1(:), op_h2(:), invm_k(:)
 !
 !   -0.2- Local variables
-    integer           :: i, j, iret
-    real(kind=8)      :: invm
+    integer :: i, j, iret
+    real(kind=8) :: invm
+    blas_int :: b_incx, b_incy, b_n
 !   --------------------------------------------------------------------------
 #define mdiag (nint(par(1)).eq.1)
 #define kdiag (nint(par(2)).eq.1)
@@ -52,18 +53,18 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
 #define deltadt par(8)
 #define nbnlsav par(9)
 #define nbsavnl nint(par(9))
-
+!
 #define m(row,col) mgen((col-1)*nbequ+row)
 #define k(row,col) kgen((col-1)*nbequ+row)
 #define c(row,col) agen((col-1)*nbequ+row)
-
+!
 #define im_c(row,col) invm_c((col-1)*nbequ+row)
 #define im_k(row,col) invm_k((col-1)*nbequ+row)
 #define h1(row,col) op_h1((col-1)*nbequ+row)
 #define h2(row,col) op_h2((col-1)*nbequ+row)
 #define k(row,col) kgen((col-1)*nbequ+row)
 #define c(row,col) agen((col-1)*nbequ+row)
-
+!
 !   --------------------------------------------------------------------------------
 !   --- Calculation of the operators invm_c, h0, h1, and h2
     if (cdiag) then
@@ -91,7 +92,10 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
                 end do
             end do
         else
-            call dcopy(nbequ*nbequ, agen, 1, invm_c, 1)
+            b_n = to_blas_int(nbequ*nbequ)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, agen, b_incx, invm_c, b_incy)
             call rrlds(mgen, nbequ, nbequ, invm_c, nbequ)
             do i = 1, nbequ
                 h1(i, i) = 4.d0+dt*im_c(i, i)
@@ -107,7 +111,7 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
         call trlds(op_h1, nbequ, nbequ, iret)
         call trlds(op_h2, nbequ, nbequ, iret)
     end if
-
+!
 !   --------------------------------------------------------------------------------
 !   --- Calculation of the operator invm_k
     if (mdiag) then
@@ -143,5 +147,5 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
         end do
         call rrlds(mgen, nbequ, nbequ, invm_k, nbequ)
     end if
-
+!
 end subroutine

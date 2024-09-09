@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pipeba(ndim, mate, sup, sud, vim, &
                   dtau, copilo)
 !
@@ -47,6 +47,7 @@ subroutine pipeba(ndim, mate, sup, sud, vim, &
     integer :: cod(3), kpg, spt
     character(len=16) :: nom(3)
     character(len=8) :: fami, poum
+    blas_int :: b_incx, b_incy, b_n
 !
 !-----------------------------------------------------------------------
 !
@@ -119,9 +120,18 @@ subroutine pipeba(ndim, mate, sup, sud, vim, &
 !
 !    PORTION EN TRACTION : FEL = (SQR(SU(1)**2 + SU(2)**2) - KA) / KREF
 !
-    p2 = ddot(ndim, sud, 1, sud, 1)
-    p1 = ddot(ndim, sud, 1, sup, 1)
-    p0 = ddot(ndim, sup, 1, sup, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p2 = ddot(b_n, sud, b_incx, sud, b_incy)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p1 = ddot(b_n, sud, b_incx, sup, b_incy)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p0 = ddot(b_n, sup, b_incx, sup, b_incy)
 !
 !    PAS DE SOLUTION
     if (p2 .lt. (1.d0/r8gaem()**0.5d0)) goto 200

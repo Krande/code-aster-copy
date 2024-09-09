@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, as2)
+!
+subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, &
+                       eps, vint, a, ap1, ap2, &
+                       as1, as2)
 !
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
@@ -66,7 +68,8 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
     real(kind=8) :: treps, trkap, deteps, detkap
     real(kind=8) :: epsl(8), emp(2), efp(2), vmp(2, 2), vfp(2, 2)
     real(kind=8) :: rvp
-
+    blas_int :: b_incx, b_incy, b_n
+!
 ! -- POUR LES TERMES DE MF POSITION D EVALUATION DE LA DEFORMATION POUR DISTINGUER TRAC-COMP
 !
     a(:, :) = 0.d0
@@ -75,7 +78,10 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
     as1(:, :) = 0.d0
     as2(:, :) = 0.d0
 !
-    call dcopy(8, eps, 1, epsl, 1)
+    b_n = to_blas_int(8)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, eps, b_incx, epsl, b_incy)
 !
     epsl(3) = epsl(3)*0.5d0
     epsl(6) = epsl(6)*0.5d0
@@ -98,8 +104,9 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
             do i = 1, 2
                 do j = i, 2
-                    call dhrc_calc_a_term(i, j, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                          ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                    call dhrc_calc_a_term(i, j, 1, 1, a0, &
+                                          aa_t, ga_t, aa_c, ga_c, vint, &
+                                          a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
                 end do
             end do
         else
@@ -108,8 +115,9 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
             do i = 1, 2
                 do j = i, 2
-                    call dhrc_calc_a_term(i, j, 2, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                          ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                    call dhrc_calc_a_term(i, j, 2, 2, a0, &
+                                          aa_t, ga_t, aa_c, ga_c, vint, &
+                                          a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
                 end do
             end do
         end if
@@ -123,16 +131,19 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
                 i = 1
                 do j = 1, 2
-                    call dhrc_calc_a_term(i, j, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                          ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                    call dhrc_calc_a_term(i, j, 1, 1, a0, &
+                                          aa_t, ga_t, aa_c, ga_c, vint, &
+                                          a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
                 end do
 !
                 i = 2
                 j = 2
-                call dhrc_calc_a_term(i, j, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 2, 2)
+                call dhrc_calc_a_term(i, j, 1, 1, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                      rvp, 2, 2)
 !
-            elseif (emp(2) .gt. 0.d0) then
+            else if (emp(2) .gt. 0.d0) then
 !
 ! -- ZONE 4
 !
@@ -140,14 +151,17 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
                 j = 2
                 do i = 1, 2
-                    call dhrc_calc_a_term(i, j, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                          ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                    call dhrc_calc_a_term(i, j, 1, 1, a0, &
+                                          aa_t, ga_t, aa_c, ga_c, vint, &
+                                          a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
                 end do
 !
                 i = 1
                 j = 1
-                call dhrc_calc_a_term(i, j, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 2, 2)
+                call dhrc_calc_a_term(i, j, 1, 1, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                      rvp, 2, 2)
 !
             else
                 write (6, *) 'deteps :', deteps
@@ -164,16 +178,19 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
                 i = 2
                 j = 2
-                call dhrc_calc_a_term(i, j, 2, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                call dhrc_calc_a_term(i, j, 2, 2, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
 !
                 i = 1
                 do j = 1, 2
-                    call dhrc_calc_a_term(i, j, 2, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                          ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 1, 1)
+                    call dhrc_calc_a_term(i, j, 2, 2, a0, &
+                                          aa_t, ga_t, aa_c, ga_c, vint, &
+                                          a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                          rvp, 1, 1)
                 end do
 !
-            elseif (emp(2) .ge. 0.d0) then
+            else if (emp(2) .ge. 0.d0) then
 !
 ! -- ZONE 6
 !
@@ -181,13 +198,16 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
                 i = 1
                 j = 1
-                call dhrc_calc_a_term(i, j, 2, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                call dhrc_calc_a_term(i, j, 2, 2, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
 !
                 j = 2
                 do i = 1, 2
-                    call dhrc_calc_a_term(i, j, 2, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                          ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 1, 1)
+                    call dhrc_calc_a_term(i, j, 2, 2, a0, &
+                                          aa_t, ga_t, aa_c, ga_c, vint, &
+                                          a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                          rvp, 1, 1)
                 end do
             else
                 write (6, *) 'deteps :', deteps
@@ -200,8 +220,9 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
 ! -- Terme Amm_xyxy identique en traction et compression
 !
-    call dhrc_calc_a_term(3, 3, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(3, 3), &
-                          ap1(3, 3), ap2(3, 3), as1(3, 3), as2(3, 3))
+    call dhrc_calc_a_term(3, 3, 1, 1, a0, &
+                          aa_t, ga_t, aa_c, ga_c, vint, &
+                          a(3, 3), ap1(3, 3), ap2(3, 3), as1(3, 3), as2(3, 3))
 !
 ! -- TERMES DE FLEXION PURE
 ! -- DANS LES DKTG LA COURBURE EST EGALE A - LA DERIVEE DE LA FLECHE
@@ -213,8 +234,9 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
             do i = 4, 5
                 do j = i, 5
-                    call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                          ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                    call dhrc_calc_a_term(i, j, 1, 2, a0, &
+                                          aa_t, ga_t, aa_c, ga_c, vint, &
+                                          a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
                 end do
             end do
 !
@@ -224,8 +246,9 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
             do i = 4, 5
                 do j = i, 5
-                    call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                          ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                    call dhrc_calc_a_term(i, j, 2, 1, a0, &
+                                          aa_t, ga_t, aa_c, ga_c, vint, &
+                                          a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
                 end do
             end do
         end if
@@ -239,20 +262,25 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
                 i = 4
                 j = 4
-                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                call dhrc_calc_a_term(i, j, 1, 2, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
 !
                 i = 4
                 j = 5
-                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 2, 2)
+                call dhrc_calc_a_term(i, j, 1, 2, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                      rvp, 2, 2)
 !
                 i = 5
                 j = 5
-                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 2, 1)
+                call dhrc_calc_a_term(i, j, 1, 2, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                      rvp, 2, 1)
 !
-            elseif (efp(2) .gt. 0.d0) then
+            else if (efp(2) .gt. 0.d0) then
 !
 ! -- ZONE 4
 !
@@ -260,18 +288,23 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
                 i = 4
                 j = 4
-                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 2, 1)
+                call dhrc_calc_a_term(i, j, 1, 2, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                      rvp, 2, 1)
 !
                 i = 4
                 j = 5
-                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 2, 2)
+                call dhrc_calc_a_term(i, j, 1, 2, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                      rvp, 2, 2)
 !
                 i = 5
                 j = 5
-                call dhrc_calc_a_term(i, j, 1, 2, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                call dhrc_calc_a_term(i, j, 1, 2, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
 !
             else
                 write (6, *) 'detkap :', detkap
@@ -288,20 +321,25 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
                 i = 4
                 j = 4
-                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 1, 2)
+                call dhrc_calc_a_term(i, j, 2, 1, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                      rvp, 1, 2)
 !
                 i = 4
                 j = 5
-                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 2, 2)
+                call dhrc_calc_a_term(i, j, 2, 1, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                      rvp, 2, 2)
 !
                 i = 5
                 j = 5
-                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                call dhrc_calc_a_term(i, j, 2, 1, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
 !
-            elseif (efp(2) .ge. 0.d0) then
+            else if (efp(2) .ge. 0.d0) then
 !
 ! -- ZONE 6
 !
@@ -309,18 +347,23 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
                 i = 4
                 j = 4
-                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
+                call dhrc_calc_a_term(i, j, 2, 1, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j))
 !
                 i = 4
                 j = 5
-                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 2, 2)
+                call dhrc_calc_a_term(i, j, 2, 1, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                      rvp, 2, 2)
 !
                 i = 5
                 j = 5
-                call dhrc_calc_a_term(i, j, 2, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(i, j), &
-                                      ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), rvp, 1, 2)
+                call dhrc_calc_a_term(i, j, 2, 1, a0, &
+                                      aa_t, ga_t, aa_c, ga_c, vint, &
+                                      a(i, j), ap1(i, j), ap2(i, j), as1(i, j), as2(i, j), &
+                                      rvp, 1, 2)
 !
             else
                 write (6, *) 'detkap :', detkap
@@ -333,18 +376,19 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
 ! -- Terme Aff_xyxy identique en traction et compression
 !
-    call dhrc_calc_a_term(6, 6, 1, 1, a0, aa_t, ga_t, aa_c, ga_c, vint, a(6, 6), &
-                          ap1(6, 6), ap2(6, 6), as1(6, 6), as2(6, 6))
+    call dhrc_calc_a_term(6, 6, 1, 1, a0, &
+                          aa_t, ga_t, aa_c, ga_c, vint, &
+                          a(6, 6), ap1(6, 6), ap2(6, 6), as1(6, 6), as2(6, 6))
 !
 ! -- TERMES DE MEMBRANE-FLEXION
 !    do i = 1, 3
 !        do j = 4, 6
 !            a(i,j)=-(a0(i,j)+0.5d0*(ga_c(i,j,1)*vint(1)/(aa_c(i,j,1)+vint(1))&
 !                                   +ga_c(i,j,2)*vint(2)/(aa_c(i,j,2)+vint(2))))
-
+!
 !            ap1(i,j)=-0.5d0*aa_c(i,j,1)*ga_c(i,j,1)/(aa_c(i,j,1)+vint(1))**2.d0
 !            ap2(i,j)=-0.5d0*aa_c(i,j,2)*ga_c(i,j,2)/(aa_c(i,j,2)+vint(2))**2.d0
-
+!
 !            as1(i,j)=aa_c(i,j,1)*ga_c(i,j,1)/(aa_c(i,j,1)+vint(1))**3.d0
 !            as2(i,j)=aa_c(i,j,2)*ga_c(i,j,2)/(aa_c(i,j,2)+vint(2))**3.d0
 !        end do

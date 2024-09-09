@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 !
 subroutine mdgepc(neq, nbmode, bmodal, xgene, u, &
-                  kacce, kprof, inst, instt, indice, taille, kcham)
+                  kacce, kprof, inst, instt, indice, &
+                  taille, kcham)
 !     CONVERTIT EN BASE PHYSIQUE MODE VECTEUR
 !     REM U EST INITIALISE A 0.
 !     OPTIONNELLEMENT: DIFFERENTES OPTIONS D'ACCELERATION
@@ -100,11 +101,13 @@ subroutine mdgepc(neq, nbmode, bmodal, xgene, u, &
     integer :: ietdeb, ietrat, ietmax, ietfin, ifm, niv, instl, insttl
     integer :: nbloci, nresti, jchamno, jkchamno, borne1, borne2, iloc
     real(kind=8) :: tempsl, tempst
-    complex(kind=8) zero, un
+    complex(kind=8) :: zero, un
     character(len=4) :: kaccl, kprol
     character(len=24) :: kgemv, kgemmb, kgemmc, kchamno, k24j
     mpi_int :: mpicou, mpicow, mrang, mnbproc
     aster_logical :: ltest
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
     data tempst/0.d0/
     save tempst
 !-----------------------------------------------------------------------
@@ -119,16 +122,20 @@ subroutine mdgepc(neq, nbmode, bmodal, xgene, u, &
     if (.not. present(kacce)) then
         kaccl = 'CAS0'
     else
-        ltest = ((kacce .eq. 'CAS0') .or. (kacce .eq. 'CAS1') .or. (kacce .eq. 'CAS2') .or. &
-                 (kacce .eq. 'CAS3'))
+        ltest = ( &
+                (kacce .eq. 'CAS0') .or. (kacce .eq. 'CAS1') .or. (kacce .eq. 'CAS2') .or. &
+                (kacce .eq. 'CAS3') &
+                )
         ASSERT(ltest)
         kaccl = kacce
     end if
     if (.not. present(kprof)) then
         kprol = 'NON'
     else
-        ltest = ((kprof(1:3) .eq. 'OUI') .or. (kprof(1:3) .eq. 'NON') .or. &
-                 (kprof(1:4) .eq. 'OUIA'))
+        ltest = ( &
+                (kprof(1:3) .eq. 'OUI') .or. (kprof(1:3) .eq. 'NON') .or. &
+                (kprof(1:4) .eq. 'OUIA') &
+                )
         ASSERT(ltest)
         kprol = kprof
     end if
@@ -221,13 +228,13 @@ subroutine mdgepc(neq, nbmode, bmodal, xgene, u, &
         call vecinc(neq, zero, u)
         borne1 = iaux
         borne2 = iaux+m-1
-!$OMP PARALLEL DO PRIVATE(i,j) COLLAPSE(2)
+        !$OMP PARALLEL DO PRIVATE(i,j) COLLAPSE(2)
         do i = borne1, borne2
             do j = 1, nbmode
                 u(i) = u(i)+bmodal(i, j)*xgene(j)
             end do
         end do
-!$OMP END PARALLEL DO
+        !$OMP END PARALLEL DO
 ! COM MPI que si au moins 1 ddl par processus
         if (m .ne. neq) call asmpi_comm_vect('MPI_SUM', 'C', nbval=neq, vc=u)
 !
@@ -239,18 +246,25 @@ subroutine mdgepc(neq, nbmode, bmodal, xgene, u, &
         if (abs(instl) .eq. 1) then
             call wkvect(kgemv, 'V V C', m*nbmode, ja)
 ! A la main car pas de BLAS1 pour faire une copie de reels à complexes
-!$OMP PARALLEL DO PRIVATE(i,j) COLLAPSE(2)
+            !$OMP PARALLEL DO PRIVATE(i,j) COLLAPSE(2)
             do j = 1, nbmode
                 do i = 1, m
                     zc(ja+(j-1)*m+i-1) = bmodal(iaux+i-1, j)*un
                 end do
             end do
-!$OMP END PARALLEL DO
+            !$OMP END PARALLEL DO
         else
             call jeveuo(kgemv, 'L', ja)
         end if
         call vecinc(neq, zero, u)
-        call zgemv('N', m, nbmode, un, zc(ja), m, xgene, 1, zero, u(iaux), 1)
+        b_lda = to_blas_int(m)
+        b_m = to_blas_int(m)
+        b_n = to_blas_int(nbmode)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zgemv('N', b_m, b_n, un, zc(ja), &
+                   b_lda, xgene, b_incx, zero, u(iaux), &
+                   b_incy)
 ! COM MPI que si au moins 1 ddl par processus
         if (m .ne. neq) call asmpi_comm_vect('MPI_SUM', 'C', nbval=neq, vc=u)
 !
@@ -284,13 +298,13 @@ subroutine mdgepc(neq, nbmode, bmodal, xgene, u, &
 ! On rempli le buffer correspondant à bmodal: matrice A
             call wkvect(kgemv, 'V V C', m*nbmode, ja)
 ! A la main car pas de BLAS1 pour faire une copie de reels à complexes
-!$OMP PARALLEL DO PRIVATE(i,j) COLLAPSE(2)
+            !$OMP PARALLEL DO PRIVATE(i,j) COLLAPSE(2)
             do j = 1, nbmode
                 do i = 1, m
                     zc(ja+(j-1)*m+i-1) = bmodal(iaux+i-1, j)*un
                 end do
             end do
-!$OMP END PARALLEL DO
+            !$OMP END PARALLEL DO
             call wkvect(kgemmb, 'V V C', nbmode*nbinst, jb)
             call wkvect(kgemmc, 'V V C', m*nbinst, jc)
             call wkvect(kchamno, 'V V K24', nbinst, jkchamno)
@@ -300,20 +314,34 @@ subroutine mdgepc(neq, nbmode, bmodal, xgene, u, &
             call jeveuo(kchamno, 'E', jkchamno)
         end if
         zk24(jkchamno-1+iloc) = kcham
-
+!
 ! On rempli le buffer correspondant à xgene: matrice B
-        call zcopy(nbmode, xgene, 1, zc(jb+(iloc-1)*nbmode), 1)
+        b_n = to_blas_int(nbmode)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, xgene, b_incx, zc(jb+(iloc-1)*nbmode), b_incy)
 !
 ! Calcul effectif
         if (nresti .eq. 0) then
             call jeveuo(kgemmc, 'E', jc)
             call vecinc(m*iloc, zero, zc(jc))
-            call zgemm('N', 'N', m, iloc, nbmode, un, zc(ja), m, zc(jb), nbmode, zero, zc(jc), m)
+            b_ldc = to_blas_int(m)
+            b_ldb = to_blas_int(nbmode)
+            b_lda = to_blas_int(m)
+            b_m = to_blas_int(m)
+            b_n = to_blas_int(iloc)
+            b_k = to_blas_int(nbmode)
+            call zgemm('N', 'N', b_m, b_n, b_k, &
+                       un, zc(ja), b_lda, zc(jb), b_ldb, &
+                       zero, zc(jc), b_ldc)
             do j = 1, iloc
                 k24j = zk24(jkchamno-1+j)
                 call jeveuo(k24j, 'E', jchamno)
                 call vecinc(neq, zero, zc(jchamno))
-                call zcopy(m, zc(jc+(j-1)*m), 1, zc(jchamno-1+iaux), 1)
+                b_n = to_blas_int(m)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, zc(jc+(j-1)*m), b_incx, zc(jchamno-1+iaux), b_incy)
 ! COM MPI que si au moins 1 ddl par processus
                 if (m .ne. neq) call asmpi_comm_vect('MPI_SUM', 'C', nbval=neq, vc=zc(jchamno))
                 call jelibe(k24j)

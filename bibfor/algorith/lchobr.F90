@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lchobr(toler, itmax, mod, nbmat, materf, &
                   nr, nvi, depsm, sigm, vim, &
                   seuil, vp, vecp, icomp, sigp, &
@@ -77,6 +77,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
     real(kind=8) :: deux, trois
     real(kind=8) :: incrg, gnp, dgnp, etanp, vh, vg
     real(kind=8) :: parame(4), derive(5), pi, fmoins
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
     parameter(deux=2.0d0)
     parameter(trois=3.0d0)
@@ -103,7 +104,10 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
     etam = deux*sin(parame(4)*pi)/(trois+sin(parame(4)*pi))
 ! =====================================================================
     call lcdevi(sigp, se)
-    seq = ddot(ndt, se, 1, se, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    seq = ddot(b_n, se, b_incx, se, b_incy)
     sigeqe = sqrt(trois*seq/deux)
     i1e = trace(ndi, sigp)
 ! ======================================================================

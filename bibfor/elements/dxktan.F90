@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit, &
     real(kind=8) :: dcc1(3, 3), dcc2(3, 3), dc1(6, 6), dc2(6, 6)
     real(kind=8) :: vect(6)
     real(kind=8) :: scal, scala, scalb
+    blas_int :: b_incx, b_incy, b_n
     common/tdim/n, nd
 !
 !     INITIALISATION
@@ -63,8 +64,14 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit, &
         end do
     end do
 !
-    call dcopy(36, delas, 1, dc1, 1)
-    call dcopy(36, delas, 1, dc2, 1)
+    b_n = to_blas_int(36)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, delas, b_incx, dc1, b_incy)
+    b_n = to_blas_int(36)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, delas, b_incx, dc2, b_incy)
 !
     do i = 1, 3
         do j = 1, 3
@@ -75,7 +82,10 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit, &
 !
     if (ncrit .eq. 0) then
 !     CAS ELASTIQUE
-        call dcopy(36, delas, 1, dsidep, 1)
+        b_n = to_blas_int(36)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, delas, b_incx, dsidep, b_incy)
 !
     else if (ncrit .eq. 1) then
         call dfplas(nbackn(4), mp1, dfpla1(4))
@@ -127,8 +137,7 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit, &
 !
         do i = 1, 6
             do j = 1, 6
-                mat(i, j) = (mata(i, j)-matb(i, j)+matc(i, j)-matd(i, j))/ &
-                            scal
+                mat(i, j) = (mata(i, j)-matb(i, j)+matc(i, j)-matd(i, j))/scal
             end do
         end do
 !

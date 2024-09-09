@@ -50,9 +50,10 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)     :: mat(6, *)
-        real(kind=8), intent(in)     :: x(*), alpha
-        real(kind=8), intent(out)    :: y(*)
+        real(kind=8), intent(in) :: mat(6, *)
+        real(kind=8), intent(in) :: x(*), alpha
+        real(kind=8), intent(out) :: y(*)
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,21 +65,40 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
-        call dgemv('T', 6, 6, alpha, mat, 6, x, 1, 0.0, y, 1)
+        b_lda = to_blas_int(6)
+        b_m = to_blas_int(6)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('T', b_m, b_n, alpha, mat, &
+                   b_lda, x, b_incx, 0.0, y, &
+                   b_incy)
 #else
 !
-        y(1) = alpha*(mat(1, 1)*x(1)+mat(2, 1)*x(2)+mat(3, 1)*x(3)+ &
-                      mat(4, 1)*x(4)+mat(5, 1)*x(5)+mat(6, 1)*x(6))
-        y(2) = alpha*(mat(1, 2)*x(1)+mat(2, 2)*x(2)+mat(3, 2)*x(3)+ &
-                      mat(4, 2)*x(4)+mat(5, 2)*x(5)+mat(6, 2)*x(6))
-        y(3) = alpha*(mat(1, 3)*x(1)+mat(2, 3)*x(2)+mat(3, 3)*x(3)+ &
-                      mat(4, 3)*x(4)+mat(5, 3)*x(5)+mat(6, 3)*x(6))
-        y(4) = alpha*(mat(1, 4)*x(1)+mat(2, 4)*x(2)+mat(3, 4)*x(3)+ &
-                      mat(4, 4)*x(4)+mat(5, 4)*x(5)+mat(6, 4)*x(6))
-        y(5) = alpha*(mat(1, 5)*x(1)+mat(2, 5)*x(2)+mat(3, 5)*x(3)+ &
-                      mat(4, 5)*x(4)+mat(5, 5)*x(5)+mat(6, 5)*x(6))
-        y(6) = alpha*(mat(1, 6)*x(1)+mat(2, 6)*x(2)+mat(3, 6)*x(3)+ &
-                      mat(4, 6)*x(4)+mat(5, 6)*x(5)+mat(6, 6)*x(6))
+        y(1) = alpha*( &
+               mat(1, 1)*x(1)+mat(2, 1)*x(2)+mat(3, 1)*x(3)+mat(4, 1)*x(4)+mat(5, 1)*x(5)+mat(6, &
+               &1)*x(6) &
+               )
+        y(2) = alpha*( &
+               mat(1, 2)*x(1)+mat(2, 2)*x(2)+mat(3, 2)*x(3)+mat(4, 2)*x(4)+mat(5, 2)*x(5)+mat(6, &
+               &2)*x(6) &
+               )
+        y(3) = alpha*( &
+               mat(1, 3)*x(1)+mat(2, 3)*x(2)+mat(3, 3)*x(3)+mat(4, 3)*x(4)+mat(5, 3)*x(5)+mat(6, &
+               &3)*x(6) &
+               )
+        y(4) = alpha*( &
+               mat(1, 4)*x(1)+mat(2, 4)*x(2)+mat(3, 4)*x(3)+mat(4, 4)*x(4)+mat(5, 4)*x(5)+mat(6, &
+               &4)*x(6) &
+               )
+        y(5) = alpha*( &
+               mat(1, 5)*x(1)+mat(2, 5)*x(2)+mat(3, 5)*x(3)+mat(4, 5)*x(4)+mat(5, 5)*x(5)+mat(6, &
+               &5)*x(6) &
+               )
+        y(6) = alpha*( &
+               mat(1, 6)*x(1)+mat(2, 6)*x(2)+mat(3, 6)*x(3)+mat(4, 6)*x(4)+mat(5, 6)*x(5)+mat(6, &
+               &6)*x(6) &
+               )
 #endif
 !
     end subroutine
@@ -91,9 +111,10 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)     :: mat(6, *)
-        real(kind=8), intent(in)     :: x(*), alpha
-        real(kind=8), intent(out)    :: y(*)
+        real(kind=8), intent(in) :: mat(6, *)
+        real(kind=8), intent(in) :: x(*), alpha
+        real(kind=8), intent(out) :: y(*)
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,7 +126,14 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
-        call dgemv('T', 4, 4, alpha, mat, 6, x, 1, 0.0, y, 1)
+        b_lda = to_blas_int(6)
+        b_m = to_blas_int(4)
+        b_n = to_blas_int(4)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('T', b_m, b_n, alpha, mat, &
+                   b_lda, x, b_incx, 0.0, y, &
+                   b_incy)
 #else
 !
         y(1) = alpha*(mat(1, 1)*x(1)+mat(2, 1)*x(2)+mat(3, 1)*x(3)+mat(4, 1)*x(4))
@@ -124,9 +152,10 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)     :: mat(3, *)
-        real(kind=8), intent(in)     :: x(*), alpha
-        real(kind=8), intent(out)    :: y(*)
+        real(kind=8), intent(in) :: mat(3, *)
+        real(kind=8), intent(in) :: x(*), alpha
+        real(kind=8), intent(out) :: y(*)
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -138,7 +167,14 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
-        call dgemv('N', 3, 3, alpha, mat, 3, x, 1, 0.0, y, 1)
+        b_lda = to_blas_int(3)
+        b_m = to_blas_int(3)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, alpha, mat, &
+                   b_lda, x, b_incx, 0.0, y, &
+                   b_incy)
 #else
 !
         y(1) = alpha*(mat(1, 1)*x(1)+mat(1, 2)*x(2)+mat(1, 3)*x(3))
@@ -156,9 +192,10 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)     :: mat(3, *)
-        real(kind=8), intent(in)     :: x(*), alpha
-        real(kind=8), intent(out)    :: y(*)
+        real(kind=8), intent(in) :: mat(3, *)
+        real(kind=8), intent(in) :: x(*), alpha
+        real(kind=8), intent(out) :: y(*)
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -170,7 +207,14 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
-        call dgemv('N', 2, 2, alpha, mat, 3, x, 1, 0.0, y, 1)
+        b_lda = to_blas_int(3)
+        b_m = to_blas_int(2)
+        b_n = to_blas_int(2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, alpha, mat, &
+                   b_lda, x, b_incx, 0.0, y, &
+                   b_incy)
 #else
 !
         y(1) = alpha*(mat(1, 1)*x(1)+mat(1, 2)*x(2))
@@ -187,10 +231,11 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)     :: mat(6, *)
-        real(kind=8), intent(in)     :: x(*)
-        real(kind=8), intent(inout)  :: y(*)
-        integer, intent(in)          :: ncol, offset
+        real(kind=8), intent(in) :: mat(6, *)
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(inout) :: y(*)
+        integer, intent(in) :: ncol, offset
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -201,89 +246,96 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
-        call dgemv('T', 6, ncol, 1.d0, mat, 6, x, 1, 1.d0, y, offset)
+        b_lda = to_blas_int(6)
+        b_m = to_blas_int(6)
+        b_n = to_blas_int(ncol)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(offset)
+        call dgemv('T', b_m, b_n, 1.d0, mat, &
+                   b_lda, x, b_incx, 1.d0, y, &
+                   b_incy)
 #else
         integer :: icol, ind
         real(kind=8) :: tmp
-
+!
         select case (ncol)
         case (3)
             ind = 1
             do icol = 1, 3
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+mat&
+                      &(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
             end do
         case (4)
             ind = 1
             do icol = 1, 4
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+mat&
+                      &(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
             end do
         case (5)
             ind = 1
             do icol = 1, 5
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+mat&
+                      &(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
             end do
         case (6)
             ind = 1
             do icol = 1, 6
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+mat&
+                      &(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
             end do
         case (7)
             ind = 1
             do icol = 1, 7
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+mat&
+                      &(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
             end do
         case (8)
             ind = 1
             do icol = 1, 8
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+mat&
+                      &(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
             end do
         case (9)
             ind = 1
             do icol = 1, 9
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+mat&
+                      &(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
             end do
         case (19)
             ind = 1
             do icol = 1, 19
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+mat&
+                      &(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
             end do
         case (26)
             ind = 1
             do icol = 1, 26
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+mat&
+                      &(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
             end do
         case default
             ind = 1
             do icol = 1, ncol
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+mat&
+                      &(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
             end do
@@ -300,10 +352,11 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)     :: mat(6, *)
-        real(kind=8), intent(in)     :: x(*)
-        real(kind=8), intent(inout)  :: y(*)
-        integer, intent(in)          :: ncol, offset
+        real(kind=8), intent(in) :: mat(6, *)
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(inout) :: y(*)
+        integer, intent(in) :: ncol, offset
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -314,11 +367,18 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
-        call dgemv('T', 6, ncol, 1.d0, mat, 4, x, 1, 1.d0, y, offset)
+        b_lda = to_blas_int(4)
+        b_m = to_blas_int(6)
+        b_n = to_blas_int(ncol)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(offset)
+        call dgemv('T', b_m, b_n, 1.d0, mat, &
+                   b_lda, x, b_incx, 1.d0, y, &
+                   b_incy)
 #else
         integer :: icol, ind
         real(kind=8) :: tmp
-
+!
         select case (ncol)
         case (2)
             ind = 1
@@ -396,10 +456,11 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)     :: mat(3, *)
-        real(kind=8), intent(in)     :: x(*)
-        real(kind=8), intent(inout)  :: y(*)
-        integer, intent(in)          :: ncol
+        real(kind=8), intent(in) :: mat(3, *)
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(inout) :: y(*)
+        integer, intent(in) :: ncol
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -410,10 +471,17 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
-        call dgemv('T', 3, ncol, 1.d0, mat, 3, x, 1, 1.d0, y, 1)
+        b_lda = to_blas_int(3)
+        b_m = to_blas_int(3)
+        b_n = to_blas_int(ncol)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('T', b_m, b_n, 1.d0, mat, &
+                   b_lda, x, b_incx, 1.d0, y, &
+                   b_incy)
 #else
         integer :: icol
-
+!
         select case (ncol)
         case (4)
             do icol = 1, 4
@@ -460,10 +528,11 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)     :: mat(3, *)
-        real(kind=8), intent(in)     :: x(*)
-        real(kind=8), intent(inout)  :: y(*)
-        integer, intent(in)          :: ncol
+        real(kind=8), intent(in) :: mat(3, *)
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(inout) :: y(*)
+        integer, intent(in) :: ncol
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -474,10 +543,17 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
-        call dgemv('T', 2, ncol, 1.d0, mat, 3, x, 1, 1.d0, y, 1)
+        b_lda = to_blas_int(3)
+        b_m = to_blas_int(2)
+        b_n = to_blas_int(ncol)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('T', b_m, b_n, 1.d0, mat, &
+                   b_lda, x, b_incx, 1.d0, y, &
+                   b_incy)
 #else
         integer :: icol
-
+!
         select case (ncol)
         case (2)
             do icol = 1, 2
@@ -528,10 +604,11 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)     :: alpha
-        real(kind=8), intent(in)     :: x(*)
-        real(kind=8), intent(inout)  :: y(*)
-        integer, intent(in)          :: n
+        real(kind=8), intent(in) :: alpha
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(inout) :: y(*)
+        integer, intent(in) :: n
+        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -542,9 +619,13 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
-        call daxpy(n, alpha, x, 1, y, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, alpha, x, b_incx, y, &
+                   b_incy)
 #else
-
+!
         select case (n)
         case (1)
             y(1) = y(1)+alpha*x(1)
@@ -568,7 +649,11 @@ contains
             y(5) = y(5)+alpha*x(5)
             y(6) = y(6)+alpha*x(6)
         case default
-            call daxpy(n, alpha, x, 1, y, 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, alpha, x, b_incx, y, &
+                       b_incy)
         end select
 #endif
 !

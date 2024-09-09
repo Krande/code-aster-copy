@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
                   itria, inoeu, icote, xbar, iproj)
     implicit none
@@ -90,6 +90,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
     integer :: ino, nbsom
     real(kind=8) :: d, dx, dy, dz, epsg, nrm2, r8bid3(3)
     aster_logical :: notlin
+    blas_int :: b_incx, b_n
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -126,8 +127,8 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
         call tstbar(3, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), r8bid3, &
                     x3dp, xbar, iproj)
         if (iproj .lt. 0) then
-            call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, &
-                          xbar, excent, iproj, inoeu, icote)
+            call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, xbar, &
+                          excent, iproj, inoeu, icote)
         end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -155,16 +156,16 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
         else if (iproj .eq. 13) then
             iproj = 0
         else if (iproj .lt. 0) then
-            call analybar(xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), x3dp, &
-                          xbar, excent, iproj, inoeu, icote)
+            call analybar(xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), x3dp, xbar, &
+                          excent, iproj, inoeu, icote)
             if (iproj .lt. 0) then
-                if (.not. (xbar(2) .lt. 0.d0 .and. xbar(1) .ge. 0.d0 &
-                           .and. xbar(3) .ge. 0.d0)) then
+                if (.not. ( &
+                    xbar(2) .lt. 0.d0 .and. xbar(1) .ge. 0.d0 .and. xbar(3) .ge. 0.d0)) then
                     goto 999
                 end if
-            elseif (iproj .eq. 20 .and. icote .eq. 3) then
+            else if (iproj .eq. 20 .and. icote .eq. 3) then
                 iproj = -1
-            elseif (iproj .eq. 20) then
+            else if (iproj .eq. 20) then
                 if (icote .eq. 1) then
                     icote = 3
                 else if (icote .eq. 2) then
@@ -173,7 +174,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
 !                   on ne doit pas passer par la
                     ASSERT(.false.)
                 end if
-            elseif (iproj .eq. 30) then
+            else if (iproj .eq. 30) then
                 if (inoeu .eq. 1) then
                     inoeu = 3
                 else if (inoeu .eq. 2) then
@@ -201,13 +202,13 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
 !           on ne doit normalement pas passer par la !
                 iproj = 0
             else if (iproj .lt. 0) then
-                call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, &
-                              xbar, excent, iproj, inoeu, icote)
+                call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, xbar, &
+                              excent, iproj, inoeu, icote)
                 if (iproj .lt. 0) then
                     goto 999
-                elseif (iproj .eq. 20) then
+                else if (iproj .eq. 20) then
                     ASSERT(icote .eq. 1 .or. icote .eq. 2)
-                elseif (iproj .eq. 30) then
+                else if (iproj .eq. 30) then
                     ASSERT(inoeu .eq. 2)
                 else
                     ASSERT(.false.)
@@ -233,14 +234,14 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
         if (iproj .eq. 13) then
             iproj = 0
         else if (iproj .lt. 0) then
-            call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, &
-                          xbar, excent, iproj, inoeu, icote)
+            call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, xbar, &
+                          excent, iproj, inoeu, icote)
             if (iproj .lt. 0) then
-                if (.not. (xbar(2) .lt. 0.d0 .and. xbar(1) .ge. 0.d0 &
-                           .and. xbar(3) .ge. 0.d0)) then
+                if (.not. ( &
+                    xbar(2) .lt. 0.d0 .and. xbar(1) .ge. 0.d0 .and. xbar(3) .ge. 0.d0)) then
                     goto 999
                 end if
-            elseif (iproj .eq. 20 .and. icote .eq. 3) then
+            else if (iproj .eq. 20 .and. icote .eq. 3) then
                 iproj = -1
             end if
         end if
@@ -260,11 +261,11 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
             else if (iproj .eq. 13) then
                 iproj = 0
             else if (iproj .lt. 0) then
-                call analybar(xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), x3dp, &
-                              xbar, excent, iproj, inoeu, icote)
+                call analybar(xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), x3dp, xbar, &
+                              excent, iproj, inoeu, icote)
                 if (iproj .lt. 0) then
                     goto 999
-                elseif (iproj .eq. 20) then
+                else if (iproj .eq. 20) then
                     if (icote .eq. 1) then
                         icote = 3
                     else if (icote .eq. 2) then
@@ -272,7 +273,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
                     else
                         ASSERT(.false.)
                     end if
-                elseif (iproj .eq. 30) then
+                else if (iproj .eq. 30) then
                     ASSERT(inoeu .eq. 2)
                     inoeu = 4
                 else
@@ -294,7 +295,9 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
 ! ---
         if (iproj .gt. 10) then
             ino = iproj-10+nbsom
-            nrm2 = dnrm2(3, xyzma(1, ino), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            nrm2 = dnrm2(b_n, xyzma(1, ino), b_incx)
             if (nrm2 .eq. 0.0d0) nrm2 = 1.0d0
             dx = xyzma(1, ino)-x3dp(1)
             dy = xyzma(2, ino)-x3dp(2)
@@ -306,7 +309,9 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
 ! 4.2    TEST DE COINCIDENCE AVEC LE NOEUD CENTRAL POUR UNE MAILLE QUAD9
 ! ---
         if ((iproj .eq. 0) .and. (nbcnx .eq. 9)) then
-            nrm2 = dnrm2(3, xyzma(1, 9), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            nrm2 = dnrm2(b_n, xyzma(1, 9), b_incx)
             if (nrm2 .eq. 0.0d0) nrm2 = 1.0d0
             dx = xyzma(1, 9)-x3dp(1)
             dy = xyzma(2, 9)-x3dp(2)

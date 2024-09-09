@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ndaram(result, sddyna, numarc)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -60,6 +60,7 @@ subroutine ndaram(result, sddyna, numarc)
     character(len=24) :: trgene
     character(len=19) :: depgep, vitgep, accgep
     integer :: jdepgp, jvitgp, jaccgp
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -98,9 +99,18 @@ subroutine ndaram(result, sddyna, numarc)
     call jeveuo(accgep, 'L', jaccgp)
     call jeveuo(vitgep, 'L', jvitgp)
     call jeveuo(depgep, 'L', jdepgp)
-    call dcopy(nbmodp, zr(jdepgp), 1, zr(jrestd), 1)
-    call dcopy(nbmodp, zr(jvitgp), 1, zr(jrestv), 1)
-    call dcopy(nbmodp, zr(jaccgp), 1, zr(jresta), 1)
+    b_n = to_blas_int(nbmodp)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jdepgp), b_incx, zr(jrestd), b_incy)
+    b_n = to_blas_int(nbmodp)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jvitgp), b_incx, zr(jrestv), b_incy)
+    b_n = to_blas_int(nbmodp)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jaccgp), b_incx, zr(jresta), b_incy)
 !
     call jedema()
 !

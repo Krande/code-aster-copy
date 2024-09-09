@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0510(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -98,6 +98,7 @@ subroutine te0510(option, nomte)
     integer :: nnopma
     parameter(nnopma=20)
     real(kind=8) :: ff(nnopma)
+    blas_int :: b_incx, b_incy, b_n
     data motfac/' '/
 !......................................................................
 !     LES TABLEAUX FISC, FISCO, PTHEA, PINTER, AINTER ONT ETE ALLOUE DE
@@ -163,14 +164,16 @@ subroutine te0510(option, nomte)
 !     CALCUL D'UNE LONGUEUR CARACTERISTIQUE DE L'ELEMENT
     call loncar(ndim, typma, zr(igeom), lonref)
 !
-    if ((enr.eq.'XH1'.or.enr.eq.'XH2'.or.enr.eq.'XH3'.or.enr.eq.'XH4') .and. iselli(elp)) then
+    if ((enr .eq. 'XH1' .or. enr .eq. 'XH2' .or. enr .eq. 'XH3' .or. enr .eq. 'XH4') &
+        .and. iselli(elp)) then
 ! --- PAS D'ELEMENTS COUPÉES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT A
 ! --- L'EXCEPTION DES ELEMENTS MULTI-HM QUADRATIQUES
         goto 999
     end if
 !
-    if ((ibid .eq. 0) .and. (enr(1:2) .eq. 'XH' .or. enr .eq. 'XHT' .or. enr .eq. 'XT' &
-                             .or. enr .eq. 'XHC') .and. .not. iselli(elp)) then
+    if ((ibid .eq. 0) .and. &
+        (enr(1:2) .eq. 'XH' .or. enr .eq. 'XHT' .or. enr .eq. 'XT' .or. enr .eq. 'XHC') &
+        .and. .not. iselli(elp)) then
         call jevech('PPMILTO', 'L', jmilt)
     end if
 !
@@ -274,10 +277,11 @@ subroutine te0510(option, nomte)
         end do
 !
         if (enr(2:2) .eq. 'H' .and. face(1:8) .eq. 'SOUS_ELE') then
-            call xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter, ninter, &
-                        jphe, ndim, ainter, nface, nptf, cface, &
-                        igeom, jlsn, jaint, jgrlsn, nfiss, ifiss, &
-                        fisc, nfisc, nfisc2, ncompe, jstano, jlst, &
+            call xfacxh(elp, jpint, jmilt, jnit, jcnset, &
+                        pinter, ninter, jphe, ndim, ainter, &
+                        nface, nptf, cface, igeom, jlsn, &
+                        jaint, jgrlsn, nfiss, ifiss, fisc, &
+                        nfisc, nfisc2, ncompe, jstano, jlst, &
                         typdis, minlst)
             nbtot = ninter
             if (typdis .eq. 'COHESIF' .and. minlst .ge. 0.d0) then
@@ -286,15 +290,16 @@ subroutine te0510(option, nomte)
                 nface = 0
                 goto 97
             end if
-        elseif (enr(2:2) .eq. 'T' .and. face(1:8) .eq. 'SOUS_ELE') then
-            call xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter, ninter, &
-                        jphe, ndim, ainter, nface, nptf, cface, &
-                        igeom, jlsn, jlst, jaint, jgrlsn)
+        else if (enr(2:2) .eq. 'T' .and. face(1:8) .eq. 'SOUS_ELE') then
+            call xfacxt(elp, jpint, jmilt, jnit, jcnset, &
+                        pinter, ninter, jphe, ndim, ainter, &
+                        nface, nptf, cface, igeom, jlsn, &
+                        jlst, jaint, jgrlsn)
             nbtot = ninter
-        elseif (iselli(elp) .or. ndim .eq. 3) then
-            call xcface(zr(jlsn), zr(jlst), jgrlsn, igeom, &
-                        enr, nfiss, ifiss, fisc, nfisc, &
-                        noma, nmaabs, typdis, pinter, ninter, ainter, &
+        else if (iselli(elp) .or. ndim .eq. 3) then
+            call xcface(zr(jlsn), zr(jlst), jgrlsn, igeom, enr, &
+                        nfiss, ifiss, fisc, nfisc, noma, &
+                        nmaabs, typdis, pinter, ninter, ainter, &
                         nface, nptf, cface, minlst)
             nbtot = ninter
             if (typdis .eq. 'COHESIF' .and. minlst .ge. 0.d0) then
@@ -305,8 +310,8 @@ subroutine te0510(option, nomte)
             end if
         else
             call xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
-                        nmaabs, pinter, ainter, nface, &
-                        nptf, cface, ninter, nfiss, ifiss)
+                        nmaabs, pinter, ainter, nface, nptf, &
+                        cface, ninter, nfiss, ifiss)
             nbtot = ndim
         end if
         if (nface*nptf .gt. ncompc) then
@@ -339,8 +344,7 @@ subroutine te0510(option, nomte)
                 zr(jout1-1+ncompp*(ifiss-1)+ndim*(i-1)+jj) = ptref(jj)
             end do
             do j = 1, zxain-1
-                zr(jout2-1+ncompa*(ifiss-1)+zxain*(i-1)+j) = ainter( &
-                                                             zxain*(i-1)+j)
+                zr(jout2-1+ncompa*(ifiss-1)+zxain*(i-1)+j) = ainter(zxain*(i-1)+j)
             end do
 !
 !     CALCUL DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
@@ -361,7 +365,10 @@ subroutine te0510(option, nomte)
             end do
 !
             call normev(nd, norme)
-            ps = ddot(ndim, grlt, 1, nd, 1)
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps = ddot(b_n, grlt, b_incx, nd, b_incy)
             do j = 1, ndim
                 tau1(j) = grlt(j)-ps*nd(j)
             end do
@@ -390,9 +397,9 @@ subroutine te0510(option, nomte)
             do j = 1, ndim
                 zr(jout5-1+ncompb*(ifiss-1)+ndim*ndim*(i-1)+j) &
                     = nd(j)
-                zr(jout5-1+ncompb*(ifiss-1)+ndim*ndim*(i-1)+j+ndim) = &
-                    tau1(j)
-                if (ndim .eq. 3) zr(jout5-1+ncompb*(ifiss-1)+ndim*ndim*(i-1)+j+2*ndim) = tau2(j)
+                zr(jout5-1+ncompb*(ifiss-1)+ndim*ndim*(i-1)+j+ndim) = tau1(j)
+                if (ndim .eq. 3) zr(jout5-1+ncompb*(ifiss-1)+ndim*ndim*(i-1)+j+2*ndim) = &
+                    tau2(j)
             end do
 !
             if (nfiss .gt. 1) then
@@ -404,8 +411,9 @@ subroutine te0510(option, nomte)
                     end do
                     if (ainter(zxain*(i-1)+4) .eq. -1.d0) then
 !    LES POINTS DE JONCTION ENTRE FISSURES ONT LEUR LSN AJUSTEE A ZERO
-                        if (abs(lsn) .le. (crijonc*lonref)) pthea(nfiss*(i-1)+jfiss) = 0
-                    elseif (abs(lsn) .gt. 1.d-10) then
+                        if (abs(lsn) .le. (crijonc*lonref)) pthea(nfiss*(i-1)+jfiss) = &
+                            0
+                    else if (abs(lsn) .gt. 1.d-10) then
                         pthea(nfiss*(i-1)+jfiss) = nint(sign(1.d0, lsn))
                     end if
                 end do

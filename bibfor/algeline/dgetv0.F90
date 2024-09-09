@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dgetv0(ido, bmat, itry, initv, n, &
                   j, v, ldv, resid, rnorm, &
                   ipntr, workd, ierr, alpha)
@@ -192,6 +192,9 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
     integer(kind=4) :: iseed4(4)
     integer :: idist, iseed(4), iter, msglvl, jj
     real(kind=8) :: rnorm0
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
+    blas_int :: b_idist
     save first, iseed, inits, iter, msglvl, orth, rnorm0
 !
 !     %-----------%
@@ -252,7 +255,9 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
             iseed4(2) = int(iseed(2), 4)
             iseed4(3) = int(iseed(3), 4)
             iseed4(4) = int(iseed(4), 4)
-            call dlarnv(idist, iseed4, n, resid)
+            b_idist = to_blas_int(idist)
+            b_n = to_blas_int(n)
+            call dlarnv(b_idist, iseed4, b_n, resid)
             iseed(1) = iseed4(1)
             iseed(2) = iseed4(2)
             iseed(3) = iseed4(3)
@@ -268,7 +273,10 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
             nopx = nopx+1
             ipntr(1) = 1
             ipntr(2) = n+1
-            call dcopy(n, resid, 1, workd, 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, resid, b_incx, workd, b_incy)
             ido = -1
             goto 9000
         end if
@@ -294,23 +302,34 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
     first = .true.
     if (bmat .eq. 'G') then
         nbx = nbx+1
-        call dcopy(n, workd(n+1), 1, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workd(n+1), b_incx, resid, b_incy)
         ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
         goto 9000
     else if (bmat .eq. 'I') then
-        call dcopy(n, resid, 1, workd, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd, b_incy)
     end if
 !
 20  continue
 !
     first = .false.
     if (bmat .eq. 'G') then
-        rnorm0 = ddot(n, resid, 1, workd, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rnorm0 = ddot(b_n, resid, b_incx, workd, b_incy)
         rnorm0 = sqrt(abs(rnorm0))
     else if (bmat .eq. 'I') then
-        rnorm0 = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        rnorm0 = dnrm2(b_n, resid, b_incx)
     end if
     rnorm = rnorm0
 !
@@ -335,12 +354,22 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
     orth = .true.
 30  continue
 !
-    call dgemv('T', n, j-1, one, v, &
-               ldv, workd, 1, zero, workd(n+1), &
-               1)
-    call dgemv('N', n, j-1, -one, v, &
-               ldv, workd(n+1), 1, one, resid, &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('T', b_m, b_n, one, v, &
+               b_lda, workd, b_incx, zero, workd(n+1), &
+               b_incy)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, -one, v, &
+               b_lda, workd(n+1), b_incx, one, resid, &
+               b_incy)
 !
 !     %----------------------------------------------------------%
 !     | COMPUTE THE B-NORM OF THE ORTHOGONALIZED STARTING VECTOR |
@@ -348,22 +377,33 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
 !
     if (bmat .eq. 'G') then
         nbx = nbx+1
-        call dcopy(n, resid, 1, workd(n+1), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(n+1), b_incy)
         ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
         goto 9000
     else if (bmat .eq. 'I') then
-        call dcopy(n, resid, 1, workd, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd, b_incy)
     end if
 !
 40  continue
 !
     if (bmat .eq. 'G') then
-        rnorm = ddot(n, resid, 1, workd, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rnorm = ddot(b_n, resid, b_incx, workd, b_incy)
         rnorm = sqrt(abs(rnorm))
     else if (bmat .eq. 'I') then
-        rnorm = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        rnorm = dnrm2(b_n, resid, b_incx)
     end if
 !
 !     %--------------------------------------%

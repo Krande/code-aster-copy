@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq, &
     integer :: sni, k, j, deb, fin, adfac, ndk, gj, debndk, ifac
     complex(kind=8) :: s, alpha, beta
     character(len=1) :: tra
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
     call jemarq()
 !
@@ -110,9 +111,14 @@ subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq, &
                     call sspmvc(nn, kk, zc(ifac), ad, trav, &
                                 trav(l+1))
                 else
-                    call zgemv(tra, nn, kk, alpha, zc(ifac+ad(1)-1), &
-                               lda, trav, incx, beta, trav(l+1), &
-                               incy)
+                    b_lda = to_blas_int(lda)
+                    b_m = to_blas_int(nn)
+                    b_n = to_blas_int(kk)
+                    b_incx = to_blas_int(incx)
+                    b_incy = to_blas_int(incy)
+                    call zgemv(tra, b_m, b_n, alpha, zc(ifac+ad(1)-1), &
+                               b_lda, trav, b_incx, beta, trav(l+1), &
+                               b_incy)
                 end if
             end if
             k = 1

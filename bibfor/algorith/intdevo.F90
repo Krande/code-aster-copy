@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
@@ -46,21 +46,21 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, pointer              :: buffdtm(:)
-    integer, pointer              :: buffint(:)
+    integer, pointer :: buffdtm(:)
+    integer, pointer :: buffint(:)
 !
 !   -0.2- Local variables
-    integer           :: i, j, nbequ, ind1, iret
-    integer           :: jw6, ind, iret1, iret2, nr
-    integer           :: nbnoli, upmat, iret3, nbvint
-    real(kind=8)      :: t1, dt, dt1, dt2, dt3
-    real(kind=8)      :: dt4, dt5, dt6, mdiag_r
-    real(kind=8)      :: kdiag_r, cdiag_r, dtnew, pas0, pas1
-    real(kind=8)      :: epsi, errt, c0, c1, alpha1
-    real(kind=8)      :: alpha2, beta, depmag, tol_dim, coeff
-    real(kind=8)      :: seuil1, seuil2, dtold, errdep, coeff2
-    character(len=8)  :: sd_dtm, sd_int, sd_nl
-
+    integer :: i, j, nbequ, ind1, iret
+    integer :: jw6, ind, iret1, iret2, nr
+    integer :: nbnoli, upmat, iret3, nbvint
+    real(kind=8) :: t1, dt, dt1, dt2, dt3
+    real(kind=8) :: dt4, dt5, dt6, mdiag_r
+    real(kind=8) :: kdiag_r, cdiag_r, dtnew, pas0, pas1
+    real(kind=8) :: epsi, errt, c0, c1, alpha1
+    real(kind=8) :: alpha2, beta, depmag, tol_dim, coeff
+    real(kind=8) :: seuil1, seuil2, dtold, errdep, coeff2
+    character(len=8) :: sd_dtm, sd_int, sd_nl
+!
     real(kind=8), pointer :: depl1(:) => null()
     real(kind=8), pointer :: vite1(:) => null()
     real(kind=8), pointer :: acce1(:) => null()
@@ -77,25 +77,26 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8), pointer :: vite4(:) => null()
     real(kind=8), pointer :: acce4(:) => null()
     real(kind=8), pointer :: fext4(:) => null()
-
+!
     real(kind=8), pointer :: par(:) => null()
     real(kind=8), pointer :: mgen(:) => null()
     real(kind=8), pointer :: kgen(:) => null()
     real(kind=8), pointer :: agen(:) => null()
     real(kind=8), pointer :: mgenf(:) => null()
-
+!
     real(kind=8), pointer :: nlsav0(:) => null()
     real(kind=8), pointer :: nlsav1(:) => null()
-
+!
     real(kind=8), pointer :: invm_c(:) => null()
     real(kind=8), pointer :: invm_k(:) => null()
     real(kind=8), pointer :: op_h0(:) => null()
     real(kind=8), pointer :: op_h1(:) => null()
     real(kind=8), pointer :: op_h2(:) => null()
     real(kind=8), pointer :: x1(:) => null()
-
-    integer, pointer          :: buffnl(:) => null()
-
+!
+    integer, pointer :: buffnl(:) => null()
+    blas_int :: b_incx, b_incy, b_n
+!
 #define mdiag (nint(par(1)).eq.1)
 #define kdiag (nint(par(2)).eq.1)
 #define cdiag (nint(par(3)).eq.1)
@@ -106,7 +107,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
 #define deltadt par(8)
 #define nbnlsav par(9)
 #define nbsavnl nint(par(9))
-
+!
 #define im_c(row,col) invm_c((col-1)*nbequ+row)
 #define im_k(row,col) invm_k((col-1)*nbequ+row)
 #define h0(row,col) op_h0((col-1)*nbequ+row)
@@ -114,7 +115,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
 #define h2(row,col) op_h2((col-1)*nbequ+row)
 #define k(row,col) kgen((col-1)*nbequ+row)
 #define c(row,col) agen((col-1)*nbequ+row)
-
+!
 #define oldpas(m) zr(jw6+m-1)
 #define depl2e(m) zr(jw6+2+m-1)
 #define depl1p(m) zr(jw6+2+nbequ+m-1)
@@ -137,20 +138,21 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
 !                   :                 :
 !                   |<------dt------->|
 !
-
+!
 !   1 - Retrieval of the system's state at instant t_i (index=1)
     call intget(sd_int, TIME, iocc=1, rscal=t1, buffer=buffint)
     call intget(sd_int, INDEX, iocc=1, iscal=ind1, buffer=buffint)
     call intget(sd_int, STEP, iocc=1, rscal=dt, buffer=buffint)
-
-    call intget(sd_int, DEPL, iocc=1, vr=depl1, lonvec=nbequ, buffer=buffint)
+!
+    call intget(sd_int, DEPL, iocc=1, vr=depl1, lonvec=nbequ, &
+                buffer=buffint)
     call intget(sd_int, VITE, iocc=1, vr=vite1, buffer=buffint)
     call intget(sd_int, ACCE, iocc=1, vr=acce1, buffer=buffint)
     call intget(sd_int, FORCE_EX, iocc=1, vr=fext1, buffer=buffint)
-
+!
     dtold = dt
     dt1 = dt/2.d0
-
+!
 !   3 - Detection of the initial call to the Devogelaero-Fu algorithm
 !       DEPL/2 does not exist in the buffer
     call intget(sd_int, DEPL, iocc=2, lonvec=iret, buffer=buffint)
@@ -163,10 +165,14 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
         call intinivec(sd_int, VITE, nbequ, iocc=2, vr=vite2)
         call intinivec(sd_int, ACCE, nbequ, iocc=2, vr=acce2)
         call intinivec(sd_int, FORCE_EX, nbequ, iocc=2, vr=fext2)
-        call intsav(sd_int, STEP, 1, iocc=2, rscal=dt1, buffer=buffint)
-
+        call intsav(sd_int, STEP, 1, iocc=2, rscal=dt1, &
+                    buffer=buffint)
+!
 !       --- Copy the external force 1 (t_i) in 2 (t_i-1/2)
-        call dcopy(nbequ, fext1, 1, fext2, 1)
+        b_n = to_blas_int(nbequ)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fext1, b_incx, fext2, b_incy)
 !
 !       --- Detection of the matrix types (full/diagonal) for M, K and C
         mdiag_r = 0.d0
@@ -195,32 +201,32 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
             call intget(sd_int, AMOR_DIA, iocc=1, vr=agen, buffer=buffint)
             cdiag_r = 1.d0
         end if
-
+!
         call intinivec(sd_int, PARAMS, 9, vr=par)
         par(1) = mdiag_r
         par(2) = kdiag_r
         par(3) = cdiag_r
-
+!
         call getvr8('SCHEMA_TEMPS', 'TOLERANCE', iocc=1, scal=tol)
         call getvr8('SCHEMA_TEMPS', 'PAS_MINI', iocc=1, scal=dtmin, nbret=iret1)
         call getvr8('SCHEMA_TEMPS', 'PAS_MAXI', iocc=1, scal=dtmax, nbret=iret2)
         call getvr8('SCHEMA_TEMPS', 'ALPHA', iocc=1, scal=alpha, nbret=iret3)
-
+!
         if (iret1 .ne. 1) dtmin = 1.d-10*dt
         if (iret2 .ne. 1) dtmax = 1.d10*dt
         if (iret3 .ne. 1) alpha = 0.d0
-
+!
 !       deltadt gives the ratio between dtmin and dtmax, it is considered as an
 !       indicator for whether we should adapt or no the time step
         deltadt = abs(dtmax/dtmin-1.d0)
-
+!
 !
 !       invm_c = (M^-1) x C
 !       invm_k = (M^-1) x K
 !       H0     = 4I - dt x (M^-1) x C
 !       H1     = 4I + dt x (M^-1) x C
 !       H2     = 6I + dt x (M^-1) x C
-
+!
 !       --- Memory allocation for operators invm_c, h0, h1, and h2
         if (cdiag) then
 !           --- Operator invm_c is diagonal
@@ -239,7 +245,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
             call intinivec(sd_int, WORK3, nbequ*nbequ, vr=op_h1)
             call intinivec(sd_int, WORK4, nbequ*nbequ, vr=op_h2)
         end if
-
+!
 !       --- Memory allocation for the operator invm_k
         if (mdiag .and. kdiag) then
 !           --- Operator invm_k is diagonal = omega2 diagonal terms
@@ -248,11 +254,11 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
 !           --- Operator invm_k is full
             call intinivec(sd_int, WORK2, nbequ*nbequ, vr=invm_k)
         end if
-
+!
 !       --- Memory allocation for work vector x1
         call intinivec(sd_int, WORK5, nbequ, vr=x1)
         call intinivec(sd_int, WORK6, 3+5*nbequ, address=jw6)
-
+!
 !       --- Allocate work vectors for NL_SAVES
         call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli, buffer=buffdtm)
         if (nbnoli .gt. 0) then
@@ -263,16 +269,28 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
         else
             nbnlsav = 0.d0
         end if
-
+!
         oldpas(1) = dt
         oldpas(2) = dt
-        call dcopy(nbequ, depl1, 1, depl1p(1), 1)
-        call dcopy(nbequ, vite1, 1, vite1p(1), 1)
-        call dcopy(nbequ, fext1, 1, fext1p(1), 1)
-
+        b_n = to_blas_int(nbequ)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, depl1, b_incx, depl1p(1), b_incy)
+        b_n = to_blas_int(nbequ)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vite1, b_incx, vite1p(1), b_incy)
+        b_n = to_blas_int(nbequ)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fext1, b_incx, fext1p(1), b_incy)
+!
         if (.not. (mdiag)) then
             AS_ALLOCATE(vr=mgenf, size=nbequ*nbequ)
-            call dcopy(nbequ*nbequ, mgen, 1, mgenf, 1)
+            b_n = to_blas_int(nbequ*nbequ)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, mgen, b_incx, mgenf, b_incy)
             call trlds(mgenf, nbequ, nbequ, iret2)
             call intdevo_oper(nbequ, par, mgenf, kgen, agen, &
                               dt, invm_c, op_h1, op_h2, invm_k)
@@ -372,38 +390,39 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
             end do
             call rrlds(op_h0, nbequ, nbequ, vite2, 1)
         end if
-
+!
         AS_DEALLOCATE(vr=op_h0)
-
+!
 !       --- Variable time-step, initialize depl2e by extrapolating the initial state
         if ((deltadt .ge. epsi)) then
             do i = 1, nbequ
-                depl2e(i) = (2.d0*depl2(i)-depl1(i))+(dt/2.d0)*(2.d0*vite2(i)-vite1(i))+ &
-                            (((dt/2.d0)**2.d0)/24.d0)* &
-                            (13.d0*fext1(i))
+                depl2e(i) = ( &
+                            2.d0*depl2(i)-depl1(i))+(dt/2.d0)*(2.d0*vite2(i)-vite1(i))+(((dt/2.d&
+                            &0)**2.d0)/24.d0)*(13.d0*fext1(i) &
+                            )
             end do
         end if
-
+!
 !       --- Allocate vectors DEPL/VITE/ACCE/3 (t_i+1/2)
         call intinivec(sd_int, DEPL, nbequ, iocc=3, vr=depl3)
         call intinivec(sd_int, VITE, nbequ, iocc=3, vr=vite3)
         call intinivec(sd_int, ACCE, nbequ, iocc=3, vr=acce3)
         call intinivec(sd_int, FORCE_EX, nbequ, iocc=3, vr=fext3)
-
+!
 !       --- Allocate vectors DEPL/VITE/ACCE/4 (t_i+1)
         call intinivec(sd_int, DEPL, nbequ, iocc=4, vr=depl4)
         call intinivec(sd_int, VITE, nbequ, iocc=4, vr=vite4)
         call intinivec(sd_int, ACCE, nbequ, iocc=4, vr=acce4)
         call intinivec(sd_int, FORCE_EX, nbequ, iocc=4, vr=fext4)
-
+!
         nullify (buffint)
         call intbuff(sd_int, buffint, level=4)
-
-        ! write(*,*) "*******************************************************"
-        ! write(*,*) "INITIALIZATION OF DEVOGELAERO ALGO"
-        ! write(*,*) "*******************************************************"
-        ! call utimsd(6, 2, .false._1, .true._1, sd_int, 1, 'V')
-
+!
+! write(*,*) "*******************************************************"
+! write(*,*) "INITIALIZATION OF DEVOGELAERO ALGO"
+! write(*,*) "*******************************************************"
+! call utimsd(6, 2, .false._1, .true._1, sd_int, 1, 'V')
+!
     else
 !       --- Algorithm is already initialized, just retrieve DEPL/VITE/ACCE/FEXT 2/3/4
         call intget(sd_int, DEPL, iocc=2, vr=depl2, buffer=buffint)
@@ -429,16 +448,19 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
         call intget(sd_int, WORK6, address=jw6, buffer=buffint)
 !       --- Retrieve choc parameters save container
         if (nbsavnl .gt. 0) call intget(sd_int, WORK7, vr=nlsav0, buffer=buffint)
-
+!
         call intget(sd_int, STEP, iocc=4, rscal=dtold, buffer=buffint)
     end if
     if (nbsavnl .gt. 0) then
         call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl, buffer=buffdtm)
         call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
         call nlget(sd_nl, _INTERNAL_VARS, vr=nlsav1, buffer=buffnl)
-        call dcopy(nbsavnl, nlsav1, 1, nlsav0, 1)
+        b_n = to_blas_int(nbsavnl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, nlsav1, b_incx, nlsav0, b_incy)
     end if
-
+!
     call intget(sd_int, MAT_UPDT, iscal=upmat, buffer=buffint)
     if (upmat .eq. 1) then
         mdiag_r = 0.d0
@@ -467,11 +489,11 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
             call intget(sd_int, AMOR_DIA, iocc=1, vr=agen, buffer=buffint)
             cdiag_r = 1.d0
         end if
-
+!
         par(1) = mdiag_r
         par(2) = kdiag_r
         par(3) = cdiag_r
-
+!
         nullify (op_h1)
         nullify (op_h2)
         nullify (invm_c)
@@ -485,16 +507,19 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
             call intinivec(sd_int, WORK3, nbequ*nbequ, vr=op_h1)
             call intinivec(sd_int, WORK4, nbequ*nbequ, vr=op_h2)
         end if
-
+!
         if (mdiag .and. kdiag) then
             call intinivec(sd_int, WORK2, nbequ, vr=invm_k)
         else
             call intinivec(sd_int, WORK2, nbequ*nbequ, vr=invm_k)
         end if
-
+!
         if (.not. (mdiag)) then
             AS_ALLOCATE(vr=mgenf, size=nbequ*nbequ)
-            call dcopy(nbequ*nbequ, mgen, 1, mgenf, 1)
+            b_n = to_blas_int(nbequ*nbequ)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, mgen, b_incx, mgenf, b_incy)
             call trlds(mgenf, nbequ, nbequ, iret2)
             call intdevo_oper(nbequ, par, mgenf, kgen, agen, &
                               dt, invm_c, op_h1, op_h2, invm_k)
@@ -503,32 +528,37 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
             call intdevo_oper(nbequ, par, mgen, kgen, agen, &
                               dt, invm_c, op_h1, op_h2, invm_k)
         end if
-
+!
         nullify (buffint)
         call intbuff(sd_int, buffint, level=4)
-
+!
         dtold = dt
         call intsav(sd_int, MAT_UPDT, 1, iscal=0, buffer=buffint)
-
-        ! write(*,*) "*******************************************************"
-        ! write(*,*) "CHANGE IN STATE WITH MATRIX UPDATE FOR DEVOGELAERO ALGO"
-        ! write(*,*) "*******************************************************"
-        ! call utimsd(6, 2, .false._1, .true._1, sd_int, 1, 'V')
+!
+! write(*,*) "*******************************************************"
+! write(*,*) "CHANGE IN STATE WITH MATRIX UPDATE FOR DEVOGELAERO ALGO"
+! write(*,*) "*******************************************************"
+! call utimsd(6, 2, .false._1, .true._1, sd_int, 1, 'V')
     end if
-
+!
     if (mdiag) then
         call intget(sd_int, MASS_DIA, vr=mgen, buffer=buffint)
     else
         call intget(sd_int, MASS_FUL, vr=mgen, buffer=buffint)
     end if
-
+!
     nr = 0
     dtnew = dt
-
+!
 10  continue
 !
-    if (nbsavnl .gt. 0) call dcopy(nbsavnl, nlsav0, 1, nlsav1, 1)
-
+    if (nbsavnl .gt. 0) then
+        b_n = to_blas_int(nbsavnl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, nlsav0, b_incx, nlsav1, b_incy)
+    end if
+!
 !   2 - Definition of algorithm parameters
     dt1 = dt/2.d0
     dt2 = dt/4.d0
@@ -537,7 +567,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     dt5 = dt*dt/6.d0
     dt6 = dt*dt/8.d0
     coeff = dt/dtold
-
+!
 !   3- Updating the operators H1 and H2 in the event of a change in dt
     if (abs(coeff-1.d0) .ge. epsi) then
 !       --- Update H1, H2
@@ -571,7 +601,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
             end do
         end if
     end if
-
+!
 !   4 - Calculation of DEPL/3 (t_i+1/2)
     do i = 1, nbequ
         x1(i) = 4.d0*vite1(i)-vite2(i)
@@ -587,11 +617,14 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
         depl3(i) = depl1(i)+dt1*vite1(i)+dt4*(4.d0*fext1(i)-fext2(i)-depl3(i))
         vite3(i) = (depl3(i)-depl1(i))/dt1
     end do
-
-    call intsav(sd_int, INDEX, 1, iocc=3, iscal=ind1+1, buffer=buffint)
-    call intsav(sd_int, TIME, 1, iocc=3, rscal=t1+dt1, buffer=buffint)
-    call intsav(sd_int, STEP, 1, iocc=3, rscal=dt1, buffer=buffint)
-
+!
+    call intsav(sd_int, INDEX, 1, iocc=3, iscal=ind1+1, &
+                buffer=buffint)
+    call intsav(sd_int, TIME, 1, iocc=3, rscal=t1+dt1, &
+                buffer=buffint)
+    call intsav(sd_int, STEP, 1, iocc=3, rscal=dt1, &
+                buffer=buffint)
+!
     call dtmforc(sd_dtm, sd_int, 3, buffdtm, buffint)
     if (mdiag) then
         if (kdiag) then
@@ -611,7 +644,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
             fext3(i) = fext3(i)-x1(i)
         end do
     end if
-
+!
 !   5 - Calculation of VITE/3(t_i+1/2) and DEPL/4 (t_i+1)
     if (cdiag) then
         do i = 1, nbequ
@@ -623,7 +656,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     do i = 1, nbequ
         vite3(i) = 4.d0*(vite1(i)+dt2*(fext1(i)+fext3(i)-vite3(i)))
     end do
-
+!
     if (cdiag) then
         do i = 1, nbequ
             vite3(i) = vite3(i)/op_h1(i)
@@ -631,7 +664,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     else
         call rrlds(op_h1, nbequ, nbequ, vite3, 1)
     end if
-
+!
     do i = 1, nbequ
         x1(i) = vite1(i)+2.d0*vite3(i)
     end do
@@ -642,19 +675,22 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     else
         call pmavec('ZERO', nbequ, invm_c, x1, depl4)
     end if
-
+!
     do i = 1, nbequ
         depl4(i) = depl1(i)+dt*vite1(i)+dt5*(fext1(i)+2.d0*fext3(i)-depl4(i))
         vite4(i) = (depl4(i)-depl3(i))/dt1
     end do
 !
 !
-    call intsav(sd_int, INDEX, 1, iocc=4, iscal=ind1+1, buffer=buffint)
-    call intsav(sd_int, TIME, 1, iocc=4, rscal=t1+dt, buffer=buffint)
-    call intsav(sd_int, STEP, 1, iocc=4, rscal=dt1, buffer=buffint)
-
+    call intsav(sd_int, INDEX, 1, iocc=4, iscal=ind1+1, &
+                buffer=buffint)
+    call intsav(sd_int, TIME, 1, iocc=4, rscal=t1+dt, &
+                buffer=buffint)
+    call intsav(sd_int, STEP, 1, iocc=4, rscal=dt1, &
+                buffer=buffint)
+!
     call dtmforc(sd_dtm, sd_int, 4, buffdtm, buffint)
-
+!
     if (mdiag) then
         if (kdiag) then
             do i = 1, nbequ
@@ -673,7 +709,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
             fext4(i) = fext4(i)-x1(i)
         end do
     end if
-
+!
 !   6 - Calculation of VITE4 and ACCE4 (t_i+1)
     do i = 1, nbequ
         x1(i) = 4.d0*vite3(i)+vite1(i)
@@ -685,11 +721,11 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     else
         call pmavec('ZERO', nbequ, invm_c, x1, vite4)
     end if
-
+!
     do i = 1, nbequ
         vite4(i) = 6.d0*(vite1(i)+dt3*(fext4(i)+4.d0*fext3(i)+fext1(i)-vite4(i)))
     end do
-
+!
     if (cdiag) then
         do i = 1, nbequ
             vite4(i) = vite4(i)/op_h2(i)
@@ -697,7 +733,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     else
         call rrlds(op_h2, nbequ, nbequ, vite4, 1)
     end if
-
+!
     if (cdiag) then
         do i = 1, nbequ
             acce4(i) = invm_c(i)*vite4(i)
@@ -705,49 +741,46 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     else
         call pmavec('ZERO', nbequ, invm_c, vite4, acce4)
     end if
-
+!
     do i = 1, nbequ
         acce4(i) = fext4(i)-acce4(i)
     end do
-
+!
 !   7 - Calculate the error and refine the timestep if needed
     if ((deltadt .ge. epsi)) then
 !       --- 7.1 - First determine which case correspond to the current
 !                 integration step, attribute an index from 0-3
         ind = 0
-        if ((abs(dt-oldpas(2)) .le. epsi) .and. &
-            (abs(oldpas(2)-oldpas(1)) .le. epsi)) then
+        if ((abs(dt-oldpas(2)) .le. epsi) .and. (abs(oldpas(2)-oldpas(1)) .le. epsi)) then
             ind = 0
-            ! Constant time-step case
+! Constant time-step case
         else if ((abs(dt-oldpas(2)) .gt. epsi) .and. &
                  (abs(oldpas(2)-oldpas(1)) .le. epsi)) then
             ind = 1
-            ! Just after the first change in time-step
+! Just after the first change in time-step
         else if ((abs(dt-oldpas(2)) .le. epsi) .and. &
                  (abs(oldpas(1)-oldpas(1)) .gt. epsi)) then
             ind = 2
-            ! Second integration after a change in time-step
+! Second integration after a change in time-step
         else if ((abs(dt-oldpas(2)) .gt. epsi) .and. &
                  (abs(oldpas(2)-oldpas(1)) .gt. epsi)) then
-            ! 2 consecutive changes in time-step
+! 2 consecutive changes in time-step
             ind = 3
         end if
 !       --- 7.2 - Calculate an estimate on DEPL/3 (t_i+1/2) based on
 !                 either the system's state at t_i+1 or t_i
         if (ind .eq. 0) then
             do i = 1, nbequ
-                depl3e(i) = depl4(i)-dt1*vite4(i)+ &
-                            ((dt1**2.d0)/24.d0)* &
-                            (7.d0*fext4(i)+6.d0*fext3(i)-fext1(i))
+                depl3e(i) = depl4(i)-dt1*vite4(i)+((dt1**2.d0)/24.d0)*(7.d0*fext4(i)+6.d0*fext3&
+                            &(i)-fext1(i))
             end do
         else
             do i = 1, nbequ
-                depl3e(i) = depl1(i)+dt1*vite1(i)+ &
-                            ((dt1**2.d0)/24.d0)* &
-                            (7.d0*fext1(i)+6.d0*fext3(i)-fext4(i))
+                depl3e(i) = depl1(i)+dt1*vite1(i)+((dt1**2.d0)/24.d0)*(7.d0*fext1(i)+6.d0*fext3&
+                            &(i)-fext4(i))
             end do
         end if
-
+!
 !       --- 7.3 - In case more than one iteration was detected in the
 !                 current step, calculate a new estimation of the
 !                 system state at t_i-1/2 (DEPL/2)
@@ -755,9 +788,8 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
         pas1 = oldpas(2)/2.d0
         if (nr .eq. 1) then
             do i = 1, nbequ
-                depl2e(i) = depl1p(i)+pas1*vite1p(i)+ &
-                            ((pas1**2.d0)/24.d0)* &
-                            (7.d0*fext1p(i)+6.d0*fext2(i)-fext1(i))
+                depl2e(i) = depl1p(i)+pas1*vite1p(i)+((pas1**2.d0)/24.d0)*(7.d0*fext1p(i)+6.d0*&
+                            &fext2(i)-fext1(i))
             end do
         end if
 !       --- 7.4 - Calculate the error on displacement, per unit half-step (dt1 = dt/2)
@@ -765,37 +797,34 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
         if (ind .eq. 0) then
             beta = (45.d0*dt1)/4.d0
             do i = 1, nbequ
-                errt = errt+(((depl3e(i)-depl3(i))- &
-                              (depl2e(i)-depl2(i)))/beta)**2.d0
+                errt = errt+(((depl3e(i)-depl3(i))-(depl2e(i)-depl2(i)))/beta)**2.d0
             end do
         else if (ind .eq. 1) then
             c1 = dt1/pas1
             alpha1 = (c1**3.d0)*(2.d0+c1)/3.d0
             beta = 5.d0*pas1*(12.d0+7.d0*c1-(c1**2.d0))/(8.d0*c1)
             do i = 1, nbequ
-                errt = errt+(((depl3e(i)-depl3(i))- &
-                              alpha1*(depl2e(i)-depl2(i)))/beta)**2.d0
+                errt = errt+(((depl3e(i)-depl3(i))-alpha1*(depl2e(i)-depl2(i)))/beta)**2.d0
             end do
         else if (ind .eq. 2) then
             c0 = pas1/pas0
             alpha2 = (1.d0+(2.d0/c0))/3.d0
             beta = 5.d0*pas0*(1.d0+5.d0*c0+3.d0*(c0**2.d0))/(4.d0*c0)
             do i = 1, nbequ
-                errt = errt+((alpha2*(depl3e(i)-depl3(i))- &
-                              (depl2e(i)-depl2(i)))/beta)**2.d0
+                errt = errt+((alpha2*(depl3e(i)-depl3(i))-(depl2e(i)-depl2(i)))/beta)**2.d0
             end do
         else
             c0 = pas1/pas0
             c1 = dt1/pas1
             alpha1 = (c1**3.d0)*(2.d0+c1)/3.d0
             alpha2 = (1.d0+(2.d0/c0))/3.d0
-            beta = 5.d0*dt1*((c0**2)*(12.d0+7.d0*c1-(c1**2))+ &
-                             c0*(20.d0+12.d0*c1-2.d0*(c1**2))+ &
-                             2.d0*c1+4.d0)/ &
-                   (24.d0*(c0**2.d0)*(c1**2.d0))
+            beta = 5.d0*dt1*( &
+                   (c0**2)*(12.d0+7.d0*c1-(c1**2))+c0*(20.d0+12.d0*c1-2.d0*(c1**2))+2.d0*c1+4.d&
+                   &0)/(24.d0*(c0**2.d0)*(c1**2.d0) &
+                   )
             do i = 1, nbequ
-                errt = errt+((alpha2*(depl3e(i)-depl3(i))- &
-                              alpha1*(depl2e(i)-depl2(i)))/beta)**2.d0
+                errt = errt+((alpha2*(depl3e(i)-depl3(i))-alpha1*(depl2e(i)-depl2(i)))/beta &
+                             )**2.d0
             end do
         end if
 !       --- The average global error is given as (in displacement units) :
@@ -842,35 +871,77 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
         else if (nr .eq. 100) then
             ASSERT(.false.)
         end if
-
-        call dcopy(nbequ, depl1, 1, depl1p(1), 1)
-        call dcopy(nbequ, vite1, 1, vite1p(1), 1)
-        call dcopy(nbequ, fext1, 1, fext1p(1), 1)
-        call dcopy(nbequ, depl3e(1), 1, depl2e(1), 1)
-
+!
+        b_n = to_blas_int(nbequ)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, depl1, b_incx, depl1p(1), b_incy)
+        b_n = to_blas_int(nbequ)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vite1, b_incx, vite1p(1), b_incy)
+        b_n = to_blas_int(nbequ)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fext1, b_incx, fext1p(1), b_incy)
+        b_n = to_blas_int(nbequ)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, depl3e(1), b_incx, depl2e(1), b_incy)
+!
         oldpas(1) = oldpas(2)
         oldpas(2) = dt
-
+!
     end if
-
+!
 !   8 - Preparing the algorithm for the next step, copy index 3 in 2 and 4 in 1
-    call dcopy(nbequ, depl3, 1, depl2, 1)
-    call dcopy(nbequ, vite3, 1, vite2, 1)
-    call dcopy(nbequ, acce3, 1, acce2, 1)
-    call dcopy(nbequ, fext3, 1, fext2, 1)
-    call dcopy(nbequ, depl4, 1, depl1, 1)
-    call dcopy(nbequ, vite4, 1, vite1, 1)
-    call dcopy(nbequ, acce4, 1, acce1, 1)
-    call dcopy(nbequ, fext4, 1, fext1, 1)
-    call intsav(sd_int, STEP, 1, iocc=1, rscal=dtnew, buffer=buffint)
-    call intsav(sd_int, TIME, 1, iocc=1, rscal=t1+dt, buffer=buffint)
-    call intsav(sd_int, INDEX, 1, iocc=1, iscal=ind1+1, buffer=buffint)
-
-    call intsav(sd_int, TIME, 1, iocc=4, rscal=t1+dt, buffer=buffint)
-    call intsav(sd_int, STEP, 1, iocc=4, rscal=dt, buffer=buffint)
-    call intsav(sd_int, INDEX, 1, iocc=4, iscal=ind1+1, buffer=buffint)
-
+    b_n = to_blas_int(nbequ)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, depl3, b_incx, depl2, b_incy)
+    b_n = to_blas_int(nbequ)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vite3, b_incx, vite2, b_incy)
+    b_n = to_blas_int(nbequ)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, acce3, b_incx, acce2, b_incy)
+    b_n = to_blas_int(nbequ)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, fext3, b_incx, fext2, b_incy)
+    b_n = to_blas_int(nbequ)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, depl4, b_incx, depl1, b_incy)
+    b_n = to_blas_int(nbequ)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vite4, b_incx, vite1, b_incy)
+    b_n = to_blas_int(nbequ)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, acce4, b_incx, acce1, b_incy)
+    b_n = to_blas_int(nbequ)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, fext4, b_incx, fext1, b_incy)
+    call intsav(sd_int, STEP, 1, iocc=1, rscal=dtnew, &
+                buffer=buffint)
+    call intsav(sd_int, TIME, 1, iocc=1, rscal=t1+dt, &
+                buffer=buffint)
+    call intsav(sd_int, INDEX, 1, iocc=1, iscal=ind1+1, &
+                buffer=buffint)
+!
+    call intsav(sd_int, TIME, 1, iocc=4, rscal=t1+dt, &
+                buffer=buffint)
+    call intsav(sd_int, STEP, 1, iocc=4, rscal=dt, &
+                buffer=buffint)
+    call intsav(sd_int, INDEX, 1, iocc=4, iscal=ind1+1, &
+                buffer=buffint)
+!
 !   8 - Set the archiving index to 4
     call intsav(sd_int, IND_ARCH, 1, iscal=4, buffer=buffint)
-
+!
 end subroutine

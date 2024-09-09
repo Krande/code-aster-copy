@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine znapps(n, kev, np, shift, v, &
                   ldv, h, ldh, resid, q, &
                   ldq, workl, workd)
@@ -215,6 +215,9 @@ subroutine znapps(n, kev, np, shift, v, &
     aster_logical :: first
     complex(kind=8) :: f, g, h11, h21, r, s, sigma(1), t
     real(kind=8) :: c, smlnum, ulp, unfl, tst1, rbid(1)
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
+    blas_int :: b_ldb
     save first, smlnum, ulp, unfl
 !
 !
@@ -273,8 +276,11 @@ subroutine znapps(n, kev, np, shift, v, &
 !     | THE ROTATIONS AND REFLECTIONS              |
 !     %--------------------------------------------%
 !
-    call zlaset('A', kplusp, kplusp, zero, one, &
-                q, ldq)
+    b_lda = to_blas_int(ldq)
+    b_m = to_blas_int(kplusp)
+    b_n = to_blas_int(kplusp)
+    call zlaset('A', b_m, b_n, zero, one, &
+                q, b_lda)
 !
 !     %----------------------------------------------%
 !     | QUICK RETURN IF THERE ARE NO SHIFTS TO APPLY |
@@ -308,7 +314,9 @@ subroutine znapps(n, kev, np, shift, v, &
 !           %----------------------------------------%
 !
             tst1 = zabs1(h(i, i))+zabs1(h(i+1, i+1))
-            if (tst1 .eq. rzero) tst1 = zlanhs('1', kplusp-jj+1, h, ldh, rbid)
+            b_lda = to_blas_int(ldh)
+            b_n = to_blas_int(kplusp-jj+1)
+            if (tst1 .eq. rzero) tst1 = zlanhs('1', b_n, h, b_lda, rbid)
 !
             if (abs(dble(h(i+1, i))) .le. max(ulp*tst1, smlnum)) then
                 if (msglvl .gt. 0) then
@@ -443,7 +451,9 @@ subroutine znapps(n, kev, np, shift, v, &
 !        %--------------------------------------------%
 !
         tst1 = zabs1(h(i, i))+zabs1(h(i+1, i+1))
-        if (tst1 .eq. rzero) tst1 = zlanhs('1', kev, h, ldh, rbid)
+        b_lda = to_blas_int(ldh)
+        b_n = to_blas_int(kev)
+        if (tst1 .eq. rzero) tst1 = zlanhs('1', b_n, h, b_lda, rbid)
         if (dble(h(i+1, i)) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
     end do
 !
@@ -455,9 +465,16 @@ subroutine znapps(n, kev, np, shift, v, &
 !     | OF H WOULD BE ZERO AS IN EXACT ARITHMETIC.      |
 !     %-------------------------------------------------%
 !
-    if (dble(h(kev+1, kev)) .gt. rzero) call zgemv('N', n, kplusp, one, v, &
-                                                   ldv, q(1, kev+1), 1, zero, workd(n+1), &
-                                                   1)
+    if (dble(h(kev+1, kev)) .gt. rzero) then
+        b_lda = to_blas_int(ldv)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(kplusp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zgemv('N', b_m, b_n, one, v, &
+                   b_lda, q(1, kev+1), b_incx, zero, workd(n+1), &
+                   b_incy)
+    end if
 !
 !     %----------------------------------------------------------%
 !     | COMPUTE COLUMN 1 TO KEV OF (V*Q) IN BACKWARD ORDER       |
@@ -465,24 +482,41 @@ subroutine znapps(n, kev, np, shift, v, &
 !     %----------------------------------------------------------%
 !
     do i = 1, kev
-        call zgemv('N', n, kplusp-i+1, one, v, &
-                   ldv, q(1, kev-i+1), 1, zero, workd, &
-                   1)
-        call zcopy(n, workd, 1, v(1, kplusp-i+1), 1)
+        b_lda = to_blas_int(ldv)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(kplusp-i+1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zgemv('N', b_m, b_n, one, v, &
+                   b_lda, q(1, kev-i+1), b_incx, zero, workd, &
+                   b_incy)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, workd, b_incx, v(1, kplusp-i+1), b_incy)
     end do
 !
 !     %-------------------------------------------------%
 !     |  MOVE V(:,KPLUSP-KEV+1:KPLUSP) INTO V(:,1:KEV). |
 !     %-------------------------------------------------%
 !
-    call zlacpy('A', n, kev, v(1, kplusp-kev+1), ldv, &
-                v, ldv)
+    b_ldb = to_blas_int(ldv)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(kev)
+    call zlacpy('A', b_m, b_n, v(1, kplusp-kev+1), b_lda, &
+                v, b_ldb)
 !
 !     %--------------------------------------------------------------%
 !     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |
 !     %--------------------------------------------------------------%
 !
-    if (dble(h(kev+1, kev)) .gt. rzero) call zcopy(n, workd(n+1), 1, v(1, kev+1), 1)
+    if (dble(h(kev+1, kev)) .gt. rzero) then
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, workd(n+1), b_incx, v(1, kev+1), b_incy)
+    end if
 !
 !     %-------------------------------------%
 !     | UPDATE THE RESIDUAL VECTOR:         |
@@ -493,8 +527,13 @@ subroutine znapps(n, kev, np, shift, v, &
 !     %-------------------------------------%
 !
     call zlscal(n, q(kplusp, kev), resid, 1)
-    if (dble(h(kev+1, kev)) .gt. rzero) call zaxpy(n, h(kev+1, kev), v(1, kev+1), 1, resid, &
-                                                   1)
+    if (dble(h(kev+1, kev)) .gt. rzero) then
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zaxpy(b_n, h(kev+1, kev), v(1, kev+1), b_incx, resid, &
+                   b_incy)
+    end if
 !
     if (msglvl .gt. 1) then
         call zvout(logfil, 1, q(kplusp, kev), ndigit, '_NAPPS: SIGMAK = (E_(KEV+P)T*Q)*E_(KEV)')

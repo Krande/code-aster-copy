@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
 !
     type(ContactNitsche) :: nits
     aster_logical :: l_cont_qp, l_fric_qp
-    integer ::  i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
+    integer :: i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
@@ -60,6 +60,8 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), dStress_nn(MAX_NITS_DOFS)
     real(kind=8) :: jump_t(MAX_LAGA_DOFS, 3)
     integer :: dofsMap(54)
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,7 +124,11 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
 !     term: theta * (gamma_c^-1 ([stress_nn + gamma_c * gap(u)]_R- - stress_nn), D(stress_nn(u))[v])
 !
             coeff = weight_sl_qp*parameters%vari_cont*(projRmVal-stress_nn)/gamma_c
-            call daxpy(slav_dofs, coeff, dStress_nn, 1, vect_cont, 1)
+            b_n = to_blas_int(slav_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, coeff, dStress_nn, b_incx, vect_cont, &
+                       b_incy)
         end if
 !
 ! ------ FRICTION PART (computed only if friction)
@@ -134,8 +140,14 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
 !
             if (l_fric_qp) then
                 coeff = weight_sl_qp
-                call dgemv('N', total_dofs, geom%elem_dime-1, coeff, jump_t, MAX_LAGA_DOFS, &
-                           projBsVal, 1, 1.d0, vect_fric, 1)
+                b_lda = to_blas_int(MAX_LAGA_DOFS)
+                b_m = to_blas_int(total_dofs)
+                b_n = to_blas_int(geom%elem_dime-1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dgemv('N', b_m, b_n, coeff, jump_t, &
+                           b_lda, projBsVal, b_incx, 1.d0, vect_fric, &
+                           b_incy)
             end if
         end if
     end do

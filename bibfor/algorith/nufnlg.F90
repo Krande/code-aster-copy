@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nufnlg(ndim, nno1, nno2, npg, iw, &
                   vff1, vff2, idff1, vu, vp, &
                   typmod, mate, compor, geomi, sig, &
@@ -81,6 +81,7 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw, &
     real(kind=8) :: alpha, trepst
     real(kind=8) :: dsbdep(2*ndim, 2*ndim)
     character(len=16) :: option
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(grand=.true._1)
     data vij/1, 4, 5,&
@@ -130,15 +131,23 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw, &
         call nmmalu(nno1, axi, r, vff1(1, g), dff1, &
                     lij)
 !
-  jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3, 2)&
-                   &)+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
+        jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*&
+             &fm(3, 2))+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
 ! - CALCUL DE LA PRESSION
-        pm = ddot(nno2, vff2(1, g), 1, presm, 1)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vff2(1, g), b_incx, presm, b_incy)
 !
 ! - CONTRAINTE DE KIRCHHOFF
-        call dcopy(2*ndim, sig(1, g), 1, tau, 1)
-        call dscal(2*ndim, jm, tau, 1)
+        b_n = to_blas_int(2*ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sig(1, g), b_incx, tau, b_incy)
+        b_n = to_blas_int(2*ndim)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, jm, tau, b_incx)
         tauhy = (tau(1)+tau(2)+tau(3))/3.d0
         do kl = 1, 6
             taudv(kl) = tau(kl)-tauhy*kr(kl)

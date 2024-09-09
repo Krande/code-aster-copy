@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !     SUBROUTINE ARPACK CALCULANT LES MODES PROPRES DU PROBLEME
 !     INITIAL.
@@ -402,6 +402,10 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 ! DUE TO CRS512 INTEGER IWEV, WRR, WRI
     aster_logical :: reord
     real(kind=8) :: conds, rnorm, sep, temp, thres, vl(1, 1), temp1, eps23, eps
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
+    blas_int :: b_ldb
+    blas_int :: b_k, b_ldc
 !
 !     %--------------------%
 !     | EXTERNAL FUNCTIONS |
@@ -654,15 +658,24 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !        | INITIALIZE THE SCHUR VECTOR MATRIX Q TO THE IDENTITY.     |
 !        %-----------------------------------------------------------%
 !
-        call dcopy(ldh*ncv, workl(ih), 1, workl(iuptri), 1)
+        b_n = to_blas_int(ldh*ncv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workl(ih), b_incx, workl(iuptri), b_incy)
 ! DUE TO CRP_102 CALL DLASET ('ALL', NCV, NCV, ZERO, ONE,
 ! WORKL(INVSUB), LDQ)
-        call dlaset('A', ncv, ncv, zero, one, &
-                    workl(invsub), ldq)
+        b_lda = to_blas_int(ldq)
+        b_m = to_blas_int(ncv)
+        b_n = to_blas_int(ncv)
+        call dlaset('A', b_m, b_n, zero, one, &
+                    workl(invsub), b_lda)
         call ar_dlahqr(.true._1, .true._1, ncv, 1, ncv, &
                        workl(iuptri), ldh, workl(iheigr), workl(iheigi), 1, &
                        ncv, workl(invsub), ldq, ierr)
-        call dcopy(ncv, workl(invsub+ncv-1), ldq, workl(ihbds), 1)
+        b_n = to_blas_int(ncv)
+        b_incx = to_blas_int(ldq)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workl(invsub+ncv-1), b_incx, workl(ihbds), b_incy)
 !
         if (ierr .ne. 0) then
             info = -8
@@ -716,7 +729,10 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !        | CONVERGED RITZ VALUES.                |
 !        %---------------------------------------%
 !
-        call dcopy(ncv, workl(invsub+ncv-1), ldq, workl(ihbds), 1)
+        b_n = to_blas_int(ncv)
+        b_incx = to_blas_int(ldq)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workl(invsub+ncv-1), b_incx, workl(ihbds), b_incy)
 !
 !        %----------------------------------------------------%
 !        | PLACE THE COMPUTED EIGENVALUES OF H INTO DR AND DI |
@@ -724,8 +740,14 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !        %----------------------------------------------------%
 !
         if (type .eq. 'REGULR') then
-            call dcopy(nconv, workl(iheigr), 1, dr, 1)
-            call dcopy(nconv, workl(iheigi), 1, di, 1)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, workl(iheigr), b_incx, dr, b_incy)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, workl(iheigi), b_incx, di, b_incy)
         end if
 !
 !        %----------------------------------------------------------%
@@ -750,12 +772,21 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !        %---------------------------------------------------------%
 ! DUE TO CRP_102 CALL DORM2R ('RIGHT', 'NOTRANSPOSE', N, NCV, NCONV,
 !
-        call dorm2r('R', 'N', n, ncv, nconv, &
-                    workl(invsub), ldq, workev, v, ldv, &
+        b_ldc = to_blas_int(ldv)
+        b_lda = to_blas_int(ldq)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(ncv)
+        b_k = to_blas_int(nconv)
+        call dorm2r('R', 'N', b_m, b_n, b_k, &
+                    workl(invsub), b_lda, workev, v, b_ldc, &
                     workd(n+1), ierr4)
         ierr = ierr4
-        call dlacpy('A', n, nconv, v, ldv, &
-                    z, ldz)
+        b_ldb = to_blas_int(ldz)
+        b_lda = to_blas_int(ldv)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(nconv)
+        call dlacpy('A', b_m, b_n, v, b_lda, &
+                    z, b_ldb)
 !
         do j = 1, nconv
 !
@@ -769,8 +800,12 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !           %---------------------------------------------------%
 !
             if (workl(invsub+(j-1)*ldq+j-1) .lt. zero) then
-                call dscal(nconv, -one, workl(iuptri+j-1), ldq)
-                call dscal(nconv, -one, workl(iuptri+(j-1)*ldq), 1)
+                b_n = to_blas_int(nconv)
+                b_incx = to_blas_int(ldq)
+                call dscal(b_n, -one, workl(iuptri+j-1), b_incx)
+                b_n = to_blas_int(nconv)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, -one, workl(iuptri+(j-1)*ldq), b_incx)
             end if
 !
         end do
@@ -816,8 +851,12 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !                 | REAL EIGENVALUE CASE |
 !                 %----------------------%
 !
-                    temp = dnrm2(ncv, workl(invsub+(j-1)*ldq), 1)
-                    call dscal(ncv, one/temp, workl(invsub+(j-1)*ldq), 1)
+                    b_n = to_blas_int(ncv)
+                    b_incx = to_blas_int(1)
+                    temp = dnrm2(b_n, workl(invsub+(j-1)*ldq), b_incx)
+                    b_n = to_blas_int(ncv)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, one/temp, workl(invsub+(j-1)*ldq), b_incx)
 !
                 else
 !
@@ -830,12 +869,18 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !                 %-------------------------------------------%
 !
                     if (iconj .eq. 0) then
+                        b_n = to_blas_int(ncv)
+                        b_incx = to_blas_int(1)
                         temp = dlapy2( &
-                               dnrm2(ncv, workl(invsub+(j-1)*ldq), 1), &
-                               dnrm2(ncv, workl(invsub+j*ldq), 1) &
+                               dnrm2(b_n, workl(invsub+(j-1)*ldq), b_incx), &
+                               dnrm2(b_n, workl(invsub+j*ldq), b_incx) &
                                )
-                        call dscal(ncv, one/temp, workl(invsub+(j-1)*ldq), 1)
-                        call dscal(ncv, one/temp, workl(invsub+j*ldq), 1)
+                        b_n = to_blas_int(ncv)
+                        b_incx = to_blas_int(1)
+                        call dscal(b_n, one/temp, workl(invsub+(j-1)*ldq), b_incx)
+                        b_n = to_blas_int(ncv)
+                        b_incx = to_blas_int(1)
+                        call dscal(b_n, one/temp, workl(invsub+j*ldq), b_incx)
                         iconj = 1
                     else
                         iconj = 0
@@ -845,9 +890,14 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !
             end do
 !
-            call dgemv('T', ncv, nconv, one, workl(invsub), &
-                       ldq, workl(ihbds), 1, zero, workev, &
-                       1)
+            b_lda = to_blas_int(ldq)
+            b_m = to_blas_int(ncv)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('T', b_m, b_n, one, workl(invsub), &
+                       b_lda, workl(ihbds), b_incx, zero, workev, &
+                       b_incy)
 !
             iconj = 0
             do j = 1, nconv
@@ -870,7 +920,10 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
             end do
 !
             if (msglvl .gt. 2) then
-                call dcopy(ncv, workl(invsub+ncv-1), ldq, workl(ihbds), 1)
+                b_n = to_blas_int(ncv)
+                b_incx = to_blas_int(ldq)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, workl(invsub+ncv-1), b_incx, workl(ihbds), b_incy)
                 call dvout(logfil, ncv, workl(ihbds), ndigit, &
                            '_NEUPD: LAST ROW OF THE EIGENVECTOR MATRIX FOR T')
                 if (msglvl .gt. 3) then
@@ -883,7 +936,10 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !           | COPY RITZ ESTIMATES INTO WORKL(IHBDS) |
 !           %---------------------------------------%
 !
-            call dcopy(nconv, workev, 1, workl(ihbds), 1)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, workev, b_incx, workl(ihbds), b_incy)
 !
 !           %---------------------------------------------------------%
 !           | COMPUTE THE QR FACTORIZATION OF THE EIGENVECTOR MATRIX  |
@@ -904,15 +960,24 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 ! DUE TO CRP102
 !          CALL DORM2R ('RIGHT', 'NOTRANSPOSE', N, NCV, NCONV,
 !     &         WORKL(INVSUB), LDQ, WORKEV, Z, LDZ, WORKD(N+1), IERR)
-            call dorm2r('R', 'N', n, ncv, nconv, &
-                        workl(invsub), ldq, workev, z, ldz, &
+            b_ldc = to_blas_int(ldz)
+            b_lda = to_blas_int(ldq)
+            b_m = to_blas_int(n)
+            b_n = to_blas_int(ncv)
+            b_k = to_blas_int(nconv)
+            call dorm2r('R', 'N', b_m, b_n, b_k, &
+                        workl(invsub), b_lda, workev, z, b_ldc, &
                         workd(n+1), ierr4)
             ierr = ierr4
 !
 ! DUE TO CRP102 CALL DTRMM('RIGHT','UPPER','NO TRANSPOSE','NON-UNIT',
-            call dtrmm('R', 'U', 'N', 'N', n, &
-                       nconv, one, workl(invsub), ldq, z, &
-                       ldz)
+            b_ldb = to_blas_int(ldz)
+            b_lda = to_blas_int(ldq)
+            b_m = to_blas_int(n)
+            b_n = to_blas_int(nconv)
+            call dtrmm('R', 'U', 'N', 'N', b_m, &
+                       b_n, one, workl(invsub), b_lda, z, &
+                       b_ldb)
 !
         end if
 !
@@ -923,11 +988,26 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !        | PLACE THE RITZ VALUES COMPUTED DNAUPD INTO DR AND DI |
 !        %------------------------------------------------------%
 !
-        call dcopy(nconv, workl(ritzr), 1, dr, 1)
-        call dcopy(nconv, workl(ritzi), 1, di, 1)
-        call dcopy(nconv, workl(ritzr), 1, workl(iheigr), 1)
-        call dcopy(nconv, workl(ritzi), 1, workl(iheigi), 1)
-        call dcopy(nconv, workl(bounds), 1, workl(ihbds), 1)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workl(ritzr), b_incx, dr, b_incy)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workl(ritzi), b_incx, di, b_incy)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workl(ritzr), b_incx, workl(iheigr), b_incy)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workl(ritzi), b_incx, workl(iheigi), b_incy)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, workl(bounds), b_incx, workl(ihbds), b_incy)
     end if
 !
 !     %------------------------------------------------%
@@ -938,7 +1018,11 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !
     if (type .eq. 'REGULR') then
 !
-        if (rvec) call dscal(ncv, rnorm, workl(ihbds), 1)
+        if (rvec) then
+            b_n = to_blas_int(ncv)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, rnorm, workl(ihbds), b_incx)
+        end if
 !
     else
 !
@@ -950,7 +1034,11 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !
         if (type .eq. 'SHIFTI') then
 !
-            if (rvec) call dscal(ncv, rnorm, workl(ihbds), 1)
+            if (rvec) then
+                b_n = to_blas_int(ncv)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, rnorm, workl(ihbds), b_incx)
+            end if
 !
             do k = 1, ncv
                 temp = dlapy2(workl(iheigr+k-1), workl(iheigi+k-1))
@@ -1018,13 +1106,25 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !
             end do
 !
-            call dcopy(nconv, workl(iheigr), 1, dr, 1)
-            call dcopy(nconv, workl(iheigi), 1, di, 1)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, workl(iheigr), b_incx, dr, b_incy)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, workl(iheigi), b_incx, di, b_incy)
 !
         else if (type .eq. 'REALPT' .or. type .eq. 'IMAGPT') then
 !
-            call dcopy(nconv, workl(iheigr), 1, dr, 1)
-            call dcopy(nconv, workl(iheigi), 1, di, 1)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, workl(iheigr), b_incx, dr, b_incy)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, workl(iheigi), b_incx, di, b_incy)
 !
         end if
 !
@@ -1087,13 +1187,13 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
                 if (temp*temp .le. eps) then
                     workev(j) = ( &
                                 workl( &
-                                invsub+(j-1)*ldq+ncv-1)*workl(iheigr+j-1)+workl(invsub+j*ldq+&
-                                &ncv-1)*workl(iheigi+j-1 &
+                                invsub+(j-1)*ldq+ncv-1)*workl(iheigr+j-1)+workl(invsub+j*ldq+ncv-&
+                                &1)*workl(iheigi+j-1 &
                                 ) &
                                 )/eps
                     workev(j+1) = ( &
-                                  workl(invsub+j*ldq+ncv-1)*workl(iheigr+j-1)-workl(invsub+(j&
-                                  &-1)*ldq+ncv-1)*workl(iheigi+j-1) &
+                                  workl(invsub+j*ldq+ncv-1)*workl(iheigr+j-1)-workl(invsub+(j-1)*&
+                                  &ldq+ncv-1)*workl(iheigi+j-1) &
                                   )/eps
                     if (msglvl .gt. 0) then
                         write (logfil, *)
@@ -1108,13 +1208,13 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
                 else
                     workev(j) = ( &
                                 workl( &
-                                invsub+(j-1)*ldq+ncv-1)*workl(iheigr+j-1)+workl(invsub+j*ldq+&
-                                &ncv-1)*workl(iheigi+j-1 &
+                                invsub+(j-1)*ldq+ncv-1)*workl(iheigr+j-1)+workl(invsub+j*ldq+ncv-&
+                                &1)*workl(iheigi+j-1 &
                                 ) &
                                 )/temp/temp
                     workev(j+1) = ( &
-                                  workl(invsub+j*ldq+ncv-1)*workl(iheigr+j-1)-workl(invsub+(j&
-                                  &-1)*ldq+ncv-1)*workl(iheigi+j-1) &
+                                  workl(invsub+j*ldq+ncv-1)*workl(iheigr+j-1)-workl(invsub+(j-1)*&
+                                  &ldq+ncv-1)*workl(iheigi+j-1) &
                                   )/temp/temp
                 end if
                 iconj = 1
@@ -1128,8 +1228,13 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !        | PURIFY ALL THE RITZ VECTORS TOGETHER. |
 !        %---------------------------------------%
 !
-        call dger(n, nconv, one, resid, 1, &
-                  workev, 1, z, ldz)
+        b_lda = to_blas_int(ldz)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dger(b_m, b_n, one, resid, b_incx, &
+                  workev, b_incy, z, b_lda)
 !
     end if
 !

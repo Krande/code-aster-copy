@@ -54,27 +54,30 @@ subroutine te0008(option, nomte)
     integer :: igeom, ivectu
     integer :: jvDisp, jvSief, jvCompor
     integer :: i, j, nbinco, iretCompor, iretDisp
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', &
-                     ndim=ndim, nno=nno, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
-
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, jpoids=ipoids, &
+                     jvf=ivf, jdfde=idfde)
+!
 ! - Initializations
     nharm = 0.d0
     nbinco = nno*ndim
     ASSERT(nbinco .le. 3*MT_NNOMAX)
     nbsig = nbsigm()
     ASSERT(nbsig .le. 6)
-
+!
 ! - Output vector
     call jevech('PVECTUR', 'E', ivectu)
-
+!
 ! - Get input field
     call jevech('PGEOMER', 'L', igeom)
-    call dcopy(nbinco, zr(igeom), 1, geo, 1)
-
+    b_n = to_blas_int(nbinco)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(igeom), b_incx, geo, b_incy)
+!
 ! - Compute
     if (option .eq. 'FORC_NODA') then
         call jevech('PSIEFR', 'L', jvSief)
@@ -84,14 +87,21 @@ subroutine te0008(option, nomte)
                 call tecach('ONO', 'PDEPLAR', 'L', iretDisp, iad=jvDisp)
                 if (iretDisp .eq. 0) then
                     call jevech('PDEPLAR', 'L', jvDisp)
-                    call daxpy(nbinco, 1.d0, zr(jvDisp), 1, geo, 1)
+                    b_n = to_blas_int(nbinco)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call daxpy(b_n, 1.d0, zr(jvDisp), b_incx, geo, &
+                               b_incy)
                 end if
             end if
         end if
         call bsigmc(nno, ndim, nbsig, npg, ipoids, &
                     ivf, idfde, geo, nharm, zr(jvSief), &
                     bsigm)
-        call dcopy(nbinco, bsigm, 1, zr(ivectu), 1)
+        b_n = to_blas_int(nbinco)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, bsigm, b_incx, zr(ivectu), b_incy)
 !
     else if (option .eq. 'REFE_FORC_NODA') then
         call terefe('SIGM_REFE', 'MECA_ISO', sigref)
@@ -107,7 +117,11 @@ subroutine te0008(option, nomte)
             end do
             sigtmp(i) = 0.d0
         end do
-        call daxpy(nbinco, 1.d0/npg, ftemp, 1, zr(ivectu), 1)
+        b_n = to_blas_int(nbinco)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0/npg, ftemp, b_incx, zr(ivectu), &
+                   b_incy)
     end if
 !
 end subroutine

@@ -18,8 +18,8 @@
 !
 subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
                   vgli, iadh, wk1, wk2, wk3, &
-                  iwk4, nbloc, offset, &
-                  trepos, noecho, intitu, nomres)
+                  iwk4, nbloc, offset, trepos, noecho, &
+                  intitu, nomres)
     implicit none
 #include "asterc/r8rddg.h"
 #include "asterfort/compt.h"
@@ -74,6 +74,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
     character(len=16) :: tvar(10), npara(nbpara)
     character(len=24) :: valek(3)
     complex(kind=8) :: c16b
+    blas_int :: b_incx, b_incy, b_n
 !
     data tvar/'DEPL_X', 'DEPL_Y', 'DEPL_Z', 'DEPL_RADIAL',&
      &     'DEPL_ANGULAIRE', 'FORCE_NORMALE', 'FORCE_TANG_1',&
@@ -154,7 +155,10 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
             dxmint = -dxmaxt
 !
             idec = 3*(i-1)+j
-            call dcopy(nbpt, dloc(idec), 3*nbobst, wk1(1), 1)
+            b_n = to_blas_int(nbpt)
+            b_incx = to_blas_int(3*nbobst)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, dloc(idec), b_incx, wk1(1), b_incy)
 !
             do ibl = 1, nbloc
                 dxmoy = zero
@@ -195,8 +199,14 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
 !       --- ANALYSE DES DEPLACEMENTS EN COORDONNEES POLAIRES ---
 !       --------------------------------------------------------
 !
-        call dcopy(nbpt, dloc(3*(i-1)+2), 3*nbobst, wk1, 1)
-        call dcopy(nbpt, dloc(3*(i-1)+3), 3*nbobst, wk2, 1)
+        b_n = to_blas_int(nbpt)
+        b_incx = to_blas_int(3*nbobst)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dloc(3*(i-1)+2), b_incx, wk1, b_incy)
+        b_n = to_blas_int(nbpt)
+        b_incx = to_blas_int(3*nbobst)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dloc(3*(i-1)+3), b_incx, wk2, b_incy)
         do in = 1, nbpt
             wk3(in) = sqrt(wk1(in)*wk1(in)+wk2(in)*wk2(in))
         end do
@@ -299,7 +309,10 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
         fxrmsc = zero
         fxmaxt = zero
         fxmint = zero
-        call dcopy(nbpt, fcho(3*(i-1)+1), 3*nbobst, wk1, 1)
+        b_n = to_blas_int(nbpt)
+        b_incx = to_blas_int(3*nbobst)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fcho(3*(i-1)+1), b_incx, wk1, b_incy)
         do ibl = 1, nbloc
             fnmoyt = zero
             fnmoyc = zero
@@ -348,7 +361,10 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
             fyrmst = zero
             fymaxt = zero
             fymint = zero
-            call dcopy(nbpt, fcho(3*(i-1)+j), 3*nbobst, wk1, 1)
+            b_n = to_blas_int(nbpt)
+            b_incx = to_blas_int(3*nbobst)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, fcho(3*(i-1)+j), b_incx, wk1, b_incy)
             do ibl = 1, nbloc
                 ftmoye = zero
                 ftetyp = zero
@@ -392,7 +408,10 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
         tchomi = zero
         tchoma = zero
         tchomy = zero
-        call dcopy(nbpt, fcho(3*(i-1)+1), 3*nbobst, wk1, 1)
+        b_n = to_blas_int(nbpt)
+        b_incx = to_blas_int(3*nbobst)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fcho(3*(i-1)+1), b_incx, wk1, b_incy)
         do ibl = 1, nbloc
             nbchoc = 0
             tchocm = zero

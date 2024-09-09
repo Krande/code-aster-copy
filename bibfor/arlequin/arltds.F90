@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,7 @@ subroutine arltds(nns, npgs, ipoids, icoors, ivfs, &
 !
 !
     integer :: mtl, kpgs
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -71,7 +72,10 @@ subroutine arltds(nns, npgs, ipoids, icoors, ivfs, &
 !
     do kpgs = 1, npgs
         mtl = nns*(kpgs-1)+1
-        call dcopy(nns, zr(ivfs-1+mtl), 1, fctfs(mtl), 1)
+        b_n = to_blas_int(nns)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivfs-1+mtl), b_incx, fctfs(mtl), b_incy)
         call dfdm3d(nns, kpgs, ipoids, idfdes, zr(icoors), &
                     poijcs(kpgs), dfdxs(mtl), dfdys(mtl), dfdzs(mtl))
     end do

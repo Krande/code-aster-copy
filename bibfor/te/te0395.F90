@@ -38,6 +38,7 @@ subroutine te0395(option, nomte)
     integer :: jgano, nno, k, npg1, i, j, ivectu, ndim, nnos
     integer :: ipoids, ivf, idfde, igeom, jvSief, imate, jvDisp
     integer :: icomp, ii, iretc, iretd
+    blas_int :: b_incx, b_incy, b_n
 ! DEB ------------------------------------------------------------------
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
@@ -68,7 +69,7 @@ subroutine te0395(option, nomte)
 !      --------------------
 !         CHAMPS POUR LA REACTUALISATION DE LA GEOMETRIE
         call jevech('PDEPLAR', 'L', jvDisp)
-
+!
 ! ----     CONTRAINTES AUX POINTS D'INTEGRATION
         call jevech('PSIEFR', 'L', jvSief)
 !
@@ -102,7 +103,11 @@ subroutine te0395(option, nomte)
 !
         end do
 !
-        call daxpy(ndim*nno, 1.d0/npg1, ftemp, 1, zr(ivectu), 1)
+        b_n = to_blas_int(ndim*nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0/npg1, ftemp, b_incx, zr(ivectu), &
+                   b_incy)
 !
     end if
 !

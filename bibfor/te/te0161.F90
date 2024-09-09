@@ -65,13 +65,14 @@ subroutine te0161(option, nomte)
 !
     integer :: ifcx, idfdk, jgano, ndim, nnos
     character(len=8), parameter :: nompav(1) = ['VITE']
-    real(kind=8)                :: valpav(1), viterela(3)
+    real(kind=8) :: valpav(1), viterela(3)
 !
-    integer             :: ichamp
-    aster_logical       :: okvent, fozero
-    character(len=8)    :: nompar(13)
-    real(kind=8)        :: valpar(13), fcx, vite2, xvp(3)
-    real(kind=8)        :: xx(3), xv(3), xa(3), wx(6), wv(6), wa(6), temps
+    integer :: ichamp
+    aster_logical :: okvent, fozero
+    character(len=8) :: nompar(13)
+    real(kind=8) :: valpar(13), fcx, vite2, xvp(3)
+    real(kind=8) :: xx(3), xv(3), xa(3), wx(6), wv(6), wa(6), temps
+    blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
     r8min = r8miem()
     r8bid = 0.0; c1 = 1.0
@@ -103,7 +104,8 @@ subroutine te0161(option, nomte)
     if (option .eq. 'CHAR_MECA_PESA_R') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PPESANR', 'L', ipesa)
-        call rcvalb('FPG1', 1, 1, '+', zi(imate), ' ', 'ELAS', 0, ' ', [r8bid], &
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', 'ELAS', 0, ' ', [r8bid], &
                     1, 'RHO', rho, icodre, 1)
         if (nomte .eq. 'MECA_POU_D_T_GD') then
             call poutre_modloc('CAGNPO', ['A1'], 1, valeur=a)
@@ -121,7 +123,10 @@ subroutine te0161(option, nomte)
         call jevech('PFR1D1D', 'L', iforc)
         normal = abs(zr(iforc+6)) .gt. 1.001
 !       Pas de moment repartis
-        r8bid = sqrt(ddot(3, zr(iforc+3), 1, zr(iforc+3), 1))
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        r8bid = sqrt(ddot(b_n, zr(iforc+3), b_incx, zr(iforc+3), b_incy))
         if (r8bid .gt. r8min) then
             call utmess('F', 'ELEMENTS3_1', sk=nomte)
         end if
@@ -137,7 +142,7 @@ subroutine te0161(option, nomte)
         if (iret .eq. 0) then
             normal = .true.
             okvent = .true.
-            ! Récupération de la fonction d'effort en fonction de la vitesse
+! Récupération de la fonction d'effort en fonction de la vitesse
             call tecach('ONO', 'PVENTCX', 'L', iret, iad=ifcx)
             if (iret .ne. 0) then
                 call utmess('F', 'ELEMENTS3_39')
@@ -235,26 +240,37 @@ subroutine te0161(option, nomte)
             valpar(13) = temps
 !
             do ic = 1, 3
-                call fointe('FM', zk8(iforc+ic-1), nbpar, nompar, valpar, force(ic), iret)
+                call fointe('FM', zk8(iforc+ic-1), nbpar, nompar, valpar, &
+                            force(ic), iret)
             end do
             if (normal) call ForceNormale(w2, force)
         end if
         if (okvent) then
             fcx = 0.0; xvp(:) = 0.0
 !           Calcul du vecteur vitesse perpendiculaire
-            xss = ddot(3, viterela, 1, viterela, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xss = ddot(b_n, viterela, b_incx, viterela, b_incy)
             xs4 = sqrt(xss)
             if (xs4 .gt. r8min) then
-                xss = ddot(3, w2, 1, w2, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                xss = ddot(b_n, w2, b_incx, w2, b_incy)
                 xs2 = 1.0/xss
                 call provec(w2, viterela, xuu)
                 call provec(xuu, w2, xvv)
                 call pscvec(3, xs2, xvv, xvp)
 !               Norme de la vitesse perpendiculaire
-                vite2 = ddot(3, xvp, 1, xvp, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                vite2 = ddot(b_n, xvp, b_incx, xvp, b_incy)
                 valpav(1) = sqrt(vite2)
                 if (valpav(1) .gt. r8min) then
-                    call fointe('FM', zk8(ifcx), 1, nompav(1), valpav, fcx, iret)
+                    call fointe('FM', zk8(ifcx), 1, nompav(1), valpav, &
+                                fcx, iret)
                     fcx = fcx/valpav(1)
                 end if
             end if
@@ -282,26 +298,45 @@ contains
 #include "blas/ddot.h"
 #include "asterc/r8miem.h"
 !
-        real(kind=8), intent(in)    :: w2(3)
+        real(kind=8), intent(in) :: w2(3)
         real(kind=8), intent(inout) :: force(3)
 !
         real(kind=8) :: xuu(3), xvv(3), xsu(3)
         real(kind=8) :: xss, xs2, xs3, xs4, xs5, r8min
+        blas_int :: b_incx, b_incy, b_n
 !
         r8min = r8miem()
-        xss = ddot(3, force, 1, force, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        b_n = to_blas_int(b_n)
+        b_incx = to_blas_int(b_incx)
+        b_incy = to_blas_int(b_incy)
+        xss = ddot(b_n, force, b_incx, force, b_incy)
         xs4 = sqrt(xss)
         if (xs4 .gt. r8min) then
-            xss = ddot(3, w2, 1, w2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            b_n = to_blas_int(b_n)
+            b_incx = to_blas_int(b_incx)
+            b_incy = to_blas_int(b_incy)
+            xss = ddot(b_n, w2, b_incx, w2, b_incy)
             xs2 = 1.0/xss
             call provec(w2, force, xuu)
             call provec(xuu, w2, xvv)
             call pscvec(3, xs2, xvv, xsu)
-            xss = ddot(3, xuu, 1, xuu, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            b_n = to_blas_int(b_n)
+            b_incx = to_blas_int(b_incx)
+            b_incy = to_blas_int(b_incy)
+            xss = ddot(b_n, xuu, b_incx, xuu, b_incy)
             xs3 = sqrt(xss)
             xs5 = xs3*sqrt(xs2)/xs4
             call pscvec(3, xs5, xsu, force)
         end if
     end subroutine ForceNormale
-
+!
 end subroutine te0161

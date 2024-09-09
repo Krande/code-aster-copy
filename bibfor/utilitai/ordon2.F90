@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,11 +33,21 @@ subroutine ordon2(vale, nb)
 ! ----------------------------------------------------------------------
     integer :: i, iord(nb)
     real(kind=8) :: xbid(nb), yrbid(nb), yibid(nb)
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
 !
-    call dcopy(nb, vale, 1, xbid, 1)
-    call dcopy(nb, vale(nb+1), 2, yrbid, 1)
-    call dcopy(nb, vale(nb+2), 2, yibid, 1)
+    b_n = to_blas_int(nb)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vale, b_incx, xbid, b_incy)
+    b_n = to_blas_int(nb)
+    b_incx = to_blas_int(2)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vale(nb+1), b_incx, yrbid, b_incy)
+    b_n = to_blas_int(nb)
+    b_incx = to_blas_int(2)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vale(nb+2), b_incx, yibid, b_incy)
     call ordr8(xbid, nb, iord)
     do i = 1, nb
         vale(i) = xbid(iord(i))

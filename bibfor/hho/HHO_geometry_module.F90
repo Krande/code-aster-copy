@@ -44,9 +44,9 @@ module HHO_geometry_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public  :: barycenter, hhoNormalFace, hhoFaceInitCoor, hhoGeomBasis, hhoGeomDerivBasis
-    public  :: hhoLocalBasisFace, hhoNormalFace2, hhoNormalFace3, hhoNormalFaceQP
-    public  :: hhoSplitSimplex, hho_transfo_3d, hho_transfo_quad, hhoIsJacobCst
+    public :: barycenter, hhoNormalFace, hhoFaceInitCoor, hhoGeomBasis, hhoGeomDerivBasis
+    public :: hhoLocalBasisFace, hhoNormalFace2, hhoNormalFace3, hhoNormalFaceQP
+    public :: hhoSplitSimplex, hho_transfo_3d, hho_transfo_quad, hhoIsJacobCst
     private :: hho_jaco_cst_quad, hho_jaco_cst_3d
     private :: hhoNormalFace2d, well_oriented, hhoNormalFace1d, prod_vec, find_lowest_vertex
 !
@@ -71,23 +71,23 @@ contains
         real(kind=8) :: norm, v(3)
 ! --------------------------------------------------------------------------------------------------
 !
-
+!
         norm = max(max(norm2(v1), norm2(v2)), 1.d0)
         v = (v1-v2)/norm
-
+!
         if (abs(v(1)) > prec) then
             if (v(1) > 0.d0) then
                 ind = 1
             else
                 ind = 2
             end if
-        elseif (abs(v(2)) > prec) then
+        else if (abs(v(2)) > prec) then
             if (v(2) > 0.d0) then
                 ind = 1
             else
                 ind = 2
             end if
-        elseif (abs(v(3)) > prec) then
+        else if (abs(v(3)) > prec) then
             if (v(3) > 0.d0) then
                 ind = 1
             else
@@ -107,9 +107,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in)                             :: nbnodes
-        real(kind=8), dimension(3, nbnodes), intent(in)  :: nodes
-        real(kind=8), dimension(3)                      :: bar
+        integer, intent(in) :: nbnodes
+        real(kind=8), dimension(3, nbnodes), intent(in) :: nodes
+        real(kind=8), dimension(3) :: bar
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
@@ -139,9 +139,9 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3), intent(in)  :: v0
-        real(kind=8), dimension(3), intent(in)  :: v1
-        real(kind=8), dimension(3)              :: v2
+        real(kind=8), dimension(3), intent(in) :: v0
+        real(kind=8), dimension(3), intent(in) :: v1
+        real(kind=8), dimension(3) :: v2
 !
 ! --------------------------------------------------------------------------------------------------
 !  In v0        :: vector 0
@@ -165,9 +165,9 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3), intent(in)  :: v0
-        real(kind=8), dimension(3), intent(in)  :: normal
-        aster_logical                           :: well_oriented
+        real(kind=8), dimension(3), intent(in) :: v0
+        real(kind=8), dimension(3), intent(in) :: normal
+        aster_logical :: well_oriented
 !
 ! --------------------------------------------------------------------------------------------------
 !  In v0        :: vector 0
@@ -191,9 +191,9 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)                :: hhoFace
-        real(kind=8), dimension(2), intent(in)    :: qp_param
-        real(kind=8), dimension(3)                :: normal
+        type(HHO_Face), intent(in) :: hhoFace
+        real(kind=8), dimension(2), intent(in) :: qp_param
+        real(kind=8), dimension(3) :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In coorno             :: coordinates of the nodes
@@ -210,7 +210,8 @@ contains
         call CellNameL2S(hhoFace%typema, ts)
         coor(1:3, 1:4) = hhoFace%coorno
 !
-        call apnorm(hhoFace%nbnodes, ts, hhoFace%ndim+1, coor, qp_param(1), qp_param(2), normal)
+        call apnorm(hhoFace%nbnodes, ts, hhoFace%ndim+1, coor, qp_param(1), &
+                    qp_param(2), normal)
 !
         if (norm2(hhoFace%normal) > 0.5d0) then
             if (.not. well_oriented(hhoFace%normal, normal)) then
@@ -228,11 +229,11 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)           :: coorno
-        integer, intent(in)                                 :: nbnodes
-        real(kind=8), dimension(3), optional, intent(in)    :: barycenter_face
-        real(kind=8), dimension(3), optional, intent(in)    :: barycenter_cell
-        real(kind=8), dimension(3)                          :: normal
+        real(kind=8), dimension(3, 4), intent(in) :: coorno
+        integer, intent(in) :: nbnodes
+        real(kind=8), dimension(3), optional, intent(in) :: barycenter_face
+        real(kind=8), dimension(3), optional, intent(in) :: barycenter_cell
+        real(kind=8), dimension(3) :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In coorno             :: coordinates of the nodes
@@ -270,10 +271,10 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)            :: coorno
-        real(kind=8), dimension(3), optional, intent(in)    :: barycenter_face
-        real(kind=8), dimension(3), optional, intent(in)    :: barycenter_cell
-        real(kind=8), dimension(3)                          :: normal
+        real(kind=8), dimension(3, 4), intent(in) :: coorno
+        real(kind=8), dimension(3), optional, intent(in) :: barycenter_face
+        real(kind=8), dimension(3), optional, intent(in) :: barycenter_cell
+        real(kind=8), dimension(3) :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In coorno             :: coordinates of the node
@@ -308,9 +309,9 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)                :: hhoFace
-        real(kind=8), dimension(2), intent(in)    :: qp_param
-        real(kind=8), dimension(3)                :: normal
+        type(HHO_Face), intent(in) :: hhoFace
+        real(kind=8), dimension(2), intent(in) :: qp_param
+        real(kind=8), dimension(3) :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face           :: face HHO
@@ -318,15 +319,15 @@ contains
 !  In normal cell        :: normal to the cell (use for 2D cell)
 !  Out normal            :: outward normal of the face
 ! --------------------------------------------------------------------------------------------------
-
+!
 ! --------------------------------------------------------------------------------------------------
         normal = 0.d0
 !
         if (hhoFace%typema == MT_QUAD4) then
             normal = hhoNormalFaceQP(hhoFace, qp_param)
-        elseif (hhoFace%typema == MT_TRIA3) then
+        else if (hhoFace%typema == MT_TRIA3) then
             normal = hhoFace%normal
-        elseif (hhoFace%typema == MT_SEG2) then
+        else if (hhoFace%typema == MT_SEG2) then
             normal = hhoFace%normal
         else
             ASSERT(ASTER_FALSE)
@@ -342,9 +343,9 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)                :: hhoFace
-        real(kind=8), dimension(3), intent(in)    :: barycenter_cell
-        real(kind=8), dimension(3)                :: normal
+        type(HHO_Face), intent(in) :: hhoFace
+        real(kind=8), dimension(3), intent(in) :: barycenter_cell
+        real(kind=8), dimension(3) :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face           :: face HHO
@@ -352,15 +353,15 @@ contains
 !  In normal cell        :: normal to the cell (use for 2D cell)
 !  Out normal            :: outward normal of the face
 ! --------------------------------------------------------------------------------------------------
-
+!
 ! --------------------------------------------------------------------------------------------------
         normal = 0.d0
 !
         if (hhoFace%typema == MT_QUAD4) then
             normal = hhoNormalFace2d(hhoFace%coorno, 4, hhoFace%barycenter, barycenter_cell)
-        elseif (hhoFace%typema == MT_TRIA3) then
+        else if (hhoFace%typema == MT_TRIA3) then
             normal = hhoNormalFace2d(hhoFace%coorno, 3, hhoFace%barycenter, barycenter_cell)
-        elseif (hhoFace%typema == MT_SEG2) then
+        else if (hhoFace%typema == MT_SEG2) then
             normal = hhoNormalFace1d(hhoFace%coorno, hhoFace%barycenter, barycenter_cell)
         else
             ASSERT(ASTER_FALSE)
@@ -376,9 +377,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in)                        :: typma
-        real(kind=8), dimension(3, 4), intent(in)  :: nodes_coor
-        real(kind=8), dimension(3)                 :: normal
+        integer, intent(in) :: typma
+        real(kind=8), dimension(3, 4), intent(in) :: nodes_coor
+        real(kind=8), dimension(3) :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In typma              :: type of face
@@ -386,15 +387,15 @@ contains
 !  In normal cell        :: normal to the cell (use for 2D cell)
 !  Out normal            :: outward normal of the face
 ! --------------------------------------------------------------------------------------------------
-
+!
 ! --------------------------------------------------------------------------------------------------
         normal = 0.d0
 !
         if (typma == MT_QUAD4) then
             normal = hhoNormalFace2d(nodes_coor, 4)
-        elseif (typma == MT_TRIA3) then
+        else if (typma == MT_TRIA3) then
             normal = hhoNormalFace2d(nodes_coor, 3)
-        elseif (typma == MT_SEG2) then
+        else if (typma == MT_SEG2) then
             normal = hhoNormalFace1d(nodes_coor)
         else
             ASSERT(ASTER_FALSE)
@@ -434,7 +435,7 @@ contains
             axes(1:3, 1) = v0/norm2(v0)
             axes(1:3, 2) = v1/norm2(v1)
 !
-        elseif (hhoFace%ndim == 1) then
+        else if (hhoFace%ndim == 1) then
             v0 = hhoFace%coorno(1:3, 2)-hhoFace%coorno(1:3, 1)
 !
             axes(1:3, 1) = v0/norm2(v0)
@@ -453,11 +454,11 @@ contains
 !
         implicit none
 !
-        integer, intent(in)                         :: ndimF
-        real(kind=8), dimension(3, 4), intent(in)   :: coorno
-        integer, intent(in)                         :: nbnodes
-        real(kind=8), dimension(3, 4)               :: nodes_face
-        integer, intent(out), optional              ::  numsorted_(4)
+        integer, intent(in) :: ndimF
+        real(kind=8), dimension(3, 4), intent(in) :: coorno
+        integer, intent(in) :: nbnodes
+        real(kind=8), dimension(3, 4) :: nodes_face
+        integer, intent(out), optional :: numsorted_(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !   We have to reorder the nodes of the face to use the same basis functions for a face
@@ -495,8 +496,8 @@ contains
                 end if
             end do
 !
-            minnum2 = candidate(find_lowest_vertex(coorno(:, candidate(1)), &
-                                                   coorno(:, candidate(2))))
+            minnum2 = candidate( &
+                      find_lowest_vertex(coorno(:, candidate(1)), coorno(:, candidate(2))))
 !
             if (nbnodes == 3) then
                 if (minnum1 == 1) then
@@ -507,7 +508,7 @@ contains
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-                elseif (minnum1 == 2) then
+                else if (minnum1 == 2) then
                     if (minnum2 == 1) then
                         numsorted(1:3) = (/2, 1, 3/)
                     else if (minnum2 == 3) then
@@ -515,7 +516,7 @@ contains
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-                elseif (minnum1 == 3) then
+                else if (minnum1 == 3) then
                     if (minnum2 == 1) then
                         numsorted(1:3) = (/3, 1, 2/)
                     else if (minnum2 == 2) then
@@ -535,7 +536,7 @@ contains
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-                elseif (minnum1 == 2) then
+                else if (minnum1 == 2) then
                     if (minnum2 == 1) then
                         numsorted(1:4) = (/2, 1, 4, 3/)
                     else if (minnum2 == 3) then
@@ -543,7 +544,7 @@ contains
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-                elseif (minnum1 == 3) then
+                else if (minnum1 == 3) then
                     if (minnum2 == 2) then
                         numsorted(1:4) = (/3, 2, 1, 4/)
                     else if (minnum2 == 4) then
@@ -551,7 +552,7 @@ contains
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-                elseif (minnum1 == 4) then
+                else if (minnum1 == 4) then
                     if (minnum2 == 1) then
                         numsorted(1:4) = (/4, 1, 2, 3/)
                     else if (minnum2 == 3) then
@@ -575,7 +576,7 @@ contains
         do ino = 1, nbnodes
             nodes_face(1:3, ino) = coorno(1:3, numsorted(ino))
         end do
-
+!
         if (present(numsorted_)) then
             numsorted_ = numsorted
         end if
@@ -590,9 +591,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in)           :: typema
-        real(kind=8), intent(in)      :: pt(3)
-        real(kind=8), intent(out)     :: basis(8)
+        integer, intent(in) :: typema
+        real(kind=8), intent(in) :: pt(3)
+        real(kind=8), intent(out) :: basis(8)
 !
 ! ---------------------------------------------------------------------------------
 !  HHO - geometrie
@@ -634,9 +635,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in)           :: typema
-        real(kind=8), intent(in)      :: pt(3)
-        real(kind=8), intent(out)     :: dbasis(3, 8)
+        integer, intent(in) :: typema
+        real(kind=8), intent(in) :: pt(3)
+        real(kind=8), intent(out) :: dbasis(3, 8)
 !
 ! ---------------------------------------------------------------------------------
 !  HHO - geometrie
@@ -679,9 +680,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in)      :: typema
-        integer, intent(out)     :: n_simpl
-        integer, intent(out)     :: indice_simpl(6, 4)
+        integer, intent(in) :: typema
+        integer, intent(out) :: n_simpl
+        integer, intent(out) :: indice_simpl(6, 4)
 !
 ! ---------------------------------------------------------------------------------
 !  HHO - geometrie
@@ -731,16 +732,17 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hho_transfo_3d(coorno, nbnodes, typema, coorref, coorac, jacob)
+    subroutine hho_transfo_3d(coorno, nbnodes, typema, coorref, coorac, &
+                              jacob)
 !
         implicit none
 !
-        integer, intent(in)                             :: nbnodes
+        integer, intent(in) :: nbnodes
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
-        integer, intent(in)                             :: typema
-        real(kind=8), dimension(3), intent(in)          :: coorref
+        integer, intent(in) :: typema
+        real(kind=8), dimension(3), intent(in) :: coorref
         real(kind=8), dimension(3), optional, intent(out) :: coorac
-        real(kind=8), optional, intent(out)             :: jacob
+        real(kind=8), optional, intent(out) :: jacob
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -785,9 +787,9 @@ contains
                 jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
             end do
 !
-            jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
-                    +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
-                    -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
+            jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2)+jaco(3, 1)&
+                    &*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3)-jaco(3, 3)*jaco(2, &
+                    &1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
         end if
 !
     end subroutine
@@ -800,11 +802,11 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)            :: coorno
-        real(kind=8), dimension(2), intent(in)              :: coorref
-        integer, intent(in)                                 :: ndim
-        real(kind=8), optional, intent(out)                 :: jacob
-        real(kind=8), dimension(3), intent(out), optional   :: coorac
+        real(kind=8), dimension(3, 4), intent(in) :: coorno
+        real(kind=8), dimension(2), intent(in) :: coorref
+        integer, intent(in) :: ndim
+        real(kind=8), optional, intent(out) :: jacob
+        real(kind=8), dimension(3), intent(out), optional :: coorac
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -824,6 +826,7 @@ contains
         real(kind=8), dimension(2, 2) :: jaco
         real(kind=8), dimension(3) :: da, db, normal
         integer :: i
+        blas_int :: b_incx, b_n
 !
         if (present(coorac)) then
 !
@@ -863,7 +866,9 @@ contains
                     db(1:3) = db(1:3)+coorno(1:3, i)*dbasis(2, i)
                 end do
                 call provec(da, db, normal)
-                jacob = dnrm2(3, normal, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                jacob = dnrm2(b_n, normal, b_incx)
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -879,8 +884,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)           :: coorno
-        integer, intent(in)                                 :: ndim
+        real(kind=8), dimension(3, 4), intent(in) :: coorno
+        integer, intent(in) :: ndim
         aster_logical :: l_cst
 !
 ! --------------------------------------------------------------------------------------------------
@@ -919,8 +924,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 8), intent(in)           :: coorno
-        integer, intent(in)                                 :: typema
+        real(kind=8), dimension(3, 8), intent(in) :: coorno
+        integer, intent(in) :: typema
         aster_logical :: l_cst
 !
 ! --------------------------------------------------------------------------------------------------
@@ -960,8 +965,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, *), intent(in)           :: coorno
-        integer, intent(in)                                 :: typema, ndim
+        real(kind=8), dimension(3, *), intent(in) :: coorno
+        integer, intent(in) :: typema, ndim
         aster_logical :: l_cst
 !
 ! --------------------------------------------------------------------------------------------------

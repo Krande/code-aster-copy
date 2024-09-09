@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
                   nb_node, norm_type, norm_vect)
 !
@@ -89,6 +89,7 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
     real(kind=8), pointer :: v_sdappa_tgel(:) => null()
     real(kind=8), pointer :: v_sdappa_tgno(:) => null()
     integer, pointer :: v_mesh_connex(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -206,7 +207,10 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
 ! ----- For VECT_Y
 !
         if (norm_type .eq. 2) then
-            call dcopy(3, norm_vect, 1, tau2_node, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, norm_vect, b_incx, tau2_node, b_incy)
             call provec(normal, tau2_node, tau1_node)
         end if
 !

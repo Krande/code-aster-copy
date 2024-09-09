@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
-                  imat, nmat, materd, materf, &
-                  nbcomm, cpmono, pgl, nfs, nsg, &
-                  toutms, hsr, nr, nvi, vind, &
-                  vinf, itmax, toler, timed, timef, &
-                  yd, yf, deps, epsd, dy, &
-                  r, ddy, iret, crit, indi)
+                  imat, nmat, materd, materf, nbcomm, &
+                  cpmono, pgl, nfs, nsg, toutms, &
+                  hsr, nr, nvi, vind, vinf, &
+                  itmax, toler, timed, timef, yd, &
+                  yf, deps, epsd, dy, r, &
+                  ddy, iret, crit, indi)
 ! aslint: disable=W1306,W1504
     implicit none
 !
@@ -77,6 +77,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
     real(kind=8) :: rhoddy(nr), dyp(nr), rp(nr), yfp(nr)
     real(kind=8) :: rho0, fp0, rho1, fp1, fp2, rho2, rho05, fsup
     real(kind=8) :: m(2, 2), s(2), a, b
+    blas_int :: b_incx, b_incy, b_n
     parameter(w=1.d-4)
     parameter(rhomin=0.1d0, rhomax=0.5d0)
     parameter(imxrho=2)
@@ -88,10 +89,16 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
 !
 !
 !     FONCTIONNELLE EN "MOINS" : F = 1/2 || R(DY) ||^2
-    f = 0.5d0*ddot(nr, r, 1, r, 1)
+    b_n = to_blas_int(nr)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    f = 0.5d0*ddot(b_n, r, b_incx, r, b_incy)
 !
 !     DERIVEE DE LA FONCTIONNELLE EN "MOINS" : DF=<GRAD(F).DDY>=<R.DDY>
-    df = -ddot(nr, r, 1, r, 1)
+    b_n = to_blas_int(nr)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    df = -ddot(b_n, r, b_incx, r, b_incy)
 !
 !     ------------------------------------
 !     ESSAI AVEC LE PAS DE NEWTON RHO0 = 1
@@ -104,17 +111,20 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
     yfp = yd(1:nr)+dyp
 !     CALCUL DE R "PLUS" : RP
     call lcresi(fami, kpg, ksp, rela_comp, mod, &
-                imat, nmat, materd, materf, &
-                nbcomm, cpmono, pgl, nfs, nsg, &
-                toutms, hsr, nr, nvi, vind, &
-                vinf, itmax, toler, timed, timef, &
-                yd, yfp, deps, epsd, dyp, &
-                rp, iret, crit, indi)
+                imat, nmat, materd, materf, nbcomm, &
+                cpmono, pgl, nfs, nsg, toutms, &
+                hsr, nr, nvi, vind, vinf, &
+                itmax, toler, timed, timef, yd, &
+                yfp, deps, epsd, dyp, rp, &
+                iret, crit, indi)
 !
     if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
-    fp0 = 0.5d0*ddot(nr, rp, 1, rp, 1)
+    b_n = to_blas_int(nr)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    fp0 = 0.5d0*ddot(b_n, rp, b_incx, rp, b_incy)
     if (fp0 .lt. r8prem()) goto 888
     if (fp0 .le. f+w*rho0*df) goto 888
 !
@@ -127,16 +137,19 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
     dyp = rhoddy+dy(1:nr)
     yfp = yd(1:nr)+dyp
     call lcresi(fami, kpg, ksp, rela_comp, mod, &
-                imat, nmat, materd, materf, &
-                nbcomm, cpmono, pgl, nfs, nsg, &
-                toutms, hsr, nr, nvi, vind, &
-                vinf, itmax, toler, timed, timef, &
-                yd, yfp, deps, epsd, dyp, &
-                rp, iret, crit, indi)
+                imat, nmat, materd, materf, nbcomm, &
+                cpmono, pgl, nfs, nsg, toutms, &
+                hsr, nr, nvi, vind, vinf, &
+                itmax, toler, timed, timef, yd, &
+                yfp, deps, epsd, dyp, rp, &
+                iret, crit, indi)
     if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
-    fsup = 0.5d0*ddot(nr, rp, 1, rp, 1)
+    b_n = to_blas_int(nr)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    fsup = 0.5d0*ddot(b_n, rp, b_incx, rp, b_incy)
     if (fsup .lt. r8prem()) goto 888
     if (fsup .le. f+w*0.5d0*df) goto 888
 !
@@ -155,16 +168,19 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
     dyp = rhoddy+dy(1:nr)
     yfp = yd(1:nr)+dyp
     call lcresi(fami, kpg, ksp, rela_comp, mod, &
-                imat, nmat, materd, materf, &
-                nbcomm, cpmono, pgl, nfs, nsg, &
-                toutms, hsr, nr, nvi, vind, &
-                vinf, itmax, toler, timed, timef, &
-                yd, yfp, deps, epsd, dyp, &
-                rp, iret, crit, indi)
+                imat, nmat, materd, materf, nbcomm, &
+                cpmono, pgl, nfs, nsg, toutms, &
+                hsr, nr, nvi, vind, vinf, &
+                itmax, toler, timed, timef, yd, &
+                yfp, deps, epsd, dyp, rp, &
+                iret, crit, indi)
     if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
-    fp1 = 0.5d0*ddot(nr, rp, 1, rp, 1)
+    b_n = to_blas_int(nr)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    fp1 = 0.5d0*ddot(b_n, rp, b_incx, rp, b_incy)
     if (fp1 .lt. r8prem()) goto 888
     if (fp1 .le. f+w*rho1*df) goto 888
 !
@@ -193,16 +209,19 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
         dyp = rhoddy+dy(1:nr)
         yfp = yd(1:nr)+dyp
         call lcresi(fami, kpg, ksp, rela_comp, mod, &
-                    imat, nmat, materd, materf, &
-                    nbcomm, cpmono, pgl, nfs, nsg, &
-                    toutms, hsr, nr, nvi, vind, &
-                    vinf, itmax, toler, timed, timef, &
-                    yd, yfp, deps, epsd, dyp, &
-                    rp, iret, crit, indi)
+                    imat, nmat, materd, materf, nbcomm, &
+                    cpmono, pgl, nfs, nsg, toutms, &
+                    hsr, nr, nvi, vind, vinf, &
+                    itmax, toler, timed, timef, yd, &
+                    yfp, deps, epsd, dyp, rp, &
+                    iret, crit, indi)
         if (iret .ne. 0) goto 999
 !
 !       TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
-        fp2 = 0.5d0*ddot(nr, rp, 1, rp, 1)
+        b_n = to_blas_int(nr)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        fp2 = 0.5d0*ddot(b_n, rp, b_incx, rp, b_incy)
         if (fp2 .lt. r8prem()) goto 888
         if (fp2 .le. f+w*rho2*df) goto 888
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine iner81(nomres, classe, basmod, nommat)
     implicit none
 !
@@ -53,9 +53,10 @@ subroutine iner81(nomres, classe, basmod, nommat)
     integer :: ltvec2, ltvec3, mxddl, nbdef, neq
 !-----------------------------------------------------------------------
     parameter(mxddl=6)
-    character(len=8) :: nomddl(mxddl)
+    character(len=8), parameter :: nomddl(mxddl) = ['DX      ', 'DY      ', 'DZ      ', &
+                                                    'DRX     ', 'DRY     ', 'DRZ     ']
     character(len=1) :: classe
-    character(len=6) :: pgc
+    character(len=6), parameter :: pgc = 'INER81'
     character(len=19) :: nommat
     character(len=8) :: basmod
     character(len=14) :: num
@@ -63,13 +64,8 @@ subroutine iner81(nomres, classe, basmod, nommat)
     character(len=24) :: valk
     complex(kind=8) :: cbid
     integer, pointer :: deeq(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
-!
-!-----------------------------------------------------------------------
-    data pgc/'INER81'/
-    data nomddl/'DX      ', 'DY      ', 'DZ      ',&
-     &            'DRX     ', 'DRY     ', 'DRZ     '/
-!-----------------------------------------------------------------------
 !
 ! --- CREATION DU .REFE
 !
@@ -137,9 +133,15 @@ subroutine iner81(nomres, classe, basmod, nommat)
 !
         iad = (if-1)*nbdef
         do i = 1, nbdef
-            call dcopy(neq, zr(idbase+(i-1)*neq), 1, zr(ltvec1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(idbase+(i-1)*neq), b_incx, zr(ltvec1), b_incy)
             call zerlag(neq, deeq, vectr=zr(ltvec1))
-            zr(ldres+iad+i-1) = ddot(neq, zr(ltvec1), 1, zr(ltvec2), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(ldres+iad+i-1) = ddot(b_n, zr(ltvec1), b_incx, zr(ltvec2), b_incy)
         end do
 !
     end do

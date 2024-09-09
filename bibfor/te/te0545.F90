@@ -67,7 +67,7 @@ subroutine te0545(option, nomte)
     integer :: iret, nnos, jv_ganoQ, jv_ganoL, itab(7)
     integer :: codret
     real(kind=8) :: angmas(3)
-    real(kind=8), allocatable:: b(:, :, :), w(:, :), ni2ldc(:, :)
+    real(kind=8), allocatable :: b(:, :, :), w(:, :), ni2ldc(:, :)
     aster_logical :: lMatr, lVect, lSigm, lVari
 !
 ! --------------------------------------------------------------------------------------------------
@@ -87,12 +87,9 @@ subroutine te0545(option, nomte)
 !
 ! - Get parameters of element
 !
-    call elrefv('RIGI', ndim, &
-                nnoL, nnoQ, nnos, &
-                npg, jv_poids, &
-                jv_vfL, jv_vfQ, &
-                jv_dfdeL, jv_dfdeQ, &
-                jv_ganoL, jv_ganoQ)
+    call elrefv('RIGI', ndim, nnoL, nnoQ, nnos, &
+                npg, jv_poids, jv_vfL, jv_vfQ, jv_dfdeL, &
+                jv_dfdeQ, jv_ganoL, jv_ganoQ)
 !
 ! - PARAMETRES EN ENTREE ET DIMENSION
 !
@@ -106,7 +103,8 @@ subroutine te0545(option, nomte)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
-    call tecach('OOO', 'PDEPLPR', 'L', iret, nval=2, itab=itab)
+    call tecach('OOO', 'PDEPLPR', 'L', iret, nval=2, &
+                itab=itab)
     nddl = itab(2)
 !
 ! - Behaviour
@@ -115,13 +113,12 @@ subroutine te0545(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 !    NOMBRE DE VARIABLES INTERNES
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=itab)
     lgpg = max(itab(6), 1)*itab(7)
 !
 ! - PARAMETRES EN SORTIE
@@ -150,23 +147,21 @@ subroutine te0545(option, nomte)
 !
     if (defo_comp .eq. 'GDEF_LOG') then
         if (lteatt('INCO', 'C5GV')) then
-            call nglgic('RIGI', option, typmod, ndim, nnoQ, nnoL, &
-                        npg, nddl, jv_poids, zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, &
-                        zr(igeom), zk16(icompo), zi(imate), lgpg, &
-                        zr(icarcr), angmas, zr(iinstm), zr(iinstp), matsym, &
-                        zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp), &
-                        zr(ivarip), zr(ivectu), zr(imatuu), &
-                        lMatr, lVect, lSigm, lVari, &
-                        codret)
+            call nglgic('RIGI', option, typmod, ndim, nnoQ, &
+                        nnoL, npg, nddl, jv_poids, zr(jv_vfQ), &
+                        zr(jv_vfL), jv_dfdeQ, jv_dfdeL, zr(igeom), zk16(icompo), &
+                        zi(imate), lgpg, zr(icarcr), angmas, zr(iinstm), &
+                        zr(iinstp), matsym, zr(ideplm), zr(ideplp), zr(icontm), &
+                        zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
+                        lMatr, lVect, lSigm, lVari, codret)
         else
-            call ngvlog('RIGI', option, typmod, ndim, nnoQ, nnoL, &
-                        npg, nddl, jv_poids, zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, &
-                        zr(igeom), zk16(icompo), zi(imate), lgpg, &
-                        zr(icarcr), angmas, zr(iinstm), zr(iinstp), matsym, &
-                        zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp), &
-                        zr(ivarip), zr(ivectu), zr(imatuu), &
-                        lMatr, lVect, lSigm, lVari, &
-                        codret)
+            call ngvlog('RIGI', option, typmod, ndim, nnoQ, &
+                        nnoL, npg, nddl, jv_poids, zr(jv_vfQ), &
+                        zr(jv_vfL), jv_dfdeQ, jv_dfdeL, zr(igeom), zk16(icompo), &
+                        zi(imate), lgpg, zr(icarcr), angmas, zr(iinstm), &
+                        zr(iinstp), matsym, zr(ideplm), zr(ideplp), zr(icontm), &
+                        zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
+                        lMatr, lVect, lSigm, lVari, codret)
         end if
     else if (defo_comp(1:5) .eq. 'PETIT') then
         call nmgvmb(ndim, nnoQ, nnoL, npg, axi, &
@@ -178,8 +173,7 @@ subroutine te0545(option, nomte)
                     zi(imate), angmas, lgpg, zr(icarcr), zr(iinstm), &
                     zr(iinstp), zr(ideplm), zr(ideplp), ni2ldc, zr(icontm), &
                     zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
-                    lMatr, lVect, lSigm, &
-                    codret)
+                    lMatr, lVect, lSigm, codret)
         deallocate (b)
         deallocate (w)
         deallocate (ni2ldc)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,14 +51,21 @@ subroutine stapu2(nbobst, nbpt, nbpair, temps, fcho, &
     integer :: ibl, idebut, in, inoe, isupp, j, jdg, k
     integer :: noccur, ntot
     real(kind=8) :: pusurn, rad
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     rad = r8rddg()
     zero = 0.d0
     pusurn = 0.d0
     ntot = 0
     pmoye = zero
-    call dcopy(nbpt, dloc(3*(inoe-1)+2), 3*nbobst, wk4, 1)
-    call dcopy(nbpt, dloc(3*(inoe-1)+3), 3*nbobst, wk5, 1)
+    b_n = to_blas_int(nbpt)
+    b_incx = to_blas_int(3*nbobst)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, dloc(3*(inoe-1)+2), b_incx, wk4, b_incy)
+    b_n = to_blas_int(nbpt)
+    b_incx = to_blas_int(3*nbobst)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, dloc(3*(inoe-1)+3), b_incx, wk5, b_incy)
     do in = 1, nbpt
         if ((wk4(in) .ne. zero) .or. (wk5(in) .ne. zero)) then
             wk6(in) = rad*atan2(wk5(in), wk4(in))
@@ -67,9 +74,18 @@ subroutine stapu2(nbobst, nbpt, nbpair, temps, fcho, &
         end if
     end do
 !
-    call dcopy(nbpt, fcho(3*(inoe-1)+1), 3*nbobst, wk1, 1)
-    call dcopy(nbpt, vgli(3*(inoe-1)+2), 3*nbobst, wk2, 1)
-    call dcopy(nbpt, vgli(3*(inoe-1)+3), 3*nbobst, wk3, 1)
+    b_n = to_blas_int(nbpt)
+    b_incx = to_blas_int(3*nbobst)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, fcho(3*(inoe-1)+1), b_incx, wk1, b_incy)
+    b_n = to_blas_int(nbpt)
+    b_incx = to_blas_int(3*nbobst)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vgli(3*(inoe-1)+2), b_incx, wk2, b_incy)
+    b_n = to_blas_int(nbpt)
+    b_incx = to_blas_int(3*nbobst)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vgli(3*(inoe-1)+3), b_incx, wk3, b_incy)
     do jdg = 1, nbpair
         pus(jdg) = zero
         occure(jdg) = 0

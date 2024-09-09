@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lcejtu(BEHinteg, &
-                  fami, kpg, ksp, ndim, imate, &
-                  option, epsm, deps, sigm, sigp, &
-                  dsidep, vim, vip, typmod, &
+!
+subroutine lcejtu(BEHinteg, fami, kpg, ksp, ndim, &
+                  imate, option, epsm, deps, sigm, &
+                  sigp, dsidep, vim, vip, typmod, &
                   instam, instap)
 !
 ! person_in_charge: astrid.filiot at edf.fr
@@ -76,6 +75,7 @@ subroutine lcejtu(BEHinteg, &
     character(len=16) :: type_comp
     character(len=1) :: poum
     aster_logical :: resi, rigi, elas, pred, l_lambda0
+    blas_int :: b_incx, b_incy, b_n
 !
     data nom/'K', 'SIGM_C_N', 'SIGM_C_T', 'GC_N', 'GC_T', 'C_RUPT', &
         'ETA_BK', 'CRIT_INIT'/
@@ -126,9 +126,21 @@ subroutine lcejtu(BEHinteg, &
     if (resi) inst = instap
 !
 ! SAUT DE DEPLACEMENT A L'INSTANT ACTUEL
-    call dcopy(ndim, epsm, 1, delta, 1)
-    call dcopy(ndim, deps, 1, ddelta, 1)
-    if (resi) call daxpy(ndim, 1.d0, ddelta, 1, delta, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, delta, b_incy)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, deps, b_incx, ddelta, b_incy)
+    if (resi) then
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, ddelta, b_incx, delta, &
+                   b_incy)
+    end if
 !
 ! RECUPERATION DES PARAMETRES PHYSIQUES
     if (option .eq. 'RIGI_MECA_TANG') then
@@ -152,7 +164,7 @@ subroutine lcejtu(BEHinteg, &
 !   * CALCUL DES SEUILS D'INITIATION DE L'ENDOMMAGEMENT POUR LES MODES PURS
     delta_N_0 = val(2)/k
     delta_T_0 = val(3)/k
-    ! METTRE UN MESSAGE D'ERREUR SI LES VALEURS SONT NULLES
+! METTRE UN MESSAGE D'ERREUR SI LES VALEURS SONT NULLES
 !
 !   * CALCUL DES SEUILS DE PROPAGATION DE LA FISSURE POUR LES MODES PURS
     delta_N_f = 2*val(4)/(k*delta_N_0)
@@ -188,7 +200,7 @@ subroutine lcejtu(BEHinteg, &
             delta_0 = sqrt(delta_N_0**2+(delta_T_0**2-delta_N_0**2)*b**eta)
             ASSERT(delta_0 .gt. r8prem())
 ! * CRITERE DE YE (DE TYPE ELLIPTIQUE)
-        elseif (crit .eq. 1) then
+        else if (crit .eq. 1) then
             if (delta_N_pos .lt. r8prem()) then
                 t = pi/2
             else
@@ -200,8 +212,8 @@ subroutine lcejtu(BEHinteg, &
             ASSERT(.False.)
         end if
 ! SEUIL DE PROPAGATION DE LA FISSURE A T+ (DE TYPE BK)
-        delta_f = 1/delta_0*(delta_N_0*delta_N_f+ &
-                             (delta_T_0*delta_T_f-delta_N_0*delta_N_f)*b**eta)
+        delta_f = 1/delta_0*(delta_N_0*delta_N_f+(delta_T_0*delta_T_f-delta_N_0*delta_N_f)*b**eta &
+                             )
         ASSERT(delta_f .gt. r8prem())
     else
 ! CAS PARTICULIERS SI ON (RE)PASSE PAR UN ETAT DE SAUT NUL :
@@ -244,7 +256,7 @@ subroutine lcejtu(BEHinteg, &
             else
                 g = 1.-(delta_f-lambda)*(delta_f-lambda)/(delta_f-delta_0)/delta_f
             end if
-
+!
             if ((r-lambda) .gt. zero) then
                 diss = 0
                 if ((r-delta_0) .ge. zero) then
@@ -277,13 +289,11 @@ subroutine lcejtu(BEHinteg, &
                 sigp(i) = (1-d)*k*delta(i)
             end do
         else if (type_comp .eq. 'COMP_INCR') then
-            sigp(1) = sigm(1) &
-                      -(d*k*max(0.d0, -delta(1))*delta(1)- &
-                        vim(3)*k*max(0.d0, -(delta(1)-ddelta(1)))*(delta(1)-ddelta(1))) &
-                      +(1-d)*k*delta(1)-(1-vim(3))*k*(delta(1)-ddelta(1))
+            sigp(1) = sigm(1)-(d*k*max(0.d0, -delta(1))*delta(1)-vim(3)*k*max(0.d0, -(delta(1)-dd&
+                      &elta(1)))*(delta(1)-ddelta(1)))+(1-d)*k*delta(1)-(1-vim(3))*k*(delta(1)-dd&
+                      &elta(1))
             do i = 2, ndim
-                sigp(i) = sigm(i) &
-                          +(1-d)*k*delta(i)-(1-vim(3))*k*(delta(i)-ddelta(i))
+                sigp(i) = sigm(i)+(1-d)*k*delta(i)-(1-vim(3))*k*(delta(i)-ddelta(i))
             end do
         else
             ASSERT(.false.)

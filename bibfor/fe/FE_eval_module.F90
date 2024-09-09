@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,10 +50,10 @@ contains
 !
         implicit none
 !
-        type(FE_Basis), intent(in)         :: FEBasis
-        real(kind=8), intent(in)           :: val_nodes(*)
-        real(kind=8), intent(in)           :: point(3)
-        real(kind=8)                       :: func
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: val_nodes(*)
+        real(kind=8), intent(in) :: point(3)
+        real(kind=8) :: func
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -66,9 +66,13 @@ contains
 !
 ! ----- Local variables
         real(kind=8) :: funcEF(MAX_BS)
+        blas_int :: b_incx, b_incy, b_n
 !
         funcEF = FEBasis%func(point)
-        func = ddot(FEBasis%size, val_nodes, 1, funcEF, 1)
+        b_n = to_blas_int(FEBasis%size)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        func = ddot(b_n, val_nodes, b_incx, funcEF, b_incy)
 !
     end function
 !
@@ -80,12 +84,12 @@ contains
 !
         implicit none
 !
-        type(FE_Basis), intent(in)         :: FEBasis
-        real(kind=8), intent(in)           :: val_nodes(*)
-        real(kind=8), intent(in)           :: point(3)
-        real(kind=8)                       :: grad(3)
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: val_nodes(*)
+        real(kind=8), intent(in) :: point(3)
+        real(kind=8) :: grad(3)
         real(kind=8), intent(in), optional :: BGSEval(3, MAX_BS)
-
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -122,12 +126,12 @@ contains
 !
         implicit none
 !
-        type(FE_Basis), intent(in)         :: FEBasis
-        real(kind=8), intent(in)           :: val_nodes(FEBasis%ndim, *)
-        real(kind=8), intent(in)           :: point(3)
-        real(kind=8)                       :: grads(6)
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: val_nodes(FEBasis%ndim, *)
+        real(kind=8), intent(in) :: point(3)
+        real(kind=8) :: grads(6)
         real(kind=8), intent(in), optional :: BGSEval(3, MAX_BS)
-
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -177,12 +181,12 @@ contains
 !
         implicit none
 !
-        type(FE_Basis), intent(in)         :: FEBasis
-        real(kind=8), intent(in)           :: val_nodes(*)
-        real(kind=8), intent(in)           :: point(3)
-        real(kind=8)                       :: grad(3, 3)
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: val_nodes(*)
+        real(kind=8), intent(in) :: point(3)
+        real(kind=8) :: grad(3, 3)
         real(kind=8), intent(in), optional :: BGSEval(3, MAX_BS)
-
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !

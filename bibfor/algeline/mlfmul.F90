@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine mlfmul(b, f, y, ldb, n, &
     real(kind=8) :: alpha, beta
     integer :: opta, optb
     character(len=1) :: tra, trb
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 !
     tra = 'T'
     if (opta .eq. 1) tra = 'N'
@@ -47,30 +48,54 @@ subroutine mlfmul(b, f, y, ldb, n, &
         ib = nb*(i-1)+1
         do j = 1, nlb
             jb = nb*(j-1)+1
-            call dgemm(tra, trb, nb, nb, p, &
-                       alpha, f(ib, 1), n, y(1, jb), ldb, &
-                       beta, b(ib, jb), ldb)
+            b_ldc = to_blas_int(ldb)
+            b_ldb = to_blas_int(ldb)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(nb)
+            b_n = to_blas_int(nb)
+            b_k = to_blas_int(p)
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb, &
+                       beta, b(ib, jb), b_ldc)
         end do
         if (restl .gt. 0) then
             jb = nb*nlb+1
-            call dgemm(tra, trb, nb, restl, p, &
-                       alpha, f(ib, 1), n, y(1, jb), ldb, &
-                       beta, b(ib, jb), ldb)
+            b_ldc = to_blas_int(ldb)
+            b_ldb = to_blas_int(ldb)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(nb)
+            b_n = to_blas_int(restl)
+            b_k = to_blas_int(p)
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb, &
+                       beta, b(ib, jb), b_ldc)
         end if
     end do
     if (restm .gt. 0) then
         ib = nb*nmb+1
         do j = 1, nlb
             jb = nb*(j-1)+1
-            call dgemm(tra, trb, restm, nb, p, &
-                       alpha, f(ib, 1), n, y(1, jb), ldb, &
-                       beta, b(ib, jb), ldb)
+            b_ldc = to_blas_int(ldb)
+            b_ldb = to_blas_int(ldb)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(restm)
+            b_n = to_blas_int(nb)
+            b_k = to_blas_int(p)
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb, &
+                       beta, b(ib, jb), b_ldc)
         end do
         if (restl .gt. 0) then
             jb = nb*nlb+1
-            call dgemm(tra, trb, restm, restl, p, &
-                       alpha, f(ib, 1), n, y(1, jb), ldb, &
-                       beta, b(ib, jb), ldb)
+            b_ldc = to_blas_int(ldb)
+            b_ldb = to_blas_int(ldb)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(restm)
+            b_n = to_blas_int(restl)
+            b_k = to_blas_int(p)
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb, &
+                       beta, b(ib, jb), b_ldc)
         end if
     end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,7 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
     character(len=19) :: accgcn
     integer :: jacccn
     integer :: ifm, niv
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -155,15 +156,18 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
 ! --- CALCUL DES FORCES MODALES
 !
         do imode = 1, nbmodp
-            zr(jfmoda+imode-1) = ddot(neq, zr(jbasmo+(imode-1)*neq), 1, zr(j2memb), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(jfmoda+imode-1) = ddot(b_n, zr(jbasmo+(imode-1)*neq), b_incx, zr(j2memb), b_incy)
             do imode2 = 1, nbmodp
-                zr(jfmoda+imode-1) = zr(jfmoda+imode-1)-zr(jrigge+(imode2-1)*nbmodp+imode-1)*z&
-                                     &r(jdepgp+imode2-1)-zr(jamoge+(imode2-1)*nbmodp+imode-1)*&
-                                     &zr(jvitgp+imode2-1)
+                zr(jfmoda+imode-1) = zr(jfmoda+imode-1)-zr(jrigge+(imode2-1)*nbmodp+imode-1)*zr(j&
+                                     &depgp+imode2-1)-zr(jamoge+(imode2-1)*nbmodp+imode-1)*zr(jvi&
+                                     &tgp+imode2-1)
             end do
             do ifonc = 1, nbgene
-                zr(jfmoda+imode-1) = zr(jfmoda+imode-1)+zr(jforge+(ifonc-1)*nbmodp+imode-1)*zr&
-                                     &(jvalfo+ifonc-1)
+                zr(jfmoda+imode-1) = zr(jfmoda+imode-1)+zr(jforge+(ifonc-1)*nbmodp+imode-1)*zr(jv&
+                                     &alfo+ifonc-1)
             end do
         end do
 !
@@ -185,7 +189,10 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
 ! --- CALCUL DES FORCES GENERALISEES
 !
         do imode = 1, nbmodp
-            zr(jfmoda+imode-1) = ddot(neq, zr(jbasmo+(imode-1)*neq), 1, zr(j2memb), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(jfmoda+imode-1) = ddot(b_n, zr(jbasmo+(imode-1)*neq), b_incx, zr(j2memb), b_incy)
         end do
 !
 ! --- CALCUL DES ACCELERATIONS GENERALISEES

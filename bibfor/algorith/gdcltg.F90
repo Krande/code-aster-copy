@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,7 @@ subroutine gdcltg(df, e)
 !
     integer :: ij, kl, i, j, l, il, jl, ind12(3, 3)
     real(kind=8) :: tre, coef, betr(6)
+    blas_int :: b_incx, b_n
     data ind12/1, 4, 5, 4, 2, 6, 5, 6, 3/
 ! ----------------------------------------------------------------------
 !
@@ -112,7 +113,9 @@ subroutine gdcltg(df, e)
             dtaude(ij, kl) = dtaude(kl, ij)
         end do
     end do
-    call dscal(36, 2*deuxmu, dtaude, 1)
+    b_n = to_blas_int(36)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 2*deuxmu, dtaude, b_incx)
 !
 !    TERME EN (2E-1) X 1  DE DTAU / DE
     do ij = 1, 6

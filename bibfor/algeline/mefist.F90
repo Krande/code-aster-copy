@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -146,6 +146,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru, &
     character(len=16) :: nopara(nbpara)
     character(len=19) :: nomt19
     character(len=24) :: nomcha
+    blas_int :: b_incx, b_incy, b_n
 !
     data nopara/'NUME_VITE', 'VITE_FLUI',&
      &              'MATR_MASS', 'MATR_AMOR', 'MATR_RIGI'/
@@ -391,10 +392,22 @@ subroutine mefist(melflu, ndim, som, alpha, ru, &
             jj = n+nbmod*(nv0-1)
             kk = 3*(n-1)+nbmod*(nv0-1)
             call pmavec('ZERO', nbmod, zr(imatm), zr(imatv+ii), zr(ivec))
-            masg(jj) = ddot(nbmod, zr(imatv+ii), 1, zr(ivec), 1)
-            fact(kk+1) = ddot(nbmod, zr(ivec), 1, facpar, 1)
-            fact(kk+2) = ddot(nbmod, zr(ivec), 1, facpar(nbmod+1), 1)
-            fact(kk+3) = ddot(nbmod, zr(ivec), 1, facpar(2*nbmod+1), 1)
+            b_n = to_blas_int(nbmod)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            masg(jj) = ddot(b_n, zr(imatv+ii), b_incx, zr(ivec), b_incy)
+            b_n = to_blas_int(nbmod)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            fact(kk+1) = ddot(b_n, zr(ivec), b_incx, facpar, b_incy)
+            b_n = to_blas_int(nbmod)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            fact(kk+2) = ddot(b_n, zr(ivec), b_incx, facpar(nbmod+1), b_incy)
+            b_n = to_blas_int(nbmod)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            fact(kk+3) = ddot(b_n, zr(ivec), b_incx, facpar(2*nbmod+1), b_incy)
         end do
 !
         do j = 1, nbmod
@@ -499,10 +512,22 @@ subroutine mefist(melflu, ndim, som, alpha, ru, &
             jj = n+nbmod*(nv-1)
             kk = 3*(n-1)+nbmod*(nv-1)
             call pmavec('ZERO', nbmod, zr(imatm), zr(imatv+ii), zr(ivec))
-            masg(jj) = ddot(nbmod, zr(imatv+ii), 1, zr(ivec), 1)
-            fact(kk+1) = ddot(nbmod, zr(ivec), 1, facpar, 1)
-            fact(kk+2) = ddot(nbmod, zr(ivec), 1, facpar(nbmod+1), 1)
-            fact(kk+3) = ddot(nbmod, zr(ivec), 1, facpar(2*nbmod+1), 1)
+            b_n = to_blas_int(nbmod)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            masg(jj) = ddot(b_n, zr(imatv+ii), b_incx, zr(ivec), b_incy)
+            b_n = to_blas_int(nbmod)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            fact(kk+1) = ddot(b_n, zr(ivec), b_incx, facpar, b_incy)
+            b_n = to_blas_int(nbmod)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            fact(kk+2) = ddot(b_n, zr(ivec), b_incx, facpar(nbmod+1), b_incy)
+            b_n = to_blas_int(nbmod)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            fact(kk+3) = ddot(b_n, zr(ivec), b_incx, facpar(2*nbmod+1), b_incy)
         end do
 !
         do j = 1, nbmod

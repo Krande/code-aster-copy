@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfgcpc(resoco, matass, solveu, neq, nbliai, &
                   precon, tole, premax, epsi)
 !
@@ -66,6 +66,7 @@ subroutine cfgcpc(resoco, matass, solveu, neq, nbliai, &
     integer :: japcoe, japddl, japptr
     character(len=19) :: mu, liac
     integer :: jmu, jliac
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -99,7 +100,10 @@ subroutine cfgcpc(resoco, matass, solveu, neq, nbliai, &
                     zr(jmu), zr(japcoe), zi(japddl), zi(japptr), zi(jliac), &
                     matass, solveu, premax, zr(jsgrap), zr(jsgprp))
     else if (precon .eq. 'SANS') then
-        call dcopy(nbliai, zr(jsgrap), 1, zr(jsgprp), 1)
+        b_n = to_blas_int(nbliai)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jsgrap), b_incx, zr(jsgprp), b_incy)
     else
         ASSERT(.false.)
     end if
