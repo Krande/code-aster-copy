@@ -169,6 +169,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 ! DUE TO CRS512      REAL*8 OVFL
     real(kind=8) :: v(3), work(1)
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -272,7 +273,9 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !
         do k = i, l+1, -1
             tst1 = abs(h(k-1, k-1))+abs(h(k, k))
-            if (tst1 .eq. zero) tst1 = dlanhs('1', i-l+1, h(l, l), ldh, work)
+            b_lda = to_blas_int(ldh)
+            b_n = to_blas_int(i-l+1)
+            if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h(l, l), b_lda, work)
             if (abs(h(k, k-1)) .le. max(ulp*tst1, smlnum)) goto 30
         end do
  30     continue

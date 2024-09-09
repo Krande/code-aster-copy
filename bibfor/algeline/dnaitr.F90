@@ -868,7 +868,9 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !              %--------------------------------------------%
 !
             tst1 = abs(h(i, i))+abs(h(i+1, i+1))
-            if (tst1 .eq. zero) tst1 = dlanhs('1', k+np, h, ldh, workd(n+1))
+            b_lda = to_blas_int(ldh)
+            b_n = to_blas_int(k+np)
+            if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h, b_lda, workd(n+1))
             if (abs(h(i+1, i)) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
         end do
 !

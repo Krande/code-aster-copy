@@ -217,7 +217,10 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q,&
         call dlacpy('F', b_m, b_n, t(j1, j1), b_lda,&
                     d, b_ldb)
 ! DUE TO CRP102 DNORM = DLANGE( 'MAX', ND, ND, D, LDD, WORK )
-        dnorm = dlange('M', nd, nd, d, ldd, work)
+        b_lda = to_blas_int(ldd)
+        b_m = to_blas_int(nd)
+        b_n = to_blas_int(nd)
+        dnorm = dlange('M', b_m, b_n, d, b_lda, work)
 !
 !        COMPUTE MACHINE-DEPENDENT THRESHOLD FOR TEST FOR ACCEPTING
 !        SWAP.

@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     function dlanhs(norm, n, a, lda, work)
-        integer, intent(in) :: lda
-        character(len=1) ,intent(in) :: norm
-        integer, intent(in) :: n
-        real(kind=8) ,intent(in) :: a(lda, *)
-        real(kind=8) ,intent(out) :: work(*)
+        blas_int, intent(in) :: lda
+        character(len=1), intent(in) :: norm
+        blas_int, intent(in) :: n
+        real(kind=8), intent(in) :: a(lda, *)
+        real(kind=8), intent(out) :: work(*)
         real(kind=8) :: dlanhs
     end function dlanhs
 end interface

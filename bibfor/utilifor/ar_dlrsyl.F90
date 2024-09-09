@@ -159,6 +159,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
     real(kind=8) :: dum(1), vec(2, 2), x(2, 2)
     blas_int :: b_incx, b_n
     blas_int :: b_incy
+    blas_int :: b_lda, b_ldabis, b_m, b_mbis, b_nbis
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -210,7 +211,13 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
     smlnum = smlnum*dble(m*n)/eps
     bignum = one/smlnum
 !
-    smin = max(smlnum, eps*dlange('M', m, m, a, lda, dum), eps*dlange('M', n, n, b, ldb, dum) )
+    b_lda = to_blas_int(lda)
+    b_m = to_blas_int(m)
+    b_n = to_blas_int(m)
+    smin = max(&
+           smlnum, eps*dlange('M', b_m, b_n, a, b_lda, dum),&
+           eps*dlange('M', b_mbis, b_nbis, b, b_ldabis, dum)&
+           )
 !
     scale = one
     sgn = isgn

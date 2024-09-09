@@ -363,7 +363,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !           %----------------------------------------%
 !
             tst1 = abs(h(i, i))+abs(h(i+1, i+1))
-            if (tst1 .eq. zero) tst1 = dlanhs('1', kplusp-jj+1, h, ldh, workl)
+            b_lda = to_blas_int(ldh)
+            b_n = to_blas_int(kplusp-jj+1)
+            if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h, b_lda, workl)
             if (abs(h(i+1, i)) .le. max(ulp*tst1, smlnum)) then
                 if (msglvl .gt. 0) then
                     call ivout(logfil, 1, [i], ndigit,&
@@ -614,7 +616,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !        %--------------------------------------------%
 !
         tst1 = abs(h(i, i))+abs(h(i+1, i+1))
-        if (tst1 .eq. zero) tst1 = dlanhs('1', kev, h, ldh, workl)
+        b_lda = to_blas_int(ldh)
+        b_n = to_blas_int(kev)
+        if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h, b_lda, workl)
         if (h(i+1, i) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
     end do
 !

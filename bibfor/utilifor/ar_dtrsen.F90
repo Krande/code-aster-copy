@@ -220,9 +220,9 @@
 !  CANNOT DIFFER FROM SIGMA-MIN(C) BY MORE THAN A FACTOR OF SQRT(N1*N2).
 !
 !  WHEN SEP IS SMALL, SMALL CHANGES IN T CAN CAUSE LARGE CHANGES IN
-subroutine ar_dtrsen(job, compq, select, n, t, &
-                     ldt, q, ldq, wr, wi, &
-                     m, s, sep, work, lwork, &
+subroutine ar_dtrsen(job, compq, select, n, t,&
+                     ldt, q, ldq, wr, wi,&
+                     m, s, sep, work, lwork,&
                      iwork, liwork, info)
 !  THE INVARIANT SUBSPACE. AN APPROXIMATE BOUND ON THE MAXIMUM ANGULAR
 !  ERROR IN THE COMPUTED RIGHT INVARIANT SUBSPACE IS
@@ -320,10 +320,10 @@ subroutine ar_dtrsen(job, compq, select, n, t, &
         n2 = n-m
         nn = n1*n2
 !
-        if (lwork .lt. 1 .or. ((wants .and. .not. wantsp) .and. lwork .lt. nn) .or. &
+        if (lwork .lt. 1 .or. ((wants .and. .not. wantsp) .and. lwork .lt. nn) .or.&
             (wantsp .and. lwork .lt. 2*nn)) then
             info = -15
-        else if (liwork .lt. 1 .or. (wantsp .and. liwork .lt. nn)) &
+            else if (liwork .lt. 1 .or. (wantsp .and. liwork .lt. nn)) &
             then
             info = -17
         end if
@@ -337,7 +337,10 @@ subroutine ar_dtrsen(job, compq, select, n, t, &
 !
     if (m .eq. n .or. m .eq. 0) then
         if (wants) s = one
-        if (wantsp) sep = dlange('1', n, n, t, ldt, work)
+        b_lda = to_blas_int(ldt)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(n)
+        if (wantsp) sep = dlange('1', b_m, b_n, t, b_lda, work)
         goto 40
     end if
 !
@@ -363,7 +366,7 @@ subroutine ar_dtrsen(job, compq, select, n, t, &
 !
                 ierr = 0
                 kk = k
-                if (k .ne. ks) call ar_dtrexc(compq, n, t, ldt, q, &
+                if (k .ne. ks) call ar_dtrexc(compq, n, t, ldt, q,&
                                               ldq, kk, ks, work, ierr)
                 if (ierr .eq. 1 .or. ierr .eq. 2) then
 !
@@ -389,16 +392,19 @@ subroutine ar_dtrsen(job, compq, select, n, t, &
         b_lda = to_blas_int(ldt)
         b_m = to_blas_int(n1)
         b_n = to_blas_int(n2)
-        call dlacpy('F', b_m, b_n, t(1, n1+1), b_lda, &
+        call dlacpy('F', b_m, b_n, t(1, n1+1), b_lda,&
                     work, b_ldb)
-        call ar_dlrsyl('N', 'N', -1, n1, n2, &
-                       t, ldt, t(n1+1, n1+1), ldt, work, &
+        call ar_dlrsyl('N', 'N', -1, n1, n2,&
+                       t, ldt, t(n1+1, n1+1), ldt, work,&
                        n1, scale, ierr)
 !
 !        ESTIMATE THE RECIPROCAL OF THE CONDITION NUMBER OF THE CLUSTER
 !        OF EIGENVALUES.
 !
-        rnorm = dlange('F', n1, n2, work, n1, rbid)
+        b_lda = to_blas_int(n1)
+        b_m = to_blas_int(n1)
+        b_n = to_blas_int(n2)
+        rnorm = dlange('F', b_m, b_n, work, b_lda, rbid)
         if (rnorm .eq. zero) then
             s = one
         else
@@ -412,23 +418,23 @@ subroutine ar_dtrsen(job, compq, select, n, t, &
 !
         est = zero
         kase = 0
-30      continue
-        call ar_dlacon(nn, work(nn+1), work, iwork, est, &
+ 30     continue
+        call ar_dlacon(nn, work(nn+1), work, iwork, est,&
                        kase)
         if (kase .ne. 0) then
             if (kase .eq. 1) then
 !
 !              SOLVE  T11*R - R*T22 = SCALE*X.
 !
-                call ar_dlrsyl('N', 'N', -1, n1, n2, &
-                               t, ldt, t(n1+1, n1+1), ldt, work, &
+                call ar_dlrsyl('N', 'N', -1, n1, n2,&
+                               t, ldt, t(n1+1, n1+1), ldt, work,&
                                n1, scale, ierr)
             else
 !
 !              SOLVE  T11'*R - R*T22' = SCALE*X.
 !
-                call ar_dlrsyl('T', 'T', -1, n1, n2, &
-                               t, ldt, t(n1+1, n1+1), ldt, work, &
+                call ar_dlrsyl('T', 'T', -1, n1, n2,&
+                               t, ldt, t(n1+1, n1+1), ldt, work,&
                                n1, scale, ierr)
             end if
             goto 30
@@ -437,7 +443,7 @@ subroutine ar_dtrsen(job, compq, select, n, t, &
         sep = scale/est
     end if
 !
-40  continue
+ 40 continue
 !
 !     STORE THE OUTPUT EIGENVALUES IN WR AND WI.
 !
