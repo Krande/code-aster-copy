@@ -490,15 +490,15 @@ subroutine znaitr(ido, bmat, n, k, np, &
 !            %-----------------------------------------%
 !
         b_lda = to_blas_int(n)
-        b_kl = to_blas_int(i)
-        b_ku = to_blas_int(i)
+        b_kl = to_blas_int(1)
+        b_ku = to_blas_int(1)
         b_m = to_blas_int(n)
         b_n = to_blas_int(1)
         call zlascl('G', b_kl, b_ku, rnorm, rone, &
                     b_m, b_n, v(1, j), b_lda, infol4)
         b_lda = to_blas_int(n)
-        b_kl = to_blas_int(i)
-        b_ku = to_blas_int(i)
+        b_kl = to_blas_int(1)
+        b_ku = to_blas_int(1)
         b_m = to_blas_int(n)
         b_n = to_blas_int(1)
         call zlascl('G', b_kl, b_ku, rnorm, rone, &

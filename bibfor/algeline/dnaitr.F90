@@ -488,16 +488,16 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
 ! DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
         b_lda = to_blas_int(n)
-        b_kl = to_blas_int(i)
-        b_ku = to_blas_int(i)
+        b_kl = to_blas_int(1)
+        b_ku = to_blas_int(1)
         b_m = to_blas_int(n)
         b_n = to_blas_int(1)
         call dlascl('G', b_kl, b_ku, rnorm, one, &
                     b_m, b_n, v(1, j), b_lda, infol4)
 ! DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
         b_lda = to_blas_int(n)
-        b_kl = to_blas_int(i)
-        b_ku = to_blas_int(i)
+        b_kl = to_blas_int(1)
+        b_ku = to_blas_int(1)
         b_m = to_blas_int(n)
         b_n = to_blas_int(1)
         call dlascl('G', b_kl, b_ku, rnorm, one, &
