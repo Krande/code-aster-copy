@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcdp_wrap(fami, kpg, ksp, ndim, imate,&
-                     crit, instam, instap, neps, epsm,&
-                     deps, vim, option, sigm, sigp,&
+subroutine lcdp_wrap(fami, kpg, ksp, ndim, imate, &
+                     crit, instam, instap, neps, epsm, &
+                     deps, vim, option, sigm, sigp, &
                      vip, typmod, dsidep, codret)
 !
     use lcdp_module, only: dp_material
@@ -40,7 +40,8 @@ subroutine lcdp_wrap(fami, kpg, ksp, ndim, imate,&
     character(len=*) :: fami
     character(len=8) :: typmod(*)
 ! ----------------------------------------------------------------------
-real(kind=8), parameter, dimension(6)::rac2 = [1.d0, 1.d0, 1.d0, sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)]
+    real(kind=8), parameter, dimension(6)::rac2 = [1.d0, 1.d0, 1.d0, &
+                                                   sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)]
 ! ----------------------------------------------------------------------
     type(dp_material) :: mat
     aster_logical :: elas, rigi, resi
@@ -74,7 +75,7 @@ real(kind=8), parameter, dimension(6)::rac2 = [1.d0, 1.d0, 1.d0, sqrt(2.d0), sqr
     ep = vim(4:3+ndimsi)*rac2(1:ndimsi)
 !
 ! COMPORTEMENT
-    codret = lcdp_compute(&
+    codret = lcdp_compute( &
              resi, rigi, elas, itemax, prec, mat, eps, ep, ka, state, sig, deps_sig, vip)
     if (codret .ne. 0) goto 999
 !

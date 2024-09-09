@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcvali(fami, kpg, ksp, imate, materi,&
-                  compor, ndim, epsm, deps, instam,&
+subroutine lcvali(fami, kpg, ksp, imate, materi, &
+                  compor, ndim, epsm, deps, instam, &
                   instap, codret)
 !
     implicit none
@@ -50,8 +50,8 @@ subroutine lcvali(fami, kpg, ksp, imate, materi,&
     nomres(2) = 'VEPS_MAXI'
     nomres(3) = 'TEMP_MINI'
     nomres(4) = 'TEMP_MAXI'
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'VERI_BORNE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                materi, 'VERI_BORNE', 0, ' ', [0.d0], &
                 4, nomres, valres, icodre, 0)
 !
 !     TRAITEMENT DE EPSI_MAXI
@@ -64,7 +64,7 @@ subroutine lcvali(fami, kpg, ksp, imate, materi,&
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, deps, b_incx, eps,&
+        call daxpy(b_n, 1.d0, deps, b_incx, eps, &
                    b_incy)
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
@@ -97,7 +97,7 @@ subroutine lcvali(fami, kpg, ksp, imate, materi,&
     if (icodre(3) .eq. 0) then
         tmin = valres(3)
         tmax = valres(4)
-        call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+        call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                     ksp, temp, iret)
         if (iret .eq. 0) then
             if ((temp .lt. tmin) .or. (temp .gt. tmax)) then

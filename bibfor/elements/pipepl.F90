@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipepl(ndim, compor, typmod, tau, mate,&
-                  sigm, vim, epsp, epsd, a0,&
+subroutine pipepl(ndim, compor, typmod, tau, mate, &
+                  sigm, vim, epsp, epsd, a0, &
                   a1, a2, a3, etas)
 !
 !
@@ -103,11 +103,11 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
         nomres(2) = 'NU'
         nomres(3) = 'SY'
         nomres(4) = 'D_SIGM_EPSI'
-        call rcvalb(fami, kpg, spt, poum, mate,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, spt, poum, mate, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 2)
-        call rcvalb(fami, kpg, spt, poum, mate,&
-                    ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, spt, poum, mate, &
+                    ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
                     2, nomres(3), valres(3), icodre(3), 2)
         young = valres(1)
         nu = valres(2)
@@ -117,13 +117,13 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
         rp = sy+h*vim(1)
 !
     else
-        call rcvalb(fami, kpg, spt, poum, mate,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, spt, poum, mate, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'NU', valres, icodre, 2)
         nu = valres(1)
-        call rctrac(mate, 1, 'SIGM', 0.d0, jprol,&
+        call rctrac(mate, 1, 'SIGM', 0.d0, jprol, &
                     jvale, nbvale, young)
-        call rcfonc('V', 1, jprol, jvale, nbvale,&
+        call rcfonc('V', 1, jprol, jvale, nbvale, &
                     p=vim(1), rp=rp)
     end if
 !

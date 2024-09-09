@@ -83,7 +83,7 @@ subroutine te0300(option, nomte)
     if (lteatt('AXIS', 'OUI')) axi = .true.
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     call jevech('PTHETAR', 'L', ithet)
     tcla = 0.d0
@@ -136,9 +136,9 @@ subroutine te0300(option, nomte)
                 valpar(j) = zr(igeom+2*(i-1)+j-1)
             end do
             do j = 1, 2
-                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
+                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar, &
                             presn(2*(i-1)+j), icode)
-                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
+                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar, &
                             forcn(2*(i-1)+j), icode)
             end do
         end do
@@ -181,9 +181,9 @@ subroutine te0300(option, nomte)
             valpar(1) = xg
             valpar(2) = yg
             do j = 1, 2
-                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
+                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar, &
                             presg(j), icode)
-                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
+                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar, &
                             forcg(j), icode)
             end do
         else
@@ -199,8 +199,8 @@ subroutine te0300(option, nomte)
             end do
         end if
 !
-        call rcvad2(fami, kp, 1, '+', zi(imate),&
-                    'ELAS', 3, nomres, valres, devres,&
+        call rcvad2(fami, kp, 1, '+', zi(imate), &
+                    'ELAS', 3, nomres, valres, devres, &
                     icodre)
         if ((icodre(1) .ne. 0) .or. (icodre(2) .ne. 0)) then
             call utmess('F', 'RUPTURE1_25')
@@ -234,7 +234,7 @@ subroutine te0300(option, nomte)
             ffp(ino) = zr(ivf-1+nno*(kp-1)+ino)
             basloc((6*(ino-1)+1):(6*(ino-1)+6)) = zr((ifond-1+1):(ifond-1+6))
         end do
-        call coor_cyl(2, nno, basloc, zr(igeom), ffp,&
+        call coor_cyl(2, nno, basloc, zr(igeom), ffp, &
                       p, invp, rpol, phi, l_not_zero)
 ! BRICOLAGE POUR CALCULER LE SIGNE DE K2 QUAND NDIM=2
         e1(:) = 0.d0
@@ -263,17 +263,17 @@ subroutine te0300(option, nomte)
             yno1 = zr(igeom+1)
             xno2 = zr(igeom+2)
             yno2 = zr(igeom+3)
-            d1 = (&
-                 (&
+            d1 = ( &
+                 ( &
                  xno1-zr(ifond-1+1))*(xno1-zr(ifond-1+1)))+((yno1-zr(ifond-1+2))*(yno1-zr(ifond-1&
-                 &+2)&
-                 )&
+                 &+2) &
+                 ) &
                  )
-            d2 = (&
-                 (&
+            d2 = ( &
+                 ( &
                  xno2-zr(ifond-1+1))*(xno2-zr(ifond-1+1)))+((yno2-zr(ifond-1+2))*(yno2-zr(ifond-1&
-                 &+2)&
-                 )&
+                 &+2) &
+                 ) &
                  )
             if (d2 .gt. d1) then
                 phi = -1.0d0*phi
@@ -287,7 +287,7 @@ subroutine te0300(option, nomte)
         end if
 !
 ! --------- champs singuliers
-        call xdeffk(ck, mu, rpol, phi, 2,&
+        call xdeffk(ck, mu, rpol, phi, 2, &
                     fkpo(1:2, 1:2))
 !
         u1s(:) = 0.d0

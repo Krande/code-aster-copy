@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmifis(ndim, ndime, elrefp, geom, lsn,&
-                  n, ip1, ip2, pinref, miref,&
-                  mifis, pintt, exit, jonc, u,&
+subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
+                  n, ip1, ip2, pinref, miref, &
+                  mifis, pintt, exit, jonc, u, &
                   v)
     implicit none
 !
@@ -88,7 +88,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn,&
             do j = 1, ndim
                 newpt(j) = pintt(ndim*(ia-1001)+j)
             end do
-            call reeref(elrefp, nno, geom, newpt, ndim,&
+            call reeref(elrefp, nno, geom, newpt, ndim, &
                         pta, ff)
         end if
 !
@@ -100,7 +100,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn,&
             do j = 1, ndim
                 newpt(j) = pintt(ndim*(ib-1001)+j)
             end do
-            call reeref(elrefp, nno, geom, newpt, ndim,&
+            call reeref(elrefp, nno, geom, newpt, ndim, &
                         ptb, ff)
         end if
 !
@@ -112,7 +112,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn,&
             do j = 1, ndim
                 newpt(j) = pintt(ndim*(ic-1001)+j)
             end do
-            call reeref(elrefp, nno, geom, newpt, ndim,&
+            call reeref(elrefp, nno, geom, newpt, ndim, &
                         ptc, ff)
         end if
         dekker(:) = 0.d0
@@ -154,7 +154,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn,&
 !
     do j = 1, ndime
         ptxx(j) = vect(j)
-        ptxx(j+ndime) = (pinref(ndime*(ip1-1)+j)+ pinref(ndime*(ip2-1)+j))/2.d0
+        ptxx(j+ndime) = (pinref(ndime*(ip1-1)+j)+pinref(ndime*(ip2-1)+j))/2.d0
     end do
 !     CALCUL DES COORDONNEES DE REFERENCE
 !     DU POINT PAR UN ALGO DE NEWTON
@@ -163,12 +163,12 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn,&
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     ksi(:) = 0.d0
     if ((present(u) .and. present(v)) .or. jonc) then
-        call xnewto(elrefp, name, n, ndime, ptxx,&
-                    ndim, geom, lsn, ip1, ip2,&
+        call xnewto(elrefp, name, n, ndime, ptxx, &
+                    ndim, geom, lsn, ip1, ip2, &
                     itemax, epsmax, ksi)
     else
-        call xnewto(elrefp, name, n, ndime, ptxx,&
-                    ndim, geom, lsn, ip1, ip2,&
+        call xnewto(elrefp, name, n, ndime, ptxx, &
+                    ndim, geom, lsn, ip1, ip2, &
                     itemax, epsmax, ksi, exit, dekker)
     end if
     do j = 1, ndime
@@ -176,7 +176,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn,&
     end do
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
-    call reerel(elrefp, nno, ndim, geom, miref,&
+    call reerel(elrefp, nno, ndim, geom, miref, &
                 mifis)
 !
 end subroutine

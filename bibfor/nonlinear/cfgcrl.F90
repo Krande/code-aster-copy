@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
+subroutine cfgcrl(resoco, neq, nbliai, matass, solveu, &
                   alpha)
 !
 !
@@ -110,14 +110,14 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
     do iliai = 1, nbliai
         jdecal = zi(japptr+iliai-1)
         nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
-        call calatm(neq, nbddl, zr(jdirec+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal),&
+        call calatm(neq, nbddl, zr(jdirec+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal), &
                     zr(jsecmb))
     end do
 !
 ! --- RESOLUTION [K].{DDELT} = [A]T .{DIRECP} -> {DDELT}
 !
-    call resoud(matass, k19bla, solveu, cncin0, 0,&
-                secmbr, ddelt, 'V', [0.d0], [c16bid],&
+    call resoud(matass, k19bla, solveu, cncin0, 0, &
+                secmbr, ddelt, 'V', [0.d0], [c16bid], &
                 k19bla, .true._1, 0, iret)
 !
 ! --- PRODUIT SCALAIRE  NUMER = <DIRECP>.{DIRECP}
@@ -149,7 +149,7 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
         write (ifm, 9040) alpha
     end if
 !
-    9040 format(' <CONTACT><CALC> PAS D''AVANCEMENT INITIAL : ', 1pe12.5)
+9040 format(' <CONTACT><CALC> PAS D''AVANCEMENT INITIAL : ', 1pe12.5)
 !
     call jedema()
 !

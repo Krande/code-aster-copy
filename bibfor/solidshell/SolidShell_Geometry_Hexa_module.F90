@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ contains
 ! - Set configuration
         geomHexa%geomCurr = geomHexa%cellGeom%geomInit
         if (present(disp_)) then
-            geomHexa%geomCurr(1:SSH_NBDOFG_HEXA) = geomHexa%geomCurr(1:SSH_NBDOFG_HEXA)+ disp_(1:&
+            geomHexa%geomCurr(1:SSH_NBDOFG_HEXA) = geomHexa%geomCurr(1:SSH_NBDOFG_HEXA)+disp_(1:&
                                                    &SSH_NBDOFG_HEXA)
         end if
 !
@@ -272,49 +272,49 @@ contains
         matrTElem(4, 1) = 2.d0*(JacInv0(1, 1)*A(1, 2)+JacInv0(1, 2)*A(1, 1))
         matrTElem(4, 2) = 2.d0*(JacInv0(2, 1)*A(2, 2)+JacInv0(2, 2)*A(2, 1))
         matrTElem(4, 3) = 2.d0*(JacInv0(3, 1)*A(3, 2)+JacInv0(3, 2)*A(3, 1))
-        matrTElem(4, 4) = (&
-                          JacInv0(1, 2)*A(2, 1)+JacInv0(2, 1)*A(1, 2))+ (JacInv0(1, 1)*A(2, 2)+Ja&
-                          &cInv0(2, 2)*A(1, 1)&
+        matrTElem(4, 4) = ( &
+                          JacInv0(1, 2)*A(2, 1)+JacInv0(2, 1)*A(1, 2))+(JacInv0(1, 1)*A(2, 2)+Ja&
+                          &cInv0(2, 2)*A(1, 1) &
                           )
-        matrTElem(4, 5) = (&
-                          JacInv0(1, 2)*A(3, 1)+JacInv0(3, 1)*A(1, 2))+ (JacInv0(1, 1)*A(3, 2)+Ja&
-                          &cInv0(3, 2)*A(1, 1)&
+        matrTElem(4, 5) = ( &
+                          JacInv0(1, 2)*A(3, 1)+JacInv0(3, 1)*A(1, 2))+(JacInv0(1, 1)*A(3, 2)+Ja&
+                          &cInv0(3, 2)*A(1, 1) &
                           )
-        matrTElem(4, 6) = (&
-                          JacInv0(2, 2)*A(3, 1)+JacInv0(3, 1)*A(2, 2))+ (JacInv0(2, 1)*A(3, 2)+Ja&
-                          &cInv0(3, 2)*A(2, 1)&
+        matrTElem(4, 6) = ( &
+                          JacInv0(2, 2)*A(3, 1)+JacInv0(3, 1)*A(2, 2))+(JacInv0(2, 1)*A(3, 2)+Ja&
+                          &cInv0(3, 2)*A(2, 1) &
                           )
 !
         matrTElem(5, 1) = 2.d0*(JacInv0(1, 1)*A(1, 3)+JacInv0(1, 3)*A(1, 1))
         matrTElem(5, 2) = 2.d0*(JacInv0(2, 1)*A(2, 3)+JacInv0(2, 3)*A(2, 1))
         matrTElem(5, 3) = 2.d0*(JacInv0(3, 1)*A(3, 3)+JacInv0(3, 3)*A(3, 1))
-        matrTElem(5, 4) = (&
-                          JacInv0(1, 3)*A(2, 1)+JacInv0(2, 1)*A(1, 3))+ (JacInv0(1, 1)*A(2, 3)+Ja&
-                          &cInv0(2, 3)*A(1, 1)&
+        matrTElem(5, 4) = ( &
+                          JacInv0(1, 3)*A(2, 1)+JacInv0(2, 1)*A(1, 3))+(JacInv0(1, 1)*A(2, 3)+Ja&
+                          &cInv0(2, 3)*A(1, 1) &
                           )
-        matrTElem(5, 5) = (&
-                          JacInv0(1, 3)*A(3, 1)+JacInv0(3, 1)*A(1, 3))+ (JacInv0(1, 1)*A(3, 3)+Ja&
-                          &cInv0(3, 3)*A(1, 1)&
+        matrTElem(5, 5) = ( &
+                          JacInv0(1, 3)*A(3, 1)+JacInv0(3, 1)*A(1, 3))+(JacInv0(1, 1)*A(3, 3)+Ja&
+                          &cInv0(3, 3)*A(1, 1) &
                           )
-        matrTElem(5, 6) = (&
-                          JacInv0(2, 3)*A(3, 1)+JacInv0(3, 1)*A(2, 3))+ (JacInv0(2, 1)*A(3, 3)+Ja&
-                          &cInv0(3, 3)*A(2, 1)&
+        matrTElem(5, 6) = ( &
+                          JacInv0(2, 3)*A(3, 1)+JacInv0(3, 1)*A(2, 3))+(JacInv0(2, 1)*A(3, 3)+Ja&
+                          &cInv0(3, 3)*A(2, 1) &
                           )
 !
         matrTElem(6, 1) = 2.d0*(JacInv0(1, 2)*A(1, 3)+JacInv0(1, 3)*A(1, 2))
         matrTElem(6, 2) = 2.d0*(JacInv0(2, 2)*A(2, 3)+JacInv0(2, 3)*A(2, 2))
         matrTElem(6, 3) = 2.d0*(JacInv0(3, 2)*A(3, 3)+JacInv0(3, 3)*A(3, 2))
-        matrTElem(6, 4) = (&
-                          JacInv0(1, 3)*A(2, 2)+JacInv0(2, 2)*A(1, 3))+ (JacInv0(1, 2)*A(2, 3)+Ja&
-                          &cInv0(2, 3)*A(1, 2)&
+        matrTElem(6, 4) = ( &
+                          JacInv0(1, 3)*A(2, 2)+JacInv0(2, 2)*A(1, 3))+(JacInv0(1, 2)*A(2, 3)+Ja&
+                          &cInv0(2, 3)*A(1, 2) &
                           )
-        matrTElem(6, 5) = (&
-                          JacInv0(1, 3)*A(3, 2)+JacInv0(3, 2)*A(1, 3))+ (JacInv0(1, 2)*A(3, 3)+Ja&
-                          &cInv0(3, 3)*A(1, 2)&
+        matrTElem(6, 5) = ( &
+                          JacInv0(1, 3)*A(3, 2)+JacInv0(3, 2)*A(1, 3))+(JacInv0(1, 2)*A(3, 3)+Ja&
+                          &cInv0(3, 3)*A(1, 2) &
                           )
-        matrTElem(6, 6) = (&
-                          JacInv0(2, 3)*A(3, 2)+JacInv0(3, 2)*A(2, 3))+ (JacInv0(2, 2)*A(3, 3)+Ja&
-                          &cInv0(3, 3)*A(2, 2)&
+        matrTElem(6, 6) = ( &
+                          JacInv0(2, 3)*A(3, 2)+JacInv0(3, 2)*A(2, 3))+(JacInv0(2, 2)*A(3, 3)+Ja&
+                          &cInv0(3, 3)*A(2, 2) &
                           )
 !
 !   ------------------------------------------------------------------------------------------------
@@ -344,8 +344,8 @@ contains
 ! Out J3XIETA          : decomposed derivatives of the jacobian in the covariant base
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine decoJacoMatrHexa(geomCurr, J10, J1ETA, J1ZETA, J1ETAZETA,&
-                                J20, J2XI, J2ZETA, J2XIZETA, J30,&
+    subroutine decoJacoMatrHexa(geomCurr, J10, J1ETA, J1ZETA, J1ETAZETA, &
+                                J20, J2XI, J2ZETA, J2XIZETA, J30, &
                                 J3ETA, J3XI, J3XIETA)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters

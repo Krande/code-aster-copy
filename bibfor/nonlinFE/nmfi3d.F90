@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
-                  vff, dfde, mate, option, geom,&
-                  deplm, ddepl, sigm, sigp, fint,&
-                  ktan, vim, vip, carcri, compor,&
-                  matsym, coopg, tm, tp, lMatr,&
+subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
+                  vff, dfde, mate, option, geom, &
+                  deplm, ddepl, sigm, sigp, fint, &
+                  ktan, vim, vip, carcri, compor, &
+                  matsym, coopg, tm, tp, lMatr, &
                   lVect, lSigm, codret)
 !
     use Behaviour_type
@@ -117,7 +117,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
 ! CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES
 ! DEPLACEMENTS AUX NOEUDS , AINSI QUE LE POIDS DES PG :
 !
-        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg),&
+        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg), &
                     geom, poids, b)
 !
 ! CALCUL DU SAUT DE DEPLACEMENT - : SUM, ET DE L'INCREMENT : DSU
@@ -158,10 +158,10 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
         BEHinteg%elem%coor_elga(kpg, 1:3) = coopg(1:3, kpg)
 !
         sigma = 0.d0
-        call nmcomp(BEHinteg, 'RIGI', kpg, 1, 3,&
-                    typmod, mate, compor, carcri, tm,&
-                    tp, 3, sum, dsu, 6,&
-                    sigmo, vim(1, kpg), option, angmas, sigma,&
+        call nmcomp(BEHinteg, 'RIGI', kpg, 1, 3, &
+                    typmod, mate, compor, carcri, tm, &
+                    tp, 3, sum, dsu, 6, &
+                    sigmo, vim(1, kpg), option, angmas, sigma, &
                     vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) goto 900
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, l_vect_name, l_vect_type,&
+subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, l_vect_name, l_vect_type, &
                              l_vect_redu, mode_type, vc_mode, vr_mode)
 !
     implicit none
@@ -87,7 +87,7 @@ subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, l_vect_name, l_vect_type,
             if (vect_type .eq. 'R') then
                 call jeveuo(vect_name(1:8)//'           .VALE', 'L', vr=jv_vect_r)
                 do i_equa = 1, nb_equa
-                    vc_vect_redu(i_mode) = vc_vect_redu(i_mode)+ dcmplx(jv_vect_r(i_equa))*dconjg&
+                    vc_vect_redu(i_mode) = vc_vect_redu(i_mode)+dcmplx(jv_vect_r(i_equa))*dconjg&
                                            &(vc_mode(i_equa))
                 end do
             else if (vect_type .eq. 'C') then

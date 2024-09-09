@@ -103,8 +103,8 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
     aster_logical :: dri, coupmf
     blas_int :: b_incx, b_incy, b_n
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
     roe = 0.0
@@ -197,8 +197,8 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
         call r8inir(144, 0.d0, bxb, 1)
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE : DRILLING ROTATION --------------------------
-        call dxmate('RIGI', df, dm, dmf, dc,&
-                    dci, dmc, dfc, nno, pgl,&
+        call dxmate('RIGI', df, dm, dmf, dc, &
+                    dci, dmc, dfc, nno, pgl, &
                     multic, coupmf, t2iu, t2ui, t1ve)
 !
         gam = abs(ctor)*dm(1)
@@ -216,7 +216,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
             dArea = dArea+wgt
 !
 !        -- COMPUTE LINEAR AND ROTATIONAL SHAPE FUNCTIONS AND DERIVATIVES :
-            call dkqshp(qsi, eta, caraq4, jacob(2), shp(1, 1, iishp),&
+            call dkqshp(qsi, eta, caraq4, jacob(2), shp(1, 1, iishp), &
                         shpr1(1, 1, iishp), shpr2(1, 1, iishp))
 !
             do j = 1, 4
@@ -299,7 +299,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 ! ---  LES TERMES SONT EN NK*NP                                      =
 !=====================================================================
 !
-            call dkqnim(shp(1, 1, i0), shpr1(1, 1, i0), shpr2(1, 1, i0), nm1, nm2,&
+            call dkqnim(shp(1, 1, i0), shpr1(1, 1, i0), shpr2(1, 1, i0), nm1, nm2, &
                         gm1, gm2)
 !
 !        do i = 1, 8
@@ -407,7 +407,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
                 b_n = to_blas_int(9)
                 b_incx = to_blas_int(1)
                 call dscal(b_n, wgt, dmf2, b_incx)
-                call utctab('CUMU', 3, 12, 8, dmf2,&
+                call utctab('CUMU', 3, 12, 8, dmf2, &
                             bf, bm, xab1, mefl)
 !
 !   compute product Gmt.Dmf.Bf
@@ -419,7 +419,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
                 b_n = to_blas_int(9)
                 b_incx = to_blas_int(1)
                 call dscal(b_n, wgt, dmf2, b_incx)
-                call utctab('CUMU', 3, 12, 4, dmf2,&
+                call utctab('CUMU', 3, 12, 4, dmf2, &
                             bf, gm, xab1, gmefl)
             else if (.not. dri) then
 !
@@ -573,7 +573,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
             call dxqloc(flex, memb, mefl, ctor, masloc)
             wgt = caraq4(21)*roe
             call utpslg(4, 6, pgl, masloc, masglo)
-            call dialum(4, 6, 24, wgt, masglo,&
+            call dialum(4, 6, 24, wgt, masglo, &
                         mas)
         else if (dri) then
             ctor = 0.d0
@@ -584,7 +584,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
             call dxqlocdri4(bxb, masloc)
             wgt = caraq4(21)*roe
             call utpslg(4, 6, pgl, masloc, masglo)
-            call dialum(4, 6, 24, wgt, masglo,&
+            call dialum(4, 6, 24, wgt, masglo, &
                         mas)
         else
             ASSERT(ASTER_FALSE)
@@ -596,13 +596,13 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
         if (iret .eq. 0) then
             call utpvgl(4, 6, pgl, zr(jvitg), vite)
-            call dxqloe(flex, memb, mefl, ctor, ASTER_FALSE,&
+            call dxqloe(flex, memb, mefl, ctor, ASTER_FALSE, &
                         vite, ener)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
             if (iret .eq. 0) then
                 call utpvgl(4, 6, pgl, zr(jdepg), depl)
-                call dxqloe(flex, memb, mefl, ctor, ASTER_FALSE,&
+                call dxqloe(flex, memb, mefl, ctor, ASTER_FALSE, &
                             depl, ener)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)

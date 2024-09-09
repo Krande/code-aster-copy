@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine projmr(matras, nomres, basemo, nugene, nu,&
+subroutine projmr(matras, nomres, basemo, nugene, nu, &
                   neq, nbmo)
     implicit none
 #include "asterf_types.h"
@@ -85,10 +85,10 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     call jeveuo(matr//'.REFA', 'L', jrefa)
     lsym = zk24(jrefa-1+9) .eq. 'MS'
     if (lsym) then
-        call jecrec(resu//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
+        call jecrec(resu//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
                     nbloc)
     else
-        call jecrec(resu//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
+        call jecrec(resu//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
                     2*nbloc)
     end if
 !
@@ -159,7 +159,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
                 ASSERT(nbj .eq. 1 .or. nbj .eq. i)
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE I
-                call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), vectass2, 1,&
+                call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), vectass2, 1, &
                             .true._1)
                 call zerlag(neq, deeq, vectr=vectass2)
 !
@@ -199,7 +199,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
             if (j .gt. 1) hc = hc-smdi(j-1)
             nbj = j-hc+1
             ASSERT(nbj .eq. 1)
-            call mrmult('ZERO', imatra, zr(idbase+(j-1)*neq), vectass2, 1,&
+            call mrmult('ZERO', imatra, zr(idbase+(j-1)*neq), vectass2, 1, &
                         .true._1)
             call zerlag(neq, deeq, vectr=vectass2)
             do i = 1, nueq

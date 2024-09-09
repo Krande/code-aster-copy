@@ -188,8 +188,8 @@ subroutine te0155(option, nomte)
 !       recuperation des caracteristiques materiaux ---
         call jevech('PMATERC', 'L', lmater)
         kpg = 1; spt = 1; poum = '+'
-        call rcvalb('FPG1', kpg, spt, poum, zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb('FPG1', kpg, spt, poum, zi(lmater), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'RHO', rho, codres, 1)
 !
         call jevech('PPESANR', 'L', lpesa)
@@ -274,7 +274,7 @@ subroutine te0155(option, nomte)
             vite2 = ddot(b_n, xvp, b_incx, xvp, b_incy)
             valpav(1) = sqrt(vite2)
             if (valpav(1) .gt. r8min) then
-                call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
+                call fointe('FM', zk8(ifcx), 1, nompav, valpav, &
                             fcx, iret)
                 fcx = fcx/valpav(1)
             end if
@@ -299,7 +299,7 @@ subroutine te0155(option, nomte)
             vite2 = ddot(b_n, xvp, b_incx, xvp, b_incy)
             valpav(1) = sqrt(vite2)
             if (valpav(1) .gt. r8min) then
-                call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
+                call fointe('FM', zk8(ifcx), 1, nompav, valpav, &
                             fcx, iret)
                 fcx = fcx/valpav(1)
             end if
@@ -326,7 +326,7 @@ subroutine te0155(option, nomte)
         valpar(7:9) = wv(1:3); valpar(10:12) = wa(1:3)
         valpar(13) = temps
         do i = 1, 3
-            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar,&
+            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar, &
                         force(i), iret)
         end do
 !
@@ -334,7 +334,7 @@ subroutine te0155(option, nomte)
         valpar(7:9) = wv(4:6); valpar(10:12) = wa(4:6)
         valpar(13) = temps
         do i = 1, 3
-            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar,&
+            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar, &
                         force(i+3), iret)
         end do
 !
@@ -362,11 +362,11 @@ subroutine te0155(option, nomte)
         aire = valr(1)
 !       Recuperation des caracteristiques materiaux ---
         call jevech('PMATERC', 'L', lmater)
-        call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'E', e, codres, 1)
 !       Temperature de reference
-        call verift(fami, 1, 1, '+', zi(lmater),&
+        call verift(fami, 1, 1, '+', zi(lmater), &
                     epsth_=epsth)
 !       Terme de la matrice elementaire
         xrig = e(1)*aire/xl
@@ -385,8 +385,8 @@ subroutine te0155(option, nomte)
         aire = valr(1)
 !       Recuperation des caracteristiques materiaux
         call jevech('PMATERC', 'L', lmater)
-        call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'E', e, codres, 1)
 !       Recuperation de l'instant
         call tecach('ONO', 'PINSTR', 'L', iret, iad=itemps)
@@ -394,12 +394,12 @@ subroutine te0155(option, nomte)
             temps = zr(itemps)
         end if
 !       Temperature effective
-        call rcvarc(' ', 'TEMP', '+', fami, 1,&
+        call rcvarc(' ', 'TEMP', '+', fami, 1, &
                     1, temper, iret)
-        call rcvarc(' ', 'SECH', '+', 'RIGI', 1,&
+        call rcvarc(' ', 'SECH', '+', 'RIGI', 1, &
                     1, sech, iret)
         if (iret .ne. 0) sech = 0.d0
-        call rcvarc(' ', 'SECH', 'REF', 'RIGI', 1,&
+        call rcvarc(' ', 'SECH', 'REF', 'RIGI', 1, &
                     1, sref, iret)
         if (iret .ne. 0) sref = 0.d0
 !
@@ -408,8 +408,8 @@ subroutine te0155(option, nomte)
 !       Terme de la matrice elementaire
         xrig = e(1)*aire/xl
 !       Interpolation de k_dessicca en fonction de la temperature du sechage
-        call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 3, nompar, valpar,&
+        call rcvalb('RIGI', 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 3, nompar, valpar, &
                     1, 'K_DESSIC', kdessi, codres, 0)
         if (codres(1) .ne. 0) kdessi(1) = 0.d0
 !
@@ -428,8 +428,8 @@ subroutine te0155(option, nomte)
         aire = valr(1)
 !       Recuperation des caracteristiques materiaux ---
         call jevech('PMATERC', 'L', lmater)
-        call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb('RIGI', 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'E', e, codres, 1)
 !       Recuperation de l'instant
         call tecach('ONO', 'PINSTR', 'L', iret, iad=itemps)
@@ -437,10 +437,10 @@ subroutine te0155(option, nomte)
             temps = zr(itemps)
         end if
 !       Temperature effective
-        call rcvarc(' ', 'TEMP', '+', fami, 1,&
+        call rcvarc(' ', 'TEMP', '+', fami, 1, &
                     1, temper, iret)
 !       Hydratation effective
-        call rcvarc(' ', 'HYDR', '+', 'RIGI', 1,&
+        call rcvarc(' ', 'HYDR', '+', 'RIGI', 1, &
                     1, hydr, iret)
         if (iret .ne. 0) hydr = 0.d0
 !
@@ -449,8 +449,8 @@ subroutine te0155(option, nomte)
 !       Terme de la matrice elementaire
         xrig = e(1)*aire/xl
 !       Interpolation de k_dessicca en fonction de la temperature ou de l hydratation
-        call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 3, nompar, valpar,&
+        call rcvalb('RIGI', 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 3, nompar, valpar, &
                     1, 'B_ENDOGE', kendog, codres, 0)
         if (codres(1) .ne. 0) kendog(1) = 0.d0
 !
@@ -469,8 +469,8 @@ subroutine te0155(option, nomte)
         aire = valr(1)
 !       Recuperation des caracteristiques materiaux
         call jevech('PMATERC', 'L', lmater)
-        call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'E', e, codres, 1)
 !       Recuperation de la deformation
         if (option(15:16) .eq. '_R') then
@@ -485,7 +485,7 @@ subroutine te0155(option, nomte)
             valpar(2) = (wx(2)+wx(5))/2.d0
             valpar(3) = (wx(3)+wx(6))/2.d0
             valpar(4) = zr(itemps)
-            call fointe('FM', zk8(iepsini), 4, nompar, valpar,&
+            call fointe('FM', zk8(iepsini), 4, nompar, valpar, &
                         epsini, iret)
         end if
 !       Calcul des forces induites

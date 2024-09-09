@@ -51,6 +51,6 @@ subroutine fteta(theta, neq, f0, f1)
     b_n = to_blas_int(neq)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, coef, f0, b_incx, f1,&
+    call daxpy(b_n, coef, f0, b_incx, f1, &
                b_incy)
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,11 +182,11 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                 call utmess('I', 'VIDE_1')
 !
                 fimpo(:) = 0.d0
-                call posddl('NUME_DDL', nume, noeu, 'DX', nunoe,&
+                call posddl('NUME_DDL', nume, noeu, 'DX', nunoe, &
                             iddlx)
-                call posddl('NUME_DDL', nume, noeu, 'DY', nunoe,&
+                call posddl('NUME_DDL', nume, noeu, 'DY', nunoe, &
                             iddly)
-                call posddl('NUME_DDL', nume, noeu, 'DZ', nunoe,&
+                call posddl('NUME_DDL', nume, noeu, 'DZ', nunoe, &
                             iddlz)
                 call nlget(sd_nl, _NORMAL_VECTOR, iocc=i, rvect=nvect)
 !
@@ -195,7 +195,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                 fimpo(iddlz) = nvect(3)
 !
 !               --- Calculation of RFIMPO = K*n
-                call mrmult('ZERO', irigi, fimpo, rfimpo, 1,&
+                call mrmult('ZERO', irigi, fimpo, rfimpo, 1, &
                             .true._1)
 !
 !               --- First pass, prepare for K^-1 by calling preres
@@ -205,7 +205,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                     matpre = '&&OP0029.BIDON'
                     istoav = slvi(3)
                     slvi(3) = 2
-                    call preres(solveu, 'V', iret, matpre, marig,&
+                    call preres(solveu, 'V', iret, matpre, marig, &
                                 ibid, -9999)
                     slvi(3) = istoav
                     if (iret .eq. 2) then
@@ -219,8 +219,8 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                 end if
 !
 !               --- Calculation of FIMPO, static deformation : K^-1 * n
-                call resoud(marig, ' ', solveu, ' ', 1,&
-                            ' ', ' ', ' ', fimpo, [cbid],&
+                call resoud(marig, ' ', solveu, ' ', 1, &
+                            ' ', ' ', ' ', fimpo, [cbid], &
                             ' ', .true._1, 0, iret)
 !
 !               --- Calculation of NORMX, square magnitude of K^-1 * n
@@ -324,7 +324,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
             end do
         end do
 !
-        call calsvd(nm, m, n, a, w,&
+        call calsvd(nm, m, n, a, w, &
                     matuv, u, matuv, v, ierr)
         if (ierr .ne. 0) goto 999
         mmax = 0.d0
@@ -366,7 +366,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                 a(k+neq*(icolc+1-1)) = bmodal(k, j)/sqrt(normy(j))
             end do
 !
-            call calsvd(nm, m, n, a, w,&
+            call calsvd(nm, m, n, a, w, &
                         matuv, u, matuv, v, ierr)
             if (ierr .ne. 0) goto 999
             mmax = 0.d0

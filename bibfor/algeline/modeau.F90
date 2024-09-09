@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine modeau(melflu, noma, geom, fsvr, base,&
-                  freqi, nbm, nuor, vicoq, torco,&
-                  tcoef, amor, masg, fact, amfr,&
+subroutine modeau(melflu, noma, geom, fsvr, base, &
+                  freqi, nbm, nuor, vicoq, torco, &
+                  tcoef, amor, masg, fact, amfr, &
                   vecpr, maj)
     implicit none
 !  CONFIGURATION DE TYPE "COQUES CYLINDRIQUES COAXIALES"
@@ -133,8 +133,8 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 !-----2.CALCUL DE LA MATRICE DE MASSE AJOUTEE  => MAT1 COMPLEXE
 !       NB : LA MATRICE CALCULEE CORRESPOND A -MAJ
 !
-    call bmocca(u0, geom, cf0, mcf0, fsvr,&
-                nbm, vicoq, torco, tcoef, s0,&
+    call bmocca(u0, geom, cf0, mcf0, fsvr, &
+                nbm, vicoq, torco, tcoef, s0, &
                 s0, zc(imat1))
 !
 !
@@ -160,7 +160,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
         end do
     end if
 !
-    500 format('MAJ(', i3, ',', i3, ') = ', g23.16)
+500 format('MAJ(', i3, ',', i3, ') = ', g23.16)
     ifr = iunifi('RESULTAT')
     write (ifr, *) '<MODEAU>'
     write (ifr, *)
@@ -181,13 +181,13 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 !
     do imod = 1, nbm
         numod = nuor(imod)
-        call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', numod,&
+        call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', numod, &
                     0, sjv=lfacx, styp=k8b)
         zr(ifact+imod-1) = zr(lfacx)
         zr(ifact+nbm+imod-1) = zr(lfacx+1)
         zr(ifact+2*nbm+imod-1) = zr(lfacx+2)
         fi = freqi(numod)
-        call rsadpa(base, 'L', 1, 'MASS_GENE', numod,&
+        call rsadpa(base, 'L', 1, 'MASS_GENE', numod, &
                     0, sjv=lmasg, styp=k8b)
         mi = zr(lmasg)
         ki = 4.d0*pi*pi*fi*fi*mi
@@ -201,8 +201,8 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 !-----5.RESOLUTION DU PROBLEME MODAL GENERALISE EN EAU AU REPOS
 !
     icalc = 1
-    call vphqrp(zr(imata), nbm, nbm, icalc, zr(ivecw),&
-                zr(imatz), nbm, zr(iwrk2), 30, ier,&
+    call vphqrp(zr(imata), nbm, nbm, icalc, zr(ivecw), &
+                zr(imatz), nbm, zr(iwrk2), 30, ier, &
                 nitqr)
     if (ier .ne. 0) then
         call utmess('F', 'ALGELINE_99')
@@ -260,12 +260,12 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 !
     call jelira(noma//'.NOMNOE', 'NOMUTI', nbnoe)
     call wkvect('&&MODEAU.TEMP.DPLA', 'V V R', 6*nbnoe*nbm, idpla)
-    call extmod(base, numddl, nuor, nbm, zr(idpla),&
+    call extmod(base, numddl, nuor, nbm, zr(idpla), &
                 neq, nbnoe, iddl, 6)
 !
     call wkvect('&&MODEAU.TEMP.DPLE', 'V V R', 6*nbnoe*nbm, idple)
-    call prmama(1, zr(idpla), 6*nbnoe, 6*nbnoe, nbm,&
-                vecpr, nbm, nbm, nbm, zr(idple),&
+    call prmama(1, zr(idpla), 6*nbnoe, 6*nbnoe, nbm, &
+                vecpr, nbm, nbm, nbm, zr(idple), &
                 6*nbnoe, 6*nbnoe, nbm, ier)
 !
     nomcha(1:13) = melflu(1:8)//'.C01.'
@@ -321,7 +321,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
         do kmod = 1, nbm
             numod = nuor(kmod)
             fk = freqi(numod)
-            call rsadpa(base, 'L', 1, 'MASS_GENE', numod,&
+            call rsadpa(base, 'L', 1, 'MASS_GENE', numod, &
                         0, sjv=lmasg, styp=k8b)
             mk = zr(lmasg)
             ck = 4.d0*pi*fk*amor(kmod)*mk

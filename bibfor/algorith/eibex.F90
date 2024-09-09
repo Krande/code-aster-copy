@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eibex(fami, kpg, ksp, ndim, imate,&
-                 instam, instap, epsm, deps, vim,&
+subroutine eibex(fami, kpg, ksp, ndim, imate, &
+                 instam, instap, epsm, deps, vim, &
                  option, sig, vip, dsidep, codret)
 !
     implicit none
@@ -76,25 +76,25 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 !
 !
 !     RECUPERATION DES VARIABLES DE COMMANDE
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '-', fami, kpg, &
                 ksp, tm, iret)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, tp, iret)
-    call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
+    call rcvarc(' ', 'TEMP', 'REF', fami, kpg, &
                 ksp, tref, iret)
-    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+    call rcvarc(' ', 'HYDR', '-', fami, kpg, &
                 ksp, hydrm, iret)
     if (iret .ne. 0) hydrm = 0.d0
-    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+    call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                 ksp, hydrp, iret)
     if (iret .ne. 0) hydrp = 0.d0
-    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+    call rcvarc(' ', 'SECH', '-', fami, kpg, &
                 ksp, sechm, iret)
     if (iret .ne. 0) sechm = 0.d0
-    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+    call rcvarc(' ', 'SECH', '+', fami, kpg, &
                 ksp, sechp, iret)
     if (iret .ne. 0) sechp = 0.d0
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                 ksp, sref, iret)
     if (iret .ne. 0) sref = 0.d0
 !
@@ -117,9 +117,9 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
     ndimsi = 2*ndim
     rac2 = sqrt(2.d0)
 !
-    call lceib1(fami, kpg, ksp, imate, ndim,&
-                epsm, sref, sechm, hydrm, t,&
-                lambda, deuxmu, epsthe, kdess, bendo,&
+    call lceib1(fami, kpg, ksp, imate, ndim, &
+                epsm, sref, sechm, hydrm, t, &
+                lambda, deuxmu, epsthe, kdess, bendo, &
                 gamma, seuil)
 !
 !
@@ -265,7 +265,7 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 !
                             do m = 1, 3
                                 do n = 1, 3
-                                    rtemp2 = rtemp2+vecp(k, m)*vecp(i, n) *vecp(j, n)*vecp(l, m)*&
+                                    rtemp2 = rtemp2+vecp(k, m)*vecp(i, n)*vecp(j, n)*vecp(l, m)*&
                                              &dspdep(n, m)
                                 end do
                             end do

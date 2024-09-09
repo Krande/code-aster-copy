@@ -165,8 +165,8 @@ contains
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Cell), intent(in) :: hhoCell
         aster_logical, intent(in) :: l_largestrains
-        real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC), intent(out) :: gradfull
-        real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC), intent(out) :: stab
+        real(kind=8), intent(out) :: gradfull(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -182,8 +182,8 @@ contains
 ! --- Local variables
 !
         integer :: cbs, fbs, total_dofs, gbs
-        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradfullvec
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stabvec
+        real(kind=8) :: gradfullvec(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
+        real(kind=8) :: stabvec(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
 !
         call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
                            gbs)
@@ -335,9 +335,8 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         aster_logical, intent(in) :: l_largestrains
-        real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC), intent(out) :: gradfull
-        real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC), intent(out), optional :: &
-            stab
+        real(kind=8), intent(out) :: gradfull(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out), optional :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -354,8 +353,8 @@ contains
 ! Out stab            : stabilization for mechanics
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: gradrec_scal
-!        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)   :: gradrec_sym
+        real(kind=8) :: gradrec_scal(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
+!        real(kind=8) :: gradrec_sym(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !

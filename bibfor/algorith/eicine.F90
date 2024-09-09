@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eicine(ndim, axi, nno1, nno2, vff1,&
-                  vff2, wref, dffr2, geom, ang,&
+subroutine eicine(ndim, axi, nno1, nno2, vff1, &
+                  vff2, wref, dffr2, geom, ang, &
                   wg, b)
 !
 !
@@ -62,7 +62,7 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
         call sumetr(cova, metr, jac)
         wg = wref*jac
     else if (ndim .eq. 2) then
-        call dfdm1d(nno2, wref, dffr2, geom, dfdx,&
+        call dfdm1d(nno2, wref, dffr2, geom, dfdx, &
                     cour, wg, cosa, sina)
     end if
 !

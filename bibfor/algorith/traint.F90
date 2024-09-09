@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine traint(resgen, modgen, numlia, sst1, sst2,&
+subroutine traint(resgen, modgen, numlia, sst1, sst2, &
                   intf1, intf2, nbmod, nl, nc)
     implicit none
 !
@@ -300,21 +300,21 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         ibid = 0
         do k1 = 1, nbddl1
             if (zi(llint1+k1-1) .gt. 0) then
-                zr(lmod1+zi(llint1+k1-1)-1) = zr(lcopy1+zi(llint1+k1-1)- 1)
+                zr(lmod1+zi(llint1+k1-1)-1) = zr(lcopy1+zi(llint1+k1-1)-1)
                 zr(lobs1+ibid) = zr(lcopy1+zi(llint1+k1-1)-1)
                 ibid = ibid+1
             end if
         end do
 !
 !-- CALCUL DU TRAVAIL
-        call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1,&
+        call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1, &
                     .true._1)
         call lceqvn(nbeq1, zr(leff1), zr(lefi1))
         b_n = to_blas_int(nbeq1)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         travm = ddot(b_n, zr(lmod1), b_incx, zr(leff1), b_incy)
-        call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), zr(leff1), 1,&
+        call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), zr(leff1), 1, &
                     .true._1)
         b_n = to_blas_int(nbeq1)
         b_incx = to_blas_int(1)
@@ -341,7 +341,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         ibid = 0
         do k1 = 1, nbddl2
             if (zi(llint2+k1-1) .gt. 0) then
-                zr(lmod2+zi(llint2+k1-1)-1) = zr(lcopy2+zi(llint2+k1-1)- 1)
+                zr(lmod2+zi(llint2+k1-1)-1) = zr(lcopy2+zi(llint2+k1-1)-1)
                 zr(lobs2+ibid) = zr(lcopy2+zi(llint2+k1-1)-1)
                 ibid = ibid+1
             end if
@@ -350,7 +350,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !--
 !-- CALCUL DE L'EFFORT RESIDUEL
 !--
-        call mrmult('ZERO', matrice_mass(isst2), zr(lcopy2), zr(leff2), 1,&
+        call mrmult('ZERO', matrice_mass(isst2), zr(lcopy2), zr(leff2), 1, &
                     .true._1)
         call lceqvn(nbeq2, zr(leff2), zr(lefi2))
         b_n = to_blas_int(nbeq2)
@@ -358,7 +358,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         b_incy = to_blas_int(1)
         travm = ddot(b_n, zr(lmod2), b_incx, zr(leff2), b_incy)
 !
-        call mrmult('ZERO', matrice_raid(isst2), zr(lcopy2), zr(leff2), 1,&
+        call mrmult('ZERO', matrice_raid(isst2), zr(lcopy2), zr(leff2), 1, &
                     .true._1)
         b_n = to_blas_int(nbeq2)
         b_incx = to_blas_int(1)
@@ -385,9 +385,9 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         do k1 = 1, nl
 !-- STOCKAGE DE LA PROJECTION DES MVTS MAITRES SUR L'INT. ESCLAVE
             do l1 = 1, nc
-                zr(lesc+(k1-1)+(j1-1)*nl) = zr(&
-                                            lesc+(k1-1)+(j1-1)*nl)+ tr_mod_mast_pro(1+(k1-1)+(l1-&
-                                            &1)*nl)*zr(lbid+l1-1&
+                zr(lesc+(k1-1)+(j1-1)*nl) = zr( &
+                                            lesc+(k1-1)+(j1-1)*nl)+tr_mod_mast_pro(1+(k1-1)+(l1-&
+                                            &1)*nl)*zr(lbid+l1-1 &
                                             )
             end do
 !-- STOCKAGE DES MVTS DE L'INT. ESCLAVE POUR EXPANSION
@@ -399,8 +399,8 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         l1 = 0
         do k1 = 1, nbddl
             if (zi(llint+k1-1) .gt. 0) then
-                zr(ldepsl+zi(lag1+k1-1)-1+nbeq*(j1-1)) = zr(lesc+l1+( j1-1)*nl)
-                zr(ldepsl+zi(lag2+k1-1)-1+nbeq*(j1-1)) = zr(lesc+l1+( j1-1)*nl)
+                zr(ldepsl+zi(lag1+k1-1)-1+nbeq*(j1-1)) = zr(lesc+l1+(j1-1)*nl)
+                zr(ldepsl+zi(lag2+k1-1)-1+nbeq*(j1-1)) = zr(lesc+l1+(j1-1)*nl)
                 l1 = l1+1
             end if
         end do
@@ -418,9 +418,9 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !
                 do k1 = 1, nbddl
                     if (zi(llint+k1-1) .gt. 0) then
-                        travk = travk+(&
-                                zr(lobs2+l1)-zr(lesc+l1+(j1- 1)*nl))*(zr(leff2+zi(llint+k1-1)-1)-&
-                                &zr( lomeg+j1-1)*zr(lefi2+zi(llint+k1-1)-1)&
+                        travk = travk+( &
+                                zr(lobs2+l1)-zr(lesc+l1+(j1-1)*nl))*(zr(leff2+zi(llint+k1-1)-1)-&
+                                &zr(lomeg+j1-1)*zr(lefi2+zi(llint+k1-1)-1) &
                                 )
                         l1 = l1+1
                     end if
@@ -429,9 +429,9 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
             else
                 do k1 = 1, nbddl
                     if (zi(llint+k1-1) .gt. 0) then
-                        travk = travk+(&
-                                zr(lobs1+l1)-zr(lesc+l1+(j1- 1)*nl))*(zr(leff1+zi(llint+k1-1)-1)-&
-                                &zr( lomeg+j1-1)*zr(lefi1+zi(llint+k1-1)-1)&
+                        travk = travk+( &
+                                zr(lobs1+l1)-zr(lesc+l1+(j1-1)*nl))*(zr(leff1+zi(llint+k1-1)-1)-&
+                                &zr(lomeg+j1-1)*zr(lefi1+zi(llint+k1-1)-1) &
                                 )
                         l1 = l1+1
                     end if

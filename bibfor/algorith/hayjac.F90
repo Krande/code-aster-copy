@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hayjac(mod, nmat, coefel, coeft, timed,&
-                  timef, yf, deps, nr, nvi,&
-                  vind, vinf, yd, dy, crit,&
+subroutine hayjac(mod, nmat, coefel, coeft, timed, &
+                  timef, yf, deps, nr, nvi, &
+                  vind, vinf, yd, dy, crit, &
                   drdy, iret)
     implicit none
 !     --------------------------------------------------------------
@@ -251,9 +251,9 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
         drdy(10, 10) = 1.d0+biga*dt*cosh2/sig0*(1-alphad)*theta*seq0
         if (sequid .gt. 0) then
             if (trsig .gt. epsi) then
-                drdy(10, 10) = drdy(10, 10)+biga*dt*cosh2/sig0*alphad* theta*trsig0
+                drdy(10, 10) = drdy(10, 10)+biga*dt*cosh2/sig0*alphad*theta*trsig0
                 do i = 1, 6
-                    drdy(10, i) = drdy(10, i)+coef*troisk*theta*alphad* kron(i)*(1.d0-d)
+                    drdy(10, i) = drdy(10, i)+coef*troisk*theta*alphad*kron(i)*(1.d0-d)
                 end do
             end if
         end if

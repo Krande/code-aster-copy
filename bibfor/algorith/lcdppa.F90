@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcdppa(mod, nvi, option, materf, compor,&
-                  sigm, deps, vim, vip, sig,&
+subroutine lcdppa(mod, nvi, option, materf, compor, &
+                  sigm, deps, vim, vip, sig, &
                   dsidep, iret)
     implicit none
 #include "asterf_types.h"
@@ -113,7 +113,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 ! --- RESOLUTION DU SYSTEME -------------------------------------------
 ! =====================================================================
         calal = alpha
-        call resdp2(materf, seq, i1e, pmoins, dp,&
+        call resdp2(materf, seq, i1e, pmoins, dp, &
                     plas)
         if (plas .eq. 0.0d0) then
             do ii = 1, ndt
@@ -122,7 +122,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 !            VIP(2) = 0.0D0
         else
             calal = alpha
-            call majsig(materf, se, seq, i1e, calal,&
+            call majsig(materf, se, seq, i1e, calal, &
                         dp, plas, sig)
         end if
 ! =====================================================================
@@ -150,7 +150,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
         if (option(10:14) .eq. '_ELAS') then
             dsidep(1:ndt, 1:ndt) = hookf(1:ndt, 1:ndt)
         else
-            call dpmata(mod, materf, alpha, dp, dpdeno,&
+            call dpmata(mod, materf, alpha, dp, dpdeno, &
                         pplus, se, seq, plas, dsidep)
         end if
     end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
+subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl, &
                   jdirol, jnvdir)
     implicit none
 !
@@ -83,9 +83,9 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
 !
 !        RECUPERATION DE L'ANCIEN VECTEUR DE DIRECTION DE PROPAGATION
         if (.not. zl(jborl-1+iptbor(i))) then
-            zr(jdirol-1+1+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+ 4)
-            zr(jdirol-1+2+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+ 5)
-            zr(jdirol-1+3+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+ 6)
+            zr(jdirol-1+1+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+4)
+            zr(jdirol-1+2+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+5)
+            zr(jdirol-1+3+3*(iptbor(i)-1)) = zr(jbas-1+6*(iptbor(i)-1)+6)
         end if
 !
         vdirol(1) = zr(jdirol-1+1+3*(iptbor(i)-1))
@@ -137,7 +137,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
 !          ON CHOISIT LA BONNE NORMALE
             do h = 1, nbfacb
 !            N.VDIROLD
-                proj = vectn(&
+                proj = vectn( &
                        1+3*(h-1))*vdirol(1)+vectn(2+3*(h-1))*vdirol(2)+vectn(3+3*(h-1))*vdirol(3)
 !
                 if (proj .ge. maxi) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xdecqv(nnose, it, cnset, heavt, lsn,&
-                  igeom, ninter, npts, ndim, ainter,&
-                  nse, cnse, heav, nsemax, pinter,&
-                  pmilie, pintt, pmitt, cut, ncomp,&
-                  nfisc, nfiss, ifiss, elp, fisco,&
+subroutine xdecqv(nnose, it, cnset, heavt, lsn, &
+                  igeom, ninter, npts, ndim, ainter, &
+                  nse, cnse, heav, nsemax, pinter, &
+                  pmilie, pintt, pmitt, cut, ncomp, &
+                  nfisc, nfiss, ifiss, elp, fisco, &
                   lonref, txlsn, tx)
     implicit none
 !
@@ -167,9 +167,9 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn,&
                 do i = 1, 3
                     do j = 1, 2
                         if (cnset(nnose*(it-1)+ar(i, j)) .eq. ip1 .and. ar(i, 3-j) .eq. b) &
-                        e = ar(i, 3)
+                            e = ar(i, 3)
                         if (cnset(nnose*(it-1)+ar(i, j)) .eq. ip1 .and. ar(i, 3-j) .eq. c) &
-                        f = ar(i, 3)
+                            f = ar(i, 3)
                     end do
                 end do
                 ASSERT((e*f) .gt. 0)
@@ -361,11 +361,11 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn,&
                     do j = 1, 2
                         if (ar(i, j) .eq. b .and. ar(i, 3-j) .eq. c) e = ar(i, 3)
                         if (ar(i, j) .eq. b .and. cnset(nnose*(it-1)+ar(i, 3-j)) .eq. ip1) &
-                        f = ar(i, 3)
+                            f = ar(i, 3)
                         if (ar(i, j) .eq. c .and. cnset(nnose*(it-1)+ar(i, 3-j)) .eq. ip1) &
-                        g = ar(i, 3)
+                            g = ar(i, 3)
                         if (ar(i, j) .eq. a .and. cnset(nnose*(it-1)+ar(i, 3-j)) .eq. ip1) &
-                        h = ar(i, 3)
+                            h = ar(i, 3)
                     end do
                 end do
                 ASSERT((a*b*c*e*f*g*h) .gt. 0)
@@ -570,20 +570,20 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn,&
                 d = nint(ainter(zxain+2))
                 do i = 1, 6
                     do j = 1, 2
-                        if (cnset(nnose*(it-1)+ar(i, j)) .eq. c .and.&
+                        if (cnset(nnose*(it-1)+ar(i, j)) .eq. c .and. &
                             cnset(nnose*(it-1)+ar(i, 3-j)) .eq. d) e = ar(i, 3)
                     end do
                 end do
                 do i = 1, 6
                     do j = 1, 2
                         if (cnset(nnose*(it-1)+ar(i, j)) .eq. c .and. ar(i, 3-j) .eq. a) &
-                        f = ar(i, 3)
+                            f = ar(i, 3)
                         if (cnset(nnose*(it-1)+ar(i, j)) .eq. d .and. ar(i, 3-j) .eq. a) &
-                        g = ar(i, 3)
+                            g = ar(i, 3)
                         if (cnset(nnose*(it-1)+ar(i, j)) .eq. c .and. ar(i, 3-j) .eq. b) &
-                        h = ar(i, 3)
+                            h = ar(i, 3)
                         if (cnset(nnose*(it-1)+ar(i, j)) .eq. d .and. ar(i, 3-j) .eq. b) &
-                        l = ar(i, 3)
+                            l = ar(i, 3)
                     end do
                 end do
                 ASSERT((e*f*g*h*l) .gt. 0)
@@ -793,12 +793,12 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn,&
 !
 !           CALCUL DES FF
 !
-                    call reeref(elp, nnop, zr(igeom), geom, ndim,&
+                    call reeref(elp, nnop, zr(igeom), geom, ndim, &
                                 rbid2, ff)
 !
                     do j = 1, nnop
                         do i = 1, nfisc
-                            somlsn(i) = somlsn(i)+ff(j)*lsn((j-1)*nfiss+ fisco(2*i-1))
+                            somlsn(i) = somlsn(i)+ff(j)*lsn((j-1)*nfiss+fisco(2*i-1))
                         end do
                         somlsn(nfisc+1) = somlsn(nfisc+1)+ff(j)*lsn((j-1)*nfiss+ifiss)
                         lsno(in) = lsno(in)+ff(j)*lsn((j-1)*nfiss+ifiss)
@@ -828,7 +828,7 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn,&
 !       SI TOUS LES NOEUDS SOMMETS DU SOUS ELEMENT SONT SUR LA LSN ON PREND LE
 !       BARYCENTRE
         if ((abslsn*lonref) .lt. 1.d-8) then
-            call reeref(elp, nnop, zr(igeom), bary, ndim,&
+            call reeref(elp, nnop, zr(igeom), bary, ndim, &
                         rbid2, ff)
             somlsn(nfisc+1) = 0.d0
             do j = 1, nnop

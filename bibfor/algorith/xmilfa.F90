@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
-                  nnose, it, ainter, ip1, ip2,&
-                  pm2, typma, pinref, pmiref, ksi,&
+subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
+                  nnose, it, ainter, ip1, ip2, &
+                  pm2, typma, pinref, pmiref, ksi, &
                   milfa, pintt, pmitt)
     implicit none
 !
@@ -107,7 +107,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
         do j = 1, ndim
             newpt(j) = pintt(ndim*(ib-1001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim,&
+        call reeref(elrefp, nno, geom, newpt, ndim, &
                     ptb, ff)
     end if
 !
@@ -119,7 +119,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
         do j = 1, ndim
             newpt(j) = pmitt(ndim*(id-2001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim,&
+        call reeref(elrefp, nno, geom, newpt, ndim, &
                     ptd, ff)
     end if
 !
@@ -131,7 +131,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
         do j = 1, ndim
             newpt(j) = pintt(ndim*(ia-1001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim,&
+        call reeref(elrefp, nno, geom, newpt, ndim, &
                     pta, ff)
     end if
 !
@@ -142,7 +142,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     courbe = .false.
     do i = 1, ndime
         t1(i) = ksi(i)-pinref(ndime*(ip1-1)+i)
-        t2(i) = -1.5d0*pinref(&
+        t2(i) = -1.5d0*pinref( &
                 ndime*(ip1-1)+i)-5.d-1*pinref(ndime*(ip2-1)+i)+2.d0*pmiref(ndime*(pm2-1)+i)
         t3(i) = pta(i)-pinref(ndime*(ip1-1)+i)
     end do
@@ -183,6 +183,6 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
         if (ksi(i) .gt. 1.d0) ksi(i) = 1.d0
         if (ksi(i) .lt. -1.d0) ksi(i) = -1.d0
     end do
-    call reerel(elrefp, nno, ndim, geom, ksi,&
+    call reerel(elrefp, nno, ndim, geom, ksi, &
                 milfa)
 end subroutine

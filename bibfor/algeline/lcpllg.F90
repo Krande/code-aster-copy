@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
-                  nr, nvi, deps, sigd, vind,&
-                  seuil, icomp, sigf, vinf, devg,&
+subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
+                  nr, nvi, deps, sigd, vind, &
+                  seuil, icomp, sigf, vinf, devg, &
                   devgii, irtet)
 !
     implicit none
@@ -107,8 +107,8 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! ======================================================================
 ! --- CALCUL A PRIORI DE LA PROJECTION AU SOMMET -----------------------
 ! ======================================================================
-    call calcpj(nbmat, mater, gamp, evp, sigd,&
-                sige, lgleps, invare, gamps, evps,&
+    call calcpj(nbmat, mater, gamp, evp, sigd, &
+                sige, lgleps, invare, gamps, evps, &
                 invars, b)
 ! ======================================================================
 ! --- FAUT-IL FAIRE UNE PROJECTION AU SOMMET DU DOMAINE ? --------------
@@ -139,12 +139,12 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! ======================================================================
 ! --- CALCUL INITIAL (ITERATION 0) -------------------------------------
 ! ======================================================================
-        call lglini(yd, nbmat, mater, seuil, sigd,&
-                    deps, devg, devgii, traceg, dy,&
+        call lglini(yd, nbmat, mater, seuil, sigd, &
+                    deps, devg, devgii, traceg, dy, &
                     codret)
         if (codret .ne. 0) goto 100
         iter = 0
-  1     continue
+1       continue
 ! ======================================================================
 ! --- ITERATION ITER ---------------------------------------------------
 ! ======================================================================
@@ -221,7 +221,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! ======================================================================
 ! --- NOUVEAU CALCUL PLASTIQUE -----------------------------------------
 ! ======================================================================
-                call lglite(yf, nbmat, mater, fiter, devg,&
+                call lglite(yf, nbmat, mater, fiter, devg, &
                             devgii, traceg, dy, codret)
                 irteti = 1
                 if (codret .ne. 0) goto 100

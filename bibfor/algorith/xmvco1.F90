@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
-                  lact, dtang, nfh, ddls, jac,&
-                  ffc, ffp, singu, fk, cstaco,&
-                  nd, tau1, tau2, jheavn, ncompn,&
-                  nfiss, ifiss, jheafa, ncomph, ifa,&
+subroutine xmvco1(ndim, nno, nnol, sigma, pla, &
+                  lact, dtang, nfh, ddls, jac, &
+                  ffc, ffp, singu, fk, cstaco, &
+                  nd, tau1, tau2, jheavn, ncompn, &
+                  nfiss, ifiss, jheafa, ncomph, ifa, &
                   vtmp)
 !
 !
@@ -93,25 +93,25 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
         do j = 1, ndim
             do ifh = 1, nfh
                 if (lmultc) then
-                    coefi = xcalc_saut(&
-                            zi(jheavn-1+ncompn*(i-1)+ifh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1),&
-                            zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
-                            zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                    coefi = xcalc_saut( &
+                            zi(jheavn-1+ncompn*(i-1)+ifh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
+                            zi(jheafa-1+ncomph*(ifiss-1)+2*ifa), &
+                            zi(jheavn-1+ncompn*(i-1)+ncompn) &
                             )
                 else
-                    coefi = xcalc_saut(&
-                            zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2),&
-                            zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                    coefi = xcalc_saut( &
+                            zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2), &
+                            zi(jheavn-1+ncompn*(i-1)+ncompn) &
                             )
                 end if
-                vtmp(ddls*(i-1)+ndim+j) = vtmp(&
-                                          ddls*(i-1)+ndim*(1+ifh-1)+j)+ (coefi*sigma(1)*nd(j)*ffp&
-                                          &(i)*jac)+(coefi*sigma(2)*tau1(j)*ffp(i)*jac&
+                vtmp(ddls*(i-1)+ndim+j) = vtmp( &
+                                          ddls*(i-1)+ndim*(1+ifh-1)+j)+(coefi*sigma(1)*nd(j)*ffp&
+                                          &(i)*jac)+(coefi*sigma(2)*tau1(j)*ffp(i)*jac &
                                           )
                 if (ndim .eq. 3) then
-                    vtmp(ddls*(i-1)+ndim+j) = vtmp(&
+                    vtmp(ddls*(i-1)+ndim+j) = vtmp( &
                                               ddls*(i-1)+ndim*(1+ifh-1)+j)+(coefi*sigma(3)*tau2(j&
-                                              &)*ffp(i)*jac&
+                                              &)*ffp(i)*jac &
                                               )
                 end if
 !
@@ -119,15 +119,15 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
         end do
         do alp = 1, singu*ndim
             do j = 1, ndim
-                vtmp(ddls*(i-1)+ndim*(1+nfh)+alp) = vtmp(&
+                vtmp(ddls*(i-1)+ndim*(1+nfh)+alp) = vtmp( &
                                                     ddls*(i-1)+ndim*(1+nfh)+alp)+(2.d0*sigma(1)*n&
                                                     &d(j)*jac*fk(i, alp, j))+(2.d0*sigma(2)*tau1(&
-                                                    &j)*jac*fk(i, alp, j)&
+                                                    &j)*jac*fk(i, alp, j) &
                                                     )
                 if (ndim .eq. 3) then
-                    vtmp(ddls*(i-1)+ndim*(1+nfh)+alp) = vtmp(&
+                    vtmp(ddls*(i-1)+ndim*(1+nfh)+alp) = vtmp( &
                                                         ddls*(i-1)+ndim*(1+nfh)+alp)+(2.d0*sigma(&
-                                                        &3)*tau2(j)*fk(i, alp, j)*jac&
+                                                        &3)*tau2(j)*fk(i, alp, j)*jac &
                                                         )
                 end if
             end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
-                  imat, nmat, materd, materf, nbcomm,&
-                  cpmono, pgl, nfs, nsg, toutms,&
-                  hsr, nr, nvi, vind, vinf,&
-                  itmax, toler, timed, timef, yd,&
-                  yf, deps, epsd, dy, r,&
+subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
+                  imat, nmat, materd, materf, nbcomm, &
+                  cpmono, pgl, nfs, nsg, toutms, &
+                  hsr, nr, nvi, vind, vinf, &
+                  itmax, toler, timed, timef, yd, &
+                  yf, deps, epsd, dy, r, &
                   ddy, iret, crit, indi)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -110,12 +110,12 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
     dyp = rhoddy+dy(1:nr)
     yfp = yd(1:nr)+dyp
 !     CALCUL DE R "PLUS" : RP
-    call lcresi(fami, kpg, ksp, rela_comp, mod,&
-                imat, nmat, materd, materf, nbcomm,&
-                cpmono, pgl, nfs, nsg, toutms,&
-                hsr, nr, nvi, vind, vinf,&
-                itmax, toler, timed, timef, yd,&
-                yfp, deps, epsd, dyp, rp,&
+    call lcresi(fami, kpg, ksp, rela_comp, mod, &
+                imat, nmat, materd, materf, nbcomm, &
+                cpmono, pgl, nfs, nsg, toutms, &
+                hsr, nr, nvi, vind, vinf, &
+                itmax, toler, timed, timef, yd, &
+                yfp, deps, epsd, dyp, rp, &
                 iret, crit, indi)
 !
     if (iret .ne. 0) goto 999
@@ -136,12 +136,12 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
     rhoddy = rho05*ddy(1:nr)
     dyp = rhoddy+dy(1:nr)
     yfp = yd(1:nr)+dyp
-    call lcresi(fami, kpg, ksp, rela_comp, mod,&
-                imat, nmat, materd, materf, nbcomm,&
-                cpmono, pgl, nfs, nsg, toutms,&
-                hsr, nr, nvi, vind, vinf,&
-                itmax, toler, timed, timef, yd,&
-                yfp, deps, epsd, dyp, rp,&
+    call lcresi(fami, kpg, ksp, rela_comp, mod, &
+                imat, nmat, materd, materf, nbcomm, &
+                cpmono, pgl, nfs, nsg, toutms, &
+                hsr, nr, nvi, vind, vinf, &
+                itmax, toler, timed, timef, yd, &
+                yfp, deps, epsd, dyp, rp, &
                 iret, crit, indi)
     if (iret .ne. 0) goto 999
 !
@@ -167,12 +167,12 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
     rhoddy = rho1*ddy(1:nr)
     dyp = rhoddy+dy(1:nr)
     yfp = yd(1:nr)+dyp
-    call lcresi(fami, kpg, ksp, rela_comp, mod,&
-                imat, nmat, materd, materf, nbcomm,&
-                cpmono, pgl, nfs, nsg, toutms,&
-                hsr, nr, nvi, vind, vinf,&
-                itmax, toler, timed, timef, yd,&
-                yfp, deps, epsd, dyp, rp,&
+    call lcresi(fami, kpg, ksp, rela_comp, mod, &
+                imat, nmat, materd, materf, nbcomm, &
+                cpmono, pgl, nfs, nsg, toutms, &
+                hsr, nr, nvi, vind, vinf, &
+                itmax, toler, timed, timef, yd, &
+                yfp, deps, epsd, dyp, rp, &
                 iret, crit, indi)
     if (iret .ne. 0) goto 999
 !
@@ -208,12 +208,12 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
         rhoddy = rho2*ddy(1:nr)
         dyp = rhoddy+dy(1:nr)
         yfp = yd(1:nr)+dyp
-        call lcresi(fami, kpg, ksp, rela_comp, mod,&
-                    imat, nmat, materd, materf, nbcomm,&
-                    cpmono, pgl, nfs, nsg, toutms,&
-                    hsr, nr, nvi, vind, vinf,&
-                    itmax, toler, timed, timef, yd,&
-                    yfp, deps, epsd, dyp, rp,&
+        call lcresi(fami, kpg, ksp, rela_comp, mod, &
+                    imat, nmat, materd, materf, nbcomm, &
+                    cpmono, pgl, nfs, nsg, toutms, &
+                    hsr, nr, nvi, vind, vinf, &
+                    itmax, toler, timed, timef, yd, &
+                    yfp, deps, epsd, dyp, rp, &
                     iret, crit, indi)
         if (iret .ne. 0) goto 999
 !

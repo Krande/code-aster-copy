@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
-                  iw, vffd, vffg, vffp, idffd,&
-                  vu, vg, vp, geomi, typmod,&
-                  option, mate, compor, lgpg, carcri,&
-                  instm, instp, ddlm, ddld, angmas,&
-                  sigm, vim, sigp, vip, lMatr,&
-                  lVect, lSigm, lVari, vect, matr,&
+subroutine nifilg(ndim, nnod, nnog, nnop, npg, &
+                  iw, vffd, vffg, vffp, idffd, &
+                  vu, vg, vp, geomi, typmod, &
+                  option, mate, compor, lgpg, carcri, &
+                  instm, instp, ddlm, ddld, angmas, &
+                  sigm, vim, sigp, vip, lMatr, &
+                  lVect, lSigm, lVari, vect, matr, &
                   matsym, codret)
 !
     use Behaviour_type
@@ -195,19 +195,19 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
 ! - Loop on Gauss points
     do kpg = 1, npg
 ! ----- Kinematic - Previous strains
-        call dfdmip(ndim, nnod, axi, geomi, kpg,&
-                    iw, vffd(1, kpg), idffd, r, w,&
+        call dfdmip(ndim, nnod, axi, geomi, kpg, &
+                    iw, vffd(1, kpg), idffd, r, w, &
                     dffd)
-        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg),&
+        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg), &
                     r, dffd, deplm, fPrev)
 !
 ! ----- Kinematic - Current strains
-        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg),&
+        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg), &
                     r, dffd, deplp, fCurr)
-        call dfdmip(ndim, nnod, axi, geomp, kpg,&
-                    iw, vffd(1, kpg), idffd, r, wp,&
+        call dfdmip(ndim, nnod, axi, geomp, kpg, &
+                    iw, vffd(1, kpg), idffd, r, wp, &
                     dffd)
-        call nmmalu(nnod, axi, r, vffd(1, kpg), dffd,&
+        call nmmalu(nnod, axi, r, vffd(1, kpg), dffd, &
                     lij)
 !
 ! ----- Gradient
@@ -245,8 +245,8 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
         gp = gm+gd
 !
 ! ----- CALCUL DES FONCTIONS A, B,... DETERMINANT LA RELATION LIANT G ET J
-        call nirela(2, jp, gm, gp, am,&
-                    ap, bp, boa, aa, bb,&
+        call nirela(2, jp, gm, gp, am, &
+                    ap, bp, boa, aa, bb, &
                     daa, dbb, dboa, d2boa, iret)
         if (iret .ne. 0) then
             cod(kpg) = 1
@@ -272,8 +272,8 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
         call dscal(b_n, corp, ftp, b_incx)
 !
 ! ----- Pre-treatment of kinematic quantities
-        call prelog(ndim, lgpg, vim(1, kpg), gn, lamb,&
-                    logl, ftm, ftp, epslPrev, epslIncr,&
+        call prelog(ndim, lgpg, vim(1, kpg), gn, lamb, &
+                    logl, ftm, ftp, epslPrev, epslIncr, &
                     tlogPrev, lCorr, cod(kpg))
         if (cod(kpg) .ne. 0) then
             goto 999
@@ -284,10 +284,10 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
         dtde = 0.d0
         tlogCurr = 0.d0
         taup = 0.d0
-        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim,&
-                    typmod, mate, compor, carcri, instm,&
-                    instp, 6, epslPrev, epslIncr, 6,&
-                    tlogPrev, vim(1, kpg), option, angmas, tlogCurr,&
+        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim, &
+                    typmod, mate, compor, carcri, instm, &
+                    instp, 6, epslPrev, epslIncr, 6, &
+                    tlogPrev, vim(1, kpg), option, angmas, tlogCurr, &
                     vip(1, kpg), 36, dtde, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
@@ -300,11 +300,11 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
         end do
 !
 ! ----- Post-treatment of sthenic quantities
-        call poslog(lCorr, lMatr, lSigm, lVari, tlogPrev,&
-                    tlogCurr, ftm, lgpg, vip(1, kpg), ndim,&
-                    ftp, kpg, dtde, sigm_ldc, .false._1,&
-                    'RIGI', mate, instp, angmas, gn,&
-                    lamb, logl, sigp_ldc, dsidep, pk2Prev,&
+        call poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
+                    tlogCurr, ftm, lgpg, vip(1, kpg), ndim, &
+                    ftp, kpg, dtde, sigm_ldc, .false._1, &
+                    'RIGI', mate, instp, angmas, gn, &
+                    lamb, logl, sigp_ldc, dsidep, pk2Prev, &
                     pk2Curr, iret)
         if (iret .eq. 1) then
             cod(kpg) = 1
@@ -425,11 +425,11 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
                                             t2 = dddev(viaja, vibjb)
                                             t2 = t2+taup(vij(ia, jb))*kr(vij(ib, ja))
                                             t2 = t2+taup(vij(jb, ja))*kr(vij(ia, ib))
-                                            t2 = t2-2.d0/3.d0*(&
+                                            t2 = t2-2.d0/3.d0*( &
                                                  taup(viaja)*kr(vibjb)+taup(vibjb)*kr(viaja))
                                             t2 = t2+2.d0/3.d0*tauhy*kr(viaja)*kr(vibjb)
-                                            t1 = t1+dffd(na, lij(ia, ja))*t2*dffd(nb, lij(ib, jb)&
-                                                 )
+                                            t1 = t1+dffd(na, lij(ia, ja))*t2*dffd(nb, lij(ib, jb) &
+                                                                                  )
                                         end do
                                     end do
                                     t2 = pp*jp*dbb
@@ -437,10 +437,10 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
 !
 ! - RIGIDITE GEOMETRIQUE
                                     do jb = 1, ndu
-                                        t1 = t1-dffd(&
-                                             na, lij(ia, ib))*dffd(nb,&
-                                             lij(ib, jb))*tauldc(vij(ia, jb)&
-                                             )
+                                        t1 = t1-dffd( &
+                                             na, lij(ia, ib))*dffd(nb, &
+                                                                   lij(ib, jb))*tauldc(vij(ia, jb) &
+                                                                                       )
                                     end do
                                     matr(kk) = matr(kk)+w*t1
                                 end if
@@ -563,7 +563,7 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
                                         t2 = dddev(viaja, vibjb)
                                         t2 = t2+taup(vij(ia, jb))*kr(vij(ib, ja))
                                         t2 = t2+taup(vij(jb, ja))*kr(vij(ia, ib))
-                                        t2 = t2-2.d0/3.d0*(&
+                                        t2 = t2-2.d0/3.d0*( &
                                              taup(viaja)*kr(vibjb)+kr(viaja)*taup(vibjb))
                                         t2 = t2+2.d0*kr(viaja)*kr(vibjb)*tauhy/3.d0
                                         t1 = t1+dffd(na, lij(ia, ja))*t2*dffd(nb, lij(ib, jb))
@@ -575,10 +575,10 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
 !
 ! - RIGIDITE GEOMETRIQUE
                                 do jb = 1, ndu
-                                    t1 = t1-dffd(&
-                                         na, lij(ia, ib))*dffd(nb,&
-                                         lij(ib, jb))*tauldc(vij(ia, jb)&
-                                         )
+                                    t1 = t1-dffd( &
+                                         na, lij(ia, ib))*dffd(nb, &
+                                                               lij(ib, jb))*tauldc(vij(ia, jb) &
+                                                                                   )
                                 end do
                                 matr(kk) = matr(kk)+w*t1
                             end do

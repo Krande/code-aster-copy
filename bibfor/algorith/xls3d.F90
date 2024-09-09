@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
-                 jlnsl, nbno, jcoor, jcoorg, nbmaf,&
-                 jdlima, nbsef, jdlise, jconx1, jconx2,&
+subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
+                 jlnsl, nbno, jcoor, jcoorg, nbmaf, &
+                 jdlima, nbsef, jdlise, jconx1, jconx2, &
                  noma)
 !
     implicit none
@@ -93,7 +93,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 !     VERIFICATION DE L'ORIENTATION DES MAILLES DE LA FISSURES
     sens = '&&XLS3D.ORI_MAFIS'
-    call xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
+    call xorima(noma, nbmaf, jdlima, jconx1, jconx2, &
                 jcoor, sens)
     call jeveuo(sens, 'L', jsens)
 !
@@ -334,7 +334,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !              SIN A = ||U^V|| / (||U|| * ||V||)
                     call provec(pm, pmprim, vect)
                     call normev(vect, nove)
-                    pronor = sqrt(&
+                    pronor = sqrt( &
                              pm(1)**2+pm(2)**2+pm(3)**2+pmprim(1)**2+pmprim(2)**2+pmprim(3)**2)
                     if (pronor .ne. 0.d0) then
                         cos = (pm(1)*pmprim(1)+pm(2)*pmprim(2)+pm(3)*pmprim(3))/pronor
@@ -350,7 +350,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                     d = padist(3, p, m)
 !
 !             MISE EN MEMOIRE DE LSN=PM.N POUR LE SEG LE PLUS PROCHE
-                    if ((dmin-d) .gt. r8prem()*1.d04 .or.&
+                    if ((dmin-d) .gt. r8prem()*1.d04 .or. &
                         (abs(dmin-d) .le. r8prem()*1.d04 .and. angle .lt. anglem)) then
                         dmin = d
                         anglem = angle

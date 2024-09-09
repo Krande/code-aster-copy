@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine diatri(n, d, e, vector, evec,&
+subroutine diatri(n, d, e, vector, evec, &
                   ldevec)
     implicit none
 #include "asterf_types.h"
@@ -70,13 +70,13 @@ subroutine diatri(n, d, e, vector, evec,&
     iter = 0
     do l = 1, n
 !    --- RECHERCHE DE LA PLUS PETITE VALEUR DE LA DIAGONALE SUPERIEURE.
- 10     continue
+10      continue
         do m = l, n
             if (m .eq. n) goto 30
             if (abs(e(m)) .le. max(tol*(abs(d(m))+abs(d(m+1))), tiny)) goto 30
         end do
 !
- 30     continue
+30      continue
         p = d(l)
         if (m .eq. l) goto 60
         if (iter .eq. 30*n) then
@@ -109,7 +109,7 @@ subroutine diatri(n, d, e, vector, evec,&
                 b_n = to_blas_int(n)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call drot(b_n, evec(1, i+1), b_incx, evec(1, i), b_incy,&
+                call drot(b_n, evec(1, i+1), b_incx, evec(1, i), b_incy, &
                           c, s)
             end if
 !
@@ -120,11 +120,11 @@ subroutine diatri(n, d, e, vector, evec,&
         e(m) = 0.0d0
         goto 10
 !
- 50     continue
+50      continue
         d(i+1) = d(i+1)-p
         e(m) = 0.0d0
         goto 10
- 60     continue
+60      continue
     end do
 !    --- POSITION DES VALEURS ET VECTERUS PROPRES ---
     do i = 1, n-1

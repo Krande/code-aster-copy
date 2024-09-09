@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmpial(numedd, depdel, depmoi, cnfepi, ddepl0,&
+subroutine nmpial(numedd, depdel, depmoi, cnfepi, ddepl0, &
                   ddepl1, eta, pilcvg, nbeffe)
 !
 ! person_in_charge: mickael.abbas at edf.fr

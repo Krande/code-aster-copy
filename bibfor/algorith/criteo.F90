@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine criteo(epsp, epsd, eta, ba, d,&
-                  lambda, mu, alpha, ecrob, ecrod,&
+subroutine criteo(epsp, epsd, eta, ba, d, &
+                  lambda, mu, alpha, ecrob, ecrod, &
                   seuil, crit, critp)
 !
 !
@@ -132,8 +132,8 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
         do j = i, 3
             do k = 1, 3
                 do l = 1, 3
-                    eps(t(i, j)) = eps(t(i, j))+vecb(k, i)*epsa(t(k, l))* vecb(l, j)
-                    epsdr(t(i, j)) = epsdr(t(i, j))+vecb(k, i)*epsd(t(k, l)) *vecb(l, j)
+                    eps(t(i, j)) = eps(t(i, j))+vecb(k, i)*epsa(t(k, l))*vecb(l, j)
+                    epsdr(t(i, j)) = epsdr(t(i, j))+vecb(k, i)*epsd(t(k, l))*vecb(l, j)
                 end do
             end do
         end do
@@ -150,7 +150,7 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                cc(t(i, j)) = cc(t(i, j))+b(t(i, k))*eps(t(k, j))+b(t(j, k)) *eps(t(k, i))
+                cc(t(i, j)) = cc(t(i, j))+b(t(i, k))*eps(t(k, j))+b(t(j, k))*eps(t(k, i))
             end do
         end do
     end do
@@ -172,7 +172,7 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                cpe(t(i, j)) = cpe(t(i, j))+ccp(t(i, k))*eps(t(k, j))+ ccp(t(j, k))*eps(t(k, i))
+                cpe(t(i, j)) = cpe(t(i, j))+ccp(t(i, k))*eps(t(k, j))+ccp(t(j, k))*eps(t(k, i))
             end do
         end do
     end do
@@ -261,9 +261,9 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
     fbm(5) = rac2*fbm(5)
     fbm(6) = rac2*fbm(6)
 !
-    call dfbde(3, b, eps, 2.d0*mu, lambda,&
+    call dfbde(3, b, eps, 2.d0*mu, lambda, &
                tdfbde)
-    call dfdde(eps, d, 3, lambda, mu,&
+    call dfdde(eps, d, 3, lambda, mu, &
                tdfdde)
 !
 !

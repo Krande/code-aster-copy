@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ptforp(itype, option, nomte, a, a2,&
-                  xl, ist, nno, ncf, pgl,&
+subroutine ptforp(itype, option, nomte, a, a2, &
+                  xl, ist, nno, ncf, pgl, &
                   fer, fei)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         else
             gamma = zr(istrxm+3-1)
         end if
-        call porea2(nno, ncf, zr(lx), gamma, pgl,&
+        call porea2(nno, ncf, zr(lx), gamma, pgl, &
                     xl)
         do i = 1, 3
             dwx(i) = zr(idepla-1+i)+zr(ideplp-1+i)
@@ -174,7 +174,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         end if
 !
         call jevech('PMATERC', 'L', lmate)
-        if ((nomte .eq. 'MECA_POU_D_EM') .or. (nomte .eq. 'MECA_POU_D_TGM') .or.&
+        if ((nomte .eq. 'MECA_POU_D_EM') .or. (nomte .eq. 'MECA_POU_D_TGM') .or. &
             (nomte .eq. 'MECA_POU_D_SQUE')) then
             if (ist .eq. 1) then
                 call pmfitx(zi(lmate), 2, casect, r8bid)
@@ -186,12 +186,12 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             coef2 = 1.d0
         else
             if (ist .eq. 1) then
-                call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ',&
-                            [r8bid], 1, 'RHO', rho(1), icodre,&
+                call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ', &
+                            [r8bid], 1, 'RHO', rho(1), icodre, &
                             1)
             else
-                call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ',&
-                            [r8bid], 1, 'RHO', rho(1), icodre,&
+                call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ', &
+                            [r8bid], 1, 'RHO', rho(1), icodre, &
                             0)
                 if (icodre(1) .ne. 0) rho(1) = 0.0d0
             end if
@@ -275,11 +275,11 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         valpar(7:9) = wv(1:3); valpar(10:12) = wa(1:3)
         valpar(13) = temps
         do i = 1, 6
-            call fointe('FM', zk8(lforc-1+i), nbpar, nompar, valpar,&
+            call fointe('FM', zk8(lforc-1+i), nbpar, nompar, valpar, &
                         q(i), ier)
         end do
         do i = 7, ncf
-            call fointe('FM', zk8(lforc+i), nbpar, nompar, valpar,&
+            call fointe('FM', zk8(lforc+i), nbpar, nompar, valpar, &
                         q(i), ier)
         end do
 !
@@ -288,11 +288,11 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         valpar(7:9) = wv(4:6); valpar(10:12) = wa(4:6)
         valpar(13) = temps
         do i = 1, 6
-            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar,&
+            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar, &
                         q(i+ncf), ier)
         end do
         do i = 7, ncf
-            call fointe('FM', zk8(lforc+i), nbpar, nompar, valpar,&
+            call fointe('FM', zk8(lforc+i), nbpar, nompar, valpar, &
                         q(i+ncf), ier)
         end do
     else
@@ -343,7 +343,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             vite2 = ddot(b_n, vp, b_incx, vp, b_incy)
             valpav(1) = sqrt(vite2)
             if (valpav(1) .gt. r8min) then
-                call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
+                call fointe('FM', zk8(ifcx), 1, nompav, valpav, &
                             fcx, iret)
                 fcx = fcx/valpav(1)
             end if
@@ -369,7 +369,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             vite2 = ddot(b_n, vp, b_incx, vp, b_incy)
             valpav(1) = sqrt(vite2)
             if (valpav(1) .gt. r8min) then
-                call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
+                call fointe('FM', zk8(ifcx), 1, nompav, valpav, &
                             fcx, iret)
                 fcx = fcx/valpav(1)
             end if
@@ -438,7 +438,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         do i = 1, 2*ncf
             qq(i) = qq(i)*zr(icoer)
         end do
-        call ptfop1(itype, ncf, coef1, coef2, xl,&
+        call ptfop1(itype, ncf, coef1, coef2, xl, &
                     qq, fer)
 !
     else if (iretc .eq. 0) then
@@ -446,13 +446,13 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             qqr(i) = qq(i)*dble(zc(icoec))
             qqi(i) = qq(i)*dimag(zc(icoec))
         end do
-        call ptfop1(itype, ncf, coef1, coef2, xl,&
+        call ptfop1(itype, ncf, coef1, coef2, xl, &
                     qqr, fer)
-        call ptfop1(itype, ncf, coef1, coef2, xl,&
+        call ptfop1(itype, ncf, coef1, coef2, xl, &
                     qqi, fei)
 !
     else
-        call ptfop1(itype, ncf, coef1, coef2, xl,&
+        call ptfop1(itype, ncf, coef1, coef2, xl, &
                     qq, fer)
     end if
 !

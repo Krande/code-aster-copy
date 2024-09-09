@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine nofipd(ndim, nnod, nnop, nnog, npg,&
-                  iw, vffd, vffp, vffg, idffd,&
-                  vu, vp, vpi, geomi, typmod,&
-                  option, nomte, mate, compor, lgpg,&
-                  carcri, instm, instp, ddlm, ddld,&
-                  angmas, sigm, vim, sigp, vip,&
-                  vect, matr, codret, lSigm, lVect,&
+subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
+                  iw, vffd, vffp, vffg, idffd, &
+                  vu, vp, vpi, geomi, typmod, &
+                  option, nomte, mate, compor, lgpg, &
+                  carcri, instm, instp, ddlm, ddld, &
+                  angmas, sigm, vim, sigp, vip, &
+                  vect, matr, codret, lSigm, lVect, &
                   lMatr)
 !
     use Behaviour_type
@@ -129,7 +129,8 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg,&
                                                       -1.d0, -1.d0, 2.d0, 0.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0, &
-                                                     0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), (/6, 6/))
+                                                      0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), &
+                                                    (/6, 6/))
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -186,14 +187,14 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg,&
         epsm = 0.d0
         deps = 0.d0
 ! ----- Kinematic - Previous strains
-        call dfdmip(ndim, nnod, axi, geomi, kpg,&
-                    iw, vffd(1, kpg), idffd, r, w,&
+        call dfdmip(ndim, nnod, axi, geomi, kpg, &
+                    iw, vffd(1, kpg), idffd, r, w, &
                     dff1)
-        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg),&
+        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg), &
                     r, dff1, deplm, fm, epsm)
         divum = epsm(1)+epsm(2)+epsm(3)
 ! ----- Kinematic - Increment of strains
-        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg),&
+        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg), &
                     r, dff1, depld, fm, deps)
         ddivu = deps(1)+deps(2)+deps(3)
 ! ----- Pressure and "gonflement"
@@ -267,16 +268,16 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg,&
         end do
 ! ----- Compute behaviour
         sigma = 0.d0
-        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim,&
-                    typmod, mate, compor, carcri, instm,&
-                    instp, 6, epsm, deps, 6,&
-                    sigmPrep, vim(1, kpg), option, angmas, sigma,&
+        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim, &
+                    typmod, mate, compor, carcri, instm, &
+                    instp, 6, epsm, deps, 6, &
+                    sigmPrep, vim(1, kpg), option, angmas, sigma, &
                     vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
         end if
 ! ----- Compute "bubble" matrix
-        call tanbul(option, ndim, kpg, mate, rela_comp,&
+        call tanbul(option, ndim, kpg, mate, rela_comp, &
                     lVect, mini, alpha, dsbdep, trepst)
 ! ----- Internal forces
         if (lVect) then

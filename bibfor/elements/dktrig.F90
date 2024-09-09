@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dktrig(nomte, xyzl, option, pgl, rig,&
+subroutine dktrig(nomte, xyzl, option, pgl, rig, &
                   ener, multic)
     implicit none
 #include "asterf_types.h"
@@ -62,8 +62,8 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig,&
 !     ------------------------------------------------------------------
     enerth = 0.0d0
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
     call jevech('PCACOQU', 'L', jcoqu)
@@ -79,8 +79,8 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig,&
 !
 !     CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION
 !     MEMBRANE ET CISAILLEMENT INVERSEE
-    call dxmate('RIGI', df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
+    call dxmate('RIGI', df, dm, dmf, dc, &
+                dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
 !     ------------------------------------------------------------------
 !     CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN MEMBRANE
@@ -98,7 +98,7 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig,&
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     call dscal(b_n, aire, dmf2, b_incx)
-    call utbtab('ZERO', 3, 6, dmf2, bm,&
+    call utbtab('ZERO', 3, 6, dmf2, bm, &
                 xab1, memb)
 !
 !     ------------------------------------------------------------------
@@ -119,7 +119,7 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig,&
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         call dscal(b_n, wgt, df2, b_incx)
-        call utbtab('CUMU', 3, 9, df2, bf,&
+        call utbtab('CUMU', 3, 9, df2, bf, &
                     xab1, flex)
         if (coupmf) then
 !        ----- CALCUL DU PRODUIT BMT.DMF.BF ------------------------
@@ -130,7 +130,7 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig,&
             b_n = to_blas_int(9)
             b_incx = to_blas_int(1)
             call dscal(b_n, wgt, dmf2, b_incx)
-            call utctab('CUMU', 3, 9, 6, dmf2,&
+            call utctab('CUMU', 3, 9, 6, dmf2, &
                         bf, bm, xab1, mefl)
         end if
 !
@@ -142,7 +142,7 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig,&
     else if (option .eq. 'EPOT_ELEM') then
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(3, 6, pgl, zr(jdepg), depl)
-        call dxtloe(flex, memb, mefl, ctor, coupmf,&
+        call dxtloe(flex, memb, mefl, ctor, coupmf, &
                     depl, ener)
         call bsthpl(nomte, bsigth, indith)
         if (indith) then

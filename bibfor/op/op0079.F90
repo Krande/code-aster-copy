@@ -113,8 +113,8 @@ subroutine op0079()
 !
 ! --- RECUPERATION DU NB DE MODES
 !
-    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', tmod, 1,&
+    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid, &
+                cbid, ebid, 'ABSOLU', tmod, 1, &
                 nbid)
     nbmode = tmod(1)
 !
@@ -124,8 +124,8 @@ subroutine op0079()
 !
 ! --- RECUPERATION DU NOMBRE DE NUME_ORDRE DE LA SD_RESU
 !
-    call rsorac(res, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', tmod, 1,&
+    call rsorac(res, 'LONUTI', ibid, bid, k8bid, &
+                cbid, ebid, 'ABSOLU', tmod, 1, &
                 nbid)
     nbo = tmod(1)
     call jeveuo(res//'           .ORDR', 'L', vi=ordr)
@@ -213,7 +213,7 @@ subroutine op0079()
             nosy = nosyou(isym)
 !
 ! --- RECUP DU CHAMP DE LA SDIN CORRESPONDANT AU NUME_ORDR ET ISYM
-            call rsexch(' ', res, nosyin(isym), ordr(iord), nochno,&
+            call rsexch(' ', res, nosyin(isym), ordr(iord), nochno, &
                         iret)
             if (iret .ne. 0) goto 40
             call jeveuo(nochno//'.VALE', 'L', vr=vale)
@@ -349,7 +349,7 @@ subroutine op0079()
             end if
 !
         end do
- 40     continue
+40      continue
     end do
 !
     call jedema()

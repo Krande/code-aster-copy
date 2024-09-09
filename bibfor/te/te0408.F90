@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,14 +73,14 @@ subroutine te0408(option, nomte)
 !   coque_3d    :   MEC3QU9H    MEC3TR7H
 !   coque_axis  :   MECXSE3
     !
-    elem_dkt = (nomte .eq. 'MEDKQU4') .or. (nomte .eq. 'MEDKTR3') .or. (nomte .eq. 'MEDSQU4')&
-               .or. (nomte .eq. 'MEDSTR3') .or. (nomte .eq. 'MEQ4QU4') .or.&
-               (nomte .eq. 'MET3TR3') .or. (nomte .eq. 'MEC3QU9H') .or. (nomte .eq. 'MEC3TR7H')&
+    elem_dkt = (nomte .eq. 'MEDKQU4') .or. (nomte .eq. 'MEDKTR3') .or. (nomte .eq. 'MEDSQU4') &
+               .or. (nomte .eq. 'MEDSTR3') .or. (nomte .eq. 'MEQ4QU4') .or. &
+               (nomte .eq. 'MET3TR3') .or. (nomte .eq. 'MEC3QU9H') .or. (nomte .eq. 'MEC3TR7H') &
                .or. (nomte .eq. 'MECXSE3')
     !
     ASSERT(elem_dkt)
     !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     !
     call jevech('PTEMPCR', 'E', jresu)
@@ -90,7 +90,7 @@ subroutine te0408(option, nomte)
     !
     epais = 0.0; excent = 0.0
     valp(1:2) = [character(8) :: 'EP', 'EXCENT']
-    call get_value_mode_local('PCACOQU', valp, valr, iret, retpara_=retpara,&
+    call get_value_mode_local('PCACOQU', valp, valr, iret, retpara_=retpara, &
                               nbpara_=2)
     if (retpara(1) .eq. 0) then
         epais = valr(1)
@@ -104,7 +104,7 @@ subroutine te0408(option, nomte)
     end if
     !
 ! Si la température est aux noeuds
-    call tecach('ONN', 'PTEMPER', 'L', iret, nval=8,&
+    call tecach('ONN', 'PTEMPER', 'L', iret, nval=8, &
                 itab=itabp)
     if (iret .eq. 0 .or. iret .eq. 3) then
         tempno = .TRUE.
@@ -133,7 +133,7 @@ subroutine te0408(option, nomte)
         nomfon = zk8(itempf)
         chprol = nomfon//'.PROL'
         call jeveuo(chprol, 'L', jprof)
-        call fonbpa(nomfon, zk24(jprof), k8bid, MaxPara, nbpara,&
+        call fonbpa(nomfon, zk24(jprof), k8bid, MaxPara, nbpara, &
                     nompara)
 ! C'est soit :
 !   INST    EPAIS
@@ -146,18 +146,18 @@ subroutine te0408(option, nomte)
         do ino = 1, nbpara
             select case (nompara(ino))
             case ('INST')
-            casfct = casfct+1
+                casfct = casfct+1
             case ('EPAIS')
-            casfct = casfct+2
+                casfct = casfct+2
             case ('EXCENT')
-            casfct = casfct+4
+                casfct = casfct+4
             case ('X')
-            casfct = casfct+8
+                casfct = casfct+8
             case ('Y')
-            casfct = casfct+16
+                casfct = casfct+16
             case ('Z')
-            casfct = casfct+32
-        end select
+                casfct = casfct+32
+            end select
         end do
         CasIsOk = (casfct .eq. (1+2)) .or. (casfct .eq. (1+4)) .or. (casfct .eq. (1+8+16+32))
         if (.not. CasIsOk) then
@@ -173,10 +173,10 @@ subroutine te0408(option, nomte)
 ! Calcul du cdg et de la normale
         if (nnos .eq. 3) then
             pta = jgeom; ptb = jgeom+6; ptc = jgeom+3; ptd = jgeom
-            cdg(1:3) = (zr(pta:pta+2)+zr(ptb:ptb+2)+ zr(ptc:ptc+2))/3.0
+            cdg(1:3) = (zr(pta:pta+2)+zr(ptb:ptb+2)+zr(ptc:ptc+2))/3.0
         else if (nnos .eq. 4) then
             pta = jgeom; ptb = jgeom+6; ptc = jgeom+3; ptd = jgeom+9
-            cdg(1:3) = (zr(pta:pta+2)+zr(ptb:ptb+2)+ zr(ptc:ptc+2)+zr(ptd:ptd+2))/4.0
+            cdg(1:3) = (zr(pta:pta+2)+zr(ptb:ptb+2)+zr(ptc:ptc+2)+zr(ptd:ptd+2))/4.0
         else
             ASSERT(.FALSE.)
         end if
@@ -239,7 +239,7 @@ subroutine te0408(option, nomte)
                     nompu(3) = 'Y'; valpu(3) = xyz(2)
                     nompu(4) = 'Z'; valpu(4) = xyz(3)
                 end if
-                call fointe(' ', zk8(itempf), nbpara, nompu, valpu,&
+                call fointe(' ', zk8(itempf), nbpara, nompu, valpu, &
                             tpc, ier)
                 if (ier .ne. 0) then
                     call utmess('F', 'FONCT0_80', sk=zk8(itempf))

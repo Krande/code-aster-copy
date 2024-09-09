@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -145,7 +145,7 @@ contains
 !
 !===================================================================================================
 !
-    function FE_grad_lagr(this, point, jacob_) result (BSGrad2)
+    function FE_grad_lagr(this, point, jacob_) result(BSGrad2)
 !
         implicit none
 !
@@ -224,17 +224,17 @@ contains
         if (this%ndim == 3) then
             cojac = cojac/jacob
             do i = 1, this%size
-                BSGrad2(1, i) = (&
-                                cojac(1, 1)*BSGrad(1, i)+cojac(1, 2)*BSGrad(2, i) +cojac(1, 3)*BS&
-                                &Grad(3, i)&
+                BSGrad2(1, i) = ( &
+                                cojac(1, 1)*BSGrad(1, i)+cojac(1, 2)*BSGrad(2, i)+cojac(1, 3)*BS&
+                                &Grad(3, i) &
                                 )
-                BSGrad2(2, i) = (&
-                                cojac(2, 1)*BSGrad(1, i)+cojac(2, 2)*BSGrad(2, i) +cojac(2, 3)*BS&
-                                &Grad(3, i)&
+                BSGrad2(2, i) = ( &
+                                cojac(2, 1)*BSGrad(1, i)+cojac(2, 2)*BSGrad(2, i)+cojac(2, 3)*BS&
+                                &Grad(3, i) &
                                 )
-                BSGrad2(3, i) = (&
-                                cojac(3, 1)*BSGrad(1, i)+cojac(3, 2)*BSGrad(2, i) +cojac(3, 3)*BS&
-                                &Grad(3, i)&
+                BSGrad2(3, i) = ( &
+                                cojac(3, 1)*BSGrad(1, i)+cojac(3, 2)*BSGrad(2, i)+cojac(3, 3)*BS&
+                                &Grad(3, i) &
                                 )
             end do
         else if (this%ndim == 2) then
@@ -251,7 +251,7 @@ contains
 !
 !===================================================================================================
 !
-    function feBSCEval(this, point) result (basisScalEval)
+    function feBSCEval(this, point) result(basisScalEval)
 !
         implicit none
 !
@@ -283,7 +283,7 @@ contains
 !
 !===================================================================================================
 !
-    function feBSCGradEv(this, point, jacob_) result (BSGradEval)
+    function feBSCGradEv(this, point, jacob_) result(BSGradEval)
 !
         implicit none
 !

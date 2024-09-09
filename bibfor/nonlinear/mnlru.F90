@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlru(imat, xcdl, parcho, adime, xvect,&
-                 ninc, nd, nchoc, h, hf,&
+subroutine mnlru(imat, xcdl, parcho, adime, xvect, &
+                 ninc, nd, nchoc, h, hf, &
                  xru)
     implicit none
 !
@@ -89,7 +89,7 @@ subroutine mnlru(imat, xcdl, parcho, adime, xvect,&
     b_n = to_blas_int(ninc-1)
     b_incx = to_blas_int(1)
     call dscal(b_n, 0.d0, zr(ivint), b_incx)
-    call mnlcst(parcho, adime, ninc, nd, nchoc,&
+    call mnlcst(parcho, adime, ninc, nd, nchoc, &
                 h, hf, xvint)
     b_n = to_blas_int(ninc-1)
     b_incx = to_blas_int(1)
@@ -99,26 +99,26 @@ subroutine mnlru(imat, xcdl, parcho, adime, xvect,&
     b_n = to_blas_int(ninc-1)
     b_incx = to_blas_int(1)
     call dscal(b_n, 0.d0, zr(ivint), b_incx)
-    call mnline(imat, xcdl, parcho, adime, xvect,&
-                ninc, nd, nchoc, h, hf,&
+    call mnline(imat, xcdl, parcho, adime, xvect, &
+                ninc, nd, nchoc, h, hf, &
                 xvint)
     b_n = to_blas_int(ninc-1)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, zr(ivint), b_incx, zr(iru),&
+    call daxpy(b_n, 1.d0, zr(ivint), b_incx, zr(iru), &
                b_incy)
 ! --- CALCUL DE Q(XVECT,XVECT)
     b_n = to_blas_int(ninc-1)
     b_incx = to_blas_int(1)
     call dscal(b_n, 0.d0, zr(ivint), b_incx)
-    call mnlqnl(imat, xcdl, parcho, adime, xvect,&
-                xvect, ninc, nd, nchoc, h,&
+    call mnlqnl(imat, xcdl, parcho, adime, xvect, &
+                xvect, ninc, nd, nchoc, h, &
                 hf, xvint)
 ! --- R(XVECT) = L0 + L(XVECT) + Q(XVECT,XVECT)
     b_n = to_blas_int(ninc-1)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, zr(ivint), b_incx, zr(iru),&
+    call daxpy(b_n, 1.d0, zr(ivint), b_incx, zr(iru), &
                b_incy)
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DU VECTEUR INTERMEDIAIRE

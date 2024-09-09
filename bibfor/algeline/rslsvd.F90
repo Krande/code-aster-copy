@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rslsvd(nm, m, n, a, w,&
-                  u, v, nb, b, eps,&
+subroutine rslsvd(nm, m, n, a, w, &
+                  u, v, nb, b, eps, &
                   ierr, rvnm)
     implicit none
 !
@@ -92,7 +92,7 @@ subroutine rslsvd(nm, m, n, a, w,&
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
     matuv = .true.
-    call calsvd(nm, m, n, a, w,&
+    call calsvd(nm, m, n, a, w, &
                 matuv, u, matuv, v, ierr)
     if (ierr .ne. 0) goto 999
 !
@@ -105,8 +105,8 @@ subroutine rslsvd(nm, m, n, a, w,&
 !     DETERMINATION DU RANG DE LA MATRICE A
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    call possvd(nm, m, n, w, matuv,&
-                u, matuv, v, eps, rg,&
+    call possvd(nm, m, n, w, matuv, &
+                u, matuv, v, eps, rg, &
                 rvnm)
     if (rg .eq. 0) then
         ierr = -1
@@ -127,7 +127,7 @@ subroutine rslsvd(nm, m, n, a, w,&
             b_n = to_blas_int(n)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, alphaj, v(1, j), b_incx, rvnm(1),&
+            call daxpy(b_n, alphaj, v(1, j), b_incx, rvnm(1), &
                        b_incy)
         end do
         b_n = to_blas_int(n)

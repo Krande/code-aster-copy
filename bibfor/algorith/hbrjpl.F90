@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hbrjpl(mod, nbmat, materf, sigp, vip,&
+subroutine hbrjpl(mod, nbmat, materf, sigp, vip, &
                   vim, vp, vecp, dsidep)
     implicit none
 #include "asterc/r8pi.h"
@@ -96,21 +96,21 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip,&
 ! --- CALCUL DE LA MATRICE TANGENTE ------------------------------------
 ! ======================================================================
     sig3 = vp(3)*(un-trois*mu*dg/(sigeqe*(etap+un)))+(i1e-neuf*k*etap*dg/(etap+un))/trois
-    call hbderi(gp, nbmat, materf, zero, etap,&
+    call hbderi(gp, nbmat, materf, zero, etap, &
                 parame, derive)
 ! ======================================================================
     if (gp .lt. materf(1, 2)) then
         detadg = 6.0d0*(pphi1-pphi0)*pi*cos(parame(4)*pi)/(grup*(trois+sin(parame(4)*pi))**2)
     else if (gp .lt. materf(2, 2)) then
         detadg = 6.0d0*(pphi2-pphi1)*pi*cos(parame(4)*pi)/((gres-grup)*(trois+sin(parame(4)*pi))*&
-                 &*2)
+                                                          &*2)
     else
         detadg = 0.d0
     end if
     dgdl = etap+un
 ! ======================================================================
-    call hbmata(se, dg, etap, i1e, sigeqe,&
-                vp, vecp, parame, derive, sig3,&
+    call hbmata(se, dg, etap, i1e, sigeqe, &
+                vp, vecp, parame, derive, sig3, &
                 detadg, dgdl, nbmat, materf, dsidep)
 ! ======================================================================
 end subroutine

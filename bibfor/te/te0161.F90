@@ -87,7 +87,7 @@ subroutine te0161(option, nomte)
     else
         nddl = 3
     end if
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     call jevete('&INEL.CABPOU.YTY', 'L', iyty)
 !
@@ -104,8 +104,8 @@ subroutine te0161(option, nomte)
     if (option .eq. 'CHAR_MECA_PESA_R') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PPESANR', 'L', ipesa)
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', [r8bid],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', 'ELAS', 0, ' ', [r8bid], &
                     1, 'RHO', rho, icodre, 1)
         if (nomte .eq. 'MECA_POU_D_T_GD') then
             call poutre_modloc('CAGNPO', ['A1'], 1, valeur=a)
@@ -160,7 +160,7 @@ subroutine te0161(option, nomte)
     else if ((option .eq. 'CHAR_MECA_FF1D1D') .or. (option .eq. 'CHAR_MECA_SF1D1D')) then
         call jevech('PFF1D1D', 'L', iforc)
 !       Pas de moment répartis
-        fozero = (zk8(iforc+3) .ne. '&FOZERO') .or. (zk8(iforc+4) .ne. '&FOZERO') .or.&
+        fozero = (zk8(iforc+3) .ne. '&FOZERO') .or. (zk8(iforc+4) .ne. '&FOZERO') .or. &
                  (zk8(iforc+5) .ne. '&FOZERO')
         if (fozero) then
             call utmess('F', 'ELEMENTS3_1', sk=nomte)
@@ -240,7 +240,7 @@ subroutine te0161(option, nomte)
             valpar(13) = temps
 !
             do ic = 1, 3
-                call fointe('FM', zk8(iforc+ic-1), nbpar, nompar, valpar,&
+                call fointe('FM', zk8(iforc+ic-1), nbpar, nompar, valpar, &
                             force(ic), iret)
             end do
             if (normal) call ForceNormale(w2, force)
@@ -269,7 +269,7 @@ subroutine te0161(option, nomte)
                 vite2 = ddot(b_n, xvp, b_incx, xvp, b_incy)
                 valpav(1) = sqrt(vite2)
                 if (valpav(1) .gt. r8min) then
-                    call fointe('FM', zk8(ifcx), 1, nompav(1), valpav,&
+                    call fointe('FM', zk8(ifcx), 1, nompav(1), valpav, &
                                 fcx, iret)
                     fcx = fcx/valpav(1)
                 end if

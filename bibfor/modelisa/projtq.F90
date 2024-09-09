@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
+subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
                   itria, inoeu, icote, xbar, iproj)
     implicit none
 !  DESCRIPTION : TEST D'APPARTENANCE DU POINT PROJETE X3DP(3)
@@ -124,10 +124,10 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
 !....... TEST D'APPARTENANCE AU TRIANGLE 1-2-3, PAR DETERMINATION DES
 !....... COORDONNEES BARYCENTRIQUES
 !
-        call tstbar(3, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), r8bid3,&
+        call tstbar(3, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), r8bid3, &
                     x3dp, xbar, iproj)
         if (iproj .lt. 0) then
-            call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, xbar,&
+            call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, xbar, &
                           excent, iproj, inoeu, icote)
         end if
 !
@@ -144,7 +144,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
 !....... TEST D'APPARTENANCE AU TRIANGLE 3-4-1, PAR DETERMINATION DES
 !....... COORDONNEES BARYCENTRIQUES
 !
-        call tstbar(3, xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), r8bid3,&
+        call tstbar(3, xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), r8bid3, &
                     x3dp(1), xbar(1), iproj)
 !
 !....... REAJUSTEMENT DE IPROJ SI APPARTENANCE A UN BORD
@@ -156,10 +156,10 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
         else if (iproj .eq. 13) then
             iproj = 0
         else if (iproj .lt. 0) then
-            call analybar(xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), x3dp, xbar,&
+            call analybar(xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), x3dp, xbar, &
                           excent, iproj, inoeu, icote)
             if (iproj .lt. 0) then
-                if (.not. (&
+                if (.not. ( &
                     xbar(2) .lt. 0.d0 .and. xbar(1) .ge. 0.d0 .and. xbar(3) .ge. 0.d0)) then
                     goto 999
                 end if
@@ -194,7 +194,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
 !
         if (iproj .lt. 0) then
             itria = 1
-            call tstbar(3, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), r8bid3,&
+            call tstbar(3, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), r8bid3, &
                         x3dp(1), xbar(1), iproj)
 !.......... REAJUSTEMENT DE IPROJ SI PROJECTION SUR LE TROISIEME COTE
 !.......... DU TRIANGLE 1-2-3
@@ -202,7 +202,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
 !           on ne doit normalement pas passer par la !
                 iproj = 0
             else if (iproj .lt. 0) then
-                call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, xbar,&
+                call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, xbar, &
                               excent, iproj, inoeu, icote)
                 if (iproj .lt. 0) then
                     goto 999
@@ -225,7 +225,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
 !....... TEST D'APPARTENANCE AU TRIANGLE 1-2-3, PAR DETERMINATION DES
 !....... COORDONNEES BARYCENTRIQUES
 !
-        call tstbar(3, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), r8bid3,&
+        call tstbar(3, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), r8bid3, &
                     x3dp(1), xbar(1), iproj)
 !
 !....... REAJUSTEMENT DE IPROJ SI PROJECTION SUR LE TROISIEME COTE
@@ -234,10 +234,10 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
         if (iproj .eq. 13) then
             iproj = 0
         else if (iproj .lt. 0) then
-            call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, xbar,&
+            call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp, xbar, &
                           excent, iproj, inoeu, icote)
             if (iproj .lt. 0) then
-                if (.not. (&
+                if (.not. ( &
                     xbar(2) .lt. 0.d0 .and. xbar(1) .ge. 0.d0 .and. xbar(3) .ge. 0.d0)) then
                     goto 999
                 end if
@@ -251,7 +251,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
 !
         if (iproj .lt. 0) then
             itria = 2
-            call tstbar(3, xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), r8bid3,&
+            call tstbar(3, xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), r8bid3, &
                         x3dp(1), xbar(1), iproj)
 !.......... REAJUSTEMENT DE IPROJ SI APPARTENANCE A UN BORD
             if (iproj .eq. 11) then
@@ -261,7 +261,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
             else if (iproj .eq. 13) then
                 iproj = 0
             else if (iproj .lt. 0) then
-                call analybar(xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), x3dp, xbar,&
+                call analybar(xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), x3dp, xbar, &
                               excent, iproj, inoeu, icote)
                 if (iproj .lt. 0) then
                     goto 999

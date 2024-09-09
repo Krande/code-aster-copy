@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ contains
 ! Out lCellLine        : 1D cells (lineic) exist
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getPropertiesOfListOfCells(meshz, nbCell, listCell, cellNbNode, cellNodeIndx,&
+    subroutine getPropertiesOfListOfCells(meshz, nbCell, listCell, cellNbNode, cellNodeIndx, &
                                           lCellSurf, lCellLine)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
@@ -121,7 +121,7 @@ contains
 ! Ptr cellSuppNume  : volumic" cells support of skin cells
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getSkinCellSupport(meshz, nbSkinCell, cellSkinNume, lCell2d, lCell1d,&
+    subroutine getSkinCellSupport(meshz, nbSkinCell, cellSkinNume, lCell2d, lCell1d, &
                                   cellSuppNume, nbCellSupport_, suppNume_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
@@ -155,10 +155,10 @@ contains
 !
         call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=meshNodeCoor)
         if (present(nbCellSupport_)) then
-            call utmasu(mesh, kdim, nbSkinCell, cellSkinNume, jvCellVolume,&
+            call utmasu(mesh, kdim, nbSkinCell, cellSkinNume, jvCellVolume, &
                         meshNodeCoor, nbCellSupport_, suppNume_, skinInsideVolume)
         else
-            call utmasu(mesh, kdim, nbSkinCell, cellSkinNume, jvCellVolume,&
+            call utmasu(mesh, kdim, nbSkinCell, cellSkinNume, jvCellVolume, &
                         meshNodeCoor, zero, ibid, skinInsideVolume)
         end if
         call jeveuo(jvCellVolume, 'L', vi=vCellVolume)
@@ -183,7 +183,7 @@ contains
 ! In  cellSuppNume     : index for "volumic" cells support of skin cells
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine checkNormalOnSkinCell(meshz, modelDime, nbSkinCell, cellSkinNume, cellSkinNbNode,&
+    subroutine checkNormalOnSkinCell(meshz, modelDime, nbSkinCell, cellSkinNume, cellSkinNbNode, &
                                      cellSkinNodeIndx, cellSuppNume, lMisoriented)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
@@ -238,8 +238,8 @@ contains
                 call jenuno(jexnum(mesh//'.NOMMAI', skinNume), cellName)
 !
 ! --------- Get sign of normal from skin cell to its volumic support
-                call getSignNormalSkinToSupport(modelDime, skinNodeNume, suppNodeNume,&
-                                                skinCellType, suppCellType, meshNodeCoor,&
+                call getSignNormalSkinToSupport(modelDime, skinNodeNume, suppNodeNume, &
+                                                skinCellType, suppCellType, meshNodeCoor, &
                                                 signNorm)
                 if (signNorm .gt. 0.d0) then
                     lMisoriented = ASTER_TRUE
@@ -265,7 +265,7 @@ contains
 !                          >0 : normal if from skin to inside support cell
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getSignNormalSkinToSupport(modelDime, skinNodeNume, suppNodeNume, skinCellType,&
+    subroutine getSignNormalSkinToSupport(modelDime, skinNodeNume, suppNodeNume, skinCellType, &
                                           suppCellType, meshNodeCoor, signNorm)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
@@ -587,7 +587,7 @@ contains
 ! Out prefCellNume     : integer for name of cell
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getCellOptionForName(keywfact, iocc, lPrefCellName, lPrefCellNume, prefCellName,&
+    subroutine getCellOptionForName(keywfact, iocc, lPrefCellName, lPrefCellNume, prefCellName, &
                                     prefCellNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
@@ -628,7 +628,7 @@ contains
 ! IO  prefCellNume     : integer for name of cell
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine createNameOfCell(cellName, lPrefCellName, lPrefCellNume, prefCellName,&
+    subroutine createNameOfCell(cellName, lPrefCellName, lPrefCellNume, prefCellName, &
                                 prefCellNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
@@ -674,7 +674,7 @@ contains
 ! Out prefNodeNume     : integer for name of node
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getNodeOptionForName(keywfact, iocc, lPrefNodeName, lPrefNodeNume, prefNodeName,&
+    subroutine getNodeOptionForName(keywfact, iocc, lPrefNodeName, lPrefNodeNume, prefNodeName, &
                                     prefNodeNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
@@ -715,7 +715,7 @@ contains
 ! IO  prefNodeNume     : integer for name of node
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine createNameOfNode(nodeName, lPrefNodeName, lPrefNodeNume, prefNodeName,&
+    subroutine createNameOfNode(nodeName, lPrefNodeName, lPrefNodeNume, prefNodeName, &
                                 prefNodeNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
@@ -855,7 +855,7 @@ contains
         nodeGroup = nodeGroupZ
         nodeName = " "
         nodeNume = 0
-        call utnono(" ", mesh, 'NOEUD', nodeGroup, nodeName,&
+        call utnono(" ", mesh, 'NOEUD', nodeGroup, nodeName, &
                     iret)
         if (iret .eq. 0) then
             call jenonu(jexnom(mesh//'.NOMNOE', nodeName), nodeNume)
@@ -893,12 +893,12 @@ contains
 !
         mesh = meshZ
         nbGroup = 0
-        call getvem(mesh, 'GROUP_MA', factorKeywordZ, 'GROUP_MA', iFactorKeyword,&
+        call getvem(mesh, 'GROUP_MA', factorKeywordZ, 'GROUP_MA', iFactorKeyword, &
                     0, k24Dummy, nbGroup)
         nbGroup = -nbGroup
         if (nbGroup .ne. 0) then
             allocate (listOfGroups(nbGroup))
-            call getvem(mesh, 'GROUP_MA', factorKeywordZ, 'GROUP_MA', iFactorKeyword,&
+            call getvem(mesh, 'GROUP_MA', factorKeywordZ, 'GROUP_MA', iFactorKeyword, &
                         nbGroup, listOfGroups, nbRet)
             ASSERT(nbRet .eq. nbGroup)
         end if
@@ -914,7 +914,7 @@ contains
 ! In  mesh             : mesh
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine checkCellsAreSkin(meshZ, nbCell, listCellNume, onlySkin1D, listCellType,&
+    subroutine checkCellsAreSkin(meshZ, nbCell, listCellNume, onlySkin1D, listCellType, &
                                  hasSkin1D, hasSkin2D)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters

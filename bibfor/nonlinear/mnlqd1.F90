@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlqd1(ind, imat, neq, ninc, nd,&
-                  nchoc, h, hf, parcho, xcdl,&
+subroutine mnlqd1(ind, imat, neq, ninc, nd, &
+                  nchoc, h, hf, parcho, xcdl, &
                   adime, xvect, xtemp)
     implicit none
 !
@@ -103,7 +103,7 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                 end if
             end do
         end do
-        call mrmult('ZERO', imat(2), zr(itemp1), zr(itemp2), 2*h,&
+        call mrmult('ZERO', imat(2), zr(itemp1), zr(itemp2), 2*h, &
                     .false._1)
         do j = 1, 2*h
             i = 0
@@ -168,12 +168,12 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                 b_n = to_blas_int(h+1)
                 b_incx = to_blas_int(nd)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, -1.d0/jeu, zr(ivec-1+nddl), b_incx, zr(itemp4),&
+                call daxpy(b_n, -1.d0/jeu, zr(ivec-1+nddl), b_incx, zr(itemp4), &
                            b_incy)
                 b_n = to_blas_int(h)
                 b_incx = to_blas_int(nd)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, -1.d0/jeu, zr(ivec-1+nd*(h+1)+nddl), b_incx, zr(itemp4-1+hf+2),&
+                call daxpy(b_n, -1.d0/jeu, zr(ivec-1+nd*(h+1)+nddl), b_incx, zr(itemp4-1+hf+2), &
                            b_incy)
             end if
             if (ind .le. nd*(2*h+1)) then
@@ -268,7 +268,7 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, zr(ivec+deb+2*(2*hf+1)), b_incx, zr(itemp4), b_incy)
                 call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+1))
-                else if (ind .gt. deb+(2*hf+1) .and. ind .le. deb+2*(2*hf+1)) &
+            else if (ind .gt. deb+(2*hf+1) .and. ind .le. deb+2*(2*hf+1)) &
                 then
 ! ---       [FY]*R - FN*(UY/JEU)
                 b_n = to_blas_int(2*hf+1)
@@ -283,7 +283,7 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, zr(ivec+deb+2*(2*hf+1)), b_incx, zr(itemp4), b_incy)
                 call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+(2*hf+1)+1))
-                else if (ind .gt. deb+2*(2*hf+1) .and. ind .le. deb+3*(2*hf+1)) &
+            else if (ind .gt. deb+2*(2*hf+1) .and. ind .le. deb+3*(2*hf+1)) &
                 then
                 b_n = to_blas_int(2*hf+1)
                 b_incx = to_blas_int(1)
@@ -308,7 +308,7 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, zr(ivec+deb+3*(2*hf+1)), b_incx, zr(itemp4), b_incy)
                 call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+3*(2*hf+1)+1))
-                else if (ind .gt. deb+3*(2*hf+1) .and. ind .le. deb+4*(2*hf+1)) &
+            else if (ind .gt. deb+3*(2*hf+1) .and. ind .le. deb+4*(2*hf+1)) &
                 then
                 b_n = to_blas_int(2*hf+1)
                 b_incx = to_blas_int(1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcin(option, max, may, maz, model,&
-                  veprj, modx, mody, modz, i,&
+subroutine calcin(option, max, may, maz, model, &
+                  veprj, modx, mody, modz, i, &
                   j, mij)
     implicit none
 !
@@ -81,9 +81,9 @@ subroutine calcin(option, max, may, maz, model,&
 !------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
-    call mrmult('ZERO', imatx, vmodx, vectx, 1,&
+    call mrmult('ZERO', imatx, vmodx, vectx, 1, &
                 .true._1)
-    call mrmult('ZERO', imaty, vmody, vecty, 1,&
+    call mrmult('ZERO', imaty, vmody, vecty, 1, &
                 .true._1)
 !
 !--PRODUITS SCALAIRES VECTEURS PRESSION PAR MAX*MODX ET MAY*MODY
@@ -119,7 +119,7 @@ subroutine calcin(option, max, may, maz, model,&
         AS_ALLOCATE(vr=vectz, size=nbpres)
         call mtdscr(maz)
         call jeveuo(maz(1:19)//'.&INT', 'E', imatz)
-        call mrmult('ZERO', imatz, vmodz, vectz, 1,&
+        call mrmult('ZERO', imatz, vmodz, vectz, 1, &
                     .true._1)
         b_n = to_blas_int(nbpres)
         b_incx = to_blas_int(1)

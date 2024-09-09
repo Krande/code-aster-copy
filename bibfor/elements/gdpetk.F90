@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,21 +71,21 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
     goto 20
 !
 !*** TETAG EST TRES PETIT ET BETA VAUT PRATIQUEMENT TETAPRIM
- 11 continue
+11  continue
     do i = 1, 3
         petik1(i) = tetapg(i)
     end do
 !
- 20 continue
+20  continue
 !
 !
     call marota(tetag, amat1)
     call antisy(petikm, un, amat2)
-    call promat(amat1, 3, 3, 3, amat2,&
+    call promat(amat1, 3, 3, 3, amat2, &
                 3, 3, 3, amat3)
-    call transp(amat1, 3, 3, 3, amat2,&
+    call transp(amat1, 3, 3, 3, amat2, &
                 3)
-    call promat(amat3, 3, 3, 3, amat2,&
+    call promat(amat3, 3, 3, 3, amat2, &
                 3, 3, 3, amat1)
     call axial(amat1, petik2)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine aceaor(noma, nomo, lmax, nbepo, ntyele,&
+subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, &
                   nomele, ivr, nbocc)
 !
 !
@@ -171,7 +171,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele,&
         nbalarme = 0
         do ioc = 1, nbocc(ACE_ORIENTATION)
 !           Pour les MAILLES
-            call getvem(noma, 'GROUP_MA', 'ORIENTATION', 'GROUP_MA', ioc,&
+            call getvem(noma, 'GROUP_MA', 'ORIENTATION', 'GROUP_MA', ioc, &
                         lmax, zk24(jdls), ng)
 !           Seuil correspondant à la longueur nulle pour une maille :
 !               si seglong .LT. longseuil ==> maille de taille nulle
@@ -179,7 +179,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele,&
             if (nbid .ne. 1) longseuil = -1.0d0
 !           Pour les NOEUDS
             call getvtx('ORIENTATION', 'CARA', iocc=ioc, scal=oricara, nbret=ncar)
-            call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=nbval, vect=val,&
+            call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=nbval, vect=val, &
                         nbret=nval)
 !           Dans le catalogue, si oricara == GENE_TUYAU c'est GROUP_NO ou NOEUD ==> Tuyaux
             if (ng .gt. 0) then
@@ -195,8 +195,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele,&
                         jad = jdori+(nummai-1)*3
                         jin = jinit+(nummai-1)*3
                         if ((nutyma .ne. ntseg3) .and. (nutyma .ne. ntseg4)) then
-                            call affori('MAILLE', nommai, oricara, val, jad,&
-                                        jin, jdno, jdco, nutyma, ntseg,&
+                            call affori('MAILLE', nommai, oricara, val, jad, &
+                                        jin, jdno, jdco, nutyma, ntseg, &
                                         lseuil=longseuil, nbseuil=nbalarme)
                         end if
                     end do
@@ -212,26 +212,26 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele,&
     ifm = ivr(4)
     if (ivr(3) .eq. 2) write (ifm, 100)
     cnum1: do nummai = 1, nbmail
-    nutyel = zi(jdme+nummai-1)
-    do jj = 1, ACE_NB_TYPE_ELEM
-        if (nutyel .eq. ntyele(jj)) then
-            nocaor = nocaor+1
-            if (ivr(3) .eq. 2) then
-                call jenuno(jexnum(mlgnma, nummai), nommai)
-                jad = jdori+(nummai-1)*3
-                alpha = rddg*zr(jad)
-                beta = rddg*zr(jad+1)
-                gamma = rddg*zr(jad+2)
-                write (ifm, 110) nommai, nomele(jj), alpha, beta, gamma
+        nutyel = zi(jdme+nummai-1)
+        do jj = 1, ACE_NB_TYPE_ELEM
+            if (nutyel .eq. ntyele(jj)) then
+                nocaor = nocaor+1
+                if (ivr(3) .eq. 2) then
+                    call jenuno(jexnum(mlgnma, nummai), nommai)
+                    jad = jdori+(nummai-1)*3
+                    alpha = rddg*zr(jad)
+                    beta = rddg*zr(jad+1)
+                    gamma = rddg*zr(jad+2)
+                    write (ifm, 110) nommai, nomele(jj), alpha, beta, gamma
+                end if
+                cycle cnum1
             end if
-            cycle cnum1
-        end if
-    end do
+        end do
     end do cnum1
 !
-    100 format(/, 3x, '<ANGL> ORIENTATIONS SUR LES MAILLES DE TYPE POUTRE BARRE OU DISCRET', //, 3x, &
+100 format(/, 3x, '<ANGL> ORIENTATIONS SUR LES MAILLES DE TYPE POUTRE BARRE OU DISCRET', //, 3x, &
             'NOM      TYPE             ALPHA         BETA          GAMMA')
-    110 format(3x, a8, 1x, a16, 1x, 3(1pd13.6, 2x))
+110 format(3x, a8, 1x, a16, 1x, 3(1pd13.6, 2x))
 !
 ! --------------------------------------------------------------------------------------------------
 !   Affectation des valeurs du tampon dans la carte orientation :
@@ -245,28 +245,28 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele,&
 !
 !       Affectation des mailles du maillage (poutre, barre ou discret)
         cnum2: do nummai = 1, nbmail
-        nutyel = zi(jdme+nummai-1)
-        do jj = 1, ACE_NB_TYPE_ELEM
-            if (nutyel .eq. ntyele(jj)) then
+            nutyel = zi(jdme+nummai-1)
+            do jj = 1, ACE_NB_TYPE_ELEM
+                if (nutyel .eq. ntyele(jj)) then
 !                   Récupération des numéros des noms des éléments
-                call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunomel)
+                    call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunomel)
 ! Pas de carte d'orientation sur les :
 !   TUYAUX                  : MET3SEG3 MET3SEG4 MET6SEG3
 !   "meca_plate_skin"       : MEBODKT  MEBODST  MEBOQ4G
 !   "meca_coque_3d_skin"    : MEBOCQ3
-                if ((nunomel .ne. 'MET3SEG3') .and. (nunomel .ne. 'MET3SEG4') .and.&
-                    (nunomel .ne. 'MET6SEG3') .and. (nunomel .ne. 'MEBODKT') .and.&
-                    (nunomel .ne. 'MEBODST') .and. (nunomel .ne. 'MEBOQ4G') .and.&
-                    (nunomel .ne. 'MEBOCQ3')) then
-                    zr(jdvlvo) = zr(jdori+nummai*3-3)
-                    zr(jdvlvo+1) = zr(jdori+nummai*3-2)
-                    zr(jdvlvo+2) = zr(jdori+nummai*3-1)
-                    call nocart(cartor, 3, 3, mode='NUM', nma=1,&
-                                limanu=[nummai])
-                    cycle cnum2
+                    if ((nunomel .ne. 'MET3SEG3') .and. (nunomel .ne. 'MET3SEG4') .and. &
+                        (nunomel .ne. 'MET6SEG3') .and. (nunomel .ne. 'MEBODKT') .and. &
+                        (nunomel .ne. 'MEBODST') .and. (nunomel .ne. 'MEBOQ4G') .and. &
+                        (nunomel .ne. 'MEBOCQ3')) then
+                        zr(jdvlvo) = zr(jdori+nummai*3-3)
+                        zr(jdvlvo+1) = zr(jdori+nummai*3-2)
+                        zr(jdvlvo+2) = zr(jdori+nummai*3-1)
+                        call nocart(cartor, 3, 3, mode='NUM', nma=1, &
+                                    limanu=[nummai])
+                        cycle cnum2
+                    end if
                 end if
-            end if
-        end do
+            end do
         end do cnum2
     end if
 !
@@ -274,7 +274,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele,&
 !   Affectation des elements tuyaux
     call dismoi('EXI_TUYAU', nomo, 'MODELE', repk=exituy)
     if (exituy .eq. 'OUI') then
-        call aceatu(noma, nomo, nbepo, ntyele, ivr,&
+        call aceatu(noma, nomo, nbepo, ntyele, ivr, &
                     nbocc)
     end if
 ! --------------------------------------------------------------------------------------------------

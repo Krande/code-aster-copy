@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
-                  jinter, ifa, cface, ipg, nnop,&
-                  nnops, igeom, jbasec, xg, jac,&
-                  ffp, ffpc, dfdi, nd, tau1,&
+subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
+                  jinter, ifa, cface, ipg, nnop, &
+                  nnops, igeom, jbasec, xg, jac, &
+                  ffp, ffpc, dfdi, nd, tau1, &
                   tau2, dfdic)
     implicit none
 !
@@ -75,7 +75,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 ! ----------------------------------------------------------------------
 !
 !
-    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nno, jpoids=ipoidf,&
+    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nno, jpoids=ipoidf, &
                      jvf=ivff, jdfde=idfdef)
 !
     ASSERT(nno .eq. 3 .or. nno .eq. 6)
@@ -107,7 +107,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     end do
 !     CALCUL DE JAC EN 3D
     k = 2*(ipg-1)*nno
-    call dfdm2b(nno, zr(ipoidf-1+ipg), zr(idfdef+k), coor3d, jac,&
+    call dfdm2b(nno, zr(ipoidf-1+ipg), zr(idfdef+k), coor3d, jac, &
                 nd)
 !
 ! --- COORDONNEES REELLES 3D DU POINT DE GAUSS IPG
@@ -122,8 +122,8 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
     do j = 1, ndim
         do k = 1, nno
-            grln(j) = grln(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ ndim*ndim*(k-1)+j)
-            grlt(j) = grlt(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ ndim*ndim*(k-1)+j+ndim)
+            grln(j) = grln(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j)
+            grlt(j) = grlt(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j+ndim)
         end do
     end do
 !
@@ -158,7 +158,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
         ASSERT(norm2 .gt. 1.d-12)
     end if
     call provec(nd, tau1, tau2)
-    call reeref(elrefp, nnop, zr(igeom), xg, 3,&
+    call reeref(elrefp, nnop, zr(igeom), xg, 3, &
                 xe, ffp, dfdi=dfdi)
 !
 !
@@ -168,7 +168,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
-    call reeref(elrefc, nnoc, zr(igeom), xg, ndim,&
+    call reeref(elrefc, nnoc, zr(igeom), xg, ndim, &
                 xe, ffpc, dfdi=dfdic)
 !
 999 continue

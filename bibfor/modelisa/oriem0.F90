@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine oriem0(kdim, type, coor, lino1, nbno1,&
-                  lino2, nbno2, lino3, nbno3, ipos,&
+subroutine oriem0(kdim, type, coor, lino1, nbno1, &
+                  lino2, nbno2, lino3, nbno3, ipos, &
                   indmai)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -147,7 +147,7 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
         end if
     end do
     ASSERT(.false.)
- 40 continue
+40  continue
 !
 !
 !   -- position de la maille 2 par rapport a la maille de peau  => ps2
@@ -168,7 +168,7 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
         end if
     end do
     ASSERT(.false.)
- 70 continue
+70  continue
 !
 !
 !   -- les mailles 1 et 2 sont elles du meme cote par rapport

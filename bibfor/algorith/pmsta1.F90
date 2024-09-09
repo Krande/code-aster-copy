@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmsta1(sigm, sigp, deps, vim, vip,&
-                  nbvari, nbvita, iforta, nbpar, nompar,&
-                  vr, igrad, typpar, nomvi, sddisc,&
+subroutine pmsta1(sigm, sigp, deps, vim, vip, &
+                  nbvari, nbvita, iforta, nbpar, nompar, &
+                  vr, igrad, typpar, nomvi, sddisc, &
                   liccvg, itemax, conver, actite)
 !
     implicit none
@@ -78,7 +78,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
         call dscal(b_n, 1.d0/rac2, depst(4), b_incx)
-    endif
+    end if
 !
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
@@ -87,7 +87,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, -1.d0, sigm, b_incx, dsig,&
+    call daxpy(b_n, -1.d0, sigm, b_incx, dsig, &
                b_incy)
     b_n = to_blas_int(3)
     b_incx = to_blas_int(1)
@@ -111,7 +111,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
         b_n = to_blas_int(nbvita)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -1.d0, vim, b_incx, vr(1+ncmp+6+3),&
+        call daxpy(b_n, -1.d0, vim, b_incx, vr(1+ncmp+6+3), &
                    b_incy)
 !
         b_n = to_blas_int(ncmp)
@@ -125,7 +125,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
         vr(ncmp+8) = equi(16)
         vr(ncmp+9) = equi(1)
 !
-        call tbajli(tabinc, nbpar, nompar, [0], vr,&
+        call tbajli(tabinc, nbpar, nompar, [0], vr, &
                     [cbid], k8b, 0)
 !
     else
@@ -145,7 +145,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
         b_n = to_blas_int(nbvita)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -1.d0, vim, b_incx, zr(jvari),&
+        call daxpy(b_n, -1.d0, vim, b_incx, zr(jvari), &
                    b_incy)
 !
         vr(1) = 0.d0
@@ -157,7 +157,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
             else
                 vk8(2) = nomgrd(i)
             end if
-            call tbajli(tabinc, nbpar, nompar, [0], vr,&
+            call tbajli(tabinc, nbpar, nompar, [0], vr, &
                         [cbid], vk8, 0)
 !
         end do
@@ -165,26 +165,26 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
         do i = 1, 6
             vr(2) = dsig(i)
             vk8(2) = nomsig(i)
-            call tbajli(tabinc, nbpar, nompar, [0], vr,&
+            call tbajli(tabinc, nbpar, nompar, [0], vr, &
                         [cbid], vk8, 0)
 !
         end do
         vk8(1) = 'SIEQ'
         vr(2) = equi(1)
         vk8(2) = 'VMIS'
-        call tbajli(tabinc, nbpar, nompar, [0], vr,&
+        call tbajli(tabinc, nbpar, nompar, [0], vr, &
                     [cbid], vk8, 0)
 !
         vr(2) = equi(16)
         vk8(2) = 'TRACE'
-        call tbajli(tabinc, nbpar, nompar, [0], vr,&
+        call tbajli(tabinc, nbpar, nompar, [0], vr, &
                     [cbid], vk8, 0)
 !
         vk8(1) = 'VARI'
         do i = 1, nbvita
             vr(2) = zr(jvari-1+i)
             vk8(2) = nomvi(i)
-            call tbajli(tabinc, nbpar, nompar, [0], vr,&
+            call tbajli(tabinc, nbpar, nompar, [0], vr, &
                         [cbid], vk8, 0)
         end do
 !
@@ -192,7 +192,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 !
 !     VERIFICATION DES EVENT-DRIVEN
 !
-    call pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
+    call pmevdr(sddisc, tabinc, liccvg, itemax, conver, &
                 actite)
 !
     call jedetr('&&OP0033.VARI')

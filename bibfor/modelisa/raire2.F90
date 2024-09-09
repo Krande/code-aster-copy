@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
+subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
                   nbno, tabnoe, rignoe)
     implicit none
 #include "asterf_types.h"
@@ -97,25 +97,25 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     yg = zero
     zg = zero
     call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=0, nbret=ncg)
-    call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1,&
+    call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1, &
                 0, k8b, nno)
-    call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1,&
+    call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1, &
                 0, k8b, ngn)
     if (ncg .ne. 0) then
-        call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=3, vect=c,&
+        call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=3, vect=c, &
                     nbret=ncg)
         xg = c(1)
         yg = c(2)
         zg = c(3)
     else if (nno .ne. 0) then
-        call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1,&
+        call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1, &
                     1, nomnoe, nno)
         call jenonu(jexnom(manono, nomnoe), inoe)
         xg = vale(1+3*(inoe-1)+1-1)
         yg = vale(1+3*(inoe-1)+2-1)
         zg = vale(1+3*(inoe-1)+3-1)
     else if (ngn .ne. 0) then
-        call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1,&
+        call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1, &
                     1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
@@ -129,7 +129,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     call getvr8('ENER_SOL', 'COEF_GROUP', iocc=1, nbval=0, nbret=ncg)
     if (ncg .ne. 0) then
         AS_ALLOCATE(vr=coegro, size=nbgr)
-        call getvr8('ENER_SOL', 'COEF_GROUP', iocc=1, nbval=nbgr, vect=coegro,&
+        call getvr8('ENER_SOL', 'COEF_GROUP', iocc=1, nbval=nbgr, vect=coegro, &
                     nbret=ncg)
     else
         call getvid('ENER_SOL', 'FONC_GROUP', iocc=1, nbval=0, nbret=ncf)
@@ -138,7 +138,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
         end if
         AS_ALLOCATE(vk8=fongro, size=nbgr)
         lfonc = .true.
-        call getvid('ENER_SOL', 'FONC_GROUP', iocc=1, nbval=nbgr, vect=fongro,&
+        call getvid('ENER_SOL', 'FONC_GROUP', iocc=1, nbval=nbgr, vect=fongro, &
                     nbret=nfg)
     end if
 !
@@ -218,7 +218,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                 b_incy = to_blas_int(1)
                 dist = ddot(b_n, u, b_incx, u, b_incy)
                 dist = sqrt(dist)
-                call fointe('F ', fongro(i), 1, ['X'], [dist],&
+                call fointe('F ', fongro(i), 1, ['X'], [dist], &
                             coef, iret)
                 surmai(im) = surmai(im)*coef
             else
@@ -245,7 +245,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                     if (zi(ldnm+nn-1) .eq. ij) then
                         coeno(ij) = coeno(ij)+surmai(im)/surtot
                     end if
- 37                 continue
+37                  continue
                 end do
             end do
         end do
@@ -273,7 +273,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
         rig45 = rig45-rigi(3)*xx*yy*coeno(ij)
         rig46 = rig46-rigi(2)*xx*zz*coeno(ij)
         rig56 = rig56-rigi(1)*yy*zz*coeno(ij)
- 50     continue
+50      continue
     end do
     nbno = ii
     rig4 = rigi(4)-rig4
@@ -298,12 +298,12 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
         rignoe(6*(ii-1)+5) = r5
         rignoe(6*(ii-1)+6) = r6
         tabnoe(ii) = ij
- 51     continue
+51      continue
     end do
 !
-    1001 format(1x, 'RAIDEURS DE ROTATION A REPARTIR:', /&
-    &      1x, ' KRX: ', 1x, 1pe12.5, ' KRY: ', 1x, 1pe12.5,&
-    &      ' KRZ: ', 1x, 1pe12.5)
+1001 format(1x, 'RAIDEURS DE ROTATION A REPARTIR:', /&
+&      1x, ' KRX: ', 1x, 1pe12.5, ' KRY: ', 1x, 1pe12.5,&
+&      ' KRZ: ', 1x, 1pe12.5)
     AS_DEALLOCATE(vr=coegro)
     AS_DEALLOCATE(vk8=fongro)
     AS_DEALLOCATE(vr=coeno)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! aslint: disable=W1306,W1504
 !
-subroutine xdecfa(elp, nno, igeom, jlsn, jlst,&
-                  npi, npis, pinter, pinref, ainter,&
-                  cooree, cooref, rainter, noeud, npts,&
-                  nintar, lst, lonref, ndim, zxain,&
+subroutine xdecfa(elp, nno, igeom, jlsn, jlst, &
+                  npi, npis, pinter, pinref, ainter, &
+                  cooree, cooref, rainter, noeud, npts, &
+                  nintar, lst, lonref, ndim, zxain, &
                   jgrlsn, mipos)
 !
     implicit none
@@ -251,14 +251,14 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst,&
             epsmax = 1.d-8
             itemax = 100
 !      ALGORITHME DE NEWTON POUR TROUVER LE FOND DE FISSURE
-            call xnewto(elp, 'XINTER', n, ndim, ptxx,&
-                        ndim, geom, tabls, ibid, ibid,&
+            call xnewto(elp, 'XINTER', n, ndim, ptxx, &
+                        ndim, geom, tabls, ibid, ibid, &
                         itemax, epsmax, ksi)
             xref(:) = 0.d0
             do ii = 1, ndim
-                xref(ii) = 2.d0*(&
-                           1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)* (1.d0-ksi(1))*ptxx(i&
-                           &i+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)* ptxx(ii+ndim&
+                xref(ii) = 2.d0*( &
+                           1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)*(1.d0-ksi(1))*ptxx(i&
+                           &i+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*ptxx(ii+ndim &
                            )
             end do
             ff(:) = 0.d0
@@ -304,9 +304,9 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst,&
                     ksi(1) = (1.d0+ksi(1))/2.d0
                 end if
                 do ii = 1, ndim
-                    miref(ii) = 2.d0*(&
-                                1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)* (1.d0-ksi(1))*p&
-                                &txx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)* ptxx(ii+ndim&
+                    miref(ii) = 2.d0*( &
+                                1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)*(1.d0-ksi(1))*p&
+                                &txx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*ptxx(ii+ndim &
                                 )
                 end do
                 call elrfvf(elp, miref, ff, nno)
@@ -348,7 +348,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst,&
                 do j = 1, ndim
                     newpt(j) = cooree(k+ndim, j)
                 end do
-                call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                call reeref(elp, nno, zr(igeom), newpt, ndim, &
                             newptref, ff)
 !      VERIF SI DEJA
                 deja = .false.
@@ -383,7 +383,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst,&
     if (.not. iselli(elp)) then
         if (mipos .and. npts .eq. 2) then
             do j = 1, ndim
-                xref(j) = (pinref((noeud(3)-1)*ndim+j)+ pinref((noeud(4)-1)*ndim+j))/2.d0
+                xref(j) = (pinref((noeud(3)-1)*ndim+j)+pinref((noeud(4)-1)*ndim+j))/2.d0
             end do
             x(:) = 0.d0
             call elrfvf(elp, xref, ff, nno)
@@ -395,15 +395,15 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst,&
         else
             if (nintar .eq. 2) then
                 do j = 1, ndim
-                    xref(j) = (pinref((noeud(4)-1)*ndim+j)+ pinref((noeud(3)-1)*ndim+j))/2.d0
+                    xref(j) = (pinref((noeud(4)-1)*ndim+j)+pinref((noeud(3)-1)*ndim+j))/2.d0
                 end do
             else if (lst(1) .eq. 0.d0) then
                 do j = 1, ndim
-                    xref(j) = (pinref((noeud(3)-1)*ndim+j)+ pinref((noeud(1)-1)*ndim+j))/2.d0
+                    xref(j) = (pinref((noeud(3)-1)*ndim+j)+pinref((noeud(1)-1)*ndim+j))/2.d0
                 end do
             else
                 do j = 1, ndim
-                    xref(j) = (pinref((noeud(3)-1)*ndim+j)+ pinref((noeud(2)-1)*ndim+j))/2.d0
+                    xref(j) = (pinref((noeud(3)-1)*ndim+j)+pinref((noeud(2)-1)*ndim+j))/2.d0
                 end do
             end if
 !   ON RECHERCHE SUR LA MEDIATRICE DU SEGMENT IP1IP2 PORTEE PAR GRADLST
@@ -419,8 +419,8 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst,&
                 ptxx(j) = vectn(j)
                 ptxx(ndim+j) = xref(j)
             end do
-            call xnewto(elp, 'XMIFIS', n, ndim, ptxx,&
-                        ndim, geom, tabls, ibid, ibid,&
+            call xnewto(elp, 'XMIFIS', n, ndim, ptxx, &
+                        ndim, geom, tabls, ibid, ibid, &
                         itemax, epsmax, ksi)
             do j = 1, ndim
                 xref(j) = xref(j)+ksi(1)*ptxx(j)
@@ -478,8 +478,8 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst,&
             nn(1:4) = 0
             jonc = .true.
             exit(1:2) = 0
-            call xcenfi(elp, ndim, ndim, nno, geom,&
-                        zr(jlsn), pinref, pinref, cenref, cenfi,&
+            call xcenfi(elp, ndim, ndim, nno, geom, &
+                        zr(jlsn), pinref, pinref, cenref, cenfi, &
                         nn, exit, jonc, num)
 !   ON ARCHIVE CE POINT
             npi = npi+1

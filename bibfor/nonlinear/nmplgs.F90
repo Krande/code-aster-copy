@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504,W1501
 !
-subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
-                  vff2, idfde2, npg, iw, geom,&
-                  typmod, option, mate, compor, carcri,&
-                  instam, instap, angmas, ddlm, ddld,&
-                  sigm, lgpg, vim, sigp, vip,&
-                  matr, vect, codret, livois, nbvois,&
-                  numa, lisoco, nbsoco, lVari, lSigm,&
+subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
+                  vff2, idfde2, npg, iw, geom, &
+                  typmod, option, mate, compor, carcri, &
+                  instam, instap, angmas, ddlm, ddld, &
+                  sigm, lgpg, vim, sigp, vip, &
+                  matr, vect, codret, livois, nbvois, &
+                  numa, lisoco, nbsoco, lVari, lSigm, &
                   lMatr, lVect)
 !
     use Behaviour_type
@@ -136,8 +136,8 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
     kpg = 1
     spt = 1
     poum = '+'
-    call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mate, &
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
                 1, 'LONG_CARA', lc, k2, 1)
     c = lc(1)**2
 !
@@ -147,7 +147,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
 !
 ! INITIALISATION CAVINI + INCREMENTATION
 ! DU COMPTEUR D'ITERATION + L ELEMENT EST-IL POINTE?
-    call cavini(ndim, nno2, geom, vim, npg,&
+    call cavini(ndim, nno2, geom, vim, npg, &
                 lgpg, mate)
 !
     nono = 0.d0
@@ -167,7 +167,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
         do kvois = 1, nbvois
 !
             numav = livois(kvois)
-            call tecach('OOO', 'PVARIMP', 'L', iret, iad=vivois,&
+            call tecach('OOO', 'PVARIMP', 'L', iret, iad=vivois, &
                         numa=numav)
             ASSERT(iret .eq. 0)
 !
@@ -257,7 +257,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
 !
         b_ldz = to_blas_int(3)
         b_n = to_blas_int(3)
-        call dspev('V', 'U', b_n, sigell, w,&
+        call dspev('V', 'U', b_n, sigell, w, &
                    z, b_ldz, work, reuss)
 !
         if (nini .eq. 0) then
@@ -513,24 +513,24 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR E-BARRE
 !
-        call dfdmip(ndim, nno2, axi, geom, g,&
-                    iw, vff2(1, g), idfde2, r, wg,&
+        call dfdmip(ndim, nno2, axi, geom, g, &
+                    iw, vff2(1, g), idfde2, r, wg, &
                     dfdi2)
-        call nmepsb(ndim, nno2, axi, vff2(1, g), dfdi2,&
+        call nmepsb(ndim, nno2, axi, vff2(1, g), dfdi2, &
                     ddlm, epsgm(1, 2), gepsm)
-        call nmepsb(ndim, nno2, axi, vff2(1, g), dfdi2,&
+        call nmepsb(ndim, nno2, axi, vff2(1, g), dfdi2, &
                     ddld, epsgd(1, 2), geps)
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 !
-        call dfdmip(ndim, nno1, axi, geom, g,&
-                    iw, vff1(1, g), idfde1, r, wg,&
+        call dfdmip(ndim, nno1, axi, geom, g, &
+                    iw, vff1(1, g), idfde1, r, wg, &
                     dfdi1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dfdi1, deplm, f, epsgm(:, 1))
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dfdi1, depld, f, epsgd(:, 1))
-        call nmmabu(ndim, nno1, axi, grand, dfdi1,&
+        call nmmabu(ndim, nno1, axi, grand, dfdi1, &
                     b)
 !
 !      DEFORMATIONS ET ECARTS EN FIN DE PAS DE TEMPS
@@ -538,7 +538,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
         b_n = to_blas_int(18)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, gepsm, b_incx, geps,&
+        call daxpy(b_n, 1.d0, gepsm, b_incx, geps, &
                    b_incy)
         do kl = 1, ndimsi
             de(kl) = epsgm(kl, 2)+epsgd(kl, 2)
@@ -561,10 +561,10 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
 !
         sigma = 0.d0
         dsidep = 0.d0
-        call nmcomp(BEHinteg, 'RIGI', g, 1, ndim,&
-                    typmod, mate, compor, carcri, instam,&
-                    instap, 12, epsgm, epsgd, 6,&
-                    sigmam, vim(1, g), option, angmas, sigma,&
+        call nmcomp(BEHinteg, 'RIGI', g, 1, ndim, &
+                    typmod, mate, compor, carcri, instam, &
+                    instap, 12, epsgm, epsgd, 6, &
+                    sigmam, vim(1, g), option, angmas, sigma, &
                     vip(1, g), 72, dsidep, cod(g))
         if (cod(g) .eq. 1) then
             goto 999

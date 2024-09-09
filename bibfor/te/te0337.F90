@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine te0337(option, nomte)
 !
     zero = 0.0d0
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx+1
 !
@@ -312,8 +312,8 @@ subroutine te0337(option, nomte)
                 ygau = ygau+zr(ivf+ldec+ino-1)*zr(i+2)
                 zgau = zgau+zr(ivf+ldec+ino-1)*zr(i+3)
             end do
-            ray = (xgau-zr(iorig+1-1))**2.d0+(ygau-zr(iorig+2-1))**2.d0+(zgau-zr(iorig+3-1)&
-                  )**2.d0
+            ray = (xgau-zr(iorig+1-1))**2.d0+(ygau-zr(iorig+2-1))**2.d0+(zgau-zr(iorig+3-1) &
+                                                                         )**2.d0
             ray = sqrt(ray)
 !
 !---  CALCUL DE A1 = RAYON
@@ -387,19 +387,19 @@ subroutine te0337(option, nomte)
 !
             do ino = 1, nno
 !
-                zr(ivect2+3*(ino-1)+1-1) = zr(&
+                zr(ivect2+3*(ino-1)+1-1) = zr( &
                                            ivect2+3*(ino-1)+1-1)+zr(ivf+ldec+ino-1)*(xgau-zr(iori&
-                                           &g+1-1)&
+                                           &g+1-1) &
                                            )*sigau
 !
-                zr(ivect2+3*(ino-1)+2-1) = zr(&
+                zr(ivect2+3*(ino-1)+2-1) = zr( &
                                            ivect2+3*(ino-1)+2-1)+zr(ivf+ldec+ino-1)*(ygau-zr(iori&
-                                           &g+2-1)&
+                                           &g+2-1) &
                                            )*sigau
 !
-                zr(ivect2+3*(ino-1)+3-1) = zr(&
+                zr(ivect2+3*(ino-1)+3-1) = zr( &
                                            ivect2+3*(ino-1)+3-1)+zr(ivf+ldec+ino-1)*(zgau-zr(iori&
-                                           &g+3-1)&
+                                           &g+3-1) &
                                            )*sigau
             end do
 !
@@ -488,36 +488,24 @@ subroutine te0337(option, nomte)
 !
 ! CALCUL DE VECT1(I) : TERMES EN UMI(COS(M.PHI)) ET UMO (SIN(M.PHI))
 !
-                    zr(ivect1+3*(ino-1)+ii-1) = zr(&
-                                                ivect1+3*(ino-1)+ii-1)+cosmfi*pgl(1,&
-                                                ii)*zr(ivf+ldec+ino-1&
-                                                )*jacpoi
-                    zr(ivect4+3*(ino-1)+ii-1) = zr(&
-                                                ivect4+3*(ino-1)+ii-1)+sinmfi*pgl(1,&
-                                                ii)*zr(ivf+ldec+ino-1&
-                                                )*jacpoi
+                    zr(ivect1+3*(ino-1)+ii-1) = &
+                        zr(ivect1+3*(ino-1)+ii-1)+cosmfi*pgl(1, ii)*zr(ivf+ldec+ino-1)*jacpoi
+                    zr(ivect4+3*(ino-1)+ii-1) = &
+                        zr(ivect4+3*(ino-1)+ii-1)+sinmfi*pgl(1, ii)*zr(ivf+ldec+ino-1)*jacpoi
 !
 ! CALCUL DE VECT2(I) : TERMES EN VMI(COS(M.PHI)) ET VMO (SIN(M.PHI))
 !
-                    zr(ivect2+3*(ino-1)+ii-1) = zr(&
-                                                ivect2+3*(ino-1)+ii-1)+cosmfi*pgl(2,&
-                                                ii)*zr(ivf+ldec+ino-1&
-                                                )*jacpoi
-                    zr(ivect5+3*(ino-1)+ii-1) = zr(&
-                                                ivect5+3*(ino-1)+ii-1)+sinmfi*pgl(2,&
-                                                ii)*zr(ivf+ldec+ino-1&
-                                                )*jacpoi
+                    zr(ivect2+3*(ino-1)+ii-1) = &
+                        zr(ivect2+3*(ino-1)+ii-1)+cosmfi*pgl(2, ii)*zr(ivf+ldec+ino-1)*jacpoi
+                    zr(ivect5+3*(ino-1)+ii-1) = &
+                        zr(ivect5+3*(ino-1)+ii-1)+sinmfi*pgl(2, ii)*zr(ivf+ldec+ino-1)*jacpoi
 !
 ! CALCUL DE VECT3(I) : TERMES EN WMI(COS(M.PHI)) ET WMO (SIN(M.PHI))
 !
-                    zr(ivect3+3*(ino-1)+ii-1) = zr(&
-                                                ivect3+3*(ino-1)+ii-1)+cosmfi*pgl(3,&
-                                                ii)*zr(ivf+ldec+ino-1&
-                                                )*jacpoi
-                    zr(ivect6+3*(ino-1)+ii-1) = zr(&
-                                                ivect6+3*(ino-1)+ii-1)+sinmfi*pgl(3,&
-                                                ii)*zr(ivf+ldec+ino-1&
-                                                )*jacpoi
+                    zr(ivect3+3*(ino-1)+ii-1) = &
+                        zr(ivect3+3*(ino-1)+ii-1)+cosmfi*pgl(3, ii)*zr(ivf+ldec+ino-1)*jacpoi
+                    zr(ivect6+3*(ino-1)+ii-1) = &
+                        zr(ivect6+3*(ino-1)+ii-1)+sinmfi*pgl(3, ii)*zr(ivf+ldec+ino-1)*jacpoi
                 end do
             end do
         end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -123,7 +123,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 ! --- VECTPT DESIGNE LES REPERES LOCAUX ORTHORNORMES EN CHAQUE
 ! --- NOEUD DANS LA CONFIGURATION INITIALE :
 !     ------------------------------------
-    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta,&
+    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta, &
                 vectn, vectpt)
 !
 ! ---   MISE DU VECTEUR DES CONTRAINTES DANS LE REPERE UTILISATEUR
@@ -151,7 +151,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 ! ---   ROTATION DU TENSEUR DES CONTRAINTES DE CAUCHY DE LA
 ! ---   ROTATION FAISANT PASSER DE L'ETAT INITAL A L'ETAT DEFORME :
 !       ---------------------------------------------------------
-        call utbtab('ZERO', 3, 3, sigmat, drot,&
+        call utbtab('ZERO', 3, 3, sigmat, drot, &
                     xab, sigmad)
 !
 ! ---   AFFECTATION DU VECTEUR EN SORTIE DES CONTRAINTES

@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
-                  ise, nfh, ddlc, ddlm, nfe,&
-                  puls, basloc, nnop, idepl, lsn,&
-                  lst, idecpg, igthet, fno, nfiss,&
+subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
+                  ise, nfh, ddlc, ddlm, nfe, &
+                  puls, basloc, nnop, idepl, lsn, &
+                  lst, idecpg, igthet, fno, nfiss, &
                   jheavn, jstno)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -132,11 +132,11 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !   QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES NOEUDS MILIEU
 !
 !   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
-    call xnbddl(ndim, nfh, nfe, ddlc, ddld,&
+    call xnbddl(ndim, nfh, nfe, ddlc, ddld, &
                 ddls, singu)
 !
 !   NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2, &
                 itab=jtab)
     ncomp = jtab(2)
 !
@@ -167,10 +167,10 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     fami_se = fami(ndim+irese)
     if (nfe .gt. 0) then
         if (ndim .eq. 3 .and. count(zi((jstno-1+1):(jstno-1+nnop)) .eq. -2) .eq. 0) fami_se = &
-                                                                                    'XGEO'
+            'XGEO'
     end if
-    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami_se, ndim=ndimb, nno=nno, nnos=nnos,&
-                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami_se, ndim=ndimb, nno=nno, nnos=nnos, &
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde, &
                      jdfd2=jdfd2, jgano=jgano)
     ASSERT(ndim .eq. ndimb)
 !
@@ -193,14 +193,14 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     end if
 !
 !   TEMPERATURE DE REF
-    call rcvarc(' ', 'TEMP', 'REF', 'XFEM', 1,&
+    call rcvarc(' ', 'TEMP', 'REF', 'XFEM', 1, &
                 1, tref, iret)
     if (iret .ne. 0) tref = 0.d0
 !
 !   TEMPERATURE AUX NOEUDS PARENT
     l_temp_noeu = .false.
     do ino = 1, nnop
-        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
+        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino, &
                     1, tpn(ino), iret)
         if (iret .ne. 0) tpn(ino) = 0.d0
     end do
@@ -213,7 +213,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDE
     if (nfh .gt. 0) then
-        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
                     itab=jtab)
         ncompn = jtab(2)/jtab(3)
         ASSERT(ncompn .eq. 5)
@@ -245,8 +245,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       RECUPERATION DES DONNEES MATERIAUX
         ipg = idecpg+kpg
-        call rcvad2('XFEM', ipg, 1, '+', zi(imate),&
-                    'ELAS', 4, nomres, valres, devres,&
+        call rcvad2('XFEM', ipg, 1, '+', zi(imate), &
+                    'ELAS', 4, nomres, valres, devres, &
                     icodre)
         if (icodre(3) .ne. 0) then
             valres(3) = 0.d0
@@ -297,15 +297,15 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         end do
 !
 !       CALCUL DES FF
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, &
                     xe, ff, dfdi=dfdi)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       AINSI QUE LES DERIVEES DES FONCTIONS DE FORMES DU SS-ELT
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
-        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
+        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse, &
                                      poids, dfdx, dfdy, dfdz)
-        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
+        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse, &
                                      poids, dfdx, dfdy)
 !
 !       --------------------------------------
@@ -314,9 +314,9 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
         if (singu .gt. 0) then
-            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
-                              lsn, lst, zr(igeom), ka, mu,&
-                              ff, fk, dfdi, dkdgl, elref=elrefp,&
+            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1), &
+                              lsn, lst, zr(igeom), ka, mu, &
+                              ff, fk, dfdi, dkdgl, elref=elrefp, &
                               kstop='C')
         end if
 !
@@ -341,7 +341,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
         p(:, :) = 0.d0
         invp(:, :) = 0.d0
-        call coor_cyl(ndim, nnop, basloc, zr(igeom), ff,&
+        call coor_cyl(ndim, nnop, basloc, zr(igeom), ff, &
                       p, invp, rg, tg, l_not_zero)
 ! BRICOLAGE POUR CALCULER LE SIGNE DE K2 QUAND NDIM=2
         if (ndim .eq. 2) then
@@ -374,7 +374,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             do ig = 1, nfh
                 do i = 1, ndim
                     cpt = cpt+1
-                    depla(i) = depla(i)+xcalc_heav(heavn(in, ig), hea_se, heavn(in, 5))*ff(in)* z&
+                    depla(i) = depla(i)+xcalc_heav(heavn(in, ig), hea_se, heavn(in, 5))*ff(in)*z&
                                &r(idepl-1+indenn+cpt)
                 end do
             end do
@@ -392,9 +392,9 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
 !
-        call xcinem(axi, igeom, nnop, nnops, idepl,&
-                    ndim, he, nfiss, nfh, singu,&
-                    ddls, ddlm, fk, dkdgl, ff,&
+        call xcinem(axi, igeom, nnop, nnops, idepl, &
+                    ndim, he, nfiss, nfh, singu, &
+                    ddls, ddlm, fk, dkdgl, ff, &
                     dfdi, f, eps, grad, heavn)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
@@ -428,7 +428,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       --------------------------------------------------
 !
 !       TEMPERATURE AU POINT DE GAUSS
-        call rcvarc(' ', 'TEMP', '+', 'XFEM', ipg,&
+        call rcvarc(' ', 'TEMP', '+', 'XFEM', ipg, &
                     1, tempg, iret)
         if (iret .ne. 0) tempg = 0.d0
         ttrgu = tempg-tref
@@ -448,19 +448,19 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       cas des varc DTX DTY DTZ, derivees partielles de la temperature
 !       "discontinue". Ces varc sont donnees aux pg xfem
-        call rcvarc(' ', 'DTX', '+', 'XFEM', ipg,&
+        call rcvarc(' ', 'DTX', '+', 'XFEM', ipg, &
                     1, dtx, iret1)
         if (iret1 .eq. 0) then
 !           economisons les appels a rcvarc... si DTX est absent, pas
 !           besoin de recuperer les autres composantes
             ASSERT(.not. l_temp_noeu)
-            call rcvarc(' ', 'DTY', '+', 'XFEM', ipg,&
+            call rcvarc(' ', 'DTY', '+', 'XFEM', ipg, &
                         1, dty, iret2)
             ASSERT(iret2 .eq. 0)
             tgudm(1) = dtx
             tgudm(2) = dty
             if (ndim .eq. 3) then
-                call rcvarc(' ', 'DTZ', '+', 'XFEM', ipg,&
+                call rcvarc(' ', 'DTZ', '+', 'XFEM', ipg, &
                             1, dtz, iret3)
                 ASSERT(iret3 .eq. 0)
                 tgudm(3) = dtz
@@ -488,8 +488,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             end do
         end if
 !
-        call chauxi(ndim, mu, ka, rg, tg,&
-                    invp, lcour, courb, du1dm, du2dm,&
+        call chauxi(ndim, mu, ka, rg, tg, &
+                    invp, lcour, courb, du1dm, du2dm, &
                     du3dm, u1l, u2l, u3l)
 !
 !       CHAMPS SINGULIERS DANS LA BASE GLOBALE
@@ -606,36 +606,36 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         if (ndim .eq. 3) then
 !
             coef = 2.d0
-            call gbil3d(dudme, dudme, dtdme, dfdm, dfdm,&
-                        tgudm, tgudm, ttrgu, ttrgu, poids,&
-                        sigin, dsigin, epsref, c1, c2,&
-                        c3, k3a, alpha, coef, rho,&
+            call gbil3d(dudme, dudme, dtdme, dfdm, dfdm, &
+                        tgudm, tgudm, ttrgu, ttrgu, poids, &
+                        sigin, dsigin, epsref, c1, c2, &
+                        c3, k3a, alpha, coef, rho, &
                         puls, g)
             zr(igthet) = zr(igthet)+g
 !
             coef = 1.d0
-            call gbil3d(dudme, du1dme, dtdme, dfdm, dzero,&
-                        tgudm, tzero, ttrgu, ttrgv, poids,&
-                        sigin, dsigin, epsref, c1, c2,&
-                        c3, k3a, alpha, coef, rho,&
+            call gbil3d(dudme, du1dme, dtdme, dfdm, dzero, &
+                        tgudm, tzero, ttrgu, ttrgv, poids, &
+                        sigin, dsigin, epsref, c1, c2, &
+                        c3, k3a, alpha, coef, rho, &
                         puls, k1)
             zr(igthet+4) = zr(igthet+4)+k1*coefk
             zr(igthet+1) = zr(igthet+1)+k1*sqrt(coefk)
 !
             coef = 1.d0
-            call gbil3d(dudme, du2dme, dtdme, dfdm, dzero,&
-                        tgudm, tzero, ttrgu, ttrgv, poids,&
-                        sigin, dsigin, epsref, c1, c2,&
-                        c3, k3a, alpha, coef, rho,&
+            call gbil3d(dudme, du2dme, dtdme, dfdm, dzero, &
+                        tgudm, tzero, ttrgu, ttrgv, poids, &
+                        sigin, dsigin, epsref, c1, c2, &
+                        c3, k3a, alpha, coef, rho, &
                         puls, k2)
             zr(igthet+5) = zr(igthet+5)+k2*coefk
             zr(igthet+2) = zr(igthet+2)+k2*sqrt(coefk)
 !
             coef = 1.d0
-            call gbil3d(dudme, du3dme, dtdme, dfdm, dzero,&
-                        tgudm, tzero, ttrgu, ttrgv, poids,&
-                        sigin, dsigin, epsref, c1, c2,&
-                        c3, k3a, alpha, coef, rho,&
+            call gbil3d(dudme, du3dme, dtdme, dfdm, dzero, &
+                        tgudm, tzero, ttrgu, ttrgv, poids, &
+                        sigin, dsigin, epsref, c1, c2, &
+                        c3, k3a, alpha, coef, rho, &
                         puls, k3)
             zr(igthet+6) = zr(igthet+6)+k3*coeff3
             zr(igthet+3) = zr(igthet+3)+k3*sqrt(coeff3)
@@ -645,29 +645,29 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !           POUR G, COEF = 2
             coef = 2.d0
             cs = 1.d0
-            call gbilin('XFEM', ipg, zi(imate), dudme, dudme,&
-                        dtdme, dfdm, tgudm, poids, sigin,&
-                        dsigin, epsref, c1, c2, c3,&
-                        cs, th, coef, rho, puls,&
+            call gbilin('XFEM', ipg, zi(imate), dudme, dudme, &
+                        dtdme, dfdm, tgudm, poids, sigin, &
+                        dsigin, epsref, c1, c2, c3, &
+                        cs, th, coef, rho, puls, &
                         axi, g)
 !
 !           POUR K1, COEF = 1
             coef = 1.d0
             cs = 0.5d0
-            call gbilin('XFEM', ipg, zi(imate), dudme, du1dme,&
-                        dtdme, dfdm, tgudm, poids, sigin,&
-                        dsigin, epsref, c1, c2, c3,&
-                        cs, th, coef, rho, puls,&
+            call gbilin('XFEM', ipg, zi(imate), dudme, du1dme, &
+                        dtdme, dfdm, tgudm, poids, sigin, &
+                        dsigin, epsref, c1, c2, c3, &
+                        cs, th, coef, rho, puls, &
                         axi, k1)
             k1 = k1*coefk
 !
 !           POUR K2, COEF = 1
             coef = 1.d0
             cs = 0.5d0
-            call gbilin('XFEM', ipg, zi(imate), dudme, du2dme,&
-                        dtdme, dfdm, tgudm, poids, sigin,&
-                        dsigin, epsref, c1, c2, c3,&
-                        cs, th, coef, rho, puls,&
+            call gbilin('XFEM', ipg, zi(imate), dudme, du2dme, &
+                        dtdme, dfdm, tgudm, poids, sigin, &
+                        dsigin, epsref, c1, c2, c3, &
+                        cs, th, coef, rho, puls, &
                         axi, k2)
             k2 = k2*coefk
             if (e3(3) .lt. 0) k2 = -k2

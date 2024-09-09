@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -106,9 +106,9 @@ subroutine chrpno(champ1, repere, nom_cham, type)
     chams1 = '&&CHRPNO.CHAMS1'
     call cnocns(champ1, 'V', chams0)
 !   sélection des composantes :
-    call selectCompN(chams0, nom_cham, type, nbcmp, nom_cmp,&
+    call selectCompN(chams0, nom_cham, type, nbcmp, nom_cmp, &
                      ndim_type)
-    call cnsred(chams0, 0, [0], nbcmp, nom_cmp,&
+    call cnsred(chams0, 0, [0], nbcmp, nom_cmp, &
                 'V', chams1)
     call detrsd('CHAM_NO_S', chams0)
     call jeveuo(chams1//'.CNSK', 'L', vk8=cnsk)
@@ -143,7 +143,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
     do iocc = 1, nocc
 ! Construction de la liste des numéros de noeuds
 ! sélectionnées par les mots-clés GROUP_NO et NOEUD
-        call reliem(' ', ma, 'NU_NOEUD', 'AFFE', iocc,&
+        call reliem(' ', ma, 'NU_NOEUD', 'AFFE', iocc, &
                     4, motcle, typmcl, mesnoe, nbn)
 !
         if (nbn .gt. 0) then
@@ -196,10 +196,10 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 !
         if (repere(1:11) .eq. 'UTILISATEUR') then
 !        SI LE NOUVEAU REPERE EST DONNE VIA DES VECTEURS
-            call getvr8('AFFE', 'VECT_X', iocc=iocc, nbval=3, vect=vectx,&
+            call getvr8('AFFE', 'VECT_X', iocc=iocc, nbval=3, vect=vectx, &
                         nbret=ibid)
             if (ibid .ne. 0) then
-                call getvr8('AFFE', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
+                call getvr8('AFFE', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty, &
                             nbret=ibid)
                 if (ndim .ne. 3) then
                     call utmess('F', 'ALGORITH2_4')
@@ -207,7 +207,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                 call angvxy(vectx, vecty, angnot)
             else
                 if (ndim .eq. 3) then
-                    call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angnot,&
+                    call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angnot, &
                                 nbret=ibid)
                     if (ibid .ne. 3) then
                         call utmess('F', 'ALGORITH2_7')
@@ -291,7 +291,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 !
                     end if
 !
- 10                 continue
+10                  continue
                 end do
             else
 ! VECTEUR
@@ -339,7 +339,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         end do
 !
                     end if
- 13                 continue
+13                  continue
                 end do
             end if
         else if (repere(1:5) .eq. 'COQUE') then
@@ -347,18 +347,18 @@ subroutine chrpno(champ1, repere, nom_cham, type)
         else
 ! REPERE CYLINDRIQUE
             if (ndim .eq. 3) then
-                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=3, vect=orig,&
+                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=3, vect=orig, &
                             nbret=ibid)
                 if (ibid .ne. 3) then
                     call utmess('F', 'ALGORITH2_8')
                 end if
-                call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=3, vect=axez,&
+                call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=3, vect=axez, &
                             nbret=ibid)
                 if (ibid .eq. 0) then
                     call utmess('F', 'ALGORITH2_9')
                 end if
             else
-                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=2, vect=orig,&
+                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=2, vect=orig, &
                             nbret=ibid)
                 if (ibid .ne. 2) then
                     call utmess('A', 'ALGORITH2_10')
@@ -436,7 +436,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                                     goto 17
                                 end if
                             end do
- 17                         continue
+17                          continue
                         end do
 !
 !                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
@@ -497,7 +497,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         valer(5) = valet(4)
                         valer(6) = valet(5)
                         do ii = 1, nbcmp
-                            zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(licmpu(ii) )
+                            zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(licmpu(ii))
                         end do
                     else
 ! CHAMP COMPLEXE
@@ -536,7 +536,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         end do
 !
                     end if
- 16                 continue
+16                  continue
                 end do
             else
 ! VECTEUR
@@ -595,7 +595,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                                     goto 24
                                 end if
                             end do
- 24                         continue
+24                          continue
                         end do
 !                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                         if (ipt2 .eq. 0) then
@@ -671,7 +671,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 !
                     end if
 !
- 23                 continue
+23                  continue
                 end do
             end if
         end if
@@ -679,7 +679,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 ! Fin de la boucle sur les occcurrences du mot-clé AFFE
         call jedetr(mesnoe)
     end do
-    call cnscno(chams1, ' ', 'NON', 'G', champ1,&
+    call cnscno(chams1, ' ', 'NON', 'G', champ1, &
                 'F', ibid)
     call detrsd('CHAM_NO_S', chams1)
 !

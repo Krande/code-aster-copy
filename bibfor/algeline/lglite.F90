@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lglite(yf, nbmat, mater, f0, devg,&
+subroutine lglite(yf, nbmat, mater, f0, devg, &
                   devgii, traceg, dy, codret)
 !
     implicit none
@@ -107,13 +107,13 @@ subroutine lglite(yf, nbmat, mater, f0, devg,&
 ! ======================================================================
 ! --- CALCUL DES DIFFERENTES DERIVEES ----------------------------------
 ! ======================================================================
-    call calcdr(nbmat, mater, zr(jpara), zr(jderiv), gn,&
-                invn, q, devg, devgii, traceg,&
+    call calcdr(nbmat, mater, zr(jpara), zr(jderiv), gn, &
+                invn, q, devg, devgii, traceg, &
                 dfdl)
 ! ======================================================================
 ! --- CALCUL DES DIFFERENTS INCREMENTS ---------------------------------
 ! ======================================================================
-    call calcdy(mu, k, f0, devg, devgii,&
+    call calcdy(mu, k, f0, devg, devgii, &
                 traceg, dfdl, deltan, dy)
 ! ======================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES --------------------------------

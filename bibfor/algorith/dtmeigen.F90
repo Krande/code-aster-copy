@@ -174,17 +174,17 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
             call jedup1(matmass//'.DESC', 'V', matamor//'.DESC')
 !
 !           --- .VALM
-            call jecrec(matmass//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
+            call jecrec(matmass//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', &
                         1)
             call jeecra(matmass//'.VALM', 'LONMAX', nbmode*(nbmode+1)/2)
             call jecroc(jexnum(matmass//'.VALM', 1))
 !
-            call jecrec(matrigi//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
+            call jecrec(matrigi//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', &
                         1)
             call jeecra(matrigi//'.VALM', 'LONMAX', nbmode*(nbmode+1)/2)
             call jecroc(jexnum(matrigi//'.VALM', 1))
 !
-            call jecrec(matamor//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
+            call jecrec(matamor//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', &
                         1)
             call jeecra(matamor//'.VALM', 'LONMAX', nbmode*(nbmode+1)/2)
             call jecroc(jexnum(matamor//'.VALM', 1))
@@ -329,13 +329,13 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         stoper = 'NON'
 ! TYPE DE CALCUL: 'CALIBRATION' OU 'TOUT'.
         typcal = 'TOUT'
-        call vpcres(eigsol, typres, raide2, masse2, k19bid,&
-                    optiof, method, modrig, arret, k19bid,&
-                    stoper, sturm, typcal, k1bid, k16bid,&
-                    nbmode, nbvect, nbvec2, nbrss, nbborn,&
-                    ibid, ibid, ibid, ibid, maxitr,&
-                    bande, precsh, omecor, precdc, r8bid,&
-                    r8bid, r8bid, r8bid, r8bid, tolsor,&
+        call vpcres(eigsol, typres, raide2, masse2, k19bid, &
+                    optiof, method, modrig, arret, k19bid, &
+                    stoper, sturm, typcal, k1bid, k16bid, &
+                    nbmode, nbvect, nbvec2, nbrss, nbborn, &
+                    ibid, ibid, ibid, ibid, maxitr, &
+                    bande, precsh, omecor, precdc, r8bid, &
+                    r8bid, r8bid, r8bid, r8bid, tolsor, &
                     alpha)
 !
 !       2.1 - Mode calculation
@@ -343,7 +343,7 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         mod45 = 'VIBR'
         sdstab = '&&DUMMY'
         call nmop45(eigsol, l_hpp, mod45, modes, sdstab)
-        call vpleci(eigsol, 'I', 1, k24bid, r8bid,&
+        call vpleci(eigsol, 'I', 1, k24bid, r8bid, &
                     nbmode)
         call detrsd('EIGENSOLVER', eigsol)
 !
@@ -357,14 +357,14 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         call mtdscr(matmass)
         call jeveuo(matmass//'.&INT', 'E', lmatm)
 !
-        call vprecu(modes, 'DEPL', -1, zi(1), base_jv,&
-                    9, nopara(1), kvali, kvalr, kvalk,&
-                    zi(1), ibid, zk8(1), zi(1), zi(1),&
+        call vprecu(modes, 'DEPL', -1, zi(1), base_jv, &
+                    9, nopara(1), kvali, kvalr, kvalk, &
+                    zi(1), ibid, zk8(1), zi(1), zi(1), &
                     zi(1))
         call jeveuo(base_jv, 'E', jbase)
         call jeveuo(kvalr, 'E', vr=valr)
-        call vpnorm('MASS_GENE', 'NON', lmatm, nbmode, nbmode,&
-                    zi(1), zr(jbase), valr, [0.d0, 0.d0, 0.d0], 0,&
+        call vpnorm('MASS_GENE', 'NON', lmatm, nbmode, nbmode, &
+                    zi(1), zr(jbase), valr, [0.d0, 0.d0, 0.d0], 0, &
                     0, coefr)
 !
 !       3 - Project the stiffness and damping matrices onto this basis
@@ -400,7 +400,7 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         call mtdscr(matrigi)
         call jeveuo(matrigi//'.&INT', 'E', lmatk)
         do i = 1, nbmode
-            call mrmult('ZERO', lmatk, zr(jbase+(i-1)*nbmode), coefr, 1,&
+            call mrmult('ZERO', lmatk, zr(jbase+(i-1)*nbmode), coefr, 1, &
                         .true._1)
             b_n = to_blas_int(nbmode)
             b_incx = to_blas_int(1)
@@ -412,7 +412,7 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         call mtdscr(matamor)
         call jeveuo(matamor//'.&INT', 'E', lmatc)
         do i = 1, nbmode
-            call mrmult('ZERO', lmatc, zr(jbase+(i-1)*nbmode), coefr, 1,&
+            call mrmult('ZERO', lmatc, zr(jbase+(i-1)*nbmode), coefr, 1, &
                         .true._1)
             do j = 1, nbmode
                 b_n = to_blas_int(nbmode)
@@ -461,8 +461,8 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
             base_jv = sd_dtm//'.PRJ_BAS.'//case0k7
             call jeveuo(base_jv, 'E', vr=phi0_v)
             AS_ALLOCATE(vr=base, size=nbmode*nbmode)
-            call prmama(1, phi0_v, nbmode, nbmode, nbmode,&
-                        zr(jbase), nbmode, nbmode, nbmode, base,&
+            call prmama(1, phi0_v, nbmode, nbmode, nbmode, &
+                        zr(jbase), nbmode, nbmode, nbmode, base, &
                         nbmode, nbmode, nbmode, iret)
             b_n = to_blas_int(nbmode*nbmode)
             b_incx = to_blas_int(1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmchat(matel, mat, nbvar, memo, visc,&
-                  plast, sigmdv, depsdv, pm, dp,&
-                  ndimsi, dt, rpvp, qp, vim,&
-                  idelta, n1, n2, beta1, beta2,&
+subroutine nmchat(matel, mat, nbvar, memo, visc, &
+                  plast, sigmdv, depsdv, pm, dp, &
+                  ndimsi, dt, rpvp, qp, vim, &
+                  idelta, n1, n2, beta1, beta2, &
                   dsidep)
 ! person_in_charge: jean-michel.proix at edf.fr
 !.======================================================================
@@ -220,7 +220,7 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
             dn2 = dn2+dgam2p*(delta2*dp+beta2*(delta2-1.d0))
             dn2 = (dn2-n2*(gamm2p+dgam2p*dp))/(1.d0+gamm2p*dp)
 !
-            ddenom = drp+3.d0*mu+mp*n1+m2p*n2+(dmp*n1+dm2p*n2)*dp+dvp +dp*mp*dn1+dp*mp*dn2
+            ddenom = drp+3.d0*mu+mp*n1+m2p*n2+(dmp*n1+dm2p*n2)*dp+dvp+dp*mp*dn1+dp*mp*dn2
         else
             ddenom = drp+3.d0*mu+mp+m2p+(dmp+dm2p)*dp+dvp
         end if

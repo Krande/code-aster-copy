@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
-                  masse, amort, rigid, fexte, famor,&
-                  fliai, fnoda, fcine, lamort, ldyna,&
+subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
+                  masse, amort, rigid, fexte, famor, &
+                  fliai, fnoda, fcine, lamort, ldyna, &
                   lexpl, ds_energy, schema)
 !
     use NonLin_Datastructure_type
@@ -248,7 +248,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     AS_ALLOCATE(vr=fmoy, size=neq)
     if (ds_energy%command .eq. 'DYNA_VIBRA') then
         AS_ALLOCATE(vr=kumoyz, size=neq)
-        call mrmult('ZERO', irigid, zr(iumoyz), kumoyz, 1,&
+        call mrmult('ZERO', irigid, zr(iumoyz), kumoyz, 1, &
                     .true._1)
         b_n = to_blas_int(neq)
         b_incx = to_blas_int(1)
@@ -269,7 +269,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! --------------------------------------------------------------------
     if (ldyna) then
         AS_ALLOCATE(vr=mdv, size=neq)
-        call mrmult('ZERO', imasse, vpmvmz, mdv, 1,&
+        call mrmult('ZERO', imasse, vpmvmz, mdv, 1, &
                     .true._1)
         b_n = to_blas_int(neq)
         b_incx = to_blas_int(1)
@@ -293,9 +293,9 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! LAGRANGES PORTES PAR LA MATRICE DE MASSE
             call wkvect('&&ENERCA.MUMOY', 'V V R', neq, imumoy)
             AS_ALLOCATE(vr=mumoyz, size=neq)
-            call mrmult('ZERO', imasse, zr(iumoy), zr(imumoy), 1,&
+            call mrmult('ZERO', imasse, zr(iumoy), zr(imumoy), 1, &
                         .true._1)
-            call mrmult('ZERO', imasse, zr(iumoyz), mumoyz, 1,&
+            call mrmult('ZERO', imasse, zr(iumoyz), mumoyz, 1, &
                         .true._1)
             do iaux = 1, neq
                 fmoy(iaux) = mumoyz(iaux)-zr(imumoy-1+iaux)
@@ -307,7 +307,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
         else
 ! LAGRANGES PORTES PAR LA MATRICE DE RIGIDITE
             call wkvect('&&ENERCA.KUMOY', 'V V R  ', neq, ikumoy)
-            call mrmult('ZERO', irigid, zr(iumoy), zr(ikumoy), 1,&
+            call mrmult('ZERO', irigid, zr(iumoy), zr(ikumoy), 1, &
                         .true._1)
             do iaux = 1, neq
                 fmoy(iaux) = kumoyz(iaux)-zr(ikumoy-1+iaux)
@@ -363,7 +363,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
         if (lamort) then
             if (zi(iamort+3) .eq. 1) then
                 call wkvect('&&ENERCA.CVMOYZ', 'V V R', neq, icvmoz)
-                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1,&
+                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1, &
                             .true._1)
                 b_n = to_blas_int(neq)
                 b_incx = to_blas_int(1)
@@ -371,7 +371,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
                 amor = amor+ddot(b_n, zr(iupmuz), b_incx, zr(icvmoz), b_incy)
             else
                 call wkvect('&&ENERCA.CVMOYZ', 'V V C', neq, icvmoz)
-                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1,&
+                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1, &
                             .true._1)
                 b_n = to_blas_int(neq)
                 b_incx = to_blas_int(1)
@@ -480,8 +480,8 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     call jedetr('&&ENERCA.VPMVM')
     AS_DEALLOCATE(vr=vpmvmz)
 !
-    101 format('(', i3, 'A1)')
-    102 format('((A1,1X,A15,1X),', i1, '(A1,A13),A1)')
-    103 format('((A1,1X,A15,1X),', i1, '(A1,1X,ES11.4,1X),A1)')
+101 format('(', i3, 'A1)')
+102 format('((A1,1X,A15,1X),', i1, '(A1,A13),A1)')
+103 format('((A1,1X,A15,1X),', i1, '(A1,1X,ES11.4,1X),A1)')
     call jedema()
 end subroutine

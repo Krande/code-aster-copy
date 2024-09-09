@@ -54,7 +54,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalCell(hhoBasisCell, order, pt, coeff, size_coeff) result (eval)
+    function hhoEvalScalCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
@@ -94,7 +94,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalFace(hhoBasisFace, order, pt, coeff, size_coeff) result (eval)
+    function hhoEvalScalFace(hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
@@ -134,7 +134,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecCell(hhoBasisCell, order, pt, coeff, size_coeff) result (eval)
+    function hhoEvalVecCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
@@ -180,7 +180,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecFace(hhoBasisFace, order, pt, coeff, size_coeff) result (eval)
+    function hhoEvalVecFace(hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
@@ -226,7 +226,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalMatCell(hhoBasisCell, order, pt, coeff, size_coeff) result (eval)
+    function hhoEvalMatCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
@@ -274,7 +274,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalSymMatCell(hhoBasisCell, order, pt, coeff, size_coeff) result (eval)
+    function hhoEvalSymMatCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
@@ -352,7 +352,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara,&
+    subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara, &
                                   ndim, FuncValuesQp, coeff_mult)
 !
         implicit none
@@ -391,14 +391,14 @@ contains
 !
         if (ndim == 0) then
             do ipg = 1, npg
-                call fointe('FM', nomfunc, nbpara, nompara, valpara,&
+                call fointe('FM', nomfunc, nbpara, nompara, valpara, &
                             FuncValuesQP(ipg), iret)
                 ASSERT(iret == 0)
             end do
         else if (ndim <= 3) then
             do ipg = 1, npg
                 valpara(1:ndim) = hhoQuad%points(1:ndim, ipg)
-                call fointe('FM', nomfunc, nbpara, nompara, valpara,&
+                call fointe('FM', nomfunc, nbpara, nompara, valpara, &
                             FuncValuesQP(ipg), iret)
                 ASSERT(iret == 0)
             end do
@@ -509,7 +509,7 @@ contains
             call elrfvf(typma, hhoQuad%points_param(1:3, ipg), ff)
             do idim = 1, celldim
                 do ino = 1, hhoFace%nbnodes
-                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ ff(ino)*funcnoEF(celldim*(&
+                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ff(ino)*funcnoEF(celldim*(&
                                               &ino-1)+idim)
                 end do
             end do
@@ -565,7 +565,7 @@ contains
             call elrfvf(typma, hhoQuad%points_param(1:3, ipg), ff)
             do idim = 1, hhoCell%ndim
                 do ino = 1, hhoCell%nbnodes
-                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ ff(ino)*funcnoEF(hhoCell%n&
+                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ff(ino)*funcnoEF(hhoCell%n&
                                               &dim*(ino-1)+idim)
                 end do
             end do

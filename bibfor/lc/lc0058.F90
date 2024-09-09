@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,C1505
 !
-subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim,&
-                  typmod, imate, compor, carcri, instam,&
-                  instap, neps, epsm, deps, nsig,&
-                  sigm, nvi, vim, option, angmas,&
+subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
+                  typmod, imate, compor, carcri, instam, &
+                  instap, neps, epsm, deps, nsig, &
+                  sigm, nvi, vim, option, angmas, &
                   sigp, vip, ndsde, dsidep, codret)
 !
     use Behaviour_type
@@ -171,12 +171,12 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim,&
     call mgis_get_number_of_props(extern_addr, nprops)
     ASSERT(nprops <= npropmax)
 !
-    call mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg,&
+    call mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
                                 ksp, imate, props, nprops)
 !
 ! - Prepare strains
 !
-    call mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps,&
+    call mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
                              stran, dstran)
 !
 ! - Number of internal state variables
@@ -239,20 +239,20 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim,&
     call mgis_set_gradients(extern_addr, s0, stran, nstran)
     call mgis_set_thermodynamic_forces(extern_addr, s0, sigp_loc, 2*ndim)
     call mgis_set_internal_state_variables(extern_addr, s0, vi_loc, nstatv)
-    call mgis_set_external_state_variables(extern_addr, s0, BEHinteg%exte%predef,&
+    call mgis_set_external_state_variables(extern_addr, s0, BEHinteg%exte%predef, &
                                            BEHinteg%exte%nb_pred)
 !
     call mgis_set_material_properties(extern_addr, s1, props, nprops)
     call mgis_set_gradients(extern_addr, s1, stran+dstran, nstran)
-    call mgis_set_external_state_variables(extern_addr, s1,&
-                                           BEHinteg%exte%predef+BEHinteg%exte%dpred,&
+    call mgis_set_external_state_variables(extern_addr, s1, &
+                                           BEHinteg%exte%predef+BEHinteg%exte%dpred, &
                                            BEHinteg%exte%nb_pred)
 !
 ! call mgis_debug(extern_addr, "Before integration:")
 !
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:9)&
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:9) &
         .eq. 'RIGI_MECA') then
-        call mgis_integrate(extern_addr, sigp_loc, vi_loc, ddsdde, dtime,&
+        call mgis_integrate(extern_addr, sigp_loc, vi_loc, ddsdde, dtime, &
                             pnewdt, retcode)
         ASSERT(nstatv .le. nvi)
     end if
@@ -274,8 +274,8 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim,&
 ! - Convert matrix
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        call lcicma(ddsdde, ntens, ntens, ntens, ntens,&
-                    1, 1, dsidep_loc, 6, 6,&
+        call lcicma(ddsdde, ntens, ntens, ntens, ntens, &
+                    1, 1, dsidep_loc, 6, 6, &
                     1, 1)
         dsidep_loc(1:6, 4:6) = dsidep_loc(1:6, 4:6)*rac2
         dsidep_loc(4:6, 1:6) = dsidep_loc(4:6, 1:6)*rac2

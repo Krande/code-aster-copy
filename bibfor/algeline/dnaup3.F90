@@ -198,12 +198,12 @@
 !
 ! ASTER INFORMATION
 ! 07/01/2000 TOILETTAGE DU FORTRAN SUIVANT LES REGLES ASTER,
-subroutine dnaup3(ido, bmat, n, which, nev,&
-                  np, tol, resid, ishift, mxiter,&
-                  v, ldv, h, ldh, ritzr,&
-                  ritzi, bounds, q, ldq, workl,&
-                  ipntr, workd, info, neqact, alpha,&
-                  nsta, ddlsta, vstab, csta, ldynfa,&
+subroutine dnaup3(ido, bmat, n, which, nev, &
+                  np, tol, resid, ishift, mxiter, &
+                  v, ldv, h, ldh, ritzr, &
+                  ritzi, bounds, q, ldq, workl, &
+                  ipntr, workd, info, neqact, alpha, &
+                  nsta, ddlsta, vstab, csta, ldynfa, &
                   ddlexc, redem)
 !            DISPARITION DE SECOND ET DLAMCH,
 !            COMMON TIMING REMPLACE PAR COMMON INFOR,
@@ -368,8 +368,8 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !
 !
     if (getv0) then
-        call dgetv0(ido, bmat, 1, initv, n,&
-                    1, v, ldv, resid, rnorm,&
+        call dgetv0(ido, bmat, 1, initv, n, &
+                    1, v, ldv, resid, rnorm, &
                     ipntr, workd, info, alpha)
         if (ido .ne. 99) goto 9000
         if (rnorm .eq. zero) then
@@ -409,8 +409,8 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !     | COMPUTE THE FIRST NEV STEPS OF THE ARNOLDI FACTORIZATION |
 !     %----------------------------------------------------------%
 !
-    call dnaitr(ido, bmat, n, 0, nev,&
-                resid, rnorm, v, ldv, h,&
+    call dnaitr(ido, bmat, n, 0, nev, &
+                resid, rnorm, v, ldv, h, &
                 ldh, ipntr, workd, info, alpha)
 !
 !     %---------------------------------------------------%
@@ -438,7 +438,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !
     iter = iter+1
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, [iter], ndigit,&
+        call ivout(logfil, 1, [iter], ndigit, &
                    '_NAUP2: **** START OF MAJOR ITERATION NUMBER ****')
     end if
 !
@@ -450,7 +450,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !
     np = kplusp-nev
     if (msglvl .gt. 1) then
-        call ivout(logfil, 1, [nev], ndigit,&
+        call ivout(logfil, 1, [nev], ndigit, &
                    '_NAUP2: THE LENGTH OF THE CURRENT ARNOLDI FACTORIZATION')
         call ivout(logfil, 1, [np], ndigit, '_NAUP2: EXTEND THE ARNOLDI FACTORIZATION BY')
     end if
@@ -460,10 +460,10 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !        %-----------------------------------------------------------%
 !
     ido = 0
- 20 continue
+20  continue
     update = .true.
-    call dnaitr(ido, bmat, n, nev, np,&
-                resid, rnorm, v, ldv, h,&
+    call dnaitr(ido, bmat, n, nev, np, &
+                resid, rnorm, v, ldv, h, &
                 ldh, ipntr, workd, info, alpha)
 !
 !        %---------------------------------------------------%
@@ -501,8 +501,8 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !        | OF THE CURRENT UPPER HESSENBERG MATRIX.                |
 !        %--------------------------------------------------------%
 !
-    call dneigh(rnorm, kplusp, h, ldh, ritzr,&
-                ritzi, bounds, q, ldq, workl,&
+    call dneigh(rnorm, kplusp, h, ldh, ritzr, &
+                ritzi, bounds, q, ldq, workl, &
                 ierr)
 !
     beta = 0.d0
@@ -530,8 +530,8 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
         else
             write (ifm, *) 'STABILITE ASSUREE'
         end if
-        call unista(h, ldh, v, ldv, ddlsta,&
-                    n, vstab, csta, beta, etat,&
+        call unista(h, ldh, v, ldv, ddlsta, &
+                    n, vstab, csta, beta, etat, &
                     ldynfa, ddlexc, redem)
     end if
 !
@@ -574,7 +574,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
     nev = nev0
     np = np0
     numcnv = nev
-    call dngets(ishift, which, nev, np, ritzr,&
+    call dngets(ishift, which, nev, np, ritzr, &
                 ritzi, bounds, workl, workl(np+1))
     if (nev .eq. nev0+1) numcnv = nev0+1
 !
@@ -586,7 +586,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, bounds(np+1), b_incx, workl(2*np+1), b_incy)
-    call dnconv(nev, ritzr(np+1), ritzi(np+1), workl(2*np+1), tol,&
+    call dnconv(nev, ritzr(np+1), ritzi(np+1), workl(2*np+1), tol, &
                 nconv)
 !
     if (msglvl .gt. 2) then
@@ -596,9 +596,9 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
         kp(4) = nconv
         call ivout(logfil, 4, kp, ndigit, '_NAUP2: NEV, NP, NUMCNV, NCONV ARE')
         call dvout(logfil, kplusp, ritzr, ndigit, '_NAUP2: REAL PART OF THE EIGENVALUES OF H')
-        call dvout(logfil, kplusp, ritzi, ndigit,&
+        call dvout(logfil, kplusp, ritzi, ndigit, &
                    '_NAUP2: IMAGINARY PART OF THE EIGENVALUES OF H')
-        call dvout(logfil, kplusp, bounds, ndigit,&
+        call dvout(logfil, kplusp, bounds, ndigit, &
                    '_NAUP2: RITZ ESTIMATES OF THE CURRENT NCV RITZ VALUES')
     end if
 !
@@ -623,11 +623,11 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
     if ((nconv .ge. numcnv) .or. (iter .gt. mxiter) .or. (np .eq. 0)) then
 !
         if (msglvl .gt. 4) then
-            call dvout(logfil, kplusp, workl(kplusp**2+1), ndigit,&
+            call dvout(logfil, kplusp, workl(kplusp**2+1), ndigit, &
                        '_NAUP2: REAL PART OF THE EIG COMPUTED BY _NEIGH:')
-            call dvout(logfil, kplusp, workl(kplusp**2+kplusp+1), ndigit,&
+            call dvout(logfil, kplusp, workl(kplusp**2+kplusp+1), ndigit, &
                        '_NAUP2: IMAG PART OF THE EIG COMPUTED BY _NEIGH:')
-            call dvout(logfil, kplusp, workl(kplusp**2+kplusp*2+1), ndigit,&
+            call dvout(logfil, kplusp, workl(kplusp**2+kplusp*2+1), ndigit, &
                        '_NAUP2: RITZ EISTMATES COMPUTED BY _NEIGH:')
         end if
 !
@@ -661,7 +661,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
         if (which .eq. 'LI') wprime = 'SM'
         if (which .eq. 'SI') wprime = 'LM'
 !
-        call dsortc(wprime, .true._1, kplusp, ritzr, ritzi,&
+        call dsortc(wprime, .true._1, kplusp, ritzr, ritzi, &
                     bounds)
 !
 !           %----------------------------------------------%
@@ -678,7 +678,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
         if (which .eq. 'LI') wprime = 'SI'
         if (which .eq. 'SI') wprime = 'LI'
 !
-        call dsortc(wprime, .true._1, kplusp, ritzr, ritzi,&
+        call dsortc(wprime, .true._1, kplusp, ritzr, ritzi, &
                     bounds)
 !
 !           %--------------------------------------------------%
@@ -699,7 +699,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !           %----------------------------------------------------%
 !
         wprime = 'LR'
-        call dsortc(wprime, .true._1, nev0, bounds, ritzr,&
+        call dsortc(wprime, .true._1, nev0, bounds, ritzr, &
                     ritzi)
 !
 !           %----------------------------------------------%
@@ -718,13 +718,13 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !           | RITZR, RITZI AND BOUND.                        |
 !           %------------------------------------------------%
 !
-        call dsortc(which, .true._1, nconv, ritzr, ritzi,&
+        call dsortc(which, .true._1, nconv, ritzr, ritzi, &
                     bounds)
 !
         if (msglvl .gt. 1) then
-            call dvout(logfil, kplusp, ritzr, ndigit,&
+            call dvout(logfil, kplusp, ritzr, ndigit, &
                        '_NAUP2: SORTED REAL PART OF THE EIGENVALUES')
-            call dvout(logfil, kplusp, ritzi, ndigit,&
+            call dvout(logfil, kplusp, ritzi, ndigit, &
                        '_NAUP2: SORTED IMAGINARY PART OF THE EIGENVALUES')
             call dvout(logfil, kplusp, bounds, ndigit, '_NAUP2: SORTED RITZ ESTIMATES.')
         end if
@@ -766,23 +766,23 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !           | RESORT THE EIGENVALUES.               |
 !           %---------------------------------------%
 !
-        if (nevbef .lt. nev) call dngets(ishift, which, nev, np, ritzr,&
+        if (nevbef .lt. nev) call dngets(ishift, which, nev, np, ritzr, &
                                          ritzi, bounds, workl, workl(np+1))
 !
     end if
 !
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, [nconv], ndigit,&
+        call ivout(logfil, 1, [nconv], ndigit, &
                    '_NAUP2: NO. OF "CONVERGED" RITZ VALUES AT THIS ITER.')
         if (msglvl .gt. 1) then
             kp(1) = nev
             kp(2) = np
             call ivout(logfil, 2, kp, ndigit, '_NAUP2: NEV AND NP ARE')
-            call dvout(logfil, nev, ritzr(np+1), ndigit,&
+            call dvout(logfil, nev, ritzr(np+1), ndigit, &
                        '_NAUP2: "WANTED" RITZ VALUES -- REAL PART')
-            call dvout(logfil, nev, ritzi(np+1), ndigit,&
+            call dvout(logfil, nev, ritzi(np+1), ndigit, &
                        '_NAUP2: "WANTED" RITZ VALUES -- IMAG PART')
-            call dvout(logfil, nev, bounds(np+1), ndigit,&
+            call dvout(logfil, nev, bounds(np+1), ndigit, &
                        '_NAUP2: RITZ ESTIMATES OF THE "WANTED" VALUES ')
         end if
     end if
@@ -800,7 +800,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
         goto 9000
     end if
 !
- 50 continue
+50  continue
 !
 !        %------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION,   |
@@ -831,7 +831,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
         call ivout(logfil, 1, [np], ndigit, '_NAUP2: THE NUMBER OF SHIFTS TO APPLY ')
         call dvout(logfil, np, ritzr, ndigit, '_NAUP2: REAL PART OF THE SHIFTS')
         call dvout(logfil, np, ritzi, ndigit, '_NAUP2: IMAGINARY PART OF THE SHIFTS')
-        if (ishift .eq. 1) call dvout(logfil, np, bounds, ndigit,&
+        if (ishift .eq. 1) call dvout(logfil, np, bounds, ndigit, &
                                       '_NAUP2: RITZ ESTIMATES OF THE SHIFTS')
     end if
 !
@@ -842,8 +842,8 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !        | THE FIRST 2*N LOCATIONS OF WORKD ARE USED AS WORKSPACE. |
 !        %---------------------------------------------------------%
 !
-    call dnapps(n, nev, np, ritzr, ritzi,&
-                v, ldv, h, ldh, resid,&
+    call dnapps(n, nev, np, ritzr, ritzi, &
+                v, ldv, h, ldh, resid, &
                 q, ldq, workl, workd)
 !
 !        %---------------------------------------------%
@@ -896,9 +896,9 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
     cnorm = .false.
 !
     if (msglvl .gt. 2) then
-        call dvout(logfil, 1, [rnorm], ndigit,&
+        call dvout(logfil, 1, [rnorm], ndigit, &
                    '_NAUP2: B-NORM OF RESIDUAL FOR COMPRESSED FACTORIZATION')
-        call dmout(logfil, nev, nev, h, ldh,&
+        call dmout(logfil, nev, nev, h, ldh, &
                    ndigit, '_NAUP2: COMPRESSED UPPER HESSENBERG MATRIX H')
     end if
 !
@@ -918,7 +918,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 1200 continue
     ido = 99
 !
-    9050 format(72(' '))
+9050 format(72(' '))
 !
 9000 continue
 !

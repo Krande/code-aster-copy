@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@ subroutine romAlgoNLMecaResidual(v_cnequi, ds_algorom, l_cine, v_ccid, resi)
 ! - Compute norm
 !
     do iMode = 1, nbMode
-        call rsexch(' ', resultName, fieldName, iMode, resultField,&
+        call rsexch(' ', resultName, fieldName, iMode, resultField, &
                     iret)
         call jeveuo(resultField(1:19)//'.VALE', 'E', vr=resultVale)
         b_n = to_blas_int(nbEqua)

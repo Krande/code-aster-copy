@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
-                  nfiss, ifiss, fisco, nfisc, noma,&
-                  nmaabs, typdis, pinter, ninter, ainter,&
+subroutine xcface(lsn, lst, jgrlsn, igeom, enr, &
+                  nfiss, ifiss, fisco, nfisc, noma, &
+                  nmaabs, typdis, pinter, ninter, ainter, &
                   nface, nptf, cface, minlst)
     implicit none
 !
@@ -104,7 +104,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 !     L'ELEMENT EST-IL TRAVERSE STRICTEMENT PAR LSN=0?
     cut = .false.
     i = 1
-  1 continue
+1   continue
 !     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
     if (lsn((i-1)*nfiss+ifiss) .ne. 0.d0 .and. i .lt. nno) then
         do k = i+1, nnos
@@ -283,14 +283,14 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
                 end if
             end do
 !
-            if (lajpa) call xajpin(ndim, pinter, ptmax, ipt, ins,&
-                                   a, longar, ainter, 0, na,&
+            if (lajpa) call xajpin(ndim, pinter, ptmax, ipt, ins, &
+                                   a, longar, ainter, 0, na, &
                                    0.d0, ajout)
-            if (lajpb) call xajpin(ndim, pinter, ptmax, ipt, ins,&
-                                   b, longar, ainter, 0, nb,&
+            if (lajpb) call xajpin(ndim, pinter, ptmax, ipt, ins, &
+                                   b, longar, ainter, 0, nb, &
                                    0.d0, ajout)
-            if (lajpc) call xajpin(ndim, pinter, ptmax, ipt, ibid,&
-                                   c, longar, ainter, nc, 0,&
+            if (lajpc) call xajpin(ndim, pinter, ptmax, ipt, ibid, &
+                                   c, longar, ainter, nc, 0, &
                                    alpha, ajout)
         end if
 !
@@ -298,8 +298,8 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 !
 !     RECHERCHE SPECIFIQUE POUR LES ELEMENTS INTERSECTÉES
     if (nfisc .gt. 0) then
-        call xcfacj(pinter, ptmax, ipt, ainter, lsn,&
-                    igeom, nno, ndim, nfiss, ifiss,&
+        call xcfacj(pinter, ptmax, ipt, ainter, lsn, &
+                    igeom, nno, ndim, nfiss, ifiss, &
                     fisco, nfisc, typma)
     end if
 !     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
@@ -307,8 +307,8 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
         ASSERT(typdis .ne. 'COHESIF')
 !
 !       ON A DROIT A 1 POINT EN PLUS
-        call xcfacf(pinter, ptmax+1, ipt, ainter, lsn,&
-                    lst, igeom, nno, ndim, typma,&
+        call xcfacf(pinter, ptmax+1, ipt, ainter, lsn, &
+                    lst, igeom, nno, ndim, typma, &
                     noma, nmaabs)
     end if
 999 continue
@@ -333,7 +333,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
         nd(:) = 0.d0
         do i = 1, nno
             do j = 1, 3
-                nd(j) = nd(j)+zr(jgrlsn-1+3*(nfiss*(i-1)+ifiss-1)+j)/ nno
+                nd(j) = nd(j)+zr(jgrlsn-1+3*(nfiss*(i-1)+ifiss-1)+j)/nno
             end do
         end do
 !
@@ -494,7 +494,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
             nd(:) = 0.d0
             do i = 1, nno
                 do j = 1, 2
-                    nd(j) = nd(j)+zr(jgrlsn-1+2*(nfiss*(i-1)+ifiss-1)+j) /nno
+                    nd(j) = nd(j)+zr(jgrlsn-1+2*(nfiss*(i-1)+ifiss-1)+j)/nno
                 end do
             end do
 !

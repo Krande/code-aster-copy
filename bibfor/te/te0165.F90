@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,8 +94,8 @@ subroutine te0165(option, nomte)
 ! - Get material properties
 !
     nomres(1) = 'E'
-    call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '  ', [0.d0],&
+    call rcvalb('RIGI', 1, 1, '+', zi(imate), &
+                ' ', 'ELAS', 0, '  ', [0.d0], &
                 1, nomres, valres, icodre, 1)
     e = valres(1)
 !
@@ -106,12 +106,12 @@ subroutine te0165(option, nomte)
 !
 ! - Thermal dilation
 !
-    call verift('RIGI', 1, 1, '+', zi(imate),&
+    call verift('RIGI', 1, 1, '+', zi(imate), &
                 epsth_=epsthe)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari,&
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
                          lSigm, codret)
 !
 ! - Get output fields
@@ -171,11 +171,11 @@ subroutine te0165(option, nomte)
     end if
 !
     if (lMatr) then
-        call kpouli(e, aire, nx, l0, l1,&
+        call kpouli(e, aire, nx, l0, l1, &
                     l2, norml1, norml2, zr(imatuu))
     end if
     if (lVect) then
-        call fpouli(nx, l1, l2, norml1, norml2,&
+        call fpouli(nx, l1, l2, norml1, norml2, &
                     zr(ivectu))
     end if
     if (lSigm) then

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmepsi(ndim, nno, l_axi, l_large, vff,&
+subroutine nmepsi(ndim, nno, l_axi, l_large, vff, &
                   r, dfdi, disp, f, epsi_)
 !
     implicit none
@@ -99,7 +99,7 @@ subroutine nmepsi(ndim, nno, l_axi, l_large, vff,&
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, grad, b_incx, f,&
+        call daxpy(b_n, 1.d0, grad, b_incx, f, &
                    b_incy)
         if (l_axi) then
             f(3, 3) = f(3, 3)+ur/r

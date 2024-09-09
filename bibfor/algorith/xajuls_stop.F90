@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -127,14 +127,14 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
     mxval = 0
     nbret = 0
     geofi = ''
-    call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, nbval=mxval, vect=geofi,&
+    call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, nbval=mxval, vect=geofi, &
                 nbret=nbret)
     if (nbret .eq. -1) then
         call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, scal=geofi, nbret=nbret)
         if (geofi .eq. 'SEGMENT') then
-            call getvr8('DEFI_FISS', 'PFON_ORIG', iocc=1, nbval=3, vect=vect1,&
+            call getvr8('DEFI_FISS', 'PFON_ORIG', iocc=1, nbval=3, vect=vect1, &
                         nbret=ibid)
-            call getvr8('DEFI_FISS', 'PFON_EXTR', iocc=1, nbval=3, vect=vect2,&
+            call getvr8('DEFI_FISS', 'PFON_EXTR', iocc=1, nbval=3, vect=vect2, &
                         nbret=ibid)
         else
             ASSERT(.false.)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcdpli(mod, nvi, option, materf, sigm,&
-                  deps, vim, vip, sig, dsidep,&
+subroutine lcdpli(mod, nvi, option, materf, sigm, &
+                  deps, vim, vip, sig, dsidep, &
                   iret)
     implicit none
 #include "asterf_types.h"
@@ -101,14 +101,14 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
 ! =====================================================================
 ! --- RESOLUTION DU SYSTEME -------------------------------------------
 ! =====================================================================
-        call resdp1(materf, seq, i1e, pmoins, dp,&
+        call resdp1(materf, seq, i1e, pmoins, dp, &
                     plas)
         if (plas .eq. 0.0d0) then
             do ii = 1, ndt
                 sig(ii) = sige(ii)
             end do
         else
-            call majsig(materf, se, seq, i1e, alpha,&
+            call majsig(materf, se, seq, i1e, alpha, &
                         dp, plas, sig)
         end if
 !
@@ -137,7 +137,7 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
         if (option(10:14) .eq. '_ELAS') then
             dsidep(1:ndt, 1:ndt) = hookf(1:ndt, 1:ndt)
         else
-            call dpmata(mod, materf, alpha, dp, dpdeno,&
+            call dpmata(mod, materf, alpha, dp, dpdeno, &
                         pplus, se, seq, plas, dsidep)
         end if
     end if

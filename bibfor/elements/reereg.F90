@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306
 !
-subroutine reereg(stop, elrefp, nnop, coor, xg,&
+subroutine reereg(stop, elrefp, nnop, coor, xg, &
                   ndim, xe, iret, toler, ndim_coor_)
 !
     implicit none
@@ -119,7 +119,7 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
 !
 ! --- CALCUL DE L'INVERSE DE LA JACOBIENNE EN XE: INVJAC
 !
-    call invjax(stop, nno, ndim, nderiv, dff,&
+    call invjax(stop, nno, ndim, nderiv, dff, &
                 coor, invjac, ipb, ndim_coor)
     if (ipb .eq. 1) then
         if (stop .eq. 'S') then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ subroutine massdir(massmat, dir, dmass)
     call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
     call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
     AS_ALLOCATE(vi=posdof, size=3*neq)
-    call pteddl('NUME_DDL', nume, 3, nomcmp, neq,&
+    call pteddl('NUME_DDL', nume, 3, nomcmp, neq, &
                 tabl_equa=posdof)
 !
     AS_ALLOCATE(vr=unitv, size=neq)
@@ -108,7 +108,7 @@ subroutine massdir(massmat, dir, dmass)
 !
 !   4 - Calculate  dmass = Ut*M*U
     AS_ALLOCATE(vr=mass_utv, size=neq)
-    call mrmult('ZERO', lmatm, unitv, mass_utv, 1,&
+    call mrmult('ZERO', lmatm, unitv, mass_utv, 1, &
                 .true._1)
     b_n = to_blas_int(neq)
     b_incx = to_blas_int(1)

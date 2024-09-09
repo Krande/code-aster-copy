@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
+subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom, &
                   co, ff)
 ! aslint: disable=W1306
     implicit none
@@ -61,7 +61,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 !
 !     CAS DES ELEMENTS PRINCIPAUX : C SIMPLE, ON APPELLE REEREF
     if (ndim .eq. ndime) then
-        call reeref(elrefp, nnop, zr(igeom), co, ndim,&
+        call reeref(elrefp, nnop, zr(igeom), co, ndim, &
                     xe, ff)
 !
 !
@@ -127,7 +127,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         if (ndime .eq. 2) coloc(2) = ddot(b_n, an, b_incx, y, b_incy)
-        call reeref(elrefp, nnop, zr(igeolo), coloc, ndime,&
+        call reeref(elrefp, nnop, zr(igeolo), coloc, ndime, &
                     xe, ff)
 !
         call jedetr(geomlo)

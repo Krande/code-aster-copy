@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fonno62(resu, noma, ndim, iseg, noe,&
-                   indr, nbnoel, vnor, vdir, basseg,&
+subroutine fonno62(resu, noma, ndim, iseg, noe, &
+                   indr, nbnoel, vnor, vdir, basseg, &
                    vect, sens)
 ! aslint: disable=W1306
     implicit none
@@ -189,10 +189,10 @@ subroutine fonno62(resu, noma, ndim, iseg, noe,&
 !     CAS OU IL FAUT PRENDRE LA MOYENNE DES 2 VECTEURS
     if (syme .eq. 'NON') then
 !
-        ndir = sqrt(&
+        ndir = sqrt( &
                (vdir(1, 1)+vdir(2, 1))**2+(vdir(1, 2)+vdir(2, 2))**2+(vdir(1, 3)+vdir(2, 3))**2)
 !
-        nnor = sqrt(&
+        nnor = sqrt( &
                (vnor(1, 1)+vnor(2, 1))**2+(vnor(1, 2)+vnor(2, 2))**2+(vnor(1, 3)+vnor(2, 3))**2)
 !
         do i = 1, ndim

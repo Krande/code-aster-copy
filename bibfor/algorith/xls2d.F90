@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
-                 jlnsl, nbno, jcoor, jcoorg, nbmaf,&
+subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
+                 jlnsl, nbno, jcoor, jcoorg, nbmaf, &
                  jdlima, nbsef, jdlise, jconx1, jconx2)
 !
     implicit none
@@ -81,7 +81,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
         do ir2 = 1, nbmaf
             nuno1 = zi(jconx1-1+zi(jconx2+zi(jdlima+ir2-1)-1)+1-1)
             nuno2 = zi(jconx1-1+zi(jconx2+zi(jdlima+ir2-1)-1)+2-1)
-            if (zi(jdlima+ir2-1) .ne. zi(jmafit+ir-1-1) .and.&
+            if (zi(jdlima+ir2-1) .ne. zi(jmafit+ir-1-1) .and. &
                 (nunoi .eq. nuno1 .or. nunoi .eq. nuno2)) then
                 if (nunoi .eq. nuno1) ori = 1
                 if (nunoi .eq. nuno2) ori = 0
@@ -91,7 +91,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                 goto 1135
             end if
         end do
-1135     continue
+1135    continue
         if (finfis) goto 1145
     end do
 1145 continue
@@ -110,7 +110,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
         do ir3 = 1, nbmaf
             nuno1 = zi(jconx1-1+zi(jconx2+zi(jdlima+ir3-1)-1)+1-1)
             nuno2 = zi(jconx1-1+zi(jconx2+zi(jdlima+ir3-1)-1)+2-1)
-            if (zi(jdlima+ir3-1) .ne. zi(jmafif+nbmaf-ir2+1) .and.&
+            if (zi(jdlima+ir3-1) .ne. zi(jmafif+nbmaf-ir2+1) .and. &
                 (nunoi .eq. nuno1 .or. nunoi .eq. nuno2)) then
                 if (nunoi .eq. nuno1) ori = 1
                 if (nunoi .eq. nuno2) ori = 0
@@ -120,7 +120,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                 goto 1165
             end if
         end do
-1165     continue
+1165    continue
         if (finfis) goto 1175
     end do
 1175 continue

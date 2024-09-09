@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipetu(ndim, mate, sup, sud, vim,&
+subroutine pipetu(ndim, mate, sup, sud, vim, &
                   dtau, copilo)
 !
 !
@@ -70,8 +70,8 @@ subroutine pipetu(ndim, mate, sup, sud, vim,&
     poum = '+'
 !
 ! RECUPERATION DES PARAMETRES PHYSIQUES
-    call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'RUPT_TURON', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mate, &
+                ' ', 'RUPT_TURON', 0, ' ', [0.d0], &
                 5, nom, val, cod, 2)
     k = val(1)
     delta_N_0 = val(2)/k

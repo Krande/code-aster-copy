@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function bprime(nbmat, mater, parame, invar1, s,&
+function bprime(nbmat, mater, parame, invar1, s, &
                 epssig)
 !
     implicit none
@@ -107,7 +107,7 @@ function bprime(nbmat, mater, parame, invar1, s,&
         call utmess('F', 'ALGELINE_4')
     end if
     sigt0 = deux*c0*sqrt((un-sin(phi0))/(un+sin(phi0)))
- 10 continue
+10  continue
 ! ======================================================================
 ! --- CALCULS DE INTERMEDIAIRE -----------------------------------------
 ! ======================================================================
@@ -121,8 +121,8 @@ function bprime(nbmat, mater, parame, invar1, s,&
         un_m_rcos2 = 0.d0
     end if
 !
-    sig2 = invar1/trois-sqrt(deux/trois)*sii*(rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux )
-    sig3 = invar1/trois+sqrt(deux/trois)*sii*(-rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux )
+    sig2 = invar1/trois-sqrt(deux/trois)*sii*(rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux)
+    sig3 = invar1/trois+sqrt(deux/trois)*sii*(-rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux)
 ! ======================================================================
 ! --- RECUPERATION DE SIG1 (MAX) ET SIG3 (MIN) -------------------------
 ! ======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine unista(h, ldh, v, ldv, ddlsta,&
-                  n, vectp, csta, beta, etat,&
+subroutine unista(h, ldh, v, ldv, ddlsta, &
+                  n, vectp, csta, beta, etat, &
                   ldynfa, ddlexc, redem)
 !-----------------------------------------------------------------------
 !
@@ -113,7 +113,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !
 !     1ER APPEL A LA METHODE DES PUISSANCES
 !
-        call mppsta(h, ldh, v, ldv, ddlsta,&
+        call mppsta(h, ldh, v, ldv, ddlsta, &
                     n, zr(vectt), ddlexc, indico, proj)
 !
     end if
@@ -137,7 +137,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !
         proj = 1
 !
-        call mppsta(zr(q), ldh, v, ldv, ddlsta,&
+        call mppsta(zr(q), ldh, v, ldv, ddlsta, &
                     n, zr(vectt), ddlexc, indico, proj)
 !
     end if
@@ -148,7 +148,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     b_n = to_blas_int(ldv)
     b_incx = to_blas_int(1)
     call dscal(b_n, one/err, zr(vectt), b_incx)
-    call mrmult('ZERO', ldynfa, zr(vectt), zr(xsol), 1,&
+    call mrmult('ZERO', ldynfa, zr(vectt), zr(xsol), 1, &
                 .true._1)
 !
     vtest = 0.d0
@@ -185,12 +185,12 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !
     cara = 'NFSP'
 !
-    call mgauss(cara, h, zr(b), ldh, ldh,&
+    call mgauss(cara, h, zr(b), ldh, ldh, &
                 ldh, det, iret)
 !
     proj = 0
 !
-    call mppsta(zr(b), ldh, v, ldv, ddlsta,&
+    call mppsta(zr(b), ldh, v, ldv, ddlsta, &
                 n, zr(vect2), ddlexc, indico, proj)
 !
     b_n = to_blas_int(ldv)
@@ -199,7 +199,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     b_n = to_blas_int(ldv)
     b_incx = to_blas_int(1)
     call dscal(b_n, one/err, zr(vect2), b_incx)
-    call mrmult('ZERO', ldynfa, zr(vect2), zr(xsol), 1,&
+    call mrmult('ZERO', ldynfa, zr(vect2), zr(xsol), 1, &
                 .true._1)
     vtest = 0.d0
     do i = 1, ldv
@@ -227,7 +227,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     indico = 1
     proj = 1
 !
-    call mppsta(zr(q), ldh, v, ldv, ddlsta,&
+    call mppsta(zr(q), ldh, v, ldv, ddlsta, &
                 n, vectp, ddlexc, indico, proj)
 !
     b_n = to_blas_int(ldv)
@@ -236,7 +236,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     b_n = to_blas_int(ldv)
     b_incx = to_blas_int(1)
     call dscal(b_n, one/err, vectp, b_incx)
-    call mrmult('ZERO', ldynfa, vectp, zr(xsol), 1,&
+    call mrmult('ZERO', ldynfa, vectp, zr(xsol), 1, &
                 .true._1)
     vtest = 0.d0
     do i = 1, ldv
@@ -258,8 +258,8 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !
     redem = redem+1
 !
-    9070 format(72(' '))
-    9080 format(72('-'))
+9070 format(72(' '))
+9080 format(72('-'))
 !
 ! ----------------------------------------------
 !

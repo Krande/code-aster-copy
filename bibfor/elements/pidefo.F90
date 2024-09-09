@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pidefo(ndim, npg, kpg, compor, fm,&
+subroutine pidefo(ndim, npg, kpg, compor, fm, &
                   epsm, epsp, epsd, copilo)
 !
 !

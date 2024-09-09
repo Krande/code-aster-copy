@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xdecov(ndim, elp, nnop, nnose, it,&
-                  pintt, cnset, heavt, ncomp, lsn,&
-                  fisco, igeom, nfiss, ifiss, pinter,&
-                  ninter, npts, ainter, nse, cnse,&
+subroutine xdecov(ndim, elp, nnop, nnose, it, &
+                  pintt, cnset, heavt, ncomp, lsn, &
+                  fisco, igeom, nfiss, ifiss, pinter, &
+                  ninter, npts, ainter, nse, cnse, &
                   heav, nfisc, nsemax)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -468,12 +468,12 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !           CALCUL DES FF
 !
 !
-                call reeref(elp, nnop, zr(igeom), geom, ndim,&
+                call reeref(elp, nnop, zr(igeom), geom, ndim, &
                             rbid2, ff)
 !
                 do j = 1, nnop
                     do i = 1, nfisc
-                        somlsn(i) = somlsn(i)+ff(j)*lsn((j-1)*nfiss+ fisco(2*i-1))
+                        somlsn(i) = somlsn(i)+ff(j)*lsn((j-1)*nfiss+fisco(2*i-1))
                     end do
                     somlsn(nfisc+1) = somlsn(nfisc+1)+ff(j)*lsn((j-1)*nfiss+ifiss)
                 end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,16 +69,16 @@ subroutine te0324(option, nomte)
     if (option .eq. 'AMOR_MECA') then
         call tecach('NNO', 'PRIGIEL', 'L', ins, iad=idrigi(1))
         if (ins .eq. 0) then
-            call tecach('ONO', 'PMATUUR', 'E', iret, nval=5,&
+            call tecach('ONO', 'PMATUUR', 'E', iret, nval=5, &
                         itab=idresu)
         else
-            call tecach('NNO', 'PMATUNS', 'E', irns, nval=5,&
+            call tecach('NNO', 'PMATUNS', 'E', irns, nval=5, &
                         itab=idresu)
-            if (irns .ne. 0) call tecach('ONO', 'PMATUUR', 'E', iret, 5,&
+            if (irns .ne. 0) call tecach('ONO', 'PMATUUR', 'E', iret, 5, &
                                          itab=idresu)
         end if
     else if (option .eq. 'RIGI_MECA_HYST') then
-        call tecach('ONO', 'PMATUUC', 'E', iret, nval=5,&
+        call tecach('ONO', 'PMATUUC', 'E', iret, nval=5, &
                     itab=idresu)
     else
         ASSERT(.false.)
@@ -96,8 +96,8 @@ subroutine te0324(option, nomte)
     valres(2) = 0.d0
     valres(3) = 0.d0
     valres(4) = 0.d0
-    call rcvala(zi(jma), ' ', 'JOINT_MECA_FROT', 0, ' ',&
-                [valpar], 4, nomres, valres, icodre,&
+    call rcvala(zi(jma), ' ', 'JOINT_MECA_FROT', 0, ' ', &
+                [valpar], 4, nomres, valres, icodre, &
                 0)
     if (icodre(1) .eq. 0) then
         ljfr = .true.
@@ -109,7 +109,7 @@ subroutine te0324(option, nomte)
     end do
 !
 !
-    call tecach('ONO', 'PGEOMER', 'L', iret, nval=5,&
+    call tecach('ONO', 'PGEOMER', 'L', iret, nval=5, &
                 itab=idgeo)
     igeom = idgeo(1)
     do i = 1, nnos
@@ -168,19 +168,19 @@ subroutine te0324(option, nomte)
         if (ljfr) then
             if (ins .eq. 0) then
                 call tecach('ONO', 'PRIGINS', 'L', irns, iad=idrigi(1))
-                call tecach('ONO', 'PRIGIEL', 'L', iret, nval=2,&
+                call tecach('ONO', 'PRIGIEL', 'L', iret, nval=2, &
                             itab=idrigi)
                 nbddl = int(-1.0d0+sqrt(1.0d0+8.d0*dble(idrigi(2))))/2
                 nbval = idrigi(2)
-                call tecach('ONO', 'PMATUUR', 'E', iret, nval=2,&
+                call tecach('ONO', 'PMATUUR', 'E', iret, nval=2, &
                             itab=idresu)
             else
-                call tecach('ONO', 'PRIGINS', 'L', iret, nval=2,&
+                call tecach('ONO', 'PRIGINS', 'L', iret, nval=2, &
                             itab=idrigi)
-                call tecach('NNO', 'PMATUNS', 'E', irns, nval=5,&
+                call tecach('NNO', 'PMATUNS', 'E', irns, nval=5, &
                             itab=idresu)
                 if (irns .ne. 0) then
-                    call tecach('ONO', 'PMATUUR', 'E', iret, 5,&
+                    call tecach('ONO', 'PMATUUR', 'E', iret, 5, &
                                 itab=idresu)
                     nbddl = int(-1.0d0+sqrt(1.0d0+8.d0*dble(idresu(2))))/2
                 else
@@ -197,7 +197,7 @@ subroutine te0324(option, nomte)
                         do j = 1, 3
                             i = 3*(i3-1)+j
                             i2 = i+3*nnos
-                            zr(iresu-1+i*(i+1)/2) = valres(2)*c1(j)**2+ valres(3)*c2(j)**2+valres&
+                            zr(iresu-1+i*(i+1)/2) = valres(2)*c1(j)**2+valres(3)*c2(j)**2+valres&
                                                     &(3)*c3(j)**2
                             zr(iresu-1+i*(i+1)/2) = zr(iresu-1+i*(i+1)/2)*surf/nnos
                             if (nnos .eq. 3 .and. nno .eq. 3) then
@@ -226,5 +226,5 @@ subroutine te0324(option, nomte)
             goto 1
         end if
     end if
-  1 continue
+1   continue
 end subroutine

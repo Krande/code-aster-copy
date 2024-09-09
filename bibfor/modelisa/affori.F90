@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine affori(typ, nomt, cara, val, jad,&
-                  jin, jdno, jdco, nutyma, ntseg,&
+subroutine affori(typ, nomt, cara, val, jad, &
+                  jin, jdno, jdco, nutyma, ntseg, &
                   lseuil, nbseuil)
 !
 !
@@ -111,7 +111,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 call utmess('F', 'MODELISA_88', nk=2, valk=vmessk)
             end if
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2),&
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
                                gamma)
 !           Affectation de gamma
             zr(jad+2) = gamma
@@ -135,11 +135,11 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 nbseuil = nbseuil+1
             end if
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad),&
+            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), &
                                alpha)
-            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1),&
+            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), &
                                beta)
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2),&
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
                                gamma)
 !           Affectation des angles
             zr(jad) = alpha
@@ -150,11 +150,11 @@ subroutine affori(typ, nomt, cara, val, jad,&
             zi(jin+2) = zi(jin+2)+1
         else
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad),&
+            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), &
                                alpha)
-            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1),&
+            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), &
                                beta)
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2),&
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
                                gamma)
 !           Affectation des angles
             zr(jad) = alpha
@@ -181,11 +181,11 @@ subroutine affori(typ, nomt, cara, val, jad,&
             beta = angl(2)
             gamma = angl(3)
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad),&
+            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), &
                                alpha)
-            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1),&
+            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), &
                                beta)
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2),&
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
                                gamma)
 !           Affectation des 3 angles
             zr(jad) = alpha
@@ -201,11 +201,11 @@ subroutine affori(typ, nomt, cara, val, jad,&
             beta = angl(2)
             gamma = angl(3)
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad),&
+            call messsurcharge(affcar, nom, 'alpha', zi(jin), zr(jad), &
                                alpha)
-            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1),&
+            call messsurcharge(affcar, nom, 'beta', zi(jin+1), zr(jad+1), &
                                beta)
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2),&
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
                                gamma)
             zr(jad) = alpha
             zr(jad+1) = beta
@@ -229,7 +229,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
             call angvxy(x3, val(1), angl)
             gamma = angl(3)
 !           Impression message si surcharge
-            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2),&
+            call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), &
                                gamma)
 !           Affectation de gamma
             zr(jad+2) = gamma
@@ -244,7 +244,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
 !
 ! ==================================================================================================
 contains
-    subroutine messsurcharge(kk1, kk2, kk3, ii1, rr1,&
+    subroutine messsurcharge(kk1, kk2, kk3, ii1, rr1, &
                              rr2)
         character(len=*) :: kk1, kk2, kk3
         integer :: ii1
@@ -262,7 +262,7 @@ contains
             vmessk(3) = kk3
             vmessr(1) = rr1*r8rddg()
             vmessr(2) = rr2*r8rddg()
-            call utmess('A', 'MODELISA2_7', nk=3, valk=vmessk, nr=2,&
+            call utmess('A', 'MODELISA2_7', nk=3, valk=vmessk, nr=2, &
                         valr=vmessr)
         end if
     end subroutine messsurcharge

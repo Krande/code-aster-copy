@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcldsb(fami, kpg, ksp, ndim, imate,&
-                  epsm, deps, vim, option, sig,&
+subroutine lcldsb(fami, kpg, ksp, ndim, imate, &
+                  epsm, deps, vim, option, sig, &
                   vip, dsidep)
     implicit none
 #include "asterf_types.h"
@@ -73,7 +73,7 @@ subroutine lcldsb(fami, kpg, ksp, ndim, imate,&
 !
 ! - Get temperatures
 !
-    call get_varc(fami, kpg, ksp, 'T', tm,&
+    call get_varc(fami, kpg, ksp, 'T', tm, &
                   tp, tref)
 !
 ! -- OPTION ET MODELISATION
@@ -84,27 +84,27 @@ subroutine lcldsb(fami, kpg, ksp, ndim, imate,&
     if (coup) rigi = .true.
     ndimsi = 2*ndim
     rac2 = sqrt(2.d0)
-    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+    call rcvarc(' ', 'HYDR', '-', fami, kpg, &
                 ksp, hydrm, iret)
     if (iret .ne. 0) hydrm = 0.d0
-    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+    call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                 ksp, hydrp, iret)
     if (iret .ne. 0) hydrp = 0.d0
-    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+    call rcvarc(' ', 'SECH', '-', fami, kpg, &
                 ksp, sechm, iret)
     if (iret .ne. 0) sechm = 0.d0
-    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+    call rcvarc(' ', 'SECH', '+', fami, kpg, &
                 ksp, sechp, iret)
     if (iret .ne. 0) sechp = 0.d0
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                 ksp, sref, iret)
     if (iret .ne. 0) sref = 0.d0
 !
 ! -- INITIALISATION
 !
-    call lceib1(fami, kpg, ksp, imate, ndim,&
-                epsm, sref, sechm, hydrm, t,&
-                lambda, deuxmu, epsthe, kdess, bendo,&
+    call lceib1(fami, kpg, ksp, imate, ndim, &
+                epsm, sref, sechm, hydrm, t, &
+                lambda, deuxmu, epsthe, kdess, bendo, &
                 gamma, seuil)
 !
 ! -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
@@ -296,7 +296,7 @@ subroutine lcldsb(fami, kpg, ksp, ndim, imate,&
                             rtemp2 = 0.d0
                             do m = 1, 3
                                 do n = 1, 3
-                                    rtemp2 = rtemp2+vecp(k, m)*vecp(i, n) *vecp(j, n)*vecp(l, m)*&
+                                    rtemp2 = rtemp2+vecp(k, m)*vecp(i, n)*vecp(j, n)*vecp(l, m)*&
                                              &dspdep(n, m)
                                 end do
                             end do
@@ -389,24 +389,24 @@ subroutine lcldsb(fami, kpg, ksp, ndim, imate,&
                                     rtemp2 = 0.d0
                                     do m = 1, 3
                                         do n = 1, 3
-                                            rtemp2 = rtemp2+ vecp(k, m)*vecp(i, n)* vecp(j, n)*ve&
+                                            rtemp2 = rtemp2+vecp(k, m)*vecp(i, n)*vecp(j, n)*ve&
                                                      &cp(l, m)*dspdep(n, m)
                                         end do
                                     end do
-                                    rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 2)* vecp(k, 1)*vecp(l, 2)*&
+                                    rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 2)*vecp(k, 1)*vecp(l, 2)*&
                                              &dspdep(4, 4)
-                                    rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 1)* vecp(k, 2)*vecp(l, 1)*&
+                                    rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 1)*vecp(k, 2)*vecp(l, 1)*&
                                              &dspdep(4, 4)
-                                    rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 3)* vecp(k, 1)*vecp(l, 3)*&
+                                    rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 3)*vecp(k, 1)*vecp(l, 3)*&
                                              &dspdep(5, 5)
-                                    rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 1)* vecp(k, 3)*vecp(l, 1)*&
+                                    rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 1)*vecp(k, 3)*vecp(l, 1)*&
                                              &dspdep(5, 5)
-                                    rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 3)* vecp(k, 2)*vecp(l, 3)*&
+                                    rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 3)*vecp(k, 2)*vecp(l, 3)*&
                                              &dspdep(6, 6)
-                                    rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 2)* vecp(k, 3)*vecp(l, 2)*&
+                                    rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 2)*vecp(k, 3)*vecp(l, 2)*&
                                              &dspdep(6, 6)
-                                    dsidep(t(i, j), t(k, l)+6) = dsidep(t( i, j), t(k, l)+6&
-                                                                 )+rtemp2*rtemp4
+                                    dsidep(t(i, j), t(k, l)+6) = dsidep(t(i, j), t(k, l)+6 &
+                                                                        )+rtemp2*rtemp4
                                 end if
                             end do
                         end do

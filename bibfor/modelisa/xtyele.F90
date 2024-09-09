@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xtyele(model, trav, nfiss, fiss, contac,&
+subroutine xtyele(model, trav, nfiss, fiss, contac, &
                   ndim, linter)
 ! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=W1306
@@ -145,7 +145,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
         call cnocns(fiss(ifiss)//'.STNO', 'V', cstn(ifiss))
         call jeveuo(cstn(ifiss)//'.CNSL', 'L', jstnl(ifiss))
         call jeveuo(cstn(ifiss)//'.CNSV', 'L', jstnv(ifiss))
-        call xelfis_lists(fiss(ifiss), model, elfis_heav(ifiss), elfis_ctip(ifiss),&
+        call xelfis_lists(fiss(ifiss), model, elfis_heav(ifiss), elfis_ctip(ifiss), &
                           elfis_hect(ifiss))
         grp(4*(ifiss-1)+1) = elfis_heav(ifiss)
         grp(4*(ifiss-1)+2) = elfis_ctip(ifiss)
@@ -231,8 +231,8 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                             if (lsnb .gt. maxlsn) maxlsn = lsnb
 ! --- ARETE OU NOEUD COUPÉ AVEC STATUT NUL -> MAILLE MULTI-H NON COUPÉE
                             if (lsna*lsnb .le. 0 .and. nfiss .gt. 1) then
-                                if (lsna*lsnb .lt. 0 .and. (stna .eq. 0 .or. stnb .eq. 0) .or.&
-                                    lsna .eq. 0 .and. stna .eq. 0 .or. lsnb .eq. 0 .and. stnb&
+                                if (lsna*lsnb .lt. 0 .and. (stna .eq. 0 .or. stnb .eq. 0) .or. &
+                                    lsna .eq. 0 .and. stna .eq. 0 .or. lsnb .eq. 0 .and. stnb &
                                     .eq. 0) goto 110
                             end if
                         end do
@@ -252,7 +252,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
 ! --- LE CONTACT EST ACTIVÉ SI TOUT LES NOEUDS D'UNE FACE SONT COUPÉS
                             nbcoup = 0
                             do ino = 1, nno
-                                nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino- 1)
+                                nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
                                 lsn = vlsn(nngl)
                                 if (lsn .eq. 0) then
 ! --- LE NOEUD EST COUPÉ SI LE MAX DE LSN DE SA CONNECTIVITÉ
@@ -262,10 +262,10 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                                     call jeveuo(jexnum(cnxinv, nngl), 'L', jmasup)
                                     do j = 1, nmasup
                                         ima2 = zi(jmasup-1+j)
-                                        call jelira(jexnum(noma//'.CONNEX', ima2), 'LONMAX',&
+                                        call jelira(jexnum(noma//'.CONNEX', ima2), 'LONMAX', &
                                                     nno2, k8bid)
                                         do ino2 = 1, nno2
-                                            nngl = zi(jconx1-1+zi(jconx2+ ima2-1)+ino2-1)
+                                            nngl = zi(jconx1-1+zi(jconx2+ima2-1)+ino2-1)
                                             lsn = vlsn(nngl)
                                             if (lsn .gt. maxlsn) maxlsn = lsn
                                         end do
@@ -283,20 +283,20 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                                 if (typma(1:5) .eq. 'TETRA') then
                                     if (nbcoup .eq. 3) lcont = .true.
                                 else if (typma(1:4) .eq. 'PYRA') then
-                                    nngl = zi(jconx1-1+zi(jconx2+ima-1)+ 5-1)
+                                    nngl = zi(jconx1-1+zi(jconx2+ima-1)+5-1)
                                     lsn = vlsn(nngl)
                                     if (lsn .eq. 0 .and. nbcoup .eq. 3 .or. nbcoup .eq. 4) &
-                                    lcont = .true.
+                                        lcont = .true.
                                 else if (typma(1:5) .eq. 'PENTA') then
                                     nbcou2 = 0
                                     do ino = 1, 3
-                                        nngl = zi(jconx1-1+zi(jconx2+ ima-1)+ino-1)
+                                        nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
                                         lsn = vlsn(nngl)
                                         if (lsn .eq. 0) then
                                             nbcou2 = nbcou2+1
                                         end if
                                     end do
-                                    if ((nbcou2 .eq. 3 .or. nbcou2 .eq. 0) .and. nbcoup .eq. 3&
+                                    if ((nbcou2 .eq. 3 .or. nbcou2 .eq. 0) .and. nbcoup .eq. 3 &
                                         .or. nbcoup .eq. 4) lcont = .true.
                                 else if (typma(1:4) .eq. 'HEXA') then
                                     if (nbcoup .eq. 4) lcont = .true.
@@ -358,7 +358,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                             call wkvect('&&XTYELE.LST', 'V V R', nno, ilst)
                             call wkvect('&&XTYELE.IGEOM', 'V V R', nno*ndim, igeom)
                             do ino = 1, nno
-                                nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino- 1)
+                                nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
                                 zr(ilsn-1+ino) = vlsn(nngl)
                                 zr(ilst-1+ino) = lst(nngl)
                                 do j = 1, ndim
@@ -367,9 +367,9 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                             end do
 ! --- BOUCLE SUR LES FACES
                             do ifq = 1, nbf
-                                call intfac(noma, ima, ifq, fa, nno,&
-                                            zr(ilst), zr(ilsn), ndim, 'NON', ibid,&
-                                            ibid, igeom, m, indptf, rbid,&
+                                call intfac(noma, ima, ifq, fa, nno, &
+                                            zr(ilst), zr(ilsn), ndim, 'NON', ibid, &
+                                            ibid, igeom, m, indptf, rbid, &
                                             rbid, codret)
 !
                                 if (codret .eq. 1) then
@@ -379,9 +379,9 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                                         b(j) = zr(igeom-1+ndim*(fa(ifq, 2)-1)+j)
                                         c(j) = zr(igeom-1+ndim*(fa(ifq, 3)-1)+j)
                                     end do
-                                    longar = (padist(ndim, a, b)+padist( ndim, a, c))/2.d0
+                                    longar = (padist(ndim, a, b)+padist(ndim, a, c))/2.d0
                                     if (padist(ndim, m, cmin) .lt. (longar*1.d-6)) lcont = &
-                                                                                   .false.
+                                        .false.
                                 end if
                             end do
                             call jedetr('&&XTYELE.LSN')
@@ -409,7 +409,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
 ! ON ENRICHIT LES GROUPES DES FISSURES POUR LESQUELS
 ! C EST UNE HEAVISIDE
 !
-                    if (lcont .and. zi(jtab-1+5*(ima-1)+kk) .le. 0 .and.&
+                    if (lcont .and. zi(jtab-1+5*(ima-1)+kk) .le. 0 .and. &
                         zi(jtab-1+5*(ima-1)+4) .eq. 0) then
                         if (kk .ne. 1) then
                             call utmess('F', 'XFEM_44', sk=nomail)
@@ -460,14 +460,14 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
 ! --- SI CONTACT AUTRE QUE P1P1 POUR UN MODELE NON HM-XFEM
                             call utmess('F', 'XFEM_43', sk=nomail)
                         end if
-                        if (kk .gt. 1 .or. abs(zi(jtab-1+5*(ima-1)+2)) .eq. 1 .or.&
+                        if (kk .gt. 1 .or. abs(zi(jtab-1+5*(ima-1)+2)) .eq. 1 .or. &
                             abs(zi(jtab-1+5*(ima-1)+3)) .eq. 1) then
 ! --- SI UNE DES MAILLES CONTIENT DU CRACK-TIP
                             call utmess('F', 'XFEM_44', sk=nomail)
                         end if
 !
 ! --- CALCUL DU NOMBRE DE FONCTIONS HEAVISIDE
-                        call xtyhea(nfiss, ifiss, ima, nno, jconx1,&
+                        call xtyhea(nfiss, ifiss, ima, nno, jconx1, &
                                     jconx2, jstnl, jstnv, nbheav)
                         if (nbheav .gt. 4) then
                             call utmess('F', 'XFEM_40', sk=nomail)

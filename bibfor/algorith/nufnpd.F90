@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
-                  vff1, vff2, idff1, vu, vp,&
-                  typmod, mate, compor, geomi, sig,&
+subroutine nufnpd(ndim, nno1, nno2, npg, iw, &
+                  vff1, vff2, idff1, vu, vp, &
+                  typmod, mate, compor, geomi, sig, &
                   ddl, mini, vect)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
@@ -114,10 +114,10 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         call r8inir(6, 0.d0, epsm, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
+        call dfdmip(ndim, nno1, axi, geomi, g, &
+                    iw, vff1(1, g), idff1, r, w, &
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dff1, deplm, fm, epsm)
 !
         divum = epsm(1)+epsm(2)+epsm(3)
@@ -168,15 +168,15 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
         end do
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
-        call tanbul(option, ndim, g, mate, compor(1),&
+        call tanbul(option, ndim, g, mate, compor(1), &
                     .false._1, mini, alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE
         if (mini) then
-            call calkbb(nno1, ndim, w, def, dsbdep,&
+            call calkbb(nno1, ndim, w, def, dsbdep, &
                         kbb)
             call calkbp(nno2, ndim, w, dff1, kbp)
-            call calkce(nno1, ndim, kbp, kbb, presm,&
+            call calkce(nno1, ndim, kbp, kbb, presm, &
                         presd, kce, rce)
         else
             call r8inir(nno2, 0.d0, rce, 1)

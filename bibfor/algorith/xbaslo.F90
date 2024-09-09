@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 !
     cnsbas = '&&OP0041.CNSBAS'
     nbcmp = ndim*3
-    call cnscre(noma, 'NEUT_R', nbcmp, licmp, 'V',&
+    call cnscre(noma, 'NEUT_R', nbcmp, licmp, 'V', &
                 cnsbas)
     call jeveuo(cnsbas//'.CNSV', 'E', vr=gsv)
     call jeveuo(cnsbas//'.CNSL', 'E', jgsl)
@@ -163,7 +163,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
             b_n = to_blas_int(3)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            cosi = ddot(b_n, ui, b_incx, uf, b_incy)/(sqrt(ddot(b_n, ui, b_incx, ui, b_incy))* sq&
+            cosi = ddot(b_n, ui, b_incx, uf, b_incy)/(sqrt(ddot(b_n, ui, b_incx, ui, b_incy))*sq&
                    &rt(ddot(b_n, uf, b_incx, uf, b_incy)))
             theta = trigom('ACOS', cosi)
             is_continu(ni) = abs(theta) .le. (angle_max*r8pi()/180.)
@@ -271,7 +271,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 !
 !     ENREGISTREMENT DU .BASLOC DANS LA SD FISS_XFEM
     basloc = fiss(1:8)//'.BASLOC'
-    call cnscno(cnsbas, basloc(1:13)//'.NUMEQ', 'NON', 'G', basloc,&
+    call cnscno(cnsbas, basloc(1:13)//'.NUMEQ', 'NON', 'G', basloc, &
                 'F', ibid)
     call detrsd('CHAM_NO_S', cnsbas)
     if (ndim .eq. 3) AS_DEALLOCATE(vl=is_continu)

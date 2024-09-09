@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcpivm(fami, kpg, ksp, mate, compor,&
-                  carcri, instam, instap, fm, df,&
-                  vim, option, taup, vip, dtaudf,&
+subroutine lcpivm(fami, kpg, ksp, mate, compor, &
+                  carcri, instam, instap, fm, df, &
+                  vim, option, taup, vip, dtaudf, &
                   iret)
 !
 !
@@ -146,8 +146,8 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
     else
         poum = '-'
     end if
-    call lcpima(fami, kpg, ksp, poum, mate,&
-                compor, instam, instap, carcri, taup,&
+    call lcpima(fami, kpg, ksp, poum, mate, &
+                compor, instam, instap, carcri, taup, &
                 vim)
 !
 ! 2 - RESOLUTION
@@ -167,30 +167,30 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
             else if (compor .eq. 'VMIS_ISOT_PUIS') then
                 tauteq = mu*eqbetr
                 mutrbe = mu*trbetr
-                call ecpuis(young, sigy, apui, 1.d0/npui, pm,&
+                call ecpuis(young, sigy, apui, 1.d0/npui, pm, &
                             0.d0, rp, rprim)
                 xap = (tauteq-rp)/mutrbe
                 precr = carcri(3)*sigy
                 itmx = nint(carcri(1))
 !
-                call zerofr(0, 'DEKKER', nmcri6, 0.d0, xap,&
+                call zerofr(0, 'DEKKER', nmcri6, 0.d0, xap, &
                             precr, itmx, dp, iret, n)
                 if (iret .ne. 0) goto 999
-                call ecpuis(young, sigy, apui, 1.d0/npui, pm,&
+                call ecpuis(young, sigy, apui, 1.d0/npui, pm, &
                             dp, rp, rprim)
                 pente = rprim
             else if (compor .eq. 'VMIS_ISOT_TRAC') then
-                call rcfonc('E', 1, jprol, jvale, nbval,&
-                            e=young*trbetr/3, nu=nu, p=pm, rp=rp, rprim=pente,&
+                call rcfonc('E', 1, jprol, jvale, nbval, &
+                            e=young*trbetr/3, nu=nu, p=pm, rp=rp, rprim=pente, &
                             airerp=airerp, sieleq=mu*eqbetr, dp=dp)
             else
 ! CAS VISQUEUX : CALCUL DE DP PAR RESOLUTION DE
 !  FPLAS - (R'+MU TR BEL)DP - PHI(DP) = 0
-                call calcdp(carcri, seuil, dt, pente, mu*trbetr,&
+                call calcdp(carcri, seuil, dt, pente, mu*trbetr, &
                             sigm0, epsi0, coefm, dp, iret)
 ! DANS LE CAS NON LINEAIRE ON VERFIE QUE L ON A LA BONNE PENTE
                 if (compor(10:14) .eq. '_TRAC') then
-                    call rcfonc('V', 1, jprol, jvale, nbval,&
+                    call rcfonc('V', 1, jprol, jvale, nbval, &
                                 p=pm+dp, rp=rp, rprim=pentep)
                     do i = 1, nbval
                         if (abs(pente-pentep) .le. 1.d-3) then
@@ -198,13 +198,13 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
                         else
                             pente = pentep
                             seuil = mu*eqbetr-(rp-pente*dp)
-                            call calcdp(carcri, seuil, dt, pente, mu*trbetr,&
+                            call calcdp(carcri, seuil, dt, pente, mu*trbetr, &
                                         sigm0, epsi0, coefm, dp, iret)
-                            call rcfonc('V', 1, jprol, jvale, nbval,&
+                            call rcfonc('V', 1, jprol, jvale, nbval, &
                                         p=vim(1)+dp, rp=rp, rprim=pentep)
                         end if
                     end do
- 20                 continue
+20                  continue
                 end if
             end if
         end if
@@ -220,7 +220,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
             b_n = to_blas_int(6)
             b_incx = to_blas_int(1)
             call dscal(b_n, 1-dp*trbetr/eqbetr, dvbe, b_incx)
-        endif
+        end if
 !
         trtau = (troisk*(jp**2-1)-3.d0*cother*(jp+1.d0/jp))/2.d0
 !
@@ -263,7 +263,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
         if (elas) line = 0
 !
         call gdsmtg()
-        call lcpitg(compor, df, line, dp, dvbe,&
+        call lcpitg(compor, df, line, dp, dvbe, &
                     dtaudf)
     end if
 999 continue

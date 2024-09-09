@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine porea4(nno, nc, geom, gamma, pgl,&
+subroutine porea4(nno, nc, geom, gamma, pgl, &
                   xl, dispParaNameZ_)
     implicit none
 #include "jeveux.h"

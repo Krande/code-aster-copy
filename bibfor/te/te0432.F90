@@ -71,9 +71,9 @@ subroutine te0432(option, nomte)
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     fami = 'MASS'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    call rcvarc(' ', 'TEMP', 'REF', fami, 1,&
+    call rcvarc(' ', 'TEMP', 'REF', fami, 1, &
                 1, tref, iret)
     call r8inir(8*8*6*6, 0.d0, a, 1)
     call r8inir(8*8*3*3, 0.d0, aexc, 1)
@@ -159,14 +159,14 @@ subroutine te0432(option, nomte)
 !
 ! - MASS_MECA
 !
-        call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, 1, '+', zi(imate), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'RHO', rho, codres, 1)
 !
 !
 ! - CALCUL DE LA MATRICE "B" : DEPL NODAL -> EPS11 ET DU JACOBIEN
 !
-        call nmgrib(nno, zr(igeom), dff, dir11, lexc,&
+        call nmgrib(nno, zr(igeom), dff, dir11, lexc, &
                     vecn, b, jac, p)
         wgt = wgt+rho(1)*zr(ipoids+kpg-1)*jac*densit
 !

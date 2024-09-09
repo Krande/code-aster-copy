@@ -80,7 +80,7 @@ subroutine gareac(xdm, xdp, dgamma)
     b_n = to_blas_int(3)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, -pscal, xdmnor, b_incx, ytr,&
+    call daxpy(b_n, -pscal, xdmnor, b_incx, ytr, &
                b_incy)
     call normev(ytr, norm)
     if (norm .le. r8miem()) then
@@ -162,9 +162,9 @@ subroutine gareac(xdm, xdp, dgamma)
     vtemp(1) = plo2tr(1, 2)
     vtemp(2) = plo2tr(2, 2)
     vtemp(3) = plo2tr(3, 2)
-    call promat(ptrbtr, 3, 3, 3, vtemp,&
+    call promat(ptrbtr, 3, 3, 3, vtemp, &
                 3, 3, 1, ytemp)
-    call promat(ptr2gl, 3, 3, 3, ytemp,&
+    call promat(ptr2gl, 3, 3, 3, ytemp, &
                 3, 3, 1, ylocp)
 !
 ! --- CALCUL DE LA BASE LOCALE A T+ EN CONSIDERANT GAMMA NUL

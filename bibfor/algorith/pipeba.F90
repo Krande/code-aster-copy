@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipeba(ndim, mate, sup, sud, vim,&
+subroutine pipeba(ndim, mate, sup, sud, vim, &
                   dtau, copilo)
 !
 !
@@ -61,8 +61,8 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
     kpg = 1
     spt = 1
     poum = '+'
-    call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mate, &
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0], &
                 3, nom, val, cod, 2)
     lc = val(1)/val(2)
     k0 = val(1)/val(2)*val(3)

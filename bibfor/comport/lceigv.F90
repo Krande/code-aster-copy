@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lceigv(fami, kpg, ksp, ndim, neps,&
-                  imate, epsm, deps, vim, option,&
+subroutine lceigv(fami, kpg, ksp, ndim, neps, &
+                  imate, epsm, deps, vim, option, &
                   sig, vip, dsidep)
     implicit none
 #include "asterf_types.h"
@@ -97,35 +97,35 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps,&
     poum = '-'
     if (resi) poum = '+'
 !
-    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+    call rcvarc(' ', 'HYDR', '-', fami, kpg, &
                 ksp, hydrm, iret)
     if (iret .ne. 0) hydrm = 0.d0
-    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+    call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                 ksp, hydrp, iret)
     if (iret .ne. 0) hydrp = 0.d0
-    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+    call rcvarc(' ', 'SECH', '-', fami, kpg, &
                 ksp, sechm, iret)
     if (iret .ne. 0) sechm = 0.d0
-    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+    call rcvarc(' ', 'SECH', '+', fami, kpg, &
                 ksp, sechp, iret)
     if (iret .ne. 0) sechp = 0.d0
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                 ksp, sref, iret)
     if (iret .ne. 0) sref = 0.d0
 !
 !
 ! -- INITIALISATION
 !
-    call lceib1(fami, kpg, ksp, imate, ndim,&
-                epsm, sref, sechm, hydrm, t,&
-                lambda, deuxmu, epsth, kdess, bendo,&
+    call lceib1(fami, kpg, ksp, imate, ndim, &
+                epsm, sref, sechm, hydrm, t, &
+                lambda, deuxmu, epsth, kdess, bendo, &
                 gamma, seuil)
 !
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
                 1, 'C_GRAD_VARI', valnl(1), iok, 2)
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
                 1, 'PENA_LAGR', valnl(2), iok, 0)
     c = valnl(1)
     if (iok(1) .ne. 0) then
@@ -139,7 +139,7 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps,&
 !
     if (resi) then
         do k = 1, ndimsi
-            eps(k) = epsm(k)+ deps(k)-kron(k)*(epsth(2)-kdess*(sref-sechp)-bendo*hydrp)
+            eps(k) = epsm(k)+deps(k)-kron(k)*(epsth(2)-kdess*(sref-sechp)-bendo*hydrp)
         end do
         apg = epsm(ndimsi+1)+deps(ndimsi+1)
         lag = epsm(ndimsi+2)+deps(ndimsi+2)
@@ -267,7 +267,7 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps,&
 !
 !
 !
- 10 continue
+10  continue
 !
 ! -- CALCUL DES CONTRAINTES
 !
@@ -310,7 +310,7 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps,&
     vip(1) = d
     vip(2) = etat
 !
- 20 continue
+20  continue
 !
 !
 ! -- CALCUL DE LA MATRICE TANGENTE
@@ -391,7 +391,7 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps,&
                         rtemp2 = 0.d0
                         do m = 1, 3
                             do n = 1, 3
-                                rtemp2 = rtemp2+vecp(k, m)*vecp(i, n)* vecp(j, n)*vecp(l, m)*dspd&
+                                rtemp2 = rtemp2+vecp(k, m)*vecp(i, n)*vecp(j, n)*vecp(l, m)*dspd&
                                          &ep(n, m)
                             end do
                         end do
@@ -401,7 +401,7 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps,&
                         rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 1)*vecp(k, 3)*vecp(l, 1)*dspdep(5, 5)
                         rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 3)*vecp(k, 2)*vecp(l, 3)*dspdep(6, 6)
                         rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 2)*vecp(k, 3)*vecp(l, 2)*dspdep(6, 6)
-                        ktg(t(i, j), t(k, l), 1) = ktg(t(i, j), t(k, l), 1)+ rtemp2*rtemp4
+                        ktg(t(i, j), t(k, l), 1) = ktg(t(i, j), t(k, l), 1)+rtemp2*rtemp4
                     end if
                 end do
             end do
@@ -464,9 +464,9 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps,&
     end if
 !
 !
- 99 continue
-    call lcgrad(resi, rigi, sigma(1:ndimsi), apg, lag,&
-                grad, d, r, c, ktg(1:ndimsi, 1:ndimsi, 1),&
+99  continue
+    call lcgrad(resi, rigi, sigma(1:ndimsi), apg, lag, &
+                grad, d, r, c, ktg(1:ndimsi, 1:ndimsi, 1), &
                 ktg(1:ndimsi, 1, 2), ktg(1:ndimsi, 1, 3), ktg(1, 1, 4), sig, dsidep)
 !
 end subroutine

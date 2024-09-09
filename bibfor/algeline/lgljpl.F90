@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lgljpl(mod, nbmat, mater, sig, devg,&
+subroutine lgljpl(mod, nbmat, mater, sig, devg, &
                   devgii, vin, dsde, codret)
 !
     implicit none
@@ -129,23 +129,23 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg,&
 ! **********************************************************************
 ! --- CALCUL DE DUDG ---------------------------------------------------
 ! **********************************************************************
-    call drudrg(zr(jpara), zr(jderiv), h0, sigc, gn,&
+    call drudrg(zr(jpara), zr(jderiv), h0, sigc, gn, &
                 invn, dudg)
 ! **********************************************************************
 ! --- CALCUL DE DFDS ---------------------------------------------------
 ! **********************************************************************
-    call drfdrs(q, zr(jpara), h0, sigc, gn,&
+    call drfdrs(q, zr(jpara), h0, sigc, gn, &
                 duds, dfds)
 ! **********************************************************************
 ! --- CALCUL DE DFDG ---------------------------------------------------
 ! **********************************************************************
-    call drfdrg(zr(jpara), zr(jderiv), h0, sigc, gn,&
+    call drfdrg(zr(jpara), zr(jderiv), h0, sigc, gn, &
                 dudg, dfdg)
 ! **********************************************************************
 ! ======================================================================
 ! --- CALCUL DE DSIG/DEPS ----------------------------------------------
 ! ======================================================================
-    call calcds(hook, devg, devgii, dfds, dfdg,&
+    call calcds(hook, devg, devgii, dfds, dfdg, &
                 dsde)
 ! ======================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES --------------------------------

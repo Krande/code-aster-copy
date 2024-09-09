@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim,&
-                  typmod, imate, compor, carcri, instam,&
-                  instap, neps, epsm, deps, nsig,&
-                  sigm, nvi, vim, option, angmas,&
+subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
+                  typmod, imate, compor, carcri, instam, &
+                  instap, neps, epsm, deps, nsig, &
+                  sigm, nvi, vim, option, angmas, &
                   stress, statev, dsidep, codret)
 !
     use calcul_module, only: ca_iactif_
@@ -177,12 +177,12 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim,&
 !
 ! - Get material properties
 !
-    call mat_proto(BEHinteg, fami, kpg, ksp, '+',&
+    call mat_proto(BEHinteg, fami, kpg, ksp, '+', &
                    imate, compor(1), nprops, props)
 !
 ! - Prepare strains
 !
-    call umatPrepareStrain(neps, epsm, deps, stran, dstran,&
+    call umatPrepareStrain(neps, epsm, deps, stran, dstran, &
                            dfgrd0, dfgrd1)
 !
 ! - Number of internal state variables
@@ -236,24 +236,24 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim,&
         b_incx = to_blas_int(1)
         call dscal(b_n, usrac2, stress(4), b_incx)
         statev(1:nstatv) = vim(1:nstatv)
-        call umatwp(pfumat, stress, statev, ddsdde, sse,&
-                    spd, scd, rpl, ddsddt, drplde,&
-                    drpldt, stran, dstran, time, dtime,&
-                    temp, dtemp, BEHinteg%exte%predef, BEHinteg%exte%dpred, cmname,&
-                    ndi, nshr, ntens, nstatv, props,&
-                    nprops, coords, drot, pnewdt, celent,&
-                    dfgrd0, dfgrd1, noel, npt, layer,&
+        call umatwp(pfumat, stress, statev, ddsdde, sse, &
+                    spd, scd, rpl, ddsddt, drplde, &
+                    drpldt, stran, dstran, time, dtime, &
+                    temp, dtemp, BEHinteg%exte%predef, BEHinteg%exte%dpred, cmname, &
+                    ndi, nshr, ntens, nstatv, props, &
+                    nprops, coords, drot, pnewdt, celent, &
+                    dfgrd0, dfgrd1, noel, npt, layer, &
                     kspt, kstep, kinc)
     else if (option(1:9) .eq. 'RIGI_MECA') then
         dstran = 0.d0
         stress = sigm
-        call umatwp(pfumat, sigm, vim, ddsdde, sse,&
-                    spd, scd, rpl, ddsddt, drplde,&
-                    drpldt, stran, dstran, time, dtime,&
-                    temp, dtemp, BEHinteg%exte%predef, BEHinteg%exte%dpred, cmname,&
-                    ndi, nshr, ntens, nstatv, props,&
-                    nprops, coords, drot, pnewdt, celent,&
-                    dfgrd0, dfgrd1, noel, npt, layer,&
+        call umatwp(pfumat, sigm, vim, ddsdde, sse, &
+                    spd, scd, rpl, ddsddt, drplde, &
+                    drpldt, stran, dstran, time, dtime, &
+                    temp, dtemp, BEHinteg%exte%predef, BEHinteg%exte%dpred, cmname, &
+                    ndi, nshr, ntens, nstatv, props, &
+                    nprops, coords, drot, pnewdt, celent, &
+                    dfgrd0, dfgrd1, noel, npt, layer, &
                     kspt, kstep, kinc)
     end if
 !
@@ -265,8 +265,8 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim,&
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         dsidep = 0.d0
-        call lcicma(ddsdde, ntens, ntens, ntens, ntens,&
-                    1, 1, dsidep, 6, 6,&
+        call lcicma(ddsdde, ntens, ntens, ntens, ntens, &
+                    1, 1, dsidep, 6, 6, &
                     1, 1)
         do i = 1, 6
             do j = 4, 6

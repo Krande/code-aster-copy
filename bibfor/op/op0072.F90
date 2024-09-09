@@ -94,8 +94,8 @@ subroutine op0072()
 !
 ! --- RECUPERATION DU NB DE MODES
 !
-    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', tmod, 1,&
+    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid, &
+                cbid, ebid, 'ABSOLU', tmod, 1, &
                 nbid)
     nbmode = tmod(1)
 !
@@ -186,7 +186,7 @@ subroutine op0072()
 !       --- VERIFIER QUE LES MAILLAGES DU CHAMP A PROJETER
 !         - LES DEFORMEES MODALES SONT IDENTIQUES
 !         - 1. MAILLAGE DE REFERENCE POUR LA BASE
-        call rsexch('F', basemo, 'DEPL', 1, nomcha,&
+        call rsexch('F', basemo, 'DEPL', 1, nomcha, &
                     iret)
         call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=maill1)
 !       - 2. MAILLAGE DE REFERENCE POUR LE CHAM_NO

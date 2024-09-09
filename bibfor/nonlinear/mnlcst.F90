@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlcst(parcho, adime, ninc, nd, nchoc,&
+subroutine mnlcst(parcho, adime, ninc, nd, nchoc, &
                   h, hf, xcst)
     implicit none
 !
@@ -92,10 +92,10 @@ subroutine mnlcst(parcho, adime, ninc, nd, nchoc,&
         jeu = vjeu(i)/jeumax(1)
         if (type(i) (1:7) .eq. 'CERCLE') then
 ! ---     -ORIG1^2 - ORIG2^2
-            zr(icst+nd*(2*h+1)+(neqs+2)*(2*hf+1)) = -(&
-                                                    orig(1+3*(i-1)) /jeu)**2-(orig(1+3*(i-1)+1&
-                                                    )/jeu&
-                                                    )**2
+            zr(icst+nd*(2*h+1)+(neqs+2)*(2*hf+1)) = -( &
+                                                    orig(1+3*(i-1))/jeu)**2-(orig(1+3*(i-1)+1 &
+                                                                                  )/jeu &
+                                                                             )**2
 ! ---     ETA
             zr(icst+nd*(2*h+1)+(neqs+3)*(2*hf+1)) = -eta
         else if (type(i) (1:6) .eq. 'PLAN') then

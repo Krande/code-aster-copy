@@ -18,9 +18,9 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1306
 !
-subroutine nifnsm(ndim, nno1, nno2, nno3, npg,&
-                  iw, vff1, vff2, vff3, idff1,&
-                  idff2, vu, vg, vp, typmod,&
+subroutine nifnsm(ndim, nno1, nno2, nno3, npg, &
+                  iw, vff1, vff2, vff3, idff1, &
+                  idff2, vu, vg, vp, typmod, &
                   mate, geomi, sig, ddl, vect)
 !
     implicit none
@@ -128,25 +128,26 @@ subroutine nifnsm(ndim, nno1, nno2, nno3, npg,&
 !
 ! - LONGUEUR CARACTERISTIQUE -> PARAMETRE C
         c(1) = 0.d0
-        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ',&
-                    [0.d0], 1, 'C_GONF', c(1), k2ret(1),&
+        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ', &
+                    [0.d0], 1, 'C_GONF', c(1), k2ret(1), &
                     0)
         nonloc = k2ret(1) .eq. 0 .and. c(1) .ne. 0.d0
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
+        call dfdmip(ndim, nno1, axi, geomi, g, &
+                    iw, vff1(1, g), idff1, r, w, &
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dff1, deplm, fm)
-        call dfdmip(ndim, nno1, axi, geomm, g,&
-                    iw, vff1(1, g), idff1, r, wm,&
+        call dfdmip(ndim, nno1, axi, geomm, g, &
+                    iw, vff1(1, g), idff1, r, wm, &
                     dff1)
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1, &
                     lij)
 !
-        jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))- fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)&
-             &*fm(3, 2))+ fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
+        jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))- &
+             fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3, 2))+ &
+             fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT
         b_n = to_blas_int(nno2)
@@ -160,8 +161,8 @@ subroutine nifnsm(ndim, nno1, nno2, nno3, npg,&
 !
 ! - CALCUL DU GRADIENT DU GONFLEMENT POUR LA REGULARISATION
         if (nonloc) then
-            call dfdmip(ndim, nno2, axi, geomi, g,&
-                        iw, vff2(1, g), idff2, r, w,&
+            call dfdmip(ndim, nno2, axi, geomi, g, &
+                        iw, vff2(1, g), idff2, r, w, &
                         dff2)
             do ia = 1, ndim
                 b_n = to_blas_int(nno2)
@@ -191,8 +192,8 @@ subroutine nifnsm(ndim, nno1, nno2, nno3, npg,&
         end do
 !
 ! - CALCUL DES FONCTIONS A,B,... QUI LIENT G ET J
-        call nirela(1, jm, gm, gm, am,&
-                    ap, bm, boa, aa, bb,&
+        call nirela(1, jm, gm, gm, am, &
+                    ap, bm, boa, aa, bb, &
                     daa, dbb, dboa, d2boa, iret)
 !
         ASSERT(iret == 0)

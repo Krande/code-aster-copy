@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalFuncScal(FEBasis, val_nodes, point) result (func)
+    function FEEvalFuncScal(FEBasis, val_nodes, point) result(func)
 !
         implicit none
 !
@@ -80,7 +80,7 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalGradVec(FEBasis, val_nodes, point, BGSEval) result (grad)
+    function FEEvalGradVec(FEBasis, val_nodes, point, BGSEval) result(grad)
 !
         implicit none
 !
@@ -122,7 +122,7 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalGradSymMat(FEBasis, val_nodes, point, BGSEval) result (grads)
+    function FEEvalGradSymMat(FEBasis, val_nodes, point, BGSEval) result(grads)
 !
         implicit none
 !
@@ -154,21 +154,21 @@ contains
 !
         grads = 0.d0
         select case (FEBasis%ndim)
-    case (2)
-        grads(1) = grad(1, 1)
-        grads(2) = grad(2, 2)
-        grads(3) = grad(3, 3)
-        grads(4) = (grad(2, 1)+grad(1, 2))*rac2_2
-    case (3)
-        grads(1) = grad(1, 1)
-        grads(2) = grad(2, 2)
-        grads(3) = grad(3, 3)
-        grads(4) = (grad(1, 2)+grad(2, 1))*rac2_2
-        grads(5) = (grad(1, 3)+grad(3, 1))*rac2_2
-        grads(6) = (grad(2, 3)+grad(3, 2))*rac2_2
-    case default
-        ASSERT(ASTER_FALSE)
-    end select
+        case (2)
+            grads(1) = grad(1, 1)
+            grads(2) = grad(2, 2)
+            grads(3) = grad(3, 3)
+            grads(4) = (grad(2, 1)+grad(1, 2))*rac2_2
+        case (3)
+            grads(1) = grad(1, 1)
+            grads(2) = grad(2, 2)
+            grads(3) = grad(3, 3)
+            grads(4) = (grad(1, 2)+grad(2, 1))*rac2_2
+            grads(5) = (grad(1, 3)+grad(3, 1))*rac2_2
+            grads(6) = (grad(2, 3)+grad(3, 2))*rac2_2
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
 !
     end function
 !
@@ -177,7 +177,7 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalGradMat(FEBasis, val_nodes, point, BGSEval) result (grad)
+    function FEEvalGradMat(FEBasis, val_nodes, point, BGSEval) result(grad)
 !
         implicit none
 !
@@ -205,44 +205,44 @@ contains
         if (present(BGSEval)) then
             ind = 0
             select case (FEBasis%ndim)
-        case (2)
-            do n = 1, FEBasis%size
-                do i = 1, 2
-                    grad(i, 1:2) = grad(i, 1:2)+BGSEval(1:2, n)*val_nodes(ind+i)
+            case (2)
+                do n = 1, FEBasis%size
+                    do i = 1, 2
+                        grad(i, 1:2) = grad(i, 1:2)+BGSEval(1:2, n)*val_nodes(ind+i)
+                    end do
+                    ind = ind+2
                 end do
-                ind = ind+2
-            end do
-        case (3)
-            do n = 1, FEBasis%size
-                do i = 1, 3
-                    grad(i, 1:3) = grad(i, 1:3)+BGSEval(1:3, n)*val_nodes(ind+i)
+            case (3)
+                do n = 1, FEBasis%size
+                    do i = 1, 3
+                        grad(i, 1:3) = grad(i, 1:3)+BGSEval(1:3, n)*val_nodes(ind+i)
+                    end do
+                    ind = ind+3
                 end do
-                ind = ind+3
-            end do
-        case default
-            ASSERT(ASTER_FALSE)
-        end select
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
         else
             gradEF = FEBasis%grad(point)
             ind = 0
             select case (FEBasis%ndim)
-        case (2)
-            do n = 1, FEBasis%size
-                do i = 1, 2
-                    grad(i, 1:2) = grad(i, 1:2)+gradEF(1:2, n)*val_nodes(ind+i)
+            case (2)
+                do n = 1, FEBasis%size
+                    do i = 1, 2
+                        grad(i, 1:2) = grad(i, 1:2)+gradEF(1:2, n)*val_nodes(ind+i)
+                    end do
+                    ind = ind+2
                 end do
-                ind = ind+2
-            end do
-        case (3)
-            do n = 1, FEBasis%size
-                do i = 1, 3
-                    grad(i, 1:3) = grad(i, 1:3)+gradEF(1:3, n)*val_nodes(ind+i)
+            case (3)
+                do n = 1, FEBasis%size
+                    do i = 1, 3
+                        grad(i, 1:3) = grad(i, 1:3)+gradEF(1:3, n)*val_nodes(ind+i)
+                    end do
+                    ind = ind+3
                 end do
-                ind = ind+3
-            end do
-        case default
-            ASSERT(ASTER_FALSE)
-        end select
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
         end if
 !
         if (FEBasis%l_axis) then

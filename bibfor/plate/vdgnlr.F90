@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
+subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
                   nomte)
 !
     implicit none
@@ -306,7 +306,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !
 !---- REPERE LOCAUX AUX NOEUDS SUR LA CONFIGURATION INITIALE
 !
-    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta,&
+    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta, &
                 vectn, vectpt)
 !
 !---- DEPLACEMENT TOTAL AUX NOEUDS DE SERENDIP
@@ -315,7 +315,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !
     do in = 1, nb1
         do ii = 1, 3
-            vecu(in, ii) = zr(ium-1+6*(in-1)+ii)+ zr(iup-1+6*(in-1)+ii)
+            vecu(in, ii) = zr(ium-1+6*(in-1)+ii)+zr(iup-1+6*(in-1)+ii)
         end do
     end do
 !
@@ -349,25 +349,25 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !
         do in = 1, nb1
             do ii = 1, 3
-                vecthe(in, ii) = zr(ium-1+6*(in-1)+ii+3)+ zr(iup-1+6*(in-1)+ii+3)
+                vecthe(in, ii) = zr(ium-1+6*(in-1)+ii+3)+zr(iup-1+6*(in-1)+ii+3)
             end do
         end do
 !
 !--------- SUPERNOEUD
 !
         do ii = 1, 3
-            vecthe(nb2, ii) = zr(ium-1+6*(nb1)+ii)+ zr(iup-1+6*(nb1)+ii)
+            vecthe(nb2, ii) = zr(ium-1+6*(nb1)+ii)+zr(iup-1+6*(nb1)+ii)
         end do
     end if
 !
 !---- TRANSFORMEES NORMALES ET MATRICES DE ROTATION AUX NOEUDS
 !
-    call vectrn(nb2, vectpt, vectn, vecthe, vecnph,&
+    call vectrn(nb2, vectpt, vectn, vecthe, vecnph, &
                 blam)
 !
 !---- VECTEUR PE DES VARIABLES NODALES TOTALES GENERALISEES
 !
-    call vectpe(nb1, nb2, vecu, vectn, vecnph,&
+    call vectpe(nb1, nb2, vecu, vectn, vecnph, &
                 vecpe)
 !
 !______________________________________________________________________
@@ -427,50 +427,50 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !
             do intsr = 1, npgsr
 !
-                call vectgt(0, nb1, zr(igeom), ksi3s2, intsr,&
+                call vectgt(0, nb1, zr(igeom), ksi3s2, intsr, &
                             zr(lzr), epais, vectn, vectg, vectt)
 !
-                call jacbm1(epais, vectg, vectt, bid33, jm1,&
+                call jacbm1(epais, vectg, vectt, bid33, jm1, &
                             detj)
 !
 !------------- J1DN1RI ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 0 INCOMPLET
-                call jm1dn1(0, 0, nb1, nb2, zr(lzr),&
+                call jm1dn1(0, 0, nb1, nb2, zr(lzr), &
                             epais, ksi3s2, intsr, jm1, jdn1ri)
 !
 !------------- CALCUL DE    DUDXRI ( 9 ) REDUIT INCOMPLET
 !
-                call promat(jdn1ri, 9, 9, 6*nb1+3, vecpe,&
+                call promat(jdn1ri, 9, 9, 6*nb1+3, vecpe, &
                             6*nb1+3, 6*nb1+3, 1, dudxri)
 !
 !+++++++++++++ B1MRI ( 3 , 51 , 4 ) MEMBRANE REDUIT INCOMPLET
 !              B2MRI ( 3 , 51 , 4 )
 !
-                call matbmr(nb1, vectt, dudxri, intsr, jdn1ri,&
+                call matbmr(nb1, vectt, dudxri, intsr, jdn1ri, &
                             b1mri, b2mri)
 !
 !------------- J1DN1RC ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn1(0, 1, nb1, nb2, zr(lzr),&
+                call jm1dn1(0, 1, nb1, nb2, zr(lzr), &
                             epais, ksi3s2, intsr, jm1, jdn1rc)
 !
 !------------- CALCUL DE    DUDXRC ( 9 ) REDUIT COMPLET
 !
-                call promat(jdn1rc, 9, 9, 6*nb1+3, vecpe,&
+                call promat(jdn1rc, 9, 9, 6*nb1+3, vecpe, &
                             6*nb1+3, 6*nb1+3, 1, dudxrc)
 !
 !------------- J1DN2RC ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn2(0, 1, nb1, nb2, zr(lzr),&
-                            epais, ksi3s2, intsr, vecnph, jm1,&
+                call jm1dn2(0, 1, nb1, nb2, zr(lzr), &
+                            epais, ksi3s2, intsr, vecnph, jm1, &
                             jdn2rc)
 !
 !+++++++++++++ B1SRC ( 2 , 51 , 4 ) SHEAR REDUIT COMPLET
 !              B2SRC ( 2 , 51 , 4 )
 !
-                call matbsr(nb1, vectt, dudxrc, intsr, jdn1rc,&
+                call matbsr(nb1, vectt, dudxrc, intsr, jdn1rc, &
                             jdn2rc, b1src, b2src)
             end do
 !
@@ -485,89 +485,89 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
             do intsn = 1, npgsn
 !
 !
-                call vectgt(1, nb1, zr(igeom), ksi3s2, intsn,&
+                call vectgt(1, nb1, zr(igeom), ksi3s2, intsn, &
                             zr(lzr), epais, vectn, vectg, vectt)
 !
-                call jacbm1(epais, vectg, vectt, bid33, jm1,&
+                call jacbm1(epais, vectg, vectt, bid33, jm1, &
                             detj)
 !
 !------------- J1DN1NC ( 9 , 6 * NB1 + 3 ) INDN = 1 NORMAL
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn1(1, 1, nb1, nb2, zr(lzr),&
+                call jm1dn1(1, 1, nb1, nb2, zr(lzr), &
                             epais, ksi3s2, intsn, jm1, jdn1nc)
 !
 !------------- CALCUL DE     DUDXNC ( 9 ) NORMAL COMPLET
 !
-                call promat(jdn1nc, 9, 9, 6*nb1+3, vecpe,&
+                call promat(jdn1nc, 9, 9, 6*nb1+3, vecpe, &
                             6*nb1+3, 6*nb1+3, 1, dudxnc)
 !
 !------------- J1DN2NC ( 9 , 6 * NB1 + 3 ) INDN = 1 NORMAL
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn2(1, 1, nb1, nb2, zr(lzr),&
-                            epais, ksi3s2, intsn, vecnph, jm1,&
+                call jm1dn2(1, 1, nb1, nb2, zr(lzr), &
+                            epais, ksi3s2, intsn, vecnph, jm1, &
                             jdn2nc)
 !
 !+++++++++++++ B1MNC ( 3 , 51 ) MEMBRANE NORMAL COMPLET
 !              B2MNC ( 3 , 51 )
 !
-                call matbmn(nb1, vectt, dudxnc, jdn1nc, jdn2nc,&
+                call matbmn(nb1, vectt, dudxnc, jdn1nc, jdn2nc, &
                             b1mnc, b2mnc)
 !
 !------------- J1DN1NI ( 9 , 6 * NB1 + 3 ) INDN = 1 NORMAL
 !                                          INDC = 0 INCOMPLET
 !
-                call jm1dn1(1, 0, nb1, nb2, zr(lzr),&
+                call jm1dn1(1, 0, nb1, nb2, zr(lzr), &
                             epais, ksi3s2, intsn, jm1, jdn1ni)
 !
 !------------- CALCUL DE     DUDXNI ( 9 ) NORMAL INCOMPLET
 !
-                call promat(jdn1ni, 9, 9, 6*nb1+3, vecpe,&
+                call promat(jdn1ni, 9, 9, 6*nb1+3, vecpe, &
                             6*nb1+3, 6*nb1+3, 1, dudxni)
 !
 !+++++++++++++ B1MNI ( 3 , 51 ) MEMBRANE NORMAL INCOMPLET
 !              B2MNI ( 3 , 51 )
 !
-                call matbmn(nb1, vectt, dudxni, jdn1ni, jdn1ni,&
+                call matbmn(nb1, vectt, dudxni, jdn1ni, jdn1ni, &
                             b1mni, b2mni)
 !
 !============= B1SU ( 5 , 51 ) SUBSTITUTION TOTAL
 !              B2SU ( 5 , 51 ) SUBSTITUTION DIFFERENTIEL
 !
-                call matbsu(nb1, zr(lzr), npgsr, intsn, b1mnc,&
-                            b2mnc, b1mni, b2mni, b1mri, b2mri,&
+                call matbsu(nb1, zr(lzr), npgsr, intsn, b1mnc, &
+                            b2mnc, b1mni, b2mni, b1mri, b2mri, &
                             b1src, b2src, b1su, b2su)
 !
 !------------- LA  DEFORMATION TOTALE  DE GREEN LAGRANGE ETILD ( 5 )
 !
-                call promat(b1su, 5, 5, 6*nb1+3, vecpe,&
+                call promat(b1su, 5, 5, 6*nb1+3, vecpe, &
                             6*nb1+3, 6*nb1+3, 1, etild)
 !
 !------------- EVALUATION DES DEFORMATIONS THERMIQUES
 !
-                call verifg('RIGI', intsn, 3, '+', zi(jmate),&
+                call verifg('RIGI', intsn, 3, '+', zi(jmate), &
                             epsthe)
                 etild(1) = etild(1)-epsthe
                 etild(2) = etild(2)-epsthe
 !
 !------------- LA  MATRICE DE COMPORTEMENT  MATC ( 5 , 5 )
 !
-                call moytpg('RIGI', intsn, 3, '+', valpar,&
+                call moytpg('RIGI', intsn, 3, '+', valpar, &
                             iret)
-                call matrc2(1, 'TEMP    ', [valpar], kappa, matc,&
+                call matrc2(1, 'TEMP    ', [valpar], kappa, matc, &
                             vectt)
 !
 !------------- LA  CONTRAINTE TOTALE  PK2 STILD ( 5 )
 !
-                call promat(matc, 5, 5, 5, etild,&
+                call promat(matc, 5, 5, 5, etild, &
                             5, 5, 1, stild)
 !
                 if (lSigm) then
 !
 !------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS
 !
-                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte- 1)
+                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
                     zr(icontp-1+k1+1) = stild(1)
                     zr(icontp-1+k1+2) = stild(2)
 !
@@ -582,7 +582,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !              ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * STILD ( 5 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, b2su, stild,&
+                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, b2su, stild, &
                                zr(ivectu))
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -598,7 +598,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !
                     do kntsr = 1, npgsr
                         do i = 1, 5
-                            stlis(i, kntsr) = stlis(i, kntsr)+ zr(lzr-1+702+4*(intsn-1)+kntsr)* s&
+                            stlis(i, kntsr) = stlis(i, kntsr)+zr(lzr-1+702+4*(intsn-1)+kntsr)*s&
                                               &tild(i)*zr(lzr-1+127+intsn-1)
                         end do
                     end do
@@ -608,7 +608,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !                  B2SU ( 5 , 6 * NB1 + 3 )
 !                POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(b2su, matc, zr(lzr-1+127+intsn-1)*detj*coef, 5, 6*nb1+3,&
+                    call btdbma(b2su, matc, zr(lzr-1+127+intsn-1)*detj*coef, 5, 6*nb1+3, &
                                 zr(imatun))
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -625,19 +625,19 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !---------- CALCUL DE
 !           J1DN3( 9 , 3 * NB2 )=JTILDM1( 9 , 9 )*DNDQSI3( 9 , 3 * NB2 )
 !
-                    call jm1dn3(nb2, zr(lzr), epais, ksi3s2, intsn,&
+                    call jm1dn3(nb2, zr(lzr), epais, ksi3s2, intsn, &
                                 jm1, j1dn3)
 !---------- CALCUL DE
 !           BTILD3 ( 5 , 27 ) = HSC ( 5 , 9 ) * J1DN3 ( 9 , 3 * NB2 )
 !
-                    call promat(hsc, 5, 5, 9, j1dn3,&
+                    call promat(hsc, 5, 5, 9, j1dn3, &
                                 9, 9, 3*nb2, btild3)
 !
 !---------- VECZN ( 27 )  =     INTEGRALE  DE
 !           ( BTILD3 ( 5 , 27 ) ) T * STILD ( 5 ) *
 !           POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(3*nb2, 5, zr(lzr-1+127+intsn-1)*detj*coef, btild3, stild,&
+                    call btsig(3*nb2, 5, zr(lzr-1+127+intsn-1)*detj*coef, btild3, stild, &
                                veczn)
 !
 !
@@ -661,7 +661,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !           *                               JDN2NC ( 9 , 6 * NB1 + 3 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(jdn2nc, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3,&
+                    call btdbma(jdn2nc, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3, &
                                 vrignc)
 !
 !------------- VRIGNI  ( 6 * NB1 + 3 , 6 * NB1 + 3 )  = INTEGRALE
@@ -669,7 +669,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !           *                               JDN1NI ( 9 , 6 * NB1 + 3 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(jdn1ni, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3,&
+                    call btdbma(jdn1ni, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3, &
                                 vrigni)
                 end if
             end do
@@ -679,16 +679,16 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !
                 do intsr = 1, npgsr
 !
-                    call vectgt(0, nb1, zr(igeom), ksi3s2, intsr,&
+                    call vectgt(0, nb1, zr(igeom), ksi3s2, intsr, &
                                 zr(lzr), epais, vectn, vectg, vectt)
 !
-                    call jacbm1(epais, vectg, vectt, bid33, jm1,&
+                    call jacbm1(epais, vectg, vectt, bid33, jm1, &
                                 detj)
 !
 !------------- J1DN1RI ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 0 INCOMPLET
 !
-                    call jm1dn1(0, 0, nb1, nb2, zr(lzr),&
+                    call jm1dn1(0, 0, nb1, nb2, zr(lzr), &
                                 epais, ksi3s2, intsr, jm1, jdn1ri)
 !
 !------------- RESTITUTION DES CONTRAINTES LISSEES MEMBRANE FLEXION
@@ -704,14 +704,14 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !------------- BARS ( 9 , 9 )
 !
                     call tilbar(stild, vectt, bars)
-                    call btdbma(jdn1ri, bars, detj*coef, 9, 6*nb1+3,&
+                    call btdbma(jdn1ri, bars, detj*coef, 9, 6*nb1+3, &
                                 vrigri)
 !
 !------------- J1DN2RC ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 1 COMPLET
 !
-                    call jm1dn2(0, 1, nb1, nb2, zr(lzr),&
-                                epais, ksi3s2, intsr, vecnph, jm1,&
+                    call jm1dn2(0, 1, nb1, nb2, zr(lzr), &
+                                epais, ksi3s2, intsr, vecnph, jm1, &
                                 jdn2rc)
 !
 !------------- ANNULATION DE MEMBRANE FLEXION
@@ -737,7 +737,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !------------- PAS D INTEGRATION REDUITE SURFACE MOYENNE
 !DDDDDDDDDDDDD
 !
-                    call btdbma(jdn2rc, bars, detj*coef, 9, 6*nb1+3,&
+                    call btdbma(jdn2rc, bars, detj*coef, 9, 6*nb1+3, &
                                 vrigrc)
                 end do
             end if
@@ -749,7 +749,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !------- AFFECTATION DE LA RIGIDITE GEOMETRIQUE
 !
         do jd = 1, (6*nb1+3)*(6*nb1+3)
-            zr(imatun-1+jd) = zr(imatun-1+jd)+ vrignc(jd)-vrigni(jd)+vrigri(jd)+vrigrc(jd)
+            zr(imatun-1+jd) = zr(imatun-1+jd)+vrignc(jd)-vrigni(jd)+vrigri(jd)+vrigrc(jd)
         end do
 !
 !------- AFFECTATION DE LA RIGIDITE NON CLASSIQUE RIGNC ( 3 , 3 )
@@ -769,13 +769,13 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !
 !---------- RIGIDITE NON CLASSIQUE RIGN ( 3 , 3 ) NON SYMETRIQUE
 !
-            call promat(antzi, 3, 3, 3, antni,&
+            call promat(antzi, 3, 3, 3, antni, &
                         3, 3, 3, rignc)
         end do
 !
 !------- ROTATION DE TOUTE LA MATRICE AU REPERE LOCAL
 !
-        call rogllo(nb1, nb2, zr(imatun), blam, ctor,&
+        call rogllo(nb1, nb2, zr(imatun), blam, ctor, &
                     knn)
 !
     else
@@ -810,12 +810,12 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
 !
 !+++++++++++ SON TRANSPOSE
 !
-        call transp(tmoin1, 3, 3, 3, tm1t,&
+        call transp(tmoin1, 3, 3, 3, tm1t, &
                     3)
 !
 !+++++++++++ PRODUIT T MOINS 1 T FOIS VECNI
 !
-        call promat(tm1t, 3, 3, 3, vecni,&
+        call promat(tm1t, 3, 3, 3, vecni, &
                     3, 3, 1, term)
 !
         if (lMatr) then
@@ -829,9 +829,9 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
                     j = 6*(in-1)+jj+3
                     do ii = 1, 3
                         i = 6*(in-1)+ii+3
-                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = zr(&
-                                                         imatun-1+(6*nb1+3)*(j-1)+i)+ knn*term(ii&
-                                                         &)*term(jj&
+                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = zr( &
+                                                         imatun-1+(6*nb1+3)*(j-1)+i)+knn*term(ii&
+                                                         &)*term(jj &
                                                          )
                     end do
                 end do
@@ -842,9 +842,9 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
                     j = 6*nb1+jj
                     do ii = 1, 3
                         i = 6*nb1+ii
-                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = zr(&
-                                                         imatun-1+(6*nb1+3)*(j-1)+i)+ knn*term(ii&
-                                                         &)*term(jj&
+                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = zr( &
+                                                         imatun-1+(6*nb1+3)*(j-1)+i)+knn*term(ii&
+                                                         &)*term(jj &
                                                          )
                     end do
                 end do
@@ -854,7 +854,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp,&
         if (lVect) then
             if (in .le. nb1) then
                 do ii = 1, 3
-                    zr(ivectu-1+6*(in-1)+ii+3) = zr(ivectu-1+6*(in-1)+ii+3)+ knn*term(ii)*thetan
+                    zr(ivectu-1+6*(in-1)+ii+3) = zr(ivectu-1+6*(in-1)+ii+3)+knn*term(ii)*thetan
                 end do
             else
                 do ii = 1, 3

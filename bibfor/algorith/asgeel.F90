@@ -167,7 +167,7 @@ subroutine asgeel(nomres, option, nugene)
         kbid = '        '
         indsst = i1
         call jenonu(jexnom(nomsst, zk8(lsst+i1-1)), indsst)
-        call mgutdm(modgen, kbid, indsst, 'NOM_MACR_ELEM', ibid,&
+        call mgutdm(modgen, kbid, indsst, 'NOM_MACR_ELEM', ibid, &
                     k8bid)
         call jelira(k8bid//adnom//'_VALE', 'NMAXOC', ntria)
         syme_macro(i1) = .true.
@@ -230,7 +230,7 @@ subroutine asgeel(nomres, option, nugene)
     ASSERT(iret .eq. 0)
 !
 !-- ALLOCATION DE LA MATRICE PROJETEE
-    call jecrec(nomres//'           .VALM', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(nomres//'           .VALM', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
                 ntria)
     call jeecra(nomres//'           .VALM', 'LONMAX', int((neq*(neq+1))/2))
 !
@@ -277,9 +277,9 @@ subroutine asgeel(nomres, option, nugene)
                 b_n = to_blas_int(nbddl)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                zr(lproj+(j1-1)*nbddl+i1-1) = ddot(&
-                                              b_n, zr(ltemp+(i1-1)*nbddl), b_incx,&
-                                              zr(lselia+(j1-1)*nlt+decal), b_incy&
+                zr(lproj+(j1-1)*nbddl+i1-1) = ddot( &
+                                              b_n, zr(ltemp+(i1-1)*nbddl), b_incx, &
+                                              zr(lselia+(j1-1)*nlt+decal), b_incy &
                                               )
             end do
         end do

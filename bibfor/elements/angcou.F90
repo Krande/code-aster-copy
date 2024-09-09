@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine angcou(coor, zk1, izk, icoude, zk2,&
-                  rayon, theta, angl1, angl2, angl3,&
-                  pgl1, pgl2, pgl3, omega, dn1n2,&
+subroutine angcou(coor, zk1, izk, icoude, zk2, &
+                  rayon, theta, angl1, angl2, angl3, &
+                  pgl1, pgl2, pgl3, omega, dn1n2, &
                   epsi, crit, zk3)
     implicit none
 #include "asterc/r8pi.h"

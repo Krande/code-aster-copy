@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine indlia(modgen, seliai, nindep, nbddl, sst,&
+subroutine indlia(modgen, seliai, nindep, nbddl, sst, &
                   sizlia)
 !    M. CORUS     DATE 25/01/10
 !-----------------------------------------------------------------------
@@ -234,7 +234,7 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst,&
     b_m = to_blas_int(nbddl)
     b_n = to_blas_int(neq)
     b_lwork = to_blas_int(lwork)
-    call dgeqp3(b_m, b_n, zr(lmalia), b_lda, zi4(jjpvt),&
+    call dgeqp3(b_m, b_n, zr(lmalia), b_lda, zi4(jjpvt), &
                 zr(ltau), swork, b_lwork, info)
     ASSERT(info .eq. 0)
     lwork = int(swork(1))
@@ -246,7 +246,7 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst,&
     b_m = to_blas_int(nbddl)
     b_n = to_blas_int(neq)
     b_lwork = to_blas_int(lwork)
-    call dgeqp3(b_m, b_n, zr(lmalia), b_lda, zi4(jjpvt),&
+    call dgeqp3(b_m, b_n, zr(lmalia), b_lda, zi4(jjpvt), &
                 zr(ltau), zr(jwork), b_lwork, info)
     ASSERT(info .eq. 0)
 !
@@ -299,7 +299,7 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst,&
     b_n = to_blas_int(neq)
     b_k = to_blas_int(nbddl)
     b_lwork = to_blas_int(-1)
-    call dorgqr(b_m, b_n, b_k, zr(lmalia), b_lda,&
+    call dorgqr(b_m, b_n, b_k, zr(lmalia), b_lda, &
                 zr(ltau), swork(1), b_lwork, info)
     ASSERT(info .eq. 0)
     if (swork(1) .gt. lwork) then
@@ -312,7 +312,7 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst,&
     b_n = to_blas_int(neq)
     b_k = to_blas_int(nbddl)
     b_lwork = to_blas_int(lwork)
-    call dorgqr(b_m, b_n, b_k, zr(lmalia), b_lda,&
+    call dorgqr(b_m, b_n, b_k, zr(lmalia), b_lda, &
                 zr(ltau), zr(jwork), b_lwork, info)
     ASSERT(info .eq. 0)
 !

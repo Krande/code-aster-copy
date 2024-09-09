@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nifnpd(ndim, nno1, nno2, nno3, npg,&
-                  iw, vff1, vff2, vff3, idff1,&
-                  vu, vg, vp, typmod, geomi,&
+subroutine nifnpd(ndim, nno1, nno2, nno3, npg, &
+                  iw, vff1, vff2, vff3, idff1, &
+                  vu, vg, vp, typmod, geomi, &
                   sig, ddl, vect)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
@@ -106,10 +106,10 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg,&
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         call r8inir(6, 0.d0, epsm, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
+        call dfdmip(ndim, nno1, axi, geomi, g, &
+                    iw, vff1(1, g), idff1, r, w, &
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dff1, deplm, fm, epsm)
 !
         divum = epsm(1)+epsm(2)+epsm(3)

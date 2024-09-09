@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
+subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
                   ener)
     implicit none
 #include "asterf_types.h"
@@ -118,8 +118,8 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
     indith = ASTER_FALSE
     dri = ASTER_FALSE
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
     enerth = 0.0d0
@@ -141,8 +141,8 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-    call dxmate('RIGI', df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
+    call dxmate('RIGI', df, dm, dmf, dc, &
+                dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)
@@ -182,7 +182,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
             dArea = dArea+wgt
 !
 !        -- COMPUTE LINEAR AND ROTATIONAL SHAPE FUNCTIONS AND DERIVATIVES :
-            call dkqshp(qsi, eta, caraq4, jacob, shp(1, 1, ii),&
+            call dkqshp(qsi, eta, caraq4, jacob, shp(1, 1, ii), &
                         shpr1(1, 1, ii), shpr2(1, 1, ii))
 !
             do j = 1, 4
@@ -231,7 +231,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         call dscal(b_n, wgt, df2, b_incx)
-        call utbtab('CUMU', 3, 12, df2, bf,&
+        call utbtab('CUMU', 3, 12, df2, bf, &
                     xab1, flex)
 !
 !        -- MEMBRANE :
@@ -244,7 +244,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         call dscal(b_n, wgt, dm2, b_incx)
-        call utbtab('CUMU', 3, 8, dm2, bm,&
+        call utbtab('CUMU', 3, 8, dm2, bm, &
                     xab1, memb)
 !
 !   compute rotational part of membrane B matrix
@@ -289,7 +289,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
             b_n = to_blas_int(9)
             b_incx = to_blas_int(1)
             call dscal(b_n, wgt, dm2, b_incx)
-            call utbtab('CUMU', 3, 4, dm2, gm,&
+            call utbtab('CUMU', 3, 4, dm2, gm, &
                         xab1, gmemb)
 !        ----- CALCUL DU PRODUIT BMT.DM.GM
             b_n = to_blas_int(9)
@@ -299,7 +299,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
             b_n = to_blas_int(9)
             b_incx = to_blas_int(1)
             call dscal(b_n, wgt, dm2, b_incx)
-            call utctab('CUMU', 3, 4, 8, dm2,&
+            call utctab('CUMU', 3, 4, 8, dm2, &
                         gm, bm, xab1, btgmemb)
 !
 !        ----- CALCUL DU PRODUIT gam/Omega*b(x)b
@@ -326,7 +326,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
                 b_n = to_blas_int(9)
                 b_incx = to_blas_int(1)
                 call dscal(b_n, wgt, dmf2, b_incx)
-                call utctab('CUMU', 3, 12, 8, dmf2,&
+                call utctab('CUMU', 3, 12, 8, dmf2, &
                             bf, bm, xab1, mefl)
 !
 !   compute product Gmt.Dmf.Bf
@@ -338,7 +338,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
                 b_n = to_blas_int(9)
                 b_incx = to_blas_int(1)
                 call dscal(b_n, wgt, dmf2, b_incx)
-                call utctab('CUMU', 3, 12, 4, dmf2,&
+                call utctab('CUMU', 3, 12, 4, dmf2, &
                             bf, gm, xab1, gmefl)
             else if (.not. dri) then
 !           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
@@ -349,7 +349,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
                 b_n = to_blas_int(9)
                 b_incx = to_blas_int(1)
                 call dscal(b_n, wgt, dmf2, b_incx)
-                call utctab('CUMU', 3, 12, 8, dmf2,&
+                call utctab('CUMU', 3, 12, 8, dmf2, &
                             bf, bm, xab1, mefl)
             else
                 ASSERT(ASTER_FALSE)
@@ -380,7 +380,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(4, 6, pgl, zr(jdepg), depl)
         if (.not. dri) then
-            call dxqloe(flex, memb, mefl, ctor, coupmf,&
+            call dxqloe(flex, memb, mefl, ctor, coupmf, &
                         depl, ener)
         else if (dri) then
 !        call dxqloe(flex, memb, mefl, abs(ctor), coupmf,&

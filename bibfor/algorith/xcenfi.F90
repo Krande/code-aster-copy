@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306
 !
-subroutine xcenfi(elrefp, ndim, ndime, nno, geom,&
-                  lsn, pinref, pmiref, cenref, cenfi,&
+subroutine xcenfi(elrefp, ndim, ndime, nno, geom, &
+                  lsn, pinref, pmiref, cenref, cenfi, &
                   nn, exit, jonc, num)
 !
     implicit none
@@ -109,28 +109,28 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom,&
     maxi = 0.d0
     edge = ""
 !   ARETE I1-I2
-    call xcedge(ndime, pinref, pi1, pi2, pmiref,&
+    call xcedge(ndime, pinref, pi1, pi2, pmiref, &
                 m12, crit)
     if (crit .gt. maxi) then
         maxi = crit
         edge = "A12"
     end if
 !   ARETE I2-I4
-    call xcedge(ndime, pinref, pi2, pi4, pmiref,&
+    call xcedge(ndime, pinref, pi2, pi4, pmiref, &
                 m24, crit)
     if (crit .gt. maxi) then
         maxi = crit
         edge = "A24"
     end if
 !   ARETE I3-I4
-    call xcedge(ndime, pinref, pi3, pi4, pmiref,&
+    call xcedge(ndime, pinref, pi3, pi4, pmiref, &
                 m34, crit)
     if (crit .gt. maxi) then
         maxi = crit
         edge = "A34"
     end if
 !   ARETE I1-I3
-    call xcedge(ndime, pinref, pi1, pi3, pmiref,&
+    call xcedge(ndime, pinref, pi1, pi3, pmiref, &
                 m13, crit)
     if (crit .gt. maxi) then
         maxi = crit
@@ -141,14 +141,14 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom,&
 !
     if (.not. courbe) then
         do i = 1, ndime
-            ptxx(i+ndime) = (pinref(ndime*(pi1-1)+i)+ pinref(ndime*(pi4-1)+i))/2.d0
+            ptxx(i+ndime) = (pinref(ndime*(pi1-1)+i)+pinref(ndime*(pi4-1)+i))/2.d0
         end do
     else
         do i = 1, ndime
             if (edge .eq. "A12" .or. edge .eq. "A34") then
-                ptxx(i+ndime) = (pmiref(ndime*(m12-1)+i)+ pmiref(ndime*(m34-1)+i))/2.d0
+                ptxx(i+ndime) = (pmiref(ndime*(m12-1)+i)+pmiref(ndime*(m34-1)+i))/2.d0
             else if (edge .eq. "A13" .or. edge .eq. "A24") then
-                ptxx(i+ndime) = (pmiref(ndime*(m13-1)+i)+ pmiref(ndime*(m24-1)+i))/2.d0
+                ptxx(i+ndime) = (pmiref(ndime*(m13-1)+i)+pmiref(ndime*(m24-1)+i))/2.d0
             else
                 ASSERT(.false.)
             end if
@@ -187,12 +187,12 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom,&
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     ksi(:) = 0.d0
     if (jonc) then
-        call xnewto(elrefp, name, n, ndime, ptxx,&
-                    ndim, geom, lsn, ibid, ibid,&
+        call xnewto(elrefp, name, n, ndime, ptxx, &
+                    ndim, geom, lsn, ibid, ibid, &
                     itemax, epsmax, ksi)
     else
-        call xnewto(elrefp, name, n, ndime, ptxx,&
-                    ndim, geom, lsn, ibid, ibid,&
+        call xnewto(elrefp, name, n, ndime, ptxx, &
+                    ndim, geom, lsn, ibid, ibid, &
                     itemax, epsmax, ksi, exit, dekker)
     end if
 !
@@ -201,7 +201,7 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom,&
     end do
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
-    call reerel(elrefp, nno, ndim, geom, cenref,&
+    call reerel(elrefp, nno, ndim, geom, cenref, &
                 cenfi)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lglini(yd, nbmat, mater, f0, sigd,&
-                  deps, devg, devgii, traceg, dy,&
+subroutine lglini(yd, nbmat, mater, f0, sigd, &
+                  deps, devg, devgii, traceg, dy, &
                   codret)
 !
     implicit none
@@ -113,10 +113,10 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
     if (teste) then
         call lcdevi(sigd, si)
         invn = trace(ndi, sigd)
-        call solrei(gamp, si, invn, zr(jpara), nbmat,&
+        call solrei(gamp, si, invn, zr(jpara), nbmat, &
                     mater, q, vecn, codret)
     else
-        call solrei(gamp, se, ie, zr(jpara), nbmat,&
+        call solrei(gamp, se, ie, zr(jpara), nbmat, &
                     mater, q, vecn, codret)
     end if
     if (codret .ne. 0) goto 100
@@ -127,16 +127,16 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
 ! ======================================================================
 ! --- PREMIERE INITIALISATION POUR GAMP = 0 ----------------------------
 ! ======================================================================
-        call lglind(nbmat, mater, zr(jpara), ge, q,&
-                    vecn, deps, devg, devgii, traceg,&
+        call lglind(nbmat, mater, zr(jpara), ge, q, &
+                    vecn, deps, devg, devgii, traceg, &
                     dy)
     else
 ! ======================================================================
 ! --- INITIALISATION DE NEWTON -----------------------------------------
 ! ======================================================================
         call dervar(gamp, nbmat, mater, zr(jpara), zr(jderiv))
-        call lglinn(nbmat, mater, zr(jpara), zr(jderiv), ge,&
-                    ie, q, vecn, f0, delta,&
+        call lglinn(nbmat, mater, zr(jpara), zr(jderiv), ge, &
+                    ie, q, vecn, f0, delta, &
                     devg, devgii, traceg, dy)
     end if
 ! ======================================================================

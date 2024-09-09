@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine caltau(ifa, is, sigf, fkooh, nfs,&
+subroutine caltau(ifa, is, sigf, fkooh, nfs, &
                   nsg, toutms, taus, mus, msns)
     implicit none
 !
@@ -69,7 +69,7 @@ subroutine caltau(ifa, is, sigf, fkooh, nfs,&
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, id6, b_incx, fetfe6,&
+        call daxpy(b_n, 1.d0, id6, b_incx, fetfe6, &
                    b_incy)
 !
         do i = 1, 3

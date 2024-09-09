@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcpitg(compor, df, line, dp, dvbe,&
+subroutine lcpitg(compor, df, line, dp, dvbe, &
                   dtaudf)
 !
 !
@@ -108,9 +108,9 @@ subroutine lcpitg(compor, df, line, dp, dvbe,&
 !
     do ij = 1, 6
         do kl = 1, 6
-            dvbbtr(ij, kl) = a2*(&
-                             id(ij, kl)-kr(ij)*kr(kl)/3.d0)+a3* dvbe(ij)*dvbe(kl)+a4*dvbe(ij)*kr(&
-                             &kl&
+            dvbbtr(ij, kl) = a2*( &
+                             id(ij, kl)-kr(ij)*kr(kl)/3.d0)+a3*dvbe(ij)*dvbe(kl)+a4*dvbe(ij)*kr(&
+                             &kl &
                              )
         end do
     end do

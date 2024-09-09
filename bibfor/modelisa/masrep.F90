@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
-                  ligrma, nbno, tabnoe, rignoe, rigto,&
+subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
+                  ligrma, nbno, tabnoe, rignoe, rigto, &
                   ndim)
     implicit none
 #include "asterf_types.h"
@@ -113,7 +113,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=0, nbret=nfg)
     nbgr = 1
     AS_ALLOCATE(vk8=fongro, size=nbgr)
-    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro,&
+    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro, &
                 nbret=nfg)
 !
 !
@@ -264,7 +264,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             nompar(1) = 'X'
             nompar(2) = 'Y'
             nompar(3) = 'Z'
-            call fointe('F ', fongro(i), 3, nompar, u,&
+            call fointe('F ', fongro(i), 3, nompar, u, &
                         coef, iret)
             surmai(im) = surmai(im)*coef
             if (lvale) then
@@ -305,7 +305,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                     if (parno(ij) .eq. 0) goto 37
                     if (zi(ldnm+nn-1) .eq. ij) then
                         if (lvale) then
-                            coeno(ij) = coeno(ij)+surmai(1+ im-1)/surtot
+                            coeno(ij) = coeno(ij)+surmai(1+im-1)/surtot
                         else
                             coenxx(ij) = coenxx(ij)+surma1(im)
                             coenxy(ij) = coenxy(ij)+surma2(im)
@@ -315,7 +315,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                             coenzz(ij) = coenzz(ij)+surma6(im)
                         end if
                     end if
- 37                 continue
+37                  continue
                 end do
             end do
         end do
@@ -370,7 +370,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
         rignoe(6*(ii-1)+5) = r5
         rignoe(6*(ii-1)+6) = r6
         tabnoe(ii) = nomnoe
- 51     continue
+51      continue
     end do
     nbno = ii
 !
@@ -392,6 +392,6 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     AS_DEALLOCATE(vr=surma6)
 !
     call jedema()
-    1010 format(' MXX= ', 1pe12.5, ' MXY= ', 1pe12.5, ' MXZ= ', 1pe12.5/,&
-    &       ' MYY= ', 1pe12.5, ' MYZ= ', 1pe12.5, ' MZZ= ', 1pe12.5)
+1010 format(' MXX= ', 1pe12.5, ' MXY= ', 1pe12.5, ' MXZ= ', 1pe12.5/,&
+&       ' MYY= ', 1pe12.5, ' MYZ= ', 1pe12.5, ' MZZ= ', 1pe12.5)
 end subroutine

@@ -53,7 +53,7 @@ contains
 !
 !===================================================================================================
 !
-    function prod_vec(v0, v1) result (v2)
+    function prod_vec(v0, v1) result(v2)
 !
         implicit none
 !
@@ -78,7 +78,7 @@ contains
 !
 !===================================================================================================
 !
-    function hho_vol_hexa(nodes) result (vol)
+    function hho_vol_hexa(nodes) result(vol)
 !
         implicit none
 !
@@ -116,7 +116,7 @@ contains
 !
 !===================================================================================================
 !
-    function hho_vol_prism(nodes) result (vol)
+    function hho_vol_prism(nodes) result(vol)
 !
         implicit none
 !
@@ -152,7 +152,7 @@ contains
 !
 !===================================================================================================
 !
-    function hho_vol_pyram(nodes) result (vol)
+    function hho_vol_pyram(nodes) result(vol)
 !
         implicit none
 !
@@ -187,7 +187,7 @@ contains
 !
 !===================================================================================================
 !
-    function hho_vol_tetra(nodes) result (vol)
+    function hho_vol_tetra(nodes) result(vol)
 !
         implicit none
 !
@@ -216,7 +216,7 @@ contains
 !
 !===================================================================================================
 !
-    function hho_surface_quad(nodes) result (surface)
+    function hho_surface_quad(nodes) result(surface)
 !
         implicit none
 !
@@ -256,7 +256,7 @@ contains
 !
 !===================================================================================================
 !
-    function hho_surface_tri(nodes) result (surface)
+    function hho_surface_tri(nodes) result(surface)
 !
         implicit none
 !
@@ -283,7 +283,7 @@ contains
 !
 !===================================================================================================
 !
-    function hho_length_edge(nodes) result (length)
+    function hho_length_edge(nodes) result(length)
 !
         implicit none
 !
@@ -308,7 +308,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoMeasureCell(cell) result (measure)
+    function hhoMeasureCell(cell) result(measure)
 !
         implicit none
 !
@@ -345,7 +345,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoMeasureFace(face) result (measure)
+    function hhoMeasureFace(face) result(measure)
 !
         implicit none
 !
@@ -375,7 +375,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoDiameter(coorno, nbnodes) result (diam)
+    function hhoDiameter(coorno, nbnodes) result(diam)
 !
         implicit none
         integer, intent(in) :: nbnodes
@@ -396,7 +396,7 @@ contains
         do inode = 1, nbnodes
             do jnode = inode+1, nbnodes
                 vector(1:3) = coorno(1:3, inode)-coorno(1:3, jnode)
-                diam = max(norm2(vector), diam);
+                diam = max(norm2(vector), diam); 
             end do
         end do
 !
@@ -406,7 +406,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoDiameterCell(cell) result (measure)
+    function hhoDiameterCell(cell) result(measure)
 !
         implicit none
 !
@@ -443,7 +443,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoDiameterFace(face) result (measure)
+    function hhoDiameterFace(face) result(measure)
 !
         implicit none
 !
@@ -472,7 +472,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoLengthBoundingBoxCell(hhoCell, axes) result (length)
+    function hhoLengthBoundingBoxCell(hhoCell, axes) result(length)
 !
         implicit none
 !
@@ -515,7 +515,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoLengthBoundingBoxFace(hhoFace, axes) result (length)
+    function hhoLengthBoundingBoxFace(hhoFace, axes) result(length)
 !
         implicit none
 !

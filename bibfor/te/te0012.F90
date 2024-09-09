@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine te0012(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     fami = 'MASS'
-    call elrefe_info(fami=fami, nno=nno, nnos=nnos, npg=npg, jpoids=ipoids,&
+    call elrefe_info(fami=fami, nno=nno, nnos=nnos, npg=npg, jpoids=ipoids, &
                      jvf=ivf, jdfde=idfde)
     nddl = 3*nno
     nvec = nddl*(nddl+1)/2
@@ -90,7 +90,7 @@ subroutine te0012(option, nomte)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_vf, 3, mecani, press1,&
+    call thmGetGene(ds_thm, l_vf, 3, mecani, press1, &
                     press2, tempe, second)
 !
     if (lteatt('TYPMOD2', 'THM')) then
@@ -110,10 +110,10 @@ subroutine te0012(option, nomte)
 !
     do kp = 1, npg
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
-        call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb(fami, kp, 1, '+', zi(imate), &
+                    ' ', phenom, 0, ' ', [0.d0], &
                     1, 'RHO', rho, icodre(1), 1)
         do i = 1, nno
             do j = 1, i

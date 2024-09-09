@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ subroutine te0082(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='MASS', nno=nno, nnos=nnos, npg=npg2, jpoids=ipoids,&
+    call elrefe_info(fami='MASS', nno=nno, nnos=nnos, npg=npg2, jpoids=ipoids, &
                      jvf=ivf, jdfde=idfde)
     nddl = 2*nno
     nvec = nddl*(nddl+1)/2
@@ -88,7 +88,7 @@ subroutine te0082(option, nomte)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_vf, 2, mecani, press1,&
+    call thmGetGene(ds_thm, l_vf, 2, mecani, press1, &
                     press2, tempe, second)
     if (lteatt('TYPMOD2', 'THM')) then
         idec = press1(1)+press2(1)+tempe(1)+second(1)*2
@@ -100,15 +100,15 @@ subroutine te0082(option, nomte)
     call jevech('PMATERC', 'L', imate)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-    call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                ' ', phenom, 0, ' ', [0.d0], &
                 1, 'RHO', valres, icodre(1), 1)
 !
     matv(:) = 0.d0
 !
     do kp = 1, npg2
         k = (kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
         if (lteatt('AXIS', 'OUI')) then
             r = 0.0d0

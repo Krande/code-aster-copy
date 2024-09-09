@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irrini(fami, kpg, ksp, typess, essai,&
-                  mod, nmat, materf, yd, deps,&
+subroutine irrini(fami, kpg, ksp, typess, essai, &
+                  mod, nmat, materf, yd, deps, &
                   dy)
 !
     implicit none
@@ -97,9 +97,9 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 !     SOLUTION EXPLICITE
     else if (typess .eq. 2) then
         call lcopli('ISOTROPE', mod, materf(1, 1), hook)
-        call rcvarc('F', 'IRRA', '-', fami, kpg,&
+        call rcvarc('F', 'IRRA', '-', fami, kpg, &
                     ksp, irrad, iret)
-        call rcvarc('F', 'IRRA', '+', fami, kpg,&
+        call rcvarc('F', 'IRRA', '+', fami, kpg, &
                     ksp, irraf, iret)
 !        ARRET DANS IRRMAT SI  IRRAD .GT. IRRAF*1.00001
         if (irrad .gt. irraf) then
@@ -159,8 +159,8 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 !
 !        (DEPS(3))
         if (mod(1:6) .eq. 'C_PLAN') then
-            deps(3) = nun*((dp+dpi)*(dfds(1)+dfds(2))+2.d0*dg-deps(1)-deps(2))+dfds(3)*(dp+dpi&
-                      )+dg
+            deps(3) = nun*((dp+dpi)*(dfds(1)+dfds(2))+2.d0*dg-deps(1)-deps(2))+dfds(3)*(dp+dpi &
+                                                                                        )+dg
         end if
 !
 !        DSIG

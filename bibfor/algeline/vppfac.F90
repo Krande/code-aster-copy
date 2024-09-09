@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
+subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
                   mxvect, masmod, facpar)
     implicit none
 #include "asterf_types.h"
@@ -113,19 +113,19 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
     do iddl = 1, 3
         if (gene) then
             do ieq = 1, neq
-                call rsvpar(basemo, 1, nompar(iddl), ibid, rundef,&
+                call rsvpar(basemo, 1, nompar(iddl), ibid, rundef, &
                             k8b, l1)
                 if (l1 .eq. 100) then
                     zr(laux1+ieq-1) = 0.D0
                 else
-                    call rsadpa(basemo, 'L', 1, nompar(iddl), ieq,&
+                    call rsadpa(basemo, 'L', 1, nompar(iddl), ieq, &
                                 0, tjv=iadpar)
                     zr(laux1+ieq-1) = zr(iadpar(1))
                 end if
 ! SECURITE SI ON EST PASSE PAR DES MODES HETERODOXES AVEC FACTEURS DE PARTICIPATIONS HERETIQUES
             end do
         else
-            call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
+            call pteddl('NUME_DDL', nume, mxddl, nomddl, neq, &
                         tabl_equa=zi(lddl))
             ia = (iddl-1)*neq
             do ieq = 1, neq
@@ -136,7 +136,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !     ------------------------------------------------------------------
 !     ----------- CALCUL DE  FREQ * MASSE * UNITAIRE_DIRECTION ---------
 !     ------------------------------------------------------------------
-        call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
+        call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1, &
                     .false._1)
         do ivect = 1, nbvect
             b_n = to_blas_int(neq)

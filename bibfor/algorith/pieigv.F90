@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pieigv(neps, tau, imate, vim, epsm,&
-                  epspc, epsdc, typmod, etamin, etamax,&
+subroutine pieigv(neps, tau, imate, vim, epsm, &
+                  epspc, epsdc, typmod, etamin, etamax, &
                   copilo)
 !
     implicit none
@@ -117,8 +117,8 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 ! -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
     nomres(1) = 'E'
     nomres(2) = 'NU'
-    call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)
@@ -127,8 +127,8 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !
 !    LECTURE DES CARACTERISTIQUES DE REGULARISATION
     nomres(1) = 'PENA_LAGR'
-    call rcvala(imate, ' ', 'NON_LOCAL', 0, ' ',&
-                [0.d0], 1, nomres, valres, icodre,&
+    call rcvala(imate, ' ', 'NON_LOCAL', 0, ' ', &
+                [0.d0], 1, nomres, valres, icodre, &
                 0)
     if (icodre(1) .ne. 0) then
         valres(1) = 1.e3
@@ -139,11 +139,11 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     nomres(1) = 'D_SIGM_EPSI'
     nomres(2) = 'SYT'
     nomres(3) = 'SYC'
-    call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'BETON_ECRO_LINE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'BETON_ECRO_LINE', 0, ' ', [0.d0], &
                 3, nomres, valres, icodre, 0)
     gamma = -e/valres(1)
-    k0 = valres(2)**2*(1.d0+gamma)/(2.d0*e) *(1.d0+nu-2.d0*nu**2)/(1.d0+nu)
+    k0 = valres(2)**2*(1.d0+gamma)/(2.d0*e)*(1.d0+nu-2.d0*nu**2)/(1.d0+nu)
     if (nu .eq. 0) then
         if (icodre(3) .eq. 0) then
             call utmess('F', 'ALGORITH4_52')
@@ -158,7 +158,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             if (valres(3) .lt. sicr) then
                 call utmess('F', 'ALGORITH4_53')
             else
-                k1 = valres(3)*(1.d0+gamma)*nu**2/(1.d0+nu)/(1.d0-2.d0* nu)-k0*e/(1.d0-2.d0*nu)/v&
+                k1 = valres(3)*(1.d0+gamma)*nu**2/(1.d0+nu)/(1.d0-2.d0*nu)-k0*e/(1.d0-2.d0*nu)/v&
                      &alres(3)
                 trepsm = 0.d0
                 do k = 1, ndim
@@ -293,12 +293,12 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     treinf = epsp(1)+epsp(2)+epsp(3)+etainf*(epsd(1)+epsd(2)+epsd(3))
     if (abs(treinf) .gt. 1.d0) then
 !        WRITE(6,*) 'Modification de etainf  :',ETAINF
-        etainf = (treinf/abs(treinf)-(epsp(1)+epsp(2)+epsp(3)))/(epsd( 1)+epsd(2)+epsd(3))
+        etainf = (treinf/abs(treinf)-(epsp(1)+epsp(2)+epsp(3)))/(epsd(1)+epsd(2)+epsd(3))
 !        WRITE(6,*) 'devient  :',ETAINF
     end if
 !
     eta = etainf
-    call critev(epsp, epsd, eta, lambda, deuxmu,&
+    call critev(epsp, epsd, eta, lambda, deuxmu, &
                 fpd, seuil, r*d, crit1, critp1)
 !
 !
@@ -308,12 +308,12 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     tresup = epsp(1)+epsp(2)+epsp(3)+etasup*(epsd(1)+epsd(2)+epsd(3))
     if (abs(tresup) .gt. 1.d0) then
 !        WRITE(6,*) 'Modification de etasup  :',ETASUP
-        etasup = (tresup/abs(tresup)-(epsp(1)+epsp(2)+epsp(3)))/(epsd( 1)+epsd(2)+epsd(3))
+        etasup = (tresup/abs(tresup)-(epsp(1)+epsp(2)+epsp(3)))/(epsd(1)+epsd(2)+epsd(3))
 !        WRITE(6,*) 'devient  :',ETASUP
     end if
 !
     eta = etasup
-    call critev(epsp, epsd, eta, lambda, deuxmu,&
+    call critev(epsp, epsd, eta, lambda, deuxmu, &
                 fpd, seuil, r*d, crit2, critp2)
 !
 !
@@ -339,7 +339,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 ! on reste au dessus du seuil sur l'intervalle,
 !        on utilise la convexite pour le voir
 !
-    if (((crit1 .gt. 0.d0) .and. (critp1 .gt. (-crit1/linter))) .or.&
+    if (((crit1 .gt. 0.d0) .and. (critp1 .gt. (-crit1/linter))) .or. &
         ((crit2 .gt. 0.d0) .and. (critp2 .lt. (crit2/linter)))) then
 !        WRITE(6,*) 'cas 2'
         goto 666
@@ -371,7 +371,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             call zerod2(x, y, z)
 555         continue
 !
-            call critev(epsp, epsd, x(3), lambda, deuxmu,&
+            call critev(epsp, epsd, x(3), lambda, deuxmu, &
                         fpd, seuil, r*d, y(3), z(3))
 !
         end do
@@ -409,7 +409,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             call zerod2(x, y, z)
 556         continue
 !
-            call critev(epsp, epsd, x(3), lambda, deuxmu,&
+            call critev(epsp, epsd, x(3), lambda, deuxmu, &
                         fpd, seuil, r*d, y(3), z(3))
         end do
         call utmess('F', 'PILOTAGE_87')
@@ -428,7 +428,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !
 ! CAS A 2 OU 0 SOLUTIONS
 !
-    if (((crit1 .gt. 0.d0) .and. (critp1 .lt. (-crit1/linter))) .and.&
+    if (((crit1 .gt. 0.d0) .and. (critp1 .lt. (-crit1/linter))) .and. &
         ((crit2 .gt. 0.d0) .and. (critp2 .gt. (crit2/linter)))) then
 !
 !        WRITE(6,*) 'cas 5'
@@ -457,7 +457,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !
         if (iter .lt. nitmax) then
             xs = (y2-y1+z1*x1-z2*x2)/(z1-z2)
-            call critev(epsp, epsd, xs, lambda, deuxmu,&
+            call critev(epsp, epsd, xs, lambda, deuxmu, &
                         fpd, seuil, r*d, ys, zs)
             if (ys .lt. 0.d0) goto 751
 !
@@ -512,7 +512,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             call zerod2(x, y, z)
 557         continue
 !
-            call critev(epsp, epsd, x(3), lambda, deuxmu,&
+            call critev(epsp, epsd, x(3), lambda, deuxmu, &
                         fpd, seuil, r*d, y(3), z(3))
 !
         end do
@@ -544,7 +544,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             call zerod2(x, y, z)
 558         continue
 !
-            call critev(epsp, epsd, x(3), lambda, deuxmu,&
+            call critev(epsp, epsd, x(3), lambda, deuxmu, &
                         fpd, seuil, r*d, y(3), z(3))
 !
         end do

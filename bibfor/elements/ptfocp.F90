@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ptfocp(itype, option, xl, nno, nc,&
+subroutine ptfocp(itype, option, xl, nno, nc, &
                   pgl, fer, fei)
 !
 !
@@ -199,9 +199,9 @@ subroutine ptfocp(itype, option, xl, nno, nc,&
         end do
     end if
 !
-    call ptfop1(itype, nc, coef1, coef2, xl,&
+    call ptfop1(itype, nc, coef1, coef2, xl, &
                 qqr, fer)
-    call ptfop1(itype, nc, coef1, coef2, xl,&
+    call ptfop1(itype, nc, coef1, coef2, xl, &
                 qqi, fei)
 !
 end subroutine

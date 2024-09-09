@@ -191,7 +191,7 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
                 kk = indiis(zi(iobcol), numcol, ii, obsdim(3))
                 if (kk .eq. 0) goto 999
                 if (zi(iobfil+kk-1) .ge. numfil) then
-                    zr(inwval+jj-1) = zr(inwval+jj-1)+zr(iobval+kk-1)* MATCHOL(numfil, zi(iobfil+&
+                    zr(inwval+jj-1) = zr(inwval+jj-1)+zr(iobval+kk-1)*MATCHOL(numfil, zi(iobfil+&
                                       &kk-1))
                 end if
 !
@@ -278,8 +278,8 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
                     il2 = indiis(zi(inwcol+posvec), icolst, 1, taivec)
 !
                     if ((il1 .ne. 0) .and. (il2 .ne. 0)) then
-                        zr(ivalm+istock-1) = zr(ivalm+istock-1)+ zr(inwval+posvec+il1-1)*zr(inwva&
-                                             &l+posvec+il2- 1)
+                        zr(ivalm+istock-1) = zr(ivalm+istock-1)+zr(inwval+posvec+il1-1)*zr(inwva&
+                                             &l+posvec+il2-1)
 !             CETTE VALEUR EST POTENTIELLEMENT RENSEIGNEE PLUSIEURS FOIS
                         zi4(ismhc+istock-1) = int(ifil, 4)
                     end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,9 +80,9 @@ subroutine arcseg34(nbno, coor, abscur)
     b_n = to_blas_int(3)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    sintheta = sqrt(&
+    sintheta = sqrt( &
                ddot(b_n, n, b_incx, n, b_incy))/(sqrt(ddot(b_n, ab, b_incx, ab, b_incy))*sqrt(ddo&
-               &t(b_n, bc, b_incx, bc, b_incy))&
+               &t(b_n, bc, b_incx, bc, b_incy)) &
                )
     theta = abs(asin(sintheta))
     if ((theta*180./3.14) .lt. 1.) then
@@ -150,7 +150,7 @@ subroutine arcseg34(nbno, coor, abscur)
     ce(3) = ddot(b_n, n, b_incx, a, b_incy)
 !
 !   -- resolution de mat*ce=ce pour trouver CE :
-    call mgauss('NFSP', mat, ce, 3, 3,&
+    call mgauss('NFSP', mat, ce, 3, 3, &
                 1, det, iret)
     ASSERT(iret .eq. 0)
 !

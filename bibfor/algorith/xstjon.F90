@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom,&
-                  nfiss, nfisc, fisco, nnops, txlsn,&
+subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, &
+                  nfiss, nfisc, fisco, nnops, txlsn, &
                   n, c)
     implicit none
 !
@@ -97,7 +97,7 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom,&
                 end if
             end do
         else if (n .lt. 2000) then
-            call reeref(elrefp, nno, zr(igeom), c, ndim,&
+            call reeref(elrefp, nno, zr(igeom), c, ndim, &
                         cref, ff)
             do i = 1, nfisc
                 val = 0.d0
@@ -107,7 +107,7 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom,&
                 if (abs(val) .lt. cridist) jonc = .true.
             end do
         else if (n .lt. 3000) then
-            call reeref(elrefp, nno, zr(igeom), c, ndim,&
+            call reeref(elrefp, nno, zr(igeom), c, ndim, &
                         cref, ff)
             do i = 1, nfisc
                 val = 0.d0

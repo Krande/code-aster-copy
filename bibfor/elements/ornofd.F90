@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
+subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
                   ndextr, base, vecori)
     implicit none
 #include "jeveux.h"
@@ -93,7 +93,7 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
 !     ------------------------------------------------------------------
     AS_ALLOCATE(vi=noeuds_extrem, size=2*nbma)
     do im = 1, nbma
-        call i2extf(zi(jmail-1+im), 1, conec(1:15), typp(1:16), nig,&
+        call i2extf(zi(jmail-1+im), 1, conec(1:15), typp(1:16), nig, &
                     nid)
         noeuds_extrem(im) = nig
         noeuds_extrem(nbma+im) = nid

@@ -95,7 +95,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! ----VERIFICATION DU TYPE DES VECTEURS PROPRES DANS LA BASE
 !
-    call rsexch('F', basmod, 'DEPL', 1, nomcha,&
+    call rsexch('F', basmod, 'DEPL', 1, nomcha, &
                 iret)
     call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=typ1)
     if (typ1 .eq. 'C') then
@@ -109,11 +109,11 @@ subroutine calpro(nomres, classe, basmod, nommat)
     ntail = nbdef*(nbdef+1)/2
     if (zk24(jrefa-1+9) .eq. 'MS') then
         lsym = .true.
-        call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', 'CONSTANT',&
+        call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', 'CONSTANT', &
                     1)
     else
         lsym = .false.
-        call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', 'CONSTANT',&
+        call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', 'CONSTANT', &
                     2)
     end if
     call jeecra(nomres(1:18)//'_VALE', 'LONMAX', ntail)
@@ -157,7 +157,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE
 !
-        call mrmult('ZERO', lmat, zr(idbase+(i-1)*neq), zr(ltvec1), 1,&
+        call mrmult('ZERO', lmat, zr(idbase+(i-1)*neq), zr(ltvec1), 1, &
                     .true._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
 !

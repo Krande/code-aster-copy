@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine nufipd(ndim, nno1, nno2, npg, iw,&
-                  vff1, vff2, idff1, vu, vp,&
-                  geomi, typmod, option, mate, compor,&
-                  lgpg, carcri, instm, instp, ddlm,&
-                  ddld, angmas, sigm, vim, sigp,&
-                  vip, mini, vect, matr, codret,&
+subroutine nufipd(ndim, nno1, nno2, npg, iw, &
+                  vff1, vff2, idff1, vu, vp, &
+                  geomi, typmod, option, mate, compor, &
+                  lgpg, carcri, instm, instp, ddlm, &
+                  ddld, angmas, sigm, vim, sigp, &
+                  vip, mini, vect, matr, codret, &
                   lSigm, lVect, lMatr)
 !
     use Behaviour_type
@@ -128,7 +128,8 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
                                                       -1.d0, -1.d0, 2.d0, 0.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0, &
-                                                     0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), (/6, 6/))
+                                                      0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), &
+                                                    (/6, 6/))
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -173,14 +174,14 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
         epsm = 0.d0
         deps = 0.d0
 ! ----- Kinematic - Previous strains
-        call dfdmip(ndim, nno1, axi, geomi, kpg,&
-                    iw, vff1(1, kpg), idff1, r, w,&
+        call dfdmip(ndim, nno1, axi, geomi, kpg, &
+                    iw, vff1(1, kpg), idff1, r, w, &
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg), &
                     r, dff1, deplm, fm, epsm)
         divum = epsm(1)+epsm(2)+epsm(3)
 ! ----- Kinematic - Increment of strains
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg), &
                     r, dff1, depld, fm, deps)
         ddivu = deps(1)+deps(2)+deps(3)
 ! ----- Pressure
@@ -236,25 +237,25 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
         end do
 ! ----- Compute behaviour
         sigma = 0.d0
-        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim,&
-                    typmod, mate, compor, carcri, instm,&
-                    instp, 6, epsm, deps, 6,&
-                    sigmPrep, vim(1, kpg), option, angmas, sigma,&
+        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim, &
+                    typmod, mate, compor, carcri, instm, &
+                    instp, 6, epsm, deps, 6, &
+                    sigmPrep, vim(1, kpg), option, angmas, sigma, &
                     vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
         end if
 ! ----- Compute "bubble" matrix
-        call tanbul(option, ndim, kpg, mate, rela_comp,&
+        call tanbul(option, ndim, kpg, mate, rela_comp, &
                     lVect, mini, alpha, dsbdep, trepst)
 ! ----- Static condensation (for MINI element)
         rce(1:nno2) = 0.d0
         kce(1:nno2, 1:nno2) = 0.d0
         if (mini) then
-            call calkbb(nno1, ndim, w, def, dsbdep,&
+            call calkbb(nno1, ndim, w, def, dsbdep, &
                         kbb)
             call calkbp(nno2, ndim, w, dff1, kbp)
-            call calkce(nno1, ndim, kbp, kbb, presm,&
+            call calkce(nno1, ndim, kbp, kbb, presm, &
                         presd, kce, rce)
         end if
 ! ----- Internal forces

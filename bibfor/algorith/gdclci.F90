@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,11 +57,11 @@ subroutine gdclci(fm, df, em)
 !  CALCUL DES JACOBIENS
 ! ----------------------
 !
-    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2)) -fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(&
-         &3, 2)) +fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
+    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(&
+         &3, 2))+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
-    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2)) -df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(&
-         &3, 2)) +df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
+    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2))-df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(&
+         &3, 2))+df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
 !
     jp = jm*dj
 !
@@ -82,7 +82,7 @@ subroutine gdclci(fm, df, em)
         do kl = 1, 6
             k = ind1(kl)
             l = ind2(kl)
-            pdf(ij, kl) = rc(ij)*rc(kl)*(df(i, k)*df(j, l)+df(j, k)*df(i, l)) /2
+            pdf(ij, kl) = rc(ij)*rc(kl)*(df(i, k)*df(j, l)+df(j, k)*df(i, l))/2
         end do
     end do
 !

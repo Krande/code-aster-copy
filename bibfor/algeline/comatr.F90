@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comatr(option, typev, nbproc, rang, vnconv,&
-                  dim1i, dim2i, vecti, dim1r, dim2r,&
+subroutine comatr(option, typev, nbproc, rang, vnconv, &
+                  dim1i, dim2i, vecti, dim1r, dim2r, &
                   vectr, dim1c, dim2c, vectc)
 !     COMMUNICATION VIA LE COMMUNICATEUR MPI COURANT D'UNE MATRICE SOIT
 !     REELLE, SOIT ENTIERE, SOIT DE CHAR*, SOIT COMPLEXE.

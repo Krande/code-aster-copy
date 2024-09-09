@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmhoff(ndim, imate, inst, epsm, deps,&
+subroutine nmhoff(ndim, imate, inst, epsm, deps, &
                   option, sigp, dsidep)
 !
     implicit none
@@ -76,7 +76,7 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, deps, b_incx, eps,&
+        call daxpy(b_n, 1.d0, deps, b_incx, eps, &
                    b_incy)
     end if
     b_n = to_blas_int(ndimsi)
@@ -88,8 +88,8 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
 !
 ! -- CARACTERISTIQUES MATERIAU (SY) ET RIGIDITE
 !
-    call rcvala(imate, ' ', 'ECRO_LINE', 0, ' ',&
-                [0.d0], 1, 'SY', sy, cod,&
+    call rcvala(imate, ' ', 'ECRO_LINE', 0, ' ', &
+                [0.d0], 1, 'SY', sy, cod, &
                 2)
     m = 1+10**(1-inst)
     am = sy(1)*rac23**m

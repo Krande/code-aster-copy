@@ -101,12 +101,12 @@ subroutine te0517(option, nomte)
         end do
     else if (option .eq. 'FORC_NODA') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug,&
+        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, &
                      jacf=jacf)
 !
         call jevech('PCAORIE', 'L', iorien)
         call jevech('PGEOMER', 'L', igeom)
-        call tecach('OOO', 'PSIEFR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PSIEFR', 'L', iret, nval=7, &
                     itab=jtab)
         nbsp = jtab(7)
         if (nbsp .ne. nbfibr) then
@@ -127,11 +127,11 @@ subroutine te0517(option, nomte)
 !       Calcul de la matrice de passage global/local
         if (reactu) then
             gamma = zr(istrxm+18-1)
-            call porea2(nno, nc, zr(igeom), gamma, pgl,&
+            call porea2(nno, nc, zr(igeom), gamma, pgl, &
                         xl, "PDEPLAR")
         else if (rigige) then
             gamma = zr(istrxm+18-1)
-            call porea4(nno, nc, zr(igeom), gamma, pgl,&
+            call porea4(nno, nc, zr(igeom), gamma, pgl, &
                         xl, "PDEPLAR")
         else
             xl = lonele()
@@ -168,12 +168,12 @@ subroutine te0517(option, nomte)
             ez = vale_cara(4)
 !
             call jevech('PMATERC', 'L', imate)
-            call moytem('RIGI', npg, 1, '+', temp,&
+            call moytem('RIGI', npg, 1, '+', temp, &
                         iret)
 !
             call pmfmats(imate, mator)
             ASSERT(mator .ne. ' ')
-            call matela(zi(imate), mator, 1, temp, e,&
+            call matela(zi(imate), mator, 1, temp, e, &
                         nu)
             g = e/(2.d0*(1.d0+nu))
             phiy = e*xiz*12.d0*alfay/(xl*xl*g*aa)

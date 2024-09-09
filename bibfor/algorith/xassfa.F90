@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xassfa(elp, npts, nintar, lst, noeud,&
+subroutine xassfa(elp, npts, nintar, lst, noeud, &
                   cface, nface, pinter, jgrlsn)
     implicit none
 !
@@ -139,7 +139,7 @@ subroutine xassfa(elp, npts, nintar, lst, noeud,&
 !   TROISIEME CAS
     else if (npts .eq. 2 .and. nintar .eq. 1) then
         nface = nface+1
-        if ((lst(1) .eq. 0.d0 .or. lst(3) .gt. 0.d0) .or.&
+        if ((lst(1) .eq. 0.d0 .or. lst(3) .gt. 0.d0) .or. &
             (lst(2) .eq. 0.d0 .or. lst(1) .gt. 0.d0)) then
             cface(nface, 1) = noeud(1)
             cface(nface, 2) = noeud(2)
@@ -149,7 +149,8 @@ subroutine xassfa(elp, npts, nintar, lst, noeud,&
                 cface(nface, 5) = noeud(5)
                 cface(nface, 6) = noeud(8)
             end if
-        else if ((lst(2).eq.0.d0.or.lst(3).gt.0.d0) .or. (lst(3).eq.0.d0.or.lst(1).gt.0.d0)) then
+        else if ((lst(2) .eq. 0.d0 .or. lst(3) .gt. 0.d0) &
+                 .or. (lst(3) .eq. 0.d0 .or. lst(1) .gt. 0.d0)) then
             cface(nface, 1) = noeud(1)
             cface(nface, 2) = noeud(2)
             cface(nface, 3) = noeud(3)

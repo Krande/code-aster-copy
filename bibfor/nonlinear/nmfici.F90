@@ -17,7 +17,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmfici(nno, nddl, wref, vff, dfde,&
+subroutine nmfici(nno, nddl, wref, vff, dfde, &
                   geom, poids, b)
 !
 !

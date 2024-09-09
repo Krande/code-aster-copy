@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tridia(n, a, lda, d, e,&
+subroutine tridia(n, a, lda, d, e, &
                   tau, w)
     implicit none
 #include "asterc/r8prem.h"
@@ -84,7 +84,7 @@ subroutine tridia(n, a, lda, d, e,&
             tau(j) = a(j, k-1)/delta
         end do
 !
-        call zmvpy('LOWER', n-k+1, (1.0d0, 0.0d0), a(k, k), lda,&
+        call zmvpy('LOWER', n-k+1, (1.0d0, 0.0d0), a(k, k), lda, &
                    a(k, k-1), 1, (0.0d0, 0.0d0), w(k), 1)
 !                                  RHO = U*NV
         b_n = to_blas_int(n-k+1)
@@ -92,12 +92,12 @@ subroutine tridia(n, a, lda, d, e,&
         b_incy = to_blas_int(1)
         temp1 = zdotc(b_n, w(k), b_incx, tau(k), b_incy)
         rho = dble(temp1)
-        call zader2('LOWER', n-k+1, (-1.0d0, 0.0d0), tau(k), 1,&
+        call zader2('LOWER', n-k+1, (-1.0d0, 0.0d0), tau(k), 1, &
                     w(k), 1, a(k, k), lda)
-        call zadder('LOWER', n-k+1, rho*delta, tau(k), 1,&
+        call zadder('LOWER', n-k+1, rho*delta, tau(k), 1, &
                     a(k, k), lda)
         tau(k) = tau(1)
- 30     continue
+30      continue
     end do
 !
 !  --- LA MATRICE A ETE REDUITE EN UNE MATRICE HERMITIENNE

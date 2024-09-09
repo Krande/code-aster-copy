@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mm_cycl_d3(ds_contact, i_cont_poin, indi_frot_prev, dist_frot_prev, indi_cont_eval,&
+subroutine mm_cycl_d3(ds_contact, i_cont_poin, indi_frot_prev, dist_frot_prev, indi_cont_eval, &
                       indi_frot_eval, dist_frot_curr)
 !
     use NonLin_Datastructure_type
@@ -114,13 +114,13 @@ subroutine mm_cycl_d3(ds_contact, i_cont_poin, indi_frot_prev, dist_frot_prev, i
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     prosca = ddot(b_n, dist_frot_prev, b_incx, dist_frot_curr, b_incy)
-    module_curr = sqrt(&
-                  dist_frot_curr(1)*dist_frot_curr(1)+ dist_frot_curr(2)*dist_frot_curr(2)+ dist_&
-                  &frot_curr(3)*dist_frot_curr(3)&
+    module_curr = sqrt( &
+                  dist_frot_curr(1)*dist_frot_curr(1)+dist_frot_curr(2)*dist_frot_curr(2)+dist_&
+                  &frot_curr(3)*dist_frot_curr(3) &
                   )
-    module_prev = sqrt(&
-                  dist_frot_prev(1)*dist_frot_prev(1)+ dist_frot_prev(2)*dist_frot_prev(2)+ dist_&
-                  &frot_prev(3)*dist_frot_prev(3)&
+    module_prev = sqrt( &
+                  dist_frot_prev(1)*dist_frot_prev(1)+dist_frot_prev(2)*dist_frot_prev(2)+dist_&
+                  &frot_prev(3)*dist_frot_prev(3) &
                   )
     angle = 0.d0
     if ((module_prev*module_curr) .gt. r8prem()) then
@@ -142,7 +142,7 @@ subroutine mm_cycl_d3(ds_contact, i_cont_poin, indi_frot_prev, dist_frot_prev, i
         cycl_stat = 10
         if (module_curr .lt. 1.d-6 .and. module_prev .lt. 1.d-6) cycl_stat = 11
 !
-        if ((module_curr .lt. 1.d-6 .and. module_prev .gt. 1.d-6) .or.&
+        if ((module_curr .lt. 1.d-6 .and. module_prev .gt. 1.d-6) .or. &
             (module_curr .gt. 1.d-6 .and. module_prev .lt. 1.d-6)) cycl_stat = 12
 !
         if (module_curr .gt. 1.d-6 .and. module_prev .gt. 1.d-6) cycl_stat = 13
@@ -152,7 +152,7 @@ subroutine mm_cycl_d3(ds_contact, i_cont_poin, indi_frot_prev, dist_frot_prev, i
 !
 ! - Cycling save : incrementation of cycle objects
 !
- 99 continue
+99  continue
     cycl_long = cycl_long+1
 !        write (6,*) "cyclage avant-arrière de type ", cycl_stat
     p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat

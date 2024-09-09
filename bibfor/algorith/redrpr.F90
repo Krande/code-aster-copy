@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine redrpr(mod, imate, sigp, vip, dsde,&
+subroutine redrpr(mod, imate, sigp, vip, dsde, &
                   icode)
     implicit none
 #include "asterfort/dplitg.h"
@@ -53,7 +53,7 @@ subroutine redrpr(mod, imate, sigp, vip, dsde,&
 ! =====================================================================
 ! --- RECUPERATION DES DONNEES MATERIAUX ------------------------------
 ! =====================================================================
-    call dpmate(mod, imate, materf, ndt, ndi,&
+    call dpmate(mod, imate, materf, ndt, ndi, &
                 nvi, typedp)
     pplus = vip(1)
     dp = 0.0d0
@@ -88,7 +88,7 @@ subroutine redrpr(mod, imate, sigp, vip, dsde,&
             siie = ddot(b_n, se, b_incx, se, b_incy)
             seq = sqrt(trois*siie/deux)
         end if
-        call dpmata(mod, materf, alpha, dp, dpdeno,&
+        call dpmata(mod, materf, alpha, dp, dpdeno, &
                     pplus, se, seq, plas, dsde)
     end if
 ! =====================================================================

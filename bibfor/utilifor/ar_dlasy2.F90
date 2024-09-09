@@ -25,9 +25,9 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
-                     tl, ldtl, tr, ldtr, b,&
-                     ldb, scale, x, ldx, xnorm,&
+subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2, &
+                     tl, ldtl, tr, ldtr, b, &
+                     ldb, scale, x, ldx, xnorm, &
                      info)
 !
 !     SUBROUTINE LAPACK RESOLVANT L'EQUATION MATRICIELLE CI-DESSOUS.
@@ -202,9 +202,9 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
 !       TL11*(X11 X12) + ISGN*(X11 X12)*OP(TR11 TR12)  = (B11 B12)
 !                                         (TR21 TR22)
 !
-        smin = max(&
-               eps*max(abs(tl(1, 1)), abs(tr(1, 1)), abs(tr(1, 2)), abs(tr(2, 1)), abs(tr(2, 2))),&
-               smlnum&
+        smin = max( &
+               eps*max(abs(tl(1, 1)), abs(tr(1, 1)), abs(tr(1, 2)), abs(tr(2, 1)), abs(tr(2, 2))), &
+               smlnum &
                )
         tmp(1) = tl(1, 1)+sgn*tr(1, 1)
         tmp(4) = tl(1, 1)+sgn*tr(2, 2)
@@ -223,9 +223,9 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
 !       2 BY 1:
 !          OP(TL11 TL12)*(X11) + ISGN* (X11)*TR11  = (B11)
 !            (TL21 TL22) (X21)         (X21)         (B21)
-        smin = max(&
-               eps*max(abs(tr(1, 1)), abs(tl(1, 1)), abs(tl(1, 2)), abs(tl(2, 1)), abs(tl(2, 2))),&
-               smlnum&
+        smin = max( &
+               eps*max(abs(tr(1, 1)), abs(tl(1, 1)), abs(tl(1, 2)), abs(tl(2, 1)), abs(tl(2, 2))), &
+               smlnum &
                )
         tmp(1) = tl(1, 1)+sgn*tr(1, 1)
         tmp(4) = tl(2, 2)+sgn*tr(1, 1)
@@ -330,9 +330,9 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
         end do
         if (abs(t16(4, 4)) .lt. smin) t16(4, 4) = smin
         scale = one
-        if ((eight*smlnum)*abs(btmp(1)) .gt. abs(t16(1, 1)) .or.&
-            (eight*smlnum)*abs(btmp(2)) .gt. abs(t16(2, 2)) .or.&
-            (eight*smlnum)*abs(btmp(3)) .gt. abs(t16(3, 3)) .or.&
+        if ((eight*smlnum)*abs(btmp(1)) .gt. abs(t16(1, 1)) .or. &
+            (eight*smlnum)*abs(btmp(2)) .gt. abs(t16(2, 2)) .or. &
+            (eight*smlnum)*abs(btmp(3)) .gt. abs(t16(3, 3)) .or. &
             (eight*smlnum)*abs(btmp(4)) .gt. abs(t16(4, 4))) then
             scale = (one/eight)/max(abs(btmp(1)), abs(btmp(2)), abs(btmp(3)), abs(btmp(4)))
             btmp(1) = btmp(1)*scale
@@ -393,7 +393,7 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
             btmp(2) = btmp(2)-l21*btmp(1)
         end if
         scale = one
-        if ((two*smlnum)*abs(btmp(2)) .gt. abs(u22) .or. (two*smlnum)*abs(btmp(1)) .gt.&
+        if ((two*smlnum)*abs(btmp(2)) .gt. abs(u22) .or. (two*smlnum)*abs(btmp(1)) .gt. &
             abs(u11)) then
             scale = half/max(abs(btmp(1)), abs(btmp(2)))
             btmp(1) = btmp(1)*scale

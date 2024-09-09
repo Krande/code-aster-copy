@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -164,7 +164,7 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
     noeud2(1) = noeud1(1)
     noeud2(1+1) = noeud1(1+1)
     noeud2(1+2) = noeud1(1+2)
- 41 continue
+41  continue
     ni1 = noeud2(3*nbe-2)
     ni2 = noeud2(3*nbe-1)
     do jma = 1, nbel
@@ -188,14 +188,14 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
         end if
     end do
     call utmess('F', 'UTILITY_2')
- 43 continue
+43  continue
     mailles(jma) = 0
     if (nbe .ge. nbma) then
         goto 11
     else
         goto 41
     end if
- 11 continue
+11  continue
     ASSERT(nbma .eq. nbe)
     nj2 = noeud2(3*nbe-1)
     nj0 = noeud2(1)

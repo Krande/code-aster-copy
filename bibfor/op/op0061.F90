@@ -117,7 +117,7 @@ subroutine op0061()
     if (ier .eq. 1) then
         reprise = .true.
         nomvect = '&&NUME_REPRISE'
-        call tbexve(modrep, 'NUME_REPRISE', nomvect, 'V', ntab,&
+        call tbexve(modrep, 'NUME_REPRISE', nomvect, 'V', ntab, &
                     typval)
         call jeveuo(nomvect, 'L', ivect)
         numrep = zi(ivect)
@@ -127,7 +127,7 @@ subroutine op0061()
         numrep = numrep+1
 !
         nomvect = '&&NUME_ORDRE'
-        call tbexve(modrep, 'NUME_ORDRE', nomvect, 'V', ntab,&
+        call tbexve(modrep, 'NUME_ORDRE', nomvect, 'V', ntab, &
                     typval)
         call jeveuo(nomvect, 'L', ivect)
         num_lig = 0
@@ -138,7 +138,7 @@ subroutine op0061()
         if (num_lig .eq. 0) then
             call utmess('F', 'RUPTURE0_37', si=num_ordr)
         end if
-        call tbacce(modrep, num_lig, 'NOM_SD', 'L', vi,&
+        call tbacce(modrep, num_lig, 'NOM_SD', 'L', vi, &
                     vr, vc, modini)
     else
         call getvid('ETAT_INIT', 'MODE_LINE', iocc=1, scal=lnm)
@@ -149,8 +149,8 @@ subroutine op0061()
 ! ----------------------------------------------------------------------
 ! --- LECTURE DES DONNEES DE L'OPERATEUR
 ! ----------------------------------------------------------------------
-    call mnllec(imat, numedd, ordman, epsman, nbpt,&
-                epscor, h, hf, itemax, nbran,&
+    call mnllec(imat, numedd, ordman, epsman, nbpt, &
+                epscor, h, hf, itemax, nbran, &
                 nextr, epsbif)
 ! ----------------------------------------------------------------------
 ! --- TAILLE DE LA MATRICE
@@ -168,10 +168,10 @@ subroutine op0061()
 !
     parcho = baseno//'.PARCH'
     if (reprise) then
-        call tbacce(modrep, 1, 'CARA_CHOC', 'L', vi,&
+        call tbacce(modrep, 1, 'CARA_CHOC', 'L', vi, &
                     vr, vc, vk8)
         nomobj = '&&NUME_CHOC'
-        call tbexve(vk8, 'NUME_CHOC', nomobj, 'V', nchoc,&
+        call tbexve(vk8, 'NUME_CHOC', nomobj, 'V', nchoc, &
                     typval)
     else
         call getfac('CHOC', nchoc)
@@ -203,8 +203,8 @@ subroutine op0061()
     adime = baseno//'.ADIME'
     call wkvect(adime, 'V V R', 3, iadim)
 !
-    call mnlcho(reprise, imat, numedd, xcdl, nd,&
-                nchoc, h, hf, parcho, adime,&
+    call mnlcho(reprise, imat, numedd, xcdl, nd, &
+                nchoc, h, hf, parcho, adime, &
                 ninc, vk8, lcine, solveu)
 ! ----------------------------------------------------------------------
 ! --- NOMBRE D'INCONNUES TOTAL DU SYSTEME
@@ -220,11 +220,11 @@ subroutine op0061()
 ! ----------------------------------------------------------------------
 ! --- INITIALISATION DE L'ALGORITHME
 ! ----------------------------------------------------------------------
-    905 format('-- INITIALISATION :     ----------')
+905 format('-- INITIALISATION :     ----------')
     xvect = baseno//'.XVECT'
     call wkvect(xvect, 'V V R', ninc, ivec)
-    call mnlali(reprise, modini, imat, xcdl, parcho,&
-                adime, ninc, nd, nchoc, h,&
+    call mnlali(reprise, modini, imat, xcdl, parcho, &
+                adime, ninc, nd, nchoc, h, &
                 hf, ampl, xvect, lnm, num_ordr)
     write (ifres, 905)
 ! ----------------------------------------------------------------------
@@ -232,9 +232,9 @@ subroutine op0061()
 ! ----------------------------------------------------------------------
     cor = .true.
     epscor2 = 1.d-08
-    call mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
-                adime, ninc, nd, nchoc, h,&
-                hf, itemax, epscor, xvect, cor,&
+    call mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
+                adime, ninc, nd, nchoc, h, &
+                hf, itemax, epscor, xvect, cor, &
                 info)
 ! ----------------------------------------------------------------------
 ! --- DIRECTION DE LA CONTINUATION (TANGENTE AU PREMIER POINT)
@@ -243,8 +243,8 @@ subroutine op0061()
     xutj = baseno//'.XUTJ'
     call wkvect(xut1, 'V V R', ninc, iut1)
     call wkvect(xutj, 'V V R', ninc, iutj)
-    call mnltan(.true._1, imat, numdrv, matdrv, xcdl,&
-                parcho, adime, xvect, ninc, nd,&
+    call mnltan(.true._1, imat, numdrv, matdrv, xcdl, &
+                parcho, adime, xvect, ninc, nd, &
                 nchoc, h, hf, xut1)
     b_n = to_blas_int(ninc)
     b_incx = to_blas_int(1)
@@ -273,22 +273,22 @@ subroutine op0061()
     call wkvect(xsort, 'V V R', nbran*(nbpt-1)*(neq*(2*h+1)+2), isort)
     call wkvect(xbif, 'V V I', nbran, ibif)
 !
-    900 format('-- BRANCHE NUMERO : ', i8, '   ----------')
-    903 format('     DETECTION D UNE BIFURCATION')
-    904 format('             (   ENERGIE   ,  FREQUENCE  )')
-    901 format('     DEBUT - (', 1pe12.5, ' ,', 1pe12.5, ' )')
-    902 format('     FIN   - (', 1pe12.5, ' ,', 1pe12.5, ' )')
+900 format('-- BRANCHE NUMERO : ', i8, '   ----------')
+903 format('     DETECTION D UNE BIFURCATION')
+904 format('             (   ENERGIE   ,  FREQUENCE  )')
+901 format('     DEBUT - (', 1pe12.5, ' ,', 1pe12.5, ' )')
+902 format('     FIN   - (', 1pe12.5, ' ,', 1pe12.5, ' )')
     k = 1
- 10 continue
+10  continue
     if (k .le. nbran) then
 !    do 10 k = 1, nbran
 ! ---   CALCUL DES COEFFICIENTS DE LA SERIE ENTIERE
         b_n = to_blas_int((ordman+1)*ninc)
         b_incx = to_blas_int(1)
         call dscal(b_n, 0.d0, zr(iups), b_incx)
-        call mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
-                    adime, xvect, xut1, ninc, nd,&
-                    nchoc, h, hf, ordman, xups,&
+        call mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
+                    adime, xvect, xut1, ninc, nd, &
+                    nchoc, h, hf, ordman, xups, &
                     xfpnl, lbif, nextr, epsbif)
         write (ifres, 900) k
         if (lbif) then
@@ -298,7 +298,7 @@ subroutine op0061()
             zi(ibif-1+k) = 1
         end if
 ! ---   RECONSTITUTION D'UNE BRANCHE
-        call mnlbra(xups, xfpnl, ninc, ordman, nbpt,&
+        call mnlbra(xups, xfpnl, ninc, ordman, nbpt, &
                     epsman, amax, xus)
 ! ---   RECUPERATION DU DERNIER POINT DE LA BRANCHE POUR INITIALISATION
 ! ---   DE LA PROCHAINE BRANCHE
@@ -308,9 +308,9 @@ subroutine op0061()
         call dcopy(b_n, zr(ius+(nbpt-1)*ninc), b_incx, zr(ivec), b_incy)
 ! ---   CORRECTION DE CE POINT
         cor = .true.
-        call mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
-                    adime, ninc, nd, nchoc, h,&
-                    hf, itemax, epscor, xvect, cor,&
+        call mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
+                    adime, ninc, nd, nchoc, h, &
+                    hf, itemax, epscor, xvect, cor, &
                     info)
         if (cor) then
 ! ---       DIRECTION DE LA CONTINUATION (TANGENTE DE V(A))
@@ -322,12 +322,12 @@ subroutine op0061()
                 b_n = to_blas_int(ninc)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, ap, zr(iups+p*ninc), b_incx, zr(iutj),&
+                call daxpy(b_n, ap, zr(iups+p*ninc), b_incx, zr(iutj), &
                            b_incy)
             end do
 ! ---       CALCUL DE LA TANGENTE AU NOUVEAU POINT
-            call mnltan(.true._1, imat, numdrv, matdrv, xcdl,&
-                        parcho, adime, xvect, ninc, nd,&
+            call mnltan(.true._1, imat, numdrv, matdrv, xcdl, &
+                        parcho, adime, xvect, ninc, nd, &
                         nchoc, h, hf, xut1)
 ! ---       SENS DE CONTINUATION
             b_n = to_blas_int(ninc)
@@ -342,7 +342,7 @@ subroutine op0061()
 !
 ! ---       BON HF ?
 !
-            call mnlbhf(xvect, parcho, adime, ninc, nd,&
+            call mnlbhf(xvect, parcho, adime, ninc, nd, &
                         nchoc, h, hf, err)
             if (err .gt. 5.d-02) then
                 call utmess('A', 'MECANONLINE9_60')
@@ -358,7 +358,7 @@ subroutine op0061()
                 zr(ius-1+i*ninc) = zr(ius-1+i*ninc)*zr(iadim-1+3)
             end do
 ! ---       CALCUL DE L'ENERGIE MECANIQUE
-            call mnleng(imat, xcdl, parcho, xus, ninc,&
+            call mnleng(imat, xcdl, parcho, xus, ninc, &
                         nd, nchoc, h, nbpt, xeng)
             do i = 1, nbpt-1
                 omega = zr(ius-1+i*ninc)
@@ -403,8 +403,8 @@ subroutine op0061()
 !10  continue
 !
     nbordr = nbranf*(nbpt-1)
-    call cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
-                nbpt, neq, h, imat, numedd,&
+    call cremnl(reprise, baseno, numrep, nbordr0, nbordr, &
+                nbpt, neq, h, imat, numedd, &
                 parcho, nchoc, vk8, modrep)
     if (.not. cor) then
         call utmess('S', 'MECANONLINE9_62')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
     typmcl(3) = 'TOUT'
-    call reliem(' ', noma, 'NU_MAILLE', motfac, iocc,&
+    call reliem(' ', noma, 'NU_MAILLE', motfac, iocc, &
                 3, motcle, typmcl, mesmai, nbmb)
     call jeveuo(mesmai, 'L', jmail)
 !
@@ -116,7 +116,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !
     AS_ALLOCATE(vi=travail, size=nbnot)
     AS_ALLOCATE(vi=noeud_beton, size=nbnot)
-    call gmgnre(noma, nbnot, travail, zi(jmail), nbmb,&
+    call gmgnre(noma, nbnot, travail, zi(jmail), nbmb, &
                 noeud_beton, nbnb, 'TOUS')
 !
 ! --- RECUPERATION DES NOEUDS AXE :
@@ -127,11 +127,11 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     typmcl(2) = 'MAILLE'
     prefix = '&&CGNOFU'
     mafour = '&&CGNOFU.MALIGNE'
-    call cgnoor(mafour, noma, motfac, iocc, 2,&
-                motcle, typmcl, ' ', nbma, ndorig,&
+    call cgnoor(mafour, noma, motfac, iocc, 2, &
+                motcle, typmcl, ' ', nbma, ndorig, &
                 ndextr, typm, vecori)
     lisnom = prefix//'.NOEUD'
-    call ornofd(mafour, noma, nbma, lisnom, ndorig,&
+    call ornofd(mafour, noma, nbma, lisnom, ndorig, &
                 ndextr, 'V', vecori)
     call jedetr(mafour)
     call jelira(lisnom, 'LONMAX', nbnc)
@@ -225,7 +225,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
             x = vale(3*(ino-1)+1)
             y = vale(3*(ino-1)+2)
             z = vale(3*(ino-1)+3)
-            if ((x .le. xmax .and. x .ge. xmin) .and. (y .le. ymax .and. y .ge. ymin) .and.&
+            if ((x .le. xmax .and. x .ge. xmin) .and. (y .le. ymax .and. y .ge. ymin) .and. &
                 (z .le. zmax .and. z .ge. zmin)) then
                 nbnor = nbnor+1
                 noeuds_cube(nbnor) = ino

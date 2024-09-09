@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmilar(ndim, ndime, elrefp, geom, pinref,&
-                  ia, ib, im, ip, ksia,&
+subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
+                  ia, ib, im, ip, ksia, &
                   ksib, milara, milarb, pintt, pmitt)
 !
     implicit none
@@ -65,7 +65,7 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref,&
         do j = 1, ndim
             newpt(j) = pintt(ndim*(ia-1001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim,&
+        call reeref(elrefp, nno, geom, newpt, ndim, &
                     pta, ff)
     end if
     if (ib .lt. 1000) then
@@ -76,7 +76,7 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref,&
         do j = 1, ndim
             newpt(j) = pintt(ndim*(ib-1001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim,&
+        call reeref(elrefp, nno, geom, newpt, ndim, &
                     ptb, ff)
     end if
     if (im .lt. 2000) then
@@ -87,7 +87,7 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref,&
         do j = 1, ndim
             newpt(j) = pmitt(ndim*(im-2001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim,&
+        call reeref(elrefp, nno, geom, newpt, ndim, &
                     ptm, ff)
     end if
 !
@@ -114,9 +114,9 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref,&
         end do
     end if
 !
-    call reerel(elrefp, nno, ndim, geom, ksia,&
+    call reerel(elrefp, nno, ndim, geom, ksia, &
                 milara)
-    call reerel(elrefp, nno, ndim, geom, ksib,&
+    call reerel(elrefp, nno, ndim, geom, ksib, &
                 milarb)
 !
 end subroutine

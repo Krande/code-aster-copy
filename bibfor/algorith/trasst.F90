@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
+subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
                   nbmod, nbint, solveu)
 !
 !
@@ -110,13 +110,13 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     comlin(2) = -((shift*2.d0*3.1415927d0)**2)
     listyp(1) = 'R'
     listyp(2) = 'R'
-    call mtcmbl(2, listyp, comlin, lismat, imped,&
+    call mtcmbl(2, listyp, comlin, lismat, imped, &
                 ' ', nume91, 'ELIM1')
     call mtdscr(imped)
     call jeveuo(imped(1:19)//'.&INT', 'E', limped)
 !
 !
-    call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped,&
+    call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped, &
                 ibid, -9999)
     if (iret .eq. 2) then
         call utmess('F', 'ALGELINE4_37', sk=imped)
@@ -162,14 +162,14 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
         end do
 !
 !-- CALCUL DES TRAVAUX
-        call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1,&
+        call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1, &
                     .true._1)
 !
         b_n = to_blas_int(nbeq1)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         travm = ddot(b_n, zr(lmod1), b_incx, zr(leff1), b_incy)
-        call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), mode_sst1_eff2, 1,&
+        call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), mode_sst1_eff2, 1, &
                     .true._1)
         b_n = to_blas_int(nbeq1)
         b_incx = to_blas_int(1)
@@ -186,7 +186,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
         b_n = to_blas_int(nbeq1)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -(pulsa_propres(j1)**2), zr(leff1), b_incx, mode_sst1_eff2,&
+        call daxpy(b_n, -(pulsa_propres(j1)**2), zr(leff1), b_incx, mode_sst1_eff2, &
                    b_incy)
         call zerlag(nbeq1, deeq, vectr=zr(leff1))
         lbid = lsecme

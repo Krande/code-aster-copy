@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu,&
+subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, &
                              modeType)
 !
     use Rom_Datastructure_type
@@ -79,7 +79,7 @@ subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu,&
 ! - Get acess to mode_current
 !
     fieldIden = 'DEPL'
-    call rsexch(' ', resultName, fieldIden, modeNume, mode,&
+    call rsexch(' ', resultName, fieldIden, modeNume, mode, &
                 iret)
 !
     if (modeType .eq. 'R') then

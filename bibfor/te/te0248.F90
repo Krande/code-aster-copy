@@ -115,7 +115,7 @@ subroutine te0248(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari,&
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
                          lSigm, codret)
 !
 ! - Properties of behaviour
@@ -126,7 +126,7 @@ subroutine te0248(option, nomte)
 !
 ! - Some checks
 !
-    if ((option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'RIGI_MECA_ELAS') .and.&
+    if ((option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'RIGI_MECA_ELAS') .and. &
         (rela_comp .ne. 'ELAS')) then
         call utmess('F', 'POUTRE0_43', sk=rela_comp)
     end if
@@ -251,14 +251,14 @@ subroutine te0248(option, nomte)
         goto 999
     end if
 !
-    if ((rela_comp .eq. 'ELAS') .or. (rela_comp .eq. 'VMIS_ISOT_LINE') .or.&
-        (rela_comp .eq. 'VMIS_ISOT_TRAC') .or. (rela_comp .eq. 'CORR_ACIER') .or.&
+    if ((rela_comp .eq. 'ELAS') .or. (rela_comp .eq. 'VMIS_ISOT_LINE') .or. &
+        (rela_comp .eq. 'VMIS_ISOT_TRAC') .or. (rela_comp .eq. 'CORR_ACIER') .or. &
         (rela_comp .eq. 'VMIS_CINE_LINE') .or. (rela_comp .eq. 'RELAX_ACIER')) then
 !       Récupération des caractéristiques du matériau
         epsm = (uml(4)-uml(1))/xlong0
-        call nmiclb(fami, 1, 1, option, rela_comp,&
-                    zi(imate), xlong0, aire, zr(iinstm), zr(iinstp),&
-                    dlong, effnom, zr(ivarim), effnop, zr(ivarip),&
+        call nmiclb(fami, 1, 1, option, rela_comp, &
+                    zi(imate), xlong0, aire, zr(iinstm), zr(iinstp), &
+                    dlong, effnom, zr(ivarim), effnop, zr(ivarip), &
                     klv, fono, epsm, zr(icarcr), codret)
 !
         if (option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
@@ -277,12 +277,12 @@ subroutine te0248(option, nomte)
 !
     else if (rela_comp .eq. 'VMIS_ASYM_LINE') then
 !       Récupération des caractéristiques du matériau
-        call nmmaba(zi(imate), rela_comp, e, dsde, sigy,&
+        call nmmaba(zi(imate), rela_comp, e, dsde, sigy, &
                     ncstpm, cstpm)
 !
-        call nmasym(fami, 1, 1, zi(imate), option,&
-                    xlong0, aire, zr(iinstm), zr(iinstp), dlong,&
-                    effnom, zr(ivarim), zr(icontp), zr(ivarip), klv,&
+        call nmasym(fami, 1, 1, zi(imate), option, &
+                    xlong0, aire, zr(iinstm), zr(iinstp), dlong, &
+                    effnom, zr(ivarim), zr(icontp), zr(ivarip), klv, &
                     fono)
 !
         if (option(1:10) .eq. 'RIGI_MECA_') then
@@ -296,7 +296,7 @@ subroutine te0248(option, nomte)
 !
     else if (rela_comp .eq. 'PINTO_MENEGOTTO') then
 !       Récupération des caractéristiques du matériau
-        call nmmaba(zi(imate), rela_comp, e, dsde, sigy,&
+        call nmmaba(zi(imate), rela_comp, e, dsde, sigy, &
                     ncstpm, cstpm)
 !
         vim(1) = zr(ivarim)
@@ -307,9 +307,9 @@ subroutine te0248(option, nomte)
         vim(6) = zr(ivarim+5)
         vim(7) = zr(ivarim+6)
         vim(8) = zr(ivarim+7)
-        call nmpime(fami, 1, 1, zi(imate), option,&
-                    xlong0, aire, xlongm, dlong, ncstpm,&
-                    cstpm, vim, effnom, vip, effnop,&
+        call nmpime(fami, 1, 1, zi(imate), option, &
+                    xlong0, aire, xlongm, dlong, ncstpm, &
+                    cstpm, vim, effnom, vip, effnop, &
                     klv, fono)
 !
         if (option(1:10) .eq. 'RIGI_MECA_') then

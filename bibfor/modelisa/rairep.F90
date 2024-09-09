@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rairep(noma, ioc, km, rigi, nbgr,&
-                  ligrma, nbno, tabnoe, rignoe, rigto,&
+subroutine rairep(noma, ioc, km, rigi, nbgr, &
+                  ligrma, nbno, tabnoe, rignoe, rigto, &
                   amoto, rirot, ndim)
 !
 !
@@ -98,19 +98,19 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 !
 !   Récupération du centre
     call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=0, nbret=ncg)
-    call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc,&
+    call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, &
                 0, k8b, ngn)
     xg = 0.0
     yg = 0.0
     zg = 0.0
     if (ncg .ne. 0) then
-        call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=3, vect=c,&
+        call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=3, vect=c, &
                     nbret=ncg)
         xg = c(1)
         yg = c(2)
         zg = c(3)
     else if (ngn .ne. 0) then
-        call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc,&
+        call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, &
                     1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
@@ -126,12 +126,12 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=0, nbret=ncg)
     if (ncg .ne. 0) then
         AS_ALLOCATE(vr=coegro, size=nbgr)
-        call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=nbgr, vect=coegro,&
+        call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=nbgr, vect=coegro, &
                     nbret=ncg)
     else
         AS_ALLOCATE(vk8=fongro, size=nbgr)
         lfonc = .true.
-        call getvid('RIGI_PARASOL', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro,&
+        call getvid('RIGI_PARASOL', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro, &
                     nbret=nfg)
     end if
 !
@@ -245,7 +245,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                 b_incy = to_blas_int(1)
                 dist = ddot(b_n, u, b_incx, u, b_incy)
                 dist = sqrt(dist)
-                call fointe('F ', fongro(i), 1, ['X'], [dist],&
+                call fointe('F ', fongro(i), 1, ['X'], [dist], &
                             coef, iret)
                 surmai(im) = surmai(im)*coef
             else
@@ -267,13 +267,13 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 cij1: do ij = 1, noemax
-                if (parno(ij) .eq. 0) cycle cij1
-                if (zi(ldnm+nn-1) .eq. ij) then
-                    coeno(ij) = coeno(ij)+surmai(im)/surtot
-                end if
-            end do cij1
+                    if (parno(ij) .eq. 0) cycle cij1
+                    if (zi(ldnm+nn-1) .eq. ij) then
+                        coeno(ij) = coeno(ij)+surmai(im)/surtot
+                    end if
+                end do cij1
+            end do
         end do
-    end do
     end do
     nbma = im
 !
@@ -287,26 +287,26 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     rig56 = zero
     rig3 = 0.d0
     cij2: do ij = 1, noemax
-    if (parno(ij) .eq. 0) cycle cij2
-    ii = ii+1
-    xx = vale(1+3*(ij-1)+1-1)-xg
-    yy = vale(1+3*(ij-1)+2-1)-yg
-    zz = vale(1+3*(ij-1)+3-1)-zg
-    if (ndim .eq. 3) then
-        rig4 = rig4+(rigi(2)*zz**2+rigi(3)*yy**2)*coeno(ij)
-        rig5 = rig5+(rigi(1)*zz**2+rigi(3)*xx**2)*coeno(ij)
-        rig6 = rig6+(rigi(2)*xx**2+rigi(1)*yy**2)*coeno(ij)
-        rig45 = rig45-rigi(3)*xx*yy*coeno(ij)
-        rig46 = rig46-rigi(2)*xx*zz*coeno(ij)
-        rig56 = rig56-rigi(1)*yy*zz*coeno(ij)
-        rig3 = 0.d0
-    else
-        rig3 = rig3+(rigi(2)*xx**2+rigi(1)*yy**2)*coeno(ij)
-    end if
+        if (parno(ij) .eq. 0) cycle cij2
+        ii = ii+1
+        xx = vale(1+3*(ij-1)+1-1)-xg
+        yy = vale(1+3*(ij-1)+2-1)-yg
+        zz = vale(1+3*(ij-1)+3-1)-zg
+        if (ndim .eq. 3) then
+            rig4 = rig4+(rigi(2)*zz**2+rigi(3)*yy**2)*coeno(ij)
+            rig5 = rig5+(rigi(1)*zz**2+rigi(3)*xx**2)*coeno(ij)
+            rig6 = rig6+(rigi(2)*xx**2+rigi(1)*yy**2)*coeno(ij)
+            rig45 = rig45-rigi(3)*xx*yy*coeno(ij)
+            rig46 = rig46-rigi(2)*xx*zz*coeno(ij)
+            rig56 = rig56-rigi(1)*yy*zz*coeno(ij)
+            rig3 = 0.d0
+        else
+            rig3 = rig3+(rigi(2)*xx**2+rigi(1)*yy**2)*coeno(ij)
+        end if
     end do cij2
     nbno = ii
 !
-    trans = (km(1:7) .eq. 'K_T_D_N') .or. (km(1:7) .eq. 'K_T_D_L') .or. (km(1:7) .eq. 'A_T_D_N')&
+    trans = (km(1:7) .eq. 'K_T_D_N') .or. (km(1:7) .eq. 'K_T_D_L') .or. (km(1:7) .eq. 'A_T_D_N') &
             .or. (km(1:7) .eq. 'A_T_D_L')
 !
     if (trans) then
@@ -340,56 +340,56 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 !
     ii = 0
     cij3: do ij = 1, noemax
-    if (parno(ij) .eq. 0) cycle cij3
-    ii = ii+1
-    r1 = rigi(1)*coeno(ij)
-    r2 = rigi(2)*coeno(ij)
-    if (ndim .eq. 3) then
-        r3 = rigi(3)*coeno(ij)
-        r4 = rig4*coeno(ij)
-        r5 = rig5*coeno(ij)
-        r6 = rig6*coeno(ij)
-    else
-        r3 = rig3*coeno(ij)
-        r4 = zero
-        r5 = zero
-        r6 = zero
-    end if
-    call jenuno(jexnum(manono, ij), nomnoe)
-    if (km(1:1) .eq. 'K') then
-        rigto(6*(ij-1)+1) = r1+rigto(6*(ij-1)+1)
-        rigto(6*(ij-1)+2) = r2+rigto(6*(ij-1)+2)
-        rigto(6*(ij-1)+3) = r3+rigto(6*(ij-1)+3)
-        rigto(6*(ij-1)+4) = r4+rigto(6*(ij-1)+4)
-        rigto(6*(ij-1)+5) = r5+rigto(6*(ij-1)+5)
-        rigto(6*(ij-1)+6) = r6+rigto(6*(ij-1)+6)
-        r1 = rigto(6*(ij-1)+1)
-        r2 = rigto(6*(ij-1)+2)
-        r3 = rigto(6*(ij-1)+3)
-        r4 = rigto(6*(ij-1)+4)
-        r5 = rigto(6*(ij-1)+5)
-        r6 = rigto(6*(ij-1)+6)
-    else if (km(1:1) .eq. 'A') then
-        amoto(6*(ij-1)+1) = r1+amoto(6*(ij-1)+1)
-        amoto(6*(ij-1)+2) = r2+amoto(6*(ij-1)+2)
-        amoto(6*(ij-1)+3) = r3+amoto(6*(ij-1)+3)
-        amoto(6*(ij-1)+4) = r4+amoto(6*(ij-1)+4)
-        amoto(6*(ij-1)+5) = r5+amoto(6*(ij-1)+5)
-        amoto(6*(ij-1)+6) = r6+amoto(6*(ij-1)+6)
-        r1 = amoto(6*(ij-1)+1)
-        r2 = amoto(6*(ij-1)+2)
-        r3 = amoto(6*(ij-1)+3)
-        r4 = amoto(6*(ij-1)+4)
-        r5 = amoto(6*(ij-1)+5)
-        r6 = amoto(6*(ij-1)+6)
-    end if
-    rignoe(6*(ii-1)+1) = r1
-    rignoe(6*(ii-1)+2) = r2
-    rignoe(6*(ii-1)+3) = r3
-    rignoe(6*(ii-1)+4) = r4
-    rignoe(6*(ii-1)+5) = r5
-    rignoe(6*(ii-1)+6) = r6
-    tabnoe(ii) = nomnoe
+        if (parno(ij) .eq. 0) cycle cij3
+        ii = ii+1
+        r1 = rigi(1)*coeno(ij)
+        r2 = rigi(2)*coeno(ij)
+        if (ndim .eq. 3) then
+            r3 = rigi(3)*coeno(ij)
+            r4 = rig4*coeno(ij)
+            r5 = rig5*coeno(ij)
+            r6 = rig6*coeno(ij)
+        else
+            r3 = rig3*coeno(ij)
+            r4 = zero
+            r5 = zero
+            r6 = zero
+        end if
+        call jenuno(jexnum(manono, ij), nomnoe)
+        if (km(1:1) .eq. 'K') then
+            rigto(6*(ij-1)+1) = r1+rigto(6*(ij-1)+1)
+            rigto(6*(ij-1)+2) = r2+rigto(6*(ij-1)+2)
+            rigto(6*(ij-1)+3) = r3+rigto(6*(ij-1)+3)
+            rigto(6*(ij-1)+4) = r4+rigto(6*(ij-1)+4)
+            rigto(6*(ij-1)+5) = r5+rigto(6*(ij-1)+5)
+            rigto(6*(ij-1)+6) = r6+rigto(6*(ij-1)+6)
+            r1 = rigto(6*(ij-1)+1)
+            r2 = rigto(6*(ij-1)+2)
+            r3 = rigto(6*(ij-1)+3)
+            r4 = rigto(6*(ij-1)+4)
+            r5 = rigto(6*(ij-1)+5)
+            r6 = rigto(6*(ij-1)+6)
+        else if (km(1:1) .eq. 'A') then
+            amoto(6*(ij-1)+1) = r1+amoto(6*(ij-1)+1)
+            amoto(6*(ij-1)+2) = r2+amoto(6*(ij-1)+2)
+            amoto(6*(ij-1)+3) = r3+amoto(6*(ij-1)+3)
+            amoto(6*(ij-1)+4) = r4+amoto(6*(ij-1)+4)
+            amoto(6*(ij-1)+5) = r5+amoto(6*(ij-1)+5)
+            amoto(6*(ij-1)+6) = r6+amoto(6*(ij-1)+6)
+            r1 = amoto(6*(ij-1)+1)
+            r2 = amoto(6*(ij-1)+2)
+            r3 = amoto(6*(ij-1)+3)
+            r4 = amoto(6*(ij-1)+4)
+            r5 = amoto(6*(ij-1)+5)
+            r6 = amoto(6*(ij-1)+6)
+        end if
+        rignoe(6*(ii-1)+1) = r1
+        rignoe(6*(ii-1)+2) = r2
+        rignoe(6*(ii-1)+3) = r3
+        rignoe(6*(ii-1)+4) = r4
+        rignoe(6*(ii-1)+5) = r5
+        rignoe(6*(ii-1)+6) = r6
+        tabnoe(ii) = nomnoe
     end do cij3
 !
     AS_DEALLOCATE(vr=coegro)

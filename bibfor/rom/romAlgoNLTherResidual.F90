@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr,&
+subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr, &
                                  resi_rela, resi_maxi)
 !
     use Rom_Datastructure_type
@@ -119,7 +119,7 @@ subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr,&
     AS_ALLOCATE(vr=v_cnresir, size=nbMode)
     AS_ALLOCATE(vr=v_cnvabtr, size=nbMode)
     do iMode = 1, nbMode
-        call rsexch(' ', resultName, fieldName, iMode, mode,&
+        call rsexch(' ', resultName, fieldName, iMode, mode, &
                     iret)
         call jeveuo(mode(1:19)//'.VALE', 'E', vr=v_mode)
         b_n = to_blas_int(nbEqua)

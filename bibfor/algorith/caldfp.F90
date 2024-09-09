@@ -65,7 +65,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, id, b_incx, a,&
+        call daxpy(b_n, 1.d0, id, b_incx, a, &
                    b_incy)
 !
 !        TEST ANALOGUE A SIMO_MIEHE NMGPFI
@@ -114,7 +114,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, msns, b_incx, dfpdg,&
+        call daxpy(b_n, 1.d0, msns, b_incx, dfpdg, &
                    b_incy)
 !
         b_n = to_blas_int(9)
@@ -164,7 +164,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, id, b_incx, b,&
+        call daxpy(b_n, 1.d0, id, b_incx, b, &
                    b_incy)
 !
         bmax = 0.d0
@@ -213,7 +213,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, msns, b_incx, dfpmdg,&
+        call daxpy(b_n, 1.d0, msns, b_incx, dfpmdg, &
                    b_incy)
 !
         b_n = to_blas_int(9)

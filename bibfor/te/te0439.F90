@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine te0439(option, nomte)
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     fami = 'MASS'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call r8inir(9*9*3*3, 0.d0, a, 1)
 !
@@ -128,18 +128,18 @@ subroutine te0439(option, nomte)
 ! - MASS_MECA
 !
         if (grdef) then
-            call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                        ' ', 'ELAS', 0, ' ', [0.d0],&
+            call rcvalb(fami, kpg, 1, '+', zi(imate), &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
                         1, 'RHO', rho, codres, 1)
         else
-            call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                        ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
+            call rcvalb(fami, kpg, 1, '+', zi(imate), &
+                        ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0], &
                         1, 'RHO', rho, codres, 1)
         end if
 !
 ! - CALCUL DE LA MATRICE "B" : DEPL NODAL -> EPS11 ET DU JACOBIEN
 !
-        call mbcine(nno, zr(igeom), dff, alpha, beta,&
+        call mbcine(nno, zr(igeom), dff, alpha, beta, &
                     b, jac)
 !
         wgt = wgt+rho(1)*zr(ipoids+kpg-1)*jac*h

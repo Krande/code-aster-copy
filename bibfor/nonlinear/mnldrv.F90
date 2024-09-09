@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
-                  parcho, adime, xvect, vecplu, ninc,&
+subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl, &
+                  parcho, adime, xvect, vecplu, ninc, &
                   nd, nchoc, h, hf)
     implicit none
 !
@@ -171,31 +171,31 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ---     CREATION DU VECTEUR DE BASE CANONIQUE (E_J)
             zr(ivei-1+j) = 1.d0
 ! ---     CALCUL DE L(E_J)
-            call mnlldr(j, imat, neq, ninc, nd,&
-                        nchoc, h, hf, parcho, xcdl,&
+            call mnlldr(j, imat, neq, ninc, nd, &
+                        nchoc, h, hf, parcho, xcdl, &
                         adime, xtemp)
             b_n = to_blas_int(ninc-1)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, zr(itemp), b_incx, zr(idrvj),&
+            call daxpy(b_n, 1.d0, zr(itemp), b_incx, zr(idrvj), &
                        b_incy)
 ! ---     CALCUL DE Q(V,E_J)
-            call mnlqd2(j, imat, neq, ninc, nd,&
-                        nchoc, h, hf, parcho, xcdl,&
+            call mnlqd2(j, imat, neq, ninc, nd, &
+                        nchoc, h, hf, parcho, xcdl, &
                         adime, xvect, xtemp)
             b_n = to_blas_int(ninc-1)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, zr(itemp), b_incx, zr(idrvj),&
+            call daxpy(b_n, 1.d0, zr(itemp), b_incx, zr(idrvj), &
                        b_incy)
 ! ---     CALCUL DE Q(E_J,V)
-            call mnlqd1(j, imat, neq, ninc, nd,&
-                        nchoc, h, hf, parcho, xcdl,&
+            call mnlqd1(j, imat, neq, ninc, nd, &
+                        nchoc, h, hf, parcho, xcdl, &
                         adime, xvect, xtemp)
             b_n = to_blas_int(ninc-1)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, zr(itemp), b_incx, zr(idrvj),&
+            call daxpy(b_n, 1.d0, zr(itemp), b_incx, zr(idrvj), &
                        b_incy)
             zr(idrvj-1+ninc) = 1.d0
 ! ---     STOCKAGE MORSE
@@ -281,7 +281,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
                         call mnlind(nind, 0, cle, zr(iiinf), ind)
                     else
                         nind = zi(ininf-1+i)-zi(ininf-1+i-1)
-                        call mnlind(nind, zi(ininf-1+i-1), cle, zr(iiinf-1+zi(ininf-1+i-1)+1),&
+                        call mnlind(nind, zi(ininf-1+i-1), cle, zr(iiinf-1+zi(ininf-1+i-1)+1), &
                                     ind)
                     end if
                     if (ind .lt. 0) then
@@ -298,7 +298,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
                         call mnlind(nind, 0, cle, zr(iiinf), ind)
                     else
                         nind = zi(ininf-1+i)-zi(ininf-1+i-1)
-                        call mnlind(nind, zi(ininf-1+i-1), cle, zr(iiinf-1+zi(ininf-1+i-1)+1),&
+                        call mnlind(nind, zi(ininf-1+i-1), cle, zr(iiinf-1+zi(ininf-1+i-1)+1), &
                                     ind)
                     end if
                     if (ind .gt. 0) then
@@ -335,7 +335,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
         call jeveuo(matdrv//'.REFA', 'E', irefa)
         zk24(irefa-1+8) = ' '
 ! ---   REMPLISSAGE CHAMP SMDI, SMHC ET VALE
-        call jecrec(matdrv//'.VALM', 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+        call jecrec(matdrv//'.VALM', 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                     2)
         call jeecra(jexnum(matdrv//'.VALM', 1), 'LONMAX', ndrdv, ' ')
         call jeecra(jexnum(matdrv//'.VALM', 2), 'LONMAX', ndrdv, ' ')
@@ -385,7 +385,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! --- FACTORISATION DE LA MATRICE
 ! ----------------------------------------------------------------------
     solveu = '&&OP0061.SOLVEUR'
-    call preres(solveu, 'V', iret, ' ', matdrv,&
+    call preres(solveu, 'V', iret, ' ', matdrv, &
                 ibid, -9999)
 !
     call jedema()

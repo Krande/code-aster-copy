@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,9 +90,9 @@ subroutine rotama(geomi, pt, d, angl, bidim)
                 p1my = zr(iadcoo+3*(i-1)+2)-pt(2)
                 p1mz = zr(iadcoo+3*(i-1)+3)-pt(3)
                 p1m = p1mx*d(1)+p1my*d(2)+p1mz*d(3)
-                zr(iadcoo+3*(i-1)+1) = pt(1)+ca*p1mx+(1-ca)*p1m*d(1)+ sa*(d(2)*p1mz-d(3)*p1my)
-                zr(iadcoo+3*(i-1)+2) = pt(2)+ca*p1my+(1-ca)*p1m*d(2)+ sa*(d(3)*p1mx-d(1)*p1mz)
-                zr(iadcoo+3*(i-1)+3) = pt(3)+ca*p1mz+(1-ca)*p1m*d(3)+ sa*(d(1)*p1my-d(2)*p1mx)
+                zr(iadcoo+3*(i-1)+1) = pt(1)+ca*p1mx+(1-ca)*p1m*d(1)+sa*(d(2)*p1mz-d(3)*p1my)
+                zr(iadcoo+3*(i-1)+2) = pt(2)+ca*p1my+(1-ca)*p1m*d(2)+sa*(d(3)*p1mx-d(1)*p1mz)
+                zr(iadcoo+3*(i-1)+3) = pt(3)+ca*p1mz+(1-ca)*p1m*d(3)+sa*(d(1)*p1my-d(2)*p1mx)
             end do
         end if
     end if

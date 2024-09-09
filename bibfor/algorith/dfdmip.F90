@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfdmip(ndim, nno, axi, geom, g,&
-                  iw, vff, idfde, r, w,&
+subroutine dfdmip(ndim, nno, axi, geom, g, &
+                  iw, vff, idfde, r, w, &
                   dfdi)
 !
 !
@@ -54,10 +54,10 @@ subroutine dfdmip(ndim, nno, axi, geom, g,&
 !
 ! - CALCUL DES DERIVEES DES FONCTIONS DE FORME ET JACOBIEN
     if (ndim .eq. 3) then
-        call dfdm3d(nno, g, iw, idfde, geom,&
+        call dfdm3d(nno, g, iw, idfde, geom, &
                     w, dfdi(1, 1), dfdi(1, 2), dfdi(1, 3))
     else
-        call dfdm2d(nno, g, iw, idfde, geom,&
+        call dfdm2d(nno, g, iw, idfde, geom, &
                     w, dfdi(1, 1), dfdi(1, 2))
     end if
 !

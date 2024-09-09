@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
-                  ddls, dfdi, ff, idepl, igthet,&
-                  ithet, jac, ndim, nnop, nnos,&
+subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm, &
+                  ddls, dfdi, ff, idepl, igthet, &
+                  ithet, jac, ndim, nnop, nnos, &
                   tau1, tau2, nd, xg)
     implicit none
 !
@@ -87,7 +87,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
             pm(3, i) = tau2(i)
         end do
     end if
-    call transp(pm, ndim, ndim, ndim, ptr,&
+    call transp(pm, ndim, ndim, ndim, ptr, &
                 ndim)
     e1(:) = 0.d0
     e2(:) = 0.d0
@@ -187,7 +187,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
             lambl(j) = lambl(j)+zr(idepl-1+ii+ddld+j)*ff(ino)
         end do
     end do
-    call prmave(0, ptr, ndim, ndim, ndim,&
+    call prmave(0, ptr, ndim, ndim, ndim, &
                 lambl, ndim, lamb, ndim, ier)
 !
 !     ---------------------------------------------

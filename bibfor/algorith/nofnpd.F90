@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
-                  iw, vff1, vff2, vff3, idff1,&
-                  vu, vp, vpi, typmod, mate,&
-                  compor, geomi, nomte, sig, ddl,&
+subroutine nofnpd(ndim, nno1, nno2, nno3, npg, &
+                  iw, vff1, vff2, vff3, idff1, &
+                  vu, vp, vpi, typmod, mate, &
+                  compor, geomi, nomte, sig, ddl, &
                   vect)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306,W1504
@@ -124,10 +124,10 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         call r8inir(6, 0.d0, epsm, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
+        call dfdmip(ndim, nno1, axi, geomi, g, &
+                    iw, vff1(1, g), idff1, r, w, &
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dff1, deplm, fm, epsm)
 !
 ! - CALCUL DE LA PRESSION
@@ -191,7 +191,7 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
         end do
 !
 ! - CALCUL DE L'INVERSE DE KAPPA
-        call tanbul(option, ndim, g, mate, compor(1),&
+        call tanbul(option, ndim, g, mate, compor(1), &
                     .false._1, .false._1, alpha, dsbdep, trepst)
 !
 ! - VECTEUR FINT:U

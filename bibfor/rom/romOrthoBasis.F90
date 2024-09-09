@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
     if (syst_type .eq. 'R') then
         call jeveuo(new_basis(1:19)//'.VALE', 'E', vr=vr_new_mode)
         AS_ALLOCATE(vr=vr_new_mode1, size=nbEqua)
-        call romAlgoMGS(nbMode, nbEqua, 'R', fieldIden, resultName,&
+        call romAlgoMGS(nbMode, nbEqua, 'R', fieldIden, resultName, &
                         vr_mode_in=vr_new_mode, vr_mode_out=vr_new_mode1)
         b_n = to_blas_int(nbEqua)
         b_incx = to_blas_int(1)
@@ -94,7 +94,7 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
             AS_DEALLOCATE(vr=vr_new_mode1)
         else
             AS_ALLOCATE(vr=vr_new_mode2, size=nbEqua)
-            call romAlgoMGS(nbMode, nbEqua, 'R', fieldIden, resultName,&
+            call romAlgoMGS(nbMode, nbEqua, 'R', fieldIden, resultName, &
                             vr_mode_in=vr_new_mode1, vr_mode_out=vr_new_mode2)
             b_n = to_blas_int(nbEqua)
             b_incx = to_blas_int(1)
@@ -113,7 +113,7 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
     else if (syst_type .eq. 'C') then
         call jeveuo(new_basis(1:19)//'.VALE', 'E', vc=vc_new_mode)
         AS_ALLOCATE(vc=vc_new_mode1, size=nbEqua)
-        call romAlgoMGS(nbMode, nbEqua, 'C', fieldIden, resultName,&
+        call romAlgoMGS(nbMode, nbEqua, 'C', fieldIden, resultName, &
                         vc_mode_in=vc_new_mode, vc_mode_out=vc_new_mode1)
         b_n = to_blas_int(nbEqua)
         b_incx = to_blas_int(1)
@@ -128,7 +128,7 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
             AS_DEALLOCATE(vc=vc_new_mode1)
         else
             AS_ALLOCATE(vc=vc_new_mode2, size=nbEqua)
-            call romAlgoMGS(nbMode, nbEqua, 'C', fieldIden, resultName,&
+            call romAlgoMGS(nbMode, nbEqua, 'C', fieldIden, resultName, &
                             vc_mode_in=vc_new_mode1, vc_mode_out=vc_new_mode2)
             b_n = to_blas_int(nbEqua)
             b_incx = to_blas_int(1)

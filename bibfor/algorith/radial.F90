@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine radial(nbsig, sigm, sigp, indm, indp,&
+subroutine radial(nbsig, sigm, sigp, indm, indp, &
                   icine, xm, xp, normdn)
 !
 !     BUT:
@@ -73,12 +73,12 @@ subroutine radial(nbsig, sigm, sigp, indm, indp,&
             b_n = to_blas_int(nbsig)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -1.d0, xm, b_incx, tensm,&
+            call daxpy(b_n, -1.d0, xm, b_incx, tensm, &
                        b_incy)
             b_n = to_blas_int(nbsig)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -1.d0, xp, b_incx, tensp,&
+            call daxpy(b_n, -1.d0, xp, b_incx, tensp, &
                        b_incy)
 !
         end if
@@ -142,7 +142,7 @@ subroutine radial(nbsig, sigm, sigp, indm, indp,&
             b_n = to_blas_int(nbsig)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -1.d0, n2, b_incx, dn1n2,&
+            call daxpy(b_n, -1.d0, n2, b_incx, dn1n2, &
                        b_incy)
             b_n = to_blas_int(nbsig)
             b_incx = to_blas_int(1)

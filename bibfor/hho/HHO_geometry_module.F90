@@ -56,7 +56,7 @@ contains
 !
 !===================================================================================================
 !
-    function find_lowest_vertex(v1, v2) result (ind)
+    function find_lowest_vertex(v1, v2) result(ind)
 !
         implicit none
 !
@@ -103,7 +103,7 @@ contains
 !
 !===================================================================================================
 !
-    function barycenter(nodes, nbnodes) result (bar)
+    function barycenter(nodes, nbnodes) result(bar)
 !
         implicit none
 !
@@ -135,7 +135,7 @@ contains
 !
 !===================================================================================================
 !
-    function prod_vec(v0, v1) result (v2)
+    function prod_vec(v0, v1) result(v2)
 !
         implicit none
 !
@@ -187,7 +187,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoNormalFaceQP(hhoFace, qp_param) result (normal)
+    function hhoNormalFaceQP(hhoFace, qp_param) result(normal)
 !
         implicit none
 !
@@ -210,7 +210,7 @@ contains
         call CellNameL2S(hhoFace%typema, ts)
         coor(1:3, 1:4) = hhoFace%coorno
 !
-        call apnorm(hhoFace%nbnodes, ts, hhoFace%ndim+1, coor, qp_param(1),&
+        call apnorm(hhoFace%nbnodes, ts, hhoFace%ndim+1, coor, qp_param(1), &
                     qp_param(2), normal)
 !
         if (norm2(hhoFace%normal) > 0.5d0) then
@@ -225,7 +225,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoNormalFace2d(coorno, nbnodes, barycenter_face, barycenter_cell) result (normal)
+    function hhoNormalFace2d(coorno, nbnodes, barycenter_face, barycenter_cell) result(normal)
 !
         implicit none
 !
@@ -267,7 +267,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoNormalFace1d(coorno, barycenter_face, barycenter_cell) result (normal)
+    function hhoNormalFace1d(coorno, barycenter_face, barycenter_cell) result(normal)
 !
         implicit none
 !
@@ -305,7 +305,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoNormalFace(hhoFace, qp_param) result (normal)
+    function hhoNormalFace(hhoFace, qp_param) result(normal)
 !
         implicit none
 !
@@ -339,7 +339,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoNormalFace3(hhoFace, barycenter_cell) result (normal)
+    function hhoNormalFace3(hhoFace, barycenter_cell) result(normal)
 !
         implicit none
 !
@@ -373,7 +373,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoNormalFace2(typma, nodes_coor) result (normal)
+    function hhoNormalFace2(typma, nodes_coor) result(normal)
 !
         implicit none
 !
@@ -407,7 +407,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoLocalBasisFace(hhoFace) result (axes)
+    function hhoLocalBasisFace(hhoFace) result(axes)
 !
         implicit none
 !
@@ -450,7 +450,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoFaceInitCoor(coorno, nbnodes, ndimF, numsorted_) result (nodes_face)
+    function hhoFaceInitCoor(coorno, nbnodes, ndimF, numsorted_) result(nodes_face)
 !
         implicit none
 !
@@ -496,7 +496,7 @@ contains
                 end if
             end do
 !
-            minnum2 = candidate(&
+            minnum2 = candidate( &
                       find_lowest_vertex(coorno(:, candidate(1)), coorno(:, candidate(2))))
 !
             if (nbnodes == 3) then
@@ -732,7 +732,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hho_transfo_3d(coorno, nbnodes, typema, coorref, coorac,&
+    subroutine hho_transfo_3d(coorno, nbnodes, typema, coorref, coorac, &
                               jacob)
 !
         implicit none
@@ -787,8 +787,8 @@ contains
                 jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
             end do
 !
-            jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) +jaco(3, 1)&
-                    &*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) -jaco(3, 3)*jaco(2, &
+            jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2)+jaco(3, 1)&
+                    &*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3)-jaco(3, 3)*jaco(2, &
                     &1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
         end if
 !
@@ -880,7 +880,7 @@ contains
 !
 !===================================================================================================
 !
-    function hho_jaco_cst_quad(coorno, ndim) result (l_cst)
+    function hho_jaco_cst_quad(coorno, ndim) result(l_cst)
 !
         implicit none
 !
@@ -920,7 +920,7 @@ contains
 !
 !===================================================================================================
 !
-    function hho_jaco_cst_3d(typema, coorno) result (l_cst)
+    function hho_jaco_cst_3d(typema, coorno) result(l_cst)
 !
         implicit none
 !
@@ -961,7 +961,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoIsJacobCst(typema, coorno, ndim) result (l_cst)
+    function hhoIsJacobCst(typema, coorno, ndim) result(l_cst)
 !
         implicit none
 !

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
+subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
                   nomch, model, carele, ligrel, lModelVariable)
 ! aslint: disable=W1501
 !
@@ -158,9 +158,9 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
     chams1 = '&&CHRPEL.CHAMS1'
     call celces(champ1, 'V', chams0)
 !   sélection des composantes :
-    call selectComp(chams0, nom_cham, type_cham, nbcmp, nom_cmp,&
+    call selectComp(chams0, nom_cham, type_cham, nbcmp, nom_cmp, &
                     ndim_type)
-    call cesred(chams0, 0, [0], nbcmp, nom_cmp,&
+    call cesred(chams0, 0, [0], nbcmp, nom_cmp, &
                 'V', chams1)
     call detrsd('CHAM_ELEM_S', chams0)
     call jeveuo(chams1//'.CESK', 'L', vk8=cesk)
@@ -213,11 +213,13 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
 !       Construction du champ des repère locaux
     exi_local = .false.
     if (type_cham .eq. '1D_GENE') then
-        chrel(1) = '&&CHRPEL.REPLO_1'; chrel(2) = '&&CHRPEL.REPLO_2'; chrel(3) = '&&CHRPEL.REPLO_&
-                   &3'
-        chres(1) = '&&CHRPEL.REPSO_1'; chres(2) = '&&CHRPEL.REPSO_2'; chres(3) = '&&CHRPEL.REPSO_&
-                   &3'
-        call carelo(model, carele, 'V', chrel(1), chrel(2),&
+        chrel(1) = '&&CHRPEL.REPLO_1'
+        chrel(2) = '&&CHRPEL.REPLO_2'
+        chrel(3) = '&&CHRPEL.REPLO_3'
+        chres(1) = '&&CHRPEL.REPSO_1'
+        chres(2) = '&&CHRPEL.REPSO_2'
+        chres(3) = '&&CHRPEL.REPSO_3'
+        call carelo(model, carele, 'V', chrel(1), chrel(2), &
                     chrel(3))
         exi_local = .true.
 !
@@ -235,7 +237,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
     do iocc = 1, nocc
 !       Construction de la liste des numéros de mailles
 !       sélectionnées par les mots-clés GROUP_MA et MAILLE
-        call reliem(' ', ma, 'NU_MAILLE', 'AFFE', iocc,&
+        call reliem(' ', ma, 'NU_MAILLE', 'AFFE', iocc, &
                     2, motcle, typmcl, mesmai, nbm)
         if (nbm .gt. 0) then
             nbmail = nbm
@@ -248,10 +250,10 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
 !       Changement de repère "UTILISATEUR"
         if (repere(1:11) .eq. 'UTILISATEUR') then
 !           SI LE NOUVEAU REPERE EST DONNE VIA DES VECTEURS
-            call getvr8('AFFE', 'VECT_X', iocc=iocc, nbval=3, vect=vectx,&
+            call getvr8('AFFE', 'VECT_X', iocc=iocc, nbval=3, vect=vectx, &
                         nbret=ibid)
             if (ibid .ne. 0) then
-                call getvr8('AFFE', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
+                call getvr8('AFFE', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty, &
                             nbret=ibid)
                 if (ndim .ne. 3) then
                     call utmess('F', 'ALGORITH2_4')
@@ -259,7 +261,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
                 call angvxy(vectx, vecty, angnot)
             else
                 if (ndim .eq. 3) then
-                    call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angnot,&
+                    call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angnot, &
                                 nbret=ibid)
                     if (ibid .ne. 3) then
                         call utmess('F', 'ALGORITH2_7')
@@ -325,14 +327,14 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
             do isp = 1, nbsp
                 exi_cmp = .false.
                 do ii = 1, nbcmp
-                    call cesexi('C', jcesd, jcesl, imai, ipt,&
+                    call cesexi('C', jcesd, jcesl, imai, ipt, &
                                 isp, ii, iad)
                     if (iad .gt. 0) then
                         exi_cmp = .true.
                     end if
                 end do
                 if (exi_cmp) then
-                    call chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
+                    call chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
                                ipt, isp, type_cham, tsca, pgu)
                 else
                     cycle cipt1
@@ -348,21 +350,21 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
                 call utmess('F', 'ALGORITH2_31')
             end if
 !
-            call dismoi('TYPE_CHAMP', champ1, 'CHAMP', repk=tych, arret='C',&
+            call dismoi('TYPE_CHAMP', champ1, 'CHAMP', repk=tych, arret='C', &
                         ier=iret)
             if (ndim .eq. 3) then
-                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=3, vect=orig,&
+                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=3, vect=orig, &
                             nbret=ibid)
                 if (ibid .ne. 3) then
                     call utmess('F', 'ALGORITH2_8')
                 end if
-                call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=3, vect=axez,&
+                call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=3, vect=axez, &
                             nbret=ibid)
                 if (ibid .eq. 0) then
                     call utmess('F', 'ALGORITH2_9')
                 end if
             else
-                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=2, vect=orig,&
+                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=2, vect=orig, &
                             nbret=ibid)
                 if (ibid .ne. 2) then
                     call utmess('A', 'ALGORITH2_10')
@@ -385,11 +387,11 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
             if (ndim == 2) then
                 select case (type_cham(1:4))
                 case ('TENS')
-                permvec(4) = 5
+                    permvec(4) = 5
                 case ('VECT')
-                permvec(2) = 3
-                permvec(3) = 2
-            end select
+                    permvec(2) = 3
+                    permvec(3) = 2
+                end select
             end if
 !
 !           Localisation du champ : noeuds/pts de Gauss
@@ -464,7 +466,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
 !                       Points de Gauss de la maille, dont il faut récupérer les coordonnées
                     do ipg = 1, nbpg
                         do icoo = 1, 3
-                            call cesexi('S', jcesd_gauss, jcesl_gauss, imai, ipg,&
+                            call cesexi('S', jcesd_gauss, jcesl_gauss, imai, ipg, &
                                         1, icoo, iad)
                             xpg(icoo, ipg) = coo_gauss(iad)
                         end do
@@ -479,43 +481,43 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
 !               Boucle sur les points (cette partie est commune aux champs ELNO et ELGA)
                 cipt2: do ipt = 1, nbpt
 !                   Calcul de la matrice de passage vers le repère cylindrique
-                call cylrep(ndim, xpt(:, ipt), axez, orig, pgcyl,&
-                            ipaxe)
+                    call cylrep(ndim, xpt(:, ipt), axez, orig, pgcyl, &
+                                ipaxe)
 !                   Si le point x appartient à l'axe du repère cylindrique
-                if (ipaxe > 0) then
-                    call utmess('A', 'ALGORITH2_13')
+                    if (ipaxe > 0) then
+                        call utmess('A', 'ALGORITH2_13')
 !                       Calcul de la matrice de passage au centre de gravité de l'élément
-                    xbary(:) = sum(xno(:, 1:nbno), dim=2)
-                    xbary(:) = xbary(:)/nbno
-                    ipaxe2 = 0
-                    call cylrep(ndim, xbary, axez, orig, pgcyl,&
-                                ipaxe2)
+                        xbary(:) = sum(xno(:, 1:nbno), dim=2)
+                        xbary(:) = xbary(:)/nbno
+                        ipaxe2 = 0
+                        call cylrep(ndim, xbary, axez, orig, pgcyl, &
+                                    ipaxe2)
 !                       Si le centre de gravité de l'élément est aussi sur l'axe, on s'arrête
-                    if (ipaxe2 > 0) then
-                        call utmess('F', 'ALGORITH2_13')
+                        if (ipaxe2 > 0) then
+                            call utmess('F', 'ALGORITH2_13')
+                        end if
                     end if
-                end if
 !                   Boucle sur les sous-points
-                do isp = 1, nbsp
-                    exi_cmp = .true.
-                    do ii = 1, nbcmp
+                    do isp = 1, nbsp
+                        exi_cmp = .true.
+                        do ii = 1, nbcmp
 !                           la composante ii du champ existe-t-elle?
-                        exi_cmp = .false.
-                        call cesexi('S', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            exi_cmp = .true.
+                            exi_cmp = .false.
+                            call cesexi('S', jcesd, jcesl, imai, ipt, &
+                                        isp, ii, iad)
+                            if (iad .gt. 0) then
+                                exi_cmp = .true.
+                            end if
+                        end do
+                        if (exi_cmp) then
+                            call chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
+                                       ipt, isp, type_cham, tsca, pgcyl, &
+                                       permvec)
+                        else
+                            cycle cipt2
                         end if
                     end do
-                    if (exi_cmp) then
-                        call chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
-                                   ipt, isp, type_cham, tsca, pgcyl,&
-                                   permvec)
-                    else
-                        cycle cipt2
-                    end if
-                end do
-            end do cipt2
+                end do cipt2
             end do
 !
             if (ipaxe .ne. 0) then
@@ -530,7 +532,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
     if ((repere(1:11) .eq. 'CYLINDRIQUE') .or. (repere(1:11) .eq. 'UTILISATEUR')) then
 !       Champ simple -> Cham_elem
         call dismoi('NOM_OPTION', champ1, 'CHAM_ELEM', repk=option)
-        call cescel(chams1, ligrel1, option, ' ', 'OUI',&
+        call cescel(chams1, ligrel1, option, ' ', 'OUI', &
                     nncp, 'G', champ1, 'F', ibid)
         call detrsd('CHAM_ELEM_S', chams1)
         if (exi_local) then
@@ -542,7 +544,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
 !
 ! --------------------------------------------------------------------------------------------------
 !   Changement de repère sur une coque
-    if ((repere(1:5) .eq. 'COQUE') .or. (repere(1:15) .eq. 'COQUE_INTR_UTIL') .or.&
+    if ((repere(1:5) .eq. 'COQUE') .or. (repere(1:15) .eq. 'COQUE_INTR_UTIL') .or. &
         (repere(1:15) .eq. 'COQUE_UTIL_INTR') .or. (repere(1:14) .eq. 'COQUE_UTIL_CYL')) then
 !        Verifier ligrel
         if (ligrel .eq. ' ') then
@@ -590,7 +592,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
         licmp(7) = 'O_X'
         licmp(8) = 'O_Y'
         licmp(9) = 'O_Z'
-        call mecact('V', carte, 'MODELE', model, 'CAORIE',&
+        call mecact('V', carte, 'MODELE', model, 'CAORIE', &
                     ncmp=9, lnomcmp=licmp, vr=valecarte)
 !
 !       CREATION D UN CHAM_ELEM D'ANGLES EN LISANT LES ANGL_REP
@@ -672,12 +674,12 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
             ch2 = '&&CHRPEL.CH2'
             call sepach(carele, lchin(4), 'V', chr, chi)
             lchin(4) = chr
-            call calcul('S', option, ligrel, npain, lchin(1:npain),&
-                        lpain(1:npain), 1, ch1, paout, 'V',&
+            call calcul('S', option, ligrel, npain, lchin(1:npain), &
+                        lpain(1:npain), 1, ch1, paout, 'V', &
                         'OUI')
             lchin(4) = chi
-            call calcul('S', option, ligrel, npain, lchin(1:npain),&
-                        lpain(1:npain), 1, ch2, paout, 'V',&
+            call calcul('S', option, ligrel, npain, lchin(1:npain), &
+                        lpain(1:npain), 1, ch2, paout, 'V', &
                         'OUI')
             call assach(ch1, ch2, 'V', chaout, parout=paoutc)
             call detrsd('CHAMP', chr)
@@ -685,8 +687,8 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz,&
             call detrsd('CHAMP', ch1)
             call detrsd('CHAMP', ch2)
         else
-            call calcul('S', option, ligrel, npain, lchin(1:npain),&
-                        lpain(1:npain), 1, chaout, paout, 'V',&
+            call calcul('S', option, ligrel, npain, lchin(1:npain), &
+                        lpain(1:npain), 1, chaout, paout, 'V', &
                         'OUI')
         end if
         call detrsd('CHAM_ELEM_S', chaout)

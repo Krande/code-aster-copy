@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
-                  indin1, tramo1, ddla1, nbeq1, imast,&
+subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
+                  indin1, tramo1, ddla1, nbeq1, imast, &
                   numlia)
     implicit none
 !    M. CORUS     DATE 02/02/10
@@ -118,12 +118,12 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !--------------------------------------------------------C
 !
 !-- NOM DE LA BASE MODALE ET NOMBRE DE MODES
-    call mgutdm(nomres, sst1, ibid, 'NOM_BASE_MODALE', ibid,&
+    call mgutdm(nomres, sst1, ibid, 'NOM_BASE_MODALE', ibid, &
                 bamo1)
     call dismoi('NB_MODES_TOT', bamo1, 'RESULTAT', repi=nbeq1)
 !
 !-- INTERFACE AMONT DE LA SOUS-STRUCTURE
-    call mgutdm(nomres, sst1, ibid, 'NOM_LIST_INTERF', ibid,&
+    call mgutdm(nomres, sst1, ibid, 'NOM_LIST_INTERF', ibid, &
                 lint1)
 !
 !-- NOMBRE DE NOEUDS DE L'INTERFACE
@@ -141,7 +141,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !
 !-- NUMEROTATION DES NOEUDS DE L'INTERFACE DANS LES MAILLAGES INITAUX
     call wkvect(lino1, 'V V I', nbno1, lnoeu1)
-    call bmnoin(bamo1, kbid, intf1, ibid, nbno1,&
+    call bmnoin(bamo1, kbid, intf1, ibid, nbno1, &
                 zi(lnoeu1), nbnoe)
 !
 !-- SI UNE AUTRE INTERFACE A DEJA ETE DEFINIE, ON REORDONNE LA LISTE
@@ -177,7 +177,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !
 !-- RECUPERATION DES INDICES CORRESPONDANT AUX DDL D'INTERFACE
 !-- DANS LA NUMEROTATION DES MAILLAGES INITIAUX
-    call mgutdm(nomres, sst1, ibid, 'NOM_MACR_ELEM', ibid,&
+    call mgutdm(nomres, sst1, ibid, 'NOM_MACR_ELEM', ibid, &
                 nmacr1)
 !-- recuperation du nume_equa
     call dismoi('NUME_EQUA', nmacr1, 'NUME_DDL', repk=numeq1)
@@ -335,7 +335,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
             kint = zk24(lmod1+i1-1) (1:19)
             call dismoi('NUME_EQUA', kint, 'CHAM_NO', repk=numeq2)
             if (.not. idensd('NUME_EQUA', numeq1, numeq2)) then
-                call utmess('E', 'ALGORITH12_36', nk=1, valk=[bamo1], ni=1,&
+                call utmess('E', 'ALGORITH12_36', nk=1, valk=[bamo1], ni=1, &
                             vali=[i1])
                 nook = .true.
             end if
@@ -359,7 +359,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !-- DU NOEUD J1
                 do k1 = 1, 6
                     if (zi(lindi1+(j1-1)*6+k1-1) .gt. 0) then
-                        zr(lresmo+k1-1) = zr(ibid+zi(lindi1+(j1-1)*6+ k1-1)-1)
+                        zr(lresmo+k1-1) = zr(ibid+zi(lindi1+(j1-1)*6+k1-1)-1)
                         length = length+1
                         norme = norme+zr(lresmo+k1-1)**2
                     else
@@ -372,7 +372,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
                     l1 = int(mod(k1-1, 3)+1)
                     m1 = int(int((k1-1)/3)*3)
                     zr(lmain1+(i1-1)*nbddl1+(j1-1)*6+k1-1) = rota(l1, 1)*zr(lresmo+m1)+rota(l1, 2&
-                                                             &)*zr(lresmo+m1+1)+ rota(l1, 3)*zr(l&
+                                                             &)*zr(lresmo+m1+1)+rota(l1, 3)*zr(l&
                                                              &resmo+m1+2)
                 end do
             end do
@@ -410,7 +410,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
         ibid = 0
         do i1 = 1, nbddl1
             if (zi(lindi1+i1-1) .gt. 0) then
-                zr(lact1+ddla1*(j1-1)+ibid) = zr(lmain1+nbddl1*(j1-1)+ i1-1)
+                zr(lact1+ddla1*(j1-1)+ibid) = zr(lmain1+nbddl1*(j1-1)+i1-1)
                 ibid = ibid+1
             end if
         end do
