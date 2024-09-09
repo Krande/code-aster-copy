@@ -108,7 +108,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    aster_logical :: lVect, lMatr, lSigm, lMatrPred, lPred
+    aster_logical :: lVect, lMatr, lSigm, lMatrPred, lMFront, lPred
     integer :: kpg, ipoids, ivf, idfde
     integer :: cod(MAX_QP)
     real(kind=8) :: dsidep(6, 6), coorpg(3), BGSEval(3, MAX_BS)
@@ -128,6 +128,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
     lMatr = L_MATR(option)
     lPred = L_PRED(option)
     lMatrPred = L_MATR_PRED(option)
+    lMFront = carcri(EXTE_TYPE) == 1 .or. carcri(EXTE_TYPE) == 2
     dispCurr = 0.d0
 !
 ! - Initialisation of behaviour datastructure
@@ -171,7 +172,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 ! ----- Compute behaviour
         sigmPost = 0
 ! ----- Check if the behavior law is MFRONT
-        if (compor(RELA_NAME) == 'MFRONT') then
+        if (lMFront) then
 ! --------- Compute the increment of f for MFRONT
             fIncr = fCurr-fPrev
             call nmcomp(BEHinteg, &

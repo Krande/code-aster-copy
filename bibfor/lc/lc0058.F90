@@ -126,7 +126,7 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    ASSERT(neps*nsig .eq. ndsde .or. (ndsde .eq. 36 .and. neps .le. 6 .and. nsig .le. 6))
+    ASSERT(neps*nsig .eq. ndsde .or. (ndsde .eq. 36 .and. neps .le. 9 .and. nsig .le. 6))
     ASSERT(nsig .ge. 2*ndim)
     ASSERT(neps .ge. 2*ndim)
 !
