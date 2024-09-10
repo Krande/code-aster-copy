@@ -3752,7 +3752,7 @@ class SimpleFieldOnCellsReal(DataField):
     def getPhysicalQuantity(self):
         pass
 
-    def getValue(self, ima, icmp, ipt, ispt):
+    def getValue(self, ima, icmp, ipt, ispt=0):
         """Returns the value of the `icmp` component of the field on the `ima` cell,
         at the `ipt` point, at the `ispt` sub-point.
 
@@ -3760,7 +3760,7 @@ class SimpleFieldOnCellsReal(DataField):
             ima  (int): Index of cells.
             icmp (int): Index of component.
             ipt  (int): Index of point.
-            ispt (int): Index of sub-point.
+            ispt (int): Index of sub-point (default = 0).
 
         Returns:
             float: Value of field at *ima*, of *icmp*, at *ipt*, at *ispt*;
@@ -3779,7 +3779,7 @@ class SimpleFieldOnCellsReal(DataField):
             tuple[cells[list[int]], points[list[int]], subpoints[list[int]]]
         """
 
-    def hasValue(self, ima, icmp, ipt, ispt):
+    def hasValue(self, ima, icmp, ipt, ispt=0):
         """Returns True  if the value of the `icmp` component of the field on the `ima` cell,
         at the `ipt` point, at the `ispt` sub-point is affected.
 
@@ -3787,7 +3787,7 @@ class SimpleFieldOnCellsReal(DataField):
             ima  (int): Index of cells.
             icmp (int): Index of component.
             ipt  (int): Index of point.
-            ispt (int): Index of sub-point.
+            ispt (int): Index of sub-point (default = 0).
 
         Returns:
             bool: True  if the value is affected
@@ -3818,8 +3818,13 @@ class SimpleFieldOnCellsReal(DataField):
             SimpleFieldOnCellsReal: field with name physical quantity.
         """
 
-    def setValue(self, ima, icmp, ipt, ispt, val):
-        """Set the value of the `icmp` component of the field on the `ima` cell,
+    def setValue(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. setValue(self: libaster.SimpleFieldOnCellsReal, ima: int, icmp: int, ipt: int, ispt: int, val: float) -> None
+
+
+        Set the value of the `icmp` component of the field on the `ima` cell,
         at the `ipt` point, at the `ispt` sub-point.
 
         Args:
@@ -3827,6 +3832,19 @@ class SimpleFieldOnCellsReal(DataField):
             icmp (int): Index of component.
             ipt  (int): Index of point.
             ispt (int): Index of sub-point.
+            val (float) : value to set
+
+
+        2. setValue(self: libaster.SimpleFieldOnCellsReal, ima: int, icmp: int, ipt: int, val: float) -> None
+
+
+        Set the value of the `icmp` component of the field on the `ima` cell,
+        at the `ipt` point, at the `ispt=0` sub-point.
+
+        Args:
+            ima  (int): Index of cells.
+            icmp (int): Index of component.
+            ipt  (int): Index of point.
             val (float) : value to set
         """
 

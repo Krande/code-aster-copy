@@ -43,11 +43,19 @@ void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
                              VectorString, const VectorInt &, ASTERINTEGER, bool > ) )
         .def( "__getitem__",
               +[]( const SimpleFieldOnCellsReal &v, const VectorLong &i ) {
-                  return v.operator()( i[0], i[1], i[2], i[3] );
+                  if ( i.size() == 3 ) {
+                      return v( i[0], i[1], i[2] );
+                  }
+
+                  return v( i[0], i[1], i[2], i[3] );
               } )
         .def( "__setitem__",
               +[]( SimpleFieldOnCellsReal &v, const VectorLong &i, ASTERDOUBLE f ) {
-                  return v.operator()( i[0], i[1], i[2], i[3] ) = f;
+                  if ( i.size() == 3 ) {
+                      return v( i[0], i[1], i[2] ) = f;
+                  }
+
+                  return v( i[0], i[1], i[2], i[3] ) = f;
               } )
         .def( "getValue", &SimpleFieldOnCellsReal::getValue, py::return_value_policy::copy, R"(
 Returns the value of the `icmp` component of the field on the `ima` cell,
@@ -57,13 +65,13 @@ Args:
     ima  (int): Index of cells.
     icmp (int): Index of component.
     ipt  (int): Index of point.
-    ispt (int): Index of sub-point.
+    ispt (int): Index of sub-point (default = 0).
 
 Returns:
     float: Value of field at *ima*, of *icmp*, at *ipt*, at *ispt*;
              NaN if the position is not allocated.
         )",
-              py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ) )
+              py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ) = 0 )
         .def( "hasValue", &SimpleFieldOnCellsReal::hasValue, R"(
 Returns True  if the value of the `icmp` component of the field on the `ima` cell,
 at the `ipt` point, at the `ispt` sub-point is affected.
@@ -72,13 +80,17 @@ Args:
     ima  (int): Index of cells.
     icmp (int): Index of component.
     ipt  (int): Index of point.
-    ispt (int): Index of sub-point.
+    ispt (int): Index of sub-point (default = 0).
 
 Returns:
     bool: True  if the value is affected
         )",
-              py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ) )
-        .def( "setValue", &SimpleFieldOnCellsReal::setValue, R"(
+              py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ) = 0 )
+        .def( "setValue",
+              py::overload_cast< const ASTERINTEGER &, const ASTERINTEGER &, const ASTERINTEGER &,
+                                 const ASTERINTEGER &, const ASTERDOUBLE & >(
+                  &SimpleFieldOnCellsReal::setValue ),
+              R"(
 Set the value of the `icmp` component of the field on the `ima` cell,
 at the `ipt` point, at the `ispt` sub-point.
 
@@ -91,6 +103,22 @@ Args:
         )",
               py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ),
               py::arg( "val" ) )
+
+        .def( "setValue",
+              py::overload_cast< const ASTERINTEGER &, const ASTERINTEGER &, const ASTERINTEGER &,
+                                 const ASTERDOUBLE & >( &SimpleFieldOnCellsReal::setValue ),
+              R"(
+Set the value of the `icmp` component of the field on the `ima` cell,
+at the `ipt` point, at the `ispt=0` sub-point.
+
+Args:
+    ima  (int): Index of cells.
+    icmp (int): Index of component.
+    ipt  (int): Index of point.
+    val (float) : value to set
+        )",
+              py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "val" ) )
+
         .def( "toNumpy", &SimpleFieldOnCellsReal::toNumpy,
               R"(
 Returns two numpy arrays with shape ( number_of_cells_with_components, number_of_components )

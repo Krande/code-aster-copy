@@ -226,6 +226,16 @@ public:
 
   bool hasValue(const ASTERINTEGER &ino, const ASTERINTEGER &icmp) const {
 
+    if (ino < 0 || this->getNumberOfNodes() == 0 ||
+        ino >= this->getNumberOfNodes()) {
+      return false;
+    }
+
+    if (icmp < 0 || this->getNumberOfComponents() == 0 ||
+        icmp >= this->getNumberOfComponents()) {
+      return false;
+    }
+
 #ifdef ASTER_DEBUG_CXX
     _checkSize(ino, icmp);
 #endif
