@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe SimpleFieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,6 +34,7 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NumpyAccess.h"
 #include "Meshes/BaseMesh.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
@@ -251,8 +252,8 @@ class SimpleFieldOnNodes : public DataField {
     py::object toNumpy() {
         PyObject *resu_tuple = PyTuple_New( 2 );
 
-        npy_intp dims[2] = {_values->size() / this->getNumberOfComponents(),
-                            this->getNumberOfComponents()};
+        npy_intp dims[2] = { _values->size() / this->getNumberOfComponents(),
+                             this->getNumberOfComponents() };
 
         PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
                                                       _values->getDataPtr() );
@@ -369,7 +370,14 @@ class SimpleFieldOnNodes : public DataField {
 
         VectorLong nodes = _mesh->getNodes( groupsOfNodes, true, same_rank );
 
-        if ( nodes.empty() ) {
+        ASTERINTEGER nbNodesGl = nodes.size();
+#ifdef ASTER_HAVE_MPI
+        if ( _mesh->isParallel() ) {
+            nbNodesGl = AsterMPI::max( nbNodesGl );
+        }
+#endif
+
+        if ( nbNodesGl == 0 ) {
             raiseAsterError( "Restriction on list of nodes is empty" );
         }
 

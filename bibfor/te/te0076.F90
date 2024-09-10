@@ -52,6 +52,7 @@ subroutine te0076(option, nomte)
     real(kind=8) ::   time
     real(kind=8) :: rigi(MAX_BS, MAX_BS)
     real(kind=8) ::  valQPK(3, 3, MAX_QP)
+    character(len=8), parameter :: famiR = "RIGI"
 ! ----------------------------------------------------------------------
     call FECell%init()
     call FEQuadCell%initCell(FECell, "RIGI")
@@ -65,7 +66,7 @@ subroutine te0076(option, nomte)
 !
     valQPK = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
-        call nlcomp(phenom, imate, FECell%ndim, FEQuadCell%points(1:3, kp), time, &
+        call nlcomp(phenom, famiR, kp, imate, FECell%ndim, FEQuadCell%points(1:3, kp), time, &
                     0.d0, valQPK(1:3, 1:3, kp))
     end do
 !

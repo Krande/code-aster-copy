@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,6 +122,12 @@ with shared_tmpdir("zzzz504a_") as tmpdir:
 with shared_tmpdir("zzzz504a_") as tmpdir:
     medfile = osp.join(tmpdir, f"resu_new_{rank}.med")
     resu.printMedFile(medfile, local=True)
+
+# print single files
+depl = resu.getField("DEPL", 1.0, "INST")
+with shared_tmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir, f"depl.med")
+    depl.printMedFile(medfile, local=False)
 
 # if (parallel):
 # rank = MPI.ASTER_COMM_WORLD.Get_rank()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine getvtx(motfac, motcle, iocc, nbval, vect, &
     character(len=*), intent(in) :: motcle
     integer, intent(in), optional :: iocc
     integer, intent(in), optional :: nbval
-    character(len=*), intent(out), optional :: vect(*)
-    character(len=*), intent(out), optional :: scal
+    character(len=*), intent(inout), optional :: vect(*)
+    character(len=*), intent(inout), optional :: scal
     integer, intent(out), optional :: nbret
 #include "asterc/getvtx_wrap.h"
 #include "asterfort/assert.h"
@@ -62,6 +62,7 @@ subroutine getvtx(motfac, motcle, iocc, nbval, vect, &
         call getvtx_wrap(motfac, motcle, uioc, umax, vect, unbret)
     else if (present(scal)) then
         ASSERT(len(scal) .le. maxlen)
+        uvect(1) = scal
         call getvtx_wrap(motfac, motcle, uioc, umax, uvect, unbret)
         if (unbret .ne. 0) then
             scal = uvect(1) (1:len(scal))

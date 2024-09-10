@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -212,7 +212,9 @@ void DEFSSPPPPP( GETLTX, getltx, _IN char *motfac, _IN STRING_SIZE lfac, _IN cha
     *nbval = (ASTERINTEGER)nval;
     if ( nval < 0 )
         nval = (int)*mxval;
-    convert( nval, tup, isval );
+    if ( nval > 0 ) {
+        convert( nval, tup, isval );
+    }
     Py_DECREF( res ); /*  decrement sur le refcount du retour */
     FreeStr( mfc );
     FreeStr( mcs );
@@ -543,8 +545,9 @@ void DEFSSPPPP( GETVC8_WRAP, getvc8_wrap, _IN char *motfac, _IN STRING_SIZE lfac
     *nbval = (ASTERINTEGER)nval;
     if ( nval < 0 )
         nval = (int)*mxval;
-    convc8( nval, tup, val );
-
+    if ( nval > 0 ) {
+        convc8( nval, tup, val );
+    }
     Py_DECREF( res );
     FreeStr( mfc );
     FreeStr( mcs );
@@ -612,7 +615,6 @@ void DEFSSPPPP( GETVR8_WRAP, getvr8_wrap, _IN char *motfac, _IN STRING_SIZE lfac
     if ( nval > 0 ) {
         convr8( nval, tup, val );
     }
-
     Py_DECREF( res ); /*  decrement sur le refcount du retour */
     FreeStr( mfc );
     FreeStr( mcs );
@@ -680,8 +682,9 @@ void DEFSSPPPP( GETVIS_WRAP, getvis_wrap, _IN char *motfac, _IN STRING_SIZE lfac
     *nbval = (ASTERINTEGER)nval;
     if ( nval < 0 )
         nval = (int)*mxval;
-    convert( nval, tup, val );
-
+    if ( nval > 0 ) {
+        convert( nval, tup, val );
+    }
     Py_DECREF( res ); /*  decrement sur le refcount du retour */
     FreeStr( mfc );
     FreeStr( mcs );
@@ -833,7 +836,6 @@ void DEFSSPPSP( GETVID_WRAP, getvid_wrap, _IN char *motfac, _IN STRING_SIZE lfac
     if ( nval > 0 ) {
         convertxt( nval, tup, txval, ltx );
     }
-
     Py_DECREF( res ); /*  decrement sur le refcount du retour */
     FreeStr( mfc );
     FreeStr( mcs );

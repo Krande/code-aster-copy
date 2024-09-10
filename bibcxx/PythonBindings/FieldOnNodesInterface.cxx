@@ -157,7 +157,7 @@ Returns:
             Returns:
                 int: number of element in the field
             )" )
-        .def( "transform", &FieldOnNodesReal::transform< ASTERDOUBLE >, R"(
+        .def( "transform", &FieldOnNodesReal::transform, R"(
             Apply a function to each value of the object.
 
             Arguments:
@@ -365,7 +365,7 @@ Returns:
             Returns:
                 int: number of components
             )" )
-        .def( "transform", &FieldOnNodesComplex::transform< ASTERCOMPLEX >, R"(
+        .def( "transform", &FieldOnNodesComplex::transform, R"(
             Apply a function to each value of the object.
 
             Arguments:

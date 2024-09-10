@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine getvr8(motfac, motcle, iocc, nbval, vect, &
     character(len=*), intent(in) :: motcle
     integer, intent(in), optional :: iocc
     integer, intent(in), optional :: nbval
-    real(kind=8), intent(out), optional :: vect(*)
-    real(kind=8), intent(out), optional :: scal
+    real(kind=8), intent(inout), optional :: vect(*)
+    real(kind=8), intent(inout), optional :: scal
     integer, intent(out), optional :: nbret
 #include "asterc/getvr8_wrap.h"
 #include "asterfort/assert.h"
@@ -55,6 +55,7 @@ subroutine getvr8(motfac, motcle, iocc, nbval, vect, &
     if (present(vect)) then
         call getvr8_wrap(motfac, motcle, uioc, umax, vect, unbret)
     else if (present(scal)) then
+        uvect(1) = scal
         call getvr8_wrap(motfac, motcle, uioc, umax, uvect, unbret)
         if (unbret .ne. 0) then
             scal = uvect(1)

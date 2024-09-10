@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -221,6 +221,7 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
                 end if
             else
                 fieldName = dsNameZ
+                newcom = 0
             end if
 !
 !         * IMPRESSION DU CHAMP (CHAM_NO OU CHAM_ELEM)
@@ -318,7 +319,7 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
 22          continue
 !
 21          continue
-            if (lfichUniq) then
+            if (lfichUniq .and. newcom .ne. 0) then
                 call asmpi_barrier_wrap(world, ierror)
                 call asmpi_comm('SET', world)
                 if (newcom .ne. 0) then

@@ -702,7 +702,7 @@ class BaseMesh(DataStructure):
 
         Arguments:
             filename (str): Name of the file
-            local (bool=True) : print local values only (relevent for BaseMesh only)
+            local (bool=True) : print local values only (relevant for BaseMesh only)
 
         Returns:
             Bool: True if of
