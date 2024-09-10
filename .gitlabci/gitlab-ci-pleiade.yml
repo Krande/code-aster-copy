@@ -123,7 +123,15 @@ verification_test:
   stage: test
   tags:
     - hulk
-  needs: ["prepare", "compile", "minimal_test", "check_source", "doc_html"]
+  needs:
+    - job: prepare
+    - job: compile
+    - job: minimal_test
+      optional: true
+    - job: check_source
+      optional: true
+    - job: doc_html
+      optional: true
   script:
     - .gitlabci/test.sh
         -L verification
