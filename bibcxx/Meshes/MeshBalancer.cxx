@@ -507,13 +507,15 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
         if ( !parallelMesh ) {
             if ( iProc == rank ) {
                 for ( const auto &tmp : newLocalNodesList ) {
-                    if ( tmp >= _range[0] && tmp < _range[1] )
+                    if ( tmp >= _range[0] && tmp < _range[1] ) {
                         nodeOwner[tmp - _range[0]] = rank;
+                    }
                 }
             } else {
                 for ( const auto &tmp : nodesLists ) {
-                    if ( tmp >= _range[0] && tmp < _range[1] )
+                    if ( tmp >= _range[0] && tmp < _range[1] ) {
                         nodeOwner[tmp - _range[0]] = iProc;
+                    }
                 }
             }
         } else {

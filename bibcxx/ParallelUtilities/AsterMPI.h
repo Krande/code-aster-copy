@@ -122,6 +122,12 @@ public:
   static T all_reduce(const T in_value, MPI_Op op,
                       aster_comm_t *_commCurrent = aster_get_current_comm());
 
+  /// AllReduce a vector (MPI_AllReduce).
+  template <typename T>
+  static void all_reduce(const std::vector<T> in_value,
+                         std::vector<T> &out_value, MPI_Op op,
+                         aster_comm_t *_commCurrent = aster_get_current_comm());
+
   /// AllReduce values for given OP, one value from each process
   /// (MPI_AllReduce).
   template <typename T>
@@ -476,6 +482,18 @@ T AsterMPI::all_reduce(const T in_value, MPI_Op op,
   AsterMPI::all_reduce(in_value, out_value, op, _commCurrent);
 
   return out_value;
+}
+//---------------------------------------------------------------------------
+template <typename T>
+void AsterMPI::all_reduce(const std::vector<T> in_value,
+                          std::vector<T> &out_value, MPI_Op op,
+                          aster_comm_t *_commCurrent) {
+  if (in_value.size() != out_value.size()) {
+    throw std::runtime_error("Inconsistent sizes");
+  }
+  aster_mpi_allreduce(const_cast<T *>(in_value.data()),
+                      static_cast<T *>(out_value.data()), in_value.size(),
+                      mpi_type<T>(), op, _commCurrent);
 }
 //---------------------------------------------------------------------------
 template <typename T>

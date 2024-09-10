@@ -31,6 +31,16 @@ from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndF
 ret = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True)
 pMesh = ret[0]
 
+# Test node gathering while partitioning mesh
+ret2 = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True, nodeGrpToGather=[["ToGather"]])
+pMesh2 = ret2[0]
+nodeList = pMesh2.getNodes("ToGather")
+nodeOwner = pMesh2.getNodesOwner()
+masterNodeOwner = nodeOwner[nodeList[0]]
+# Test if there is only one proc number for all node group
+for nodeId in nodeList:
+    test.assertEqual(nodeOwner[nodeId], masterNodeOwner)
+
 model = AFFE_MODELE(
     MAILLAGE=pMesh, AFFE=_F(MODELISATION="D_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI")
 )
@@ -54,6 +64,5 @@ test.assertEqual(pMesh.getNumberOfCells(), nbCells[rank])
 test.assertTrue(pMesh.isParallel())
 
 test.printSummary()
-
 
 FIN()

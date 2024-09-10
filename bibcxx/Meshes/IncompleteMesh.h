@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe IncompleteMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -81,6 +81,8 @@ class IncompleteMesh : public Mesh {
     std::vector< VectorString > getNodeFamilyGroups() const { return _nodeFamGroups; };
 
     VectorLong getNodeFamily() const { return _nodeFamily; };
+
+    VectorLong getNodesFromGroup( const std::string &grpName ) const;
 
     const VectorLong &getNodeRange() const { return _nodeRange; };
 
