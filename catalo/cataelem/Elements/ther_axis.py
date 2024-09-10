@@ -45,7 +45,7 @@ class THAXTR3(Element):
         ElrefeLoc(
             MT.TR3,
             gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )
     calculs = (
@@ -441,7 +441,7 @@ class THAXTR6(THAXTR3):
         ElrefeLoc(
             MT.TR6,
             gauss=("RIGI=FPG6", "MASS=FPG6", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )
 
@@ -455,7 +455,7 @@ class THAXQU4(THAXTR3):
         ElrefeLoc(
             MT.QU4,
             gauss=("RIGI=FPG4", "MASS=FPG4", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )
 
@@ -469,7 +469,7 @@ class THAXQU8(THAXTR3):
         ElrefeLoc(
             MT.QU8,
             gauss=("RIGI=FPG9", "MASS=FPG9", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )
 
@@ -483,6 +483,6 @@ class THAXQU9(THAXTR3):
         ElrefeLoc(
             MT.QU9,
             gauss=("RIGI=FPG9", "MASS=FPG9", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )

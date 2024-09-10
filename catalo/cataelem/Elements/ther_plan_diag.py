@@ -45,7 +45,7 @@ class THPLQL4(Element):
         ElrefeLoc(
             MT.QU4,
             gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )
     calculs = (
@@ -441,7 +441,7 @@ class THPLTL3(THPLQL4):
         ElrefeLoc(
             MT.TR3,
             gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))

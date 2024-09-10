@@ -40,12 +40,14 @@ module HHO_measure_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: hhoMeasureCell, hhoMeasureFace, hhoDiameterCell, hhoDiameterFace
-    public :: hhoLengthBoundingBoxCell, hhoLengthBoundingBoxFace
-    public :: hho_vol_tetra, hho_surface_tri
-    private :: hho_vol_hexa, hho_surface_quad, hho_length_edge
-    private :: hho_vol_prism, hho_vol_pyram
-    private :: hhoDiameter, prod_vec
+    public   :: hhoMeasureCell, hhoMeasureFace, hhoDiameterCell, hhoDiameterFace
+    public   :: hhoLengthBoundingBoxCell, hhoLengthBoundingBoxFace
+    public   :: hhoCenterBoundingBoxCell, hhoCenterBoundingBoxFace
+    public   :: hho_vol_tetra, hho_surface_tri
+    private  :: hho_vol_hexa, hho_surface_quad, hho_length_edge
+    private  :: hho_vol_prism, hho_vol_pyram
+    private  :: hhoDiameter, prod_vec
+    private  :: hhoBoundingBoxCell, hhoBoundingBoxFace
 !
 contains
 !
@@ -396,7 +398,7 @@ contains
         do inode = 1, nbnodes
             do jnode = inode+1, nbnodes
                 vector(1:3) = coorno(1:3, inode)-coorno(1:3, jnode)
-                diam = max(norm2(vector), diam); 
+                diam = max(norm2(vector), diam)
             end do
         end do
 !
@@ -472,41 +474,103 @@ contains
 !
 !===================================================================================================
 !
-    function hhoLengthBoundingBoxCell(hhoCell, axes) result(length)
+    function hhoBoundingBoxCell(hhoCell, axes) result(box)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in) :: hhoCell
-        real(kind=8), intent(in) :: axes(3, 3)
-        real(kind=8), dimension(3) :: length
+        type(HHO_Cell), intent(in)    :: hhoCell
+        real(kind=8), intent(in)      :: axes(3, 3)
+        real(kind=8), dimension(3, 2) :: box
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Cell              :: cell HHO
 !  In axes                  :: axes to use
-!  Out length               :: length of the boundix box of the cell
+!  Out box                  :: bounding box of the cell
 ! --------------------------------------------------------------------------------------------------
-        real(kind=8), dimension(3) :: xmin, xmax, pt
+        real(kind=8), dimension(3) :: pt
         real(kind=8) :: rotmat(3, 3)
-        integer :: inode, idim, ndim
+        integer :: inode, idim
 ! --------------------------------------------------------------------------------------------------
-        length = 1.d0
-        ndim = hhoCell%ndim
 !
-        xmin = r8maem()
-        xmax = -r8maem()
+        box(:, 1) = r8maem()
+        box(:, 2) = -r8maem()
         pt = 0.d0
         rotmat = transpose(axes)
 !
         do inode = 1, hhoCell%nbnodes
             pt = matmul(rotmat, hhoCell%coorno(1:3, inode))
-            do idim = 1, ndim
-                xmin(idim) = min(xmin(idim), pt(idim))
-                xmax(idim) = max(xmax(idim), pt(idim))
+            do idim = 1, 3
+                box(idim, 1) = min(box(idim, 1), pt(idim))
+                box(idim, 2) = max(box(idim, 2), pt(idim))
             end do
         end do
 !
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoBoundingBoxFace(hhoFace, axes) result(box)
+!
+        implicit none
+!
+        type(HHO_Face), intent(in)    :: hhoFace
+        real(kind=8), intent(in)      :: axes(3, 2)
+        real(kind=8), dimension(2, 2)  :: box
+!
+! --------------------------------------------------------------------------------------------------
+!  In HHO_Face              :: face HHO
+!  In axes                  :: axes to use
+!  Out box                  :: bounding box of the face
+! --------------------------------------------------------------------------------------------------
+        real(kind=8) :: pt(2)
+        real(kind=8) :: rotmat(2, 3)
+        integer :: inode, idim
+! --------------------------------------------------------------------------------------------------
+!
+        rotmat = transpose(axes)
+        box(:, 1) = r8maem()
+        box(:, 2) = -r8maem()
+        pt = 0.d0
+!
+        do inode = 1, hhoFace%nbnodes
+            pt = matmul(rotmat, hhoFace%coorno(1:3, inode))
+            do idim = 1, 2
+                box(idim, 1) = min(box(idim, 1), pt(idim))
+                box(idim, 2) = max(box(idim, 2), pt(idim))
+            end do
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoLengthBoundingBoxCell(hhoCell, axes) result(length)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)    :: hhoCell
+        real(kind=8), intent(in)      :: axes(3, 3)
+        real(kind=8), dimension(3)    :: length
+!
+! --------------------------------------------------------------------------------------------------
+!  In HHO_Cell              :: cell HHO
+!  In axes                  :: axes to use
+!  Out length               :: length of the bounding box of the cell
+! --------------------------------------------------------------------------------------------------
+        real(kind=8), dimension(3, 2) :: box
+        integer :: idim, ndim
+! --------------------------------------------------------------------------------------------------
+        length = 1.d0
+        ndim = hhoCell%ndim
+!
+        box = hhoBoundingBoxCell(hhoCell, axes)
+!
         do idim = 1, ndim
-            length(idim) = abs(xmax(idim)-xmin(idim))
+            length(idim) = abs(box(idim, 2)-box(idim, 1))
         end do
 !
     end function
@@ -519,18 +583,17 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in) :: hhoFace
-        real(kind=8), intent(in) :: axes(3, 2)
-        real(kind=8), dimension(2) :: length
+        type(HHO_Face), intent(in)    :: hhoFace
+        real(kind=8), intent(in)      :: axes(3, 2)
+        real(kind=8), dimension(2)    :: length
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face              :: face HHO
 !  In axes                  :: axes to use
-!  Out length               :: length of the boundix box of the face
+!  Out length               :: length of the bounding box of the face
 ! --------------------------------------------------------------------------------------------------
-        real(kind=8) :: xmin(2), xmax(2), pt(2)
-        real(kind=8) :: rotmat(2, 3)
-        integer :: inode, idim, ndim
+        real(kind=8) :: box(2, 2)
+        integer :: idim, ndim
 ! --------------------------------------------------------------------------------------------------
         length = 1.d0
         ndim = hhoFace%ndim
@@ -538,22 +601,80 @@ contains
         if (ndim == 1) then
             length(1) = hhoDiameterFace(hhoFace)
         else
-            rotmat = transpose(axes)
-            xmin = r8maem()
-            xmax = -r8maem()
-            pt = 0.d0
-!
-            do inode = 1, hhoFace%nbnodes
-                pt = matmul(rotmat, hhoFace%coorno(1:3, inode))
-                do idim = 1, ndim
-                    xmin(idim) = min(xmin(idim), pt(idim))
-                    xmax(idim) = max(xmax(idim), pt(idim))
-                end do
-            end do
+            box = hhoBoundingBoxFace(hhoFace, axes)
 !
             do idim = 1, ndim
-                length(idim) = abs(xmax(idim)-xmin(idim))
+                length(idim) = abs(box(idim, 2)-box(idim, 1))
             end do
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoCenterBoundingBoxCell(hhoCell, axes) result(center)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)    :: hhoCell
+        real(kind=8), intent(in)      :: axes(3, 3)
+        real(kind=8), dimension(3)    :: center
+!
+! --------------------------------------------------------------------------------------------------
+!  In HHO_Cell              :: cell HHO
+!  In axes                  :: axes to use
+!  Out center               :: center of the bounding box of the cell
+! --------------------------------------------------------------------------------------------------
+        real(kind=8), dimension(3, 2) :: box, c(3)
+        integer :: idim, ndim
+! --------------------------------------------------------------------------------------------------
+        c = 0.d0
+        ndim = hhoCell%ndim
+!
+        box = hhoBoundingBoxCell(hhoCell, axes)
+!
+        do idim = 1, ndim
+            c(idim) = (box(idim, 1)+box(idim, 2))/2.d0
+        end do
+
+        center = matmul(axes, c)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoCenterBoundingBoxFace(hhoFace, axes) result(center)
+!
+        implicit none
+!
+        type(HHO_Face), intent(in)    :: hhoFace
+        real(kind=8), intent(in)      :: axes(3, 2)
+        real(kind=8), dimension(3)    :: center
+!
+! --------------------------------------------------------------------------------------------------
+!  In HHO_Face              :: face HHO
+!  In axes                  :: axes to use
+!  Out center               :: center of the bounding box of the face
+! --------------------------------------------------------------------------------------------------
+        real(kind=8) :: box(2, 2), c(2)
+        integer :: idim, ndim
+! --------------------------------------------------------------------------------------------------
+        ndim = hhoFace%ndim
+!
+        if (ndim == 1) then
+            center = hhoFace%barycenter
+        else
+            box = hhoBoundingBoxFace(hhoFace, axes)
+!
+            do idim = 1, ndim
+                c(idim) = (box(idim, 2)+box(idim, 1))/2.d0
+            end do
+
+            center = matmul(axes, c)
         end if
 !
     end function

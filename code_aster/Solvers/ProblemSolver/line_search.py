@@ -131,7 +131,7 @@ class LineSearch(SolverFeature):
                     iteropt = iter
                     # converged ?
                     if abs(f) < fcvg:
-                        logger.info(
+                        logger.debug(
                             "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iter, rho, f)
                         )
                         return rhoopt * solution
@@ -170,7 +170,7 @@ class LineSearch(SolverFeature):
                                 else:
                                     rho = -p0 / p1
                             else:
-                                logger.info(
+                                logger.debug(
                                     "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f"
                                     % (iteropt, rhoopt, fopt)
                                 )
@@ -178,10 +178,9 @@ class LineSearch(SolverFeature):
                     # zbproj
                     if rho < rhoneg:
                         if bpos:
-                            print("ici ici")
                             rho = 0.5 * (rhoneg + rhopos)
                         else:
-                            logger.info(
+                            logger.debug(
                                 "LinesearchB: iter = %d, rho = %0.6f and f(rho) = %0.6f"
                                 % (iteropt, rhoopt, fopt)
                             )
@@ -192,7 +191,7 @@ class LineSearch(SolverFeature):
                     rho = sens * _proj(sens * rho)
                 rhom = rhotmp
                 fm = f
-            logger.info(
+            logger.debug(
                 "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iteropt, rhoopt, fopt)
             )
             return rhoopt * solution

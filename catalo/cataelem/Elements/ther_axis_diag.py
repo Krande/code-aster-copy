@@ -45,7 +45,7 @@ class THAXTL3(Element):
         ElrefeLoc(
             MT.TR3,
             gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )
     calculs = (
@@ -441,6 +441,6 @@ class THAXQL4(THAXTL3):
         ElrefeLoc(
             MT.QU4,
             gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )

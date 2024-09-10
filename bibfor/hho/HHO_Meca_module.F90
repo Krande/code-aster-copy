@@ -577,8 +577,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !   HHO - thermics
 !
-!   Compute the local mass contribution for thermics
-!   RHS = (rho_cp * uT, vT)_T
+!   Compute the local mass contribution for mechanics
+!   RHS = (rho * uT, vT)_T
 !   In hhoCell      : the current HHO Cell
 !   In hhoData       : information on HHO methods
 !   In hhoQuadCellRigi : quadrature rules from the rigidity family
