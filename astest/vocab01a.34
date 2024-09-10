@@ -1200,6 +1200,8 @@ CRIT_STAB
 CRIT_TEMP_RELA
 CROISSANT
 CROSSLAND
+CSSM
+CSSM_FO
 CSTE_CONNORS
 CSTE_TPS
 CTM1
@@ -1274,7 +1276,6 @@ C_SY
 C_S_VP
 C_TZTZ
 C_VOLU
-CamClayCSS
 Cohesion
 CritStateSlope
 D
@@ -2968,7 +2969,6 @@ G_R
 G_TN
 G_X1
 G_X2
-GammaRef
 GonfElas
 GonfElas_FO
 H
@@ -3047,6 +3047,8 @@ HZ
 HZ1
 HZ2
 HardeningCoef
+HypDistortion
+HypExponent
 I
 IDEAS
 IDEAS_DS58
@@ -3231,10 +3233,10 @@ IncoPlastIndex
 IncompIndex
 InitConsPress
 InitCritPress
-InitPreconsPress
-InitTensionPress
 InitVoidsRatio
 IsoCompElasLim
+IsoHardIndex
+IsoHardRatio
 IsoTensElasLim
 Iwan
 Iwan_FO
@@ -3309,10 +3311,6 @@ KFIN_DY
 KFIN_DZ
 KGEL
 KGTEST
-KHIndex
-KHModulus
-KH_CSSM
-KH_CSSM_FO
 KI
 KIC
 KICHENIN_NL
@@ -4016,6 +4014,7 @@ M_ULT
 M_ZIRC
 MetaAcierEPIL_PT
 MetaAcierEPIL_PT_FO
+MinCritPress
 MohrCoulombAS
 MohrCoulombAS_FO
 N
@@ -4895,7 +4894,6 @@ P_ULT
 P_ULTM
 Pa
 PerzynaExpo
-PlastCompIndex
 PlastStrainIndex
 PlastStrainPara1
 PlastStrainPara2
@@ -5565,6 +5563,7 @@ S_LT
 S_RUP
 S_VP_MELANGE
 ShearModulus
+ShearModulusRatio
 SuccionIndex
 SuccionModulus
 SwellingIndex
@@ -6414,8 +6413,6 @@ Y_CENTRE2
 Y_MAXI
 Y_MINI
 YieldSuccion
-YieldSurfCapCoef
-YieldSurfLinCoef
 YieldTensSlope
 YoungModulus
 Z
@@ -6450,5 +6447,4 @@ metaFDF_1
 metaFDF_2
 metaFDF_3
 mm
-n
 reuse

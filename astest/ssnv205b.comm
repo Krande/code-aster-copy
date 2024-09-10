@@ -23,8 +23,8 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
-GammaRef = 2.0e-4
-n = 0.78
+HypDistortion = 2.0e-4
+HypExponent = 0.78
 P0 = -5.0e4
 N = 0.4
 PREF = -1.0e6
@@ -37,12 +37,17 @@ POISSON = (3.0 * K - 2.0 * G) / (6.0 * K + 2.0 * G)
 
 YOUNGf = DEFI_CONSTANTE(VALE=YOUNG)
 POISSONf = DEFI_CONSTANTE(VALE=POISSON)
-GammaReff = DEFI_CONSTANTE(VALE=GammaRef)
-nf = DEFI_CONSTANTE(VALE=n)
+HypDistortionf = DEFI_CONSTANTE(VALE=HypDistortion)
+HypExponentf = DEFI_CONSTANTE(VALE=HypExponent)
 
 MATE = DEFI_MATERIAU(
     ELAS=_F(E=YOUNG, NU=POISSON),
-    Iwan_FO=_F(YoungModulus=YOUNGf, PoissonRatio=POISSONf, GammaRef=GammaReff, n=nf),
+    Iwan_FO=_F(
+        YoungModulus=YOUNGf,
+        PoissonRatio=POISSONf,
+        HypDistortion=HypDistortionf,
+        HypExponent=HypExponentf,
+    ),
 )
 
 TEMPS1 = DEFI_LIST_REEL(

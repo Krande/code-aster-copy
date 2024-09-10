@@ -38,20 +38,31 @@ G = 238.2e6 * (P0 / PREF) ** N
 YOUNG = 9.0 * K * G / (3.0 * K + G)
 POISSON = (3.0 * K - 2.0 * G) / (6.0 * K + 2.0 * G)
 
-GammaRef = 2.0e-4
-n = 0.78
+HypDistortion = 2.0e-4
+HypExponent = 0.78
 
 try:
     DEFI_MATERIAU(
         ELAS=_F(K=K, MU=G * 1.01),
-        Iwan=_F(YoungModulus=YOUNG, PoissonRatio=POISSON, GammaRef=GammaRef, n=n),
+        Iwan=_F(
+            YoungModulus=YOUNG,
+            PoissonRatio=POISSON,
+            HypDistortion=HypDistortion,
+            HypExponent=HypExponent,
+        ),
     )
     assert False, "invalid parameters must raise an exception!"
 except CA.AsterError as exc:
     assert exc.id_message == "MATERIAL1_13", f"unexpected exception {exc}"
 
 MATE = DEFI_MATERIAU(
-    ELAS=_F(K=K, MU=G), Iwan=_F(YoungModulus=YOUNG, PoissonRatio=POISSON, GammaRef=GammaRef, n=n)
+    ELAS=_F(K=K, MU=G),
+    Iwan=_F(
+        YoungModulus=YOUNG,
+        PoissonRatio=POISSON,
+        HypDistortion=HypDistortion,
+        HypExponent=HypExponent,
+    ),
 )
 
 

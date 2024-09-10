@@ -222,8 +222,8 @@ def C_RELATION(command):
             "MetaAcierEPIL_PT",
             "MohrCoulombAS",
             "GonfElas",
-            "KH_CSSM",
             "NLH_CSRM",
             "MCC",
             "Barcelone",
+            "CSSM",
         )
