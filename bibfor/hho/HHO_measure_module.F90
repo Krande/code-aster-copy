@@ -398,7 +398,7 @@ contains
         do inode = 1, nbnodes
             do jnode = inode+1, nbnodes
                 vector(1:3) = coorno(1:3, inode)-coorno(1:3, jnode)
-                diam = max(norm2(vector), diam);
+                diam = max(norm2(vector), diam)
             end do
         end do
 !
