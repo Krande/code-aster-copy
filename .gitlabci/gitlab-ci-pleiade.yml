@@ -19,6 +19,7 @@ workflow:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"
       variables:
         IMAGE_URL: nexus.retd.edf.fr:5075/codeaster-prerequisites:${PREREQ_VERSION}-debian-11
+        REFREV: main
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
       variables:
         BUILD: debug
