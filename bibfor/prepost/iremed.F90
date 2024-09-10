@@ -319,7 +319,7 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
 22          continue
 !
 21          continue
-            if (lfichUniq) then
+            if (lfichUniq .and. newcom .ne. 0) then
                 call asmpi_barrier_wrap(world, ierror)
                 call asmpi_comm('SET', world)
                 if (newcom .ne. 0) then
