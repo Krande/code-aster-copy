@@ -148,7 +148,7 @@ subroutine te0041(option, nomte)
 !   Nombre de DDL par noeuds
     nddl = nno*nc
 !
-    if ((infodi .eq. 1) .and. (option .eq. 'RIGI_MECA_HYST')) then
+    if (infodi .eq. 1 .and. option .eq. 'RIGI_MECA_HYST') then
         call jevech('PRIGIEL', 'L', jdr)
         call jevech('PMATUUC', 'E', jdm)
         call infdis('ETAK', ibid, eta, k8bid)
@@ -166,9 +166,9 @@ subroutine te0041(option, nomte)
 !
 !   Matrices symétriques
     if (infodi .eq. 1) then
-        matv1(:) = 0.0
-        mata1(:) = 0.0
-        mata2(:) = 0.0
+        matv1 = 0.0
+        mata1 = 0.0
+        mata2 = 0.0
 !
         if ((option .eq. 'RIGI_MECA') .or. &
             (option .eq. 'RIGI_MECA_TANG') .or. &
@@ -215,27 +215,29 @@ subroutine te0041(option, nomte)
                 nomres(1) = 'RIGI_NOR'
                 nomres(2) = 'AMOR_NOR'
                 nomres(3) = 'AMOR_TAN'
-                valres(:) = 0.0
+                valres = 0.0
                 call utpsgl(nno, nc, pgl, zr(jdr), matv1)
                 call rcvala(zi(jma), ' ', 'DIS_CONTACT', 0, ' ', &
                             [0.0d0], 3, nomres, valres, icodre, 0)
-                if ((icodre(1) .eq. 0) .and. (abs(valres(1)) > r8prem())) then
-                    if (icodre(2) .eq. 0) then
-                        mata1(1) = matv1(1)*valres(2)/valres(1)
+                if (icodre(1) .eq. 0) then
+                    if (abs(valres(1)) > r8prem()) then
+                        if (icodre(2) .eq. 0) then
+                            mata1(1) = matv1(1)*valres(2)/valres(1)
+                        end if
+                        if (icodre(3) .eq. 0) then
+                            mata1(3) = matv1(1)*valres(3)/valres(1)
+                        end if
+                        mata1(6) = mata1(3)
                     end if
-                    if (icodre(3) .eq. 0) then
-                        mata1(3) = matv1(1)*valres(3)/valres(1)
-                    end if
-                    mata1(6) = mata1(3)
                 end if
-                if ((nno .eq. 2) .and. (nc .eq. 3)) then
+                if (nno .eq. 2 .and. nc .eq. 3) then
                     mata1(7) = -mata1(1)
                     mata1(10) = mata1(1)
                     mata1(15) = mata1(3)
                     mata1(21) = mata1(3)
                     mata1(12) = -mata1(3)
                     mata1(18) = -mata1(3)
-                else if ((nno .eq. 2) .and. (nc .eq. 6)) then
+                else if (nno .eq. 2 .and. nc .eq. 6) then
                     mata1(22) = -mata1(1)
                     mata1(28) = mata1(1)
                     mata1(36) = mata1(3)
@@ -311,10 +313,10 @@ subroutine te0041(option, nomte)
 
 !   Matrices non-symétriques
     else
-        matv1(:) = 0.0
-        mata3(:) = 0.0
-        mata4(:) = 0.0
-        tempo(:) = 0.0
+        matv1 = 0.0
+        mata3 = 0.0
+        mata4 = 0.0
+        tempo = 0.0
 !
         if (option .eq. 'RIGI_MECA') then
 !           Discret de type raideur
@@ -356,19 +358,21 @@ subroutine te0041(option, nomte)
                 nomres(1) = 'RIGI_NOR'
                 nomres(2) = 'AMOR_NOR'
                 nomres(3) = 'AMOR_TAN'
-                valres(:) = 0.0
+                valres = 0.0
                 call utpsgl(nno, nc, pgl, zr(jdr), matv1)
                 call rcvala(zi(jma), ' ', 'DIS_CONTACT', 0, ' ', &
                             [0.0d0], 3, nomres, valres, icodre, 0)
-                if ((icodre(1) .eq. 0) .and. (abs(valres(1)) > r8prem())) then
-                    if (icodre(2) .eq. 0) then
-                        mata3(1) = matv1(1)*valres(2)/valres(1)
-                    end if
-                    if (icodre(3) .eq. 0) then
-                        mata3(3) = matv1(1)*valres(3)/valres(1)
+                if (icodre(1) .eq. 0) then
+                    if (abs(valres(1)) > r8prem()) then
+                        if (icodre(2) .eq. 0) then
+                            mata3(1) = matv1(1)*valres(2)/valres(1)
+                        end if
+                        if (icodre(3) .eq. 0) then
+                            mata3(3) = matv1(1)*valres(3)/valres(1)
+                        end if
                     end if
                 end if
-                if ((nno .eq. 2) .and. (nc .eq. 3)) then
+                if (nno .eq. 2 .and. nc .eq. 3) then
                     mata3(19) = -mata3(1)
                     mata3(22) = mata3(1)
                     mata3(29) = mata3(3)
@@ -381,7 +385,7 @@ subroutine te0041(option, nomte)
                     mata3(11) = mata3(26)
                     mata3(18) = mata3(33)
                     mata3(3) = 0.d0
-                else if ((nno .eq. 2) .and. (nc .eq. 6)) then
+                else if (nno .eq. 2 .and. nc .eq. 6) then
                     mata3(73) = -mata3(1)
                     mata3(79) = mata3(1)
                     mata3(92) = mata3(3)
