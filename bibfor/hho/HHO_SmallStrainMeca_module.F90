@@ -124,8 +124,8 @@ contains
 !   In multcomp     : ?
 !   Out lhs         : local contribution (lhs)
 !   Out rhs         : local contribution (rhs)
-!   In sigp         : stress at T+  (XX, YY, ZZ, XY, XZ, YZ)
-!   In vip          : internal variables at T+
+!   Out sig         : stress at T+  (XX, YY, ZZ, XY, XZ, YZ)
+!   Out vip         : internal variables at T+
 !   Out codret      : info on integration of the LDC
 ! --------------------------------------------------------------------------------------------------
 !
