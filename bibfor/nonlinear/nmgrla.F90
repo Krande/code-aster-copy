@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,11 +108,11 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    aster_logical :: lVect, lMatr, lSigm, lMatrPred, lPred
+    aster_logical :: lVect, lMatr, lSigm, lMatrPred, lMFront, lPred
     integer :: kpg, ipoids, ivf, idfde
     integer :: cod(MAX_QP)
     real(kind=8) :: dsidep(6, 6), coorpg(3), BGSEval(3, MAX_BS)
-    real(kind=8) :: fPrev(3, 3), fCurr(3, 3), gPrev(3, 3), gCurr(3, 3)
+    real(kind=8) :: fPrev(3, 3), fCurr(3, 3), fIncr(3, 3), gPrev(3, 3), gCurr(3, 3)
     real(kind=8) :: epsgPrev(6), epsgIncr(6), epsgCurr(6)
     real(kind=8) :: detfPrev, detfCurr
     real(kind=8) :: dispCurr(ndim*nno)
@@ -128,6 +128,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
     lMatr = L_MATR(option)
     lPred = L_PRED(option)
     lMatrPred = L_MATR_PRED(option)
+    lMFront = carcri(EXTE_TYPE) == 1 .or. carcri(EXTE_TYPE) == 2
     dispCurr = 0.d0
 !
 ! - Initialisation of behaviour datastructure
@@ -170,15 +171,30 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 
 ! ----- Compute behaviour
         sigmPost = 0
-        epsgIncr = epsgCurr-epsgPrev
+! ----- Check if the behavior law is MFRONT
+        if (lMFront) then
+! --------- Compute the increment of f for MFRONT
+            fIncr = fCurr-fPrev
+            call nmcomp(BEHinteg, &
+                        FEQuad%fami, kpg, 1, ndim, typmod, &
+                        imate, compor, carcri, instam, instap, &
+                        9, fPrev, fIncr, 6, sigmPrep, &
+                        vim(1, kpg), option, angmas, &
+                        sigmPost, vip(1, kpg), 36, dsidep, &
+                        cod(kpg), mult_comp)
+        else
+! --------- Original behavior
+            epsgIncr = epsgCurr-epsgPrev
 
-        call nmcomp(BEHinteg, &
-                    FEQuad%fami, kpg, 1, ndim, typmod, &
-                    imate, compor, carcri, instam, instap, &
-                    6, epsgPrev, epsgIncr, 6, sigmPrep, &
-                    vim(1, kpg), option, angmas, &
-                    sigmPost, vip(1, kpg), 36, dsidep, &
-                    cod(kpg), mult_comp)
+            call nmcomp(BEHinteg, &
+                        FEQuad%fami, kpg, 1, ndim, typmod, &
+                        imate, compor, carcri, instam, instap, &
+                        6, epsgPrev, epsgIncr, 6, sigmPrep, &
+                        vim(1, kpg), option, angmas, &
+                        sigmPost, vip(1, kpg), 36, dsidep, &
+                        cod(kpg), mult_comp)
+        end if
+
         if (cod(kpg) .eq. 1) goto 999
 !        write (6,*) 'option = ',option
 !        write (6,*) 'epsm   = ',epsgPrev
@@ -199,6 +215,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
             call lcdetf(ndim, fCurr, detfCurr)
             call pk2sig(ndim, fCurr, detfCurr, sigmPost, sigmCurr(1, kpg), 1)
         end if
+        !ASSERT(.false.)
     end do
 !
 999 continue

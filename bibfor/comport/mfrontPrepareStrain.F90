@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
+subroutine mfrontPrepareStrain(l_greenlag, neps, epsm, deps, &
                                stran, dstran)
 !
     implicit none
@@ -27,7 +27,7 @@ subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-    aster_logical, intent(in) :: l_greenlag, l_pred
+    aster_logical, intent(in) :: l_greenlag
     integer, intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps), deps(neps)
     real(kind=8), intent(out) :: stran(neps), dstran(neps)
@@ -42,7 +42,6 @@ subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  l_greenlag       : .true. if large strains with GREEN_LAGRANGE
-! In  l_pred           : flag if prediction
 ! In  option           : option of calcul : RIGI_MECA, FULL_MECA...
 ! In  neps             : number of components of strains
 ! In  epsm             : mechanical strains at T- for all kinematics but simo_miehe
@@ -57,7 +56,6 @@ subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
 !
     real(kind=8), parameter :: rac2 = 1.0
 !sqrt(2.d0)
-    real(kind=8) :: dfgrd0(3, 3), dfgrd1(3, 3)
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -67,31 +65,14 @@ subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
 !
     if (l_greenlag) then
         ASSERT(neps .eq. 9)
-        dfgrd0(:, :) = 0.d0
-        dfgrd1(:, :) = 0.d0
         b_n = to_blas_int(neps)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, epsm, b_incx, dfgrd0, b_incy)
-        if (l_pred) then
-            b_n = to_blas_int(neps)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, epsm, b_incx, dfgrd1, b_incy)
-        else
-            b_n = to_blas_int(neps)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, deps, b_incx, dfgrd1, b_incy)
-        end if
+        call dcopy(b_n, epsm, b_incx, stran, b_incy)
         b_n = to_blas_int(neps)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, dfgrd0, b_incx, stran, b_incy)
-        b_n = to_blas_int(neps)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, dfgrd1, b_incx, dstran, b_incy)
+        call dcopy(b_n, deps, b_incx, dstran, b_incy)
     else
         ASSERT(neps .ne. 9)
         b_n = to_blas_int(neps)
