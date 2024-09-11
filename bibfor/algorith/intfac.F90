@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno, &
     real(kind=8) :: lsnb, solsn, a(ndim), b(ndim), mem(3), memo, normab, coeffk
     real(kind=8) :: prec2, length(12)
     character(len=8) :: alias
-    aster_logical :: chgsgn
+    aster_logical :: chgsgn, c1, c2
     integer, pointer :: connex(:) => null()
 ! ----------------------------------------------------------------------
 !
@@ -145,7 +145,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno, &
 !
 !       ON ACCEPTE TOUT DE SUITE LA FACE SI LE FRONT COINCIDE
 !       AVEC L'UN DES NOEUDS DE LA FACE
-        if ((lsna .eq. 0.d0) .and. (lsta .eq. 0.d0)) then
+        if (lsna .eq. 0.d0 .and. lsta .eq. 0.d0) then
             chgsgn = .true.
             indptf(1) = 1
             indptf(2) = connex(zi(jconx2+nmaabs-1)+fa(ifq, i)-1)
@@ -154,7 +154,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno, &
 !
 !       ON ACCEPTE TOUT DE SUITE LA FACE SI LE FRONT COINCIDE
 !       AVEC UN POINT D'UNE ARETE DE LA FACE
-        if (((lsna .eq. 0.d0) .and. (lsnb .eq. 0.d0)) .and. ((lsta*lstb) .lt. r8prem())) then
+        if ((lsna .eq. 0.d0 .and. lsnb .eq. 0.d0) .and. lsta*lstb .lt. prec) then
             chgsgn = .true.
             indptf(1) = 2
             indptf(2) = connex(zi(jconx2+nmaabs-1)+fa(ifq, i)-1)
@@ -167,21 +167,18 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno, &
 !       POUR CELA, ON CONTROLE LE SIGNE DE LST(I) OU I EST LE POINT
 !       D'INTERSECTION DE L'ARETE AVEC LSN=0
 !       (ON A LSN(I)=LST(B)-LSN(B)*(LST(A)-LST(B))/(LSN(A)-LSN(B)))
-        if ((lsna*lsnb) .lt. prec) then
-!
-            if (( &
-                (abs((lsna-lsnb)) .gt. r8prem()) .and. &
-                ((lstb-(lsnb*(lsta-lstb)/(lsna-lsnb))) .lt. prec) &
-                ) &
-                .or. ((abs((lsna-lsnb)) .le. r8prem()) .and. ((lsta*lstb) .lt. r8prem()))) then
-!
+        if (lsna*lsnb .lt. prec) then
+            c1 = abs((lsna-lsnb)) .gt. prec
+            if (c1) then
+                c1 = lstb-(lsnb*(lsta-lstb)/(lsna-lsnb)) .lt. prec
+            end if
+            c2 = (abs(lsna-lsnb) .le. prec) .and. (lsta*lstb .lt. prec)
+            if (c1 .or. c2) then
                 chgsgn = .true.
                 indptf(1) = 3
                 indptf(2) = 0
                 indptf(3) = 0
-!
             end if
-!
         end if
     end do
 !
