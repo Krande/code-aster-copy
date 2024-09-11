@@ -44,10 +44,10 @@ Erreur utilisateur :
     ),
     9: _(
         """
-La méthode ECLA_PG avec le mot-clé RESULTAT ne peut être utilisée que :
-- si PROJECTION="OUI",
-- si MODELE_2 renseigné,
-- et si NOM_CHAM fournit le champ aux points de Gauss à projeter.
+Erreur utilisateur :
+  Vous ne pouvez pas utiliser la méthode ECLA_PG avec le mot-clé RESULTAT.
+Conseil :
+   Extrayez le champ aux ELGA que contient votre résultat puis utilisez la méthode ECLA_PG avec le mot-clé CHAM_GD.
 """
     ),
     20: _(
@@ -130,6 +130,12 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 PROJ_CHAMP  :
   Vous utilisez la méthode SOUS_POINT.
   Pour cela, il vous faut renseigner le mot-clé  %(k1)s."""
+    ),
+    41: _(
+        """
+PROJ_CHAMP  :
+  Vous utilisez la méthode SOUS_POINT. Dans ce cas :
+  PROJECTION = "OUI" ET le mot clef MATR_PROJECTION ne doit pas être renseigné."""
     ),
     43: _(
         """
@@ -256,8 +262,8 @@ Risques et Conseils :
         """
 Erreur utilisateur dans la commande PROJ_CHAMP :
   La structure de données résultat à projeter ne contient que des champs 'ELGA'.
-  La méthode de projection adaptée à ces champs est la méthode 'ECLA_PG', et
-  doit être appelée explicitement avec METHODE="ECLA_PG".
+  La méthode de projection adaptée à ces champs est la méthode 'ECLA_PG' mais
+  elle ne fonctionne qu'avec un champ isolé (mot clé CHAM_GD).
 """
     ),
     58: _(

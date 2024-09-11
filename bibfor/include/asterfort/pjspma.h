@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,20 @@
 !
 !
 interface
-    subroutine pjspma(corres, cham1, cham2, prol0, ligre2,&
+!
+    subroutine pjspma(corres, cham1, cham2, prolong, ligre2,&
                       noca, base, iret)
+        !
+        use proj_champ_module
+        !
         character(len=16) :: corres
         character(len=19) :: cham1
         character(len=19) :: cham2
-        character(len=8) :: prol0
+        type(prolongation) :: prolong
         character(len=19) :: ligre2
         character(len=8) :: noca
         character(len=1) :: base
         integer :: iret
     end subroutine pjspma
+!
 end interface

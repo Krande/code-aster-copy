@@ -16,23 +16,24 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
+subroutine cescel_wrap(cesz, ligrez, optini, nompaz, prolz, &
+                       nncp, basez, celz, kstop, iret)
 !
+    implicit none
 !
-#include "asterf_types.h"
+#include "asterfort/cescel.h"
 !
-interface
+    character(len=*)    :: cesz
+    character(len=*)    :: ligrez
+    character(len=*)    :: optini
+    character(len=*)    :: nompaz
+    character(len=*)    :: prolz
+    integer             :: nncp
+    character(len=*)    :: basez
+    character(len=*)    :: celz
+    character(len=1)    :: kstop
+    integer             :: iret
 !
-    subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
-                      base, noca, method, xfem)
-        character(len=8) :: resu1
-        character(len=8) :: resu2
-        character(len=8) :: moa1
-        character(len=8) :: moa2
-        character(len=16) :: corres
-        character(len=1) :: base
-        character(len=8) :: noca
-        character(len=19) :: method
-        aster_logical, optional :: xfem
-    end subroutine pjxxpr
-!
-end interface
+    call cescel(cesz, ligrez, optini, nompaz, prolz, &
+                nncp, basez, celz, kstop, iret)
+end subroutine
