@@ -154,7 +154,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno, &
 !
 !       ON ACCEPTE TOUT DE SUITE LA FACE SI LE FRONT COINCIDE
 !       AVEC UN POINT D'UNE ARETE DE LA FACE
-        if ((lsna .eq. 0.d0 .and. lsnb .eq. 0.d0) .and. lsta*lstb .lt. prec) then
+        if (lsna .eq. 0.d0 .and. lsnb .eq. 0.d0 .and. lsta*lstb .lt. prec) then
             chgsgn = .true.
             indptf(1) = 2
             indptf(2) = connex(zi(jconx2+nmaabs-1)+fa(ifq, i)-1)
@@ -172,7 +172,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno, &
             if (c1) then
                 c1 = lstb-(lsnb*(lsta-lstb)/(lsna-lsnb)) .lt. prec
             end if
-            c2 = (abs(lsna-lsnb) .le. prec) .and. (lsta*lstb .lt. prec)
+            c2 = abs((lsna-lsnb)) .le. r8prem() .and. (lsta*lstb) .lt. r8prem()
             if (c1 .or. c2) then
                 chgsgn = .true.
                 indptf(1) = 3
