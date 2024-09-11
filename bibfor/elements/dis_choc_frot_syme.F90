@@ -297,15 +297,17 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
 !   Prédiction en dynamique, on retourne les efforts précédents
 !       Si on passe d'une formulation 'plastique' à une en 'vitesse'
 !       On le fait à la fin, la raideur doit être mise comme il faut
-    if (Predic .and. (nint(varmo(icalc)) .eq. EnPlasticite)) then
+    if (Predic) then
+        if (nint(varmo(icalc)) .eq. EnPlasticite) then
 ! Les efforts précédents
-        force(1) = varmo(ifx)
-        force(2) = varmo(ify)
-        force(3) = varmo(ifz)
+            force(1) = varmo(ifx)
+            force(2) = varmo(ify)
+            force(3) = varmo(ifz)
 ! On remet les varpl comme il faut. Elles ont peut-être été modifiées
-        varpl(ifx) = varmo(ifx)
-        varpl(ify) = varmo(ify)
-        varpl(ifz) = varmo(ifz)
+            varpl(ifx) = varmo(ifx)
+            varpl(ify) = varmo(ify)
+            varpl(ifz) = varmo(ifz)
+        end if
     end if
 !
 end subroutine
