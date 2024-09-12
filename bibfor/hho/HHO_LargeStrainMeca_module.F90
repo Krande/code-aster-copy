@@ -923,17 +923,14 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: GL_prev(6), GL_curr(6), GL_incr(6), dpk2dc(6, 6), me(3, 3, 3, 3)
-        real(kind=8) :: detF_prev
+        real(kind=8) :: detF_prev, F_incr(3, 3)
         real(kind=8) :: PK2_prev(6), PK2_curr(6), detF_curr, sig(6)
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         real(kind=8) :: angmas(1:3)
-        integer :: jstrainexte
+        aster_logical :: lMFront
 !
         angmas(1:3) = r8nnem()
-!
-! ----- Get coded integer for external state variable
-!
-        jstrainexte = nint(carcri(EXTE_STRAIN))
+        lMFront = nint(carcri(EXTE_TYPE)) == 1 .or. nint(carcri(EXTE_TYPE)) == 2
 !
 ! ----- Compute PK2 at T-
 !
@@ -951,7 +948,20 @@ contains
         dpk2dc = 0.d0
         module_tang = 0.d0
 !
-        if (jstrainexte .eq. 0) then
+        if (lMFront) then
+!
+! --------- Compute pre-processing F
+!
+            F_incr = F_curr-F_prev
+!
+! --------- Compute behaviour
+!
+            call nmcomp(BEHinteg, fami, ipg, 1, ndim, &
+                        typmod, imate, compor, carcri, time_prev, &
+                        time_curr, 9, F_prev, F_incr, 6, &
+                        PK2_prev, vi_prev_pg, option, angmas, PK2_curr, &
+                        vi_curr_pg, 36, dpk2dc, cod, mult_comp)
+        else
 !
 ! --------- Compute pre-processing E (Green-Lagrange)
 !
@@ -966,8 +976,6 @@ contains
                         time_curr, 6, GL_prev, GL_incr, 6, &
                         PK2_prev, vi_prev_pg, option, angmas, PK2_curr, &
                         vi_curr_pg, 36, dpk2dc, cod, mult_comp)
-        else
-            ASSERT(.false.)
         end if
 !
 ! ----- Test the code of the LDC
