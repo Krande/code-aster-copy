@@ -205,7 +205,8 @@ RES_LIST = DEFI_LIST_FREQ(
         FREQ_MIN=fmin,
         FREQ_MAX=fmax,
         LIST_FREQ=list_freq.tolist(),
-        EQUILIBRAGE=_F(TOLERANCE=tol, NB_MODES=Nb),
+        TOLERANCE=tol,
+        NB_MODES=Nb,
     )
 )
 
@@ -217,7 +218,8 @@ RES_MATR = DEFI_LIST_FREQ(
         FREQ_MAX=fmax,
         MATR_RIGI=RIGI,
         MATR_MASS=MASS,
-        EQUILIBRAGE=_F(TOLERANCE=tol, NB_MODES=Nb),
+        TOLERANCE=tol,
+        NB_MODES=Nb,
     )
 )
 

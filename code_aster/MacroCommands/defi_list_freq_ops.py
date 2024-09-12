@@ -244,12 +244,11 @@ class FrequencyBandOptimizationAlgorithm(object):
         else:
             self.list_freq = sorted(args["LIST_FREQ"])
         # Parse algorithm parameters
-        algo_options = args.pop("EQUILIBRAGE", [None])[0]
-        self.tol = algo_options["TOLERANCE"]
-        self.n_init = algo_options["NB_POINTS_INIT"]
-        self.n_supp = algo_options["NB_POINTS_SUPP"]
-        self.iter_maxi = algo_options["ITER_MAXI"]
-        self.n_modes = algo_options["NB_MODES"]
+        self.tol = args["TOLERANCE"]
+        self.n_init = args["NB_POINTS_INIT"]
+        self.n_supp = args["NB_POINTS_SUPP"]
+        self.iter_maxi = args["ITER_MAXI"]
+        self.n_modes = args["NB_MODES"]
 
     def run(self):
         r"""Run algorithm
