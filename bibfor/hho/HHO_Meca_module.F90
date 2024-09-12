@@ -264,7 +264,7 @@ contains
         rhs = 0.d0
         if (.not. l_vari) then
 !           not accessed but expected to be (lgpg, *)
-            AS_ALLOCATE(vr=hhoCS%vari_curr, size=hhoCS%lgpg)
+            AS_ALLOCATE(vr=hhoCS%vari_curr, size=max(1, hhoCS%lgpg))
         end if
 !
         if (hhoCS%l_largestrain) then
