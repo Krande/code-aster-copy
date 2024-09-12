@@ -505,7 +505,12 @@ dans AFFE_MATERIAU pour affecter les propriétés de WEIBULL.
     ),
     89: _(
         """
-L'OPTION NB_COUCHE n'est pas compatible avec des éléments QUAD27 ou PENTA18'
+L'OPTION NB_COUCHE n'est pas compatible avec des éléments HEXA27 ou PENTA18'
+"""
+    ),
+    90: _(
+        """
+CALC_G fonctionne uniquement avec des éléments incompressibles de type INCO_UPG. L'utilisation d'autres types d'éléments pourrait entraîner des résultats incorrects (INCO_UP, INCO_UPO, GRAD_INCO).
 """
     ),
 }

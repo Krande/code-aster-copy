@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: matthieu-m.le-cren at edf.fr
+# person_in_charge: matthieu.le-cren at edf.fr
 
 
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
@@ -63,6 +63,7 @@ CALC_K_G_F = Option(
         PVARIPR,
         SP.PCOURB,
         SP.PDEPLAR,
+        SP.PDEPLA,
         SP.PEPSINF,
         SP.PFF1D2D,
         SP.PFF2D3D,

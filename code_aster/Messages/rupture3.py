@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -104,12 +104,6 @@ Vous réalisez un calcul de G en grandes transformations (formalisme GREEN_LAGRA
 
 Ce calcul n'est pas compatible avec la discrétisation LEGENDRE. 
 Veuillez utiliser la discrétisation LINEAIRE.
-"""
-    ),
-    14: _(
-        """
-Vous utilisez la commande CALC_G avec des éléments de type "INCO" et une loi élastoplastique. 
-Cette association est autorisée uniquement à titre expérimental et ne doit pas être utilisée pour des études de sûreté.
 """
     ),
 }

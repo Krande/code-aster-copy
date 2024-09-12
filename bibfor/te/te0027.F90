@@ -377,7 +377,7 @@ subroutine te0027(option, nomte)
             call nmelnl(BEHinteg, &
                         fami, kp, 1, &
                         ndim, typmod, matcod, compor, &
-                        eps, sigl, energi)
+                        eps, 0.d0, 0.d0, sigl, energi)
             call tecach('NNO', 'PCONTGR', 'L', iret, iad=isigm)
             if (iret .eq. 0) then
                 call jevech('PCONTGR', 'L', isigm)

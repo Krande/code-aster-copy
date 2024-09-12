@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine nmelnl(BEHinteg, &
                   fami, kpg, ksp, ndim, &
                   typmod, imate, compor, &
-                  eps, sig, energi)
+                  eps, gonf, pres, sig, energi)
 !
     use Behaviour_type
 !
@@ -47,7 +47,7 @@ subroutine nmelnl(BEHinteg, &
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*)
     integer :: kpg, ksp, ndim, imate
-    real(kind=8) :: eps(:), sig(:), energi(2)
+    real(kind=8) :: eps(:), gonf, pres, sig(:), energi(2)
 ! --------------------------------------------------------------------------------------------------
 !     REALISE LA LOI DE HENCKY POUR LES ELEMENTS ISOPARAMETRIQUES ET CALCULE L'ENERGIE
 !     RESERVE AUX CALCULS DE MECANIQUE DE LA RUPTURE
@@ -59,6 +59,8 @@ subroutine nmelnl(BEHinteg, &
 ! IN  TEMP    : TEMPERATURE.
 ! IN  TREF    : TEMPERATURE DE REFERENCE.
 ! IN  EPS     : DEFORMATION (SI C_PLAN EPS(3) EST EN FAIT CALCULE)
+! IN  GONF    : VALEUR DE G POUR LES ELEMENTS INCOMPRESSIBLES
+! IN  PRES    : VALEUR DE P POUR LES ELEMENTS INCOMPRESSIBLES
 ! OUT SIG     : CONTRAINTES LAGRANGIENNES
 ! OUT P       : VARIABLE INTERNE (AUXILIAIRE DE CALCUL)
 ! --------------------------------------------------------------------------------------------------
@@ -248,6 +250,7 @@ subroutine nmelnl(BEHinteg, &
     do k = 1, ndimsi
         epsdv(k) = epsth(k)-epsmo*kron(k)
     end do
+
 ! - CALCUL DE LA CONTRAINTE ELASTIQUE EQUIVALENTE
     epseq = 0.d0
     do k = 1, ndimsi
@@ -351,7 +354,7 @@ subroutine nmelnl(BEHinteg, &
 !====================================================================
     if (inco) then
         do k = 1, ndimsi
-            sig(k) = g*epsdv(k)
+            sig(k) = g*epsdv(k)-pres*kron(k)
         end do
     else
         do k = 1, ndimsi
@@ -363,6 +366,6 @@ subroutine nmelnl(BEHinteg, &
 ! - CALCUL DE L'ENERGIE
 !====================================================================
     call nmelru(fami, kpg, ksp, &
-                imate, compor, epseq, p, 3.d0*epsmo, &
+                imate, compor, epseq, p, 3.d0*epsmo, gonf, inco, &
                 nonlin, energi)
 end subroutine
