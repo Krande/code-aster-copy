@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
                   mu, apcoef, apddl, appoin, inliac, &
                   matass, solveu, premax, ssgrad, ssgrpr)
@@ -77,6 +77,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
     complex(kind=8) :: c16bid
     parameter(coef=1.d-2)
     integer :: iret
+    blas_int :: b_incx, b_incy, b_n
     c16bid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
@@ -117,7 +118,10 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
 ! --- LE PRECONDITIONNEUR EST INUTILE
 !
     if (nbliac .eq. 0) then
-        call dcopy(nbliai, ssgrad, 1, ssgrpr, 1)
+        b_n = to_blas_int(nbliai)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, ssgrad, b_incx, ssgrpr, b_incy)
         if (niv .ge. 2) then
             write (ifm, *) '<CONTACT><CALC> PAS DE '//&
      &                  'PRECONDITIONNEMENT (PAS DE LIAISONS ACTIVES)'
@@ -187,15 +191,27 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
 ! --- DIRECH=RESIDU+BETA*DIRECH
 !
     if (iterat .eq. 1) then
-        numerp = ddot(nbliac, zr(jpcres), 1, zr(jpcres), 1)
-        call dcopy(nbliac, zr(jpcres), 1, zr(jpcdir), 1)
+        b_n = to_blas_int(nbliac)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        numerp = ddot(b_n, zr(jpcres), b_incx, zr(jpcres), b_incy)
+        b_n = to_blas_int(nbliac)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jpcres), b_incx, zr(jpcdir), b_incy)
     else
         numerm = numerp
-        numerp = ddot(nbliac, zr(jpcres), 1, zr(jpcres), 1)
+        b_n = to_blas_int(nbliac)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        numerp = ddot(b_n, zr(jpcres), b_incx, zr(jpcres), b_incy)
         beta = numerp/numerm
         call dscal(nbliac, beta, zr(jpcdir), 1)
-        call daxpy(nbliac, 1.d0, zr(jpcres), 1, zr(jpcdir), &
-                   1)
+        b_n = to_blas_int(nbliac)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, zr(jpcres), b_incx, zr(jpcdir), &
+                   b_incy)
     end if
 !
 ! --- CALCUL DU SECOND MEMBRE
@@ -220,8 +236,14 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
 !
 ! --- PAS D'AVANCEMENT
 !
-    numer = ddot(nbliac, zr(jpcres), 1, zr(jpcres), 1)
-    denom = ddot(neq, zr(jddelt), 1, zr(jsecmb), 1)
+    b_n = to_blas_int(nbliac)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    numer = ddot(b_n, zr(jpcres), b_incx, zr(jpcres), b_incy)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    denom = ddot(b_n, zr(jddelt), b_incx, zr(jsecmb), b_incy)
     alpha = numer/denom
 !
     if (alpha .lt. 0.d0) then
@@ -235,8 +257,11 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
         ssgrpr(iliai) = ssgrpr(iliai)+alpha*zr(jpcdir-1+iliac)
     end do
 !
-    call daxpy(neq, -alpha, zr(jddelt), 1, zr(jpcdep), &
-               1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -alpha, zr(jddelt), b_incx, zr(jpcdep), &
+               b_incy)
 !
 !
 ! --- ON A ATTEINT LE NOMBRE D'ITERATION MAXIMAL
@@ -287,9 +312,9 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
     call jedema()
 !
 9000 format(' <CONTACT><CALC> PRECONDITIONNEUR : ITERATION =', i6,&
-    &        ' RESIDU =', 1pe12.5)
+   &        ' RESIDU =', 1pe12.5)
 9010 format(' <CONTACT><CALC> PRECONDITIONNEUR : ', i6,&
-    &        ' LIAISON ACTIVES, CRITERE DE CONVERGENCE =', 1pe12.5)
+   &        ' LIAISON ACTIVES, CRITERE DE CONVERGENCE =', 1pe12.5)
 9020 format(' <CONTACT><CALC> PRECONDITIONNEUR : ITERATION =', i6,&
-    &        ' RESIDU =', 1pe12.5, ' => CONVERGENCE')
+   &        ' RESIDU =', 1pe12.5, ' => CONVERGENCE')
 end subroutine

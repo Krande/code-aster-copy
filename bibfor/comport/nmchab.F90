@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,6 +96,7 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
      &    qm, qp, ksim, ksip, dt, n1, n2, depsp,&
      &    beta1, beta2, ndimsi, nbvar, visc, memo, idelta
     integer :: ndimsi, i, niter, visc, memo, idelta
+    blas_int :: b_incx, b_incy, b_n
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
     iret = 0
@@ -155,19 +156,34 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
         call r8inir(6, 0.d0, ksip, 1)
         call r8inir(6, 0.d0, epspm, 1)
         call r8inir(6, 0.d0, epspp, 1)
-        call dcopy(ndimsi, vim(17), 1, ksim, 1)
-        call dcopy(ndimsi, vim(23), 1, epspm, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vim(17), b_incx, ksim, b_incy)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vim(23), b_incx, epspm, b_incy)
         qp = qm
-        call dcopy(ndimsi, ksim, 1, ksip, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, ksim, b_incx, ksip, b_incy)
         rpvp = rpvm
     end if
     cm = cinf*(un+(k-un)*exp(-w*pm))
     c2m = c2inf*(un+(k-un)*exp(-w*pm))
 !
-    call dcopy(ndimsi, vim(3), 1, alfam, 1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vim(3), b_incx, alfam, b_incy)
     call dscal(ndimsi-3, rac2, alfam(4), 1)
     if (nbvar .eq. 2) then
-        call dcopy(ndimsi, vim(9), 1, alfa2m, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vim(9), b_incx, alfa2m, b_incy)
         call dscal(ndimsi-3, rac2, alfa2m(4), 1)
     else
         call r8inir(6, 0.d0, alfa2m, 1)
@@ -175,19 +191,30 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
 !
 ! --- CALCUL DE DEPSMO ET DEPSDV :
     depsmo = 0.d0
-    call dcopy(ndimsi, deps, 1, depsth, 1)
-    call daxpy(3, -coef, kron, 1, depsth, &
-               1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, deps, b_incx, depsth, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -coef, kron, b_incx, depsth, &
+               b_incy)
     depsmo = trace(3, depsth)/3.d0
-    call dcopy(ndimsi, depsth, 1, depsdv, 1)
-    call daxpy(3, -depsmo, kron, 1, depsdv, &
-               1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, depsth, b_incx, depsdv, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -depsmo, kron, b_incx, depsdv, &
+               b_incy)
 !
 !       -------------------------------------------------
     sigmmo = trace(3, sigm)/3.d0
     do i = 1, ndimsi
-        sigmp(i) = deuxmu/deumum*(sigm(i)-sigmmo*kron(i))+troisk/ &
-                   troikm*sigmmo*kron(i)
+        sigmp(i) = deuxmu/deumum*(sigm(i)-sigmmo*kron(i))+troisk/troikm*sigmmo*kron(i)
     end do
 !     SIGMMO A PU CHANGER A CAUSE DE TROISK/TROIKM
     sigmmo = trace(3, sigmp)/3.d0
@@ -223,9 +250,15 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
         gamm2p = gamm20*(ainf+(un-ainf)*exp(-b*pp))
 !
         if (memo .eq. 1) then
-            call dcopy(ndimsi, epspm, 1, epspp, 1)
-            call daxpy(ndimsi, 1.d0, depsp, 1, epspp, &
-                       1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, epspm, b_incx, epspp, b_incy)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, depsp, b_incx, epspp, &
+                       b_incy)
         end if
 !
         do i = 1, ndimsi
@@ -269,17 +302,29 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         vip(1) = pp
         vip(2) = niter
-        call dcopy(ndimsi, alfa, 1, vip(3), 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, alfa, b_incx, vip(3), b_incy)
         call dscal(ndimsi-3, unrac2, vip(6), 1)
         if (nbvar .eq. 2) then
-            call dcopy(ndimsi, alfa2, 1, vip(9), 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, alfa2, b_incx, vip(9), b_incy)
             call dscal(ndimsi-3, unrac2, vip(12), 1)
         end if
         if (memo .eq. 1) then
             vip(15) = rpvp
             vip(16) = qp
-            call dcopy(ndimsi, ksip, 1, vip(17), 1)
-            call dcopy(ndimsi, epspp, 1, vip(23), 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, ksip, b_incx, vip(17), b_incy)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, epspp, b_incx, vip(23), b_incy)
         end if
     end if
 !
@@ -289,15 +334,27 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
 !           CALCUL DE X1, X2
             cp = cinf*(un+(k-un)*exp(-w*pp))
             c2p = c2inf*(un+(k-un)*exp(-w*pp))
-            call dcopy(ndimsi, alfam, 1, xm, 1)
-            call dcopy(ndimsi, alfa, 1, xp, 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, alfam, b_incx, xm, b_incy)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, alfa, b_incx, xp, b_incy)
             call dscal(ndimsi, cm/1.5d0, xm, 1)
             call dscal(ndimsi, cp/1.5d0, xp, 1)
             if (nbvar .eq. 2) then
-                call daxpy(ndimsi, c2m/1.5d0, alfa2m, 1, xm, &
-                           1)
-                call daxpy(ndimsi, c2p/1.5d0, alfa2, 1, xp, &
-                           1)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, c2m/1.5d0, alfa2m, b_incx, xm, &
+                           b_incy)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, c2p/1.5d0, alfa2, b_incx, xp, &
+                           b_incy)
             end if
             call radial(ndimsi, sigm, sigp, vim(2), vip(2), &
                         1, xm, xp, radi)

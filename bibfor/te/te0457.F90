@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0457(option, nomte)
 !
     use HHO_type
@@ -108,7 +108,7 @@ subroutine te0457(option, nomte)
         call jevech('PCOEFHR', 'L', j_coefh)
         CoeffQP_curr(1:hhoQuadFace%nbQuadPoints) = zr(j_coefh)
 !
-    elseif (option .eq. 'RIGI_THER_ECHA_F') then
+    else if (option .eq. 'RIGI_THER_ECHA_F') then
 !
 ! ---- Get Function Parameters
 !
@@ -133,7 +133,7 @@ subroutine te0457(option, nomte)
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_coefh), nbpara, nompar, valpar, &
                                 celldim, CoeffQP_curr)
 !
-    elseif (option .eq. 'MTAN_THER_RAYO_R') then
+    else if (option .eq. 'MTAN_THER_RAYO_R') then
 !
 ! ----- Get real value (sigma, epsil, temp_inf)
 !
@@ -145,12 +145,14 @@ subroutine te0457(option, nomte)
         call readVector('PTEMPEI', fbs, temp_F_curr)
 !
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
-                                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
-
+            temp_eval_curr = hhoEvalScalFace( &
+                             hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs &
+                             )
+!
             CoeffQP_curr(ipg) = 4.d0*sigma(ipg)*epsil(ipg)*(temp_eval_curr+tz0)**3
         end do
-    elseif (option .eq. 'MTAN_THER_RAYO_F') then
+    else if (option .eq. 'MTAN_THER_RAYO_F') then
         call jevech('PRAYONF', 'L', j_para)
 !
 ! ---- Get Function Parameters (sigma, epsil, temp_inf)
@@ -179,22 +181,26 @@ subroutine te0457(option, nomte)
 !
         tz0 = r8t0()
         call readVector('PTEMPEI', fbs, temp_F_curr)
-
+!
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
-                                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
-
+            temp_eval_curr = hhoEvalScalFace( &
+                             hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs &
+                             )
+!
             CoeffQP_curr(ipg) = 4.d0*sigma(ipg)*epsil(ipg)*(temp_eval_curr+tz0)**3
         end do
 !
-    elseif (option .eq. 'MTAN_THER_FLUXNL') then
+    else if (option .eq. 'MTAN_THER_FLUXNL') then
         call jevech('PFLUXNL', 'L', j_para)
 !
         call readVector('PTEMPEI', fbs, temp_F_curr)
 !
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
-                                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
+            temp_eval_curr = hhoEvalScalFace( &
+                             hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs &
+                             )
             call foderi(zk8(j_para), temp_eval_curr, rbid, d_alpha)
             CoeffQP_curr(ipg) = -d_alpha
         end do
@@ -211,11 +217,12 @@ subroutine te0457(option, nomte)
 ! ----- Loop on quadrature point
     do ipg = 1, hhoQuadFace%nbQuadPoints
 ! --------- Eval basis function at the quadrature point
-        call hhoBasisFace%BSEval(hhoFace, hhoQuadFace%points(1:3, ipg), 0, &
-                                 hhoData%face_degree(), basisScalEval)
+        call hhoBasisFace%BSEval(hhoFace, hhoQuadFace%points(1:3, ipg), 0, hhoData%face_degree(), &
+                                 basisScalEval)
 ! --------  Eval massMat
         coeff = CoeffQP_curr(ipg)*hhoQuadFace%weights(ipg)
-        call dsyr('U', fbs, coeff, basisScalEval, 1, lhs, MSIZE_FACE_SCAL)
+        call dsyr('U', fbs, coeff, basisScalEval, 1, &
+                  lhs, MSIZE_FACE_SCAL)
     end do
 !
 ! ----- Copy the lower part

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
 !-----------------------------------------------------------------------
     integer :: jsens
     integer, pointer :: nbno_ma_fondfiss(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -151,31 +152,58 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
                 call provec(ab, ac, vn)
                 call normev(vn, norme)
                 call provec(ap, vn, vnt)
-                ps = ddot(3, vnt, 1, ac, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                ps = ddot(b_n, vnt, b_incx, ac, b_incy)
                 eps1 = -1*ps/norme
-                ps = ddot(3, vnt, 1, ab, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                ps = ddot(b_n, vnt, b_incx, ab, b_incy)
                 eps2 = ps/norme
                 eps3 = 1-eps1-eps2
 !
 !           SI M EST DS LE SECTEUR 1
                 if (eps1 .lt. 0.d0) then
-                    ps = ddot(3, ac, 1, ac, 1)
-                    ps1 = ddot(3, ab, 1, ac, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps = ddot(b_n, ac, b_incx, ac, b_incy)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps1 = ddot(b_n, ab, b_incx, ac, b_incy)
                     eps2 = eps2+eps1*ps1/ps
                     eps1 = 0.d0
                 end if
 !           SI M EST DS LE SECTEUR 2
                 if (eps2 .lt. 0.d0) then
-                    ps = ddot(3, ab, 1, ab, 1)
-                    ps1 = ddot(3, ab, 1, ac, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps = ddot(b_n, ab, b_incx, ab, b_incy)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps1 = ddot(b_n, ab, b_incx, ac, b_incy)
                     eps1 = eps1+eps2*ps1/ps
                     eps2 = 0.d0
                 end if
 !           SI M EST DS LE SECTEUR 3
                 if (eps3 .lt. 0.d0) then
-                    ps = ddot(3, bc, 1, bc, 1)
-                    ps1 = ddot(3, ab, 1, bc, 1)
-                    ps2 = ddot(3, ac, 1, bc, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps = ddot(b_n, bc, b_incx, bc, b_incy)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps1 = ddot(b_n, ab, b_incx, bc, b_incy)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps2 = ddot(b_n, ac, b_incx, bc, b_incy)
                     eps1 = (-1.d0*eps1*ps1+(1.d0-eps2)*ps2)/ps
                     eps2 = 1.d0-eps1
                 end if
@@ -197,7 +225,10 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
 !           MISE EN MEMOIRE DE LSN POUR LA MAILLE LA PLUS PROCHE
                 if ((dmin-d) .gt. r8prem()*1.d04) then
                     dmin = d
-                    xln = zi(jsens-1+imafis)*ddot(3, vn, 1, pm, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    xln = zi(jsens-1+imafis)*ddot(b_n, vn, b_incx, pm, b_incy)
                 end if
 !
             end do
@@ -272,8 +303,14 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
                     vn(3) = -1.d0*vnt(3)
 !
 !             PROJECTION SUR LE SEGMENT
-                    ps = ddot(3, ap, 1, ab, 1)
-                    ps1 = ddot(3, ab, 1, ab, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps = ddot(b_n, ap, b_incx, ab, b_incy)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps1 = ddot(b_n, ab, b_incx, ab, b_incy)
                     eps = ps/ps1
 !
                     do i = 1, 3
@@ -317,7 +354,10 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
                         (abs(dmin-d) .le. r8prem()*1.d04 .and. angle .lt. anglem)) then
                         dmin = d
                         anglem = angle
-                        xlt = ddot(3, vn, 1, pm, 1)
+                        b_n = to_blas_int(3)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        xlt = ddot(b_n, vn, b_incx, pm, b_incy)
                     end if
 !
                 end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine diag99(nomres)
     implicit none
 #include "jeveux.h"
@@ -56,7 +56,7 @@ subroutine diag99(nomres)
 !
 !
     integer :: iad, jiad, ier, idmode, lmasse, idstat
-    integer ::     jnsta, i, j, k, ieq, nbord
+    integer :: jnsta, i, j, k, ieq, nbord
     integer :: nbmode, nbstat, neq, n1, iorne, iorol
     real(kind=8) :: alpha, r8scal
     complex(kind=8) :: cbid
@@ -71,6 +71,7 @@ subroutine diag99(nomres)
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: ordm(:) => null()
     integer, pointer :: ords(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !----------------------------------------------------------------------
     call jemarq()
@@ -135,7 +136,10 @@ subroutine diag99(nomres)
                         .true._1)
 !
 ! --------- (T(MODE STAT J)*MASSE*MODE PROPRE I)
-            r8scal = ddot(neq, zr(idstat+(j-1)*neq), 1, trav2, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            r8scal = ddot(b_n, zr(idstat+(j-1)*neq), b_incx, trav2, b_incy)
 !
 ! --------- PRODUIT (T(MODE STAT J)*MASSE*MODE PROPRE I)*MODE PROPRE I
 ! --------- PUIS
@@ -215,19 +219,19 @@ subroutine diag99(nomres)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
-
+!
         call rsadpa(meca, 'L', 1, 'MODELE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'MODELE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
-
+!
         call rsadpa(meca, 'L', 1, 'CHAMPMAT', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
-
+!
         call rsadpa(meca, 'L', 1, 'CARAELEM', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne, &
@@ -277,19 +281,19 @@ subroutine diag99(nomres)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
-
+!
         call rsadpa(stat, 'L', 1, 'MODELE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'MODELE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
-
+!
         call rsadpa(stat, 'L', 1, 'CHAMPMAT', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
-
+!
         call rsadpa(stat, 'L', 1, 'CARAELEM', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne, &

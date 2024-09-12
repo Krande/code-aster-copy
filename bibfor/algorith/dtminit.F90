@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dtminit(sd_dtm_, sd_int_)
     implicit none
 !
@@ -44,20 +44,20 @@ subroutine dtminit(sd_dtm_, sd_int_)
 #include "asterfort/nlinivec.h"
 #include "asterfort/preres.h"
 #include "asterfort/utmess.h"
-
+!
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
 !
 !   -0.2- Local variables
-    aster_logical     :: reuse
-    integer           :: nbrede, nbrevi, nbsauv, nbnli, nbpal
-    integer           :: nbmode, iret, jmass, nbvint, jchor
-    integer           :: nltreat, append, appendind, i
+    aster_logical :: reuse
+    integer :: nbrede, nbrevi, nbsauv, nbnli, nbpal
+    integer :: nbmode, iret, jmass, nbvint, jchor
+    integer :: nltreat, append, appendind, i
 !
-    real(kind=8)      :: tinit, dt
-    character(len=8)  :: sd_dtm, sd_int, nomres, basemo, sd_nl
+    real(kind=8) :: tinit, dt
+    character(len=8) :: sd_dtm, sd_int, nomres, basemo, sd_nl
     character(len=24) :: matasm, solver
 !
     integer, pointer :: vindx(:) => null()
@@ -76,14 +76,14 @@ subroutine dtminit(sd_dtm_, sd_int_)
     sd_int = sd_int_
 !
 !   1 - Retrieval of the necessary information
-
+!
     call dtmget(sd_dtm, _ARCH_NB, iscal=nbsauv)
     call dtmget(sd_dtm, _CALC_SD, kscal=nomres)
     call dtmget(sd_dtm, _INST_INI, rscal=tinit)
     call dtmget(sd_dtm, _BASE_MOD, kscal=basemo)
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode)
     call dtmget(sd_dtm, _DT, rscal=dt)
-
+!
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli)
     nbrede = 0
     nbrevi = 0
@@ -92,7 +92,7 @@ subroutine dtminit(sd_dtm_, sd_int_)
         call nlget(sd_nl, _NB_PALIE, iscal=nbpal)
         call nlget(sd_nl, _NB_REL_FX, iscal=nbrede)
         call nlget(sd_nl, _NB_REL_FV, iscal=nbrevi)
-
+!
         call nlinivec(sd_nl, _F_TOT_WK, nbmode)
         call nlinivec(sd_nl, _F_TAN_WK, nbmode)
     end if
@@ -117,7 +117,7 @@ subroutine dtminit(sd_dtm_, sd_int_)
         call preres(solver, 'V', iret, '&&DTMCAL.MATPRE', matasm, &
                     iret, -9999)
     end if
-
+!
     call dtmget(sd_dtm, _MASS_FUL, lonvec=iret)
     if (iret .gt. 0) then
 !       --- Copy the full mass matrix
@@ -144,7 +144,7 @@ subroutine dtminit(sd_dtm_, sd_int_)
         nbvint = vindx(nbnli+1)-1
         call nlinivec(sd_nl, _INTERNAL_VARS, nbvint, vr=vint)
     end if
-
+!
     call mdinit(basemo, nbmode, nbnli, depl, vite, &
                 vint, iret, tinit, reprise=reuse, accgen=acce, &
                 index=appendind)
@@ -153,9 +153,9 @@ subroutine dtminit(sd_dtm_, sd_int_)
     if (append .ne. 0) then
         call dtmsav(sd_dtm, _APPND_SD, 1, iscal=appendind-1)
     end if
-
+!
     if (iret .ne. 0) call utmess('F', 'ALGORITH5_24')
-
+!
     if (nbnli .ne. 0) then
 !   --- Non linear case with implicit treatment of choc-type non-linearities
 !       initialize the displacement to the user given value
@@ -170,9 +170,9 @@ subroutine dtminit(sd_dtm_, sd_int_)
             zr(jchor+i-1) = vint(i)
         end do
     end if
-
+!
 !   Calculate the initial acceleration
-
+!
 !   --- If no reuse, then acce0 must be calculated based on depl0, vite0, and the
 !       forces equilibrium equation (using dtmacce). To do so, delete acce0 for now.
     call dtminivec(sd_dtm, _ACC_WORK, nbmode, address=iret)
@@ -180,13 +180,13 @@ subroutine dtminit(sd_dtm_, sd_int_)
     nullify (buffint)
     call dtmbuff(sd_dtm, buffdtm)
     call intbuff(sd_int, buffint)
-
+!
     if (.not. (reuse)) then
         call dtmacce(sd_dtm, sd_int, 1, buffdtm, buffint)
     else
         call dtmforeq(sd_dtm, sd_int, 1, buffdtm, buffint)
     end if
-
+!
 !   Initialize archiving indices and archive the initial state
     call dtmsav(sd_dtm, _ARCH_STO, 4, ivect=[0, 0, 0, 0])
     call dtmarch(sd_dtm, sd_int, buffdtm, buffint)

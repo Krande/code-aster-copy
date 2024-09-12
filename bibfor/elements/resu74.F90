@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine resu74(tran, nomres)
     implicit none
 !
@@ -66,7 +66,8 @@ subroutine resu74(tran, nomres)
     integer, pointer :: ordr2(:) => null()
     real(kind=8), pointer :: vint1(:) => null()
     real(kind=8), pointer :: pas1(:) => null()
-
+    blas_int :: b_incx, b_incy, b_n
+!
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -82,7 +83,7 @@ subroutine resu74(tran, nomres)
     call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
     if (nc .eq. 0) crit = 'RELATIF'
     if (np .eq. 0) prec = 1.d-6
-
+!
 !
 !      --- RECHERCHE DU NUMERO D'ORDRE DE L'INSTANT DE REPRISE
 !
@@ -91,10 +92,10 @@ subroutine resu74(tran, nomres)
 !
     call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=tinit, nbret=ni)
     if (ni .eq. 0) tinit = inst1(nbinst)
-
+!
     call jelira(tran//'           .DEPL', 'LONUTI', nbsto1)
     ASSERT((nbsto1/nbmode) .eq. nbinst)
-
+!
     nbsto1 = nbinst
     prec2 = prec
     if (crit(1:7) .eq. 'RELATIF') prec2 = prec*inst1(1)
@@ -114,10 +115,10 @@ subroutine resu74(tran, nomres)
             goto 202
         end if
     end do
-
+!
 !   tran is thus to be truncated from i=1 up to i=nbinst
 !   its total size is nbsto1
-
+!
 202 continue
 !
 !     --- Retrieval of DEPL, VITE, and ACCE fields ---
@@ -137,31 +138,49 @@ subroutine resu74(tran, nomres)
 !
     call wkvect(resu//'           .DEPL', 'G V R', nbstoc, jdepl)
     call jeveuo(resu//'           .DEPL', 'E', vr=deplf)
-    call dcopy(nbsto3, depl1, 1, zr(jdepl), 1)
+    b_n = to_blas_int(nbsto3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, depl1, b_incx, zr(jdepl), b_incy)
     call jedetr(tran//'           .DEPL')
-
+!
     call jeveuo(nomres//'           .DEPL', 'E', jdepl2)
-    call dcopy(nbsto2-nbmode, zr(jdepl2+nbmode), 1, zr(jdepl+nbsto3), 1)
+    b_n = to_blas_int(nbsto2-nbmode)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jdepl2+nbmode), b_incx, zr(jdepl+nbsto3), b_incy)
     call jedetr(nomres//'           .DEPL')
-
+!
     call jeveuo(tran//'           .VITE', 'E', vr=vite1)
     call wkvect(resu//'           .VITE', 'G V R', nbstoc, jvite)
-    call dcopy(nbsto3, vite1, 1, zr(jvite), 1)
+    b_n = to_blas_int(nbsto3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vite1, b_incx, zr(jvite), b_incy)
     call jedetr(tran//'           .VITE')
-
+!
     call jeveuo(nomres//'           .VITE', 'E', jvite2)
-    call dcopy(nbsto2-nbmode, zr(jvite2+nbmode), 1, zr(jvite+nbsto3), 1)
+    b_n = to_blas_int(nbsto2-nbmode)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jvite2+nbmode), b_incx, zr(jvite+nbsto3), b_incy)
     call jedetr(nomres//'           .VITE')
-
+!
     call jeveuo(tran//'           .ACCE', 'E', vr=acce1)
     call wkvect(resu//'           .ACCE', 'G V R', nbstoc, jacce)
-    call dcopy(nbsto3, acce1, 1, zr(jacce), 1)
+    b_n = to_blas_int(nbsto3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, acce1, b_incx, zr(jacce), b_incy)
     call jedetr(tran//'           .ACCE')
-
+!
     call jeveuo(nomres//'           .ACCE', 'E', jacce2)
-    call dcopy(nbsto2-nbmode, zr(jacce2+nbmode), 1, zr(jacce+nbsto3), 1)
+    b_n = to_blas_int(nbsto2-nbmode)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jacce2+nbmode), b_incx, zr(jacce+nbsto3), b_incy)
     call jedetr(nomres//'           .ACCE')
-
+!
 !
 !     --- RECUPERATION DES CHAMPS ORDR ET DISC
 !
@@ -174,7 +193,7 @@ subroutine resu74(tran, nomres)
     call copvis(nbinst, ordr1, zi(jordr))
     decal = ordr1(nbinst)
     call jedetr(tran//'           .ORDR')
-
+!
     call jeveuo(nomres//'           .ORDR', 'E', vi=ordr2)
     do i = 1, nbsau2-1
         zi(jordr+nbinst-1+i) = ordr2(i+1)+decal
@@ -182,24 +201,36 @@ subroutine resu74(tran, nomres)
     call jedetr(nomres//'           .ORDR')
 !
     call wkvect(resu//'           .DISC', 'G V R', nbsauv, jinst)
-    call dcopy(nbinst, inst1, 1, zr(jinst), 1)
+    b_n = to_blas_int(nbinst)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, inst1, b_incx, zr(jinst), b_incy)
     call jedetr(tran//'           .DISC')
-
+!
     call jeveuo(nomres//'           .DISC', 'E', jinst2)
-    call dcopy(nbsau2-1, zr(jinst2+1), 1, zr(jinst+nbinst), 1)
+    b_n = to_blas_int(nbsau2-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jinst2+1), b_incx, zr(jinst+nbinst), b_incy)
     call jedetr(nomres//'           .DISC')
 !
 !     --- RECUPERATION DES PAS DE TEMPS
 !
     call jeveuo(tran//'           .PTEM', 'E', vr=pas1)
     call wkvect(resu//'           .PTEM', 'G V R', nbsauv, jpas)
-    call dcopy(nbinst, pas1, 1, zr(jpas), 1)
+    b_n = to_blas_int(nbinst)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, pas1, b_incx, zr(jpas), b_incy)
     call jedetr(tran//'           .PTEM')
-
+!
     call jeveuo(nomres//'           .PTEM', 'E', jpas2)
-    call dcopy(nbsau2-1, zr(jpas2+1), 1, zr(jpas+nbinst), 1)
+    b_n = to_blas_int(nbsau2-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jpas2+1), b_incx, zr(jpas+nbinst), b_incy)
     call jedetr(nomres//'           .PTEM')
-
+!
 !
 !     --- RECUPERATION DES VARIABLES INTERNES DES NON LINEARITES
 !
@@ -209,25 +240,31 @@ subroutine resu74(tran, nomres)
         call jedetr(nomres//'        .NL.TYPE')
         call jedetr(nomres//'        .NL.INTI')
         call jedetr(nomres//'        .NL.VIND')
-
-        ! Variables internes
+!
+! Variables internes
         nbvint = zi(jdesc+3)
         nbvarit = nbvint*nbinst
         nbvarin = nbvint*(nbsau2-1)
-
+!
         call jeveuo(tran//'        .NL.VINT', 'E', vr=vint1)
         call wkvect(resu//'        .NL.VINT', 'G V R', nbvint*nbsauv, jvint)
-        call dcopy(nbvarit, vint1, 1, zr(jvint), 1)
+        b_n = to_blas_int(nbvarit)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vint1, b_incx, zr(jvint), b_incy)
         call jedetr(tran//'        .NL.VINT')
-
+!
         call jeveuo(nomres//'        .NL.VINT', 'E', jvint2)
-        call dcopy(nbvarin, zr(jvint2+nbvint), 1, zr(jvint+nbvarit), 1)
+        b_n = to_blas_int(nbvarin)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jvint2+nbvint), b_incx, zr(jvint+nbvarit), b_incy)
         call jedetr(nomres//'        .NL.VINT')
-
+!
     end if
-
+!
     call jedetr(nomres//'           .DESC')
-
+!
 !
 !     --- DUPLICATION ---
 !
@@ -243,7 +280,7 @@ subroutine resu74(tran, nomres)
     call jedetr(resu//'           .DISC')
     call jedupo(resu//'           .PTEM', 'G', tran//'           .PTEM', .false._1)
     call jedetr(resu//'           .PTEM')
-
+!
     if (nbnoli .ne. 0) then
         call jedupo(resu//'        .NL.VINT', 'G', tran//'        .NL.VINT', .false._1)
         call jedetr(resu//'        .NL.VINT')

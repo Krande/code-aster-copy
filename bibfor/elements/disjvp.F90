@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine disjvp(for_discret, iret)
 !
 ! person_in_charge: jean-luc.flejou at edf.fr
@@ -74,7 +74,7 @@ subroutine disjvp(for_discret, iret)
 !
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out)          :: iret
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,47 +85,48 @@ subroutine disjvp(for_discret, iret)
     character(len=24) :: messak(5)
 !
 !
-    real(kind=8)     :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
-    real(kind=8)     :: dpe(for_discret%neq)
-    real(kind=8)     :: fl(for_discret%neq)
-    real(kind=8)     :: force(3), raide(6)
-    real(kind=8)     :: r8bid
+    real(kind=8) :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
+    real(kind=8) :: dpe(for_discret%neq)
+    real(kind=8) :: fl(for_discret%neq)
+    real(kind=8) :: force(3), raide(6)
+    real(kind=8) :: r8bid
     character(len=8) :: k8bid
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter  :: nbre1 = 8
-    real(kind=8)        :: valre1(nbre1)
-    integer             :: codre1(nbre1)
-    character(len=8)    :: nomre1(nbre1)
-    integer             :: nbpar
-    real(kind=8)        :: valpar
-    character(len=8)    :: nompar
+    integer, parameter :: nbre1 = 8
+    real(kind=8) :: valre1(nbre1)
+    integer :: codre1(nbre1)
+    character(len=8) :: nomre1(nbre1)
+    integer :: nbpar
+    real(kind=8) :: valpar
+    character(len=8) :: nompar
     data nomre1/'KE', 'KP', 'KDP', 'KDM', 'RDP', 'RDM', 'MYP', 'MYM'/
 !
 ! --------------------------------------------------------------------------------------------------
 !   Pour l'intégration de la loi de comportement
-    real(kind=8)            :: temps0, temps1, dtemps
+    real(kind=8) :: temps0, temps1, dtemps
 !   Paramètres de la loi :     KE      KP    KDP    KDM     RDP    RDM    MYP    MYM
-    integer, parameter      :: ike = 1, ikdp = 3, ikdm = 4, irdp = 5, irdm = 6
+    integer, parameter :: ike = 1, ikdp = 3, ikdm = 4, irdp = 5, irdm = 6
 !   integer, parameter      :: ike=1, ikp=2, ikdp=3, ikdm=4, irdp=5, irdm=6, imyp=7, imym=8
-    integer, parameter      :: nbpara = 8
-    real(kind=8)            :: ldcpar(nbpara)
-    integer                 :: ldcpai(1)
-    character(len=8)        :: ldcpac(1)
+    integer, parameter :: nbpara = 8
+    real(kind=8) :: ldcpar(nbpara)
+    integer :: ldcpai(1)
+    character(len=8) :: ldcpac(1)
 !   Équations du système
-    integer, parameter      :: nbequa = 7
-    real(kind=8)            :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax, ynorme(nbequa)
-    integer                 :: nbdecp
+    integer, parameter :: nbequa = 7
+    real(kind=8) :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax, ynorme(nbequa)
+    integer :: nbdecp
 !   Variables internes
-    integer, parameter      :: nbvari = 9, nbcorr = 6, idebut = nbvari, iddp = 7, iddm = 8
-    integer                 :: Correspond(nbcorr)
-    real(kind=8)            :: varmo(nbvari), varpl(nbvari)
+    integer, parameter :: nbvari = 9, nbcorr = 6, idebut = nbvari, iddp = 7, iddm = 8
+    integer :: Correspond(nbcorr)
+    real(kind=8) :: varmo(nbvari), varpl(nbvari)
 !
 !   système d'équations :
-    integer, parameter      :: imoment = 1, itheta = 2, ithetap = 3, idp = 4, idm = 5, ixm = 6, &
-                               idiss = 7
+    integer, parameter :: imoment = 1, itheta = 2, ithetap = 3, idp = 4, idm = 5, ixm = 6
+    integer, parameter :: idiss = 7
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8)    :: xl(7), deplac, Dp, Dm
+    real(kind=8) :: xl(7), deplac, Dp, Dm
+    blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !   Seulement sur SEG2
     if (for_discret%nomte .ne. 'MECA_DIS_TR_L') then
@@ -159,7 +160,10 @@ subroutine disjvp(for_discret, iret)
             call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
         end if
     else
-        call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
+        b_n = to_blas_int(for_discret%nbt)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jdc), b_incx, klv, b_incy)
     end if
 !   les caractéristiques sont toujours dans le repère local. on fait seulement une copie
 !   Récupération des termes diagonaux : raide = klv(i,i)
@@ -217,7 +221,8 @@ subroutine disjvp(for_discret, iret)
     nompar = ' '
     valpar = 0.d0
     call rcvala(zi(imat), ' ', 'JONC_ENDO_PLAS', nbpar, nompar, &
-                [valpar], nbre1, nomre1, valre1, codre1, 0, nan='NON')
+                [valpar], nbre1, nomre1, valre1, codre1, &
+                0, nan='NON')
 !   recuperation des parametres materiaux
     ldcpar(1:nbpara) = valre1(1:nbre1)
 !
@@ -236,7 +241,8 @@ subroutine disjvp(for_discret, iret)
 !   récupération du moment précédent, suivant l'axe z local
     y0(imoment) = zr(icontm+5)
 !   récupération de la rotation précédente, suivant l'axe z local
-    y0(itheta) = for_discret%ulm(6+for_discret%nc)-for_discret%ulm(6)+dpe(6+for_discret%nc)-dpe(6)
+    y0(itheta) = for_discret%ulm(6+for_discret%nc)-for_discret%ulm(6)+dpe(6+for_discret%nc)-dpe(6&
+                 &)
 !   initialisation de Yp et Ym
     if (nint(varmo(idebut)) .eq. 0) then
         y0(idp) = ldcpar(irdp)
@@ -254,8 +260,9 @@ subroutine disjvp(for_discret, iret)
     ynorme(idm) = min(ldcpar(irdp), abs(ldcpar(irdm)))*0.6
     ynorme(idiss) = (ldcpar(ike)*min(ldcpar(irdp), abs(ldcpar(irdm)))**2)*0.6
 !   Integration de la loi de comportement
-    call rk5adp(nbequa, ldcpar, ldcpai, ldcpac, temps0, dtemps, nbdecp, &
-                errmax, y0, dy0, ldc_disjvp, resu, iret, ynorme=ynorme)
+    call rk5adp(nbequa, ldcpar, ldcpai, ldcpac, temps0, &
+                dtemps, nbdecp, errmax, y0, dy0, &
+                ldc_disjvp, resu, iret, ynorme=ynorme)
 !   resu(1:nbeq)            : variables intégrées
 !   resu(nbeq+1:2*nbeq)     : d(resu)/d(t) a t+dt
     if (iret .ne. 0) goto 999
@@ -290,13 +297,13 @@ subroutine disjvp(for_discret, iret)
     end if
 !
     if (for_discret%lVect .or. for_discret%lSigm) then
-        ! Demi-matrice klv transformée en matrice pleine klc
+! Demi-matrice klv transformée en matrice pleine klc
         call vecma(klv, for_discret%nbt, klc, for_discret%neq)
-        ! Calcul de fl = klc.dul (incrément d'effort)
+! Calcul de fl = klc.dul (incrément d'effort)
         call pmavec('ZERO', for_discret%neq, klc, for_discret%dul, fl)
     end if
     !
-    ! calcul des efforts généralisés et des forces nodales
+! calcul des efforts généralisés et des forces nodales
     if (for_discret%lSigm) then
 !       calcul des efforts généralisés, des forces nodales
         call jevech('PVECTUR', 'E', ifono)

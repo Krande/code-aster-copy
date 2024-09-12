@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfgcrl(resoco, neq, nbliai, matass, solveu, &
                   alpha)
 !
@@ -67,6 +67,7 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu, &
     character(len=24) :: secmbr, ddelt, cncin0
     integer :: jsecmb, jddelt
     integer :: iret
+    blas_int :: b_incx, b_incy, b_n
     c16bid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
@@ -121,12 +122,18 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu, &
 !
 ! --- PRODUIT SCALAIRE  NUMER = <DIRECP>.{DIRECP}
 !
-    numer = ddot(nbliai, zr(jsgprp), 1, zr(jsgrap), 1)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    numer = ddot(b_n, zr(jsgprp), b_incx, zr(jsgrap), b_incy)
 !
 ! --- PRODUIT SCALAIRE  DENOM = <DIRECP>.[A].[K]-1.[A]T .{DIRECP}
 !
     call jeveuo(ddelt(1:19)//'.VALE', 'L', jddelt)
-    denom = ddot(neq, zr(jddelt), 1, zr(jsecmb), 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    denom = ddot(b_n, zr(jddelt), b_incx, zr(jsecmb), b_incy)
 !
     if (denom .lt. 0.d0) then
         call utmess('A', 'CONTACT_7')

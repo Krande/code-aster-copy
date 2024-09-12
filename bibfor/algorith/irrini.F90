@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai, &
     real(kind=8) :: detai, dpi, dp, dg, yy, xx, zz
     real(kind=8) :: penpe, pe, pk
     integer :: ndt, ndi, iret, i
+    blas_int :: b_incx, b_incy, b_n
     data id3d/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
     if (typess .eq. -1) typess = 2
@@ -108,7 +109,10 @@ subroutine irrini(fami, kpg, ksp, typess, essai, &
         end if
 !
         call lcdevi(sig, dev)
-        s = ddot(ndt, dev, 1, dev, 1)
+        b_n = to_blas_int(ndt)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        s = ddot(b_n, dev, b_incx, dev, b_incy)
         s = sqrt(1.5d0*s)
 !
 !        DETAI
@@ -155,8 +159,8 @@ subroutine irrini(fami, kpg, ksp, typess, essai, &
 !
 !        (DEPS(3))
         if (mod(1:6) .eq. 'C_PLAN') then
-            deps(3) = nun*( &
-                      (dp+dpi)*(dfds(1)+dfds(2))+2.d0*dg-deps(1)-deps(2))+dfds(3)*(dp+dpi)+dg
+            deps(3) = nun*((dp+dpi)*(dfds(1)+dfds(2))+2.d0*dg-deps(1)-deps(2))+dfds(3)*(dp+dpi &
+                                                                                        )+dg
         end if
 !
 !        DSIG

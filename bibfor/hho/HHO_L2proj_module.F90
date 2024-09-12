@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,11 +57,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)          :: hhoFace
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: FuncValuesQP(MAX_QP_FACE)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_FACE_SCAL)
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: FuncValuesQP(MAX_QP_FACE)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_FACE_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -94,7 +94,8 @@ contains
 !
 ! ---- Solve the system
 !
-        call dposv('U', mbs, 1, faceMass, MSIZE_FACE_SCAL, coeff_L2Proj, MSIZE_FACE_SCAL, info)
+        call dposv('U', mbs, 1, faceMass, MSIZE_FACE_SCAL, &
+                   coeff_L2Proj, MSIZE_FACE_SCAL, info)
 !
 ! ---- Sucess ?
 !
@@ -112,11 +113,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)          :: hhoFace
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: FuncValuesQP(3, MAX_QP_FACE)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_FACE_VEC)
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: FuncValuesQP(3, MAX_QP_FACE)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_FACE_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -150,7 +151,8 @@ contains
 !
 ! ---- Solve the system
 !
-        call dposv('U', mbs, hhoFace%ndim+1, faceMass, MSIZE_FACE_SCAL, coeff_L2Proj, mbs, info)
+        call dposv('U', mbs, hhoFace%ndim+1, faceMass, MSIZE_FACE_SCAL, &
+                   coeff_L2Proj, mbs, info)
 !
 ! ---- Sucess ?
 !
@@ -168,11 +170,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: FuncValuesQP(MAX_QP_CELL)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_CELL_SCAL)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: FuncValuesQP(MAX_QP_CELL)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_CELL_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -205,7 +207,8 @@ contains
 !
 ! ---- Solve the system
 !
-        call dposv('U', mbs, 1, cellMass, MSIZE_CELL_SCAL, coeff_L2Proj, MSIZE_CELL_SCAL, info)
+        call dposv('U', mbs, 1, cellMass, MSIZE_CELL_SCAL, &
+                   coeff_L2Proj, MSIZE_CELL_SCAL, info)
 !
 ! ---- Sucess ?
 !
@@ -223,11 +226,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: FuncValuesQP(3, MAX_QP_CELL)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_CELL_VEC)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: FuncValuesQP(3, MAX_QP_CELL)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_CELL_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -261,7 +264,8 @@ contains
 !
 ! ---- Solve the system
 !
-        call dposv('U', mbs, hhoCell%ndim, cellMass, MSIZE_CELL_SCAL, coeff_L2Proj, mbs, info)
+        call dposv('U', mbs, hhoCell%ndim, cellMass, MSIZE_CELL_SCAL, &
+                   coeff_L2Proj, mbs, info)
 !
 ! ---- Sucess ?
 !
@@ -275,16 +279,17 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj, all)
+    subroutine hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj, &
+                             all)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Data), intent(in)          :: hhoData
-        character(len=8), intent(in)        :: func
-        real(kind=8), intent(in)            :: time
-        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_TDOFS_SCAL)
-        aster_logical, intent(in), optional          :: all
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        character(len=8), intent(in) :: func
+        real(kind=8), intent(in) :: time
+        real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_TDOFS_SCAL)
+        aster_logical, intent(in), optional :: all
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -344,8 +349,8 @@ contains
 !
 ! -------------- Value of the function at the quadrature point
 !
-                call hhoFuncFScalEvalQp(hhoQuadFace, func, nbpara, nompar, &
-                                        valpar, hhoCell%ndim, FuncValuesFaceQP)
+                call hhoFuncFScalEvalQp(hhoQuadFace, func, nbpara, nompar, valpar, &
+                                        hhoCell%ndim, FuncValuesFaceQP)
 !
 !
 ! -------------- Compute L2 projection
@@ -362,8 +367,8 @@ contains
 !
 ! -------------- Value of the function at the quadrature point
 !
-        call hhoFuncFScalEvalQp(hhoQuadCell, func, nbpara, nompar, &
-                                valpar, hhoCell%ndim, FuncValuesCellQP)
+        call hhoFuncFScalEvalQp(hhoQuadCell, func, nbpara, nompar, valpar, &
+                                hhoCell%ndim, FuncValuesCellQP)
 !
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                                coeff_L2Proj(ind))
@@ -374,17 +379,18 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoL2ProjVec(hhoCell, hhoData, func, time, coeff_L2Proj, all)
+    subroutine hhoL2ProjVec(hhoCell, hhoData, func, time, coeff_L2Proj, &
+                            all)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Data), intent(in)          :: hhoData
-        character(len=8), intent(in)        :: func(*)
-        real(kind=8), intent(in)            :: time
-        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_TDOFS_VEC)
-        aster_logical, intent(in), optional   :: all
-
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        character(len=8), intent(in) :: func(*)
+        real(kind=8), intent(in) :: time
+        real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_TDOFS_VEC)
+        aster_logical, intent(in), optional :: all
+!
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -405,6 +411,7 @@ contains
         real(kind=8) :: FuncValuesCellQP(3, MAX_QP_CELL), FuncValuesFaceQP(3, MAX_QP_FACE)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
         aster_logical :: with_faces
+        blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
@@ -446,9 +453,8 @@ contains
 ! -------------- Value of the function at the quadrature point
 !
                 do idim = 1, hhoCell%ndim
-                    call hhoFuncFScalEvalQp(hhoQuadFace, func(idim), nbpara, nompar, &
-                                            valpar, hhoCell%ndim, &
-                                            FuncValuesFaceQP(idim, 1:MAX_QP_FACE))
+                    call hhoFuncFScalEvalQp(hhoQuadFace, func(idim), nbpara, nompar, valpar, &
+                                            hhoCell%ndim, FuncValuesFaceQP(idim, 1:MAX_QP_FACE))
                 end do
 !
 ! -------------- Compute L2 projection
@@ -456,7 +462,10 @@ contains
                 call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesFaceQP, &
                                       hhoData%face_degree(), rhs_face)
             end if
-            call dcopy(fbs, rhs_face, 1, coeff_L2Proj(ind), 1)
+            b_n = to_blas_int(fbs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rhs_face, b_incx, coeff_L2Proj(ind), b_incy)
             ind = ind+fbs
         end do
 !
@@ -467,14 +476,17 @@ contains
 ! -------------- Value of the function at the quadrature point
 !
         do idim = 1, hhoCell%ndim
-            call hhoFuncFScalEvalQp(hhoQuadCell, func(idim), nbpara, nompar, &
-                                    valpar, hhoCell%ndim, FuncValuesCellQP(idim, 1:MAX_QP_CELL))
+            call hhoFuncFScalEvalQp(hhoQuadCell, func(idim), nbpara, nompar, valpar, &
+                                    hhoCell%ndim, FuncValuesCellQP(idim, 1:MAX_QP_CELL))
         end do
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
-        call dcopy(cbs, rhs_cell, 1, coeff_L2Proj(ind), 1)
-
+        b_n = to_blas_int(cbs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, rhs_cell, b_incx, coeff_L2Proj(ind), b_incy)
+!
 !
     end subroutine
 !
@@ -486,10 +498,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Data), intent(in)          :: hhoData
-        real(kind=8), intent(in)            :: field(*)
-        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_TDOFS_SCAL)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        real(kind=8), intent(in) :: field(*)
+        real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -507,7 +519,8 @@ contains
         real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL), FuncValuesFaceQP(MAX_QP_FACE)
         real(kind=8) :: FieldValuesNodes(27)
         real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)
-
+        blas_int :: b_incx, b_incy, b_n
+!
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
@@ -535,9 +548,12 @@ contains
 !
 ! -------------- Compute L2 projection
 !
-            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesFaceQP, &
-                                   hhoData%face_degree(), rhs_face)
-            call dcopy(fbs, rhs_face, 1, coeff_L2Proj(ind), 1)
+            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesFaceQP, hhoData%face_degree(), &
+                                   rhs_face)
+            b_n = to_blas_int(fbs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rhs_face, b_incx, coeff_L2Proj(ind), b_incy)
             ind = ind+fbs
         end do
 !
@@ -551,7 +567,10 @@ contains
 !
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                                rhs_cell)
-        call dcopy(cbs, rhs_cell, 1, coeff_L2Proj(ind), 1)
+        b_n = to_blas_int(cbs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, rhs_cell, b_incx, coeff_L2Proj(ind), b_incy)
 !
     end subroutine
 !

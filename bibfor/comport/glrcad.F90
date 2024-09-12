@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,6 +98,7 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara, &
     integer :: nmief, newief
 !         NMIEF > 0 : NBN HORS DE LA ZONE DE DEFINITION DE MP
     integer :: nmprox(2), newpro(2)
+    blas_int :: b_incx, b_incy, b_n
 !         NMPROX > 0 : NBN DANS ZONE DE CRITIQUE
 !---------------------------------------------
 !
@@ -244,8 +245,8 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara, &
 !     LA METHODE BRINGBACK EST UTILISEE
 !     POUR ESSAYER DE LE RAMENER SUR LA SURFACE
 !
-                    if (fplass(newnbn, newpla, 1) .gt. newzef .or. fplass(newnbn, newpla, 2) &
-                        .gt. newzef) then
+                    if (fplass(newnbn, newpla, 1) .gt. newzef .or. &
+                        fplass(newnbn, newpla, 2) .gt. newzef) then
 !
 !     PROCEDURE BRINGBACK
                         call brbagl(zimat, newnbn, newpla, newdpl, newddp, &
@@ -343,7 +344,10 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara, &
         end do
     end do
 !
-    call dcopy(36, delas, 1, dsidep, 1)
+    b_n = to_blas_int(36)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, delas, b_incx, dsidep, b_incy)
 !
 !     REALISE LE CALCUL DE LA MATRICE TANGENTE
     call dxktan(dtg, mp1, mp2, nbackn, ncrit, &

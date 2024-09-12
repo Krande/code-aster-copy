@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 ! aslint: disable=
     implicit none
@@ -61,7 +61,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !
     integer :: nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j
     integer :: jmail, idlino, idnono, ino1, ino2, ino
-    integer ::  nbnor, irest, nbma
+    integer :: nbnor, irest, nbma
     real(kind=8) :: c1(3), c2(3), nb(3), c1nb(3), c1c2(3), lc1c2, psca, zero
     real(kind=8) :: rfut, rfut2, lfut, lcumul, xc1h, xc2h, r, c2nb(3), lc1nb, x
     real(kind=8) :: y, z, xmin, xmax, lc2nb, c2h(3), ymin, ymax, zmin, zmax
@@ -74,6 +74,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     integer, pointer :: noeuds_trouves(:) => null()
     integer, pointer :: travail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -251,12 +252,18 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
             lc1nb = c1nb(1)*c1nb(1)+c1nb(2)*c1nb(2)+c1nb(3)*c1nb(3)
             lc2nb = c2nb(1)*c2nb(1)+c2nb(2)*c2nb(2)+c2nb(3)*c2nb(3)
 !
-            psca = ddot(3, c1nb, 1, c1c2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            psca = ddot(b_n, c1nb, b_incx, c1c2, b_incy)
             c1h(1) = psca*c1c2(1)/lc1c2
             c1h(2) = psca*c1c2(2)/lc1c2
             c1h(3) = psca*c1c2(3)/lc1c2
             xc1h = c1h(1)*c1h(1)+c1h(2)*c1h(2)+c1h(3)*c1h(3)
-            psca = ddot(3, c2nb, 1, c1c2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            psca = ddot(b_n, c2nb, b_incx, c1c2, b_incy)
             c2h(1) = psca*c1c2(1)/lc1c2
             c2h(2) = psca*c1c2(2)/lc1c2
             c2h(3) = psca*c1c2(3)/lc1c2

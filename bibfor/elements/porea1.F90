@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine porea1(nno, nc, deplm, deplp, geom, &
                   gamma, vecteu, pgl, xl1, angp)
     implicit none
@@ -69,6 +69,7 @@ subroutine porea1(nno, nc, deplm, deplp, geom, &
     integer :: iadzi, iazk24
     character(len=24) :: valkm(2)
     real(kind=8) :: valrm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
     ASSERT(nno .eq. 2)
@@ -94,7 +95,10 @@ subroutine porea1(nno, nc, deplm, deplp, geom, &
     call normev(xdn0, xl0)
     call normev(xdn1, xl1)
 !   si angle > pi/8 : cos(angle) < 0.9238
-    cosangle = ddot(3, xdn0, 1, xdn1, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cosangle = ddot(b_n, xdn0, b_incx, xdn1, b_incy)
     if (cosangle .lt. 0.9238) then
         call tecael(iadzi, iazk24)
         valkm(1) = zk24(iazk24+3-1)
@@ -121,8 +125,14 @@ subroutine porea1(nno, nc, deplm, deplp, geom, &
 !   calcul des deux premiers angles nautiques au temps t+, pour mémorisation
     call angvx(xd1, alfa1, beta1)
 !
-    tet1 = ddot(3, utg(4), 1, xd1, 1)
-    tet2 = ddot(3, utg(nc+4), 1, xd1, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    tet1 = ddot(b_n, utg(4), b_incx, xd1, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    tet2 = ddot(b_n, utg(nc+4), b_incx, xd1, b_incy)
     tet1 = tet1/xl1
     tet2 = tet2/xl1
     gamma1 = gamma+dgamma+(tet1+tet2)/2.d0

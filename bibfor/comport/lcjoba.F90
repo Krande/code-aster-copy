@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,6 +92,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum, &
     real(kind=8) :: d0n, dfn, y0n, yin, confi, epsco
     real(kind=8) :: xmul, fx, dfds, dfdx, dphids, dphidx, lamdap
     real(kind=8) :: valres(14)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ======================================================================
 !                            INITIALISATION
@@ -170,9 +171,17 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum, &
 !
 ! CALCUL DU SAUT EN T+
 !
-    call dcopy(2, sum, 1, su, 1)
-    if (resi) call daxpy(2, 1.d0, dsu, 1, su, &
-                         1)
+    b_n = to_blas_int(2)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, sum, b_incx, su, b_incy)
+    if (resi) then
+        b_n = to_blas_int(2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, dsu, b_incx, su, &
+                   b_incy)
+    end if
 !
 !  - TRANSFORMATION DES SAUTS EN DEFORMATIONS
 !
@@ -257,8 +266,9 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum, &
 !
 !         ENDOMMAGEMENT EN REGION 1
 !
-            df0t = (sqrt(y0t/yit))*exp(ad1*((sqrt(2.d0/dsidep(2, 2))* &
-                                             (sqrt(yit)-sqrt(y0t)))**bd1))
+            df0t = ( &
+                   sqrt(y0t/yit))*exp(ad1*((sqrt(2.d0/dsidep(2, 2))*(sqrt(yit)-sqrt(y0t)))**bd1) &
+                                      )
             zf0 = yit-y0t
 !
             if (fd2 .gt. 0.d0) then

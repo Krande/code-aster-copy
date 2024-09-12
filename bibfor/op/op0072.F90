@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0072()
 !
 !  CALCUL PROJECTION VECTEUR SUR BASE DE RITZ
@@ -76,6 +76,7 @@ subroutine op0072()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refe(:) => null()
     integer, pointer :: nequ(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -211,12 +212,18 @@ subroutine op0072()
 !
 ! --------- RECOPIE DU IEME MODE
 !
-            call dcopy(neq, zr(idbase+(i-1)*neq), 1, zr(idvect), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(idbase+(i-1)*neq), b_incx, zr(idvect), b_incy)
 !
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
             if (typvec .eq. 'R') then
-                zr(iavale+i-1) = ddot(neq, zr(idvect), 1, zr(iadvec), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(iavale+i-1) = ddot(b_n, zr(idvect), b_incx, zr(iadvec), b_incy)
             else
                 do j = 1, neq
                     zc(idvec3+j-1) = dcmplx(zr(idvect+j-1), zero)
@@ -241,7 +248,10 @@ subroutine op0072()
 !
 ! ----- RECOPIE DU IEME MODE
 !
-            call dcopy(neq, zr(idbase+(i-1)*neq), 1, zr(idvec1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(idbase+(i-1)*neq), b_incx, zr(idvec1), b_incy)
 !
 !-------- PRODUIT SCALAIRE MODE(I)*MODE(J)
 !
@@ -249,11 +259,17 @@ subroutine op0072()
 !
 ! ------- RECOPIE DU JEME MODE
 !
-                call dcopy(neq, zr(idbase+(j-1)*neq), 1, zr(idvec2), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(idbase+(j-1)*neq), b_incx, zr(idvec2), b_incy)
 !
 ! --------- PRODUIT SCALAIRE MODE(I)*MODE(J)
 !
-                pij = ddot(neq, zr(idvec1), 1, zr(idvec2), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                pij = ddot(b_n, zr(idvec1), b_incx, zr(idvec2), b_incy)
                 zr(iamatr+i+(j-1)*nbmode-1) = pij
                 zr(iamatr+j+(i-1)*nbmode-1) = pij
             end do
@@ -265,12 +281,18 @@ subroutine op0072()
 !
 ! ------- RECOPIE DU IEME MODE
 !
-            call dcopy(neq, zr(idbase+(i-1)*neq), 1, zr(idvec1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(idbase+(i-1)*neq), b_incx, zr(idvec1), b_incy)
 !
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
             if (typvec .eq. 'R') then
-                zr(idvec2+i-1) = ddot(neq, zr(idvec1), 1, zr(iadvec), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(idvec2+i-1) = ddot(b_n, zr(idvec1), b_incx, zr(iadvec), b_incy)
             else
                 do j = 1, neq
                     zc(idvec3+j-1) = dcmplx(zr(idvec1+j-1), zero)
@@ -287,7 +309,10 @@ subroutine op0072()
         end if
         if (typvec .eq. 'R') then
             call rrlds(zr(iamatr), nbmode, nbmode, zr(idvec2), 1)
-            call dcopy(nbmode, zr(idvec2), 1, zr(iavale), 1)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(idvec2), b_incx, zr(iavale), b_incy)
         else
             call utmess('F', 'ALGORITH9_1')
         end if

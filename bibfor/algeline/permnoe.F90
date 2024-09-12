@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
     implicit none
 !
@@ -65,23 +65,24 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
     character(len=8) :: typm
     character(len=24) :: cooabs, conseg, typseg, nommas, connex, typmai
 !
-    integer, pointer          :: grmai(:) => null()
-    integer, pointer          :: vois1(:) => null()
-    integer, pointer          :: vois2(:) => null()
-    integer, pointer          :: ptch(:) => null()
-    integer, pointer          :: lnoe(:) => null()
-    integer, pointer          :: v_ach(:) => null()
-    integer, pointer          :: maille(:) => null()
-    real(kind=8), pointer     :: copyv(:) => null()
-    integer, pointer          :: tym(:) => null()
-
+    integer, pointer :: grmai(:) => null()
+    integer, pointer :: vois1(:) => null()
+    integer, pointer :: vois2(:) => null()
+    integer, pointer :: ptch(:) => null()
+    integer, pointer :: lnoe(:) => null()
+    integer, pointer :: v_ach(:) => null()
+    integer, pointer :: maille(:) => null()
+    real(kind=8), pointer :: copyv(:) => null()
+    integer, pointer :: tym(:) => null()
+    blas_int :: b_incx, b_incy, b_n
+!
 !
 !   -0.3- Initialization
     cooabs = maillage//'.ABSC_CURV .VALE'
     nommas = maillage//'.NOMMAI'
     connex = maillage//'.CONNEX'
     typmai = maillage//'.TYPMAIL'
-
+!
     call jemarq()
 !
 !   ====================================================================
@@ -91,7 +92,7 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
         call utmess('F', 'UTILITAI2_84')
     end if
     call jeveuo(cooabs, 'L', labs)
-
+!
 !     --- LECTURE DES CARACTERISTIQUES DU GROUPE DE MAILLES : ADRESSE
 !                   ET NOMBRE DE MAILLES
 !
@@ -133,7 +134,7 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
     do im = 1, nbrma
         tym(im) = kseg
     end do
-
+!
 !     IL FAUT CREER UNE TABLE DE CONNECTIVITE POUR LES SEG2
     call jecrec(conseg, 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbseg2)
@@ -156,7 +157,7 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
                 nbchm)
     call i2sens(v_ach, nbseg2*2, grmai, nbseg2, conseg, &
                 typseg, zr(labs))
-
+!
 !     --- CREATION D UNE LISTE ORDONNEE DE NOEUDS ---
     isens = 1
     do i = 1, nbseg2
@@ -167,7 +168,7 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
         end if
         call i2extf(mi, 1, conseg, typseg, ing, &
                     ind)
-
+!
         if (isens .eq. 1) then
             lnoe(i) = ing
             lnoe(i+1) = ind
@@ -176,20 +177,24 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
             lnoe(i) = ind
         end if
     end do
-
+!
 !
     ASSERT(nbno .eq. (nbseg2+1))
     AS_ALLOCATE(nbno*nbmod*nbddl, vr=copyv)
-    call dcopy(nbno*nbmod*nbddl, deform, 1, copyv, 1)
-
+    b_n = to_blas_int(nbno*nbmod*nbddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, deform, b_incx, copyv, b_incy)
+!
     do i = 1, nbno
         do j = 1, nbmod
             do k = 1, nbddl
-                deform((j-1)*nbno*nbddl+(i-1)*nbddl+k) = copyv((j-1)*nbno*nbddl+(lnoe(i)-1)*nbddl+k)
+                deform((j-1)*nbno*nbddl+(i-1)*nbddl+k) = copyv( &
+                                                         (j-1)*nbno*nbddl+(lnoe(i)-1)*nbddl+k)
             end do
         end do
     end do
-
+!
     AS_DEALLOCATE(vi=grmai)
     AS_DEALLOCATE(vi=vois1)
     AS_DEALLOCATE(vi=vois2)
@@ -198,10 +203,10 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
     AS_DEALLOCATE(vi=v_ach)
     AS_DEALLOCATE(vi=maille)
     AS_DEALLOCATE(vr=copyv)
-
+!
     call jedetr(typseg)
     call jedetr(conseg)
-
+!
     call jedema()
-
+!
 end subroutine

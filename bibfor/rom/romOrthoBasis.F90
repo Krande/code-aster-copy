@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,7 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
     real(kind=8) :: normr_new_mode, normr_new_mode1, normr_new_mode2
     character(len=8) :: resultName
     character(len=24) :: fieldIden
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,19 +80,26 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
         call jeveuo(new_basis(1:19)//'.VALE', 'E', vr=vr_new_mode)
         AS_ALLOCATE(vr=vr_new_mode1, size=nbEqua)
         call romAlgoMGS(nbMode, nbEqua, 'R', fieldIden, resultName, &
-                        vr_mode_in=vr_new_mode, &
-                        vr_mode_out=vr_new_mode1)
-        normr_new_mode = sqrt(ddot(nbEqua, vr_new_mode, 1, vr_new_mode, 1))
-        normr_new_mode1 = sqrt(ddot(nbEqua, vr_new_mode1, 1, vr_new_mode1, 1))
+                        vr_mode_in=vr_new_mode, vr_mode_out=vr_new_mode1)
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normr_new_mode = sqrt(ddot(b_n, vr_new_mode, b_incx, vr_new_mode, b_incy))
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normr_new_mode1 = sqrt(ddot(b_n, vr_new_mode1, b_incx, vr_new_mode1, b_incy))
         if (normr_new_mode1 .gt. 0.717*normr_new_mode) then
             vr_new_mode(1:nbEqua) = vr_new_mode1(1:nbEqua)/normr_new_mode1
             AS_DEALLOCATE(vr=vr_new_mode1)
         else
             AS_ALLOCATE(vr=vr_new_mode2, size=nbEqua)
             call romAlgoMGS(nbMode, nbEqua, 'R', fieldIden, resultName, &
-                            vr_mode_in=vr_new_mode1, &
-                            vr_mode_out=vr_new_mode2)
-            normr_new_mode2 = sqrt(ddot(nbEqua, vr_new_mode2, 1, vr_new_mode2, 1))
+                            vr_mode_in=vr_new_mode1, vr_mode_out=vr_new_mode2)
+            b_n = to_blas_int(nbEqua)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            normr_new_mode2 = sqrt(ddot(b_n, vr_new_mode2, b_incx, vr_new_mode2, b_incy))
             if (normr_new_mode2 .gt. 0.717*normr_new_mode1) then
                 vr_new_mode(1:nbEqua) = vr_new_mode2(1:nbEqua)/normr_new_mode2
                 AS_DEALLOCATE(vr=vr_new_mode1)
@@ -106,8 +114,7 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
         call jeveuo(new_basis(1:19)//'.VALE', 'E', vc=vc_new_mode)
         AS_ALLOCATE(vc=vc_new_mode1, size=nbEqua)
         call romAlgoMGS(nbMode, nbEqua, 'C', fieldIden, resultName, &
-                        vc_mode_in=vc_new_mode, &
-                        vc_mode_out=vc_new_mode1)
+                        vc_mode_in=vc_new_mode, vc_mode_out=vc_new_mode1)
         normc_new_mode = sqrt(zdotc(nbEqua, vc_new_mode, 1, vc_new_mode, 1))
         normc_new_mode1 = sqrt(zdotc(nbEqua, vc_new_mode1, 1, vc_new_mode1, 1))
         if (real(normc_new_mode1) .gt. 0.717*real(normc_new_mode)) then
@@ -116,8 +123,7 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
         else
             AS_ALLOCATE(vc=vc_new_mode2, size=nbEqua)
             call romAlgoMGS(nbMode, nbEqua, 'C', fieldIden, resultName, &
-                            vc_mode_in=vc_new_mode1, &
-                            vc_mode_out=vc_new_mode2)
+                            vc_mode_in=vc_new_mode1, vc_mode_out=vc_new_mode2)
             normc_new_mode2 = sqrt(zdotc(nbEqua, vc_new_mode2, 1, vc_new_mode2, 1))
             if (real(normc_new_mode2) .gt. 0.717*real(normc_new_mode1)) then
                 vc_new_mode(1:nbEqua) = vc_new_mode2(1:nbEqua)/normc_new_mode2

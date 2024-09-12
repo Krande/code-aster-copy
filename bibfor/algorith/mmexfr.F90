@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1, &
                   tau2)
 !
@@ -66,6 +66,7 @@ subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1, &
     real(kind=8) :: tau1fr(3), tau2fr(3)
     real(kind=8) :: extau1, extau2
     character(len=8) :: elem_mast_name
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,13 +84,28 @@ subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1, &
         vdirex(2) = mminfr(ds_contact%sdcont_defi, 'EXCL_FROT_DIRY', i_zone)
         vdirex(3) = mminfr(ds_contact%sdcont_defi, 'EXCL_FROT_DIRZ', i_zone)
 ! ----- ON LA PROJETTE SUR LE PLAN TANGENT
-        call dcopy(3, tau1, 1, tau1fr, 1)
-        call dcopy(3, tau2, 1, tau2fr, 1)
-        extau1 = ddot(3, vdirex, 1, tau1, 1)
-        extau2 = ddot(3, vdirex, 1, tau2, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tau1, b_incx, tau1fr, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tau2, b_incx, tau2fr, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        extau1 = ddot(b_n, vdirex, b_incx, tau1, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        extau2 = ddot(b_n, vdirex, b_incx, tau2, b_incy)
         call dscal(3, extau1, tau1fr, 1)
-        call daxpy(3, extau2, tau2fr, 1, tau1fr, &
-                   1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, extau2, tau2fr, b_incx, tau1fr, &
+                   b_incy)
         call normev(tau1fr, norme)
         if (norme .le. r8prem()) then
             call cfnomm(mesh, ds_contact%sdcont_defi, 'MAIL', elem_mast_indx, elem_mast_name)
@@ -100,8 +116,14 @@ subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1, &
         call mmnorm(model_ndim, tau1, tau2, norm, norme)
         call provec(tau1fr, norm, tau2fr)
 ! ----- RECOPIE
-        call dcopy(3, tau1fr, 1, tau1, 1)
-        call dcopy(3, tau2fr, 1, tau2, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tau1fr, b_incx, tau1, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tau2fr, b_incx, tau2, b_incy)
     end if
 !
 end subroutine

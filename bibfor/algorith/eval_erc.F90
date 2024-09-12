@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine eval_erc(baseno,dynam1,vecterc,nommes,matobs,obsdim,ifreq,omega,alpha,cout_fon,terme_uv)
+!
+subroutine eval_erc(baseno, dynam1, vecterc, nommes, matobs, &
+                    obsdim, ifreq, omega, alpha, cout_fon, &
+                    terme_uv)
 !
 !
     implicit none
@@ -75,9 +77,10 @@ subroutine eval_erc(baseno,dynam1,vecterc,nommes,matobs,obsdim,ifreq,omega,alpha
     integer :: iobsval, ii, n_fil, n_col, idesc, nvect_mes, nvale_norme, ivale_norm, lmat
     real(kind=8) :: coef_mes, coef_alpha, terme_obs
     aster_logical :: isdiag
+    blas_int :: b_incx, b_incy, b_n
 !
     bl11 = '           '
-
+!
 ! --- CALCUL DU PRODUIT (H*u-\tilde{u})
 ! --- --- recuperation de la mesure
     call getvtx(' ', 'CHAMP_MESURE', scal=type_mes)
@@ -97,7 +100,10 @@ subroutine eval_erc(baseno,dynam1,vecterc,nommes,matobs,obsdim,ifreq,omega,alpha
     call jeveuo(nom_objev_mes//'.VALE', 'L', i_mes)
 !  on recopie la mesure dans un vecteur de travail avec signe oppose
     call wkvect(baseno//'.EVALF_AUX1.VAL', 'V V R', obsdim(1), iaux1)
-    call dcopy(obsdim(1), zr(i_mes), 1, zr(iaux1), 1)
+    b_n = to_blas_int(obsdim(1))
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(i_mes), b_incx, zr(iaux1), b_incy)
     call dscal(obsdim(1), -1.d0*coef_mes, zr(iaux1), 1)
 ! --- recuperation de la matrice d'observation
     call jeveuo(matobs(1), 'L', iobsfil)
@@ -128,36 +134,47 @@ subroutine eval_erc(baseno,dynam1,vecterc,nommes,matobs,obsdim,ifreq,omega,alpha
     call jeveuo(jexnum(mnorme//bl11//'.VALM', 1), 'L', ivale_norm)
 !
 ! --- PRODUIT  (alpha/(1-alpha))*(H*u-\tilde{u})^T*G*(H*u-\tilde{u})
-
+!
 ! --- on cree un deuxieme vecteur de travail  iaux2
     call wkvect(baseno//'.EVALF_AUX2.VAL', 'V V R', nvect_mes, iaux2)
     call r8inir(nvect_mes, 0.d0, zr(iaux2), 1)
-
+!
 ! --- premier produit matrice vecteur   coef_alpha*G*(H*u-\tilde{u})
     coef_alpha = alpha/(1.0d0-alpha)
     if (isdiag) then
-
+!
         do ii = 1, nvect_mes
             zr(iaux2-1+ii) = zr(ivale_norm-1+ii)*zr(iaux1-1+ii)*coef_alpha
         end do
     else
-        call dspmv('u', nvect_mes, coef_alpha, zr(ivale_norm), zr(iaux1), 1, 0.d0, zr(iaux2), 1)
+        call dspmv('u', nvect_mes, coef_alpha, zr(ivale_norm), zr(iaux1), &
+                   1, 0.d0, zr(iaux2), 1)
     end if
 !   on finalise par le prduit de iaux1 et iaux2 pour avoir le produit final du terme d'obs
-    terme_obs = ddot(nvect_mes, zr(iaux1), 1, zr(iaux2), 1)
+    b_n = to_blas_int(nvect_mes)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    terme_obs = ddot(b_n, zr(iaux1), b_incx, zr(iaux2), b_incy)
 ! --- PRODUIT DU BLOC DYNAM1 AVEC LE CHAMP (u-v)
     call wkvect(baseno//'.EVALF_AUX3.VAL', 'V V R', obsdim(2), iaux3)
-    call dcopy(obsdim(2), vecterc(1), 1, zr(iaux3), 1)
+    b_n = to_blas_int(obsdim(2))
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vecterc(1), b_incx, zr(iaux3), b_incy)
     call wkvect(baseno//'.EVALF_AUX4.VAL', 'V V R', obsdim(2), iaux4)
     call r8inir(obsdim(2), 0.d0, zr(iaux4), 1)
     call jeveuo(dynam1//'.&INT', 'L', lmat)
-    call mrmult('ZERO', lmat, zr(iaux3), zr(iaux4), 1, .false._1)
-    terme_uv = 0.5d0*ddot(obsdim(2), zr(iaux3), 1, zr(iaux4), 1)
+    call mrmult('ZERO', lmat, zr(iaux3), zr(iaux4), 1, &
+                .false._1)
+    b_n = to_blas_int(obsdim(2))
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    terme_uv = 0.5d0*ddot(b_n, zr(iaux3), b_incx, zr(iaux4), b_incy)
     cout_fon = terme_uv+terme_obs
 !     NETOYAGE DES OBJETS JEVEUX TEMPORAIRES
     call jedetr(baseno//'.EVALF_AUX1.VAL')
     call jedetr(baseno//'.EVALF_AUX2.VAL')
     call jedetr(baseno//'.EVALF_AUX3.VAL')
     call jedetr(baseno//'.EVALF_AUX4.VAL')
-
+!
 end subroutine

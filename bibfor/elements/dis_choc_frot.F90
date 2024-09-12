@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine dis_choc_frot(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out)          :: iret
+    integer, intent(out) :: iret
 !
 ! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
@@ -60,19 +60,20 @@ subroutine dis_choc_frot(for_discret, iret)
     integer :: iretlc, ifono, icontm, icontp, iiter, iterat
 !
 !   Les variables internes
-    integer, parameter  :: nbvari = 10
-    real(kind=8)        :: varmo(nbvari), varpl(nbvari)
+    integer, parameter :: nbvari = 10
+    real(kind=8) :: varmo(nbvari), varpl(nbvari)
 !
     real(kind=8) :: dvl(12), dpe(12), dve(12), ulp(12), fl(12), force(3)
     real(kind=8) :: klc(144), klv(78)
 !
-    real(kind=8)     :: r8bid
+    real(kind=8) :: r8bid
     character(len=8) :: k8bid
 !
     real(kind=8) :: valre1(1)
-    integer      :: codre1(1)
+    integer :: codre1(1)
 !
     aster_logical :: okelem, IsSymetrique, IsCoulomb, IsDynamique, IsStatique, Prediction
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,7 +96,10 @@ subroutine dis_choc_frot(for_discret, iret)
             call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
         end if
     else
-        call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
+        b_n = to_blas_int(for_discret%nbt)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jdc), b_incx, klv, b_incy)
     end if
     call jevech('PMATERC', 'L', imat)
     call jevech('PVARIMR', 'L', ivarim)
@@ -143,11 +147,12 @@ subroutine dis_choc_frot(for_discret, iret)
     !
     ulp(:) = for_discret%ulm(:)+for_discret%dul(:)
     !
-    ! Traitement du cas coulomb=0
+! Traitement du cas coulomb=0
     IsCoulomb = ASTER_FALSE
-    call rcvala(zi(imat), ' ', 'DIS_CONTACT', 0, ' ', [0.0d0], &
-                1, ['COULOMB'], valre1, codre1, 0, nan='NON')
-    ! Coulomb existe et >0
+    call rcvala(zi(imat), ' ', 'DIS_CONTACT', 0, ' ', &
+                [0.0d0], 1, ['COULOMB'], valre1, codre1, &
+                0, nan='NON')
+! Coulomb existe et >0
     if (codre1(1) .eq. 0) then
         if (valre1(1) .gt. r8prem()) then
             IsCoulomb = ASTER_TRUE
@@ -155,8 +160,10 @@ subroutine dis_choc_frot(for_discret, iret)
     end if
 !
     okelem = (for_discret%ndim .eq. 3)
-    okelem = okelem .and. ((for_discret%nomte .eq. 'MECA_DIS_T_N') .or. &
-                           (for_discret%nomte .eq. 'MECA_DIS_T_L'))
+    okelem = okelem .and. &
+             ( &
+             (for_discret%nomte .eq. 'MECA_DIS_T_N') .or. (for_discret%nomte .eq. 'MECA_DIS_T_L') &
+             )
 !   Relation de comportement de choc
     if (IsCoulomb .and. IsStatique .and. okelem) then
         IsSymetrique = ASTER_FALSE
@@ -164,10 +171,12 @@ subroutine dis_choc_frot(for_discret, iret)
                                   varmo, force, varpl)
     else
         IsSymetrique = ASTER_TRUE
-        ! Prédiction en dynamique, on retourne les efforts précédents
-        Prediction = IsDynamique .and. (iterat .eq. 1) .and. (for_discret%option .eq. 'RAPH_MECA')
+! Prédiction en dynamique, on retourne les efforts précédents
+        Prediction = IsDynamique .and. (iterat .eq. 1) .and. &
+                     (for_discret%option .eq. 'RAPH_MECA')
         call dis_choc_frot_syme(for_discret, zi(imat), ulp, zr(igeom), klv, &
-                                dvl, dpe, dve, Prediction, force, varmo, varpl)
+                                dvl, dpe, dve, Prediction, force, &
+                                varmo, varpl)
     end if
 !   actualisation de la matrice tangente
     if (for_discret%lMatr) then
@@ -201,7 +210,7 @@ subroutine dis_choc_frot(for_discret, iret)
 !   calcul des efforts généralisés
     if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, neq
                 zr(icontp-1+ii) = fl(ii)+zr(icontm-1+ii)
@@ -235,10 +244,10 @@ subroutine dis_choc_frot(for_discret, iret)
             end do
         end if
     end if
-    ! calcul des efforts généralisés et des forces nodales
+! calcul des efforts généralisés et des forces nodales
     if (for_discret%lVect) then
         call jevech('PVECTUR', 'E', ifono)
-        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, neq
                 fl(ii) = fl(ii)+zr(icontm-1+ii)

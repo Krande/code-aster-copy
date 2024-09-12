@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,6 +88,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr, &
     integer :: zxain
     parameter(cridist=1.d-7)
     aster_logical :: lcont, lajpa, lajpb, lajpc, ajout, cut, arete
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !
 !
@@ -332,8 +333,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr, &
         nd(:) = 0.d0
         do i = 1, nno
             do j = 1, 3
-                nd(j) = nd(j)+zr(jgrlsn-1+3*(nfiss*(i-1)+ifiss-1)+j)/ &
-                        nno
+                nd(j) = nd(j)+zr(jgrlsn-1+3*(nfiss*(i-1)+ifiss-1)+j)/nno
             end do
         end do
 !
@@ -356,15 +356,24 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr, &
                 m(j) = pinter((i-1)*3+j)
                 am(j) = m(j)-a(j)
             end do
-            ps = ddot(3, am, 1, nd, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps = ddot(b_n, am, b_incx, nd, b_incy)
 !
-            ps1 = ddot(3, nd, 1, nd, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps1 = ddot(b_n, nd, b_incx, nd, b_incy)
             lambda = -ps/ps1
             do j = 1, 3
                 h(j) = m(j)+lambda*nd(j)
                 oh(j) = h(j)-bar(j)
             end do
-            ps = ddot(3, oa, 1, oh, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps = ddot(b_n, oa, b_incx, oh, b_incy)
 !
             noh = sqrt(oh(1)*oh(1)+oh(2)*oh(2)+oh(3)*oh(3))
             cos = ps/(noa*noh)
@@ -372,7 +381,10 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr, &
             theta(i) = trigom('ACOS', cos)
 !        SIGNE DE THETA (06/01/2004)
             call provec(oa, oh, r3)
-            ps = ddot(3, r3, 1, nd, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps = ddot(b_n, r3, b_incx, nd, b_incy)
             if (ps .lt. eps) theta(i) = -1*theta(i)+2*r8pi()
 !
         end do
@@ -482,8 +494,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr, &
             nd(:) = 0.d0
             do i = 1, nno
                 do j = 1, 2
-                    nd(j) = nd(j)+zr(jgrlsn-1+2*(nfiss*(i-1)+ifiss-1)+j) &
-                            /nno
+                    nd(j) = nd(j)+zr(jgrlsn-1+2*(nfiss*(i-1)+ifiss-1)+j)/nno
                 end do
             end do
 !
@@ -496,7 +507,10 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr, &
             abprim(1) = -ab(2)
             abprim(2) = ab(1)
 !
-            if (ddot(2, abprim, 1, nd, 1) .lt. 0.d0) then
+            b_n = to_blas_int(2)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            if (ddot(b_n, abprim, b_incx, nd, b_incy) .lt. 0.d0) then
                 do k = 1, 2
                     tampor(k) = pinter(k)
                     pinter(k) = pinter(2+k)

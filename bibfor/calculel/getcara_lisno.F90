@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, linocara)
+!
+subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, &
+                         linocara)
 !
     implicit none
 !
@@ -62,26 +63,27 @@ subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, linocara)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: k, nuno
-    real(kind=8)  :: d2, d21, d2_1, d3_12, d4_123
-    real(kind=8)  :: x1(3), x2(3), x3(3), x4(3), xm(3)
-    real(kind=8)  :: y2(3), y3(3), xx(3), ym(3), valr(2), ratio
-
+    real(kind=8) :: d2, d21, d2_1, d3_12, d4_123
+    real(kind=8) :: x1(3), x2(3), x3(3), x4(3), xm(3)
+    real(kind=8) :: y2(3), y3(3), xx(3), ym(3), valr(2), ratio
+!
     real(kind=8), pointer :: coor(:) => null()
-
+    blas_int :: b_incx, b_incy, b_n
+!
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-
+!
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coor)
-
+!
 !   1 : linocara(1) : on choisit le 1er
 !   ---------------------------------------
     dim = 0
     nuno = lisno(1)
     linocara(1) = nuno
     x1(1:3) = coor(3*(nuno-1)+1:3*(nuno-1)+3)
-
+!
 !   2 : linocara(2) : le noeud le plus eloigne de x1
 !   ---------------------------------------------------
     d21 = 0.d0
@@ -90,7 +92,10 @@ subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, linocara)
         nuno = lisno(k)
         xm(1:3) = coor(3*(nuno-1)+1:3*(nuno-1)+3)
         xm(1:3) = xm(1:3)-x1(1:3)
-        d2 = ddot(3, xm, 1, xm, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        d2 = ddot(b_n, xm, b_incx, xm, b_incy)
         if (sqrt(d2) .gt. dist_mini) then
             if (d2 .gt. d21) then
                 linocara(2) = nuno
@@ -99,16 +104,19 @@ subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, linocara)
         end if
     end do
     if (linocara(2) .eq. 0) goto 999
-
+!
     dim = dim+1
     nuno = linocara(2)
     x2(1:3) = coor(3*(nuno-1)+1:3*(nuno-1)+3)
 !   y2 : vecteur norme x1 -> x2
     y2(1:3) = x2(1:3)-x1(1:3)
-    d2 = ddot(3, y2, 1, y2, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    d2 = ddot(b_n, y2, b_incx, y2, b_incy)
     d2_1 = sqrt(d2)
     y2(1:3) = y2(1:3)/d2_1
-
+!
 !   3 : linocara(3) : le noeud le plus eloigne de la droite x1 x2
 !   ----------------------------------------------------------------
     d21 = 0.d0
@@ -118,7 +126,10 @@ subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, linocara)
         xm(1:3) = coor(3*(nuno-1)+1:3*(nuno-1)+3)
         ym(1:3) = xm(1:3)-x1(1:3)
         call provec(y2, ym, xx)
-        d2 = ddot(3, xx, 1, xx, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        d2 = ddot(b_n, xx, b_incx, xx, b_incy)
         if (sqrt(d2) .gt. dist_mini) then
             if (d2 .gt. d21) then
                 linocara(3) = nuno
@@ -127,16 +138,19 @@ subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, linocara)
         end if
     end do
     if (linocara(3) .eq. 0) goto 999
-
+!
     dim = dim+1
     nuno = linocara(3)
     d3_12 = sqrt(d21)
     x3(1:3) = coor(3*(nuno-1)+1:3*(nuno-1)+3)
 !   y3 : vecteur norme orthogonal au plan x1, x2, x3
     call provec(y2, x3(1:3)-x1(1:3), y3)
-    d2 = ddot(3, y3, 1, y3, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    d2 = ddot(b_n, y3, b_incx, y3, b_incy)
     y3(1:3) = y3(1:3)/sqrt(d2)
-
+!
     if (d3_12 .lt. 1.d-2*d2_1) then
     end if
 !   -- si d3_12 est petit / d2_1, on alarme :
@@ -146,7 +160,7 @@ subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, linocara)
         valr(2) = d3_12
         call utmess('A', 'CALCULEL5_56', nr=2, valr=valr)
     end if
-
+!
 !   4 : linocara(4) : le noeud le plus eloigne du plan x1 x2 x3
 !   ----------------------------------------------------------------
     d21 = 0.d0
@@ -155,7 +169,10 @@ subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, linocara)
         nuno = lisno(k)
         xm(1:3) = coor(3*(nuno-1)+1:3*(nuno-1)+3)
         ym(1:3) = xm(1:3)-x1(1:3)
-        d2 = abs(ddot(3, y3, 1, ym, 1))
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        d2 = abs(ddot(b_n, y3, b_incx, ym, b_incy))
         if (sqrt(d2) .gt. dist_mini) then
             if (d2 .gt. d21) then
                 linocara(4) = nuno
@@ -164,12 +181,12 @@ subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, linocara)
         end if
     end do
     if (linocara(4) .eq. 0) goto 999
-
+!
     dim = dim+1
     nuno = linocara(4)
     x4(1:3) = coor(3*(nuno-1)+1:3*(nuno-1)+3)
     d4_123 = sqrt(d21)
-
+!
 !   -- si d4_123 est petit / d2_1, on alarme :
     ratio = d4_123/d2_1
     if (ratio .lt. 1.d-2) then
@@ -177,7 +194,7 @@ subroutine getcara_lisno(noma, nno, lisno, dist_mini, dim, linocara)
         valr(2) = d4_123
         call utmess('A', 'CALCULEL5_55', nr=2, valr=valr)
     end if
-
+!
 999 continue
 !
     call jedema()

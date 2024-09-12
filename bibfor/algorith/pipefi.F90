@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ subroutine pipefi(npg, lgpg, mate, geom, vim, &
     aster_logical :: axi
     integer :: i, j, kpg
     real(kind=8) :: up(8), ud(8), sup(2), sud(2), b(2, 8), poids
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
 ! INITIALISATION
@@ -56,12 +57,24 @@ subroutine pipefi(npg, lgpg, mate, geom, vim, &
 !
 ! DEPLACEMENT U(ETA) = UP + ETA * UD
 !
-    call dcopy(8, deplm, 1, up, 1)
-    call daxpy(8, 1.d0, ddepl, 1, up, &
-               1)
-    call daxpy(8, 1.d0, ddepl0, 1, up, &
-               1)
-    call dcopy(8, ddepl1, 1, ud, 1)
+    b_n = to_blas_int(8)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, deplm, b_incx, up, b_incy)
+    b_n = to_blas_int(8)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, ddepl, b_incx, up, &
+               b_incy)
+    b_n = to_blas_int(8)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, ddepl0, b_incx, up, &
+               b_incy)
+    b_n = to_blas_int(8)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, ddepl1, b_incx, ud, b_incy)
 ! BOUCLE SUR LES POINTS DE GAUSS :
 !
     do kpg = 1, npg

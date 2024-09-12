@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0337(option, nomte)
 !.......................................................................
 !
@@ -77,14 +77,15 @@ subroutine te0337(option, nomte)
     integer :: ino, jno, ii
     integer :: i, j, isect, iorig, iorifi, iaxe
     integer :: ivect1, ivect2, ivect3, ivect4, ivect5, ivect6
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 !
 !
     zero = 0.0d0
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx+1
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -387,18 +388,18 @@ subroutine te0337(option, nomte)
             do ino = 1, nno
 !
                 zr(ivect2+3*(ino-1)+1-1) = zr( &
-                                           ivect2+3*(ino-1)+1-1)+zr(ivf+ldec+ino-1)*(xgau-zr(io&
-                                           &rig+1-1) &
+                                           ivect2+3*(ino-1)+1-1)+zr(ivf+ldec+ino-1)*(xgau-zr(iori&
+                                           &g+1-1) &
                                            )*sigau
 !
                 zr(ivect2+3*(ino-1)+2-1) = zr( &
-                                           ivect2+3*(ino-1)+2-1)+zr(ivf+ldec+ino-1)*(ygau-zr(io&
-                                           &rig+2-1) &
+                                           ivect2+3*(ino-1)+2-1)+zr(ivf+ldec+ino-1)*(ygau-zr(iori&
+                                           &g+2-1) &
                                            )*sigau
 !
                 zr(ivect2+3*(ino-1)+3-1) = zr( &
-                                           ivect2+3*(ino-1)+3-1)+zr(ivf+ldec+ino-1)*(zgau-zr(io&
-                                           &rig+3-1) &
+                                           ivect2+3*(ino-1)+3-1)+zr(ivf+ldec+ino-1)*(zgau-zr(iori&
+                                           &g+3-1) &
                                            )*sigau
             end do
 !
@@ -460,10 +461,16 @@ subroutine te0337(option, nomte)
                 gpg(i) = xpg(i)-zr(iorig-1+i)
             end do
             call normev(gpg, norgpg)
-            cosphi = ddot(3, gp0, 1, gpg, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            cosphi = ddot(b_n, gp0, b_incx, gpg, b_incy)
 !PM          CALL PROVEC(GP0,GPG,VSIN)
             call provec(gpg, gp0, vsin)
-            sinphi = ddot(3, e1, 1, vsin, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            sinphi = ddot(b_n, e1, b_incx, vsin, b_incy)
             phi0 = atan2(sinphi, cosphi)
 !JMP          PHI=-PHI0
             phi = phi0

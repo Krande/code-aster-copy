@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ module HHO_basis_module
         type(HHO_monomials) :: hhoMono
         real(kind=8) :: scaling_factor(3) = 0.d0
         real(kind=8) :: rotmat(3, 3) = 0.d0
-
+!
 ! ----- member function
     contains
         procedure, pass :: initialize => hhoBasisCellInit
@@ -75,7 +75,7 @@ module HHO_basis_module
     end type
 ! --------------------------------------------------------------------------------------------------
 ! --------------------------------------------------------------------------------------------------
-    public  :: HHO_basis_cell, HHO_basis_face
+    public :: HHO_basis_cell, HHO_basis_face
     private :: hhoBasisCellInit, hhoBasisFaceInit, hhoBSCellSize, hhoBSFaceSize
     private :: hhoBVCellSize, hhoBVFaceSize, hhoBMCellSize
     private :: hhoBSCellRange, hhoBVCellRange, hhoBMCellRange, hhoBSFaceRange, hhoBVFaceRange
@@ -130,8 +130,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)          :: hhoCell
-        class(HHO_basis_cell), intent(out)  :: this
+        type(HHO_Cell), intent(in) :: hhoCell
+        class(HHO_basis_cell), intent(out) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -163,8 +163,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)               :: hhoFace
-        class(HHO_basis_face), intent(out)       :: this
+        type(HHO_Face), intent(in) :: hhoFace
+        class(HHO_basis_face), intent(out) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -196,10 +196,10 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_cell), intent(in)      :: this
-        integer, intent(in)                    :: min_order
-        integer, intent(in)                    :: max_order
-        integer                                :: size_basis
+        class(HHO_basis_cell), intent(in) :: this
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        integer :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -226,10 +226,10 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_face), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer                                 :: size_basis
+        class(HHO_basis_face), intent(in) :: this
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        integer :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -256,11 +256,11 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_cell), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer, intent(out)                    :: ifrom
-        integer, intent(out)                    :: ito
+        class(HHO_basis_cell), intent(in) :: this
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        integer, intent(out) :: ifrom
+        integer, intent(out) :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -294,11 +294,11 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_face), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer, intent(out)                    :: ifrom
-        integer, intent(out)                    :: ito
+        class(HHO_basis_face), intent(in) :: this
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        integer, intent(out) :: ifrom
+        integer, intent(out) :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -332,10 +332,10 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_cell), intent(in)      :: this
-        integer, intent(in)                    :: min_order
-        integer, intent(in)                    :: max_order
-        integer                                :: size_basis
+        class(HHO_basis_cell), intent(in) :: this
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        integer :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -362,10 +362,10 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_face), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer                                 :: size_basis
+        class(HHO_basis_face), intent(in) :: this
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        integer :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -392,11 +392,11 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_cell), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer, intent(out)                    :: ifrom
-        integer, intent(out)                    :: ito
+        class(HHO_basis_cell), intent(in) :: this
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        integer, intent(out) :: ifrom
+        integer, intent(out) :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -434,11 +434,11 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_face), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer, intent(out)                    :: ifrom
-        integer, intent(out)                    :: ito
+        class(HHO_basis_face), intent(in) :: this
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        integer, intent(out) :: ifrom
+        integer, intent(out) :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -475,10 +475,10 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_cell), intent(in)      :: this
-        integer, intent(in)                    :: min_order
-        integer, intent(in)                    :: max_order
-        integer                                :: size_basis
+        class(HHO_basis_cell), intent(in) :: this
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        integer :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -507,11 +507,11 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_cell), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer, intent(out)                    :: ifrom
-        integer, intent(out)                    :: ito
+        class(HHO_basis_cell), intent(in) :: this
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        integer, intent(out) :: ifrom
+        integer, intent(out) :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -545,16 +545,17 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoBSCellEval(this, hhoCell, point, min_order, max_order, basisScalEval)
+    subroutine hhoBSCellEval(this, hhoCell, point, min_order, max_order, &
+                             basisScalEval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                              :: hhoCell
-        class(HHO_basis_cell), intent(inout)                    :: this
-        real(kind=8), dimension(3), intent(in)                  :: point
-        integer, intent(in)                                     :: min_order
-        integer, intent(in)                                     :: max_order
-        real(kind=8), dimension(MSIZE_CELL_SCAL), intent(out)   :: basisScalEval
+        type(HHO_Cell), intent(in) :: hhoCell
+        class(HHO_basis_cell), intent(inout) :: this
+        real(kind=8), dimension(3), intent(in) :: point
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        real(kind=8), dimension(MSIZE_CELL_SCAL), intent(out) :: basisScalEval
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - basis functions
@@ -595,15 +596,16 @@ contains
         else if (hhoCell%ndim == 2) then
             do imono = ifrom, ito
                 power(1:2) = this%hhoMono%monomials(1:2, imono)
-                basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))* &
-                                       this%hhoMono%monoEval(2, power(2))
+                basisScalEval(imono) = this%hhoMono%monoEval( &
+                                       1, power(1))*this%hhoMono%monoEval(2, power(2))
             end do
         else if (hhoCell%ndim == 3) then
             do imono = ifrom, ito
                 power(1:3) = this%hhoMono%monomials(1:3, imono)
-                basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))* &
-                                       this%hhoMono%monoEval(2, power(2))* &
-                                       this%hhoMono%monoEval(3, power(3))
+                basisScalEval(imono) = this%hhoMono%monoEval( &
+                                       1, power(1))*this%hhoMono%monoEval(2, &
+                                                       power(2))*this%hhoMono%monoEval(3, power(3) &
+                                                                                                   )
             end do
         else
             ASSERT(ASTER_FALSE)
@@ -611,22 +613,23 @@ contains
 !
     end subroutine
 !
-
+!
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-    subroutine hhoBSCellGradEv(this, hhoCell, point, min_order, max_order, BSGradEval)
+    subroutine hhoBSCellGradEv(this, hhoCell, point, min_order, max_order, &
+                               BSGradEval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                              :: hhoCell
-        class(HHO_basis_cell), intent(inout)                    :: this
-        real(kind=8), dimension(3), intent(in)                  :: point
-        integer, intent(in)                                     :: min_order
-        integer, intent(in)                                     :: max_order
-        real(kind=8), dimension(3, MSIZE_CELL_SCAL), intent(out):: BSGradEval
+        type(HHO_Cell), intent(in) :: hhoCell
+        class(HHO_basis_cell), intent(inout) :: this
+        real(kind=8), dimension(3), intent(in) :: point
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        real(kind=8), dimension(3, MSIZE_CELL_SCAL), intent(out) :: BSGradEval
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - basis functions
@@ -674,8 +677,8 @@ contains
                 if (power(1) == 0) then
                     dfunc(1) = 0.d0
                 else
-                    dfunc(1) = power(1)*this%hhoMono%monoEval(1, power(1)-1)* &
-                               this%scaling_factor(1)
+                    dfunc(1) = power(1)*this%hhoMono%monoEval(1, power(1)-1)*this%scaling_factor&
+                               &(1)
                 end if
 !
                 BSGradEval(1, ind) = dfunc(1)
@@ -685,8 +688,8 @@ contains
                 ind = ind+1
                 power(1:2) = this%hhoMono%monomials(1:2, imono)
 !
-                func(1:2) = (/this%hhoMono%monoEval(1, power(1)),&
-                            & this%hhoMono%monoEval(2, power(2))/)
+                func(1:2) = (/this%hhoMono%monoEval(1, power(1)), &
+                              this%hhoMono%monoEval(2, power(2))/)
 !
                 if (power(1) == 0) then
                     dfunc(1) = 0.d0
@@ -708,9 +711,9 @@ contains
                 ind = ind+1
                 power(1:3) = this%hhoMono%monomials(1:3, imono)
 !
-                func(1:3) = (/this%hhoMono%monoEval(1, power(1)),&
-                            & this%hhoMono%monoEval(2, power(2)),&
-                            & this%hhoMono%monoEval(3, power(3))/)
+                func(1:3) = (/this%hhoMono%monoEval(1, power(1)), &
+                              this%hhoMono%monoEval(2, power(2)), &
+                              this%hhoMono%monoEval(3, power(3))/)
 !
                 if (power(1) == 0) then
                     dfunc(1) = 0.d0
@@ -743,15 +746,16 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoBVCellSymGdEv(this, hhoCell, point, min_order, max_order, BVSymGradEval)
+    subroutine hhoBVCellSymGdEv(this, hhoCell, point, min_order, max_order, &
+                                BVSymGradEval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                              :: hhoCell
-        class(HHO_basis_cell), intent(inout)                    :: this
-        real(kind=8), dimension(3), intent(in)                  :: point
-        integer, intent(in)                                     :: min_order
-        integer, intent(in)                                     :: max_order
+        type(HHO_Cell), intent(in) :: hhoCell
+        class(HHO_basis_cell), intent(inout) :: this
+        real(kind=8), dimension(3), intent(in) :: point
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
         real(kind=8), dimension(6, MSIZE_CELL_VEC), intent(out) :: BVSymGradEval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -836,16 +840,17 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoBSFaceEval(this, hhoFace, point, min_order, max_order, basisScalEval)
+    subroutine hhoBSFaceEval(this, hhoFace, point, min_order, max_order, &
+                             basisScalEval)
 !
         implicit none
 !
-        type(HHO_Face), intent(in)                              :: hhoFace
-        class(HHO_basis_face), intent(inout)                    :: this
-        real(kind=8), dimension(3), intent(in)                  :: point
-        integer, intent(in)                                     :: min_order
-        integer, intent(in)                                     :: max_order
-        real(kind=8), dimension(MSIZE_FACE_SCAL), intent(out)   :: basisScalEval
+        type(HHO_Face), intent(in) :: hhoFace
+        class(HHO_basis_face), intent(inout) :: this
+        real(kind=8), dimension(3), intent(in) :: point
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        real(kind=8), dimension(MSIZE_FACE_SCAL), intent(out) :: basisScalEval
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - basis functions
@@ -887,8 +892,8 @@ contains
         else if (hhoFace%ndim == 2) then
             do imono = ifrom, ito
                 power(1:2) = this%hhoMono%monomials(1:2, imono)
-                basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))* &
-                                   & this%hhoMono%monoEval(2, power(2))
+                basisScalEval(imono) = this%hhoMono%monoEval( &
+                                       1, power(1))*this%hhoMono%monoEval(2, power(2))
             end do
         else
             ASSERT(ASTER_FALSE)
@@ -904,9 +909,9 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_face), intent(in)          :: this
-        real(kind=8), dimension(3), intent(in)     :: point, barycenter
-        real(kind=8), dimension(2)                 :: proj
+        class(HHO_basis_face), intent(in) :: this
+        real(kind=8), dimension(3), intent(in) :: point, barycenter
+        real(kind=8), dimension(2) :: proj
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - basis functions
@@ -923,8 +928,8 @@ contains
         ep(1:3) = point(1:3)-barycenter(1:3)
 !
         proj = matmul(this%rotmat, ep)
-        ! if(proj(1) < -1.1d0 .or. proj(1) > 1.1d0) print*, "errorf0: ", proj
-        ! if(proj(2) < -1.1d0 .or. proj(2) > 1.1d0) print*, "errorf1: ", proj
+! if(proj(1) < -1.1d0 .or. proj(1) > 1.1d0) print*, "errorf0: ", proj
+! if(proj(2) < -1.1d0 .or. proj(2) > 1.1d0) print*, "errorf1: ", proj
 !
     end function
 !
@@ -936,9 +941,9 @@ contains
 !
         implicit none
 !
-        class(HHO_basis_cell), intent(in)          :: this
-        real(kind=8), dimension(3), intent(in)     :: point, barycenter
-        real(kind=8), dimension(3)                 :: proj
+        class(HHO_basis_cell), intent(in) :: this
+        real(kind=8), dimension(3), intent(in) :: point, barycenter
+        real(kind=8), dimension(3) :: proj
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - basis functions
@@ -955,9 +960,9 @@ contains
         ep(1:3) = point(1:3)-barycenter(1:3)
 !
         proj = matmul(this%rotmat, ep)
-        ! if(proj(1) < -1.1d0 .or. proj(1) > 1.1d0) print*, "errorc0: ", proj
-        ! if(proj(2) < -1.1d0 .or. proj(2) > 1.1d0) print*, "errorc1: ", proj
-        ! if(proj(3) < -1.1d0 .or. proj(3) > 1.1d0) print*, "errorc2: ", proj
+! if(proj(1) < -1.1d0 .or. proj(1) > 1.1d0) print*, "errorc0: ", proj
+! if(proj(2) < -1.1d0 .or. proj(2) > 1.1d0) print*, "errorc1: ", proj
+! if(proj(3) < -1.1d0 .or. proj(3) > 1.1d0) print*, "errorc2: ", proj
 !
     end function
 !

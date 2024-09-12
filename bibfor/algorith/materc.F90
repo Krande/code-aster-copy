@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine materc(matmas, matrig, matamo, numnu, amor, nommes, &
-                  lfreqs, nbfreq, matobs, obsdim, gamma, alpha, eval)
+!
+subroutine materc(matmas, matrig, matamo, numnu, amor, &
+                  nommes, lfreqs, nbfreq, matobs, obsdim, &
+                  gamma, alpha, eval)
 !
 !
     implicit none
@@ -85,6 +86,7 @@ subroutine materc(matmas, matrig, matamo, numnu, amor, nommes, &
     integer :: idec(6), itach, tach1, iprnom, iprnoc, lprno, ipjnb
     integer :: ipjnu, ltest, nbddl, ieq, ihh, ipjcf, nbnonu, jj, inddl, icode(6), lnueqm, lnueqc
     integer :: iobfil, iobcol, iobval, ifreq, lh, cc, dd
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -111,11 +113,11 @@ subroutine materc(matmas, matrig, matamo, numnu, amor, nommes, &
     end if
 !
 ! --- NUME_DDL DES MATRICES DU MODELE
-
+!
     numdl1 = ' '
     numdl2 = ' '
     numdl3 = ' '
-
+!
     call dismoi('NOM_NUME_DDL', matrig, 'MATR_ASSE', repk=numdl1)
     call dismoi('NOM_NUME_DDL', matmas, 'MATR_ASSE', repk=numdl2)
     if (amor) then
@@ -146,7 +148,7 @@ subroutine materc(matmas, matrig, matamo, numnu, amor, nommes, &
     if (answer .ne. 'OUI') then
         call utmess('A', 'CALCERROR1_1')
     end if
-
+!
 !
 ! --- INFOS SUR LA MATRICE DE PROJECTION
     call jeveuo(matprj//'        .PJXX_K1', 'L', iproj)
@@ -171,7 +173,7 @@ subroutine materc(matmas, matrig, matamo, numnu, amor, nommes, &
     call jeveuo(jexnum(nommes//bl11//'.TACH', itach), 'L', tach1)
     call dismoi('NOM_MAILLA', zk24(tach1) (1:19), 'CHAM_NO', repk=mesh)
     call dismoi('NUME_EQUA', zk24(tach1) (1:19), 'CHAM_NO', repk=nume_equa)
-
+!
     if (mesh .ne. maiexp) then
         call utmess('F', 'ALGORITH9_67')
     end if
@@ -239,8 +241,7 @@ subroutine materc(matmas, matrig, matamo, numnu, amor, nommes, &
             do inp = 1, nnopr
                 nbnonu = zi(ipjnu+(inn-1)*nnopr+inp-1)
                 zi(iobfil+ihh) = ieq+inddl-1
-                zi(iobcol+ihh) = zi(iprnoc+(nbnonu-1)*(2+nec1))+icode( &
-                                 inddl)-1
+                zi(iobcol+ihh) = zi(iprnoc+(nbnonu-1)*(2+nec1))+icode(inddl)-1
                 zr(iobval+ihh) = zr(ipjcf+(inn-1)*nnopr+inp-1)
                 ihh = ihh+1
             end do
@@ -257,19 +258,22 @@ subroutine materc(matmas, matrig, matamo, numnu, amor, nommes, &
         call jeveuo(lifreq//'.VALE', 'L', lfreq)
         call jelira(lifreq//'.VALE', 'LONMAX', nbfreq, k8bid)
     else
-
+!
         call getvr8(' ', 'FREQ', nbval=0, nbret=nbfreq)
         nbfreq = -nbfreq
         call wkvect(baseno//'.LISTE.FREQ', 'V V R', nbfreq, lfreq)
         call getvr8(' ', 'FREQ', nbval=nbfreq, vect=zr(lfreq))
-
+!
     end if
     lfreqs = baseno//'.LISTE.FREQS.ERC'
     call wkvect(lfreqs, 'V V R', nbfreq, ifreq)
-    call dcopy(nbfreq, zr(lfreq), 1, zr(ifreq), 1)
+    b_n = to_blas_int(nbfreq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(lfreq), b_incx, zr(ifreq), b_incy)
 !
 ! --- COEFFICIENTS POUR L'ERC
     call getvr8(' ', 'GAMMA', nbval=1, scal=gamma)
     call getvr8(' ', 'ALPHA', nbval=1, scal=alpha)
-
+!
 end subroutine

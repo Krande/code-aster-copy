@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,11 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine plasti(BEHinteg, &
-                  fami, kpg, ksp, typmod, imate, &
-                  compor, carcri, instam, instap, &
-                  epsdt, depst, sigm, &
-                  vim, option, angmas, sigp, vip, &
-                  dsidep, icomp, nvi, codret, &
-                  mult_compor_)
+subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
+                  imate, compor, carcri, instam, instap, &
+                  epsdt, depst, sigm, vim, option, &
+                  angmas, sigp, vip, dsidep, icomp, &
+                  nvi, codret, mult_compor_)
 !
     use Behaviour_type
 !
@@ -169,6 +167,7 @@ subroutine plasti(BEHinteg, &
 !     POUR BETON_BURGER - ATTENTION DIMENSION MAXI POUR CE MODELE
     parameter(epsi=1.d-15)
     aster_logical :: resi, rigi
+    blas_int :: b_incx, b_incy, b_n
     common/tdim/ndt, ndi
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !
@@ -196,8 +195,8 @@ subroutine plasti(BEHinteg, &
 !
 ! - Get temperatures
 !
-    call get_varc(fami, kpg, ksp, 'T', &
-                  tempd, tempf, tref, l_temp)
+    call get_varc(fami, kpg, ksp, 'T', tempd, &
+                  tempf, tref, l_temp)
 !
 ! - Glute pour LKR
 !
@@ -209,20 +208,26 @@ subroutine plasti(BEHinteg, &
 !
 ! --  RECUPERATION COEF MATERIAU A T ET/OU T+DT
 !
-    call lcmate(BEHinteg, &
-                fami, kpg, ksp, compor, mod, &
-                imate, nmat, tempd, tempf, tref, 0, &
-                typma, hsr, materd, materf, matcst, &
-                nbcomm, cpmono, angmas, pgl, itmax, &
-                toler, ndt, ndi, nr, carcri, &
-                nvi, vim, nfs, nsg, toutms, &
-                1, numhsr, sigm, mult_comp)
+    call lcmate(BEHinteg, fami, kpg, ksp, compor, &
+                mod, imate, nmat, tempd, tempf, &
+                tref, 0, typma, hsr, materd, &
+                materf, matcst, nbcomm, cpmono, angmas, &
+                pgl, itmax, toler, ndt, ndi, &
+                nr, carcri, nvi, vim, nfs, &
+                nsg, toutms, 1, numhsr, sigm, &
+                mult_comp)
 !
 !
     if (gdef .eq. 1) then
 !        GDEF_MONO : PAS DE DEFORM. THERMIQUE
-        call dcopy(9, depst, 1, deps, 1)
-        call dcopy(9, epsdt, 1, epsd, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, depst, b_incx, deps, b_incy)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epsdt, b_incx, epsd, b_incy)
     else
 ! --     RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
         call lcdedi(fami, kpg, ksp, nmat, materd, &
@@ -241,10 +246,8 @@ subroutine plasti(BEHinteg, &
     end if
 !
 !
-    if (option(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. &
-        rela_comp .eq. 'MONOCRISTAL') then
-        call lcsmelas(epsd, deps, dsidep, &
-                      nmat=nmat, materd_=materd)
+    if (option(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. rela_comp .eq. 'MONOCRISTAL') then
+        call lcsmelas(epsd, deps, dsidep, nmat=nmat, materd_=materd)
         codret = 0
         goto 999
     end if
@@ -270,11 +273,10 @@ subroutine plasti(BEHinteg, &
 ! --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
             seuil = 1.d0
             call lccnvx(fami, kpg, ksp, rela_comp, mod, &
-                        imate, nmat, materf, sigm, &
-                        sigp, deps, vim, vip, nbcomm, &
-                        cpmono, pgl, nvi, vp, vecp, &
-                        hsr, nfs, nsg, toutms, instam, &
-                        instap, &
+                        imate, nmat, materf, sigm, sigp, &
+                        deps, vim, vip, nbcomm, cpmono, &
+                        pgl, nvi, vp, vecp, hsr, &
+                        nfs, nsg, toutms, instam, instap, &
                         seuil, iret)
 !
             if (iret .ne. 0) goto 1
@@ -284,17 +286,16 @@ subroutine plasti(BEHinteg, &
 ! --        PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
             etatf = 'PLASTIC'
 !
-            call lcplas(BEHinteg, &
-                        fami, kpg, ksp, rela_comp, toler, &
-                        itmax, mod, imate, nmat, materd, &
-                        materf, nr, nvi, instam, instap, &
-                        deps, epsd, sigm, vim, sigp, &
-                        vip, compor, nbcomm, cpmono, pgl, &
-                        nfs, nsg, toutms, hsr, icomp, &
-                        irtet, theta, vp, vecp, seuil, &
-                        devg, devgii, drdy, carcri)
+            call lcplas(BEHinteg, fami, kpg, ksp, rela_comp, &
+                        toler, itmax, mod, imate, nmat, &
+                        materd, materf, nr, nvi, instam, &
+                        instap, deps, epsd, sigm, vim, &
+                        sigp, vip, compor, nbcomm, cpmono, &
+                        pgl, nfs, nsg, toutms, hsr, &
+                        icomp, irtet, theta, vp, vecp, &
+                        seuil, devg, devgii, drdy, carcri)
 !
-
+!
             if (irtet .eq. 1) then
                 goto 1
             else if (irtet .eq. 2) then
@@ -305,8 +306,8 @@ subroutine plasti(BEHinteg, &
             etatf = 'ELASTIC'
 ! ---       MISE A JOUR DE VINF EN FONCTION DE LA LOI
 !           ET POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
-            call lcelpl(rela_comp, nmat, materf, &
-                        deps, nvi, vim, vip)
+            call lcelpl(rela_comp, nmat, materf, deps, nvi, &
+                        vim, vip)
         end if
 !
 !        POST-TRAITEMENTS PARTICULIERS

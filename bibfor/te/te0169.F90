@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine te0169(option, nomte)
     real(kind=8) :: norml1, norml2, coef1, coef2
     integer :: jefint, lsigma, igeom, idepla, ideplp, ivectu, nno, nc
     integer :: ino, i, kc, iret
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !
     if (option .eq. 'REFE_FORC_NODA') then
@@ -78,8 +79,14 @@ subroutine te0169(option, nomte)
         do kc = 1, 3
             l2(kc) = w(3+kc)+zr(igeom+2+kc)-w(6+kc)-zr(igeom+5+kc)
         end do
-        norml1 = ddot(3, l1, 1, l1, 1)
-        norml2 = ddot(3, l2, 1, l2, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        norml1 = ddot(b_n, l1, b_incx, l1, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        norml2 = ddot(b_n, l2, b_incx, l2, b_incy)
         norml1 = sqrt(norml1)
         norml2 = sqrt(norml2)
 !

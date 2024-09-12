@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,13 +40,14 @@ subroutine digou2(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out)          :: iret
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jdc, irep, imat, ivarim, ifono, icontp, ivarip, icontm, neq
     real(kind=8) :: r8bid, klv(78), klv2(78)
     character(len=8) :: k8bid
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,7 +66,10 @@ subroutine digou2(for_discret, iret)
             call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
         end if
     else
-        call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
+        b_n = to_blas_int(for_discret%nbt)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jdc), b_incx, klv, b_incy)
     end if
 !
     ifono = 1
@@ -83,8 +87,8 @@ subroutine digou2(for_discret, iret)
 !   relation de comportement : élastique partout
 !   sauf suivant Y local : élasto-plastique VMIS_ISOT_TRAC
     neq = for_discret%nno*for_discret%nc
-    call digouj(for_discret%option, for_discret%rela_comp, for_discret%nno, for_discret%nbt, &
-                neq, for_discret%nc, zi(imat), for_discret%dul, zr(icontm), zr(ivarim), &
+    call digouj(for_discret%option, for_discret%rela_comp, for_discret%nno, for_discret%nbt, neq, &
+                for_discret%nc, zi(imat), for_discret%dul, zr(icontm), zr(ivarim), &
                 for_discret%pgl, klv, klv2, zr(ivarip), zr(ifono), &
                 zr(icontp), for_discret%nomte)
 !

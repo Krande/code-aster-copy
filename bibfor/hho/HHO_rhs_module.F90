@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,11 +57,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)          :: hhoFace
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(MAX_QP_FACE)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: rhs(MSIZE_FACE_SCAL)
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: ValuesQP(MAX_QP_FACE)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: rhs(MSIZE_FACE_SCAL)
 ! --------------------------------------------------------------------------------------------------
 !   HHO
 !
@@ -79,6 +79,7 @@ contains
         type(HHO_basis_face) :: hhoBasisFace
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
         real(kind=8) :: coeff
+        blas_int :: b_incx, b_incy, b_n
 !
         rhs = 0.d0
 !
@@ -93,7 +94,11 @@ contains
 !
 ! ---- rhs = rhs + weight * BSFEval
             coeff = hhoQuad%weights(ipg)*ValuesQP(ipg)
-            call daxpy(size, coeff, BSFEval, 1, rhs, 1)
+            b_n = to_blas_int(size)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, coeff, BSFEval, b_incx, rhs, &
+                       b_incy)
         end do
 !
     end subroutine
@@ -106,11 +111,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)          :: hhoFace
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(3, MAX_QP_FACE)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: rhs(MSIZE_FACE_VEC)
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: ValuesQP(3, MAX_QP_FACE)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: rhs(MSIZE_FACE_VEC)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -128,6 +133,7 @@ contains
         type(HHO_basis_face) :: hhoBasisFace
         integer :: size, idir, begin, i
         real(kind=8) :: Values(MAX_QP_FACE), rhs_dir(MSIZE_FACE_SCAL)
+        blas_int :: b_incx, b_incy, b_n
 !
 ! -- init face basis
         call hhoBasisFace%initialize(hhoFace)
@@ -142,7 +148,10 @@ contains
                 Values(i) = ValuesQP(idir, i)
             end do
             call hhoMakeRhsFaceScal(hhoFace, hhoQuad, Values, degree, rhs_dir)
-            call dcopy(size, rhs_dir, 1, rhs(begin), 1)
+            b_n = to_blas_int(size)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rhs_dir, b_incx, rhs(begin), b_incy)
             begin = begin+size
         end do
 !
@@ -156,11 +165,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(MAX_QP_CELL)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: rhs(MSIZE_CELL_SCAL)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: ValuesQP(MAX_QP_CELL)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: rhs(MSIZE_CELL_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -179,6 +188,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
         real(kind=8) :: coeff
+        blas_int :: b_incx, b_incy, b_n
 !
 ! -- init face basis
         call hhoBasisCell%initialize(hhoCell)
@@ -193,7 +203,11 @@ contains
 !
 ! ---- rhs = rhs + weight * BSCEval
             coeff = hhoQuad%weights(ipg)*ValuesQP(ipg)
-            call daxpy(size, coeff, BSCEval, 1, rhs, 1)
+            b_n = to_blas_int(size)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, coeff, BSCEval, b_incx, rhs, &
+                       b_incy)
         end do
 !
     end subroutine
@@ -206,11 +220,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(3, MAX_QP_CELL)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: rhs(MSIZE_CELL_VEC)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: ValuesQP(3, MAX_QP_CELL)
+        integer, intent(in) :: degree
+        real(kind=8), intent(out) :: rhs(MSIZE_CELL_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -227,6 +241,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         integer :: size, idir, begin, i
         real(kind=8) :: Values(MAX_QP_CELL), rhs_dir(MSIZE_CELL_SCAL)
+        blas_int :: b_incx, b_incy, b_n
 !
 ! -- init face basis
         call hhoBasisCell%initialize(hhoCell)
@@ -241,7 +256,10 @@ contains
                 Values(i) = ValuesQP(idir, i)
             end do
             call hhoMakeRhsCellScal(hhoCell, hhoQuad, Values, degree, rhs_dir)
-            call dcopy(size, rhs_dir, 1, rhs(begin), 1)
+            b_n = to_blas_int(size)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rhs_dir, b_incx, rhs(begin), b_incy)
             begin = begin+size
         end do
 !

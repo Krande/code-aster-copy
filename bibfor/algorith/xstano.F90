@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                   cnsln, cnslj, rayon, cnxinv, stano, &
                   typdis)
@@ -92,6 +92,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
     real(kind=8), pointer :: ltsv(:) => null()
     integer, pointer :: connex(:) => null()
     integer, pointer :: cnsd(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -182,14 +183,10 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                 lstb = ltsv((nunob-1)+1)
                 if (ljonc) then
                     do ifiss = 1, nfiss
-                        lsja(ifiss, 1) = ljsv(2*nfiss*(nunoa-1)+2*( &
-                                              ifiss-1)+1)
-                        lsjb(ifiss, 1) = ljsv(2*nfiss*(nunob-1)+2*( &
-                                              ifiss-1)+1)
-                        lsja(ifiss, 2) = ljsv(2*nfiss*(nunoa-1)+2*( &
-                                              ifiss-1)+2)
-                        lsjb(ifiss, 2) = ljsv(2*nfiss*(nunob-1)+2*( &
-                                              ifiss-1)+2)
+                        lsja(ifiss, 1) = ljsv(2*nfiss*(nunoa-1)+2*(ifiss-1)+1)
+                        lsjb(ifiss, 1) = ljsv(2*nfiss*(nunob-1)+2*(ifiss-1)+1)
+                        lsja(ifiss, 2) = ljsv(2*nfiss*(nunoa-1)+2*(ifiss-1)+2)
+                        lsjb(ifiss, 2) = ljsv(2*nfiss*(nunob-1)+2*(ifiss-1)+2)
                     end do
                 end if
                 if (.not. ismali(typma)) then
@@ -200,10 +197,8 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                     lstm = ltsv((nunom-1)+1)
                     if (ljonc) then
                         do ifiss = 1, nfiss
-                            lsjm(ifiss, 1) = ljsv(2*nfiss*(nunom-1)+2*( &
-                                                  ifiss-1)+1)
-                            lsjm(ifiss, 2) = ljsv(2*nfiss*(nunom-1)+2*( &
-                                                  ifiss-1)+2)
+                            lsjm(ifiss, 1) = ljsv(2*nfiss*(nunom-1)+2*(ifiss-1)+1)
+                            lsjm(ifiss, 2) = ljsv(2*nfiss*(nunom-1)+2*(ifiss-1)+2)
                         end do
                     end if
                     if (lsna .eq. 0.d0 .and. lsnb .eq. 0.d0) then
@@ -218,15 +213,24 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                         if (lstm .gt. maxlst) maxlst = lstm
                         if (ljonc) then
                             do ifiss = 1, nfiss
-                         if (lsjb(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsjb(ifiss, 1)
-                               if (lsjb(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsjb(ifiss, 1)
-                         if (lsja(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsja(ifiss, 1)
-                               if (lsja(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsja(ifiss, 1)
-                         if (lsjm(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsjm(ifiss, 1)
-                               if (lsjm(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsjm(ifiss, 1)
-                         if (lsjb(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsjb(ifiss, 2)
-                         if (lsja(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsja(ifiss, 2)
-                         if (lsjm(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsjm(ifiss, 2)
+                                if (lsjb(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsjb(ifiss, 1)
+                                if (lsjb(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsjb(ifiss, 1)
+                                if (lsja(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsja(ifiss, 1)
+                                if (lsja(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsja(ifiss, 1)
+                                if (lsjm(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsjm(ifiss, 1)
+                                if (lsjm(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsjm(ifiss, 1)
+                                if (lsjb(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsjb(ifiss, 2)
+                                if (lsja(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsja(ifiss, 2)
+                                if (lsjm(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsjm(ifiss, 2)
                             end do
                         end if
                     else if (lsna .eq. 0 .and. lsnm .ne. 0) then
@@ -235,9 +239,12 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                         if (lsta .gt. maxlst) maxlst = lsta
                         if (ljonc) then
                             do ifiss = 1, nfiss
-                         if (lsja(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsja(ifiss, 1)
-                               if (lsja(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsja(ifiss, 1)
-                         if (lsja(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsja(ifiss, 2)
+                                if (lsja(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsja(ifiss, 1)
+                                if (lsja(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsja(ifiss, 1)
+                                if (lsja(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsja(ifiss, 2)
                             end do
                         end if
                     else if (lsna .eq. 0 .and. lsnm .eq. 0) then
@@ -249,12 +256,18 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                         if (lstm .gt. maxlst) maxlst = lstm
                         if (ljonc) then
                             do ifiss = 1, nfiss
-                         if (lsja(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsja(ifiss, 1)
-                               if (lsja(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsja(ifiss, 1)
-                         if (lsjm(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsjm(ifiss, 1)
-                               if (lsjm(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsjm(ifiss, 1)
-                         if (lsja(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsja(ifiss, 2)
-                         if (lsjm(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsjm(ifiss, 2)
+                                if (lsja(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsja(ifiss, 1)
+                                if (lsja(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsja(ifiss, 1)
+                                if (lsjm(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsjm(ifiss, 1)
+                                if (lsjm(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsjm(ifiss, 1)
+                                if (lsja(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsja(ifiss, 2)
+                                if (lsjm(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsjm(ifiss, 2)
                             end do
                         end if
                     else if (lsnb .eq. 0 .and. lsnm .ne. 0) then
@@ -263,9 +276,12 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                         if (lstb .gt. maxlst) maxlst = lstb
                         if (ljonc) then
                             do ifiss = 1, nfiss
-                         if (lsjb(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsjb(ifiss, 1)
-                               if (lsjb(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsjb(ifiss, 1)
-                         if (lsjb(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsjb(ifiss, 2)
+                                if (lsjb(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsjb(ifiss, 1)
+                                if (lsjb(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsjb(ifiss, 1)
+                                if (lsjb(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsjb(ifiss, 2)
                             end do
                         end if
                     else if (lsnb .eq. 0 .and. lsnm .eq. 0) then
@@ -277,12 +293,18 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                         if (lstm .gt. maxlst) maxlst = lstm
                         if (ljonc) then
                             do ifiss = 1, nfiss
-                         if (lsjb(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsjb(ifiss, 1)
-                               if (lsjb(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsjb(ifiss, 1)
-                         if (lsjm(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsjm(ifiss, 1)
-                               if (lsjm(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsjm(ifiss, 1)
-                         if (lsjb(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsjb(ifiss, 2)
-                         if (lsjm(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsjm(ifiss, 2)
+                                if (lsjb(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsjb(ifiss, 1)
+                                if (lsjb(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsjb(ifiss, 1)
+                                if (lsjm(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsjm(ifiss, 1)
+                                if (lsjm(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsjm(ifiss, 1)
+                                if (lsjb(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsjb(ifiss, 2)
+                                if (lsjm(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsjm(ifiss, 2)
                             end do
                         end if
                     else if (lsna*lsnb .lt. 0) then
@@ -295,8 +317,11 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
 !                 INTERPOLATION DES COORDONNEES DE C ET DE LST EN C
                             ac(k) = c(k)-a(k)
                         end do
-                        ASSERT(ddot(ndim, ab, 1, ab, 1) .gt. r8prem())
-
+                        b_n = to_blas_int(ndim)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        ASSERT(ddot(b_n, ab, b_incx, ab, b_incy) .gt. r8prem())
+!
 !                 ON CALCULE LES COORDONNEES DU POINT D'INTERSECTION DANS L'ELEMENT DE REFERNCE
                         a1 = lsna+lsnb-2.d0*lsnm
                         b1 = lsnb-lsna
@@ -327,9 +352,12 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                                 b2 = lsjb(ifiss, 2)-lsja(ifiss, 2)
                                 c2 = 2.d0*lsjm(ifiss, 2)
                                 lsjc(ifiss, 2) = (a2*x1**2+b2*x1+c2)*5.d-1
-                         if (lsjc(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsjc(ifiss, 1)
-                               if (lsjc(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsjc(ifiss, 1)
-                         if (lsjc(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsjc(ifiss, 2)
+                                if (lsjc(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsjc(ifiss, 1)
+                                if (lsjc(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsjc(ifiss, 1)
+                                if (lsjc(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsjc(ifiss, 2)
                             end do
                         end if
                     end if
@@ -345,12 +373,18 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                         if (lstb .gt. maxlst) maxlst = lstb
                         if (ljonc) then
                             do ifiss = 1, nfiss
-                         if (lsjb(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsjb(ifiss, 1)
-                               if (lsjb(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsjb(ifiss, 1)
-                         if (lsja(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsja(ifiss, 1)
-                               if (lsja(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsja(ifiss, 1)
-                         if (lsjb(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsjb(ifiss, 2)
-                         if (lsja(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsja(ifiss, 2)
+                                if (lsjb(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsjb(ifiss, 1)
+                                if (lsjb(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsjb(ifiss, 1)
+                                if (lsja(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsja(ifiss, 1)
+                                if (lsja(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsja(ifiss, 1)
+                                if (lsjb(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsjb(ifiss, 2)
+                                if (lsja(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsja(ifiss, 2)
                             end do
                         end if
                     else if ((lsna*lsnb) .le. 0.d0) then
@@ -364,20 +398,38 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                             c(k) = a(k)-lsna/(lsnb-lsna)*ab(k)
                             ac(k) = c(k)-a(k)
                         end do
-                        ASSERT(ddot(ndim, ab, 1, ab, 1) .gt. r8prem())
-                        lstc = lsta+(lstb-lsta)*ddot(ndim, ab, 1, ac, 1)/ddot(ndim, ab, 1, ab, 1)
+                        b_n = to_blas_int(ndim)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        ASSERT(ddot(b_n, ab, b_incx, ab, b_incy) .gt. r8prem())
+                        b_n = to_blas_int(ndim)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        lstc = lsta+(lstb-lsta)*ddot(b_n, ab, b_incx, ac, b_incy)/ddot(b_n, ab, b&
+                               &_incx, ab, b_incy)
                         if (lstc .lt. minlst) minlst = lstc
                         if (lstc .lt. mincoh) mincoh = lstc
                         if (lstc .gt. maxlst) maxlst = lstc
                         if (ljonc) then
                             do ifiss = 1, nfiss
-                               lsjc(ifiss, 1) = lsja(ifiss, 1)+(lsjb(ifiss, 1)-lsja(ifiss, 1))*ddot&
-                                                &(ndim, ab, 1, ac, 1)/ddot(ndim, ab, 1, ab, 1)
-                               lsjc(ifiss, 2) = lsja(ifiss, 2)+(lsjb(ifiss, 2)-lsja(ifiss, 2))*ddot&
-                                                &(ndim, ab, 1, ac, 1)/ddot(ndim, ab, 1, ab, 1)
-                         if (lsjc(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = lsjc(ifiss, 1)
-                               if (lsjc(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = lsjc(ifiss, 1)
-                         if (lsjc(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = lsjc(ifiss, 2)
+                                b_n = to_blas_int(ndim)
+                                b_incx = to_blas_int(1)
+                                b_incy = to_blas_int(1)
+                                lsjc(ifiss, 1) = lsja(ifiss, 1)+(lsjb(ifiss, 1)-lsja(ifiss, 1))*d&
+                                                 &dot(b_n, ab, b_incx, ac, b_incy)/ddot(b_n, ab, &
+                                                 &b_incx, ab, b_incy)
+                                b_n = to_blas_int(ndim)
+                                b_incx = to_blas_int(1)
+                                b_incy = to_blas_int(1)
+                                lsjc(ifiss, 2) = lsja(ifiss, 2)+(lsjb(ifiss, 2)-lsja(ifiss, 2))*d&
+                                                 &dot(b_n, ab, b_incx, ac, b_incy)/ddot(b_n, ab, &
+                                                 &b_incx, ab, b_incy)
+                                if (lsjc(ifiss, 1) .lt. minlsj(ifiss, 1)) minlsj(ifiss, 1) = &
+                                    lsjc(ifiss, 1)
+                                if (lsjc(ifiss, 1) .gt. maxlsj(ifiss)) maxlsj(ifiss) = &
+                                    lsjc(ifiss, 1)
+                                if (lsjc(ifiss, 2) .lt. minlsj(ifiss, 2)) minlsj(ifiss, 2) = &
+                                    lsjc(ifiss, 2)
                             end do
                         end if
                     else
@@ -411,8 +463,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                 if ((minlsn*maxlsn .lt. 0.d0) .and. cohenr) enr1 = 1
             else
                 if ((minlsn*maxlsn .lt. 0.d0) .and. (maxlst .le. r8prem())) enr1 = 1
-                if ((minlsn*maxlsn .le. r8prem()) .and. &
-                    (minlst*maxlst .le. r8prem())) then
+                if ((minlsn*maxlsn .le. r8prem()) .and. (minlst*maxlst .le. r8prem())) then
                     enr2 = -2
 !                  enr2=+2
                 end if
@@ -425,8 +476,8 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
                         enr2 = 0
                     end if
 !       CORRECTION DU STATUT SI ON EST SUR LA JONCTION
-                    if (abs(enr2) .eq. 2 .and. minlsj(ifiss, 1)*maxlsj(ifiss) .le. r8prem() .and. &
-                        minlsj(ifiss, 2) .lt. 0) then
+                    if (abs(enr2) .eq. 2 .and. minlsj(ifiss, 1)*maxlsj(ifiss) .le. r8prem() &
+                        .and. minlsj(ifiss, 2) .lt. 0) then
                         enr2 = 0
                         if (minlsn*maxlsn .lt. 0.d0) enr1 = 1
                     end if

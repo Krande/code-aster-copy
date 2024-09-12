@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,7 @@ subroutine xnorme(indipt, iptbor, vectn, nbfacb, nunoa, &
 !
     integer :: k
     real(kind=8) :: ab(3), ac(3), ag(3), normal(3), proj
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
     call jemarq()
 !
@@ -66,7 +67,10 @@ subroutine xnorme(indipt, iptbor, vectn, nbfacb, nunoa, &
     call provec(ab, ac, normal)
 !
 !     ORIENTATION DE LA NORMALE VERS L'EXTERIEUR
-    proj = ddot(3, normal, 1, ag, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    proj = ddot(b_n, normal, b_incx, ag, b_incy)
 !
     if (proj .gt. 0) then
         normal(1) = -normal(1)

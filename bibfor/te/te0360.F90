@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,7 @@ subroutine te0360(option, nomte)
     aster_logical :: lVect, lMatr, lVari, lSigm
     integer :: codret
     integer :: jv_codret
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,10 +85,10 @@ subroutine te0360(option, nomte)
 ! - Get element parameters
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, &
-                     npg=npg, jpoids=iw, jvf=ivf1)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, &
-                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, npg=npg, &
+                     jpoids=iw, jvf=ivf1)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, npg=npg, &
+                     jpoids=iw, jvf=ivf2, jdfde=idf2)
     ndim = ndim+1
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
@@ -120,15 +121,14 @@ subroutine te0360(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! --- ORIENTATION DE L'ELEMENT D'INTERFACE : REPERE LOCAL
 !     RECUPERATION DES ANGLES NAUTIQUES DEFINIS PAR AFFE_CARA_ELEM
 !
-    call tecach('ONO', 'PCAMASS', 'L', iret, nval=1, itab=jtab)
+    call tecach('ONO', 'PCAMASS', 'L', iret, nval=1, &
+                itab=jtab)
     if (iret .eq. 0) then
         icamas = jtab(1)
     else
@@ -144,7 +144,8 @@ subroutine te0360(option, nomte)
 !
 ! - Total number of internal state variables on element
 !
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - VARIABLES DE COMMANDE
@@ -166,7 +167,10 @@ subroutine te0360(option, nomte)
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*lgpg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 !
 ! - FORCES INTERIEURES ET MATRICE TANGENTE
@@ -177,9 +181,8 @@ subroutine te0360(option, nomte)
                     ang, typmod, option, zi(imate), zk16(icompo), &
                     lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), &
                     zr(iddld), iu, im, zr(ivarim), zr(icontp), &
-                    zr(ivarip), zr(imatuu), zr(ivectu), &
-                    lMatr, lVect, lSigm, &
-                    codret)
+                    zr(ivarip), zr(imatuu), zr(ivectu), lMatr, lVect, &
+                    lSigm, codret)
     else
         call utmess('F', 'JOINT1_2', sk=defo_comp)
     end if

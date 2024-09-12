@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
                   nbsol, istop, iret)
 !
@@ -85,7 +85,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
 !
 !     VARIABLES LOCALES
     integer :: iprem, k, nglo, kdeb, jnequ, ier2
-    integer ::  kptsc, lslvo
+    integer :: kptsc, lslvo
     integer :: np, i
     real(kind=8) :: r8
 !
@@ -108,7 +108,8 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
     PetscOffset :: offbid
     PetscReal :: rbid
     PetscBool :: initialized
-
+    blas_int :: b_incx, b_incy, b_n
+!
 !----------------------------------------------------------------
 !   INITIALISATION DE PETSC A FAIRE AU PREMIER APPEL
     save iprem
@@ -137,11 +138,11 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
 !
 !   Vérification du nom de la matrice
     ASSERT(matas .ne. ' ')
-
+!
 !   PETSc a-t-il ete initialise ?
     call PetscInitialized(initialized, ierr)
     ASSERT(ierr .eq. 0)
-
+!
 !   Récupération des options PETSc
     myopt = ''
     if (action .ne. 'DETR_MAT') then
@@ -152,7 +153,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
             myopt(80*(i-1)+1:80*i) = slvo(i)
         end do
     end if
-
+!
     if (iprem .eq. 0 .or. .not. initialized) then
 !     --------------------
 !        -- quelques verifications sur la coherence Aster / Petsc :
@@ -191,14 +192,14 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
     call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
     call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
     nglo = zi(jnequ)
-
+!
 !  2. On recherche l'identifiant de l'image PETSc
 !  de la matrice matas
 !
     kptsc = get_mat_id(matas)
     mat_not_recorded = (kptsc == 0)
 !
-
+!
     if (action .eq. 'DETR_MAT') then
         if (mat_not_recorded) then
 ! On n'a pas cree d'image PETSc de la matrice => rien à detruire !
@@ -206,7 +207,8 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
 ! L'image PETSc de la a matrice est stockée dans le tableau ap,
 ! a l'indice kptsc => on la détruit
             kbid = repeat(" ", 19)
-            call apmain(action, kptsc, [0.d0], kbid, 0, iret)
+            call apmain(action, kptsc, [0.d0], kbid, 0, &
+                        iret)
         end if
         goto 999
     end if
@@ -220,16 +222,17 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
         kptsc = get_mat_id(matas)
         ASSERT(nbsol .ge. 1)
         ASSERT((istop .eq. 0) .or. (istop .eq. 2))
-
+!
     else if (action .eq. 'ELIM_LAGR') then
         call mat_record(matas, solveu, kptsc)
     end if
-
+!
 !   4. Si LDLT_INC, il faut renumeroter la matrice (RCMK) :
 !   --------------------------------------------------------
-
-    call apldlt(kptsc, action, 'PRE', rsolu, vcine, nbsol)
-
+!
+    call apldlt(kptsc, action, 'PRE', rsolu, vcine, &
+                nbsol)
+!
 !   5. Verifications + elimination des ddls (affe_char_cine)
 !   --------------------------------------------------------
     call jeveuo(nomat_courant//'.REFA', 'E', vk24=refa)
@@ -248,33 +251,41 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
 !        ASSERT(refa(3).ne.'ELIMF')
         if (refa(3) .eq. 'ELIML') call mtmchc(nomat_courant, 'ELIMF')
         ASSERT(refa(3) .ne. 'ELIML')
-
+!
     else if (action .eq. 'ELIM_LAGR') then
         call build_elg_context(nomat_courant)
         iret = 0
         goto 999
     end if
-
+!
 !   5. APPEL DE PETSC :
 !   -------------------
     if (action .eq. 'RESOUD') then
         AS_ALLOCATE(vr=travail, size=nglo)
         do k = 1, nbsol
             kdeb = (k-1)*nglo+1
-            call dcopy(nglo, rsolu(kdeb), 1, travail, 1)
+            b_n = to_blas_int(nglo)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rsolu(kdeb), b_incx, travail, b_incy)
             call apmain(action, kptsc, travail, vcine, istop, &
                         iret)
-            call dcopy(nglo, travail, 1, rsolu(kdeb), 1)
+            b_n = to_blas_int(nglo)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, travail, b_incx, rsolu(kdeb), b_incy)
         end do
         AS_DEALLOCATE(vr=travail)
     else
-        call apmain(action, kptsc, rsolu, vcine, istop, iret)
+        call apmain(action, kptsc, rsolu, vcine, istop, &
+                    iret)
     end if
-
+!
 !   6. Si LDLT_INC, il faut revenir a la numerotation initiale :
 !   -------------------------------------------------------------
-    call apldlt(kptsc, action, 'POST', rsolu, vcine, nbsol)
-
+    call apldlt(kptsc, action, 'POST', rsolu, vcine, &
+                nbsol)
+!
 999 continue
     call jedema()
 #else

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
                   ligrma, nbno, tabnoe, rignoe, rigto, &
                   ndim)
@@ -82,6 +82,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     real(kind=8), pointer :: surma6(:) => null()
     real(kind=8), pointer :: surmai(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
@@ -214,12 +215,18 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
                 b(1) = x(2)-x(1)
                 b(2) = y(2)-y(1)
                 b(3) = zero
-                surf = ddot(3, b, 1, b, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                surf = ddot(b_n, b, b_incx, b, b_incy)
                 surmai(im) = sqrt(surf)
                 c(1) = y(1)-y(2)
                 c(2) = x(2)-x(1)
                 c(3) = zero
-                surf = ddot(3, c, 1, c, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                surf = ddot(b_n, c, b_incx, c, b_incy)
                 c(1) = c(1)/sqrt(surf)
                 c(2) = c(2)/sqrt(surf)
                 c(3) = c(3)/sqrt(surf)
@@ -239,7 +246,10 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
                     ASSERT(.false.)
                 end if
                 call provec(a, b, c)
-                surf = ddot(3, c, 1, c, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                surf = ddot(b_n, c, b_incx, c, b_incy)
                 c(1) = c(1)/sqrt(surf)
                 c(2) = c(2)/sqrt(surf)
                 c(3) = c(3)/sqrt(surf)
@@ -295,8 +305,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
                     if (parno(ij) .eq. 0) goto 37
                     if (zi(ldnm+nn-1) .eq. ij) then
                         if (lvale) then
-                            coeno(ij) = coeno(ij)+surmai(1+ &
-                                                         im-1)/surtot
+                            coeno(ij) = coeno(ij)+surmai(1+im-1)/surtot
                         else
                             coenxx(ij) = coenxx(ij)+surma1(im)
                             coenxy(ij) = coenxy(ij)+surma2(im)
@@ -384,5 +393,5 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
 !
     call jedema()
 1010 format(' MXX= ', 1pe12.5, ' MXY= ', 1pe12.5, ' MXZ= ', 1pe12.5/,&
-    &       ' MYY= ', 1pe12.5, ' MYZ= ', 1pe12.5, ' MZZ= ', 1pe12.5)
+   &       ' MYY= ', 1pe12.5, ' MYZ= ', 1pe12.5, ' MZZ= ', 1pe12.5)
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine caldfe(df, nr, nvi, vind, dfpds, fe, dfpdbs, msdgdt, drdy)
+!
+subroutine caldfe(df, nr, nvi, vind, dfpds, &
+                  fe, dfpdbs, msdgdt, drdy)
 !
     implicit none
 ! person_in_charge: jean-michel.proix at edf.fr
@@ -43,6 +44,7 @@ subroutine caldfe(df, nr, nvi, vind, dfpds, fe, dfpdbs, msdgdt, drdy)
     real(kind=8) :: fem(3, 3)
     real(kind=8) :: id(3, 3), drdy(nr, nr)
     real(kind=8) :: dfpdbs(3, 3, 30), dfedbs(3, 3, 30), dfefdb(3, 3, 30)
+    blas_int :: b_incx, b_incy, b_n
 !     ----------------------------------------------------------------
     common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
@@ -52,8 +54,15 @@ subroutine caldfe(df, nr, nvi, vind, dfpds, fe, dfpdbs, msdgdt, drdy)
 !
     ns = nr-6
 !
-    call dcopy(9, vind(nvi-3-18+10), 1, fem, 1)
-    call daxpy(9, 1.d0, id, 1, fem, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vind(nvi-3-18+10), b_incx, fem, b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, id, b_incx, fem, &
+               b_incy)
     dffe = matmul(df, fem)
 !
 !     on calcule dFe/dS
@@ -96,7 +105,11 @@ subroutine caldfe(df, nr, nvi, vind, dfpds, fe, dfpdbs, msdgdt, drdy)
         end do
     end do
 !
-    call daxpy(81, 1.d0, dfefds, 1, dfefdt, 1)
+    b_n = to_blas_int(81)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, dfefds, b_incx, dfefdt, &
+               b_incy)
     call dscal(81, -0.5d0, dfefdt, 1)
 !
     do i = 1, 3
@@ -127,12 +140,13 @@ subroutine caldfe(df, nr, nvi, vind, dfpds, fe, dfpdbs, msdgdt, drdy)
         do j = 1, 3
             do k = 1, ns
                 do m = 1, 3
-                 dfefdb(i, j, k) = dfefdb(i, j, k)+dfedbs(m, i, k)*fe(m, j)+dfedbs(m, j, k)*fe(m, i)
+                    dfefdb(i, j, k) = dfefdb(i, j, k)+dfedbs(m, i, k)*fe(m, j)+dfedbs(m, j, k)*fe&
+                                      &(m, i)
                 end do
             end do
         end do
     end do
-
+!
 !
     call dscal(3*3*ns, -0.5d0, dfefdb, 1)
 !
@@ -143,5 +157,5 @@ subroutine caldfe(df, nr, nvi, vind, dfpds, fe, dfpdbs, msdgdt, drdy)
             end do
         end do
     end do
-
+!
 end subroutine caldfe

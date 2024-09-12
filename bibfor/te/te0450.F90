@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0450(nomopt, nomte)
 !
     use HHO_basis_module
@@ -91,7 +91,8 @@ subroutine te0450(nomopt, nomte)
     call elrefe_info(fami=fami, npg=npg)
 !
 ! --- Number of dofs
-    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+                       gbs, gbs_sym)
     gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
     ASSERT(cbs <= MSIZE_CELL_VEC)
     ASSERT(fbs <= MSIZE_FACE_VEC)
@@ -126,8 +127,9 @@ subroutine te0450(nomopt, nomte)
 ! --- Compute local contribution
 !
     if (l_largestrains) then
-        call dgemv('N', gbs, total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
-                   hhoMecaState%depl_curr, 1, 0.d0, G_curr_coeff, 1)
+        call dgemv('N', gbs, total_dofs, 1.d0, hhoMecaState%grad, &
+                   MSIZE_CELL_MAT, hhoMecaState%depl_curr, 1, 0.d0, G_curr_coeff, &
+                   1)
         gbs_curr = gbs
     else
         gbs_curr = gbs_sym
@@ -151,8 +153,9 @@ subroutine te0450(nomopt, nomte)
 !
 !
         if (l_largestrains) then
-            G_curr = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
-                                    coorpg(1:3), G_curr_coeff, gbs)
+            G_curr = hhoEvalMatCell( &
+                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs &
+                     )
 !
 ! --------- Eval gradient of the deformation at T- and T+
 !
@@ -160,15 +163,18 @@ subroutine te0450(nomopt, nomte)
 !
             call sigtopk1(hhoCell%ndim, Cauchy_curr, F_curr, PK1_curr)
 !
-            call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs, bT)
+            call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs, &
+                                    bT)
         else
 !
-            call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
+            call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, &
+                                    bT)
         end if
     end do
 !
-    call dgemv('T', gbs_curr, total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
-               bT, 1, 1.d0, rhs, 1)
+    call dgemv('T', gbs_curr, total_dofs, 1.d0, hhoMecaState%grad, &
+               MSIZE_CELL_MAT, bT, 1, 1.d0, rhs, &
+               1)
 !
 ! --- add stabilization
 !

@@ -76,6 +76,7 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
     character(len=16) :: nom(nbpa)
     character(len=1) :: poum
     aster_logical :: resi, rigi, elas, ifpahm, ifhyme
+    blas_int :: b_incx, b_incy, b_n
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
     resi = option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
@@ -87,10 +88,21 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
     if (typmod(2) .eq. 'ELEMJOIN') ifhyme = .false.
 !
 ! SAUT DE DEPLACEMENT EN T- OU T+
-    call dcopy(ndim, epsm, 1, delta, 1)
-    call dcopy(ndim, deps, 1, ddelta, 1)
-    if (resi) call daxpy(ndim, 1.d0, deps, 1, delta, &
-                         1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, delta, b_incy)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, deps, b_incx, ddelta, b_incy)
+    if (resi) then
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps, b_incx, delta, &
+                   b_incy)
+    end if
 !
 ! GRADIENT DE PRESSION ET PRESSION EN T- OU T+
     if (ifhyme) then
@@ -503,8 +515,7 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
 !
 !       TERME : DW/DGP  (POUR KTAN P P)
         do n = 1, ndim-1
-            dsidep(ndim+n, ndim+n) = &
-                -rhof*(max(amin, delta(1)+amin))**3/(12*visf)
+            dsidep(ndim+n, ndim+n) = -rhof*(max(amin, delta(1)+amin))**3/(12*visf)
         end do
 !
 !       TERME : DW/DDELTA_N  (POUR KTAN P U)
@@ -512,8 +523,7 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
             if (delta(1) .lt. 0.d0) then
                 dsidep(ndim+n, 1) = 0.d0
             else
-                dsidep(ndim+n, 1) = &
-                    -3*rhof*gp(n)*(delta(1)+amin)**2/(12*visf)
+                dsidep(ndim+n, 1) = -3*rhof*gp(n)*(delta(1)+amin)**2/(12*visf)
             end if
         end do
 !

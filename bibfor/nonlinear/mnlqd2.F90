@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,6 +64,7 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd, &
     character(len=8), pointer :: type(:) => null()
     integer, pointer :: vnddl(:) => null()
     real(kind=8), pointer :: raid(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 !
@@ -135,12 +136,21 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd, &
             if ((ind .le. nd*(2*h+1)) .or. ((ind .gt. deb) .and. (ind .le. (deb+(2*hf+1))))) then
 ! ---     (F/ALPHA-XG))
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
-                call dcopy(2*hf+1, zr(ivec-1+deb+1), 1, zr(itemp4), 1)
+                b_n = to_blas_int(2*hf+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(ivec-1+deb+1), b_incx, zr(itemp4), b_incy)
                 call dscal(2*hf+1, 1.d0/alpha, zr(itemp4), 1)
-                call daxpy(h+1, -1.d0/jeu, zr(ivec-1+nddl), nd, zr(itemp4), &
-                           1)
-                call daxpy(h, -1.d0/jeu, zr(ivec-1+nd*(h+1)+nddl), nd, zr(itemp4-1+hf+2), &
-                           1)
+                b_n = to_blas_int(h+1)
+                b_incx = to_blas_int(nd)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, -1.d0/jeu, zr(ivec-1+nddl), b_incx, zr(itemp4), &
+                           b_incy)
+                b_n = to_blas_int(h)
+                b_incx = to_blas_int(nd)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, -1.d0/jeu, zr(ivec-1+nd*(h+1)+nddl), b_incx, zr(itemp4-1+hf+2), &
+                           b_incy)
             end if
             if (ind .le. nd*(2*h+1)) then
                 hind = int((ind-1)/nd)
@@ -172,7 +182,10 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd, &
                 call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
                 zr(itemp3-1+ind-deb-(2*hf+1)) = -1.d0
-                call dcopy(2*hf+1, zr(ivec-1+deb+1), 1, zr(itemp4), 1)
+                b_n = to_blas_int(2*hf+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(ivec-1+deb+1), b_incx, zr(itemp4), b_incy)
                 call mnlaft(zr(itemp4), zr(itemp3), hf, nt, zr(iq2-1+deb+1))
             end if
         else if (type(i) (1:6) .eq. 'CERCLE') then
@@ -191,7 +204,10 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd, &
 ! ---         FX*R - FN*([UX]/JEU)
 ! ---         FY*R - FN*([UY]/JEU)
                     call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
-                    call dcopy(2*hf+1, zr(ivec+deb+3*(2*hf+1)), 1, zr(itemp3), 1)
+                    b_n = to_blas_int(2*hf+1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(ivec+deb+3*(2*hf+1)), b_incx, zr(itemp3), b_incy)
                     if (ddl .eq. nddlx) then
                         call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq2-1+deb+1))
                         call dscal(2*hf+1, -1.d0, zr(iq2-1+deb+1), 1)
@@ -201,8 +217,14 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd, &
                     end if
 ! ---         R*R - ([UX]/JEU)^2 - ([UY]/JEU)^2
                     call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
-                    call dcopy(h+1, zr(ivec-1+ddl), nd, zr(itemp3), 1)
-                    call dcopy(h, zr(ivec-1+nd*(h+1)+ddl), nd, zr(itemp3-1+hf+2), 1)
+                    b_n = to_blas_int(h+1)
+                    b_incx = to_blas_int(nd)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(ivec-1+ddl), b_incx, zr(itemp3), b_incy)
+                    b_n = to_blas_int(h)
+                    b_incx = to_blas_int(nd)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(ivec-1+nd*(h+1)+ddl), b_incx, zr(itemp3-1+hf+2), b_incy)
                     call dscal(2*hf+1, 1.d0/jeu, zr(itemp3), 1)
                     call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq2-1+deb+2*(2*hf+1)+1))
                     call dscal(2*hf+1, -1.d0, zr(iq2-1+deb+2*(2*hf+1)+1), 1)
@@ -212,25 +234,40 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd, &
                 zr(itemp4-1+ind-deb-2*(2*hf+1)) = 1.d0
 ! ---       FX*[R] - FN*(UX/JEU)
                 call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
-                call dcopy(2*hf+1, zr(ivec+deb), 1, zr(itemp3), 1)
+                b_n = to_blas_int(2*hf+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(ivec+deb), b_incx, zr(itemp3), b_incy)
                 call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq2-1+deb+1))
 ! ---       FY*[R] - FN*(UY/JEU)
                 call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
-                call dcopy(2*hf+1, zr(ivec+deb+(2*hf+1)), 1, zr(itemp3), 1)
+                b_n = to_blas_int(2*hf+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(ivec+deb+(2*hf+1)), b_incx, zr(itemp3), b_incy)
                 call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq2-1+deb+(2*hf+1)+1))
 ! ---       R*[R] - (UX/JEU)^2 - (UY/JEU)^2
                 call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
-                call dcopy(2*hf+1, zr(ivec+deb+2*(2*hf+1)), 1, zr(itemp3), 1)
+                b_n = to_blas_int(2*hf+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(ivec+deb+2*(2*hf+1)), b_incx, zr(itemp3), b_incy)
                 call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq2-1+deb+2*(2*hf+1)+1))
             else if (ind .gt. deb+3*(2*hf+1) .and. ind .le. deb+4*(2*hf+1)) then
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
                 zr(itemp4-1+ind-deb-3*(2*hf+1)) = 1.d0
 ! ---       (FN/ALPHA - R)*[FN]
                 call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
-                call daxpy(2*hf+1, -1.d0, zr(ivec+deb+2*(2*hf+1)), 1, zr(itemp3), &
-                           1)
-                call daxpy(2*hf+1, 1.d0/alpha, zr(ivec+deb+3*(2*hf+1)), 1, zr(itemp3), &
-                           1)
+                b_n = to_blas_int(2*hf+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, -1.d0, zr(ivec+deb+2*(2*hf+1)), b_incx, zr(itemp3), &
+                           b_incy)
+                b_n = to_blas_int(2*hf+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, 1.d0/alpha, zr(ivec+deb+3*(2*hf+1)), b_incx, zr(itemp3), &
+                           b_incy)
                 call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq2-1+deb+3*(2*hf+1)+1))
             end if
         else if (type(i) (1:4) .eq. 'PLAN') then
@@ -239,11 +276,21 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd, &
             call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
             if (ind .gt. deb .and. ind .le. deb+(2*hf+1)) then
 ! ---       (F/ALPHA - XG)*[F]
-                call dcopy(h+1, zr(ivec-1+nddl), nd, zr(itemp3-1+1:h+1), 1)
-                call dcopy(h, zr(ivec-1+nd*(h+1)+nddl), nd, zr(itemp3-1+hf+2:hf+h+1), 1)
+                b_n = to_blas_int(h+1)
+                b_incx = to_blas_int(nd)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(ivec-1+nddl), b_incx, zr(itemp3-1+1:h+1), b_incy)
+                b_n = to_blas_int(h)
+                b_incx = to_blas_int(nd)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(ivec-1+nd*(h+1)+nddl), b_incx, zr(itemp3-1+hf+2:hf+h+1), &
+                           b_incy)
                 call dscal(2*hf+1, -1.d0, zr(itemp3), 1)
-                call daxpy(2*hf+1, 1.d0/alpha, zr(ivec+deb), 1, zr(itemp3), &
-                           1)
+                b_n = to_blas_int(2*hf+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, 1.d0/alpha, zr(ivec+deb), b_incx, zr(itemp3), &
+                           b_incy)
                 zr(itemp4-1+ind-deb) = 1.d0
                 call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq2-1+deb+1))
             end if
@@ -269,7 +316,10 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd, &
         end if
     end do
 !
-    call dcopy(ninc-1, zr(iq2), 1, zr(itemp), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(iq2), b_incx, zr(itemp), b_incy)
 !
     call jedetr('&&mnlqd2.q2')
     call jedetr('&&mnlqd2.temp1')

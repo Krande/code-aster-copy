@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,6 +114,7 @@ subroutine te0406(option, nomte)
     real(kind=8) :: masrg(3, 3)
     real(kind=8) :: masrl(3, 3)
     real(kind=8) :: mnn
+    blas_int :: b_incx, b_incy, b_n
 !
 ! DEB
 !
@@ -220,9 +221,7 @@ subroutine te0406(option, nomte)
             do j = 1, 6*nb1+3
                 do i = 1, 6*nb1+3
                     jd = (6*nb1+3)*(j-1)+i
-                    mas(jd) = mas(jd)+(rho*mantn(jd)* &
-                                       zr(lzr-1+127+intsn-1)*detj*1.d0 &
-                                       )
+                    mas(jd) = mas(jd)+(rho*mantn(jd)*zr(lzr-1+127+intsn-1)*detj*1.d0)
                 end do
             end do
 !
@@ -302,9 +301,8 @@ subroutine te0406(option, nomte)
                 do ii = 1, 3
                     j = 6*(in-1)+jj+3
                     i = 6*(in-1)+ii+3
-                    mas((6*nb1+3)*(j-1)+i) = mas(( &
-                                                 6*nb1+3)*(j-1)+i)+mnn*vectn( &
-                                             in, ii)*vectn(in, jj)
+                    mas((6*nb1+3)*(j-1)+i) = mas( &
+                                             (6*nb1+3)*(j-1)+i)+mnn*vectn(in, ii)*vectn(in, jj)
                 end do
             end do
 !
@@ -315,9 +313,8 @@ subroutine te0406(option, nomte)
                 do ii = 1, 3
                     j = 6*nb1+jj
                     i = 6*nb1+ii
-                    mas((6*nb1+3)*(j-1)+i) = mas(( &
-                                                 6*nb1+3)*(j-1)+i)+mnn*vectn( &
-                                             in, ii)*vectn(in, jj)
+                    mas((6*nb1+3)*(j-1)+i) = mas( &
+                                             (6*nb1+3)*(j-1)+i)+mnn*vectn(in, ii)*vectn(in, jj)
                 end do
             end do
 !
@@ -344,8 +341,7 @@ subroutine te0406(option, nomte)
         do j = 1, 6*nb1+3
             do i = 1, j
                 kompt = kompt+1
-                zr(imatuu-1+kompt) = mas((6*nb1+3)*(j &
-                                                    -1)+i)
+                zr(imatuu-1+kompt) = mas((6*nb1+3)*(j-1)+i)
             end do
         end do
 !
@@ -390,7 +386,10 @@ subroutine te0406(option, nomte)
 !
             call pmavec('ZERO', 6*nb1+3, mas, zr(iv), masv)
 !
-            zr(jener) = 5.d-1*ddot(6*nb1+3, zr(iv), 1, masv, 1)
+            b_n = to_blas_int(6*nb1+3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(jener) = 5.d-1*ddot(b_n, zr(iv), b_incx, masv, b_incy)
 !
         else
 !
@@ -399,7 +398,10 @@ subroutine te0406(option, nomte)
                 call jevech('POMEGA2', 'L', jfreq)
                 call r8inir(51, 0.d0, masu, 1)
                 call pmavec('ZERO', 6*nb1+3, mas, zr(iu), masu)
-                zr(jener) = ddot(6*nb1+3, zr(iu), 1, masu, 1)
+                b_n = to_blas_int(6*nb1+3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(jener) = ddot(b_n, zr(iu), b_incx, masu, b_incy)
 !
 !--------- VITESSE = OMEGA * MODE
 !

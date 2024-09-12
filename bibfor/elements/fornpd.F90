@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fornpd(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -67,6 +67,7 @@ subroutine fornpd(option, nomte)
     real(kind=8) :: zero, zic, zmin, coef, hepa, hic
 !
     character(len=16) :: kmess(2)
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(npge=3)
 ! DEB
@@ -86,7 +87,7 @@ subroutine fornpd(option, nomte)
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
     end if
-
+!
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcara)
     epais = zr(jcara)
@@ -218,8 +219,11 @@ subroutine fornpd(option, nomte)
 !
     if (option .eq. 'REFE_FORC_NODA') then
         nval = nbcou*npge*npgsn*5
-        call daxpy(nb1*5, 1.d0/nval, ftemp, 1, effint, &
-                   1)
+        b_n = to_blas_int(nb1*5)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0/nval, ftemp, b_incx, effint, &
+                   b_incy)
     end if
 !
 !

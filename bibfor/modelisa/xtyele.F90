@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xtyele(model, trav, nfiss, fiss, contac, &
                   ndim, linter)
 ! person_in_charge: jacques.pellet at edf.fr
@@ -92,10 +92,11 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
     real(kind=8), pointer :: vlsn(:) => null()
     real(kind=8), pointer :: lst(:) => null()
     integer, pointer :: tmdim(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
-
+!
     call jemarq()
 !
 ! --- INITIALISATION
@@ -144,8 +145,8 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
         call cnocns(fiss(ifiss)//'.STNO', 'V', cstn(ifiss))
         call jeveuo(cstn(ifiss)//'.CNSL', 'L', jstnl(ifiss))
         call jeveuo(cstn(ifiss)//'.CNSV', 'L', jstnv(ifiss))
-        call xelfis_lists(fiss(ifiss), model, elfis_heav(ifiss), &
-                          elfis_ctip(ifiss), elfis_hect(ifiss))
+        call xelfis_lists(fiss(ifiss), model, elfis_heav(ifiss), elfis_ctip(ifiss), &
+                          elfis_hect(ifiss))
         grp(4*(ifiss-1)+1) = elfis_heav(ifiss)
         grp(4*(ifiss-1)+2) = elfis_ctip(ifiss)
         grp(4*(ifiss-1)+3) = elfis_hect(ifiss)
@@ -218,10 +219,8 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
                         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                         call conare(typma, ar, nbar)
                         do ia = 1, nbar
-                            nunoa = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, &
-                                                                    1)-1)
-                            nunob = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, &
-                                                                    2)-1)
+                            nunoa = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, 1)-1)
+                            nunob = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, 2)-1)
                             lsna = vlsn(nunoa)
                             lsnb = vlsn(nunob)
                             stna = zi(jstnv(ifiss)-1+nunoa)
@@ -232,9 +231,9 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
                             if (lsnb .gt. maxlsn) maxlsn = lsnb
 ! --- ARETE OU NOEUD COUPÉ AVEC STATUT NUL -> MAILLE MULTI-H NON COUPÉE
                             if (lsna*lsnb .le. 0 .and. nfiss .gt. 1) then
-                               if (lsna*lsnb .lt. 0 .and. (stna .eq. 0 .or. stnb .eq. 0) .or. lsna &
-                                    .eq. 0 .and. stna .eq. 0 .or. lsnb .eq. 0 .and. stnb .eq. 0) &
-                                    goto 110
+                                if (lsna*lsnb .lt. 0 .and. (stna .eq. 0 .or. stnb .eq. 0) .or. &
+                                    lsna .eq. 0 .and. stna .eq. 0 .or. lsnb .eq. 0 .and. stnb &
+                                    .eq. 0) goto 110
                             end if
                         end do
 ! --- BOUCLE SUR LES NOEUDS DE LA MAILLE
@@ -253,8 +252,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
 ! --- LE CONTACT EST ACTIVÉ SI TOUT LES NOEUDS D'UNE FACE SONT COUPÉS
                             nbcoup = 0
                             do ino = 1, nno
-                                nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino- &
-                                          1)
+                                nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
                                 lsn = vlsn(nngl)
                                 if (lsn .eq. 0) then
 ! --- LE NOEUD EST COUPÉ SI LE MAX DE LSN DE SA CONNECTIVITÉ
@@ -267,8 +265,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
                                         call jelira(jexnum(noma//'.CONNEX', ima2), 'LONMAX', &
                                                     nno2, k8bid)
                                         do ino2 = 1, nno2
-                                            nngl = zi(jconx1-1+zi(jconx2+ &
-                                                                  ima2-1)+ino2-1)
+                                            nngl = zi(jconx1-1+zi(jconx2+ima2-1)+ino2-1)
                                             lsn = vlsn(nngl)
                                             if (lsn .gt. maxlsn) maxlsn = lsn
                                         end do
@@ -286,23 +283,21 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
                                 if (typma(1:5) .eq. 'TETRA') then
                                     if (nbcoup .eq. 3) lcont = .true.
                                 else if (typma(1:4) .eq. 'PYRA') then
-                                    nngl = zi(jconx1-1+zi(jconx2+ima-1)+ &
-                                              5-1)
+                                    nngl = zi(jconx1-1+zi(jconx2+ima-1)+5-1)
                                     lsn = vlsn(nngl)
                                     if (lsn .eq. 0 .and. nbcoup .eq. 3 .or. nbcoup .eq. 4) &
                                         lcont = .true.
                                 else if (typma(1:5) .eq. 'PENTA') then
                                     nbcou2 = 0
                                     do ino = 1, 3
-                                        nngl = zi(jconx1-1+zi(jconx2+ &
-                                                              ima-1)+ino-1)
+                                        nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
                                         lsn = vlsn(nngl)
                                         if (lsn .eq. 0) then
                                             nbcou2 = nbcou2+1
                                         end if
                                     end do
-                                   if ((nbcou2 .eq. 3 .or. nbcou2 .eq. 0) .and. nbcoup .eq. 3 .or. &
-                                        nbcoup .eq. 4) lcont = .true.
+                                    if ((nbcou2 .eq. 3 .or. nbcou2 .eq. 0) .and. nbcoup .eq. 3 &
+                                        .or. nbcoup .eq. 4) lcont = .true.
                                 else if (typma(1:4) .eq. 'HEXA') then
                                     if (nbcoup .eq. 4) lcont = .true.
                                 end if
@@ -318,10 +313,8 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
                         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                         call conare(typma, ar, nbar)
                         do ia = 1, nbar
-                            nunoa = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, &
-                                                                    1)-1)
-                            nunob = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, &
-                                                                    2)-1)
+                            nunoa = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, 1)-1)
+                            nunob = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, 2)-1)
                             lsna = vlsn(nunoa)
                             lsnb = vlsn(nunob)
                             lsta = lst(nunoa)
@@ -337,9 +330,15 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
                                     c(k) = a(k)-lsna/(lsnb-lsna)*ab(k)
                                     ac(k) = c(k)-a(k)
                                 end do
-                                ASSERT(ddot(ndim, ab, 1, ab, 1) .gt. r8prem())
-                                lstc = lsta+(lstb-lsta)*ddot(ndim, ab, 1, ac, 1)/ddot(ndim, ab,&
-                                       &1, ab, 1)
+                                b_n = to_blas_int(ndim)
+                                b_incx = to_blas_int(1)
+                                b_incy = to_blas_int(1)
+                                ASSERT(ddot(b_n, ab, b_incx, ab, b_incy) .gt. r8prem())
+                                b_n = to_blas_int(ndim)
+                                b_incx = to_blas_int(1)
+                                b_incy = to_blas_int(1)
+                                lstc = lsta+(lstb-lsta)*ddot(b_n, ab, b_incx, ac, b_incy)/ddot(b_&
+                                       &n, ab, b_incx, ab, b_incy)
                                 if (lstc .lt. minlst) then
                                     minlst = lstc
                                     do k = 1, ndim
@@ -359,13 +358,11 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
                             call wkvect('&&XTYELE.LST', 'V V R', nno, ilst)
                             call wkvect('&&XTYELE.IGEOM', 'V V R', nno*ndim, igeom)
                             do ino = 1, nno
-                                nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino- &
-                                          1)
+                                nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
                                 zr(ilsn-1+ino) = vlsn(nngl)
                                 zr(ilst-1+ino) = lst(nngl)
                                 do j = 1, ndim
-                                    zr(igeom-1+ndim*(ino-1)+j) = &
-                                        vale(3*(nngl-1)+j)
+                                    zr(igeom-1+ndim*(ino-1)+j) = vale(3*(nngl-1)+j)
                                 end do
                             end do
 ! --- BOUCLE SUR LES FACES
@@ -382,9 +379,9 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
                                         b(j) = zr(igeom-1+ndim*(fa(ifq, 2)-1)+j)
                                         c(j) = zr(igeom-1+ndim*(fa(ifq, 3)-1)+j)
                                     end do
-                                    longar = (padist(ndim, a, b)+padist( &
-                                              ndim, a, c))/2.d0
-                                    if (padist(ndim, m, cmin) .lt. (longar*1.d-6)) lcont = .false.
+                                    longar = (padist(ndim, a, b)+padist(ndim, a, c))/2.d0
+                                    if (padist(ndim, m, cmin) .lt. (longar*1.d-6)) lcont = &
+                                        .false.
                                 end if
                             end do
                             call jedetr('&&XTYELE.LSN')

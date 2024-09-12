@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0446(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -62,6 +62,7 @@ subroutine te0446(option, nomte)
     real(kind=8) :: alpha, beta, t2ev(4), t2ve(4), c, s
     real(kind=8) :: foref, moref
     aster_logical :: reactu
+    blas_int :: b_incx, b_incy, b_n
 !
     if (option .eq. 'FORC_NODA') then
 !
@@ -103,7 +104,10 @@ subroutine te0446(option, nomte)
 ! --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
         do ipg = 1, npg
             icontm = jtab(1)+8*(ipg-1)
-            call dcopy(8, zr(icontm), 1, effort(8*(ipg-1)+1), 1)
+            b_n = to_blas_int(8)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(icontm), b_incx, effort(8*(ipg-1)+1), b_incy)
         end do
         call dxefro(npg, t2ve, effort, effgt)
 !

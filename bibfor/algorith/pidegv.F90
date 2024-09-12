@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,7 @@ subroutine pidegv(neps, tau, epsm, epsp, epsd, &
 ! ----------------------------------------------------------------------
     integer :: ndim, ndimsi, nrac, i
     real(kind=8) :: epsmno, p0, p1, p2, rac(2)
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !
 ! -- INITIALISATION
@@ -55,15 +56,30 @@ subroutine pidegv(neps, tau, epsm, epsp, epsd, &
     epsmno = dnrm2(ndimsi, epsm, 1)
 !
     if (epsmno .gt. 1.d0/r8gaem()) then
-        copilo(1, 1) = ddot(ndimsi, epsm, 1, epsp, 1)/epsmno
-        copilo(2, 1) = ddot(ndimsi, epsm, 1, epsd, 1)/epsmno
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        copilo(1, 1) = ddot(b_n, epsm, b_incx, epsp, b_incy)/epsmno
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        copilo(2, 1) = ddot(b_n, epsm, b_incx, epsd, b_incy)/epsmno
 !
     else
 !
 !      PREMIER PAS : PILOTAGE PAR LA NORME DE L'INCREMENT
-        p2 = ddot(ndimsi, epsd, 1, epsd, 1)
-        p1 = ddot(ndimsi, epsd, 1, epsp, 1)*2
-        p0 = ddot(ndimsi, epsp, 1, epsp, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        p2 = ddot(b_n, epsd, b_incx, epsd, b_incy)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        p1 = ddot(b_n, epsd, b_incx, epsp, b_incy)*2
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        p0 = ddot(b_n, epsp, b_incx, epsp, b_incy)
         call zerop2(p1/p2, (p0-tau**2)/p2, rac, nrac)
 !
         do i = 1, nrac

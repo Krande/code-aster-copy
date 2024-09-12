@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
-                              dvl, dpe, dve, Predic, force, varmo, varpl)
+                              dvl, dpe, dve, Predic, force, &
+                              varmo, varpl)
 !
     use te0047_type
     implicit none
@@ -32,12 +33,12 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer         :: icodma
-    real(kind=8)    :: ulp(*), dvl(*)
-    real(kind=8)    :: dpe(*), dve(*)
-    real(kind=8)    :: klv(*), xg(*)
-    real(kind=8)    :: varmo(*), varpl(*), force(*)
-    aster_logical   :: Predic
+    integer :: icodma
+    real(kind=8) :: ulp(*), dvl(*)
+    real(kind=8) :: dpe(*), dve(*)
+    real(kind=8) :: klv(*), xg(*)
+    real(kind=8) :: varmo(*), varpl(*), force(*)
+    aster_logical :: Predic
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,10 +62,10 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer, parameter  :: nbre1 = 8
-    real(kind=8)        :: valre1(nbre1)
-    integer             :: codre1(nbre1)
-    character(len=8)    :: nomre1(nbre1)
+    integer, parameter :: nbre1 = 8
+    real(kind=8) :: valre1(nbre1)
+    integer :: codre1(nbre1)
+    character(len=8) :: nomre1(nbre1)
 !   Index des variables internes
     integer, parameter :: idepx = 1, idepy = 2, idepz = 3, iidic = 4, idepyp = 5, idepzp = 6
     integer, parameter :: ifx = 7, ify = 8, ifz = 9, icalc = 10
@@ -72,10 +73,11 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
     integer, parameter :: EtatAdher = 0, EtatGliss = 1, EtatDecol = 2
     integer, parameter :: EnVitesse = 1, EnPlasticite = 2
 !
-    integer      :: ii
+    integer :: ii
     real(kind=8) :: xl(6), xd(3), dirl(6), raide(6), rignor, rigtan
     real(kind=8) :: coulom, dist12, utot, vit2, vit3, depx, depy, depz, psca
     real(kind=8) :: vitt, vity, vitz, fort
+    blas_int :: b_incx, b_incy, b_n
 !
     data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', &
         'COULOMB', 'DIST_1', 'DIST_2', 'JEU'/
@@ -95,8 +97,9 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
     valre1(:) = 0.0
     valre1(1) = raide(1)
 !   Caractéristiques du matériau
-    call rcvala(icodma, ' ', 'DIS_CONTACT', 0, ' ', [0.0d0], &
-                nbre1, nomre1, valre1, codre1, 0, nan='NON')
+    call rcvala(icodma, ' ', 'DIS_CONTACT', 0, ' ', &
+                [0.0d0], nbre1, nomre1, valre1, codre1, &
+                0, nan='NON')
     rignor = valre1(1)
     rigtan = valre1(2)
     coulom = valre1(5)
@@ -105,20 +108,26 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
 !   Élément avec 2 noeuds
     if (for_discret%nno .eq. 2) then
         dist12 = valre1(6)+valre1(7)
-        ! Dans l'axe du discret
+! Dans l'axe du discret
         utot = ulp(1+for_discret%nc)-ulp(1)
-        ! Vitesse tangente
+! Vitesse tangente
         vit2 = dvl(2+for_discret%nc)-dvl(2)
         vit3 = 0.0
         if (for_discret%ndim .eq. 3) then
             vit3 = dvl(3+for_discret%nc)-dvl(3)
         end if
-        ! Longueur du discret
+! Longueur du discret
         do ii = 1, for_discret%ndim
             xd(ii) = xl(for_discret%ndim+ii)-xl(ii)
         end do
-        call dcopy(for_discret%ndim, dpe(1), 1, dirl, 1)
-        call dcopy(for_discret%ndim, dpe(1+for_discret%nc), 1, dirl(4), 1)
+        b_n = to_blas_int(for_discret%ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dpe(1), b_incx, dirl, b_incy)
+        b_n = to_blas_int(for_discret%ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dpe(1+for_discret%nc), b_incx, dirl(4), b_incy)
         depx = xd(1)-dist12+utot+dirl(4)-dirl(1)
         depx = depx-r8prem()
         depy = xd(2)+ulp(2+for_discret%nc)-ulp(2)+dirl(5)-dirl(2)
@@ -126,9 +135,15 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
         if (for_discret%ndim .eq. 3) then
             depz = xd(3)+ulp(3+for_discret%nc)-ulp(3)+dirl(6)-dirl(3)
         end if
-        call dcopy(for_discret%ndim, dve(1), 1, dirl, 1)
-        call dcopy(for_discret%ndim, dve(1+for_discret%nc), 1, dirl(4), 1)
-        ! Vitesse tangente
+        b_n = to_blas_int(for_discret%ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dve(1), b_incx, dirl, b_incy)
+        b_n = to_blas_int(for_discret%ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dve(1+for_discret%nc), b_incx, dirl(4), b_incy)
+! Vitesse tangente
         vity = vit2+dirl(5)-dirl(2)
         vitz = 0.0
         if (for_discret%ndim .eq. 3) then
@@ -176,7 +191,7 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
             if (for_discret%ndim .eq. 3) then
                 force(3) = force(3)+raide(3)*(ulp(3+for_discret%nc)-ulp(3))
             end if
-            ! Actualisation de la matrice de raideur
+! Actualisation de la matrice de raideur
             raide(1) = rignor
             call diklvraid(for_discret%nomte, klv, raide)
         else
@@ -193,21 +208,27 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
 !   Élément avec 1 noeud
     else
         dist12 = valre1(8)-valre1(6)
-        ! Vitesse tangente
+! Vitesse tangente
         vit2 = dvl(2)
         vit3 = 0.0
         if (for_discret%ndim .eq. 3) then
             vit3 = dvl(3)
         end if
-        call dcopy(for_discret%ndim, dpe(1), 1, dirl, 1)
+        b_n = to_blas_int(for_discret%ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dpe(1), b_incx, dirl, b_incy)
         depx = ulp(1)+dist12+dirl(1)
         depy = ulp(2)+dirl(2)
         depz = 0.0
         if (for_discret%ndim .eq. 3) then
             depz = ulp(3)+dirl(3)
         end if
-        call dcopy(for_discret%ndim, dve(1), 1, dirl, 1)
-        ! Vitesse tangente
+        b_n = to_blas_int(for_discret%ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dve(1), b_incx, dirl, b_incy)
+! Vitesse tangente
         vity = vit2+dirl(2)
         vitz = 0.0
         if (for_discret%ndim .eq. 3) then
@@ -255,7 +276,7 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
             if (for_discret%ndim .eq. 3) then
                 force(3) = force(3)+raide(3)*ulp(3)
             end if
-            ! Actualisation de la matrice de raideur
+! Actualisation de la matrice de raideur
             raide(1) = rignor
             call diklvraid(for_discret%nomte, klv, raide)
         else
@@ -277,11 +298,11 @@ subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
 !       Si on passe d'une formulation 'plastique' à une en 'vitesse'
 !       On le fait à la fin, la raideur doit être mise comme il faut
     if (Predic .and. (nint(varmo(icalc)) .eq. EnPlasticite)) then
-        ! Les efforts précédents
+! Les efforts précédents
         force(1) = varmo(ifx)
         force(2) = varmo(ify)
         force(3) = varmo(ifz)
-        ! On remet les varpl comme il faut. Elles ont peut-être été modifiées
+! On remet les varpl comme il faut. Elles ont peut-être été modifiées
         varpl(ifx) = varmo(ifx)
         varpl(ify) = varmo(ify)
         varpl(ifz) = varmo(ifz)

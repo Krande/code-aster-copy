@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fonno7(noma, cnxinv, ndim, na, vecdir, &
                   hmax)
     implicit none
@@ -61,6 +61,7 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir, &
     character(len=8) :: type
     integer, pointer :: connex(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -120,11 +121,17 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir, &
             end do
 !
 !          PROJECTION DE L'ARETE SUR LE VECTEUR TANGENT
-            p = ddot(ndim, vect, 1, vecdir, 1)
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            p = ddot(b_n, vect, b_incx, vecdir, b_incy)
 !
 !          FILTRAGE DES ARETES A PRENDRE EN COMPTE:
 !          L'ANGLE ENTRE VECT ET VECDIR DOIT ETRE <60
-            normv = sqrt(ddot(ndim, vect, 1, vect, 1))
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            normv = sqrt(ddot(b_n, vect, b_incx, vect, b_incy))
 !
             cosinu = p/normv
             cos70 = cos(70*r8pi()/180.d0)

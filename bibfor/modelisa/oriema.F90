@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d, &
                   lnm3d, ndim, coor, reorie, norien, &
                   ifm, niv)
@@ -52,6 +52,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d, &
     integer :: lisnoe(nbnomx)
     real(kind=8) :: coon1(3), coon2(3), coon3(3), n1n2(3), n1n3(3)
     real(kind=8) :: n(3), norme, n1g(3), xg3d(3), xgm(3), xgn, zero
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -148,7 +149,10 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d, &
     n1g = xg3d-xgm
 !
     call normev(n1g, norme)
-    xgn = ddot(3, n1g, 1, n, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    xgn = ddot(b_n, n1g, b_incx, n, b_incy)
 !
 ! --- SI XGN > 0, LA NORMALE A LA MAILLE DE PEAU
 ! --- EST DIRIGEE VERS L'INTERIEUR DU VOLUME, IL FAUT

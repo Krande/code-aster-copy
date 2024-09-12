@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,7 @@ subroutine pidefo(ndim, npg, kpg, compor, fm, &
     real(kind=8) :: rac2
     real(kind=8) :: em(6), epsmno
     integer :: ij, kl, i, j, k, l
+    blas_int :: b_incx, b_incy, b_n
 !
     data indi/1, 2, 3, 2, 3, 3/
     data indj/1, 2, 3, 1, 1, 2/
@@ -81,7 +82,10 @@ subroutine pidefo(ndim, npg, kpg, compor, fm, &
 ! --- TRANSPORT DU TENSEUR DES DEFORMATIONS E := F E FT
 !
     if (grand) then
-        call dcopy(ndimsi, epsm, 1, em, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epsm, b_incx, em, b_incy)
         call r8inir(ndimsi, 0.d0, epsm, 1)
 !
         do ij = 1, ndimsi
@@ -100,8 +104,14 @@ subroutine pidefo(ndim, npg, kpg, compor, fm, &
 ! --- INCREMENT DE DEFORMATION PROJETE
 !
     epsmno = dnrm2(ndimsi, epsm, 1)
-    copilo(1, kpg) = ddot(ndimsi, epsm, 1, epsp, 1)/epsmno
-    copilo(2, kpg) = ddot(ndimsi, epsm, 1, epsd, 1)/epsmno
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    copilo(1, kpg) = ddot(b_n, epsm, b_incx, epsp, b_incy)/epsmno
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    copilo(2, kpg) = ddot(b_n, epsm, b_incx, epsd, b_incy)/epsmno
 !
 !
 end subroutine

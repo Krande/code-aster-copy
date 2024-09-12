@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0455(nomopt, nomte)
 !
     use Behaviour_module, only: behaviourOption
@@ -66,7 +66,7 @@ subroutine te0455(nomopt, nomte)
     aster_logical :: l_largestrains, lMatr, lVect, lSigm, lVari, matsym
     character(len=4), parameter :: fami = 'RIGI'
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC)
-    real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)  :: lhs
+    real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC) :: lhs
 !
 ! --- Get HHO informations
 !
@@ -82,11 +82,8 @@ subroutine te0455(nomopt, nomte)
     ASSERT(fbs <= MSIZE_FACE_VEC)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
 !
-    if (nomopt /= "RIGI_MECA_TANG" .and. &
-        nomopt /= "RIGI_MECA_ELAS" .and. &
-        nomopt /= "RIGI_MECA" .and. &
-        nomopt /= "FULL_MECA" .and. &
-        nomopt /= "RAPH_MECA") then
+    if (nomopt /= "RIGI_MECA_TANG" .and. nomopt /= "RIGI_MECA_ELAS" .and. &
+        nomopt /= "RIGI_MECA" .and. nomopt /= "FULL_MECA" .and. nomopt /= "RAPH_MECA") then
         ASSERT(ASTER_FALSE)
     end if
 !
@@ -105,7 +102,8 @@ subroutine te0455(nomopt, nomte)
 !
         l_largestrains = hhoCS%l_largestrain
 !
-        call behaviourOption(nomopt, hhoCS%compor, lMatr, lVect, lVari, lSigm, hhoCS%codret)
+        call behaviourOption(nomopt, hhoCS%compor, lMatr, lVect, lVari, &
+                             lSigm, hhoCS%codret)
     else
         l_largestrains = ASTER_FALSE
         lMatr = ASTER_TRUE
@@ -122,13 +120,14 @@ subroutine te0455(nomopt, nomte)
         call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab), &
                                   hhoMecaState%grad, hhoMecaState%stab)
     else
-        call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, hhoMecaState%stab)
+        call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, &
+                           hhoMecaState%stab)
     end if
 !
 ! --- Compute local contribution
 !
-    call hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, &
-                             hhoCS, lhs, rhs)
+    call hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, hhoCS, &
+                             lhs, rhs)
 !
 ! --- Save return code
 !

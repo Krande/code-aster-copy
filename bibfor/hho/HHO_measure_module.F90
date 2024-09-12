@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,11 +39,11 @@ module HHO_measure_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public   :: hhoMeasureCell, hhoMeasureFace, hhoDiameterCell, hhoDiameterFace, hho_surface_tri
-    public   :: hhoLengthBoundingBoxCell, hhoLengthBoundingBoxFace
-    private  :: hho_vol_hexa, hho_vol_tetra, hho_surface_quad, hho_length_edge
-    private  :: hho_vol_prism, hho_vol_pyram
-    private  :: hhoDiameter, prod_vec
+    public :: hhoMeasureCell, hhoMeasureFace, hhoDiameterCell, hhoDiameterFace, hho_surface_tri
+    public :: hhoLengthBoundingBoxCell, hhoLengthBoundingBoxFace
+    private :: hho_vol_hexa, hho_vol_tetra, hho_surface_quad, hho_length_edge
+    private :: hho_vol_prism, hho_vol_pyram
+    private :: hhoDiameter, prod_vec
 !
 contains
 !
@@ -55,8 +55,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3), intent(in)  :: v0, v1
-        real(kind=8), dimension(3)              :: v2
+        real(kind=8), dimension(3), intent(in) :: v0, v1
+        real(kind=8), dimension(3) :: v2
 !
 ! --------------------------------------------------------------------------------------------------
 !  In v0        :: vector 0
@@ -80,15 +80,15 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 8), intent(in)   :: nodes
-        real(kind=8)                               :: vol
+        real(kind=8), dimension(3, 8), intent(in) :: nodes
+        real(kind=8) :: vol
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4, 5)  :: tets
+        integer, dimension(4, 5) :: tets
         integer :: i, j
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
@@ -118,15 +118,15 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 6), intent(in)   :: nodes
-        real(kind=8)                               :: vol
+        real(kind=8), dimension(3, 6), intent(in) :: nodes
+        real(kind=8) :: vol
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4, 3)  :: tets
+        integer, dimension(4, 3) :: tets
         integer :: i, j
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
@@ -154,15 +154,15 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 5), intent(in)   :: nodes
-        real(kind=8)                               :: vol
+        real(kind=8), dimension(3, 5), intent(in) :: nodes
+        real(kind=8) :: vol
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4, 2)  :: tets
+        integer, dimension(4, 2) :: tets
         integer :: i, j
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
@@ -189,15 +189,15 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)    :: nodes
-        real(kind=8)                                :: vol
+        real(kind=8), dimension(3, 4), intent(in) :: nodes
+        real(kind=8) :: vol
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3)  :: v0, v1, v2, cross
+        real(kind=8), dimension(3) :: v0, v1, v2, cross
 ! --------------------------------------------------------------------------------------------------
 !
         vol = 0.d0
@@ -218,15 +218,15 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)    :: nodes
-        real(kind=8)                                :: surface
+        real(kind=8), dimension(3, 4), intent(in) :: nodes
+        real(kind=8) :: surface
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: surface
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3)  :: e1, e2, e3, e4, d1, d2
+        real(kind=8), dimension(3) :: e1, e2, e3, e4, d1, d2
         real(kind=8) :: l1, l2, l3, l4, ld1, ld2
 !
 ! ---- edge
@@ -258,8 +258,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 3), intent(in)  :: nodes
-        real(kind=8)                              :: surface
+        real(kind=8), dimension(3, 3), intent(in) :: nodes
+        real(kind=8) :: surface
 !
 !---------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
@@ -285,15 +285,15 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 2), intent(in)  :: nodes
-        real(kind=8)                              :: length
+        real(kind=8), dimension(3, 2), intent(in) :: nodes
+        real(kind=8) :: length
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: length
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3)  :: v0
+        real(kind=8), dimension(3) :: v0
 ! --------------------------------------------------------------------------------------------------
 !
         v0(1:3) = nodes(1:3, 2)-nodes(1:3, 1)
@@ -310,28 +310,28 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)    :: cell
-        real(kind=8)                  :: measure
+        type(HHO_Cell), intent(in) :: cell
+        real(kind=8) :: measure
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Cell           :: cell HHO
 !  Out measure           :: measure of the cell
 ! --------------------------------------------------------------------------------------------------
-
+!
 !
         measure = 0.d0
 !
         if (cell%typema == 'HEXA8') then
             measure = hho_vol_hexa(cell%coorno(1:3, 1:8))
-        elseif (cell%typema == 'TETRA4') then
+        else if (cell%typema == 'TETRA4') then
             measure = hho_vol_tetra(cell%coorno(1:3, 1:4))
-        elseif (cell%typema == 'PYRAM5') then
+        else if (cell%typema == 'PYRAM5') then
             measure = hho_vol_pyram(cell%coorno(1:3, 1:5))
-        elseif (cell%typema == 'PENTA6') then
+        else if (cell%typema == 'PENTA6') then
             measure = hho_vol_prism(cell%coorno(1:3, 1:6))
-        elseif (cell%typema == 'QUAD4') then
+        else if (cell%typema == 'QUAD4') then
             measure = hho_surface_quad(cell%coorno(1:3, 1:4))
-        elseif (cell%typema == 'TRIA3') then
+        else if (cell%typema == 'TRIA3') then
             measure = hho_surface_tri(cell%coorno(1:3, 1:3))
         else
             ASSERT(ASTER_FALSE)
@@ -347,8 +347,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)                  :: face
-        real(kind=8)                                :: measure
+        type(HHO_Face), intent(in) :: face
+        real(kind=8) :: measure
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face           :: face HHO
@@ -359,9 +359,9 @@ contains
 !
         if (face%typema(1:5) == 'QUAD4') then
             measure = hho_surface_quad(face%coorno(1:3, 1:4))
-        elseif (face%typema(1:5) == 'TRIA3') then
+        else if (face%typema(1:5) == 'TRIA3') then
             measure = hho_surface_tri(face%coorno(1:3, 1:3))
-        elseif (face%typema(1:4) == 'SEG2') then
+        else if (face%typema(1:4) == 'SEG2') then
             measure = hho_length_edge(face%coorno(1:3, 1:2))
         else
             ASSERT(ASTER_FALSE)
@@ -376,9 +376,9 @@ contains
     function hhoDiameter(coorno, nbnodes) result(diam)
 !
         implicit none
-        integer, intent(in)                             :: nbnodes
+        integer, intent(in) :: nbnodes
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
-        real(kind=8)                                    :: diam
+        real(kind=8) :: diam
 !
 ! --------------------------------------------------------------------------------------------------
 !  In coorno            :: coordinates of the nodes
@@ -408,28 +408,28 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)    :: cell
-        real(kind=8)                  :: measure
+        type(HHO_Cell), intent(in) :: cell
+        real(kind=8) :: measure
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Cell              :: cell HHO
 !  Out measure              :: maximum length of two distinc nodes
 ! --------------------------------------------------------------------------------------------------
-
+!
 !
         measure = 0.d0
 !
         if (cell%typema == 'HEXA8') then
             measure = hhoDiameter(cell%coorno(1:3, 1:8), 8)
-        elseif (cell%typema == 'TETRA4') then
+        else if (cell%typema == 'TETRA4') then
             measure = hhoDiameter(cell%coorno(1:3, 1:4), 4)
-        elseif (cell%typema == 'PYRAM5') then
+        else if (cell%typema == 'PYRAM5') then
             measure = hhoDiameter(cell%coorno(1:3, 1:5), 5)
-        elseif (cell%typema == 'PENTA6') then
+        else if (cell%typema == 'PENTA6') then
             measure = hhoDiameter(cell%coorno(1:3, 1:6), 6)
-        elseif (cell%typema == 'QUAD4') then
+        else if (cell%typema == 'QUAD4') then
             measure = hhoDiameter(cell%coorno(1:3, 1:4), 4)
-        elseif (cell%typema == 'TRIA3') then
+        else if (cell%typema == 'TRIA3') then
             measure = hhoDiameter(cell%coorno(1:3, 1:3), 3)
         else
             ASSERT(ASTER_FALSE)
@@ -445,8 +445,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)    :: face
-        real(kind=8)                  :: measure
+        type(HHO_Face), intent(in) :: face
+        real(kind=8) :: measure
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face              :: face HHO
@@ -456,9 +456,9 @@ contains
         measure = 0.d0
         if (face%typema == 'QUAD4') then
             measure = hhoDiameter(face%coorno(1:3, 1:4), 4)
-        elseif (face%typema == 'TRIA3') then
+        else if (face%typema == 'TRIA3') then
             measure = hhoDiameter(face%coorno(1:3, 1:3), 3)
-        elseif (face%typema == 'SEG2') then
+        else if (face%typema == 'SEG2') then
             measure = hhoDiameter(face%coorno(1:3, 1:2), 2)
         else
             ASSERT(ASTER_FALSE)
@@ -474,8 +474,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)    :: hhocell
-        real(kind=8), dimension(3)    :: length
+        type(HHO_Cell), intent(in) :: hhocell
+        real(kind=8), dimension(3) :: length
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Cell              :: cell HHO
@@ -515,8 +515,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)    :: hhoFace
-        real(kind=8), dimension(2)    :: length
+        type(HHO_Face), intent(in) :: hhoFace
+        real(kind=8), dimension(2) :: length
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face              :: face HHO

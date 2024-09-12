@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,6 +78,7 @@ subroutine possvd(nm, m, n, w, matu, &
 ! -----------------
     integer :: i, j, jmax, rgmax
     real(kind=8) :: wmax
+    blas_int :: b_incx, b_incy, b_n
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -115,7 +116,10 @@ subroutine possvd(nm, m, n, w, matu, &
     else
         rgmax = min(m, n)
         if (rgmax .gt. 1) then
-            call dcopy(rgmax, w(1), 1, rv1(1), 1)
+            b_n = to_blas_int(rgmax)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, w(1), b_incx, rv1(1), b_incy)
             call dscal(rgmax, 1.0d0/rv1(1), rv1(1), 1)
             do j = 2, rgmax
                 if (rv1(j) .lt. eps) goto 40

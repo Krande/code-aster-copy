@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,11 +43,21 @@ subroutine statpu(nbobst, nbpt, temps, fcho, vgli, &
     integer :: i, ibl, idebut, ifires, impr, inoe, nbloc
     integer :: nbobst, nbpt, nbval
     real(kind=8) :: pusee, pusurn
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     pusurn = 0.d0
-    call dcopy(nbpt, fcho(3*(inoe-1)+1), 3*nbobst, wk1, 1)
-    call dcopy(nbpt, vgli(3*(inoe-1)+2), 3*nbobst, wk2, 1)
-    call dcopy(nbpt, vgli(3*(inoe-1)+3), 3*nbobst, wk3, 1)
+    b_n = to_blas_int(nbpt)
+    b_incx = to_blas_int(3*nbobst)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, fcho(3*(inoe-1)+1), b_incx, wk1, b_incy)
+    b_n = to_blas_int(nbpt)
+    b_incx = to_blas_int(3*nbobst)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vgli(3*(inoe-1)+2), b_incx, wk2, b_incy)
+    b_n = to_blas_int(nbpt)
+    b_incx = to_blas_int(3*nbobst)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vgli(3*(inoe-1)+3), b_incx, wk3, b_incy)
 !     CALL DCOPY(NBPT,IADH(1*(INOE-1)+1),NBOBST,IWK4,1)
     do i = 1, nbpt
         iwk4(i) = iadh(1*(inoe-1)+1+(i-1)*nbobst)

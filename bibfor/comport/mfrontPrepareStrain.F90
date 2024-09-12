@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mfrontPrepareStrain(l_greenlag, l_pred, &
-                               neps, epsm, deps, &
+subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
                                stran, dstran)
 !
     implicit none
@@ -57,8 +56,9 @@ subroutine mfrontPrepareStrain(l_greenlag, l_pred, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: rac2 = 1.0
-    !sqrt(2.d0)
+!sqrt(2.d0)
     real(kind=8) :: dfgrd0(3, 3), dfgrd1(3, 3)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,18 +69,39 @@ subroutine mfrontPrepareStrain(l_greenlag, l_pred, &
         ASSERT(neps .eq. 9)
         dfgrd0(:, :) = 0.d0
         dfgrd1(:, :) = 0.d0
-        call dcopy(neps, epsm, 1, dfgrd0, 1)
+        b_n = to_blas_int(neps)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epsm, b_incx, dfgrd0, b_incy)
         if (l_pred) then
-            call dcopy(neps, epsm, 1, dfgrd1, 1)
+            b_n = to_blas_int(neps)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, epsm, b_incx, dfgrd1, b_incy)
         else
-            call dcopy(neps, deps, 1, dfgrd1, 1)
+            b_n = to_blas_int(neps)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, deps, b_incx, dfgrd1, b_incy)
         end if
-        call dcopy(neps, dfgrd0, 1, stran, 1)
-        call dcopy(neps, dfgrd1, 1, dstran, 1)
+        b_n = to_blas_int(neps)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dfgrd0, b_incx, stran, b_incy)
+        b_n = to_blas_int(neps)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dfgrd1, b_incx, dstran, b_incy)
     else
         ASSERT(neps .ne. 9)
-        call dcopy(neps, deps, 1, dstran, 1)
-        call dcopy(neps, epsm, 1, stran, 1)
+        b_n = to_blas_int(neps)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, deps, b_incx, dstran, b_incy)
+        b_n = to_blas_int(neps)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, epsm, b_incx, stran, b_incy)
         if (neps .eq. 6) then
             call dscal(3, rac2, dstran(4), 1)
             call dscal(3, rac2, stran(4), 1)

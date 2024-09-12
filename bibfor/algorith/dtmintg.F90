@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
@@ -42,15 +42,16 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, pointer              :: buffdtm(:)
-    integer, pointer              :: buffint(:)
+    integer, pointer :: buffdtm(:)
+    integer, pointer :: buffint(:)
 !
 !   -0.2- Local variables
-    integer               :: nbnoli, method
-    character(len=8)      :: sd_dtm, sd_int, sd_nl
+    integer :: nbnoli, method
+    character(len=8) :: sd_dtm, sd_int, sd_nl
     real(kind=8), pointer :: nlsav1(:) => null()
     real(kind=8), pointer :: nlsav2(:) => null()
-    integer, pointer      :: buffnl(:) => null()
+    integer, pointer :: buffnl(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 !   0 - Initializations
     sd_dtm = sd_dtm_
@@ -63,9 +64,12 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
         call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
         call nlget(sd_nl, _INTERNAL_VARS, vr=nlsav2, buffer=buffnl)
         call dtmget(sd_dtm, _NL_SAVES, vr=nlsav1, buffer=buffdtm)
-        call dcopy(size(nlsav2), nlsav2, 1, nlsav1, 1)
+        b_n = to_blas_int(size(nlsav2))
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, nlsav2, b_incx, nlsav1, b_incy)
     end if
-
+!
     select case (method)
 !
     case (_SCH_EULER)
@@ -99,5 +103,5 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
         ASSERT(.false.)
 !
     end select
-
+!
 end subroutine

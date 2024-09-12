@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -154,6 +154,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
     character(len=24) :: nomrai, nommas, nomamo
     aster_logical :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
     integer, pointer :: smdi(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 !-----------------------------------------------------------------------
 !
@@ -362,10 +363,8 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 zr(lvecn+jm1+qrn) = zr(lvecn+jm1+qrn)+caux
                 if (iauxh .ne. j) then
                     zr(lvecn+iauxh1) = zr(lvecn+iauxh1)+aaux1
-                    zr(lvecn+iauxh1+qrns2) = zr(lvecn+iauxh1+qrns2)+ &
-                                             baux1
-                    zr(lvecn+iauxh1+qrn) = zr(lvecn+iauxh1+qrn) &
-                                           +caux1
+                    zr(lvecn+iauxh1+qrns2) = zr(lvecn+iauxh1+qrns2)+baux1
+                    zr(lvecn+iauxh1+qrn) = zr(lvecn+iauxh1+qrn)+caux1
                 end if
             end do
             ideb = ifin+1
@@ -882,7 +881,10 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                     call utmess(kmsg, 'ALGELINE5_61', si=vali(1), nr=4, valr=valr)
                 end if
                 zr(lvalpr+im1-decal) = zr(qrar+im1)/zr(qrba+im1)
-                call dcopy(qrn, zr(lvec3+im1*qrn), 1, zr(lvec+(im1-decal)*qrn), 1)
+                b_n = to_blas_int(qrn)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(lvec3+im1*qrn), b_incx, zr(lvec+(im1-decal)*qrn), b_incy)
                 if (lqze) zr(ics1+im1-decal) = zr(icscal+im1)
             else
                 decal = decal+1
@@ -965,7 +967,10 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 end if
             else
                 zr(lvalpr+im1-decal) = zr(lvalpr+im1)
-                call dcopy(qrn, zr(iqrn+im1*qrn), 1, zr(lvec+(im1-decal)*qrn), 1)
+                b_n = to_blas_int(qrn)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(iqrn+im1*qrn), b_incx, zr(lvec+(im1-decal)*qrn), b_incy)
             end if
         end do
     end if
@@ -1031,7 +1036,10 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 if ((vpcour .ge. vpinf) .and. (vpcour .le. vpmax)) then
                     j = j+1
                     zr(lvalpr-1+j) = vpcour
-                    call dcopy(qrn, zr(lvec+(i-1)*qrn), 1, zr(lvec+(j-1)*qrn), 1)
+                    b_n = to_blas_int(qrn)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(lvec+(i-1)*qrn), b_incx, zr(lvec+(j-1)*qrn), b_incy)
                 end if
             end do
             nconv = j
@@ -1143,8 +1151,11 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 anorm1 = dnrm2(iauxh, zr(iaux1), 1)
                 call mrmult('ZERO', lmasse, zr(lvec+iauxh*(i-1)), zr(iaux2), 1, &
                             .false._1)
-                call daxpy(iauxh, -fr, zr(iaux2), 1, zr(iaux1), &
-                           1)
+                b_n = to_blas_int(iauxh)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, -fr, zr(iaux2), b_incx, zr(iaux1), &
+                           b_incy)
                 anorm2 = dnrm2(iauxh, zr(iaux1), 1)
             else
                 if (lc) then

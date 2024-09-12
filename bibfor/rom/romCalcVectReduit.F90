@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, &
-                             l_vect_name, l_vect_type, l_vect_redu, &
-                             mode_type, vc_mode, vr_mode)
+subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, l_vect_name, l_vect_type, &
+                             l_vect_redu, mode_type, vc_mode, vr_mode)
 !
     implicit none
 !
@@ -61,6 +60,7 @@ subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, &
     complex(kind=8), pointer :: jv_vect_c(:) => null()
     character(len=1) :: vect_type
     character(len=8) :: vect_name
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,7 +71,10 @@ subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, &
             vect_type = l_vect_type(i_vect) (1:1)
             if (vect_type .eq. 'R') then
                 call jeveuo(vect_name(1:8)//'           .VALE', 'L', vr=jv_vect_r)
-                vr_vect_redu(i_mode) = ddot(nb_equa, vr_mode, 1, jv_vect_r, 1)
+                b_n = to_blas_int(nb_equa)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                vr_vect_redu(i_mode) = ddot(b_n, vr_mode, b_incx, jv_vect_r, b_incy)
             else
                 ASSERT(ASTER_FALSE)
             end if
@@ -84,8 +87,8 @@ subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, &
             if (vect_type .eq. 'R') then
                 call jeveuo(vect_name(1:8)//'           .VALE', 'L', vr=jv_vect_r)
                 do i_equa = 1, nb_equa
-                    vc_vect_redu(i_mode) = vc_vect_redu(i_mode)+ &
-                                           dcmplx(jv_vect_r(i_equa))*dconjg(vc_mode(i_equa))
+                    vc_vect_redu(i_mode) = vc_vect_redu(i_mode)+dcmplx(jv_vect_r(i_equa))*dconjg&
+                                           &(vc_mode(i_equa))
                 end do
             else if (vect_type .eq. 'C') then
                 call jeveuo(vect_name(1:8)//'           .VALE', 'L', vc=jv_vect_c)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function bprime(nbmat, mater, parame, invar1, s, &
                 epssig)
 !
@@ -46,6 +46,7 @@ function bprime(nbmat, mater, parame, invar1, s, &
     real(kind=8) :: sgamp, agamp, mgamp, sii, fact1, fact2
     real(kind=8) :: rcos3t
     real(kind=8) :: phi0, c0, sigt0, sig1, sig2, sig3, alpha, sinpsi
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
@@ -76,7 +77,10 @@ function bprime(nbmat, mater, parame, invar1, s, &
 ! ======================================================================
 ! --- CALCULS INTERMEDIAIRE POUR LE CALCUL DE BPRIME -------------------
 ! ======================================================================
-    sii = ddot(ndt, s, 1, s, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    sii = ddot(b_n, s, b_incx, s, b_incy)
     sii = sqrt(sii)
     rcos3t = cos3t(s, pref, epssig)
 ! ======================================================================
@@ -117,10 +121,8 @@ function bprime(nbmat, mater, parame, invar1, s, &
         un_m_rcos2 = 0.d0
     end if
 !
-    sig2 = invar1/trois-sqrt(deux/trois)*sii*(rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux&
-           & )
-    sig3 = invar1/trois+sqrt(deux/trois)*sii*(-rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux&
-           & )
+    sig2 = invar1/trois-sqrt(deux/trois)*sii*(rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux)
+    sig3 = invar1/trois+sqrt(deux/trois)*sii*(-rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux)
 ! ======================================================================
 ! --- RECUPERATION DE SIG1 (MAX) ET SIG3 (MIN) -------------------------
 ! ======================================================================

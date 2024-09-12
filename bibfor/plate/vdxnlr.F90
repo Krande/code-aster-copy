@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,6 +94,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     parameter(npge=3)
     real(kind=8) :: ksi3s2
     aster_logical :: lVect, lMatr, lVari, lSigm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -132,7 +133,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PVARIMP', 'L', ivarix)
     call jevech('PCACOQU', 'L', jcara)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=itab)
     if (itab(6) .le. 1) then
         lgpg = itab(7)
     else
@@ -145,15 +147,13 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Properties of behaviour
 !
     read (zk16(icompo-1+NVAR), '(I16)') nbvari
-
+!
     epais = zr(jcara)
     kappa = zr(jcara+3)
     ctor = zr(jcara+4)
@@ -180,7 +180,10 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     end if
 !
     ndimv = lgpg*npgsn
-    call dcopy(ndimv, zr(ivarix), 1, zr(ivarip), 1)
+    b_n = to_blas_int(ndimv)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
 !
     call vectan(nb1, nb2, xi, zr(lzr), vecta, &
                 vectn, vectpt)
@@ -293,15 +296,14 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !
                 ksp = (icou-1)*npge+inte
                 cisail = 0.d0
-
+!
                 if (elasKeyword .eq. 'ELAS') then
                     sigma = 0.d0
-                    call nmcomp(BEHinteg, &
-                                'MASS', intsn, ksp, 2, typmod, &
-                                zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
-                                4, eps2d, deps2d, 4, sign, &
-                                zr(ivarim+k2), option, angmas, &
-                                sigma, zr(ivarip+k2), 36, dsidep, cod)
+                    call nmcomp(BEHinteg, 'MASS', intsn, ksp, 2, &
+                                typmod, zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), &
+                                zr(iinstp), 4, eps2d, deps2d, 4, &
+                                sign, zr(ivarim+k2), option, angmas, sigma, &
+                                zr(ivarip+k2), 36, dsidep, cod)
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 !           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
                     if (cod .ne. 0) then
@@ -320,7 +322,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                 else if (elasKeyword .eq. 'ELAS_ORTH') then
                     call moytpg('RIGI', intsn, 3, '+', valpar, &
                                 iret)
-                    call matrc2(1, 'TEMP    ', [valpar], kappa, matc, vectt)
+                    call matrc2(1, 'TEMP    ', [valpar], kappa, matc, &
+                                vectt)
                 end if
 !
 !    CALCULS DE LA MATRICE TANGENTE : BOUCLE SUR L'EPAISSEUR
@@ -380,7 +383,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-
+!
                     call dscal(25, wgt, dtild, 1)
 !
                     call btkb(5, 42, nddle, dtild, btild, &
@@ -411,16 +414,22 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         sgmtd(5) = cisail*kappa*gyz/2.d0
 !
                     else if (elasKeyword .eq. 'ELAS_ORTH') then
-                        zr(icontp-1+k1+1) = (epsi(1)+depsi(1))*matc(1, 1)+ &
-                                            (epsi(2)+depsi(2))*matc(1, 2)+ &
-                                            (epsi(3)+depsi(3))*matc(1, 3)
-                        zr(icontp-1+k1+2) = (epsi(1)+depsi(1))*matc(2, 1)+ &
-                                            (epsi(2)+depsi(2))*matc(2, 2)+ &
-                                            (epsi(3)+depsi(3))*matc(2, 3)
+                        zr(icontp-1+k1+1) = ( &
+                                            epsi(1)+depsi(1))*matc(1, &
+                                                                   1)+(epsi(2)+depsi(2))*matc(1, &
+                                                                   2)+(epsi(3)+depsi(3))*matc(1, 3 &
+                                                                                                   )
+                        zr(icontp-1+k1+2) = ( &
+                                            epsi(1)+depsi(1))*matc(2, &
+                                                                   1)+(epsi(2)+depsi(2))*matc(2, &
+                                                                   2)+(epsi(3)+depsi(3))*matc(2, 3 &
+                                                                                                   )
                         zr(icontp-1+k1+3) = 0.d0
-                        zr(icontp-1+k1+4) = (epsi(1)+depsi(1))*matc(3, 1)+ &
-                                            (epsi(2)+depsi(2))*matc(3, 2)+ &
-                                            (epsi(3)+depsi(3))*matc(3, 3)
+                        zr(icontp-1+k1+4) = ( &
+                                            epsi(1)+depsi(1))*matc(3, &
+                                                                   1)+(epsi(2)+depsi(2))*matc(3, &
+                                                                   2)+(epsi(3)+depsi(3))*matc(3, 3 &
+                                                                                                   )
                         zr(icontp-1+k1+5) = matc(4, 4)*gxz+matc(4, 5)*gyz
                         zr(icontp-1+k1+6) = matc(5, 4)*gxz+matc(5, 5)*gyz
 !
@@ -431,7 +440,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         sgmtd(4) = dtild(4, 4)*gxz
                         sgmtd(5) = dtild(5, 5)*gyz
                     end if
-
+!
                     call epseff('EFFORI', nb1, x, btild, sgmtd, &
                                 x, wgt, effint)
 !

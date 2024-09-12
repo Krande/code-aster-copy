@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfgcpr(resoco, matass, solveu, neq, nbliai, &
                   search, alpha)
 !
@@ -76,6 +76,7 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai, &
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddep0(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     c16bid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
@@ -131,8 +132,11 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai, &
 !
 ! --- MISE A JOUR DE MU
 !
-    call daxpy(nbliai, alpha, zr(jdirec), 1, zr(jmu), &
-               1)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, alpha, zr(jdirec), b_incx, zr(jmu), &
+               b_incy)
 !
 ! --- DESACTIVATION DE MU POUR UNE SOLUTION NON-ADMISSIBLE
 !
@@ -168,12 +172,15 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai, &
 !
 ! ----- RECOPIE DE LA SPOLUTION SANS CONTACT
 !
-        call dcopy(neq, ddep0, 1, ddepc, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, ddep0, b_incx, ddepc, b_incy)
         alpha = 1.d0
     end if
 !
 9050 format(' <CONTACT><CALC> PAS D''AVANCEMENT APRES PROJECTION : ',&
-    &       1pe12.5)
+   &       1pe12.5)
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus, &
     real(kind=8) :: sqrt2, sqrt3, q(3, 3), ngr(3), mgr(3), tbsys(30, 6), norn
     real(kind=8) :: norm
     integer :: nbsys, nusys, k, i, j, ir
+    blas_int :: b_incx, b_incy, b_n
 !     ----------------------------------------------------------------
 !
     if (nomfam(1:4) .eq. 'UTIL') then
@@ -708,8 +709,14 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus, &
     call utpvlg(1, 3, pgl2, ml, mg)
 !     rotation de reseau
     if (ir .eq. 1) then
-        call dcopy(3, ng, 1, ngr, 1)
-        call dcopy(3, mg, 1, mgr, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, ng, b_incx, ngr, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, mg, b_incx, mgr, b_incy)
         call pmavec('ZERO', 3, q, ngr, ng)
         call pmavec('ZERO', 3, q, mgr, mg)
     else

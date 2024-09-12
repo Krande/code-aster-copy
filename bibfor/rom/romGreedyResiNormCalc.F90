@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ subroutine romGreedyResiNormCalc(i_coef, nb_equa, ds_algoGreedy)
     complex(kind=8) :: normc_2mbr, normc_resi
     real(kind=8) :: normr_2mbr, normr_resi
     character(len=1) :: resi_type
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,8 +64,14 @@ subroutine romGreedyResiNormCalc(i_coef, nb_equa, ds_algoGreedy)
     if (resi_type .eq. 'R') then
         call jeveuo(ds_algoGreedy%solveDOM%syst_2mbr(1:19)//'.VALE', 'L', vr=vr_vect_2mbr)
         call jeveuo(ds_algoGreedy%resi_vect(1:19)//'.VALE', 'L', vr=vr_resi_vect)
-        normr_2mbr = ddot(nb_equa, vr_vect_2mbr, 1, vr_vect_2mbr, 1)
-        normr_resi = ddot(nb_equa, vr_resi_vect, 1, vr_resi_vect, 1)
+        b_n = to_blas_int(nb_equa)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normr_2mbr = ddot(b_n, vr_vect_2mbr, b_incx, vr_vect_2mbr, b_incy)
+        b_n = to_blas_int(nb_equa)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normr_resi = ddot(b_n, vr_resi_vect, b_incx, vr_resi_vect, b_incy)
         ds_algoGreedy%resi_norm(i_coef) = sqrt(normr_resi/normr_2mbr)
     else if (resi_type .eq. 'C') then
         call jeveuo(ds_algoGreedy%solveDOM%syst_2mbr(1:19)//'.VALE', 'L', vc=vc_vect_2mbr)

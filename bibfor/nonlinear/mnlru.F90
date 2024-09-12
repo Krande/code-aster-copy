@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlru(imat, xcdl, parcho, adime, xvect, &
                  ninc, nd, nchoc, h, hf, &
                  xru)
@@ -66,6 +66,7 @@ subroutine mnlru(imat, xcdl, parcho, adime, xvect, &
 ! ----------------------------------------------------------------------
     integer :: iru, ivint
     character(len=14) :: xvint
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 !    call jxveri(' ', ' ')
@@ -86,22 +87,31 @@ subroutine mnlru(imat, xcdl, parcho, adime, xvect, &
     call dscal(ninc-1, 0.d0, zr(ivint), 1)
     call mnlcst(parcho, adime, ninc, nd, nchoc, &
                 h, hf, xvint)
-    call dcopy(ninc-1, zr(ivint), 1, zr(iru), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivint), b_incx, zr(iru), b_incy)
 ! --- CALCUL DE L(XVECT)
     call dscal(ninc-1, 0.d0, zr(ivint), 1)
     call mnline(imat, xcdl, parcho, adime, xvect, &
                 ninc, nd, nchoc, h, hf, &
                 xvint)
-    call daxpy(ninc-1, 1.d0, zr(ivint), 1, zr(iru), &
-               1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, zr(ivint), b_incx, zr(iru), &
+               b_incy)
 ! --- CALCUL DE Q(XVECT,XVECT)
     call dscal(ninc-1, 0.d0, zr(ivint), 1)
     call mnlqnl(imat, xcdl, parcho, adime, xvect, &
                 xvect, ninc, nd, nchoc, h, &
                 hf, xvint)
 ! --- R(XVECT) = L0 + L(XVECT) + Q(XVECT,XVECT)
-    call daxpy(ninc-1, 1.d0, zr(ivint), 1, zr(iru), &
-               1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, zr(ivint), b_incx, zr(iru), &
+               b_incy)
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DU VECTEUR INTERMEDIAIRE
 ! ----------------------------------------------------------------------

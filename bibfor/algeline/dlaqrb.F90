@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dlaqrb(wantt, n, ilo, ihi, h, &
                   ldh, wr, wi, z, info)
 !
@@ -168,6 +168,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h, &
     real(kind=8) :: v2, v3
 ! DUE TO CRS512      REAL*8 OVFL
     real(kind=8) :: v(3), work(1)
+    blas_int :: b_incx, b_incy, b_n
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -378,7 +379,12 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h, &
 !           ------------------------------------------------------------
 !
             nr = min(3, i-k+1)
-            if (k .gt. m) call dcopy(nr, h(k, k-1), 1, v, 1)
+            if (k .gt. m) then
+                b_n = to_blas_int(nr)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, h(k, k-1), b_incx, v, b_incy)
+            end if
             call ar_dlarfg(nr, v(1), v(2), 1, t1)
             if (k .gt. m) then
                 h(k, k-1) = v(1)

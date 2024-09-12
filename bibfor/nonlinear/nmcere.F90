@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmcere(model, nume_dof, ds_material, cara_elem, &
-                  ds_constitutive, ds_contact, list_load, list_func_acti, ds_measure, &
-                  iter_newt, sdnume, valinc, solalg, hval_veelem, &
-                  hval_veasse, offset, rho, eta, residu, &
-                  ldccvg, ds_system, matr_asse)
+subroutine nmcere(model, nume_dof, ds_material, cara_elem, ds_constitutive, &
+                  ds_contact, list_load, list_func_acti, ds_measure, iter_newt, &
+                  sdnume, valinc, solalg, hval_veelem, hval_veasse, &
+                  offset, rho, eta, residu, ldccvg, &
+                  ds_system, matr_asse)
 !
     use NonLin_Datastructure_type
 !
@@ -121,6 +121,7 @@ subroutine nmcere(model, nume_dof, ds_material, cara_elem, &
     real(kind=8), pointer :: deppt(:) => null()
     real(kind=8), pointer :: du0(:) => null()
     real(kind=8), pointer :: du1(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -157,8 +158,16 @@ subroutine nmcere(model, nume_dof, ds_material, cara_elem, &
     call jeveuo(deppr2(1:19)//'.VALE', 'L', vr=du1)
     call jeveuo(ddep(1:19)//'.VALE', 'E', vr=ddepl)
     call r8inir(neq, 0.d0, ddepl, 1)
-    call daxpy(neq, rho, du0, 1, ddepl, 1)
-    call daxpy(neq, eta-offset, du1, 1, ddepl, 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, rho, du0, b_incx, ddepl, &
+               b_incy)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, eta-offset, du1, b_incx, ddepl, &
+               b_incy)
 !
 ! --- MISE A JOUR DE L'INCREMENT DE DEPLACEMENT DEPUIS LE DEBUT
 ! --- DU PAS DE TEMPS DEPDET = DEPDEL+DDEP
@@ -187,26 +196,20 @@ subroutine nmcere(model, nume_dof, ds_material, cara_elem, &
 !
 ! - Compute internal forces
 !
-    call nonlinIntForce(phaseType, &
-                        model, cara_elem, &
-                        list_func_acti, iter_newt, sdnume, &
-                        ds_material, ds_constitutive, &
-                        ds_system, ds_measure, &
-                        valint, solalt, &
-                        ldccvg)
+    call nonlinIntForce(phaseType, model, cara_elem, list_func_acti, iter_newt, &
+                        sdnume, ds_material, ds_constitutive, ds_system, ds_measure, &
+                        valint, solalt, ldccvg)
     ASSERT(ldccvg .ge. 0)
 !
 ! - Update Dirichlet boundary conditions - B.U
 !
-    call nonlinLoadDirichletCompute(list_load, model, nume_dof, &
-                                    ds_measure, matr_asse, depplt, &
-                                    hval_veelem, hval_veasse)
+    call nonlinLoadDirichletCompute(list_load, model, nume_dof, ds_measure, matr_asse, &
+                                    depplt, hval_veelem, hval_veasse)
 !
 ! - Update force for Dirichlet boundary conditions (dualized) - BT.LAMBDA
 !
-    call nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
-                             nume_dof, ds_measure, depl, &
-                             hval_veelem, hval_veasse)
+    call nonlinRForceCompute(model, ds_material, cara_elem, list_load, nume_dof, &
+                             ds_measure, depl, hval_veelem, hval_veasse)
 !
 ! - Launch timer
 !
@@ -225,9 +228,8 @@ subroutine nmcere(model, nume_dof, ds_material, cara_elem, &
 ! - Compute maximum of out-of-balance force
 !
     if (ldccvg .eq. 0) then
-        call nmpilr(list_func_acti, nume_dof, matr_asse, &
-                    hval_veasse, ds_contact, ds_system%cnfint, &
-                    eta, residu)
+        call nmpilr(list_func_acti, nume_dof, matr_asse, hval_veasse, ds_contact, &
+                    ds_system%cnfint, eta, residu)
     end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine chor2c(lischa, vecele)
 !
 !
@@ -65,6 +65,7 @@ subroutine chor2c(lischa, vecele)
     character(len=1) :: typchn
     real(kind=8), pointer :: copie_travail(:) => null()
     character(len=24), pointer :: relr(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -141,7 +142,7 @@ subroutine chor2c(lischa, vecele)
             end if
             call jeveuo(chamno//".REFE", "E", jrefn)
             zk24(jrefn-1+2) = nume_equa_new
-
+!
             call jeveuo(chamno//'.VALE', 'L', jcn)
             call jelira(chamno//'.VALE', 'LONMAX', nbvale)
             if (nbvdim .ne. nbvale) then
@@ -150,7 +151,10 @@ subroutine chor2c(lischa, vecele)
 !
 ! ------- SAUVEGARDE DES VALEURS
 !
-            call dcopy(nbvale, zr(jcn), 1, copie_travail, 1)
+            b_n = to_blas_int(nbvale)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jcn), b_incx, copie_travail, b_incy)
 !
 ! ------- DESTRUCTION CHAMNO A VALEURS REELLES
 !

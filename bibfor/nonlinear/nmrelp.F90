@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,8 @@
 !
 subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
                   ds_constitutive, list_load, list_func_acti, iter_newt, ds_measure, &
-                  sdnume, ds_algopara, ds_contact, valinc, &
-                  solalg, veelem, veasse, ds_conv, ldccvg, &
-                  sddyna_)
+                  sdnume, ds_algopara, ds_contact, valinc, solalg, &
+                  veelem, veasse, ds_conv, ldccvg, sddyna_)
 !
     use NonLin_Datastructure_type
     use HHO_type
@@ -125,6 +124,7 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
     aster_logical :: echec
     real(kind=8), pointer :: vale(:) => null()
     type(NL_DS_System) :: ds_system2
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -218,9 +218,8 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
 !
 ! --- CALCUL DE F(RHO=0)
 !
-    call nmrecz(nume_dof, ds_contact, list_func_acti, &
-                cndiri, ds_system%cnfint, cnfext, cnsstr, ddepla, &
-                f0)
+    call nmrecz(nume_dof, ds_contact, list_func_acti, cndiri, ds_system%cnfint, &
+                cnfext, cnsstr, ddepla, f0)
 !
     if (niv .ge. 2) then
         write (ifm, *) '<MECANONLINE> ... FONCTIONNELLE INITIALE: ', f0
@@ -278,17 +277,12 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
 ! ----- Update internal forces
         ds_system2%cnfint = cnfint2(act)
         ds_system2%veinte = ds_system%veinte
-        call nonlinIntForce(phaseType, &
-                            model, cara_elem, &
-                            list_func_acti, iter_newt, sdnume, &
-                            ds_material, ds_constitutive, &
-                            ds_system2, ds_measure, &
-                            valint(1, act), solalt, &
-                            ldccvg)
+        call nonlinIntForce(phaseType, model, cara_elem, list_func_acti, iter_newt, &
+                            sdnume, ds_material, ds_constitutive, ds_system2, ds_measure, &
+                            valint(1, act), solalt, ldccvg)
 ! ----- Update force for Dirichlet boundary conditions (dualized) - BT.LAMBDA
-        call nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
-                                 nume_dof, ds_measure, depplt, &
-                                 veelem, cndiri_=cndiri2(act))
+        call nonlinRForceCompute(model, ds_material, cara_elem, list_load, nume_dof, &
+                                 ds_measure, depplt, veelem, cndiri_=cndiri2(act))
         if (niv .ge. 2) then
             write (ifm, *) '<MECANONLINE> ...... FORCES INTERNES'
             call nmdebg('VECT', cnfint2(act), 6)
@@ -315,8 +309,8 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
 !
 ! ----- CALCUL DE F(RHO)
 !
-        call nmrecz(nume_dof, ds_contact, list_func_acti, &
-                    cndiri2(act), cnfint2(act), cnfext, cnsstr, ddepla, f)
+        call nmrecz(nume_dof, ds_contact, list_func_acti, cndiri2(act), cnfint2(act), &
+                    cnfext, cnsstr, ddepla, f)
 !
         if (niv .ge. 2) then
             write (ifm, *) '<MECANONLINE> ... FONCTIONNELLE COURANTE: ', f
@@ -353,7 +347,11 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
 !
 ! --- AJUSTEMENT DE LA DIRECTION DE DESCENTE
 !
-    call daxpy(neq, rhoopt-1.d0, vale, 1, vale, 1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, rhoopt-1.d0, vale, b_incx, vale, &
+               b_incy)
 !
 ! --- RECUPERATION DES VARIABLES EN T+ SI NECESSAIRE
 !

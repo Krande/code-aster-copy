@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0061()
 !
 !        MODE_NON_LINE
@@ -100,6 +100,7 @@ subroutine op0061()
     complex(kind=8) :: vc
 !
     integer :: ibif
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------------------------
 !
     call jemarq()
@@ -107,10 +108,10 @@ subroutine op0061()
     ifres = iunifi('MESSAGE')
     call getvis(' ', 'INFO', scal=info)
     baseno = '&&'//nompro
-
+!
     solveu = '&&OP0061.SOLVEUR'
     call cresol(solveu)
-
+!
     call getvis('ETAT_INIT', 'NUME_ORDRE', iocc=1, scal=num_ordr)
     call getvid('ETAT_INIT', 'MODE_NON_LINE', iocc=1, scal=modrep, nbret=ier)
     if (ier .eq. 1) then
@@ -245,7 +246,10 @@ subroutine op0061()
     call mnltan(.true._1, imat, numdrv, matdrv, xcdl, &
                 parcho, adime, xvect, ninc, nd, &
                 nchoc, h, hf, xut1)
-    call dcopy(ninc, zr(iut1), 1, zr(iutj), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(iut1), b_incx, zr(iutj), b_incy)
     call getvis('ETAT_INIT', 'DIR_EVOLUTION', iocc=1, scal=prodsci)
     prodsc = dble(prodsci)
     if (prodsc .le. 0.d0) then
@@ -294,7 +298,10 @@ subroutine op0061()
                     epsman, amax, xus)
 ! ---   RECUPERATION DU DERNIER POINT DE LA BRANCHE POUR INITIALISATION
 ! ---   DE LA PROCHAINE BRANCHE
-        call dcopy(ninc, zr(ius+(nbpt-1)*ninc), 1, zr(ivec), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ius+(nbpt-1)*ninc), b_incx, zr(ivec), b_incy)
 ! ---   CORRECTION DE CE POINT
         cor = .true.
         call mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
@@ -306,15 +313,21 @@ subroutine op0061()
             call dscal(ninc, 0.d0, zr(iutj), 1)
             do p = 1, ordman
                 ap = dble(p)*(amax**(p-1))
-                call daxpy(ninc, ap, zr(iups+p*ninc), 1, zr(iutj), &
-                           1)
+                b_n = to_blas_int(ninc)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, ap, zr(iups+p*ninc), b_incx, zr(iutj), &
+                           b_incy)
             end do
 ! ---       CALCUL DE LA TANGENTE AU NOUVEAU POINT
             call mnltan(.true._1, imat, numdrv, matdrv, xcdl, &
                         parcho, adime, xvect, ninc, nd, &
                         nchoc, h, hf, xut1)
 ! ---       SENS DE CONTINUATION
-            prodsc = ddot(ninc, zr(iutj), 1, zr(iut1), 1)
+            b_n = to_blas_int(ninc)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            prodsc = ddot(b_n, zr(iutj), b_incx, zr(iut1), b_incy)
             if (prodsc .le. 0.d0) then
                 call dscal(ninc, -1.d0, zr(iut1), 1)
             end if
@@ -356,8 +369,7 @@ subroutine op0061()
                     do jj = 1, neq
                         if (zi(icdl-1+jj) .eq. 0) then
                             i = i+1
-                            zr(isort-1+p+(j-1)*neq+jj) = zr(ius-1+(ii-1)* &
-                                                            ninc+(j-1)*nd+i)
+                            zr(isort-1+p+(j-1)*neq+jj) = zr(ius-1+(ii-1)*ninc+(j-1)*nd+i)
                         else
                             zr(isort-1+p+(j-1)*neq+jj) = 0.d0
                         end if
@@ -387,7 +399,7 @@ subroutine op0061()
     if (.not. cor) then
         call utmess('S', 'MECANONLINE9_62')
     end if
-
+!
 !   -- pour etre OK sdveri, il ne faut pas faire reference au solveur
 !      temporaire :
 !   -------------------------------------------------------------------
@@ -403,6 +415,6 @@ subroutine op0061()
         call jeveuo(matas//'.REFA', 'E', jrefa)
         zk24(jrefa-1+7) = ' '
     end if
-
+!
     call jedema()
 end subroutine

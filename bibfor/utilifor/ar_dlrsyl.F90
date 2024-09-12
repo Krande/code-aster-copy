@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -157,6 +157,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !     ..
 !     .. LOCAL ARRAYS ..
     real(kind=8) :: dum(1), vec(2, 2), x(2, 2)
+    blas_int :: b_incx, b_incy, b_n
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -208,8 +209,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
     smlnum = smlnum*dble(m*n)/eps
     bignum = one/smlnum
 !
-    smin = max(smlnum, eps*dlange('M', m, m, a, lda, dum), eps*dlange('M', n, n, b, ldb, dum) &
-               )
+    smin = max(smlnum, eps*dlange('M', m, m, a, lda, dum), eps*dlange('M', n, n, b, ldb, dum))
 !
     scale = one
     sgn = isgn
@@ -271,8 +271,14 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                 end if
 !
                 if (l1 .eq. l2 .and. k1 .eq. k2) then
-                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l1), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(m-k1)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k1+1, m)), b_incx, c(min(k1+1, m), l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l1), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
                     scaloc = one
 !
@@ -299,12 +305,24 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .eq. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k2+1, m)), b_incx, c(min(k2+1, m), l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l1), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
-                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k2, min(k2+1, m)), b_incx, c(min(k2+1, m), l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k2, 1), b_incx, b(1, l1), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
                     call ar_dlaln2(.false._1, 2, 1, smin, one, &
@@ -324,12 +342,24 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .ne. l2 .and. k1 .eq. k2) then
 !
-                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l1), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(m-k1)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k1+1, m)), b_incx, c(min(k1+1, m), l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l1), b_incy)
                     vec(1, 1) = sgn*(c(k1, l1)-(suml+sgn*sumr))
 !
-                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l2), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l2), 1)
+                    b_n = to_blas_int(m-k1)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k1+1, m)), b_incx, c(min(k1+1, m), l2), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l2), b_incy)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
                     call ar_dlaln2(.true._1, 2, 1, smin, one, &
@@ -349,20 +379,44 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .ne. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k2+1, m)), b_incx, c(min(k2+1, m), l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l1), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l2), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l2), 1)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k2+1, m)), b_incx, c(min(k2+1, m), l2), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l2), b_incy)
                     vec(1, 2) = c(k1, l2)-(suml+sgn*sumr)
 !
-                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
-                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k2, min(k2+1, m)), b_incx, c(min(k2+1, m), l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k2, 1), b_incx, b(1, l1), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l2), 1)
-                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l2), 1)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k2, min(k2+1, m)), b_incx, c(min(k2+1, m), l2), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k2, 1), b_incx, b(1, l2), b_incy)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
                     call ar_dlasy2(.false._1, .false._1, isgn, 2, 2, &
@@ -446,8 +500,14 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                 end if
 !
                 if (l1 .eq. l2 .and. k1 .eq. k2) then
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l1), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
                     scaloc = one
 !
@@ -474,12 +534,24 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .eq. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l1), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(k1-1, a(1, k2), 1, c(1, l1), 1)
-                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k2), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k2, 1), b_incx, b(1, l1), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
                     call ar_dlaln2(.true._1, 2, 1, smin, one, &
@@ -499,12 +571,24 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .ne. l2 .and. k1 .eq. k2) then
 !
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l1), b_incy)
                     vec(1, 1) = sgn*(c(k1, l1)-(suml+sgn*sumr))
 !
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l2), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l2), 1)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l2), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l2), b_incy)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
                     call ar_dlaln2(.true._1, 2, 1, smin, one, &
@@ -524,20 +608,44 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .ne. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l1), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l2), 1)
-                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l2), 1)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l2), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l2), b_incy)
                     vec(1, 2) = c(k1, l2)-(suml+sgn*sumr)
 !
-                    suml = ddot(k1-1, a(1, k2), 1, c(1, l1), 1)
-                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l1), 1)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k2), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k2, 1), b_incx, b(1, l1), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(k1-1, a(1, k2), 1, c(1, l2), 1)
-                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l2), 1)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k2), b_incx, c(1, l2), b_incy)
+                    b_n = to_blas_int(l1-1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(1)
+                    sumr = ddot(b_n, c(k2, 1), b_incx, b(1, l2), b_incy)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
                     call ar_dlasy2(.true._1, .false._1, isgn, 2, 2, &
@@ -620,8 +728,14 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                 end if
 !
                 if (l1 .eq. l2 .and. k1 .eq. k2) then
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
-                    sumr = ddot(n-l1, c(k1, min(l1+1, n)), ldc, b(l1, min(l1+1, n)), ldb)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(n-l1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l1+1, n)), b_incx, b(l1, min(l1+1, n)), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
                     scaloc = one
 !
@@ -648,12 +762,24 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .eq. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
-                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(k1-1, a(1, k2), 1, c(1, l1), 1)
-                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k2), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k2, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
                     call ar_dlaln2(.true._1, 2, 1, smin, one, &
@@ -673,12 +799,24 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .ne. l2 .and. k1 .eq. k2) then
 !
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
-                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(1, 1) = sgn*(c(k1, l1)-(suml+sgn*sumr))
 !
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l2), 1)
-                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l2), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l2, min(l2+1, n)), b_incy)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
                     call ar_dlaln2(.false._1, 2, 1, smin, one, &
@@ -698,20 +836,44 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .ne. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
-                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(k1-1, a(1, k1), 1, c(1, l2), 1)
-                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k1), b_incx, c(1, l2), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l2, min(l2+1, n)), b_incy)
                     vec(1, 2) = c(k1, l2)-(suml+sgn*sumr)
 !
-                    suml = ddot(k1-1, a(1, k2), 1, c(1, l1), 1)
-                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k2), b_incx, c(1, l1), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k2, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(k1-1, a(1, k2), 1, c(1, l2), 1)
-                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(k1-1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(1, k2), b_incx, c(1, l2), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k2, min(l2+1, n)), b_incx, b(l2, min(l2+1, n)), b_incy)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
                     call ar_dlasy2(.true._1, .true._1, isgn, 2, 2, &
@@ -794,8 +956,14 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
                 end if
 !
                 if (l1 .eq. l2 .and. k1 .eq. k2) then
-                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l1), 1)
-                    sumr = ddot(n-l1, c(k1, min(l1+1, n)), ldc, b(l1, min(l1+1, n)), ldb)
+                    b_n = to_blas_int(m-k1)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k1+1, m)), b_incx, c(min(k1+1, m), l1), b_incy)
+                    b_n = to_blas_int(n-l1)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l1+1, n)), b_incx, b(l1, min(l1+1, n)), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
                     scaloc = one
 !
@@ -822,12 +990,24 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .eq. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
-                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k2+1, m)), b_incx, c(min(k2+1, m), l1), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
-                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k2, min(k2+1, m)), b_incx, c(min(k2+1, m), l1), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k2, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
                     call ar_dlaln2(.false._1, 2, 1, smin, one, &
@@ -847,12 +1027,24 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .ne. l2 .and. k1 .eq. k2) then
 !
-                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l1), 1)
-                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(m-k1)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k1+1, m)), b_incx, c(min(k1+1, m), l1), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(1, 1) = sgn*(c(k1, l1)-(suml+sgn*sumr))
 !
-                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l2), 1)
-                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(m-k1)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k1+1, m)), b_incx, c(min(k1+1, m), l2), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l2, min(l2+1, n)), b_incy)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
                     call ar_dlaln2(.false._1, 2, 1, smin, one, &
@@ -872,20 +1064,44 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !
                 else if (l1 .ne. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
-                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k2+1, m)), b_incx, c(min(k2+1, m), l1), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l2), 1)
-                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k1, min(k2+1, m)), b_incx, c(min(k2+1, m), l2), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l2, min(l2+1, n)), b_incy)
                     vec(1, 2) = c(k1, l2)-(suml+sgn*sumr)
 !
-                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
-                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k2, min(k2+1, m)), b_incx, c(min(k2+1, m), l1), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k2, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l2), 1)
-                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    b_n = to_blas_int(m-k2)
+                    b_incx = to_blas_int(lda)
+                    b_incy = to_blas_int(1)
+                    suml = ddot(b_n, a(k2, min(k2+1, m)), b_incx, c(min(k2+1, m), l2), b_incy)
+                    b_n = to_blas_int(n-l2)
+                    b_incx = to_blas_int(ldc)
+                    b_incy = to_blas_int(ldb)
+                    sumr = ddot(b_n, c(k2, min(l2+1, n)), b_incx, b(l2, min(l2+1, n)), b_incy)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
                     call ar_dlasy2(.false._1, .true._1, isgn, 2, 2, &

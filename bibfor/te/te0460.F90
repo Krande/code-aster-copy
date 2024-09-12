@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0460(nomopt, nomte)
 !
     use HHO_type
@@ -52,10 +52,11 @@ subroutine te0460(nomopt, nomte)
     aster_logical :: l_largestrains
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)   :: gradfull
-    real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)  :: gradfullvec
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL):: stabvec
+    real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC) :: gradfull
+    real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradfullvec
+    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stabvec
     real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: gradrec_scal
+    blas_int :: b_incx, b_incy, b_n
 !
     ASSERT(nomopt == 'HHO_PRECALC_MECA')
 !
@@ -74,7 +75,8 @@ subroutine te0460(nomopt, nomte)
     l_largestrains = isLargeStrain(zk16(jcompo-1+DEFO))
 !
     if (hhoCell%ndim == 2) then
-        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+                           gbs, gbs_sym)
 !
 ! ---- if ndim = 2, we save the full operator
 !
@@ -93,15 +95,19 @@ subroutine te0460(nomopt, nomte)
 ! -- Copy the results
 !
         do j = 1, total_dofs
-            call dcopy(gbs2, gradfull(1, j), 1, zr(jgrad+(j-1)*gbs2), 1)
+            b_n = to_blas_int(gbs2)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, gradfull(1, j), b_incx, zr(jgrad+(j-1)*gbs2), b_incy)
         end do
 !
-    elseif (hhoCell%ndim == 3) then
+    else if (hhoCell%ndim == 3) then
 !
 ! ---- if ndim = 3, we save the scalar operator for large_strain (not for small strains)
 ! ---- because the matrix are too big to be save
 !
-        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs2)
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+                           gbs2)
 !
         if (l_largestrains) then
 ! ----- Compute vectoriel Gradient reconstruction
@@ -109,7 +115,10 @@ subroutine te0460(nomopt, nomte)
 !
 ! -- Copy the results
             do j = 1, total_dofs
-                call dcopy(gbs2, gradfullvec(1, j), 1, zr(jgrad+(j-1)*gbs2), 1)
+                b_n = to_blas_int(gbs2)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, gradfullvec(1, j), b_incx, zr(jgrad+(j-1)*gbs2), b_incy)
             end do
         end if
 !
@@ -130,7 +139,10 @@ subroutine te0460(nomopt, nomte)
 !
     call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
     do j = 1, total_dofs
-        call dcopy(total_dofs, stabvec(1, j), 1, zr(jstab+(j-1)*total_dofs), 1)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, stabvec(1, j), b_incx, zr(jstab+(j-1)*total_dofs), b_incy)
     end do
 !
 end subroutine

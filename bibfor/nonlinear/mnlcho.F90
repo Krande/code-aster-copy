@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
                   nchoc, h, hf, parcho, adime, &
                   ninc, tabchoc, lcine, solveu)
@@ -99,6 +99,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
     integer, pointer :: indmax(:) => null()
     integer, pointer :: nddl(:) => null()
     integer, pointer :: ncmp(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
@@ -300,7 +301,10 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
         call dscal(neq, 0.d0, ei2, 1)
         call mrmult('ZERO', imat(2), zr(iei), ei2, 1, &
                     .true._1)
-        zr(iadim-1+2) = ddot(neq, zr(iei), 1, ei2, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        zr(iadim-1+2) = ddot(b_n, zr(iei), b_incx, ei2, b_incy)
     end if
 ! --- ON RECUPERE OMEGA (POUR ADIMENSIONNE LE TEMPS)
     zr(iadim-1+3) = sqrt(zr(iadim-1+1)/zr(iadim-1+2))

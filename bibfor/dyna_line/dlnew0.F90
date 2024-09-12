@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -173,6 +173,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
     real(kind=8), pointer :: forc0(:) => null()
     real(kind=8), pointer :: nlval1(:) => null()
     real(kind=8), pointer :: nlval2(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !     -----------------------------------------------------------------
 !
 !
@@ -227,7 +228,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
         vite(ieq) = vit0(ieq)
     end do
     if (lmodst) then
-        do 32, ieq = 1, neq
+        do 32 ieq = 1, neq
             vien(ieq) = vitea(ieq)
 32          continue
             end if
@@ -244,7 +245,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 !
             if (nmodam .ne. 0) then
                 if (lmodst) then
-                    do 33, ieq = 1, neq
+                    do 33 ieq = 1, neq
                         vita1(ieq) = vit0(ieq)+vitea(ieq)
 33                      continue
                         call fmodam(neq, vita1, valmod, basmod, fammo)
@@ -262,14 +263,15 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                     call dlfext(nveca, nchar, temps, neq, liad, &
                                 lifo, charge, infoch, fomult, modele, &
                                 mate, mateco, carele, numedd, zr(iforc1))
-
+!
 !                   second membre des charges cinématiques
                     if (nchar .gt. 0) then
-                        call ascavc(charge, infoch, fomult, numedd, temps, kineLoad)
+                        call ascavc(charge, infoch, fomult, numedd, temps, &
+                                    kineLoad)
                     end if
 !
                     if (nondp .ne. 0) then
-                        do 43, ieq = 1, neq
+                        do 43 ieq = 1, neq
                             zr(iforc1+ieq-1) = zr(iforc1+ieq-1)-fonde(ieq)
 43                          continue
                             end if
@@ -281,7 +283,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                             end if
 !
                             if (limped) then
-                                do 41, ieq = 1, neq
+                                do 41 ieq = 1, neq
                                     zr(iforc1+ieq-1) = zr(iforc1+ieq-1)-fimpe(ieq)
 41                                  continue
                                     if (ds_energy%l_comp) then
@@ -293,7 +295,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                                     end if
 !
                                     if (nmodam .ne. 0) then
-                                        do 42, ieq = 1, neq
+                                        do 42 ieq = 1, neq
                                             zr(iforc1+ieq-1) = zr(iforc1+ieq-1)-fammo(ieq)
 42                                          continue
                                             if (ds_energy%l_comp) then
@@ -357,10 +359,16 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                                                                             iret)
                                                               call vtcopy(cham19, chamn2, 'F', iret)
                                                         call jeveuo(chamn2//'.VALE', 'L', vr=nlval2)
-                                                            call dcopy(neq, nlval1, 1, zr(lvale), 1)
+                                                                b_n = to_blas_int(neq)
+                                                                b_incx = to_blas_int(1)
+                                                                b_incy = to_blas_int(1)
+                                                  call dcopy(b_n, nlval1, b_incx, zr(lvale), b_incy)
                                                          call dscal(neq, (1.d0-alpha), zr(lvale), 1)
-                                                      call daxpy(neq, alpha, nlval2, 1, zr(lvale), &
-                                                                           1)
+                                                                b_n = to_blas_int(neq)
+                                                                b_incx = to_blas_int(1)
+                                                                b_incy = to_blas_int(1)
+                                                 call daxpy(b_n, alpha, nlval2, b_incx, zr(lvale), &
+                                                                           b_incy)
                                                                 goto 213
                                                             end if
                                                 if (i .eq. nbinst-1 .and. temps .ge. zr(ltps1)) then
@@ -392,7 +400,10 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                                             end if
 !
                                             if (iinteg .eq. 2) then
-                                                call dcopy(neq, zr(iforc1), 1, zr(iforc2), 1)
+                                                b_n = to_blas_int(neq)
+                                                b_incx = to_blas_int(1)
+                                                b_incy = to_blas_int(1)
+                                             call dcopy(b_n, zr(iforc1), b_incx, zr(iforc2), b_incy)
                                                 call fteta(theta, neq, forc0, zr(iforc1))
                                             end if
 !
@@ -414,7 +425,10 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                                             call copisd('CHAMP_GD', 'V', chsol(1:19), force1(1:19))
                                             call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
                                             call detrsd('CHAMP_GD', chsol)
-                                            call dcopy(neq, zr(iforc1), 1, depl1, 1)
+                                            b_n = to_blas_int(neq)
+                                            b_incx = to_blas_int(1)
+                                            b_incy = to_blas_int(1)
+                                            call dcopy(b_n, zr(iforc1), b_incx, depl1, b_incy)
 !
 !====
 ! 7. CALCUL DES DEPLACEMENTS,VITESSES ET ACCELERATIONS
@@ -460,14 +474,29 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 ! 9. TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
 !====
 !
-                                            call dcopy(neq, depl1, 1, dep0, 1)
-                                            call dcopy(neq, vite1, 1, vit0, 1)
-                                            call dcopy(neq, acce1, 1, acc0, 1)
+                                            b_n = to_blas_int(neq)
+                                            b_incx = to_blas_int(1)
+                                            b_incy = to_blas_int(1)
+                                            call dcopy(b_n, depl1, b_incx, dep0, b_incy)
+                                            b_n = to_blas_int(neq)
+                                            b_incx = to_blas_int(1)
+                                            b_incy = to_blas_int(1)
+                                            call dcopy(b_n, vite1, b_incx, vit0, b_incy)
+                                            b_n = to_blas_int(neq)
+                                            b_incx = to_blas_int(1)
+                                            b_incy = to_blas_int(1)
+                                            call dcopy(b_n, acce1, b_incx, acc0, b_incy)
 !
                                             if (iinteg .eq. 2) then
-                                                call dcopy(neq, zr(iforc2), 1, forc0, 1)
+                                                b_n = to_blas_int(neq)
+                                                b_incx = to_blas_int(1)
+                                                b_incy = to_blas_int(1)
+                                                call dcopy(b_n, zr(iforc2), b_incx, forc0, b_incy)
                                             else
-                                                call dcopy(neq, zr(iforc1), 1, forc0, 1)
+                                                b_n = to_blas_int(neq)
+                                                b_incx = to_blas_int(1)
+                                                b_incy = to_blas_int(1)
+                                                call dcopy(b_n, zr(iforc1), b_incx, forc0, b_incy)
                                             end if
 !
 !
@@ -487,7 +516,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                                                     typa(4) = '    '
                                                     typa(5) = '    '
                                                     typa(6) = '    '
-                                                    do 101, ieq = 1, neq
+                                                    do 101 ieq = 1, neq
                                                         depla(ieq) = depla(ieq)+dep0(ieq)
                                                         vitea(ieq) = vitea(ieq)+vit0(ieq)
                                                         accea(ieq) = accea(ieq)+acc0(ieq)

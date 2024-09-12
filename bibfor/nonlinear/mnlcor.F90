@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
                   adime, ninc, nd, nchoc, h, &
                   hf, itemax, epscor, xvect, cor, &
@@ -84,6 +84,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
     integer :: iru, itang, ivect, cptr, iret, itemp, inddl, ifres
     real(kind=8) :: eps, normr, normc
     complex(kind=8) :: cbid
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !
@@ -117,7 +118,10 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
                xru)
     zr(iru-1+ninc) = 0.d0
     normr = dnrm2(ninc-1, zr(iru), 1)
-    call dcopy(ninc, zr(ivect), 1, zr(itemp), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivect), b_incx, zr(itemp), b_incy)
     normc = normr
 900 format(' Norme erreur iteration Newton numero : ', i2, ' : ', 1pe12.5)
     if (info .eq. 2) then
@@ -149,8 +153,11 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
                     ' ', ' ', 'V', zr(iru), [cbid], &
                     ' ', .false._1, 0, iret)
 ! ---   ON AJOUTE AU VECTEUR SOLUTION
-        call daxpy(ninc, -1.d0, zr(iru), 1, zr(itemp), &
-                   1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -1.d0, zr(iru), b_incx, zr(itemp), &
+                   b_incy)
 ! ---   ON CALCUL R(NOUVEAU VECTEUR SOLUTION)
         call mnlru(imat, xcdl, parcho, adime, xtemp, &
                    ninc, nd, nchoc, h, hf, &
@@ -159,7 +166,10 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
 ! ---   ON CALCUL LA NORME DE R(NOUVEAU VECTEUR SOLUTION)
         normc = dnrm2(ninc-1, zr(iru), 1)
         normr = normc
-        call dcopy(ninc, zr(itemp), 1, zr(ivect), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(itemp), b_incx, zr(ivect), b_incy)
         if (info .eq. 2) then
             write (ifres, 900) cptr, normc
         end if

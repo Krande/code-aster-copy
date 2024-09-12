@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     character(len=8), pointer :: inti(:) => null()
     integer, pointer :: icho(:) => null()
     character(len=8), pointer :: ncho(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 !-----------------------------------------------------------------------
@@ -262,7 +263,10 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 !
             call wkvect(kforn, 'V V R', nbpt, jfn)
             call wkvect(kvgli, 'V V R', nbpt, jvg)
-            call dcopy(nbpt, zr(jwk1), 1, zr(jfn), 1)
+            b_n = to_blas_int(nbpt)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jwk1), b_incx, zr(jfn), b_incy)
             do i = 0, nbpt-1
                 zr(jvg+i) = sqrt(zr(jwk2+i)**2+zr(jwk3+i)**2)
             end do

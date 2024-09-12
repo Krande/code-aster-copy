@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,16 +24,12 @@ module Behaviour_module
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
-    private :: varcIsGEOM, relaIsExte, &
-               initElem, initElga, initESVA, initExte, &
-               prepEltSize1, prepGradVelo, prepEltSize2, prepHygrometry, &
-               getESVA, computeStrainESVA, computeStrainMeca, &
-               getListUserESVA, getESVAPtot
-    public  :: behaviourInit, behaviourInitPoint, &
-               behaviourPrepESVAElem, prepCoorGauss, behaviourPrepESVAGauss, &
-               behaviourPrepStrain, behaviourPredictionStress, &
-               behaviourPrepESVA, behaviourPrepESVAExte, &
-               behaviourOption
+    private :: varcIsGEOM, relaIsExte, initElem, initElga, initESVA, initExte, prepEltSize1
+    private :: prepGradVelo, prepEltSize2, prepHygrometry, getESVA, computeStrainESVA
+    private :: computeStrainMeca, getListUserESVA, getESVAPtot
+    public :: behaviourInit, behaviourInitPoint, behaviourPrepESVAElem, prepCoorGauss
+    public :: behaviourPrepESVAGauss, behaviourPrepStrain, behaviourPredictionStress
+    public :: behaviourPrepESVA, behaviourPrepESVAExte, behaviourOption
 ! ==================================================================================================
     private
 #include "asterc/indik8.h"
@@ -214,7 +210,7 @@ contains
         character(len=16), intent(in) :: rela_comp
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 !   ------------------------------------------------------------------------------------------------
-
+!
 !
 ! - Get list of external state variables from user (AFFE_VARC)
 !
@@ -236,7 +232,7 @@ contains
         if (BEHinteg%tabcod(ELTSIZE2) .eq. 1) then
             call utmess('F', 'COMPOR2_12')
         end if
-
+!
         if (BEHinteg%tabcod(ELTSIZE1) .eq. 1) then
             if (rela_comp .ne. 'BETON_DOUBLE_DP') then
                 call utmess('F', 'COMPOR2_12')
@@ -289,10 +285,8 @@ contains
 ! In  ddepl            : displacements of nodes since beginning of time step
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine behaviourPrepESVAElem(carcri, typmod, &
-                                     nno, npg, ndim, &
-                                     jv_poids, jv_func, jv_dfunc, &
-                                     geom, BEHinteg, &
+    subroutine behaviourPrepESVAElem(carcri, typmod, nno, npg, ndim, &
+                                     jv_poids, jv_func, jv_dfunc, geom, BEHinteg, &
                                      deplm_, ddepl_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
@@ -313,17 +307,15 @@ contains
 ! - Element size 1
 !
         if (BEHinteg%tabcod(ELTSIZE1) .eq. 1) then
-            call prepEltSize1(nno, npg, ndim, &
-                              jv_poids, jv_func, jv_dfunc, &
-                              geom, typmod, BEHinteg%elem)
+            call prepEltSize1(nno, npg, ndim, jv_poids, jv_func, &
+                              jv_dfunc, geom, typmod, BEHinteg%elem)
         end if
 !
 ! - Element size 2
 !
         if (BEHinteg%tabcod(ELTSIZE2) .eq. 1) then
-            call prepEltSize2(nno, npg, ndim, &
-                              jv_dfunc, &
-                              geom, typmod, BEHinteg%elem)
+            call prepEltSize2(nno, npg, ndim, jv_dfunc, geom, &
+                              typmod, BEHinteg%elem)
         end if
 !
 ! - Gradient of velocity
@@ -332,16 +324,14 @@ contains
             if (.not. present(deplm_) .or. .not. present(ddepl_)) then
                 call utmess('F', 'COMPOR2_26')
             end if
-            call prepGradVelo(nno, npg, ndim, &
-                              jv_poids, jv_func, jv_dfunc, &
-                              geom, deplm_, ddepl_, &
-                              BEHinteg%elem)
+            call prepGradVelo(nno, npg, ndim, jv_poids, jv_func, &
+                              jv_dfunc, geom, deplm_, ddepl_, BEHinteg%elem)
         end if
 !
 ! - Coordinates of Gauss points
 !
-        call prepCoorGauss(nno, npg, ndim, &
-                           jv_func, geom, BEHinteg%elem)
+        call prepCoorGauss(nno, npg, ndim, jv_func, geom, &
+                           BEHinteg%elem)
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -361,9 +351,8 @@ contains
 ! IO  BEHinteg         : parameters for integration of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine behaviourPrepESVAGauss(carcri, defo_ldc, imate, &
-                                      fami, kpg, ksp, &
-                                      neps, time_curr, BEHinteg)
+    subroutine behaviourPrepESVAGauss(carcri, defo_ldc, imate, fami, kpg, &
+                                      ksp, neps, time_curr, BEHinteg)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         real(kind=8), intent(in) :: carcri(*)
@@ -406,10 +395,8 @@ contains
 !
 ! - Prepare external state variables (intrinsic)
 !
-        call behaviourPrepESVA(defo_ldc, imate, &
-                               fami, kpg, ksp, &
-                               neps, l_mfront, l_umat, &
-                               BEHinteg%esva)
+        call behaviourPrepESVA(defo_ldc, imate, fami, kpg, ksp, &
+                               neps, l_mfront, l_umat, BEHinteg%esva)
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -442,10 +429,10 @@ contains
                                        'SECH    ', 'HYDR    ', 'IRRA    ', &
                                        'NEUT1   ', 'NEUT2   ', 'CORR    ', &
                                        'ALPHPUR ', 'ALPHBETA'/)
-        character(len=8)   :: list_varc(EXTE_ESVA_NBMAXI), varc_name
-        integer            :: i_varc, iret, nb_varc
-        real(kind=8)       :: varc_prev, varc_curr
-
+        character(len=8) :: list_varc(EXTE_ESVA_NBMAXI), varc_name
+        integer :: i_varc, iret, nb_varc
+        real(kind=8) :: varc_prev, varc_curr
+!
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -461,13 +448,13 @@ contains
             call mgis_get_number_of_esvs(compor(MGIS_ADDR), nb_varc)
             ASSERT(nb_varc .le. EXTE_ESVA_NBMAXI)
             call mgis_get_esvs(compor(MGIS_ADDR), list_varc)
-
-        elseif (BEHinteg%l_umat) then
+!
+        else if (BEHinteg%l_umat) then
             list_varc = umat_lvarc
             nb_varc = umat_nbvarc
         end if
         BEHinteg%exte%nb_pred = nb_varc
-
+!
         ASSERT(nb_varc .le. EXTE_ESVA_NBMAXI)
         if (LDC_PREP_DEBUG .eq. 1) then
             if (nb_varc .eq. 0) then
@@ -487,12 +474,12 @@ contains
                 else
                     call utmess('F', 'COMPOR4_23', sk=varc_name)
                 end if
-            elseif (varc_name .eq. 'Temperat') then
-                ! Used by MGIS/MFront
+            else if (varc_name .eq. 'Temperat') then
+! Used by MGIS/MFront
                 ASSERT(BEHinteg%l_mfront)
                 BEHinteg%exte%predef(i_varc) = BEHinteg%esva%temp_prev
                 BEHinteg%exte%dpred(i_varc) = BEHinteg%esva%temp_incr
-            elseif (varc_name .eq. 'SECH') then
+            else if (varc_name .eq. 'SECH') then
                 if (BEHinteg%esva%l_sech) then
                     BEHinteg%exte%predef(i_varc) = BEHinteg%esva%sech_prev
                     BEHinteg%exte%dpred(i_varc) = BEHinteg%esva%sech_incr
@@ -501,7 +488,7 @@ contains
                         call utmess('F', 'COMPOR4_23', sk=varc_name)
                     end if
                 end if
-            elseif (varc_name .eq. 'HYDR') then
+            else if (varc_name .eq. 'HYDR') then
                 if (BEHinteg%esva%l_hydr) then
                     BEHinteg%exte%predef(i_varc) = BEHinteg%esva%hydr_prev
                     BEHinteg%exte%dpred(i_varc) = BEHinteg%esva%hydr_incr
@@ -515,7 +502,7 @@ contains
                         end if
                     end if
                 end if
-            elseif (varc_name .eq. 'HYGR') then
+            else if (varc_name .eq. 'HYGR') then
                 if (BEHinteg%esva%l_hygr) then
                     BEHinteg%exte%predef(i_varc) = BEHinteg%esva%hygr_prev
                     BEHinteg%exte%dpred(i_varc) = BEHinteg%esva%hygr_incr
@@ -524,24 +511,26 @@ contains
                         call utmess('F', 'COMPOR4_23', sk=varc_name)
                     end if
                 end if
-            elseif (varc_name .eq. 'TIME') then
+            else if (varc_name .eq. 'TIME') then
                 BEHinteg%exte%predef(i_varc) = BEHinteg%time_curr
-            elseif (varc_name .eq. 'TEMPREFE') then
+            else if (varc_name .eq. 'TEMPREFE') then
                 if (.not. BEHinteg%esva%l_temp) then
                     call utmess('F', 'COMPOR4_26', sk=varc_name)
                 else
                     BEHinteg%exte%predef(i_varc) = BEHinteg%esva%temp_refe
                 end if
-            elseif (varc_name .eq. 'ELTSIZE1') then
+            else if (varc_name .eq. 'ELTSIZE1') then
                 BEHinteg%exte%predef(i_varc) = BEHinteg%elem%eltsize1
-            elseif (varc_name .eq. 'ELTSIZE2') then
+            else if (varc_name .eq. 'ELTSIZE2') then
                 call utmess('F', 'COMPOR4_25', sk=varc_name)
-            elseif (varc_name .eq. 'GRADVELO') then
+            else if (varc_name .eq. 'GRADVELO') then
                 call utmess('F', 'COMPOR4_25', sk=varc_name)
             else
-                call rcvarc(' ', varc_name, '-', fami, kpg, ksp, varc_prev, iret)
+                call rcvarc(' ', varc_name, '-', fami, kpg, &
+                            ksp, varc_prev, iret)
                 if (iret .eq. 0) then
-                    call rcvarc('F', varc_name, '+', fami, kpg, ksp, varc_curr, iret)
+                    call rcvarc('F', varc_name, '+', fami, kpg, &
+                                ksp, varc_curr, iret)
                     BEHinteg%exte%predef(i_varc) = varc_prev
                     BEHinteg%exte%dpred(i_varc) = varc_curr-varc_prev
                 else
@@ -575,9 +564,11 @@ contains
         integer :: iret
 !   ------------------------------------------------------------------------------------------------
 !
-        call rcvarc(' ', 'PTOT', '-', fami, kpg, ksp, BEHesva%ptot_prev, iret)
+        call rcvarc(' ', 'PTOT', '-', fami, kpg, &
+                    ksp, BEHesva%ptot_prev, iret)
         if (iret .eq. 0) then
-            call rcvarc('F', 'PTOT', '+', fami, kpg, ksp, BEHesva%ptot_curr, iret)
+            call rcvarc('F', 'PTOT', '+', fami, kpg, &
+                        ksp, BEHesva%ptot_curr, iret)
             BEHesva%ptot_incr = BEHesva%ptot_curr-BEHesva%ptot_prev
             BEHesva%l_ptot = ASTER_TRUE
         end if
@@ -596,7 +587,8 @@ contains
 ! IO  BEHesva          : parameters for external state variables
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getESVA(fami, kpg, ksp, imate, neps, BEHesva)
+    subroutine getESVA(fami, kpg, ksp, imate, neps, &
+                       BEHesva)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: fami
@@ -616,21 +608,15 @@ contains
 !
         iret = 0
         call verift(fami, kpg, ksp, '-', imate, &
-                    epsth_=BEHesva%epsthm, &
-                    epsth_anis_=BEHesva%epsth_anism, &
-                    epsth_meta_=BEHesva%epsth_metam, &
-                    temp_prev_=BEHesva%temp_prev, &
-                    temp_refe_=BEHesva%temp_refe, &
-                    iret_=iret)
+                    epsth_=BEHesva%epsthm, epsth_anis_=BEHesva%epsth_anism, &
+                    epsth_meta_=BEHesva%epsth_metam, temp_prev_=BEHesva%temp_prev, &
+                    temp_refe_=BEHesva%temp_refe, iret_=iret)
         if (iret .ne. 0) then
             BEHesva%temp_prev = 0.d0
         end if
         call verift(fami, kpg, ksp, '+', imate, &
-                    epsth_=BEHesva%epsthp, &
-                    epsth_anis_=BEHesva%epsth_anisp, &
-                    epsth_meta_=BEHesva%epsth_metap, &
-                    temp_curr_=BEHesva%temp_curr, &
-                    iret_=iret)
+                    epsth_=BEHesva%epsthp, epsth_anis_=BEHesva%epsth_anisp, &
+                    epsth_meta_=BEHesva%epsth_metap, temp_curr_=BEHesva%temp_curr, iret_=iret)
         if (iret .eq. 0) then
             BEHesva%temp_incr = BEHesva%temp_curr-BEHesva%temp_prev
             BEHesva%l_temp = ASTER_TRUE
@@ -640,22 +626,27 @@ contains
 !
 ! - SECH
 !
-        call rcvarc(' ', 'SECH', '-', fami, kpg, ksp, BEHesva%sech_prev, iret)
+        call rcvarc(' ', 'SECH', '-', fami, kpg, &
+                    ksp, BEHesva%sech_prev, iret)
         if (iret .eq. 0) then
-            call rcvarc('F', 'SECH', '+', fami, kpg, ksp, BEHesva%sech_curr, iret)
+            call rcvarc('F', 'SECH', '+', fami, kpg, &
+                        ksp, BEHesva%sech_curr, iret)
             BEHesva%sech_incr = BEHesva%sech_curr-BEHesva%sech_prev
             BEHesva%l_sech = ASTER_TRUE
         end if
-        call rcvarc(' ', 'SECH', 'REF', fami, kpg, ksp, BEHesva%sech_refe, iret)
+        call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
+                    ksp, BEHesva%sech_refe, iret)
         if (iret .ne. 0) then
             BEHesva%sech_refe = 0.d0
         end if
 !
 ! - HYDR
 !
-        call rcvarc(' ', 'HYDR', '-', fami, kpg, ksp, BEHesva%hydr_prev, iret)
+        call rcvarc(' ', 'HYDR', '-', fami, kpg, &
+                    ksp, BEHesva%hydr_prev, iret)
         if (iret .eq. 0) then
-            call rcvarc('F', 'HYDR', '+', fami, kpg, ksp, BEHesva%hydr_curr, iret)
+            call rcvarc('F', 'HYDR', '+', fami, kpg, &
+                        ksp, BEHesva%hydr_curr, iret)
             BEHesva%hydr_incr = BEHesva%hydr_curr-BEHesva%hydr_prev
             BEHesva%l_hydr = ASTER_TRUE
         end if
@@ -663,13 +654,15 @@ contains
 ! - EPSA
 !
         do k = 1, neps
-            call rcvarc(' ', epsa(k), '-', fami, kpg, ksp, BEHesva%anel_prev(k), iret)
+            call rcvarc(' ', epsa(k), '-', fami, kpg, &
+                        ksp, BEHesva%anel_prev(k), iret)
             if (iret .ne. 0) then
                 BEHesva%anel_prev(k) = 0.d0
             else
                 BEHesva%l_anel = ASTER_TRUE
             end if
-            call rcvarc(' ', epsa(k), '+', fami, kpg, ksp, BEHesva%anel_curr(k), iret)
+            call rcvarc(' ', epsa(k), '+', fami, kpg, &
+                        ksp, BEHesva%anel_curr(k), iret)
             if (iret .ne. 0) then
                 BEHesva%anel_curr(k) = 0.d0
             else
@@ -716,10 +709,8 @@ contains
 ! IO  BEHesva          : parameters for external state variables
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine behaviourPrepESVA(defo_ldc, imate, &
-                                 fami, kpg, ksp, &
-                                 neps, l_mfront, l_umat, &
-                                 BEHesva)
+    subroutine behaviourPrepESVA(defo_ldc, imate, fami, kpg, ksp, &
+                                 neps, l_mfront, l_umat, BEHesva)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=16), intent(in) :: defo_ldc
@@ -734,7 +725,8 @@ contains
         if (ca_nbcvrc_ .ne. 0) then
             call getESVAPtot(fami, kpg, ksp, BEHesva)
             if (l_mfront .or. l_umat .or. defo_ldc .eq. 'MECANIQUE') then
-                call getESVA(fami, kpg, ksp, imate, neps, BEHesva)
+                call getESVA(fami, kpg, ksp, imate, neps, &
+                             BEHesva)
             end if
         end if
 !   ------------------------------------------------------------------------------------------------
@@ -763,9 +755,9 @@ contains
 ! IO  BEHesva          : parameters for external state variables
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine behaviourPrepStrain(l_pred, l_czm, l_large, l_defo_meca, &
-                                   l_grad_vari, imate, fami, kpg, ksp, &
-                                   neps, BEHesva, epsm, deps)
+    subroutine behaviourPrepStrain(l_pred, l_czm, l_large, l_defo_meca, l_grad_vari, &
+                                   imate, fami, kpg, ksp, neps, &
+                                   BEHesva, epsm, deps)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         aster_logical, intent(in) :: l_pred, l_czm, l_large, l_defo_meca, l_grad_vari
@@ -780,9 +772,11 @@ contains
         if (ca_nbcvrc_ .ne. 0) then
             if ((l_defo_meca) .and. (.not. l_large) .or. BEHesva%l_ptot) then
 ! --------- Compute "thermic" strains for some external state variables
-                call computeStrainESVA(fami, kpg, ksp, imate, neps, BEHesva)
+                call computeStrainESVA(fami, kpg, ksp, imate, neps, &
+                                       BEHesva)
 ! --------- Subtract to get mechanical strain epsm and deps become mechanical strains
-                call computeStrainMeca(l_pred, l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
+                call computeStrainMeca(l_pred, l_czm, l_grad_vari, neps, BEHesva, &
+                                       epsm, deps)
             end if
         end if
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -792,7 +786,7 @@ contains
         end if
 !   ------------------------------------------------------------------------------------------------
     end subroutine
-
+!
 ! --------------------------------------------------------------------------------------------------
 !
 ! behaviourPredictionStress
@@ -808,8 +802,8 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         type(Behaviour_ESVA), intent(in) :: BEHesva
-        real(kind=8), intent(in)         :: dsidep(:, :)
-        real(kind=8), intent(inout)      :: sig(:)
+        real(kind=8), intent(in) :: dsidep(:, :)
+        real(kind=8), intent(inout) :: sig(:)
 ! - Local
         integer :: ndimsi
 !   ------------------------------------------------------------------------------------------------
@@ -819,7 +813,7 @@ contains
             ASSERT(size(dsidep, 1) .ge. ndimsi)
             ASSERT(size(dsidep, 2) .ge. ndimsi)
             sig = sig-matmul(dsidep(1:ndimsi, 1:ndimsi), BEHesva%depsi_varc(1:ndimsi))
-
+!
             if (LDC_PREP_DEBUG .eq. 1) WRITE (6, *) '<DEBUG>  Prediction stress: ', sig
         end if
 !   ------------------------------------------------------------------------------------------------
@@ -841,9 +835,8 @@ contains
 ! IO  BEHelem          : parameters on element
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine prepEltSize1(nno, npg, ndim, &
-                            jv_poids, jv_func, jv_dfunc, &
-                            geom, typmod, BEHelem)
+    subroutine prepEltSize1(nno, npg, ndim, jv_poids, jv_func, &
+                            jv_dfunc, geom, typmod, BEHelem)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         integer, intent(in) :: nno, npg, ndim
@@ -875,7 +868,7 @@ contains
             else
                 lc = rac2*volume**0.33333333333333d0
             end if
-        elseif (typmod(1) (1:6) .eq. 'D_PLAN' .or. typmod(1) (1:4) .eq. 'AXIS') then
+        else if (typmod(1) (1:6) .eq. 'D_PLAN' .or. typmod(1) (1:4) .eq. 'AXIS') then
             surfac = 0.d0
             do kpg = 1, npg
                 k = (kpg-1)*nno
@@ -897,7 +890,7 @@ contains
                 lc = rac2*surfac**0.5d0
             end if
 !
-        elseif (typmod(1) (1:6) .eq. 'C_PLAN') then
+        else if (typmod(1) (1:6) .eq. 'C_PLAN') then
             lc = r8vide()
         else
             ASSERT(ASTER_FALSE)
@@ -922,9 +915,8 @@ contains
 ! IO  BEHelem          : parameters on element
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine prepEltSize2(nno, npg, ndim, &
-                            jv_dfunc, geom, typmod, &
-                            BEHelem)
+    subroutine prepEltSize2(nno, npg, ndim, jv_dfunc, geom, &
+                            typmod, BEHelem)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         integer, intent(in) :: nno, npg, ndim
@@ -995,10 +987,8 @@ contains
 ! IO  BEHelem          : parameters on element
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine prepGradVelo(nno, npg, ndim, &
-                            jv_poids, jv_func, jv_dfunc, &
-                            geom, deplm, ddepl, &
-                            BEHelem)
+    subroutine prepGradVelo(nno, npg, ndim, jv_poids, jv_func, &
+                            jv_dfunc, geom, deplm, ddepl, BEHelem)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         integer, intent(in) :: nno, npg, ndim
@@ -1012,6 +1002,7 @@ contains
         real(kind=8) :: deplp(3, 27), geomm(3, 27), epsbid(6)
         real(kind=8) :: dfdi(nno, 3)
         real(kind=8), parameter :: id(9) = (/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/)
+        blas_int :: b_incx, b_incy, b_n
 !   ------------------------------------------------------------------------------------------------
         nddl = ndim*nno
         BEHelem%gradvelo = 0.d0
@@ -1019,10 +1010,24 @@ contains
             WRITE (6, *) '<DEBUG>  Compute GRADVELO'
         end if
 !
-        call dcopy(nddl, geom, 1, geomm, 1)
-        call daxpy(nddl, 1.d0, deplm, 1, geomm, 1)
-        call dcopy(nddl, deplm, 1, deplp, 1)
-        call daxpy(nddl, 1.d0, ddepl, 1, deplp, 1)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, geom, b_incx, geomm, b_incy)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deplm, b_incx, geomm, &
+                   b_incy)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, deplm, b_incx, deplp, b_incy)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, ddepl, b_incx, deplp, &
+                   b_incy)
         do kpg = 1, npg
             call nmgeom(ndim, nno, .false._1, .true._1, geom, &
                         kpg, jv_poids, jv_func, jv_dfunc, deplp, &
@@ -1032,7 +1037,11 @@ contains
                         kpg, jv_poids, jv_func, jv_dfunc, ddepl, &
                         .true._1, r8bid, dfdi, df, epsbid, &
                         r)
-            call daxpy(9, -1.d0, id, 1, df, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, id, b_incx, df, &
+                       b_incy)
             call matinv('S', 3, f, fmm, r8bid)
             l = matmul(df, fmm)
             do i = 1, 3
@@ -1057,8 +1066,8 @@ contains
 ! IO  BEHelem          : parameters on element
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine prepCoorGauss(nno, npg, ndim, &
-                             jv_func, geom, BEHelem)
+    subroutine prepCoorGauss(nno, npg, ndim, jv_func, geom, &
+                             BEHelem)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         integer, intent(in) :: nno, npg, ndim
@@ -1077,8 +1086,8 @@ contains
         do kpg = 1, npg
             do i = 1, ndim
                 do k = 1, nno
-                    BEHelem%coor_elga(kpg, i) = BEHelem%coor_elga(kpg, i)+ &
-                                                geom(i, k)*zr(jv_func-1+nno*(kpg-1)+k)
+                    BEHelem%coor_elga(kpg, i) = BEHelem%coor_elga(kpg, i)+geom(i, k)*zr(jv_func-&
+                                                &1+nno*(kpg-1)+k)
                 end do
             end do
         end do
@@ -1104,8 +1113,8 @@ contains
         integer, intent(in) :: kpg, ksp, imate
         type(Behaviour_ESVA), intent(inout) :: BEHesva
 ! - Local
-        integer           :: codret(1)
-        real(kind=8)      :: valres(1)
+        integer :: codret(1)
+        real(kind=8) :: valres(1)
         character(len=16) :: nomres(1)
 !   ------------------------------------------------------------------------------------------------
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -1143,7 +1152,7 @@ contains
 !
 ! Precompute strains from external state variables
 !
-
+!
 ! In  fami             : Gauss family for integration point rule
 ! In  kpg              : current point gauss
 ! In  ksp              : current "sous-point" gauss
@@ -1152,7 +1161,8 @@ contains
 ! IO  BEHesva          : parameters for external state variables
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine computeStrainESVA(fami, kpg, ksp, imate, neps, BEHesva)
+    subroutine computeStrainESVA(fami, kpg, ksp, imate, neps, &
+                                 BEHesva)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         integer, intent(in) :: neps
@@ -1160,12 +1170,12 @@ contains
         integer, intent(in) :: kpg, ksp, imate
         type(Behaviour_ESVA), intent(inout) :: BEHesva
 ! - Local
-        integer           :: elas_id, codret(3), i_dim, k
+        integer :: elas_id, codret(3), i_dim, k
         character(len=16) :: elas_keyword
-        real(kind=8)      :: valres(3)
+        real(kind=8) :: valres(3)
         character(len=16) :: nomres(3)
-        real(kind=8)      :: epsbp, epsbm, bendom, kdessm, bendop, kdessp
-        real(kind=8)      :: biotp, biotm, em, ep, num, nup, troikm, troikp
+        real(kind=8) :: epsbp, epsbm, bendom, kdessm, bendop, kdessp
+        real(kind=8) :: biotp, biotm, em, ep, num, nup, troikm, troikp
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !   ------------------------------------------------------------------------------------------------
         BEHesva%depsi_varc(1:6) = 0.d0
@@ -1188,8 +1198,8 @@ contains
                     end do
                 else
                     do i_dim = 1, 3
-                        BEHesva%depsi_varc(i_dim) = BEHesva%epsth_anisp(i_dim)- &
-                                                    BEHesva%epsth_anism(i_dim)
+                        BEHesva%depsi_varc(i_dim) = BEHesva%epsth_anisp(i_dim)-BEHesva%epsth_ani&
+                                                    &sm(i_dim)
                         BEHesva%epsi_varc(i_dim) = BEHesva%epsth_anism(i_dim)
                     end do
                 end if
@@ -1200,17 +1210,13 @@ contains
 !
         if (BEHesva%l_sech) then
             nomres(1) = 'K_DESSIC'
-            call rcvalb(fami, kpg, ksp, &
-                        '-', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        1, nomres, valres, &
-                        codret, 1)
+            call rcvalb(fami, kpg, ksp, '-', imate, &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
+                        1, nomres, valres, codret, 1)
             kdessm = valres(1)
-            call rcvalb(fami, kpg, ksp, &
-                        '+', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        1, nomres, valres, &
-                        codret, 1)
+            call rcvalb(fami, kpg, ksp, '+', imate, &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
+                        1, nomres, valres, codret, 1)
             kdessp = valres(1)
             epsbm = -kdessm*(BEHesva%sech_refe-BEHesva%sech_prev)
             epsbp = -kdessp*(BEHesva%sech_refe-BEHesva%sech_curr)
@@ -1224,17 +1230,13 @@ contains
 !
         if (BEHesva%l_hydr) then
             nomres(1) = 'B_ENDOGE'
-            call rcvalb(fami, kpg, ksp, &
-                        '-', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        1, nomres, valres, &
-                        codret, 1)
+            call rcvalb(fami, kpg, ksp, '-', imate, &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
+                        1, nomres, valres, codret, 1)
             bendom = valres(1)
-            call rcvalb(fami, kpg, ksp, &
-                        '+', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        1, nomres, valres, &
-                        codret, 1)
+            call rcvalb(fami, kpg, ksp, '+', imate, &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
+                        1, nomres, valres, codret, 1)
             bendop = valres(1)
             epsbm = -bendom*BEHesva%hydr_prev
             epsbp = -bendop*BEHesva%hydr_curr
@@ -1250,14 +1252,14 @@ contains
             ASSERT(neps .le. 6)
             do k = 1, 3
                 BEHesva%epsi_varc(k) = BEHesva%epsi_varc(k)+BEHesva%anel_prev(k)
-                BEHesva%depsi_varc(k) = BEHesva%depsi_varc(k)+BEHesva%anel_curr(k)- &
-                                        BEHesva%anel_prev(k)
+                BEHesva%depsi_varc(k) = BEHesva%depsi_varc(k)+BEHesva%anel_curr(k)-BEHesva%anel_&
+                                        &prev(k)
             end do
 ! ----- Nondiagonal terms of EPSA are rescaled with rac2
             do k = 4, neps
                 BEHesva%epsi_varc(k) = BEHesva%epsi_varc(k)+BEHesva%anel_prev(k)*rac2
-                BEHesva%depsi_varc(k) = BEHesva%depsi_varc(k)+(BEHesva%anel_curr(k)- &
-                                                               BEHesva%anel_prev(k))*rac2
+                BEHesva%depsi_varc(k) = BEHesva%depsi_varc(k)+(BEHesva%anel_curr(k)-BEHesva%anel&
+                                        &_prev(k))*rac2
             end do
         end if
 !
@@ -1265,31 +1267,25 @@ contains
 !
         if (BEHesva%l_ptot) then
             nomres(1) = 'BIOT_COEF'
-            call rcvalb(fami, kpg, ksp, &
-                        '-', imate, ' ', 'THM_DIFFU', &
-                        0, ' ', [0.d0], &
-                        1, nomres(1), valres(1), &
-                        codret(1), 1)
+            call rcvalb(fami, kpg, ksp, '-', imate, &
+                        ' ', 'THM_DIFFU', 0, ' ', [0.d0], &
+                        1, nomres(1), valres(1), codret(1), 1)
             if (codret(1) .ne. 0) then
                 valres(1) = 0.d0
             end if
             biotm = valres(1)
-            call rcvalb(fami, kpg, ksp, &
-                        '+', imate, ' ', 'THM_DIFFU', &
-                        0, ' ', [0.d0], &
-                        1, nomres(1), valres(1), &
-                        codret(1), 1)
+            call rcvalb(fami, kpg, ksp, '+', imate, &
+                        ' ', 'THM_DIFFU', 0, ' ', [0.d0], &
+                        1, nomres(1), valres(1), codret(1), 1)
             if (codret(1) .ne. 0) then
                 valres(1) = 0.d0
             end if
             biotp = valres(1)
             nomres(1) = 'E'
             nomres(2) = 'NU'
-            call rcvalb(fami, kpg, ksp, &
-                        '-', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        2, nomres, valres, &
-                        codret, 1)
+            call rcvalb(fami, kpg, ksp, '-', imate, &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
+                        2, nomres, valres, codret, 1)
             if (codret(1) .ne. 0) then
                 valres(1) = 0.d0
             end if
@@ -1298,11 +1294,9 @@ contains
             end if
             em = valres(1)
             num = valres(2)
-            call rcvalb(fami, kpg, ksp, &
-                        '+', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        2, nomres, valres, &
-                        codret, 1)
+            call rcvalb(fami, kpg, ksp, '+', imate, &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
+                        2, nomres, valres, codret, 1)
             if (codret(1) .ne. 0) then
                 valres(1) = 0.d0
             end if
@@ -1314,10 +1308,11 @@ contains
             troikp = ep/(1.d0-2.d0*nup)
             troikm = em/(1.d0-2.d0*num)
             do i_dim = 1, 3
-                BEHesva%epsi_varc(i_dim) = BEHesva%epsi_varc(i_dim)+biotm/troikm*BEHesva%ptot_prev
-                BEHesva%depsi_varc(i_dim) = BEHesva%depsi_varc(i_dim)+ &
-                                            biotp/troikp*BEHesva%ptot_curr- &
-                                            biotm/troikm*BEHesva%ptot_prev
+                BEHesva%epsi_varc(i_dim) = BEHesva%epsi_varc(i_dim &
+                                                             )+biotm/troikm*BEHesva%ptot_prev
+                BEHesva%depsi_varc(i_dim) = BEHesva%depsi_varc(i_dim &
+                                            )+biotp/troikp*BEHesva%ptot_curr-biotm/troikm*BEHes&
+                                            &va%ptot_prev
             end do
         end if
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -1342,7 +1337,8 @@ contains
 !                        Out : increment of mechanical strains during current step time
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine computeStrainMeca(l_pred, l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
+    subroutine computeStrainMeca(l_pred, l_czm, l_grad_vari, neps, BEHesva, &
+                                 epsm, deps)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         aster_logical, intent(in) :: l_pred, l_czm, l_grad_vari
@@ -1352,12 +1348,12 @@ contains
 ! - Local
         real(kind=8) :: stran(12), dstran(12)
         integer :: nepu
-
+!
 !   ------------------------------------------------------------------------------------------------
-
+!
         dstran(1:neps) = 0.d0
         stran(1:neps) = 0.d0
-
+!
         if ((neps .eq. 6) .or. (neps .eq. 4)) then
             dstran(1:neps) = deps(1:neps)-BEHesva%depsi_varc(1:neps)
             stran(1:neps) = epsm(1:neps)-BEHesva%epsi_varc(1:neps)
@@ -1392,7 +1388,7 @@ contains
             epsm(1:neps) = stran(1:neps)
             deps(1:neps) = dstran(1:neps)
         end if
-
+!
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  Prepare strains for integration: ', &
                 neps, epsm(1:neps), deps(1:neps)
@@ -1453,10 +1449,10 @@ contains
         if (nint(carcri(EXTE_TYPE)) .eq. 1) then
 !       MFront official
             l_mfront = ASTER_TRUE
-        elseif (nint(carcri(EXTE_TYPE)) .eq. 2) then
+        else if (nint(carcri(EXTE_TYPE)) .eq. 2) then
 !       MFront proto
             l_mfront = ASTER_TRUE
-        elseif (nint(carcri(EXTE_TYPE)) .eq. 4) then
+        else if (nint(carcri(EXTE_TYPE)) .eq. 4) then
             l_umat = ASTER_TRUE
         end if
 !   ------------------------------------------------------------------------------------------------
@@ -1476,10 +1472,8 @@ contains
 ! Out codret           : return code when integrate behaviour
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine behaviourOption(option, compor, &
-                               lMatr, lVect, &
-                               lVari, lSigm, &
-                               codret_)
+    subroutine behaviourOption(option, compor, lMatr, lVect, lVari, &
+                               lSigm, codret_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=16), intent(in) :: option, compor(*)

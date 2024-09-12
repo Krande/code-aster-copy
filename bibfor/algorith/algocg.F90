@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,6 +112,7 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass, &
     real(kind=8) :: ninf, ninfpc, alpha, epsi
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -255,8 +256,11 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass, &
 !
     call jeveuo(ddelt(1:19)//'.VALE', 'L', vr=vddelt)
     call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
-    call daxpy(neq, -alpha, vddelt, 1, ddepc, &
-               1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -alpha, vddelt, b_incx, ddepc, &
+               b_incy)
 !
 ! --- ON VERIFIE SI L'ETAT DE CONTACT A CHANGE (ON NE CONJUGUE PAS)
 !
@@ -276,9 +280,18 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass, &
 !
 ! --- MISE A JOUR DES GRADIENTS ET DES DIRECTIONS DE RECHERCHE
 !
-    call dcopy(nbliai, zr(jsgrap), 1, zr(jsgram), 1)
-    call dcopy(nbliai, zr(jsgprp), 1, zr(jsgprm), 1)
-    call dcopy(nbliai, zr(jmu), 1, zr(jmum), 1)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jsgrap), b_incx, zr(jsgram), b_incy)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jsgprp), b_incx, zr(jsgprm), b_incy)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jmu), b_incx, zr(jmum), b_incy)
 !
 ! --- ON PASSE A L'ITERATION SUIVANTE
 !

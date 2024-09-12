@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pmconv(r, rini, r1, inst, sigp, &
                   coef, iter, indimp, ds_conv, conver, &
                   itemax)
@@ -66,15 +66,15 @@ subroutine pmconv(r, rini, r1, inst, sigp, &
     real(kind=8) :: r8b(12)
     real(kind=8) :: ee, e1, e2, toler, e1ini, e2ini, er1, eini
     aster_logical :: l_rela
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
 !
 ! - Get parameters
 !
-    call GetResi(ds_conv, type='RESI_GLOB_RELA', user_para_=resi_glob_rela, &
-                 l_resi_test_=l_rela)
+    call GetResi(ds_conv, type='RESI_GLOB_RELA', user_para_=resi_glob_rela, l_resi_test_=l_rela)
     call GetResi(ds_conv, type='RESI_GLOB_MAXI', user_para_=resi_glob_maxi)
-
+!
 !-----------------------------------------------------------------------
 !     VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
 !-----------------------------------------------------------------------
@@ -87,9 +87,15 @@ subroutine pmconv(r, rini, r1, inst, sigp, &
     itemax = .false.
     if (iter .eq. 1) then
 !        SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
-        call dcopy(6, sigp, 1, r1(1), 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigp, b_incx, r1(1), b_incy)
         call dscal(6, 1.d0/coef, r1(1), 1)
-        call dcopy(6, r(7), 1, r1(7), 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, r(7), b_incx, r1(7), b_incy)
         do i = 1, 12
             er1 = max(er1, abs(r1(i)))
         end do
@@ -150,7 +156,7 @@ subroutine pmconv(r, rini, r1, inst, sigp, &
     end if
 999 continue
 !
-    call pmimpr(ind, inst, indimp, r8b, &
-                iter, r8b, r8b, r8b, 1, &
-                r8b, ee, eini)
+    call pmimpr(ind, inst, indimp, r8b, iter, &
+                r8b, r8b, r8b, 1, r8b, &
+                ee, eini)
 end subroutine

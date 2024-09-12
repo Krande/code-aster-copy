@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -159,6 +159,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi, &
 !     ..
 !     .. LOCAL ARRAYS ..
     real(kind=8) :: v(3), work(1)
+    blas_int :: b_incx, b_incy, b_n
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -312,7 +313,12 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi, &
 !           SUBMATRIX. NR IS THE ORDER OF G.
 !
             nr = min(3, i-k+1)
-            if (k .gt. m) call dcopy(nr, h(k, k-1), 1, v, 1)
+            if (k .gt. m) then
+                b_n = to_blas_int(nr)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, h(k, k-1), b_incx, v, b_incy)
+            end if
             call ar_dlarfg(nr, v(1), v(2), 1, t1)
             if (k .gt. m) then
                 h(k, k-1) = v(1)

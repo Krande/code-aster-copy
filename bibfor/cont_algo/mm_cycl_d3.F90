@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine mm_cycl_d3(ds_contact, i_cont_poin, &
-                      indi_frot_prev, dist_frot_prev, &
-                      indi_cont_eval, indi_frot_eval, &
-                      dist_frot_curr)
+!
+subroutine mm_cycl_d3(ds_contact, i_cont_poin, indi_frot_prev, dist_frot_prev, indi_cont_eval, &
+                      indi_frot_eval, dist_frot_curr)
 !
     use NonLin_Datastructure_type
 !
@@ -70,6 +68,7 @@ subroutine mm_cycl_d3(ds_contact, i_cont_poin, &
     real(kind=8) :: module_prev, module_curr
     real(kind=8) :: angle, prosca, val, tole_angl
     integer :: cycl_type, cycl_ecod, cycl_long, cycl_stat, cycl_long_acti
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,9 +94,7 @@ subroutine mm_cycl_d3(ds_contact, i_cont_poin, &
 !
 ! - Cycling break if: no contact, sticking or previous state was sticking
 !
-    if ((indi_cont_eval .eq. 0) .or. &
-        (indi_frot_eval .eq. 1) .or. &
-        (indi_frot_prev .eq. 1)) then
+    if ((indi_cont_eval .eq. 0) .or. (indi_frot_eval .eq. 1) .or. (indi_frot_prev .eq. 1)) then
         goto 99
     end if
 !
@@ -113,13 +110,18 @@ subroutine mm_cycl_d3(ds_contact, i_cont_poin, &
 !
 ! - Cycling detection
 !
-    prosca = ddot(3, dist_frot_prev, 1, dist_frot_curr, 1)
-    module_curr = sqrt(dist_frot_curr(1)*dist_frot_curr(1)+ &
-                       dist_frot_curr(2)*dist_frot_curr(2)+ &
-                       dist_frot_curr(3)*dist_frot_curr(3))
-    module_prev = sqrt(dist_frot_prev(1)*dist_frot_prev(1)+ &
-                       dist_frot_prev(2)*dist_frot_prev(2)+ &
-                       dist_frot_prev(3)*dist_frot_prev(3))
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    prosca = ddot(b_n, dist_frot_prev, b_incx, dist_frot_curr, b_incy)
+    module_curr = sqrt( &
+                  dist_frot_curr(1)*dist_frot_curr(1)+dist_frot_curr(2)*dist_frot_curr(2)+dist_&
+                  &frot_curr(3)*dist_frot_curr(3) &
+                  )
+    module_prev = sqrt( &
+                  dist_frot_prev(1)*dist_frot_prev(1)+dist_frot_prev(2)*dist_frot_prev(2)+dist_&
+                  &frot_prev(3)*dist_frot_prev(3) &
+                  )
     angle = 0.d0
     if ((module_prev*module_curr) .gt. r8prem()) then
         val = prosca/(module_prev*module_curr)
@@ -139,14 +141,14 @@ subroutine mm_cycl_d3(ds_contact, i_cont_poin, &
     if ((abs(angle) .ge. 180.-tole_angl) .and. (abs(angle) .le. 180.d0+tole_angl)) then
         cycl_stat = 10
         if (module_curr .lt. 1.d-6 .and. module_prev .lt. 1.d-6) cycl_stat = 11
-
+!
         if ((module_curr .lt. 1.d-6 .and. module_prev .gt. 1.d-6) .or. &
             (module_curr .gt. 1.d-6 .and. module_prev .lt. 1.d-6)) cycl_stat = 12
-
+!
         if (module_curr .gt. 1.d-6 .and. module_prev .gt. 1.d-6) cycl_stat = 13
-
+!
     end if
-
+!
 !
 ! - Cycling save : incrementation of cycle objects
 !

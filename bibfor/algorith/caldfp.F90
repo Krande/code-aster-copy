@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caldfp(msns, gamsns, dfpmdg, iret)
     implicit none
 !
@@ -46,6 +46,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
     real(kind=8) :: dfpdg(3, 3), dfpmdf(3, 3, 3, 3), amax, amin, bmax, bmin
     real(kind=8) :: a(3, 3), am(3, 3), amt(3, 3), deta, coef2
     real(kind=8) :: b(3, 3), bm(3, 3), bmt(3, 3), detb
+    blas_int :: b_incx, b_incy, b_n
     data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !     ----------------------------------------------------------------
 !
@@ -56,9 +57,16 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
 !        calcul de dFp/dGamma suivant ANNAND 1996
 !
-        call dcopy(9, gamsns, 1, a, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, gamsns, b_incx, a, b_incy)
 !
-        call daxpy(9, 1.d0, id, 1, a, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, id, b_incx, a, &
+                   b_incy)
 !
 !        TEST ANALOGUE A SIMO_MIEHE NMGPFI
         amax = 0.d0
@@ -85,15 +93,25 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         call matinv('S', 3, a, am, det2)
         amt = transpose(am)
 !
-        ddetdg = ddot(9, amt, 1, msns, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ddetdg = ddot(b_n, amt, b_incx, msns, b_incy)
 !
         call dscal(9, ddetdg, a, 1)
 !
-        call dcopy(9, a, 1, dfpdg, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, a, b_incx, dfpdg, b_incy)
 !
         call dscal(9, -1.d0/3.d0, dfpdg, 1)
 !
-        call daxpy(9, 1.d0, msns, 1, dfpdg, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, msns, b_incx, dfpdg, &
+                   b_incy)
 !
         call dscal(9, coef, dfpdg, 1)
 !
@@ -128,9 +146,16 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !        calcul de dFp/dGamma par linearisation directe
 !        de exp(-dgamma.ms x ns)
 !
-        call dcopy(9, gamsns, 1, b, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, gamsns, b_incx, b, b_incy)
         call dscal(9, -1.d0, b, 1)
-        call daxpy(9, 1.d0, id, 1, b, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, id, b_incx, b, &
+                   b_incy)
 !
         bmax = 0.d0
         bmin = 100.d0
@@ -157,15 +182,25 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
         bmt = transpose(bm)
 !
-        ddetdg = ddot(9, bmt, 1, msns, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ddetdg = ddot(b_n, bmt, b_incx, msns, b_incy)
 !
         call dscal(9, ddetdg, b, 1)
 !
-        call dcopy(9, b, 1, dfpmdg, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, b, b_incx, dfpmdg, b_incy)
 !
         call dscal(9, -1.d0/3.d0, dfpmdg, 1)
 !
-        call daxpy(9, 1.d0, msns, 1, dfpmdg, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, msns, b_incx, dfpmdg, &
+                   b_incy)
 !
         call dscal(9, -coef, dfpmdg, 1)
 !

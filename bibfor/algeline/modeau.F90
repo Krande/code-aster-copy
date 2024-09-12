@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine modeau(melflu, noma, geom, fsvr, base, &
                   freqi, nbm, nuor, vicoq, torco, &
                   tcoef, amor, masg, fact, amfr, &
@@ -96,6 +96,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base, &
     integer :: lmasg, nbm2, nbnoe, neq, nitqr, numod
     real(kind=8) :: cf0, ck, fi, fim, fk, fre, omegai
     real(kind=8) :: pi, rmax, rtamp, s0, tole, u0
+    blas_int :: b_incx, b_incy, b_n
 !
 !-----------------------------------------------------------------------
     data iddl/1, 2, 3, 4, 5, 6/
@@ -292,14 +293,29 @@ subroutine modeau(melflu, noma, geom, fsvr, base, &
         amfr(imod, 2) = omegai/(2.d0*pi)
 !-------MASSES MODALES
         call pmavec('ZERO', nbm, zr(imatm), vecpr(1, imod), zr(ivec))
-        masg(imod) = ddot(nbm, vecpr(1, imod), 1, zr(ivec), 1)
+        b_n = to_blas_int(nbm)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        masg(imod) = ddot(b_n, vecpr(1, imod), b_incx, zr(ivec), b_incy)
 !-------FACTEURS DE PARTICIPATION
-        fact(3*(imod-1)+1) = ddot(nbm, zr(ivec), 1, zr(ifact), 1)
-        fact(3*(imod-1)+2) = ddot(nbm, zr(ivec), 1, zr(ifact+nbm), 1)
-        fact(3*(imod-1)+3) = ddot(nbm, zr(ivec), 1, zr(ifact+2*nbm), 1)
+        b_n = to_blas_int(nbm)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        fact(3*(imod-1)+1) = ddot(b_n, zr(ivec), b_incx, zr(ifact), b_incy)
+        b_n = to_blas_int(nbm)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        fact(3*(imod-1)+2) = ddot(b_n, zr(ivec), b_incx, zr(ifact+nbm), b_incy)
+        b_n = to_blas_int(nbm)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        fact(3*(imod-1)+3) = ddot(b_n, zr(ivec), b_incx, zr(ifact+2*nbm), b_incy)
 !-------MASSES MODALES AJOUTEES PAR LE FLUIDE
         call pmavec('ZERO', nbm, zr(imat2), vecpr(1, imod), zr(ivec))
-        maj(imod) = ddot(nbm, vecpr(1, imod), 1, zr(ivec), 1)
+        b_n = to_blas_int(nbm)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        maj(imod) = ddot(b_n, vecpr(1, imod), b_incx, zr(ivec), b_incy)
 !-------AMORTISSEMENTS MODAUX
         amfr(imod, 1) = 0.d0
         do kmod = 1, nbm

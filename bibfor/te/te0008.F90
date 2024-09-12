@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0008(option, nomte)
 !
 !
@@ -56,11 +56,12 @@ subroutine te0008(option, nomte)
     integer :: igeom, ivectu
     integer :: idepl, icomp, icontm
     integer :: i, j, iretd, iretc, nbinco
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS
 !
@@ -80,14 +81,21 @@ subroutine te0008(option, nomte)
 ! --- PARAMETRE EN ENTREE: GEROMETRIE
 !
     call jevech('PGEOMER', 'L', igeom)
-    call dcopy(nbinco, zr(igeom), 1, geo, 1)
+    b_n = to_blas_int(nbinco)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(igeom), b_incx, geo, b_incy)
 !
     if (option .eq. 'FORC_NODA') then
         call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
         call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icomp)
         if ((iretd .eq. 0) .and. (iretc .eq. 0)) then
             if (zk16(icomp+2) (1:6) .ne. 'PETIT ') then
-                call daxpy(nbinco, 1.d0, zr(idepl), 1, geo, 1)
+                b_n = to_blas_int(nbinco)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, 1.d0, zr(idepl), b_incx, geo, &
+                           b_incy)
             end if
         end if
 !
@@ -103,7 +111,10 @@ subroutine te0008(option, nomte)
 !
 ! ----- AFFECTATION DU VECTEUR EN SORTIE
 !
-        call dcopy(nbinco, bsigm, 1, zr(ivectu), 1)
+        b_n = to_blas_int(nbinco)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, bsigm, b_incx, zr(ivectu), b_incy)
 !
     else if (option .eq. 'REFE_FORC_NODA') then
 !
@@ -127,7 +138,11 @@ subroutine te0008(option, nomte)
 !
         end do
 !
-        call daxpy(nbinco, 1.d0/npg1, ftemp, 1, zr(ivectu), 1)
+        b_n = to_blas_int(nbinco)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0/npg1, ftemp, b_incx, zr(ivectu), &
+                   b_incy)
 !
     end if
 !

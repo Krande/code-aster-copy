@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine pielas(BEHinteg, &
-                  ndim, npg, kpg, compor, typmod, &
-                  mate, lgpg, vim, epsm, &
+!
+subroutine pielas(BEHinteg, ndim, npg, kpg, compor, &
+                  typmod, mate, lgpg, vim, epsm, &
                   epsp, epsd, sigma, etamin, etamax, &
                   tau, copilo)
-
+!
     use Behaviour_type
-
-    use endo_loca_module, only: &
-        ELE_law => CONSTITUTIVE_LAW, &
-        ELE_Init => Init, &
-        ELE_PathFollowing => PathFollowing
-
+!
+    use endo_loca_module, only: ELE_law => CONSTITUTIVE_LAW, ELE_Init => Init, ELE_PathFollowing => PathFollowing
+!
 !
     implicit none
 !
@@ -80,14 +76,15 @@ subroutine pielas(BEHinteg, &
 ! IN  TAU    : 2ND MEMBRE DE L'EQUATION F(ETA)=TAU
 ! OUT COPILO : COEFFICIENTS A0 ET A1 POUR CHAQUE POINT DE GAUSS
 ! ---------------------------------------------------------------------
-    integer      :: ndimsi, nsol, sgn(2)
+    integer :: ndimsi, nsol, sgn(2)
     real(kind=8) :: sol(2), eps0(2*ndim), eps1(2*ndim)
-    type(ELE_LAW):: ELE_ldc
-    character(len=16):: option
+    type(ELE_LAW) :: ELE_ldc
+    character(len=16) :: option
+    blas_int :: b_incx, b_incy, b_n
 ! ---------------------------------------------------------------------
-
+!
 ! --- INITIALISATIONS
-
+!
     ndimsi = 2*ndim
     option = 'PILO_PRED_ELAS'
 !
@@ -99,8 +96,11 @@ subroutine pielas(BEHinteg, &
                     copilo(2, kpg), copilo(3, kpg), copilo(4, kpg), copilo(5, kpg))
 !
     else if (compor(1) .eq. 'ENDO_ISOT_BETON') then
-        call daxpy(ndimsi, 1.d0, epsm, 1, epsp, &
-                   1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, epsm, b_incx, epsp, &
+                   b_incy)
 !
         if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) then
             call utmess('F', 'MECANONLINE_60', sk=compor(1))
@@ -111,17 +111,17 @@ subroutine pielas(BEHinteg, &
                     copilo(1, kpg), copilo(2, kpg), copilo(3, kpg), copilo(4, kpg), &
                     copilo(5, kpg))
 !
-
+!
     else if (compor(1) .eq. 'ENDO_LOCA_EXP') then
-
+!
         eps0 = epsm(1:ndimsi)+epsp(1:ndimsi)
         eps1 = epsd(1:ndimsi)
-
+!
         ELE_ldc = ELE_Init(ndimsi, option, 'NONE', kpg, 1, mate, 100, 0.d0, 0.d0)
-        call ELE_PathFollowing(ELE_ldc, vim(1, kpg)+tau, eps0, eps1, etamin, etamax, &
-                               1.d-6, nsol, sol, sgn)
+        call ELE_PathFollowing(ELE_ldc, vim(1, kpg)+tau, eps0, eps1, etamin, &
+                               etamax, 1.d-6, nsol, sol, sgn)
         if (ELE_ldc%exception .ne. 0) call utmess('F', 'PILOTAGE_83')
-
+!
         if (nsol .eq. 0) then
             copilo(5, kpg) = 0.d0
         else if (nsol .eq. 1) then
@@ -133,10 +133,13 @@ subroutine pielas(BEHinteg, &
             copilo(3, kpg) = tau-sgn(2)*sol(2)
             copilo(4, kpg) = sgn(2)
         end if
-
+!
     else if (compor(1) .eq. 'ENDO_ORTH_BETON') then
-        call daxpy(ndimsi, 1.d0, epsm, 1, epsp, &
-                   1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, epsm, b_incx, epsp, &
+                   b_incy)
 !
         if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) then
             call utmess('F', 'MECANONLINE_60', sk=compor(1))
@@ -147,13 +150,15 @@ subroutine pielas(BEHinteg, &
                     copilo(1, kpg), copilo(2, kpg), copilo(3, kpg), copilo(4, kpg), &
                     copilo(5, kpg))
     else if (compor(1) .eq. 'BETON_DOUBLE_DP') then
-        call daxpy(ndimsi, 1.d0, epsm, 1, epsp, &
-                   1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, epsm, b_incx, epsp, &
+                   b_incy)
 !
-        call pipedp(BEHinteg, &
-                    kpg, 1, ndim, typmod, mate, &
-                    epsm, sigma, vim(1, kpg), epsp, epsd, &
-                    copilo(1, kpg), copilo(2, kpg))
+        call pipedp(BEHinteg, kpg, 1, ndim, typmod, &
+                    mate, epsm, sigma, vim(1, kpg), epsp, &
+                    epsd, copilo(1, kpg), copilo(2, kpg))
 !
     else
         call utmess('F', 'PILOTAGE_88', sk=compor(1))

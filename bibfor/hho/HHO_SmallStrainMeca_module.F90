@@ -64,39 +64,39 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
-                                    fami, typmod, imate, compor, option, carcri, lgpg, ncomp, &
-                                    time_prev, time_curr, depl_prev, depl_incr, &
-                                    sigm, vim, angmas, mult_comp, &
+    subroutine hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, fami, &
+                                    typmod, imate, compor, option, carcri, &
+                                    lgpg, ncomp, time_prev, time_curr, depl_prev, &
+                                    depl_incr, sigm, vim, angmas, mult_comp, &
                                     lhs, rhs, sigp, vip, codret)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)      :: hhoCell
-        type(HHO_Data), intent(in)      :: hhoData
-        type(HHO_Quadrature), intent(in):: hhoQuadCellRigi
-        real(kind=8), intent(in)        :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
-        character(len=*), intent(in)    :: fami
-        character(len=8), intent(in)    :: typmod(*)
-        integer, intent(in)             :: imate
-        character(len=16), intent(in)   :: compor(*)
-        character(len=16), intent(in)   :: option
-        real(kind=8), intent(in)        :: carcri(*)
-        integer, intent(in)             :: lgpg
-        integer, intent(in)             :: ncomp
-        real(kind=8), intent(in)        :: time_prev
-        real(kind=8), intent(in)        :: time_curr
-        real(kind=8), intent(in)        :: depl_prev(MSIZE_TDOFS_VEC)
-        real(kind=8), intent(in)        :: depl_incr(MSIZE_TDOFS_VEC)
-        real(kind=8), intent(in)        :: sigm(ncomp, *)
-        real(kind=8), intent(in)        :: vim(lgpg, *)
-        real(kind=8), intent(in)        :: angmas(*)
-        character(len=16), intent(in)   :: mult_comp
-        real(kind=8), intent(inout)     :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
-        real(kind=8), intent(inout)     :: rhs(MSIZE_TDOFS_VEC)
-        real(kind=8), intent(inout)     :: sigp(ncomp, *)
-        real(kind=8), intent(inout)     :: vip(lgpg, *)
-        integer, intent(inout)          :: codret
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
+        real(kind=8), intent(in) :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        character(len=*), intent(in) :: fami
+        character(len=8), intent(in) :: typmod(*)
+        integer, intent(in) :: imate
+        character(len=16), intent(in) :: compor(*)
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(in) :: carcri(*)
+        integer, intent(in) :: lgpg
+        integer, intent(in) :: ncomp
+        real(kind=8), intent(in) :: time_prev
+        real(kind=8), intent(in) :: time_curr
+        real(kind=8), intent(in) :: depl_prev(MSIZE_TDOFS_VEC)
+        real(kind=8), intent(in) :: depl_incr(MSIZE_TDOFS_VEC)
+        real(kind=8), intent(in) :: sigm(ncomp, *)
+        real(kind=8), intent(in) :: vim(lgpg, *)
+        real(kind=8), intent(in) :: angmas(*)
+        character(len=16), intent(in) :: mult_comp
+        real(kind=8), intent(inout) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        real(kind=8), intent(inout) :: rhs(MSIZE_TDOFS_VEC)
+        real(kind=8), intent(inout) :: sigp(ncomp, *)
+        real(kind=8), intent(inout) :: vip(lgpg, *)
+        integer, intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -137,14 +137,15 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT), bT(MSIZE_CELL_MAT)
         real(kind=8) :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
-        integer:: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
+        integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
         integer :: cod(27)
         aster_logical :: l_lhs, l_rhs
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
 ! ------ number of dofs
-        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+                           gbs, gbs_sym)
         faces_dofs = total_dofs-cbs
         gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
 !
@@ -166,12 +167,14 @@ contains
         call hhoBasisCell%initialize(hhoCell)
 !
 ! ----- compute E_prev = gradrec_sym * depl_prev
-        call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                   depl_prev, 1, 0.d0, E_prev_coeff, 1)
+        call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, &
+                   MSIZE_CELL_MAT, depl_prev, 1, 0.d0, E_prev_coeff, &
+                   1)
 !
 ! ----- compute E_incr = gradrec_sym * depl_incr
-        call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                   depl_incr, 1, 0.d0, E_incr_coeff, 1)
+        call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, &
+                   MSIZE_CELL_MAT, depl_incr, 1, 0.d0, E_incr_coeff, &
+                   1)
 !
 ! ----- Loop on quadrature point
 !
@@ -183,11 +186,15 @@ contains
             call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
 ! --------- Eval deformations
-            E_prev = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
-                                       coorpg(1:3), E_prev_coeff, gbs_sym)
+            E_prev = hhoEvalSymMatCell( &
+                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), E_prev_coeff, &
+                     gbs_sym &
+                     )
 !
-            E_incr = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
-                                       coorpg(1:3), E_incr_coeff, gbs_sym)
+            E_incr = hhoEvalSymMatCell( &
+                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), E_incr_coeff, &
+                     gbs_sym &
+                     )
 !
 ! -------- tranform sigm in symmetric form
 !
@@ -195,12 +202,11 @@ contains
 !
 ! --------- Compute behaviour
 !
-            call nmcomp(BEHinteg, &
-                        fami, ipg, 1, hhoCell%ndim, typmod, &
-                        imate, compor, carcri, time_prev, time_curr, &
-                        6, E_prev, E_incr, 6, Cauchy_prev, &
-                        vim(1, ipg), option, angmas, &
-                        Cauchy_curr, vip(1, ipg), 36, dsidep, cod(ipg), mult_comp)
+            call nmcomp(BEHinteg, fami, ipg, 1, hhoCell%ndim, &
+                        typmod, imate, compor, carcri, time_prev, &
+                        time_curr, 6, E_prev, E_incr, 6, &
+                        Cauchy_prev, vim(1, ipg), option, angmas, Cauchy_curr, &
+                        vip(1, ipg), 36, dsidep, cod(ipg), mult_comp)
 !
             if (cod(ipg) .eq. 1) then
                 goto 999
@@ -216,16 +222,18 @@ contains
                 call tranfoSymToMat(hhoCell%ndim, Cauchy_curr, sigp(1:ncomp, ipg))
             end if
 !
-            if (l_rhs) call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
+            if (l_rhs) call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, &
+                                               bT)
 !
-            if (l_lhs) call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, &
-                                               gbs_sym, gbs_cmp, AT)
+            if (l_lhs) call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, gbs_sym, &
+                                               gbs_cmp, AT)
         end do
 !
 ! ----- compute rhs += Gradrec**T * bT
         if (l_rhs) then
-            call dgemv('T', gbs_sym, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                       bT, 1, 1.d0, rhs, 1)
+            call dgemv('T', gbs_sym, total_dofs, 1.d0, gradrec, &
+                       MSIZE_CELL_MAT, bT, 1, 1.d0, rhs, &
+                       1)
         end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
@@ -234,18 +242,20 @@ contains
 ! ----- Copy symetric part of AT
             call hhoCopySymPartMat('U', AT, gbs_sym)
 ! ----- step1: TMP = AT * gradrec
-            call dgemm('N', 'N', gbs_sym, total_dofs, gbs_sym, 1.d0, AT, MSIZE_CELL_MAT, &
-                       gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
+            call dgemm('N', 'N', gbs_sym, total_dofs, gbs_sym, &
+                       1.d0, AT, MSIZE_CELL_MAT, gradrec, MSIZE_CELL_MAT, &
+                       0.d0, TMP, MSIZE_CELL_MAT)
 !
 ! ----- step2: lhs += gradrec**T * TMP
-            call dgemm('T', 'N', total_dofs, total_dofs, gbs_sym, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                       TMP, MSIZE_CELL_MAT, 1.d0, lhs, MSIZE_TDOFS_VEC)
+            call dgemm('T', 'N', total_dofs, total_dofs, gbs_sym, &
+                       1.d0, gradrec, MSIZE_CELL_MAT, TMP, MSIZE_CELL_MAT, &
+                       1.d0, lhs, MSIZE_TDOFS_VEC)
         end if
 !
-        ! print*, "AT", hhoNorm2Mat(AT(1:gbs_sym,1:gbs_sym))
-        ! print*, "bT", norm2(bT)
-        ! print*, "KT", hhoNorm2Mat(lhs(1:total_dofs,1:total_dofs))
-        ! print*, "fT", norm2(rhs)
+! print*, "AT", hhoNorm2Mat(AT(1:gbs_sym,1:gbs_sym))
+! print*, "bT", norm2(bT)
+! print*, "KT", hhoNorm2Mat(lhs(1:total_dofs,1:total_dofs))
+! print*, "fT", norm2(rhs)
 !
 999     continue
 !
@@ -259,21 +269,21 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
-                               fami, imate, option, time_curr, angmas, lhs)
+    subroutine hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, fami, &
+                               imate, option, time_curr, angmas, lhs)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)      :: hhoCell
-        type(HHO_Data), intent(in)      :: hhoData
-        type(HHO_Quadrature), intent(in):: hhoQuadCellRigi
-        real(kind=8), intent(in)        :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
-        character(len=*), intent(in)    :: fami
-        integer, intent(in)             :: imate
-        character(len=16), intent(in)   :: option
-        real(kind=8), intent(in)        :: time_curr
-        real(kind=8), intent(in)        :: angmas(*)
-        real(kind=8), intent(inout)     :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
+        real(kind=8), intent(in) :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: imate
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(in) :: time_curr
+        real(kind=8), intent(in) :: angmas(*)
+        real(kind=8), intent(inout) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -298,11 +308,12 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
         real(kind=8) :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
-        integer:: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
+        integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
 ! --------------------------------------------------------------------------------------------------
 !
 ! ------ number of dofs
-        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+                           gbs, gbs_sym)
         faces_dofs = total_dofs-cbs
         gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
 !
@@ -327,10 +338,12 @@ contains
 !
 ! --------- Compute behaviour
 !
-            call dmatmc(fami, imate, time_curr, '+', ipg, 1, angmas, nb_sig, dsidep)
+            call dmatmc(fami, imate, time_curr, '+', ipg, &
+                        1, angmas, nb_sig, dsidep)
             call tranfoTensToSym(nb_sig, dsidep, dsidep3D)
 !
-            call hhoComputeLhsSmall(hhoCell, dsidep3D, weight, BSCEval, gbs_sym, gbs_cmp, AT)
+            call hhoComputeLhsSmall(hhoCell, dsidep3D, weight, BSCEval, gbs_sym, &
+                                    gbs_cmp, AT)
         end do
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
@@ -338,12 +351,14 @@ contains
 ! ----- Copy symetric part of AT
         call hhoCopySymPartMat('U', AT, gbs_sym)
 ! ----- step1: TMP = AT * gradrec
-        call dgemm('N', 'N', gbs_sym, total_dofs, total_dofs, 1.d0, AT, MSIZE_CELL_MAT, &
-                   gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
+        call dgemm('N', 'N', gbs_sym, total_dofs, total_dofs, &
+                   1.d0, AT, MSIZE_CELL_MAT, gradrec, MSIZE_CELL_MAT, &
+                   0.d0, TMP, MSIZE_CELL_MAT)
 !
 ! ----- step2: lhs += gradrec**T * TMP
-        call dgemm('T', 'N', total_dofs, total_dofs, gbs_sym, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                   TMP, MSIZE_CELL_MAT, 1.d0, lhs, MSIZE_TDOFS_VEC)
+        call dgemm('T', 'N', total_dofs, total_dofs, gbs_sym, &
+                   1.d0, gradrec, MSIZE_CELL_MAT, TMP, MSIZE_CELL_MAT, &
+                   1.d0, lhs, MSIZE_TDOFS_VEC)
 !
     end subroutine
 !
@@ -351,16 +366,17 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeRhsSmall(hhoCell, stress, weight, BSCEval, gbs_cmp, bT)
+    subroutine hhoComputeRhsSmall(hhoCell, stress, weight, BSCEval, gbs_cmp, &
+                                  bT)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)      :: hhoCell
-        real(kind=8), intent(in)        :: stress(6)
-        real(kind=8), intent(in)        :: weight
-        real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
-        integer, intent(in)             :: gbs_cmp
-        real(kind=8), intent(inout)     :: bT(MSIZE_CELL_MAT)
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: stress(6)
+        real(kind=8), intent(in) :: weight
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer, intent(in) :: gbs_cmp
+        real(kind=8), intent(inout) :: bT(MSIZE_CELL_MAT)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -375,7 +391,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_stress(6)
-        integer:: i, deca
+        integer :: i, deca
+        blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
         qp_stress = weight*stress
@@ -383,7 +400,11 @@ contains
 ! -------- (RAPPEL: the composents of the gradient are saved by G11, G22, G33, G12, G13, G23)
         deca = 0
         do i = 1, hhoCell%ndim
-            call daxpy(gbs_cmp, qp_stress(i), BSCEval, 1, bT(deca+1), 1)
+            b_n = to_blas_int(gbs_cmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, qp_stress(i), BSCEval, b_incx, bT(deca+1), &
+                       b_incy)
             deca = deca+gbs_cmp
         end do
 !
@@ -391,11 +412,19 @@ contains
         select case (hhoCell%ndim)
         case (3)
             do i = 1, 3
-                call daxpy(gbs_cmp, qp_stress(3+i), BSCEval, 1, bT(deca+1), 1)
+                b_n = to_blas_int(gbs_cmp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, qp_stress(3+i), BSCEval, b_incx, bT(deca+1), &
+                           b_incy)
                 deca = deca+gbs_cmp
             end do
         case (2)
-            call daxpy(gbs_cmp, qp_stress(4), BSCEval, 1, bT(deca+1), 1)
+            b_n = to_blas_int(gbs_cmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, qp_stress(4), BSCEval, b_incx, bT(deca+1), &
+                       b_incy)
             deca = deca+gbs_cmp
         case default
             ASSERT(ASTER_FALSE)
@@ -407,17 +436,18 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhsSmall(hhoCell, module_tang, weight, BSCEval, gbs_sym, gbs_cmp, AT)
+    subroutine hhoComputeLhsSmall(hhoCell, module_tang, weight, BSCEval, gbs_sym, &
+                                  gbs_cmp, AT)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)      :: hhoCell
-        real(kind=8), intent(in)        :: module_tang(6, 6)
-        real(kind=8), intent(in)        :: weight
-        real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
-        integer, intent(in)             :: gbs_sym
-        integer, intent(in)             :: gbs_cmp
-        real(kind=8), intent(inout)     :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: module_tang(6, 6)
+        real(kind=8), intent(in) :: weight
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer, intent(in) :: gbs_sym
+        integer, intent(in) :: gbs_cmp
+        real(kind=8), intent(inout) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -433,11 +463,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Cgphi(6, MSIZE_CELL_MAT)
-        integer:: i, j, k, row
+        integer :: i, j, k, row
 ! --------------------------------------------------------------------------------------------------
 !
 ! --------- Eval (C : sgphi)_T
-        call hhoComputeCgphi(hhoCell, module_tang, BSCEval, gbs_cmp, weight, qp_Cgphi)
+        call hhoComputeCgphi(hhoCell, module_tang, BSCEval, gbs_cmp, weight, &
+                             qp_Cgphi)
 !
 ! -------- Compute scalar_product of (C_sgphi(j), sgphi(j))_T
         do j = 1, gbs_sym
@@ -486,16 +517,17 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeCgphi(hhoCell, module_tang, BSCEval, gbs_cmp, weight, Cgphi)
+    subroutine hhoComputeCgphi(hhoCell, module_tang, BSCEval, gbs_cmp, weight, &
+                               Cgphi)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)      :: hhoCell
-        integer, intent(in)             :: gbs_cmp
-        real(kind=8), intent(in)        :: module_tang(6, 6)
-        real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in)        :: weight
-        real(kind=8), intent(out)       :: Cgphi(6, MSIZE_CELL_MAT)
+        type(HHO_Cell), intent(in) :: hhoCell
+        integer, intent(in) :: gbs_cmp
+        real(kind=8), intent(in) :: module_tang(6, 6)
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8), intent(in) :: weight
+        real(kind=8), intent(out) :: Cgphi(6, MSIZE_CELL_MAT)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -511,6 +543,7 @@ contains
 !
         integer :: i, col, k
         real(kind=8) :: qp_C(6, 6)
+        blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
         Cgphi = 0.d0
@@ -521,7 +554,11 @@ contains
         case (3)
             do i = 1, 6
                 do k = 1, gbs_cmp
-                    call daxpy(6, BSCEval(k), qp_C(1, i), 1, Cgphi(1, col), 1)
+                    b_n = to_blas_int(6)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call daxpy(b_n, BSCEval(k), qp_C(1, i), b_incx, Cgphi(1, col), &
+                               b_incy)
                     col = col+1
                 end do
             end do
@@ -554,9 +591,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in)             :: ndim
-        real(kind=8), intent(in)        :: mat(*)
-        real(kind=8), intent(out)       :: mat_sym(6)
+        integer, intent(in) :: ndim
+        real(kind=8), intent(in) :: mat(*)
+        real(kind=8), intent(out) :: mat_sym(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -593,9 +630,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in)             :: ndim
-        real(kind=8), intent(out)       :: mat(*)
-        real(kind=8), intent(in)        :: mat_sym(6)
+        integer, intent(in) :: ndim
+        real(kind=8), intent(out) :: mat(*)
+        real(kind=8), intent(in) :: mat_sym(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -630,9 +667,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in)             :: nb_sig
-        real(kind=8), intent(in)        :: dsidep(nb_sig, nb_sig)
-        real(kind=8), intent(out)       :: dsidep3D(6, 6)
+        integer, intent(in) :: nb_sig
+        real(kind=8), intent(in) :: dsidep(nb_sig, nb_sig)
+        real(kind=8), intent(out) :: dsidep3D(6, 6)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics

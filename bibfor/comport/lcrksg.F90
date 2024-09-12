@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcrksg(rela_comp, nvi, vinf, fd, df, &
                   nmat, coefl, sigi)
     implicit none
@@ -42,6 +42,7 @@ subroutine lcrksg(rela_comp, nvi, vinf, fd, df, &
     real(kind=8) :: vinf(*), fp(3, 3), fpm(3, 3), fe(3, 3), detp, f(3, 3)
     real(kind=8) :: epsgl(6)
     integer :: irr, decirr, nbsyst, decal, gdef, ndi, ndt
+    blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
@@ -59,7 +60,10 @@ subroutine lcrksg(rela_comp, nvi, vinf, fd, df, &
             end if
 !           SPECIFIQUE MONICRISTAL : RECUP DE FP
 !           Attention, NVI represente ici 6+3*NS+9
-            call dcopy(9, vinf(nvi-9+1), 1, fp, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vinf(nvi-9+1), b_incx, fp, b_incy)
             call matinv('S', 3, fp, fpm, detp)
 !
 !           F=FE.FP  => FP = DF.F-.(FP)**-1

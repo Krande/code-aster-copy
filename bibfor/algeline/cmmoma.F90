@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
     character(len=*), intent(in) :: meshOutZ
     integer, intent(in) :: nbNodeIn, nbCellModi
     integer, pointer :: modiCellNume(:), modiCellType(:)
-
+!
 !     OPERATEUR CREA_MAILLAGE   MOT CLE FACTEUR "MODI_MAILLE"
 !     ------------------------------------------------------------------
 !
@@ -49,6 +49,7 @@ subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
     integer, pointer :: connex(:) => null()
     integer, pointer :: typmail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
 !
     meshOut = meshOutZ
@@ -62,7 +63,7 @@ subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
 ! ----- Cell to modify
         cellNume = modiCellNume(iCell)
         cellType = modiCellType(iCell)
-
+!
 ! ----- New type of cell
         if (cellType .eq. MT_TRIA6) then
             cellModiType = MT_TRIA7
@@ -79,7 +80,7 @@ subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
         typmail(cellNume) = cellModiType
 !
         call jeveuo(jexnum(meshOut//'.CONNEX', cellNume), 'E', vi=connex)
-
+!
 ! ----- Add node
         nodeNume = nbNodeIn+iCell
         connex(nodeAddIndx) = nodeNume
@@ -117,7 +118,10 @@ subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
                 theta = 0.d0
             else
                 icoude = 1
-                costet = ddot(3, t13, 1, t32, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                costet = ddot(b_n, t13, b_incx, t32, b_incy)
                 theta = 2.d0*atan2(normen, costet)
             end if
 !
@@ -148,8 +152,8 @@ subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
             vale(3*(nodeNume4-1)+1) = x4(1)
             vale(3*(nodeNume4-1)+2) = x4(2)
             vale(3*(nodeNume4-1)+3) = x4(3)
-
-        elseif (cellType .eq. MT_TRIA6) then
+!
+        else if (cellType .eq. MT_TRIA6) then
             do iDime = 1, 3
                 w = 0.d0
                 w = w+vale(3*(connex(1)-1)+iDime)*(-1.d0/9.d0)
@@ -160,7 +164,7 @@ subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
                 w = w+vale(3*(connex(6)-1)+iDime)*(4.d0/9.d0)
                 vale(3*(nodeNume-1)+iDime) = w
             end do
-        elseif (cellType .eq. MT_QUAD8) then
+        else if (cellType .eq. MT_QUAD8) then
             do iDime = 1, 3
                 w = 0.d0
                 w = w+vale(3*(connex(1)-1)+iDime)*(-1.d0/4.d0)

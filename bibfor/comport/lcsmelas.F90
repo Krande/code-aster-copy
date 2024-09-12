@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lcsmelas(fm, df, dtaudf, &
-                    nmat, materd_, young_, nu_)
+!
+subroutine lcsmelas(fm, df, dtaudf, nmat, materd_, &
+                    young_, nu_)
 !
     implicit none
 !
@@ -47,13 +47,14 @@ subroutine lcsmelas(fm, df, dtaudf, &
     real(kind=8) :: dtaudj, dtaudb
     real(kind=8) :: dvbbtr(6, 6), dvbedf(6, 3, 3)
     real(kind=8) :: em(6)
-
+!
 ! - Common for SIMO-MIEHE
     integer :: ind(3, 3), ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6), id(6, 6)
     real(kind=8) :: bem(6), betr(6), dvbetr(6), eqbetr, trbetr
     real(kind=8) :: jp, dj, jm, dfb(3, 3)
     real(kind=8) :: djdf(3, 3), dbtrdf(6, 3, 3)
+    blas_int :: b_incx, b_incy, b_n
 !
     common/gdsmc/&
      &            bem, betr, dvbetr, eqbetr, trbetr,&
@@ -99,7 +100,10 @@ subroutine lcsmelas(fm, df, dtaudf, &
     do ij = 1, 6
         do k = 1, 3
             do l = 1, 3
-                dvbedf(ij, k, l) = ddot(6, dvbbtr(ij, 1), 6, dbtrdf(1, k, l), 1)
+                b_n = to_blas_int(6)
+                b_incx = to_blas_int(6)
+                b_incy = to_blas_int(1)
+                dvbedf(ij, k, l) = ddot(b_n, dvbbtr(ij, 1), b_incx, dbtrdf(1, k, l), b_incy)
             end do
         end do
     end do
@@ -115,6 +119,6 @@ subroutine lcsmelas(fm, df, dtaudf, &
             end do
         end do
     end do
-
+!
 !
 end subroutine

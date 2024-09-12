@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,6 +93,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
     real(kind=8), pointer :: vjeu(:) => null()
     real(kind=8), pointer :: orig(:) => null()
     integer, pointer :: vnddl(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -163,12 +164,10 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
                 if (zi(icdl-1+k) .eq. 0) then
                     i = i+1
                     if (h .gt. ht .and. j .gt. ht+1) then
-                        zr(ivect-1+(h-ht+j-1)*nd+i) = zr(ilnm-1+(j-1)* &
-                                                         neq+k)
+                        zr(ivect-1+(h-ht+j-1)*nd+i) = zr(ilnm-1+(j-1)*neq+k)
                     else if (h .lt. ht .and. j .gt. (h+1) .and. j .le. (2*h+1)) &
                         then
-                        zr(ivect-1+(j-1)*nd+i) = zr(ilnm-1+(ht-h+j-1)* &
-                                                    neq+k)
+                        zr(ivect-1+(j-1)*nd+i) = zr(ilnm-1+(ht-h+j-1)*neq+k)
                     else
                         zr(ivect-1+(j-1)*nd+i) = zr(ilnm-1+(j-1)*neq+k)
                     end if
@@ -215,8 +214,11 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
         if (type(i) (1:7) .eq. 'BI_PLAN') then
             nddl = vnddl(6*(i-1)+1)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
-            call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1), &
-                       1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
+                       b_incy)
             call mnlbil(zr(idep1), omega, alpha, eta, h, &
                         hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
         else if (type(i) (1:6) .eq. 'CERCLE') then
@@ -224,20 +226,32 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
             nddly = vnddl(6*(i-1)+2)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
             call dscal(2*h+1, 0.d0, zr(idep2), 1)
-            call dcopy(2*h+1, zr(ivect-1+nddlx), nd, zr(idep1), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivect-1+nddlx), b_incx, zr(idep1), b_incy)
             zr(idep1) = zr(idep1)-orig(3*(i-1)+1)
             call dscal(2*h+1, 1.d0/jeu, zr(idep1), 1)
-            call dcopy(2*h+1, zr(ivect-1+nddly), nd, zr(idep2), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivect-1+nddly), b_incx, zr(idep2), b_incy)
             zr(idep2) = zr(idep2)-orig(3*(i-1)+2)
             call dscal(2*h+1, 1.d0/jeu, zr(idep2), 1)
             call mnlcir(xdep1, xdep2, omega, alpha, eta, &
                         h, hf, nt, xtemp)
-            call dcopy(4*(2*hf+1), zr(itemp), 1, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), 1)
+            b_n = to_blas_int(4*(2*hf+1))
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(itemp), b_incx, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incy)
         else if (type(i) (1:4) .eq. 'PLAN') then
             nddl = vnddl(6*(i-1)+1)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
-            call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1), &
-                       1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
+                       b_incy)
             call mnluil(zr(idep1), omega, alpha, eta, h, &
                         hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
         end if

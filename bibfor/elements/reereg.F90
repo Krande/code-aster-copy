@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,6 +70,7 @@ subroutine reereg(stop, elrefp, nnop, coor, xg, &
     real(kind=8) :: point(ndim), xenew(ndim), invjac(3, 3)
     real(kind=8) :: dff(3, nbnomx)
     real(kind=8) :: ff(nnop)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -145,7 +146,10 @@ subroutine reereg(stop, elrefp, nnop, coor, xg, &
     do i = 1, ndim
         etmp(i) = xenew(i)-xe(i)
     end do
-    err = ddot(nderiv, etmp, 1, etmp, 1)
+    b_n = to_blas_int(nderiv)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    err = ddot(b_n, etmp, b_incx, etmp, b_incy)
 !
 ! --- NOUVELLE VALEUR DE XE
 !

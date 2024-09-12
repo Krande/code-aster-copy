@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine dis_contact_frot(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out)          :: iret
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,48 +68,48 @@ subroutine dis_contact_frot(for_discret, iret)
     integer :: iretlc, ifono, imatsym, icarcr, iiter, iterat
     integer :: icontm, icontp
 !
-    real(kind=8)     :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
-    real(kind=8)     :: dvl(for_discret%neq), dpe(for_discret%neq), dve(for_discret%neq)
-    real(kind=8)     :: fl(for_discret%neq)
-    real(kind=8)     :: force(3), raide(6)
-    real(kind=8)     :: r8bid
+    real(kind=8) :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
+    real(kind=8) :: dvl(for_discret%neq), dpe(for_discret%neq), dve(for_discret%neq)
+    real(kind=8) :: fl(for_discret%neq)
+    real(kind=8) :: force(3), raide(6)
+    real(kind=8) :: r8bid
     character(len=8) :: k8bid
-    aster_logical    :: Prediction, Dynamique
+    aster_logical :: Prediction, Dynamique
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter  :: nbre1 = 8
-    real(kind=8)        :: valre1(nbre1)
-    integer             :: codre1(nbre1)
-    character(len=8)    :: nomre1(nbre1)
-    integer             :: nbpar
-    real(kind=8)        :: valpar
-    character(len=8)    :: nompar
-    integer             :: jadre1, jcodre1
+    integer, parameter :: nbre1 = 8
+    real(kind=8) :: valre1(nbre1)
+    integer :: codre1(nbre1)
+    character(len=8) :: nomre1(nbre1)
+    integer :: nbpar
+    real(kind=8) :: valpar
+    character(len=8) :: nompar
+    integer :: jadre1, jcodre1
 !
     data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', &
         'COULOMB', 'DIST_1', 'DIST_2', 'JEU'/
 ! --------------------------------------------------------------------------------------------------
 !   Pour l'intégration de la loi de comportement
-    real(kind=8)            :: temps0, temps1, dtemps
+    real(kind=8) :: temps0, temps1, dtemps
 !   Paramètres de la loi :     Kn       Kt       mu       cn       ct       jeu,      ky,    kz
-    integer, parameter      :: ikn = 1, ikt = 2, imu = 3, icn = 4, ict = 5, ijeu = 6, &
-                               iky = 7, ikz = 8
-    integer, parameter      :: nbpara = 8
-    real(kind=8)            :: ldcpar(nbpara)
-    integer                 :: ldcpai(2)
-    character(len=8)        :: ldcpac(1)
+    integer, parameter :: ikn = 1, ikt = 2, imu = 3, icn = 4, ict = 5, ijeu = 6, iky = 7, ikz = 8
+    integer, parameter :: nbpara = 8
+    real(kind=8) :: ldcpar(nbpara)
+    integer :: ldcpai(2)
+    character(len=8) :: ldcpac(1)
 !   Équations du système
-    integer, parameter      :: nbequa = 14
-    real(kind=8)            :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax
-    integer                 :: nbdecp
+    integer, parameter :: nbequa = 14
+    real(kind=8) :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax
+    integer :: nbdecp
 !   Variables internes
-    integer, parameter      :: nbvari = 9, nbcorr = 8, idebut = 9
-    integer                 :: Correspond(nbcorr)
-    real(kind=8)            :: varmo(nbvari), varpl(nbvari)
-
+    integer, parameter :: nbvari = 9, nbcorr = 8, idebut = 9
+    integer :: Correspond(nbcorr)
+    real(kind=8) :: varmo(nbvari), varpl(nbvari)
+!
 ! --------------------------------------------------------------------------------------------------
-    integer         :: nbout
-    real(kind=8)    :: xl(6), xd(3), rignor, rigtan, coulom, deplac, evoljeu0, evoljeu1, xjeu
-    real(kind=8)    :: LgDiscret, Dist12, inst0, inst1
+    integer :: nbout
+    real(kind=8) :: xl(6), xd(3), rignor, rigtan, coulom, deplac, evoljeu0, evoljeu1, xjeu
+    real(kind=8) :: LgDiscret, Dist12, inst0, inst1
+    blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
     iret = 0
@@ -131,7 +131,10 @@ subroutine dis_contact_frot(for_discret, iret)
             call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
         end if
     else
-        call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
+        b_n = to_blas_int(for_discret%nbt)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jdc), b_incx, klv, b_incy)
     end if
 !   Récupération des termes diagonaux : raide = klv(i,i)
     call diraidklv(for_discret%nomte, raide, klv)
@@ -213,7 +216,8 @@ subroutine dis_contact_frot(for_discret, iret)
     rignor = raide(1)
     rigtan = 0.0
     call rcvala(zi(imat), ' ', 'DIS_CONTACT', nbpar, nompar, &
-                [valpar], nbre1, nomre1, valre1, codre1, 0, nan='NON')
+                [valpar], nbre1, nomre1, valre1, codre1, &
+                0, nan='NON')
 !
     if (codre1(1) .eq. 0) rignor = valre1(1)
     if (codre1(2) .eq. 0) rigtan = valre1(2)
@@ -247,8 +251,9 @@ subroutine dis_contact_frot(for_discret, iret)
     end if
 !   Traitement de l'évolution du jeu
     jadre1 = 0; nbout = 0; jcodre1 = 0
-    call rcadlv(' ', 1, 1, '+', zi(imat), ' ', 'DIS_CONTACT', 'INST_COMP_INIT', &
-                0, [' '], [0.d0], jadre1, nbout, jcodre1, 0)
+    call rcadlv(' ', 1, 1, '+', zi(imat), &
+                ' ', 'DIS_CONTACT', 'INST_COMP_INIT', 0, [' '], &
+                [0.d0], jadre1, nbout, jcodre1, 0)
     if (jcodre1 .eq. 0 .and. nbout .eq. 2) then
         inst0 = zr(jadre1); inst1 = zr(jadre1+1)
         ASSERT(inst0 < inst1)
@@ -294,10 +299,14 @@ subroutine dis_contact_frot(for_discret, iret)
             dy0(9) = (dvl(3)+dve(3)-y0(9))/dtemps
         end if
     else
-        y0(1) = (for_discret%ulm(1+for_discret%nc)-for_discret%ulm(1)+ &
-                 dpe(1+for_discret%nc)-dpe(1))
-        y0(2) = (for_discret%ulm(2+for_discret%nc)-for_discret%ulm(2)+ &
-                 dpe(2+for_discret%nc)-dpe(2))
+        y0(1) = ( &
+                for_discret%ulm(1+for_discret%nc)-for_discret%ulm(1)+dpe(1+for_discret%nc)-dpe(1&
+                &) &
+                )
+        y0(2) = ( &
+                for_discret%ulm(2+for_discret%nc)-for_discret%ulm(2)+dpe(2+for_discret%nc)-dpe(2&
+                &) &
+                )
         y0(4) = zr(icontm)
         y0(5) = zr(icontm+1)
         dy0(1) = (for_discret%dul(1+for_discret%nc)-for_discret%dul(1))/dtemps
@@ -305,12 +314,13 @@ subroutine dis_contact_frot(for_discret, iret)
         dy0(7) = (dvl(1+for_discret%nc)-dvl(1)+dve(1+for_discret%nc)-dve(1)-y0(7))/dtemps
         dy0(8) = (dvl(2+for_discret%nc)-dvl(2)+dve(2+for_discret%nc)-dve(2)-y0(8))/dtemps
         if (for_discret%ndim .eq. 3) then
-            y0(3) = (for_discret%ulm(3+for_discret%nc)-for_discret%ulm(3)+ &
-                     dpe(3+for_discret%nc)-dpe(3))
+            y0(3) = ( &
+                    for_discret%ulm(3+for_discret%nc)-for_discret%ulm(3)+dpe(3+for_discret%nc)-d&
+                    &pe(3) &
+                    )
             y0(6) = zr(icontm+2)
             dy0(3) = (for_discret%dul(3+for_discret%nc)-for_discret%dul(3))/dtemps
-            dy0(9) = (dvl(3+for_discret%nc)-dvl(3)+dve(3+for_discret%nc)- &
-                      dve(3)-y0(9))/dtemps
+            dy0(9) = (dvl(3+for_discret%nc)-dvl(3)+dve(3+for_discret%nc)-dve(3)-y0(9))/dtemps
         end if
     end if
 !
@@ -359,8 +369,9 @@ subroutine dis_contact_frot(for_discret, iret)
 !   Pas de normalisation des équations : on laisse l'algo faire, c'est prévu :)
 !   On intègre
     iret = 0
-    call rk5adp(nbequa, ldcpar, ldcpai, ldcpac, temps0, dtemps, nbdecp, &
-                errmax, y0, dy0, ldc_dis_contact_frot, resu, iret)
+    call rk5adp(nbequa, ldcpar, ldcpai, ldcpac, temps0, &
+                dtemps, nbdecp, errmax, y0, dy0, &
+                ldc_dis_contact_frot, resu, iret)
 !   resu(1:nbequa)              : variables intégrées
 !   resu(nbequa+1:2*nbequa)     : d(resu)/d(t) a t+dt
     if (iret .ne. 0) goto 999
@@ -408,16 +419,16 @@ subroutine dis_contact_frot(for_discret, iret)
     end if
 !
     if (for_discret%lVect .or. for_discret%lSigm) then
-        ! Demi-matrice klv transformée en matrice pleine klc
+! Demi-matrice klv transformée en matrice pleine klc
         call vecma(klv, for_discret%nbt, klc, for_discret%neq)
-        ! Calcul de fl = klc.dul (incrément d'effort)
+! Calcul de fl = klc.dul (incrément d'effort)
         call pmavec('ZERO', for_discret%neq, klc, for_discret%dul, fl)
     end if
     !
-    ! calcul des efforts généralisés et des forces nodales
+! calcul des efforts généralisés et des forces nodales
     if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, for_discret%neq
                 zr(icontp-1+ii) = fl(ii)+zr(icontm-1+ii)
@@ -425,8 +436,8 @@ subroutine dis_contact_frot(for_discret, iret)
         else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
                 zr(icontp-1+ii) = -fl(ii)+zr(icontm-1+ii)
-                zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
-                                                 zr(icontm-1+ii+for_discret%nc)
+                zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discre&
+                                                 &t%nc)
             end do
         end if
         if (for_discret%nno .eq. 1) then
@@ -446,10 +457,10 @@ subroutine dis_contact_frot(for_discret, iret)
             end if
         end if
     end if
-    ! calcul des forces nodales
+! calcul des forces nodales
     if (for_discret%lVect) then
         call jevech('PVECTUR', 'E', ifono)
-        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, for_discret%neq
                 fl(ii) = fl(ii)+zr(icontm-1+ii)
@@ -457,8 +468,7 @@ subroutine dis_contact_frot(for_discret, iret)
         else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
                 fl(ii) = fl(ii)-zr(icontm-1+ii)
-                fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
-                                        zr(icontm-1+ii+for_discret%nc)
+                fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discret%nc)
             end do
         end if
         if (for_discret%nno .eq. 1) then
@@ -484,7 +494,7 @@ subroutine dis_contact_frot(for_discret, iret)
             call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         end if
     end if
-    !   mise à jour des variables internes
+!   mise à jour des variables internes
     if (for_discret%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         if (for_discret%nno .eq. 1) then

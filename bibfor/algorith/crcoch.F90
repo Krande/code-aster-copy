@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine crcoch()
     implicit none
 !
@@ -144,20 +144,23 @@ subroutine crcoch()
         typabs = 'INST'
         nbinst = -nis
     end if
-
+!
     if (nis .ne. 0) then
         call wkvect(lcpt, 'V V I', nbinst, jcpt)
         call wkvect(linst, 'V V R', nbinst, jinst)
         call getvr8('CONV_CHAR', typabs, iocc=iocc, nbval=nbinst, vect=zr(jinst))
         call getvr8('CONV_CHAR', 'PRECISION', iocc=iocc, scal=prec)
         call getvtx('CONV_CHAR', 'CRITERE', iocc=iocc, scal=criter)
-        call rsorac(resu, 'LONUTI', 0, rbid, k8b, cbid, rbid, k8b, nbv, 1, ibid)
+        call rsorac(resu, 'LONUTI', 0, rbid, k8b, &
+                    cbid, rbid, k8b, nbv, 1, &
+                    ibid)
 !
         ivmx = rsmxno(resu)
         do k = 1, nbinst
             if (nbv(1) .gt. 0) then
                 call rsorac(resu, typabs, ibid, zr(jinst+k-1), k8b, &
-                            cbid, prec, criter, tnum, 1, nbr)
+                            cbid, prec, criter, tnum, 1, &
+                            nbr)
                 nume = tnum(1)
             else
                 nbr = 0
@@ -186,13 +189,14 @@ subroutine crcoch()
         nbinst = nbval
         numini = 1
         numfin = nbinst
-
+!
         nbinst = min(nbinst, nbval)
 !
         call wkvect(linst, 'V V R', nbinst, jinst)
         call jeveuo(listr8//'.VALE', 'L', vr=val)
-        call rsorac(resu, 'LONUTI', 0, rbid, k8b, cbid, rbid, k8b, nbv, &
-                    1, ibid)
+        call rsorac(resu, 'LONUTI', 0, rbid, k8b, &
+                    cbid, rbid, k8b, nbv, 1, &
+                    ibid)
         call wkvect(lcpt, 'V V I', nbinst, jcpt)
         ivmx = rsmxno(resu)
         j = 0
@@ -202,7 +206,9 @@ subroutine crcoch()
             j = j+1
             zr(jinst-1+j) = val(k)
             if (nbv(1) .gt. 0) then
-                call rsorac(resu, typabs, ibid, val(k), k8b, cbid, prec, criter, tnum, 1, nbr)
+                call rsorac(resu, typabs, ibid, val(k), k8b, &
+                            cbid, prec, criter, tnum, 1, &
+                            nbr)
                 nume = tnum(1)
             else
                 nbr = 0
@@ -217,13 +223,13 @@ subroutine crcoch()
             end if
         end do
     end if
-
+!
     numedd = ' '
     call getvid('CONV_CHAR', 'MATR_RIGI', iocc=iocc, scal=matr, nbret=n1)
     if (n1 .eq. 1) then
         call dismoi('NOM_NUME_DDL', matr, 'MATR_ASSE', repk=numedd)
     end if
-
+!
     call dismoi('NOM_MODELE', matr, 'MATR_ASSE', repk=modele)
     call dismoi('NUME_EQUA', matr, 'MATR_ASSE', repk=profch)
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
@@ -246,12 +252,15 @@ subroutine crcoch()
         partps(1) = tps
         partps(2) = r8vide()
         partps(3) = r8vide()
-        call rsexch(' ', resu, nsymb, icompt, nomch, iret)
+        call rsexch(' ', resu, nsymb, icompt, nomch, &
+                    iret)
         if (iret .eq. 0) then
-            call rsadpa(resu, 'L', 1, typabs, icompt, 0, sjv=iad)
+            call rsadpa(resu, 'L', 1, typabs, icompt, &
+                        0, sjv=iad)
         else if (iret .eq. 110) then
             call rsagsd(resu, 0)
-            call rsexch(' ', resu, nsymb, icompt, nomch, iret)
+            call rsexch(' ', resu, nsymb, icompt, nomch, &
+                        iret)
         else if (iret .eq. 100) then
             call vtcreb(nomch, 'G', 'R', nume_ddlz=numedd)
         end if
@@ -268,8 +277,9 @@ subroutine crcoch()
             do ie = 1, neq
                 zr(jchou1+ie-1) = 0.d0
             end do
-            call fondpl(modele, materi, mate, numedd, neq, v_ondp, &
-                        nb_ondp, vecond, veonde, vaonde, tps, zr(jchou1))
+            call fondpl(modele, materi, mate, numedd, neq, &
+                        v_ondp, nb_ondp, vecond, veonde, vaonde, &
+                        tps, zr(jchou1))
             do ie = 1, neq
                 zr(jchout+ie-1) = zr(jchout+ie-1)-zr(jchou1+ie-1)
             end do
@@ -289,7 +299,8 @@ subroutine crcoch()
             call vechme('S', modele, lload_name, lload_info, partps, &
                         carele, materi, mate, vechmp)
             call asasve(vechmp, numedd, 'R', vachmp)
-            call ascova('D', vachmp, lload_func, 'INST', tps, 'R', nomch2)
+            call ascova('D', vachmp, lload_func, 'INST', tps, &
+                        'R', nomch2)
             call jeveuo(nomch2//'.VALE', 'L', jchou2)
             do ie = 1, neq
                 zr(jchout+ie-1) = zr(jchout+ie-1)+zr(jchou2+ie-1)
@@ -299,14 +310,16 @@ subroutine crcoch()
         call jeveuo(nomch//'.REFE', 'E', jrefe)
         zk24(jrefe-1+1) = " "
         zk24(jrefe-1+2) = profch
-
+!
         call rsnoch(resu, nsymb, icompt)
-        call rsadpa(resu, 'E', 1, typabs, icompt, 0, sjv=iad)
+        call rsadpa(resu, 'E', 1, typabs, icompt, &
+                    0, sjv=iad)
         zr(iad) = tps
 ! ----- Special copy of list of loads for save in results datastructure
         call liscpy(list_load, list_load_resu, 'G')
 ! ----- Save parameters in results datastructure
-        call rssepa(resu, icompt, modele(1:8), materi, carele, list_load_resu)
+        call rssepa(resu, icompt, modele(1:8), materi, carele, &
+                    list_load_resu)
         if (j .ge. 2) call jedema()
 !
     end do

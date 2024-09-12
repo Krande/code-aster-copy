@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
     implicit none
 !-----------------------------------------------------------------------
@@ -87,6 +87,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
     integer, pointer :: cycl_diam(:) => null()
     integer, pointer :: cycl_nuin(:) => null()
     integer, pointer :: cycl_desc(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     data depl/'DEPL            '/
     data typsup/'MODE_MECA       '/
@@ -308,8 +309,11 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
             fact = 1.d0/(para(1)**0.5d0)
             genek = (cycl_freq(icomp)*depi)**2
-            call daxpy(neq, fact, zr(ltvere), 1, zr(llcham), &
-                       1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, fact, zr(ltvere), b_incx, zr(llcham), &
+                       b_incy)
             zr(ldfre) = cycl_freq(icomp)
             zr(ldkge) = genek
             zr(ldmge) = 1.d0
@@ -355,8 +359,11 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
                 fact = 1.d0/(para(2)**0.5d0)
                 genek = (cycl_freq(icomp)*depi)**2
-                call daxpy(neq, fact, zr(ltvere), 1, zr(llcham), &
-                           1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, fact, zr(ltvere), b_incx, zr(llcham), &
+                           b_incy)
                 zr(ldfre) = cycl_freq(icomp)
                 zr(ldkge) = genek
                 zr(ldmge) = 1.d0

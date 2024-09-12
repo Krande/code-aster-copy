@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,10 +54,10 @@ contains
 !
         implicit none
 !
-        type(FE_Quadrature), intent(in)     :: FEQuad
-        type(FE_Basis), intent(in)          :: FEBasis
-        real(kind=8), intent(out)           :: mass(MAX_BS, MAX_BS)
-        real(kind=8), intent(in), optional  :: ValuesQP(MAX_QP)
+        type(FE_Quadrature), intent(in) :: FEQuad
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(out) :: mass(MAX_BS, MAX_BS)
+        real(kind=8), intent(in), optional :: ValuesQP(MAX_QP)
 ! --------------------------------------------------------------------------------------------------
 !   HHO
 !
@@ -84,11 +84,12 @@ contains
 ! ---- mass = mass + weight * BSEval^T * BSEVAL
             if (present(ValuesQP)) then
                 coeff = FEQuad%weights(ipg)*ValuesQP(ipg)
-
+!
             else
                 coeff = FEQuad%weights(ipg)
             end if
-            call dsyr('U', FEBasis%size, coeff, BSEval, 1, mass, MAX_BS)
+            call dsyr('U', FEBasis%size, coeff, BSEval, 1, &
+                      mass, MAX_BS)
         end do
 !
 ! ----- Copy the lower part
