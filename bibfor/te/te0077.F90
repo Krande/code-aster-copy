@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,12 +50,13 @@ subroutine te0077(option, nomte)
     character(len=16) :: phenom
     real(kind=8) :: valQP(MAX_QP), cp(1)
     real(kind=8) :: mass(MAX_BS, MAX_BS)
-    integer ::  imate, itemps
+    integer ::  imate, itemps, kp
+    character(len=8), parameter :: famiM = "MASS"
 !
 !-----------------------------------------------------------------------
 !
     call FECell%init()
-    call FEQuadCell%initCell(FECell, "MASS")
+    call FEQuadCell%initCell(FECell, famiM)
     call FEBasis%initCell(FECell)
 !
     call jevech('PMATERC', 'L', imate)
@@ -63,18 +64,22 @@ subroutine te0077(option, nomte)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
     if (phenom .eq. 'THER') then
-        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
-                    ' ', phenom, 1, 'INST', [zr(itemps)], &
-                    1, 'RHO_CP', cp, icodre(1), 1)
+        do kp = 1, FEQuadCell%nbQuadPoints
+            call rcvalb(famiM, kp, 1, '+', zi(imate), &
+                        ' ', phenom, 1, 'INST', [zr(itemps)], &
+                        1, 'RHO_CP', cp, icodre(1), 1)
+            valQP(kp) = cp(1)
+        end do
     else if (phenom .eq. 'THER_ORTH') then
-        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
-                    ' ', phenom, 1, 'INST', [zr(itemps)], &
-                    1, 'RHO_CP', cp, icodre(1), 1)
+        do kp = 1, FEQuadCell%nbQuadPoints
+            call rcvalb(famiM, kp, 1, '+', zi(imate), &
+                        ' ', phenom, 1, 'INST', [zr(itemps)], &
+                        1, 'RHO_CP', cp, icodre(1), 1)
+            valQP(kp) = cp(1)
+        end do
     else
         call utmess('F', 'ELEMENTS2_63')
     end if
-!
-    valQP = cp(1)
 !
     call FEMassMatScal(FEQuadCell, FEBasis, mass, valQP)
 !

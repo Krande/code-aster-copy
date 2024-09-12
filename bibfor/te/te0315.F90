@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0315(option, nomte)
     real(kind=8) :: acc(2, 4), flufn(4)
     integer :: ipoids, ivf, idfde, igeom
     integer :: nno, kp, npg, ivectt, imate
-    integer :: ldec, kpg, spt
+    integer :: ldec, spt
     aster_logical :: laxi
 !
 !
@@ -63,14 +63,9 @@ subroutine te0315(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PVECTTR', 'E', ivectt)
-    fami = 'FPG1'
-    kpg = 1
+    fami = 'RIGI'
     spt = 1
     poum = '+'
-!
-    call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                ' ', 'THER', 0, ' ', [0.d0], &
-                1, 'RHO_CP', rho, icodre, 1)
 !
     if (option(16:16) .eq. 'R') then
         call jevech('PACCELR', 'L', iacce)
@@ -106,6 +101,10 @@ subroutine te0315(option, nomte)
 !
     do kp = 1, npg
         ldec = (kp-1)*nno
+!
+        call rcvalb(fami, kp, spt, poum, zi(imate), &
+                    ' ', 'THER', 0, ' ', [0.d0], &
+                    1, 'RHO_CP', rho, icodre, 1)
 !
         nx = 0.d0
         ny = 0.d0

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,12 +84,14 @@ sf2 = testfield2.toSimpleFieldOnCells()
 test.assertSequenceEqual(["V1", "V2"], sf2.getComponents())
 test.assertEqual(sf2.getPhysicalQuantity(), "VARI_R")
 test.assertEqual(sf2.getLocalization(), "ELGA")
+test.assertFalse(sf2.hasValue(200, 1, 4800))
+test.assertTrue(sf2.hasValue(200, 1, 1))
 
 sfr2 = sf2.restrict(["V1"])
 test.assertSequenceEqual(["V1"], sfr2.getComponents())
 test.assertEqual(sfr2.getPhysicalQuantity(), "VARI_R")
 test.assertEqual(sfr2.getLocalization(), "ELGA")
-test.assertAlmostEqual(sf2.getValue(0, 0, 0, 0), sfr2.getValue(0, 0, 0, 0))
+test.assertAlmostEqual(sf2.getValue(200, 0, 0), sfr2.getValue(200, 0, 0))
 
 # Test constructeur avec le caraelem
 
