@@ -1,0 +1,257 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# person_in_charge: donatien.rossat at edf.fr
+#
+
+import numpy as np
+from code_aster.Commands import *
+from code_aster import CA
+
+###
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+MESH = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+nc = MESH.getNumberOfCells()
+for n in range(nc):
+    gma = "P{0}".format(n)
+    MESH.setGroupOfCells(gma, [n])
+
+MODEL = AFFE_MODELE(
+    MAILLAGE=MESH, AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),)
+)
+
+MATER = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3, RHO=7800.0))
+
+CHMAT = AFFE_MATERIAU(MODELE=MODEL, AFFE=_F(TOUT="OUI", MATER=MATER))
+
+## List of eigenfrequencies
+list_freq = np.array(
+    [
+        105.37853977,
+        122.28777882,
+        31.11268747,
+        24.28684931,
+        168.5137411,
+        29.59719564,
+        89.87614571,
+        116.04591321,
+        191.22336248,
+        354.51500678,
+        29.45212552,
+        350.13859322,
+        107.32308906,
+        308.74325978,
+        335.75518154,
+        25.07021296,
+        333.27837342,
+        100.85866233,
+        338.93055871,
+        153.92830402,
+        30.81653513,
+        25.8533967,
+        331.359632,
+        183.70963784,
+        313.9991005,
+        164.81298515,
+        29.43388934,
+        25.7175579,
+        28.45322071,
+        124.79764591,
+        204.13632826,
+        204.82732096,
+        112.44816025,
+        118.12059126,
+        34.39571825,
+        130.65395982,
+        121.99253238,
+        23.86206775,
+        208.28526719,
+        27.48685958,
+        177.22511539,
+        185.22880783,
+        192.68615471,
+        196.40055966,
+        161.73079859,
+        426.61862561,
+        185.51652501,
+        373.51172296,
+        198.42904042,
+        318.87196016,
+        101.11636168,
+        116.1214546,
+        120.95326837,
+        28.62581017,
+        97.73727714,
+        217.16294323,
+        106.33526761,
+        107.80068315,
+        171.9616008,
+        194.34484757,
+        120.61069524,
+        206.10631243,
+        96.45838464,
+        219.96922485,
+        29.99938764,
+        183.05794103,
+        189.17790483,
+        110.38171659,
+        452.07686087,
+        377.40956027,
+        183.14109985,
+        31.41449777,
+        185.94224323,
+        296.77998273,
+        110.87477257,
+        27.94810833,
+        266.42855818,
+        195.24588074,
+        406.69303766,
+        326.8482449,
+        209.46624895,
+        192.49416098,
+        89.81911373,
+        334.26918406,
+        192.51498495,
+        18.8994471,
+        115.70682939,
+        101.21281657,
+        116.5097,
+        31.65173847,
+        182.94745378,
+        113.23995793,
+        30.18659601,
+        122.53055899,
+        190.93608734,
+        31.3628639,
+        29.68415542,
+        201.04378783,
+        166.0178125,
+        202.42570786,
+        213.30514252,
+        110.47804449,
+        199.38176777,
+        29.18879512,
+        228.14726618,
+        183.10766555,
+        196.25227802,
+        26.75692197,
+        32.35729203,
+        213.16234756,
+        176.01951861,
+        307.25728128,
+        119.36099857,
+        188.26525318,
+        181.65085581,
+        37.51754006,
+    ]
+)  # [Hz]
+fmin = 18.0  # [Hz]
+fmax = 455.0  # [Hz]
+N = np.sum(
+    (list_freq >= fmin) * (list_freq <= fmax)
+)  # number of eigenfrequencies between fmin and fmax [-]
+
+## Build matrices such that eigenfrequencies of the corresponding GEP are those of list_freq
+DISCRET_args = [_F(GROUP_MA="POI1", CARA="M_T_D_N", VALE=(1.0,))]
+for n in range(nc):
+    DISCRET_args.append(
+        _F(GROUP_MA="P{0}".format(n), CARA="K_T_D_N", VALE=((2 * np.pi * list_freq[n]) ** 2,) * 3)
+    )
+
+CARA = AFFE_CARA_ELEM(MODELE=MODEL, DISCRET=DISCRET_args)
+
+BC = AFFE_CHAR_CINE(MODELE=MODEL, MECA_IMPO=(_F(TOUT="OUI", DY=0.0, DZ=0.0),))
+
+
+ASSEMBLAGE(
+    MODELE=MODEL,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARA,
+    CHAR_CINE=BC,
+    NUME_DDL=CO("NUMEDDL"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("RIGI"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASS"), OPTION="MASS_MECA"),
+    ),
+)
+
+
+## Run frequency bands balancing algorithm
+Nb = 40  # number of desired modes per band [-]
+tol = 5e-2  # balancing tolerance [-]
+
+# List-based balancing (given frequencies)
+RES_LIST = DEFI_LIST_FREQ(
+    EQUI_MODES=_F(
+        TYPE_SAISIE="LISTE",
+        FREQ_MIN=fmin,
+        FREQ_MAX=fmax,
+        LIST_FREQ=list_freq.tolist(),
+        TOLERANCE=tol,
+        NB_MODES=Nb,
+    )
+)
+
+# Matrix-based balancing
+RES_MATR = DEFI_LIST_FREQ(
+    EQUI_MODES=_F(
+        TYPE_SAISIE="MATR_ASSE",
+        FREQ_MIN=fmin,
+        FREQ_MAX=fmax,
+        MATR_RIGI=RIGI,
+        MATR_MASS=MASS,
+        TOLERANCE=tol,
+        NB_MODES=Nb,
+    )
+)
+
+
+## Extract results
+eps_LIST = np.array(RES_LIST.EXTR_TABLE().values()["ERR_REL"])
+freq_LIST = np.array(
+    [RES_LIST.EXTR_TABLE().values()["FREQ_MIN"][0]] + RES_LIST.EXTR_TABLE().values()["FREQ_MAX"]
+)
+counts_LIST = np.array(RES_LIST.EXTR_TABLE().values()["NB_MODES"])
+
+eps_MATR = np.array(RES_MATR.EXTR_TABLE().values()["ERR_REL"])
+freq_MATR = np.array(
+    [RES_MATR.EXTR_TABLE().values()["FREQ_MIN"][0]] + RES_MATR.EXTR_TABLE().values()["FREQ_MAX"]
+)
+counts_MATR = np.array(RES_MATR.EXTR_TABLE().values()["NB_MODES"])
+
+## Test frequency bands balancing
+test = CA.TestCase()
+
+# Check results
+test.assertTrue(np.max(eps_LIST) < tol)
+test.assertTrue(np.max(eps_MATR) < tol)
+test.assertEqual(counts_LIST.sum(), N)
+test.assertEqual(counts_MATR.sum(), N)
+test.assertTrue(np.allclose(freq_LIST, freq_MATR))
+
+# Non regression testing
+test.assertTrue(np.allclose(freq_LIST, [18.0, 110.86250000000001, 192.8, 455.0]))
+test.assertTrue(np.allclose(freq_MATR, [18.0, 110.86250000000001, 192.8, 455.0]))
+
+test.printSummary()
+
+###
+FIN()

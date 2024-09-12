@@ -23,16 +23,26 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
+
+def defi_list_freq_prod(self, **args):
+    if args.get("EQUI_MODES", None) is not None:
+        return table_sdaster
+    else:
+        return listr8_sdaster
+
+
 DEFI_LIST_FREQ = MACRO(
     nom="DEFI_LIST_FREQ",
     op=OPS("code_aster.MacroCommands.defi_list_freq_ops.defi_list_freq_ops"),
-    sd_prod=listr8_sdaster,
+    sd_prod=defi_list_freq_prod,
     fr=tr("Définir une liste de fréquences strictement croissante"),
     reentrant="n",
     regles=(
-        UN_PARMI("VALE", "DEBUT"),
+        UN_PARMI("VALE", "DEBUT", "EQUI_MODES"),
         EXCLUS("VALE", "INTERVALLE"),
         ENSEMBLE("DEBUT", "INTERVALLE"),
+        EXCLUS("VALE", "EQUI_MODES"),
+        EXCLUS("DEBUT", "EQUI_MODES"),
     ),
     VALE=SIMP(statut="f", typ="R", max="**"),
     DEBUT=SIMP(statut="f", typ="R"),
@@ -45,7 +55,7 @@ DEFI_LIST_FREQ = MACRO(
         PAS=SIMP(statut="f", typ="R"),
     ),
     RAFFINEMENT=FACT(
-        statut="o",
+        statut="f",
         LIST_RAFFINE=SIMP(statut="o", typ="R", max="**"),
         NB_POINTS=SIMP(statut="f", typ="I", defaut=5),
         PAS_MINI=SIMP(statut="f", typ="R", defaut=0.001),
@@ -62,6 +72,26 @@ DEFI_LIST_FREQ = MACRO(
             AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
             LIST_AMOR=SIMP(statut="f", typ=listr8_sdaster),
         ),
+    ),
+    EQUI_MODES=FACT(
+        statut="f",
+        TYPE_SAISIE=SIMP(statut="f", typ="TXM", defaut="LISTE", into=("LISTE", "MATR_ASSE")),
+        FREQ_MIN=SIMP(statut="o", typ="R"),
+        FREQ_MAX=SIMP(statut="o", typ="R"),
+        b_matr_asse=BLOC(
+            condition="""(equal_to("TYPE_SAISIE", 'MATR_ASSE'))""",
+            MATR_RIGI=SIMP(statut="o", typ=matr_asse_depl_r),
+            MATR_MASS=SIMP(statut="o", typ=matr_asse_depl_r),
+        ),
+        b_listr=BLOC(
+            condition="""(equal_to("TYPE_SAISIE", 'LISTE'))""",
+            LIST_FREQ=SIMP(statut="o", typ="R", max="**"),
+        ),
+        TOLERANCE=SIMP(statut="f", typ="R", defaut=0.1),
+        NB_POINTS_INIT=SIMP(statut="f", typ="I", defaut=10),
+        NB_POINTS_SUPP=SIMP(statut="f", typ="I", defaut=1),
+        ITER_MAXI=SIMP(statut="f", typ="I", defaut=20),
+        NB_MODES=SIMP(statut="f", typ="I", defaut=40),
     ),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
     TITRE=SIMP(statut="f", typ="TXM"),
