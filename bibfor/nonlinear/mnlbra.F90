@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt, &
+subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt,&
                   epsman, amax, xus)
     implicit none
 !
@@ -77,7 +77,9 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt, &
 ! --- RECUPERATION DU SECOND MEMBRE SUPPLEMENTAIRE
 ! ----------------------------------------------------------------------
     call jeveuo(xfpnla, 'L', ifpnla)
-    norme = dnrm2(ninc-1, zr(ifpnla), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    norme = dnrm2(b_n, zr(ifpnla), b_incx)
 !
     if (norme .eq. 0.d0) then
         call utmess('F', 'MECANONLINE9_61')
@@ -100,7 +102,7 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt, &
             b_n = to_blas_int(ninc)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, a**dble(k), zr(iups+k*ninc), b_incx, zr(ius+(i-1)*ninc), &
+            call daxpy(b_n, a**dble(k), zr(iups+k*ninc), b_incx, zr(ius+(i-1)*ninc),&
                        b_incy)
         end do
     end do

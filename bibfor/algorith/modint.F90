@@ -138,6 +138,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     real(kind=8), pointer :: v_f_pro(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_ldb, b_ldvl, b_ldvr, b_lwork
 !
 !-- DEBUT --C
 !
@@ -434,16 +435,28 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     AS_ALLOCATE(vr=vect_beta, size=nsekry)
     AS_ALLOCATE(vr=matr_mod_red, size=nsekry**2)
 !
-    call dggev('N', 'V', nsekry, zr(lkpro), nsekry,&
-               zr(lmapro), nsekry, vect_alphar, vect_alphai, vect_beta,&
-               vrbid, 1, matr_mod_red, nsekry, swork,&
-               -1, info)
+    b_ldvr = to_blas_int(nsekry)
+    b_ldvl = to_blas_int(1)
+    b_ldb = to_blas_int(nsekry)
+    b_lda = to_blas_int(nsekry)
+    b_n = to_blas_int(nsekry)
+    b_lwork = to_blas_int(-1)
+    call dggev('N', 'V', b_n, zr(lkpro), b_lda,&
+               zr(lmapro), b_ldb, vect_alphar, vect_alphai, vect_beta,&
+               vrbid, b_ldvl, matr_mod_red, b_ldvr, swork,&
+               b_lwork, info)
     lwork = int(swork(1))
     AS_ALLOCATE(vr=matr_work_dggev, size=lwork)
-    call dggev('N', 'V', nsekry, zr(lkpro), nsekry,&
-               zr(lmapro), nsekry, vect_alphar, vect_alphai, vect_beta,&
-               vrbid, 1, matr_mod_red, nsekry, matr_work_dggev,&
-               lwork, info)
+    b_ldvr = to_blas_int(nsekry)
+    b_ldvl = to_blas_int(1)
+    b_ldb = to_blas_int(nsekry)
+    b_lda = to_blas_int(nsekry)
+    b_n = to_blas_int(nsekry)
+    b_lwork = to_blas_int(lwork)
+    call dggev('N', 'V', b_n, zr(lkpro), b_lda,&
+               zr(lmapro), b_ldb, vect_alphar, vect_alphai, vect_beta,&
+               vrbid, b_ldvl, matr_mod_red, b_ldvr, matr_work_dggev,&
+               b_lwork, info)
 !-- ON REACTIVE LE TEST FPE
     call matfpe(1)
 !

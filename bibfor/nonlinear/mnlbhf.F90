@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
+subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
                   nchoc, h, hf, err)
     implicit none
 !
@@ -120,9 +120,9 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
             b_n = to_blas_int(2*h+1)
             b_incx = to_blas_int(nd)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1),&
                        b_incy)
-            call mnlbil(zr(idep1), omega, alpha, eta, h, &
+            call mnlbil(zr(idep1), omega, alpha, eta, h,&
                         hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
         else if (type(i) (1:6) .eq. 'CERCLE') then
             nddlx = vnddl(6*(i-1)+1)
@@ -143,16 +143,18 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
             zr(idep2) = zr(idep2)-orig(3*(i-1)+2)
             call dscal(2*h+1, 1.d0/jeu, zr(idep2), 1)
 !
-            call mnlcir(xdep1, xdep2, omega, alpha, eta, &
+            call mnlcir(xdep1, xdep2, omega, alpha, eta,&
                         h, hf, nt, xtemp)
 !
             b_n = to_blas_int(4*(2*hf+1))
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, zr(itemp), &
+            call daxpy(b_n, -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, zr(itemp),&
                        b_incy)
 !
-            nrm = dnrm2(4*(2*hf+1), zr(itemp), 1)
+            b_n = to_blas_int(4*(2*hf+1))
+            b_incx = to_blas_int(1)
+            nrm = dnrm2(b_n, zr(itemp), b_incx)
             if (nrm .gt. 0.d0) then
                 nrm = 0.d0
                 do j = 1, 2
@@ -165,7 +167,9 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dcopy(b_n, zr(itemp+(j-1)*(2*hf+1)+hf+1), b_incx, tep2, b_incy)
-                    nrm = nrm+dnrm2(2*h+1, tep2, 1)
+                    b_n = to_blas_int(2*h+1)
+                    b_incx = to_blas_int(1)
+                    nrm = nrm+dnrm2(b_n, tep2, b_incx)
                 end do
                 err = err+nrm/2.d0
             end if
@@ -176,16 +180,18 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
             b_n = to_blas_int(2*h+1)
             b_incx = to_blas_int(nd)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1),&
                        b_incy)
-            call mnluil(zr(idep1), omega, alpha, eta, h, &
+            call mnluil(zr(idep1), omega, alpha, eta, h,&
                         hf, nt, zr(itemp))
             b_n = to_blas_int(2*hf+1)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, zr(itemp), &
+            call daxpy(b_n, -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, zr(itemp),&
                        b_incy)
-            nrm = dnrm2(2*hf+1, zr(itemp), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            nrm = dnrm2(b_n, zr(itemp), b_incx)
             if (nrm .gt. 0.d0) then
                 call dscal(2*h+1, 0.d0, tep2, 1)
                 b_n = to_blas_int(h+1)
@@ -196,7 +202,9 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, zr(itemp+hf+1), b_incx, tep2, b_incy)
-                err = err+dnrm2(2*h+1, tep2, 1)
+                b_n = to_blas_int(2*h+1)
+                b_incx = to_blas_int(1)
+                err = err+dnrm2(b_n, tep2, b_incx)
             end if
         end if
         neqs = neqs+vneqs(i)

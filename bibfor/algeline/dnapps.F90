@@ -223,6 +223,8 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
     real(kind=8) :: smlnum, ulp, unfl, u(3), t, tau, tst1
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_m
+    blas_int :: b_ldb
+    blas_int :: b_incv, b_ldc
 ! DUE TO CRS512      REAL*8 OVFL
 ! DUE TO CRS512      SAVE FIRST, OVFL, SMLNUM, ULP, UNFL
     save first, smlnum, ulp, unfl
@@ -275,8 +277,11 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !
 ! DUE TO CRP_102 CALL DLASET ('ALL', KPLUSP, KPLUSP, ZERO,
 ! ONE, Q, LDQ)
-    call dlaset('A', kplusp, kplusp, zero, one,&
-                q, ldq)
+    b_lda = to_blas_int(ldq)
+    b_m = to_blas_int(kplusp)
+    b_n = to_blas_int(kplusp)
+    call dlaset('A', b_m, b_n, zero, one,&
+                q, b_lda)
 !
 !     %----------------------------------------------%
 !     | QUICK RETURN IF THERE ARE NO SHIFTS TO APPLY |
@@ -358,7 +363,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !           %----------------------------------------%
 !
             tst1 = abs(h(i, i))+abs(h(i+1, i+1))
-            if (tst1 .eq. zero) tst1 = dlanhs('1', kplusp-jj+1, h, ldh, workl)
+            b_lda = to_blas_int(ldh)
+            b_n = to_blas_int(kplusp-jj+1)
+            if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h, b_lda, workl)
             if (abs(h(i+1, i)) .le. max(ulp*tst1, smlnum)) then
                 if (msglvl .gt. 0) then
                     call ivout(logfil, 1, [i], ndigit,&
@@ -514,8 +521,12 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !              | APPLY THE REFLECTOR TO THE LEFT OF H |
 !              %--------------------------------------%
 ! DUE TO CRP_102 CALL DLARF ('LEFT', NR, KPLUSP-I+1, U, 1, TAU,
-                call dlarf('L', nr, kplusp-i+1, u, 1,&
-                           tau, h(i, i), ldh, workl)
+                b_ldc = to_blas_int(ldh)
+                b_m = to_blas_int(nr)
+                b_n = to_blas_int(kplusp-i+1)
+                b_incv = to_blas_int(1)
+                call dlarf('L', b_m, b_n, u, b_incv,&
+                           tau, h(i, i), b_ldc, workl)
 !
 !              %---------------------------------------%
 !              | APPLY THE REFLECTOR TO THE RIGHT OF H |
@@ -523,16 +534,24 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !
                 ir = min(i+3, iend)
 ! DUE TO CRP_102 CALL DLARF ('RIGHT', IR, NR, U, 1, TAU,
-                call dlarf('R', ir, nr, u, 1,&
-                           tau, h(1, i), ldh, workl)
+                b_ldc = to_blas_int(ldh)
+                b_m = to_blas_int(ir)
+                b_n = to_blas_int(nr)
+                b_incv = to_blas_int(1)
+                call dlarf('R', b_m, b_n, u, b_incv,&
+                           tau, h(1, i), b_ldc, workl)
 !
 !              %-----------------------------------------------------%
 !              | ACCUMULATE THE REFLECTOR IN THE MATRIX Q,  Q <- Q*G |
 !              %-----------------------------------------------------%
 !
 ! DUE TO CRP_102 CALL DLARF ('RIGHT', KPLUSP, NR, U, 1, TAU,
-                call dlarf('R', kplusp, nr, u, 1,&
-                           tau, q(1, i), ldq, workl)
+                b_ldc = to_blas_int(ldq)
+                b_m = to_blas_int(kplusp)
+                b_n = to_blas_int(nr)
+                b_incv = to_blas_int(1)
+                call dlarf('R', b_m, b_n, u, b_incv,&
+                           tau, q(1, i), b_ldc, workl)
 !
 !              %----------------------------%
 !              | PREPARE FOR NEXT REFLECTOR |
@@ -591,7 +610,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !        %--------------------------------------------%
 !
         tst1 = abs(h(i, i))+abs(h(i+1, i+1))
-        if (tst1 .eq. zero) tst1 = dlanhs('1', kev, h, ldh, workl)
+        b_lda = to_blas_int(ldh)
+        b_n = to_blas_int(kev)
+        if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h, b_lda, workl)
         if (h(i+1, i) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
     end do
 !
@@ -638,8 +659,12 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     |  MOVE V(:,KPLUSP-KEV+1:KPLUSP) INTO V(:,1:KEV). |
 !     %-------------------------------------------------%
 !
-    call dlacpy('A', n, kev, v(1, kplusp-kev+1), ldv,&
-                v, ldv)
+    b_ldb = to_blas_int(ldv)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(kev)
+    call dlacpy('A', b_m, b_n, v(1, kplusp-kev+1), b_lda,&
+                v, b_ldb)
 !
 !     %--------------------------------------------------------------%
 !     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |

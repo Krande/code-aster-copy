@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmholi(ndim, axi, nno, npg, ipoids, &
-                  ivf, idfde, imate, inst, geom, &
+subroutine nmholi(ndim, axi, nno, npg, ipoids,&
+                  ivf, idfde, imate, inst, geom,&
                   depl, chlim)
     implicit none
 #include "asterf_types.h"
@@ -58,6 +58,7 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids, &
     real(kind=8) :: dfdi(27, 3), fbid(3, 3), r
     real(kind=8) :: rac23, val(1)
     integer :: cod(1)
+    blas_int :: b_incx, b_n
 ! ------------------------------------------------------------------
 !
 !
@@ -75,8 +76,8 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids, &
     kpg = 1
     spt = 1
     poum = '+'
-    call rcvalb(fami, kpg, spt, poum, imate, &
-                ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
+    call rcvalb(fami, kpg, spt, poum, imate,&
+                ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 1, 'SY', val, cod, 2)
     sy = val(1)
     m = 1+10**(1-inst)
@@ -86,15 +87,17 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids, &
 !
 ! -- DEFORMATION
 !
-        call nmgeom(ndim, nno, axi, .false._1, geom, &
-                    kpg, ipoids, ivf, idfde, depl, &
-                    .true._1, poids, dfdi, fbid, eps, &
+        call nmgeom(ndim, nno, axi, .false._1, geom,&
+                    kpg, ipoids, ivf, idfde, depl,&
+                    .true._1, poids, dfdi, fbid, eps,&
                     r)
         epsh = (eps(1)+eps(2)+eps(3))/3
         eps(1) = eps(1)-epsh
         eps(2) = eps(2)-epsh
         eps(3) = eps(3)-epsh
-        epsno = dnrm2(ndimsi, eps, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        epsno = dnrm2(b_n, eps, b_incx)
 !
 ! - CALCUL DES TERME ELEMENTAIRES
 !

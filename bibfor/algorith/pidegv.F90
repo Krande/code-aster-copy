@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pidegv(neps, tau, epsm, epsp, epsd, &
+subroutine pidegv(neps, tau, epsm, epsp, epsd,&
                   copilo)
 !
 !
@@ -53,7 +53,9 @@ subroutine pidegv(neps, tau, epsm, epsp, epsd, &
 !
 ! -- COEFFICIENTS DE PILOTAGE
 !
-    epsmno = dnrm2(ndimsi, epsm, 1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    epsmno = dnrm2(b_n, epsm, b_incx)
 !
     if (epsmno .gt. 1.d0/r8gaem()) then
         b_n = to_blas_int(ndimsi)

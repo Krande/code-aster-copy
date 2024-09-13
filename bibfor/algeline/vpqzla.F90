@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
-                  qrai, qrba, qrvl, lvec, kqrn, &
-                  lvalpr, nconv, omecor, ktyp, kqrnr, &
-                  neqact, ilscal, irscal, optiof, omemin, &
-                  omemax, omeshi, ddlexc, nfreq, lmasse, &
-                  lraide, lamor, numedd, sigma, icscal, &
+subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
+                  qrai, qrba, qrvl, lvec, kqrn,&
+                  lvalpr, nconv, omecor, ktyp, kqrnr,&
+                  neqact, ilscal, irscal, optiof, omemin,&
+                  omemax, omeshi, ddlexc, nfreq, lmasse,&
+                  lraide, lamor, numedd, sigma, icscal,&
                   ivscal, iiscal, bwork, flage)
 !     SUBROUTINE ASTER ORCHESTRANT LA METHODE QZ (VERSION LAPACK).
 !     EN GENERALISEE OU EN QUADRATIQUE AVEC MATRICES K, M  ET C
@@ -155,6 +155,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
     aster_logical :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
     integer, pointer :: smdi(:) => null()
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_ldb, b_ldvl, b_ldvr, b_lwork
 !
 !-----------------------------------------------------------------------
 !
@@ -632,12 +633,18 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
         call wkvect('&&VPQZLA.QRRCONDE', 'V V R', qrn, ics1)
         if ((lkr) .and. (.not. lc) .and. (.not. lnsr) .and. (.not. lnsm)) then
 ! RECHERCHE DE LA TAILLE OPTIMALE POUR L'ESPACE DE TRAVAIL
-            call dggevx(kbal, 'N', 'V', ksens, qrn, &
-                        zr(iqrn), qrn, zr(lqrn), qrn, zr(qrar), &
-                        zr(qrai), zr(qrba), zr(qrvl), ldvl, zr(lvec3), &
-                        qrn, ilo, ihi, zr(ilscal), zr(irscal), &
-                        abnrm, bbnrm, zr(icscal), zr(ivscal), zr(kqrn), &
-                        qrlwo, zi4(iiscal), bwork, qrinfo)
+            b_ldvr = to_blas_int(qrn)
+            b_ldvl = to_blas_int(ldvl)
+            b_ldb = to_blas_int(qrn)
+            b_lda = to_blas_int(qrn)
+            b_n = to_blas_int(qrn)
+            b_lwork = to_blas_int(qrlwo)
+            call dggevx(kbal, 'N', 'V', ksens, b_n,&
+                        zr(iqrn), b_lda, zr(lqrn), b_ldb, zr(qrar),&
+                        zr(qrai), zr(qrba), zr(qrvl), b_ldvl, zr(lvec3),&
+                        b_ldvr, ilo, ihi, zr(ilscal), zr(irscal),&
+                        abnrm, bbnrm, zr(icscal), zr(ivscal), zr(kqrn),&
+                        b_lwork, zi4(iiscal), bwork, qrinfo)
 ! CREATION DU VECTEUR DE TRAVAIL OPTIMALE, DESTRUCTION DU PRECEDENT
 ! ET RESOLUTION
             if (qrinfo .eq. 0) then
@@ -651,19 +658,25 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 ! FIN PATCH
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
-                call dggevx(kbal, 'N', 'V', ksens, qrn, &
-                            zr(iqrn), qrn, zr(lqrn), qrn, zr(qrar), &
-                            zr(qrai), zr(qrba), zr(qrvl), ldvl, zr(lvec3), &
-                            qrn, ilo, ihi, zr(ilscal), zr(irscal), &
-                            abnrm, bbnrm, zr(icscal), zr(ivscal), zr(kqrn2), &
-                            qrlwo, zi4(iiscal), bwork, qrinfo)
+                b_ldvr = to_blas_int(qrn)
+                b_ldvl = to_blas_int(ldvl)
+                b_ldb = to_blas_int(qrn)
+                b_lda = to_blas_int(qrn)
+                b_n = to_blas_int(qrn)
+                b_lwork = to_blas_int(qrlwo)
+                call dggevx(kbal, 'N', 'V', ksens, b_n,&
+                            zr(iqrn), b_lda, zr(lqrn), b_ldb, zr(qrar),&
+                            zr(qrai), zr(qrba), zr(qrvl), b_ldvl, zr(lvec3),&
+                            b_ldvr, ilo, ihi, zr(ilscal), zr(irscal),&
+                            abnrm, bbnrm, zr(icscal), zr(ivscal), zr(kqrn2),&
+                            b_lwork, zi4(iiscal), bwork, qrinfo)
             end if
         else
-            call zggevx(kbal, 'N', 'V', ksens, qrn, &
-                        zc(iqrn), qrn, zc(lqrn), qrn, zc(qrar), &
-                        zc(qrba), zc(qrvl), ldvl, zc(lvec3), qrn, &
-                        ilo, ihi, zr(ilscal), zr(irscal), abnrm, &
-                        bbnrm, zr(icscal), zr(ivscal), zc(kqrn), qrlwo, &
+            call zggevx(kbal, 'N', 'V', ksens, qrn,&
+                        zc(iqrn), qrn, zc(lqrn), qrn, zc(qrar),&
+                        zc(qrba), zc(qrvl), ldvl, zc(lvec3), qrn,&
+                        ilo, ihi, zr(ilscal), zr(irscal), abnrm,&
+                        bbnrm, zr(icscal), zr(ivscal), zc(kqrn), qrlwo,&
                         zr(kqrnr), zi4(iiscal), bwork, qrinfo)
             if (qrinfo .eq. 0) then
                 qrlwo = int(dble(zc(kqrn)))
@@ -676,11 +689,11 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 ! FIN PATCH
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V C', qrlwor, kqrn2)
-                call zggevx(kbal, 'N', 'V', ksens, qrn, &
-                            zc(iqrn), qrn, zc(lqrn), qrn, zc(qrar), &
-                            zc(qrba), zc(qrvl), ldvl, zc(lvec3), qrn, &
-                            ilo, ihi, zr(ilscal), zr(irscal), abnrm, &
-                            bbnrm, zr(icscal), zr(ivscal), zc(kqrn2), qrlwo, &
+                call zggevx(kbal, 'N', 'V', ksens, qrn,&
+                            zc(iqrn), qrn, zc(lqrn), qrn, zc(qrar),&
+                            zc(qrba), zc(qrvl), ldvl, zc(lvec3), qrn,&
+                            ilo, ihi, zr(ilscal), zr(irscal), abnrm,&
+                            bbnrm, zr(icscal), zr(ivscal), zc(kqrn2), qrlwo,&
                             zr(kqrnr), zi4(iiscal), bwork, qrinfo)
             end if
         end if
@@ -701,33 +714,45 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 ! ----  QZ SIMPLE
     else if (typeqz(1:9) .eq. 'QZ_SIMPLE') then
         if ((lkr) .and. (.not. lc) .and. (.not. lnsr) .and. (.not. lnsm)) then
-            call dggev('N', 'V', qrn, zr(iqrn), qrn, &
-                       zr(lqrn), qrn, zr(qrar), zr(qrai), zr(qrba), &
-                       zr(qrvl), ldvl, zr(lvec3), qrn, zr(kqrn), &
-                       qrlwo, qrinfo)
+            b_ldvr = to_blas_int(qrn)
+            b_ldvl = to_blas_int(ldvl)
+            b_ldb = to_blas_int(qrn)
+            b_lda = to_blas_int(qrn)
+            b_n = to_blas_int(qrn)
+            b_lwork = to_blas_int(qrlwo)
+            call dggev('N', 'V', b_n, zr(iqrn), b_lda,&
+                       zr(lqrn), b_ldb, zr(qrar), zr(qrai), zr(qrba),&
+                       zr(qrvl), b_ldvl, zr(lvec3), b_ldvr, zr(kqrn),&
+                       b_lwork, qrinfo)
             if (qrinfo .eq. 0) then
                 qrlwo = int(zr(kqrn))
                 qrlwor = int(zr(kqrn))
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
-                call dggev('N', 'V', qrn, zr(iqrn), qrn, &
-                           zr(lqrn), qrn, zr(qrar), zr(qrai), zr(qrba), &
-                           zr(qrvl), ldvl, zr(lvec3), qrn, zr(kqrn2), &
-                           qrlwo, qrinfo)
+                b_ldvr = to_blas_int(qrn)
+                b_ldvl = to_blas_int(ldvl)
+                b_ldb = to_blas_int(qrn)
+                b_lda = to_blas_int(qrn)
+                b_n = to_blas_int(qrn)
+                b_lwork = to_blas_int(qrlwo)
+                call dggev('N', 'V', b_n, zr(iqrn), b_lda,&
+                           zr(lqrn), b_ldb, zr(qrar), zr(qrai), zr(qrba),&
+                           zr(qrvl), b_ldvl, zr(lvec3), b_ldvr, zr(kqrn2),&
+                           b_lwork, qrinfo)
             end if
         else
-            call zggev('N', 'V', qrn, zc(iqrn), qrn, &
-                       zc(lqrn), qrn, zc(qrar), zc(qrba), zc(qrvl), &
-                       ldvl, zc(lvec3), qrn, zc(kqrn), qrlwo, &
+            call zggev('N', 'V', qrn, zc(iqrn), qrn,&
+                       zc(lqrn), qrn, zc(qrar), zc(qrba), zc(qrvl),&
+                       ldvl, zc(lvec3), qrn, zc(kqrn), qrlwo,&
                        zr(kqrnr), qrinfo)
             if (qrinfo .eq. 0) then
                 qrlwo = 4*int(dble(zc(kqrn)))
                 qrlwor = 4*int(dble(zc(kqrn)))
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V C', qrlwor, kqrn2)
-                call zggev('N', 'V', qrn, zc(iqrn), qrn, &
-                           zc(lqrn), qrn, zc(qrar), zc(qrba), zc(qrvl), &
-                           ldvl, zc(lvec3), qrn, zc(kqrn2), qrlwo, &
+                call zggev('N', 'V', qrn, zc(iqrn), qrn,&
+                           zc(lqrn), qrn, zc(qrar), zc(qrba), zc(qrvl),&
+                           ldvl, zc(lvec3), qrn, zc(kqrn2), qrlwo,&
                            zr(kqrnr), qrinfo)
             end if
         end if
@@ -738,16 +763,16 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
         if (lc .or. lnsm .or. lnsr .or. (.not. lkr)) then
             ASSERT(.false.)
         end if
-        call dsygv(1, 'V', 'U', qrn, zr(iqrn), &
-                   qrn, zr(lqrn), qrn, zr(lvalpr), zr(kqrn), &
+        call dsygv(1, 'V', 'U', qrn, zr(iqrn),&
+                   qrn, zr(lqrn), qrn, zr(lvalpr), zr(kqrn),&
                    qrlwo, qrinfo)
         if (qrinfo .eq. 0) then
             qrlwo = int(zr(kqrn))
             qrlwor = int(zr(kqrn))
             call jedetr('&&VPQZLA.QR.WORK')
             call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
-            call dsygv(1, 'V', 'U', qrn, zr(iqrn), &
-                       qrn, zr(lqrn), qrn, zr(lvalpr), zr(kqrn2), &
+            call dsygv(1, 'V', 'U', qrn, zr(iqrn),&
+                       qrn, zr(lqrn), qrn, zr(lvalpr), zr(kqrn2),&
                        qrlwo, qrinfo)
         end if
     else
@@ -823,8 +848,8 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 end if
             end if
         end do
-910     format(i4, 1x, e12.5, e12.5, e12.5, 1x, e12.5, e12.5)
-912     format(i4, 1x, e12.5, e12.5, 1x, e12.5, e12.5, 1x, e12.5, e12.5)
+        910     format(i4, 1x, e12.5, e12.5, e12.5, 1x, e12.5, e12.5)
+        912     format(i4, 1x, e12.5, e12.5, 1x, e12.5, e12.5, 1x, e12.5, e12.5)
     end if
 ! FIN DEBUG
 !
@@ -836,7 +861,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 !
     decal = 0
 ! ---- SI SYSTEME NON SYM REEL, TRAITEMENT DES PARTIES IMAGINAIRES
-    if ((typeqz(1:5) .ne. 'QZ_QR') .and. (lkr) .and. (.not. lc) .and. (.not. lnsm) .and. &
+    if ((typeqz(1:5) .ne. 'QZ_QR') .and. (lkr) .and. (.not. lc) .and. (.not. lnsm) .and.&
         (.not. lnsr)) then
         do i = 1, qrn
             im1 = i-1
@@ -863,7 +888,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 ! ----  1/ ADEQUATION /ALPHA/, /BETA/ VS //A// ET //B//
 ! ----  2/ ADEQUATION /BETA/ PROCHE DE ZERO ET DDL BLOQUE
 !---------------------------------------------------------
-    if ((typeqz(1:5) .ne. 'QZ_QR') .and. (lkr) .and. (.not. lc) .and. (.not. lnsm) .and. &
+    if ((typeqz(1:5) .ne. 'QZ_QR') .and. (lkr) .and. (.not. lc) .and. (.not. lnsm) .and.&
         (.not. lnsr)) then
 ! ---- GENERALISE REEL SYM MAIS PAS SPD
         do i = 1, qrn
@@ -900,7 +925,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 end if
             end if
         end do
-    else if ((typeqz(1:5) .ne. 'QZ_QR') .and. ((.not. lkr) .or. (lc) .or. &
+        else if ((typeqz(1:5) .ne. 'QZ_QR') .and. ((.not. lkr) .or. (lc) .or. &
                                                (lnsm) .or. (lnsr))) then
 ! ---- GENERALISE COMPLEXE SYM OU NON, REEL NON SYM
 ! ---- QUADRATIQUE REEL ET COMPLEXE, SYM OU NON
@@ -1025,7 +1050,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
     end if
     if (lkr .and. (.not. lc) .and. (.not. lnsm) .and. (.not. lnsr)) then
 ! ---- GENERALISE SYM REEL
-        call vpordo(0, 0, nconv, zr(lvalpr), zr(lvec), &
+        call vpordo(0, 0, nconv, zr(lvalpr), zr(lvec),&
                     qrn)
         vpinf = omemin-prec
         vpmax = omemax+prec
@@ -1053,13 +1078,13 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
             do i = 1, nconv
                 zr(lvalpr-1+i) = zr(lvalpr-1+i)-omeshi
             end do
-            call vpordo(1, 0, nconv, zr(lvalpr), zr(lvec), &
+            call vpordo(1, 0, nconv, zr(lvalpr), zr(lvec),&
                         qrn)
         else
             do i = 1, nconv
                 zr(lvalpr-1+i) = zr(lvalpr-1+i)-omeshi
             end do
-            call vpordo(1, 0, nconv, zr(lvalpr), zr(lvec), &
+            call vpordo(1, 0, nconv, zr(lvalpr), zr(lvec),&
                         qrn)
             if (nconv .ge. nfreq) then
                 nconv = nfreq
@@ -1071,15 +1096,15 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 call utmess(kmsg, 'ALGELINE5_66', ni=2, vali=vali)
             end if
         end if
-        call vpgsmm(qrn, nfreq, nconv, zr(lvec), alpha, &
-                    lmasse, 2, zr(ivp1), ddlexc, zr(ivp2), &
+        call vpgsmm(qrn, nfreq, nconv, zr(lvec), alpha,&
+                    lmasse, 2, zr(ivp1), ddlexc, zr(ivp2),&
                     zr(lvalpr), omecor)
 !
     else if ((.not. lc) .and. ((lnsm) .or. (lnsr) .or. (.not. lkr))) then
 ! ---- GENERALISE COMPLEXE SYM OU NON, REEL NON SYM
 ! DECALAGE DU SHIFT HOMOGENE A CE QUI EST FAIT POUR SORENSEN
 ! STRATEGIE BIZARRE A REVOIR (CF VPSORC, VPFOPC, RECTFC, VPBOSC)
-        call vpordc(1, 0, nconv, zc(lvalpr), zc(lvec), &
+        call vpordc(1, 0, nconv, zc(lvalpr), zc(lvec),&
                     qrn)
         if (nconv .ge. nfreq) then
             nconv = nfreq
@@ -1102,7 +1127,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 !
     else if (lc) then
 ! ---- QUADRATIQUE SYM OU NON, REEL ET COMPLEXE
-        call vpordc(1, 0, nconv, zc(lvalpr), zc(lvec4), &
+        call vpordc(1, 0, nconv, zc(lvalpr), zc(lvec4),&
                     qrn)
         do i = 1, nconv
             do j = 1, qrns2
@@ -1146,38 +1171,42 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
             if (lkr .and. (.not. lc) .and. (.not. lnsm) .and. (.not. lnsr)) then
                 fr = zr(lvalpr-1+i)+omeshi
                 freq = fr*cun
-                call mrmult('ZERO', lraide, zr(lvec+iauxh*(i-1)), zr(iaux1), 1, &
+                call mrmult('ZERO', lraide, zr(lvec+iauxh*(i-1)), zr(iaux1), 1,&
                             .false._1)
-                anorm1 = dnrm2(iauxh, zr(iaux1), 1)
-                call mrmult('ZERO', lmasse, zr(lvec+iauxh*(i-1)), zr(iaux2), 1, &
+                b_n = to_blas_int(iauxh)
+                b_incx = to_blas_int(1)
+                anorm1 = dnrm2(b_n, zr(iaux1), b_incx)
+                call mrmult('ZERO', lmasse, zr(lvec+iauxh*(i-1)), zr(iaux2), 1,&
                             .false._1)
                 b_n = to_blas_int(iauxh)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, -fr, zr(iaux2), b_incx, zr(iaux1), &
+                call daxpy(b_n, -fr, zr(iaux2), b_incx, zr(iaux1),&
                            b_incy)
-                anorm2 = dnrm2(iauxh, zr(iaux1), 1)
+                b_n = to_blas_int(iauxh)
+                b_incx = to_blas_int(1)
+                anorm2 = dnrm2(b_n, zr(iaux1), b_incx)
             else
                 if (lc) then
                     freq = zc(lvalpr-1+i)
                 else
                     freq = zc(lvalpr-1+i)-sigma
                 end if
-                call mcmult('ZERO', lraide, zc(lvec+iauxh*(i-1)), zc(iaux1), 1, &
+                call mcmult('ZERO', lraide, zc(lvec+iauxh*(i-1)), zc(iaux1), 1,&
                             .false._1)
                 anorm1 = dznrm2(iauxh, zc(iaux1), 1)
-                call mcmult('ZERO', lmasse, zc(lvec+iauxh*(i-1)), zc(iaux2), 1, &
+                call mcmult('ZERO', lmasse, zc(lvec+iauxh*(i-1)), zc(iaux2), 1,&
                             .false._1)
                 if (lc) then
-                    call mcmult('ZERO', lamor, zc(lvec+iauxh*(i-1)), zc(iaux3), 1, &
+                    call mcmult('ZERO', lamor, zc(lvec+iauxh*(i-1)), zc(iaux3), 1,&
                                 .false._1)
-                    call zaxpy(iauxh, freq, zc(iaux3), 1, zc(iaux1), &
+                    call zaxpy(iauxh, freq, zc(iaux3), 1, zc(iaux1),&
                                1)
                     freq2 = freq*freq
-                    call zaxpy(iauxh, freq2, zc(iaux2), 1, zc(iaux1), &
+                    call zaxpy(iauxh, freq2, zc(iaux2), 1, zc(iaux1),&
                                1)
                 else
-                    call zaxpy(iauxh, -freq, zc(iaux2), 1, zc(iaux1), &
+                    call zaxpy(iauxh, -freq, zc(iaux2), 1, zc(iaux1),&
                                1)
                 end if
                 anorm2 = dznrm2(iauxh, zc(iaux1), 1)
@@ -1201,10 +1230,10 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                                                                      dble(freq)), anorm3
             end if
         end do
-921     format('I/FREQ/ERREUR INVERSE ASTER', i4, 1x, e12.5, 1x, e12.5)
-922     format('I/LAMBDA/ERREUR INVERSE ASTER', i4, 1x, e12.5, e12.5, 1x,&
+        921     format('I/FREQ/ERREUR INVERSE ASTER', i4, 1x, e12.5, 1x, e12.5)
+        922     format('I/LAMBDA/ERREUR INVERSE ASTER', i4, 1x, e12.5, e12.5, 1x,&
      &         e12.5)
-923     format('I/FREQ/ERREUR INVERSE ASTER', i4, 1x, e12.5, e12.5, 1x,&
+        923     format('I/FREQ/ERREUR INVERSE ASTER', i4, 1x, e12.5, e12.5, 1x,&
      &         e12.5)
         call jedetr('&&VPQZLA.TAMPON.PROV_1')
         call jedetr('&&VPQZLA.TAMPON.PROV_2')

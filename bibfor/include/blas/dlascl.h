@@ -15,23 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dlascl(type, kl, ku, cfrom, cto,&
                       m, n, a, lda, info)
-        integer, intent(in) :: lda
-        character(len=1) ,intent(in) :: type
-        integer, intent(in) :: kl
-        integer, intent(in) :: ku
-        real(kind=8) ,intent(in) :: cfrom
-        real(kind=8) ,intent(in) :: cto
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        real(kind=8) ,intent(inout) :: a(lda, *)
+        blas_int, intent(in) :: lda
+        character(len=1), intent(in) :: type
+        blas_int, intent(in) :: kl
+        blas_int, intent(in) :: ku
+        real(kind=8), intent(in) :: cfrom
+        real(kind=8), intent(in) :: cto
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        real(kind=8), intent(inout) :: a(lda, *)
         blas_int, intent(out) :: info
     end subroutine dlascl
 end interface

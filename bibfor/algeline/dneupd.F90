@@ -404,6 +404,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
     real(kind=8) :: conds, rnorm, sep, temp, thres, vl(1, 1), temp1, eps23, eps
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_m
+    blas_int :: b_ldb
 !
 !     %--------------------%
 !     | EXTERNAL FUNCTIONS |
@@ -662,8 +663,11 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         call dcopy(b_n, workl(ih), b_incx, workl(iuptri), b_incy)
 ! DUE TO CRP_102 CALL DLASET ('ALL', NCV, NCV, ZERO, ONE,
 ! WORKL(INVSUB), LDQ)
-        call dlaset('A', ncv, ncv, zero, one,&
-                    workl(invsub), ldq)
+        b_lda = to_blas_int(ldq)
+        b_m = to_blas_int(ncv)
+        b_n = to_blas_int(ncv)
+        call dlaset('A', b_m, b_n, zero, one,&
+                    workl(invsub), b_lda)
         call ar_dlahqr(.true._1, .true._1, ncv, 1, ncv,&
                        workl(iuptri), ldh, workl(iheigr), workl(iheigi), 1,&
                        ncv, workl(invsub), ldq, ierr)
@@ -771,8 +775,12 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                     workl(invsub), ldq, workev, v, ldv,&
                     workd(n+1), ierr4)
         ierr = ierr4
-        call dlacpy('A', n, nconv, v, ldv,&
-                    z, ldz)
+        b_ldb = to_blas_int(ldz)
+        b_lda = to_blas_int(ldv)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(nconv)
+        call dlacpy('A', b_m, b_n, v, b_lda,&
+                    z, b_ldb)
 !
         do j = 1, nconv
 !
@@ -833,7 +841,9 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !                 | REAL EIGENVALUE CASE |
 !                 %----------------------%
 !
-                    temp = dnrm2(ncv, workl(invsub+(j-1)*ldq), 1)
+                    b_n = to_blas_int(ncv)
+                    b_incx = to_blas_int(1)
+                    temp = dnrm2(b_n, workl(invsub+(j-1)*ldq), b_incx)
                     call dscal(ncv, one/temp, workl(invsub+(j-1)*ldq), 1)
 !
                 else
@@ -847,9 +857,11 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !                 %-------------------------------------------%
 !
                     if (iconj .eq. 0) then
+                        b_n = to_blas_int(ncv)
+                        b_incx = to_blas_int(1)
                         temp = dlapy2(&
-                               dnrm2(ncv, workl(invsub+(j-1)*ldq), 1),&
-                               dnrm2(ncv, workl(invsub+j*ldq), 1)&
+                               dnrm2(b_n, workl(invsub+(j-1)*ldq), b_incx),&
+                               dnrm2(b_n, workl(invsub+j*ldq), b_incx)&
                                )
                         call dscal(ncv, one/temp, workl(invsub+(j-1)*ldq), 1)
                         call dscal(ncv, one/temp, workl(invsub+j*ldq), 1)

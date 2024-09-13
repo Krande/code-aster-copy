@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comatr(option, typev, nbproc, rang, vnconv, &
-                  dim1i, dim2i, vecti, dim1r, dim2r, &
+subroutine comatr(option, typev, nbproc, rang, vnconv,&
+                  dim1i, dim2i, vecti, dim1r, dim2r,&
                   vectr, dim1c, dim2c, vectc)
 !     COMMUNICATION VIA LE COMMUNICATEUR MPI COURANT D'UNE MATRICE SOIT
 !     REELLE, SOIT ENTIERE, SOIT DE CHAR*, SOIT COMPLEXE.
@@ -69,9 +69,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
 ! VARIABLES LOCALES
     integer :: nconv, nconvg, i, j, idecal, iaux1, izero, idim1, idim2
     integer :: ifm, niv
-    real(kind=8) :: rzero
+    real(kind=8) :: rzero, res
     complex(kind=8) :: czero, dcmplx
     aster_logical :: ldebug
+    blas_int :: b_incx, b_n
 !
 ! --- INIT.
     call jemarq()
@@ -87,7 +88,7 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
 !-----------------------------------------------------------------------
     ASSERT((option .eq. 'S') .or. (option .eq. 'T'))
     ASSERT((typev .eq. 'R') .or. (typev .eq. 'I') .or. (typev .eq. 'C'))
-    ASSERT((nbproc .ge. 1) .and. (rang .ge. 0) .and. (rang+1 .le. nbproc))
+    ASSERT((nbproc .ge. 1) .and. (rang .ge. 0) .and. (rang + 1 .le. nbproc))
 !
     if (typev .eq. 'I') then
         idim1 = dim1i
@@ -108,13 +109,13 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
 ! --- NCONV:  NBRE DE PREMIERES COLONNES A DECALER
 ! --- NCONVG: SOMME DE DECALAGES
 ! --- IDECAL: DECALAGE POUR LE PROC COURANT
-    nconv = vnconv(rang+1)
+    nconv = vnconv(rang + 1)
     nconvg = 0
     idecal = 0
     do i = 1, nbproc
         ASSERT(vnconv(i) .ge. 0)
-        if ((i-1) .lt. rang) idecal = idecal+vnconv(i)
-        nconvg = nconvg+vnconv(i)
+        if ((i - 1) .lt. rang) idecal = idecal + vnconv(i)
+        nconvg = nconvg + vnconv(i)
     end do
     if (option .eq. 'S') then
         ASSERT(idim2 .eq. nconvg)
@@ -129,7 +130,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         write (ifm, *) 'INITIALISATION***************************'
         if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
+                b_n = to_blas_int(idim1)
+                b_incx = to_blas_int(1)
+                res = dnrm2(b_n, vectr(1, j), b_incx)
+                write (ifm, *) j, res
             end do
         else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
 ! --- ON NE FAIT QU'IMPRIMER LES TERMES CAR CERTAINS SONT EN 1.E+308
@@ -149,33 +153,33 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
 ! --- A ZERO: COMME SEULS LES NCONV PREMIERES COLONNES (RESP. LIGNES)
 ! --- SONT SIGNIFIANTES.
     if (option .eq. 'S') then
-        iaux1 = idim1*(idim2-nconv)
+        iaux1 = idim1*(idim2 - nconv)
     else
-        iaux1 = idim1-nconv
+        iaux1 = idim1 - nconv
     end if
     if ((option .eq. 'S') .and. (iaux1 .gt. 0)) then
 !
         if (typev .eq. 'R') then
-            call vecini(iaux1, rzero, vectr(1, nconv+1))
+            call vecini(iaux1, rzero, vectr(1, nconv + 1))
         else if (typev .eq. 'I') then
-            call vecint(iaux1, izero, vecti(1, nconv+1))
+            call vecint(iaux1, izero, vecti(1, nconv + 1))
         else if (typev .eq. 'C') then
-            call vecinc(iaux1, czero, vectc(1, nconv+1))
+            call vecinc(iaux1, czero, vectc(1, nconv + 1))
         end if
 !
     else if ((option .eq. 'T') .and. (iaux1 .gt. 0)) then
 !
         if (typev .eq. 'R') then
             do j = 1, idim2
-                call vecini(iaux1, rzero, vectr(nconv+1, j))
+                call vecini(iaux1, rzero, vectr(nconv + 1, j))
             end do
         else if (typev .eq. 'I') then
             do j = 1, idim2
-                call vecint(iaux1, izero, vecti(nconv+1, j))
+                call vecint(iaux1, izero, vecti(nconv + 1, j))
             end do
         else if (typev .eq. 'C') then
             do j = 1, idim2
-                call vecinc(iaux1, czero, vectc(nconv+1, j))
+                call vecinc(iaux1, czero, vectc(nconv + 1, j))
             end do
         end if
 !
@@ -186,7 +190,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         write (ifm, *) 'STEP 1***************************'
         if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
+                b_n = to_blas_int(idim1)
+                b_incx = to_blas_int(1)
+                res = dnrm2(b_n, vectr(1, j), b_incx)
+                write (ifm, *) j, res
             end do
         else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1
@@ -207,19 +214,19 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         if (typev .eq. 'R') then
             do j = nconv, 1, -1
                 do i = 1, idim1
-                    vectr(i, j+idecal) = vectr(i, j)
+                    vectr(i, j + idecal) = vectr(i, j)
                 end do
             end do
         else if (typev .eq. 'I') then
             do j = nconv, 1, -1
                 do i = 1, idim1
-                    vecti(i, j+idecal) = vecti(i, j)
+                    vecti(i, j + idecal) = vecti(i, j)
                 end do
             end do
         else if (typev .eq. 'C') then
             do j = nconv, 1, -1
                 do i = 1, idim1
-                    vectc(i, j+idecal) = vectc(i, j)
+                    vectc(i, j + idecal) = vectc(i, j)
                 end do
             end do
         end if
@@ -229,19 +236,19 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         if (typev .eq. 'R') then
             do j = 1, idim2
                 do i = nconv, 1, -1
-                    vectr(i+idecal, j) = vectr(i, j)
+                    vectr(i + idecal, j) = vectr(i, j)
                 end do
             end do
         else if (typev .eq. 'I') then
             do j = 1, idim2
                 do i = nconv, 1, -1
-                    vecti(i+idecal, j) = vecti(i, j)
+                    vecti(i + idecal, j) = vecti(i, j)
                 end do
             end do
         else if (typev .eq. 'C') then
             do j = 1, idim2
                 do i = nconv, 1, -1
-                    vectc(i+idecal, j) = vectc(i, j)
+                    vectc(i + idecal, j) = vectc(i, j)
                 end do
             end do
         end if
@@ -253,7 +260,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         write (ifm, *) 'STEP 2***************************'
         if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
+                b_n = to_blas_int(idim1)
+                b_incx = to_blas_int(1)
+                res = dnrm2(b_n, vectr(1, j), b_incx)
+                write (ifm, *) j, res
             end do
         else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1
@@ -300,7 +310,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         write (ifm, *) 'STEP 3***************************'
         if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
+                b_n = to_blas_int(idim1)
+                b_incx = to_blas_int(1)
+                res = dnrm2(b_n, vectr(1, j), b_incx)
+                write (ifm, *) j, res
             end do
         else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1
@@ -327,7 +340,10 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
         write (ifm, *) 'FINALISATION***************************'
         if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
+                b_n = to_blas_int(idim1)
+                b_incx = to_blas_int(1)
+                res = dnrm2(b_n, vectr(1, j), b_incx)
+                write (ifm, *) j, res
             end do
         else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1

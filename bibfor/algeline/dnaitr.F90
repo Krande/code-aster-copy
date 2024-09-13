@@ -303,6 +303,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
     real(kind=8) :: xtemp(2)
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_m
+    blas_int :: b_kl, b_ku
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -482,11 +483,21 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !            %-----------------------------------------%
 !
 ! DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
-        call dlascl('G', i, i, rnorm, one,&
-                    n, 1, v(1, j), n, infol4)
+        b_lda = to_blas_int(n)
+        b_kl = to_blas_int(i)
+        b_ku = to_blas_int(i)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(1)
+        call dlascl('G', b_kl, b_ku, rnorm, one,&
+                    b_m, b_n, v(1, j), b_lda, infol4)
 ! DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
-        call dlascl('G', i, i, rnorm, one,&
-                    n, 1, workd(ipj), n, infol4)
+        b_lda = to_blas_int(n)
+        b_kl = to_blas_int(i)
+        b_ku = to_blas_int(i)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(1)
+        call dlascl('G', b_kl, b_ku, rnorm, one,&
+                    b_m, b_n, workd(ipj), b_lda, infol4)
 !
     end if
 !
@@ -575,7 +586,9 @@ subroutine dnaitr(ido, bmat, n, k, np,&
         wnorm = ddot(b_n, resid, b_incx, workd(ipj), b_incy)
         wnorm = sqrt(abs(wnorm))
     else if (bmat .eq. 'I') then
-        wnorm = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        wnorm = dnrm2(b_n, resid, b_incx)
     end if
 !
 !        %-----------------------------------------%
@@ -657,7 +670,9 @@ subroutine dnaitr(ido, bmat, n, k, np,&
         rnorm = ddot(b_n, resid, b_incx, workd(ipj), b_incy)
         rnorm = sqrt(abs(rnorm))
     else if (bmat .eq. 'I') then
-        rnorm = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        rnorm = dnrm2(b_n, resid, b_incx)
     end if
 !
 !        %-----------------------------------------------------------%
@@ -773,7 +788,9 @@ subroutine dnaitr(ido, bmat, n, k, np,&
         rnorm1 = ddot(b_n, resid, b_incx, workd(ipj), b_incy)
         rnorm1 = sqrt(abs(rnorm1))
     else if (bmat .eq. 'I') then
-        rnorm1 = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        rnorm1 = dnrm2(b_n, resid, b_incx)
     end if
 !
     if (msglvl .gt. 0 .and. iter .gt. 0) then
@@ -853,7 +870,9 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !              %--------------------------------------------%
 !
             tst1 = abs(h(i, i))+abs(h(i+1, i+1))
-            if (tst1 .eq. zero) tst1 = dlanhs('1', k+np, h, ldh, workd(n+1))
+            b_lda = to_blas_int(ldh)
+            b_n = to_blas_int(k+np)
+            if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h, b_lda, workd(n+1))
             if (abs(h(i+1, i)) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
         end do
 !
