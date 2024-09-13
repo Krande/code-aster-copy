@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
-                 ipt, isp, type_gd, rc, p, permvec)
+!
+subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
+                 ipt, isp, type_gd, rc, p,&
+                 permvec)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -26,10 +27,10 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
 #include "asterfort/utmess.h"
 #include "blas/dgemv.h"
 !
-    integer, intent(in)                         :: nbcmp, jcesd, jcesl, jcesv, imai, ipt, isp
-    real(kind=8), dimension(:, :), intent(in)    :: p
-    character(len=*), intent(in)                :: type_gd
-    character, intent(in)                       :: rc
+    integer, intent(in) :: nbcmp, jcesd, jcesl, jcesv, imai, ipt, isp
+    real(kind=8), dimension(:, :), intent(in) :: p
+    character(len=*), intent(in) :: type_gd
+    character, intent(in) :: rc
 !
     integer, dimension(:), intent(in), optional :: permvec
 ! ----------------------------------------------------------------------
@@ -48,10 +49,11 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
 !     PERMVEC  IN  I    : VECTEUR DE PERMUTATION (POUR DIM 2 & CHANGEMENT CYLINDRIQUE)
 ! ---------------------------------------------------------------------
 !
-    integer                    :: ii, iad, kk
+    integer :: ii, iad, kk
     real(kind=8), dimension(6) :: val1, val1r, val1i
     real(kind=8), dimension(6) :: val, valr, vali
-    integer, dimension(6)      :: permvec_loc
+    integer, dimension(6) :: permvec_loc
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 !   Lecture des composantes du champ (vecteur ou tenseur) au sous-point courant
 !       Si tenseur réel ou vecteur réel : lecture dans val1
@@ -66,7 +68,7 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
     val1(:) = 0.d0
     val1r(:) = 0.d0
     val1i(:) = 0.d0
-
+!
 !   Vecteur (optionnel) permettant de permuter les composantes (du tenseur ou du vecteur)
 !   après application du changement de repère.  Cette possibilité est utilisée pour le
 !   changement de repère vers un repère cylindrique dans les éléments de milieu continu.
@@ -77,12 +79,13 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
     end if
 !
     do ii = 1, nbcmp
-        call cesexi('C', jcesd, jcesl, imai, ipt, isp, ii, iad)
+        call cesexi('C', jcesd, jcesl, imai, ipt,&
+                    isp, ii, iad)
         if (iad .gt. 0) then
             select case (rc)
-            case ('R')
+                case ('R')
                 val1(ii) = zr(jcesv-1+iad)
-            case ('C')
+                case ('C')
                 val1r(ii) = dreal(zc(jcesv-1+iad))
                 val1i(ii) = dimag(zc(jcesv-1+iad))
             case default
@@ -94,52 +97,71 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
     select case (type_gd(1:7))
     case ('TENS_3D', 'TENS_2D')
 !           Sigma <- P^T Sigma P
-        select case (rc)
+    select case (rc)
         case ('R')
-            val(:) = val1(:)
-            call tpsivp(p, val)
+        val(:) = val1(:)
+        call tpsivp(p, val)
         case ('C')
-            valr(:) = val1r(:)
-            vali(:) = val1i(:)
-            call tpsivp(p, valr)
-            call tpsivp(p, vali)
-        end select
+        valr(:) = val1r(:)
+        vali(:) = val1i(:)
+        call tpsivp(p, valr)
+        call tpsivp(p, vali)
+    end select
     case ('VECT_3D', 'VECT_2D')
 !           val = P^T val1
-        select case (rc)
+    select case (rc)
         case ('R')
-            call dgemv(trans='T', m=3, n=3, alpha=1.d0, a=p, &
-                       lda=3, x=val1, incx=1, beta=0.d0, y=val, incy=1)
+        b_lda = to_blas_int(3)
+        b_m = to_blas_int(3)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv(trans='T', m=b_m, n=b_n, alpha=1.d0, a=p,&
+                   lda=b_lda, x=val1, incx=b_incx, beta=0.d0, y=val,&
+                   incy=b_incy)
         case ('C')
-            call dgemv(trans='T', m=3, n=3, alpha=1.d0, a=p, &
-                       lda=3, x=val1r, incx=1, beta=0.d0, y=valr, incy=1)
-            call dgemv(trans='T', m=3, n=3, alpha=1.d0, a=p, &
-                       lda=3, x=val1i, incx=1, beta=0.d0, y=vali, incy=1)
-        end select
+        b_lda = to_blas_int(3)
+        b_m = to_blas_int(3)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv(trans='T', m=b_m, n=b_n, alpha=1.d0, a=p,&
+                   lda=b_lda, x=val1r, incx=b_incx, beta=0.d0, y=valr,&
+                   incy=b_incy)
+        b_lda = to_blas_int(3)
+        b_m = to_blas_int(3)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv(trans='T', m=b_m, n=b_n, alpha=1.d0, a=p,&
+                   lda=b_lda, x=val1i, incx=b_incx, beta=0.d0, y=vali,&
+                   incy=b_incy)
+    end select
     case ('1D_GENE')
 !           val = P val1 sur 2 blocs de 3 composantes  X,Y,Z  RX,RY,RZ
-        select case (rc)
+    select case (rc)
         case ('R')
-            do ii = 1, 3
-                do kk = 1, 3
-                    val(ii) = val(ii)+p(ii, kk)*val1(kk)
-                    val(ii+3) = val(ii+3)+p(ii, kk)*val1(kk+3)
-                end do
+        do ii = 1, 3
+            do kk = 1, 3
+                val(ii) = val(ii)+p(ii, kk)*val1(kk)
+                val(ii+3) = val(ii+3)+p(ii, kk)*val1(kk+3)
             end do
+        end do
         case ('C')
-            call utmess('F', 'ALGORITH2_31')
-        end select
-    case default
-        ASSERT(.false.)
+        call utmess('F', 'ALGORITH2_31')
     end select
+case default
+    ASSERT(.false.)
+end select
 !   Copie des composantes modifiées dans le champ
     do ii = 1, nbcmp
-        call cesexi('C', jcesd, jcesl, imai, ipt, isp, ii, iad)
+        call cesexi('C', jcesd, jcesl, imai, ipt,&
+                    isp, ii, iad)
         if (iad .gt. 0) then
             select case (rc)
-            case ('R')
+                case ('R')
                 zr(jcesv-1+iad) = val(permvec_loc(ii))
-            case ('C')
+                case ('C')
                 zc(jcesv-1+iad) = dcmplx(valr(permvec_loc(ii)), vali(permvec_loc(ii)))
             end select
         end if

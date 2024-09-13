@@ -15,22 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dger(m, n, alpha, x, incx,&
                     y, incy, a, lda)
-        integer, intent(in) :: lda
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        real(kind=8) ,intent(in) :: alpha
-        real(kind=8) ,intent(in) :: x(*)
-        integer, intent(in) :: incx
-        real(kind=8) ,intent(in) :: y(*)
-        integer, intent(in) :: incy
-        real(kind=8) ,intent(inout) :: a(lda, *)
+        blas_int, intent(in) :: lda
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        real(kind=8), intent(in) :: alpha
+        real(kind=8), intent(in) :: x(*)
+        blas_int, intent(in) :: incx
+        real(kind=8), intent(in) :: y(*)
+        blas_int, intent(in) :: incy
+        real(kind=8), intent(inout) :: a(lda, *)
     end subroutine dger
 end interface

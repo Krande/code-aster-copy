@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! --------------------------------------------------------------------
 !  SD pour la manipulation des deformations logarithmiques
 ! --------------------------------------------------------------------
-
+!
 module gdlog_module
-
+!
     implicit none
-
+!
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/deflg2.h"
@@ -37,16 +37,16 @@ module gdlog_module
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
 #include "blas/dger.h"
-
+!
     type GDLOG_DS
         private
-        integer      :: ndim
-        integer      :: nno
-        aster_logical:: init_ds
-        aster_logical:: calc_defo
-        aster_logical:: calc_matb
-        aster_logical:: axi
-        aster_logical:: rigi
+        integer :: ndim
+        integer :: nno
+        aster_logical :: init_ds
+        aster_logical :: calc_defo
+        aster_logical :: calc_matb
+        aster_logical :: axi
+        aster_logical :: rigi
         real(kind=8) :: f(3, 3)
         real(kind=8) :: gn(3, 3)
         real(kind=8) :: lamb(3)
@@ -55,22 +55,22 @@ module gdlog_module
         real(kind=8) :: feta(4)
         real(kind=8) :: xi(3, 3)
         real(kind=8) :: me(3, 3, 3, 3)
-        real(kind=8), dimension(:, :, :), pointer:: deft
-        real(kind=8), dimension(:, :, :), pointer:: pff
-        real(kind=8), dimension(:), pointer    :: axf
+        real(kind=8), dimension(:, :, :), pointer :: deft
+        real(kind=8), dimension(:, :, :), pointer :: pff
+        real(kind=8), dimension(:), pointer :: axf
     end type GDLOG_DS
-
-    public:: gdlog_init
-    public:: gdlog_defo
-    public:: gdlog_matb
-    public:: gdlog_rigeo
-    public:: gdlog_nice_cauchy
-    public:: gdlog_delete
-
+!
+    public :: gdlog_init
+    public :: gdlog_defo
+    public :: gdlog_matb
+    public :: gdlog_rigeo
+    public :: gdlog_nice_cauchy
+    public :: gdlog_delete
+!
 contains
-
+!
     subroutine gdlog_init(self, ndim, nno, axi, rigi)
-
+!
 ! ----------------------------------------------------------------------
 !   Creation de l'objet GDLOG_DS
 ! ----------------------------------------------------------------------
@@ -79,13 +79,13 @@ contains
 ! in axi  axi ou pas
 ! in rigi calculera-t-on des matrices de rigidite geometrique ou pas
 ! ----------------------------------------------------------------------
-
+!
         implicit none
-        type(GDLOG_DS)    :: self
-        integer           :: ndim, nno
-        aster_logical     :: axi, rigi
+        type(GDLOG_DS) :: self
+        integer :: ndim, nno
+        aster_logical :: axi, rigi
 ! ---------------------------------------------------------------------
-
+!
         self%ndim = ndim
         self%nno = nno
         self%init_ds = .true.
@@ -93,17 +93,17 @@ contains
         self%calc_matb = .false.
         self%axi = axi
         self%rigi = rigi
-
+!
         allocate (self%deft(2*ndim, ndim, nno))
         allocate (self%pff(2*ndim, nno, nno))
         allocate (self%axf(nno))
-
+!
     end subroutine gdlog_init
-
+!
 ! =====================================================================
-
+!
     subroutine gdlog_defo(self, f, eps, iret)
-
+!
 ! ----------------------------------------------------------------------
 !     CALCUL DES DEFORMATIONS LOGARITHMIQUES
 ! ----------------------------------------------------------------------
@@ -111,42 +111,43 @@ contains
 !     out   eps   def. log.
 !     out   iret  0=ok, 1=vp(ft.f) trop petites (compression infinie) ou jac<0
 ! ----------------------------------------------------------------------
-
+!
         implicit none
-        type(GDLOG_DS)          :: self
+        type(GDLOG_DS) :: self
         real(kind=8), intent(in) :: f(3, 3)
-        real(kind=8), intent(out):: eps(:)
-        integer, intent(out)     :: iret
+        real(kind=8), intent(out) :: eps(:)
+        integer, intent(out) :: iret
 ! ----------------------------------------------------------------------
-        real(kind=8):: eps6(6), jac
+        real(kind=8) :: eps6(6), jac
 ! ----------------------------------------------------------------------
-
-        ! initialisation
+!
+! initialisation
         self%calc_matb = .false.
-
-        ! Controle de coherence
+!
+! Controle de coherence
         ASSERT(self%init_ds)
         ASSERT(size(eps) .eq. 2*self%ndim)
-
-        ! Controle numerique
+!
+! Controle numerique
         call lcdetf(self%ndim, f, jac)
         iret = merge(1, 0, jac .le. r8prem())
         if (iret .ne. 0) goto 999
-
-        ! Calcul des elements cinematiques et des deformations
-        call deflog(self%ndim, f, eps6, self%gn, self%lamb, self%logl, iret)
+!
+! Calcul des elements cinematiques et des deformations
+        call deflog(self%ndim, f, eps6, self%gn, self%lamb,&
+                    self%logl, iret)
         self%calc_defo = (iret .eq. 0)
         if (iret .ne. 0) goto 999
         eps = eps6(1:2*self%ndim)
         self%f = f
-
+!
 999     continue
     end subroutine gdlog_defo
-
+!
 ! =====================================================================
-
+!
     subroutine gdlog_matb(self, r, vff, dff, matb)
-
+!
 ! ----------------------------------------------------------------------
 !     Calcul matrice B tq dElog = B . dU
 ! ----------------------------------------------------------------------
@@ -155,31 +156,35 @@ contains
 ! in  dff  derivee des fonctions de forme
 ! out matb matrice b
 ! ----------------------------------------------------------------------
-
+!
         implicit none
-        type(GDLOG_DS)                  :: self
-        real(kind=8), intent(in)         :: r
-        real(kind=8), intent(in)         :: vff(:)
-        real(kind=8), intent(in)         :: dff(:, :)
-        real(kind=8), intent(out)        :: matb(:, :, :)
+        type(GDLOG_DS) :: self
+        real(kind=8), intent(in) :: r
+        real(kind=8), intent(in) :: vff(:)
+        real(kind=8), intent(in) :: dff(:, :)
+        real(kind=8), intent(out) :: matb(:, :, :)
 ! ---------------------------------------------------------------------
-        integer                 :: ndimsi, nno, ndim, kl
-        real(kind=8), allocatable:: def(:, :, :)
+        integer :: ndimsi, nno, ndim, kl
+        real(kind=8), allocatable :: def(:, :, :)
+        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 ! ---------------------------------------------------------------------
-
+!
         ASSERT(self%calc_defo)
-
-        ! Initialisation
+!
+! Initialisation
         ndim = self%ndim
         nno = self%nno
         ndimsi = 2*ndim
         allocate (def(ndimsi, nno, ndim))
-
-        ! Calcul de la matrice PES de passage T -> PK2
-        call deflg2(self%gn, self%lamb, self%logl, self%pes, self%feta, self%xi, self%me)
-
-        ! Derivee premiere et seconde du tenseur de Green-Lagrange (lien log <-> GL)
-     call nmfdff(ndim, nno, self%axi, 1, r, self%rigi, ASTER_FALSE, self%f, vff, dff, def, self%pff)
+!
+! Calcul de la matrice PES de passage T -> PK2
+        call deflg2(self%gn, self%lamb, self%logl, self%pes, self%feta,&
+                    self%xi, self%me)
+!
+! Derivee premiere et seconde du tenseur de Green-Lagrange (lien log <-> GL)
+        call nmfdff(ndim, nno, self%axi, 1, r,&
+                    self%rigi, ASTER_FALSE, self%f, vff, dff,&
+                    def, self%pff)
         do kl = 1, ndimsi
             self%deft(kl, :, :) = transpose(def(kl, :, :))
         end do
@@ -188,137 +193,178 @@ contains
         else
             self%axf = 0
         end if
-
-        ! matb = pes:def
-        call dgemm('n','n',ndimsi,ndim*nno,ndimsi,1.d0,self%pes,6,self%deft,ndimsi,0.d0,matb,ndimsi)
-
+!
+! matb = pes:def
+        b_ldc = to_blas_int(ndimsi)
+        b_ldb = to_blas_int(ndimsi)
+        b_lda = to_blas_int(6)
+        b_m = to_blas_int(ndimsi)
+        b_n = to_blas_int(ndim*nno)
+        b_k = to_blas_int(ndimsi)
+        call dgemm('n', 'n', b_m, b_n, b_k,&
+                   1.d0, self%pes, b_lda, self%deft, b_ldb,&
+                   0.d0, matb, b_ldc)
+!
         self%calc_matb = .true.
         deallocate (def)
     end subroutine gdlog_matb
-
+!
 ! =====================================================================
-
-    function gdlog_rigeo(self, t) result(matr)
-
+!
+    function gdlog_rigeo(self, t) result (matr)
+!
 ! ----------------------------------------------------------------------
 !     Calcul de la rigidite geometrique T:d2E
 ! ----------------------------------------------------------------------
 ! in  t     tenseur de contrainte T
 ! out matr  matrice tangente de rigidite geometrique (ndim,nno,ndim,nno)
 ! ----------------------------------------------------------------------
-
+!
         implicit none
-        type(GDLOG_DS)         :: self
-        real(kind=8), intent(in):: t(:)
-        real(kind=8)           :: matr(self%ndim, self%nno, self%ndim, self%nno)
+        type(GDLOG_DS) :: self
+        real(kind=8), intent(in) :: t(:)
+        real(kind=8) :: matr(self%ndim, self%nno, self%ndim, self%nno)
 ! ---------------------------------------------------------------------
-        integer     :: ndimsi, nno, ndim, i
-        real(kind=8):: t6(6), tls3(3, 3, 3, 3), tls(6, 6), pk2(6)
-        real(kind=8), allocatable:: maax(:, :)
-        real(kind=8), allocatable:: marg(:, :)
-        real(kind=8), allocatable:: trv(:, :, :)
+        integer :: ndimsi, nno, ndim, i
+        real(kind=8) :: t6(6), tls3(3, 3, 3, 3), tls(6, 6), pk2(6)
+        real(kind=8), allocatable :: maax(:, :)
+        real(kind=8), allocatable :: marg(:, :)
+        real(kind=8), allocatable :: trv(:, :, :)
+        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+        blas_int :: b_incx, b_incy
 ! ---------------------------------------------------------------------
-
+!
         ASSERT(self%calc_matb)
-
-        ! identification des dimensions
+!
+! identification des dimensions
         ndim = self%ndim
         ndimsi = 2*ndim
         nno = self%nno
         allocate (maax(nno, nno))
         allocate (marg(nno, nno))
         allocate (trv(ndimsi, ndim, nno))
-
-        ! Controles de coherence
+!
+! Controles de coherence
         ASSERT(size(t) .eq. ndimsi)
-
-        ! initialisation
+!
+! initialisation
         t6 = 0
         t6(1:ndimsi) = t
-
+!
 ! Termes relatifs GDEF_LOG -> GREEN_LAGRANGE
-
-        ! Tenseur L (TLS): terme en de:tls:de hors variation de dT/dE
-        call deflg3(self%gn, self%feta, self%xi, self%me, t6, tls3)
+!
+! Tenseur L (TLS): terme en de:tls:de hors variation de dT/dE
+        call deflg3(self%gn, self%feta, self%xi, self%me, t6,&
+                    tls3)
         call symt46(tls3, tls)
-
-        ! Calcul de S (PK2) pour le terme en PK2:d2e
+!
+! Calcul de S (PK2) pour le terme en PK2:d2e
         pk2 = matmul(t6, self%pes)
-
+!
 ! Rigidite geometrique a partie de de:L:de et S:d2e
-
-        ! Terme axi : S(3) * Nn/r * Nm/r (termes i=j=1)
+!
+! Terme axi : S(3) * Nn/r * Nm/r (termes i=j=1)
         maax = 0
-        call dger(nno, nno, pk2(3), self%axf, 1, self%axf, 1, maax, nno)
-
-        ! Terme S(kl).PFF(kl,n,m) (termes i=j)
-        call dgemv('t', ndimsi, nno*nno, 1.d0, self%pff, ndimsi, pk2, 1, 0.d0, marg, 1)
-
-        ! Terme DEFT(ab,i,n):L(ab,kl): DEFT(kl,j,m) = M(j,m,i,n)
-  call dgemm('n', 'n', ndimsi, ndim*nno, ndimsi, 1.d0, tls, 6, self%deft, ndimsi, 0.d0, trv, ndimsi)
-    call dgemm('t','n',ndim*nno,ndim*nno,ndimsi,1.d0,trv,ndimsi,self%deft,ndimsi,0.d0,matr,ndim*nno)
-
-        ! Ajout des termes marg (symetrique) et maax (symetrique) -> pas besoin de transposer n <-> m
+        b_lda = to_blas_int(nno)
+        b_m = to_blas_int(nno)
+        b_n = to_blas_int(nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dger(b_m, b_n, pk2(3), self%axf, b_incx,&
+                  self%axf, b_incy, maax, b_lda)
+!
+! Terme S(kl).PFF(kl,n,m) (termes i=j)
+        b_lda = to_blas_int(ndimsi)
+        b_m = to_blas_int(ndimsi)
+        b_n = to_blas_int(nno*nno)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('t', b_m, b_n, 1.d0, self%pff,&
+                   b_lda, pk2, b_incx, 0.d0, marg,&
+                   b_incy)
+!
+! Terme DEFT(ab,i,n):L(ab,kl): DEFT(kl,j,m) = M(j,m,i,n)
+        b_ldc = to_blas_int(ndimsi)
+        b_ldb = to_blas_int(ndimsi)
+        b_lda = to_blas_int(6)
+        b_m = to_blas_int(ndimsi)
+        b_n = to_blas_int(ndim*nno)
+        b_k = to_blas_int(ndimsi)
+        call dgemm('n', 'n', b_m, b_n, b_k,&
+                   1.d0, tls, b_lda, self%deft, b_ldb,&
+                   0.d0, trv, b_ldc)
+        b_ldc = to_blas_int(ndim*nno)
+        b_ldb = to_blas_int(ndimsi)
+        b_lda = to_blas_int(ndimsi)
+        b_m = to_blas_int(ndim*nno)
+        b_n = to_blas_int(ndim*nno)
+        b_k = to_blas_int(ndimsi)
+        call dgemm('t', 'n', b_m, b_n, b_k,&
+                   1.d0, trv, b_lda, self%deft, b_ldb,&
+                   0.d0, matr, b_ldc)
+!
+! Ajout des termes marg (symetrique) et maax (symetrique) -> pas besoin de transposer n <-> m
         forall (i=1:ndim)
-            matr(i, :, i, :) = matr(i, :, i, :)+marg(:, :)
+        matr(i, :, i, :) = matr(i, :, i, :)+marg(:, :)
         end forall
         matr(1, :, 1, :) = matr(1, :, 1, :)+maax(:, :)
-
+!
         deallocate (maax)
         deallocate (marg)
         deallocate (trv)
     end function gdlog_rigeo
-
+!
 ! =====================================================================
-
-    function gdlog_nice_cauchy(self, t) result(cauchy)
-
+!
+    function gdlog_nice_cauchy(self, t) result (cauchy)
+!
 ! ----------------------------------------------------------------------
 !     Calcule le tenseur de Cauchy (sans racines de deux) a partir de T
 ! ----------------------------------------------------------------------
-
+!
         implicit none
-        type(GDLOG_DS):: self
-        real(kind=8), intent(in):: t(:)
-        real(kind=8)           :: cauchy(size(t))
+        type(GDLOG_DS) :: self
+        real(kind=8), intent(in) :: t(:)
+        real(kind=8) :: cauchy(size(t))
 ! ----------------------------------------------------------------------
-        integer:: ndimsi
-        real(kind=8):: t6(6), pk2(6), jac, sig6(6)
+        integer :: ndimsi
+        real(kind=8) :: t6(6), pk2(6), jac, sig6(6)
 ! ---------------------------------------------------------------------
-
-        ! tests de coherence
+!
+! tests de coherence
         ndimsi = 2*self%ndim
         ASSERT(self%calc_matb)
         ASSERT(size(t) .eq. ndimsi)
-
-        ! PK2
+!
+! PK2
         t6 = 0
         t6(1:ndimsi) = t
         pk2 = matmul(t6, self%pes)
-
-        ! Conversion vers Cauchy
+!
+! Conversion vers Cauchy
         call lcdetf(self%ndim, self%f, jac)
-        call pk2sig(self%ndim, self%f, jac, pk2, sig6, 1)
+        call pk2sig(self%ndim, self%f, jac, pk2, sig6,&
+                    1)
         cauchy = sig6(1:ndimsi)
-
+!
     end function gdlog_nice_cauchy
-
+!
 ! =====================================================================
-
+!
     subroutine gdlog_delete(self)
-
+!
 ! ----------------------------------------------------------------------
 !     Liberation de l'objet gdlog
 ! ----------------------------------------------------------------------
-
+!
         implicit none
-        type(GDLOG_DS):: self
+        type(GDLOG_DS) :: self
 ! ---------------------------------------------------------------------
-
+!
         deallocate (self%deft)
         deallocate (self%pff)
         deallocate (self%axf)
-
+!
     end subroutine gdlog_delete
-
+!
 end module gdlog_module

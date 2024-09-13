@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltfmj(nb, n, p, front, frn, &
+subroutine mltfmj(nb, n, p, front, frn,&
                   adper, trav, c)
 ! person_in_charge: olivier.boiteau at edf.fr
     use superv_module
@@ -30,6 +30,7 @@ subroutine mltfmj(nb, n, p, front, frn, &
     integer :: i1, j1, k, m, it, numpro
     real(kind=8) :: s, trav(p, nb, *)
     real(kind=8) :: c(nb, nb, *), alpha, beta
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
     tra = 'N'
     trb = 'N'
     alpha = -1.d0
@@ -63,9 +64,15 @@ subroutine mltfmj(nb, n, p, front, frn, &
         do ib = kb, nmb
             ia = k+nb*(ib-kb)
             it = 1
-            call dgemm(tra, trb, nb, nb, p, &
-                       alpha, front(ia), n, trav(it, 1, numpro), p, &
-                       beta, c(1, 1, numpro), nb)
+            b_ldc = to_blas_int(nb)
+            b_ldb = to_blas_int(p)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(nb)
+            b_n = to_blas_int(nb)
+            b_k = to_blas_int(p)
+            call dgemm(tra, trb, b_m, b_n, b_k,&
+                       alpha, front(ia), b_lda, trav(it, 1, numpro), b_ldb,&
+                       beta, c(1, 1, numpro), b_ldc)
 !     RECOPIE
 !
 !
@@ -89,9 +96,15 @@ subroutine mltfmj(nb, n, p, front, frn, &
             ib = nmb+1
             ia = k+nb*(ib-kb)
             it = 1
-            call dgemm(tra, trb, restm, nb, p, &
-                       alpha, front(ia), n, trav(it, 1, numpro), p, &
-                       beta, c(1, 1, numpro), nb)
+            b_ldc = to_blas_int(nb)
+            b_ldb = to_blas_int(p)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(restm)
+            b_n = to_blas_int(nb)
+            b_k = to_blas_int(p)
+            call dgemm(tra, trb, b_m, b_n, b_k,&
+                       alpha, front(ia), b_lda, trav(it, 1, numpro), b_ldb,&
+                       beta, c(1, 1, numpro), b_ldc)
 !
 !     RECOPIE
 !
@@ -126,9 +139,15 @@ subroutine mltfmj(nb, n, p, front, frn, &
         ib = kb
         ia = k+nb*(ib-kb)
         it = 1
-        call dgemm(tra, trb, restm, restm, p, &
-                   alpha, front(ia), n, trav(it, 1, 1), p, &
-                   beta, c(1, 1, 1), nb)
+        b_ldc = to_blas_int(nb)
+        b_ldb = to_blas_int(p)
+        b_lda = to_blas_int(n)
+        b_m = to_blas_int(restm)
+        b_n = to_blas_int(restm)
+        b_k = to_blas_int(p)
+        call dgemm(tra, trb, b_m, b_n, b_k,&
+                   alpha, front(ia), b_lda, trav(it, 1, 1), b_ldb,&
+                   beta, c(1, 1, 1), b_ldc)
 !     RECOPIE
 !
 !

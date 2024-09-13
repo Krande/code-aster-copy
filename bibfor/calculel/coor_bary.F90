@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine coor_bary(coor, xm, dim, lino, cobary)
 !
     implicit none
@@ -48,12 +48,13 @@ subroutine coor_bary(coor, xm, dim, lino, cobary)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
+!
     integer :: m, n, k
     integer, parameter :: nrhs = 1, lda = 4, ldb = 4, lwork = 128
     blas_int :: info
-    real(kind=8) ::   a(lda, lda), b(ldb, 1), work(lwork), ym(3)
-
+    real(kind=8) :: a(lda, lda), b(ldb, 1), work(lwork), ym(3)
+    blas_int :: b_lda, b_ldb, b_lwork, b_m, b_n, b_nrhs
+!
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,23 +62,31 @@ subroutine coor_bary(coor, xm, dim, lino, cobary)
         cobary(1) = 1.d0
         goto 999
     end if
-
+!
     b(1, 1) = 1.d0
     b(2:4, 1) = xm(1:3)
-
+!
     do k = 1, dim+1
         a(1, k) = 1.d0
         a(2:4, k) = coor(3*(lino(k)-1)+1:3*(lino(k)-1)+3)
     end do
-
+!
     m = 4
     n = dim+1
-    call dgels('N', m, n, nrhs, a, lda, b, ldb, work, lwork, info)
+    b_ldb = to_blas_int(ldb)
+    b_lda = to_blas_int(lda)
+    b_m = to_blas_int(m)
+    b_n = to_blas_int(n)
+    b_nrhs = to_blas_int(nrhs)
+    b_lwork = to_blas_int(lwork)
+    call dgels('N', b_m, b_n, b_nrhs, a,&
+               b_lda, b, b_ldb, work, b_lwork,&
+               info)
     ASSERT(info .eq. 0)
     cobary(1:dim+1) = b(1:dim+1, 1)
-
+!
 999 continue
-
+!
 !     -- verif :
     ym(1:3) = 0.d0
     do k = 1, dim+1

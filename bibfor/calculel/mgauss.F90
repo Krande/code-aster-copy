@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mgauss(cara, a, b, dim, nordre, &
+subroutine mgauss(cara, a, b, dim, nordre,&
                   nb, det, iret)
 !
 !
@@ -95,6 +95,8 @@ subroutine mgauss(cara, a, b, dim, nordre, &
     character(len=4) :: cara2
     character(len=24) :: valk(2)
     aster_logical :: ltrans, lstop, ldet, lret
+    blas_int :: b_lda, b_ldb, b_n, b_nrhs
+    blas_int :: b_ldaf, b_ldx
 !----------------------------------------------------------------------
     call matfpe(-1)
 !
@@ -134,10 +136,16 @@ subroutine mgauss(cara, a, b, dim, nordre, &
         aa = a
 !
 ! --- RESOLUTION
-        call dgesvx(fact, trans2, n, nrhs, aa, &
-                    lda, af, ldaf, ipiv4, equed, &
-                    r, c, b, ldb, x, &
-                    ldx, rcond, ferr, berr, work, &
+        b_ldx = to_blas_int(ldx)
+        b_ldb = to_blas_int(ldb)
+        b_ldaf = to_blas_int(ldaf)
+        b_lda = to_blas_int(lda)
+        b_n = to_blas_int(n)
+        b_nrhs = to_blas_int(nrhs)
+        call dgesvx(fact, trans2, b_n, b_nrhs, aa,&
+                    b_lda, af, b_ldaf, ipiv4, equed,&
+                    r, c, b, b_ldb, x,&
+                    b_ldx, rcond, ferr, berr, work,&
                     iwork4, inf4)
         iret = inf4
 !
@@ -195,8 +203,12 @@ subroutine mgauss(cara, a, b, dim, nordre, &
         end if
 !
 !       ---   RESOLUTION
-        call dgesv(n, nrhs, af, lda, ipiv4, &
-                   b, ldb, inf4)
+        b_ldb = to_blas_int(ldb)
+        b_lda = to_blas_int(lda)
+        b_n = to_blas_int(n)
+        b_nrhs = to_blas_int(nrhs)
+        call dgesv(b_n, b_nrhs, af, b_lda, ipiv4,&
+                   b, b_ldb, inf4)
         iret = inf4
         if (ldet) then
             det = 1.d0
@@ -224,10 +236,10 @@ subroutine mgauss(cara, a, b, dim, nordre, &
             det = 0.d0
         end if
         if (ltrans) then
-            call mgausw(af, b, dim, nordre, nb, &
+            call mgausw(af, b, dim, nordre, nb,&
                         det, lret)
         else
-            call mgausw(a, b, dim, nordre, nb, &
+            call mgausw(a, b, dim, nordre, nb,&
                         det, lret)
         end if
         iret = 0
@@ -247,7 +259,7 @@ subroutine mgauss(cara, a, b, dim, nordre, &
                     vali(2) = iret
                     valk(1) = ' '
                     valk(2) = ' '
-                    call utmess('F', 'CALCULEL6_15', nk=2, valk=valk, ni=2, &
+                    call utmess('F', 'CALCULEL6_15', nk=2, valk=valk, ni=2,&
                                 vali=vali)
                 end if
             else
@@ -294,7 +306,7 @@ subroutine mgauss(cara, a, b, dim, nordre, &
 !
 110 continue
 !
-1001 format(10('='), a, 10('='))
+    1001 format(10('='), a, 10('='))
 !
     call matfpe(1)
 !

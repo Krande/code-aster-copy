@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltfld(n, front, adper, t1, ad, &
+subroutine mltfld(n, front, adper, t1, ad,&
                   eps, ier)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -31,6 +31,7 @@ subroutine mltfld(n, front, adper, t1, ad, &
     parameter(seuin=1500, seuik=300)
     integer :: nn, kk, lda, incx, incy
     character(len=1) :: tra
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 !     MLTFLD TRAITE UNIQUEMENT LES BLOCS DIAGONAUX
 !
@@ -50,12 +51,17 @@ subroutine mltfld(n, front, adper, t1, ad, &
             nn = n-k+1
             kk = k-1
             if (nn .lt. seuin .or. kk .lt. seuik) then
-                call sspmvb(n-k+1, k-1, front, ad, t1, &
+                call sspmvb(n-k+1, k-1, front, ad, t1,&
                             front(adper(k)))
             else
-                call dgemv(tra, nn, kk, alpha, front(k), &
-                           lda, t1, incx, beta, front(adper(k)), &
-                           incy)
+                b_lda = to_blas_int(lda)
+                b_m = to_blas_int(nn)
+                b_n = to_blas_int(kk)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(incy)
+                call dgemv(tra, b_m, b_n, alpha, front(k),&
+                           b_lda, t1, b_incx, beta, front(adper(k)),&
+                           b_incy)
             end if
         end if
 !         DIVISION PAR LE TERME DIAGONAL
@@ -67,5 +73,5 @@ subroutine mltfld(n, front, adper, t1, ad, &
             front(adper(k)+i) = front(adper(k)+i)/front(adper(k))
         end do
     end do
-40  continue
+ 40 continue
 end subroutine

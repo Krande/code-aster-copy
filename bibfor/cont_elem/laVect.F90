@@ -68,6 +68,7 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), mu_c(MAX_LAGA_DOFS)
     real(kind=8) :: mu_f(MAX_LAGA_DOFS, 2), jump_t(MAX_LAGA_DOFS, 3)
     blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,7 +97,7 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
 ! - Get quadrature (slave side)
 !
-    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
+    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code,&
                      geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp)
 !
 ! - Diameter of slave side
@@ -114,9 +115,9 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
 ! ----- Compute contact quantities
 !
-        call laElemCont(parameters, geom, coor_qp_sl, hF, lagr_c, &
-                        gap, gamma_c, projRmVal, l_cont_qp, lagr_f, &
-                        vT, gamma_f, projBsVal, l_fric_qp, dGap=dGap, &
+        call laElemCont(parameters, geom, coor_qp_sl, hF, lagr_c,&
+                        gap, gamma_c, projRmVal, l_cont_qp, lagr_f,&
+                        vT, gamma_f, projBsVal, l_fric_qp, dGap=dGap,&
                         mu_c=mu_c, mu_f=mu_f, jump_t=jump_t)
 !
 ! ------ CONTACT PART (always computed)
@@ -130,7 +131,7 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
             b_n = to_blas_int(geom%nb_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, coeff, dGap, b_incx, vect_cont, &
+            call daxpy(b_n, coeff, dGap, b_incx, vect_cont,&
                        b_incy)
         end if
 !
@@ -141,7 +142,7 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
         b_n = to_blas_int(geom%nb_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, coeff, mu_c, b_incx, vect_cont, &
+        call daxpy(b_n, coeff, mu_c, b_incx, vect_cont,&
                    b_incy)
 !
 !
@@ -154,9 +155,14 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
             if (l_fric_qp) then
                 coeff = weight_sl_qp
-                call dgemv('N', geom%nb_dofs, geom%elem_dime-1, coeff, jump_t, &
-                           MAX_LAGA_DOFS, projBsVal, 1, 1.d0, vect_fric, &
-                           1)
+                b_lda = to_blas_int(MAX_LAGA_DOFS)
+                b_m = to_blas_int(geom%nb_dofs)
+                b_n = to_blas_int(geom%elem_dime-1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dgemv('N', b_m, b_n, coeff, jump_t,&
+                           b_lda, projBsVal, b_incx, 1.d0, vect_fric,&
+                           b_incy)
             end if
 !
 ! ------ Compute Lagrange (slave side)
@@ -164,9 +170,14 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
             coeff = weight_sl_qp
             term_f = (projBsVal-lagr_f)/gamma_f
-            call dgemv('N', geom%nb_dofs, geom%elem_dime-1, coeff, mu_f, &
-                       MAX_LAGA_DOFS, term_f, 1, 1.d0, vect_fric, &
-                       1)
+            b_lda = to_blas_int(MAX_LAGA_DOFS)
+            b_m = to_blas_int(geom%nb_dofs)
+            b_n = to_blas_int(geom%elem_dime-1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('N', b_m, b_n, coeff, mu_f,&
+                       b_lda, term_f, b_incx, 1.d0, vect_fric,&
+                       b_incy)
         end if
     end do
 !

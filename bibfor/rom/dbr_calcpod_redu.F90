@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode, v_gamma)
+!
+subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode,&
+                            v_gamma)
 !
     use Rom_Datastructure_type
 !
@@ -31,11 +32,11 @@ subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode, v_gamma)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in)  :: nb_snap
-    integer, intent(in)  :: m
-    real(kind=8), pointer  :: q(:)
-    real(kind=8), pointer  :: v(:)
-    integer, intent(in)  :: nb_mode
+    integer, intent(in) :: nb_snap
+    integer, intent(in) :: m
+    real(kind=8), pointer :: q(:)
+    real(kind=8), pointer :: v(:)
+    integer, intent(in) :: nb_mode
     real(kind=8), pointer :: v_gamma(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,6 +59,7 @@ subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode, v_gamma)
     integer :: ifm, niv
     real(kind=8), pointer :: v_pod(:) => null()
     integer :: ieq, i_mode
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,7 +81,15 @@ subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode, v_gamma)
             v_pod(ieq+m*(i_mode-1)) = v(ieq+m*(i_mode-1))
         end do
     end do
-    call dgemm('T', 'N', nb_mode, nb_snap, m, 1.d0, v_pod, m, q, m, 0.d0, v_gamma, nb_mode)
+    b_ldc = to_blas_int(nb_mode)
+    b_ldb = to_blas_int(m)
+    b_lda = to_blas_int(m)
+    b_m = to_blas_int(nb_mode)
+    b_n = to_blas_int(nb_snap)
+    b_k = to_blas_int(m)
+    call dgemm('T', 'N', b_m, b_n, b_k,&
+               1.d0, v_pod, b_lda, q, b_ldb,&
+               0.d0, v_gamma, b_ldc)
     AS_DEALLOCATE(vr=v_pod)
 !
 end subroutine

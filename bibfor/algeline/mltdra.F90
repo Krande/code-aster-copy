@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq, &
-                  nbsn, nbnd, supnd, adress, global, &
-                  lgsn, factol, factou, sm, x, &
+subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
+                  nbsn, nbnd, supnd, adress, global,&
+                  lgsn, factol, factou, sm, x,&
                   invp, perm, ad, trav, typsym)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -50,6 +50,7 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq, &
     integer :: lda, nn, kk
     real(kind=8) :: s, alpha, beta
     character(len=1) :: tra
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
     call jemarq()
 !
@@ -105,12 +106,17 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq, &
                 kk = l
                 lda = long
                 if (nn .lt. seuin .or. kk .lt. seuik) then
-                    call sspmvb((long-l), l, zr(ifac), ad, trav, &
+                    call sspmvb((long-l), l, zr(ifac), ad, trav,&
                                 trav(l+1))
                 else
-                    call dgemv(tra, nn, kk, alpha, zr(ifac+ad(1)-1), &
-                               lda, trav, incx, beta, trav(l+1), &
-                               incy)
+                    b_lda = to_blas_int(lda)
+                    b_m = to_blas_int(nn)
+                    b_n = to_blas_int(kk)
+                    b_incx = to_blas_int(incx)
+                    b_incy = to_blas_int(incy)
+                    call dgemv(tra, b_m, b_n, alpha, zr(ifac+ad(1)-1),&
+                               b_lda, trav, b_incx, beta, trav(l+1),&
+                               b_incy)
                 end if
             end if
             k = 1

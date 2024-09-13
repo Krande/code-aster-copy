@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calsvd(nm, m, n, a, w, &
+subroutine calsvd(nm, m, n, a, w,&
                   matu, u, matv, v, ierr)
     implicit none
 !
@@ -92,6 +92,7 @@ subroutine calsvd(nm, m, n, a, w, &
     integer(kind=4), pointer :: viwork(:) => null()
     real(kind=8), pointer :: vvt(:) => null()
     real(kind=8), pointer :: vwork(:) => null()
+    blas_int :: b_lda, b_ldu, b_ldvt, b_lwork, b_m, b_n
 !
 !
 !
@@ -135,13 +136,25 @@ subroutine calsvd(nm, m, n, a, w, &
 !     ------------------------------------------------------------
     if (.not. alloc) then
         if (safe) then
-            call dgesvd(code, code, m, n, a, &
-                        nm, w, u, nm, vt, &
-                        ldvt, work, lwork, ierr1)
+            b_ldvt = to_blas_int(ldvt)
+            b_ldu = to_blas_int(nm)
+            b_lda = to_blas_int(nm)
+            b_m = to_blas_int(m)
+            b_n = to_blas_int(n)
+            b_lwork = to_blas_int(lwork)
+            call dgesvd(code, code, b_m, b_n, a,&
+                        b_lda, w, u, b_ldu, vt,&
+                        b_ldvt, work, b_lwork, ierr1)
         else
-            call dgesdd(code, m, n, a, nm, &
-                        w, u, nm, vt, ldvt, &
-                        work, lwork, iwork, ierr1)
+            b_ldvt = to_blas_int(ldvt)
+            b_ldu = to_blas_int(nm)
+            b_lda = to_blas_int(nm)
+            b_m = to_blas_int(m)
+            b_n = to_blas_int(n)
+            b_lwork = to_blas_int(lwork)
+            call dgesdd(code, b_m, b_n, a, b_lda,&
+                        w, u, b_ldu, vt, b_ldvt,&
+                        work, b_lwork, iwork, ierr1)
         end if
         if (matv) then
             do i = 1, nm
@@ -153,13 +166,25 @@ subroutine calsvd(nm, m, n, a, w, &
 !
     else
         if (safe) then
-            call dgesvd(code, code, m, n, a, &
-                        nm, w, u, nm, vvt, &
-                        ldvt, vwork, lwork, ierr1)
+            b_ldvt = to_blas_int(ldvt)
+            b_ldu = to_blas_int(nm)
+            b_lda = to_blas_int(nm)
+            b_m = to_blas_int(m)
+            b_n = to_blas_int(n)
+            b_lwork = to_blas_int(lwork)
+            call dgesvd(code, code, b_m, b_n, a,&
+                        b_lda, w, u, b_ldu, vvt,&
+                        b_ldvt, vwork, b_lwork, ierr1)
         else
-            call dgesdd(code, m, n, a, nm, &
-                        w, u, nm, vvt, ldvt, &
-                        vwork, lwork, viwork, ierr1)
+            b_ldvt = to_blas_int(ldvt)
+            b_ldu = to_blas_int(nm)
+            b_lda = to_blas_int(nm)
+            b_m = to_blas_int(m)
+            b_n = to_blas_int(n)
+            b_lwork = to_blas_int(lwork)
+            call dgesdd(code, b_m, b_n, a, b_lda,&
+                        w, u, b_ldu, vvt, b_ldvt,&
+                        vwork, b_lwork, viwork, ierr1)
         end if
         if (matv) then
             do i = 1, nm

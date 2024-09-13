@@ -52,11 +52,11 @@ contains
 !
         implicit none
 !
-        type(FE_Basis), intent(in)          :: FEBasis
-        real(kind=8), intent(in)            :: point(3)
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: point(3)
         real(kind=8), intent(in), dimension(3, MAX_BS) :: BGSEval
-        real(kind=8), intent(out)           :: matFB(6, MAX_BS, 3)
-        real(kind=8), intent(in)            :: f(3, 3)
+        real(kind=8), intent(out) :: matFB(6, MAX_BS, 3)
+        real(kind=8), intent(in) :: f(3, 3)
 ! --------------------------------------------------------------------------------------------------
 !
 !
@@ -73,29 +73,29 @@ contains
         matFB = 0.d0
 !
         select case (FEBasis%ndim)
-        case (2)
-            do i = 1, FEBasis%size
-                do i_dim = 1, 2
-                    matFB(1, i, i_dim) = f(i_dim, 1)*BGSEval(1, i)
-                    matFB(2, i, i_dim) = f(i_dim, 2)*BGSEval(2, i)
-                    matFB(4, i, i_dim) = (f(i_dim, 1)*BGSEval(2, i)+f(i_dim, 2)*BGSEval(1, i))/rac2
-                end do
+    case (2)
+        do i = 1, FEBasis%size
+            do i_dim = 1, 2
+                matFB(1, i, i_dim) = f(i_dim, 1)*BGSEval(1, i)
+                matFB(2, i, i_dim) = f(i_dim, 2)*BGSEval(2, i)
+                matFB(4, i, i_dim) = (f(i_dim, 1)*BGSEval(2, i)+f(i_dim, 2)*BGSEval(1, i))/rac2
             end do
-        case (3)
-            do i = 1, FEBasis%size
-                do i_dim = 1, 3
-                    matFB(1, i, i_dim) = f(i_dim, 1)*BGSEval(1, i)
-                    matFB(2, i, i_dim) = f(i_dim, 2)*BGSEval(2, i)
-                    matFB(3, i, i_dim) = f(i_dim, 3)*BGSEval(3, i)
-                    matFB(4, i, i_dim) = (f(i_dim, 1)*BGSEval(2, i)+f(i_dim, 2)*BGSEval(1, i))/rac2
-                    matFB(5, i, i_dim) = (f(i_dim, 1)*BGSEval(3, i)+f(i_dim, 3)*BGSEval(1, i))/rac2
-                    matFB(6, i, i_dim) = (f(i_dim, 2)*BGSEval(3, i)+f(i_dim, 3)*BGSEval(2, i))/rac2
-                end do
+        end do
+    case (3)
+        do i = 1, FEBasis%size
+            do i_dim = 1, 3
+                matFB(1, i, i_dim) = f(i_dim, 1)*BGSEval(1, i)
+                matFB(2, i, i_dim) = f(i_dim, 2)*BGSEval(2, i)
+                matFB(3, i, i_dim) = f(i_dim, 3)*BGSEval(3, i)
+                matFB(4, i, i_dim) = (f(i_dim, 1)*BGSEval(2, i)+f(i_dim, 2)*BGSEval(1, i))/rac2
+                matFB(5, i, i_dim) = (f(i_dim, 1)*BGSEval(3, i)+f(i_dim, 3)*BGSEval(1, i))/rac2
+                matFB(6, i, i_dim) = (f(i_dim, 2)*BGSEval(3, i)+f(i_dim, 3)*BGSEval(2, i))/rac2
             end do
-        case default
-            ASSERT(ASTER_FALSE)
-        end select
-
+        end do
+    case default
+        ASSERT(ASTER_FALSE)
+    end select
+!
         if (FEBasis%l_axis) then
             funcEF = FEBasis%func(point)
             r = 0.d0
@@ -117,9 +117,9 @@ contains
 !
         implicit none
 !
-        type(FE_Basis), intent(in)          :: FEBasis
+        type(FE_Basis), intent(in) :: FEBasis
         real(kind=8), intent(in), dimension(3, MAX_BS) :: BGSEval
-        real(kind=8), intent(out)           :: matBB(6, MAX_BS, MAX_BS)
+        real(kind=8), intent(out) :: matBB(6, MAX_BS, MAX_BS)
 ! --------------------------------------------------------------------------------------------------
 !
 !
@@ -135,39 +135,39 @@ contains
         matBB = 0.d0
 !
         select case (FEBasis%ndim)
-        case (2)
-            do i = 1, FEBasis%size
-                do j = 1, i
-                    matBB(1, i, j) = BGSEval(1, i)*BGSEval(1, j)
-                    matBB(2, i, j) = BGSEval(2, i)*BGSEval(2, j)
-                    matBB(4, i, j) = (BGSEval(1, i)*BGSEval(2, j)+BGSEval(2, i)*BGSEval(1, j))/rac2
+    case (2)
+        do i = 1, FEBasis%size
+            do j = 1, i
+                matBB(1, i, j) = BGSEval(1, i)*BGSEval(1, j)
+                matBB(2, i, j) = BGSEval(2, i)*BGSEval(2, j)
+                matBB(4, i, j) = (BGSEval(1, i)*BGSEval(2, j)+BGSEval(2, i)*BGSEval(1, j))/rac2
 !
-                    matBB(1, j, i) = matBB(1, i, j)
-                    matBB(2, j, i) = matBB(2, i, j)
-                    matBB(4, j, i) = matBB(4, i, j)
-                end do
+                matBB(1, j, i) = matBB(1, i, j)
+                matBB(2, j, i) = matBB(2, i, j)
+                matBB(4, j, i) = matBB(4, i, j)
             end do
-        case (3)
-            do i = 1, FEBasis%size
-                do j = 1, i
-                    matBB(1, i, j) = BGSEval(1, i)*BGSEval(1, j)
-                    matBB(2, i, j) = BGSEval(2, i)*BGSEval(2, j)
-                    matBB(3, i, j) = BGSEval(3, i)*BGSEval(3, j)
-                    matBB(4, i, j) = (BGSEval(1, i)*BGSEval(2, j)+BGSEval(2, i)*BGSEval(1, j))/rac2
-                    matBB(5, i, j) = (BGSEval(1, i)*BGSEval(3, j)+BGSEval(3, i)*BGSEval(1, j))/rac2
-                    matBB(6, i, j) = (BGSEval(2, i)*BGSEval(3, j)+BGSEval(3, i)*BGSEval(2, j))/rac2
+        end do
+    case (3)
+        do i = 1, FEBasis%size
+            do j = 1, i
+                matBB(1, i, j) = BGSEval(1, i)*BGSEval(1, j)
+                matBB(2, i, j) = BGSEval(2, i)*BGSEval(2, j)
+                matBB(3, i, j) = BGSEval(3, i)*BGSEval(3, j)
+                matBB(4, i, j) = (BGSEval(1, i)*BGSEval(2, j)+BGSEval(2, i)*BGSEval(1, j))/rac2
+                matBB(5, i, j) = (BGSEval(1, i)*BGSEval(3, j)+BGSEval(3, i)*BGSEval(1, j))/rac2
+                matBB(6, i, j) = (BGSEval(2, i)*BGSEval(3, j)+BGSEval(3, i)*BGSEval(2, j))/rac2
 !
-                    matBB(1, j, i) = matBB(1, i, j)
-                    matBB(2, j, i) = matBB(2, i, j)
-                    matBB(3, j, i) = matBB(3, i, j)
-                    matBB(4, j, i) = matBB(4, i, j)
-                    matBB(5, j, i) = matBB(5, i, j)
-                    matBB(6, j, i) = matBB(6, i, j)
-                end do
+                matBB(1, j, i) = matBB(1, i, j)
+                matBB(2, j, i) = matBB(2, i, j)
+                matBB(3, j, i) = matBB(3, i, j)
+                matBB(4, j, i) = matBB(4, i, j)
+                matBB(5, j, i) = matBB(5, i, j)
+                matBB(6, j, i) = matBB(6, i, j)
             end do
-        case default
-            ASSERT(ASTER_FALSE)
-        end select
+        end do
+    case default
+        ASSERT(ASTER_FALSE)
+    end select
 !
     end subroutine
 !
@@ -180,10 +180,10 @@ contains
 !
         implicit none
 !
-        type(FE_Basis), intent(in)          :: FEBasis
-        real(kind=8), intent(in)            :: point(3)
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: point(3)
         real(kind=8), intent(in), dimension(3, MAX_BS) :: BGSEval
-        real(kind=8), intent(out)           :: matB(6, MAX_BS, 3)
+        real(kind=8), intent(out) :: matB(6, MAX_BS, 3)
 ! --------------------------------------------------------------------------------------------------
 !
 !
@@ -204,29 +204,29 @@ contains
         matB = 0.d0
 !
         select case (FEBasis%ndim)
-        case (2)
-            do i = 1, FEBasis%size
-                matB(1, i, 1) = BGSEval(1, i)
-                matB(2, i, 2) = BGSEval(2, i)
-                matB(4, i, 1) = BGSEval(2, i)/rac2
-                matB(4, i, 2) = BGSEval(1, i)/rac2
-            end do
-        case (3)
-            do i = 1, FEBasis%size
-                matB(1, i, 1) = BGSEval(1, i)
-                matB(2, i, 2) = BGSEval(2, i)
-                matB(3, i, 3) = BGSEval(3, i)
-                matB(4, i, 1) = BGSEval(2, i)/rac2
-                matB(5, i, 1) = BGSEval(3, i)/rac2
-                matB(4, i, 2) = BGSEval(1, i)/rac2
-                matB(6, i, 2) = BGSEval(3, i)/rac2
-                matB(5, i, 3) = BGSEval(1, i)/rac2
-                matB(6, i, 3) = BGSEval(2, i)/rac2
-            end do
-        case default
-            ASSERT(ASTER_FALSE)
-        end select
-
+    case (2)
+        do i = 1, FEBasis%size
+            matB(1, i, 1) = BGSEval(1, i)
+            matB(2, i, 2) = BGSEval(2, i)
+            matB(4, i, 1) = BGSEval(2, i)/rac2
+            matB(4, i, 2) = BGSEval(1, i)/rac2
+        end do
+    case (3)
+        do i = 1, FEBasis%size
+            matB(1, i, 1) = BGSEval(1, i)
+            matB(2, i, 2) = BGSEval(2, i)
+            matB(3, i, 3) = BGSEval(3, i)
+            matB(4, i, 1) = BGSEval(2, i)/rac2
+            matB(5, i, 1) = BGSEval(3, i)/rac2
+            matB(4, i, 2) = BGSEval(1, i)/rac2
+            matB(6, i, 2) = BGSEval(3, i)/rac2
+            matB(5, i, 3) = BGSEval(1, i)/rac2
+            matB(6, i, 3) = BGSEval(2, i)/rac2
+        end do
+    case default
+        ASSERT(ASTER_FALSE)
+    end select
+!
         if (FEBasis%l_axis) then
             funcEF = FEBasis%func(point)
             r = 0.d0
@@ -245,13 +245,13 @@ contains
 !
 !===================================================================================================
 !
-    function matG2F(grad) result(f)
+    function matG2F(grad) result (f)
 !
         implicit none
 !
-        real(kind=8), intent(in)           :: grad(3, 3)
-        real(kind=8)                       :: f(3, 3)
-
+        real(kind=8), intent(in) :: grad(3, 3)
+        real(kind=8) :: f(3, 3)
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -271,13 +271,13 @@ contains
 !
 !===================================================================================================
 !
-    function matG2E(grad) result(e)
+    function matG2E(grad) result (e)
 !
         implicit none
 !
-        real(kind=8), intent(in)           :: grad(3, 3)
-        real(kind=8)                       :: e(6)
-
+        real(kind=8), intent(in) :: grad(3, 3)
+        real(kind=8) :: e(6)
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -289,7 +289,7 @@ contains
         integer :: i, j, k
         real(kind=8) :: c(3, 3), tmp
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
-
+!
         do i = 1, 3
             do j = 1, i
                 tmp = grad(i, j)+grad(j, i)
@@ -302,7 +302,7 @@ contains
 !
             end do
         end do
-
+!
         e(1) = c(1, 1)
         e(2) = c(2, 2)
         e(3) = c(3, 3)
@@ -316,13 +316,13 @@ contains
 !
 !===================================================================================================
 !
-    function matG2Epsi(grad) result(e)
+    function matG2Epsi(grad) result (e)
 !
         implicit none
 !
-        real(kind=8), intent(in)           :: grad(3, 3)
-        real(kind=8)                       :: e(6)
-
+        real(kind=8), intent(in) :: grad(3, 3)
+        real(kind=8) :: e(6)
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !

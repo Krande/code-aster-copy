@@ -15,22 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
-    subroutine dgeqp3(m, n, a, lda, jpvt, tau,&
-                      work, lwork, info)
-        integer, intent(in) :: lda
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        real(kind=8) ,intent(inout) :: a(lda, *)
-        integer(kind=4) ,intent(inout) :: jpvt(n)
-        real(kind=8) ,intent(out) :: tau(*)
-        real(kind=8) ,intent(out) :: work(*)
-        integer, intent(in) :: lwork
+    subroutine dgeqp3(m, n, a, lda, jpvt,&
+                      tau, work, lwork, info)
+        blas_int, intent(in) :: lda
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        real(kind=8), intent(inout) :: a(lda, *)
+        blas_int, intent(inout) :: jpvt(n)
+        real(kind=8), intent(out) :: tau(*)
+        real(kind=8), intent(out) :: work(*)
+        blas_int, intent(in) :: lwork
         blas_int, intent(out) :: info
     end subroutine dgeqp3
 end interface

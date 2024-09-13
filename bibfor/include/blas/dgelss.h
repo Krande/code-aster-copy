@@ -15,27 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dgelss(m, n, nrhs, a, lda,&
                       b, ldb, s, rcond, rank,&
                       work, lwork, info)
-        integer, intent(in) :: ldb
-        integer, intent(in) :: lda
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        integer, intent(in) :: nrhs
-        real(kind=8) ,intent(inout) :: a(lda, *)
-        real(kind=8) ,intent(inout) :: b(ldb, *)
-        real(kind=8) ,intent(out) :: s(*)
-        real(kind=8) ,intent(in) :: rcond
+        blas_int, intent(in) :: ldb
+        blas_int, intent(in) :: lda
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        blas_int, intent(in) :: nrhs
+        real(kind=8), intent(inout) :: a(lda, *)
+        real(kind=8), intent(inout) :: b(ldb, *)
+        real(kind=8), intent(out) :: s(*)
+        real(kind=8), intent(in) :: rcond
         blas_int, intent(out) :: rank
-        real(kind=8) ,intent(out) :: work(*)
-        integer, intent(in) :: lwork
+        real(kind=8), intent(out) :: work(*)
+        blas_int, intent(in) :: lwork
         blas_int, intent(out) :: info
     end subroutine dgelss
 end interface

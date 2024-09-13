@@ -77,6 +77,7 @@ subroutine te0450(nomopt, nomte)
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC), coorpg(3), weight
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
     real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_curr_coeff
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --- Get HHO informations
 !
@@ -91,7 +92,7 @@ subroutine te0450(nomopt, nomte)
     call elrefe_info(fami=fami, npg=npg)
 !
 ! --- Number of dofs
-    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs,&
                        gbs, gbs_sym)
     gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
     ASSERT(cbs <= MSIZE_CELL_VEC)
@@ -127,9 +128,14 @@ subroutine te0450(nomopt, nomte)
 ! --- Compute local contribution
 !
     if (l_largestrains) then
-        call dgemv('N', gbs, total_dofs, 1.d0, hhoMecaState%grad, &
-                   MSIZE_CELL_MAT, hhoMecaState%depl_curr, 1, 0.d0, G_curr_coeff, &
-                   1)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(gbs)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad,&
+                   b_lda, hhoMecaState%depl_curr, b_incx, 0.d0, G_curr_coeff,&
+                   b_incy)
         gbs_curr = gbs
     else
         gbs_curr = gbs_sym
@@ -153,8 +159,8 @@ subroutine te0450(nomopt, nomte)
 !
 !
         if (l_largestrains) then
-            G_curr = hhoEvalMatCell( &
-                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs &
+            G_curr = hhoEvalMatCell(&
+                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs&
                      )
 !
 ! --------- Eval gradient of the deformation at T- and T+
@@ -163,24 +169,29 @@ subroutine te0450(nomopt, nomte)
 !
             call sigtopk1(hhoCell%ndim, Cauchy_curr, F_curr, PK1_curr)
 !
-            call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs, &
+            call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs,&
                                     bT)
         else
 !
-            call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, &
+            call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp,&
                                     bT)
         end if
     end do
 !
-    call dgemv('T', gbs_curr, total_dofs, 1.d0, hhoMecaState%grad, &
-               MSIZE_CELL_MAT, bT, 1, 1.d0, rhs, &
-               1)
+    b_lda = to_blas_int(MSIZE_CELL_MAT)
+    b_m = to_blas_int(gbs_curr)
+    b_n = to_blas_int(total_dofs)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('T', b_m, b_n, 1.d0, hhoMecaState%grad,&
+               b_lda, bT, b_incx, 1.d0, rhs,&
+               b_incy)
 !
 ! --- add stabilization
 !
     call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, 0.d0, hhoQuadCellRigi)
 !
-    call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC, &
+    call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC,&
                hhoMecaState%depl_curr, 1, 1.d0, rhs, 1)
 !
 ! --- Save rhs

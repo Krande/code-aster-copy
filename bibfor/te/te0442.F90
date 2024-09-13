@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0442(option, nomte)
     !
     implicit none
@@ -66,6 +66,7 @@ subroutine te0442(option, nomte)
     real(kind=8) :: a, b, xnorm, epais, excen, zic, hicou
     integer, parameter :: pt_gauss = 1, pt_noeud = 2
     integer :: jnbspi, nbcou, icou, isp
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
     !
     if (option .ne. 'REPE_TENS' .and. option .ne. 'REPE_GENE') then
 ! OPTION DE CALCUL INVALIDE
@@ -74,13 +75,13 @@ subroutine te0442(option, nomte)
     !
     if (option .eq. 'REPE_TENS') then
         ncmp = 6
-        call tecach('ONO', 'PCOGAIN', 'L', iret(1), nval=7, &
+        call tecach('ONO', 'PCOGAIN', 'L', iret(1), nval=7,&
                     itab=itab)
-        call tecach('ONO', 'PCONOIN', 'L', iret(2), nval=7, &
+        call tecach('ONO', 'PCONOIN', 'L', iret(2), nval=7,&
                     itab=itab)
-        call tecach('ONO', 'PDEGAIN', 'L', iret(3), nval=7, &
+        call tecach('ONO', 'PDEGAIN', 'L', iret(3), nval=7,&
                     itab=itab)
-        call tecach('ONO', 'PDENOIN', 'L', iret(4), nval=7, &
+        call tecach('ONO', 'PDENOIN', 'L', iret(4), nval=7,&
                     itab=itab)
         iret1 = iret(1)+iret(2)+iret(3)+iret(4)
         ASSERT(iret1 .eq. 6)
@@ -101,13 +102,13 @@ subroutine te0442(option, nomte)
         !
     else if (option .eq. 'REPE_GENE') then
         ncmp = 8
-        call tecach('ONO', 'PEFGAIN', 'L', iret(1), nval=7, &
+        call tecach('ONO', 'PEFGAIN', 'L', iret(1), nval=7,&
                     itab=itab)
-        call tecach('ONO', 'PEFNOIN', 'L', iret(2), nval=7, &
+        call tecach('ONO', 'PEFNOIN', 'L', iret(2), nval=7,&
                     itab=itab)
-        call tecach('ONO', 'PDGGAIN', 'L', iret(3), nval=7, &
+        call tecach('ONO', 'PDGGAIN', 'L', iret(3), nval=7,&
                     itab=itab)
-        call tecach('ONO', 'PDGNOIN', 'L', iret(4), nval=7, &
+        call tecach('ONO', 'PDGNOIN', 'L', iret(4), nval=7,&
                     itab=itab)
         iret1 = iret(1)+iret(2)+iret(3)+iret(4)
         ASSERT(iret1 .eq. 6)
@@ -135,8 +136,8 @@ subroutine te0442(option, nomte)
         type_pt = pt_gauss
     end if
 ! Infos sur les noeuds et points de Gauss de l'élément
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 ! Nombre de points en fonction de la localisation des champs
     if (pain(4:5) .eq. 'NO') then
         np = nno
@@ -151,7 +152,7 @@ subroutine te0442(option, nomte)
     call jevech('PANGREP', 'L', jang)
     call jevech(pain, 'L', jin)
     call jevech(paout, 'E', jout)
-    call tecach('OOO', pain, 'L', iret2, nval=7, &
+    call tecach('OOO', pain, 'L', iret2, nval=7,&
                 itab=itab)
 ! Nombre de sous-points dans le champ local
     nbsp = itab(7)
@@ -183,7 +184,7 @@ subroutine te0442(option, nomte)
 ! T2iu1 : matrice (2x2) de passage du repère intrinsèque au repère utilisateur 1 de
 ! la variété (défini par l'utilisateur dans caraelem)
 ! T2ui1 = tiu1^T
-    call coqrep(pig, alpha, beta, t2iu1, t2ui1, &
+    call coqrep(pig, alpha, beta, t2iu1, t2ui1,&
                 c, s)
 !  Type de changement de repère
     rep = zr(jang-1+3)
@@ -202,7 +203,7 @@ subroutine te0442(option, nomte)
 ! --- CALCUL DES MATRICES DE PASSAGE DU CHGT DE REPERE
         alpha = zr(jang-1+1)*r8dgrd()
         beta = zr(jang-1+2)*r8dgrd()
-        call coqrep(pig, alpha, beta, t2iu2, t2ui2, &
+        call coqrep(pig, alpha, beta, t2iu2, t2ui2,&
                     c, s)
         !
 ! ---   PASSAGE DES QUANTITES DU REPERE INTRINSEQUE
@@ -302,7 +303,7 @@ subroutine te0442(option, nomte)
                             xsp(:) = x(:)+zic*pig(3, :)
 !-- Calcul de la matrice de passage du repère global au repère local cylindrique
                             ipaxe = 0
-                            call cylrep(ndim, xsp, axe_z, orig, pgcyl, &
+                            call cylrep(ndim, xsp, axe_z, orig, pgcyl,&
                                         ipaxe)
                             if (ipaxe > 0) then
 ! le point est sur l'axe du repere cylindrique, on essaie de se placer au
@@ -315,7 +316,7 @@ subroutine te0442(option, nomte)
                                 end do
                                 xbary(:) = xbary(:)/nno
                                 ipaxe2 = 0
-                                call cylrep(ndim, xbary, axe_z, orig, pgcyl, &
+                                call cylrep(ndim, xbary, axe_z, orig, pgcyl,&
                                             ipaxe2)
                                 if (ipaxe2 > 0) then
                                     call utmess('A', 'ALGORITH2_13')
@@ -325,9 +326,15 @@ subroutine te0442(option, nomte)
 ! picyl = pig*pgcyl
                             a = 1.d0
                             b = 0.d0
-                            call dgemm('N', 'N', 3, 3, 3, &
-                                       a, pig(1, 1), 3, pgcyl(1, 1), 3, &
-                                       b, picyl(1, 1), 3)
+                            b_ldc = to_blas_int(3)
+                            b_ldb = to_blas_int(3)
+                            b_lda = to_blas_int(3)
+                            b_m = to_blas_int(3)
+                            b_n = to_blas_int(3)
+                            b_k = to_blas_int(3)
+                            call dgemm('N', 'N', b_m, b_n, b_k,&
+                                       a, pig(1, 1), b_lda, pgcyl(1, 1), b_ldb,&
+                                       b, picyl(1, 1), b_ldc)
 ! Appliquer le changement de base
                             call tpsivp(picyl, zr(jout+joff-1+1:jout+joff-1+ncmp))
 ! Mettre à jour l'offset (un tenseur 3D symétrique a 6 composantes)

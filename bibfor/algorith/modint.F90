@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
-                  matmod, masse, raide, neq, coint, &
+subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
+                  matmod, masse, raide, neq, coint,&
                   noddli, nnoint, vefreq, switch)
     implicit none
 !    M. CORUS     DATE 05/02/10
@@ -172,13 +172,13 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     listyp(1) = 'R'
     listyp(2) = 'R'
 !
-    call mtcmbl(2, listyp, comlin, lismat, imped, &
+    call mtcmbl(2, listyp, comlin, lismat, imped,&
                 ' ', nume91, 'ELIM1')
     call mtdscr(imped)
     call jeveuo(imped(1:19)//'.&INT', 'E', limped)
     call dismoi('SOLVEUR', ssami, 'MATR_ASSE', repk=solveu)
     call dismoi('NOM_NUME_DDL', ssami, 'MATR_ASSE', repk=nume91)
-    call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped, &
+    call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped,&
                 ibid, 1)
 !
     if (iret .eq. 2) then
@@ -282,13 +282,13 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     stoper = 'NON'
 ! TYPE DE CALCUL: 'CALIBRATION' OU 'TOUT'.
     typcal = 'TOUT'
-    call vpcres(eigsol, typres, raide2, masse2, k19bid, &
-                optiof, method, modrig, arret, k19bid, &
-                stoper, sturm, typcal, k1bid, k16bid, &
-                nsekry2, nbvect, nbvec2, nbrss, nbborn, &
-                ibid, ibid, ibid, ibid, maxitr, &
-                bande, precsh, omecor, precdc, r8bid, &
-                r8bid, r8bid, r8bid, r8bid, tolsor, &
+    call vpcres(eigsol, typres, raide2, masse2, k19bid,&
+                optiof, method, modrig, arret, k19bid,&
+                stoper, sturm, typcal, k1bid, k16bid,&
+                nsekry2, nbvect, nbvec2, nbrss, nbborn,&
+                ibid, ibid, ibid, ibid, maxitr,&
+                bande, precsh, omecor, precdc, r8bid,&
+                r8bid, r8bid, r8bid, r8bid, tolsor,&
                 alpha)
 !
 ! --- CALCUL MODAL PROPREMENT DIT
@@ -297,7 +297,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     mod45 = 'VIBR'
     sdstab = '&&DUMMY2'
     call nmop45(eigsol, l_hpp, mod45, modes, sdstab)
-    call vpleci(eigsol, 'I', 1, k24bid, r8bid, &
+    call vpleci(eigsol, 'I', 1, k24bid, r8bid,&
                 nsekry2)
     call detrsd('EIGENSOLVER', eigsol)
 !
@@ -305,10 +305,10 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 !      un sous-espace propre en 2 :
     nsekry3 = 0
     do j1 = nsekry, nsekry2-1
-        call rsadpa(modes, 'L', 1, 'FREQ', j1, &
+        call rsadpa(modes, 'L', 1, 'FREQ', j1,&
                     0, sjv=jfreq)
         freq1 = zr(jfreq)
-        call rsadpa(modes, 'L', 1, 'FREQ', j1+1, &
+        call rsadpa(modes, 'L', 1, 'FREQ', j1+1,&
                     0, sjv=jfreq)
         freq2 = zr(jfreq)
         if (abs(freq1-freq2)/(abs(freq1)+abs(freq2)) .gt. 1.e-6) then
@@ -352,8 +352,8 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 !-- RELEVE STATIQUE DU SOUS ESPACE DE KRYLOV SUR LE MODELE COMPLET
 !
     call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
-    call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nsekry, &
-                ' ', ' ', ' ', zr(lmakry), [cbid], &
+    call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nsekry,&
+                ' ', ' ', ' ', zr(lmakry), [cbid],&
                 ' ', .true._1, 0, iret)
 !
 !---------------------------------------------C
@@ -381,43 +381,43 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     end do
 !
     call jeveuo(masse(1:19)//'.&INT', 'L', lmatm)
-    call mrmult('ZERO', lmatm, zr(lmakry), zr(lmatrm), nsekry, &
+    call mrmult('ZERO', lmatm, zr(lmakry), zr(lmatrm), nsekry,&
                 .true._1)
     call jeveuo(raide(1:19)//'.&INT', 'L', lmatk)
-    call mrmult('ZERO', lmatk, zr(lmakry), zr(lmatrk), nsekry, &
+    call mrmult('ZERO', lmatk, zr(lmakry), zr(lmatrk), nsekry,&
                 .true._1)
 !
     do j1 = 1, nsekry
         b_n = to_blas_int(neq)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        zr(lmapro+(j1-1)*nsekry+j1-1) = ddot( &
-                                        b_n, zr(lmakry+(j1-1)*neq), b_incx, &
-                                        zr(lmatrm+(j1-1)*neq), b_incy &
+        zr(lmapro+(j1-1)*nsekry+j1-1) = ddot(&
+                                        b_n, zr(lmakry+(j1-1)*neq), b_incx,&
+                                        zr(lmatrm+(j1-1)*neq), b_incy&
                                         )
         b_n = to_blas_int(neq)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        zr(lkpro+(j1-1)*nsekry+j1-1) = ddot( &
-                                       b_n, zr(lmakry+(j1-1)*neq), b_incx, zr(lmatrk+(j1-1)*neq), &
-                                       b_incy &
+        zr(lkpro+(j1-1)*nsekry+j1-1) = ddot(&
+                                       b_n, zr(lmakry+(j1-1)*neq), b_incx, zr(lmatrk+(j1-1)*neq),&
+                                       b_incy&
                                        )
         do i1 = 1, j1-1
             b_n = to_blas_int(neq)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            zr(lmapro+(j1-1)*nsekry+i1-1) = ddot( &
-                                            b_n, zr(lmakry+(i1-1)*neq), b_incx, &
-                                            zr(lmatrm+(j1-1)*neq), b_incy &
+            zr(lmapro+(j1-1)*nsekry+i1-1) = ddot(&
+                                            b_n, zr(lmakry+(i1-1)*neq), b_incx,&
+                                            zr(lmatrm+(j1-1)*neq), b_incy&
                                             )
             zr(lmapro+(i1-1)*nsekry+j1-1) = zr(lmapro+(j1-1)*nsekry+i1-1)
 !
             b_n = to_blas_int(neq)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            zr(lkpro+(j1-1)*nsekry+i1-1) = ddot( &
-                                           b_n, zr(lmakry+(i1-1)*neq), b_incx, &
-                                           zr(lmatrk+(j1-1)*neq), b_incy &
+            zr(lkpro+(j1-1)*nsekry+i1-1) = ddot(&
+                                           b_n, zr(lmakry+(i1-1)*neq), b_incx,&
+                                           zr(lmatrk+(j1-1)*neq), b_incy&
                                            )
             zr(lkpro+(i1-1)*nsekry+j1-1) = zr(lkpro+(j1-1)*nsekry+i1-1)
         end do
@@ -434,15 +434,15 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     AS_ALLOCATE(vr=vect_beta, size=nsekry)
     AS_ALLOCATE(vr=matr_mod_red, size=nsekry**2)
 !
-    call dggev('N', 'V', nsekry, zr(lkpro), nsekry, &
-               zr(lmapro), nsekry, vect_alphar, vect_alphai, vect_beta, &
-               vrbid, 1, matr_mod_red, nsekry, swork, &
+    call dggev('N', 'V', nsekry, zr(lkpro), nsekry,&
+               zr(lmapro), nsekry, vect_alphar, vect_alphai, vect_beta,&
+               vrbid, 1, matr_mod_red, nsekry, swork,&
                -1, info)
     lwork = int(swork(1))
     AS_ALLOCATE(vr=matr_work_dggev, size=lwork)
-    call dggev('N', 'V', nsekry, zr(lkpro), nsekry, &
-               zr(lmapro), nsekry, vect_alphar, vect_alphai, vect_beta, &
-               vrbid, 1, matr_mod_red, nsekry, matr_work_dggev, &
+    call dggev('N', 'V', nsekry, zr(lkpro), nsekry,&
+               zr(lmapro), nsekry, vect_alphar, vect_alphai, vect_beta,&
+               vrbid, 1, matr_mod_red, nsekry, matr_work_dggev,&
                lwork, info)
 !-- ON REACTIVE LE TEST FPE
     call matfpe(1)
@@ -492,9 +492,9 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
         do k1 = 1, nsekry
             temp = matr_mod_red(1+(v_ind_f_pro(j1)-1)*nsekry+k1-1)
             do i1 = 1, neq
-                zr(lmatmo+(j1-1)*neq+i1-1) = zr( &
-                                             lmatmo+(j1-1)*neq+i1-1)+temp*zr(lmakry+(k1-1)*neq+i&
-                                             &1-1 &
+                zr(lmatmo+(j1-1)*neq+i1-1) = zr(&
+                                             lmatmo+(j1-1)*neq+i1-1)+temp*zr(lmakry+(k1-1)*neq+i1&
+                                             &-1&
                                              )
             end do
         end do

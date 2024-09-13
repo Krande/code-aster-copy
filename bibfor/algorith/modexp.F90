@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
+!
+subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
                   numlia, tramod, modet, solveu)
 !-------------------------------------------------------------C
 !--                                                         --C
@@ -84,6 +84,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
     integer :: iret
     integer, pointer :: vect_clefs(:) => null()
     integer, pointer :: vect_num(:) => null()
+    blas_int :: b_lda, b_ldb, b_lwork, b_m, b_n, b_nrhs
     cbid = dcmplx(0.d0, 0.d0)
     call infniv(ifm, niv)
 !
@@ -167,8 +168,8 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
     call wkvect(coint, 'V V I', sizeco, lconnc)
     call wkvect('&&MOIN93.IND_NOEUD', 'V V I', zi(lnoint+nbno-1), lindno)
     call wkvect('&&MOIN93.IPOS_DDL_INTERF', 'V V I', nbno, lipos)
-    call conint(nume, raide, coint, connec, &
-                noddli, nbno, nume91, raiint, ssami)
+    call conint(nume, raide, coint, connec, noddli,&
+                nbno, nume91, raiint, ssami)
 !
 !-- CALCUL DES MODES DU MODELE D'INTERFACE
     call getvr8(' ', 'SHIFT', scal=shift, nbret=ibid)
@@ -191,18 +192,18 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
     nbvect = 2*nbmod
 !
 !-- Factorisation de la matrice de raideur
-    call preres(solveu, 'V', ibid, '&&OP0091.MATPRE', raide, &
+    call preres(solveu, 'V', ibid, '&&OP0091.MATPRE', raide,&
                 ibid, 1)
 !
 !-- ON BOUCLE POUR AVOIR UNE EXPANSION CORRECTE. TANT QUE C'EST PAS BON,
 !-- ON ENRICHIT LA BASE DES MODES D'INTERFACE
 500 continue
 !  IL FAUDRA TRAVAILLER CE POINT POUR RENDRE L'EXPANSION PLUS ROBUSTE
-    call modint(ssami, raiint, nddlin, nbvect, shift, &
-                matmod, masse, raide, nbeq1, coint, &
+    call modint(ssami, raiint, nddlin, nbvect, shift,&
+                matmod, masse, raide, nbeq1, coint,&
                 noddli, nbno, vefreq, 0)
     call jeveuo(matmod, 'L', lmatmo)
-
+!
 !
 !---------------------------C
 !--                       --C
@@ -225,9 +226,10 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
     do j1 = 1, nbvect
         do k1 = 1, nc
             do i1 = 1, nl
-                zr(lcphi+(j1-1)*nl+i1-1) = zr(lcphi+(j1-1)*nl+i1-1)+ &
-                                           zr(ltramo+(k1-1)*nl+(i1-1))*zr(lmatmo+(j1-1)*nc+(k1-1) &
-                                                                          )
+                zr(lcphi+(j1-1)*nl+i1-1) = zr(&
+                                           lcphi+(j1-1)*nl+i1-1)+ zr(ltramo+(k1-1)*nl+(i1-1))*zr(&
+                                           &lmatmo+(j1-1)*nc+(k1-1)&
+                                           )
             end do
         end do
     end do
@@ -247,16 +249,28 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
 !
     call wkvect('&&MODEXP.VEC_VAL_SING', 'V V R', min(nl, nbvect), ibid)
 !
-    call dgelss(nl, nbvect, nbmod, zr(lcphi), nl, &
-                zr(lclin), max(nl, nbvect), zr(ibid), -1.0d0, rank, &
-                swork, -1, info)
+    b_ldb = to_blas_int(max(nl, nbvect))
+    b_lda = to_blas_int(nl)
+    b_m = to_blas_int(nl)
+    b_n = to_blas_int(nbvect)
+    b_nrhs = to_blas_int(nbmod)
+    b_lwork = to_blas_int(-1)
+    call dgelss(b_m, b_n, b_nrhs, zr(lcphi), b_lda,&
+                zr(lclin), b_ldb, zr(ibid), -1.0d0, rank,&
+                swork, b_lwork, info)
 !
     lwork = int(swork(1))
     call wkvect('&&MODEXP.MAT_AXB', 'V V R', lwork, jwork)
 !
-    call dgelss(nl, nbvect, nbmod, zr(lcphi), nl, &
-                zr(lclin), max(nl, nbvect), zr(ibid), 1.0d-12, rank, &
-                zr(jwork), lwork, info)
+    b_ldb = to_blas_int(max(nl, nbvect))
+    b_lda = to_blas_int(nl)
+    b_m = to_blas_int(nl)
+    b_n = to_blas_int(nbvect)
+    b_nrhs = to_blas_int(nbmod)
+    b_lwork = to_blas_int(lwork)
+    call dgelss(b_m, b_n, b_nrhs, zr(lcphi), b_lda,&
+                zr(lclin), b_ldb, zr(ibid), 1.0d-12, rank,&
+                zr(jwork), b_lwork, info)
 !
 !-- MOUVEMENTS DE L'INTERFACE
     call wkvect('&&MODEXP.PHI_EXP', 'V V R', nc*nbmod, lphiex)
@@ -264,9 +278,10 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
     do j1 = 1, nbmod
         do k1 = 1, nbvect
             do i1 = 1, nc
-                zr(lphiex+(j1-1)*nc+i1-1) = zr(lphiex+(j1-1)*nc+i1-1)+ &
-                                            zr(lmatmo+(k1-1)*nc+(i1-1))*zr(lclin+(j1-1)*nbvect+( &
-                                                                           k1-1))
+                zr(lphiex+(j1-1)*nc+i1-1) = zr(&
+                                            lphiex+(j1-1)*nc+i1-1)+ zr(lmatmo+(k1-1)*nc+(i1-1))*z&
+                                            &r(lclin+(j1-1)*nbvect+( k1-1)&
+                                            )
             end do
         end do
     end do
@@ -277,9 +292,10 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
     do j1 = 1, nbmod
         do k1 = 1, nc
             do i1 = 1, nl
-                zr(lcpet+(j1-1)*nl+i1-1) = zr(lcpet+(j1-1)*nl+i1-1)+ &
-                                           zr(ltramo+(k1-1)*nl+(i1-1))*zr(lphiex+(j1-1)*nc+(k1-1) &
-                                                                          )
+                zr(lcpet+(j1-1)*nl+i1-1) = zr(&
+                                           lcpet+(j1-1)*nl+i1-1)+ zr(ltramo+(k1-1)*nl+(i1-1))*zr(&
+                                           &lphiex+(j1-1)*nc+(k1-1)&
+                                           )
             end do
         end do
     end do
@@ -292,8 +308,8 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
     swork(1) = 0
     do j1 = 1, nbmod
         do i1 = 1, nl
-            zr(lnres+j1-1) = zr(lnres+j1-1)+(zr(lmast+(j1-1)*nl+(i1-1)) &
-                                             -zr(lcpet+(j1-1)*nl+(i1-1)))**2
+            zr(lnres+j1-1) = zr(lnres+j1-1)+(zr(lmast+(j1-1)*nl+(i1-1)) -zr(lcpet+(j1-1)*nl+(i1-1&
+                             &)))**2
         end do
         zr(lnres+j1-1) = sqrt(zr(lnres+j1-1))/nl
         swork(1) = max(swork(1), zr(lnres+j1-1))
@@ -353,15 +369,13 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
 !
     do j1 = 1, nbmod
         do i1 = 1, nddlin
-            zr(lmodet+(j1-1)*nbeq1+zi(linlag+(i1-1)*2)-1) = &
-                zr(lphiex+(j1-1)*nc+(i1-1))
-            zr(lmodet+(j1-1)*nbeq1+zi(linlag+(i1-1)*2+1)-1) = &
-                zr(lphiex+(j1-1)*nc+(i1-1))
+            zr(lmodet+(j1-1)*nbeq1+zi(linlag+(i1-1)*2)-1) = zr(lphiex+(j1-1)*nc+(i1-1))
+            zr(lmodet+(j1-1)*nbeq1+zi(linlag+(i1-1)*2+1)-1) = zr(lphiex+(j1-1)*nc+(i1-1))
         end do
     end do
 !
-    call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nbmod, &
-                ' ', ' ', ' ', zr(lmodet), [cbid], &
+    call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nbmod,&
+                ' ', ' ', ' ', zr(lmodet), [cbid],&
                 ' ', .true._1, 0, iret)
 !
 !------------C

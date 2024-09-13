@@ -15,25 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dgemv(trans, m, n, alpha, a,&
                      lda, x, incx, beta, y,&
                      incy)
-        integer, intent(in) :: lda
-        character(len=1) ,intent(in) :: trans
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        real(kind=8) ,intent(in) :: alpha
-        real(kind=8) ,intent(in) :: a(lda, *)
-        real(kind=8) ,intent(in) :: x(*)
-        integer, intent(in) :: incx
-        real(kind=8) ,intent(in) :: beta
-        real(kind=8) ,intent(inout) :: y(*)
-        integer, intent(in) :: incy
+        blas_int, intent(in) :: lda
+        character(len=1), intent(in) :: trans
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        real(kind=8), intent(in) :: alpha
+        real(kind=8), intent(in) :: a(lda, *)
+        real(kind=8), intent(in) :: x(*)
+        blas_int, intent(in) :: incx
+        real(kind=8), intent(in) :: beta
+        real(kind=8), intent(inout) :: y(*)
+        blas_int, intent(in) :: incy
     end subroutine dgemv
 end interface

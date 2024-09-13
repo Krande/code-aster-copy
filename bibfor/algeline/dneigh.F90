@@ -17,8 +17,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dneigh(rnorm, n, h, ldh, ritzr, &
-                  ritzi, bounds, q, ldq, workl, &
+subroutine dneigh(rnorm, n, h, ldh, ritzr,&
+                  ritzi, bounds, q, ldq, workl,&
                   ierr)
 !
 !     SUBROUTINE ARPACK CALCULANT LES MODES PROPRES DE LA MATRICE DE
@@ -167,6 +167,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
     aster_logical :: select(1)
     integer :: i, iconj, msglvl
     real(kind=8) :: temp, vl(1)
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -187,7 +188,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
     msglvl = mneigh
 !
     if (msglvl .gt. 2) then
-        call dmout(logfil, n, n, h, ldh, &
+        call dmout(logfil, n, n, h, ldh,&
                    ndigit, '_NEIGH: ENTERING UPPER HESSENBERG MATRIX H ')
     end if
 !
@@ -199,9 +200,9 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !     | AND THE LAST COMPONENTS OF THE SCHUR VECTORS IN BOUNDS.   |
 !     %-----------------------------------------------------------%
 ! DUE TO CRP_102 CALL DLACPY ('ALL', N, N, H, LDH, WORKL, N)
-    call dlacpy('A', n, n, h, ldh, &
+    call dlacpy('A', n, n, h, ldh,&
                 workl, n)
-    call dlaqrb(.true._1, n, 1, n, workl, &
+    call dlaqrb(.true._1, n, 1, n, workl,&
                 n, ritzr, ritzi, bounds, ierr)
     if (ierr .ne. 0) goto 9000
 !
@@ -219,8 +220,8 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !     | COLUMNS OF Q.                                             |
 !     %-----------------------------------------------------------%
 !
-    call ar_dtrevc('R', 'A', select, n, workl, &
-                   n, vl, n, q, ldq, &
+    call ar_dtrevc('R', 'A', select, n, workl,&
+                   n, vl, n, q, ldq,&
                    n, n, workl(n*n+1), ierr)
 !
     if (ierr .ne. 0) goto 9000
@@ -264,9 +265,14 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
         end if
     end do
 !
-    call dgemv('T', n, n, one, q, &
-               ldq, bounds, 1, zero, workl, &
-               1)
+    b_lda = to_blas_int(ldq)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('T', b_m, b_n, one, q,&
+               b_lda, bounds, b_incx, zero, workl,&
+               b_incy)
 !
     if (msglvl .gt. 1) then
         call dvout(logfil, n, workl, ndigit, '_NEIGH: LAST ROW OF THE EIGENVECTOR MATRIX FOR H')
