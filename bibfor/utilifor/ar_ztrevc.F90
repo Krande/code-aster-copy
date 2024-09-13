@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_ztrevc(side, howmny, select, n, t,&
-                     ldt, vl, ldvl, vr, ldvr,&
+subroutine ar_ztrevc(side, howmny, select, n, t, &
+                     ldt, vl, ldvl, vr, ldvr, &
                      mm, m, work, rwork, info)
 !  -- LAPACK ROUTINE (VERSION 2.0) --
 !     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
@@ -310,8 +310,8 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
             if (ki .gt. 1) then
                 b_lda = to_blas_int(ldt)
                 b_n = to_blas_int(ki-1)
-                call zlatrs('U', 'N', 'N', 'Y', b_n,&
-                            t, b_lda, work(1), scale, rwork,&
+                call zlatrs('U', 'N', 'N', 'Y', b_n, &
+                            t, b_lda, work(1), scale, rwork, &
                             info4)
                 work(ki) = scale
             end if
@@ -342,10 +342,10 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
                     b_n = to_blas_int(ki-1)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call zgemv('N', b_m, b_n, cmone, vr,&
-                               b_lda, work(1), b_incx, dcmplx(scale), vr(1, ki),&
+                    call zgemv('N', b_m, b_n, cmone, vr, &
+                               b_lda, work(1), b_incx, dcmplx(scale), vr(1, ki), &
                                b_incy)
-                endif
+                end if
 !
                 b_n = to_blas_int(n)
                 b_incx = to_blas_int(1)
@@ -363,7 +363,7 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
             end do
 !
             is = is-1
- 80         continue
+80          continue
         end do
     end if
 !
@@ -398,8 +398,8 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
             if (ki .lt. n) then
                 b_lda = to_blas_int(ldt)
                 b_n = to_blas_int(n-ki)
-                call zlatrs('U', 'C', 'N', 'Y', b_n,&
-                            t(ki+1, ki+1), b_lda, work(ki+1), scale, rwork,&
+                call zlatrs('U', 'C', 'N', 'Y', b_n, &
+                            t(ki+1, ki+1), b_lda, work(ki+1), scale, rwork, &
                             info4)
                 work(ki) = scale
             end if
@@ -430,10 +430,10 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
                     b_n = to_blas_int(n-ki)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call zgemv('N', b_m, b_n, cmone, vl(1, ki+1),&
-                               b_lda, work(ki+1), b_incx, dcmplx(scale), vl(1, ki),&
+                    call zgemv('N', b_m, b_n, cmone, vl(1, ki+1), &
+                               b_lda, work(ki+1), b_incx, dcmplx(scale), vl(1, ki), &
                                b_incy)
-                endif
+                end if
 !
                 b_n = to_blas_int(n)
                 b_incx = to_blas_int(1)

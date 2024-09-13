@@ -50,7 +50,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoLocalAxesCell(hhoCell) result (axes)
+    function hhoLocalAxesCell(hhoCell) result(axes)
 !
         implicit none
 !
@@ -84,7 +84,7 @@ contains
                 b_n = to_blas_int(hhoCell%ndim)
                 b_incx = to_blas_int(1)
                 b_lda = to_blas_int(3)
-                call dsyr('U', b_n, hhoQuad%weights(ipg), coor, b_incx,&
+                call dsyr('U', b_n, hhoQuad%weights(ipg), coor, b_incx, &
                           axes, b_lda)
             end do
 !
@@ -93,7 +93,7 @@ contains
             b_n = to_blas_int(hhoCell%ndim)
             b_lda = to_blas_int(3)
             b_lwork = to_blas_int(50)
-            call dsyev('V', 'U', b_n, axes, b_lda,&
+            call dsyev('V', 'U', b_n, axes, b_lda, &
                        evalues, work, b_lwork, info)
             ASSERT(info == 0)
 !
@@ -112,7 +112,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoLocalAxesFace(hhoFace) result (axes)
+    function hhoLocalAxesFace(hhoFace) result(axes)
 !
         implicit none
 !
@@ -151,7 +151,7 @@ contains
                     b_n = to_blas_int(hhoFace%ndim+1)
                     b_incx = to_blas_int(1)
                     b_lda = to_blas_int(3)
-                    call dsyr('U', b_n, hhoQuad%weights(ipg), coor, b_incx,&
+                    call dsyr('U', b_n, hhoQuad%weights(ipg), coor, b_incx, &
                               axes_3d, b_lda)
                 end do
 !
@@ -160,7 +160,7 @@ contains
                 b_n = to_blas_int(hhoFace%ndim+1)
                 b_lda = to_blas_int(3)
                 b_lwork = to_blas_int(50)
-                call dsyev('V', 'U', b_n, axes_3d, b_lda,&
+                call dsyev('V', 'U', b_n, axes_3d, b_lda, &
                            evalues, work, b_lwork, info)
                 ASSERT(info == 0)
                 ASSERT(minloc(evalues(1:hhoFace%ndim+1), dim=1) == 1)

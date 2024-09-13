@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
-                  drds, ck, b, poids, work1,&
+subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde, &
+                  drds, ck, b, poids, work1, &
                   work2, matri)
     implicit none
 #include "blas/dgemm.h"
@@ -43,8 +43,8 @@ subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
     b_m = to_blas_int(dimcon)
     b_n = to_blas_int(dimuel)
     b_k = to_blas_int(dimdef)
-    call dgemm('N', 'N', b_m, b_n, b_k,&
-               1.d0, dsde, b_lda, b, b_ldb,&
+    call dgemm('N', 'N', b_m, b_n, b_k, &
+               1.d0, dsde, b_lda, b, b_ldb, &
                0.d0, work1, b_ldc)
 !   WORK2 = DRDS x WORK1
     b_ldc = to_blas_int(dimdef)
@@ -53,8 +53,8 @@ subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
     b_m = to_blas_int(dimdef)
     b_n = to_blas_int(dimuel)
     b_k = to_blas_int(dimcon)
-    call dgemm('N', 'N', b_m, b_n, b_k,&
-               1.d0, drds, b_lda, work1, b_ldb,&
+    call dgemm('N', 'N', b_m, b_n, b_k, &
+               1.d0, drds, b_lda, work1, b_ldb, &
                0.d0, work2, b_ldc)
 !   WORK2 = CK x WORK2
     do j = 1, dimuel
@@ -69,8 +69,8 @@ subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
     b_m = to_blas_int(dimuel)
     b_n = to_blas_int(dimuel)
     b_k = to_blas_int(dimdef)
-    call dgemm('T', 'N', b_m, b_n, b_k,&
-               poids, b, b_lda, work2, b_ldb,&
+    call dgemm('T', 'N', b_m, b_n, b_k, &
+               poids, b, b_lda, work2, b_ldb, &
                1.d0, matri, b_ldc)
 ! ======================================================================
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine te0487(nomopt, nomte)
     call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellRigi)
 !
 ! --- Number of dofs
-    call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs,&
+    call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
                        gbs)
     ASSERT(cbs <= MSIZE_CELL_SCAL)
     ASSERT(fbs <= MSIZE_FACE_SCAL)
@@ -125,8 +125,8 @@ subroutine te0487(nomopt, nomte)
     b_n = to_blas_int(total_dofs)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, 1.d0, gradrec,&
-               b_lda, temp_curr, b_incx, 0.d0, G_curr_coeff,&
+    call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+               b_lda, temp_curr, b_incx, 0.d0, G_curr_coeff, &
                b_incy)
 !
 ! ----- Loop on quadrature point
@@ -142,20 +142,20 @@ subroutine te0487(nomopt, nomte)
 !
 ! --------- Eval gradient at T+
 !
-        G_curr = hhoEvalVecCell(&
+        G_curr = hhoEvalVecCell( &
                  hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs)
 !
 ! --------- Eval temperature at T+
 !
-        temp_eval_curr = hhoEvalScalCell(&
-                         hhoCell, hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), temp_curr,&
-                         cbs&
+        temp_eval_curr = hhoEvalScalCell( &
+                         hhoCell, hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), temp_curr, &
+                         cbs &
                          )
 !
 ! ------- Compute behavior
 !
-        call hhoComputeBehaviourTher(phenom, fami, poum, ipg, hhoCell%ndim,&
-                                     time_curr, jmate, temp_eval_curr, G_curr, sig_curr,&
+        call hhoComputeBehaviourTher(phenom, fami, poum, ipg, hhoCell%ndim, &
+                                     time_curr, jmate, temp_eval_curr, G_curr, sig_curr, &
                                      module_tang)
 !
         flux(deca:deca+hhoCell%ndim) = -sig_curr(1:hhoCell%ndim)

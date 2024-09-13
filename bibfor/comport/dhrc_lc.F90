@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
-                   sig, vip, a0, c0, aa_t,&
-                   ga_t, ab, gb, ac, gc,&
-                   aa_c, ga_c, cstseu, crit, codret,&
+subroutine dhrc_lc(epsm, deps, vim, pgl, option, &
+                   sig, vip, a0, c0, aa_t, &
+                   ga_t, ab, gb, ac, gc, &
+                   aa_c, ga_c, cstseu, crit, codret, &
                    dsidep, debug)
 ! aslint: disable=W1504
 !
@@ -158,7 +158,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1)*r8dgrd()
     beta = zr(jcara+2)*r8dgrd()
-    call coqrep(pgl, alpha, beta, t2ev2, t2ve2,&
+    call coqrep(pgl, alpha, beta, t2ev2, t2ve2, &
                 cosi, sinu)
 !
 ! ---   PASSAGE DES DEFORMATIONS EPS DU REPERE INTRINSEQUE
@@ -210,21 +210,21 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! --  CALCUL DES TENSEURS DE RAIDEUR A,B,C EN FONCTION DE
 !     L'ENDOMMAGEMENT ET DE LEURS DERIVEES PAR RAPPORT A D1 ET D2
 !
-        call dhrc_calc_b(ab, gb, vint, b, bp1,&
+        call dhrc_calc_b(ab, gb, vint, b, bp1, &
                          bp2, bs1, bs2)
-        call dhrc_calc_c(c0, ac, gc, vint, c,&
+        call dhrc_calc_c(c0, ac, gc, vint, c, &
                          cp1, cp2, cs1, cs2)
-        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
-                         epsg, vint, a, ap1, ap2,&
+        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, &
+                         epsg, vint, a, ap1, ap2, &
                          as1, as2)
 !
 ! ----------------------------------------------------------------------
 ! -------CALCUL DES FORCES THERMODYNAMIQUES -------
 ! ----------------------------------------------------------------------
 !
-        call dhrc_calc_n(epsg, vint, b, c, neta1,&
+        call dhrc_calc_n(epsg, vint, b, c, neta1, &
                          neta2)
-        call dhrc_calc_g(epsg, vint, ap1, bp1, cp1,&
+        call dhrc_calc_g(epsg, vint, ap1, bp1, cp1, &
                          ap2, bp2, cp2, g1, g2)
 !
 ! ----------------------------------------------------------------------
@@ -326,9 +326,9 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
             jacob(:, :) = 0.0d0
 !
-            call dhrc_jacob(epsg, vint, c, bp1, cp1,&
-                            bp2, cp2, as1, bs1, cs1,&
-                            as2, bs2, cs2, indi, neta1,&
+            call dhrc_jacob(epsg, vint, c, bp1, cp1, &
+                            bp2, cp2, as1, bs1, cs1, &
+                            as2, bs2, cs2, indi, neta1, &
                             neta2, cstseu, jacob)
 !
 !
@@ -343,7 +343,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
                 bocaj(k, k) = 1.0d0
             end do
 !
-            call mgauss('NFSP', jacob, bocaj, 6, nbact,&
+            call mgauss('NFSP', jacob, bocaj, 6, nbact, &
                         6, det, iret)
 !
 ! --  MISE A JOUR DES VARIABLES INTERNES
@@ -384,12 +384,12 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! --  CALCUL DES TENSEURS DE RAIDEUR A,B,C EN FONCTION DE
 !     L'ENDOMMAGEMENT ET DE LEURS DERIVEES PAR RAPPORT A D1 ET D2
 !
-                call dhrc_calc_b(ab, gb, vint, b, bp1,&
+                call dhrc_calc_b(ab, gb, vint, b, bp1, &
                                  bp2, bs1, bs2)
-                call dhrc_calc_c(c0, ac, gc, vint, c,&
+                call dhrc_calc_c(c0, ac, gc, vint, c, &
                                  cp1, cp2, cs1, cs2)
-                call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
-                                 epsg, vint, a, ap1, ap2,&
+                call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, &
+                                 epsg, vint, a, ap1, ap2, &
                                  as1, as2)
             end if
 !
@@ -399,9 +399,9 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! ----CALCUL DES FORCES THERMODYNAMIQUES AVEC VARIABLES ACTUALISEES-----
 ! ----------------------------------------------------------------------
 !
-            call dhrc_calc_n(epsg, vint, b, c, neta1,&
+            call dhrc_calc_n(epsg, vint, b, c, neta1, &
                              neta2)
-            call dhrc_calc_g(epsg, vint, ap1, bp1, cp1,&
+            call dhrc_calc_g(epsg, vint, ap1, bp1, cp1, &
                              ap2, bp2, cp2, g1, g2)
 !
 ! ----------------------------------------------------------------------
@@ -453,11 +453,11 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
         end do
 ! --  CALCUL DE LA DISSIPATION
         vip(7) = (vip(1)*cstseu(1)+vip(2)*cstseu(2))
-        vip(8) = vim(8)+(abs(vip(3)-vim(3))*cstseu(3)+abs(vip(4)-vim(4))*cstseu(4) +abs(vip(5)-vi&
+        vip(8) = vim(8)+(abs(vip(3)-vim(3))*cstseu(3)+abs(vip(4)-vim(4))*cstseu(4)+abs(vip(5)-vi&
                  &m(5))*cstseu(5)+abs(vip(6)-vim(6))*cstseu(6))
-        vip(10) = 1.d0-(&
+        vip(10) = 1.d0-( &
                   a(1, 1)*a(2, 2)*a(3, 3))**(1.d0/3.d0)/(a0(1, 1)*a0(2, 2)*a0(3, 3))**(1.d0/3.d0)
-        vip(11) = 1.d0-(&
+        vip(11) = 1.d0-( &
                   a(4, 4)*a(5, 5)*a(6, 6))**(1.d0/3.d0)/(a0(4, 4)*a0(5, 5)*a0(6, 6))**(1.d0/3.d0)
 !
     else
@@ -482,14 +482,14 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
         end if
     end do
 !
-    call dhrc_calc_b(ab, gb, vip, b, bp1,&
+    call dhrc_calc_b(ab, gb, vip, b, bp1, &
                      bp2, bs1, bs2)
-    call dhrc_calc_c(c0, ac, gc, vip, c,&
+    call dhrc_calc_c(c0, ac, gc, vip, c, &
                      cp1, cp2, cs1, cs2)
-    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
-                     epsg, vip, a, ap1, ap2,&
+    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, &
+                     epsg, vip, a, ap1, ap2, &
                      as1, as2)
-    call dhrc_calc_n(epsg, vip, b, c, neta1,&
+    call dhrc_calc_n(epsg, vip, b, c, neta1, &
                      neta2)
 !
     if (resi) then
@@ -525,9 +525,9 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
         jacob(:, :) = 0.0d0
 !
-        call dhrc_jacob(epsg, vip, c, bp1, cp1,&
-                        bp2, cp2, as1, bs1, cs1,&
-                        as2, bs2, cs2, indi, neta1,&
+        call dhrc_jacob(epsg, vip, c, bp1, cp1, &
+                        bp2, cp2, as1, bs1, cs1, &
+                        as2, bs2, cs2, indi, neta1, &
                         neta2, cstseu, jacob)
 !
 ! --  INVERSION DE LA JACOBIENNE => BOCAJ(NBACT,NBACT)
@@ -538,11 +538,11 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
             bocaj(k, k) = 1.0d0
         end do
 !
-        call mgauss('NFSP', jacob, bocaj, 6, nbact,&
+        call mgauss('NFSP', jacob, bocaj, 6, nbact, &
                     6, det, iret)
 !
-        call dhrc_mat_tan(a, ap1, ap2, b, bp1,&
-                          bp2, bocaj, neta1, neta2, indi,&
+        call dhrc_mat_tan(a, ap1, ap2, b, bp1, &
+                          bp2, bocaj, neta1, neta2, indi, &
                           cstseu, epsg, vip, dsideg)
     end if
 !
@@ -563,8 +563,8 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     b_lda = to_blas_int(6)
     b_n = to_blas_int(6)
     b_lwork = to_blas_int(18)
-    call dgeev('N', 'N', b_n, ates, b_lda,&
-               wr, wi, vl, b_ldvl, vr,&
+    call dgeev('N', 'N', b_n, ates, b_lda, &
+               wr, wi, vl, b_ldvl, vr, &
                b_ldvr, work, b_lwork, info)
 !
 !     ECRITURE DES VALEURS PROPRES
@@ -611,11 +611,11 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
         end do
     end do
 !
-    call utbtab('ZERO', 3, 3, dsidmg, t1ve,&
+    call utbtab('ZERO', 3, 3, dsidmg, t1ve, &
                 xab1, dsidem)
-    call utbtab('ZERO', 3, 3, dsidcg, t1ve,&
+    call utbtab('ZERO', 3, 3, dsidcg, t1ve, &
                 xab1, dsidec)
-    call utbtab('ZERO', 3, 3, dsidfg, t1ve,&
+    call utbtab('ZERO', 3, 3, dsidfg, t1ve, &
                 xab1, dsidef)
 !
     dsidep(:, :) = 0.0d0

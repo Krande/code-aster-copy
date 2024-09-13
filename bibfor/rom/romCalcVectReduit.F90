@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, l_vect_name, l_vect_type,&
+subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, l_vect_name, l_vect_type, &
                              l_vect_redu, mode_type, vc_mode, vr_mode)
 !
     implicit none

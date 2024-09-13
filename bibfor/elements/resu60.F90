@@ -185,11 +185,11 @@ subroutine resu60(resu1, resu2)
 !
 !     --- DUPLICATION ---
 !
-    if (flagd1 .ne. 0) call jedupo(resu//'           .DEPL', 'G', resu1//'           .DEPL',&
+    if (flagd1 .ne. 0) call jedupo(resu//'           .DEPL', 'G', resu1//'           .DEPL', &
                                    .false._1)
-    if (flagv1 .ne. 0) call jedupo(resu//'           .VITE', 'G', resu1//'           .VITE',&
+    if (flagv1 .ne. 0) call jedupo(resu//'           .VITE', 'G', resu1//'           .VITE', &
                                    .false._1)
-    if (flaga1 .ne. 0) call jedupo(resu//'           .ACCE', 'G', resu1//'           .ACCE',&
+    if (flaga1 .ne. 0) call jedupo(resu//'           .ACCE', 'G', resu1//'           .ACCE', &
                                    .false._1)
     call jedupo(resu//'           .ORDR', 'G', resu1//'           .ORDR', .false._1)
     call jedupo(resu//'           .DISC', 'G', resu1//'           .DISC', .false._1)

@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hypela(fami, kpg, ksp, ndim, typmod,&
-                  imate, crit, eps, option, sig,&
+subroutine hypela(fami, kpg, ksp, ndim, typmod, &
+                  imate, crit, eps, option, sig, &
                   dsidep, codret)
 !
     implicit none
@@ -101,7 +101,7 @@ subroutine hypela(fami, kpg, ksp, ndim, typmod,&
 !
 ! --- LECTURE DES CARACTERISTIQUES MATERIAU
 !
-    call hypmat(fami, kpg, ksp, poum, imate,&
+    call hypmat(fami, kpg, ksp, poum, imate, &
                 c10, c01, c20, k)
 !
 ! --- A PRIORI ON A CONVERGE
@@ -129,27 +129,27 @@ subroutine hypela(fami, kpg, ksp, ndim, typmod,&
         c13 = 2.d0*epstot(5)
         c23 = 2.d0*epstot(6)
 ! --- CALCUL DES CONTRAINTES ISOTROPIQUES
-        call hyp3ci(c11, c22, c33, c12, c13,&
-                    c23, c10, c01, c20, siso,&
+        call hyp3ci(c11, c22, c33, c12, c13, &
+                    c23, c10, c01, c20, siso, &
                     codret)
         if (codret .eq. 1) then
             goto 99
         end if
 ! --- CALCUL DES CONTRAINTES VOLUMIQUES
-        call hyp3cv(c11, c22, c33, c12, c13,&
+        call hyp3cv(c11, c22, c33, c12, c13, &
                     c23, k, svol, codret)
         if (codret .eq. 1) then
             goto 99
         end if
 ! --- CALCUL DE LA MATRICE TANGENTE (PARTIE ISOTROPIQUE)
-        call hyp3di(c11, c22, c33, c12, c13,&
-                    c23, c10, c01, c20, ciso,&
+        call hyp3di(c11, c22, c33, c12, c13, &
+                    c23, c10, c01, c20, ciso, &
                     codret)
         if (codret .eq. 1) then
             goto 99
         end if
 ! --- CALCUL DE LA MATRICE TANGENTE (PARTIE VOLUMIQUE)
-        call hyp3dv(c11, c22, c33, c12, c13,&
+        call hyp3dv(c11, c22, c33, c12, c13, &
                     c23, k, cvol, codret)
         if (codret .eq. 1) then
             goto 99
@@ -178,14 +178,14 @@ subroutine hypela(fami, kpg, ksp, ndim, typmod,&
         c22 = 2.d0*epstot(2)+1.d0
         c33 = 1.d0
 ! --- CALCUL DES CONTRAINTES
-        call hypcpc(c11, c22, c33, c12, k,&
-                    c10, c01, c20, nitmax, epsi,&
+        call hypcpc(c11, c22, c33, c12, k, &
+                    c10, c01, c20, nitmax, epsi, &
                     sig, codret)
         if (codret .eq. 1) then
             goto 99
         end if
 ! --- CALCUL DE LA MATRICE TANGENTE
-        call hypcpd(c11, c22, c33, c12, k,&
+        call hypcpd(c11, c22, c33, c12, k, &
                     c10, c01, c20, dsidep, codret)
         if (codret .eq. 1) then
             goto 99
@@ -220,5 +220,5 @@ subroutine hypela(fami, kpg, ksp, ndim, typmod,&
     b_incx = to_blas_int(1)
     call dscal(b_n, sqrt(2.d0), sig(4), b_incx)
 !
- 99 continue
+99  continue
 end subroutine

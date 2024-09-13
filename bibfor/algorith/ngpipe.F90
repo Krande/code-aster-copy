@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ngpipe(typilo, npg, neps, nddl, b,&
-                  ni2ldc, typmod, mat, compor, lgpg,&
-                  ddlm, sigm, vim, ddld, ddl0,&
+subroutine ngpipe(typilo, npg, neps, nddl, b, &
+                  ni2ldc, typmod, mat, compor, lgpg, &
+                  ddlm, sigm, vim, ddld, ddl0, &
                   ddl1, tau, etamin, etamax, copilo)
 !
 !
@@ -87,32 +87,32 @@ subroutine ngpipe(typilo, npg, neps, nddl, b,&
     b_n = to_blas_int(nddl)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, 1.d0, b,&
-               b_lda, ddlm, b_incx, 0.d0, epsm,&
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddlm, b_incx, 0.d0, epsm, &
                b_incy)
     b_lda = to_blas_int(nepg)
     b_m = to_blas_int(nepg)
     b_n = to_blas_int(nddl)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, 1.d0, b,&
-               b_lda, ddld, b_incx, 0.d0, epsp,&
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddld, b_incx, 0.d0, epsp, &
                b_incy)
     b_lda = to_blas_int(nepg)
     b_m = to_blas_int(nepg)
     b_n = to_blas_int(nddl)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, 1.d0, b,&
-               b_lda, ddl0, b_incx, 1.d0, epsp,&
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddl0, b_incx, 1.d0, epsp, &
                b_incy)
     b_lda = to_blas_int(nepg)
     b_m = to_blas_int(nepg)
     b_n = to_blas_int(nddl)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, 1.d0, b,&
-               b_lda, ddl1, b_incx, 0.d0, epsd,&
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddl1, b_incx, 0.d0, epsd, &
                b_incy)
 !
 !
@@ -126,8 +126,8 @@ subroutine ngpipe(typilo, npg, neps, nddl, b,&
 ! -- TRAITEMENT DE CHAQUE POINT DE GAUSS
 !
     do g = 1, npg
-        call pil000(typilo, compor, neps, tau, mat,&
-                    vim(1, g), sigmam(os(g)), epsm(os(g)), epsp(os(g)), epsd(os(g)),&
+        call pil000(typilo, compor, neps, tau, mat, &
+                    vim(1, g), sigmam(os(g)), epsm(os(g)), epsp(os(g)), epsd(os(g)), &
                     typmod, etamin, etamax, copilo(1, g))
     end do
 !

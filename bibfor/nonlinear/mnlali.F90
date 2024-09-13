@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
-                  adime, ninc, nd, nchoc, h,&
+subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
+                  adime, ninc, nd, nchoc, h, &
                   hf, ampl, xvect, lnm, num_ordr)
     implicit none
 !
@@ -131,10 +131,10 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
 ! --- RECUPERATION DE LA FREQUENCE PROPRE DU MODE LINEAIRE
 ! ----------------------------------------------------------------------
     if (reprise) then
-        call rsadpa(modini, 'L', 1, 'FREQ', 2,&
+        call rsadpa(modini, 'L', 1, 'FREQ', 2, &
                     0, sjv=ifreq, styp=k16bid)
     else
-        call rsadpa(lnm, 'L', 1, 'FREQ', num_ordr,&
+        call rsadpa(lnm, 'L', 1, 'FREQ', num_ordr, &
                     0, sjv=ifreq, styp=k16bid)
     end if
     omega = r8depi()*zr(ifreq)/zr(iadim-1+3)
@@ -143,14 +143,14 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
 ! ----------------------------------------------------------------------
     clnm = '&&MNLALI.RECUP     '
     if (reprise) then
-        call vprecu(modini, 'DEPL', -1, [0], clnm,&
-                    0, ' ', ' ', ' ', ' ',&
-                    neqv, nbmode, typmod, nbpari, nbparr,&
+        call vprecu(modini, 'DEPL', -1, [0], clnm, &
+                    0, ' ', ' ', ' ', ' ', &
+                    neqv, nbmode, typmod, nbpari, nbparr, &
                     nbpark)
     else
-        call vprecu(lnm, 'DEPL', -1, [0], clnm,&
-                    0, ' ', ' ', ' ', ' ',&
-                    neqv, nbmode, typmod, nbpari, nbparr,&
+        call vprecu(lnm, 'DEPL', -1, [0], clnm, &
+                    0, ' ', ' ', ' ', ' ', &
+                    neqv, nbmode, typmod, nbpari, nbparr, &
                     nbpark)
     end if
     call jeveuo(clnm, 'L', ilnm)
@@ -167,7 +167,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
                     i = i+1
                     if (h .gt. ht .and. j .gt. ht+1) then
                         zr(ivect-1+(h-ht+j-1)*nd+i) = zr(ilnm-1+(j-1)*neq+k)
-                        else if (h .lt. ht .and. j .gt. (h+1) .and. j .le. (2*h+1)) &
+                    else if (h .lt. ht .and. j .gt. (h+1) .and. j .le. (2*h+1)) &
                         then
                         zr(ivect-1+(j-1)*nd+i) = zr(ilnm-1+(ht-h+j-1)*neq+k)
                     else
@@ -225,9 +225,9 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
             b_n = to_blas_int(2*h+1)
             b_incx = to_blas_int(nd)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1),&
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
                        b_incy)
-            call mnlbil(zr(idep1), omega, alpha, eta, h,&
+            call mnlbil(zr(idep1), omega, alpha, eta, h, &
                         hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
         else if (type(i) (1:6) .eq. 'CERCLE') then
             nddlx = vnddl(6*(i-1)+1)
@@ -254,7 +254,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
             b_n = to_blas_int(2*h+1)
             b_incx = to_blas_int(1)
             call dscal(b_n, 1.d0/jeu, zr(idep2), b_incx)
-            call mnlcir(xdep1, xdep2, omega, alpha, eta,&
+            call mnlcir(xdep1, xdep2, omega, alpha, eta, &
                         h, hf, nt, xtemp)
             b_n = to_blas_int(4*(2*hf+1))
             b_incx = to_blas_int(1)
@@ -268,9 +268,9 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
             b_n = to_blas_int(2*h+1)
             b_incx = to_blas_int(nd)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1),&
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
                        b_incy)
-            call mnluil(zr(idep1), omega, alpha, eta, h,&
+            call mnluil(zr(idep1), omega, alpha, eta, h, &
                         hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
         end if
         neqs = neqs+vneqs(i)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine dbr_calcpod_svd(m, n, q, s, v,&
+subroutine dbr_calcpod_svd(m, n, q, s, v, &
                            nb_sing)
 !
     use Rom_Datastructure_type
@@ -89,8 +89,8 @@ subroutine dbr_calcpod_svd(m, n, q, s, v,&
     b_m = to_blas_int(m)
     b_n = to_blas_int(n)
     b_lwork = to_blas_int(lwork)
-    call dgesvd('S', 'N', b_m, b_n, qSave,&
-                b_lda, s, v, b_ldu, w,&
+    call dgesvd('S', 'N', b_m, b_n, qSave, &
+                b_lda, s, v, b_ldu, w, &
                 b_ldvt, work, b_lwork, info)
     lwork = nint(work(1))
     AS_DEALLOCATE(vr=work)
@@ -109,8 +109,8 @@ subroutine dbr_calcpod_svd(m, n, q, s, v,&
     b_m = to_blas_int(m)
     b_n = to_blas_int(n)
     b_lwork = to_blas_int(lwork)
-    call dgesvd('S', 'N', b_m, b_n, qSave,&
-                b_lda, s, v, b_ldu, w,&
+    call dgesvd('S', 'N', b_m, b_n, qSave, &
+                b_lda, s, v, b_ldu, w, &
                 b_ldvt, work, b_lwork, info)
     if (info .ne. 0) then
         call utmess('F', 'ROM5_8')

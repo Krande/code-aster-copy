@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,13 +88,13 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), min_order, max_order,&
+            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), min_order, max_order, &
                                      basisScalEval)
 ! --------  Eval massMat
             b_n = to_blas_int(dimMat)
             b_incx = to_blas_int(1)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
-            call dsyr('U', b_n, hhoQuad%weights(ipg), basisScalEval, b_incx,&
+            call dsyr('U', b_n, hhoQuad%weights(ipg), basisScalEval, b_incx, &
                       massMat, b_lda)
         end do
 !
@@ -154,13 +154,13 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), min_order, max_order,&
+            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), min_order, max_order, &
                                      basisScalEval)
 ! --------  Eval massMat
             b_n = to_blas_int(dimMat)
             b_incx = to_blas_int(1)
             b_lda = to_blas_int(MSIZE_FACE_SCAL)
-            call dsyr('U', b_n, hhoQuad%weights(ipg), basisScalEval, b_incx,&
+            call dsyr('U', b_n, hhoQuad%weights(ipg), basisScalEval, b_incx, &
                       massMat, b_lda)
         end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -111,7 +111,7 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
         numeStore = iStore
 !
 ! ----- Get current field from reduced model
-        call rsexch(' ', resultRomName, fieldName, numeStore, fieldRom,&
+        call rsexch(' ', resultRomName, fieldName, numeStore, fieldRom, &
                     iret)
         ASSERT(iret .eq. 0)
         call dismoi('TYPE_CHAMP', fieldRom, 'CHAMP', repk=fieldSupp)
@@ -154,8 +154,8 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
         b_m = to_blas_int(nbMode)
         b_n = to_blas_int(1)
         b_k = to_blas_int(nbEquaRID)
-        call dgemm('T', 'N', b_m, b_n, b_k,&
-                   1.d0, fieldBuild%matrPhiRID, b_lda, valeField, b_ldb,&
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, fieldBuild%matrPhiRID, b_lda, valeField, b_ldb, &
                    0.d0, systVect, b_ldc)
         b_ldc = to_blas_int(nbMode)
         b_ldb = to_blas_int(nbEquaRID)
@@ -163,8 +163,8 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
         b_m = to_blas_int(nbMode)
         b_n = to_blas_int(nbMode)
         b_k = to_blas_int(nbEquaRID)
-        call dgemm('T', 'N', b_m, b_n, b_k,&
-                   1.d0, fieldBuild%matrPhiRID, b_lda, fieldBuild%matrPhiRID, b_ldb,&
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, fieldBuild%matrPhiRID, b_lda, fieldBuild%matrPhiRID, b_ldb, &
                    0.d0, systMatr, b_ldc)
 !
 ! ----- Solve system
@@ -172,7 +172,7 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
         b_lda = to_blas_int(nbMode)
         b_n = to_blas_int(nbMode)
         b_nrhs = to_blas_int(1)
-        call dgesv(b_n, b_nrhs, systMatr, b_lda, systPerm,&
+        call dgesv(b_n, b_nrhs, systMatr, b_lda, systPerm, &
                    systVect, b_ldb, systInfo)
         if (systInfo .ne. 0) then
             call utmess('F', 'ROM17_9')

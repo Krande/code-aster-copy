@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mgauss(cara, a, b, dim, nordre,&
+subroutine mgauss(cara, a, b, dim, nordre, &
                   nb, det, iret)
 !
 !
@@ -142,10 +142,10 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         b_lda = to_blas_int(lda)
         b_n = to_blas_int(n)
         b_nrhs = to_blas_int(nrhs)
-        call dgesvx(fact, trans2, b_n, b_nrhs, aa,&
-                    b_lda, af, b_ldaf, ipiv4, equed,&
-                    r, c, b, b_ldb, x,&
-                    b_ldx, rcond, ferr, berr, work,&
+        call dgesvx(fact, trans2, b_n, b_nrhs, aa, &
+                    b_lda, af, b_ldaf, ipiv4, equed, &
+                    r, c, b, b_ldb, x, &
+                    b_ldx, rcond, ferr, berr, work, &
                     iwork4, inf4)
         iret = inf4
 !
@@ -207,7 +207,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         b_lda = to_blas_int(lda)
         b_n = to_blas_int(n)
         b_nrhs = to_blas_int(nrhs)
-        call dgesv(b_n, b_nrhs, af, b_lda, ipiv4,&
+        call dgesv(b_n, b_nrhs, af, b_lda, ipiv4, &
                    b, b_ldb, inf4)
         iret = inf4
         if (ldet) then
@@ -236,10 +236,10 @@ subroutine mgauss(cara, a, b, dim, nordre,&
             det = 0.d0
         end if
         if (ltrans) then
-            call mgausw(af, b, dim, nordre, nb,&
+            call mgausw(af, b, dim, nordre, nb, &
                         det, lret)
         else
-            call mgausw(a, b, dim, nordre, nb,&
+            call mgausw(a, b, dim, nordre, nb, &
                         det, lret)
         end if
         iret = 0
@@ -259,7 +259,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
                     vali(2) = iret
                     valk(1) = ' '
                     valk(2) = ' '
-                    call utmess('F', 'CALCULEL6_15', nk=2, valk=valk, ni=2,&
+                    call utmess('F', 'CALCULEL6_15', nk=2, valk=valk, ni=2, &
                                 vali=vali)
                 end if
             else
@@ -306,7 +306,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
 !
 110 continue
 !
-    1001 format(10('='), a, 10('='))
+1001 format(10('='), a, 10('='))
 !
     call matfpe(1)
 !

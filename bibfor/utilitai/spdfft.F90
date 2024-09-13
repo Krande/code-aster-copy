@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine spdfft(lvar, nbva, nsens, ltra, nbpts1,&
+subroutine spdfft(lvar, nbva, nsens, ltra, nbpts1, &
                   nbpts, nout, nbpts2, sym)
     implicit none
 #include "jeveux.h"
@@ -85,15 +85,15 @@ subroutine spdfft(lvar, nbva, nsens, ltra, nbpts1,&
             zc(ltra+i-1) = dcmplx(zr(lfon+ii-1), zr(lfon+ii))
             zc(ltra+nbpts2-i+1) = dcmplx(zr(lfon+ii-1), -zr(lfon+ii))
         end do
-        zc(ltra+nbpts+1) = dcmplx(((4.d0*zr(lfon+ii-1)-zr(lfon+ii-3) )/3.d0), 0.d0)
+        zc(ltra+nbpts+1) = dcmplx(((4.d0*zr(lfon+ii-1)-zr(lfon+ii-3))/3.d0), 0.d0)
         if ((nbpts .gt. nbva) .and. (sym .eq. 'NON')) then
             do i = 1, (nbpts-nbva)
                 zc(ltra+nbva+i-1) = dcmplx(0.d0, 0.d0)
                 zc(ltra+nbpts2-nbva-i+1) = dcmplx(0.d0, 0.d0)
             end do
         end if
-        zc(ltra+nbpts+1) = dcmplx(&
-                           ((4.d0*dble(zc(ltra+nbpts))-dble(zc( ltra+nbpts-1)))/3.d0), 0.d0)
+        zc(ltra+nbpts+1) = dcmplx( &
+                           ((4.d0*dble(zc(ltra+nbpts))-dble(zc(ltra+nbpts-1)))/3.d0), 0.d0)
         call fft(zc(ltra), nbpts2, -1)
         pas = zr(lvar+1)-zr(lvar)
         lres1 = nout+nbpts2

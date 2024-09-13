@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zmvpy(uplo, n, alpha, a, lda,&
+subroutine zmvpy(uplo, n, alpha, a, lda, &
                  x, incx, beta, y, incy)
     implicit none
 #include "asterfort/vecinc.h"
@@ -76,7 +76,7 @@ subroutine zmvpy(uplo, n, alpha, a, lda,&
             b_n = to_blas_int(j-1)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(incy)
-            call zaxpy(b_n, temp, a(1, j), b_incx, y(ky),&
+            call zaxpy(b_n, temp, a(1, j), b_incx, y(ky), &
                        b_incy)
             ky = iy+(j-1)*incy
             y(ky) = y(ky)+temp*dble(a(j, j))
@@ -99,7 +99,7 @@ subroutine zmvpy(uplo, n, alpha, a, lda,&
             b_n = to_blas_int(n-j)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(incy)
-            call zaxpy(b_n, temp, a(j+1, j), b_incx, y(ky),&
+            call zaxpy(b_n, temp, a(j+1, j), b_incx, y(ky), &
                        b_incy)
             ix = ix+incx
         end do

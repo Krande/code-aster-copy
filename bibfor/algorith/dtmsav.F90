@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal,&
-                  iscal, rscal, cscal, kvect, ivect,&
+subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
+                  iscal, rscal, cscal, kvect, ivect, &
                   rvect, cvect, buffer)
     implicit none
 ! Save a parameter in the temporary data structure for the command
@@ -180,7 +180,7 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal,&
         end if
     end if
 !
- 20 continue
+20  continue
 !
     savejv(1:8) = sd_dtm
     if (present(iocc)) then
@@ -272,6 +272,6 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal,&
         AS_DEALLOCATE(vk24=kvect_)
     end if
 !
- 99 continue
+99  continue
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lggvfc(refe, ndim, nno, nnob, npg,&
-                  nddl, axi, geom, ddl, vff,&
-                  vffb, idff, idffb, iw, sief,&
+subroutine lggvfc(refe, ndim, nno, nnob, npg, &
+                  nddl, axi, geom, ddl, vff, &
+                  vffb, idff, idffb, iw, sief, &
                   fint)
 !
     use bloc_fe_module, only: prod_sb, add_fint
@@ -94,42 +94,42 @@ subroutine lggvfc(refe, ndim, nno, nnob, npg,&
     gauss: do g = 1, npg
 !
 ! Calcul des derivees des fonctions de forme P1 (geometrie initiale)
-    call dfdmip(ndim, nnob, axi, geom, g,&
-                iw, vffb(1, g), idffb, rbid, rbid,&
-                dffb)
+        call dfdmip(ndim, nnob, axi, geom, g, &
+                    iw, vffb(1, g), idffb, rbid, rbid, &
+                    dffb)
 !
 ! Calcul du poids d'integration (geometrie initiale)
-    call dfdmip(ndim, nno, axi, geom, g,&
-                iw, vff(1, g), idff, r_ini, poids_ini,&
-                dff_ini)
+        call dfdmip(ndim, nno, axi, geom, g, &
+                    iw, vff(1, g), idff, r_ini, poids_ini, &
+                    dff_ini)
 !
 ! Calcul des derivees des fonctions de forme P2, du rayon et du poids (geometrie deformee)
-    call dfdmip(ndim, nno, axi, geom+depl, g,&
-                iw, vff(1, g), idff, r_def, poids_def,&
-                dff_def)
+        call dfdmip(ndim, nno, axi, geom+depl, g, &
+                    iw, vff(1, g), idff, r_def, poids_def, &
+                    dff_def)
 !
 ! Calcul de la matrice BU (geometrie deformee)
-    call nmbeps(axi, r_def, vff(:, g), dff_def, bu)
+        call nmbeps(axi, r_def, vff(:, g), dff_def, bu)
 !
 ! Matrice BG (geometrie initiale)
-    bg = 0
-    bg(1, 1, :) = vffb(:, g)
-    bg(2, 2, :) = vffb(:, g)
-    bg(3:neg, 1, :) = transpose(dffb)
+        bg = 0
+        bg(1, 1, :) = vffb(:, g)
+        bg(2, 2, :) = vffb(:, g)
+        bg(3:neg, 1, :) = transpose(dffb)
 !
 ! Extraction des blocs de contraintes generalisees (dont contrainte mecanique de Cauchy)
-    siefu = sief(1:neu, g)*vrac2(1:neu)
-    siefg = sief(neu+1:neu+neg, g)
+        siefu = sief(1:neu, g)*vrac2(1:neu)
+        siefg = sief(neu+1:neu+neg, g)
 !
 ! Matrices corrigees si REFE_FORC_NODA
-    if (refe) then
-        bu = abs(bu)
-        bg = abs(bg)
-    end if
+        if (refe) then
+            bu = abs(bu)
+            bg = abs(bg)
+        end if
 !
 ! Calcul des contributions aux forces interieures
-    call add_fint(fint, xu, poids_def*prod_sb(siefu, bu))
-    call add_fint(fint, xg, poids_ini*prod_sb(siefg, bg))
+        call add_fint(fint, xu, poids_def*prod_sb(siefu, bu))
+        call add_fint(fint, xg, poids_ini*prod_sb(siefg, bg))
 !
     end do gauss
 !

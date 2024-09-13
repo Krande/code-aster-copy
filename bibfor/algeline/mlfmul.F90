@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mlfmul(b, f, y, ldb, n,&
+subroutine mlfmul(b, f, y, ldb, n, &
                   p, l, opta, optb, nb)
 !
 !
@@ -54,8 +54,8 @@ subroutine mlfmul(b, f, y, ldb, n,&
             b_m = to_blas_int(nb)
             b_n = to_blas_int(nb)
             b_k = to_blas_int(p)
-            call dgemm(tra, trb, b_m, b_n, b_k,&
-                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb,&
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb, &
                        beta, b(ib, jb), b_ldc)
         end do
         if (restl .gt. 0) then
@@ -66,8 +66,8 @@ subroutine mlfmul(b, f, y, ldb, n,&
             b_m = to_blas_int(nb)
             b_n = to_blas_int(restl)
             b_k = to_blas_int(p)
-            call dgemm(tra, trb, b_m, b_n, b_k,&
-                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb,&
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb, &
                        beta, b(ib, jb), b_ldc)
         end if
     end do
@@ -81,8 +81,8 @@ subroutine mlfmul(b, f, y, ldb, n,&
             b_m = to_blas_int(restm)
             b_n = to_blas_int(nb)
             b_k = to_blas_int(p)
-            call dgemm(tra, trb, b_m, b_n, b_k,&
-                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb,&
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb, &
                        beta, b(ib, jb), b_ldc)
         end do
         if (restl .gt. 0) then
@@ -93,8 +93,8 @@ subroutine mlfmul(b, f, y, ldb, n,&
             b_m = to_blas_int(restm)
             b_n = to_blas_int(restl)
             b_k = to_blas_int(p)
-            call dgemm(tra, trb, b_m, b_n, b_k,&
-                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb,&
+            call dgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, f(ib, 1), b_lda, y(1, jb), b_ldb, &
                        beta, b(ib, jb), b_ldc)
         end if
     end if

@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine intsav(sd_int_, ip, lonvec, iocc, kscal,&
-                  iscal, rscal, cscal, kvect, ivect,&
+subroutine intsav(sd_int_, ip, lonvec, iocc, kscal, &
+                  iscal, rscal, cscal, kvect, ivect, &
                   rvect, cvect, buffer)
     implicit none
 ! Save a parameter in the temporary data structure for integration schemes
@@ -180,7 +180,7 @@ subroutine intsav(sd_int_, ip, lonvec, iocc, kscal,&
         end if
     end if
 !
- 20 continue
+20  continue
 !
     savejv(1:8) = sd_int
     if (present(iocc)) then
@@ -272,6 +272,6 @@ subroutine intsav(sd_int_, ip, lonvec, iocc, kscal,&
         AS_DEALLOCATE(vk24=kvect_)
     end if
 !
- 99 continue
+99  continue
 !
 end subroutine

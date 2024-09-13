@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
+subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
                   nd, nchoc, h, nbpt, xeng)
     implicit none
 !
@@ -155,23 +155,23 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
             b_n = to_blas_int(nd)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(iy),&
+            call daxpy(b_n, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(iy), &
                        b_incy)
             b_n = to_blas_int(nd)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(idy),&
+            call daxpy(b_n, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(idy), &
                        b_incy)
 ! ---     SIN
             b_n = to_blas_int(nd)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(iy),&
+            call daxpy(b_n, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(iy), &
                        b_incy)
             b_n = to_blas_int(nd)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(idy),&
+            call daxpy(b_n, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(idy), &
                        b_incy)
         end do
 ! ----------------------------------------------------------------------
@@ -197,9 +197,9 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
                 dye(k) = zr(idy-1+i)
             end if
         end do
-        call mrmult('ZERO', imat(1), ye, kye, 1,&
+        call mrmult('ZERO', imat(1), ye, kye, 1, &
                     .false._1)
-        call mrmult('ZERO', imat(2), dye, mdye, 1,&
+        call mrmult('ZERO', imat(2), dye, mdye, 1, &
                     .false._1)
         b_n = to_blas_int(nd)
         b_incx = to_blas_int(1)

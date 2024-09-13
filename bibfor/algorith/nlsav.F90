@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
-                 iscal, rscal, cscal, kvect, ivect,&
+subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal, &
+                 iscal, rscal, cscal, kvect, ivect, &
                  rvect, cvect, buffer)
     implicit none
 ! Save a parameter in the temporary data structure for the nonlinear
@@ -198,7 +198,7 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
         end if
     end if
 !
- 20 continue
+20  continue
 !
     savejv(1:8) = sd_nl
     if (present(iocc)) then
@@ -290,6 +290,6 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
         AS_DEALLOCATE(vk24=kvect_)
     end if
 !
- 99 continue
+99  continue
 !
 end subroutine

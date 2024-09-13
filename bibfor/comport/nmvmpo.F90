@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmvmpo(fami, npg, nno, option, nc,&
-                  xl, wgauss, icodma, sect, u,&
+subroutine nmvmpo(fami, npg, nno, option, nc, &
+                  xl, wgauss, icodma, sect, u, &
                   du, contm, contp, fl, klv)
 !
 !
@@ -96,28 +96,28 @@ subroutine nmvmpo(fami, npg, nno, option, nc,&
     fg(:) = 0.0d0
 !
 !   Température
-    call verifm(fami, npg, 1, '-', icodma,&
+    call verifm(fami, npg, 1, '-', icodma, &
                 epsthf, iret)
-    call verifm(fami, npg, 1, 'T', icodma,&
+    call verifm(fami, npg, 1, 'T', icodma, &
                 epsthd, iret)
     itemp = 0
     if (iret .eq. 0) itemp = 1
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !   Thermique à T+
-    call moytem(fami, npg, 1, '+', temp,&
+    call moytem(fami, npg, 1, '+', temp, &
                 iret)
-    call rcvalb(fami, 1, 1, '+', icodma,&
-                ' ', 'ELAS', 1, 'TEMP', [temp],&
+    call rcvalb(fami, 1, 1, '+', icodma, &
+                ' ', 'ELAS', 1, 'TEMP', [temp], &
                 2, nomres, valres, codres, 1)
     e = valres(1)
     nu = valres(2)
     g = e/(2.d0*(1.d0+nu))
 !   thermique à T-
-    call moytem(fami, npg, 1, '-', temm,&
+    call moytem(fami, npg, 1, '-', temm, &
                 iret)
-    call rcvalb(fami, 1, 1, '-', icodma,&
-                ' ', 'ELAS', 1, 'TEMP', [temm],&
+    call rcvalb(fami, 1, 1, '-', icodma, &
+                ' ', 'ELAS', 1, 'TEMP', [temm], &
                 2, nomres, valres, codres, 1)
     em = valres(1)
     num = valres(2)
@@ -177,7 +177,7 @@ subroutine nmvmpo(fami, npg, nno, option, nc,&
             b_n = to_blas_int(nc*nc)
             b_incx = to_blas_int(1)
             call dscal(b_n, wgauss(kp), hota, b_incx)
-            call utbtab('CUMU', nc, nno*nc, hota, d1b,&
+            call utbtab('CUMU', nc, nno*nc, hota, d1b, &
                         work, rg0)
         end if
 !       Les contraintes "+" et fl

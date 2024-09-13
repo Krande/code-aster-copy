@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vecind(mat, lvec, nbl, nbc, force,&
+subroutine vecind(mat, lvec, nbl, nbc, force, &
                   nindep)
     implicit none
 !
@@ -96,7 +96,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     do i1 = 1, nbc
         if (mat .ne. ' ') then
             call zerlag(nbl, deeq, vectr=zr(lvec+nbl*(i1-1)))
-            call mrmult('ZERO', lmat, zr(lvec+nbl*(i1-1)), zr(ltrav1), 1,&
+            call mrmult('ZERO', lmat, zr(lvec+nbl*(i1-1)), zr(ltrav1), 1, &
                         .true._1)
             call zerlag(nbl, deeq, vectr=zr(ltrav1))
             b_n = to_blas_int(nbl)
@@ -115,7 +115,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
             b_n = to_blas_int(nbl)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1/norme, zr(lvec+nbl*(i1-1)), b_incx, zr(lcopy+nbl*(i1-1)),&
+            call daxpy(b_n, 1/norme, zr(lvec+nbl*(i1-1)), b_incx, zr(lcopy+nbl*(i1-1)), &
                        b_incy)
 !        ELSE
 !          CALL DAXPY(NBL,0.D0,ZR(LVEC+NBL*(I1-1)),1,
@@ -125,7 +125,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !
     do l1 = 1, nbc
         if (mat .ne. ' ') then
-            call mrmult('ZERO', lmat, zr(lcopy+nbl*(l1-1)), zr(ltrav1), 1,&
+            call mrmult('ZERO', lmat, zr(lcopy+nbl*(l1-1)), zr(ltrav1), 1, &
                         .true._1)
         else
             call lceqvn(nbl, zr(lcopy+nbl*(l1-1)), zr(ltrav1))
@@ -171,7 +171,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !
         end do
 !
-        call getvtx('  ', 'ORTHO', iocc=1, nbval=8, vect=ortho,&
+        call getvtx('  ', 'ORTHO', iocc=1, nbval=8, vect=ortho, &
                     nbret=iret)
         if ((iret .eq. 1) .and. (ortho .eq. 'OUI')) then
 !-- SELECTION DES VECTEURS NON NULS POUR REMPLIR LA BASE
@@ -206,8 +206,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
         b_m = to_blas_int(nbc)
         b_n = to_blas_int(nbc)
         b_lwork = to_blas_int(-1)
-        call dgesvd('A', 'N', b_m, b_n, new_stat,&
-                    b_lda, zr(ltrav1), trav2_u, b_ldu, trav3_v,&
+        call dgesvd('A', 'N', b_m, b_n, new_stat, &
+                    b_lda, zr(ltrav1), trav2_u, b_ldu, trav3_v, &
                     b_ldvt, swork, b_lwork, info)
         lwork = int(swork(1))
         AS_ALLOCATE(vr=mat_svd_work, size=lwork)
@@ -218,8 +218,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
         b_m = to_blas_int(nbc)
         b_n = to_blas_int(nbc)
         b_lwork = to_blas_int(lwork)
-        call dgesvd('A', 'N', b_m, b_n, new_stat,&
-                    b_lda, zr(ltrav1), trav2_u, b_ldu, trav3_v,&
+        call dgesvd('A', 'N', b_m, b_n, new_stat, &
+                    b_lda, zr(ltrav1), trav2_u, b_ldu, trav3_v, &
                     b_ldvt, mat_svd_work, b_lwork, info)
 !
         nindep = 0
@@ -236,8 +236,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
         b_m = to_blas_int(nbl)
         b_n = to_blas_int(nindep)
         b_k = to_blas_int(nbc)
-        call dgemm('N', 'N', b_m, b_n, b_k,&
-                   1.d0, zr(lcopy), b_lda, trav2_u, b_ldb,&
+        call dgemm('N', 'N', b_m, b_n, b_k, &
+                   1.d0, zr(lcopy), b_lda, trav2_u, b_ldb, &
                    0.d0, zr(lvec), b_ldc)
 !
 !-- INUTILE D'ANNULER DES VECTEURS QUI NE SERVIRONT NUL PART...

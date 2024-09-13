@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,9 +98,9 @@ subroutine romMultiParaROMMatrCreate(base, ds_multipara, i_coef, syst_matr)
             call jeveuo(ds_multipara%matr_redu(iMatr), 'L', vr=vr_matr_red)
             do iMode = 1, nbMode
                 do jMode = 1, nbMode
-                    vr_syst_matr(nbMode*(iMode-1)+jMode) = vr_syst_matr(&
-                                                           nbMode*(iMode-1)+jMode)+ vr_matr_red(n&
-                                                           &bModeMaxi*(iMode-1)+jMode&
+                    vr_syst_matr(nbMode*(iMode-1)+jMode) = vr_syst_matr( &
+                                                           nbMode*(iMode-1)+jMode)+vr_matr_red(n&
+                                                           &bModeMaxi*(iMode-1)+jMode &
                                                            )*coef_r
                 end do
             end do
@@ -119,9 +119,9 @@ subroutine romMultiParaROMMatrCreate(base, ds_multipara, i_coef, syst_matr)
             call jeveuo(ds_multipara%matr_redu(iMatr), 'L', vc=vc_matr_red)
             do iMode = 1, nbMode
                 do jMode = 1, nbMode
-                    vc_syst_matr(nbMode*(iMode-1)+jMode) = vc_syst_matr(&
-                                                           nbMode*(iMode-1)+jMode)+ vc_matr_red(n&
-                                                           &bModeMaxi*(iMode-1)+jMode&
+                    vc_syst_matr(nbMode*(iMode-1)+jMode) = vc_syst_matr( &
+                                                           nbMode*(iMode-1)+jMode)+vc_matr_red(n&
+                                                           &bModeMaxi*(iMode-1)+jMode &
                                                            )*coef_cplx
                 end do
             end do

@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
-                     h, ldh, wr, wi, iloz,&
+subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi, &
+                     h, ldh, wr, wi, iloz, &
                      ihiz, z, ldz, info)
 !
 !     SUBROUTINE LAPACK DE MISE A JOUR DES VALEURS PROPRES ET DE LA
@@ -212,7 +212,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !     H(L,L-1) IS NEGLIGIBLE SO THAT THE MATRIX SPLITS.
 !
     i = ihi
- 10 continue
+10  continue
     l = ilo
     if (i .lt. ilo) goto 150
 !
@@ -231,7 +231,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
             if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h(l, l), b_lda, work)
             if (abs(h(k, k-1)) .le. max(ulp*tst1, smlnum)) goto 30
         end do
- 30     continue
+30      continue
         l = k
         if (l .gt. ilo) then
 !
@@ -300,7 +300,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
             tst1 = abs(v1)*(abs(h00)+abs(h11)+abs(h22))
             if (abs(h10)*(abs(v2)+abs(v3)) .le. ulp*tst1) goto 50
         end do
- 50     continue
+50      continue
 !
 !        DOUBLE-SHIFT QR STEP
 !
@@ -422,7 +422,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !        TRANSFORM THE 2-BY-2 SUBMATRIX TO STANDARD SCHUR FORM,
 !        AND COMPUTE AND STORE THE EIGENVALUES.
 !
-        call ar_dlanv2(h(i-1, i-1), h(i-1, i), h(i, i-1), h(i, i), wr(i-1),&
+        call ar_dlanv2(h(i-1, i-1), h(i-1, i), h(i, i-1), h(i, i), wr(i-1), &
                        wi(i-1), wr(i), wi(i), cs, sn)
 !
         if (wantt) then
@@ -433,13 +433,13 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
                 b_n = to_blas_int(i2-i)
                 b_incx = to_blas_int(ldh)
                 b_incy = to_blas_int(ldh)
-                call drot(b_n, h(i-1, i+1), b_incx, h(i, i+1), b_incy,&
+                call drot(b_n, h(i-1, i+1), b_incx, h(i, i+1), b_incy, &
                           cs, sn)
-            endif
+            end if
             b_n = to_blas_int(i-i1-1)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call drot(b_n, h(i1, i-1), b_incx, h(i1, i), b_incy,&
+            call drot(b_n, h(i1, i-1), b_incx, h(i1, i), b_incy, &
                       cs, sn)
         end if
         if (wantz) then
@@ -449,7 +449,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
             b_n = to_blas_int(nz)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call drot(b_n, z(iloz, i-1), b_incx, z(iloz, i), b_incy,&
+            call drot(b_n, z(iloz, i-1), b_incx, z(iloz, i), b_incy, &
                       cs, sn)
         end if
     end if

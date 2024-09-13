@@ -178,7 +178,7 @@ function nmchcr(dp)
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, depsp, b_incx, epspp,&
+        call daxpy(b_n, 1.d0, depsp, b_incx, epspp, &
                    b_incy)
 !
         grjeps = 0.0d0

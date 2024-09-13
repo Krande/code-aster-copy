@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine diaghr(n, a, lda, eval, evec,&
+subroutine diaghr(n, a, lda, eval, evec, &
                   ldevec, acopy, rwk, cwk)
     implicit none
 #include "asterf_types.h"
@@ -89,19 +89,19 @@ subroutine diaghr(n, a, lda, eval, evec,&
     call r8inir(n, 1.0d0, rwk(n+1), n+1)
 !
 !   --- REDUCTION EN UNE MATRICE SYMETRIQUE TRIDIAGONALE ---
-    call tridia(n, acopy, n, eval, rwk,&
+    call tridia(n, acopy, n, eval, rwk, &
                 cwk, cwk(n+1))
 !
 !   --- CALCUL DES VECTEURS ET DES VALEURS PROPRES ---
     true = .true.
-    call diatri(n, eval, rwk, true, rwk(n+1),&
+    call diatri(n, eval, rwk, true, rwk(n+1), &
                 n)
 !
 !   --- LES VECTEURS PROPRES SONT STOCKES DANS UNE MATRICE COMPLEXE ---
     call cvrmzm(n, rwk(n+1), n, evec, ldevec)
 !
 !   --- TRANSFORMATION DES VECTEURS PROPRES ---
-    call diares(n, n, acopy, n, cwk,&
+    call diares(n, n, acopy, n, cwk, &
                 evec, ldevec, cwk(n+1))
 !
 !   --- NORMALISATION DES VECTEURS PROPRES ---
@@ -109,7 +109,7 @@ subroutine diaghr(n, a, lda, eval, evec,&
         b_n = to_blas_int(n)
         b_incx = to_blas_int(1)
         scale = evec(izamax(b_n, evec(1, j), b_incx), j)
-        if (dble(scale) .ne. 0.0d0 .or. dimag(scale) .ne. 0.0d0) call zmult(n, 1.0d0/scale,&
+        if (dble(scale) .ne. 0.0d0 .or. dimag(scale) .ne. 0.0d0) call zmult(n, 1.0d0/scale, &
                                                                             evec(1, j), 1)
     end do
 !

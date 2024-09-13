@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltclj(nb, n, ll, m, it,&
-                  p, front, frn, adper, trav,&
+subroutine mltclj(nb, n, ll, m, it, &
+                  p, front, frn, adper, trav, &
                   c)
     use superv_module
     implicit none
@@ -75,8 +75,8 @@ subroutine mltclj(nb, n, ll, m, it,&
                 b_m = to_blas_int(nb)
                 b_n = to_blas_int(nb)
                 b_k = to_blas_int(nbl)
-                call zgemm(tra, trb, b_m, b_n, b_k,&
-                           alpha, front(ia), b_lda, trav(it, 1, numpro), b_ldb,&
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, front(ia), b_lda, trav(it, 1, numpro), b_ldb, &
                            beta, c(1, 1, numpro), b_ldc)
 !     RECOPIE
 !
@@ -106,8 +106,8 @@ subroutine mltclj(nb, n, ll, m, it,&
                 b_m = to_blas_int(restl)
                 b_n = to_blas_int(nb)
                 b_k = to_blas_int(nbl)
-                call zgemm(tra, trb, b_m, b_n, b_k,&
-                           alpha, front(ia), b_lda, trav(it, 1, numpro), b_ldb,&
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, front(ia), b_lda, trav(it, 1, numpro), b_ldb, &
                            beta, c(1, 1, numpro), b_ldc)
 !           RECOPIE
 !
@@ -148,8 +148,8 @@ subroutine mltclj(nb, n, ll, m, it,&
                 b_m = to_blas_int(nb)
                 b_n = to_blas_int(nb)
                 b_k = to_blas_int(nbl)
-                call zgemm(tra, trb, b_m, b_n, b_k,&
-                           alpha, front(ia), b_lda, trav(it, 1, 1), b_ldb,&
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, front(ia), b_lda, trav(it, 1, 1), b_ldb, &
                            beta, c(1, 1, 1), b_ldc)
 !     RECOPIE
 !
@@ -178,8 +178,8 @@ subroutine mltclj(nb, n, ll, m, it,&
                 b_m = to_blas_int(restl)
                 b_n = to_blas_int(nb)
                 b_k = to_blas_int(nbl)
-                call zgemm(tra, trb, b_m, b_n, b_k,&
-                           alpha, front(ia), b_lda, trav(it, 1, 1), b_ldb,&
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, front(ia), b_lda, trav(it, 1, 1), b_ldb, &
                            beta, c(1, 1, 1), b_ldc)
 !           RECOPIE
 !
@@ -222,8 +222,8 @@ subroutine mltclj(nb, n, ll, m, it,&
             b_m = to_blas_int(nb)
             b_n = to_blas_int(restm)
             b_k = to_blas_int(nbl)
-            call zgemm(tra, trb, b_m, b_n, b_k,&
-                       alpha, front(ia), b_lda, trav(it, 1, 1), b_ldb,&
+            call zgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, front(ia), b_lda, trav(it, 1, 1), b_ldb, &
                        beta, c(1, 1, 1), b_ldc)
 !     RECOPIE
 !
@@ -253,8 +253,8 @@ subroutine mltclj(nb, n, ll, m, it,&
             b_m = to_blas_int(restl)
             b_n = to_blas_int(restm)
             b_k = to_blas_int(nbl)
-            call zgemm(tra, trb, b_m, b_n, b_k,&
-                       alpha, front(ia), b_lda, trav(it, 1, 1), b_ldb,&
+            call zgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, front(ia), b_lda, trav(it, 1, 1), b_ldb, &
                        beta, c(1, 1, 1), b_ldc)
 !     RECOPIE
 !

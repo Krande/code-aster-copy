@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpstor(ineg, typ, modes, nbmode, neq,&
-                  vecpr8, vecpc8, mxresf, nbpari, nbparr,&
-                  nbpark, nopara, mod45, resufi, resufr,&
+subroutine vpstor(ineg, typ, modes, nbmode, neq, &
+                  vecpr8, vecpc8, mxresf, nbpari, nbparr, &
+                  nbpark, nopara, mod45, resufi, resufr, &
                   resufk, iprec)
     implicit none
 #include "asterf_types.h"
@@ -113,13 +113,13 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
 !
     call jeexin(modes(1:8)//'           .REFD', iret)
     if (iret .eq. 0) then
-        call refdaj(' ', modes, -1, ' ', 'INIT',&
+        call refdaj(' ', modes, -1, ' ', 'INIT', &
                     ' ', iret)
         lrefd = .false.
     end if
 !
     typeba = ' '
-    call dismoi('TYPE_BASE', modes, 'RESU_DYNA', repk=typeba, arret='C',&
+    call dismoi('TYPE_BASE', modes, 'RESU_DYNA', repk=typeba, arret='C', &
                 ier=iret)
     if (typeba(1:1) .ne. ' ') lbasm = .true.
     if (lbasm) then
@@ -138,7 +138,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
             call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
             lstock = .true.
         else
-            call dismoi('NUME_DDL', modes, 'RESU_DYNA', repk=nume, arret='C',&
+            call dismoi('NUME_DDL', modes, 'RESU_DYNA', repk=nume, arret='C', &
                         ier=iret)
         end if
     end if
@@ -178,7 +178,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
 !     CARACTERISTIQUES ELEMENTAIRES
     chmat = '        '
     if (lstock) then
-        if (typcon(1:9) .eq. 'MODE_MECA' .or. typcon(1:9) .eq. 'MODE_ACOU' .or.&
+        if (typcon(1:9) .eq. 'MODE_MECA' .or. typcon(1:9) .eq. 'MODE_ACOU' .or. &
             typcon(1:10) .eq. 'MODE_FLAMB' .or. typcon(1:9) .eq. 'MODE_STAB') then
             call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=modele)
             call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=chmat, arret='C')
@@ -193,13 +193,13 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
                 if (raide2 .eq. ' ') then
                     call jeveuo(jexnum(basemo//'           .TACH', 1), 'L', jmod2)
                     sd2 = zk24(jmod2) (1:8)
-                    call rsadpa(sd2, 'L', 1, 'MODELE', 1,&
+                    call rsadpa(sd2, 'L', 1, 'MODELE', 1, &
                                 0, sjv=jpara, styp=k8b)
                     modele = zk8(jpara)
-                    call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1,&
+                    call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1, &
                                 0, sjv=jpara, styp=k8b)
                     chmat = zk8(jpara)
-                    call rsadpa(sd2, 'L', 1, 'CARAELEM', 1,&
+                    call rsadpa(sd2, 'L', 1, 'CARAELEM', 1, &
                                 0, sjv=jpara, styp=k8b)
                     carael = zk8(jpara)
                     goto 39
@@ -231,13 +231,13 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
                 if (raide2 .eq. ' ') then
                     call jeveuo(jexnum(basemo//'           .TACH', 1), 'L', jmod2)
                     sd2 = zk24(jmod2) (1:8)
-                    call rsadpa(sd2, 'L', 1, 'MODELE', 1,&
+                    call rsadpa(sd2, 'L', 1, 'MODELE', 1, &
                                 0, sjv=jpara, styp=k8b)
                     modele = zk8(jpara)
-                    call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1,&
+                    call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1, &
                                 0, sjv=jpara, styp=k8b)
                     chmat = zk8(jpara)
-                    call rsadpa(sd2, 'L', 1, 'CARAELEM', 1,&
+                    call rsadpa(sd2, 'L', 1, 'CARAELEM', 1, &
                                 0, sjv=jpara, styp=k8b)
                     carael = zk8(jpara)
                     goto 39
@@ -249,7 +249,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
         end if
     end if
 !
- 39 continue
+39  continue
 !
     do imode = 1, nbmode
 !
@@ -282,7 +282,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
         nordr = iprec+imode
 !
 !        --- VECTEUR PROPRE ---
-        call rsexch(' ', modes, nosy, nordr, chamno,&
+        call rsexch(' ', modes, nosy, nordr, chamno, &
                     ier)
         if (ier .eq. 0) then
             continue
@@ -331,7 +331,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
 !
         irang = indk24(nopara, nopast(1), 1, nbpari)
         if (irang .gt. 0) then
-            call rsadpa(modes, 'E', 1, nopast(1), nordr,&
+            call rsadpa(modes, 'E', 1, nopast(1), nordr, &
                         0, sjv=ladpa, styp=k8b)
             if ((typcon .ne. 'MODE_FLAMB') .or. (nomcmd .eq. 'NORM_MODE')) then
                 zi(ladpa) = resufi(kmode, irang)
@@ -344,7 +344,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
 !
         irang = indk24(nopara(nbpari+1), nopast(2), 1, nbpark)
         if (irang .gt. 0) then
-            call rsadpa(modes, 'E', 1, nopast(2), nordr,&
+            call rsadpa(modes, 'E', 1, nopast(2), nordr, &
                         0, sjv=ladpa, styp=k8b)
             zk24(ladpa) = resufk(kmode, irang)
         end if
@@ -363,7 +363,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
                 typmod = "MODE_DYN"
             end if
 !
-            call rsadpa(modes, 'E', 1, nopast(3), nordr,&
+            call rsadpa(modes, 'E', 1, nopast(3), nordr, &
                         0, sjv=ladpa, styp=k8b)
             zk16(ladpa) = typmod
 !
@@ -373,7 +373,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
 !
         irang = indk24(nopara(nbpari+1), nopast(4), 1, nbpark)
         if (irang .gt. 0) then
-            call rsadpa(modes, 'E', 1, nopast(4), nordr,&
+            call rsadpa(modes, 'E', 1, nopast(4), nordr, &
                         0, sjv=ladpa, styp=k8b)
             zk16(ladpa) = resufk(kmode, irang)
         end if
@@ -381,13 +381,13 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
 ! ----- ON STOCKE : MODELE, CARA_ELEM, CHAM_MATER
 !
         if (lstock) then
-            call rsadpa(modes, 'E', 1, 'MODELE', nordr,&
+            call rsadpa(modes, 'E', 1, 'MODELE', nordr, &
                         0, sjv=ladpa, styp=k8b)
             zk8(ladpa) = modele
-            call rsadpa(modes, 'E', 1, 'CHAMPMAT', nordr,&
+            call rsadpa(modes, 'E', 1, 'CHAMPMAT', nordr, &
                         0, sjv=ladpa, styp=k8b)
             zk8(ladpa) = chmat
-            call rsadpa(modes, 'E', 1, 'CARAELEM', nordr,&
+            call rsadpa(modes, 'E', 1, 'CARAELEM', nordr, &
                         0, sjv=ladpa, styp=k8b)
             zk8(ladpa) = carael
         end if
@@ -396,7 +396,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
 ! ----- ON STOCKE LES PARAMETRES REELS
 !
         if (typcon .eq. 'MODE_FLAMB') then
-            call rsadpa(modes, 'E', 1, 'CHAR_CRIT', nordr,&
+            call rsadpa(modes, 'E', 1, 'CHAR_CRIT', nordr, &
                         0, sjv=ladpa, styp=k8b)
             if (nomcmd .eq. 'NORM_MODE') then
                 zr(ladpa) = resufr(kmode, 1)
@@ -404,14 +404,14 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
                 zr(ladpa) = -resufr(kmode, 2)
             end if
         else if (typcon .eq. 'MODE_STAB') then
-            call rsadpa(modes, 'E', 1, 'CHAR_STAB', 1,&
+            call rsadpa(modes, 'E', 1, 'CHAR_STAB', 1, &
                         0, sjv=ladpa, styp=k8b)
             zr(ladpa) = resufr(kmode, 1)
         else
             do i = 5, nbpast
                 irang = indk24(nopara(nbpari+nbpark+1), nopast(i), 1, nbparr)
                 if (irang .gt. 0) then
-                    call rsadpa(modes, 'E', 1, nopast(i), nordr,&
+                    call rsadpa(modes, 'E', 1, nopast(i), nordr, &
                                 0, sjv=ladpa, styp=k8b)
                     zr(ladpa) = resufr(kmode, irang)
                 end if

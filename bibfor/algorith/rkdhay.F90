@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
+subroutine rkdhay(mod, nvi, vini, coeft, nmat, &
                   sigi, dvin, iret)
     implicit none
 !      MODELE VISCOPLASTIQUE A ECROUISSAGE ISOTROPE COUPLE A DE

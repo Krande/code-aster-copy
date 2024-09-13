@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zneigh(rnorm, n, h, ldh, ritz,&
-                  bounds, q, ldq, workl, rwork,&
+subroutine zneigh(rnorm, n, h, ldh, ritz, &
+                  bounds, q, ldq, workl, rwork, &
                   ierr)
 !
 !     SUBROUTINE ARPACK CALCULANT LES MODES PROPRES DE LA MATRICE DE
@@ -201,7 +201,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
     msglvl = mneigh
 !
     if (msglvl .gt. 2) then
-        call zmout(logfil, n, n, h, ldh,&
+        call zmout(logfil, n, n, h, ldh, &
                    ndigit, '_NEIGH: ENTERING UPPER HESSENBERG MATRIX H ')
     end if
 !
@@ -217,12 +217,12 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
     b_lda = to_blas_int(ldh)
     b_m = to_blas_int(n)
     b_n = to_blas_int(n)
-    call zlacpy('A', b_m, b_n, h, b_lda,&
+    call zlacpy('A', b_m, b_n, h, b_lda, &
                 workl, b_ldb)
     b_lda = to_blas_int(ldq)
     b_m = to_blas_int(n)
     b_n = to_blas_int(n)
-    call zlaset('A', b_m, b_n, zero, one,&
+    call zlaset('A', b_m, b_n, zero, one, &
                 q, b_lda)
 !
     b_ldz = to_blas_int(ldq)
@@ -232,8 +232,8 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
     b_ihi = to_blas_int(n)
     b_iloz = to_blas_int(1)
     b_ihiz = to_blas_int(n)
-    call zlahqr(.true._1, .true._1, b_n, b_ilo, b_ihi,&
-                workl, b_ldh, ritz, b_iloz, b_ihiz,&
+    call zlahqr(.true._1, .true._1, b_n, b_ilo, b_ihi, &
+                workl, b_ldh, ritz, b_iloz, b_ihiz, &
                 q, b_ldz, ierr4)
     if (ierr4 .ne. 0) goto 9000
 !
@@ -251,8 +251,8 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     |    EIGENVECTORS.                                         |
 !     %----------------------------------------------------------%
 !
-    call ar_ztrevc('R', 'B', select, n, workl,&
-                   n, vl, n, q, ldq,&
+    call ar_ztrevc('R', 'B', select, n, workl, &
+                   n, vl, n, q, ldq, &
                    n, n, workl(n*n+1), rwork, ierr)
 !
     if (ierr .ne. 0) goto 9000

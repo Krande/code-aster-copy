@@ -131,7 +131,7 @@ subroutine te0457(option, nomte)
 ! ----- Evaluate the analytical function COEF_H
 !
         call jevech('PCOEFHF', 'L', j_coefh)
-        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_coefh), nbpara, nompar, valpar,&
+        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_coefh), nbpara, nompar, valpar, &
                                 celldim, CoeffQP_curr)
 !
     else if (option .eq. 'MTAN_THER_RAYO_R') then
@@ -146,9 +146,9 @@ subroutine te0457(option, nomte)
         call readVector('PTEMPEI', fbs, temp_F_curr)
 !
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            temp_eval_curr = hhoEvalScalFace(&
-                             hhoFace, hhoBasisFace, hhoData%face_degree(),&
-                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs&
+            temp_eval_curr = hhoEvalScalFace( &
+                             hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs &
                              )
 !
             CoeffQP_curr(ipg) = 4.d0*sigma(ipg)*epsil(ipg)*(temp_eval_curr+tz0)**3
@@ -175,18 +175,18 @@ subroutine te0457(option, nomte)
 !
 ! ----- Evaluate the analytical function at T+
 !
-        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar,&
+        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar, &
                                 celldim, sigma)
-        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para+1), nbpara, nompar, valpar,&
+        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para+1), nbpara, nompar, valpar, &
                                 celldim, epsil)
 !
         tz0 = r8t0()
         call readVector('PTEMPEI', fbs, temp_F_curr)
 !
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            temp_eval_curr = hhoEvalScalFace(&
-                             hhoFace, hhoBasisFace, hhoData%face_degree(),&
-                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs&
+            temp_eval_curr = hhoEvalScalFace( &
+                             hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs &
                              )
 !
             CoeffQP_curr(ipg) = 4.d0*sigma(ipg)*epsil(ipg)*(temp_eval_curr+tz0)**3
@@ -198,9 +198,9 @@ subroutine te0457(option, nomte)
         call readVector('PTEMPEI', fbs, temp_F_curr)
 !
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            temp_eval_curr = hhoEvalScalFace(&
-                             hhoFace, hhoBasisFace, hhoData%face_degree(),&
-                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs&
+            temp_eval_curr = hhoEvalScalFace( &
+                             hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs &
                              )
             call foderi(zk8(j_para), temp_eval_curr, rbid, d_alpha)
             CoeffQP_curr(ipg) = -d_alpha
@@ -218,14 +218,14 @@ subroutine te0457(option, nomte)
 ! ----- Loop on quadrature point
     do ipg = 1, hhoQuadFace%nbQuadPoints
 ! --------- Eval basis function at the quadrature point
-        call hhoBasisFace%BSEval(hhoFace, hhoQuadFace%points(1:3, ipg), 0, hhoData%face_degree(),&
+        call hhoBasisFace%BSEval(hhoFace, hhoQuadFace%points(1:3, ipg), 0, hhoData%face_degree(), &
                                  basisScalEval)
 ! --------  Eval massMat
         coeff = CoeffQP_curr(ipg)*hhoQuadFace%weights(ipg)
         b_n = to_blas_int(fbs)
         b_incx = to_blas_int(1)
         b_lda = to_blas_int(MSIZE_FACE_SCAL)
-        call dsyr('U', b_n, coeff, basisScalEval, b_incx,&
+        call dsyr('U', b_n, coeff, basisScalEval, b_incx, &
                   lhs, b_lda)
     end do
 !

@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
-                  vff1, vff2, idff1, vu, vp,&
-                  typmod, mate, compor, geomi, sig,&
+subroutine nufnlg(ndim, nno1, nno2, npg, iw, &
+                  vff1, vff2, idff1, vu, vp, &
+                  typmod, mate, compor, geomi, sig, &
                   ddl, vect)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
@@ -120,15 +120,15 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
     do g = 1, npg
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
+        call dfdmip(ndim, nno1, axi, geomi, g, &
+                    iw, vff1(1, g), idff1, r, w, &
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dff1, deplm, fm, epsm)
-        call dfdmip(ndim, nno1, axi, geomm, g,&
-                    iw, vff1(1, g), idff1, r, wm,&
+        call dfdmip(ndim, nno1, axi, geomm, g, &
+                    iw, vff1(1, g), idff1, r, wm, &
                     dff1)
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1, &
                     lij)
 !
         jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*&
@@ -154,7 +154,7 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
         end do
 !
 ! - CALCUL DE ALPHA
-        call tanbul(option, ndim, g, mate, compor(1),&
+        call tanbul(option, ndim, g, mate, compor(1), &
                     .false._1, .false._1, alpha, dsbdep, trepst)
 !
 ! - VECTEUR FINT:U

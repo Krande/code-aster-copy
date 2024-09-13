@@ -164,7 +164,8 @@ subroutine te0510(option, nomte)
 !     CALCUL D'UNE LONGUEUR CARACTERISTIQUE DE L'ELEMENT
     call loncar(ndim, typma, zr(igeom), lonref)
 !
-    if ((enr.eq.'XH1'.or.enr.eq.'XH2'.or.enr.eq.'XH3'.or.enr.eq.'XH4') .and. iselli(elp)) then
+    if ((enr .eq. 'XH1' .or. enr .eq. 'XH2' .or. enr .eq. 'XH3' .or. enr .eq. 'XH4') &
+        .and. iselli(elp)) then
 ! --- PAS D'ELEMENTS COUPÉES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT A
 ! --- L'EXCEPTION DES ELEMENTS MULTI-HM QUADRATIQUES
         goto 999

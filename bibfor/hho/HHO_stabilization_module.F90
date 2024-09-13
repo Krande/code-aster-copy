@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -128,8 +128,8 @@ contains
         b_m = to_blas_int(dimM1)
         b_n = to_blas_int(total_dofs)
         b_k = to_blas_int(colsM2)
-        call dgemm('N', 'N', b_m, b_n, b_k,&
-                   -1.d0, M2, b_lda, gradrec, b_ldb,&
+        call dgemm('N', 'N', b_m, b_n, b_k, &
+                   -1.d0, M2, b_lda, gradrec, b_ldb, &
                    0.d0, proj1, b_ldc)
 !
 ! -- Solve proj1 = M1^-1 * proj1
@@ -139,7 +139,7 @@ contains
         b_nhrs = to_blas_int(total_dofs)
         b_lda = to_blas_int(MSIZE_CELL_SCAL)
         b_ldb = to_blas_int(MSIZE_CELL_SCAL)
-        call dposv('U', b_n, b_nhrs, M1, b_lda,&
+        call dposv('U', b_n, b_nhrs, M1, b_lda, &
                    proj1, b_ldb, b_info)
         info = to_aster_int(b_info)
 !
@@ -168,7 +168,7 @@ contains
             call hhoMassMatFaceScal(hhoFace, 0, hhoData%face_degree(), faceMass)
 !
 ! ----- Compute trace mass matrix
-            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, hhoFace, 0,&
+            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, hhoFace, 0, &
                                  hhoData%face_degree(), traceMat)
 !
 ! ---- Factorize face Mass
@@ -198,8 +198,8 @@ contains
             b_m = to_blas_int(fbs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(colsM2)
-            call dgemm('N', 'N', b_m, b_n, b_k,&
-                       1.d0, MR1, b_lda, gradrec, b_ldb,&
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, MR1, b_lda, gradrec, b_ldb, &
                        0.d0, proj2, b_ldc)
 !
 ! ---- Solve proj2 = pikF^-1 * proj2
@@ -209,7 +209,7 @@ contains
             b_nhrs = to_blas_int(total_dofs)
             b_lda = to_blas_int(MSIZE_FACE_SCAL)
             b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-            call dpotrs('U', b_n, b_nhrs, piKF, b_lda,&
+            call dpotrs('U', b_n, b_nhrs, piKF, b_lda, &
                         proj2, b_ldb, b_info)
             info = to_aster_int(b_info)
 !
@@ -238,8 +238,8 @@ contains
             b_m = to_blas_int(fbs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(dimM1)
-            call dgemm('N', 'N', b_m, b_n, b_k,&
-                       1.d0, MR2, b_lda, proj1, b_ldb,&
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, MR2, b_lda, proj1, b_ldb, &
                        0.d0, proj3, b_ldc)
 !
 ! ---- Solve proj3 = pikF^-1 * proj3
@@ -248,7 +248,7 @@ contains
             b_nhrs = to_blas_int(total_dofs)
             b_lda = to_blas_int(MSIZE_FACE_SCAL)
             b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-            call dpotrs('U', b_n, b_nhrs, piKF, b_lda,&
+            call dpotrs('U', b_n, b_nhrs, piKF, b_lda, &
                         proj3, b_ldb, b_info)
             info = to_aster_int(b_info)
 !
@@ -269,8 +269,8 @@ contains
             b_m = to_blas_int(fbs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(fbs)
-            call dgemm('N', 'N', b_m, b_n, b_k,&
-                       1.d0, faceMass, b_lda, proj3, b_ldb,&
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, faceMass, b_lda, proj3, b_ldb, &
                        0.d0, TMP, b_ldc)
 !
 ! ---- Compute stab += invH * proj3**T * TMP
@@ -280,8 +280,8 @@ contains
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(fbs)
-            call dgemm('T', 'N', b_m, b_n, b_k,&
-                       invH, proj3, b_lda, TMP, b_ldb,&
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       invH, proj3, b_lda, TMP, b_ldb, &
                        1.d0, stab, b_ldc)
 !
             offset_face = offset_face+fbs
@@ -428,8 +428,8 @@ contains
             b_m = to_blas_int(dimM1)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(colsM2)
-            call dgemm('N', 'N', b_m, b_n, b_k,&
-                       -1.d0, M2, b_lda, gradrec(ifromGrad:itoGrad, 1:total_dofs), b_ldb,&
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       -1.d0, M2, b_lda, gradrec(ifromGrad:itoGrad, 1:total_dofs), b_ldb, &
                        0.d0, proj1(ifromProj:itoProj, 1:total_dofs), b_ldc)
 !
 ! -- Solve proj1 = M1^-1 * proj1
@@ -439,7 +439,7 @@ contains
             b_nhrs = to_blas_int(total_dofs)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
             b_ldb = to_blas_int(dimM1)
-            call dpotrs('U', b_n, b_nhrs, M1, b_lda,&
+            call dpotrs('U', b_n, b_nhrs, M1, b_lda, &
                         proj1(ifromProj:itoProj, 1:total_dofs), b_ldb, b_info)
             info = to_aster_int(b_info)
 !
@@ -467,7 +467,7 @@ contains
             call hhoMassMatFaceScal(hhoFace, 0, hhoData%face_degree(), faceMass)
 !
 ! ----- Compute trace mass matrix
-            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, hhoFace, 0,&
+            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, hhoFace, 0, &
                                  hhoData%face_degree(), traceMat)
 !
 ! ---- Factorize face Mass
@@ -507,8 +507,8 @@ contains
                 b_m = to_blas_int(fbs_comp)
                 b_n = to_blas_int(total_dofs)
                 b_k = to_blas_int(colsM2)
-                call dgemm('N', 'N', b_m, b_n, b_k,&
-                           1.d0, MR1, b_lda, gradrec(ifromGrad:itoGrad, 1:total_dofs), b_ldb,&
+                call dgemm('N', 'N', b_m, b_n, b_k, &
+                           1.d0, MR1, b_lda, gradrec(ifromGrad:itoGrad, 1:total_dofs), b_ldb, &
                            0.d0, proj2, b_ldc)
 !
 ! ---- Solve proj2 = pikF^-1 * proj2
@@ -518,7 +518,7 @@ contains
                 b_nhrs = to_blas_int(total_dofs)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
                 b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-                call dpotrs('U', b_n, b_nhrs, piKF, b_lda,&
+                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, &
                             proj2, b_ldb, b_info)
                 info = to_aster_int(b_info)
 !
@@ -548,8 +548,8 @@ contains
                 b_m = to_blas_int(fbs_comp)
                 b_n = to_blas_int(total_dofs)
                 b_k = to_blas_int(dimM1)
-                call dgemm('N', 'N', b_m, b_n, b_k,&
-                           1.d0, MR2, b_lda, proj1(ifromProj:itoProj, 1:total_dofs), b_ldb,&
+                call dgemm('N', 'N', b_m, b_n, b_k, &
+                           1.d0, MR2, b_lda, proj1(ifromProj:itoProj, 1:total_dofs), b_ldb, &
                            0.d0, proj3, b_ldc)
 !
 ! ---- Solve proj3 = pikF^-1 * proj3
@@ -558,7 +558,7 @@ contains
                 b_nhrs = to_blas_int(total_dofs)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
                 b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-                call dpotrs('U', b_n, b_nhrs, piKF, b_lda,&
+                call dpotrs('U', b_n, b_nhrs, piKF, b_lda, &
                             proj3, b_ldb, b_info)
                 info = to_aster_int(b_info)
 !
@@ -569,7 +569,7 @@ contains
                 end if
 !
 ! ---- proj3 = proj3 + proj2
-                proj3(1:fbs_comp, 1:total_dofs) = proj3(1:fbs_comp, 1:total_dofs) +proj2(1:fbs_co&
+                proj3(1:fbs_comp, 1:total_dofs) = proj3(1:fbs_comp, 1:total_dofs)+proj2(1:fbs_co&
                                                   &mp, 1:total_dofs)
 !
 ! ---- Compute TMP = faceMass * proj3
@@ -580,8 +580,8 @@ contains
                 b_m = to_blas_int(fbs_comp)
                 b_n = to_blas_int(total_dofs)
                 b_k = to_blas_int(fbs_comp)
-                call dgemm('N', 'N', b_m, b_n, b_k,&
-                           1.d0, faceMass, b_lda, proj3, b_ldb,&
+                call dgemm('N', 'N', b_m, b_n, b_k, &
+                           1.d0, faceMass, b_lda, proj3, b_ldb, &
                            0.d0, TMP, b_ldc)
 !
 ! ---- Compute stab += invH * proj3**T * TMP
@@ -591,8 +591,8 @@ contains
                 b_m = to_blas_int(total_dofs)
                 b_n = to_blas_int(total_dofs)
                 b_k = to_blas_int(fbs_comp)
-                call dgemm('T', 'N', b_m, b_n, b_k,&
-                           invH, proj3, b_lda, TMP, b_ldb,&
+                call dgemm('T', 'N', b_m, b_n, b_k, &
+                           invH, proj3, b_lda, TMP, b_ldb, &
                            1.d0, stab, b_ldc)
 !
             end do
@@ -664,7 +664,7 @@ contains
             call hhoMassMatFaceScal(hhoFace, 0, hhoData%face_degree(), faceMass)
 !
 ! ----- Compute trace mass matrix
-            call hhoTraceMatScal(hhoCell, 0, hhoData%cell_degree(), hhoFace, 0,&
+            call hhoTraceMatScal(hhoCell, 0, hhoData%cell_degree(), hhoFace, 0, &
                                  hhoData%face_degree(), traceMat)
 !
 ! ---- Factorize face Mass
@@ -690,8 +690,8 @@ contains
             b_m = to_blas_int(fbs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(cbs)
-            call dgemm('N', 'N', b_m, b_n, b_k,&
-                       1.d0, traceMat, b_lda, proj1, b_ldb,&
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, traceMat, b_lda, proj1, b_ldb, &
                        0.d0, proj3, b_ldc)
 !
 ! ---- Solve proj3 = pikF^-1 * proj3
@@ -700,7 +700,7 @@ contains
             b_nhrs = to_blas_int(total_dofs)
             b_lda = to_blas_int(MSIZE_FACE_SCAL)
             b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-            call dpotrs('U', b_n, b_nhrs, piKF, b_lda,&
+            call dpotrs('U', b_n, b_nhrs, piKF, b_lda, &
                         proj3, b_ldb, b_info)
             info = to_aster_int(b_info)
 !
@@ -725,8 +725,8 @@ contains
             b_m = to_blas_int(fbs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(fbs)
-            call dgemm('N', 'N', b_m, b_n, b_k,&
-                       1.d0, faceMass, b_lda, proj3, b_ldb,&
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, faceMass, b_lda, proj3, b_ldb, &
                        0.d0, TMP, b_ldc)
 !
 ! ---- Compute stab += invH * proj3**T * TMP
@@ -736,8 +736,8 @@ contains
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(fbs)
-            call dgemm('T', 'N', b_m, b_n, b_k,&
-                       invH, proj3, b_lda, TMP, b_ldb,&
+            call dgemm('T', 'N', b_m, b_n, b_k, &
+                       invH, proj3, b_lda, TMP, b_ldb, &
                        1.d0, stab, b_ldc)
 !
             offset_face = offset_face+fbs

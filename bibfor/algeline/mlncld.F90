@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mlncld(n, frontl, frontu, adper, t1,&
+subroutine mlncld(n, frontl, frontu, adper, t1, &
                   t2, ad, eps, ier)
     implicit none
 #include "asterfort/sspmvc.h"
@@ -49,9 +49,9 @@ subroutine mlncld(n, frontl, frontu, adper, t1,&
             nn = n-k+1
             kk = k-1
             if (nn .lt. seuin .or. kk .lt. seuik) then
-                call sspmvc(n-k+1, k-1, frontl, ad, t1,&
+                call sspmvc(n-k+1, k-1, frontl, ad, t1, &
                             frontl(adper(k)))
-                call sspmvc(n-k+1, k-1, frontu, ad, t2,&
+                call sspmvc(n-k+1, k-1, frontu, ad, t2, &
                             frontu(adper(k)))
             else
                 b_lda = to_blas_int(lda)
@@ -59,16 +59,16 @@ subroutine mlncld(n, frontl, frontu, adper, t1,&
                 b_n = to_blas_int(kk)
                 b_incx = to_blas_int(incx)
                 b_incy = to_blas_int(incy)
-                call zgemv(tra, b_m, b_n, alpha, frontl(k),&
-                           b_lda, t1, b_incx, beta, frontl(adper(k)),&
+                call zgemv(tra, b_m, b_n, alpha, frontl(k), &
+                           b_lda, t1, b_incx, beta, frontl(adper(k)), &
                            b_incy)
                 b_lda = to_blas_int(lda)
                 b_m = to_blas_int(nn)
                 b_n = to_blas_int(kk)
                 b_incx = to_blas_int(incx)
                 b_incy = to_blas_int(incy)
-                call zgemv(tra, b_m, b_n, alpha, frontu(k),&
-                           b_lda, t2, b_incx, beta, frontu(adper(k)),&
+                call zgemv(tra, b_m, b_n, alpha, frontu(k), &
+                           b_lda, t2, b_incx, beta, frontu(adper(k)), &
                            b_incy)
             end if
         end if
@@ -81,5 +81,5 @@ subroutine mlncld(n, frontl, frontu, adper, t1,&
             frontl(adper(k)+i) = frontl(adper(k)+i)/frontl(adper(k))
         end do
     end do
- 40 continue
+40  continue
 end subroutine

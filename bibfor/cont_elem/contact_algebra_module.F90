@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ contains
 !
 !===================================================================================================
 !
-    real(kind=8)function projRm(x)
+    real(kind=8) function projRm(x)
 !
         implicit none
 !
@@ -77,7 +77,7 @@ contains
 !
 !===================================================================================================
 !
-    real(kind=8)function Heaviside(x)
+    real(kind=8) function Heaviside(x)
 !
         implicit none
 !
@@ -441,7 +441,7 @@ contains
                     dprojBs_dn = -x_n*Tn-otimes(norm_slav, xT)
                 else
                     xT_uni = xT/norm_xT
-                    dprojBs_dn = -s/norm_xT*(&
+                    dprojBs_dn = -s/norm_xT*( &
                                  x_n*(Tn-otimes(xT_uni, xT_uni))+otimes(norm_slav, xT))
                 end if
             end if
@@ -488,8 +488,8 @@ contains
         b_m = to_blas_int(geom%nb_dofs)
         b_n = to_blas_int(geom%elem_dime)
         b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k,&
-                   1.d0, dTs_ns, b_lda, lhs_inv, b_ldb,&
+        call dgemm("N", "T", b_m, b_n, b_k, &
+                   1.d0, dTs_ns, b_lda, lhs_inv, b_ldb, &
                    0.d0, dNs_du, b_ldc)
 !
     end function
@@ -530,8 +530,8 @@ contains
         b_m = to_blas_int(geom%nb_dofs)
         b_n = to_blas_int(geom%elem_dime-1)
         b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k,&
-                   -1.d0, dTs_ns, b_lda, invMetricTens, b_ldb,&
+        call dgemm("N", "T", b_m, b_n, b_k, &
+                   -1.d0, dTs_ns, b_lda, invMetricTens, b_ldb, &
                    0.d0, invA_dT_ns, b_ldc)
 !
 ! --- Compute D2 ns . n^s
@@ -543,8 +543,8 @@ contains
         b_m = to_blas_int(geom%nb_dofs)
         b_n = to_blas_int(geom%nb_dofs)
         b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k,&
-                   1.d0, dTs_ns, b_lda, invA_dT_ns, b_ldb,&
+        call dgemm("N", "T", b_m, b_n, b_k, &
+                   1.d0, dTs_ns, b_lda, invA_dT_ns, b_ldb, &
                    0.d0, d2Ns_du2_ns, b_ldc)
 !
     end function
@@ -553,7 +553,7 @@ contains
 !
 !===================================================================================================
 !
-    function d2Ns_du2_nm(geom, tau_slav, norm_mast, dNs, dTs,&
+    function d2Ns_du2_nm(geom, tau_slav, norm_mast, dNs, dTs, &
                          dTs_ns, dTs_nm)
 !
         implicit none
@@ -597,8 +597,8 @@ contains
         b_m = to_blas_int(geom%nb_dofs)
         b_n = to_blas_int(geom%elem_dime-1)
         b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k,&
-                   -1.d0, dTs_ns, b_lda, invMetricTens, b_ldb,&
+        call dgemm("N", "T", b_m, b_n, b_k, &
+                   -1.d0, dTs_ns, b_lda, invMetricTens, b_ldb, &
                    0.d0, invA_dT_ns, b_ldc)
 !
 ! --- Term: -( D tau^s(u^s)[v^s](u^s)[v^s] n^s)^T * invMetricTens^s * ( D tau^s(u^s)[v^s] n^m)
@@ -609,8 +609,8 @@ contains
         b_m = to_blas_int(geom%nb_dofs)
         b_n = to_blas_int(geom%nb_dofs)
         b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k,&
-                   1.d0, dTs_nm, b_lda, invA_dT_ns, b_ldb,&
+        call dgemm("N", "T", b_m, b_n, b_k, &
+                   1.d0, dTs_nm, b_lda, invA_dT_ns, b_ldb, &
                    0.d0, d2Ns_du2_nm, b_ldc)
 !
 ! --- Term: -((tau^s)^T n^m  invMetricTens^s ) . D tau^s(u^s)[v^s] D n^s(u^s)[du^s]
@@ -622,8 +622,8 @@ contains
             b_m = to_blas_int(geom%nb_dofs)
             b_n = to_blas_int(geom%nb_dofs)
             b_k = to_blas_int(geom%elem_dime)
-            call dgemm("N", "T", b_m, b_n, b_k,&
-                       -invA_ts_nm(i_tau), dTs(:, :, i_tau), b_lda, dNs, b_ldb,&
+            call dgemm("N", "T", b_m, b_n, b_k, &
+                       -invA_ts_nm(i_tau), dTs(:, :, i_tau), b_lda, dNs, b_ldb, &
                        1.d0, d2Ns_du2_nm, b_ldc)
         end do
 !
@@ -636,8 +636,8 @@ contains
             b_m = to_blas_int(geom%nb_dofs)
             b_n = to_blas_int(geom%nb_dofs)
             b_k = to_blas_int(geom%elem_dime-1)
-            call dgemm("N", "T", b_m, b_n, b_k,&
-                       -invA_ts_nm(i_tau), dinvMetric(:, :, i_tau), b_lda, dTs_ns, b_ldb,&
+            call dgemm("N", "T", b_m, b_n, b_k, &
+                       -invA_ts_nm(i_tau), dinvMetric(:, :, i_tau), b_lda, dTs_ns, b_ldb, &
                        1.d0, d2Ns_du2_nm, b_ldc)
         end do
 !
@@ -711,9 +711,9 @@ contains
             do i_dim = 1, geom%elem_dime
                 index = index+1
                 index2 = index2+1
-                dTs_du(index, 1:geom%elem_dime, 1:geom%elem_dime-1) = dT(&
-                                                                      index2, 1:geom%elem_dime,&
-                                                                      1:geom%elem_dime-1&
+                dTs_du(index, 1:geom%elem_dime, 1:geom%elem_dime-1) = dT( &
+                                                                      index2, 1:geom%elem_dime, &
+                                                                      1:geom%elem_dime-1 &
                                                                       )
             end do
 !
@@ -755,9 +755,9 @@ contains
             do i_dim = 1, geom%elem_dime
                 index = index+1
                 index2 = index2+1
-                dTm_du(index, 1:geom%elem_dime, 1:geom%elem_dime-1) = dT(&
-                                                                      index2, 1:geom%elem_dime,&
-                                                                      1:geom%elem_dime-1&
+                dTm_du(index, 1:geom%elem_dime, 1:geom%elem_dime-1) = dT( &
+                                                                      index2, 1:geom%elem_dime, &
+                                                                      1:geom%elem_dime-1 &
                                                                       )
             end do
         end do
@@ -905,7 +905,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine dPi_du(geom, norm_slav, tau_mast, gap, jump_v,&
+    subroutine dPi_du(geom, norm_slav, tau_mast, gap, jump_v, &
                       dNs, dGap, dZetaM)
 !
         implicit none
@@ -955,14 +955,14 @@ contains
         b_m = to_blas_int(3)
         b_n = to_blas_int(geom%nb_dofs)
         b_k = to_blas_int(3)
-        call dgemm("N", "T", b_m, b_n, b_k,&
-                   1.d0, lhs_inv, b_lda, rhs, b_ldb,&
+        call dgemm("N", "T", b_m, b_n, b_k, &
+                   1.d0, lhs_inv, b_lda, rhs, b_ldb, &
                    0.d0, sol, b_ldc)
 !
 ! --- Extract terms
 !
         if (present(dZetaM)) then
-            dZetaM(1:geom%nb_dofs, 1:geom%elem_dime-1) = transpose(&
+            dZetaM(1:geom%nb_dofs, 1:geom%elem_dime-1) = transpose( &
                                                          sol(1:geom%elem_dime-1, 1:geom%nb_dofs))
         end if
 !
@@ -976,7 +976,7 @@ contains
 !
 !===================================================================================================
 !
-    function dZetaM_du(geom, norm_slav, tau_mast, gap, jump_v,&
+    function dZetaM_du(geom, norm_slav, tau_mast, gap, jump_v, &
                        dNs)
 !
         implicit none
@@ -993,7 +993,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        call dPi_du(geom, norm_slav, tau_mast, gap, jump_v,&
+        call dPi_du(geom, norm_slav, tau_mast, gap, jump_v, &
                     dNs, dZetaM=dZetaM_du)
 !
     end function
@@ -1002,7 +1002,7 @@ contains
 !
 !===================================================================================================
 !
-    function dGap_du(geom, norm_slav, tau_mast, gap, jump_v,&
+    function dGap_du(geom, norm_slav, tau_mast, gap, jump_v, &
                      dNs)
 !
         implicit none
@@ -1019,7 +1019,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        call dPi_du(geom, norm_slav, tau_mast, gap, jump_v,&
+        call dPi_du(geom, norm_slav, tau_mast, gap, jump_v, &
                     dNs, dGap=dGap_du)
 !
     end function
@@ -1028,7 +1028,7 @@ contains
 !
 !===================================================================================================
 !
-    function d2Gap_du2(geom, norm_slav, norm_mast, gap, Hm,&
+    function d2Gap_du2(geom, norm_slav, norm_mast, gap, Hm, &
                        dNs, dGap, dZetaM, dTm_nm, d2Ns_nm)
 !
         implicit none
@@ -1068,8 +1068,8 @@ contains
         b_n = to_blas_int(geom%elem_dime)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, dNs,&
-                   b_lda, norm, b_incx, 1.d0, dNs_n,&
+        call dgemv('N', b_m, b_n, 1.d0, dNs, &
+                   b_lda, norm, b_incx, 1.d0, dNs_n, &
                    b_incy)
 !
 ! --- Term: -(D gap(u)[v]* D n^s[w^s] + D gap(u)[w]* D n^s[v^s]).n^m/(n^m.n^s)
@@ -1079,14 +1079,14 @@ contains
         b_n = to_blas_int(geom%nb_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dger(b_m, b_n, -1.d0, dGap, b_incx,&
+        call dger(b_m, b_n, -1.d0, dGap, b_incx, &
                   dNs_n, b_incy, d2Gap_du2, b_lda)
         b_lda = to_blas_int(MAX_LAGA_DOFS)
         b_m = to_blas_int(geom%nb_dofs)
         b_n = to_blas_int(geom%nb_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dger(b_m, b_n, -1.d0, dNs_n, b_incx,&
+        call dger(b_m, b_n, -1.d0, dNs_n, b_incx, &
                   dGap, b_incy, d2Gap_du2, b_lda)
 !
 ! --- Term: -gap(u) D^2 n^s[v^s, w^s].n^m/(n^m.n^s)
@@ -1103,8 +1103,8 @@ contains
         b_m = to_blas_int(geom%nb_dofs)
         b_n = to_blas_int(geom%nb_dofs)
         b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k,&
-                   inv_ns_nm, dTm_nm, b_lda, dZetaM, b_ldb,&
+        call dgemm("N", "T", b_m, b_n, b_k, &
+                   inv_ns_nm, dTm_nm, b_lda, dZetaM, b_ldb, &
                    1.d0, d2Gap_du2, b_ldc)
         b_ldc = to_blas_int(MAX_LAGA_DOFS)
         b_ldb = to_blas_int(MAX_LAGA_DOFS)
@@ -1112,8 +1112,8 @@ contains
         b_m = to_blas_int(geom%nb_dofs)
         b_n = to_blas_int(geom%nb_dofs)
         b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k,&
-                   inv_ns_nm, dZetaM, b_lda, dTm_nm, b_ldb,&
+        call dgemm("N", "T", b_m, b_n, b_k, &
+                   inv_ns_nm, dZetaM, b_lda, dTm_nm, b_ldb, &
                    1.d0, d2Gap_du2, b_ldc)
 !
 ! --- Term: H^m * De[v]
@@ -1125,8 +1125,8 @@ contains
         b_m = to_blas_int(geom%nb_dofs)
         b_n = to_blas_int(geom%elem_dime-1)
         b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "N", b_m, b_n, b_k,&
-                   1.d0, dZetaM, b_lda, Hm, b_ldb,&
+        call dgemm("N", "N", b_m, b_n, b_k, &
+                   1.d0, dZetaM, b_lda, Hm, b_ldb, &
                    0.d0, dZetaM_H, b_ldc)
 !
 ! --- Term: (H^m * De[v])*De[w] / (n^m.n^s)
@@ -1137,8 +1137,8 @@ contains
         b_m = to_blas_int(geom%nb_dofs)
         b_n = to_blas_int(geom%nb_dofs)
         b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k,&
-                   inv_ns_nm, dZetaM, b_lda, dZetaM_H, b_ldb,&
+        call dgemm("N", "T", b_m, b_n, b_k, &
+                   inv_ns_nm, dZetaM, b_lda, dZetaM_H, b_ldb, &
                    1.d0, d2Gap_du2, b_ldc)
 !
     end function
@@ -1269,8 +1269,8 @@ contains
         b_n = to_blas_int(geom%elem_dime)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv("N", b_m, b_n, 1.d0, jump_v,&
-                   b_lda, norm_, b_incx, 0.d0, jump_norm,&
+        call dgemv("N", b_m, b_n, 1.d0, jump_v, &
+                   b_lda, norm_, b_incx, 0.d0, jump_norm, &
                    b_incy)
 !
     end function

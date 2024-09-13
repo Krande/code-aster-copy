@@ -92,7 +92,7 @@ subroutine te0450(nomopt, nomte)
     call elrefe_info(fami=fami, npg=npg)
 !
 ! --- Number of dofs
-    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs,&
+    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
                        gbs, gbs_sym)
     gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
     ASSERT(cbs <= MSIZE_CELL_VEC)
@@ -133,8 +133,8 @@ subroutine te0450(nomopt, nomte)
         b_n = to_blas_int(total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad,&
-                   b_lda, hhoMecaState%depl_curr, b_incx, 0.d0, G_curr_coeff,&
+        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad, &
+                   b_lda, hhoMecaState%depl_curr, b_incx, 0.d0, G_curr_coeff, &
                    b_incy)
         gbs_curr = gbs
     else
@@ -159,8 +159,8 @@ subroutine te0450(nomopt, nomte)
 !
 !
         if (l_largestrains) then
-            G_curr = hhoEvalMatCell(&
-                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs&
+            G_curr = hhoEvalMatCell( &
+                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs &
                      )
 !
 ! --------- Eval gradient of the deformation at T- and T+
@@ -169,11 +169,11 @@ subroutine te0450(nomopt, nomte)
 !
             call sigtopk1(hhoCell%ndim, Cauchy_curr, F_curr, PK1_curr)
 !
-            call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs,&
+            call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs, &
                                     bT)
         else
 !
-            call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp,&
+            call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, &
                                     bT)
         end if
     end do
@@ -183,8 +183,8 @@ subroutine te0450(nomopt, nomte)
     b_n = to_blas_int(total_dofs)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('T', b_m, b_n, 1.d0, hhoMecaState%grad,&
-               b_lda, bT, b_incx, 1.d0, rhs,&
+    call dgemv('T', b_m, b_n, 1.d0, hhoMecaState%grad, &
+               b_lda, bT, b_incx, 1.d0, rhs, &
                b_incy)
 !
 ! --- add stabilization
@@ -195,7 +195,7 @@ subroutine te0450(nomopt, nomte)
     b_n = to_blas_int(total_dofs)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dsymv('U', b_n, hhoData%coeff_stab(), hhoMecaState%stab, b_lda,&
+    call dsymv('U', b_n, hhoData%coeff_stab(), hhoMecaState%stab, b_lda, &
                hhoMecaState%depl_curr, b_incx, 1.d0, rhs, b_incy)
 !
 ! --- Save rhs

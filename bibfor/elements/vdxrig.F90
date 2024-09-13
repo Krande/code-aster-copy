@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdxrig(nomte, xi, rig, nb1, indm,&
+subroutine vdxrig(nomte, xi, rig, nb1, indm, &
                   indf)
     implicit none
 #include "jeveux.h"
@@ -76,7 +76,7 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
 !
     nddle = 5*nb1+2
 !
-    call vectan(nb1, nb2, xi, zr(lzr), vecta,&
+    call vectan(nb1, nb2, xi, zr(lzr), vecta, &
                 vectn, vectpt)
 !
     do i = 1, nddle
@@ -92,15 +92,15 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
 !     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
         do intsr = 1, npgsr
-            call mahsms(0, nb1, xi, ksi3s2, intsr,&
-                        zr(lzr), epais, vectn, vectg, vectt,&
+            call mahsms(0, nb1, xi, ksi3s2, intsr, &
+                        zr(lzr), epais, vectn, vectg, vectt, &
                         hsfm, hss)
 !
-            call hsj1ms(epais, vectg, vectt, hsfm, hss,&
+            call hsj1ms(epais, vectg, vectt, hsfm, hss, &
                         hsj1m, hsj1s)
 !
-            call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
-                        epais, vectpt, hsj1m, hsj1s, btdm,&
+            call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr), &
+                        epais, vectpt, hsj1m, hsj1s, btdm, &
                         btds)
         end do
 !
@@ -125,14 +125,14 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
 !     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
 !                          (NORMAL) ET DU DETERMINANT DU JACOBIEN
 !
-            call mahsf(1, nb1, xi, ksi3s2, intsn,&
-                       zr(lzr), epais, vectn, vectg, vectt,&
+            call mahsf(1, nb1, xi, ksi3s2, intsn, &
+                       zr(lzr), epais, vectn, vectg, vectt, &
                        hsf)
 !
-            call hsj1f(intsn, zr(lzr), epais, vectg, vectt,&
+            call hsj1f(intsn, zr(lzr), epais, vectg, vectt, &
                        hsf, kwgt, hsj1fx, wgt)
 !
-            call btdfn(1, nb1, nb2, ksi3s2, intsn,&
+            call btdfn(1, nb1, nb2, ksi3s2, intsn, &
                        zr(lzr), epais, vectpt, hsj1fx, btdf)
 !
 !     CALCUL DE BTDMN, BTDSN
@@ -145,7 +145,7 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
             if (indm .eq. 1) call r8inir(3*42, 0.d0, btdf, 1)
 !
 !
-            call btdmsn(1, nb1, intsn, npgsr, zr(lzr),&
+            call btdmsn(1, nb1, intsn, npgsr, zr(lzr), &
                         btdm, btdf, btds, btild)
 !
             call matrc(nb2, kappa, matc, vectt)
@@ -154,7 +154,7 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
             b_incx = to_blas_int(1)
             call dscal(b_n, wgt, matc, b_incx)
 !
-            call btkb(5, 42, nddle, matc, btild,&
+            call btkb(5, 42, nddle, matc, btild, &
                       wmatcb, ktildi)
 !
             do i = 1, nddle
@@ -170,7 +170,7 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
 !
 !
     nddlet = 6*nb1+3
-    call matrkb(nb1, 42, 51, nddlet, ktild,&
+    call matrkb(nb1, 42, 51, nddlet, ktild, &
                 ctor, rig, coef)
 !
 !     AFFECTATION DU COEF POUR LA CONTRIBUTION DES ROTATIONS FICTIVES
@@ -178,7 +178,7 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
 !     (CETTE AFFECTATION N'A LIEU QUE DANS LE CAS OU ON PREND LA
 !     MATRICE ELASTIQUE AU LIEU DE LA MATRICE TANGENTE)
 !
-    call tecach('NNO', 'PCACO3D', 'E', iret, nval=8,&
+    call tecach('NNO', 'PCACO3D', 'E', iret, nval=8, &
                 itab=itab)
     jcrf = itab(1)
     if (jcrf .ne. 0) zr(jcrf) = coef

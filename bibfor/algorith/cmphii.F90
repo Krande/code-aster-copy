@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmphii(ck, cm, ndim, nbmod, niter,&
-                  xcrit, ceigen, cmod, ndimax, cmat1,&
+subroutine cmphii(ck, cm, ndim, nbmod, niter, &
+                  xcrit, ceigen, cmod, ndimax, cmat1, &
                   cmat2, cvec, ific)
 ! aslint: disable=W1306
     implicit none
@@ -137,7 +137,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
 !
 !    CALCUL DE L'ERREUR COLINEARITE ET REECOPIE
 !    DE CVEC DANS CMOD
-        call ctescv(cvec, cmod(1, j), cvec0, cmod0, ndim,&
+        call ctescv(cvec, cmod(1, j), cvec0, cmod0, ndim, &
                     xer)
 !
 !      RECOPIE DU VECTEUR DE L'ITERATION PRECEDENTE
@@ -151,7 +151,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
         call zcopy(b_n, cvec, b_incx, cvec0, b_incy)
 !
 !   ORTHORMALISATION PAR RAPPORT MATRICE DE MASSE
-        call cschmi(cm, ndim, cmod(1, j), cmod, ndimax,&
+        call cschmi(cm, ndim, cmod(1, j), cmod, ndimax, &
                     j-1)
 !
 !
@@ -173,7 +173,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
         valr(1) = xer
         valr(2) = dble(ceigen(j))
         valr(3) = dimag(ceigen(j))
-        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
+        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3, &
                     valr=valr)
 !
     end do

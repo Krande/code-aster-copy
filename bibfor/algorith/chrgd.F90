@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
-                 ipt, isp, type_gd, rc, p,&
+subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
+                 ipt, isp, type_gd, rc, p, &
                  permvec)
     implicit none
 #include "jeveux.h"
@@ -79,13 +79,13 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
     end if
 !
     do ii = 1, nbcmp
-        call cesexi('C', jcesd, jcesl, imai, ipt,&
+        call cesexi('C', jcesd, jcesl, imai, ipt, &
                     isp, ii, iad)
         if (iad .gt. 0) then
             select case (rc)
-                case ('R')
+            case ('R')
                 val1(ii) = zr(jcesv-1+iad)
-                case ('C')
+            case ('C')
                 val1r(ii) = dreal(zc(jcesv-1+iad))
                 val1i(ii) = dimag(zc(jcesv-1+iad))
             case default
@@ -97,71 +97,71 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
     select case (type_gd(1:7))
     case ('TENS_3D', 'TENS_2D')
 !           Sigma <- P^T Sigma P
-    select case (rc)
+        select case (rc)
         case ('R')
-        val(:) = val1(:)
-        call tpsivp(p, val)
+            val(:) = val1(:)
+            call tpsivp(p, val)
         case ('C')
-        valr(:) = val1r(:)
-        vali(:) = val1i(:)
-        call tpsivp(p, valr)
-        call tpsivp(p, vali)
-    end select
+            valr(:) = val1r(:)
+            vali(:) = val1i(:)
+            call tpsivp(p, valr)
+            call tpsivp(p, vali)
+        end select
     case ('VECT_3D', 'VECT_2D')
 !           val = P^T val1
-    select case (rc)
+        select case (rc)
         case ('R')
-        b_lda = to_blas_int(3)
-        b_m = to_blas_int(3)
-        b_n = to_blas_int(3)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv(trans='T', m=b_m, n=b_n, alpha=1.d0, a=p,&
-                   lda=b_lda, x=val1, incx=b_incx, beta=0.d0, y=val,&
-                   incy=b_incy)
+            b_lda = to_blas_int(3)
+            b_m = to_blas_int(3)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv(trans='T', m=b_m, n=b_n, alpha=1.d0, a=p, &
+                       lda=b_lda, x=val1, incx=b_incx, beta=0.d0, y=val, &
+                       incy=b_incy)
         case ('C')
-        b_lda = to_blas_int(3)
-        b_m = to_blas_int(3)
-        b_n = to_blas_int(3)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv(trans='T', m=b_m, n=b_n, alpha=1.d0, a=p,&
-                   lda=b_lda, x=val1r, incx=b_incx, beta=0.d0, y=valr,&
-                   incy=b_incy)
-        b_lda = to_blas_int(3)
-        b_m = to_blas_int(3)
-        b_n = to_blas_int(3)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv(trans='T', m=b_m, n=b_n, alpha=1.d0, a=p,&
-                   lda=b_lda, x=val1i, incx=b_incx, beta=0.d0, y=vali,&
-                   incy=b_incy)
-    end select
+            b_lda = to_blas_int(3)
+            b_m = to_blas_int(3)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv(trans='T', m=b_m, n=b_n, alpha=1.d0, a=p, &
+                       lda=b_lda, x=val1r, incx=b_incx, beta=0.d0, y=valr, &
+                       incy=b_incy)
+            b_lda = to_blas_int(3)
+            b_m = to_blas_int(3)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv(trans='T', m=b_m, n=b_n, alpha=1.d0, a=p, &
+                       lda=b_lda, x=val1i, incx=b_incx, beta=0.d0, y=vali, &
+                       incy=b_incy)
+        end select
     case ('1D_GENE')
 !           val = P val1 sur 2 blocs de 3 composantes  X,Y,Z  RX,RY,RZ
-    select case (rc)
+        select case (rc)
         case ('R')
-        do ii = 1, 3
-            do kk = 1, 3
-                val(ii) = val(ii)+p(ii, kk)*val1(kk)
-                val(ii+3) = val(ii+3)+p(ii, kk)*val1(kk+3)
+            do ii = 1, 3
+                do kk = 1, 3
+                    val(ii) = val(ii)+p(ii, kk)*val1(kk)
+                    val(ii+3) = val(ii+3)+p(ii, kk)*val1(kk+3)
+                end do
             end do
-        end do
         case ('C')
-        call utmess('F', 'ALGORITH2_31')
+            call utmess('F', 'ALGORITH2_31')
+        end select
+    case default
+        ASSERT(.false.)
     end select
-case default
-    ASSERT(.false.)
-end select
 !   Copie des composantes modifiées dans le champ
     do ii = 1, nbcmp
-        call cesexi('C', jcesd, jcesl, imai, ipt,&
+        call cesexi('C', jcesd, jcesl, imai, ipt, &
                     isp, ii, iad)
         if (iad .gt. 0) then
             select case (rc)
-                case ('R')
+            case ('R')
                 zr(jcesv-1+iad) = val(permvec_loc(ii))
-                case ('C')
+            case ('C')
                 zc(jcesv-1+iad) = dcmplx(valr(permvec_loc(ii)), vali(permvec_loc(ii)))
             end select
         end if

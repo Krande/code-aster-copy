@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
-                  mate, epsm, sigm, vim, epsp,&
+subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
+                  mate, epsm, sigm, vim, epsp, &
                   epsd, a0, a1)
 !
     use Behaviour_type
@@ -106,8 +106,8 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
     tbid = 0.d0
     fami = 'RIGI'
     mod = typmod(1)
-    call betmat(fami, kpg, ksp, mod, mate,&
-                nmat, tbid, tbid, materd, materf,&
+    call betmat(fami, kpg, ksp, mod, mate, &
+                nmat, tbid, tbid, materd, materf, &
                 matcst, ndt, ndi, nr, nvi)
 !
     e = materd(1, 1)
@@ -116,8 +116,8 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
 !
     pc = vim(1)
     pt = vim(2)
-    call betfpp(BEHinteg, materf, nmat, pc, pt,&
-                3, fc, ft, rbid, rbid,&
+    call betfpp(BEHinteg, materf, nmat, pc, pt, &
+                3, fc, ft, rbid, rbid, &
                 kuc, kut, ke)
 !
     fcp = materf(1, 2)

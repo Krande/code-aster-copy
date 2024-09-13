@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -197,10 +197,10 @@
 !                INCREASE THE SIZE OF THE ARRAY D TO HAVE
 !                DIMENSION AT LEAST DIMENSION NCV AND ALLOCATE AT LEAST
 !                NCV
-subroutine zneupd(rvec, howmny, select, d, z,&
-                  ldz, sigma, workev, bmat, n,&
-                  which, nev, tol, resid, ncv,&
-                  v, ldv, iparam, ipntr, workd,&
+subroutine zneupd(rvec, howmny, select, d, z, &
+                  ldz, sigma, workev, bmat, n, &
+                  which, nev, tol, resid, ncv, &
+                  v, ldv, iparam, ipntr, workd, &
                   workl, lworkl, rwork, info)
 !                COLUMNS FOR Z. NOTE: NOT NECESSARY IF Z AND V SHARE
 !                THE SAME SPACE. PLEASE NOTIFY THE AUTHORS IF THIS ERROR
@@ -431,7 +431,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
             write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
             write (logfil, *)
         end if
-        else if (which .ne. 'LM' .and. which .ne. 'SM' .and. which .ne. &
+    else if (which .ne. 'LM' .and. which .ne. 'SM' .and. which .ne. &
              'LR' .and. which .ne. 'SR' .and. which .ne. 'LI' .and. which .ne. &
              'SI') then
         ierr = -5
@@ -439,7 +439,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
         ierr = -6
     else if (lworkl .lt. 3*ncv**2+4*ncv) then
         ierr = -7
-        else if ((howmny .ne. 'A' .and. howmny .ne. 'P' .and. howmny &
+    else if ((howmny .ne. 'A' .and. howmny .ne. 'P' .and. howmny &
               .ne. 'S') .and. rvec) then
         ierr = -13
     else if (howmny .eq. 'S') then
@@ -529,7 +529,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !
     if (msglvl .gt. 2) then
         call zvout(logfil, ncv, workl(irz), ndigit, '_NEUPD: RITZ VALUES PASSED IN FROM _NAUPD.')
-        call zvout(logfil, ncv, workl(ibd), ndigit,&
+        call zvout(logfil, ncv, workl(ibd), ndigit, &
                    '_NEUPD: RITZ ESTIMATES PASSED IN FROM _NAUPD.')
     end if
 !
@@ -559,13 +559,13 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !
         np = ncv-nev
         ishift = 0
-        call zngets(ishift, which, nev, np, workl(irz),&
+        call zngets(ishift, which, nev, np, workl(irz), &
                     workl(bounds))
 !
         if (msglvl .gt. 2) then
-            call zvout(logfil, ncv, workl(irz), ndigit,&
+            call zvout(logfil, ncv, workl(irz), ndigit, &
                        '_NEUPD: RITZ VALUES AFTER CALLING _NGETS.')
-            call zvout(logfil, ncv, workl(bounds), ndigit,&
+            call zvout(logfil, ncv, workl(bounds), ndigit, &
                        '_NEUPD: RITZ VALUE INDICES AFTER CALLING _NGETS.')
         end if
 !
@@ -578,7 +578,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
         do j = 1, ncv
             rtemp = max(eps23, dlapy2(dble(workl(irz+ncv-j)), dimag(workl(irz+ncv-j))))
             jj = nint(dble(workl(bounds+ncv-j)))
-            if (numcnv .lt. nconv .and.&
+            if (numcnv .lt. nconv .and. &
                 dlapy2(dble(workl(ibd+jj-1)), dimag(workl(ibd+jj-1))) .le. tol*rtemp) then
                 select(jj) = .true.
                 numcnv = numcnv+1
@@ -617,7 +617,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
         b_lda = to_blas_int(ldq)
         b_m = to_blas_int(ncv)
         b_n = to_blas_int(ncv)
-        call zlaset('A', b_m, b_n, zero, one,&
+        call zlaset('A', b_m, b_n, zero, one, &
                     workl(invsub), b_lda)
         b_ldz = to_blas_int(ldq)
         b_ldh = to_blas_int(ldh)
@@ -626,8 +626,8 @@ subroutine zneupd(rvec, howmny, select, d, z,&
         b_ihi = to_blas_int(ncv)
         b_iloz = to_blas_int(1)
         b_ihiz = to_blas_int(ncv)
-        call zlahqr(.true._1, .true._1, b_n, b_ilo, b_ihi,&
-                    workl(iuptri), b_ldh, workl(iheig), b_iloz, b_ihiz,&
+        call zlahqr(.true._1, .true._1, b_n, b_ilo, b_ihi, &
+                    workl(iuptri), b_ldh, workl(iheig), b_iloz, b_ihiz, &
                     workl(invsub), b_ldz, ierr4)
         ierr = ierr4
         b_n = to_blas_int(ncv)
@@ -642,10 +642,10 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !
         if (msglvl .gt. 1) then
             call zvout(logfil, ncv, workl(iheig), ndigit, '_NEUPD: EIGENVALUES OF H')
-            call zvout(logfil, ncv, workl(ihbds), ndigit,&
+            call zvout(logfil, ncv, workl(ihbds), ndigit, &
                        '_NEUPD: LAST ROW OF THE SCHUR VECTOR MATRIX')
             if (msglvl .gt. 3) then
-                call zmout(logfil, ncv, ncv, workl(iuptri), ldh,&
+                call zmout(logfil, ncv, ncv, workl(iuptri), ldh, &
                            ndigit, '_NEUPD: THE UPPER TRIANGULAR MATRIX ')
             end if
         end if
@@ -656,7 +656,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !           | REORDER THE COMPUTED UPPER TRIANGULAR MATRIX. |
 !           %-----------------------------------------------%
 !
-            call ar_ztrsen(select, ncv, workl(iuptri), ldh, workl(invsub),&
+            call ar_ztrsen(select, ncv, workl(iuptri), ldh, workl(invsub), &
                            ldq, workl(iheig), nconv, ierr)
 !
             if (ierr .eq. 1) then
@@ -665,10 +665,10 @@ subroutine zneupd(rvec, howmny, select, d, z,&
             end if
 !
             if (msglvl .gt. 2) then
-                call zvout(logfil, ncv, workl(iheig), ndigit,&
+                call zvout(logfil, ncv, workl(iheig), ndigit, &
                            '_NEUPD: EIGENVALUES OF H--REORDERED')
                 if (msglvl .gt. 3) then
-                    call zmout(logfil, ncv, ncv, workl(iuptri), ldq,&
+                    call zmout(logfil, ncv, ncv, workl(iuptri), ldq, &
                                ndigit, '_NEUPD: TRIANGULAR MATRIX AFTER RE-ORDERING')
                 end if
             end if
@@ -708,7 +708,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
         b_lda = to_blas_int(ldq)
         b_m = to_blas_int(ncv)
         b_n = to_blas_int(nconv)
-        call zgeqr2(b_m, b_n, workl(invsub), b_lda, workev,&
+        call zgeqr2(b_m, b_n, workl(invsub), b_lda, workev, &
                     workev(ncv+1), ierr4)
         ierr = ierr4
 !
@@ -729,15 +729,15 @@ subroutine zneupd(rvec, howmny, select, d, z,&
         b_m = to_blas_int(n)
         b_n = to_blas_int(ncv)
         b_k = to_blas_int(nconv)
-        call zunm2r('R', 'N', b_m, b_n, b_k,&
-                    workl(invsub), b_lda, workev, v, b_ldc,&
+        call zunm2r('R', 'N', b_m, b_n, b_k, &
+                    workl(invsub), b_lda, workev, v, b_ldc, &
                     workd(n+1), ierr4)
         ierr = ierr4
         b_ldb = to_blas_int(ldz)
         b_lda = to_blas_int(ldv)
         b_m = to_blas_int(n)
         b_n = to_blas_int(nconv)
-        call zlacpy('A', b_m, b_n, v, b_lda,&
+        call zlacpy('A', b_m, b_n, v, b_lda, &
                     z, b_ldb)
 !
         do j = 1, nconv
@@ -777,8 +777,8 @@ subroutine zneupd(rvec, howmny, select, d, z,&
                 end if
             end do
 !
-            call ar_ztrevc('R', 'S', select, ncv, workl(iuptri),&
-                           ldq, vl, 1, workl(invsub), ldq,&
+            call ar_ztrevc('R', 'S', select, ncv, workl(iuptri), &
+                           ldq, vl, 1, workl(invsub), ldq, &
                            ncv, outncv, workev, rwork, ierr)
 !
             if (ierr .ne. 0) then
@@ -823,10 +823,10 @@ subroutine zneupd(rvec, howmny, select, d, z,&
                 b_incx = to_blas_int(ldq)
                 b_incy = to_blas_int(1)
                 call zcopy(b_n, workl(invsub+ncv-1), b_incx, workl(ihbds), b_incy)
-                call zvout(logfil, nconv, workl(ihbds), ndigit,&
+                call zvout(logfil, nconv, workl(ihbds), ndigit, &
                            '_NEUPD: LAST ROW OF THE EIGENVECTOR MATRIX FOR T')
                 if (msglvl .gt. 3) then
-                    call zmout(logfil, ncv, ncv, workl(invsub), ldq,&
+                    call zmout(logfil, ncv, ncv, workl(invsub), ldq, &
                                ndigit, '_NEUPD: THE EIGENVECTOR MATRIX FOR T')
                 end if
             end if
@@ -849,8 +849,8 @@ subroutine zneupd(rvec, howmny, select, d, z,&
             b_lda = to_blas_int(ldq)
             b_m = to_blas_int(n)
             b_n = to_blas_int(nconv)
-            call ztrmm('R', 'U', 'N', 'N', b_m,&
-                       b_n, one, workl(invsub), b_lda, z,&
+            call ztrmm('R', 'U', 'N', 'N', b_m, &
+                       b_n, one, workl(invsub), b_lda, z, &
                        b_ldb)
         end if
 !
@@ -888,7 +888,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
             b_n = to_blas_int(ncv)
             b_incx = to_blas_int(1)
             call zscal(b_n, rnorm, workl(ihbds), b_incx)
-        endif
+        end if
 !
     else
 !
@@ -902,7 +902,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
             b_n = to_blas_int(ncv)
             b_incx = to_blas_int(1)
             call zscal(b_n, rnorm, workl(ihbds), b_incx)
-        endif
+        end if
 !
         do k = 1, ncv
             temp = workl(iheig+k-1)
@@ -941,7 +941,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !
     if (type .ne. 'REGULR' .and. msglvl .gt. 1) then
         call zvout(logfil, nconv, d, ndigit, '_NEUPD: UNTRANSFORMED RITZ VALUES.')
-        call zvout(logfil, nconv, workl(ihbds), ndigit,&
+        call zvout(logfil, nconv, workl(ihbds), ndigit, &
                    '_NEUPD: RITZ ESTIMATES OF THE UNTRANSFORMED RITZ VALUES.')
     else if (msglvl .gt. 1) then
         call zvout(logfil, nconv, d, ndigit, '_NEUPD: CONVERGED RITZ VALUES.')
@@ -981,7 +981,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
         b_n = to_blas_int(nconv)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call zgeru(b_m, b_n, one, resid, b_incx,&
+        call zgeru(b_m, b_n, one, resid, b_incx, &
                    workev, b_incy, z, b_lda)
 !
     end if

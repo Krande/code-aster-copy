@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
-                  nmat, nvi, sig, detot, epsd,&
+subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono, &
+                  nmat, nvi, sig, detot, epsd, &
                   materf, pgl)
 !
 ! aslint: disable=W1306
@@ -83,7 +83,7 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
 !            NUECOU=NINT(MATERF(IFL,2))
             nomfam = cpmono(5*(ifa-1)+1) (1:16)
             necoul = cpmono(5*(ifa-1)+3) (1:16)
-            call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
+            call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
                         ng, lg, 0, qm)
             if (necoul .eq. 'MONO_DD_CC_IRRA') then
                 b_n = to_blas_int(12)
@@ -167,13 +167,13 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
         do ifa = 1, nbfsys
             ifl = nbcomm(ifa, 1)
             nomfam = cpmono(5*(ifa-1)+1) (1:16)
-            call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
+            call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
                         ng, lg, 0, qm)
             do is = 1, nbsys
 !              CALCUL DE LA SCISSION REDUITE =
 !              PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !              TAU      : SCISSION REDUITE TAU=SIG:MUS
-                call lcmmsg(nomfam, nbsys, is, pgl, mus,&
+                call lcmmsg(nomfam, nbsys, is, pgl, mus, &
                             ng, lg, 0, qm)
                 tau(ns+is) = 0.d0
                 do i = 1, 6
@@ -205,7 +205,7 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
             b_n = to_blas_int(3)
             b_incx = to_blas_int(1)
             call dscal(b_n, sqrt(2.d0), pk2(4), b_incx)
-            call pk2sig(3, fe, 1.d0, pk2, sig,&
+            call pk2sig(3, fe, 1.d0, pk2, sig, &
                         1)
 !           LES RACINE(2) ATTENDUES PAR NMCOMP :-)
             b_n = to_blas_int(3)
@@ -214,7 +214,7 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
             b_n = to_blas_int(9)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -1.d0, id, b_incx, fe,&
+            call daxpy(b_n, -1.d0, id, b_incx, fe, &
                        b_incy)
             b_n = to_blas_int(9)
             b_incx = to_blas_int(1)
@@ -231,7 +231,7 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
             b_n = to_blas_int(9)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -1.d0, id, b_incx, fp,&
+            call daxpy(b_n, -1.d0, id, b_incx, fp, &
                        b_incy)
             b_n = to_blas_int(9)
             b_incx = to_blas_int(1)
@@ -279,7 +279,7 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
             indfv = nbcomm(1+iphas, 3)
 !         RECUPERER L'ORIENTATION DE LA PHASE ET LA PROPORTION
             fv = materf(indfv, 2)
-            call lcloca(materf(1, 2), nmat, nbcomm, nbphas, sig,&
+            call lcloca(materf(1, 2), nmat, nbcomm, nbphas, sig, &
                         vinf, iphas, granb, loca, sigg)
             do i = 1, 6
                 vinf(nuvi+6*(iphas-1)+i) = sigg(i)

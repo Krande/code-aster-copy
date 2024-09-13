@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine radipg(sig1, sig2, npg, nbsig, radia,&
-                  cosang, ind, compor, imate, nvi,&
+subroutine radipg(sig1, sig2, npg, nbsig, radia, &
+                  cosang, ind, compor, imate, nvi, &
                   vari1, vari2)
     implicit none
 #include "asterc/r8prem.h"
@@ -146,7 +146,7 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
             call dscal(b_n, sqrt(2.d0), tensp(4), b_incx)
 !
 !           ISOTROPE : LA NORMALE NE DEPEND QUE DE SIG
-            if ((compor .eq. 'VMIS_ISOT_TRAC') .or. (compor .eq. 'VMIS_ISOT_LINE') .or.&
+            if ((compor .eq. 'VMIS_ISOT_TRAC') .or. (compor .eq. 'VMIS_ISOT_LINE') .or. &
                 (compor .eq. 'VMIS_ISOT_PUIS')) then
                 indm = vari1((igau-1)*nvi+2)
                 indp = vari2((igau-1)*nvi+2)
@@ -154,7 +154,7 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
                 iradi = 1
 !
 !           CINEMATIQUE : LA NORMALE DEPEND DE SIG ET X
-                elseif ((compor .eq. 'VMIS_ECMI_TRAC') .or. ( &
+            elseif ((compor .eq. 'VMIS_ECMI_TRAC') .or. ( &
                     compor .eq. 'VMIS_ECMI_LINE')) then
                 b_n = to_blas_int(nbsig)
                 b_incx = to_blas_int(1)
@@ -195,7 +195,7 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
                 b_incx = to_blas_int(1)
                 call dscal(b_n, sqrt(2.d0), xp(4), b_incx)
 !
-                elseif ((compor .eq. 'VMIS_CIN1_CHAB') .or. ( &
+            elseif ((compor .eq. 'VMIS_CIN1_CHAB') .or. ( &
                     compor .eq. 'VISC_CIN1_CHAB') .or. ( &
                     compor .eq. 'VMIS_CIN2_CHAB') .or. ( &
                     compor .eq. 'VMIS_CIN2_MEMO') .or. ( &
@@ -203,8 +203,8 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
                     compor .eq. 'VISC_CIN2_MEMO')) then
                 compor2 = ' '
                 compor2(1) = compor
-                call nmcham('RIGI', igau, 1, imate, compor2,&
-                            matel, mat, nbvar, memo, visc,&
+                call nmcham('RIGI', igau, 1, imate, compor2, &
+                            matel, mat, nbvar, memo, visc, &
                             idelta, coef)
 !              approximation : on supose C constant
                 cinf = mat(4)/1.5d0
@@ -229,12 +229,12 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
                     b_n = to_blas_int(nbsig)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call daxpy(b_n, c2inf, vari1((igau-1)*nvi+9), b_incx, xm,&
+                    call daxpy(b_n, c2inf, vari1((igau-1)*nvi+9), b_incx, xm, &
                                b_incy)
                     b_n = to_blas_int(nbsig)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call daxpy(b_n, c2inf, vari2((igau-1)*nvi+9), b_incx, xp,&
+                    call daxpy(b_n, c2inf, vari2((igau-1)*nvi+9), b_incx, xp, &
                                b_incy)
                 end if
                 icine = 1
@@ -251,7 +251,7 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
 !
 !           CALCUL EFFECTUE UNIQUEMENT SI LE COMPORTEMENT LE PERMET
             if (iradi .eq. 1) then
-                call radial(nbsig, tensm, tensp, indm, indp,&
+                call radial(nbsig, tensm, tensp, indm, indp, &
                             icine, xm, xp, radia(igau))
                 cosang(igau) = sqrt(abs(1.d0-radia(igau)*radia(igau)))
             else

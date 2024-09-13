@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ subroutine te0448(nomopt, nomte)
     call elrefe_info(fami=fami, npg=npg)
 !
 ! --- Number of dofs
-    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs,&
+    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
                        gbs, gbs_sym)
     nsig = nbsigm()
     gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
@@ -97,23 +97,23 @@ subroutine te0448(nomopt, nomte)
 ! --- Type of finite element
 !
     select case (hhoCell%ndim)
-case (3)
-    typmod(1) = '3D'
-case (2)
-    if (lteatt('AXIS', 'OUI')) then
+    case (3)
+        typmod(1) = '3D'
+    case (2)
+        if (lteatt('AXIS', 'OUI')) then
+            ASSERT(ASTER_FALSE)
+            typmod(1) = 'AXIS'
+        else if (lteatt('C_PLAN', 'OUI')) then
+            ASSERT(ASTER_FALSE)
+            typmod(1) = 'C_PLAN'
+        else if (lteatt('D_PLAN', 'OUI')) then
+            typmod(1) = 'D_PLAN'
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+    case default
         ASSERT(ASTER_FALSE)
-        typmod(1) = 'AXIS'
-    else if (lteatt('C_PLAN', 'OUI')) then
-        ASSERT(ASTER_FALSE)
-        typmod(1) = 'C_PLAN'
-    else if (lteatt('D_PLAN', 'OUI')) then
-        typmod(1) = 'D_PLAN'
-    else
-        ASSERT(ASTER_FALSE)
-    end if
-case default
-    ASSERT(ASTER_FALSE)
-end select
+    end select
     typmod(2) = 'HHO'
 !
     call jevech('PDEFOPG', 'E', idefo)
@@ -152,8 +152,8 @@ end select
         b_n = to_blas_int(total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec,&
-                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff,&
+        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
                    b_incy)
         gbs_curr = gbs
     else
@@ -162,8 +162,8 @@ end select
         b_n = to_blas_int(total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec,&
-                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff,&
+        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
                    b_incy)
         gbs_curr = gbs_sym
     end if
@@ -178,13 +178,13 @@ end select
         call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
         if (l_largestrains) then
-            G_curr = hhoEvalMatCell(&
-                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs&
+            G_curr = hhoEvalMatCell( &
+                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs &
                      )
         else
-            E_curr = hhoEvalSymMatCell(&
-                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff,&
-                     gbs_sym&
+            E_curr = hhoEvalSymMatCell( &
+                     hhoCell, hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, &
+                     gbs_sym &
                      )
             zr(idefo-1+(ipg-1)*nsig+1:idefo-1+ipg*nsig) = E_curr(1:nsig)
         end if

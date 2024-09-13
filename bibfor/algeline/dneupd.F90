@@ -211,10 +211,10 @@
 !        = -1: N MUST BE POSITIVE.
 !        = -2: NEV MUST BE POSITIVE.
 !        = -3: NCV-NEV >= 2 AND LESS THAN OR EQUAL TO N.
-subroutine dneupd(rvec, howmny, select, dr, di,&
-                  z, ldz, sigmar, sigmai, workev,&
-                  bmat, n, which, nev, tol,&
-                  resid, ncv, v, ldv, iparam,&
+subroutine dneupd(rvec, howmny, select, dr, di, &
+                  z, ldz, sigmar, sigmai, workev, &
+                  bmat, n, which, nev, tol, &
+                  resid, ncv, v, ldv, iparam, &
                   ipntr, workd, workl, lworkl, info)
 !        = -5: WHICH MUST BE ONE OF 'LM', 'SM', 'LR', 'SR', 'LI', 'SI'
 !        = -6: BMAT MUST BE ONE OF 'I' OR 'G'.
@@ -456,7 +456,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
             write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
             write (logfil, *)
         end if
-        else if (which .ne. 'LM' .and. which .ne. 'SM' .and. which .ne. &
+    else if (which .ne. 'LM' .and. which .ne. 'SM' .and. which .ne. &
              'LR' .and. which .ne. 'SR' .and. which .ne. 'LI' .and. which .ne. &
              'SI') then
         ierr = -5
@@ -464,7 +464,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         ierr = -6
     else if (lworkl .lt. 3*ncv**2+6*ncv) then
         ierr = -7
-        else if ((howmny .ne. 'A' .and. howmny .ne. 'P' .and. howmny &
+    else if ((howmny .ne. 'A' .and. howmny .ne. 'P' .and. howmny &
               .ne. 'S') .and. rvec) then
         ierr = -13
     else if (howmny .eq. 'S') then
@@ -583,7 +583,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         end if
 !
         if (msglvl .gt. 2) then
-            call dvout(logfil, 1, [thres], ndigit,&
+            call dvout(logfil, 1, [thres], ndigit, &
                        '_NEUPD: THRESHOLD EIGENVALUE USED FOR RE-ORDERING')
         end if
 !
@@ -667,10 +667,10 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         b_lda = to_blas_int(ldq)
         b_m = to_blas_int(ncv)
         b_n = to_blas_int(ncv)
-        call dlaset('A', b_m, b_n, zero, one,&
+        call dlaset('A', b_m, b_n, zero, one, &
                     workl(invsub), b_lda)
-        call ar_dlahqr(.true._1, .true._1, ncv, 1, ncv,&
-                       workl(iuptri), ldh, workl(iheigr), workl(iheigi), 1,&
+        call ar_dlahqr(.true._1, .true._1, ncv, 1, ncv, &
+                       workl(iuptri), ldh, workl(iheigr), workl(iheigi), 1, &
                        ncv, workl(invsub), ldq, ierr)
         b_n = to_blas_int(ncv)
         b_incx = to_blas_int(ldq)
@@ -683,14 +683,14 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         end if
 !
         if (msglvl .gt. 1) then
-            call dvout(logfil, ncv, workl(iheigr), ndigit,&
+            call dvout(logfil, ncv, workl(iheigr), ndigit, &
                        '_NEUPD: REAL PART OF THE EIGENVALUES OF H')
-            call dvout(logfil, ncv, workl(iheigi), ndigit,&
+            call dvout(logfil, ncv, workl(iheigi), ndigit, &
                        '_NEUPD: IMAGINARY PART OF THE EIGENVALUES OF H')
-            call dvout(logfil, ncv, workl(ihbds), ndigit,&
+            call dvout(logfil, ncv, workl(ihbds), ndigit, &
                        '_NEUPD: LAST ROW OF THE SCHUR VECTOR MATRIX')
             if (msglvl .gt. 3) then
-                call dmout(logfil, ncv, ncv, workl(iuptri), ldh,&
+                call dmout(logfil, ncv, ncv, workl(iuptri), ldh, &
                            ndigit, '_NEUPD: THE UPPER QUASI-TRIANGULAR MATRIX ')
             end if
         end if
@@ -701,9 +701,9 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !           | REORDER THE COMPUTED UPPER QUASI-TRIANGULAR MATRIX. |
 !           %-----------------------------------------------------%
 !
-            call ar_dtrsen('N', 'V', select, ncv, workl(iuptri),&
-                           ldh, workl(invsub), ldq, workl(iheigr), workl(iheigi),&
-                           nconv, conds, sep, workl(ihbds), ncv,&
+            call ar_dtrsen('N', 'V', select, ncv, workl(iuptri), &
+                           ldh, workl(invsub), ldq, workl(iheigr), workl(iheigi), &
+                           nconv, conds, sep, workl(ihbds), ncv, &
                            iwork, 1, ierr)
             if (ierr .eq. 1) then
                 info = 1
@@ -711,12 +711,12 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
             end if
 !
             if (msglvl .gt. 2) then
-                call dvout(logfil, ncv, workl(iheigr), ndigit,&
+                call dvout(logfil, ncv, workl(iheigr), ndigit, &
                            '_NEUPD: REAL PART OF THE EIGENVALUES OF H--REORDERED')
-                call dvout(logfil, ncv, workl(iheigi), ndigit,&
+                call dvout(logfil, ncv, workl(iheigi), ndigit, &
                            '_NEUPD: IMAG PART OF THE EIGENVALUES OF H--REORDERED')
                 if (msglvl .gt. 3) then
-                    call dmout(logfil, ncv, ncv, workl(iuptri), ldq,&
+                    call dmout(logfil, ncv, ncv, workl(iuptri), ldq, &
                                ndigit, '_NEUPD: QUASI-TRIANGULAR MATRIX AFTER RE-ORDERING')
                 end if
             end if
@@ -756,7 +756,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !        | COLUMNS OF WORKL(INVSUB,LDQ).                            |
 !        %----------------------------------------------------------%
 !
-        call ar_dgeqr2(ncv, nconv, workl(invsub), ldq, workev,&
+        call ar_dgeqr2(ncv, nconv, workl(invsub), ldq, workev, &
                        workev(ncv+1), ierr)
 !
 !        %---------------------------------------------------------%
@@ -777,15 +777,15 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         b_m = to_blas_int(n)
         b_n = to_blas_int(ncv)
         b_k = to_blas_int(nconv)
-        call dorm2r('R', 'N', b_m, b_n, b_k,&
-                    workl(invsub), b_lda, workev, v, b_ldc,&
+        call dorm2r('R', 'N', b_m, b_n, b_k, &
+                    workl(invsub), b_lda, workev, v, b_ldc, &
                     workd(n+1), ierr4)
         ierr = ierr4
         b_ldb = to_blas_int(ldz)
         b_lda = to_blas_int(ldv)
         b_m = to_blas_int(n)
         b_n = to_blas_int(nconv)
-        call dlacpy('A', b_m, b_n, v, b_lda,&
+        call dlacpy('A', b_m, b_n, v, b_lda, &
                     z, b_ldb)
 !
         do j = 1, nconv
@@ -825,8 +825,8 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                 end if
             end do
 !
-            call ar_dtrevc('R', 'S', select, ncv, workl(iuptri),&
-                           ldq, vl, 1, workl(invsub), ldq,&
+            call ar_dtrevc('R', 'S', select, ncv, workl(iuptri), &
+                           ldq, vl, 1, workl(invsub), ldq, &
                            ncv, outncv, workev, ierr)
 !
             if (ierr .ne. 0) then
@@ -871,9 +871,9 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                     if (iconj .eq. 0) then
                         b_n = to_blas_int(ncv)
                         b_incx = to_blas_int(1)
-                        temp = dlapy2(&
-                               dnrm2(b_n, workl(invsub+(j-1)*ldq), b_incx),&
-                               dnrm2(b_n, workl(invsub+j*ldq), b_incx)&
+                        temp = dlapy2( &
+                               dnrm2(b_n, workl(invsub+(j-1)*ldq), b_incx), &
+                               dnrm2(b_n, workl(invsub+j*ldq), b_incx) &
                                )
                         b_n = to_blas_int(ncv)
                         b_incx = to_blas_int(1)
@@ -895,8 +895,8 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
             b_n = to_blas_int(nconv)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dgemv('T', b_m, b_n, one, workl(invsub),&
-                       b_lda, workl(ihbds), b_incx, zero, workev,&
+            call dgemv('T', b_m, b_n, one, workl(invsub), &
+                       b_lda, workl(ihbds), b_incx, zero, workev, &
                        b_incy)
 !
             iconj = 0
@@ -924,10 +924,10 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                 b_incx = to_blas_int(ldq)
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, workl(invsub+ncv-1), b_incx, workl(ihbds), b_incy)
-                call dvout(logfil, ncv, workl(ihbds), ndigit,&
+                call dvout(logfil, ncv, workl(ihbds), ndigit, &
                            '_NEUPD: LAST ROW OF THE EIGENVECTOR MATRIX FOR T')
                 if (msglvl .gt. 3) then
-                    call dmout(logfil, ncv, ncv, workl(invsub), ldq,&
+                    call dmout(logfil, ncv, ncv, workl(invsub), ldq, &
                                ndigit, '_NEUPD: THE EIGENVECTOR MATRIX FOR T')
                 end if
             end if
@@ -947,7 +947,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !           | COLUMNS OF WORKL(INVSUB,LDQ).                           |
 !           %---------------------------------------------------------%
 !
-            call ar_dgeqr2(ncv, nconv, workl(invsub), ldq, workev,&
+            call ar_dgeqr2(ncv, nconv, workl(invsub), ldq, workev, &
                            workev(ncv+1), ierr)
 !
 !           %----------------------------------------------%
@@ -965,8 +965,8 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
             b_m = to_blas_int(n)
             b_n = to_blas_int(ncv)
             b_k = to_blas_int(nconv)
-            call dorm2r('R', 'N', b_m, b_n, b_k,&
-                        workl(invsub), b_lda, workev, z, b_ldc,&
+            call dorm2r('R', 'N', b_m, b_n, b_k, &
+                        workl(invsub), b_lda, workev, z, b_ldc, &
                         workd(n+1), ierr4)
             ierr = ierr4
 !
@@ -975,8 +975,8 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
             b_lda = to_blas_int(ldq)
             b_m = to_blas_int(n)
             b_n = to_blas_int(nconv)
-            call dtrmm('R', 'U', 'N', 'N', b_m,&
-                       b_n, one, workl(invsub), b_lda, z,&
+            call dtrmm('R', 'U', 'N', 'N', b_m, &
+                       b_n, one, workl(invsub), b_lda, z, &
                        b_ldb)
 !
         end if
@@ -1022,7 +1022,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
             b_n = to_blas_int(ncv)
             b_incx = to_blas_int(1)
             call dscal(b_n, rnorm, workl(ihbds), b_incx)
-        endif
+        end if
 !
     else
 !
@@ -1038,7 +1038,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                 b_n = to_blas_int(ncv)
                 b_incx = to_blas_int(1)
                 call dscal(b_n, rnorm, workl(ihbds), b_incx)
-            endif
+            end if
 !
             do k = 1, ncv
                 temp = dlapy2(workl(iheigr+k-1), workl(iheigi+k-1))
@@ -1131,11 +1131,11 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
     end if
 !
     if (type .eq. 'SHIFTI' .and. msglvl .gt. 1) then
-        call dvout(logfil, nconv, dr, ndigit,&
+        call dvout(logfil, nconv, dr, ndigit, &
                    '_NEUPD: UNTRANSFORMED REAL PART OF THE RITZ VALUESS.')
-        call dvout(logfil, nconv, di, ndigit,&
+        call dvout(logfil, nconv, di, ndigit, &
                    '_NEUPD: UNTRANSFORMED IMAG PART OF THE RITZ VALUESS.')
-        call dvout(logfil, nconv, workl(ihbds), ndigit,&
+        call dvout(logfil, nconv, workl(ihbds), ndigit, &
                    '_NEUPD: RITZ ESTIMATES OF UNTRANSFORMED RITZ VALUES.')
     else if (type .eq. 'REGULR' .and. msglvl .gt. 1) then
         call dvout(logfil, nconv, dr, ndigit, '_NEUPD: REAL PARTS OF CONVERGED RITZ VALUES.')
@@ -1185,15 +1185,15 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                 temp = dlapy2(workl(iheigr+j-1), workl(iheigi+j-1))
 !
                 if (temp*temp .le. eps) then
-                    workev(j) = (&
-                                workl(&
+                    workev(j) = ( &
+                                workl( &
                                 invsub+(j-1)*ldq+ncv-1)*workl(iheigr+j-1)+workl(invsub+j*ldq+ncv-&
-                                &1)*workl(iheigi+j-1&
-                                )&
+                                &1)*workl(iheigi+j-1 &
+                                ) &
                                 )/eps
-                    workev(j+1) = (&
+                    workev(j+1) = ( &
                                   workl(invsub+j*ldq+ncv-1)*workl(iheigr+j-1)-workl(invsub+(j-1)*&
-                                  &ldq+ncv-1)*workl(iheigi+j-1)&
+                                  &ldq+ncv-1)*workl(iheigi+j-1) &
                                   )/eps
                     if (msglvl .gt. 0) then
                         write (logfil, *)
@@ -1206,15 +1206,15 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                         write (logfil, *)
                     end if
                 else
-                    workev(j) = (&
-                                workl(&
+                    workev(j) = ( &
+                                workl( &
                                 invsub+(j-1)*ldq+ncv-1)*workl(iheigr+j-1)+workl(invsub+j*ldq+ncv-&
-                                &1)*workl(iheigi+j-1&
-                                )&
+                                &1)*workl(iheigi+j-1 &
+                                ) &
                                 )/temp/temp
-                    workev(j+1) = (&
+                    workev(j+1) = ( &
                                   workl(invsub+j*ldq+ncv-1)*workl(iheigr+j-1)-workl(invsub+(j-1)*&
-                                  &ldq+ncv-1)*workl(iheigi+j-1)&
+                                  &ldq+ncv-1)*workl(iheigi+j-1) &
                                   )/temp/temp
                 end if
                 iconj = 1
@@ -1233,7 +1233,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         b_n = to_blas_int(nconv)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dger(b_m, b_n, one, resid, b_incx,&
+        call dger(b_m, b_n, one, resid, b_incx, &
                   workev, b_incy, z, b_lda)
 !
     end if

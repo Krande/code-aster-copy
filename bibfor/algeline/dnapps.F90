@@ -17,8 +17,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dnapps(n, kev, np, shiftr, shifti,&
-                  v, ldv, h, ldh, resid,&
+subroutine dnapps(n, kev, np, shiftr, shifti, &
+                  v, ldv, h, ldh, resid, &
                   q, ldq, workl, workd)
 !
 !     SUBROUTINE ARPACK PREPARANT LE RESTART VIA UN QR IMPLICITE POUR
@@ -280,7 +280,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
     b_lda = to_blas_int(ldq)
     b_m = to_blas_int(kplusp)
     b_n = to_blas_int(kplusp)
-    call dlaset('A', b_m, b_n, zero, one,&
+    call dlaset('A', b_m, b_n, zero, one, &
                 q, b_lda)
 !
 !     %----------------------------------------------%
@@ -341,7 +341,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
             goto 110
         end if
         istart = 1
- 20     continue
+20      continue
 !
 !        %--------------------------------------------------%
 !        | IF SIGMAI = 0 THEN                               |
@@ -368,9 +368,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
             if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h, b_lda, workl)
             if (abs(h(i+1, i)) .le. max(ulp*tst1, smlnum)) then
                 if (msglvl .gt. 0) then
-                    call ivout(logfil, 1, [i], ndigit,&
+                    call ivout(logfil, 1, [i], ndigit, &
                                '_NAPPS: MATRIX SPLITTING AT ROW/COLUMN NO.')
-                    call ivout(logfil, 1, [jj], ndigit,&
+                    call ivout(logfil, 1, [jj], ndigit, &
                                '_NAPPS: MATRIX SPLITTING WITH SHIFT NUMBER.')
                     call dvout(logfil, 1, h(i+1, i), ndigit, '_NAPPS: OFF DIAGONAL ELEMENT.')
                 end if
@@ -380,7 +380,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
             end if
         end do
         iend = kplusp
- 40     continue
+40      continue
 !
         if (msglvl .gt. 2) then
             call ivout(logfil, 1, [istart], ndigit, '_NAPPS: START OF CURRENT BLOCK ')
@@ -525,7 +525,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
                 b_m = to_blas_int(nr)
                 b_n = to_blas_int(kplusp-i+1)
                 b_incv = to_blas_int(1)
-                call dlarf('L', b_m, b_n, u, b_incv,&
+                call dlarf('L', b_m, b_n, u, b_incv, &
                            tau, h(i, i), b_ldc, workl)
 !
 !              %---------------------------------------%
@@ -538,7 +538,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
                 b_m = to_blas_int(ir)
                 b_n = to_blas_int(nr)
                 b_incv = to_blas_int(1)
-                call dlarf('R', b_m, b_n, u, b_incv,&
+                call dlarf('R', b_m, b_n, u, b_incv, &
                            tau, h(1, i), b_ldc, workl)
 !
 !              %-----------------------------------------------------%
@@ -550,7 +550,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
                 b_m = to_blas_int(kplusp)
                 b_n = to_blas_int(nr)
                 b_incv = to_blas_int(1)
-                call dlarf('R', b_m, b_n, u, b_incv,&
+                call dlarf('R', b_m, b_n, u, b_incv, &
                            tau, q(1, i), b_ldc, workl)
 !
 !              %----------------------------%
@@ -636,10 +636,10 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
         b_n = to_blas_int(kplusp)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, one, v,&
-                   b_lda, q(1, kev+1), b_incx, zero, workd(n+1),&
+        call dgemv('N', b_m, b_n, one, v, &
+                   b_lda, q(1, kev+1), b_incx, zero, workd(n+1), &
                    b_incy)
-    endif
+    end if
 !
 !     %----------------------------------------------------------%
 !     | COMPUTE COLUMN 1 TO KEV OF (V*Q) IN BACKWARD ORDER       |
@@ -652,8 +652,8 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
         b_n = to_blas_int(kplusp-i+1)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, one, v,&
-                   b_lda, q(1, kev-i+1), b_incx, zero, workd,&
+        call dgemv('N', b_m, b_n, one, v, &
+                   b_lda, q(1, kev-i+1), b_incx, zero, workd, &
                    b_incy)
         b_n = to_blas_int(n)
         b_incx = to_blas_int(1)
@@ -669,7 +669,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
     b_lda = to_blas_int(ldv)
     b_m = to_blas_int(n)
     b_n = to_blas_int(kev)
-    call dlacpy('A', b_m, b_n, v(1, kplusp-kev+1), b_lda,&
+    call dlacpy('A', b_m, b_n, v(1, kplusp-kev+1), b_lda, &
                 v, b_ldb)
 !
 !     %--------------------------------------------------------------%
@@ -698,7 +698,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
         b_n = to_blas_int(n)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, h(kev+1, kev), v(1, kev+1), b_incx, resid,&
+        call daxpy(b_n, h(kev+1, kev), v(1, kev+1), b_incx, resid, &
                    b_incy)
     end if
 !
@@ -707,7 +707,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
         call dvout(logfil, 1, h(kev+1, kev), ndigit, '_NAPPS: BETAK = E_(KEV+1)T*H*E_(KEV)')
         call ivout(logfil, 1, [kev], ndigit, '_NAPPS: ORDER OF THE FINAL HESSENBERG MATRIX ')
         if (msglvl .gt. 2) then
-            call dmout(logfil, kev, kev, h, ldh,&
+            call dmout(logfil, kev, kev, h, ldh, &
                        ndigit, '_NAPPS: UPDATED HESSENBERG MATRIX H FOR NEXT ITERATION')
         end if
     end if

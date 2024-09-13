@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim,&
-                  typmod, imate, compor, carcri, instam,&
-                  instap, neps, epsm, deps, nsig,&
-                  sigm, nvi, vim, option, angmas,&
+subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
+                  typmod, imate, compor, carcri, instam, &
+                  instap, neps, epsm, deps, nsig, &
+                  sigm, nvi, vim, option, angmas, &
                   sigp, vip, dsidep, codret)
 !
     use Behaviour_type
@@ -159,12 +159,12 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim,&
     call mgis_get_number_of_props(extern_addr, nprops)
     ASSERT(nprops <= npropmax)
 !
-    call mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg,&
+    call mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
                                 ksp, imate, props, nprops)
 !
 ! - Prepare strains
 !
-    call mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps,&
+    call mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
                              stran, dstran)
 !
 ! - Number of internal state variables
@@ -230,20 +230,20 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim,&
     call mgis_set_gradients(extern_addr, s0, stran, ndim)
     call mgis_set_thermodynamic_forces(extern_addr, s0, sigp_loc, ndim)
     call mgis_set_internal_state_variables(extern_addr, s0, vi_loc, nstatv)
-    call mgis_set_external_state_variables(extern_addr, s0, BEHinteg%exte%predef,&
+    call mgis_set_external_state_variables(extern_addr, s0, BEHinteg%exte%predef, &
                                            BEHinteg%exte%nb_pred)
 !
     call mgis_set_material_properties(extern_addr, s1, props, nprops)
     call mgis_set_gradients(extern_addr, s1, stran+dstran, ndim)
-    call mgis_set_external_state_variables(extern_addr, s1,&
-                                           BEHinteg%exte%predef+BEHinteg%exte%dpred,&
+    call mgis_set_external_state_variables(extern_addr, s1, &
+                                           BEHinteg%exte%predef+BEHinteg%exte%dpred, &
                                            BEHinteg%exte%nb_pred)
 !
 ! call mgis_debug(extern_addr, "Before integration:")
 !
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:9)&
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:9) &
         .eq. 'RIGI_MECA') then
-        call mgis_integrate(extern_addr, sigp_loc, vi_loc, ddsdde, dtime,&
+        call mgis_integrate(extern_addr, sigp_loc, vi_loc, ddsdde, dtime, &
                             pnewdt, retcode)
         ASSERT(nstatv .le. nvi)
     end if

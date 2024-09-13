@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltclm(nb, n, p, front, adper,&
+subroutine mltclm(nb, n, p, front, adper, &
                   t1, ad, eps, ier, c)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -46,7 +46,7 @@ subroutine mltclm(nb, n, p, front, adper,&
         k = nb*(kb-1)+1
         adk = adper(k)
 !     BLOC DIAGONAL
-        call mltcld(nb, front(adk), adper, t1, ad,&
+        call mltcld(nb, front(adk), adper, t1, ad, &
                     eps, ier)
         if (ier .gt. 0) goto 999
 !
@@ -66,8 +66,8 @@ subroutine mltclm(nb, n, p, front, adper,&
             b_n = to_blas_int(i-1)
             b_incx = to_blas_int(incx)
             b_incy = to_blas_int(incy)
-            call zgemv(tra, b_m, b_n, alpha, front(ia),&
-                       b_lda, t1, b_incx, beta, front(ind),&
+            call zgemv(tra, b_m, b_n, alpha, front(ia), &
+                       b_lda, t1, b_incx, beta, front(ind), &
                        b_incy)
             adki = adper(k+i-1)
             do j = 1, ll
@@ -80,8 +80,8 @@ subroutine mltclm(nb, n, p, front, adper,&
         ll = n-decal
         m = p-decal
         ind = adper(k+nb)
-        call mltclj(nb, n, ll, m, k,&
-                    decal, front, front(ind), adper, t1,&
+        call mltclj(nb, n, ll, m, k, &
+                    decal, front, front(ind), adper, t1, &
                     c)
     end do
 !     COLONNES RESTANTES
@@ -92,7 +92,7 @@ subroutine mltclm(nb, n, p, front, adper,&
         k = nb*npb+1
         adk = adper(k)
 !     BLOC DIAGONAL
-        call mltcld(restp, front(adk), adper, t1, ad,&
+        call mltcld(restp, front(adk), adper, t1, ad, &
                     eps, ier)
         if (ier .gt. 0) goto 999
 !
@@ -112,8 +112,8 @@ subroutine mltclm(nb, n, p, front, adper,&
             b_n = to_blas_int(i-1)
             b_incx = to_blas_int(incx)
             b_incy = to_blas_int(incy)
-            call zgemv(tra, b_m, b_n, alpha, front(ia),&
-                       b_lda, t1, b_incx, beta, front(ind),&
+            call zgemv(tra, b_m, b_n, alpha, front(ia), &
+                       b_lda, t1, b_incx, beta, front(ind), &
                        b_incy)
             adki = adper(k+i-1)
             do j = 1, ll

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1,&
+subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1, &
                   tau2)
 !
     use NonLin_Datastructure_type
@@ -106,12 +106,12 @@ subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1,&
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, extau2, tau2fr, b_incx, tau1fr,&
+        call daxpy(b_n, extau2, tau2fr, b_incx, tau1fr, &
                    b_incy)
         call normev(tau1fr, norme)
         if (norme .le. r8prem()) then
             call cfnomm(mesh, ds_contact%sdcont_defi, 'MAIL', elem_mast_indx, elem_mast_name)
-            call utmess('F', 'CONTACT3_18', sk=elem_mast_name, si=i_zone, nr=3,&
+            call utmess('F', 'CONTACT3_18', sk=elem_mast_name, si=i_zone, nr=3, &
                         valr=vdirex)
         end if
 ! ----- ON CALCULE TAU2FR PAR PROD. VECT.

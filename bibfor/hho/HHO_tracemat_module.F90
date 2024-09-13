@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoTraceMatScal(hhoCell, min_order_cell, max_order_cell, hhoFace, min_order_face,&
+    subroutine hhoTraceMatScal(hhoCell, min_order_cell, max_order_cell, hhoFace, min_order_face, &
                                max_order_face, traceMat)
 !
         implicit none
@@ -98,10 +98,10 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), min_order_cell,&
+            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), min_order_cell, &
                                      max_order_cell, BSCellEval)
 ! --------- Eval face basis function at the quadrature point
-            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), min_order_face,&
+            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), min_order_face, &
                                      max_order_face, BSFaceEval)
 ! --------  Eval traceMat
             b_lda = to_blas_int(MSIZE_FACE_SCAL)
@@ -109,7 +109,7 @@ contains
             b_n = to_blas_int(colsMat)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dger(b_m, b_n, hhoQuad%weights(ipg), BSFaceEval, b_incx,&
+            call dger(b_m, b_n, hhoQuad%weights(ipg), BSFaceEval, b_incx, &
                       BSCellEval, b_incy, traceMat, b_lda)
         end do
 !

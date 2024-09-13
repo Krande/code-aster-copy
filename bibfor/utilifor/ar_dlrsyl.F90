@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
-                     a, lda, b, ldb, c,&
+subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
+                     a, lda, b, ldb, c, &
                      ldc, scale, info)
 !
 !     SUBROUTINE LAPACK RESOLVANT L'EQUATION DE SYLVESTER.
@@ -177,7 +177,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
     info = 0
     if (.not. notrna .and. .not. lsame(trana, 'T') .and. .not. lsame(trana, 'C')) then
         info = -1
-        else if (.not. notrnb .and. .not. lsame(tranb, 'T') .and. .not. &
+    else if (.not. notrnb .and. .not. lsame(tranb, 'T') .and. .not. &
              lsame(tranb, 'C')) then
         info = -2
     else if (isgn .ne. 1 .and. isgn .ne. -1) then
@@ -213,9 +213,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
     b_lda = to_blas_int(lda)
     b_m = to_blas_int(m)
     b_n = to_blas_int(m)
-    smin = max(&
-           smlnum, eps*dlange('M', b_m, b_n, a, b_lda, dum),&
-           eps*dlange('M', b_mbis, b_nbis, b, b_ldabis, dum)&
+    smin = max( &
+           smlnum, eps*dlange('M', b_m, b_n, a, b_lda, dum), &
+           eps*dlange('M', b_mbis, b_nbis, b, b_ldabis, dum) &
            )
 !
     scale = one
@@ -334,9 +334,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k2, 1), b_incx, b(1, l1), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                   a(k1, k1), lda, one, one, vec,&
-                                   2, -sgn*b(l1, l1), zero, x, 2,&
+                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
+                                   a(k1, k1), lda, one, one, vec, &
+                                   2, -sgn*b(l1, l1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -373,9 +373,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l2), b_incy)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                   b(l1, l1), ldb, one, one, vec,&
-                                   2, -sgn*a(k1, k1), zero, x, 2,&
+                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
+                                   b(l1, l1), ldb, one, one, vec, &
+                                   2, -sgn*a(k1, k1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -432,9 +432,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k2, 1), b_incx, b(1, l2), b_incy)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.false._1, .false._1, isgn, 2, 2,&
-                                   a(k1, k1), lda, b(l1, l1), ldb, vec,&
-                                   2, scaloc, x, 2, xnorm,&
+                    call ar_dlasy2(.false._1, .false._1, isgn, 2, 2, &
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
+                                   2, scaloc, x, 2, xnorm, &
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -452,10 +452,10 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     c(k2, l2) = x(2, 2)
                 end if
 !
- 50             continue
+50              continue
             end do
 !
- 60         continue
+60          continue
         end do
 !
     else if (.not. notrna .and. notrnb) then
@@ -571,9 +571,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k2, 1), b_incx, b(1, l1), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                   a(k1, k1), lda, one, one, vec,&
-                                   2, -sgn*b(l1, l1), zero, x, 2,&
+                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
+                                   a(k1, k1), lda, one, one, vec, &
+                                   2, -sgn*b(l1, l1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -610,9 +610,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k1, 1), b_incx, b(1, l2), b_incy)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                   b(l1, l1), ldb, one, one, vec,&
-                                   2, -sgn*a(k1, k1), zero, x, 2,&
+                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
+                                   b(l1, l1), ldb, one, one, vec, &
+                                   2, -sgn*a(k1, k1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -669,9 +669,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k2, 1), b_incx, b(1, l2), b_incy)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.true._1, .false._1, isgn, 2, 2,&
-                                   a(k1, k1), lda, b(l1, l1), ldb, vec,&
-                                   2, scaloc, x, 2, xnorm,&
+                    call ar_dlasy2(.true._1, .false._1, isgn, 2, 2, &
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
+                                   2, scaloc, x, 2, xnorm, &
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -807,9 +807,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k2, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                   a(k1, k1), lda, one, one, vec,&
-                                   2, -sgn*b(l1, l1), zero, x, 2,&
+                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
+                                   a(k1, k1), lda, one, one, vec, &
+                                   2, -sgn*b(l1, l1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -846,9 +846,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l2, min(l2+1, n)), b_incy)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                   b(l1, l1), ldb, one, one, vec,&
-                                   2, -sgn*a(k1, k1), zero, x, 2,&
+                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
+                                   b(l1, l1), ldb, one, one, vec, &
+                                   2, -sgn*a(k1, k1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -905,9 +905,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k2, min(l2+1, n)), b_incx, b(l2, min(l2+1, n)), b_incy)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.true._1, .true._1, isgn, 2, 2,&
-                                   a(k1, k1), lda, b(l1, l1), ldb, vec,&
-                                   2, scaloc, x, 2, xnorm,&
+                    call ar_dlasy2(.true._1, .true._1, isgn, 2, 2, &
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
+                                   2, scaloc, x, 2, xnorm, &
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -1043,9 +1043,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k2, min(l2+1, n)), b_incx, b(l1, min(l2+1, n)), b_incy)
                     vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                   a(k1, k1), lda, one, one, vec,&
-                                   2, -sgn*b(l1, l1), zero, x, 2,&
+                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
+                                   a(k1, k1), lda, one, one, vec, &
+                                   2, -sgn*b(l1, l1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -1082,9 +1082,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k1, min(l2+1, n)), b_incx, b(l2, min(l2+1, n)), b_incy)
                     vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                   b(l1, l1), ldb, one, one, vec,&
-                                   2, -sgn*a(k1, k1), zero, x, 2,&
+                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
+                                   b(l1, l1), ldb, one, one, vec, &
+                                   2, -sgn*a(k1, k1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
@@ -1141,9 +1141,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(b_n, c(k2, min(l2+1, n)), b_incx, b(l2, min(l2+1, n)), b_incy)
                     vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.false._1, .true._1, isgn, 2, 2,&
-                                   a(k1, k1), lda, b(l1, l1), ldb, vec,&
-                                   2, scaloc, x, 2, xnorm,&
+                    call ar_dlasy2(.false._1, .true._1, isgn, 2, 2, &
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
+                                   2, scaloc, x, 2, xnorm, &
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !

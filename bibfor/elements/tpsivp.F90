@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,8 @@ subroutine tpsivp(p, sigmav)
     b_lda = to_blas_int(ld)
     b_m = to_blas_int(ld)
     b_n = to_blas_int(ld)
-    call dsymm('L', 'L', b_m, b_n, alpha,&
-               sigma, b_lda, p, b_ldb, beta,&
+    call dsymm('L', 'L', b_m, b_n, alpha, &
+               sigma, b_lda, p, b_ldb, beta, &
                temp, b_ldc)
 ! sigma <- P^T*temp
     b_ldc = to_blas_int(3)
@@ -71,8 +71,8 @@ subroutine tpsivp(p, sigmav)
     b_m = to_blas_int(3)
     b_n = to_blas_int(3)
     b_k = to_blas_int(3)
-    call dgemm('T', 'N', b_m, b_n, b_k,&
-               alpha, p, b_lda, temp, b_ldb,&
+    call dgemm('T', 'N', b_m, b_n, b_k, &
+               alpha, p, b_lda, temp, b_ldb, &
                beta, sigma(1, 1), b_ldc)
 ! On re-compacte le tenseur
 !xx

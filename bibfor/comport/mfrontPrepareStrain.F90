@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps,&
+subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
                                stran, dstran)
 !
     implicit none

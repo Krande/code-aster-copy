@@ -149,7 +149,8 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, &
                 cface(nface, 5) = noeud(5)
                 cface(nface, 6) = noeud(8)
             end if
-        else if ((lst(2).eq.0.d0.or.lst(3).gt.0.d0) .or. (lst(3).eq.0.d0.or.lst(1).gt.0.d0)) then
+        else if ((lst(2) .eq. 0.d0 .or. lst(3) .gt. 0.d0) &
+                 .or. (lst(3) .eq. 0.d0 .or. lst(1) .gt. 0.d0)) then
             cface(nface, 1) = noeud(1)
             cface(nface, 2) = noeud(2)
             cface(nface, 3) = noeud(3)

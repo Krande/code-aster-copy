@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calsvd(nm, m, n, a, w,&
+subroutine calsvd(nm, m, n, a, w, &
                   matu, u, matv, v, ierr)
     implicit none
 !
@@ -142,8 +142,8 @@ subroutine calsvd(nm, m, n, a, w,&
             b_m = to_blas_int(m)
             b_n = to_blas_int(n)
             b_lwork = to_blas_int(lwork)
-            call dgesvd(code, code, b_m, b_n, a,&
-                        b_lda, w, u, b_ldu, vt,&
+            call dgesvd(code, code, b_m, b_n, a, &
+                        b_lda, w, u, b_ldu, vt, &
                         b_ldvt, work, b_lwork, ierr1)
         else
             b_ldvt = to_blas_int(ldvt)
@@ -152,8 +152,8 @@ subroutine calsvd(nm, m, n, a, w,&
             b_m = to_blas_int(m)
             b_n = to_blas_int(n)
             b_lwork = to_blas_int(lwork)
-            call dgesdd(code, b_m, b_n, a, b_lda,&
-                        w, u, b_ldu, vt, b_ldvt,&
+            call dgesdd(code, b_m, b_n, a, b_lda, &
+                        w, u, b_ldu, vt, b_ldvt, &
                         work, b_lwork, iwork, ierr1)
         end if
         if (matv) then
@@ -172,8 +172,8 @@ subroutine calsvd(nm, m, n, a, w,&
             b_m = to_blas_int(m)
             b_n = to_blas_int(n)
             b_lwork = to_blas_int(lwork)
-            call dgesvd(code, code, b_m, b_n, a,&
-                        b_lda, w, u, b_ldu, vvt,&
+            call dgesvd(code, code, b_m, b_n, a, &
+                        b_lda, w, u, b_ldu, vvt, &
                         b_ldvt, vwork, b_lwork, ierr1)
         else
             b_ldvt = to_blas_int(ldvt)
@@ -182,8 +182,8 @@ subroutine calsvd(nm, m, n, a, w,&
             b_m = to_blas_int(m)
             b_n = to_blas_int(n)
             b_lwork = to_blas_int(lwork)
-            call dgesdd(code, b_m, b_n, a, b_lda,&
-                        w, u, b_ldu, vvt, b_ldvt,&
+            call dgesdd(code, b_m, b_n, a, b_lda, &
+                        w, u, b_ldu, vvt, b_ldvt, &
                         vwork, b_lwork, viwork, ierr1)
         end if
         if (matv) then

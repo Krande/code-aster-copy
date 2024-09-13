@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,10 +59,10 @@ subroutine zgauss(v_matr, v_2mbr, dim, nb, v_solu)
     b_ldaf = to_blas_int(dim)
     b_ldb = to_blas_int(dim)
     b_ldx = to_blas_int(dim)
-    call zgesvx('N', 'T', b_n, b_nrhs, v_matr,&
-                b_lda, af, b_ldaf, ipiv, equed,&
-                r, c, v_2mbr, b_ldb, v_solu,&
-                b_ldx, rcond, ferr, berr, work,&
+    call zgesvx('N', 'T', b_n, b_nrhs, v_matr, &
+                b_lda, af, b_ldaf, ipiv, equed, &
+                r, c, v_2mbr, b_ldb, v_solu, &
+                b_ldx, rcond, ferr, berr, work, &
                 rwork, info)
 !
     call matfpe(1)

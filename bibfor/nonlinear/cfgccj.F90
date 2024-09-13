@@ -112,7 +112,7 @@ subroutine cfgccj(resoco, nbliai, conjug)
     b_n = to_blas_int(nbliai)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, zr(jsgprp), b_incx, zr(jdirec),&
+    call daxpy(b_n, 1.d0, zr(jsgprp), b_incx, zr(jdirec), &
                b_incy)
 !
 ! --- AFFICHAGE

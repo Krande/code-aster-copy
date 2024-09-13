@@ -74,7 +74,7 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
 !
 ! - Get quadrature (slave side)
 !
-    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code,&
+    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
                      geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp)
 !
 ! - Diameter of slave side
@@ -102,9 +102,9 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
 !
 ! ----- Compute contact quantities
 !
-        call niElemCont(parameters, geom, nits, coor_qp_sl, hF,&
-                        stress_nn, gap, gamma_c, projRmVal, l_cont_qp,&
-                        stress_t, vT, gamma_f, projBsVal, l_fric_qp,&
+        call niElemCont(parameters, geom, nits, coor_qp_sl, hF, &
+                        stress_nn, gap, gamma_c, projRmVal, l_cont_qp, &
+                        stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
                         dGap=dGap, jump_t=jump_t, dStress_nn=dStress_nn)
 !
 ! ------ CONTACT PART (always computed)
@@ -127,7 +127,7 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
             b_n = to_blas_int(slav_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, coeff, dStress_nn, b_incx, vect_cont,&
+            call daxpy(b_n, coeff, dStress_nn, b_incx, vect_cont, &
                        b_incy)
         end if
 !
@@ -145,8 +145,8 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
                 b_n = to_blas_int(geom%elem_dime-1)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call dgemv('N', b_m, b_n, coeff, jump_t,&
-                           b_lda, projBsVal, b_incx, 1.d0, vect_fric,&
+                call dgemv('N', b_m, b_n, coeff, jump_t, &
+                           b_lda, projBsVal, b_incx, 1.d0, vect_fric, &
                            b_incy)
             end if
         end if

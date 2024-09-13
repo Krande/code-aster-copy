@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -198,8 +198,8 @@
 !     4) COMPUTE THE J-TH STEP RESIDUAL VECTOR.
 !        W_{J} =  V_{J}^T * B * OP * V_{J}
 !        R_{J} =  OP*V_{J} - V_{J} * W_{J}
-subroutine znaitr(ido, bmat, n, k, np,&
-                  resid, rnorm, v, ldv, h,&
+subroutine znaitr(ido, bmat, n, k, np, &
+                  resid, rnorm, v, ldv, h, &
                   ldh, ipntr, workd, info, alpha)
 !        H(:,J) = W_{J};
 !        H(J,J-1) = RNORM
@@ -433,18 +433,18 @@ subroutine znaitr(ido, bmat, n, k, np,&
     betaj = rzero
     nrstrt = nrstrt+1
     itry = 1
- 20 continue
+20  continue
     rstart = .true.
     ido = 0
- 30 continue
+30  continue
 !
 !           %--------------------------------------%
 !           | IF IN REVERSE COMMUNICATION MODE AND |
 !           | RSTART = .TRUE. FLOW RETURNS HERE.   |
 !           %--------------------------------------%
 !
-    call zgetv0(ido, bmat, .false._1, n, j,&
-                v, ldv, resid, rnorm, ipntr,&
+    call zgetv0(ido, bmat, .false._1, n, j, &
+                v, ldv, resid, rnorm, ipntr, &
                 workd, ierr, alpha)
     if (ido .ne. 99) goto 9000
     if (ierr .lt. 0) then
@@ -462,7 +462,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
         goto 9000
     end if
 !
- 40 continue
+40  continue
 !
 !        %---------------------------------------------------------%
 !        | STEP 2:  V_{J} = R_{J-1}/RNORM AND P_{J} = P_{J}/RNORM  |
@@ -491,18 +491,18 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !            %-----------------------------------------%
 !
         b_lda = to_blas_int(n)
-        b_kl = to_blas_int(i)
-        b_ku = to_blas_int(i)
+        b_kl = to_blas_int(1)
+        b_ku = to_blas_int(1)
         b_m = to_blas_int(n)
         b_n = to_blas_int(1)
-        call zlascl('G', b_kl, b_ku, rnorm, rone,&
+        call zlascl('G', b_kl, b_ku, rnorm, rone, &
                     b_m, b_n, v(1, j), b_lda, infol4)
         b_lda = to_blas_int(n)
-        b_kl = to_blas_int(i)
-        b_ku = to_blas_int(i)
+        b_kl = to_blas_int(1)
+        b_ku = to_blas_int(1)
         b_m = to_blas_int(n)
         b_n = to_blas_int(1)
-        call zlascl('G', b_kl, b_ku, rnorm, rone,&
+        call zlascl('G', b_kl, b_ku, rnorm, rone, &
                     b_m, b_n, workd(ipj), b_lda, infol4)
     end if
 !
@@ -527,7 +527,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        %-----------------------------------%
 !
     goto 9000
- 50 continue
+50  continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION; |
@@ -569,7 +569,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
         b_incy = to_blas_int(1)
         call zcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
- 60 continue
+60  continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION; |
@@ -615,8 +615,8 @@ subroutine znaitr(ido, bmat, n, k, np,&
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call zgemv('C', b_m, b_n, one, v,&
-               b_lda, workd(ipj), b_incx, zero, h(1, j),&
+    call zgemv('C', b_m, b_n, one, v, &
+               b_lda, workd(ipj), b_incx, zero, h(1, j), &
                b_incy)
 !
 !        %--------------------------------------%
@@ -629,8 +629,8 @@ subroutine znaitr(ido, bmat, n, k, np,&
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call zgemv('N', b_m, b_n, -one, v,&
-               b_lda, h(1, j), b_incx, one, resid,&
+    call zgemv('N', b_m, b_n, -one, v, &
+               b_lda, h(1, j), b_incx, one, resid, &
                b_incy)
 !
     if (j .gt. 1) h(j, j-1) = dcmplx(betaj, rzero)
@@ -659,7 +659,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
         b_incy = to_blas_int(1)
         call zcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
- 70 continue
+70  continue
 !
 !        %---------------------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION IF ORTH1 = .TRUE. |
@@ -714,7 +714,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        | GRAM-SCHMIDT USING ALL THE ARNOLDI VECTORS V_{J}  |
 !        %---------------------------------------------------%
 !
- 80 continue
+80  continue
 !
     if (msglvl .gt. 2) then
         rtemp(1) = wnorm
@@ -733,8 +733,8 @@ subroutine znaitr(ido, bmat, n, k, np,&
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call zgemv('C', b_m, b_n, one, v,&
-               b_lda, workd(ipj), b_incx, zero, workd(irj),&
+    call zgemv('C', b_m, b_n, one, v, &
+               b_lda, workd(ipj), b_incx, zero, workd(irj), &
                b_incy)
 !
 !        %---------------------------------------------%
@@ -749,13 +749,13 @@ subroutine znaitr(ido, bmat, n, k, np,&
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call zgemv('N', b_m, b_n, -one, v,&
-               b_lda, workd(irj), b_incx, one, resid,&
+    call zgemv('N', b_m, b_n, -one, v, &
+               b_lda, workd(irj), b_incx, one, resid, &
                b_incy)
     b_n = to_blas_int(j)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call zaxpy(b_n, one, workd(irj), b_incx, h(1, j),&
+    call zaxpy(b_n, one, workd(irj), b_incx, h(1, j), &
                b_incy)
 !
     orth2 = .true.
@@ -781,7 +781,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
         b_incy = to_blas_int(1)
         call zcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
- 90 continue
+90  continue
 !
 !        %---------------------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION IF ORTH2 = .TRUE. |
@@ -808,7 +808,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
         if (msglvl .gt. 2) then
             rtemp(1) = rnorm
             rtemp(2) = rnorm1
-            call dvout(logfil, 2, rtemp, ndigit,&
+            call dvout(logfil, 2, rtemp, ndigit, &
                        '_NAITR: ITERATIVE REFINEMENT ; RNORM AND RNORM1 ARE')
         end if
     end if
@@ -880,17 +880,18 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !              | REFERENCE: LAPACK SUBROUTINE ZLAHQR        |
 !              %--------------------------------------------%
 !
-            tst1 = dlapy2(&
-                   dble(h(i, i)), dimag(h(i, i)))+dlapy2(dble(h(i+1, i+1)), dimag(h(i+1, i+1)))
+            tst1 = dlapy2(dble(h(i, i)), dimag(h(i, i)))+ &
+                   dlapy2(dble(h(i+1, i+1)), dimag(h(i+1, i+1)))
             b_lda = to_blas_int(ldh)
             b_n = to_blas_int(k+np)
             if (tst1 .eq. dble(zero)) tst1 = zlanhs('1', b_n, h, b_lda, rbid)
-            if (dlapy2(dble(h(i+1, i)), dimag(h(i+1, i))) .le. max(ulp*tst1, smlnum)) h(i+1, i) = &
-                                                                                      zero
+            if (dlapy2(dble(h(i+1, i)), dimag(h(i+1, i))) .le. max(ulp*tst1, smlnum)) then
+                h(i+1, i) = zero
+            end if
         end do
 !
         if (msglvl .gt. 2) then
-            call zmout(logfil, k+np, k+np, h, ldh,&
+            call zmout(logfil, k+np, k+np, h, ldh, &
                        ndigit, '_NAITR: FINAL UPPER HESSENBERG MATRIX H OF ORDER K+NP')
         end if
 !

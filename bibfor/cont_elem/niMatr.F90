@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !
 ! - Get quadrature (slave side)
 !
-    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code,&
+    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
                      geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp)
 !
 ! - Diameter of slave side
@@ -102,9 +102,9 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !
 ! ----- Compute contact quantities
 !
-        call niElemCont(parameters, geom, nits, coor_qp_sl, hF,&
-                        stress_nn, gap, gamma_c, projRmVal, l_cont_qp,&
-                        stress_t, vT, gamma_f, projBsVal, l_fric_qp,&
+        call niElemCont(parameters, geom, nits, coor_qp_sl, hF, &
+                        stress_nn, gap, gamma_c, projRmVal, l_cont_qp, &
+                        stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
                         dGap=dGap, d2Gap=d2Gap, dStress_nn=dStress_nn)
 !
 ! ------ CONTACT PART (always computed)
@@ -121,7 +121,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
             b_n = to_blas_int(face_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dger(b_m, b_n, coeff, dGap, b_incx,&
+            call dger(b_m, b_n, coeff, dGap, b_incx, &
                       dGap, b_incy, matr_tmp, b_lda)
 !
 ! ------ Compute displacement / displacement (slave and master side)
@@ -145,7 +145,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
             b_n = to_blas_int(slav_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dger(b_m, b_n, coeff, dGapRenum, b_incx,&
+            call dger(b_m, b_n, coeff, dGapRenum, b_incx, &
                       dStress_nn, b_incy, matr_cont, b_lda)
 !
             if (parameters%vari_cont .ne. CONT_VARI_RAPI) then
@@ -159,7 +159,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
                 b_n = to_blas_int(total_dofs)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call dger(b_m, b_n, coeff, dStress_nn, b_incx,&
+                call dger(b_m, b_n, coeff, dStress_nn, b_incx, &
                           dGapRenum, b_incy, matr_cont, b_lda)
             end if
 !
@@ -175,7 +175,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
                 b_n = to_blas_int(slav_dofs)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call dger(b_m, b_n, coeff, dStress_nn, b_incx,&
+                call dger(b_m, b_n, coeff, dStress_nn, b_incx, &
                           dStress_nn, b_incy, matr_cont, b_lda)
             end if
         end if

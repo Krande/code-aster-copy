@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
-                  adime, xvecu0, xtang, ninc, nd,&
-                  nchoc, h, hf, ordman, xups,&
+subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
+                  adime, xvecu0, xtang, ninc, nd, &
+                  nchoc, h, hf, ordman, xups, &
                   xfpnla, lbif, nextr, epsbif)
     implicit none
 !
@@ -125,8 +125,8 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 ! --- ON CALCUL LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
-    call mnldrv(.false._1, imat, numdrv, matdrv, xcdl,&
-                parcho, adime, xvecu0, zr(itang), ninc,&
+    call mnldrv(.false._1, imat, numdrv, matdrv, xcdl, &
+                parcho, adime, xvecu0, zr(itang), ninc, &
                 nd, nchoc, h, hf)
 ! ----------------------------------------------------------------------
 ! --- CALCUL DES ORDRES P=2,...,ORDMAN
@@ -156,20 +156,20 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
             b_incy = to_blas_int(1)
             call dcopy(b_n, zr(iups+(p-r)*ninc), b_incx, zr(ivecu2), b_incy)
 !         CALCULE DE Q(UPS(:,R),UPS(:,P-R))
-            call mnlqnl(imat, xcdl, parcho, adime, xvecu1,&
-                        xvecu2, ninc, nd, nchoc, h,&
+            call mnlqnl(imat, xcdl, parcho, adime, xvecu1, &
+                        xvecu2, ninc, nd, nchoc, h, &
                         hf, xqnl)
 !         CALCUL DE FPNL(1:NEQ)=FPNL(1:NEQ)-Q(SYS,UPS(:,R),UPS(:,P-R))
             b_n = to_blas_int(ninc-1)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -1.d0, zr(iqnl), b_incx, fpnl,&
+            call daxpy(b_n, -1.d0, zr(iqnl), b_incx, fpnl, &
                        b_incy)
         end do
         fpnl(ninc) = 0.d0
 ! ---   RESOLUTION DU SYSTEME LINEAIRE UPS(:,P) = K\FPNL
-        call resoud(matdrv, ' ', solveu, ' ', 1,&
-                    ' ', ' ', 'v', fpnl, [cbid],&
+        call resoud(matdrv, ' ', solveu, ' ', 1, &
+                    ' ', ' ', 'v', fpnl, [cbid], &
                     ' ', .false._1, 0, iret)
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
@@ -201,9 +201,9 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        alpha(k) = ddot(&
-                   b_n, zr(iups+(ordman-k+2-1)*ninc), b_incx, zr(iups+(ordman-k+1-1)*ninc),&
-                   b_incy&
+        alpha(k) = ddot( &
+                   b_n, zr(iups+(ordman-k+2-1)*ninc), b_incx, zr(iups+(ordman-k+1-1)*ninc), &
+                   b_incy &
                    )
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
@@ -217,7 +217,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), b_incx, zr(ivecu1),&
+        call daxpy(b_n, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), b_incx, zr(ivecu1), &
                    b_incy)
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
@@ -262,7 +262,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
             b_n = to_blas_int(ninc)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, -((1.d0/ac)**k), zr(ivecu1), b_incx, zr(iups+k*ninc),&
+            call daxpy(b_n, -((1.d0/ac)**k), zr(ivecu1), b_incx, zr(iups+k*ninc), &
                        b_incy)
         end do
     end if
@@ -300,14 +300,14 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         b_incy = to_blas_int(1)
         call dcopy(b_n, zr(iups+(ordman+1-r)*ninc), b_incx, zr(ivecu2), b_incy)
 ! ---   Q(VECU1,VECU2)
-        call mnlqnl(imat, xcdl, parcho, adime, xvecu1,&
-                    xvecu2, ninc, nd, nchoc, h,&
+        call mnlqnl(imat, xcdl, parcho, adime, xvecu1, &
+                    xvecu2, ninc, nd, nchoc, h, &
                     hf, xqnl)
 !       AJOUT DES DEUX VECTEURS DANS XFPNLA
         b_n = to_blas_int(ninc-1)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -1.d0, zr(iqnl), b_incx, zr(ifpnla),&
+        call daxpy(b_n, -1.d0, zr(iqnl), b_incx, zr(ifpnla), &
                    b_incy)
     end do
 ! ----------------------------------------------------------------------

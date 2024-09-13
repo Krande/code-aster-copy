@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
-                  lino1, lino2, indin1, indin2, ddlmas,&
+subroutine lipsrb(nomres, sst1, sst2, intf1, intf2, &
+                  lino1, lino2, indin1, indin2, ddlmas, &
                   ddlsla, nbmoma, imast, tramod)
     implicit none
 !    M. CORUS     DATE 04/02/10
@@ -140,10 +140,10 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
 !------------------------------------------------------------C
 !
 !-- INTERFACE AMONT DE LA SOUS-STRUCTURE 1
-    call mgutdm(nomres, sst1, ibid, 'NOM_LIST_INTERF', ibid,&
+    call mgutdm(nomres, sst1, ibid, 'NOM_LIST_INTERF', ibid, &
                 kbid)
 !-- NOEUDS DE LA SOUS STRUCTURE 1
-    call mgutdm(nomres, sst1, ibid, 'NOM_MAILLAGE', ibid,&
+    call mgutdm(nomres, sst1, ibid, 'NOM_MAILLAGE', ibid, &
                 mail1)
     call jeveuo(mail1//'.COORDO    .VALE', 'L', vr=nlnoma1)
 !-- NOMBRE DE NOEUDS DE L'INTERFACE 1
@@ -153,14 +153,14 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
     call jeveuo(lino1, 'L', lno1)
 !
 !-- INTERFACE AMONT DE LA SOUS-STRUCTURE 2
-    call mgutdm(nomres, sst2, ibid, 'NOM_LIST_INTERF', ibid,&
+    call mgutdm(nomres, sst2, ibid, 'NOM_LIST_INTERF', ibid, &
                 kbid)
 !-- NOMBRE DE NOEUDS DE L'INTERFACE 2
     int2 = kbid//'.IDC_LINO'
     call jenonu(jexnom(int2(1:13)//'NOMS', intf2), ibid)
     call jelira(jexnum(int2, ibid), 'LONMAX', nbno2)
 !-- NOEUDS DE LA SOUS STRUCTURE 2
-    call mgutdm(nomres, sst2, ibid, 'NOM_MAILLAGE', ibid,&
+    call mgutdm(nomres, sst2, ibid, 'NOM_MAILLAGE', ibid, &
                 mail2)
     call jeveuo(mail2//'.COORDO    .VALE', 'L', vr=nlnoma2)
     call jeveuo(lino2, 'L', lno2)
@@ -179,7 +179,7 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
     do i1 = 1, nbno1
         numno = zi(lno1+(i1-1))
         do j1 = 1, 3
-            zr(lcoor1+(i1-1)*3+j1-1) = tr1(j1)+rot1(j1, 1)*nlnoma1(1+( numno-1)*3)+rot1(j1, 2)*nl&
+            zr(lcoor1+(i1-1)*3+j1-1) = tr1(j1)+rot1(j1, 1)*nlnoma1(1+(numno-1)*3)+rot1(j1, 2)*nl&
                                        &noma1(1+(numno-1)*3+1)+rot1(j1, 3)*nlnoma1(1+(numno-1)*3+&
                                        &2)
         end do
@@ -188,7 +188,7 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
     do i1 = 1, nbno2
         numno = zi(lno2+(i1-1))
         do j1 = 1, 3
-            zr(lcoor2+(i1-1)*3+j1-1) = tr2(j1)+rot2(j1, 1)*nlnoma2(1+( numno-1)*3)+rot2(j1, 2)*nl&
+            zr(lcoor2+(i1-1)*3+j1-1) = tr2(j1)+rot2(j1, 1)*nlnoma2(1+(numno-1)*3)+rot2(j1, 2)*nl&
                                        &noma2(1+(numno-1)*3+1)+rot2(j1, 3)*nlnoma2(1+(numno-1)*3+&
                                        &2)
         end do
@@ -251,12 +251,12 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
         dismin = 1.d16
 !
         do j1 = 1, nbmast
-            dist_noeuds(j1) = (&
-                              zr(&
-                              lnosla+(i1-1)*3)-zr(lnomas+(j1-1)*3)) **2+(zr(lnosla+(i1-1)*3+1)-zr&
-                              &(lnomas+(j1-1)*3+1))**2+ (zr(lnosla+(i1-1)*3+2)-zr(lnomas+(j1-1)*3&
-                              &+2&
-                              )&
+            dist_noeuds(j1) = ( &
+                              zr( &
+                              lnosla+(i1-1)*3)-zr(lnomas+(j1-1)*3))**2+(zr(lnosla+(i1-1)*3+1)-zr&
+                              &(lnomas+(j1-1)*3+1))**2+(zr(lnosla+(i1-1)*3+2)-zr(lnomas+(j1-1)*3&
+                              &+2 &
+                              ) &
                               )**2
             if (dist_noeuds(j1) .gt. dismax) then
                 dismax = dist_noeuds(j1)
@@ -337,8 +337,8 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
     b_m = to_blas_int(6)
     b_n = to_blas_int(6*dima)
     b_lwork = to_blas_int(-1)
-    call dgesvd('A', 'A', b_m, b_n, mat_phir,&
-                b_lda, zr(lmats), mat_u, b_ldu, zr(lmatv),&
+    call dgesvd('A', 'A', b_m, b_n, mat_phir, &
+                b_lda, zr(lmats), mat_u, b_ldu, zr(lmatv), &
                 b_ldvt, swork, b_lwork, info)
     lwork = int(swork(1))
     AS_ALLOCATE(vr=mat_svd_work, size=lwork)
@@ -419,8 +419,8 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
         b_m = to_blas_int(6)
         b_n = to_blas_int(6*dima)
         b_lwork = to_blas_int(lwork)
-        call dgesvd('A', 'A', b_m, b_n, mat_phir,&
-                    b_lda, zr(lmats), mat_u, b_ldu, zr(lmatv),&
+        call dgesvd('A', 'A', b_m, b_n, mat_phir, &
+                    b_lda, zr(lmats), mat_u, b_ldu, zr(lmatv), &
                     b_ldvt, mat_svd_work, b_lwork, info)
 !
 !-- VOIR A RAJOUTER UN TEST EN FONCTION DE LA DIMENSION DU MAILLAGE,
@@ -430,7 +430,7 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
 !-- TEST SUR LA VALEUR SINGULIERE, POUR LIMITER LES PB DE
 !-- CONDITIONNEMENT
                 if (abs(zr(lmats+j1-1)) .gt. 1.d-10) then
-                    zr(lmsm1u+(k1-1)*6+j1-1) = (1/zr(lmats+j1-1))* mat_u(1+(j1-1)*6+k1-1)
+                    zr(lmsm1u+(k1-1)*6+j1-1) = (1/zr(lmats+j1-1))*mat_u(1+(j1-1)*6+k1-1)
                 end if
             end do
         end do
@@ -439,10 +439,10 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
             do j1 = 1, 6*dima
                 mat_vxsm1xut(1+(k1-1)*6*dima+j1-1) = 0.d0
                 do l1 = 1, 6
-                    mat_vxsm1xut(1+(k1-1)*6*dima+j1-1) = mat_vxsm1xut(&
-                                                         1+(k1-1)*6* dima+j1-1)+zr(lmatv+(j1-1)*6&
-                                                         &*dima+l1-1)*zr( lmsm1u+(k1-1)*6+l1-1&
-                                                         )
+                    mat_vxsm1xut(1+(k1-1)*6*dima+j1-1) = &
+                        mat_vxsm1xut(1+(k1-1)*6*dima+j1-1)+ &
+                        zr(lmatv+(j1-1)*6*dima+l1-1) &
+                        *zr(lmsm1u+(k1-1)*6+l1-1)
                 end do
             end do
         end do
@@ -460,12 +460,10 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2,&
                         numno = depend_noeuds(1+(i1-1)*dima+int((k1-1)/6))
                         indmas = ind_int_mast(1+(numno-1)*6+mod(k1-1, 6))
                         if (indmas .gt. 0) then
-                            zr(lprojt+(l1-1)*ddlsla+indsla-1) = zr(&
-                                                                lprojt+(l1-1)*ddlsla+indsla-1)+ m&
-                                                                &at_vxsm1xut(1+(j1-1)*6*dima+k1-1&
-                                                                &)*zr(ltramo+( l1-1)*ddlmas+indma&
-                                                                &s-1&
-                                                                )
+                            zr(lprojt+(l1-1)*ddlsla+indsla-1) = &
+                                zr(lprojt+(l1-1)*ddlsla+indsla-1)+ &
+                                mat_vxsm1xut(1+(j1-1)*6*dima+k1-1) &
+                                *zr(ltramo+(l1-1)*ddlmas+indmas-1)
                         end if
                     end do
                 end do

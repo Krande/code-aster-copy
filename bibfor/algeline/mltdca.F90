@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq,&
-                  nbsn, nbnd, supnd, adress, global,&
-                  lgsn, factol, factou, sm, x,&
+subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq, &
+                  nbsn, nbnd, supnd, adress, global, &
+                  lgsn, factol, factou, sm, x, &
                   invp, perm, ad, trav, typsym)
 ! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION COMPLEXE DE MLTDRA
@@ -108,7 +108,7 @@ subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq,&
                 kk = l
                 lda = long
                 if (nn .lt. seuin .or. kk .lt. seuik) then
-                    call sspmvc(nn, kk, zc(ifac), ad, trav,&
+                    call sspmvc(nn, kk, zc(ifac), ad, trav, &
                                 trav(l+1))
                 else
                     b_lda = to_blas_int(lda)
@@ -116,8 +116,8 @@ subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq,&
                     b_n = to_blas_int(kk)
                     b_incx = to_blas_int(incx)
                     b_incy = to_blas_int(incy)
-                    call zgemv(tra, b_m, b_n, alpha, zc(ifac+ad(1)-1),&
-                               b_lda, trav, b_incx, beta, trav(l+1),&
+                    call zgemv(tra, b_m, b_n, alpha, zc(ifac+ad(1)-1), &
+                               b_lda, trav, b_incx, beta, trav(l+1), &
                                b_incy)
                 end if
             end if

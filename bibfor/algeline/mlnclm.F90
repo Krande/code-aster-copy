@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mlnclm(nb, n, p, frontl, frontu,&
-                  adper, tu, tl, ad, eps,&
+subroutine mlnclm(nb, n, p, frontl, frontu, &
+                  adper, tu, tl, ad, eps, &
                   ier, cl, cu)
 ! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION AVEC APPEL A DGEMV POUR LES PRODUITS MATRICE-VECTEUR
@@ -54,7 +54,7 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
         k = nb*(kb-1)+1
         adk = adper(k)
 !     BLOC DIAGONAL
-        call mlncld(nb, frontl(adk), frontu(adk), adper, tu,&
+        call mlncld(nb, frontl(adk), frontu(adk), adper, tu, &
                     tl, ad, eps, ier)
         if (ier .gt. 0) goto 999
 !
@@ -75,16 +75,16 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
             b_n = to_blas_int(i-1)
             b_incx = to_blas_int(incx)
             b_incy = to_blas_int(incy)
-            call zgemv(tra, b_m, b_n, alpha, frontl(ia),&
-                       b_lda, tu, b_incx, beta, frontl(ind),&
+            call zgemv(tra, b_m, b_n, alpha, frontl(ia), &
+                       b_lda, tu, b_incx, beta, frontl(ind), &
                        b_incy)
             b_lda = to_blas_int(n)
             b_m = to_blas_int(ll)
             b_n = to_blas_int(i-1)
             b_incx = to_blas_int(incx)
             b_incy = to_blas_int(incy)
-            call zgemv(tra, b_m, b_n, alpha, frontu(ia),&
-                       b_lda, tl, b_incx, beta, frontu(ind),&
+            call zgemv(tra, b_m, b_n, alpha, frontu(ia), &
+                       b_lda, tl, b_incx, beta, frontu(ind), &
                        b_incy)
             adki = adper(k+i-1)
 !        LA PARTIE INFERIEURE  SEULE EST DIVISEE PAR LE TERME DIAGONAL,
@@ -99,8 +99,8 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
         ll = n-decal
         m = p-decal
         ind = adper(k+nb)
-        call mlnclj(nb, n, ll, m, k,&
-                    decal, frontl, frontu, frontl(ind), frontu(ind),&
+        call mlnclj(nb, n, ll, m, k, &
+                    decal, frontl, frontu, frontl(ind), frontu(ind), &
                     adper, tu, tl, cl, cu)
     end do
 !     COLONNES RESTANTES
@@ -111,7 +111,7 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
         k = nb*npb+1
         adk = adper(k)
 !     BLOC DIAGONAL
-        call mlncld(restp, frontl(adk), frontu(adk), adper, tu,&
+        call mlncld(restp, frontl(adk), frontu(adk), adper, tu, &
                     tl, ad, eps, ier)
         if (ier .gt. 0) goto 999
 !
@@ -132,16 +132,16 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
             b_n = to_blas_int(i-1)
             b_incx = to_blas_int(incx)
             b_incy = to_blas_int(incy)
-            call zgemv(tra, b_m, b_n, alpha, frontl(ia),&
-                       b_lda, tu, b_incx, beta, frontl(ind),&
+            call zgemv(tra, b_m, b_n, alpha, frontl(ia), &
+                       b_lda, tu, b_incx, beta, frontl(ind), &
                        b_incy)
             b_lda = to_blas_int(n)
             b_m = to_blas_int(ll)
             b_n = to_blas_int(i-1)
             b_incx = to_blas_int(incx)
             b_incy = to_blas_int(incy)
-            call zgemv(tra, b_m, b_n, alpha, frontu(ia),&
-                       b_lda, tl, b_incx, beta, frontu(ind),&
+            call zgemv(tra, b_m, b_n, alpha, frontu(ia), &
+                       b_lda, tl, b_incx, beta, frontu(ind), &
                        b_incy)
             adki = adper(k+i-1)
 !              SEUL FRONTL EST DIVISE PAR LE TERME DIAGONAL

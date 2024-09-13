@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dgeqr2(m, n, a, lda, tau,&
+subroutine ar_dgeqr2(m, n, a, lda, tau, &
                      work, info)
 !
 !     SUBROUTINE LAPACK CALCULANT UNE FACTORISATION QR.
@@ -152,7 +152,7 @@ subroutine ar_dgeqr2(m, n, a, lda, tau,&
             b_m = to_blas_int(m-i+1)
             b_n = to_blas_int(n-i)
             b_incv = to_blas_int(1)
-            call dlarf('L', b_m, b_n, a(i, i), b_incv,&
+            call dlarf('L', b_m, b_n, a(i, i), b_incv, &
                        tau(i), a(i, i+1), b_ldc, work)
             a(i, i) = aii
         end if

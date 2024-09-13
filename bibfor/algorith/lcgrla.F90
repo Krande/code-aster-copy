@@ -36,7 +36,7 @@ subroutine lcgrla(f, eps)
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, -1.d0, id6, b_incx, eps,&
+    call daxpy(b_n, -1.d0, id6, b_incx, eps, &
                b_incy)
     b_n = to_blas_int(6)
     b_incx = to_blas_int(1)

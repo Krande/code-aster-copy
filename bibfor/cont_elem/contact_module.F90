@@ -69,7 +69,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine projQpSl2Ma(geom, coor_qp_sl, proj_tole, coor_qp_ma, gap,&
+    subroutine projQpSl2Ma(geom, coor_qp_sl, proj_tole, coor_qp_ma, gap, &
                            tau_slav, norm_slav, tau_mast, norm_mast)
 !
         implicit none
@@ -108,13 +108,13 @@ contains
 !
 ! ------ Compute outward slave normal (pairing configuration)
 !
-        call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_pair,&
+        call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_pair, &
                     coor_qp_sl(1), coor_qp_sl(2), norm_slav, tau_slav(1:3, 1), tau_slav(1:3, 2))
 !
 ! ----- Return in real slave space (pairing configuration)
 !
         coor_qp_sl_re = 0.d0
-        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_pair, coor_qp_sl,&
+        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_pair, coor_qp_sl, &
                     coor_qp_sl_re)
 ! ----- Projection of node on master cell (master parametric space)
 !
@@ -133,22 +133,22 @@ contains
 !
 !
 ! ----- Projection on master element
-        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, geom%coor_mast_pair,&
-                    coor_qp_sl_re, 100, proj_tole, norm_slav, ksi_line(1),&
+        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, geom%coor_mast_pair, &
+                    coor_qp_sl_re, 100, proj_tole, norm_slav, ksi_line(1), &
                     ksi_line(2), tau1_mast, tau2_mast, iret)
         if (iret == 1) then
 !
 ! ----- Try with linearization
 !
-            call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, geom%elem_dime,&
-                        geom%coor_mast_pair, coor_qp_sl_re, 75, proj_tole, norm_slav,&
+            call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, geom%elem_dime, &
+                        geom%coor_mast_pair, coor_qp_sl_re, 75, proj_tole, norm_slav, &
                         ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1)
 !
-            call reerel(elem_mast_line_code, elem_mast_line_nbnode, 3, geom%coor_mast_pair,&
+            call reerel(elem_mast_line_code, elem_mast_line_nbnode, 3, geom%coor_mast_pair, &
                         ksi_line, coor_qp_sl_re_aux)
 !
-            call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime,&
-                        geom%coor_mast_pair, coor_qp_sl_re_aux, 75, proj_tole, norm_slav,&
+            call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
+                        geom%coor_mast_pair, coor_qp_sl_re_aux, 75, proj_tole, norm_slav, &
                         ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1)
         end if
 !
@@ -178,7 +178,7 @@ contains
 !
 ! ------ Compute outward master normal (pairing configuration)
 !
-        call apnorm(geom%nb_node_mast, geom%elem_mast_code, geom%elem_dime, geom%coor_mast_pair,&
+        call apnorm(geom%nb_node_mast, geom%elem_mast_code, geom%elem_dime, geom%coor_mast_pair, &
                     coor_qp_ma(1), coor_qp_ma(2), norm_mast, tau_mast(1:3, 1), tau_mast(1:3, 2))
 !
 ! ------ Check
@@ -200,10 +200,10 @@ contains
 ! ----- Compute gap for raytracing gap = -(x^s - x^m).n^s (current configuration)
 !
         coor_qp_sl_re = 0.d0
-        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_curr, coor_qp_sl,&
+        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_curr, coor_qp_sl, &
                     coor_qp_sl_re)
         coor_qp_ma_re = 0.d0
-        call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%coor_mast_curr, coor_qp_ma,&
+        call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%coor_mast_curr, coor_qp_ma, &
                     coor_qp_ma_re)
         gap = gapEval(coor_qp_sl_re, coor_qp_ma_re, norm_slav)
 !print*, "COOR_SL: ", geom%coor_slav_curr(1,1:2)
@@ -244,12 +244,12 @@ contains
 ! ----- Return in real face slave space (current configuration)
 !
         coor_qp_sl_re = 0.d0
-        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_curr, coor_qp_sl,&
+        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_curr, coor_qp_sl, &
                     coor_qp_sl_re)
 !
 ! ----- Projection of node on volumic slave cell (volumic parametric space)
 !
-        call reereg('S', geom%elem_volu_code, geom%nb_node_volu, geom%coor_volu_curr,&
+        call reereg('S', geom%elem_volu_code, geom%nb_node_volu, geom%coor_volu_curr, &
                     coor_qp_sl_re, geom%elem_dime, coor_qp_vo, iret, ndim_coor_=3)
 !
     end subroutine
@@ -258,7 +258,7 @@ contains
 !
 !===================================================================================================
 !
-    real(kind=8)function gapEval(slav_pt, mast_pt, norm_slav)
+    real(kind=8) function gapEval(slav_pt, mast_pt, norm_slav)
 !
         implicit none
 !
@@ -345,21 +345,21 @@ contains
 ! ----- Return in real slave space
 !
         coor_qp_sl_prev = 0.d0
-        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_prev, coor_qp_slav,&
+        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_prev, coor_qp_slav, &
                     coor_qp_sl_prev)
 !
 ! ----- Return in real master space
 !
         coor_qp_ma_prev = 0.d0
-        call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%coor_mast_prev, coor_qp_mast,&
+        call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%coor_mast_prev, coor_qp_mast, &
                     coor_qp_ma_prev)
 !
 ! ------ Compute outward slave normal
 !
-        call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_prev,&
+        call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_prev, &
                     coor_qp_slav(1), coor_qp_slav(2), norm_slav_prev)
 !
-        speedEval = -(coor_qp_sl_prev-coor_qp_ma_prev+gap*norm_slav_prev) /(geom%time_curr-geom%t&
+        speedEval = -(coor_qp_sl_prev-coor_qp_ma_prev+gap*norm_slav_prev)/(geom%time_curr-geom%t&
                     &ime_prev)
 !
     end function
@@ -368,7 +368,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine shapeFuncDisp(elem_dime, elem_nbnode, elem_code, coor_qp, shape_,&
+    subroutine shapeFuncDisp(elem_dime, elem_nbnode, elem_code, coor_qp, shape_, &
                              dshape_, ddshape_)
 !
         implicit none
@@ -388,17 +388,17 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         if (present(shape_)) then
-            call mmnonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2),&
+            call mmnonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), &
                         shape_)
         end if
 !
         if (present(dshape_)) then
-            call mmdonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2),&
+            call mmdonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), &
                         dshape_)
         end if
 !
         if (present(ddshape_)) then
-            call mm2onf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2),&
+            call mm2onf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), &
                         ddshape_)
         end if
     end subroutine
@@ -530,7 +530,7 @@ contains
             ASSERT(ASTER_FALSE)
         end if
 !
-        call mmnonf(elem_dime, elem_nbnode_lagr, elem_code_lagr, coor_qp(1), coor_qp(2),&
+        call mmnonf(elem_dime, elem_nbnode_lagr, elem_code_lagr, coor_qp(1), coor_qp(2), &
                     ff)
         shape_(1:4) = ff(1:4)
     end subroutine
@@ -539,7 +539,7 @@ contains
 !
 !===================================================================================================
 !
-    real(kind=8)function evalPoly(nb_node, shape, coeff_node)
+    real(kind=8) function evalPoly(nb_node, shape, coeff_node)
 !
         implicit none
 !
@@ -566,7 +566,7 @@ contains
 !
 !===================================================================================================
 !
-    real(kind=8)function diameter(nb_node, nodes_coor)
+    real(kind=8) function diameter(nb_node, nodes_coor)
 !
         implicit none
 !

@@ -302,8 +302,8 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
     end do
 !
 1001 format(1x, 'RAIDEURS DE ROTATION A REPARTIR:', /&
-   &      1x, ' KRX: ', 1x, 1pe12.5, ' KRY: ', 1x, 1pe12.5,&
-   &      ' KRZ: ', 1x, 1pe12.5)
+&      1x, ' KRX: ', 1x, 1pe12.5, ' KRY: ', 1x, 1pe12.5,&
+&      ' KRZ: ', 1x, 1pe12.5)
     AS_DEALLOCATE(vr=coegro)
     AS_DEALLOCATE(vk8=fongro)
     AS_DEALLOCATE(vr=coeno)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,8 +79,8 @@ subroutine coor_bary(coor, xm, dim, lino, cobary)
     b_n = to_blas_int(n)
     b_nrhs = to_blas_int(nrhs)
     b_lwork = to_blas_int(lwork)
-    call dgels('N', b_m, b_n, b_nrhs, a,&
-               b_lda, b, b_ldb, work, b_lwork,&
+    call dgels('N', b_m, b_n, b_nrhs, a, &
+               b_lda, b, b_ldb, work, b_lwork, &
                info)
     ASSERT(info .eq. 0)
     cobary(1:dim+1) = b(1:dim+1, 1)

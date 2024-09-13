@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine dbr_pod_incr(lReuse, base, paraPod, q, s,&
+subroutine dbr_pod_incr(lReuse, base, paraPod, q, s, &
                         v, nbModeOut, nbSnapOut)
 !
     use Rom_Datastructure_type
@@ -147,7 +147,7 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s,&
     if (lReuse) then
 ! ----- Add previous modes in v
         do iMode = 1, nbModePrev
-            call rsexch(' ', baseName, fieldName, iMode, mode,&
+            call rsexch(' ', baseName, fieldName, iMode, mode, &
                         iret)
             if (fieldSupp .eq. 'NOEU') then
                 call jeveuo(mode(1:19)//'.VALE', 'L', vr=v_mode)
@@ -223,8 +223,8 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s,&
         b_m = to_blas_int(iAlgoSnap)
         b_n = to_blas_int(1)
         b_k = to_blas_int(nbEqua)
-        call dgemm('T', 'N', b_m, b_n, b_k,&
-                   1.d0, vt, b_lda, qi, b_ldb,&
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, vt, b_lda, qi, b_ldb, &
                    0.d0, kt, b_ldc)
 !
 ! ----- Compute [kv] = [v]^T [v]
@@ -235,8 +235,8 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s,&
         b_m = to_blas_int(iAlgoSnap)
         b_n = to_blas_int(iAlgoSnap)
         b_k = to_blas_int(nbEqua)
-        call dgemm('T', 'N', b_m, b_n, b_k,&
-                   1.d0, vt, b_lda, vt, b_ldb,&
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, vt, b_lda, vt, b_ldb, &
                    0.d0, kv, b_ldc)
 !
 ! ----- Solve [v]^T [v] {Y} = [v]^T {q} => {Y} are reduced coordinates
@@ -245,7 +245,7 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s,&
         b_lda = to_blas_int(iAlgoSnap)
         b_n = to_blas_int(iAlgoSnap)
         b_nrhs = to_blas_int(1)
-        call dgesv(b_n, b_nrhs, kv, b_lda, IPIV,&
+        call dgesv(b_n, b_nrhs, kv, b_lda, IPIV, &
                    kt, b_ldb, info)
 !
 ! ----- Compute residu {r} = [v] {Y}
@@ -255,8 +255,8 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s,&
         b_m = to_blas_int(nbEqua)
         b_n = to_blas_int(1)
         b_k = to_blas_int(iAlgoSnap)
-        call dgemm('N', 'N', b_m, b_n, b_k,&
-                   1.d0, vt, b_lda, kt, b_ldb,&
+        call dgemm('N', 'N', b_m, b_n, b_k, &
+                   1.d0, vt, b_lda, kt, b_ldb, &
                    0.d0, rt, b_ldc)
         ri = qi-rt
 !
@@ -329,7 +329,7 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s,&
 !
 ! - Compute SVD on matrix of reduced coordinates: Q = V S Wt
 !
-    call dbr_calcpod_svd(iAlgoSnap, nbSnapOut, g, s, b,&
+    call dbr_calcpod_svd(iAlgoSnap, nbSnapOut, g, s, b, &
                          nbSing)
 !
 ! - Select empiric modes
@@ -345,8 +345,8 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s,&
     b_m = to_blas_int(nbEqua)
     b_n = to_blas_int(nbModeOut)
     b_k = to_blas_int(iAlgoSnap)
-    call dgemm('N', 'N', b_m, b_n, b_k,&
-               1.d0, vt, b_lda, b, b_ldb,&
+    call dgemm('N', 'N', b_m, b_n, b_k, &
+               1.d0, vt, b_lda, b, b_ldb, &
                0.d0, v, b_ldc)
 !
 ! - Compute reduced coordinates G <= B^T G (dim : [nbModeOut x nbSnapOut] )
@@ -358,8 +358,8 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s,&
     b_m = to_blas_int(nbModeOut)
     b_n = to_blas_int(nbSnapOut)
     b_k = to_blas_int(iAlgoSnap)
-    call dgemm('T', 'N', b_m, b_n, b_k,&
-               1.d0, b, b_lda, gt, b_ldb,&
+    call dgemm('T', 'N', b_m, b_n, b_k, &
+               1.d0, b, b_lda, gt, b_ldb, &
                0.d0, v_gamma, b_ldc)
 !
 ! - Save the reduced coordinates in a table

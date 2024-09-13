@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comatr(option, typev, nbproc, rang, vnconv,&
-                  dim1i, dim2i, vecti, dim1r, dim2r,&
+subroutine comatr(option, typev, nbproc, rang, vnconv, &
+                  dim1i, dim2i, vecti, dim1r, dim2r, &
                   vectr, dim1c, dim2c, vectc)
 !     COMMUNICATION VIA LE COMMUNICATEUR MPI COURANT D'UNE MATRICE SOIT
 !     REELLE, SOIT ENTIERE, SOIT DE CHAR*, SOIT COMPLEXE.
@@ -88,7 +88,7 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 !-----------------------------------------------------------------------
     ASSERT((option .eq. 'S') .or. (option .eq. 'T'))
     ASSERT((typev .eq. 'R') .or. (typev .eq. 'I') .or. (typev .eq. 'C'))
-    ASSERT((nbproc .ge. 1) .and. (rang .ge. 0) .and. (rang + 1 .le. nbproc))
+    ASSERT((nbproc .ge. 1) .and. (rang .ge. 0) .and. (rang+1 .le. nbproc))
 !
     if (typev .eq. 'I') then
         idim1 = dim1i
@@ -109,13 +109,13 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 ! --- NCONV:  NBRE DE PREMIERES COLONNES A DECALER
 ! --- NCONVG: SOMME DE DECALAGES
 ! --- IDECAL: DECALAGE POUR LE PROC COURANT
-    nconv = vnconv(rang + 1)
+    nconv = vnconv(rang+1)
     nconvg = 0
     idecal = 0
     do i = 1, nbproc
         ASSERT(vnconv(i) .ge. 0)
-        if ((i - 1) .lt. rang) idecal = idecal + vnconv(i)
-        nconvg = nconvg + vnconv(i)
+        if ((i-1) .lt. rang) idecal = idecal+vnconv(i)
+        nconvg = nconvg+vnconv(i)
     end do
     if (option .eq. 'S') then
         ASSERT(idim2 .eq. nconvg)
@@ -153,33 +153,33 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 ! --- A ZERO: COMME SEULS LES NCONV PREMIERES COLONNES (RESP. LIGNES)
 ! --- SONT SIGNIFIANTES.
     if (option .eq. 'S') then
-        iaux1 = idim1*(idim2 - nconv)
+        iaux1 = idim1*(idim2-nconv)
     else
-        iaux1 = idim1 - nconv
+        iaux1 = idim1-nconv
     end if
     if ((option .eq. 'S') .and. (iaux1 .gt. 0)) then
 !
         if (typev .eq. 'R') then
-            call vecini(iaux1, rzero, vectr(1, nconv + 1))
+            call vecini(iaux1, rzero, vectr(1, nconv+1))
         else if (typev .eq. 'I') then
-            call vecint(iaux1, izero, vecti(1, nconv + 1))
+            call vecint(iaux1, izero, vecti(1, nconv+1))
         else if (typev .eq. 'C') then
-            call vecinc(iaux1, czero, vectc(1, nconv + 1))
+            call vecinc(iaux1, czero, vectc(1, nconv+1))
         end if
 !
     else if ((option .eq. 'T') .and. (iaux1 .gt. 0)) then
 !
         if (typev .eq. 'R') then
             do j = 1, idim2
-                call vecini(iaux1, rzero, vectr(nconv + 1, j))
+                call vecini(iaux1, rzero, vectr(nconv+1, j))
             end do
         else if (typev .eq. 'I') then
             do j = 1, idim2
-                call vecint(iaux1, izero, vecti(nconv + 1, j))
+                call vecint(iaux1, izero, vecti(nconv+1, j))
             end do
         else if (typev .eq. 'C') then
             do j = 1, idim2
-                call vecinc(iaux1, czero, vectc(nconv + 1, j))
+                call vecinc(iaux1, czero, vectc(nconv+1, j))
             end do
         end if
 !
@@ -214,19 +214,19 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         if (typev .eq. 'R') then
             do j = nconv, 1, -1
                 do i = 1, idim1
-                    vectr(i, j + idecal) = vectr(i, j)
+                    vectr(i, j+idecal) = vectr(i, j)
                 end do
             end do
         else if (typev .eq. 'I') then
             do j = nconv, 1, -1
                 do i = 1, idim1
-                    vecti(i, j + idecal) = vecti(i, j)
+                    vecti(i, j+idecal) = vecti(i, j)
                 end do
             end do
         else if (typev .eq. 'C') then
             do j = nconv, 1, -1
                 do i = 1, idim1
-                    vectc(i, j + idecal) = vectc(i, j)
+                    vectc(i, j+idecal) = vectc(i, j)
                 end do
             end do
         end if
@@ -236,19 +236,19 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         if (typev .eq. 'R') then
             do j = 1, idim2
                 do i = nconv, 1, -1
-                    vectr(i + idecal, j) = vectr(i, j)
+                    vectr(i+idecal, j) = vectr(i, j)
                 end do
             end do
         else if (typev .eq. 'I') then
             do j = 1, idim2
                 do i = nconv, 1, -1
-                    vecti(i + idecal, j) = vecti(i, j)
+                    vecti(i+idecal, j) = vecti(i, j)
                 end do
             end do
         else if (typev .eq. 'C') then
             do j = 1, idim2
                 do i = nconv, 1, -1
-                    vectc(i + idecal, j) = vectc(i, j)
+                    vectc(i+idecal, j) = vectc(i, j)
                 end do
             end do
         end if

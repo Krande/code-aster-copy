@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
-                  xcrit, ceigen, cmod, ndimax, cmat1,&
-                  cmat2, cvect, cvect1, alpha, beta,&
+subroutine cmphdi(ck, cm, ndim, nbmod, niter, &
+                  xcrit, ceigen, cmod, ndimax, cmat1, &
+                  cmat2, cvect, cvect1, alpha, beta, &
                   lambd1, lambd2, interv)
 ! aslint: disable=W1306
     implicit none
@@ -93,7 +93,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
 !        SEPARATION DES VALEURS PROPRES
 !
-    call sepavp(ck, cm, cmat1, ndim, alpha,&
+    call sepavp(ck, cm, cmat1, ndim, alpha, &
                 beta, nbmod, lambd1, lambd2, interv)
 !
     call utmess('I', 'ALGELINE7_3')
@@ -156,7 +156,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
 !         ITERATION INVERSE PROPREMENT DITE
 !
- 30     continue
+30      continue
         if (sortie) goto 40
 !      RECOPIE DU VECTEUR DE L'ITERATION PRECEDENTE
         ct = ct+1
@@ -165,7 +165,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         if (iretou .eq. 1) then
             call utmess('F', 'ALGORITH2_22')
         end if
-        call ctescv(cvect1, cmod(1, j), cvec0, cmod0, ndim,&
+        call ctescv(cvect1, cmod(1, j), cvec0, cmod0, ndim, &
                     ecart)
         b_n = to_blas_int(ndim)
         b_incx = to_blas_int(1)
@@ -178,7 +178,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         if (ecart .le. xcrit) sortie = .true.
         if (ct .ge. niter) sortie = .true.
         goto 30
- 40     continue
+40      continue
 !
 !         CALCUL DE LA VALEUR PROPRE PAR LE COEFFICIENT DE RAYLEIGH
 !
@@ -189,7 +189,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         valr(1) = ecart
         valr(2) = dble(ceigen(j))
         valr(3) = dimag(ceigen(j))
-        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
+        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3, &
                     valr=valr)
     end do
 !

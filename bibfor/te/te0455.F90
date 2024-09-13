@@ -82,7 +82,7 @@ subroutine te0455(nomopt, nomte)
     ASSERT(fbs <= MSIZE_FACE_VEC)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
 !
-    if (nomopt /= "RIGI_MECA_TANG" .and. nomopt /= "RIGI_MECA_ELAS" .and.&
+    if (nomopt /= "RIGI_MECA_TANG" .and. nomopt /= "RIGI_MECA_ELAS" .and. &
         nomopt /= "RIGI_MECA" .and. nomopt /= "FULL_MECA" .and. nomopt /= "RAPH_MECA") then
         ASSERT(ASTER_FALSE)
     end if
@@ -102,7 +102,7 @@ subroutine te0455(nomopt, nomte)
 !
         l_largestrains = hhoCS%l_largestrain
 !
-        call behaviourOption(nomopt, hhoCS%compor, lMatr, lVect, lVari,&
+        call behaviourOption(nomopt, hhoCS%compor, lMatr, lVect, lVari, &
                              lSigm, hhoCS%codret)
     else
         l_largestrains = ASTER_FALSE
@@ -117,16 +117,16 @@ subroutine te0455(nomopt, nomte)
         call jevech('PCHHOGT', 'L', jgrad)
         call jevech('PCHHOST', 'L', jstab)
 !
-        call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab),&
+        call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab), &
                                   hhoMecaState%grad, hhoMecaState%stab)
     else
-        call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad,&
+        call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, &
                            hhoMecaState%stab)
     end if
 !
 ! --- Compute local contribution
 !
-    call hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, hhoCS,&
+    call hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, hhoCS, &
                              lhs, rhs)
 !
 ! --- Save return code

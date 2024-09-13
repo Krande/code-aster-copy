@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmconv(r, rini, r1, inst, sigp,&
-                  coef, iter, indimp, ds_conv, conver,&
+subroutine pmconv(r, rini, r1, inst, sigp, &
+                  coef, iter, indimp, ds_conv, conver, &
                   itemax)
 !
     use NonLin_Datastructure_type
@@ -158,7 +158,7 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
     end if
 999 continue
 !
-    call pmimpr(ind, inst, indimp, r8b, iter,&
-                r8b, r8b, r8b, 1, r8b,&
+    call pmimpr(ind, inst, indimp, r8b, iter, &
+                r8b, r8b, r8b, 1, r8b, &
                 ee, eini)
 end subroutine

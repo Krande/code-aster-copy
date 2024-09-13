@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine caldfe(df, nr, nvi, vind, dfpds,&
+subroutine caldfe(df, nr, nvi, vind, dfpds, &
                   fe, dfpdbs, msdgdt, drdy)
 !
     implicit none
@@ -61,7 +61,7 @@ subroutine caldfe(df, nr, nvi, vind, dfpds,&
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, id, b_incx, fem,&
+    call daxpy(b_n, 1.d0, id, b_incx, fem, &
                b_incy)
     dffe = matmul(df, fem)
 !
@@ -108,7 +108,7 @@ subroutine caldfe(df, nr, nvi, vind, dfpds,&
     b_n = to_blas_int(81)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, dfefds, b_incx, dfefdt,&
+    call daxpy(b_n, 1.d0, dfefds, b_incx, dfefdt, &
                b_incy)
     b_n = to_blas_int(81)
     b_incx = to_blas_int(1)

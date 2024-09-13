@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ subroutine ddr_comp(base, v_equa)
 ! - Get index of slice in reduced basis
 !
     do iMode = 1, nbMode
-        call rsadpa(resultName, 'L', 1, 'NUME_PLAN', iMode,&
+        call rsadpa(resultName, 'L', 1, 'NUME_PLAN', iMode, &
                     0, sjv=jvPara)
         v_npl(iMode) = zi(jvPara)
     end do
@@ -126,7 +126,7 @@ subroutine ddr_comp(base, v_equa)
             AS_ALLOCATE(vi=v_list_loca, size=nb_motr)
 ! - First mode of slice
             k_mode = 1
-            call rsexch(' ', resultName, fieldName, iMode+k_mode-1, mode,&
+            call rsexch(' ', resultName, fieldName, iMode+k_mode-1, mode, &
                         iret)
             ASSERT(iret .eq. 0)
             call jeveuo(mode(1:19)//'.VALE', 'E', vr=v_mode)
@@ -143,7 +143,7 @@ subroutine ddr_comp(base, v_equa)
             v_list_loca(k_mode) = equa_maxi
 ! - Loop on mode of slice
             do k_mode = 2, nb_motr
-                call rsexch(' ', resultName, fieldName, iMode+k_mode-1, mode,&
+                call rsexch(' ', resultName, fieldName, iMode+k_mode-1, mode, &
                             iret)
                 ASSERT(iret .eq. 0)
                 call jeveuo(mode(1:19)//'.VALE', 'E', vr=v_mode)
@@ -154,8 +154,8 @@ subroutine ddr_comp(base, v_equa)
                 do i_vect = 1, nb_vect
                     v_vect(i_vect) = v_mode(v_list_loca(i_vect))
                     do i_matr = 1, nb_vect
-                        v_matr(i_vect+nb_vect*(i_matr-1)) = v_base(&
-                                                            v_list_loca(i_vect)+nbEqua*(i_matr-1)&
+                        v_matr(i_vect+nb_vect*(i_matr-1)) = v_base( &
+                                                            v_list_loca(i_vect)+nbEqua*(i_matr-1) &
                                                             )
                     end do
                 end do
@@ -164,7 +164,7 @@ subroutine ddr_comp(base, v_equa)
                 b_lda = to_blas_int(lval)
                 b_n = to_blas_int(nb_vect)
                 b_nrhs = to_blas_int(1)
-                call dgesv(b_n, b_nrhs, v_matr, b_lda, IPIV,&
+                call dgesv(b_n, b_nrhs, v_matr, b_lda, IPIV, &
                            v_vect, b_ldb, info)
                 if (info .ne. 0) then
                     call utmess('F', 'ROM4_7')

@@ -246,7 +246,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFaceInit(hhoFace, typma, ndim, nbnodes, nodes_coor,&
+    subroutine hhoFaceInit(hhoFace, typma, ndim, nbnodes, nodes_coor, &
                            barycenter_cell, num_nodes_loc)
 !
         implicit none
@@ -519,8 +519,8 @@ contains
             do i_node = 1, nbnodes_faces(i_face)
                 coor_face(1:3, i_node) = hhoCell%coorno(1:3, nodes_faces(i_node, i_face))
             end do
-            call hhoFaceInit(hhoCell%faces(i_face), type_faces(i_face), hhoCell%ndim-1,&
-                             nbnodes_faces(i_face), coor_face, hhoCell%barycenter,&
+            call hhoFaceInit(hhoCell%faces(i_face), type_faces(i_face), hhoCell%ndim-1, &
+                             nbnodes_faces(i_face), coor_face, hhoCell%barycenter, &
                              nodes_faces(:, i_face))
         end do
 !
@@ -579,12 +579,12 @@ contains
         coef_stab = 0.d0
         iret = -1
         l_adapt_coeff = ASTER_TRUE
-        call tecach('NNN', 'PMATERC', 'L', iret, nval=1,&
+        call tecach('NNN', 'PMATERC', 'L', iret, nval=1, &
                     itab=jtab)
         if (iret .eq. 0) then
             call jevech('PMATERC', 'L', jv_mater)
-            call rcvala(zi(jv_mater), ' ', 'HHO', 0, ' ',&
-                        [0.0], 1, resu_name, resu_vale, icodre,&
+            call rcvala(zi(jv_mater), ' ', 'HHO', 0, ' ', &
+                        [0.0], 1, resu_name, resu_vale, icodre, &
                         0)
             l_adapt_coeff = icodre(1) == 1
             if (.not. l_adapt_coeff) then
@@ -594,7 +594,7 @@ contains
 !
 ! --- Init
 !
-        call hhoData%initialize(face_deg, cell_deg, grad_deg, coef_stab, l_debug,&
+        call hhoData%initialize(face_deg, cell_deg, grad_deg, coef_stab, l_debug, &
                                 l_adapt_coeff)
 !
         if (hhoData%debug()) then

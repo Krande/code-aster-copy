@@ -54,8 +54,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalCell(hhoCell, hhoBasisCell, order, pt, coeff,&
-                             size_coeff) result (eval)
+    function hhoEvalScalCell(hhoCell, hhoBasisCell, order, pt, coeff, &
+                             size_coeff) result(eval)
 !
         implicit none
 !
@@ -97,8 +97,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalFace(hhoFace, hhoBasisFace, order, pt, coeff,&
-                             size_coeff) result (eval)
+    function hhoEvalScalFace(hhoFace, hhoBasisFace, order, pt, coeff, &
+                             size_coeff) result(eval)
 !
         implicit none
 !
@@ -140,8 +140,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecCell(hhoCell, hhoBasisCell, order, pt, coeff,&
-                            size_coeff) result (eval)
+    function hhoEvalVecCell(hhoCell, hhoBasisCell, order, pt, coeff, &
+                            size_coeff) result(eval)
 !
         implicit none
 !
@@ -189,8 +189,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecFace(hhoFace, hhoBasisFace, order, pt, coeff,&
-                            size_coeff) result (eval)
+    function hhoEvalVecFace(hhoFace, hhoBasisFace, order, pt, coeff, &
+                            size_coeff) result(eval)
 !
         implicit none
 !
@@ -238,8 +238,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalMatCell(hhoCell, hhoBasisCell, order, pt, coeff,&
-                            size_coeff) result (eval)
+    function hhoEvalMatCell(hhoCell, hhoBasisCell, order, pt, coeff, &
+                            size_coeff) result(eval)
 !
         implicit none
 !
@@ -289,8 +289,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalSymMatCell(hhoCell, hhoBasisCell, order, pt, coeff,&
-                               size_coeff) result (eval)
+    function hhoEvalSymMatCell(hhoCell, hhoBasisCell, order, pt, coeff, &
+                               size_coeff) result(eval)
 !
         implicit none
 !
@@ -370,7 +370,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara,&
+    subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara, &
                                   ndim, FuncValuesQp, coeff_mult)
 !
         implicit none
@@ -409,14 +409,14 @@ contains
 !
         if (ndim == 0) then
             do ipg = 1, npg
-                call fointe('FM', nomfunc, nbpara, nompara, valpara,&
+                call fointe('FM', nomfunc, nbpara, nompara, valpara, &
                             FuncValuesQP(ipg), iret)
                 ASSERT(iret == 0)
             end do
         else if (ndim <= 3) then
             do ipg = 1, npg
                 valpara(1:ndim) = hhoQuad%points(1:ndim, ipg)
-                call fointe('FM', nomfunc, nbpara, nompara, valpara,&
+                call fointe('FM', nomfunc, nbpara, nompara, valpara, &
                             FuncValuesQP(ipg), iret)
                 ASSERT(iret == 0)
             end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode,&
+subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode, &
                             v_gamma)
 !
     use Rom_Datastructure_type
@@ -87,8 +87,8 @@ subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode,&
     b_m = to_blas_int(nb_mode)
     b_n = to_blas_int(nb_snap)
     b_k = to_blas_int(m)
-    call dgemm('T', 'N', b_m, b_n, b_k,&
-               1.d0, v_pod, b_lda, q, b_ldb,&
+    call dgemm('T', 'N', b_m, b_n, b_k, &
+               1.d0, v_pod, b_lda, q, b_ldb, &
                0.d0, v_gamma, b_ldc)
     AS_DEALLOCATE(vr=v_pod)
 !

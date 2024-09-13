@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
-                  iscal, rscal, cscal, kvect, ivect,&
+subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal, &
+                  iscal, rscal, cscal, kvect, ivect, &
                   rvect, cvect, savejv)
     implicit none
 ! Save a parameter in the temporary data structure for the command
@@ -143,7 +143,7 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
     do ip = 1, nbparams
         if (params(ip) .eq. param_) goto 10
     end do
- 10 continue
+10  continue
 !
 !   The parameter to be saved was not found in the predefined list
     if (ip .eq. nbparams+1) then

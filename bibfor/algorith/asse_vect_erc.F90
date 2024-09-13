@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim,&
+subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim, &
                          alpha, n_ordre_mes, omega)
 !
 !
@@ -132,7 +132,7 @@ subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim,&
         b_n = to_blas_int(nvect_mes)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dspmv('u', b_n, coeff_alpha, zr(ivale_norm), zr(iaux1),&
+        call dspmv('u', b_n, coeff_alpha, zr(ivale_norm), zr(iaux1), &
                    b_incx, 0.d0, zr(iaux2), b_incy)
     end if
 ! --- RECUPERATION DE LA MATRICE D'OBSERVATION
@@ -148,9 +148,9 @@ subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim,&
     do ii = 1, obsdim(3)
         n_fil = zi(iobsfil-1+ii)
         n_col = zi(iobscol-1+ii)
-        zr(ivecterc-1+obsdim(2)+n_col) = zr(&
+        zr(ivecterc-1+obsdim(2)+n_col) = zr( &
                                          ivecterc-1+obsdim(2)+n_col)+zr(iobsval-1+ii)*zr(iaux2-1+&
-                                         &n_fil&
+                                         &n_fil &
                                          )
     end do
 !     NETOYAGE DES OBJETS JEVEUX TEMPORAIRES

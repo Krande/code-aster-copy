@@ -17,24 +17,24 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine dlnew0(result, force0, force1, iinteg, neq,&
-                  istoc, iarchi, nbexci, nondp, nmodam,&
-                  lamort, limped, lmodst, imat, masse,&
-                  rigid, amort, nchar, nveca, liad,&
-                  lifo, modele, mate, mateco, carele,&
-                  charge, infoch, fomult, numedd, depla,&
-                  vitea, accea, dep0, vit0, acc0,&
-                  fexte, famor, fliai, depl1, vite1,&
-                  acce1, psdel, fammo, fimpe, fonde,&
-                  vien, vite, vita1, mltap, a0,&
-                  a2, a3, a4, a5, a6,&
-                  a7, a8, c0, c1, c2,&
-                  c3, c4, c5, nodepl, novite,&
-                  noacce, matres, maprec, solveu, criter,&
-                  chondp, vitini, vitent, valmod, basmod,&
-                  veanec, vaanec, vaonde, veonde, dt,&
-                  theta, tempm, temps, iforc2, tabwk1,&
-                  tabwk2, archiv, nbtyar, typear, numrep,&
+subroutine dlnew0(result, force0, force1, iinteg, neq, &
+                  istoc, iarchi, nbexci, nondp, nmodam, &
+                  lamort, limped, lmodst, imat, masse, &
+                  rigid, amort, nchar, nveca, liad, &
+                  lifo, modele, mate, mateco, carele, &
+                  charge, infoch, fomult, numedd, depla, &
+                  vitea, accea, dep0, vit0, acc0, &
+                  fexte, famor, fliai, depl1, vite1, &
+                  acce1, psdel, fammo, fimpe, fonde, &
+                  vien, vite, vita1, mltap, a0, &
+                  a2, a3, a4, a5, a6, &
+                  a7, a8, c0, c1, c2, &
+                  c3, c4, c5, nodepl, novite, &
+                  noacce, matres, maprec, solveu, criter, &
+                  chondp, vitini, vitent, valmod, basmod, &
+                  veanec, vaanec, vaonde, veonde, dt, &
+                  theta, tempm, temps, iforc2, tabwk1, &
+                  tabwk2, archiv, nbtyar, typear, numrep, &
                   ds_energy, kineLoad)
 !
 !     CALCUL MECANIQUE TRANSITOIRE PAR INTEGRATION DIRECTE
@@ -204,11 +204,11 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         do iexci = 1, nbexci
 !
             if (mltap(iexci) .eq. 1) then
-                call fointe('F ', nodepl(iexci), 1, ['INST'], [temps],&
+                call fointe('F ', nodepl(iexci), 1, ['INST'], [temps], &
                             coefd, ieq)
-                call fointe('F ', novite(iexci), 1, ['INST'], [temps],&
+                call fointe('F ', novite(iexci), 1, ['INST'], [temps], &
                             coefv, ieq)
-                call fointe('F ', noacce(iexci), 1, ['INST'], [temps],&
+                call fointe('F ', noacce(iexci), 1, ['INST'], [temps], &
                             coefa, ieq)
                 do ieq = 1, neq
                     depla(ieq) = depla(ieq)+psdel(ieq)*coefd
@@ -228,26 +228,26 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         vite(ieq) = vit0(ieq)
     end do
     if (lmodst) then
-        do 32 ieq = 1, neq
+        do ieq = 1, neq
             vien(ieq) = vitea(ieq)
- 32     continue
+        end do
     end if
     if (limped) then
-        call fimped(modele, mateco, numedd, neq, vitini,&
-                    vitent, veccor, veanec, vaanec, tempm,&
+        call fimped(modele, mateco, numedd, neq, vitini, &
+                    vitent, veccor, veanec, vaanec, tempm, &
                     fimpe)
     end if
     if (nondp .ne. 0) then
-        call fondpl(modele, mate, mateco, numedd, neq,&
-                    chondp, nondp, vecond, veonde, vaonde,&
+        call fondpl(modele, mate, mateco, numedd, neq, &
+                    chondp, nondp, vecond, veonde, vaonde, &
                     temps, fonde)
     end if
 !
     if (nmodam .ne. 0) then
         if (lmodst) then
-            do 33 ieq = 1, neq
+            do ieq = 1, neq
                 vita1(ieq) = vit0(ieq)+vitea(ieq)
- 33         continue
+            end do
             call fmodam(neq, vita1, valmod, basmod, fammo)
         else
             call fmodam(neq, vit0, valmod, basmod, fammo)
@@ -260,20 +260,20 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     call jeveuo(force0(1:19)//'.VALE', 'E', vr=forc0)
     call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
 !
-    call dlfext(nveca, nchar, temps, neq, liad,&
-                lifo, charge, infoch, fomult, modele,&
+    call dlfext(nveca, nchar, temps, neq, liad, &
+                lifo, charge, infoch, fomult, modele, &
                 mate, mateco, carele, numedd, zr(iforc1))
 !
 !                   second membre des charges cinématiques
     if (nchar .gt. 0) then
-        call ascavc(charge, infoch, fomult, numedd, temps,&
+        call ascavc(charge, infoch, fomult, numedd, temps, &
                     kineLoad)
     end if
 !
     if (nondp .ne. 0) then
-        do 43 ieq = 1, neq
+        do ieq = 1, neq
             zr(iforc1+ieq-1) = zr(iforc1+ieq-1)-fonde(ieq)
- 43     continue
+        end do
     end if
     if (ds_energy%l_comp) then
         do ieq = 1, neq
@@ -283,9 +283,9 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     end if
 !
     if (limped) then
-        do 41 ieq = 1, neq
+        do ieq = 1, neq
             zr(iforc1+ieq-1) = zr(iforc1+ieq-1)-fimpe(ieq)
- 41     continue
+        end do
         if (ds_energy%l_comp) then
             do ieq = 1, neq
                 fliai(ieq) = fliai(ieq+neq)
@@ -295,9 +295,9 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     end if
 !
     if (nmodam .ne. 0) then
-        do 42 ieq = 1, neq
+        do ieq = 1, neq
             zr(iforc1+ieq-1) = zr(iforc1+ieq-1)-fammo(ieq)
- 42     continue
+        end do
         if (ds_energy%l_comp) then
             do ieq = 1, neq
                 famor(ieq) = famor(ieq+neq)
@@ -317,16 +317,16 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         eps0 = 1.d-12
         do iresu = 1, nbexre
             if (abs(temps) .gt. eps0) then
-                call rsorac(listresu(iresu), 'INST', 0, temps, k8bid,&
-                            cbid, prec, 'RELATIF', item2, 1,&
+                call rsorac(listresu(iresu), 'INST', 0, temps, k8bid, &
+                            cbid, prec, 'RELATIF', item2, 1, &
                             ibid)
             else
-                call rsorac(listresu(iresu), 'INST', 0, temps, k8bid,&
-                            cbid, eps0, 'ABSOLU', item2, 1,&
+                call rsorac(listresu(iresu), 'INST', 0, temps, k8bid, &
+                            cbid, eps0, 'ABSOLU', item2, 1, &
                             ibid)
             end if
             if (ibid .gt. 0) then
-                call rsexch('F', listresu(iresu), 'DEPL', item2(1), cham19,&
+                call rsexch('F', listresu(iresu), 'DEPL', item2(1), cham19, &
                             iret)
                 call vtcopy(cham19, chamno, 'F', iret)
                 call jeveuo(chamno//'.VALE', 'L', lvale)
@@ -338,12 +338,12 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !        --- INTERPOLATION LINEAIRE ---
                 do i = 1, nbinst-1
 !
-                    call rsadpa(listresu(iresu), 'L', 1, 'INST', i,&
+                    call rsadpa(listresu(iresu), 'L', 1, 'INST', i, &
                                 0, sjv=ltps0, styp=k8bid)
-                    call rsadpa(listresu(iresu), 'L', 1, 'INST', i+1,&
+                    call rsadpa(listresu(iresu), 'L', 1, 'INST', i+1, &
                                 0, sjv=ltps1, styp=k8bid)
                     if (i .eq. 1 .and. temps .lt. zr(ltps0)) then
-                        call rsexch('F', listresu(iresu), 'DEPL', i, cham19,&
+                        call rsexch('F', listresu(iresu), 'DEPL', i, cham19, &
                                     iret)
                         call vtcopy(cham19, chamno, 'F', iret)
                         call jeveuo(chamno//'.VALE', 'L', lvale)
@@ -351,11 +351,11 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                     end if
                     if (temps .ge. zr(ltps0) .and. temps .lt. zr(ltps1)) then
                         alpha = (temps-zr(ltps0))/(zr(ltps1)-zr(ltps0))
-                        call rsexch('F', listresu(iresu), 'DEPL', i, cham19,&
+                        call rsexch('F', listresu(iresu), 'DEPL', i, cham19, &
                                     iret)
                         call vtcopy(cham19, chamno, 'F', iret)
                         call jeveuo(chamno//'.VALE', 'L', vr=nlval1)
-                        call rsexch('F', listresu(iresu), 'DEPL', i+1, cham19,&
+                        call rsexch('F', listresu(iresu), 'DEPL', i+1, cham19, &
                                     iret)
                         call vtcopy(cham19, chamn2, 'F', iret)
                         call jeveuo(chamn2//'.VALE', 'L', vr=nlval2)
@@ -369,12 +369,12 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                         b_n = to_blas_int(neq)
                         b_incx = to_blas_int(1)
                         b_incy = to_blas_int(1)
-                        call daxpy(b_n, alpha, nlval2, b_incx, zr(lvale),&
+                        call daxpy(b_n, alpha, nlval2, b_incx, zr(lvale), &
                                    b_incy)
                         goto 213
                     end if
                     if (i .eq. nbinst-1 .and. temps .ge. zr(ltps1)) then
-                        call rsexch('F', listresu(iresu), 'DEPL', i+1, cham19,&
+                        call rsexch('F', listresu(iresu), 'DEPL', i+1, cham19, &
                                     iret)
                         call vtcopy(cham19, chamno, 'F', iret)
                         call jeveuo(chamno//'.VALE', 'L', lvale)
@@ -412,17 +412,17 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !====
 ! 5. FORCE DYNAMIQUE F*
 !====
-    call forcdy(imat(2), imat(3), lamort, neq, c0,&
-                c1, c2, c3, c4, c5,&
-                dep0, vit0, acc0, tabwk1, tabwk2,&
+    call forcdy(imat(2), imat(3), lamort, neq, c0, &
+                c1, c2, c3, c4, c5, &
+                dep0, vit0, acc0, tabwk1, tabwk2, &
                 zr(iforc1))
 !
 !====
 ! 6.  RESOLUTION DU PROBLEME K*  . U*  =  P*
 !           --- RESOLUTION AVEC FORCE1 COMME SECOND MEMBRE ---
 !====
-    call resoud(matres, maprec, solveu, kineLoad, 0,&
-                force1, chsol, 'V', [0.d0], [cbid],&
+    call resoud(matres, maprec, solveu, kineLoad, 0, &
+                force1, chsol, 'V', [0.d0], [cbid], &
                 criter, .true._1, 0, iret)
     call copisd('CHAMP_GD', 'V', chsol(1:19), force1(1:19))
     call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
@@ -437,18 +437,18 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !====
     if (iinteg .eq. 2) then
 !
-        call newacc(neq, a4, a5, a6, dep0,&
+        call newacc(neq, a4, a5, a6, dep0, &
                     vit0, acc0, depl1, acce1)
-        call newvit(neq, a7, a7, vit0, acc0,&
+        call newvit(neq, a7, a7, vit0, acc0, &
                     vite1, acce1)
-        call newdep(neq, a8, dt, dep0, vit0,&
+        call newdep(neq, a8, dt, dep0, vit0, &
                     acc0, depl1, acce1)
 !
     else if (iinteg .eq. 1) then
 !
-        call newacc(neq, a0, -a2, -a3, dep0,&
+        call newacc(neq, a0, -a2, -a3, dep0, &
                     vit0, acc0, depl1, acce1)
-        call newvit(neq, a6, a7, vit0, acc0,&
+        call newvit(neq, a6, a7, vit0, acc0, &
                     vite1, acce1)
 !
     end if
@@ -464,9 +464,9 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         ASSERT(kineLoad .eq. ' ')
         call wkvect('FNODABID', 'V V R', 2*neq, ifnobi)
         call wkvect('FCINEBID', 'V V R', 2*neq, ifcibi)
-        call enerca(k19bid, dep0, vit0, depl1, vite1,&
-                    masse1, amort1, rigid1, fexte, famor,&
-                    fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&
+        call enerca(k19bid, dep0, vit0, depl1, vite1, &
+                    masse1, amort1, rigid1, fexte, famor, &
+                    fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1, &
                     .false._1, ds_energy, '&&DLNEWI')
         call jedetr('FNODABID')
         call jedetr('FCINEBID')
@@ -518,21 +518,21 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
             typa(4) = '    '
             typa(5) = '    '
             typa(6) = '    '
-            do 101 ieq = 1, neq
+            do ieq = 1, neq
                 depla(ieq) = depla(ieq)+dep0(ieq)
                 vitea(ieq) = vitea(ieq)+vit0(ieq)
                 accea(ieq) = accea(ieq)+acc0(ieq)
-101         continue
-            call dlarch(result, neq, istoc, iarchi, ' ',&
-                        alarm, temps, nbtyar, typa, masse,&
-                        depla, vitea, accea, fexte(neq+1), famor(neq+1),&
+            end do
+            call dlarch(result, neq, istoc, iarchi, ' ', &
+                        alarm, temps, nbtyar, typa, masse, &
+                        depla, vitea, accea, fexte(neq+1), famor(neq+1), &
                         fliai(neq+1))
 !
         end if
 !
-        call dlarch(result, neq, istoc, iarchi, ' ',&
-                    alarm, temps, nbtyar, typear, masse,&
-                    dep0, vit0, acc0, fexte(neq+1), famor(neq+1),&
+        call dlarch(result, neq, istoc, iarchi, ' ', &
+                    alarm, temps, nbtyar, typear, masse, &
+                    dep0, vit0, acc0, fexte(neq+1), famor(neq+1), &
                     fliai(neq+1))
 !
     end if

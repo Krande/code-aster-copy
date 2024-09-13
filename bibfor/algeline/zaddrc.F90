@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zaddrc(m, n, alpha, x, incx,&
+subroutine zaddrc(m, n, alpha, x, incx, &
                   y, incy, a, lda)
     implicit none
 #include "blas/zaxpy.h"
@@ -48,7 +48,7 @@ subroutine zaddrc(m, n, alpha, x, incx,&
         b_n = to_blas_int(m)
         b_incx = to_blas_int(incx)
         b_incy = to_blas_int(1)
-        call zaxpy(b_n, alpha*dconjg(y(iy)), x, b_incx, a(i1x),&
+        call zaxpy(b_n, alpha*dconjg(y(iy)), x, b_incx, a(i1x), &
                    b_incy)
         iy = iy+incy
         i1x = i1x+lda

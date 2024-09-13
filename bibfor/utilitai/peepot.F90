@@ -581,7 +581,8 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
             if (lmonit) then
                 call system_clock(ietfin)
                 retfin = real(ietfin-ietdeb)/real(ietrat)
-             write (ifm, *) '< ', rang, 'peepot> temps peenca/tbajli iord/iocc=', iord, iocc, retfin
+                write (ifm, *) '< ', rang, 'peepot> temps peenca/tbajli iord/iocc=', &
+                    iord, iocc, retfin
             end if
 !
 !-----------------------------------------------------------------------------

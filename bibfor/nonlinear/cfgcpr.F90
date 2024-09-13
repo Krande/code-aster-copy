@@ -180,7 +180,7 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai, &
     end if
 !
 9050 format(' <CONTACT><CALC> PAS D''AVANCEMENT APRES PROJECTION : ',&
-   &       1pe12.5)
+&       1pe12.5)
 !
     call jedema()
 !

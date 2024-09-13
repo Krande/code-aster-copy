@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,8 +83,8 @@ contains
 !
         do i_node = 1, geom%nb_node_slav
             do i_elem = 1, geom%elem_dime
-                dofsMapping((i_node-1)*geom%elem_dime+i_elem) = (geom%mapVolu2Surf(i_node)-1&
-                                                                )*geom%elem_dime+i_elem
+                dofsMapping((i_node-1)*geom%elem_dime+i_elem) = (geom%mapVolu2Surf(i_node)-1 &
+                                                                 )*geom%elem_dime+i_elem
             end do
         end do
 !
@@ -92,8 +92,8 @@ contains
         nb_dofs_volu = geom%nb_node_volu*geom%elem_dime
         do i_node = 1, geom%nb_node_mast
             do i_elem = 1, geom%elem_dime
-                dofsMapping(nb_dofs_slav+(i_node-1)*geom%elem_dime+i_elem) = nb_dofs_volu+(&
-                                                                             i_node-1&
+                dofsMapping(nb_dofs_slav+(i_node-1)*geom%elem_dime+i_elem) = nb_dofs_volu+( &
+                                                                             i_node-1 &
                                                                              )*geom%elem_dime+i_e&
                                                                              &lem
             end do
@@ -252,8 +252,8 @@ contains
 ! ----- Projection of node on volumic slave cell (volumic parametric space)
 !
             coor_qp_vo = 0.d0
-            call reereg('S', geom%elem_volu_code, geom%nb_node_volu, geom%coor_volu_curr,&
-                        geom%coor_slav_curr(1:3, i_node), geom%elem_dime, coor_qp_vo, iret,&
+            call reereg('S', geom%elem_volu_code, geom%nb_node_volu, geom%coor_volu_curr, &
+                        geom%coor_slav_curr(1:3, i_node), geom%elem_dime, coor_qp_vo, iret, &
                         ndim_coor_=3)
 !
 ! ----- Eval shape function and gradient
@@ -293,7 +293,7 @@ contains
 !
         do j = 1, 3
             do i = 1, 3
-                evalStress(i, j) = evalPoly(&
+                evalStress(i, j) = evalPoly( &
                                    nb_node_slav, shape_func_sl, nits%stress_nodes(i, j, :))
             end do
         end do
@@ -416,8 +416,8 @@ contains
         b_n = to_blas_int(geom%elem_dime)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, dNs,&
-                   b_lda, stress_n, b_incx, 1.d0, dNs_sn,&
+        call dgemv('N', b_m, b_n, 1.d0, dNs, &
+                   b_lda, stress_n, b_incx, 1.d0, dNs_sn, &
                    b_incy)
 !
 ! --- Remapping

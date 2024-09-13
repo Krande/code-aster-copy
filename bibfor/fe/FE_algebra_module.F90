@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,34 +68,34 @@ contains
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('T', b_m, b_n, alpha, mat,&
-                   b_lda, x, b_incx, 0.0, y,&
+        call dgemv('T', b_m, b_n, alpha, mat, &
+                   b_lda, x, b_incx, 0.0, y, &
                    b_incy)
 #else
 !
-        y(1) = alpha*(&
-               mat(1, 1)*x(1)+mat(2, 1)*x(2)+mat(3, 1)*x(3)+ mat(4, 1)*x(4)+mat(5, 1)*x(5)+mat(6,&
-               & 1)*x(6)&
+        y(1) = alpha*( &
+               mat(1, 1)*x(1)+mat(2, 1)*x(2)+mat(3, 1)*x(3)+mat(4, 1)*x(4)+mat(5, 1)*x(5)+mat(6,&
+               & 1)*x(6) &
                )
-        y(2) = alpha*(&
-               mat(1, 2)*x(1)+mat(2, 2)*x(2)+mat(3, 2)*x(3)+ mat(4, 2)*x(4)+mat(5, 2)*x(5)+mat(6,&
-               & 2)*x(6)&
+        y(2) = alpha*( &
+               mat(1, 2)*x(1)+mat(2, 2)*x(2)+mat(3, 2)*x(3)+mat(4, 2)*x(4)+mat(5, 2)*x(5)+mat(6,&
+               & 2)*x(6) &
                )
-        y(3) = alpha*(&
-               mat(1, 3)*x(1)+mat(2, 3)*x(2)+mat(3, 3)*x(3)+ mat(4, 3)*x(4)+mat(5, 3)*x(5)+mat(6,&
-               & 3)*x(6)&
+        y(3) = alpha*( &
+               mat(1, 3)*x(1)+mat(2, 3)*x(2)+mat(3, 3)*x(3)+mat(4, 3)*x(4)+mat(5, 3)*x(5)+mat(6,&
+               & 3)*x(6) &
                )
-        y(4) = alpha*(&
-               mat(1, 4)*x(1)+mat(2, 4)*x(2)+mat(3, 4)*x(3)+ mat(4, 4)*x(4)+mat(5, 4)*x(5)+mat(6,&
-               & 4)*x(6)&
+        y(4) = alpha*( &
+               mat(1, 4)*x(1)+mat(2, 4)*x(2)+mat(3, 4)*x(3)+mat(4, 4)*x(4)+mat(5, 4)*x(5)+mat(6,&
+               & 4)*x(6) &
                )
-        y(5) = alpha*(&
-               mat(1, 5)*x(1)+mat(2, 5)*x(2)+mat(3, 5)*x(3)+ mat(4, 5)*x(4)+mat(5, 5)*x(5)+mat(6,&
-               & 5)*x(6)&
+        y(5) = alpha*( &
+               mat(1, 5)*x(1)+mat(2, 5)*x(2)+mat(3, 5)*x(3)+mat(4, 5)*x(4)+mat(5, 5)*x(5)+mat(6,&
+               & 5)*x(6) &
                )
-        y(6) = alpha*(&
-               mat(1, 6)*x(1)+mat(2, 6)*x(2)+mat(3, 6)*x(3)+ mat(4, 6)*x(4)+mat(5, 6)*x(5)+mat(6,&
-               & 6)*x(6)&
+        y(6) = alpha*( &
+               mat(1, 6)*x(1)+mat(2, 6)*x(2)+mat(3, 6)*x(3)+mat(4, 6)*x(4)+mat(5, 6)*x(5)+mat(6,&
+               & 6)*x(6) &
                )
 #endif
 !
@@ -129,8 +129,8 @@ contains
         b_n = to_blas_int(4)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('T', b_m, b_n, alpha, mat,&
-                   b_lda, x, b_incx, 0.0, y,&
+        call dgemv('T', b_m, b_n, alpha, mat, &
+                   b_lda, x, b_incx, 0.0, y, &
                    b_incy)
 #else
 !
@@ -170,8 +170,8 @@ contains
         b_n = to_blas_int(3)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, alpha, mat,&
-                   b_lda, x, b_incx, 0.0, y,&
+        call dgemv('N', b_m, b_n, alpha, mat, &
+                   b_lda, x, b_incx, 0.0, y, &
                    b_incy)
 #else
 !
@@ -210,8 +210,8 @@ contains
         b_n = to_blas_int(2)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, alpha, mat,&
-                   b_lda, x, b_incx, 0.0, y,&
+        call dgemv('N', b_m, b_n, alpha, mat, &
+                   b_lda, x, b_incx, 0.0, y, &
                    b_incy)
 #else
 !
@@ -249,8 +249,8 @@ contains
         b_n = to_blas_int(ncol)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(offset)
-        call dgemv('T', b_m, b_n, 1.d0, mat,&
-                   b_lda, x, b_incx, 1.d0, y,&
+        call dgemv('T', b_m, b_n, 1.d0, mat, &
+                   b_lda, x, b_incx, 1.d0, y, &
                    b_incy)
 #else
         integer :: icol, ind
@@ -260,7 +260,7 @@ contains
         case (3)
             ind = 1
             do icol = 1, 3
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ mat(4, icol)*x(4)+ma&
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+ma&
                       &t(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
@@ -268,7 +268,7 @@ contains
         case (4)
             ind = 1
             do icol = 1, 4
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ mat(4, icol)*x(4)+ma&
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+ma&
                       &t(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
@@ -276,7 +276,7 @@ contains
         case (5)
             ind = 1
             do icol = 1, 5
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ mat(4, icol)*x(4)+ma&
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+ma&
                       &t(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
@@ -284,7 +284,7 @@ contains
         case (6)
             ind = 1
             do icol = 1, 6
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ mat(4, icol)*x(4)+ma&
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+ma&
                       &t(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
@@ -292,7 +292,7 @@ contains
         case (7)
             ind = 1
             do icol = 1, 7
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ mat(4, icol)*x(4)+ma&
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+ma&
                       &t(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
@@ -300,7 +300,7 @@ contains
         case (8)
             ind = 1
             do icol = 1, 8
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ mat(4, icol)*x(4)+ma&
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+ma&
                       &t(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
@@ -308,7 +308,7 @@ contains
         case (9)
             ind = 1
             do icol = 1, 9
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ mat(4, icol)*x(4)+ma&
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+ma&
                       &t(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
@@ -316,7 +316,7 @@ contains
         case (19)
             ind = 1
             do icol = 1, 19
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ mat(4, icol)*x(4)+ma&
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+ma&
                       &t(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
@@ -324,7 +324,7 @@ contains
         case (26)
             ind = 1
             do icol = 1, 26
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ mat(4, icol)*x(4)+ma&
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+ma&
                       &t(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
@@ -332,7 +332,7 @@ contains
         case default
             ind = 1
             do icol = 1, ncol
-                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ mat(4, icol)*x(4)+ma&
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)+ma&
                       &t(5, icol)*x(5)+mat(6, icol)*x(6)
                 y(ind) = y(ind)+tmp
                 ind = ind+offset
@@ -370,8 +370,8 @@ contains
         b_n = to_blas_int(ncol)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(offset)
-        call dgemv('T', b_m, b_n, 1.d0, mat,&
-                   b_lda, x, b_incx, 1.d0, y,&
+        call dgemv('T', b_m, b_n, 1.d0, mat, &
+                   b_lda, x, b_incx, 1.d0, y, &
                    b_incy)
 #else
         integer :: icol, ind
@@ -474,8 +474,8 @@ contains
         b_n = to_blas_int(ncol)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('T', b_m, b_n, 1.d0, mat,&
-                   b_lda, x, b_incx, 1.d0, y,&
+        call dgemv('T', b_m, b_n, 1.d0, mat, &
+                   b_lda, x, b_incx, 1.d0, y, &
                    b_incy)
 #else
         integer :: icol
@@ -546,8 +546,8 @@ contains
         b_n = to_blas_int(ncol)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('T', b_m, b_n, 1.d0, mat,&
-                   b_lda, x, b_incx, 1.d0, y,&
+        call dgemv('T', b_m, b_n, 1.d0, mat, &
+                   b_lda, x, b_incx, 1.d0, y, &
                    b_incy)
 #else
         integer :: icol

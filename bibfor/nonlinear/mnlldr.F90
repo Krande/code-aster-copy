@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlldr(ind, imat, neq, ninc, nd,&
-                  nchoc, h, hf, parcho, xcdl,&
+subroutine mnlldr(ind, imat, neq, ninc, nd, &
+                  nchoc, h, hf, parcho, xcdl, &
                   adime, xtemp)
     implicit none
 !
@@ -109,7 +109,7 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
                 end if
             end if
         end do
-        call mrmult('ZERO', imat(1), zr(itemp1), zr(itemp2), 1,&
+        call mrmult('ZERO', imat(1), zr(itemp1), zr(itemp2), 1, &
                     .false._1)
         i = 0
         do k = 1, neq

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pidegv(neps, tau, epsm, epsp, epsd,&
+subroutine pidegv(neps, tau, epsm, epsp, epsd, &
                   copilo)
 !
 !

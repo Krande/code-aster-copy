@@ -53,9 +53,10 @@ subroutine iner81(nomres, classe, basmod, nommat)
     integer :: ltvec2, ltvec3, mxddl, nbdef, neq
 !-----------------------------------------------------------------------
     parameter(mxddl=6)
-    character(len=8) :: nomddl(mxddl)
+    character(len=8), parameter :: nomddl(mxddl) = ['DX      ', 'DY      ', 'DZ      ', &
+                                                    'DRX     ', 'DRY     ', 'DRZ     ']
     character(len=1) :: classe
-    character(len=6) :: pgc
+    character(len=6), parameter :: pgc = 'INER81'
     character(len=19) :: nommat
     character(len=8) :: basmod
     character(len=14) :: num
@@ -65,12 +66,6 @@ subroutine iner81(nomres, classe, basmod, nommat)
     integer, pointer :: deeq(:) => null()
     blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
-!
-!-----------------------------------------------------------------------
-    data pgc/'INER81'/
-    data nomddl/'DX      ', 'DY      ', 'DZ      ',&
-     &            'DRX     ', 'DRY     ', 'DRZ     '/
-!-----------------------------------------------------------------------
 !
 ! --- CREATION DU .REFE
 !

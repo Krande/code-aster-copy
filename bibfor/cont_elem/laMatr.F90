@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ subroutine laMatr(parameters, geom, matr_cont, matr_fric)
 !
 ! - Get quadrature (slave side)
 !
-    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code,&
+    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
                      geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp)
 !
 ! - Diameter of slave side
@@ -115,9 +115,9 @@ subroutine laMatr(parameters, geom, matr_cont, matr_fric)
 !
 ! ----- Compute contact quantities
 !
-        call laElemCont(parameters, geom, coor_qp_sl, hF, lagr_c,&
-                        gap, gamma_c, projRmVal, l_cont_qp, lagr_f,&
-                        vT, gamma_f, projBsVal, l_fric_qp, dGap=dGap,&
+        call laElemCont(parameters, geom, coor_qp_sl, hF, lagr_c, &
+                        gap, gamma_c, projRmVal, l_cont_qp, lagr_f, &
+                        vT, gamma_f, projBsVal, l_fric_qp, dGap=dGap, &
                         d2Gap=d2Gap, mu_c=mu_c, mu_f=mu_f)
 !
 ! ------ CONTACT PART (always computed)
@@ -133,7 +133,7 @@ subroutine laMatr(parameters, geom, matr_cont, matr_fric)
             b_n = to_blas_int(geom%nb_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dger(b_m, b_n, coeff, dGap, b_incx,&
+            call dger(b_m, b_n, coeff, dGap, b_incx, &
                       dGap, b_incy, matr_cont, b_lda)
 !
 ! ------ Compute displacement / displacement (slave and master side)
@@ -141,7 +141,7 @@ subroutine laMatr(parameters, geom, matr_cont, matr_fric)
 !
             coeff = weight_sl_qp*projRmVal
             matr_cont(1:geom%nb_dofs, 1:geom%nb_dofs) = matr_cont(1:geom%nb_dofs, 1:geom%nb_dofs)&
-                                                        &+ coeff*d2Gap(1:geom%nb_dofs, 1:geom%nb_&
+                                                        &+coeff*d2Gap(1:geom%nb_dofs, 1:geom%nb_&
                                                         &dofs)
 !
 ! ------ Compute displacement / Lagrange and Lagrange / displacement
@@ -153,14 +153,14 @@ subroutine laMatr(parameters, geom, matr_cont, matr_fric)
             b_n = to_blas_int(geom%nb_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dger(b_m, b_n, coeff, dGap, b_incx,&
+            call dger(b_m, b_n, coeff, dGap, b_incx, &
                       mu_c, b_incy, matr_cont, b_lda)
             b_lda = to_blas_int(MAX_LAGA_DOFS)
             b_m = to_blas_int(geom%nb_dofs)
             b_n = to_blas_int(geom%nb_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dger(b_m, b_n, coeff, mu_c, b_incx,&
+            call dger(b_m, b_n, coeff, mu_c, b_incx, &
                       dGap, b_incy, matr_cont, b_lda)
         else
 !
@@ -173,7 +173,7 @@ subroutine laMatr(parameters, geom, matr_cont, matr_fric)
             b_n = to_blas_int(geom%nb_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dger(b_m, b_n, coeff, mu_c, b_incx,&
+            call dger(b_m, b_n, coeff, mu_c, b_incx, &
                       mu_c, b_incy, matr_cont, b_lda)
 !
         end if
@@ -195,8 +195,8 @@ subroutine laMatr(parameters, geom, matr_cont, matr_fric)
                 b_m = to_blas_int(geom%nb_dofs)
                 b_n = to_blas_int(geom%nb_dofs)
                 b_k = to_blas_int(geom%elem_dime-1)
-                call dgemm('N', 'T', b_m, b_n, b_k,&
-                           coeff, mu_f, b_lda, mu_f, b_ldb,&
+                call dgemm('N', 'T', b_m, b_n, b_k, &
+                           coeff, mu_f, b_lda, mu_f, b_ldb, &
                            1.d0, matr_fric, b_ldc)
             end if
         end if

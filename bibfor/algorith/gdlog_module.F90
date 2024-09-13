@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ contains
         if (iret .ne. 0) goto 999
 !
 ! Calcul des elements cinematiques et des deformations
-        call deflog(self%ndim, f, eps6, self%gn, self%lamb,&
+        call deflog(self%ndim, f, eps6, self%gn, self%lamb, &
                     self%logl, iret)
         self%calc_defo = (iret .eq. 0)
         if (iret .ne. 0) goto 999
@@ -178,12 +178,12 @@ contains
         allocate (def(ndimsi, nno, ndim))
 !
 ! Calcul de la matrice PES de passage T -> PK2
-        call deflg2(self%gn, self%lamb, self%logl, self%pes, self%feta,&
+        call deflg2(self%gn, self%lamb, self%logl, self%pes, self%feta, &
                     self%xi, self%me)
 !
 ! Derivee premiere et seconde du tenseur de Green-Lagrange (lien log <-> GL)
-        call nmfdff(ndim, nno, self%axi, 1, r,&
-                    self%rigi, ASTER_FALSE, self%f, vff, dff,&
+        call nmfdff(ndim, nno, self%axi, 1, r, &
+                    self%rigi, ASTER_FALSE, self%f, vff, dff, &
                     def, self%pff)
         do kl = 1, ndimsi
             self%deft(kl, :, :) = transpose(def(kl, :, :))
@@ -201,8 +201,8 @@ contains
         b_m = to_blas_int(ndimsi)
         b_n = to_blas_int(ndim*nno)
         b_k = to_blas_int(ndimsi)
-        call dgemm('n', 'n', b_m, b_n, b_k,&
-                   1.d0, self%pes, b_lda, self%deft, b_ldb,&
+        call dgemm('n', 'n', b_m, b_n, b_k, &
+                   1.d0, self%pes, b_lda, self%deft, b_ldb, &
                    0.d0, matb, b_ldc)
 !
         self%calc_matb = .true.
@@ -211,7 +211,7 @@ contains
 !
 ! =====================================================================
 !
-    function gdlog_rigeo(self, t) result (matr)
+    function gdlog_rigeo(self, t) result(matr)
 !
 ! ----------------------------------------------------------------------
 !     Calcul de la rigidite geometrique T:d2E
@@ -254,7 +254,7 @@ contains
 ! Termes relatifs GDEF_LOG -> GREEN_LAGRANGE
 !
 ! Tenseur L (TLS): terme en de:tls:de hors variation de dT/dE
-        call deflg3(self%gn, self%feta, self%xi, self%me, t6,&
+        call deflg3(self%gn, self%feta, self%xi, self%me, t6, &
                     tls3)
         call symt46(tls3, tls)
 !
@@ -270,7 +270,7 @@ contains
         b_n = to_blas_int(nno)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dger(b_m, b_n, pk2(3), self%axf, b_incx,&
+        call dger(b_m, b_n, pk2(3), self%axf, b_incx, &
                   self%axf, b_incy, maax, b_lda)
 !
 ! Terme S(kl).PFF(kl,n,m) (termes i=j)
@@ -279,8 +279,8 @@ contains
         b_n = to_blas_int(nno*nno)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('t', b_m, b_n, 1.d0, self%pff,&
-                   b_lda, pk2, b_incx, 0.d0, marg,&
+        call dgemv('t', b_m, b_n, 1.d0, self%pff, &
+                   b_lda, pk2, b_incx, 0.d0, marg, &
                    b_incy)
 !
 ! Terme DEFT(ab,i,n):L(ab,kl): DEFT(kl,j,m) = M(j,m,i,n)
@@ -290,8 +290,8 @@ contains
         b_m = to_blas_int(ndimsi)
         b_n = to_blas_int(ndim*nno)
         b_k = to_blas_int(ndimsi)
-        call dgemm('n', 'n', b_m, b_n, b_k,&
-                   1.d0, tls, b_lda, self%deft, b_ldb,&
+        call dgemm('n', 'n', b_m, b_n, b_k, &
+                   1.d0, tls, b_lda, self%deft, b_ldb, &
                    0.d0, trv, b_ldc)
         b_ldc = to_blas_int(ndim*nno)
         b_ldb = to_blas_int(ndimsi)
@@ -299,13 +299,13 @@ contains
         b_m = to_blas_int(ndim*nno)
         b_n = to_blas_int(ndim*nno)
         b_k = to_blas_int(ndimsi)
-        call dgemm('t', 'n', b_m, b_n, b_k,&
-                   1.d0, trv, b_lda, self%deft, b_ldb,&
+        call dgemm('t', 'n', b_m, b_n, b_k, &
+                   1.d0, trv, b_lda, self%deft, b_ldb, &
                    0.d0, matr, b_ldc)
 !
 ! Ajout des termes marg (symetrique) et maax (symetrique) -> pas besoin de transposer n <-> m
         forall (i=1:ndim)
-        matr(i, :, i, :) = matr(i, :, i, :)+marg(:, :)
+            matr(i, :, i, :) = matr(i, :, i, :)+marg(:, :)
         end forall
         matr(1, :, 1, :) = matr(1, :, 1, :)+maax(:, :)
 !
@@ -316,7 +316,7 @@ contains
 !
 ! =====================================================================
 !
-    function gdlog_nice_cauchy(self, t) result (cauchy)
+    function gdlog_nice_cauchy(self, t) result(cauchy)
 !
 ! ----------------------------------------------------------------------
 !     Calcule le tenseur de Cauchy (sans racines de deux) a partir de T
@@ -343,7 +343,7 @@ contains
 !
 ! Conversion vers Cauchy
         call lcdetf(self%ndim, self%f, jac)
-        call pk2sig(self%ndim, self%f, jac, pk2, sig6,&
+        call pk2sig(self%ndim, self%f, jac, pk2, sig6, &
                     1)
         cauchy = sig6(1:ndimsi)
 !

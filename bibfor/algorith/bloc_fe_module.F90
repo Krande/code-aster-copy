@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ module bloc_fe_module
 !
 contains
 !
-    function prod_bd(b, d) result (bd)
+    function prod_bd(b, d) result(bd)
         implicit none
         real(kind=8) :: b(:, :, :), d(:, :)
         real(kind=8) :: bd(size(b, 1))
@@ -53,12 +53,12 @@ contains
         b_n = to_blas_int(ndim*nno)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('n', b_m, b_n, 1.d0, b,&
-                   b_lda, d, b_incx, 0.d0, bd,&
+        call dgemv('n', b_m, b_n, 1.d0, b, &
+                   b_lda, d, b_incx, 0.d0, bd, &
                    b_incy)
     end function prod_bd
 !
-    function prod_sb(s, b) result (sb)
+    function prod_sb(s, b) result(sb)
         implicit none
         real(kind=8) :: s(:), b(:, :, :)
         real(kind=8) :: sb(size(b, 2), size(b, 3))
@@ -75,12 +75,12 @@ contains
         b_n = to_blas_int(ndim*nno)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('t', b_m, b_n, 1.d0, b,&
-                   b_lda, s, b_incx, 0.d0, sb,&
+        call dgemv('t', b_m, b_n, 1.d0, b, &
+                   b_lda, s, b_incx, 0.d0, sb, &
                    b_incy)
     end function prod_sb
 !
-    function prod_bkb(bin, kinjm, bjm) result (bkb)
+    function prod_bkb(bin, kinjm, bjm) result(bkb)
         implicit none
         real(kind=8), intent(in) :: bin(:, :, :), bjm(:, :, :), kinjm(:, :)
         real(kind=8) :: bkb(size(bin, 2), size(bin, 3), size(bjm, 2), size(bjm, 3))
@@ -106,8 +106,8 @@ contains
         b_m = to_blas_int(neps1)
         b_n = to_blas_int(ndim2*nno2)
         b_k = to_blas_int(neps2)
-        call dgemm('n', 'n', b_m, b_n, b_k,&
-                   1.d0, kinjm, b_lda, bjm, b_ldb,&
+        call dgemm('n', 'n', b_m, b_n, b_k, &
+                   1.d0, kinjm, b_lda, bjm, b_ldb, &
                    0.d0, kbjm, b_ldc)
         b_ldc = to_blas_int(ndim1*nno1)
         b_ldb = to_blas_int(neps1)
@@ -115,8 +115,8 @@ contains
         b_m = to_blas_int(ndim1*nno1)
         b_n = to_blas_int(ndim2*nno2)
         b_k = to_blas_int(neps1)
-        call dgemm('t', 'n', b_m, b_n, b_k,&
-                   1.d0, bin, b_lda, kbjm, b_ldb,&
+        call dgemm('t', 'n', b_m, b_n, b_k, &
+                   1.d0, bin, b_lda, kbjm, b_ldb, &
                    0.d0, bkb, b_ldc)
 !
         deallocate (kbjm)

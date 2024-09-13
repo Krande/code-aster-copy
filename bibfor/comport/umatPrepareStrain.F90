@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine umatPrepareStrain(neps, epsm, deps, stran, dstran,&
+subroutine umatPrepareStrain(neps, epsm, deps, stran, dstran, &
                              dfgrd0, dfgrd1)
 !
     implicit none

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
+subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
                   materf, mod, nr, dsde)
     implicit none
 !
@@ -57,7 +57,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, id, b_incx, fem,&
+    call daxpy(b_n, 1.d0, id, b_incx, fem, &
                b_incy)
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
@@ -66,7 +66,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, id, b_incx, fep,&
+    call daxpy(b_n, 1.d0, id, b_incx, fep, &
                b_incy)
 !
     b_n = to_blas_int(9)
@@ -76,7 +76,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0, id, b_incx, fpp,&
+    call daxpy(b_n, 1.d0, id, b_incx, fpp, &
                b_incy)
     call matinv('S', 3, fpp, fppinv, det)
 !
@@ -157,7 +157,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, -1.d0, id, b_incx, fetfe,&
+    call daxpy(b_n, -1.d0, id, b_incx, fetfe, &
                b_incy)
     b_n = to_blas_int(9)
     b_incx = to_blas_int(1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,14 +65,14 @@ subroutine fft(s, n, ifft)
         t = s(j)
         s(j) = s(i)
         s(i) = t
-  5     continue
+5       continue
         k = nv2
-  6     continue
+6       continue
         if (k .ge. j) goto 7
         j = j-k
         k = k/2
         goto 6
-  7     continue
+7       continue
         j = j+k
     end do
     do l = 1, m

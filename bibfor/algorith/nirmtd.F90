@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nirmtd(ndim, nno1, nno2, nno3, npg,&
-                  iw, vff2, vff3, ivf1, idff1,&
-                  vu, vg, vp, igeom, mate,&
+subroutine nirmtd(ndim, nno1, nno2, nno3, npg, &
+                  iw, vff2, vff3, ivf1, idff1, &
+                  vu, vg, vp, igeom, mate, &
                   matr)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
@@ -105,7 +105,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,&
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 ! - CALCUL DE DFDI,F,EPS,R(EN AXI) ET POIDS
-        call bmatmc(g, nbsig, zr(igeom), iw, ivf1,&
+        call bmatmc(g, nbsig, zr(igeom), iw, ivf1, &
                     idff1, nno1, 0.d0, w, b)
 !
         do ia = 1, 2*ndim
@@ -126,7 +126,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,&
 ! - CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 ! - ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
         notime = r8vide()
-        call dmatmc('RIGI', mate, notime, '+', g,&
+        call dmatmc('RIGI', mate, notime, '+', g, &
                     1, angl_naut, nbsig, dsidep)
 !
         b_n = to_blas_int(2*ndim-3)

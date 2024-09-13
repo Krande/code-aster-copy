@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zadder(uplo, n, alpha, x, incx,&
+subroutine zadder(uplo, n, alpha, x, incx, &
                   a, lda)
     implicit none
 #include "asterf_types.h"
@@ -58,13 +58,13 @@ subroutine zadder(uplo, n, alpha, x, incx,&
                 b_n = to_blas_int(j-1)
                 b_incx = to_blas_int(incx)
                 b_incy = to_blas_int(1)
-                call zaxpy(b_n, temp, x, b_incx, a(lda*(j-1)+1),&
+                call zaxpy(b_n, temp, x, b_incx, a(lda*(j-1)+1), &
                            b_incy)
             else
                 b_n = to_blas_int(j-1)
                 b_incx = to_blas_int(incx)
                 b_incy = to_blas_int(1)
-                call zaxpy(b_n, temp, x(ix-incx), b_incx, a(lda*(j-1)+1),&
+                call zaxpy(b_n, temp, x(ix-incx), b_incx, a(lda*(j-1)+1), &
                            b_incy)
             end if
         else
@@ -72,13 +72,13 @@ subroutine zadder(uplo, n, alpha, x, incx,&
                 b_n = to_blas_int(n-j)
                 b_incx = to_blas_int(incx)
                 b_incy = to_blas_int(1)
-                call zaxpy(b_n, temp, x(ix+incx), b_incx, a(lda*(j-1)+j+1),&
+                call zaxpy(b_n, temp, x(ix+incx), b_incx, a(lda*(j-1)+j+1), &
                            b_incy)
             else
                 b_n = to_blas_int(n-j)
                 b_incx = to_blas_int(incx)
                 b_incy = to_blas_int(1)
-                call zaxpy(b_n, temp, x, b_incx, a(lda*(j-1)+j+1),&
+                call zaxpy(b_n, temp, x, b_incx, a(lda*(j-1)+j+1), &
                            b_incy)
             end if
         end if

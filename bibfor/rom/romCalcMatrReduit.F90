@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu,&
+subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, &
                              modeType)
 !
     use Rom_Datastructure_type
@@ -79,7 +79,7 @@ subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu,&
 ! - Get acess to mode_current
 !
     fieldIden = 'DEPL'
-    call rsexch(' ', resultName, fieldIden, modeNume, mode,&
+    call rsexch(' ', resultName, fieldIden, modeNume, mode, &
                 iret)
 !
     if (modeType .eq. 'R') then

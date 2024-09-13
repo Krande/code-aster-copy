@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine pminit(imate, nbvari, ndim, typmod, table,&
-                  nbpar, iforta, nompar, typpar, angl_naut,&
-                  pgl, irota, epsm, sigm, vim,&
-                  vip, vr, defimp, coef, indimp,&
-                  fonimp, cimpo, kel, sddisc, ds_conv,&
-                  ds_algopara, pred, matrel, imptgt, option,&
+subroutine pminit(imate, nbvari, ndim, typmod, table, &
+                  nbpar, iforta, nompar, typpar, angl_naut, &
+                  pgl, irota, epsm, sigm, vim, &
+                  vip, vr, defimp, coef, indimp, &
+                  fonimp, cimpo, kel, sddisc, ds_conv, &
+                  ds_algopara, pred, matrel, imptgt, option, &
                   nomvi, nbvita, sderro)
 !
     use NonLin_Datastructure_type
@@ -237,9 +237,9 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 !     ----------------------------------------
     angl_naut(:) = 0.d0
     call r8inir(3, 0.d0, angeul, 1)
-    call getvr8('MASSIF', 'ANGL_REP', iocc=1, nbval=3, vect=angl_naut,&
+    call getvr8('MASSIF', 'ANGL_REP', iocc=1, nbval=3, vect=angl_naut, &
                 nbret=n1)
-    call getvr8('MASSIF', 'ANGL_EULER', iocc=1, nbval=3, vect=angeul,&
+    call getvr8('MASSIF', 'ANGL_EULER', iocc=1, nbval=3, vect=angeul, &
                 nbret=n2)
 !
     if (n1 .gt. 0) then
@@ -315,7 +315,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     end if
     call getfac('VARI_INIT', nbocc)
     if (nbocc .gt. 0) then
-        call getvr8('VARI_INIT', 'VALE', iocc=1, nbval=nbvari, vect=vim,&
+        call getvr8('VARI_INIT', 'VALE', iocc=1, nbval=nbvari, vect=vim, &
                     nbret=n1)
         if (n1 .ne. nbvari) then
             imes(1) = n1
@@ -412,7 +412,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 !  RECUPERER LES VALEURS INITIALES DE F "GRAD_IMPOSE"
     if (igrad .eq. 9) then
         do i = 1, 9
-            call fointe('F', fonimp(i), 1, ['INST'], [instam],&
+            call fointe('F', fonimp(i), 1, ['INST'], [instam], &
                         valimp(i), ier)
         end do
     end if
@@ -465,7 +465,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             call dcopy(b_n, dsidep, b_incx, vr(1+6+6+3+nbvari), b_incy)
         end if
         vr(nbpar) = 0
-        call tbajli(table, nbpar, nompar, [0], vr,&
+        call tbajli(table, nbpar, nompar, [0], vr, &
                     [cbid], k8b, 0)
     else
         vr(1) = instam
@@ -473,14 +473,14 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
         do i = 1, ncmp
             vr(2) = epsm(i)
             vk8(2) = nomeps(i)
-            call tbajli(table, nbpar, nompar, [0], vr,&
+            call tbajli(table, nbpar, nompar, [0], vr, &
                         [cbid], vk8, 0)
         end do
         vk8(1) = 'SIGM'
         do i = 1, ncmp
             vr(2) = sigm(i)
             vk8(2) = nomsig(i)
-            call tbajli(table, nbpar, nompar, [0], vr,&
+            call tbajli(table, nbpar, nompar, [0], vr, &
                         [cbid], vk8, 0)
         end do
         vk8(1) = 'VARI'
@@ -489,7 +489,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             vk8(2) (1:1) = 'V'
             call codent(i, 'G', vk8(2) (2:8))
             nomvi(i) = vk8(2)
-            call tbajli(table, nbpar, nompar, [0], vr,&
+            call tbajli(table, nbpar, nompar, [0], vr, &
                         [cbid], vk8, 0)
         end do
     end if
@@ -523,7 +523,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     end if
 !     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
     limpex = .false.
-    call nmcrsu(sddisc, lisins, ds_conv, ds_algopara, limpex,&
+    call nmcrsu(sddisc, lisins, ds_conv, ds_algopara, limpex, &
                 solveu)
 !     INSTANT INITIAL
     numins = 0
@@ -533,7 +533,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 !     ----------------------------------------
 !     MATRICE ELASTIQUE ET COEF POUR ADIMENSIONNALISER
 !     ----------------------------------------
-    call dmat3d('PMAT', imate, instam, '+', kpg,&
+    call dmat3d('PMAT', imate, instam, '+', kpg, &
                 ksp, angl_naut, kel)
 !     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
     coef = max(kel(1, 1), kel(2, 2), kel(3, 3))

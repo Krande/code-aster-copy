@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mattge(nomte, dtild, sina, cosa, r,&
+subroutine mattge(nomte, dtild, sina, cosa, r, &
                   jacp, vf, dfds, rtangi)
     implicit none
 !
@@ -91,7 +91,7 @@ subroutine mattge(nomte, dtild, sina, cosa, r,&
         b_incx = to_blas_int(1)
         call dscal(b_n, jacp, dtild, b_incx)
 !
-        call btkb(5, 9, 9, dtild, mats,&
+        call btkb(5, 9, 9, dtild, mats, &
                   dtilds, rtangi)
 !
     else
@@ -136,7 +136,7 @@ subroutine mattge(nomte, dtild, sina, cosa, r,&
         b_incx = to_blas_int(1)
         call dscal(b_n, jacp, dtild1, b_incx)
 !
-        call btkb(3, 9, 9, dtild1, mats1,&
+        call btkb(3, 9, 9, dtild1, mats1, &
                   dtildt, rtangi)
 !
     end if

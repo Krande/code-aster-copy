@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
-                  nbpt, neq, nbhar, imat, numedd,&
+subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, &
+                  nbpt, neq, nbhar, imat, numedd, &
                   parcho, nbchoc, vk8, modrep)
 !
 !
@@ -172,10 +172,10 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
         matrice(1) = rigid
         matrice(2) = masse
         matrice(3) = ' '
-        call refdaj('F', nomrep, nmodes, numedd, 'DYNAMIQUE',&
+        call refdaj('F', nomrep, nmodes, numedd, 'DYNAMIQUE', &
                     matrice, ier)
         do ihar = 1, nmodes
-            call rsexch(' ', nomrep, nomsym(1), ihar, chamno,&
+            call rsexch(' ', nomrep, nomsym(1), ihar, chamno, &
                         ier)
             if (ier .eq. 0) then
             else if (ier .eq. 100) then
@@ -193,11 +193,11 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
             end do
             call rsnoch(nomrep, nomsym(1), ihar)
 !
-            call rsadpa(nomrep, 'E', 1, 'NUME_MODE', ihar,&
+            call rsadpa(nomrep, 'E', 1, 'NUME_MODE', ihar, &
                         0, sjv=ladpa, styp=k8b)
             zi(ladpa) = ihar
 !
-            call rsadpa(nomrep, 'E', 1, 'FREQ', ihar,&
+            call rsadpa(nomrep, 'E', 1, 'FREQ', ihar, &
                         0, sjv=ladpa, styp=k8b)
 !     -----------------------------------------------------------------
 ! reverifier le rangement des contributions harmoniques
@@ -214,7 +214,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
             iadd = (iordr-1)*(neq*nmodes+2)+nmodes*neq+1
             zr(ladpa) = iomega*zr(isort-1+iadd)
 !
-            call rsadpa(nomrep, 'E', 1, 'FACT_PARTICI_DX', ihar,&
+            call rsadpa(nomrep, 'E', 1, 'FACT_PARTICI_DX', ihar, &
                         0, sjv=ladpa, styp=k8b)
             zr(ladpa) = sqrt(xnorm)
         end do
@@ -241,9 +241,9 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
         iadd = (iordr-1)*(neq*nmodes+2)+inspec
         espec(1) = zr(isort-1+iadd)**2/nspec(inspec)
         do ihar = 1, nbhar
-            espec(ihar+1) = (&
-                            zr(isort-1+iadd+ihar*neq)**2+ zr(isort-1+iadd+(nbhar+ihar)*neq)**2)/n&
-                            &spec(inspec&
+            espec(ihar+1) = ( &
+                            zr(isort-1+iadd+ihar*neq)**2+zr(isort-1+iadd+(nbhar+ihar)*neq)**2)/n&
+                            &spec(inspec &
                             )
         end do
         b_n = to_blas_int(nbhar+1)
@@ -278,7 +278,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
         end if
         valk(5) = kbif
         valk(6) = 'NON_EVALUE'
-        call tbajli(nomres, nbpar, nompar, vali, valr,&
+        call tbajli(nomres, nbpar, nompar, vali, valr, &
                     [cvide], valk, 0)
 !
     end do
@@ -333,7 +333,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
             valrt(4) = orig((iordr-1)*3+1)
             valrt(5) = orig((iordr-1)*3+2)
             valrt(6) = orig((iordr-1)*3+3)
-            call tbajli(nomtab, nbpart, nompat, valit, valrt,&
+            call tbajli(nomtab, nbpart, nompat, valit, valrt, &
                         [cvide], valkt, 0)
         end do
     end if

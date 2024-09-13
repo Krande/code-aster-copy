@@ -362,26 +362,31 @@ subroutine te0570(option, nomte)
             do ino = 1, nno
                 i = igeom+3*(ino-1)-1
 !
-                zr(ivect1+6*(ino-1)+1-1) = zr(ivect1+6*(ino-1)+1-1)+zr(ivf+ldec+ino-1)*(xgau-xg &
-                                                                                        )*jacpoi
-                zr(ivect1+6*(ino-1)+2-1) = zr(ivect1+6*(ino-1)+2-1)+zr(ivf+ldec+ino-1)*(ygau-yg &
-                                                                                        )*jacpoi
-                zr(ivect1+6*(ino-1)+3-1) = zr(ivect1+6*(ino-1)+3-1)+zr(ivf+ldec+ino-1)*(zgau-zg &
-                                                                                        )*jacpoi
-                zr(ivect1+6*(ino-1)+4-1) = zr(ivect1+6*(ino-1)+4-1)+zr(ivf+ldec+ino-1)*jacpoi
-                zr(ivect1+6*(ino-1)+5-1) = zr(ivect1+6*(ino-1)+5-1)+zr(ivf+ldec+ino-1)*jacpo2
+                zr(ivect1+6*(ino-1)+1-1) = &
+                    zr(ivect1+6*(ino-1)+1-1)+zr(ivf+ldec+ino-1)*(xgau-xg)*jacpoi
+                zr(ivect1+6*(ino-1)+2-1) = &
+                    zr(ivect1+6*(ino-1)+2-1)+zr(ivf+ldec+ino-1)*(ygau-yg)*jacpoi
+                zr(ivect1+6*(ino-1)+3-1) = &
+                    zr(ivect1+6*(ino-1)+3-1)+zr(ivf+ldec+ino-1)*(zgau-zg)*jacpoi
+                zr(ivect1+6*(ino-1)+4-1) = &
+                    zr(ivect1+6*(ino-1)+4-1)+zr(ivf+ldec+ino-1)*jacpoi
+                zr(ivect1+6*(ino-1)+5-1) = &
+                    zr(ivect1+6*(ino-1)+5-1)+zr(ivf+ldec+ino-1)*jacpo2
 !
 !            PRODUIT VECTORIEL N.(THETA.N).
 !
-                zr(ivect2+6*(ino-1)+1-1) = zr( &
-                                           ivect2+6*(ino-1)+1-1)+zr(ivf+ldec+ino-1)*(e3yy+e3zz)
-                zr(ivect2+6*(ino-1)+2-1) = zr(ivect2+6*(ino-1)+2-1)-zr(ivf+ldec+ino-1)*e3xy
-                zr(ivect2+6*(ino-1)+3-1) = zr(ivect2+6*(ino-1)+3-1)-zr(ivf+ldec+ino-1)*e3xz
-                zr(ivect2+6*(ino-1)+4-1) = zr( &
-                                           ivect2+6*(ino-1)+4-1)+zr(ivf+ldec+ino-1)*(e3zz+e3xx)
-                zr(ivect2+6*(ino-1)+5-1) = zr(ivect2+6*(ino-1)+5-1)-zr(ivf+ldec+ino-1)*e3yz
-                zr(ivect2+6*(ino-1)+6-1) = zr( &
-                                           ivect2+6*(ino-1)+6-1)+zr(ivf+ldec+ino-1)*(e3yy+e3xx)
+                zr(ivect2+6*(ino-1)+1-1) = &
+                    zr(ivect2+6*(ino-1)+1-1)+zr(ivf+ldec+ino-1)*(e3yy+e3zz)
+                zr(ivect2+6*(ino-1)+2-1) = &
+                    zr(ivect2+6*(ino-1)+2-1)-zr(ivf+ldec+ino-1)*e3xy
+                zr(ivect2+6*(ino-1)+3-1) = &
+                    zr(ivect2+6*(ino-1)+3-1)-zr(ivf+ldec+ino-1)*e3xz
+                zr(ivect2+6*(ino-1)+4-1) = &
+                    zr(ivect2+6*(ino-1)+4-1)+zr(ivf+ldec+ino-1)*(e3zz+e3xx)
+                zr(ivect2+6*(ino-1)+5-1) = &
+                    zr(ivect2+6*(ino-1)+5-1)-zr(ivf+ldec+ino-1)*e3yz
+                zr(ivect2+6*(ino-1)+6-1) = &
+                    zr(ivect2+6*(ino-1)+6-1)+zr(ivf+ldec+ino-1)*(e3yy+e3xx)
             end do
         end do
 !
@@ -463,36 +468,30 @@ subroutine te0570(option, nomte)
 !
 ! CALCUL DE VECT1(I) : TERMES EN UMI(COS(M.PHI)) ET UMO (SIN(M.PHI))
 !
-                    zr(ivect1+6*(ino-1)+ii-1) = zr( &
-                                                ivect1+6*(ino-1)+ii-1)+cosmfi*pgl(1, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                         )*jacpoi
-                    zr(ivect1+6*(ino-1)+3+ii-1) = zr( &
-                                                  ivect1+6*(ino-1)+3+ii-1)+sinmfi*pgl(1, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                            )*jacpoi
+                    zr(ivect1+6*(ino-1)+ii-1) = &
+                        zr(ivect1+6*(ino-1)+ii-1)+ &
+                        cosmfi*pgl(1, ii)*zr(ivf+ldec+ino-1)*jacpoi
+                    zr(ivect1+6*(ino-1)+3+ii-1) = &
+                        zr(ivect1+6*(ino-1)+3+ii-1)+ &
+                        sinmfi*pgl(1, ii)*zr(ivf+ldec+ino-1)*jacpoi
 !
 ! CALCUL DE VECT2(I) : TERMES EN VMI(COS(M.PHI)) ET VMO (SIN(M.PHI))
 !
-                    zr(ivect2+6*(ino-1)+ii-1) = zr( &
-                                                ivect2+6*(ino-1)+ii-1)+cosmfi*pgl(2, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                         )*jacpoi
-                    zr(ivect2+6*(ino-1)+3+ii-1) = zr( &
-                                                  ivect2+6*(ino-1)+3+ii-1)+sinmfi*pgl(2, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                            )*jacpoi
+                    zr(ivect2+6*(ino-1)+ii-1) = &
+                        zr(ivect2+6*(ino-1)+ii-1)+ &
+                        cosmfi*pgl(2, ii)*zr(ivf+ldec+ino-1)*jacpoi
+                    zr(ivect2+6*(ino-1)+3+ii-1) = &
+                        zr(ivect2+6*(ino-1)+3+ii-1)+ &
+                        sinmfi*pgl(2, ii)*zr(ivf+ldec+ino-1)*jacpoi
 !
 ! CALCUL DE VECT3(I) : TERMES EN WMI(COS(M.PHI)) ET WMO (SIN(M.PHI))
 !
-                    zr(ivect3+6*(ino-1)+ii-1) = zr( &
-                                                ivect3+6*(ino-1)+ii-1)+cosmfi*pgl(3, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                         )*jacpoi
-                    zr(ivect3+6*(ino-1)+3+ii-1) = zr( &
-                                                  ivect3+6*(ino-1)+3+ii-1)+sinmfi*pgl(3, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                            )*jacpoi
+                    zr(ivect3+6*(ino-1)+ii-1) = &
+                        zr(ivect3+6*(ino-1)+ii-1)+ &
+                        cosmfi*pgl(3, ii)*zr(ivf+ldec+ino-1)*jacpoi
+                    zr(ivect3+6*(ino-1)+3+ii-1) = &
+                        zr(ivect3+6*(ino-1)+3+ii-1)+ &
+                        sinmfi*pgl(3, ii)*zr(ivf+ldec+ino-1)*jacpoi
                 end do
             end do
         end do

@@ -393,5 +393,5 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
 !
     call jedema()
 1010 format(' MXX= ', 1pe12.5, ' MXY= ', 1pe12.5, ' MXZ= ', 1pe12.5/,&
-   &       ' MYY= ', 1pe12.5, ' MYZ= ', 1pe12.5, ' MZZ= ', 1pe12.5)
+&       ' MYY= ', 1pe12.5, ' MYZ= ', 1pe12.5, ' MZZ= ', 1pe12.5)
 end subroutine
