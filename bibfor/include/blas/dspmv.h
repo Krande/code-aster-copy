@@ -15,18 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
 !
-
+!
+!
 interface
-    subroutine dspmv(uplo, n, alpha, a, x ,incx,beta, y,incy)
-
-        integer,intent(in) :: n,incx,incy
-        real(kind=8),intent(in) :: x        
-        real(kind=8),intent(inout) :: y
-        real(kind=8),intent(in) :: a(n*(n+1)/2),alpha,beta
-        character(len=1),intent(in) :: uplo  
-
+    subroutine dspmv(uplo, n, alpha, a, x,&
+                     incx, beta, y, incy)
+!
+        blas_int, intent(in) :: n, incx, incy
+        real(kind=8), intent(in) :: x
+        real(kind=8), intent(inout) :: y
+        real(kind=8), intent(in) :: a(n*(n+1)/2), alpha, beta
+        character(len=1), intent(in) :: uplo
+!
     end subroutine dspmv
 end interface

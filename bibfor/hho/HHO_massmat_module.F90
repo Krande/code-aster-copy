@@ -38,7 +38,7 @@ module HHO_massmat_module
 ! Module to compute mass matrix
 !
 ! --------------------------------------------------------------------------------------------------
-    public   :: hhoMassMatCellScal, hhoMassMatFaceScal
+    public :: hhoMassMatCellScal, hhoMassMatFaceScal
 !    private  ::
 !
 contains
@@ -52,9 +52,9 @@ contains
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in)        :: min_order
-        integer, intent(in)        :: max_order
-        real(kind=8), intent(out)  :: massMat(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        real(kind=8), intent(out) :: massMat(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
         integer, intent(out), optional :: mbs
 !
 ! --------------------------------------------------------------------------------------------------
@@ -70,9 +70,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        type(HHO_quadrature)  :: hhoQuad
-        real(kind=8), dimension(MSIZE_CELL_SCAL):: basisScalEval
+        type(HHO_quadrature) :: hhoQuad
+        real(kind=8), dimension(MSIZE_CELL_SCAL) :: basisScalEval
         integer :: dimMat, ipg
+        blas_int :: b_incx, b_lda, b_n
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- init basis
@@ -88,9 +89,13 @@ contains
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
             call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), min_order, max_order,&
-                              & basisScalEval)
+                                     basisScalEval)
 ! --------  Eval massMat
-            call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, 1, massMat, MSIZE_CELL_SCAL)
+            b_n = to_blas_int(dimMat)
+            b_incx = to_blas_int(1)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            call dsyr('U', b_n, hhoQuad%weights(ipg), basisScalEval, b_incx,&
+                      massMat, b_lda)
         end do
 !
 ! ----- Copy the lower part
@@ -113,9 +118,9 @@ contains
         implicit none
 !
         type(HHO_Face), intent(in) :: hhoFace
-        integer, intent(in)        :: min_order
-        integer, intent(in)        :: max_order
-        real(kind=8), intent(out)  :: massMat(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL)
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        real(kind=8), intent(out) :: massMat(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL)
         integer, intent(out), optional :: mbs
 !
 ! --------------------------------------------------------------------------------------------------
@@ -131,9 +136,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_face) :: hhoBasisFace
-        type(HHO_quadrature)  :: hhoQuad
+        type(HHO_quadrature) :: hhoQuad
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
         integer :: dimMat, ipg
+        blas_int :: b_incx, b_lda, b_n
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- init basis
@@ -148,10 +154,14 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), min_order, &
-                                    & max_order, basisScalEval)
+            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), min_order, max_order,&
+                                     basisScalEval)
 ! --------  Eval massMat
-            call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, 1, massMat, MSIZE_FACE_SCAL)
+            b_n = to_blas_int(dimMat)
+            b_incx = to_blas_int(1)
+            b_lda = to_blas_int(MSIZE_FACE_SCAL)
+            call dsyr('U', b_n, hhoQuad%weights(ipg), basisScalEval, b_incx,&
+                      massMat, b_lda)
         end do
 !
 ! ----- Copy the lower part

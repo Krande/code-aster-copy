@@ -25,7 +25,7 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlacon(n, v, x, isgn, est, &
+subroutine ar_dlacon(n, v, x, isgn, est,&
                      kase)
 !
 !     SUBROUTINE LAPACK CALCULANT LA NORME L1 D'UNE MATRICE CARREE.
@@ -144,7 +144,7 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 !     ................ ENTRY   (JUMP = 1)
 !     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY A*X.
 !
-20  continue
+ 20 continue
     if (n .eq. 1) then
         v(1) = x(1)
         est = abs(v(1))
@@ -164,13 +164,15 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 !     ................ ENTRY   (JUMP = 2)
 !     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY TRANDPOSE(A)*X.
 !
-40  continue
-    j = idamax(n, x, 1)
+ 40 continue
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    j = idamax(b_n, x, b_incx)
     iter = 2
 !
 !     MAIN LOOP - ITERATIONS 2,3,...,ITMAX.
 !
-50  continue
+ 50 continue
     do i = 1, n
         x(i) = zero
     end do
@@ -182,7 +184,7 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 !     ................ ENTRY   (JUMP = 3)
 !     X HAS BEEN OVERWRITTEN BY A*X.
 !
-70  continue
+ 70 continue
     b_n = to_blas_int(n)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
@@ -195,7 +197,7 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 !     REPEATED SIGN VECTOR DETECTED, HENCE ALGORITHM HAS CONVERGED.
     goto 120
 !
-90  continue
+ 90 continue
 !     TEST FOR CYCLING.
     if (est .le. estold) goto 120
 !
@@ -212,7 +214,9 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 !
 110 continue
     jlast = j
-    j = idamax(n, x, 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    j = idamax(b_n, x, b_incx)
     if ((x(jlast) .ne. abs(x(j))) .and. (iter .lt. itmax)) then
         iter = iter+1
         goto 50

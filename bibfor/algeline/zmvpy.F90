@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zmvpy(uplo, n, alpha, a, lda, &
+subroutine zmvpy(uplo, n, alpha, a, lda,&
                  x, incx, beta, y, incy)
     implicit none
 #include "asterfort/vecinc.h"
@@ -45,6 +45,7 @@ subroutine zmvpy(uplo, n, alpha, a, lda, &
     integer :: i, ix, iy, j, ky
     complex(kind=8) :: temp
     real(kind=8) :: dble
+    blas_int :: b_incx, b_incy, b_n
 !
     if (n .eq. 0 .or. (alpha .eq. (0.0d0, 0.0d0) .and. beta .eq. (1.0d0, 0.0d0))) goto 999
 !
@@ -72,8 +73,11 @@ subroutine zmvpy(uplo, n, alpha, a, lda, &
         do j = 1, n
             temp = alpha*x(ix)
             ky = iy+(j-2)*min(incy, 0)
-            call zaxpy(j-1, temp, a(1, j), 1, y(ky), &
-                       incy)
+            b_n = to_blas_int(j-1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(incy)
+            call zaxpy(b_n, temp, a(1, j), b_incx, y(ky),&
+                       b_incy)
             ky = iy+(j-1)*incy
             y(ky) = y(ky)+temp*dble(a(j, j))
             do i = j+1, n
@@ -92,8 +96,11 @@ subroutine zmvpy(uplo, n, alpha, a, lda, &
             end do
             y(ky) = y(ky)+temp*dble(a(j, j))
             ky = ky+incy+(n-j-1)*min(incy, 0)
-            call zaxpy(n-j, temp, a(j+1, j), 1, y(ky), &
-                       incy)
+            b_n = to_blas_int(n-j)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(incy)
+            call zaxpy(b_n, temp, a(j+1, j), b_incx, y(ky),&
+                       b_incy)
             ix = ix+incx
         end do
     end if

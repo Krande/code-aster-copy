@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine extrac(interp, prec, crit, nbinst, ti, &
-                  temps, y, neq, xtract, ier, &
+subroutine extrac(interp, prec, crit, nbinst, ti,&
+                  temps, y, neq, xtract, ier,&
                   index)
     implicit none
 #include "blas/daxpy.h"
@@ -117,11 +117,13 @@ subroutine extrac(interp, prec, crit, nbinst, ti, &
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, y((i-1)*neq+1), b_incx, xtract, b_incy)
-                call dscal(neq, (1.d0-alpha), xtract, 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, (1.d0-alpha), xtract, b_incx)
                 b_n = to_blas_int(neq)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, alpha, y(i*neq+1), b_incx, xtract, &
+                call daxpy(b_n, alpha, y(i*neq+1), b_incx, xtract,&
                            b_incy)
                 goto 9999
             end if

@@ -40,6 +40,7 @@ subroutine fft(s, n, ifft)
     integer :: le, le1, m, n2, nm1, nv2
     complex(kind=8) :: calpha
     real(kind=8) :: pi
+    blas_int :: b_incx, b_n
 !-----------------------------------------------------------------------
 !
     m = int(log(dble(n))/log(2.d0))
@@ -64,14 +65,14 @@ subroutine fft(s, n, ifft)
         t = s(j)
         s(j) = s(i)
         s(i) = t
-5       continue
+  5     continue
         k = nv2
-6       continue
+  6     continue
         if (k .ge. j) goto 7
         j = j-k
         k = k/2
         goto 6
-7       continue
+  7     continue
         j = j+k
     end do
     do l = 1, m
@@ -92,6 +93,8 @@ subroutine fft(s, n, ifft)
     end do
     if (ifft .lt. 0) then
         calpha = dcmplx(1.d0, 0.d0)/(n2*1.d0)
-        call zscal(n2, calpha, s, 1)
+        b_n = to_blas_int(n2)
+        b_incx = to_blas_int(1)
+        call zscal(b_n, calpha, s, b_incx)
     end if
 end subroutine

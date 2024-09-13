@@ -73,7 +73,10 @@ subroutine romMultiParaModeSave(multPara, base, numeMode, modeName)
 !
     if (syst_type .eq. 'C') then
         call jeveuo(modeName(1:19)//'.VALE', 'E', vc=modeValeC)
-        normc = zdotc(nbEqua, modeValeC, 1, modeValeC, 1)
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normc = zdotc(b_n, modeValeC, b_incx, modeValeC, b_incy)
         modeValeC(:) = modeValeC(:)/sqrt(normc)
         call romModeSave(resultName, numeMode, fieldName, mode, modeValeC_=modeValeC)
     else if (syst_type .eq. 'R') then

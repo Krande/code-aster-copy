@@ -17,7 +17,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmfici(nno, nddl, wref, vff, dfde, &
+subroutine nmfici(nno, nddl, wref, vff, dfde,&
                   geom, poids, b)
 !
 !
@@ -75,12 +75,16 @@ subroutine nmfici(nno, nddl, wref, vff, dfde, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, r, b_incx, b(1, 1, n), b_incy)
-        call dscal(9, -vff(n), b(1, 1, n), 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -vff(n), b(1, 1, n), b_incx)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, r, b_incx, b(1, 1, n+nno), b_incy)
-        call dscal(9, vff(n), b(1, 1, n+nno), 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, vff(n), b(1, 1, n+nno), b_incx)
     end do
 !
 end subroutine

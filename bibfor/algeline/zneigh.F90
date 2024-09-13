@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zneigh(rnorm, n, h, ldh, ritz, &
-                  bounds, q, ldq, workl, rwork, &
+subroutine zneigh(rnorm, n, h, ldh, ritz,&
+                  bounds, q, ldq, workl, rwork,&
                   ierr)
 !
 !     SUBROUTINE ARPACK CALCULANT LES MODES PROPRES DE LA MATRICE DE
@@ -177,6 +177,10 @@ subroutine zneigh(rnorm, n, h, ldh, ritz, &
     integer :: j, msglvl
     complex(kind=8) :: vl(1)
     real(kind=8) :: temp
+    blas_int :: b_incx, b_n
+    blas_int :: b_incy
+    blas_int :: b_lda, b_ldb, b_m
+    blas_int :: b_ihi, b_ihiz, b_ilo, b_iloz, b_ldh, b_ldz
 !
 !     %--------------------%
 !     | EXTERNAL FUNCTIONS |
@@ -197,7 +201,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz, &
     msglvl = mneigh
 !
     if (msglvl .gt. 2) then
-        call zmout(logfil, n, n, h, ldh, &
+        call zmout(logfil, n, n, h, ldh,&
                    ndigit, '_NEIGH: ENTERING UPPER HESSENBERG MATRIX H ')
     end if
 !
@@ -209,17 +213,34 @@ subroutine zneigh(rnorm, n, h, ldh, ritz, &
 !     |    IN WORKL(1:N**2), AND THE SCHUR VECTORS IN Q.         |
 !     %----------------------------------------------------------%
 !
-    call zlacpy('A', n, n, h, ldh, &
-                workl, n)
-    call zlaset('A', n, n, zero, one, &
-                q, ldq)
+    b_ldb = to_blas_int(n)
+    b_lda = to_blas_int(ldh)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(n)
+    call zlacpy('A', b_m, b_n, h, b_lda,&
+                workl, b_ldb)
+    b_lda = to_blas_int(ldq)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(n)
+    call zlaset('A', b_m, b_n, zero, one,&
+                q, b_lda)
 !
-    call zlahqr(.true._1, .true._1, n, 1, n, &
-                workl, ldh, ritz, 1, n, &
-                q, ldq, ierr4)
+    b_ldz = to_blas_int(ldq)
+    b_ldh = to_blas_int(ldh)
+    b_n = to_blas_int(n)
+    b_ilo = to_blas_int(1)
+    b_ihi = to_blas_int(n)
+    b_iloz = to_blas_int(1)
+    b_ihiz = to_blas_int(n)
+    call zlahqr(.true._1, .true._1, b_n, b_ilo, b_ihi,&
+                workl, b_ldh, ritz, b_iloz, b_ihiz,&
+                q, b_ldz, ierr4)
     if (ierr4 .ne. 0) goto 9000
 !
-    call zcopy(n, q(n-1, 1), ldq, bounds, 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(ldq)
+    b_incy = to_blas_int(1)
+    call zcopy(b_n, q(n-1, 1), b_incx, bounds, b_incy)
     if (msglvl .gt. 1) then
         call zvout(logfil, n, bounds, ndigit, '_NEIGH: LAST ROW OF THE SCHUR MATRIX FOR H')
     end if
@@ -230,8 +251,8 @@ subroutine zneigh(rnorm, n, h, ldh, ritz, &
 !     |    EIGENVECTORS.                                         |
 !     %----------------------------------------------------------%
 !
-    call ar_ztrevc('R', 'B', select, n, workl, &
-                   n, vl, n, q, ldq, &
+    call ar_ztrevc('R', 'B', select, n, workl,&
+                   n, vl, n, q, ldq,&
                    n, n, workl(n*n+1), rwork, ierr)
 !
     if (ierr .ne. 0) goto 9000
@@ -246,12 +267,19 @@ subroutine zneigh(rnorm, n, h, ldh, ritz, &
 !     %------------------------------------------------%
 !
     do j = 1, n
-        temp = dznrm2(n, q(1, j), 1)
-        call zdscal(n, rone/temp, q(1, j), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        temp = dznrm2(b_n, q(1, j), b_incx)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        call zdscal(b_n, rone/temp, q(1, j), b_incx)
     end do
 !
     if (msglvl .gt. 1) then
-        call zcopy(n, q(n, 1), ldq, workl, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(ldq)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, q(n, 1), b_incx, workl, b_incy)
         call zvout(logfil, n, workl, ndigit, '_NEIGH: LAST ROW OF THE EIGENVECTOR MATRIX FOR H')
     end if
 !
@@ -259,8 +287,13 @@ subroutine zneigh(rnorm, n, h, ldh, ritz, &
 !     | COMPUTE THE RITZ ESTIMATES |
 !     %----------------------------%
 !
-    call zcopy(n, q(n, 1), n, bounds, 1)
-    call zdscal(n, rnorm, bounds, 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(n)
+    b_incy = to_blas_int(1)
+    call zcopy(b_n, q(n, 1), b_incx, bounds, b_incy)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    call zdscal(b_n, rnorm, bounds, b_incx)
 !
     if (msglvl .gt. 2) then
         call zvout(logfil, n, ritz, ndigit, '_NEIGH: THE EIGENVALUES OF H')

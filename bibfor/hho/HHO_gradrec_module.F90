@@ -92,6 +92,7 @@ contains
         integer :: cbs, fbs, total_dofs, iface, info, fromFace, toFace
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
         blas_int :: b_incx, b_incy
+        blas_int :: b_info, b_nhrs
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -183,8 +184,13 @@ contains
 !
 ! - Verif strange bug if info neq 0 in entry
         info = 0
-        call dposv('U', dimMG, total_dofs, MG, MSIZE_CELL_SCAL,&
-                   gradrec, MSIZE_CELL_SCAL, info)
+        b_n = to_blas_int(dimMG)
+        b_nhrs = to_blas_int(total_dofs)
+        b_lda = to_blas_int(MSIZE_CELL_SCAL)
+        b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+        call dposv('U', b_n, b_nhrs, MG, b_lda,&
+                   gradrec, b_ldb, b_info)
+        info = to_aster_int(b_info)
 !
 ! - Sucess ?
         if (info .ne. 0) then
@@ -331,6 +337,7 @@ contains
         integer :: iface, fromFace, toFace
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
         blas_int :: b_incx, b_incy
+        blas_int :: b_info, b_nhrs
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -443,8 +450,13 @@ contains
 !
 ! - Verif strange bug if info neq 0 in entry
         info = 0
-        call dposv('U', dimMassMat, hhoCell%ndim*total_dofs, MassMat, MSIZE_CELL_SCAL,&
-                   SOL, MSIZE_CELL_SCAL, info)
+        b_n = to_blas_int(dimMassMat)
+        b_nhrs = to_blas_int(hhoCell%ndim*total_dofs)
+        b_lda = to_blas_int(MSIZE_CELL_SCAL)
+        b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+        call dposv('U', b_n, b_nhrs, MassMat, b_lda,&
+                   SOL, b_ldb, b_info)
+        info = to_aster_int(b_info)
 !
 ! - Sucess ?
         if (info .ne. 0) then
@@ -634,6 +646,7 @@ contains
         integer :: jbegCell, jendCell, jbegFace, jendFace
         blas_int :: b_incx, b_incy, b_n
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
+        blas_int :: b_info, b_nhrs
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -974,8 +987,13 @@ contains
 !
 ! - Verif strange bug if info neq 0 in entry
         info = 0
-        call dposv('U', dimMassMat, nbdimMat*total_dofs, MassMat, MSIZE_CELL_SCAL,&
-                   SOL, MSIZE_CELL_SCAL, info)
+        b_n = to_blas_int(dimMassMat)
+        b_nhrs = to_blas_int(nbdimMat*total_dofs)
+        b_lda = to_blas_int(MSIZE_CELL_SCAL)
+        b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+        call dposv('U', b_n, b_nhrs, MassMat, b_lda,&
+                   SOL, b_ldb, b_info)
+        info = to_aster_int(b_info)
 !
 ! - Sucess ?
         if (info .ne. 0) then
@@ -1056,6 +1074,7 @@ contains
         real(kind=8) :: qp_dphi_ss, normal(3)
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
         blas_int :: b_incx, b_incy
+        blas_int :: b_lwork, b_nrhs
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -1257,8 +1276,13 @@ contains
 !
 ! - Verif strange bug if info neq 0 in entry
         info = 0
-        call dsysv('U', dimMGLag, total_dofs, MG, MSIZE_CELL_VEC+3,&
-                   IPIV, gradrec2, MSIZE_CELL_VEC+3, WORK, LWORK,&
+        b_ldb = to_blas_int(MSIZE_CELL_VEC+3)
+        b_lda = to_blas_int(MSIZE_CELL_VEC+3)
+        b_n = to_blas_int(dimMGLag)
+        b_nrhs = to_blas_int(total_dofs)
+        b_lwork = to_blas_int(LWORK)
+        call dsysv('U', b_n, b_nrhs, MG, b_lda,&
+                   IPIV, gradrec2, b_ldb, WORK, b_lwork,&
                    info)
 !
 ! - Sucess ?

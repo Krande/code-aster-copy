@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
+subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps,&
                                stran, dstran)
 !
     implicit none
@@ -103,12 +103,20 @@ subroutine mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
         b_incy = to_blas_int(1)
         call dcopy(b_n, epsm, b_incx, stran, b_incy)
         if (neps .eq. 6) then
-            call dscal(3, rac2, dstran(4), 1)
-            call dscal(3, rac2, stran(4), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, rac2, dstran(4), b_incx)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, rac2, stran(4), b_incx)
         end if
         if (neps .eq. 4) then
-            call dscal(1, rac2, dstran(4), 1)
-            call dscal(1, rac2, stran(4), 1)
+            b_n = to_blas_int(1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, rac2, dstran(4), b_incx)
+            b_n = to_blas_int(1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, rac2, stran(4), b_incx)
         end if
     end if
 !

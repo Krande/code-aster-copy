@@ -17,12 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dsyr(uplo, n, alpha, x, incx, a, lda)
+    subroutine dsyr(uplo, n, alpha, x, incx,&
+                    a, lda)
 !
         character(len=1), intent(in) :: uplo
-        integer, intent(in) :: n
-        integer, intent(in) :: incx
-        integer, intent(in) :: lda
+        blas_int, intent(in) :: n
+        blas_int, intent(in) :: incx
+        blas_int, intent(in) :: lda
         real(kind=8), intent(in) :: alpha
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: a(lda, *)

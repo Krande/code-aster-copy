@@ -203,7 +203,7 @@ contains
 !
 ! --- Init fields
 !
-        call inical(nbin, lpain, lchin, nbout, lpaout, &
+        call inical(nbin, lpain, lchin, nbout, lpaout,&
                     lchout)
 !
 ! --- Geometry field
@@ -226,8 +226,8 @@ contains
 !
 ! - Compute
 !
-        call calcul('S', option, ligrel_model, nbin, lchin, &
-                    lpain, nbout, lchout, lpaout, base, &
+        call calcul('S', option, ligrel_model, nbin, lchin,&
+                    lpain, nbout, lchout, lpaout, base,&
                     'OUI')
 !
         call nmtime(ds_measure, 'Stop', 'HHO_Prep')
@@ -238,7 +238,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, gradsav, stabsav, &
+    subroutine hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, gradsav, stabsav,&
                                     gradfull, stab)
 !
         implicit none
@@ -275,7 +275,7 @@ contains
 !
 ! ---- if ndim = 2, we save the full operator
 !
-            call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+            call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs,&
                                gbs, gbs_sym)
             gradfull = 0.d0
 !
@@ -296,7 +296,7 @@ contains
 !
 ! ---- if ndim = 3, we save the scalar operator for large_strain (not for small strains)
 !
-            call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+            call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs,&
                                gbs2)
 !
             if (l_largestrains) then
@@ -323,7 +323,7 @@ contains
 ! -------- Reload stabilization
         stab = 0.d0
         stabvec = 0.d0
-        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs,&
                            gbs2)
         do j = 1, total_dofs
             b_n = to_blas_int(total_dofs)
@@ -339,7 +339,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, hhoCS, &
+    subroutine hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, hhoCS,&
                                    lhs, rhs)
 !
         implicit none
@@ -368,6 +368,7 @@ contains
         aster_logical :: l_rigi_meca
         integer :: cbs, fbs, total_dofs, j
         blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_lda
 !
 ! --- Verif compor
 !
@@ -390,31 +391,31 @@ contains
 !
 ! --- large strains and use gradient
 !
-            call hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
-                                      hhoCS%fami, hhoCS%typmod, hhoCS%imater, hhoCS%compor, &
-                                      hhoCS%option, hhoCS%carcri, hhoCS%lgpg, hhoCS%nbsigm, &
-                                      hhoMecaState%time_prev, hhoMecaState%time_curr, &
-                                      hhoMecaState%depl_prev, hhoMecaState%depl_curr, &
-                                      hhoCS%sig_prev, hhoCS%vari_prev, hhoCS%angl_naut, &
-                                      hhoCS%mult_comp, hhoCS%c_plan, lhs, rhs, hhoCS%sig_curr, &
+            call hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad,&
+                                      hhoCS%fami, hhoCS%typmod, hhoCS%imater, hhoCS%compor,&
+                                      hhoCS%option, hhoCS%carcri, hhoCS%lgpg, hhoCS%nbsigm,&
+                                      hhoMecaState%time_prev, hhoMecaState%time_curr,&
+                                      hhoMecaState%depl_prev, hhoMecaState%depl_curr,&
+                                      hhoCS%sig_prev, hhoCS%vari_prev, hhoCS%angl_naut,&
+                                      hhoCS%mult_comp, hhoCS%c_plan, lhs, rhs, hhoCS%sig_curr,&
                                       hhoCS%vari_curr, hhoCS%codret)
         else
 !
 ! --- small strains and use symmetric gradient
 !
             if (l_rigi_meca) then
-                call hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
-                                     hhoCS%fami, hhoCS%imater, hhoCS%option, &
+                call hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad,&
+                                     hhoCS%fami, hhoCS%imater, hhoCS%option,&
                                      hhoMecaState%time_curr, hhoCS%angl_naut, lhs)
                 hhoCS%codret = 0
             else
-                call hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
-                                          hhoCS%fami, hhoCS%typmod, hhoCS%imater, hhoCS%compor, &
-                                          hhoCS%option, hhoCS%carcri, hhoCS%lgpg, hhoCS%nbsigm, &
-                                          hhoMecaState%time_prev, hhoMecaState%time_curr, &
-                                          hhoMecaState%depl_prev, hhoMecaState%depl_incr, &
-                                          hhoCS%sig_prev, hhoCS%vari_prev, hhoCS%angl_naut, &
-                                          hhoCS%mult_comp, lhs, rhs, hhoCS%sig_curr, &
+                call hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad,&
+                                          hhoCS%fami, hhoCS%typmod, hhoCS%imater, hhoCS%compor,&
+                                          hhoCS%option, hhoCS%carcri, hhoCS%lgpg, hhoCS%nbsigm,&
+                                          hhoMecaState%time_prev, hhoMecaState%time_curr,&
+                                          hhoMecaState%depl_prev, hhoMecaState%depl_incr,&
+                                          hhoCS%sig_prev, hhoCS%vari_prev, hhoCS%angl_naut,&
+                                          hhoCS%mult_comp, lhs, rhs, hhoCS%sig_curr,&
                                           hhoCS%vari_curr, hhoCS%codret)
             end if
         end if
@@ -428,8 +429,12 @@ contains
         call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, hhoMecaState%time_curr, hhoQuadCellRigi)
 !
         if (L_VECT(hhoCS%option)) then
-            call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC, &
-                       hhoMecaState%depl_curr, 1, 1.d0, rhs, 1)
+            b_lda = to_blas_int(MSIZE_TDOFS_VEC)
+            b_n = to_blas_int(total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, hhoData%coeff_stab(), hhoMecaState%stab, b_lda,&
+                       hhoMecaState%depl_curr, b_incx, 1.d0, rhs, b_incy)
         end if
 !
         if (L_MATR(hhoCS%option)) then
@@ -437,7 +442,7 @@ contains
                 b_n = to_blas_int(total_dofs)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, hhoData%coeff_stab(), hhoMecaState%stab(1, j), b_incx, lhs(1, j), &
+                call daxpy(b_n, hhoData%coeff_stab(), hhoMecaState%stab(1, j), b_incx, lhs(1, j),&
                            b_incy)
             end do
         end if
@@ -459,7 +464,7 @@ contains
         aster_logical, intent(in) :: l_largestrains
         real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC), intent(out) :: gradfull
         real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC), intent(out), optional :: &
-            stab
+        stab
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -511,7 +516,7 @@ contains
 !
 !===================================================================================================
 !
-    function YoungModulus(fami, imate, time, hhoQuad) result(coeff)
+    function YoungModulus(fami, imate, time, hhoQuad) result (coeff)
 !
         implicit none
 !
@@ -543,7 +548,7 @@ contains
 !
         do ipg = 1, hhoQuad%nbQuadPoints
             BEHinteg%elem%coor_elga(ipg, 1:3) = hhoQuad%points(1:3, ipg)
-            call get_elas_para(fami, imate, '+', ipg, 1, &
+            call get_elas_para(fami, imate, '+', ipg, 1,&
                                elas_id, elas_keyword, e_=e, time=time, BEHinteg=BEHinteg)
             coeff = coeff+e
         end do
@@ -608,7 +613,7 @@ contains
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
         blas_int :: b_incx, b_incy, b_n
 !
-        if (hhoComporState%option .ne. "RIGI_MECA" .and. hhoComporState%option .ne. &
+        if (hhoComporState%option .ne. "RIGI_MECA" .and. hhoComporState%option .ne.&
             "FORC_NODA") then
             call jevech('PINSTMR', 'L', iinstm)
             call jevech('PINSTPR', 'L', iinstp)
@@ -662,7 +667,7 @@ contains
             b_n = to_blas_int(mk_total_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, this%depl_incr, b_incx, this%depl_curr, &
+            call daxpy(b_n, 1.d0, this%depl_incr, b_incx, this%depl_curr,&
                        b_incy)
         else if (hhoComporState%option == "RIGI_MECA") then
             call tecach('ONO', 'PTEMPSR', 'L', iret, iad=iinstp)
@@ -713,6 +718,7 @@ contains
         real(kind=8) :: coorpg(3), weight, rho, rho_(1), coeff
         real(kind=8) :: mass_scal(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
         real(kind=8) :: mass_vec(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+        blas_int :: b_incx, b_lda, b_n
 !
 ! --- Get input fields
 !
@@ -744,16 +750,19 @@ contains
 !
 ! -------- Compute behavior
 !
-            call rcvalb(fami, ipg, 1, '+', zi(jmate), &
-                        ' ', phenom, 0, ' ', [0.d0], &
+            call rcvalb(fami, ipg, 1, '+', zi(jmate),&
+                        ' ', phenom, 0, ' ', [0.d0],&
                         1, 'RHO', rho_, icodre(1), 1)
             rho = rho_(1)
 !
 ! -------- Compute lhs
 !
             coeff = rho*weight
-            call dsyr('U', dimMatScal, coeff, BSCEval, 1, &
-                      mass_scal, MSIZE_CELL_SCAL)
+            b_n = to_blas_int(dimMatScal)
+            b_incx = to_blas_int(1)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            call dsyr('U', b_n, coeff, BSCEval, b_incx,&
+                      mass_scal, b_lda)
 !
         end do
 !

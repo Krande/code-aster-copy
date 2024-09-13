@@ -86,7 +86,7 @@ contains
             b_n = to_blas_int(FEBasis%size)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, coeff, BSEval, b_incx, rhs, &
+            call daxpy(b_n, coeff, BSEval, b_incx, rhs,&
                        b_incy)
         end do
 !

@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
-                  kscal, iscal, rscal, cscal, kvect, &
+subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
+                  kscal, iscal, rscal, cscal, kvect,&
                   ivect, rvect, cvect)
     implicit none
 ! Extract the value of a parameter in the temporary data structure for the
@@ -128,7 +128,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
 !   ====================================================================
 !
     if ((.not. present(lonvec)) .and. (.not. present(savejv))) then
-        output_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
+        output_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or.&
                       UN_PARMI4(kvect, ivect, rvect, cvect)
 !
         ASSERT(output_test)
@@ -137,7 +137,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
     do ip = 1, nbparams
         if (params(ip) .eq. param_) goto 10
     end do
-10  continue
+ 10 continue
 !
 !   The parameter to be saved was not found in the predefined list
     if (ip .eq. nbparams+1) then
@@ -162,7 +162,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
 !   --- Length of vectors
     if (present(savejv)) savejv = savename
 !
-    if (present(lonvec) .or. UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
+    if (present(lonvec) .or. UN_PARMI4(kscal, iscal, rscal, cscal) .or.&
         UN_PARMI4(kvect, ivect, rvect, cvect)) then
         call jelira(savename, 'LONMAX', lvec)
     end if
@@ -188,7 +188,10 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
                     b_incy = to_blas_int(1)
                     call dcopy(b_n, zr(jvect), b_incx, rvect, b_incy)
                 else if (partyp(ip) .eq. 'C16') then
-                    call zcopy(lvec, zc(jvect), 1, cvect, 1)
+                    b_n = to_blas_int(lvec)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(jvect), b_incx, cvect, b_incy)
                 else if (partyp(ip) .eq. 'I') then
                     do i = 1, lvec
                         ivect(i) = zi(jvect+i-1)

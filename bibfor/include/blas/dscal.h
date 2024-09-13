@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dscal(n, da, dx, incx)
-        integer, intent(in) :: n
-        real(kind=8),intent(in) :: da
-        real(kind=8),intent(inout) :: dx(*)
-        integer, intent(in) :: incx
+        blas_int, intent(in) :: n
+        real(kind=8), intent(in) :: da
+        real(kind=8), intent(inout) :: dx(*)
+        blas_int, intent(in) :: incx
     end subroutine dscal
 end interface

@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmviss(numedd, sddyna, ds_inout, instam, instap, &
+!
+subroutine nmviss(numedd, sddyna, ds_inout, instam, instap,&
                   vecasz)
 !
     use NonLin_Datastructure_type
@@ -98,6 +98,7 @@ subroutine nmviss(numedd, sddyna, ds_inout, instam, instap, &
     real(kind=8), pointer :: travd(:) => null()
     real(kind=8), pointer :: travv(:) => null()
     real(kind=8), pointer :: trava(:) => null()
+    blas_int :: b_incx, b_incy, b_lda, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -143,7 +144,8 @@ subroutine nmviss(numedd, sddyna, ds_inout, instam, instap, &
         goto 99
     else
         call rs_getfirst(ds_inout%result, nume0)
-        call rs_getnume(ds_inout%result, inst, criterion, precision, nume, iret)
+        call rs_getnume(ds_inout%result, inst, criterion, precision, nume,&
+                        iret)
         if (iret .ne. 1) then
             call utmess('F', 'DYNAMIQUE_25')
         end if
@@ -181,59 +183,80 @@ subroutine nmviss(numedd, sddyna, ds_inout, instam, instap, &
     do iordr = 1, nummax
         iarc = iordr+nume0
         iarc2 = nume+1-iordr
-        call rsexch('F', ds_inout%result, 'DEPL', iarc2, chamnd, &
+        call rsexch('F', ds_inout%result, 'DEPL', iarc2, chamnd,&
                     iret)
         call jeveuo(chamnd(1:19)//'.VALE', 'L', vr=vald)
-        call rsexch('F', ds_inout%result, 'VITE', iarc2, chamnv, &
+        call rsexch('F', ds_inout%result, 'VITE', iarc2, chamnv,&
                     iret)
         call jeveuo(chamnv(1:19)//'.VALE', 'L', vr=valv)
-        call rsexch('F', ds_inout%result, 'ACCE', iarc2, chamna, &
+        call rsexch('F', ds_inout%result, 'ACCE', iarc2, chamna,&
                     iret)
         call jeveuo(chamna(1:19)//'.VALE', 'L', vr=vala)
         if (iarc2 .gt. 0) then
-            call rsexch('F', ds_inout%result, 'DEPL', iarc2-1, chand2, &
+            call rsexch('F', ds_inout%result, 'DEPL', iarc2-1, chand2,&
                         iret)
             call jeveuo(chand2(1:19)//'.VALE', 'L', vr=vad2)
-            call rsexch('F', ds_inout%result, 'VITE', iarc2-1, chanv2, &
+            call rsexch('F', ds_inout%result, 'VITE', iarc2-1, chanv2,&
                         iret)
             call jeveuo(chanv2(1:19)//'.VALE', 'L', vr=vav2)
-            call rsexch('F', ds_inout%result, 'ACCE', iarc2-1, chana2, &
+            call rsexch('F', ds_inout%result, 'ACCE', iarc2-1, chana2,&
                         iret)
             call jeveuo(chana2(1:19)//'.VALE', 'L', vr=vaa2)
         end if
         if (iordr .eq. (nume+1-nume0)) then
             inst = instd+pas
         else
-            call rsadpa(ds_inout%result, 'L', 1, 'INST', iarc, &
+            call rsadpa(ds_inout%result, 'L', 1, 'INST', iarc,&
                         1, sjv=jinst, styp=k8bid)
             inst = zr(jinst)
         end if
 !
         ifreq = int(inst*(1.d0+precision)/pas)+1
-
+!
         if (iarc2 .gt. 0) then
             do id1 = 1, nbmode
                 trav(id1) = zr(ldnew+zi(ieqint+id1-1)-1)
-                travd(id1) = coef1*vald(1+zi(ieqint+id1-1)-1) &
-                             +coef2*vad2(1+zi(ieqint+id1-1)-1)
-                travv(id1) = coef1*valv(1+zi(ieqint+id1-1)-1) &
-                             +coef2*vav2(1+zi(ieqint+id1-1)-1)
-                trava(id1) = coef1*vala(1+zi(ieqint+id1-1)-1) &
-                             +coef2*vaa2(1+zi(ieqint+id1-1)-1)
+                travd(id1) = coef1*vald(1+zi(ieqint+id1-1)-1) +coef2*vad2(1+zi(ieqint+id1-1)-1)
+                travv(id1) = coef1*valv(1+zi(ieqint+id1-1)-1) +coef2*vav2(1+zi(ieqint+id1-1)-1)
+                trava(id1) = coef1*vala(1+zi(ieqint+id1-1)-1) +coef2*vaa2(1+zi(ieqint+id1-1)-1)
             end do
             alpha = -0.5d0
-            call dsymv('L', nbmode, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, travd, 1, 1.d0, trav, 1)
-            call dsymv('U', nbmode, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, travd, 1, 1.d0, trav, 1)
-            call dsymv('L', nbmode, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, travv, 1, 1.d0, trav, 1)
-            call dsymv('U', nbmode, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, travv, 1, 1.d0, trav, 1)
-            call dsymv('L', nbmode, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, trava, 1, 1.d0, trav, 1)
-            call dsymv('U', nbmode, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, trava, 1, 1.d0, trav, 1)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('L', b_n, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       travd, b_incx, 1.d0, trav, b_incy)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       travd, b_incx, 1.d0, trav, b_incy)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('L', b_n, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       travv, b_incx, 1.d0, trav, b_incy)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       travv, b_incx, 1.d0, trav, b_incy)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('L', b_n, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       trava, b_incx, 1.d0, trav, b_incy)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       trava, b_incx, 1.d0, trav, b_incy)
         else
             do id1 = 1, nbmode
                 trav(id1) = zr(ldnew+zi(ieqint+id1-1)-1)
@@ -242,19 +265,43 @@ subroutine nmviss(numedd, sddyna, ds_inout, instam, instap, &
                 trava(id1) = vala(1+zi(ieqint+id1-1)-1)
             end do
             alpha = -0.5d0*coef1
-            call dsymv('L', nbmode, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, travd, 1, 1.d0, trav, 1)
-            call dsymv('U', nbmode, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, travd, 1, 1.d0, trav, 1)
-            call dsymv('L', nbmode, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, travv, 1, 1.d0, trav, 1)
-            call dsymv('U', nbmode, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, travv, 1, 1.d0, trav, 1)
-            call dsymv('L', nbmode, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, trava, 1, 1.d0, trav, 1)
-            call dsymv('U', nbmode, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode), &
-                       nbmode, trava, 1, 1.d0, trav, 1)
-
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('L', b_n, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       travd, b_incx, 1.d0, trav, b_incy)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       travd, b_incx, 1.d0, trav, b_incy)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('L', b_n, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       travv, b_incx, 1.d0, trav, b_incy)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       travv, b_incx, 1.d0, trav, b_incy)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('L', b_n, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       trava, b_incx, 1.d0, trav, b_incy)
+            b_lda = to_blas_int(nbmode)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode), b_lda,&
+                       trava, b_incx, 1.d0, trav, b_incy)
+!
         end if
         do id1 = 1, nbmode
             zr(ldnew+zi(ieqint+id1-1)-1) = trav(id1)
@@ -276,7 +323,7 @@ subroutine nmviss(numedd, sddyna, ds_inout, instam, instap, &
         end do
     end if
 !
-99  continue
+ 99 continue
     call jedetr(tabfor)
     call jedema()
 end subroutine

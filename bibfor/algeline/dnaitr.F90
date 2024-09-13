@@ -473,8 +473,12 @@ subroutine dnaitr(ido, bmat, n, k, np,&
     call dcopy(b_n, resid, b_incx, v(1, j), b_incy)
     if (rnorm .ge. unfl) then
         temp1 = one/rnorm
-        call dscal(n, temp1, v(1, j), 1)
-        call dscal(n, temp1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, temp1, v(1, j), b_incx)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, temp1, workd(ipj), b_incx)
     else
 !
 !            %-----------------------------------------%

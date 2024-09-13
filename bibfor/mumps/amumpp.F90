@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine amumpp(option, nbsol, kxmps, ldist, type, &
-                  impr, ifmump, eli2lg, rsolu, csolu, &
+subroutine amumpp(option, nbsol, kxmps, ldist, type,&
+                  impr, ifmump, eli2lg, rsolu, csolu,&
                   vcine, prepos, lpreco, lmhpc)
 !
 !
@@ -324,10 +324,10 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !           --- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
 !           --- RANG 0 UNIQUEMENT
                 if (ltypr) then
-                    call mrconl('MULT', lmat, nbeql, 'R', rsolu, &
+                    call mrconl('MULT', lmat, nbeql, 'R', rsolu,&
                                 nbsol)
                 else
-                    call mcconl('MULT', lmat, nbeql, 'C', csolu, &
+                    call mcconl('MULT', lmat, nbeql, 'C', csolu,&
                                 nbsol)
                 end if
             end if
@@ -350,13 +350,13 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                 if (ltypr) then
                     ASSERT(rouc .eq. 'R')
                     do i = 1, nbsol
-                        call csmbgg(lmat, rsolu(nbeql*(i-1)+1), zr(idvalc), [cbid], [cbid], &
+                        call csmbgg(lmat, rsolu(nbeql*(i-1)+1), zr(idvalc), [cbid], [cbid],&
                                     'R')
                     end do
                 else
                     ASSERT(rouc .eq. 'C')
                     do i = 1, nbsol
-                        call csmbgg(lmat, [0.d0], [0.d0], csolu(nbeql*(i-1)+1), zc(idvalc), &
+                        call csmbgg(lmat, [0.d0], [0.d0], csolu(nbeql*(i-1)+1), zc(idvalc),&
                                     'C')
                     end do
                 end if
@@ -477,7 +477,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                         caux = dcmplx(0.d0, 0.d0)
                     else if (rtest .gt. rmax) then
                         caux = dcmplx(rmax*sign(1.d0, dble(caux)), 0.d0)
-                        caux = rmax*dcmplx( &
+                        caux = rmax*dcmplx(&
                                1.d0*sign(1.d0, dble(caux)), 1.d0*sign(1.d0, imag(caux)))
                     end if
                     cmpsk%rhs(i) = cmplx(caux, kind=4)
@@ -588,7 +588,10 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                     call dcopy(b_n, dmpsk%rhs, b_incx, rsolu2, b_incy)
                     deallocate (dmpsk%rhs)
                 else if (type .eq. 'Z') then
-                    call zcopy(nnbsol, zmpsk%rhs, 1, csolu2, 1)
+                    b_n = to_blas_int(nnbsol)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zmpsk%rhs, b_incx, csolu2, b_incy)
                     deallocate (zmpsk%rhs)
                 else
                     ASSERT(.false.)
@@ -673,10 +676,10 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !         ON NE LE FAIT PAS SI NON DEMANDE
             if (.not. lpreco .and. prepos) then
                 if (ltypr) then
-                    call mrconl('MULT', lmat, nbeql, 'R', rsolu, &
+                    call mrconl('MULT', lmat, nbeql, 'R', rsolu,&
                                 nbsol)
                 else
-                    call mcconl('MULT', lmat, nbeql, 'C', csolu, &
+                    call mcconl('MULT', lmat, nbeql, 'C', csolu,&
                                 nbsol)
                 end if
             end if

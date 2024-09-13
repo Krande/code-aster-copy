@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine copmod(base, bmodr, bmodz, champ, numer, &
+subroutine copmod(base, bmodr, bmodz, champ, numer,&
                   nbmodes, nequa)
     implicit none
 !
@@ -154,7 +154,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
             end if
         else
 ! Check with nume_ddl in resu_dyna (meant to be reference) otherwise
-            call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=nume_ddl_field, arret='C', &
+            call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=nume_ddl_field, arret='C',&
                         ier=iret)
             if (iret .eq. 0) then
                 call jeexin(nume_ddl_field//'.NUME.NEQU', iret)
@@ -168,7 +168,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
         end if
     else
 !   --- 2. CHAMP AUX ELEMENTS : PAR RAPPORT A UN CHAMP DU MEME TYPE DE LA BASE
-        call rsexch('F', base, champ2, 1, nomcha, &
+        call rsexch('F', base, champ2, 1, nomcha,&
                     iret)
         call jelira(nomcha(1:19)//'.CELV', 'LONMAX', neq)
         if (present(nequa)) then
@@ -193,7 +193,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !
 !     1.1.1 - RECUPERER LE NOM DE CHAMP DU 1ER NUMERO ORDRE
 !
-    call rsexch('F', base, champ2, 1, nomcha, &
+    call rsexch('F', base, champ2, 1, nomcha,&
                 iret)
     valcha = nomcha//'.VALE'
     call jeexin(nomcha//'.VALE', iret)
@@ -206,7 +206,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !             RECUPERER LE .REFE DU CHAMP DE DEPLACEMENT
 !
     call jeexin(nomcha//'.REFE', iret)
-    if (iret .eq. 0) call rsexch('F', base, 'DEPL', 1, nomcha, &
+    if (iret .eq. 0) call rsexch('F', base, 'DEPL', 1, nomcha,&
                                  iret)
 !
     call jeveuo(nomcha//'.REFE', 'L', vk24=refe)
@@ -280,7 +280,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !     3.1 - BOUCLE SUR LES MODES DE LA BASE
     do i = 1, nbmode
 !       3.1.1 - EXTRAIRE LE NOM DU CHAMP D'INTERET (NOMCHA)
-        call rsexch('F', base, champ2, i, nomcha, &
+        call rsexch('F', base, champ2, i, nomcha,&
                     iret)
 !
 !       3.1.2 - NOUVELLE NUMER.? BASE IN REELLE et BASE OUT COMPLEXE?
@@ -288,7 +288,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !               AVEC LA BONNE NUMEROTATION
         if (docu(1:4) == 'CHNO' .and. (modnum .or. r2zbase)) then
             tmpcha = '&&COPMOD.CHAMP'
-            call copy_field_with_numbering(nomcha, tmpcha, maill2, nume_equa_user, 'V', &
+            call copy_field_with_numbering(nomcha, tmpcha, maill2, nume_equa_user, 'V',&
                                            typc=typc, nequa=neq)
             nomcha = tmpcha
         end if
@@ -307,7 +307,10 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
             b_incy = to_blas_int(1)
             call dcopy(b_n, zr(jval), b_incx, bmodr((i-1)*neq+1), b_incy)
         else
-            call zcopy(neq, zc(jval), 1, bmodz((i-1)*neq+1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, zc(jval), b_incx, bmodz((i-1)*neq+1), b_incy)
         end if
 !
 !       3.1.5 - MENAGE ET LIBERATION DE LA MEMOIRE SELON LE BESOIN

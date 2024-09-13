@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal, &
-                  iscal, rscal, cscal, kvect, ivect, &
+subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
+                  iscal, rscal, cscal, kvect, ivect,&
                   rvect, cvect, savejv)
     implicit none
 ! Save a parameter in the temporary data structure for the command
@@ -143,7 +143,7 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal, &
     do ip = 1, nbparams
         if (params(ip) .eq. param_) goto 10
     end do
-10  continue
+ 10 continue
 !
 !   The parameter to be saved was not found in the predefined list
     if (ip .eq. nbparams+1) then
@@ -181,7 +181,10 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal, &
             b_incy = to_blas_int(1)
             call dcopy(b_n, rvect, b_incx, zr(jvect), b_incy)
         else if (partyp(ip) .eq. 'C8') then
-            call zcopy(lonvec, cvect, 1, zc(jvect), 1)
+            b_n = to_blas_int(lonvec)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, cvect, b_incx, zc(jvect), b_incy)
         else if (partyp(ip) .eq. 'I') then
             do i = 1, lonvec
                 zi(jvect+i-1) = ivect(i)

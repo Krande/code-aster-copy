@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine zlacon(n, v, x, est, kase)
-        integer, intent(in) :: n
-        complex(kind=8) ,intent(out) :: v(n)
-        complex(kind=8) ,intent(inout) :: x(n)
-        real(kind=8) ,intent(inout) :: est
+        blas_int, intent(in) :: n
+        complex(kind=8), intent(out) :: v(n)
+        complex(kind=8), intent(inout) :: x(n)
+        real(kind=8), intent(inout) :: est
         blas_int, intent(inout) :: kase
     end subroutine zlacon
 end interface

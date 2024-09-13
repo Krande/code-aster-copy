@@ -135,13 +135,13 @@ subroutine op0141()
 !
 ! RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
     call gettco(base1, typba1)
-    call rsorac(base1, 'LONUTI', 0, rbid, k8b, &
-                cbid, rbid, 'ABSOLU', tmod, 1, &
+    call rsorac(base1, 'LONUTI', 0, rbid, k8b,&
+                cbid, rbid, 'ABSOLU', tmod, 1,&
                 ibid)
     nbmod1 = tmod(1)
     call gettco(base2, typba2)
-    call rsorac(base2, 'LONUTI', 0, rbid, k8b, &
-                cbid, rbid, 'ABSOLU', tmod, 1, &
+    call rsorac(base2, 'LONUTI', 0, rbid, k8b,&
+                cbid, rbid, 'ABSOLU', tmod, 1,&
                 ibid)
     nbmod2 = tmod(1)
 !
@@ -252,7 +252,7 @@ subroutine op0141()
         do i = 1, nbmod1
             pii = 0.d0
             if (matr .ne. ' ') then
-                call mcmult('ZERO', imatra, zc(idbas1+(i-1)*neq), zc(idvec1), 1, &
+                call mcmult('ZERO', imatra, zc(idbas1+(i-1)*neq), zc(idvec1), 1,&
                             .true._1)
 !
                 do iddl = 1, neq
@@ -260,7 +260,10 @@ subroutine op0141()
                 end do
 !
             else
-                call zcopy(neq, zc(idbas1+(i-1)*neq), 1, zc(idvec1), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, zc(idbas1+(i-1)*neq), b_incx, zc(idvec1), b_incy)
             end if
 !
 ! PB AVEC ZDOTC DE BLAS POUR CERTAIN COMPILO -> CALCUL DIRECT
@@ -276,7 +279,7 @@ subroutine op0141()
                 pij = 0.d0
                 pjj = 0.d0
                 if (matr .ne. ' ') then
-                    call mcmult('ZERO', imatra, zc(idbas2+(j-1)*neq), zc(idvec2), 1, &
+                    call mcmult('ZERO', imatra, zc(idbas2+(j-1)*neq), zc(idvec2), 1,&
                                 .true._1)
 !
                     do iddl = 1, neq
@@ -284,7 +287,10 @@ subroutine op0141()
                     end do
 !
                 else
-                    call zcopy(neq, zc(idbas2+(j-1)*neq), 1, zc(idvec2), 1)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(idbas2+(j-1)*neq), b_incx, zc(idvec2), b_incy)
                 end if
 !
                 ztemp = dcmplx(0.0d0, 0.0d0)
@@ -295,10 +301,10 @@ subroutine op0141()
 !
                 if (ieri) then
                     do iddl = 1, neq
-                        zc(idbas3-1+iddl) = zc( &
+                        zc(idbas3-1+iddl) = zc(&
                                             idbas1+(i-1)*neq-1+iddl)-zc(idbas2+(j-1)*neq-1+iddl)
                     end do
-                    call mcmult('ZERO', imatra, zc(idbas3), zc(idvec3), 1, &
+                    call mcmult('ZERO', imatra, zc(idbas3), zc(idvec3), 1,&
                                 .true._1)
                     do iddl = 1, neq
                         if (deeq(2*iddl) .le. 0) zc(idvec3-1+iddl) = dcmplx(0.d0, 0.d0)
@@ -322,7 +328,7 @@ subroutine op0141()
 !
                 zi(ind+1) = j
                 zr(indv) = pij
-                call tbajli(table, nbpara, zk16(inom), zi(ind), zr(indv), &
+                call tbajli(table, nbpara, zk16(inom), zi(ind), zr(indv),&
                             [cbid], k8b, 0)
             end do
         end do
@@ -343,7 +349,7 @@ subroutine op0141()
         do i = 1, nbmod1
             pii = 0.d0
             if (matr .ne. ' ') then
-                call mrmult('ZERO', imatra, zr(idbas1+(i-1)*neq), zr(idvec1), 1, &
+                call mrmult('ZERO', imatra, zr(idbas1+(i-1)*neq), zr(idvec1), 1,&
                             .true._1)
                 call zerlag(neq, deeq, vectr=zr(idvec1))
             else
@@ -364,7 +370,7 @@ subroutine op0141()
                 pij = 0.d0
                 pjj = 0.d0
                 if (matr .ne. ' ') then
-                    call mrmult('ZERO', imatra, zr(idbas2+(j-1)*neq), zr(idvec2), 1, &
+                    call mrmult('ZERO', imatra, zr(idbas2+(j-1)*neq), zr(idvec2), 1,&
                                 .true._1)
                     call zerlag(neq, deeq, vectr=zr(idvec2))
                 else
@@ -383,7 +389,7 @@ subroutine op0141()
                     do ieq = 1, neq
                         zr(idbas3-1+ieq) = zr(idbas1+neq*(i-1)-1+ieq)-zr(idbas2+neq*(i-1)-1+ieq)
                     end do
-                    call mrmult('ZERO', imatra, zr(idbas3), zr(idvec3), 1, &
+                    call mrmult('ZERO', imatra, zr(idbas3), zr(idvec3), 1,&
                                 ASTER_TRUE)
                     call zerlag(neq, deeq, vectr=zr(idvec3))
 !
@@ -413,7 +419,7 @@ subroutine op0141()
 !
                 zi(ind+1) = j
                 zr(indv) = pij
-                call tbajli(table, nbpara, zk16(inom), zi(ind), zr(indv), &
+                call tbajli(table, nbpara, zk16(inom), zi(ind), zr(indv),&
                             [cbid], k8b, 0)
             end do
         end do
@@ -422,17 +428,17 @@ subroutine op0141()
 !  FIN TEST SUR TYPE DE VECTEURS (C/R)
 !
     if (niv .ge. 2) then
-        call tbimpr(table, 'TABLEAU', ifm, 3, zk16(inom), &
+        call tbimpr(table, 'TABLEAU', ifm, 3, zk16(inom),&
                     0, '1PE12.5')
         if (nbpara .eq. 4) then
             write (ifm, *) ' '
             write (ifm, 1000) zk16(inom+2)
-            call tbimex(table, ifm, 4, zk16(inom), 'EXCEL', &
+            call tbimex(table, ifm, 4, zk16(inom), 'EXCEL',&
                         '1PE12.5')
             write (ifm, *) ' '
         end if
     end if
-1000 format('AFFICHAGE ', a4, ' ET MATRICE GENERALISEE : ')
+    1000 format('AFFICHAGE ', a4, ' ET MATRICE GENERALISEE : ')
 !
     call jedema()
 end subroutine

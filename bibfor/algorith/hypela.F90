@@ -16,10 +16,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine hypela(fami, kpg, ksp, ndim, &
-                  typmod, imate, crit, eps, &
-                  option, sig, dsidep, codret)
+!
+subroutine hypela(fami, kpg, ksp, ndim, typmod,&
+                  imate, crit, eps, option, sig,&
+                  dsidep, codret)
 !
     implicit none
 !
@@ -36,20 +36,20 @@ subroutine hypela(fami, kpg, ksp, ndim, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-
+!
     character(len=*), intent(in) :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
-    integer, intent(in)          :: ndim
-    character(len=8), intent(in)  :: typmod(*)
-    integer, intent(in)          :: imate
-    real(kind=8), intent(in)      :: crit(*)
-    real(kind=8), intent(in)      :: eps(2*ndim)
-    character(len=16), intent(in):: option
-    real(kind=8), intent(out)     :: sig(6)
-    real(kind=8), intent(out)     :: dsidep(6, 6)
-    integer, intent(out)         :: codret
-
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: imate
+    real(kind=8), intent(in) :: crit(*)
+    real(kind=8), intent(in) :: eps(2*ndim)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(out) :: sig(6)
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: codret
+!
 !
 ! ----------------------------------------------------------------------
 !
@@ -91,7 +91,8 @@ subroutine hypela(fami, kpg, ksp, ndim, &
     real(kind=8) :: c10, c01, c20, k
     integer :: nitmax
     real(kind=8) :: epsi
-    character(len=1):: poum
+    character(len=1) :: poum
+    blas_int :: b_incx, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -100,7 +101,7 @@ subroutine hypela(fami, kpg, ksp, ndim, &
 !
 ! --- LECTURE DES CARACTERISTIQUES MATERIAU
 !
-    call hypmat(fami, kpg, ksp, poum, imate, &
+    call hypmat(fami, kpg, ksp, poum, imate,&
                 c10, c01, c20, k)
 !
 ! --- A PRIORI ON A CONVERGE
@@ -128,32 +129,32 @@ subroutine hypela(fami, kpg, ksp, ndim, &
         c13 = 2.d0*epstot(5)
         c23 = 2.d0*epstot(6)
 ! --- CALCUL DES CONTRAINTES ISOTROPIQUES
-        call hyp3ci(c11, c22, c33, c12, c13, &
-                    c23, c10, c01, c20, siso, &
+        call hyp3ci(c11, c22, c33, c12, c13,&
+                    c23, c10, c01, c20, siso,&
                     codret)
         if (codret .eq. 1) then
             goto 99
         end if
 ! --- CALCUL DES CONTRAINTES VOLUMIQUES
-        call hyp3cv(c11, c22, c33, c12, c13, &
+        call hyp3cv(c11, c22, c33, c12, c13,&
                     c23, k, svol, codret)
         if (codret .eq. 1) then
             goto 99
         end if
 ! --- CALCUL DE LA MATRICE TANGENTE (PARTIE ISOTROPIQUE)
-        call hyp3di(c11, c22, c33, c12, c13, &
-                    c23, c10, c01, c20, ciso, &
+        call hyp3di(c11, c22, c33, c12, c13,&
+                    c23, c10, c01, c20, ciso,&
                     codret)
         if (codret .eq. 1) then
             goto 99
         end if
 ! --- CALCUL DE LA MATRICE TANGENTE (PARTIE VOLUMIQUE)
-        call hyp3dv(c11, c22, c33, c12, c13, &
+        call hyp3dv(c11, c22, c33, c12, c13,&
                     c23, k, cvol, codret)
         if (codret .eq. 1) then
             goto 99
         end if
-
+!
 ! --- ASSEMBLAGE VOLUMIQUE/ISOTROPIQUE
 ! --- ON CORRIGE A CE NIVEAU LES TERMES LIES AU CISAILLEMENT
 ! --- A TERME IL FAUDRA RE-ECRIRE LES ROUTINES D'INTEGRATION
@@ -170,21 +171,21 @@ subroutine hypela(fami, kpg, ksp, ndim, &
     else if (typmod(1) (1:6) .eq. 'C_PLAN') then
         epsi = abs(crit(3))
         nitmax = abs(nint(crit(1)))
-
+!
 ! --- CALCUL DES ELONGATIONS
         c11 = 2.d0*epstot(1)+1.d0
         c12 = 2.d0*epstot(4)
         c22 = 2.d0*epstot(2)+1.d0
         c33 = 1.d0
 ! --- CALCUL DES CONTRAINTES
-        call hypcpc(c11, c22, c33, c12, k, &
-                    c10, c01, c20, nitmax, epsi, &
+        call hypcpc(c11, c22, c33, c12, k,&
+                    c10, c01, c20, nitmax, epsi,&
                     sig, codret)
         if (codret .eq. 1) then
             goto 99
         end if
 ! --- CALCUL DE LA MATRICE TANGENTE
-        call hypcpd(c11, c22, c33, c12, k, &
+        call hypcpd(c11, c22, c33, c12, k,&
                     c10, c01, c20, dsidep, codret)
         if (codret .eq. 1) then
             goto 99
@@ -215,7 +216,9 @@ subroutine hypela(fami, kpg, ksp, ndim, &
 !
 ! --- POST-TRAITEMENT DES CONTRAINTES (PAS DE NOTATION DE VOIGT)
 !
-    call dscal(3, sqrt(2.d0), sig(4), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, sqrt(2.d0), sig(4), b_incx)
 !
-99  continue
+ 99 continue
 end subroutine

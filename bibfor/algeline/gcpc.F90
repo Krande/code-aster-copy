@@ -180,7 +180,9 @@ subroutine gcpc(m, in, ip, ac, inpc,&
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, bf, b_incx, r, b_incy)
-        call dscal(m, -1.d0, r, 1)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -1.d0, r, b_incx)
         anorm = bnorm
         epsix = epsi*anorm
         if (niv .eq. 2) write (ifm, 101) anorm, epsix, epsi
@@ -252,7 +254,9 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !                                                   PK <--- P()
         if (iter .gt. 1) then
             gama = rrri/rrrim1
-            call dscal(m, gama, p, 1)
+            b_n = to_blas_int(m)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, gama, p, b_incx)
             b_n = to_blas_int(m)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)

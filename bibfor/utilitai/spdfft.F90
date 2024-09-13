@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine spdfft(lvar, nbva, nsens, ltra, nbpts1, &
+subroutine spdfft(lvar, nbva, nsens, ltra, nbpts1,&
                   nbpts, nout, nbpts2, sym)
     implicit none
 #include "jeveux.h"
@@ -36,6 +36,7 @@ subroutine spdfft(lvar, nbva, nsens, ltra, nbpts1, &
     complex(kind=8) :: dcmplx, czero, caux
     real(kind=8) :: pas, pasfrq, raux, rzero
     integer :: lfon, i, ii, valmax, lres1
+    blas_int :: b_incx, b_incy, b_n
 !     ----------------------------------------------------------------
 !
     czero = dcmplx(0.D0, 0.D0)
@@ -63,7 +64,10 @@ subroutine spdfft(lvar, nbva, nsens, ltra, nbpts1, &
         do i = 1, nbpts2
             zc(nout+i-1) = (i-1)*caux
         end do
-        call zcopy(nbpts2, zc(ltra), 1, zc(lres1), 1)
+        b_n = to_blas_int(nbpts2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, zc(ltra), b_incx, zc(lres1), b_incy)
 !
     else if (nsens .eq. -1) then
 !     --- SENS INVERSE
@@ -81,16 +85,15 @@ subroutine spdfft(lvar, nbva, nsens, ltra, nbpts1, &
             zc(ltra+i-1) = dcmplx(zr(lfon+ii-1), zr(lfon+ii))
             zc(ltra+nbpts2-i+1) = dcmplx(zr(lfon+ii-1), -zr(lfon+ii))
         end do
-        zc(ltra+nbpts+1) = dcmplx(((4.d0*zr(lfon+ii-1)-zr(lfon+ii-3) &
-                                    )/3.d0), 0.d0)
+        zc(ltra+nbpts+1) = dcmplx(((4.d0*zr(lfon+ii-1)-zr(lfon+ii-3) )/3.d0), 0.d0)
         if ((nbpts .gt. nbva) .and. (sym .eq. 'NON')) then
             do i = 1, (nbpts-nbva)
                 zc(ltra+nbva+i-1) = dcmplx(0.d0, 0.d0)
                 zc(ltra+nbpts2-nbva-i+1) = dcmplx(0.d0, 0.d0)
             end do
         end if
-        zc(ltra+nbpts+1) = dcmplx(((4.d0*dble(zc(ltra+nbpts))-dble(zc( &
-                                                                   ltra+nbpts-1)))/3.d0), 0.d0)
+        zc(ltra+nbpts+1) = dcmplx(&
+                           ((4.d0*dble(zc(ltra+nbpts))-dble(zc( ltra+nbpts-1)))/3.d0), 0.d0)
         call fft(zc(ltra), nbpts2, -1)
         pas = zr(lvar+1)-zr(lvar)
         lres1 = nout+nbpts2

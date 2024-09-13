@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine postsm(option, fm, df, sigm, sigp, &
+subroutine postsm(option, fm, df, sigm, sigp,&
                   dsidep)
 !
 !
@@ -53,16 +53,18 @@ subroutine postsm(option, fm, df, sigm, sigp, &
     resi = option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL'
     rigi = option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL'
 !
-    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(&
-         &3, 2))+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
+    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3&
+         &, 2))+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
-    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2))-df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(&
-         &3, 2))+df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
+    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2))-df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(3&
+         &, 2))+df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
 !
     jp = jm*dj
 !
     if (resi) then
-        call dscal(6, jp, sigp, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, jp, sigp, b_incx)
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -73,7 +75,9 @@ subroutine postsm(option, fm, df, sigm, sigp, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, sigm, b_incx, tau, b_incy)
-        call dscal(6, jm, tau, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, jm, tau, b_incx)
         j = jm
     end if
 !
@@ -83,7 +87,9 @@ subroutine postsm(option, fm, df, sigm, sigp, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, dsidep, b_incx, mat, b_incy)
-        call dscal(54, j, mat, 1)
+        b_n = to_blas_int(54)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, j, mat, b_incx)
         do kl = 1, 6
             do p = 1, 3
                 do q = 1, 3
@@ -99,6 +105,8 @@ subroutine postsm(option, fm, df, sigm, sigp, &
         end do
     end if
 !
-    call dscal(3, rac2, sigp(4), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, rac2, sigp(4), b_incx)
 !
 end subroutine

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlfft(n, x, y, h, nt, &
+subroutine mnlfft(n, x, y, h, nt,&
                   ind)
     implicit none
 !
@@ -57,6 +57,7 @@ subroutine mnlfft(n, x, y, h, nt, &
 !
     integer :: k, iadd, j
     integer :: ixf, iyf, ixft
+    blas_int :: b_incx, b_n
 !
     call jemarq()
 !
@@ -69,7 +70,9 @@ subroutine mnlfft(n, x, y, h, nt, &
 ! ---   REECRITURE COMPATIBLE AVEC LA DFT
 ! ---   APPLICATION DE L'IFFT
         do k = 1, n
-            call zdscal(nt, 0.d0, zc(ixft), 1)
+            b_n = to_blas_int(nt)
+            b_incx = to_blas_int(1)
+            call zdscal(b_n, 0.d0, zc(ixft), b_incx)
 !
             zc(ixft) = nt*x(k)
             do j = 1, h

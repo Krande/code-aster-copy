@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
-                 iscal, rscal, cscal, kscal, ivect, &
-                 rvect, cvect, kvect, vi, vr, &
-                 vc, vk8, vk16, vk24, address, &
+subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
+                 iscal, rscal, cscal, kscal, ivect,&
+                 rvect, cvect, kvect, vi, vr,&
+                 vc, vk8, vk16, vk24, address,&
                  buffer)
     use iso_c_binding, only: c_loc, c_ptr, c_f_pointer
     implicit none
@@ -117,8 +117,8 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
 !   ====================================================================
 !
     if ((.not. present(lonvec)) .and. (.not. present(savejv))) then
-        output_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
-                      UN_PARMI4(kvect, ivect, rvect, cvect) .or. UN_PARMI3(vk8, vk16, vk24) .or. &
+        output_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or.&
+                      UN_PARMI4(kvect, ivect, rvect, cvect) .or. UN_PARMI3(vk8, vk16, vk24) .or.&
                       UN_PARMI4(vi, vr, vc, address)
 !
         ASSERT(output_test)
@@ -177,7 +177,10 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, zr(addr), b_incx, rvect, b_incy)
             else if (present(cvect)) then
-                call zcopy(lvec, zc(addr), 1, cvect, 1)
+                b_n = to_blas_int(lvec)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, zc(addr), b_incx, cvect, b_incy)
             else if (present(kvect)) then
                 if (partyp(ip) .eq. 'K8 ') then
                     do i = 1, lvec
@@ -220,7 +223,7 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
         end if
     end if
 !
-20  continue
+ 20 continue
     savename(1:8) = sd_nl
     if (present(iocc)) then
 !       The parameter to be extracted is global but an occurence index was given
@@ -239,8 +242,8 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
 !   --- Length of vectors
     if (present(savejv)) savejv = savename
 !
-    if (present(lonvec) .or. UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
-        UN_PARMI4(kvect, ivect, rvect, cvect) .or. UN_PARMI3(vk8, vk16, vk24) .or. &
+    if (present(lonvec) .or. UN_PARMI4(kscal, iscal, rscal, cscal) .or.&
+        UN_PARMI4(kvect, ivect, rvect, cvect) .or. UN_PARMI3(vk8, vk16, vk24) .or.&
         UN_PARMI3(vi, vr, vc)) then
         call jeexin(savename, lvec)
         if (lvec .le. 0) then
@@ -255,12 +258,12 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
 !
     if (present(lonvec)) lonvec = lvec
 !
-    if (UN_PARMI4(kscal, iscal, rscal, cscal) .or. UN_PARMI4(kvect, ivect, rvect, cvect) &
+    if (UN_PARMI4(kscal, iscal, rscal, cscal) .or. UN_PARMI4(kvect, ivect, rvect, cvect)&
         .or. UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
 !   --- Vectors
         if (abs(parind(ip)) .eq. 2) then
 !
-            if (UN_PARMI4(kvect, ivect, rvect, cvect) .or. UN_PARMI3(vk8, vk16, vk24) .or. &
+            if (UN_PARMI4(kvect, ivect, rvect, cvect) .or. UN_PARMI3(vk8, vk16, vk24) .or.&
                 UN_PARMI3(vi, vr, vc)) then
                 if (partyp(ip) .eq. 'I') then
                     if (present(ivect)) then
@@ -284,7 +287,10 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
                 else if (partyp(ip) .eq. 'C') then
                     if (present(cvect)) then
                         call jeveuo(savename, 'L', addr)
-                        call zcopy(lvec, zc(addr), 1, cvect, 1)
+                        b_n = to_blas_int(lvec)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call zcopy(b_n, zc(addr), b_incx, cvect, b_incy)
                     else
                         call jeveuo(savename, 'E', vc=vc)
                     end if
@@ -352,6 +358,6 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
         end if
     end if
 !
-99  continue
+ 99 continue
 !
 end subroutine

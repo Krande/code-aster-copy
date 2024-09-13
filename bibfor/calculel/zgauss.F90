@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zgauss(v_matr, v_2mbr, dim, nb, v_solu)
 !
     implicit none
@@ -46,16 +46,23 @@ subroutine zgauss(v_matr, v_2mbr, dim, nb, v_solu)
     character(len=1) :: equed
     integer(kind=4) :: info
     real(kind=8) :: rcond
+    blas_int :: b_lda, b_ldaf, b_ldb, b_ldx, b_n, b_nrhs
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call matfpe(-1)
 !
     equed = 'N'
-    call zgesvx('N', 'T', dim, nb, v_matr, &
-                dim, af, dim, ipiv, equed, &
-                r, c, v_2mbr, dim, v_solu, &
-                dim, rcond, ferr, berr, work, &
+    b_n = to_blas_int(dim)
+    b_nrhs = to_blas_int(nb)
+    b_lda = to_blas_int(dim)
+    b_ldaf = to_blas_int(dim)
+    b_ldb = to_blas_int(dim)
+    b_ldx = to_blas_int(dim)
+    call zgesvx('N', 'T', b_n, b_nrhs, v_matr,&
+                b_lda, af, b_ldaf, ipiv, equed,&
+                r, c, v_2mbr, b_ldb, v_solu,&
+                b_ldx, rcond, ferr, berr, work,&
                 rwork, info)
 !
     call matfpe(1)

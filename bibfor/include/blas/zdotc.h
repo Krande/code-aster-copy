@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     function zdotc(n, zx, incx, zy, incy)
-        integer, intent(in) :: n
-        complex(kind=8),intent(in) :: zx(*)
-        integer, intent(in) :: incx
-        complex(kind=8),intent(in) :: zy(*)
-        integer, intent(in) :: incy
+        blas_int, intent(in) :: n
+        complex(kind=8), intent(in) :: zx(*)
+        blas_int, intent(in) :: incx
+        complex(kind=8), intent(in) :: zy(*)
+        blas_int, intent(in) :: incy
         complex(kind=8) :: zdotc
     end function zdotc
 end interface

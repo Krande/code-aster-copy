@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine diaghr(n, a, lda, eval, evec, &
+subroutine diaghr(n, a, lda, eval, evec,&
                   ldevec, acopy, rwk, cwk)
     implicit none
 #include "asterf_types.h"
@@ -50,6 +50,8 @@ subroutine diaghr(n, a, lda, eval, evec, &
     complex(kind=8) :: scale
     real(kind=8) :: dble
     aster_logical :: true
+    blas_int :: b_incx, b_n
+    blas_int :: b_incy
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -75,7 +77,10 @@ subroutine diaghr(n, a, lda, eval, evec, &
     end if
 !    --- A EST COPIEE DANS ACOPY
     do i = 1, n
-        call zcopy(i, a(1, i), 1, acopy(1, i), 1)
+        b_n = to_blas_int(i)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, a(1, i), b_incx, acopy(1, i), b_incy)
     end do
 !
     call mexthr(n, acopy, n)
@@ -84,25 +89,27 @@ subroutine diaghr(n, a, lda, eval, evec, &
     call r8inir(n, 1.0d0, rwk(n+1), n+1)
 !
 !   --- REDUCTION EN UNE MATRICE SYMETRIQUE TRIDIAGONALE ---
-    call tridia(n, acopy, n, eval, rwk, &
+    call tridia(n, acopy, n, eval, rwk,&
                 cwk, cwk(n+1))
 !
 !   --- CALCUL DES VECTEURS ET DES VALEURS PROPRES ---
     true = .true.
-    call diatri(n, eval, rwk, true, rwk(n+1), &
+    call diatri(n, eval, rwk, true, rwk(n+1),&
                 n)
 !
 !   --- LES VECTEURS PROPRES SONT STOCKES DANS UNE MATRICE COMPLEXE ---
     call cvrmzm(n, rwk(n+1), n, evec, ldevec)
 !
 !   --- TRANSFORMATION DES VECTEURS PROPRES ---
-    call diares(n, n, acopy, n, cwk, &
+    call diares(n, n, acopy, n, cwk,&
                 evec, ldevec, cwk(n+1))
 !
 !   --- NORMALISATION DES VECTEURS PROPRES ---
     do j = 1, n
-        scale = evec(izamax(n, evec(1, j), 1), j)
-        if (dble(scale) .ne. 0.0d0 .or. dimag(scale) .ne. 0.0d0) call zmult(n, 1.0d0/scale, &
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        scale = evec(izamax(b_n, evec(1, j), b_incx), j)
+        if (dble(scale) .ne. 0.0d0 .or. dimag(scale) .ne. 0.0d0) call zmult(n, 1.0d0/scale,&
                                                                             evec(1, j), 1)
     end do
 !

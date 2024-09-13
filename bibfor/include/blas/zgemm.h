@@ -15,27 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine zgemm(transa, transb, m, n, k,&
                      alpha, a, lda, b, ldb,&
                      beta, c, ldc)
-        integer, intent(in) :: ldc
-        integer, intent(in) :: ldb
-        integer, intent(in) :: lda
-        character(len=1) ,intent(in) :: transa
-        character(len=1) ,intent(in) :: transb
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        integer, intent(in) :: k
-        complex(kind=8) ,intent(in) :: alpha
-        complex(kind=8) ,intent(in) :: a(lda, *)
-        complex(kind=8) ,intent(in) :: b(ldb, *)
-        complex(kind=8) ,intent(in) :: beta
-        complex(kind=8) ,intent(inout) :: c(ldc, *)
+        blas_int, intent(in) :: ldc
+        blas_int, intent(in) :: ldb
+        blas_int, intent(in) :: lda
+        character(len=1), intent(in) :: transa
+        character(len=1), intent(in) :: transb
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        blas_int, intent(in) :: k
+        complex(kind=8), intent(in) :: alpha
+        complex(kind=8), intent(in) :: a(lda, *)
+        complex(kind=8), intent(in) :: b(ldb, *)
+        complex(kind=8), intent(in) :: beta
+        complex(kind=8), intent(inout) :: c(ldc, *)
     end subroutine zgemm
 end interface

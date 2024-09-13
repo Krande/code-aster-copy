@@ -68,7 +68,9 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt,&
 ! --- RECUPERATION DU POINTEUR DE LA BRANCHE
 ! ----------------------------------------------------------------------
     call jeveuo(xus, 'E', ius)
-    call dscal(ninc*nbpt, 0.d0, zr(ius), 1)
+    b_n = to_blas_int(ninc*nbpt)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ius), b_incx)
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES COEFFICIENTS DE LA SERIE ENTIERE
 ! ----------------------------------------------------------------------

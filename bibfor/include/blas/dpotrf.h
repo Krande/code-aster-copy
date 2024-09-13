@@ -18,9 +18,9 @@
 !
 interface
     subroutine dpotrf(uplo, n, a, lda, info)
-        integer,intent(in) :: lda, n
-        integer,intent(out) :: info
-        real(kind=8),intent(inout) :: a(lda,*)
-        character(len=1),intent(in) :: uplo
+        blas_int, intent(in) :: lda, n
+        blas_int, intent(out) :: info
+        real(kind=8), intent(inout) :: a(lda, *)
+        character(len=1), intent(in) :: uplo
     end subroutine dpotrf
 end interface

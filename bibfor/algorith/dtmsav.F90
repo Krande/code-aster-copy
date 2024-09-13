@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
-                  iscal, rscal, cscal, kvect, ivect, &
+subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal,&
+                  iscal, rscal, cscal, kvect, ivect,&
                   rvect, cvect, buffer)
     implicit none
 ! Save a parameter in the temporary data structure for the command
@@ -157,7 +157,10 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
                 b_incy = to_blas_int(1)
                 call dcopy(b_n, rvect, b_incx, zr(addr), b_incy)
             else if (present(cvect)) then
-                call zcopy(lvec, cvect, 1, zc(addr), 1)
+                b_n = to_blas_int(lvec)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, cvect, b_incx, zc(addr), b_incy)
             else if (present(kvect)) then
                 if (partyp(ip) .eq. 'K8 ') then
                     do i = 1, lvec
@@ -177,7 +180,7 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
         end if
     end if
 !
-20  continue
+ 20 continue
 !
     savejv(1:8) = sd_dtm
     if (present(iocc)) then
@@ -225,7 +228,10 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
             b_incy = to_blas_int(1)
             call dcopy(b_n, rvect, b_incx, zr(jvect), b_incy)
         else if (partyp(ip) .eq. 'C') then
-            call zcopy(lonvec, cvect, 1, zc(jvect), 1)
+            b_n = to_blas_int(lonvec)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, cvect, b_incx, zc(jvect), b_incy)
         else if (partyp(ip) .eq. 'I') then
             do i = 1, lonvec
                 zi(jvect+i-1) = ivect(i)
@@ -266,6 +272,6 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
         AS_DEALLOCATE(vk24=kvect_)
     end if
 !
-99  continue
+ 99 continue
 !
 end subroutine

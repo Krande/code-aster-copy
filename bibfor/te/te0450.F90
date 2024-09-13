@@ -191,8 +191,12 @@ subroutine te0450(nomopt, nomte)
 !
     call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, 0.d0, hhoQuadCellRigi)
 !
-    call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC,&
-               hhoMecaState%depl_curr, 1, 1.d0, rhs, 1)
+    b_lda = to_blas_int(MSIZE_TDOFS_VEC)
+    b_n = to_blas_int(total_dofs)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dsymv('U', b_n, hhoData%coeff_stab(), hhoMecaState%stab, b_lda,&
+               hhoMecaState%depl_curr, b_incx, 1.d0, rhs, b_incy)
 !
 ! --- Save rhs
 !

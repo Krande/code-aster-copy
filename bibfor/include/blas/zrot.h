@@ -15,20 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine zrot(n, cx, incx, cy, incy,&
                     c, s)
-        integer, intent(in) :: n
-        complex(kind=8) ,intent(inout) :: cx(*)
-        integer, intent(in) :: incx
-        complex(kind=8) ,intent(inout) :: cy(*)
-        integer, intent(in) :: incy
-        real(kind=8) ,intent(in) :: c
-        complex(kind=8) ,intent(in) :: s
+        blas_int, intent(in) :: n
+        complex(kind=8), intent(inout) :: cx(*)
+        blas_int, intent(in) :: incx
+        complex(kind=8), intent(inout) :: cy(*)
+        blas_int, intent(in) :: incy
+        real(kind=8), intent(in) :: c
+        complex(kind=8), intent(in) :: s
     end subroutine zrot
 end interface

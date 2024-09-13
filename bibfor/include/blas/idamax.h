@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     function idamax(n, dx, incx)
-        integer, intent(in) :: n
-        real(kind=8),intent(in) :: dx(*)
-        integer, intent(in) :: incx
-        blas_int              :: idamax
+        blas_int, intent(in) :: n
+        real(kind=8), intent(in) :: dx(*)
+        blas_int, intent(in) :: incx
+        blas_int :: idamax
     end function idamax
 end interface

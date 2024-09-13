@@ -15,22 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dspev(jobz, uplo, n, ap, w,&
                      z, ldz, work, info)
-        integer, intent(in) :: ldz
-        character(len=1) ,intent(in) :: jobz
-        character(len=1) ,intent(in) :: uplo
-        integer, intent(in) :: n
-        real(kind=8) ,intent(inout) :: ap(*)
-        real(kind=8) ,intent(out) :: w(*)
-        real(kind=8) ,intent(out) :: z(ldz, *)
-        real(kind=8) ,intent(out) :: work(*)
+        blas_int, intent(in) :: ldz
+        character(len=1), intent(in) :: jobz
+        character(len=1), intent(in) :: uplo
+        blas_int, intent(in) :: n
+        real(kind=8), intent(inout) :: ap(*)
+        real(kind=8), intent(out) :: w(*)
+        real(kind=8), intent(out) :: z(ldz, *)
+        real(kind=8), intent(out) :: work(*)
         blas_int, intent(out) :: info
     end subroutine dspev
 end interface

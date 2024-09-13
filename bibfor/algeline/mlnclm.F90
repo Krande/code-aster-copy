@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mlnclm(nb, n, p, frontl, frontu, &
-                  adper, tu, tl, ad, eps, &
+subroutine mlnclm(nb, n, p, frontl, frontu,&
+                  adper, tu, tl, ad, eps,&
                   ier, cl, cu)
 ! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION AVEC APPEL A DGEMV POUR LES PRODUITS MATRICE-VECTEUR
@@ -38,6 +38,7 @@ subroutine mlnclm(nb, n, p, frontl, frontu, &
     integer :: i, kb, adk, adki, decal, l, incx, incy
     integer :: m, ll, k, ind, ia, j, restp, npb
     character(len=1) :: tra
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
     npb = p/nb
     restp = p-(nb*npb)
     ll = n
@@ -53,7 +54,7 @@ subroutine mlnclm(nb, n, p, frontl, frontu, &
         k = nb*(kb-1)+1
         adk = adper(k)
 !     BLOC DIAGONAL
-        call mlncld(nb, frontl(adk), frontu(adk), adper, tu, &
+        call mlncld(nb, frontl(adk), frontu(adk), adper, tu,&
                     tl, ad, eps, ier)
         if (ier .gt. 0) goto 999
 !
@@ -69,12 +70,22 @@ subroutine mlnclm(nb, n, p, frontl, frontu, &
                     tl(l) = frontl(n*(k+l-2)+k+i-1)
                 end do
             end if
-            call zgemv(tra, ll, i-1, alpha, frontl(ia), &
-                       n, tu, incx, beta, frontl(ind), &
-                       incy)
-            call zgemv(tra, ll, i-1, alpha, frontu(ia), &
-                       n, tl, incx, beta, frontu(ind), &
-                       incy)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(ll)
+            b_n = to_blas_int(i-1)
+            b_incx = to_blas_int(incx)
+            b_incy = to_blas_int(incy)
+            call zgemv(tra, b_m, b_n, alpha, frontl(ia),&
+                       b_lda, tu, b_incx, beta, frontl(ind),&
+                       b_incy)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(ll)
+            b_n = to_blas_int(i-1)
+            b_incx = to_blas_int(incx)
+            b_incy = to_blas_int(incy)
+            call zgemv(tra, b_m, b_n, alpha, frontu(ia),&
+                       b_lda, tl, b_incx, beta, frontu(ind),&
+                       b_incy)
             adki = adper(k+i-1)
 !        LA PARTIE INFERIEURE  SEULE EST DIVISEE PAR LE TERME DIAGONAL,
 !        PAS LA PARTIE SUPERIEURE
@@ -88,8 +99,8 @@ subroutine mlnclm(nb, n, p, frontl, frontu, &
         ll = n-decal
         m = p-decal
         ind = adper(k+nb)
-        call mlnclj(nb, n, ll, m, k, &
-                    decal, frontl, frontu, frontl(ind), frontu(ind), &
+        call mlnclj(nb, n, ll, m, k,&
+                    decal, frontl, frontu, frontl(ind), frontu(ind),&
                     adper, tu, tl, cl, cu)
     end do
 !     COLONNES RESTANTES
@@ -100,7 +111,7 @@ subroutine mlnclm(nb, n, p, frontl, frontu, &
         k = nb*npb+1
         adk = adper(k)
 !     BLOC DIAGONAL
-        call mlncld(restp, frontl(adk), frontu(adk), adper, tu, &
+        call mlncld(restp, frontl(adk), frontu(adk), adper, tu,&
                     tl, ad, eps, ier)
         if (ier .gt. 0) goto 999
 !
@@ -116,12 +127,22 @@ subroutine mlnclm(nb, n, p, frontl, frontu, &
                     tl(l) = frontl(n*(k+l-2)+k+i-1)
                 end do
             end if
-            call zgemv(tra, ll, i-1, alpha, frontl(ia), &
-                       n, tu, incx, beta, frontl(ind), &
-                       incy)
-            call zgemv(tra, ll, i-1, alpha, frontu(ia), &
-                       n, tl, incx, beta, frontu(ind), &
-                       incy)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(ll)
+            b_n = to_blas_int(i-1)
+            b_incx = to_blas_int(incx)
+            b_incy = to_blas_int(incy)
+            call zgemv(tra, b_m, b_n, alpha, frontl(ia),&
+                       b_lda, tu, b_incx, beta, frontl(ind),&
+                       b_incy)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(ll)
+            b_n = to_blas_int(i-1)
+            b_incx = to_blas_int(incx)
+            b_incy = to_blas_int(incy)
+            call zgemv(tra, b_m, b_n, alpha, frontu(ia),&
+                       b_lda, tl, b_incx, beta, frontu(ind),&
+                       b_incy)
             adki = adper(k+i-1)
 !              SEUL FRONTL EST DIVISE PAR LE TERME DIAGONAL
             do j = 1, ll

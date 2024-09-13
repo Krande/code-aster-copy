@@ -267,7 +267,9 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp,&
         b_incy = to_blas_int(1)
         call daxpy(b_n, 1.0d0, normal(1), b_incx, x3dp(1),&
                    b_incy)
-        call dscal(3, -1.0d0/excent, normal(1), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -1.0d0/excent, normal(1), b_incx)
     else
         call r8inir(3, 0.0d0, normal(1), 1)
     end if

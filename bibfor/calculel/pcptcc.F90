@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
-                  ltest, rang, nbproc, mpicou, nbordr, &
-                  nbpas, vldist, vcham, lisori, nbordi, &
-                  lisord, modele, partsd, lsdpar, i, &
-                  ipas, ideb, ifin, irelat, chamno, &
-                  lonnew, lonch, ktyp, vcnoch, noch, &
+subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu,&
+                  ltest, rang, nbproc, mpicou, nbordr,&
+                  nbpas, vldist, vcham, lisori, nbordi,&
+                  lisord, modele, partsd, lsdpar, i,&
+                  ipas, ideb, ifin, irelat, chamno,&
+                  lonnew, lonch, ktyp, vcnoch, noch,&
                   nochc)
     implicit none
 !
@@ -75,7 +75,7 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
     character(len=24) :: kblanc, k24b
     blas_int :: b_incx, b_incy, b_n
 !
-    if (((option .ge. 1) .and. (option .le. 8)) .or. (option .eq. 101) .or. &
+    if (((option .ge. 1) .and. (option .le. 8)) .or. (option .eq. 101) .or.&
         (option .eq. 301) .or. (option .eq. 102)) then
 ! Option prévue
     else
@@ -210,8 +210,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
             ASSERT(compt .eq. nbordi)
             if (dbgv_ob) call jeimpo(ifm, lisori, 'lisori')
         end if
-        if (dbg_ob) write (ifm, *) '< ', rang, &
-            'pcptcc> Fin de création du contexte parallélisme en temps '
+        if (dbg_ob) write (ifm, *) '< ', rang,&
+                    'pcptcc> Fin de création du contexte parallélisme en temps '
 !
     else if (option .eq. 102) then
 ! OPTION=102 INITIALISATIONS POUR CALCOP AVEC APPELS RECURSIF
@@ -316,8 +316,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 ! INDICE RELATIF DANS CE PAQUET
             irelat = i-ideb+1
         end if
-        if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> i/ideb/ifin/irelat= ', i, ideb, ifin, &
-            irelat
+        if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> i/ideb/ifin/irelat= ', i, ideb, ifin,&
+                    irelat
         ASSERT(ideb .ge. 1)
         ASSERT(ifin .ge. 1)
         ASSERT(irelat .ge. 1)
@@ -371,8 +371,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
             ASSERT(lonmax .ge. lonnew)
             ASSERT(lonmin .le. lonnew)
             ASSERT(lonmin .le. lonmax)
-            if ((lonmax .ne. lonmin) .or. ((ipas .gt. 1) .and. (lonnew .ne. lonch))) call utmess( &
-                                                                                     'F', &
+            if ((lonmax .ne. lonmin) .or. ((ipas .gt. 1) .and. (lonnew .ne. lonch))) call utmess(&
+                                                                                     'F',&
                                                                                      'PREPOST_17&
                                                                                      &')
         end if
@@ -426,8 +426,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                 call dcopy(b_n, noch, b_incx, zr(jcnoch+(irelat-1)*lonch), b_incy)
                 call asmpi_barrier(mpicou)
                 call asmpi_comm_vect('MPI_SUM', 'R', nbval=lonch*nbproc, vr=zr(jcnoch))
-                if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> ALLREDUCE réel longueur=', &
-                    lonch*nbproc
+                if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> ALLREDUCE réel longueur=',&
+                            lonch*nbproc
                 call asmpi_barrier(mpicou)
                 p = 1
                 do k = ideb, ifin
@@ -442,17 +442,23 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                     p = p+1
                 end do
             else
-                call zcopy(lonch, nochc, 1, zc(jcnoch+(irelat-1)*lonch), 1)
+                b_n = to_blas_int(lonch)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, nochc, b_incx, zc(jcnoch+(irelat-1)*lonch), b_incy)
                 call asmpi_barrier(mpicou)
                 call asmpi_comm_vect('MPI_SUM', 'C', nbval=lonch*nbproc, vc=zc(jcnoch))
-                if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> ALLREDUCE complexe longueur=', &
-                    lonch*nbproc
+                if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> ALLREDUCE complexe longueur=',&
+                            lonch*nbproc
                 call asmpi_barrier(mpicou)
                 p = 1
                 do k = ideb, ifin
                     k24b = zk24(jvcham+p-1)
                     call jeveuo(k24b(1:19)//'.VALE', 'E', jval)
-                    call zcopy(lonch, zc(jcnoch+(p-1)*lonch), 1, zc(jval), 1)
+                    b_n = to_blas_int(lonch)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(jcnoch+(p-1)*lonch), b_incx, zc(jval), b_incy)
                     call jelibe(k24b(1:19)//'.VALE')
                     call jelibe(k24b(1:19)//'.REFE')
                     p = p+1
@@ -480,7 +486,7 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 !              write(ifm,*)i,zr(jval+i-1)
 !            enddo
 !            call jeimpo(ifm,k24b(1:19)//'.VALE','ccfnrn fin')
-                    call utimsd(ifm, -1, .False._1, .False._1, k24b(1:19), &
+                    call utimsd(ifm, -1, .False._1, .False._1, k24b(1:19),&
                                 1, 'G', perm='NON')
                     p = p+1
                 end do
@@ -492,7 +498,7 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 !            do i=1,10
 !              write(ifm,*)i,zr(jval+i-1)
 !            enddo
-                call utimsd(ifm, -1, .False._1, .False._1, chamno(1:19), &
+                call utimsd(ifm, -1, .False._1, .False._1, chamno(1:19),&
                             1, 'G', perm='NON')
             end if
         end if

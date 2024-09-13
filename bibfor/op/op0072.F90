@@ -94,8 +94,8 @@ subroutine op0072()
 !
 ! --- RECUPERATION DU NB DE MODES
 !
-    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid, &
-                cbid, ebid, 'ABSOLU', tmod, 1, &
+    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
+                cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
     nbmode = tmod(1)
 !
@@ -186,7 +186,7 @@ subroutine op0072()
 !       --- VERIFIER QUE LES MAILLAGES DU CHAMP A PROJETER
 !         - LES DEFORMEES MODALES SONT IDENTIQUES
 !         - 1. MAILLAGE DE REFERENCE POUR LA BASE
-        call rsexch('F', basemo, 'DEPL', 1, nomcha, &
+        call rsexch('F', basemo, 'DEPL', 1, nomcha,&
                     iret)
         call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=maill1)
 !       - 2. MAILLAGE DE REFERENCE POUR LE CHAM_NO
@@ -228,7 +228,10 @@ subroutine op0072()
                 do j = 1, neq
                     zc(idvec3+j-1) = dcmplx(zr(idvect+j-1), zero)
                 end do
-                zc(iavale+i-1) = zdotc(neq, zc(idvec3), 1, zc(iadvec), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zc(iavale+i-1) = zdotc(b_n, zc(idvec3), b_incx, zc(iadvec), b_incy)
             end if
         end do
     else
@@ -297,7 +300,10 @@ subroutine op0072()
                 do j = 1, neq
                     zc(idvec3+j-1) = dcmplx(zr(idvec1+j-1), zero)
                 end do
-                zc(idvec4+i-1) = zdotc(neq, zc(idvec3), 1, zc(iadvec), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zc(idvec4+i-1) = zdotc(b_n, zc(idvec3), b_incx, zc(iadvec), b_incy)
             end if
         end do
 !

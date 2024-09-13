@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine zscal(n, za, zx, incx)
-        integer, intent(in) :: n
-        complex(kind=8),intent(in) :: za
-        complex(kind=8),intent(inout) :: zx(*)
-        integer, intent(in) :: incx
+        blas_int, intent(in) :: n
+        complex(kind=8), intent(in) :: za
+        complex(kind=8), intent(inout) :: zx(*)
+        blas_int, intent(in) :: incx
     end subroutine zscal
 end interface

@@ -454,12 +454,18 @@ contains
                                            gv_AT)
 ! ---------- += weight * (dsv_dv : c_phi, c_phi)
                 coeff = weight*dsv_dv
-                call dsyr('U', gv_cbs, coeff, BSCEval, 1,&
-                          lhs_vv, MSIZE_TDOFS_SCAL)
+                b_n = to_blas_int(gv_cbs)
+                b_incx = to_blas_int(1)
+                b_lda = to_blas_int(MSIZE_TDOFS_SCAL)
+                call dsyr('U', b_n, coeff, BSCEval, b_incx,&
+                          lhs_vv, b_lda)
 ! ---------- += weight * (dsv_dl : c_phi, c_phi)
                 coeff = weight*dsv_dl
-                call dsyr('U', gv_cbs, coeff, BSCEval, 1,&
-                          lhs_vl, MSIZE_TDOFS_SCAL)
+                b_n = to_blas_int(gv_cbs)
+                b_incx = to_blas_int(1)
+                b_lda = to_blas_int(MSIZE_TDOFS_SCAL)
+                call dsyr('U', b_n, coeff, BSCEval, b_incx,&
+                          lhs_vl, b_lda)
 ! ---------- += weight * (dsl_dl : c_phi, c_phi)
                 call hhoComputeLhsMassTher(dsl_dl, weight, BSCEval, gv_cbs, lhs_ll)
             end if
@@ -485,8 +491,12 @@ contains
                        b_lda, mk_bT, b_incx, 1.d0, rhs_mk,&
                        b_incy)
 ! ----- compute rhs += stab
-            call dsymv('U', mk_total_dofs, mk_stab, hhoMecaState%stab, MSIZE_TDOFS_VEC,&
-                       hhoMecaState%depl_curr, 1, 1.d0, rhs_mk, 1)
+            b_lda = to_blas_int(MSIZE_TDOFS_VEC)
+            b_n = to_blas_int(mk_total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, mk_stab, hhoMecaState%stab, b_lda,&
+                       hhoMecaState%depl_curr, b_incx, 1.d0, rhs_mk, b_incy)
 ! ----- compute rhs += Gradrec**T * bT
             b_lda = to_blas_int(MSIZE_CELL_VEC)
             b_m = to_blas_int(gv_gbs)
@@ -497,8 +507,12 @@ contains
                        b_lda, gv_bT, b_incx, 1.d0, rhs_vari,&
                        b_incy)
 ! ----- compute rhs += stab
-            call dsymv('U', gv_total_dofs, gv_stab, hhoGVState%stab, MSIZE_TDOFS_SCAL,&
-                       hhoGVState%vari_curr, 1, 1.d0, rhs_vari, 1)
+            b_lda = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_n = to_blas_int(gv_total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, gv_stab, hhoGVState%stab, b_lda,&
+                       hhoGVState%vari_curr, b_incx, 1.d0, rhs_vari, b_incy)
 ! ----- assembly
             call hhoAssGVRhs(hhoCell, hhoData, mapMeca, mapVari, mapLagv,&
                              rhs_mk, rhs_vari, rhs_lagv, rhs)

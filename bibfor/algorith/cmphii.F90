@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmphii(ck, cm, ndim, nbmod, niter, &
-                  xcrit, ceigen, cmod, ndimax, cmat1, &
+subroutine cmphii(ck, cm, ndim, nbmod, niter,&
+                  xcrit, ceigen, cmod, ndimax, cmat1,&
                   cmat2, cvec, ific)
 ! aslint: disable=W1306
     implicit none
@@ -72,6 +72,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter, &
     integer :: k, niter
     real(kind=8) :: valr(3), xcrit, xer
     character(len=6) :: valk
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
     valk = 'CMPHII'
@@ -79,7 +80,10 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter, &
     call utmess('I', 'ALGELINE7_3')
 !
 !      RECOPIE DE LA MATRICE DE RAIDEUR
-    call zcopy(ndim*(ndim+1)/2, ck, 1, cmat1, 1)
+    b_n = to_blas_int(ndim*(ndim+1)/2)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call zcopy(b_n, ck, b_incx, cmat1, b_incy)
 !
 !    FACTORISATION DE LA MATRICE DE RAIDEUR
     call trldc(cmat1, ndim, ipivo)
@@ -133,15 +137,21 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter, &
 !
 !    CALCUL DE L'ERREUR COLINEARITE ET REECOPIE
 !    DE CVEC DANS CMOD
-        call ctescv(cvec, cmod(1, j), cvec0, cmod0, ndim, &
+        call ctescv(cvec, cmod(1, j), cvec0, cmod0, ndim,&
                     xer)
 !
 !      RECOPIE DU VECTEUR DE L'ITERATION PRECEDENTE
-        call zcopy(ndim, cmod(1, j), 1, cmod0, 1)
-        call zcopy(ndim, cvec, 1, cvec0, 1)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, cmod(1, j), b_incx, cmod0, b_incy)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, cvec, b_incx, cvec0, b_incy)
 !
 !   ORTHORMALISATION PAR RAPPORT MATRICE DE MASSE
-        call cschmi(cm, ndim, cmod(1, j), cmod, ndimax, &
+        call cschmi(cm, ndim, cmod(1, j), cmod, ndimax,&
                     j-1)
 !
 !
@@ -163,7 +173,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter, &
         valr(1) = xer
         valr(2) = dble(ceigen(j))
         valr(3) = dimag(ceigen(j))
-        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3, &
+        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
                     valr=valr)
 !
     end do

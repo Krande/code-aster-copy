@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zaddrc(m, n, alpha, x, incx, &
+subroutine zaddrc(m, n, alpha, x, incx,&
                   y, incy, a, lda)
     implicit none
 #include "blas/zaxpy.h"
@@ -37,6 +37,7 @@ subroutine zaddrc(m, n, alpha, x, incx, &
 ! IN  : LDA  : DIMENSION DE A.
 !-----------------------------------------------------------------------
     integer :: iy, j
+    blas_int :: b_incx, b_incy, b_n
     if (m .eq. 0 .or. n .eq. 0 .or. alpha .eq. (0.0d0, 0.0d0)) goto 9000
 !
     iy = 1
@@ -44,8 +45,11 @@ subroutine zaddrc(m, n, alpha, x, incx, &
 !
     i1x = 1
     do j = 1, n
-        call zaxpy(m, alpha*dconjg(y(iy)), x, incx, a(i1x), &
-                   1)
+        b_n = to_blas_int(m)
+        b_incx = to_blas_int(incx)
+        b_incy = to_blas_int(1)
+        call zaxpy(b_n, alpha*dconjg(y(iy)), x, b_incx, a(i1x),&
+                   b_incy)
         iy = iy+incy
         i1x = i1x+lda
     end do

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, &
+subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu,&
                              modeType)
 !
     use Rom_Datastructure_type
@@ -79,7 +79,7 @@ subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, 
 ! - Get acess to mode_current
 !
     fieldIden = 'DEPL'
-    call rsexch(' ', resultName, fieldIden, modeNume, mode, &
+    call rsexch(' ', resultName, fieldIden, modeNume, mode,&
                 iret)
 !
     if (modeType .eq. 'R') then
@@ -119,7 +119,10 @@ subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, 
                 do iEqua = 1, nbEqua
                     vc_matr_jmode(iEqua) = vc_matr_mode(iEqua+nbEqua*(iMode-1))
                 end do
-                termc = zdotc(nbEqua, vc_mode, 1, vc_matr_jmode, 1)
+                b_n = to_blas_int(nbEqua)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                termc = zdotc(b_n, vc_mode, b_incx, vc_matr_jmode, b_incy)
                 vc_matr_red(nbModeMaxi*(modeNume-1)+iMode) = termc
                 vc_matr_red(nbModeMaxi*(iMode-1)+modeNume) = dconjg(termc)
                 AS_DEALLOCATE(vc=vc_matr_jmode)

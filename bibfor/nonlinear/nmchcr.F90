@@ -163,7 +163,9 @@ function nmchcr(dp)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, norm, b_incx, depsp, b_incy)
-    call dscal(ndimsi, dp*sqrt(1.5d0), depsp, 1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, dp*sqrt(1.5d0), depsp, b_incx)
 !
     if (memo .eq. 1) then
 !
@@ -176,7 +178,7 @@ function nmchcr(dp)
         b_n = to_blas_int(ndimsi)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, depsp, b_incx, epspp, &
+        call daxpy(b_n, 1.d0, depsp, b_incx, epspp,&
                    b_incy)
 !
         grjeps = 0.0d0

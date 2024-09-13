@@ -54,8 +54,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalCell(hhoCell, hhoBasisCell, order, pt, coeff, &
-                             size_coeff) result(eval)
+    function hhoEvalScalCell(hhoCell, hhoBasisCell, order, pt, coeff,&
+                             size_coeff) result (eval)
 !
         implicit none
 !
@@ -97,8 +97,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalFace(hhoFace, hhoBasisFace, order, pt, coeff, &
-                             size_coeff) result(eval)
+    function hhoEvalScalFace(hhoFace, hhoBasisFace, order, pt, coeff,&
+                             size_coeff) result (eval)
 !
         implicit none
 !
@@ -140,8 +140,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecCell(hhoCell, hhoBasisCell, order, pt, coeff, &
-                            size_coeff) result(eval)
+    function hhoEvalVecCell(hhoCell, hhoBasisCell, order, pt, coeff,&
+                            size_coeff) result (eval)
 !
         implicit none
 !
@@ -189,8 +189,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecFace(hhoFace, hhoBasisFace, order, pt, coeff, &
-                            size_coeff) result(eval)
+    function hhoEvalVecFace(hhoFace, hhoBasisFace, order, pt, coeff,&
+                            size_coeff) result (eval)
 !
         implicit none
 !
@@ -238,8 +238,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalMatCell(hhoCell, hhoBasisCell, order, pt, coeff, &
-                            size_coeff) result(eval)
+    function hhoEvalMatCell(hhoCell, hhoBasisCell, order, pt, coeff,&
+                            size_coeff) result (eval)
 !
         implicit none
 !
@@ -289,8 +289,8 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalSymMatCell(hhoCell, hhoBasisCell, order, pt, coeff, &
-                               size_coeff) result(eval)
+    function hhoEvalSymMatCell(hhoCell, hhoBasisCell, order, pt, coeff,&
+                               size_coeff) result (eval)
 !
         implicit none
 !
@@ -370,7 +370,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara, &
+    subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara,&
                                   ndim, FuncValuesQp, coeff_mult)
 !
         implicit none
@@ -402,20 +402,21 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: npg, ipg, iret
+        blas_int :: b_incx, b_n
 !
         npg = hhoQuad%nbQuadPoints
 ! ---- Value of the function at the quadrature point
 !
         if (ndim == 0) then
             do ipg = 1, npg
-                call fointe('FM', nomfunc, nbpara, nompara, valpara, &
+                call fointe('FM', nomfunc, nbpara, nompara, valpara,&
                             FuncValuesQP(ipg), iret)
                 ASSERT(iret == 0)
             end do
         else if (ndim <= 3) then
             do ipg = 1, npg
                 valpara(1:ndim) = hhoQuad%points(1:ndim, ipg)
-                call fointe('FM', nomfunc, nbpara, nompara, valpara, &
+                call fointe('FM', nomfunc, nbpara, nompara, valpara,&
                             FuncValuesQP(ipg), iret)
                 ASSERT(iret == 0)
             end do
@@ -424,7 +425,9 @@ contains
         end if
 !
         if (present(coeff_mult)) then
-            call dscal(npg, coeff_mult, FuncValuesQP, 1)
+            b_n = to_blas_int(npg)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coeff_mult, FuncValuesQP, b_incx)
         end if
 !
     end subroutine
@@ -458,6 +461,7 @@ contains
         integer :: npg, ipg, ino
         real(kind=8) :: ff(9)
         character(len=8) :: typma
+        blas_int :: b_incx, b_n
 !
         call cellNameL2S(hhoFace%typema, typma)
         FuncValuesQP = 0.d0
@@ -473,7 +477,9 @@ contains
         end do
 !
         if (present(coeff_mult)) then
-            call dscal(npg, coeff_mult, FuncValuesQP, 1)
+            b_n = to_blas_int(npg)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coeff_mult, FuncValuesQP, b_incx)
         end if
 !
     end subroutine
@@ -507,6 +513,7 @@ contains
         integer :: npg, ino, idim, celldim, ipg
         real(kind=8) :: ff(9)
         character(len=8) :: typma
+        blas_int :: b_incx, b_n
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
@@ -518,14 +525,16 @@ contains
             call elrfvf(typma, hhoQuad%points_param(1:3, ipg), ff)
             do idim = 1, celldim
                 do ino = 1, hhoFace%nbnodes
-                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ff(ino)*funcnoEF(celldim*(&
-                                              &ino-1)+idim)
+                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ff(ino)*funcnoEF(celldim*(i&
+                                              &no-1)+idim)
                 end do
             end do
         end do
 !
         if (present(coeff_mult)) then
-            call dscal(3*npg, coeff_mult, FuncValuesQP, 1)
+            b_n = to_blas_int(3*npg)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coeff_mult, FuncValuesQP, b_incx)
         end if
 !
     end subroutine
@@ -560,6 +569,7 @@ contains
         integer :: npg, ino, idim, ipg
         real(kind=8) :: ff(27)
         character(len=8) :: typma
+        blas_int :: b_incx, b_n
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
@@ -570,14 +580,16 @@ contains
             call elrfvf(typma, hhoQuad%points_param(1:3, ipg), ff)
             do idim = 1, hhoCell%ndim
                 do ino = 1, hhoCell%nbnodes
-                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ff(ino)*funcnoEF(hhoCell%n&
-                                              &dim*(ino-1)+idim)
+                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ff(ino)*funcnoEF(hhoCell%nd&
+                                              &im*(ino-1)+idim)
                 end do
             end do
         end do
 !
         if (present(coeff_mult)) then
-            call dscal(3*npg, coeff_mult, FuncValuesQP, 1)
+            b_n = to_blas_int(3*npg)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coeff_mult, FuncValuesQP, b_incx)
         end if
 !
     end subroutine
@@ -612,6 +624,7 @@ contains
         integer :: npg, ino, ipg
         real(kind=8) :: ff(27)
         character(len=8) :: typma
+        blas_int :: b_incx, b_n
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
@@ -627,7 +640,9 @@ contains
         end do
 !
         if (present(coeff_mult)) then
-            call dscal(npg, coeff_mult, FuncValuesQP, 1)
+            b_n = to_blas_int(npg)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coeff_mult, FuncValuesQP, b_incx)
         end if
 !
     end subroutine

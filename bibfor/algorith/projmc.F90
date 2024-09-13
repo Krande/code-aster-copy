@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine projmc(matras, nomres, basemo, nugene, nu, &
+!
+subroutine projmc(matras, nomres, basemo, nugene, nu,&
                   neq, nbmo)
     implicit none
 #include "jeveux.h"
@@ -69,7 +69,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     integer(kind=4), pointer :: smhc(:) => null()
     integer, pointer :: smdi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
-    !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -79,7 +79,8 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     matr = matras
 !
 !   TYPE DE LA BASE MODALE
-    call rsexch('F', basemo, 'DEPL', 1, nomcha, iret)
+    call rsexch('F', basemo, 'DEPL', 1, nomcha,&
+                iret)
     call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=typbase)
     if (typbase .eq. 'C') call utmess('A', 'DEFIBASEMODALE1_2')
 !
@@ -94,10 +95,10 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     call jeveuo(matr//'.REFA', 'L', jrefa)
     lsym = zk24(jrefa-1+9) .eq. 'MS'
     if (lsym) then
-        call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT', &
+        call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&
                     nbloc)
     else
-        call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT', &
+        call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&
                     2*nbloc)
     end if
 !
@@ -172,7 +173,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE I
 !
-                call mcmult('ZERO', imatra, vectass2, vectass3, 1, &
+                call mcmult('ZERO', imatra, vectass2, vectass3, 1,&
                             .true._1)
                 call zerlag(neq, zi(iddeeq), vectz=vectass3)
 !
@@ -225,7 +226,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE J
 !
-            call mcmult('ZERO', imatra, vectass2, vectass3, 1, &
+            call mcmult('ZERO', imatra, vectass2, vectass3, 1,&
                         .true._1)
             call zerlag(neq, zi(iddeeq), vectz=vectass3)
 !

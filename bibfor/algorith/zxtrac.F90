@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zxtrac(interp, prec, crit, nbinst, ti, &
+subroutine zxtrac(interp, prec, crit, nbinst, ti,&
                   temps, y, neq, xtract, ier)
     implicit none
 #include "asterfort/utmess.h"
@@ -44,6 +44,7 @@ subroutine zxtrac(interp, prec, crit, nbinst, ti, &
 !-----------------------------------------------------------------------
     integer :: i
     real(kind=8) :: temps
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     ier = 0
 !
@@ -52,12 +53,18 @@ subroutine zxtrac(interp, prec, crit, nbinst, ti, &
     prec2 = prec
     if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(1)
     if (abs(temps-ti(1)) .le. prec2) then
-        call zcopy(neq, y(1), 1, xtract, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, y(1), b_incx, xtract, b_incy)
         goto 999
     end if
     if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(nbinst)
     if (abs(temps-ti(nbinst)) .le. prec2) then
-        call zcopy(neq, y((nbinst-1)*neq+1), 1, xtract, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, y((nbinst-1)*neq+1), b_incx, xtract, b_incy)
         goto 999
     end if
 !
@@ -75,7 +82,10 @@ subroutine zxtrac(interp, prec, crit, nbinst, ti, &
         do i = 2, nbinst-1
             if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(i)
             if (abs(temps-ti(i)) .le. prec2) then
-                call zcopy(neq, y((i-1)*neq+1), 1, xtract, 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, y((i-1)*neq+1), b_incx, xtract, b_incy)
                 goto 999
             end if
         end do

@@ -156,6 +156,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     integer, pointer :: smdi(:) => null()
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_ldb, b_ldvl, b_ldvr, b_lwork
+    blas_int :: b_itype
 !
 !-----------------------------------------------------------------------
 !
@@ -672,11 +673,17 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                             b_lwork, zi4(iiscal), bwork, qrinfo)
             end if
         else
-            call zggevx(kbal, 'N', 'V', ksens, qrn,&
-                        zc(iqrn), qrn, zc(lqrn), qrn, zc(qrar),&
-                        zc(qrba), zc(qrvl), ldvl, zc(lvec3), qrn,&
+            b_ldvr = to_blas_int(qrn)
+            b_ldvl = to_blas_int(ldvl)
+            b_ldb = to_blas_int(qrn)
+            b_lda = to_blas_int(qrn)
+            b_n = to_blas_int(qrn)
+            b_lwork = to_blas_int(qrlwo)
+            call zggevx(kbal, 'N', 'V', ksens, b_n,&
+                        zc(iqrn), b_lda, zc(lqrn), b_ldb, zc(qrar),&
+                        zc(qrba), zc(qrvl), b_ldvl, zc(lvec3), b_ldvr,&
                         ilo, ihi, zr(ilscal), zr(irscal), abnrm,&
-                        bbnrm, zr(icscal), zr(ivscal), zc(kqrn), qrlwo,&
+                        bbnrm, zr(icscal), zr(ivscal), zc(kqrn), b_lwork,&
                         zr(kqrnr), zi4(iiscal), bwork, qrinfo)
             if (qrinfo .eq. 0) then
                 qrlwo = int(dble(zc(kqrn)))
@@ -689,11 +696,17 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! FIN PATCH
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V C', qrlwor, kqrn2)
-                call zggevx(kbal, 'N', 'V', ksens, qrn,&
-                            zc(iqrn), qrn, zc(lqrn), qrn, zc(qrar),&
-                            zc(qrba), zc(qrvl), ldvl, zc(lvec3), qrn,&
+                b_ldvr = to_blas_int(qrn)
+                b_ldvl = to_blas_int(ldvl)
+                b_ldb = to_blas_int(qrn)
+                b_lda = to_blas_int(qrn)
+                b_n = to_blas_int(qrn)
+                b_lwork = to_blas_int(qrlwo)
+                call zggevx(kbal, 'N', 'V', ksens, b_n,&
+                            zc(iqrn), b_lda, zc(lqrn), b_ldb, zc(qrar),&
+                            zc(qrba), zc(qrvl), b_ldvl, zc(lvec3), b_ldvr,&
                             ilo, ihi, zr(ilscal), zr(irscal), abnrm,&
-                            bbnrm, zr(icscal), zr(ivscal), zc(kqrn2), qrlwo,&
+                            bbnrm, zr(icscal), zr(ivscal), zc(kqrn2), b_lwork,&
                             zr(kqrnr), zi4(iiscal), bwork, qrinfo)
             end if
         end if
@@ -741,18 +754,30 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                            b_lwork, qrinfo)
             end if
         else
-            call zggev('N', 'V', qrn, zc(iqrn), qrn,&
-                       zc(lqrn), qrn, zc(qrar), zc(qrba), zc(qrvl),&
-                       ldvl, zc(lvec3), qrn, zc(kqrn), qrlwo,&
+            b_ldvr = to_blas_int(qrn)
+            b_ldvl = to_blas_int(ldvl)
+            b_ldb = to_blas_int(qrn)
+            b_lda = to_blas_int(qrn)
+            b_n = to_blas_int(qrn)
+            b_lwork = to_blas_int(qrlwo)
+            call zggev('N', 'V', b_n, zc(iqrn), b_lda,&
+                       zc(lqrn), b_ldb, zc(qrar), zc(qrba), zc(qrvl),&
+                       b_ldvl, zc(lvec3), b_ldvr, zc(kqrn), b_lwork,&
                        zr(kqrnr), qrinfo)
             if (qrinfo .eq. 0) then
                 qrlwo = 4*int(dble(zc(kqrn)))
                 qrlwor = 4*int(dble(zc(kqrn)))
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V C', qrlwor, kqrn2)
-                call zggev('N', 'V', qrn, zc(iqrn), qrn,&
-                           zc(lqrn), qrn, zc(qrar), zc(qrba), zc(qrvl),&
-                           ldvl, zc(lvec3), qrn, zc(kqrn2), qrlwo,&
+                b_ldvr = to_blas_int(qrn)
+                b_ldvl = to_blas_int(ldvl)
+                b_ldb = to_blas_int(qrn)
+                b_lda = to_blas_int(qrn)
+                b_n = to_blas_int(qrn)
+                b_lwork = to_blas_int(qrlwo)
+                call zggev('N', 'V', b_n, zc(iqrn), b_lda,&
+                           zc(lqrn), b_ldb, zc(qrar), zc(qrba), zc(qrvl),&
+                           b_ldvl, zc(lvec3), b_ldvr, zc(kqrn2), b_lwork,&
                            zr(kqrnr), qrinfo)
             end if
         end if
@@ -763,17 +788,27 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         if (lc .or. lnsm .or. lnsr .or. (.not. lkr)) then
             ASSERT(.false.)
         end if
-        call dsygv(1, 'V', 'U', qrn, zr(iqrn),&
-                   qrn, zr(lqrn), qrn, zr(lvalpr), zr(kqrn),&
-                   qrlwo, qrinfo)
+        b_ldb = to_blas_int(qrn)
+        b_lda = to_blas_int(qrn)
+        b_itype = to_blas_int(1)
+        b_n = to_blas_int(qrn)
+        b_lwork = to_blas_int(qrlwo)
+        call dsygv(b_itype, 'V', 'U', b_n, zr(iqrn),&
+                   b_lda, zr(lqrn), b_ldb, zr(lvalpr), zr(kqrn),&
+                   b_lwork, qrinfo)
         if (qrinfo .eq. 0) then
             qrlwo = int(zr(kqrn))
             qrlwor = int(zr(kqrn))
             call jedetr('&&VPQZLA.QR.WORK')
             call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
-            call dsygv(1, 'V', 'U', qrn, zr(iqrn),&
-                       qrn, zr(lqrn), qrn, zr(lvalpr), zr(kqrn2),&
-                       qrlwo, qrinfo)
+            b_ldb = to_blas_int(qrn)
+            b_lda = to_blas_int(qrn)
+            b_itype = to_blas_int(1)
+            b_n = to_blas_int(qrn)
+            b_lwork = to_blas_int(qrlwo)
+            call dsygv(b_itype, 'V', 'U', b_n, zr(iqrn),&
+                       b_lda, zr(lqrn), b_ldb, zr(lvalpr), zr(kqrn2),&
+                       b_lwork, qrinfo)
         end if
     else
 ! ---- OPTION INVALIDE
@@ -946,9 +981,15 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 end if
                 zc(lvalpr+im1-decal) = zc(qrar+im1)/zc(qrba+im1)
                 if (lc) then
-                    call zcopy(qrn, zc(lvec3+im1*qrn), 1, zc(lvec4+(im1-decal)*qrn), 1)
+                    b_n = to_blas_int(qrn)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(lvec3+im1*qrn), b_incx, zc(lvec4+(im1-decal)*qrn), b_incy)
                 else
-                    call zcopy(qrn, zc(lvec3+im1*qrn), 1, zc(lvec+(im1-decal)*qrn), 1)
+                    b_n = to_blas_int(qrn)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(lvec3+im1*qrn), b_incx, zc(lvec+(im1-decal)*qrn), b_incy)
                 end if
                 if (lqze) zr(ics1+im1-decal) = zr(icscal+im1)
             else
@@ -1194,22 +1235,35 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 end if
                 call mcmult('ZERO', lraide, zc(lvec+iauxh*(i-1)), zc(iaux1), 1,&
                             .false._1)
-                anorm1 = dznrm2(iauxh, zc(iaux1), 1)
+                b_n = to_blas_int(iauxh)
+                b_incx = to_blas_int(1)
+                anorm1 = dznrm2(b_n, zc(iaux1), b_incx)
                 call mcmult('ZERO', lmasse, zc(lvec+iauxh*(i-1)), zc(iaux2), 1,&
                             .false._1)
                 if (lc) then
                     call mcmult('ZERO', lamor, zc(lvec+iauxh*(i-1)), zc(iaux3), 1,&
                                 .false._1)
-                    call zaxpy(iauxh, freq, zc(iaux3), 1, zc(iaux1),&
-                               1)
+                    b_n = to_blas_int(iauxh)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zaxpy(b_n, freq, zc(iaux3), b_incx, zc(iaux1),&
+                               b_incy)
                     freq2 = freq*freq
-                    call zaxpy(iauxh, freq2, zc(iaux2), 1, zc(iaux1),&
-                               1)
+                    b_n = to_blas_int(iauxh)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zaxpy(b_n, freq2, zc(iaux2), b_incx, zc(iaux1),&
+                               b_incy)
                 else
-                    call zaxpy(iauxh, -freq, zc(iaux2), 1, zc(iaux1),&
-                               1)
+                    b_n = to_blas_int(iauxh)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zaxpy(b_n, -freq, zc(iaux2), b_incx, zc(iaux1),&
+                               b_incy)
                 end if
-                anorm2 = dznrm2(iauxh, zc(iaux1), 1)
+                b_n = to_blas_int(iauxh)
+                b_incx = to_blas_int(1)
+                anorm2 = dznrm2(b_n, zc(iaux1), b_incx)
             end if
             if (abs(freq) .gt. omecor) then
                 if (anorm1 .gt. prec) then

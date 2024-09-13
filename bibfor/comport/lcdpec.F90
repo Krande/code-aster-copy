@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
-                  cpmono, materf, iter, nvi, itmax, &
-                  toler, pgl, nfs, nsg, toutms, &
-                  hsr, dt, dy, yd, vinf, &
+subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt,&
+                  cpmono, materf, iter, nvi, itmax,&
+                  toler, pgl, nfs, nsg, toutms,&
+                  hsr, dt, dy, yd, vinf,&
                   sigf, df, nr, mod, codret)
 ! aslint: disable=W1306,W1504
 !
@@ -125,11 +125,13 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
             call lcopil('ORTHOTRO', mod, materf(1), fkooh)
         end if
         fetfe6(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigf(1:ndt))
-        call dscal(6, 2.d0, fetfe6, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 2.d0, fetfe6, b_incx)
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, id6, b_incx, fetfe6, &
+        call daxpy(b_n, 1.d0, id6, b_incx, fetfe6,&
                    b_incy)
         call r8inir(9, 0.d0, gamsns, 1)
     end if
@@ -141,7 +143,7 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
         nomfam = cpmono(5*(ifa-1)+1) (1:16)
         necoul = cpmono(5*(ifa-1)+3) (1:16)
 !
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ng, lg, 0, qm)
 !
         if (necoul .eq. 'MONO_DD_CC_IRRA') then
@@ -172,14 +174,14 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
 !
         do is = 1, nbsys
 !
-            call caltau(ifa, is, sigf, fkooh, nfs, &
+            call caltau(ifa, is, sigf, fkooh, nfs,&
                         nsg, toutms, taus, mus, msns)
 !
-            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
-                        hsr, nsfv, nsfa, ifa, nbsys, &
-                        is, dt, nvi, vind, yd, &
-                        dy, itmax, toler, materf, expbp, &
-                        taus, dalpha, dgamma, dp, crit, &
+            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
+                        hsr, nsfv, nsfa, ifa, nbsys,&
+                        is, dt, nvi, vind, yd,&
+                        dy, itmax, toler, materf, expbp,&
+                        taus, dalpha, dgamma, dp, crit,&
                         sgns, rp, iret)
 !
             if (iret .gt. 0) goto 999
@@ -192,7 +194,7 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
                 b_n = to_blas_int(9)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, dgamma, msns, b_incx, gamsns, &
+                call daxpy(b_n, dgamma, msns, b_incx, gamsns,&
                            b_incy)
             end if
 !
@@ -208,10 +210,10 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
             end if
 !
 ! CONTRAINTE DE CLIVAGE
-            call lcmcli(nomfam, nbsys, is, pgl, sigf, &
+            call lcmcli(nomfam, nbsys, is, pgl, sigf,&
                         sicl)
 !
-            call lcmmsg(nomfam, nbsys, is, pgl, mus, &
+            call lcmmsg(nomfam, nbsys, is, pgl, mus,&
                         ng, lg, ir, qm)
             if (ir .eq. 1) then
 !              ROTATION RESEAU - CALCUL DE OMEGAP
@@ -272,19 +274,19 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
     do ifa = 1, nbfsys
         ifl = nbcomm(ifa, 1)
         nomfam = cpmono(5*(ifa-1)+1) (1:16)
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ng, lg, 0, qm)
         do is = 1, nbsys
 !           CALCUL DE LA SCISSION REDUITE =
 !           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !           TAU      : SCISSION REDUITE TAU=SIG:MUS
-            call caltau(ifa, is, sigf, fkooh, nfs, &
+            call caltau(ifa, is, sigf, fkooh, nfs,&
                         nsg, toutms, tau(ns+is), mus, msns)
-            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
-                        hsr, nsfv, nsfa, ifa, nbsys, &
-                        is, dt, nvi, vind, yd, &
-                        dy, itmax, toler, materf, expbp, &
-                        tau(ns+is), dalpha, dgamma, dp, crit, &
+            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
+                        hsr, nsfv, nsfa, ifa, nbsys,&
+                        is, dt, nvi, vind, yd,&
+                        dy, itmax, toler, materf, expbp,&
+                        tau(ns+is), dalpha, dgamma, dp, crit,&
                         sgns, rp, iret)
         end do
         ns = ns+nbsys
@@ -304,7 +306,7 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
 ! ROTATION RESEAU FIN
 !
     if (gdef .eq. 1) then
-        call calcfe(nr, ndt, nvi, vind, df, &
+        call calcfe(nr, ndt, nvi, vind, df,&
                     gamsns, fe, fp, iret)
         if (iret .gt. 0) goto 999
 !
@@ -313,17 +315,21 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, sigf, b_incx, pk2, b_incy)
-        call dscal(3, sqrt(2.d0), pk2(4), 1)
-        call pk2sig(3, fe, 1.d0, pk2, sigf, &
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, sqrt(2.d0), pk2(4), b_incx)
+        call pk2sig(3, fe, 1.d0, pk2, sigf,&
                     1)
 !
 ! les racine(2) attendues par NMCOMP :-)
-        call dscal(3, sqrt(2.d0), sigf(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, sqrt(2.d0), sigf(4), b_incx)
 !
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -1.d0, iden, b_incx, fe, &
+        call daxpy(b_n, -1.d0, iden, b_incx, fe,&
                    b_incy)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
@@ -335,12 +341,14 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, devi, b_incx, vinf, b_incy)
-        call dscal(3, sqrt(2.d0), devi(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, sqrt(2.d0), devi(4), b_incx)
 !
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, -1.d0, iden, b_incx, fp, &
+        call daxpy(b_n, -1.d0, iden, b_incx, fp,&
                    b_incy)
         b_n = to_blas_int(9)
         b_incx = to_blas_int(1)

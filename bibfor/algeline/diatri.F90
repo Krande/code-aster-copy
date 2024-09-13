@@ -141,16 +141,25 @@ subroutine diatri(n, d, e, vector, evec,&
         if (k .ne. i) then
             d(k) = d(i)
             d(i) = p
-            if (vector) call dswap(n, evec(1, i), 1, evec(1, k), 1)
+            if (vector) then
+                b_n = to_blas_int(n)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dswap(b_n, evec(1, i), b_incx, evec(1, k), b_incy)
+            endif
         end if
 !
     end do
 !          --- NORMALISATION DES VECTEURS PROPRES ---
     if (vector) then
         do j = 1, n
-            i = idamax(n, evec(1, j), 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            i = idamax(b_n, evec(1, j), b_incx)
             scale = evec(i, j)
-            call dscal(n, 1.0d0/scale, evec(1, j), 1)
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.0d0/scale, evec(1, j), b_incx)
         end do
     end if
 !

@@ -20,15 +20,16 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dsyev(jobz, uplo, n, a, lda, w, work, lwork, info)
-        character(len=1) ,intent(in) :: jobz
-        character(len=1) ,intent(in) :: uplo
-        integer, intent(in) :: n
-        integer, intent(in) :: lda
-        real(kind=8) ,intent(inout) :: a(lda, *)
-        real(kind=8) ,intent(out) :: w(*)
-        real(kind=8) ,intent(out) :: work(*)
-        integer, intent(in) :: lwork
+    subroutine dsyev(jobz, uplo, n, a, lda,&
+                     w, work, lwork, info)
+        character(len=1), intent(in) :: jobz
+        character(len=1), intent(in) :: uplo
+        blas_int, intent(in) :: n
+        blas_int, intent(in) :: lda
+        real(kind=8), intent(inout) :: a(lda, *)
+        real(kind=8), intent(out) :: w(*)
+        real(kind=8), intent(out) :: work(*)
+        blas_int, intent(in) :: lwork
         blas_int, intent(out) :: info
     end subroutine dsyev
 !

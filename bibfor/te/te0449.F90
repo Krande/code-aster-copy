@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0449(nomopt, nomte)
 !
     use HHO_type
@@ -41,7 +41,7 @@ subroutine te0449(nomopt, nomte)
 #include "asterfort/lteatt.h"
 #include "jeveux.h"
 #include "blas/dsyr.h"
-
+!
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO

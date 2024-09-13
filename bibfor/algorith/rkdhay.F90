@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rkdhay(mod, nvi, vini, coeft, nmat, &
+subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
                   sigi, dvin, iret)
     implicit none
 !      MODELE VISCOPLASTIQUE A ECROUISSAGE ISOTROPE COUPLE A DE
@@ -113,10 +113,14 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat, &
 !
 !------------CALCUL DES INVARIANTS DE CONTRAINTE  -------
 !     attention FGEQUI ne prend pas en compte les SQRT(2)
-    call dscal(3, 1.d0/sqrt(2.d0), smx(4), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 1.d0/sqrt(2.d0), smx(4), b_incx)
     call fgequi(smx, 'SIGM_DIR', ndim, equi)
 !     on retablit le tenseur
-    call dscal(3, sqrt(2.d0), smx(4), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, sqrt(2.d0), smx(4), b_incx)
     trsig = equi(16)
     grj0 = max(equi(3), equi(4))
     grj0 = max(grj0, equi(5))

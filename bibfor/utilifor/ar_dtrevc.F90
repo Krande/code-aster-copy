@@ -400,7 +400,11 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
 !                    SCALE IF NECESSARY
 !
-                        if (scale .ne. one) call dscal(ki, scale, work(1+n), 1)
+                        if (scale .ne. one) then
+                            b_n = to_blas_int(ki)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(1+n), b_incx)
+                        endif
                         work(j+n) = x(1, 1)
 !
 !                    UPDATE RIGHT-HAND SIDE
@@ -434,7 +438,11 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
 !                    SCALE IF NECESSARY
 !
-                        if (scale .ne. one) call dscal(ki, scale, work(1+n), 1)
+                        if (scale .ne. one) then
+                            b_n = to_blas_int(ki)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(1+n), b_incx)
+                        endif
                         work(j-1+n) = x(1, 1)
                         work(j+n) = x(2, 1)
 !
@@ -462,9 +470,13 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     b_incy = to_blas_int(1)
                     call dcopy(b_n, work(1+n), b_incx, vr(1, is), b_incy)
 !
-                    ii = idamax(ki, vr(1, is), 1)
+                    b_n = to_blas_int(ki)
+                    b_incx = to_blas_int(1)
+                    ii = idamax(b_n, vr(1, is), b_incx)
                     remax = one/abs(vr(ii, is))
-                    call dscal(ki, remax, vr(1, is), 1)
+                    b_n = to_blas_int(ki)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vr(1, is), b_incx)
 !
                     do k = ki+1, n
                         vr(k, is) = zero
@@ -481,9 +493,13 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                                    b_incy)
                     endif
 !
-                    ii = idamax(n, vr(1, ki), 1)
+                    b_n = to_blas_int(n)
+                    b_incx = to_blas_int(1)
+                    ii = idamax(b_n, vr(1, ki), b_incx)
                     remax = one/abs(vr(ii, ki))
-                    call dscal(n, remax, vr(1, ki), 1)
+                    b_n = to_blas_int(n)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vr(1, ki), b_incx)
                 end if
 !
             else
@@ -551,8 +567,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    SCALE IF NECESSARY
 !
                         if (scale .ne. one) then
-                            call dscal(ki, scale, work(1+n), 1)
-                            call dscal(ki, scale, work(1+n2), 1)
+                            b_n = to_blas_int(ki)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(1+n), b_incx)
+                            b_n = to_blas_int(ki)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(1+n2), b_incx)
                         end if
                         work(j+n) = x(1, 1)
                         work(j+n2) = x(1, 2)
@@ -597,8 +617,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    SCALE IF NECESSARY
 !
                         if (scale .ne. one) then
-                            call dscal(ki, scale, work(1+n), 1)
-                            call dscal(ki, scale, work(1+n2), 1)
+                            b_n = to_blas_int(ki)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(1+n), b_incx)
+                            b_n = to_blas_int(ki)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(1+n2), b_incx)
                         end if
                         work(j-1+n) = x(1, 1)
                         work(j+n) = x(2, 1)
@@ -649,8 +673,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     end do
 !
                     remax = one/emax
-                    call dscal(ki, remax, vr(1, is-1), 1)
-                    call dscal(ki, remax, vr(1, is), 1)
+                    b_n = to_blas_int(ki)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vr(1, is-1), b_incx)
+                    b_n = to_blas_int(ki)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vr(1, is), b_incx)
 !
                     do k = ki+1, n
                         vr(k, is-1) = zero
@@ -678,8 +706,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                                    b_lda, work(1+n2), b_incx, work(ki+n2), vr(1, ki),&
                                    b_incy)
                     else
-                        call dscal(n, work(ki-1+n), vr(1, jnxt), 1)
-                        call dscal(n, work(ki+n2), vr(1, ki), 1)
+                        b_n = to_blas_int(n)
+                        b_incx = to_blas_int(1)
+                        call dscal(b_n, work(ki-1+n), vr(1, jnxt), b_incx)
+                        b_n = to_blas_int(n)
+                        b_incx = to_blas_int(1)
+                        call dscal(b_n, work(ki+n2), vr(1, ki), b_incx)
                     end if
 !
                     emax = zero
@@ -687,8 +719,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                         emax = max(emax, abs(vr(k, jnxt))+abs(vr(k, ki)))
                     end do
                     remax = one/emax
-                    call dscal(n, remax, vr(1, jnxt), 1)
-                    call dscal(n, remax, vr(1, ki), 1)
+                    b_n = to_blas_int(n)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vr(1, jnxt), b_incx)
+                    b_n = to_blas_int(n)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vr(1, ki), b_incx)
                 end if
             end if
 !
@@ -765,7 +801,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
                         if (work(j) .gt. vcrit) then
                             rec = one/vmax
-                            call dscal(n-ki+1, rec, work(ki+n), 1)
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, rec, work(ki+n), b_incx)
                             vmax = one
                             vcrit = bignum
                         end if
@@ -784,7 +822,11 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
 !                    SCALE IF NECESSARY
 !
-                        if (scale .ne. one) call dscal(n-ki+1, scale, work(ki+n), 1)
+                        if (scale .ne. one) then
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(ki+n), b_incx)
+                        endif
                         work(j+n) = x(1, 1)
                         vmax = max(abs(work(j+n)), vmax)
                         vcrit = bignum/vmax
@@ -799,7 +841,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                         beta = max(work(j), work(j+1))
                         if (beta .gt. vcrit) then
                             rec = one/vmax
-                            call dscal(n-ki+1, rec, work(ki+n), 1)
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, rec, work(ki+n), b_incx)
                             vmax = one
                             vcrit = bignum
                         end if
@@ -826,7 +870,11 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
 !                    SCALE IF NECESSARY
 !
-                        if (scale .ne. one) call dscal(n-ki+1, scale, work(ki+n), 1)
+                        if (scale .ne. one) then
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(ki+n), b_incx)
+                        endif
                         work(j+n) = x(1, 1)
                         work(j+1+n) = x(2, 1)
 !
@@ -845,9 +893,13 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     b_incy = to_blas_int(1)
                     call dcopy(b_n, work(ki+n), b_incx, vl(ki, is), b_incy)
 !
-                    ii = idamax(n-ki+1, vl(ki, is), 1)+ki-1
+                    b_n = to_blas_int(n-ki+1)
+                    b_incx = to_blas_int(1)
+                    ii = idamax(b_n, vl(ki, is), b_incx)+ki-1
                     remax = one/abs(vl(ii, is))
-                    call dscal(n-ki+1, remax, vl(ki, is), 1)
+                    b_n = to_blas_int(n-ki+1)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vl(ki, is), b_incx)
 !
                     do k = 1, ki-1
                         vl(k, is) = zero
@@ -866,9 +918,13 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                                    b_incy)
                     endif
 !
-                    ii = idamax(n, vl(1, ki), 1)
+                    b_n = to_blas_int(n)
+                    b_incx = to_blas_int(1)
+                    ii = idamax(b_n, vl(1, ki), b_incx)
                     remax = one/abs(vl(ii, ki))
-                    call dscal(n, remax, vl(1, ki), 1)
+                    b_n = to_blas_int(n)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vl(1, ki), b_incx)
 !
                 end if
 !
@@ -925,8 +981,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
                         if (work(j) .gt. vcrit) then
                             rec = one/vmax
-                            call dscal(n-ki+1, rec, work(ki+n), 1)
-                            call dscal(n-ki+1, rec, work(ki+n2), 1)
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, rec, work(ki+n), b_incx)
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, rec, work(ki+n2), b_incx)
                             vmax = one
                             vcrit = bignum
                         end if
@@ -951,8 +1011,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    SCALE IF NECESSARY
 !
                         if (scale .ne. one) then
-                            call dscal(n-ki+1, scale, work(ki+n), 1)
-                            call dscal(n-ki+1, scale, work(ki+n2), 1)
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(ki+n), b_incx)
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(ki+n2), b_incx)
                         end if
                         work(j+n) = x(1, 1)
                         work(j+n2) = x(1, 2)
@@ -969,8 +1033,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                         beta = max(work(j), work(j+1))
                         if (beta .gt. vcrit) then
                             rec = one/vmax
-                            call dscal(n-ki+1, rec, work(ki+n), 1)
-                            call dscal(n-ki+1, rec, work(ki+n2), 1)
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, rec, work(ki+n), b_incx)
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, rec, work(ki+n2), b_incx)
                             vmax = one
                             vcrit = bignum
                         end if
@@ -1010,8 +1078,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    SCALE IF NECESSARY
 !
                         if (scale .ne. one) then
-                            call dscal(n-ki+1, scale, work(ki+n), 1)
-                            call dscal(n-ki+1, scale, work(ki+n2), 1)
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(ki+n), b_incx)
+                            b_n = to_blas_int(n-ki+1)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scale, work(ki+n2), b_incx)
                         end if
                         work(j+n) = x(1, 1)
                         work(j+n2) = x(1, 2)
@@ -1041,8 +1113,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                         emax = max(emax, abs(vl(k, is))+abs(vl(k, is+1)))
                     end do
                     remax = one/emax
-                    call dscal(n-ki+1, remax, vl(ki, is), 1)
-                    call dscal(n-ki+1, remax, vl(ki, is+1), 1)
+                    b_n = to_blas_int(n-ki+1)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vl(ki, is), b_incx)
+                    b_n = to_blas_int(n-ki+1)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vl(ki, is+1), b_incx)
 !
                     do k = 1, ki-1
                         vl(k, is) = zero
@@ -1067,8 +1143,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                                    b_lda, work(ki+2+n2), b_incx, work(ki+1+n2), vl(1, ki+1),&
                                    b_incy)
                     else
-                        call dscal(n, work(ki+n), vl(1, ki), 1)
-                        call dscal(n, work(ki+1+n2), vl(1, ki+1), 1)
+                        b_n = to_blas_int(n)
+                        b_incx = to_blas_int(1)
+                        call dscal(b_n, work(ki+n), vl(1, ki), b_incx)
+                        b_n = to_blas_int(n)
+                        b_incx = to_blas_int(1)
+                        call dscal(b_n, work(ki+1+n2), vl(1, ki+1), b_incx)
                     end if
 !
                     emax = zero
@@ -1076,8 +1156,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                         emax = max(emax, abs(vl(k, ki))+abs(vl(k, ki+1)))
                     end do
                     remax = one/emax
-                    call dscal(n, remax, vl(1, ki), 1)
-                    call dscal(n, remax, vl(1, ki+1), 1)
+                    b_n = to_blas_int(n)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vl(1, ki), b_incx)
+                    b_n = to_blas_int(n)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, remax, vl(1, ki+1), b_incx)
 !
                 end if
 !

@@ -15,26 +15,26 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dorm2r(side, trans, m, n, k,&
                       a, lda, tau, c, ldc,&
                       work, info)
-        integer, intent(in) :: ldc
-        integer, intent(in) :: lda
-        character(len=1) ,intent(in) :: side
-        character(len=1) ,intent(in) :: trans
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        integer, intent(in) :: k
-        real(kind=8) ,intent(in) :: a(lda, *)
-        real(kind=8) ,intent(in) :: tau(*)
-        real(kind=8) ,intent(inout) :: c(ldc, *)
-        real(kind=8) ,intent(out) :: work(*)
+        blas_int, intent(in) :: ldc
+        blas_int, intent(in) :: lda
+        character(len=1), intent(in) :: side
+        character(len=1), intent(in) :: trans
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        blas_int, intent(in) :: k
+        real(kind=8), intent(in) :: a(lda, *)
+        real(kind=8), intent(in) :: tau(*)
+        real(kind=8), intent(inout) :: c(ldc, *)
+        real(kind=8), intent(out) :: work(*)
         blas_int, intent(out) :: info
     end subroutine dorm2r
 end interface

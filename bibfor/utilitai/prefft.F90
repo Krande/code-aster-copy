@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine prefft(resin, method, symetr, nsens, grand, &
+subroutine prefft(resin, method, symetr, nsens, grand,&
                   vectot, nbva, kmpi, ier, npuis)
     implicit none
 #include "jeveux.h"
@@ -148,14 +148,14 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
 !
     call gettco(resin, typres)
     call jelira(resin//'.ORDR', 'LONUTI', nbordr)
-    call rsorac(resin, 'LONUTI', 0, r8b, k8b, &
-                c16b, r8b, k8b, tord, 1, &
+    call rsorac(resin, 'LONUTI', 0, r8b, k8b,&
+                c16b, r8b, k8b, tord, 1,&
                 ibid)
     nbordr = tord(1)
     knume = 'KNUME'
     call wkvect(knume, 'V V I', nbordr, jordr)
-    call rsorac(resin, 'TOUT_ORDRE', 0, r8b, k8b, &
-                c16b, r8b, k8b, zi(jordr), nbordr, &
+    call rsorac(resin, 'TOUT_ORDRE', 0, r8b, k8b,&
+                c16b, r8b, k8b, zi(jordr), nbordr,&
                 ibid)
     call jeveuo(knume, 'L', lordr)
 !
@@ -174,7 +174,7 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
     call wkvect(kcham, 'V V K24', nbordr, lcham)
 !
     if (typres(6:9) .ne. 'GENE') then
-        call rsexch('F', resin, grande, 1, chdep, &
+        call rsexch('F', resin, grande, 1, chdep,&
                     iret)
         call jeveuo(chdep//'.VALE', 'L', lval)
 !     --- NOMBRE D'EQUATIONS : NEQ
@@ -250,7 +250,7 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
 ! PREPARATION POUR SPDFFT
     nbva = nbordr
     n = 1
-2   continue
+  2 continue
     nbpts = 2**n
     if (nbpts .lt. nbva) then
         n = n+1
@@ -297,10 +297,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
 !        --- CAS OU ON DISPOSE D'UNE DYNA_TRANS:
             do iordr = 0, nbordr-1
 !           --- BOUCLE SUR LES NUMEROS D'ORDRE (INSTANTS ARCHIVES)
-                call rsexch('F', resin, grande, zi(jordr+iordr), cham19, &
+                call rsexch('F', resin, grande, zi(jordr+iordr), cham19,&
                             iret)
                 zk24(lcham+iordr) = cham19
-                call rsadpa(resin, 'L', 1, 'INST', zi(jordr+iordr), &
+                call rsadpa(resin, 'L', 1, 'INST', zi(jordr+iordr),&
                             0, sjv=lacce, styp=k8b)
                 call jeveuo(cham19//'.VALE', 'L', lvale)
 !              --- REMPLIR LE VECTEUR ABSCISSES DE LA FONCTION PREFFT
@@ -329,7 +329,7 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
 ! TOUS LES PROCESSUS MPI FONT LE CALCUL
 !
 !        --- CALCUL DE LA FFT DE LA FONCTION PREFFT DEFINIE PRECEDEMNT
-        call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
+        call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
                     nbpts, nout, nbpts2, sym)
 !
 !        --- VERIFICATIONS AVANT CREATION DE LA VECTEUR DES FFT FINAL
@@ -343,7 +343,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
 !
 !        --- REMPLISSAGE AVEC LES PREMIERS RESULTATS POUR IDDL=1
         lfon2 = nout+nbvout
-        call zcopy(nbvout, zc(lfon2), 1, zc(npara+(iddl-1)*nbvout), 1)
+        b_n = to_blas_int(nbvout)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, zc(lfon2), b_incx, zc(npara+(iddl-1)*nbvout), b_incy)
 !
 !        --- BOUCLE DES FFTS SUR LES AUTRES DDL'S
 !            REFERER AUX PRECEDENTS COMMENTAIRES POUR + DE DETAILS
@@ -364,11 +367,14 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
                         call jelibe(cham19//'.VALE')
                     end do
 !              --- CALCUL DES FFT
-                    call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
+                    call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
                                 nbpts, nout, nbpts2, sym)
 !              --- SAUVEGARDE DES RESULTATS DANS VECTOT
                     lfon2 = nout+nbvout
-                    call zcopy(nbvout, zc(lfon2), 1, zc(npara+(iddl-1)*nbvout), 1)
+                    b_n = to_blas_int(nbvout)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(lfon2), b_incx, zc(npara+(iddl-1)*nbvout), b_incy)
                 end if
             end do
 !
@@ -397,11 +403,14 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
                     b_incy = to_blas_int(1)
                     call dcopy(b_n, zr(lval+iddl-1), b_incx, zr(lfon), b_incy)
 !              --- CALCUL DES FFT
-                    call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
+                    call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
                                 nbpts, nout, nbpts2, sym)
 !              --- SAUVEGARDE DES RESULTATS DANS VECTOT
                     lfon2 = nout+nbvout
-                    call zcopy(nbvout, zc(lfon2), 1, zc(npara+(iddl-1)*nbvout), 1)
+                    b_n = to_blas_int(nbvout)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(lfon2), b_incx, zc(npara+(iddl-1)*nbvout), b_incy)
                 end if
             end do
 !
@@ -420,7 +429,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
         end if
 !
 !        --- STOCKAGE DES INSTANTS A LA FIN DANS VECTOT
-        call zcopy(nbvout, zc(nout), 1, zc(npara+neq*nbvout), 1)
+        b_n = to_blas_int(nbvout)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, zc(nout), b_incx, zc(npara+neq*nbvout), b_incy)
 !
     else if (nsens .eq. -1) then
 !     --- DE FREQUENTIEL EN TEMPOREL : HARM_GENE EN TRAN_GENE
@@ -434,10 +446,10 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
             do iordr = 1, nbordr
 !             --- REMPLIR L'ABSCISSE ET ORDONNE DE LA FONCTION PREFFT
 !             --- NOTE : VALEURS DES CHAMPS SONT COMPLEXES
-                call rsexch('F', resin, grande, zi(jordr+iordr-1), cham19, &
+                call rsexch('F', resin, grande, zi(jordr+iordr-1), cham19,&
                             iret)
                 zk24(lcham+iordr-1) = cham19
-                call rsadpa(resin, 'L', 1, 'FREQ', zi(jordr+iordr-1), &
+                call rsadpa(resin, 'L', 1, 'FREQ', zi(jordr+iordr-1),&
                             0, sjv=lacce, styp=k8b)
                 call jeveuo(cham19//'.VALE', 'L', lvale)
                 zr(lvar+iordr-1) = zr(lacce)
@@ -467,7 +479,7 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
 ! TOUS LES PROCESSUS MPI FONT LE CALCUL
 !
 !        --- CALCUL DU PREMIER FFT INVERSE SUR LA FONCTION CALCULEE
-        call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
+        call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
                     nbpts, nout, nbpts2, sym)
 !
 !        --- VERIFICATIONS AVANT CREATION DE LA VECTEUR DES FFT FINAL
@@ -505,7 +517,7 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
                         call jelibe(cham19//'.VALE')
                     end do
 !             --- CALCUL DES FFT'S INVERSES
-                    call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
+                    call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
                                 nbpts, nout, nbpts2, sym)
 !             --- SAUVEGARDE DES RESULTATS DANS VECTOT
                     lfon2 = nout+nbvout
@@ -541,7 +553,7 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
                         ii = ii+1
                     end do
 !             --- CALCUL DES FFT'S INVERSES
-                    call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
+                    call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
                                 nbpts, nout, nbpts2, sym)
 !             --- SAUVEGARDE DES RESULTATS DANS VECTOT
                     lfon2 = nout+nbvout

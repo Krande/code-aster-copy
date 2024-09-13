@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
-                  mu, apcoef, apddl, appoin, inliac, &
+subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
+                  mu, apcoef, apddl, appoin, inliac,&
                   matass, solveu, premax, ssgrad, ssgrpr)
 !
     implicit none
@@ -150,7 +150,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
 ! =========================== BOUCLE PRINCIPALE ========================
 ! ======================================================================
 !
-20  continue
+ 20 continue
 !
 ! --- NOUVELLE VALEUR DU GRADIENT
 !
@@ -159,7 +159,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
         jdecal = appoin(iliai)
         nbddl = appoin(iliai+1)-appoin(iliai)
 !       RESIDU=A.UU-SSGRAD(ACT)
-        call caladu(neq, nbddl, apcoef(1+jdecal), apddl(1+jdecal), zr(jpcdep), &
+        call caladu(neq, nbddl, apcoef(1+jdecal), apddl(1+jdecal), zr(jpcdep),&
                     zr(jpcres-1+iliac))
         zr(jpcres-1+iliac) = zr(jpcres-1+iliac)-ssgrad(iliai)
     end do
@@ -206,11 +206,13 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
         b_incy = to_blas_int(1)
         numerp = ddot(b_n, zr(jpcres), b_incx, zr(jpcres), b_incy)
         beta = numerp/numerm
-        call dscal(nbliac, beta, zr(jpcdir), 1)
+        b_n = to_blas_int(nbliac)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, beta, zr(jpcdir), b_incx)
         b_n = to_blas_int(nbliac)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, zr(jpcres), b_incx, zr(jpcdir), &
+        call daxpy(b_n, 1.d0, zr(jpcres), b_incx, zr(jpcdir),&
                    b_incy)
     end if
 !
@@ -222,15 +224,15 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
         iliai = inliac(iliac)
         jdecal = appoin(iliai)
         nbddl = appoin(iliai+1)-appoin(iliai)
-        call calatm(neq, nbddl, zr(jpcdir-1+iliac), apcoef(1+jdecal), apddl(1+jdecal), &
+        call calatm(neq, nbddl, zr(jpcdir-1+iliac), apcoef(1+jdecal), apddl(1+jdecal),&
                     zr(jsecmb))
     end do
 !
 ! --- RESOLUTION
 ! --- DU=K-1*(AT.DIRECH)
 !
-    call resoud(matass, k19bla, solveu, cncin0, 0, &
-                secmbr, ddelt, 'V', [0.d0], [c16bid], &
+    call resoud(matass, k19bla, solveu, cncin0, 0,&
+                secmbr, ddelt, 'V', [0.d0], [c16bid],&
                 k19bla, .true._1, 0, iret)
     call jeveuo(ddelt(1:19)//'.VALE', 'E', jddelt)
 !
@@ -260,7 +262,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
     b_n = to_blas_int(neq)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call daxpy(b_n, -alpha, zr(jddelt), b_incx, zr(jpcdep), &
+    call daxpy(b_n, -alpha, zr(jddelt), b_incx, zr(jpcdep),&
                b_incy)
 !
 !
@@ -272,7 +274,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
     iterat = iterat+1
     goto 20
 !
-80  continue
+ 80 continue
 !
 !     ON A DEPASSE LE NOMBRE D'ITERATIONS MAX
     if (niv .ge. 2) then
@@ -281,7 +283,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
     end if
 !
 !
-90  continue
+ 90 continue
 !
 ! ======================================================================
 ! ============================= ON A CONVERGE ==========================
@@ -299,7 +301,9 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
 !
 !     ON REPROJETE LE SOUS-GRADIENT PRECONDITIONNE POUR
 !     ASSURER LA POSITIVITE DES MULTIPLICATEURS
-    call dscal(nbliai, -1.d0, ssgrpr, 1)
+    b_n = to_blas_int(nbliai)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, -1.d0, ssgrpr, b_incx)
     do iliai = 1, nbliai
         if (mu(iliai) .le. tole) then
             ssgrpr(iliai) = max(ssgrpr(iliai), 0.d0)
@@ -311,10 +315,10 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
 !
     call jedema()
 !
-9000 format(' <CONTACT><CALC> PRECONDITIONNEUR : ITERATION =', i6,&
+    9000 format(' <CONTACT><CALC> PRECONDITIONNEUR : ITERATION =', i6,&
    &        ' RESIDU =', 1pe12.5)
-9010 format(' <CONTACT><CALC> PRECONDITIONNEUR : ', i6,&
+    9010 format(' <CONTACT><CALC> PRECONDITIONNEUR : ', i6,&
    &        ' LIAISON ACTIVES, CRITERE DE CONVERGENCE =', 1pe12.5)
-9020 format(' <CONTACT><CALC> PRECONDITIONNEUR : ITERATION =', i6,&
+    9020 format(' <CONTACT><CALC> PRECONDITIONNEUR : ITERATION =', i6,&
    &        ' RESIDU =', 1pe12.5, ' => CONVERGENCE')
 end subroutine

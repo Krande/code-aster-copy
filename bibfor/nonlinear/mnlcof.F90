@@ -140,7 +140,9 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     call wkvect(xqnl, 'V V R', ninc-1, iqnl)
     do p = 2, ordman
 !       REMISE A ZERO DU SECOND MEMBRE
-        call dscal(ninc, 0.d0, fpnl, 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, fpnl, b_incx)
 !       CALCUL DU SECOND MEMBRE
         do r = 1, p-1
 !         VECU1 = UPS(:,R)
@@ -177,9 +179,15 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 ! --- REMISE A ZERO DES VECTEURS TEMPORAIRES
 ! ----------------------------------------------------------------------
-    call dscal(ninc-1, 0.d0, zr(iqnl), 1)
-    call dscal(ninc, 0.d0, zr(ivecu1), 1)
-    call dscal(ninc, 0.d0, zr(ivecu2), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(iqnl), b_incx)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ivecu1), b_incx)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ivecu2), b_incx)
 ! ----------------------------------------------------------------------
 ! --- EXTRACTION SERIE GEOMETRIQUE
 ! ----------------------------------------------------------------------
@@ -187,7 +195,9 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     AS_ALLOCATE(vr=ratio, size=nextr)
     AS_ALLOCATE(vr=ecar, size=nextr-1)
     do k = 1, nextr
-        call dscal(ninc, 0.d0, zr(ivecu1), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(ivecu1), b_incx)
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -227,7 +237,9 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     necar = dnrm2(b_n, ecar, b_incx)
     if (nratio .lt. epsbif .and. necar .lt. epsbif) then
         lbif = .true.
-        call dscal(ninc, 0.d0, zr(ivecu1), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(ivecu1), b_incx)
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -240,7 +252,9 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, zr(iups+ordman*ninc), b_incx, zr(ivecu1), b_incy)
-        call dscal(ninc, ac**ordman, zr(ivecu1), 1)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, ac**ordman, zr(ivecu1), b_incx)
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)
         nudom = dnrm2(b_n, zr(ivecu1), b_incx)
@@ -253,18 +267,28 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         end do
     end if
 !
-    call dscal(ninc, 0.d0, zr(ivecu1), 1)
+    b_n = to_blas_int(ninc)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ivecu1), b_incx)
 ! ----------------------------------------------------------------------
 ! --- CALCUL DU SECOND MEMBRE SUPPLEMENTAIRE POUR LE CALCUL DE LA
 ! ---                                                     LONGUEUR D'ARC
 ! ----------------------------------------------------------------------
     call jeveuo(xfpnla, 'E', ifpnla)
-    call dscal(ninc-1, 0.d0, zr(ifpnla), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ifpnla), b_incx)
 ! ---   CALCULE DE FPNLA = FPNLA - Q(SYS,UPS(:,R),UPS(:,P+1-R))
     do r = 1, ordman
-        call dscal(ninc-1, 0.d0, zr(iqnl), 1)
-        call dscal(ninc, 0.d0, zr(ivecu1), 1)
-        call dscal(ninc, 0.d0, zr(ivecu2), 1)
+        b_n = to_blas_int(ninc-1)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(iqnl), b_incx)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(ivecu1), b_incx)
+        b_n = to_blas_int(ninc)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(ivecu2), b_incx)
 ! ---   VECU1 = UPS(:,R+1)
         b_n = to_blas_int(ninc)
         b_incx = to_blas_int(1)

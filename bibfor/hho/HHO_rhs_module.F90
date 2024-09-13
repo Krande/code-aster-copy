@@ -97,7 +97,7 @@ contains
             b_n = to_blas_int(size)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, coeff, BSFEval, b_incx, rhs, &
+            call daxpy(b_n, coeff, BSFEval, b_incx, rhs,&
                        b_incy)
         end do
 !
@@ -206,7 +206,7 @@ contains
             b_n = to_blas_int(size)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, coeff, BSCEval, b_incx, rhs, &
+            call daxpy(b_n, coeff, BSCEval, b_incx, rhs,&
                        b_incy)
         end do
 !

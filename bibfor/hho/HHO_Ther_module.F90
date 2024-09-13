@@ -282,8 +282,12 @@ contains
                                   time_curr)
 !
         if (l_rhs) then
-            call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_SCAL,&
-                       temp_curr, 1, 1.d0, rhs, 1)
+            b_lda = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_n = to_blas_int(total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, hhoData%coeff_stab(), stab, b_lda,&
+                       temp_curr, b_incx, 1.d0, rhs, b_incy)
         end if
 !
         if (l_lhs) then
@@ -627,11 +631,15 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: coeff
+        blas_int :: b_incx, b_lda, b_n
 ! --------------------------------------------------------------------------------------------------
 !
         coeff = cp*weight
-        call dsyr('U', cbs, coeff, BSCEval, 1,&
-                  lhs, MSIZE_CELL_SCAL)
+        b_n = to_blas_int(cbs)
+        b_incx = to_blas_int(1)
+        b_lda = to_blas_int(MSIZE_CELL_SCAL)
+        call dsyr('U', b_n, coeff, BSCEval, b_incx,&
+                  lhs, b_lda)
 !
     end subroutine
 !

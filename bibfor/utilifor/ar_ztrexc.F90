@@ -25,7 +25,7 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_ztrexc(compq, n, t, ldt, q, &
+subroutine ar_ztrexc(compq, n, t, ldt, q,&
                      ldq, ifst, ilst, info)
 !  -- LAPACK ROUTINE (VERSION 2.0) --
 !     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
@@ -109,6 +109,7 @@ subroutine ar_ztrexc(compq, n, t, ldt, q, &
     integer :: k, m1, m2, m3
     real(kind=8) :: cs
     complex(kind=8) :: sn, t11, t22, temp
+    blas_int :: b_incx, b_incy, b_n
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -171,9 +172,17 @@ subroutine ar_ztrexc(compq, n, t, ldt, q, &
 !
 !        APPLY TRANSFORMATION TO THE MATRIX T.
 !
-        if (k+2 .le. n) call zrot(n-k-1, t(k, k+2), ldt, t(k+1, k+2), ldt, &
-                                  cs, sn)
-        call zrot(k-1, t(1, k), 1, t(1, k+1), 1, &
+        if (k+2 .le. n) then
+            b_n = to_blas_int(n-k-1)
+            b_incx = to_blas_int(ldt)
+            b_incy = to_blas_int(ldt)
+            call zrot(b_n, t(k, k+2), b_incx, t(k+1, k+2), b_incy,&
+                      cs, sn)
+        endif
+        b_n = to_blas_int(k-1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zrot(b_n, t(1, k), b_incx, t(1, k+1), b_incy,&
                   cs, dconjg(sn))
 !
         t(k, k) = t22
@@ -183,7 +192,10 @@ subroutine ar_ztrexc(compq, n, t, ldt, q, &
 !
 !           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 !
-            call zrot(n, q(1, k), 1, q(1, k+1), 1, &
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zrot(b_n, q(1, k), b_incx, q(1, k+1), b_incy,&
                       cs, dconjg(sn))
         end if
 !

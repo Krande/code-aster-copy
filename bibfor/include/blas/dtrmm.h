@@ -15,25 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine dtrmm(side, uplo, transa, diag, m,&
                      n, alpha, a, lda, b,&
                      ldb)
-        integer, intent(in) :: ldb
-        integer, intent(in) :: lda
-        character(len=1) ,intent(in) :: side
-        character(len=1) ,intent(in) :: uplo
-        character(len=1) ,intent(in) :: transa
-        character(len=1) ,intent(in) :: diag
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        real(kind=8) ,intent(in) :: alpha
-        real(kind=8) ,intent(in) :: a(lda, *)
-        real(kind=8) ,intent(inout) :: b(ldb, *)
+        blas_int, intent(in) :: ldb
+        blas_int, intent(in) :: lda
+        character(len=1), intent(in) :: side
+        character(len=1), intent(in) :: uplo
+        character(len=1), intent(in) :: transa
+        character(len=1), intent(in) :: diag
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        real(kind=8), intent(in) :: alpha
+        real(kind=8), intent(in) :: a(lda, *)
+        real(kind=8), intent(inout) :: b(ldb, *)
     end subroutine dtrmm
 end interface

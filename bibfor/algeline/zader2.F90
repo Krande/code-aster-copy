@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zader2(uplo, n, alpha, x, incx, &
+subroutine zader2(uplo, n, alpha, x, incx,&
                   y, incy, a, lda)
     implicit none
 #include "asterf_types.h"
@@ -44,6 +44,7 @@ subroutine zader2(uplo, n, alpha, x, incx, &
     complex(kind=8) :: tempx, tempy, temp1
     aster_logical :: upper
     real(kind=8) :: dble
+    blas_int :: b_incx, b_incy, b_n
 !
     if (n .eq. 0 .or. alpha .eq. (0.0d0, 0.0d0)) goto 999
 !
@@ -59,33 +60,57 @@ subroutine zader2(uplo, n, alpha, x, incx, &
         tempy = alpha*dconjg(y(iy))
         if (upper) then
             if (incx .ge. 0) then
-                call zaxpy(j-1, tempy, x, incx, a(1, j), &
-                           1)
+                b_n = to_blas_int(j-1)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, tempy, x, b_incx, a(1, j),&
+                           b_incy)
             else
-                call zaxpy(j-1, tempy, x(ix-incx), incx, a(1, j), &
-                           1)
+                b_n = to_blas_int(j-1)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, tempy, x(ix-incx), b_incx, a(1, j),&
+                           b_incy)
             end if
             if (incy .ge. 0) then
-                call zaxpy(j-1, tempx, y, incy, a(1, j), &
-                           1)
+                b_n = to_blas_int(j-1)
+                b_incx = to_blas_int(incy)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, tempx, y, b_incx, a(1, j),&
+                           b_incy)
             else
-                call zaxpy(j-1, tempx, y(iy-incy), incy, a(1, j), &
-                           1)
+                b_n = to_blas_int(j-1)
+                b_incx = to_blas_int(incy)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, tempx, y(iy-incy), b_incx, a(1, j),&
+                           b_incy)
             end if
         else
             if (incx .ge. 0) then
-                call zaxpy(n-j, tempy, x(ix+incx), incx, a(j+1, j), &
-                           1)
+                b_n = to_blas_int(n-j)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, tempy, x(ix+incx), b_incx, a(j+1, j),&
+                           b_incy)
             else
-                call zaxpy(n-j, tempy, x, incx, a(j+1, j), &
-                           1)
+                b_n = to_blas_int(n-j)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, tempy, x, b_incx, a(j+1, j),&
+                           b_incy)
             end if
             if (incy .ge. 0) then
-                call zaxpy(n-j, tempx, y(iy+incy), incy, a(j+1, j), &
-                           1)
+                b_n = to_blas_int(n-j)
+                b_incx = to_blas_int(incy)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, tempx, y(iy+incy), b_incx, a(j+1, j),&
+                           b_incy)
             else
-                call zaxpy(n-j, tempx, y, incy, a(j+1, j), &
-                           1)
+                b_n = to_blas_int(n-j)
+                b_incx = to_blas_int(incy)
+                b_incy = to_blas_int(1)
+                call zaxpy(b_n, tempx, y, b_incx, a(j+1, j),&
+                           b_incy)
             end if
         end if
         temp1 = a(j, j)+y(iy)*tempx+x(ix)*tempy

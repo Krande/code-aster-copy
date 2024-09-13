@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     function dzasum(n, zx, incx)
-        integer, intent(in) :: n
-        complex(kind=8),intent(in) :: zx(*)
-        integer, intent(in) :: incx
+        blas_int, intent(in) :: n
+        complex(kind=8), intent(in) :: zx(*)
+        blas_int, intent(in) :: incx
         real(kind=8) :: dzasum
     end function dzasum
 end interface

@@ -304,7 +304,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -340,7 +342,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -377,7 +381,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -434,7 +440,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -533,7 +541,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -569,7 +579,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -606,7 +618,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -663,7 +677,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -761,7 +777,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -797,7 +815,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -834,7 +854,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -891,7 +913,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -989,7 +1013,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -1025,7 +1051,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -1062,7 +1090,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if
@@ -1119,7 +1149,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c(1, j), 1)
+                            b_n = to_blas_int(m)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, scaloc, c(1, j), b_incx)
                         end do
                         scale = scale*scaloc
                     end if

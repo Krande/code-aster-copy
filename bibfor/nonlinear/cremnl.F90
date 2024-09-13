@@ -235,7 +235,9 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
             b_incx = to_blas_int(neq)
             nspec(ieq) = dnrm2(b_n, zr(isort-1+iadd), b_incx)**2
         end do
-        inspec = idamax(neq, nspec, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        inspec = idamax(b_n, nspec, b_incx)
         iadd = (iordr-1)*(neq*nmodes+2)+inspec
         espec(1) = zr(isort-1+iadd)**2/nspec(inspec)
         do ihar = 1, nbhar
@@ -244,7 +246,9 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
                             &spec(inspec&
                             )
         end do
-        harmaxa = idamax(nbhar+1, espec, 1)-1
+        b_n = to_blas_int(nbhar+1)
+        b_incx = to_blas_int(1)
+        harmaxa = idamax(b_n, espec, b_incx)-1
         if (harmaxa .gt. harmax) then
             harmax = harmaxa
         end if

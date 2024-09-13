@@ -73,6 +73,7 @@ contains
         integer :: ipg
         real(kind=8), dimension(MAX_BS) :: BSEval
         real(kind=8) :: coeff
+        blas_int :: b_incx, b_lda, b_n
 !
         mass = 0.d0
 !
@@ -88,8 +89,11 @@ contains
             else
                 coeff = FEQuad%weights(ipg)
             end if
-            call dsyr('U', FEBasis%size, coeff, BSEval, 1, &
-                      mass, MAX_BS)
+            b_n = to_blas_int(FEBasis%size)
+            b_incx = to_blas_int(1)
+            b_lda = to_blas_int(MAX_BS)
+            call dsyr('U', b_n, coeff, BSEval, b_incx,&
+                      mass, b_lda)
         end do
 !
 ! ----- Copy the lower part

@@ -17,14 +17,15 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dsyrk(uplo, trans, n, k, alpha, a, lda, beta, c, ldc)
+    subroutine dsyrk(uplo, trans, n, k, alpha,&
+                     a, lda, beta, c, ldc)
 !
         character(len=1), intent(in) :: uplo
         character(len=1), intent(in) :: trans
-        integer, intent(in) :: n
-        integer, intent(in) :: k
-        integer, intent(in) :: lda
-        integer, intent(in) :: ldc
+        blas_int, intent(in) :: n
+        blas_int, intent(in) :: k
+        blas_int, intent(in) :: lda
+        blas_int, intent(in) :: ldc
         real(kind=8), intent(in) :: alpha
         real(kind=8), intent(in) :: beta
         real(kind=8), intent(in) :: a(lda, *)

@@ -145,7 +145,9 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     b_n = to_blas_int(ldv)
     b_incx = to_blas_int(1)
     err = dnrm2(b_n, zr(vectt), b_incx)
-    call dscal(ldv, one/err, zr(vectt), 1)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, one/err, zr(vectt), b_incx)
     call mrmult('ZERO', ldynfa, zr(vectt), zr(xsol), 1,&
                 .true._1)
 !
@@ -194,7 +196,9 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     b_n = to_blas_int(ldv)
     b_incx = to_blas_int(1)
     err = dnrm2(b_n, zr(vect2), b_incx)
-    call dscal(ldv, one/err, zr(vect2), 1)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, one/err, zr(vect2), b_incx)
     call mrmult('ZERO', ldynfa, zr(vect2), zr(xsol), 1,&
                 .true._1)
     vtest = 0.d0
@@ -229,7 +233,9 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     b_n = to_blas_int(ldv)
     b_incx = to_blas_int(1)
     err = dnrm2(b_n, vectp, b_incx)
-    call dscal(ldv, one/err, vectp, 1)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, one/err, vectp, b_incx)
     call mrmult('ZERO', ldynfa, vectp, zr(xsol), 1,&
                 .true._1)
     vtest = 0.d0

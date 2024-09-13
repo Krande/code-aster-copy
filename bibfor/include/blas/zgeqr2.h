@@ -15,20 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine zgeqr2(m, n, a, lda, tau,&
                       work, info)
-        integer, intent(in) :: lda
-        integer, intent(in) :: m
-        integer, intent(in) :: n
-        complex(kind=8) ,intent(inout) :: a(lda, *)
-        complex(kind=8) ,intent(out) :: tau(*)
-        complex(kind=8) ,intent(out) :: work(*)
+        blas_int, intent(in) :: lda
+        blas_int, intent(in) :: m
+        blas_int, intent(in) :: n
+        complex(kind=8), intent(inout) :: a(lda, *)
+        complex(kind=8), intent(out) :: tau(*)
+        complex(kind=8), intent(out) :: work(*)
         blas_int, intent(out) :: info
     end subroutine zgeqr2
 end interface

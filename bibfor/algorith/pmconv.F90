@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmconv(r, rini, r1, inst, sigp, &
-                  coef, iter, indimp, ds_conv, conver, &
+subroutine pmconv(r, rini, r1, inst, sigp,&
+                  coef, iter, indimp, ds_conv, conver,&
                   itemax)
 !
     use NonLin_Datastructure_type
@@ -91,7 +91,9 @@ subroutine pmconv(r, rini, r1, inst, sigp, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, sigp, b_incx, r1(1), b_incy)
-        call dscal(6, 1.d0/coef, r1(1), 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 1.d0/coef, r1(1), b_incx)
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
@@ -156,7 +158,7 @@ subroutine pmconv(r, rini, r1, inst, sigp, &
     end if
 999 continue
 !
-    call pmimpr(ind, inst, indimp, r8b, iter, &
-                r8b, r8b, r8b, 1, r8b, &
+    call pmimpr(ind, inst, indimp, r8b, iter,&
+                r8b, r8b, r8b, 1, r8b,&
                 ee, eini)
 end subroutine

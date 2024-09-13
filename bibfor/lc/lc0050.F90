@@ -232,7 +232,9 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim,&
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, sigm, b_incx, stress, b_incy)
-        call dscal(3, usrac2, stress(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, usrac2, stress(4), b_incx)
         statev(1:nstatv) = vim(1:nstatv)
         call umatwp(pfumat, stress, statev, ddsdde, sse,&
                     spd, scd, rpl, ddsddt, drplde,&
@@ -256,7 +258,9 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim,&
     end if
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        call dscal(3, rac2, stress(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, stress(4), b_incx)
     end if
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then

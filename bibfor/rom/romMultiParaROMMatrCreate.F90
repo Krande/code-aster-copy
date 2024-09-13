@@ -98,8 +98,10 @@ subroutine romMultiParaROMMatrCreate(base, ds_multipara, i_coef, syst_matr)
             call jeveuo(ds_multipara%matr_redu(iMatr), 'L', vr=vr_matr_red)
             do iMode = 1, nbMode
                 do jMode = 1, nbMode
-                    vr_syst_matr(nbMode*(iMode-1)+jMode) = vr_syst_matr(nbMode*(iMode-1)+jMode)+ &
-                                                      vr_matr_red(nbModeMaxi*(iMode-1)+jMode)*coef_r
+                    vr_syst_matr(nbMode*(iMode-1)+jMode) = vr_syst_matr(&
+                                                           nbMode*(iMode-1)+jMode)+ vr_matr_red(n&
+                                                           &bModeMaxi*(iMode-1)+jMode&
+                                                           )*coef_r
                 end do
             end do
         end do
@@ -117,8 +119,10 @@ subroutine romMultiParaROMMatrCreate(base, ds_multipara, i_coef, syst_matr)
             call jeveuo(ds_multipara%matr_redu(iMatr), 'L', vc=vc_matr_red)
             do iMode = 1, nbMode
                 do jMode = 1, nbMode
-                    vc_syst_matr(nbMode*(iMode-1)+jMode) = vc_syst_matr(nbMode*(iMode-1)+jMode)+ &
-                                                   vc_matr_red(nbModeMaxi*(iMode-1)+jMode)*coef_cplx
+                    vc_syst_matr(nbMode*(iMode-1)+jMode) = vc_syst_matr(&
+                                                           nbMode*(iMode-1)+jMode)+ vc_matr_red(n&
+                                                           &bModeMaxi*(iMode-1)+jMode&
+                                                           )*coef_cplx
                 end do
             end do
         end do

@@ -59,11 +59,11 @@ subroutine gdsmci(fm, df, em)
 ! 1 - CALCUL DES JACOBIENS ET DE DF-BARRE
 ! ----------------------------------------
 !
-    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(&
-         &3, 2))+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
+    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3&
+         &, 2))+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
-    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2))-df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(&
-         &3, 2))+df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
+    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2))-df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(3&
+         &, 2))+df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
 !
     jp = jm*dj
 !
@@ -71,7 +71,9 @@ subroutine gdsmci(fm, df, em)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dcopy(b_n, df, b_incx, dfb, b_incy)
-    call dscal(9, dj**(-1.d0/3.d0), dfb, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, dj**(-1.d0/3.d0), dfb, b_incx)
 !
 !
 !
@@ -123,8 +125,8 @@ subroutine gdsmci(fm, df, em)
         end do
     end do
 !
-    dete = e(1, 1)*(e(2, 2)*e(3, 3)-e(2, 3)*e(3, 2))-e(2, 1)*(e(1, 2)*e(3, 3)-e(1, 3)*e(3, 2))+&
-           &e(3, 1)*(e(1, 2)*e(2, 3)-e(1, 3)*e(2, 2))
+    dete = e(1, 1)*(e(2, 2)*e(3, 3)-e(2, 3)*e(3, 2))-e(2, 1)*(e(1, 2)*e(3, 3)-e(1, 3)*e(3, 2))+e(&
+           &3, 1)*(e(1, 2)*e(2, 3)-e(1, 3)*e(2, 2))
 !
     do i = 1, 3
         do j = 1, 3

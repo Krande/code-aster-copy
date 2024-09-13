@@ -92,7 +92,9 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
         b_n = to_blas_int(ldh)
         b_incx = to_blas_int(1)
         temp = dnrm2(b_n, zr(x0), b_incx)
-        call dscal(ldh, one/temp, zr(x0), 1)
+        b_n = to_blas_int(ldh)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, one/temp, zr(x0), b_incx)
         epsf = crit2
         goto 100
     else
@@ -147,7 +149,9 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
     b_n = to_blas_int(ldh)
     b_incx = to_blas_int(1)
     temp = dnrm2(b_n, zr(x0), b_incx)
-    call dscal(ldh, one/temp, zr(x0), 1)
+    b_n = to_blas_int(ldh)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, one/temp, zr(x0), b_incx)
 !
 !     ON APPLIQUE LA METHODE DES PUISSANCES
 !
@@ -195,7 +199,9 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
         b_n = to_blas_int(ldh)
         b_incx = to_blas_int(1)
         temp = dnrm2(b_n, zr(x), b_incx)
-        call dscal(ldh, one/temp, zr(x), 1)
+        b_n = to_blas_int(ldh)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, one/temp, zr(x), b_incx)
         do i = 1, ldh
             zr(bounds+i-1) = zr(x0+i-1)-zr(x+i-1)
         end do
