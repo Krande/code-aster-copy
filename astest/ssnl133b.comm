@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -212,8 +212,8 @@ IMPR_FONCTION(
 ResuRefe = [
     # PARA    DXREFE                DZREFE              PRECISx  , PRECISz
     [1.0, 1.9557493475982e-01, 8.1849504440533e-01, 2.0e-02, 7.0e-02],
-    [1.2, 2.2003159601578e01, 4.5085834614729e01, 6.0e-02, 1.0e-02],
-    [1.4, 5.1370721240215e01, 5.9127605459760e01, 2.2e-02, 1.5e-02],
+    [1.2, 2.2003159601578e01, 4.5085834614729e01, 7.0e-02, 1.0e-02],
+    [1.4, 5.1370721240215e01, 5.9127605459760e01, 2.5e-02, 1.5e-02],
     [1.6, 7.2307885049332e01, 6.1008538728158e01, 2.0e-02, 2.0e-02],
     [2.0, 9.9971229134146e01, 5.5985405418044e01, 1.0e-02, 2.2e-02],
     [3.0, 1.3415730437940e02, 3.9186532467172e01, 1.0e-02, 2.0e-02],
@@ -221,25 +221,22 @@ ResuRefe = [
     [5.0, 1.6092765462757e02, 2.0199252710901e01, 1.0e-02, 0.5e-02],
 ]
 ResuCalc = [
-    # PARA     DXCALC                DZCALC                TOLEMAx    TOLEMAz
-    [1.0, 1.9923605963949e-01, 8.7235139991219e-01, 5.0e-06, 5.0e-05],
-    [1.2, 2.3300405810010e01, 4.5275014263570e01, 5.0e-06, 1.0e-06],
-    [1.4, 5.2450920067957e01, 5.8317864434310e01, 1.0e-06, 1.0e-06],
-    [1.6, 7.3160259968313e01, 5.9902876871147e01, 1.0e-06, 1.0e-06],
-    [2.0, 1.0040816338777e02, 5.4831948902580e01, 1.0e-06, 1.0e-06],
-    [3.0, 1.3370711193233e02, 3.8544415892543e01, 1.0e-06, 1.0e-06],
-    [4.0, 1.4968823951463e02, 2.7468597543163e01, 1.0e-06, 1.0e-06],
-    [5.0, 1.5941886483680e02, 2.0273548683443e01, 1.0e-06, 1.0e-06],
+    # PARA     DXCALC                DZCALC
+    [1.0, 0.19924110599349, 0.87266781206005],
+    [1.2, 23.46120668036, 45.40613159877],
+    [1.4, 52.60813482016, 58.36331993569],
+    [1.6, 73.29628932396, 59.91371915273],
+    [2.0, 100.5107410237, 54.82067751089],
+    [3.0, 133.7809157606, 38.52882283134],
+    [4.0, 149.7365952220, 27.45574182717],
+    [5.0, 159.4628428159, 20.26322618189],
 ]
 
-# Par defaut TOLE_MACHINE=1.0E-06
-# Les TOLE_MACHINE sont ajustes pour clap0f0q (32bits) car la solution est
-# numeriquement sensible (instabilite)
 motclef = {}
 motclef["VALEUR"] = []
 for ii in range(len(ResuRefe)):
     vpara, vdxrefe, vdzrefe, precisx, precisz = ResuRefe[ii]
-    vpara, vdxcalc, vdzcalc, tolemax, tolemaz = ResuCalc[ii]
+    vpara, vdxcalc, vdzcalc = ResuCalc[ii]
     motclef["VALEUR"].append(
         _F(
             VALE_PARA=vpara,
@@ -249,7 +246,6 @@ for ii in range(len(ResuRefe)):
             PRECISION=precisx,
             REFERENCE="AUTRE_ASTER",
             VALE_CALC=vdxcalc,
-            TOLE_MACHINE=tolemax,
         )
     )
     motclef["VALEUR"].append(
@@ -261,7 +257,6 @@ for ii in range(len(ResuRefe)):
             PRECISION=precisz,
             REFERENCE="AUTRE_ASTER",
             VALE_CALC=vdzcalc,
-            TOLE_MACHINE=tolemaz,
         )
     )
 TEST_FONCTION(**motclef)

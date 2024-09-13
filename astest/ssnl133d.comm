@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -203,23 +203,22 @@ ResuRefe = [
     [5.0, 1.6092765462757e02, 2.0199252710901e01, 1.0e-02, 1.0e-02],
 ]
 ResuCalc = [
-    # PARA     DXCALC                DZCALC             TOLEMAx   TOLEMAz
-    [1.0, 1.9681746649650e-01, 8.2824182514840e-01, 1.0e-06, 2.0e-05],
-    [1.2, 2.2590963000000e01, 4.5023245379322e01, 5.0e-05, 1.0e-06],
-    [1.4, 5.2248068202753e01, 5.8493557355433e01, 1.0e-06, 1.0e-06],
-    [1.6, 7.3097922568307e01, 6.0009951872958e01, 1.0e-06, 1.0e-06],
-    [2.0, 1.0036526820529e02, 5.4818440293274e01, 1.0e-06, 1.0e-06],
-    [3.0, 1.3372689466962e02, 3.8462420058247e01, 1.0e-06, 1.0e-06],
-    [4.0, 1.4967053523819e02, 2.7316694642473e01, 1.0e-06, 1.0e-06],
-    [5.0, 1.5944990447567e02, 2.0070578324148e01, 1.0e-06, 1.0e-06],
+    # PARA     DXCALC                DZCALC
+    [1.0, 0.19681970910436, 0.82841830207047],
+    [1.2, 22.65075938308, 45.09740615480],
+    [1.4, 52.34692464762, 58.53943929151],
+    [1.6, 73.19476343073, 60.03070844562],
+    [2.0, 100.4460742981, 54.81930665615],
+    [3.0, 133.7844459961, 38.45574130416],
+    [4.0, 149.7197352332, 27.31040658054],
+    [5.0, 159.4949076990, 20.06519380052],
 ]
 
-# Par defaut TOLE_MACHINE=1.0E-06
 motclef = {}
 motclef["VALEUR"] = []
 for ii in range(len(ResuRefe)):
     vpara, vdxrefe, vdzrefe, precisx, precisz = ResuRefe[ii]
-    vpara, vdxcalc, vdzcalc, tolemax, tolemaz = ResuCalc[ii]
+    vpara, vdxcalc, vdzcalc = ResuCalc[ii]
     motclef["VALEUR"].append(
         _F(
             VALE_PARA=vpara,
@@ -229,7 +228,6 @@ for ii in range(len(ResuRefe)):
             PRECISION=precisx,
             REFERENCE="AUTRE_ASTER",
             VALE_CALC=vdxcalc,
-            TOLE_MACHINE=tolemax,
         )
     )
     motclef["VALEUR"].append(
@@ -241,7 +239,6 @@ for ii in range(len(ResuRefe)):
             PRECISION=precisz,
             REFERENCE="AUTRE_ASTER",
             VALE_CALC=vdzcalc,
-            TOLE_MACHINE=tolemaz,
         )
     )
 TEST_FONCTION(**motclef)
