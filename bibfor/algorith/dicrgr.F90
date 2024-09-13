@@ -83,8 +83,8 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
     integer :: npg, nno, nbpar, iretp, iretm, iret2
     real(kind=8) :: valpar(2), irram, irrap
     real(kind=8) :: fser, h1
-    real(kind=8) :: dux, duy, dph, dth
-    real(kind=8) :: uxm, phm, thm
+    real(kind=8) :: dux, duy, duz, dph, dth
+    real(kind=8) :: uxm, uym, uzm, phm, thm
     real(kind=8) :: kxx, kyy, kzz, kpp, ktt, kkk
     real(kind=8) :: temp, prec
     real(kind=8) :: kt_ax, coul_ax, et_ax, kn_ax, et_rot
@@ -96,13 +96,13 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
     real(kind=8) :: phiseuil, kphi, thetac, ktheta, kphi2, phiseuil2, phipl2
     real(kind=8) :: dpp, dphipl, dphipl2, ktheta2
     real(kind=8) :: tempp, tempm
-    real(kind=8) :: fl(12), raideldc(6)
+    real(kind=8) :: fl(12), raideldc(6), kp
 !
-    integer             :: codre1(5), codre2(1), codre3(1), codre4(7), codre5(7)
-    real(kind=8)        :: valp_fix(5), valp_tr(1), valp_rot(7)
-    character(len=8)    :: nomre1(5), nomre2, nomre3, nomre4(7), nomre5(7)
+    integer             :: codre1(6), codre2(1), codre3(1), codre4(7), codre5(7)
+    real(kind=8)        :: valp_fix(6), valp_tr(1), valp_rot(7)
+    character(len=8)    :: nomre1(6), nomre2, nomre3, nomre4(7), nomre5(7)
 !
-    data nomre1/'KN_AX', 'KT_AX', 'ET_AX', 'ET_ROT', 'COUL_AX'/
+    data nomre1/'KN_AX', 'KT_AX', 'ET_AX', 'ET_ROT', 'COUL_AX', 'KP'/
     data nomre2/'F_SER'/
     data nomre3/'F_SER_FO'/
     data nomre4/'ANG1', 'ANG2', 'PEN1', 'PEN2', 'PEN3', 'ANG3', 'PEN4'/
@@ -130,10 +130,10 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
 !
 !   Récupération des données matériau
 !
-!   'KN_AX', 'KT_AX', 'ET_AX', 'ET_ROT', 'COUL_AX'
+!   'KN_AX', 'KT_AX', 'ET_AX', 'ET_ROT', 'COUL_AX', 'KP'
 !
     call rcvalb(fami, 1, 1, '+', icodma, ' ', 'DIS_GRICRA', 0, ' ', [0.d0], &
-                5, nomre1, valp_fix, codre1, 0)
+                6, nomre1, valp_fix, codre1, 0)
 !
     ASSERT(ALL(codre1 .eq. 0))
 !
@@ -191,6 +191,7 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
     et_ax = valp_fix(3)
     et_rot = valp_fix(4)
     coul_ax = valp_fix(5)
+    kp = valp_fix(6)
 !
     fser = valp_tr(1)/4.d0
 !
@@ -217,12 +218,15 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
     if ((option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA')) then
         ! extension de l'élément au pas de temps précédent
         uxm = DD%ulm(1+DD%nc)-DD%ulm(1)
+        uym = DD%ulm(2+DD%nc)-DD%ulm(2)
+        uzm = DD%ulm(3+DD%nc)-DD%ulm(3)
         phm = DD%ulm(4+DD%nc)-DD%ulm(4)
         khm = DD%ulm(5+DD%nc)-DD%ulm(5)
         thm = DD%ulm(6+DD%nc)-DD%ulm(6)
         ! variation d'extension
         dux = DD%dul(1+DD%nc)-DD%dul(1)
         duy = DD%dul(2+DD%nc)-DD%dul(2)
+        duz = DD%dul(3+DD%nc)-DD%dul(3)
         dph = DD%dul(4+DD%nc)-DD%dul(4)
         dkh = DD%dul(5+DD%nc)-DD%dul(5)
         dth = DD%dul(6+DD%nc)-DD%dul(6)
@@ -260,9 +264,10 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
         !
         varip(7) = rtp
         !
-        sip(1) = -fser+kn_ax*(uxm+dux)
-        sip(2) = rtp
-        sip(3) = 0.d0
+        ! Mise en // de KP sur (kx,ky,kz)
+        sip(1) = -fser+(kn_ax+kp)*(uxm+dux)
+        sip(2) = rtp+kp*(uym+duy)
+        sip(3) = 0.d0+kp*(uzm+duz)
         sip(1+DD%nc) = sip(1)
         sip(2+DD%nc) = sip(2)
         sip(3+DD%nc) = sip(3)
@@ -366,10 +371,10 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
             kkk = kphi
             ktt = thetan
         end if
-        !
-        raideldc(1) = kxx
-        raideldc(2) = kyy
-        raideldc(3) = kzz
+        ! Mise en // de KP sur (kx,ky,kz)
+        raideldc(1) = kxx+kp
+        raideldc(2) = kyy+kp
+        raideldc(3) = kzz+kp
         raideldc(4) = kpp
         raideldc(5) = kkk
         raideldc(6) = ktt

@@ -1514,6 +1514,7 @@ DEFI_MATERIAU = MACRO(
         F_SER_FO=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         ET_AX=SIMP(statut="f", typ="R", defaut=1.0e-7),
         ET_ROT=SIMP(statut="f", typ="R", defaut=1.0e-7),
+        KP=SIMP(statut="f", typ="R", defaut=0.0),
         ANG1=SIMP(statut="f", typ="R"),
         ANG2=SIMP(statut="f", typ="R"),
         ANG3=SIMP(statut="f", typ="R"),
