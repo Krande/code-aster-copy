@@ -17,7 +17,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dlaqrb(wantt, n, ilo, ihi, h, &
+subroutine dlaqrb(wantt, n, ilo, ihi, h,&
                   ldh, wr, wi, z, info)
 !
 !     SUBROUTINE ARPACK CALCULANT LES VALEURS PROPRES ET LA DECOMPOSI
@@ -254,7 +254,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h, &
 !     ------------------------------------------------------------------
 !
     i = ihi
-10  continue
+ 10 continue
     l = ilo
     if (i .lt. ilo) goto 150
 !
@@ -275,7 +275,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h, &
             if (tst1 .eq. zero) tst1 = dlanhs('1', i-l+1, h(l, l), ldh, work)
             if (abs(h(k, k-1)) .le. max(ulp*tst1, smlnum)) goto 30
         end do
-30      continue
+ 30     continue
         l = k
         if (l .gt. ilo) then
 !
@@ -359,7 +359,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h, &
             tst1 = abs(v1)*(abs(h00)+abs(h11)+abs(h22))
             if (abs(h10)*(abs(v2)+abs(v3)) .le. ulp*tst1) goto 50
         end do
-50      continue
+ 50     continue
 !
 !        %----------------------%
 !        | DOUBLE-SHIFT QR STEP |
@@ -496,7 +496,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h, &
 !        | AND COMPUTE AND STORE THE EIGENVALUES.                 |
 !        %--------------------------------------------------------%
 !
-        call ar_dlanv2(h(i-1, i-1), h(i-1, i), h(i, i-1), h(i, i), wr(i-1), &
+        call ar_dlanv2(h(i-1, i-1), h(i-1, i), h(i, i-1), h(i, i), wr(i-1),&
                        wi(i-1), wr(i), wi(i), cs, sn)
 !
         if (wantt) then
@@ -506,9 +506,17 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h, &
 !           | AS REQUIRED.                                        |
 !           %-----------------------------------------------------%
 !
-            if (i2 .gt. i) call drot(i2-i, h(i-1, i+1), ldh, h(i, i+1), ldh, &
-                                     cs, sn)
-            call drot(i-i1-1, h(i1, i-1), 1, h(i1, i), 1, &
+            if (i2 .gt. i) then
+                b_n = to_blas_int(i2-i)
+                b_incx = to_blas_int(ldh)
+                b_incy = to_blas_int(ldh)
+                call drot(b_n, h(i-1, i+1), b_incx, h(i, i+1), b_incy,&
+                          cs, sn)
+            endif
+            b_n = to_blas_int(i-i1-1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call drot(b_n, h(i1, i-1), b_incx, h(i1, i), b_incy,&
                       cs, sn)
             sum = cs*z(i-1)+sn*z(i)
             z(i) = cs*z(i)-sn*z(i-1)

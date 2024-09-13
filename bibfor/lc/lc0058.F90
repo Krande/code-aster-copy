@@ -17,17 +17,16 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,C1505
 !
-subroutine lc0058(BEHinteg, &
-                  fami, kpg, ksp, ndim, typmod, &
-                  imate, compor, carcri, instam, instap, &
-                  neps, epsm, deps, nsig, sigm, &
-                  nvi, vim, option, angmas, &
+subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
+                  typmod, imate, compor, carcri, instam, &
+                  instap, neps, epsm, deps, nsig, &
+                  sigm, nvi, vim, option, angmas, &
                   sigp, vip, ndsde, dsidep, codret)
 !
-    use Behaviour_type
-    use logging_module, only: DEBUG, LOGLEVEL_MGIS, is_enabled
+   use Behaviour_type
+   use logging_module, only: DEBUG, LOGLEVEL_MGIS, is_enabled
 !
-    implicit none
+   implicit none
 !
 #include "asterc/mgis_debug.h"
 #include "asterc/mgis_get_number_of_props.h"
@@ -47,28 +46,28 @@ subroutine lc0058(BEHinteg, &
 #include "asterfort/use_orient.h"
 #include "asterfort/utmess.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
-    character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp, ndim
-    character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: imate
-    character(len=16), intent(in) :: compor(*)
-    real(kind=8), intent(in) :: carcri(*)
-    real(kind=8), intent(in) :: instam, instap
-    integer, intent(in) :: neps
-    real(kind=8), intent(in) :: epsm(neps), deps(neps)
-    integer, intent(in) :: nsig
-    real(kind=8), intent(in) :: sigm(nsig)
-    integer, intent(in) :: nvi
-    real(kind=8), intent(in) :: vim(nvi)
-    character(len=16), intent(in) :: option
-    real(kind=8), intent(in) :: angmas(*)
-    real(kind=8), intent(out) :: sigp(nsig)
-    real(kind=8), intent(out) :: vip(nvi)
-    integer, intent(in) :: ndsde
-    real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
-                                        merge(neps, 6, nsig*neps .eq. ndsde))
-    integer, intent(out) :: codret
+   type(Behaviour_Integ), intent(in) :: BEHinteg
+   character(len=*), intent(in) :: fami
+   integer, intent(in) :: kpg, ksp, ndim
+   character(len=8), intent(in) :: typmod(*)
+   integer, intent(in) :: imate
+   character(len=16), intent(in) :: compor(*)
+   real(kind=8), intent(in) :: carcri(*)
+   real(kind=8), intent(in) :: instam, instap
+   integer, intent(in) :: neps
+   real(kind=8), intent(in) :: epsm(neps), deps(neps)
+   integer, intent(in) :: nsig
+   real(kind=8), intent(in) :: sigm(nsig)
+   integer, intent(in) :: nvi
+   real(kind=8), intent(in) :: vim(nvi)
+   character(len=16), intent(in) :: option
+   real(kind=8), intent(in) :: angmas(*)
+   real(kind=8), intent(out) :: sigp(nsig)
+   real(kind=8), intent(out) :: vip(nvi)
+   integer, intent(in) :: ndsde
+   real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                                       merge(neps, 6, nsig*neps .eq. ndsde))
+   integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,218 +104,220 @@ subroutine lc0058(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: lMatr, lSigm, lVari
-    integer :: nstatv, i, j, nstran
-    integer :: strain_model
-    real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    integer, parameter :: s0 = 0, s1 = 1
-    real(kind=8) :: drot(3, 3), dstran(9)
-    real(kind=8) :: time(2)
-    real(kind=8) :: ddsdde(54)
-    real(kind=8) :: stran(9)
-    real(kind=8) :: dtime, pnewdt
-    character(len=16) :: rela_comp, defo_comp, extern_addr
-    aster_logical :: l_greenlag, l_czm, l_pred
-    real(kind=8) :: sigp_loc(6), vi_loc(nvi), dsidep_loc(6, 6)
-    integer, parameter :: npropmax = 197
-    real(kind=8) :: props(npropmax)
-    integer :: ntens, ndi, nprops, retcode
-    common/tdim/ntens, ndi
-    aster_logical :: dbg
+   aster_logical :: lMatr, lSigm, lVari
+   integer :: nstatv, i, j, nstran
+   integer :: strain_model
+   real(kind=8), parameter :: rac2 = sqrt(2.d0)
+   integer, parameter :: s0 = 0, s1 = 1
+   real(kind=8) :: drot(3, 3), dstran(9)
+   real(kind=8) :: time(2)
+   real(kind=8) :: ddsdde(54)
+   real(kind=8) :: stran(9)
+   real(kind=8) :: dtime, pnewdt
+   character(len=16) :: rela_comp, defo_comp, extern_addr
+   aster_logical :: l_greenlag, l_czm, l_pred
+   real(kind=8) :: sigp_loc(6), vi_loc(nvi), dsidep_loc(6, 6)
+   integer, parameter :: npropmax = 197
+   real(kind=8) :: props(npropmax)
+   integer :: ntens, ndi, nprops, retcode
+   common/tdim/ntens, ndi
+   aster_logical :: dbg
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
-    ASSERT(neps*nsig .eq. ndsde .or. (ndsde .eq. 36 .and. neps .le. 6 .and. nsig .le. 6))
-    ASSERT(nsig .ge. 2*ndim)
-    ASSERT(neps .ge. 2*ndim)
-
-    lSigm = L_SIGM(option)
-    lVari = L_VARI(option)
-    lMatr = L_MATR(option)
-
-    sigp_loc = 0.d0
-    vi_loc = 0.d0
-    dsidep_loc = 0.d0
-    stran = 0.d0
-    dstran = 0.d0
-    props = 0.d0
-
-    dbg = is_enabled(LOGLEVEL_MGIS, DEBUG)
-
-    ntens = 2*ndim
-    ndi = 3
-    codret = 0
-    rela_comp = compor(RELA_NAME)
-    defo_comp = compor(DEFO)
-    l_pred = option(1:9) .eq. 'RIGI_MECA'
+!
+   ASSERT(neps*nsig .eq. ndsde .or. (ndsde .eq. 36 .and. neps .le. 6 .and. nsig .le. 6))
+   ASSERT(nsig .ge. 2*ndim)
+   ASSERT(neps .ge. 2*ndim)
+!
+   lSigm = L_SIGM(option)
+   lVari = L_VARI(option)
+   lMatr = L_MATR(option)
+!
+   sigp_loc = 0.d0
+   vi_loc = 0.d0
+   dsidep_loc = 0.d0
+   stran = 0.d0
+   dstran = 0.d0
+   props = 0.d0
+!
+   dbg = is_enabled(LOGLEVEL_MGIS, DEBUG)
+!
+   ntens = 2*ndim
+   ndi = 3
+   codret = 0
+   rela_comp = compor(RELA_NAME)
+   defo_comp = compor(DEFO)
+   l_pred = option(1:9) .eq. 'RIGI_MECA'
 !
 ! - Finite element
 !
-    l_czm = typmod(2) .eq. 'ELEMJOIN'
-    ASSERT(.not. l_czm)
+   l_czm = typmod(2) .eq. 'ELEMJOIN'
+   ASSERT(.not. l_czm)
 !
 ! - Strain model
 !
-    strain_model = nint(carcri(EXTE_STRAIN))
+   strain_model = nint(carcri(EXTE_STRAIN))
 !   not yet supported
-    l_greenlag = defo_comp .eq. 'GREEN_LAGRANGE'
-    ASSERT(.not. l_greenlag)
-    nstran = 2*ndim
+   l_greenlag = defo_comp .eq. 'GREEN_LAGRANGE'
+   ASSERT(.not. l_greenlag)
+   nstran = 2*ndim
 !
 ! - Pointer to MGISBehaviour
 !
-    extern_addr = compor(MGIS_ADDR)
+   extern_addr = compor(MGIS_ADDR)
 !
 ! - Get and set the material properties
-    call mgis_get_number_of_props(extern_addr, nprops)
-    ASSERT(nprops <= npropmax)
+   call mgis_get_number_of_props(extern_addr, nprops)
+   ASSERT(nprops <= npropmax)
 !
-    call mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
-                                ksp, imate, props, nprops)
+   call mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
+                               ksp, imate, props, nprops)
 !
 ! - Prepare strains
 !
-    call mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, stran, dstran)
+   call mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, &
+                            stran, dstran)
 !
 ! - Number of internal state variables
 !
-    nstatv = nvi
+   nstatv = nvi
 !
 ! - Time parameters
 !
-    time(1) = instap-instam
-    time(2) = instam
-    dtime = instap-instam
+   time(1) = instap - instam
+   time(2) = instam
+   dtime = instap - instam
 !
 ! - Anisotropic case
 !
-    if (use_orient(angmas, 3)) then
-        call matrot(angmas, drot)
-        call mgis_set_rotation_matrix(extern_addr, drot)
-    end if
+   if (use_orient(angmas, 3)) then
+      call matrot(angmas, drot)
+      call mgis_set_rotation_matrix(extern_addr, drot)
+   end if
 !
 ! - Type of matrix for MFront
 !
-    ddsdde = 0.d0
-    if (option .eq. 'RIGI_MECA_TANG') then
-        ddsdde(1) = 4.d0
-    else if (option .eq. 'RIGI_MECA_ELAS') then
-        ddsdde(1) = 1.d0
-    else if (option .eq. 'FULL_MECA_ELAS') then
-        ddsdde(1) = 2.d0
-    else if (option .eq. 'FULL_MECA') then
-        ddsdde(1) = 4.d0
-    else if (option .eq. 'RAPH_MECA') then
-        ddsdde(1) = 0.d0
-    end if
+   ddsdde = 0.d0
+   if (option .eq. 'RIGI_MECA_TANG') then
+      ddsdde(1) = 4.d0
+   else if (option .eq. 'RIGI_MECA_ELAS') then
+      ddsdde(1) = 1.d0
+   else if (option .eq. 'FULL_MECA_ELAS') then
+      ddsdde(1) = 2.d0
+   else if (option .eq. 'FULL_MECA') then
+      ddsdde(1) = 4.d0
+   else if (option .eq. 'RAPH_MECA') then
+      ddsdde(1) = 0.d0
+   end if
 !
 ! - Call MFront
 !
-    pnewdt = 1.d0
-    sigp_loc(1:nsig) = sigm(1:nsig)
-    vi_loc(1:nstatv) = vim(1:nstatv)
-
-    ! nstatv must be equal to the value returned by mgis_get_sizeof_isvs
-    ! (not increased by kit...)
-
-    if (dbg) then
-        write (6, *) "+++ inputs +++ ", option
-        write (6, *) "ddsdde", (ddsdde(i), i=1, ntens*ntens)
-        write (6, *) "sigp_loc", (sigp_loc(i), i=1, 6)
-        write (6, *) "vi_loc", (vi_loc(i), i=1, nstatv)
-        write (6, *) "stran:", (stran(i), i=1, neps)
-        write (6, *) "dstran:", (dstran(i), i=1, neps)
-        write (6, *) "dtime:", dtime
-        write (6, *) "predef:", (BEHinteg%exte%predef(i), i=1, BEHinteg%exte%nb_pred)
-        write (6, *) "dpred:", (BEHinteg%exte%dpred(i), i=1, BEHinteg%exte%nb_pred)
-        write (6, *) "props:", (props(i), i=1, nprops)
-        write (6, *) "angl_naut:", (angmas(i), i=1, ndim)
-        write (6, *) "ntens/nstatv:", ntens, nstatv
-    end if
-
-    call mgis_set_material_properties(extern_addr, s0, props, nprops)
-    call mgis_set_gradients(extern_addr, s0, stran, nstran)
-    call mgis_set_thermodynamic_forces(extern_addr, s0, sigp_loc, 2*ndim)
-    call mgis_set_internal_state_variables(extern_addr, s0, vi_loc, nstatv)
-    call mgis_set_external_state_variables(extern_addr, s0, BEHinteg%exte%predef, &
-                                           BEHinteg%exte%nb_pred)
-
-    call mgis_set_material_properties(extern_addr, s1, props, nprops)
-    call mgis_set_gradients(extern_addr, s1, stran+dstran, nstran)
-    call mgis_set_external_state_variables(extern_addr, s1, &
-                                           BEHinteg%exte%predef+BEHinteg%exte%dpred, &
-                                           BEHinteg%exte%nb_pred)
-
-    ! call mgis_debug(extern_addr, "Before integration:")
-
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. &
-        option(1:9) .eq. 'RIGI_MECA') then
-        call mgis_integrate(extern_addr, sigp_loc, vi_loc, ddsdde, dtime, &
-                            pnewdt, retcode)
-        ASSERT(nstatv .le. nvi)
-    end if
+   pnewdt = 1.d0
+   sigp_loc(1:nsig) = sigm(1:nsig)
+   vi_loc(1:nstatv) = vim(1:nstatv)
 !
-    if (dbg) then
-        write (6, *) "+++ outputs +++"
-        write (6, *) "sigp_loc", (sigp_loc(i), i=1, 6)
-        write (6, *) "vi_loc", (vi_loc(i), i=1, nstatv)
-        write (6, *) "ddsdde", (ddsdde(i), i=1, ntens*ntens)
-        write (6, *) "pnewdt/retcode:", pnewdt, retcode
-        write (6, *) "ntens/nstatv:", ntens, nstatv
-    end if
+! nstatv must be equal to the value returned by mgis_get_sizeof_isvs
+! (not increased by kit...)
+!
+   if (dbg) then
+      write (6, *) "+++ inputs +++ ", option
+      write (6, *) "ddsdde", (ddsdde(i), i=1, ntens*ntens)
+      write (6, *) "sigp_loc", (sigp_loc(i), i=1, 6)
+      write (6, *) "vi_loc", (vi_loc(i), i=1, nstatv)
+      write (6, *) "stran:", (stran(i), i=1, neps)
+      write (6, *) "dstran:", (dstran(i), i=1, neps)
+      write (6, *) "dtime:", dtime
+      write (6, *) "predef:", (BEHinteg%exte%predef(i), i=1, BEHinteg%exte%nb_pred)
+      write (6, *) "dpred:", (BEHinteg%exte%dpred(i), i=1, BEHinteg%exte%nb_pred)
+      write (6, *) "props:", (props(i), i=1, nprops)
+      write (6, *) "angl_naut:", (angmas(i), i=1, ndim)
+      write (6, *) "ntens/nstatv:", ntens, nstatv
+   end if
+!
+   call mgis_set_material_properties(extern_addr, s0, props, nprops)
+   call mgis_set_gradients(extern_addr, s0, stran, nstran)
+   call mgis_set_thermodynamic_forces(extern_addr, s0, sigp_loc, 2*ndim)
+   call mgis_set_internal_state_variables(extern_addr, s0, vi_loc, nstatv)
+   call mgis_set_external_state_variables(extern_addr, s0, BEHinteg%exte%predef, &
+                                          BEHinteg%exte%nb_pred)
+!
+   call mgis_set_material_properties(extern_addr, s1, props, nprops)
+   call mgis_set_gradients(extern_addr, s1, stran + dstran, nstran)
+   call mgis_set_external_state_variables(extern_addr, s1, &
+                                          BEHinteg%exte%predef + BEHinteg%exte%dpred, &
+                                          BEHinteg%exte%nb_pred)
+!
+! call mgis_debug(extern_addr, "Before integration:")
+!
+   if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:9) &
+       .eq. 'RIGI_MECA') then
+      call mgis_integrate(extern_addr, sigp_loc, vi_loc, ddsdde, dtime, &
+                          pnewdt, retcode)
+      ASSERT(nstatv .le. nvi)
+   end if
+!
+   if (dbg) then
+      write (6, *) "+++ outputs +++"
+      write (6, *) "sigp_loc", (sigp_loc(i), i=1, 6)
+      write (6, *) "vi_loc", (vi_loc(i), i=1, nstatv)
+      write (6, *) "ddsdde", (ddsdde(i), i=1, ntens*ntens)
+      write (6, *) "pnewdt/retcode:", pnewdt, retcode
+      write (6, *) "ntens/nstatv:", ntens, nstatv
+   end if
 !
 ! - Convert stresses
 !
 !   TODO: sqrt(2) should be removed, same convention seems to be in used in MGIS/MFront
-    ! sigp_loc(4:6) = sigp_loc(4:6)*rac2
+! sigp_loc(4:6) = sigp_loc(4:6)*rac2
 !
 ! - Convert matrix
 !
-    if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        call lcicma(ddsdde, ntens, ntens, ntens, ntens, &
-                    1, 1, dsidep_loc, 6, 6, 1, 1)
-        dsidep_loc(1:6, 4:6) = dsidep_loc(1:6, 4:6)*rac2
-        dsidep_loc(4:6, 1:6) = dsidep_loc(4:6, 1:6)*rac2
-    end if
+   if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+      call lcicma(ddsdde, ntens, ntens, ntens, ntens, &
+                  1, 1, dsidep_loc, 6, 6, &
+                  1, 1)
+      dsidep_loc(1:6, 4:6) = dsidep_loc(1:6, 4:6)*rac2
+      dsidep_loc(4:6, 1:6) = dsidep_loc(4:6, 1:6)*rac2
+   end if
 !
 ! - Returned code from mgis_integrate (retcode):
 !    -1: integration failed
 !     0: integration succeeded but results are unreliable
 !     1: integration succeeded and results are reliable
 !   Use 'pnewdt' to return state to caller:
-    if (retcode .lt. 0) then
-        codret = 1
-    end if
-    if (pnewdt .lt. 0.0d0) then
-        if (pnewdt .lt. -0.99d0 .and. pnewdt .gt. -1.01d0) then
-            codret = 1
-        else if (pnewdt .lt. -1.99d0 .and. pnewdt .gt. -2.01d0) then
-            call utmess('F', 'MFRONT_1')
-        else if (pnewdt .lt. -2.99d0 .and. pnewdt .gt. -3.01d0) then
-            call utmess('F', 'MFRONT_2')
-        else if (pnewdt .lt. -3.99d0 .and. pnewdt .gt. -4.01d0) then
-            codret = 1
-        else
-            call utmess('F', 'MFRONT_3')
-        end if
-    end if
-
-    if (lSigm) then
-        sigp = 0.d0
-        sigp(1:2*ndim) = sigp_loc(1:2*ndim)
-    end if
-    if (lVari) then
-        vip = 0.d0
-        vip(1:nstatv) = vi_loc(1:nstatv)
-    end if
-    if (lMatr) then
-        dsidep = 0.d0
-        do i = 1, 2*ndim
-            do j = 1, 2*ndim
-                dsidep(i, j) = dsidep_loc(j, i)
-            end do
-        end do
-    end if
+   if (retcode .lt. 0) then
+      codret = 1
+   end if
+   if (pnewdt .lt. 0.0d0) then
+      if (pnewdt .lt. -0.99d0 .and. pnewdt .gt. -1.01d0) then
+         codret = 1
+      else if (pnewdt .lt. -1.99d0 .and. pnewdt .gt. -2.01d0) then
+         call utmess('F', 'MFRONT_1')
+      else if (pnewdt .lt. -2.99d0 .and. pnewdt .gt. -3.01d0) then
+         call utmess('F', 'MFRONT_2')
+      else if (pnewdt .lt. -3.99d0 .and. pnewdt .gt. -4.01d0) then
+         codret = 1
+      else
+         call utmess('F', 'MFRONT_3')
+      end if
+   end if
+!
+   if (lSigm) then
+      sigp = 0.d0
+      sigp(1:2*ndim) = sigp_loc(1:2*ndim)
+   end if
+   if (lVari) then
+      vip = 0.d0
+      vip(1:nstatv) = vi_loc(1:nstatv)
+   end if
+   if (lMatr) then
+      dsidep = 0.d0
+      do i = 1, 2*ndim
+         do j = 1, 2*ndim
+            dsidep(i, j) = dsidep_loc(j, i)
+         end do
+      end do
+   end if
 !
 end subroutine

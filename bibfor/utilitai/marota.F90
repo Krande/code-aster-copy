@@ -65,14 +65,14 @@ subroutine marota(tetag, drot)
     end do
     goto 40
 !*** TETAG EST TRES PETIT ET LA MATRICE DROT EST PRATIQUEMENT L'UNITE
-30  continue
+ 30 continue
     do j = 1, 3
         do i = 1, 3
             drot(i, j) = zero
         end do
         drot(j, j) = un
     end do
-40  continue
+ 40 continue
     goto 999
 999 continue
 end subroutine

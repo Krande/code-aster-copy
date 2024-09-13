@@ -15,20 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine drot(n, dx, incx, dy, incy,&
                     c, s)
-        integer, intent(in) :: n
-        real(kind=8),intent(inout) :: dx(*)
-        integer, intent(in) :: incx
-        real(kind=8),intent(inout) :: dy(*)
-        integer, intent(in) :: incy
-        real(kind=8),intent(in) :: c
-        real(kind=8),intent(in) :: s
+        blas_int, intent(in) :: n
+        real(kind=8), intent(inout) :: dx(*)
+        blas_int, intent(in) :: incx
+        real(kind=8), intent(inout) :: dy(*)
+        blas_int, intent(in) :: incy
+        real(kind=8), intent(in) :: c
+        real(kind=8), intent(in) :: s
     end subroutine drot
 end interface
