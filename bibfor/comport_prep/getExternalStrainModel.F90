@@ -24,6 +24,7 @@ subroutine getExternalStrainModel(defo_comp, strain_model)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/BehaviourMGIS_type.h"
 !
     character(len=16), intent(in) :: defo_comp
     integer, intent(out) :: strain_model
@@ -42,7 +43,7 @@ subroutine getExternalStrainModel(defo_comp, strain_model)
 !                        2 - Simo-Miehe
 !                        3 - GreenLagrange
 ! --------------------------------------------------------------------------------------------------
-    strain_model = MFRONT_STRAIN_UNSET
+    strain_model = MGIS_STRAIN_UNSET
 
 ! ----- Indicator for large strains
 
@@ -54,9 +55,9 @@ subroutine getExternalStrainModel(defo_comp, strain_model)
     if (defo_comp .eq. 'PETIT' .or. &
         defo_comp .eq. 'PETIT_REAC' .or. &
         defo_comp .eq. 'GDEF_LOG') then
-        strain_model = MFRONT_STRAIN_SMALL
+        strain_model = MGIS_STRAIN_SMALL
     else if (defo_comp .eq. 'GREEN_LAGRANGE') then
-        strain_model = MFRONT_STRAIN_F
+        strain_model = MGIS_STRAIN_F
     else
         ASSERT(ASTER_FALSE)
     end if

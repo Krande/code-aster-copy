@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -149,17 +149,17 @@ subroutine get_elas_para(fami, j_mater, poum, ipg, ispg, &
         para_vale(nb_para) = temp
     end if
     if (present(BEHinteg)) then
-        if (.not. BEHinteg%l_varext_geom .and. (fami .ne. "XFEM")) then
+        if (.not. BEHinteg%behavESVA%lGeomInESVA .and. (fami .ne. "XFEM")) then
             ASSERT(ipg <= 27)
             nb_para = nb_para+1
             para_name(nb_para) = 'X'
-            para_vale(nb_para) = BEHinteg%elem%coor_elga(ipg, 1)
+            para_vale(nb_para) = BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 1)
             nb_para = nb_para+1
             para_name(nb_para) = 'Y'
-            para_vale(nb_para) = BEHinteg%elem%coor_elga(ipg, 2)
+            para_vale(nb_para) = BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 2)
             nb_para = nb_para+1
             para_name(nb_para) = 'Z'
-            para_vale(nb_para) = BEHinteg%elem%coor_elga(ipg, 3)
+            para_vale(nb_para) = BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 3)
         end if
     end if
 !

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,C1505
+! aslint: disable=W1306,W1504,C1505
 !
 subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
                   typmod, imate, compor, carcri, instam, &
@@ -230,8 +230,10 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
         write (6, *) "stran:", (stran(i), i=1, neps)
         write (6, *) "dstran:", (dstran(i), i=1, neps)
         write (6, *) "dtime:", dtime
-        write (6, *) "predef:", (BEHinteg%exte%predef(i), i=1, BEHinteg%exte%nb_pred)
-        write (6, *) "dpred:", (BEHinteg%exte%dpred(i), i=1, BEHinteg%exte%nb_pred)
+        write (6, *) "predef:", (BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(i), &
+                                 i=1, BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
+        write (6, *) "dpred:", (BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(i), &
+                                i=1, BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
         write (6, *) "props:", (props(i), i=1, nprops)
         write (6, *) "angl_naut:", (angmas(i), i=1, ndim)
         write (6, *) "ntens/nstatv:", ntens, nstatv
@@ -241,19 +243,21 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
     call mgis_set_gradients(extern_addr, s0, stran, nstran)
     call mgis_set_thermodynamic_forces(extern_addr, s0, sigp_loc, 2*ndim)
     call mgis_set_internal_state_variables(extern_addr, s0, vi_loc, nstatv)
-    call mgis_set_external_state_variables(extern_addr, s0, BEHinteg%exte%predef, &
-                                           BEHinteg%exte%nb_pred)
-!
+    call mgis_set_external_state_variables(extern_addr, s0, &
+                                           BEHinteg%behavESVA%behavESVAExte%scalESVAPrev, &
+                                           BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
+
     call mgis_set_material_properties(extern_addr, s1, props, nprops)
     call mgis_set_gradients(extern_addr, s1, stran+dstran, nstran)
     call mgis_set_external_state_variables(extern_addr, s1, &
-                                           BEHinteg%exte%predef+BEHinteg%exte%dpred, &
-                                           BEHinteg%exte%nb_pred)
-!
-! call mgis_debug(extern_addr, "Before integration:")
-!
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:9) &
-        .eq. 'RIGI_MECA') then
+                                           BEHinteg%behavESVA%behavESVAExte%scalESVAPrev+ &
+                                           BEHinteg%behavESVA%behavESVAExte%scalESVAIncr, &
+                                           BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
+
+    ! call mgis_debug(extern_addr, "Before integration:")
+
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. &
+        option(1:9) .eq. 'RIGI_MECA') then
         call mgis_integrate(extern_addr, sigp_loc, vi_loc, ddsdde, dtime, &
                             pnewdt, retcode)
         ASSERT(nstatv .le. nvi)

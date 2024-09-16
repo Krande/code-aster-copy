@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comp1d(fami, kpg, ksp, option, sigx, &
+subroutine comp1d(BEHinteg, &
+                  fami, kpg, ksp, option, sigx, &
                   epsx, depx, angmas, vim, vip, &
                   sigxp, etan, codret)
 !
@@ -28,8 +29,8 @@ subroutine comp1d(fami, kpg, ksp, option, sigx, &
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/r8inir.h"
 !
+    type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*) :: fami
     character(len=16) :: option
     integer :: codret, kpg, ksp
@@ -75,46 +76,37 @@ subroutine comp1d(fami, kpg, ksp, option, sigx, &
 !
     integer :: imate, iinstm
     integer :: iinstp, icompo, icarcr
-!
+    integer, parameter :: ndimLdc = 2
     real(kind=8) :: dsidep(6, 6)
-    real(kind=8) :: zero
     real(kind=8) :: sigm(6), sigp(6), eps(6), deps(6)
-!
     character(len=8) :: typmod(2)
-    type(Behaviour_Integ) :: BEHinteg
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    zero = 0.0d0
-    call r8inir(6, zero, eps, 1)
-    call r8inir(6, zero, sigm, 1)
-    call r8inir(6, zero, sigp, 1)
-    call r8inir(6, zero, deps, 1)
-    call r8inir(36, zero, dsidep, 1)
+    eps = 0.d0
+    sigm = 0.d0
+    sigp = 0.d0
+    deps = 0.d0
+    dsidep = 0.d0
     eps(1) = epsx
     deps(1) = depx
     sigm(1) = sigx
     typmod(1) = 'COMP1D '
     typmod(2) = '        '
 !
-! - Initialisation of behaviour datastructure
-!
-    call behaviourInit(BEHinteg)
-!
 !
 ! ---    PARAMETRES EN ENTREE
-!
     call jevech('PMATERC', 'L', imate)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-!
-!
-! -    APPEL A LA LOI DE COMPORTEMENT
+
+! - Integrator
     sigp = 0.d0
     call nmcomp(BEHinteg, &
-                fami, kpg, ksp, 2, typmod, &
+                fami, kpg, ksp, ndimLdc, typmod, &
                 zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
                 6, eps, deps, 6, sigm, &
                 vim, option, angmas, &

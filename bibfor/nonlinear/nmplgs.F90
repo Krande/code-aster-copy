@@ -32,8 +32,8 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/cavini.h"
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
@@ -48,6 +48,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 #include "blas/dspev.h"
+#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,8 +88,9 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
 ! --------------------------------------------------------------------------------------------------
 !
     common/trucit/iteamm
-    character(len=8) :: typmod(*), fami, poum
-    character(len=16) :: option, compor(*)
+    integer, parameter :: ksp = 1
+    character(len=8) :: typmod(2), fami, poum
+    character(len=16) :: option, compor(COMPOR_SIZE)
     integer :: nbvois, nvoima, numav, iret, nscoma, iteamm
     integer(kind=4) :: reuss
     parameter(nvoima=12, nscoma=4)
@@ -96,7 +98,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
     integer :: livois(1:nvoima), numa
     integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno1)
-    real(kind=8) :: carcri(*), instam, instap
+    real(kind=8) :: carcri(CARCRI_SIZE), instam, instap
     real(kind=8) :: ddlm(*), ddld(*), sigm(2*ndim, npg), sigp(2*ndim, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), matr(*), vect(*)
     real(kind=8) :: dfdi2(nno2, ndim), angmas(3), compar
@@ -129,9 +131,8 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
 !
     epsgm = 0
     epsgd = 0
-!
+
 ! - Get length
-!
     fami = 'FPG1'
     kpg = 1
     spt = 1
@@ -140,15 +141,21 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
                 ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
                 1, 'LONG_CARA', lc, k2, 1)
     c = lc(1)**2
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+
+! - Set main parameters for behaviour (on cell)
+    fami = "RIGI"
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              fami, mate, &
+                              BEHinteg)
+
 ! INITIALISATION CAVINI + INCREMENTATION
 ! DU COMPTEUR D'ITERATION + L ELEMENT EST-IL POINTE?
-    call cavini(ndim, nno2, geom, vim, npg, &
-                lgpg, mate)
+    call cavini(ndim, nno2, geom, vim, npg, lgpg, mate)
 !
     nono = 0.d0
     nini = 0
@@ -558,14 +565,19 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
             cod(g) = 1
             goto 999
         end if
-!
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(g, ksp, BEHinteg)
+
+! ----- Integrator
         sigma = 0.d0
         dsidep = 0.d0
-        call nmcomp(BEHinteg, 'RIGI', g, 1, ndim, &
-                    typmod, mate, compor, carcri, instam, &
-                    instap, 12, epsgm, epsgd, 6, &
-                    sigmam, vim(1, g), option, angmas, sigma, &
-                    vip(1, g), 72, dsidep, cod(g))
+        call nmcomp(BEHinteg, &
+                    fami, g, ksp, ndim, typmod, &
+                    mate, compor, carcri, instam, instap, &
+                    12, epsgm, epsgd, 6, sigmam, &
+                    vim(1, g), option, angmas, &
+                    sigma, vip(1, g), 72, dsidep, cod(g))
         if (cod(g) .eq. 1) then
             goto 999
         end if

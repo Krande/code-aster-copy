@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,8 @@
 !
 module THM_type
 !
+    use Behaviour_type
+!
     implicit none
 !
 #include "asterf_types.h"
@@ -30,7 +32,6 @@ module THM_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
 ! - Type of FE
     type THM_Element
 ! ----- Type of FE: element where dof TEMP exist
@@ -53,6 +54,8 @@ module THM_type
 
 ! - Behaviour
     type THM_Behaviour
+! ----- Datastructure for integrator of mzchanical laws
+        type(Behaviour_Integ) :: BEHinteg
 ! ----- Name of deformation algorithm
         character(len=16) :: defo = ' '
 ! ----- Name of behaviour law for coupling

@@ -430,9 +430,9 @@ contains
         call behaviourInit(BEHinteg)
 !
         do ipg = 1, hhoQuad%nbQuadPoints
-            BEHinteg%elem%coor_elga(ipg, 1:3) = hhoQuad%points(1:3, ipg)
-            call get_elas_para(fami, imate, '+', ipg, 1, &
-                               elas_id, elas_keyword, e_=e, time=time, BEHinteg=BEHinteg)
+            BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 1:3) = hhoQuad%points(1:3, ipg)
+            call get_elas_para(fami, imate, '+', ipg, 1, elas_id, elas_keyword, &
+                               e_=e, time=time, BEHinteg=BEHinteg)
             coeff = coeff+e
         end do
 !

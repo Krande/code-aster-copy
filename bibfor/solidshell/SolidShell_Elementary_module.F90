@@ -214,36 +214,43 @@ contains
 ! In  option           : name of option to compute
 ! In  elemProp         : general properties of element
 ! In  cellGeom         : general geometric properties of cell
+! In  matePara         : parameters of material
 ! Out behaPara         : parameters of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine initBehaPara(option, elemProp, cellGeom, behaPara)
+    subroutine initBehaPara(option, elemProp, cellGeom, matePara, behaPara)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
-        character(len=16), intent(in)    :: option
-        type(SSH_ELEM_PROP), intent(in)  :: elemProp
-        type(SSH_CELL_GEOM), intent(in)  :: cellGeom
+! ----- Parameters
+        character(len=16), intent(in) :: option
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        type(SSH_MATE_PARA), intent(in) :: matePara
         type(SSH_BEHA_PARA), intent(out) :: behaPara
-! - Local
+! ----- Local
         integer :: nno, npg
         integer :: jvWeight, jvShape, jvDShape
+        integer :: jvTimeM, jvTimeP
         aster_logical :: lMatrSyme
 !   ------------------------------------------------------------------------------------------------
 !
         if (SSH_DBG_ELEM) SSH_DBG_STRG('> initBehaPara')
 
-! - Properties of finite element
+! ----- Properties of finite element
         nno = elemProp%nbNodeGeom
         npg = elemProp%elemInte%nbIntePoint
         jvWeight = elemProp%elemInte%jvWeight
         jvShape = elemProp%elemInte%jvShape
         jvDShape = elemProp%elemInte%jvDShape
 
-! - Access to fields of behaviours parameters
+! ----- Access to fields time
+        call jevech('PINSTMR', 'L', jvTimeM)
+        call jevech('PINSTPR', 'L', jvTimeP)
+
+! ----- Access to fields of behaviours parameters
         call jevech('PCOMPOR', 'L', behaPara%jvCompor)
         call jevech('PCARCRI', 'L', behaPara%jvCarcri)
 
-! - Main parameters
+! ----- Main parameters
         behaPara%relaComp = zk16(behaPara%jvCompor-1+RELA_NAME)
         behaPara%typeComp = zk16(behaPara%jvCompor-1+INCRELAS)
         behaPara%defoComp = zk16(behaPara%jvCompor-1+DEFO)
@@ -260,17 +267,23 @@ contains
         end if
         behaPara%lMatrSyme = lMatrSyme
 
-! - Select objects to construct from option name
+! ----- Select objects to construct from option name
         call behaviourOption(option, zk16(behaPara%jvCompor), &
                              behaPara%lMatr, behaPara%lVect, &
                              behaPara%lVari, behaPara%lSigm)
 
-! - Initialisation of behaviour datastructure
+! ----- Initialisation of behaviour datastructure
         call behaviourInit(behaPara%BEHinteg)
 
-! - Prepare external state variables
-        call behaviourPrepESVAElem(zr(behaPara%jvCarcri), typmod, &
-                                   nno, npg, SSH_NDIM, &
+! ----- Set main parameters for behaviour (on cell)
+        call behaviourSetParaCell(SSH_NDIM, typmod, option, &
+                                  zk16(behaPara%jvCompor), zr(behaPara%jvCarcri), &
+                                  zr(jvTimeM), zr(jvTimeP), &
+                                  elemProp%elemInte%inteFami, matePara%jvMater, &
+                                  behaPara%BEHinteg)
+
+! ----- Prepare external state variables (geometry)
+        call behaviourPrepESVAGeom(nno, npg, SSH_NDIM, &
                                    jvWeight, jvShape, jvDShape, &
                                    cellGeom%geomInit, &
                                    behaPara%BEHinteg)
@@ -509,26 +522,26 @@ contains
 !   ------------------------------------------------------------------------------------------------
 !
 
-! - Non-sense ! To suppress (see issue30887)
+! ----- Non-sense ! To suppress (see issue30887)
         timeCurr = r8vide()
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Initialization of properties of material
+! ----- Initialization of properties of material
         call initMatePara(elemProp, cellGeom, timeCurr, matePara)
         if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
-! - Initialization of properties of behaviour
-        call initBehaPara(option, elemProp, cellGeom, behaPara)
+! ----- Initialization of properties of behaviour
+        call initBehaPara(option, elemProp, cellGeom, matePara, behaPara)
         if (SSH_DBG_BEHA) call dbgObjBehaPara(behaPara)
 
-! - Compute non-linear options
+! ----- Compute non-linear options
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             call compNonLinearHexa(option, elemProp, cellGeom, matePara, behaPara)
         else

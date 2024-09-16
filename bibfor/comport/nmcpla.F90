@@ -41,9 +41,9 @@ subroutine nmcpla(BEHinteg, &
     type(Behaviour_Integ), intent(in) :: BEHinteg
     integer :: imat, ndim, kpg, ksp, iret
     integer :: neps, nsig, ndsde
-    character(len=16), intent(in) :: compor_plas(*)
-    character(len=16), intent(in) :: compor_creep(*)
-    real(kind=8), intent(in) :: carcri(*)
+    character(len=16), intent(in) :: compor_plas(COMPOR_SIZE)
+    character(len=16), intent(in) :: compor_creep(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8) :: timed, timef, tempd, tempf, tref
     real(kind=8) :: epsdt(6), depst(6)
     real(kind=8) :: sigd(6), sigf(6)
@@ -51,7 +51,7 @@ subroutine nmcpla(BEHinteg, &
     real(kind=8) :: dsde(ndsde)
     character(len=16) :: option
     character(len=*) :: fami
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !

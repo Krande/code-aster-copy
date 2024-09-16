@@ -46,11 +46,11 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
 #include "asterfort/Behaviour_type.h"
 !
     integer :: ndim, nno, npg, imate, lgpg
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(2)
     character(len=*) :: fami
-    character(len=16) :: option, compor(*)
+    character(len=16) :: option, compor(COMPOR_SIZE)
     character(len=16), intent(in) :: mult_comp
-    real(kind=8) :: geomInit(*), carcri(*), instm, instp
+    real(kind=8) :: geomInit(*), carcri(CARCRI_SIZE), instm, instp
     real(kind=8) :: angmas(3)
     real(kind=8) :: dispPrev(*), dispIncr(*), sigmPrev(2*ndim, npg)
     real(kind=8) :: vim(lgpg, npg), sigmCurr(2*ndim, npg), vip(lgpg, npg)
@@ -96,6 +96,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
     aster_logical :: grand, axi
     aster_logical :: lMatr, lSigm
     integer :: lij(3, 3), ia, ja, na, ib, jb, nb, kpg, kk, os, ija
@@ -110,6 +111,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     integer, parameter :: vij(3, 3) = reshape((/1, 4, 5, 4, 2, 6, 5, 6, 3/), (/3, 3/))
     aster_logical :: resi
     blas_int :: b_incx, b_incy, b_n
+    integer, parameter :: ndimBizarre = 3
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,6 +119,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     grand = ASTER_TRUE
     axi = typmod(1) .eq. 'AXIS'
     lSigm = L_SIGM(option)
+
 ! - Special case for SIMO_MIEHE
     resi = option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL'
     lMatr = L_MATR(option)
@@ -125,10 +128,23 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     codret = 0
 !
     call elrefe_info(fami=fami, jpoids=iw, jvf=ivf, jdfde=idff)
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndimBizarre, typmod, option, &
+                              compor, carcri, &
+                              instm, instp, &
+                              fami, imate, &
+                              BEHinteg)
+
+! - Prepare external state variables (geometry)
+    call behaviourPrepESVAGeom(nno, npg, ndim, &
+                               iw, ivf, idff, &
+                               geomInit, BEHinteg, &
+                               dispPrev, dispIncr)
+
 !
     ASSERT(nno .le. 27)
     ASSERT(typmod(1) .ne. 'C_PLAN')
@@ -162,7 +178,6 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
                b_incy)
 !
 ! - Loop on Gauss points
-!
     cod = 0
     do kpg = 1, npg
         tauCurr = 0.d0
@@ -173,18 +188,20 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
                     dff)
         call nmepsi(ndim, nno, axi, grand, zr(ivf+(kpg-1)*nno), &
                     r, dff, dispPrev, fPrev)
+
 ! ----- Kinematic - Increment of strains
         call dfdmip(ndim, nno, axi, geomPrev, kpg, &
                     iw, zr(ivf+(kpg-1)*nno), idff, r, rbid, &
                     dff)
         call nmepsi(ndim, nno, axi, grand, zr(ivf+(kpg-1)*nno), &
                     r, dff, dispIncr, fIncr)
+
 ! ----- LU decomposition of GRAD U
         call dfdmip(ndim, nno, axi, geomCurr, kpg, &
                     iw, zr(ivf+(kpg-1)*nno), idff, r, rbid, &
                     dff)
-        call nmmalu(nno, axi, r, zr(ivf+(kpg-1)*nno), dff, &
-                    lij)
+        call nmmalu(nno, axi, r, zr(ivf+(kpg-1)*nno), dff, lij)
+
 ! ----- Kinematic - Jacobians
         jacoPrev = fPrev(1, 1)*(fPrev(2, 2)*fPrev(3, 3)-fPrev(2, 3)*fPrev(3, 2))-fPrev(2, 1)*(fPr&
                    &ev(1, 2)*fPrev(3, 3)-fPrev(1, 3)*fPrev(3, 2))+fPrev(3, 1)*(fPrev(1, 2)*fPrev(&
@@ -193,24 +210,31 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
                    &cr(1, 2)*fIncr(3, 3)-fIncr(1, 3)*fIncr(3, 2))+fIncr(3, 1)*(fIncr(1, 2)*fIncr(&
                    &2, 3)-fIncr(1, 3)*fIncr(2, 2))
         jacoCurr = jacoPrev*jacoIncr
+
 ! ----- Check jacobian
         if (jacoIncr .le. 1.d-2 .or. jacoIncr .gt. 1.d2) then
             cod(kpg) = 1
             goto 999
         end if
+
 ! ----- Prepare stresses (for compatibility with behaviour using previous stress)
         sigmPrevComp = 0.d0
         b_n = to_blas_int(ndim*2)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, sigmPrev(1, kpg), b_incx, sigmPrevComp, b_incy)
-! ----- Compute behaviour
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         cod(kpg) = 0
-        call nmcomp(BEHinteg, fami, kpg, 1, 3, &
-                    typmod, imate, compor, carcri, instm, &
-                    instp, 9, fPrev, fIncr, 6, &
-                    sigmPrevComp, vim(1, kpg), option, angmas, tauCurr, &
-                    vip(1, kpg), 54, dsidep, cod(kpg), mult_comp)
+        call nmcomp(BEHinteg, &
+                    fami, kpg, ksp, ndimBizarre, typmod, &
+                    imate, compor, carcri, instm, instp, &
+                    9, fPrev, fIncr, 6, sigmPrevComp, &
+                    vim(1, kpg), option, angmas, &
+                    tauCurr, vip(1, kpg), 54, dsidep, &
+                    cod(kpg), mult_comp)
         if (cod(kpg) .eq. 1) then
             goto 999
         end if

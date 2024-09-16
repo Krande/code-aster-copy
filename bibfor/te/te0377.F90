@@ -34,13 +34,13 @@ subroutine te0377(option, nomte)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterc/r8prem.h"
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/elref7.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/ermeb2.h"
 #include "asterfort/ermes2.h"
 #include "asterfort/ermev2.h"
@@ -60,6 +60,7 @@ subroutine te0377(option, nomte)
 #include "asterfort/uthk.h"
 #include "asterfort/utjac.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 !
     character(len=16) :: option, nomte
 !
@@ -200,8 +201,8 @@ subroutine te0377(option, nomte)
 !
     call jevech('PPRESS', 'L', iref2)
     call elrefe_info(fami='FPG1', jvf=ivf2)
-    call prepCoorGauss(nno, 1, ndim, &
-                       ivf2, zr(igeom), BEHinteg%elem)
+    call behaviourCoorGauss(nno, 1, ndim, &
+                            ivf2, zr(igeom), BEHinteg%behavESVA%behavESVAGeom)
 !
 ! 1.7. --- MATERIAU SI BESOIN
 !
@@ -221,7 +222,7 @@ subroutine te0377(option, nomte)
             nompar(nbpar) = 'RHO'
         end if
 !
-        para_vale(:) = BEHinteg%elem%coor_elga(1, :)
+        para_vale(:) = BEHinteg%behavESVA%behavESVAGeom%coorElga(1, :)
         call rcvalb('FPG1', 1, 1, '+', zi(imate), &
                     ' ', phenom, nb_para, para_name, para_vale, &
                     nbpar, nompar, valres, icodre, 1)
@@ -541,7 +542,7 @@ subroutine te0377(option, nomte)
 !      NORME H1
         errest = (ter1+ter2+ter3)/coeff
         sigcal = sqrt(norsig)
-        if ((errest**2+norsig) .ne. 0.d0) then
+        if (abs(errest**2+norsig) .gt. r8prem()) then
             nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
         else
             nuest = 0.d0
@@ -552,7 +553,7 @@ subroutine te0377(option, nomte)
         zr(ierr+2) = sigcal
 !
         errest = ter1/coeff
-        if ((errest**2+norsig) .ne. 0.d0) then
+        if (abs(errest**2+norsig) .gt. r8prem()) then
             nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
         else
             nuest = 0.d0
@@ -562,7 +563,7 @@ subroutine te0377(option, nomte)
         zr(ierr+4) = nuest
 !
         errest = ter3/coeff
-        if ((errest**2+norsig) .ne. 0.d0) then
+        if (abs(errest**2+norsig) .gt. r8prem()) then
             nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
         else
             nuest = 0.d0
@@ -572,7 +573,7 @@ subroutine te0377(option, nomte)
         zr(ierr+6) = nuest
 !
         errest = ter2/coeff
-        if ((errest**2+norsig) .ne. 0.d0) then
+        if (abs(errest**2+norsig) .gt. r8prem()) then
             nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
         else
             nuest = 0.d0
@@ -592,7 +593,7 @@ subroutine te0377(option, nomte)
 !      NORME EN ENERGIE
         errest = sqrt(ter1+ter2+ter3)/coeff
         sigcal = sqrt(norsig)
-        if ((errest**2+norsig) .ne. 0.d0) then
+        if (abs(errest**2+norsig) .gt. r8prem()) then
             nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
         else
             nuest = 0.d0
@@ -603,7 +604,7 @@ subroutine te0377(option, nomte)
         zr(ierr+2) = sigcal
 !
         errest = sqrt(ter1)/coeff
-        if ((errest**2+norsig) .ne. 0.d0) then
+        if (abs(errest**2+norsig) .gt. r8prem()) then
             nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
         else
             nuest = 0.d0
@@ -613,7 +614,7 @@ subroutine te0377(option, nomte)
         zr(ierr+4) = nuest
 !
         errest = sqrt(ter3)/coeff
-        if ((errest**2+norsig) .ne. 0.d0) then
+        if (abs(errest**2+norsig) .gt. r8prem()) then
             nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
         else
             nuest = 0.d0
@@ -623,7 +624,7 @@ subroutine te0377(option, nomte)
         zr(ierr+6) = nuest
 !
         errest = sqrt(ter2)/coeff
-        if ((errest**2+norsig) .ne. 0.d0) then
+        if (abs(errest**2+norsig) .gt. r8prem()) then
             nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
         else
             nuest = 0.d0

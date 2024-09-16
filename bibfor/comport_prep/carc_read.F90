@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine carc_read(behaviourPrepCrit, model_)
+subroutine carc_read(prepMapCarcri, model_)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -49,7 +49,7 @@ subroutine carc_read(behaviourPrepCrit, model_)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-    type(Behaviour_PrepCrit), intent(inout) :: behaviourPrepCrit
+    type(BehaviourPrep_MapCarcri), intent(inout) :: prepMapCarcri
     character(len=8), intent(in), optional :: model_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ subroutine carc_read(behaviourPrepCrit, model_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  behaviourPrepCrit: datastructure to prepare parameters for constitutive laws
+! IO  prepMapCarcri    : datastructure to construct CARCRI map
 ! In  model            : name of model
 !
 ! --------------------------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ subroutine carc_read(behaviourPrepCrit, model_)
     real(kind=8) :: algo_inte_r
     real(kind=8), pointer :: resi_inte_p => null()
     integer, pointer :: iter_inte_maxi_p => null()
-    type(Behaviour_ParaExte) :: paraExte
+    type(BehaviourPrep_Exte) :: prepExte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -129,7 +129,7 @@ subroutine carc_read(behaviourPrepCrit, model_)
     l_exist_thm = ASTER_FALSE
     l_kit = ASTER_FALSE
     texte(:) = (/' ', ' ', ' '/)
-    nbFactorKeyword = behaviourPrepCrit%nb_comp
+    nbFactorKeyword = prepMapCarcri%nb_comp
     mesh = ' '
     l_exist_thm = ASTER_FALSE
 
@@ -291,10 +291,10 @@ subroutine carc_read(behaviourPrepCrit, model_)
 
 ! ----- Get parameters for external programs (MFRONT/UMAT)
         call getExternalBehaviourPara(mesh, modelCell, rela_comp, defo_comp, kit_comp, &
-                                      paraExte, factorKeyword, iFactorKeyword)
-        extern_type = paraExte%extern_type
-        extern_addr = paraExte%extern_addr
-        exte_strain = paraExte%strain_model
+                                      prepExte, factorKeyword, iFactorKeyword)
+        extern_type = prepExte%extern_type
+        extern_addr = prepExte%extern_addr
+        exte_strain = prepExte%strain_model
 
 ! ----- Get list of elements where comportment is defined
         plane_stress = ASTER_FALSE
@@ -326,40 +326,40 @@ subroutine carc_read(behaviourPrepCrit, model_)
         call lcdiscard(defo_code_py)
 
 ! ----- Save parameters
-        behaviourPrepCrit%v_crit(iFactorKeyword)%rela_comp = rela_comp
-        behaviourPrepCrit%v_crit(iFactorKeyword)%meca_comp = meca_comp
-        behaviourPrepCrit%v_crit(iFactorKeyword)%type_matr_t = type_matr_t
-        behaviourPrepCrit%v_crit(iFactorKeyword)%parm_theta = parm_theta
-        behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_pas = iter_inte_pas
-        behaviourPrepCrit%v_crit(iFactorKeyword)%vale_pert_rela = vale_pert_rela
-        behaviourPrepCrit%v_crit(iFactorKeyword)%resi_deborst_max = resi_deborst_max
-        behaviourPrepCrit%v_crit(iFactorKeyword)%iter_deborst_max = iter_deborst_max
-        behaviourPrepCrit%v_crit(iFactorKeyword)%resi_radi_rela = resi_radi_rela
-        behaviourPrepCrit%v_crit(iFactorKeyword)%ipostiter = ipostiter
-        behaviourPrepCrit%v_crit(iFactorKeyword)%iveriborne = iveriborne
-        behaviourPrepCrit%v_crit(iFactorKeyword)%l_matr_unsymm = l_matr_unsymm
-        behaviourPrepCrit%v_crit(iFactorKeyword)%algo_inte_r = algo_inte_r
+        prepMapCarcri%prepCrit(iFactorKeyword)%rela_comp = rela_comp
+        prepMapCarcri%prepCrit(iFactorKeyword)%meca_comp = meca_comp
+        prepMapCarcri%prepCrit(iFactorKeyword)%type_matr_t = type_matr_t
+        prepMapCarcri%prepCrit(iFactorKeyword)%parm_theta = parm_theta
+        prepMapCarcri%prepCrit(iFactorKeyword)%iter_inte_pas = iter_inte_pas
+        prepMapCarcri%prepCrit(iFactorKeyword)%vale_pert_rela = vale_pert_rela
+        prepMapCarcri%prepCrit(iFactorKeyword)%resi_deborst_max = resi_deborst_max
+        prepMapCarcri%prepCrit(iFactorKeyword)%iter_deborst_max = iter_deborst_max
+        prepMapCarcri%prepCrit(iFactorKeyword)%resi_radi_rela = resi_radi_rela
+        prepMapCarcri%prepCrit(iFactorKeyword)%ipostiter = ipostiter
+        prepMapCarcri%prepCrit(iFactorKeyword)%iveriborne = iveriborne
+        prepMapCarcri%prepCrit(iFactorKeyword)%l_matr_unsymm = l_matr_unsymm
+        prepMapCarcri%prepCrit(iFactorKeyword)%algo_inte_r = algo_inte_r
         if (associated(resi_inte_p)) then
-            allocate (behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte)
-            behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte = resi_inte_p
+            allocate (prepMapCarcri%prepCrit(iFactorKeyword)%resi_inte)
+            prepMapCarcri%prepCrit(iFactorKeyword)%resi_inte = resi_inte_p
             deallocate (resi_inte_p)
         end if
         if (associated(iter_inte_maxi_p)) then
-            allocate (behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi)
-            behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi = iter_inte_maxi_p
+            allocate (prepMapCarcri%prepCrit(iFactorKeyword)%iter_inte_maxi)
+            prepMapCarcri%prepCrit(iFactorKeyword)%iter_inte_maxi = iter_inte_maxi_p
             deallocate (iter_inte_maxi_p)
         end if
-        behaviourPrepCrit%v_crit(iFactorKeyword)%extern_ptr = paraExte%extern_ptr
-        behaviourPrepCrit%v_crit(iFactorKeyword)%extern_type = extern_type
-        behaviourPrepCrit%v_crit(iFactorKeyword)%jvariext1 = variExteCode(1)
-        behaviourPrepCrit%v_crit(iFactorKeyword)%jvariext2 = variExteCode(2)
-        behaviourPrepCrit%v_crit(iFactorKeyword)%exte_strain = exte_strain
-        behaviourPrepCrit%v_crit(iFactorKeyword)%paraExte = paraExte
+        prepMapCarcri%prepCrit(iFactorKeyword)%extern_ptr = prepExte%extern_ptr
+        prepMapCarcri%prepCrit(iFactorKeyword)%extern_type = extern_type
+        prepMapCarcri%prepCrit(iFactorKeyword)%jvariext1 = variExteCode(1)
+        prepMapCarcri%prepCrit(iFactorKeyword)%jvariext2 = variExteCode(2)
+        prepMapCarcri%prepCrit(iFactorKeyword)%exte_strain = exte_strain
+        prepMapCarcri%prepCrit(iFactorKeyword)%prepExte = prepExte
     end do
 
 ! - Get SCHEMA_THM parameters
     if (l_exist_thm) then
-        call getTHMPara(behaviourPrepCrit)
+        call getTHMPara(prepMapCarcri)
     end if
 !
 end subroutine

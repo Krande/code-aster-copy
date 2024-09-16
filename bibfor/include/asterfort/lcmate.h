@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine lcmate(BEHinteg,&
-                      fami, kpg, ksp, comp, mod,&
-                      imat, nmat, tempd, tempf, tref, impexp,&
-                      typma, hsr, materd, materf, matcst,&
-                      nbcomm, cpmono, angmas, pgl, itmax,&
-                      toler, ndt, ndi, nr, crit,&
-                      nvi, vind, nfs, nsg, toutms,&
+    subroutine lcmate(BEHinteg, &
+                      fami, kpg, ksp, comp, mod, &
+                      imat, nmat, tempd, tempf, tref, impexp, &
+                      typma, hsr, materd, materf, matcst, &
+                      nbcomm, cpmono, angmas, pgl, itmax, &
+                      toler, ndt, ndi, nr, crit, &
+                      nvi, vind, nfs, nsg, toutms, &
                       nhsr, numhsr, sigd, mult_comp_)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
@@ -53,7 +53,7 @@ interface
         integer :: ndi
         integer :: nr
         real(kind=8) :: crit(*)
-        integer,intent(in) :: nvi
+        integer, intent(in) :: nvi
         real(kind=8) :: vind(*)
         integer :: nfs
         integer :: nsg

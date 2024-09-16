@@ -15,16 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1504,W0104
+!
 subroutine lc0004(fami, kpg, ksp, ndim, imate, &
                   compor, crit, instam, instap, epsm, &
                   deps, sigm, vim, option, angmas, &
-                  sigp, vip, typmod, icomp, &
+                  sigp, vip, typmod, &
                   nvi, dsidep, codret)
 
     implicit none
 #include "asterfort/nmchab.h"
-    integer :: kpg, ksp, ndim, imate, codret, icomp, nvi
+    integer :: kpg, ksp, ndim, imate, codret, nvi
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
@@ -33,7 +34,7 @@ subroutine lc0004(fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !
 !
-! aslint: disable=W1504,W0104
+
 !
 ! ======================================================================
 !

@@ -20,13 +20,13 @@
 subroutine vdpnlr(option, nomte, codret)
 !
     use Behaviour_type
-    use Behaviour_module, only: behaviourOption, behaviourInit
+    use Behaviour_module
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/antisy.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/btdbma.h"
 #include "asterfort/btsig.h"
 #include "asterfort/gdt.h"
@@ -57,7 +57,8 @@ subroutine vdpnlr(option, nomte, codret)
 #include "asterfort/vectrn.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
-#include "asterfort/Behaviour_type.h"
+#include "jeveux.h"
+!
     character(len=16) :: option, nomte
     integer :: codret
 !
@@ -164,8 +165,6 @@ subroutine vdpnlr(option, nomte, codret)
     real(kind=8) :: theta(3), thetan
     real(kind=8) :: tmoin1(3, 3), tm1t(3, 3)
     real(kind=8) :: term(3)
-!
-    character(len=8) :: typmod(2)
     integer, parameter :: nbv = 2
     character(len=16), parameter :: nomres(nbv) = (/'E ', 'NU'/)
     integer :: icodre(nbv)
@@ -173,27 +172,25 @@ subroutine vdpnlr(option, nomte, codret)
     character(len=32) :: elasKeyword
     integer :: imate, icarcr, iinstm, iinstp, ivarim
     integer :: nbvari, itab(8), lgpg, k2, iret
-!
-    real(kind=8) :: rac2, angmas(3)
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    real(kind=8) :: angmas(3)
     character(len=16) :: defo_comp, rela_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     real(kind=8) :: cisail
+    integer, parameter :: ndimLdc = 2
+    character(len=8), parameter :: typmod(2) = (/"C_PLAN  ", "        "/)
     type(Behaviour_Integ) :: BEHinteg
+    character(len=4), parameter :: fami = "MASS"
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    rac2 = sqrt(2.d0)
-    typmod(1) = 'C_PLAN  '
-    typmod(2) = '        '
     codret = 0
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+
 ! - Get input fields
-!
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou = zi(jnbspi-1+1)
     if (nbcou .le. 0) then
@@ -213,14 +210,24 @@ subroutine vdpnlr(option, nomte, codret)
     else
         lgpg = itab(6)*itab(7)
     end if
-!
+
+! - Don"t use AFFE_CARA_ELEM/MASSIF
+    angmas = r8vide()
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndimLdc, typmod, option, &
+                              zk16(icompo), zr(icarcr), &
+                              zr(iinstm), zr(iinstp), &
+                              fami, zi(imate), &
+                              BEHinteg)
+
 ! - Select objects to construct from option name
-!
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
-                         lSigm, codret)
-!
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
+                         codret)
+
 ! - Properties of behaviour
-!
     rela_comp = zk16(icompo-1+RELA_NAME)
     defo_comp = zk16(icompo-1+DEFO)
     read (zk16(icompo-1+NVAR), '(I16)') nbvari
@@ -265,10 +272,8 @@ subroutine vdpnlr(option, nomte, codret)
 !---- RECUPERATION DES POINTEURS ( E : ECRITURE ) SELON OPTION
 !______________________________________________________________________
 !
-!
-!
+
 ! - Get output fields
-!
     ivarip = ivarim
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
@@ -677,22 +682,23 @@ subroutine vdpnlr(option, nomte, codret)
                     sign(i) = zr(icontm-1+k1+i)
                 end do
                 sign(4) = zr(icontm-1+k1+4)*rac2
-!
-! - LOI DE COMPORTEMENT
-! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
-! --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
-                call r8inir(3, r8vide(), angmas, 1)
-! -    APPEL A LA LOI DE COMPORTEMENT
+
+! ------------- Index of "sub"-point
                 ksp = (icou-1)*npge+inte
-!
+
+! ------------- Set main parameters for behaviour (on point)
+                call behaviourSetParaPoin(intsn, ksp, BEHinteg)
+
+! ------------- Integrator
                 sigma = 0.d0
-                call nmcomp(BEHinteg, 'MASS', intsn, ksp, 2, &
-                            typmod, zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), &
-                            zr(iinstp), 4, eps2d, deps2d, 4, &
-                            sign, zr(ivarim+k2), option, angmas, sigma, &
-                            zr(ivarip+k2), 36, dsidep, cod)
+                call nmcomp(BEHinteg, &
+                            fami, intsn, ksp, ndimLdc, typmod, &
+                            zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
+                            4, eps2d, deps2d, 4, sign, &
+                            zr(ivarim+k2), option, angmas, &
+                            sigma, zr(ivarip+k2), 36, dsidep, cod)
 !
-                call rcvalb('MASS', intsn, ksp, '+', zi(imate), &
+                call rcvalb(fami, intsn, ksp, '+', zi(imate), &
                             ' ', elasKeyword, 0, ' ', [0.d0], &
                             nbv, nomres, valres, icodre, 1)
 !

@@ -15,13 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
-interface
-    subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
-        use BehaviourPrepare_type
-        aster_logical, intent(in) :: l_etat_init
-        type(BehaviourPrep_MapCompor), intent(inout) :: prepMapCompor
-        character(len=8), intent(in), optional :: model
-    end subroutine comp_meca_read
-end interface
+! ==================================================================================================
+!
+! Types for elasticity material
+!
+! ==================================================================================================
+!
+!
+! --------------------------------------------------------------------------------------------------
+! Type of elasticity
+! --------------------------------------------------------------------------------------------------
+!
+#define ELAS_UNDEF     0
+#define ELAS_ISOT      1
+#define ELAS_ORTH      2
+#define ELAS_ISTR      3
+#define ELAS_VISC_ISOT 4
+#define ELAS_VISC_ORTH 5
+#define ELAS_VISC_ISTR 6

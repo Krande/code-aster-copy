@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine op0033()
 !
@@ -26,8 +25,8 @@ subroutine op0033()
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dierre.h"
 #include "asterfort/diinst.h"
@@ -44,6 +43,8 @@ subroutine op0033()
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmcrcv.h"
 #include "asterfort/nmfinp.h"
+#include "asterfort/nonlinDSAlgoParaCreate.h"
+#include "asterfort/nonlinDSConvergenceCreate.h"
 #include "asterfort/pmactn.h"
 #include "asterfort/pmconv.h"
 #include "asterfort/pmdocc.h"
@@ -60,12 +61,10 @@ subroutine op0033()
 #include "asterfort/utmess.h"
 #include "asterfort/vrcinp.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/nonlinDSConvergenceCreate.h"
-#include "asterfort/nonlinDSAlgoParaCreate.h"
-#include "asterfort/Behaviour_type.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
+#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,84 +72,72 @@ subroutine op0033()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim, iret, nbmat, nbvari, nbpar, i, ier
-    integer :: imate, kpg, ksp, iter, pred, ncmp, imptgt
+    integer :: iret, nbmat, nbvari, nbpar, i, ier
+    integer :: imate, iter, pred, ncmp, imptgt
     integer :: matrel, irota, defimp, liccvg(5)
     integer :: indimp(9), nume_inst, actite, action, itgt, iforta
 !     NOMBRE MAXI DE COLONNES DANS UNE TABLE 9999 (CF D4.02.05)
     integer, parameter :: ntamax = 9999
     integer :: igrad, nbvita
-    character(len=4) :: fami, cargau
+    character(len=4) :: cargau
     character(len=8) :: typmod(2), mater(30), table, fonimp(9), typpar(ntamax)
     character(len=16) :: option, compor(COMPOR_SIZE), nompar(ntamax), opt2
-    character(len=16) :: mult_comp, type_comp, defo_ldc, rela_comp
-    character(len=19) :: codi, sddisc, k19b, sdcrit
-    character(len=24) :: sderro
+    character(len=16) :: mult_comp, type_comp
+    character(len=19) :: codi, k19b
     real(kind=8) :: instam, instap, angl_naut(3), r8b, carcri(CARCRI_SIZE), fem(9)
     real(kind=8) :: deps(9), sigm(6), sigp(6), epsm(9), vr(ntamax)
-    real(kind=8) :: valimp(9), r(12), rini(12), dy(12), ddy(12), y(12), rac2
+    real(kind=8) :: valimp(9), r(12), rini(12), dy(12), ddy(12), y(12)
     real(kind=8) :: dsidep(6, 9), drdy(12, 12), kel(6, 6), cimpo(6, 12), ym(12)
     real(kind=8) :: work(10), sdeps(6), ssigp(6), smatr(36), r1(12)
     real(kind=8) :: matper(36), varia(2*36), epsilo, pgl(3, 3), vimp33(3, 3)
     real(kind=8) :: vimp2(3, 3), coef, jm, jp, jd, coefextra
     aster_logical :: finpas, itemax, conver
-    character(len=19) :: nomvi
-    character(len=19) :: vim, vip, vim2, svip
     integer :: lvim, lvip, lvim2, lsvip, lnomvi
     type(NL_DS_Conv) :: ds_conv
     type(NL_DS_AlgoPara) :: ds_algopara
     type(Behaviour_Integ) :: BEHinteg
     blas_int :: b_incx, b_incy, b_n
-!
-    data sddisc/'&&OP0033.SDDISC'/
-    data sdcrit/'&&OP0033.SDCRIT'/
-    data sderro/'&&OP0033.ERRE.'/
-!
-    data vim/'&&OP0033.VIM'/
-    data vip/'&&OP0033.VIP'/
-    data svip/'&&OP0033.SVIP'/
-    data vim2/'&&OP0033.VIM2'/
-    data nomvi/'&&OP0033.NOMVI'/
+    character(len=19), parameter :: sddisc = '&&OP0033.SDDISC'
+    character(len=19), parameter :: sdcrit = '&&OP0033.SDCRIT'
+    character(len=24), parameter :: sderro = '&&OP0033.ERRE.'
+    character(len=19), parameter :: nomvi = '&&OP0033.NOMVI'
+    character(len=19), parameter :: vim = '&&OP0033.VIM'
+    character(len=19), parameter :: vip = '&&OP0033.VIP'
+    character(len=19), parameter :: svip = '&&OP0033.SVIP'
+    character(len=19), parameter :: vim2 = '&&OP0033.VIM2'
+    integer, parameter :: ndim = 3
+    character(len=4), parameter :: fami = "PMAT"
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    integer, parameter :: ksp = 1, kpg = 1
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infmaj()
     call jemarq()
-!
+
 ! - Initializations
-!
-    work(:) = 0.d0
-    dsidep(:, :) = 0.d0
-    ndim = 3
-    rac2 = sqrt(2.d0)
-    fami = 'PMAT'
-    kpg = 1
-    ksp = 1
+    work = 0.d0
+    dsidep = 0.d0
     k19b = ' '
     iter = 0
     action = 1
     finpas = ASTER_FALSE
     itemax = ASTER_FALSE
-    liccvg(1:5) = 0
-!
+    liccvg = 0
+
 ! - Prepare CALCUL parameters for external state variables
-!
     call vrcinp(1, 0.d0, 0.d0)
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+
 ! - Create convergence management datastructure
-!
     call nonlinDSConvergenceCreate(ds_conv)
-!
+
 ! - Create algorithm parameters datastructure
-!
     call nonlinDSAlgoParaCreate(ds_algopara)
-!
+
 ! - Get material parameters
-!
     call getvid(' ', 'MATER', nbval=6, vect=mater, nbret=nbmat)
 !
 ! - Get list of parameters for constitutive law
@@ -165,32 +152,28 @@ subroutine op0033()
     call wkvect(svip, 'V V R', nbvari, lsvip)
     call wkvect(vim2, 'V V R', nbvari, lvim2)
     call wkvect(nomvi, 'V V K8', nbvari, lnomvi)
-!
+
 ! - Coding material parameters
-!
     call pmmaco(mater, nbmat, codi)
     call jeveut(codi//'.CODI', 'L', imate)
-!
+
 !     INITIALISATIONS SD
-!
     call pminit(imate, nbvari, ndim, typmod, table, &
                 nbpar, iforta, nompar, typpar, angl_naut, &
                 pgl, irota, epsm, sigm, zr(lvim), &
                 zr(lvip), vr, defimp, coef, indimp, &
-                fonimp, cimpo, kel, sddisc, ds_conv, &
-                ds_algopara, pred, matrel, imptgt, option, &
-                zk8(lnomvi), nbvita, sderro)
-!
+                fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara, &
+                pred, matrel, imptgt, option, zk8(lnomvi), &
+                nbvita, sderro)
+
 ! - Message if PETIT_REAC
-!
     if (defimp .gt. 0) then
         if (compor(DEFO) .eq. 'PETIT_REAC') then
             call utmess('I', 'COMPOR2_93')
         end if
     end if
-!
-! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
-!
+
+! - CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
     call nmcrcv(sdcrit)
     nume_inst = 1
 !
@@ -201,18 +184,25 @@ subroutine op0033()
 200 continue
 !
     liccvg(1:5) = 0
-!
+
 ! - Get times
-!
     instam = diinst(sddisc, nume_inst-1)
     instap = diinst(sddisc, nume_inst)
-!
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              fami, imate, &
+                              BEHinteg)
+
+! - Set main parameters for behaviour (on point)
+    call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
 ! - Compute external state variables
-!
     call vrcinp(2, instam, instap)
-!
+
 ! - Prepare stress/strain to impose
-!
     if (defimp .lt. 2) then
         igrad = 0
         do i = 1, 6
@@ -245,13 +235,10 @@ subroutine op0033()
         b_incx = to_blas_int(1)
         call dscal(b_n, rac2, valimp(4), b_incx)
     end if
-!
-!
+
 ! - Initialisation of behaviour datastructure - Special for SIMU_POINT_MAT
-!
-    read (compor(DEFO_LDC), '(A16)') defo_ldc
-    rela_comp = compor(RELA_NAME)
-    call behaviourInitPoint(carcri, rela_comp, BEHinteg)
+    call behaviourInitPoint(compor(RELA_NAME), BEHinteg)
+
 !
 !        6 CMP DE EPSI OU 9 CMP DE GRAD DONNEES : PAS BESOIN DE NEWTON
     if ((defimp .ge. 1) .and. (abs(carcri(2)) .lt. 0.1d0)) then

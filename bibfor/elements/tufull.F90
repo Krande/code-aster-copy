@@ -20,7 +20,7 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
                   b, ktild, effint, pass, vtemp)
 !
     use Behaviour_type
-    use Behaviour_module, only: behaviourOption, behaviourInit
+    use Behaviour_module
 !
     implicit none
 !
@@ -63,11 +63,12 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ndimLdc = 2
+    character(len=4), parameter :: fami = "RIGI"
     integer :: nbres, nbrddl, nc, kpgs, nbcoum, nbsecm
     integer :: vali, jcret, nFourier
     parameter(nbres=9)
     character(len=16) :: nomres(nbres)
-    character(len=8) :: typmod(2)
     character(len=32) :: elasKeyword
     integer :: valret(nbres)
     real(kind=8) :: valres(nbres), xpg(4)
@@ -102,22 +103,20 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
     integer :: lg_varip
     real(kind=8), allocatable :: varip(:)
     character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ', 'EP1'/)
+    character(len=8), parameter :: typmod(2) = (/'C_PLAN  ', '        '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', nno=nno, npg=npg, jpoids=ipoids, jcoopg=jcoopg, &
-                     jvf=ivf, jdfde=idfdk, jdfd2=jdfd2)
+    call elrefe_info(fami=fami, nno=nno, npg=npg, &
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2)
 !
     nc = nbrddl*(nbrddl+1)/2
     pi = r8pi()
     deuxpi = 2.d0*pi
     rac2 = sqrt(2.d0)
-    typmod(1) = 'C_PLAN  '
-    typmod(2) = ' '
     codret = 0
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
 !
 !   Angle du mot clef MASSIF de AFFE_CARA_ELEM, initialisé à r8nnem (on ne s'en sert pas)
@@ -128,9 +127,8 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
 ! - LEMAITRE_IRRA et VIS_IRRA_LOG (voir ssnl121c)
 !
     angmas = 0.d0
-!
+
 ! - Get input fields
-!
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
@@ -146,14 +144,25 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
     call jevech('PNBSP_I', 'L', jnbspi)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCAORIE', 'L', lorien)
-!
+
+! - Get time
+    instm = zr(iinstm)
+    instp = zr(iinstp)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndimLdc, typmod, option, &
+                              zk16(icompo), zr(icarcr), &
+                              instm, instp, &
+                              fami, zi(imate), &
+                              BEHinteg)
+
 ! - Select objects to construct from option name
-!
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
-                         lSigm, codret)
-!
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
+                         codret)
+
 ! - Properties of behaviour
-!
     read (zk16(icompo-1+NVAR), '(I16)') nbvari
     rela_comp = zk16(icompo-1+RELA_NAME)
     defo_comp = zk16(icompo-1+DEFO)
@@ -243,11 +252,7 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
         icoude = icoud2
         mmt = 1
     end if
-!
-! - Get time
-!
-    instm = zr(iinstm)
-    instp = zr(iinstp)
+
 !
 ! ===== INITIALISATION DE LA MATRICE K DE RIGIDITE===
 ! ===== ET DES EFFORTS INTERNES======================
@@ -352,16 +357,19 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
                     sign(i) = zr(icontm-1+k1+i)
                 end do
                 sign(4) = zr(icontm-1+k1+4)*rac2
-!
-!
-! -    APPEL A LA LOI DE COMPORTEMENT
                 ksp = (icou-1)*(2*nbsec+1)+isect
+
+! ------------- Set main parameters for behaviour (on point)
+                call behaviourSetParaPoin(igau, ksp, BEHinteg)
+
+! ------------- Integrate
                 sigma = 0.d0
-                call nmcomp(BEHinteg, 'RIGI', igau, ksp, 2, &
-                            typmod, zi(imate), zk16(icompo), zr(icarcr), instm, &
-                            instp, 6, eps2d, deps2d, 6, &
-                            sign, zr(ivarim+k2), option, angmas, sigma, &
-                            varip(1+k2), 36, dsidep, cod)
+                call nmcomp(BEHinteg, &
+                            fami, igau, ksp, ndimLdc, typmod, &
+                            zi(imate), zk16(icompo), zr(icarcr), instm, instp, &
+                            6, eps2d, deps2d, 6, sign, &
+                            zr(ivarim+k2), option, angmas, &
+                            sigma, varip(1+k2), 36, dsidep, cod)
 !
                 if (elasKeyword .eq. 'ELAS') then
                     nbv = 2

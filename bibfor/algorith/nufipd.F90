@@ -54,9 +54,9 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
     real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: vect(*), matr(*)
-    real(kind=8) :: carcri(*)
-    character(len=8) :: typmod(*)
-    character(len=16) :: compor(*), option
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    character(len=8), intent(in)  :: typmod(2)
+    character(len=16), intent(in)  :: compor(COMPOR_SIZE), option
     aster_logical, intent(in) :: lSigm, lVect, lMatr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -101,7 +101,10 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: axi, grand
+    integer, parameter :: ksp = 1
+    character(len=4), parameter :: fami = "RIGI"
+    aster_logical, parameter ::grand = ASTER_FALSE
+    aster_logical :: axi
     integer :: kpg, nddl
     integer :: ia, na, sa, ib, nb, sb, ja, jb
     integer :: os, kk
@@ -134,7 +137,6 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    grand = ASTER_FALSE
     axi = typmod(1) .eq. 'AXIS'
     cod = 0
     nddl = nno1*ndim+nno2
@@ -146,13 +148,18 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
     if (lMatr) then
         matr(1:nddl*(nddl+1)/2) = 0.d0
     end if
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instm, instp, &
+                              fami, mate, &
+                              BEHinteg)
+
 ! - Extract for fields
-!
     do na = 1, nno1
         do ia = 1, ndim
             deplm(ia+ndim*(na-1)) = ddlm(vu(ia, na))
@@ -163,13 +170,11 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
         presm(sa) = ddlm(vp(sa))
         presd(sa) = ddld(vp(sa))
     end do
-!
+
 ! - Properties of behaviour
-!
     rela_comp = compor(RELA_NAME)
-!
+
 ! - Loop on Gauss points
-!
     do kpg = 1, npg
         epsm = 0.d0
         deps = 0.d0
@@ -180,10 +185,12 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
         call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg), &
                     r, dff1, deplm, fm, epsm)
         divum = epsm(1)+epsm(2)+epsm(3)
+
 ! ----- Kinematic - Increment of strains
         call nmepsi(ndim, nno1, axi, grand, vff1(1, kpg), &
                     r, dff1, depld, fm, deps)
         ddivu = deps(1)+deps(2)+deps(3)
+
 ! ----- Pressure
         b_n = to_blas_int(nno2)
         b_incx = to_blas_int(1)
@@ -235,19 +242,26 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
         do ia = 4, 2*ndim
             sigmPrep(ia) = sigm(ia, kpg)*rac2
         end do
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
 ! ----- Compute behaviour
         sigma = 0.d0
-        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim, &
-                    typmod, mate, compor, carcri, instm, &
-                    instp, 6, epsm, deps, 6, &
-                    sigmPrep, vim(1, kpg), option, angmas, sigma, &
-                    vip(1, kpg), 36, dsidep, cod(kpg))
+        call nmcomp(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    mate, compor, carcri, instm, instp, &
+                    6, epsm, deps, 6, sigmPrep, &
+                    vim(1, kpg), option, angmas, &
+                    sigma, vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
         end if
+
 ! ----- Compute "bubble" matrix
         call tanbul(option, ndim, kpg, mate, rela_comp, &
                     lVect, mini, alpha, dsbdep, trepst)
+
 ! ----- Static condensation (for MINI element)
         rce(1:nno2) = 0.d0
         kce(1:nno2, 1:nno2) = 0.d0
@@ -258,6 +272,7 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
             call calkce(nno1, ndim, kbp, kbb, presm, &
                         presd, kce, rce)
         end if
+
 ! ----- Internal forces
         if (lVect) then
             sigtr = sigma(1)+sigma(2)+sigma(3)
@@ -353,9 +368,8 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
     end do
 !
 999 continue
-!
+
 ! - Return code summary
-!
     call codere(cod, npg, codret)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,15 +35,16 @@ subroutine eifint(ndim, axi, nno1, nno2, npg, &
 #include "asterfort/codere.h"
 #include "asterfort/eicine.h"
 #include "asterfort/nmcomp.h"
+#include "asterfort/Behaviour_type.h"
 !
-    character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(*)
+    character(len=8) :: typmod(2)
+    character(len=16) :: option, compor(COMPOR_SIZE)
     aster_logical :: axi
     integer :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 18), im(3, 9)
     integer :: codret
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
     real(kind=8) :: wref(npg)
-    real(kind=8) :: carcri(*), instam, instap
+    real(kind=8) :: carcri(CARCRI_SIZE), instam, instap
     real(kind=8) :: ddlm(2*nno1*ndim+nno2*ndim), ddld(2*nno1*ndim+nno2*ndim)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), vect(2*nno1*ndim+nno2*ndim)
     real(kind=8) :: dffr2(ndim-1, nno2, npg), ang(*), sigp(2*ndim, npg), matr(*)
@@ -88,12 +89,14 @@ subroutine eifint(ndim, axi, nno1, nno2, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    type(Behaviour_Integ) :: BEHinteg
+    character(len=4), parameter :: fami = 'RIGI'
+    integer, parameter :: ksp = 1
     integer :: nddl, g, cod(npg), n, i, m, j, k, l, os, kk
     real(kind=8) :: angmas(3), r, wg, b(3, 3, 18), t1
     real(kind=8) :: mu_m(ndim), su_m(ndim), mu_d(ndim), su_d(ndim), mu_p(ndim), su_p(ndim)
     real(kind=8) :: eps_m(2*ndim), eps_d(2*ndim), sig_m(2*ndim), de(2*ndim), ddedt(2*ndim, 2*ndim)
     real(kind=8) :: cl(ndim)
-    type(Behaviour_Integ) :: BEHinteg
 !
 ! TODO: passer de(3) et ddedt(3,3) avec impact sur les lois de comportement
 ! cf. exemple lc7077
@@ -104,10 +107,16 @@ subroutine eifint(ndim, axi, nno1, nno2, npg, &
     codret = 0
     sig_m = 0
     angmas = 0
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              fami, mat, &
+                              BEHinteg)
 
     if (lMatr) matr(1:(nddl*(nddl+1))/2) = 0.d0
     if (lVect) vect(1:nddl) = 0.d0
@@ -158,15 +167,19 @@ subroutine eifint(ndim, axi, nno1, nno2, npg, &
         eps_d(1:ndim) = mu_d
         eps_d(ndim+1:2*ndim) = su_d
 
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(g, ksp, BEHinteg)
+
+! ----- Integrator
         call nmcomp(BEHinteg, &
-                    'RIGI', g, 1, ndim, typmod, &
+                    fami, g, ksp, ndim, typmod, &
                     mat, compor, carcri, instam, instap, &
                     2*ndim, eps_m, eps_d, 2*ndim, sig_m, &
                     vim(1, g), option, angmas, &
                     de, vip(1, g), 2*ndim*2*ndim, ddedt, cod(g))
         if (cod(g) .eq. 1) goto 999
 
-        r = BEHinteg%elga%r
+        r = BEHinteg%behavESVA%behavESVAOther%r
         cl = su_p(1:ndim)-de(1:ndim)
 
 ! ----- Stresses

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine mat_proto(BEHinteg, &
 !
 ! - Coordinates of current Gauss point
 !
-    para_vale = BEHinteg%elem%coor_elga(kpg, :)
+    para_vale = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, :)
 !
 ! - Get material properties
 !
@@ -90,7 +90,7 @@ subroutine mat_proto(BEHinteg, &
         call rcadlv(fami, kpg, ksp, poum, imate, ' ', itface, &
                     'LISTE_COEF', 1, ['META'], [zalpha], jadr, ncoef, icodre, 1)
     else
-        if (BEHinteg%l_varext_geom) then
+        if (BEHinteg%behavESVA%lGeomInESVA) then
             call rcadlv(fami, kpg, ksp, poum, imate, ' ', itface, &
                         'LISTE_COEF', 0, [' '], [0.d0], jadr, ncoef, icodre, 1)
         else

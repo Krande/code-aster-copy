@@ -15,49 +15,34 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getTHMPara(prepMapCarcri)
-!
-    use BehaviourPrepare_type
-!
-    implicit none
-!
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/Behaviour_type.h"
-#include "asterfort/getvr8.h"
-!
-    type(BehaviourPrep_MapCarcri), intent(inout) :: prepMapCarcri
-!
-! --------------------------------------------------------------------------------------------------
-!
-! THM
-!
-! Get parameters from STAT_NON_LINE command
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IO  prepMapCarcri    : datastructure to construct CARCRI map
-!
-! --------------------------------------------------------------------------------------------------
-!
-    character(len=16), parameter :: factorKeyword = 'SCHEMA_THM'
-    integer :: iret
-    real(kind=8) :: parm_theta_thm, parm_alpha_thm
-!
-! --------------------------------------------------------------------------------------------------
-!
-    parm_theta_thm = 1.d0
-    parm_alpha_thm = 1.d0
 
-    call getvr8(factorKeyword, 'PARM_THETA', iocc=1, nbval=0, nbret=iret)
-    if (iret .ne. 0) then
-        call getvr8(factorKeyword, 'PARM_THETA', iocc=1, scal=parm_theta_thm, nbret=iret)
-        call getvr8(factorKeyword, 'PARM_ALPHA', iocc=1, scal=parm_alpha_thm, nbret=iret)
-    end if
+! --------------------------------------------------------------------------------------------------
 !
-    prepMapCarcri%parm_theta_thm = parm_theta_thm
-    prepMapCarcri%parm_alpha_thm = parm_alpha_thm
+! For external state variables
 !
-end subroutine
+! --------------------------------------------------------------------------------------------------
+
+! Maximum number of differents types of external state variables for MFront/MGIS
+#define ESVA_EXTE_MGIS_NBMAXI    11
+
+! --------------------------------------------------------------------------------------------------
+!
+! For external solver MFront/MGIS
+!
+! Constants
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Type of model and strain model (MGIS)
+! keep consistency with bibcxx/Behaviours/MGISBehaviourFort.h
+!
+#define MGIS_MODEL_UNSET          0
+#define MGIS_MODEL_TRIDIMENSIONAL 1
+#define MGIS_MODEL_AXISYMMETRICAL 2
+#define MGIS_MODEL_PLANESTRESS    3
+#define MGIS_MODEL_PLANESTRAIN    4
+!
+#define MGIS_STRAIN_UNSET         0
+#define MGIS_STRAIN_SMALL         1
+#define MGIS_STRAIN_F             3

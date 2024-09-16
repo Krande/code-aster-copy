@@ -95,9 +95,8 @@ subroutine te0027(option, nomte)
     epsini = .false.
     typmod(1) = '3D      '
     typmod(2) = ' '
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
 !
     fami = 'RIGI'

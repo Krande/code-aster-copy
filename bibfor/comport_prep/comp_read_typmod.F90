@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/BehaviourMGIS_type.h"
 #include "asterfort/comp_mfront_modelem.h"
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/dismoi.h"
@@ -77,8 +78,8 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    model_mfront = MFRONT_MODEL_UNSET
-    model_save = MFRONT_MODEL_UNSET
+    model_mfront = MGIS_MODEL_UNSET
+    model_save = MGIS_MODEL_UNSET
     model_dim = 0
     list_elem_affe = '&&COMPMECASAVE.LIST'
     type_cpla_out = 'VIDE'
@@ -126,8 +127,8 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
             call comp_mfront_modelem(elem_type_name, l_mfront_cp, &
                                      model_dim, model_mfront, &
                                      codret, type_cpla_out)
-            if (model_mfront .ne. MFRONT_MODEL_UNSET) then
-                if (model_save .eq. MFRONT_MODEL_UNSET) then
+            if (model_mfront .ne. MGIS_MODEL_UNSET) then
+                if (model_save .eq. MGIS_MODEL_UNSET) then
                     model_save = model_mfront
                 else
                     if ((model_save .ne. model_mfront)) then

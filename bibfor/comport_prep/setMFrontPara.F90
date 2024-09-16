@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W0413
 !
-subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
+subroutine setMFrontPara(prepCrit, iFactorKeyword)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -32,7 +32,7 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-    type(Behaviour_Crit), pointer :: behaviourCrit(:)
+    type(BehaviourPrep_Crit), pointer :: prepCrit(:)
     integer, intent(in) :: iFactorKeyword
 !
 ! --------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  behaviourCrit    : parameters for integration of constitutive law
+! Ptr prepCrit         : pointer to behaviour criteria
 ! In  iFactorKeyword   : index of factor keyword (for map)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,15 +56,15 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    iveriborne = behaviourCrit(iFactorKeyword)%iveriborne
-    extern_addr = behaviourCrit(iFactorKeyword)%paraExte%extern_addr
-    extern_type = behaviourCrit(iFactorKeyword)%extern_type
+    iveriborne = prepCrit(iFactorKeyword)%iveriborne
+    extern_addr = prepCrit(iFactorKeyword)%prepExte%extern_addr
+    extern_type = prepCrit(iFactorKeyword)%extern_type
 !
 ! - Set values
 !
     if (extern_type .eq. 1 .or. extern_type .eq. 2) then
-        if (associated(behaviourCrit(iFactorKeyword)%resi_inte)) then
-            resi_inte = behaviourCrit(iFactorKeyword)%resi_inte
+        if (associated(prepCrit(iFactorKeyword)%resi_inte)) then
+            resi_inte = prepCrit(iFactorKeyword)%resi_inte
             call mgis_get_double_mfront_parameter(extern_addr, "epsilon", resi_inte_mfront_rela)
             if (resi_inte_mfront_rela .ne. 0.d0 .and. &
                 resi_inte .gt. resi_inte_mfront_rela) then
@@ -74,8 +74,8 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
             end if
             call mgis_set_double_parameter(extern_addr, "epsilon", resi_inte)
         end if
-        if (associated(behaviourCrit(iFactorKeyword)%iter_inte_maxi)) then
-            iter_inte_maxi = behaviourCrit(iFactorKeyword)%iter_inte_maxi
+        if (associated(prepCrit(iFactorKeyword)%iter_inte_maxi)) then
+            iter_inte_maxi = prepCrit(iFactorKeyword)%iter_inte_maxi
             call mgis_get_integer_mfront_parameter(extern_addr, "iterMax", iter_inte_mfront_maxi)
             if (iter_inte_mfront_maxi .ne. 0 .and. &
                 iter_inte_maxi .ne. iter_inte_mfront_maxi) then

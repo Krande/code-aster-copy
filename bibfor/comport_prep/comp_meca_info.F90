@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_info(behaviourPrepPara)
+subroutine comp_meca_info(prepMapCompor)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -27,7 +27,7 @@ subroutine comp_meca_info(behaviourPrepPara)
 #include "asterc/getfac.h"
 #include "asterfort/comp_meca_init.h"
 !
-    type(Behaviour_PrepPara), intent(out) :: behaviourPrepPara
+    type(BehaviourPrep_MapCompor), intent(out) :: prepMapCompor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,13 +37,13 @@ subroutine comp_meca_info(behaviourPrepPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out behaviourPrepPara: datastructure to prepare behaviour
+! Out prepMapCompor    : datastructure to construct COMPOR map
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     integer :: nb_info_comp, nbFactorKeyword
-    type(Behaviour_Para) :: behaviourPara
+    type(BehaviourPrep_Para) :: prepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,20 +56,20 @@ subroutine comp_meca_info(behaviourPrepPara)
     else
         nb_info_comp = nbFactorKeyword
     end if
-    behaviourPrepPara%nb_comp = nbFactorKeyword
+    prepMapCompor%nb_comp = nbFactorKeyword
 
 ! - Allocate objects
-    allocate (behaviourPrepPara%v_para(nb_info_comp))
-    allocate (behaviourPrepPara%v_paraExte(nb_info_comp))
+    allocate (prepMapCompor%prepPara(nb_info_comp))
+    allocate (prepMapCompor%prepExte(nb_info_comp))
 
 ! - If nothing in COMPORTEMENT: all is elastic
-    call comp_meca_init(behaviourPara)
+    call comp_meca_init(prepPara)
     if (nbFactorKeyword .eq. 0) then
-        behaviourPrepPara%v_para(1) = behaviourPara
-        behaviourPrepPara%v_para(1)%rela_comp = 'ELAS'
-        behaviourPrepPara%v_para(1)%defo_comp = 'PETIT'
-        behaviourPrepPara%v_para(1)%type_comp = 'COMP_ELAS'
-        behaviourPrepPara%v_para(1)%type_cpla = 'ANALYTIQUE'
+        prepMapCompor%prepPara(1) = prepPara
+        prepMapCompor%prepPara(1)%rela_comp = 'ELAS'
+        prepMapCompor%prepPara(1)%defo_comp = 'PETIT'
+        prepMapCompor%prepPara(1)%type_comp = 'COMP_ELAS'
+        prepMapCompor%prepPara(1)%type_cpla = 'ANALYTIQUE'
     end if
 !
 end subroutine

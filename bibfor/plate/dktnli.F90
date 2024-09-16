@@ -24,22 +24,22 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/dkqbf.h"
+#include "asterfort/dkqtxy.h"
 #include "asterfort/dktbf.h"
+#include "asterfort/dkttxy.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dxmate.h"
 #include "asterfort/dxqbm.h"
 #include "asterfort/dxqloc.h"
 #include "asterfort/dxqloc2.h"
 #include "asterfort/dxtbm.h"
 #include "asterfort/dxtloc.h"
 #include "asterfort/dxtloc2.h"
-#include "asterfort/dsxhft.h"
-#include "asterfort/dkttxy.h"
-#include "asterfort/dkqtxy.h"
-#include "asterfort/dxmate.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/gtria3.h"
@@ -51,7 +51,7 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
 #include "blas/dcopy.h"
-#include "asterfort/Behaviour_type.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: xyzl(3, 4), uml(6, 4), dul(6, 4)
@@ -158,6 +158,7 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
 !             LE MATERIAU EST SUPPOSE HOMOGENE
 !             IL PEUT NEANMOINS Y AVOIR COUPLAGE PAR LA PLASTICITE
 !     ------------------ PARAMETRAGE ELEMENT ---------------------------
+    integer, parameter :: ndimLdc = 2
     integer :: ndim, nbNode, npg, ipoids, icoopg
     integer :: jtab(7), codkpg, i, ksp
     integer :: icacoq, icarcr, icompo, icontm, icontp, icou, icpg, igauh, iinstm
@@ -194,11 +195,10 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
     ktan = 0.d0
     btsig = 0.d0
     codret = 0
-!
+
 ! - Get finite element parameters
-!
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nbNode, npg=npg, jpoids=ipoids, &
-                     jcoopg=icoopg)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nbNode, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg)
     dkt = ASTER_FALSE
     dkq = ASTER_FALSE
     if (nbNode .eq. 3) then
@@ -210,17 +210,14 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
     end if
     typmod(1) = 'C_PLAN  '
     typmod(2) = '        '
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+
 ! - No orientation from MASSIF
-!
     angmas = r8vide()
-!
+
 ! - Get input fields
-!
     call jevech('PMATERC', 'L', imate)
     call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
                 itab=jtab)
@@ -240,18 +237,21 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
     end if
 !
 ! - Properties of behaviour
-!
     call jevech('PCOMPOR', 'L', icompo)
     defo_comp = zk16(icompo-1+DEFO)
     incr_elas = zk16(icompo-1+INCRELAS)
     leul = defo_comp .eq. 'GROT_GDEP'
     read (zk16(icompo-1+NVAR), '(I16)') nbvar
-!
     ASSERT((.not. defo_comp .eq. 'GROT_GDEP') .or. (.not. incr_elas .eq. 'COMP_ELAS'))
-!
-!
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndimLdc, typmod, option, &
+                              zk16(icompo), zr(icarcr), &
+                              instm, instp, &
+                              fami, zi(imate), &
+                              BEHinteg)
+
 ! - Geometric parameters
-!
     h = zr(icacoq)
     distn = zr(icacoq+4)
     if (dkt) then
@@ -263,10 +263,8 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
     else
         ASSERT(ASTER_FALSE)
     end if
-!
+
 ! - Output fields
-!
-!
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
     end if
@@ -277,9 +275,8 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
         call jevech('PVARIMP', 'L', ivarix)
         varip(1:lg_varip) = zr(ivarix:ivarix+lg_varip-1)
     end if
-!
+
 ! - Preparation of displacements
-!
     do ino = 1, nbNode
         um(1, ino) = uml(1, ino)
         um(2, ino) = uml(2, ino)
@@ -292,9 +289,8 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
         duf(2, ino) = dul(5, ino)
         duf(3, ino) = -dul(4, ino)
     end do
-!
+
 ! - Get layers
-!
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou = zi(jnbspi-1+1)
     ASSERT(nbcou .gt. 0)
@@ -330,9 +326,11 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
         dmf = 0.d0
         dvt = 0.d0
         vt = 0.d0
+
 ! ----- Current Gauss point
         qsi = zr(icoopg-1+ndim*(ipg-1)+1)
         eta = zr(icoopg-1+ndim*(ipg-1)+2)
+
 ! ----- Prepare quantities for strain operators
         if (dkq) then
             call jquad4(xyzl, qsi, eta, jacob)
@@ -351,15 +349,13 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
         else
             ASSERT(ASTER_FALSE)
         end if
+
 ! ----- Compute strain and curvature
-        call pmrvec('ZERO', 3, 2*nbNode, bm, um, &
-                    eps)
-        call pmrvec('ZERO', 3, 2*nbNode, bm, dum, &
-                    deps)
-        call pmrvec('ZERO', 3, 3*nbNode, bf, uf, &
-                    khi)
-        call pmrvec('ZERO', 3, 3*nbNode, bf, duf, &
-                    dkhi)
+        call pmrvec('ZERO', 3, 2*nbNode, bm, um, eps)
+        call pmrvec('ZERO', 3, 2*nbNode, bm, dum, deps)
+        call pmrvec('ZERO', 3, 3*nbNode, bf, uf, khi)
+        call pmrvec('ZERO', 3, 3*nbNode, bf, duf, dkhi)
+
 ! ----- Quadratic terms for GROT_GDEP
         if (leul) then
             bmq = 0.d0
@@ -415,6 +411,7 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
                 d1iel(2, 2) = d1iel(1, 1)
                 d1iel(1, 2) = 0.d0
                 d1iel(2, 1) = 0.d0
+
 ! ------------- Prepare stresses
                 do j = 1, 4
                     sigmPrep(j) = zr(icontm+icpg-1+j)
@@ -425,13 +422,19 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
                         zr(icontp+icpg+j) = 0.d0
                     end do
                 end if
-! ------------- Integration
-                call nmcomp(BEHinteg, 'RIGI', ipg, ksp, 2, &
-                            typmod, zi(imate), zk16(icompo), zr(icarcr), instm, &
-                            instp, 4, eps2d, deps2d, 4, &
-                            sigmPrep, zr(ivarim+ivpg), option, angmas, zr(icontp+icpg), &
-                            varip(1+ivpg), 36, dsidep, codkpg)
-!
+
+! ------------- Set main parameters for behaviour (on point)
+                call behaviourSetParaPoin(ipg, ksp, BEHinteg)
+
+! ------------- Integrator
+                call nmcomp(BEHinteg, &
+                            fami, ipg, ksp, ndimLdc, typmod, &
+                            zi(imate), zk16(icompo), zr(icarcr), instm, instp, &
+                            4, eps2d, deps2d, 4, sigmPrep, &
+                            zr(ivarim+ivpg), option, angmas, &
+                            zr(icontp+icpg), varip(1+ivpg), 36, dsidep, &
+                            codkpg)
+
                 if (codkpg .ne. 0) then
                     if (codret .ne. 1) then
                         codret = codkpg

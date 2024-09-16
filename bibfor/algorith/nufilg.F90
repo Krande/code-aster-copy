@@ -57,9 +57,9 @@ subroutine nufilg(ndim, nnod, nnop, npg, iw, &
     real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: vect(*), matr(*)
-    real(kind=8) :: carcri(*)
-    character(len=8) :: typmod(*)
-    character(len=16) :: compor(*), option
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    character(len=8), intent(in)  :: typmod(2)
+    character(len=16), intent(in)  :: compor(COMPOR_SIZE), option
     aster_logical, intent(in) :: lVect, lMatr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -104,8 +104,9 @@ subroutine nufilg(ndim, nnod, nnop, npg, iw, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical, parameter :: mini = ASTER_FALSE
-    aster_logical, parameter :: grand = ASTER_TRUE
+    integer, parameter :: ksp = 1
+    character(len=4), parameter :: fami = "RIGI"
+    aster_logical, parameter :: mini = ASTER_FALSE, grand = ASTER_TRUE
     aster_logical :: axi
     aster_logical :: lCorr, lSigm, lVari
     integer :: kpg, nddl, ndu
@@ -173,8 +174,14 @@ subroutine nufilg(ndim, nnod, nnop, npg, iw, &
 !
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
-    rela_comp = compor(RELA_NAME)
-!
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instm, instp, &
+                              fami, mate, &
+                              BEHinteg)
+
 ! - Extract for fields
     do na = 1, nnod
         do ia = 1, ndim
@@ -188,7 +195,10 @@ subroutine nufilg(ndim, nnod, nnop, npg, iw, &
         presm(sa) = ddlm(vp(sa))
         presd(sa) = ddld(vp(sa))
     end do
-!
+
+! - Properties of behaviour
+    rela_comp = compor(RELA_NAME)
+
 ! - Loop on Gauss points
     do kpg = 1, npg
 ! ----- Kinematic - Previous strains
@@ -255,17 +265,21 @@ subroutine nufilg(ndim, nnod, nnop, npg, iw, &
         if (cod(kpg) .ne. 0) then
             goto 999
         end if
-!
-! ----- Compute behaviour
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         cod(kpg) = 0
         dtde = 0.d0
         tlogCurr = 0.d0
         taup = 0.d0
-        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim, &
-                    typmod, mate, compor, carcri, instm, &
-                    instp, 6, epslPrev, epslIncr, 6, &
-                    tlogPrev, vim(1, kpg), option, angmas, tlogCurr, &
-                    vip(1, kpg), 36, dtde, cod(kpg))
+        call nmcomp(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    mate, compor, carcri, instm, instp, &
+                    6, epslPrev, epslIncr, 6, tlogPrev, &
+                    vim(1, kpg), option, angmas, &
+                    tlogCurr, vip(1, kpg), 36, dtde, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
         end if

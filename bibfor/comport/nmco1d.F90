@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmco1d(fami, kpg, ksp, imate, rela_comp, rela_cpla, &
+subroutine nmco1d(BEHInteg, &
+                  fami, kpg, ksp, imate, rela_comp, rela_cpla, &
                   option, epsm, deps, angmas, sigm, &
                   vim, sigp, vip, dsidep, codret)
+!
+    use Behaviour_type
+    use Behaviour_module
 !
     implicit none
 !
@@ -34,6 +38,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, rela_comp, rela_cpla, &
 #include "asterfort/verift.h"
 #include "asterfort/vmci1d.h"
 !
+    type(Behaviour_Integ), intent(in) :: BEHinteg
     integer :: imate, codret, kpg, ksp
     character(len=16) :: option, rela_comp, rela_cpla
     character(len=*) :: fami
@@ -63,10 +68,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, rela_comp, rela_cpla, &
 !
     aster_logical :: cine, isot, pinto, com1d, elas, cinegc
     real(kind=8) :: e, et, sigy
-    integer :: nvarpi
-    parameter(nvarpi=8)
-    integer :: ncstpm
-    parameter(ncstpm=13)
+    integer, parameter :: nvarpi = 8, ncstpm = 13
     real(kind=8) :: cstpm(ncstpm)
     real(kind=8) :: em, ep, depsth, depsm, val(1)
     integer :: codres(1)
@@ -146,7 +148,8 @@ subroutine nmco1d(fami, kpg, ksp, imate, rela_comp, rela_cpla, &
         end if
 !
     else if (com1d) then
-        call comp1d(fami, kpg, ksp, option, sigm, &
+        call comp1d(BEHinteg, &
+                    fami, kpg, ksp, option, sigm, &
                     epsm, deps, angmas, vim, vip, &
                     sigp, dsidep, codret)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -105,7 +105,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     character(len=255) :: libr_name, subr_name
     character(len=16) :: extern_addr, notype
     integer :: extern_type, model_dim
-    type(Behaviour_ParaExte), pointer :: behaviourParaExte(:) => null()
+    type(BehaviourPrep_Exte), pointer :: prepExte(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -155,11 +155,11 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     if (present(comporMap_)) then
         call comp_ntvari(model_=model_, comporMap_=comporMap_, comporInfo=comporInfo, &
                          nt_vari=nt_vari, nb_vari_maxi=nb_vari_maxi, &
-                         mapNbZone=nb_zone2, behaviourParaExte=behaviourParaExte)
+                         mapNbZone=nb_zone2, prepExte=prepExte)
     elseif (present(comporList_)) then
         call comp_ntvari(comporList_=comporList_, comporInfo=comporInfo, &
                          nt_vari=nt_vari, nb_vari_maxi=nb_vari_maxi, &
-                         mapNbZone=nb_zone2, behaviourParaExte=behaviourParaExte)
+                         mapNbZone=nb_zone2, prepExte=prepExte)
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -249,13 +249,13 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
                 end if
             end if
 ! --------- Parameters for external constitutive laws
-            l_mfront_proto = behaviourParaExte(mapZoneNume)%l_mfront_proto
-            l_mfront_offi = behaviourParaExte(mapZoneNume)%l_mfront_offi
-            subr_name = behaviourParaExte(mapZoneNume)%subr_name
-            libr_name = behaviourParaExte(mapZoneNume)%libr_name
-            extern_addr = behaviourParaExte(mapZoneNume)%extern_addr
-            extern_type = behaviourParaExte(mapZoneNume)%extern_type
-            model_dim = behaviourParaExte(mapZoneNume)%model_dim
+            l_mfront_proto = prepExte(mapZoneNume)%l_mfront_proto
+            l_mfront_offi = prepExte(mapZoneNume)%l_mfront_offi
+            subr_name = prepExte(mapZoneNume)%subr_name
+            libr_name = prepExte(mapZoneNume)%libr_name
+            extern_addr = prepExte(mapZoneNume)%extern_addr
+            extern_type = prepExte(mapZoneNume)%extern_type
+            model_dim = prepExte(mapZoneNume)%model_dim
 
 ! --------- Exception for name of internal state variables
             call comp_meca_exc2(l_cristal, l_pmf, &
@@ -293,7 +293,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     comporInfoInfo(4) = nt_vari
     comporInfoInfo(5) = nb_zone_acti
 !
-    deallocate (behaviourParaExte)
+    deallocate (prepExte)
     AS_DEALLOCATE(vi=zoneRead)
 !
     call jedema()

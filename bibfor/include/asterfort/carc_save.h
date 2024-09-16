@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine carc_save(mesh, carcri, ds_compor_para)
-        use Behaviour_type
+    subroutine carc_save(mesh, carcri, prepMapCarcri)
+        use BehaviourPrepare_type
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: carcri
-        type(Behaviour_PrepCrit), intent(in) :: ds_compor_para
+        type(BehaviourPrep_MapCarcri), intent(in) :: prepMapCarcri
     end subroutine carc_save
 end interface

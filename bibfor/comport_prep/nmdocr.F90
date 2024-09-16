@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmdocr(model, carcri, base)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -53,7 +53,7 @@ subroutine nmdocr(model, carcri, base)
 !
     integer :: ifm, niv
     character(len=8) :: mesh
-    type(Behaviour_PrepCrit) :: behaviourPrepCrit
+    type(BehaviourPrep_MapCarcri) :: prepMapCarcri
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,21 +66,21 @@ subroutine nmdocr(model, carcri, base)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 
 ! - Create objects
-    call carc_info(behaviourPrepCrit)
+    call carc_info(prepMapCarcri)
 
 ! - Create CARCRI <CARTE>
     call carc_init(mesh, carcri, base)
 
 ! - Read informations from command file
-    call carc_read(behaviourPrepCrit, model)
+    call carc_read(prepMapCarcri, model)
 
 ! - Check informations in CARCRI <CARTE>
-    call carc_chck(behaviourPrepCrit)
+    call carc_chck(prepMapCarcri)
 
 ! - Save and check informations in CARCRI <CARTE>
-    call carc_save(mesh, carcri, behaviourPrepCrit)
+    call carc_save(mesh, carcri, prepMapCarcri)
 
 ! - Cleaning
-    deallocate (behaviourPrepCrit%v_crit)
+    deallocate (prepMapCarcri%prepCrit)
 !
 end subroutine

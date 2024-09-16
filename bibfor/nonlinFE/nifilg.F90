@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1306,W1504
+! aslint: disable=W1306,W1504,W1501
 !
 subroutine nifilg(ndim, nnod, nnog, nnop, npg, &
                   iw, vffd, vffg, vffp, idffd, &
@@ -33,6 +33,7 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/dsde2d.h"
@@ -45,7 +46,6 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, &
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-#include "asterfort/Behaviour_type.h"
 !
     aster_logical :: matsym
     integer :: ndim, nnod, nnog, nnop, npg, iw, idffd, lgpg
@@ -58,9 +58,9 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, &
     real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: vect(*), matr(*)
-    real(kind=8) :: carcri(*)
-    character(len=8) :: typmod(*)
-    character(len=16) :: compor(*), option
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    character(len=8), intent(in) :: typmod(2)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE), option
     aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
 !
 ! --------------------------------------------------------------------------------------------------
@@ -108,6 +108,8 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
+    character(len=4), parameter :: fami = 'RIGI'
     aster_logical, parameter :: grand = ASTER_TRUE
     aster_logical :: axi
     aster_logical :: lCorr
@@ -160,6 +162,8 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, &
     dsidep = 0.d0
     codret = 0
     cod = 0
+
+! - Output quantities
     if (lVect) then
         vect(1:nddl) = 0.d0
     end if
@@ -173,7 +177,14 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, &
 !
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
-!
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instm, instp, &
+                              fami, mate, &
+                              BEHinteg)
+
 ! - Extract for fields
     do na = 1, nnod
         do ia = 1, ndim
@@ -278,17 +289,21 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, &
         if (cod(kpg) .ne. 0) then
             goto 999
         end if
-!
-! ----- Compute behaviour
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         cod(kpg) = 0
         dtde = 0.d0
         tlogCurr = 0.d0
         taup = 0.d0
-        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim, &
-                    typmod, mate, compor, carcri, instm, &
-                    instp, 6, epslPrev, epslIncr, 6, &
-                    tlogPrev, vim(1, kpg), option, angmas, tlogCurr, &
-                    vip(1, kpg), 36, dtde, cod(kpg))
+        call nmcomp(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    mate, compor, carcri, instm, instp, &
+                    6, epslPrev, epslIncr, 6, tlogPrev, &
+                    vim(1, kpg), option, angmas, &
+                    tlogCurr, vip(1, kpg), 36, dtde, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
         end if

@@ -52,9 +52,10 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
     real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: vect(*), matr(*)
-    real(kind=8) :: carcri(*)
-    character(len=8) :: typmod(*)
-    character(len=16) :: compor(*), option, nomte
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    character(len=8), intent(in)  :: typmod(2)
+    character(len=16), intent(in)  :: compor(COMPOR_SIZE), option
+    character(len=16) :: nomte
     aster_logical, intent(in) :: lSigm, lVect, lMatr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -101,7 +102,10 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: axi, grand, mini
+    integer, parameter :: ksp = 1
+    character(len=4), parameter :: fami = "RIGI"
+    aster_logical, parameter :: mini = ASTER_FALSE, grand = ASTER_FALSE
+    aster_logical :: axi
     integer :: kpg, nddl
     integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
     integer :: os, kk
@@ -135,8 +139,6 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    mini = ASTER_FALSE
-    grand = ASTER_FALSE
     axi = typmod(1) .eq. 'AXIS'
     cod = 0
     nddl = nnod*ndim+nnop+nnog*ndim
@@ -148,13 +150,18 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
     if (lMatr) then
         matr(1:nddl*(nddl+1)/2) = 0.d0
     end if
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instm, instp, &
+                              fami, mate, &
+                              BEHinteg)
+
 ! - Compute stabilization
-!
     call uthk(nomte, geomi, hk, ndim, 1)
     stab = 1.d-4*hk*hk
 !
@@ -180,9 +187,8 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
 ! - Properties of behaviour
 !
     rela_comp = compor(RELA_NAME)
-!
+
 ! - Loop on Gauss points
-!
     do kpg = 1, npg
         epsm = 0.d0
         deps = 0.d0
@@ -266,13 +272,18 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
         do ia = 4, 2*ndim
             sigmPrep(ia) = sigm(ia, kpg)*rac2
         end do
-! ----- Compute behaviour
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         sigma = 0.d0
-        call nmcomp(BEHinteg, 'RIGI', kpg, 1, ndim, &
-                    typmod, mate, compor, carcri, instm, &
-                    instp, 6, epsm, deps, 6, &
-                    sigmPrep, vim(1, kpg), option, angmas, sigma, &
-                    vip(1, kpg), 36, dsidep, cod(kpg))
+        call nmcomp(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    mate, compor, carcri, instm, instp, &
+                    6, epsm, deps, 6, sigmPrep, &
+                    vim(1, kpg), option, angmas, &
+                    sigma, vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
         end if
@@ -431,9 +442,8 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
     end do
 !
 999 continue
-!
+
 ! - Return code summary
-!
     call codere(cod, npg, codret)
 !
 end subroutine

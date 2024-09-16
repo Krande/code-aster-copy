@@ -149,11 +149,10 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Pointer to UMAT function
 !
     pfumat = int(carcri(EXTE_PTR))
-!
+
 ! - Get temperature
-!
-    temp = BEHinteg%esva%temp_prev
-    dtemp = BEHinteg%esva%temp_incr
+    temp = BEHInteg%behavESVA%behavESVAField(ESVA_FIELD_TEMP)%valeScalPrev
+    dtemp = BEHInteg%behavESVA%behavESVAField(ESVA_FIELD_TEMP)%valeScalIncr
 !
 ! - Get index of element / Newton iteration
 !
@@ -173,7 +172,7 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
 !
 ! - Coordinates of current Gauss point
 !
-    coords(ndim+1:) = BEHinteg%elem%coor_elga(kpg, 1:ndim)
+    coords(ndim+1:) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 1:ndim)
 !
 ! - Get material properties
 !
@@ -236,25 +235,29 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
         b_incx = to_blas_int(1)
         call dscal(b_n, usrac2, stress(4), b_incx)
         statev(1:nstatv) = vim(1:nstatv)
-        call umatwp(pfumat, stress, statev, ddsdde, sse, &
-                    spd, scd, rpl, ddsddt, drplde, &
-                    drpldt, stran, dstran, time, dtime, &
-                    temp, dtemp, BEHinteg%exte%predef, BEHinteg%exte%dpred, cmname, &
-                    ndi, nshr, ntens, nstatv, props, &
-                    nprops, coords, drot, pnewdt, celent, &
-                    dfgrd0, dfgrd1, noel, npt, layer, &
-                    kspt, kstep, kinc)
+        call umatwp(pfumat, stress, statev, ddsdde, &
+                    sse, spd, scd, rpl, ddsddt, &
+                    drplde, drpldt, stran, dstran, time, &
+                    dtime, temp, dtemp, &
+                    BEHinteg%behavESVA%behavESVAExte%scalESVAPrev, &
+                    BEHinteg%behavESVA%behavESVAExte%scalESVAIncr, &
+                    cmname, ndi, nshr, ntens, nstatv, &
+                    props, nprops, coords, drot, pnewdt, &
+                    celent, dfgrd0, dfgrd1, noel, npt, &
+                    layer, kspt, kstep, kinc)
     else if (option(1:9) .eq. 'RIGI_MECA') then
         dstran = 0.d0
         stress = sigm
-        call umatwp(pfumat, sigm, vim, ddsdde, sse, &
-                    spd, scd, rpl, ddsddt, drplde, &
-                    drpldt, stran, dstran, time, dtime, &
-                    temp, dtemp, BEHinteg%exte%predef, BEHinteg%exte%dpred, cmname, &
-                    ndi, nshr, ntens, nstatv, props, &
-                    nprops, coords, drot, pnewdt, celent, &
-                    dfgrd0, dfgrd1, noel, npt, layer, &
-                    kspt, kstep, kinc)
+        call umatwp(pfumat, sigm, vim, ddsdde, &
+                    sse, spd, scd, rpl, ddsddt, &
+                    drplde, drpldt, stran, dstran, time, &
+                    dtime, temp, dtemp, &
+                    BEHinteg%behavESVA%behavESVAExte%scalESVAPrev, &
+                    BEHinteg%behavESVA%behavESVAExte%scalESVAIncr, &
+                    cmname, ndi, nshr, ntens, nstatv, &
+                    props, nprops, coords, drot, pnewdt, &
+                    celent, dfgrd0, dfgrd1, noel, npt, &
+                    layer, kspt, kstep, kinc)
     end if
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then

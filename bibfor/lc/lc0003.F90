@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0104,W1504
+!
 subroutine lc0003(fami, kpg, ksp, ndim, imate, &
                   compor, crit, instam, instap, epsm, &
                   deps, sigm, vim, option, angmas, &
-                  sigp, vip, typmod, icomp, nvi, &
+                  sigp, vip, typmod, nvi, &
                   dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,9 +59,7 @@ subroutine lc0003(fami, kpg, ksp, ndim, imate, &
 !                                   n = nombre de paliers
 !   angmas      les trois angles du mot-clef massif venant de AFFE_CARA_ELEM
 !                   un réel qui vaut 0 si nautiques ou 2 si Euler
-!                   les angles soit nautiques soit Euler
-
-!   icomp       compteur de redécoupage produit par redece
+!                   les angles soit nautiques soit Eule
 !   nvi         nombre de variables internes du point d'intégration
 !   instam      instant t-
 !   instap      instant t+
@@ -93,7 +92,7 @@ subroutine lc0003(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/utmess.h"
 !
     integer             :: kpg, ksp, ndim, imate
-    integer             :: icomp, nvi
+    integer             :: nvi
     integer             :: codret
     character(len=8)    :: typmod(*)
     character(len=16)   :: compor(*), option

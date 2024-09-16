@@ -141,6 +141,7 @@ contains
 !   (c_phi, c_phi), (c_phi, g_phi), (g_phi, g_phi)
 ! --------------------------------------------------------------------------------------------------
 !
+        integer, parameter :: ksp = 1
         type(HHO_basis_cell) :: hhoBasisCell
         type(Behaviour_Integ) :: BEHinteg
         real(kind=8), dimension(MSIZE_CELL_MAT) :: mk_bT, G_prev_coeff, G_curr_coeff
@@ -230,23 +231,28 @@ contains
         ml_AT = 0.d0
         vm_AT = 0.d0
         lm_AT = 0.d0
-!
+
 ! ----- Type of behavior
-!
         call check_behavior(hhoComporState)
-!
+
 ! ----- Initialisation of behaviour datastructure
-!
         call behaviourInit(BEHinteg)
-!
+
+! ----- Set main parameters for behaviour (on cell)
+        call behaviourSetParaCell(hhoCell%ndim, hhoComporState%typmod, hhoComporState%option, &
+                                  hhoComporState%compor, hhoComporState%carcri, &
+                                  hhoMecaState%time_prev, hhoMecaState%time_curr, &
+                                  hhoComporState%fami, hhoComporState%imater, &
+                                  BEHinteg)
+
+! ----- Vector and/or matrix
         forc_noda = hhoComporState%option == "FORC_NODA"
         l_lhs = L_MATR(hhoComporState%option)
         l_rhs = L_VECT(hhoComporState%option) .or. forc_noda
-!
+
 ! ----- init basis
-!
         call hhoBasisCell%initialize(hhoCell)
-!
+
 ! ----- compute G_prev = gradrec * depl_prev (sym or not)
 !
         b_lda = to_blas_int(MSIZE_CELL_MAT)
@@ -358,9 +364,11 @@ contains
                        hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), hhoGVState%lagv_curr, &
                        gv_cbs &
                        )
-!
-! ------- Compute behavior
-!
+
+! --------- Set main parameters for behaviour (on point)
+            call behaviourSetParaPoin(ipg, ksp, BEHinteg)
+
+! --------- Compute behavior
             if (forc_noda) then
                 call forc_noda_stress(hhoComporState, hhoCell%ndim, ipg, F_curr, Pk1, &
                                       Cauchy, sig_vari, sig_lagv, sig_gv)
@@ -770,9 +778,8 @@ contains
 ! Preparation des contraintes generalisees de ldc en t-
         silcm(1:neu) = viPrev(lgpg-5:lgpg-6+neu)
         silcm(neu+1:ntot) = sigPrev(neu+1:ntot)
-!
+
 ! ----- Compute Stress and module_tangent
-!
         silcp = 0.d0
         viCurr = 0.d0
         dsde = 0.d0

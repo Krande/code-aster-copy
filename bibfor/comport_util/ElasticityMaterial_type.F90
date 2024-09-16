@@ -15,13 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1403
+!
+! ==================================================================================================
+!
+! Types for elasticity material
+!
+! ==================================================================================================
+!
+module ElasticityMaterial_type
+!
+    implicit none
+!
 #include "asterf_types.h"
 !
-interface
-    subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
-        use BehaviourPrepare_type
-        aster_logical, intent(in) :: l_etat_init
-        type(BehaviourPrep_MapCompor), intent(inout) :: prepMapCompor
-        character(len=8), intent(in), optional :: model
-    end subroutine comp_meca_read
-end interface
+! false module required because of error in aslint (E1009)
+!
+end module ElasticityMaterial_type

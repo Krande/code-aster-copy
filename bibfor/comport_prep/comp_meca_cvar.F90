@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_cvar(behaviourPrepPara)
+subroutine comp_meca_cvar(prepMapCompor)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -27,7 +27,7 @@ subroutine comp_meca_cvar(behaviourPrepPara)
 #include "asterfort/assert.h"
 #include "asterfort/comp_nbvari.h"
 !
-    type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
+    type(BehaviourPrep_MapCompor), intent(inout) :: prepMapCompor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,7 +37,7 @@ subroutine comp_meca_cvar(behaviourPrepPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  behaviourPrepPara: datastructure to prepare comportement
+! IO  prepMapCompor    : datastructure to construct COMPOR map
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine comp_meca_cvar(behaviourPrepPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbFactorKeyword = behaviourPrepPara%nb_comp
+    nbFactorKeyword = prepMapCompor%nb_comp
     do iFactorKeyword = 1, nbFactorKeyword
         nbVari = 0
         numeLaw = 0
@@ -58,17 +58,17 @@ subroutine comp_meca_cvar(behaviourPrepPara)
         numeLawKit = 0
 
 ! ----- Get parameters
-        rela_comp = behaviourPrepPara%v_para(iFactorKeyword)%rela_comp
-        defo_comp = behaviourPrepPara%v_para(iFactorKeyword)%defo_comp
-        type_cpla = behaviourPrepPara%v_para(iFactorKeyword)%type_cpla
-        kit_comp = behaviourPrepPara%v_para(iFactorKeyword)%kit_comp
-        mult_comp = behaviourPrepPara%v_para(iFactorKeyword)%mult_comp
-        post_iter = behaviourPrepPara%v_para(iFactorKeyword)%post_iter
-        regu_visc = behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
-        post_incr = behaviourPrepPara%v_para(iFactorKeyword)%post_incr
-        nbVariUMAT = behaviourPrepPara%v_paraExte(iFactorKeyword)%nbVariUMAT
-        extern_addr = behaviourPrepPara%v_paraExte(iFactorKeyword)%extern_addr
-        extern_type = behaviourPrepPara%v_paraExte(iFactorKeyword)%extern_type
+        rela_comp = prepMapCompor%prepPara(iFactorKeyword)%rela_comp
+        defo_comp = prepMapCompor%prepPara(iFactorKeyword)%defo_comp
+        type_cpla = prepMapCompor%prepPara(iFactorKeyword)%type_cpla
+        kit_comp = prepMapCompor%prepPara(iFactorKeyword)%kit_comp
+        mult_comp = prepMapCompor%prepPara(iFactorKeyword)%mult_comp
+        post_iter = prepMapCompor%prepPara(iFactorKeyword)%post_iter
+        regu_visc = prepMapCompor%prepPara(iFactorKeyword)%regu_visc
+        post_incr = prepMapCompor%prepPara(iFactorKeyword)%post_incr
+        nbVariUMAT = prepMapCompor%prepExte(iFactorKeyword)%nbVariUMAT
+        extern_addr = prepMapCompor%prepExte(iFactorKeyword)%extern_addr
+        extern_type = prepMapCompor%prepExte(iFactorKeyword)%extern_type
 
 ! ----- Count the number of internal state variables and index of behaviours
         call comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
@@ -78,17 +78,17 @@ subroutine comp_meca_cvar(behaviourPrepPara)
                          nbVari, numeLaw, nbVariKit, numeLawKit)
 
 ! ----- Save informations
-        behaviourPrepPara%v_para(iFactorKeyword)%nbVari = nbVari
-        behaviourPrepPara%v_para(iFactorKeyword)%nbVariKit = nbVariKit
-        behaviourPrepPara%v_para(iFactorKeyword)%numeLaw = numeLaw
-        behaviourPrepPara%v_para(iFactorKeyword)%numeLawKit = numeLawKit
+        prepMapCompor%prepPara(iFactorKeyword)%nbVari = nbVari
+        prepMapCompor%prepPara(iFactorKeyword)%nbVariKit = nbVariKit
+        prepMapCompor%prepPara(iFactorKeyword)%numeLaw = numeLaw
+        prepMapCompor%prepPara(iFactorKeyword)%numeLawKit = numeLawKit
 
-        if (behaviourPrepPara%lDebug) then
+        if (prepMapCompor%lDebug) then
             WRITE (6, *) "- Occurrence : ", iFactorKeyword
-            WRITE (6, *) "--- nbVari : ", behaviourPrepPara%v_para(iFactorKeyword)%nbVari
-            WRITE (6, *) "--- nbVariKit : ", behaviourPrepPara%v_para(iFactorKeyword)%nbVariKit
-            WRITE (6, *) "--- numeLaw : ", behaviourPrepPara%v_para(iFactorKeyword)%numeLaw
-            WRITE (6, *) "--- numeLawKit : ", behaviourPrepPara%v_para(iFactorKeyword)%numeLawKit
+            WRITE (6, *) "--- nbVari : ", prepMapCompor%prepPara(iFactorKeyword)%nbVari
+            WRITE (6, *) "--- nbVariKit : ", prepMapCompor%prepPara(iFactorKeyword)%nbVariKit
+            WRITE (6, *) "--- numeLaw : ", prepMapCompor%prepPara(iFactorKeyword)%numeLaw
+            WRITE (6, *) "--- numeLawKit : ", prepMapCompor%prepPara(iFactorKeyword)%numeLawKit
         end if
 
     end do

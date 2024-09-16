@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
-                       nt_vari, nb_vari_maxi, mapNbZone, behaviourParaExte)
+                       nt_vari, nb_vari_maxi, mapNbZone, prepExte)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -42,7 +42,7 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
     character(len=16), optional, intent(in) :: comporList_(COMPOR_SIZE)
     character(len=19), intent(in) :: comporInfo
     integer, intent(out) :: nt_vari, nb_vari_maxi, mapNbZone
-    type(Behaviour_ParaExte), pointer :: behaviourParaExte(:)
+    type(BehaviourPrep_Exte), pointer :: prepExte(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
 ! Out nt_vari          : total number of internal variables (on all <CARTE> COMPOR)
 ! Out nb_vari_maxi     : maximum number of internal variables on all comportments"
 ! Out mapNbZone        : number of affected zones
-! Out behaviourParaExte: pointer to external behaviours parameters
+! Ptr prepExte         : pointer to external behaviours parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,7 +85,7 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
     nt_vari = 0
     nb_vari_maxi = 0
     mapNbZone = 0
-    behaviourParaExte => null()
+    prepExte => null()
     if (present(model_)) then
         call jeveuo(model_//'.MAILLE', 'L', vi=modelCell)
     end if
@@ -114,7 +114,7 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
     call jeveuo(comporInfo(1:19)//'.ZONE', 'L', vi=comporInfoZone)
 
 ! - Prepare objects for external constitutive laws
-    allocate (behaviourParaExte(mapNbZone))
+    allocate (prepExte(mapNbZone))
 
 ! - Count internal variables by comportment
     iocc = 0
@@ -187,11 +187,11 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
 20      continue
 
 ! ----- Get parameters for external programs (MFRONT/UMAT)
-        behaviourParaExte(iMapZone)%extern_addr = extern_addr
+        prepExte(iMapZone)%extern_addr = extern_addr
 
         call getExternalBehaviourPara(mesh, modelCell, &
                                       rela_comp, defo_comp, kit_comp, &
-                                      behaviourParaExte(iMapZone), &
+                                      prepExte(iMapZone), &
                                       factorKeyword, iocc, &
                                       elem_type_=cellTypeNume, &
                                       type_cpla_in_=type_cpla)

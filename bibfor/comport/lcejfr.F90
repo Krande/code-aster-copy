@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413,W1306
 !
 subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
                   mate, option, epsm, deps, sigma, &
@@ -150,10 +151,10 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
 ! DEFINITION DES PARAMETRES POUR LA RECUPERATION DES FONCTIONS
     coorot = 0.d0
     do i = 1, ndim
-        coorot(i) = BEHinteg%elem%coor_elga(kpg, i)
+        coorot(i) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, i)
     end do
     do i = 1, ndim*ndim
-        coorot(ndim+i) = BEHinteg%elga%rotpg(i)
+        coorot(ndim+i) = BEHinteg%behavESVA%behavESVAOther%rotpg(i)
     end do
 !
     nompar(1) = 'INST'

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine carc_save(mesh, carcri, ds_compor_para)
+subroutine carc_save(mesh, carcri, prepMapCarcri)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -36,7 +36,7 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: carcri
-    type(Behaviour_PrepCrit), intent(in) :: ds_compor_para
+    type(BehaviourPrep_MapCarcri), intent(in) :: prepMapCarcri
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,7 +48,7 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
 !
 ! In  mesh             : name of mesh
 ! In  carcri           : name of <CARTE> CARCRI
-! In  ds_compor_para   : datastructure to prepare parameters for constitutive laws
+! In  prepMapCarcri    : datastructure to construct CARCRI map
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,15 +64,15 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbFactorKeyword = ds_compor_para%nb_comp
+    nbFactorKeyword = prepMapCarcri%nb_comp
     l_parallel_mesh = isParallelMesh(mesh)
 
 ! - Access to MAP
     call jeveuo(carcri//'.VALV', 'E', vr=carcriValv)
 
 ! - Get parameters from SCHEMA_THM
-    parm_theta_thm = ds_compor_para%parm_theta_thm
-    parm_alpha_thm = ds_compor_para%parm_alpha_thm
+    parm_theta_thm = prepMapCarcri%parm_theta_thm
+    parm_alpha_thm = prepMapCarcri%parm_alpha_thm
 
 ! - Loop on occurrences of COMPORTEMENT
     do iFactorKeyword = 1, nbFactorKeyword
@@ -81,7 +81,7 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
                             list_elem_affe, l_affe_all, nb_elem_affe)
 
 ! ----- Set in <CARTE>
-        call setBehaviourParaValue(ds_compor_para%v_crit, &
+        call setBehaviourParaValue(prepMapCarcri%prepCrit, &
                                    parm_theta_thm, parm_alpha_thm, &
                                    iFactorKeyword, carcriMap_=carcriValv)
 

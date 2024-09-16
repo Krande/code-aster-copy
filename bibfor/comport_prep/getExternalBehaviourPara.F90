@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
-                                    kit_comp, comp_exte, keywf_, i_comp_, &
+                                    kit_comp, prepExte, keywf_, i_comp_, &
                                     elem_type_, type_cpla_in_, type_cpla_out_)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -31,18 +30,19 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/BehaviourMGIS_type.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_read_exte.h"
 #include "asterfort/comp_read_mfront.h"
 #include "asterfort/comp_read_typmod.h"
 #include "asterfort/getExternalStrainModel.h"
-
+!
     character(len=8), intent(in) :: mesh
     integer, pointer :: v_model_elem(:)
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: defo_comp
     character(len=16), intent(in) :: kit_comp(4)
-    type(Behaviour_ParaExte), intent(inout)   :: comp_exte
+    type(BehaviourPrep_Exte), intent(inout) :: prepExte
     character(len=16), optional, intent(in) :: keywf_
     integer, optional, intent(in) :: i_comp_
     integer, optional, intent(in) :: elem_type_
@@ -63,7 +63,7 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
 !                         0 -  Get from affectation
 ! In  rela_comp        : RELATION comportment
 ! In  kit_comp         : KIT comportment
-! IO  comp_exte        : values defining external behaviour
+! IO  prepExte         : external behaviours parameters
 ! In  keywf            : factor keyword to read (COMPORTEMENT)
 ! In  i_comp           : factor keyword index
 ! In  type_cpla_in     : stress plane hypothesis if known
@@ -90,7 +90,7 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
     libr_name = ' '
     subr_name = ' '
     nbVariUMAT = 0
-    model_mfront = MFRONT_MODEL_UNSET
+    model_mfront = MGIS_MODEL_UNSET
     model_dim = 0
     type_cpla_out = 'VIDE'
     if (present(type_cpla_in_)) then
@@ -144,11 +144,11 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
 ! - Get pointer and model for MFRONT
 !
     elseif (l_mfront_proto .or. l_mfront_offi) then
-        ASSERT(i_comp .ne. 0 .or. comp_exte%extern_addr .ne. ' ')
+        ASSERT(i_comp .ne. 0 .or. prepExte%extern_addr .ne. ' ')
         if (i_comp .ne. 0) then
             call comp_read_mfront(keywf, i_comp, extern_addr)
         else
-            extern_addr = comp_exte%extern_addr
+            extern_addr = prepExte%extern_addr
         end if
 
         if (extern_addr .ne. " ") then
@@ -161,7 +161,7 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
             else
 !               For CALC_POINT_MAT case
                 model_dim = 3
-                model_mfront = MFRONT_MODEL_TRIDIMENSIONAL
+                model_mfront = MGIS_MODEL_TRIDIMENSIONAL
             end if
 !           Get model of strains and load library
             call getExternalStrainModel(defo_comp, strain_model)
@@ -177,17 +177,17 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
     if (present(type_cpla_out_)) then
         type_cpla_out_ = type_cpla_out
     end if
-    comp_exte%extern_type = extern_type
-    comp_exte%extern_addr = extern_addr
-    comp_exte%libr_name = libr_name
-    comp_exte%subr_name = subr_name
-    comp_exte%extern_ptr = extern_ptr
-    comp_exte%model_mfront = model_mfront
-    comp_exte%model_dim = model_dim
-    comp_exte%nbVariUMAT = nbVariUMAT
-    comp_exte%l_umat = l_umat
-    comp_exte%l_mfront_proto = l_mfront_proto
-    comp_exte%l_mfront_offi = l_mfront_offi
-    comp_exte%strain_model = strain_model
+    prepExte%extern_type = extern_type
+    prepExte%extern_addr = extern_addr
+    prepExte%libr_name = libr_name
+    prepExte%subr_name = subr_name
+    prepExte%extern_ptr = extern_ptr
+    prepExte%model_mfront = model_mfront
+    prepExte%model_dim = model_dim
+    prepExte%nbVariUMAT = nbVariUMAT
+    prepExte%l_umat = l_umat
+    prepExte%l_mfront_proto = l_mfront_proto
+    prepExte%l_mfront_offi = l_mfront_offi
+    prepExte%strain_model = strain_model
 !
 end subroutine
