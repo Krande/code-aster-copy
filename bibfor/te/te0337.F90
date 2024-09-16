@@ -488,36 +488,30 @@ subroutine te0337(option, nomte)
 !
 ! CALCUL DE VECT1(I) : TERMES EN UMI(COS(M.PHI)) ET UMO (SIN(M.PHI))
 !
-                    zr(ivect1+3*(ino-1)+ii-1) = zr( &
-                                                ivect1+3*(ino-1)+ii-1)+cosmfi*pgl(1, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                         )*jacpoi
-                    zr(ivect4+3*(ino-1)+ii-1) = zr( &
-                                                ivect4+3*(ino-1)+ii-1)+sinmfi*pgl(1, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                         )*jacpoi
+                    zr(ivect1+3*(ino-1)+ii-1) = &
+                        zr(ivect1+3*(ino-1)+ii-1)+ &
+                        cosmfi*pgl(1, ii)*zr(ivf+ldec+ino-1)*jacpoi
+                    zr(ivect4+3*(ino-1)+ii-1) = &
+                        zr(ivect4+3*(ino-1)+ii-1)+ &
+                        sinmfi*pgl(1, ii)*zr(ivf+ldec+ino-1)*jacpoi
 !
 ! CALCUL DE VECT2(I) : TERMES EN VMI(COS(M.PHI)) ET VMO (SIN(M.PHI))
 !
-                    zr(ivect2+3*(ino-1)+ii-1) = zr( &
-                                                ivect2+3*(ino-1)+ii-1)+cosmfi*pgl(2, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                         )*jacpoi
-                    zr(ivect5+3*(ino-1)+ii-1) = zr( &
-                                                ivect5+3*(ino-1)+ii-1)+sinmfi*pgl(2, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                         )*jacpoi
+                    zr(ivect2+3*(ino-1)+ii-1) = &
+                        zr(ivect2+3*(ino-1)+ii-1)+ &
+                        cosmfi*pgl(2, ii)*zr(ivf+ldec+ino-1)*jacpoi
+                    zr(ivect5+3*(ino-1)+ii-1) = &
+                        zr(ivect5+3*(ino-1)+ii-1)+ &
+                        sinmfi*pgl(2, ii)*zr(ivf+ldec+ino-1)*jacpoi
 !
 ! CALCUL DE VECT3(I) : TERMES EN WMI(COS(M.PHI)) ET WMO (SIN(M.PHI))
 !
-                    zr(ivect3+3*(ino-1)+ii-1) = zr( &
-                                                ivect3+3*(ino-1)+ii-1)+cosmfi*pgl(3, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                         )*jacpoi
-                    zr(ivect6+3*(ino-1)+ii-1) = zr( &
-                                                ivect6+3*(ino-1)+ii-1)+sinmfi*pgl(3, &
-                                                                             ii)*zr(ivf+ldec+ino-1 &
-                                                                                         )*jacpoi
+                    zr(ivect3+3*(ino-1)+ii-1) = &
+                        zr(ivect3+3*(ino-1)+ii-1)+ &
+                        cosmfi*pgl(3, ii)*zr(ivf+ldec+ino-1)*jacpoi
+                    zr(ivect6+3*(ino-1)+ii-1) = &
+                        zr(ivect6+3*(ino-1)+ii-1)+ &
+                        sinmfi*pgl(3, ii)*zr(ivf+ldec+ino-1)*jacpoi
                 end do
             end do
         end do

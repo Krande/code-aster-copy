@@ -602,10 +602,9 @@ contains
         else if (hhoCell%ndim == 3) then
             do imono = ifrom, ito
                 power(1:3) = this%hhoMono%monomials(1:3, imono)
-                basisScalEval(imono) = this%hhoMono%monoEval( &
-                                       1, power(1))*this%hhoMono%monoEval(2, &
-                                                       power(2))*this%hhoMono%monoEval(3, power(3) &
-                                                                                                   )
+                basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))* &
+                                       this%hhoMono%monoEval(2, power(2))* &
+                                       this%hhoMono%monoEval(3, power(3))
             end do
         else
             ASSERT(ASTER_FALSE)

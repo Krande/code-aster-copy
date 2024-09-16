@@ -40,7 +40,8 @@ subroutine lcdp_wrap(fami, kpg, ksp, ndim, imate, &
     character(len=*) :: fami
     character(len=8) :: typmod(*)
 ! ----------------------------------------------------------------------
-real(kind=8), parameter, dimension(6)::rac2 = [1.d0, 1.d0, 1.d0, sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)]
+    real(kind=8), parameter ::rac2(6) = [1.d0, 1.d0, 1.d0, &
+                                         sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)]
 ! ----------------------------------------------------------------------
     type(dp_material) :: mat
     aster_logical :: elas, rigi, resi

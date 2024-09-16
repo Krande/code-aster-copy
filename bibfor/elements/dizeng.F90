@@ -89,12 +89,19 @@ subroutine dizeng(for_discret, iret)
     parameter(precis=1.0e-08)
 !
 !   paramètres issus de DEFI_MATERIAU
-    integer, parameter :: nbcar=8, ie1=1, ie2=2, ie3=3, in3=4, ia3=5, is1=6, is2=7, is3=8
-    character(len=16) :: nomcar(nbcar)
+    integer, parameter :: nbcar = 8, ie1 = 1, ie2 = 2, ie3 = 3, in3 = 4, ia3 = 5
+    integer, parameter :: is1 = 6, is2 = 7, is3 = 8
+    character(len=16), parameter:: nomcar(nbcar) = ['K1              ', &
+                                                    'K2              ', &
+                                                    'K3              ', &
+                                                    'C               ', &
+                                                    'PUIS_ALPHA      ', &
+                                                    'UNSUR_K1        ', &
+                                                    'UNSUR_K2        ', &
+                                                    'UNSUR_K3        ']
     real(kind=8) :: valcar(nbcar)
     integer :: codcar(nbcar)
     blas_int :: b_incx, b_incy, b_n
-    data nomcar/'K1', 'K2', 'K3', 'C', 'PUIS_ALPHA', 'UNSUR_K1', 'UNSUR_K2', 'UNSUR_K3'/
 ! --------------------------------------------------------------------------------------------------
 !
     iret = 0
@@ -272,8 +279,8 @@ subroutine dizeng(for_discret, iret)
         else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
                 zr(icontp-1+ii) = -fl(ii)+zr(icontm-1+ii)
-                zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discre&
-                                                 &t%nc)
+                zr(icontp-1+ii+for_discret%nc) = &
+                    fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discret%nc)
             end do
             zr(icontp) = resu(1)
             zr(icontp+for_discret%nc) = resu(1)
