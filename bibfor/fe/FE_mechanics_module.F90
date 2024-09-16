@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,11 +52,11 @@ contains
 !
         implicit none
 !
-        type(FE_Basis), intent(in)          :: FEBasis
-        real(kind=8), intent(in)            :: point(3)
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: point(3)
         real(kind=8), intent(in), dimension(3, MAX_BS) :: BGSEval
-        real(kind=8), intent(out)           :: matFB(6, MAX_BS, 3)
-        real(kind=8), intent(in)            :: f(3, 3)
+        real(kind=8), intent(out) :: matFB(6, MAX_BS, 3)
+        real(kind=8), intent(in) :: f(3, 3)
 ! --------------------------------------------------------------------------------------------------
 !
 !
@@ -95,7 +95,7 @@ contains
         case default
             ASSERT(ASTER_FALSE)
         end select
-
+!
         if (FEBasis%l_axis) then
             funcEF = FEBasis%func(point)
             r = 0.d0
@@ -117,9 +117,9 @@ contains
 !
         implicit none
 !
-        type(FE_Basis), intent(in)          :: FEBasis
+        type(FE_Basis), intent(in) :: FEBasis
         real(kind=8), intent(in), dimension(3, MAX_BS) :: BGSEval
-        real(kind=8), intent(out)           :: matBB(6, MAX_BS, MAX_BS)
+        real(kind=8), intent(out) :: matBB(6, MAX_BS, MAX_BS)
 ! --------------------------------------------------------------------------------------------------
 !
 !
@@ -180,10 +180,10 @@ contains
 !
         implicit none
 !
-        type(FE_Basis), intent(in)          :: FEBasis
-        real(kind=8), intent(in)            :: point(3)
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: point(3)
         real(kind=8), intent(in), dimension(3, MAX_BS) :: BGSEval
-        real(kind=8), intent(out)           :: matB(6, MAX_BS, 3)
+        real(kind=8), intent(out) :: matB(6, MAX_BS, 3)
 ! --------------------------------------------------------------------------------------------------
 !
 !
@@ -226,7 +226,7 @@ contains
         case default
             ASSERT(ASTER_FALSE)
         end select
-
+!
         if (FEBasis%l_axis) then
             funcEF = FEBasis%func(point)
             r = 0.d0
@@ -249,9 +249,9 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)           :: grad(3, 3)
-        real(kind=8)                       :: f(3, 3)
-
+        real(kind=8), intent(in) :: grad(3, 3)
+        real(kind=8) :: f(3, 3)
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -275,9 +275,9 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)           :: grad(3, 3)
-        real(kind=8)                       :: e(6)
-
+        real(kind=8), intent(in) :: grad(3, 3)
+        real(kind=8) :: e(6)
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -289,7 +289,7 @@ contains
         integer :: i, j, k
         real(kind=8) :: c(3, 3), tmp
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
-
+!
         do i = 1, 3
             do j = 1, i
                 tmp = grad(i, j)+grad(j, i)
@@ -302,7 +302,7 @@ contains
 !
             end do
         end do
-
+!
         e(1) = c(1, 1)
         e(2) = c(2, 2)
         e(3) = c(3, 3)
@@ -320,9 +320,9 @@ contains
 !
         implicit none
 !
-        real(kind=8), intent(in)           :: grad(3, 3)
-        real(kind=8)                       :: e(6)
-
+        real(kind=8), intent(in) :: grad(3, 3)
+        real(kind=8) :: e(6)
+!
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !

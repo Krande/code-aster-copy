@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,7 @@ subroutine prstoc(vecsol, vestoc, j, k, iad, &
     integer :: kb
     real(kind=8), pointer :: vale(:) => null()
     character(len=24), pointer :: refe(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()
     chaine = 'CBIDON'
@@ -68,7 +69,10 @@ subroutine prstoc(vecsol, vestoc, j, k, iad, &
 !
 !-------------STOCKAGE DANS LE VECTEUR CREE -------------------------
 !
-    call dcopy(nbvec, vale, 1, zr(ivalp), 1)
+    b_n = to_blas_int(nbvec)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vale, b_incx, zr(ivalp), b_incy)
 !
     do kb = 1, nbrefe
         zk24(irefp+kb-1) = refe(kb)

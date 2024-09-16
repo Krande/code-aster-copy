@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine mattge(nomte, dtild, sina, cosa, r, &
 !
 !-----------------------------------------------------------------------
     integer :: i, j
+    blas_int :: b_incx, b_n
 !-----------------------------------------------------------------------
     if (nomte .eq. 'MECXSE3') then
 !
@@ -86,7 +87,9 @@ subroutine mattge(nomte, dtild, sina, cosa, r, &
         mats(5, 8) = sina*dfds(3)
         mats(5, 9) = vf(3)
 !
-        call dscal(25, jacp, dtild, 1)
+        b_n = to_blas_int(25)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, jacp, dtild, b_incx)
 !
         call btkb(5, 9, 9, dtild, mats, &
                   dtilds, rtangi)
@@ -129,7 +132,9 @@ subroutine mattge(nomte, dtild, sina, cosa, r, &
         mats1(3, 8) = sina*dfds(3)
         mats1(3, 9) = vf(3)
 !
-        call dscal(9, jacp, dtild1, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, jacp, dtild1, b_incx)
 !
         call btkb(3, 9, 9, dtild1, mats1, &
                   dtildt, rtangi)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,15 @@ subroutine marota(tetag, drot)
     integer :: i, j
     real(kind=8) :: coef, coef1, coef2, epsil, teta1
     real(kind=8) :: teta2, un, zero
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     zero = 0.d0
     epsil = r8prem()**4
     un = 1.d0
-    teta2 = ddot(3, tetag, 1, tetag, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    teta2 = ddot(b_n, tetag, b_incx, tetag, b_incy)
     if (abs(teta2) .lt. epsil) goto 30
     teta1 = sqrt(teta2)
     coef = un/teta1

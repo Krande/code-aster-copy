@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -117,6 +117,7 @@ subroutine te0516(option, nomte)
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8), parameter :: noms_cara(nb_cara) = (/'AY1  ', 'AZ1  ', 'EY1  ', 'EZ1  ', &
                                                           'JX1  ', 'JG1  ', 'IYR21', 'IZR21'/)
+    blas_int :: b_incx, b_n
 ! --------------------------------------------------------------------------------------------------
 !
 !
@@ -134,7 +135,8 @@ subroutine te0516(option, nomte)
     codrep = 0
 !
 !   Récupération des caractéristiques des fibres
-    call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
+    call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, &
+                 jacf=jacf)
 !
 !   Nombre de composantes du champs PSTRX?? par points de gauss
 !   La 15eme composante ne concerne pas les POU_D_TGM
@@ -162,11 +164,13 @@ subroutine te0516(option, nomte)
     call jevech('PITERAT', 'L', iiter)
     iterat = zi(iiter)
 !
-    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
+                itab=jtab)
     icontm = jtab(1)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     ivarim = jtab(1)
-
+!
 !   Pour matric=(RIGI_MECA_TANG) : valeurs "+" égalent valeurs "-"
     icontp = icontm
     ivarip = ivarim
@@ -182,10 +186,8 @@ subroutine te0516(option, nomte)
     read (zk16(icompo-1+NVAR), '(I16)') nbvalc
 !
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
     if (option .eq. 'RIGI_MECA_TANG') then
         lVect = ASTER_FALSE
         lSigm = ASTER_FALSE
@@ -219,7 +221,8 @@ subroutine te0516(option, nomte)
         call jevech('PCODRET', 'E', jcret)
     end if
     if (lVari) then
-        call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, &
+                    itab=jtab)
         ivarmp = jtab(1)
         call jevech('PSTRXMP', 'L', istrmp)
         call jevech('PVARIPR', 'E', ivarip)
@@ -302,12 +305,14 @@ subroutine te0516(option, nomte)
         ddu(7*(ii-1)+3) = ddu(7*(ii-1)+3)+ey*ddu(7*(ii-1)+4)
     end do
 !   coefficient dependant de la temperature moyenne
-    call moytem(fami, npg, 1, '+', temp, iret)
+    call moytem(fami, npg, 1, '+', temp, &
+                iret)
 !   caracteristiques elastiques (pas de temperature pour l'instant)
 !   on prend le E et NU du materiau torsion (voir op0059)
     call pmfmats(imate, mator)
     ASSERT(mator .ne. ' ')
-    call matela(zi(imate), mator, 1, temp, e, nu)
+    call matela(zi(imate), mator, 1, temp, e, &
+                nu)
     g = e/(2.d0*(1.d0+nu))
 !   matrice de raideur elastique : materiau integre sur la section
     hoel(1) = e*aa
@@ -378,8 +383,10 @@ subroutine te0516(option, nomte)
             end if
         end if
 !       calcul des deformations et des increments de def sur les fibres
-        call pmfdef(tygrfi, nbfibr, nbcarm, zr(jacf), eps, defmfib)
-        call pmfdef(tygrfi, nbfibr, nbcarm, zr(jacf), deps, defpfib)
+        call pmfdef(tygrfi, nbfibr, nbcarm, zr(jacf), eps, &
+                    defmfib)
+        call pmfdef(tygrfi, nbfibr, nbcarm, zr(jacf), deps, &
+                    defpfib)
         epsm = (u(8)-u(1))/xl
 !       module et contraintes sur chaque fibre (comportement)
         call pmfmcf(kp, nbgrfi, nbfibr, nug, zk24(isdcom), &
@@ -402,7 +409,8 @@ subroutine te0516(option, nomte)
 !              moment autour Y : composante 5
 !              moment autour Z : composante 6
 !           calcul de la raideur tangente au comportement par fibre
-            call pmfite(tygrfi, nbfibr, nbcarm, zr(jacf), modufib, matsct)
+            call pmfite(tygrfi, nbfibr, nbcarm, zr(jacf), modufib, &
+                        matsct)
 !           MATSCT(1:3) : INT(E.DS)     INT(E.Y.DS)   INT(E.Z.DS)
 !           MATSCT(4:6) : INT(E.Y.Y.DS) INT(E.Z.Z.DS) INT(E.Y.Z.DS)
             hota(2, 2) = hoel(2)
@@ -419,8 +427,12 @@ subroutine te0516(option, nomte)
             hota(6, 1) = -matsct(2)
             hota(6, 5) = -matsct(6)
             hota(6, 6) = matsct(4)
-            call dscal(nc*nc, xls2, hota, 1)
-            call dscal(nc*nc, co(kp), hota, 1)
+            b_n = to_blas_int(nc*nc)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, xls2, hota, b_incx)
+            b_n = to_blas_int(nc*nc)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, co(kp), hota, b_incx)
             call utbtab('CUMU', nc, 2*nc, hota, d1b, &
                         work, rg0)
         end if
@@ -442,7 +454,8 @@ subroutine te0516(option, nomte)
 !           Efforts généralisés à "+" :
 !               ffp : < int(sig.ds) int(sig.y.ds)  int(sig.z.ds) >
 !               ffp : <     Nx          -Mz             My       >
-            call pmfits(tygrfi, nbfibr, nbcarm, zr(jacf), vsigfib, ffp)
+            call pmfits(tygrfi, nbfibr, nbcarm, zr(jacf), vsigfib, &
+                        ffp)
             Nx = ffp(1)
             My = ffp(3)
             Mz = -ffp(2)
@@ -452,10 +465,9 @@ subroutine te0516(option, nomte)
             zr(istrxp+ifgp+2) = zr(istrxm+ifgp+2)+hoel(2)*deps(2)
             zr(istrxp+ifgp+3) = zr(istrxm+ifgp+3)+hoel(3)*deps(3)
 !           On rajoute l'effet WAGNER dû au gauchissement
-            zr(istrxp+ifgp+4) = zr(istrxm+ifgp+4)+hoel(4)*deps(4)+ &
-                                (Nx*((xiy+xiz)/aa+ey**2+ez**2))*deps(4)+ &
-                                (My*(xizr2/xiy-2.0d0*ez))*deps(4)- &
-                                (Mz*(xiyr2/xiz-2.0d0*ey))*deps(4)
+            zr(istrxp+ifgp+4) = zr(istrxm+ifgp+4)+hoel(4)*deps(4)+(Nx*((xiy+xiz)/aa+ey**2+ez**2))&
+                                &*deps(4)+(My*(xizr2/xiy-2.0d0*ez))*deps(4)-(Mz*(xiyr2/xiz-2.0d0*&
+                                &ey))*deps(4)
 !
             zr(istrxp+ifgp+5) = My
             zr(istrxp+ifgp+6) = Mz
@@ -476,8 +488,10 @@ subroutine te0516(option, nomte)
             end do
             hotage(1, 2) = -effgep(3)
             hotage(1, 3) = effgep(2)
-            hotage(1, 4) = -(ey*effgep(2)+ez*effgep(3))+(0.5d0*(xiyr2/xiz)*effgep(2))+ &
-                           (0.5d0*(xizr2/xiy)*effgep(3))
+            hotage(1, 4) = -( &
+                           ey*effgep(2)+ez*effgep(3))+(0.5d0*(xiyr2/xiz)*effgep(2))+(0.5d0*(xizr2&
+                           &/xiy)*effgep(3) &
+                           )
 !           Terme non calcule exactement (on fait l'hypothese d'une torsion de saint-venant)
             hotage(2, 1) = hotage(1, 2)
             hotage(2, 2) = effgep(1)
@@ -491,18 +505,26 @@ subroutine te0516(option, nomte)
             hotage(4, 2) = hotage(2, 4)
             hotage(4, 3) = hotage(3, 4)
 !           Moment de WAGNER
-            hotage(4, 4) = (effgep(1)*((xiy+xiz)/aa+ey**2+ez**2))+ &
-                           (effgep(5)*(xizr2/xiy-2.0d0*ez))-(effgep(6)*(xiyr2/xiz-2.0d0*ey))
+            hotage(4, 4) = ( &
+                           effgep(1)*((xiy+xiz)/aa+ey**2+ez**2))+(effgep(5)*(xizr2/xiy-2.0d0*ez))&
+                           &-(effgep(6)*(xiyr2/xiz-2.0d0*ey) &
+                           )
 !           Terme non calcule actuellement car xiwr2 n'est pas fourni par l'utilisateur
 !               XIWR2 = INT(W*(Y*Y+Z*Z)*DS) + (EFFGEP(7)*(XIWR2/XJG))
-            call dscal(4*4, xls2, hotage, 1)
-            call dscal(4*4, co(kp), hotage, 1)
+            b_n = to_blas_int(4*4)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, xls2, hotage, b_incx)
+            b_n = to_blas_int(4*4)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, co(kp), hotage, b_incx)
 !           Recuperation de la matrice des fonctions de forme d1bsig
 !           Le dernier argument permet de choisir l'interpolation :
 !               lineaire (0)
 !               cubique flexion-torsion(1)
-            call bsigma(kp, xl, phiy, phiz, d1bsig, 1)
-            call utbtab('CUMU', 4, 2*nc, hotage, d1bsig, work, rigge0)
+            call bsigma(kp, xl, phiy, phiz, d1bsig, &
+                        1)
+            call utbtab('CUMU', 4, 2*nc, hotage, d1bsig, &
+                        work, rigge0)
         end if
     end do
 !
@@ -568,11 +590,11 @@ subroutine te0516(option, nomte)
 !
 !   On rend le FL dans le repere global
     if (lVect) then
-        ! Prise en compte du centre de torsion
+! Prise en compte du centre de torsion
         do ii = 1, 2
             fl(7*(ii-1)+4) = fl(7*(ii-1)+4)-ez*fl(7*(ii-1)+2)+ey*fl(7*(ii-1)+3)
         end do
-        ! passage local -> global
+! passage local -> global
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
     end if
 !

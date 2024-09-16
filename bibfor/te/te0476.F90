@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0476(option, nomte)
 !
     use HHO_type
@@ -107,7 +107,7 @@ subroutine te0476(option, nomte)
                                     hhocell%ndim, VoluValQP(idim, 1:MAX_QP_CELL))
         end do
 !
-    elseif (option .eq. 'CHAR_MECA_FR2D2D' .or. option .eq. 'CHAR_MECA_FR3D3D') then
+    else if (option .eq. 'CHAR_MECA_FR2D2D' .or. option .eq. 'CHAR_MECA_FR3D3D') then
 !
 ! ---- Get Forces
 !
@@ -126,7 +126,7 @@ subroutine te0476(option, nomte)
         call hhoFuncRVecEvalCellQp(hhoCell, hhoQuadCell, zr(j_forc), VoluValQP)
 !
     else
-
+!
         ASSERT(ASTER_FALSE)
     end if
 !

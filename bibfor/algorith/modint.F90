@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
                   matmod, masse, raide, neq, coint, &
                   noddli, nnoint, vefreq, switch)
@@ -97,13 +97,13 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 #include "blas/ddot.h"
 #include "blas/dgeev.h"
 #include "blas/dggev.h"
-    integer           :: nddlin, nbmod, nnoint, neq, switch, jfreq
-    real(kind=8)      :: shift
-    character(len=6)  :: k6bid
-    character(len=8)  :: modes
+    integer :: nddlin, nbmod, nnoint, neq, switch, jfreq
+    real(kind=8) :: shift
+    character(len=6) :: k6bid
+    character(len=8) :: modes
     character(len=19) :: masse, raide, ssami, raiint
     character(len=24) :: coint, noddli, matmod, vefreq
-
+!
 !
 !-- VARIABLES DE LA ROUTINE
     real(kind=8) :: pi
@@ -118,14 +118,14 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     real(kind=8) :: bande(2), freq1, freq2, alpha, tolsor, precsh, fcorig, precdc
     real(kind=8) :: mval, normx, valx, avalx, r8bid, vrbid(1)
     complex(kind=8) :: cbid
-    character(len=1)  :: listyp(2), k1bid
-    character(len=4)  :: mod45
-    character(len=8)  :: k8bid, method, sdstab, arret
+    character(len=1) :: listyp(2), k1bid
+    character(len=4) :: mod45
+    character(len=8) :: k8bid, method, sdstab, arret
     character(len=16) :: typres, k16bid, optiof, sturm, modrig, stoper, typcal
     character(len=19) :: lismat(2), imped, solveu, nume91, nume, prno, eigsol, k19bid
     character(len=19) :: raide2, masse2
     character(len=24) :: valk, k24bid
-
+!
     integer, pointer :: v_ind_lag(:) => null()
     integer, pointer :: delg(:) => null()
     integer, pointer :: ddl_actif_int(:) => null()
@@ -137,6 +137,8 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     real(kind=8), pointer :: vect_beta(:) => null()
     real(kind=8), pointer :: v_f_pro(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_ldb, b_ldvl, b_ldvr, b_lwork
 !
 !-- DEBUT --C
 !
@@ -153,7 +155,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 !
 !-- ON DESACTIVE LE TEST FPE
     call matfpe(-1)
-
+!
     call mtdscr(ssami)
     call jeveuo(ssami(1:19)//'.&INT', 'L', lmatma)
 !
@@ -225,7 +227,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 !--
 !-- Appel a nmop45 pour le calcul des modes du modele d'interface
 !--
-
+!
 !
 ! --- CREATION DE LA SD EIGENSOLVER PARAMETRANT LE CALCUL MODAL
 ! --- UN GEP SYM REEL RESOLU VIA SORENSEN
@@ -281,10 +283,14 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     stoper = 'NON'
 ! TYPE DE CALCUL: 'CALIBRATION' OU 'TOUT'.
     typcal = 'TOUT'
-    call vpcres(eigsol, typres, raide2, masse2, k19bid, optiof, method, modrig, arret, k19bid, &
-                stoper, sturm, typcal, k1bid, k16bid, nsekry2, nbvect, nbvec2, nbrss, nbborn, &
-                ibid, ibid, ibid, ibid, maxitr, bande, precsh, omecor, precdc, r8bid, &
-                r8bid, r8bid, r8bid, r8bid, tolsor, alpha)
+    call vpcres(eigsol, typres, raide2, masse2, k19bid, &
+                optiof, method, modrig, arret, k19bid, &
+                stoper, sturm, typcal, k1bid, k16bid, &
+                nsekry2, nbvect, nbvec2, nbrss, nbborn, &
+                ibid, ibid, ibid, ibid, maxitr, &
+                bande, precsh, omecor, precdc, r8bid, &
+                r8bid, r8bid, r8bid, r8bid, tolsor, &
+                alpha)
 !
 ! --- CALCUL MODAL PROPREMENT DIT
 !
@@ -292,50 +298,54 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     mod45 = 'VIBR'
     sdstab = '&&DUMMY2'
     call nmop45(eigsol, l_hpp, mod45, modes, sdstab)
-    call vpleci(eigsol, 'I', 1, k24bid, r8bid, nsekry2)
+    call vpleci(eigsol, 'I', 1, k24bid, r8bid, &
+                nsekry2)
     call detrsd('EIGENSOLVER', eigsol)
-
+!
 !   -- on examine les modes calcules pour savoir ou tronquer sans couper
 !      un sous-espace propre en 2 :
     nsekry3 = 0
     do j1 = nsekry, nsekry2-1
-        call rsadpa(modes, 'L', 1, 'FREQ', j1, 0, sjv=jfreq)
+        call rsadpa(modes, 'L', 1, 'FREQ', j1, &
+                    0, sjv=jfreq)
         freq1 = zr(jfreq)
-        call rsadpa(modes, 'L', 1, 'FREQ', j1+1, 0, sjv=jfreq)
+        call rsadpa(modes, 'L', 1, 'FREQ', j1+1, &
+                    0, sjv=jfreq)
         freq2 = zr(jfreq)
         if (abs(freq1-freq2)/(abs(freq1)+abs(freq2)) .gt. 1.e-6) then
-            ! on peut "couper" a j1 :
+! on peut "couper" a j1 :
             nsekry3 = j1
             exit
         end if
     end do
     ASSERT(nsekry3 .ne. 0)
     if (nsekry3 .gt. nsekry) nsekry = nsekry3
-
+!
 !
     call wkvect('&&MODINT.SE_KRYLOV', 'V V R', neq*nsekry, lmakry)
     call jeveuo('&&MOIN93.V_IND_LAG', 'L', vi=v_ind_lag)
     call jeveuo('&&MOIN93.DDL_ACTIF_INT', 'L', vi=ddl_actif_int)
 !restaurant trélazé
     do j1 = 1, nsekry
-        ! construction du nom du mode "a la main"
+! construction du nom du mode "a la main"
         call codent(j1-1, 'D0', k6bid)
         call jeveuo(modes//'.001.'//k6bid//'.VALE', 'L', vr=vale)
-        norm = ddot(6*nnoint, vale, 1, vale, 1)
+        b_n = to_blas_int(6*nnoint)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        norm = ddot(b_n, vale, b_incx, vale, b_incy)
         norm = sqrt(norm)
-        ! normalisation dans L2
+! normalisation dans L2
         do i1 = 1, nddlin
             m1 = ddl_actif_int(i1)
-            zr(lmakry+(j1-1)*neq+v_ind_lag(1+(i1-1)*2)-1) = &
-                vale(m1)/norm
-            zr(lmakry+(j1-1)*neq+v_ind_lag(1+(i1-1)*2+1)-1) = &
-                vale(m1)/norm
+            zr(lmakry+(j1-1)*neq+v_ind_lag(1+(i1-1)*2)-1) = vale(m1)/norm
+            zr(lmakry+(j1-1)*neq+v_ind_lag(1+(i1-1)*2+1)-1) = vale(m1)/norm
         end do
     end do
 !
     call jedetc('G', modes, 1)
     call jedetc('G', '&&DUMMY2', 1)
-
+!
     no = max(nsekry, nbvect)
     AS_ALLOCATE(vr=v_f_pro, size=no)
     AS_ALLOCATE(vi=v_ind_f_pro, size=no)
@@ -379,18 +389,37 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
                 .true._1)
 !
     do j1 = 1, nsekry
-        zr(lmapro+(j1-1)*nsekry+j1-1) = ddot(neq, zr(lmakry+(j1-1)*neq), &
-                                             1, zr(lmatrm+(j1-1)*neq), 1)
-        zr(lkpro+(j1-1)*nsekry+j1-1) = ddot(neq, zr(lmakry+(j1-1)*neq), &
-                                            1, zr(lmatrk+(j1-1)*neq), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        zr(lmapro+(j1-1)*nsekry+j1-1) = ddot( &
+                                        b_n, zr(lmakry+(j1-1)*neq), b_incx, &
+                                        zr(lmatrm+(j1-1)*neq), b_incy &
+                                        )
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        zr(lkpro+(j1-1)*nsekry+j1-1) = ddot( &
+                                       b_n, zr(lmakry+(j1-1)*neq), b_incx, zr(lmatrk+(j1-1)*neq), &
+                                       b_incy &
+                                       )
         do i1 = 1, j1-1
-            zr(lmapro+(j1-1)*nsekry+i1-1) = ddot(neq, zr(lmakry+(i1-1)* &
-                                                         neq), 1, zr(lmatrm+(j1-1)*neq), 1)
-            zr(lmapro+(i1-1)*nsekry+j1-1) = zr(lmapro+(j1-1)*nsekry+i1- &
-                                               1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(lmapro+(j1-1)*nsekry+i1-1) = ddot( &
+                                            b_n, zr(lmakry+(i1-1)*neq), b_incx, &
+                                            zr(lmatrm+(j1-1)*neq), b_incy &
+                                            )
+            zr(lmapro+(i1-1)*nsekry+j1-1) = zr(lmapro+(j1-1)*nsekry+i1-1)
 !
-            zr(lkpro+(j1-1)*nsekry+i1-1) = ddot(neq, zr(lmakry+(i1-1)* &
-                                                        neq), 1, zr(lmatrk+(j1-1)*neq), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(lkpro+(j1-1)*nsekry+i1-1) = ddot( &
+                                           b_n, zr(lmakry+(i1-1)*neq), b_incx, &
+                                           zr(lmatrk+(j1-1)*neq), b_incy &
+                                           )
             zr(lkpro+(i1-1)*nsekry+j1-1) = zr(lkpro+(j1-1)*nsekry+i1-1)
         end do
     end do
@@ -406,16 +435,28 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     AS_ALLOCATE(vr=vect_beta, size=nsekry)
     AS_ALLOCATE(vr=matr_mod_red, size=nsekry**2)
 !
-    call dggev('N', 'V', nsekry, zr(lkpro), nsekry, &
-               zr(lmapro), nsekry, vect_alphar, vect_alphai, vect_beta, &
-               vrbid, 1, matr_mod_red, nsekry, swork, &
-               -1, info)
+    b_ldvr = to_blas_int(nsekry)
+    b_ldvl = to_blas_int(1)
+    b_ldb = to_blas_int(nsekry)
+    b_lda = to_blas_int(nsekry)
+    b_n = to_blas_int(nsekry)
+    b_lwork = to_blas_int(-1)
+    call dggev('N', 'V', b_n, zr(lkpro), b_lda, &
+               zr(lmapro), b_ldb, vect_alphar, vect_alphai, vect_beta, &
+               vrbid, b_ldvl, matr_mod_red, b_ldvr, swork, &
+               b_lwork, info)
     lwork = int(swork(1))
     AS_ALLOCATE(vr=matr_work_dggev, size=lwork)
-    call dggev('N', 'V', nsekry, zr(lkpro), nsekry, &
-               zr(lmapro), nsekry, vect_alphar, vect_alphai, vect_beta, &
-               vrbid, 1, matr_mod_red, nsekry, matr_work_dggev, &
-               lwork, info)
+    b_ldvr = to_blas_int(nsekry)
+    b_ldvl = to_blas_int(1)
+    b_ldb = to_blas_int(nsekry)
+    b_lda = to_blas_int(nsekry)
+    b_n = to_blas_int(nsekry)
+    b_lwork = to_blas_int(lwork)
+    call dggev('N', 'V', b_n, zr(lkpro), b_lda, &
+               zr(lmapro), b_ldb, vect_alphar, vect_alphai, vect_beta, &
+               vrbid, b_ldvl, matr_mod_red, b_ldvr, matr_work_dggev, &
+               b_lwork, info)
 !-- ON REACTIVE LE TEST FPE
     call matfpe(1)
 !
@@ -435,7 +476,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     if (iret .eq. 0) then
         call wkvect(vefreq, 'V V R', nbmod, lvp)
     else
-        ! appel depuis modexp => il faut redimensionner l'objet
+! appel depuis modexp => il faut redimensionner l'objet
         call jedetr(vefreq)
         call wkvect(vefreq, 'V V R', nbmod, lvp)
     end if
@@ -449,8 +490,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
             end if
         end do
         v_f_pro(1+v_ind_f_pro(i1)-1) = 1.d+16
-        lambda = vect_alphar(1+v_ind_f_pro(i1)-1)/vect_beta(1+v_ind_f_pro(i1)- &
-                                                            1)-0*shift
+        lambda = vect_alphar(1+v_ind_f_pro(i1)-1)/vect_beta(1+v_ind_f_pro(i1)-1)-0*shift
         zr(lvp+i1-1) = (sqrt(abs(lambda)))/2/pi
     end do
 !
@@ -465,13 +505,15 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
         do k1 = 1, nsekry
             temp = matr_mod_red(1+(v_ind_f_pro(j1)-1)*nsekry+k1-1)
             do i1 = 1, neq
-                zr(lmatmo+(j1-1)*neq+i1-1) = zr(lmatmo+(j1-1)*neq+i1-1)+ &
-                                             temp*zr(lmakry+(k1-1)*neq+i1-1)
+                zr(lmatmo+(j1-1)*neq+i1-1) = zr( &
+                                             lmatmo+(j1-1)*neq+i1-1)+temp*zr(lmakry+(k1-1)*neq+i1&
+                                             &-1 &
+                                             )
             end do
         end do
     end do
-
-    !-- normalisation des modes et mise a zero des ddls de Lagrange :
+!
+!-- normalisation des modes et mise a zero des ddls de Lagrange :
     do j1 = 1, nbmod
         normx = -1.d0
         do i1 = 1, neq
@@ -492,7 +534,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
             end if
         end do
         ASSERT(normx .gt. 0.d0)
-
+!
 !       -- Si le mode est symetrique, on choisit celui qui a son premier "max" >0:
         if (mode_symetrique .eq. 1) then
             do i1 = 1, neq
@@ -505,13 +547,13 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
             end do
         end if
     end do
-
+!
 !---------------------------------------C
 !--                                   --C
 !-- DESTRUCTION DES OBJETS DE TRAVAIL --C
 !--                                   --C
 !---------------------------------------C
-
+!
     call jedetr('&&MODINT.M_PROJ_TEMP')
     call jedetr('&&MODINT.K_PROJ_TEMP')
     call jedetr('&&MODINT.M_PROJ')

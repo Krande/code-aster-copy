@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine veri_noe(mailla, dmax_cable, lnuma, liproj, &
-                    nbmaok, x3dca, iproj, noe, numail)
+!
+subroutine veri_noe(mailla, dmax_cable, lnuma, liproj, nbmaok, &
+                    x3dca, iproj, noe, numail)
     implicit none
 !  DESCRIPTION :
 !  -----------
@@ -58,6 +58,7 @@ subroutine veri_noe(mailla, dmax_cable, lnuma, liproj, &
     real(kind=8) :: d1, d2
     character(len=24) :: conxma, coorno, tymama
     real(kind=8) :: xyzma(3, 9), normal(3), excent, xbar(3), x3dp(3), prec, quart
+    blas_int :: b_incx, b_incy, b_n
     parameter(prec=5.d-2, quart=0.25d0)
 !
 !
@@ -65,13 +66,13 @@ subroutine veri_noe(mailla, dmax_cable, lnuma, liproj, &
 !
 !
     call jemarq()
-
+!
     j = 0
     iproj = -1
     noe = 0
     numail = 0
     xyzma = 0.d0
-
+!
     conxma = mailla//'.CONNEX'
     call jeveuo(conxma, 'L', jconx1)
     coorno = mailla//'.COORDO    .VALE'
@@ -79,19 +80,19 @@ subroutine veri_noe(mailla, dmax_cable, lnuma, liproj, &
     tymama = mailla//'.TYPMAIL'
     call jeveuo(tymama, 'L', jtyma)
     call jeveuo(jexatr(mailla//'.CONNEX', 'LONCUM'), 'L', jconx2)
-
+!
 !   tstbar est très sévère sur les cas limites
 !   en cas d'echec on regarde si on est suffisamment près du noeud pour
 !   accepter la projection sur ce noeud.
 !   on fixe la longeur limite au min entre 1/4 de la taille de la maille
 !   et un 1/1000eme de la longueur du cable (dmax_cable)
-
+!
     do imail = 1, nbmaok
         if (liproj(imail) .eq. 30) then
             numail = lnuma(imail)
 !
             nbcnx = zi(jconx2+numail)-zi(jconx2-1+numail)
-
+!
             do inoma = 1, nbcnx
                 noe = zi(jconx1-1+zi(jconx2+numail-1)+inoma-1)
                 cxma(inoma) = noe
@@ -103,10 +104,17 @@ subroutine veri_noe(mailla, dmax_cable, lnuma, liproj, &
             ntyma = zi(jtyma+numail-1)
             call canorm(xyzma, normal, 3, ntyma, 1)
             !
-            excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1)) &
-                     +normal(3)*(x3dca(3)-xyzma(3, 1))
-            call dcopy(3, x3dca, 1, x3dp, 1)
-            call daxpy(3, -excent, normal, 1, x3dp, 1)
+            excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+normal(3)&
+                    &*(x3dca(3)-xyzma(3, 1))
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, x3dca, b_incx, x3dp, b_incy)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -excent, normal, b_incx, x3dp, &
+                       b_incy)
             !
             call projtq(nbcnx, xyzma, 1, x3dp, abs(excent), &
                         itria, inoeu, icote, xbar, iproj2)
@@ -126,12 +134,18 @@ subroutine veri_noe(mailla, dmax_cable, lnuma, liproj, &
                         if (knoeu .eq. 0) knoeu = 4
                         if (knoeu .eq. 2) knoeu = 1
                     end if
-                    d1 = sqrt((xyzma(1, jnoeu)-xyzma(1, inoeu))**2 &
-                              +(xyzma(2, jnoeu)-xyzma(2, inoeu))**2 &
-                              +(xyzma(3, jnoeu)-xyzma(3, inoeu))**2)
-                    d2 = sqrt((xyzma(1, knoeu)-xyzma(1, inoeu))**2 &
-                              +(xyzma(2, knoeu)-xyzma(2, inoeu))**2 &
-                              +(xyzma(3, knoeu)-xyzma(3, inoeu))**2)
+                    d1 = sqrt( &
+                         ( &
+                         xyzma(1, jnoeu)-xyzma(1, inoeu))**2+(xyzma(2, jnoeu)-xyzma(2, inoeu))**&
+                         &2+(xyzma(3, jnoeu)-xyzma(3, inoeu) &
+                         )**2 &
+                         )
+                    d2 = sqrt( &
+                         ( &
+                         xyzma(1, knoeu)-xyzma(1, inoeu))**2+(xyzma(2, knoeu)-xyzma(2, inoeu))**&
+                         &2+(xyzma(3, knoeu)-xyzma(3, inoeu) &
+                         )**2 &
+                         )
                     d1 = max(d1, d2)
                     if (d1*abs(1.d0-xbar(i)) .le. prec*dmax_cable) then
                         noe = cxma(inoeu)

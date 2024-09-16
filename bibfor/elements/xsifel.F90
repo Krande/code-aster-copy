@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -168,7 +168,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
 !   Sous-element de reference
     fami_se = fami(ndim+irese)
     if (nfe .gt. 0) then
-        if (ndim .eq. 3 .and. count(zi((jstno-1+1):(jstno-1+nnop)) .eq. -2) .eq. 0) fami_se = 'XGEO'
+        if (ndim .eq. 3 .and. count(zi((jstno-1+1):(jstno-1+nnop)) .eq. -2) .eq. 0) fami_se = &
+            'XGEO'
     end if
     call elrefe_info(elrefe=elrese(ndim+irese), fami=fami_se, ndim=ndimb, nno=nno, nnos=nnos, &
                      npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde, &
@@ -375,8 +376,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
             do ig = 1, nfh
                 do i = 1, ndim
                     cpt = cpt+1
-                    depla(i) = depla(i)+xcalc_heav(heavn(in, ig), hea_se, heavn(in, 5))*ff(in)* &
-                               &zr(idepl-1+indenn+cpt)
+                    depla(i) = depla(i)+xcalc_heav(heavn(in, ig), hea_se, heavn(in, 5))*ff(in)*z&
+                               &r(idepl-1+indenn+cpt)
                 end do
             end do
 !           DDL ENRICHIS EN FOND DE FISSURE

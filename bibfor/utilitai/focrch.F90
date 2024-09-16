@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine focrch(nomfon, resu, noeud, parax, paray, &
-                  base, int, intitu, ind, listr, &
+                  base, i0, intitu, ind, listr, &
                   sst, nsst, ier)
     implicit none
 #include "jeveux.h"
@@ -33,7 +33,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    integer :: nsst, int, ind, ier
+    integer :: nsst, i0, ind, ier
     character(len=1) :: base
     character(len=16) :: parax, paray
     character(len=8) :: sst, noeud
@@ -69,6 +69,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     character(len=24), pointer :: nlname(:) => null()
     integer, pointer :: desc(:) => null()
     integer, pointer :: vindx(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -84,7 +85,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     call jeveuo(resu(1:16)//'.NL.INTI', 'L', vk24=nlname)
 !
     ic = 1
-    if (int .ne. 0) then
+    if (i0 .ne. 0) then
         do inl = 1, nbnoli
             if (nlname((inl-1)*5+1) .eq. intitu) goto 4
         end do
@@ -180,7 +181,10 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
         goto 999
     end if
     call wkvect('&&FOCRCH.PARAX', 'V V R', nbinst, jvalx)
-    call dcopy(nbinst, zr(jparx), nbvint, zr(jvalx), 1)
+    b_n = to_blas_int(nbinst)
+    b_incx = to_blas_int(nbvint)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jparx), b_incx, zr(jvalx), b_incy)
 20  continue
 !
     if (paray(1:4) .eq. 'INST') then
@@ -225,7 +229,10 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
         goto 999
     end if
     call wkvect('&&FOCRCH.PARAY', 'V V R', nbinst, jvaly)
-    call dcopy(nbinst, zr(jpary), nbvint, zr(jvaly), 1)
+    b_n = to_blas_int(nbinst)
+    b_incx = to_blas_int(nbvint)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jpary), b_incx, zr(jvaly), b_incy)
 22  continue
 !
     if (ind .eq. 0) then

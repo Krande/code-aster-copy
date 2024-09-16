@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                   impr, ifmump, eli2lg, rsolu, csolu, &
                   vcine, prepos, lpreco, lmhpc)
@@ -113,8 +113,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     real(kind=8), pointer :: rsolu2(:) => null()
     complex(kind=8), pointer :: csolu2(:) => null()
     type(c_ptr) :: pteur_c
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
-#define zzprno(ili,nunoel,l)  zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define zzprno(ili,nunoel,l) zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -209,7 +210,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     else
         lrhs_sparse = .false.
     end if
-
+!
 !   Adresses needed to get the solution wrt nodes and dof numbers (see below)
     if (l_debug) then
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
@@ -220,7 +221,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
             nonulg = mesh//'.NUNOLG'
             call jeveuo(nonulg, 'L', jmlogl)
         end if
-
+!
         call jeveuo(mesh//'.DIME', 'L', dime)
         call jelira(jexnum(nonu//'.NUME.PRNO', 1), 'LONMAX', ntot, k8bid)
         call jeveuo(nonu//'.NUME.PRNO', 'L', idprn1)
@@ -265,7 +266,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
         i1 = zi(js3+izrhs)
         i2 = zi(js3+izrhs+nbsol)
         nzrhs = i2-i1
-        ! Traitements simplifies
+! Traitements simplifies
         if (rang .eq. 0) then
             conl = zk24(zi(lmat+1)) (1:19)//'.CONL'
             call jeexin(conl, iret)
@@ -285,7 +286,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
             do i = 0, nbsol
                 dmpsk%irhs_ptr(i+1) = zi(js3+izrhs+i)-(i1-1)
             end do
-
+!
             if (lverbose) then
                 write (6, *) '<amumpp> ibatch/batch_size/nz_rhs/i1/i2=', izrhs, nbsol, nzrhs, i1, i2
                 do i = 1, dmpsk%nz_rhs
@@ -323,9 +324,11 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !           --- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
 !           --- RANG 0 UNIQUEMENT
                 if (ltypr) then
-                    call mrconl('MULT', lmat, nbeql, 'R', rsolu, nbsol)
+                    call mrconl('MULT', lmat, nbeql, 'R', rsolu, &
+                                nbsol)
                 else
-                    call mcconl('MULT', lmat, nbeql, 'C', csolu, nbsol)
+                    call mcconl('MULT', lmat, nbeql, 'C', csolu, &
+                                nbsol)
                 end if
             end if
 !
@@ -440,7 +443,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                     do j = 1, nnbsol
                         nuno = zi(jdeeq+2*(j-1))
                         nucmp = zi(jdeeq+2*(j-1)+1)
-                        !                numéro noeud, num comp du noeud, solution
+!                numéro noeud, num comp du noeud, solution
                         write (49, *) nuno, nucmp, j, rsolu(j)
                     end do
                     flush (49)
@@ -474,7 +477,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                         caux = dcmplx(0.d0, 0.d0)
                     else if (rtest .gt. rmax) then
                         caux = dcmplx(rmax*sign(1.d0, dble(caux)), 0.d0)
-                        caux = rmax*dcmplx(1.d0*sign(1.d0, dble(caux)), 1.d0*sign(1.d0, imag(caux)))
+                        caux = rmax*dcmplx( &
+                               1.d0*sign(1.d0, dble(caux)), 1.d0*sign(1.d0, imag(caux)))
                     end if
                     cmpsk%rhs(i) = cmplx(caux, kind=4)
                 end do
@@ -578,10 +582,16 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                     end do
                     deallocate (cmpsk%rhs)
                 else if (type .eq. 'D') then
-                    call dcopy(nnbsol, dmpsk%rhs, 1, rsolu2, 1)
+                    b_n = to_blas_int(nnbsol)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, dmpsk%rhs, b_incx, rsolu2, b_incy)
                     deallocate (dmpsk%rhs)
                 else if (type .eq. 'Z') then
-                    call zcopy(nnbsol, zmpsk%rhs, 1, csolu2, 1)
+                    b_n = to_blas_int(nnbsol)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zmpsk%rhs, b_incx, csolu2, b_incy)
                     deallocate (zmpsk%rhs)
                 else
                     ASSERT(.false.)
@@ -598,8 +608,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                             nucmp = zi(jdeeq+2*(j-1)+1)
 !                    numero ddl local, numéro noeud local, numéro noeud global, num comp du noeud,
 !                                num ddl global, num proc proprio, solution
-                            ! write(51+rang,*) j, zi(jdeeq+2*(j-1)), nuno, nucmp,  &
-                            !                      nulg(j), pddl(j), rsolu(j)
+! write(51+rang,*) j, zi(jdeeq+2*(j-1)), nuno, nucmp,  &
+!                      nulg(j), pddl(j), rsolu(j)
                             write (51+rang, *) nuno, nucmp, rsolu2(j)
                         end do
                         flush (51+rang)
@@ -712,7 +722,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                 write (ifmump, *) 'MUMPS FIN SOLUTION'
             end if
         end if
-
+!
         if (l_debug .and. .not. lmhpc) then
             do j = 1, nnbsol
                 nuno = zi(jdeeq+2*(j-1))

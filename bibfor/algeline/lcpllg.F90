@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
     real(kind=8) :: evp, evps
     character(len=10) :: ctol, citer
     character(len=24) :: valk(2)
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRE --------------------------------------
 ! ======================================================================
@@ -89,7 +90,10 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
     evp = vind(2)
     sige(1:ndt) = sigf(1:ndt)
     call lcdevi(sige, se)
-    siie = ddot(ndt, se, 1, se, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    siie = ddot(b_n, se, b_incx, se, b_incy)
     siie = sqrt(siie)
     invare = trace(ndi, sige)
 ! ======================================================================
@@ -259,8 +263,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
                     epsf(1:ndt) = matmul(dkooh(1:ndt, 1:ndt), sigf(1:ndt))
                     if (mod .eq. 'C_PLAN') then
                         sigf(3) = 0.0d0
-                        epsf(3) = dkooh(3, 1)*sigf(1)+dkooh(3, 2)*sigf(2)+dkooh(3, 4)*sigf&
-                                  &(4)
+                        epsf(3) = dkooh(3, 1)*sigf(1)+dkooh(3, 2)*sigf(2)+dkooh(3, 4)*sigf(4)
                     end if
                     vinf(1) = gamps
                     vinf(2) = evp

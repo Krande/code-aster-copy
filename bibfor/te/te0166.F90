@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0166(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -46,6 +46,7 @@ subroutine te0166(option, nomte)
 !
 !-----------------------------------------------------------------------
     real(kind=8) :: r8b
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     r8b = 0.d0
     fami = 'FPG1'
@@ -78,10 +79,22 @@ subroutine te0166(option, nomte)
         l2(kc) = w(3+kc)+zr(igeom+2+kc)-w(6+kc)-zr(igeom+5+kc)
         l20(kc) = zr(igeom+2+kc)-zr(igeom+5+kc)
     end do
-    norml1 = ddot(3, l1, 1, l1, 1)
-    norml2 = ddot(3, l2, 1, l2, 1)
-    norl10 = ddot(3, l10, 1, l10, 1)
-    norl20 = ddot(3, l20, 1, l20, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    norml1 = ddot(b_n, l1, b_incx, l1, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    norml2 = ddot(b_n, l2, b_incx, l2, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    norl10 = ddot(b_n, l10, b_incx, l10, b_incy)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    norl20 = ddot(b_n, l20, b_incx, l20, b_incy)
     norml1 = sqrt(norml1)
     norml2 = sqrt(norml2)
     norl10 = sqrt(norl10)

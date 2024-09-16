@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
                   imat, nmat, angmas, pgl, materd, &
                   materf, matcst, nbcomm, cpmono, ndt, &
@@ -149,6 +149,7 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
     integer :: nbphas, icompk, icompi, icompr, dimk, tabicp(nmat), nvloc
     integer :: indmat, indcp, imono, nbval, indloc, indcom, iphas, nbfam
     integer :: numono, nvintg, idmono, nbval1, nbval2, nbval3, nbcoef
+    blas_int :: b_incx, b_incy, b_n
     common/tbsysg/tbsysg(900)
 !     ----------------------------------------------------------------
     call jemarq()
@@ -168,7 +169,7 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
     call r8inir(2*nmat, 0.d0, materd, 1)
     call r8inir(2*nmat, 0.d0, materf, 1)
 !
-
+!
 !
 !     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
     nr = nvi+ndt-1
@@ -235,7 +236,10 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
             call r8inir(900, 0.d0, tbsysg, 1)
             call jeveuo(monor, 'L', imonor)
 !           TABLE CONTENANT LES SYSTEMES
-            call dcopy(6*nbtbsy+12, zr(imonor), 1, tbsysg, 1)
+            b_n = to_blas_int(6*nbtbsy+12)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(imonor), b_incx, tbsysg, b_incy)
         else
             tbsysg(1) = 0.d0
         end if

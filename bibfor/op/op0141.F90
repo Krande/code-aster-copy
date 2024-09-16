@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0141()
     implicit none
 !
@@ -71,6 +71,7 @@ subroutine op0141()
     aster_logical :: c1, c2, zcmplx, ieri
     integer, pointer :: deeq(:) => null()
     integer, pointer :: nllneq1(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
@@ -259,7 +260,10 @@ subroutine op0141()
                 end do
 !
             else
-                call zcopy(neq, zc(idbas1+(i-1)*neq), 1, zc(idvec1), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, zc(idbas1+(i-1)*neq), b_incx, zc(idvec1), b_incy)
             end if
 !
 ! PB AVEC ZDOTC DE BLAS POUR CERTAIN COMPILO -> CALCUL DIRECT
@@ -283,7 +287,10 @@ subroutine op0141()
                     end do
 !
                 else
-                    call zcopy(neq, zc(idbas2+(j-1)*neq), 1, zc(idvec2), 1)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(idbas2+(j-1)*neq), b_incx, zc(idvec2), b_incy)
                 end if
 !
                 ztemp = dcmplx(0.0d0, 0.0d0)
@@ -294,8 +301,8 @@ subroutine op0141()
 !
                 if (ieri) then
                     do iddl = 1, neq
-                        zc(idbas3-1+iddl) = zc(idbas1+(i-1)*neq-1+iddl) &
-                                            -zc(idbas2+(j-1)*neq-1+iddl)
+                        zc(idbas3-1+iddl) = zc( &
+                                            idbas1+(i-1)*neq-1+iddl)-zc(idbas2+(j-1)*neq-1+iddl)
                     end do
                     call mcmult('ZERO', imatra, zc(idbas3), zc(idvec3), 1, &
                                 .true._1)
@@ -346,10 +353,16 @@ subroutine op0141()
                             .true._1)
                 call zerlag(neq, deeq, vectr=zr(idvec1))
             else
-                call dcopy(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec1), 1)
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(idbas1+(i-1)*neq), b_incx, zr(idvec1), b_incy)
             end if
 !
-            pii = abs(ddot(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec1), 1))
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            pii = abs(ddot(b_n, zr(idbas1+(i-1)*neq), b_incx, zr(idvec1), b_incy))
 !
             zi(ind) = i
 !
@@ -361,28 +374,44 @@ subroutine op0141()
                                 .true._1)
                     call zerlag(neq, deeq, vectr=zr(idvec2))
                 else
-                    call dcopy(neq, zr(idbas2+(j-1)*neq), 1, zr(idvec2), 1)
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(idbas2+(j-1)*neq), b_incx, zr(idvec2), b_incy)
                 end if
 !
-                pjj = abs(ddot(neq, zr(idbas2+(j-1)*neq), 1, zr(idvec2), 1))
+                b_n = to_blas_int(neq)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                pjj = abs(ddot(b_n, zr(idbas2+(j-1)*neq), b_incx, zr(idvec2), b_incy))
 !
                 if (ieri) then
                     do ieq = 1, neq
                         zr(idbas3-1+ieq) = zr(idbas1+neq*(i-1)-1+ieq)-zr(idbas2+neq*(i-1)-1+ieq)
                     end do
-                    call mrmult('ZERO', imatra, zr(idbas3), zr(idvec3), 1, ASTER_TRUE)
+                    call mrmult('ZERO', imatra, zr(idbas3), zr(idvec3), 1, &
+                                ASTER_TRUE)
                     call zerlag(neq, deeq, vectr=zr(idvec3))
 !
-                    pij = abs(ddot(neq, zr(idbas3), 1, zr(idvec3), 1))
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    pij = abs(ddot(b_n, zr(idbas3), b_incx, zr(idvec3), b_incy))
 !
                     pij = (pij**2)/(pii**2+pjj**2)
 !  POUR LA MATRICE GENERALISEE : Y1_W_Y2
-                    rbid = abs(ddot(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec2), 1))
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    rbid = abs(ddot(b_n, zr(idbas1+(i-1)*neq), b_incx, zr(idvec2), b_incy))
 !
                     rbid = (rbid**2)/(pii*pjj)
                     zr(indv+1) = sqrt(rbid*pii*pjj)
                 else
-                    pij = abs(ddot(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec2), 1))
+                    b_n = to_blas_int(neq)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    pij = abs(ddot(b_n, zr(idbas1+(i-1)*neq), b_incx, zr(idvec2), b_incy))
 !
                     pij = (pij**2)/(pii*pjj)
                     zr(indv+1) = sqrt(pij*pii*pjj)

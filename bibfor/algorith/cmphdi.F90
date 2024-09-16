@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,6 +84,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter, &
     aster_logical :: sortie
     integer :: idiag, iretou, iv, ivdiag
     character(len=6) :: valk
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
     valk = 'CMPHDI'
@@ -166,8 +167,14 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter, &
         end if
         call ctescv(cvect1, cmod(1, j), cvec0, cmod0, ndim, &
                     ecart)
-        call zcopy(ndim, cmod(1, j), 1, cmod0, 1)
-        call zcopy(ndim, cvect1, 1, cvec0, 1)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, cmod(1, j), b_incx, cmod0, b_incy)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, cvect1, b_incx, cvec0, b_incy)
         if (ecart .le. xcrit) sortie = .true.
         if (ct .ge. niter) sortie = .true.
         goto 30

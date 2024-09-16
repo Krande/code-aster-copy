@@ -67,10 +67,10 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 27), intent(out)  :: nodes_coor
-        integer, intent(out)                        :: nbnodes
-        character(len=8), intent(out)               :: typma
-        integer, intent(out)                        :: elem_dim
+        real(kind=8), dimension(3, 27), intent(out) :: nodes_coor
+        integer, intent(out) :: nbnodes
+        character(len=8), intent(out) :: typma
+        integer, intent(out) :: elem_dim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,31 +104,31 @@ contains
             typma = 'HEXA27'
             nbnodes = 27
             elem_dim = 3
-        elseif (typma == 'QU8') then
+        else if (typma == 'QU8') then
             typma = 'QUAD8'
             nbnodes = 8
             elem_dim = 2
-        elseif (typma == 'QU9') then
+        else if (typma == 'QU9') then
             typma = 'QUAD9'
             nbnodes = 9
             elem_dim = 2
-        elseif (typma == 'TR6') then
+        else if (typma == 'TR6') then
             typma = 'TRIA6'
             nbnodes = 6
             elem_dim = 2
-        elseif (typma == 'TR7') then
+        else if (typma == 'TR7') then
             typma = 'TRIA7'
             nbnodes = 7
             elem_dim = 2
-        elseif (typma == 'T15') then
+        else if (typma == 'T15') then
             typma = 'TETRA15'
             nbnodes = 15
             elem_dim = 3
-        elseif (typma == 'P19') then
+        else if (typma == 'P19') then
             typma = 'PYRAM19'
             nbnodes = 19
             elem_dim = 3
-        elseif (typma == 'P21') then
+        else if (typma == 'P21') then
             typma = 'PENTA21'
             nbnodes = 21
             elem_dim = 3
@@ -169,10 +169,10 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 9), intent(out)  :: nodes_coor
-        integer, intent(out)                        :: nbnodes
-        character(len=8), intent(out)               :: typma
-        integer, intent(out)                        :: elem_dim
+        real(kind=8), dimension(3, 9), intent(out) :: nodes_coor
+        integer, intent(out) :: nbnodes
+        character(len=8), intent(out) :: typma
+        integer, intent(out) :: elem_dim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -205,11 +205,11 @@ contains
             typma = 'QUAD4'
             nbnodes = 4
             elem_dim = 2
-        elseif (typma == 'TR7') then
+        else if (typma == 'TR7') then
             typma = 'TRIA3'
             nbnodes = 3
             elem_dim = 2
-        elseif (typma == 'SE3') then
+        else if (typma == 'SE3') then
             typma = 'SEG2'
             nbnodes = 2
             elem_dim = 1
@@ -251,13 +251,13 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)                    :: typma
-        integer, intent(in)                             :: ndim
-        real(kind=8), dimension(3, 4), intent(in)        :: nodes_coor
-        integer, intent(in)                             :: nbnodes
-        real(kind=8), dimension(3), optional, intent(in):: barycenter_cell
-        integer, dimension(4), optional, intent(in)     :: num_nodes_loc
-        type(HHO_Face), intent(out)                     :: hhoFace
+        character(len=8), intent(in) :: typma
+        integer, intent(in) :: ndim
+        real(kind=8), dimension(3, 4), intent(in) :: nodes_coor
+        integer, intent(in) :: nbnodes
+        real(kind=8), dimension(3), optional, intent(in) :: barycenter_cell
+        integer, dimension(4), optional, intent(in) :: num_nodes_loc
+        type(HHO_Face), intent(out) :: hhoFace
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -310,9 +310,9 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)                :: typma
-        real(kind=8), dimension(3, 27), intent(in)   :: nodes_coor
-        type(HHO_Cell), intent(out)                 :: hhoCell
+        character(len=8), intent(in) :: typma
+        real(kind=8), dimension(3, 27), intent(in) :: nodes_coor
+        type(HHO_Cell), intent(out) :: hhoCell
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -328,12 +328,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        integer, parameter                      :: max_faces = 6
-        integer, parameter                      :: max_nodes = 4
+        integer, parameter :: max_faces = 6
+        integer, parameter :: max_nodes = 4
         integer, dimension(max_nodes, max_faces) :: nodes_faces
-        integer, dimension(max_faces)           :: nbnodes_faces
-        character(len=8), dimension(max_faces)  :: type_faces
-        real(kind=8), dimension(3, max_nodes)    :: coor_face
+        integer, dimension(max_faces) :: nbnodes_faces
+        character(len=8), dimension(max_faces) :: type_faces
+        real(kind=8), dimension(3, max_nodes) :: coor_face
         integer :: i_face, i_node
 ! --------------------------------------------------------------------------------------------------
 ! --- Init
@@ -520,8 +520,8 @@ contains
                 coor_face(1:3, i_node) = hhoCell%coorno(1:3, nodes_faces(i_node, i_face))
             end do
             call hhoFaceInit(hhoCell%faces(i_face), type_faces(i_face), hhoCell%ndim-1, &
-                             nbnodes_faces(i_face), coor_face, &
-                             hhoCell%barycenter, nodes_faces(:, i_face))
+                             nbnodes_faces(i_face), coor_face, hhoCell%barycenter, &
+                             nodes_faces(:, i_face))
         end do
 !
         if (l_debug) then
@@ -538,7 +538,7 @@ contains
 !
         implicit none
 !
-        type(HHO_Data), intent(out)            :: hhoData
+        type(HHO_Data), intent(out) :: hhoData
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -554,7 +554,7 @@ contains
         aster_logical, parameter :: l_debug = ASTER_FALSE
         aster_logical :: l_adapt_coeff
         integer :: grad_deg, face_deg, cell_deg, jv_mater
-        integer ::  jtab(1), iret, icodre(1)
+        integer :: jtab(1), iret, icodre(1)
         real(kind=8) :: coef_stab
         real(kind=8) :: resu_vale(1)
         character(len=16), parameter :: resu_name(1) = (/"COEF_STAB"/)
@@ -566,7 +566,7 @@ contains
             face_deg = 1
             cell_deg = 1
             grad_deg = 1
-        elseif (lteatt('FORMULATION', 'HHO_QUAD')) then
+        else if (lteatt('FORMULATION', 'HHO_QUAD')) then
             face_deg = 2
             cell_deg = 2
             grad_deg = 2
@@ -579,11 +579,13 @@ contains
         coef_stab = 0.d0
         iret = -1
         l_adapt_coeff = ASTER_TRUE
-        call tecach('NNN', 'PMATERC', 'L', iret, nval=1, itab=jtab)
+        call tecach('NNN', 'PMATERC', 'L', iret, nval=1, &
+                    itab=jtab)
         if (iret .eq. 0) then
             call jevech('PMATERC', 'L', jv_mater)
-            call rcvala(zi(jv_mater), ' ', 'HHO', 0, ' ', [0.0], &
-                        1, resu_name, resu_vale, icodre, 0)
+            call rcvala(zi(jv_mater), ' ', 'HHO', 0, ' ', &
+                        [0.0], 1, resu_name, resu_vale, icodre, &
+                        0)
             l_adapt_coeff = icodre(1) == 1
             if (.not. l_adapt_coeff) then
                 coef_stab = resu_vale(1)
@@ -592,7 +594,8 @@ contains
 !
 ! --- Init
 !
-        call hhoData%initialize(face_deg, cell_deg, grad_deg, coef_stab, l_debug, l_adapt_coeff)
+        call hhoData%initialize(face_deg, cell_deg, grad_deg, coef_stab, l_debug, &
+                                l_adapt_coeff)
 !
         if (hhoData%debug()) then
             call hhoData%print()
@@ -608,11 +611,11 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(out)                 :: hhoCell
-        type(HHO_Data), intent(out)                 :: hhoData
-        integer, intent(in), optional               :: npg
+        type(HHO_Cell), intent(out) :: hhoCell
+        type(HHO_Data), intent(out) :: hhoData
+        integer, intent(in), optional :: npg
         type(HHO_Quadrature), optional, intent(out) :: hhoQuad
-
+!
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -665,8 +668,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(out)   :: hhoFace
-        type(HHO_Data), intent(out)   :: hhoData
+        type(HHO_Face), intent(out) :: hhoFace
+        type(HHO_Data), intent(out) :: hhoData
         integer, intent(in), optional :: npg
         type(HHO_Quadrature), intent(out), optional :: hhoQuadFace
 !

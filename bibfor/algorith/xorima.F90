@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,6 +85,7 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2, &
 !
 !-----------------------------------------------------------------------
     integer :: nuno
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -181,22 +182,19 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2, &
                             nbnoma = zi(jconx2+nmaass)-zi(jconx2+nmaass-1)
 !
                             inoma = 1
-                            nuno = zi(jconx1-1+zi(jconx2+nmaass-1)+ &
-                                      inoma-1)
+                            nuno = zi(jconx1-1+zi(jconx2+nmaass-1)+inoma-1)
                             a(1) = zr(jcoor-1+3*(nuno-1)+1)
                             a(2) = zr(jcoor-1+3*(nuno-1)+2)
                             a(3) = zr(jcoor-1+3*(nuno-1)+3)
 !
                             inoma = 2
-                            nuno = zi(jconx1-1+zi(jconx2+nmaass-1)+ &
-                                      inoma-1)
+                            nuno = zi(jconx1-1+zi(jconx2+nmaass-1)+inoma-1)
                             b(1) = zr(jcoor-1+3*(nuno-1)+1)
                             b(2) = zr(jcoor-1+3*(nuno-1)+2)
                             b(3) = zr(jcoor-1+3*(nuno-1)+3)
 !
                             inoma = 3
-                            nuno = zi(jconx1-1+zi(jconx2+nmaass-1)+ &
-                                      inoma-1)
+                            nuno = zi(jconx1-1+zi(jconx2+nmaass-1)+inoma-1)
                             c(1) = zr(jcoor-1+3*(nuno-1)+1)
                             c(2) = zr(jcoor-1+3*(nuno-1)+2)
                             c(3) = zr(jcoor-1+3*(nuno-1)+3)
@@ -214,7 +212,10 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2, &
 !
 !                       CHECK THE ORIENTATION OF THE ELEMENT NORMAL
 !                       WITH RESPECT TO THE REFERENCE NORMAL
-                            ps = ddot(3, vn, 1, vnref, 1)
+                            b_n = to_blas_int(3)
+                            b_incx = to_blas_int(1)
+                            b_incy = to_blas_int(1)
+                            ps = ddot(b_n, vn, b_incx, vnref, b_incy)
 !
                             if (ps .lt. 0.d0) then
                                 zi(jsens-1+numelm) = -1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfnord(noma, typent, nument, itype, vector, &
                   tau1, tau2, lnfixe)
 !
@@ -75,6 +75,7 @@ subroutine cfnord(noma, typent, nument, itype, vector, &
 !
     character(len=8) :: noment
     real(kind=8) :: norm(3), noor, noor2
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -131,7 +132,10 @@ subroutine cfnord(noma, typent, nument, itype, vector, &
 !
         call normev(tau2, noor)
         if (noor .le. r8prem()) then
-            call dcopy(3, vector, 1, tau2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vector, b_incx, tau2, b_incy)
             call provec(tau1, tau2, norm)
             call normev(norm, noor2)
             if (noor2 .le. r8prem()) then
@@ -144,7 +148,10 @@ subroutine cfnord(noma, typent, nument, itype, vector, &
                 end if
             end if
         else
-            call dcopy(3, vector, 1, tau2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vector, b_incx, tau2, b_incy)
             call provec(tau1, tau2, norm)
             call normev(norm, noor2)
             if (noor2 .le. r8prem()) then

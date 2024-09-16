@@ -69,14 +69,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine projQpSl2Ma(geom, coor_qp_sl, proj_tole, &
-                           coor_qp_ma, gap, &
+    subroutine projQpSl2Ma(geom, coor_qp_sl, proj_tole, coor_qp_ma, gap, &
                            tau_slav, norm_slav, tau_mast, norm_mast)
 !
         implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in)  :: coor_qp_sl(2), proj_tole
+        real(kind=8), intent(in) :: coor_qp_sl(2), proj_tole
         real(kind=8), intent(out) :: coor_qp_ma(2)
         real(kind=8), intent(out) :: gap
         real(kind=8), intent(out) :: tau_slav(3, 2), tau_mast(3, 2)
@@ -95,7 +94,7 @@ contains
         character(len=8) :: elem_mast_line_code
         aster_logical :: debug
 !
-
+!
         norm_slav = 0.d0
         iret = 0
         iret1 = 0
@@ -118,62 +117,62 @@ contains
         call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_pair, coor_qp_sl, &
                     coor_qp_sl_re)
 ! ----- Projection of node on master cell (master parametric space)
-
+!
         if (geom%elem_mast_code(1:2) == "SE") then
             elem_mast_line_code = "SE2"
             elem_mast_line_nbnode = 2
-        elseif (geom%elem_mast_code(1:2) == "TR") then
+        else if (geom%elem_mast_code(1:2) == "TR") then
             elem_mast_line_code = "TR3"
             elem_mast_line_nbnode = 3
-        elseif (geom%elem_mast_code(1:2) == "QU") then
+        else if (geom%elem_mast_code(1:2) == "QU") then
             elem_mast_line_code = "QU4"
             elem_mast_line_nbnode = 4
         else
             ASSERT(ASTER_FALSE)
         end if
-
+!
 !
 ! ----- Projection on master element
-        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
-                    geom%coor_mast_pair, coor_qp_sl_re, 100, proj_tole, norm_slav, &
-                    ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret)
+        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, geom%coor_mast_pair, &
+                    coor_qp_sl_re, 100, proj_tole, norm_slav, ksi_line(1), &
+                    ksi_line(2), tau1_mast, tau2_mast, iret)
         if (iret == 1) then
 !
 ! ----- Try with linearization
-
+!
             call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, geom%elem_dime, &
                         geom%coor_mast_pair, coor_qp_sl_re, 75, proj_tole, norm_slav, &
                         ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1)
-
+!
             call reerel(elem_mast_line_code, elem_mast_line_nbnode, 3, geom%coor_mast_pair, &
                         ksi_line, coor_qp_sl_re_aux)
-
+!
             call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
                         geom%coor_mast_pair, coor_qp_sl_re_aux, 75, proj_tole, norm_slav, &
                         ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1)
         end if
-
+!
 !
 !
 ! ----- Check that projected node is inside cell
 !
         call projInsideCell(1e-3, geom%elem_dime, geom%elem_mast_code, ksi_line, iret2)
-
+!
         coor_qp_ma(:) = ksi_line(:)
-
+!
         if ((iret .eq. 0) .and. (iret1 .eq. 0) .and. (iret2 .eq. 0)) then
-            !print*, 'mast_coor_pair', geom%coor_mast_pair(1:2,1:3)
-            !print*, 'mast_coor_curr', geom%coor_mast_curr(1:2,1:3)
-            !print*, 'slav_coor_pair', geom%coor_slav_pair(1:2,1:3)
-            !print*, 'salv_coor_curr', geom%coor_slav_curr(1:2,1:3)
-            !print*, "normslav", norm_slav
-            !print*, "iret", iret
-            !print*, "iret1", iret1
-            !print*, "iret2", iret2
+!print*, 'mast_coor_pair', geom%coor_mast_pair(1:2,1:3)
+!print*, 'mast_coor_curr', geom%coor_mast_curr(1:2,1:3)
+!print*, 'slav_coor_pair', geom%coor_slav_pair(1:2,1:3)
+!print*, 'salv_coor_curr', geom%coor_slav_curr(1:2,1:3)
+!print*, "normslav", norm_slav
+!print*, "iret", iret
+!print*, "iret1", iret1
+!print*, "iret2", iret2
             if (debug) then
-                !print*, "1", ksi_line(1)
-                !print*, "2", ksi_line(2)
-                !print*, "3", ksi_line(1)+coor_qp_ma(2)
+!print*, "1", ksi_line(1)
+!print*, "2", ksi_line(2)
+!print*, "3", ksi_line(1)+coor_qp_ma(2)
             end if
         end if
 !
@@ -195,7 +194,7 @@ contains
                     diameter(geom%nb_node_slav, geom%coor_slav_curr), &
                     diameter(geom%nb_node_mast, geom%coor_mast_curr)
             end if
-
+!
         end if
 !
 ! ----- Compute gap for raytracing gap = -(x^s - x^m).n^s (current configuration)
@@ -207,15 +206,15 @@ contains
         call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%coor_mast_curr, coor_qp_ma, &
                     coor_qp_ma_re)
         gap = gapEval(coor_qp_sl_re, coor_qp_ma_re, norm_slav)
-        !print*, "COOR_SL: ", geom%coor_slav_curr(1,1:2)
-        !print*, "COOR_MA: ", geom%coor_mast_curr(1,1:2)
-        !print*, "NORM_SL: ", norm_slav
-        !print*, "NORM_MA: ", norm_mast
-        !print*, "COOR_QP: ", coor_qp_sl
-        !print*, "COOR_QP_RE: ", coor_qp_sl_re
-        !print*, "COOR_PJ: ", coor_qp_ma
-        !print*, "COOR_PJ_RE: ", coor_qp_ma_re
-        !print*, "GAP: ", gap
+!print*, "COOR_SL: ", geom%coor_slav_curr(1,1:2)
+!print*, "COOR_MA: ", geom%coor_mast_curr(1,1:2)
+!print*, "NORM_SL: ", norm_slav
+!print*, "NORM_MA: ", norm_mast
+!print*, "COOR_QP: ", coor_qp_sl
+!print*, "COOR_QP_RE: ", coor_qp_sl_re
+!print*, "COOR_PJ: ", coor_qp_ma
+!print*, "COOR_PJ_RE: ", coor_qp_ma_re
+!print*, "GAP: ", gap
 !
     end subroutine
 !
@@ -303,7 +302,7 @@ contains
             if (param%type_fric == FRIC_TYPE_TRES) then
                 l_fric_qp = ASTER_TRUE
                 thres_qp = param%threshold_given
-            elseif (param%type_fric == FRIC_TYPE_NONE) then
+            else if (param%type_fric == FRIC_TYPE_NONE) then
                 l_fric_qp = ASTER_FALSE
                 thres_qp = 0.d0
             else
@@ -360,8 +359,8 @@ contains
         call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_prev, &
                     coor_qp_slav(1), coor_qp_slav(2), norm_slav_prev)
 !
-        speedEval = -(coor_qp_sl_prev-coor_qp_ma_prev+gap*norm_slav_prev) &
-                    /(geom%time_curr-geom%time_prev)
+        speedEval = -(coor_qp_sl_prev-coor_qp_ma_prev+gap*norm_slav_prev)/(geom%time_curr-geom%t&
+                    &ime_prev)
 !
     end function
 !
@@ -369,8 +368,8 @@ contains
 !
 !===================================================================================================
 !
-    subroutine shapeFuncDisp(elem_dime, elem_nbnode, elem_code, coor_qp, &
-                             shape_, dshape_, ddshape_)
+    subroutine shapeFuncDisp(elem_dime, elem_nbnode, elem_code, coor_qp, shape_, &
+                             dshape_, ddshape_)
 !
         implicit none
 !
@@ -379,8 +378,8 @@ contains
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(in) :: coor_qp(2)
         real(kind=8), intent(out), optional :: shape_(9)
-        real(kind=8), intent(out), optional  :: dshape_(2, 9)
-        real(kind=8), intent(out), optional  :: ddshape_(3, 9)
+        real(kind=8), intent(out), optional :: dshape_(2, 9)
+        real(kind=8), intent(out), optional :: ddshape_(3, 9)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -389,15 +388,18 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         if (present(shape_)) then
-            call mmnonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), shape_)
+            call mmnonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), &
+                        shape_)
         end if
 !
         if (present(dshape_)) then
-            call mmdonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), dshape_)
+            call mmdonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), &
+                        dshape_)
         end if
 !
         if (present(ddshape_)) then
-            call mm2onf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), ddshape_)
+            call mm2onf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), &
+                        ddshape_)
         end if
     end subroutine
 !
@@ -405,15 +407,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine shapeFuncDispVolu(elem_code, coor_qp, &
-                                 shape_, dshape_)
+    subroutine shapeFuncDispVolu(elem_code, coor_qp, shape_, dshape_)
 !
         implicit none
 !
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(in) :: coor_qp(3)
         real(kind=8), intent(out), optional :: shape_(27)
-        real(kind=8), intent(out), optional  :: dshape_(3, 27)
+        real(kind=8), intent(out), optional :: dshape_(3, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -494,8 +495,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine shapeFuncLagr(elem_dime, elem_code, coor_qp, &
-                             shape_)
+    subroutine shapeFuncLagr(elem_dime, elem_code, coor_qp, shape_)
 !
         implicit none
 !
@@ -517,21 +517,21 @@ contains
         if (elem_code == "SE2") then
             elem_code_lagr = "SE2"
             elem_nbnode_lagr = 2
-        elseif (elem_code == "SE3") then
+        else if (elem_code == "SE3") then
             elem_code_lagr = "SE3"
             elem_nbnode_lagr = 3
-        elseif (elem_code(1:2) == "TR") then
+        else if (elem_code(1:2) == "TR") then
             elem_code_lagr = "TR3"
             elem_nbnode_lagr = 3
-        elseif (elem_code(1:2) == "QU") then
+        else if (elem_code(1:2) == "QU") then
             elem_code_lagr = "QU4"
             elem_nbnode_lagr = 4
         else
             ASSERT(ASTER_FALSE)
         end if
 !
-        call mmnonf(elem_dime, elem_nbnode_lagr, elem_code_lagr, &
-                    coor_qp(1), coor_qp(2), ff)
+        call mmnonf(elem_dime, elem_nbnode_lagr, elem_code_lagr, coor_qp(1), coor_qp(2), &
+                    ff)
         shape_(1:4) = ff(1:4)
     end subroutine
 !
@@ -673,7 +673,7 @@ contains
 !
         integer, intent(in) :: nb_nodes
         real(kind=8), intent(in) :: coor_nodes(3, nb_nodes)
-        real(kind=8)  :: barycenter(3)
+        real(kind=8) :: barycenter(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde, &
-                  drds, ck, b, poids, work1, work2, matri)
+                  drds, ck, b, poids, work1, &
+                  work2, matri)
     implicit none
 #include "blas/dgemm.h"
     integer :: dimdef, dimcon, dimuel, dimmat
@@ -31,17 +32,30 @@ subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde, &
 ! ---       C,F,D SONT DIAGONALES --------------------------------------
 ! ======================================================================
     integer :: i, j
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 ! ======================================================================
 ! --- ON FAIT LE CALCUL EN QUATRE FOIS ---------------------------------
 ! ======================================================================
 !   WORK1 = DSDE x B
-    call dgemm('N', 'N', dimcon, dimuel, dimdef, 1.d0, &
-               dsde, dimcon, b, dimdef, 0.d0, &
-               work1, dimcon)
+    b_ldc = to_blas_int(dimcon)
+    b_ldb = to_blas_int(dimdef)
+    b_lda = to_blas_int(dimcon)
+    b_m = to_blas_int(dimcon)
+    b_n = to_blas_int(dimuel)
+    b_k = to_blas_int(dimdef)
+    call dgemm('N', 'N', b_m, b_n, b_k, &
+               1.d0, dsde, b_lda, b, b_ldb, &
+               0.d0, work1, b_ldc)
 !   WORK2 = DRDS x WORK1
-    call dgemm('N', 'N', dimdef, dimuel, dimcon, 1.d0, &
-               drds, dimdef, work1, dimcon, 0.d0, &
-               work2, dimdef)
+    b_ldc = to_blas_int(dimdef)
+    b_ldb = to_blas_int(dimcon)
+    b_lda = to_blas_int(dimdef)
+    b_m = to_blas_int(dimdef)
+    b_n = to_blas_int(dimuel)
+    b_k = to_blas_int(dimcon)
+    call dgemm('N', 'N', b_m, b_n, b_k, &
+               1.d0, drds, b_lda, work1, b_ldb, &
+               0.d0, work2, b_ldc)
 !   WORK2 = CK x WORK2
     do j = 1, dimuel
         do i = 1, dimdef
@@ -49,8 +63,14 @@ subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde, &
         end do
     end do
 !   MATRI = MATRI + POIDS x Bt x WORK2
-    call dgemm('T', 'N', dimuel, dimuel, dimdef, poids, &
-               b, dimdef, work2, dimdef, 1.d0, &
-               matri, dimmat)
+    b_ldc = to_blas_int(dimmat)
+    b_ldb = to_blas_int(dimdef)
+    b_lda = to_blas_int(dimdef)
+    b_m = to_blas_int(dimuel)
+    b_n = to_blas_int(dimuel)
+    b_k = to_blas_int(dimdef)
+    call dgemm('T', 'N', b_m, b_n, b_k, &
+               poids, b, b_lda, work2, b_ldb, &
+               1.d0, matri, b_ldc)
 ! ======================================================================
 end subroutine

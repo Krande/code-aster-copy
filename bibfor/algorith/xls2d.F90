@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
     integer :: ir, ir2, ir3, jmafit, jmafif, jmaori, nuno1, nuno2, nunoi, ori
     aster_logical :: finfis
     aster_logical, pointer :: is_pt_fond(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(tole=1.d-12)
 !
@@ -170,12 +171,18 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
 !
 !           CALCUL DE EPS TEL QUE AM=EPS*AB
             norcab = ab(1)*ab(1)+ab(2)*ab(2)
-            ps = ddot(2, ap, 1, ab, 1)
+            b_n = to_blas_int(2)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps = ddot(b_n, ap, b_incx, ab, b_incy)
             eps = ps/norcab
 !
 !           ON RAMENE LES POINTS EN DEHORS DU SEGMENT
 !             > SI LE POINT N EST PAS SUR LA DROITE DIRECTRICE AU SEGMENT
-            if (abs(ddot(2, ap, 1, [-ab(2), ab(1)], 1)) .gt. norcab*tole) then
+            b_n = to_blas_int(2)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            if (abs(ddot(b_n, ap, b_incx, [-ab(2), ab(1)], b_incy)) .gt. norcab*tole) then
                 if (eps .lt. -tole .and. .not. is_pt_fond(nuno(1))) eps = 0.d0
                 if (eps .gt. (1.d0+tole) .and. .not. is_pt_fond(nuno(2))) eps = 1.d0
             end if
@@ -259,8 +266,14 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
                     end do
 !
 !               PROJECTION SUR LE SEGMENT
-                    ps = ddot(2, ap, 1, ab, 1)
-                    ps1 = ddot(2, ab, 1, ab, 1)
+                    b_n = to_blas_int(2)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps = ddot(b_n, ap, b_incx, ab, b_incy)
+                    b_n = to_blas_int(2)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    ps1 = ddot(b_n, ab, b_incx, ab, b_incy)
                     eps = ps/ps1
 !
 !               CALCUL DE LA DISTANCE PA

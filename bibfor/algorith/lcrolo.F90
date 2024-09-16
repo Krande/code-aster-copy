@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,6 +105,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option, &
     real(kind=8) :: infini, petit
     real(kind=8) :: porom, poro, em(6), ep(6)
     real(kind=8) :: y, ym, x, seuil, dseuil, s, dp
+    blas_int :: b_incx, b_incy, b_n
 !
 !    parameter (typoro = 'IMPLICITE')
 !    parameter (typoro = 'EXPLICITE')
@@ -126,7 +127,10 @@ subroutine lcrolo(fami, kpg, ksp, mate, option, &
 !    LECTURE DES VARIABLES INTERNES
     pm = vim(1)
     porom = vim(2)
-    call dcopy(6, vim(4), 1, em, 1)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vim(4), b_incx, em, b_incy)
 !
 !    INITIALISATION SPECIFIQUE A RIGI_MECA_*
     if (resi) then
@@ -135,7 +139,10 @@ subroutine lcrolo(fami, kpg, ksp, mate, option, &
         poum = '-'
         dp = 0.d0
         indice = nint(vim(3))
-        call dcopy(6, em, 1, ep, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, em, b_incx, ep, b_incy)
     end if
 !
 !    CARACTERISTIQUES MATERIAU
@@ -257,7 +264,10 @@ subroutine lcrolo(fami, kpg, ksp, mate, option, &
 ! 4.5 - CALCUL DE LA DEFORMATION ELASTIQUE
 !
         if (indice .eq. 0) then
-            call dcopy(6, etr, 1, ep, 1)
+            b_n = to_blas_int(6)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, etr, b_incx, ep, b_incy)
         else
             do ij = 1, 6
                 ep(ij) = (x+tretr)/3.d0*kr(ij)
@@ -296,7 +306,10 @@ subroutine lcrolo(fami, kpg, ksp, mate, option, &
         vip(1) = pm+dp
         vip(2) = poro
         vip(3) = indice
-        call dcopy(6, ep, 1, vip(4), 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, ep, b_incx, vip(4), b_incy)
 !
 ! 8 - CORRECTION DE LA LOI D'ECOULEMENT A POSTERIORI
 !

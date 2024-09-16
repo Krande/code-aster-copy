@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,6 +80,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf, &
     character(len=24) :: nomfam
     real(kind=8) :: timed, timef, vind(*), sigd(6), sigdn(6)
     integer :: irr, decirr, nbsyst, decal, gdef
+    blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !
 ! - SOLUTION INITIALE = NUL
@@ -116,8 +117,14 @@ subroutine lcmmin(typess, essai, mod, nmat, materf, &
         end if
 !        GDEF : INITIALISATION PAR FET.DFT.DF.FE
         if (gdef .eq. 1) then
-            call dcopy(9, vind(nvi-3-18+10), 1, fe, 1)
-            call dcopy(9, deps, 1, df, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vind(nvi-3-18+10), b_incx, fe, b_incy)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, deps, b_incx, df, b_incy)
             fe1 = matmul(df, fe)
             fe1t = transpose(fe1)
             fetfe = matmul(fe1t, fe1)
@@ -160,12 +167,9 @@ subroutine lcmmin(typess, essai, mod, nmat, materf, &
 !
             do is = 1, nbsys
                 nums = nums+1
-                dy(ndt+6+3*ifa*(is-1)+3) = vind(6+3*ifa*(is-1)+3) &
-                                           *(timef-timed)/timef
-                dy(ndt+6+3*ifa*(is-1)+2) = abs(vind(6+3*ifa*(is-1)+2) &
-                                               )*(timef-timed)/timef
-                dy(ndt+6+3*ifa*(is-1)+1) = vind(6+3*ifa*(is-1)+1) &
-                                           *(timef-timed)/timef
+                dy(ndt+6+3*ifa*(is-1)+3) = vind(6+3*ifa*(is-1)+3)*(timef-timed)/timef
+                dy(ndt+6+3*ifa*(is-1)+2) = abs(vind(6+3*ifa*(is-1)+2))*(timef-timed)/timef
+                dy(ndt+6+3*ifa*(is-1)+1) = vind(6+3*ifa*(is-1)+1)*(timef-timed)/timef
 !           RECUPERATION DE MS ET CALCUL DE EVP
                 call lcmmsg(nomfam, nbsys, is, pgl, ms, &
                             ng, lg, 0, q)

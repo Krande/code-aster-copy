@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
     implicit none
 !
@@ -61,29 +61,29 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
 #include "blas/dcopy.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-
+!
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
     integer, intent(in) :: oldcase
-    integer, pointer              :: buffdtm(:)
-    integer, pointer              :: buffint(:)
+    integer, pointer :: buffdtm(:)
+    integer, pointer :: buffint(:)
 !
 !   -0.2- Local variables
-    aster_logical         :: l_hpp
-    integer               :: nbmode, i, j, count, jrefa, nbnoli, nbvect, nbvec2, nbrss, maxitr
-    integer               :: jdesc, lmatm, lmatk, lmatc, jbase, nbborn
-    integer               :: ibid, nlcase, iret, fsichoc, info, ifm
-    real(kind=8)          :: time, bande(2), r8bid, alpha, tolsor, precsh, omecor, precdc, fcorig
-    character(len=1)      :: k1bid
-    character(len=4)      :: mod45
-    character(len=7)      :: casek7, case0k7
-    character(len=8)      :: sd_dtm, sd_int, modmec, typrof, modes, method, sdstab, arret
-    character(len=14)     :: nugene, nopara(9)
-    character(len=16)     :: optiof, typres, k16bid, sturm, modrig, stoper, typcal
-    character(len=19)     :: matmass, matrigi, matamor, raide2, masse2, eigsol, k19bid
-    character(len=24)     :: stomor, solver, base_jv, kvali, kvalr, kvalk, add_jv, k24bid
+    aster_logical :: l_hpp
+    integer :: nbmode, i, j, count, jrefa, nbnoli, nbvect, nbvec2, nbrss, maxitr
+    integer :: jdesc, lmatm, lmatk, lmatc, jbase, nbborn
+    integer :: ibid, nlcase, iret, fsichoc, info, ifm
+    real(kind=8) :: time, bande(2), r8bid, alpha, tolsor, precsh, omecor, precdc, fcorig
+    character(len=1) :: k1bid
+    character(len=4) :: mod45
+    character(len=7) :: casek7, case0k7
+    character(len=8) :: sd_dtm, sd_int, modmec, typrof, modes, method, sdstab, arret
+    character(len=14) :: nugene, nopara(9)
+    character(len=16) :: optiof, typres, k16bid, sturm, modrig, stoper, typcal
+    character(len=19) :: matmass, matrigi, matamor, raide2, masse2, eigsol, k19bid
+    character(len=24) :: stomor, solver, base_jv, kvali, kvalr, kvalk, add_jv, k24bid
 !
     real(kind=8), pointer :: base(:) => null()
     real(kind=8), pointer :: mat_v(:) => null()
@@ -94,25 +94,26 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
     real(kind=8), pointer :: mvalm(:) => null()
     real(kind=8), pointer :: kvalm(:) => null()
     real(kind=8), pointer :: avalm(:) => null()
-
+!
     real(kind=8), pointer :: mgen2(:) => null()
     real(kind=8), pointer :: kgen2(:) => null()
     real(kind=8), pointer :: agen2(:) => null()
     real(kind=8), pointer :: aful2(:) => null()
-
+!
     real(kind=8), pointer :: coefr(:) => null()
     real(kind=8), pointer :: valr(:) => null()
-
+!
     real(kind=8), pointer :: c_flu(:) => null()
-
+    blas_int :: b_incx, b_incy, b_n
+!
 !
 #define mat(row,col) mat_v((col-1)*nbmode+row)
 #define m(row,col) mgen((col-1)*nbmode+row)
 #define k(row,col) kgen((col-1)*nbmode+row)
 #define a(row,col) agen((col-1)*nbmode+row)
-
+!
 #define a2(row,col) aful2((col-1)*nbmode+row)
-
+!
 !
     data nopara/&
      &  'NUME_MODE', 'NORME    ', 'FREQ       ', &
@@ -122,16 +123,16 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
 !   0 - Initializations
     sd_dtm = sd_dtm_
     sd_int = sd_int_
-
+!
     call dtmget(sd_dtm, _NL_CASE, iscal=nlcase, buffer=buffdtm)
     call dtmcase_coder(nlcase, casek7)
-
+!
     base_jv = sd_dtm//'.PRJ_BAS.'//casek7
     call jeexin(base_jv, iret)
     if (iret .eq. 0) then
 !
 !       1 - Prepare the matrices for a nmop45 call
-
+!
 !       1.1 - Create a nume_ddl_gene with the initial basis in full profile
         call dtmget(sd_dtm, _BASE_MOD, kscal=modmec, buffer=buffdtm)
         call dtmget(sd_dtm, _NB_MODES, iscal=nbmode, buffer=buffdtm)
@@ -139,7 +140,7 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         matmass = '&&DTMMAG'
         matrigi = '&&DTMRIG'
         matamor = '&&DTMAMO'
-
+!
         call jeexin(nugene//'.NUME.DESC', iret)
         if (iret .eq. 0) then
             typrof = 'PLEIN'
@@ -147,13 +148,13 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
             stomor = nugene//'     .SMOS'
             call crsmos(stomor, typrof, nbmode)
         end if
-
+!
 !       1.2 - Create the appropriate matrix layouts, if needed, in full storage format
         call jeexin(matmass//'.REFA', iret)
         if (iret .eq. 0) then
 !           1.2 - Copy the temporary mass and stiffness matrices in a Morse format
             call dtmget(sd_dtm, _SOLVER, savejv=solver)
-
+!
 !       --- .REFA
             call wkvect(matmass//'.REFA', 'V V K24', 20, jrefa)
             zk24(jrefa-1+1) = modmec
@@ -164,32 +165,35 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
             zk24(jrefa-1+11) = 'MPI_COMPLET'
             call jedup1(matmass//'.REFA', 'V', matrigi//'.REFA')
             call jedup1(matmass//'.REFA', 'V', matamor//'.REFA')
-
+!
 !           --- .DESC
             call wkvect(matmass//'.DESC', 'V V I', 3, jdesc)
             zi(jdesc-1+1) = 2
             zi(jdesc-1+2) = nbmode
             call jedup1(matmass//'.DESC', 'V', matrigi//'.DESC')
             call jedup1(matmass//'.DESC', 'V', matamor//'.DESC')
-
+!
 !           --- .VALM
-            call jecrec(matmass//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', 1)
+            call jecrec(matmass//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', &
+                        1)
             call jeecra(matmass//'.VALM', 'LONMAX', nbmode*(nbmode+1)/2)
             call jecroc(jexnum(matmass//'.VALM', 1))
-
-            call jecrec(matrigi//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', 1)
+!
+            call jecrec(matrigi//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', &
+                        1)
             call jeecra(matrigi//'.VALM', 'LONMAX', nbmode*(nbmode+1)/2)
             call jecroc(jexnum(matrigi//'.VALM', 1))
-
-            call jecrec(matamor//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', 1)
+!
+            call jecrec(matamor//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', &
+                        1)
             call jeecra(matamor//'.VALM', 'LONMAX', nbmode*(nbmode+1)/2)
             call jecroc(jexnum(matamor//'.VALM', 1))
         end if
-
+!
         call jeveuo(jexnum(matmass//'.VALM', 1), 'E', vr=mvalm)
         call jeveuo(jexnum(matrigi//'.VALM', 1), 'E', vr=kvalm)
         call jeveuo(jexnum(matamor//'.VALM', 1), 'E', vr=avalm)
-
+!
         if (nbmode .gt. 1) then
             call intget(sd_int, MASS_FUL, iocc=1, lonvec=iret, buffer=buffint)
             if (iret .eq. 0) then
@@ -212,7 +216,7 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
                     end do
                 end do
             end if
-
+!
             call intget(sd_int, RIGI_FUL, iocc=1, lonvec=iret, buffer=buffint)
             if (iret .eq. 0) then
                 call intget(sd_int, RIGI_DIA, iocc=1, vr=kgen, buffer=buffint)
@@ -234,7 +238,7 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
                     end do
                 end do
             end if
-
+!
             call intget(sd_int, AMOR_FUL, iocc=1, lonvec=iret, buffer=buffint)
             call dtmget(sd_dtm, _FSI_ZET0, vr=c_flu, buffer=buffdtm)
             if (iret .eq. 0) then
@@ -325,29 +329,34 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         stoper = 'NON'
 ! TYPE DE CALCUL: 'CALIBRATION' OU 'TOUT'.
         typcal = 'TOUT'
-        call vpcres(eigsol, typres, raide2, masse2, k19bid, optiof, method, modrig, arret, k19bid, &
-                    stoper, sturm, typcal, k1bid, k16bid, nbmode, nbvect, nbvec2, nbrss, nbborn, &
-                    ibid, ibid, ibid, ibid, maxitr, bande, precsh, omecor, precdc, r8bid, &
-                    r8bid, r8bid, r8bid, r8bid, tolsor, alpha)
-
+        call vpcres(eigsol, typres, raide2, masse2, k19bid, &
+                    optiof, method, modrig, arret, k19bid, &
+                    stoper, sturm, typcal, k1bid, k16bid, &
+                    nbmode, nbvect, nbvec2, nbrss, nbborn, &
+                    ibid, ibid, ibid, ibid, maxitr, &
+                    bande, precsh, omecor, precdc, r8bid, &
+                    r8bid, r8bid, r8bid, r8bid, tolsor, &
+                    alpha)
+!
 !       2.1 - Mode calculation
         l_hpp = ASTER_TRUE
         mod45 = 'VIBR'
         sdstab = '&&DUMMY'
         call nmop45(eigsol, l_hpp, mod45, modes, sdstab)
-        call vpleci(eigsol, 'I', 1, k24bid, r8bid, nbmode)
+        call vpleci(eigsol, 'I', 1, k24bid, r8bid, &
+                    nbmode)
         call detrsd('EIGENSOLVER', eigsol)
-
+!
 !       2.2 - Mode normalising using MASS_GENE option
-
+!
         kvali = '&&DTMEIG.GRAN_MODAL_I'
         kvalr = kvali(1:20)//'R'
         kvalk = kvali(1:20)//'K'
         AS_ALLOCATE(vr=coefr, size=nbmode)
-
+!
         call mtdscr(matmass)
         call jeveuo(matmass//'.&INT', 'E', lmatm)
-
+!
         call vprecu(modes, 'DEPL', -1, zi(1), base_jv, &
                     9, nopara(1), kvali, kvalr, kvalk, &
                     zi(1), ibid, zk8(1), zi(1), zi(1), &
@@ -355,20 +364,20 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         call jeveuo(base_jv, 'E', jbase)
         call jeveuo(kvalr, 'E', vr=valr)
         call vpnorm('MASS_GENE', 'NON', lmatm, nbmode, nbmode, &
-                    zi(1), zr(jbase), valr, [0.d0, 0.d0, 0.d0], &
-                    0, 0, coefr)
+                    zi(1), zr(jbase), valr, [0.d0, 0.d0, 0.d0], 0, &
+                    0, coefr)
 !
 !       3 - Project the stiffness and damping matrices onto this basis
 !           (The mass matrix is set to the identity)
 !           Calculating    [Phi]^t * [ K ] * [Phi]
 !                                    -- mrmult ---
 !                          ------- ddot ----------
-
+!
         call wkvect(sd_dtm//'.PRJ_MAS.'//casek7, 'V V R', nbmode, vr=mgen2)
         call wkvect(sd_dtm//'.PRJ_RIG.'//casek7, 'V V R', nbmode, vr=kgen2)
         call wkvect(sd_dtm//'.PRJ_AMO.'//casek7, 'V V R', nbmode, vr=agen2)
         call wkvect(sd_dtm//'.PRJ_AM2.'//casek7, 'V V R', nbmode*nbmode, vr=aful2)
-
+!
 !       ------------------------------------------------------------------------------
 !       --- This can be used to verify that the norm_mode step was successful, giving
 !          thus a diagonal mass matrix == Identity
@@ -380,12 +389,12 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
 !               m2(i,j) = ddot(nbmode, zr(jbase+(j-1)*nbmode), 1, coefr, 1)
 !           end do
 !       end do
-
+!
 !       --- The mass matrix is filled manually
         do i = 1, nbmode
             mgen2(i) = 1.d0
         end do
-
+!
 !       --- The stiffness matrix is calculed, it should be diagonal and containing
 !           omega^2 (i=1->n) on the diagonal (orthogonality properties of the eigen vectors)
         call mtdscr(matrigi)
@@ -393,9 +402,12 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         do i = 1, nbmode
             call mrmult('ZERO', lmatk, zr(jbase+(i-1)*nbmode), coefr, 1, &
                         .true._1)
-            kgen2(i) = ddot(nbmode, zr(jbase+(i-1)*nbmode), 1, coefr, 1)
+            b_n = to_blas_int(nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            kgen2(i) = ddot(b_n, zr(jbase+(i-1)*nbmode), b_incx, coefr, b_incy)
         end do
-
+!
 !       --- The damping matrix is full
         call mtdscr(matamor)
         call jeveuo(matamor//'.&INT', 'E', lmatc)
@@ -403,11 +415,14 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
             call mrmult('ZERO', lmatc, zr(jbase+(i-1)*nbmode), coefr, 1, &
                         .true._1)
             do j = 1, nbmode
-                a2(i, j) = ddot(nbmode, zr(jbase+(j-1)*nbmode), 1, coefr, 1)
+                b_n = to_blas_int(nbmode)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                a2(i, j) = ddot(b_n, zr(jbase+(j-1)*nbmode), b_incx, coefr, b_incy)
                 if (i .eq. j) agen2(i) = a2(i, j)
             end do
         end do
-
+!
         add_jv = sd_dtm//'.ADDED_K.'//casek7
         call jeveuo(add_jv, 'E', vr=mat_v)
         do i = 1, nbmode
@@ -419,25 +434,28 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         nullify (mat_v)
         add_jv = sd_dtm//'.ADDED_C.'//casek7
         call jeveuo(add_jv, 'E', vr=mat_v)
-        call dcopy(nbmode*nbmode, aful2, 1, mat_v, 1)
+        b_n = to_blas_int(nbmode*nbmode)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, aful2, b_incx, mat_v, b_incy)
         nullify (mat_v)
-
+!
         call jedetr(kvali)
         call jedetr(kvalr)
         call jedetr(kvalk)
         call detrsd('RESULTAT', modes)
         call detrsd('RESULTAT', '&&DUMMY ')
-
+!
         AS_DEALLOCATE(vr=coefr)
-
+!
 !       --- At this point, the new eigen vectors are given as function of the
 !           preceding basis
-
+!
 !       --- If the preceding case is not <0> (i.e. corresponding to no chocs at all)
 !           then their is nothing to do, however, if the preceding case is non lineair
 !           i.e. case != 0, then we need to transform the eigen vector in term of the
 !           original coordinates
-
+!
         if (oldcase .ne. 0) then
             call dtmcase_coder(oldcase, case0k7)
             base_jv = sd_dtm//'.PRJ_BAS.'//case0k7
@@ -446,16 +464,19 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
             call prmama(1, phi0_v, nbmode, nbmode, nbmode, &
                         zr(jbase), nbmode, nbmode, nbmode, base, &
                         nbmode, nbmode, nbmode, iret)
-            call dcopy(nbmode*nbmode, base, 1, zr(jbase), 1)
+            b_n = to_blas_int(nbmode*nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, base, b_incx, zr(jbase), b_incy)
             AS_DEALLOCATE(vr=base)
         end if
-
+!
         call dtmget(sd_dtm, _FSI_CASE, iscal=fsichoc, buffer=buffdtm)
         if (fsichoc .eq. 1) then
             call dtmeigen_fsi(sd_dtm, buffdtm)
         end if
     else
-
+!
         call infmaj()
         call infniv(ifm, info)
         if (info .eq. 2) then
@@ -465,5 +486,5 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
             call dtminfo_choc(nlcase, nbnoli)
         end if
     end if
-
+!
 end subroutine

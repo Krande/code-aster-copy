@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine dladap(result, tinit, lcrea, lamort, neq, &
                   imat, masse, rigid, amort, dep0, &
                   vit0, acc0, fexte, famor, fliai, &
                   nchar, nveca, liad, lifo, modele, &
-                  mate, mateco, carele, charge, infoch, fomult, &
-                  numedd, nume, numrep, ds_energy, &
+                  mate, mateco, carele, charge, infoch, &
+                  fomult, numedd, nume, numrep, ds_energy, &
                   sd_obsv, mesh)
 !
     use NonLin_Datastructure_type
@@ -148,6 +148,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq, &
     character(len=*), intent(in) :: mesh
     integer :: ipas_obs
     integer :: idepmoi, ivitmoi, iaccmoi
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -188,11 +189,11 @@ subroutine dladap(result, tinit, lcrea, lamort, neq, &
     call wkvect('&&DLADAP.IND1', 'V V I', neq, jind1)
     call wkvect('&&DLADAP.IND2', 'V V I', neq, jind2)
     call jeveuo(ndeeq, 'L', adeeq)
-
+!
     call jeveuo('&&NMCH1P.DEPMOI    .VALE', 'E', idepmoi)
     call jeveuo('&&NMCH1P.VITMOI    .VALE', 'E', ivitmoi)
     call jeveuo('&&NMCH1P.ACCMOI    .VALE', 'E', iaccmoi)
-
+!
 !
     epsi = r8prem()
     npas = 0
@@ -354,10 +355,10 @@ subroutine dladap(result, tinit, lcrea, lamort, neq, &
     last_prperc = 0
 !
     if (temps .lt. tfin) then
-        ! - observation
+! - observation
         t_obs = temps
         ipas_obs = ipas
-
+!
         istoc = 0
         err = 100.d0
         nr = 0
@@ -415,14 +416,11 @@ subroutine dladap(result, tinit, lcrea, lamort, neq, &
             else if (vvar(1:4) .eq. 'NORM') then
                 do ieq = 0, neq-1
                     if (zr(iwk1+ieq) .ne. 0.d0) then
-                        zr(jvmin1+ieq) = 1.d-02*zr(jvit2+(zi(jind1+ieq)- &
-                                                          1))
-                        zr(jvmin2+ieq) = 1.d-02*zr(jvit2+(zi(jind2+ieq)- &
-                                                          1))
+                        zr(jvmin1+ieq) = 1.d-02*zr(jvit2+(zi(jind1+ieq)-1))
+                        zr(jvmin2+ieq) = 1.d-02*zr(jvit2+(zi(jind2+ieq)-1))
                     end if
                     rtmp = 1.d-15
-                    zr(jvmin+ieq) = max(rtmp, zr(jvmin1+ieq), zr(jvmin2+ &
-                                                                 ieq))
+                    zr(jvmin+ieq) = max(rtmp, zr(jvmin1+ieq), zr(jvmin2+ieq))
                 end do
             end if
 !
@@ -515,23 +513,44 @@ subroutine dladap(result, tinit, lcrea, lamort, neq, &
 !
 ! ------------- TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
         temps = temp2
-        call dcopy(neq, vale, 1, zr(jdepl), 1)
-        call dcopy(neq, zr(jvit2), 1, zr(jvite), 1)
-        call dcopy(neq, zr(jvip2), 1, zr(jvip1), 1)
-        call dcopy(neq, zr(jacc2), 1, zr(jacce), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vale, b_incx, zr(jdepl), b_incy)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jvit2), b_incx, zr(jvite), b_incy)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jvip2), b_incx, zr(jvip1), b_incy)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jacc2), b_incx, zr(jacce), b_incy)
 !
 ! - observation
         l_obsv = ASTER_FALSE
         call lobs(sd_obsv, ipas_obs, t_obs, l_obsv)
-
+!
         if (l_obsv) then
-            ! stock depl/vite/acce dans le champ pour Observation
-
-            call dcopy(neq, vale, 1, zr(idepmoi), 1)
-            call dcopy(neq, zr(jvit2), 1, zr(ivitmoi), 1)
-            call dcopy(neq, zr(jacc2), 1, zr(iaccmoi), 1)
-
-            ! make observation
+! stock depl/vite/acce dans le champ pour Observation
+!
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vale, b_incx, zr(idepmoi), b_incy)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvit2), b_incx, zr(ivitmoi), b_incy)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jacc2), b_incx, zr(iaccmoi), b_incy)
+!
+! make observation
             call nmobse(mesh, sd_obsv, t_obs)
         end if
 !

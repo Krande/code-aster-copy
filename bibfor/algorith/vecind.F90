@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vecind(mat, lvec, nbl, nbc, force, &
                   nindep)
     implicit none
@@ -60,7 +60,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
 #include "blas/dgemm.h"
 #include "blas/dgesvd.h"
     integer :: lvec, nbl, nbc, nindep, lwork, lmat, ltrav1
-    integer ::   i1, k1, l1, iret, lcopy, force, indnz
+    integer :: i1, k1, l1, iret, lcopy, force, indnz
     integer(kind=4) :: info
     real(kind=8) :: swork(1), norme, sqrt, rij
     character(len=8) :: ortho
@@ -71,6 +71,9 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
     real(kind=8), pointer :: trav3_v(:) => null()
     integer, pointer :: vec_ind_nz(:) => null()
     integer, pointer :: deeq(:) => null()
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
+    blas_int :: b_ldu, b_ldvt, b_lwork
 !
     ortho = ' '
     iret = 0
@@ -96,16 +99,24 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
             call mrmult('ZERO', lmat, zr(lvec+nbl*(i1-1)), zr(ltrav1), 1, &
                         .true._1)
             call zerlag(nbl, deeq, vectr=zr(ltrav1))
-            norme = ddot(nbl, zr(ltrav1), 1, zr(lvec+nbl*(i1-1)), 1)
+            b_n = to_blas_int(nbl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            norme = ddot(b_n, zr(ltrav1), b_incx, zr(lvec+nbl*(i1-1)), b_incy)
 !
         else
-            norme = ddot(nbl, zr(lvec+nbl*(i1-1)), 1, zr(lvec+nbl*(i1-1)), &
-                         1)
+            b_n = to_blas_int(nbl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            norme = ddot(b_n, zr(lvec+nbl*(i1-1)), b_incx, zr(lvec+nbl*(i1-1)), b_incy)
         end if
         norme = sqrt(norme)
         if (norme .gt. 1.d-16) then
-            call daxpy(nbl, 1/norme, zr(lvec+nbl*(i1-1)), 1, zr(lcopy+nbl*(i1-1)), &
-                       1)
+            b_n = to_blas_int(nbl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1/norme, zr(lvec+nbl*(i1-1)), b_incx, zr(lcopy+nbl*(i1-1)), &
+                       b_incy)
 !        ELSE
 !          CALL DAXPY(NBL,0.D0,ZR(LVEC+NBL*(I1-1)),1,
 !     &               ZR(LCOPY+NBL*(I1-1)),1)
@@ -119,10 +130,16 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
         else
             call lceqvn(nbl, zr(lcopy+nbl*(l1-1)), zr(ltrav1))
         end if
-        norme = ddot(nbl, zr(ltrav1), 1, zr(lcopy+nbl*(l1-1)), 1)
+        b_n = to_blas_int(nbl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        norme = ddot(b_n, zr(ltrav1), b_incx, zr(lcopy+nbl*(l1-1)), b_incy)
         new_stat(1+(l1-1)*(nbc+1)) = norme
         do k1 = l1+1, nbc
-            rij = ddot(nbl, zr(ltrav1), 1, zr(lcopy+nbl*(k1-1)), 1)
+            b_n = to_blas_int(nbl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            rij = ddot(b_n, zr(ltrav1), b_incx, zr(lcopy+nbl*(k1-1)), b_incy)
             new_stat(1+(l1-1)*nbc+k1-1) = rij
             new_stat(1+(k1-1)*nbc+l1-1) = rij
         end do
@@ -183,15 +200,27 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
 !-- DESACTIVATION DU TEST FPE
         call matfpe(-1)
 !
-        call dgesvd('A', 'N', nbc, nbc, new_stat, &
-                    nbc, zr(ltrav1), trav2_u, nbc, trav3_v, &
-                    nbc, swork, -1, info)
+        b_ldvt = to_blas_int(nbc)
+        b_ldu = to_blas_int(nbc)
+        b_lda = to_blas_int(nbc)
+        b_m = to_blas_int(nbc)
+        b_n = to_blas_int(nbc)
+        b_lwork = to_blas_int(-1)
+        call dgesvd('A', 'N', b_m, b_n, new_stat, &
+                    b_lda, zr(ltrav1), trav2_u, b_ldu, trav3_v, &
+                    b_ldvt, swork, b_lwork, info)
         lwork = int(swork(1))
         AS_ALLOCATE(vr=mat_svd_work, size=lwork)
 !
-        call dgesvd('A', 'N', nbc, nbc, new_stat, &
-                    nbc, zr(ltrav1), trav2_u, nbc, trav3_v, &
-                    nbc, mat_svd_work, lwork, info)
+        b_ldvt = to_blas_int(nbc)
+        b_ldu = to_blas_int(nbc)
+        b_lda = to_blas_int(nbc)
+        b_m = to_blas_int(nbc)
+        b_n = to_blas_int(nbc)
+        b_lwork = to_blas_int(lwork)
+        call dgesvd('A', 'N', b_m, b_n, new_stat, &
+                    b_lda, zr(ltrav1), trav2_u, b_ldu, trav3_v, &
+                    b_ldvt, mat_svd_work, b_lwork, info)
 !
         nindep = 0
         norme = (nbc+0.d0)*zr(ltrav1)*1.d-16
@@ -201,9 +230,15 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
 !
         call wkvect('&&VECIND.MODE_INTF_DEPL', 'V V R', nbl*nbc, lmat)
 !
-        call dgemm('N', 'N', nbl, nindep, nbc, &
-                   1.d0, zr(lcopy), nbl, trav2_u, nbc, &
-                   0.d0, zr(lvec), nbl)
+        b_ldc = to_blas_int(nbl)
+        b_ldb = to_blas_int(nbc)
+        b_lda = to_blas_int(nbl)
+        b_m = to_blas_int(nbl)
+        b_n = to_blas_int(nindep)
+        b_k = to_blas_int(nbc)
+        call dgemm('N', 'N', b_m, b_n, b_k, &
+                   1.d0, zr(lcopy), b_lda, trav2_u, b_ldb, &
+                   0.d0, zr(lvec), b_ldc)
 !
 !-- INUTILE D'ANNULER DES VECTEURS QUI NE SERVIRONT NUL PART...
 !        DO 540 I1=1,NBL*(NBC-NINDEP)

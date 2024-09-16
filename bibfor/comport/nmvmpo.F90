@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmvmpo(fami, npg, nno, option, nc, &
                   xl, wgauss, icodma, sect, u, &
                   du, contm, contp, fl, klv)
@@ -75,6 +75,7 @@ subroutine nmvmpo(fami, npg, nno, option, nc, &
     real(kind=8) :: work(nc, nno*nc), rg0(nno*nc, nno*nc)
 !   pour la thermique
     real(kind=8) :: temm, em, num, f, df
+    blas_int :: b_incx, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -170,8 +171,12 @@ subroutine nmvmpo(fami, npg, nno, option, nc, &
         end do
 !       calcul de bt*h*b
         if (matric) then
-            call dscal(nc*nc, xls2, hota, 1)
-            call dscal(nc*nc, wgauss(kp), hota, 1)
+            b_n = to_blas_int(nc*nc)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, xls2, hota, b_incx)
+            b_n = to_blas_int(nc*nc)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, wgauss(kp), hota, b_incx)
             call utbtab('CUMU', nc, nno*nc, hota, d1b, &
                         work, rg0)
         end if

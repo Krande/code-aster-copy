@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
                   b, ktild, effint, pass, vtemp)
 !
@@ -93,20 +93,20 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
     integer :: icoud2, mmt, codret, cod
     integer :: jnbspi, iret, ksp
     integer :: jcoopg, idfdk, jdfd2
-    !aster_logical :: vecteu, matric
+!aster_logical :: vecteu, matric
     character(len=16) :: defo_comp, rela_comp, type_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     type(Behaviour_Integ) :: BEHinteg
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
-    integer                 :: lg_varip
-    real(kind=8), allocatable:: varip(:)
+    integer :: lg_varip
+    real(kind=8), allocatable :: varip(:)
     character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ', 'EP1'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', nno=nno, npg=npg, &
-                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2)
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, jpoids=ipoids, jcoopg=jcoopg, &
+                     jvf=ivf, jdfde=idfdk, jdfd2=jdfd2)
 !
     nc = nbrddl*(nbrddl+1)/2
     pi = r8pi()
@@ -140,7 +140,8 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCOMPOR', 'L', icompo)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
     call jevech('PNBSP_I', 'L', jnbspi)
     call jevech('PGEOMER', 'L', igeom)
@@ -148,10 +149,8 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Properties of behaviour
 !
@@ -160,7 +159,7 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
     defo_comp = zk16(icompo-1+DEFO)
     type_comp = zk16(icompo-1+INCRELAS)
     ASSERT(defo_comp .eq. 'PETIT')
-
+!
 !
 ! - For section
 !
@@ -191,7 +190,7 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
     end if
-
+!
     lg_varip = npg*lgpg
     allocate (varip(lg_varip))
     if (lVari) then
@@ -302,8 +301,8 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
             do isect = 1, 2*nbsec+1
                 kpgs = kpgs+1
                 if (icoude .eq. 0) then
-                    wgt = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)* &
-                          (l/2.d0)*h*deuxpi/(4.d0*nbcou*nbsec)*r
+                    wgt = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)*(l/2.d0)*h*deuxpi/(4.d0*n&
+                          &bcou*nbsec)*r
                     call bcoude(igau, icou, isect, l, h, &
                                 a, nFourier, nno, nbcou, nbsec, &
                                 zr(ivf), zr(idfdk), zr(jdfd2), mmt, b)
@@ -316,8 +315,8 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
                                 nFourier, omega, xpg, nno, nbcou, &
                                 nbsec, zr(ivf), zr(idfdk), zr(jdfd2), rayon, &
                                 theta, mmt, b)
-                    wgt = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)* &
-                          (l/2.d0)*h*deuxpi/(4.d0*nbcou*nbsec)*r
+                    wgt = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)*(l/2.d0)*h*deuxpi/(4.d0*n&
+                          &bcou*nbsec)*r
                 else
                     ASSERT(ASTER_FALSE)
                 end if
@@ -327,7 +326,7 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
 !
 ! ======= CALCUL DES DEFORMATIONS ET INCREMENTS DE DEFORMATION
 !
-
+!
                 call epsett('DEFORM', nbrddl, deplm, b, rbid, &
                             epsi, wgt, rbid)
                 eps2d = 0
@@ -358,12 +357,11 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
 ! -    APPEL A LA LOI DE COMPORTEMENT
                 ksp = (icou-1)*(2*nbsec+1)+isect
                 sigma = 0.d0
-                call nmcomp(BEHinteg, &
-                            'RIGI', igau, ksp, 2, typmod, &
-                            zi(imate), zk16(icompo), zr(icarcr), instm, instp, &
-                            6, eps2d, deps2d, 6, sign, &
-                            zr(ivarim+k2), option, angmas, &
-                            sigma, varip(1+k2), 36, dsidep, cod)
+                call nmcomp(BEHinteg, 'RIGI', igau, ksp, 2, &
+                            typmod, zi(imate), zk16(icompo), zr(icarcr), instm, &
+                            instp, 6, eps2d, deps2d, 6, &
+                            sign, zr(ivarim+k2), option, angmas, sigma, &
+                            varip(1+k2), 36, dsidep, cod)
 !
                 if (elasKeyword .eq. 'ELAS') then
                     nbv = 2
@@ -465,12 +463,12 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
     end if
 !
 ! STOCKAGE DES VARIABLES INTERNES
-
+!
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         zr(ivarip:ivarip+lg_varip-1) = varip(1:lg_varip)
     end if
-
+!
     if (lSigm) then
         zi(jcret) = codret
     end if

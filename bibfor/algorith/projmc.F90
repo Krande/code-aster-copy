@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine projmc(matras, nomres, basemo, nugene, nu, &
                   neq, nbmo)
     implicit none
@@ -69,7 +69,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     integer(kind=4), pointer :: smhc(:) => null()
     integer, pointer :: smdi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
-    !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -79,7 +79,8 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     matr = matras
 !
 !   TYPE DE LA BASE MODALE
-    call rsexch('F', basemo, 'DEPL', 1, nomcha, iret)
+    call rsexch('F', basemo, 'DEPL', 1, nomcha, &
+                iret)
     call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=typbase)
     if (typbase .eq. 'C') call utmess('A', 'DEFIBASEMODALE1_2')
 !

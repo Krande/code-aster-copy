@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
     real(kind=8) :: rzero
     character(len=24) :: vecaux, vecau1
     integer :: ieq, ivect, laux, laux1
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     data vecaux/'&&VPPGEN.VECTEUR.AUX0'/
     data vecau1/'&&VPPGEN.VECTEUR.AUX1'/
@@ -64,7 +65,10 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
         do ivect = 1, nbvect
             call mrmult('ZERO', lmasse, vect(1, ivect), zr(laux+1), 1, &
                         .false._1)
-            masseg(ivect) = ddot(neq, vect(1, ivect), 1, zr(laux+1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            masseg(ivect) = ddot(b_n, vect(1, ivect), b_incx, zr(laux+1), b_incy)
         end do
     end if
 !     ------------------------------------------------------------------
@@ -74,7 +78,10 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
         do ivect = 1, nbvect
             call mrmult('ZERO', lamor, vect(1, ivect), zr(laux+1), 1, &
                         .false._1)
-            amorg(ivect) = ddot(neq, vect(1, ivect), 1, zr(laux+1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            amorg(ivect) = ddot(b_n, vect(1, ivect), b_incx, zr(laux+1), b_incy)
         end do
     else
         amorg(1:nbvect) = rzero
@@ -89,7 +96,10 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
             end do
             call mrmult('ZERO', lraide, zr(laux1+1), zr(laux+1), 1, &
                         .false._1)
-            raideg(ivect) = ddot(neq, zr(laux+1), 1, zr(laux1+1), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            raideg(ivect) = ddot(b_n, zr(laux+1), b_incx, zr(laux1+1), b_incy)
         end do
     end if
 !     ------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,6 +89,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, &
     real(kind=8), pointer :: raid(:) => null()
     real(kind=8), pointer :: jeu(:) => null()
     real(kind=8), pointer :: reg(:) => null()
+    blas_int :: b_incx, b_n
 !     -----------------------------------------------------------------
     call jemarq()
     call getres(nomres, typres, nomcmd)
@@ -230,16 +231,24 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, &
         harmax = 1
         do ieq = 1, neq
             iadd = (iordr-1)*(neq*nmodes+2)+ieq
-            nspec(ieq) = dnrm2(2*nbhar+1, zr(isort-1+iadd), neq)**2
+            b_n = to_blas_int(2*nbhar+1)
+            b_incx = to_blas_int(neq)
+            nspec(ieq) = dnrm2(b_n, zr(isort-1+iadd), b_incx)**2
         end do
-        inspec = idamax(neq, nspec, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        inspec = idamax(b_n, nspec, b_incx)
         iadd = (iordr-1)*(neq*nmodes+2)+inspec
         espec(1) = zr(isort-1+iadd)**2/nspec(inspec)
         do ihar = 1, nbhar
-            espec(ihar+1) = (zr(isort-1+iadd+ihar*neq)**2+ &
-                             zr(isort-1+iadd+(nbhar+ihar)*neq)**2)/nspec(inspec)
+            espec(ihar+1) = ( &
+                            zr(isort-1+iadd+ihar*neq)**2+zr(isort-1+iadd+(nbhar+ihar)*neq)**2)/n&
+                            &spec(inspec &
+                            )
         end do
-        harmaxa = idamax(nbhar+1, espec, 1)-1
+        b_n = to_blas_int(nbhar+1)
+        b_incx = to_blas_int(1)
+        harmaxa = idamax(b_n, espec, b_incx)-1
         if (harmaxa .gt. harmax) then
             harmax = harmaxa
         end if

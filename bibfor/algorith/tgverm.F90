@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
     integer :: i, j, k, l, indi, nvar, init, pos
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxdep, maxgeo, maxpre, maxgon
     real(kind=8) :: matper(nddl*nddl), epsilp, epsilg
+    blas_int :: b_incx, b_incy, b_n
     save init, pos
     data matra/'PYTHON.TANGENT.MATA'/
     data matrc/'PYTHON.TANGENT.MATC'/
@@ -143,10 +144,22 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
         end if
 !      ARCHIVAGE DES VALEURS DE REFERENCE
 !
-        call dcopy(nddl, deplp, 1, sdepl, 1)
-        call dcopy(ncont, contp, 1, scont, 1)
-        call dcopy(nddl, vectu, 1, svect, 1)
-        call dcopy(nvari, varip, 1, svari, 1)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, deplp, b_incx, sdepl, b_incy)
+        b_n = to_blas_int(ncont)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, contp, b_incx, scont, b_incy)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vectu, b_incx, svect, b_incy)
+        b_n = to_blas_int(nvari)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, varip, b_incx, svari, b_incy)
 !
 !       ARCHIVAGE DE LA MATRICE TANGENTE COHERENTE
         if (matsym) then
@@ -160,7 +173,10 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
                 end do
             end do
         else
-            call dcopy(nddl*nddl, matuu, 1, smatr, 1)
+            b_n = to_blas_int(nddl*nddl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, matuu, b_incx, smatr, b_incy)
         end if
 !
 !      PREPARATION DES ITERATIONS
@@ -179,7 +195,10 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
     nvar = int((pos+1)/2)
 !
     if (nvar .gt. 0) then
-        call dcopy(nddl, vectu, 1, varia(1+(pos-1)*nddl), 1)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vectu, b_incx, varia(1+(pos-1)*nddl), b_incy)
     end if
 !
     pos = pos+1
@@ -187,7 +206,10 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
     indi = 1-2*mod(pos, 2)
 !
     if (nvar .le. nddl) then
-        call dcopy(nddl, sdepl, 1, deplp, 1)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sdepl, b_incx, deplp, b_incy)
         do i = 1, nno1
             do j = 1, ndim
                 if (nvar .eq. vu(j, i)) then
@@ -257,10 +279,22 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
     option = 'FULL_MECA'
 !
 !    RETABLISSEMENT DE LA SOLUTION
-    call dcopy(nddl, sdepl, 1, deplp, 1)
-    call dcopy(nddl, svect, 1, vectu, 1)
-    call dcopy(ncont, scont, 1, contp, 1)
-    call dcopy(nvari, svari, 1, varip, 1)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, sdepl, b_incx, deplp, b_incy)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, svect, b_incx, vectu, b_incy)
+    b_n = to_blas_int(ncont)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, scont, b_incx, contp, b_incy)
+    b_n = to_blas_int(nvari)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, svari, b_incx, varip, b_incy)
 !
 !     PERTURBATION => SAUVEGARDE DE LA MATRICE CALCULEE PAR
 !     DIFFERENCES FINIES COMME MATRICE TANGENTE
@@ -269,7 +303,10 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
         if (matsym) then
             call mavec(matper, nddl, matuu, nddl*(nddl+1)/2)
         else
-            call dcopy(nddl*nddl, matper, 1, matuu, 1)
+            b_n = to_blas_int(nddl*nddl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, matper, b_incx, matuu, b_incy)
         end if
 !
 !     VERIFICATION
@@ -278,7 +315,10 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
         if (matsym) then
             call mavec(smatr, nddl, matuu, nddl*(nddl+1)/2)
         else
-            call dcopy(nddl*nddl, smatr, 1, matuu, 1)
+            b_n = to_blas_int(nddl*nddl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, smatr, b_incx, matuu, b_incy)
         end if
 !
 !      CREATION DES OBJETS
@@ -294,8 +334,14 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
 !        ROUTINES ELEMENTAIRES
         call wkvect(matra, 'G V R', nddl*nddl, ematra)
         call wkvect(matrc, 'G V R', nddl*nddl, ematrc)
-        call dcopy(nddl*nddl, smatr, 1, zr(ematra), 1)
-        call dcopy(nddl*nddl, matper, 1, zr(ematrc), 1)
+        b_n = to_blas_int(nddl*nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, smatr, b_incx, zr(ematra), b_incy)
+        b_n = to_blas_int(nddl*nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, matper, b_incx, zr(ematrc), b_incy)
     end if
 !
 999 continue

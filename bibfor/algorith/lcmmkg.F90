@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
                   materf, mod, nr, dsde)
     implicit none
@@ -36,6 +36,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
     integer :: nr, ndt, ndi, i, j, k, l, m, n, nmat, ind(3, 3), nvi
     common/tdim/ndt, ndi
     character(len=8) :: mod
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
     data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !
@@ -49,13 +50,34 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
     ind(2, 3) = 6
     ind(3, 2) = 6
 !
-    call dcopy(9, vind(nvi-3-18+10), 1, fem, 1)
-    call daxpy(9, 1.d0, id, 1, fem, 1)
-    call dcopy(9, vinf(nvi-3-18+10), 1, fep, 1)
-    call daxpy(9, 1.d0, id, 1, fep, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vind(nvi-3-18+10), b_incx, fem, b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, id, b_incx, fem, &
+               b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vinf(nvi-3-18+10), b_incx, fep, b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, id, b_incx, fep, &
+               b_incy)
 !
-    call dcopy(9, vinf(nvi-3-18+1), 1, fpp, 1)
-    call daxpy(9, 1.d0, id, 1, fpp, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vinf(nvi-3-18+1), b_incx, fpp, b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0, id, b_incx, fpp, &
+               b_incy)
     call matinv('S', 3, fpp, fppinv, det)
 !
 ! CALCUL DE DFE/DF
@@ -86,7 +108,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
             end do
         end do
     end do
-
+!
     do i = 1, 3
         do j = 1, 3
             do k = 1, 3
@@ -98,7 +120,9 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
             end do
         end do
     end do
-    call dscal(81, -0.5d0, dr1df, 1)
+    b_n = to_blas_int(81)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, -0.5d0, dr1df, b_incx)
 !
 ! CALCUL DE DS/DF EN UTILISANT LES SYMETRIES
     do i = 1, 3
@@ -130,8 +154,14 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
     end if
     fet = transpose(fep)
     fetfe = matmul(fet, fep)
-    call daxpy(9, -1.d0, id, 1, fetfe, 1)
-    call dscal(9, 0.5d0, fetfe, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -1.d0, id, b_incx, fetfe, &
+               b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.5d0, fetfe, b_incx)
 !
 !      CONTRAINTES PK2
     call tnsvec(3, 3, fetfe, eel, 1.d0)
@@ -171,7 +201,8 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
                 do l = 1, 3
                     do m = 1, 3
                         do n = 1, 3
-                   dtaudf(i, j, k, l) = dtaudf(i, j, k, l)+fep(i, m)*dsdf(ind(m, n), k, l)*fep(j, n)
+                            dtaudf(i, j, k, l) = dtaudf(i, j, k, l)+fep(i, m)*dsdf(ind(m, n), k, &
+                                                 &l)*fep(j, n)
                         end do
                     end do
                 end do
@@ -190,8 +221,14 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
     end do
 !
 ! LES RACINE(2) ATTENDUES PAR NMCOMP  !!!
-    call dscal(9, sqrt(2.d0), dsde(4, 1, 1), 6)
-    call dscal(9, sqrt(2.d0), dsde(5, 1, 1), 6)
-    call dscal(9, sqrt(2.d0), dsde(6, 1, 1), 6)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(6)
+    call dscal(b_n, sqrt(2.d0), dsde(4, 1, 1), b_incx)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(6)
+    call dscal(b_n, sqrt(2.d0), dsde(5, 1, 1), b_incx)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(6)
+    call dscal(b_n, sqrt(2.d0), dsde(6, 1, 1), b_incx)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate, &
     real(kind=8) :: kron(6)
     real(kind=8) :: p0, p1, p2, eta, rac(2)
     real(kind=8) :: young, nu, deuxmu, rp, h, et, sy
+    blas_int :: b_incx, b_incy, b_n
 !
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
@@ -149,9 +150,18 @@ subroutine pipepl(ndim, compor, typmod, tau, mate, &
 !    COEFFICIENTS DE LA FORME QUADRATIQUE DU CRITERE
 !      FEL = SQRT(P0 + 2P1 ETA + P2 ETA**2) - 1
 !
-    p0 = ddot(ndimsi, s0, 1, s0, 1)*(1.5d0/rp**2)
-    p1 = ddot(ndimsi, s0, 1, s1, 1)*(1.5d0/rp**2)
-    p2 = ddot(ndimsi, s1, 1, s1, 1)*(1.5d0/rp**2)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p0 = ddot(b_n, s0, b_incx, s0, b_incy)*(1.5d0/rp**2)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p1 = ddot(b_n, s0, b_incx, s1, b_incy)*(1.5d0/rp**2)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p2 = ddot(b_n, s1, b_incx, s1, b_incy)*(1.5d0/rp**2)
 !
 !
 !    POINT A DEVIATEUR NUL : PAS DE PILOTAGE POSSIBLE

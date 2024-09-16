@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
                   numenm, lmait, lescl, lmfixe, lefixe, &
                   tau1m, tau2m, tau1e, tau2e, tau1, &
@@ -88,6 +88,7 @@ subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
     real(kind=8) :: noor
     real(kind=8) :: enorm(3), mnorm(3), norm(3)
     character(len=8) :: nomnoe, nomenm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -139,13 +140,19 @@ subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
 ! --- CALCUL DE LA NORMALE
 !
     if (lmait .and. (.not. lescl)) then
-        call dcopy(3, mnorm, 1, norm, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, mnorm, b_incx, norm, b_incy)
     else if (lmait .and. lescl) then
         do i = 1, 3
             norm(i) = (enorm(i)+mnorm(i))/2.d0
         end do
     else if (lescl) then
-        call dcopy(3, enorm, 1, norm, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, enorm, b_incx, norm, b_incy)
     else
         ASSERT(.false.)
     end if
@@ -154,16 +161,28 @@ subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
 !
     if (lmfixe) then
         if (lmait .and. (.not. lescl)) then
-            call dcopy(3, tau1m, 1, tau1, 1)
-            call dcopy(3, tau2m, 1, tau2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, tau1m, b_incx, tau1, b_incy)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, tau2m, b_incx, tau2, b_incy)
         else
             ASSERT(.false.)
         end if
     end if
     if (lefixe) then
         if (lescl .and. (.not. lmait)) then
-            call dcopy(3, tau1e, 1, tau2, 1)
-            call dcopy(3, tau2e, 1, tau1, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, tau1e, b_incx, tau2, b_incy)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, tau2e, b_incx, tau1, b_incy)
         else
             ASSERT(.false.)
         end if

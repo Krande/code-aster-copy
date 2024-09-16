@@ -79,7 +79,8 @@ subroutine te0590(option, nomte)
     real(kind=8) :: epsilo, epsilp, epsilg
     real(kind=8) :: varia(2*135*135)
     real(kind=8) :: tab_out(27*3*27*3)
-    integer      :: na, os, nb, ib, kk
+    integer :: na, os, nb, ib, kk
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,14 +102,12 @@ subroutine te0590(option, nomte)
 ! - Get shape functions
 !
 ! - PRES
-    call elrefe_info(elrefe=list_elrefe(3), fami='RIGI', nno=nno3, &
-                     jvf=ivf3)
+    call elrefe_info(elrefe=list_elrefe(3), fami='RIGI', nno=nno3, jvf=ivf3)
 ! - GONF
-    call elrefe_info(elrefe=list_elrefe(2), fami='RIGI', nno=nno2, &
-                     jvf=ivf2, jdfde=idf2)
+    call elrefe_info(elrefe=list_elrefe(2), fami='RIGI', nno=nno2, jvf=ivf2, jdfde=idf2)
 ! - DX, DY, DZ
-    call elrefe_info(elrefe=list_elrefe(1), fami='RIGI', ndim=ndim, nno=nno1, &
-                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1)
+    call elrefe_info(elrefe=list_elrefe(1), fami='RIGI', ndim=ndim, nno=nno1, npg=npg, &
+                     jpoids=iw, jvf=ivf1, jdfde=idf1)
 !
     nddl = nno1*ndim+nno2+nno3
 !
@@ -126,9 +125,8 @@ subroutine te0590(option, nomte)
 !
 ! - Get index of dof
 !
-    call niinit(typmod, &
-                ndim, nno1, nno2, nno3, 0, &
-                vu, vg, vp, vpi)
+    call niinit(typmod, ndim, nno1, nno2, nno3, &
+                0, vu, vg, vp, vpi)
 !
 ! - Get input fields
 !
@@ -142,7 +140,8 @@ subroutine te0590(option, nomte)
     call jevech('PDEPLPR', 'L', iddld)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Get orientation
@@ -151,10 +150,8 @@ subroutine te0590(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
     lMatrPred = option .eq. 'RIGI_MECA_TANG'
 !
 ! - Properties of behaviour
@@ -178,7 +175,10 @@ subroutine te0590(option, nomte)
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*lgpg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 !
 100 continue
@@ -189,9 +189,8 @@ subroutine te0590(option, nomte)
                     vu, vg, vp, zr(igeom), typmod, &
                     option, zi(imate), zk16(icompo), lgpg, zr(icarcr), &
                     zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut, &
-                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
-                    lMatr, lVect, &
-                    zr(ivectu), zr(imatuu), codret)
+                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), lMatr, &
+                    lVect, zr(ivectu), zr(imatuu), codret)
     else if (defo_comp .eq. 'GDEF_LOG') then
 !
 ! - PARAMETRES EN SORTIE
@@ -200,9 +199,9 @@ subroutine te0590(option, nomte)
                     vu, vg, vp, zr(igeom), typmod, &
                     option, zi(imate), zk16(icompo), lgpg, zr(icarcr), &
                     zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut, &
-                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
-                    lMatr, lVect, lSigm, lVari, &
-                    zr(ivectu), zr(imatuu), matsym, codret)
+                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), lMatr, &
+                    lVect, lSigm, lVari, zr(ivectu), zr(imatuu), &
+                    matsym, codret)
     else if (defo_comp .eq. 'SIMO_MIEHE') then
 !
 ! - PARAMETRES EN SORTIE
@@ -213,8 +212,8 @@ subroutine te0590(option, nomte)
                     typmod, option, zi(imate), zk16(icompo), lgpg, &
                     zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), &
                     angl_naut, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
-                    lMatr, lVect, lMatrPred, &
-                    zr(ivectu), zr(imatuu), codret)
+                    lMatr, lVect, lMatrPred, zr(ivectu), zr(imatuu), &
+                    codret)
     else
         call utmess('F', 'ELEMENTS3_16', sk=defo_comp)
     end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,20 +53,33 @@ subroutine radial(nbsig, sigm, sigp, indm, indp, &
     real(kind=8) :: tensm(6), tensp(6), normdn, sigm(nbsig), sigp(nbsig)
     real(kind=8) :: zernor, devm(6), devp(6), smeq, speq
     real(kind=8) :: dn1n2(6), ndn, preci, trt1, trt2
+    blas_int :: b_incx, b_incy, b_n
 ! ......................................................................
 !
     if ((nint(indm) .gt. 0.d0) .and. (nint(indp) .gt. 0.d0)) then
 !
-        call dcopy(nbsig, sigm, 1, tensm, 1)
-        call dcopy(nbsig, sigp, 1, tensp, 1)
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigm, b_incx, tensm, b_incy)
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigp, b_incx, tensp, b_incy)
 !
         zernor = r8prem()
         if (icine .eq. 1) then
 !
-            call daxpy(nbsig, -1.d0, xm, 1, tensm, &
-                       1)
-            call daxpy(nbsig, -1.d0, xp, 1, tensp, &
-                       1)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, xm, b_incx, tensm, &
+                       b_incy)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, xp, b_incx, tensp, &
+                       b_incy)
 !
         end if
 !
@@ -75,16 +88,28 @@ subroutine radial(nbsig, sigm, sigp, indm, indp, &
         trt2 = (tensp(1)+tensp(2)+tensp(3))/3.d0
 !        PART DEVIATORIQUE DES CONTRAINTES
 !
-        call dcopy(nbsig, tensm, 1, devm, 1)
-        call dcopy(nbsig, tensp, 1, devp, 1)
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tensm, b_incx, devm, b_incy)
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, tensp, b_incx, devp, b_incy)
         do i = 1, 3
             devm(i) = devm(i)-trt1
             devp(i) = devp(i)-trt2
         end do
 !         CALL DSCAL(NBSIG-3,SQRT(2.D0),DEVM(4),1)
 !         CALL DSCAL(NBSIG-3,SQRT(2.D0),DEVP(4),1)
-        smeq = sqrt(ddot(nbsig, devm, 1, devm, 1))
-        speq = sqrt(ddot(nbsig, devp, 1, devp, 1))
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        smeq = sqrt(ddot(b_n, devm, b_incx, devm, b_incy))
+        b_n = to_blas_int(nbsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        speq = sqrt(ddot(b_n, devp, b_incx, devp, b_incy))
         preci = 1.d3*zernor*max(smeq, speq)
 !
 ! ----      DANS LE CAS OU NORME(TENSM) = 0  OU NORME(DTENSMA) = 0 :
@@ -93,17 +118,36 @@ subroutine radial(nbsig, sigm, sigp, indm, indp, &
         if (smeq .le. preci .or. speq .le. preci) then
             normdn = 0.d0
         else
-            call dcopy(nbsig, devm, 1, n1, 1)
-            call dcopy(nbsig, devp, 1, n2, 1)
-            call dscal(nbsig, 1.d0/smeq, n1, 1)
-            call dscal(nbsig, 1.d0/speq, n2, 1)
-            call dcopy(nbsig, n1, 1, dn1n2, 1)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, devm, b_incx, n1, b_incy)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, devp, b_incx, n2, b_incy)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/smeq, n1, b_incx)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/speq, n2, b_incx)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, n1, b_incx, dn1n2, b_incy)
 !
 !          CALCUL DE LA DIFFERENCE N1 - N2
 !
-            call daxpy(nbsig, -1.d0, n2, 1, dn1n2, &
-                       1)
-            ndn = sqrt(ddot(nbsig, dn1n2, 1, dn1n2, 1))
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, n2, b_incx, dn1n2, &
+                       b_incy)
+            b_n = to_blas_int(nbsig)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ndn = sqrt(ddot(b_n, dn1n2, b_incx, dn1n2, b_incy))
             normdn = ndn/2.d0
         end if
 !

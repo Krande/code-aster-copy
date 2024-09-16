@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dsyr(uplo, n, alpha, x, incx, a, lda)
+    subroutine dsyr(uplo, n, alpha, x, incx,&
+                    a, lda)
 !
         character(len=1), intent(in) :: uplo
-        integer, intent(in) :: n
-        integer, intent(in) :: incx
-        integer, intent(in) :: lda
+        blas_int, intent(in) :: n
+        blas_int, intent(in) :: incx
+        blas_int, intent(in) :: lda
         real(kind=8), intent(in) :: alpha
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: a(lda, *)

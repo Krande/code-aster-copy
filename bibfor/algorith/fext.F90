@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ subroutine fext(t, neq, nvect, liad, lifo, &
     integer :: i, ier
     real(kind=8) :: zero, alpha
     character(len=8) :: nompar
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
 !
     nompar = 'INST'
@@ -51,7 +52,10 @@ subroutine fext(t, neq, nvect, liad, lifo, &
     do i = 1, nvect
         call fointe('F ', lifo(i), 1, [nompar], [t], &
                     alpha, ier)
-        call daxpy(neq, alpha, zr(liad(i)), 1, f, &
-                   1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, alpha, zr(liad(i)), b_incx, f, &
+                   b_incy)
     end do
 end subroutine

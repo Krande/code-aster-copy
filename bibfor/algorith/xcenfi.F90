@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306
 !
-subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn, &
-                  pinref, pmiref, cenref, cenfi, &
+subroutine xcenfi(elrefp, ndim, ndime, nno, geom, &
+                  lsn, pinref, pmiref, cenref, cenfi, &
                   nn, exit, jonc, num)
 !
     implicit none
@@ -141,17 +141,14 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn, &
 !
     if (.not. courbe) then
         do i = 1, ndime
-            ptxx(i+ndime) = (pinref(ndime*(pi1-1)+i)+ &
-                             pinref(ndime*(pi4-1)+i))/2.d0
+            ptxx(i+ndime) = (pinref(ndime*(pi1-1)+i)+pinref(ndime*(pi4-1)+i))/2.d0
         end do
     else
         do i = 1, ndime
             if (edge .eq. "A12" .or. edge .eq. "A34") then
-                ptxx(i+ndime) = (pmiref(ndime*(m12-1)+i)+ &
-                                 pmiref(ndime*(m34-1)+i))/2.d0
+                ptxx(i+ndime) = (pmiref(ndime*(m12-1)+i)+pmiref(ndime*(m34-1)+i))/2.d0
             else if (edge .eq. "A13" .or. edge .eq. "A24") then
-                ptxx(i+ndime) = (pmiref(ndime*(m13-1)+i)+ &
-                                 pmiref(ndime*(m24-1)+i))/2.d0
+                ptxx(i+ndime) = (pmiref(ndime*(m13-1)+i)+pmiref(ndime*(m24-1)+i))/2.d0
             else
                 ASSERT(.false.)
             end if
@@ -190,15 +187,13 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn, &
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     ksi(:) = 0.d0
     if (jonc) then
-        call xnewto(elrefp, name, n, &
-                    ndime, ptxx, ndim, geom, lsn, &
-                    ibid, ibid, itemax, &
-                    epsmax, ksi)
+        call xnewto(elrefp, name, n, ndime, ptxx, &
+                    ndim, geom, lsn, ibid, ibid, &
+                    itemax, epsmax, ksi)
     else
-        call xnewto(elrefp, name, n, &
-                    ndime, ptxx, ndim, geom, lsn, &
-                    ibid, ibid, itemax, &
-                    epsmax, ksi, exit, dekker)
+        call xnewto(elrefp, name, n, ndime, ptxx, &
+                    ndim, geom, lsn, ibid, ibid, &
+                    itemax, epsmax, ksi, exit, dekker)
     end if
 !
     do i = 1, ndime

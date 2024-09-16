@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dtmprep(sd_dtm_)
     implicit none
 !
@@ -73,44 +73,45 @@ subroutine dtmprep(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer          :: iret, append, substruc, vali(1), nbmode
-    integer          :: nbstor, jmas1, jmas2, jrefe, jrig1
-    integer          :: jrig2, lamor, jamo1, jamo2, i
-    integer          :: neq, jbase, nexcit, nexcir
-    integer          :: ntotex, jcoefm, jiadve, jinumo
-    integer          :: jidesc, jnomfo, jnodep, jnovit, jnoacc
-    integer          :: jpsdel, jgyog, jrgyg, ng2, jscdeg
-    integer          :: descr, descm, desca, lagrcorr
-    integer          :: jrefa, nbnli, nbpas
-    integer          :: ibid, nbbas, nbmodi, piv
-    integer          :: nbsst, j, jmas3, nbmody
-    real(kind=8)     :: acrit, agene, valr(2), omeg2
-    real(kind=8)     :: vrotat, dt, dtmax, dtmin, tinit
-    real(kind=8)     :: tfin, epsi
+    integer :: iret, append, substruc, vali(1), nbmode
+    integer :: nbstor, jmas1, jmas2, jrefe, jrig1
+    integer :: jrig2, lamor, jamo1, jamo2, i
+    integer :: neq, jbase, nexcit, nexcir
+    integer :: ntotex, jcoefm, jiadve, jinumo
+    integer :: jidesc, jnomfo, jnodep, jnovit, jnoacc
+    integer :: jpsdel, jgyog, jrgyg, ng2, jscdeg
+    integer :: descr, descm, desca, lagrcorr
+    integer :: jrefa, nbnli, nbpas
+    integer :: ibid, nbbas, nbmodi, piv
+    integer :: nbsst, j, jmas3, nbmody
+    real(kind=8) :: acrit, agene, valr(2), omeg2
+    real(kind=8) :: vrotat, dt, dtmax, dtmin, tinit
+    real(kind=8) :: tfin, epsi
     character(len=8) :: sd_dtm, nomres, tran, calcres, masgen
     character(len=8) :: riggen, amogen, basemo, matass
     character(len=8) :: resgen, basemo2, monmot, foncv, fonca
     character(len=8) :: gyogen, rgygen, k8var, modgen
     character(len=8) :: mastem, amotem, sd_nl
-    character(len=14):: numddl, numgeg
-    character(len=16):: typrep, typbas, typco, method, methods(_DTM_NB_SCHEMAS)
-    character(len=19):: nomstg
-    character(len=24):: typres, nomcmd, nume24, nomstr, valk(1), jvname
-    character(len=24):: solver, lisins
+    character(len=14) :: numddl, numgeg
+    character(len=16) :: typrep, typbas, typco, method, methods(_DTM_NB_SCHEMAS)
+    character(len=19) :: nomstg
+    character(len=24) :: typres, nomcmd, nume24, nomstr, valk(1), jvname
+    character(len=24) :: solver, lisins
 !
-    integer, pointer           :: desc(:) => null()
-    integer, pointer           :: smde(:) => null()
-    integer, pointer           :: nequ(:) => null()
-    real(kind=8), pointer      :: conl(:) => null()
-    real(kind=8), pointer      :: puls(:) => null()
-    real(kind=8), pointer      :: puls2(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: smde(:) => null()
+    integer, pointer :: nequ(:) => null()
+    real(kind=8), pointer :: conl(:) => null()
+    real(kind=8), pointer :: puls(:) => null()
+    real(kind=8), pointer :: puls2(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refag(:) => null()
-
+    blas_int :: b_incx, b_incy, b_n
+!
     data methods/'DIFF_CENTRE     ', 'DEVOGE          ', 'NEWMARK         ', &
         'RUNGE_KUTTA_32  ', 'RUNGE_KUTTA_54  ', 'ADAPT_ORDRE1    ', &
         'ADAPT_ORDRE2    ', 'ITMI            ', 'TRBDF2          '/
-
+!
 !
 !   0 - Initializations
     call jemarq()
@@ -149,7 +150,7 @@ subroutine dtmprep(sd_dtm_)
     call dtmsav(sd_dtm, _RESU_SD, 1, kscal=nomres)
     call dtmsav(sd_dtm, _CALC_SD, 1, kscal=calcres)
     call dtmsav(sd_dtm, _APPND_SD, 1, iscal=append)
-
+!
     do i = 1, _DTM_NB_SCHEMAS
         if (method .eq. methods(i)) goto 5
     end do
@@ -159,7 +160,7 @@ subroutine dtmprep(sd_dtm_)
     end if
     call dtmsav(sd_dtm, _SCHEMA_I, 1, iscal=i)
     call dtmsav(sd_dtm, _SCHEMA, 1, kscal=method)
-
+!
 !
 !   --------------------------------------------------------------------------------------
 !   3 - Information on the projection (modal) basis, frequencies, and eigen vectors
@@ -167,9 +168,9 @@ subroutine dtmprep(sd_dtm_)
 !
 !   --- 4.1 - Modal basis and number of modes
     call getvid(' ', 'MATR_MASS', scal=masgen, nbret=iret)
-
+!
     if (iret .eq. 0) then
-        ! write(*,*) "No mass matrix has been found as an input"
+! write(*,*) "No mass matrix has been found as an input"
         ASSERT(.false.)
     end if
     call jeveuo(masgen//'           .REFA', 'L', vk24=refa)
@@ -177,12 +178,12 @@ subroutine dtmprep(sd_dtm_)
     call jeveuo(masgen//'           .DESC', 'L', vi=desc)
     nbmode = desc(2)
     typbas = 'MODE_MECA'
-
+!
 !   --- Base type : MODE_MECA <=> the projected matrices (K,M) are both diagonal
 !   ---           : BASE_MODA <=> at least one of the projected matrices is not diagonal
 !
 !   Note : this property is determined in section 4 after checking the matrices K and M
-
+!
     call gettco(basemo, typco)
     if (typco(1:9) .eq. 'MODE_MECA') then
         write (6, *) 'type mode_meca'
@@ -219,7 +220,7 @@ subroutine dtmprep(sd_dtm_)
 !   Physical DOF numbering, note that in substructuring cases the nume_ddl_gene is saved
 !   under this parameter (NUM_DDL) of the sd_dtm (section 4.0)
     call dtmsav(sd_dtm, _NUM_DDL, 1, kscal=numddl)
-
+!
 10  continue
 !
 !   --------------------------------------------------------------------------------------
@@ -239,7 +240,7 @@ subroutine dtmprep(sd_dtm_)
     end if
     call dtmsav(sd_dtm, _SUB_STRU, 1, iscal=substruc)
     lagrcorr = 0
-
+!
 !   --- 4.1 - Extraction of the mass M-matrix, full and diagonal
     nomstr = nume24(1:14)//'.SMOS'
     call jeveuo(nomstr(1:19)//'.SMDE', 'L', vi=smde)
@@ -251,12 +252,15 @@ subroutine dtmprep(sd_dtm_)
 !       --- Full matrix extraction and saving
         call dtminivec(sd_dtm, _MASS_FUL, nbmode*nbmode, address=jmas2)
         call copmat(masgen, zr(jmas2))
-
+!
 !       --- Factorized matrix saving
         call dtminivec(sd_dtm, _MASS_FAC, nbmode*nbmode, address=jmas3)
-        call dcopy(nbmode*nbmode, zr(jmas2), 1, zr(jmas3), 1)
+        b_n = to_blas_int(nbmode*nbmode)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jmas2), b_incx, zr(jmas3), b_incy)
         call trlds(zr(jmas3), nbmode, nbmode, iret)
-
+!
         typbas = 'BASE_MODA'
 !       --- Zero pivot : correction is required (case of sub-structuring)
         if (iret .ne. 0) then
@@ -265,7 +269,10 @@ subroutine dtmprep(sd_dtm_)
             call getvid(' ', 'MATR_RIGI', scal=riggen)
             call ajlagr(riggen, masgen, mastem)
             call copmat(mastem, zr(jmas2))
-            call dcopy(nbmode*nbmode, zr(jmas2), 1, zr(jmas3), 1)
+            b_n = to_blas_int(nbmode*nbmode)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jmas2), b_incx, zr(jmas3), b_incy)
             call trlds(zr(jmas3), nbmode, nbmode, piv)
             if (piv .ne. 0) then
                 call dtmget(sd_dtm, _MASS_FAC, savejv=jvname)
@@ -302,7 +309,7 @@ subroutine dtmprep(sd_dtm_)
     end if
     call dtmsav(sd_dtm, _RIGI_MAT, 1, kscal=riggen)
     call dtmsav(sd_dtm, _TYP_BASE, 1, kscal=typbas)
-
+!
 !   --- Calculation of the frequencies associated to the modes from the diagonal
 !       mass and stiffness terms
     AS_ALLOCATE(vr=puls, size=nbmode)
@@ -330,7 +337,8 @@ subroutine dtmprep(sd_dtm_)
 !           frequency for the dynamic modes
         nbmodi = 0
         do i = 1, nbsst
-            call mgutdm(modgen, ' ', i, 'NOM_BASE_MODALE', ibid, basemo)
+            call mgutdm(modgen, ' ', i, 'NOM_BASE_MODALE', ibid, &
+                        basemo)
             call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbbas)
             do j = 1, nbbas
                 omeg2 = abs(zr(jrig1+nbmodi+j-1)/zr(jmas1+nbmodi+j-1))
@@ -345,7 +353,7 @@ subroutine dtmprep(sd_dtm_)
 !           dynamic substructure (??? Special care should be taken thereafter ???)
 !           NB_MOD_D represents the number of dynamic modes across all substructures
         call dtmsav(sd_dtm, _BASE_MOD, 1, kscal=basemo)
-        ! call dtmsav(sd_dtm, _NB_MOD_D,1,iscal=nbmody)
+! call dtmsav(sd_dtm, _NB_MOD_D,1,iscal=nbmody)
     end if
     call dtmsav(sd_dtm, _OMEGA, nbmody, rvect=puls)
     call dtmsav(sd_dtm, _OMEGA_SQ, nbmody, rvect=puls2)
@@ -418,7 +426,7 @@ subroutine dtmprep(sd_dtm_)
 !       --- Creation of a diagonal damping matrix from the supplied damping coefs list
         call dtmprep_damp(sd_dtm)
     end if
-
+!
 !   --- Set the modal mass to k/omega^2 for the previously detected static modes,
 !       Note : these have been artificially damped beyond criticity
     do i = 1, nbmode
@@ -431,7 +439,7 @@ subroutine dtmprep(sd_dtm_)
             end if
         end if
     end do
-
+!
 !
 !   -------------------------------------------------------------------------------------
 !
@@ -456,14 +464,14 @@ subroutine dtmprep(sd_dtm_)
     else
         call dtmsav(sd_dtm, _MAT_DESC, 3, ivect=[0, 0, 0])
     end if
-
+!
 !
 !   --------------------------------------------------------------------------------------
 !   5 - Fluid Structure Interactions
 !   --------------------------------------------------------------------------------------
 !
     call dtmprep_fsi(sd_dtm)
-
+!
 !
 !   --------------------------------------------------------------------------------------
 !   6 - Information about the external charging (EXCIT and EXCIT_RESU)
@@ -474,24 +482,24 @@ subroutine dtmprep(sd_dtm_)
 !   --- 6.1 - Charging with a generalized vector : EXCIT -> VECT_ASSE_GENE
     call getfac('EXCIT', nexcit)
     if (nexcit .gt. 0) then
-        ! call dtminivec(sd_dtm, _VECT_GEN, nexcit, address=jvec)
-        ! do i = 1, nexcit
-        !     call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, scal=vecgen)
-        !     zk8(jvec-1+i) = vecgen
-        ! enddo
+! call dtminivec(sd_dtm, _VECT_GEN, nexcit, address=jvec)
+! do i = 1, nexcit
+!     call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, scal=vecgen)
+!     zk8(jvec-1+i) = vecgen
+! enddo
         continue
     else
         nexcit = 0
     end if
-
+!
 !
 !   --- 6.2 - Charging from an existing result : EXCIT_RESU -> RESULTAT
     call getfac('EXCIT_RESU', nexcir)
     if (nexcir .gt. 0) then
-        ! call dtminivec(sd_dtm, _VECT_RES, nexcir, address=jvecr)
+! call dtminivec(sd_dtm, _VECT_RES, nexcir, address=jvecr)
         do i = 1, nexcir
             call getvid('EXCIT_RESU', 'RESULTAT', iocc=i, scal=resgen)
-            ! zk8(jvecr-1+i) = resgen
+! zk8(jvecr-1+i) = resgen
 !           --- Verify that the modal basis associated to the charging result is the same
 !               as that corresponding to the projection basis of the M and K matrices
             call dismoi('BASE_MODALE', resgen, 'RESU_DYNA', repk=basemo2)
@@ -534,7 +542,7 @@ subroutine dtmprep(sd_dtm_)
     end if
     call dtmsav(sd_dtm, _NB_EXC_T, 1, iscal=ntotex)
     call dtmsav(sd_dtm, _MULTI_AP, 1, kscal=monmot)
-
+!
 !
 !   --------------------------------------------------------------------------------------
 !   7 - Nonlinearities : (1) Gyroscopy           / MATR_GYRO, MATR_RIGY, VITESSE_VAR...
@@ -573,7 +581,7 @@ subroutine dtmprep(sd_dtm_)
     end if
     call dtmsav(sd_dtm, _V_ROT, 1, rscal=vrotat)
     call dtmsav(sd_dtm, _VITE_VAR, 1, kscal=k8var(1:3))
-
+!
 !   --------------------------------------------------------------------------------------
 !   7 - Nonlinearities (localized) :
 !       (1)     Chocs                       / CHOC
@@ -597,17 +605,17 @@ subroutine dtmprep(sd_dtm_)
     lisins = '&&DTMPREP'
     if ((nbnli) .gt. 0) then
         call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
-
-        ! call dtmget(sd_dtm, _CHO_DEPL, vr=chodep)
-        ! call dtmget(sd_dtm, _CHO_PARA, vr=chopar)
-        ! call dtmget(sd_dtm, _CHO_NOEU, vk8=chonoe)
+!
+! call dtmget(sd_dtm, _CHO_DEPL, vr=chodep)
+! call dtmget(sd_dtm, _CHO_PARA, vr=chopar)
+! call dtmget(sd_dtm, _CHO_NOEU, vk8=chonoe)
 !
 !         ---------------------------------------------------
 !       // TODO important : this needs to be refigured out
 !       // as to exploit sd_nl
-        ! call mdptem(nbmode, zr(jmas1), puls, nbnli, chodep,&
-        !             chopar, chonoe, dt, dtmax, dtmin,&
-        !             tinit, tfin, nbpas, iret, lisins)
+! call mdptem(nbmode, zr(jmas1), puls, nbnli, chodep,&
+!             chopar, chonoe, dt, dtmax, dtmin,&
+!             tinit, tfin, nbpas, iret, lisins)
         call mdptem(nbmode, zr(jmas1), puls, nbnli, dt, &
                     dtmax, dtmin, tinit, tfin, nbpas, &
                     iret, lisins)
@@ -622,7 +630,7 @@ subroutine dtmprep(sd_dtm_)
     AS_DEALLOCATE(vr=puls)
 !
 !
-
+!
     call dtmsav(sd_dtm, _DT, 1, rscal=dt)
     call dtmsav(sd_dtm, _DT_MIN, 1, rscal=dtmin)
     call dtmsav(sd_dtm, _DT_MAX, 1, rscal=dtmax)
@@ -642,7 +650,7 @@ subroutine dtmprep(sd_dtm_)
 !   --------------------------------------------------------------------------------------
 !
     call dtmallo(sd_dtm)
-
+!
 !
     call jedema()
 end subroutine

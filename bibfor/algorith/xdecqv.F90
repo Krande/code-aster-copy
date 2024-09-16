@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,7 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, &
     integer :: nnop
     integer :: zxain
     character(len=8) :: typma, elrese(3)
+    blas_int :: b_incx, b_incy, b_n
 !
     data elrese/'SEG3', 'TRIA6', 'TETRA10'/
 ! --------------------------------------------------------------------
@@ -704,7 +705,10 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, &
                 ad(j) = xyz(4, j)-xyz(1, j)
             end do
             call provec(ab, ac, vn)
-            ps = ddot(3, vn, 1, ad, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            ps = ddot(b_n, vn, b_incx, ad, b_incy)
             if (ps .lt. 0) then
 !          MAUVAIS SENS DU TETRA, ON INVERSE LES NOEUDS 3 ET 4
                 inh = cnse(ise, 3)
@@ -794,8 +798,7 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, &
 !
                     do j = 1, nnop
                         do i = 1, nfisc
-                            somlsn(i) = somlsn(i)+ff(j)*lsn((j-1)*nfiss+ &
-                                                            fisco(2*i-1))
+                            somlsn(i) = somlsn(i)+ff(j)*lsn((j-1)*nfiss+fisco(2*i-1))
                         end do
                         somlsn(nfisc+1) = somlsn(nfisc+1)+ff(j)*lsn((j-1)*nfiss+ifiss)
                         lsno(in) = lsno(in)+ff(j)*lsn((j-1)*nfiss+ifiss)

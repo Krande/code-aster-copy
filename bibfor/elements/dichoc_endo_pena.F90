@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine dichoc_endo_pena(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out)          :: iret
+    integer, intent(out) :: iret
 !
 ! -------------------------------------------------------------------------------
 !
@@ -67,34 +67,35 @@ subroutine dichoc_endo_pena(for_discret, iret)
     real(kind=8) :: r8bid
     character(len=8) :: k8bid
     character(len=24) :: messak(6)
-
-    aster_logical     :: resi
+!
+    aster_logical :: resi
 ! -------------------------------------------------------------------------------
-    integer, parameter  :: nbres = 3
-    real(kind=8)        :: valres(nbres)
-    integer             :: codres(nbres)
-    character(len=8)    :: nomres(nbres)
-    integer             :: nbpar
-    real(kind=8)        :: valpar
-    character(len=8)    :: nompar
-    integer             :: tecro2
+    integer, parameter :: nbres = 3
+    real(kind=8) :: valres(nbres)
+    integer :: codres(nbres)
+    character(len=8) :: nomres(nbres)
+    integer :: nbpar
+    real(kind=8) :: valpar
+    character(len=8) :: nompar
+    integer :: tecro2
 !
 ! -------------------------------------------------------------------------------
 !   Variables internes
-    integer, parameter       :: nbvari = 3
-    real(kind=8)            :: varmo(nbvari), varpl(nbvari)
+    integer, parameter :: nbvari = 3
+    real(kind=8) :: varmo(nbvari), varpl(nbvari)
 ! -------------------------------------------------------------------------------
     real(kind=8) :: xl(6), xd(3), rignor, amornor_in, amornor_out, deplace, ld, seuil, seuil2
     real(kind=8) :: enfoncement_resi, enfoncement_resi_moins, enfoncement
     real(kind=8) :: ftry, vitesse
     real(kind=8) :: indic_charge, indic_charge_moins, enfoncement_max
+    blas_int :: b_incx, b_incy, b_n
 ! -------------------------------------------------------------------------------
 !
     iret = 0
     resi = for_discret%lVect .or. for_discret%lSigm .or. for_discret%lVari
 !   Seulement en 3D, sur un segment, avec seulement de la translation
-    if ((for_discret%nomte(1:12) .ne. 'MECA_DIS_T_L') .or. &
-        (for_discret%ndim .ne. 3) .or. (for_discret%nno .ne. 2) .or. (for_discret%nc .ne. 3)) then
+    if ((for_discret%nomte(1:12) .ne. 'MECA_DIS_T_L') .or. (for_discret%ndim .ne. 3) .or. &
+        (for_discret%nno .ne. 2) .or. (for_discret%nc .ne. 3)) then
         call jevech('PCOMPOR', 'L', icompo)
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
@@ -120,7 +121,10 @@ subroutine dichoc_endo_pena(for_discret, iret)
             call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
         end if
     else
-        call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
+        b_n = to_blas_int(for_discret%nbt)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jdc), b_incx, klv, b_incy)
     end if
 !   Récupération des termes diagonaux : raide = klv(i,i)
     call diraidklv(for_discret%nomte, raide, klv)
@@ -181,7 +185,8 @@ subroutine dichoc_endo_pena(for_discret, iret)
     valres(:) = 0.0; nomres(:) = ' '
     nomres(1) = 'DIST_1'; nomres(2) = 'DIST_2'
     call rcvala(zi(imat), ' ', 'DIS_CHOC_ENDO', nbpar, nompar, &
-                [valpar], 2, nomres, valres, codres, 0, nan='NON')
+                [valpar], 2, nomres, valres, codres, &
+                0, nan='NON')
 !
 !   calcul du jeu
     if (for_discret%nno .eq. 2) then
@@ -203,8 +208,10 @@ subroutine dichoc_endo_pena(for_discret, iret)
             deplace = for_discret%ulm(1)+for_discret%dul(1)
             vitesse = dvl(1)
         else
-            deplace = (for_discret%ulm(1+for_discret%nc)+for_discret%dul(1+for_discret%nc)- &
-                       for_discret%ulm(1)-for_discret%dul(1))
+            deplace = ( &
+                      for_discret%ulm(1+for_discret%nc)+for_discret%dul(1+for_discret%nc)-for_di&
+                      &scret%ulm(1)-for_discret%dul(1) &
+                      )
             vitesse = (dvl(1+for_discret%nc)-dvl(1))
         end if
     else
@@ -224,16 +231,19 @@ subroutine dichoc_endo_pena(for_discret, iret)
 !   Type d'amortissement inclus ou exclus
     tecro2 = 0
     call rcvala(zi(imat), ' ', 'DIS_CHOC_ENDO', 0, ' ', &
-                [0.0d0], 1, ['CRIT_AMOR'], valres, codres, 1)
+                [0.0d0], 1, ['CRIT_AMOR'], valres, codres, &
+                1)
     tecro2 = nint(valres(1))
 !   récupération de l'effort enveloppe, de la raideur et de l'amortissement
     nomres(1) = 'FX'; nomres(2) = 'RIGI_NOR'; nomres(3) = 'AMOR_NOR'
     call rcvala(zi(imat), ' ', 'DIS_CHOC_ENDO', 1, 'DX', &
-                [-enfoncement], nbres, nomres, valres, codres, 1)
+                [-enfoncement], nbres, nomres, valres, codres, &
+                1)
     seuil = valres(1)
 !
     call rcvala(zi(imat), ' ', 'DIS_CHOC_ENDO', 1, 'DX', &
-                [-enfoncement_max], nbres, nomres, valres, codres, 1)
+                [-enfoncement_max], nbres, nomres, valres, codres, &
+                1)
     seuil2 = valres(1)
     rignor = valres(2)
     amornor_in = 0.0
@@ -243,7 +253,7 @@ subroutine dichoc_endo_pena(for_discret, iret)
     else if (tecro2 .eq. 2) then
         amornor_out = valres(3)
     end if
-
+!
 !   indic_charge [0, 1, 2] : [pas de contact, contact élastique, sur le seuil]
     force(:) = 0.0
     if (enfoncement-enfoncement_resi_moins > 0) then
@@ -251,14 +261,14 @@ subroutine dichoc_endo_pena(for_discret, iret)
         indic_charge = 0.0
         enfoncement_resi = enfoncement_resi_moins
     else
-        ! correction de l'enfoncement residuel (vitesse = 0)
+! correction de l'enfoncement residuel (vitesse = 0)
         ftry = rignor*(enfoncement-enfoncement_resi_moins)
         if (abs(ftry) .gt. seuil2) then
             enfoncement_resi = enfoncement+seuil2/rignor
         else
             enfoncement_resi = enfoncement_resi_moins
         end if
-        ! limitation de f au seuil (en prenant en compte l'amortissement)
+! limitation de f au seuil (en prenant en compte l'amortissement)
         ftry = rignor*(enfoncement-enfoncement_resi)+amornor_in*vitesse
         if (abs(ftry) .ge. seuil) then
             force(1) = -seuil+amornor_out*vitesse
@@ -272,7 +282,7 @@ subroutine dichoc_endo_pena(for_discret, iret)
         end if
     end if
     !
-    ! stockage des contraintes
+! stockage des contraintes
     if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         if (for_discret%nno .eq. 1) then
@@ -292,7 +302,7 @@ subroutine dichoc_endo_pena(for_discret, iret)
             end if
         end if
     end if
-    ! stockage des efforts
+! stockage des efforts
     if (for_discret%lVect) then
         fl(:) = 0.d0
         if (for_discret%nno .eq. 1) then
@@ -318,7 +328,7 @@ subroutine dichoc_endo_pena(for_discret, iret)
             call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         end if
     end if
-    ! stockage variables internes
+! stockage variables internes
     if (for_discret%lVari) then
         varpl(1) = enfoncement_max
         varpl(2) = enfoncement_resi
@@ -335,7 +345,7 @@ subroutine dichoc_endo_pena(for_discret, iret)
             end do
         end if
     end if
-    ! stockage matrice tangente
+! stockage matrice tangente
     if (for_discret%lMatr) then
         call jevech('PMATUUR', 'E', imatsym)
         if (for_discret%ndim .eq. 3) then

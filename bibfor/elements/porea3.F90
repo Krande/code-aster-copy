@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine porea3(nno, nc, deplm, deplp, geom, &
                   gamma, pgl, xl1, angp)
     implicit none
@@ -28,7 +28,7 @@ subroutine porea3(nno, nc, deplm, deplp, geom, &
 #include "asterfort/normev.h"
 #include "asterfort/trigom.h"
 #include "blas/ddot.h"
-
+!
     integer :: nno, nc
     real(kind=8) :: deplm(nno*nc), deplp(nno*nc), geom(3, nno), gamma
     real(kind=8) :: pgl(3, 3), xl1, angp(3)
@@ -51,16 +51,16 @@ subroutine porea3(nno, nc, deplm, deplp, geom, &
 ! OUT PGL    : MATRICE DE PASSAGE GLOBAL/LOCAL
 ! OUT XL     : LONGUEUR DE L'ELEMENT
 ! OUT ANGP   : ANGLES NAUTIQUES ACTUALISEE
-
+!
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i
     real(kind=8) :: utg(14), xug(6), xd0(3), alfa1, beta1
-
+!
 ! --------------------------------------------------------------------------------------------------
     ASSERT(nno .eq. 2)
-    !   Calcul du vecteur xlocal au temps t-
+!   Calcul du vecteur xlocal au temps t-
 !   Déplacement total a t+
     do i = 1, nno*nc
         utg(i) = deplm(i)+deplp(i)
@@ -72,16 +72,16 @@ subroutine porea3(nno, nc, deplm, deplp, geom, &
     end do
 !
     call normev(xd0, xl1)
-
+!
 !   calcul des deux premiers angles nautiques
     call angvx(xd0, alfa1, beta1)
-
+!
 !   Sauvegarde des angles nautiques
     angp(1) = alfa1
     angp(2) = beta1
     angp(3) = gamma
-
+!
 !   Matrice de passage global -> local
     call matrot(angp, pgl)
-
+!
 end subroutine porea3

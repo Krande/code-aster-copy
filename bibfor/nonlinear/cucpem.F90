@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cucpem(deficu, resocu, nbliai)
 !
 !
@@ -72,9 +72,8 @@ subroutine cucpem(deficu, resocu, nbliai)
 !
 ! --- CALCUL DE LA MATRICE DE CONTACT PENALISEE
 !
-    call compute_ineq_conditions_matrix(enat, nbliai, japptr, &
-                                        japcoe, jjeux, jcoef_pena-1, &
-                                        1, 1)
+    call compute_ineq_conditions_matrix(enat, nbliai, japptr, japcoe, jjeux, &
+                                        jcoef_pena-1, 1, 1)
 !
     call jedema()
 !

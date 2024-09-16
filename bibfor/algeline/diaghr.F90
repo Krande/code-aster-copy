@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,8 @@ subroutine diaghr(n, a, lda, eval, evec, &
     complex(kind=8) :: scale
     real(kind=8) :: dble
     aster_logical :: true
+    blas_int :: b_incx, b_n
+    blas_int :: b_incy
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -75,7 +77,10 @@ subroutine diaghr(n, a, lda, eval, evec, &
     end if
 !    --- A EST COPIEE DANS ACOPY
     do i = 1, n
-        call zcopy(i, a(1, i), 1, acopy(1, i), 1)
+        b_n = to_blas_int(i)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, a(1, i), b_incx, acopy(1, i), b_incy)
     end do
 !
     call mexthr(n, acopy, n)
@@ -101,7 +106,9 @@ subroutine diaghr(n, a, lda, eval, evec, &
 !
 !   --- NORMALISATION DES VECTEURS PROPRES ---
     do j = 1, n
-        scale = evec(izamax(n, evec(1, j), 1), j)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        scale = evec(izamax(b_n, evec(1, j), b_incx), j)
         if (dble(scale) .ne. 0.0d0 .or. dimag(scale) .ne. 0.0d0) call zmult(n, 1.0d0/scale, &
                                                                             evec(1, j), 1)
     end do

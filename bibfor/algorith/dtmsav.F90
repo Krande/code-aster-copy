@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
                   iscal, rscal, cscal, kvect, ivect, &
                   rvect, cvect, buffer)
@@ -77,23 +77,24 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
 !   -0.2- Local variables
 !   --- For strings copying
     character(len=8) :: sd_dtm
-    character(len=24):: kscal_
-    character(len=24):: savejv
+    character(len=24) :: kscal_
+    character(len=24) :: savejv
     character(len=24), pointer :: kvect_(:) => null()
-
+!
 !   --- For general usage
-    aster_logical     :: input_test
-    integer           :: i, jvect, jscal, iret
-    integer           :: dec, level, lvec, addr
-    character(len=6)  :: k_iocc
+    aster_logical :: input_test
+    integer :: i, jvect, jscal, iret
+    integer :: dec, level, lvec, addr
+    character(len=6) :: k_iocc
+    blas_int :: b_incx, b_incy, b_n
 !
 #include "dtminc.h"
 !
     savejv = '                        '
-
+!
 !   Copying the input strings, in order to allow in-command truncated input
     sd_dtm = sd_dtm_
-
+!
     if (present(kscal)) kscal_ = kscal
     if (present(kvect)) then
         AS_ALLOCATE(vk24=kvect_, size=lonvec)
@@ -105,24 +106,23 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
 !   ====================================================================
 !   = 1 = Validation of the input arguments, distinguishing global vars
 !   ====================================================================
-
-    input_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
-                 UN_PARMI4(kvect, ivect, rvect, cvect)
-
+!
+    input_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or. UN_PARMI4(kvect, ivect, rvect, cvect)
+!
     ASSERT(input_test)
-
+!
     if (lonvec .gt. 1) then
         input_test = UN_PARMI4(kvect, ivect, rvect, cvect)
         ASSERT(input_test)
     end if
-
+!
 !   The parameter to be saved was not found in the predefined list
     if (ip .gt. _DTM_NBPAR) then
         ASSERT(.false.)
     end if
-
+!
     if (present(buffer)) then
-
+!
         dec = 0
         if (present(iocc)) then
             level = size(buffer)/(2*_DTM_NBPAR)
@@ -132,39 +132,45 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
                 goto 20
             end if
         end if
-
+!
         addr = buffer(dec+ip)
         lvec = buffer(dec+_DTM_NBPAR+ip)
-
+!
         if ((addr .ne. 0) .and. (lonvec .eq. lvec)) then
             if (present(iscal)) then
                 zi(addr) = iscal
-            elseif (present(rscal)) then
+            else if (present(rscal)) then
                 zr(addr) = rscal
-            elseif (present(cscal)) then
+            else if (present(cscal)) then
                 zc(addr) = cscal
-            elseif (present(kscal)) then
+            else if (present(kscal)) then
                 if (partyp(ip) .eq. 'K8 ') zk8(addr) = kscal
                 if (partyp(ip) .eq. 'K16') zk16(addr) = kscal
                 if (partyp(ip) .eq. 'K24') zk24(addr) = kscal
-            elseif (present(ivect)) then
+            else if (present(ivect)) then
                 do i = 1, lvec
                     zi(addr+i-1) = ivect(i)
                 end do
-            elseif (present(rvect)) then
-                call dcopy(lvec, rvect, 1, zr(addr), 1)
-            elseif (present(cvect)) then
-                call zcopy(lvec, cvect, 1, zc(addr), 1)
-            elseif (present(kvect)) then
+            else if (present(rvect)) then
+                b_n = to_blas_int(lvec)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, rvect, b_incx, zr(addr), b_incy)
+            else if (present(cvect)) then
+                b_n = to_blas_int(lvec)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, cvect, b_incx, zc(addr), b_incy)
+            else if (present(kvect)) then
                 if (partyp(ip) .eq. 'K8 ') then
                     do i = 1, lvec
                         zk8(addr+i-1) = kvect(i)
                     end do
-                elseif (partyp(ip) .eq. 'K16') then
+                else if (partyp(ip) .eq. 'K16') then
                     do i = 1, lvec
                         zk16(addr+i-1) = kvect(i)
                     end do
-                elseif (partyp(ip) .eq. 'K24') then
+                else if (partyp(ip) .eq. 'K24') then
                     do i = 1, lvec
                         zk24(addr+i-1) = kvect(i)
                     end do
@@ -173,9 +179,9 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
             goto 99
         end if
     end if
-
+!
 20  continue
-
+!
     savejv(1:8) = sd_dtm
     if (present(iocc)) then
 !       The parameter to be saved is global but an occurence index was given
@@ -184,11 +190,11 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
         savejv(9:15) = '.'//k_iocc(1:6)
     end if
     savejv(16:24) = '.'//params(ip)
-
+!
 !   ====================================================================
 !   = 2 = Saving data
 !   ====================================================================
-
+!
 !   --- Vectors
     if (abs(parind(ip)) .eq. 2) then
 !
@@ -208,18 +214,24 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
             do i = 1, lonvec
                 zk8(jvect+i-1) = kvect_(i) (1:8)
             end do
-        elseif (partyp(ip) .eq. 'K16') then
+        else if (partyp(ip) .eq. 'K16') then
             do i = 1, lonvec
                 zk16(jvect+i-1) = kvect_(i) (1:16)
             end do
-        elseif (partyp(ip) .eq. 'K24') then
+        else if (partyp(ip) .eq. 'K24') then
             do i = 1, lonvec
                 zk24(jvect+i-1) = kvect_(i)
             end do
         else if (partyp(ip) .eq. 'R') then
-            call dcopy(lonvec, rvect, 1, zr(jvect), 1)
+            b_n = to_blas_int(lonvec)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, rvect, b_incx, zr(jvect), b_incy)
         else if (partyp(ip) .eq. 'C') then
-            call zcopy(lonvec, cvect, 1, zc(jvect), 1)
+            b_n = to_blas_int(lonvec)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, cvect, b_incx, zc(jvect), b_incy)
         else if (partyp(ip) .eq. 'I') then
             do i = 1, lonvec
                 zi(jvect+i-1) = ivect(i)
@@ -246,11 +258,11 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
             zk16(jscal) = kscal_(1:16)
         else if (partyp(ip) .eq. 'K24') then
             zk24(jscal) = kscal_
-        elseif (partyp(ip) .eq. 'R') then
+        else if (partyp(ip) .eq. 'R') then
             zr(jscal) = rscal
-        elseif (partyp(ip) .eq. 'C') then
+        else if (partyp(ip) .eq. 'C') then
             zc(jscal) = cscal
-        elseif (partyp(ip) .eq. 'I') then
+        else if (partyp(ip) .eq. 'I') then
             zi(jscal) = iscal
         end if
 !
@@ -259,7 +271,7 @@ subroutine dtmsav(sd_dtm_, ip, lonvec, iocc, kscal, &
     if (present(kvect)) then
         AS_DEALLOCATE(vk24=kvect_)
     end if
-
+!
 99  continue
 !
 end subroutine

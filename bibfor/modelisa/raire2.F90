@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
     integer, pointer :: parno(:) => null()
     real(kind=8), pointer :: surmai(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
@@ -203,13 +204,19 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
                 call utmess('F', 'MODELISA6_34')
             end if
             call provec(a, b, c)
-            surf = ddot(3, c, 1, c, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            surf = ddot(b_n, c, b_incx, c, b_incy)
             surmai(im) = sqrt(surf)*0.5d0
             if (lfonc) then
                 u(1) = xg-xc
                 u(2) = yg-yc
                 u(3) = zg-hc
-                dist = ddot(3, u, 1, u, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                dist = ddot(b_n, u, b_incx, u, b_incy)
                 dist = sqrt(dist)
                 call fointe('F ', fongro(i), 1, ['X'], [dist], &
                             coef, iret)
@@ -295,8 +302,8 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
     end do
 !
 1001 format(1x, 'RAIDEURS DE ROTATION A REPARTIR:', /&
-    &      1x, ' KRX: ', 1x, 1pe12.5, ' KRY: ', 1x, 1pe12.5,&
-    &      ' KRZ: ', 1x, 1pe12.5)
+&      1x, ' KRX: ', 1x, 1pe12.5, ' KRY: ', 1x, 1pe12.5,&
+&      ' KRZ: ', 1x, 1pe12.5)
     AS_DEALLOCATE(vr=coegro)
     AS_DEALLOCATE(vk8=fongro)
     AS_DEALLOCATE(vr=coeno)

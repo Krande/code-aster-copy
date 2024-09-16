@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,9 +51,11 @@ subroutine romCoefComputeFromField(base, v_field, v_vect)
 !
     integer :: nbEqua, nbMode
     integer(kind=4) :: info
-    real(kind=8), pointer    :: v_matr_phi(:) => null()
-    real(kind=8), pointer    :: v_matr(:) => null()
+    real(kind=8), pointer :: v_matr_phi(:) => null()
+    real(kind=8), pointer :: v_matr(:) => null()
     integer(kind=4), pointer :: IPIV(:) => null()
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+    blas_int :: b_nrhs
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,11 +73,30 @@ subroutine romCoefComputeFromField(base, v_field, v_vect)
 !
 ! - COmpute reduced coefficients
 !
-    call dgemm('T', 'N', nbMode, 1, nbEqua, 1.d0, &
-               v_matr_phi, nbEqua, v_field, nbEqua, 0.d0, v_vect, nbMode)
-    call dgemm('T', 'N', nbMode, nbMode, nbEqua, 1.d0, &
-               v_matr_phi, nbEqua, v_matr_phi, nbEqua, 0.d0, v_matr, nbMode)
-    call dgesv(nbMode, 1, v_matr, nbMode, IPIV, v_vect, nbMode, info)
+    b_ldc = to_blas_int(nbMode)
+    b_ldb = to_blas_int(nbEqua)
+    b_lda = to_blas_int(nbEqua)
+    b_m = to_blas_int(nbMode)
+    b_n = to_blas_int(1)
+    b_k = to_blas_int(nbEqua)
+    call dgemm('T', 'N', b_m, b_n, b_k, &
+               1.d0, v_matr_phi, b_lda, v_field, b_ldb, &
+               0.d0, v_vect, b_ldc)
+    b_ldc = to_blas_int(nbMode)
+    b_ldb = to_blas_int(nbEqua)
+    b_lda = to_blas_int(nbEqua)
+    b_m = to_blas_int(nbMode)
+    b_n = to_blas_int(nbMode)
+    b_k = to_blas_int(nbEqua)
+    call dgemm('T', 'N', b_m, b_n, b_k, &
+               1.d0, v_matr_phi, b_lda, v_matr_phi, b_ldb, &
+               0.d0, v_matr, b_ldc)
+    b_ldb = to_blas_int(nbMode)
+    b_lda = to_blas_int(nbMode)
+    b_n = to_blas_int(nbMode)
+    b_nrhs = to_blas_int(1)
+    call dgesv(b_n, b_nrhs, v_matr, b_lda, IPIV, &
+               v_vect, b_ldb, info)
     if (info .ne. 0) then
         call utmess('F', 'ROM6_32')
     end if

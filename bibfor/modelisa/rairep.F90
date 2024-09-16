@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rairep(noma, ioc, km, rigi, nbgr, &
                   ligrma, nbno, tabnoe, rignoe, rigto, &
                   amoto, rirot, ndim)
@@ -77,6 +77,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr, &
     integer, pointer :: parno(:) => null()
     real(kind=8), pointer :: surmai(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
@@ -97,17 +98,20 @@ subroutine rairep(noma, ioc, km, rigi, nbgr, &
 !
 !   Récupération du centre
     call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=0, nbret=ncg)
-    call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, 0, k8b, ngn)
+    call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, &
+                0, k8b, ngn)
     xg = 0.0
     yg = 0.0
     zg = 0.0
     if (ncg .ne. 0) then
-        call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=3, vect=c, nbret=ncg)
+        call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=3, vect=c, &
+                    nbret=ncg)
         xg = c(1)
         yg = c(2)
         zg = c(3)
     else if (ngn .ne. 0) then
-        call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, 1, nomgr, ngn)
+        call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, &
+                    1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
         call jenuno(jexnum(manono, inoe), nomnoe)
@@ -122,11 +126,13 @@ subroutine rairep(noma, ioc, km, rigi, nbgr, &
     call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=0, nbret=ncg)
     if (ncg .ne. 0) then
         AS_ALLOCATE(vr=coegro, size=nbgr)
-        call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=nbgr, vect=coegro, nbret=ncg)
+        call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=nbgr, vect=coegro, &
+                    nbret=ncg)
     else
         AS_ALLOCATE(vk8=fongro, size=nbgr)
         lfonc = .true.
-        call getvid('RIGI_PARASOL', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro, nbret=nfg)
+        call getvid('RIGI_PARASOL', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro, &
+                    nbret=nfg)
     end if
 !
     if (ndim .eq. 2) then
@@ -201,7 +207,10 @@ subroutine rairep(noma, ioc, km, rigi, nbgr, &
                 a(1) = x(2)-x(1)
                 a(2) = y(2)-y(1)
                 a(3) = z(2)-z(1)
-                surf = ddot(2, a, 1, a, 1)
+                b_n = to_blas_int(2)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                surf = ddot(b_n, a, b_incx, a, b_incy)
                 surmai(im) = sqrt(surf)
             else if (appui .eq. 2) then
                 a(1) = x(3)-x(1)
@@ -219,7 +228,10 @@ subroutine rairep(noma, ioc, km, rigi, nbgr, &
                     ASSERT(.false.)
                 end if
                 call provec(a, b, c)
-                surf = ddot(3, c, 1, c, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                surf = ddot(b_n, c, b_incx, c, b_incy)
                 surmai(im) = sqrt(surf)*0.5d0
             else
                 ASSERT(.false.)
@@ -228,7 +240,10 @@ subroutine rairep(noma, ioc, km, rigi, nbgr, &
                 u(1) = xg-xc
                 u(2) = yg-yc
                 u(3) = zg-hc
-                dist = ddot(3, u, 1, u, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                dist = ddot(b_n, u, b_incx, u, b_incy)
                 dist = sqrt(dist)
                 call fointe('F ', fongro(i), 1, ['X'], [dist], &
                             coef, iret)
@@ -291,8 +306,8 @@ subroutine rairep(noma, ioc, km, rigi, nbgr, &
     end do cij2
     nbno = ii
 !
-    trans = (km(1:7) .eq. 'K_T_D_N') .or. (km(1:7) .eq. 'K_T_D_L') .or. &
-            (km(1:7) .eq. 'A_T_D_N') .or. (km(1:7) .eq. 'A_T_D_L')
+    trans = (km(1:7) .eq. 'K_T_D_N') .or. (km(1:7) .eq. 'K_T_D_L') .or. (km(1:7) .eq. 'A_T_D_N') &
+            .or. (km(1:7) .eq. 'A_T_D_L')
 !
     if (trans) then
 !       pas de raideur en rotation sur les discrets

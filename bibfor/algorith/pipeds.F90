@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,6 +89,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
     real(kind=8) :: x1, y1, z1
     real(kind=8) :: x2, y2, z2
     real(kind=8) :: kron(6)
+    blas_int :: b_incx, b_incy, b_n
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 !----- GET INFO=1,2
@@ -242,7 +243,10 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
         sigeld(k) = lambda*trepsd*kron(k)+deuxmu*epsd(k)
     end do
 !
-    epsnor = 1.d0/sqrt(0.5d0*ddot(ndimsi, epsd, 1, sigeld, 1))
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    epsnor = 1.d0/sqrt(0.5d0*ddot(b_n, epsd, b_incx, sigeld, b_incy))
 !
     do k = 1, 6
         epsd(k) = epsd(k)*epsnor
@@ -265,8 +269,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
 ! pour s'assurer qu'elle ne diverge pas. On fixe une borne tr(eps)<1
     treinf = epsp(1)+epsp(2)+epsp(3)+etainf*(epsd(1)+epsd(2)+epsd(3))
     if (abs(treinf) .gt. 1.d0) then
-        etainf = (treinf/abs(treinf)-(epsp(1)+epsp(2)+epsp(3))) &
-                 /(epsd(1)+epsd(2)+epsd(3))
+        etainf = (treinf/abs(treinf)-(epsp(1)+epsp(2)+epsp(3)))/(epsd(1)+epsd(2)+epsd(3))
     end if
 !
     eta = etainf
@@ -279,8 +282,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
 !
     tresup = epsp(1)+epsp(2)+epsp(3)+etasup*(epsd(1)+epsd(2)+epsd(3))
     if (abs(tresup) .gt. 1.d0) then
-        etasup = (tresup/abs(tresup)-(epsp(1)+epsp(2)+epsp(3)))/(epsd( &
-                                                                 1)+epsd(2)+epsd(3))
+        etasup = (tresup/abs(tresup)-(epsp(1)+epsp(2)+epsp(3)))/(epsd(1)+epsd(2)+epsd(3))
     end if
 !
     eta = etasup

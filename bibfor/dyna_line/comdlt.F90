@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -160,17 +160,18 @@ subroutine comdlt()
     infoch = listLoad(1:19)//'.INFC'
     chvarc = '&&COMDLT.VARC'
     chvref = '&&COMDLT.VREF'
-
+!
 ! - Get parameters
     call dltlec(result, modele, numedd, materi, mateco, &
-                carele, imat, masse, rigid, &
-                amort, lamort, nchar, nveca, listLoad, &
-                charge, infoch, fomult, iaadve, ialifo, &
-                nondp, iondp, solveu, iinteg, t0, &
-                nume, numrep, ds_inout)
-
+                carele, imat, masse, rigid, amort, &
+                lamort, nchar, nveca, listLoad, charge, &
+                infoch, fomult, iaadve, ialifo, nondp, &
+                iondp, solveu, iinteg, t0, nume, &
+                numrep, ds_inout)
+!
 ! - Get kinematic loads
-    call dyGetKineLoad(masse, rigid, amort, lamort, listLoad, kineLoad, iinteg)
+    call dyGetKineLoad(masse, rigid, amort, lamort, listLoad, &
+                       kineLoad, iinteg)
 !
     neq = zi(imat(1)+2)
 !
@@ -186,17 +187,17 @@ subroutine comdlt()
     call nmchex(valinc, 'VALINC', 'DEPMOI', depmoi)
     call nmchex(valinc, 'VALINC', 'VITMOI', vitmoi)
     call nmchex(valinc, 'VALINC', 'ACCMOI', accmoi)
-
+!
     call vtcreb(depmoi, 'V', 'R', nume_ddlz=numedd)
     call vtcreb(vitmoi, 'V', 'R', nume_ddlz=numedd)
     call vtcreb(accmoi, 'V', 'R', nume_ddlz=numedd)
-
+!
 !---lecture d adresse depl/vite/acce
 !
     call jeveuo(depmoi//'.VALE', 'L', idepl0)
     call jeveuo(vitmoi//'.VALE', 'L', ivite0)
     call jeveuo(accmoi//'.VALE', 'L', iacce0)
-
+!
     call wkvect('&&COMDLT.FEXTE', 'V V R', 2*neq, ifexte)
     call wkvect('&&COMDLT.FAMOR', 'V V R', 2*neq, ifamor)
     call wkvect('&&COMDLT.FLIAI', 'V V R', 2*neq, ifliai)
@@ -216,9 +217,8 @@ subroutine comdlt()
 ! 4. IMPRESSIONS RECAPITULATIVES POUR L'UTILISATEUR
 !===
 !
-    call utmess('I', 'DYNAMIQUE_55', nk=3, valk=['D Y N A _ V I B R A', &
-                                                 'TRANsitoire        ', &
-                                                 'PHYSique           '])
+    call utmess('I', 'DYNAMIQUE_55', nk=3, &
+                valk=['D Y N A _ V I B R A', 'TRANsitoire        ', 'PHYSique           '])
     call utmess('I', 'DYNAMIQUE_82', sk=modele, si=neq)
     call utmess('I', 'DYNAMIQUE_60')
     call utmess('I', 'DYNAMIQUE_61', nk=2, valk=[masse, rigid])
@@ -227,7 +227,7 @@ subroutine comdlt()
     else
         call utmess('I', 'DYNAMIQUE_64')
     end if
-
+!
     schema = allschemes(iinteg)
     schtyp = 'explicite'
     if ((iinteg .eq. 1) .or. (iinteg .eq. 2)) schtyp = 'implicite'
@@ -257,19 +257,18 @@ subroutine comdlt()
 !
     if (iinteg .ne. 4) then
         nbpas = nint((tfin-tinit)/dt)
-        call utmess('I', 'DYNAMIQUE_70', nk=2, valk=[schema, schtyp], &
-                    nr=1, valr=[dt], &
-                    ni=1, vali=[nbpas])
+        call utmess('I', 'DYNAMIQUE_70', nk=2, valk=[schema, schtyp], nr=1, &
+                    valr=[dt], ni=1, vali=[nbpas])
     else
         call getvr8('SCHEMA_TEMPS', 'PAS_MINI', iocc=1, scal=dtmin, nbret=iret)
         if (iret .eq. 0) dtmin = dt*1.d-6
         call getvr8('SCHEMA_TEMPS', 'PAS_MAXI', iocc=1, scal=dt, nbret=iret)
         if (iret .eq. 0) dtmax = dt*1.d6
-        call utmess('I', 'DYNAMIQUE_66', nk=1, valk=[schema], &
-                    nr=3, valr=[dt, dtmin, dtmax])
+        call utmess('I', 'DYNAMIQUE_66', nk=1, valk=[schema], nr=3, &
+                    valr=[dt, dtmin, dtmax])
         call getvr8('SCHEMA_TEMPS', 'COEF_DIVI_PAS', iocc=1, scal=cdivi)
         call utmess('I', 'DYNAMIQUE_68', nr=1, valr=[cdivi])
-
+!
         nbpas_min = nint((tfin-tinit)/dtmax)
         nbpas_max = 1000000000
         if (dtmin .gt. epsi) then
@@ -278,7 +277,7 @@ subroutine comdlt()
         end if
         call utmess('I', 'DYNAMIQUE_69', ni=2, vali=[nbpas_min, nbpas_max])
     end if
-
+!
 !
 !===
 ! 5. INITIALISATION DE L'ALGORITHME
@@ -288,14 +287,14 @@ subroutine comdlt()
     force1 = '&&COMDLT.FORCE1'
     call dltali(neq, result, imat, masse, rigid, &
                 zi(iaadve), zk24(ialifo), nchar, nveca, lcrea, &
-                lprem, lamort, t0, materi, mateco, carele, &
-                charge, infoch, fomult, modele, numedd, &
-                nume, solveu, criter, zr(idepl0), zr(ivite0), &
-                zr(iacce0), zr(ifexte+neq), zr(ifamor+neq), zr(ifliai+neq), &
+                lprem, lamort, t0, materi, mateco, &
+                carele, charge, infoch, fomult, modele, &
+                numedd, nume, solveu, criter, zr(idepl0), &
+                zr(ivite0), zr(iacce0), zr(ifexte+neq), zr(ifamor+neq), zr(ifliai+neq), &
                 zr(iwk), force0, force1, ds_energy, kineLoad)
-
+!
     call utmess('I', 'DYNAMIQUE_80', nr=2, valr=[tinit, tfin])
-
+!
     call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=pasar, nbret=iret)
     if (iret .ne. 0) then
         call utmess('I', 'DYNAMIQUE_85', si=pasar)
@@ -309,9 +308,9 @@ subroutine comdlt()
         end if
         call utmess('I', 'DYNAMIQUE_86', si=nbar)
     end if
-
+!
     call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=0, nbret=iret)
-
+!
     nomsym = ' '
     nomsym(1) = 'DEPL'
     nomsym(2) = 'VITE'
@@ -321,7 +320,7 @@ subroutine comdlt()
         nomsym(5) = 'FORC_AMOR'
         nomsym(6) = 'FORC_LIAI'
     end if
-
+!
     if (iret .ne. 0) then
         nbexcl = -iret
         AS_ALLOCATE(vk8=chexc, size=nbexcl)
@@ -333,7 +332,7 @@ subroutine comdlt()
         end do
         AS_DEALLOCATE(vk8=chexc)
     end if
-
+!
     champs = ' '
     counter = 0
     do i = 1, 6
@@ -350,15 +349,15 @@ subroutine comdlt()
 !
     call nonlinDSInOutRead('VIBR', result, ds_inout)
     call nonlinDSInOutInit('VIBR', ds_inout)
-
+!
 !--- Create observation datastructure
 ! -  routine in stat_non_line : nmcrob => dvcrob
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
     call dvcrob(mesh, modele, ds_inout, materi, sd_obsv)
-
+!
 ! - Make initial observation
-
+!
     l_obsv = ASTER_FALSE
     call lobs(sd_obsv, nume, t0, l_obsv)
     if (l_obsv) then
@@ -378,10 +377,10 @@ subroutine comdlt()
                     iinteg, neq, imat, masse, rigid, &
                     amort, zr(idepl0), zr(ivite0), zr(iacce0), zr(ifexte), &
                     zr(ifamor), zr(ifliai), t0, nchar, nveca, &
-                    zi(iaadve), zk24(ialifo), modele, materi, mateco, carele, &
-                    charge, infoch, fomult, numedd, nume, &
-                    solveu, criter, zk8(iondp), nondp, numrep, ds_energy, &
-                    sd_obsv, mesh, kineLoad)
+                    zi(iaadve), zk24(ialifo), modele, materi, mateco, &
+                    carele, charge, infoch, fomult, numedd, &
+                    nume, solveu, criter, zk8(iondp), nondp, &
+                    numrep, ds_energy, sd_obsv, mesh, kineLoad)
 !
     else if (iinteg .eq. 2) then
 !
@@ -389,10 +388,10 @@ subroutine comdlt()
                     iinteg, neq, imat, masse, rigid, &
                     amort, zr(idepl0), zr(ivite0), zr(iacce0), zr(ifexte), &
                     zr(ifamor), zr(ifliai), t0, nchar, nveca, &
-                    zi(iaadve), zk24(ialifo), modele, materi, mateco, carele, &
-                    charge, infoch, fomult, numedd, nume, &
-                    solveu, criter, zk8(iondp), nondp, numrep, ds_energy, &
-                    sd_obsv, mesh, kineLoad)
+                    zi(iaadve), zk24(ialifo), modele, materi, mateco, &
+                    carele, charge, infoch, fomult, numedd, &
+                    nume, solveu, criter, zk8(iondp), nondp, &
+                    numrep, ds_energy, sd_obsv, mesh, kineLoad)
 !
     else if (iinteg .eq. 3) then
 !
@@ -400,9 +399,9 @@ subroutine comdlt()
                     imat, masse, rigid, amort, zr(idepl0), &
                     zr(ivite0), zr(iacce0), zr(ifexte), zr(ifamor), zr(ifliai), &
                     t0, nchar, nveca, zi(iaadve), zk24(ialifo), &
-                    modele, materi, mateco, carele, charge, infoch, &
-                    fomult, numedd, nume, numrep, ds_energy, &
-                    sd_obsv, mesh)
+                    modele, materi, mateco, carele, charge, &
+                    infoch, fomult, numedd, nume, numrep, &
+                    ds_energy, sd_obsv, mesh)
 !
     else if (iinteg .eq. 4) then
 !
@@ -410,8 +409,8 @@ subroutine comdlt()
                     imat, masse, rigid, amort, zr(idepl0), &
                     zr(ivite0), zr(iacce0), zr(ifexte), zr(ifamor), zr(ifliai), &
                     nchar, nveca, zi(iaadve), zk24(ialifo), modele, &
-                    materi, mateco, carele, charge, infoch, fomult, &
-                    numedd, nume, numrep, ds_energy, &
+                    materi, mateco, carele, charge, infoch, &
+                    fomult, numedd, nume, numrep, ds_energy, &
                     sd_obsv, mesh)
 !
     end if
@@ -424,15 +423,17 @@ subroutine comdlt()
     call jeveuo(result//'           .ORDR', 'L', vi=ordr)
     call jelira(result//'           .ORDR', 'LONUTI', nbord)
     do iordr = 1, nbord
-        call rsadpa(result, 'E', 1, 'MODELE', ordr(iordr), 0, sjv=ladpa)
+        call rsadpa(result, 'E', 1, 'MODELE', ordr(iordr), &
+                    0, sjv=ladpa)
         zk8(ladpa) = modele(1:8)
         if (materi .ne. ' ') then
-            call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(iordr), 0, sjv=ladpa)
+            call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(iordr), &
+                        0, sjv=ladpa)
             zk8(ladpa) = materi(1:8)
         else
             call utmess('A', 'CHAMPS_21')
         end if
-
+!
         call rsadpa(result, 'E', 1, 'CARAELEM', ordr(iordr), &
                     0, sjv=ladpa)
         zk8(ladpa) = carele(1:8)
@@ -487,11 +488,10 @@ subroutine comdlt()
             call rsexch(' ', result, 'STRX_ELGA', iordr, chstru, &
                         iret)
             if (iret .ne. 0) cycle
-            call compStrx(modele, ligrel, compor, &
-                          chamgd, chgeom, mateco, chcara, &
-                          chvarc, chvref, &
-                          base, chstru, iret, &
-                          exipou, charep, typcoe, alpha, calpha)
+            call compStrx(modele, ligrel, compor, chamgd, chgeom, &
+                          mateco, chcara, chvarc, chvref, base, &
+                          chstru, iret, exipou, charep, typcoe, &
+                          alpha, calpha)
             call rsnoch(result, 'STRX_ELGA', iordr)
         end do
     end if

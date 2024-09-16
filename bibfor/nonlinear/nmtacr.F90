@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,7 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
     real(kind=8) :: pbs0, seqde(6), meqde(6), qde(6), fde(6)
     real(kind=8) :: pas0, leqde(6), gde(6)
     real(kind=8) :: pde(6), det
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 !
@@ -91,7 +92,10 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
         a(n) = (mat(11)-sp)*epm(n)+sp*b(n)
         se(n) = sigel(n)-c*a(n)
     end do
-    seeq = sqrt(1.5d0*ddot(ndimsi, se, 1, se, 1))
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    seeq = sqrt(1.5d0*ddot(b_n, se, b_incx, se, b_incy))
 !
 !
 ! -- CALCUL D'UNE BORNE POUR DP
@@ -100,7 +104,10 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
         do n = 1, ndimsi
             v(n) = sigel(n)-mat(10)*a(n)
         end do
-        semax = sqrt(1.5d0*ddot(ndimsi, v, 1, v, 1))
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        semax = sqrt(1.5d0*ddot(b_n, v, b_incx, v, b_incy))
         if (seeq .gt. semax) semax = seeq
         dpmax = (semax-d*mat(4))/1.5d0/(mat(2)+mat(11)*mat(10))
         goto 999
@@ -133,8 +140,14 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
     end do
 !
     seq = seeq-1.5d0*(mat(2)+mat(11)*c)*dp
-    meq = sqrt(1.5d0*ddot(ndimsi, m, 1, m, 1))
-    leq = sqrt(1.5d0*ddot(ndimsi, l, 1, l, 1))
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    meq = sqrt(1.5d0*ddot(b_n, m, b_incx, m, b_incy))
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    leq = sqrt(1.5d0*ddot(b_n, l, b_incx, l, b_incy))
     if (meq .le. 0.d0) then
         q = mat(4)
     else
@@ -157,7 +170,10 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
         ads(n) = -epn(n)
         seds(n) = -cds*a(n)-c*ads(n)
     end do
-    seeqds = 1.5d0*ddot(ndimsi, se, 1, seds, 1)/seeq
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    seeqds = 1.5d0*ddot(b_n, se, b_incx, seds, b_incy)/seeq
     seqds = seeqds-1.5d0*mat(11)*cds*dp
 !
     do n = 1, ndimsi
@@ -165,8 +181,14 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
         mds(n) = 1.5d0*dp*s0ds(n)
         lds(n) = ads(n)+1.5d0*mat(11)*dp*s0ds(n)
     end do
-    meqds = 1.5d0*ddot(ndimsi, m, 1, mds, 1)/meq
-    leqds = 1.5d0*ddot(ndimsi, l, 1, lds, 1)/leq
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    meqds = 1.5d0*ddot(b_n, m, b_incx, mds, b_incy)/meq
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    leqds = 1.5d0*ddot(b_n, l, b_incx, lds, b_incy)/leq
     qds = mat(7)*mat(5)*meq**(mat(5)-1)*meqds
 !
     fds = seqds-dds*q-d*qds
@@ -183,7 +205,10 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
         do n = 1, ndimsi
             sedp(n) = -cdp*a(n)
         end do
-        seeqdp = 1.5d0*ddot(ndimsi, se, 1, sedp, 1)/seeq
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        seeqdp = 1.5d0*ddot(b_n, se, b_incx, sedp, b_incy)/seeq
         seqdp = seeqdp-1.5d0*(mat(2)+mat(11)*c+mat(11)*cdp*dp)
 !
         do n = 1, ndimsi
@@ -191,12 +216,17 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
             mdp(n) = 1.5d0*(s0(n)+dp*s0dp(n))
             ldp(n) = mat(11)*mdp(n)
         end do
-        meqdp = 1.5d0*ddot(ndimsi, m, 1, mdp, 1)/meq
-        leqdp = 1.5d0*ddot(ndimsi, l, 1, ldp, 1)/leq
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        meqdp = 1.5d0*ddot(b_n, m, b_incx, mdp, b_incy)/meq
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        leqdp = 1.5d0*ddot(b_n, l, b_incx, ldp, b_incy)/leq
         qdp = mat(7)*mat(5)*meq**(mat(5)-1)*meqdp
 !
-        fdp = seqdp-ddp*q-d*qdp-mat(13)*(mat(14)*dp+mat(12)*p)*p**(mat(14)-1)*dp**(ma&
-              &t(12)-1)
+        fdp = seqdp-ddp*q-d*qdp-mat(13)*(mat(14)*dp+mat(12)*p)*p**(mat(14)-1)*dp**(mat(12)-1)
         gdp = cdp*leq+c*leqdp+ddp*q+d*qdp
 !
         if (mode .eq. 2) goto 999
@@ -206,7 +236,10 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
 ! -- DERIVEES PAR RT A SIGEL ET CONSTRUCTION DE LA MATRICE TANGENTE
     if (mode .eq. 5 .or. mode .eq. 6) then
         tmp = 1.5d0/meq*1.5d0*dp/seeq
-        pbs0 = 1.5d0*ddot(ndimsi, b, 1, s0, 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pbs0 = 1.5d0*ddot(b_n, b, b_incx, s0, b_incy)
         do n = 1, ndimsi
             seqde(n) = 1.5d0*s0(n)
             meqde(n) = tmp*(b(n)-pbs0*s0(n))
@@ -216,7 +249,10 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
 !
         if (mode .eq. 6) then
             tmp = 1.5d0/leq*1.5d0*mat(11)*dp/seeq
-            pas0 = 1.5d0*ddot(ndimsi, a, 1, s0, 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            pas0 = 1.5d0*ddot(b_n, a, b_incx, s0, b_incy)
             do n = 1, ndimsi
                 leqde(n) = tmp*(a(n)-pas0*s0(n))
                 gde(n) = c*leqde(n)+d*qde(n)
@@ -262,7 +298,10 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
             sedx(n) = -c*adx(n)
         end do
 !
-        seeqdx = 1.5d0*ddot(ndimsi, se, 1, sedx, 1)/seeq
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        seeqdx = 1.5d0*ddot(b_n, se, b_incx, sedx, b_incy)/seeq
         seqdx = seeqdx
 !
         do n = 1, ndimsi
@@ -270,8 +309,14 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
             mdx(n) = bdx(n)+1.5d0*dp*s0dx(n)
             ldx(n) = adx(n)+1.5d0*mat(11)*dp*s0dx(n)
         end do
-        meqdx = 1.5d0*ddot(ndimsi, m, 1, mdx, 1)/meq
-        leqdx = 1.5d0*ddot(ndimsi, l, 1, ldx, 1)/leq
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        meqdx = 1.5d0*ddot(b_n, m, b_incx, mdx, b_incy)/meq
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        leqdx = 1.5d0*ddot(b_n, l, b_incx, ldx, b_incy)/leq
         qdx = mat(7)*mat(5)*meq**(mat(5)-1)*meqdx
 !
         fdx = seqdx-d*qdx

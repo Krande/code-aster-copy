@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,6 +79,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
     parameter(cridist=1.d-7)
     parameter(crijonc=1.d-2)
     character(len=8) :: typma, typsma
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------
 !
@@ -112,7 +113,8 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
     if (zr(jlsn-1+(i-1)*nfiss+ifiss) .ne. 0.d0 .and. i .lt. nno) then
         do k = i+1, nno
 !     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
-            if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut = .true.
+            if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut = &
+                .true.
         end do
     else if (i .lt. nno) then
         i = i+1
@@ -144,7 +146,8 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
                 lsnabs = 0.d0
                 lsnabs = abs( &
                          zr( &
-                         jlsn-1+(ar(i, 1)-1)*nfiss+ifiss))+abs(zr(jlsn-1+(ar(i, 2)-1)*nfiss+ifiss) &
+                         jlsn-1+(ar(i, 1)-1)*nfiss+ifiss))+abs(zr(jlsn-1+(ar(i, 2)-1)*nfiss+ifiss &
+                                                                  ) &
                                                                )
                 if (lsnabs .le. cridist*lonref) arete = .true.
             end do
@@ -264,7 +267,10 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
                                     jlst-1+(zi(jcnset-1+nnose*(i-1)+ar(j, k))-1 &
                                             )*nfiss+ifiss &
                                     )) then
-                               minlst = zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+ar(j, k))-1)*nfiss+ifiss)
+                                    minlst = zr( &
+                                             jlst-1+(zi(jcnset-1+nnose*(i-1)+ar(j, k))-1 &
+                                                     )*nfiss+ifiss &
+                                             )
                                 end if
                             end if
                         end do
@@ -329,11 +335,17 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
                         newpt(:) = 0.d0
                         if (zi(jcnset-1+nnose*(i-1)+ar(j, 3)) .gt. 3000) then
                             do ii = 1, ndim
-                            newpt(ii) = zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j, 3))-3001)+ii)
+                                newpt(ii) = zr( &
+                                            jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j, 3))-3001 &
+                                                          )+ii &
+                                            )
                             end do
                         else if (zi(jcnset-1+nnose*(i-1)+ar(j, 3)) .gt. 2000) then
                             do ii = 1, ndim
-                            newpt(ii) = zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j, 3))-2001)+ii)
+                                newpt(ii) = zr( &
+                                            jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j, 3))-2001 &
+                                                          )+ii &
+                                            )
                             end do
                         else if (zi(jcnset-1+nnose*(i-1)+ar(j, 3)) .lt. 2000) then
                             if (zr(jlsn-1+zi(jcnset-1+nnose*(i-1)+ar(j, 3))) .ne. 0.d0) then
@@ -430,9 +442,9 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
                         det = ( &
                               pinter( &
                               ndim*( &
-                              cface(nface, 2)-1)+1)-pinter(ndim*(cface(nface, 1)-1)+1))*zr(jgrlsn-&
-                              &1+ndim*(ifiss-1)+2)-(pinter(ndim*(cface(nface, 2)-1)+2)-pinter(n&
-                              &dim*(cface(nface, 1)-1)+2) &
+                              cface(nface, 2)-1)+1)-pinter(ndim*(cface(nface, 1)-1)+1))*zr(jgrlsn&
+                              &-1+ndim*(ifiss-1)+2)-(pinter(ndim*(cface(nface, 2)-1)+2)-pinter(nd&
+                              &im*(cface(nface, 1)-1)+2) &
                               )*zr(jgrlsn-1+ndim*(ifiss-1 &
                               )+1 &
                               )
@@ -534,7 +546,10 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
                                     zr( &
                                     jlst-1+(zi(jcnset-1+nnose*(i-1)+f(j, k))-1)*nfiss+ifiss &
                                     )) then
-                                minlst = zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+f(j, k))-1)*nfiss+ifiss)
+                                    minlst = zr( &
+                                             jlst-1+(zi(jcnset-1+nnose*(i-1)+f(j, k))-1 &
+                                                     )*nfiss+ifiss &
+                                             )
                                 end if
                             end if
                         end do
@@ -774,7 +789,10 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
                             normfa(jj) = 0.d0
                         end do
                         call provec(ab, bc, normfa)
-                        det = ddot(ndim, gradlsn, 1, normfa, 1)
+                        b_n = to_blas_int(ndim)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        det = ddot(b_n, gradlsn, b_incx, normfa, b_incy)
                         if (det .lt. 0.d0) then
                             tempo = cface(nface, 2)
                             cface(nface, 2) = cface(nface, 3)

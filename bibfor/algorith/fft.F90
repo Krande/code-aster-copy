@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine fft(s, n, ifft)
     integer :: le, le1, m, n2, nm1, nv2
     complex(kind=8) :: calpha
     real(kind=8) :: pi
+    blas_int :: b_incx, b_n
 !-----------------------------------------------------------------------
 !
     m = int(log(dble(n))/log(2.d0))
@@ -92,6 +93,8 @@ subroutine fft(s, n, ifft)
     end do
     if (ifft .lt. 0) then
         calpha = dcmplx(1.d0, 0.d0)/(n2*1.d0)
-        call zscal(n2, calpha, s, 1)
+        b_n = to_blas_int(n2)
+        b_incx = to_blas_int(1)
+        call zscal(b_n, calpha, s, b_incx)
     end if
 end subroutine

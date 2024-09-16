@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine chgref(geomi, x, y, bidim)
     character(len=19) :: geomi
     character(len=24) :: coorjv
     real(kind=8) :: x(3), y(3), z(3), p(3), prec, r1, r2
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !
     call matfpe(-1)
@@ -62,7 +63,9 @@ subroutine chgref(geomi, x, y, bidim)
     iadcoo = iadcoo-1
 !     -- ON TRAITE LE CAS 2D SEPAREMENT POUR OPTIMISER :
     if (bidim) then
-        r1 = dnrm2(2, x, 1)
+        b_n = to_blas_int(2)
+        b_incx = to_blas_int(1)
+        r1 = dnrm2(b_n, x, b_incx)
         if (r1 .gt. prec) then
             x(1) = x(1)/r1
             x(2) = x(2)/r1
@@ -72,16 +75,29 @@ subroutine chgref(geomi, x, y, bidim)
             do i = 1, n1
                 p(1) = zr(iadcoo+3*(i-1)+1)
                 p(2) = zr(iadcoo+3*(i-1)+2)
-                zr(iadcoo+3*(i-1)+1) = ddot(2, x, 1, p, 1)
-                zr(iadcoo+3*(i-1)+2) = ddot(2, y, 1, p, 1)
+                b_n = to_blas_int(2)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(iadcoo+3*(i-1)+1) = ddot(b_n, x, b_incx, p, b_incy)
+                b_n = to_blas_int(2)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(iadcoo+3*(i-1)+2) = ddot(b_n, y, b_incx, p, b_incy)
             end do
         else
             call utmess('F', 'ALGORITH_96')
         end if
     else
-        r1 = dnrm2(3, x, 1)
-        r2 = dnrm2(3, y, 1)
-        if ((ddot(3, x, 1, y, 1) .lt. prec) .and. ((r1*r2) .gt. 0.d0)) then
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        r1 = dnrm2(b_n, x, b_incx)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        r2 = dnrm2(b_n, y, b_incx)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        if ((ddot(b_n, x, b_incx, y, b_incy) .lt. prec) .and. ((r1*r2) .gt. 0.d0)) then
             x(1) = x(1)/r1
             x(2) = x(2)/r1
             x(3) = x(3)/r1
@@ -93,9 +109,18 @@ subroutine chgref(geomi, x, y, bidim)
                 p(1) = zr(iadcoo+3*(i-1)+1)
                 p(2) = zr(iadcoo+3*(i-1)+2)
                 p(3) = zr(iadcoo+3*(i-1)+3)
-                zr(iadcoo+3*(i-1)+1) = ddot(3, x, 1, p, 1)
-                zr(iadcoo+3*(i-1)+2) = ddot(3, y, 1, p, 1)
-                zr(iadcoo+3*(i-1)+3) = ddot(3, z, 1, p, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(iadcoo+3*(i-1)+1) = ddot(b_n, x, b_incx, p, b_incy)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(iadcoo+3*(i-1)+2) = ddot(b_n, y, b_incx, p, b_incy)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(iadcoo+3*(i-1)+3) = ddot(b_n, z, b_incx, p, b_incy)
             end do
         else
             call utmess('F', 'ALGORITH_97')

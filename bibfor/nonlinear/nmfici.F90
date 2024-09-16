@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ subroutine nmfici(nno, nddl, wref, vff, dfde, &
 !-----------------------------------------------------------------------
     integer :: n
     real(kind=8) :: cova(3, 3), metr(2, 2), jac, r(3, 3), noa1
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
 !
@@ -70,10 +71,20 @@ subroutine nmfici(nno, nddl, wref, vff, dfde, &
 !    CONSTRUCTION DE LA MATRICE B
 !
     do n = 1, nno
-        call dcopy(9, r, 1, b(1, 1, n), 1)
-        call dscal(9, -vff(n), b(1, 1, n), 1)
-        call dcopy(9, r, 1, b(1, 1, n+nno), 1)
-        call dscal(9, vff(n), b(1, 1, n+nno), 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, r, b_incx, b(1, 1, n), b_incy)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, -vff(n), b(1, 1, n), b_incx)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, r, b_incx, b(1, 1, n+nno), b_incy)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, vff(n), b(1, 1, n+nno), b_incx)
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0442(option, nomte)
     !
     implicit none
@@ -66,6 +66,7 @@ subroutine te0442(option, nomte)
     real(kind=8) :: a, b, xnorm, epais, excen, zic, hicou
     integer, parameter :: pt_gauss = 1, pt_noeud = 2
     integer :: jnbspi, nbcou, icou, isp
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
     !
     if (option .ne. 'REPE_TENS' .and. option .ne. 'REPE_GENE') then
 ! OPTION DE CALCUL INVALIDE
@@ -135,8 +136,8 @@ subroutine te0442(option, nomte)
         type_pt = pt_gauss
     end if
 ! Infos sur les noeuds et points de Gauss de l'élément
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 ! Nombre de points en fonction de la localisation des champs
     if (pain(4:5) .eq. 'NO') then
         np = nno
@@ -325,9 +326,15 @@ subroutine te0442(option, nomte)
 ! picyl = pig*pgcyl
                             a = 1.d0
                             b = 0.d0
-                            call dgemm('N', 'N', 3, 3, 3, &
-                                       a, pig(1, 1), 3, pgcyl(1, 1), 3, &
-                                       b, picyl(1, 1), 3)
+                            b_ldc = to_blas_int(3)
+                            b_ldb = to_blas_int(3)
+                            b_lda = to_blas_int(3)
+                            b_m = to_blas_int(3)
+                            b_n = to_blas_int(3)
+                            b_k = to_blas_int(3)
+                            call dgemm('N', 'N', b_m, b_n, b_k, &
+                                       a, pig(1, 1), b_lda, pgcyl(1, 1), b_ldb, &
+                                       b, picyl(1, 1), b_ldc)
 ! Appliquer le changement de base
                             call tpsivp(picyl, zr(jout+joff-1+1:jout+joff-1+ncmp))
 ! Mettre à jour l'offset (un tenseur 3D symétrique a 6 composantes)

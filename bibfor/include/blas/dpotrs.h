@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 interface
-    subroutine dpotrs(uplo, n, nhrs, a, lda, b, ldb, info)
-        integer,intent(in) :: n
-        integer,intent(in) :: nhrs
-        integer,intent(in) :: lda
-        integer,intent(in) :: ldb
-        integer,intent(out) :: info
-        real(kind=8),intent(in) :: a(lda,*)
-        real(kind=8),intent(inout) :: b(ldb,*)
-        character(len=1),intent(in) :: uplo
+    subroutine dpotrs(uplo, n, nhrs, a, lda,&
+                      b, ldb, info)
+        blas_int, intent(in) :: n
+        blas_int, intent(in) :: nhrs
+        blas_int, intent(in) :: lda
+        blas_int, intent(in) :: ldb
+        blas_int, intent(out) :: info
+        real(kind=8), intent(in) :: a(lda, *)
+        real(kind=8), intent(inout) :: b(ldb, *)
+        character(len=1), intent(in) :: uplo
     end subroutine dpotrs
 end interface

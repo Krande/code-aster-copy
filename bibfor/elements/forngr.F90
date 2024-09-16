@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -119,6 +119,7 @@ subroutine forngr(option, nomte)
     integer :: jnbspi
 !
     real(kind=8) :: blam(9, 3, 3)
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 ! DEB
@@ -228,8 +229,7 @@ subroutine forngr(option, nomte)
     do in = 1, nb1
         do ii = 1, 3
 !
-            vecu(in, ii) = zr(ium-1+6*(in-1)+ii &
-                              )
+            vecu(in, ii) = zr(ium-1+6*(in-1)+ii)
 !
         end do
     end do
@@ -245,8 +245,7 @@ subroutine forngr(option, nomte)
 !
     do in = 1, nb1
         do ii = 1, 3
-            vecthe(in, ii) = zr(ium-1+6*(in-1)+ii+ &
-                                3)
+            vecthe(in, ii) = zr(ium-1+6*(in-1)+ii+3)
         end do
     end do
 !
@@ -434,8 +433,7 @@ subroutine forngr(option, nomte)
 !
 !------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS
 !
-                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte- &
-                            1)
+                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
                     stild(1) = zr(icontm-1+k1+1)
                     stild(2) = zr(icontm-1+k1+2)
                     stild(3) = zr(icontm-1+k1+4)
@@ -446,8 +444,8 @@ subroutine forngr(option, nomte)
 !              ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * STILD ( 5 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, &
-                               b2su, stild, zr(ivectu))
+                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, b2su, stild, &
+                               zr(ivectu))
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -464,8 +462,8 @@ subroutine forngr(option, nomte)
 !
                     do i = 1, 5
                         sigtmp(i) = sigref
-                        call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, &
-                                   b2su, sigtmp, effint)
+                        call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, b2su, sigtmp, &
+                                   effint)
                         sigtmp(i) = 0.d0
                         do j = 1, 51
                             ftemp(j) = ftemp(j)+abs(effint(j))
@@ -490,8 +488,11 @@ subroutine forngr(option, nomte)
 !
     if (option .eq. 'REFE_FORC_NODA') then
         nval = nbcou*npge*npgsn*5
-        call daxpy(51, 1.d0/nval, ftemp, 1, zr(ivectu), &
-                   1)
+        b_n = to_blas_int(51)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0/nval, ftemp, b_incx, zr(ivectu), &
+                   b_incy)
         do j = 1, 51
             if (zr(ivectu+j-1) .eq. 0.) then
                 kmess(1) = 'COQUE3D'

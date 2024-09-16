@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dktnli(option, &
-                  xyzl, pgl, uml, dul, &
+subroutine dktnli(option, xyzl, pgl, uml, dul, &
                   btsig, ktan, codret)
 !
     use Behaviour_type
@@ -172,11 +171,11 @@ subroutine dktnli(option, &
     real(kind=8) :: d1iel(2, 2)
     real(kind=8) :: depfel(3*nbNodeMaxi)
     real(kind=8) :: hft2el(2, 6)
-    real(kind=8) ::   t2iuel(4), t2uiel(4), t1veel(9)
+    real(kind=8) :: t2iuel(4), t2uiel(4), t1veel(9)
     aster_logical :: coupmfel
     integer :: multicel
     integer :: lg_varip
-    real(kind=8), allocatable:: varip(:)
+    real(kind=8), allocatable :: varip(:)
     character(len=4), parameter :: fami = 'RIGI'
     type(Behaviour_Integ) :: BEHinteg
     aster_logical :: lVect, lMatr, lVari, lSigm
@@ -196,8 +195,8 @@ subroutine dktnli(option, &
 !
 ! - Get finite element parameters
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nbNode, npg=npg, &
-                     jpoids=ipoids, jcoopg=icoopg)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nbNode, npg=npg, jpoids=ipoids, &
+                     jcoopg=icoopg)
     dkt = ASTER_FALSE
     dkq = ASTER_FALSE
     if (nbNode .eq. 3) then
@@ -221,7 +220,8 @@ subroutine dktnli(option, &
 ! - Get input fields
 !
     call jevech('PMATERC', 'L', imate)
-    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
+                itab=jtab)
     nbsp = jtab(7)
     icontm = jtab(1)
     ASSERT(npg .eq. jtab(3))
@@ -240,9 +240,9 @@ subroutine dktnli(option, &
     incr_elas = zk16(icompo-1+INCRELAS)
     leul = defo_comp .eq. 'GROT_GDEP'
     read (zk16(icompo-1+NVAR), '(I16)') nbvar
-
+!
     ASSERT((.not. defo_comp .eq. 'GROT_GDEP') .or. (.not. incr_elas .eq. 'COMP_ELAS'))
-
+!
 !
 ! - Geometric parameters
 !
@@ -260,11 +260,11 @@ subroutine dktnli(option, &
 !
 ! - Output fields
 !
-
+!
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
     end if
-
+!
     lg_varip = npg*nbsp*nbvar
     allocate (varip(lg_varip))
     if (lVari) then
@@ -334,8 +334,9 @@ subroutine dktnli(option, &
             call dxqbm(qsi, eta, jacob(2), bm)
             call dkqbf(qsi, eta, jacob(2), cara, bf)
             call dsxhft(dfel, jacob(2), hft2el)
-            call dkqtxy(qsi, eta, hft2el, depfel, cara(13), cara(9), vt)
-        elseif (dkt) then
+            call dkqtxy(qsi, eta, hft2el, depfel, cara(13), &
+                        cara(9), vt)
+        else if (dkt) then
             poids = zr(ipoids+ipg-1)*cara(7)
             call dxtbm(cara(9), bm)
             call dktbf(qsi, eta, cara, bf)
@@ -345,10 +346,14 @@ subroutine dktnli(option, &
             ASSERT(ASTER_FALSE)
         end if
 ! ----- Compute strain and curvature
-        call pmrvec('ZERO', 3, 2*nbNode, bm, um, eps)
-        call pmrvec('ZERO', 3, 2*nbNode, bm, dum, deps)
-        call pmrvec('ZERO', 3, 3*nbNode, bf, uf, khi)
-        call pmrvec('ZERO', 3, 3*nbNode, bf, duf, dkhi)
+        call pmrvec('ZERO', 3, 2*nbNode, bm, um, &
+                    eps)
+        call pmrvec('ZERO', 3, 2*nbNode, bm, dum, &
+                    deps)
+        call pmrvec('ZERO', 3, 3*nbNode, bf, uf, &
+                    khi)
+        call pmrvec('ZERO', 3, 3*nbNode, bf, duf, &
+                    dkhi)
 ! ----- Quadratic terms for GROT_GDEP
         if (leul) then
             bmq = 0.d0
@@ -415,20 +420,18 @@ subroutine dktnli(option, &
                     end do
                 end if
 ! ------------- Integration
-                call nmcomp(BEHinteg, &
-                            'RIGI', ipg, ksp, 2, typmod, &
-                            zi(imate), zk16(icompo), zr(icarcr), instm, instp, &
-                            4, eps2d, deps2d, 4, sigmPrep, &
-                            zr(ivarim+ivpg), option, angmas, &
-                            zr(icontp+icpg), varip(1+ivpg), 36, dsidep, &
-                            codkpg)
-
+                call nmcomp(BEHinteg, 'RIGI', ipg, ksp, 2, &
+                            typmod, zi(imate), zk16(icompo), zr(icarcr), instm, &
+                            instp, 4, eps2d, deps2d, 4, &
+                            sigmPrep, zr(ivarim+ivpg), option, angmas, zr(icontp+icpg), &
+                            varip(1+ivpg), 36, dsidep, codkpg)
+!
                 if (codkpg .ne. 0) then
                     if (codret .ne. 1) then
                         codret = codkpg
                     end if
                 end if
-
+!
 ! ------------- Get stresses
                 if (lSigm) then
                     zr(icontp+icpg+3) = zr(icontp+icpg+3)/rac2
@@ -478,9 +481,12 @@ subroutine dktnli(option, &
         end if
 ! ----- Elementary matrices (membrane, bending, ...)
         if (lMatr) then
-            call utbtab('CUMU', 3, 2*nbNode, dm, bm, work, memb)
-            call utbtab('CUMU', 3, 3*nbNode, df, bf, work, flex)
-            call utctab('CUMU', 3, 3*nbNode, 2*nbNode, dmf, bf, bm, work, mefl)
+            call utbtab('CUMU', 3, 2*nbNode, dm, bm, &
+                        work, memb)
+            call utbtab('CUMU', 3, 3*nbNode, df, bf, &
+                        work, flex)
+            call utctab('CUMU', 3, 3*nbNode, 2*nbNode, dmf, &
+                        bf, bm, work, mefl)
         end if
     end do
 !
@@ -489,18 +495,18 @@ subroutine dktnli(option, &
     if (lMatr) then
         if (dkt) then
             call dxtloc(flex, memb, mefl, ctor, ktan)
-        elseif (dkq) then
+        else if (dkq) then
             call dxqloc(flex, memb, mefl, ctor, ktan)
         else
             ASSERT(ASTER_FALSE)
         end if
     end if
-
+!
 ! ------------- Get internal variables
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         zr(ivarip:ivarip+lg_varip-1) = varip(1:lg_varip)
     end if
-
+!
     deallocate (varip)
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine te0201(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
-
+!
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -59,6 +59,7 @@ subroutine te0201(option, nomte)
     character(len=16) :: rela_comp
     aster_logical :: matsym
     aster_logical :: lVect, lMatr, lVari, lSigm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,15 +91,14 @@ subroutine te0201(option, nomte)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icomp), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icomp), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Properties of behaviour
 !
@@ -120,7 +120,7 @@ subroutine te0201(option, nomte)
     if (lVect) then
         call jevech('PVECTUR', 'E', ivect)
     end if
-
+!
 !     CONTRAINTE -, RANGEE DANS UN TABLEAU (6,NPG)
     sigmo = 0.d0
     sigmo(1, 1) = zr(icontm)
@@ -132,8 +132,8 @@ subroutine te0201(option, nomte)
     call nmfi2d(npg, lgpg, zi(imater), option, zr(igeom), &
                 zr(idepm), zr(iddep), sigmo, sigma, fint, &
                 mat, zr(ivarim), zr(ivarip), zr(iinstm), zr(iinstp), &
-                zr(icarcr), zk16(icomp), typmod, lMatr, lVect, lSigm, &
-                codret)
+                zr(icarcr), zk16(icomp), typmod, lMatr, lVect, &
+                lSigm, codret)
 !
 ! - Save matrix
 !
@@ -171,7 +171,10 @@ subroutine te0201(option, nomte)
 ! - Save internal forces
 !
     if (lVect) then
-        call dcopy(8, fint, 1, zr(ivect), 1)
+        b_n = to_blas_int(8)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fint, b_incx, zr(ivect), b_incy)
     end if
 !
 ! - Save return code

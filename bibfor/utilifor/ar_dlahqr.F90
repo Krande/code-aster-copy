@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -159,6 +159,8 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi, &
 !     ..
 !     .. LOCAL ARRAYS ..
     real(kind=8) :: v(3), work(1)
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -224,7 +226,9 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi, &
 !
         do k = i, l+1, -1
             tst1 = abs(h(k-1, k-1))+abs(h(k, k))
-            if (tst1 .eq. zero) tst1 = dlanhs('1', i-l+1, h(l, l), ldh, work)
+            b_lda = to_blas_int(ldh)
+            b_n = to_blas_int(i-l+1)
+            if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h(l, l), b_lda, work)
             if (abs(h(k, k-1)) .le. max(ulp*tst1, smlnum)) goto 30
         end do
 30      continue
@@ -312,7 +316,12 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi, &
 !           SUBMATRIX. NR IS THE ORDER OF G.
 !
             nr = min(3, i-k+1)
-            if (k .gt. m) call dcopy(nr, h(k, k-1), 1, v, 1)
+            if (k .gt. m) then
+                b_n = to_blas_int(nr)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, h(k, k-1), b_incx, v, b_incy)
+            end if
             call ar_dlarfg(nr, v(1), v(2), 1, t1)
             if (k .gt. m) then
                 h(k, k-1) = v(1)
@@ -420,16 +429,27 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi, &
 !
 !           APPLY THE TRANSFORMATION TO THE REST OF H.
 !
-            if (i2 .gt. i) call drot(i2-i, h(i-1, i+1), ldh, h(i, i+1), ldh, &
-                                     cs, sn)
-            call drot(i-i1-1, h(i1, i-1), 1, h(i1, i), 1, &
+            if (i2 .gt. i) then
+                b_n = to_blas_int(i2-i)
+                b_incx = to_blas_int(ldh)
+                b_incy = to_blas_int(ldh)
+                call drot(b_n, h(i-1, i+1), b_incx, h(i, i+1), b_incy, &
+                          cs, sn)
+            end if
+            b_n = to_blas_int(i-i1-1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call drot(b_n, h(i1, i-1), b_incx, h(i1, i), b_incy, &
                       cs, sn)
         end if
         if (wantz) then
 !
 !           APPLY THE TRANSFORMATION TO Z.
 !
-            call drot(nz, z(iloz, i-1), 1, z(iloz, i), 1, &
+            b_n = to_blas_int(nz)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call drot(b_n, z(iloz, i-1), b_incx, z(iloz, i), b_incy, &
                       cs, sn)
         end if
     end if

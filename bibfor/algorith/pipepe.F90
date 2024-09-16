@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,6 +90,7 @@ subroutine pipepe(BEHinteg, pilo, ndim, nno, npg, &
     real(kind=8) :: rac2
     real(kind=8) :: etamin, etamax, tau, sigma(6)
     real(kind=8) :: dfdi(27, 3)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -129,7 +130,10 @@ subroutine pipepe(BEHinteg, pilo, ndim, nno, npg, &
             etamin = zr(iborne+1)
             etamax = zr(iborne)
 !
-            call dcopy(ndimsi, sigm(1, kpg), 1, sigma, 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, sigm(1, kpg), b_incx, sigma, b_incy)
             do k = 4, ndimsi
                 sigma(k) = sigma(k)*rac2
             end do

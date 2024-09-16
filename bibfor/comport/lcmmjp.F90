@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmjp(mod, nmat, mater, timed, timef, &
                   comp, nbcomm, cpmono, pgl, nfs, &
                   nsg, toutms, hsr, nr, nvi, &
@@ -77,6 +77,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef, &
     parameter(zero=0.d0)
     common/tdim/ndt, ndi
     integer :: irr, decirr, nbsyst, decal, gdef
+    blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     data i6/un, zero, zero, zero, zero, zero,&
      &                 zero, un, zero, zero, zero, zero,&
@@ -99,12 +100,15 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef, &
         call lcafyd(comp, mater, mater, nbcomm, cpmono, &
                     nmat, mod, nvi, vind, vinf, &
                     sigd, nr, yd, bnews, mtrac)
-        call dcopy(nr, yd, 1, yf, 1)
-        call lcmmja(mod, nmat, mater, timed, &
-                    timef, itmax, toler, nbcomm, cpmono, &
-                    pgl, nfs, nsg, toutms, hsr, &
-                    nr, nvi, vind, df, yf, &
-                    yd, dy, drdy, iret)
+        b_n = to_blas_int(nr)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, yd, b_incx, yf, b_incy)
+        call lcmmja(mod, nmat, mater, timed, timef, &
+                    itmax, toler, nbcomm, cpmono, pgl, &
+                    nfs, nsg, toutms, hsr, nr, &
+                    nvi, vind, df, yf, yd, &
+                    dy, drdy, iret)
         if (iret .gt. 0) goto 999
     end if
 !
@@ -147,7 +151,10 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef, &
         end do
     end do
 !
-    call dcopy(36, i6, 1, zinv, 1)
+    b_n = to_blas_int(36)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, i6, b_incx, zinv, b_incy)
 !     CALL MGAUSS ('NCSP',Z0, ZINV, 6, 6, 6, DET, IRET )
     call mgauss('NCWP', z0, zinv, 6, 6, &
                 6, det, iret)
@@ -157,7 +164,10 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef, &
 !
 !        DSDE = INVERSE(Z0-Z1*INVERSE(Z3)*Z2)
 !
-        call dcopy(36, zinv, 1, dsde, 1)
+        b_n = to_blas_int(36)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zinv, b_incx, dsde, b_incy)
 !
     else
 !

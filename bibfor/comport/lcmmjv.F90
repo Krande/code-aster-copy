@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmjv(mult_comp, nmat, cpmono, nbfsys, irota, &
                   itbint, nsg, hsr)
     implicit none
@@ -45,6 +45,7 @@ subroutine lcmmjv(mult_comp, nmat, cpmono, nbfsys, irota, &
     character(len=16) :: mult_comp
     character(len=16) :: compk, compi, compr
     character(len=24) :: cpmono(5*nmat+1)
+    blas_int :: b_incx, b_incy, b_n
     common/tbsysg/tbsysg(900)
 !     ----------------------------------------------------------------
 !
@@ -81,7 +82,10 @@ subroutine lcmmjv(mult_comp, nmat, cpmono, nbfsys, irota, &
         call r8inir(900, 0.d0, tbsysg, 1)
         call jeveuo(compr, 'L', icompr)
 !           TABLE CONTENANT LES SYSTEMES
-        call dcopy(6*nbtbsy+12, zr(icompr), 1, tbsysg, 1)
+        b_n = to_blas_int(6*nbtbsy+12)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(icompr), b_incx, tbsysg, b_incy)
     else
         tbsysg(1) = 0.d0
     end if

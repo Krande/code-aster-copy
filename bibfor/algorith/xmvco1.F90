@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla, &
     real(kind=8) :: tau(3), coefi
     real(kind=8) :: ffi, ttx(3), eps, sqrtan, sqttan
     aster_logical :: lmultc
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ---------------------------------------------------------------------
 !
@@ -104,14 +105,13 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla, &
                             )
                 end if
                 vtmp(ddls*(i-1)+ndim+j) = vtmp( &
-                                          ddls*(i-1)+ndim*(1+ifh-1)+j)+ &
-                                          (coefi*sigma(1)*nd(j)*ffp(i)*jac)+(coefi&
-                                                                     &*sigma(2)*tau1(j)*ffp(i)*jac &
-                                                                             )
+                                          ddls*(i-1)+ndim*(1+ifh-1)+j)+(coefi*sigma(1)*nd(j)*ffp&
+                                          &(i)*jac)+(coefi*sigma(2)*tau1(j)*ffp(i)*jac &
+                                          )
                 if (ndim .eq. 3) then
                     vtmp(ddls*(i-1)+ndim+j) = vtmp( &
-                                              ddls*(i-1)+ndim*(1+ifh-1)+j)+(coefi*sigma(3)*tau2(&
-                                              &j)*ffp(i)*jac &
+                                              ddls*(i-1)+ndim*(1+ifh-1)+j)+(coefi*sigma(3)*tau2(j&
+                                              &)*ffp(i)*jac &
                                               )
                 end if
 !
@@ -120,14 +120,14 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla, &
         do alp = 1, singu*ndim
             do j = 1, ndim
                 vtmp(ddls*(i-1)+ndim*(1+nfh)+alp) = vtmp( &
-                                                    ddls*(i-1)+ndim*(1+nfh)+alp)+(2.d0*sigma(1)&
-                                                    &*nd(j)*jac*fk(i, alp, j))+(2.d0*sigma(2)*tau&
-                                                    &1(j)*jac*fk(i, alp, j) &
+                                                    ddls*(i-1)+ndim*(1+nfh)+alp)+(2.d0*sigma(1)*n&
+                                                    &d(j)*jac*fk(i, alp, j))+(2.d0*sigma(2)*tau1(&
+                                                    &j)*jac*fk(i, alp, j) &
                                                     )
                 if (ndim .eq. 3) then
                     vtmp(ddls*(i-1)+ndim*(1+nfh)+alp) = vtmp( &
-                                                        ddls*(i-1)+ndim*(1+nfh)+alp)+(2.d0*sigm&
-                                                        &a(3)*tau2(j)*fk(i, alp, j)*jac &
+                                                        ddls*(i-1)+ndim*(1+nfh)+alp)+(2.d0*sigma(&
+                                                        &3)*tau2(j)*fk(i, alp, j)*jac &
                                                         )
                 end if
             end do
@@ -141,8 +141,14 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla, &
         ffi = ffc(i)
         nli = lact(i)
         if (nli .eq. 0) goto 460
-        ttx(1) = ddot(ndim, tau1, 1, tau, 1)
-        if (ndim .eq. 3) ttx(2) = ddot(ndim, tau2, 1, tau, 1)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        ttx(1) = ddot(b_n, tau1, b_incx, tau, b_incy)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        if (ndim .eq. 3) ttx(2) = ddot(b_n, tau2, b_incx, tau, b_incy)
         do k = 1, ndim-1
             vtmp(pli+k) = vtmp(pli+k)+sqrt(sigma(2)**2+sigma(3)**2)*ttx(k)*ffi*jac
         end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine caltau(ifa, is, sigf, fkooh, &
-                  nfs, nsg, toutms, taus, mus, &
-                  msns)
+!
+subroutine caltau(ifa, is, sigf, fkooh, nfs, &
+                  nsg, toutms, taus, mus, msns)
     implicit none
 !
 !     MONOCRISTAL : calcul de la scission reduite sur le systeme IS
@@ -40,6 +39,7 @@ subroutine caltau(ifa, is, sigf, fkooh, &
     real(kind=8) :: fesig(3, 3), s(3, 3), fetfe(3, 3), fetfe6(6)
     real(kind=8) :: toutms(nfs, nsg, 6), fkooh(6, 6)
     integer :: irr, decirr, nbsyst, decal, gdef
+    blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
     data id6/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
@@ -63,9 +63,14 @@ subroutine caltau(ifa, is, sigf, fkooh, &
 !        CONTRAINTES PK2
 ! Y contient : SIGF=PK2 (sans les SQRT(2) !), puis les alpha_s
         fetfe6 = matmul(fkooh, sigf)
-        call dscal(6, 2.d0, fetfe6, 1)
-        call daxpy(6, 1.d0, id6, 1, fetfe6, &
-                   1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 2.d0, fetfe6, b_incx)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, id6, b_incx, fetfe6, &
+                   b_incy)
 !
         do i = 1, 3
             ms(i) = toutms(ifa, is, i)

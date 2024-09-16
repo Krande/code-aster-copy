@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !     SUBROUTINE ARPACK OPERANT NP ETAPE D'ARNOLDI A PARTIR D'UNE
 !     FACTORISATION D'ORDRE K.
@@ -301,6 +301,9 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !     %-----------------------%
 !
     real(kind=8) :: xtemp(2)
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_lda, b_m
+    blas_int :: b_kl, b_ku
 !
 !     %-----------%
 !     | FUNCTIONS |
@@ -464,11 +467,18 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | MACHINE BOUND.                                          |
 !        %---------------------------------------------------------%
 !
-    call dcopy(n, resid, 1, v(1, j), 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, resid, b_incx, v(1, j), b_incy)
     if (rnorm .ge. unfl) then
         temp1 = one/rnorm
-        call dscal(n, temp1, v(1, j), 1)
-        call dscal(n, temp1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, temp1, v(1, j), b_incx)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, temp1, workd(ipj), b_incx)
     else
 !
 !            %-----------------------------------------%
@@ -477,11 +487,21 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !            %-----------------------------------------%
 !
 ! DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
-        call dlascl('G', i, i, rnorm, one, &
-                    n, 1, v(1, j), n, infol4)
+        b_lda = to_blas_int(n)
+        b_kl = to_blas_int(1)
+        b_ku = to_blas_int(1)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(1)
+        call dlascl('G', b_kl, b_ku, rnorm, one, &
+                    b_m, b_n, v(1, j), b_lda, infol4)
 ! DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
-        call dlascl('G', i, i, rnorm, one, &
-                    n, 1, workd(ipj), n, infol4)
+        b_lda = to_blas_int(n)
+        b_kl = to_blas_int(1)
+        b_ku = to_blas_int(1)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(1)
+        call dlascl('G', b_kl, b_ku, rnorm, one, &
+                    b_m, b_n, workd(ipj), b_lda, infol4)
 !
     end if
 !
@@ -492,7 +512,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
     step3 = .true.
     nopx = nopx+1
-    call dcopy(n, v(1, j), 1, workd(ivj), 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, v(1, j), b_incx, workd(ivj), b_incy)
     ipntr(1) = ivj
     ipntr(2) = irj
     ipntr(3) = ipj
@@ -517,7 +540,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | PUT ANOTHER COPY OF OP*V_(J) INTO RESID. |
 !        %------------------------------------------%
 !
-    call dcopy(n, workd(irj), 1, resid, 1)
+    b_n = to_blas_int(n)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, workd(irj), b_incx, resid, b_incy)
 !
 !        %---------------------------------------%
 !        | STEP 4:  FINISH EXTENDING THE ARNOLDI |
@@ -537,7 +563,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
         goto 9000
     else if (bmat .eq. 'I') then
-        call dcopy(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
 60  continue
 !
@@ -555,10 +584,15 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        %-------------------------------------%
 !
     if (bmat .eq. 'G') then
-        wnorm = ddot(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        wnorm = ddot(b_n, resid, b_incx, workd(ipj), b_incy)
         wnorm = sqrt(abs(wnorm))
     else if (bmat .eq. 'I') then
-        wnorm = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        wnorm = dnrm2(b_n, resid, b_incx)
     end if
 !
 !        %-----------------------------------------%
@@ -574,24 +608,37 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | WORKD(IPJ:IPJ+N-1) CONTAINS B*OP*V_(J).  |
 !        %------------------------------------------%
 !
-    call dgemv('T', n, j, one, v, &
-               ldv, workd(ipj), 1, zero, h(1, j), &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('T', b_m, b_n, one, v, &
+               b_lda, workd(ipj), b_incx, zero, h(1, j), &
+               b_incy)
 !
 !        %--------------------------------------%
 !        | ORTHOGONALIZE R_(J) AGAINST V_(J).   |
 !        | RESID CONTAINS OP*V_(J). SEE STEP 3. |
 !        %--------------------------------------%
 !
-    call dgemv('N', n, j, -one, v, &
-               ldv, h(1, j), 1, one, resid, &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, -one, v, &
+               b_lda, h(1, j), b_incx, one, resid, &
+               b_incy)
 !
     if (j .gt. 1) h(j, j-1) = betaj
     orth1 = .true.
     if (bmat .eq. 'G') then
         nbx = nbx+1
-        call dcopy(n, resid, 1, workd(irj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(irj), b_incy)
         ipntr(1) = irj
         ipntr(2) = ipj
         ido = 2
@@ -602,7 +649,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
         goto 9000
     else if (bmat .eq. 'I') then
-        call dcopy(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
 70  continue
 !
@@ -618,10 +668,15 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        %------------------------------%
 !
     if (bmat .eq. 'G') then
-        rnorm = ddot(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rnorm = ddot(b_n, resid, b_incx, workd(ipj), b_incy)
         rnorm = sqrt(abs(rnorm))
     else if (bmat .eq. 'I') then
-        rnorm = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        rnorm = dnrm2(b_n, resid, b_incx)
     end if
 !
 !        %-----------------------------------------------------------%
@@ -667,9 +722,14 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | WORKD(IRJ:IRJ+J-1) = V(:,1:J)'*WORKD(IPJ:IPJ+N-1). |
 !        %----------------------------------------------------%
 !
-    call dgemv('T', n, j, one, v, &
-               ldv, workd(ipj), 1, zero, workd(irj), &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('T', b_m, b_n, one, v, &
+               b_lda, workd(ipj), b_incx, zero, workd(irj), &
+               b_incy)
 !
 !        %---------------------------------------------%
 !        | COMPUTE THE CORRECTION TO THE RESIDUAL:     |
@@ -678,16 +738,27 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        | + V(:,1:J)*WORKD(IRJ:IRJ+J-1)*E'_J.         |
 !        %---------------------------------------------%
 !
-    call dgemv('N', n, j, -one, v, &
-               ldv, workd(irj), 1, one, resid, &
-               1)
-    call daxpy(j, one, workd(irj), 1, h(1, j), &
-               1)
+    b_lda = to_blas_int(ldv)
+    b_m = to_blas_int(n)
+    b_n = to_blas_int(j)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, -one, v, &
+               b_lda, workd(irj), b_incx, one, resid, &
+               b_incy)
+    b_n = to_blas_int(j)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, one, workd(irj), b_incx, h(1, j), &
+               b_incy)
 !
     orth2 = .true.
     if (bmat .eq. 'G') then
         nbx = nbx+1
-        call dcopy(n, resid, 1, workd(irj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(irj), b_incy)
         ipntr(1) = irj
         ipntr(2) = ipj
         ido = 2
@@ -699,7 +770,10 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
         goto 9000
     else if (bmat .eq. 'I') then
-        call dcopy(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, resid, b_incx, workd(ipj), b_incy)
     end if
 90  continue
 !
@@ -712,10 +786,15 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !        %-----------------------------------------------------%
 !
     if (bmat .eq. 'G') then
-        rnorm1 = ddot(n, resid, 1, workd(ipj), 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rnorm1 = ddot(b_n, resid, b_incx, workd(ipj), b_incy)
         rnorm1 = sqrt(abs(rnorm1))
     else if (bmat .eq. 'I') then
-        rnorm1 = dnrm2(n, resid, 1)
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        rnorm1 = dnrm2(b_n, resid, b_incx)
     end if
 !
     if (msglvl .gt. 0 .and. iter .gt. 0) then
@@ -795,7 +874,9 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !              %--------------------------------------------%
 !
             tst1 = abs(h(i, i))+abs(h(i+1, i+1))
-            if (tst1 .eq. zero) tst1 = dlanhs('1', k+np, h, ldh, workd(n+1))
+            b_lda = to_blas_int(ldh)
+            b_n = to_blas_int(k+np)
+            if (tst1 .eq. zero) tst1 = dlanhs('1', b_n, h, b_lda, workd(n+1))
             if (abs(h(i+1, i)) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
         end do
 !

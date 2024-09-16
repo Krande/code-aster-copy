@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,6 +61,7 @@ subroutine romAlgoNLMecaResidual(v_cnequi, ds_algorom, l_cine, v_ccid, resi)
     real(kind=8) :: term
     real(kind=8), pointer :: resultVale(:) => null()
     real(kind=8), pointer :: v_resi(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,7 +88,7 @@ subroutine romAlgoNLMecaResidual(v_cnequi, ds_algorom, l_cine, v_ccid, resi)
             v_resi(iEqua) = v_cnequi(iEqua)
         end if
     end do
-
+!
 !
 ! - Truncation of residual
 !
@@ -102,9 +103,13 @@ subroutine romAlgoNLMecaResidual(v_cnequi, ds_algorom, l_cine, v_ccid, resi)
 ! - Compute norm
 !
     do iMode = 1, nbMode
-        call rsexch(' ', resultName, fieldName, iMode, resultField, iret)
+        call rsexch(' ', resultName, fieldName, iMode, resultField, &
+                    iret)
         call jeveuo(resultField(1:19)//'.VALE', 'E', vr=resultVale)
-        term = ddot(nbEqua, resultVale, 1, v_resi, 1)
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        term = ddot(b_n, resultVale, b_incx, v_resi, b_incy)
         resi = max(resi, abs(term))
     end do
 !

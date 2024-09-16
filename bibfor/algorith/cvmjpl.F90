@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,6 +101,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef, &
     real(kind=8) :: drdy(nr, nr), yd(ndt+nvi), yf(ndt+nvi), dy(ndt+nvi)
     real(kind=8) :: timed, timef, sigf(*), vinf(*), sigd(*), vind(*)
     real(kind=8) :: epsd(*), deps(*)
+    blas_int :: b_incx, b_incy, b_n
 !       ----------------------------------------------------------------
     common/tdim/ndt, ndi
     common/opti/ioptio, idnr
@@ -124,8 +125,11 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef, &
     yd(ndt+1:ndt+nvi-1) = vind(1:nvi-1)
     yf(ndt+1:ndt+nvi-1) = vinf(1:nvi-1)
     dy(1:nr) = yf(1:nr)
-    call daxpy(nr, -1.d0, yd, 1, dy, &
-               1)
+    b_n = to_blas_int(nr)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -1.d0, yd, b_incx, dy, &
+               b_incy)
 !
     call cvmjac(mod, nmat, mater, timed, timef, &
                 yf, dy, nr, epsd, deps, &

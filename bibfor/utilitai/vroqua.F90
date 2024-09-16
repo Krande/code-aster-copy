@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine vroqua(theta, quater)
     real(kind=8) :: epsil, demi, un
     real(kind=8) :: angle, coef, prosca
     integer :: i
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +48,10 @@ subroutine vroqua(theta, quater)
     demi = 5.d-1
     un = 1.d0
 !
-    prosca = ddot(3, theta, 1, theta, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    prosca = ddot(b_n, theta, b_incx, theta, b_incy)
     angle = demi*sqrt(prosca)
     quater(4) = cos(angle)
     if (angle .gt. epsil) then

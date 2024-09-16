@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,6 +83,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
     parameter(cridist=1.d-7)
     aster_logical :: cut, ajout, arete
     character(len=8) :: typma, elp, elc
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(ptmax=4, elc='SE3')
 ! --------------------------------------------------------------------
@@ -121,7 +122,8 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
     if (zr(jlsn-1+(i-1)*nfiss+ifiss) .ne. 0.d0 .and. i .lt. nno) then
         do k = i+1, nno
 !     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
-            if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut = .true.
+            if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut = &
+                .true.
         end do
     else if (i .lt. nno) then
         i = i+1
@@ -142,7 +144,8 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
         call conare(typma, ar, nbar)
         do i = 1, nbar
             lsnabs = abs( &
-                     zr(jlsn-1+(ar(i, 1)-1)*nfiss+ifiss))+abs(zr(jlsn-1+(ar(i, 2)-1)*nfiss+ifiss))
+                     zr(jlsn-1+(ar(i, 1)-1)*nfiss+ifiss))+abs(zr(jlsn-1+(ar(i, 2)-1)*nfiss+ifiss) &
+                                                              )
             if (lsnabs .le. cridist*lonref) arete = .true.
         end do
         if (.not. arete) goto 999
@@ -329,7 +332,10 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
             abprim(1) = -ab(2)
             abprim(2) = ab(1)
 !
-            if (ddot(2, abprim, 1, nd, 1) .lt. 0.d0) then
+            b_n = to_blas_int(2)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            if (ddot(b_n, abprim, b_incx, nd, b_incy) .lt. 0.d0) then
                 do k = 1, 2
                     tampor(k) = pinter(k)
                     pinter(k) = pinter(2+k)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,6 +78,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1, &
     real(kind=8), pointer :: vjeu(:) => null()
     real(kind=8), pointer :: jeumax(:) => null()
     integer, pointer :: vnddl(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -104,22 +105,38 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1, &
     call jeveuo(parcho//'.JEUMAX', 'L', vr=jeumax)
     call jeveuo(parcho//'.NEQS', 'L', vi=vneqs)
     call jeveuo(parcho//'.TYPE', 'L', vk8=type)
-    call dscal(ninc-1, 0.d0, zr(iqnl), 1)
+    b_n = to_blas_int(ninc-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(iqnl), b_incx)
 ! ----------------------------------------------------------------------
 ! --- EQUATION DE LA DYNAMIQUE
 ! ----------------------------------------------------------------------
 ! --- ON MET XSK PUIS XCK DANS LE VECTEUR QNL
-    call dcopy(nd*h, zr(ivec2+(h+1)*nd), 1, zr(iqnl+nd), 1)
-    call dcopy(nd*h, zr(ivec2+nd), 1, zr(iqnl+nd*(h+1)), 1)
+    b_n = to_blas_int(nd*h)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivec2+(h+1)*nd), b_incx, zr(iqnl+nd), b_incy)
+    b_n = to_blas_int(nd*h)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivec2+nd), b_incx, zr(iqnl+nd*(h+1)), b_incy)
 !     QNL(COS) = -K*GAMA1*XSK
-    call dscal(nd*h, -zr(ivec1-1+ninc-3), zr(iqnl+nd), 1)
+    b_n = to_blas_int(nd*h)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, -zr(ivec1-1+ninc-3), zr(iqnl+nd), b_incx)
     do k = 1, h
-        call dscal(nd, dble(k), zr(iqnl-1+k*nd+1), 1)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, dble(k), zr(iqnl-1+k*nd+1), b_incx)
     end do
 ! --- QNL(SIN) =  K*GAMA1*XCK
-    call dscal(nd*h, zr(ivec1-1+ninc-3), zr(iqnl+nd*(h+1)), 1)
+    b_n = to_blas_int(nd*h)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, zr(ivec1-1+ninc-3), zr(iqnl+nd*(h+1)), b_incx)
     do k = 1, h
-        call dscal(nd, dble(k), zr(iqnl-1+(k+h)*nd+1), 1)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, dble(k), zr(iqnl-1+(k+h)*nd+1), b_incx)
     end do
 ! --- CREATION DE 2 VECTEURS TEMPORAIRES
     call wkvect('&&MNLQNL.VTEP1', 'V V R', neq*(2*h), ivtp1)
@@ -144,18 +161,23 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1, &
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i = i+1
-                zr(ivtp3-1+(j-1)*nd+i) = zr(ivtp2-1+(j-1)*neq+k)/zr( &
-                                         iadim-1+2)
+                zr(ivtp3-1+(j-1)*nd+i) = zr(ivtp2-1+(j-1)*neq+k)/zr(iadim-1+2)
             end if
         end do
     end do
 ! --- QNL = QNL - (K^2)*GAMMA2*VECTEMP3
     do k = 1, h
         kk = dble(k)**2
-        call daxpy(nd, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(k-1)*nd+1), 1, zr(iqnl-1+k*nd+1), &
-                   1)
-        call daxpy(nd, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(h+k-1)*nd+1), 1, &
-                   zr(iqnl-1+(h+k)*nd+1), 1)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(k-1)*nd+1), b_incx, &
+                   zr(iqnl-1+k*nd+1), b_incy)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(h+k-1)*nd+1), b_incx, &
+                   zr(iqnl-1+(h+k)*nd+1), b_incy)
     end do
 ! ----------------------------------------------------------------------
 ! --- EQUATIONS SUPPLEMENTAIRES
@@ -176,140 +198,268 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1, &
             call mnlaft(zr(ivec1-1+nd*(2*h+1)+neqs*(2*hf+1)+1), &
                         zr(ivec2-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), hf, nt, &
                         zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)))
-            call dscal(2*hf+1, -1.d0, zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, -1.d0, zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)), b_incx)
 ! ---     -(F/ALPHA-XG)*(F/ALPHA-XG))
 !           VECTEMP4=F1/ALPHA - XG
-            call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
-            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec1-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1, zr(ivtp4), &
-                       1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp4), b_incx)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/alpha, zr(ivec1-1+nd*(2*h+1)+neqs*(2*hf+1)+1), b_incx, &
+                       zr(ivtp4), b_incy)
 !           CSTE & COS
-            call daxpy(h+1, -1.d0/jeu, zr(ivec1-1+nddl), nd, zr(ivtp4), &
-                       1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0/jeu, zr(ivec1-1+nddl), b_incx, zr(ivtp4), &
+                       b_incy)
 !           SIN
-            call daxpy(h, -1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddl), nd, zr(ivtp4+hf+1), &
-                       1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddl), b_incx, zr(ivtp4+hf+1), &
+                       b_incy)
 !           VECTEMP5=F2/ALPHA - XG
-            call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
-            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec2-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1, zr(ivtp5), &
-                       1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp5), b_incx)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/alpha, zr(ivec2-1+nd*(2*h+1)+neqs*(2*hf+1)+1), b_incx, &
+                       zr(ivtp5), b_incy)
 !           CSTE & COS
-            call daxpy(h+1, -1.d0/jeu, zr(ivec2-1+nddl), nd, zr(ivtp5), &
-                       1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0/jeu, zr(ivec2-1+nddl), b_incx, zr(ivtp5), &
+                       b_incy)
 !           SIN
-            call daxpy(h, -1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddl), nd, zr(ivtp5+hf+1), &
-                       1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddl), b_incx, zr(ivtp5+hf+1), &
+                       b_incy)
 !          WRITE(6,*) 'VECT5',ZR(IVTP5:IVTP5+2*HF)
             call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1))
-            call dscal(2*hf+1, -1.d0, zr(iqnl-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, -1.d0, zr(iqnl-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), b_incx)
         else if (type(i) (1:6) .eq. 'CERCLE') then
             nddlx = vnddl(6*(i-1)+1)
             nddly = vnddl(6*(i-1)+2)
 ! ---     FX*R - FN*(UX/JEU)
-            call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp4), b_incx)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddlx), nd, zr(ivtp4), &
-                       1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec2-1+nddlx), b_incx, zr(ivtp4), &
+                       b_incy)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddlx), nd, zr(ivtp4+hf+1), &
-                       1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddlx), b_incx, zr(ivtp4+hf+1), &
+                       b_incy)
 !           FN*(UX/JEU)
-            call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp5), b_incx)
             call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), zr(ivtp4), hf, nt, zr(ivtp5))
 !           FX*R
             call mnlaft(zr(ivec1+nd*(2*h+1)+neqs*(2*hf+1)), &
                         zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt, &
                         zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)))
-            call daxpy(2*hf+1, -1.d0, zr(ivtp5), 1, zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)), &
-                       1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, zr(ivtp5), b_incx, zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)), &
+                       b_incy)
 ! ---     FY*R - FN*(UY/JEU)
-            call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp4), b_incx)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddly), nd, zr(ivtp4), &
-                       1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec2-1+nddly), b_incx, zr(ivtp4), &
+                       b_incy)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddly), nd, zr(ivtp4+hf+1), &
-                       1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddly), b_incx, zr(ivtp4+hf+1), &
+                       b_incy)
 !           FN*(UY/JEU)
-            call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp5), b_incx)
             call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), zr(ivtp4), hf, nt, zr(ivtp5))
 !           FY*R
             call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+1)*(2*hf+1)), &
                         zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt, &
                         zr(iqnl+nd*(2*h+1)+(neqs+1)*(2*hf+1)))
-            call daxpy(2*hf+1, -1.d0, zr(ivtp5), 1, zr(iqnl+nd*(2*h+1)+(neqs+1)*(2*hf+1)), &
-                       1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, zr(ivtp5), b_incx, zr(iqnl+nd*(2*h+1)+(neqs+1)*(2*hf+1)), &
+                       b_incy)
 ! ---     R*R - (UX/JEU)^2 - (UY/JEU)^2
 !          - (UY/JEU)^2
-            call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp4), b_incx)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec1-1+nddly), nd, zr(ivtp4), &
-                       1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec1-1+nddly), b_incx, zr(ivtp4), &
+                       b_incy)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddly), nd, zr(ivtp4+hf+1), &
-                       1)
-            call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddly), b_incx, zr(ivtp4+hf+1), &
+                       b_incy)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp5), b_incx)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddly), nd, zr(ivtp5), &
-                       1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec2-1+nddly), b_incx, zr(ivtp5), &
+                       b_incy)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddly), nd, zr(ivtp5+hf+1), &
-                       1)
-            call dscal(2*hf+1, 0.d0, vtep6, 1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddly), b_incx, zr(ivtp5+hf+1), &
+                       b_incy)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, vtep6, b_incx)
             call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, vtep6)
-            call daxpy(2*hf+1, -1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
-                       1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, vtep6, b_incx, zr(iqnl+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
+                       b_incy)
 !         - (UX/JEU)^2
-            call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp4), b_incx)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec1-1+nddlx), nd, zr(ivtp4), &
-                       1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec1-1+nddlx), b_incx, zr(ivtp4), &
+                       b_incy)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddlx), nd, zr(ivtp4+hf+1), &
-                       1)
-            call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddlx), b_incx, zr(ivtp4+hf+1), &
+                       b_incy)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp5), b_incx)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddlx), nd, zr(ivtp5), &
-                       1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec2-1+nddlx), b_incx, zr(ivtp5), &
+                       b_incy)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddlx), nd, zr(ivtp5+hf+1), &
-                       1)
-            call dscal(2*hf+1, 0.d0, vtep6, 1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddlx), b_incx, zr(ivtp5+hf+1), &
+                       b_incy)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, vtep6, b_incx)
             call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, vtep6)
-            call daxpy(2*hf+1, -1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
-                       1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, vtep6, b_incx, zr(iqnl+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
+                       b_incy)
 !          + R^2
-            call dscal(2*hf+1, 0.d0, vtep6, 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, vtep6, b_incx)
             call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
                         zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt, vtep6)
-            call daxpy(2*hf+1, 1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
-                       1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, vtep6, b_incx, zr(iqnl+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
+                       b_incy)
 ! ---     (FN/ALPHA - R)*FN
-            call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
-            call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
-            call daxpy(2*hf+1, -1.d0, zr(ivec1+nd*(2*h+1)+(neqs+2)*(2*hf+1)), 1, zr(ivtp4), &
-                       1)
-            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, zr(ivtp4), &
-                       1)
-            call dcopy(2*hf+1, zr(ivec2+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, zr(ivtp5), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp4), b_incx)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp5), b_incx)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, zr(ivec1+nd*(2*h+1)+(neqs+2)*(2*hf+1)), b_incx, zr(ivtp4), &
+                       b_incy)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/alpha, zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), b_incx, &
+                       zr(ivtp4), b_incy)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivec2+nd*(2*h+1)+(neqs+3)*(2*hf+1)), b_incx, zr(ivtp5), b_incy)
             call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl+nd*(2*h+1)+(neqs+3)*(2*hf+1)))
         else if (type(i) (1:4) .eq. 'PLAN') then
             nddl = vnddl(6*(i-1)+1)
 ! ---     (F/ALPHA - XG)*F
-            call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
-            call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp4), b_incx)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(ivtp5), b_incx)
 !            call jxveri(' ', ' ')
 !           (F/ALPHA - XG)
-            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec1+nd*(2*h+1)+neqs*(2*hf+1)), 1, zr(ivtp4), &
-                       1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/alpha, zr(ivec1+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, zr(ivtp4), &
+                       b_incy)
 !           CSTE & COS
-            call daxpy(h+1, -1.d0/jeu, zr(ivec1-1+nddl), nd, zr(ivtp4), &
-                       1)
+            b_n = to_blas_int(h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0/jeu, zr(ivec1-1+nddl), b_incx, zr(ivtp4), &
+                       b_incy)
 !           SIN
-            call daxpy(h, -1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddl), nd, zr(ivtp4+hf+1), &
-                       1)
+            b_n = to_blas_int(h)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddl), b_incx, zr(ivtp4+hf+1), &
+                       b_incy)
 !           F
-            call daxpy(2*hf+1, 1.d0, zr(ivec2+nd*(2*h+1)+neqs*(2*hf+1)), 1, zr(ivtp5), &
-                       1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, zr(ivec2+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, zr(ivtp5), &
+                       b_incy)
 !
             call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)))
         end if

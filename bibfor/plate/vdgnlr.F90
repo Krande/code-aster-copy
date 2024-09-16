@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
+subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
+                  nomte)
 !
     implicit none
 !
@@ -159,6 +160,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
     real(kind=8) :: theta(3), thetan
     real(kind=8) :: tmoin1(3, 3), tm1t(3, 3)
     real(kind=8) :: term(3)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! DEB
 !
@@ -177,7 +179,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
         call utmess('F', 'PLATE1_10')
     end if
 !
-
+!
 !______________________________________________________________________
 !
 !---- RECUPERATION DES POINTEURS ( L : LECTURE )
@@ -313,8 +315,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !
     do in = 1, nb1
         do ii = 1, 3
-            vecu(in, ii) = zr(ium-1+6*(in-1)+ii)+ &
-                           zr(iup-1+6*(in-1)+ii)
+            vecu(in, ii) = zr(ium-1+6*(in-1)+ii)+zr(iup-1+6*(in-1)+ii)
         end do
     end do
 !
@@ -348,16 +349,14 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !
         do in = 1, nb1
             do ii = 1, 3
-                vecthe(in, ii) = zr(ium-1+6*(in-1)+ii+3)+ &
-                                 zr(iup-1+6*(in-1)+ii+3)
+                vecthe(in, ii) = zr(ium-1+6*(in-1)+ii+3)+zr(iup-1+6*(in-1)+ii+3)
             end do
         end do
 !
 !--------- SUPERNOEUD
 !
         do ii = 1, 3
-            vecthe(nb2, ii) = zr(ium-1+6*(nb1)+ii)+ &
-                              zr(iup-1+6*(nb1)+ii)
+            vecthe(nb2, ii) = zr(ium-1+6*(nb1)+ii)+zr(iup-1+6*(nb1)+ii)
         end do
     end if
 !
@@ -556,7 +555,8 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !
                 call moytpg('RIGI', intsn, 3, '+', valpar, &
                             iret)
-                call matrc2(1, 'TEMP    ', [valpar], kappa, matc, vectt)
+                call matrc2(1, 'TEMP    ', [valpar], kappa, matc, &
+                            vectt)
 !
 !------------- LA  CONTRAINTE TOTALE  PK2 STILD ( 5 )
 !
@@ -567,8 +567,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !
 !------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS
 !
-                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte- &
-                            1)
+                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
                     zr(icontp-1+k1+1) = stild(1)
                     zr(icontp-1+k1+2) = stild(2)
 !
@@ -583,8 +582,8 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !              ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * STILD ( 5 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, &
-                               b2su, stild, zr(ivectu))
+                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, b2su, stild, &
+                               zr(ivectu))
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -599,9 +598,8 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !
                     do kntsr = 1, npgsr
                         do i = 1, 5
-                            stlis(i, kntsr) = stlis(i, kntsr)+ &
-                                              zr(lzr-1+702+4*(intsn-1)+kntsr)* &
-                                              stild(i)*zr(lzr-1+127+intsn-1)
+                            stlis(i, kntsr) = stlis(i, kntsr)+zr(lzr-1+702+4*(intsn-1)+kntsr)*s&
+                                              &tild(i)*zr(lzr-1+127+intsn-1)
                         end do
                     end do
 !
@@ -610,8 +608,8 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !                  B2SU ( 5 , 6 * NB1 + 3 )
 !                POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(b2su, matc, zr(lzr-1+127+intsn-1)*detj*coef, 5, &
-                                6*nb1+3, zr(imatun))
+                    call btdbma(b2su, matc, zr(lzr-1+127+intsn-1)*detj*coef, 5, 6*nb1+3, &
+                                zr(imatun))
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -639,8 +637,8 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !           ( BTILD3 ( 5 , 27 ) ) T * STILD ( 5 ) *
 !           POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(3*nb2, 5, zr(lzr-1+127+intsn-1)*detj*coef, btild3, &
-                               stild, veczn)
+                    call btsig(3*nb2, 5, zr(lzr-1+127+intsn-1)*detj*coef, btild3, stild, &
+                               veczn)
 !
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -663,16 +661,16 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !           *                               JDN2NC ( 9 , 6 * NB1 + 3 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(jdn2nc, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, &
-                                6*nb1+3, vrignc)
+                    call btdbma(jdn2nc, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3, &
+                                vrignc)
 !
 !------------- VRIGNI  ( 6 * NB1 + 3 , 6 * NB1 + 3 )  = INTEGRALE
 !              ( JDN1NI ( 9 , 6 * NB1 + 3 ) ) T * BARS   ( 9 , 9 )
 !           *                               JDN1NI ( 9 , 6 * NB1 + 3 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(jdn1ni, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, &
-                                6*nb1+3, vrigni)
+                    call btdbma(jdn1ni, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3, &
+                                vrigni)
                 end if
             end do
             if (lMatr) then
@@ -739,7 +737,8 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !------------- PAS D INTEGRATION REDUITE SURFACE MOYENNE
 !DDDDDDDDDDDDD
 !
-                    call btdbma(jdn2rc, bars, detj*coef, 9, 6*nb1+3, vrigrc)
+                    call btdbma(jdn2rc, bars, detj*coef, 9, 6*nb1+3, &
+                                vrigrc)
                 end do
             end if
         end do
@@ -750,8 +749,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !------- AFFECTATION DE LA RIGIDITE GEOMETRIQUE
 !
         do jd = 1, (6*nb1+3)*(6*nb1+3)
-            zr(imatun-1+jd) = zr(imatun-1+jd)+ &
-                              vrignc(jd)-vrigni(jd)+vrigri(jd)+vrigrc(jd)
+            zr(imatun-1+jd) = zr(imatun-1+jd)+vrignc(jd)-vrigni(jd)+vrigri(jd)+vrigrc(jd)
         end do
 !
 !------- AFFECTATION DE LA RIGIDITE NON CLASSIQUE RIGNC ( 3 , 3 )
@@ -801,7 +799,10 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
             theta(ii) = vecthe(in, ii)
         end do
 !
-        thetan = ddot(3, theta, 1, vecni, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        thetan = ddot(b_n, theta, b_incx, vecni, b_incy)
 !
 !+++++++++++ MATRICE T MOIUNS 1 DE THETA
 !
@@ -809,7 +810,8 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
 !
 !+++++++++++ SON TRANSPOSE
 !
-        call transp(tmoin1, 3, 3, 3, tm1t, 3)
+        call transp(tmoin1, 3, 3, 3, tm1t, &
+                    3)
 !
 !+++++++++++ PRODUIT T MOINS 1 T FOIS VECNI
 !
@@ -827,9 +829,10 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
                     j = 6*(in-1)+jj+3
                     do ii = 1, 3
                         i = 6*(in-1)+ii+3
-                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = &
-                            zr(imatun-1+(6*nb1+3)*(j-1)+i)+ &
-                            knn*term(ii)*term(jj)
+                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = zr( &
+                                                         imatun-1+(6*nb1+3)*(j-1)+i)+knn*term(ii&
+                                                         &)*term(jj &
+                                                         )
                     end do
                 end do
             else
@@ -839,9 +842,10 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
                     j = 6*nb1+jj
                     do ii = 1, 3
                         i = 6*nb1+ii
-                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = &
-                            zr(imatun-1+(6*nb1+3)*(j-1)+i)+ &
-                            knn*term(ii)*term(jj)
+                        zr(imatun-1+(6*nb1+3)*(j-1)+i) = zr( &
+                                                         imatun-1+(6*nb1+3)*(j-1)+i)+knn*term(ii&
+                                                         &)*term(jj &
+                                                         )
                     end do
                 end do
             end if
@@ -850,14 +854,11 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, nomte)
         if (lVect) then
             if (in .le. nb1) then
                 do ii = 1, 3
-                    zr(ivectu-1+6*(in-1)+ii+3) = &
-                        zr(ivectu-1+6*(in-1)+ii+3)+ &
-                        knn*term(ii)*thetan
+                    zr(ivectu-1+6*(in-1)+ii+3) = zr(ivectu-1+6*(in-1)+ii+3)+knn*term(ii)*thetan
                 end do
             else
                 do ii = 1, 3
-                    zr(ivectu-1+6*(in-1)+ii) = &
-                        zr(ivectu-1+6*(in-1)+ii)+knn*term(ii)*thetan
+                    zr(ivectu-1+6*(in-1)+ii) = zr(ivectu-1+6*(in-1)+ii)+knn*term(ii)*thetan
                 end do
             end if
         end if

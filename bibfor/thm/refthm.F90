@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine refthm(ds_thm, &
-                  jv_mater, ndim, l_axi, fnoevo, &
+subroutine refthm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
                   mecani, press1, press2, tempe, second, &
-                  nno, nnos, npi, npg, &
-                  elem_coor, dt, dimdef, dimcon, dimuel, &
-                  jv_poids, jv_poids2, &
-                  jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
-                  nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
-                  b, r, vectu)
+                  nno, nnos, npi, npg, elem_coor, &
+                  dt, dimdef, dimcon, dimuel, jv_poids, &
+                  jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                  nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                  nddl_2nd, b, r, vectu)
 !
     use THM_type
 !
@@ -110,6 +108,7 @@ subroutine refthm(ds_thm, &
     integer, parameter :: parbsi = 27*6
     real(kind=8) :: sigtm(parsig), ftemp(partmp), bsigm(parbsi)
     real(kind=8) :: vale_refe, list_vale_refe(6)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -169,8 +168,8 @@ subroutine refthm(ds_thm, &
             else if (i_dim .le. (mecani(5)+press1(2)*press1(7)+press2(2)*press2(7))) then
                 indx_vale_refe = 3
                 if (tempe(5) .gt. 0) then
-                    if (i_dim .eq. (mecani(5)+press1(2)*press1(7)+press2(7)) .or. &
-                        i_dim .eq. (mecani(5)+press1(2)*press1(7)+press2(2)*press2(7))) then
+                    if (i_dim .eq. (mecani(5)+press1(2)*press1(7)+press2(7)) .or. i_dim &
+                        .eq. (mecani(5)+press1(2)*press1(7)+press2(2)*press2(7))) then
                         cycle
                     end if
                 end if
@@ -194,12 +193,11 @@ subroutine refthm(ds_thm, &
                 sigtm(i_dim+dimcon*(kpi-1)) = vale_refe
                 call fnothm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
                             mecani, press1, press2, tempe, second, &
-                            nno, nnos, npi, npg, &
-                            elem_coor, dt, dimdef, dimcon, dimuel, &
-                            jv_poids, jv_poids2, &
-                            jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
-                            nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
-                            sigtm, b, r, bsigm(1))
+                            nno, nnos, npi, npg, elem_coor, &
+                            dt, dimdef, dimcon, dimuel, jv_poids, &
+                            jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                            nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                            nddl_2nd, sigtm, b, r, bsigm(1))
                 do k = 1, dimuel
                     ftemp(k) = ftemp(k)+abs(bsigm(k))
                 end do
@@ -208,7 +206,11 @@ subroutine refthm(ds_thm, &
         end do
     end do
 !
-    call daxpy(dimuel, 1.d0/npi, ftemp(1), 1, vectu(1), 1)
+    b_n = to_blas_int(dimuel)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, 1.d0/npi, ftemp(1), b_incx, vectu(1), &
+               b_incy)
 !
 ! - Check
 !

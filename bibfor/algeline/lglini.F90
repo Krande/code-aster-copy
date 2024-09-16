@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,7 @@ subroutine lglini(yd, nbmat, mater, f0, sigd, &
     real(kind=8) :: q(6), vecn(6), ie
     real(kind=8) :: si(6), invn
     character(len=16) :: parecr, derive
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
@@ -94,7 +95,10 @@ subroutine lglini(yd, nbmat, mater, f0, sigd, &
 ! ======================================================================
 ! --- CALCUL DES VARIABLES ELASTIQUES INITIALES ------------------------
 ! ======================================================================
-    siie = ddot(ndt, se, 1, se, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    siie = ddot(b_n, se, b_incx, se, b_incy)
     siie = sqrt(siie)
     rcos3t = cos3t(se, pref, epssig)
     re = hlode(gamcjs, rcos3t)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps, &
     real(kind=8) :: sy(1), m, am
     real(kind=8) :: eps(6), epsno
     real(kind=8) :: coef, rac23
+    blas_int :: b_incx, b_incy, b_n
 ! -----------------------------------------------------------------
 !
 !
@@ -67,10 +68,20 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps, &
     rigi = option .eq. 'RIGI_MECA_TANG' .or. option .eq. 'FULL_MECA'
     elas = option .eq. 'RIGI_MECA_ELAS'
 !
-    call dcopy(ndimsi, epsm, 1, eps, 1)
-    if (resi) call daxpy(ndimsi, 1.d0, deps, 1, eps, &
-                         1)
-    epsno = dnrm2(ndimsi, eps, 1)
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, eps, b_incy)
+    if (resi) then
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps, b_incx, eps, &
+                   b_incy)
+    end if
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    epsno = dnrm2(b_n, eps, b_incx)
 !
     line = inst .eq. 1 .or. epsno .eq. 0.d0
 !

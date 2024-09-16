@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,6 +90,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     character(len=19) :: depgem, vitgem, accgem, depgep, vitgep, accgep
     integer :: jdepgm, jvitgm, jaccgm, jdepgp, jvitgp, jaccgp
     integer :: ifm, niv
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -369,15 +370,24 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
         call jeveuo(vitgep, 'E', jvitgp)
         call jeveuo(depgem, 'E', jdepgm)
         call jeveuo(depgep, 'E', jdepgp)
-        call dcopy(nbmodp, zr(jdepgm), 1, zr(jdepgp), 1)
-        call dcopy(nbmodp, zr(jvitgm), 1, zr(jvitgp), 1)
-        call dcopy(nbmodp, zr(jaccgm), 1, zr(jaccgp), 1)
+        b_n = to_blas_int(nbmodp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jdepgm), b_incx, zr(jdepgp), b_incy)
+        b_n = to_blas_int(nbmodp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jvitgm), b_incx, zr(jvitgp), b_incy)
+        b_n = to_blas_int(nbmodp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jaccgm), b_incx, zr(jaccgp), b_incy)
 !
 ! --- PREDICTION DEPLACEMENT GENERALISE
 !
         do imode = 1, nbmodp
-            zr(jdepgp+imode-1) = zr(jdepgm+imode-1)+coefd(2)*zr(jvitgm+imode-1)+coefd(3)*zr(&
-                                 &jaccgm+imode-1)
+            zr(jdepgp+imode-1) = zr(jdepgm+imode-1)+coefd(2)*zr(jvitgm+imode-1)+coefd(3)*zr(jaccg&
+                                 &m+imode-1)
         end do
         if (niv .ge. 2) then
             write (ifm, *) '<MECANONLINE> ...... PRED. DEPL. GENE'

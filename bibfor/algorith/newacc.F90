@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine newacc(neq, c1, c2, c3, d0, &
                   v0, a0, d1, a1)
     implicit none
@@ -48,14 +48,29 @@ subroutine newacc(neq, c1, c2, c3, d0, &
 !
 !-----------------------------------------------------------------------
     integer :: neq
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     scal = -1.d0
-    call dcopy(neq, d1, 1, a1, 1)
-    call daxpy(neq, scal, d0, 1, a1, &
-               1)
-    call dscal(neq, c1, a1, 1)
-    call daxpy(neq, c2, v0, 1, a1, &
-               1)
-    call daxpy(neq, c3, a0, 1, a1, &
-               1)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, d1, b_incx, a1, b_incy)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, scal, d0, b_incx, a1, &
+               b_incy)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, c1, a1, b_incx)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, c2, v0, b_incx, a1, &
+               b_incy)
+    b_n = to_blas_int(neq)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, c3, a0, b_incx, a1, &
+               b_incy)
 end subroutine

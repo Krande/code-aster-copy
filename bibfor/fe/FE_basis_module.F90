@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,16 +49,16 @@ module FE_Basis_module
         integer :: typeEF = EF_LAGRANGE
         integer :: size
 ! ----- Dimension topologique
-        integer                     :: ndim = 0
-        aster_logical               :: l_skin = ASTER_FALSE
-        aster_logical               :: l_axis = ASTER_FALSE
+        integer :: ndim = 0
+        aster_logical :: l_skin = ASTER_FALSE
+        aster_logical :: l_axis = ASTER_FALSE
 ! ----- Type maille
-        character(len=8)            :: typema = ''
+        character(len=8) :: typema = ''
 ! ----- Nombre de noeuds
-        integer                     :: nbnodes = 0
+        integer :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
-        real(kind=8), dimension(3, 27):: coorno = 0.d0
-
+        real(kind=8), dimension(3, 27) :: coorno = 0.d0
+!
 ! ----- member function
     contains
         procedure, pass :: initCell => init_cell
@@ -68,7 +68,7 @@ module FE_Basis_module
     end type
 !
 ! --------------------------------------------------------------------------------------------------
-    public  :: FE_Basis
+    public :: FE_Basis
     private :: feBSCEval, feBSCGradEv, init_cell, init_face, FE_grad_lagr
 !
 contains
@@ -82,7 +82,7 @@ contains
         implicit none
 !
         class(FE_Basis), intent(inout) :: this
-        type(FE_Cell), intent(in)      :: FECell
+        type(FE_Cell), intent(in) :: FECell
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions
@@ -118,7 +118,7 @@ contains
         implicit none
 !
         class(FE_Basis), intent(inout) :: this
-        type(FE_Skin), intent(in)      :: FESkin
+        type(FE_Skin), intent(in) :: FESkin
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions
@@ -150,8 +150,8 @@ contains
         implicit none
 !
         class(FE_Basis), intent(in) :: this
-        real(kind=8), intent(in)       :: point(3)
-        real(kind=8), optional, intent(in)  :: jacob_(3, 3)
+        real(kind=8), intent(in) :: point(3)
+        real(kind=8), optional, intent(in) :: jacob_(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions
@@ -178,13 +178,13 @@ contains
                     jaco(2, 1:3) = jaco(2, 1:3)+this%coorno(1:3, i)*BSGrad(2, i)
                     jaco(3, 1:3) = jaco(3, 1:3)+this%coorno(1:3, i)*BSGrad(3, i)
                 end do
-            elseif (this%ndim == 2) then
+            else if (this%ndim == 2) then
                 do i = 1, this%nbnodes
                     jaco(1, 1:2) = jaco(1, 1:2)+this%coorno(1:2, i)*BSGrad(1, i)
                     jaco(2, 1:2) = jaco(2, 1:2)+this%coorno(1:2, i)*BSGrad(2, i)
                 end do
                 jaco(3, 3) = 1.d0
-            elseif (this%ndim == 1) then
+            else if (this%ndim == 1) then
                 do i = 1, this%nbnodes
                     jaco(1, 1) = jaco(1, 1)+this%coorno(1, i)*BSGrad(1, i)
                 end do
@@ -194,7 +194,7 @@ contains
                 ASSERT(ASTER_FALSE)
             end if
         end if
-
+!
         cojac(1, 1) = jaco(2, 2)*jaco(3, 3)-jaco(2, 3)*jaco(3, 2)
         cojac(2, 1) = jaco(3, 1)*jaco(2, 3)-jaco(2, 1)*jaco(3, 3)
         cojac(3, 1) = jaco(2, 1)*jaco(3, 2)-jaco(3, 1)*jaco(2, 2)
@@ -207,9 +207,9 @@ contains
 !
         if (this%ndim == 3) then
             jacob = jaco(1, 1)*cojac(1, 1)+jaco(1, 2)*cojac(2, 1)+jaco(1, 3)*cojac(3, 1)
-        elseif (this%ndim == 2) then
+        else if (this%ndim == 2) then
             jacob = cojac(3, 3)
-        elseif (this%ndim == 1) then
+        else if (this%ndim == 1) then
             jacob = jaco(1, 1)
         else
             ASSERT(ASTER_FALSE)
@@ -224,14 +224,20 @@ contains
         if (this%ndim == 3) then
             cojac = cojac/jacob
             do i = 1, this%size
-                BSGrad2(1, i) = (cojac(1, 1)*BSGrad(1, i)+cojac(1, 2)*BSGrad(2, i) &
-                                 +cojac(1, 3)*BSGrad(3, i))
-                BSGrad2(2, i) = (cojac(2, 1)*BSGrad(1, i)+cojac(2, 2)*BSGrad(2, i) &
-                                 +cojac(2, 3)*BSGrad(3, i))
-                BSGrad2(3, i) = (cojac(3, 1)*BSGrad(1, i)+cojac(3, 2)*BSGrad(2, i) &
-                                 +cojac(3, 3)*BSGrad(3, i))
+                BSGrad2(1, i) = ( &
+                                cojac(1, 1)*BSGrad(1, i)+cojac(1, 2)*BSGrad(2, i)+cojac(1, 3)*BS&
+                                &Grad(3, i) &
+                                )
+                BSGrad2(2, i) = ( &
+                                cojac(2, 1)*BSGrad(1, i)+cojac(2, 2)*BSGrad(2, i)+cojac(2, 3)*BS&
+                                &Grad(3, i) &
+                                )
+                BSGrad2(3, i) = ( &
+                                cojac(3, 1)*BSGrad(1, i)+cojac(3, 2)*BSGrad(2, i)+cojac(3, 3)*BS&
+                                &Grad(3, i) &
+                                )
             end do
-        elseif (this%ndim == 2) then
+        else if (this%ndim == 2) then
             cojac(1:2, 1:2) = cojac(1:2, 1:2)/jacob
             do i = 1, this%size
                 BSGrad2(1, i) = (cojac(1, 1)*BSGrad(1, i)+cojac(1, 2)*BSGrad(2, i))
@@ -249,9 +255,9 @@ contains
 !
         implicit none
 !
-        class(FE_Basis), intent(in)             :: this
-        real(kind=8), dimension(3), intent(in)  :: point
-        real(kind=8), dimension(MAX_BS)         :: basisScalEval
+        class(FE_Basis), intent(in) :: this
+        real(kind=8), dimension(3), intent(in) :: point
+        real(kind=8), dimension(MAX_BS) :: basisScalEval
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions
@@ -281,10 +287,10 @@ contains
 !
         implicit none
 !
-        class(FE_Basis), intent(in)             :: this
-        real(kind=8), dimension(3), intent(in)  :: point
-        real(kind=8), dimension(3, 3), optional, intent(in)  :: jacob_
-        real(kind=8), dimension(3, MAX_BS)      :: BSGradEval
+        class(FE_Basis), intent(in) :: this
+        real(kind=8), dimension(3), intent(in) :: point
+        real(kind=8), dimension(3, 3), optional, intent(in) :: jacob_
+        real(kind=8), dimension(3, MAX_BS) :: BSGradEval
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions

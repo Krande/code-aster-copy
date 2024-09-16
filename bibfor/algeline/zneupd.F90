@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !     SUBROUTINE ARPACK CALCULANT LES MODES PROPRES DU PROBLEME
 !     INITIAL.
@@ -371,6 +371,12 @@ subroutine zneupd(rvec, howmny, select, d, z, &
     complex(kind=8) :: rnorm, temp, vl(1)
     real(kind=8) :: rtemp, eps23, eps
     aster_logical :: reord
+    blas_int :: b_incx, b_n
+    blas_int :: b_incy
+    blas_int :: b_lda, b_m
+    blas_int :: b_ldb
+    blas_int :: b_ihi, b_ihiz, b_ilo, b_iloz, b_ldh, b_ldz
+    blas_int :: b_k, b_ldc
 !
 !
 !     %--------------------%
@@ -604,14 +610,30 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !        | INITIALIZE THE SCHUR VECTOR MATRIX Q TO THE IDENTITY. |
 !        %-------------------------------------------------------%
 !
-        call zcopy(ldh*ncv, workl(ih), 1, workl(iuptri), 1)
-        call zlaset('A', ncv, ncv, zero, one, &
-                    workl(invsub), ldq)
-        call zlahqr(.true._1, .true._1, ncv, 1, ncv, &
-                    workl(iuptri), ldh, workl(iheig), 1, ncv, &
-                    workl(invsub), ldq, ierr4)
+        b_n = to_blas_int(ldh*ncv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, workl(ih), b_incx, workl(iuptri), b_incy)
+        b_lda = to_blas_int(ldq)
+        b_m = to_blas_int(ncv)
+        b_n = to_blas_int(ncv)
+        call zlaset('A', b_m, b_n, zero, one, &
+                    workl(invsub), b_lda)
+        b_ldz = to_blas_int(ldq)
+        b_ldh = to_blas_int(ldh)
+        b_n = to_blas_int(ncv)
+        b_ilo = to_blas_int(1)
+        b_ihi = to_blas_int(ncv)
+        b_iloz = to_blas_int(1)
+        b_ihiz = to_blas_int(ncv)
+        call zlahqr(.true._1, .true._1, b_n, b_ilo, b_ihi, &
+                    workl(iuptri), b_ldh, workl(iheig), b_iloz, b_ihiz, &
+                    workl(invsub), b_ldz, ierr4)
         ierr = ierr4
-        call zcopy(ncv, workl(invsub+ncv-1), ldq, workl(ihbds), 1)
+        b_n = to_blas_int(ncv)
+        b_incx = to_blas_int(ldq)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, workl(invsub+ncv-1), b_incx, workl(ihbds), b_incy)
 !
         if (ierr .ne. 0) then
             info = -8
@@ -660,7 +682,10 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !        | RITZ VALUES.                                |
 !        %---------------------------------------------%
 !
-        call zcopy(ncv, workl(invsub+ncv-1), ldq, workl(ihbds), 1)
+        b_n = to_blas_int(ncv)
+        b_incx = to_blas_int(ldq)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, workl(invsub+ncv-1), b_incx, workl(ihbds), b_incy)
 !
 !        %--------------------------------------------%
 !        | PLACE THE COMPUTED EIGENVALUES OF H INTO D |
@@ -668,7 +693,10 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !        %--------------------------------------------%
 !
         if (type .eq. 'REGULR') then
-            call zcopy(nconv, workl(iheig), 1, d, 1)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, workl(iheig), b_incx, d, b_incy)
         end if
 !
 !        %----------------------------------------------------------%
@@ -677,7 +705,10 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !        | COLUMNS OF WORKL(INVSUB,LDQ).                            |
 !        %----------------------------------------------------------%
 !
-        call zgeqr2(ncv, nconv, workl(invsub), ldq, workev, &
+        b_lda = to_blas_int(ldq)
+        b_m = to_blas_int(ncv)
+        b_n = to_blas_int(nconv)
+        call zgeqr2(b_m, b_n, workl(invsub), b_lda, workev, &
                     workev(ncv+1), ierr4)
         ierr = ierr4
 !
@@ -693,12 +724,21 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !        | NCONV IN WORKL(IUPTRI).                                |
 !        %--------------------------------------------------------%
 !
-        call zunm2r('R', 'N', n, ncv, nconv, &
-                    workl(invsub), ldq, workev, v, ldv, &
+        b_ldc = to_blas_int(ldv)
+        b_lda = to_blas_int(ldq)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(ncv)
+        b_k = to_blas_int(nconv)
+        call zunm2r('R', 'N', b_m, b_n, b_k, &
+                    workl(invsub), b_lda, workev, v, b_ldc, &
                     workd(n+1), ierr4)
         ierr = ierr4
-        call zlacpy('A', n, nconv, v, ldv, &
-                    z, ldz)
+        b_ldb = to_blas_int(ldz)
+        b_lda = to_blas_int(ldv)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(nconv)
+        call zlacpy('A', b_m, b_n, v, b_lda, &
+                    z, b_ldb)
 !
         do j = 1, nconv
 !
@@ -712,8 +752,12 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !           %---------------------------------------------------%
 !
             if (dble(workl(invsub+(j-1)*ldq+j-1)) .lt. dble(zero)) then
-                call zscal(nconv, -one, workl(iuptri+j-1), ldq)
-                call zscal(nconv, -one, workl(iuptri+(j-1)*ldq), 1)
+                b_n = to_blas_int(nconv)
+                b_incx = to_blas_int(ldq)
+                call zscal(b_n, -one, workl(iuptri+j-1), b_incx)
+                b_n = to_blas_int(nconv)
+                b_incx = to_blas_int(1)
+                call zscal(b_n, -one, workl(iuptri+(j-1)*ldq), b_incx)
             end if
 !
         end do
@@ -751,9 +795,13 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !           %------------------------------------------------%
 !
             do j = 1, nconv
-                rtemp = dznrm2(ncv, workl(invsub+(j-1)*ldq), 1)
+                b_n = to_blas_int(ncv)
+                b_incx = to_blas_int(1)
+                rtemp = dznrm2(b_n, workl(invsub+(j-1)*ldq), b_incx)
                 rtemp = dble(one)/rtemp
-                call zdscal(ncv, rtemp, workl(invsub+(j-1)*ldq), 1)
+                b_n = to_blas_int(ncv)
+                b_incx = to_blas_int(1)
+                call zdscal(b_n, rtemp, workl(invsub+(j-1)*ldq), b_incx)
 !
 !                 %------------------------------------------%
 !                 | RITZ ESTIMATES CAN BE OBTAINED BY TAKING |
@@ -764,11 +812,17 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !                 | INNER PRODUCT CAN BE SET TO J.           |
 !                 %------------------------------------------%
 !
-                workev(j) = zdotc(j, workl(ihbds), 1, workl(invsub+(j-1)*ldq), 1)
+                b_n = to_blas_int(j)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                workev(j) = zdotc(b_n, workl(ihbds), b_incx, workl(invsub+(j-1)*ldq), b_incy)
             end do
 !
             if (msglvl .gt. 2) then
-                call zcopy(nconv, workl(invsub+ncv-1), ldq, workl(ihbds), 1)
+                b_n = to_blas_int(nconv)
+                b_incx = to_blas_int(ldq)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, workl(invsub+ncv-1), b_incx, workl(ihbds), b_incy)
                 call zvout(logfil, nconv, workl(ihbds), ndigit, &
                            '_NEUPD: LAST ROW OF THE EIGENVECTOR MATRIX FOR T')
                 if (msglvl .gt. 3) then
@@ -781,16 +835,23 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !           | COPY RITZ ESTIMATES INTO WORKL(IHBDS) |
 !           %---------------------------------------%
 !
-            call zcopy(nconv, workev, 1, workl(ihbds), 1)
+            b_n = to_blas_int(nconv)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, workev, b_incx, workl(ihbds), b_incy)
 !
 !           %----------------------------------------------%
 !           | THE EIGENVECTOR MATRIX Q OF T IS TRIANGULAR. |
 !           | FORM Z*Q.                                    |
 !           %----------------------------------------------%
 !
-            call ztrmm('R', 'U', 'N', 'N', n, &
-                       nconv, one, workl(invsub), ldq, z, &
-                       ldz)
+            b_ldb = to_blas_int(ldz)
+            b_lda = to_blas_int(ldq)
+            b_m = to_blas_int(n)
+            b_n = to_blas_int(nconv)
+            call ztrmm('R', 'U', 'N', 'N', b_m, &
+                       b_n, one, workl(invsub), b_lda, z, &
+                       b_ldb)
         end if
 !
     else
@@ -800,9 +861,18 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !        | PLACE THE RITZ VALUES COMPUTED ZNAUPD  INTO D.    |
 !        %--------------------------------------------------%
 !
-        call zcopy(nconv, workl(ritz), 1, d, 1)
-        call zcopy(nconv, workl(ritz), 1, workl(iheig), 1)
-        call zcopy(nconv, workl(bounds), 1, workl(ihbds), 1)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, workl(ritz), b_incx, d, b_incy)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, workl(ritz), b_incx, workl(iheig), b_incy)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, workl(bounds), b_incx, workl(ihbds), b_incy)
 !
     end if
 !
@@ -814,7 +884,11 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !
     if (type .eq. 'REGULR') then
 !
-        if (rvec) call zscal(ncv, rnorm, workl(ihbds), 1)
+        if (rvec) then
+            b_n = to_blas_int(ncv)
+            b_incx = to_blas_int(1)
+            call zscal(b_n, rnorm, workl(ihbds), b_incx)
+        end if
 !
     else
 !
@@ -824,7 +898,11 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !        |   RITZ VALUES IN THE ORIGINAL SYSTEM. |
 !        %---------------------------------------%
 !
-        if (rvec) call zscal(ncv, rnorm, workl(ihbds), 1)
+        if (rvec) then
+            b_n = to_blas_int(ncv)
+            b_incx = to_blas_int(1)
+            call zscal(b_n, rnorm, workl(ihbds), b_incx)
+        end if
 !
         do k = 1, ncv
             temp = workl(iheig+k-1)
@@ -898,8 +976,13 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !        | PURIFY ALL THE RITZ VECTORS TOGETHER. |
 !        %---------------------------------------%
 !
-        call zgeru(n, nconv, one, resid, 1, &
-                   workev, 1, z, ldz)
+        b_lda = to_blas_int(ldz)
+        b_m = to_blas_int(n)
+        b_n = to_blas_int(nconv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zgeru(b_m, b_n, one, resid, b_incx, &
+                   workev, b_incy, z, b_lda)
 !
     end if
 !

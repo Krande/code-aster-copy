@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine hypela(fami, kpg, ksp, ndim, &
-                  typmod, imate, crit, eps, &
-                  option, sig, dsidep, codret)
+!
+subroutine hypela(fami, kpg, ksp, ndim, typmod, &
+                  imate, crit, eps, option, sig, &
+                  dsidep, codret)
 !
     implicit none
 !
@@ -36,20 +36,20 @@ subroutine hypela(fami, kpg, ksp, ndim, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-
+!
     character(len=*), intent(in) :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
-    integer, intent(in)          :: ndim
-    character(len=8), intent(in)  :: typmod(*)
-    integer, intent(in)          :: imate
-    real(kind=8), intent(in)      :: crit(*)
-    real(kind=8), intent(in)      :: eps(2*ndim)
-    character(len=16), intent(in):: option
-    real(kind=8), intent(out)     :: sig(6)
-    real(kind=8), intent(out)     :: dsidep(6, 6)
-    integer, intent(out)         :: codret
-
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: imate
+    real(kind=8), intent(in) :: crit(*)
+    real(kind=8), intent(in) :: eps(2*ndim)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(out) :: sig(6)
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: codret
+!
 !
 ! ----------------------------------------------------------------------
 !
@@ -91,7 +91,8 @@ subroutine hypela(fami, kpg, ksp, ndim, &
     real(kind=8) :: c10, c01, c20, k
     integer :: nitmax
     real(kind=8) :: epsi
-    character(len=1):: poum
+    character(len=1) :: poum
+    blas_int :: b_incx, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -153,7 +154,7 @@ subroutine hypela(fami, kpg, ksp, ndim, &
         if (codret .eq. 1) then
             goto 99
         end if
-
+!
 ! --- ASSEMBLAGE VOLUMIQUE/ISOTROPIQUE
 ! --- ON CORRIGE A CE NIVEAU LES TERMES LIES AU CISAILLEMENT
 ! --- A TERME IL FAUDRA RE-ECRIRE LES ROUTINES D'INTEGRATION
@@ -170,7 +171,7 @@ subroutine hypela(fami, kpg, ksp, ndim, &
     else if (typmod(1) (1:6) .eq. 'C_PLAN') then
         epsi = abs(crit(3))
         nitmax = abs(nint(crit(1)))
-
+!
 ! --- CALCUL DES ELONGATIONS
         c11 = 2.d0*epstot(1)+1.d0
         c12 = 2.d0*epstot(4)
@@ -215,7 +216,9 @@ subroutine hypela(fami, kpg, ksp, ndim, &
 !
 ! --- POST-TRAITEMENT DES CONTRAINTES (PAS DE NOTATION DE VOIGT)
 !
-    call dscal(3, sqrt(2.d0), sig(4), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, sqrt(2.d0), sig(4), b_incx)
 !
 99  continue
 end subroutine

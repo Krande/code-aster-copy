@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matass2petsc(matasz, petscMatz, iret)
 !
 !
@@ -68,7 +68,7 @@ subroutine matass2petsc(matasz, petscMatz, iret)
 !
 !     VARIABLES LOCALES
     integer :: k, ierror
-    integer ::  ibid
+    integer :: ibid
     real(kind=8) :: rbid
 !
     character(len=24), dimension(:), pointer :: slvk => null()
@@ -79,30 +79,30 @@ subroutine matass2petsc(matasz, petscMatz, iret)
 !
 !     Variables PETSc
     PetscErrorCode :: ierr
-
+!
     call jemarq()
 !
     matas = matasz
     rbid = 0.d0
-
+!
 !   -- Creation d'un solveur bidon
     solvbd = '&&MAT2PET'
-   call crsvfm(solvbd, matas, 'D', rank='L', pcpiv=50, usersmz='IN_CORE', blreps=rbid, renumz=' ', &
-                redmpi=-9999)
+    call crsvfm(solvbd, matas, 'D', rank='L', pcpiv=50, &
+                usersmz='IN_CORE', blreps=rbid, renumz=' ', redmpi=-9999)
     call jeveuo(solvbd//'.SLVK', 'L', vk24=slvk)
     slvk(2) = 'SANS'
-
+!
 !   -- Effacement si déjà factorisée
     call jeveuo(matas//'.REFA', 'E', vk24=refa)
     refa(8) = ' '
-
+!
 !   -- Conversion de matass vers petsc
     call apetsc('PRERES', solvbd, matas, [0.d0], ' ', &
                 0, ibid, ierror)
     k = get_mat_id(matas)
     call MatDuplicate(ap(k), MAT_COPY_VALUES, petscMatz, ierr)
     ASSERT(ierr .eq. 0)
-
+!
 !   -- Nettoyage
 !   Destruction des objets petsc
     call apetsc('DETR_MAT', solvbd, matas, [0.d0], ' ', &
@@ -110,7 +110,7 @@ subroutine matass2petsc(matasz, petscMatz, iret)
 !   Destruction du solveur bidon
     call detrsd('SOLVEUR', solvbd)
     iret = 0
-
+!
     call jedema()
 #else
     petscMatz = 0

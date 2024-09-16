@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,8 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg, &
                   vu, vg, vp, geomi, typmod, &
                   option, mate, compor, lgpg, carcri, &
                   instm, instp, ddlm, ddld, angmas, &
-                  sigm, vim, sigp, vip, &
-                  lMatr, lVect, &
-                  vect, matr, codret)
+                  sigm, vim, sigp, vip, lMatr, &
+                  lVect, vect, matr, codret)
 !
     use Behaviour_type
     use Behaviour_module
@@ -117,6 +116,7 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg, &
     real(kind=8) :: t1, t2
     real(kind=8) :: idev(6, 6), kr(6)
     type(Behaviour_Integ) :: BEHinteg
+    blas_int :: b_incx, b_incy, b_n
 !
     parameter(grand=.false._1)
     data kr/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
@@ -180,11 +180,23 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg, &
                     r, dff1, depld, fm, deps)
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT AU POINT DE GAUSS
-        gm = ddot(nno2, vff2(1, g), 1, gonfm, 1)
-        gd = ddot(nno2, vff2(1, g), 1, gonfd, 1)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        gm = ddot(b_n, vff2(1, g), b_incx, gonfm, b_incy)
+        b_n = to_blas_int(nno2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        gd = ddot(b_n, vff2(1, g), b_incx, gonfd, b_incy)
 !
-        pm = ddot(nno3, vff3(1, g), 1, presm, 1)
-        pd = ddot(nno3, vff3(1, g), 1, presd, 1)
+        b_n = to_blas_int(nno3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vff3(1, g), b_incx, presm, b_incy)
+        b_n = to_blas_int(nno3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pd = ddot(b_n, vff3(1, g), b_incx, presd, b_incy)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         divum = epsm(1)+epsm(2)+epsm(3)
@@ -244,12 +256,11 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg, &
 !
 ! - APPEL A LA LOI DE COMPORTEMENT
         sigma = 0.d0
-        call nmcomp(BEHinteg, &
-                    'RIGI', g, 1, ndim, typmod, &
-                    mate, compor, carcri, instm, instp, &
-                    6, epsm, deps, 6, sigmam, &
-                    vim(1, g), option, angmas, &
-                    sigma, vip(1, g), 36, dsidep, cod(g))
+        call nmcomp(BEHinteg, 'RIGI', g, 1, ndim, &
+                    typmod, mate, compor, carcri, instm, &
+                    instp, 6, epsm, deps, 6, &
+                    sigmam, vim(1, g), option, angmas, sigma, &
+                    vip(1, g), 36, dsidep, cod(g))
 !
         if (cod(g) .eq. 1) then
             codret = 1
@@ -269,7 +280,10 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg, &
             do na = 1, nno1
                 do ia = 1, ndim
                     kk = vu(ia, na)
-                    t1 = ddot(2*ndim, sigma, 1, def(1, na, ia), 1)
+                    b_n = to_blas_int(2*ndim)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    t1 = ddot(b_n, sigma, b_incx, def(1, na, ia), b_incy)
                     vect(kk) = vect(kk)+w*t1
                 end do
             end do

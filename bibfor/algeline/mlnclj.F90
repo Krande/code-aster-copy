@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine mlnclj(nb, n, ll, m, it, &
     integer :: nproc, numpro
     complex(kind=8) :: travl(p, nb, *), travu(p, nb, *)
     complex(kind=8) :: cl(nb, nb, *), cu(nb, nb, *), alpha, beta
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
     tra = 'N'
     trb = 'N'
     alpha = dcmplx(-1.d0, 0.d0)
@@ -69,12 +70,24 @@ subroutine mlnclj(nb, n, ll, m, it, &
 !
             do ib = kb, nlb
                 ia = n*(it-1)+k+nb*(ib-kb)
-                call zgemm(tra, trb, nb, nb, nbl, &
-                           alpha, frontl(ia), n, travu(it, 1, numpro), p, &
-                           beta, cl(1, 1, numpro), nb)
-                call zgemm(tra, trb, nb, nb, nbl, &
-                           alpha, frontu(ia), n, travl(it, 1, numpro), p, &
-                           beta, cu(1, 1, numpro), nb)
+                b_ldc = to_blas_int(nb)
+                b_ldb = to_blas_int(p)
+                b_lda = to_blas_int(n)
+                b_m = to_blas_int(nb)
+                b_n = to_blas_int(nb)
+                b_k = to_blas_int(nbl)
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, frontl(ia), b_lda, travu(it, 1, numpro), b_ldb, &
+                           beta, cl(1, 1, numpro), b_ldc)
+                b_ldc = to_blas_int(nb)
+                b_ldb = to_blas_int(p)
+                b_lda = to_blas_int(n)
+                b_m = to_blas_int(nb)
+                b_n = to_blas_int(nb)
+                b_k = to_blas_int(nbl)
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, frontu(ia), b_lda, travl(it, 1, numpro), b_ldb, &
+                           beta, cu(1, 1, numpro), b_ldc)
 !     RECOPIE
 !
 !
@@ -98,12 +111,24 @@ subroutine mlnclj(nb, n, ll, m, it, &
             if (restl .gt. 0) then
                 ib = nlb+1
                 ia = n*(it-1)+k+nb*(ib-kb)
-                call zgemm(tra, trb, restl, nb, nbl, &
-                           alpha, frontl(ia), n, travu(it, 1, numpro), p, &
-                           beta, cl(1, 1, numpro), nb)
-                call zgemm(tra, trb, restl, nb, nbl, &
-                           alpha, frontu(ia), n, travl(it, 1, numpro), p, &
-                           beta, cu(1, 1, numpro), nb)
+                b_ldc = to_blas_int(nb)
+                b_ldb = to_blas_int(p)
+                b_lda = to_blas_int(n)
+                b_m = to_blas_int(restl)
+                b_n = to_blas_int(nb)
+                b_k = to_blas_int(nbl)
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, frontl(ia), b_lda, travu(it, 1, numpro), b_ldb, &
+                           beta, cl(1, 1, numpro), b_ldc)
+                b_ldc = to_blas_int(nb)
+                b_ldb = to_blas_int(p)
+                b_lda = to_blas_int(n)
+                b_m = to_blas_int(restl)
+                b_n = to_blas_int(nb)
+                b_k = to_blas_int(nbl)
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, frontu(ia), b_lda, travl(it, 1, numpro), b_ldb, &
+                           beta, cu(1, 1, numpro), b_ldc)
 !           RECOPIE
 !
 !
@@ -139,12 +164,24 @@ subroutine mlnclj(nb, n, ll, m, it, &
 !
             do ib = kb, nlb
                 ia = n*(it-1)+k+nb*(ib-kb)
-                call zgemm(tra, trb, nb, nb, nbl, &
-                           alpha, frontl(ia), n, travu(it, 1, 1), p, &
-                           beta, cl(1, 1, 1), nb)
-                call zgemm(tra, trb, nb, nb, nbl, &
-                           alpha, frontu(ia), n, travl(it, 1, 1), p, &
-                           beta, cu(1, 1, 1), nb)
+                b_ldc = to_blas_int(nb)
+                b_ldb = to_blas_int(p)
+                b_lda = to_blas_int(n)
+                b_m = to_blas_int(nb)
+                b_n = to_blas_int(nb)
+                b_k = to_blas_int(nbl)
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, frontl(ia), b_lda, travu(it, 1, 1), b_ldb, &
+                           beta, cl(1, 1, 1), b_ldc)
+                b_ldc = to_blas_int(nb)
+                b_ldb = to_blas_int(p)
+                b_lda = to_blas_int(n)
+                b_m = to_blas_int(nb)
+                b_n = to_blas_int(nb)
+                b_k = to_blas_int(nbl)
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, frontu(ia), b_lda, travl(it, 1, 1), b_ldb, &
+                           beta, cu(1, 1, 1), b_ldc)
 !     RECOPIE
 !
 !
@@ -167,12 +204,24 @@ subroutine mlnclj(nb, n, ll, m, it, &
             if (restl .gt. 0) then
                 ib = nlb+1
                 ia = n*(it-1)+k+nb*(ib-kb)
-                call zgemm(tra, trb, restl, nb, nbl, &
-                           alpha, frontl(ia), n, travu(it, 1, 1), p, &
-                           beta, cl(1, 1, 1), nb)
-                call zgemm(tra, trb, restl, nb, nbl, &
-                           alpha, frontu(ia), n, travl(it, 1, 1), p, &
-                           beta, cu(1, 1, 1), nb)
+                b_ldc = to_blas_int(nb)
+                b_ldb = to_blas_int(p)
+                b_lda = to_blas_int(n)
+                b_m = to_blas_int(restl)
+                b_n = to_blas_int(nb)
+                b_k = to_blas_int(nbl)
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, frontl(ia), b_lda, travu(it, 1, 1), b_ldb, &
+                           beta, cl(1, 1, 1), b_ldc)
+                b_ldc = to_blas_int(nb)
+                b_ldb = to_blas_int(p)
+                b_lda = to_blas_int(n)
+                b_m = to_blas_int(restl)
+                b_n = to_blas_int(nb)
+                b_k = to_blas_int(nbl)
+                call zgemm(tra, trb, b_m, b_n, b_k, &
+                           alpha, frontu(ia), b_lda, travl(it, 1, 1), b_ldb, &
+                           beta, cu(1, 1, 1), b_ldc)
 !           RECOPIE
 !
 !
@@ -209,12 +258,24 @@ subroutine mlnclj(nb, n, ll, m, it, &
 !
         do ib = kb, nlb
             ia = n*(it-1)+k+nb*(ib-kb)
-            call zgemm(tra, trb, nb, restm, nbl, &
-                       alpha, frontl(ia), n, travu(it, 1, 1), p, &
-                       beta, cl(1, 1, 1), nb)
-            call zgemm(tra, trb, nb, restm, nbl, &
-                       alpha, frontu(ia), n, travl(it, 1, 1), p, &
-                       beta, cu(1, 1, 1), nb)
+            b_ldc = to_blas_int(nb)
+            b_ldb = to_blas_int(p)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(nb)
+            b_n = to_blas_int(restm)
+            b_k = to_blas_int(nbl)
+            call zgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, frontl(ia), b_lda, travu(it, 1, 1), b_ldb, &
+                       beta, cl(1, 1, 1), b_ldc)
+            b_ldc = to_blas_int(nb)
+            b_ldb = to_blas_int(p)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(nb)
+            b_n = to_blas_int(restm)
+            b_k = to_blas_int(nbl)
+            call zgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, frontu(ia), b_lda, travl(it, 1, 1), b_ldb, &
+                       beta, cu(1, 1, 1), b_ldc)
 !     RECOPIE
 !
 !
@@ -238,12 +299,24 @@ subroutine mlnclj(nb, n, ll, m, it, &
         if (restl .gt. 0) then
             ib = nlb+1
             ia = n*(it-1)+k+nb*(ib-kb)
-            call zgemm(tra, trb, restl, restm, nbl, &
-                       alpha, frontl(ia), n, travu(it, 1, 1), p, &
-                       beta, cl(1, 1, 1), nb)
-            call zgemm(tra, trb, restl, restm, nbl, &
-                       alpha, frontu(ia), n, travl(it, 1, 1), p, &
-                       beta, cu(1, 1, 1), nb)
+            b_ldc = to_blas_int(nb)
+            b_ldb = to_blas_int(p)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(restl)
+            b_n = to_blas_int(restm)
+            b_k = to_blas_int(nbl)
+            call zgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, frontl(ia), b_lda, travu(it, 1, 1), b_ldb, &
+                       beta, cl(1, 1, 1), b_ldc)
+            b_ldc = to_blas_int(nb)
+            b_ldb = to_blas_int(p)
+            b_lda = to_blas_int(n)
+            b_m = to_blas_int(restl)
+            b_n = to_blas_int(restm)
+            b_k = to_blas_int(nbl)
+            call zgemm(tra, trb, b_m, b_n, b_k, &
+                       alpha, frontu(ia), b_lda, travl(it, 1, 1), b_ldb, &
+                       beta, cu(1, 1, 1), b_ldc)
 !     RECOPIE
 !
 !

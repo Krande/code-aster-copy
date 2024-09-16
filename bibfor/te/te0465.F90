@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0465(option, nomte)
 !
     use HHO_type
@@ -106,7 +106,7 @@ subroutine te0465(option, nomte)
         call jevech('PSOURCR', 'L', j_sour)
         NeumValuesQP(1:npg) = zr(j_sour-1+1:j_sour-1+npg)
 !
-    elseif (option .eq. 'CHAR_THER_SOUR_F') then
+    else if (option .eq. 'CHAR_THER_SOUR_F') then
         call jevech('PSOURCF', 'L', j_sour)
 !
 ! ---- Get Function Parameters
@@ -136,7 +136,7 @@ subroutine te0465(option, nomte)
     end if
 !
 ! ---- compute surface load
-!$
+    !$
     call hhoMakeRhsCellScal(hhoCell, hhoQuadCell, NeumValuesQP, hhoData%cell_degree(), rhs_T)
 !
 ! ---- save result

@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
-                  compor, f, sigma, nbvari, &
-                  vari, enelas)
+                  compor, f, sigma, nbvari, vari, &
+                  enelas)
 !.......................................................................
     implicit none
 ! -----------------------------------------------------------------
@@ -67,6 +67,7 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
     real(kind=8) :: trbe, epsthe, kr(6), pdtsca(6), d1(36), valres(2)
     character(len=4) :: fami
     character(len=16) :: nomres(2), compor(*)
+    blas_int :: b_incx, b_incy, b_n
     data kr/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
     data pdtsca/1.d0, 1.d0, 1.d0, 2.d0, 2.d0, 2.d0/
 !-----------------------------------------------------------------------
@@ -104,9 +105,8 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
         mu = e/(2.d0*(1.d0+nu))
         troisk = e/(1.d0-2.d0*nu)
 !
-        jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2)) &
-              -f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2)) &
-              +f(3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
+        jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2))-f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2)&
+              &)+f(3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
 !
 ! ---    CALCUL DE TAU TEL QUE TAU=JAC*SIGMA
 !
@@ -129,7 +129,10 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
 !
 ! ---    CALCUL DE LA TRACE DES DEFORMATIONS ELASTIQUES BE
 !
-        call dcopy(6, vari(3), 1, be, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vari(3), b_incx, be, b_incy)
         trbe = be(1)+be(2)+be(3)
         trbe = jac**(-2.d0/3.d0)*(3.d0-2.d0*trbe)
 !
@@ -170,15 +173,18 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
 !
         c1 = (un+nu)/e
         c2 = nu/e
-        call dcopy(6, vari(nbvari-5), 1, tlog, 1)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vari(nbvari-5), b_incx, tlog, b_incy)
 !
 !        CAS 3D
         if (lteatt('DIM_TOPO_MAILLE', '3')) then
 !
             trt = tlog(1)+tlog(2)+tlog(3)
             enelas = undemi*( &
-                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+tlog(3)*(c1*tl&
-                     &og(3)-c2*trt)+(tlog(4)*c1*tlog(4)+tlog(5)*c1*tlog(5)+tlog(6)*c1*tlog(6)) &
+                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+tlog(3)*(c1*tlog(3)-&
+                     &c2*trt)+(tlog(4)*c1*tlog(4)+tlog(5)*c1*tlog(5)+tlog(6)*c1*tlog(6)) &
                      )
 !
 !
@@ -187,23 +193,23 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
             trt = tlog(1)+tlog(2)
 !
             enelas = undemi*( &
-                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+deux*tlog(4)*c1&
-                    &*tlog(4) &
+                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+deux*tlog(4)*c1*tlog&
+                     &(4) &
                      )
 ! ---    CAS AXI ET DEFORMATIONS PLANES :
         else
             trt = tlog(1)+tlog(2)+tlog(3)
 !
             enelas = undemi*( &
-                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+tlog(3)*(c1*tlog(&
-                     &3)-c2*trt)+deux*tlog(4)*c1*tlog(4) &
+                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+tlog(3)*(c1*tlog(3)-&
+                     &c2*trt)+deux*tlog(4)*c1*tlog(4) &
                      )
         end if
 ! --- EN HPP SI ON CONSIDERE LE MATERIAU ISOTROPE
 ! --- E_ELAS = 1/2*SIGMA*1/D*SIGMA :
 !
 ! --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
-    elseif ((compor(3) (1:5) .eq. 'PETIT') .or. (compor(3) .eq. 'GROT_GDEP')) then
+    else if ((compor(3) (1:5) .eq. 'PETIT') .or. (compor(3) .eq. 'GROT_GDEP')) then
 !
 !  --    CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
 !  --    POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
@@ -217,8 +223,7 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
         call r8inir(6, 0.d0, epsi, 1)
         do isig = 1, nbsig
             do jsig = 1, nbsig
-                epsi(isig) = epsi(isig)+d1(nbsig*(isig-1)+jsig)*sigma( &
-                             jsig)
+                epsi(isig) = epsi(isig)+d1(nbsig*(isig-1)+jsig)*sigma(jsig)
             end do
             enelas = enelas+undemi*sigma(isig)*epsi(isig)
         end do

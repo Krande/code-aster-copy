@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine mlncld(n, frontl, frontu, adper, t1, &
     parameter(seuin=1500, seuik=300)
     integer :: nn, kk, lda
     character(len=1) :: tra
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 !     MLTFLD TRAITE UNIQUEMENT LES BLOCS DIAGONAUX
     tra = 'N'
@@ -53,12 +54,22 @@ subroutine mlncld(n, frontl, frontu, adper, t1, &
                 call sspmvc(n-k+1, k-1, frontu, ad, t2, &
                             frontu(adper(k)))
             else
-                call zgemv(tra, nn, kk, alpha, frontl(k), &
-                           lda, t1, incx, beta, frontl(adper(k)), &
-                           incy)
-                call zgemv(tra, nn, kk, alpha, frontu(k), &
-                           lda, t2, incx, beta, frontu(adper(k)), &
-                           incy)
+                b_lda = to_blas_int(lda)
+                b_m = to_blas_int(nn)
+                b_n = to_blas_int(kk)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(incy)
+                call zgemv(tra, b_m, b_n, alpha, frontl(k), &
+                           b_lda, t1, b_incx, beta, frontl(adper(k)), &
+                           b_incy)
+                b_lda = to_blas_int(lda)
+                b_m = to_blas_int(nn)
+                b_n = to_blas_int(kk)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(incy)
+                call zgemv(tra, b_m, b_n, alpha, frontu(k), &
+                           b_lda, t2, b_incx, beta, frontu(adper(k)), &
+                           b_incy)
             end if
         end if
 !         DIVISION PAR LE TERME DIAGONAL DE FRONTL (PAS FRONTU)

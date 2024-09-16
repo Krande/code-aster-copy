@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine crprol()
     implicit none
 !
@@ -58,7 +58,7 @@ subroutine crprol()
     integer :: ibid, ndimf, nbnoi, nbnof, nbinst, iad
     integer :: vali, iret
     integer :: jinst, iord, jcnsvl, jcnsle, nbval
-    integer ::  axyzmf, jtbcor, jtbres
+    integer :: axyzmf, jtbcor, jtbres
     integer :: imin, imax, inoi, inof, indice, jtbpdg
     integer :: jtbnoe, ordef, ino, inomin, inomax
     real(kind=8) :: xnormr, prec, rmin, rmax
@@ -74,6 +74,7 @@ subroutine crprol()
     character(len=24) :: knum, tabl2
     character(len=24) :: valk(2)
     real(kind=8), pointer :: cnsv(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 !
@@ -180,12 +181,18 @@ subroutine crprol()
 !
         call tbtri(nbnoi, zi(jtbres), tabchr=zr(jtbcor))
 !
-        prosca = ddot(3, orig, 1, axez, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        prosca = ddot(b_n, orig, b_incx, axez, b_incy)
         axer(1) = orig(1)-prosca*axez(1)
         axer(2) = orig(2)-prosca*axez(2)
         axer(3) = orig(3)-prosca*axez(3)
         call normev(axer, xnormr)
-        rref = ddot(3, orig, 1, axer, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        rref = ddot(b_n, orig, b_incx, axer, b_incy)
         rref = abs(rref)
 !
         nomgd = 'TEMP_R'
@@ -201,12 +208,18 @@ subroutine crprol()
             axet(1) = zr(axyzmf+3*(inof-1)-1+1)
             axet(2) = zr(axyzmf+3*(inof-1)-1+2)
             axet(3) = zr(axyzmf+3*(inof-1)-1+3)
-            prosca = ddot(3, axet, 1, axez, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            prosca = ddot(b_n, axet, b_incx, axez, b_incy)
             axer(1) = axet(1)-prosca*axez(1)
             axer(2) = axet(2)-prosca*axez(2)
             axer(3) = axet(3)-prosca*axez(3)
             call normev(axer, xnormr)
-            rpro = ddot(3, axet, 1, axer, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            rpro = ddot(b_n, axet, b_incx, axer, b_incy)
             rval = rpro-rref
             if (rval .lt. 0.0d0) then
                 indice = indice+1
@@ -232,8 +245,7 @@ subroutine crprol()
                 call utmess('F', 'ALGORITH12_70')
             end if
             lambda = (rval-rmin)/(rmax-rmin)
-            cnsv((inof-1)+1) = (1-lambda)*zr(jcnsvl-1+(imin-1)+1) &
-                               +lambda*zr(jcnsvl-1+(imax-1)+1)
+            cnsv((inof-1)+1) = (1-lambda)*zr(jcnsvl-1+(imin-1)+1)+lambda*zr(jcnsvl-1+(imax-1)+1)
             zl(jcnsle-1+(inof-1)+1) = .true.
 3           continue
         end do
@@ -256,11 +268,9 @@ subroutine crprol()
                     rmax = zr(jtbcor-1+inomax)
                     lambda = (rmin-rval)/(rmax-rval)
                     cnsv((ino-1)+1) = ( &
-                                             zr( &
-                                             jcnsvl-1+(inomin-1)+1)-zr(jcnsvl-1+(inomax-1)+1)*l&
-                                             &ambda &
-                                             )/(1-lambda &
-                                             )
+                                      zr(jcnsvl-1+(inomin-1)+1)-zr(jcnsvl-1+(inomax-1)+1)*lambda &
+                                      )/(1-lambda &
+                                         )
                     zl(jcnsle-1+(ino-1)+1) = .true.
                 end if
             else
@@ -279,11 +289,9 @@ subroutine crprol()
                     rmax = zr(jtbcor-1+inomax)
                     lambda = (rmax-rmin)/(rval-rmin)
                     cnsv((ino-1)+1) = ( &
-                                             zr( &
-                                             jcnsvl-1+(inomax-1)+1)-zr(jcnsvl-1+(inomin-1)+1)*(&
-                                             &1-lambda &
-                                             ) &
-                                             )/lambda
+                                      zr( &
+                                      jcnsvl-1+(inomax-1)+1)-zr(jcnsvl-1+(inomin-1)+1)*(1-lambda) &
+                                      )/lambda
                     zl(jcnsle-1+(ino-1)+1) = .true.
                 end if
             end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
+!
+subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, &
+                  nomele, ivr, nbocc)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -85,6 +86,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
     character(len=24) :: tmpnor, tmpvor, tmpori, tmpini
     character(len=24) :: mlgnma, mlgnno, mlgtma, mlggno, mlggma, mlgcoo, mlgcnx
     character(len=24) :: modmai, nommai
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -149,7 +151,10 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
                 x2(ii) = zr(jdco+(no2-1)*3+ii-1)
                 x3(ii) = x2(ii)-x1(ii)
             end do
-            longseg = sqrt(ddot(3, x3, 1, x3, 1))
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            longseg = sqrt(ddot(b_n, x3, b_incx, x3, b_incy))
             if (longseg .gt. 0.0d0) then
                 call angvx(x3, alpha, beta)
                 zr(jad) = zr(jad)+alpha
@@ -166,14 +171,16 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
         nbalarme = 0
         do ioc = 1, nbocc(ACE_ORIENTATION)
 !           Pour les MAILLES
-            call getvem(noma, 'GROUP_MA', 'ORIENTATION', 'GROUP_MA', ioc, lmax, zk24(jdls), ng)
+            call getvem(noma, 'GROUP_MA', 'ORIENTATION', 'GROUP_MA', ioc, &
+                        lmax, zk24(jdls), ng)
 !           Seuil correspondant à la longueur nulle pour une maille :
 !               si seglong .LT. longseuil ==> maille de taille nulle
             call getvr8('ORIENTATION', 'PRECISION', iocc=ioc, scal=longseuil, nbret=nbid)
             if (nbid .ne. 1) longseuil = -1.0d0
 !           Pour les NOEUDS
             call getvtx('ORIENTATION', 'CARA', iocc=ioc, scal=oricara, nbret=ncar)
-            call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=nbval, vect=val, nbret=nval)
+            call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=nbval, vect=val, &
+                        nbret=nval)
 !           Dans le catalogue, si oricara == GENE_TUYAU c'est GROUP_NO ou NOEUD ==> Tuyaux
             if (ng .gt. 0) then
 !               GROUP_MA = toutes les mailles possibles de la liste des groupes de mailles
@@ -188,8 +195,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
                         jad = jdori+(nummai-1)*3
                         jin = jinit+(nummai-1)*3
                         if ((nutyma .ne. ntseg3) .and. (nutyma .ne. ntseg4)) then
-                            call affori('MAILLE', nommai, oricara, val, jad, jin, &
-                                        jdno, jdco, nutyma, ntseg, &
+                            call affori('MAILLE', nommai, oricara, val, jad, &
+                                        jin, jdno, jdco, nutyma, ntseg, &
                                         lseuil=longseuil, nbseuil=nbalarme)
                         end if
                     end do
@@ -243,19 +250,19 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
                 if (nutyel .eq. ntyele(jj)) then
 !                   Récupération des numéros des noms des éléments
                     call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunomel)
-                    ! Pas de carte d'orientation sur les :
-                    !   TUYAUX                  : MET3SEG3 MET3SEG4 MET6SEG3
-                    !   "meca_plate_skin"       : MEBODKT  MEBODST  MEBOQ4G
-                    !   "meca_coque_3d_skin"    : MEBOCQ3
+! Pas de carte d'orientation sur les :
+!   TUYAUX                  : MET3SEG3 MET3SEG4 MET6SEG3
+!   "meca_plate_skin"       : MEBODKT  MEBODST  MEBOQ4G
+!   "meca_coque_3d_skin"    : MEBOCQ3
                     if ((nunomel .ne. 'MET3SEG3') .and. (nunomel .ne. 'MET3SEG4') .and. &
-                        (nunomel .ne. 'MET6SEG3') .and. &
-                        (nunomel .ne. 'MEBODKT') .and. (nunomel .ne. 'MEBODST') .and. &
-                        (nunomel .ne. 'MEBOQ4G') .and. &
+                        (nunomel .ne. 'MET6SEG3') .and. (nunomel .ne. 'MEBODKT') .and. &
+                        (nunomel .ne. 'MEBODST') .and. (nunomel .ne. 'MEBOQ4G') .and. &
                         (nunomel .ne. 'MEBOCQ3')) then
                         zr(jdvlvo) = zr(jdori+nummai*3-3)
                         zr(jdvlvo+1) = zr(jdori+nummai*3-2)
                         zr(jdvlvo+2) = zr(jdori+nummai*3-1)
-                        call nocart(cartor, 3, 3, mode='NUM', nma=1, limanu=[nummai])
+                        call nocart(cartor, 3, 3, mode='NUM', nma=1, &
+                                    limanu=[nummai])
                         cycle cnum2
                     end if
                 end if
@@ -267,7 +274,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 !   Affectation des elements tuyaux
     call dismoi('EXI_TUYAU', nomo, 'MODELE', repk=exituy)
     if (exituy .eq. 'OUI') then
-        call aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
+        call aceatu(noma, nomo, nbepo, ntyele, ivr, &
+                    nbocc)
     end if
 ! --------------------------------------------------------------------------------------------------
 !

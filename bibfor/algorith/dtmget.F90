@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
                   iscal, rscal, cscal, kscal, ivect, &
                   rvect, cvect, kvect, vi, vr, &
@@ -60,7 +60,7 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
 #include "asterfort/jgetptc.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
-
+!
 !
 !   ====================================================================
 !   = 0 =   Variable declarations and initialization
@@ -70,16 +70,16 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
     character(len=*), intent(in) :: sd_dtm_
     integer, intent(in) :: ip
     integer, optional, intent(in) :: iocc
-    character(len=24), optional, intent(out):: savejv
-    integer, optional, intent(out):: lonvec
-    integer, optional, intent(out):: iscal
-    real(kind=8), optional, intent(out):: rscal
-    complex(kind=8), optional, intent(out):: cscal
-    character(len=*), optional, intent(out):: kscal
-    integer, optional, intent(out):: ivect(*)
-    real(kind=8), optional, intent(out):: rvect(*)
-    complex(kind=8), optional, intent(out):: cvect(*)
-    character(len=*), optional, intent(out):: kvect(*)
+    character(len=24), optional, intent(out) :: savejv
+    integer, optional, intent(out) :: lonvec
+    integer, optional, intent(out) :: iscal
+    real(kind=8), optional, intent(out) :: rscal
+    complex(kind=8), optional, intent(out) :: cscal
+    character(len=*), optional, intent(out) :: kscal
+    integer, optional, intent(out) :: ivect(*)
+    real(kind=8), optional, intent(out) :: rvect(*)
+    complex(kind=8), optional, intent(out) :: cvect(*)
+    character(len=*), optional, intent(out) :: kvect(*)
 !
     integer, pointer, optional :: vi(:)
     real(kind=8), pointer, optional :: vr(:)
@@ -89,48 +89,48 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
     character(len=24), pointer, optional :: vk24(:)
 !
     integer, optional, intent(out) :: address
-    integer, pointer, optional  :: buffer(:)
+    integer, pointer, optional :: buffer(:)
 !
 !   -0.2- Local variables
 !   --- For strings copying
     character(len=8) :: sd_dtm
-
+!
 !   --- For general usage
-    aster_logical     :: output_test
-    integer           :: i, addr, jscal, lvec, level, dec
-    character(len=6)  :: k_iocc
+    aster_logical :: output_test
+    integer :: i, addr, jscal, lvec, level, dec
+    character(len=6) :: k_iocc
     character(len=24) :: savename
     type(c_ptr) :: pc
+    blas_int :: b_incx, b_incy, b_n
 !
 #include "dtminc.h"
 !
 !
     savename = '                        '
     addr = 0
-
+!
 !   Copying the input strings, in order to allow in-command truncated input
     sd_dtm = sd_dtm_
-
+!
 !   ====================================================================
 !   = 1 = Validation of the input arguments, distinguishing global vars
 !   ====================================================================
-
+!
     if ((.not. present(lonvec)) .and. (.not. present(savejv))) then
         output_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
-                      UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
-                      UN_PARMI3(vk8, vk16, vk24) .or. &
+                      UN_PARMI4(kvect, ivect, rvect, cvect) .or. UN_PARMI3(vk8, vk16, vk24) .or. &
                       UN_PARMI4(vi, vr, vc, address)
-
+!
         ASSERT(output_test)
     end if
-
+!
 !   The parameter to be saved was not found in the predefined list
     if (ip .gt. _DTM_NBPAR) then
         ASSERT(.false.)
     end if
-
+!
     if (present(buffer) .and. (.not. present(savejv))) then
-
+!
         dec = 0
         if (present(iocc)) then
             level = size(buffer)/(2*_DTM_NBPAR)
@@ -143,31 +143,37 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
                 goto 20
             end if
         end if
-
+!
         addr = buffer(dec+ip)
         lvec = buffer(dec+_DTM_NBPAR+ip)
-
+!
         if (present(lonvec)) lonvec = lvec
         if (present(address)) address = addr
-
+!
         if (addr .ne. 0) then
             if (present(iscal)) then
                 iscal = zi(addr)
-            elseif (present(rscal)) then
+            else if (present(rscal)) then
                 rscal = zr(addr)
-            elseif (present(cscal)) then
+            else if (present(cscal)) then
                 cscal = zc(addr)
-            elseif (present(kscal)) then
+            else if (present(kscal)) then
                 kscal = zk24(addr)
-            elseif (present(ivect)) then
+            else if (present(ivect)) then
                 do i = 1, lvec
                     ivect(i) = zi(addr+i-1)
                 end do
-            elseif (present(rvect)) then
-                call dcopy(lvec, zr(addr), 1, rvect, 1)
-            elseif (present(cvect)) then
-                call zcopy(lvec, zc(addr), 1, cvect, 1)
-            elseif (present(kvect)) then
+            else if (present(rvect)) then
+                b_n = to_blas_int(lvec)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(addr), b_incx, rvect, b_incy)
+            else if (present(cvect)) then
+                b_n = to_blas_int(lvec)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call zcopy(b_n, zc(addr), b_incx, cvect, b_incy)
+            else if (present(kvect)) then
                 do i = 1, lvec
                     kvect(i) = zk24(addr+i-1)
                 end do
@@ -196,7 +202,7 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
             goto 99
         end if
     end if
-
+!
 20  continue
     savename(1:8) = sd_dtm
     if (present(iocc)) then
@@ -208,17 +214,17 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
         ASSERT(parind(ip) .lt. 0)
     end if
     savename(16:24) = '.'//params(ip)
-
+!
 !   ====================================================================
 !   = 2 = Extracting data
 !   ====================================================================
-
+!
 !   --- Length of vectors
     if (present(savejv)) savejv = savename
-
+!
     if (present(lonvec) .or. UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
-        UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
-        UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
+        UN_PARMI4(kvect, ivect, rvect, cvect) .or. UN_PARMI3(vk8, vk16, vk24) .or. &
+        UN_PARMI3(vi, vr, vc)) then
         call jeexin(savename, lvec)
         if (lvec .le. 0) then
             if (present(lonvec)) then
@@ -229,17 +235,16 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
             call jelira(savename, 'LONMAX', lvec)
         end if
     end if
-
+!
     if (present(lonvec)) lonvec = lvec
-
-    if (UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
-        UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
-        UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
+!
+    if (UN_PARMI4(kscal, iscal, rscal, cscal) .or. UN_PARMI4(kvect, ivect, rvect, cvect) &
+        .or. UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
 !   --- Vectors
         if (abs(parind(ip)) .eq. 2) then
 !
-            if (UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
-                UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
+            if (UN_PARMI4(kvect, ivect, rvect, cvect) .or. UN_PARMI3(vk8, vk16, vk24) .or. &
+                UN_PARMI3(vi, vr, vc)) then
                 if (partyp(ip) .eq. 'I') then
                     if (present(ivect)) then
                         call jeveuo(savename, 'L', addr)
@@ -252,14 +257,20 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
                 else if (partyp(ip) .eq. 'R') then
                     if (present(rvect)) then
                         call jeveuo(savename, 'L', addr)
-                        call dcopy(lvec, zr(addr), 1, rvect, 1)
+                        b_n = to_blas_int(lvec)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call dcopy(b_n, zr(addr), b_incx, rvect, b_incy)
                     else
                         call jeveuo(savename, 'E', vr=vr)
                     end if
                 else if (partyp(ip) .eq. 'C') then
                     if (present(cvect)) then
                         call jeveuo(savename, 'L', addr)
-                        call zcopy(lvec, zc(addr), 1, cvect, 1)
+                        b_n = to_blas_int(lvec)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call zcopy(b_n, zc(addr), b_incx, cvect, b_incy)
                     else
                         call jeveuo(savename, 'E', vc=vc)
                     end if
@@ -303,9 +314,9 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
             call jeveuo(savename, 'L', jscal)
             if (partyp(ip) .eq. 'I') then
                 iscal = zi(jscal)
-            elseif (partyp(ip) .eq. 'R') then
+            else if (partyp(ip) .eq. 'R') then
                 rscal = zr(jscal)
-            elseif (partyp(ip) .eq. 'C') then
+            else if (partyp(ip) .eq. 'C') then
                 cscal = zc(jscal)
             else if (partyp(ip) .eq. 'K8') then
                 kscal = zk8(jscal)
@@ -328,5 +339,5 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
     end if
 !
 99  continue
-
+!
 end subroutine

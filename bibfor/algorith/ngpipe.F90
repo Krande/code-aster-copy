@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ngpipe(typilo, npg, neps, nddl, b, &
                   ni2ldc, typmod, mat, compor, lgpg, &
                   ddlm, sigm, vim, ddld, ddl0, &
@@ -67,8 +67,9 @@ subroutine ngpipe(typilo, npg, neps, nddl, b, &
     real(kind=8) :: sigmam(0:epsmax*npgmax-1)
     real(kind=8) :: epsm(0:epsmax*npgmax-1), epsd(0:epsmax*npgmax-1)
     real(kind=8) :: epsp(0:epsmax*npgmax-1)
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 ! ----------------------------------------------------------------------
-#define os(g)   (g-1)*neps
+#define os(g) (g-1)*neps
 ! ----------------------------------------------------------------------
 !
 !
@@ -81,18 +82,38 @@ subroutine ngpipe(typilo, npg, neps, nddl, b, &
 !
 ! -- DEFORMATIONS
 !
-    call dgemv('N', nepg, nddl, 1.d0, b, &
-               nepg, ddlm, 1, 0.d0, epsm, &
-               1)
-    call dgemv('N', nepg, nddl, 1.d0, b, &
-               nepg, ddld, 1, 0.d0, epsp, &
-               1)
-    call dgemv('N', nepg, nddl, 1.d0, b, &
-               nepg, ddl0, 1, 1.d0, epsp, &
-               1)
-    call dgemv('N', nepg, nddl, 1.d0, b, &
-               nepg, ddl1, 1, 0.d0, epsd, &
-               1)
+    b_lda = to_blas_int(nepg)
+    b_m = to_blas_int(nepg)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddlm, b_incx, 0.d0, epsm, &
+               b_incy)
+    b_lda = to_blas_int(nepg)
+    b_m = to_blas_int(nepg)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddld, b_incx, 0.d0, epsp, &
+               b_incy)
+    b_lda = to_blas_int(nepg)
+    b_m = to_blas_int(nepg)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddl0, b_incx, 1.d0, epsp, &
+               b_incy)
+    b_lda = to_blas_int(nepg)
+    b_m = to_blas_int(nepg)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddl1, b_incx, 0.d0, epsd, &
+               b_incy)
 !
 !
 ! -- PRETRAITEMENT SI NECESSAIRE

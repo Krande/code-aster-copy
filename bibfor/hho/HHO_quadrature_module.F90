@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,11 +44,11 @@ module HHO_quadrature_module
 ! --------------------------------------------------------------------------------------------------
 !
     type HHO_Quadrature
-        integer                             :: order = 0
-        integer                             :: nbQuadPoints = 0
-        real(kind=8), dimension(3, MAX_QP)   :: points = 0.d0
-        real(kind=8), dimension(MAX_QP)     :: weights = 0.d0
-        real(kind=8), dimension(3, MAX_QP)   :: points_param = 0.d0
+        integer :: order = 0
+        integer :: nbQuadPoints = 0
+        real(kind=8), dimension(3, MAX_QP) :: points = 0.d0
+        real(kind=8), dimension(MAX_QP) :: weights = 0.d0
+        real(kind=8), dimension(3, MAX_QP) :: points_param = 0.d0
 ! ----- member functions
     contains
         procedure, private, pass :: hho_edge_rules
@@ -69,12 +69,11 @@ module HHO_quadrature_module
 !
 !===================================================================================================
 !
-    public   :: HHO_Quadrature
-    private  :: hho_edge_rules, hho_hexa_rules, hho_tri_rules, hho_tetra_rules, &
-                hho_transfo_3d, hho_transfo_quad, &
-                hho_prism_rules, hho_pyram_rules, &
-                hho_quad_rules, hhoGetQuadCell, hhoGetQuadFace, hhoQuadPrint, &
-                hhoinitCellFamiQ, hhoinitFaceFamiQ, check_order, hhoSelectOrder
+    public :: HHO_Quadrature
+    private :: hho_edge_rules, hho_hexa_rules, hho_tri_rules, hho_tetra_rules, hho_transfo_3d
+    private :: hho_transfo_quad, hho_prism_rules, hho_pyram_rules, hho_quad_rules, hhoGetQuadCell
+    private :: hhoGetQuadFace, hhoQuadPrint, hhoinitCellFamiQ, hhoinitFaceFamiQ, check_order
+    private :: hhoSelectOrder
 !
 contains
 !
@@ -112,16 +111,17 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hho_transfo_3d(coorno, nbnodes, typema, coorref, coorac, jacob)
+    subroutine hho_transfo_3d(coorno, nbnodes, typema, coorref, coorac, &
+                              jacob)
 !
         implicit none
 !
-        integer, intent(in)                             :: nbnodes
+        integer, intent(in) :: nbnodes
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
-        character(len=8), intent(in)                    :: typema
-        real(kind=8), dimension(3), intent(in)          :: coorref
-        real(kind=8), dimension(3), intent(out)         :: coorac
-        real(kind=8), intent(out)                       :: jacob
+        character(len=8), intent(in) :: typema
+        real(kind=8), dimension(3), intent(in) :: coorref
+        real(kind=8), dimension(3), intent(out) :: coorac
+        real(kind=8), intent(out) :: jacob
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -162,9 +162,9 @@ contains
         end do
 !
         jacob = 0.d0
-        jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
-                +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
-                -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
+        jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2)+jaco(3, 1)*jac&
+                &o(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3)-jaco(3, 3)*jaco(2, 1)*jaco(&
+                &1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
 !
     end subroutine
 !
@@ -179,10 +179,10 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 2), intent(in)        :: coorno
-        real(kind=8), intent(in)                        :: measure
-        real(kind=8), dimension(3), intent(in)          :: barycenter
-        class(HHO_quadrature), intent(inout)            :: this
+        real(kind=8), dimension(3, 2), intent(in) :: coorno
+        real(kind=8), intent(in) :: measure
+        real(kind=8), dimension(3), intent(in) :: barycenter
+        class(HHO_quadrature), intent(inout) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -199,7 +199,7 @@ contains
         real(kind=8), dimension(3) :: v1
         integer, parameter :: max_order = 7
         integer, parameter :: max_pg = 4
-        character(len=8), dimension(0:max_order) ::rules
+        character(len=8), dimension(0:max_order) :: rules
         integer :: dimp, nbpg, ipg
         real(kind=8), dimension(max_pg) :: xpg, poidpg
 !
@@ -214,7 +214,8 @@ contains
 !------ get quadrature points
         xpg = 0.d0
         poidpg = 0.d0
-        call elraga('SE2', rules(this%order), dimp, nbpg, xpg, poidpg)
+        call elraga('SE2', rules(this%order), dimp, nbpg, xpg, &
+                    poidpg)
 !
 ! ----- fill hhoQuad
         ASSERT(nbpg <= MAX_QP)
@@ -236,11 +237,11 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)            :: coorno
-        real(kind=8), dimension(2), intent(in)              :: coorref
-        integer, intent(in)                                 :: ndim
-        real(kind=8), intent(out)                           :: jacob
-        real(kind=8), dimension(3), intent(out), optional   :: coorac
+        real(kind=8), dimension(3, 4), intent(in) :: coorno
+        real(kind=8), dimension(2), intent(in) :: coorref
+        integer, intent(in) :: ndim
+        real(kind=8), intent(out) :: jacob
+        real(kind=8), dimension(3), intent(out), optional :: coorac
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -260,6 +261,7 @@ contains
         real(kind=8), dimension(2, 2) :: jaco
         real(kind=8), dimension(3) :: da, db, normal
         integer :: i
+        blas_int :: b_incx, b_n
 !
         if (present(coorac)) then
 !
@@ -297,7 +299,9 @@ contains
                 db(1:3) = db(1:3)+coorno(1:3, i)*dbasis(2, i)
             end do
             call provec(da, db, normal)
-            jacob = dnrm2(3, normal, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            jacob = dnrm2(b_n, normal, b_incx)
         case default
             ASSERT(ASTER_FALSE)
         end select
@@ -312,9 +316,9 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)        :: coorno
-        integer, intent(in)                             :: ndim
-        class(HHO_quadrature), intent(inout)            :: this
+        real(kind=8), dimension(3, 4), intent(in) :: coorno
+        integer, intent(in) :: ndim
+        class(HHO_quadrature), intent(inout) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -326,10 +330,10 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) ::  coorpgglo
+        real(kind=8), dimension(3) :: coorpgglo
         integer, parameter :: max_order = 7
         integer, parameter :: max_pg = 16
-        character(len=8), dimension(0:max_order) ::rules
+        character(len=8), dimension(0:max_order) :: rules
         integer :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, jaco
 !
@@ -341,7 +345,8 @@ contains
 !------ get quadrature points
         coorpg = 0.d0
         poidpg = 0.d0
-        call elraga('QU4', rules(this%order), dimp, nbpg, coorpg, poidpg)
+        call elraga('QU4', rules(this%order), dimp, nbpg, coorpg, &
+                    poidpg)
 !
 ! ----- fill hhoQuad
         ASSERT(nbpg <= MAX_QP)
@@ -366,8 +371,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 8), intent(in)        :: coorno
-        class(HHO_quadrature), intent(inout)            :: this
+        real(kind=8), dimension(3, 8), intent(in) :: coorno
+        class(HHO_quadrature), intent(inout) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -394,7 +399,8 @@ contains
 !------ get quadrature points
         coorpg = 0.d0
         poidpg = 0.d0
-        call elraga('HE8', rules(this%order), dimp, nbpg, coorpg, poidpg)
+        call elraga('HE8', rules(this%order), dimp, nbpg, coorpg, &
+                    poidpg)
 !
 ! ----- fill hhoQuad
         ASSERT(nbpg <= MAX_QP)
@@ -404,7 +410,8 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 8, "HEXA8   ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 8, "HEXA8   ", (/x, y, z/), coorac, &
+                                jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -420,9 +427,9 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 3), intent(in)        :: coorno
-        real(kind=8), intent(in)                        :: measure
-        class(HHO_quadrature), intent(inout)            :: this
+        real(kind=8), dimension(3, 3), intent(in) :: coorno
+        real(kind=8), intent(in) :: measure
+        class(HHO_quadrature), intent(inout) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -434,22 +441,24 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) ::  coorac
+        real(kind=8), dimension(3) :: coorac
         integer, parameter :: max_order = 8
         integer, parameter :: max_pg = 16
-        character(len=8), dimension(0:max_order) ::rules
+        character(len=8), dimension(0:max_order) :: rules
         integer :: dimp, nbpg, ipg, ino
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8)
 !
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG1 ', 'FPG3 ', 'FPG4 ', 'FPG6 ', 'FPG7 ', 'FPG12', 'FPG13', 'FPG16'/)
+        rules = (/'FPG1 ', 'FPG1 ', 'FPG3 ', 'FPG4 ', 'FPG6 ', 'FPG7 ', 'FPG12', &
+                  'FPG13', 'FPG16'/)
 !
 !------ get quadrature points
         coorpg = 0.d0
         poidpg = 0.d0
-        call elraga('TR3', rules(this%order), dimp, nbpg, coorpg, poidpg)
+        call elraga('TR3', rules(this%order), dimp, nbpg, coorpg, &
+                    poidpg)
 !
 ! ----- fill hhoQuad
         ASSERT(nbpg <= MAX_QP)
@@ -478,9 +487,9 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)        :: coorno
-        real(kind=8), intent(in)                        :: measure
-        class(HHO_quadrature), intent(inout)            :: this
+        real(kind=8), dimension(3, 4), intent(in) :: coorno
+        real(kind=8), intent(in) :: measure
+        class(HHO_quadrature), intent(inout) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -492,7 +501,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) ::  coorac
+        real(kind=8), dimension(3) :: coorac
         integer, parameter :: max_order = 6
         integer, parameter :: max_pg = 23
         character(len=8), dimension(0:max_order) :: rules
@@ -507,7 +516,8 @@ contains
 !------ get quadrature points
         coorpg = 0.d0
         poidpg = 0.d0
-        call elraga('TE4', rules(this%order), dimp, nbpg, coorpg, poidpg)
+        call elraga('TE4', rules(this%order), dimp, nbpg, coorpg, &
+                    poidpg)
 !
 ! ----- fill hhoQuad
         ASSERT(nbpg <= MAX_QP)
@@ -517,7 +527,8 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 4, "TETRA4  ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 4, "TETRA4  ", (/x, y, z/), coorac, &
+                                jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac
             this%weights(ipg) = jaco*poidpg(ipg)
@@ -533,8 +544,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 5), intent(in)        :: coorno
-        class(HHO_quadrature), intent(inout)            :: this
+        real(kind=8), dimension(3, 5), intent(in) :: coorno
+        class(HHO_quadrature), intent(inout) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -561,7 +572,8 @@ contains
 !------ get quadrature points
         coorpg = 0.d0
         poidpg = 0.d0
-        call elraga('PY5', rules(this%order), dimp, nbpg, coorpg, poidpg)
+        call elraga('PY5', rules(this%order), dimp, nbpg, coorpg, &
+                    poidpg)
 !
 ! ----- fill hhoQuad
         ASSERT(nbpg <= MAX_QP)
@@ -571,7 +583,8 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 5, "PYRAM5  ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 5, "PYRAM5  ", (/x, y, z/), coorac, &
+                                jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -587,8 +600,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 6), intent(in)        :: coorno
-        class(HHO_quadrature), intent(inout)            :: this
+        real(kind=8), dimension(3, 6), intent(in) :: coorno
+        class(HHO_quadrature), intent(inout) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -615,7 +628,8 @@ contains
 !------ get quadrature points
         coorpg = 0.d0
         poidpg = 0.d0
-        call elraga('PE6', rules(this%order), dimp, nbpg, coorpg, poidpg)
+        call elraga('PE6', rules(this%order), dimp, nbpg, coorpg, &
+                    poidpg)
 !
 ! ----- fill hhoQuad
         ASSERT(nbpg <= MAX_QP)
@@ -625,7 +639,8 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_3d(coorno, 6, "PENTA6  ", (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 6, "PENTA6  ", (/x, y, z/), coorac, &
+                                jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -641,10 +656,10 @@ contains
 !
         implicit none
 !
-        type(HHO_cell), intent(in)            :: hhoCell
-        integer, intent(in)                   :: order
-        aster_logical, intent(in), optional   :: axis
-        class(HHO_quadrature), intent(out)    :: this
+        type(HHO_cell), intent(in) :: hhoCell
+        integer, intent(in) :: order
+        aster_logical, intent(in), optional :: axis
+        class(HHO_quadrature), intent(out) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -663,15 +678,15 @@ contains
 !
         if (hhoCell%typema == 'HEXA8') then
             call this%hho_hexa_rules(hhoCell%coorno(1:3, 1:8))
-        elseif (hhoCell%typema == 'TETRA4') then
+        else if (hhoCell%typema == 'TETRA4') then
             call this%hho_tetra_rules(hhoCell%coorno(1:3, 1:4), hhoCell%measure)
-        elseif (hhoCell%typema == 'PYRAM5') then
+        else if (hhoCell%typema == 'PYRAM5') then
             call this%hho_pyram_rules(hhoCell%coorno(1:3, 1:5))
-        elseif (hhoCell%typema == 'PENTA6') then
+        else if (hhoCell%typema == 'PENTA6') then
             call this%hho_prism_rules(hhoCell%coorno(1:3, 1:6))
-        elseif (hhoCell%typema == 'QUAD4') then
+        else if (hhoCell%typema == 'QUAD4') then
             call this%hho_quad_rules(hhoCell%coorno(1:3, 1:4), 2)
-        elseif (hhoCell%typema == 'TRIA3') then
+        else if (hhoCell%typema == 'TRIA3') then
             call this%hho_tri_rules(hhoCell%coorno(1:3, 1:3), hhoCell%measure)
         else
             ASSERT(ASTER_FALSE)
@@ -695,10 +710,10 @@ contains
 !
         implicit none
 !
-        type(HHO_face), intent(in)          :: hhoFace
-        integer, intent(in)                 :: order
+        type(HHO_face), intent(in) :: hhoFace
+        integer, intent(in) :: order
         aster_logical, intent(in), optional :: axis
-        class(HHO_quadrature), intent(out)  :: this
+        class(HHO_quadrature), intent(out) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -717,10 +732,11 @@ contains
 !
         if (hhoFace%typema(1:5) == 'QUAD4') then
             call this%hho_quad_rules(hhoFace%coorno(1:3, 1:4), 3)
-        elseif (hhoFace%typema(1:5) == 'TRIA3') then
+        else if (hhoFace%typema(1:5) == 'TRIA3') then
             call this%hho_tri_rules(hhoFace%coorno(1:3, 1:3), hhoFace%measure)
-        elseif (hhoFace%typema(1:4) == 'SEG2') then
-            call this%hho_edge_rules(hhoFace%coorno(1:3, 1:2), hhoFace%measure, hhoFace%barycenter)
+        else if (hhoFace%typema(1:4) == 'SEG2') then
+            call this%hho_edge_rules(hhoFace%coorno(1:3, 1:2), hhoFace%measure, &
+                                     hhoFace%barycenter)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -743,9 +759,9 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)  :: typema
-        integer, intent(in)           :: npg
-        integer, intent(out)          :: order
+        character(len=8), intent(in) :: typema
+        integer, intent(in) :: npg
+        integer, intent(out) :: order
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -772,7 +788,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'PENTA6') then
+        else if (typema == 'PENTA6') then
             select case (npg)
             case (1)
                 order = 0
@@ -787,7 +803,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'PYRAM5') then
+        else if (typema == 'PYRAM5') then
             select case (npg)
             case (1)
                 order = 1
@@ -806,7 +822,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'TETRA4') then
+        else if (typema == 'TETRA4') then
             select case (npg)
             case (1)
                 order = 1
@@ -823,7 +839,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'QUAD4') then
+        else if (typema == 'QUAD4') then
             select case (npg)
             case (1)
                 order = 1
@@ -836,7 +852,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'TRIA3') then
+        else if (typema == 'TRIA3') then
             select case (npg)
             case (1)
                 order = 1
@@ -857,7 +873,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-        elseif (typema == 'SEG2') then
+        else if (typema == 'SEG2') then
             select case (npg)
             case (1)
                 order = 1
@@ -884,10 +900,10 @@ contains
 !
         implicit none
 !
-        type(HHO_cell), intent(in)          :: hhoCell
-        integer, intent(in)                 :: npg
+        type(HHO_cell), intent(in) :: hhoCell
+        integer, intent(in) :: npg
         aster_logical, intent(in), optional :: axis
-        class(HHO_quadrature), intent(out)  :: this
+        class(HHO_quadrature), intent(out) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -932,10 +948,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)          :: hhoFace
-        integer, intent(in)                 :: npg
+        type(HHO_Face), intent(in) :: hhoFace
+        integer, intent(in) :: npg
         aster_logical, intent(in), optional :: axis
-        class(HHO_quadrature), intent(out)  :: this
+        class(HHO_quadrature), intent(out) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -973,7 +989,7 @@ contains
 !
         implicit none
 !
-        class(HHO_quadrature), intent(in)  :: this
+        class(HHO_quadrature), intent(in) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO

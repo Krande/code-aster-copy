@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine aprend(sdappa, sdcont_defi, newgeo)
 !
     implicit none
@@ -74,6 +74,7 @@ subroutine aprend(sdappa, sdcont_defi, newgeo)
     character(len=24) :: sdappa_dist, sdappa_appa
     integer, pointer :: v_sdappa_appa(:) => null()
     real(kind=8), pointer :: v_sdappa_dist(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -170,24 +171,34 @@ subroutine aprend(sdappa, sdcont_defi, newgeo)
 ! ------------- Compute distance
 !
                 if (l_pair_dire) then
-                    normd = sqrt(pair_vect(1)*pair_vect(1)+ &
-                                 pair_vect(2)*pair_vect(2)+ &
-                                 pair_vect(3)*pair_vect(3))
-                    normv = sqrt((poin_coor(1)-node_mast_coor(1))**2+ &
-                                 (poin_coor(2)-node_mast_coor(2))**2+ &
-                                 (poin_coor(3)-node_mast_coor(3))**2)
+                    normd = sqrt( &
+                            pair_vect(1)*pair_vect(1)+pair_vect(2)*pair_vect(2)+pair_vect(3)*pa&
+                            &ir_vect(3) &
+                            )
+                    normv = sqrt( &
+                            ( &
+                            poin_coor(1)-node_mast_coor(1))**2+(poin_coor(2)-node_mast_coor(2))*&
+                           &*2+(poin_coor(3)-node_mast_coor(3) &
+                                )**2 &
+                            )
                     if (normv .le. r8prem()) then
                         dist = 1.d0
                     else
-                        dist = abs((poin_coor(1)-node_mast_coor(1))*pair_vect(1)+ &
-                                   (poin_coor(2)-node_mast_coor(2))*pair_vect(2)+ &
-                                   (poin_coor(3)-node_mast_coor(3))*pair_vect(3))/ &
-                               (normd*normv)
+                        dist = abs( &
+                               ( &
+                               poin_coor(1)-node_mast_coor(1))*pair_vect(1)+(poin_coor(2)-node_m&
+                               &ast_coor(2))*pair_vect(2)+(poin_coor(3)-node_mast_coor(3))*pair_&
+                               &vect(3) &
+                               )/(normd*normv &
+                               )
                     end if
                 else
-                    dist = sqrt((poin_coor(1)-node_mast_coor(1))**2+ &
-                                (poin_coor(2)-node_mast_coor(2))**2+ &
-                                (poin_coor(3)-node_mast_coor(3))**2)
+                    dist = sqrt( &
+                           ( &
+                           poin_coor(1)-node_mast_coor(1))**2+(poin_coor(2)-node_mast_coor(2))**&
+                           &2+(poin_coor(3)-node_mast_coor(3) &
+                           )**2 &
+                           )
                 end if
                 vect_pm(1) = node_mast_coor(1)-poin_coor(1)
                 vect_pm(2) = node_mast_coor(2)-poin_coor(2)
@@ -198,7 +209,10 @@ subroutine aprend(sdappa, sdcont_defi, newgeo)
                 if (dist .lt. dist_mini) then
                     node_mini_indx = node_mast_indx
                     dist_mini = dist
-                    call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, vect_pm, b_incx, vect_pm_mini, b_incy)
                     if (pair_tole .gt. 0.d0) then
                         if (dist .le. pair_tole) then
                             l_proj_tole = .true.
@@ -238,7 +252,7 @@ subroutine aprend(sdappa, sdcont_defi, newgeo)
             v_sdappa_dist(4*(i_poin+i-1)+2) = vect_pm_mini(1)
             v_sdappa_dist(4*(i_poin+i-1)+3) = vect_pm_mini(2)
             v_sdappa_dist(4*(i_poin+i-1)+4) = vect_pm_mini(3)
-
+!
         end do
 !
 ! ----- Next zone

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0461(option, nomte)
 !
     use HHO_type
@@ -122,7 +122,7 @@ subroutine te0461(option, nomte)
         call jevech('PT_EXTR', 'L', j_para)
         ParaQP_curr = zr(j_para)
 !
-    elseif (option .eq. 'CHAR_THER_ECHA_F') then
+    else if (option .eq. 'CHAR_THER_ECHA_F') then
         call jevech('PCOEFHF', 'L', j_coefh)
         call jevech('PT_EXTF', 'L', j_para)
 !
@@ -146,11 +146,11 @@ subroutine te0461(option, nomte)
 ! ----- Evaluate the analytical function at T+
 !
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_coefh), nbpara, nompar, valpar, &
-                                & celldim, CoeffQP_curr)
+                                celldim, CoeffQP_curr)
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar, &
-                                & celldim, ParaQP_curr)
+                                celldim, ParaQP_curr)
 !
-    elseif (option .eq. 'CHAR_THER_RAYO_R') then
+    else if (option .eq. 'CHAR_THER_RAYO_R') then
 !
 ! ----- Get real value (sigma, epsil, temp_inf)
 !
@@ -158,7 +158,7 @@ subroutine te0461(option, nomte)
         CoeffQP_curr = zr(j_para)*zr(j_para+1)
         ParaQP_curr = zr(j_para+2)
 !
-    elseif (option .eq. 'CHAR_THER_RAYO_F') then
+    else if (option .eq. 'CHAR_THER_RAYO_F') then
         call jevech('PRAYONF', 'L', j_para)
 !
 ! ---- Get Function Parameters (sigma, epsil, temp_inf)
@@ -188,14 +188,14 @@ subroutine te0461(option, nomte)
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para+2), nbpara, nompar, valpar, &
                                 celldim, ParaQP_curr)
 !
-    elseif (option .eq. 'CHAR_THER_FLUN_R') then
+    else if (option .eq. 'CHAR_THER_FLUN_R') then
 !
 ! ----- Get real value FLUXN
 !
         call jevech('PFLUXNR', 'L', j_para)
         ParaQP_curr = zr(j_para)
 !
-    elseif (option .eq. 'CHAR_THER_FLUN_F') then
+    else if (option .eq. 'CHAR_THER_FLUN_F') then
         call jevech('PFLUXNF', 'L', j_para)
 !
 ! ---- Get Function Parameters
@@ -218,13 +218,13 @@ subroutine te0461(option, nomte)
 ! ----- Evaluate the analytical function at T+
 !
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar, &
-                                & celldim, ParaQP_curr)
+                                celldim, ParaQP_curr)
 !
-    elseif (option .eq. 'CHAR_THER_FLUNL') then
+    else if (option .eq. 'CHAR_THER_FLUNL') then
         call jevech('PFLUXNL', 'L', j_para)
 !
     else
-
+!
         ASSERT(ASTER_FALSE)
     end if
 !
@@ -233,33 +233,39 @@ subroutine te0461(option, nomte)
         call readVector('PTEMPER', fbs, temp_F_curr)
 !
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
-                                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
-
+            temp_eval_curr = hhoEvalScalFace( &
+                             hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs &
+                             )
+!
             NeumValuesQP(ipg) = CoeffQP_curr(ipg)*(ParaQP_curr(ipg)-temp_eval_curr)
         end do
-    elseif (option(1:15) .eq. 'CHAR_THER_RAYO_') then
+    else if (option(1:15) .eq. 'CHAR_THER_RAYO_') then
 !
         tz0 = r8t0()
 !
         call readVector('PTEMPER', fbs, temp_F_curr)
 !
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
-                                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
-
-            NeumValuesQP(ipg) = CoeffQP_curr(ipg)* &
-                                ((ParaQP_curr(ipg)+tz0)**4-(temp_eval_curr+tz0)**4)
+            temp_eval_curr = hhoEvalScalFace( &
+                             hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs &
+                             )
+!
+            NeumValuesQP(ipg) = CoeffQP_curr(ipg)*((ParaQP_curr(ipg)+tz0)**4-(temp_eval_curr+tz0&
+                                &)**4)
         end do
 !
-    elseif (option(1:15) .eq. 'CHAR_THER_FLUN_') then
+    else if (option(1:15) .eq. 'CHAR_THER_FLUN_') then
         NeumValuesQP = ParaQP_curr
-    elseif (option .eq. 'CHAR_THER_FLUNL') then
+    else if (option .eq. 'CHAR_THER_FLUNL') then
         call readVector('PTEMPER', fbs, temp_F_curr)
 !
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
-                                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
+            temp_eval_curr = hhoEvalScalFace( &
+                             hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs &
+                             )
             call foderi(zk8(j_para), temp_eval_curr, NeumValuesQP(ipg), rbid)
         end do
     else

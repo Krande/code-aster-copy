@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,11 +73,12 @@ subroutine te0082(option, nomte)
     aster_logical :: l_axi
     aster_logical, parameter :: l_vf = ASTER_FALSE
     type(THM_DS) :: ds_thm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='MASS', nno=nno, nnos=nnos, &
-                     npg=npg2, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+    call elrefe_info(fami='MASS', nno=nno, nnos=nnos, npg=npg2, jpoids=ipoids, &
+                     jvf=ivf, jdfde=idfde)
     nddl = 2*nno
     nvec = nddl*(nddl+1)/2
 !
@@ -87,8 +88,8 @@ subroutine te0082(option, nomte)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_vf, 2, &
-                    mecani, press1, press2, tempe, second)
+    call thmGetGene(ds_thm, l_vf, 2, mecani, press1, &
+                    press2, tempe, second)
     if (lteatt('TYPMOD2', 'THM')) then
         idec = press1(1)+press2(1)+tempe(1)+second(1)*2
     else
@@ -214,7 +215,10 @@ subroutine te0082(option, nomte)
             call jevech('PENERCR', 'E', iecin)
             call vecma(matv, nvec, matp, nddl)
             call pmavec('ZERO', nddl, matp, zr(ivite), masvit)
-            zr(iecin) = .5d0*ddot(nddl, zr(ivite), 1, masvit, 1)
+            b_n = to_blas_int(nddl)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(iecin) = .5d0*ddot(b_n, zr(ivite), b_incx, masvit, b_incy)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=idepl)
             if (iret .eq. 0) then
@@ -222,7 +226,10 @@ subroutine te0082(option, nomte)
                 call jevech('POMEGA2', 'L', ifreq)
                 call vecma(matv, nvec, matp, nddl)
                 call pmavec('ZERO', nddl, matp, zr(idepl), masdep)
-                zr(iecin) = .5d0*ddot(nddl, zr(idepl), 1, masdep, 1)*zr(ifreq)
+                b_n = to_blas_int(nddl)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                zr(iecin) = .5d0*ddot(b_n, zr(idepl), b_incx, masdep, b_incy)*zr(ifreq)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
             end if
