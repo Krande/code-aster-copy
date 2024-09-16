@@ -52,7 +52,7 @@ except ImportError:
     pass
 
 from waflib import Configure, Errors, Logs, Utils
-
+from waftools.wafutils import pyenv_abspath
 
 def options(self):
     group = self.get_option_group("code_aster options")
@@ -723,22 +723,6 @@ def _check_prog(self, name, programs, mandatory=True, add_paths=None, var_prefix
     if not success and mandatory:
         raise Errors.ConfigurationError("not found in $PATH: {0}".format(programs))
 
-def pyenv_abspath(self, program):
-    """Return abspath to program, even if pyenv is used.
-
-    Arguments:
-        self (Context): *Context* object.
-        program (str): Path to program.
-
-    Returns:
-        str: Path to program, eventually expanded by pyenv which.
-    """
-    try:
-        # check_call(["pyenv", "which", osp.basename(program)], stderr=PIPE, stdout=PIPE)
-        program = self.cmd_and_log(["pyenv", "which", osp.basename(program)]).strip()
-    except:
-        pass
-    return program
 
 def is_python_wrapped(interp):
     """Tell if the given python interpreter is a wrapper.
