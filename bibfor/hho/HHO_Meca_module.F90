@@ -40,6 +40,8 @@ module HHO_Meca_module
     private
 #include "asterf_types.h"
 #include "asterfort/alchml.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/calcul.h"
@@ -238,7 +240,7 @@ contains
 !   Out rhs         : local contribution (rhs)
 ! --------------------------------------------------------------------------------------------------
 !
-        aster_logical :: l_rigi_meca
+        aster_logical :: l_rigi_meca, l_vari
         integer :: cbs, fbs, total_dofs, j
         blas_int :: b_incx, b_incy, b_n
         blas_int :: b_lda
@@ -246,6 +248,7 @@ contains
 ! --- Verif compor
 !
         l_rigi_meca = (hhoCS%option == "RIGI_MECA")
+        l_vari = L_VARI(hhoCS%option)
 !
         if (hhoCS%axis .or. hhoCS%c_plan) then
             ASSERT(ASTER_FALSE)
@@ -259,6 +262,10 @@ contains
 !
         lhs = 0.d0
         rhs = 0.d0
+        if (.not. l_vari) then
+!           not accessed but expected to be (lgpg, *)
+            AS_ALLOCATE(vr=hhoCS%vari_curr, size=max(1, hhoCS%lgpg))
+        end if
 !
         if (hhoCS%l_largestrain) then
 !
@@ -291,6 +298,10 @@ contains
                                           hhoCS%mult_comp, lhs, rhs, hhoCS%sig_curr, &
                                           hhoCS%vari_curr, hhoCS%codret)
             end if
+        end if
+!
+        if (.not. l_vari) then
+            AS_DEALLOCATE(vr=hhoCS%vari_curr)
         end if
 !
 ! --- test integration of the behavior

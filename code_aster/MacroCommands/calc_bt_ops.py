@@ -866,13 +866,13 @@ def calc_bt_ops(self, **args):
 
         Peaks_ = np.multiply(P_1, P_2)
         P_coord = np.zeros((sum(sum(Peaks_)), 2))
-        P_coord[:, 0] = np.reshape(grid_x[Peaks_ == 1], -1, 1)
-        P_coord[:, 1] = np.reshape(grid_y[Peaks_ == 1], -1, 1)
+        P_coord[:, 0] = np.reshape(grid_x[Peaks_ == 1], -1)
+        P_coord[:, 1] = np.reshape(grid_y[Peaks_ == 1], -1)
 
         Valleys = np.multiply(V_1, V_2)
         V_coord = np.zeros((sum(sum(Valleys)), 2))
-        V_coord[:, 0] = np.reshape(grid_x[Valleys == 1], -1, 1)
-        V_coord[:, 1] = np.reshape(grid_y[Valleys == 1], -1, 1)
+        V_coord[:, 0] = np.reshape(grid_x[Valleys == 1], -1)
+        V_coord[:, 1] = np.reshape(grid_y[Valleys == 1], -1)
 
         return P_coord, V_coord
 
