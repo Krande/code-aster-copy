@@ -15494,6 +15494,16 @@ class IncompleteMesh(Mesh):
     def debugCheckFromBaseMesh(self, arg0):
         pass
 
+    def getNodesFromGroup(self, grpName):
+        """Get node ids (local numbering) of nodes in a group
+
+        Arguments:
+            grpName (str) : node group name
+
+        Returns:
+             list: list of ids in local numbering
+        """
+
 
 # class PtScotchPartitioner in libaster
 
@@ -15527,13 +15537,14 @@ class PtScotchPartitioner:
             edgeloctab: Describes vertex connections (at which vertices each vertex is connected)
 
 
-        2. buildGraph(self: libaster.PtScotchPartitioner, meshConnectionGraph: MeshConnectionGraph) -> int
+        2. buildGraph(self: libaster.PtScotchPartitioner, meshConnectionGraph: MeshConnectionGraph, nodesToGather: list[list[int]] = []) -> int
 
 
         Build the PtScotch graph from a MeshConnectionGraph
 
         Arguments:
             meshConnectionGraph: MeshConnectionGraph
+            nodesToGather: list of list of nodes to be gather on same MPI processor
         """
 
     def checkGraph(self):
