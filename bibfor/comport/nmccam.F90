@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
 ! IN  NDIM    : DIMENSION DE L'ESPACE
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  IMATE   : ADRESSE DU MATERIAU CODE
-! IN  carcri    : CRITERES DE CONVERGENCE LOCAUX
+! IN  carcri  : CRITERES DE CONVERGENCE LOCAUX
 ! IN  INSTAM  : INSTANT DU CALCUL PRECEDENT
 ! IN  INSTAP  : INSTANT DU CALCUL
 ! IN  TM      : TEMPERATURE A L'INSTANT PRECEDENT
@@ -155,8 +155,8 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
 !
 ! - Compute thermic dilation
 !
-    if ((.not. isnan(tp)) .and. (isnan(tm))) then
-        if ((isnan(tref)) .or. (icodre(1) .ne. 0)) then
+    if (.not. isnan(tp) .and. isnan(tm)) then
+        if (isnan(tref) .or. icodre(1) .ne. 0) then
             call utmess('F', 'COMPOR5_42')
         else
             coef = valres(1)*(tp-tref)-valres(1)*(tm-tref)
@@ -183,7 +183,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
     e0 = poro/(1.d0-poro)
     xk0 = (1.d0+e0)/kapa
     xk = (1.d0+e0)/(lambda-kapa)
-    if ((kcam .ne. zero) .and. (kcam .le. (-xk0*ptrac))) then
+    if (kcam .ne. zero .and. kcam .le. (-xk0*ptrac)) then
         call utmess('F', 'COMPOR1_42')
     end if
 !
@@ -268,7 +268,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
     end if
 !
 !
-!     -- 5 CALCUL DU carcriERE :
+!     -- 5 CALCUL DU CRITERE :
 !     ----------------------
     fonc = sieleq**2+m*m*(simoel-ptrac)**2-2.d0*m*m*(simoel-ptrac)*pcrm(1)
 !
@@ -289,14 +289,11 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
             pcrp(5) = 0.d0
             pcrp(6) = 0.d0
 !
-            if ((pcrm(3) .ne. zero) .and. ((pcrp(3)/pcrm(3)) .gt. zero)) then
-!
-                pcrp(7) = pcrm(7)-kapa*log(pcrp(3)/pcrm(3))
-!
-            else
-!
-                pcrp(7) = pcrm(7)
-!
+            pcrp(7) = pcrm(7)
+            if (pcrm(3) .ne. zero) then
+                if (pcrp(3)/pcrm(3) .gt. zero) then
+                    pcrp(7) = pcrm(7)-kapa*log(pcrp(3)/pcrm(3))
+                end if
             end if
 !
         else
@@ -380,7 +377,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
 !
             do iter = 1, nint(carcri(1))
 !
-!     --carcriERE DE CONVERGENCE
+!     --CRITERE DE CONVERGENCE
                 if ((abs(f)/seuil) .le. carcri(3)) goto 100
 !
 !     --CONSTRUCTION DU NOUVEL ITERE
@@ -512,18 +509,13 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
             pcrp(6) = pcrm(6)+depseq
 !
 ! ---- V(7) :: INDICE DES VIDES
-            if ((pcrm(3) .ne. zero) .and. ((pcrp(3)/pcrm(3)) .gt. zero) .and. &
-                ((pcrp(1)/pcrm(1)) .gt. zero) .and. (pcrm(1) .ne. zero)) then
-!
-                pcrp(7) = pcrm(7)-kapa*log(pcrp(3)/pcrm(3))-(lambda-kapa)*log(pcrp(1)/pcr&
-                          &m(1))
-!
-            else
-!
-                pcrp(7) = pcrm(7)
-!
+            pcrp(7) = pcrm(7)
+            if (pcrm(3) .ne. zero .and. pcrm(1) .ne. zero) then
+                if (pcrp(3)/pcrm(3) .gt. zero .and. pcrp(1)/pcrm(1) .gt. zero) then
+                    pcrp(7) = pcrm(7)-kapa*log(pcrp(3)/pcrm(3))-(lambda-kapa)*log(pcrp(1)/pcr&
+                              &m(1))
+                end if
             end if
-!
         end if
 !
     end if
@@ -683,10 +675,10 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
             diff2 = abs((pcrp(1)-sigpmo)/pcrp(1))
             if (diff2 .lt. carcri(3)) then
 !
-!     -- 7.3.1 OPERATEUR TANGENT COHERENT AU POINT carcriIQUE
+!     -- 7.3.1 OPERATEUR TANGENT COHERENT AU POINT CRITIQUE
 !     -- TRAITEMENT DE LA PARTIE DEVIATORIQUE
 !     -- CALCUL DE Q+
-!     -- CALCUL DU TENSEUR HH QUI MULTIMPLIE LA DEFORMATION
+!     -- CALCUL DU TENSEUR HH QUI MULTIPLIE LA DEFORMATION
                 call r8inir(6*6, 0.d0, ses, 1)
                 do k = 1, ndimsi
                     do l = 1, ndimsi
@@ -714,7 +706,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
                 call mgauss('NFWP', hh, hhm, 6, 6, &
                             6, rbid, iret)
 !
-!     -- CALCUL DU TENSEUR GG QUI MULTIMPLIE LA CONTRAINTE
+!     -- CALCUL DU TENSEUR GG QUI MULTIPLIE LA CONTRAINTE
                 call r8inir(6*6, 0.d0, gg, 1)
                 call r8inir(6*6, 0.d0, sps, 1)
                 do k = 1, ndimsi
