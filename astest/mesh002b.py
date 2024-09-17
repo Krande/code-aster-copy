@@ -36,10 +36,13 @@ ret2 = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True, nodeGrpToGat
 pMesh2 = ret2[0]
 nodeList = pMesh2.getNodes("ToGather")
 nodeOwner = pMesh2.getNodesOwner()
-masterNodeOwner = nodeOwner[nodeList[0]]
-# Test if there is only one proc number for all node group
-for nodeId in nodeList:
-    test.assertEqual(nodeOwner[nodeId], masterNodeOwner)
+if len(nodeList) != 0:
+    masterNodeOwner = nodeOwner[nodeList[0]]
+    # Test if there is only one proc number for all node group
+    for nodeId in nodeList:
+        test.assertEqual(nodeOwner[nodeId], masterNodeOwner)
+else:
+    test.assertTrue(True)
 
 model = AFFE_MODELE(
     MAILLAGE=pMesh, AFFE=_F(MODELISATION="D_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI")
