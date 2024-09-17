@@ -3,7 +3,7 @@
  * @brief Implementation de IncompleteMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -127,5 +127,29 @@ ASTERINTEGER IncompleteMesh::getDimension() const {
 }
 
 void IncompleteMesh::setCellFamily( const VectorLong &cf ) { _cellFamily = cf; };
+
+VectorLong IncompleteMesh::getNodesFromGroup( const std::string &grpName ) const {
+    VectorLong nodeIds;
+    VectorLong foundFamId;
+    int count = 1;
+    for ( const auto &grpNames : _nodeFamGroups ) {
+        for ( const auto &curName : grpNames ) {
+            if ( curName == grpName ) {
+                foundFamId.push_back( count );
+            }
+        }
+        ++count;
+    }
+    for ( const auto &famIdToSearch : foundFamId ) {
+        count = 0;
+        for ( const auto &nodeFamId : _nodeFamily ) {
+            if ( famIdToSearch == nodeFamId ) {
+                nodeIds.push_back( count );
+            }
+            ++count;
+        }
+    }
+    return nodeIds;
+};
 
 #endif /* ASTER_HAVE_MPI */
