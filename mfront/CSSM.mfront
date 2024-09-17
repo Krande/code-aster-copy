@@ -12,12 +12,12 @@
 // Material properties
 // <<<<<<<<<<<<<<<<<<<
 
-@MaterialProperty stress k;            // Bulk modulus [Pa]                       
+@MaterialProperty stress k;            // Bulk modulus [Pa]
 @MaterialProperty stress mu;           // Shear modulus [Pa]
 @MaterialProperty stress pc0;          // Initial critical pressure [Pa]
 @MaterialProperty real M;              // Critical state slope [-]
-@MaterialProperty real bt;             // Volumetric hardening index [-]               
-@MaterialProperty real nhyp;           // Exponent from the hyperbolic model [-] 
+@MaterialProperty real bt;             // Volumetric hardening index [-]
+@MaterialProperty real nhyp;           // Exponent from the hyperbolic model [-]
 @MaterialProperty real gammahyp;       // Distortion from the hyperbolic model [-]
 @MaterialProperty real C;              // Center of every half-ellipse [Pa]
 @MaterialProperty real rho;            // Shear modulus ratio [-]
@@ -52,8 +52,8 @@ om.setEntryName("IsoHardIndex");
 @LocalVariable Stensor4 Ce_mcc;        // Stiffness tensor in the Modified Cam-Clay element
 @IntegerConstant Ns = 10;              // Number of calibration points for the Iwan element
 @LocalVariable stress R[Ns];           // Yield stresses matching the "modified hyperbolic" relationship
-@LocalVariable real gamma[Ns];         // Calibrated distorsion points           
-@LocalVariable stress H[Ns-1];         // Corresponding deviatoric kinematic hardening moduli 
+@LocalVariable real gamma[Ns];         // Calibrated distorsion points
+@LocalVariable stress H[Ns-1];         // Corresponding deviatoric kinematic hardening moduli
 @LocalVariable Stensor depl_iwa[Ns-1]; // Increment of internal variables in the Iwan element
 @LocalVariable real ipp;               // Indicator for the largest plasticity yield criterion consistent with the calibration of the Iwan element
 @LocalVariable real lzt;               // Local zero tolerance
@@ -98,6 +98,9 @@ ip.setEntryName("PlasticIndicator");
 	Ce = 3.*k*j4+2.*mu*k4;
 	Ce_mcc = (j4+rho*k4)*Ce;
 
+	// Local zero tolerance (to avoid floating point errors)
+	lzt = 1.e-12;
+
 	// Calibration of the Iwan element
     gamma[0] = 1.00000000e-05;
     gamma[1] = 2.15443469e-05;
@@ -124,12 +127,12 @@ ip.setEntryName("PlasticIndicator");
 			break;
 		}
     }
-	/* Remark: None of the i-th surface for i>ipp can be reached by the stress sig_iwa in the Iwan element, 
+	/* Remark: None of the i-th surface for i>ipp can be reached by the stress sig_iwa in the Iwan element,
 	           since indeel_mcc the ipp-th surface behaves as perfect plasticity. As a consequence
 			   only iteration of the i<ipp plasticity criteria will be made in the following
 			   for which H[i]>0. On the other hand, the ipp-th surface
 			   is dealt with the internal state variable lam_iwa. */
-	
+
 	// Initialization of the yield stress in the Modified Cam-Clay element
 	if (Rn < pc0){
 		Rn = pc0*exp(-bt*epv_mcc);
@@ -150,10 +153,7 @@ ip.setEntryName("PlasticIndicator");
 			eel_mcc = eel;
 		}
 	}
-
-	// Local zero tolerance (to avoid floating point errors)
-	lzt = 1.e-12;
-}       
+}
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>
 // Stress-strain relationship
@@ -217,7 +217,7 @@ ip.setEntryName("PlasticIndicator");
 		const stress dRnp = Rnp>Rn ? bt*Rnp : 0.;
 		const stress df_mcc_depv_mcc = (n_mcc|dA_depv_mcc)+om*S_mcc+dRnp;
 		const stress df_mcc_dlam_mcc = (n_mcc|dA_dlam_mcc)-om*S_mcc;
-		
+
 		// Derivatives of the flow direction n_mcc
 		const Stensor4 dn_mcc_dA = (3.*k4/(2.*pow(M,2.))+j4/3.-(n_mcc^n_mcc))/Teq_mcc;
 		const Stensor4 dn_mcc_deel_mcc = dn_mcc_dA*dA_deel_mcc;
@@ -250,7 +250,7 @@ ip.setEntryName("PlasticIndicator");
 		sig_iwa = sig-2.*rho*mu*deviator(eel_mcc+deel_mcc);
 		const stress mx = max(trace(sig_iwa)/(3.*C)+1.,0.);
 		const stress Teq_iwa = max(sqrt(pow(sigmaeq(sig_iwa),2.)+pow(R[ipp]*mx,2.)),lzt*mu);
-		const stress f_iwa = Teq_iwa-R[ipp];	
+		const stress f_iwa = Teq_iwa-R[ipp];
 		const Stensor n_iwa = (3.*deviator(sig_iwa)/2.+pow(R[ipp],2.)*mx*id2/(3.*C))/Teq_iwa;
 
 		// Modification of the system to solve
@@ -289,7 +289,7 @@ ip.setEntryName("PlasticIndicator");
 	// Activation of other criteria with hardening
 	sig_iwa = sig-2.*rho*mu*deviator(eel_mcc+deel_mcc);
 	for (unsigned short i = 0; i < ipp; i++) {
-    	const stress mx = max(trace(sig_iwa+Xn[i])/(3.*C)+1.,0.); 
+    	const stress mx = max(trace(sig_iwa+Xn[i])/(3.*C)+1.,0.);
     	const stress Teqi_iwa = max(sqrt(pow(sigmaeq(sig_iwa+Xn[i]),2.)+pow(R[i]*mx,2.)),lzt*mu);
 		const stress fel_iwa = Teqi_iwa-R[i];
 
@@ -327,7 +327,7 @@ ip.setEntryName("PlasticIndicator");
 // Tangent operator
 // >>>>>>>>>>>>>>>>
 
-@TangentOperator{ 
+@TangentOperator{
 	Stensor4 Je;
   	getPartialJacobianInvert(Je);
   	Dt = Ce*Je;
@@ -337,7 +337,7 @@ ip.setEntryName("PlasticIndicator");
 // Additional convergence checks
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-@AdditionalConvergenceChecks{  	
+@AdditionalConvergenceChecks{
 	if (converged){
 			sig_mcc = k*trace(eel_mcc+deel_mcc)*id2+2.*rho*mu*deviator(eel_mcc+deel_mcc);
 			sig_iwa = sig-2.*rho*mu*deviator(eel_mcc+deel_mcc);
@@ -351,7 +351,7 @@ ip.setEntryName("PlasticIndicator");
 				b[1] = true;
 				converged = false;
 			}
-		} 
+		}
 		else if (b[1] and !b[0]) {
 			if (dlam_iwa < 0.) {
 				converged = b[1] = false;
@@ -360,7 +360,7 @@ ip.setEntryName("PlasticIndicator");
 				b[0] = true;
 				converged = false;
 			}
-    	} 
+    	}
 		else if (b[0] and b[1]) {
     		if (dlam_mcc < 0.) {
 				converged = b[0] = false;
@@ -404,4 +404,3 @@ ip.setEntryName("PlasticIndicator");
     }
 	Rn *= max(1.,exp(-bt*depv_mcc));
 }
-
