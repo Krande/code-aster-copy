@@ -1,0 +1,52 @@
+@DSL ImplicitCZM;
+@Behaviour elasticCZMimplicit;
+
+@Algorithm NewtonRaphson;
+@Theta 1;
+
+@StateVariable DisplacementTVector uel;
+uel.setEntryName("ElasticOpening");
+
+@MaterialProperty real kn;
+kn.setGlossaryName( "NormalStiffness" );
+@MaterialProperty real kt;
+kt.setEntryName( "TangentStiffness" );
+
+
+@ComputeCohesizeForce {
+  //Elasticity matrix
+  auto K=tmatrix<N,N,real>{0};
+  K(0,0)=kn;
+  K(1,1)=kt;
+  K(2,2)=kt;
+  t = K * uel;
+}
+
+@Integrator {
+
+  //Elasticity matrix
+  auto K=tmatrix<N,N,real>{0};
+  K(0,0)=kn;
+  K(1,1)=kt;
+  K(2,2)=kt;
+
+  const auto Id = tmatrix<N, N>::Id();
+
+  // Evolution eqs
+  fuel = duel - du;
+
+  //ANALYTICAL JACOBIAN
+  dfuel_dduel = Id;
+
+}
+
+
+@TangentOperator {
+ //Elasticity matrix
+ auto K=tmatrix<N,N,real>{0};
+ K(0,0)=kn;
+ K(1,1)=kt;
+ K(2,2)=kt;
+
+ Dt=K;
+}
