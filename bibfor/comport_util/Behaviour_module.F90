@@ -392,6 +392,7 @@ contains
         end if
 
         BEHinteg%behavPara%lStandardFE = typmod(2) .eq. ' '
+        BEHinteg%behavPara%lTHM = typmod(2) .eq. 'THM'
         BEHinteg%behavPara%lCZM = typmod(2) .eq. 'ELEMJOIN'
         BEHinteg%behavPara%lGradVari = typmod(2) .eq. 'GRADVARI'
         BEHinteg%behavPara%lAxis = typmod(1) .eq. 'AXIS'
@@ -451,19 +452,19 @@ contains
             lFiniteStrain = BEHinteg%behavPara%lFiniteStrain
             lPtot = BEHinteg%behavESVA%behavESVAField(ESVA_FIELD_PTOT)%exist
             if (lStrainMeca .or. lPtot) then
-            if (LDC_PREP_DEBUG .eq. 1) then
-                WRITE (6, *) '<DEBUG>  Présence de VARC avec nouveau système ou PTOT'
-            end if
-            ASSERT(.not. lFiniteStrain)
+                if (LDC_PREP_DEBUG .eq. 1) then
+                    WRITE (6, *) '<DEBUG>  Présence de VARC avec nouveau système ou PTOT'
+                end if
+                ASSERT(.not. lFiniteStrain)
 ! ------------- Compute non-mechanic strains for some external state variables
-            call computeStrainESVA(BEHinteg%behavESVA, &
-                                   BEHinteg%behavPara%ldcDime, neps)
+                call computeStrainESVA(BEHinteg%behavESVA, &
+                                       BEHinteg%behavPara%ldcDime, neps)
 ! ------------- Subtract to get mechanical strain epsm and deps become mechanical strains
-            call computeStrainMeca(BEHinteg, neps, epsm, deps)
+                call computeStrainMeca(BEHinteg, neps, epsm, deps)
             else
-            if (LDC_PREP_DEBUG .eq. 1) then
-                WRITE (6, *) '<DEBUG>  Présence de VARC, mais ancien système'
-            end if
+                if (LDC_PREP_DEBUG .eq. 1) then
+                    WRITE (6, *) '<DEBUG>  Présence de VARC, mais ancien système'
+                end if
             end if
         else
             if (LDC_PREP_DEBUG .eq. 1) then
@@ -670,15 +671,15 @@ contains
         end if
 
 ! ----- Prepare external state variables from fields (in AFFE_VARC)
-        if (ca_nbcvrc_ .ne. 0) then
-        if (lExteSolver .or. lStrainMeca) then
-            call prepFields(BEHinteg%behavPara%fami, &
-                            BEHinteg%behavPara%kpg, &
-                            BEHinteg%behavPara%ksp, &
-                            BEHinteg%behavPara%jvMaterCode, &
-                            BEHinteg%behavPara, &
-                            BEHinteg%behavESVA)
-        end if
+        if (ca_nbcvrc_ .ne. 0 .or. BEHinteg%behavPara%lTHM) then
+            if (lExteSolver .or. lStrainMeca) then
+                call prepFields(BEHinteg%behavPara%fami, &
+                                BEHinteg%behavPara%kpg, &
+                                BEHinteg%behavPara%ksp, &
+                                BEHinteg%behavPara%jvMaterCode, &
+                                BEHinteg%behavPara, &
+                                BEHinteg%behavESVA)
+            end if
         end if
 
 ! ----- Prepare other external state variables (For temperature: see preparation of fields)

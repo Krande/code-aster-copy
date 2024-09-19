@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,7 @@ subroutine xcomhm(ds_thm, &
 !
 ! - Update unknowns
 !
-    call calcva(ds_thm, kpi, ndim, &
+    call calcva(ds_thm, ndim, &
                 defgem, defgep, &
                 addeme, addep1, addep2, addete, &
                 depsv, epsv, deps, &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine calcva(ds_thm, kpi, ndim, &
+subroutine calcva(ds_thm, ndim, &
                   defgem, defgep, &
                   addeme, addep1, addep2, addete, &
                   depsv, epsv, deps, &
@@ -33,15 +33,16 @@ subroutine calcva(ds_thm, kpi, ndim, &
 !
     implicit none
 !
+#include "asterc/r8nnem.h"
+#include "asterc/r8prem.h"
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterc/r8prem.h"
+#include "jeveux.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: kpi, ndim
+    integer, intent(in) :: ndim
     real(kind=8), intent(in) :: defgem(*), defgep(*)
     integer, intent(in) :: addeme, addep1, addep2, addete
     real(kind=8), intent(out) :: depsv, epsv, deps(6)
@@ -59,7 +60,6 @@ subroutine calcva(ds_thm, kpi, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_thm           : datastructure for THM
-! In  kpi              : current Gauss point
 ! In  ndim             : dimension of space (2 or 3)
 ! In  defgem           : generalized strains - At begin of current step
 ! In  defgep           : generalized strains - At end of current step
@@ -83,9 +83,8 @@ subroutine calcva(ds_thm, kpi, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, iadzi, iazk24, iret1, iret2
+    integer :: i, iadzi, iazk24
     character(len=8) :: nomail
-    real(kind=8) :: epsvp, epsvm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -134,8 +133,8 @@ subroutine calcva(ds_thm, kpi, ndim, &
             end do
         end if
     else
-        ca_cpcapm_ = 0.d0
-        ca_cpcapp_ = 0.d0
+        ca_cpcapm_ = r8nnem()
+        ca_cpcapp_ = r8nnem()
     end if
 
 ! - Thermic
@@ -157,10 +156,9 @@ subroutine calcva(ds_thm, kpi, ndim, &
         ca_ctempm_ = temp-dtemp
         ca_ctempp_ = temp
     else
-        ca_ctempr_ = 0.d0
-        ca_ctempm_ = 0.d0
-        ca_ctempp_ = 0.d0
+        ca_ctempr_ = r8nnem()
+        ca_ctempm_ = r8nnem()
+        ca_ctempp_ = r8nnem()
     end if
-
 !
 end subroutine

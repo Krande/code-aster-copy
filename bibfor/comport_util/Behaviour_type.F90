@@ -84,6 +84,7 @@ module Behaviour_type
 ! ----- Flags for other modeliazations
         aster_logical :: lGradVari = ASTER_FALSE
         aster_logical :: lCZM = ASTER_FALSE
+        aster_logical :: lTHM = ASTER_FALSE
 ! ----- Flags for external solves
         aster_logical :: lExteSolver = ASTER_FALSE
         aster_logical :: lMGIS = ASTER_FALSE
