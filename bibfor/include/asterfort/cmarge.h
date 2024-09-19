@@ -19,8 +19,18 @@
 !
 !
 interface
-   subroutine trgfct(nb, fcttab)
-      integer :: nb
-      real(kind=8) :: fcttab(nb, 6)
-   end subroutine trgfct
+subroutine cmarge(N, M, Ned, Med, Ned_g, Med_g, margin,Nrd,Mrd,load_rate,c0_c,c0_crd)
+       real(kind=8), pointer :: N(:)
+       real(kind=8), pointer :: M(:)
+       real(kind=8) :: Ned
+       real(kind=8) :: Med
+       real(kind=8) :: Ned_g
+       real(kind=8) :: Med_g
+       real(kind=8) :: margin
+       real(kind=8) :: Nrd
+       real(kind=8) :: Mrd
+       real(kind=8) :: load_rate
+       real(kind=8) :: c0_c
+       real(kind=8) :: c0_crd
+end subroutine cmarge
 end interface

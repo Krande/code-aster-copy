@@ -19,8 +19,8 @@
 !
 !
 interface
-   subroutine trgfct(nb, fcttab)
-      integer :: nb
-      real(kind=8) :: fcttab(nb, 6)
-   end subroutine trgfct
+   subroutine w190af(modele, chmar1)
+      character(len=8) :: modele
+      character(len=19) :: chmar1
+   end subroutine w190af
 end interface

@@ -576,6 +576,17 @@ class MEDKQU4(Element):
             ),
             para_out=((SP.PFERRA2, LC.CFER2_R),),
         ),
+        OP.MARG_ELEM(
+            te=53,
+            para_in=(
+                (SP.PCACOQU, CCACOQU),
+                (OP.MARG_ELEM.PEFFORR, EEFGENOR),
+                (OP.MARG_ELEM.PEFFOR0, EEFGENOR),
+                (SP.PVFER1, LC.CVFER1_R),
+                (SP.PVFER0, LC.CVFER0_R),
+            ),
+            para_out=((SP.PVFER2, LC.CVFER2_R),),
+        ),
         OP.FORC_NODA(
             te=31,
             para_in=(

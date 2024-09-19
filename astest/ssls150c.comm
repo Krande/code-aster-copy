@@ -1,0 +1,185 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Objectif: Verification avec la feuille DIPDE de la marge ELU de VERI_FERRAILLAGE:
+# On impose un chargement egal au chargement ultime obtenu avec la feuille.
+# La marge attendue est nulle
+
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="ALARME"),
+    DEBUG=_F(SDVERI="OUI"),
+    IGNORE_ALARM=("CALCULEL_83", "CALCULEL_88", "CALCULEL7_28"),
+)
+
+MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+MODEL = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(GROUP_MA="PLAQUE", PHENOMENE="MECANIQUE", MODELISATION="DKT")
+)
+
+CARA = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=1.0))
+
+# on cree une sd evol_elas avec des champs d'efforts imposes :
+# -------------------------------------------------------------
+
+# Ferraillage de reference
+
+# dnsxi = phi20@200 = 0.00157 m2/m
+# dnsxs = phi20@200 = 0.00157 m2/m
+# dnsyi = phi20@200 = 0.00157 m2/m
+# dnsys = phi20@200 = 0.00157 m2/m
+
+FERRAILLAGE_REF1 = CREA_CHAMP(
+    AFFE=(
+        _F(
+            GROUP_MA=("PLAQUE",),
+            NOM_CMP=("DNSXI", "DNSXS", "DNSYI", "DNSYS"),
+            VALE=(0.004021, 0.0, 0.004021, 0.0),
+        ),
+    ),
+    MODELE=MODEL,
+    OPERATION="AFFE",
+    PROL_ZERO="OUI",
+    OPTION="FERR_ELEM",
+    TYPE_CHAM="ELEM_FER2_R",
+)
+
+
+# Pivot A - marge attentdue 0
+CHEFF1 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, 0.0, 0.0, 0.0, -1.534e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot B aciers tendu - Marge attendue : 0
+CHEFF2 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -5.0e6, 0.0, 0.0, -3.2309e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot B aciers comprimé - Marge attendue : 0
+CHEFF3 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -20.0e6, 0.0, 0.0, -2.2898e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot C- Marge attendue : 0
+CHEFF4 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -25.0e6, 0.0, 0.0, -0.5531e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+
+RESUELU = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF1, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF2, INST=2.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF3, INST=3.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF4, INST=4.0, MODELE=MODEL, CARA_ELEM=CARA),
+    ),
+)
+
+
+# # Appel a la commande VERI_FERRAILLAGE : Sans chref
+MARGE1 = VERI_FERRAILLAGE(
+    reuse=RESUELU,
+    RESULTAT=RESUELU,
+    CARA_ELEM=CARA,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    CHAM_FERR=FERRAILLAGE_REF1,
+    INST=(1.0, 2.0, 3.0, 4.0),
+    AFFE=(
+        # Reinf/EC2
+        _F(
+            TOUT="OUI",
+            TYPE_DIAGRAMME="B2",
+            # Enrobage (2D)
+            C_SUP=0.08,
+            C_INF=0.08,
+            #
+            FYK=500.0e6,
+            FCK=40.0e6,
+            EYS=200.0e9,
+            GAMMA_S=1.15,
+            GAMMA_C=1.5,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
+
+# -----------------------------------------------------
+# Tests
+# -----------------------------------------------------
+D_ref = [[0.0], [0.0], [0.0], [0.0]]  # 1  # 2  # 3  # 4
+
+D_calc = [
+    [0.02100363028178942],  # 1
+    [0.0006922822587589472],  # 2
+    [0.004125664998677947],  # 3
+    [-0.0005643415314280364],  # 4
+]
+
+for j in range(len(D_ref)):
+    TEST_RESU(
+        RESU=_F(
+            RESULTAT=RESUELU,
+            INST=j + 1.0,
+            NOM_CHAM="MARG_ELEM",
+            NOM_CMP="MARGE",
+            GROUP_MA="M1",
+            LEGENDE="ELU",
+            VALE_REFE=D_ref[j],
+            VALE_CALC=D_calc[j],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.05,
+            CRITERE="ABSOLU",
+        )
+    )
+
+FIN()
