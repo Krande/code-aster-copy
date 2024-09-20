@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ VARI_V6 = CREA_CHAMP(
     OPERATION="ASSE",
     MODELE=MO,
     PROL_ZERO="OUI",
-    ASSE=_F(GROUP_MA="LI1", CHAM_GD=NEUT_VI, NOM_CMP=("X1", "X2"), NOM_CMP_RESU=("V6", "V7")),
+    ASSE=_F(GROUP_MA="LI1", CHAM_GD=NEUT_VI, NOM_CMP=("X1", "X2"), NOM_CMP_RESU=("V8", "V6")),
 )
 
 RESG = STAT_NON_LINE(

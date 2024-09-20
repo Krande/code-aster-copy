@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,10 +30,10 @@ interface
         real(kind=8) :: ulm(neq)
         real(kind=8) :: dul(neq)
         real(kind=8) :: sim(neq)
-        real(kind=8) :: varim(7)
+        real(kind=8) :: varim(8)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: klv(78)
-        real(kind=8) :: varip(7)
+        real(kind=8) :: varip(8)
         real(kind=8) :: fono(neq)
         real(kind=8) :: sip(neq)
     end subroutine dicrgr

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ subroutine dicrgr(fami, option, neq, nc, icodma, &
 #include "asterfort/utpvlg.h"
 #include "asterfort/assert.h"
     integer :: neq, icodma, nc
-    real(kind=8) :: ulm(neq), dul(neq), sim(neq), sip(neq), varim(7)
-    real(kind=8) :: pgl(3, 3), varip(7), fono(neq), klv(78)
+    real(kind=8) :: ulm(neq), dul(neq), sim(neq), sip(neq), varim(8)
+    real(kind=8) :: pgl(3, 3), varip(8), fono(neq), klv(78)
     character(len=*) :: fami
     character(len=16) :: option
 !
@@ -129,7 +129,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma, &
                 1, irrap, iret2)
     if (iret2 .gt. 0) irrap = 0.d0
     ASSERT((irrap-irram) .gt. -prec)
-    irrap = irrap-irram+varim(6)
+    irrap = irrap-irram+varim(8)
 !
     call rcvalb(fami, 1, 1, '+', icodma, &
                 ' ', 'DIS_GRICRA', 0, ' ', [0.d0], &
@@ -237,7 +237,8 @@ subroutine dicrgr(fami, option, neq, nc, icodma, &
 ! possibilité de frottement dans la direction 2 (verticalement)
 ! force nulle dans la 3e direction
 !
-        rtm = (sim(2+nc)+sim(2))/2.d0
+        rtm = varim(7)
+        ASSERT(abs(rtm-((sim(2+nc)+sim(2))/2.d0)) .lt. prec)
         seuil = muax*fno
         pm = varim(1)
         rte = rtm+ktax*duy
@@ -264,6 +265,8 @@ subroutine dicrgr(fami, option, neq, nc, icodma, &
         sip(1+nc) = -fno+knax*(uxm+dux)
         sip(2+nc) = rtp
         sip(3+nc) = 0.d0
+!
+        varip(7) = rtp
 !
         fl(2) = -sip(2)
         fl(1) = -sip(1)
@@ -325,17 +328,17 @@ subroutine dicrgr(fami, option, neq, nc, icodma, &
             phitan = ephi
         end if
 
-        phipl2 = varim(7)
+        phipl2 = varim(6)
         fphi2 = phm+dph-phipl2
         seurot2 = abs(fphi2)-phic2
         if (seurot2 .lt. 0.d0) then
             mophi = mophi+kphi2*fphi2
-            varip(7) = varim(7)
+            varip(6) = varim(6)
             phitan = phitan+kphi2
         else
             sgne = (fphi2)/abs(fphi2)
             dphipl2 = -sgne*(phic2-abs(phm+dph-phipl2))
-            varip(7) = varim(7)+dphipl2
+            varip(6) = varim(6)+dphipl2
             mophi = mophi+kphi2*(phm+dph-phipl2-dphipl2)
         end if
 
@@ -352,7 +355,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma, &
         fl(5) = -kphi*(khm+dkh)
         fl(5+nc) = kphi*(khm+dkh)
 !
-        varip(6) = irrap
+        varip(8) = irrap
     end if
 !
 !
