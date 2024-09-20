@@ -17,6 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from code_aster.Commands import *
+from code_aster.MacroCommands.Mac3Coeur.mac3coeur_coeur import CoeurFactory
+
 POURSUITE(CODE="OUI", ERREUR=_F(ALARME="ALARME"))
 
 IMPR_RESU(
@@ -25,93 +28,49 @@ IMPR_RESU(
     RESU=_F(
         RESULTAT=RESU,
         IMPR_NOM_VARI="NON",
-        NOM_CHAM=("DEPL", "SIEF_ELGA", "VARI_ELGA"),
+        NOM_CHAM=("DEPL", "SIEF_ELGA", "VARI_ELGA", "STRX_ELGA"),
         VISU_SP="NON",
         INST=t4,
     ),
 )
 
-RELOAD = LIRE_RESU(
+MA_RELOAD = LIRE_MAILLAGE(UNITE=81, FORMAT="MED")
+MODEL_RELOAD, CARAELEM_RELOAD, MATER_RELOAD = CoeurFactory.buildFromMesh("TEST", DATAMAC, MA_RELOAD)
+
+RESU_RELOAD = LIRE_RESU(
     TYPE_RESU="EVOL_NOLI",
-    CARA_ELEM=RESU.getElementaryCharacteristics(),
-    CHAM_MATER=RESU.getMaterialField(1),
+    CARA_ELEM=CARAELEM_RELOAD,
+    CHAM_MATER=MATER_RELOAD,
     COMPORTEMENT=(
         _F(
-            DEFORMATION="PETIT",
-            GROUP_MA=("CRAYON", "T_GUIDE"),
-            ITER_CPLAN_MAXI=10,
-            ITER_INTE_MAXI=20,
-            ITER_INTE_PAS=0,
-            PARM_THETA=0.5,
-            REGU_VISC="NON",
             RELATION="MULTIFIBRE",
-            RESI_CPLAN_RELA=1e-06,
-            RESI_INTE=1e-06,
-            RIGI_GEOM="OUI",
-        ),
-        _F(
+            GROUP_MA=("CRAYON", "T_GUIDE"),
+            PARM_THETA=0.5,
             DEFORMATION="PETIT",
-            GROUP_MA="ELA",
-            ITER_CPLAN_MAXI=10,
-            ITER_INTE_MAXI=20,
-            ITER_INTE_PAS=0,
-            PARM_THETA=1.0,
-            REGU_VISC="NON",
-            RELATION="DIS_GRICRA",
-            RESI_CPLAN_RELA=1e-06,
-            RESI_INTE=1e-06,
         ),
+        _F(RELATION="DIS_GRICRA", GROUP_MA="ELA"),
+        _F(RELATION="DIS_CHOC", GROUP_MA=("CREIC", "RES_TOT")),
         _F(
-            DEFORMATION="PETIT",
-            GROUP_MA=("CREIC", "RES_TOT"),
-            ITER_CPLAN_MAXI=10,
-            ITER_INTE_MAXI=20,
-            ITER_INTE_PAS=0,
-            PARM_THETA=1.0,
-            REGU_VISC="NON",
-            RELATION="DIS_CHOC",
-            RESI_CPLAN_RELA=1e-06,
-            RESI_INTE=1e-06,
-        ),
-        _F(
-            DEFORMATION="PETIT",
-            GROUP_MA=("GRIL_I", "GRIL_E", "ELAP", "CREI", "EBOINF", "EBOSUP", "RIG", "DIL"),
-            ITER_CPLAN_MAXI=10,
-            ITER_INTE_MAXI=20,
-            ITER_INTE_PAS=0,
-            PARM_THETA=1.0,
-            REGU_VISC="NON",
             RELATION="ELAS",
-            RESI_CPLAN_RELA=1e-06,
-            RESI_INTE=1e-06,
+            GROUP_MA=("GRIL_I", "GRIL_E", "ELAP", "CREI", "EBOINF", "EBOSUP", "RIG", "DIL"),
         ),
-        _F(
-            DEFORMATION="PETIT",
-            GROUP_MA="MAINTIEN",
-            ITER_CPLAN_MAXI=10,
-            ITER_INTE_MAXI=20,
-            ITER_INTE_PAS=0,
-            PARM_THETA=1.0,
-            REGU_VISC="NON",
-            RELATION="VMIS_ISOT_TRAC",
-            RESI_CPLAN_RELA=1e-06,
-            RESI_INTE=1e-06,
-        ),
+        _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA="MAINTIEN", DEFORMATION="PETIT"),
     ),
     FORMAT="MED",
-    MODELE=RESU.getModel(),
+    MODELE=MODEL_RELOAD,
     TOUT_ORDRE="OUI",
     UNITE=81,
     FORMAT_MED=(
         _F(NOM_RESU="RESU", NOM_CHAM="DEPL"),
         _F(NOM_RESU="RESU", NOM_CHAM="SIEF_ELGA"),
         _F(NOM_RESU="RESU", NOM_CHAM="VARI_ELGA"),
+        _F(NOM_RESU="RESU", NOM_CHAM="STRX_ELGA"),
     ),
 )
 
 
 TABP1 = POST_MAC3COEUR(
-    RESULTAT=RELOAD,
+    RESULTAT=RESU_RELOAD,
     TYPE_COEUR="TEST",
     INST=t4,
     TABLE=DATAMAC,
@@ -120,7 +79,7 @@ TABP1 = POST_MAC3COEUR(
 )
 
 TABP3 = POST_MAC3COEUR(
-    RESULTAT=RELOAD,
+    RESULTAT=RESU_RELOAD,
     TYPE_COEUR="TEST",
     INST=t4,
     TABLE=DATAMAC,

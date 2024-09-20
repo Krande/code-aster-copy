@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,6 +26,7 @@
 #include "Behaviours/BehaviourProperty.h"
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/SimpleFieldOnCells.h"
+#include "Discretization/Calcul.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "Modeling/Model.h"
 
@@ -50,6 +51,7 @@ FieldOnCellsPtrBuilder( const FiniteElementDescriptorPtr FEDesc, const std::stri
     auto cham_elem = std::make_shared< FieldOnCells< ValueType > >( FEDesc );
     std::string option;
     std::string nompar;
+    bool hastrx = ( loc == "ELGA" && quantity == "STRX_R" );
 
     if ( loc == "ELGA" ) {
         option = "TOU_INI_ELGA";
@@ -71,7 +73,7 @@ FieldOnCellsPtrBuilder( const FiniteElementDescriptorPtr FEDesc, const std::stri
 
     std::string dcel = " ";
 
-    if ( behaviour || carael ) {
+    if ( !hastrx && ( behaviour || carael ) ) {
         std::string carele = " ", comporName = " ";
 
         if ( behaviour ) {
@@ -89,10 +91,18 @@ FieldOnCellsPtrBuilder( const FiniteElementDescriptorPtr FEDesc, const std::stri
         cham_elem->setExtentedInformations( _DCEL );
     }
 
-    CALLO_ALCHML( cham_elem->getDescription()->getName(), option, nompar,
-                  JeveuxMemoryTypesNames[Permanent], cham_elem->getName(), &iret, dcel );
-    AS_ASSERT( iret == 0 );
-
+    if ( hastrx ) {
+        AS_ASSERT( carael );
+        CalculPtr calcul = std::make_unique< Calcul >( "INI_STRX" );
+        calcul->setModel( carael->getModel() );
+        calcul->addElementaryCharacteristicsField( carael );
+        calcul->addOutputField( "PSTRX_R", cham_elem );
+        calcul->compute();
+    } else {
+        CALLO_ALCHML( cham_elem->getDescription()->getName(), option, nompar,
+                      JeveuxMemoryTypesNames[Permanent], cham_elem->getName(), &iret, dcel );
+        AS_ASSERT( iret == 0 );
+    }
     cham_elem->updateValuePointers();
 
     return cham_elem;

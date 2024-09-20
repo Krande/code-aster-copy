@@ -46,7 +46,7 @@ def mac3coeur_ac_permute(self, **args):
         RESU_INIT=RESU_INI,
         INST_INIT=INSTANT,
         MAILLAGE_INIT=MA_INI,
-        NOM_CHAM=("DEPL", "VARI_ELGA"),
+        NOM_CHAM=("DEPL", "VARI_ELGA", "SIEF_ELGA", "STRX_ELGA"),
         RESU_FINAL=RESU_FIN,
         MAILLAGE_FINAL=MA_FIN,
         PERM_CHAM=(
@@ -113,6 +113,36 @@ def mac3coeur_ac_permute(self, **args):
             _F(
                 GROUP_MA_INIT="MNT_%s" % POS_INIT,
                 GROUP_MA_FINAL="MNT_%s" % POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="CREI_%s" % POS_INIT,
+                GROUP_MA_FINAL="CREI_%s" % POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="CREIC_%s" % POS_INIT,
+                GROUP_MA_FINAL="CREIC_%s" % POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="GCKP_%s_B" % POS_INIT,
+                GROUP_MA_FINAL="GCKP_%s_B" % POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="GCKP_%s_T" % POS_INIT,
+                GROUP_MA_FINAL="GCKP_%s_T" % POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="GCKP_%s_M" % POS_INIT,
+                GROUP_MA_FINAL="GCKP_%s_M" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),

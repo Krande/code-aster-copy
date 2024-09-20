@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,11 +48,11 @@ FONCT = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 0.0001, 2.0, -0.0000
 
 LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=2.0, NOMBRE=20),))
 
-carel = [0.0] * 78
+carel = [0.0] * 6
 
 CAREG = AFFE_CARA_ELEM(
     MODELE=MO,
-    DISCRET=_F(GROUP_MA=("LI1"), CARA="K_TR_L", VALE=carel, REPERE="LOCAL"),
+    DISCRET=_F(GROUP_MA=("LI1"), CARA="K_TR_D_L", VALE=carel, REPERE="LOCAL"),
     ORIENTATION=(_F(GROUP_MA=("LI1",), CARA="VECT_Y", VALE=(0.0, 0.0, 1.0)),),
 )
 

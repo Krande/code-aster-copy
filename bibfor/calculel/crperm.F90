@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,10 +98,11 @@ subroutine crperm()
     call getvid(' ', 'MAILLAGE_FINAL', scal=ma2, nbret=n1)
     call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n1)
     if (n1 .eq. 0) then
-        nbcham = 3
+        nbcham = 4
         cham(1) = 'DEPL'
         cham(2) = 'SIEF_ELGA'
         cham(3) = 'VARI_ELGA'
+        cham(4) = 'STRX_ELGA'
     else
         nbcham = -n1
         call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=cham, nbret=n1)
