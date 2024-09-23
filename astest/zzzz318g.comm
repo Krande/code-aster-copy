@@ -1,0 +1,267 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+"""
+La méthode SOUS_POINT de PROJ_CHAMP est testée pour les cas suivants :
+    Projection d'un champ aux noeuds (NOEU) isolé
+    Projection d'un résultat de type EVOL_THER composé
+    Prolongement avec PROL_VALE
+"""
+
+# MAILLAGE ET MODELE THERMIQUE 3D
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
+MOTHER = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(GROUP_MA=("GR1", "GR2"), PHENOMENE="THERMIQUE", MODELISATION="3D")
+)
+
+# DÉFINITION DES FONCTIONS DE TEMPÉRATURE
+FTEMP = FORMULE(VALE="2.*X +3.*Y +4.*Z +5.*INST", NOM_PARA=["X", "Y", "Z", "INST"])
+
+# CONSTRUCTION DES CHAMPS DE GÉOMETRIE
+CHXN = CREA_CHAMP(OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAIL)
+
+# AFFECTATION DES FONCTIONS
+TEMP_F = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_NEUT_F",
+    MAILLAGE=MAIL,
+    AFFE=_F(GROUP_MA=("GR1", "GR2"), NOM_CMP=("X1",), VALE_F=(FTEMP,)),
+)
+
+# CONSTRUCTION DU MODÈLE MÉCANIQUE A SOUS-POINTS : ÉLÉMENT DKT QUADRANGULAIRE
+MACOQ = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=19)
+MOCOQ = AFFE_MODELE(MAILLAGE=MACOQ, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DKT"))
+
+COQCA = AFFE_CARA_ELEM(MODELE=MOCOQ, COQUE=_F(GROUP_MA=("COQUE"), COQUE_NCOU=2, EPAIS=1.0))
+
+# PROJECTION D'UN CHAMP AUX NOEUDS (NOEU) ISOLÉ
+INSTN0 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_INST_R",
+    MAILLAGE=MAIL,
+    AFFE=_F(GROUP_MA=("GR1", "GR2"), NOM_CMP=("INST",), VALE=0.0),
+)
+TEMP0 = CREA_CHAMP(
+    OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=TEMP_F, CHAM_PARA=(CHXN, INSTN0)
+)
+TEMP1 = CREA_CHAMP(
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MODELE=MOTHER,
+    ASSE=_F(TOUT="OUI", CHAM_GD=TEMP0, NOM_CMP=("X1",), NOM_CMP_RESU=("TEMP",)),
+)
+
+# FONCTIONS POUR TESTER TRANSF_GEOM_1/2
+FX = FORMULE(VALE=" 2.*X + 3.*Y + 4.", NOM_PARA=["X", "Y"])
+FY = FORMULE(VALE="-3.*X + 2.*Y + 7.", NOM_PARA=["X", "Y"])
+FZ = FORMULE(VALE="Z+1", NOM_PARA="Z")
+
+Prol_Vale = 25.0
+
+TEMP_SP = PROJ_CHAMP(
+    PROJECTION="OUI",
+    METHODE="SOUS_POINT",
+    TRANSF_GEOM_1=(FX, FY, FZ),
+    TRANSF_GEOM_2=(FX, FY, FZ),
+    PROL_VALE=Prol_Vale,
+    DISTANCE_MAX=1.0e-03,
+    MODELE_1=MOTHER,
+    MODELE_2=MOCOQ,
+    CHAM_GD=TEMP1,
+    CARA_ELEM=COQCA,
+)
+
+# PROJECTION D'UN RÉSULTAT DE TYPE EVOL_THER
+l_inst = [0.0, 1.0, 2.0]
+TEMP = {}
+l_affe_temp = []
+
+for i, inst in enumerate(l_inst):
+    INSTN = CREA_CHAMP(
+        OPERATION="AFFE",
+        TYPE_CHAM="NOEU_INST_R",
+        MAILLAGE=MAIL,
+        AFFE=_F(TOUT="OUI", NOM_CMP=("INST",), VALE=inst),
+    )
+    TEMP2 = CREA_CHAMP(
+        OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=TEMP_F, CHAM_PARA=(CHXN, INSTN)
+    )
+    TEMP[i] = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="NOEU_TEMP_R",
+        MAILLAGE=MAIL,
+        ASSE=_F(TOUT="OUI", CHAM_GD=TEMP2, NOM_CMP=("X1",), NOM_CMP_RESU=("TEMP",)),
+    )
+    l_affe_temp.append(_F(NOM_CHAM="TEMP", CHAM_GD=TEMP[i], MODELE=MOTHER, INST=inst))
+
+
+RESUTHER = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_temp)
+
+RESU_SP = PROJ_CHAMP(
+    PROJECTION="OUI",
+    METHODE="SOUS_POINT",
+    MODELE_1=MOTHER,
+    MODELE_2=MOCOQ,
+    PROL_VALE=Prol_Vale,
+    DISTANCE_MAX=1.0e-03,
+    RESULTAT=RESUTHER,
+    CARA_ELEM=COQCA,
+)
+
+
+#
+def Temper(xyzpt, INST):
+    X, Y, Z = xyzpt
+    # Au-delà de 2m + epsilon ==> pas de 3D ==> Temper = Prol_Vale
+    if X > 2.1:
+        return Prol_Vale
+    return 2.0 * X + 3.0 * Y + 4.0 * Z + 5.0 * INST
+
+
+"""
+    ^Y
+    |
+    8---------7
+    | 4     3 |
+    |    9    |
+    | 1     2 |
+  --5---------6-----> X
+    |
+
+Num : numéro du quandrangle [1, 4]
+        1 décalé de 0m
+        2           1m
+        3           2m
+        4           3m
+pt  : numéro du point [1, 9]
+spt : numéro du sous-point [1, 6]. Coque en z=0.5, epais=1.0, 2 couches
+"""
+
+
+def Quad(Num, pt, spt):
+    # coordonnées des points de gauss
+    v1 = 0.5 * (1.0 - (3.0**0.5) / 3.0)
+    v2 = 1.0 - v1
+    # Altitude des couches
+    zspt = (0.0, 0.25, 0.5, 0.5, 0.75, 1.0)
+    #
+    if pt == 1:
+        xyz = (v1 + (Num - 1), v1, zspt[spt - 1])
+    elif pt == 2:
+        xyz = (v2 + (Num - 1), v1, zspt[spt - 1])
+    elif pt == 3:
+        xyz = (v2 + (Num - 1), v2, zspt[spt - 1])
+    elif pt == 4:
+        xyz = (v1 + (Num - 1), v2, zspt[spt - 1])
+    elif pt == 5:
+        xyz = (0.0 + (Num - 1), 0.0, zspt[spt - 1])
+    elif pt == 6:
+        xyz = (1.0 + (Num - 1), 0.0, zspt[spt - 1])
+    elif pt == 7:
+        xyz = (1.0 + (Num - 1), 1.0, zspt[spt - 1])
+    elif pt == 8:
+        xyz = (0.0 + (Num - 1), 1.0, zspt[spt - 1])
+    elif pt == 9:
+        xyz = (0.5 + (Num - 1), 0.5, zspt[spt - 1])
+    #
+    return xyz
+
+
+motclef = {}
+motclef["CHAM_ELEM"] = []
+for imail in [1, 2, 3, 4]:
+    GrpMail = "QUAD%d" % imail
+    for ipt in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+        for ispt in [1, 2, 3, 4, 5, 6]:
+            xyz = Quad(imail, ipt, ispt)
+            vale = Temper(xyz, 0.0)
+            if vale > 1.0e-10:
+                motclef["CHAM_ELEM"].append(
+                    _F(
+                        CHAM_GD=TEMP_SP,
+                        NOM_CMP="TEMP",
+                        GROUP_MA=GrpMail,
+                        POINT=ipt,
+                        SOUS_POINT=ispt,
+                        VALE_CALC=vale,
+                        VALE_REFE=vale,
+                        REFERENCE="ANALYTIQUE",
+                    )
+                )
+            else:
+                motclef["CHAM_ELEM"].append(
+                    _F(
+                        CHAM_GD=TEMP_SP,
+                        NOM_CMP="TEMP",
+                        GROUP_MA=GrpMail,
+                        POINT=ipt,
+                        SOUS_POINT=ispt,
+                        VALE_CALC=vale,
+                        VALE_REFE=vale,
+                        ORDRE_GRANDEUR=1.0,
+                        REFERENCE="ANALYTIQUE",
+                    )
+                )
+TEST_RESU(**motclef)
+
+motclef = {}
+motclef["RESU"] = []
+for imail in [1, 2, 3, 4]:
+    GrpMail = "QUAD%d" % imail
+    for ipt in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+        for ispt in [1, 2, 3, 4, 5, 6]:
+            xyz = Quad(imail, ipt, ispt)
+            for inst in [0.0, 1.0, 2.0]:
+                vale = Temper(xyz, inst)
+                if vale > 1.0e-10:
+                    motclef["RESU"].append(
+                        _F(
+                            RESULTAT=RESU_SP,
+                            NOM_CHAM="TEMP",
+                            NOM_CMP="TEMP",
+                            INST=inst,
+                            GROUP_MA=GrpMail,
+                            POINT=ipt,
+                            SOUS_POINT=ispt,
+                            VALE_CALC=vale,
+                            VALE_REFE=vale,
+                            REFERENCE="ANALYTIQUE",
+                        )
+                    )
+                else:
+                    motclef["RESU"].append(
+                        _F(
+                            RESULTAT=RESU_SP,
+                            NOM_CHAM="TEMP",
+                            NOM_CMP="TEMP",
+                            INST=inst,
+                            GROUP_MA=GrpMail,
+                            POINT=ipt,
+                            SOUS_POINT=ispt,
+                            VALE_CALC=vale,
+                            VALE_REFE=vale,
+                            ORDRE_GRANDEUR=1.0,
+                            REFERENCE="ANALYTIQUE",
+                        )
+                    )
+TEST_RESU(**motclef)
+
+FIN()

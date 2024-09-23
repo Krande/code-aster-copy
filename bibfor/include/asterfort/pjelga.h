@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,20 @@
 !
 !
 interface
-    subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
+!
+    subroutine pjelga(nomo2, cham1, ligre1, prolong, corres,&
                       leres1, ligre2, iret)
+        !
+        use proj_champ_module
+        !
         character(len=8) :: nomo2
         character(len=19) :: cham1
         character(len=19) :: ligre1
-        character(len=8) :: prol0
+        type(prolongation) :: prolong
         character(len=16) :: corres
         character(len=19) :: leres1
         character(len=19) :: ligre2
         integer :: iret
     end subroutine pjelga
+!
 end interface

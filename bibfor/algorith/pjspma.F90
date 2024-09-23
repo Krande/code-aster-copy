@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pjspma(corres, cham1, cham2, prol0, ligre2, &
+subroutine pjspma(corres, cham1, cham2, prolong, ligre2, &
                   noca, base, iret)
-!
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -31,12 +30,14 @@ subroutine pjspma(corres, cham1, cham2, prol0, ligre2, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    use proj_champ_module
     implicit none
-    character(len=1) :: base
-    character(len=8) :: prol0, noca
-    character(len=16) :: corres
-    character(len=19) :: cham1, cham2, ligre2
-    integer :: iret
+    character(len=1)    :: base
+    character(len=8)    :: noca
+    character(len=16)   :: corres
+    character(len=19)   :: cham1, cham2, ligre2
+    type(prolongation)  :: prolong
+    integer             :: iret
 !
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
@@ -52,11 +53,13 @@ subroutine pjspma(corres, cham1, cham2, prol0, ligre2, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nncp, ierd
-    character(len=4) :: tycha2
-    character(len=8) :: nompar
-    character(len=16) :: option
-    character(len=19) :: chauxs, prfchn, cns1, ch2s
+    integer             :: nncp, ierd
+    character(len=4)    :: tycha2
+    character(len=8)    :: nompar
+    character(len=16)   :: option
+    character(len=19)   :: chauxs, prfchn, cns1, ch2s
+!
+    character(len=8) :: prol0
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,8 +69,7 @@ subroutine pjspma(corres, cham1, cham2, prol0, ligre2, &
 !   projection du champ sur le maillage masp
     chauxs = '&&PJSPMA'//'.CHAS'
     tycha2 = 'NOEU'
-    call pjxxch(corres, cham1, chauxs, tycha2, ' ', &
-                prol0, ligre2, base, iret)
+    call pjxxch(corres, cham1, chauxs, tycha2, ' ', prolong, ligre2, base, iret)
     if (iret .ne. 0) goto 999
 !
 !   chauxs : valeur aux noeud du maillage masp
@@ -78,13 +80,14 @@ subroutine pjspma(corres, cham1, cham2, prol0, ligre2, &
 !   cns1 : CHAM_NO_S des valeurs aux noeuds de masp
 !   on transpose le champ sur le modèle 2 (ELGA sous-points)
     ch2s = '&&OP0166'//'.CH2S'
-    call pjcor2(noca, cns1, ch2s, ligre2, corres, &
-                nompar, option, ierd)
+    call pjcor2(noca, cns1, ch2s, ligre2, corres, nompar, option, ierd)
 !
     ASSERT((option .eq. 'INI_SP_MATER') .or. (option .eq. 'INI_SP_RIGI'))
 !
-    call cescel(ch2s, ligre2, option, nompar, prol0, &
-                nncp, 'G', cham2, 'A', ierd)
+!   'prolong' est donné alors 'prol0' ne sert pas
+    prol0 = "????"
+!
+    call cescel(ch2s, ligre2, option, nompar, prol0, nncp, 'G', cham2, 'A', ierd, prolong)
 !
     call dismoi('NUME_EQUA', chauxs, 'CHAM_NO', repk=prfchn)
     call detrsd('NUME_EQUA', prfchn)

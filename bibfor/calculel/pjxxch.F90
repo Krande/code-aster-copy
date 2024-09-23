@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,21 @@
 ! --------------------------------------------------------------------
 
 subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz, &
-                  prol0, ligrez, base, iret)
+                  prolong, ligrez, base, iret)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!       PROJETER UN CHAMP "CH1" SUIVANT "CORRES" POUR CREER "CH2" SUR LA BASE "BASE"
+!
+! --------------------------------------------------------------------------------------------------
+!
+!  IRET (OUT)  : = 0    : OK
+!                = 1    : PB : ON N' A PAS PU PROJETER LE CHAMP
+!                = 10   : ON NE SAIT PAS ENCORE FAIRE
+!
+! --------------------------------------------------------------------------------------------------
+!
+    use proj_champ_module
     implicit none
 #include "jeveux.h"
 !
@@ -27,25 +41,21 @@ subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/pjefch.h"
 #include "asterfort/pjngch.h"
-    character(len=*) :: correz, ch1z, ch2z, prfchz, ligrez
-! person_in_charge: jacques.pellet at edf.fr
-!-------------------------------------------------------------------
-!     BUT : PROJETER UN CHAMP "CH1" SUIVANT "CORRES"
-!           POUR CREER "CH2" SUR LA BASE "BASE"
-!-------------------------------------------------------------------
-!  IRET (OUT)  : = 0    : OK
-!                = 1    : PB : ON N' A PAS PU PROJETER LE CHAMP
-!                = 10   : ON NE SAIT PAS ENCORE FAIRE
-!-------------------------------------------------------------------
-    character(len=19) :: ch1, ch2, prfchn, ligrel
-    character(len=16) :: corres, method
-    character(len=1) :: base
-!     TYCHV = NOEU OU ' ', SI TYCHV = NOEU CH2Z SERA UN CHAM_NO
-    character(len=4) :: tychv
-    character(len=*) :: prol0
-    integer :: iret
+!
+    character(len=*)    :: correz, ch1z, ch2z, prfchz, ligrez
+    character(len=4)    :: tychv
+    character(len=1)    :: base
+    integer             :: iret
+    type(prolongation)  :: prolong
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=19)   :: ch1, ch2, prfchn, ligrel
+    character(len=16)   :: corres
+    character(len=24) :: method
     character(len=24), pointer :: pjxx_k1(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     corres = correz
@@ -54,8 +64,7 @@ subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz, &
     prfchn = prfchz
     ligrel = ligrez
 !
-!
-!     -- GLUTE MODIFICATION STRUCTURALE : (SI CORRES=' ')
+!   GLUTE MODIFICATION STRUCTURALE : (SI CORRES=' ')
     if (corres .ne. ' ') then
         call jeveuo(corres//'.PJXX_K1', 'L', vk24=pjxx_k1)
         method = pjxx_k1(3)
@@ -63,11 +72,9 @@ subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz, &
         method = 'COLLOCATION'
     end if
 !
-!
-    if (method .eq. 'COLLOCATION') then
+    if (method(1:11) .eq. 'COLLOCATION') then
         ASSERT(tychv .eq. ' ' .or. tychv .eq. 'NOEU')
-        call pjefch(corres, ch1, ch2, tychv, prfchn, &
-                    prol0, ligrel, base, iret)
+        call pjefch(corres, ch1, ch2, tychv, prfchn, prolong, ligrel, base, iret)
 !
     else if (method(1:10) .eq. 'NUAGE_DEG_') then
         call pjngch(ch1, ch2, corres)

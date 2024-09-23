@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,13 @@
 
 subroutine op0166()
 !
-! person_in_charge: jacques.pellet at edf.fr
-!
 ! --------------------------------------------------------------------------------------------------
 !
 !     COMMANDE:  PROJ_CHAMP
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    use proj_champ_module
     implicit none
 !
 #include "asterf_types.h"
@@ -53,15 +52,17 @@ subroutine op0166()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, ie, n1, n2, n3, nbocc
+    integer :: iret, n1, n2, n3, nbocc
     aster_logical :: isole, lnoeu, lelno, lelem, lelga, lxfem
     character(len=4) :: tychv, typcal
-    character(len=8) :: k8b, noma1, noma2, noma3, resuin, prol0, projon, norein
+    character(len=8) :: k8b, noma1, noma2, noma3, resuin, projon, norein
     character(len=8) :: nomo1, nomo2, moa1, moa2, cnref, nomare, noca
     character(len=16) :: typres, nomcmd, lcorre(2), corru, nomgd
     character(len=19) :: resuou, cham1, method, rtyp, ligre1, ligre2
     character(len=24) :: valk(4)
     character(len=24), pointer :: pjxx_k1(:) => null()
+!
+    type(prolongation)  :: prolong
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -192,11 +193,15 @@ subroutine op0166()
 !
 ! --------------------------------------------------------------------------------------------------
 !   méthode SOUS_POINT :
-!       données  : CARA_ELEM, MODELE_2
-!       valide  sur RESULTAT : EVOL_THER
-!       interdit : VIS_A_VIS
-!       valide sur CHAMP     : ELNO, NOEU (test de vérification fait après)
+!       Type de calcul          : '1ET2' ou '1'
+!       données                 : CARA_ELEM, MODELE_2
+!       valide  sur RESULTAT    : EVOL_THER
+!       interdit                : VIS_A_VIS
+!       valide sur CHAMP        : ELNO, NOEU (test de vérification fait après)
     if (method .eq. 'SOUS_POINT') then
+        if ((typcal .ne. '1ET2') .and. (typcal .ne. '1')) then
+            call utmess('F', 'CALCULEL5_41')
+        end if
 !       récupération du CARA_ELEM
         call getvid(' ', 'CARA_ELEM', scal=noca, nbret=n1)
         if (n1 .eq. 0) then
@@ -296,8 +301,10 @@ subroutine op0166()
         if (method(1:10) .eq. 'NUAGE_DEG_') then
 !           méthode 'NUAGE_DEG' : on ne peut projeter que des CHAM_NO
             tychv = ' '
-            call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', &
-                        'NON', ' ', 'G', iret)
+            ! Pas de prolongation
+            call prolongation_init(prolong)
+            !
+            call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', prolong, ' ', 'G', iret)
             ASSERT(iret .eq. 0)
         else
 !           autre méthode :
@@ -313,8 +320,7 @@ subroutine op0166()
                 call utmess('F', 'CALCULEL5_36')
             end if
 !           on détermine le type de champ à projeter
-            call pjtyco(isole, k8b, cham1, lnoeu, lelno, &
-                        lelem, lelga)
+            call pjtyco(isole, k8b, cham1, lnoeu, lelno, lelem, lelga)
 !
             if (lnoeu) then
 !               cas ou il y a un CHAM_NO (NOEU)
@@ -322,17 +328,15 @@ subroutine op0166()
                     valk(1) = method
                     call utmess('F', 'CALCULEL5_32', sk=valk(1))
                 end if
+                ! Quel est le type de la prolongation
+                call prolongation_get(prolong)
+                !
                 if (method(1:10) .eq. 'SOUS_POINT') then
                     ligre2 = nomo2//'.MODELE'
-                    prol0 = 'NON'
-                    call pjspma(lcorre(1), cham1, resuou, prol0, ligre2, &
-                                noca, 'G', iret)
+                    call pjspma(lcorre(1), cham1, resuou, prolong, ligre2, noca, 'G', iret)
                 else
-                    prol0 = 'NON'
-                    call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
                     tychv = ' '
-                    call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', &
-                                prol0, ' ', 'G', iret)
+                    call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', prolong, ' ', 'G', iret)
                     ASSERT(iret .eq. 0)
                 end if
 !
@@ -344,21 +348,19 @@ subroutine op0166()
                     call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
                 end if
 !               le mot-clef 'MODELE_2' est obligatoire
-                call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
                 call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
                     call utmess('F', 'CALCULEL5_37')
                 end if
-!
                 ligre2 = nomo2//'.MODELE'
+                ! Quel est le type de la prolongation
+                call prolongation_get(prolong)
+                !
                 if (method(1:10) .eq. 'SOUS_POINT') then
-                    prol0 = 'NON'
-                    call pjspma(lcorre(1), cham1, resuou, prol0, ligre2, &
-                                noca, 'G', iret)
+                    call pjspma(lcorre(1), cham1, resuou, prolong, ligre2, noca, 'G', iret)
                 else
                     tychv = ' '
-                    call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', &
-                                prol0, ligre2, 'G', iret)
+                    call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', prolong, ligre2, 'G', iret)
                     ASSERT(iret .eq. 0)
                 end if
 !
@@ -369,16 +371,17 @@ subroutine op0166()
                     valk(2) = 'ELEM'
                     call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
                 end if
-!               le mot-clef 'MODELE_2' est obligatoire
-                call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
+                ! Le mot-clef 'MODELE_2' est obligatoire
                 call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
                     call utmess('F', 'CALCULEL5_37')
                 end if
                 ligre2 = nomo2//'.MODELE'
+                ! Quel est le type de la prolongation
+                call prolongation_get(prolong)
+                !
                 tychv = ' '
-                call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', &
-                            prol0, ligre2, 'G', iret)
+                call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', prolong, ligre2, 'G', iret)
                 ASSERT(iret .eq. 0)
 !
             else if (lelga) then
@@ -389,7 +392,6 @@ subroutine op0166()
                     call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
                 end if
 !               les mots-clefs 'MODELE_1' et 'MODELE_2' sont obligatoires
-                call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
                 call getvid(' ', 'MODELE_1', scal=nomo1, nbret=n1)
                 if (n1 .eq. 0) then
                     call utmess('F', 'CALCULEL5_35')
@@ -400,9 +402,10 @@ subroutine op0166()
                 end if
                 ligre1 = nomo1//'.MODELE'
                 ligre2 = nomo2//'.MODELE'
-!
-                call pjelga(nomo2, cham1, ligre1, prol0, lcorre(2), &
-                            resuou, ligre2, iret)
+                ! Quel est le type de la prolongation
+                call prolongation_get(prolong)
+                !
+                call pjelga(nomo2, cham1, ligre1, prolong, lcorre(2), resuou, ligre2, iret)
                 ASSERT(iret .eq. 0)
 !
             end if
@@ -411,8 +414,7 @@ subroutine op0166()
 ! --------------------------------------------------------------------------------------------------
 !   cas SD_RESULTAT :
     else
-        call pjxxpr(resuin, resuou(1:8), moa1, moa2, lcorre(1), &
-                    'G', noca, method, xfem=lxfem)
+        call pjxxpr(resuin, resuou(1:8), moa1, moa2, lcorre(1), 'G', noca, method, xfem=lxfem)
     end if
 !
 999 continue

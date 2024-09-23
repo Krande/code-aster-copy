@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,21 @@
 !
 !
 interface
+!
     subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
-                      prol0, ligrel, base, iret)
-        character(len=16) :: corres
-        character(len=19) :: ch1
-        character(len=19) :: ch2
-        character(len=4) :: tychv
-        character(len=19) :: prfchn
-        character(len=*) :: prol0
-        character(len=19) :: ligrel
-        character(len=1) :: base
-        integer :: iret
+                      prolong, ligrel, base, iret)
+        !
+        use proj_champ_module
+        !
+        character(len=16)   :: corres
+        character(len=19)   :: ch1
+        character(len=19)   :: ch2
+        character(len=4)    :: tychv
+        character(len=19)   :: prfchn
+        type(prolongation)  :: prolong
+        character(len=19)   :: ligrel
+        character(len=1)    :: base
+        integer             :: iret
     end subroutine pjefch
+!
 end interface

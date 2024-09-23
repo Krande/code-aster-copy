@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,11 @@
 ! --------------------------------------------------------------------
 
 subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
-                  nncp, basez, celz, kstop, iret)
+                  nncp, basez, celz, kstop, iret, prolong)
 !
-! person_in_charge: jacques.pellet at edf.fr
+    use proj_champ_module
     implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cheksd.h"
@@ -55,6 +56,8 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
     character(len=*) :: cesz, celz, basez, ligrez, optini, nompaz, prolz
     character(len=1) :: kstop
     integer :: nncp, iret
+    type(prolongation), optional :: prolong
+!
 ! ------------------------------------------------------------------
 ! BUT : TRANSFORMER UN CHAM_ELEM_S (CESZ) EN CHAM_ELEM (CELZ)
 ! ------------------------------------------------------------------
@@ -120,7 +123,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
     character(len=16) :: option
     character(len=19) :: ces, cel, ligrel, dcel
     character(len=24) :: valk(5), messag
-    character(len=3) :: prol0
+    character(len=3) :: prol0, prolv
     real(kind=8) :: rnan
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: cesk(:) => null()
@@ -151,32 +154,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
     valk(4) = cel
     valk(5) = ces
 !
-!
-!
-!     PROL : AUTORISATION DE PROLONGER (MEME UNE CMP ISOLEE)
-!     PROL2: AUTORISATION DE PROLONGER UNE MAILLE ENTIEREMENT VIERGE
-    if (prol0 .eq. 'OUI') then
-        prol = .true.
-        prol2 = .true.
-!
-    else if (prol0 .eq. 'NON') then
-        prol = .false.
-        prol2 = .false.
-!
-    else if (prol0 .eq. 'CHL') then
-        prol = .false.
-        prol2 = .true.
-!
-    else if (prol0 .eq. 'NAN') then
-        prol = .true.
-        prol2 = .true.
-!
-    else
-        ASSERT(.false.)
-    end if
-!
-!
-!     -- SI CEL EXISTE DEJA, ON LE DETRUIT :
+!   SI CEL EXISTE DEJA, ON LE DETRUIT :
     call detrsd('CHAM_ELEM', cel)
 !
     call jeveuo(ces//'.CESK', 'L', vk8=cesk)
@@ -184,14 +162,13 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
     call jeveuo(ces//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces//'.CESV', 'L', jcesv)
     call jeveuo(ces//'.CESL', 'L', jcesl)
-!     -- OBJET .COPI TEMPORAIRE POUR VERIFIER QUE TOUTES LES
-!        COMPOSANTES DE CES ONT ETE RECOPIEES
+!   OBJET .COPI TEMPORAIRE POUR VERIFIER QUE TOUTES LES COMPOSANTES DE CES ONT ETE RECOPIEES
     call jelira(ces//'.CESV', 'LONMAX', nbvces)
     AS_ALLOCATE(vi=copi, size=nbvces)
 !
     ma = cesk(1)
     nomgd = cesk(2)
-    typces = cesk(3)
+    typces = cesk(3) (1:4)
     if (nomgd .eq. 'VAR2_R') nomgd = 'VARI_R'
 !
     nbma = zi(jcesd-1+1)
@@ -202,9 +179,43 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
     call dismoi('NUM_GD', nomgd, 'GRANDEUR', repi=gd)
 !
+!   prol  : autorisation de prolonger (même une cmp isolée)
+!   prol2 : autorisation de prolonger une maille entièrement vierge
+    prol = .false.
+    prol2 = .false.
+!   Si 'prolong' est donné, 'prol0' ne sert pas
+    prolv = 'NON'
+    if (present(prolong)) then
+        prol0 = '???'
+        ! si prolong%prol_vale_r que sur tsca=R
+        if (prolong%prol_vale_r .eq. 'OUI') then
+            ASSERT(tsca .eq. 'R')
+        end if
+        prolv = prolong%prol_vale_r(1:3)
+        if (prolv .eq. 'OUI') then
+            prol = .true.
+            prol2 = .true.
+        end if
+    else
+        if (prol0 .eq. 'OUI') then
+            prol = .true.
+            prol2 = .true.
+        else if (prol0 .eq. 'NON') then
+            prol = .false.
+            prol2 = .false.
+        else if (prol0 .eq. 'CHL') then
+            prol = .false.
+            prol2 = .true.
+        else if (prol0 .eq. 'NAN') then
+            prol = .true.
+            prol2 = .true.
+        else
+            ASSERT(.false.)
+        end if
+    end if
 !
-!     1- REMPLISSAGE DE .NUCM2 ET .NUCM1 (SI NOMGD /='VARI_R'):
-!     -----------------------------------------------------------------
+!   1- REMPLISSAGE DE .NUCM2 ET .NUCM1 (SI NOMGD /='VARI_R')
+!   ========================================================
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
     if (nomgd .ne. 'VARI_R') then
         if (ncmp1 .ne. 0) call wkvect('&&CESCEL.NUCM1', 'V V I', ncmp1, jnucm1)
@@ -219,17 +230,13 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                 valk(3) = cel
                 messag = 'CALCULEL_52'
                 goto 240
-!
             end if
             zi(jnucm2-1+icmp) = icmp1
             zi(jnucm1-1+icmp1) = icmp
         end do
     end if
 !
-!
-!     -- ALLOCATION ET REMPLISSAGE DE 2 PETITS VECTEURS D'INDIRECTION
-!       ENTRE LES CMPS (SI VARI_R) :
-!     ----------------------------------------------------------------
+!   ALLOCATION ET REMPLISSAGE DE 2 PETITS VECTEURS D'INDIRECTION ENTRE LES CMPS (SI VARI_R)
     if (nomgd .eq. 'VARI_R') then
         ncmpmx = 0
         do icmp1 = 1, ncmp1
@@ -248,13 +255,10 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
         end do
     end if
 !
+!   2- ON ALLOUE LE CHAM_ELEM CEL "VIERGE"
+!   ======================================
 !
-!
-!     2- ON ALLOUE LE CHAM_ELEM CEL "VIERGE"
-!     =========================================
-!
-!     2.1 DETERMINATION DE OPTION SI NECESSAIRE :
-!     -------------------------------------------
+!   2.1 DETERMINATION DE OPTION SI NECESSAIRE
     if (option .eq. ' ') then
         if (typces .eq. 'ELNO') then
             option = 'TOU_INI_ELNO'
@@ -271,41 +275,34 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
     end if
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), iopt)
 !
-!
     if (iopt .eq. 0) then
         valk(1) = optini
         messag = 'CALCULEL_53'
         goto 240
-!
     end if
 !
+!   2.2 DETERMINATION DE NOMPAR SI NECESSAIRE
+    if (nompar .eq. ' ') then
+        call nopar2(option, nomgd, 'INOUT', nompar)
+    end if
 !
-!     2.2 DETERMINATION DE NOMPAR SI NECESSAIRE :
-!     -------------------------------------------
-    if (nompar .eq. ' ') call nopar2(option, nomgd, 'INOUT', nompar)
-!
-!
-!     2.3 CREATION DE DCEL :
-!     ----------------------------------------------
+!   2.3 CREATION DE DCEL
     licmp(1) = 'NPG_DYN'
     licmp(2) = 'NCMP_DYN'
     dcel = '&&CESCEL.DCEL'
-    call cescre('V', dcel, 'ELEM', ma, 'DCEL_I', &
-                2, licmp, [-1], [-1], [-2])
+    call cescre('V', dcel, 'ELEM', ma, 'DCEL_I', 2, licmp, [-1], [-1], [-2])
     call jeveuo(dcel//'.CESD', 'L', jdceld)
     call jeveuo(dcel//'.CESV', 'E', vi=dcelv)
     call jeveuo(dcel//'.CESL', 'E', jdcell)
     do ima = 1, nbma
-!       -- NBRE DE SOUS-POINTS :
-        call cesexi('C', jdceld, jdcell, ima, 1, &
-                    1, 1, iad)
+!       NBRE DE SOUS-POINTS :
+        call cesexi('C', jdceld, jdcell, ima, 1, 1, 1, iad)
         ASSERT(iad .lt. 0)
         zl(jdcell-1-iad) = .true.
         dcelv(1-1-iad) = zi(jcesd-1+5+4*(ima-1)+2)
 !
-!       -- NBRE DE CMPS "DYNAMIQUES" (POUR VARI_R) :
-        call cesexi('C', jdceld, jdcell, ima, 1, &
-                    1, 2, iad)
+!       NBRE DE CMPS "DYNAMIQUES" (POUR VARI_R) :
+        call cesexi('C', jdceld, jdcell, ima, 1, 1, 2, iad)
         ASSERT(iad .lt. 0)
         zl(jdcell-1-iad) = .true.
         if (nomgd .eq. 'VARI_R') then
@@ -317,24 +314,19 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                 icmp = zi(jnucm1-1+icmp1)
                 do ipt = 1, nbpt
                     do isp = 1, nbsp
-                        call cesexi('C', jcesd, jcesl, ima, ipt, &
-                                    isp, icmp1, iad2)
+                        call cesexi('C', jcesd, jcesl, ima, ipt, isp, icmp1, iad2)
                         if (iad2 .gt. 0) icmpmx = icmp
                     end do
                 end do
             end do
             dcelv(1-1-iad) = icmpmx
-!
         else
             dcelv(1-1-iad) = 0
         end if
     end do
 !
-!
-!     2.4 ALLOCATION DU CHAM_ELEM :
-!     ----------------------------------------------
-    call alchml(ligrel, option, nompar, base, cel, &
-                iret, dcel)
+!   2.4 ALLOCATION DU CHAM_ELEM
+    call alchml(ligrel, option, nompar, base, cel, iret, dcel)
     if (iret .eq. 1) then
         valk(1) = nompar
         valk(2) = option
@@ -344,8 +336,8 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
 !
     end if
 !
-!     3- ON REMPLIT LE .CELV :
-!     ===================================================
+!   3- ON REMPLIT LE .CELV
+!   ======================
     call jeveuo(cel//'.CELV', 'E', jcelv)
     call jelira(cel//'.CELV', 'LONMAX', neq)
     call jeveuo(cel//'.CELD', 'L', vi=celd)
@@ -353,9 +345,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
     call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
 !
-!
-!     3.1 ON INITIALISE CELV AVEC "NAN" SI NECESSAIRE :
-!     -------------------------------------------------
+!   3.1 on initialise celv avec "nan" si necessaire
     if (prol0 .eq. 'NAN') then
         rnan = r8nnem()
         inan = isnnem()
@@ -380,13 +370,18 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
             do ieq = 1, neq
                 zk24(jcelv-1+ieq) = knan
             end do
+        else
             ASSERT(.false.)
         end if
+!
+!   3.1 on initialise celv avec une valeur réelle si necessaire
+    else if (prolv .eq. 'OUI') then
+        do ieq = 1, neq
+            zr(jcelv-1+ieq) = prolong%vale_r
+        end do
     end if
 !
-!
-!     3.2 ON INITIALISE CELV AVEC "&FOZERO" SI NEUT_F :
-!     -----------------------------------------------------
+!   3.2 on initialise celv avec "&FOZERO" si NEUT_F
     if (prol0 .eq. 'OUI' .and. nomgd .eq. 'NEUT_F') then
         ASSERT(tsca .eq. 'K8')
         do ieq = 1, neq
@@ -394,12 +389,10 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
         end do
     end if
 !
-!
-!     3.2 CAS NOMGD /= 'VARI_R' :
-!     ---------------------------------------------------
+!   3.3 CAS NOMGD /= 'VARI_R'
+!   -------------------------
     if (nomgd .ne. 'VARI_R') then
-!
-!       3.2.1 ALLOCATION DE 2 VECTEURS DE TRAVAIL :
+        ! 3.3.1 ALLOCATION DE 2 VECTEURS DE TRAVAIL
         nptmx = zi(jcesd-1+3)
         do igr = 1, nbgr
             imolo = celd(celd(4+igr)+2)
@@ -409,22 +402,21 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
             nptmx = max(nptmx, nbpt)
 90          continue
         end do
-!
+        !
         call wkvect('&&CESCEL.LONG_PT', 'V V I', nptmx, jlpt)
         AS_ALLOCATE(vi=long_pt_cumu, size=nptmx)
-!
-!       3.2.2 BOUCLE SUR LES GREL DU LIGREL
+        !
+        ! 3.3.2 BOUCLE SUR LES GREL DU LIGREL
         do igr = 1, nbgr
             imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 170
-!
+            !
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
             diff = (zi(jmolo-1+4) .gt. 10000)
             nbpt = mod(zi(jmolo-1+4), 10000)
             nbel = nbelem(ligrel, igr)
-!
-!         -- CALCUL DU NOMBRE DE CMPS POUR CHAQUE POINT
-!            ET DU CUMUL SUR LES POINTS PRECEDENTS :
+            !
+            ! CALCUL DU NOMBRE DE CMPS POUR CHAQUE POINT ET DU CUMUL SUR LES POINTS PRECEDENTS
             do ipt = 1, nbpt
                 ico = 0
                 k = 1
@@ -435,13 +427,13 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                 end do
                 zi(jlpt-1+ipt) = ico
             end do
-!
+            !
             cumu = 0
             do ipt = 1, nbpt
                 long_pt_cumu(ipt) = cumu
                 cumu = cumu+zi(jlpt-1+ipt)
             end do
-!
+            !
             do ipt = 1, nbpt
                 ico = 0
                 k = 1
@@ -454,35 +446,30 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                         if (icmp1 .eq. 0) then
                             if (prol) then
                                 goto 150
-!
                             else
                                 nomcmp = zk8(jcmpgd-1+icmp)
                                 messag = 'CALCULEL_55'
                                 goto 240
-!
                             end if
                         end if
-!
+                        !
                         do iel = 1, nbel
                             numa = numail(igr, iel)
-!
-!                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
+                            !
+                            ! QUE FAIRE SI LA MAILLE EST TARDIVE ?
                             if (numa .lt. 0) then
                                 if (prol2) then
                                     goto 140
-!
                                 else
                                     messag = 'CALCULEL_56'
                                     goto 240
-!
                                 end if
                             end if
-!
+                            !
                             nbpt2 = zi(jcesd-1+5+4*(numa-1)+1)
                             if (nbpt .ne. nbpt2) then
                                 if ((nbpt2 .eq. 0) .and. prol2) then
                                     goto 140
-!
                                 else
                                     if (nbpt .lt. nbpt2 .or. .not. prol) then
                                         call jenuno(jexnum(ma//'.NOMMAI', numa), nomma)
@@ -493,23 +480,17 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                                         messag = 'CALCULEL_57'
                                         goto 240
                                     end if
-!
                                 end if
                             end if
-!
-!
+                            !
                             nbspt = celd(celd(4+igr)+4+4*(iel-1)+1)
                             nbspt = max(nbspt, 1)
                             adiel = celd(celd(4+igr)+4+4*(iel-1)+4)
                             do ispt = 1, nbspt
-!
-!
-                                call cesexi('C', jcesd, jcesl, numa, ipt, &
-                                            ispt, icmp1, iad)
+                                call cesexi('C', jcesd, jcesl, numa, ipt, ispt, icmp1, iad)
                                 if (iad .le. 0) then
                                     if (prol) then
                                         goto 130
-!
                                     else
                                         nomcmp = zk8(jcmpgd-1+icmp)
                                         call jenuno(jexnum(ma//'.NOMMAI', numa), nomma)
@@ -517,33 +498,24 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                                         valk(2) = nomma
                                         messag = 'CALCULEL_58'
                                         goto 240
-!
                                     end if
                                 end if
-!
-                                ieq = adiel-1+nbspt*long_pt_cumu(ipt)+(ispt-1)*zi(jlpt-1+ip&
-                                      &t)+ico
+                                !
+                                ieq = adiel-1+nbspt*long_pt_cumu(ipt)+(ispt-1)*zi(jlpt-1+ipt)+ico
                                 if (tsca .eq. 'R') then
                                     zr(jcelv-1+ieq) = zr(jcesv-1+iad)
-!
                                 else if (tsca .eq. 'I') then
                                     zi(jcelv-1+ieq) = zi(jcesv-1+iad)
-!
                                 else if (tsca .eq. 'C') then
                                     zc(jcelv-1+ieq) = zc(jcesv-1+iad)
-!
                                 else if (tsca .eq. 'L') then
                                     zl(jcelv-1+ieq) = zl(jcesv-1+iad)
-!
                                 else if (tsca .eq. 'K8') then
                                     zk8(jcelv-1+ieq) = zk8(jcesv-1+iad)
-!
                                 else if (tsca .eq. 'K16') then
                                     zk16(jcelv-1+ieq) = zk16(jcesv-1+iad)
-!
                                 else if (tsca .eq. 'K24') then
                                     zk24(jcelv-1+ieq) = zk24(jcesv-1+iad)
-!
                                 else
                                     ASSERT(.false.)
                                 end if
@@ -559,45 +531,41 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
 170         continue
         end do
 !
-!
-!     3.3 CAS NOMGD == 'VARI_R' :
-!     ---------------------------------------------------
+!   3.4 CAS NOMGD == 'VARI_R'
+!   -------------------------
     else
         do igr = 1, nbgr
             imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 220
-!
+            !
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
             diff = (zi(jmolo-1+4) .gt. 10000)
-!         CAS (ZI(JMOLO-1+4).GT.10000) RESTE A PROGRAMMER
+            ! CAS (ZI(JMOLO-1+4).GT.10000) RESTE A PROGRAMMER
             ASSERT(.not. diff)
             nbpt = mod(zi(jmolo-1+4), 10000)
             lgcata = celd(celd(4+igr)+3)
             ASSERT(nbpt .eq. lgcata)
             nbel = nbelem(ligrel, igr)
-!
-!
+            !
             do iel = 1, nbel
-!
+                !
                 nbspt = celd(celd(4+igr)+4+4*(iel-1)+1)
                 nbspt = max(nbspt, 1)
                 ncdyn = celd(celd(4+igr)+4+4*(iel-1)+2)
                 adiel = celd(celd(4+igr)+4+4*(iel-1)+4)
                 numa = numail(igr, iel)
-!
-!           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
+                !
+                ! QUE FAIRE SI LA MAILLE EST TARDIVE ?
                 if (numa .lt. 0) then
                     if (prol2) goto 210
                     messag = 'CALCULEL_56'
                     goto 240
-!
                 end if
-!
+                !
                 nbpt2 = zi(jcesd-1+5+4*(numa-1)+1)
                 if (nbpt .ne. nbpt2) then
                     if ((nbpt2 .eq. 0) .and. prol2) then
                         goto 210
-!
                     else
                         call jenuno(jexnum(ma//'.NOMMAI', numa), nomma)
                         valk(1) = nomma
@@ -606,21 +574,18 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                         vali(2) = nbpt2
                         messag = 'CALCULEL_57'
                         goto 240
-!
                     end if
                 end if
-!
+                !
                 do ipt = 1, nbpt
                     do ispt = 1, nbspt
                         do icmp = 1, ncdyn
                             icmp1 = zi(jnucm2-1+icmp)
                             if (icmp1 .eq. 0) goto 180
-                            call cesexi('C', jcesd, jcesl, numa, ipt, &
-                                        ispt, icmp1, iad)
+                            call cesexi('C', jcesd, jcesl, numa, ipt, ispt, icmp1, iad)
                             if (iad .le. 0) then
                                 if (prol) then
                                     goto 180
-!
                                 else
                                     nomcmp = 'V'
                                     call codent(icmp, 'G', nomcmp(2:8))
@@ -629,26 +594,20 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                                     valk(2) = nomma
                                     messag = 'CALCULEL_58'
                                     goto 240
-!
                                 end if
                             end if
-!
+                            !
                             ieq = adiel-1+((ipt-1)*nbspt+ispt-1)*ncdyn+icmp
                             if (tsca .eq. 'R') then
                                 zr(jcelv-1+ieq) = zr(jcesv-1+iad)
-!
                             else if (tsca .eq. 'I') then
                                 zi(jcelv-1+ieq) = zi(jcesv-1+iad)
-!
                             else if (tsca .eq. 'C') then
                                 zc(jcelv-1+ieq) = zc(jcesv-1+iad)
-!
                             else if (tsca .eq. 'L') then
                                 zl(jcelv-1+ieq) = zl(jcesv-1+iad)
-!
                             else if (tsca .eq. 'K8') then
                                 zk8(jcelv-1+ieq) = zk8(jcesv-1+iad)
-!
                             else
                                 ASSERT(.false.)
                             end if
@@ -663,9 +622,8 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
         end do
     end if
 !
-!
-!     -- CALCUL DU NOMBRE DE CMPS NON RECOPIEES (NNCP):
-!     ------------------------------------------------------
+!   CALCUL DU NOMBRE DE CMPS NON RECOPIEES (NNCP)
+!   ---------------------------------------------
     nbvcop = 0
     nbvaco = 0
     do iad = 1, nbvces
@@ -676,15 +634,13 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
     iret = 0
     goto 250
 !
-!
-!     -- MESSAGES D'ERREUR:
-!     ---------------------
+!   MESSAGES D'ERREUR
+!   -----------------
 240 continue
     iret = 1
     ASSERT(kstop .eq. 'F' .or. kstop .eq. 'A' .or. kstop .eq. ' ')
     call detrsd('CHAMP', cel)
     if (kstop .eq. ' ') goto 250
-!
 !
     if (messag .eq. 'CALCULEL_52') then
         call utmess(kstop, 'CALCULEL_52', nk=4, valk=valk)
@@ -698,15 +654,12 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
     else if (messag .eq. 'CALCULEL_56') then
         call utmess(kstop, 'CALCULEL_56', nk=4, valk=valk)
     else if (messag .eq. 'CALCULEL_57') then
-        call utmess(kstop, 'CALCULEL_57', nk=5, valk=valk, ni=2, &
-                    vali=vali)
+        call utmess(kstop, 'CALCULEL_57', nk=5, valk=valk, ni=2, vali=vali)
     else if (messag .eq. 'CALCULEL_58') then
         call utmess(kstop, 'CALCULEL_58', nk=4, valk=valk)
     else
         ASSERT(.false.)
     end if
-!
-!
 !
 250 continue
     if (dbg) then

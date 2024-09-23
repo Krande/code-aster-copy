@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,21 @@
 !
 !
 interface
+!
     subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz,&
-                      prol0, ligrez, base, iret)
+                      prolong, ligrez, base, iret)
+        !
+        use proj_champ_module
+        !
         character(len=*) :: correz
         character(len=*) :: ch1z
         character(len=*) :: ch2z
         character(len=4) :: tychv
         character(len=*) :: prfchz
-        character(len=*) :: prol0
+        type(prolongation) :: prolong
         character(len=*) :: ligrez
         character(len=1) :: base
         integer :: iret
     end subroutine pjxxch
+!
 end interface
