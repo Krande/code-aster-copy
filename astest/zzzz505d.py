@@ -108,6 +108,7 @@ test.assertEqual(sf2.getPhysicalQuantity(), "VARI_R")
 test.assertEqual(sf2.getLocalization(), "ELGA")
 test.assertFalse(sf2.hasValue(200, 1, 4800))
 test.assertTrue(sf2.hasValue(200, 1, 1))
+test.assertTrue(len(sf2.getValuesOnCell(200)[0]) == sf2.getNumberOfPointsOfCell(200))
 
 sfr2 = sf2.restrict(["V1"])
 test.assertSequenceEqual(["V1"], sfr2.getComponents())
