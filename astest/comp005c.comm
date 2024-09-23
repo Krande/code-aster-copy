@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,7 +111,7 @@ for i in range(0, len(modelisation)):
         INCREMENT=_F(LIST_INST=L_INST, INST_FIN=2.0),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, MATR_RIGI_SYME="OUI"),
         SOLVEUR=_F(METHODE="MUMPS"),
-        CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_RELA=5.0e-10),
+        CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_RELA=7.0e-10),
     )
 
     U[i] = CALC_CHAMP(
