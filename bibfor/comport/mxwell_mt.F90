@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0104
+!
 
 subroutine mxwell_mt(ndim, typmod, imate, instam, instap, nl, &
                      deps, sigm, vim, option, &
@@ -50,11 +52,14 @@ subroutine mxwell_mt(ndim, typmod, imate, instam, instap, nl, &
 !
     implicit none
 #include "asterf_types.h"
-#include "asterfort/rcvala.h"
+#include "asterfort/assert.h"
 #include "asterfort/get_varc.h"
-    aster_logical :: cplan
+#include "asterfort/rcvala.h"
+#include "asterfort/utmess.h"
+
+    aster_logical :: cplan, lTemp
     integer :: ndim, imate, iret, ndimsi
-    integer :: k, l, icodre(3)
+    integer :: k, l, icodre(5)
 !
     real(kind=8) :: instam, instap, dt, nl
     real(kind=8) :: valres(5)
@@ -90,15 +95,18 @@ subroutine mxwell_mt(ndim, typmod, imate, instam, instap, nl, &
     nomres(5) = 'ETA_V'
 !
     call rcvala(imate, ' ', 'ELAS', 0, ' ', [0.d0], &
-                3, nomres(1), valres(1), icodre(1), 2)
-!
-!
-    call rcvala(imate, ' ', 'VISC_MAXWELL_MT', 0, ' ', [0.d0], &
-                2, nomres(4), valres(4), icodre(1), 2)
-!
+                3, nomres(1), valres(1), icodre(1), 0)
     esk = valres(1)
     nusk = valres(2)
     alpha = valres(3)
+    ASSERT(icodre(1) == 0)
+    ASSERT(icodre(2) == 0)
+
+!
+    call rcvala(imate, ' ', 'VISC_MAXWELL_MT', 0, ' ', [0.d0], &
+                2, nomres(4), valres(4), icodre(4), 2)
+!
+
     etadsk = valres(4)
     etavsk = valres(5)
 !
@@ -122,11 +130,17 @@ subroutine mxwell_mt(ndim, typmod, imate, instam, instap, nl, &
 !     -- 4 CALCUL DE DEPSMO ET DEPSDV :   (deformation moyenne et deviateur des deformations)
 !     --------------------------------
 ! - Get temperatures
-!
+!;
+    coef = 0.d0
     call get_varc('RIGI', 1, 1, 'T', &
-                  tm, tp, tref)
-!
-    coef = alpha*(tp-tref)-alpha*(tm-tref)
+                  tm, tp, tref, l_temp_=lTemp)
+    if (icodre(3) == 0) then
+        if (lTemp) then
+            coef = alpha*(tp-tref)-alpha*(tm-tref)
+        else
+            call utmess('F', 'CALCULEL_15')
+        end if
+    end if
 !
 
     depsmo = 0.d0
