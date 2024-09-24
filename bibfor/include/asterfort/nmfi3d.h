@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,18 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
-                      vff, dfde, mate, option, geom,&
-                      deplm, ddepl, sigm, sigp, fint,&
-                      ktan, vim, vip, carcri, compor,&
-                      matsym, coopg, tm, tp, lMatr, lVect, lSigm,&
+    subroutine nmfi3d(BEHInteg, typmod, &
+                      nno, nddl, npg, lgpg, wref, &
+                      vff, dfde, mate, option, geom, &
+                      deplm, ddepl, sigm, sigp, fint, &
+                      ktan, vim, vip, carcri, compor, &
+                      matsym, coopg, tm, tp, lMatr, lVect, lSigm, &
                       codret)
+        use Behaviour_type
+        type(Behaviour_Integ), intent(in) :: BEHinteg
         integer :: lgpg
         integer :: npg
         integer :: nddl
@@ -32,7 +36,6 @@ interface
         real(kind=8) :: vff(nno, npg)
         real(kind=8) :: dfde(2, nno, npg)
         integer :: mate
-        character(len=16) :: option
         real(kind=8) :: geom(nddl)
         real(kind=8) :: deplm(nddl)
         real(kind=8) :: ddepl(nddl)
@@ -42,12 +45,13 @@ interface
         real(kind=8) :: ktan(*)
         real(kind=8) :: vim(lgpg, npg)
         real(kind=8) :: vip(lgpg, npg)
-        real(kind=8) :: carcri(*)
-        character(len=16) :: compor(*)
         aster_logical :: matsym
         real(kind=8) :: coopg(4, npg)
         real(kind=8) :: tm
         real(kind=8) :: tp
+        character(len=8), intent(in) :: typmod(2)
+        character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         aster_logical, intent(in) :: lMatr, lVect, lSigm
         integer :: codret
     end subroutine nmfi3d

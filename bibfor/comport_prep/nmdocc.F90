@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmdocc(model, chmate, lInitialState, compor, base, l_verbose)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -65,7 +65,7 @@ subroutine nmdocc(model, chmate, lInitialState, compor, base, l_verbose)
     aster_logical :: verbose
     character(len=8) :: mesh
     character(len=19), parameter :: fullElemField = '&&NMDOCC.FULL_ELEM'
-    type(Behaviour_PrepPara) :: behaviourPrepPara
+    type(BehaviourPrep_MapCompor) :: prepMapCompor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,7 +82,7 @@ subroutine nmdocc(model, chmate, lInitialState, compor, base, l_verbose)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 
 ! - Create datastructure to prepare comportement
-    call comp_meca_info(behaviourPrepPara)
+    call comp_meca_info(prepMapCompor)
 
 ! - Create COMPOR <CARTE>
     call comp_init(mesh, compor, base)
@@ -91,19 +91,19 @@ subroutine nmdocc(model, chmate, lInitialState, compor, base, l_verbose)
     call comp_meca_elas(compor, lInitialState)
 
 ! - Read informations from command file
-    call comp_meca_read(lInitialState, behaviourPrepPara, model)
+    call comp_meca_read(lInitialState, prepMapCompor, model)
 
 ! - Create <CARTE> of FULL_MECA option for checking
     call comp_meca_full(model, compor, fullElemField)
 
 ! - Check informations in COMPOR <CARTE>
-    call comp_meca_chck(model, mesh, chmate, fullElemField, lInitialState, behaviourPrepPara)
+    call comp_meca_chck(model, mesh, chmate, fullElemField, lInitialState, prepMapCompor)
 
 ! - Count internal variables
-    call comp_meca_cvar(behaviourPrepPara)
+    call comp_meca_cvar(prepMapCompor)
 
 ! - Save informations in COMPOR <CARTE>
-    call comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
+    call comp_meca_save(model, mesh, chmate, compor, prepMapCompor)
 
 ! - Verbose mode
     if (verbose) then
@@ -111,7 +111,7 @@ subroutine nmdocc(model, chmate, lInitialState, compor, base, l_verbose)
     end if
 
 ! - Clean
-    deallocate (behaviourPrepPara%v_para)
-    deallocate (behaviourPrepPara%v_paraExte)
+    deallocate (prepMapCompor%prepPara)
+    deallocate (prepMapCompor%prepExte)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine pmdocr(carcri)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -45,27 +45,27 @@ subroutine pmdocr(carcri)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type(Behaviour_PrepCrit) :: behaviourPrepCrit
+    type(BehaviourPrep_MapCarcri) :: prepMapCarcri
 !
 ! --------------------------------------------------------------------------------------------------
 !
     carcri(1:CARCRI_SIZE) = 0.d0
 
 ! - Create carcri informations objects
-    call carc_info(behaviourPrepCrit)
+    call carc_info(prepMapCarcri)
 
 ! - Read informations from command file
-    call carc_read(behaviourPrepCrit)
+    call carc_read(prepMapCarcri)
 
 ! - Some checks
-    call carc_chck(behaviourPrepCrit)
+    call carc_chck(prepMapCarcri)
 
 ! - Set in list
-    call setBehaviourParaValue(behaviourPrepCrit%v_crit, &
-                               behaviourPrepCrit%parm_theta_thm, behaviourPrepCrit%parm_alpha_thm, &
+    call setBehaviourParaValue(prepMapCarcri%prepCrit, &
+                               prepMapCarcri%parm_theta_thm, prepMapCarcri%parm_alpha_thm, &
                                carcriList_=carcri(1:CARCRI_SIZE))
 
 ! - Clean
-    deallocate (behaviourPrepCrit%v_crit)
+    deallocate (prepMapCarcri%prepCrit)
 !
 end subroutine

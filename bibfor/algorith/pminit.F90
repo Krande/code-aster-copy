@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
+! aslint: disable=W1504,W0413
 !
 subroutine pminit(imate, nbvari, ndim, typmod, table, &
                   nbpar, iforta, nompar, typpar, angl_naut, &
@@ -128,7 +128,6 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 ! --------------------------------------------------------------------------------------------------
 !
     cbid = (0.d0, 0.d0)
-    ndim = 3
     typmod(1) = '3D'
     typmod(2) = ' '
     solveu = '&&OP0033'

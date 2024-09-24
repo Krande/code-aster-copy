@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine lc8331(BEHinteg, &
                   compor, mult_comp, carcri, instam, instap, neps, &
                   epsm, deps, nsig, sigm, vim, &
                   option, angmas, sigp, nvi, vip, &
-                  typmod, icomp, ndsde, dsidep, codret)
+                  typmod, ndsde, dsidep, codret)
 !
     use Behaviour_type
 !
@@ -57,7 +57,6 @@ subroutine lc8331(BEHinteg, &
     integer, intent(in) :: nvi
     real(kind=8), intent(out) :: vip(*)
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: icomp
     integer, intent(in) :: ndsde
     real(kind=8), intent(out) :: dsidep(*)
     integer, intent(out) :: codret

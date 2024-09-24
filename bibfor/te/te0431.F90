@@ -18,7 +18,8 @@
 !
 subroutine te0431(option, nomte)
 !
-    use Behaviour_module, only: behaviourOption
+    use Behaviour_type
+    use Behaviour_module
 !
     implicit none
 !
@@ -59,6 +60,8 @@ subroutine te0431(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
+    integer, parameter :: ndimLdc = 2
     integer :: codres(2)
     character(len=4) :: fami
     character(len=16) :: nomres(2)
@@ -71,13 +74,15 @@ subroutine te0431(option, nomte)
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
     real(kind=8) :: epsm, deps, sigm, sig, tmp, rig, valres(2)
     real(kind=8) :: angmas(3)
+    integer :: iinstm, iinstp
     aster_logical :: lexc, lNonLine, lLine
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=16) :: rela_cpla, rela_comp
+    type(Behaviour_Integ) :: BEHinteg
+    character(len=8), parameter :: typmod(2) = (/"COMP1D  ", "        "/)
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
-!
 !
     lexc = (lteatt('MODELI', 'GRC'))
 !
@@ -88,11 +93,10 @@ subroutine te0431(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
+
 ! - Get input fields
-!
     call jevech('PGEOMER', 'L', igeom)
     if (lLine) then
         call jevech('PMATERC', 'L', imate)
@@ -115,6 +119,8 @@ subroutine te0431(option, nomte)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PVARIMP', 'L', ivarix)
         call r8inir(3, r8nnem(), angmas, 1)
+        call jevech('PINSTMR', 'L', iinstm)
+        call jevech('PINSTPR', 'L', iinstp)
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -127,6 +133,13 @@ subroutine te0431(option, nomte)
         rela_comp = zk16(icompo-1+RELA_NAME)
         rela_cpla = zk16(icompo-1+PLANESTRESS)
     end if
+
+! - Initialisation of behaviour datastructure
+    if (lNonLine) then
+        call behaviourInit(BEHinteg)
+    end if
+!
+
 !
 ! - Get output fields
 !
@@ -183,9 +196,17 @@ subroutine te0431(option, nomte)
     else
         nddl = 3
     end if
-!
+
+! - Set main parameters for behaviour (on cell)
+    if (lNonLine) then
+        call behaviourSetParaCell(ndimLdc, typmod, option, &
+                                  zk16(icompo), zr(icarcr), &
+                                  zr(iinstm), zr(iinstp), &
+                                  fami, zi(imate), &
+                                  BEHinteg)
+    end if
+
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
-!
     do kpg = 1, npg
 !
 ! --- MISE SOUS FORME DE TABLEAU DES VALEURS DES FONCTIONS DE FORME
@@ -224,11 +245,14 @@ subroutine te0431(option, nomte)
                     deps = deps+b(j, i)*zr(ideplp+(i-1)*nddl+j-1)
                 end do
             end do
-!
-            call nmco1d(fami, kpg, 1, zi(imate), rela_comp, &
-                        rela_cpla, option, epsm, deps, angmas, &
-                        sigm, zr(ivarim+(kpg-1)*lgpg), sig, zr(ivarip+(kpg-1)*lgpg), rig, &
-                        cod(kpg))
+! --------- Set main parameters for behaviour (on point)
+            call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! --------- Integrator
+            call nmco1d(BEHInteg, &
+                        fami, kpg, ksp, zi(imate), rela_comp, rela_cpla, &
+                        option, epsm, deps, angmas, sigm, &
+                        zr(ivarim+(kpg-1)*lgpg), sig, zr(ivarip+(kpg-1)*lgpg), rig, cod(kpg))
             if (cod(kpg) .eq. 1) goto 900
 !
             if (lSigm) then

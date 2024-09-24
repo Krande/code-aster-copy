@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -61,7 +61,7 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
     integer :: nbocc1, nbocc2, nbocc3
     character(len=16) :: rela_comp
     aster_logical :: l_etat_init, l_kit_thm
-    type(Behaviour_PrepPara) :: behaviourPrepPara
+    type(BehaviourPrep_MapCompor) :: prepMapCompor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,22 +77,22 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
     l_etat_init = (nbocc1+nbocc2+nbocc3) > 0
 
 ! - Create datastructure to prepare comportement
-    call comp_meca_info(behaviourPrepPara)
-    if (behaviourPrepPara%nb_comp .eq. 0) then
+    call comp_meca_info(prepMapCompor)
+    if (prepMapCompor%nb_comp .eq. 0) then
         call utmess('F', 'COMPOR4_63')
     end if
 
 ! - Read informations from command file
-    call comp_meca_read(l_etat_init, behaviourPrepPara)
+    call comp_meca_read(l_etat_init, prepMapCompor)
 
 ! - Count internal variables
-    call comp_meca_cvar(behaviourPrepPara)
+    call comp_meca_cvar(prepMapCompor)
 
 ! - Some properties
-    nbVari = behaviourPrepPara%v_para(1)%nbVari
-    rela_comp = behaviourPrepPara%v_para(1)%rela_comp
-    type_comp = behaviourPrepPara%v_para(1)%type_comp
-    mult_comp = behaviourPrepPara%v_para(1)%mult_comp
+    nbVari = prepMapCompor%prepPara(1)%nbVari
+    rela_comp = prepMapCompor%prepPara(1)%rela_comp
+    type_comp = prepMapCompor%prepPara(1)%type_comp
+    mult_comp = prepMapCompor%prepPara(1)%mult_comp
 
 ! - Detection of specific cases
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
@@ -101,7 +101,7 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
     end if
 
 ! - Save informations in the field <COMPOR>
-    call setBehaviourTypeValue(behaviourPrepPara, comporList_=compor(1:COMPOR_SIZE))
+    call setBehaviourTypeValue(prepMapCompor, comporList_=compor(1:COMPOR_SIZE))
 
 ! - Prepare informations about internal variables
     call comp_meca_pvar(comporList_=compor, comporInfo=comporInfo)
@@ -110,7 +110,7 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
     call imvari(comporInfo)
 
 ! - Cleaning
-    deallocate (behaviourPrepPara%v_para)
-    deallocate (behaviourPrepPara%v_paraExte)
+    deallocate (prepMapCompor%prepPara)
+    deallocate (prepMapCompor%prepExte)
 !
 end subroutine

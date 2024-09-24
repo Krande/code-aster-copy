@@ -86,11 +86,11 @@ contains
         type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
         real(kind=8), intent(in) :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
         character(len=*), intent(in) :: fami
-        character(len=8), intent(in) :: typmod(*)
+        character(len=8), intent(in) :: typmod(2)
         integer, intent(in) :: imate
-        character(len=16), intent(in) :: compor(*)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
         character(len=16), intent(in) :: option
-        real(kind=8), intent(in) :: carcri(*)
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         integer, intent(in) :: lgpg
         integer, intent(in) :: ncomp
         real(kind=8), intent(in) :: time_prev
@@ -140,6 +140,7 @@ contains
 !   Out codret      : info on integration of the LDC
 ! --------------------------------------------------------------------------------------------------
 !
+        integer, parameter :: ksp = 1
         type(HHO_basis_cell) :: hhoBasisCell
         type(Behaviour_Integ) :: BEHinteg
         real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_prev_coeff, G_curr_coeff
@@ -170,16 +171,22 @@ contains
         AT = 0.d0
         G_prev_coeff = 0.d0
         G_curr_coeff = 0.d0
-!print*, "GT", hhoNorm2Mat(gradrec(1:gbs,1:total_dofs))
-!
+        !print*, "GT", hhoNorm2Mat(gradrec(1:gbs,1:total_dofs))
+
 ! ----- Type of behavior
-!
         call select_behavior(compor, l_gdeflog, l_green_lagr)
-!
+
 ! ----- Initialisation of behaviour datastructure
-!
         call behaviourInit(BEHinteg)
-!
+
+! ----- Set main parameters for behaviour (on cell)
+        call behaviourSetParaCell(hhoCell%ndim, typmod, option, &
+                                  compor, carcri, &
+                                  time_prev, time_curr, &
+                                  fami, imate, &
+                                  BEHinteg)
+
+! ----- Vector and/or matrix
         l_lhs = L_MATR(option)
         l_rhs = L_VECT(option)
 !
@@ -218,7 +225,7 @@ contains
 !
         do ipg = 1, hhoQuadCellRigi%nbQuadPoints
             coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
-            BEHinteg%elem%coor_elga(ipg, 1:3) = coorpg(1:3)
+            BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 1:3) = coorpg(1:3)
             weight = hhoQuadCellRigi%weights(ipg)
 !print*, ipg, "qp", coorpg(1:3), weight
 !
@@ -249,9 +256,11 @@ contains
             call lcdetf(hhoCell%ndim, F_curr, jac_curr)
             cod(ipg) = merge(1, 0, jac_curr .le. r8prem())
             if (cod(ipg) .ne. 0) goto 999
-!
-! ------- Compute behavior
-!
+
+! --------- Set main parameters for behaviour (on point)
+            call behaviourSetParaPoin(ipg, ksp, BEHinteg)
+
+! --------- Integrate
             if (l_gdeflog) then
                 call gdeflog(BEHinteg, hhoCell%ndim, fami, typmod, imate, &
                              compor, option, carcri, lgpg, ipg, &
@@ -803,9 +812,8 @@ contains
         if (cod .ne. 0) then
             goto 999
         end if
-!
+
 ! ----- Compute Stress and module_tangent
-!
         dtde = 0.d0
         tlogCurr = 0.d0
         call nmcomp(BEHinteg, fami, ipg, 1, ndim, &

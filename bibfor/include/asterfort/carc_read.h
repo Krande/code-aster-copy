@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine carc_read(behaviourPrepCrit, model_)
-        use Behaviour_type
-        type(Behaviour_PrepCrit), intent(inout) :: behaviourPrepCrit
+    subroutine carc_read(prepMapCarcri, model_)
+        use BehaviourPrepare_type
+        type(BehaviourPrep_MapCarcri), intent(inout) :: prepMapCarcri
         character(len=8), intent(in), optional :: model_
     end subroutine carc_read
 end interface

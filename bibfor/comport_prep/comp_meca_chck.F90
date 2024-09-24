@@ -18,9 +18,9 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_meca_chck(model, mesh, chmate, &
-                          fullElemField, lInitialState, behaviourPrepPara)
+                          fullElemField, lInitialState, prepMapCompor)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -44,7 +44,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     character(len=8), intent(in) :: model, mesh, chmate
     character(len=19), intent(in) :: fullElemField
     aster_logical, intent(in) :: lInitialState
-    type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
+    type(BehaviourPrep_MapCompor), intent(inout) :: prepMapCompor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
 ! In  chmate           : material field
 ! In  fullElemField    : <CHELEM_S> of FULL_MECA option
 ! In  lInitialState    : .true. if initial state is defined
-! IO  behaviourPrepPara: datastructure to prepare behaviour
+! IO  prepMapCompor    : datastructure to construct COMPOR map
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,7 +78,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbFactorKeyword = behaviourPrepPara%nb_comp
+    nbFactorKeyword = prepMapCompor%nb_comp
     lNeedDeborst = ASTER_FALSE
     lElasByDefault = ASTER_FALSE
     lDistParallel = ASTER_FALSE
@@ -104,14 +104,14 @@ subroutine comp_meca_chck(model, mesh, chmate, &
                             cellAffe, lAllCellAffe, nbCellAffe)
 
 ! ----- Get main parameters for this behaviour
-        relaComp = behaviourPrepPara%v_para(iFactorKeyword)%rela_comp
-        defoComp = behaviourPrepPara%v_para(iFactorKeyword)%defo_comp
-        typeComp = behaviourPrepPara%v_para(iFactorKeyword)%type_comp
-        reguVisc = behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
-        lMfront = behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_offi .or. &
-                  behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_proto
-        exteDefo = behaviourPrepPara%v_paraExte(iFactorKeyword)%strain_model
-        postIncr = behaviourPrepPara%v_para(iFactorKeyword)%post_incr
+        relaComp = prepMapCompor%prepPara(iFactorKeyword)%rela_comp
+        defoComp = prepMapCompor%prepPara(iFactorKeyword)%defo_comp
+        typeComp = prepMapCompor%prepPara(iFactorKeyword)%type_comp
+        reguVisc = prepMapCompor%prepPara(iFactorKeyword)%regu_visc
+        lMfront = prepMapCompor%prepExte(iFactorKeyword)%l_mfront_offi .or. &
+                  prepMapCompor%prepExte(iFactorKeyword)%l_mfront_proto
+        exteDefo = prepMapCompor%prepExte(iFactorKeyword)%strain_model
+        postIncr = prepMapCompor%prepPara(iFactorKeyword)%post_incr
 
 ! ----- Coding comportment (Python)
         call lccree(1, relaComp, relaCompPY)
@@ -125,9 +125,9 @@ subroutine comp_meca_chck(model, mesh, chmate, &
                                lElasByDefault, lNeedDeborst, lIncoUpo)
 
 ! ----- Select plane stress algorithm
-        typeCpla = behaviourPrepPara%v_para(iFactorKeyword)%type_cpla
+        typeCpla = prepMapCompor%prepPara(iFactorKeyword)%type_cpla
         call compMecaSelectPlaneStressAlgo(lNeedDeborst, typeCpla)
-        behaviourPrepPara%v_para(iFactorKeyword)%type_cpla = typeCpla
+        prepMapCompor%prepPara(iFactorKeyword)%type_cpla = typeCpla
 
 ! ----- Check the consistency of the strain model with the behaviour
         call compMecaChckStrain(iFactorKeyword, &
@@ -203,13 +203,13 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     if (lElasByDefault) then
         call utmess('I', 'COMPOR5_21')
     end if
-    if (lExistVarc .and. behaviourPrepPara%lTotalStrain) then
+    if (lExistVarc .and. prepMapCompor%lTotalStrain) then
         call utmess('A', 'COMPOR4_17')
     end if
-    if (behaviourPrepPara%nb_comp .eq. 0) then
+    if (prepMapCompor%nb_comp .eq. 0) then
         call utmess('I', 'COMPOR4_64')
     end if
-    if (behaviourPrepPara%nb_comp .ge. 99999) then
+    if (prepMapCompor%nb_comp .ge. 99999) then
         call utmess('A', 'COMPOR4_65')
     end if
 !

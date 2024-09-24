@@ -55,11 +55,11 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
     type(FE_Quadrature), intent(in) :: FEQuad
     type(FE_basis), intent(in) :: FEBasis
     character(len=16), intent(in) :: option
-    character(len=8), intent(in) :: typmod(*)
+    character(len=8), intent(in) :: typmod(2)
     integer, intent(in) :: imate
     integer, intent(in) :: ndim, nno, npg, lgpg
-    character(len=16), intent(in) :: compor(*)
-    real(kind=8), intent(in) :: carcri(*), angmas(*)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE), angmas(*)
     character(len=16), intent(in) :: mult_comp
     real(kind=8), intent(in) :: instam, instap
     real(kind=8), intent(inout) :: dispPrev(ndim*nno), dispIncr(ndim*nno)
@@ -107,7 +107,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
+    integer, parameter :: ksp = 1
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lMFront, lPred
     integer :: kpg, ipoids, ivf, idfde
     integer :: cod(MAX_QP)
@@ -123,33 +123,39 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 ! --------------------------------------------------------------------------------------------------
 !
     cod = 0
+    dispCurr = 0.d0
+
+! - Finite element parameters
+    call elrefe_info(fami=FEQuad%fami, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+
+! - Initialisation of behaviour datastructure
+    call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              FEQuad%fami, imate, &
+                              BEHinteg)
+
+! - Prepare external state variables (geometry)
+    call behaviourPrepESVAGeom(nno, npg, ndim, &
+                               ipoids, ivf, idfde, &
+                               FECell%coorno(1:ndim, 1:nno), BEHinteg, &
+                               dispPrev, dispIncr)
+
+! - Quantities to compute
     lSigm = L_SIGM(option)
     lVect = L_VECT(option)
     lMatr = L_MATR(option)
     lPred = L_PRED(option)
     lMatrPred = L_MATR_PRED(option)
     lMFront = carcri(EXTE_TYPE) == 1 .or. carcri(EXTE_TYPE) == 2
-    dispCurr = 0.d0
-!
-! - Initialisation of behaviour datastructure
-!
-    call behaviourInit(BEHinteg)
-!
-! - Prepare external state variables
-!
-    call elrefe_info(fami=FEQuad%fami, jpoids=ipoids, jvf=ivf, jdfde=idfde)
-    call behaviourPrepESVAElem(carcri, typmod, &
-                               nno, npg, ndim, &
-                               ipoids, ivf, idfde, &
-                               FECell%coorno(1:ndim, 1:nno), BEHinteg, &
-                               dispPrev, dispIncr)
-!
+
 ! - Update displacements
-!
     dispCurr(:) = dispPrev(:)+dispIncr(:)
-!
+
 ! - Loop on Gauss points
-!
     do kpg = 1, FEQuad%nbQuadPoints
         coorpg = FEQuad%points_param(1:3, kpg)
         BGSEval = FEBasis%grad(coorpg, FEQuad%jacob(1:3, 1:3, kpg))
@@ -169,14 +175,17 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
         call pk2sig(ndim, fPrev, detfPrev, sigmPrep, sigmPrev(1, kpg), -1)
         sigmPrep(4:2*ndim) = sigmPrep(4:2*ndim)*rac2
 
-! ----- Compute behaviour
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         sigmPost = 0
 ! ----- Check if the behavior law is MFRONT
         if (lMFront) then
 ! --------- Compute the increment of f for MFRONT
             fIncr = fCurr-fPrev
             call nmcomp(BEHinteg, &
-                        FEQuad%fami, kpg, 1, ndim, typmod, &
+                        FEQuad%fami, kpg, ksp, ndim, typmod, &
                         imate, compor, carcri, instam, instap, &
                         9, fPrev, fIncr, 6, sigmPrep, &
                         vim(1, kpg), option, angmas, &
@@ -187,14 +196,13 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
             epsgIncr = epsgCurr-epsgPrev
 
             call nmcomp(BEHinteg, &
-                        FEQuad%fami, kpg, 1, ndim, typmod, &
+                        FEQuad%fami, kpg, ksp, ndim, typmod, &
                         imate, compor, carcri, instam, instap, &
                         6, epsgPrev, epsgIncr, 6, sigmPrep, &
                         vim(1, kpg), option, angmas, &
                         sigmPost, vip(1, kpg), 36, dsidep, &
                         cod(kpg), mult_comp)
         end if
-
         if (cod(kpg) .eq. 1) goto 999
 !        write (6,*) 'option = ',option
 !        write (6,*) 'epsm   = ',epsgPrev

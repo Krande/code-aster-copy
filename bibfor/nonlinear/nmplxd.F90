@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,11 +49,11 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
     type(FE_Quadrature), intent(in) :: FEQuad
     type(FE_basis), intent(in) :: FEBasis
     integer, intent(in) :: nno, npg, ndim
-    character(len=8), intent(in) :: typmod(*)
+    character(len=8), intent(in) :: typmod(2)
     character(len=16), intent(in) :: option
     integer, intent(in) :: imate
-    character(len=16), intent(in) :: compor(*), mult_comp
-    real(kind=8), intent(in) :: carcri(*)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE), mult_comp
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     integer, intent(in) :: lgpg
     real(kind=8), intent(in) :: instam, instap
     real(kind=8), intent(inout) :: dispPrev(ndim, nno), dispIncr(ndim, nno)
@@ -103,6 +103,7 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
     aster_logical :: lVect, lMatr, lSigm
     integer :: kpg, i_tens, ipoids, ivf, idfde
     integer :: cod(MAX_QP)
@@ -117,25 +118,32 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     cod = 0
-    lSigm = L_SIGM(option)
-    lVect = L_VECT(option)
-    lMatr = L_MATR(option)
-!
-! - Initialisation of behaviour datastructure
-!
-    call behaviourInit(BEHinteg)
-!
-! - Prepare external state variables
-!
+
+! - Finite element parameters
     call elrefe_info(fami=FEQuad%fami, jpoids=ipoids, jvf=ivf, jdfde=idfde)
-    call behaviourPrepESVAElem(carcri, typmod, &
-                               nno, npg, ndim, &
+
+! - Initialisation of behaviour datastructure
+    call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              FEQuad%fami, imate, &
+                              BEHinteg)
+
+! - Prepare external state variables (geometry)
+    call behaviourPrepESVAGeom(nno, npg, ndim, &
                                ipoids, ivf, idfde, &
                                FECell%coorno(1:ndim, 1:nno), BEHinteg, &
                                dispPrev, dispIncr)
-!
+
+! - Quantities to compute
+    lSigm = L_SIGM(option)
+    lVect = L_VECT(option)
+    lMatr = L_MATR(option)
+
 ! - Loop on Gauss points
-!
     do kpg = 1, npg
         coorpg = FEQuad%points_param(1:3, kpg)
         BGSEval = FEBasis%grad(coorpg, FEQuad%jacob(1:3, 1:3, kpg))
@@ -147,6 +155,7 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
 
 ! ----- Kinematic - Product [B]
         call FEMatB(FEBasis, coorpg, BGSEval, def)
+
 ! ----- Prepare stresses
         do i_tens = 1, 3
             sigmPrep(i_tens) = sigmPrev(i_tens, kpg)
@@ -154,10 +163,14 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
         do i_tens = 4, 2*ndim
             sigmPrep(i_tens) = sigmPrev(i_tens, kpg)*rac2
         end do
-! ----- Compute behaviour
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         sigmPost = 0.d0
         call nmcomp(BEHinteg, &
-                    FEQuad%fami, kpg, 1, ndim, typmod, &
+                    FEQuad%fami, kpg, ksp, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
                     6, eps, deps, 6, sigmPrep, &
                     vim(1, kpg), option, angmas, &
@@ -166,14 +179,17 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
         if (cod(kpg) .eq. 1) then
             goto 999
         end if
+
 ! ----- Rigidity matrix
         if (lMatr) then
             call FEStiffJacoVectSymAdd(FEBasis, def, FEQuad%weights(kpg), dsidep, matsym, matuu)
         end if
+
 ! ----- Internal forces
         if (lVect) then
             call FEStiffResiVectSymAdd(FEBasis, def, FEQuad%weights(kpg), sigmPost, vectu)
         end if
+
 ! ----- Cauchy stresses
         if (lSigm .or. option .eq. 'RIGI_MECA_IMPLEX') then
             do i_tens = 1, 3
@@ -184,9 +200,8 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
             end do
         end if
     end do
-!
+
 ! - For POST_ITER='CRIT_RUPT'
-!
     if (carcri(13) .gt. 0.d0) then
         call crirup(FEQuad%fami, imate, ndim, npg, lgpg, &
                     option, compor, sigmCurr, vip, vim, &
@@ -194,9 +209,8 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
     end if
 !
 999 continue
-!
+
 ! - Return code summary
-!
     call codere(cod, FEQuad%nbQuadPoints, codret)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine lc0004(fami, kpg, ksp, ndim, imate,&
-                      compor, crit, instam, instap, epsm,&
-                      deps, sigm, vim, option, angmas,&
-                      sigp, vip, typmod, icomp,&
+    subroutine lc0004(fami, kpg, ksp, ndim, imate, &
+                      compor, crit, instam, instap, epsm, &
+                      deps, sigm, vim, option, angmas, &
+                      sigp, vip, typmod, &
                       nvi, dsidep, codret)
         character(len=*) :: fami
         integer :: kpg
@@ -42,7 +40,6 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(*)
         character(len=8) :: typmod(*)
-        integer :: icomp
         integer :: nvi
         real(kind=8) :: dsidep(6, 6)
         integer :: codret

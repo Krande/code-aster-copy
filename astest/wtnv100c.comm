@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ MAILLAGE = DEFI_GROUP(
 THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
 
 SOL = DEFI_MATERIAU(
-    ELAS=_F(E=22.4e6, NU=0.3, RHO=2500.0, ALPHA=1.0e-5),
+    ELAS=_F(E=22.4e6, NU=0.3, RHO=2500.0),
     CJS=_F(BETA_CJS=-0.03, GAMMA_CJS=0.82, RM=0.289, PA=-100.0e3),
     COMP_THM="LIQU_SATU",
     THM_LIQU=_F(

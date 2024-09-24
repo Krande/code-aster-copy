@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
-                      iw, vff1, vff2, idfde1, idfde2,&
-                      geom, typmod, option, mat, compor,&
-                      lgpg, crit, instam, instap, ddlm,&
-                      ddld, angmas, sigm, vim, sigp,&
+    subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
+                      iw, vff1, vff2, idfde1, idfde2, &
+                      geom, typmod, option, mat, compor, &
+                      lgpg, carcri, instam, instap, ddlm, &
+                      ddld, angmas, sigm, vim, sigp, &
                       vip, matr, vect, codret)
         integer :: lgpg
         integer :: npg
@@ -37,11 +36,11 @@ interface
         integer :: idfde1
         integer :: idfde2
         real(kind=8) :: geom(ndim, nno1)
-        character(len=8) :: typmod(*)
+        character(len=8) :: typmod(2)
         character(len=16) :: option
         integer :: mat
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
+        character(len=16) :: compor(COMPOR_SIZE)
+        real(kind=8) :: carcri(CARCRI_SIZE)
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: ddlm(*)

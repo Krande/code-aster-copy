@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 ! aslint: disable=W1403
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_init(ds_comporPara)
+subroutine comp_meca_init(prepPara)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
 #include "asterc/getfac.h"
 !
-    type(Behaviour_Para), intent(out) :: ds_comporPara
+    type(BehaviourPrep_Para), intent(out) :: prepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -36,24 +36,24 @@ subroutine comp_meca_init(ds_comporPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out ds_comporPara    : datastructure to describe comportement
+! Out prepPara         : behaviour parameters from user
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ds_comporPara%rela_comp = 'VIDE'
-    ds_comporPara%defo_comp = 'VIDE'
-    ds_comporPara%type_comp = 'VIDE'
-    ds_comporPara%type_cpla = 'VIDE'
-    ds_comporPara%kit_comp = 'VIDE'
-    ds_comporPara%mult_comp = 'VIDE'
-    ds_comporPara%post_iter = 'VIDE'
-    ds_comporPara%defo_ldc = 'VIDE'
-    ds_comporPara%rigi_geom = 'VIDE'
-    ds_comporPara%regu_visc = 'VIDE'
-    ds_comporPara%post_incr = 'VIDE'
-    ds_comporPara%nbVari = 0
-    ds_comporPara%numeLaw = 0
-    ds_comporPara%nbVariKit = 0
-    ds_comporPara%numeLawKit = 0
+    prepPara%rela_comp = 'VIDE'
+    prepPara%defo_comp = 'VIDE'
+    prepPara%type_comp = 'VIDE'
+    prepPara%type_cpla = 'VIDE'
+    prepPara%kit_comp = 'VIDE'
+    prepPara%mult_comp = 'VIDE'
+    prepPara%post_iter = 'VIDE'
+    prepPara%defo_ldc = 'VIDE'
+    prepPara%rigi_geom = 'VIDE'
+    prepPara%regu_visc = 'VIDE'
+    prepPara%post_incr = 'VIDE'
+    prepPara%nbVari = 0
+    prepPara%numeLaw = 0
+    prepPara%nbVariKit = 0
+    prepPara%numeLawKit = 0
 !
 end subroutine

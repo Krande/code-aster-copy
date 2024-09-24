@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,23 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine nmfi2d(npg, lgpg, mate, option, geom,&
-                      deplm, ddepl, sigmo, sigma, fint,&
-                      ktan, vim, vip, tm, tp,&
-                      carcri, compor, typmod, lMatr, lVect, lSigm,&
+    subroutine nmfi2d(BEHInteg, &
+                      npg, lgpg, mate, option, geom, &
+                      deplm, ddepl, sigmo, sigma, fint, &
+                      ktan, vim, vip, tm, tp, &
+                      carcri, compor, typmod, lMatr, lVect, lSigm, &
                       codret)
+        use Behaviour_type
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
         integer :: lgpg
         integer :: npg
         integer :: mate
-        character(len=16) :: option
+        character(len=8), intent(in) :: typmod(2)
+        character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8) :: geom(2, 4)
         real(kind=8) :: deplm(8)
         real(kind=8) :: ddepl(8)
@@ -38,9 +44,6 @@ interface
         real(kind=8) :: vip(lgpg, npg)
         real(kind=8) :: tm
         real(kind=8) :: tp
-        real(kind=8) :: carcri(*)
-        character(len=16) :: compor(*)
-        character(len=8) :: typmod(*)
         aster_logical, intent(in) :: lMatr, lVect, lSigm
         integer :: codret
     end subroutine nmfi2d

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,25 +18,25 @@
 !
 interface
     subroutine nglgic(fami, option, typmod, ndim, nno, &
-                      nnob,npg, nddl, iw, vff, &
-                      vffb, idff,idffb,geomi, compor, &
-                      mate, lgpg,crit, angmas, instm, &
-                      instp, matsym,ddlm, ddld, siefm, &
-                      vim, siefp,vip, fint, matr, &
-                      lMatr, lVect, lSigm, lVari,&
+                      nnob, npg, nddl, iw, vff, &
+                      vffb, idff, idffb, geomi, compor, &
+                      mate, lgpg, carcri, angmas, instm, &
+                      instp, matsym, ddlm, ddld, siefm, &
+                      vim, siefp, vip, fint, matr, &
+                      lMatr, lVect, lSigm, lVari, &
                       codret)
-        aster_logical,intent(in)    :: matsym
-        character(len=8),intent(in) :: typmod(*)
-        character(len=*),intent(in) :: fami
-        character(len=16),intent(in):: option, compor(*)
-        integer,intent(in)          :: ndim,nno,nnob,npg,nddl,lgpg
-        integer,intent(in)          :: mate,iw,idff,idffb
-        real(kind=8),intent(in)     :: geomi(ndim,nno), crit(*), instm, instp
-        real(kind=8),intent(in)     :: vff(nno, npg),vffb(nnob, npg)
-        real(kind=8),intent(in)     :: angmas(3), ddlm(nddl), ddld(nddl), siefm(3*ndim+4, npg)
-        real(kind=8),intent(in)     :: vim(lgpg, npg)
-        real(kind=8),intent(out)    :: fint(nddl),matr(nddl,nddl),siefp(3*ndim+4,npg),vip(lgpg,npg)
-        aster_logical,intent(in)    :: lMatr, lVect, lSigm, lVari
-        integer,intent(out)         :: codret
+        aster_logical, intent(in)    :: matsym
+        character(len=8), intent(in) :: typmod(2)
+        character(len=*), intent(in) :: fami
+        character(len=16), intent(in):: option, compor(COMPOR_SIZE)
+        integer, intent(in)          :: ndim, nno, nnob, npg, nddl, lgpg
+        integer, intent(in)          :: mate, iw, idff, idffb
+        real(kind=8), intent(in)     :: geomi(ndim, nno), carcri(CARCRI_SIZE), instm, instp
+        real(kind=8), intent(in)     :: vff(nno, npg), vffb(nnob, npg)
+        real(kind=8), intent(in)     :: angmas(3), ddlm(nddl), ddld(nddl), siefm(3*ndim+4, npg)
+        real(kind=8), intent(in)     :: vim(lgpg, npg)
+  real(kind=8), intent(out)    :: fint(nddl), matr(nddl, nddl), siefp(3*ndim+4, npg), vip(lgpg, npg)
+        aster_logical, intent(in)    :: lMatr, lVect, lSigm, lVari
+        integer, intent(out)         :: codret
     end subroutine nglgic
 end interface

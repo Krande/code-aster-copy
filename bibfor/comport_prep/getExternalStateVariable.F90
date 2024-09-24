@@ -22,7 +22,7 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
                                     extern_addr, variExteCode)
 !
     use NonLin_Datastructure_type
-    use Behaviour_module, only: getAsterVariableName, getMFrontVariableName
+    use Behaviour_module
 !
     implicit none
 !
@@ -60,9 +60,8 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
 !
     integer :: nb_exte, i_exte, idummy1, idummy2, i_exte_list
     integer, parameter :: nb_exte_list = 31
-    character(len=64) :: name_exte(EXTE_ESVA_NBMAXI)
+    character(len=64) :: name_exte(ESVA_EXTE_NBMAXI)
     character(len=8) :: varc_aster
-
     integer :: tabcod(60)
     character(len=8), parameter :: name_varc(nb_exte_list) = (/ &
                                    'ELTSIZE1', 'COORGA  ', &
@@ -97,11 +96,11 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
     name_exte = ' '
     if (l_mfront_proto .or. l_mfront_offi) then
         call mgis_get_number_of_esvs(extern_addr, nb_exte)
-        ASSERT(nb_exte .le. EXTE_ESVA_NBMAXI)
+        ASSERT(nb_exte .le. ESVA_EXTE_NBMAXI)
         call mgis_get_esvs(extern_addr, name_exte)
     else
         call lcinfo(rela_code_py, idummy1, idummy2, nb_exte)
-        ASSERT(nb_exte .le. EXTE_ESVA_NBMAXI)
+        ASSERT(nb_exte .le. ESVA_EXTE_NBMAXI)
         call lcextevari(rela_code_py, nb_exte, name_exte)
     end if
 

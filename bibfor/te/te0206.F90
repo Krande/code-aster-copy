@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,22 +16,24 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1006
 !
 subroutine te0206(option, nomte)
 !
-    use Behaviour_module, only: behaviourOption
+    use Behaviour_module
+    use Behaviour_type
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/gedisc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmfi3d.h"
 #include "asterfort/tecach.h"
-#include "asterfort/Behaviour_type.h"
-#include "asterfort/assert.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -50,6 +52,8 @@ subroutine te0206(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ndim = 3
+    character(len=4), parameter :: fami = "RIGI"
     integer :: nno, npg, nddl
     integer :: ipoids, ivf, idfde
     integer :: igeom, imater, icarcr, icomp, idepm, iddep, icoret
@@ -58,9 +62,11 @@ subroutine te0206(option, nomte)
     integer :: lgpg, codret
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,Z,W => 1ER INDICE
     real(kind=8) :: coopg(4, 4)
+    character(len=8), parameter :: typmod(2) = (/'3D      ', 'ELEMJOIN'/)
     character(len=16) :: rela_comp
     aster_logical :: matsym
     aster_logical :: lVect, lMatr, lVari, lSigm
+    type(Behaviour_Integ) :: BEHinteg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,15 +81,15 @@ subroutine te0206(option, nomte)
 !    ICI AUX FONCTIONS DE FORMES 2D DES FACES DES MAILLES JOINT 3D
 !    PAR EXEMPLE FONCTION DE FORME DU QUAD4 POUR LES HEXA8.
 !
-    call elrefe_info(fami='RIGI', nno=nno, npg=npg, &
+    call elrefe_info(fami=fami, nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
     nddl = 6*nno
 !
     ASSERT(nno .le. 4)
     ASSERT(npg .le. 4)
-!
-! - LECTURE DES PARAMETRES
+
+! - Get input fields
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imater)
     call jevech('PCARCRI', 'L', icarcr)
@@ -100,22 +106,27 @@ subroutine te0206(option, nomte)
 !     CALCUL DES COORDONNEES DES POINTS DE GAUSS, POIDS=0
     call gedisc(3, nno, npg, zr(ivf), zr(igeom), &
                 coopg)
-!
-!     RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS
-!
+
+! - Initialisation of behaviour datastructure
+    call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              zk16(icomp), zr(icarcr), &
+                              zr(iinstm), zr(iinstp), &
+                              fami, zi(imater), &
+                              BEHinteg)
+
 ! - Select objects to construct from option name
-!
     call behaviourOption(option, zk16(icomp), &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
-!
+
 ! - Properties of behaviour
-!
     rela_comp = zk16(icomp-1+RELA_NAME)
-!
+
 ! - Get output fields
-!
     if (lMatr) then
         matsym = .true.
         if (rela_comp .eq. 'JOINT_MECA_RUPT') matsym = .false.
@@ -136,15 +147,15 @@ subroutine te0206(option, nomte)
         call jevech('PVECTUR', 'E', ivect)
     end if
 !
-    call nmfi3d(nno, nddl, npg, lgpg, zr(ipoids), &
+    call nmfi3d(BEHInteg, typmod, &
+                nno, nddl, npg, lgpg, zr(ipoids), &
                 zr(ivf), zr(idfde), zi(imater), option, zr(igeom), &
                 zr(idepm), zr(iddep), zr(icontm), zr(icontp), zr(ivect), &
                 zr(imatr), zr(ivarim), zr(ivarip), zr(icarcr), zk16(icomp), &
                 matsym, coopg, zr(iinstm), zr(iinstp), lMatr, lVect, lSigm, &
                 codret)
-!
+
 ! - Save return code
-!
     if (lSigm) then
         call jevech('PCODRET', 'E', icoret)
         zi(icoret) = codret

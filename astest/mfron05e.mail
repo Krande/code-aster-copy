@@ -1,0 +1,97 @@
+                    
+ FINSF
+ %
+ COOR_3D
+ NO1      1.000000000000  -5.000000000000E-01  -5.000000000000E-01  
+ NO2      1.000000000000   5.000000000000E-01  -5.000000000000E-01 
+ NO3      1.000000000000   5.000000000000E-01   5.000000000000E-01 
+ NO4      1.000000000000  -5.000000000000E-01   5.000000000000E-01 
+ NO5      0.000000000000  -5.000000000000E-01  -5.000000000000E-01 
+ NO6      0.000000000000   5.000000000000E-01  -5.000000000000E-01
+ NO7      0.000000000000   5.000000000000E-01   5.000000000000E-01
+ NO8      0.000000000000  -5.000000000000E-01   5.000000000000E-01 
+ NO9      0.000000000000  -5.000000000000E-01  -5.000000000000E-01
+ NO10     0.000000000000   5.000000000000E-01  -5.000000000000E-01 
+ NO11     0.000000000000   5.000000000000E-01   5.000000000000E-01 
+ NO12     0.000000000000  -5.000000000000E-01   5.000000000000E-01
+ FINSF
+ %
+ HEXA8   
+ CUBE     NO1      NO2      NO3      NO4      NO5      NO6     NO7     
+          NO8     
+ CUBEDEG  NO5     NO6     NO7     NO8      NO9      NO10      NO11     
+          NO12     
+ FINSF
+ %
+ QUAD4   
+ GAUCHE   NO5      NO6      NO7      NO8     
+ GAUCHE2  NO9      NO10     NO11     NO12    
+ DROITE   NO1      NO2      NO3      NO4     
+ HAUT     NO4      NO3      NO7      NO8     
+ BAS      NO1      NO2      NO6      NO5     
+ %AVAN     NO1      NO3      NO4      NO2     
+ %ARRI     NO7      NO8      NO10     NO9     
+ FINSF
+ %
+ GROUP_NO
+ TOUSNO                  
+ NO1      NO2      NO3      NO4      NO5      NO6      NO7     
+ NO8      NO9      NO10     NO11     NO12    
+ FINSF
+ %
+ GROUP_NO
+ NOREF_3D                
+ NO5     
+ FINSF
+ %
+ GROUP_NO
+ NOREF_CZM                
+ NO9     
+ FINSF
+ %
+ GROUP_MA
+ G_CUBE                  
+ CUBE    
+ FINSF
+ %
+ GROUP_MA
+ CUBEDEG                 
+ CUBEDEG 
+ FINSF
+ %
+ GROUP_MA
+ CUBE                    
+ CUBE    
+ FINSF
+ %
+ GROUP_MA
+ DROITE                  
+ DROITE  
+ FINSF
+ %
+ GROUP_MA
+ GAUCHE2                 
+ GAUCHE2 
+ FINSF
+ %
+ %GROUP_MA
+ %ARRI                    
+ %ARRI    
+ %FINSF
+ %
+ GROUP_MA
+ HAUT                    
+ HAUT    
+ FINSF
+ %
+ %GROUP_MA
+ %AVAN                    
+ %AVAN    
+ %FINSF
+ %
+ GROUP_MA
+ BAS                     
+ BAS     
+ FINSF
+ %
+ FIN

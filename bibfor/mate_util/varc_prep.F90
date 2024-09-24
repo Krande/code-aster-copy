@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,6 @@ subroutine varc_prep(chmate, l_thm)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/utmess.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: chmate
     aster_logical, intent(in) :: l_thm
@@ -87,7 +85,8 @@ subroutine varc_prep(chmate, l_thm)
             ca_ctempp_ = r8nnem()
         end if
     end if
-    ! Test plus fin que l_Thm (voir calcul_module.F90)
+!
+    varc_name = 'PCAP'
     if (l_thm) then
         if (ca_nbcvrc_ .eq. 0) then
             ca_cpcapm_ = r8nnem()
@@ -101,7 +100,6 @@ subroutine varc_prep(chmate, l_thm)
             ca_cpcapp_ = r8nnem()
         end if
     end if
-
 !
     call jedema()
 end subroutine

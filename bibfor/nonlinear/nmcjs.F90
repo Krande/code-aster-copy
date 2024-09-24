@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 
 subroutine nmcjs(typmod, imat, crit, &
                  epsd, &
@@ -133,7 +134,7 @@ subroutine nmcjs(typmod, imat, crit, &
     real(kind=8) :: epscon
     real(kind=8) :: epsthe, epsthm
     real(kind=8) :: depsth(6), epsdth(6), alphaf, alpham
-    aster_logical :: trac
+    aster_logical :: trac, lTemp
 !
     real(kind=8) :: i1d
 !
@@ -148,7 +149,7 @@ subroutine nmcjs(typmod, imat, crit, &
 ! - Get temperatures
 !
     call get_varc('RIGI', 1, 1, 'T', &
-                  tempm, tempf, tref)
+                  tempm, tempf, tref, l_temp_=lTemp)
 !
     umess = iunifi('MESSAGE')
     mod = typmod(1)
@@ -180,15 +181,19 @@ subroutine nmcjs(typmod, imat, crit, &
 !     --  CALCUL DE DEPSTH ET EPSDTH
 !     --------------------------------
 !
-    if (((isnan(tempm)) .or. (isnan(tref))) .and. (materf(3, 1) .ne. 0.d0)) then
-        call utmess('F', 'CALCULEL_15')
-    else if (materf(3, 1) .eq. 0.d0) then
+    if (materf(3, 1) .eq. 0.d0) then
         epsthe = 0.d0
         epsthm = 0.d0
     else
-        epsthe = alphaf*(tempf-tref)-alpham*(tempm-tref)
-        epsthm = alpham*(tempm-tref)
+        if (lTemp) then
+            epsthe = alphaf*(tempf-tref)-alpham*(tempm-tref)
+            epsthm = alpham*(tempm-tref)
+        else
+            call utmess('F', 'CALCULEL_15')
+        end if
     end if
+    depsth = 0.d0
+    epsdth = 0.d0
     do i = 1, ndi
         depsth(i) = deps(i)-epsthe
         epsdth(i) = epsd(i)-epsthm

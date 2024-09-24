@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,15 @@ subroutine te0543(option, nomte)
 !
     implicit none
 !
-#include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/pipepe.h"
 #include "asterfort/tecach.h"
-#include "asterfort/Behaviour_type.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 ! ......................................................................
@@ -45,16 +46,15 @@ subroutine te0543(option, nomte)
 !
     character(len=8) :: typmod(2)
     character(len=16) :: rela_comp, pilo
-!
+    character(len=4), parameter :: fami = 'RIGI'
     integer :: jgano, ndim, nno, nnos, npg, lgpg, jtab(7), itype
     integer :: ipoids, ivf, idfde, igeom, imate, icarcr
     integer :: icontm, ivarim, icopil, iborne, ictau
     integer :: ideplm, iddepl, idepl0, idepl1, icompo, iret
+    real(kind=8) :: instam, instap
     type(Behaviour_Integ) :: BEHinteg
 
-!
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
 !
 ! - TYPE DE MODELISATION
@@ -72,14 +72,13 @@ subroutine te0543(option, nomte)
     typmod(2) = 'DEPLA'
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     ASSERT(nno .le. 27)
     ASSERT(npg .le. 27)
-!
+
 ! - PARAMETRES EN ENTREE
-!
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCOMPOR', 'L', icompo)
@@ -103,14 +102,24 @@ subroutine te0543(option, nomte)
 !
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
-!
-! - Prepare external state variables
-!
+
+! - Continuation method: no time !
+    instam = r8vide()
+    instap = r8vide()
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              zk16(icompo), zr(icarcr), &
+                              instam, instap, &
+                              fami, zi(imate), &
+                              BEHinteg)
+
+! ----- Prepare external state variables (geometry)
     if (rela_comp .eq. 'BETON_DOUBLE_DP') then
-        call behaviourPrepESVAElem(zr(icarcr), typmod, &
-                                   nno, npg, ndim, &
+        call behaviourPrepESVAGeom(nno, npg, ndim, &
                                    ipoids, ivf, idfde, &
                                    zr(igeom), BEHinteg)
+
     end if
 !
 ! PARAMETRES EN SORTIE

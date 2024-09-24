@@ -25,7 +25,6 @@ subroutine lc0000(BEHinteg, &
                   angmas, numlc, sigp, vip, &
                   ndsde, dsidep, icomp, nvi_all, codret)
 !
-    use calcul_module, only: calcul_status
     use Behaviour_type
     use Behaviour_module
 !
@@ -125,17 +124,17 @@ subroutine lc0000(BEHinteg, &
     integer :: imate, ndim, nvi_all, kpg, ksp
     aster_logical, intent(in) :: l_epsi_varc
     integer :: neps, nsig, ndsde
-    real(kind=8) :: carcri(*), angmas(3)
+    real(kind=8) :: carcri(CARCRI_SIZE), angmas(3)
     real(kind=8) :: instam, instap
-    real(kind=8) :: epsm_tot(neps), deps_tot(neps)
+    real(kind=8), intent(in) :: epsm_tot(neps), deps_tot(neps)
     real(kind=8) :: sigm_all(nsig), sigp(nsig)
     real(kind=8) :: vim(nvi_all), vip(nvi_all)
     real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                            merge(neps, 6, nsig*neps .eq. ndsde))
-    character(len=16) :: compor(*), option
+    character(len=16) :: compor(COMPOR_SIZE), option
     character(len=8), intent(in) :: materi
     character(len=16), intent(in) :: mult_comp
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(2)
     character(len=*) :: fami
     integer :: icomp
     integer :: numlc
@@ -176,17 +175,20 @@ subroutine lc0000(BEHinteg, &
 !     ICOMP   : COMPTEUR DE REDECOUPAGE PRODUIT PAR REDECE
 !     NVI_ALL : NOMBRE DE VARIABLES INTERNES DU POINT D'INTEGRATION
 !
-! OUT SIGP    : CONTRAINTES A L'INSTANT ACTUEL
 ! VAR VIP     : VARIABLES INTERNES
 !                IN  : ESTIMATION (ITERATION PRECEDENTE OU LAG. AUGM.)
 !                OUT : EN T+
 !     NDSDE   : DIMENSION DE DSIDEP
-!     DSIDEP  : OPERATEUR TANGENT DSIG/DEPS OU DSIG/DF
-!     CODRET  : CODE RETOUR LOI DE COMPORMENT :
-!               CODRET=0 : TOUT VA BIEN
-!               CODRET=1 : ECHEC DANS L'INTEGRATION DE LA LOI
-!               CODRET=2 : LOI OK MAIS UNE CONDITION INTERDIT LA CONVERGENCE GLOBALE
-!
+! Out sigp             : stresses after integration
+! Out vip              : internal state variables after integration
+! Out dsidep           : tangent matrix
+! Out codret           : code for error
+!                   1 : echec fatal dans l'integration de la loi (resultats non utilisables)
+!                   3 : contraintes planes deborst non convergees (interdit la convergence)
+!                   2 : criteres de qualite de la loi non respectes (decoupage si convergence)
+!                   4 : domaine de validite de la loi non respecte (emission d'une alarme)
+!                   0 : tout va bien
+
 ! PRECISIONS :
 ! -----------
 !  LES TENSEURS ET MATRICES SONT RANGES DANS L'ORDRE :
@@ -227,16 +229,11 @@ subroutine lc0000(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8), parameter             :: rac2 = sqrt(2.d0)
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8), dimension(6), parameter:: r2 = [1.d0, 1.d0, 1.d0, rac2, rac2, rac2]
-    integer, parameter                 :: nvi_regu_visc = 8
-    integer, parameter                 :: nvi_gdef_log = 6
-    character(len=16) :: defo_ldc, defo_comp, regu_visc, postIncr
-    aster_logical :: l_pred, l_czm, l_defo_meca, l_large, lVari, lSigm, lMatr, l_grad_vari
-    aster_logical :: l_regu_visc, l_gdef_log, lImplex, lAnnealing
-    integer:: nvi, idx_regu_visc, ndimsi
+    integer, parameter :: nvi_regu_visc = 8, nvi_gdef_log = 6
+    integer:: nvi, idx_regu_visc, numlcEff, ndimsi
     real(kind=8):: sigm(nsig), epsm(neps), deps(neps)
-! --------------------------------------------------------------------------------------------------
     integer :: ndt, ndi
     common/tdim/ndt, ndi
 !
@@ -246,100 +243,61 @@ subroutine lc0000(BEHinteg, &
     ndt = 2*ndim
     ndi = ndim
 
-! - Get parameters from COMPOR map
-    read (compor(DEFO_LDC), '(A16)') defo_ldc
-    read (compor(DEFO), '(A16)') defo_comp
-    read (compor(REGUVISC), '(A16)') regu_visc
-    read (compor(POSTINCR), '(A16)') postIncr
-    l_large = (defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP' &
-               .or. defo_comp .eq. 'GREEN_LAGRANGE')
-    l_gdef_log = defo_comp .eq. 'GDEF_LOG'
-    l_defo_meca = defo_ldc .eq. 'MECANIQUE'
-    l_regu_visc = regu_visc .eq. 'REGU_VISC_ELAS'
-    lAnnealing = postIncr .eq. "REST_ECRO"
-
-! - Get parameters from modelization
-    l_czm = typmod(2) .eq. 'ELEMJOIN'
-    l_grad_vari = typmod(2) .eq. 'GRADVARI'
-
-! - Get parameters from option
-    lImplex = option .eq. "RIGI_MECA_IMPLEX" .or. option .eq. "RAPH_MECA_IMPLEX"
-    l_pred = L_PRED(option)
-    lVari = L_VARI(option)
-    lSigm = L_SIGM(option)
-    lMatr = L_MATR(option)
-
-! - Initializations
-    codret = 0
-    if (lSigm) sigp = 0.d0
-    if (lMatr) dsidep = 0.d0
-
-! - Prepare parameters at Gauss point
-    call behaviourPrepESVAGauss(carcri, defo_ldc, imate, &
-                                fami, kpg, ksp, &
-                                neps, instap, BEHinteg)
+! - Prepare external state variables at Gauss point
+    call behaviourPrepESVAPoin(BEHinteg)
 
 ! - Prepare input strains for the behaviour law
+! - Default: mechanical strains are total strains (no external state variables)
     epsm = epsm_tot
     deps = deps_tot
-    call behaviourPrepStrain(l_czm, l_large, l_defo_meca, &
-                             l_grad_vari, imate, fami, kpg, ksp, &
-                             neps, BEHinteg%esva, epsm, deps)
+    call behaviourPrepStrain(neps, epsm, deps, BEHinteg)
 
 ! - Prepare external state variables for external solvers (UMAT/MFRONT)
-    if (BEHinteg%l_mfront .or. BEHinteg%l_umat) then
-        call behaviourPrepESVAExte(compor, fami, kpg, ksp, BEHinteg)
+    if (BEHinteg%behavPara%lExteSolver) then
+        call behaviourPrepESVAExte(BEHinteg)
     end if
 
-! - Prepare index of behaviour law
-    if (typmod(2) .eq. 'GDVARINO') then
-        numlc = numlc+3000
-    end if
-    if (typmod(2) .eq. 'GRADSIGM') then
-        numlc = numlc+4000
-    end if
-    if (typmod(2) .eq. 'GRADVARI') then
-        numlc = numlc+6000
-    end if
-    if (typmod(2) .eq. 'EJ_HYME' .or. &
-        typmod(2) .eq. 'ELEMJOIN' .or. typmod(2) .eq. 'INTERFAC') then
-        numlc = numlc+7000
-    end if
-    if (lImplex) then
-        numlc = numlc+2000
-    end if
-
-! - How many internal variables really for the constitutive law
+! - How many internal variables really for the constitutive law ?
     nvi = nvi_all
-    if (l_gdef_log) then
+    if (BEHinteg%behavPara%lGdefLog) then
         nvi = nvi-nvi_gdef_log
     end if
-    if (l_regu_visc) then
+    if (BEHinteg%behavPara%lReguVisc) then
         nvi = nvi-nvi_regu_visc
         idx_regu_visc = nvi+1
     end if
     ASSERT(nvi .ge. 1)
 
-! - What is the stress at t- for the constitutive law
+! - What is the stress at t- for the constitutive law ?
     sigm(1:nsig) = sigm_all(1:nsig)
-    if (l_regu_visc) then
+    if (BEHinteg%behavPara%lReguVisc) then
         ASSERT(nsig .ge. 2*ndim)
         sigm(1:2*ndim) = sigm(1:2*ndim)-vim(idx_regu_visc:idx_regu_visc-1+2*ndim)*r2(1:2*ndim)
     end if
 
-! - Copy internal states variables
-    if (lVari .and. lAnnealing) then
+! - Initializations of output variables
+    codret = 0
+    if (BEHinteg%behavPara%lSigm) then
+        sigp = 0.d0
+    end if
+    if (BEHinteg%behavPara%lMatr) then
+        dsidep = 0.d0
+    end if
+    if (BEHInteg%behavPara%lVari .and. BEHinteg%behavPara%lAnnealing) then
         vip(nvi_all) = vim(nvi_all)
     end if
 
+! - Get index of behaviour law
+    numlcEff = numlc+BEHinteg%behavPara%lawIndexOffset
+
 ! --------------------------------------------------------------------------------------------------
-    select case (numlc)
+    select case (numlcEff)
     case (1)
 !     ELAS
         call lc0001(BEHinteg, fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
+                    sigp, vip, typmod, &
                     ndsde, dsidep, codret)
     case (2)
 !     VMIS_ISOT_XXX, VISC_ISOT_XXX
@@ -353,14 +311,14 @@ subroutine lc0000(BEHinteg, &
         call lc0003(fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, epsm, &
                     deps, sigm, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
+                    sigp, vip, typmod, &
                     nvi, dsidep, codret)
     case (4)
 !     VMIS_CINX_CHAB/MEMO VISC_CINX_CHAB/MEMO,
         call lc0004(fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, epsm, &
                     deps, sigm, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
+                    sigp, vip, typmod, &
                     nvi, dsidep, codret)
     case (7)
 !     ENDO_ORTH_BETON
@@ -449,7 +407,7 @@ subroutine lc0000(BEHinteg, &
                     compor, carcri, instam, instap, &
                     epsm, deps, sigm, vim, option, &
                     sigp, vip, typmod, icomp, &
-                    nvi, numlc, dsidep, codret)
+                    nvi, numlcEff, dsidep, codret)
     case (26)
         call lc0026(fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, epsm, &
@@ -865,7 +823,7 @@ subroutine lc0000(BEHinteg, &
         call lc7045(BEHinteg, &
                     fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, epsm, &
-                    deps, sigm, vim, option, angmas, &
+                    deps, vim, option, angmas, &
                     sigp, vip, typmod, icomp, &
                     nvi, dsidep, codret)
     case (7046)
@@ -967,25 +925,27 @@ subroutine lc0000(BEHinteg, &
                     compor, mult_comp, carcri, instam, instap, neps, &
                     epsm, deps, nsig, sigm, vim, &
                     option, angmas, sigp, nvi, vip, &
-                    typmod, icomp, ndsde, dsidep, codret)
+                    typmod, ndsde, dsidep, codret)
     case default
-        call utmess('F', 'COMPOR1_43', si=numlc)
+        call utmess('F', 'COMPOR1_43', si=numlcEff)
     end select
 ! --------------------------------------------------------------------------------------------------
 
-! - Prediction
-    if (l_Pred .and. lSigm .and. .not. l_defo_meca) then
+! - For "old" drediction
+    if (BEHInteg%behavPara%lPred .and. BEHInteg%behavPara%lSigm .and. &
+        BEHInteg%behavPara%lStrainAll) then
         sigp = sigm
     end if
 
 ! - Viscous regularisation
-    if (l_regu_visc .and. codret .ne. 1) then
+    if (BEHInteg%behavPara%lReguVisc .and. codret .ne. LDC_ERROR_NCVG) then
         ndimsi = 2*ndim
-        ASSERT(.not. l_large)
-        ASSERT(typmod(2) .eq. ' ' .or. typmod(2) .eq. 'GRADVARI')
+        ASSERT(.not. BEHInteg%behavPara%lFiniteStrain)
+        ASSERT(BEHInteg%behavPara%lStandardFE .or. BEHInteg%behavPara%lGradVari)
         ASSERT(neps .ge. ndimsi)
         ASSERT(nsig .ge. ndimsi)
-        call lcvisc(fami, kpg, ksp, ndim, imate, lSigm, lMatr, lVari, &
+        call lcvisc(fami, kpg, ksp, ndim, imate, &
+                    BEHInteg%behavPara%lSigm, BEHInteg%behavPara%lMatr, BEHInteg%behavPara%lVari, &
                     instam, instap, deps(1:ndimsi), &
                     vim(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
                     sigp(1:ndimsi), &
@@ -993,5 +953,6 @@ subroutine lc0000(BEHinteg, &
                     dsidep(1:ndimsi, 1:ndimsi))
     end if
 !
-    ASSERT(codret .ge. 0 .and. codret .le. 2)
+    ASSERT(codret .ge. LDC_ERROR_NONE .and. codret .le. LDC_ERROR_QUAL)
+!
 end subroutine

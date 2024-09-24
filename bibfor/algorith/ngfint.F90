@@ -19,7 +19,7 @@
 !
 subroutine ngfint(option, typmod, ndim, nddl, neps, &
                   npg, w, b, compor, fami, &
-                  mat, angmas, lgpg, crit, instam, &
+                  mat, angmas, lgpg, carcri, instam, &
                   instap, ddlm, ddld, ni2ldc, sigmam, &
                   vim, sigmap, vip, fint, matr, &
                   lMatr, lVect, lSigm, codret)
@@ -33,15 +33,16 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/nmcomp.h"
+#include "asterfort/Behaviour_type.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
 !
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(2)
     character(len=*) :: fami
-    character(len=16) :: option, compor(*)
+    character(len=16) :: option, compor(COMPOR_SIZE)
     integer :: ndim, nddl, neps, npg, mat, lgpg
     real(kind=8) :: w(neps, npg), ni2ldc(neps, npg), b(neps, npg, nddl)
-    real(kind=8) :: angmas(3), crit(*), instam, instap
+    real(kind=8) :: angmas(3), carcri(*), instam, instap
     real(kind=8) :: ddlm(nddl), ddld(nddl)
     real(kind=8) :: sigmam(neps, npg), sigmap(neps, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), matr(nddl, nddl), fint(nddl)
@@ -82,6 +83,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
     integer :: nepg, g, i, cod(npg)
     real(kind=8) :: sigm(neps, npg), sigp(neps, npg)
     real(kind=8) :: epsm(neps, npg), epsd(neps, npg)
@@ -98,10 +100,16 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
     if (lMatr) dsidep = 0.d0
     if (lSigm) sigp = 0.d0
     cod = 0
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              fami, mat, &
+                              BEHinteg)
 !
 ! - CALCUL DES DEFORMATIONS GENERALISEES
 !
@@ -127,13 +135,19 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
 !    FORMAT LDC DES CONTRAINTES (AVEC RAC2)
     sigm = sigmam*ni2ldc
 !
-!    LOI DE COMPORTEMENT EN CHAQUE POINT DE GAUSS
+! - LOI DE COMPORTEMENT EN CHAQUE POINT DE GAUSS
     do g = 1, npg
-        call nmcomp(BEHinteg, fami, g, 1, ndim, &
-                    typmod, mat, compor, crit, instam, &
-                    instap, neps, epsm(:, g), epsd(:, g), neps, &
-                    sigm(:, g), vim(1, g), option, angmas, sigp(:, g), &
-                    vip(1, g), neps*neps, dsidep(:, :, g), cod(g))
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(g, ksp, BEHinteg)
+
+! ----- Integrator
+        call nmcomp(BEHinteg, &
+                    fami, g, ksp, ndim, typmod, &
+                    mat, compor, carcri, instam, instap, &
+                    neps, epsm(:, g), epsd(:, g), neps, sigm(:, g), &
+                    vim(1, g), option, angmas, &
+                    sigp(:, g), vip(1, g), neps*neps, dsidep(:, :, g), cod(g))
         if (cod(g) .eq. 1) goto 900
     end do
 !

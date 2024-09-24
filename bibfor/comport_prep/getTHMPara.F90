@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getTHMPara(behaviourPrepCrit)
+subroutine getTHMPara(prepMapCarcri)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -28,7 +28,7 @@ subroutine getTHMPara(behaviourPrepCrit)
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/getvr8.h"
 !
-    type(Behaviour_PrepCrit), intent(inout) :: behaviourPrepCrit
+    type(BehaviourPrep_MapCarcri), intent(inout) :: prepMapCarcri
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,7 +38,7 @@ subroutine getTHMPara(behaviourPrepCrit)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  behaviourPrepCrit: datastructure to prepare parameters for constitutive laws
+! IO  prepMapCarcri    : datastructure to construct CARCRI map
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,7 +57,7 @@ subroutine getTHMPara(behaviourPrepCrit)
         call getvr8(factorKeyword, 'PARM_ALPHA', iocc=1, scal=parm_alpha_thm, nbret=iret)
     end if
 !
-    behaviourPrepCrit%parm_theta_thm = parm_theta_thm
-    behaviourPrepCrit%parm_alpha_thm = parm_alpha_thm
+    prepMapCarcri%parm_theta_thm = parm_theta_thm
+    prepMapCarcri%parm_alpha_thm = parm_alpha_thm
 !
 end subroutine

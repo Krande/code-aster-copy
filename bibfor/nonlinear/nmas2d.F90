@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmas2d(fami, nno, npg, ipoids, ivf, &
+subroutine nmas2d(BEHinteg, &
+                  fami, nno, npg, ipoids, ivf, &
                   idfde, geom, typmod, option, imate, &
                   compor, mult_comp, lgpg, carcri, instam, instap, &
                   deplm, deplp, angmas, sigm, vim, &
@@ -39,6 +40,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf, &
 #include "asterfort/nmgeom.h"
 #include "asterfort/Behaviour_type.h"
 !
+    type(Behaviour_Integ), intent(inout) :: BEHinteg
     integer :: nno, npg, imate, lgpg, codret, cod(9), npgs
     integer :: ipoids, ivf, idfde
     character(len=*) :: fami
@@ -68,7 +70,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf, &
 ! IN  DFDE    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
 ! IN  DFDK    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
 ! IN  GEOM    : COORDONEES DES NOEUDS
-! IN  TYPMOD  : TYPE DE MODEELISATION
+! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  OPTION  : OPTION DE CALCUL
 ! IN  IMATE   : MATERIAU CODE
 ! IN  COMPOR  : COMPORTEMENT
@@ -88,15 +90,16 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf, &
 ! OUT VIP     : VARIABLES INTERNES    (RAPH_MECA ET FULL_MECA)
 ! OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 ! OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
-!.......................................................................
 !
+! --------------------------------------------------------------------------------------------------
+!
+    integer, parameter :: ksp = 1
     aster_logical :: grand, axi
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl, kpgs, proj
-    integer, parameter :: ndim = 2
+    integer, parameter :: ndimLdc = 2
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), r, sigma(6), sign(6)
     real(kind=8) :: poids, tmp, sig(6)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    type(Behaviour_Integ) :: BEHinteg
 !
 !     AJ. VARIABLES
     real(kind=8) :: jac, sigas(4, 4), pqx, pqy, defc(4, 4, 2)
@@ -125,15 +128,9 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf, &
             f(i, j) = kron(i, j)
         end do
     end do
-!
-! - Initialisation of behaviour datastructure
-!
-    call behaviourInit(BEHinteg)
-!
-! - Prepare external state variables
-!
-    call behaviourPrepESVAElem(carcri, typmod, &
-                               nno, npg, ndim, &
+
+! - Prepare external state variables (geometry)
+    call behaviourPrepESVAGeom(nno, npg, ndimLdc, &
                                ipoids, ivf, idfde, &
                                geom, BEHinteg, &
                                deplm, deplp)
@@ -165,15 +162,14 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf, &
                &om(2, 3)-geom(2, 1)))/(2*(((geom(1, 2)-geom(1, 4))*(geom(2, 1)-geom(2, 3)))-(geom(&
                &1, 1)-geom(1, 3))*(geom(2, 2)-geom(2, 4))) &
                )
-!
-!
-!
-!
+
 ! - CALCUL POUR LE POINT DE GAUSS CENTRAL
     kpg = 1
-!
+
+! - Set main parameters for behaviour (on point)
+    call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
-!
 !     CALCUL DE DFDI,F,EPS,DEPS,R(EN AXI) ET POIDS
 !
     do j = 1, 6
@@ -201,12 +197,10 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf, &
         end do
     end do
 !
-!
     do i = 1, 3
         sign(i) = sigm(i, kpg)
     end do
     sign(4) = sigm(4, kpg)*rac2
-!
 !
 ! - LOI DE COMPORTEMENT
     if (option(1:9) .eq. 'RAPH_MECA') then
@@ -217,7 +211,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf, &
 !
     sigma = 0.d0
     call nmcomp(BEHinteg, &
-                fami, kpg, 1, 2, typmod, &
+                fami, kpg, ksp, ndimLdc, typmod, &
                 imate, compor, carcri, instam, instap, &
                 6, eps, deps, 6, sign, &
                 vim(1, kpg), optios, angmas, &

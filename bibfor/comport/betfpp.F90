@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,8 +93,8 @@ subroutine betfpp(BEHinteg, &
 ! --- LONGUEUR CARACTERISTIQUE POUR LOI BETON LC
 !
     if (materf(9, 2) .lt. zero) then
-        if (BEHinteg%elem%l_eltsize1) then
-            lc = BEHinteg%elem%eltsize1
+        if (BEHinteg%behavESVA%behavESVAGeom%lElemSize1) then
+            lc = BEHinteg%behavESVA%behavESVAGeom%elemSize1
         else
             call utmess('F', 'COMPOR2_12')
         end if

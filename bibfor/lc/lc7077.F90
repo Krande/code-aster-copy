@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104,W1306,C1509
+! aslint: disable=W1504,W0104,W1306,C1505
 !
 subroutine lc7077(BEHinteg, fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
@@ -37,8 +37,8 @@ subroutine lc7077(BEHinteg, fami, kpg, ksp, ndim, imate, &
     integer, intent(in) :: ksp
     integer, intent(in) :: ndim
     integer, intent(in) :: imate
-    character(len=16), intent(in) :: compor(*)
-    real(kind=8), intent(in) :: carcri(*)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
     real(kind=8), intent(in) :: instap
     integer, intent(in) :: neps
@@ -52,10 +52,11 @@ subroutine lc7077(BEHinteg, fami, kpg, ksp, ndim, imate, &
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8)                 :: sigp(nsig)
     real(kind=8)                 :: vip(nvi)
-    character(len=8), intent(in) :: typmod(*)
+    character(len=8), intent(in) :: typmod(2)
     integer, intent(in) :: icomp
     integer, intent(in) :: ndsde
-    real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
+    real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                           merge(neps, 6, nsig*neps .eq. ndsde))
     integer, intent(out):: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -85,7 +86,7 @@ subroutine lc7077(BEHinteg, fami, kpg, ksp, ndim, imate, &
     codret = cl%exception
     if (codret .ne. 0) goto 999
 
-    BEHinteg%elga%r = cl%r
+    BEHinteg%behavESVA%behavESVAOther%r = cl%r
     if (lSigm) sigp(1:ndim) = delta
     if (lVari) vip(1:nvi) = vi(1:nvi)
     if (lMatr) dsidep(1:ndim, 1:ndim) = dphi_delta

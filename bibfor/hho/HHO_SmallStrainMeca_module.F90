@@ -130,6 +130,7 @@ contains
 !   Out codret      : info on integration of the LDC
 ! --------------------------------------------------------------------------------------------------
 !
+        integer, parameter :: ksp = 1
         type(HHO_basis_cell) :: hhoBasisCell
         type(Behaviour_Integ) :: BEHinteg
         real(kind=8) :: E_prev_coeff(MSIZE_CELL_MAT), E_incr_coeff(MSIZE_CELL_MAT)
@@ -161,10 +162,16 @@ contains
         l_lhs = L_MATR(option)
         l_rhs = L_VECT(option)
         nb_sig = nbsigm()
-!
+
 ! ----- Initialisation of behaviour datastructure
-!
         call behaviourInit(BEHinteg)
+
+! ----- Set main parameters for behaviour (on cell)
+        call behaviourSetParaCell(hhoCell%ndim, typmod, option, &
+                                  compor, carcri, &
+                                  time_prev, time_curr, &
+                                  fami, imate, &
+                                  BEHinteg)
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
@@ -193,7 +200,7 @@ contains
 !
         do ipg = 1, hhoQuadCellRigi%nbQuadPoints
             coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
-            BEHinteg%elem%coor_elga(ipg, 1:3) = coorpg(1:3)
+            BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 1:3) = coorpg(1:3)
             weight = hhoQuadCellRigi%weights(ipg)
 ! --------- Eval basis function at the quadrature point
             call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
@@ -208,14 +215,16 @@ contains
 ! -------- tranform sigm in symmetric form
 !
             call tranfoMatToSym(hhoCell%ndim, sigm(1:ncomp, ipg), Cauchy_prev)
-!
-! --------- Compute behaviour
-!
-            call nmcomp(BEHinteg, fami, ipg, 1, hhoCell%ndim, &
-                        typmod, imate, compor, carcri, time_prev, &
-                        time_curr, 6, E_prev, E_incr, 6, &
-                        Cauchy_prev, vim(1, ipg), option, angmas, Cauchy_curr, &
-                        vip(1, ipg), 36, dsidep, cod(ipg), mult_comp)
+! --------- Set main parameters for behaviour (on point)
+            call behaviourSetParaPoin(ipg, ksp, BEHinteg)
+
+! --------- Integrate
+            call nmcomp(BEHinteg, &
+                        fami, ipg, 1, hhoCell%ndim, typmod, &
+                        imate, compor, carcri, time_prev, time_curr, &
+                        6, E_prev, E_incr, 6, Cauchy_prev, &
+                        vim(1, ipg), option, angmas, &
+                        Cauchy_curr, vip(1, ipg), 36, dsidep, cod(ipg), mult_comp)
 !
             if (cod(ipg) .eq. 1) then
                 goto 999

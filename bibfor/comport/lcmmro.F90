@@ -45,7 +45,7 @@ subroutine lcmmro(BEHinteg, omp, nvi, vind, vinf)
 !
     do i = 1, 3
         do j = 1, 3
-            l(i, j) = BEHinteg%elem%gradvelo(3*(i-1)+j)
+            l(i, j) = BEHinteg%behavESVA%behavESVAGeom%gradVelo(3*(i-1)+j)
         end do
     end do
     do i = 1, 3

@@ -99,16 +99,17 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
     aster_logical :: cplan
     aster_logical :: matsym, lintbo
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lCorr, lVari
     integer :: kpg, nddl, cod(MAX_QP), ivf
     integer :: mate, lgpg, codret, iw, idff, iret
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(2)
     character(len=16) :: option
-    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
     character(len=16), intent(in) :: mult_comp
-    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8) :: instm, instp
     real(kind=8) :: dtde(6, 6)
     real(kind=8) :: angmas(3), dispPrev(*), dispIncr(*), sigmPrev(2*ndim, npg), epslPrev(6)
@@ -137,11 +138,19 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
 !
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
-!
-! - Prepare external state variables
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instm, instp, &
+                              FEQuad%fami, mate, &
+                              BEHinteg)
+
+! - Prepare external state variables (geometry)
     call elrefe_info(fami=FEQuad%fami, jpoids=iw, jvf=ivf, jdfde=idff)
-    call behaviourPrepESVAElem(carcri, typmod, nno, npg, ndim, &
-                               iw, ivf, idff, FECell%coorno(1:ndim, 1:nno), BEHinteg, &
+    call behaviourPrepESVAGeom(nno, npg, ndim, &
+                               iw, ivf, idff, &
+                               FECell%coorno(1:ndim, 1:nno), BEHinteg, &
                                dispPrev, dispIncr)
 !
 ! - Update configuration
@@ -179,21 +188,28 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
         if (cod(kpg) .ne. 0) then
             goto 999
         end if
-! ----- Compute behaviour
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         cod(kpg) = 0
         dtde = 0.d0
         tlogCurr = 0.d0
-        call nmcomp(BEHinteg, FEQuad%fami, kpg, 1, ndim, &
-                    typmod, mate, compor, carcri, instm, &
-                    instp, 6, epslPrev, epslIncr, 6, &
-                    tlogPrev, vim(1, kpg), option, angmas, tlogCurr, &
-                    vip(1, kpg), 36, dtde, cod(kpg), mult_comp)
+        call nmcomp(BEHinteg, &
+                    FEQuad%fami, kpg, ksp, ndim, typmod, &
+                    mate, compor, carcri, instm, instp, &
+                    6, epslPrev, epslIncr, 6, tlogPrev, &
+                    vim(1, kpg), option, angmas, &
+                    tlogCurr, vip(1, kpg), 36, dtde, &
+                    cod(kpg), mult_comp)
         if (cod(kpg) .eq. 1) then
             goto 999
         end if
         if (cod(kpg) .eq. 4) then
             lintbo = .true.
         end if
+
 ! ----- Post-treatment of sthenic quantities
         call poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
                     tlogCurr, fPrev, lgpg, vip(1, kpg), ndim, &
@@ -205,6 +221,7 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
             cod(kpg) = 1
             goto 999
         end if
+
 ! ----- Compute internal forces and matrix
         call nmgrtg(FEBasis, coorpg, FEQuad%weights(kpg), BGSEval, lVect, &
                     lMatr, lMatrPred, fPrev, fCurr, dsidep, &

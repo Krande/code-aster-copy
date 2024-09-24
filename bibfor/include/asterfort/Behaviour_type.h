@@ -175,8 +175,31 @@
 !
 ! --------------------------------------------------------------------------------------------------
 
-! Maximum number of differents types of external state variables for MFront
-#define ESVA_EXTE_MFRONT_NBMAXI     11
+! Maximum number of external state variables in external solvers
+#define ESVA_EXTE_NBMAXI            8
+
+! Maximum number of components in fields for external state variables
+#define ESVA_FIELD_NBCMPMAXI        6
+#define ESVA_FIELD_TEMP_NBCMP       3
+#define ESVA_FIELD_EPSA_NBCMP       6
+
+! Maximum number of fields for external state variables
+#define ESVA_FIELD_NBMAXI           5
+#define ESVA_FIELD_TEMP             1
+#define ESVA_FIELD_SECH             2
+#define ESVA_FIELD_HYDR             3
+#define ESVA_FIELD_EPSA             4
+#define ESVA_FIELD_PTOT             5
+
+! Type of field to compute strain
+#define ESVA_FIELD_TYPE_UNKW        0
+#define ESVA_FIELD_TYPE_VOLU        1
+#define ESVA_FIELD_TYPE_COMP        2
+
+! Maximum number of Gauss points for coordinates
+#define ESVA_GEOM_NBMAXI            27
+
+! --------------------------------------------------------------------------------------------------
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -219,30 +242,22 @@
 #define ZALPHBET  29
 #define TIME      30
 #define TEMPREFE  31
-!
-! --------------------------------------------------------------------------------------------------
-!
-! For external solvers (UMAT/MFRONT)
-!
-! Constants
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Type of model and strain model (MGIS)
-! keep consistency with bibcxx/Behaviours/MGISBehaviourFort.h
-!
-#define MFRONT_MODEL_UNSET          0
-#define MFRONT_MODEL_TRIDIMENSIONAL 1
-#define MFRONT_MODEL_AXISYMMETRICAL 2
-#define MFRONT_MODEL_PLANESTRESS    3
-#define MFRONT_MODEL_PLANESTRAIN    4
-!
-#define MFRONT_STRAIN_UNSET         0
-#define MFRONT_STRAIN_SMALL         1
-#define MFRONT_STRAIN_F             3
-!
-! Maximum number of external state variables (UMAT/MFRONT)
-!
-#define EXTE_ESVA_NBMAXI            8
+
 ! Set to 1 to activate DEBUG (careful, very verbose, at each Gauss point !)
 #define LDC_PREP_DEBUG              0
+
+! --------------------------------------------------------------------------------------------------
+! Error during integration of behaviour
+!
+! 0 => No problem
+! 1 => convergence default
+! 2 => quality problem
+! 3 => stress plane algorithm not converged
+! 4 => out of bound for validity
+!
+! --------------------------------------------------------------------------------------------------
+#define LDC_ERROR_NONE 0
+#define LDC_ERROR_NCVG 1
+#define LDC_ERROR_QUAL 2
+#define LDC_ERROR_CPLA 3
+#define LDC_ERROR_DVAL 4

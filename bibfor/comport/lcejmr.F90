@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: kyrylo.kazymyrenko at edf.fr
+! aslint: disable=W0413,W1306
 !
 subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
-                  mate, option, epsm, deps, sigmo, &
+                  mate, option, epsm, deps, &
                   sigma, dsidep, vim, vip, typmod, &
                   instam, instap)
 !
@@ -38,7 +38,7 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
     type(Behaviour_Integ), intent(in) :: BEHinteg
     integer :: mate, ndim, kpg, ksp
     real(kind=8) :: epsm(6), deps(6)
-    real(kind=8) :: sigmo(6), sigma(6), dsidep(6, 6)
+    real(kind=8) :: sigma(6), dsidep(6, 6)
     real(kind=8) :: vim(*), vip(*), instam, instap
     character(len=8) :: typmod(*)
     character(len=16) :: option
@@ -178,10 +178,10 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
 ! DEFINITION DES PARAMETRES POUR LA RECUPERATION DES FONCTIONS
     coorot = 0.d0
     do i = 1, ndim
-        coorot(i) = BEHinteg%elem%coor_elga(kpg, i)
+        coorot(i) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, i)
     end do
     do i = 1, ndim*ndim
-        coorot(ndim+i) = BEHinteg%elga%rotpg(i)
+        coorot(ndim+i) = BEHinteg%behavESVA%behavESVAOther%rotpg(i)
     end do
 !
     nompar(1) = 'INST'
