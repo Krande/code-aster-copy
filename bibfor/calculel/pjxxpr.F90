@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -130,6 +130,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
     end if
 !
 !
+    prol0 = 'NON'
 !
     if (nomcmd .eq. 'DEPL_INTERNE') then
 !       ON NE TRAITE QUE LE CHAMP DEPL

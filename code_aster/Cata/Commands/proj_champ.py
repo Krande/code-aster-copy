@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -137,15 +137,6 @@ PROJ_CHAMP = OPER(
         b_sous_point=BLOC(
             condition="""equal_to("METHODE", 'SOUS_POINT')""",
             CARA_ELEM=SIMP(statut="o", typ=cara_elem),
-            PROL_ZERO=SIMP(
-                statut="f",
-                typ="TXM",
-                into=("OUI", "NON"),
-                defaut="NON",
-                fr=tr(
-                    "Pour prolonger les champs par zéro là ou la projection ne donne pas de valeurs."
-                ),
-            ),
             TRANSF_GEOM_1=SIMP(
                 statut="f",
                 typ=(fonction_sdaster, nappe_sdaster, formule),
