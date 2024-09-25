@@ -25,6 +25,7 @@ from code_aster.Commands import *
 from code_aster import CA
 
 command = MECA_NON_LINE
+test = CA.TestCase()
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # >>> Isotropic compression test on a 3D HEXA8 element with the CSSM model
@@ -91,8 +92,8 @@ MATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
 
 LI1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=5), _F(JUSQU_A=2.0, NOMBRE=5)))
 
-maxSteps = 22
-DEFLIST = DEFI_LIST_INST(
+maxSteps = 5
+timeStepper = DEFI_LIST_INST(
     METHODE="AUTO",
     DEFI_LIST=_F(LIST_INST=LI1, NB_PAS_MAXI=maxSteps),
     ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO"),
@@ -124,24 +125,45 @@ CHA_DEPL = AFFE_CHAR_MECA(
 ### Solution
 ### <<<<<<<<
 
-RESU = command(
+result = CA.NonLinearResult()
+
+keywords = _F(
     MODELE=MODELE,
     CHAM_MATER=MATE,
     EXCIT=(_F(CHARGE=CHA_PRES), _F(CHARGE=CHA_DEPL)),
     COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14, ITER_INTE_MAXI=20),
-    INCREMENT=_F(LIST_INST=DEFLIST),
+    INCREMENT=_F(LIST_INST=timeStepper),
     NEWTON=_F(MATRICE="TANGENTE"),
     CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-10),
     SOLVEUR=_F(METHODE="MUMPS"),
 )
 
+done = 1  # t=0
+finished = False
+while not finished:
+    result = command(**keywords)
+
+    test.assertLessEqual(
+        result.getNumberOfIndexes() - done,
+        maxSteps,
+        msg="check that at most 'maxSteps' have been completed",
+    )
+
+    finished = result.getLastTime() >= 2.0
+    if done == 1:
+        keywords.update(_F(reuse=result, ETAT_INIT=_F(EVOL_NOLI=result)))
+    done = result.getNumberOfIndexes()
+
+test.assertAlmostEqual(result.getLastTime(), 2.0, msg="last time == 2.0")
+
+
 ### >>>>>>>>>>>>>>>
 ### Post-processing
 ### <<<<<<<<<<<<<<<
 
-RESU = CALC_CHAMP(
-    reuse=RESU,
-    RESULTAT=RESU,
+result = CALC_CHAMP(
+    reuse=result,
+    RESULTAT=result,
     CONTRAINTE="SIEF_NOEU",
     DEFORMATION="EPSI_NOEU",
     VARI_INTERNE="VARI_NOEU",
@@ -160,13 +182,11 @@ x0 = -np.log(p / (2.0 * pc0)) / bt
 EPVP = fsolve(func, x0)[0]
 EPVE = -p / k
 
-test = CA.TestCase()
-test.assertEqual(RESU.getNumberOfIndexes() - 1, maxSteps)
 
 TEST_RESU(
     RESU=_F(
         INST=1.0,
-        RESULTAT=RESU,
+        RESULTAT=result,
         REFERENCE="ANALYTIQUE",
         NOM_CHAM="EPSI_NOEU",
         GROUP_NO="NO6",
@@ -179,7 +199,7 @@ TEST_RESU(
 TEST_RESU(
     RESU=_F(
         INST=1.0,
-        RESULTAT=RESU,
+        RESULTAT=result,
         REFERENCE="ANALYTIQUE",
         NOM_CHAM="VARI_NOEU",
         NOM_CMP="V15",
@@ -191,8 +211,8 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=maxSteps,
-        RESULTAT=RESU,
+        INST=1.4,
+        RESULTAT=result,
         NOM_CHAM="EPSI_NOEU",
         GROUP_NO="NO6",
         NOM_CMP="EPXX",
@@ -202,8 +222,8 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=maxSteps,
-        RESULTAT=RESU,
+        INST=1.4,
+        RESULTAT=result,
         NOM_CHAM="VARI_NOEU",
         NOM_CMP="V15",
         GROUP_NO="NO6",
