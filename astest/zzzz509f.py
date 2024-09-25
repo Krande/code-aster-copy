@@ -18,8 +18,11 @@
 # --------------------------------------------------------------------
 
 # This testcase is a copy of ssnv160f, but using MECA_NON_LINE.
+import numpy as np
+from scipy.optimize import fsolve
 
 from code_aster.Commands import *
+from code_aster import CA
 
 command = MECA_NON_LINE
 
@@ -86,19 +89,23 @@ MATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
 ### Time steps
 ### <<<<<<<<<<
 
-LI1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=50), _F(JUSQU_A=2.0, NOMBRE=50)))
+LI1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=5), _F(JUSQU_A=2.0, NOMBRE=5)))
 
+maxSteps = 22
 DEFLIST = DEFI_LIST_INST(
-    DEFI_LIST=_F(LIST_INST=LI1), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO")
+    METHODE="AUTO",
+    DEFI_LIST=_F(LIST_INST=LI1, NB_PAS_MAXI=maxSteps),
+    ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO"),
 )
 
 ### >>>>>>>>>>>>>>>>>>>
 ### Boundary conditions
 ### <<<<<<<<<<<<<<<<<<<
 
-PRES = DEFI_FONCTION(
-    NOM_PARA="INST", NOM_RESU="PRESSION", VALE=(0.0, 0.0, 1.0, 100.0e3, 2.0, 100.0)
-)
+# /!\ p is 50 times more than in ssnv160f + reduced ITER_INTE_MAXI to force the timesteps splitting
+p = 500.0e4
+
+PRES = DEFI_FONCTION(NOM_PARA="INST", NOM_RESU="PRESSION", VALE=(0.0, 0.0, 1.0, p, 2.0, 100.0))
 
 CHA_PRES = AFFE_CHAR_MECA_F(
     MODELE=MODELE, PRES_REP=_F(GROUP_MA=("HAUT", "DROITE", "ARRIERE"), PRES=PRES), VERI_NORM="OUI"
@@ -121,22 +128,12 @@ RESU = command(
     MODELE=MODELE,
     CHAM_MATER=MATE,
     EXCIT=(_F(CHARGE=CHA_PRES), _F(CHARGE=CHA_DEPL)),
-    COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14),
+    COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14, ITER_INTE_MAXI=20),
     INCREMENT=_F(LIST_INST=DEFLIST),
-    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-8),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-10),
     SOLVEUR=_F(METHODE="MUMPS"),
 )
-
-#     MODELE=MODELE,
-#     CHAM_MATER=CHM,
-#     EXCIT=(_F(CHARGE=CHA0), _F(CHARGE=CHA2)),
-#     COMPORTEMENT=_F(RELATION="KH_CSSM", RESI_INTE=1.0e-14, ITER_INTE_MAXI=100),
-#     INCREMENT=_F(LIST_INST=DEFLIST),
-#     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-#     CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-10),
-#     SOLVEUR=_F(METHODE="MUMPS"),
-# )
 
 ### >>>>>>>>>>>>>>>
 ### Post-processing
@@ -154,11 +151,6 @@ RESU = CALC_CHAMP(
 ### Tests
 ### <<<<<
 
-import numpy as np
-from scipy.optimize import fsolve
-
-p = 100.0e3
-
 
 def func(x):
     return p - 2.0 * pc0 * (np.exp(-bt * x) - eta * np.exp(2.0 * om * x))
@@ -167,6 +159,9 @@ def func(x):
 x0 = -np.log(p / (2.0 * pc0)) / bt
 EPVP = fsolve(func, x0)[0]
 EPVE = -p / k
+
+test = CA.TestCase()
+test.assertEqual(RESU.getNumberOfIndexes() - 1, maxSteps)
 
 TEST_RESU(
     RESU=_F(
@@ -177,7 +172,7 @@ TEST_RESU(
         GROUP_NO="NO6",
         NOM_CMP="EPXX",
         VALE_REFE=(EPVE + EPVP) / 3.0,
-        VALE_CALC=-0.00196837523706952,
+        VALE_CALC=-0.038995719385912855,
     )
 )
 
@@ -190,7 +185,29 @@ TEST_RESU(
         NOM_CMP="V15",
         GROUP_NO="NO6",
         VALE_REFE=EPVP,
-        VALE_CALC=-0.005711327261524507,
+        VALE_CALC=-0.10729723567711803,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=maxSteps,
+        RESULTAT=RESU,
+        NOM_CHAM="EPSI_NOEU",
+        GROUP_NO="NO6",
+        NOM_CMP="EPXX",
+        VALE_CALC=-0.037703755561623496,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=maxSteps,
+        RESULTAT=RESU,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V15",
+        GROUP_NO="NO6",
+        VALE_CALC=-0.10729723567711803,
     )
 )
 
