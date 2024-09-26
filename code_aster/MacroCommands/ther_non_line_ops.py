@@ -31,7 +31,6 @@ from ..Objects import (
 )
 from ..Solvers import NonLinearSolver, ProblemSolver
 from ..Solvers import ProblemType as PBT
-from ..Solvers import SolverOptions as SOP
 from ..Solvers.Post import ComputeHydr, ComputeTempFromHHO
 from ..Utilities import force_list, print_stats, reset_stats
 from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
