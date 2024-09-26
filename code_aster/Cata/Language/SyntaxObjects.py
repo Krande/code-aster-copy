@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ from collections import OrderedDict
 
 from . import DataStructure as DS
 from .DataStructure import DataStructure, UnitBaseType
-from .SyntaxChecker import checkCommandSyntax
+from .SyntaxChecker import CheckerError, checkCommandSyntax
 from .SyntaxUtils import (
     add_none_sdprod,
     block_utils,
@@ -421,9 +421,19 @@ class PartOfSyntax(UIDMixing):
                     pass
                 elif type(userFact) in (list, tuple):
                     for userOcc in userFact:
-                        kwd.addDefaultKeywords(userOcc, ctxt)
+                        try:
+                            kwd.addDefaultKeywords(userOcc, ctxt)
+                        except AttributeError:
+                            raise CheckerError(
+                                TypeError, f"{key}: Unexpected type: {type(userOcc)}", []
+                            )
                 else:
-                    kwd.addDefaultKeywords(userFact, ctxt)
+                    try:
+                        kwd.addDefaultKeywords(userFact, ctxt)
+                    except AttributeError:
+                        raise CheckerError(
+                            TypeError, f"{key}: Unexpected type: {type(userFact)}", []
+                        )
                     if kwd.is_list():
                         userFact = [userFact]
                 userSyntax[key] = userFact
