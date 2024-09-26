@@ -113,28 +113,40 @@ def expand_table(coefficients_table, nb_orders):
 
 
 def restrain_field(field, model, groups=(), is_node=True):
-    """Restrain the given field on the given groups.
-
-    Arguments:
-        field (FieldOnNodes or FieldOnCells) : aster field to be restrained.
-        model (Model) : aster model to be used.
-        groups (list)    : list of groups to restrain to.
-        is_node (bool)   : indicates wether the group is node based (GROUP_NO)
-                        or element based (GROUP_MA).
-    Returns:
-        field (FieldOnNodes or FieldOnCells) : the new field.
-
     """
-    if len(groups):
-        type_cham = f"{field.getFieldType()}_{field.getPhysicalQuantity()}"
-        crea_champ_args = {"TYPE_CHAM": type_cham, "OPERATION": "ASSE", "MODELE": model}
-        if is_node:
-            crea_champ_args["ASSE"] = {"GROUP_NO": groups, "CHAM_GD": field}
-        else:
-            crea_champ_args["ASSE"] = {"GROUP_MA": groups, "CHAM_GD": field}
-            crea_champ_args["PROL_ZERO"] = "OUI"
-        field = CREA_CHAMP(**crea_champ_args)
-    return field
+    Restrain the given field on the specified groups.
+
+    Args:
+        field (FieldOnNodes or FieldOnCells): Aster field to be restrained.
+        model (Model): Aster model to be used.
+        groups (list): List of groups to restrain to (default is empty list).
+        is_node (bool): Indicates whether the group is node-based (GROUP_NO)
+                        or element-based (GROUP_MA). Defaults to True.
+
+    Returns:
+        FieldOnNodes or FieldOnCells: The new restrained field.
+    """
+    type_cham = f"{field.getFieldType()}_{field.getPhysicalQuantity()}"
+
+    # Initialize the argument dictionary
+    crea_champ_args = {"TYPE_CHAM": type_cham, "OPERATION": "ASSE", "MODELE": model, "ASSE": {}}
+
+    # Add group or default based on node/element flag
+    if groups:
+        group_key = "GROUP_NO" if is_node else "GROUP_MA"
+        crea_champ_args["ASSE"][group_key] = groups
+    else:
+        crea_champ_args["ASSE"]["TOUT"] = "OUI"
+
+    # Add field data
+    crea_champ_args["ASSE"]["CHAM_GD"] = field
+
+    # For element-based groups, add zero-prolongation if necessary
+    if not is_node and groups:
+        crea_champ_args["PROL_ZERO"] = "OUI"
+
+    # Create and return the new field
+    return CREA_CHAMP(**crea_champ_args)
 
 
 def extract_results_values_by_field(
