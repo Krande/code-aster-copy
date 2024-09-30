@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -400,7 +400,7 @@ MACRO_BASCULE_SCHEMA_CATA = MACRO(
         INST_INIT=SIMP(statut="f", typ="R"),
         NUME_INST_FIN=SIMP(statut="f", typ="I"),
         INST_FIN=SIMP(statut="f", typ="R"),
-        PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-3),
+        PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
         OPTI_LIST_INST=SIMP(statut="f", typ="TXM", into=("INCR_MAXI",)),
         NOM_CHAM=SIMP(statut="f", typ="TXM"),
         NOM_CMP=SIMP(statut="f", typ="TXM"),
@@ -415,7 +415,7 @@ MACRO_BASCULE_SCHEMA_CATA = MACRO(
         INST_INIT=SIMP(statut="f", typ="R"),
         NUME_INST_FIN=SIMP(statut="f", typ="I"),
         INST_FIN=SIMP(statut="f", typ="R"),
-        PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-3),
+        PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
         OPTI_LIST_INST=SIMP(statut="f", typ="TXM", into=("INCR_MAXI",)),
         NOM_CHAM=SIMP(statut="f", typ="TXM"),
         NOM_CMP=SIMP(statut="f", typ="TXM"),
