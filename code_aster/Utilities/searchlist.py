@@ -1,6 +1,6 @@
 # coding: utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,8 @@ class SearchList:
             msg = f"{value} is not in list"
             raise ValueError(msg)
         if len(idx) > 1:
-            msg = f"{value} is not unique in list"
+            values = [self._values[i] for i in idx]
+            msg = f"{value} is not unique in list: {values} at indexes {idx}"
             raise IndexError(msg)
         else:
             return idx[0]
