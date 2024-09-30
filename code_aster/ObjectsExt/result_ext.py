@@ -103,7 +103,7 @@ class ResultStateBuilder(InternalStateBuilder):
             )
             self._st["loads"] = []
 
-        indexes = result.getIndexes()
+        indexes = self._st["index"]
         self._st["fields"] = {}
         for i in indexes:
             self._st["fields"][i] = {}
