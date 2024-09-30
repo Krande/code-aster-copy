@@ -238,17 +238,19 @@ contains
 ! ----- Initialisation of behaviour datastructure
         call behaviourInit(BEHinteg)
 
-! ----- Set main parameters for behaviour (on cell)
-        call behaviourSetParaCell(hhoCell%ndim, hhoComporState%typmod, hhoComporState%option, &
-                                  hhoComporState%compor, hhoComporState%carcri, &
-                                  hhoMecaState%time_prev, hhoMecaState%time_curr, &
-                                  hhoComporState%fami, hhoComporState%imater, &
-                                  BEHinteg)
-
-! ----- Vector and/or matrix
+        ! ----- Vector and/or matrix
         forc_noda = hhoComporState%option == "FORC_NODA"
         l_lhs = L_MATR(hhoComporState%option)
         l_rhs = L_VECT(hhoComporState%option) .or. forc_noda
+
+        ! ----- Set main parameters for behaviour (on cell)
+        if (.not. forc_noda) then
+            call behaviourSetParaCell(hhoCell%ndim, hhoComporState%typmod, hhoComporState%option, &
+                                      hhoComporState%compor, hhoComporState%carcri, &
+                                      hhoMecaState%time_prev, hhoMecaState%time_curr, &
+                                      hhoComporState%fami, hhoComporState%imater, &
+                                      BEHinteg)
+        end if
 
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
@@ -266,11 +268,6 @@ contains
 !
 ! ----- compute G_curr = gradrec * depl_curr (sym or not)
 !
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
-        b_m = to_blas_int(mk_gbs_tot)
-        b_n = to_blas_int(mk_total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
         call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad, &
                    b_lda, hhoMecaState%depl_curr, b_incx, 0.d0, G_curr_coeff, &
                    b_incy)
@@ -280,19 +277,12 @@ contains
         b_lda = to_blas_int(MSIZE_CELL_VEC)
         b_m = to_blas_int(gv_gbs)
         b_n = to_blas_int(gv_total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
         call dgemv('N', b_m, b_n, 1.d0, hhoGVState%grad, &
                    b_lda, hhoGVState%vari_prev, b_incx, 0.d0, GV_prev_coeff, &
                    b_incy)
 !
 ! ----- compute GV_curr = gradrec * vari_curr
 !
-        b_lda = to_blas_int(MSIZE_CELL_VEC)
-        b_m = to_blas_int(gv_gbs)
-        b_n = to_blas_int(gv_total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
         call dgemv('N', b_m, b_n, 1.d0, hhoGVState%grad, &
                    b_lda, hhoGVState%vari_curr, b_incx, 0.d0, GV_curr_coeff, &
                    b_incy)
@@ -332,38 +322,26 @@ contains
                 cod(ipg) = merge(1, 0, jac_curr .le. r8prem())
                 if (cod(ipg) .ne. 0) goto 999
             else
-                Eps_prev = hhoEvalSymMatCell( &
-                           hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_prev_coeff, &
-                           mk_gbs_sym &
-                           )
-                Eps_curr = hhoEvalSymMatCell( &
-                           hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, &
-                           mk_gbs_sym &
-                           )
+                Eps_prev = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
+                                             coorpg(1:3), G_prev_coeff, mk_gbs_sym)
+                Eps_curr = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
+                                             coorpg(1:3), G_curr_coeff, mk_gbs_sym)
             end if
 !
-            GV_prev = hhoEvalVecCell( &
-                      hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), GV_prev_coeff, gv_gbs)
-            GV_curr = hhoEvalVecCell( &
-                      hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), GV_curr_coeff, gv_gbs)
+            GV_prev = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
+                                     coorpg(1:3), GV_prev_coeff, gv_gbs)
+            GV_curr = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
+                                     coorpg(1:3), GV_curr_coeff, gv_gbs)
 !
-            var_prev = hhoEvalScalCell( &
-                       hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), hhoGVState%vari_prev, &
-                       gv_cbs &
-                       )
-            var_curr = hhoEvalScalCell( &
-                       hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), hhoGVState%vari_curr, &
-                       gv_cbs &
-                       )
+            var_prev = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
+                                       coorpg(1:3), hhoGVState%vari_prev, gv_cbs)
+            var_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
+                                       coorpg(1:3), hhoGVState%vari_curr, gv_cbs)
 !
-            lag_prev = hhoEvalScalCell( &
-                       hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), hhoGVState%lagv_prev, &
-                       gv_cbs &
-                       )
-            lag_curr = hhoEvalScalCell( &
-                       hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), hhoGVState%lagv_curr, &
-                       gv_cbs &
-                       )
+            lag_prev = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
+                                       coorpg(1:3), hhoGVState%lagv_prev, gv_cbs)
+            lag_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
+                                       coorpg(1:3), hhoGVState%lagv_curr, gv_cbs)
 
 ! --------- Set main parameters for behaviour (on point)
             call behaviourSetParaPoin(ipg, ksp, BEHinteg)
@@ -462,9 +440,6 @@ contains
                           lhs_vv, b_lda)
 ! ---------- += weight * (dsv_dl : c_phi, c_phi)
                 coeff = weight*dsv_dl
-                b_n = to_blas_int(gv_cbs)
-                b_incx = to_blas_int(1)
-                b_lda = to_blas_int(MSIZE_TDOFS_SCAL)
                 call dsyr('U', b_n, coeff, BSCEval, b_incx, &
                           lhs_vl, b_lda)
 ! ---------- += weight * (dsl_dl : c_phi, c_phi)

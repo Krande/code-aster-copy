@@ -190,6 +190,9 @@ ip.setEntryName("PlasticIndicator");
 	dfeel_mcc_ddeel = -id4;
 
 	if(b[0]){  // Plastic loading in the Modified Cam-Clay element
+		if(-om*(lam_mcc+dlam_mcc-epv_mcc-depv_mcc) > 300.) {
+			return false;
+		}
 
 	    sig_mcc = k*trace(eel_mcc+deel_mcc)*id2+2.*rho*mu*deviator(eel_mcc+deel_mcc);
 		const stress pc_mcc = pc0*exp(-bt*(epv_mcc+depv_mcc));

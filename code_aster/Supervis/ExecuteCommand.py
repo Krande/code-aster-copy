@@ -352,7 +352,17 @@ class ExecuteCommand:
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        self._cata.get_compat_syntax()(keywords)
+        try:
+            self._cata.get_compat_syntax()(keywords)
+        except (AssertionError, KeyError, TypeError, ValueError, AttributeError) as exc:
+            # in case of syntax error, show the syntax and raise the exception
+            self.print_syntax(keywords)
+            ExecuteCommand.level -= 1
+            msg = getattr(exc, "msg", str(exc))
+            if ExecutionParameter().option & Options.Debug:
+                logger.error(msg)
+                raise
+            UTMESS("F", "DVP_10", valk=("compat_syntax", self.command_name, msg))
         self.change_syntax(keywords)
 
     def change_syntax(self, keywords):
@@ -435,13 +445,20 @@ class ExecuteCommand:
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        self._cata.addDefaultKeywords(keywords)
-        remove_none(keywords)
         try:
+            self._cata.addDefaultKeywords(keywords)
+            remove_none(keywords)
             logger.debug("checking syntax of %s...", self.name)
             max_check = ExecutionParameter().get_option("max_check")
             checkCommandSyntax(self._cata, keywords, add_default=False, max_check=max_check)
-        except (CheckerError, AssertionError, KeyError, TypeError, ValueError) as exc:
+        except (
+            CheckerError,
+            AssertionError,
+            KeyError,
+            TypeError,
+            ValueError,
+            AttributeError,
+        ) as exc:
             # in case of syntax error, show the syntax and raise the exception
             self.print_syntax(keywords)
             ExecuteCommand.level -= 1

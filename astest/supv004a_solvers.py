@@ -32,7 +32,8 @@ from code_aster.Solvers import (
     StorageManager,
     TimeStepper,
 )
-from code_aster.Utilities.logger import INFO, logger
+
+# from code_aster.Utilities.logger import INFO, logger
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
 listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
@@ -523,6 +524,44 @@ class TestTimeStepper(unittest.TestCase):
         # print("+ split #2")
         with self.assertRaisesRegex(CA.SolverError, "trop petit"):
             stp.failed(CA.ConvergenceError("MESSAGEID"))
+
+    def test22_finalize(self):
+        stp = TimeStepper([0.0, 1.0, 1.1, 2.0, 3.0])
+        nb_max_steps = 2
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.0)
+        self.assertFalse(stp.isFinished())
+        stp.completed()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.1)
+        self.assertFalse(stp.isFinished())
+        done = stp.size() - stp.remaining()
+        self.assertEqual(done, 1)
+        self.assertGreaterEqual(done + 1, nb_max_steps)
+        stp.setFinal(step, current=step)
+        self.assertEqual(stp.size(), 2)
+        self.assertSequenceEqual(stp._times, [1.0, 1.1])
+        stp.completed()
+        self.assertEqual(stp.remaining(), 0)
+        self.assertTrue(stp.isFinished())
+
+    def test23_event_finalize(self):
+        stp = TimeStepper([0.0, 1.0, 1.1, 2.0, 3.0])
+        nb_max_steps = 2
+        stp.register_event(TimeStepper.Finalize(TimeStepper.MaximumNbOfSteps(nb_max_steps)))
+        phys = MagicMock(name="phys_state")
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.0)
+        self.assertTrue(stp.check_event(phys))
+        self.assertFalse(stp.isFinished())
+        stp.completed()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.1)
+        self.assertTrue(stp.check_event(phys))
+        self.assertFalse(stp.isFinished())
+        stp.completed()
+        self.assertEqual(stp.remaining(), 0)
+        self.assertTrue(stp.isFinished())
 
     def test30_autosplit(self):
         residuals = [

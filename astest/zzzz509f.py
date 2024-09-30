@@ -18,10 +18,14 @@
 # --------------------------------------------------------------------
 
 # This testcase is a copy of ssnv160f, but using MECA_NON_LINE.
+import numpy as np
+from scipy.optimize import fsolve
 
 from code_aster.Commands import *
+from code_aster import CA
 
 command = MECA_NON_LINE
+test = CA.TestCase()
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # >>> Isotropic compression test on a 3D HEXA8 element with the CSSM model
@@ -86,19 +90,23 @@ MATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
 ### Time steps
 ### <<<<<<<<<<
 
-LI1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=50), _F(JUSQU_A=2.0, NOMBRE=50)))
+LI1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=5), _F(JUSQU_A=2.0, NOMBRE=5)))
 
-DEFLIST = DEFI_LIST_INST(
-    DEFI_LIST=_F(LIST_INST=LI1), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO")
+maxSteps = 5
+timeStepper = DEFI_LIST_INST(
+    METHODE="AUTO",
+    DEFI_LIST=_F(LIST_INST=LI1, NB_PAS_MAXI=maxSteps),
+    ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO"),
 )
 
 ### >>>>>>>>>>>>>>>>>>>
 ### Boundary conditions
 ### <<<<<<<<<<<<<<<<<<<
 
-PRES = DEFI_FONCTION(
-    NOM_PARA="INST", NOM_RESU="PRESSION", VALE=(0.0, 0.0, 1.0, 100.0e3, 2.0, 100.0)
-)
+# /!\ p is 50 times more than in ssnv160f + reduced ITER_INTE_MAXI to force the timesteps splitting
+p = 500.0e4
+
+PRES = DEFI_FONCTION(NOM_PARA="INST", NOM_RESU="PRESSION", VALE=(0.0, 0.0, 1.0, p, 2.0, 100.0))
 
 CHA_PRES = AFFE_CHAR_MECA_F(
     MODELE=MODELE, PRES_REP=_F(GROUP_MA=("HAUT", "DROITE", "ARRIERE"), PRES=PRES), VERI_NORM="OUI"
@@ -117,34 +125,45 @@ CHA_DEPL = AFFE_CHAR_MECA(
 ### Solution
 ### <<<<<<<<
 
-RESU = command(
+result = CA.NonLinearResult()
+
+keywords = _F(
     MODELE=MODELE,
     CHAM_MATER=MATE,
     EXCIT=(_F(CHARGE=CHA_PRES), _F(CHARGE=CHA_DEPL)),
-    COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14),
-    INCREMENT=_F(LIST_INST=DEFLIST),
-    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-8),
+    COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14, ITER_INTE_MAXI=20),
+    INCREMENT=_F(LIST_INST=timeStepper),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-10),
     SOLVEUR=_F(METHODE="MUMPS"),
 )
 
-#     MODELE=MODELE,
-#     CHAM_MATER=CHM,
-#     EXCIT=(_F(CHARGE=CHA0), _F(CHARGE=CHA2)),
-#     COMPORTEMENT=_F(RELATION="KH_CSSM", RESI_INTE=1.0e-14, ITER_INTE_MAXI=100),
-#     INCREMENT=_F(LIST_INST=DEFLIST),
-#     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-#     CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-10),
-#     SOLVEUR=_F(METHODE="MUMPS"),
-# )
+done = 1  # t=0
+finished = False
+while not finished:
+    result = command(**keywords)
+
+    test.assertLessEqual(
+        result.getNumberOfIndexes() - done,
+        maxSteps,
+        msg="check that at most 'maxSteps' have been completed",
+    )
+
+    finished = result.getLastTime() >= 2.0
+    if done == 1:
+        keywords.update(_F(reuse=result, ETAT_INIT=_F(EVOL_NOLI=result)))
+    done = result.getNumberOfIndexes()
+
+test.assertAlmostEqual(result.getLastTime(), 2.0, msg="last time == 2.0")
+
 
 ### >>>>>>>>>>>>>>>
 ### Post-processing
 ### <<<<<<<<<<<<<<<
 
-RESU = CALC_CHAMP(
-    reuse=RESU,
-    RESULTAT=RESU,
+result = CALC_CHAMP(
+    reuse=result,
+    RESULTAT=result,
     CONTRAINTE="SIEF_NOEU",
     DEFORMATION="EPSI_NOEU",
     VARI_INTERNE="VARI_NOEU",
@@ -153,11 +172,6 @@ RESU = CALC_CHAMP(
 ### >>>>>
 ### Tests
 ### <<<<<
-
-import numpy as np
-from scipy.optimize import fsolve
-
-p = 100.0e3
 
 
 def func(x):
@@ -168,29 +182,52 @@ x0 = -np.log(p / (2.0 * pc0)) / bt
 EPVP = fsolve(func, x0)[0]
 EPVE = -p / k
 
+
 TEST_RESU(
     RESU=_F(
         INST=1.0,
-        RESULTAT=RESU,
+        RESULTAT=result,
         REFERENCE="ANALYTIQUE",
         NOM_CHAM="EPSI_NOEU",
         GROUP_NO="NO6",
         NOM_CMP="EPXX",
         VALE_REFE=(EPVE + EPVP) / 3.0,
-        VALE_CALC=-0.00196837523706952,
+        VALE_CALC=-0.038995719385912855,
     )
 )
 
 TEST_RESU(
     RESU=_F(
         INST=1.0,
-        RESULTAT=RESU,
+        RESULTAT=result,
         REFERENCE="ANALYTIQUE",
         NOM_CHAM="VARI_NOEU",
         NOM_CMP="V15",
         GROUP_NO="NO6",
         VALE_REFE=EPVP,
-        VALE_CALC=-0.005711327261524507,
+        VALE_CALC=-0.10729723567711803,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.4,
+        RESULTAT=result,
+        NOM_CHAM="EPSI_NOEU",
+        GROUP_NO="NO6",
+        NOM_CMP="EPXX",
+        VALE_CALC=-0.037703755561623496,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.4,
+        RESULTAT=result,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V15",
+        GROUP_NO="NO6",
+        VALE_CALC=-0.10729723567711803,
     )
 )
 

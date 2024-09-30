@@ -19,8 +19,6 @@
 
 
 from code_aster.Commands import *
-from code_aster.Solvers import NonLinearSolver, TimeStepper
-from code_aster import CA
 from code_aster.CA import MPI
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)

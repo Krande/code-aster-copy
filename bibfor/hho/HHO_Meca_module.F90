@@ -250,9 +250,7 @@ contains
         l_rigi_meca = (hhoCS%option == "RIGI_MECA")
         l_vari = L_VARI(hhoCS%option)
 !
-        if (hhoCS%axis .or. hhoCS%c_plan) then
-            ASSERT(ASTER_FALSE)
-        end if
+        ASSERT(.not. (hhoCS%axis .or. hhoCS%c_plan))
 !
 ! --- number of dofs
 !

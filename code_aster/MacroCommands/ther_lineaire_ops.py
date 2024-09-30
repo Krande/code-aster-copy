@@ -26,7 +26,6 @@ from ..Objects import (
     DiscreteComputation,
     FieldOnNodesReal,
     LinearSolver,
-    ListOfFloats,
     ParallelThermalLoadFunction,
     ParallelThermalLoadReal,
     PhysicalProblem,
