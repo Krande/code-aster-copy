@@ -303,7 +303,36 @@ Il faut fournir le mot-clé BETON_DESORP à DEFI_MATERIAU pour calculer l'hygrom
     ),
     95: _(
         """
-Il faut obligatoirement fournir FONC_DESORP sous BETON_DESORP  pour calculer l'hygrométrie.
+On ne trouve pas la variable de commande %(k1)s qui est nécessaire pour calculer
+l'hygrométrie par isotherme de LEVERETT.
+Il faut renseigner cette variable de commande dans le mot-clé AFFE_VARC d'AFFE_MATERIAU.
+"""
+    ),
+    96: _(
+        """
+Pour le calcul de l'hygrométrie par isotherme de LEVERETT, 
+la valeur de la saturation en eau doit être comprise entre 0 et 1.
+
+La saturation est obtenue en divisant le séchage (ou concentration en eau)
+par la porosité et par le facteur 1000.
+
+Teneur en eau : %(r1)E
+"""
+    ),
+    97: _(
+        """
+Dans le cas du calcul de l'hygrométrie par isotherme de LEVERETT,
+la température doit être inférieure à 300 degrés.
+"""
+    ),
+    98: _(
+        """
+Hygrométrie par isotherme de LEVERETT :
+La valeur de la saturation en eau est trop proche des bornes limites (0. et 1.).
+On a translaté d'un epsilon cette valeur vers l'intérieur de l'intervalle.
+
+La teneur ou saturation en eau est obtenue en divisant le séchage (concentration en eau)
+par la porosité et par le facteur 1000.
 """
     ),
 }

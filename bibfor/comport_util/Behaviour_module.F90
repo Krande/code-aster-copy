@@ -59,6 +59,7 @@ module Behaviour_module
 #include "asterfort/get_elas_id.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jevech.h"
+#include "asterfort/leverettIsotMeca.h"
 #include "asterfort/matinv.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/rccoma.h"
@@ -1147,22 +1148,21 @@ contains
         if (codret(1) .ne. 0) then
             call utmess('F', 'COMPOR2_94')
         end if
+        exist = ASTER_TRUE
         call rcvalb(fami, kpg, ksp, '-', imate, &
                     ' ', 'BETON_DESORP', 0, ' ', [0.d0], &
                     nbPara, paraName, paraVale, codret, 0)
         if (codret(1) .eq. 0) then
             funcDesorpPrev = paraVale(1)
-        else
-            call utmess('F', 'COMPOR2_95')
-        end if
-        call rcvalb(fami, kpg, ksp, '+', imate, &
-                    ' ', 'BETON_DESORP', 0, ' ', [0.d0], &
-                    nbPara, paraName, paraVale, codret, 0)
-        if (codret(1) .eq. 0) then
-            exist = ASTER_TRUE
+            call rcvalb(fami, kpg, ksp, '+', imate, &
+                        ' ', 'BETON_DESORP', 0, ' ', [0.d0], &
+                        nbPara, paraName, paraVale, codret, 0)
+            ASSERT(codret(1) .eq. 0)
             funcDesorpCurr = paraVale(1)
         else
-            call utmess('F', 'COMPOR2_95')
+            !   leverett isotherm
+            call leverettIsotMeca(fami, kpg, ksp, imate, funcDesorpPrev, &
+                                  funcDesorpCurr)
         end if
 
 ! ----- Save values

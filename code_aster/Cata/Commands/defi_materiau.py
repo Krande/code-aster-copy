@@ -1864,7 +1864,20 @@ DEFI_MATERIAU = MACRO(
         ETA_FD=SIMP(statut="f", typ="R"),
     ),
     BETON_DESORP=FACT(
-        statut="f", FONC_DESORP=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule))
+        statut="f",
+        LEVERETT=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+        b_fonc_deso=BLOC(
+            condition="""equal_to("LEVERETT", 'NON')""",
+            FONC_DESORP=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        ),
+        b_leverett=BLOC(
+            condition="""equal_to("LEVERETT", 'OUI')""",
+            VG_PR=SIMP(statut="o", typ="R"),
+            VG_N=SIMP(statut="o", typ="R"),
+            ATH=SIMP(statut="o", typ="R"),
+            TEMP_0_C=SIMP(statut="o", typ="R"),
+            PORO=SIMP(statut="o", typ="R"),
+        ),
     ),
     BETON_RAG=FACT(
         statut="f",
