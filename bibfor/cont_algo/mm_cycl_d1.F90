@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,7 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mm_cycl_d1_ss.h"
-!
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+#include "asterfort/mm_cycl_erase.h"
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: i_cont_poin
@@ -65,19 +64,20 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: cycl_type = 1
     character(len=24) :: sdcont_cyclis
     integer, pointer :: p_sdcont_cyclis(:) => null()
     character(len=24) :: sdcont_cycnbr
     integer, pointer :: p_sdcont_cycnbr(:) => null()
     character(len=24) :: sdcont_cyceta
     integer, pointer :: p_sdcont_cyceta(:) => null()
-    integer :: cycl_type, cycl_long_acti
+    integer :: cycl_long_acti
     integer :: cycl_ecod, cycl_long, cycl_sub_type, cycl_stat
     aster_logical :: detect
     real(kind=8) :: laug_cont_prev, laug_cont_curr
     real(kind=8) :: pres_near_zero
     integer :: zone_cont_prev, zone_cont_curr
-    logical :: indi_cont_prev_modified
+    logical :: indi_cont_prev_modified, endCycl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,37 +86,34 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
 ! - Initializations
 !
     cycl_long_acti = ds_contact%cycl_long_acti
-    cycl_type = 1
     !on definit une pression rasante proche du zero
     pres_near_zero = 1.d-3*ds_contact%arete_min
     alpha_cont_matr = 1.0d0
     alpha_cont_vect = 1.0d0
-!
+
 ! - Access to cycling objects
-!
     sdcont_cyclis = ds_contact%sdcont_solv(1:14)//'.CYCLIS'
     sdcont_cycnbr = ds_contact%sdcont_solv(1:14)//'.CYCNBR'
     sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
     call jeveuo(sdcont_cyclis, 'E', vi=p_sdcont_cyclis)
     call jeveuo(sdcont_cycnbr, 'E', vi=p_sdcont_cycnbr)
     call jeveuo(sdcont_cyceta, 'E', vi=p_sdcont_cyceta)
-!
+
 ! - Previous augmented lagrangian
-!
     laug_cont_prev = pres_cont_prev-coef_cont*dist_cont_prev
-!
+
 ! - Current augmented lagrangian
-!
     laug_cont_curr = pres_cont-coef_cont*dist_cont
-!
+
 ! - Cycle state
-!
     if (ds_contact%iteration_newton .eq. 0) then
         cycl_long = 0
         cycl_ecod = 0
+        cycl_stat = -1
     else
         cycl_long = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
         cycl_ecod = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
+        cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type)
     end if
 
 !   info pour savoir si indi_cont_prev a été modifié
@@ -126,11 +123,10 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
                 +2**cycl_long*indi_cont_prev &
                 +2**(cycl_long+1)*indi_cont_eval
 
-!
 ! - Cycling detection
-!
     cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type)
-    if (cycl_long+1 .eq. cycl_long_acti) then
+    endCycl = cycl_long+1 .eq. cycl_long_acti
+    if (endCycl) then
         ! décalage à gauche
         cycl_ecod = cycl_ecod/2
         detect = iscycl(cycl_ecod*2, cycl_long_acti)
@@ -150,13 +146,15 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
         cycl_long = cycl_long+1
     end if
 
-!
 ! - Cycling save : incrementation of cycle objects
-!
     p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat
     p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
     p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type) = cycl_long
     ASSERT(cycl_long .lt. cycl_long_acti)
+
+    ! if (endCycl) then
+    !     call mm_cycl_erase(ds_contact, cycl_type, i_cont_poin)
+    ! end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mm_cycl_prop(ds_contact)
 !
     use NonLin_Datastructure_type
@@ -26,11 +26,10 @@ subroutine mm_cycl_prop(ds_contact)
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mminfl.h"
 #include "asterfort/mm_cycl_laugf.h"
 #include "asterfort/mm_cycl_zonf.h"
-!
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+#include "asterfort/mminfl.h"
+#include "Contact_type.h"
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
@@ -59,12 +58,10 @@ subroutine mm_cycl_prop(ds_contact)
     aster_logical :: propa, l_frot_zone
     real(kind=8) :: tole_stick, tole_slide
     integer :: zone_frot, zone_frot_prop, it
-    integer :: n_cychis
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nb_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
-    n_cychis = ds_contact%n_cychis
     tole_stick = 0.95
     tole_slide = 1.05
     zone_frot = 0
@@ -83,19 +80,19 @@ subroutine mm_cycl_prop(ds_contact)
 ! - Erasing cycling information
 !
     do i_cont_poin = 1, nb_cont_poin
-        i_zone = nint(v_sdcont_cychis(n_cychis*(i_cont_poin-1)+60))
+        i_zone = nint(v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+60))
         l_frot_zone = mminfl(ds_contact%sdcont_defi, 'FROTTEMENT_ZONE', i_zone)
         if (l_frot_zone) then
             cycl_stat = v_sdcont_cyceta(4*(i_cont_poin-1)+2)
             coef_frot_mini = v_sdcont_cyccoe(6*(i_zone-1)+5)
             coef_frot_maxi = v_sdcont_cyccoe(6*(i_zone-1)+6)
-            coef_frot = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+6)
-            pres_frot(1) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+7)
-            pres_frot(2) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+8)
-            pres_frot(3) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+9)
-            dist_frot(1) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+10)
-            dist_frot(2) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+11)
-            dist_frot(3) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+12)
+            coef_frot = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+6)
+            pres_frot(1) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+7)
+            pres_frot(2) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+8)
+            pres_frot(3) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+9)
+            dist_frot(1) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+10)
+            dist_frot(2) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+11)
+            dist_frot(3) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+12)
             if (cycl_stat .ne. -1) then
 !
 ! ------------- Norm of augmented lagrangian for friction
@@ -156,7 +153,7 @@ subroutine mm_cycl_prop(ds_contact)
                     end if
                 end if
             end if
-            v_sdcont_cychis(n_cychis*(i_cont_poin-1)+6) = coef_frot
+            v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+6) = coef_frot
 
         end if
     end do
