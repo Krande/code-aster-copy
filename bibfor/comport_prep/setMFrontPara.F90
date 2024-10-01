@@ -70,7 +70,7 @@ subroutine setMFrontPara(prepCrit, iFactorKeyword)
                 resi_inte .gt. resi_inte_mfront_rela) then
                 valr(1) = resi_inte
                 valr(2) = resi_inte_mfront_rela
-                call utmess('I', 'COMPOR6_16', nr=2, valr=valr)
+                call utmess('A', 'COMPOR6_16', nr=2, valr=valr)
             end if
             call mgis_set_double_parameter(extern_addr, "epsilon", resi_inte)
         end if
