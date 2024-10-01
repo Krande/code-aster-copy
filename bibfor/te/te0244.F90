@@ -87,7 +87,9 @@ subroutine te0244(option, nomte)
     theta = zr(itemps+2)
 !
     if ((zk16(icomp) (1:5) .eq. 'SECH_')) then
-        if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. 'SECH_NAPPE') then
+        if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. &
+            zk16(icomp) (1:10) .eq. 'SECH_NAPPE' .or. &
+            zk16(icomp) (1:8) .eq. 'SECH_RFT') then
             call jevech('PTMPCHI', 'L', vr=sechf)
         else
 !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE

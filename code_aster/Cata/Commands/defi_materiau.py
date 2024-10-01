@@ -123,6 +123,7 @@ DEFI_MATERIAU = MACRO(
         EXCLUS("POST_ROCHE", "POST_ROCHE_FO"),
         PRESENT_PRESENT("BETON_BURGER", "BETON_DESORP"),
         PRESENT_PRESENT("BETON_BURGER_FO", "BETON_DESORP"),
+        PRESENT_PRESENT("SECH_RFT", "BETON_DESORP"),
         AU_MOINS_UN(
             "TABLE",
             "ELAS",
@@ -253,6 +254,7 @@ DEFI_MATERIAU = MACRO(
             "SECH_MENSI",
             "SECH_BAZANT",
             "SECH_NAPPE",
+            "SECH_RFT",
             "META_ACIER_REVENU",
             "META_ACIER",
             "META_ZIRC",
@@ -2697,6 +2699,16 @@ DEFI_MATERIAU = MACRO(
         FONC_DESORP=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
     SECH_NAPPE=FACT(statut="f", FONCTION=SIMP(statut="o", typ=(nappe_sdaster, formule))),
+    SECH_RFT=FACT(
+        statut="f",
+        PERM_IN=SIMP(statut="o", typ="R"),
+        QSR_K=SIMP(statut="o", typ="R"),
+        PORO=SIMP(statut="o", typ="R"),
+        A_MIL=SIMP(statut="o", typ="R"),
+        B_MIL=SIMP(statut="o", typ="R"),
+        TEMP_0_C=SIMP(statut="o", typ="R"),
+        VG_M_P=SIMP(statut="o", typ="R"),
+    ),
     #
     # comportement métallurgique
     #

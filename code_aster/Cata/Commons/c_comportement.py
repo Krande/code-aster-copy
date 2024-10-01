@@ -162,6 +162,7 @@ def C_COMPORTEMENT(command):
                     "SECH_MENSI",
                     "SECH_BAZANT",
                     "SECH_NAPPE",
+                    "SECH_RFT",
                 ),
             ),
             regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
