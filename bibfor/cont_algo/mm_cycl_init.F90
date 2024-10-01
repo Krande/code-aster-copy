@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,7 @@ subroutine mm_cycl_init(ds_contact)
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfm.h"
 #include "asterfort/mminfr.h"
-!
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+#include "Contact_type.h"
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
@@ -62,16 +61,13 @@ subroutine mm_cycl_init(ds_contact)
     integer :: slave_pt_index, slave_pt_nb
     real(kind=8) :: coef_cont, coef_frot, coef_init
     aster_logical :: lveri
-    integer               :: n_cychis
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
-    n_cychis = ds_contact%n_cychis
 !
 ! - Access to cycling objects
 !
@@ -115,7 +111,7 @@ subroutine mm_cycl_init(ds_contact)
 !
             do slave_pt_index = 1, slave_pt_nb
                 do i_cyc = 1, 60
-                    p_sdcont_cychis(n_cychis*(i_cont_poin-1)+i_cyc) = 0
+                    p_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+i_cyc) = 0
                 end do
                 coef_init = p_sdcont_cyccoe(6*(zone_index-1)+1)
                 if (nint(ds_contact%update_init_coefficient) .eq. 1) &
@@ -123,14 +119,14 @@ subroutine mm_cycl_init(ds_contact)
                 do i_cyc = 1, 4
                     p_sdcont_cyceta(4*(i_cont_poin-1)+i_cyc) = -1
                 end do
-                p_sdcont_cychis(n_cychis*(i_cont_poin-1)+2) = coef_init
-                p_sdcont_cychis(n_cychis*(i_cont_poin-1)+6) = coef_frot
-                p_sdcont_cychis(n_cychis*(i_cont_poin-1)+60) = zone_index
-                p_sdcont_cychis(n_cychis*(i_cont_poin-1)+59) = 1.0
-                p_sdcont_cychis(n_cychis*(i_cont_poin-1)+56) = 1.0
-                p_sdcont_cychis(n_cychis*(i_cont_poin-1)+54) = 1.0
-                p_sdcont_cychis(n_cychis*(i_cont_poin-1)+55) = 1.0
-                p_sdcont_cychis(n_cychis*(i_cont_poin-1)+51) = 1.0
+                p_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+2) = coef_init
+                p_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+6) = coef_frot
+                p_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+60) = zone_index
+                p_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+59) = 1.0
+                p_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+56) = 1.0
+                p_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+54) = 1.0
+                p_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+55) = 1.0
+                p_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+51) = 1.0
                 i_cont_poin = i_cont_poin+1
             end do
         end do

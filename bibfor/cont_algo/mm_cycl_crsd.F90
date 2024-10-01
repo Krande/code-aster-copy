@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,7 @@ subroutine mm_cycl_crsd(ds_contact)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
+#include "Contact_type.h"
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
@@ -54,44 +53,35 @@ subroutine mm_cycl_crsd(ds_contact)
     real(kind=8), pointer :: p_sdcont_cychis(:) => null()
     character(len=24) :: sdcont_cyccoe
     real(kind=8), pointer :: p_sdcont_cyccoe(:) => null()
-    integer               :: n_cychis
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
 ! - Initializations
-!
-    n_cychis = ds_contact%n_cychis
     nb_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
-!
+
 ! - Status saving (coded integer)
-!
     sdcont_cyclis = ds_contact%sdcont_solv(1:14)//'.CYCLIS'
-!
+
 ! - Cycling length
-!
     sdcont_cycnbr = ds_contact%sdcont_solv(1:14)//'.CYCNBR'
-!
+
 ! - Cycling state
-!
     sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
-!
+
 ! - Cycling history
-!
     sdcont_cychis = ds_contact%sdcont_solv(1:14)//'.CYCHIS'
-!
+
 ! - Informations about ratios
-!
     sdcont_cyccoe = ds_contact%sdcont_solv(1:14)//'.CYCCOE'
-!
+
 ! - Creating cycling objects
-!
     call wkvect(sdcont_cyclis, 'V V I', 4*nb_cont_poin, vi=p_sdcont_cyclis)
     call wkvect(sdcont_cycnbr, 'V V I', 4*nb_cont_poin, vi=p_sdcont_cycnbr)
     call wkvect(sdcont_cyceta, 'V V I', 4*nb_cont_poin, vi=p_sdcont_cyceta)
-    call wkvect(sdcont_cychis, 'V V R', n_cychis*nb_cont_poin, vr=p_sdcont_cychis)
+    call wkvect(sdcont_cychis, 'V V R', NB_DATA_CYCL*nb_cont_poin, vr=p_sdcont_cychis)
     call wkvect(sdcont_cyccoe, 'V V R', 6*nb_cont_zone, vr=p_sdcont_cyccoe)
 !
     call jedema()

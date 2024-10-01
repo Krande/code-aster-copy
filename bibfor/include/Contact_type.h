@@ -19,8 +19,9 @@
 ! Contact data structure : Parameters <-> integer definitions
 ! -------------------------------------------------------------------------
 !
-#define ALGO_FIXE   0
-#define ALGO_NEWT   1
+#define ALGO_FIXE       0
+#define ALGO_NEWT       1
+#define NB_DATA_CYCL    75
 
 #define SIZE_MAX_INTE_SL 16
 
