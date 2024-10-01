@@ -468,7 +468,8 @@ def macr_spectre_ops(self, **args):
                     if ENVELOPPE == "OUI":
                         if dd == "H":
                             l_fonc = [
-                                _F(FONCTION=__snha[i], LEGENDE=legende) for i in range(len(AMOR_SPEC))
+                                _F(FONCTION=__snha[i], LEGENDE=legende)
+                                for i in range(len(AMOR_SPEC))
                             ]
                     IMPR_FONCTION(
                         FORMAT=IMPRESSION["FORMAT"],
