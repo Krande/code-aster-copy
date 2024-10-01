@@ -1,0 +1,506 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+import numpy
+import math
+
+
+def loi_de_kelvin_hr(pc, Temp, rho_liquide, R=8.314, Mmolaire=18.01528e-3):
+    hr = numpy.exp(pc * Mmolaire / (rho_liquide * R * Temp))
+    return hr
+
+
+def diffusion_vapeur_air(Temp):
+    """
+    Diffusion de la vapeur d'eau dans l'air libre'
+    """
+    D0 = 0.217 * 1e-4 * ((Temp / 273.15)) ** 1.88
+    return D0
+
+
+def modele_de_Rankine_pvs(Temp, alpha_rankine=13.7, beta_rankine=5120, Pa=101325):
+    """
+    Equation de Rankine pour le calcul de la pression de vapeur saturante
+    """
+    Pvs = Pa * numpy.exp(alpha_rankine - (beta_rankine / Temp))
+    return Pvs
+
+
+def tension_superficielle(Temp):
+    """
+    Tension superficielle de l'eau'
+    """
+    gamma = 0.1558 * (1 - (Temp / 647.1)) ** 1.26
+    return gamma
+
+
+def viscosite_liquide(Temp):
+    """
+    Viscosite liquide
+    """
+    nul = 0.6612 * (Temp - 229) ** (-1.562)
+    return nul
+
+
+def densite_liquide(Temp):
+    """
+    Masse volumique de l'eau liquide
+    """
+    rho_liquide = 314.4 + 685.6 * (1 - ((Temp - 273.15) / 374.14) ** (1 / 0.55)) ** 0.55
+    return rho_liquide
+
+
+def permeabilite_liquide(K0, Temp, Ea_R, T0):
+    """
+    Permeabilite_liquide
+    """
+    Kl = K0 * numpy.exp(
+        numpy.exp((Temp - T0) / Ea_R) - 1.0
+    )  # (K0*Temp/T0)*numpy.exp(-Ea_R*((1/Temp)-(1/T0))) # [m2]
+    return Kl
+
+
+def isotherme_hr_T(C, alpha, beta, Ad, T0, poro, Temp, R=8.314, Mmolaire=18.01528e-3):
+    """
+    Isotherme Leverett(C,T)
+    """
+    C = numpy.minimum(C, 0.999 * poro * 1000)
+    gamma0 = tension_superficielle(T0)
+    gamma = tension_superficielle(Temp)
+    a = densite_liquide(T0) * R * T0 / (alpha * Mmolaire)
+    K0_KT = (10 ** (Ad * (2 * 10**-3 * (Temp - T0) - 1e-6 * (Temp - T0) ** 2))) ** (-1)
+    pc = (
+        -a
+        * (((C / (poro * 1000)) ** (-1.0 / beta) - 1.0) ** (1.0 - beta))
+        * (gamma0 / gamma)
+        * numpy.sqrt(K0_KT)
+    )
+    rho_liquide = densite_liquide(Temp)
+    HR = loi_de_kelvin_hr(pc, Temp, rho_liquide)
+    return HR
+
+
+def permeabilte_relative_VGM(C, p, beta, poro):
+    """
+    Permeabilite relative de Mualem-Van-guenuchten
+    """
+    krl = ((C / (poro * 1000)) ** p) * (
+        1.0 - (1.0 - (C / (poro * 1000)) ** (1 / beta)) ** beta
+    ) ** 2
+    return krl
+
+
+def derivee_isotherme_pc(C, alpha, beta, Ad, T0, poro, Temp, R=8.314, Mmolaire=18.01528e-3):
+    """
+    Derivee isotherme de desorption de Van-guenuchten
+    """
+    C = numpy.minimum(C, 0.999 * poro * 1000)
+    gamma0 = tension_superficielle(T0)
+    gamma = tension_superficielle(Temp)
+    a = densite_liquide(T0) * R * T0 / (alpha * Mmolaire)
+    KT_K0 = 10 ** (Ad * (2 * 10**-3 * (Temp - T0) - 1e-6 * (Temp - T0) ** 2))
+    dpc = (
+        ((gamma / gamma0) * ((KT_K0) ** 0.5) * a * (-beta + 1.0) / (beta))
+        * ((C / (poro * 1000)) ** (-(1.0 + beta) / beta))
+        * (-1.0 + (C / (poro * 1000)) ** (-1.0 / beta)) ** (-beta)
+    )
+    return dpc
+
+
+def facteur_de_resistance(C, poro, a, b):
+    """
+    Facteur de resistance de Millington
+    """
+    C = numpy.minimum(C, 0.999 * poro * 1000)
+    R = ((poro) ** a) * (1.0 - C / (poro * 1000)) ** b
+    return R
+
+
+def coefficient_de_diffusion_fick(C, poro, a, b, Temp):
+    """
+    Coefficient de diffusion effectif du béton
+    """
+    C = numpy.minimum(C, 0.999 * poro * 1000)
+    D0 = diffusion_vapeur_air(Temp)
+    R = facteur_de_resistance(C, poro, a, b)
+    D = D0 * R
+    return D
+
+
+def coefficient_de_diffusion_vapeur(
+    C, poro, alpha, beta, a, b, Ad, T0, Temp, Mmolaire=18.01528e-3, R=8.314
+):
+    """
+    Coefficient de diffusion de la vapeur d'eau
+    """
+    C = numpy.minimum(C, 0.999 * poro * 1000)
+    Temp = Temp + 273.15
+    rho_liquide = densite_liquide(Temp)
+    D = coefficient_de_diffusion_fick(C, poro, a, b, Temp)
+    dpc = derivee_isotherme_pc(C, alpha, beta, Ad, T0, poro, Temp, R, Mmolaire)
+    HR = isotherme_hr_T(C, alpha, beta, Ad, T0, poro, Temp, R, Mmolaire)
+    Pv = HR * modele_de_Rankine_pvs(Temp)
+    Dv = (D * Pv * dpc * (Mmolaire / (R * Temp)) ** 2) / (poro * rho_liquide**2)
+    return Dv
+
+
+def coefficient_de_diffusion(
+    C, K0, poro, alpha, beta, p, Ad, T0, Temp, Ea_R, Mmolaire=18.01528e-3, R=8.314
+):
+    """
+    Coefficient de diffusion de Richards
+    """
+    C = numpy.minimum(C, 0.999 * poro * 1000)
+    Temp = Temp + 273.15
+    Kl = permeabilite_liquide(K0, Temp, Ea_R, T0)
+    nul = viscosite_liquide(Temp)
+    krl = permeabilte_relative_VGM(C, p, beta, poro)
+    dpc = derivee_isotherme_pc(C, alpha, beta, Ad, T0, poro, Temp, R, Mmolaire)
+    Dl = (Kl / (poro * nul)) * krl * dpc
+    return Dl
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+MA = LIRE_MAILLAGE(FORMAT="MED")
+
+T0_C = 20
+T0_K = T0_C + 273.15
+
+alpha = 9.33427661  # premier coefficient de Van Genuchten [Pa]
+beta = 0.38923339  # second coefficient de Van Genuchten [-]
+Ad = 10.160105601  # activation thermique de l'isotherme
+K0 = 1.175e-20  # Perméabilité intrinsèque du liquide [m²]
+p = 2.91  # facteur d'interaction porale [-]
+a = 2.607  # premier coefficient de Millington [-]
+b = 7.0  # second coefficient de Millington [-]
+Ea_R = 9918.698  # Energie d'activation [K]'
+poro = 0.161  # porosité moyenne [-]
+
+
+DIFF_R = FORMULE(
+    NOM_PARA=("TEMP", "TSEC"),
+    VALE="""coefficient_de_diffusion_vapeur(TEMP, poro, alpha, beta, a, b, Ad, T0_K, TSEC) 
+                       + coefficient_de_diffusion(TEMP, K0, poro, alpha, beta, p, Ad, T0_K, TSEC, Ea_R)""",
+    coefficient_de_diffusion_vapeur=coefficient_de_diffusion_vapeur,
+    coefficient_de_diffusion=coefficient_de_diffusion,
+    K0=K0,
+    poro=poro,
+    alpha=alpha,
+    beta=beta,
+    a=a,
+    b=b,
+    Ad=Ad,
+    p=p,
+    T0_K=T0_K,
+    Ea_R=Ea_R,
+)
+
+
+BETON = DEFI_MATERIAU(
+    SECH_NAPPE=_F(FONCTION=DIFF_R),
+    BETON_DESORP=_F(LEVERETT="OUI", PORO=poro, VG_PR=alpha, VG_N=beta, ATH=Ad, TEMP_0_C=T0_C),
+    SECH_RFT=_F(PERM_IN=K0, QSR_K=Ea_R, PORO=poro, A_MIL=a, B_MIL=b, TEMP_0_C=T0_C, VG_M_P=p),
+    THER=_F(LAMBDA=2.22, RHO_CP=2.400e6),
+)
+
+###################
+# CALCUL THERMIQUE
+###################
+
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=BETON))
+
+MOTH = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MODELISATION="AXIS", PHENOMENE="THERMIQUE"))
+
+T_INT = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0, 15, 1.57670e08, 15, 1.57680e08, 35, 1.70294e09, 35)  # 5ans-1j  # 5ans
+)
+T_EXT = DEFI_CONSTANTE(VALE=15)
+HEXT = DEFI_CONSTANTE(VALE=6)
+HINT = DEFI_CONSTANTE(VALE=4)
+CHARTH = AFFE_CHAR_THER_F(
+    MODELE=MOTH,
+    ECHANGE=(
+        _F(GROUP_MA="L_INT", COEF_H=HINT, TEMP_EXT=T_INT),
+        _F(GROUP_MA="L_EXT", COEF_H=HEXT, TEMP_EXT=T_EXT),
+    ),
+)
+LISTTHER = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=3.15360e05, NOMBRE=1),  #   0.1 AN
+        _F(JUSQU_A=3.15360e07, NOMBRE=1),  #   1   AN
+        _F(JUSQU_A=1.57670e08, NOMBRE=4),  #   5 -1  ANS
+        _F(JUSQU_A=1.57680e08, NOMBRE=2),  #   5 ANS
+        _F(JUSQU_A=1.89216e08, NOMBRE=1),  #   6   ANS
+        _F(JUSQU_A=3.15360e08, NOMBRE=4),  #  10   ANS
+        _F(JUSQU_A=4.73040e08, NOMBRE=4),  #  15   ANS
+        _F(JUSQU_A=1.70294e09, NOMBRE=1),
+    ),  #  54   ANS
+)
+
+DEFLISTH = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LISTTHER))
+
+RESUTHER = THER_LINEAIRE(
+    MODELE=MOTH,
+    EXCIT=_F(CHARGE=CHARTH),
+    CHAM_MATER=CHMAT,
+    ETAT_INIT=_F(VALE=15.0),
+    INCREMENT=_F(LIST_INST=DEFLISTH),
+)
+
+#####################
+# CALCUL DU SECHAGE
+#####################
+
+# FLUX D HUMIDITE SUR LES PAROIS EXTERNES
+
+BETA = 3.41557e-06
+
+C_0 = 105.7
+C_50 = 57.5
+
+C_EQ_I05 = 69.1
+
+C_EQ_E05 = 69.1
+
+C_EQ_I10 = 51.6
+
+C_EQ_E10 = 69.1
+
+FL_INT05 = FORMULE(
+    VALE="""(0.5*BETA / ((C_0 - C_50 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_I05 ))*(TEMP - C_EQ_I05 ))""",
+    BETA=BETA,
+    C_0=C_0,
+    C_50=C_50,
+    C_EQ_I05=C_EQ_I05,
+    NOM_PARA="TEMP",
+)
+
+FL_EXT05 = FORMULE(
+    VALE="""(0.5*BETA / ((C_0 - C_50 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_E05 ))*(TEMP - C_EQ_E05 ))""",
+    BETA=BETA,
+    C_0=C_0,
+    C_50=C_50,
+    C_EQ_E05=C_EQ_E05,
+    NOM_PARA="TEMP",
+)
+
+FL_INT10 = FORMULE(
+    VALE="""(0.5*BETA / ((C_0 - C_50 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_I10 ))*(TEMP - C_EQ_I10 ))""",
+    BETA=BETA,
+    C_0=C_0,
+    C_50=C_50,
+    C_EQ_I10=C_EQ_I10,
+    NOM_PARA="TEMP",
+)
+
+FL_EXT10 = FORMULE(
+    VALE="""(0.5*BETA / ((C_0 - C_50 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_E10 ))*(TEMP - C_EQ_E10 ))""",
+    BETA=BETA,
+    C_0=C_0,
+    C_50=C_50,
+    C_EQ_E10=C_EQ_E10,
+    NOM_PARA="TEMP",
+)
+
+LIST0 = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=50.0, PAS=10.0),
+        _F(JUSQU_A=100.0, PAS=2.0),
+        _F(JUSQU_A=110.0, PAS=2.0),
+        _F(JUSQU_A=200.0, PAS=10.0),
+    ),
+)
+
+HU_INT05 = CALC_FONC_INTERP(
+    FONCTION=FL_INT05,
+    LIST_PARA=LIST0,
+    NOM_PARA="TEMP",
+    NOM_RESU="FL_INT05",
+    PROL_GAUCHE="LINEAIRE",
+    PROL_DROITE="LINEAIRE",
+    #                                 INTERPOL='INT',
+    INTERPOL="LIN",
+    TITRE="FLUX D HUMIDITE",
+)
+
+HU_EXT05 = CALC_FONC_INTERP(
+    FONCTION=FL_EXT05,
+    LIST_PARA=LIST0,
+    NOM_PARA="TEMP",
+    NOM_RESU="FL_EXT05",
+    PROL_GAUCHE="LINEAIRE",
+    PROL_DROITE="LINEAIRE",
+    #                                 INTERPOL='INT',
+    INTERPOL="LIN",
+    TITRE="FLUX D HUMIDITE",
+)
+
+HU_INT10 = CALC_FONC_INTERP(
+    FONCTION=FL_INT10,
+    LIST_PARA=LIST0,
+    NOM_PARA="TEMP",
+    NOM_RESU="FL_INT10",
+    PROL_GAUCHE="LINEAIRE",
+    PROL_DROITE="LINEAIRE",
+    #                                 INTERPOL='INT',
+    INTERPOL="LIN",
+    TITRE="FLUX D HUMIDITE",
+)
+
+HU_EXT10 = CALC_FONC_INTERP(
+    FONCTION=FL_EXT10,
+    LIST_PARA=LIST0,
+    NOM_PARA="TEMP",
+    NOM_RESU="FL_EXT10",
+    PROL_GAUCHE="LINEAIRE",
+    PROL_DROITE="LINEAIRE",
+    #                                 INTERPOL='INT',
+    INTERPOL="LIN",
+    TITRE="FLUX D HUMIDITE",
+)
+
+CHARSE05 = AFFE_CHAR_THER_F(
+    MODELE=MOTH, FLUX_NL=(_F(GROUP_MA="L_INT", FLUN=HU_INT05), _F(GROUP_MA="L_EXT", FLUN=HU_EXT05))
+)
+
+CHARSE10 = AFFE_CHAR_THER_F(
+    MODELE=MOTH, FLUX_NL=(_F(GROUP_MA="L_INT", FLUN=HU_INT10), _F(GROUP_MA="L_EXT", FLUN=HU_EXT10))
+)
+
+LISTSECH = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=3.15360e04, NOMBRE=1),  #   0.001 A
+        _F(JUSQU_A=3.15360e06, NOMBRE=10),  #   0.1 AN
+        _F(JUSQU_A=3.15360e07, NOMBRE=9),  #   1   AN
+        _F(JUSQU_A=1.50000e08, NOMBRE=16),  #   4.9 ANS
+        _F(JUSQU_A=1.57680e08, NOMBRE=16),  #   5   ANS
+        _F(JUSQU_A=1.57712e08, NOMBRE=1),  #   5.001 A
+        _F(JUSQU_A=1.60834e08, NOMBRE=4),  #   5.1 ANS
+        _F(JUSQU_A=1.89216e08, NOMBRE=9),  #   6   ANS
+        _F(JUSQU_A=3.15360e08, NOMBRE=8),  #  10   ANS
+        _F(JUSQU_A=4.73040e08, NOMBRE=10),  #  15   ANS
+        _F(JUSQU_A=1.57680e09, NOMBRE=70),  #  50   ANS
+        _F(JUSQU_A=1.70294e09, NOMBRE=8),
+    ),  #  54   ANS
+)
+
+DEFLISTS = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LISTSECH))
+
+RESUSECH = THER_NON_LINE(
+    MODELE=MOTH,
+    EXCIT=_F(CHARGE=CHARSE05),
+    CHAM_MATER=CHMAT,
+    ETAT_INIT=_F(VALE=105.7),
+    INCREMENT=_F(LIST_INST=DEFLISTS, INST_FIN=1.57680e08),
+    COMPORTEMENT=_F(RELATION="SECH_RFT", TOUT="OUI"),
+    # COMPORTEMENT=_F(RELATION="SECH_NAPPE", TOUT="OUI"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+    EVOL_THER_SECH=RESUTHER,
+    TITRE=("CAS TEST THER_NON_LINE",),
+)
+
+RESUSECH = THER_NON_LINE(
+    reuse=RESUSECH,
+    MODELE=MOTH,
+    EXCIT=_F(CHARGE=CHARSE10),
+    CHAM_MATER=CHMAT,
+    ETAT_INIT=_F(EVOL_THER=RESUSECH, INST=1.57680e08),
+    INCREMENT=_F(LIST_INST=DEFLISTS, INST_INIT=1.57680e08),
+    COMPORTEMENT=_F(RELATION="SECH_RFT", TOUT="OUI"),
+    # COMPORTEMENT=_F(RELATION="SECH_NAPPE", TOUT="OUI"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+    EVOL_THER_SECH=RESUTHER,
+    TITRE=("CAS TEST THER_NON_LINE",),
+)
+
+##############################
+# TESTS DES RESULTATS
+##############################
+LISTSEC2 = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.57680e08, NOMBRE=1),  #   5   ANS
+        _F(JUSQU_A=4.73040e08, NOMBRE=1),  #  15   ANS
+        _F(JUSQU_A=1.70294e09, NOMBRE=1),
+    ),  #  54   ANS
+)
+COUP = MACR_LIGN_COUPE(
+    RESULTAT=RESUSECH,
+    LIST_INST=LISTSEC2,
+    NOM_CHAM="TEMP",
+    LIGN_COUPE=_F(NOM_CMP=("TEMP"), TYPE="GROUP_MA", MAILLAGE=MA, GROUP_MA="RGENEF"),
+)
+
+IMPR_TABLE(
+    TABLE=COUP, FORMAT="TABLEAU_CROISE", FORMAT_R="F3.12", NOM_PARA=("INST", "COOR_X", "TEMP")
+)
+# -----------------------------------------------------
+# Tests des concentrations en eau dans l'épaisseur
+# -----------------------------------------------------
+C_ref = [
+    [67.6838, 54.2257, 51.6],
+    [80.9129, 65.2, 56.8903],
+    [89.6936, 75.4576, 62.4],
+    [97.8, 84.9649, 69.1059],
+    [102.207, 91.4, 74.4781],
+    [104, 95.2, 78.3688],
+    [102, 93.55, 77.8487],
+    [97.8, 89.3776, 75.9533],
+    [90.1783, 82.8, 73.1186],
+    [81, 76.3516, 70.815],
+    [71.2, 70.0603, 68.8035],
+]
+# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS
+C_reg = [
+    [69.395181067823, 51.783622484755, 51.655519222563],
+    [81.147292294737, 64.547409835086, 56.462377622713],
+    [90.609706107310, 74.958289607395, 61.976610683787],
+    [97.954965037933, 83.713318572372, 67.834869815810],
+    [102.990254828005, 90.729044913468, 73.403657364081],
+    [105.019114321163, 94.886579325464, 77.451054405526],
+    [102.953924193607, 93.732149884745, 77.711745283719],
+    [97.889816692660, 89.220704011352, 75.730636745293],
+    [90.530016005161, 83.130289049746, 73.240257608390],
+    [81.098664271063, 76.298380859997, 70.963553124055],
+    [69.361291644540, 69.278022053404, 69.149615073210],
+]
+x_test = [22.5, 22.5382, 22.5954, 22.6809, 22.8088, 23, 23.1912, 23.3191, 23.4046, 23.4618, 23.5]
+inst_test = [1.57680e08, 4.73040e08, 1.70294e09]
+for j, t in enumerate(inst_test):
+    for i, x in enumerate(x_test):
+        TEST_TABLE(
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.05,
+            VALE_CALC=C_reg[i][j],
+            VALE_REFE=C_ref[i][j],
+            NOM_PARA="TEMP",
+            TABLE=COUP,
+            FILTRE=(_F(NOM_PARA="COOR_X", VALE=x), _F(NOM_PARA="INST", VALE=t)),
+        )
+#
+FIN()
+#
