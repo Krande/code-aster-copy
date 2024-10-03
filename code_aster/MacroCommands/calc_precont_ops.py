@@ -32,6 +32,7 @@ from ..CodeCommands import (
     DEFI_FONCTION,
     DEFI_LIST_INST,
     DEFI_LIST_REEL,
+    DEFI_MATERIAU,
     RECU_TABLE,
     STAT_NON_LINE,
 )
@@ -386,10 +387,30 @@ def calc_precont_ops(
         #     on travaile entre tmin et tmax
         # -------------------------------------------------------------------
 
-        # Utilisation d'un cham_mater sans variables de commande (sinon, résultats faux)
-        MasquerAlarme("MATERIAL2_61")
-        __cham_mater_fictif = AFFE_MATERIAU(MODELE=MODELE, CHAM_MATER=CHAM_MATER)
-        RetablirAlarme("MATERIAL2_61")
+        # Utilisation d'un cham_mater fictif sans variables de commande (sinon, résultats faux)
+        # # et dont les propriétés sont aussi indépendantes des variables de commande
+
+        E_fictif = 0.0
+        pena_lagr_fictif = 0.0
+
+        for __mater in CHAM_MATER.getVectorOfMaterial():
+            l_names = __mater.getMaterialNames()
+            names = " ".join(l_names)
+            if "BPEL_ACIER" in names or "ETCC_ACIER" in names:
+                E_fictif = max(E_fictif, __mater.getValueReal("ELAS", "E"))
+                if "CABLE_GAINE_FROT" in names:
+                    pena_lagr_fictif = max(
+                        pena_lagr_fictif, __mater.getValueReal("CABLE_GAINE_FROT", "PENA_LAGR")
+                    )
+
+        __mater_fictif = DEFI_MATERIAU(
+            ELAS=_F(E=E_fictif, NU=0),
+            CABLE_GAINE_FROT=_F(TYPE="ADHERENT", PENA_LAGR=pena_lagr_fictif),
+        )
+
+        __cham_mater_fictif = AFFE_MATERIAU(
+            MAILLAGE=MODELE.getMesh(), AFFE=_F(GROUP_MA=__GROUP_MA_A, MATER=__mater_fictif)
+        )
 
         __EV1 = STAT_NON_LINE(
             MODELE=__M_CA,

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
 #include "asterfort/jexnum.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
+#include "asterc/r8vide.h"
 !
     integer :: jgano, nbsp, ncmp
     real(kind=8) :: vno(*), vpg(*)
@@ -78,10 +79,14 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
         do ino = 1, nno
             do isp = 1, nbsp
                 s = 0.d0
-                do ipg = 1, npg
-                    s = s+zr(jmat-1+(ino-1)*npg+ipg)*vpg((ipg-1)*ncmp*nbsp+(isp-1)*ncmp+icmp &
-                                                         )
-                end do
+                if (vpg((npg-1)*ncmp*nbsp+(isp-1)*ncmp+icmp) .ne. r8vide()) then
+                    do ipg = 1, npg
+                        s = s+zr(jmat-1+(ino-1)*npg+ipg)*vpg((ipg-1)*ncmp*nbsp+(isp-1)*ncmp+icmp &
+                                                             )
+                    end do
+                else
+                    s = r8vide()
+                end if
                 vno((ino-1)*ncmp*nbsp+(isp-1)*ncmp+icmp) = s
             end do
         end do

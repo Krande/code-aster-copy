@@ -1248,6 +1248,13 @@ PVARCPR = InputParameter(
 
 PVARCCR = InputParameter(phys=PHY.VARI_R, comment=""" External state variables """)
 
+PVARCGR = InputParameter(
+    phys=PHY.VARC_R,
+    container="RESU!VARC_ELGA!N",
+    comment="""  PVARCGR : VARIABLES DE COMMANDES NOMMEES AUX POINTS DE GAUSS
+""",
+)
+
 PVARIGR = InputParameter(
     phys=PHY.VARI_R,
     container="RESU!VARI_ELGA!N",
@@ -1852,7 +1859,14 @@ PVALO_R = OutputParameter(phys=PHY.VALO_R, type="ELGA", comment="""""")
 PVARC_R = OutputParameter(
     phys=PHY.VARC_R,
     type="ELGA",
-    comment=""" VARIABLES DE COMMANDE (NOMMEES)
+    comment=""" VARIABLES DE COMMANDE (NOMMEES) PAR POINTS DE GAUSS
+""",
+)
+
+PVARCNR = OutputParameter(
+    phys=PHY.VARC_R,
+    type="ELNO",
+    comment=""" VARIABLES DE COMMANDE (NOMMEES) AUX NOEUDS PAR ELEMENT
 """,
 )
 

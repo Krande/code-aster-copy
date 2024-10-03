@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -147,7 +147,8 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
         (option .eq. 'EPME_ELGA') .or. (option .eq. 'EPME_ELNO') .or. &
         (option .eq. 'EPSP_ELGA') .or. (option .eq. 'EPSP_ELNO') .or. &
         (option .eq. 'VARI_ELNO') .or. (option .eq. 'DEPL_ELGA') .or. &
-        (option .eq. 'TEMP_ELGA') .or. (option .eq. 'VARC_ELGA')) then!
+        (option .eq. 'TEMP_ELGA') .or. (option .eq. 'VARC_ELGA') .or. &
+        (option .eq. 'VARC_ELNO')) then!
 !       -- CONCERNANT LES VARIABLES INTERNES :
         if (option .eq. 'VARI_ELNO') then
             compo2 = compor
@@ -177,6 +178,8 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
             parain = 'PSIEFR'
         else if (option .eq. 'VARC_ELGA') then
             parain = 'PVARCPR'
+        else if (option .eq. 'VARC_ELNO') then
+            parain = 'PVARCGR'
         else
             parain = ' '
         end if

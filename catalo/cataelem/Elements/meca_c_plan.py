@@ -1223,6 +1223,9 @@ class MECPQU4(Element):
             para_in=((OP.VARC_ELGA.PVARCPR, LC.ZVARCPG),),
             para_out=((SP.PVARC_R, LC.EVARC_R),),
         ),
+        OP.VARC_ELNO(
+            te=4, para_in=((SP.PVARCGR, LC.EVARC_R),), para_out=((SP.PVARCNR, LC.EVARCNR),)
+        ),
         OP.VARI_ELNO(
             te=4,
             para_in=((SP.PVARIGR, LC.ZVARIPG),),

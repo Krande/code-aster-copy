@@ -116,6 +116,7 @@ def C_NOM_GRANDEUR():
         "VALO_R",
         "VANL_R",
         "VAR2_R",
+        "VARC_R",
         "VARI_R",
         "VENTCX_F",
         "VFAC_C",
