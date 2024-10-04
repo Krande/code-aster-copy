@@ -1,0 +1,334 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+### >>>>>>>>>>>>>
+### Read the mesh
+### <<<<<<<<<<<<<
+
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MA = MODI_MAILLAGE(
+    reuse=MA,
+    MAILLAGE=MA,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT", "BAS", "DEVANT", "DERRIERE", "DROITE", "GAUCHE")),
+)
+
+### >>>>>>>>>>>>>>>>>
+### Model affectation
+### <<<<<<<<<<<<<<<<<
+
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_THHM"))
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+# Concrete parameters (BETON_AGEING model)
+
+E = 30.0e9
+NU = 0.2
+KV_VT = 1.0e9
+KD_VT = 1.0e9
+ETAV_VT = 1.0e13
+ETAD_VT = 1.0e13
+KV_MX = 1.0e9
+KD_MX = 1.0e9
+T0 = 0.0
+EA_R = 2100.0
+M_RHOR = 18.0e-3 / (1.0e3 * 8.314)
+TREF = 293.0
+K_FD = 1.0e6
+
+CONCRETE = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=NU, ALPHA=0.0),
+    BETON_AGEING=_F(
+        YoungModulus=E,
+        PoissonRatio=NU,
+        VoigtSphModulus=KV_VT,
+        VoigtDevModulus=KD_VT,
+        VoigtSphViscosity=ETAV_VT,
+        VoigtDevViscosity=ETAD_VT,
+        MaxwellSphModulus=KV_MX,
+        MaxwellDevModulus=KD_MX,
+        ConcreteInitTime=T0,
+        DessiccationModulus=K_FD,
+        ReferenceTemperature=TREF,
+        ArrheniusIndex=EA_R,
+        KelvinIndex=M_RHOR,
+    ),
+    COMP_THM="LIQU_GAZ",
+    THM_LIQU=_F(
+        RHO=1.0e3,
+        UN_SUR_K=0.0,
+        VISC=DEFI_CONSTANTE(VALE=1.0e-3),
+        D_VISC_TEMP=DEFI_CONSTANTE(VALE=0.0),
+        ALPHA=DEFI_CONSTANTE(VALE=0.0),
+        CP=1.0e3,
+    ),
+    THM_GAZ=_F(
+        MASS_MOL=28.0e-3,
+        VISC=DEFI_CONSTANTE(VALE=1.0e-5),
+        D_VISC_TEMP=DEFI_CONSTANTE(VALE=0.0),
+        CP=1.0e3,
+    ),
+    THM_DIFFU=_F(
+        R_GAZ=8.314,
+        CP=1.0e3,
+        RHO=2.7e3,
+        BIOT_COEF=1.0,
+        PESA_X=0.0,
+        PESA_Y=0.0,
+        PESA_Z=0.0,
+        PERM_IN=DEFI_CONSTANTE(VALE=1.0e-20),
+        VG_N=1.3,
+        VG_PR=1.0e7,
+        VG_SR=0.0,
+        VG_SMAX=0.99,
+        VG_SATUR=1.0,
+    ),
+    THM_INIT=_F(TEMP=TREF, PRE1=0.0, PRE2=1.0e5, PORO=0.2),
+)
+
+### >>>>>>>>>>>>>>>>>>>>
+### Material affectation
+### <<<<<<<<<<<<<<<<<<<<
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=CONCRETE))
+
+### >>>>>>>>>>>>>>>>>>>
+### Boundary conditions
+### <<<<<<<<<<<<<<<<<<<
+
+second = 1.0
+year = 365.0 * (24.0 * 3600.0)
+tload = 28.0 * (24.0 * 3600.0)
+pload = 30.0e6
+
+CL_DEPL = AFFE_CHAR_CINE(
+    MODELE=MO,
+    MECA_IMPO=(
+        _F(GROUP_MA="BAS", DZ=0.0),
+        _F(GROUP_MA="DEVANT", DX=0.0),
+        _F(GROUP_MA="GAUCHE", DY=0.0),
+    ),
+)
+
+CL_PRE1 = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(TOUT="OUI", PRE1=0.0))
+
+CL_PRE2 = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(TOUT="OUI", PRE2=0.0))
+
+CL_TEMP = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(TOUT="OUI", TEMP=0.0))
+
+PRES = DEFI_FONCTION(
+    NOM_PARA="INST",
+    NOM_RESU="PRESSION",
+    VALE=(tload, 0.0, tload + second, pload),
+    PROL_DROITE="CONSTANT",
+)
+
+CL_PRES = AFFE_CHAR_MECA_F(MODELE=MO, PRES_REP=_F(GROUP_MA=("HAUT"), PRES=PRES), VERI_NORM="OUI")
+
+### >>>>>>>>>>
+### Time steps
+### <<<<<<<<<<
+
+TEMPS = DEFI_LIST_REEL(
+    DEBUT=tload, INTERVALLE=(_F(JUSQU_A=tload + second, NOMBRE=10), _F(JUSQU_A=year, NOMBRE=1000))
+)
+
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=TEMPS),
+    ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO"),
+)
+### >>>>>>>>
+### Solution
+### <<<<<<<<
+
+RESU = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(
+        _F(CHARGE=CL_DEPL),
+        _F(CHARGE=CL_PRE1),
+        _F(CHARGE=CL_PRE2),
+        _F(CHARGE=CL_TEMP),
+        _F(CHARGE=CL_PRES),
+    ),
+    COMPORTEMENT=_F(RELATION="KIT_THHM", RELATION_KIT=("BETON_AGEING", "LIQU_GAZ", "HYDR_VGM")),
+    INCREMENT=_F(LIST_INST=DEFLIST, INST_INIT=tload, INST_FIN=year),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-10),
+)
+
+### >>>>>>>>>>>>>>>
+### Post-processing
+### <<<<<<<<<<<<<<<
+
+RESU = CALC_CHAMP(
+    reuse=RESU,
+    RESULTAT=RESU,
+    CONTRAINTE="SIEF_NOEU",
+    DEFORMATION="EPSI_NOEU",
+    VARI_INTERNE="VARI_NOEU",
+)
+
+### >>>>>
+### Tests
+### <<<<<
+
+import numpy as np
+
+### Computation of the reversible part of the creep strain
+def EXX_FP_R(t, ti, sig):
+    return (
+        sig
+        / 3.0
+        * (
+            1.0 / (3.0 * KV_VT) * (1.0 - np.exp(-KV_VT * (t - ti) / ETAV_VT))
+            - 1.0 / (2.0 * KD_VT) * (1.0 - np.exp(-KD_VT * (t - ti) / ETAD_VT))
+        )
+    )
+
+
+def EZZ_FP_R(t, ti, sig):
+    return (
+        sig
+        / 3.0
+        * (
+            1.0 / (3.0 * KV_VT) * (1.0 - np.exp(-KV_VT * (t - ti) / ETAV_VT))
+            + 1.0 / KD_VT * (1.0 - np.exp(-KD_VT * (t - ti) / ETAD_VT))
+        )
+    )
+
+
+### Computation of the irreversible part of the creep strain
+def EXX_FP_I(t, t0, ti, sig):
+    return sig / 3.0 * (1.0 / (3.0 * KV_MX) - 1.0 / (2.0 * KD_MX)) * np.log((t - t0) / (ti - t0))
+
+
+def EZZ_FP_I(t, t0, ti, sig):
+    return sig / 3.0 * (1.0 / (3.0 * KV_MX) + 1.0 / KD_MX) * np.log((t - t0) / (ti - t0))
+
+
+### Computation of the total strain
+def EXX(t, t0, ti, sig):
+    EXX_EL = -NU * sig / E
+    return EXX_EL + EXX_FP_R(t, ti, sig) + EXX_FP_I(t, t0, ti, sig)
+
+
+def EZZ(t, t0, ti, sig):
+    EZZ_EL = sig / E
+    return EZZ_EL + EZZ_FP_R(t, ti, sig) + EZZ_FP_I(t, t0, ti, sig)
+
+
+EXX_end = EXX(year, T0, tload + second, -pload)
+EZZ_end = EZZ(year, T0, tload + second, -pload)
+EXX_FP_R_end = EXX_FP_R(year, tload + second, -pload)
+EZZ_FP_R_end = EZZ_FP_R(year, tload + second, -pload)
+EXX_FP_I_end = EXX_FP_I(year, T0, tload + second, -pload)
+EZZ_FP_I_end = EZZ_FP_I(year, T0, tload + second, -pload)
+
+TEST_RESU(
+    RESU=_F(
+        INST=year,
+        RESULTAT=RESU,
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="EPSI_NOEU",
+        NOM_CMP="EPXX",
+        GROUP_NO="NO8",
+        PRECISION=0.01,
+        VALE_REFE=EXX_end,
+        VALE_CALC=0.006146144428842571,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=year,
+        RESULTAT=RESU,
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="EPSI_NOEU",
+        NOM_CMP="EPZZ",
+        GROUP_NO="NO8",
+        PRECISION=0.01,
+        VALE_REFE=EZZ_end,
+        VALE_CALC=-0.048569155430740474,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=year,
+        RESULTAT=RESU,
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V1",
+        GROUP_NO="NO8",
+        PRECISION=0.01,
+        VALE_REFE=EXX_FP_R_end,
+        VALE_CALC=0.0016666666666666722,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=year,
+        RESULTAT=RESU,
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V3",
+        GROUP_NO="NO8",
+        PRECISION=0.01,
+        VALE_REFE=EZZ_FP_R_end,
+        VALE_CALC=-0.013333333333333315,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=year,
+        RESULTAT=RESU,
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V7",
+        GROUP_NO="NO8",
+        PRECISION=0.01,
+        VALE_REFE=EXX_FP_I_end,
+        VALE_CALC=0.004279477762175899,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=year,
+        RESULTAT=RESU,
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V9",
+        GROUP_NO="NO8",
+        PRECISION=0.01,
+        VALE_REFE=EZZ_FP_I_end,
+        VALE_CALC=-0.03423582209740715,
+    )
+)
+
+
+FIN()
