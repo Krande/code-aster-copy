@@ -70,7 +70,9 @@ SHELL = /bin/bash
 # targets for BUILD configuration
 .PHONY: configure install safe fast doc distclean install-tests test
 # same targets for 'debug' configuration
-.PHONY: configure_debug install_debug safe_debug fast_debug doc_debug distclean_debug install-tests_debug test_debug
+.PHONY: configure_debug install_debug safe_debug fast_debug doc_debug distclean_debug
+.PHONY: install-tests_debug test_debug
+.PHONY: clean_cache
 
 default: $(DEFAULT)
 
@@ -136,8 +138,11 @@ doc_debug:
 distclean_debug:
 	$(MAKE) BUILD=debug distclean
 
+clean_cache:
+	@rm -rf $$(find * -type d -name __pycache__ ! -path 'build/*')
+
 install-tests_debug:
-	$(MAKE) BUILD=debug install-tests"
+	$(MAKE) BUILD=debug install-tests
 
 test_debug:
 	$(MAKE) BUILD=debug test n=$(n)
