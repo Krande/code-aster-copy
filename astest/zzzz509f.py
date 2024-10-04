@@ -24,7 +24,7 @@ from scipy.optimize import fsolve
 from code_aster.Commands import *
 from code_aster import CA
 
-command = MECA_NON_LINE
+
 test = CA.TestCase()
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -96,7 +96,7 @@ maxSteps = 5
 timeStepper = DEFI_LIST_INST(
     METHODE="AUTO",
     DEFI_LIST=_F(LIST_INST=LI1, NB_PAS_MAXI=maxSteps),
-    ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO"),
+    ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=2, SUBD_NIVEAU=4),
 )
 
 ### >>>>>>>>>>>>>>>>>>>
@@ -122,8 +122,10 @@ CHA_DEPL = AFFE_CHAR_MECA(
 )
 
 ### >>>>>>>>
-### Solution
+### Solution with MECA_NON_LINE
 ### <<<<<<<<
+
+command = MECA_NON_LINE
 
 result = CA.NonLinearResult()
 
@@ -150,6 +152,118 @@ while not finished:
     )
 
     finished = result.getLastTime() >= 2.0
+    if done == 1:
+        keywords.update(_F(reuse=result, ETAT_INIT=_F(EVOL_NOLI=result)))
+    done = result.getNumberOfIndexes()
+
+test.assertAlmostEqual(result.getLastTime(), 2.0, msg="last time == 2.0")
+
+
+### >>>>>>>>>>>>>>>
+### Post-processing
+### <<<<<<<<<<<<<<<
+
+result = CALC_CHAMP(
+    reuse=result,
+    RESULTAT=result,
+    CONTRAINTE="SIEF_NOEU",
+    DEFORMATION="EPSI_NOEU",
+    VARI_INTERNE="VARI_NOEU",
+)
+
+### >>>>>
+### Tests
+### <<<<<
+
+
+def func(x):
+    return p - 2.0 * pc0 * (np.exp(-bt * x) - eta * np.exp(2.0 * om * x))
+
+
+x0 = -np.log(p / (2.0 * pc0)) / bt
+EPVP = fsolve(func, x0)[0]
+EPVE = -p / k
+
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        RESULTAT=result,
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="EPSI_NOEU",
+        GROUP_NO="NO6",
+        NOM_CMP="EPXX",
+        VALE_REFE=(EPVE + EPVP) / 3.0,
+        VALE_CALC=-0.038995719385912855,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        RESULTAT=result,
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V15",
+        GROUP_NO="NO6",
+        VALE_REFE=EPVP,
+        VALE_CALC=-0.10729723567711803,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.4,
+        RESULTAT=result,
+        NOM_CHAM="EPSI_NOEU",
+        GROUP_NO="NO6",
+        NOM_CMP="EPXX",
+        VALE_CALC=-0.037703755561623496,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.4,
+        RESULTAT=result,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V15",
+        GROUP_NO="NO6",
+        VALE_CALC=-0.10729723567711803,
+    )
+)
+
+### >>>>>>>>
+### Solution with STAT_NON_LINE
+### <<<<<<<<
+
+command = STAT_NON_LINE
+
+result = CA.NonLinearResult()
+
+keywords = _F(
+    MODELE=MODELE,
+    CHAM_MATER=MATE,
+    EXCIT=(_F(CHARGE=CHA_PRES), _F(CHARGE=CHA_DEPL)),
+    COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14, ITER_INTE_MAXI=20),
+    INCREMENT=_F(LIST_INST=timeStepper),
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-10),
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
+
+done = 1  # t=0
+finished = False
+while not finished:
+    result = command(**keywords)
+
+    test.assertLessEqual(
+        result.getNumberOfIndexes() - done,
+        maxSteps,
+        msg="check that at most 'maxSteps' have been completed",
+    )
+
+    finished = abs(result.getLastTime() - 2.0) <= 1.0e-6
     if done == 1:
         keywords.update(_F(reuse=result, ETAT_INIT=_F(EVOL_NOLI=result)))
     done = result.getNumberOfIndexes()

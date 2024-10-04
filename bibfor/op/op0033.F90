@@ -75,7 +75,7 @@ subroutine op0033()
     integer :: iret, nbmat, nbvari, nbpar, i, ier
     integer :: imate, iter, pred, ncmp, imptgt
     integer :: matrel, irota, defimp, liccvg(5)
-    integer :: indimp(9), nume_inst, actite, action, itgt, iforta
+    integer :: indimp(9), numeInst, actite, action, itgt, iforta
 !     NOMBRE MAXI DE COLONNES DANS UNE TABLE 9999 (CF D4.02.05)
     integer, parameter :: ntamax = 9999
     integer :: igrad, nbvita
@@ -91,7 +91,7 @@ subroutine op0033()
     real(kind=8) :: work(10), sdeps(6), ssigp(6), smatr(36), r1(12)
     real(kind=8) :: matper(36), varia(2*36), epsilo, pgl(3, 3), vimp33(3, 3)
     real(kind=8) :: vimp2(3, 3), coef, jm, jp, jd, coefextra
-    aster_logical :: finpas, itemax, conver
+    aster_logical :: lastTimeStep, itemax, conver
     integer :: lvim, lvip, lvim2, lsvip, lnomvi
     type(NL_DS_Conv) :: ds_conv
     type(NL_DS_AlgoPara) :: ds_algopara
@@ -121,7 +121,7 @@ subroutine op0033()
     k19b = ' '
     iter = 0
     action = 1
-    finpas = ASTER_FALSE
+    lastTimeStep = ASTER_FALSE
     itemax = ASTER_FALSE
     liccvg = 0
 
@@ -175,7 +175,7 @@ subroutine op0033()
 
 ! - CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
     call nmcrcv(sdcrit)
-    nume_inst = 1
+    numeInst = 1
 !
 !==================================
 !     BOUCLE SUR lES INSTANTS
@@ -186,8 +186,8 @@ subroutine op0033()
     liccvg(1:5) = 0
 
 ! - Get times
-    instam = diinst(sddisc, nume_inst-1)
-    instap = diinst(sddisc, nume_inst)
+    instam = diinst(sddisc, numeInst-1)
+    instap = diinst(sddisc, numeInst)
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndim, typmod, option, &
@@ -315,7 +315,7 @@ subroutine op0033()
             call pmdrdy(dsidep, coef, cimpo, valimp, ym, &
                         sigm, r, drdy)
         end if
-    else if ((pred .eq. 0) .or. ((pred .eq. -1) .and. (nume_inst .eq. 1))) then
+    else if ((pred .eq. 0) .or. ((pred .eq. -1) .and. (numeInst .eq. 1))) then
         dy(:) = 0.d0
         deps(:) = 0.d0
         call pmdrdy(kel, coef, cimpo, valimp, ym, &
@@ -340,9 +340,9 @@ subroutine op0033()
 !
     iter = iter+1
 !
-    if ((iter .eq. 1) .and. (pred .eq. -1) .and. (nume_inst .gt. 1)) then
+    if ((iter .eq. 1) .and. (pred .eq. -1) .and. (numeInst .gt. 1)) then
 !   prediction='extrapole'
-        coefextra = (instap-instam)/(instam-diinst(sddisc, nume_inst-2))
+        coefextra = (instap-instam)/(instam-diinst(sddisc, numeInst-2))
 !       dy = dy * (ti - ti-1)/(ti-1 - ti-2)
         b_n = to_blas_int(12)
         b_incx = to_blas_int(1)
@@ -453,7 +453,7 @@ subroutine op0033()
 !        GESTION DE LA DECOUPE DU PAS DE TEMPS
 !        EN L'ABSENCE DE CONVERGENCE ON CHERCHE A SUBDIVISER LE PAS
 !        DE TEMPS SI L'UTILISATEUR A FAIT LA DEMANDE
-    call pmactn(sddisc, ds_conv, iter, nume_inst, itemax, &
+    call pmactn(sddisc, ds_conv, iter, numeInst, itemax, &
                 sderro, liccvg, actite, action)
 !
 ! ---    ACTION
@@ -480,9 +480,9 @@ subroutine op0033()
 !
 !        ADAPTATION DU NOUVEAU PAS DE TEMPS
 !        PAS DE GESTION DE DELTA_GRANDEUR ACTUELLEMENT
-    call nmfinp(sddisc, nume_inst, finpas)
-    if (.not. finpas) call nmadat(sddisc, nume_inst, iter, k19b)
-    nume_inst = nume_inst+1
+    call nmfinp(sddisc, numeInst, lastTimeStep)
+    if (.not. lastTimeStep) call nmadat(sddisc, numeInst, iter, k19b)
+    numeInst = numeInst+1
 !        STOCKAGE EFFECTIF DU RESULTAT DANS LA TABLE
     call pmstab(sigm, sigp, epsm, deps, nbvari, &
                 zr(lvim), zr(lvip), iforta, instam, instap, &
@@ -497,7 +497,7 @@ subroutine op0033()
 !
 ! --- DERNIER INSTANT DE CALCUL ? -> ON SORT DE STAT_NON_LINE
 !
-    if (finpas .or. (action .eq. 0)) then
+    if (lastTimeStep .or. (action .eq. 0)) then
         goto 900
     end if
     goto 200

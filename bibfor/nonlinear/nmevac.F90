@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
     integer :: retsup, retswa, retpen, retdec, failType, actionType
     aster_logical :: trydec, litmax
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     retact = 3
     actionType = FAIL_ACT_STOP
