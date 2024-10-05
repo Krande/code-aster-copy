@@ -17,8 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), ERREUR=_F(ALARME="EXCEPTION"), IMPR_MACRO="NON")
-
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 RESU_C2 = CALC_MAC3COEUR(
     TYPE_COEUR="TEST",
