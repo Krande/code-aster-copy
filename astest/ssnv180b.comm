@@ -96,6 +96,7 @@ SECH1 = CREA_RESU(
     AFFE=(
         _F(NOM_CHAM="TEMP", CHAM_GD=SECHI, INST=0.0),
         _F(NOM_CHAM="TEMP", CHAM_GD=SECHF, INST=64800000.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=SECHI, INST=64800000.0 * 2),
     ),
 )
 
@@ -122,6 +123,7 @@ HYDR1 = CREA_RESU(
     ),
 )
 
+
 TEMPI = CREA_CHAMP(
     OPERATION="AFFE",
     TYPE_CHAM="NOEU_TEMP_R",
@@ -142,6 +144,7 @@ TEMP1 = CREA_RESU(
     AFFE=(
         _F(NOM_CHAM="TEMP", CHAM_GD=TEMPI, INST=0.0),
         _F(NOM_CHAM="TEMP", CHAM_GD=TEMPF, INST=64800000.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMPF, INST=64800000.0 * 2),
     ),
 )
 
@@ -166,7 +169,7 @@ FORCE = DEFI_FONCTION(
     NOM_PARA="INST",
     PROL_DROITE="LINEAIRE",
     PROL_GAUCHE="LINEAIRE",
-    VALE=(0.0, 0.0, 1.0, -3.0, 64800000.0, -3.0),
+    VALE=(0.0, 0.0, 1.0, -3.0, 64800000.0 * 2, -3.0),
 )
 
 CH10 = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_NO="S_INF", DZ=0.0))
@@ -185,6 +188,7 @@ L_INST = DEFI_LIST_REEL(
         _F(JUSQU_A=648000.0, NOMBRE=20),
         _F(JUSQU_A=6480000.0, NOMBRE=20),
         _F(JUSQU_A=64800000.0, NOMBRE=20),
+        _F(JUSQU_A=64800000.0 * 2, NOMBRE=80),
     ),
 )
 
@@ -339,7 +343,7 @@ TEST_RESU(
             NOM_CHAM="EPSI_ELNO",
             GROUP_NO="N6",
             NOM_CMP="EPZZ",
-            VALE_CALC=-0.000414679610062,
+            VALE_CALC=-0.00041467899217015325,
             VALE_REFE=-4.15e-4,
             PRECISION=1.0000000000000001e-3,
             GROUP_MA="M1",
@@ -351,7 +355,7 @@ TEST_RESU(
             NOM_CHAM="EPSI_ELNO",
             GROUP_NO="N6",
             NOM_CMP="EPZZ",
-            VALE_CALC=-0.000581845523867,
+            VALE_CALC=-0.0005818111602248609,
             VALE_REFE=-5.8200000000000005e-4,
             PRECISION=3.0000000000000001e-3,
             GROUP_MA="M1",
@@ -363,7 +367,7 @@ TEST_RESU(
             NOM_CHAM="EPSI_ELNO",
             GROUP_NO="N6",
             NOM_CMP="EPZZ",
-            VALE_CALC=-0.00136180526653,
+            VALE_CALC=-0.0013602991791364042,
             VALE_REFE=-1.3600000000000001e-3,
             PRECISION=2.0000000000000001e-3,
             GROUP_MA="M1",
@@ -375,9 +379,9 @@ TEST_RESU(
             NOM_CHAM="EPSI_ELNO",
             GROUP_NO="N6",
             NOM_CMP="EPZZ",
-            VALE_CALC=-0.00437295483668,
+            VALE_CALC=-0.004332174749185838,
             VALE_REFE=-4.3800000000000002e-3,
-            PRECISION=2.0000000000000001e-3,
+            PRECISION=1.5000000000000001e-2,
             GROUP_MA="M1",
         ),
     )
@@ -461,9 +465,9 @@ TEST_RESU(
             NOM_CHAM="EPFP_ELNO",
             GROUP_NO="N6",
             NOM_CMP="EPZZ",
-            VALE_CALC=-0.00249378259515,
+            VALE_CALC=-0.0024530025106063117,
             VALE_REFE=-2.5024000000000001e-3,
-            PRECISION=4.0000000000000001e-3,
+            PRECISION=2.0000000000000001e-2,
             GROUP_MA="M1",
         ),
         _F(
@@ -512,12 +516,32 @@ TEST_RESU(
             NOM_CHAM="EPFP_NOEU",
             GROUP_NO="N1",
             NOM_CMP="EPZZ",
-            VALE_CALC=-0.00249378259511,
+            VALE_CALC=-0.0024530025137659527,
             VALE_REFE=-2.5024000000000001e-3,
-            PRECISION=4.0000000000000001e-3,
+            PRECISION=2.0000000000000001e-2,
         ),
     )
 )
+
+
+# TESTS SUR LES DEFORMATIONS DE FLUAGE
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=6.4800000e7 * 2,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="EPFD_ELNO",
+            GROUP_NO="N6",
+            NOM_CMP="EPZZ",
+            VALE_CALC=-0.00113207546733,
+            VALE_REFE=-1.132e-3,
+            PRECISION=1.0000000000000001e-3,
+            GROUP_MA="M1",
+        ),
+    )
+)
+
 
 FIN()
 #
