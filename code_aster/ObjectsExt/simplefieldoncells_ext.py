@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,11 @@ from ..Utilities import injector, medcoupling as medc
 class ExtendedSimpleFieldOnCellsReal:
     def getValues(self, copy=False):
         """
-        Returns two numpy arrays with shape ( number_of_cells_with_components, number_of_components )
+        Returns two numpy arrays containing the field values on specific cells.
+
         The first array contains the field values while the second one is a mask
         which is `True` if the corresponding value exists, `False` otherwise.
-
-        Where the mask is `False` the corresponding value is set to zero.
+        Array shape is ( number_of_cells_with_components, number_of_components ).
 
         Args:
             copy (bool): If True copy the data, default: *False*
@@ -56,3 +56,35 @@ class ExtendedSimpleFieldOnCellsReal:
         mask.setflags(write=False)
 
         return values, mask
+
+    def getValuesOnCell(self, idcell):
+        """
+        Returns two numpy arrays containing the field values on specific cells.
+
+        The first array contains the field values while the second one is a mask
+        which is `True` if the corresponding value exists, `False` otherwise.
+        Each array contains `number_of_cells * number_of_components` values.
+        Array shape is ( number_of_cells_with_components, number_of_components ).
+
+        Args:
+            idcell (int): The cell id.
+
+        Returns:
+            ndarray (float): Field values.
+            ndarray (bool): Mask for the field values.
+        """
+
+        istart = sum(
+            [
+                self.getNumberOfPointsOfCell(i) * self.getNumberOfSubPointsOfCell(i)
+                for i in range(idcell)
+            ]
+        )
+
+        iend = istart + self.getNumberOfPointsOfCell(idcell) * self.getNumberOfSubPointsOfCell(
+            idcell
+        )
+
+        values, mask = self.getValues()
+
+        return values[istart:iend], mask[istart:iend]

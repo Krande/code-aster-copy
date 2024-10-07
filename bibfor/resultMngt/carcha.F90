@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -192,6 +192,11 @@ subroutine carcha(fieldType, fieldQuantity, fieldSupport, option, param)
     else if (fieldType .eq. 'VARI_NOEU') then
         fieldQuantity = 'VAR2_R'
         fieldSupport = 'NOEU'
+    else if (fieldType .eq. 'STRX_ELGA') then
+        fieldQuantity = 'STRX_R'
+        fieldSupport = 'ELGA'
+        option = 'RAPH_MECA'
+        param = 'PSTRXMR'
     else if (fieldType .eq. 'HYDR_ELGA') then
         fieldQuantity = 'HYDR_R'
         fieldSupport = 'ELGA'

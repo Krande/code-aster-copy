@@ -604,52 +604,56 @@ class Coeur:
         if "UNLINKED_LOCAL" not in gno_names:
             MA0.setGroupOfNodes("UNLINKED_LOCAL", tuple(unlinked_local))
 
-        LISGRIL = []
-        LISGRILI = []
-        LISGRILE = []
-        LISG = []
-        LIS_PG = []
-        nbgrmax = 0
+        dict_grids = []
+        grids_middle = []
+        grids_extr = []
+        grids_lock = []
+
+        lsnbgrids = list(set(ac.NBGR for ac in self.collAC))
+        assert len(lsnbgrids) == 1, "Invalid Mesh"
+        nbgr = lsnbgrids[0]
+
         for ac in self.collAC:
-            nbgrmax = max(nbgrmax, ac.NBGR)
             LIS_GNO = []
             for igr in range(ac.NBGR):
                 LIS_GNO.append("G_%s_%d" % (ac.pos_aster, igr + 1))
-                LIS_PG.append("P_%s_%d" % (ac.pos_aster, igr + 1))
+                grids_lock.append("P_%s_%d" % (ac.pos_aster, igr + 1))
 
-            DICG = {"NOM_GROUP_MA": "GR_%s" % ac.pos_aster, "GROUP_NO": LIS_GNO}
-            LISG.append(DICG)
+            dict_grids.append({"NOM_GROUP_MA": "GR_%s" % ac.pos_aster, "GROUP_NO": LIS_GNO})
 
-        for igr in range(0, nbgrmax):
+        for igr in range(0, nbgr):
             grid_name = "GRIL_%d" % (igr + 1)
-            DICGRIL = {"NOM_GROUP_MA": grid_name, "GROUP_NO": grid_name}
-            LISGRIL.append(DICGRIL)
-            if igr in (0, nbgrmax - 1):
-                LISGRILE.append(grid_name)
+            dict_grids.append({"NOM_GROUP_MA": grid_name, "GROUP_NO": grid_name})
+            if igr in (0, nbgr - 1):
+                grids_extr.append(grid_name)
             else:
-                LISGRILI.append(grid_name)
+                grids_middle.append(grid_name)
 
-        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(LISGRIL + LISG))
+        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(dict_grids))
 
-        DICCR1 = {"GROUP_MA": "CREI", "NOM": "CREIC", "PREF_MAILLE": "MM"}
+        dict_creic = [
+            {
+                "GROUP_MA": "CREI_%s" % ac.pos_aster,
+                "NOM": "CREIC_%s" % ac.pos_aster,
+                "PREF_MAILLE": "MM",
+            }
+            for ac in self.collAC
+        ]
 
-        DICCR2 = {"GROUP_MA": "ELA", "NOM": "ELAP", "PREF_MAILLE": "MM"}
-
-        LISCR2 = [DICCR1, DICCR2]
-
-        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=tuple(LISCR2))
+        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=dict_creic)
 
         _MA = DEFI_GROUP(
             reuse=_MA,
             ALARME="NON",
             MAILLAGE=_MA,
             CREA_GROUP_MA=(
-                _F(NOM="GRIL_I", UNION=tuple(LISGRILI)),
-                _F(NOM="GRIL_E", UNION=tuple(LISGRILE)),
+                _F(NOM="GRIL_I", UNION=tuple(grids_middle)),
+                _F(NOM="GRIL_E", UNION=tuple(grids_extr)),
+                _F(NOM="CREIC", UNION=[i["NOM"] for i in dict_creic]),
             ),
             CREA_GROUP_NO=(
                 _F(GROUP_MA=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN")),
-                _F(NOM="LISPG", UNION=tuple(LIS_PG)),
+                _F(NOM="LISPG", UNION=tuple(grids_lock)),
             ),
         )
 
@@ -773,7 +777,7 @@ class Coeur:
                 ),
                 _F(GROUP_MA=("ELA", "RIG"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
                 _F(
-                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI", "CREIC", "ELAP"),
+                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI", "CREIC"),
                     PHENOMENE="MECANIQUE",
                     MODELISATION="DIS_T",
                 ),
@@ -1726,6 +1730,23 @@ class CoeurFactory(Mac3Factory):
         coeur = factory.get(type_coeur)(name, type_coeur, datg, longueur)
         coeur.init_from_table(damactab)
         return coeur
+
+    @classmethod
+    def buildFromMesh(
+        cls, type_coeur, sdtab, mesh, contact="NON", fluence_level=0.0, longueur=None
+    ):
+
+        core = CoeurFactory.build(type_coeur, sdtab)
+        model = core.affectation_modele(mesh)
+        core.init_from_mesh(mesh)
+        gfibre = core.definition_geom_fibre()
+        carael = core.definition_cara_coeur(model, gfibre)
+        timeline = core.definition_time(fluence_level, 1.0)
+        fluence = core.definition_fluence(fluence_level, mesh, 0.0)
+        tempfield = core.definition_champ_temperature(mesh)
+        mater = core.definition_materiau(mesh, gfibre, fluence, tempfield, CONTACT=contact)
+
+        return model, carael, mater
 
     def build_supported_types(self):
         """Construit la liste des types autorisés."""

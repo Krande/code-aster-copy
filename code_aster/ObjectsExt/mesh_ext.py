@@ -360,3 +360,39 @@ class ExtendedMesh:
         val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
         return self._getNodesFromCells(force_list(group_name), localNumbering, val[same_rank])
+
+    def _getGroupsOfCellsContainingIds(self, idcell):
+        """Returns the list of groups of cells containing the cell ids.
+
+        *For debugging only, performance issues.*
+
+        Arguments:
+            idcell (int/list[int]): Cell idS to find.
+
+        Returns:
+            list[str]: Names of groups containing the cell ids.
+        """
+
+        return [
+            grp
+            for grp in self.getGroupsOfCells()
+            if any(ids in self.getCells(grp) for ids in force_list(idcell))
+        ]
+
+    def _getGroupsOfNodesContainingIds(self, idnode):
+        """Returns the list of groups of nodes containing the node ids.
+
+        *For debugging only, performance issues.*
+
+        Arguments:
+            idnode (int/list[int]): Node idS to find.
+
+        Returns:
+            list[str]: Names of groups containing the node ids.
+        """
+
+        return [
+            grp
+            for grp in self.getGroupsOfNodes()
+            if any(ids in self.getNodes(grp) for ids in force_list(idnode))
+        ]

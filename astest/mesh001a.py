@@ -65,6 +65,9 @@ test.assertFalse(mesh.hasGroupOfNodes("AA"))
 test.assertFalse(mesh.hasGroupOfNodes("AA", True))
 test.assertFalse(mesh.hasGroupOfNodes("AA", False))
 
+test.assertSequenceEqual(mesh._getGroupsOfCellsContainingIds(40), ["Bas"])
+test.assertSequenceEqual(mesh._getGroupsOfCellsContainingIds((40, 47)), ["Bas", "Haut"])
+test.assertSequenceEqual(mesh._getGroupsOfNodesContainingIds(5), ["B", "Bas"])
 
 # do the same thing (compatibily with ParallelMesh)
 test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()), ["Bas", "Haut"])

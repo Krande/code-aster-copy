@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-subroutine digric(for_discret, iret)
+subroutine digric(DD, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IN    for_discret : voir l'appel
-! OUT   iret        : code retour
+! IN    DD      : voir l'appel
+! OUT   iret    : code retour
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -36,54 +36,49 @@ subroutine digric(for_discret, iret)
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 !
-    type(te0047_dscr), intent(in) :: for_discret
+    type(te0047_dscr), intent(in) :: DD
     integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iadzi, iazk24, imat, ivarim, jtp, ifono, icontp, ivarip, neq, icontm
+    integer :: iadzi, iazk24, imat, ivarim, ifono, icontp, ivarip
     real(kind=8) :: klv(78)
     character(len=24) :: messak(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     iret = 0
-    call jevech('PCONTMR', 'L', icontm)
 !
-    if (for_discret%nomte .ne. 'MECA_DIS_TR_L') then
-        messak(1) = for_discret%nomte
+    if (DD%nomte .ne. 'MECA_DIS_TR_L') then
+        messak(1) = DD%nomte
         messak(2) = 'NON_LINEAR'
-        messak(3) = for_discret%type_comp
-        messak(4) = for_discret%rela_comp
+        messak(3) = DD%type_comp
+        messak(4) = DD%rela_comp
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_11', nk=5, valk=messak)
     end if
-!   paramètres en entrée
+    ! Paramètres en entrée
     call jevech('PMATERC', 'L', imat)
     call jevech('PVARIMR', 'L', ivarim)
-    call jevech('PINSTPR', 'L', jtp)
-!
+    !
     ifono = 1
     icontp = 1
     ivarip = 1
-    if (for_discret%lVect) then
+    if (DD%lVect) then
         call jevech('PVECTUR', 'E', ifono)
     end if
-    if (for_discret%lSigm) then
+    if (DD%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
     end if
-    if (for_discret%lVari) then
+    if (DD%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
     end if
-    neq = for_discret%nno*for_discret%nc
-!
-    call dicrgr('RIGI', for_discret%option, neq, for_discret%nc, zi(imat), &
-                for_discret%ulm, for_discret%dul, zr(icontm), zr(ivarim), for_discret%pgl, &
-                klv, zr(ivarip), zr(ifono), zr(icontp))
-!
-    if (for_discret%lMatr) then
+    !
+    call dicrgr(DD, zi(imat), zr(ivarim), klv, zr(ivarip), zr(ifono), zr(icontp))
+    !
+    if (DD%lMatr) then
         call jevech('PMATUUR', 'E', imat)
-        call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
+        call utpslg(DD%nno, DD%nc, DD%pgl, klv, zr(imat))
     end if
 end subroutine

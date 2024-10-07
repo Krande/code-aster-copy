@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,22 +19,15 @@
 !
 !
 interface
-    subroutine dicrgr(fami, option, neq, nc, icodma,&
-                      ulm, dul, sim, varim, pgl,&
-                      klv, varip, fono, sip)
-        integer :: neq
-        character(len=*) :: fami
-        character(len=16) :: option
-        integer :: nc
+    subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
+        use te0047_type
+        !
+        type(te0047_dscr), intent(in) :: DD
         integer :: icodma
-        real(kind=8) :: ulm(neq)
-        real(kind=8) :: dul(neq)
-        real(kind=8) :: sim(neq)
-        real(kind=8) :: varim(7)
-        real(kind=8) :: pgl(3, 3)
+        real(kind=8) :: varim(*)
         real(kind=8) :: klv(78)
-        real(kind=8) :: varip(7)
-        real(kind=8) :: fono(neq)
-        real(kind=8) :: sip(neq)
+        real(kind=8) :: varip(*)
+        real(kind=8) :: fono(*)
+        real(kind=8) :: sip(*)
     end subroutine dicrgr
 end interface

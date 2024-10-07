@@ -587,12 +587,6 @@ class Assemblage:
                 VALE=vale_K_T_D_L(1.0e4, self.nb_cr_mesh),
             ),
             _F(
-                GROUP_MA="ELAP",
-                REPERE="GLOBAL",
-                CARA="K_T_D_L",
-                VALE=vale_K_T_D_L(1.0e6, self.nb_cr_mesh),
-            ),
-            _F(
                 GROUP_MA="CREIC",
                 REPERE="GLOBAL",
                 CARA="K_T_D_L",

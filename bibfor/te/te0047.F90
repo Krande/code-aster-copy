@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -144,7 +144,7 @@ subroutine te0047(optioz, nomtez)
         call utmess('F', 'DISCRETS_8', nk=5, valk=messak)
     end if
     ! dans les cas *_ELAS, les comportements qui ont une matrice de
-    ! décharge sont : elas DIS_GRICRA. pour tous les autres cas : <f>
+    ! décharge sont : elas DIS_GRICRA. pour tous les autres cas : <F>
     if ((for_discret%option(10:14) .eq. '_ELAS') .and. &
         (for_discret%rela_comp .ne. 'ELAS') .and. &
         (for_discret%rela_comp .ne. 'DIS_GRICRA')) then
