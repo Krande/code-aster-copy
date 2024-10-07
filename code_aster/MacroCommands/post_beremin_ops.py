@@ -441,7 +441,6 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
                     NOM_CMP_RESU="SIXX",
                 ),
             )
-            # sigtyp = rsig1.getField("UT01_ELGA", 0).setPhysicalQuantity("SIEF_R", {"X1":"SIXX"})
 
             maxsig.setField(sigtyp, "SIEF_ELGA", indice)
             maxsig.setTime(resultat.getTime(nume_inst), indice)

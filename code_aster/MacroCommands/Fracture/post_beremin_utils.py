@@ -210,7 +210,7 @@ def get_resu_gdef_log(resusd, med_filename_in, rvga, grmapb):
                 tuple(
                     _F(CHAM_GD=chvga, GROUP_MA=grmapb, NOM_CMP=nom_cmp, NOM_CMP_RESU=nom_cmp_resu)
                     for (nom_cmp, nom_cmp_resu) in zip(
-                        tuple("V{}".format(ncs) for ncs in numcmpsel),
+                        tuple(f"V{ncs}" for ncs in numcmpsel),
                         {
                             2: ("SIXX", "SIYY", "SIZZ", "SIXY"),
                             3: ("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
