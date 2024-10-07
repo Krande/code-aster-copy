@@ -329,20 +329,11 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
         ),
     )
 
-    sq2 = CREA_CHAMP(
-        OPERATION="ASSE",
-        TYPE_CHAM="ELGA_SIEF_R",
-        MODELE=modele,
-        PROL_ZERO="OUI",
-        ASSE=(
-            _F(GROUP_MA=grmacalc, CHAM_GD=sqsursgrefe, NOM_CMP="X1", NOM_CMP_RESU="SIXX"),
-            _F(GROUP_MA=grmacalc, CHAM_GD=sqsursgrefe, NOM_CMP="X2", NOM_CMP_RESU="SIYY"),
-        ),
-    )
-
     rdivaux = NonLinearResult()
     rdivaux.allocate(1)
-    rdivaux.setField(sq2, "SIEF_ELGA", 0)
+    rdivaux.setField(
+        sqsursgrefe.setPhysicalQuantity("SIEF_R", {"X1": "SIXX", "X2": "SIYY"}), "SIEF_ELGA", 0
+    )
     rdivaux.setModel(modele, 0)
 
     formule = Formula()
@@ -356,18 +347,7 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
         CHAM_UTIL=_F(NOM_CHAM="SIEF_ELGA", FORMULE=formule, NUME_CHAM_RESU=1),
     )
 
-    return CREA_CHAMP(
-        OPERATION="ASSE",
-        TYPE_CHAM="ELGA_DEPL_R",
-        MODELE=modele,
-        PROL_ZERO="OUI",
-        ASSE=_F(
-            GROUP_MA=grmacalc,
-            CHAM_GD=rdiv1.getField("UT01_ELGA", 0),
-            NOM_CMP="X1",
-            NOM_CMP_RESU="DX",
-        ),
-    )
+    return rdiv1.getField("UT01_ELGA", 0).setPhysicalQuantity("DEPL_R", {"X1": "DX"})
 
 
 def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
@@ -465,6 +445,7 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
                     NOM_CMP_RESU="SIXX",
                 ),
             )
+            # sigtyp = rsig1.getField("UT01_ELGA", 0).setPhysicalQuantity("SIEF_R", {"X1":"SIXX"})
 
             maxsig.setField(sigtyp, "SIEF_ELGA", indice)
             maxsig.setTime(resultat.getTime(nume_inst), indice)
@@ -506,7 +487,7 @@ def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
     linstants = rsieq.getAccessParameters()["INST"]
 
     def puiss_m(valsixx):
-        return valsixx**bere_m
+        return valsixx ** bere_m
 
     indice = 0
     for nume_inst, inst in enumerate(linstants):
@@ -687,7 +668,7 @@ def make_plasticity_groups(reswbrest, numv1v2, mclinst, seuil, l_epspmax):
         CREA_GROUP_NO=tuple(
             [
                 _F(
-                    NOM="vale_{}".format(iteration),
+                    NOM=f"vale_{iteration}",
                     OPTION="INTERVALLE_VALE",
                     CHAM_GD=reswbrest.getField("VARI_ELGA", iteration).toFieldOnNodes(),
                     NOM_CMP="V{}".format(numv1v2[0]),
