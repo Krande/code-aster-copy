@@ -237,16 +237,13 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
     """
     if not "SIGM_CNV" in dwb[grwb]:
 
-        grmacalc = "mgrplas_{}".format(nume_inst)
-        modele = reswbrest.getModel()
-
         sg1 = CREA_CHAMP(
             OPERATION="ASSE",
             TYPE_CHAM="ELGA_DEPL_R",
-            MODELE=modele,
+            MODELE=reswbrest.getModel(),
             PROL_ZERO="OUI",
             ASSE=_F(
-                GROUP_MA=grmacalc,
+                GROUP_MA=f"mgrplas_{nume_inst}",
                 CHAM_GD=rsieq.getField("SIEQ_ELGA", nume_inst),
                 NOM_CMP="PRIN_3",
                 NOM_CMP_RESU="DX",
@@ -276,7 +273,7 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
     Returns:
         FieldOnCells: ELGA_NEUT_R filled by PRIN_3
     """
-    grmacalc = "mgrplas_{}".format(nume_inst)
+    grmacalc = f"mgrplas_{nume_inst}"
     modele = reswbrest.getModel()
 
     chf = CREA_CHAMP(
@@ -286,8 +283,7 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
         OPERATION="AFFE",
     )
 
-    chmat = reswbrest.getMaterialField()
-    extvariaffe = chmat.getExtStateVariablesOnMeshEntities()
+    extvariaffe = reswbrest.getMaterialField().getExtStateVariablesOnMeshEntities()
     for curiter in extvariaffe:
         extvari = curiter[0]
         nom_varc = ExternalVariableTraits.getExternVarTypeStr(extvari.getType())
@@ -487,7 +483,7 @@ def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
     linstants = rsieq.getAccessParameters()["INST"]
 
     def puiss_m(valsixx):
-        return valsixx ** bere_m
+        return valsixx**bere_m
 
     indice = 0
     for nume_inst, inst in enumerate(linstants):
@@ -656,11 +652,11 @@ def make_plasticity_groups(reswbrest, numv1v2, mclinst, seuil, l_epspmax):
     for indice, iteration in enumerate(liter):
 
         if l_epspmax[indice] < seuil:
-            dval["min{}".format(indice)] = 0
-            dval["max{}".format(indice)] = l_epspmax[indice]
+            dval[f"min{indice}"] = 0
+            dval[f"max{indice}"] = l_epspmax[indice]
         else:
-            dval["min{}".format(indice)] = seuil
-            dval["max{}".format(indice)] = l_epspmax[indice]
+            dval[f"min{indice}"] = seuil
+            dval[f"max{indice}"] = l_epspmax[indice]
 
     mawbrest = DEFI_GROUP(
         reuse=mawbrest,
@@ -672,15 +668,12 @@ def make_plasticity_groups(reswbrest, numv1v2, mclinst, seuil, l_epspmax):
                     OPTION="INTERVALLE_VALE",
                     CHAM_GD=reswbrest.getField("VARI_ELGA", iteration).toFieldOnNodes(),
                     NOM_CMP="V{}".format(numv1v2[0]),
-                    VALE=(dval["min{}".format(indice)], dval["max{}".format(indice)]),
+                    VALE=(dval[f"min{indice}"], dval[f"max{indice}"]),
                 )
                 for (indice, iteration) in enumerate(liter)
             ]
             + [
-                _F(
-                    NOM="ngrplas_{}".format(iteration),
-                    INTERSEC=("vale_{}".format(iteration), "ngrmapb"),
-                )
+                _F(NOM=f"ngrplas_{iteration}", INTERSEC=(f"vale_{iteration}", "ngrmapb"))
                 for iteration in liter
             ]
         ),
@@ -691,10 +684,10 @@ def make_plasticity_groups(reswbrest, numv1v2, mclinst, seuil, l_epspmax):
         MAILLAGE=mawbrest,
         CREA_GROUP_MA=tuple(
             _F(
-                NOM="mgrplas_{}".format(iteration),
+                NOM=f"mgrplas_{iteration}",
                 OPTION="APPUI",
                 TYPE_MAILLE="{}D".format(mawbrest.getDimension()),
-                GROUP_NO="ngrplas_{}".format(iteration),
+                GROUP_NO=f"ngrplas_{iteration}",
                 TYPE_APPUI="AU_MOINS_UN",
             )
             for iteration in liter
@@ -704,7 +697,7 @@ def make_plasticity_groups(reswbrest, numv1v2, mclinst, seuil, l_epspmax):
                 _F(
                     NOM="mgrplasfull",
                     TYPE_MAILLE="{}D".format(mawbrest.getDimension()),
-                    UNION=tuple("mgrplas_{}".format(iteration) for iteration in liter),
+                    UNION=tuple(f"mgrplas_{iteration}" for iteration in liter),
                 )
             ]
         ),
