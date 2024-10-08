@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,11 +79,11 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3, &
 !
             idech = 0
 !
-            do j = 1, nbpas
+            do j = i, min(i+nbpas, nbpt)
 !
 !              EST CE QUE C'EST LA FIN D'UN CHOC GLOBAL
 !
-                if (abs(fn(i+j)) .gt. offset) idech = 1
+                if (abs(fn(j)) .gt. offset) idech = 1
             end do
 !
             if (idech .eq. 0 .and. ichoc .eq. 1) then
