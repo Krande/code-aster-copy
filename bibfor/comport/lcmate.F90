@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine lcmate(BEHinteg, &
 #include "asterfort/cvmmat.h"
 #include "asterfort/haymat.h"
 #include "asterfort/hbrmat.h"
-#include "asterfort/hujma2.h"
 #include "asterfort/irrmat.h"
 #include "asterfort/lcmatt.h"
 #include "asterfort/lcmmap.h"
@@ -188,13 +187,6 @@ subroutine lcmate(BEHinteg, &
                     nmat, '+', materf(1, 1), materf(1, 2), nvi, &
                     nr)
         call matect(materd, materf, nmat, matcst)
-        typma = 'COHERENT'
-!
-    else if (rela_comp .eq. 'HUJEUX') then
-        call hujma2(fami, kpg, ksp, mod, imat, &
-                    nmat, tempf, angmas, sigd, vind, &
-                    materd, materf, ndt, ndi, nvi, &
-                    nr, matcst)
         typma = 'COHERENT'
 !
     else

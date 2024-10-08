@@ -72,7 +72,6 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef, &
     character(len=8) :: mod
     character(len=16) :: comp(*), option
     character(len=24) :: cpmono(5*nmat+1)
-    aster_logical :: bnews(3), mtrac
     parameter(un=1.d0)
     parameter(zero=0.d0)
     common/tdim/ndt, ndi
@@ -99,7 +98,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef, &
 !       call r8inir(ndt, 0.d0, sigd, 1)
         call lcafyd(comp, mater, mater, nbcomm, cpmono, &
                     nmat, mod, nvi, vind, vinf, &
-                    sigd, nr, yd, bnews, mtrac)
+                    sigd, nr, yd)
         b_n = to_blas_int(nr)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)

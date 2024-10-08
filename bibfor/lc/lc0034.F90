@@ -60,7 +60,7 @@ subroutine lc0034(BEHinteg, &
     real(kind=8)     :: npal, crit
     character(len=8) :: nomail
     integer          :: iadzi, iazk24, ndt, ndi
-    aster_logical    :: debug, redec, cnmhuj
+    aster_logical    :: debug, redec
 ! ----------------------------------------------------------------
     common/meshuj/debug
     common/tdim/ndt, ndi
@@ -85,24 +85,12 @@ subroutine lc0034(BEHinteg, &
 !
     call utlcal('VALE_NOM', algo_inte, carcri(6))
 !
-    cnmhuj = algo_inte(1:10) .eq. 'SPECIFIQUE' .or. &
-             algo_inte(1:14) .eq. 'SEMI_EXPLICITE' .or. &
-             algo_inte(1:16) .eq. 'BASCULE_EXPLICIT'
-!
-    if (cnmhuj .or. option(1:9) .eq. 'RIGI_MECA') then
-        call nmhuj(fami, kpg, ksp, typmod, imate, &
-                   carcri, &
-                   angmas, epsm, &
-                   deps, sigm, vim, option, sigp, &
-                   vip, dsidep, codret)
-    else
-        call plasti(BEHinteg, &
-                    fami, kpg, ksp, typmod, imate, &
-                    compor, carcri, instam, instap, &
-                    epsm, deps, sigm, &
-                    vim, option, angmas, sigp, vip, &
-                    dsidep, icomp, nvi, codret)
-    end if
+    call nmhuj(fami, kpg, ksp, typmod, imate, &
+               carcri, &
+               angmas, epsm, &
+               deps, sigm, vim, option, sigp, &
+               vip, dsidep, codret)
+
 !
 ! M. Kham (18/07/2018) :: Interception de l'erreur
 ! ===================================================

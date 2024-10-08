@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine lcconv(rela_comp, yd, dy, ddy, ye, &
                   nr, itmax, toler, iter, intg, &
                   nmat, mater, r, rini, epstr, &
                   typess, essai, icomp, nvi, vind, &
-                  vinf, vind1, indi, bnews, mtrac, &
+                  vinf, &
                   lreli, iret)
 
     implicit none
@@ -51,10 +51,6 @@ subroutine lcconv(rela_comp, yd, dy, ddy, ye, &
 !         NVI    :  NOMBRE DE VARIABLES INTERNES
 !         VINF   :  VARIABLES INTERNES A L'INSTANT T+DT
 !
-!         VIND1  :  VARIABLES INTERNES A T (SAUV. INITIALE - HUJEUX)
-!         INDI   :  MECANISMES POTENTIEL ACTIFS ( HUJEUX)
-!         BNEWS  :  INDICATEUR DES MECANISMES DE TRACTION (HUJEUX)
-!         MTRAC  :  INDICATEUR LIE A LA TRACTION(HUJEUX - BIS)
 !         YE     :  VALEURS DES INCONNUES APRES LCINIT
 !         LRELI  :  TYPE DE SCHEMA D'INTEGRATION
 !
@@ -67,19 +63,18 @@ subroutine lcconv(rela_comp, yd, dy, ddy, ye, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cvmcvg.h"
-#include "asterfort/hujcvg.h"
 #include "asterfort/irrcvg.h"
 #include "asterfort/lccong.h"
 #include "asterfort/lcmmcv.h"
 #include "asterfort/lkicvg.h"
 #include "asterfort/sricvg.h"
     integer :: typess, itmax, iter, intg, nr, icomp
-    integer :: iret, nmat, nvi, indi(7)
+    integer :: iret, nmat, nvi
     real(kind=8) :: toler, essai, ddy(*), dy(*), r(*), rini(*), yd(*)
-    real(kind=8) :: mater(nmat, 2), epstr(6), vinf(nvi), vind1(nvi)
+    real(kind=8) :: mater(nmat, 2), epstr(6), vinf(nvi)
     real(kind=8) :: ye(nr), vind(nvi)
     character(len=16), intent(in) :: rela_comp
-    aster_logical :: bnews(3), mtrac, lreli
+    aster_logical :: lreli
 !     ----------------------------------------------------------------
 !
     if (rela_comp .eq. 'VISCOCHAB') then
@@ -109,13 +104,6 @@ subroutine lcconv(rela_comp, yd, dy, ddy, ye, &
 !
         call sricvg(nr, itmax, toler, iter, r, &
                     nvi, vinf, dy, iret)
-!
-    else if (rela_comp .eq. 'HUJEUX') then
-!
-        call hujcvg(nmat, mater, nvi, vind, vinf, &
-                    vind1, nr, yd, dy, r, &
-                    indi, iter, itmax, intg, toler, &
-                    bnews, mtrac, ye, lreli, iret)
 !
     else
 !

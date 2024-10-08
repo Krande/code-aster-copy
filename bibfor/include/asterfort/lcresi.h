@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
                       toutms, hsr, nr, nvi, vind,&
                       vinf, itmax, toler, timed, timef,&
                       yd, yf, deps, epsd, dy,&
-                      r, iret, crit, indi)
+                      r, iret, crit)
         integer :: nsg
         integer :: nfs
         integer :: nmat
@@ -58,6 +58,5 @@ interface
         real(kind=8) :: r(*)
         integer :: iret
         real(kind=8) :: crit(*)
-        integer :: indi(7)
     end subroutine lcresi
 end interface

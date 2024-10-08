@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine lcelas(fami, kpg, ksp, loi, mod,&
                       imat, nmat, materd, materf, matcst,&
                       nvi, angmas, deps, sigd, vind,&
-                      sigf, vinf, theta, etatd, crit,&
+                      sigf, theta, etatd, crit,&
                       iret)
         character(len=*) :: fami
         integer :: kpg
@@ -40,7 +40,6 @@ interface
         real(kind=8) :: sigd(6)
         real(kind=8) :: vind(*)
         real(kind=8) :: sigf(6)
-        real(kind=8) :: vinf(*)
         real(kind=8) :: theta
         character(len=7) :: etatd
         real(kind=8) :: crit(*)

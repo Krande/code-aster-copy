@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,6 @@ subroutine lcplnl(BEHinteg, &
 !         TYPESS :  TYPE DE SOLUTION D ESSAI POUR NEWTON
 !         ESSAI  :  VALEUR  SOLUTION D ESSAI POUR NEWTON
 !         INTG   :  COMPTEUR DU NOMBRE DE TENTATIVES D'INTEGRATIONS
-!         INDI   :  INDICATEURS DES MECANISMES POT.ACTIFS (HUJEUX)
 !         YE     : VECTEUR SOLUTIONS APRES LCINIT
 !
 #include "asterf_types.h"
@@ -135,9 +134,8 @@ subroutine lcplnl(BEHinteg, &
     character(len=16) :: algo
     character(len=24) :: cpmono(5*nmat+1)
 !
-    aster_logical :: bnews(3), mtrac
-    integer :: indi(7), nr1
-    real(kind=8) :: vind0(nvi), vind1(nvi), ye(nr)
+    integer :: nr1
+    real(kind=8) :: ye(nr)
 !
 !     ACTIVATION OU PAS DE LA RECHERCHE LINEAIRE
     lreli = .false.
@@ -164,9 +162,6 @@ subroutine lcplnl(BEHinteg, &
 !
     codret = 0
 !
-! --- SAUVEGARDE DE VIND INITIAL - VIND0 (POUR HUJEUX)
-!     + VARIABLES POUR GESTION TRACTION AVEC HUJEUX
-    vind0(1:nvi) = vind(1:nvi)
     nr1 = nr
     iret = 0
 !
@@ -174,10 +169,7 @@ subroutine lcplnl(BEHinteg, &
 !     CHOIX DES VALEURS DE VIND A AFFECTER A YD
     call lcafyd(compor, materd, materf, nbcomm, cpmono, &
                 nmat, mod, nvi, vind, vinf, &
-                sigd, nr1, yd, bnews, mtrac)
-!
-! --- SAUVEGARDE DE VIND INITIAL - VIND1 (POUR HUJEUX)
-    vind1(1:nvi) = vind(1:nvi)
+                sigd, nr1, yd)
 !
 !     CHOIX DES PARAMETRES DE LANCEMENT DE MGAUSS
     call lccaga(rela_comp, cargau)
@@ -205,7 +197,7 @@ subroutine lcplnl(BEHinteg, &
                 yd, epsd, deps, dy, compor, &
                 nbcomm, cpmono, pgl, nfs, nsg, &
                 toutms, vind, sigd, sigf, epstr, &
-                bnews, mtrac, indi, iret)
+                iret)
 !
     if (iret .ne. 0) then
         goto 3
@@ -235,7 +227,7 @@ subroutine lcplnl(BEHinteg, &
                     toutms, hsr, nr, nvi, vind, &
                     vinf, itmax, toler, timed, timef, &
                     yd, yf, deps, epsd, dy, &
-                    r, iret, carcri, indi)
+                    r, iret, carcri)
 !
         if (iret .ne. 0) then
             goto 3
@@ -256,7 +248,7 @@ subroutine lcplnl(BEHinteg, &
                     cpmono, pgl, nfs, nsg, toutms, &
                     hsr, nr, nvi, vind, &
                     vinf, epsd, yd, dy, ye, &
-                    carcri, indi, vind1, bnews, mtrac, &
+                    carcri, &
                     drdy, iret)
         if (iret .ne. 0) then
             goto 3
@@ -270,8 +262,7 @@ subroutine lcplnl(BEHinteg, &
                     deps, epsd, vind, vinf, yd, &
                     nbcomm, cpmono, pgl, nfs, &
                     nsg, toutms, hsr, dy, r, &
-                    drdy, verjac, drdyb, iret, carcri, &
-                    indi)
+                    drdy, verjac, drdyb, iret, carcri)
         if (iret .ne. 0) goto 3
     end if
 !
@@ -297,7 +288,7 @@ subroutine lcplnl(BEHinteg, &
                     toutms, hsr, nr, nvi, vind, &
                     vinf, itmax, toler, timed, timef, &
                     yd, yf, deps, epsd, dy, &
-                    r, ddy, iret, carcri, indi)
+                    r, ddy, iret, carcri)
         if (iret .ne. 0) goto 3
     end if
     if (mod(1:6) .eq. 'C_PLAN') deps(3) = dy(nr)
@@ -307,7 +298,7 @@ subroutine lcplnl(BEHinteg, &
                 nr, itmax, toler, iter, intg, &
                 nmat, materf, r, rini, epstr, &
                 typess, essai, icomp, nvi, vind, &
-                vinf, vind1, indi, bnews, mtrac, &
+                vinf, &
                 lreli, iret)
 !     IRET = 0 CONVERGENCE
 !          = 1 ITERATION SUIVANTE
@@ -336,7 +327,7 @@ subroutine lcplnl(BEHinteg, &
                 hsr, dt, dy, yd, yf, &
                 vinf, sigd, sigf, &
                 deps, nr1, mod, timef, &
-                indi, vind0, iret)
+                iret)
 !
     if (iret .ne. 0) then
         if (iret .eq. 2) goto 2

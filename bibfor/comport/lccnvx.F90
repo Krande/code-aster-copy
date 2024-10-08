@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,6 @@ subroutine lccnvx(fami, kpg, ksp, rela_comp, mod, &
 ! ======================================================================
 #include "asterfort/cvmcvx.h"
 #include "asterfort/hbrcvx.h"
-#include "asterfort/hujcvx.h"
 #include "asterfort/irrcvx.h"
 #include "asterfort/lcmmvx.h"
 #include "asterfort/lglcvx.h"
@@ -107,10 +106,6 @@ subroutine lccnvx(fami, kpg, ksp, rela_comp, mod, &
 ! ======================================================================
     else if (rela_comp .eq. 'LKR') then
         call srcnvx(sigd, sigf, nvi, vind, nmat, materf, seuil, vinf)
-! ======================================================================
-    else if (rela_comp .eq. 'HUJEUX') then
-        call hujcvx(mod, nmat, materf, vinf, deps, &
-                    sigd, sigf, seuil, iret)
 ! ======================================================================
     end if
 ! ======================================================================

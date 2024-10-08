@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine lcjplc(rela_comp, mod, angmas, imat, nmat, &
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
 #include "asterfort/cvmjpl.h"
-#include "asterfort/hujopt.h"
 #include "asterfort/lcmmjp.h"
 #include "asterfort/lcoptg.h"
 #include "asterfort/lkijpl.h"
@@ -81,10 +80,6 @@ subroutine lcjplc(rela_comp, mod, angmas, imat, nmat, &
         n2 = nr-ndt
         call lcoptg(nmat, mater, nr, n2, drdy, &
                     0, dsde, iret)
-    else if (rela_comp .eq. 'HUJEUX') then
-        call hujopt(fami, kpg, ksp, mod, angmas, &
-                    imat, nmat, mater, nvi, vinf, &
-                    nr, drdy, sigf, dsde, iret)
     else
         n2 = nr-ndt
         call lcoptg(nmat, mater, nr, n2, drdy, &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,7 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler, &
                   deps, epsd, vind, vinf, yd, &
                   nbcomm, cpmono, pgl, nfs, &
                   nsg, toutms, hsr, dy, r, &
-                  drdy, verjac, drdyb, iret, crit, &
-                  indi)
+                  drdy, verjac, drdyb, iret, crit)
 !
 !     CONSTRUCTION DE LA MATRICE JACOBIENNE PAR PERTURBATION
 !     IN  FAMI   :  FAMILLE DE POINT DE GAUSS
@@ -66,7 +65,7 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler, &
 #include "asterfort/lcresi.h"
 #include "asterfort/utmess.h"
     integer :: nmat, nbcomm(nmat, 3), nr, impr, vali(2), nfs, nsg
-    integer :: imat, i, j, itmax, iret, kpg, ksp, nvi, verjac, indi(7)
+    integer :: imat, i, j, itmax, iret, kpg, ksp, nvi, verjac
 !
     real(kind=8) :: toler, epsd(6), deps(6), vind(nvi), vinf(nvi), timed, timef
     real(kind=8) :: err
@@ -136,7 +135,7 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler, &
                     toutms, hsr, nr, nvi, vind, &
                     vinf, itmax, toler, timed, timef, &
                     yd, yfp, deps, epsd, dyp, &
-                    rp, iret, crit, indi)
+                    rp, iret, crit)
         if (iret .gt. 0) then
             goto 999
         end if
@@ -153,7 +152,7 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler, &
                     toutms, hsr, nr, nvi, vind, &
                     vinf, itmax, toler, timed, timef, &
                     yd, yfm, deps, epsd, dym, &
-                    rm, iret, crit, indi)
+                    rm, iret, crit)
         if (iret .gt. 0) then
             goto 999
         end if

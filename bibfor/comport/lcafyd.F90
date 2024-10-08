@@ -18,7 +18,7 @@
 !
 subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
                   nmat, mod, nvi, vind, vinf, &
-                  sigd, nr, yd, bnews, mtrac)
+                  sigd, nr, yd)
     implicit none
 !
 !
@@ -40,14 +40,10 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
 !          SIGD   :  ETAT DE CONTRAINTES A T
 !     OUT  YD     :  VECTEUR INITIAL
 !
-! --- SPECIFIQUE HUJEUX
-!         BNEWS   :  GESTION MECANISMES TRACTION POUR HUJEUX
-!         MTRAC   :  GESTION MECANISMES TRACTION POUR HUJEUX (BIS)
 !     ----------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/assert.h"
-#include "asterfort/hujayd.h"
 #include "asterfort/lcgrla.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
@@ -62,7 +58,6 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
     character(len=16) :: rela_comp
     character(len=24) :: cpmono(5*nmat+1), necoul
     character(len=8) :: mod
-    aster_logical :: bnews(3), mtrac
     common/tdim/ndt, ndi
     integer :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
@@ -177,10 +172,6 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
         yd(ndt+3) = vind(9)
 !        D
         yd(ndt+4) = vind(11)
-!
-    else if (rela_comp .eq. 'HUJEUX') then
-        call hujayd(nmat, materf, nvi, vind, vinf, &
-                    nr, yd, bnews, mtrac)
 !
     else
 !     CAS GENERAL :

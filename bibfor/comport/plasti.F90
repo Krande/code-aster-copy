@@ -266,7 +266,7 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
             call lcelas(fami, kpg, ksp, rela_comp, mod, &
                         imate, nmat, materd, materf, matcst, &
                         nvi, angmas, deps, sigm, vim, &
-                        sigp, vip, theta, etatd, carcri, &
+                        sigp, theta, etatd, carcri, &
                         iret)
             if (iret .ne. 0) goto 1
 !

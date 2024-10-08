@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                       yd, epsd, deps, dy, compor,&
                       nbcomm, cpmono, pgl, nfs, nsg,&
                       toutms, vind, sigd, sigf, epstr,&
-                      bnews, mtrac, indi, iret)
+                      iret)
         integer :: nsg
         integer :: nfs
         integer :: nmat
@@ -54,9 +54,6 @@ interface
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
         real(kind=8) :: epstr(6)
-        aster_logical :: bnews(3)
-        aster_logical :: mtrac
-        integer :: indi(7)
         integer :: iret
     end subroutine lcinit
 end interface
