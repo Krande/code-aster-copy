@@ -590,11 +590,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return toFieldOnNodes( simpFieldRest );
     };
 
-    FieldOnNodesPtr setPhysicalQuantity( const std::string physQuant,
-                                         const MapString &map_cmps ) const {
+    FieldOnNodesPtr asPhysicalQuantity( const std::string physQuant,
+                                        const MapString &map_cmps ) const {
 
         auto simpField = toSimpleFieldOnNodes( *this );
-        auto simpFieldRest = simpField->setPhysicalQuantity( physQuant, map_cmps );
+        auto simpFieldRest = simpField->asPhysicalQuantity( physQuant, map_cmps );
 
         return toFieldOnNodes( simpFieldRest );
     };
