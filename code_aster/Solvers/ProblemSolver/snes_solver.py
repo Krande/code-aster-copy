@@ -80,7 +80,7 @@ class SNESSolver(SolverFeature):
         """
         self.param = param
 
-        self.prediction = self._get("NEWTON", "PREDICTION")
+        self.prediction = self._get("NEWTON", "PREDICTION") or self._get("NEWTON", "MATRICE")
 
         assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: "
 
