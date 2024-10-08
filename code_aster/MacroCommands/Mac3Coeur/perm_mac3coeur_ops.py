@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -119,6 +119,9 @@ def perm_mac3coeur_ops(self, **args):
     __ASSVAR = FieldOnCellsReal(_MO_NP1, "ELGA", "VARI_R", bhv_prop, _CARANP1)
     __ASSVAR.setValues(0.0)
 
+    __ASSSTR = FieldOnCellsReal(_MO_NP1, "ELGA", "STRX_R", bhv_prop, _CARANP1)
+    __ASSSTR.setValues(0.0)
+
     BIDON = CREA_RESU(
         OPERATION="AFFE",
         TYPE_RESU="EVOL_NOLI",
@@ -150,6 +153,18 @@ def perm_mac3coeur_ops(self, **args):
         NOM_CHAM="VARI_ELGA",
         AFFE=_F(
             CHAM_GD=__ASSVAR, CHAM_MATER=_AFSCNP1, CARA_ELEM=_CARANP1, INST=0.0, MODELE=_MO_NP1
+        ),
+    )
+
+    CREA_RESU(
+        reuse=BIDON,
+        RESULTAT=BIDON,
+        COMPORTEMENT=compor,
+        OPERATION="AFFE",
+        TYPE_RESU="EVOL_NOLI",
+        NOM_CHAM="STRX_ELGA",
+        AFFE=_F(
+            CHAM_GD=__ASSSTR, CHAM_MATER=_AFSCNP1, CARA_ELEM=_CARANP1, INST=0.0, MODELE=_MO_NP1
         ),
     )
 
