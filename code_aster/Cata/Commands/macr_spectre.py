@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ MACR_SPECTRE = MACRO(
     ),  # fin b_not_maillage
     NOM_CHAM=SIMP(statut="o", typ="TXM", into=("ACCE", "DEPL")),
     CALCUL=SIMP(statut="o", typ="TXM", into=("ABSOLU", "RELATIF")),
+    ENVELOPPE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
     b_acce_rela=BLOC(
         condition="""equal_to("NOM_CHAM", 'ACCE') and equal_to("CALCUL", 'RELATIF')""",
         regles=(UN_PARMI("LIST_FREQ", "FREQ"),),
