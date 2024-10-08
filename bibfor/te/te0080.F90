@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,12 +74,12 @@ subroutine te0080(option, nomte)
         do kp = 1, FEQuadCell%nbQuadPoints
             valpar(1:3) = FEQuadCell%points(1:3, kp)
             valpar(4) = zr(itemps)
-            call fointe_varc('FM', 'FPG1', 1, 1, '+', &
+            call fointe_varc('FM', 'RIGI', 1, 1, '+', &
                              zk8(isour), 4, nompar, valpar, &
                              sounp1, icode)
             if (theta .ne. 1.0d0) then
                 valpar(4) = zr(itemps)-zr(itemps+1)
-                call fointe_varc('FM', 'FPG1', 1, 1, '+', &
+                call fointe_varc('FM', 'RIGI', 1, 1, '+', &
                                  zk8(isour), 4, nompar, valpar, &
                                  soun, icode)
             else

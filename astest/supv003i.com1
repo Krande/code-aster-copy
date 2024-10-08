@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,20 @@ with test.assertRaisesRegex(code_aster.AsterError, "SUPERVIS_4"):
 
 with test.assertRaisesRegex(code_aster.AsterError, "SUPERVIS_4"):
     CREA_MAILLAGE(RESTREINT=(_F(GROUP_MA="group1"), _F(GROUP_MA="group2")), MAILLAGE=MA)
+
+# check proper handling of non-dict passed to FactorKeywords
+with test.assertRaisesRegex(code_aster.AsterError, "Unexpected type.*str"):
+    DEFI_LIST_REEL(VALE="a")
+
+with test.assertRaisesRegex(code_aster.AsterError, "Unexpected type.*int"):
+    DEFI_LIST_REEL(VALE=(0.0, 1.0), TITRE=12)
+
+with test.assertRaisesRegex(code_aster.AsterError, "Unexpected type.*str"):
+    DEFI_LIST_REEL(VALE=(0.0, 1.0), INTERVALLE="a")
+
+
+with test.assertRaisesRegex(code_aster.AsterError, "Unexpected type.*float"):
+    DEFI_LIST_REEL(VALE=(0.0, 1.0), INTERVALLE=45.0)
 
 test.printSummary()
 

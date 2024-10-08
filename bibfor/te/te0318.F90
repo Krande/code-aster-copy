@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,10 +70,6 @@ subroutine te0318(option, nomte)
 !
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
-        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
-                    ' ', phenom, 1, 'INST', [zr(itemps)], &
-                    1, nomres, valres, icodre, 1)
-        lambda = valres(1)
     else
         call utmess('F', 'ELEMENTS2_67')
     end if
@@ -81,6 +77,10 @@ subroutine te0318(option, nomte)
     dtpg_moy = 0.d0
 !
     do kp = 1, FEQuadCell%nbQuadPoints
+        call rcvalb('RIGI', kp, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemps)], &
+                    1, nomres, valres, icodre, 1)
+        lambda = valres(1)
         dtpg = FEEvalGradVec(FEBasis, tempe, FEQuadCell%points_param(1:3, kp))
         dtpg_moy = dtpg_moy-lambda*dtpg
     end do
@@ -88,6 +88,9 @@ subroutine te0318(option, nomte)
     dtpg_moy = dtpg_moy/FEQuadCell%nbQuadPoints
     dtpg_norm = (dtpg_moy(1)**2+dtpg_moy(2)**2+dtpg_moy(3)**2)
     do kp = 1, FEQuadCell%nbQuadPoints
+        call rcvalb('RIGI', kp, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemps)], &
+                    1, nomres, valres, icodre, 1)
         zr(iflux+(kp-1)) = dtpg_norm/lambda
     end do
 end subroutine

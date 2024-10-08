@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,6 +84,13 @@ Erreur de programmation dans un module Python.
 Condition non respectée : %(k2)s
 
       %(k1)s
+"""
+    ),
+    10: _(
+        """
+Erreur de programmation dans la fonction '%(k1)s' de la commande %(k2)s.
+
+      %(k3)s
 """
     ),
     97: _(

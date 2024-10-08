@@ -144,11 +144,4 @@ Erreur de mise en donnée
 La loi de comportement  %(k1)s n'est pas utilisable pour CABLE_GAINE; elle n'existe pas en format unidimensionnel.
 """
     ),
-    27: _(
-        """
-Le champ de matériaux fourni à CALC_PRECONT ne doit pas contenir de variables de commandes.
-Conseils :
-Dupliquer votre champ de matériaux en retirant le mot-clé AFFE_VARC pour l'appel à CALC_PRECONT.
-"""
-    ),
 }

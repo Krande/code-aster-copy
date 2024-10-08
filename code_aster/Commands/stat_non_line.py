@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -55,8 +55,17 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        if keywords.get("reuse") != None:
+        if keywords.get("reuse") is not None:
             self._result = keywords["reuse"]
+            incr = keywords["INCREMENT"][0]
+            index = incr.get("NUME_INST_INIT")
+            if index is None:
+                prec = incr.get("PRECISION", 1.0e-6)
+                crit = incr.get("CRITERE", "RELATIF")
+                index = self._result._getIndexFromParameter(
+                    "INST", incr["INST_INIT"], crit, prec, throw_except=True
+                )
+            self._result.clear(index + 1)
         else:
             self._result = NonLinearResult()
 
