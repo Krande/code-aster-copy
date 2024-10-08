@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -578,64 +578,67 @@ class Coeur:
 
     def affectation_maillage(self, MA0):
 
-        LISGRIL = []
-        LISGRILI = []
-        LISGRILE = []
-        LISG = []
-        LIS_PG = []
-        nbgrmax = 0
-        for ac in list(self.collAC.values()):
-            nbgrmax = max(nbgrmax, ac._para["NBGR"])
+        dict_grids = []
+        grids_middle = []
+        grids_extr = []
+        grids_lock = []
+
+        lsnbgrids = list(set(ac._para["NBGR"] for ac in self.collAC.values()))
+        assert len(lsnbgrids) == 1, "Invalid Mesh"
+        nbgr = lsnbgrids[0]
+
+        for ac in self.collAC.values():
             LIS_GNO = []
-            for igr in range(0, ac._para["NBGR"]):
+            for igr in range(ac._para["NBGR"]):
                 LIS_GNO.append("G_%s_%d" % (ac.idAST, igr + 1))
-                LIS_PG.append("P_%s_%d" % (ac.idAST, igr + 1))
+                grids_lock.append("P_%s_%d" % (ac.idAST, igr + 1))
 
-            DICG = {}
-            DICG["GROUP_NO"] = tuple(LIS_GNO)
-            DICG["NOM_GROUP_MA"] = "GR_%s" % ac.idAST
-            LISG.append(DICG)
+            dict_grids.append({"NOM_GROUP_MA": "GR_%s" % ac.idAST, "GROUP_NO": LIS_GNO})
 
-        for igr in range(0, nbgrmax):
-            DICGRIL = {}
-            DICGRIL["GROUP_NO"] = "GRIL_%d" % (igr + 1)
-            DICGRIL["NOM_GROUP_MA"] = "GRIL_%d" % (igr + 1)
-            LISGRIL.append(DICGRIL)
-
-            if igr == 0:
-                LISGRILE.append("GRIL_%d" % (igr + 1))
-            elif igr == (nbgrmax - 1):
-                LISGRILE.append("GRIL_%d" % (igr + 1))
+        for igr in range(0, nbgr):
+            grid_name = "GRIL_%d" % (igr + 1)
+            dict_grids.append({"NOM_GROUP_MA": grid_name, "GROUP_NO": grid_name})
+            if igr in (0, nbgr - 1):
+                grids_extr.append(grid_name)
             else:
-                LISGRILI.append("GRIL_%d" % (igr + 1))
+                grids_middle.append(grid_name)
 
-        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(LISGRIL + LISG))
+        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(dict_grids))
 
-        DICCR = {}
-        DICCR["GROUP_MA"] = "CREI"
-        DICCR["NOM"] = "CREIC"
-        DICCR["PREF_MAILLE"] = "MM"
-        LISCR2 = []
-        LISCR2.append(DICCR)
-        DICCR = {}
-        DICCR["GROUP_MA"] = "ELA"
-        DICCR["NOM"] = "ELAP"
-        DICCR["PREF_MAILLE"] = "MM"
-        LISCR2.append(DICCR)
+        dict_creic = [
+            {"GROUP_MA": "CREI_%s" % ac.idAST, "NOM": "CREIC_%s" % ac.idAST, "PREF_MAILLE": "MM"}
+            for ac in self.collAC.values()
+        ]
+        dict_elap_m = [
+            {"GROUP_MA": "GC_%s_M" % ac.idAST, "NOM": "GCKP_%s_M" % ac.idAST, "PREF_MAILLE": "MM"}
+            for ac in self.collAC.values()
+        ]
+        dict_elap_t = [
+            {"GROUP_MA": "GC_%s_T" % ac.idAST, "NOM": "GCKP_%s_T" % ac.idAST, "PREF_MAILLE": "MM"}
+            for ac in self.collAC.values()
+        ]
+        dict_elap_b = [
+            {"GROUP_MA": "GC_%s_B" % ac.idAST, "NOM": "GCKP_%s_B" % ac.idAST, "PREF_MAILLE": "MM"}
+            for ac in self.collAC.values()
+        ]
 
-        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=tuple(LISCR2))
+        ls_dict = dict_creic + dict_elap_m + dict_elap_t + dict_elap_b
+
+        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=ls_dict)
 
         _MA = DEFI_GROUP(
             reuse=_MA,
             ALARME="NON",
             MAILLAGE=_MA,
             CREA_GROUP_MA=(
-                _F(NOM="GRIL_I", UNION=tuple(LISGRILI)),
-                _F(NOM="GRIL_E", UNION=tuple(LISGRILE)),
+                _F(NOM="GRIL_I", UNION=tuple(grids_middle)),
+                _F(NOM="GRIL_E", UNION=tuple(grids_extr)),
+                _F(NOM="CREIC", UNION=[i["NOM"] for i in dict_creic]),
+                _F(NOM="ELAP", UNION=[i["NOM"] for i in dict_elap_m + dict_elap_t + dict_elap_b]),
             ),
             CREA_GROUP_NO=(
                 _F(GROUP_MA=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN")),
-                _F(NOM="LISPG", UNION=tuple(LIS_PG)),
+                _F(NOM="LISPG", UNION=tuple(grids_lock)),
             ),
         )
 
