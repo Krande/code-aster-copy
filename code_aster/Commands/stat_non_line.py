@@ -62,7 +62,9 @@ class NonLinearStaticAnalysis(ExecuteCommand):
             if index is None:
                 prec = incr.get("PRECISION", 1.0e-6)
                 crit = incr.get("CRITERE", "RELATIF")
-                index = self._result.getIndexFromParameter("INST", incr["INST_INIT"], crit, prec)
+                index = self._result._getIndexFromParameter(
+                    "INST", incr["INST_INIT"], crit, prec, throw_except=True
+                )
             self._result.clear(index + 1)
         else:
             self._result = NonLinearResult()
