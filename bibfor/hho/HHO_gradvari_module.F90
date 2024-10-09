@@ -16,7 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
-!
+
+! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
+! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
+
 module HHO_GV_module
 !
     use NonLin_Datastructure_type
@@ -157,8 +160,8 @@ contains
         real(kind=8) :: dSig_dEps(6, 6), dSig_dv(6), dSig_dl(6)
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight, coeff, mk_stab, gv_stab
         real(kind=8) :: BSCEvalG(MSIZE_CELL_SCAL), BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8) :: mk_AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
-        real(kind=8) :: mk_TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        real(kind=8), save :: mk_AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
+        real(kind=8), save :: mk_TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
         real(kind=8) :: gv_AT(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
         real(kind=8) :: gv_TMP(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
         real(kind=8) :: mv_AT(MSIZE_CELL_MAT, MSIZE_CELL_SCAL)
@@ -167,7 +170,7 @@ contains
         real(kind=8) :: lm_AT(MSIZE_CELL_SCAL, MSIZE_CELL_MAT)
         real(kind=8) :: rhs_vari(MSIZE_TDOFS_SCAL), rhs_lagv(MSIZE_CELL_SCAL)
         real(kind=8) :: rhs_mk(MSIZE_TDOFS_VEC)
-        real(kind=8) :: lhs_mm(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        real(kind=8), save :: lhs_mm(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
         real(kind=8) :: lhs_mv(MSIZE_TDOFS_VEC, MSIZE_TDOFS_SCAL)
         real(kind=8) :: lhs_ml(MSIZE_TDOFS_VEC, MSIZE_CELL_SCAL)
         real(kind=8) :: lhs_vm(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_VEC)

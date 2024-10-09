@@ -15,9 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
+
 ! aslint: disable=W1504
-!
+
+! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
+! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
+
 module HHO_SmallStrainMeca_module
 !
     use HHO_basis_module
@@ -136,9 +139,9 @@ contains
         real(kind=8) :: E_prev_coeff(MSIZE_CELL_MAT), E_incr_coeff(MSIZE_CELL_MAT)
         real(kind=8) :: dsidep(6, 6), E_prev(6), E_incr(6), Cauchy_curr(6), Cauchy_prev(6)
         real(kind=8) :: coorpg(3), weight
-        real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT), bT(MSIZE_CELL_MAT)
-        real(kind=8) :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), bT(MSIZE_CELL_MAT)
+        real(kind=8), save :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
+        real(kind=8), save :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
         integer :: cod(27)
         aster_logical :: l_lhs, l_rhs
@@ -341,8 +344,8 @@ contains
         real(kind=8) :: dsidep(6, 6), dsidep3D(6, 6)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
-        real(kind=8) :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        real(kind=8), save :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
+        real(kind=8), save :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 ! --------------------------------------------------------------------------------------------------

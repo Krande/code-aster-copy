@@ -16,7 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
-!
+
+! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
+! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
+
 module HHO_LargeStrainMeca_module
 !
     use HHO_basis_module
@@ -147,8 +150,8 @@ contains
         real(kind=8) :: module_tang(3, 3, 3, 3), G_prev(3, 3), G_curr(3, 3)
         real(kind=8) :: F_prev(3, 3), F_curr(3, 3), Pk1_curr(3, 3)
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
-        real(kind=8) :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        real(kind=8), save :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
+        real(kind=8), save :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
         integer :: cod(27), nbsig

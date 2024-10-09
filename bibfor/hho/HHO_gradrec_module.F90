@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
-!
-! 'blas_int' not detected by static checker
-! aslint: disable=C1314
-!
+
+! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
+! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
+
 module HHO_gradrec_module
 !
     use HHO_type
@@ -667,8 +666,8 @@ contains
         type(HHO_basis_face) :: hhoBasisFace
         type(HHO_quadrature) :: hhoQuad, hhoQuadCell
         type(HHO_massmat_cell) :: massMat
-        real(kind=8), dimension(6*MSIZE_CELL_SCAL, MSIZE_TDOFS_VEC) :: BG
-        real(kind=8), dimension(MSIZE_CELL_SCAL, 6*MSIZE_TDOFS_VEC) :: SOL
+        real(kind=8), dimension(6*MSIZE_CELL_SCAL, MSIZE_TDOFS_VEC), save :: BG
+        real(kind=8), dimension(MSIZE_CELL_SCAL, 6*MSIZE_TDOFS_VEC), save :: SOL
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVCSGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL)
         real(kind=8) :: BSGEval(MSIZE_CELL_SCAL)
@@ -1100,13 +1099,13 @@ contains
         type(HHO_quadrature) :: hhoQuad, hhoQuadCell
         real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_CELL_VEC) :: stiffMat
         real(kind=8), dimension(MSIZE_CELL_VEC+3, MSIZE_CELL_VEC+3) :: MG
-        real(kind=8), dimension(MSIZE_CELL_VEC+3, MSIZE_TDOFS_VEC) :: BG, gradrec2
+        real(kind=8), dimension(MSIZE_CELL_VEC+3, MSIZE_TDOFS_VEC), save :: BG, gradrec2
         real(kind=8), dimension(MSIZE_CELL_VEC, 3) :: CGradN
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVCGradEval
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSCGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL)
         blas_int, parameter :: LWORK = (MSIZE_CELL_VEC+3)*MSIZE_TDOFS_VEC
-        real(kind=8), dimension(LWORK) :: WORK
+        real(kind=8), dimension(LWORK), save :: WORK
         blas_int, dimension(MSIZE_CELL_VEC+3) :: IPIV
         integer :: ipg, dimStiffMat, ifromBG, itoBG, dimMG, nblag, dimMGLag, idir, idir2
         integer :: cbs, fbs, total_dofs, iface, i, cbs_comp, fbs_comp, dimMG_cmp, ind_MG
