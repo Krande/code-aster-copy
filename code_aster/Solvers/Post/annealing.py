@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,11 @@ class Annealing:
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
 
     def __call__(self, nl_solver):
-        previous = nl_solver.phys_state.getState(-2)
+        try:
+            previous = nl_solver.phys_state.getState(-2)
+        except IndexError:
+            # No post-pro at initial step
+            return
         last = nl_solver.phys_state.getState(-1)
         post_process = PostProcessing(nl_solver.phys_pb)
         internVar_anneal = post_process.computeAnnealing(
