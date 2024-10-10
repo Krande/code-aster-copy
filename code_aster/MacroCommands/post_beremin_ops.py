@@ -311,7 +311,7 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
 
     sqsursgrefe = CREA_CHAMP(
         OPERATION="ASSE",
-        TYPE_CHAM="ELGA_NEUT_R",
+        TYPE_CHAM="ELGA_DEPL_R",
         MODELE=modele,
         PROL_ZERO="OUI",
         ASSE=(
@@ -319,28 +319,26 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
                 GROUP_MA=grmacalc,
                 CHAM_GD=rsieq.getField("SIEQ_ELGA", nume_inst),
                 NOM_CMP="PRIN_3",
-                NOM_CMP_RESU="X1",
+                NOM_CMP_RESU="DX",
             ),
-            _F(GROUP_MA=grmacalc, CHAM_GD=sgrefega, NOM_CMP="X1", NOM_CMP_RESU="X2"),
+            _F(GROUP_MA=grmacalc, CHAM_GD=sgrefega, NOM_CMP="X1", NOM_CMP_RESU="DY"),
         ),
     )
 
     rdivaux = NonLinearResult()
     rdivaux.allocate(1)
-    rdivaux.setField(
-        sqsursgrefe.setPhysicalQuantity("SIEF_R", {"X1": "SIXX", "X2": "SIYY"}), "SIEF_ELGA", 0
-    )
+    rdivaux.setField(sqsursgrefe, "DEPL_ELGA", 0)
     rdivaux.setModel(modele, 0)
 
     formule = Formula()
-    formule.setExpression("SIXX/SIYY*sigm_cnv")
-    formule.setVariables(["SIXX", "SIYY"])
+    formule.setExpression("DX/DY*sigm_cnv")
+    formule.setVariables(["DX", "DY"])
     formule.setContext({"sigm_cnv": dwb[grwb]["SIGM_CNV"]})
 
     rdiv1 = CALC_CHAMP(
         RESULTAT=rdivaux,
         GROUP_MA=grmacalc,
-        CHAM_UTIL=_F(NOM_CHAM="SIEF_ELGA", FORMULE=formule, NUME_CHAM_RESU=1),
+        CHAM_UTIL=_F(NOM_CHAM="DEPL_ELGA", FORMULE=formule, NUME_CHAM_RESU=1),
     )
 
     return rdiv1.getField("UT01_ELGA", 0).setPhysicalQuantity("DEPL_R", {"X1": "DX"})
@@ -473,7 +471,7 @@ def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
     linstants = rsieq.getAccessParameters()["INST"]
 
     def puiss_m(valsixx):
-        return valsixx ** bere_m
+        return valsixx**bere_m
 
     indice = 0
     for nume_inst, inst in enumerate(linstants):
