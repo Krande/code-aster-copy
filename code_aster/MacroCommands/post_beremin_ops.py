@@ -305,8 +305,15 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
 
     sgrefeno = CREA_CHAMP(OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=chf, CHAM_PARA=chpar)
 
+    chno = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="NOEU_DEPL_R",
+        MODELE=modele,
+        ASSE=_F(GROUP_MA=grmacalc, CHAM_GD=sgrefeno, NOM_CMP="X1", NOM_CMP_RESU="DX"),
+    )
+
     sgrefega = CREA_CHAMP(
-        TYPE_CHAM="ELGA_NEUT_R", OPERATION="DISC", MODELE=modele, PROL_ZERO="OUI", CHAM_GD=sgrefeno
+        TYPE_CHAM="ELGA_DEPL_R", OPERATION="DISC", MODELE=modele, PROL_ZERO="OUI", CHAM_GD=chno
     )
 
     sqsursgrefe = CREA_CHAMP(
@@ -321,7 +328,7 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
                 NOM_CMP="PRIN_3",
                 NOM_CMP_RESU="DX",
             ),
-            _F(GROUP_MA=grmacalc, CHAM_GD=sgrefega, NOM_CMP="X1", NOM_CMP_RESU="DY"),
+            _F(GROUP_MA=grmacalc, CHAM_GD=sgrefega, NOM_CMP="DX", NOM_CMP_RESU="DY"),
         ),
     )
 
