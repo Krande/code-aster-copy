@@ -361,7 +361,7 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
             (iteration, order, time step) where there is plasticity
 
     Returns:
-        FieldOnCells: ELGA_NEUT_R filled by PRIN_3
+        FieldOnCells: ELGA_SIEF_R filled by PRIN_3
     """
     modele = resultat.getModel()
     if not grmapb in dwb:
@@ -446,7 +446,7 @@ def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
         rsieq (NonLinearResult): SIEQ_ELGA field
         mclinst (list): List of medcoupling time steps
             (iteration, order, time step) where there is plasticity
-        maxsig (NonLinearResult): ELGA_NEUT_R filled by PRIN_3
+        maxsig (NonLinearResult): ELGA_SIEF_R filled by PRIN_3
         resanpb (NonLinearResult): Name of auxiliary result
         bere_m (float): Value of Beremin parameter M
 
@@ -530,7 +530,7 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
     Arguments:
         model (Model): Model used for resultat
         coefmultpb (float): Value of COEF_MULT in POST_BEREMIN
-        sigw (NonLinearResult): ELGA_NEUT_R filled by PRIN_3
+        sigw (NonLinearResult): ELGA_SIEF_R filled by PRIN_3
         dwb (dict): POST_BEREMIN keywords
         grmapb (str): Mesh cells group given in POST_BEREMIN
         resupb (NonLinearResult): Resultat input of POST_BEREMIN
