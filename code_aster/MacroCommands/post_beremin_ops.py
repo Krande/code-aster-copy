@@ -233,7 +233,7 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
         grwb (str): name of mesh cells group given in POST_BEREMIN
 
     Returns:
-        FieldOnCells: ELGA_NEUT_R filled by PRIN_3
+        FieldOnCells: ELGA_DEPL_R filled by PRIN_3
     """
     if not "SIGM_CNV" in dwb[grwb]:
 
@@ -271,7 +271,7 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
         grwb (str): name of mesh cells group given in POST_BEREMIN
 
     Returns:
-        FieldOnCells: ELGA_NEUT_R filled by PRIN_3
+        FieldOnCells: ELGA_DEPL_R filled by PRIN_3
     """
     grmacalc = f"mgrplas_{nume_inst}"
     modele = reswbrest.getModel()
@@ -371,28 +371,32 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
 
     maxsig = NonLinearResult()
     maxsig.allocate(rsieq.getNumberOfIndexes())
-    seuil = dwb[grmapb]["SEUIL_EPSP_CUMU"]
 
     indice = 0
+    fotrq = Formula()
+    fotrq.setExpression("indic_plasac(V{}, V{}, seuil)".format(numv1v2[0], numv1v2[1]))
+    fotrq.setVariables(["V{}".format(numv1v2[0]), "V{}".format(numv1v2[1])])
+    fotrq.setContext({"indic_plasac": indic_plasac, "seuil": dwb[grmapb]["SEUIL_EPSP_CUMU"]})
+
+    fomul = Formula()
+    fomul.setExpression("SIXX*SIYY")
+    fomul.setVariables(["SIXX", "SIYY"])
+    fomul.setContext({})
+
     for nume_inst in rsieq.getAccessParameters()["NUME_ORDRE"]:
         grcalc = f"mgrplas_{nume_inst}"
         inst = rsieq.getTime(nume_inst)
 
         if inst in [elt[2] for elt in mclinst]:
 
-            formule = Formula()
-            formule.setExpression("indic_plasac(V{}, V{}, seuil)".format(numv1v2[0], numv1v2[1]))
-            formule.setVariables(["V{}".format(numv1v2[0]), "V{}".format(numv1v2[1])])
-            formule.setContext({"indic_plasac": indic_plasac, "seuil": seuil})
-
             tronque = CALC_CHAMP(
                 RESULTAT=resultat,
                 INST=inst,
                 GROUP_MA=grmapb,
-                CHAM_UTIL=_F(NOM_CHAM="VARI_ELGA", FORMULE=formule, NUME_CHAM_RESU=1),
+                CHAM_UTIL=_F(NOM_CHAM="VARI_ELGA", FORMULE=fotrq, NUME_CHAM_RESU=1),
             )
 
-            sign = CREA_CHAMP(
+            sigga = CREA_CHAMP(
                 OPERATION="ASSE",
                 TYPE_CHAM="ELGA_SIEF_R",
                 MODELE=modele,
@@ -412,34 +416,21 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
                     ),
                 ),
             )
+            sfsigga = sigga.toSimpleFieldOnCells()
 
-            rsig1aux = NonLinearResult()
-            rsig1aux.allocate(1)
-            rsig1aux.setField(sign, "SIEF_ELGA", 0)
-            rsig1aux.setModel(modele, 0)
-
-            formule = Formula()
-            formule.setExpression("SIXX*SIYY")
-            formule.setVariables(["SIXX", "SIYY"])
-            formule.setContext({})
-
-            rsig1 = CALC_CHAMP(
-                RESULTAT=rsig1aux,
-                GROUP_MA=grcalc,
-                CHAM_UTIL=_F(NOM_CHAM="SIEF_ELGA", FORMULE=formule, NUME_CHAM_RESU=1),
-            )
-
-            sigtyp = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="ELGA_SIEF_R",
-                MODELE=modele,
-                PROL_ZERO="OUI",
-                ASSE=_F(
-                    GROUP_MA=grcalc,
-                    CHAM_GD=rsig1.getField("UT01_ELGA", 0),
-                    NOM_CMP="X1",
-                    NOM_CMP_RESU="SIXX",
-                ),
+            sigtyp = FieldOnCellsReal(modele, "ELGA", "SIEF_R")
+            sigtyp.setValues(
+                [
+                    vxx * vyy
+                    for (vxx, vyy) in zip(
+                        sfsigga.restrict(["SIXX"])
+                        .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
+                        .getValues(),
+                        sfsigga.restrict(["SIYY"])
+                        .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
+                        .getValues(),
+                    )
+                ]
             )
 
             maxsig.setField(sigtyp, "SIEF_ELGA", indice)
@@ -482,7 +473,7 @@ def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
     linstants = rsieq.getAccessParameters()["INST"]
 
     def puiss_m(valsixx):
-        return valsixx**bere_m
+        return valsixx ** bere_m
 
     indice = 0
     for nume_inst, inst in enumerate(linstants):
