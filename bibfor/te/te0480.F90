@@ -65,7 +65,7 @@ subroutine te0480(option, nomte)
     integer :: icodre(1)
     integer :: idepm,imate
 ! 
-    real(kind=8) :: hrext, tm,mamolv,rgp,rhol, coefvap,rhovs,pvs,alpha,text,p1ref,p2ref,tref
+    real(kind=8) :: hrext, tm,mamolv,rgp,rhol, coefvap,rhovs,pvs,alpha,p1ref,p2ref,tref
 
 
     type(THM_DS) :: ds_thm
@@ -80,48 +80,50 @@ subroutine te0480(option, nomte)
     c22 = 0.D0
     p1ext = 0.D0
     p2ext = 0.D0
-    text = 0.
     tm = 293.
 ! intialisation
     hrext=-1.
     rhovs = 0.
     pvs = 0.
 
-
-! Recuperation des donnees matériaux
-    call jevech('PMATERC', 'L', imate)
-!
-    call rcvala(zi(imate), ' ', 'THM_VAPE_GAZ', 0, ' ', &
-                    [0.d0], 1, 'MASS_MOL', valres(1), icodre, 1)
-    call rcvala(zi(imate), ' ', 'THM_DIFFU', 0, ' ', &
-                    [0.d0], 1, 'R_GAZ', valres(2), icodre, 1)
-    call rcvala(zi(imate), ' ', 'THM_LIQU', 0, ' ', &
-                    [0.d0], 1, 'RHO', valres(3), icodre, 1)
-    mamolv = valres(1)
-    rgp    = valres(2)
-    rhol   = valres(3)
-    coefvap=mamolv/rhol/rgp
-!
-! RECUP VAL THM_INIT
-
-
-    call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
-                3, 'PRE1', valres(1),icodre, 0, nan='OUI')
-    call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
-                3, 'PRE2', valres(2),icodre, 0, nan='OUI')
-    call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
-                3, 'TEMP', valres(3),icodre, 0, nan='OUI')
-    p1ref = valres(1)
-    p2ref = valres(2)
-    tref  = valres(3)
 !
     nompar(1) = 'PCAP'
     nompar(2) = 'INST'
     nompar(3) = 'TEMP'
-! initialisation 
-    valpar(3) = tref
-    text = tref
+! Recuperation des donnees matériaux cas CHAR_ECHA_HR
+    if (option .eq. 'CHAR_ECHA_HR_R' .OR. &
+        option .eq. 'CHAR_ECHA_HR_F') then
+       call jevech('PMATERC', 'L', imate)
 !
+       call rcvala(zi(imate), ' ', 'THM_VAPE_GAZ', 0, ' ', &
+                    [0.d0], 1, 'MASS_MOL', valres(1), icodre, 1)
+       call rcvala(zi(imate), ' ', 'THM_DIFFU', 0, ' ', &
+                    [0.d0], 1, 'R_GAZ', valres(2), icodre, 1)
+       call rcvala(zi(imate), ' ', 'THM_LIQU', 0, ' ', &
+                    [0.d0], 1, 'RHO', valres(3), icodre, 1)
+       mamolv = valres(1)
+       rgp    = valres(2)
+       rhol   = valres(3)
+       coefvap=mamolv/rhol/rgp
+!
+! RECUP VAL THM_INIT
+!
+       call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
+                3, 'PRE1', valres(1),icodre, 0, nan='OUI')
+       call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
+                3, 'PRE2', valres(2),icodre, 0, nan='OUI')
+       call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
+                3, 'TEMP', valres(3),icodre, 0, nan='OUI')
+       p1ref = valres(1)
+       p2ref = valres(2)
+       tref  = valres(3)
+
+! initialisation 
+       valpar(3) = tref
+    endif
+!
+
+
 ! - Get model of finite element
 !
     call thmGetElemModel(ds_thm, l_axi_=l_axi, l_vf_=l_vf)
@@ -154,8 +156,8 @@ subroutine te0480(option, nomte)
         call jevech('PINSTR', 'L', itemps)
         deltat = zr(itemps+1)
         call jevech('PDEPLMR', 'L', idepm)
-        p1m = zr(idepm+ndim2+1)+p1ref
-        p2m = zr(idepm+ndim2+2)+p2ref
+        p1m = zr(idepm+ndim2+1)
+        p2m = zr(idepm+ndim2+2)
 !
 ! Recuperation des informations pour le flux
         call jevech('PECHTHM', 'L', iech)
@@ -163,8 +165,8 @@ subroutine te0480(option, nomte)
         c12 = zr(iech+1)
         c21 = zr(iech+2)
         c22 = zr(iech+3)
-        p1ext = zr(iech+4)+p1ref
-        p2ext = zr(iech+5)+p2ref
+        p1ext = zr(iech+4)
+        p2ext = zr(iech+5)
 !
     else if (option .eq. 'CHAR_ECHA_HR_R') then
         iopt = 1
@@ -186,8 +188,8 @@ subroutine te0480(option, nomte)
         iopt = 2
         call jevech('PINSTR', 'L', itemps)
         call jevech('PDEPLMR', 'L', idepm)
-        p1m = zr(idepm+ndim2+1)+p1ref
-        p2m = zr(idepm+ndim2+2)+p2ref
+        p1m = zr(idepm+ndim2+1)
+        p2m = zr(idepm+ndim2+2)
 !
         valpar(1) = p1m  ! on garde pour le moment inutile
         valpar(2) = zr(itemps)

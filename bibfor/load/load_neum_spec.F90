@@ -132,7 +132,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         'No_Load         ', 'No_Load         ', 'CHAR_MECA_SR1D1D', 'CHAR_MECA_PESA_R', &
         'CHAR_MECA_ROTA_R', 'CHAR_MECA_PRSU_R', 'No_Load         ', 'CHAR_MECA_SRCO3D', &
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
-        'No_Load         ', 'CHAR_MECA_EFSU_R', 'CHAR_ECHA_THM', 'CHAR_ECHA_HR_R'/
+        'No_Load         ', 'CHAR_MECA_EFSU_R', 'CHAR_ECHA_THM_R', 'CHAR_ECHA_HR_R'/
 !
 ! - Name of option for undead load matrix (real coefficient)
 !
