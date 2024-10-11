@@ -383,13 +383,7 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
     fotrq.setVariables(["V{}".format(numv1v2[0]), "V{}".format(numv1v2[1])])
     fotrq.setContext({"indic_plasac": indic_plasac, "seuil": dwb[grmapb]["SEUIL_EPSP_CUMU"]})
 
-    fomul = Formula()
-    fomul.setExpression("SIXX*SIYY")
-    fomul.setVariables(["SIXX", "SIYY"])
-    fomul.setContext({})
-
     for nume_inst in rsieq.getAccessParameters()["NUME_ORDRE"]:
-        grcalc = f"mgrplas_{nume_inst}"
         inst = rsieq.getTime(nume_inst)
 
         if inst in [elt[2] for elt in mclinst]:
@@ -401,37 +395,26 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
                 CHAM_UTIL=_F(NOM_CHAM="VARI_ELGA", FORMULE=fotrq, NUME_CHAM_RESU=1),
             )
 
-            sigga = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="ELGA_SIEF_R",
-                MODELE=modele,
-                PROL_ZERO="OUI",
-                ASSE=(
-                    _F(
-                        GROUP_MA=grcalc,
-                        CHAM_GD=sigma1(rsieq, nume_inst, dwb, reswbrest, grmapb),
-                        NOM_CMP="DX",
-                        NOM_CMP_RESU="SIXX",
-                    ),
-                    _F(
-                        GROUP_MA=grcalc,
-                        CHAM_GD=tronque.getField("UT01_ELGA", nume_inst),
-                        NOM_CMP="X1",
-                        NOM_CMP_RESU="SIYY",
-                    ),
-                ),
+            sf1 = (
+                sigma1(rsieq, nume_inst, dwb, reswbrest, grmapb)
+                .setPhysicalQuantity("SIEF_R", {"DX": "SIXX"})
+                .toSimpleFieldOnCells()
             )
-            sfsigga = sigga.toSimpleFieldOnCells()
+            sf2 = (
+                tronque.getField("UT01_ELGA", nume_inst)
+                .setPhysicalQuantity("SIEF_R", {"X1": "SIXX"})
+                .toSimpleFieldOnCells()
+            )
 
             sigtyp = FieldOnCellsReal(modele, "ELGA", "SIEF_R")
             sigtyp.setValues(
                 [
                     vxx * vyy
                     for (vxx, vyy) in zip(
-                        sfsigga.restrict(["SIXX"])
+                        sf1.restrict(["SIXX"])
                         .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
                         .getValues(),
-                        sfsigga.restrict(["SIYY"])
+                        sf2.restrict(["SIXX"])
                         .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
                         .getValues(),
                     )
