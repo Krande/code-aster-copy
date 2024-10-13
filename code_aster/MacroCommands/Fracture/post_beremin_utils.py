@@ -25,7 +25,7 @@ import medcoupling as mc
 from libaster import EntityType
 
 from ...Cata.Syntax import _F
-from ...CodeCommands import DEFI_FICHIER, IMPR_RESU, CREA_CHAMP
+from ...CodeCommands import DEFI_FICHIER, IMPR_RESU
 
 from ...Objects import NonLinearResult
 
@@ -71,14 +71,12 @@ def get_beremin_properties(resusd, group_ma):
     return dwb
 
 
-def get_resu_from_deftype(resusd, grmapb, defopb):
+def get_resu_from_deftype(resusd, defopb):
     """
     Result to consider to compute Beremin stress
 
     Arguments:
         resusd (NonLinearResult): Resultat aster concept
-        grmapb (str): Name of mesh cells group for Beremin computation from
-                      command file
         defopb (str): Deformation type ("PETIT" or "GDEF_LOG")
 
     Returns:
@@ -129,7 +127,7 @@ def get_resu_from_deftype(resusd, grmapb, defopb):
 
         if defopb == "GDEF_LOG":
             cmd_result = (
-                get_resu_gdef_log(resusd, med_filename_in, rvga, grmapb),
+                get_resu_gdef_log(resusd, med_filename_in, rvga),
                 numv1v2,
                 mclinst,
                 l_epspmax,
@@ -166,7 +164,7 @@ def make_rvga(resusd):
     return rvga
 
 
-def get_resu_gdef_log(resusd, med_filename_in, rvga, grmapb):
+def get_resu_gdef_log(resusd, med_filename_in, rvga):
     """
     Result to consider to compute Beremin stress when DEFORMATION="GDEF_LOG"
 
@@ -174,8 +172,6 @@ def get_resu_gdef_log(resusd, med_filename_in, rvga, grmapb):
         resusd (NonLinearResult): Resultat aster concept
         med_filename_in (str): Filename of temporary file
         rvga (NonLinearResult): Result of VARI_ELGA
-        grmapb (str): Name of mesh cells group for Beremin computation from
-                      command file
 
     Returns:
         NonLinearResult: Result to consider to compute Weibull stress
@@ -201,27 +197,23 @@ def get_resu_gdef_log(resusd, med_filename_in, rvga, grmapb):
     for rank in resusd.getIndexes():
         chvga = rvga.getField("VARI_ELGA", rank)
 
-        sglog = CREA_CHAMP(
-            OPERATION="ASSE",
-            TYPE_CHAM="ELGA_SIEF_R",
-            MODELE=resusd.getModel(rank),
-            PROL_ZERO="OUI",
-            ASSE=(
-                tuple(
-                    _F(CHAM_GD=chvga, GROUP_MA=grmapb, NOM_CMP=nom_cmp, NOM_CMP_RESU=nom_cmp_resu)
-                    for (nom_cmp, nom_cmp_resu) in zip(
+        reswbrest.setField(resusd.getField("COMPORTEMENT", rank), "COMPORTEMENT", rank)
+        reswbrest.setField(
+            chvga.setPhysicalQuantity(
+                "SIEF_R",
+                dict(
+                    zip(
                         tuple(f"V{ncs}" for ncs in numcmpsel),
                         {
                             2: ("SIXX", "SIYY", "SIZZ", "SIXY"),
                             3: ("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
                         }[dim_geom],
                     )
-                )
+                ),
             ),
+            "SIEF_ELGA",
+            rank,
         )
-
-        reswbrest.setField(resusd.getField("COMPORTEMENT", rank), "COMPORTEMENT", rank)
-        reswbrest.setField(sglog, "SIEF_ELGA", rank)
         reswbrest.setField(chvga, "VARI_ELGA", rank)
         reswbrest.setModel(resusd.getModel(rank), rank)
         reswbrest.setTime(resusd.getTime(rank), rank)

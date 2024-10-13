@@ -84,7 +84,7 @@ def post_beremin_ops(self, **args):
     fspb = args.get("FILTRE_SIGM")
 
     (reswbrest, numv1v2, mclinst, l_epspmax) = get_resu_from_deftype(
-        resupb, grmapb, args.get("DEFORMATION")
+        resupb, args.get("DEFORMATION")
     )
 
     linstplasac = tuple(elt[2] for elt in mclinst)
@@ -461,7 +461,7 @@ def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
     linstants = rsieq.getAccessParameters()["INST"]
 
     def puiss_m(valsixx):
-        return valsixx**bere_m
+        return valsixx ** bere_m
 
     indice = 0
     for nume_inst, inst in enumerate(linstants):
