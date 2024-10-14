@@ -22,11 +22,4 @@ Definition of objects for coupled simulations with code_aster.
 """
 
 from .external_coupling import ExternalCoupling
-from .medc_utilities import (
-    importMEDCDisplacement,
-    importMEDCFluidForces,
-    importMEDCPressure,
-    exportMEDCDisplacement,
-    exportMEDCPressure,
-    createField,
-)
+from .medc_utilities import MEDProj, createField

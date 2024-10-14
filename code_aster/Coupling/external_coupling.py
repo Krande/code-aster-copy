@@ -23,14 +23,11 @@ Definition of objects for coupled simulations with code_aster.
 
 import os
 
-import medcoupling as MEDC
 import numpy
 from ple.pyple_coupler import pyple_coupler
 
 from ..Utilities.MedUtils.med_coupler import MEDCoupler
 from ..Utilities.mpi_utils import MPI
-from ..CodeCommands.fin import close
-
 
 from .parameters import SchemeParams
 
@@ -84,40 +81,6 @@ class ExternalCoupling:
         """Disable pickling"""
         return None
 
-    def init_coupling(self, with_app, meshfile, input_fields, output_fields, **params):
-        """Initialize the coupling.
-
-        Arguments:
-            with_app (str): Name of the other application to be coupled with.
-            meshfile (str): Path to the MED file of the interface.
-            input_fields (list): List of exchanged fields as input.
-            output_fields (list): List of exchanged fields as output.
-            params (dict): Parameters of the coupling scheme.
-        """
-        verbosity = 2 if self.debug else 1
-        output = "all" if self.debug else "master"
-        self.ple = pyple_coupler(verbosity=verbosity, logdir=LOGDIR, output_mode=output)
-        self.ple.init_coupling(app_name=self.whoami, app_type="code_aster")
-
-        myranks = self.ple.get_app_ranks(self.whoami)
-        self.log(f"allocated ranks for {self.whoami!r}: {myranks}", verbosity=verbosity)
-        other_ranks = self.ple.get_app_ranks(with_app)
-        self.log(f"allocated ranks for {with_app!r}: {other_ranks}", verbosity=verbosity)
-        assert other_ranks, f"Application {with_app!r} not found!"
-        self._other_root = other_ranks[0]
-
-        self.log(
-            f"{self.whoami!r} coupler created from #{myranks[0]}, "
-            f"{with_app!r} root proc is #{1}"
-        )
-        self.mesh = MEDC.MEDFileUMesh(meshfile)[0]
-        self.fields_in = input_fields
-        self.fields_out = output_fields
-        self.params.update(params)
-        self._init_metadata()
-        self.params.check()
-        self._init_paramedmem(with_app)
-
     def sync(self, end_coupling=False):
         """Synchronization with the other application.
 
@@ -160,10 +123,11 @@ class ExternalCoupling:
         other_ranks = self.ple.get_app_ranks(with_app)
 
         # Creating the parallel DEC
-        if self.starter:
-            self.medcpl.init_paramedmem_coupling(ranks1=my_ranks, ranks2=other_ranks)
-        else:
-            self.medcpl.init_paramedmem_coupling(ranks1=other_ranks, ranks2=my_ranks)
+        for name, _, _ in self.fields_in + self.fields_out:
+            if self.starter:
+                self.medcpl.init_paramedmem_coupling(name, ranks1=my_ranks, ranks2=other_ranks)
+            else:
+                self.medcpl.init_paramedmem_coupling(name, ranks1=other_ranks, ranks2=my_ranks)
 
         # Define coupling mesh
         self.medcpl.create_coupling_mesh(self.mesh)
@@ -247,36 +211,65 @@ class ExternalCoupling:
         data = self.medcpl.pmm_recv(names)  # cs_coupler adds `.deepCopy()`
         return data
 
-    def send_output_result(self, outputs):
-        """Send the results to the other code.
+    def send_output_data(self, outputs):
+        """Send the outputs to the other code.
 
         Arguments:
             outputs (list[*ParaFIELD*]): Result used to define the inputs of the other code.
         """
         self.medcpl.pmm_send(outputs)
 
-    def finalize(self):
-        """Finalize the coupling."""
-        close()
-        self.ple.finalize()
-
-    def testing(self, *args, close=True):
-        """Execute the study without coupling, run the setup and one step,
-        for debugging.
+    def setup(self, with_app, mesh_interf, input_fields, output_fields, **params):
+        """Initialize the coupling.
 
         Arguments:
-            args (misc): Value required to execute one step, as passed to :py:meth:`exec_step`.
+            with_app (str): Name of the other application to be coupled with.
+            mesh_interf (MEDFileUMesh): Medcoupling mesh of the interface.
+            input_fields (list): List of exchanged fields as input.
+            output_fields (list): List of exchanged fields as output.
+            params (dict): Parameters of the coupling scheme.
+        """
+        verbosity = 2 if self.debug else 1
+        output = "all" if self.debug else "master"
+        self.ple = pyple_coupler(verbosity=verbosity, logdir=LOGDIR, output_mode=output)
+        self.ple.init_coupling(app_name=self.whoami, app_type="code_aster")
+
+        myranks = self.ple.get_app_ranks(self.whoami)
+        self.log(f"allocated ranks for {self.whoami!r}: {myranks}", verbosity=verbosity)
+        other_ranks = self.ple.get_app_ranks(with_app)
+        self.log(f"allocated ranks for {with_app!r}: {other_ranks}", verbosity=verbosity)
+        assert other_ranks, f"Application {with_app!r} not found!"
+        self._other_root = other_ranks[0]
+
+        self.log(
+            f"{self.whoami!r} coupler created from #{myranks[0]}, "
+            f"{with_app!r} root proc is #{1}"
+        )
+        self.mesh = mesh_interf
+        self.fields_in = input_fields
+        self.fields_out = output_fields
+        self.params.update(params)
+        self._init_metadata()
+        self.params.check()
+        self._init_paramedmem(with_app)
+
+    def finalize(self):
+        """Finalize the coupling."""
+        self.ple.finalize()
+
+    def testing(self, exec_iteration):
+        """Execute one iteration without coupling.
+            To debug purpose.
+
+        Arguments:
+            exec_iteration (func): Function that execute one iteration.
         """
 
-        class _Fake:
-            my_comm = 0
-            log = print
+        data = {}
+        for name, _, _ in self.fields_in:
+            data[name] = None
 
-        self.ple = _Fake()
-        self.setup()
-        self.exec_step(*args)
-        if close:
-            close()
+        results = exec_iteration(0, 0.0, 1.0, data)
 
     def run(self, exec_iteration):
         """Execute the coupling loop.
@@ -294,25 +287,38 @@ class ExternalCoupling:
         while not completed and not exit_coupling:
             istep += 1
 
+            self.medcpl.sync_dec()
+
             # ask for timestep (propose the last used)
-            self.send_parameter(istep, "DTAST", delta_t, MPI.DOUBLE)
-            delta_t = self.recv_parameter(istep, "DTCALC", MPI.DOUBLE)
+            if self.starter:
+                self.send_parameter(istep, "DTAST", delta_t, MPI.DOUBLE)
+                delta_t = self.recv_parameter(istep, "DTCALC", MPI.DOUBLE)
+            else:
+                delta_t = self.recv_parameter(istep, "DTAST", MPI.DOUBLE)
+                self.send_parameter(istep, "DTCALC", delta_t, MPI.DOUBLE)
 
             current_time += delta_t
             self.log("coupling iteration #{0:d}, time: {1:f}".format(istep, current_time))
 
             # recv results from the other code
-            data = self.recv_input_data()
-            assert len(data) == 1, data
+            if self.starter and istep == 1:
+                data = {}
+                for name, _, _ in self.fields_in:
+                    data[name] = None
+            else:
+                data = self.recv_input_data()
 
             results = exec_iteration(istep, current_time, delta_t, data)
 
             # get convergence indicator
-            icvast = self.recv_parameter(istep, "ICVAST", MPI.INT)
-            assert icvast == 1
+            if self.starter:
+                self.send_parameter(istep, "ICVAST", 1, MPI.INT)
+            else:
+                icvast = self.recv_parameter(istep, "ICVAST", MPI.INT)
+                assert icvast == 1
 
             # send results to other code
-            self.send_output_result(results)
+            self.send_output_data(results)
 
             completed = current_time >= self.params.final_time
             exit_coupling = self.sync(end_coupling=completed)

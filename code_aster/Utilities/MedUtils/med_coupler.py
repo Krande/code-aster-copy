@@ -103,17 +103,19 @@ class MEDCoupler:
     """Class handling the MEDCoupling related calls."""
 
     def __init__(self, logfunc=None):
-        self.dec = {MEDC.ON_NODES: None, MEDC.ON_CELLS: None}
+        self.dec = {MEDC.ON_NODES: {}, MEDC.ON_CELLS: {}}
+        self.xdec = {MEDC.ON_NODES: {}, MEDC.ON_CELLS: {}}
         self.interf_mesh = None
         self.exch_fields = {}
         # self.comptopo = None
 
         self.log = logfunc if logfunc else print
 
-    def init_paramedmem_coupling(self, ranks1, ranks2):
+    def init_paramedmem_coupling(self, field_name, ranks1, ranks2):
         """Start ParaMEDMEM coupling and DEC.
 
         Arguments:
+            field_name (str): Field name.
             ranks1 (list[int]): List of ranks allocated to the first application.
             ranks2 (list[int]): List of ranks allocated to the second application.
         """
@@ -121,13 +123,16 @@ class MEDCoupler:
         # Creating the send and recv DEC's
         for sup in (MEDC.ON_CELLS, MEDC.ON_NODES):
             sup_name = "nodes" if sup == MEDC.ON_NODES else "cells"
-            self.log(
-                f"creating InterpKernelDEC on {sup_name} with "
-                f"ranks1={ranks1} and ranks2={ranks2}",
-                verbosity=2,
-            )
-            self.dec[sup] = ExtendedDEC(PMM.InterpKernelDEC(ranks1, ranks2))
-            self.dec[sup].setMethod("P0" if sup == MEDC.ON_CELLS else "P1")
+            key = f"{ranks1},{ranks2}"
+            if key not in self.dec[sup]:
+                self.log(
+                    f"creating InterpKernelDEC on {sup_name} with "
+                    f"ranks1={ranks1} and ranks2={ranks2}",
+                    verbosity=2,
+                )
+                self.dec[sup][key] = PMM.InterpKernelDEC(ranks1, ranks2)
+            self.xdec[sup][field_name] = ExtendedDEC(self.dec[sup][key])
+            self.xdec[sup][field_name].setMethod("P0" if sup == MEDC.ON_CELLS else "P1")
 
     def create_coupling_mesh(self, mesh):
         """Create the ParaMEDMEM mesh, support of coupling.
@@ -138,12 +143,13 @@ class MEDCoupler:
         self.log("creating coupling mesh in memory", verbosity=2)
         self.interf_mesh = mesh
         for sup in (MEDC.ON_CELLS, MEDC.ON_NODES):
-            dec = self.dec[sup]
-            if dec.isInSourceSide():
-                group = dec.getSourceGrp()
-            else:
-                group = dec.getTargetGrp()
-            dec.mesh = PMM.ParaMESH(mesh, group, "couplingMesh")
+            for name in self.xdec[sup]:
+                dec = self.xdec[sup][name]
+                if dec.isInSourceSide():
+                    group = dec.getSourceGrp()
+                else:
+                    group = dec.getTargetGrp()
+                dec.mesh = PMM.ParaMESH(mesh, group, "couplingMesh")
 
         # self.comptopo = PMM.ComponentTopology()
 
@@ -174,8 +180,9 @@ class MEDCoupler:
             field_type (str): On "NODES" or "CELLS".
         """
         if not self.get_coupled_field(field_name, silent=True):
+            assert field_type in ("NODES", "CELLS")
             sup = MEDC.ON_CELLS if field_type == "CELLS" else MEDC.ON_NODES
-            dec = self.dec[sup]
+            dec = self.xdec[sup][field_name]
             if field_type == "CELLS":
                 nature = MEDC.IntensiveConservation
                 nb_tuples = self.interf_mesh.getNumberOfCells()
@@ -193,7 +200,10 @@ class MEDCoupler:
                 dec.interf_size = nb_tuples * len(components)
             assert (
                 nb_tuples * len(components) == dec.interf_size
-            ), "inconsistent number of components"
+            ), "inconsistent number of components: %i vs. %i" % (
+                nb_tuples * len(components),
+                dec.interf_size,
+            )
 
             field = CoupledField(field_name, components, sup, dec.interf_size, pfield)
             self.exch_fields[field_name] = field
@@ -201,32 +211,34 @@ class MEDCoupler:
     def sync_dec(self):
         """Sync the parallel DEC objects."""
         for sup in (MEDC.ON_CELLS, MEDC.ON_NODES):
-            if self.dec[sup].synced:
-                continue
-            dec = self.dec[sup]
-            cfield = [field for field in self.exch_fields.values() if field.support == sup][0]
-            pfield = cfield.para_field.getField()
-            self.log(f"sync using field {cfield.name!r}", verbosity=2)
-            dec.attachLocalField(pfield)
-            sup_name = "nodes" if sup == MEDC.ON_NODES else "cells"
-            self.log(
-                f"synchronize DEC #{sup} for fields on {sup_name}, "
-                f"interface size: {dec.interf_size}",
-                verbosity=2,
-            )
-            dec.synchronize()
+            for name in self.xdec[sup]:
+                dec = self.xdec[sup][name]
+                if dec.synced:
+                    continue
+                cfield = [field for field in self.exch_fields.values() if field.support == sup]
+                if len(cfield) > 0:
+                    cfield = cfield[0]
+                    pfield = cfield.para_field.getField()
+                    dec.attachLocalField(pfield)
+                    sup_name = "nodes" if sup == MEDC.ON_NODES else "cells"
+                    self.log(
+                        f"synchronize DEC #{sup}-{name} for field {name} on {sup_name}, "
+                        f"interface size: {dec.interf_size}",
+                        verbosity=2,
+                    )
+                    dec.synchronize()
 
     def pmm_send(self, fields):
         """Send a field to the partner code with ParaMEDMEM.
 
         Arguments:
-            fields (list[*ParaFIELD*]): Fields to send.
+            fields (dict[*ParaFIELD*]): Fields to send.
         """
         if not fields:
             return
         support = None
-        for field in fields:
-            field_name = field.getName()
+        for field_name in fields:
+            field = fields[field_name]
             exchanged = self.get_coupled_field(field_name)
             if support is None:
                 support = exchanged.support
@@ -236,12 +248,14 @@ class MEDCoupler:
             pfield = exchanged.para_field.getField()
             array = field.getArray()
             pfield.setArray(array)
+            pfield.setName(field_name)
             self.log(repr(pfield), verbosity=2)
             # self.log(array, verbosity=2)
-            dec = self.dec[support]
+            dec = self.xdec[support][field_name]
             dec.attachLocalField(pfield)
-        dec.synchronize()
-        dec.sendData()
+            dec.synchronize()
+            self.log(f"sendData...")
+            dec.sendData()
         self.log("pmm_send: done", verbosity=2)
 
     def pmm_recv(self, fields_names):
@@ -251,9 +265,9 @@ class MEDCoupler:
             fields_names (list[str]): Fields names.
 
         Returns:
-            list[*ParaFIELD*]: Received fields.
+            dict[*ParaFIELD*]: Received fields.
         """
-        fields = []
+        fields = {}
         if not fields_names:
             return fields
         support = None
@@ -264,19 +278,18 @@ class MEDCoupler:
             assert support == support, "all fields must be on the same support type."
             sup_name = "nodes" if support == MEDC.ON_NODES else "cells"
             self.log(f"waiting for field {field_name!r} on {sup_name}...")
-            values = [0.0] * exchanged.size
             pfield = exchanged.para_field.getField()
-            pfield.setValues(values)
+            pfield.setValues([0.0] * exchanged.size)
             array = pfield.getArray()
             array.rearrange(len(exchanged.components))
             array.setInfoOnComponents(exchanged.components)
-            dec = self.dec[support]
+            dec = self.xdec[support][field_name]
             dec.attachLocalField(pfield)
-            fields.append(pfield)
-        dec.synchronize()
-        self.log(f"recvData...", verbosity=2)
-        dec.recvData()
-        self.log(repr(pfield), verbosity=2)
-        # self.log(array, verbosity=2)
-        self.log(f"pmm_recv: done", verbosity=2)
+            fields[field_name] = pfield
+            dec.synchronize()
+            self.log(f"recvData...", verbosity=2)
+            dec.recvData()
+            self.log(repr(pfield), verbosity=2)
+            # self.log(array, verbosity=2)
+            self.log(f"pmm_recv: done", verbosity=2)
         return fields
