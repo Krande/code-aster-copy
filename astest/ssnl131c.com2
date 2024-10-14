@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,6 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DZ",
             VALE_CALC=1e-05,
-            TOLE_MACHINE=1.0e-3,
         ),
         _F(
             INST=0.10000000000000001,
@@ -106,7 +105,6 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DZ",
             VALE_CALC=5.0,
-            TOLE_MACHINE=1.0e-3,
         ),
         _F(
             INST=0.20000000000000001,
@@ -115,7 +113,6 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DZ",
             VALE_CALC=2e-05,
-            TOLE_MACHINE=1.0e-3,
         ),
         _F(
             INST=0.20000000000000001,
@@ -124,17 +121,8 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DZ",
             VALE_CALC=10.0,
-            TOLE_MACHINE=1.0e-3,
         ),
-        _F(
-            INST=1.0,
-            RESULTAT=RESG,
-            NOM_CHAM="DEPL",
-            GROUP_NO="N2",
-            NOM_CMP="DZ",
-            VALE_CALC=0.0001,
-            TOLE_MACHINE=1.0e-3,
-        ),
+        _F(INST=1.0, RESULTAT=RESG, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DZ", VALE_CALC=0.0001),
         _F(
             INST=1.0,
             RESULTAT=RESG,
@@ -142,17 +130,8 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DZ",
             VALE_CALC=8.0000042,
-            TOLE_MACHINE=1.0e-3,
         ),
-        _F(
-            INST=2.0,
-            RESULTAT=RESG,
-            NOM_CHAM="DEPL",
-            GROUP_NO="N2",
-            NOM_CMP="DZ",
-            VALE_CALC=-1e-05,
-            TOLE_MACHINE=1.0e-3,
-        ),
+        _F(INST=2.0, RESULTAT=RESG, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DZ", VALE_CALC=-1e-05),
         _F(
             INST=2.0,
             RESULTAT=RESG,
@@ -160,7 +139,6 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DZ",
             VALE_CALC=-8.0000081,
-            TOLE_MACHINE=1.0e-3,
         ),
     )
 )

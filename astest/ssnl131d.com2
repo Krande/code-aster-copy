@@ -109,7 +109,6 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DRX",
             VALE_CALC=0.0005,
-            TOLE_MACHINE=1.0e-3,
         ),
         _F(
             INST=0.050000000000000003,
@@ -118,7 +117,6 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DRX",
             VALE_CALC=0.5,
-            TOLE_MACHINE=1.0e-3,
         ),
         _F(
             INST=0.14999999999999999,
@@ -127,7 +125,6 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DRX",
             VALE_CALC=0.0015,
-            TOLE_MACHINE=1.0e-3,
         ),
         _F(
             INST=0.14999999999999999,
@@ -136,17 +133,8 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DRX",
             VALE_CALC=0.7500000375,
-            TOLE_MACHINE=1.0e-3,
         ),
-        _F(
-            INST=1.0,
-            RESULTAT=RESG,
-            NOM_CHAM="DEPL",
-            GROUP_NO="N2",
-            NOM_CMP="DRX",
-            VALE_CALC=0.01,
-            TOLE_MACHINE=1.0e-3,
-        ),
+        _F(INST=1.0, RESULTAT=RESG, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DRX", VALE_CALC=0.01),
         _F(
             INST=1.0,
             RESULTAT=RESG,
@@ -154,7 +142,6 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="DRX",
             VALE_CALC=0.896500675,
-            TOLE_MACHINE=1.0e-3,
         ),
     )
 )
