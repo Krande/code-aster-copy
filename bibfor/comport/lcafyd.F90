@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
-                  nmat, mod, nvi, vind, vinf, &
+                  nmat, mod, nvi, vind, &
                   sigd, nr, yd)
     implicit none
 !
@@ -53,7 +53,7 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
     integer :: ndt, nvi, nmat, ndi, ns, i, nbcomm(nmat, 3), nr
     real(kind=8) :: yd(*), materd(nmat, 2), materf(nmat, 2), vind(*)
     real(kind=8) :: id(3, 3), hookf(6, 6), dkooh(6, 6), epsegl(6), fe(3, 3)
-    real(kind=8) :: dtot, vinf(nvi), sigd(6)
+    real(kind=8) :: dtot, sigd(6)
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     character(len=16) :: rela_comp
     character(len=24) :: cpmono(5*nmat+1), necoul

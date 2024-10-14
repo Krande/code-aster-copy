@@ -20,7 +20,7 @@
 interface
     subroutine lcinit(fami, kpg, ksp, rela_comp, typess,&
                       essai, mod, nmat, materf,&
-                      timed, timef, intg, nr, nvi,&
+                      timed, timef, nr, nvi,&
                       yd, epsd, deps, dy, compor,&
                       nbcomm, cpmono, pgl, nfs, nsg,&
                       toutms, vind, sigd, sigf, epstr,&
@@ -38,7 +38,6 @@ interface
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: timed
         real(kind=8) :: timef
-        integer :: intg
         integer :: nr
         integer :: nvi
         real(kind=8) :: yd(*)

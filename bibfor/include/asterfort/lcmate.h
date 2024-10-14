@@ -17,16 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine lcmate(BEHinteg, &
-                      fami, kpg, ksp, comp, mod, &
+    subroutine lcmate(fami, kpg, ksp, comp, mod, &
                       imat, nmat, tempd, tempf, tref, impexp, &
                       typma, hsr, materd, materf, matcst, &
                       nbcomm, cpmono, angmas, pgl, itmax, &
                       toler, ndt, ndi, nr, crit, &
                       nvi, vind, nfs, nsg, toutms, &
                       nhsr, numhsr, sigd, mult_comp_)
-        use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
         integer :: nmat
         character(len=*) :: fami
         integer :: kpg

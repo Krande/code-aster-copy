@@ -23,7 +23,7 @@ interface
                       yf, deps, itmax, toler, nbcomm,&
                       cpmono, pgl, nfs, nsg, toutms,&
                       hsr, nr, nvi, vind,&
-                      vinf, epsd, yd, dy, ye,&
+                      vinf, epsd, yd, dy,&
                       crit,&
                       drdy, iret)
         integer :: nvi
@@ -53,7 +53,6 @@ interface
         real(kind=8) :: epsd(*)
         real(kind=8) :: yd(nr)
         real(kind=8) :: dy(nr)
-        real(kind=8) :: ye(nr)
         real(kind=8) :: crit(*)
         real(kind=8) :: drdy(nr, nr)
         integer :: iret

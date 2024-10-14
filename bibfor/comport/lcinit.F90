@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 subroutine lcinit(fami, kpg, ksp, rela_comp, typess, &
                   essai, mod, nmat, materf, &
-                  timed, timef, intg, nr, nvi, &
+                  timed, timef, nr, nvi, &
                   yd, epsd, deps, dy, compor, &
                   nbcomm, cpmono, pgl, nfs, nsg, &
                   toutms, vind, sigd, sigf, epstr, &
@@ -41,7 +41,6 @@ subroutine lcinit(fami, kpg, ksp, rela_comp, typess, &
 !           MATERF :  COEFFICIENTS MATERIAU A T+DT
 !           TIMED  :  INSTANT  T
 !           TIMEF  :  INSTANT  T+DT
-!           INTG   :  NOMBRE DE TENTATIVES D'INTEGRATION
 !           EPSD   :  DEFORMATION A T
 !           YD     :  VARIABLES A T   = ( SIG  VIN  (EPS3)  )
 !           NVI    :  NOMBRE VARIABLES INTERNES
@@ -60,7 +59,7 @@ subroutine lcinit(fami, kpg, ksp, rela_comp, typess, &
 #include "asterfort/srlini.h"
 #include "asterfort/Behaviour_type.h"
     integer :: typess, nmat, nr, nvi, kpg, ksp, nfs, nsg
-    integer :: nbcomm(nmat, 3), iret, intg
+    integer :: nbcomm(nmat, 3), iret
     real(kind=8) :: deps(6), epsd(6), essai
     real(kind=8) :: yd(*), dy(*)
     real(kind=8) :: materf(nmat, 2)

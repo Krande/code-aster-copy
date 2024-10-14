@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmveei(BEHinteg,&
-                      fami, kpg, ksp, ndim, typmod,&
+    subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
                       imate, compor, carcri, instam, instap,&
                       epsm, deps, sigm, nvi, vim, option,&
                       sigp, vip, dsidep, iret)
-        use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp

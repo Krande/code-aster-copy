@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
 !
-subroutine lcconv(rela_comp, yd, dy, ddy, ye, &
+subroutine lcconv(rela_comp, yd, dy, ddy, &
                   nr, itmax, toler, iter, intg, &
                   nmat, mater, r, rini, epstr, &
-                  typess, essai, icomp, nvi, vind, &
+                  typess, essai, icomp, nvi, &
                   vinf, &
-                  lreli, iret)
+                  iret)
 
     implicit none
 !     ROUTINE D AIGUILLAGE
@@ -51,9 +50,6 @@ subroutine lcconv(rela_comp, yd, dy, ddy, ye, &
 !         NVI    :  NOMBRE DE VARIABLES INTERNES
 !         VINF   :  VARIABLES INTERNES A L'INSTANT T+DT
 !
-!         YE     :  VALEURS DES INCONNUES APRES LCINIT
-!         LRELI  :  TYPE DE SCHEMA D'INTEGRATION
-!
 !     OUT IRET = 0:  CONVERGENCE
 !         IRET = 1:  ITERATION SUIVANTE
 !         IRET = 2:  RE-INTEGRATION
@@ -72,9 +68,7 @@ subroutine lcconv(rela_comp, yd, dy, ddy, ye, &
     integer :: iret, nmat, nvi
     real(kind=8) :: toler, essai, ddy(*), dy(*), r(*), rini(*), yd(*)
     real(kind=8) :: mater(nmat, 2), epstr(6), vinf(nvi)
-    real(kind=8) :: ye(nr), vind(nvi)
     character(len=16), intent(in) :: rela_comp
-    aster_logical :: lreli
 !     ----------------------------------------------------------------
 !
     if (rela_comp .eq. 'VISCOCHAB') then

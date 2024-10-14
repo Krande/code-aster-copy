@@ -85,7 +85,6 @@ subroutine lcplnl(BEHinteg, &
 !         TYPESS :  TYPE DE SOLUTION D ESSAI POUR NEWTON
 !         ESSAI  :  VALEUR  SOLUTION D ESSAI POUR NEWTON
 !         INTG   :  COMPTEUR DU NOMBRE DE TENTATIVES D'INTEGRATIONS
-!         YE     : VECTEUR SOLUTIONS APRES LCINIT
 !
 #include "asterf_types.h"
 #include "asterfort/lcafyd.h"
@@ -135,7 +134,6 @@ subroutine lcplnl(BEHinteg, &
     character(len=24) :: cpmono(5*nmat+1)
 !
     integer :: nr1
-    real(kind=8) :: ye(nr)
 !
 !     ACTIVATION OU PAS DE LA RECHERCHE LINEAIRE
     lreli = .false.
@@ -168,7 +166,7 @@ subroutine lcplnl(BEHinteg, &
 !
 !     CHOIX DES VALEURS DE VIND A AFFECTER A YD
     call lcafyd(compor, materd, materf, nbcomm, cpmono, &
-                nmat, mod, nvi, vind, vinf, &
+                nmat, mod, nvi, vind, &
                 sigd, nr1, yd)
 !
 !     CHOIX DES PARAMETRES DE LANCEMENT DE MGAUSS
@@ -193,7 +191,7 @@ subroutine lcplnl(BEHinteg, &
 !     CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
     call lcinit(fami, kpg, ksp, rela_comp, typess, &
                 essai, mod, nmat, materf, &
-                timed, timef, intg, nr1, nvi, &
+                timed, timef, nr1, nvi, &
                 yd, epsd, deps, dy, compor, &
                 nbcomm, cpmono, pgl, nfs, nsg, &
                 toutms, vind, sigd, sigf, epstr, &
@@ -202,9 +200,6 @@ subroutine lcplnl(BEHinteg, &
     if (iret .ne. 0) then
         goto 3
     end if
-!
-! --- ENREGISTREMENT DE LA SOLUTION D'ESSAI
-    ye(1:nr) = yd(1:nr)+dy(1:nr)
 !
     iter = 0
 !
@@ -247,7 +242,7 @@ subroutine lcplnl(BEHinteg, &
                     yf, deps, itmax, toler, nbcomm, &
                     cpmono, pgl, nfs, nsg, toutms, &
                     hsr, nr, nvi, vind, &
-                    vinf, epsd, yd, dy, ye, &
+                    vinf, epsd, yd, dy, &
                     carcri, &
                     drdy, iret)
         if (iret .ne. 0) then
@@ -294,12 +289,12 @@ subroutine lcplnl(BEHinteg, &
     if (mod(1:6) .eq. 'C_PLAN') deps(3) = dy(nr)
 !
 !     VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
-    call lcconv(rela_comp, yd, dy, ddy, ye, &
+    call lcconv(rela_comp, yd, dy, ddy, &
                 nr, itmax, toler, iter, intg, &
                 nmat, materf, r, rini, epstr, &
-                typess, essai, icomp, nvi, vind, &
+                typess, essai, icomp, nvi, &
                 vinf, &
-                lreli, iret)
+                iret)
 !     IRET = 0 CONVERGENCE
 !          = 1 ITERATION SUIVANTE
 !          = 2 RE-INTEGRATION

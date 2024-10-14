@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine lccnvx(fami, kpg, ksp, rela_comp, mod,&
+    subroutine lccnvx(fami, kpg, ksp, rela_comp,&
                       imat, nmat, materf, sigd,&
                       sigf, deps, vind, vinf, nbcomm,&
                       cpmono, pgl, nvi, vp, vecp,&
                       hsr, nfs, nsg, toutms, timed,&
                       timef,&
-                      seuil, iret)
+                      seuil)
         integer :: nr
         integer :: nsg
         integer :: nfs
@@ -32,7 +32,6 @@ interface
         integer :: kpg
         integer :: ksp
         character(len=16), intent(in) :: rela_comp
-        character(len=8) :: mod
         integer :: imat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: sigd(6)
@@ -51,6 +50,5 @@ interface
         real(kind=8) :: timed
         real(kind=8) :: timef
         real(kind=8) :: seuil
-        integer :: iret
     end subroutine lccnvx
 end interface

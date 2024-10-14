@@ -16,22 +16,18 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcjplc(rela_comp, mod, angmas, imat, nmat, &
+subroutine lcjplc(rela_comp, mod, nmat, &
                   mater, timed, timef, compor, nbcomm, &
                   cpmono, pgl, nfs, nsg, toutms, &
                   hsr, nr, nvi, epsd, deps, &
                   itmax, toler, sigf, vinf, sigd, &
-                  vind, dsde, drdy, option, iret, &
-                  fami, kpg, ksp)
+                  vind, dsde, drdy, option, iret)
 ! aslint: disable=W1504
     implicit none
 !       MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT ELASTO-PLASTIQUE OU
 !       VISCO-PLASTIQUE COHERENT A T+DT OU T
 !       COHERENT A T+DT OU T
-!       IN  FAMI   :  FAMILLE DES POINTS DE GAUSS
-!           KPG    :  NUMERO DU POINT DE GAUSS
-!           KSP    :  NUMERO DU SOUS POINT DE GAUSS
-!           LOI    :  MODELE DE COMPORTEMENT
+!       IN  LOI    :  MODELE DE COMPORTEMENT
 !           MOD    :  TYPE DE MODELISATION
 !           NMAT   :  DIMENSION MATER
 !           MATER  :  COEFFICIENTS MATERIAU
@@ -43,12 +39,10 @@ subroutine lcjplc(rela_comp, mod, angmas, imat, nmat, &
 #include "asterfort/lkijpl.h"
 #include "asterfort/srijpl.h"
 #include "asterfort/Behaviour_type.h"
-    integer :: imat, nmat, nr, nvi, itmax, iret, nfs, nsg, ndt, ndi, n2
-    integer :: kpg, ksp
-    real(kind=8) :: dsde(6, 6), epsd(*), deps(*), toler, angmas(3)
+    integer :: nmat, nr, nvi, itmax, iret, nfs, nsg, ndt, ndi, n2
+    real(kind=8) :: dsde(6, 6), epsd(*), deps(*), toler
     real(kind=8) :: mater(nmat, 2)
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg)
-    character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: option
     common/tdim/ndt, ndi

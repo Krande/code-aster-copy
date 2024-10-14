@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcpopl(loi, angmas, nmat, materd, materf, &
-                  mod, deps, sigd, sigf, vind, &
+subroutine lcpopl(loi, nmat, materd, materf, &
+                  mod, sigf, vind, &
                   vinf)
     implicit none
 !     ROUTINE DE POST-TRAITEMENT POUR CERTAINES LOIS
@@ -40,20 +40,8 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf, &
 #include "asterfort/utmess.h"
     integer :: nmat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), sigf(*), vind(*), vinf(*)
-    real(kind=8) :: angmas(3), sigd(6), deps(6)
     character(len=8) :: mod
     character(len=16) :: loi
-!
-    real(kind=8) :: bid66(6, 6), hill, dsig(6), nsig, neps
-    real(kind=8) :: zero, un, deux, dix
-    aster_logical :: reorie
-    integer :: i, ndt
-!
-    parameter(ndt=6)
-    parameter(zero=0.d0)
-    parameter(un=1.d0)
-    parameter(deux=2.d0)
-    parameter(dix=1.d1)
 !
     if (loi(1:6) .eq. 'LAIGLE') then
         call lgldcm(nmat, materf, sigf, vinf)

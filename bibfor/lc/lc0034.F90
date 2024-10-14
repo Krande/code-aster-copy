@@ -15,16 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104
 !
-subroutine lc0034(BEHinteg, &
-                  fami, kpg, ksp, ndim, imate, &
-                  compor, carcri, instam, instap, epsm, &
+subroutine lc0034(fami, kpg, ksp, imate, &
+                  carcri, epsm, &
                   deps, sigm, vim, option, angmas, &
                   sigp, vip, typmod, icomp, &
-                  nvi, dsidep, codret)
-!
-    use Behaviour_type
+                  dsidep, codret)
 !
     implicit none
 !
@@ -34,16 +30,11 @@ subroutine lc0034(BEHinteg, &
 #include "asterfort/utlcal.h"
 #include "asterfort/tecael.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
     integer, intent(in) :: kpg
     integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
     integer, intent(in) :: imate
-    character(len=16), intent(in) :: compor(*)
     real(kind=8) :: carcri(*)
-    real(kind=8), intent(in) :: instam
-    real(kind=8), intent(in) :: instap
     real(kind=8), intent(in) :: epsm(*)
     real(kind=8), intent(in) :: deps(*)
     real(kind=8), intent(in) :: sigm(6)
@@ -54,7 +45,6 @@ subroutine lc0034(BEHinteg, &
     real(kind=8) :: vip(50)
     character(len=8), intent(in) :: typmod(*)
     integer, intent(in) :: icomp
-    integer, intent(in) :: nvi
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer, intent(out) :: codret
     real(kind=8)     :: npal, crit

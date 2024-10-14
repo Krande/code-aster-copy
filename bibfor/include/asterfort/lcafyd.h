@@ -20,7 +20,7 @@
 !
 interface
     subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
-                      nmat, mod, nvi, vind, vinf,&
+                      nmat, mod, nvi, vind,&
                       sigd, nr, yd)
         integer :: nvi
         integer :: nmat
@@ -31,7 +31,6 @@ interface
         character(len=24) :: cpmono(5*nmat+1)
         character(len=8) :: mod
         real(kind=8) :: vind(*)
-        real(kind=8) :: vinf(nvi)
         real(kind=8) :: sigd(6)
         integer :: nr
         real(kind=8) :: yd(*)

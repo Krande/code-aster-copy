@@ -18,12 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine lcconv(rela_comp, yd, dy, ddy, ye,&
+    subroutine lcconv(rela_comp, yd, dy, ddy, &
                       nr, itmax, toler, iter, intg,&
                       nmat, mater, r, rini, epstr,&
-                      typess, essai, icomp, nvi, vind,&
+                      typess, essai, icomp, nvi,&
                       vinf,&
-                      lreli, iret)
+                      iret)
         integer :: nvi
         integer :: nmat
         integer :: nr
@@ -31,7 +31,6 @@ interface
         real(kind=8) :: yd(*)
         real(kind=8) :: dy(*)
         real(kind=8) :: ddy(*)
-        real(kind=8) :: ye(nr)
         integer :: itmax
         real(kind=8) :: toler
         integer :: iter
@@ -43,13 +42,11 @@ interface
         integer :: typess
         real(kind=8) :: essai
         integer :: icomp
-        real(kind=8) :: vind(nvi)
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: vind1(nvi)
         integer :: indi(7)
         aster_logical :: bnews(3)
         aster_logical :: mtrac
-        aster_logical :: lreli
         integer :: iret
     end subroutine lcconv
 end interface

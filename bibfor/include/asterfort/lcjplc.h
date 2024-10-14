@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,12 @@
 #include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine lcjplc(rela_comp, mod, angmas, imat, nmat,&
+    subroutine lcjplc(rela_comp, mod, nmat,&
                       mater, timed, timef, compor, nbcomm,&
                       cpmono, pgl, nfs, nsg, toutms,&
                       hsr, nr, nvi, epsd, deps,&
                       itmax, toler, sigf, vinf, sigd,&
-                      vind, dsde, drdy, option, iret,&
-                      fami, kpg, ksp)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+                      vind, dsde, drdy, option, iret)
         integer :: nr
         integer :: nsg
         integer :: nfs
@@ -35,8 +31,6 @@ interface
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
         character(len=8) :: mod
-        real(kind=8) :: angmas(3)
-        integer :: imat
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: timed
         real(kind=8) :: timef

@@ -15,18 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104
 !
-subroutine lcmate(BEHinteg, &
-                  fami, kpg, ksp, comp, mod, &
+subroutine lcmate(fami, kpg, ksp, comp, mod, &
                   imat, nmat, tempd, tempf, tref, impexp, &
                   typma, hsr, materd, materf, matcst, &
                   nbcomm, cpmono, angmas, pgl, itmax, &
                   toler, ndt, ndi, nr, crit, &
                   nvi, vind, nfs, nsg, toutms, &
                   nhsr, numhsr, sigd, mult_comp_)
-!
-    use Behaviour_type
 !
     implicit none
 !
@@ -46,10 +42,7 @@ subroutine lcmate(BEHinteg, &
 #include "asterfort/rsvmat.h"
 #include "asterfort/vecmat.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
-!
 !       RECUPERATION DU MATERIAU A TEMPF ET TEMPD
-! In  BEHinteg         : parameters for integration of behaviour
 !       IN  FAMI   :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 !           KPG,KSP:  NUMERO DU (SOUS)POINT DE GAUSS
 !           COMP   :  COMPORTEMENT

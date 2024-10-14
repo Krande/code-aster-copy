@@ -21,7 +21,7 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
                   yf, deps, itmax, toler, nbcomm, &
                   cpmono, pgl, nfs, nsg, toutms, &
                   hsr, nr, nvi, vind, &
-                  vinf, epsd, yd, dy, ye, &
+                  vinf, epsd, yd, dy, &
                   crit, &
                   drdy, iret)
 
@@ -55,7 +55,6 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
 !           YD     :  VARIABLES A T   = ( SIGD  VARD  ) A T
 !           DY     :  SOLUTION           =    ( DSIG  DVIN  (DEPS3)  )
 !           CRIT   :  CRITERES LOCAUX
-!           YE     :  VECTEUR SOLUTION APRES LCINIT
 !       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 !           IRET   :  CODE RETOUR
 !       ----------------------------------------------------------------
@@ -70,7 +69,6 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
     integer :: nr, nmat, kpg, ksp, itmax, iret, nvi, nfs, nsg
     real(kind=8) :: deps(*), epsd(*), toler, crit(*)
     real(kind=8) :: drdy(nr, nr), yf(nr), dy(nr), yd(nr)
-    real(kind=8) :: ye(nr)
 !
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: timed, timef, vind(*), vinf(*)

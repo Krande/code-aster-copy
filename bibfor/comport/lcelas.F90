@@ -16,11 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcelas(fami, kpg, ksp, loi, mod, &
-                  imat, nmat, materd, materf, matcst, &
-                  nvi, angmas, deps, sigd, vind, &
-                  sigf, theta, etatd, crit, &
-                  iret)
+subroutine lcelas(loi, mod, &
+                  nmat, materd, materf, matcst, &
+                  deps, sigd, vind, &
+                  sigf, theta)
     implicit none
 !       INTEGRATION ELASTIQUE SUR DT
 !       IN  LOI    :  NOM DU MODELE DE COMPORTEMENT
@@ -39,23 +38,17 @@ subroutine lcelas(fami, kpg, ksp, loi, mod, &
 #include "asterfort/lksige.h"
 #include "asterfort/srsige.h"
 #include "asterfort/rsllin.h"
-    integer :: nmat, nvi, imat, iret, kpg, ksp
+    integer :: nmat
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: theta
     real(kind=8) :: sigd(6), sigf(6)
     real(kind=8) :: vind(*)
-    real(kind=8) :: deps(6), crit(*)
-    real(kind=8) :: angmas(3)
+    real(kind=8) :: deps(6)
 !
-    character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: loi
     character(len=3) :: matcst
-    character(len=7) :: etatd
-!
-! --- INITIALISATION VARIABLE CODE RETOUR
-    iret = 0
 !
     if (loi(1:8) .eq. 'ROUSS_PR' .or. loi(1:10) .eq. 'ROUSS_VISC') then
         call rsllin(mod, nmat, materd, materf, matcst, &
