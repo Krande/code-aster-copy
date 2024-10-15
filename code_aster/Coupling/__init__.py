@@ -21,5 +21,5 @@
 Definition of objects for coupled simulations with code_aster.
 """
 
-from .external_coupling import ExternalCoupling
+from .external_coupling import ExternalCoupling, SaturneCoupling
 from .medc_utilities import MEDProj, createField

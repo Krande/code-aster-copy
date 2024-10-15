@@ -300,3 +300,94 @@ class ExternalCoupling:
                 "completed" if completed else "interrupted", exit_coupling
             )
         )
+
+
+class SaturneCoupling(ExternalCoupling):
+    """Coupled simulation with code_aster and code_saturne with PLE.
+
+    Arguments:
+        app (str): Application name (default: "code_aster").
+        starter (bool): *True* if this instance starts (it sends first),
+            *False* if it receives first (default: "False").
+        debug (bool): Enable debugging mode (default: "False")".
+
+    Attributes:
+        ple (*ple_coupler*): PLE Coupler object.
+        ctxt (dict): Execution context where code_aster objects are kept between
+            the different stages of the simulation.
+        tag (int): tag used for direct MPI communication (`CS_CALCIUM_MPI_TAG`
+           ).
+        mesh (*medcoupling.MEDCouplingUMesh*): Mesh of the interface.
+        fields_in (list): List of exchanged fields (field name, number of
+            components, components names).
+        fields_out (list): List of exchanged fields (field name, number of
+            components, components names).
+        params (SchemeParams): Parameters of the coupling scheme.
+    """
+
+    def update(self, params):
+        """Update parameters.
+
+        Arguments:
+            params (dict): Parameters of the coupling scheme.
+        """
+
+        raise NotImplemented()
+
+    def run(self, exec_iteration, **params):
+        """Execute the coupling loop.
+
+        Arguments:
+            exec_iteration (func): Function that execute one iteration.
+            params (dict): Parameters of the coupling scheme.
+        """
+
+        # update parameters
+        self.update(params)
+
+        # initial sync before the loop
+        exit_coupling = self.sync()
+
+        current_time = self.params.init_time
+        delta_t = self.params.delta_t
+        completed = False
+        istep = 0
+
+        while not completed and not exit_coupling:
+            istep += 1
+
+            for i_iter in range(self.params.nb_iter):
+
+                self.MPI.SUB_COMM.send(istep, "DTAST", delta_t, self.MPI.DOUBLE)
+                delta_t = self.MPI.SUB_COMM.recv(istep, "DTCALC", self.MPI.DOUBLE)
+
+                self.log("coupling iteration #{0:d}, time: {1:f}".format(i_iter, current_time))
+
+                # recv data from code_saturne
+                current_time += delta_t
+                input_data = self.recv_input_data()
+
+                has_cvg, output_data = exec_iteration(i_iter, current_time, delta_time, input_data)
+
+                # received cvg
+                converged = bool(self.recv(istep, "ICVAST", self.MPI.INT))
+
+                # send results to code_saturne
+                self.send_output_data(output_data)
+
+                if converged:
+                    break
+
+                exit_coupling = self.sync()
+                self.log("end of iteration status: {}".format(exit_coupling))
+
+            completed = current_time >= self.params.final_time
+            exit_coupling = self.sync(end_coupling=completed)
+
+            self.log("end of time step with status: {}".format(exit_coupling))
+
+        self.log(
+            "coupling {0} with exit status: {1}".format(
+                "completed" if completed else "interrupted", exit_coupling
+            )
+        )

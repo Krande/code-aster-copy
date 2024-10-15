@@ -106,3 +106,8 @@ class SchemeParams:
             time (float): Last time to be used.
         """
         self.stepper.setFinal(time)
+
+    @property
+    def delta_t(self):
+        """float: delta time value."""
+        return self.stepper.getIncrement()
