@@ -15,8 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
-!
+
+! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
+! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
+
 module HHO_stabilization_module
 !
     use HHO_basis_module
@@ -383,7 +385,7 @@ contains
         real(kind=8) :: invH
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: M1, M2
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
-        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC) :: proj1
+        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC), save :: proj1
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, MR2, traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_VEC) :: proj2, proj3, TMP
         integer :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, dimM1, colsM2, i, j, idir

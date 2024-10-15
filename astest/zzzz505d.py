@@ -86,19 +86,19 @@ test.assertSequenceEqual(["V1", "V2"], fieldVARI.getComponents())
 
 fno = fieldSIEF.toFieldOnNodes()
 fsno = fieldSIEF.toSimpleFieldOnNodes()
-felno = fieldSIEF.setLocalization("ELNO")
+felno = fieldSIEF.asLocalization("ELNO")
 
 test.assertEqual(felno.getLocalization(), "ELNO")
 test.assertSequenceEqual(["SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"], felno.getComponents())
 
 
 fs0 = fieldSIEF.toSimpleFieldOnCells()
-fneuts = fs0.setPhysicalQuantity("DEPL_R", {"SIXX": "DZ", "SIXZ": "DX"})
+fneuts = fs0.asPhysicalQuantity("DEPL_R", {"SIXX": "DZ", "SIXZ": "DX"})
 test.assertSequenceEqual(["DZ", "DX"], fneuts.getComponents())
 test.assertEqual(fneuts.getPhysicalQuantity(), "DEPL_R")
 test.assertEqual(fneuts.getLocalization(), "ELGA")
 
-fneut = fieldSIEF.setPhysicalQuantity("DEPL_R", {"SIXX": "DZ", "SIXZ": "DX"})
+fneut = fieldSIEF.asPhysicalQuantity("DEPL_R", {"SIXX": "DZ", "SIXZ": "DX"})
 test.assertEqual(fneut.getPhysicalQuantity(), "DEPL_R")
 test.assertEqual(fneut.getLocalization(), "ELGA")
 
@@ -116,13 +116,13 @@ test.assertEqual(sfr2.getPhysicalQuantity(), "VARI_R")
 test.assertEqual(sfr2.getLocalization(), "ELGA")
 test.assertAlmostEqual(sf2.getValue(200, 0, 0), sfr2.getValue(200, 0, 0))
 
-sfr3 = sf2.setPhysicalQuantity("NEUT_R", {"V1": "X2"})
+sfr3 = sf2.asPhysicalQuantity("NEUT_R", {"V1": "X2"})
 test.assertSequenceEqual(["X2"], sfr3.getComponents())
 test.assertEqual(sfr3.getPhysicalQuantity(), "NEUT_R")
 test.assertEqual(sfr3.getLocalization(), "ELGA")
 test.assertAlmostEqual(sfr2.getValue(200, 0, 0), sfr3.getValue(200, 0, 0))
 
-fn3 = fno.setPhysicalQuantity("TEMP_R", {"SIYY": "TEMP"})
+fn3 = fno.asPhysicalQuantity("TEMP_R", {"SIYY": "TEMP"})
 test.assertSequenceEqual(["TEMP"], fn3.getComponents())
 test.assertEqual(fn3.getPhysicalQuantity(), "TEMP_R")
 test.assertEqual(fn3.getLocalization(), "NOEU")

@@ -199,7 +199,7 @@ def get_resu_gdef_log(resusd, med_filename_in, rvga):
 
         reswbrest.setField(resusd.getField("COMPORTEMENT", rank), "COMPORTEMENT", rank)
         reswbrest.setField(
-            chvga.setPhysicalQuantity(
+            chvga.asPhysicalQuantity(
                 "SIEF_R",
                 dict(
                     zip(

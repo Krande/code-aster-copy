@@ -15,7 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
+
+! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
+! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
+
 module HHO_Ther_module
 !
     use FE_algebra_module
@@ -120,7 +123,7 @@ contains
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: AT(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
-        real(kind=8) :: TMP(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
+        real(kind=8), save :: TMP(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
         real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3)
         real(kind=8) :: coorpg(3), weight, time_curr, temp_eval_curr
         real(kind=8), pointer :: flux(:) => null()

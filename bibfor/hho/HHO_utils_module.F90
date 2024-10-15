@@ -15,8 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
-!
+
+! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
+! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
+
 module HHO_utils_module
 !
     use HHO_type
@@ -804,7 +806,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8) :: mat_tmp(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        real(kind=8), save :: mat_tmp(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---- Number of dofs

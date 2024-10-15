@@ -555,7 +555,7 @@ class FieldOnCells : public DataField {
 
     bool printMedFile( const std::string fileName, bool local = true ) const;
 
-    FieldOnCellsPtr setLocalization( const std::string &loc ) const {
+    FieldOnCellsPtr asLocalization( const std::string &loc ) const {
         if ( loc == getLocalization() ) {
             return std::make_shared< FieldOnCells< ValueType > >( *this );
         }

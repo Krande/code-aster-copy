@@ -348,7 +348,7 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
         CHAM_UTIL=_F(NOM_CHAM="DEPL_ELGA", FORMULE=formule, NUME_CHAM_RESU=1),
     )
 
-    return rdiv1.getField("UT01_ELGA", 0).setPhysicalQuantity("DEPL_R", {"X1": "DX"})
+    return rdiv1.getField("UT01_ELGA", 0).asPhysicalQuantity("DEPL_R", {"X1": "DX"})
 
 
 def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
@@ -397,12 +397,12 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
 
             sf1 = (
                 sigma1(rsieq, nume_inst, dwb, reswbrest, grmapb)
-                .setPhysicalQuantity("SIEF_R", {"DX": "SIXX"})
+                .asPhysicalQuantity("SIEF_R", {"DX": "SIXX"})
                 .toSimpleFieldOnCells()
             )
             sf2 = (
                 tronque.getField("UT01_ELGA", nume_inst)
-                .setPhysicalQuantity("SIEF_R", {"X1": "SIXX"})
+                .asPhysicalQuantity("SIEF_R", {"X1": "SIXX"})
                 .toSimpleFieldOnCells()
             )
 

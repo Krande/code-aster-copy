@@ -94,28 +94,31 @@ class ExtendedFieldOnCellsReal:
             cells = mesh.getCells()
         return self.toSimpleFieldOnCells().getValuesWithDescription(cells, component)
 
-    def setPhysicalQuantity(self, physQuantity, map_cmps, fed=None):
+    def asPhysicalQuantity(self, physQuantity, map_cmps, fed=None):
         """Return a new field with a new physical quantity and renamed components.
 
         Arguments:
             physQuantity [str]: name of the new physical quantity
             map_cmps [dict[str, str]]: dict to rename components
-            (only renamed component will be keeped)
-            fed [FiniteElementDescriptor] : FED used to convert the field if the one present
-             in the field is not appropriate (default: None)
+                (only renamed components will be keeped)
+            fed [FiniteElementDescriptor] : FED used to convert the field if
+                the one present in the field is not appropriate (default: None)
 
         Returns:
             FieldOnCellsReal: field with name physical quantity.
         """
-
-        fcs = self.toSimpleFieldOnCells().setPhysicalQuantity(physQuantity, map_cmps)
-
+        fcs = self.toSimpleFieldOnCells().asPhysicalQuantity(physQuantity, map_cmps)
         ligrel = self.getDescription()
         if fed:
             ligrel = fed
-
         return fcs.toFieldOnCells(ligrel)
 
+    # <16.4.0
+    @deprecated(case=1, help="Use 'asLocalization()' instead, it returns a new field.")
+    def changeLocalization(self, loc):
+        return self.asLocalization(loc)
+
+    # <16.4.0
     @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
     def EXTR_COMP(self, comp, lgma=[], topo=0):
         """Deprecated: Use 'getValuesWithDescription()' instead.

@@ -83,7 +83,7 @@ Convert to SimpleFieldOnNodes
 Returns:
     SimpleFieldOnNodesReal: field converted
         )" )
-        .def( "setLocalization", &FieldOnCellsReal::setLocalization,
+        .def( "asLocalization", &FieldOnCellsReal::asLocalization,
               R"(
             Return a new field interpolated at the given localozation.
 

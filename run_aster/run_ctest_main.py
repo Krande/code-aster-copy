@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -100,6 +100,10 @@ To execute all sslp01* and zzzz100a/f testcases, use:
 
     run_ctest -R 'sslp01|zzzz100[af]'
 
+The '--nlist=N' option creates N directories that can be run separately
+(in different jobs under a batch scheduler for example). The lists may not be
+well balanced if '-R' or '-L' filters are used.
+
 Note:
   Difference from 'ctest': all values passed to '-L' option are sorted and joined
   as a unique regular expression.
@@ -190,6 +194,20 @@ def parse_args(argv):
         default=False,
         help=f"call run_sbatch instead of run_aster (see '{run_sbatch} --help' for specific options)",
     )
+    parser.add_argument(
+        "--nlist",
+        metavar="N",
+        action="store",
+        type=int,
+        default=None,
+        help="create several CTestTestfile.cmake files, do not run testcases, show command lines",
+    )
+    parser.add_argument(
+        "--report",
+        action="store_true",
+        default=None,
+        help="create a 'run_testcases.xml' report file",
+    )
     group = parser.add_argument_group("ctest options")
     group.add_argument(
         "--rerun-failed", action="store_true", help="run only the tests that failed previously"
@@ -255,6 +273,14 @@ def main(argv=None):
     else:
         resutest = osp.join(os.getcwd(), args.resutest)
 
+    if args.report and args.nlist:
+        report = XUnitReport(resutest, "")
+        for icount in range(args.nlist):
+            resdir = osp.join(resutest, f"{icount + 1:03d}")
+            report.read_ctest(resdir)
+        report.write_xml("run_testcases.xml")
+        return 0
+
     if not use_tmp and args.clean and not args.rerun_failed:  # clean = True or 'auto'
         if args.clean == "auto" and osp.exists(resutest):
             print(f"{resutest} will be removed.")
@@ -275,7 +301,7 @@ def main(argv=None):
     opts = "--sbatch" if args.sbatch else ""
     if not args.rerun_failed:
         # create CTestTestfile.cmake
-        create_ctest_file(testlist, excl, osp.join(resutest, "CTestTestfile.cmake"), opts)
+        create_ctest_file(testlist, excl, resutest, opts, args.nlist)
     parallel = CFG.get("parallel", 0)
     labels = set()
     if not parallel:
@@ -286,8 +312,20 @@ def main(argv=None):
     if args.label_exclude:
         ctest_args.extend(["-LE", "|".join(sorted(args.label_exclude))])
 
-    # execute ctest
     os.chdir(resutest)
+    # show command lines to be run
+    if args.nlist:
+        print("Command lines for each batch job:")
+        for icount in range(args.nlist):
+            wrkdir = osp.join(resutest, f"{icount + 1:03d}")
+            print(f"  cd {wrkdir} && ctest " + " ".join([f"'{i}'" for i in ctest_args]))
+        print("Build consolidated report:")
+        print(f"  cd {resutest}")
+        bindir = osp.normpath(osp.join(RUNASTER_ROOT, "bin"))
+        print("  " + osp.join(bindir, "run_ctest") + " " + " ".join(sys.argv[1:]) + " --report")
+        return 0
+
+    # execute ctest
     proc = _run(["ctest"] + ctest_args)
     if not use_tmp:
         legend = ""
@@ -301,14 +339,15 @@ def main(argv=None):
     return proc.returncode
 
 
-def create_ctest_file(testlist, exclude, filename, options):
+def create_ctest_file(testlist, exclude, destdir, options, nlist=None):
     """Create the CTestTestfile.cmake file.
 
     Arguments:
         testlist (str): file containing a list of testcases.
         exclude (str): file containing a list of testcases to be excluded.
-        filename (str): Destination for the 'ctest' file.
+        destdir (str): Destination directory for the 'ctest' file(s).
         options (str): Additional command line options.
+        nlist (int, optional): Number of files to be created.
     """
     datadir = osp.normpath(osp.join(RUNASTER_ROOT, "share", "aster"))
     bindir = osp.normpath(osp.join(RUNASTER_ROOT, "bin"))
@@ -330,9 +369,23 @@ def create_ctest_file(testlist, exclude, filename, options):
         lexport = list(set(lexport).difference(excl))
 
     tag = CFG.get("version_tag", "")
-    text = [f"set(COMPONENT_NAME ASTER_{tag})", _build_def(bindir, datadir, lexport, options)]
-    with open(filename, "w") as fobj:
-        fobj.write("\n".join(text))
+    size = len(lexport) // (nlist or 1)
+    if len(lexport) % (nlist or 1):
+        size += 1
+    icount = 0
+    while lexport:
+        icount += 1
+        text = [
+            f"set(COMPONENT_NAME ASTER_{tag})",
+            _build_def(bindir, datadir, lexport[:size], options),
+        ]
+        lexport = lexport[size:]
+        filename = osp.join(destdir, "CTestTestfile.cmake")
+        if nlist:
+            filename = osp.join(destdir, f"{icount:03d}", "CTestTestfile.cmake")
+        os.makedirs(osp.dirname(filename), exist_ok=True)
+        with open(filename, "w") as fobj:
+            fobj.write("\n".join(text))
 
 
 CTEST_DEF = """

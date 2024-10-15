@@ -371,9 +371,6 @@ class ExtendedResult:
             para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
             crit (str) : search criterion ABSOLU or RELATIF
             prec (float) : precision for the search criterion
-
-        Returns:
-            Nothing
         """
 
         assert crit in ("ABSOLU", "RELATIF")

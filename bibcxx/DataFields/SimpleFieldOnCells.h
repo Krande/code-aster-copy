@@ -654,8 +654,8 @@ public:
     return ret;
   };
 
-  SimpleFieldOnCellsPtr setPhysicalQuantity(const std::string physQuant,
-                                            const MapString &map_cmps) const {
+  SimpleFieldOnCellsPtr asPhysicalQuantity(const std::string physQuant,
+                                           const MapString &map_cmps) const {
 
     if (map_cmps.empty()) {
       raiseAsterError("Map to rename components is empty");
