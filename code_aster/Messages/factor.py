@@ -598,10 +598,10 @@ Conseil :
     86: _(
         """
 Solveur MUMPS :
-  Sur WINDOWS on force 'IN_CORE' avec les matrices complexes car il y a un problème avec les I/O 
+  Sur WINDOWS, on force 'IN_CORE' avec les matrices complexes car il y a un problème avec les I/O.
 
 Conseil :
-  passer explicitement en gestion mémoire IN_CORE (SOLVEUR/GESTION_MEMOIRE='IN_CORE')
+  Passer explicitement en gestion mémoire IN_CORE (SOLVEUR/GESTION_MEMOIRE='IN_CORE').
 """
     ),
     88: _(
