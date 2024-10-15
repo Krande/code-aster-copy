@@ -1,0 +1,119 @@
+ TITRE
+  FICHIER GENERE PAR NOUS                                                       
+  LE  ME-26-FEVR-92 17:09:54                                                    
+ FINSF
+ %
+ COOR_2D
+ N1        1.00000000000000E+00  0.00000000000000E+00
+ N2        2.00000000000000E+00  0.00000000000000E+00
+ N3        2.00000000000000E+00  4.00000000000000E+00
+ N4        1.00000000000000E+00  4.00000000000000E+00
+ FINSF
+ %
+ QUAD4   
+ M1       N1       N2       N3       N4      
+ FINSF
+ %
+ SEG2    
+ M5       N1       N2      
+ M6       N2       N3      
+ M7       N3       N4      
+ M8       N4       N1      
+ FINSF
+ %
+ GROUP_NO
+ GRNM1                   
+ N1       N2      
+ FINSF
+ %
+ GROUP_NO
+ GRNO1                   
+ N1       N2      
+ FINSF
+ %
+ GROUP_NO
+ GRNM2                   
+ N2       N3      
+ FINSF
+ %
+ GROUP_NO
+ GRNO2                   
+ N2       N3      
+ FINSF
+ %
+ GROUP_NO
+ GRNM3                   
+ N3       N4      
+ FINSF
+ %
+ GROUP_NO
+ GRNO3                   
+ N3       N4      
+ FINSF
+ %
+ GROUP_NO
+ GRNM4                   
+ N4       N1      
+ FINSF
+ %
+ GROUP_NO
+ GRNO4                   
+ N4       N1      
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N4                      
+ N4      
+ FINSF
+ %
+ GROUP_MA
+ GRSD1                   
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ GRMA1                   
+ M5      
+ FINSF
+ %
+ GROUP_MA
+ GRMA2                   
+ M6      
+ FINSF
+ %
+ GROUP_MA
+ GRMA3                   
+ M7      
+ FINSF
+ %
+ GROUP_MA
+ GRMA4                   
+ M8      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ M5                      
+ M5      
+ FINSF
+ %
+ FIN
