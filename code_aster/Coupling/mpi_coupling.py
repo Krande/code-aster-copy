@@ -159,14 +159,14 @@ class MPICoupling:
                 (bool): broadcasted value.
             """
 
-            if isinstance(type, self.BOOL):
+            if typ == MPICoupling.BOOL:
                 value = int(value)
-                typ = self.INT
+                typ = MPICoupling.INT
 
                 b0 = bool(self.bcast(True, iteration, name, value, typ))
                 b1 = bool(self.bcast(False, iteration, name, value, typ))
 
-                if op == self.LAND:
+                if op == MPICoupling.LAND:
                     if b0 and b1:
                         return True
                     else:

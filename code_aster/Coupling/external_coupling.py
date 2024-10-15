@@ -274,16 +274,26 @@ class ExternalCoupling:
                 # send data to other code
                 if self.starter:
                     self.send_output_data(output_data)
-                    exit_coupling = self.sync(end_coupling=completed)
+                    converged = self.MPI.SUB_COMM.allreduce(
+                        i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
+                    )
                 else:
-                    exit_coupling = self.sync(end_coupling=completed)
+                    converged = self.MPI.SUB_COMM.allreduce(
+                        i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
+                    )
                     self.send_output_data(output_data)
+
+                if converged:
+                    break
 
                 self.log("end of iteration status: {}".format(exit_coupling))
 
             stepper.completed()
 
             self.log("end of time step with status: {}".format(exit_coupling))
+
+        if self.starter:
+            input_data = self.recv_input_data()
 
         self.log(
             "coupling {0} with exit status: {1}".format(
