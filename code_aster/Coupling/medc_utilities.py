@@ -28,6 +28,7 @@ import numpy as np
 
 from ..Commands import LIRE_CHAMP, PROJ_CHAMP, CREA_RESU, CREA_CHAMP
 from ..Utilities.mpi_utils import MPI
+from ..Utilities.logger import logger
 
 
 class MEDProj:
@@ -60,7 +61,7 @@ class MEDProj:
         if MPI.ASTER_COMM_WORLD.rank == 0:
             if os.path.exists(filename):
                 os.remove(filename)
-            print("writing file {0!r}...".format(filename), flush=True)
+            logger.debug("writing file {0!r}...".format(filename), flush=True)
             field.printMedFile(filename)
         MPI.ASTER_COMM_WORLD.Barrier()
 

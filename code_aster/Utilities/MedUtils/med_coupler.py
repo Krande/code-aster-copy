@@ -24,6 +24,8 @@ Definition of a convenient object to synchronize MEDCoupling fields.
 import medcoupling as MEDC
 import ParaMEDMEM as PMM
 
+from ..logger import logger
+
 
 class CoupledField:
     """Define the properties of an exchanged field.
@@ -109,7 +111,7 @@ class MEDCoupler:
         self.exch_fields = {}
         # self.comptopo = None
 
-        self.log = logfunc if logfunc else print
+        self.log = logfunc if logfunc else logger
 
     def init_paramedmem_coupling(self, field_name, ranks1, ranks2):
         """Start ParaMEDMEM coupling and DEC.

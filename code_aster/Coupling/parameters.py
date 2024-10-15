@@ -22,22 +22,27 @@ Definition of object that stores the parameters of a coupled simulation
 between code_saturne and code_aster.
 """
 
-import sys
+from ..Utilities.logger import logger
+from ..Solvers import TimeStepper
+
+import numpy as np
 
 
 class SchemeParams:
     """Object thats holds the values of the parameters of the scheme."""
 
-    __slots__ = ("nb_steps", "init_time", "delta_t", "final_time", "epsilon", "nb_iter", "_")
-
     def __init__(self):
-        self.nb_steps = None
-        self.init_time = None
-        self.delta_t = None
-        self.final_time = None
         self.epsilon = 1.0e-6
         self.nb_iter = 1
-        self._ = 0
+        self.stepper = TimeStepper([0.0])
+
+    @staticmethod
+    def _get_value(args, param, default=None):
+
+        if param in args:
+            return args[param]
+
+        return default
 
     def update(self, kwargs):
         """Set values from keyword arguments.
@@ -45,27 +50,59 @@ class SchemeParams:
         Arguments:
             kwargs (dict): Dict of parameters values.
         """
-        for key, value in kwargs.items():
-            try:
-                setattr(self, key, value)
-            except AttributeError:
-                print(f"unknown parameter: {key!r}, ignored", file=sys.stderr)
 
-    def check(self):
-        """Check consistency of time steps values."""
-        values = [self.nb_steps, self.init_time, self.delta_t, self.final_time]
-        if values.count(None) > 1:
-            raise ValueError(f"missing values to define time steps: {values}")
-        if self.nb_steps is None:
-            self.nb_steps = (self.final_time - self.init_time) / self.delta_t
-        if self.init_time is None:
-            self.init_time = self.final_time - self.delta_t * self.nb_steps
-        if self.delta_t is None:
-            self.delta_t = (self.final_time - self.init_time) / self.nb_steps
-        if self.final_time is None:
-            self.final_time = self.init_time + self.delta_t * self.nb_steps
-        if (
-            abs(self.final_time - (self.init_time + self.delta_t * self.nb_steps))
-            > 1.0e6 * self.final_time
-        ):
-            raise ValueError("inconsistent definition of time steps!")
+        self.epsilon = self._get_value(kwargs, "epsilon", self.epsilon)
+        self.nb_iter = self._get_value(kwargs, "nb_iter", self.nb_iter)
+
+        init_time = self._get_value(kwargs, "init_time", 0.0)
+        nb_step = self._get_value(kwargs, "nb_step")
+        final_time = self._get_value(kwargs, "final_time")
+        delta_t = self._get_value(kwargs, "delta_t")
+        time_list = self._get_value(kwargs, "time_list")
+
+        if time_list or nb_step or final_time or delta_t:
+            if time_list is None:
+                if final_time is None:
+                    assert nb_step is not None and delta_t is not None
+                    final_time = init_time + nb_step * delta_t
+
+                if delta_t is None:
+                    assert nb_step is not None and final_time is not None
+                    delta_t = (final_time - init_time) / nb_step
+
+                time_list = np.linspace(init_time, final_time, delta_t)
+
+            self.stepper = TimeStepper(time_list)
+
+        if final_time:
+            self.final_time = final_time
+        if init_time:
+            self.init_time = init_time
+
+    @property
+    def init_time(self):
+        """float: Initial time value."""
+        return self.stepper.getInitial()
+
+    @init_time.setter
+    def init_time(self, time):
+        """Define the initial time. Lesser values are removed.
+
+        Arguments:
+            time (float): First time to be used.
+        """
+        self.stepper.setInitial(time)
+
+    @property
+    def final_time(self):
+        """float: Final time value."""
+        return self.stepper.getFinal()
+
+    @final_time.setter
+    def final_time(self, time):
+        """imit the sequence to the times lower than `time`.
+
+        Arguments:
+            time (float): Last time to be used.
+        """
+        self.stepper.setFinal(time)
