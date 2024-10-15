@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rsbary(lr8, nr8, tous, lexi, x, &
-                  i1, i2, iposit)
+subroutine rsbary(lr8, nr8, tous, lexi, x, i1, i2, iposit)
+
+    use searchlist_module, only: allUnique, almostEqual, getUnique
     implicit none
 #include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/utmess.h"
 !
 !     ARGUMENTS:
 !     ----------
@@ -52,15 +57,22 @@ subroutine rsbary(lr8, nr8, tous, lexi, x, &
 !
 !
 ! ----------------------------------------------------------------------
-    integer :: ipp, ip, is, iss
-    real(kind=8) :: xpp, xp, xs, xss, epsi, inter
-    aster_logical :: afaire
-!-----------------------------------------------------------------------
-    integer :: i, imax, imin
+    integer :: imax, imin, ipp, ip, is, iss, ns
     real(kind=8) :: xmax, xmin
+    real(kind=8), parameter :: prec = 1.0d-10
+    character(len=8), parameter :: crit = 'ABSOLU'
+    real(kind=8), pointer :: v_diff(:) => null()
+    aster_logical, pointer :: v_active(:) => null()
 !-----------------------------------------------------------------------
-    data epsi/1.0d-10/
+    AS_ALLOCATE(vl=v_active, size=nr8)
 !
+    v_active = ASTER_FALSE
+    if (tous) then
+        v_active = ASTER_TRUE
+    else
+        v_active = lexi(1:nr8)
+    end if
+
 ! DEB-------------------------------------------------------------------
 !
 !     --------XI-----XPP--XP-------X---XS-------XSS-------XJ-->
@@ -72,159 +84,82 @@ subroutine rsbary(lr8, nr8, tous, lexi, x, &
 !               XMAX: LE REEL MAX DE LA LISTE
 !               XMIN: LE REEL MIN DE LA LISTE
 !
-    ip = 0
-    ipp = 0
-    is = 0
-    iss = 0
-!
-!     -- CAS DE LA LISTE VIDE:
-!     ------------------------
-    do i = 1, nr8
-        if (tous) then
-            afaire = .true.
+    i1 = 0
+    i2 = 0
+    ns = count(v_active)
+
+    if (ns .eq. 0) then
+        ! CAS LISTE VIDE
+        iposit = -2
+    else if (ns .eq. 1) then
+        ! CAS EXCEPTION LISTE AVEC UN SEUL INSTANT
+        i1 = MAXLOC(lr8(1:nr8), dim=1, mask=v_active)
+        i2 = i1
+        xmax = MAXVAL(lr8(1:nr8), dim=1, mask=v_active)
+        xmin = xmax
+        if (almostEqual(x, xmax, prec, crit)) then
+            iposit = 0
+        else if (x .gt. xmax) then
+            iposit = 1
+        else if (x .lt. xmin) then
+            iposit = -1
         else
-            if (lexi(i)) then
-                afaire = .true.
-            else
-                afaire = .false.
-            end if
+            ASSERT(.false.)
         end if
-        if (afaire) then
-            imin = i
-            imax = i
-            xmax = lr8(i)
-            xmin = lr8(i)
-            goto 101
-        end if
-    end do
-    iposit = -2
-    goto 999
-101 continue
-!
-!     RECHERCHE DE XMAX ET XMIN:
-    do i = 1, nr8
-        if (tous) then
-            afaire = .true.
+    else
+        i1 = getUnique(x, lr8(1:nr8), prec, crit, v_active)
+        if (i1 .ne. 0) then
+            ! CAS EXCEPTION OU ON DEMANDE UN INSTANT EXISTANT DANS LA LISTE
+            iposit = 0
+            i2 = i1
         else
-            if (lexi(i)) then
-                afaire = .true.
+            ! INTERPOLATION
+            !
+            !
+            ! VERIFICATION UNICITE DE CHAQUE INSTANT
+            if (.not. allUnique(lr8(1:nr8), prec, crit, v_active)) then
+                call utmess('F', 'UTILITAI_44', sk=crit, sr=prec)
+            end if
+            !
+            ! RECHERCHE DE XMAX ET XMIN:
+            xmax = MAXVAL(lr8(1:nr8), dim=1, mask=v_active)
+            xmin = MINVAL(lr8(1:nr8), dim=1, mask=v_active)
+            !
+            if ((x .ge. xmin) .and. (x .le. xmax)) then
+                ! 1ER CAS X EST INCLU DANS L'INTERVALLE DE LA LISTE:
+                AS_ALLOCATE(vr=v_diff, size=nr8)
+                v_diff = lr8(1:nr8)-x
+                ip = MAXLOC(v_diff, dim=1, mask=(v_diff .lt. 0.d0 .and. v_active))
+                is = MINLOC(v_diff, dim=1, mask=(v_diff .gt. 0.d0 .and. v_active))
+                AS_DEALLOCATE(vr=v_diff)
+                i1 = ip
+                i2 = is
+                iposit = 0
+            else if (x .gt. xmax) then
+                ! 2EME CAS X EST A DROITE DE L'INTERVALLE DE LA LISTE:
+                imax = MAXLOC(lr8(1:nr8), dim=1, mask=v_active)
+                ip = imax
+                v_active(imax) = ASTER_FALSE
+                ipp = MAXLOC(lr8(1:nr8), dim=1, mask=v_active)
+                i1 = ipp
+                i2 = ip
+                iposit = 1
+            else if (x .lt. xmin) then
+                ! 3EME CAS X EST A GAUCHE DE L'INTERVALLE DE LA LISTE:
+                imin = MINLOC(lr8(1:nr8), dim=1, mask=v_active)
+                is = imin
+                v_active(imin) = ASTER_FALSE
+                iss = MINLOC(lr8(1:nr8), dim=1, mask=v_active)
+                i1 = is
+                i2 = iss
+                iposit = -1
             else
-                afaire = .false.
+                ASSERT(.false.)
             end if
         end if
-        if (afaire) then
-            if (lr8(i) .ge. xmax) then
-                imax = i
-                xmax = lr8(i)
-            end if
-            if (lr8(i) .le. xmin) then
-                imin = i
-                xmin = lr8(i)
-            end if
-        end if
-    end do
-!
-!
-    inter = epsi*(xmax-xmin)
-!
-!     -- 1ER CAS X EST INCLU DANS L'INTERVALLE DE LA LISTE:
-    if (((x .ge. xmin) .or. (abs(x-xmin) .lt. inter)) .and. &
-        ((x .le. xmax) .or. (abs(x-xmax) .lt. inter))) then
-        iposit = 0
-        ip = imin
-        is = imax
-        xp = xmin
-        xs = xmax
-        do i = 1, nr8
-            if (tous) then
-                afaire = .true.
-            else
-                if (lexi(i)) then
-                    afaire = .true.
-                else
-                    afaire = .false.
-                end if
-            end if
-            if (afaire) then
-                if ((lr8(i) .ge. x) .and. (lr8(i) .le. xs)) then
-                    is = i
-                    xs = lr8(i)
-                end if
-                if ((lr8(i) .le. x) .and. (lr8(i) .ge. xp)) then
-                    ip = i
-                    xp = lr8(i)
-                end if
-            end if
-        end do
-        i1 = ip
-        i2 = is
-        goto 999
     end if
 !
 !
-!     -- 2EME CAS X EST A DROITE DE L'INTERVALLE DE LA LISTE:
-    if (x .gt. xmax) then
-        iposit = 1
-        ip = imax
-        xp = xmax
-        ipp = imin
-        xpp = xmin
-        do i = 1, nr8
-            if (tous) then
-                afaire = .true.
-            else
-                if (lexi(i)) then
-                    afaire = .true.
-                else
-                    afaire = .false.
-                end if
-            end if
-            if (afaire) then
-                if (i .eq. imax) goto 31
-                if (lr8(i) .ge. xpp) then
-                    ipp = i
-                    xpp = lr8(i)
-                end if
-            end if
-31          continue
-        end do
-        i1 = ipp
-        i2 = ip
-        goto 999
-    end if
-!
-!     -- 3EME CAS X EST A GAUCHE DE L'INTERVALLE DE LA LISTE:
-    if (x .lt. xmin) then
-        iposit = -1
-        is = imin
-        xs = xmin
-        iss = imax
-        xss = xmax
-        do i = 1, nr8
-            if (tous) then
-                afaire = .true.
-            else
-                if (lexi(i)) then
-                    afaire = .true.
-                else
-                    afaire = .false.
-                end if
-            end if
-            if (afaire) then
-                if (i .eq. imin) goto 41
-                if (lr8(i) .le. xss) then
-                    iss = i
-                    xss = lr8(i)
-                end if
-            end if
-41          continue
-        end do
-        i1 = is
-        i2 = iss
-        goto 999
-    end if
-!
-!
-!
-999 continue
+    AS_DEALLOCATE(vl=v_active)
+
 end subroutine
