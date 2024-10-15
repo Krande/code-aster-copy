@@ -46,7 +46,8 @@ class Options(IntFlag):
     - *SlaveMode*: Execution embedded by another program (do not abort, do not
       exit in case of time limit...).
     - *LastStep*: Last step of a study, database won't be reloaded from the
-      temporary directory
+      temporary directory.
+    - *SaveBase*: The database will be copied at the end of the calculation.
     - *HPCMode*: High Performance Computing mode, parallel computing using
       domain decomposition.
     """
@@ -64,6 +65,7 @@ class Options(IntFlag):
     TestMode = auto()
     SlaveMode = auto()
     LastStep = auto()
+    SaveBase = auto()
     HPCMode = auto()
     WarningAsError = auto()
     # do not forget to document each new option

@@ -435,6 +435,8 @@ class TestExport(unittest.TestCase):
         param.set(False)
         self.assertFalse(export.get("hide-command"))
         self.assertEqual(repr(export), "\n")
+        savdb = bool([i for i in export.resultfiles if i.filetype == "base"])
+        self.assertFalse(savdb)
 
     def test_split(self):
         text = "\n".join(
@@ -444,6 +446,7 @@ class TestExport(unittest.TestCase):
                 "F mail filename.mail D 20",
                 "P time_limit 3600.0",
                 "A args --tpmax 3600",
+                "R base path-to-base R 0",
             ]
         )
         export = Export(from_string=text)
@@ -467,6 +470,8 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len(obj.commfiles), 1)
             comm.append(obj.commfiles[0])
         self.assertSequenceEqual([i.path for i in comm], ["filename.comm", "filename.com1"])
+        savdb = bool([i for i in export.resultfiles if i.filetype == "base"])
+        self.assertTrue(savdb)
 
 
 class TestCommandFiles(unittest.TestCase):

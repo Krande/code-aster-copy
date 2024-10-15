@@ -435,6 +435,14 @@ class ExecutionParameter(metaclass=Singleton):
             help="to be used for the last step of a study",
         )
         parser.add_argument(
+            "--save_db",
+            dest="SaveBase",
+            action="store_const",
+            const=1,
+            default=0,
+            help="to be enabled if the database will be saved",
+        )
+        parser.add_argument(
             "--use_legacy_mode",
             dest="UseLegacyMode",
             action="store",

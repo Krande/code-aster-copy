@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,14 +48,14 @@ subroutine op9999(options)
 !   but OnlyProc0 must be set everywhere with the same value.
 !   Options:
     integer, parameter :: SaveBase = 1, Repack = 4, OnlyProc0 = 8
-!   InfoResu = 2 not used here
+!   InfoResu = 2, Set = 16 not used here
 !   - SaveBase:
 !       If enabled, the objects must be saved properly.
-!       Otherwise, the objects can be wiped out (== automatically called).
+!       Otherwise, the objects can be wiped out (== automatically called at exit).
 !   - Repack:
 !       Enabled if RETASSAGE="OUI"
 !   - OnlyProc0:
-!       The objects are only saved on rank #0.
+!       The objects are only saved on rank #0 if SaveBase.
 !   Same values are in 'fin.py'
 
     character(len=512) :: path
