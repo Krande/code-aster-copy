@@ -42,11 +42,11 @@ class MEDProj:
         model (*Model*): code_aster model (entire).
     """
 
-    def __init__(self, mesh_interf, ids, meshDimRelToMaxExt, model_intef, model):
+    def __init__(self, mesh_interf, ids, meshDimRelToMaxExt, model_interf, model):
         self.mesh_interf = mesh_interf
         self.ids = ids
         self.meshDimRelToMaxExt = meshDimRelToMaxExt
-        self.model_intef = model_intef
+        self.model_interf = model_interf
         self.model = model
 
     @staticmethod
@@ -79,39 +79,28 @@ class MEDProj:
         tmpfile = "fort.77"
         MEDC.WriteUMesh(tmpfile, mc_mesh, True)
         MEDC.WriteFieldUsingAlreadyWrittenMesh(tmpfile, mc_displ)
-        ca_displ = LIRE_CHAMP(
+        depl = LIRE_CHAMP(
             UNITE=77,
-            MAILLAGE=self.model_intef.getMesh(),
+            MAILLAGE=self.model_interf.getMesh(),
             PROL_ZERO="OUI",
             NOM_MED=mc_displ.getName(),
             TYPE_CHAM="NOEU_DEPL_R",
             NOM_CMP_IDEM="OUI",
             INST=time,
-            INFO=2,
+            INFO=1,
         )
         os.remove(tmpfile)
 
-        result = CREA_RESU(
-            TYPE_RESU="EVOL_ELAS",
-            OPERATION="AFFE",
-            AFFE=_F(CHAM_GD=ca_displ, NOM_CHAM="DEPL", MODELE=self.model_intef, INST=time),
-        )
-
         # projection on the entire model
-        proj_result = PROJ_CHAMP(
+        proj_depl = PROJ_CHAMP(
             METHODE="COLLOCATION",
-            RESULTAT=result,
-            MODELE_1=self.model_intef,
+            CHAM_GD=depl,
+            MODELE_1=self.model_interf,
             MODELE_2=self.model,
-            # VIS_A_VIS=_F(
-            #     GROUP_MA_1="interf",
-            #     GROUP_MA_2="interf",
-            # ),
-            TOUT_ORDRE="OUI",
             PROL_ZERO="OUI",
         )
 
-        return proj_result.getField("DEPL", value=time, para="INST")
+        return proj_depl
 
     def exportMEDCDisplacement(self, displ, field_name):
         """Create a MEDCoupling field of displacement reduced on the interface mesh.
@@ -187,36 +176,26 @@ class MEDProj:
         MEDC.WriteUMesh(tmpfile, mc_mesh, True)
         MEDC.WriteFieldUsingAlreadyWrittenMesh(tmpfile, mc_temp)
         temp = LIRE_CHAMP(
-            MAILLAGE=self.model_intef.getMesh(),
+            MAILLAGE=self.model_interf.getMesh(),
             PROL_ZERO="OUI",
             UNITE=78,
             NOM_MED=mc_temp.getName(),
             TYPE_CHAM="NOEU_TEMP_R",
             NOM_CMP_IDEM="OUI",
             INST=time,
-            INFO=2,
+            INFO=1,
         )
         os.remove(tmpfile)
 
-        result = CREA_RESU(
-            TYPE_RESU="EVOL_THER",
-            OPERATION="AFFE",
-            AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=temp, MODELE=self.model_intef, INST=time),
-        )
-        # projection on the entire model
-        proj_result = PROJ_CHAMP(
+        # projection on the whole model
+        proj_temp = PROJ_CHAMP(
             METHODE="COLLOCATION",
-            RESULTAT=result,
-            MODELE_1=self.model_intef,
+            CHAM_GD=temp,
+            MODELE_1=self.model_interf,
             MODELE_2=self.model,
-            # VIS_A_VIS=_F(
-            #     GROUP_MA_1="interf",
-            #     GROUP_MA_2="interf",
-            # ),
-            TOUT_ORDRE="OUI",
             PROL_ZERO="OUI",
         )
-        return proj_result.getField("TEMP", value=time, para="INST")
+        return proj_temp
 
     def importMEDCFluidForces(self, mc_fluidf, field_name, time=0.0):
         """Convert a MEDCoupling pressure field as a code_aster field.
@@ -234,8 +213,8 @@ class MEDProj:
         MEDC.WriteUMesh(tmpfile, mc_mesh, True)
         MEDC.WriteFieldUsingAlreadyWrittenMesh(tmpfile, mc_fluidf)
         forces = LIRE_CHAMP(
-            MAILLAGE=self.model_intef.getMesh(),
-            MODELE=self.model_intef,
+            MAILLAGE=self.model_interf.getMesh(),
+            MODELE=self.model_interf,
             UNITE=78,
             NOM_MED=field_name,
             TYPE_CHAM="ELEM_FORC_R",
@@ -248,13 +227,13 @@ class MEDProj:
         forces = CREA_RESU(
             TYPE_RESU="EVOL_CHAR",
             OPERATION="AFFE",
-            AFFE=_F(NOM_CHAM="FORC_NODA", CHAM_GD=forces, MODELE=self.model_intef, INST=time),
+            AFFE=_F(NOM_CHAM="FORC_NODA", CHAM_GD=forces, MODELE=self.model_interf, INST=time),
         )
         # projection on the entire model
         proj_forces = PROJ_CHAMP(
             METHODE="COLLOCATION",
             RESULTAT=forces,
-            MODELE_1=self.model_intef,
+            MODELE_1=self.model_interf,
             MODELE_2=self.model,
             # VIS_A_VIS=_F(
             #     GROUP_MA_1="interf",

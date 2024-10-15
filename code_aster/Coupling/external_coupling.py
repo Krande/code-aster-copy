@@ -49,7 +49,7 @@ class ExternalCoupling:
         ctxt (dict): Execution context where code_aster objects are kept between
             the different stages of the simulation.
         tag (int): tag used for direct MPI communication (`CS_CALCIUM_MPI_TAG`
-            in code_saturne).
+           ).
         mesh (*medcoupling.MEDCouplingUMesh*): Mesh of the interface.
         fields_in (list): List of exchanged fields (field name, number of
             components, components names).
@@ -139,27 +139,27 @@ class ExternalCoupling:
         # Sync the parallel DEC
         # self.medcpl.sync_dec()
 
-    def recv_parameter(self, iteration, cs_name, typ):
+    def recv_parameter(self, iteration, name, typ):
         """Receive a parameter (equivalent to `cs_calcium_write_xxx`).
 
         Arguments:
             iteration (int): Iteration number.
-            cs_name (str): Expected parameter name in code_saturne.
+            name (str): Expected parameter name.
             typ (MPI.INT|MPI.DOUBLE): Type of MPI data.
 
-        Results:
+        Returns:
             int|double: Received value of the parameter.
         """
         args = dict(source=self._other_root, tag=self.tag)
         data = None
         if self.comm.rank == 0:
             self.log(
-                f"waiting for parameter {cs_name!r} from proc #{self._other_root}...", verbosity=2
+                f"waiting for parameter {name!r} from proc #{self._other_root}...", verbosity=2
             )
             data = bytearray(128)
             self.ple.base_comm.Recv((data, 128, MPI.CHAR), **args)
             varname = data.decode("utf-8").strip("\x00")
-            assert varname == cs_name, f"expecting {cs_name!r}, get {varname!r}"
+            assert varname == name, f"expecting {name!r}, get {varname!r}"
 
             meta = numpy.zeros((3,), dtype=numpy.int32)
             self.ple.base_comm.Recv((meta, 3, MPI.INT), **args)
@@ -171,25 +171,27 @@ class ExternalCoupling:
             value = numpy.zeros((1,), dtype=ctype)
             self.ple.base_comm.Recv((value, 1, typ), **args)
             data = [varname, value[0]]
-            self.log(f"results value is {data}", verbosity=2)
+            self.log(f"Returns value is {data}", verbosity=2)
 
-        # share the results, used as inputs by others
+        # share the Returns, used as inputs by others
         data = self.comm.bcast(data, root=0)
-        self.log(f"receive parameter {cs_name!r} (iteration {iteration}): {data[1]}")
+        self.log(f"receive parameter {name!r} (iteration {iteration}): {data[1]}")
         return data[1]
 
-    def send_parameter(self, iteration, cs_name, value, typ):
+    def send_parameter(self, iteration, name, value, typ):
         """Send a parameter (equivalent to `cs_calcium_read_xxx`).
 
         Arguments:
             iteration (int): Iteration number.
-            cs_name (str): Parameter name in code_saturne.
+            name (str): Parameter name.
             value (int|double): Value of the parameter.
+            typ (MPI.INT|MPI.DOUBLE): Type of MPI data.
         """
-        self.log(f"send parameter {cs_name!r} (iteration {iteration}): {value}")
+
+        self.log(f"send parameter {name!r} (iteration {iteration}): {value}")
         args = dict(dest=self._other_root, tag=self.tag)
         if self.comm.rank == 0:
-            bname = (cs_name + "\x00" * (128 - len(cs_name))).encode("utf-8")
+            bname = (name + "\x00" * (128 - len(name))).encode("utf-8")
             self.ple.base_comm.Send((bname, 128, MPI.CHAR), **args)
 
             meta = numpy.array([iteration, 1, typ.size], dtype=numpy.int32)
@@ -200,6 +202,28 @@ class ExternalCoupling:
             self.ple.base_comm.Send((value, 1, typ), **args)
 
         self.comm.Barrier()
+
+    def bcast_parameter(self, root, iteration, name, value, typ):
+        """Broadcast a parameter between root and receiver.
+
+        Arguments:
+            root (bool): root or not ?
+            iteration (int): Iteration number.
+            name (str): Parameter name.
+            value (int|double): Value of the parameter.
+            typ (MPI.INT|MPI.DOUBLE): Type of MPI data.
+
+        Returns:
+            int|double: Broadcasted value of the parameter.
+        """
+
+        val = value
+        if root:
+            self.send_parameter(iteration, name, val, typ)
+        else:
+            val = self.recv_parameter(iteration, name, typ)
+
+        return val
 
     def recv_input_data(self):
         """Receive the inputs from the other code.
@@ -257,19 +281,25 @@ class ExternalCoupling:
         """Finalize the coupling."""
         self.ple.finalize()
 
-    def testing(self, exec_iteration):
+    def testing(self, exec_iteration, data=None):
         """Execute one iteration without coupling.
-            To debug purpose.
 
         Arguments:
             exec_iteration (func): Function that execute one iteration.
+            data (dict[*ParaFIELD*]): fields to use in exec_iteration (default: None)
+
+        Returns:
+            dict[*ParaFIELD*]: output fields of exec_iteration function.
         """
 
-        data = {}
-        for name, _, _ in self.fields_in:
-            data[name] = None
+        if data is None:
+            data = {}
+            for name, _, _ in self.fields_in:
+                data[name] = None
 
-        results = exec_iteration(0, 0.0, 1.0, data)
+        Returns = exec_iteration(0, 0.0, 1.0, data)
+
+        return Returns
 
     def run(self, exec_iteration):
         """Execute the coupling loop.
@@ -283,45 +313,41 @@ class ExternalCoupling:
         current_time = self.params.init_time
         delta_t = self.params.delta_t
         completed = False
+        output_data = None
         istep = 0
         while not completed and not exit_coupling:
             istep += 1
 
-            self.medcpl.sync_dec()
-
-            # ask for timestep (propose the last used)
-            if self.starter:
-                self.send_parameter(istep, "DTAST", delta_t, MPI.DOUBLE)
-                delta_t = self.recv_parameter(istep, "DTCALC", MPI.DOUBLE)
-            else:
-                delta_t = self.recv_parameter(istep, "DTAST", MPI.DOUBLE)
-                self.send_parameter(istep, "DTCALC", delta_t, MPI.DOUBLE)
+            # ask for timestep
+            delta_t = self.bcast_parameter(self.starter, istep, "DTCALC", delta_t, MPI.DOUBLE)
 
             current_time += delta_t
             self.log("coupling iteration #{0:d}, time: {1:f}".format(istep, current_time))
 
-            # recv results from the other code
+            # recv data from the other code
             if self.starter and istep == 1:
-                data = {}
+                input_data = {}
                 for name, _, _ in self.fields_in:
-                    data[name] = None
+                    input_data[name] = None
             else:
-                data = self.recv_input_data()
+                input_data = self.recv_input_data()
 
-            results = exec_iteration(istep, current_time, delta_t, data)
+            output_data = exec_iteration(istep, current_time, delta_t, input_data)
 
             # get convergence indicator
-            if self.starter:
-                self.send_parameter(istep, "ICVAST", 1, MPI.INT)
-            else:
-                icvast = self.recv_parameter(istep, "ICVAST", MPI.INT)
-                assert icvast == 1
-
-            # send results to other code
-            self.send_output_data(results)
+            icvast = self.bcast_parameter(self.starter, istep, "ICVAST", 1, MPI.INT)
+            assert icvast == 1, f"icvast = {icvast}"
 
             completed = current_time >= self.params.final_time
-            exit_coupling = self.sync(end_coupling=completed)
+
+            # send data to other code
+            if self.starter:
+                self.send_output_data(output_data)
+                exit_coupling = self.sync(end_coupling=completed)
+            else:
+                exit_coupling = self.sync(end_coupling=completed)
+                self.send_output_data(output_data)
+
             self.log("end of iteration status: {}".format(exit_coupling))
 
         self.log(
