@@ -123,6 +123,7 @@ class RunAster:
         if not export.has_param("nbsteps"):
             export.set("nbsteps", len(self.export.commfiles))
         self._last = export.get("step") + 1 == export.get("nbsteps")
+        self._savdb = bool([i for i in export.resultfiles if i.filetype == "base"])
 
     def execute(self, wrkdir):
         """Execution in a working directory.
@@ -274,6 +275,8 @@ class RunAster:
             cmd.append("--test")
         if self._last:
             cmd.append("--last")
+        if self._savdb:
+            cmd.append("--save_db")
         # copy datafiles only the first time because all share the same workdir
         if idx == 0:
             for obj in self.export.datafiles:
