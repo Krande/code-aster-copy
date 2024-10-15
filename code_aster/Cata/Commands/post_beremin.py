@@ -60,6 +60,25 @@ POST_BEREMIN = MACRO(
         into=("SIGM_ELGA", "SIGM_ELMOY"),
         fr=tr("Option de moyennation des contraintes"),
     ),
+    LIST_NUME_VARI=SIMP(
+        statut="o",
+        typ="I",
+        fr=tr("Numéros des variables EPSPEQ et INDIPLAS"),
+        val_min=1,
+        min=2,
+        max=2,
+    ),
+    b_gdeflog=BLOC(
+        condition="""equal_to("DEFORMATION", 'GDEF_LOG')""",
+        LIST_NUME_SIEF=SIMP(
+            statut="o",
+            typ="I",
+            fr=tr("Numéros des contraintes de Kirchhoff "),
+            val_min=1,
+            min=4,
+            max=6,
+        ),
+    ),
     SIGM_MAXI=SIMP(
         statut="f", typ=CO, fr=tr("Maximum temporel de la contrainte principale majeure")
     ),

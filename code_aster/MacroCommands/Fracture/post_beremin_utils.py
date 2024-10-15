@@ -90,40 +90,19 @@ def get_resu_from_deftype(resusd, defopb):
               strictly greater than 0
 
     """
-    rvga = make_rvga(resusd)
-
-    med_filename_in = tempfile.NamedTemporaryFile(dir=".", suffix=".med").name
-
-    unite = DEFI_FICHIER(FICHIER=med_filename_in, ACTION="ASSOCIER", TYPE="LIBRE", ACCES="NEW")
-
-    IMPR_RESU(UNITE=unite, PROC0="NON", RESU=_F(RESULTAT=rvga, NOM_CHAM="VARI_ELGA"))
-
-    DEFI_FICHIER(ACTION="LIBERER", UNITE=unite)
+    rvga = NonLinearResult()
+    rvga.allocate(resusd.getNumberOfIndexes())
+    rvga.userName = "rvga____"
 
     mclinst = []
     l_epspmax = []
-    mcchamp = mc.MEDFileData(med_filename_in).getFields()["{}VARI_ELGA_NOMME".format(rvga.userName)]
-    for mctime in mcchamp.getTimeSteps():
-        epspmax = (
-            mcchamp[(mctime[0], mctime[1])]
-            .getFieldAtLevel(mc.ON_GAUSS_PT, 0)
-            .getArray()[:, 0]
-            .getMaxValue()[0]
-        )
-        if epspmax > 0:
-            mclinst.append(mctime)
-            l_epspmax.append(epspmax)
+    for nume_inst in resusd.getIndexes():
+        rvga.setField(resusd.getField("VARI_ELGA", nume_inst), "VARI_ELGA", nume_inst)
+        rvga.setMaterialField(resusd.getMaterialField(nume_inst), nume_inst)
+        rvga.setField(resusd.getField("COMPORTEMENT", nume_inst), "COMPORTEMENT", nume_inst)
+        rvga.setTime(resusd.getTime(nume_inst), nume_inst)
 
     if len(mclinst) > 0:
-        for field in mc.MEDFileFields(med_filename_in, False).getFieldsNames():
-            if field[8:] == "VARI_ELGA_NOMME":
-                numv1v2 = [
-                    1
-                    + [
-                        elt[0] for elt in mc.GetComponentsNamesOfField(med_filename_in, field)
-                    ].index(comp)
-                    for comp in ("EPSPEQ", "INDIPLAS")
-                ]
 
         if defopb == "GDEF_LOG":
             cmd_result = (
@@ -134,34 +113,11 @@ def get_resu_from_deftype(resusd, defopb):
             )
 
         else:
-            cmd_result = (resusd, numv1v2, mclinst, l_epspmax)
+            cmd_result = (resusd, mclinst, l_epspmax)
     else:
-        cmd_result = (None, None, mclinst, l_epspmax)
+        cmd_result = (None, mclinst, l_epspmax)
 
     return cmd_result
-
-
-def make_rvga(resusd):
-    """
-    Result to consider to compute Beremin stress
-
-    Arguments:
-        resusd (NonLinearResult): Resultat aster concept
-
-    Returns:
-        NonLinearResult: Restriction of resusd to VARI_ELGA
-    """
-    rvga = NonLinearResult()
-    rvga.allocate(resusd.getNumberOfIndexes())
-    rvga.userName = "rvga____"
-
-    for nume_inst in resusd.getIndexes():
-        rvga.setField(resusd.getField("VARI_ELGA", nume_inst), "VARI_ELGA", nume_inst)
-        rvga.setMaterialField(resusd.getMaterialField(nume_inst), nume_inst)
-        rvga.setField(resusd.getField("COMPORTEMENT", nume_inst), "COMPORTEMENT", nume_inst)
-        rvga.setTime(resusd.getTime(nume_inst), nume_inst)
-
-    return rvga
 
 
 def get_resu_gdef_log(resusd, med_filename_in, rvga):
