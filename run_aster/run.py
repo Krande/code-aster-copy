@@ -238,7 +238,7 @@ class RunAster:
                 for vola in glob("vola.*"):
                     os.remove(vola)
                 logger.info("saving result databases to 'BASE_PREC'...")
-                for base in glob("glob.*") + glob("bhdf.*") + glob("pick.*"):
+                for base in glob("glob.*") + glob("pick.*"):
                     copy(base, "BASE_PREC")
             msg = f"execution ended (command file #{idx + 1}): {status.diag}"
             logger.info(msg)
@@ -555,7 +555,7 @@ def copy_datafiles(files, verbose=True):
                 dest += ".gz"
         # for directories
         else:
-            if obj.filetype in ("base", "bhdf"):
+            if obj.filetype == "base":
                 dest = osp.basename(obj.path)
             elif obj.filetype == "repe":
                 dest = "REPE_IN"
@@ -565,7 +565,7 @@ def copy_datafiles(files, verbose=True):
             if obj.compr:
                 dest = uncompress(dest)
             # move the bases in main directory
-            if obj.filetype in ("base", "bhdf"):
+            if obj.filetype == "base":
                 for fname in glob(osp.join(dest, "*")):
                     os.rename(fname, osp.basename(fname))
             # force the file to be writable
@@ -591,11 +591,8 @@ def copy_resultfiles(files, copybase, test=False):
             lsrc.append(osp.basename(obj.path))
         # for directories
         else:
-            if copybase and obj.filetype in ("base", "bhdf"):
-                lbase = glob("bhdf.*")
-                if not lbase or obj.filetype == "base":
-                    lbase = glob("glob.*")
-                lsrc.extend(lbase)
+            if copybase and obj.filetype == "base":
+                lsrc.extend(glob("glob.*"))
                 lsrc.extend(glob("pick.*"))
             elif obj.filetype == "repe":
                 lsrc.extend(glob(osp.join("REPE_OUT", "*")))
