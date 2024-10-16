@@ -81,6 +81,7 @@ class FinalizeOptions(IntFlag):
     InfoResu = auto()
     Repack = auto()
     OnlyProc0 = auto()
+    InfoBase = auto()
     Set = auto()
 
 
@@ -286,6 +287,8 @@ def saveObjectsFromContext(context, delete=True, options=0):
     gc.collect()
     if not options:
         options = FinalizeOptions.SaveBase
+    if options & FinalizeOptions.SaveBase:
+        options |= FinalizeOptions.InfoBase
     rank = MPI.ASTER_COMM_WORLD.Get_rank()
     if options & FinalizeOptions.OnlyProc0 and rank != 0:
         logger.info("Objects not saved on processor #%d", rank)

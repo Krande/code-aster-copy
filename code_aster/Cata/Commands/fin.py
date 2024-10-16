@@ -57,6 +57,15 @@ FIN = FIN_PROC(
         defaut="NON",
         into=("OUI", "NON"),
     ),
+    INFO_BASE=SIMP(
+        fr=tr(
+            "impression des informations sur les objets existants la base globale "
+            "même si celui-ci n'est pas sauvegardée"
+        ),
+        statut="f",
+        typ="TXM",
+        into=("OUI", "NON"),
+    ),
     INFO_RESU=SIMP(
         fr=tr("impression des informations sur les structures de données résultats"),
         statut="f",

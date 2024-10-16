@@ -296,4 +296,4 @@ test.assertEqual(sf_complex_mask.all(), True)
 
 #
 test.printSummary()
-CA.close()
+CA.close(INFO_BASE="NON")

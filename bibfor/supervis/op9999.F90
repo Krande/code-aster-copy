@@ -47,8 +47,11 @@ subroutine op9999(options)
 !   Warning: 'options' has not necessarly the same value on all processes
 !   but OnlyProc0 must be set everywhere with the same value.
 !   Options:
-    integer, parameter :: SaveBase = 1, Repack = 4, OnlyProc0 = 8
-!   InfoResu = 2, Set = 16 not used here
+    integer, parameter :: SaveBase = 1, Repack = 4, OnlyProc0 = 8, InfoBase = 16
+!   InfoResu = 2, Set = 32 not used here
+!   - InfoBase:
+!       If enabled, list the objects existing in the database
+!       (automatically enabled if SaveBase).
 !   - SaveBase:
 !       If enabled, the objects must be saved properly.
 !       Otherwise, the objects can be wiped out (== automatically called at exit).
@@ -61,10 +64,11 @@ subroutine op9999(options)
     character(len=512) :: path
     integer :: iunres, iunmes
     integer :: idx, iret, nbext
-    aster_logical :: close_base
+    aster_logical :: info_base, close_base
 
     call jemarq()
 
+    info_base = iand(options, InfoBase) .ne. 0
     close_base = iand(options, SaveBase) .ne. 0
 
     call ststat(ST_OK)
@@ -90,14 +94,16 @@ subroutine op9999(options)
 !   Check error messages of type 'E' not followed by 'F' message
     call chkmsg(1, iret)
 
-    if (close_base) then
+    if (info_base) then
 !       Remove temporay objects from macro-commands
         call jedetc('G', '.', 1)
 
 !       Print the size of objects existing on the GLOBALE database
         iunmes = iunifi('MESSAGE')
         call uimpba('G', iunmes)
+    end if
 
+    if (close_base) then
 !       Repacking of the GLOBALE database
         if (iand(options, Repack) .ne. 0) then
             call jetass('G')
