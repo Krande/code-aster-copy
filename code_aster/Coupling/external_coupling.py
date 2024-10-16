@@ -21,19 +21,12 @@
 Definition of objects for coupled simulations with code_aster.
 """
 
-import os
-
-import numpy
-from ple.pyple_coupler import pyple_coupler
-
 from ..Utilities.MedUtils.med_coupler import MEDCoupler
 from ..Utilities.logger import logger
 
 from .parameters import SchemeParams
 from .mpi_coupling import MPICoupling
-
-
-LOGDIR = os.environ.get("CA_COUPLING_LOGDIR", "/tmp")
+from .ple_utils import PLE
 
 
 class ExternalCoupling:
@@ -61,6 +54,7 @@ class ExternalCoupling:
 
     def __init__(self, app="code_aster", starter=False, debug=False):
         self.whoami = app
+        self.other_app = None
         self.starter = starter
         self.debug = debug
         self.ple = None
@@ -177,20 +171,18 @@ class ExternalCoupling:
 
                 self.params.update({"time_list": times})
 
-    def setup(self, with_app, mesh_interf, input_fields, output_fields, **params):
-        """Initialize the coupling.
+    def init_coupling(self, with_app):
+        """Initialize the coupling with an other application.
 
         Arguments:
             with_app (str): Name of the other application to be coupled with.
-            mesh_interf (MEDFileUMesh): Medcoupling mesh of the interface.
-            input_fields (list): List of exchanged fields as input.
-            output_fields (list): List of exchanged fields as output.
-            params (dict): Parameters of the coupling scheme.
         """
         verbosity = 2 if self.debug else 1
         output = "all" if self.debug else "master"
-        self.ple = pyple_coupler(verbosity=verbosity, logdir=LOGDIR, output_mode=output)
+        self.ple = PLE(verbosity=verbosity, logdir="/tmp", output_mode=output)
         self.ple.init_coupling(app_name=self.whoami, app_type="code_aster")
+
+        self.other_app = with_app
 
         myranks = self.ple.get_app_ranks(self.whoami)
         self.log(f"allocated ranks for {self.whoami!r}: {myranks}", verbosity=verbosity)
@@ -203,11 +195,22 @@ class ExternalCoupling:
             f"{self.whoami!r} coupler created from #{myranks[0]}, "
             f"{with_app!r} root proc is #{1}"
         )
+
+    def setup(self, mesh_interf, input_fields, output_fields, **params):
+        """Initialize the coupling.
+
+        Arguments:
+            mesh_interf (MEDFileUMesh): Medcoupling mesh of the interface.
+            input_fields (list): List of exchanged fields as input.
+            output_fields (list): List of exchanged fields as output.
+            params (dict): Parameters of the coupling scheme.
+        """
+
         self.mesh = mesh_interf
         self.fields_in = input_fields
         self.fields_out = output_fields
         self.update(params)
-        self._init_paramedmem(with_app)
+        self._init_paramedmem(self.other_app)
 
     def finalize(self):
         """Finalize the coupling."""
