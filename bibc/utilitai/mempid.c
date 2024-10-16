@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -42,7 +42,7 @@
 */
 ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
     static char filename[80];
-    static char sbuf[1024];
+    static char sbuf[4096];
     char *S;
     int fd, num_read;
     ASTERINTEGER iret;
