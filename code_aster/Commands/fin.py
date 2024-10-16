@@ -73,6 +73,8 @@ class Closer(ExecuteCommand):
                 self._options |= FinalizeOptions.OnlyProc0
             if option & Options.SaveBase:
                 self._options |= FinalizeOptions.SaveBase
+        if keywords.get("INFO_BASE") == "OUI":
+            self._options |= FinalizeOptions.InfoBase
         if keywords.get("INFO_RESU") == "OUI":
             self._options |= FinalizeOptions.InfoResu
         if keywords.get("RETASSAGE") == "OUI":
