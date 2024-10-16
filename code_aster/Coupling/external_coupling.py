@@ -158,18 +158,20 @@ class ExternalCoupling:
         )
 
         if self.starter:
-            times = self.params.stepper._times
-            if times:
+            if self.params.stepper:
+                times = self.params.stepper._times
                 nb_step = len(times)
             else:
                 nb_step = 0
             self.MPI.SUB_COMM.send(0, "NBPDTM", nb_step, self.MPI.INT)
-            for i in range(nb_step):
-                self.MPI.SUB_COMM.send(0, "STEP", times[i], self.MPI.DOUBLE)
+            if nb_step > 0:
+                self.MPI.SUB_COMM.send(0, "STEP", self.params.init_time, self.MPI.DOUBLE)
+                for i in range(nb_step):
+                    self.MPI.SUB_COMM.send(0, "STEP", times[i], self.MPI.DOUBLE)
         else:
             nb_step = self.MPI.SUB_COMM.recv(0, "NBPDTM", self.MPI.INT)
             if nb_step > 0:
-                times = []
+                times = [self.MPI.SUB_COMM.recv(0, "STEP", self.MPI.DOUBLE)]
                 for _ in range(nb_step):
                     times.append(self.MPI.SUB_COMM.recv(0, "STEP", self.MPI.DOUBLE))
 
@@ -251,10 +253,11 @@ class ExternalCoupling:
 
         while not stepper.isFinished():
             istep += 1
+            current_time = stepper.getCurrent()
+            delta_time = stepper.getIncrement()
+            self.log("coupling step #{0:d}, time: {1:f}".format(istep, current_time))
 
             for i_iter in range(self.params.nb_iter):
-                current_time = stepper.getCurrent()
-                delta_time = stepper.getIncrement()
 
                 self.log("coupling iteration #{0:d}, time: {1:f}".format(i_iter, current_time))
 
@@ -294,6 +297,7 @@ class ExternalCoupling:
 
             self.log("end of time step with status: {}".format(exit_coupling))
 
+        # only to avoid deadlock
         if self.starter:
             input_data = self.recv_input_data()
 

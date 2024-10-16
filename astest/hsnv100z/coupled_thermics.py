@@ -114,7 +114,7 @@ L_INST = DEFI_LIST_REEL(
 ################################################################################
 
 
-cpl.ctxt["timedone"] = [cpl.params.init_time]
+cpl.ctxt["timedone"] = [0.0]
 
 
 def exec_iteration(i_iter, current_time, delta_t, data, ctxt):

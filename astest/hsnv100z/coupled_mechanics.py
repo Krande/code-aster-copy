@@ -112,7 +112,7 @@ CHMECA = AFFE_CHAR_CINE(
 ################################################################################
 
 
-cpl.ctxt["timedone"] = [cpl.params.init_time]
+cpl.ctxt["timedone"] = [0.0]
 
 
 def exec_iteration(i_iter, current_time, delta_t, data, ctxt):
@@ -183,9 +183,7 @@ input_data = cpl.recv_input_data()
 TEMPE = medp.importMEDCTemperature(input_data["TEMP"])
 
 cpl.ctxt["evol_ther"] = CREA_RESU(
-    TYPE_RESU="EVOL_THER",
-    OPERATION="AFFE",
-    AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=TEMPE, INST=cpl.params.init_time),
+    TYPE_RESU="EVOL_THER", OPERATION="AFFE", AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=TEMPE, INST=0.0)
 )
 
 ################################################################################

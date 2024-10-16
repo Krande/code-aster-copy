@@ -34,7 +34,7 @@ class SchemeParams:
     def __init__(self):
         self.epsilon = 1.0e-6
         self.nb_iter = 1
-        self.stepper = TimeStepper([0.0])
+        self.stepper = None
 
     @staticmethod
     def _get_value(args, param, default=None):
@@ -54,7 +54,7 @@ class SchemeParams:
         self.epsilon = self._get_value(kwargs, "epsilon", self.epsilon)
         self.nb_iter = self._get_value(kwargs, "nb_iter", self.nb_iter)
 
-        init_time = self._get_value(kwargs, "init_time", 0.0)
+        init_time = self._get_value(kwargs, "init_time")
         nb_step = self._get_value(kwargs, "nb_step")
         final_time = self._get_value(kwargs, "final_time")
         delta_t = self._get_value(kwargs, "delta_t")
@@ -72,7 +72,7 @@ class SchemeParams:
 
                 time_list = np.linspace(init_time, final_time, delta_t)
 
-            self.stepper = TimeStepper(time_list)
+            self.stepper = TimeStepper(time_list, initial=time_list[0])
 
         if final_time:
             self.final_time = final_time
