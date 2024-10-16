@@ -44,7 +44,7 @@
 */
 ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
     static char filename[80];
-    static char sbuf[1024];
+    static char sbuf[4096];
     char *S;
     int fd, num_read;
     ASTERINTEGER iret;
