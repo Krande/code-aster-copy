@@ -55,7 +55,7 @@ cpl.setup(
 # setup the simulation
 ################################################################################
 # send signal 6 (abort) to produce a traceback
-CA.init(comm=cpl.comm, debug=False, ERREUR=_F(ERREUR_F="ABORT"))
+CA.init("--test", comm=cpl.comm, debug=False, ERREUR=_F(ERREUR_F="ABORT"))
 
 
 MAIL = CA.Mesh()
@@ -114,15 +114,10 @@ L_INST = DEFI_LIST_REEL(
 ################################################################################
 
 
-class Context:
-    """Context to be saved between iterations"""
+cpl.ctxt["timedone"] = [cpl.params.init_time]
 
 
-ctxt = Context()
-ctxt.timedone = [cpl.params.init_time]
-
-
-def exec_iteration(i_iter, current_time, delta_t, data):
+def exec_iteration(i_iter, current_time, delta_t, data, ctxt):
     """Execute one iteration.
 
     Arguments:
@@ -130,6 +125,7 @@ def exec_iteration(i_iter, current_time, delta_t, data):
         current_time (float): Current time.
         delta_t (float): Time step.
         data (list[*MEDCouplingField*]): List of input fields, on cells.
+        ctxt (object): context of the computation
 
     Returns:
         list[*MEDCouplingField*]: Output fields, on nodes.
@@ -144,18 +140,18 @@ def exec_iteration(i_iter, current_time, delta_t, data):
         # distorsion of the mesh (very low impact on the thermal calculation!)
         MAIL = MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, DEFORME=_F(OPTION="TRAN", DEPL=warp))
 
-    ctxt.timedone.append(current_time)
-    listr = DEFI_LIST_REEL(VALE=ctxt.timedone)
+    ctxt["timedone"].append(current_time)
+    listr = DEFI_LIST_REEL(VALE=ctxt["timedone"])
 
     opts = {}
     if i_iter > 1:
-        opts["reuse"] = ctxt.result
-        opts["RESULTAT"] = ctxt.result
-        opts["ETAT_INIT"] = _F(EVOL_THER=ctxt.result)
+        opts["reuse"] = ctxt["result"]
+        opts["RESULTAT"] = ctxt["result"]
+        opts["ETAT_INIT"] = _F(EVOL_THER=ctxt["result"])
     else:
         opts["ETAT_INIT"] = _F(CHAM_NO=T0)
 
-    ctxt.result = THER_LINEAIRE(
+    ctxt["result"] = THER_LINEAIRE(
         MODELE=model, CHAM_MATER=CM, EXCIT=_F(CHARGE=CHTHER), INCREMENT=_F(LIST_INST=listr), **opts
     )
 
@@ -163,7 +159,7 @@ def exec_iteration(i_iter, current_time, delta_t, data):
         # distorsion of the mesh (very low impact on the thermal calculation!)
         MAIL = MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, DEFORME=_F(OPTION="TRAN", DEPL=-warp))
 
-    temp = ctxt.result.getField("TEMP", ctxt.result.getLastIndex())
+    temp = ctxt["result"].getField("TEMP", ctxt["result"].getLastIndex())
     mc_temp = medp.exportMEDCTemperature(temp, "TEMP")
     print("[Convert] Temperature field info:")
     print(mc_temp.simpleRepr(), flush=True)
@@ -192,7 +188,7 @@ TEST_RESU(
     RESU=(
         _F(
             INST=90.0,
-            RESULTAT=ctxt.result,
+            RESULTAT=cpl.ctxt["result"],
             NOM_CHAM="TEMP",
             GROUP_NO="N1",
             NOM_CMP="TEMP",

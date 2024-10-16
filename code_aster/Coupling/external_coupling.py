@@ -266,7 +266,9 @@ class ExternalCoupling:
                 else:
                     input_data = self.recv_input_data()
 
-                has_cvg, output_data = exec_iteration(i_iter, current_time, delta_time, input_data)
+                has_cvg, output_data = exec_iteration(
+                    i_iter, current_time, delta_time, input_data, self.ctxt
+                )
 
                 # # get convergence indicator
                 # assert icvast == 1, f"icvast = {icvast}"
@@ -367,7 +369,9 @@ class SaturneCoupling(ExternalCoupling):
                 current_time += delta_t
                 input_data = self.recv_input_data()
 
-                has_cvg, output_data = exec_iteration(i_iter, current_time, delta_time, input_data)
+                has_cvg, output_data = exec_iteration(
+                    i_iter, current_time, delta_time, input_data, self.ctxt
+                )
 
                 # received cvg
                 converged = bool(self.recv(istep, "ICVAST", self.MPI.INT))

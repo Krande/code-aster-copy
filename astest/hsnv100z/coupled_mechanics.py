@@ -55,7 +55,7 @@ cpl.setup(
 # setup the simulation
 ################################################################################
 # send signal 6 (abort) to produce a traceback
-CA.init(comm=cpl.comm, debug=False, ERREUR=_F(ERREUR_F="ABORT"))
+CA.init("--test", comm=cpl.comm, debug=False, ERREUR=_F(ERREUR_F="ABORT"))
 
 
 mesh = CA.Mesh()
@@ -112,15 +112,10 @@ CHMECA = AFFE_CHAR_CINE(
 ################################################################################
 
 
-class Context:
-    """Context to be saved between iterations"""
+cpl.ctxt["timedone"] = [cpl.params.init_time]
 
 
-ctxt = Context()
-ctxt.timedone = [cpl.params.init_time]
-
-
-def exec_iteration(i_iter, current_time, delta_t, data):
+def exec_iteration(i_iter, current_time, delta_t, data, ctxt):
     """Execute one iteration.
 
     Arguments:
@@ -128,6 +123,7 @@ def exec_iteration(i_iter, current_time, delta_t, data):
         current_time (float): Current time.
         delta_t (float): Time step.
         data (dict[*MEDCouplingField*]): dict of input fields, on cells.
+        ctxt (object): context of the computation
 
     Returns:
         dict[*MEDCouplingField*]: Output fields, on nodes.
@@ -139,9 +135,9 @@ def exec_iteration(i_iter, current_time, delta_t, data):
     # MEDC field => .med => code_aster field
     TEMPE = medp.importMEDCTemperature(mc_ther)
 
-    ctxt.evol_ther = CREA_RESU(
-        reuse=ctxt.evol_ther,
-        RESULTAT=ctxt.evol_ther,
+    ctxt["evol_ther"] = CREA_RESU(
+        reuse=ctxt["evol_ther"],
+        RESULTAT=ctxt["evol_ther"],
         TYPE_RESU="EVOL_THER",
         OPERATION="AFFE",
         AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=TEMPE, INST=current_time),
@@ -150,19 +146,19 @@ def exec_iteration(i_iter, current_time, delta_t, data):
     CTM = AFFE_MATERIAU(
         MAILLAGE=mesh,
         AFFE=_F(TOUT="OUI", MATER=MAT),
-        AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=ctxt.evol_ther, VALE_REF=0.0),
+        AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=ctxt["evol_ther"], VALE_REF=0.0),
     )
 
-    ctxt.timedone.append(current_time)
-    listr = DEFI_LIST_REEL(VALE=ctxt.timedone)
+    ctxt["timedone"].append(current_time)
+    listr = DEFI_LIST_REEL(VALE=ctxt["timedone"])
 
     opts = {}
     if i_iter > 1:
-        opts["reuse"] = ctxt.result
-        opts["RESULTAT"] = ctxt.result
-        opts["ETAT_INIT"] = _F(EVOL_NOLI=ctxt.result)
+        opts["reuse"] = ctxt["result"]
+        opts["RESULTAT"] = ctxt["result"]
+        opts["ETAT_INIT"] = _F(EVOL_NOLI=ctxt["result"])
 
-    ctxt.result = STAT_NON_LINE(
+    ctxt["result"] = STAT_NON_LINE(
         MODELE=model,
         CHAM_MATER=CTM,
         COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
@@ -171,7 +167,7 @@ def exec_iteration(i_iter, current_time, delta_t, data):
         **opts,
     )
 
-    displ = ctxt.result.getField("DEPL", ctxt.result.getLastIndex())
+    displ = ctxt["result"].getField("DEPL", ctxt["result"].getLastIndex())
     mc_displ = medp.exportMEDCDisplacement(displ, "Displ")
     print("[Convert] Displacement field info:")
     print(mc_displ.simpleRepr(), flush=True)
@@ -186,7 +182,7 @@ def exec_iteration(i_iter, current_time, delta_t, data):
 input_data = cpl.recv_input_data()
 TEMPE = medp.importMEDCTemperature(input_data["TEMP"])
 
-ctxt.evol_ther = CREA_RESU(
+cpl.ctxt["evol_ther"] = CREA_RESU(
     TYPE_RESU="EVOL_THER",
     OPERATION="AFFE",
     AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=TEMPE, INST=cpl.params.init_time),
@@ -199,9 +195,9 @@ ctxt.evol_ther = CREA_RESU(
 cpl.run(exec_iteration)
 
 
-ctxt.result = CALC_CHAMP(
-    reuse=ctxt.result,
-    RESULTAT=ctxt.result,
+cpl.ctxt["result"] = CALC_CHAMP(
+    reuse=cpl.ctxt["result"],
+    RESULTAT=cpl.ctxt["result"],
     CONTRAINTE=("SIGM_ELNO",),
     DEFORMATION=("EPSI_ELNO",),
     VARI_INTERNE=("VARI_ELNO",),
@@ -211,7 +207,7 @@ TEST_RESU(
     RESU=(
         _F(
             INST=66.665999999999997,
-            RESULTAT=ctxt.result,
+            RESULTAT=cpl.ctxt["result"],
             NOM_CHAM="EPSI_ELNO",
             GROUP_NO="N1",
             NOM_CMP="EPXX",
@@ -220,7 +216,7 @@ TEST_RESU(
         ),
         _F(
             INST=66.665999999999997,
-            RESULTAT=ctxt.result,
+            RESULTAT=cpl.ctxt["result"],
             NOM_CHAM="SIGM_ELNO",
             GROUP_NO="N1",
             NOM_CMP="SIYY",
@@ -229,7 +225,7 @@ TEST_RESU(
         ),
         _F(
             INST=80.0,
-            RESULTAT=ctxt.result,
+            RESULTAT=cpl.ctxt["result"],
             NOM_CHAM="EPSI_ELNO",
             GROUP_NO="N2",
             NOM_CMP="EPZZ",
@@ -238,7 +234,7 @@ TEST_RESU(
         ),
         _F(
             INST=80.0,
-            RESULTAT=ctxt.result,
+            RESULTAT=cpl.ctxt["result"],
             NOM_CHAM="VARI_ELNO",
             GROUP_NO="N2",
             NOM_CMP="V1",
@@ -247,7 +243,7 @@ TEST_RESU(
         ),
         _F(
             INST=80.0,
-            RESULTAT=ctxt.result,
+            RESULTAT=cpl.ctxt["result"],
             NOM_CHAM="SIGM_ELNO",
             GROUP_NO="N2",
             NOM_CMP="SIYY",
@@ -256,7 +252,7 @@ TEST_RESU(
         ),
         _F(
             INST=90.0,
-            RESULTAT=ctxt.result,
+            RESULTAT=cpl.ctxt["result"],
             NOM_CHAM="EPSI_ELNO",
             GROUP_NO="N3",
             NOM_CMP="EPZZ",
@@ -265,7 +261,7 @@ TEST_RESU(
         ),
         _F(
             INST=90.0,
-            RESULTAT=ctxt.result,
+            RESULTAT=cpl.ctxt["result"],
             NOM_CHAM="VARI_ELNO",
             GROUP_NO="N3",
             NOM_CMP="V1",
@@ -274,7 +270,7 @@ TEST_RESU(
         ),
         _F(
             INST=90.0,
-            RESULTAT=ctxt.result,
+            RESULTAT=cpl.ctxt["result"],
             NOM_CHAM="SIGM_ELNO",
             GROUP_NO="N3",
             NOM_CMP="SIYY",
