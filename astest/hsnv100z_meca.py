@@ -54,24 +54,24 @@ def coupled_mechanics(cpl):
 
     MEDC.WriteUMesh(interf_med, mc_interf, True)
 
-    cpl.setup(
-        mc_interf,
-        input_fields=[("TEMP", ["TEMP"], "NODES")],
-        output_fields=[("DEPL", ["DX", "DY"], "NODES")],
-    )
-
-    mesh = CA.Mesh()
-    mesh.readMedFile(solid_med)
+    MAIL = CA.Mesh()
+    MAIL.readMedFile(solid_med)
 
     interf = CA.Mesh()
     interf.readMedFile(interf_med)
 
     model = AFFE_MODELE(
-        AFFE=_F(MODELISATION="AXIS", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh
+        AFFE=_F(MODELISATION="AXIS", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=MAIL
     )
 
     modinterf = AFFE_MODELE(
         AFFE=_F(MODELISATION="AXIS", PHENOMENE="THERMIQUE", TOUT="OUI"), MAILLAGE=interf
+    )
+
+    cpl.setup(
+        interface=(MAIL, ["M1"]),
+        input_fields=[("TEMP", ["TEMP"], "NODES")],
+        output_fields=[("DEPL", ["DX", "DY"], "NODES")],
     )
 
     medp = MEDProj(mc_interf, interf_ids, 0, modinterf, model)
@@ -145,7 +145,7 @@ def coupled_mechanics(cpl):
         )
 
         CTM = AFFE_MATERIAU(
-            MAILLAGE=mesh,
+            MAILLAGE=MAIL,
             AFFE=_F(TOUT="OUI", MATER=MAT),
             AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=ctxt["evol_ther"], VALE_REF=0.0),
         )

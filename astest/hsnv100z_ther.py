@@ -60,7 +60,7 @@ def coupled_thermics(cpl):
     interf.readMedFile(interf_med)
 
     cpl.setup(
-        mc_interf,
+        interface=(MAIL, ["M1"]),
         input_fields=[("DEPL", ["DX", "DY"], "NODES")],
         output_fields=[("TEMP", ["TEMP"], "NODES")],
     )

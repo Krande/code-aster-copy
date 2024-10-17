@@ -113,11 +113,11 @@ class MEDCoupler:
 
         self.log = logfunc if logfunc else logger
 
-    def init_paramedmem_coupling(self, field_name, ranks1, ranks2):
+    def init_coupling(self, fields_name, ranks1, ranks2):
         """Start ParaMEDMEM coupling and DEC.
 
         Arguments:
-            field_name (str): Field name.
+            fields_name (list[str]): list of field names.
             ranks1 (list[int]): List of ranks allocated to the first application.
             ranks2 (list[int]): List of ranks allocated to the second application.
         """
@@ -133,17 +133,14 @@ class MEDCoupler:
                     verbosity=2,
                 )
                 self.dec[sup][key] = PMM.InterpKernelDEC(ranks1, ranks2)
-            self.xdec[sup][field_name] = ExtendedDEC(self.dec[sup][key])
-            self.xdec[sup][field_name].setMethod("P0" if sup == MEDC.ON_CELLS else "P1")
+            for name in fields_name:
+                self.xdec[sup][name] = ExtendedDEC(self.dec[sup][key])
+                self.xdec[sup][name].setMethod("P0" if sup == MEDC.ON_CELLS else "P1")
 
-    def create_coupling_mesh(self, mesh):
-        """Create the ParaMEDMEM mesh, support of coupling.
+    def _create_paramesh(self):
+        """Create the ParaMEDMEM mesh, support of coupling."""
 
-        Arguments:
-            mesh (*medcoupling.MEDCouplingUMesh*): The coupling mesh.
-        """
         self.log("creating coupling mesh in memory", verbosity=2)
-        self.interf_mesh = mesh
         for sup in (MEDC.ON_CELLS, MEDC.ON_NODES):
             for name in self.xdec[sup]:
                 dec = self.xdec[sup][name]
@@ -151,11 +148,32 @@ class MEDCoupler:
                     group = dec.getSourceGrp()
                 else:
                     group = dec.getTargetGrp()
-                dec.mesh = PMM.ParaMESH(mesh, group, "couplingMesh")
+                dec.mesh = PMM.ParaMESH(self.interf_mesh, group, "couplingMesh")
 
-        # self.comptopo = PMM.ComponentTopology()
+    def create_mesh_interface(self, mesh, groupsOfCells):
+        """Create the Medcoupling mesh of the interface.
+           The mesh is restricted to a given list of groups of cells.
 
-    def get_coupled_field(self, name, silent=False):
+        Arguments:
+            mesh (Mesh|ParallelMesh): mesh.
+            groupsOfCells (list[str]): list of groups of cells.
+        """
+
+        self.log("creating interface mesh", verbosity=2)
+
+        mm = mesh.createMedCouplingMesh()
+        levels = mm.getGrpsNonEmptyLevels(groupsOfCells)
+        assert len(levels) == 1, "Groups are not at one level"
+        interf_ids = mm.getGroupsArr(levels[0], groupsOfCells)
+        interf_ids.setName("interf")
+        mc_interf = mm.getMeshAtLevel(0)[interf_ids]
+        mc_interf.setName("interface")
+
+        self.interf_mesh = mc_interf
+
+        self._create_paramesh()
+
+    def get_field(self, name, silent=False):
         """Return a coupled field by name.
 
         Arguments:
@@ -173,7 +191,7 @@ class MEDCoupler:
             raise KeyError(msg)
         return found
 
-    def define_coupled_field(self, field_name, components, field_type):
+    def add_field(self, field_name, components, field_type):
         """Add a coupled field.
 
         Arguments:
@@ -181,7 +199,7 @@ class MEDCoupler:
             components (list[str]): Components of the field.
             field_type (str): On "NODES" or "CELLS".
         """
-        if not self.get_coupled_field(field_name, silent=True):
+        if not self.get_field(field_name, silent=True):
             assert field_type in ("NODES", "CELLS")
             sup = MEDC.ON_CELLS if field_type == "CELLS" else MEDC.ON_NODES
             dec = self.xdec[sup][field_name]
@@ -241,7 +259,7 @@ class MEDCoupler:
         support = None
         for field_name in fields:
             field = fields[field_name]
-            exchanged = self.get_coupled_field(field_name)
+            exchanged = self.get_field(field_name)
             if support is None:
                 support = exchanged.support
             assert support == support, "all fields must be on the same support type."
@@ -274,7 +292,7 @@ class MEDCoupler:
             return fields
         support = None
         for field_name in fields_names:
-            exchanged = self.get_coupled_field(field_name)
+            exchanged = self.get_field(field_name)
             if support is None:
                 support = exchanged.support
             assert support == support, "all fields must be on the same support type."

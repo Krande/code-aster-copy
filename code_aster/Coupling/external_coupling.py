@@ -61,7 +61,6 @@ class ExternalCoupling:
         self.MPI = None
         self.ctxt = {}
         self.medcpl = None
-        self.mesh = None
         self.fields_in = []
         self.fields_out = []
         self.params = SchemeParams()
@@ -96,25 +95,30 @@ class ExternalCoupling:
             print("[CPL]", *args, **prargs)
         return func(*args, **kwargs)
 
-    def _init_paramedmem(self, with_app):
-        self.medcpl = MEDCoupler(logfunc=self.log)
+    def _init_paramedmem(self, with_app, interface):
+        """Initialize ParaMEDMEM coupling.
+
+        Arguments:
+            with_app (str): name of coupling application
+            interface (tuple(Mesh, list[str])): whole mesh and groups of the interface.
+        """
 
         my_ranks = self.ple.get_app_ranks(self.whoami)
         other_ranks = self.ple.get_app_ranks(with_app)
 
         # Creating the parallel DEC
-        for name, _, _ in self.fields_in + self.fields_out:
-            if self.starter:
-                self.medcpl.init_paramedmem_coupling(name, ranks1=my_ranks, ranks2=other_ranks)
-            else:
-                self.medcpl.init_paramedmem_coupling(name, ranks1=other_ranks, ranks2=my_ranks)
+        fields_name = [name for name, _, _ in self.fields_in + self.fields_out]
+        if self.starter:
+            self.medcpl.init_coupling(fields_name, ranks1=my_ranks, ranks2=other_ranks)
+        else:
+            self.medcpl.init_coupling(fields_name, ranks1=other_ranks, ranks2=my_ranks)
 
         # Define coupling mesh
-        self.medcpl.create_coupling_mesh(self.mesh)
+        self.medcpl.create_mesh_interface(interface[0], interface[1])
 
         # Define coupled fields
         for name, components, discr in self.fields_in + self.fields_out:
-            self.medcpl.define_coupled_field(name, components, discr)
+            self.medcpl.add_field(name, components, discr)
 
     def recv_input_data(self):
         """Receive the inputs from the other code.
@@ -196,21 +200,22 @@ class ExternalCoupling:
             f"{with_app!r} root proc is #{1}"
         )
 
-    def setup(self, mesh_interf, input_fields, output_fields, **params):
+        self.medcpl = MEDCoupler(logfunc=self.log)
+
+    def setup(self, interface, input_fields, output_fields, **params):
         """Initialize the coupling.
 
         Arguments:
-            mesh_interf (MEDFileUMesh): Medcoupling mesh of the interface.
+            interface (tuple(Mesh, list[str])): whole mesh and groups of the interface.
             input_fields (list): List of exchanged fields as input.
             output_fields (list): List of exchanged fields as output.
             params (dict): Parameters of the coupling scheme.
         """
 
-        self.mesh = mesh_interf
         self.fields_in = input_fields
         self.fields_out = output_fields
         self.update(params)
-        self._init_paramedmem(self.other_app)
+        self._init_paramedmem(self.other_app, interface)
 
     def finalize(self):
         """Finalize the coupling."""
@@ -309,6 +314,11 @@ class ExternalCoupling:
                 "completed" if completed else "interrupted", exit_coupling
             )
         )
+
+    @property
+    def mesh_interface(self):
+        """MedcouplingUMesh: mesh of the interface."""
+        return self.medcpl.interf_mesh
 
 
 class SaturneCoupling(ExternalCoupling):
