@@ -1,0 +1,818 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+import math
+from scipy import special
+from code_aster.Commands import *
+from code_aster import CA
+
+test = CA.TestCase()
+
+
+def ptot_ec8_pcp(pir, pif, pc1, prv, pfv, phydr, theta):
+    ptot = (
+        math.copysign(((pir + pif) ** 2.0 + pc1**2.0) ** 0.5, math.cos(theta))
+        + 0.4 * (prv + pfv)
+        + phydr
+    )
+    return ptot
+
+
+def ptot_ec8_pcm(pir, pif, pc1, prv, pfv, phydr, theta):
+    ptot = (
+        math.copysign(((pir + pif) ** 2.0 + pc1**2.0) ** 0.5, math.cos(theta))
+        - 0.4 * (prv + pfv)
+        + phydr
+    )
+    return ptot
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+# =======================================================================
+#
+#          VALIDATION DE DEFI_PRES_EC8
+#
+# =======================================================================
+
+g = 9.81
+R = 4.820
+H = 9.250
+rho_eau = 1000
+rho_acier = 7800
+
+liste_alti = [0, 2.5, 5.241667, 7.475, 9.25]
+liste_epais = [0.006] * 5
+liste_epais2 = list(liste_epais)
+liste_epais2[2] = 0.007
+
+liste_R = [0.1, R / 3, R / 2, 3 * R / 4, R]
+
+Ac1 = 0.085 * g
+Afhn = 0.51252007 * g
+Afv = 0.33572503 * g
+Arh = 0.241 * g
+Arv = 0.1606700 * g
+
+
+# VALIDATION POUR THETA 0
+# -----------------------
+
+fonc_pres = DEFI_PRES_EC8(
+    Z_FOND=0.0,
+    RAYON=R,
+    HAUT_EAU=H,
+    ACCE_SP_H=Arh,
+    ACCE_FLEX_H_N=Afhn,
+    ACCE_FLEX_V=Afv,
+    ACCE_SP_V=Arv,
+    ACCE_CONV_H=Ac1,
+    RHO_EAU=rho_eau,
+    GRAVITE=g,
+    PRES_SURF_LIBR=0.0,
+    EVAL=(
+        _F(RHO=rho_acier, LIST_H=liste_alti, LIST_EPAIS=liste_epais, TABLE=CO("TAB_SEIS")),
+        #          même évaluation avec épaisseur différentes en 1 point
+        _F(RHO=rho_acier, LIST_H=liste_alti, LIST_EPAIS=liste_epais2, TABLE=CO("TAB_EPAIS")),
+        _F(RHO=rho_acier, LIST_H=liste_alti, LIST_EPAIS=liste_epais, THETA=45, TABLE=CO("TAB_45")),
+        _F(RHO=rho_acier, LIST_H=liste_alti, LIST_EPAIS=liste_epais, THETA=90, TABLE=CO("TAB_90")),
+        _F(
+            RHO=rho_acier, LIST_H=liste_alti, LIST_EPAIS=liste_epais, THETA=135, TABLE=CO("TAB_135")
+        ),
+        _F(RHO=rho_acier, LIST_R_FOND=liste_R, LIST_EPAIS=liste_epais, TABLE=CO("TAB_FOND")),
+    ),
+)
+
+fonc_pres_pcm = DEFI_PRES_EC8(
+    Z_FOND=0.0,
+    RAYON=R,
+    HAUT_EAU=H,
+    ACCE_SP_H=Arh,
+    ACCE_FLEX_H_N=Afhn,
+    ACCE_FLEX_V=Afv,
+    ACCE_SP_V=Arv,
+    ACCE_CONV_H=Ac1,
+    RHO_EAU=rho_eau,
+    GRAVITE=g,
+    PRES_SURF_LIBR=0.0,
+    NEWMARK="PC-",
+)
+
+# IMPR_TABLE(UNITE=6, TABLE = TAB_SEIS)
+
+
+# Altitude 0
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=10843.975980321064,
+    VALE_REFE=1.084398e4,
+    NOM_PARA="PIR",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=0),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=5174.090304167701,
+    VALE_REFE=5.173988e3,
+    NOM_PARA="PIF",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=0),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=196.42295517845014,
+    VALE_REFE=1.963995e2,
+    NOM_PARA="PC1",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=0),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=14579.597475,
+    VALE_REFE=1.457960e4,
+    NOM_PARA="PRV",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=0),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=16268.306554545828,
+    VALE_REFE=1.626831e4,
+    NOM_PARA="PFV",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=0),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=90742.5,
+    VALE_REFE=9.07425e4,
+    NOM_PARA="PHYDR",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=0),),
+)
+
+# Validation de PTOT
+
+pir = 10843.975980321064
+pif = 5174.090304167701
+pc1 = 196.42295517845014
+prv = 14579.597475
+pfv = 16268.306554545828
+phydr = 90742.5
+ptot_0 = ptot_ec8_pcp(pir, pif, pc1, prv, pfv, phydr, 0)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=ptot_0,
+    VALE_REFE=ptot_0,
+    NOM_PARA="PTOT",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=0),),
+)
+
+# Validation que l'on obtient la même valeur par évaluation
+# de la fonction
+
+x = R
+y = 0
+z = 0
+ep = 0.006
+ptot_0_func = fonc_pres(x, y, z, ep, rho_acier)
+
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    VALE_CALC=ptot_0_func,
+    VALE_REFE=ptot_0_func,
+    NOM_PARA="PTOT",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=0),),
+)
+
+# validation de PC-
+
+ptot_0_pcm = ptot_ec8_pcm(pir, pif, pc1, prv, pfv, phydr, 0)
+ptot_0_func_pcm = fonc_pres_pcm(x, y, z, ep, rho_acier)
+test.assertAlmostEqual(ptot_0_pcm, ptot_0_func_pcm)
+
+# Altitude 5.241667 m
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=9294.762685743959,
+    VALE_REFE=9.294763e3,
+    NOM_PARA="PIR",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=11824.934444666414,
+    VALE_REFE=1.182470e4,
+    NOM_PARA="PIF",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=740.4477060081224,
+    VALE_REFE=7.403592e2,
+    NOM_PARA="PC1",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=6317.8250471091005,
+    VALE_REFE=6.317826e3,
+    NOM_PARA="PRV",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=10237.976326973494,
+    VALE_REFE=1.023798e4,
+    NOM_PARA="PFV",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=39321.746730000006,
+    VALE_REFE=3.932175e4,
+    NOM_PARA="PHYDR",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+
+# Validation de PTOT
+
+pir = 9294.762685743959
+pif = 11824.934444666414
+pc1 = 740.4477060081224
+prv = 6317.8250471091005
+pfv = 10237.976326973494
+phydr = 39321.746730000006
+ptot_5 = ptot_ec8_pcp(pir, pif, pc1, prv, pfv, phydr, 0)
+
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=ptot_5,
+    VALE_REFE=ptot_5,
+    NOM_PARA="PTOT",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+
+# Validation que l'on obtient la même valeur par évaluation
+# de la fonction
+
+x = R
+y = 0
+z = 5.241667
+ep = 0.006
+ptot_5_func = fonc_pres(x, y, z, ep, rho_acier)
+
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    VALE_CALC=ptot_5_func,
+    VALE_REFE=ptot_5_func,
+    NOM_PARA="PTOT",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+
+# validation de PC-
+
+ptot_5_pcm = ptot_ec8_pcm(pir, pif, pc1, prv, pfv, phydr, 0)
+ptot_5_func_pcm = fonc_pres_pcm(x, y, z, ep, rho_acier)
+test.assertAlmostEqual(ptot_5_pcm, ptot_5_func_pcm)
+
+
+# Altitude 9.25 m
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=3.3363552023765345e-12,
+    VALE_REFE=3.336355e-12,
+    NOM_PARA="PIR",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=1.6972775949893834e-12,
+    VALE_REFE=1.697244e-12,
+    NOM_PARA="PIF",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=3364.4363247000006,
+    VALE_REFE=3.364034e3,
+    NOM_PARA="PC1",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=0,
+    VALE_REFE=0,
+    CRITERE="RELATIF",
+    NOM_PARA="PRV",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=9.961464774786226e-13,
+    VALE_REFE=9.961465e-13,
+    NOM_PARA="PFV",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+)
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_CALC=0.0,
+    VALE_REFE=0.0,
+    NOM_PARA="PHYDR",
+    TABLE=TAB_SEIS,
+    CRITERE="RELATIF",
+    FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+)
+# Validation de PTOT
+
+pir = 3.3363552023765345e-12
+pif = 1.6972775949893834e-12
+pc1 = 3364.4363247000006
+prv = 0.0
+pfv = 9.961464774786226e-13
+phydr = 0.0
+ptot_9 = ptot_ec8_pcp(pir, pif, pc1, prv, pfv, phydr, 0)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=ptot_9,
+    VALE_REFE=ptot_9,
+    NOM_PARA="PTOT",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+)
+# Validation que l'on obtient la même valeur par évaluation
+# de la fonction
+
+x = R
+y = 0
+z = 9.25
+ep = 0.006
+ptot_9_func = fonc_pres(x, y, z, ep, rho_acier)
+
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    VALE_CALC=ptot_9_func,
+    VALE_REFE=ptot_9_func,
+    NOM_PARA="PTOT",
+    TABLE=TAB_SEIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+)
+
+ptot_9_pcm = ptot_ec8_pcm(pir, pif, pc1, prv, pfv, phydr, 0)
+ptot_9_func_pcm = fonc_pres_pcm(x, y, z, ep, rho_acier)
+test.assertAlmostEqual(ptot_9_pcm, ptot_9_func_pcm)
+
+# Validation de PRES_SURF_LIBR
+
+# dernier point au dessus de la hauteur d'eau
+liste_alti = [0, 2.5, 5.241667, 7.475, 9.3]
+
+fonc_pres_surf_libr = DEFI_PRES_EC8(
+    Z_FOND=0.0,
+    RAYON=R,
+    HAUT_EAU=H,
+    ACCE_SP_H=Arh,
+    ACCE_FLEX_H_N=Afhn,
+    ACCE_FLEX_V=Afv,
+    ACCE_SP_V=Arv,
+    ACCE_CONV_H=Ac1,
+    RHO_EAU=rho_eau,
+    GRAVITE=g,
+    PRES_SURF_LIBR=4.0,
+    EVAL=_F(RHO=rho_acier, LIST_H=liste_alti, LIST_EPAIS=liste_epais, TABLE=CO("TAB_SEIS2")),
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=4.0,
+    VALE_REFE=4.0,
+    NOM_PARA="PTOT",
+    TABLE=TAB_SEIS2,
+    CRITERE="RELATIF",
+    FILTRE=(_F(NOM_PARA="H", VALE=9.30),),
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=67076.74031655851 + 4.0,
+    VALE_REFE=67076.74031655851 + 4.0,
+    NOM_PARA="PTOT",
+    TABLE=TAB_SEIS2,
+    CRITERE="RELATIF",
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+
+# TAB_EPAIS : on a changé d'épaisseur pour une valeur et on vérifie que
+# les valeurs ptot sont modifiées uniquement pour cette altitude
+
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    VALE_CALC=ptot_0_func,
+    VALE_REFE=ptot_0_func,
+    NOM_PARA="PTOT",
+    TABLE=TAB_EPAIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=0),),
+)
+
+TEST_TABLE(
+    VALE_CALC=67070.65653328865,
+    NOM_PARA="PTOT",
+    TABLE=TAB_EPAIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+
+x = R
+y = 0
+z = 5.241667
+ep = 0.007
+ptot_5_func3 = fonc_pres(x, y, z, ep, rho_acier)
+
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    VALE_CALC=ptot_5_func3,
+    VALE_REFE=ptot_5_func3,
+    NOM_PARA="PTOT",
+    TABLE=TAB_EPAIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+)
+
+
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    VALE_CALC=ptot_9_func,
+    VALE_REFE=ptot_9_func,
+    NOM_PARA="PTOT",
+    TABLE=TAB_EPAIS,
+    FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+)
+
+
+# VALIDATION POUR THETA différent de 0
+# ------------------------------------
+
+
+TABS = [TAB_45, TAB_90, TAB_135]
+
+for ii, theta_deg in enumerate([45, 90, 135]):
+
+    theta = theta_deg * math.pi / 180.0
+
+    # pour pir, pif et pc1 : on multiplie des valeurs par cos(theta)
+
+    # Altitude 0
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=10843.975980321064 * math.cos(theta),
+        VALE_REFE=1.084398e4 * math.cos(theta),
+        NOM_PARA="PIR",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=0),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=5174.090304167701 * math.cos(theta),
+        VALE_REFE=5.173988e3 * math.cos(theta),
+        NOM_PARA="PIF",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=0),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=196.42295517845014 * math.cos(theta),
+        VALE_REFE=1.963995e2 * math.cos(theta),
+        NOM_PARA="PC1",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=0),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=14579.597475,
+        VALE_REFE=1.457960e4,
+        NOM_PARA="PRV",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=0),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=16268.306554545828,
+        VALE_REFE=1.626831e4,
+        NOM_PARA="PFV",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=0),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=90742.5,
+        VALE_REFE=9.07425e4,
+        NOM_PARA="PHYDR",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=0),),
+    )
+
+    # Validation de PTOT
+
+    pir = 10843.975980321064 * math.cos(theta)
+    pif = 5174.090304167701 * math.cos(theta)
+    pc1 = 196.42295517845014 * math.cos(theta)
+    prv = 14579.597475
+    pfv = 16268.306554545828
+    phydr = 90742.5
+    ptot_0 = ptot_ec8_pcp(pir, pif, pc1, prv, pfv, phydr, theta)
+
+    TEST_TABLE(
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=ptot_0,
+        VALE_REFE=ptot_0,
+        NOM_PARA="PTOT",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=0),),
+    )
+
+    # Validation que l'on obtient la même valeur par évaluation
+    # de la fonction
+
+    x = R * math.cos(theta)
+    y = R * math.sin(theta)
+    z = 0
+    ep = 0.006
+    ptot_0_func = fonc_pres(x, y, z, ep, rho_acier)
+
+    TEST_TABLE(
+        REFERENCE="AUTRE_ASTER",
+        VALE_CALC=ptot_0_func,
+        VALE_REFE=ptot_0_func,
+        NOM_PARA="PTOT",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=0),),
+    )
+
+    # Altitude 5.241667 m
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=9294.762685743959 * math.cos(theta),
+        VALE_REFE=9.294763e3 * math.cos(theta),
+        NOM_PARA="PIR",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=11824.934444666414 * math.cos(theta),
+        VALE_REFE=1.182470e4 * math.cos(theta),
+        NOM_PARA="PIF",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=740.4477060081224 * math.cos(theta),
+        VALE_REFE=7.403592e2 * math.cos(theta),
+        NOM_PARA="PC1",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=6317.8250471091005,
+        VALE_REFE=6.317826e3,
+        NOM_PARA="PRV",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=10237.976326973494,
+        VALE_REFE=1.023798e4,
+        NOM_PARA="PFV",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=39321.746730000006,
+        VALE_REFE=3.932175e4,
+        NOM_PARA="PHYDR",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+    )
+
+    # Validation de PTOT
+
+    pir = 9294.762685743959 * math.cos(theta)
+    pif = 11824.934444666414 * math.cos(theta)
+    pc1 = 740.4477060081224 * math.cos(theta)
+    prv = 6317.8250471091005
+    pfv = 10237.976326973494
+    phydr = 39321.746730000006
+    ptot_5 = ptot_ec8_pcp(pir, pif, pc1, prv, pfv, phydr, theta)
+
+    TEST_TABLE(
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=ptot_5,
+        VALE_REFE=ptot_5,
+        NOM_PARA="PTOT",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+    )
+
+    # Validation que l'on obtient la même valeur par évaluation
+    # de la fonction
+
+    x = R * math.cos(theta)
+    y = R * math.sin(theta)
+    z = 5.241667
+    ep = 0.006
+    ptot_5_func = fonc_pres(x, y, z, ep, rho_acier)
+
+    TEST_TABLE(
+        REFERENCE="AUTRE_ASTER",
+        VALE_CALC=ptot_5_func,
+        VALE_REFE=ptot_5_func,
+        NOM_PARA="PTOT",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=5.241667),),
+    )
+
+    # Altitude 9.25 m
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=3.3363552023765345e-12 * math.cos(theta),
+        VALE_REFE=3.336355e-12 * math.cos(theta),
+        NOM_PARA="PIR",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=1.6972775949893834e-12 * math.cos(theta),
+        VALE_REFE=1.697244e-12 * math.cos(theta),
+        NOM_PARA="PIF",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=3364.4363247000006 * math.cos(theta),
+        VALE_REFE=3.364034e3 * math.cos(theta),
+        NOM_PARA="PC1",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=0,
+        VALE_REFE=0,
+        CRITERE="RELATIF",
+        NOM_PARA="PRV",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=9.961464774786226e-13,
+        VALE_REFE=9.961465e-13,
+        NOM_PARA="PFV",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+    )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=0.0,
+        VALE_REFE=0.0,
+        NOM_PARA="PHYDR",
+        TABLE=TABS[ii],
+        CRITERE="RELATIF",
+        FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+    )
+    # Validation de PTOT
+
+    pir = 3.3363552023765345e-12 * math.cos(theta)
+    pif = 1.6972775949893834e-12 * math.cos(theta)
+    pc1 = 3364.4363247000006 * math.cos(theta)
+    prv = 0.0
+    pfv = 9.961464774786226e-13
+    phydr = 0.0
+    ptot_9 = ptot_ec8_pcp(pir, pif, pc1, prv, pfv, phydr, theta)
+
+    TEST_TABLE(
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=ptot_9,
+        VALE_REFE=ptot_9,
+        NOM_PARA="PTOT",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+    )
+    # Validation que l'on obtient la même valeur par évaluation
+    # de la fonction
+
+    x = R * math.cos(theta)
+    y = R * math.sin(theta)
+    z = 9.25
+    ep = 0.006
+    ptot_9_func = fonc_pres(x, y, z, ep, rho_acier)
+
+    TEST_TABLE(
+        REFERENCE="AUTRE_ASTER",
+        VALE_CALC=ptot_9_func,
+        VALE_REFE=ptot_9_func,
+        NOM_PARA="PTOT",
+        TABLE=TABS[ii],
+        FILTRE=(_F(NOM_PARA="H", VALE=9.25),),
+    )
+
+# TEST DES VALEURS SUR LE FOND (plat)
+
+pir = 10843.975980321064
+pif = 5174.090304167701
+pc1 = 196.42295517845014
+prv = 14579.597475
+pfv = 16268.306554545828
+phydr = 90742.5
+
+
+# IMPR_TABLE(UNITE=6, TABLE=TAB_SEIS)
+# IMPR_TABLE(UNITE=6, TABLE=TAB_FOND)
+
+for r in liste_R:
+
+    # PIR est testé dans la modélisation B
+
+    TEST_TABLE(
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=pif * r / R,
+        VALE_REFE=pif * r / R,
+        NOM_PARA="PIF",
+        TABLE=TAB_FOND,
+        FILTRE=(_F(NOM_PARA="R", VALE=r),),
+    )
+
+    coef = special.jv(1, 1.841 * r / R) / special.jv(1, 1.841)
+
+    TEST_TABLE(
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=pc1 * coef,
+        VALE_REFE=pc1 * coef,
+        NOM_PARA="PC1",
+        TABLE=TAB_FOND,
+        FILTRE=(_F(NOM_PARA="R", VALE=r),),
+    )
+    TEST_TABLE(
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=prv,
+        VALE_REFE=prv,
+        NOM_PARA="PRV",
+        TABLE=TAB_FOND,
+        FILTRE=(_F(NOM_PARA="R", VALE=r),),
+    )
+
+    TEST_TABLE(
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=pfv,
+        VALE_REFE=pfv,
+        NOM_PARA="PFV",
+        TABLE=TAB_FOND,
+        FILTRE=(_F(NOM_PARA="R", VALE=r),),
+    )
+    TEST_TABLE(
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=phydr,
+        VALE_REFE=phydr,
+        NOM_PARA="PHYDR",
+        TABLE=TAB_FOND,
+        FILTRE=(_F(NOM_PARA="R", VALE=r),),
+    )
+
+FIN()

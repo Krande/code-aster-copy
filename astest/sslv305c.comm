@@ -1,0 +1,168 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+import math
+from scipy import special
+from code_aster.Commands import *
+from code_aster import CA
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+# =======================================================================
+#
+#          VALIDATION DE DEFI_PRES_EC8
+#
+#          On applique le pression issue de DEFI_PRES_EC8 sur un
+#          réservoir de rayon 4.820 et de hauteur 10
+#          Test de NON_REGRESSION
+#
+# =======================================================================
+
+# on reprend les mêmes valeurs que dans le modélisation A
+g = 9.81
+R = 4.820
+H = 9.250
+rho_eau = 1000
+rho_acier = 7800
+
+Ac1 = 0.085 * g
+Afhn = 0.51252007 * g
+Afv = 0.33572503 * g
+Arh = 0.241 * g
+Arv = 0.1606700 * g
+
+MAILLAGE = LIRE_MAILLAGE(FORMAT="MED")
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAILLAGE,
+    MAILLAGE=MAILLAGE,
+    ORIE_NORM_COQUE=(
+        _F(GROUP_MA="VIROLES", VECT_NORM=(-1.0, 0.0, 0.0), GROUP_NO="NODE_VIR"),
+        _F(GROUP_MA="FOND", VECT_NORM=(0.0, 0.0, 1.0)),
+        _F(GROUP_MA="PLAFOND", VECT_NORM=(0.0, 0.0, -1.0)),
+    ),
+)
+
+MOD1 = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=_F(GROUP_MA=("VIROLES", "FOND", "PLAFOND"), PHENOMENE="MECANIQUE", MODELISATION="DKT"),
+)
+
+ACIER = DEFI_MATERIAU(ELAS=_F(E=197.0e9, NU=0.3, RHO=rho_acier))
+
+CHMAT = AFFE_MATERIAU(MODELE=MOD1, AFFE=(_F(GROUP_MA=("VIROLES", "FOND", "PLAFOND"), MATER=ACIER),))
+
+CARA = AFFE_CARA_ELEM(
+    MODELE=MOD1, COQUE=(_F(GROUP_MA=("VIROLES", "FOND", "PLAFOND"), EPAIS=0.006),)
+)
+
+ENCAS = AFFE_CHAR_CINE(
+    MODELE=MOD1, MECA_IMPO=_F(GROUP_MA="FOND", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0)
+)
+
+
+fonc_pres = DEFI_PRES_EC8(
+    Z_FOND=0.0,
+    RAYON=R,
+    HAUT_EAU=H,
+    ACCE_SP_H=Arh,
+    ACCE_FLEX_H_N=Afhn,
+    ACCE_FLEX_V=Afv,
+    ACCE_SP_V=Arv,
+    ACCE_CONV_H=Ac1,
+    RHO_EAU=rho_eau,
+    GRAVITE=g,
+    PRES_SURF_LIBR=0.0,
+)
+
+P_SEIS = AFFE_CHAR_MECA(
+    MODELE=MOD1,
+    CARA_ELEM=CARA,
+    CHAM_MATER=CHMAT,
+    FORCE_COQUE_FO=_F(GROUP_MA=("VIROLES", "FOND", "PLAFOND"), PRES=fonc_pres),
+)
+
+
+RESU = MECA_STATIQUE(
+    MODELE=MOD1, CARA_ELEM=CARA, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=ENCAS), _F(CHARGE=P_SEIS))
+)
+
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, FORCE="FORC_NODA")
+
+# IMPR_RESU(UNITE=62, FORMAT='MED', RESU=_F(RESULTAT=RESU, NOM_CHAM='DEPL', NOM_CMP=('DX','DY','DZ')))
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="NODE_VIR",
+            NUME_ORDRE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.002856844552443951,
+        ),
+        _F(
+            GROUP_NO="NODE_VIR",
+            NUME_ORDRE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.0008499644473738428,
+        ),
+        _F(
+            GROUP_NO="NODE_VIR",
+            NUME_ORDRE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="FORC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=13159.1374169691,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="NODE_VIR_OP",
+            NUME_ORDRE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.0009495402841144107,
+        ),
+        _F(
+            GROUP_NO="NODE_VIR_OP",
+            NUME_ORDRE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=-3.556968504690713e-05,
+        ),
+        _F(
+            GROUP_NO="NODE_VIR_OP",
+            NUME_ORDRE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="FORC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=-5189.889960193915,
+        ),
+    )
+)
+
+
+FIN()
