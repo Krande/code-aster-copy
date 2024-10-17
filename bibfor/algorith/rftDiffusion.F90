@@ -30,13 +30,19 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
     real(kind=8), intent(out) :: diff
 ! ......................................................................
 !   RFT law : diffusion coefficient calculation (SECH_RFT)
+!
+!
+!   c (in) : concentration en eau
+!   temp (in) : temperature
+!
+!   diff (out) : coefficient de diffusion
 ! ......................................................................
-    integer           :: codret(7), nbpar
-    real(kind=8)      :: valres(7), hygr, valpar(2), dpc
+    integer           :: codret(5), nbpar
+    real(kind=8)      :: valres(5), hygr, valpar(2), dpc
     real(kind=8)      :: richardsDiffusionCoef, vapourDiffusionCoef
     real(kind=8)      :: perm_in, qsr_k, poro, a_mil, b_mil, t0_C, vg_m_p
     real(kind=8)      :: t0_K, tempK, beta, satu
-    character(len=16) :: nomres(7)
+    character(len=16) :: nomres(5)
     character(len=8) :: nompar(2)
 !   waterMolarMass (g/mol)
     real(kind=8), parameter :: waterMolarMass = 18.01528d-3
@@ -49,26 +55,19 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
     !   rft parameters
     nomres(1) = 'PERM_IN'
     nomres(2) = 'QSR_K'
-    nomres(3) = 'PORO'
-    nomres(4) = 'A_MIL'
-    nomres(5) = 'B_MIL'
-    nomres(6) = 'TEMP_0_C'
-    nomres(7) = 'VG_M_P'
+    nomres(3) = 'A_MIL'
+    nomres(4) = 'B_MIL'
+    nomres(5) = 'VG_M_P'
 
     call rcvalb(fami, kpg, ksp, poum, imate, &
                 ' ', 'SECH_RFT', 0, ' ', [0.d0], &
-                7, nomres, valres, codret, 1)
+                5, nomres, valres, codret, 1)
 
     perm_in = valres(1)
     qsr_k = valres(2)
-    poro = valres(3)
-    a_mil = valres(4)
-    b_mil = valres(5)
-    t0_C = valres(6)
-    vg_m_p = valres(7)
-
-    satu = c/poro/1.d3
-    ! satu =c
+    a_mil = valres(3)
+    b_mil = valres(4)
+    vg_m_p = valres(5)
 
     nomres(1) = 'FONC_DESORP'
     nbpar = 2
@@ -81,15 +80,13 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
                 1, nomres, valres, codret, 0)
 !
     if (codret(1) .eq. 0) then
-        hygr = valres(1)
-        nomres(1) = 'D_FONC_DESORP'
-!       ajouter la récupération de la dérivée
-        dpc = 1.0
+        call utmess('F', 'ALGORITH10_22')
     else
 !       leverett isotherm
-        call leverettIsotTher(satu, temp, imate, hygr, dpc, beta)
+        call leverettIsotTher(c, temp, imate, hygr, dpc, poro, t0_C, beta)
     end if
 !
+    satu = c/poro/1.d3
     t0_K = t0_C+273.15d0
     tempK = temp+273.15d0
 
@@ -105,36 +102,45 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 contains
 !
 !   --------------------------------------------------------------------
-    subroutine leverettIsotTher(satu, temp, imate, hygr, dpc, beta)
+    subroutine leverettIsotTher(c, temp, imate, hygr, dpc, poro, t0_C, beta)
 !
 #include "asterfort/rcvala.h"
 #include "asterfort/leverettIsot.h"
-#include "asterfort/utmess.h"
 !
 !      .................................................................
 !      evaluation of hygrometry with leverett isotherm for thermic
+!
+!      c (in) : concentration en eau
+!      temp (in) : temperature
+!
+!      hygr (out) : hygrometry
+!      dpc (out) : capillar pressure derivative
+!
 !      .................................................................
         integer, intent(in) :: imate
-        real(kind=8), intent(in) :: satu, temp
-        real(kind=8), intent(out) :: hygr, dpc, beta
+        real(kind=8), intent(in) :: c, temp
+        real(kind=8), intent(out) :: hygr, dpc, beta, poro, t0_C
 !
-        integer           :: codret(4)
-        real(kind=8)      :: valres(4)
-        character(len=16) :: nomres(4)
-        real(kind=8)      :: alpha, ad, t0_C
+        integer           :: codret(5)
+        real(kind=8)      :: valres(5)
+        character(len=16) :: nomres(5)
+        real(kind=8)      :: alpha, ad, satu
 !
         nomres(1) = 'VG_PR'
         nomres(2) = 'VG_N'
         nomres(3) = 'ATH'
         nomres(4) = 'TEMP_0_C'
-!       poro
+        nomres(5) = 'PORO'
+!
         call rcvala(imate, ' ', 'BETON_DESORP', 0, ' ', [0.d0], &
-                    4, nomres, valres, codret, 0)
+                    5, nomres, valres, codret, 0)
         ASSERT(codret(1) .eq. 0)
         alpha = valres(1)
         beta = valres(2)
         ad = valres(3)
         t0_C = valres(4)
+        poro = valres(5)
+        satu = c/poro/1.d3
 !
         call leverettIsot(temp, satu, alpha, beta, ad, t0_C, hygr, dpc)
 

@@ -2703,10 +2703,8 @@ DEFI_MATERIAU = MACRO(
         statut="f",
         PERM_IN=SIMP(statut="o", typ="R"),
         QSR_K=SIMP(statut="o", typ="R"),
-        PORO=SIMP(statut="o", typ="R"),
         A_MIL=SIMP(statut="o", typ="R"),
         B_MIL=SIMP(statut="o", typ="R"),
-        TEMP_0_C=SIMP(statut="o", typ="R"),
         VG_M_P=SIMP(statut="o", typ="R"),
     ),
     #
