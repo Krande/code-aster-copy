@@ -120,23 +120,23 @@ class ExternalCoupling:
         for name, components, discr in self.fields_in + self.fields_out:
             self.medcpl.add_field(name, components, discr)
 
-    def recv_input_data(self):
-        """Receive the inputs from the other code.
+    def recv_input_fields(self):
+        """Receive the input fields from the other code.
 
         Returns:
-            data (list[*ParaFIELD*]): Data used to define the inputs at the next step.
+            (dict[*ParaFIELD*]): fields used to define the inputs at the next step.
         """
         names = [name for name, _, _ in self.fields_in]
-        data = self.medcpl.pmm_recv(names)  # cs_coupler adds `.deepCopy()`
-        return data
+        return self.medcpl.recv(names)
 
-    def send_output_data(self, outputs):
-        """Send the outputs to the other code.
+    def send_output_fields(self, outputs):
+        """Send the output fields to the other code.
 
         Arguments:
-            outputs (list[*ParaFIELD*]): Result used to define the inputs of the other code.
+            outputs (dict[*ParaFIELD*]): fields used to define the inputs of the other code.
         """
-        self.medcpl.pmm_send(outputs)
+        assert len(outputs) == len(self.fields_out)
+        self.medcpl.send(outputs)
 
     def update(self, params):
         """Update parameters.
@@ -275,7 +275,7 @@ class ExternalCoupling:
                     for name, _, _ in self.fields_in:
                         input_data[name] = None
                 else:
-                    input_data = self.recv_input_data()
+                    input_data = self.recv_input_fields()
 
                 has_cvg, output_data = exec_iteration(
                     i_iter, current_time, delta_time, input_data, self.ctxt
@@ -286,7 +286,7 @@ class ExternalCoupling:
 
                 # send data to other code
                 if self.starter:
-                    self.send_output_data(output_data)
+                    self.send_output_fields(output_data)
                     converged = self.MPI.SUB_COMM.allreduce(
                         i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
                     )
@@ -294,7 +294,7 @@ class ExternalCoupling:
                     converged = self.MPI.SUB_COMM.allreduce(
                         i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
                     )
-                    self.send_output_data(output_data)
+                    self.send_output_fields(output_data)
 
                 if converged:
                     break
@@ -307,7 +307,7 @@ class ExternalCoupling:
 
         # only to avoid deadlock
         if self.starter:
-            input_data = self.recv_input_data()
+            input_data = self.recv_input_fields()
 
         self.log(
             "coupling {0} with exit status: {1}".format(
@@ -384,7 +384,7 @@ class SaturneCoupling(ExternalCoupling):
 
                 # recv data from code_saturne
                 current_time += delta_t
-                input_data = self.recv_input_data()
+                input_data = self.recv_input_fields()
 
                 has_cvg, output_data = exec_iteration(
                     i_iter, current_time, delta_time, input_data, self.ctxt
@@ -394,7 +394,7 @@ class SaturneCoupling(ExternalCoupling):
                 converged = bool(self.recv(istep, "ICVAST", self.MPI.INT))
 
                 # send results to code_saturne
-                self.send_output_data(output_data)
+                self.send_output_fields(output_data)
 
                 if converged:
                     break

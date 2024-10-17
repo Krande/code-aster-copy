@@ -179,7 +179,7 @@ def coupled_mechanics(cpl):
     # Initialization
     ################################################################################
 
-    input_data = cpl.recv_input_data()
+    input_data = cpl.recv_input_fields()
     TEMPE = medp.importMEDCTemperature(input_data["TEMP"])
 
     cpl.ctxt["evol_ther"] = CREA_RESU(

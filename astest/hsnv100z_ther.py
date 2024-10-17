@@ -176,7 +176,7 @@ def coupled_thermics(cpl):
     T0.setValues(0.0)
 
     mc_temp = medp.exportMEDCTemperature(T0, "TEMP")
-    cpl.send_output_data({"TEMP": mc_temp})
+    cpl.send_output_fields({"TEMP": mc_temp})
 
     ################################################################################
     # loop on time steps

@@ -109,7 +109,6 @@ class MEDCoupler:
         self.xdec = {MEDC.ON_NODES: {}, MEDC.ON_CELLS: {}}
         self.interf_mesh = None
         self.exch_fields = {}
-        # self.comptopo = None
 
         self.log = logfunc if logfunc else logger
 
@@ -228,8 +227,8 @@ class MEDCoupler:
             field = CoupledField(field_name, components, sup, dec.interf_size, pfield)
             self.exch_fields[field_name] = field
 
-    def sync_dec(self):
-        """Sync the parallel DEC objects."""
+    def sync(self):
+        """Synchronize the parallel DEC objects."""
         for sup in (MEDC.ON_CELLS, MEDC.ON_NODES):
             for name in self.xdec[sup]:
                 dec = self.xdec[sup][name]
@@ -248,8 +247,8 @@ class MEDCoupler:
                     )
                     dec.synchronize()
 
-    def pmm_send(self, fields):
-        """Send a field to the partner code with ParaMEDMEM.
+    def send(self, fields):
+        """Send fields to the partner code with ParaMEDMEM.
 
         Arguments:
             fields (dict[*ParaFIELD*]): Fields to send.
@@ -278,8 +277,8 @@ class MEDCoupler:
             dec.sendData()
         self.log("pmm_send: done", verbosity=2)
 
-    def pmm_recv(self, fields_names):
-        """Receive a field from the partner code with ParaMEDMEM.
+    def recv(self, fields_names):
+        """Receive fields from the partner code with ParaMEDMEM.
 
         Arguments:
             fields_names (list[str]): Fields names.
@@ -311,5 +310,5 @@ class MEDCoupler:
             dec.recvData()
             self.log(repr(pfield), verbosity=2)
             # self.log(array, verbosity=2)
-            self.log(f"pmm_recv: done", verbosity=2)
+        self.log(f"pmm_recv: done", verbosity=2)
         return fields
