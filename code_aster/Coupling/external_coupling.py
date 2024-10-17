@@ -135,8 +135,8 @@ class ExternalCoupling:
         assert len(outputs) == len(self.fields_out)
         self.medcpl.send(outputs)
 
-    def update(self, params):
-        """Update parameters.
+    def set_parameters(self, params):
+        """Set parameters.
 
         Arguments:
             params (dict): Parameters of the coupling scheme.
@@ -211,7 +211,7 @@ class ExternalCoupling:
 
         self.fields_in = input_fields
         self.fields_out = output_fields
-        self.update(params)
+        self.set_parameters(params)
         self._init_paramedmem(self.other_app, interface)
 
     def finalize(self):
@@ -247,7 +247,7 @@ class ExternalCoupling:
         """
 
         # update parameters
-        self.update(params)
+        self.set_parameters(params)
 
         # initial sync before the loop
         exit_coupling = self.sync()
@@ -339,8 +339,8 @@ class SaturneCoupling(ExternalCoupling):
         params (SchemeParams): Parameters of the coupling scheme.
     """
 
-    def update(self, params):
-        """Update parameters.
+    def set_parameter(self, params):
+        """Set parameters.
 
         Arguments:
             params (dict): Parameters of the coupling scheme.
@@ -357,7 +357,7 @@ class SaturneCoupling(ExternalCoupling):
         """
 
         # update parameters
-        self.update(params)
+        self.set_parameter(params)
 
         # initial sync before the loop
         exit_coupling = self.sync()

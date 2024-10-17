@@ -62,12 +62,13 @@ class SchemeParams:
 
         if time_list or nb_step or final_time or delta_t:
             if time_list is None:
+                assert nb_step is not None and init_time is not None
                 if final_time is None:
-                    assert nb_step is not None and delta_t is not None
+                    assert delta_t is not None
                     final_time = init_time + nb_step * delta_t
 
                 if delta_t is None:
-                    assert nb_step is not None and final_time is not None
+                    assert final_time is not None
                     delta_t = (final_time - init_time) / nb_step
 
                 time_list = np.linspace(init_time, final_time, delta_t)
