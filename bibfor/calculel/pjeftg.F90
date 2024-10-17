@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,6 +78,8 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
     character(len=80) :: fichier
     aster_logical :: limpr
 !
+    character(len=14) :: messk(2)
+!
     character(len=14) :: trans12(2), geome12(2)
     data trans12/'TRANSF_GEOM_1', 'TRANSF_GEOM_2'/
     data geome12/'&&PJEFTG.GEOM1', '&&PJEFTG.GEOM2'/
@@ -86,6 +88,16 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
     call jemarq()
 !
     ASSERT((igeom .eq. 1) .or. (igeom .eq. 2))
+!
+!   Si motfac<>' ' On vérifie que TRANSF_GEOM_* n'a pas été utilisé en mot clef simple "au dessus"
+    if (motfac .ne. ' ') then
+        call getvid(' ', trans12(igeom), nbret=nfonc)
+        if (nfonc .ne. 0) then
+            messk(1) = motfac
+            messk(2) = trans12(igeom)
+            call utmess('F', 'PROJECTION4_3', nk=2, valk=messk)
+        end if
+    end if
 !
 !   Prise en compte du mot-cle TRANSF_GEOM_[1|2]
     call getvid(motfac, trans12(igeom), iocc=iocc, nbval=3, vect=lfonc, nbret=nfonc)
