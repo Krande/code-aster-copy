@@ -113,82 +113,79 @@ def coupled_thermics(cpl):
     # define one iteration
     ################################################################################
 
-    cpl.ctxt["timedone"] = [0.0]
+    class ThermalSolver:
+        """Class that allows to compute one iteration of the coupling.
+           This class has to contains at least run() function.
 
-    def exec_iteration(i_iter, current_time, delta_t, data, ctxt):
-        """Execute one iteration.
+        Attributes:
+            result (ThermalResult): result of the thermal computation.
 
-        Arguments:
-            i_iter (int): Iteration number.
-            current_time (float): Current time.
-            delta_t (float): Time step.
-            data (list[*MEDCouplingField*]): List of input fields, on cells.
-            ctxt (object): context of the computation
-
-        Returns:
-            list[*MEDCouplingField*]: Output fields, on nodes.
         """
 
-        assert len(data) == 1, "expecting one field"
-        mc_displ = data["DEPL"]
+        def __init__(self, cpl):
 
-        # MEDC field => .med => code_aster field
-        if i_iter > 1:
-            warp = medp.importMEDCDisplacement(mc_displ)
-            # distorsion of the mesh (very low impact on the thermal calculation!)
-            MAIL = MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, DEFORME=_F(OPTION="TRAN", DEPL=warp))
+            T0 = CA.FieldOnNodesReal(model)
+            T0.setValues(0.0)
 
-        ctxt["timedone"].append(current_time)
-        listr = DEFI_LIST_REEL(VALE=ctxt["timedone"])
+            self.listr = [0.0]
 
-        opts = {}
-        if i_iter > 1:
-            opts["reuse"] = ctxt["result"]
-            opts["RESULTAT"] = ctxt["result"]
-            opts["ETAT_INIT"] = _F(EVOL_THER=ctxt["result"])
-        else:
-            opts["ETAT_INIT"] = _F(CHAM_NO=T0)
+            self.result = CREA_RESU(
+                TYPE_RESU="EVOL_THER",
+                OPERATION="AFFE",
+                AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=T0, INST=0.0, MODELE=model, CHAM_MATER=CM),
+            )
 
-        ctxt["result"] = THER_LINEAIRE(
-            MODELE=model,
-            CHAM_MATER=CM,
-            EXCIT=_F(CHARGE=CHTHER),
-            INCREMENT=_F(LIST_INST=listr),
-            **opts
-        )
+            mc_temp = medp.exportMEDCTemperature(T0, "TEMP")
+            cpl.send_output_fields({"TEMP": mc_temp})
 
-        if i_iter > 1:
-            # distorsion of the mesh (very low impact on the thermal calculation!)
-            MAIL = MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, DEFORME=_F(OPTION="TRAN", DEPL=-warp))
+        def run_iteration(self, i_iter, current_time, delta_t, data):
+            """Execute one iteration.
 
-        temp = ctxt["result"].getField("TEMP", ctxt["result"].getLastIndex())
-        mc_temp = medp.exportMEDCTemperature(temp, "TEMP")
-        print("[Convert] Temperature field info:")
-        print(mc_temp.simpleRepr(), flush=True)
+            Arguments:
+                i_iter (int): Iteration number if the current time_step.
+                current_time (float): Current time.
+                delta_t (float): Time step.
+                data (dict[*MEDCouplingField*]): dict of input fields.
 
-        return True, {"TEMP": mc_temp}
+            Returns:
+                bool: True if solver has converged at the current time step, else False.
+                dict[*MEDCouplingField*]: Output fields, on nodes.
+            """
 
-    ################################################################################
-    # Initialization
-    ################################################################################
+            assert len(data) == 1, "expecting one field"
 
-    T0 = CA.FieldOnNodesReal(model)
-    T0.setValues(0.0)
+            self.listr.append(current_time)
 
-    mc_temp = medp.exportMEDCTemperature(T0, "TEMP")
-    cpl.send_output_fields({"TEMP": mc_temp})
+            self.result = THER_LINEAIRE(
+                reuse=self.result,
+                RESULTAT=self.result,
+                MODELE=model,
+                CHAM_MATER=CM,
+                EXCIT=_F(CHARGE=CHTHER),
+                INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=self.listr)),
+                ETAT_INIT=_F(EVOL_THER=self.result),
+            )
+
+            temp = self.result.getField("TEMP", self.result.getLastIndex())
+            mc_temp = medp.exportMEDCTemperature(temp, "TEMP")
+            print("[Convert] Temperature field info:")
+            print(mc_temp.simpleRepr(), flush=True)
+
+            return True, {"TEMP": mc_temp}
 
     ################################################################################
     # loop on time steps
     ################################################################################
 
-    cpl.run(exec_iteration, time_list=L_INST.getValues())
+    ther_solv = ThermalSolver(cpl)
+
+    cpl.run(ther_solv, time_list=L_INST.getValues())
 
     TEST_RESU(
         RESU=(
             _F(
                 INST=90.0,
-                RESULTAT=cpl.ctxt["result"],
+                RESULTAT=ther_solv.result,
                 NOM_CHAM="TEMP",
                 GROUP_NO="N1",
                 NOM_CMP="TEMP",

@@ -40,8 +40,6 @@ class ExternalCoupling:
 
     Attributes:
         ple (*ple_coupler*): PLE Coupler object.
-        ctxt (dict): Execution context where code_aster objects are kept between
-            the different stages of the simulation.
         tag (int): tag used for direct MPI communication (`CS_CALCIUM_MPI_TAG`
            ).
         mesh (*medcoupling.MEDCouplingUMesh*): Mesh of the interface.
@@ -59,7 +57,6 @@ class ExternalCoupling:
         self.debug = debug
         self.ple = None
         self.MPI = None
-        self.ctxt = {}
         self.medcpl = None
         self.fields_in = []
         self.fields_out = []
@@ -241,11 +238,11 @@ class ExternalCoupling:
 
         return output_data
 
-    def run(self, exec_iteration, **params):
+    def run(self, solver, **params):
         """Execute the coupling loop.
 
         Arguments:
-            exec_iteration (func): Function that execute one iteration.
+            solver (object): Solver contains at least a method run_iteration.
             params (dict): Parameters of the coupling scheme.
         """
 
@@ -277,8 +274,8 @@ class ExternalCoupling:
                 else:
                     input_data = self.recv_input_fields()
 
-                has_cvg, output_data = exec_iteration(
-                    i_iter, current_time, delta_time, input_data, self.ctxt
+                has_cvg, output_data = solver.run_iteration(
+                    i_iter, current_time, delta_time, input_data
                 )
 
                 # # get convergence indicator
@@ -332,8 +329,6 @@ class SaturneCoupling(ExternalCoupling):
 
     Attributes:
         ple (*ple_coupler*): PLE Coupler object.
-        ctxt (dict): Execution context where code_aster objects are kept between
-            the different stages of the simulation.
         tag (int): tag used for direct MPI communication (`CS_CALCIUM_MPI_TAG`
            ).
         mesh (*medcoupling.MEDCouplingUMesh*): Mesh of the interface.
@@ -353,11 +348,11 @@ class SaturneCoupling(ExternalCoupling):
 
         raise NotImplemented()
 
-    def run(self, exec_iteration, **params):
+    def run(self, solver, **params):
         """Execute the coupling loop.
 
         Arguments:
-            exec_iteration (func): Function that execute one iteration.
+            solver (object): Solver contains at least a method run_iteration.
             params (dict): Parameters of the coupling scheme.
         """
 
@@ -386,8 +381,8 @@ class SaturneCoupling(ExternalCoupling):
                 current_time += delta_t
                 input_data = self.recv_input_fields()
 
-                has_cvg, output_data = exec_iteration(
-                    i_iter, current_time, delta_time, input_data, self.ctxt
+                has_cvg, output_data = iteration_solver.run_iteration(
+                    i_iter, current_time, delta_time, input_data
                 )
 
                 # received cvg

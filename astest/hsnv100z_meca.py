@@ -114,87 +114,97 @@ def coupled_mechanics(cpl):
     # define one iteration
     ################################################################################
 
-    cpl.ctxt["timedone"] = [0.0]
+    class MechanicalSolver:
+        """Class that allows to compute one iteration of the coupling.
+           This class has to contains at least run() function.
 
-    def exec_iteration(i_iter, current_time, delta_t, data, ctxt):
-        """Execute one iteration.
-
-        Arguments:
-            i_iter (int): Iteration number.
-            current_time (float): Current time.
-            delta_t (float): Time step.
-            data (dict[*MEDCouplingField*]): dict of input fields, on cells.
-            ctxt (object): context of the computation
-
-        Returns:
-            dict[*MEDCouplingField*]: Output fields, on nodes.
+        Attributes:
+            result (NonLinearResult): result of the mechanical computation.
+            evol_ther (ThermalResult) : evolution of the thermal field.
         """
 
-        assert len(data) == 1, "expecting one field"
-        mc_ther = data["TEMP"]
+        def __init__(self, cpl):
 
-        # MEDC field => .med => code_aster field
-        TEMPE = medp.importMEDCTemperature(mc_ther)
+            input_data = cpl.recv_input_fields()
+            TEMPE = medp.importMEDCTemperature(input_data["TEMP"])
 
-        ctxt["evol_ther"] = CREA_RESU(
-            reuse=ctxt["evol_ther"],
-            RESULTAT=ctxt["evol_ther"],
-            TYPE_RESU="EVOL_THER",
-            OPERATION="AFFE",
-            AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=TEMPE, INST=current_time),
-        )
+            self.evol_ther = CREA_RESU(
+                TYPE_RESU="EVOL_THER",
+                OPERATION="AFFE",
+                AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=TEMPE, INST=0.0),
+            )
 
-        CTM = AFFE_MATERIAU(
-            MAILLAGE=MAIL,
-            AFFE=_F(TOUT="OUI", MATER=MAT),
-            AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=ctxt["evol_ther"], VALE_REF=0.0),
-        )
+            self.listr = [0.0]
 
-        ctxt["timedone"].append(current_time)
-        listr = DEFI_LIST_REEL(VALE=ctxt["timedone"])
+        def run_iteration(self, i_iter, current_time, delta_t, data):
+            """Execute one iteration.
 
-        opts = {}
-        if i_iter > 1:
-            opts["reuse"] = ctxt["result"]
-            opts["RESULTAT"] = ctxt["result"]
-            opts["ETAT_INIT"] = _F(EVOL_NOLI=ctxt["result"])
+            Arguments:
+                i_iter (int): Iteration number if the current time_step.
+                current_time (float): Current time.
+                delta_t (float): Time step.
+                data (dict[*MEDCouplingField*]): dict of input fields.
 
-        ctxt["result"] = STAT_NON_LINE(
-            MODELE=model,
-            CHAM_MATER=CTM,
-            COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
-            EXCIT=_F(CHARGE=CHMECA),
-            INCREMENT=_F(LIST_INST=listr),
-            **opts,
-        )
+            Returns:
+                bool: True if solver has converged at the current time step, else False.
+                dict[*MEDCouplingField*]: Output fields, on nodes.
+            """
 
-        displ = ctxt["result"].getField("DEPL", ctxt["result"].getLastIndex())
-        mc_displ = medp.exportMEDCDisplacement(displ, "Displ")
-        print("[Convert] Displacement field info:")
-        print(mc_displ.simpleRepr(), flush=True)
+            assert len(data) == 1, "expecting one field"
+            mc_ther = data["TEMP"]
 
-        return True, {"DEPL": mc_displ}
+            # MEDC field => .med => code_aster field
+            TEMPE = medp.importMEDCTemperature(mc_ther)
 
-    ################################################################################
-    # Initialization
-    ################################################################################
+            self.evol_ther = CREA_RESU(
+                reuse=self.evol_ther,
+                RESULTAT=self.evol_ther,
+                TYPE_RESU="EVOL_THER",
+                OPERATION="AFFE",
+                AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=TEMPE, INST=current_time),
+            )
 
-    input_data = cpl.recv_input_fields()
-    TEMPE = medp.importMEDCTemperature(input_data["TEMP"])
+            CTM = AFFE_MATERIAU(
+                MAILLAGE=MAIL,
+                AFFE=_F(TOUT="OUI", MATER=MAT),
+                AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=self.evol_ther, VALE_REF=0.0),
+            )
 
-    cpl.ctxt["evol_ther"] = CREA_RESU(
-        TYPE_RESU="EVOL_THER", OPERATION="AFFE", AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=TEMPE, INST=0.0)
-    )
+            self.listr.append(current_time)
+
+            opts = {}
+            if i_iter > 1:
+                opts["reuse"] = self.result
+                opts["RESULTAT"] = self.result
+                opts["ETAT_INIT"] = _F(EVOL_NOLI=self.result)
+
+            self.result = STAT_NON_LINE(
+                MODELE=model,
+                CHAM_MATER=CTM,
+                COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
+                EXCIT=_F(CHARGE=CHMECA),
+                INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=self.listr)),
+                **opts,
+            )
+
+            displ = self.result.getField("DEPL", self.result.getLastIndex())
+            mc_displ = medp.exportMEDCDisplacement(displ, "Displ")
+            print("[Convert] Displacement field info:")
+            print(mc_displ.simpleRepr(), flush=True)
+
+            return True, {"DEPL": mc_displ}
 
     ################################################################################
     # loop on time steps
     ################################################################################
 
-    cpl.run(exec_iteration)
+    mech_solv = MechanicalSolver(cpl)
 
-    cpl.ctxt["result"] = CALC_CHAMP(
-        reuse=cpl.ctxt["result"],
-        RESULTAT=cpl.ctxt["result"],
+    cpl.run(mech_solv)
+
+    mech_solv.result = CALC_CHAMP(
+        reuse=mech_solv.result,
+        RESULTAT=mech_solv.result,
         CONTRAINTE=("SIGM_ELNO",),
         DEFORMATION=("EPSI_ELNO",),
         VARI_INTERNE=("VARI_ELNO",),
@@ -204,7 +214,7 @@ def coupled_mechanics(cpl):
         RESU=(
             _F(
                 INST=66.665999999999997,
-                RESULTAT=cpl.ctxt["result"],
+                RESULTAT=mech_solv.result,
                 NOM_CHAM="EPSI_ELNO",
                 GROUP_NO="N1",
                 NOM_CMP="EPXX",
@@ -213,7 +223,7 @@ def coupled_mechanics(cpl):
             ),
             _F(
                 INST=66.665999999999997,
-                RESULTAT=cpl.ctxt["result"],
+                RESULTAT=mech_solv.result,
                 NOM_CHAM="SIGM_ELNO",
                 GROUP_NO="N1",
                 NOM_CMP="SIYY",
@@ -222,7 +232,7 @@ def coupled_mechanics(cpl):
             ),
             _F(
                 INST=80.0,
-                RESULTAT=cpl.ctxt["result"],
+                RESULTAT=mech_solv.result,
                 NOM_CHAM="EPSI_ELNO",
                 GROUP_NO="N2",
                 NOM_CMP="EPZZ",
@@ -231,7 +241,7 @@ def coupled_mechanics(cpl):
             ),
             _F(
                 INST=80.0,
-                RESULTAT=cpl.ctxt["result"],
+                RESULTAT=mech_solv.result,
                 NOM_CHAM="VARI_ELNO",
                 GROUP_NO="N2",
                 NOM_CMP="V1",
@@ -240,7 +250,7 @@ def coupled_mechanics(cpl):
             ),
             _F(
                 INST=80.0,
-                RESULTAT=cpl.ctxt["result"],
+                RESULTAT=mech_solv.result,
                 NOM_CHAM="SIGM_ELNO",
                 GROUP_NO="N2",
                 NOM_CMP="SIYY",
@@ -249,7 +259,7 @@ def coupled_mechanics(cpl):
             ),
             _F(
                 INST=90.0,
-                RESULTAT=cpl.ctxt["result"],
+                RESULTAT=mech_solv.result,
                 NOM_CHAM="EPSI_ELNO",
                 GROUP_NO="N3",
                 NOM_CMP="EPZZ",
@@ -258,7 +268,7 @@ def coupled_mechanics(cpl):
             ),
             _F(
                 INST=90.0,
-                RESULTAT=cpl.ctxt["result"],
+                RESULTAT=mech_solv.result,
                 NOM_CHAM="VARI_ELNO",
                 GROUP_NO="N3",
                 NOM_CMP="V1",
@@ -267,7 +277,7 @@ def coupled_mechanics(cpl):
             ),
             _F(
                 INST=90.0,
-                RESULTAT=cpl.ctxt["result"],
+                RESULTAT=mech_solv.result,
                 NOM_CHAM="SIGM_ELNO",
                 GROUP_NO="N3",
                 NOM_CMP="SIYY",
