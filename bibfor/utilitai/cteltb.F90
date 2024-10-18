@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
-                  nkcmp, nkvari, toucmp, nbcmp, typac, ndim, &
+                  nkcmp, nkvari, toucmp, nbcmp, typac, &
                   nrval, resu, nomtb, nsymb, chpgs, chpsu, &
                   tych, nival, niord, label)
 !
@@ -74,7 +74,9 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbcmp, ndim, nbval, nbma
+    integer, parameter :: ndim = 3
+
+    integer :: nbcmp, nbval, nbma
     character(len=4) :: tych
     character(len=8) :: typac, noma, resu, nomtb
     character(len=16) :: nsymb
@@ -355,7 +357,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
                         ASSERT(kk .eq. ni)
 !
                         kk = 0
-                        table_valk(kk+1) = slabel
+                        table_valk(kk+1) = slabel(1:16)
                         kk = kk+1
                         if (resu .ne. ' ') then
                             table_valk(kk+1) = nsymb

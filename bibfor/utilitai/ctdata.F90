@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
-                  nkcmp, nkvari, nbcmp, ndim, chpgs, chpsu, noma, &
+                  nkcmp, nkvari, nbcmp, chpgs, chpsu, noma, &
                   nbno, nbma, nbval, tsca)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
 #include "asterfort/rs_get_liststore.h"
 #include "asterfort/rsGetOneBehaviourFromResult.h"
 !
-    integer :: nbcmp, ndim, nbno, nbma, nbval
+    integer :: nbcmp, nbno, nbma, nbval
     character(len=1) :: tsca
     character(len=4) :: tych
     character(len=8) :: noma
@@ -88,7 +88,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jkcha, i, ibid, iret, jlno, n1, jlma, n2, n3, nchi, n0, n4, ncho, ierr
+    integer :: jkcha, i, iret, jlno, n1, jlma, n2, n3, nchi, n0, n4, ncho, ierr
     integer :: n5, igrel, nbVari
     integer, pointer :: repe(:) => null()
     character(len=8) :: model, nomgd, noca
@@ -122,7 +122,6 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
             call dismoi('NOM_MAILLA', zk24(jkcha+i-1) (1:19), 'CHAMP', repk=noma)
             call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
             call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
-            call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
             call dismoi('NOM_GD', zk24(jkcha+i-1) (1:19), 'CHAMP', repk=nomgd)
             call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
             if (tsca .ne. 'R') then
@@ -142,20 +141,6 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
                 else if (n4 .ne. 0) then
                     call getvid('RESU', 'CARA_ELEM', iocc=1, scal=noca, nbret=n5)
                     if (n5 .ne. 0) exicar = .true.
-                end if
-!               DIMENSION MODELE POUR IMPRESSION COOR POINT GAUSS
-                call dismoi('DIM_GEOM', model, 'MODELE', repi=ibid)
-                ndim = ibid
-                if (ibid .ge. 100) then
-                    ibid = ibid-100
-                    ndim = 1
-                end if
-                if (ibid .ge. 20) then
-                    ibid = ibid-20
-                    ndim = 2
-                end if
-                if (ibid .eq. 3) then
-                    ndim = 3
                 end if
             end if
             goto 61

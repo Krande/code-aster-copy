@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 !
 interface
     subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
-                      nkcmp, toucmp, nbcmp, typac, ndim,&
+                      nkcmp, toucmp, nbcmp, typac, &
                       nrval, resu, nomtb, nsymb, nival,&
                       niord,label)
         integer :: nbno
@@ -34,7 +34,6 @@ interface
         aster_logical :: toucmp
         integer :: nbcmp
         character(len=8) :: typac
-        integer :: ndim
         character(len=24) :: nrval
         character(len=8) :: resu
         character(len=8) :: nomtb
