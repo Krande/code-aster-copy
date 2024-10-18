@@ -27,6 +27,7 @@ import medcoupling as MEDC
 import ParaMEDMEM as PMM
 
 from ..Commands import CREA_RESU, LIRE_CHAMP, PROJ_CHAMP
+from ..Objects import Mesh
 from ..Utilities.logger import logger
 from ..Utilities.mpi_utils import MPI
 
@@ -166,9 +167,8 @@ class MEDCoupler:
         self.log("creating interface mesh", verbosity=2)
 
         self.mesh = mesh
-        self.mesh_interf = mesh.restrict(groupsOfCells)
 
-        mm = self.mesh_interf.createMedCouplingMesh()
+        mm = self.mesh.createMedCouplingMesh()
         levels = mm.getGrpsNonEmptyLevels(groupsOfCells)
         assert len(levels) == 1, "Groups are not at one level"
         self.meshDimRelToMaxExt = levels[0]
@@ -176,6 +176,11 @@ class MEDCoupler:
         self.interf_ids.setName("interf")
         self.interf_mc = mm.getMeshAtLevel(0)[self.interf_ids]
         self.interf_mc.setName("interface")
+
+        meshMEDFile = MEDC.MEDFileUMesh()
+        meshMEDFile.setMeshAtLevel(0, self.interf_mc)
+        self.mesh_interf = Mesh()
+        self.mesh_interf.buildFromMedCouplingMesh(meshMEDFile)
 
         self._create_paramesh()
 
@@ -351,7 +356,7 @@ class MEDCoupler:
         tmpfile = "fort.77"
         MEDC.WriteUMesh(tmpfile, mc_mesh, True)
         MEDC.WriteFieldUsingAlreadyWrittenMesh(tmpfile, mc_field)
-        depl = LIRE_CHAMP(
+        field = LIRE_CHAMP(
             UNITE=77,
             MAILLAGE=self.mesh_interf,
             PROL_ZERO="OUI",
@@ -362,7 +367,7 @@ class MEDCoupler:
             INFO=1,
         )
         os.remove(tmpfile)
-        return depl
+        return field
 
     def import_field(self, mc_field, field_type, time=0.0):
         """Convert a MEDCoupling field defined on the interface as

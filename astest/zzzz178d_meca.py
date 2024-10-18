@@ -159,8 +159,6 @@ def coupled_mechanics(cpl):
     temp = mech_solv.evol_ther.getField("TEMP", 1)
     test.assertAlmostEqual(temp.norm("NORM_2"), 218.6233131691481)
 
-    # temp.printMedFile("/home/C00976/tmp/temp_proj.med")
-
     test.printSummary()
 
     ################################################################################

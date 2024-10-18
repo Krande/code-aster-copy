@@ -138,8 +138,6 @@ def coupled_thermics(cpl):
     temp = ther_solv.result.getField("TEMP", 1)
     test.assertAlmostEqual(temp.norm("NORM_2"), 218.6233131691481)
 
-    # temp.printMedFile("/home/C00976/tmp/temp.med")
-
     # Assign thermal model on linear model
     MODE_TQ = AFFE_MODELE(
         MAILLAGE=MQ, AFFE=_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="THERMIQUE")
@@ -155,7 +153,6 @@ def coupled_thermics(cpl):
     test.assertAlmostEqual(temp2.norm("NORM_INFINITY"), temp.norm("NORM_INFINITY"))
     test.assertAlmostEqual(temp2.norm("NORM_INFINITY"), 21.7467518133881)
 
-    print(temp2.norm("NORM_2"))
     test.assertAlmostEqual(temp2.norm("NORM_2"), 535.323717828298)
 
     ################################################################################
