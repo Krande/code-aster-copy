@@ -32,12 +32,13 @@ try:
 
 except ImportError:
 
-    from mpi4py import MPI
     import logging
+
+    from mpi4py import MPI
 
     class PLE:
         """
-        This class PLE is an encapsulation of ple.pyple_coupler if not present.
+        This class PLE is an encapsulation of ple.pyple_coupler if it is not present.
 
         The same API than ple.pyple_coupler is used.
 
@@ -83,7 +84,6 @@ except ImportError:
             Arguments:
                 app_name (str): name of the other application.
                 app_type (str, optional): type of application (default=None).
-
             """
 
             self.app_name = app_name
@@ -120,6 +120,9 @@ except ImportError:
 
             Arguments:
                 app_name (str): name of the app.
+
+            Returns:
+                list[int]: list of rank used for the application.
             """
 
             return self.app_ranks[app_name]

@@ -22,10 +22,10 @@ Definition of object that stores the parameters of a coupled simulation
 between code_saturne and code_aster.
 """
 
-from ..Utilities.logger import logger
-from ..Solvers import TimeStepper
-
 import numpy as np
+
+from ..Solvers import TimeStepper
+from ..Utilities.logger import logger
 
 
 class SchemeParams:
@@ -44,7 +44,7 @@ class SchemeParams:
 
         return default
 
-    def update(self, kwargs):
+    def set_values(self, kwargs):
         """Set values from keyword arguments.
 
         Arguments:

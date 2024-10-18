@@ -103,7 +103,7 @@ def coupled_thermics(cpl):
                 AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=T0, INST=0.0, MODELE=model, CHAM_MATER=CM),
             )
 
-            mc_temp = cpl.medcpl.exportMEDCTemperature(T0, "TEMP")
+            mc_temp = cpl.medcpl.export_temperature(T0, "TEMP")
             cpl.send_output_fields({"TEMP": mc_temp})
 
         def run_iteration(self, i_iter, current_time, delta_t, data, medcpl):
@@ -126,7 +126,7 @@ def coupled_thermics(cpl):
             mc_depl = data["DEPL"]
             if mc_depl:
                 # MEDC field => .med => code_aster field
-                depl = medcpl.importMEDCDisplacement(mc_depl)
+                depl = medcpl.import_displacement(mc_depl)
 
             self.listr.append(current_time)
 
@@ -141,7 +141,7 @@ def coupled_thermics(cpl):
             )
 
             temp = self.result.getField("TEMP", self.result.getLastIndex())
-            mc_temp = medcpl.exportMEDCTemperature(temp, "TEMP")
+            mc_temp = medcpl.export_temperature(temp, "TEMP")
             print("[Convert] Temperature field info:")
             print(mc_temp.simpleRepr(), flush=True)
 

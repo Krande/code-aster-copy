@@ -138,7 +138,7 @@ class ExternalCoupling:
         """
 
         if self.starter:
-            self.params.update(params)
+            self.params.set_values(params)
 
         self.params.nb_iter = self.MPI.COUPLING_COMM_WORLD.bcast(
             self.starter, 0, "NBSSIT", self.params.nb_iter, self.MPI.INT
@@ -165,7 +165,7 @@ class ExternalCoupling:
                 for _ in range(nb_step):
                     times.append(self.MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self.MPI.DOUBLE))
 
-                self.params.update({"time_list": times})
+                self.params.set_values({"time_list": times})
 
     def init_coupling(self, with_app):
         """Initialize the coupling with an other application.
@@ -229,7 +229,7 @@ class ExternalCoupling:
             for name, _, _ in self.fields_in:
                 data[name] = None
 
-        output_data = exec_iteration(0, 0.0, 1.0, data)
+        output_data = exec_iteration(0, 0.0, 1.0, data, self.medcpl)
 
         return output_data
 
@@ -241,7 +241,7 @@ class ExternalCoupling:
             params (dict): Parameters of the coupling scheme.
         """
 
-        # update parameters
+        # set parameters
         self.set_parameters(params)
 
         # initial sync before the loop
@@ -353,7 +353,7 @@ class SaturneCoupling(ExternalCoupling):
             params (dict): Parameters of the coupling scheme.
         """
 
-        # update parameters
+        # set parameters
         self.set_parameter(params)
 
         # initial sync before the loop
@@ -378,7 +378,7 @@ class SaturneCoupling(ExternalCoupling):
                 current_time += delta_t
                 input_data = self.recv_input_fields()
 
-                has_cvg, output_data = iteration_solver.run_iteration(
+                has_cvg, output_data = solver.run_iteration(
                     i_iter, current_time, delta_time, input_data, self.medcpl
                 )
 

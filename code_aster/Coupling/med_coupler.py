@@ -26,16 +26,9 @@ import os
 import medcoupling as MEDC
 import ParaMEDMEM as PMM
 
-
-from ..Commands import LIRE_CHAMP, PROJ_CHAMP, CREA_RESU
-from ..Objects import (
-    FieldOnNodesReal,
-    FieldOnCellsReal,
-    SimpleFieldOnNodesReal,
-    SimpleFieldOnCellsReal,
-)
-from ..Utilities.mpi_utils import MPI
+from ..Commands import CREA_RESU, LIRE_CHAMP, PROJ_CHAMP
 from ..Utilities.logger import logger
+from ..Utilities.mpi_utils import MPI
 
 
 class CoupledField:
@@ -346,8 +339,12 @@ class MEDCoupler:
         """Convert MEDCouplingField to FieldOnNodes/Cells
 
         Arguments:
-            field (FieldOn*): aster field.
-            filename (str): name of MED file.
+            mc_field (*MEDCouplingField*): MEDCoupling field.
+            field_type (str): type of the field (like `NOEU_DEPL_R`)
+            time (float, optional): Time of assignment.
+
+        Returns:
+            *Field*: aster field.
         """
 
         mc_mesh = mc_field.getMesh()
@@ -367,7 +364,7 @@ class MEDCoupler:
         os.remove(tmpfile)
         return depl
 
-    def importMEDCField(self, mc_field, field_type, time=0.0):
+    def import_field(self, mc_field, field_type, time=0.0):
         """Convert a MEDCoupling field defined on the interface as
         a code_aster field defined on the whole mesh.
 
@@ -383,7 +380,7 @@ class MEDCoupler:
         field = self._medcfield2aster(mc_field, field_type, time)
         return self.project_field(field)
 
-    def importMEDCDisplacement(self, mc_displ, time=0.0):
+    def import_displacement(self, mc_displ, time=0.0):
         """Convert a MEDCoupling displacement field defined on the interface as
         a code_aster field.
 
@@ -395,9 +392,9 @@ class MEDCoupler:
             *FieldOnNodesReal*: code_aster displacement field.
         """
 
-        return self.importMEDCField(mc_displ, "NOEU_DEPL_R", time)
+        return self.import_field(mc_displ, "NOEU_DEPL_R", time)
 
-    def exportMEDCDisplacement(self, displ, field_name):
+    def export_displacement(self, displ, field_name):
         """Create a MEDCoupling field of displacement reduced on the interface mesh.
 
         Arguments:
@@ -430,7 +427,7 @@ class MEDCoupler:
 
         return displ
 
-    def exportMEDCTemperature(self, temp, field_name):
+    def export_temperature(self, temp, field_name):
         """Create a MEDCoupling field of temperature reduced on the interface mesh.
 
         Arguments:
@@ -459,7 +456,7 @@ class MEDCoupler:
 
         return temp
 
-    def importMEDCTemperature(self, mc_temp, time=0.0):
+    def import_temperature(self, mc_temp, time=0.0):
         """Convert a MEDCoupling pemperature field as a code_aster field.
 
         Arguments:
@@ -470,9 +467,9 @@ class MEDCoupler:
             *FieldOnNodes*: code_aster thermal field.
         """
 
-        return self.importMEDCField(mc_temp, "NOEU_TEMP_R", time)
+        return self.import_field(mc_temp, "NOEU_TEMP_R", time)
 
-    def importMEDCFluidForces(self, mc_fluidf, field_name, time=0.0):
+    def import_fluidforces(self, mc_fluidf, field_name, time=0.0):
         """Convert a MEDCoupling pressure field as a code_aster field.
 
         Arguments:
@@ -484,7 +481,7 @@ class MEDCoupler:
             *LoadResult*: code_aster pressure as *LoadResult*.
         """
 
-        forces = self.importMEDCField(mc_fluidf, "ELEM_FORC_R", time)
+        forces = self.import_field(mc_fluidf, "ELEM_FORC_R", time)
 
         forces = CREA_RESU(
             TYPE_RESU="EVOL_CHAR",
