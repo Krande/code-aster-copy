@@ -38,7 +38,10 @@ def coupled_thermics(cpl):
     CA.init("--test", comm=cpl.MPI.ASTER_COMM_WORLD, debug=False, ERREUR=_F(ERREUR_F="ABORT"))
 
     # Read the quadratic mesh - 2 cases : 1 or several procs
-    MQ = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+    if CA.MPI.ASTER_COMM_WORLD.size > 1:
+        MQ = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, PARTITIONNEUR="PTSCOTCH")
+    else:
+        MQ = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
     # Create the linear mesh
     ML = CREA_MAILLAGE(MAILLAGE=MQ, QUAD_LINE=_F(TOUT="OUI"), INFO=1)

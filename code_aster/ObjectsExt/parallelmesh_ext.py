@@ -41,6 +41,7 @@ from ..Objects import (
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, Options, force_list, injector, shared_tmpdir
 from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from . import mesh_builder
 
 
@@ -259,6 +260,15 @@ class ExtendedParallelMesh:
         """
 
         return CREA_MAILLAGE(MAILLAGE=self, RESTREINT=_F(GROUP_MA=groupsOfCells), INFO=info)
+
+    def createMedCouplingMesh(self):
+        """Returns the MEDCoupling unstructured mesh associated to the current mesh.
+
+        Returns:
+            Mesh: The MEDCoupling unstructured mesh associated to the current mesh.
+        """
+
+        return convertMesh2MedCoupling(self)
 
     @classmethod
     def buildSquare(cls, l=1, refine=0, info=1, deterministic=False):

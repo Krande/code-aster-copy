@@ -39,15 +39,13 @@ comm = MPI.COMM_WORLD
 global_rank = comm.rank
 global_size = comm.size
 
-assert global_size == 2, "This testcase should be executed with 2 processes."
-
 
 ################################################################################
 # definition of the coupled cpl
 ################################################################################
 
 
-if global_rank == 0:
+if global_rank < global_size / 2:
     # define thermal coupling
     cpl_ther = ExternalCoupling("thermics", starter=True, debug=True)
     cpl_ther.init_coupling("mechanics")

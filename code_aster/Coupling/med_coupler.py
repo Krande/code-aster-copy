@@ -333,12 +333,10 @@ class MEDCoupler:
             field (FieldOn*): aster field.
             filename (str): name of MED file.
         """
-        if MPI.ASTER_COMM_WORLD.rank == 0:
-            if os.path.exists(filename):
-                os.remove(filename)
-            logger.debug("writing file {0!r}...".format(filename), flush=True)
-            field.printMedFile(filename)
-        MPI.ASTER_COMM_WORLD.Barrier()
+        if os.path.exists(filename):
+            os.remove(filename)
+        logger.debug("writing file {0!r}...".format(filename), flush=True)
+        field.printMedFile(filename)
 
     def _medcfield2aster(self, mc_field, field_type, time=0.0):
         """Convert MEDCouplingField to FieldOnNodes/Cells
@@ -413,7 +411,7 @@ class MEDCoupler:
         if len(cmps) != len(displ.getComponents()):
             displ = displ.restrict(cmps=cmps)
 
-        filename = "/tmp/displ.med"
+        filename = "displ_%i.med" % (MPI.ASTER_COMM_WORLD.rank)
         self._write_field2med(displ, filename)
 
         fieldname = displ.getName()[:8]
@@ -443,7 +441,7 @@ class MEDCoupler:
             *MEDCouplingField*: Pressure field on cells.
         """
 
-        filename = "/tmp/temp.med"
+        filename = "temp_%i.med" % (MPI.ASTER_COMM_WORLD.rank)
         self._write_field2med(temp, filename)
 
         fieldname = temp.getName()[:8]
