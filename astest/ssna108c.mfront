@@ -6,6 +6,10 @@
 @MaterialProperty stress E;
 @MaterialProperty real NU;
 
+/* Only for BEREMIN computation */
+@Epsilon 1.e-14;
+@AuxiliaryStateVariable real INDIPLAS;
+
 @Brick StandardElastoViscoPlasticity {
   stress_potential : "Hooke" {young_modulus : E, poisson_ratio : NU},
   inelastic_flow : "Plastic" {
@@ -16,3 +20,8 @@
     }
   }
 };
+
+@UpdateAuxiliaryStateVariables{
+  INDIPLAS = static_cast<real>(dp > 10 * epsilon);
+}
+
