@@ -8,4 +8,5 @@ P testlist submit verification parallel
 F comm zzzz178b.comm D 1
 R nom zzzz178b D 0
 R nom zzzz178b.mmed D 0
+R nom zzzz178d.mmed D 0
 R nom zzzz178b.datg D 0
