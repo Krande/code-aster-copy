@@ -17,12 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os.path as osp
 
 from code_aster.Commands import *
-from code_aster.Coupling import ExternalCoupling, MEDProj
 from code_aster import CA
-import medcoupling as MEDC
 
 
 def coupled_thermics(cpl):
@@ -37,27 +34,7 @@ def coupled_thermics(cpl):
     # send signal 6 (abort) to produce a traceback
     CA.init("--test", comm=cpl.comm, debug=False, ERREUR=_F(ERREUR_F="ABORT"))
 
-    # Study directory (containing this file and the datafiles)
-    STUDY = osp.dirname(__file__)
-
-    solid_med = "hsnv100z.mmed"
-    interf_med = "fort.89"
-
-    # prepare MEDCoupling meshes
-    mfm = MEDC.MEDFileUMesh(osp.join(STUDY, "hsnv100z.mmed"))
-    mc_solid = mfm.getMeshAtLevel(0)
-    interf_ids = mfm.getGroupArr(0, "M1")
-    interf_ids.setName("interf")
-    mc_interf = mc_solid[interf_ids]
-    mc_interf.setName("interface")
-
-    MEDC.WriteUMesh(interf_med, mc_interf, True)
-
-    MAIL = CA.Mesh()
-    MAIL.readMedFile(solid_med)
-
-    interf = CA.Mesh()
-    interf.readMedFile(interf_med)
+    MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
     cpl.setup(
         interface=(MAIL, ["M1"]),
@@ -68,15 +45,6 @@ def coupled_thermics(cpl):
     model = AFFE_MODELE(
         AFFE=_F(MODELISATION="AXIS", PHENOMENE="THERMIQUE", TOUT="OUI"), MAILLAGE=MAIL
     )
-
-    model_meca = AFFE_MODELE(
-        AFFE=_F(MODELISATION="AXIS", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=MAIL
-    )
-    modinterf = AFFE_MODELE(
-        AFFE=_F(MODELISATION="AXIS", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=interf
-    )
-
-    medp = MEDProj(mc_interf, interf_ids, 0, modinterf, model_meca)
 
     MAT = DEFI_MATERIAU(THER=_F(LAMBDA=1.0e-3, RHO_CP=0.0e-3))
 
@@ -135,10 +103,10 @@ def coupled_thermics(cpl):
                 AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=T0, INST=0.0, MODELE=model, CHAM_MATER=CM),
             )
 
-            mc_temp = medp.exportMEDCTemperature(T0, "TEMP")
+            mc_temp = cpl.medcpl.exportMEDCTemperature(T0, "TEMP")
             cpl.send_output_fields({"TEMP": mc_temp})
 
-        def run_iteration(self, i_iter, current_time, delta_t, data):
+        def run_iteration(self, i_iter, current_time, delta_t, data, medcpl):
             """Execute one iteration.
 
             Arguments:
@@ -146,6 +114,7 @@ def coupled_thermics(cpl):
                 current_time (float): Current time.
                 delta_t (float): Time step.
                 data (dict[*MEDCouplingField*]): dict of input fields.
+                medcpl (MEDCoupler): coupler to exchange and interpolate data.
 
             Returns:
                 bool: True if solver has converged at the current time step, else False.
@@ -153,6 +122,11 @@ def coupled_thermics(cpl):
             """
 
             assert len(data) == 1, "expecting one field"
+
+            mc_depl = data["DEPL"]
+            if mc_depl:
+                # MEDC field => .med => code_aster field
+                depl = medcpl.importMEDCDisplacement(mc_depl)
 
             self.listr.append(current_time)
 
@@ -167,7 +141,7 @@ def coupled_thermics(cpl):
             )
 
             temp = self.result.getField("TEMP", self.result.getLastIndex())
-            mc_temp = medp.exportMEDCTemperature(temp, "TEMP")
+            mc_temp = medcpl.exportMEDCTemperature(temp, "TEMP")
             print("[Convert] Temperature field info:")
             print(mc_temp.simpleRepr(), flush=True)
 

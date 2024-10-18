@@ -6,7 +6,7 @@ P mpi_nbnoeud 1
 P testlist submit verification parallel
 
 F comm hsnv100z.comm D 1
-R nom hsnv100z.mmed D 0
+F mmed hsnv100z.mmed D 20
 F libr hsnv100z_ther.py D 21
 F libr hsnv100z_meca.py D 22
 

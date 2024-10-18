@@ -21,11 +21,11 @@
 Definition of objects for coupled simulations with code_aster.
 """
 
-from ..Utilities.MedUtils.med_coupler import MEDCoupler
 from ..Utilities.logger import logger
 
 from .parameters import SchemeParams
 from .mpi_coupling import MPICoupling
+from .med_coupler import MEDCoupler
 from .ple_utils import PLE
 
 
@@ -40,14 +40,14 @@ class ExternalCoupling:
 
     Attributes:
         ple (*ple_coupler*): PLE Coupler object.
-        tag (int): tag used for direct MPI communication (`CS_CALCIUM_MPI_TAG`
-           ).
         mesh (*medcoupling.MEDCouplingUMesh*): Mesh of the interface.
         fields_in (list): List of exchanged fields (field name, number of
             components, components names).
         fields_out (list): List of exchanged fields (field name, number of
             components, components names).
         params (SchemeParams): Parameters of the coupling scheme.
+        medcpl (MEDCouple): Coupler to exchange and interpolate fields.
+        MPI (MPICoupling): Wrapping of mpi4py
     """
 
     def __init__(self, app="code_aster", starter=False, debug=False):
@@ -275,11 +275,8 @@ class ExternalCoupling:
                     input_data = self.recv_input_fields()
 
                 has_cvg, output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data
+                    i_iter, current_time, delta_time, input_data, self.medcpl
                 )
-
-                # # get convergence indicator
-                # assert icvast == 1, f"icvast = {icvast}"
 
                 # send data to other code
                 if self.starter:
@@ -314,8 +311,13 @@ class ExternalCoupling:
 
     @property
     def mesh_interface(self):
-        """MedcouplingUMesh: mesh of the interface."""
-        return self.medcpl.interf_mesh
+        """Mesh|ParallelMesh: mesh of the interface."""
+        return self.medcpl.mesh_interf
+
+    @property
+    def mesh(self):
+        """Mesh|ParallelMesh: coupled mesh."""
+        return self.medcpl.mesh
 
 
 class SaturneCoupling(ExternalCoupling):
@@ -382,7 +384,7 @@ class SaturneCoupling(ExternalCoupling):
                 input_data = self.recv_input_fields()
 
                 has_cvg, output_data = iteration_solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data
+                    i_iter, current_time, delta_time, input_data, self.medcpl
                 )
 
                 # received cvg

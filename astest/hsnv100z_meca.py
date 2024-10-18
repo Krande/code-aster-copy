@@ -17,11 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os.path as osp
-import medcoupling as MEDC
 
 from code_aster.Commands import *
-from code_aster.Coupling import ExternalCoupling, MEDProj
 from code_aster import CA
 
 
@@ -38,34 +35,10 @@ def coupled_mechanics(cpl):
     # send signal 6 (abort) to produce a traceback
     CA.init("--test", comm=cpl.comm, debug=False, ERREUR=_F(ERREUR_F="ABORT"))
 
-    # Study directory (containing this file and the datafiles)
-    STUDY = osp.dirname(__file__)
-
-    solid_med = "hsnv100z.mmed"
-    interf_med = "fort.88"
-
-    # prepare MEDCoupling meshes
-    mfm = MEDC.MEDFileUMesh(osp.join(STUDY, "hsnv100z.mmed"))
-    mc_solid = mfm.getMeshAtLevel(0)
-    interf_ids = mfm.getGroupArr(0, "M1")
-    interf_ids.setName("interf")
-    mc_interf = mc_solid[interf_ids]
-    mc_interf.setName("interface")
-
-    MEDC.WriteUMesh(interf_med, mc_interf, True)
-
-    MAIL = CA.Mesh()
-    MAIL.readMedFile(solid_med)
-
-    interf = CA.Mesh()
-    interf.readMedFile(interf_med)
+    MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
     model = AFFE_MODELE(
         AFFE=_F(MODELISATION="AXIS", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=MAIL
-    )
-
-    modinterf = AFFE_MODELE(
-        AFFE=_F(MODELISATION="AXIS", PHENOMENE="THERMIQUE", TOUT="OUI"), MAILLAGE=interf
     )
 
     cpl.setup(
@@ -73,8 +46,6 @@ def coupled_mechanics(cpl):
         input_fields=[("TEMP", ["TEMP"], "NODES")],
         output_fields=[("DEPL", ["DX", "DY"], "NODES")],
     )
-
-    medp = MEDProj(mc_interf, interf_ids, 0, modinterf, model)
 
     # DONNEES DE MODELISATION
 
@@ -126,7 +97,7 @@ def coupled_mechanics(cpl):
         def __init__(self, cpl):
 
             input_data = cpl.recv_input_fields()
-            TEMPE = medp.importMEDCTemperature(input_data["TEMP"])
+            TEMPE = cpl.medcpl.importMEDCTemperature(input_data["TEMP"])
 
             self.evol_ther = CREA_RESU(
                 TYPE_RESU="EVOL_THER",
@@ -136,7 +107,7 @@ def coupled_mechanics(cpl):
 
             self.listr = [0.0]
 
-        def run_iteration(self, i_iter, current_time, delta_t, data):
+        def run_iteration(self, i_iter, current_time, delta_t, data, medcpl):
             """Execute one iteration.
 
             Arguments:
@@ -144,6 +115,7 @@ def coupled_mechanics(cpl):
                 current_time (float): Current time.
                 delta_t (float): Time step.
                 data (dict[*MEDCouplingField*]): dict of input fields.
+                medcpl (MEDCoupler): coupler to exchange and interpolate data.
 
             Returns:
                 bool: True if solver has converged at the current time step, else False.
@@ -154,7 +126,7 @@ def coupled_mechanics(cpl):
             mc_ther = data["TEMP"]
 
             # MEDC field => .med => code_aster field
-            TEMPE = medp.importMEDCTemperature(mc_ther)
+            TEMPE = medcpl.importMEDCTemperature(mc_ther)
 
             self.evol_ther = CREA_RESU(
                 reuse=self.evol_ther,
@@ -188,7 +160,7 @@ def coupled_mechanics(cpl):
             )
 
             displ = self.result.getField("DEPL", self.result.getLastIndex())
-            mc_displ = medp.exportMEDCDisplacement(displ, "Displ")
+            mc_displ = medcpl.exportMEDCDisplacement(displ, "Displ")
             print("[Convert] Displacement field info:")
             print(mc_displ.simpleRepr(), flush=True)
 

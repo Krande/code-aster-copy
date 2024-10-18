@@ -21,10 +21,21 @@
 Definition of a convenient object to synchronize MEDCoupling fields.
 """
 
+import os
+
 import medcoupling as MEDC
 import ParaMEDMEM as PMM
 
-from ..logger import logger
+
+from ..Commands import LIRE_CHAMP, PROJ_CHAMP, CREA_RESU
+from ..Objects import (
+    FieldOnNodesReal,
+    FieldOnCellsReal,
+    SimpleFieldOnNodesReal,
+    SimpleFieldOnCellsReal,
+)
+from ..Utilities.mpi_utils import MPI
+from ..Utilities.logger import logger
 
 
 class CoupledField:
@@ -107,7 +118,8 @@ class MEDCoupler:
     def __init__(self, logfunc=None):
         self.dec = {MEDC.ON_NODES: {}, MEDC.ON_CELLS: {}}
         self.xdec = {MEDC.ON_NODES: {}, MEDC.ON_CELLS: {}}
-        self.interf_mesh = None
+        self.interf_mesh = self.interf_mc = self.mesh = None
+        self.matr_proj = None
         self.exch_fields = {}
 
         self.log = logfunc if logfunc else logger
@@ -147,7 +159,7 @@ class MEDCoupler:
                     group = dec.getSourceGrp()
                 else:
                     group = dec.getTargetGrp()
-                dec.mesh = PMM.ParaMESH(self.interf_mesh, group, "couplingMesh")
+                dec.mesh = PMM.ParaMESH(self.interf_mc, group, "couplingMesh")
 
     def create_mesh_interface(self, mesh, groupsOfCells):
         """Create the Medcoupling mesh of the interface.
@@ -160,15 +172,17 @@ class MEDCoupler:
 
         self.log("creating interface mesh", verbosity=2)
 
-        mm = mesh.createMedCouplingMesh()
+        self.mesh = mesh
+        self.mesh_interf = mesh.restrict(groupsOfCells)
+
+        mm = self.mesh_interf.createMedCouplingMesh()
         levels = mm.getGrpsNonEmptyLevels(groupsOfCells)
         assert len(levels) == 1, "Groups are not at one level"
-        interf_ids = mm.getGroupsArr(levels[0], groupsOfCells)
-        interf_ids.setName("interf")
-        mc_interf = mm.getMeshAtLevel(0)[interf_ids]
-        mc_interf.setName("interface")
-
-        self.interf_mesh = mc_interf
+        self.meshDimRelToMaxExt = levels[0]
+        self.interf_ids = mm.getGroupsArr(self.meshDimRelToMaxExt, groupsOfCells)
+        self.interf_ids.setName("interf")
+        self.interf_mc = mm.getMeshAtLevel(0)[self.interf_ids]
+        self.interf_mc.setName("interface")
 
         self._create_paramesh()
 
@@ -204,10 +218,10 @@ class MEDCoupler:
             dec = self.xdec[sup][field_name]
             if field_type == "CELLS":
                 nature = MEDC.IntensiveConservation
-                nb_tuples = self.interf_mesh.getNumberOfCells()
+                nb_tuples = self.interf_mc.getNumberOfCells()
             else:
                 nature = MEDC.IntensiveMaximum
-                nb_tuples = self.interf_mesh.getNumberOfNodes()
+                nb_tuples = self.interf_mc.getNumberOfNodes()
 
             topo = PMM.ComponentTopology(len(components))
             pfield = PMM.ParaFIELD(sup, MEDC.ONE_TIME, dec.mesh, topo)
@@ -312,3 +326,203 @@ class MEDCoupler:
             # self.log(array, verbosity=2)
         self.log(f"pmm_recv: done", verbosity=2)
         return fields
+
+    @staticmethod
+    def _write_field2med(field, filename):
+        """Write field on disk using MED format.
+
+        Arguments:
+            field (FieldOn*): aster field.
+            filename (str): name of MED file.
+        """
+        if MPI.ASTER_COMM_WORLD.rank == 0:
+            if os.path.exists(filename):
+                os.remove(filename)
+            logger.debug("writing file {0!r}...".format(filename), flush=True)
+            field.printMedFile(filename)
+        MPI.ASTER_COMM_WORLD.Barrier()
+
+    def _medcfield2aster(self, mc_field, field_type, time=0.0):
+        """Convert MEDCouplingField to FieldOnNodes/Cells
+
+        Arguments:
+            field (FieldOn*): aster field.
+            filename (str): name of MED file.
+        """
+
+        mc_mesh = mc_field.getMesh()
+        tmpfile = "fort.77"
+        MEDC.WriteUMesh(tmpfile, mc_mesh, True)
+        MEDC.WriteFieldUsingAlreadyWrittenMesh(tmpfile, mc_field)
+        depl = LIRE_CHAMP(
+            UNITE=77,
+            MAILLAGE=self.mesh_interf,
+            PROL_ZERO="OUI",
+            NOM_MED=mc_field.getName(),
+            TYPE_CHAM=field_type,
+            NOM_CMP_IDEM="OUI",
+            INST=time,
+            INFO=1,
+        )
+        os.remove(tmpfile)
+        return depl
+
+    def importMEDCField(self, mc_field, field_type, time=0.0):
+        """Convert a MEDCoupling field defined on the interface as
+        a code_aster field defined on the whole mesh.
+
+        Arguments:
+            mc_field (*MEDCouplingField*): MEDCoupling field.
+            field_type (str): type of the field (like `NOEU_DEPL_R`)
+            time (float, optional): Time of assignment.
+
+        Returns:
+            *FieldOnNodes*: code_aster field defined on the whole mesh.
+        """
+
+        field = self._medcfield2aster(mc_field, field_type, time)
+        return self.project_field(field)
+
+    def importMEDCDisplacement(self, mc_displ, time=0.0):
+        """Convert a MEDCoupling displacement field defined on the interface as
+        a code_aster field.
+
+        Arguments:
+            mc_displ (*MEDCouplingField*): MEDCoupling displacement field.
+            time (float, optional): Time of assignment.
+
+        Returns:
+            *FieldOnNodesReal*: code_aster displacement field.
+        """
+
+        return self.importMEDCField(mc_displ, "NOEU_DEPL_R", time)
+
+    def exportMEDCDisplacement(self, displ, field_name):
+        """Create a MEDCoupling field of displacement reduced on the interface mesh.
+
+        Arguments:
+            displ (*FieldOnNodes*): code_aster displacement field.
+            field_name (str): Field name.
+
+        Returns:
+            *MEDCouplingField*: Displacement field.
+        """
+        cmps = [cmp for cmp in displ.getComponents() if cmp in ["DX", "DY", "DZ"]]
+        if len(cmps) != len(displ.getComponents()):
+            displ = displ.restrict(cmps=cmps)
+
+        filename = "/tmp/displ.med"
+        self._write_field2med(displ, filename)
+
+        fieldname = displ.getName()[:8]
+        mc_displ = MEDC.ReadFieldNode(
+            filename, displ.getMesh().getName(), self.meshDimRelToMaxExt, fieldname, -1, -1
+        )
+
+        displ = mc_displ[self.interf_ids]
+        displ.setName(field_name)
+        displ.setNature(MEDC.IntensiveMaximum)
+        displ.setMesh(self.interf_mc)
+        array = displ.getArray()
+        array.setInfoOnComponents(cmps)
+        displ.checkConsistencyLight()
+        os.remove(filename)
+
+        return displ
+
+    def exportMEDCTemperature(self, temp, field_name):
+        """Create a MEDCoupling field of temperature reduced on the interface mesh.
+
+        Arguments:
+            temp (*FieldOnNodes*): code_aster thermal field.
+            field_name (str): Field name.
+
+        Returns:
+            *MEDCouplingField*: Pressure field on cells.
+        """
+
+        filename = "/tmp/temp.med"
+        self._write_field2med(temp, filename)
+
+        fieldname = temp.getName()[:8]
+        mc_temp = MEDC.ReadFieldNode(
+            filename, temp.getMesh().getName(), self.meshDimRelToMaxExt, fieldname, -1, -1
+        )
+
+        temp = mc_temp[self.interf_ids]
+        temp.setName(field_name)
+        temp.setNature(MEDC.IntensiveMaximum)
+        temp.setMesh(self.interf_mc)
+        temp.getArray().setInfoOnComponents(["TEMP"])
+        temp.checkConsistencyLight()
+        os.remove(filename)
+
+        return temp
+
+    def importMEDCTemperature(self, mc_temp, time=0.0):
+        """Convert a MEDCoupling pemperature field as a code_aster field.
+
+        Arguments:
+            mc_temp (*MEDCouplingField*): MEDCoupling temp field.
+            time (float, optional): Time of assignment.
+
+        Returns:
+            *FieldOnNodes*: code_aster thermal field.
+        """
+
+        return self.importMEDCField(mc_temp, "NOEU_TEMP_R", time)
+
+    def importMEDCFluidForces(self, mc_fluidf, field_name, time=0.0):
+        """Convert a MEDCoupling pressure field as a code_aster field.
+
+        Arguments:
+            mc_fluidf (*MEDCouplingField*): MEDCoupling pressure field.
+            field_name (str): Field name.
+            time (float, optional): Time of assignment.
+
+        Returns:
+            *LoadResult*: code_aster pressure as *LoadResult*.
+        """
+
+        forces = self.importMEDCField(mc_fluidf, "ELEM_FORC_R", time)
+
+        forces = CREA_RESU(
+            TYPE_RESU="EVOL_CHAR",
+            OPERATION="AFFE",
+            AFFE=_F(NOM_CHAM="FORC_NODA", CHAM_GD=forces, MODELE=self.model_interf, INST=time),
+        )
+        # projection on the entire model
+        proj_forces = PROJ_CHAMP(
+            METHODE="COLLOCATION",
+            RESULTAT=forces,
+            MODELE_1=self.model_interf,
+            MODELE_2=self.model,
+            # VIS_A_VIS=_F(
+            #     GROUP_MA_1="interf",
+            #     GROUP_MA_2="interf",
+            # ),
+            TOUT_ORDRE="OUI",
+            PROL_ZERO="OUI",
+        )
+        return proj_forces
+
+    def project_field(self, field):
+        """Project field from ther interface to the whole mesh and
+        extend by zero where the field does not exist.
+
+        Arguments:
+            field (FieldOn***): field defined on the interface mesh.
+
+        Returns
+            (FieldOn***): field projected on the whole mesh.
+        """
+
+        if self.matr_proj is None:
+            self.matr_proj = PROJ_CHAMP(
+                METHODE="COLLOCATION",
+                PROJECTION="NON",
+                MAILLAGE_1=self.mesh_interf,
+                MAILLAGE_2=self.mesh,
+            )
+
+        return PROJ_CHAMP(CHAM_GD=field, MATR_PROJECTION=self.matr_proj, PROL_ZERO="OUI")

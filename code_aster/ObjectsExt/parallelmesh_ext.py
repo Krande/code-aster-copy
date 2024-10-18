@@ -248,6 +248,18 @@ class ExtendedParallelMesh:
 
         return CREA_MAILLAGE(MAILLAGE=self, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes), INFO=info)
 
+    def restrict(self, groupsOfCells, info=1):
+        """Restrict the mesh to given groups of cells.
+
+        Arguments:
+            info [int] : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the restricted mesh.
+        """
+
+        return CREA_MAILLAGE(MAILLAGE=self, RESTREINT=_F(GROUP_MA=groupsOfCells), INFO=info)
+
     @classmethod
     def buildSquare(cls, l=1, refine=0, info=1, deterministic=False):
         """Build the quadrilateral mesh of a square.
