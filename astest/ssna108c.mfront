@@ -1,6 +1,6 @@
 @DSL Implicit;
 @Behaviour ssna108c;
-
+@Theta 1.;
 @Algorithm NewtonRaphson;
 
 @MaterialProperty stress E;
@@ -24,4 +24,3 @@
 @UpdateAuxiliaryStateVariables{
   INDIPLAS = static_cast<real>(dp > 10 * epsilon);
 }
-
