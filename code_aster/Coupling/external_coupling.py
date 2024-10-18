@@ -22,10 +22,9 @@ Definition of objects for coupled simulations with code_aster.
 """
 
 from ..Utilities.logger import logger
-
-from .parameters import SchemeParams
-from .mpi_coupling import MPICoupling
 from .med_coupler import MEDCoupler
+from .mpi_calcium import MPI_CALCIUM
+from .parameters import SchemeParams
 from .ple_utils import PLE
 
 
@@ -46,8 +45,9 @@ class ExternalCoupling:
         fields_out (list): List of exchanged fields (field name, number of
             components, components names).
         params (SchemeParams): Parameters of the coupling scheme.
-        medcpl (MEDCouple): Coupler to exchange and interpolate fields.
-        MPI (MPICoupling): Wrapping of mpi4py
+        medcpl (MEDCoupler): Coupler to exchange and interpolate fields.
+        MPI (MPI_CALCIUM): Wrapping of mpi4py for communication inside
+            application and between applications.
     """
 
     def __init__(self, app="code_aster", starter=False, debug=False):
@@ -61,11 +61,6 @@ class ExternalCoupling:
         self.fields_in = []
         self.fields_out = []
         self.params = SchemeParams()
-
-    @property
-    def comm(self):
-        """Attribute that holds the sub-communicator for the application."""
-        return self.MPI.COMM
 
     def __getstate__(self):
         """Disable pickling"""
@@ -145,10 +140,10 @@ class ExternalCoupling:
         if self.starter:
             self.params.update(params)
 
-        self.params.nb_iter = self.MPI.SUB_COMM.bcast(
+        self.params.nb_iter = self.MPI.COUPLING_COMM_WORLD.bcast(
             self.starter, 0, "NBSSIT", self.params.nb_iter, self.MPI.INT
         )
-        self.params.epsilon = self.MPI.SUB_COMM.bcast(
+        self.params.epsilon = self.MPI.COUPLING_COMM_WORLD.bcast(
             self.starter, 0, "EPSILO", self.params.epsilon, self.MPI.DOUBLE
         )
 
@@ -158,17 +153,17 @@ class ExternalCoupling:
                 nb_step = len(times)
             else:
                 nb_step = 0
-            self.MPI.SUB_COMM.send(0, "NBPDTM", nb_step, self.MPI.INT)
+            self.MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self.MPI.INT)
             if nb_step > 0:
-                self.MPI.SUB_COMM.send(0, "STEP", self.params.init_time, self.MPI.DOUBLE)
+                self.MPI.COUPLING_COMM_WORLD.send(0, "STEP", self.params.init_time, self.MPI.DOUBLE)
                 for i in range(nb_step):
-                    self.MPI.SUB_COMM.send(0, "STEP", times[i], self.MPI.DOUBLE)
+                    self.MPI.COUPLING_COMM_WORLD.send(0, "STEP", times[i], self.MPI.DOUBLE)
         else:
-            nb_step = self.MPI.SUB_COMM.recv(0, "NBPDTM", self.MPI.INT)
+            nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
             if nb_step > 0:
-                times = [self.MPI.SUB_COMM.recv(0, "STEP", self.MPI.DOUBLE)]
+                times = [self.MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self.MPI.DOUBLE)]
                 for _ in range(nb_step):
-                    times.append(self.MPI.SUB_COMM.recv(0, "STEP", self.MPI.DOUBLE))
+                    times.append(self.MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self.MPI.DOUBLE))
 
                 self.params.update({"time_list": times})
 
@@ -190,7 +185,7 @@ class ExternalCoupling:
         other_ranks = self.ple.get_app_ranks(with_app)
         self.log(f"allocated ranks for {with_app!r}: {other_ranks}", verbosity=verbosity)
         assert other_ranks, f"Application {with_app!r} not found!"
-        self.MPI = MPICoupling(self.ple.base_comm, self.ple.my_comm, other_ranks[0], self.log)
+        self.MPI = MPI_CALCIUM(self.ple.base_comm, self.ple.my_comm, other_ranks[0], self.log)
 
         self.log(
             f"{self.whoami!r} coupler created from #{myranks[0]}, "
@@ -281,11 +276,11 @@ class ExternalCoupling:
                 # send data to other code
                 if self.starter:
                     self.send_output_fields(output_data)
-                    converged = self.MPI.SUB_COMM.allreduce(
+                    converged = self.MPI.COUPLING_COMM_WORLD.allreduce(
                         i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
                     )
                 else:
-                    converged = self.MPI.SUB_COMM.allreduce(
+                    converged = self.MPI.COUPLING_COMM_WORLD.allreduce(
                         i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
                     )
                     self.send_output_fields(output_data)
@@ -374,8 +369,8 @@ class SaturneCoupling(ExternalCoupling):
 
             for i_iter in range(self.params.nb_iter):
 
-                self.MPI.SUB_COMM.send(istep, "DTAST", delta_t, self.MPI.DOUBLE)
-                delta_t = self.MPI.SUB_COMM.recv(istep, "DTCALC", self.MPI.DOUBLE)
+                self.MPI.COUPLING_COMM_WORLD.send(istep, "DTAST", delta_t, self.MPI.DOUBLE)
+                delta_t = self.MPI.COUPLING_COMM_WORLD.recv(istep, "DTCALC", self.MPI.DOUBLE)
 
                 self.log("coupling iteration #{0:d}, time: {1:f}".format(i_iter, current_time))
 

@@ -32,7 +32,7 @@ def coupled_thermics(cpl):
     # setup the simulation
     ################################################################################
     # send signal 6 (abort) to produce a traceback
-    CA.init("--test", comm=cpl.comm, debug=False, ERREUR=_F(ERREUR_F="ABORT"))
+    CA.init("--test", comm=cpl.MPI.ASTER_COMM_WORLD, debug=False, ERREUR=_F(ERREUR_F="ABORT"))
 
     MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
