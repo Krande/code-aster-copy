@@ -17,8 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 # ......................................................................
+
+BEHAVIOUR = CREA_LIB_MFRONT(NOM_COMPOR="zzzz163b", UNITE_MFRONT=40)
 
 M = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -31,61 +33,9 @@ MO = AFFE_MODELE(
     ),
 )
 
-
-COMP = DEFI_FONCTION(
-    NOM_PARA="EPSI",
-    PROL_DROITE="LINEAIRE",
-    PROL_GAUCHE="LINEAIRE",
-    VALE=(
-        0.002775,
-        555.0,
-        0.005000,
-        588.7,
-        0.010000,
-        631.0,
-        0.0150,
-        657.0,
-        0.0200,
-        676.0,
-        0.0250,
-        691.0,
-        0.0300,
-        704.0,
-        0.0400,
-        725.0,
-        0.0500,
-        741.0,
-        0.0750,
-        772.0,
-        0.1000,
-        794.0,
-        0.1250,
-        812.0,
-        0.1500,
-        827.0,
-        0.2000,
-        851.0,
-        0.3000,
-        887.0,
-        0.4000,
-        912.0,
-        0.5000,
-        933.0,
-        0.6000,
-        950.0,
-        0.7000,
-        965.0,
-        0.8000,
-        978.0,
-        0.9000,
-        990.0,
-    ),
-)
-
-
 ACIER = DEFI_MATERIAU(
-    ELAS=_F(E=200000.0, NU=0.3, ALPHA=0.0),
-    TRACTION=_F(SIGM=COMP),
+    ELAS=_F(E=2e5, NU=0.3, ALPHA=0.0),
+    MFRONT=_F(LISTE_COEF=(2e5, 0.3)),
     WEIBULL=_F(M=8.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
 )
 
@@ -116,9 +66,9 @@ U = STAT_NON_LINE(
     MODELE=MO,
     CHAM_MATER=CM,
     EXCIT=(_F(CHARGE=CHARG), _F(CHARGE=ZERO)),
-    COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
+    COMPORTEMENT=_F(RELATION="MFRONT", RESI_INTE=1e-14, COMPOR_MFRONT=BEHAVIOUR),
     INCREMENT=_F(LIST_INST=L_INST, NUME_INST_FIN=10),
-    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-06, ITER_GLOB_MAXI=25),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10),
 )
 
 
@@ -129,7 +79,7 @@ BERE = POST_BEREMIN(
     DEFORMATION="PETIT",
     GROUP_MA="s_tout",
     FILTRE_SIGM="SIGM_ELGA",
-    LIST_NUME_VARI=(1, 2),
+    LIST_NUME_VARI=(5, 6),
 )
 
 
@@ -140,7 +90,7 @@ BERE2 = POST_BEREMIN(
     DEFORMATION="PETIT",
     GROUP_MA="s_tout",
     FILTRE_SIGM="SIGM_ELMOY",
-    LIST_NUME_VARI=(1, 2),
+    LIST_NUME_VARI=(5, 6),
 )
 
 

@@ -1,0 +1,27 @@
+@DSL Implicit;
+@Behaviour zzzz163b;
+@Theta 1.;
+@Algorithm NewtonRaphson;
+@ModellingHypothesis PlaneStrain;
+
+@MaterialProperty stress E;
+@MaterialProperty real NU;
+
+/* Only for BEREMIN computation */
+@Epsilon 1.e-14;
+@AuxiliaryStateVariable real INDIPLAS;
+
+@Brick StandardElastoViscoPlasticity {
+  stress_potential : "Hooke" {young_modulus : E, poisson_ratio : NU},
+  inelastic_flow : "Plastic" {
+    criterion : "Mises",
+    isotropic_hardening : "Data" {
+      values : {0 : 555, 0.0020565: 588.7, 0.006845: 631, 0.011715:657, 0.01662: 676, 0.021545: 691, 0.02648: 704, 0.036375: 725, 0.046295: 741, 0.07114: 772, 0.09603: 794, 0.12094: 812, 0.145865: 827, 0.195745: 851, 0.295565: 887, 0.39544: 912, 0.495335: 933, 0.59525: 950, 0.695175: 965, 0.79511: 978, 0.89505: 990},
+      interpolation : "linear"
+    }
+  }
+};
+
+@UpdateAuxiliaryStateVariables{
+  INDIPLAS = static_cast<real>(dp > 10 * epsilon);
+}

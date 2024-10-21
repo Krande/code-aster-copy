@@ -19,13 +19,7 @@
 """
 Utilitary functions for POST_BEREMIN
 """
-import tempfile
-import medcoupling as mc
-
 from libaster import EntityType
-
-from ...Cata.Syntax import _F
-from ...CodeCommands import DEFI_FICHIER, IMPR_RESU
 
 from ...Objects import NonLinearResult
 
@@ -71,129 +65,74 @@ def get_beremin_properties(resusd, group_ma):
     return dwb
 
 
-def get_resu_from_deftype(resusd, defopb):
+def get_resu_from_deftype(resusd, grmapb, defopb, numvs):
     """
     Result to consider to compute Beremin stress
 
     Arguments:
-        resusd (NonLinearResult): Resultat aster concept
-        defopb (str): Deformation type ("PETIT" or "GDEF_LOG")
+        resusd (NonLinearResult): Resultat aster input
+        grmapb (str): Mesh cells group for Beremin (one group only).
+        defopb (str): {"PETIT", "GDEF_LOG"} Deformation type
+        numvs (dict): {"vari":LIST_NUME_VARI, "sief": LIST_NUME_SIEF}
 
     Returns:
         tuple:
 
             - First value is result to consider to compute Weibull stress
-            - Second value is indices of internal variables EPSPEQ and INDIPLAS
-            - Third value is list of medcoupling time steps, followed by
-              (iteration, order, time step)
-            - Fourth value is list of values of maximum of plasticity, if
+            - Second value is list of time steps (nume_ordre, time step), in plasticity only
+            - Third value is list of values of maximum of plasticity, if
               strictly greater than 0
 
-    """
-    rvga = make_rvga(resusd)
-
-    med_filename_in = tempfile.NamedTemporaryFile(dir=".", suffix=".med").name
-
-    unite = DEFI_FICHIER(FICHIER=med_filename_in, ACTION="ASSOCIER", TYPE="LIBRE", ACCES="NEW")
-
-    IMPR_RESU(UNITE=unite, PROC0="NON", RESU=_F(RESULTAT=rvga, NOM_CHAM="VARI_ELGA"))
-
-    DEFI_FICHIER(ACTION="LIBERER", UNITE=unite)
-
-    mclinst = []
-    l_epspmax = []
-    mcchamp = mc.MEDFileData(med_filename_in).getFields()["{}VARI_ELGA_NOMME".format(rvga.userName)]
-    for mctime in mcchamp.getTimeSteps():
-        epspmax = (
-            mcchamp[(mctime[0], mctime[1])]
-            .getFieldAtLevel(mc.ON_GAUSS_PT, 0)
-            .getArray()[:, 0]
-            .getMaxValue()[0]
-        )
-        if epspmax > 0:
-            mclinst.append(mctime)
-            l_epspmax.append(epspmax)
-
-    if len(mclinst) > 0:
-        for field in mc.MEDFileFields(med_filename_in, False).getFieldsNames():
-            if field[8:] == "VARI_ELGA_NOMME":
-                numv1v2 = [
-                    1
-                    + [
-                        elt[0] for elt in mc.GetComponentsNamesOfField(med_filename_in, field)
-                    ].index(comp)
-                    for comp in ("EPSPEQ", "INDIPLAS")
-                ]
-
-        if defopb == "GDEF_LOG":
-            cmd_result = (
-                get_resu_gdef_log(resusd, med_filename_in, rvga),
-                numv1v2,
-                mclinst,
-                l_epspmax,
-            )
-
-        else:
-            cmd_result = (resusd, numv1v2, mclinst, l_epspmax)
-    else:
-        cmd_result = (None, None, mclinst, l_epspmax)
-
-    return cmd_result
-
-
-def make_rvga(resusd):
-    """
-    Result to consider to compute Beremin stress
-
-    Arguments:
-        resusd (NonLinearResult): Resultat aster concept
-
-    Returns:
-        NonLinearResult: Restriction of resusd to VARI_ELGA
     """
     rvga = NonLinearResult()
     rvga.allocate(resusd.getNumberOfIndexes())
     rvga.userName = "rvga____"
 
+    l_instplas = []
+    l_epspmax = []
     for nume_inst in resusd.getIndexes():
-        rvga.setField(resusd.getField("VARI_ELGA", nume_inst), "VARI_ELGA", nume_inst)
+        chvari = resusd.getField("VARI_ELGA", nume_inst)
+        maxepspeq = max(
+            chvari.getValuesWithDescription("V{}".format(numvs["vari"][0]), [grmapb])[0]
+        )
+        if maxepspeq > 0:
+            l_instplas.append((nume_inst, resusd.getTime(nume_inst)))
+            l_epspmax.append(maxepspeq)
+        rvga.setField(chvari, "VARI_ELGA", nume_inst)
         rvga.setMaterialField(resusd.getMaterialField(nume_inst), nume_inst)
         rvga.setField(resusd.getField("COMPORTEMENT", nume_inst), "COMPORTEMENT", nume_inst)
         rvga.setTime(resusd.getTime(nume_inst), nume_inst)
 
-    return rvga
+    if len(l_instplas) > 0:
+
+        if defopb == "GDEF_LOG":
+
+            cmd_result = (get_resu_gdef_log(resusd, rvga, numvs["sief"]), l_instplas, l_epspmax)
+
+        else:
+            cmd_result = (resusd, l_instplas, l_epspmax)
+    else:
+        cmd_result = (None, l_instplas, l_epspmax)
+
+    return cmd_result
 
 
-def get_resu_gdef_log(resusd, med_filename_in, rvga):
+def get_resu_gdef_log(resusd, rvga, numsief):
     """
     Result to consider to compute Beremin stress when DEFORMATION="GDEF_LOG"
 
     Arguments:
         resusd (NonLinearResult): Resultat aster concept
-        med_filename_in (str): Filename of temporary file
         rvga (NonLinearResult): Result of VARI_ELGA
+        numsief (list): Indices of Kirchhoff stresses
 
     Returns:
         NonLinearResult: Result to consider to compute Weibull stress
     """
     dim_geom = resusd.getModel().getMesh().getDimension()
 
-    for field in mc.MEDFileFields(med_filename_in, False).getFieldsNames():
-        if field[8:] == "VARI_ELGA_NOMME":
-            numcmpsel = [
-                1
-                + [elt[0] for elt in mc.GetComponentsNamesOfField(med_filename_in, field)].index(
-                    comp
-                )
-                for comp in {
-                    2: ("TXX", "TYY", "TZZ", "TXY"),
-                    3: ("TXX", "TYY", "TZZ", "TXY", "TXZ", "TYZ"),
-                }[dim_geom]
-            ]
-
     reswbrest = NonLinearResult()
     reswbrest.allocate(resusd.getNumberOfIndexes())
-
     for rank in resusd.getIndexes():
         chvga = rvga.getField("VARI_ELGA", rank)
 
@@ -203,7 +142,7 @@ def get_resu_gdef_log(resusd, med_filename_in, rvga):
                 "SIEF_R",
                 dict(
                     zip(
-                        tuple(f"V{ncs}" for ncs in numcmpsel),
+                        tuple(f"V{ncs}" for ncs in numsief),
                         {
                             2: ("SIXX", "SIYY", "SIZZ", "SIXY"),
                             3: ("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
