@@ -60,22 +60,6 @@ class Closer(ExecuteCommand):
         self._exit = keywords.pop("exit", False)
         self._atexit = keywords.pop("atexit", False)
 
-    def adapt_syntax(self, keywords):
-        """Adapt syntax after checking syntax.
-
-        Change defaults depending on the parallel execution context.
-
-        Arguments:
-            keywords (dict): Keywords arguments of user's keywords, changed
-                in place.
-        """
-        # if PROC0 is not provided by the user
-        if not keywords.get("PROC0") and haveMPI():
-            keywords["PROC0"] = "OUI"
-            option = ExecutionParameter().option
-            if option & Options.HPCMode or not option & Options.LastStep:
-                keywords["PROC0"] = "NON"
-
     @classmethod
     def run(cls, **keywords):
         """Run the Command.
@@ -93,13 +77,22 @@ class Closer(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._options = FinalizeOptions.SaveBase
+        option = ExecutionParameter().option
+        self._options = FinalizeOptions.Set
+        if not option & Options.LastStep:
+            self._options |= FinalizeOptions.SaveBase
+        else:
+            # at the last step
+            if haveMPI() and not option & Options.HPCMode:
+                self._options |= FinalizeOptions.OnlyProc0
+            if option & Options.SaveBase:
+                self._options |= FinalizeOptions.SaveBase
+        if keywords.get("INFO_BASE") == "OUI":
+            self._options |= FinalizeOptions.InfoBase
         if keywords.get("INFO_RESU") == "OUI":
             self._options |= FinalizeOptions.InfoResu
         if keywords.get("RETASSAGE") == "OUI":
             self._options |= FinalizeOptions.Repack
-        if keywords.get("PROC0") == "OUI":
-            self._options |= FinalizeOptions.OnlyProc0
         super().exec_(keywords)
         Closer._is_finalized = True
         # restore excepthook
