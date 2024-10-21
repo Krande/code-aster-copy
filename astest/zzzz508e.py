@@ -250,5 +250,52 @@ reac_noda = disc_comp.getMechanicalReactionForces(
 # )
 
 
+########## tests interpolation
+test = CA.TestCase()
+
+t0 = 0.0
+t1 = 1.0
+v0 = 0.0
+v1 = 2.0
+
+depl_t0 = CA.FieldOnNodesReal(model)
+depl_t0.setValues(v0)
+depl_t1 = CA.FieldOnNodesReal(model)
+depl_t1.setValues(v1)
+
+sief_t0 = CA.FieldOnCellsReal(model, "ELGA", "SIEF_R", phys_pb.getBehaviourProperty())
+sief_t0.setValues(v0)
+sief_t1 = CA.FieldOnCellsReal(model, "ELGA", "SIEF_R", phys_pb.getBehaviourProperty())
+sief_t1.setValues(v1)
+
+resu = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(
+        _F(NOM_CHAM="DEPL", MODELE=model, CHAM_GD=depl_t0, INST=t0),
+        _F(NOM_CHAM="DEPL", MODELE=model, CHAM_GD=depl_t1, INST=t1),
+        _F(NOM_CHAM="SIEF_ELGA", MODELE=model, CHAM_GD=sief_t0, INST=t0),
+        _F(NOM_CHAM="SIEF_ELGA", MODELE=model, CHAM_GD=sief_t1, INST=t1),
+    ),
+)
+t_interp = 0.5
+v_interp_resu = 1.0
+depl_interp = resu.interpolateField("DEPL", t_interp)
+sief_interp = resu.interpolateField("SIEF_ELGA", t_interp)
+
+test.assertTrue(all(abs(i - v_interp_resu) < 1.0e-12 for i in depl_interp.getValues()))
+test.assertTrue(all(abs(i - v_interp_resu) < 1.0e-12 for i in sief_interp.getValues()))
+with test.assertRaises(ValueError):
+    err = resu.interpolateField("DEEEEEPL", t_interp)
+with test.assertRaises(ValueError):
+    err = resu.interpolateField("DEPL", 1.5)
+with test.assertRaises(ValueError):
+    err = resu.interpolateField("DEPL", -0.5)
+with test.assertRaises(ValueError):
+    err = resu.interpolateField("DEPL", t_interp, prec=-1.0)
+with test.assertRaises(ValueError):
+    err = resu.interpolateField("SIEF_ELGA", t_interp, crit="ABSOREL")
+
+test.printSummary()
 FIN()
 #

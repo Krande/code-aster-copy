@@ -50,7 +50,9 @@ class SearchList:
 
     @precision.setter
     def precision(self, value):
-        assert value >= np.finfo(float).eps
+        prec = np.finfo(float).eps
+        if not value >= prec:
+            raise ValueError(f"Invalid precision value {value}")
         self._precision = value
 
     @property
@@ -84,16 +86,17 @@ class SearchList:
             criterion (str): The search criterion ( ABSOLU|RELATIF )
         """
 
-        assert all(isinstance(i, (int, float)) for i in values)
+        assert len(values) >= 1
+        assert all(np.isreal(values))
         self._values = np.array(values)
         self.precision = precision
         self.criterion = criterion
 
-    def _search_candidates(self, value):
+    def _get_bounds(self, value):
         """
-        Search indexes of value matching the defined criterion
+        Get bounds of value considering precision and criterion
         """
-        assert isinstance(value, (int, float))
+        assert np.isreal(value), value
 
         if self.criterion == "RELATIF":
             min_v = value * (1 - self.precision)
@@ -102,7 +105,13 @@ class SearchList:
             min_v = value - self.precision
             max_v = value + self.precision
 
-        min_v, max_v = sorted((min_v, max_v))
+        return sorted((min_v, max_v))
+
+    def _search_candidates(self, value):
+        """
+        Search indexes of value matching the defined criterion
+        """
+        min_v, max_v = self._get_bounds(value)
         return np.flatnonzero(np.logical_and(self._values >= min_v, self._values <= max_v))
 
     def __contains__(self, value):
@@ -116,17 +125,22 @@ class SearchList:
         idx = self._search_candidates(value)
         return len(idx) == 1
 
+    def assertAllUnique(self):
+        """
+        Assert if all the values are unique
+        """
+        if not all(self.unique(i) for i in self):
+            raise ValueError(f"List values are not unique {self.values}")
+
     def index(self, value):
         """
         Return index of value if value is unique
         """
         idx = self._search_candidates(value)
         if len(idx) == 0:
-            msg = f"{value} is not in list"
-            raise ValueError(msg)
+            raise ValueError(f"{value} is not in list")
         if len(idx) > 1:
             values = [self._values[i] for i in idx]
-            msg = f"{value} is not unique in list: {values} at indexes {idx}"
-            raise IndexError(msg)
+            raise IndexError(f"{value} is not unique in list: {values} at indexes {idx}")
         else:
             return idx[0]

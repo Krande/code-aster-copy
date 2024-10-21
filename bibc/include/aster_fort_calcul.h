@@ -166,6 +166,10 @@ void DEFSSSSPPPSSSSS( VECHME_WRAP, vechme_wrap, const char *, STRING_SIZE, const
                       STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
                       const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALLO_RSINCHPRE( a, b, c, d ) CALLOOOP( RSINCHPRE, rsinchpre, a, b, c, d )
+void DEFSSSP( RSINCHPRE, rsinchpre, const char *, STRING_SIZE, const char *, STRING_SIZE,
+              const char *, STRING_SIZE, const ASTERINTEGER * );
+
 #define CALLO_RSINCH( a, b, c, d, e, f, g, h, i, l, m, n )                                         \
     CALLOOOPOOOPOPOP( RSINCH, rsinch, a, b, c, d, e, f, g, h, i, l, m, n )
 void DEFSSSPSSSPSPSP( RSINCH, rsinch, const char *, STRING_SIZE, const char *, STRING_SIZE,

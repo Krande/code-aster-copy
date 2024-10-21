@@ -507,6 +507,24 @@ class Result : public DataStructure, public ListOfTables {
                    const ASTERINTEGER storageIndex );
 
     /**
+     * @brief Interpolation
+     */
+
+    FieldOnNodesRealPtr
+    interpolateFieldOnNodesReal( const std::string name, const ASTERDOUBLE value,
+                                 const std::string para = "INST", const std::string left = "EXCLU",
+                                 const std::string right = "EXCLU",
+                                 const std::string crit = "RELATIF", const ASTERDOUBLE prec = 1.e-6,
+                                 const bool updatePtr = true ) const;
+
+    FieldOnCellsRealPtr
+    interpolateFieldOnCellsReal( const std::string name, const ASTERDOUBLE value,
+                                 const std::string para = "INST", const std::string left = "EXCLU",
+                                 const std::string right = "EXCLU",
+                                 const std::string crit = "RELATIF", const ASTERDOUBLE prec = 1.e-6,
+                                 const bool updatePtr = true ) const;
+
+    /**
      * @brief Impression de la sd au format MED
      * @param fileName Nom du fichier MED à imprimer
      * @return true

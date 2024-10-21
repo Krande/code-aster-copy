@@ -756,6 +756,100 @@ void Result::printInfo() const {
     CALLO_RSINFO( getName(), &umess );
 }
 
+FieldOnNodesRealPtr
+Result::interpolateFieldOnNodesReal( const std::string name, const ASTERDOUBLE value,
+                                     const std::string para, const std::string left,
+                                     const std::string right, const std::string crit,
+                                     const ASTERDOUBLE prec, const bool updatePtr ) const {
+
+    VectorString namesok = getFieldsOnNodesRealNames();
+    VectorString paraok = { "INST" };
+    VectorString extrok = { "EXCLU", "LINEAIRE", "CONSTANT" };
+    VectorString critok = { "ABSOLU", "RELATIF" };
+
+    if ( std::count( namesok.begin(), namesok.end(), name ) == 0 ) {
+        AS_ABORT( "Invalid input " + name );
+    }
+    if ( std::count( paraok.begin(), paraok.end(), para ) == 0 ) {
+        AS_ABORT( "Invalid input " + para );
+    }
+    if ( std::count( extrok.begin(), extrok.end(), left ) == 0 ) {
+        AS_ABORT( "Invalid input " + left );
+    }
+    if ( std::count( extrok.begin(), extrok.end(), right ) == 0 ) {
+        AS_ABORT( "Invalid input " + right );
+    }
+    if ( std::count( critok.begin(), critok.end(), crit ) == 0 ) {
+        AS_ABORT( "Invalid input " + crit );
+    }
+    if ( prec < 0.0 ) {
+        AS_ABORT( "Invalid input " + std::to_string( prec ) );
+    }
+
+    const auto model = this->getModel();
+    FieldOnNodesRealPtr result = std::make_shared< FieldOnNodesReal >( model );
+
+    std::string base( "G" );
+    ASTERINTEGER iret = 100;
+    ASTERINTEGER stop = 0;
+
+    CALLO_RSINCH( this->getName(), name, para, &value, result->getName(), right, left, &stop, base,
+                  &prec, crit, &iret );
+    if ( iret > 2 ) {
+        AS_ABORT( "Interpolation error " + std::to_string( iret ) );
+    }
+    if ( updatePtr )
+        result->updateValuePointers();
+    return result;
+}
+
+FieldOnCellsRealPtr
+Result::interpolateFieldOnCellsReal( const std::string name, const ASTERDOUBLE value,
+                                     const std::string para, const std::string left,
+                                     const std::string right, const std::string crit,
+                                     const ASTERDOUBLE prec, const bool updatePtr ) const {
+
+    VectorString namesok = getFieldsOnCellsRealNames();
+    VectorString paraok = { "INST" };
+    VectorString extrok = { "EXCLU", "LINEAIRE", "CONSTANT" };
+    VectorString critok = { "ABSOLU", "RELATIF" };
+
+    if ( std::count( namesok.begin(), namesok.end(), name ) == 0 ) {
+        AS_ABORT( "Invalid input " + name );
+    }
+    if ( std::count( paraok.begin(), paraok.end(), para ) == 0 ) {
+        AS_ABORT( "Invalid input " + para );
+    }
+    if ( std::count( extrok.begin(), extrok.end(), left ) == 0 ) {
+        AS_ABORT( "Invalid input " + left );
+    }
+    if ( std::count( extrok.begin(), extrok.end(), right ) == 0 ) {
+        AS_ABORT( "Invalid input " + right );
+    }
+    if ( std::count( critok.begin(), critok.end(), crit ) == 0 ) {
+        AS_ABORT( "Invalid input " + crit );
+    }
+    if ( prec < 0.0 ) {
+        AS_ABORT( "Invalid input " + std::to_string( prec ) );
+    }
+
+    const auto fed = this->getModel()->getFiniteElementDescriptor();
+    FieldOnCellsRealPtr result = std::make_shared< FieldOnCellsReal >( fed );
+
+    std::string base( "G" );
+    ASTERINTEGER iret = 100;
+    ASTERINTEGER stop = 0;
+
+    CALLO_RSINCH( this->getName(), name, para, &value, result->getName(), right, left, &stop, base,
+                  &prec, crit, &iret );
+    if ( iret > 2 ) {
+        AS_ABORT( "Interpolation error " + std::to_string( iret ) );
+    }
+    if ( updatePtr )
+        result->updateValuePointers();
+    return result;
+};
+
 void Result::printMedFile( const std::string fileName, std::string medName, bool local ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;

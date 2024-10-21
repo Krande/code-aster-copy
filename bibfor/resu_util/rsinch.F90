@@ -18,12 +18,13 @@
 
 subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
                   proldr, prolga, istop, base, prec, crit, ier)
+
+    use searchlist_module, only: almostEqual
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/barych.h"
-#include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -33,7 +34,6 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/lxliis.h"
 #include "asterfort/rsbary.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rslipa.h"
@@ -41,6 +41,8 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/rsinchpre.h"
+
 !
     integer, intent(in) :: istop
     real(kind=8), intent(in) :: rval
@@ -83,8 +85,6 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
     real(kind=8) :: valr
     integer :: l1, l2
     character(len=1) :: stp, base2
-    character(len=4) :: type, tysca
-    character(len=8) :: nomobj, k8debu, k8maxi, k8ent
     character(len=19) :: ch1, ch2
     character(len=8) :: prold2, prolg2
     character(len=19) :: noms2
@@ -94,10 +94,9 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iacces, iaobj, iatach
-    integer :: iatava, ibid, idebu, ier1, ier2, ierr1, ierr2
-    integer :: iloty, imaxi, inomch, ip1, ip2, iposit, nbord2
-    integer :: nbordr
+    integer :: i, i1, i2, iaobj, iatach
+    integer :: iadesc, ier1, ier2
+    integer :: ip1, ip2, iposit, nbordr, nbvalid
     aster_logical, pointer :: lexi(:) => null()
 
 !-----------------------------------------------------------------------
@@ -109,182 +108,141 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
     prolg2 = prolga
     chext2 = chextr
     base2 = base
+
+    call rsinchpre(noms2, nomc2, acce2, ier)
+    if (ier .eq. 0) then
 !
-!     -- VERIFICATION DE LA VARIABLE D'ACCES:
-!     ---------------------------------------
-!
-    call jenonu(jexnom(noms2//'.NOVA', acce2), iacces)
-    if (iacces .eq. 0) then
-        ier = 20
-        goto 998
-    end if
-!
-    call jeveuo(jexnum(noms2//'.TAVA', iacces), 'L', iatava)
-    nomobj = zk8(iatava-1+1)
-    k8debu = zk8(iatava-1+2)
-    call lxliis(k8debu, idebu, ier1)
-    k8maxi = zk8(iatava-1+3)
-    call lxliis(k8maxi, imaxi, ier2)
-    ASSERT((abs(ier1)+abs(ier2)) .eq. 0)
-    if (ier2 .ne. 0) then
-        ier = 20
-        goto 998
-    end if
-!
-    call jelira(noms2//nomobj, 'TYPE', cval=type)
-    call jelira(noms2//nomobj, 'LTYP', iloty)
-    call codent(iloty, 'G', k8ent)
-    tysca = type(1:1)//k8ent(1:3)
-    if (tysca .ne. 'R8  ') then
-        ier = 20
-        goto 998
-    end if
-!
-    call rslipa(noms2, acces, '&&RSINCH.LIR8', iaobj, nbordr)
-!
-!
-!     -- VERIFICATION DU NOM DE CHAMP:
-!     --------------------------------
-    call jenonu(jexnom(noms2//'.DESC', nomc2), inomch)
-    if (inomch .eq. 0) then
-        ier = 21
-        goto 998
-    end if
-!
-!     -- ON INTERPOLE :
-!     -----------------
+        call rslipa(noms2, acces, '&&RSINCH.LIR8', iaobj, nbordr)
 !
 !     -- ON REPERE QUELS SONT LES CHAMPS EXISTANT REELLEMENT:
-    AS_ALLOCATE(vl=lexi, size=nbordr)
-    call jenonu(jexnom(noms2//'.DESC', nomc2), ibid)
-    call jeveuo(jexnum(noms2//'.TACH', ibid), 'L', iatach)
-    nbord2 = 0
-    do i = 1, nbordr
-        if (zk24(iatach-1+i) (1:1) .eq. ' ') then
-            lexi(i) = .false.
-        else
-            lexi(i) = .true.
-            nbord2 = nbord2+1
-        end if
-    end do
-!
-    call rsbary(zr(iaobj), nbordr, ASTER_FALSE, lexi, rval, &
-                i1, i2, iposit, prec, crit)
-    if (iposit .eq. -2) then
-        ier = 10
-        goto 998
-    end if
-    call rsutro(nomsd, i1, ip1, ierr1)
-    call rsutro(nomsd, i2, ip2, ierr2)
-    ASSERT(ierr1+ierr2 .le. 0)
-    rbase = zr(iaobj-1+i2)-zr(iaobj-1+i1)
-!
-    call rsexch(' ', nomsd, nomc2, ip1, ch1, &
-                l1)
-    call rsexch(' ', nomsd, nomc2, ip2, ch2, &
-                l2)
-    ASSERT(l1+l2 .le. 0)
-!
-!     -- SI LES 2 POINTS IP1 ET IP2 ONT MEME ABSCISSE, ON RECOPIE
-!     -- SIMPLEMENT LE CHAMP(IP1) DANS CHEXT2.
-    if (rbase .eq. 0.0d0) then
-        if (iposit .eq. 0) then
-            call copisd('CHAMP_GD', base2, ch1(1:19), chext2(1:19))
-            ier = 0
-            goto 998
-        else
-!         -- CAS DE L'EVOL_XXX QUI N'A QU'UN SEUL INSTANT :
-!            ON AUTORISE LE PROLONGEMENT CONSTANT ET ON ALARME
-            ASSERT(nbord2 .eq. 1)
-            r1 = 1.d0
-            r2 = 0.d0
-            if ((prold2 .ne. 'CONSTANT') .or. (prolg2 .ne. 'CONSTANT')) then
-                prold2 = 'CONSTANT'
-                prolg2 = 'CONSTANT'
-                if (rval .ne. zr(iaobj-1+i1)) then
-                    call utmess('A', 'CALCULEL_28', sk=nomsd)
-                end if
+        AS_ALLOCATE(vl=lexi, size=nbordr)
+        call jenonu(jexnom(noms2//'.DESC', nomc2), iadesc)
+        call jeveuo(jexnum(noms2//'.TACH', iadesc), 'L', iatach)
+        do i = 1, nbordr
+            if (zk24(iatach-1+i) (1:1) .eq. ' ') then
+                lexi(i) = .false.
+            else
+                lexi(i) = .true.
             end if
-        end if
-    else
-        r1 = (zr(iaobj-1+i2)-rval)/rbase
-        r2 = (rval-zr(iaobj-1+i1))/rbase
-    end if
+        end do
+        nbvalid = count(lexi(1:nbordr))
 !
-!     -- INTERPOLATION VRAIE:
-!     -----------------------
-    if (iposit .eq. 0) then
-        call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
-        ier = 0
-        goto 998
+        call rsbary(zr(iaobj), nbordr, ASTER_FALSE, lexi, rval, &
+                    i1, i2, iposit, prec, crit)
+        AS_DEALLOCATE(vl=lexi)
+        ASSERT(iposit .ne. -2)
+        call rsutro(nomsd, i1, ip1, ier1)
+        call rsutro(nomsd, i2, ip2, ier2)
+        ASSERT(ier1+ier2 .le. 0)
+        rbase = zr(iaobj-1+i2)-zr(iaobj-1+i1)
 !
-!        -- PROLONGEMENT A GAUCHE:
-!        -------------------------
-    else if (iposit .eq. -1) then
-        ier = 1
-        if (prolg2(1:8) .eq. 'LINEAIRE') then
-            call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
-        else if (prolg2(1:8) .eq. 'CONSTANT') then
-            call copisd('CHAMP_GD', base2, ch1(1:19), chext2(1:19))
+        call rsexch(' ', nomsd, nomc2, ip1, ch1, l1)
+        call rsexch(' ', nomsd, nomc2, ip2, ch2, l2)
+        ASSERT(l1+l2 .le. 0)
+!
+        if (i1 .eq. i2) then
+            ! --- RECOPIE DU CHAMP SI LES 2 POINTS IP1 ET IP2 ONT MEME ABSCISSE
+            if (iposit .eq. 0) then
+                ! CAS EXCEPTION OU ON DEMANDE UN INSTANT EXISTANT DANS LA LISTE
+                call copisd('CHAMP_GD', base2, ch1(1:19), chext2(1:19))
+                ier = 0
+            else if ((iposit .eq. -1)) then
+                ! CAS EXCEPTION DE PROLONGATION GAUCHE AVEC LISTE D'UN SEUL INSTANT
+                ASSERT(nbvalid .eq. 1)
+                if (prold2 .ne. "CONSTANT") then
+                    ! SEULE L'OPTION CONSTANT A DU SENS
+                    call utmess("A", "CALCULEL_28")
+                end if
+                call copisd('CHAMP_GD', base2, ch1(1:19), chext2(1:19))
+                ier = 1
+            else if ((iposit .eq. 1)) then
+                ASSERT(nbvalid .eq. 1)
+                ! CAS EXCEPTION DE PROLONGATION DROITE AVEC LISTE D'UN SEUL INSTANT
+                if (prold2 .ne. "CONSTANT") then
+                    ! SEULE L'OPTION CONSTANT A DU SENS
+                    call utmess("A", "CALCULEL_28")
+                end if
+                call copisd('CHAMP_GD', base2, ch1(1:19), chext2(1:19))
+                ier = 2
+            else
+                ASSERT(.false.)
+            end if
         else
-            ier = 11
-        end if
-        goto 998
-!
+            !     -- INTERPOLATION VRAIE:
+            !     -----------------------
+            r1 = (zr(iaobj-1+i2)-rval)/rbase
+            r2 = (rval-zr(iaobj-1+i1))/rbase
+
+            if (iposit .eq. 0) then
+                call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
+                ier = 0
+            else if (iposit .eq. -1) then
+                !        -- PROLONGEMENT A GAUCHE:
+                !        -------------------------
+                if (prolg2(1:8) .eq. 'LINEAIRE') then
+                    call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
+                    ier = 1
+                else if (prolg2(1:8) .eq. 'CONSTANT') then
+                    call copisd('CHAMP_GD', base2, ch1(1:19), chext2(1:19))
+                    ier = 1
+                else
+                    ier = 11
+                end if
+
 !        -- PROLONGEMENT A DROITE:
 !        -------------------------
-    else if (iposit .eq. 1) then
-        ier = 2
-        if (prold2(1:8) .eq. 'LINEAIRE') then
-            call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
-        else if (prold2(1:8) .eq. 'CONSTANT') then
-            call copisd('CHAMP_GD', base2, ch2(1:19), chext2(1:19))
-        else
-            ier = 12
+            else if (iposit .eq. 1) then
+                if (prold2(1:8) .eq. 'LINEAIRE') then
+                    call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
+                    ier = 2
+                else if (prold2(1:8) .eq. 'CONSTANT') then
+                    call copisd('CHAMP_GD', base2, ch2(1:19), chext2(1:19))
+                    ier = 2
+                else
+                    ier = 12
+                end if
+            else
+                ASSERT(.false.)
+            end if
         end if
-        goto 998
-!
+        call jedetr('&&RSINCH.LIR8')
     end if
-998 continue
 !
 !     -- MESSAGES, ARRET?
 !     -------------------
-    if (istop .eq. 0) then
-        goto 999
-    else if (istop .eq. 1) then
-        stp = 'A'
-    else if (istop .eq. 2) then
-        stp = 'F'
+    if (istop .ne. 0) then
+        if (istop .eq. 1) then
+            stp = 'A'
+        else if (istop .eq. 2) then
+            stp = 'F'
+        else
+            ASSERT(.false.)
+        end if
+!
+!
+        if (ier .eq. 11) then
+            call utmess(stp//'+', 'UTILITAI8_32')
+        else if (ier .eq. 12) then
+            call utmess(stp//'+', 'UTILITAI8_33')
+        else if (ier .eq. 10) then
+            valk(1) = nomc2
+            call utmess(stp//'+', 'UTILITAI8_34', sk=valk(1))
+        else if (ier .eq. 20) then
+            valk(1) = acce2
+            call utmess(stp//'+', 'UTILITAI8_35', sk=valk(1))
+        else if (ier .eq. 21) then
+            valk(1) = nomc2
+            call utmess(stp//'+', 'UTILITAI8_36', sk=valk(1))
+        end if
+!
+        if (ier .ge. 10) then
+            valk(1) = nomsd
+            valk(2) = nomch
+            valk(3) = acces
+            valr = rval
+            call utmess(stp, 'UTILITAI8_37', nk=3, valk=valk, sr=valr)
+        end if
     end if
-!
-!
-    if (ier .eq. 11) then
-        call utmess(stp//'+', 'UTILITAI8_32')
-    else if (ier .eq. 12) then
-        call utmess(stp//'+', 'UTILITAI8_33')
-    else if (ier .eq. 10) then
-        valk(1) = nomc2
-        call utmess(stp//'+', 'UTILITAI8_34', sk=valk(1))
-    else if (ier .eq. 20) then
-        valk(1) = acce2
-        call utmess(stp//'+', 'UTILITAI8_35', sk=valk(1))
-    else if (ier .eq. 21) then
-        valk(1) = nomc2
-        call utmess(stp//'+', 'UTILITAI8_36', sk=valk(1))
-    end if
-!
-    if (ier .ge. 10) then
-        valk(1) = nomsd
-        valk(2) = nomch
-        valk(3) = acces
-        valr = rval
-        call utmess(stp, 'UTILITAI8_37', nk=3, valk=valk, sr=valr)
-    end if
-!
-!
-999 continue
-    call jedetr('&&RSINCH.LIR8')
-    AS_DEALLOCATE(vl=lexi)
 !
     call jedema()
 end subroutine
