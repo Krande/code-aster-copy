@@ -110,6 +110,17 @@ void DEFSP( MGIS_GET_ISVS_SIZES, mgis_get_isvs_sizes, const char *hexid, STRING_
 #endif
 }
 
+void DEFSP( MGIS_GET_ISVS_TYPES, mgis_get_isvs_types, const char *hexid, STRING_SIZE l_id,
+            ASTERINTEGER *types ) {
+#ifdef ASTER_HAVE_MGIS
+    // output array must be big enough
+    auto vartypes = getPtr( hexid, l_id )->getInternalStateVariablesTypes();
+    for ( auto i = 0; i < vartypes.size(); ++i ) {
+        types[i] = (ASTERINTEGER)vartypes[i];
+    }
+#endif
+}
+
 void DEFSPPP( MGIS_SET_INTERNAL_STATE_VARIABLES, mgis_set_internal_state_variables,
               const char *hexid, STRING_SIZE l_id, ASTERINTEGER *stid, ASTERDOUBLE *values,
               ASTERINTEGER *nbvar ) {

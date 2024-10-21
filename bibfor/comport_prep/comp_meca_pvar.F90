@@ -104,7 +104,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp
     character(len=255) :: libr_name, subr_name
     character(len=16) :: extern_addr, notype
-    integer :: extern_type, model_dim
+    integer :: extern_type
     type(BehaviourPrep_Exte), pointer :: prepExte(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -255,7 +255,6 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
             libr_name = prepExte(mapZoneNume)%libr_name
             extern_addr = prepExte(mapZoneNume)%extern_addr
             extern_type = prepExte(mapZoneNume)%extern_type
-            model_dim = prepExte(mapZoneNume)%model_dim
 
 ! --------- Exception for name of internal state variables
             call comp_meca_exc2(l_cristal, l_pmf, &
@@ -274,7 +273,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
             call comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                                 rela_comp, defo_comp, kit_comp, type_cpla, post_iter, &
                                 regu_visc, post_incr, &
-                                extern_addr, extern_type, model_dim, comporInfoVari)
+                                extern_addr, extern_type, comporInfoVari)
 
 ! --------- Save current zone
             zoneRead(mapZoneNume) = 1

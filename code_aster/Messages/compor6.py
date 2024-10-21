@@ -100,4 +100,17 @@ est mis à %(i2)d par le fichier de commande, à la place de la valeur
 originelle %(i1)d de MFront.
         """
     ),
+    20: _(
+        """Une variable interne de type vectorielle contient plus de composantes que la dimension maximale autorisée."""
+    ),
+    21: _(
+        """Une variable interne de type tensorielle (symétrique) contient plus de composantes que la dimension maximale autorisée."""
+    ),
+    22: _(
+        """Une variable interne de type tensorielle (non symétrique) contient plus de composantes que la dimension maximale autorisée."""
+    ),
+    23: _(
+        """Une variable interne de type quelconque contient plus de composantes que la dimension maximale autorisée."""
+    ),
+    24: _("""Une variable interne est d'un type inconnu."""),
 }

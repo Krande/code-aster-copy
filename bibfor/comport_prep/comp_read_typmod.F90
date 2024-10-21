@@ -19,7 +19,7 @@
 !
 subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
                             keywf, i_comp, rela_comp, type_cpla_in, &
-                            model_dim, model_mfront, type_cpla_out)
+                            model_mfront, type_cpla_out)
 !
     implicit none
 !
@@ -44,7 +44,6 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: type_cpla_in
     integer, intent(out) :: model_mfront
-    integer, intent(out) :: model_dim
     character(len=16), intent(out) :: type_cpla_out
 !
 ! --------------------------------------------------------------------------------------------------
@@ -63,7 +62,6 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
 ! In  i_comp           : factor keyword index
 ! In  rela_comp        : RELATION comportment
 ! In  type_cpla_in     : stress plane hypothesis if known
-! Out model_dim        : dimension of modelisation (2D or 3D)
 ! Out model_mfront     : type of modelisation MFront
 ! Out type_cpla_out    : stress plane hypothesis (for Deborst)
 !
@@ -80,7 +78,6 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
 !
     model_mfront = MGIS_MODEL_UNSET
     model_save = MGIS_MODEL_UNSET
-    model_dim = 0
     list_elem_affe = '&&COMPMECASAVE.LIST'
     type_cpla_out = 'VIDE'
 !
@@ -125,7 +122,7 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
         if (elem_type_nume .ne. 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', elem_type_nume), elem_type_name)
             call comp_mfront_modelem(elem_type_name, l_mfront_cp, &
-                                     model_dim, model_mfront, &
+                                     model_mfront, &
                                      codret, type_cpla_out)
             if (model_mfront .ne. MGIS_MODEL_UNSET) then
                 if (model_save .eq. MGIS_MODEL_UNSET) then

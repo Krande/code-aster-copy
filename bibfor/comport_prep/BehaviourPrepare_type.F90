@@ -53,8 +53,6 @@ module BehaviourPrepare_type
         character(len=255) :: libr_name = ' '
 ! ----- Model for MFront law
         integer :: model_mfront = MGIS_MODEL_UNSET
-! ----- Number of dimension for MFront law
-        integer :: model_dim = 0
 ! ----- Number of internal variables for UMAT
         integer :: nbVariUMAT = 0
 ! ----- Identifier for strains model
