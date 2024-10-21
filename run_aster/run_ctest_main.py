@@ -74,6 +74,7 @@ import sys
 import tempfile
 from glob import glob
 from subprocess import run
+from pathlib import Path
 
 from .config import CFG
 from .ctest2junit import XUnitReport
@@ -349,7 +350,7 @@ def create_ctest_file(testlist, exclude, destdir, options, nlist=None):
         options (str): Additional command line options.
         nlist (int, optional): Number of files to be created.
     """
-    datadir = osp.normpath(osp.join(RUNASTER_ROOT, "share", "aster"))
+    datadir = Path(osp.normpath(osp.join(RUNASTER_ROOT, "share", "aster"))).as_posix()
     bindir = osp.normpath(osp.join(RUNASTER_ROOT, "bin"))
     testdir = osp.join(datadir, "tests")
     assert osp.isdir(testdir), f"no such directory {testdir}"

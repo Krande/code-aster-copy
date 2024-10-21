@@ -57,7 +57,7 @@ from .miss_post import PostMissFactory
 from .miss_resu_aster import ResuAsterReader
 from .miss_utils import copie_fichier
 
-MODE = "wb" if config["ASTER_PLATFORM_MINGW"] else "w"
+MODE = "wb"
 
 
 class CalculMiss:
@@ -248,7 +248,7 @@ class CalculMiss:
         self._dbg_trace("Start")
         content = fichier_mvol(self.data)
         with open(self._fichier_tmp("mvol"), MODE) as f:
-            f.write(content)
+            f.write(content.encode())
         self._dbg_trace("Stop")
 
     def cree_fichier_pc(self):
@@ -257,11 +257,11 @@ class CalculMiss:
             return
         self._dbg_trace("Start")
         content = fichier_ext(self.data)
-        with open(self._fichier_tmp("ext"), "w") as f:
-            f.write(content)
+        with open(self._fichier_tmp("ext"), MODE) as f:
+            f.write(content.encode())
         content = fichier_sign(self.param)
-        with open(self._fichier_tmp("01.sign"), "w") as f:
-            f.write(content)
+        with open(self._fichier_tmp("01.sign"), MODE) as f:
+            f.write(content.encode())
         self._dbg_trace("Stop")
 
     def cree_fichier_chp(self):
@@ -269,7 +269,7 @@ class CalculMiss:
         self._dbg_trace("Start")
         content = fichier_chp(self.param, self.data)
         with open(self._fichier_tmp("chp"), MODE) as f:
-            f.write(content)
+            f.write(content.encode())
         self._dbg_trace("Stop")
 
     def cree_fichier_sol(self):
@@ -281,7 +281,7 @@ class CalculMiss:
             if self.verbose:
                 _print("Fichier de sol", sol_content)
             with open(self._fichier_tmp("sol"), MODE) as f:
-                f.write(sol_content)
+                f.write(sol_content.encode())
         self._dbg_trace("Stop")
 
     def cree_commande_miss(self, ext="in", lapl_temps=False):
@@ -293,7 +293,7 @@ class CalculMiss:
         )
         content = generator.build()
         with open(self._fichier_tmp(ext), MODE) as f:
-            f.write(content)
+            f.write(content.encode())
         self._dbg_trace("Stop")
 
     def cree_fichier_option(self):
@@ -303,7 +303,7 @@ class CalculMiss:
         if self.verbose:
             _print("Fichier d'option", option_content)
         with open(self._fichier_tmp("optmis"), MODE) as f:
-            f.write(option_content)
+            f.write(option_content.encode())
         self._dbg_trace("Stop")
 
     # --- utilitaires internes

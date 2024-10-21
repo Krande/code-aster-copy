@@ -467,7 +467,7 @@ def check_config(self):
     cfg = {}
     cfgext = self.env["CFG_EXT"]
     self.start_msg(f"Set parameters for 'config.{cfgext}'")
-    tmpdir = os.environ["TEMP"] if self.env.ASTER_PLATFORM_MINGW else "/tmp"
+    tmpdir = None if self.env.ASTER_PLATFORM_MINGW else "/tmp"
     if os.environ.get("ASTER_TMPDIR"):
         tmpdir = os.environ["ASTER_TMPDIR"]
     cfg["tmpdir"] = tmpdir
@@ -636,6 +636,7 @@ def _call_cmd(self, msg, cmd):
 @Configure.conf
 def check_external_programs(self):
     exe = ".exe" if self.env.ASTER_PLATFORM_MINGW else ""
+    bat = ".bat" if self.env.ASTER_PLATFORM_MINGW else ""
     _check_prog(
         self, "gmsh", ["gmsh"], mandatory=self.options.with_prog_gmsh, add_paths=["${GMSH_BIN_DIR}"]
     )
@@ -646,7 +647,7 @@ def check_external_programs(self):
         ["run_miss3d"],
         mandatory=self.options.with_prog_run_miss3d,
         add_paths=["${MISS3D_DIR}"],
-        ext=exe,
+        ext=bat,
     )
 
     _check_prog(
@@ -658,7 +659,7 @@ def check_external_programs(self):
             "${HOMARD_ASTER_ROOT_DIR}",
             osp.join("${HOMARD_ASTER_ROOT_DIR}", "ASTER_HOMARD"),
         ],
-        ext=exe,
+        ext=bat,
     )
 
     _check_prog(

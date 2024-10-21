@@ -20,6 +20,7 @@
 
 from code_aster.Commands import *
 from code_aster import CA
+from code_aster.Utilities import haveMPI
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"), INFO=1
@@ -27,7 +28,10 @@ DEBUT(
 
 test = CA.TestCase()
 
-mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, PARTITIONNEUR="PTSCOTCH")
+if haveMPI():
+    mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, PARTITIONNEUR="PTSCOTCH")
+else:
+    mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
 model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
