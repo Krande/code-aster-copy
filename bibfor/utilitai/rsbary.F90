@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rsbary(lr8, nr8, tous, lexi, x, i1, i2, iposit)
+subroutine rsbary(lr8, nr8, tous, lexi, x, i1, i2, iposit, prec, crit)
 
     use searchlist_module, only: allUnique, almostEqual, getUnique
     implicit none
@@ -28,9 +28,12 @@ subroutine rsbary(lr8, nr8, tous, lexi, x, i1, i2, iposit)
 !
 !     ARGUMENTS:
 !     ----------
-    integer :: nr8, i1, i2, iposit
-    real(kind=8) :: lr8(*), x
-    aster_logical :: tous, lexi(*)
+    real(kind=8), intent(in) :: x, prec, lr8(*)
+    integer, intent(in) :: nr8
+    aster_logical, intent(in) :: tous, lexi(*)
+    integer, intent(out) :: i1, i2, iposit
+    character(len=8), intent(in) :: crit
+!
 ! ----------------------------------------------------------------------
 !     BUT:
 !      TROUVER DANS UNE LISTE DE R8 QUELS SONT LES 2 REELS LES PLUS
@@ -59,10 +62,9 @@ subroutine rsbary(lr8, nr8, tous, lexi, x, i1, i2, iposit)
 ! ----------------------------------------------------------------------
     integer :: imax, imin, ipp, ip, is, iss, ns
     real(kind=8) :: xmax, xmin
-    real(kind=8), parameter :: prec = 1.0d-10
-    character(len=8), parameter :: crit = 'ABSOLU'
     real(kind=8), pointer :: v_diff(:) => null()
     aster_logical, pointer :: v_active(:) => null()
+
 !-----------------------------------------------------------------------
     AS_ALLOCATE(vl=v_active, size=nr8)
 !

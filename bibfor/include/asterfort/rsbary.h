@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,11 @@
 !
 interface
     subroutine rsbary(lr8, nr8, tous, lexi, x,&
-                      i1, i2, iposit)
-        real(kind=8) :: lr8(*)
-        integer :: nr8
-        aster_logical :: tous
-        aster_logical :: lexi(*)
-        real(kind=8) :: x
-        integer :: i1
-        integer :: i2
-        integer :: iposit
+                      i1, i2, iposit, prec, crit)
+        real(kind=8), intent(in) :: x, prec, lr8(*)
+        integer, intent(in) :: nr8
+        aster_logical, intent(in) :: tous, lexi(*)
+        integer, intent(out) :: i1, i2, iposit
+        character(len=8), intent(in) :: crit
     end subroutine rsbary
 end interface

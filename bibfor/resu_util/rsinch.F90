@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,6 +95,8 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
     integer :: iloty, imaxi, inomch, ip1, ip2, iposit, nbord2
     integer :: nbordr
     aster_logical, pointer :: lexi(:) => null()
+    real(kind=8), parameter :: prec = 1.0d-10
+    character(len=8), parameter :: crit = 'ABSOLU'
 !-----------------------------------------------------------------------
     call jemarq()
     acce2 = acces
@@ -163,8 +165,8 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
         end if
     end do
 !
-    call rsbary(zr(iaobj), nbordr, .false._1, lexi, rval, &
-                i1, i2, iposit)
+    call rsbary(zr(iaobj), nbordr, ASTER_FALSE, lexi, rval, &
+                i1, i2, iposit, prec, crit)
     if (iposit .eq. -2) then
         ier = 10
         goto 998

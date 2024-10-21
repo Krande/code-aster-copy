@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,6 +88,8 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille, &
     real(kind=8) :: r1, r2, rbase, rval, valr1, valr2
     aster_logical, pointer :: lexi(:) => null()
     real(kind=8), pointer :: nlval2(:) => null()
+    real(kind=8), parameter :: prec = 1.0d-10
+    character(len=8), parameter :: crit = 'ABSOLU'
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -184,8 +186,8 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille, &
     end do
 !
     rval = zr(jinst)
-    call rsbary(zr(jlir8), nbordr, .false._1, lexi, rval, &
-                i1, i2, iposit)
+    call rsbary(zr(jlir8), nbordr, ASTER_FALSE, lexi, rval, &
+                i1, i2, iposit, prec, crit)
     call rsutro(resu, i1, ip1, ierr1)
     call rsexch('F', resu, nomcha, ip1, ch1, &
                 ierd)
@@ -213,8 +215,8 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille, &
             call jemarq()
 !
             rval = zr(jinst+iordr)
-            call rsbary(zr(jlir8), nbordr, .false._1, lexi, rval, &
-                        i1, i2, iposit)
+            call rsbary(zr(jlir8), nbordr, ASTER_FALSE, lexi, rval, &
+                        i1, i2, iposit, prec, crit)
             if (iposit .eq. -2) then
                 valr(1) = rval
                 call utmess('F', 'UTILITAI6_16', sr=valr(1))
@@ -334,8 +336,8 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille, &
             call jemarq()
 !
             rval = zr(jinst+iordr)
-            call rsbary(zr(jlir8), nbordr, .false._1, lexi, rval, &
-                        i1, i2, iposit)
+            call rsbary(zr(jlir8), nbordr, ASTER_FALSE, lexi, rval, &
+                        i1, i2, iposit, prec, crit)
             if (iposit .eq. -2) then
                 valr(1) = rval
                 call utmess('F', 'UTILITAI6_16', sr=valr(1))
