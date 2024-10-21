@@ -323,7 +323,7 @@ class ExtendedMesh:
     def restrict(self, groupsOfCells, info=1):
         """Restrict the mesh to given groups of cells.
 
-        Arguments:
+        groupsOfCells (list[str]): groups of cells to restrict the mesh on.
             info [int] : verbosity mode (1 or 2). Default 1.
 
         Returns:

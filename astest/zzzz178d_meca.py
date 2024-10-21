@@ -85,7 +85,12 @@ def coupled_mechanics(cpl):
             evol_ther (ThermalResult) : evolution of the thermal field.
         """
 
-        def run_iteration(self, i_iter, current_time, delta_t, data, medcpl):
+        def __init__(self, cpl):
+            """cpl (ExternalCoupling): coupler."""
+
+            self._medcpl = cpl.medcpl
+
+        def run_iteration(self, i_iter, current_time, delta_t, data):
             """Execute one iteration.
 
             Arguments:
@@ -93,7 +98,6 @@ def coupled_mechanics(cpl):
                 current_time (float): Current time.
                 delta_t (float): Time step.
                 data (dict[*MEDCouplingField*]): dict of input fields.
-                medcpl (MEDCoupler): coupler to exchange and interpolate data.
 
             Returns:
                 bool: True if solver has converged at the current time step, else False.
@@ -104,7 +108,7 @@ def coupled_mechanics(cpl):
             mc_ther = data["TEMP"]
 
             # MEDC field => .med => code_aster field
-            TEMP = medcpl.import_temperature(mc_ther)
+            TEMP = self._medcpl.import_temperature(mc_ther)
 
             self.evol_ther = CREA_RESU(
                 TYPE_RESU="EVOL_THER",
@@ -130,7 +134,7 @@ def coupled_mechanics(cpl):
             )
 
             displ = self.result.getField("DEPL", self.result.getLastIndex())
-            mc_displ = medcpl.export_displacement(displ, "Displ")
+            mc_displ = self._medcpl.export_displacement(displ, "Displ")
             print("[Convert] Displacement field info:")
             print(mc_displ.simpleRepr(), flush=True)
 
@@ -140,7 +144,7 @@ def coupled_mechanics(cpl):
     # loop on time steps
     ################################################################################
 
-    mech_solv = MechanicalSolver()
+    mech_solv = MechanicalSolver(cpl)
 
     cpl.setup(
         interface=(ML, ["Volume"]),

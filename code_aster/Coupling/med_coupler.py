@@ -28,7 +28,7 @@ import ParaMEDMEM as PMM
 
 from ..Commands import CREA_RESU, LIRE_CHAMP, PROJ_CHAMP
 from ..Objects import Mesh
-from ..Utilities.logger import logger
+from ..Utilities import logger, no_new_attributes
 from ..Utilities.mpi_utils import MPI
 
 
@@ -58,6 +58,9 @@ class ExtendedDEC:
     Arguments:
         mcdec (*PMM.InterpKernelDEC*): ParaMEDMEM InterpKernelDEC object.
     """
+
+    dec = mesh = interf_size = _synced = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, mcdec):
         self.dec = mcdec
@@ -109,10 +112,18 @@ class ExtendedDEC:
 class MEDCoupler:
     """Class handling the MEDCoupling related calls."""
 
+    dec = xdec = None
+    mesh_interf = interf_mc = mesh = interf_ids = None
+    matr_proj = meshDimRelToMaxExt = None
+    exch_fields = None
+    log = None
+
+    __setattr__ = no_new_attributes(object.__setattr__)
+
     def __init__(self, logfunc=None):
         self.dec = {MEDC.ON_NODES: {}, MEDC.ON_CELLS: {}}
         self.xdec = {MEDC.ON_NODES: {}, MEDC.ON_CELLS: {}}
-        self.interf_mesh = self.interf_mc = self.mesh = None
+        self.mesh_interf = self.interf_mc = self.mesh = None
         self.matr_proj = None
         self.exch_fields = {}
 

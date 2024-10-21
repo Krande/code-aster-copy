@@ -95,9 +95,11 @@ def coupled_mechanics(cpl):
         """
 
         def __init__(self, cpl):
+            """cpl (ExternalCoupling): coupler."""
 
+            self._medcpl = cpl.medcpl
             input_data = cpl.recv_input_fields()
-            TEMPE = cpl.medcpl.import_temperature(input_data["TEMP"])
+            TEMPE = self._medcpl.import_temperature(input_data["TEMP"])
 
             self.evol_ther = CREA_RESU(
                 TYPE_RESU="EVOL_THER",
@@ -107,7 +109,7 @@ def coupled_mechanics(cpl):
 
             self.listr = [0.0]
 
-        def run_iteration(self, i_iter, current_time, delta_t, data, medcpl):
+        def run_iteration(self, i_iter, current_time, delta_t, data):
             """Execute one iteration.
 
             Arguments:
@@ -115,7 +117,6 @@ def coupled_mechanics(cpl):
                 current_time (float): Current time.
                 delta_t (float): Time step.
                 data (dict[*MEDCouplingField*]): dict of input fields.
-                medcpl (MEDCoupler): coupler to exchange and interpolate data.
 
             Returns:
                 bool: True if solver has converged at the current time step, else False.
@@ -126,7 +127,7 @@ def coupled_mechanics(cpl):
             mc_ther = data["TEMP"]
 
             # MEDC field => .med => code_aster field
-            TEMPE = medcpl.import_temperature(mc_ther)
+            TEMPE = self._medcpl.import_temperature(mc_ther)
 
             self.evol_ther = CREA_RESU(
                 reuse=self.evol_ther,
@@ -160,7 +161,7 @@ def coupled_mechanics(cpl):
             )
 
             displ = self.result.getField("DEPL", self.result.getLastIndex())
-            mc_displ = medcpl.export_displacement(displ, "Displ")
+            mc_displ = self._medcpl.export_displacement(displ, "Displ")
             print("[Convert] Displacement field info:")
             print(mc_displ.simpleRepr(), flush=True)
 

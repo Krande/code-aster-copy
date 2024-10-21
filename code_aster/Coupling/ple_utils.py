@@ -28,7 +28,7 @@ Need only pyple package.
 try:
     from ple.pyple_coupler import pyple_coupler
 
-    PLE = pyple_coupler
+    pyple_coupler = pyple_coupler
 
 except ImportError:
 
@@ -36,9 +36,9 @@ except ImportError:
 
     from mpi4py import MPI
 
-    class PLE:
+    class pyple_coupler:
         """
-        This class PLE is an encapsulation of ple.pyple_coupler if it is not present.
+        This class is an emulation of ple.pyple_coupler if it is not present.
 
         The same API than ple.pyple_coupler is used.
 
@@ -49,15 +49,14 @@ except ImportError:
             """Initialzation.
 
             Arguments:
-                verbosity (int, optional) : log verbosity level
-                                            default value is 1.
-                                            1:info level
-                                            2:debug level
-                                            If negative value, no output.
-                logdir (str, optional) : User defined directory name for the logfile.
-                                        Default is None, use the current working directory.
-                output_mode (str, optional) : Log output mode. Options are "all" or "master"
-                                            default is "master".
+                verbosity (int) : log verbosity level (default=1)
+                                  1:info level
+                                  2:debug level
+                                  If negative value, no output.
+                logdir (str) : User defined directory name for the logfile.
+                               Default is None, use the current working directory.
+                output_mode (str) : Log output mode. Options are "all" or "master"
+                                    default is "master".
             """
             self.base_comm = None
             self.my_comm = None
@@ -83,7 +82,7 @@ except ImportError:
 
             Arguments:
                 app_name (str): name of the other application.
-                app_type (str, optional): type of application (default=None).
+                app_type (str): type of application (default=None).
             """
 
             self.app_name = app_name
@@ -131,7 +130,7 @@ except ImportError:
             """Synchronize with other application.
 
             Arguments:
-                end_coupling (bool, optional): Flag to force the end of the coupled run.
+                end_coupling (bool): Flag to force the end of the coupled run (default=False).
 
             Returns:
                 (bool): Returns exit_status which tells us if the coupling needs to stop.

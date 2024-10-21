@@ -21,11 +21,11 @@
 Definition of objects for coupled simulations with code_aster.
 """
 
-from ..Utilities.logger import logger
+from ..Utilities import logger, no_new_attributes
 from .med_coupler import MEDCoupler
-from .mpi_calcium import MPI_CALCIUM
+from .mpi_calcium import MPICalcium
 from .parameters import SchemeParams
-from .ple_utils import PLE
+from .ple_utils import pyple_coupler
 
 
 class ExternalCoupling:
@@ -36,31 +36,27 @@ class ExternalCoupling:
         starter (bool): *True* if this instance starts (it sends first),
             *False* if it receives first (default: "False").
         debug (bool): Enable debugging mode (default: "False")".
-
-    Attributes:
-        ple (*ple_coupler*): PLE Coupler object.
-        mesh (*medcoupling.MEDCouplingUMesh*): Mesh of the interface.
-        fields_in (list): List of exchanged fields (field name, number of
-            components, components names).
-        fields_out (list): List of exchanged fields (field name, number of
-            components, components names).
-        params (SchemeParams): Parameters of the coupling scheme.
-        medcpl (MEDCoupler): Coupler to exchange and interpolate fields.
-        MPI (MPI_CALCIUM): Wrapping of mpi4py for communication inside
-            application and between applications.
     """
 
+    _whoami = _other_app = _starter = None
+    _debug = False
+    _ple = _MPI = _medcpl = None
+    _fields_in = _fields_out = None
+    _params = None
+
+    __setattr__ = no_new_attributes(object.__setattr__)
+
     def __init__(self, app="code_aster", starter=False, debug=False):
-        self.whoami = app
-        self.other_app = None
-        self.starter = starter
-        self.debug = debug
-        self.ple = None
-        self.MPI = None
-        self.medcpl = None
-        self.fields_in = []
-        self.fields_out = []
-        self.params = SchemeParams()
+        self._whoami = app
+        self._other_app = None
+        self._starter = starter
+        self._debug = debug
+        self._ple = None
+        self._MPI = None
+        self._medcpl = None
+        self._fields_in = []
+        self._fields_out = []
+        self._params = SchemeParams()
 
     def __getstate__(self):
         """Disable pickling"""
@@ -75,16 +71,16 @@ class ExternalCoupling:
         Returns:
             bool: *True* if the study should terminate.
         """
-        return self.ple.sync_coupling_status(end_coupling=end_coupling)
+        return self._ple.sync_coupling_status(end_coupling=end_coupling)
 
     def log(self, *args, **kwargs):
         """Log messages using the logging function of the coupler object."""
-        func = self.ple.log if self.ple else logger
-        if self.debug:
+        func = self._ple.log if self._ple else logger
+        if self._debug:
             prargs = kwargs.copy()
             prargs.pop("verbosity", None)
             prargs["flush"] = True
-            print("[CPL]", *args, **prargs)
+            logger.debug(*args)
         return func(*args, **kwargs)
 
     def _init_paramedmem(self, with_app, interface):
@@ -95,22 +91,22 @@ class ExternalCoupling:
             interface (tuple(Mesh, list[str])): whole mesh and groups of the interface.
         """
 
-        my_ranks = self.ple.get_app_ranks(self.whoami)
-        other_ranks = self.ple.get_app_ranks(with_app)
+        my_ranks = self._ple.get_app_ranks(self._whoami)
+        other_ranks = self._ple.get_app_ranks(with_app)
 
         # Creating the parallel DEC
-        fields_name = [name for name, _, _ in self.fields_in + self.fields_out]
-        if self.starter:
-            self.medcpl.init_coupling(fields_name, ranks1=my_ranks, ranks2=other_ranks)
+        fields_name = [name for name, _, _ in self._fields_in + self._fields_out]
+        if self._starter:
+            self._medcpl.init_coupling(fields_name, ranks1=my_ranks, ranks2=other_ranks)
         else:
-            self.medcpl.init_coupling(fields_name, ranks1=other_ranks, ranks2=my_ranks)
+            self._medcpl.init_coupling(fields_name, ranks1=other_ranks, ranks2=my_ranks)
 
         # Define coupling mesh
-        self.medcpl.create_mesh_interface(interface[0], interface[1])
+        self._medcpl.create_mesh_interface(interface[0], interface[1])
 
         # Define coupled fields
-        for name, components, discr in self.fields_in + self.fields_out:
-            self.medcpl.add_field(name, components, discr)
+        for name, components, discr in self._fields_in + self._fields_out:
+            self._medcpl.add_field(name, components, discr)
 
     def recv_input_fields(self):
         """Receive the input fields from the other code.
@@ -118,8 +114,8 @@ class ExternalCoupling:
         Returns:
             (dict[*ParaFIELD*]): fields used to define the inputs at the next step.
         """
-        names = [name for name, _, _ in self.fields_in]
-        return self.medcpl.recv(names)
+        names = [name for name, _, _ in self._fields_in]
+        return self._medcpl.recv(names)
 
     def send_output_fields(self, outputs):
         """Send the output fields to the other code.
@@ -127,8 +123,8 @@ class ExternalCoupling:
         Arguments:
             outputs (dict[*ParaFIELD*]): fields used to define the inputs of the other code.
         """
-        assert len(outputs) == len(self.fields_out)
-        self.medcpl.send(outputs)
+        assert len(outputs) == len(self._fields_out)
+        self._medcpl.send(outputs)
 
     def set_parameters(self, params):
         """Set parameters.
@@ -137,35 +133,37 @@ class ExternalCoupling:
             params (dict): Parameters of the coupling scheme.
         """
 
-        if self.starter:
-            self.params.set_values(params)
+        if self._starter:
+            self._params.set_values(params)
 
-        self.params.nb_iter = self.MPI.COUPLING_COMM_WORLD.bcast(
-            self.starter, 0, "NBSSIT", self.params.nb_iter, self.MPI.INT
+        self._params.nb_iter = self._MPI.COUPLING_COMM_WORLD.bcast(
+            self._starter, 0, "NBSSIT", self._params.nb_iter, self._MPI.INT
         )
-        self.params.epsilon = self.MPI.COUPLING_COMM_WORLD.bcast(
-            self.starter, 0, "EPSILO", self.params.epsilon, self.MPI.DOUBLE
+        self._params.epsilon = self._MPI.COUPLING_COMM_WORLD.bcast(
+            self._starter, 0, "EPSILO", self._params.epsilon, self._MPI.DOUBLE
         )
 
-        if self.starter:
-            if self.params.stepper:
-                times = self.params.stepper._times
+        if self._starter:
+            if self._params.stepper:
+                times = self._params.stepper._times
                 nb_step = len(times)
             else:
                 nb_step = 0
-            self.MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self.MPI.INT)
+            self._MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self._MPI.INT)
             if nb_step > 0:
-                self.MPI.COUPLING_COMM_WORLD.send(0, "STEP", self.params.init_time, self.MPI.DOUBLE)
+                self._MPI.COUPLING_COMM_WORLD.send(
+                    0, "STEP", self._params.init_time, self._MPI.DOUBLE
+                )
                 for i in range(nb_step):
-                    self.MPI.COUPLING_COMM_WORLD.send(0, "STEP", times[i], self.MPI.DOUBLE)
+                    self._MPI.COUPLING_COMM_WORLD.send(0, "STEP", times[i], self._MPI.DOUBLE)
         else:
-            nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
+            nb_step = self._MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self._MPI.INT)
             if nb_step > 0:
-                times = [self.MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self.MPI.DOUBLE)]
+                times = [self._MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self._MPI.DOUBLE)]
                 for _ in range(nb_step):
-                    times.append(self.MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self.MPI.DOUBLE))
+                    times.append(self._MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self._MPI.DOUBLE))
 
-                self.params.set_values({"time_list": times})
+                self._params.set_values({"time_list": times})
 
     def init_coupling(self, with_app):
         """Initialize the coupling with an other application.
@@ -173,26 +171,26 @@ class ExternalCoupling:
         Arguments:
             with_app (str): Name of the other application to be coupled with.
         """
-        verbosity = 2 if self.debug else 1
-        output = "all" if self.debug else "master"
-        self.ple = PLE(verbosity=verbosity, logdir="/tmp", output_mode=output)
-        self.ple.init_coupling(app_name=self.whoami, app_type="code_aster")
+        verbosity = 2 if self._debug else 1
+        output = "all" if self._debug else "master"
+        self._ple = pyple_coupler(verbosity=verbosity, logdir="/tmp", output_mode=output)
+        self._ple.init_coupling(app_name=self._whoami, app_type="code_aster")
 
-        self.other_app = with_app
+        self._other_app = with_app
 
-        myranks = self.ple.get_app_ranks(self.whoami)
-        self.log(f"allocated ranks for {self.whoami!r}: {myranks}", verbosity=verbosity)
-        other_ranks = self.ple.get_app_ranks(with_app)
+        myranks = self._ple.get_app_ranks(self._whoami)
+        self.log(f"allocated ranks for {self._whoami!r}: {myranks}", verbosity=verbosity)
+        other_ranks = self._ple.get_app_ranks(with_app)
         self.log(f"allocated ranks for {with_app!r}: {other_ranks}", verbosity=verbosity)
         assert other_ranks, f"Application {with_app!r} not found!"
-        self.MPI = MPI_CALCIUM(self.ple.base_comm, self.ple.my_comm, other_ranks[0], self.log)
+        self._MPI = MPICalcium(self._ple.base_comm, self._ple.my_comm, other_ranks[0], self.log)
 
         self.log(
-            f"{self.whoami!r} coupler created from #{myranks[0]}, "
+            f"{self._whoami!r} coupler created from #{myranks[0]}, "
             f"{with_app!r} root proc is #{1}"
         )
 
-        self.medcpl = MEDCoupler(logfunc=self.log)
+        self._medcpl = MEDCoupler(logfunc=self.log)
 
     def setup(self, interface, input_fields, output_fields, **params):
         """Initialize the coupling.
@@ -204,14 +202,14 @@ class ExternalCoupling:
             params (dict): Parameters of the coupling scheme.
         """
 
-        self.fields_in = input_fields
-        self.fields_out = output_fields
+        self._fields_in = input_fields
+        self._fields_out = output_fields
         self.set_parameters(params)
-        self._init_paramedmem(self.other_app, interface)
+        self._init_paramedmem(self._other_app, interface)
 
     def finalize(self):
         """Finalize the coupling."""
-        self.ple.finalize()
+        self._ple.finalize()
 
     def testing(self, exec_iteration, data=None):
         """Execute one iteration without coupling.
@@ -226,10 +224,10 @@ class ExternalCoupling:
 
         if data is None:
             data = {}
-            for name, _, _ in self.fields_in:
+            for name, _, _ in self._fields_in:
                 data[name] = None
 
-        output_data = exec_iteration(0, 0.0, 1.0, data, self.medcpl)
+        output_data = exec_iteration(0, 0.0, 1.0, data, self._medcpl)
 
         return output_data
 
@@ -247,7 +245,7 @@ class ExternalCoupling:
         # initial sync before the loop
         exit_coupling = self.sync()
 
-        stepper = self.params.stepper
+        stepper = self._params.stepper
         completed = False
         istep = 0
 
@@ -257,31 +255,31 @@ class ExternalCoupling:
             delta_time = stepper.getIncrement()
             self.log("coupling step #{0:d}, time: {1:f}".format(istep, current_time))
 
-            for i_iter in range(self.params.nb_iter):
+            for i_iter in range(self._params.nb_iter):
 
                 self.log("coupling iteration #{0:d}, time: {1:f}".format(i_iter, current_time))
 
                 # recv data from the other code
-                if self.starter and istep == 1:
+                if self._starter and istep == 1:
                     input_data = {}
-                    for name, _, _ in self.fields_in:
+                    for name, _, _ in self._fields_in:
                         input_data[name] = None
                 else:
                     input_data = self.recv_input_fields()
 
                 has_cvg, output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data, self.medcpl
+                    i_iter, current_time, delta_time, input_data
                 )
 
                 # send data to other code
-                if self.starter:
+                if self._starter:
                     self.send_output_fields(output_data)
-                    converged = self.MPI.COUPLING_COMM_WORLD.allreduce(
-                        i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
+                    converged = self._MPI.COUPLING_COMM_WORLD.allreduce(
+                        i_iter, "ICVAST", has_cvg, self._MPI.BOOL, self._MPI.LAND
                     )
                 else:
-                    converged = self.MPI.COUPLING_COMM_WORLD.allreduce(
-                        i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
+                    converged = self._MPI.COUPLING_COMM_WORLD.allreduce(
+                        i_iter, "ICVAST", has_cvg, self._MPI.BOOL, self._MPI.LAND
                     )
                     self.send_output_fields(output_data)
 
@@ -295,7 +293,7 @@ class ExternalCoupling:
             self.log("end of time step with status: {}".format(exit_coupling))
 
         # only to avoid deadlock
-        if self.starter:
+        if self._starter:
             input_data = self.recv_input_fields()
 
         self.log(
@@ -307,12 +305,22 @@ class ExternalCoupling:
     @property
     def mesh_interface(self):
         """Mesh|ParallelMesh: mesh of the interface."""
-        return self.medcpl.mesh_interf
+        return self._medcpl.mesh_interf
 
     @property
     def mesh(self):
         """Mesh|ParallelMesh: coupled mesh."""
-        return self.medcpl.mesh
+        return self._medcpl.mesh
+
+    @property
+    def MPI(self):
+        """MPICalCium: like mpi4py but for coupling."""
+        return self._MPI
+
+    @property
+    def medcpl(self):
+        """MEDCoupler: medcoupling coupler."""
+        return self._medcpl
 
 
 class SaturneCoupling(ExternalCoupling):
@@ -323,17 +331,6 @@ class SaturneCoupling(ExternalCoupling):
         starter (bool): *True* if this instance starts (it sends first),
             *False* if it receives first (default: "False").
         debug (bool): Enable debugging mode (default: "False")".
-
-    Attributes:
-        ple (*ple_coupler*): PLE Coupler object.
-        tag (int): tag used for direct MPI communication (`CS_CALCIUM_MPI_TAG`
-           ).
-        mesh (*medcoupling.MEDCouplingUMesh*): Mesh of the interface.
-        fields_in (list): List of exchanged fields (field name, number of
-            components, components names).
-        fields_out (list): List of exchanged fields (field name, number of
-            components, components names).
-        params (SchemeParams): Parameters of the coupling scheme.
     """
 
     def set_parameter(self, params):
@@ -359,18 +356,18 @@ class SaturneCoupling(ExternalCoupling):
         # initial sync before the loop
         exit_coupling = self.sync()
 
-        current_time = self.params.init_time
-        delta_t = self.params.delta_t
+        current_time = self._params.init_time
+        delta_t = self._params.delta_t
         completed = False
         istep = 0
 
         while not completed and not exit_coupling:
             istep += 1
 
-            for i_iter in range(self.params.nb_iter):
+            for i_iter in range(self._params.nb_iter):
 
-                self.MPI.COUPLING_COMM_WORLD.send(istep, "DTAST", delta_t, self.MPI.DOUBLE)
-                delta_t = self.MPI.COUPLING_COMM_WORLD.recv(istep, "DTCALC", self.MPI.DOUBLE)
+                self._MPI.COUPLING_COMM_WORLD.send(istep, "DTAST", delta_t, self._MPI.DOUBLE)
+                delta_t = self._MPI.COUPLING_COMM_WORLD.recv(istep, "DTCALC", self._MPI.DOUBLE)
 
                 self.log("coupling iteration #{0:d}, time: {1:f}".format(i_iter, current_time))
 
@@ -379,11 +376,11 @@ class SaturneCoupling(ExternalCoupling):
                 input_data = self.recv_input_fields()
 
                 has_cvg, output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data, self.medcpl
+                    i_iter, current_time, delta_time, input_data
                 )
 
                 # received cvg
-                converged = bool(self.recv(istep, "ICVAST", self.MPI.INT))
+                converged = bool(self.recv(istep, "ICVAST", self._MPI.INT))
 
                 # send results to code_saturne
                 self.send_output_fields(output_data)
@@ -394,7 +391,7 @@ class SaturneCoupling(ExternalCoupling):
                 exit_coupling = self.sync()
                 self.log("end of iteration status: {}".format(exit_coupling))
 
-            completed = current_time >= self.params.final_time
+            completed = current_time >= self._params.final_time
             exit_coupling = self.sync(end_coupling=completed)
 
             self.log("end of time step with status: {}".format(exit_coupling))

@@ -80,10 +80,14 @@ def coupled_thermics(cpl):
 
         Attributes:
             result (ThermalResult): result of the thermal computation.
-
         """
 
-        def run_iteration(self, i_iter, current_time, delta_t, data, medcpl):
+        def __init__(self, cpl):
+            """cpl (ExternalCoupling): coupler."""
+
+            self._medcpl = cpl.medcpl
+
+        def run_iteration(self, i_iter, current_time, delta_t, data):
             """Execute one iteration.
 
             Arguments:
@@ -91,7 +95,6 @@ def coupled_thermics(cpl):
                 current_time (float): Current time.
                 delta_t (float): Time step.
                 data (dict[*MEDCouplingField*]): dict of input fields.
-                medcpl (MEDCoupler): coupler to exchange and interpolate data.
 
             Returns:
                 bool: True if solver has converged at the current time step, else False.
@@ -103,7 +106,7 @@ def coupled_thermics(cpl):
             mc_depl = data["DEPL"]
             if mc_depl:
                 # MEDC field => .med => code_aster field
-                depl = medcpl.import_displacement(mc_depl)
+                depl = self._medcpl.import_displacement(mc_depl)
 
             self.result = THER_LINEAIRE(
                 MODELE=MODE_TL,
@@ -117,7 +120,7 @@ def coupled_thermics(cpl):
             )
 
             temp = self.result.getField("TEMP", self.result.getLastIndex())
-            mc_temp = medcpl.export_temperature(temp, "TEMP")
+            mc_temp = self._medcpl.export_temperature(temp, "TEMP")
             print("[Convert] Temperature field info:")
             print(mc_temp.simpleRepr(), flush=True)
 
@@ -127,7 +130,7 @@ def coupled_thermics(cpl):
     # loop on time steps
     ################################################################################
 
-    ther_solv = ThermalSolver()
+    ther_solv = ThermalSolver(cpl)
 
     cpl.setup(
         interface=(ML, ["Volume"]),

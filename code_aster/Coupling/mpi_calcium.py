@@ -31,15 +31,15 @@ from ..Utilities.logger import logger
 from ..Utilities.mpi_utils import MPI
 
 
-class MPI_CALCIUM:
+class MPICalcium:
     """
     This class MPI is an encapsulation of CALCIUM communication.
 
     The same API than mpi4py is used.
 
     Arguments:
-        comm (Comm): communicator between applications.
-        sub_comm (Comm): sub-communicator for the application.
+        comm (*MPI.Comm*): communicator between applications.
+        sub_comm (*MPI.Comm*): sub-communicator for the application.
         other_root (int): root of the other application.
         log (logger): logger (default: None).
     """
@@ -51,7 +51,7 @@ class MPI_CALCIUM:
 
     LAND = MPI.LAND
 
-    class COMM_CALCIUM:
+    class CommCalcium:
         def __init__(self, comm, sub_comm, other_root, log):
             self.comm = comm
             self.sub_comm = sub_comm
@@ -65,7 +65,7 @@ class MPI_CALCIUM:
             Arguments:
                 iteration (int): Iteration number.
                 name (str): Expected parameter name.
-                typ (INT|DOUBLE): Type of MPI data.
+                typ (:py:class:`~MPICalcium.INT`|:py:class:`~MPICalcium.DOUBLE`): Type of MPI data.
 
             Returns:
                 int|double: Received value of the parameter.
@@ -78,17 +78,17 @@ class MPI_CALCIUM:
                     f"waiting for parameter {name!r} from proc #{self._other_root}...", verbosity=2
                 )
                 data = bytearray(128)
-                self.comm.Recv((data, 128, MPI_CALCIUM.CHAR), **args)
+                self.comm.Recv((data, 128, MPICalcium.CHAR), **args)
                 varname = data.decode("utf-8").strip("\x00")
                 assert varname == name, f"expecting {name!r}, get {varname!r}"
 
                 meta = np.zeros((3,), dtype=np.int32)
-                self.comm.Recv((meta, 3, MPI_CALCIUM.INT), **args)
+                self.comm.Recv((meta, 3, MPICalcium.INT), **args)
                 assert meta[0] == iteration, meta
                 assert meta[1] == 1, meta
                 assert meta[2] == typ.size
 
-                ctype = np.double if typ == MPI_CALCIUM.DOUBLE else np.int32
+                ctype = np.double if typ == MPICalcium.DOUBLE else np.int32
                 value = np.zeros((1,), dtype=ctype)
                 self.comm.Recv((value, 1, typ), **args)
                 data = [varname, value[0]]
@@ -106,19 +106,19 @@ class MPI_CALCIUM:
                 iteration (int): Iteration number.
                 name (str): Parameter name.
                 value (int|double): Value of the parameter.
-                typ (INT|DOUBLE): Type of MPI data.
+                typ (:py:class:`~MPICalcium.INT`|:py:class:`~MPICalcium.DOUBLE`): Type of MPI data.
             """
 
             self.log(f"send parameter {name!r} (iteration {iteration}): {value}")
             args = dict(dest=self._other_root, tag=self.tag)
             if self.sub_comm.rank == 0:
                 bname = (name + "\x00" * (128 - len(name))).encode("utf-8")
-                self.comm.Send((bname, 128, MPI_CALCIUM.CHAR), **args)
+                self.comm.Send((bname, 128, MPICalcium.CHAR), **args)
 
                 meta = np.array([iteration, 1, typ.size], dtype=np.int32)
-                self.comm.Send((meta, 3, MPI_CALCIUM.INT), **args)
+                self.comm.Send((meta, 3, MPICalcium.INT), **args)
 
-                ctype = np.double if typ == MPI_CALCIUM.DOUBLE else np.int32
+                ctype = np.double if typ == MPICalcium.DOUBLE else np.int32
                 value = np.array(value, dtype=ctype)
                 self.comm.Send((value, 1, typ), **args)
 
@@ -132,7 +132,7 @@ class MPI_CALCIUM:
                 iteration (int): Iteration number.
                 name (str): Parameter name.
                 value (int|double): Value of the parameter.
-                typ (MPI.INT|MPI.DOUBLE): Type of MPI data.
+                typ (:py:class:`~MPICalcium.INT`|:py:class:`~MPICalcium.DOUBLE`): Type of MPI data.
 
             Returns:
                 (int|double): broadcasted value.
@@ -153,20 +153,20 @@ class MPI_CALCIUM:
                 iteration (int): Iteration number.
                 name (str): Parameter name.
                 value (int|double): Value of the parameter.
-                typ (MPI.BOOL): Type of MPI data.
+                typ (:py:class:`~MPICalcium.BOOL`): Type of MPI data.
 
             Returns:
                 (bool): broadcasted value.
             """
 
-            if typ == MPI_CALCIUM.BOOL:
+            if typ == MPICalcium.BOOL:
                 value = int(value)
-                typ = MPI_CALCIUM.INT
+                typ = MPICalcium.INT
 
                 b0 = bool(self.bcast(True, iteration, name, value, typ))
                 b1 = bool(self.bcast(False, iteration, name, value, typ))
 
-                if op == MPI_CALCIUM.LAND:
+                if op == MPICalcium.LAND:
                     if b0 and b1:
                         return True
                     else:
@@ -178,19 +178,19 @@ class MPI_CALCIUM:
 
     def __init__(self, comm, sub_comm, other_root, logfunc=None):
         self.log = logfunc if logfunc else logger
-        self.cpl_comm = self.COMM_CALCIUM(comm, sub_comm, other_root, self.log)
+        self.cpl_comm = self.CommCalcium(comm, sub_comm, other_root, self.log)
 
     @property
     def ASTER_COMM_WORLD(self):
-        """MPI.Comm: (sub-)communicator for the application."""
+        """*MPI.Comm*: (sub-)communicator for the application."""
         return self.cpl_comm.sub_comm
 
     @property
     def COMM_WORLD(self):
-        """MPI.Comm: global communicator for all applications."""
+        """*MPI.Comm*: global communicator for all applications."""
         return self.cpl_comm.comm
 
     @property
     def COUPLING_COMM_WORLD(self):
-        """MPI.Comm: communicator between applications."""
+        """*MPI.Comm*: communicator between applications."""
         return self.cpl_comm
