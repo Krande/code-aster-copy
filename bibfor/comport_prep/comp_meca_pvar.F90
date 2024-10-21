@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp
     character(len=255) :: libr_name, subr_name
     character(len=16) :: extern_addr, notype
-    integer :: extern_type, model_dim
+    integer :: extern_type
     type(Behaviour_ParaExte), pointer :: behaviourParaExte(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -255,7 +255,6 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
             libr_name = behaviourParaExte(mapZoneNume)%libr_name
             extern_addr = behaviourParaExte(mapZoneNume)%extern_addr
             extern_type = behaviourParaExte(mapZoneNume)%extern_type
-            model_dim = behaviourParaExte(mapZoneNume)%model_dim
 
 ! --------- Exception for name of internal state variables
             call comp_meca_exc2(l_cristal, l_pmf, &
@@ -274,7 +273,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
             call comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                                 rela_comp, defo_comp, kit_comp, type_cpla, post_iter, &
                                 regu_visc, post_incr, &
-                                extern_addr, extern_type, model_dim, comporInfoVari)
+                                extern_addr, extern_type, comporInfoVari)
 
 ! --------- Save current zone
             zoneRead(mapZoneNume) = 1

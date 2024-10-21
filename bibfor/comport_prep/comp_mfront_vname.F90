@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comp_mfront_vname(extern_addr, model_dim, nbVariMeca, infoVari)
+subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
 !
     implicit none
 !
@@ -25,12 +25,16 @@ subroutine comp_mfront_vname(extern_addr, model_dim, nbVariMeca, infoVari)
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/lxlgut.h"
+#include "asterfort/utmess.h"
+#include "asterfort/codent.h"
+#include "asterfort/BehaviourMGIS_type.h"
 #include "asterc/mgis_get_number_of_isvs.h"
 #include "asterc/mgis_get_isvs.h"
 #include "asterc/mgis_get_isvs_sizes.h"
+#include "asterc/mgis_get_isvs_types.h"
 !
     character(len=16), intent(in) :: extern_addr
-    integer, intent(in) :: model_dim, nbVariMeca
+    integer, intent(in) :: nbVariMeca
     character(len=16), pointer :: infoVari(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,25 +46,27 @@ subroutine comp_mfront_vname(extern_addr, model_dim, nbVariMeca, infoVari)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  extern_addr      : MGIS address
-! In  model_dim        : dimension of modelisation (2D or 3D)
 ! In  nbVariMeca       : number of internal state variables for mechanical part of behaviour
 ! Ptr infoVari         : pointer to names of internal state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbVariMGIS, iVariType, iVari, iCmp, variSizeMGIS, leng
+    integer :: nbVariMGIS, iVariType, iVari, iCmp, variSizeMGIS, leng, variTypeMGIS, lenTronca
     character(len=16) :: variName, variNameMGIS
     character(len=80), pointer :: variNameList(:) => null()
     integer, pointer :: variSizeList(:) => null()
-    character(len=2), parameter :: cmpNameVoigt(6) = &
+    integer, pointer :: variTypeList(:) => null()
+    character(len=2) :: nomk2
+    character(len=2), parameter :: cmpNameSTensor(6) = &
                                    (/'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ'/)
     character(len=2), parameter :: cmpNameTensor(9) = &
-                                   (/'F0', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8'/)
+                                   (/'XX', 'YY', 'ZZ', 'XY', 'YX', 'XZ', 'ZX', 'YZ', 'ZY'/)
     character(len=2), parameter :: cmpNameVector(3) = &
-                                   (/'N ', 'T1', 'T2'/)
+                                   (/'X', 'Y', 'Z'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+
     if (nbVariMeca .ne. 0) then
         call mgis_get_number_of_isvs(extern_addr, nbVariMGIS)
         if (nbVariMGIS .eq. 0) then
@@ -69,49 +75,81 @@ subroutine comp_mfront_vname(extern_addr, model_dim, nbVariMeca, infoVari)
         else
             AS_ALLOCATE(vk80=variNameList, size=nbVariMGIS)
             AS_ALLOCATE(vi=variSizeList, size=nbVariMGIS)
+            AS_ALLOCATE(vi=variTypeList, size=nbVariMGIS)
             call mgis_get_isvs(extern_addr, variNameList)
             call mgis_get_isvs_sizes(extern_addr, variSizeList)
+            call mgis_get_isvs_types(extern_addr, variTypeList)
             iVari = 0
             do iVariType = 1, nbVariMGIS
                 variNameMGIS = variNameList(iVariType) (1:16)
                 variSizeMGIS = variSizeList(iVariType)
+                variTypeMGIS = variTypeList(iVariType)
+
                 leng = lxlgut(variNameMGIS)
-                if (variSizeMGIS .eq. 1) then
+                lenTronca = min(leng, 14)
+
+                if (variTypeMGIS .eq. MGIS_BV_SCALAR) then
                     infoVari(iVari+1) = variNameMGIS
-                elseif (variSizeMGIS .eq. 2*model_dim) then
-                    do iCmp = 1, 2*model_dim
-                        if (leng .le. 14) then
-                            variName = variNameMGIS(1:leng)//cmpNameVoigt(iCmp)
-                        else
-                            variName = variNameMGIS(1:14)//cmpNameVoigt(iCmp)
-                        end if
-                        infoVari(iVari+iCmp) = variName
-                    end do
-                elseif (variSizeMGIS .eq. model_dim) then
-                    do iCmp = 1, model_dim
-                        if (leng .le. 14) then
-                            variName = variNameMGIS(1:leng)//cmpNameVector(iCmp)
-                        else
-                            variName = variNameMGIS(1:14)//cmpNameVector(iCmp)
-                        end if
-                        infoVari(iVari+iCmp) = variName
-                    end do
-                elseif (variSizeMGIS .eq. 9) then
-                    do iCmp = 1, 9
-                        if (leng .le. 14) then
-                            variName = variNameMGIS(1:leng)//cmpNameTensor(iCmp)
-                        else
-                            variName = variNameMGIS(1:14)//cmpNameTensor(iCmp)
-                        end if
-                        infoVari(iVari+iCmp) = variName
-                    end do
+
+                else if (variTypeMGIS .eq. MGIS_BV_VECTOR_1D .or. &
+                         variTypeMGIS .eq. MGIS_BV_VECTOR_2D .or. &
+                         variTypeMGIS .eq. MGIS_BV_VECTOR_3D .or. &
+                         variTypeMGIS .eq. MGIS_BV_VECTOR) then
+                    if (variSizeMGIS .le. 3) then
+                        do iCmp = 1, variSizeMGIS
+                            variName = variNameMGIS(1:lenTronca)//cmpNameVector(iCmp)
+                            infoVari(iVari+iCmp) = variName
+                        end do
+                    else
+                        call utmess('F', "COMPOR6_20")
+                    end if
+
+                else if (variTypeMGIS .eq. MGIS_BV_STENSOR_1D .or. &
+                         variTypeMGIS .eq. MGIS_BV_STENSOR_2D .or. &
+                         variTypeMGIS .eq. MGIS_BV_STENSOR_3D .or. &
+                         variTypeMGIS .eq. MGIS_BV_STENSOR) then
+                    if (variSizeMGIS .le. 6) then
+                        do iCmp = 1, variSizeMGIS
+                            variName = variNameMGIS(1:lenTronca)//cmpNameSTensor(iCmp)
+                            infoVari(iVari+iCmp) = variName
+                        end do
+                    else
+                        call utmess('F', "COMPOR6_21")
+                    end if
+
+                else if (variTypeMGIS .eq. MGIS_BV_TENSOR_1D .or. &
+                         variTypeMGIS .eq. MGIS_BV_TENSOR_2D .or. &
+                         variTypeMGIS .eq. MGIS_BV_TENSOR_3D .or. &
+                         variTypeMGIS .eq. MGIS_BV_TENSOR) then
+                    if (variSizeMGIS .le. 9) then
+                        do iCmp = 1, variSizeMGIS
+                            variName = variNameMGIS(1:lenTronca)//cmpNameTensor(iCmp)
+                            infoVari(iVari+iCmp) = variName
+                        end do
+                    else
+                        call utmess('F', "COMPOR6_22")
+                    end if
+
+                else if (variTypeMGIS .eq. MGIS_BV_HIGHER_ORDER_TENSOR .or. &
+                         variTypeMGIS .eq. MGIS_BV_ARRAY) then
+                    if (variSizeMGIS .le. 99) then
+                        do iCmp = 1, variSizeMGIS
+                            call codent(iCmp, 'D0', nomk2)
+                            variName = variNameMGIS(1:lenTronca)//nomk2
+                            infoVari(iVari+iCmp) = variName
+                        end do
+                    else
+                        call utmess('F', "COMPOR6_23")
+                    end if
+
                 else
-                    ASSERT(ASTER_FALSE)
+                    call utmess('F', "COMPOR6_24")
                 end if
                 iVari = iVari+variSizeMGIS
             end do
             AS_DEALLOCATE(vk80=variNameList)
             AS_DEALLOCATE(vi=variSizeList)
+            AS_DEALLOCATE(vi=variTypeList)
         end if
         ASSERT(nbVariMeca .eq. iVari)
     end if

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -103,6 +103,17 @@ void DEFSP( MGIS_GET_ISVS_SIZES, mgis_get_isvs_sizes, const char *hexid, STRING_
     auto varsizes = getPtr( hexid, l_id )->getInternalStateVariablesSizes();
     for ( auto i = 0; i < varsizes.size(); ++i ) {
         sizes[i] = (ASTERINTEGER)varsizes[i];
+    }
+#endif
+}
+
+void DEFSP( MGIS_GET_ISVS_TYPES, mgis_get_isvs_types, const char *hexid, STRING_SIZE l_id,
+            ASTERINTEGER *types ) {
+#ifdef ASTER_HAVE_MGIS
+    // output array must be big enough
+    auto vartypes = getPtr( hexid, l_id )->getInternalStateVariablesTypes();
+    for ( auto i = 0; i < vartypes.size(); ++i ) {
+        types[i] = (ASTERINTEGER)vartypes[i];
     }
 #endif
 }

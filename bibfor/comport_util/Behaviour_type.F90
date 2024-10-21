@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -150,8 +150,6 @@ module Behaviour_type
         character(len=255) :: libr_name = ' '
 ! ----- Model for MFront law
         integer            :: model_mfront = MFRONT_MODEL_UNSET
-! ----- Number of dimension for MFront law
-        integer            :: model_dim = 0
 ! ----- Number of internal variables for UMAT
         integer            :: nbVariUMAT = 0
 ! ----- Identifier for strains model

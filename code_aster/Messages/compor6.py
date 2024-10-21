@@ -80,4 +80,17 @@ Cette combinaison est connue comme donnant des résultats imprécis voir faux, e
         L'intégration locale de loi de comportement DRUCK_PRAG_N_A n'admet pas une unique solution : vérifier les données matériaux. 
         """
     ),
+    20: _(
+        """Une variable interne de type vectorielle contient plus de composantes que la dimension maximale autorisée."""
+    ),
+    21: _(
+        """Une variable interne de type tensorielle (symétrique) contient plus de composantes que la dimension maximale autorisée."""
+    ),
+    22: _(
+        """Une variable interne de type tensorielle (non symétrique) contient plus de composantes que la dimension maximale autorisée."""
+    ),
+    23: _(
+        """Une variable interne de type quelconque contient plus de composantes que la dimension maximale autorisée."""
+    ),
+    24: _("""Une variable interne est d'un type inconnu."""),
 }

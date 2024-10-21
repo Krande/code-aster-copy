@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
-                               model_dim, model_mfront, &
+                               model_mfront, &
                                codret, type_cpla)
 !
     implicit none
@@ -30,7 +30,6 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 !
     character(len=16), intent(in) :: elem_type_name
     aster_logical, intent(in) :: l_mfront_cp
-    integer, intent(out) :: model_dim
     integer, intent(out) :: model_mfront
     integer, intent(out) :: codret
     character(len=16), intent(out) :: type_cpla
@@ -45,7 +44,6 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 !
 ! In  elem_type_name   : type of finite element
 ! In  l_mfront_cp      : .true. if plane stress is possible for this MFront behaviour
-! Out model_dim        : dimension of model 2 or 3
 ! Out model_mfront     : type of modelisation for MFront
 ! Out codret           : code for error
 !                        0 - OK
@@ -56,25 +54,19 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret
-    character(len=1) :: model_dim_s
     character(len=16) :: principal, model_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    model_dim = 0
     model_mfront = MFRONT_MODEL_UNSET
     type_cpla = 'VIDE'
-!
+
 ! - Get attributes on finite element
-!
     call teattr('C', 'TYPMOD', model_type, iret, typel=elem_type_name)
     call teattr('C', 'PRINCIPAL', principal, iret, typel=elem_type_name)
-    call teattr('C', 'DIM_TOPO_MODELI', model_dim_s, iret, typel=elem_type_name)
-    read (model_dim_s, '(I1)') model_dim
-!
+
 ! - Select modelisation for MFront
-!
     if (principal .eq. 'OUI') then
         if (model_type .eq. '3D') then
             model_mfront = MFRONT_MODEL_TRIDIMENSIONAL
@@ -84,7 +76,6 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
                 type_cpla = 'ANALYTIQUE'
             else
                 model_mfront = MFRONT_MODEL_AXISYMMETRICAL
-                model_dim = 2
                 type_cpla = 'DEBORST'
             end if
         elseif (model_type .eq. 'D_PLAN') then
@@ -95,15 +86,10 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
             model_mfront = MFRONT_MODEL_AXISYMMETRICAL
         elseif (model_type .eq. '1D') then
             model_mfront = MFRONT_MODEL_AXISYMMETRICAL
-            model_dim = 2
             type_cpla = 'DEBORST'
         else
             codret = 2
         end if
-    end if
-!
-    if (model_dim .le. 1) then
-        codret = 2
     end if
 !
 end subroutine
