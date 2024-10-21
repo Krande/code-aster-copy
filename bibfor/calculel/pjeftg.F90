@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
+subroutine pjeftg(igeom, geomi, nomai, motfac, iocc, ncas)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,6 +42,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
     character(len=24) :: geomi
     character(len=*) :: motfac
     integer :: iocc
+    character(len=8) :: ncas
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -78,7 +79,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
     character(len=80) :: fichier
     aster_logical :: limpr
 !
-    character(len=14) :: messk(2)
+    character(len=14) :: messk(3)
 !
     character(len=14) :: trans12(2), geome12(2)
     data trans12/'TRANSF_GEOM_1', 'TRANSF_GEOM_2'/
@@ -107,7 +108,16 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
     maili = ' '
     if (nfonc .gt. 0) then
         ASSERT(nfonc .eq. 2 .or. nfonc .eq. 3)
-        if (nfonc .eq. 2) lfonc(3) = '&FOZERO'
+        if (nfonc .eq. 2) then
+            if (ncas .eq. '2D') then
+                lfonc(3) = '&FOZERO'
+            else
+                messk(1) = motfac
+                messk(2) = trans12(igeom)
+                messk(3) = ncas
+                call utmess('F', 'PROJECTION4_4', nk=3, valk=messk)
+            end if
+        end if
         geomi = geome12(igeom)
         call jedetr(geomi)
 !       Copiage du maillage initial
