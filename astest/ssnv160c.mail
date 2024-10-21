@@ -1,5 +1,5 @@
  TITRE
- %  GIBI FECIT                                                                  
+ %  GIBI FECIT
  FINSF
  %
  COOR_3D
@@ -13,68 +13,73 @@
  NO8       1.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
  FINSF
  %
- HEXA8   
- CUBE     NO2      NO4      NO8      NO6      NO1      NO3      NO7     
-          NO5     
+ HEXA8
+ CUBE     NO2      NO4      NO8      NO6      NO1      NO3      NO7
+          NO5
  FINSF
  %
- QUAD4   
- ARRIERE  NO1      NO3      NO7      NO5     
- AVANT    NO2      NO6      NO8      NO4     
- DROITE   NO1      NO5      NO6      NO2     
- GAUCHE   NO3      NO4      NO8      NO7     
- BAS      NO1      NO2      NO4      NO3     
- HAUT     NO5      NO7      NO8      NO6     
- FINSF
- %
- GROUP_NO
- NO8                     
- NO8     
+ QUAD4
+ ARRIERE  NO1      NO3      NO7      NO5
+ AVANT    NO2      NO6      NO8      NO4
+ DROITE   NO1      NO5      NO6      NO2
+ GAUCHE   NO3      NO4      NO8      NO7
+ BAS      NO1      NO2      NO4      NO3
+ HAUT     NO5      NO7      NO8      NO6
  FINSF
  %
  GROUP_NO
- NO6                     
- NO6     
+ NO8
+ NO8
  FINSF
  %
  GROUP_NO
- NO1                     
- NO1     
+ NO6
+ NO6
  FINSF
  %
  GROUP_NO
- NO4                     
- NO4     
+ NO1
+ NO1
  FINSF
  %
  GROUP_NO
- NO2                     
- NO2     
+ NO4
+ NO4
  FINSF
  %
  GROUP_NO
- NO3                     
- NO3     
+ NO2
+ NO2
  FINSF
  %
  GROUP_NO
- NO7                     
- NO7     
+ NO3
+ NO3
+ FINSF
+ %
+ GROUP_NO
+ NO7
+ NO7
  FINSF
  %
  GROUP_MA
- HAUT                    
- HAUT    
+ HAUT
+ HAUT
  FINSF
  %
  GROUP_MA
- ARRIERE                 
- ARRIERE 
+ BAS
+ BAS
  FINSF
  %
  GROUP_MA
- DROITE                  
- DROITE  
+ ARRIERE
+ ARRIERE
+ FINSF
+ %
+ GROUP_MA
+ DROITE
+ DROITE
  FINSF
  %
  FIN

@@ -237,19 +237,73 @@ TEST_RESU(
 ### Solution with STAT_NON_LINE
 ### <<<<<<<<
 
+Kinv = 3.2841e-4
+Kv = 1.0 / Kinv
+SY = 120.0
+Rinf = 758.0
+Qzer = 758.0 - SY
+Qinf = Qzer + 100.0
+b = 2.3
+C1inf = 63767.0 / 2.0
+C2inf = 63767.0 / 2.0
+Gam1 = 341.0
+Gam2 = 341.0
+C_Pa = 1.0e6
+
+Steel = DEFI_MATERIAU(
+    ELAS=_F(E=200e9, NU=0.3),
+    ECRO_LINE=_F(D_SIGM_EPSI=1930.0, SY=100.0e6),
+    VISCOCHAB=_F(
+        K=SY * C_Pa,
+        B=b,
+        MU=10,
+        Q_M=Qinf * C_Pa,
+        Q_0=Qzer * C_Pa,
+        C1=C1inf * C_Pa,
+        C2=C2inf * C_Pa,
+        G1_0=Gam1,
+        G2_0=Gam2,
+        K_0=Kv * C_Pa,
+        N=11,
+        A_K=1.0,
+    ),
+)
+
+MATE2 = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=Steel))
+p = 5000.0e7
+
+PRES2 = DEFI_FONCTION(NOM_PARA="INST", NOM_RESU="PRESSION", VALE=(0.0, 0.0, 1.0, p))
+
+
+CHA_PRES2 = AFFE_CHAR_MECA_F(
+    MODELE=MODELE, PRES_REP=_F(GROUP_MA=("HAUT",), PRES=PRES2), VERI_NORM="OUI"
+)
+
+CHA_DEPL2 = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=(_F(GROUP_MA=("BAS",), DX=0, DY=0.0, DZ=0.0),))
+
+LI1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=10), _F(JUSQU_A=2.0, NOMBRE=10)))
+
+maxSteps = 4
+timeStepper = DEFI_LIST_INST(
+    METHODE="AUTO",
+    DEFI_LIST=_F(LIST_INST=LI1, NB_PAS_MAXI=maxSteps),
+    ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=3, SUBD_NIVEAU=4),
+)
+
 command = STAT_NON_LINE
 
 result = CA.NonLinearResult()
 
+inst_fin = 1.0
+
 keywords = _F(
     MODELE=MODELE,
-    CHAM_MATER=MATE,
-    EXCIT=(_F(CHARGE=CHA_PRES), _F(CHARGE=CHA_DEPL)),
-    COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14, ITER_INTE_MAXI=20),
-    INCREMENT=_F(LIST_INST=timeStepper),
-    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE"),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-10),
-    SOLVEUR=_F(METHODE="MUMPS"),
+    CHAM_MATER=MATE2,
+    EXCIT=(_F(CHARGE=CHA_PRES2), _F(CHARGE=CHA_DEPL2)),
+    COMPORTEMENT=_F(RELATION="VISCOCHAB"),
+    INCREMENT=_F(LIST_INST=timeStepper, INST_FIN=inst_fin),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10),
 )
 
 done = 1  # t=0
@@ -263,87 +317,43 @@ while not finished:
         msg="check that at most 'maxSteps' have been completed",
     )
 
-    finished = abs(result.getLastTime() - 2.0) <= 1.0e-6
+    finished = abs(result.getLastTime() - inst_fin) <= 1.0e-6
     if done == 1:
         keywords.update(_F(reuse=result, ETAT_INIT=_F(EVOL_NOLI=result)))
     done = result.getNumberOfIndexes()
 
-test.assertAlmostEqual(result.getLastTime(), 2.0, msg="last time == 2.0")
+test.assertAlmostEqual(result.getLastTime(), inst_fin, msg="last time == 0.9")
 
 
-### >>>>>>>>>>>>>>>
-### Post-processing
-### <<<<<<<<<<<<<<<
-
-result = CALC_CHAMP(
-    reuse=result,
-    RESULTAT=result,
-    CONTRAINTE="SIEF_NOEU",
-    DEFORMATION="EPSI_NOEU",
-    VARI_INTERNE="VARI_NOEU",
-)
-
-### >>>>>
-### Tests
-### <<<<<
-
-
-def func(x):
-    return p - 2.0 * pc0 * (np.exp(-bt * x) - eta * np.exp(2.0 * om * x))
-
-
-x0 = -np.log(p / (2.0 * pc0)) / bt
-EPVP = fsolve(func, x0)[0]
-EPVE = -p / k
+# ### >>>>>
+# ### Tests
+# ### <<<<<
 
 
 TEST_RESU(
     RESU=_F(
-        INST=1.0,
+        INST=inst_fin,
         RESULTAT=result,
         REFERENCE="ANALYTIQUE",
-        NOM_CHAM="EPSI_NOEU",
+        NOM_CHAM="DEPL",
         GROUP_NO="NO6",
-        NOM_CMP="EPXX",
-        VALE_REFE=(EPVE + EPVP) / 3.0,
-        VALE_CALC=-0.038995719385912855,
+        NOM_CMP="DX",
+        VALE_REFE=0.4048801011868622,
+        VALE_CALC=0.4048801011868622,
     )
 )
 
 TEST_RESU(
     RESU=_F(
-        INST=1.0,
+        INST=inst_fin,
         RESULTAT=result,
         REFERENCE="ANALYTIQUE",
-        NOM_CHAM="VARI_NOEU",
-        NOM_CMP="V15",
+        NOM_CHAM="DEPL",
         GROUP_NO="NO6",
-        VALE_REFE=EPVP,
-        VALE_CALC=-0.10729723567711803,
+        NOM_CMP="DY",
+        VALE_REFE=0.40488010118686224,
+        VALE_CALC=0.4048801011868622,
     )
 )
-
-TEST_RESU(
-    RESU=_F(
-        INST=1.4,
-        RESULTAT=result,
-        NOM_CHAM="EPSI_NOEU",
-        GROUP_NO="NO6",
-        NOM_CMP="EPXX",
-        VALE_CALC=-0.037703755561623496,
-    )
-)
-
-TEST_RESU(
-    RESU=_F(
-        INST=1.4,
-        RESULTAT=result,
-        NOM_CHAM="VARI_NOEU",
-        NOM_CMP="V15",
-        GROUP_NO="NO6",
-        VALE_CALC=-0.10729723567711803,
-    )
-)
-
 
 FIN()
