@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sylvie.granet at edf.fr
-
 
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
@@ -27,7 +25,7 @@ import cataelem.Commons.attributes as AT
 
 
 CHAR_ECHA_HR_R = Option(
-    para_in=(SP.HECHTHM, SP.PFLUXR, SP.PGEOMER, SP.PDEPLMR, SP.PINSTR,SP.PMATERC),
+    para_in=(SP.HECHTHM, SP.PFLUXR, SP.PGEOMER, SP.PDEPLMR, SP.PINSTR, SP.PMATERC),
     para_out=(SP.PVECTUR,),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "THM"), (AT.BORD, "-1"))),),
     comment=""" CHAR_ECHA_HR_R """,

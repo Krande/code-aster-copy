@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,14 +101,14 @@ subroutine caethm(load, mesh, model, valeType)
                 call getvr8(keywordFact, 'COEF_21', iocc=iocc, scal=zr(jvalv+2), nbret=nbOcc(3))
                 call getvr8(keywordFact, 'COEF_22', iocc=iocc, scal=zr(jvalv+3), nbret=nbOcc(4))
                 call getvr8(keywordFact, 'PRE1_EXT', iocc=iocc, scal=zr(jvalv+4), nbret=nbOcc(5))
-                call getvr8(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zr(jvalv+5), nbret=nbOcc(6))        
+                call getvr8(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zr(jvalv+5), nbret=nbOcc(6))
             elseif (valeType .eq. 'FONC') then
                 call getvid(keywordFact, 'COEF_11', iocc=iocc, scal=zk8(jvalv), nbret=nbOcc(1))
                 call getvid(keywordFact, 'COEF_12', iocc=iocc, scal=zk8(jvalv+1), nbret=nbOcc(2))
                 call getvid(keywordFact, 'COEF_21', iocc=iocc, scal=zk8(jvalv+2), nbret=nbOcc(3))
                 call getvid(keywordFact, 'COEF_22', iocc=iocc, scal=zk8(jvalv+3), nbret=nbOcc(4))
                 call getvid(keywordFact, 'PRE1_EXT', iocc=iocc, scal=zk8(jvalv+4), nbret=nbOcc(5))
-                call getvid(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zk8(jvalv+5), nbret=nbOcc(6))   
+                call getvid(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zk8(jvalv+5), nbret=nbOcc(6))
             else
                 ASSERT(ASTER_FALSE)
             end if

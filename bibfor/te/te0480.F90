@@ -55,18 +55,17 @@ subroutine te0480(option, nomte)
     aster_logical :: l_axi, l_vf
     integer :: nno, nnos, kp, npg, ndim, nnom, ndim2
     integer :: jv_gano, jv_poids, jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2
-    integer :: k, kk, i, l, ires, itemps, iopt, ndlnm, iech
-    integer :: iret, ndlno, igeom, iechf
-    real(kind=8) :: poids, r, z, nx, ny, valpar(3),para_vale(3),deltat
+    integer :: k, kk, i, l, ires, itemps, iopt, iech
+    integer :: iret, igeom, iechf
+    real(kind=8) :: poids, r, z, nx, ny, valpar(3), deltat
     real(kind=8) :: poids2, nx2, ny2, flu1, flu2, fluth
     real(kind=8) :: c11, c12, c21, c22, p1ext, p2ext, p1m, p2m
     character(len=8) :: nompar(3), elrefe, elref2
     real(kind=8) :: valres(3)
     integer :: icodre(1)
-    integer :: idepm,imate
-! 
-    real(kind=8) :: hrext, tm,mamolv,rgp,rhol, coefvap,rhovs,pvs,alpha,p1ref,p2ref,tref
-
+    integer :: idepm, imate
+!
+    real(kind=8) :: hrext, tm, mamolv, rgp, rhol, coefvap, rhovs, pvs, alpha, p1ref, p2ref, tref
 
     type(THM_DS) :: ds_thm
 !
@@ -82,7 +81,7 @@ subroutine te0480(option, nomte)
     p2ext = 0.D0
     tm = 293.
 ! intialisation
-    hrext=-1.
+    hrext = -1.
     rhovs = 0.
     pvs = 0.
 
@@ -93,36 +92,35 @@ subroutine te0480(option, nomte)
 ! Recuperation des donnees matériaux cas CHAR_ECHA_HR
     if (option .eq. 'CHAR_ECHA_HR_R' .OR. &
         option .eq. 'CHAR_ECHA_HR_F') then
-       call jevech('PMATERC', 'L', imate)
+        call jevech('PMATERC', 'L', imate)
 !
-       call rcvala(zi(imate), ' ', 'THM_VAPE_GAZ', 0, ' ', &
+        call rcvala(zi(imate), ' ', 'THM_VAPE_GAZ', 0, ' ', &
                     [0.d0], 1, 'MASS_MOL', valres(1), icodre, 1)
-       call rcvala(zi(imate), ' ', 'THM_DIFFU', 0, ' ', &
+        call rcvala(zi(imate), ' ', 'THM_DIFFU', 0, ' ', &
                     [0.d0], 1, 'R_GAZ', valres(2), icodre, 1)
-       call rcvala(zi(imate), ' ', 'THM_LIQU', 0, ' ', &
+        call rcvala(zi(imate), ' ', 'THM_LIQU', 0, ' ', &
                     [0.d0], 1, 'RHO', valres(3), icodre, 1)
-       mamolv = valres(1)
-       rgp    = valres(2)
-       rhol   = valres(3)
-       coefvap=mamolv/rhol/rgp
+        mamolv = valres(1)
+        rgp = valres(2)
+        rhol = valres(3)
+        coefvap = mamolv/rhol/rgp
 !
 ! RECUP VAL THM_INIT
 !
-       call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
-                3, 'PRE1', valres(1),icodre, 0, nan='OUI')
-       call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
-                3, 'PRE2', valres(2),icodre, 0, nan='OUI')
-       call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
-                3, 'TEMP', valres(3),icodre, 0, nan='OUI')
-       p1ref = valres(1)
-       p2ref = valres(2)
-       tref  = valres(3)
+        call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
+                    3, 'PRE1', valres(1), icodre, 0, nan='OUI')
+        call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
+                    3, 'PRE2', valres(2), icodre, 0, nan='OUI')
+        call rcvala(zi(imate), ' ', 'THM_INIT', 0, ' ', [0.d0], &
+                    3, 'TEMP', valres(3), icodre, 0, nan='OUI')
+        p1ref = valres(1)
+        p2ref = valres(2)
+        tref = valres(3)
 
-! initialisation 
-       valpar(3) = tref
-    endif
+! initialisation
+        valpar(3) = tref
+    end if
 !
-
 
 ! - Get model of finite element
 !
@@ -148,9 +146,9 @@ subroutine te0480(option, nomte)
 !
     ndim2 = -1
     if (ds_thm%ds_elem%l_dof_meca) then
-       ndim2=ndim
-    endif
-! 
+        ndim2 = ndim
+    end if
+!
     if (option .eq. 'CHAR_ECHA_THM_R') then
         iopt = 1
         call jevech('PINSTR', 'L', itemps)
@@ -175,8 +173,8 @@ subroutine te0480(option, nomte)
         call jevech('PDEPLMR', 'L', idepm)
         p1m = zr(idepm+ndim2+1)+p1ref
         if (ds_thm%ds_elem%l_dof_ther) then
-          tm = zr(idepm+ndim2+3)+tref 
-        endif
+            tm = zr(idepm+ndim2+3)+tref
+        end if
 !
 ! Recuperation des informations pour le flux
         call jevech('HECHTHM', 'L', iech)
@@ -191,7 +189,7 @@ subroutine te0480(option, nomte)
         p1m = zr(idepm+ndim2+1)
         p2m = zr(idepm+ndim2+2)
 !
-        valpar(1) = p1m  ! on garde pour le moment inutile
+        valpar(1) = p1m
         valpar(2) = zr(itemps)
         deltat = zr(itemps+1)
 
@@ -209,13 +207,13 @@ subroutine te0480(option, nomte)
         call jevech('PINSTR', 'L', itemps)
         call jevech('PDEPLMR', 'L', idepm)
         p1m = zr(idepm+ndim2+1)+p1ref
-        valpar(1) = p1m  ! on garde pour le moment inutile
+        valpar(1) = p1m
         valpar(2) = zr(itemps)
         deltat = zr(itemps+1)
         if (ds_thm%ds_elem%l_dof_ther) then
-          tm = zr(idepm+ndim2+3)+tref
-          valpar(3) = tm
-        endif
+            tm = zr(idepm+ndim2+3)+tref
+            valpar(3) = tm
+        end if
 ! Recuperation des informations pour le flux
         call jevech('HCHTHMF', 'L', iechf)
         call fointe('FM', zk8(iechf), 1, nompar(2), valpar(2), alpha, iret)
@@ -225,8 +223,8 @@ subroutine te0480(option, nomte)
     else
         ASSERT(ASTER_FALSE)
     end if
-!    
-!  
+!
+!
 ! ======================================================================
 ! --- CAS DU PERMANENT POUR LA PARTIE H OU T : LE SYSTEME A ETE --------
 ! --- CONSTRUIT EN SIMPLIFIANT PAR LE PAS DE TEMPS. ON DOIT DONC -------
@@ -263,19 +261,19 @@ subroutine te0480(option, nomte)
 ! --- FLU1 REPRESENTE LE FLUX ASSOCIE A PRE1 ---------------------------
 ! --- FLU2 REPRESENTE LE FLUX ASSOCIE A PRE2 ---------------------------
 ! ======================================================================
-        if (option .eq. 'CHAR_ECHA_THM_R'.OR. &
-          option .eq. 'CHAR_ECHA_THM_F') then
-          fluth = 0.
-          flu1 = c11*(p1m-p1ext)+c12*(p2m-p2ext)
-          flu2 = c21*(p1m-p1ext)+c22*(p2m-p2ext)
-        else if (option .eq. 'CHAR_ECHA_HR_R'.OR. &
-          option .eq. 'CHAR_ECHA_HR_F') then
-          rhovs = pvs*coefvap/tm
-          flu1 = +alpha*rhovs*(hrext-exp(-coefvap*p1m/(tm)))
-          flu2 = 0.
+        if (option .eq. 'CHAR_ECHA_THM_R' .OR. &
+            option .eq. 'CHAR_ECHA_THM_F') then
+            fluth = 0.
+            flu1 = c11*(p1m-p1ext)+c12*(p2m-p2ext)
+            flu2 = c21*(p1m-p1ext)+c22*(p2m-p2ext)
+        else if (option .eq. 'CHAR_ECHA_HR_R' .OR. &
+                 option .eq. 'CHAR_ECHA_HR_F') then
+            rhovs = pvs*coefvap/tm
+            flu1 = +alpha*rhovs*(hrext-exp(-coefvap*p1m/(tm)))
+            flu2 = 0.
         else
-         ASSERT(ASTER_FALSE)
-        endif
+            ASSERT(ASTER_FALSE)
+        end if
 
 !
         if (iopt .eq. 1 .or. iopt .eq. 2) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: sylvie.granet at edf.fr
 !
 subroutine caethr(load, mesh, model, valeType)
 !
@@ -84,7 +83,7 @@ subroutine caethr(load, mesh, model, valeType)
 ! - Creation and initialization to zero of <CARTE>
 !
     call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType, &
-                        nbMap, map, nbCmp)       
+                        nbMap, map, nbCmp)
     ASSERT(nbMap .eq. 1)
     call jeveuo(map(1)//'.VALV', 'E', jvalv)
 !
@@ -95,14 +94,14 @@ subroutine caethr(load, mesh, model, valeType)
         call getelem(mesh, keywordfact, iocc, 'A', listCell, nbCell)
 
         if (nbCell .ne. 0) then
-            if (valeType .eq. 'REEL') then   
-                call getvr8(keywordFact, 'ALPHA'    , iocc=iocc, scal=zr(jvalv), nbret=nbOcc(1))                                 
-                call getvr8(keywordFact, 'PVAP_SAT' , iocc=iocc, scal=zr(jvalv+1), nbret=nbOcc(2))   
-                call getvr8(keywordFact, 'HR_EXT'   , iocc=iocc, scal=zr(jvalv+2), nbret=nbOcc(3))      
-            elseif (valeType .eq. 'FONC') then                                 
-                call getvid(keywordFact, 'ALPHA'   , iocc=iocc, scal=zk8(jvalv), nbret=nbOcc(1))                                 
-                call getvid(keywordFact, 'PVAP_SAT', iocc=iocc, scal=zk8(jvalv+1), nbret=nbOcc(2))  
-                call getvid(keywordFact, 'HR_EXT'  , iocc=iocc, scal=zk8(jvalv+2), nbret=nbOcc(3)) 
+            if (valeType .eq. 'REEL') then
+                call getvr8(keywordFact, 'ALPHA', iocc=iocc, scal=zr(jvalv), nbret=nbOcc(1))
+                call getvr8(keywordFact, 'PVAP_SAT', iocc=iocc, scal=zr(jvalv+1), nbret=nbOcc(2))
+                call getvr8(keywordFact, 'HR_EXT', iocc=iocc, scal=zr(jvalv+2), nbret=nbOcc(3))
+            elseif (valeType .eq. 'FONC') then
+                call getvid(keywordFact, 'ALPHA', iocc=iocc, scal=zk8(jvalv), nbret=nbOcc(1))
+                call getvid(keywordFact, 'PVAP_SAT', iocc=iocc, scal=zk8(jvalv+1), nbret=nbOcc(2))
+                call getvid(keywordFact, 'HR_EXT', iocc=iocc, scal=zk8(jvalv+2), nbret=nbOcc(3))
             else
                 ASSERT(ASTER_FALSE)
             end if

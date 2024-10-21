@@ -661,7 +661,7 @@ AFFE_CHAR_MECA_F = OPER(
         ),
         regles=(
             UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
-            PRESENT_PRESENT("HR_EXT", "ALPHA",'PVAP_SAT'),
+            PRESENT_PRESENT("HR_EXT", "ALPHA", "PVAP_SAT"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),

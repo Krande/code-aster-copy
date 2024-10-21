@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -343,7 +343,7 @@ DLSRB = DEFI_CONSTANTE(VALE=0.15)
 #
 
 
-INST1= DEFI_LIST_REEL(
+INST1 = DEFI_LIST_REEL(
     DEBUT=0.0,
     INTERVALLE=(
         _F(JUSQU_A=100, NOMBRE=10),
@@ -474,47 +474,29 @@ print("S au bord", S)
 TEXT = 60.0 + 273
 SECH = AFFE_CHAR_CINE(
     MODELE=MODELE,
-    MECA_IMPO=(
-        _F(GROUP_MA=("GAUCHE"), PRE2=4.0e5),
-        _F(GROUP_MA=("GAUCHE",), TEMP=TEXT - TREF),
-    ),
+    MECA_IMPO=(_F(GROUP_MA=("GAUCHE"), PRE2=4.0e5), _F(GROUP_MA=("GAUCHE",), TEMP=TEXT - TREF)),
 )
-alphaech=1.e-3
-hrext=0.7
-pvsat=2460.
-COEFECH=DEFI_CONSTANTE(VALE=alphaech)
-HR =DEFI_CONSTANTE(VALE=hrext)
+alphaech = 1.0e-3
+hrext = 0.7
+pvsat = 2460.0
+COEFECH = DEFI_CONSTANTE(VALE=alphaech)
+HR = DEFI_CONSTANTE(VALE=hrext)
 PVS = DEFI_CONSTANTE(VALE=pvsat)
 PVSF = FORMULE(NOM_PARA="TEMP", VALE="10**(2.7858+(TEMP-273.)/(31.559+0.1354*(TEMP-273.)))")
 
 FLUECH1 = AFFE_CHAR_MECA(
     MODELE=MODELE,
-    ECHANGE_THM_HR=(
-        _F(
-            GROUP_MA=("GAUCHE",),
-            HR_EXT=hrext,
-            ALPHA=alphaech,
-            PVAP_SAT=pvsat,   
-        ),),)
+    ECHANGE_THM_HR=(_F(GROUP_MA=("GAUCHE",), HR_EXT=hrext, ALPHA=alphaech, PVAP_SAT=pvsat),),
+)
 
 FLUECH2 = AFFE_CHAR_MECA_F(
     MODELE=MODELE,
-    ECHANGE_THM_HR=(
-        _F(
-            GROUP_MA=("GAUCHE",),
-            HR_EXT=HR,
-            ALPHA=COEFECH,
-            PVAP_SAT=PVS,   
-        ),),)
+    ECHANGE_THM_HR=(_F(GROUP_MA=("GAUCHE",), HR_EXT=HR, ALPHA=COEFECH, PVAP_SAT=PVS),),
+)
 FLUECH3 = AFFE_CHAR_MECA_F(
     MODELE=MODELE,
-    ECHANGE_THM_HR=(
-        _F(
-            GROUP_MA=("GAUCHE",),
-            HR_EXT=HR,
-            ALPHA=COEFECH,
-            PVAP_SAT=PVSF,   
-        ),),)
+    ECHANGE_THM_HR=(_F(GROUP_MA=("GAUCHE",), HR_EXT=HR, ALPHA=COEFECH, PVAP_SAT=PVSF),),
+)
 #
 #
 # *************************************************************
@@ -524,7 +506,7 @@ FLUECH3 = AFFE_CHAR_MECA_F(
 U1 = STAT_NON_LINE(
     MODELE=MODELE,
     CHAM_MATER=CHMAT1,
-    EXCIT=(_F(CHARGE=SECH),_F(CHARGE=FLUECH1, TYPE_CHARGE="SUIV")),
+    EXCIT=(_F(CHARGE=SECH), _F(CHARGE=FLUECH1, TYPE_CHARGE="SUIV")),
     COMPORTEMENT=_F(RELATION="KIT_THH2", RELATION_KIT=(LOI, "HYDR_UTIL")),
     ETAT_INIT=_F(DEPL=CHAMNO),
     INCREMENT=_F(LIST_INST=LI),
@@ -544,7 +526,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="N3",
         NOM_CMP="PRE1",
-        VALE_CALC=  950517.0593731663 ,
+        VALE_CALC=950517.0593731663,
     )
 )
 TEST_RESU(
@@ -566,12 +548,14 @@ PR1 = POST_RELEVE_T(
         LIST_INST=LISPOST,
         NOM_CMP=("PRE1"),
         OPERATION="EXTRACTION",
-    ))
+    )
+)
 IMPR_TABLE(
     TABLE=PR1,
     FORMAT="TABLEAU_CROISE",
     NOM_PARA=("INST", "COOR_X", "PRE1"),
-    TRI=(_F(NOM_PARA=("COOR_X"), ORDRE="CROISSANT")),)
+    TRI=(_F(NOM_PARA=("COOR_X"), ORDRE="CROISSANT")),
+)
 
 ### Impression au bord pour verif coherence du flux et du terme d'échange
 
@@ -579,22 +563,22 @@ IMPR_TABLE(
 U1 = CALC_CHAMP(reuse=U1, RESULTAT=U1, CONTRAINTE=("SIEF_ELNO"))
 U1 = CALC_CHAMP(reuse=U1, CONTRAINTE=("SIEF_NOEU"), RESULTAT=U1)
 
-TSIEF=CREA_TABLE(RESU=_F(RESULTAT=U1,
-                                 PRECISION=1.E-10,
-                                 NOM_CHAM='SIEF_NOEU',
-                                 INST=UNMOIS,
-                                 GROUP_NO="N3",
-                                 TOUT_CMP='OUI', ))
-FLUW = FORMULE(NOM_PARA=('FH11X','FH12X'),VALE='FH11X + FH12X');
-TSIEF=CALC_TABLE(reuse=TSIEF,
-                         TABLE=TSIEF, 
-                         ACTION=(
-                                  _F(OPERATION='OPER',
-                                    NOM_PARA='FLUW',
-                                    FORMULE=FLUW),  
-                                ),)         
+TSIEF = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=U1,
+        PRECISION=1.0e-10,
+        NOM_CHAM="SIEF_NOEU",
+        INST=UNMOIS,
+        GROUP_NO="N3",
+        TOUT_CMP="OUI",
+    )
+)
+FLUW = FORMULE(NOM_PARA=("FH11X", "FH12X"), VALE="FH11X + FH12X")
+TSIEF = CALC_TABLE(
+    reuse=TSIEF, TABLE=TSIEF, ACTION=(_F(OPERATION="OPER", NOM_PARA="FLUW", FORMULE=FLUW),)
+)
 
-                               
+
 DEP = POST_RELEVE_T(
     ACTION=_F(
         INTITULE="DEPL",
@@ -602,19 +586,20 @@ DEP = POST_RELEVE_T(
         RESULTAT=U1,
         NOM_CHAM="DEPL",
         INST=UNMOIS,
-        TOUT_CMP=('OUI'),
+        TOUT_CMP=("OUI"),
         OPERATION="EXTRACTION",
-    ))
+    )
+)
 
-ttabp1  = []  
-ttabt  = []    
-ttabp1.append(DEP.EXTR_TABLE().PRE1[0]) 
-ttabt.append(DEP.EXTR_TABLE().TEMP[0])  
+ttabp1 = []
+ttabt = []
+ttabp1.append(DEP.EXTR_TABLE().PRE1[0])
+ttabt.append(DEP.EXTR_TABLE().TEMP[0])
 
 pc = ttabp1[0]
-temp = ttabt[0]+TREF
-coef=alphaech*pvsat*MAMOLVAP/(rho0l*R* temp)
-flux_eau=-coef*(exp(-pc*MAMOLVAP/(rho0l*R* temp))-hrext)
+temp = ttabt[0] + TREF
+coef = alphaech * pvsat * MAMOLVAP / (rho0l * R * temp)
+flux_eau = -coef * (exp(-pc * MAMOLVAP / (rho0l * R * temp)) - hrext)
 
 
 TEST_TABLE(
@@ -622,11 +607,11 @@ TEST_TABLE(
     NOM_PARA="FLUW",
     REFERENCE="ANALYTIQUE",
     VALE_REFE=flux_eau,
-    VALE_CALC=(-4.6829680086239834E-09,),
+    VALE_CALC=(-4.6829680086239834e-09,),
     PRECISION=0.01,
     CRITERE="RELATIF",
     VALE_ABS="NON",
-)                      
+)
 #
 #
 # *************************************************************
@@ -637,7 +622,7 @@ TEST_TABLE(
 U2 = STAT_NON_LINE(
     MODELE=MODELE,
     CHAM_MATER=CHMAT1,
-    EXCIT=(_F(CHARGE=SECH),_F(CHARGE=FLUECH2, TYPE_CHARGE="SUIV")),
+    EXCIT=(_F(CHARGE=SECH), _F(CHARGE=FLUECH2, TYPE_CHARGE="SUIV")),
     COMPORTEMENT=_F(RELATION="KIT_THH2", RELATION_KIT=(LOI, "HYDR_UTIL")),
     ETAT_INIT=_F(DEPL=CHAMNO),
     INCREMENT=_F(LIST_INST=LI),
@@ -651,8 +636,8 @@ TEST_RESU(
         RESULTAT=U2,
         NOM_CHAM="DEPL",
         GROUP_NO="N3",
-        NOM_CMP="PRE1",        
-        VALE_CALC= 950517.0593731663,
+        NOM_CMP="PRE1",
+        VALE_CALC=950517.0593731663,
     )
 )
 TEST_RESU(
@@ -672,22 +657,22 @@ TEST_RESU(
 U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CONTRAINTE=("SIEF_ELNO"))
 U2 = CALC_CHAMP(reuse=U2, CONTRAINTE=("SIEF_NOEU"), RESULTAT=U2)
 
-TSIEF=CREA_TABLE(RESU=_F(RESULTAT=U2,
-                                 PRECISION=1.E-10,
-                                 NOM_CHAM='SIEF_NOEU',
-                                 INST=UNMOIS,
-                                 GROUP_NO="N3",
-                                 TOUT_CMP='OUI', ))
-FLUW = FORMULE(NOM_PARA=('FH11X','FH12X'),VALE='FH11X + FH12X');
-TSIEF=CALC_TABLE(reuse=TSIEF,
-                         TABLE=TSIEF, 
-                         ACTION=(
-                                  _F(OPERATION='OPER',
-                                    NOM_PARA='FLUW',
-                                    FORMULE=FLUW),  
-                                ),)         
+TSIEF = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=U2,
+        PRECISION=1.0e-10,
+        NOM_CHAM="SIEF_NOEU",
+        INST=UNMOIS,
+        GROUP_NO="N3",
+        TOUT_CMP="OUI",
+    )
+)
+FLUW = FORMULE(NOM_PARA=("FH11X", "FH12X"), VALE="FH11X + FH12X")
+TSIEF = CALC_TABLE(
+    reuse=TSIEF, TABLE=TSIEF, ACTION=(_F(OPERATION="OPER", NOM_PARA="FLUW", FORMULE=FLUW),)
+)
 
-                               
+
 DEP = POST_RELEVE_T(
     ACTION=_F(
         INTITULE="DEPL",
@@ -695,19 +680,20 @@ DEP = POST_RELEVE_T(
         RESULTAT=U2,
         NOM_CHAM="DEPL",
         INST=UNMOIS,
-        TOUT_CMP=('OUI'),
+        TOUT_CMP=("OUI"),
         OPERATION="EXTRACTION",
-    ))
+    )
+)
 
-ttabp1  = []  
-ttabt  = []    
-ttabp1.append(DEP.EXTR_TABLE().PRE1[0]) 
-ttabt.append(DEP.EXTR_TABLE().TEMP[0])  
+ttabp1 = []
+ttabt = []
+ttabp1.append(DEP.EXTR_TABLE().PRE1[0])
+ttabt.append(DEP.EXTR_TABLE().TEMP[0])
 
 pc = ttabp1[0]
-temp = ttabt[0]+TREF
-coef=alphaech*pvsat*MAMOLVAP/(rho0l*R* temp)
-flux_eau=-coef*(exp(-pc*MAMOLVAP/(rho0l*R* temp))-hrext)
+temp = ttabt[0] + TREF
+coef = alphaech * pvsat * MAMOLVAP / (rho0l * R * temp)
+flux_eau = -coef * (exp(-pc * MAMOLVAP / (rho0l * R * temp)) - hrext)
 
 
 TEST_TABLE(
@@ -715,21 +701,20 @@ TEST_TABLE(
     NOM_PARA="FLUW",
     REFERENCE="ANALYTIQUE",
     VALE_REFE=flux_eau,
-    VALE_CALC=(-4.6829680086239834E-09,),
+    VALE_CALC=(-4.6829680086239834e-09,),
     PRECISION=0.01,
     CRITERE="RELATIF",
     VALE_ABS="NON",
-)                      
+)
 # *************************************************************
 #     STAT NON LINE
 # *************************************************************
 
 
-
 U3 = STAT_NON_LINE(
     MODELE=MODELE,
     CHAM_MATER=CHMAT1,
-    EXCIT=(_F(CHARGE=SECH),_F(CHARGE=FLUECH3, TYPE_CHARGE="SUIV")),
+    EXCIT=(_F(CHARGE=SECH), _F(CHARGE=FLUECH3, TYPE_CHARGE="SUIV")),
     COMPORTEMENT=_F(RELATION="KIT_THH2", RELATION_KIT=(LOI, "HYDR_UTIL")),
     ETAT_INIT=_F(DEPL=CHAMNO),
     INCREMENT=_F(LIST_INST=LI),
@@ -742,9 +727,6 @@ U3 = STAT_NON_LINE(
 # *************************************************************
 
 
-
-
-
 PR13 = POST_RELEVE_T(
     ACTION=_F(
         INTITULE="DEPL",
@@ -754,13 +736,14 @@ PR13 = POST_RELEVE_T(
         LIST_INST=LISPOST,
         NOM_CMP=("PRE1"),
         OPERATION="EXTRACTION",
-    ))
+    )
+)
 IMPR_TABLE(
     TABLE=PR13,
     FORMAT="TABLEAU_CROISE",
     NOM_PARA=("INST", "COOR_X", "PRE1"),
-    TRI=(_F(NOM_PARA=("COOR_X"), ORDRE="CROISSANT")),)
-
+    TRI=(_F(NOM_PARA=("COOR_X"), ORDRE="CROISSANT")),
+)
 
 
 PRT = POST_RELEVE_T(
@@ -772,12 +755,14 @@ PRT = POST_RELEVE_T(
         LIST_INST=LISPOST,
         NOM_CMP=("TEMP"),
         OPERATION="EXTRACTION",
-    ),)
+    )
+)
 IMPR_TABLE(
     TABLE=PRT,
     FORMAT="TABLEAU_CROISE",
     NOM_PARA=("INST", "COOR_X", "TEMP"),
-    TRI=(_F(NOM_PARA=("COOR_X"), ORDRE="CROISSANT")),)
+    TRI=(_F(NOM_PARA=("COOR_X"), ORDRE="CROISSANT")),
+)
 
 
 TEST_RESU(
@@ -788,9 +773,9 @@ TEST_RESU(
         GROUP_NO="N3",
         NOM_CMP="PRE1",
         VALE_CALC=1366503.2249101945,
-    ))
+    )
+)
 #
-
 
 
 FIN()

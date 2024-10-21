@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -409,18 +409,18 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         ASSERT(ASTER_FALSE)
     end if
 
-! - Creation of the <CARTE>         
+! - Creation of the <CARTE>
     if (createMap) then
-        do iMap = 1, nbMap       
-            call exisd('CARTE', map(iMap), iret)   
+        do iMap = 1, nbMap
+            call exisd('CARTE', map(iMap), iret)
             if (iret .eq. 0) then
                 call alcart('G', map(iMap), mesh, physQuantity(iMap))
                 l_init(iMap) = ASTER_TRUE
             else
                 l_init(iMap) = ASTER_FALSE
-            end if   
+            end if
         end do
-    end if   
+    end if
 ! - Initialization of the <CARTE>
     if (createMap) then
         do iMap = 1, nbMap

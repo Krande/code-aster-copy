@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -183,7 +183,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     'VECT_ASSE_CHAR', 'FORCE_CONTOUR', 'FORCE_INTERNE#3D',&
      &     'FORCE_INTERNE#2D', 'FORCE_ARETE', 'FORCE_FACE',&
      &     'FORCE_POUTRE', 'FORCE_COQUE#3D', 'FORCE_COQUE#2D',&
-     &     'VECT_ASSE', 'VECT_ASSE_GENE', 'ECHA_THM','ECHA_HR'/
+     &     'VECT_ASSE', 'VECT_ASSE_GENE', 'ECHA_THM', 'ECHA_HR'/
 !
 ! --- POSITION DANS L'ENTIER CODE POUR LE MOT_CLEF DE LA CHARGE
 !
@@ -197,7 +197,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     17, 18, 19,&
      &     20, 21, 22,&
      &     23, 24, 25,&
-     &     26, 27, 28,29/
+     &     26, 27, 28, 29/
 !
 ! --- GENRE DE LA CHARGE
 !
@@ -211,7 +211,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     'VECT_ASSE_CHAR', 'NEUM_MECA', 'NEUM_MECA',&
      &     'NEUM_MECA', 'NEUM_MECA', 'NEUM_MECA',&
      &     'NEUM_MECA', 'NEUM_MECA', 'NEUM_MECA',&
-     &     'VECT_ASSE', 'VECT_ASSE_GENE', 'NEUM_MECA',&
+     &     'VECT_ASSE', 'VECT_ASSE_GENE', 'NEUM_MECA', &
            'NEUM_MECA'/
 !
 ! --- POSITION DANS L'ENTIER CODE POUR LE GENRE DE LA CHARGE
@@ -226,7 +226,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     12, 03, 03,&
      &     03, 03, 03,&
      &     03, 03, 03,&
-     &     04, 14, 03,03/
+     &     04, 14, 03, 03/
 !
     data typlig/&
      &     'LIGRCH', 'LIGRCH',&
@@ -323,7 +323,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     ' ', 'PFF1D2D', 'PFF3D3D',&
      &     'PFF2D2D', 'PFF1D3D', 'PFF2D3D',&
      &     'PFF1D1D', 'PFFCO3D', 'PFFCO2D',&
-     &     ' ', ' ', 'PCHTHMF','HCHTHMF'/
+     &     ' ', ' ', 'PCHTHMF', 'HCHTHMF'/
 !
 ! ----------------------------------------------------------------------
 !

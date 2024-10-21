@@ -160,7 +160,7 @@ class HH2_FACE8(Element):
             para_in=(
                 (SP.PFLUXR, EFLUXE),
                 (SP.PGEOMER, NGEOMER),
-                (SP.HECHTHM, CCOECHH,),
+                (SP.HECHTHM, CCOECHH),
                 (SP.PINSTR, CTEMPSR),
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PMATERC, LC.CMATERC),

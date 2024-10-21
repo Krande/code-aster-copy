@@ -103,7 +103,7 @@ class HH2_DPSE3(Element):
             te=472,
             para_in=((SP.PFLUXR, EFLUXE), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
-        ), 
+        ),
         OP.CHAR_ECHA_THM_R(
             te=480,
             para_in=(
@@ -114,7 +114,7 @@ class HH2_DPSE3(Element):
                 (SP.PDEPLMR, DDL_MECA),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
-        ),  
+        ),
         OP.CHAR_ECHA_THM_F(
             te=480,
             para_in=(
@@ -125,25 +125,25 @@ class HH2_DPSE3(Element):
                 (SP.PDEPLMR, DDL_MECA),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
-        ), 
+        ),
         OP.CHAR_ECHA_HR_R(
             te=480,
             para_in=(
                 (SP.PFLUXR, EFLUXE),
                 (SP.PGEOMER, NGEOMER),
-                (SP.HECHTHM, CCOECHH,),
+                (SP.HECHTHM, CCOECHH),
                 (SP.PINSTR, CTEMPSR),
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PMATERC, LC.CMATERC),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
-        ),    
+        ),
         OP.CHAR_ECHA_HR_F(
             te=480,
             para_in=(
                 (SP.PFLUXF, CFLUXF),
                 (SP.PGEOMER, NGEOMER),
-                (SP.HCHTHMF, CCOECHHF,),
+                (SP.HCHTHMF, CCOECHHF),
                 (SP.PINSTR, CTEMPSR),
                 (SP.PDEPLMR, DDL_MECA),
                 (SP.PMATERC, LC.CMATERC),

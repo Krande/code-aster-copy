@@ -31,7 +31,6 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: load_name
     integer, intent(in) :: load_nume
@@ -172,7 +171,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
         'No_Load         ', 'RIGI_MECA_PRSU_F', 'No_Load         ', 'RIGI_MECA_SFCO3D', &
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
-        'No_Load         ', 'RIGI_MECA_EFSU_F','No_Load         ', 'No_Load         '/
+        'No_Load         ', 'RIGI_MECA_EFSU_F', 'No_Load         ', 'No_Load         '/
 !
 ! - Flag if load can been undead load type
 !

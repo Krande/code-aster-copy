@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,13 +40,13 @@ subroutine loadGetNeumannType(l_stat, load_name, ligrch, &
     integer, intent(in) :: nb_info_maxi
     character(len=24), intent(inout)  :: list_info_type(nb_info_maxi)
 !
-! --------------------------------------------------------------------------------------------------
+! ------------------------------------------------------------------------------------------------
 !
 ! List of loads - Utility
 !
 ! Get type of Neumann load
 !
-! --------------------------------------------------------------------------------------------------
+! ------------------------------------------------------------------------------------------------
 !
 ! In  l_stat         : flag for static computation
 ! In  load_name      : name of load
@@ -54,15 +54,16 @@ subroutine loadGetNeumannType(l_stat, load_name, ligrch, &
 ! IO  nb_info_type   : number of type of loads to assign (list)
 ! IO  list_info_type : list of type of loads to assign (list)
 !
-! --------------------------------------------------------------------------------------------------
+! ------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nb_type_neum = 21
-    character(len=6), parameter :: ligr_name(nb_type_neum) = (/'.FORNO', '.F3D3D', '.F2D3D', '.F1D3D', &
-                                                           '.F2D2D', '.F1D2D', '.F1D1D', '.PESAN', &
-                                                           '.ROTAT', '.PRESS', '.FELEC', '.FCO3D', &
-                                                           '.FCO2D', '.EPSIN', '.FLUX ', '.VEASS', &
-                                                            '.ONDPL', '.SIINT', '.ETHM ', '.VFACE',&
-                                                            '.ETHMH'/)
+    character(len=6), parameter :: ligr_name(nb_type_neum) = &
+                                   (/'.FORNO', '.F3D3D', '.F2D3D', '.F1D3D', &
+                                     '.F2D2D', '.F1D2D', '.F1D1D', '.PESAN', &
+                                     '.ROTAT', '.PRESS', '.FELEC', '.FCO3D', &
+                                     '.FCO2D', '.EPSIN', '.FLUX ', '.VEASS', &
+                                     '.ONDPL', '.SIINT', '.ETHM ', '.VFACE', &
+                                     '.ETHMH'/)
     integer :: i_type_neum, iret, iret_cable_cine
     character(len=5) :: suffix, para_inst, para_vite, para_acce
     character(len=24) :: info_type, lchin
@@ -102,11 +103,11 @@ subroutine loadGetNeumannType(l_stat, load_name, ligrch, &
             if (ligr_name(i_type_neum) .eq. '.ETHM') then
                 if (.not. (load_apply .eq. 'SUIV')) then
                     call utmess('F', 'CHARGES5_13', sk=load_name)
-                end if           
+                end if
             else if (ligr_name(i_type_neum) .eq. '.ETHMH') then
                 if (.not. (load_apply .eq. 'SUIV')) then
                     call utmess('F', 'CHARGES5_13', sk=load_name)
-                end if           
+                end if
             end if
             l_para_inst = para_inst .eq. 'OUI'
             l_para_vite = para_vite .eq. 'OUI'
