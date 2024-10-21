@@ -36,6 +36,12 @@ Distance maximale autorisée (DISTANCE_0D) : %(r2)f
 Vous ne devez définir la transformation géométrique %(k2)s que sous le mot clef facteur %(k1)s.
 """
     ),
+    4: _(
+        """Vous utilisez le mot clef %(k1)s pour faire une projection.
+Vous êtes en dimension %(k3)s. Vous devez définir les 3 fonctions (FX, FY, FZ) pour la
+transformation géométrique %(k2)s.
+"""
+    ),
     54: _("""Il n'y a aucun noeud sur lesquels projeter."""),
     55: _(
         """Il n'y a pas de mailles à projeter ou en correspondance.
