@@ -415,12 +415,14 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
             std::string base( "G" );
             std::string extr_right( "EXCLU" );
             std::string extr_left( "EXCLU" );
+            std::string crit( "ABSOLU" );
+            ASTERDOUBLE prec = 1.e-10;
             ASTERINTEGER iret = 100;
             ASTERINTEGER stop = 0;
 
             CALLO_RSINCH( evol_char_name, para, access_var, &time_curr,
-                          evol_exchange_field->getName(), extr_right, extr_left, &stop, base,
-                          &iret );
+                          evol_exchange_field->getName(), extr_right, extr_left, &stop, base, &prec,
+                          crit, &iret );
 
             if ( iret >= 2 ) {
                 AS_ABORT( "Cannot find COEF_H in EVOL_CHAR " + evol_char_name + " at time " +

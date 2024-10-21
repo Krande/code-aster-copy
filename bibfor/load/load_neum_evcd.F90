@@ -84,6 +84,8 @@ subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, load_nume, ligrel_
     character(len=4) :: load_type
     character(len=24) :: object
     character(len=8), pointer :: p_object(:) => null()
+    real(kind=8), parameter :: prec = 1.0d-10
+    character(len=8), parameter :: crit = 'ABSOLU'
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,7 +119,7 @@ subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, load_nume, ligrel_
 !
     option = ' '
     call rsinch(evol_char, 'FVOL_3D', 'INST', inst_curr, load_name_evol, &
-                'EXCLU', 'EXCLU', 0, 'V', ier)
+                'EXCLU', 'EXCLU', 0, 'V', prec, crit, ier)
     if (ier .le. 2) then
         option = 'CHAR_MECA_FR3D3D'
         goto 10
@@ -125,7 +127,7 @@ subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, load_nume, ligrel_
         call utmess('F', 'CHARGES3_2', sk=evol_char, sr=inst_curr)
     end if
     call rsinch(evol_char, 'FVOL_2D', 'INST', inst_curr, load_name_evol, &
-                'EXCLU', 'EXCLU', 0, 'V', ier)
+                'EXCLU', 'EXCLU', 0, 'V', prec, crit, ier)
     if (ier .le. 2) then
         option = 'CHAR_MECA_FR2D2D'
         goto 10
@@ -152,7 +154,7 @@ subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, load_nume, ligrel_
 ! - Get surfacic forces (CHAR_MECA_FR2D3D / CHAR_MECA_FR1D2D)
 !
     call rsinch(evol_char, 'FSUR_3D', 'INST', inst_curr, load_name_evol, &
-                'EXCLU', 'EXCLU', 0, 'V', ier)
+                'EXCLU', 'EXCLU', 0, 'V', prec, crit, ier)
     if (ier .le. 2) then
         if (option .eq. 'CHAR_MECA_FR2D2D') then
             call utmess('F', 'CHARGES3_4', sk=evol_char, sr=inst_curr)
@@ -164,7 +166,7 @@ subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, load_nume, ligrel_
     end if
 !
     call rsinch(evol_char, 'FSUR_2D', 'INST', inst_curr, load_name_evol, &
-                'EXCLU', 'EXCLU', 0, 'V', ier)
+                'EXCLU', 'EXCLU', 0, 'V', prec, crit, ier)
     if (ier .le. 2) then
         if (option .eq. 'CHAR_MECA_FR3D3D') then
             call utmess('F', 'CHARGES3_6', sk=evol_char, sr=inst_curr)
@@ -195,7 +197,7 @@ subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, load_nume, ligrel_
 !
     if (load_nume .ne. 4) then
         call rsinch(evol_char, 'PRES', 'INST', inst_curr, load_name_evol, &
-                    'EXCLU', 'EXCLU', 0, 'V', ier)
+                    'EXCLU', 'EXCLU', 0, 'V', prec, crit, ier)
         if (ier .le. 2) then
             option = 'CHAR_MECA_PRES_R'
         else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
@@ -216,7 +218,7 @@ subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, load_nume, ligrel_
 ! - Get nodal force (VECT_ASSE)
 !
     call rsinch(evol_char, 'FORC_NODA', 'INST', inst_curr, load_name_evol, &
-                'EXCLU', 'EXCLU', 0, 'V', ier)
+                'EXCLU', 'EXCLU', 0, 'V', prec, crit, ier)
     if (ier .le. 2) then
         option = 'Copy_Load'
         goto 40

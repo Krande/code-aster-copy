@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,8 @@ subroutine load_neut_evol(nb_type_neumz, type_calc, time_curr, load_name, load_t
     character(len=16) :: type_sd
     character(len=8) :: evol_char
     character(len=8), pointer :: p_object(:) => null()
+    real(kind=8), parameter :: prec = 1.0d-10
+    character(len=8), parameter :: crit = 'ABSOLU'
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,7 +102,7 @@ subroutine load_neut_evol(nb_type_neumz, type_calc, time_curr, load_name, load_t
 !
     load_name_evol(1) = '&&NTDEPR.FLURE'
     call rsinch(evol_char, 'FLUN', 'INST', time_curr, load_name_evol(1), &
-                'EXCLU', 'EXCLU', 0, 'V', iret)
+                'EXCLU', 'EXCLU', 0, 'V', prec, crit, iret)
     if (iret .gt. 2) then
 
         load_name_evol(1) = '&&NTDEPR.COEFH'
@@ -109,7 +111,7 @@ subroutine load_neut_evol(nb_type_neumz, type_calc, time_curr, load_name, load_t
 ! -     Get exterior temperature
 !
         call rsinch(evol_char, 'COEF_H', 'INST', time_curr, load_name_evol(1), &
-                    'EXCLU', 'EXCLU', 0, 'V', iret)
+                    'EXCLU', 'EXCLU', 0, 'V', prec, crit, iret)
         if (iret .gt. 2) then
             call utmess('F', 'CHARGES3_12', sk=evol_char, sr=time_curr)
         end if
@@ -117,7 +119,7 @@ subroutine load_neut_evol(nb_type_neumz, type_calc, time_curr, load_name, load_t
 ! -     Get exchange coefficient
 !
         call rsinch(evol_char, 'T_EXT', 'INST', time_curr, load_name_evol(2), &
-                    'EXCLU', 'EXCLU', 0, 'V', iret)
+                    'EXCLU', 'EXCLU', 0, 'V', prec, crit, iret)
         if (iret .gt. 2) then
             call utmess('F', 'CHARGES3_12', sk=evol_char, sr=time_curr)
         end if

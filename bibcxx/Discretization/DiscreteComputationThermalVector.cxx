@@ -728,6 +728,8 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
             std::string base( "G" );
             std::string extr_right( "EXCLU" );
             std::string extr_left( "EXCLU" );
+            std::string crit( "ABSOLU" );
+            ASTERDOUBLE prec = 1.e-10;
             ASTERINTEGER iret = 100;
             ASTERINTEGER stop = 0;
 
@@ -736,8 +738,8 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
             // On cherche le champ FLUN. Si il existe on calcule l'option CHAR_THER_FLUN_R
             // Si il n'existe pas on suppose l'existence des champs pour calculer CHAR_THER_ECHA_R
             CALLO_RSINCH( evol_char_name, para_flun, access_var, &time_curr,
-                          evol_flow_xyz_field->getName(), extr_right, extr_left, &stop, base,
-                          &iret );
+                          evol_flow_xyz_field->getName(), extr_right, extr_left, &stop, base, &prec,
+                          crit, &iret );
 
             if ( iret >= 2 ) {
 
@@ -748,7 +750,7 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
 
                 CALLO_RSINCH( evol_char_name, para_coefh, access_var, &time_curr,
                               evol_exchange_field->getName(), extr_right, extr_left, &stop, base,
-                              &iret );
+                              &prec, crit, &iret );
 
                 if ( iret >= 2 ) {
                     AS_ABORT( "Cannot find COEF_H in EVOL_CHAR " + evol_char_name + " at time " +
@@ -757,7 +759,7 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
 
                 CALLO_RSINCH( evol_char_name, para_text, access_var, &time_curr,
                               evol_ext_temp_field->getName(), extr_right, extr_left, &stop, base,
-                              &iret );
+                              &prec, crit, &iret );
 
                 if ( iret >= 2 ) {
                     AS_ABORT( "Cannot find T_EXT in EVOL_CHAR " + evol_char_name + " at time " +

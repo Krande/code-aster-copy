@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
-                  proldr, prolga, istop, base, ier)
+                  proldr, prolga, istop, base, prec, crit, ier)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,10 +42,14 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: istop, ier
-    real(kind=8) :: rval
-    character(len=*) :: nomsd, nomch, acces, chextr, proldr, prolga
-    character(len=*) :: base
+    integer, intent(in) :: istop
+    real(kind=8), intent(in) :: rval
+    character(len=*), intent(in) :: nomsd, nomch, acces, chextr, proldr, prolga
+    character(len=*), intent(in) :: base
+    real(kind=8), intent(in) :: prec
+    character(len=8), intent(in) :: crit
+    integer, intent(out) :: ier
+
 !      INTERPOLATION D'UN CHAMP_19 A PARTIR D'1 SD RESULTAT-COMPOSE
 ! ----------------------------------------------------------------------
 ! IN  : NOMSD  : NOM DE LA STRUCTURE "RESULTAT"
@@ -95,8 +99,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
     integer :: iloty, imaxi, inomch, ip1, ip2, iposit, nbord2
     integer :: nbordr
     aster_logical, pointer :: lexi(:) => null()
-    real(kind=8), parameter :: prec = 1.0d-10
-    character(len=8), parameter :: crit = 'ABSOLU'
+
 !-----------------------------------------------------------------------
     call jemarq()
     acce2 = acces
