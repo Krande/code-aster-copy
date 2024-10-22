@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    character(len=8) :: noma1, noma2, nomo1, nomo2, ncas
+    character(len=8) :: noma1, noma2, nomo1, nomo2, ncas(2)
     character(len=16) :: corre1, corre2, corre3
     character(len=16) :: tymocl(5), motcle(5), nameListInterc
     character(len=24) :: geom2, geom1
@@ -108,7 +108,9 @@ subroutine pjefco(moa1, moa2, corres, base)
         noma2 = moa2
     end if
 !
-!
+!   Initialisation de ncas
+    ncas(1:2) = '????'
+
 !   Determination de dmax et l_dmax:
 !   --------------------------------------------------------
     dmax = 0.d0
@@ -120,16 +122,13 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
     call getfac('VIS_A_VIS', nbocc)
     if (nbocc .eq. 0) then
-!        -- CAS : TOUT:'OUI'
-!        ------------------------
-        call pjefca(moa1, ' ', 0, ncas)
+!       CAS : TOUT:'OUI'
+        call pjefca(moa1, ' ', 0, ncas(1))
 !
-!        PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_[1|2]
-!        --------------------------------------------
-        call pjeftg(1, geom1, noma1, ' ', 1)
-        call pjeftg(2, geom2, noma2, ' ', 1)
-!
-!
+!       PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_[1|2]
+!           ncas(1) == ncas(2)
+        call pjeftg(1, geom1, noma1, ' ', 1, ncas(1))
+        call pjeftg(2, geom2, noma2, ' ', 1, ncas(1))
 !
         dbg = .false.
         if (dbg) then
@@ -150,19 +149,19 @@ subroutine pjefco(moa1, moa2, corres, base)
         end if
 !
 !
-        if (ncas .eq. '2D') then
+        if (ncas(1) .eq. '2D') then
             call pj2dco('TOUT', moa1, moa2, 0, [0], &
                         0, [0], geom1, geom2, corres, &
                         l_dmax, dmax, dala)
-        else if (ncas .eq. '3D') then
+        else if (ncas(1) .eq. '3D') then
             call pj3dco('TOUT', moa1, moa2, 0, [0], &
                         0, [0], geom1, geom2, corres, &
                         l_dmax, dmax, dala)
-        else if (ncas .eq. '2.5D') then
+        else if (ncas(1) .eq. '2.5D') then
             call pj4dco('TOUT', moa1, moa2, 0, [0], &
                         0, [0], geom1, geom2, corres, &
                         l_dmax, dmax, dala)
-        else if (ncas .eq. '1.5D') then
+        else if (ncas(1) .eq. '1.5D') then
             call pj6dco('TOUT', moa1, moa2, 0, [0], &
                         0, [0], geom1, geom2, corres, &
                         l_dmax, dmax, dala)
@@ -215,17 +214,17 @@ subroutine pjefco(moa1, moa2, corres, base)
             nbnoma2 = 0
             if (nbma2 .gt. 0) then
                 call jeveuo('&&PJEFCO.LIMANU2', 'L', vi=limanu2)
-                call pjefca(moa2, '&&PJEFCO.LIMANU2', -iocc, ncas)
+                call pjefca(moa2, '&&PJEFCO.LIMANU2', -iocc, ncas(2))
 
-                if (ncas .eq. '2D') then
+                if (ncas(2) .eq. '2D') then
                     dim = '2D'
-                else if (ncas .eq. '3D') then
+                else if (ncas(2) .eq. '3D') then
                     dim = '3D'
-                else if (ncas .eq. '2.5D') then
+                else if (ncas(2) .eq. '2.5D') then
                     dim = '2D'
-                else if (ncas .eq. '1.5D') then
+                else if (ncas(2) .eq. '1.5D') then
                     dim = '1D'
-                else if (ncas .eq. '0D') then
+                else if (ncas(2) .eq. '0D') then
                     dim = '0D'
                 else
                     ASSERT(.false.)
@@ -274,43 +273,40 @@ subroutine pjefco(moa1, moa2, corres, base)
                 ASSERT(.false.)
             end if
 !
-!
 !           intersection entre les noeuds2 des occurrences precedentes
 !           et de l'occurrence courante
             call pjreco(linonu2, nbno2, iocc, final_occ, nameListInterc, &
                         nbNodeInterc)
 !
+!           CALCUL DU CORRESP_2_MAILLA POUR IOCC :
+            call pjefca(moa1, '&&PJEFCO.LIMANU1', iocc, ncas(1))
+
 !           PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_[1|2]
-!           --------------------------------------------
-            call pjeftg(1, geom1, noma1, 'VIS_A_VIS', iocc)
-            call pjeftg(2, geom2, noma2, 'VIS_A_VIS', iocc)
-!
-!           -- CALCUL DU CORRESP_2_MAILLA POUR IOCC :
-!           ----------------------------------------------
-            call pjefca(moa1, '&&PJEFCO.LIMANU1', iocc, ncas)
+            call pjeftg(1, geom1, noma1, 'VIS_A_VIS', iocc, ncas(1))
+            call pjeftg(2, geom2, noma2, 'VIS_A_VIS', iocc, ncas(2))
 !
             call detrsd('CORRESP_2_MAILLA', corre1)
-            if (ncas .eq. '2D') then
+            if (ncas(1) .eq. '2D') then
                 call pj2dco('PARTIE', moa1, moa2, nbma1, limanu1, &
                             nbno2, linonu2, geom1, geom2, corre1, &
                             l_dmax, dmax, dala, listInterc_=nameListInterc, &
                             nbInterc_=nbNodeInterc)
-            else if (ncas .eq. '3D') then
+            else if (ncas(1) .eq. '3D') then
                 call pj3dco('PARTIE', moa1, moa2, nbma1, limanu1, &
                             nbno2, linonu2, geom1, geom2, corre1, &
                             l_dmax, dmax, dala, listInterc_=nameListInterc, &
                             nbInterc_=nbNodeInterc)
-            else if (ncas .eq. '2.5D') then
+            else if (ncas(1) .eq. '2.5D') then
                 call pj4dco('PARTIE', moa1, moa2, nbma1, limanu1, &
                             nbno2, linonu2, geom1, geom2, corre1, &
                             l_dmax, dmax, dala, listInterc_=nameListInterc, &
                             nbInterc_=nbNodeInterc)
-            else if (ncas .eq. '1.5D') then
+            else if (ncas(1) .eq. '1.5D') then
                 call pj6dco('PARTIE', moa1, moa2, nbma1, limanu1, &
                             nbno2, linonu2, geom1, geom2, corre1, &
                             l_dmax, dmax, dala, listInterc_=nameListInterc, &
                             nbInterc_=nbNodeInterc)
-            else if (ncas .eq. '0D') then
+            else if (ncas(1) .eq. '0D') then
                 call getvr8('VIS_A_VIS', 'DISTANCE_0D', iocc=iocc, scal=dmax0d, nbret=n1)
                 call pj0dco('PARTIE', moa1, moa2, nbma1, limanu1, &
                             nbno2, linonu2, geom1, geom2, corre1, &

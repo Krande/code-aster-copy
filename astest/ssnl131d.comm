@@ -31,7 +31,7 @@ MA = LIRE_MAILLAGE(FORMAT="ASTER")
 MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=(_F(TOUT_GROUP_MA="OUI"),))
 
 MO = AFFE_MODELE(
-    MAILLAGE=MA, AFFE=(_F(GROUP_MA=("LI1"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),), INFO=2
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA=("LI1"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),)
 )
 
 CHTEMP_1 = CREA_CHAMP(
@@ -99,11 +99,22 @@ FONCT = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 0.01, 2.0, 0.00001))
 
 LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=2.0, NOMBRE=40),))
 
+
+# ---------------------------------------------------------------------------------- Avec des K_TR_L
 carel = [0.0] * 78
 
-CAREG = AFFE_CARA_ELEM(
+CAREG1 = AFFE_CARA_ELEM(
     MODELE=MO,
     DISCRET=_F(GROUP_MA=("LI1"), CARA="K_TR_L", VALE=carel, REPERE="LOCAL"),
+    ORIENTATION=(_F(GROUP_MA=("LI1",), CARA="VECT_Y", VALE=(0.0, 0.0, 1.0)),),
+)
+
+# -------------------------------------------------------------------------------- Avec des K_TR_D_L
+carel = [0.0] * 6
+
+CAREG2 = AFFE_CARA_ELEM(
+    MODELE=MO,
+    DISCRET=_F(GROUP_MA=("LI1"), CARA="K_TR_D_L", VALE=carel, REPERE="LOCAL"),
     ORIENTATION=(_F(GROUP_MA=("LI1",), CARA="VECT_Y", VALE=(0.0, 0.0, 1.0)),),
 )
 

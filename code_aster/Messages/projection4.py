@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,17 @@ suffisamment proche du noeud %(k1)s.
 
 Distance à la maille POI1 la plus proche  : %(r1)f
 Distance maximale autorisée (DISTANCE_0D) : %(r2)f
-
+"""
+    ),
+    3: _(
+        """Vous utilisez le mot clef %(k1)s pour faire une projection.
+Vous ne devez définir la transformation géométrique %(k2)s que sous le mot clef facteur %(k1)s.
+"""
+    ),
+    4: _(
+        """Vous utilisez le mot clef %(k1)s pour faire une projection.
+Vous êtes en dimension %(k3)s. Vous devez définir les 3 fonctions (FX, FY, FZ) pour la
+transformation géométrique %(k2)s.
 """
     ),
     54: _("""Il n'y a aucun noeud sur lesquels projeter."""),

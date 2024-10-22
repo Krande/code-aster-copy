@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine ctcrtb(nomtb, tych, resu, nkcha, typac, &
-                  toucmp, nbcmp, nbval, nkcmp, nkvari, &
-                  ndim)
+                  toucmp, nbcmp, nbval, nkcmp, nkvari)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,7 +33,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbcrsv.h"
-    integer :: nbcmp, ndim, nbval
+    integer :: nbcmp, nbval
     character(len=4) :: tych
     character(len=8) :: nomtb, typac, resu
     character(len=24) :: nkcha, nkcmp, nkvari
@@ -58,6 +57,8 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac, &
 !
 ! ----------------------------------------------------------------------
 !
+    integer, parameter :: ndim = 3
+
     integer :: nbpara, n, jkcha, jcesd, jcesc
     integer :: kk, i, j, jcmp, iret, jvari, iexi
     character(len=19) :: chamns, chames
