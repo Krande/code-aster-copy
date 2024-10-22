@@ -81,7 +81,7 @@ def coupled_mechanics(cpl):
             """cpl (ExternalCoupling): coupler."""
 
             self._medcpl = cpl.medcpl
-            self.listr = [0.0]
+            self.result = None
 
         def run_iteration(self, i_iter, current_time, delta_t, data):
             """Execute one iteration.
@@ -111,13 +111,13 @@ def coupled_mechanics(cpl):
 
             CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=RES_PROJ)
 
-            self.listr.append(current_time)
-
             opts = {}
-            if i_iter > 1:
+            if self.result:
                 opts["reuse"] = self.result
                 opts["RESULTAT"] = self.result
                 opts["ETAT_INIT"] = _F(EVOL_NOLI=self.result)
+
+            previous_time = current_time - delta_t
 
             # Solve the mechanical problem
             self.result = STAT_NON_LINE(
@@ -125,7 +125,10 @@ def coupled_mechanics(cpl):
                 CHAM_MATER=MATER,
                 EXCIT=(_F(CHARGE=CHA_IMPO), _F(CHARGE=CHA_PROJ)),
                 COMPORTEMENT=_F(RELATION="ELAS"),
-                INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=self.listr)),
+                INCREMENT=_F(
+                    LIST_INST=DEFI_LIST_REEL(VALE=(previous_time, current_time)),
+                    INST_INIT=previous_time,
+                ),
                 **opts,
             )
 

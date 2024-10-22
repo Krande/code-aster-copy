@@ -107,7 +107,7 @@ def coupled_mechanics(cpl):
                 AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=TEMPE, INST=0.0),
             )
 
-            self.listr = [0.0]
+            self.result = None
 
         def run_iteration(self, i_iter, current_time, delta_t, data):
             """Execute one iteration.
@@ -143,20 +143,23 @@ def coupled_mechanics(cpl):
                 AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=self.evol_ther, VALE_REF=0.0),
             )
 
-            self.listr.append(current_time)
-
             opts = {}
-            if i_iter > 1:
+            if self.result:
                 opts["reuse"] = self.result
                 opts["RESULTAT"] = self.result
                 opts["ETAT_INIT"] = _F(EVOL_NOLI=self.result)
+
+            previous_time = current_time - delta_t
 
             self.result = STAT_NON_LINE(
                 MODELE=model,
                 CHAM_MATER=CTM,
                 COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
                 EXCIT=_F(CHARGE=CHMECA),
-                INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=self.listr)),
+                INCREMENT=_F(
+                    LIST_INST=DEFI_LIST_REEL(VALE=(previous_time, current_time)),
+                    INST_INIT=previous_time,
+                ),
                 **opts,
             )
 

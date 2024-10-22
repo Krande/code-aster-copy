@@ -96,8 +96,6 @@ def coupled_thermics(cpl):
             T0 = CA.FieldOnNodesReal(model)
             T0.setValues(0.0)
 
-            self.listr = [0.0]
-
             self.result = CREA_RESU(
                 TYPE_RESU="EVOL_THER",
                 OPERATION="AFFE",
@@ -130,7 +128,7 @@ def coupled_thermics(cpl):
                 # MEDC field => .med => code_aster field
                 depl = self._medcpl.import_displacement(mc_depl)
 
-            self.listr.append(current_time)
+            previous_time = current_time - delta_t
 
             self.result = THER_LINEAIRE(
                 reuse=self.result,
@@ -138,7 +136,10 @@ def coupled_thermics(cpl):
                 MODELE=model,
                 CHAM_MATER=CM,
                 EXCIT=_F(CHARGE=CHTHER),
-                INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=self.listr)),
+                INCREMENT=_F(
+                    LIST_INST=DEFI_LIST_REEL(VALE=(previous_time, current_time)),
+                    INST_INIT=previous_time,
+                ),
                 ETAT_INIT=_F(EVOL_THER=self.result),
             )
 

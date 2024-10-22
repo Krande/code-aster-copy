@@ -247,6 +247,7 @@ class ExternalCoupling:
 
         stepper = self._params.stepper
         completed = False
+        first_start = self._starter
         istep = 0
 
         while not stepper.isFinished():
@@ -260,7 +261,8 @@ class ExternalCoupling:
                 self.log("coupling iteration #{0:d}, time: {1:f}".format(i_iter, current_time))
 
                 # recv data from the other code
-                if self._starter and istep == 1:
+                if first_start:
+                    first_start = False
                     input_data = {}
                     for name, _, _ in self._fields_in:
                         input_data[name] = None
