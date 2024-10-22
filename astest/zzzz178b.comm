@@ -34,19 +34,14 @@ nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 # Read the quadratic mesh - 2 cases : 1 or several procs
 if nbproc > 1:
     MQ = CA.ParallelMesh()
-    MQ.readMedFile("zzzz178d.mmed")
-
-    MQ.printMedFile("/home/C00976/tmp/zzzz178d_{}.med".format(rank))
+    MQ.readMedFile("zzzz178b/{}.med".format(rank), partitioned=True)
 else:
     MQ = CA.Mesh()
-    MQ.readMedFile("zzzz178d.mmed")
+    MQ.readMedFile("zzzz178b.mmed")
     test.assertTrue(MQ.isQuadratic())
 
 # Create the linear mesh
 ML = CREA_MAILLAGE(MAILLAGE=MQ, QUAD_LINE=_F(TOUT="OUI"), INFO=1)
-
-MQ.printMedFile("/home/C00976/tmp/zzzz178d_lin_{}.med".format(rank))
-
 
 # Check the orientation of the boundary
 ML = MODI_MAILLAGE(reuse=ML, MAILLAGE=ML, ORIE_PEAU=_F(GROUP_MA_PEAU="L1"))
@@ -61,7 +56,7 @@ MODE_TQ = AFFE_MODELE(MAILLAGE=MQ, AFFE=_F(TOUT="OUI", MODELISATION="3D", PHENOM
 
 
 # Assign Mechanical model
-MODE_MQ = AFFE_MODELE(MAILLAGE=ML, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+MODE_MQ = AFFE_MODELE(MAILLAGE=MQ, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
 # Assign thermal loading
 CLIMT = AFFE_CHAR_THER(MODELE=MODE_TL, FLUX_REP=(_F(GROUP_MA="L1", FLUN=-400),))
@@ -93,7 +88,7 @@ TEMP = THER_LINEAIRE(
     MODELE=MODE_TL,
     CHAM_MATER=MATE_T,
     EXCIT=(_F(CHARGE=CLIMT), _F(CHARGE=BLOQT)),
-    SOLVEUR=_F(METHODE="PETSC", PRE_COND="LDLT_SP", RESI_RELA=1.0e-9),
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="HPDDM", RESI_RELA=1.0e-9),
     TYPE_CALCUL="STAT",
     INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
     INFO=1,
@@ -101,8 +96,6 @@ TEMP = THER_LINEAIRE(
 
 # Extract the field from the result
 temp = TEMP.getField("TEMP", 1)
-test.assertAlmostEqual(temp.norm("NORM_2"), 21.7467518133881)
-
 
 # Project the field from the linear to the quadratic thermal model
 TEMP2 = PROJ_CHAMP(METHODE="COLLOCATION", RESULTAT=TEMP, MODELE_1=MODE_TL, MODELE_2=MODE_TQ)
@@ -110,16 +103,14 @@ TEMP2 = PROJ_CHAMP(METHODE="COLLOCATION", RESULTAT=TEMP, MODELE_1=MODE_TL, MODEL
 # Validate the result
 temp2 = TEMP2.getField("TEMP", 1)
 test.assertAlmostEqual(temp2.norm("NORM_INFINITY"), temp.norm("NORM_INFINITY"))
-test.assertAlmostEqual(temp2.norm("NORM_INFINITY"), 21.7467518133881)
 
-print(temp2.norm("NORM_2"))
-test.assertAlmostEqual(temp2.norm("NORM_2"), 535.323717828298)
+test.assertAlmostEqual(temp2.norm("NORM_2"), 412.46150094775635)
 
 # Assign the mechanical material with the thermal field
 MATE_M = AFFE_MATERIAU(
-    MAILLAGE=ML,
+    MAILLAGE=MQ,
     AFFE=_F(TOUT="OUI", MATER=ACIER_M),
-    AFFE_VARC=_F(TOUT="OUI", EVOL=TEMP, VALE_REF=0.0, NOM_VARC="TEMP", NOM_CHAM="TEMP"),
+    AFFE_VARC=_F(TOUT="OUI", EVOL=TEMP2, VALE_REF=0.0, NOM_VARC="TEMP", NOM_CHAM="TEMP"),
 )
 
 # Solve the mechanical problem
@@ -127,7 +118,7 @@ RESU = MECA_STATIQUE(
     MODELE=MODE_MQ,
     CHAM_MATER=MATE_M,
     EXCIT=(_F(CHARGE=CHAR), _F(CHARGE=DIRI)),
-    SOLVEUR=_F(METHODE="PETSC", PRE_COND="LDLT_SP"),
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="HPDDM"),
 )
 
 # Extract the field from the result
@@ -140,7 +131,7 @@ with shared_tmpdir("foo") as tmpdir:
 
 # Validate the result againt sequential run
 # norm = displ.norm("NORM_2")
-norm = 0.13288024031844303
+norm = 0.10070829146943601
 test.assertAlmostEqual(displ.norm("NORM_2"), norm)
 
 test.printSummary()

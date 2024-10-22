@@ -354,7 +354,7 @@ class MEDCoupler:
         """
         if os.path.exists(filename):
             os.remove(filename)
-        logger.debug("writing file {0!r}...".format(filename), flush=True)
+        logger.debug("writing file {0!r}...".format(filename))
         field.printMedFile(filename)
 
     def _medcfield2aster(self, mc_field, field_type, time=0.0):
