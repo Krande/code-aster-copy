@@ -82,6 +82,7 @@ def post_beremin_ops(self, **args):
     grmapb = args.get("GROUP_MA")
     deformation = args.get("DEFORMATION")
     numvs = {"vari": args.get("LIST_NUME_VARI")}
+    mtpb = args.get("MAXI_TPS")
 
     if deformation == "GDEF_LOG":
         numvs.update({"sief": args.get("LIST_NUME_SIEF")})
@@ -173,6 +174,7 @@ def compute_pb(self, resupb, grmapb, numvi, data_resu, **args):
             sig1plasac(relmoysief, rsieq, numvi, dwb, resupb, grmapb, data_resu[1]),
             resanpb,
             dwb[grmapb]["M"],
+            mtpb,
         )
 
     else:
@@ -272,6 +274,15 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
     else:
         sg1 = FieldOnCellsReal(reswbrest.getModel(), "ELGA", "DEPL_R")
         sg1.setValues(0)
+
+    if "CRIT_SIGM" in dwb[grwb]:
+
+        if dwb[grwb]["CRIT_SIGM"] > 0:
+
+            def crit_sigm(sigma):
+                return max(sigma - dwb[grwb]["CRIT_SIGM"], 0.0)
+
+            sg1 = sg1.transform(crit_sigm)
 
     return sg1
 
@@ -451,7 +462,7 @@ def sig1plasac(resultat, rsieq, numvi, dwb, reswbrest, grmapb, l_instplas):
     return maxsig
 
 
-def tps_maxsigm(rsieq, l_instplas, maxsig, resanpb, bere_m):
+def tps_maxsigm(rsieq, l_instplas, maxsig, resanpb, bere_m, mtpb):
     """
     Compute temporal maximum for each Gauss point and elevation to power m
 
@@ -461,6 +472,7 @@ def tps_maxsigm(rsieq, l_instplas, maxsig, resanpb, bere_m):
         maxsig (NonLinearResult): ELGA_SIEF_R filled by PRIN_3
         resanpb (NonLinearResult): Name of auxiliary result
         bere_m (float): Value of Beremin parameter M
+        mtpb (str): {"OUI", "NON"} Value of keyword MAXI_TPS
 
     Returns:
         FieldOnCells:
@@ -486,51 +498,88 @@ def tps_maxsigm(rsieq, l_instplas, maxsig, resanpb, bere_m):
     def puiss_m(valsixx):
         return valsixx**bere_m
 
-    indice = 0
-    for nume_inst, inst in enumerate(linstants):
+    if mtpb == "OUI":
 
-        if inst in [elt[1] for elt in l_instplas]:
+        indice = 0
+        for nume_inst, inst in enumerate(linstants):
 
-            if inst == maxsig.getTime(0):
-                chmaxsig = maxsig.getField("SIEF_ELGA", 0)
-                maxsig_r = NonLinearResult()
-                maxsig_r.allocate(2)
-                maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
-            elif inst > maxsig.getTime(0):
+            if inst in [elt[1] for elt in l_instplas]:
 
-                maxsig_r.setField(maxsig.getField("SIEF_ELGA", indice), "SIEF_ELGA", 1)
+                if inst == maxsig.getTime(0):
+                    chmaxsig = maxsig.getField("SIEF_ELGA", 0)
+                    maxsig_r = NonLinearResult()
+                    maxsig_r.allocate(2)
+                    maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
+                elif inst > maxsig.getTime(0):
 
-                chmaxsig = CREA_CHAMP(
-                    TYPE_CHAM="ELGA_SIEF_R",
-                    OPERATION="EXTR",
-                    RESULTAT=maxsig_r,
-                    NOM_CHAM="SIEF_ELGA",
-                    TYPE_MAXI="MAXI",
-                    TYPE_RESU="VALE",
-                    NUME_ORDRE=(0, 1),
-                )
+                    maxsig_r.setField(maxsig.getField("SIEF_ELGA", indice), "SIEF_ELGA", 1)
 
-                maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
+                    chmaxsig = CREA_CHAMP(
+                        TYPE_CHAM="ELGA_SIEF_R",
+                        OPERATION="EXTR",
+                        RESULTAT=maxsig_r,
+                        NOM_CHAM="SIEF_ELGA",
+                        TYPE_MAXI="MAXI",
+                        TYPE_RESU="VALE",
+                        NUME_ORDRE=(0, 1),
+                    )
 
-            chsixxm = chmaxsig.transform(puiss_m)
+                    maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
 
-            if resanpb is not None:
-                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
-                resimpr.setTime(inst, nume_inst)
+                chsixxm = chmaxsig.transform(puiss_m)
 
-            indice = indice + 1
+                if resanpb is not None:
+                    resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                    resimpr.setTime(inst, nume_inst)
 
-        else:
+                indice = indice + 1
 
-            if resanpb is not None:
+            else:
 
-                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
-                chsixxm.setValues(0)
-                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
-                resimpr.setTime(inst, nume_inst)
+                if resanpb is not None:
 
-        sigw.setField(chsixxm, "SIEF_ELGA", nume_inst)
-        sigw.setTime(inst, nume_inst)
+                    chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
+                    chsixxm.setValues(0)
+                    resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                    resimpr.setTime(inst, nume_inst)
+
+            sigw.setField(chsixxm, "SIEF_ELGA", nume_inst)
+            sigw.setTime(inst, nume_inst)
+
+    elif mtpb == "NON":
+
+        indice = 0
+        for nume_inst, inst in enumerate(linstants):
+
+            if inst in [elt[1] for elt in l_instplas]:
+
+                if inst == maxsig.getTime(0):
+
+                    chmaxsig = maxsig.getField("SIEF_ELGA", 0)
+
+                elif inst > maxsig.getTime(0):
+
+                    chmaxsig = maxsig.getField("SIEF_ELGA", indice)
+
+                chsixxm = chmaxsig.transform(puiss_m)
+
+                if resanpb is not None:
+                    resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                    resimpr.setTime(inst, nume_inst)
+
+                indice = indice + 1
+
+            else:
+
+                if resanpb is not None:
+
+                    chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
+                    chsixxm.setValues(0)
+                    resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                    resimpr.setTime(inst, nume_inst)
+
+            sigw.setField(chsixxm, "SIEF_ELGA", nume_inst)
+            sigw.setTime(inst, nume_inst)
 
     sigw.setModel(maxsig.getModel())
 
