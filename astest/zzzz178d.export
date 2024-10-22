@@ -1,0 +1,12 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 2
+P mpi_nbnoeud 1
+P testlist submit verification parallel
+
+F comm zzzz178d.comm D 1
+F mmed zzzz178d.mmed D 20
+F libr zzzz178d_ther.py D 21
+F libr zzzz178d_meca.py D 22
+

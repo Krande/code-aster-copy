@@ -320,6 +320,18 @@ class ExtendedMesh:
         )
         return new_mesh
 
+    def restrict(self, groupsOfCells, info=1):
+        """Restrict the mesh to given groups of cells.
+
+        groupsOfCells (list[str]): groups of cells to restrict the mesh on.
+            info [int] : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the restricted mesh.
+        """
+
+        return CREA_MAILLAGE(MAILLAGE=self, RESTREINT=_F(GROUP_MA=groupsOfCells), INFO=info)
+
     def createMedCouplingMesh(self):
         """Returns the MEDCoupling unstructured mesh associated to the current mesh.
 
