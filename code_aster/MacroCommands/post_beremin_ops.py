@@ -25,7 +25,7 @@ Compute:
   - Strain model -> Stress to consider (6 components: XX, YY, ZZ, XY, XZ, YZ)
       - "PETIT"      -> "SIEF"
       - "PETIT_REAC" -> "SIEF"
-      - "GDEF_LOG"   -> "VARI_ELGA_NOMME"
+      - "GDEF_LOG"   -> "VARI_ELGA"
       - "SIMO_MIEHE" -> To retrieve Kirchhof stresses ? Not obvious ...
                         Normally, we can do without
                         Use of HHO models instead ?
@@ -80,18 +80,15 @@ def post_beremin_ops(self, **args):
     """
     resupb = args.get("RESULTAT")
     grmapb = args.get("GROUP_MA")
-    resanpb = args.get("SIGM_MAXI")
-    fspb = args.get("FILTRE_SIGM")
     deformation = args.get("DEFORMATION")
     numvs = {"vari": args.get("LIST_NUME_VARI")}
 
     if deformation == "GDEF_LOG":
         numvs.update({"sief": args.get("LIST_NUME_SIEF")})
 
-    (reswbrest, l_instplas, l_epspmax) = get_resu_from_deftype(resupb, grmapb, deformation, numvs)
-    linstplasac = tuple(elt[1] for elt in l_instplas)
+    data_resu = get_resu_from_deftype(resupb, grmapb, deformation, numvs)
 
-    if len(linstplasac) == 0:
+    if len(tuple(elt[1] for elt in data_resu[1])) == 0:
         lentable = len(resupb.getAccessParameters()["INST"])
         liste_r = [0] * lentable
         table = CREA_TABLE(
@@ -106,97 +103,113 @@ def post_beremin_ops(self, **args):
         )
 
     else:
+        table = compute_pb(self, resupb, grmapb, numvs["vari"], data_resu, **args)
 
-        dwb = get_beremin_properties(resupb, grmapb)
+    return table
 
-        mawbrest = reswbrest.getModel().getMesh()
 
-        mawbrest.setGroupOfNodes("ngrmapb", mawbrest.getNodesFromCells(grmapb))
+def compute_pb(self, resupb, grmapb, numvi, data_resu, **args):
+    """
+    Core function of POST_BEREMIN
 
-        make_plasticity_groups(
-            reswbrest, numvs["vari"][0], l_instplas, dwb[grmapb]["SEUIL_EPSP_CUMU"], l_epspmax
+    Arguments:
+        resupb (NonLinearResult): Resultat input of POST_BEREMIN
+        grmapb (str): Mesh cells group given in POST_BEREMIN
+        numvi (tuple): Indices of EPSPEQ and INDIPLAS
+        data_resu (tuple): (result to consider for Weibull stress,
+                            list of time steps (nume_ordre, time step) in plasticity only,
+                            list of values of maximum of plasticity, if strictly greater than 0)
+
+    Returns:
+        Table: Final table with Weibull stress and failure probability
+    """
+    resanpb = args.get("SIGM_MAXI")
+    linstplasac = tuple(elt[1] for elt in data_resu[1])
+    dwb = get_beremin_properties(resupb, grmapb)
+
+    mawbrest = data_resu[0].getModel().getMesh()
+
+    mawbrest.setGroupOfNodes("ngrmapb", mawbrest.getNodesFromCells(grmapb))
+
+    make_plasticity_groups(data_resu, numvi[0], dwb[grmapb]["SEUIL_EPSP_CUMU"])
+
+    if args.get("FILTRE_SIGM") == "SIGM_ELGA":
+
+        rsieq = CALC_CHAMP(
+            RESULTAT=data_resu[0], GROUP_MA="mgrplasfull", INST=linstplasac, CRITERES="SIEQ_ELGA"
         )
 
-        if fspb == "SIGM_ELGA":
+        (sigw, resimpr) = tps_maxsigm(
+            rsieq,
+            data_resu[1],
+            sig1plasac(data_resu[0], rsieq, numvi, dwb, resupb, grmapb, data_resu[1]),
+            resanpb,
+            dwb[grmapb]["M"],
+        )
 
-            rsieq = CALC_CHAMP(
-                RESULTAT=reswbrest, GROUP_MA="mgrplasfull", INST=linstplasac, CRITERES="SIEQ_ELGA"
-            )
+    elif args.get("FILTRE_SIGM") == "SIGM_ELMOY":
 
-            (sigw, resimpr) = tps_maxsigm(
-                rsieq,
-                l_instplas,
-                sig1plasac(reswbrest, rsieq, numvs, dwb, resupb, grmapb, l_instplas),
-                resanpb,
-                dwb[grmapb]["M"],
-            )
+        rmelmoy = CALC_CHAMP(
+            RESULTAT=data_resu[0], GROUP_MA="mgrplasfull", INST=linstplasac, CONTRAINTE="SIMY_ELGA"
+        )
 
-        elif fspb == "SIGM_ELMOY":
+        relmoysief = NonLinearResult()
+        relmoysief.allocate(rmelmoy.getNumberOfIndexes())
 
-            rmelmoy = CALC_CHAMP(
-                RESULTAT=reswbrest, GROUP_MA="mgrplasfull", INST=linstplasac, CONTRAINTE="SIMY_ELGA"
-            )
-
-            relmoysief = NonLinearResult()
-            relmoysief.allocate(rmelmoy.getNumberOfIndexes())
-
-            for nume_inst in rmelmoy.getIndexes():
-                relmoysief.setField(
-                    rmelmoy.getField("SIMY_ELGA", nume_inst), "SIEF_ELGA", nume_inst
-                )
-                for field in ("COMPORTEMENT", "VARI_ELGA"):
-                    relmoysief.setField(reswbrest.getField(field, nume_inst), field, nume_inst)
+        for nume_inst in rmelmoy.getIndexes():
+            relmoysief.setField(rmelmoy.getField("SIMY_ELGA", nume_inst), "SIEF_ELGA", nume_inst)
+            for field in ("COMPORTEMENT", "VARI_ELGA"):
+                relmoysief.setField(data_resu[0].getField(field, nume_inst), field, nume_inst)
                 relmoysief.setModel(rmelmoy.getModel(nume_inst), nume_inst)
                 relmoysief.setTime(rmelmoy.getTime(nume_inst), nume_inst)
 
-            rsieq = CALC_CHAMP(
-                RESULTAT=relmoysief, GROUP_MA="mgrplasfull", INST=linstplasac, CRITERES="SIEQ_ELGA"
-            )
-
-            (sigw, resimpr) = tps_maxsigm(
-                rsieq,
-                l_instplas,
-                sig1plasac(relmoysief, rsieq, numvs, dwb, resupb, grmapb, l_instplas),
-                resanpb,
-                dwb[grmapb]["M"],
-            )
-
-        else:
-            assert False
-
-        if resanpb is not None:
-            self.register_result(resimpr, resanpb)
-
-        table = compute_beremin_integral(args.get("COEF_MULT"), sigw, dwb, grmapb, resupb)
-
-        itlist = [elt[0] for elt in l_instplas]
-
-        mawbrest = reswbrest.getModel().getMesh()
-        mawbrest = DEFI_GROUP(
-            reuse=mawbrest,
-            MAILLAGE=mawbrest,
-            DETR_GROUP_NO=_F(
-                NOM=tuple(
-                    ["ngrmapb"]
-                    + [f"vale_{iteration}" for iteration in itlist]
-                    + [f"ngrplas_{iteration}" for iteration in itlist]
-                )
-            ),
+        rsieq = CALC_CHAMP(
+            RESULTAT=relmoysief, GROUP_MA="mgrplasfull", INST=linstplasac, CRITERES="SIEQ_ELGA"
         )
 
-        mawbrest = DEFI_GROUP(
-            reuse=mawbrest,
-            MAILLAGE=mawbrest,
-            DETR_GROUP_MA=_F(
-                NOM=tuple(
-                    [f"mgrplas_{iteration}" for iteration in itlist]
-                    + [f"ngrplas_{iteration}" for iteration in itlist]
-                    + ["mgrplasfull"]
-                )
-            ),
+        (sigw, resimpr) = tps_maxsigm(
+            rsieq,
+            data_resu[1],
+            sig1plasac(relmoysief, rsieq, numvi, dwb, resupb, grmapb, data_resu[1]),
+            resanpb,
+            dwb[grmapb]["M"],
         )
 
-        mawbrest.resetDependencies()
+    else:
+        assert False
+
+    if resanpb is not None:
+        self.register_result(resimpr, resanpb)
+
+    table = compute_beremin_integral(args.get("COEF_MULT"), sigw, dwb, grmapb, resupb)
+
+    itlist = [elt[0] for elt in data_resu[1]]
+
+    mawbrest = DEFI_GROUP(
+        reuse=mawbrest,
+        MAILLAGE=mawbrest,
+        DETR_GROUP_NO=_F(
+            NOM=tuple(
+                ["ngrmapb"]
+                + [f"vale_{iteration}" for iteration in itlist]
+                + [f"ngrplas_{iteration}" for iteration in itlist]
+            )
+        ),
+    )
+
+    mawbrest = DEFI_GROUP(
+        reuse=mawbrest,
+        MAILLAGE=mawbrest,
+        DETR_GROUP_MA=_F(
+            NOM=tuple(
+                [f"mgrplas_{iteration}" for iteration in itlist]
+                + [f"ngrplas_{iteration}" for iteration in itlist]
+                + ["mgrplasfull"]
+            )
+        ),
+    )
+
+    mawbrest.resetDependencies()
 
     return table
 
@@ -235,24 +248,30 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
     Returns:
         FieldOnCells: ELGA_DEPL_R filled by PRIN_3
     """
-    if not "SIGM_CNV" in dwb[grwb]:
+    if reswbrest.getModel().getMesh().hasGroupOfCells(f"mgrplas_{nume_inst}"):
 
-        sg1 = CREA_CHAMP(
-            OPERATION="ASSE",
-            TYPE_CHAM="ELGA_DEPL_R",
-            MODELE=reswbrest.getModel(),
-            PROL_ZERO="OUI",
-            ASSE=_F(
-                GROUP_MA=f"mgrplas_{nume_inst}",
-                CHAM_GD=rsieq.getField("SIEQ_ELGA", nume_inst),
-                NOM_CMP="PRIN_3",
-                NOM_CMP_RESU="DX",
-            ),
-        )
+        if not "SIGM_CNV" in dwb[grwb]:
+
+            sg1 = CREA_CHAMP(
+                OPERATION="ASSE",
+                TYPE_CHAM="ELGA_DEPL_R",
+                MODELE=reswbrest.getModel(),
+                PROL_ZERO="OUI",
+                ASSE=_F(
+                    GROUP_MA=f"mgrplas_{nume_inst}",
+                    CHAM_GD=rsieq.getField("SIEQ_ELGA", nume_inst),
+                    NOM_CMP="PRIN_3",
+                    NOM_CMP_RESU="DX",
+                ),
+            )
+
+        else:
+
+            sg1 = sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb)
 
     else:
-
-        sg1 = sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb)
+        sg1 = FieldOnCellsReal(reswbrest.getModel(), "ELGA", "DEPL_R")
+        sg1.setValues(0)
 
     return sg1
 
@@ -296,14 +315,17 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
             if evolparam:
                 chamchpar = evolparam.getTransientResult().getField("TEMP", nume_inst)
 
-    chpar = CREA_CHAMP(
-        OPERATION="ASSE",
-        TYPE_CHAM="NOEU_TEMP_R",
-        MODELE=modele,
-        ASSE=_F(GROUP_MA=grmacalc, CHAM_GD=chamchpar, NOM_CMP="TEMP", NOM_CMP_RESU="TEMP"),
+    sgrefeno = CREA_CHAMP(
+        OPERATION="EVAL",
+        TYPE_CHAM="NOEU_NEUT_R",
+        CHAM_F=chf,
+        CHAM_PARA=CREA_CHAMP(
+            OPERATION="ASSE",
+            TYPE_CHAM="NOEU_TEMP_R",
+            MODELE=modele,
+            ASSE=_F(GROUP_MA=grmacalc, CHAM_GD=chamchpar, NOM_CMP="TEMP", NOM_CMP_RESU="TEMP"),
+        ),
     )
-
-    sgrefeno = CREA_CHAMP(OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=chf, CHAM_PARA=chpar)
 
     chno = CREA_CHAMP(
         OPERATION="ASSE",
@@ -351,7 +373,7 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
     return rdiv1.getField("UT01_ELGA", 0).asPhysicalQuantity("DEPL_R", {"X1": "DX"})
 
 
-def sig1plasac(resultat, rsieq, numvs, dwb, reswbrest, grmapb, l_instplas):
+def sig1plasac(resultat, rsieq, numvi, dwb, reswbrest, grmapb, l_instplas):
     """
     Major principal stress where the plasticity is active
 
@@ -359,7 +381,7 @@ def sig1plasac(resultat, rsieq, numvs, dwb, reswbrest, grmapb, l_instplas):
         resultat (NonLinearResult): Result to consider to compute Weibull
             stress
         rsieq (NonLinearResult): SIEQ_ELGA field
-        numvs (tuple): Indices of internal variables EPSPEQ and INDIPLAS
+        numvi (tuple): Indices of internal variables EPSPEQ and INDIPLAS
         dwb (dict): Weibull parameters
         reswbrest (NonLinearResult): Result where plasticity is strictly
             positive
@@ -378,8 +400,8 @@ def sig1plasac(resultat, rsieq, numvs, dwb, reswbrest, grmapb, l_instplas):
 
     indice = 0
     fotrq = Formula()
-    fotrq.setExpression("indic_plasac(V{}, V{}, seuil)".format(numvs["vari"][0], numvs["vari"][1]))
-    fotrq.setVariables(["V{}".format(numvs["vari"][0]), "V{}".format(numvs["vari"][1])])
+    fotrq.setExpression("indic_plasac(V{}, V{}, seuil)".format(numvi[0], numvi[1]))
+    fotrq.setVariables(["V{}".format(numvi[0]), "V{}".format(numvi[1])])
     fotrq.setContext({"indic_plasac": indic_plasac, "seuil": dwb[grmapb]["SEUIL_EPSP_CUMU"]})
 
     for nume_inst in rsieq.getAccessParameters()["NUME_ORDRE"]:
@@ -612,71 +634,77 @@ def compute_beremin_integral(coefmultpb, sigw, dwb, grmapb, resupb):
     return tab_final
 
 
-def make_plasticity_groups(reswbrest, numv1, l_instplas, seuil, l_epspmax):
+def make_plasticity_groups(data_resu, numv1, seuil):
     """
     Construct groups of plasticity for each time step when there is plasticity
 
     Arguments:
-        reswbrest (NonLinearResult): result to consider to compute Weibull
-            stress
+        data_resu (tuple): (result to consider for Weibull stress,
+                            list of time steps (nume_ordre, time step) in plasticity only,
+                            list of values of maximum of plasticity, if strictly greater than 0)
         numv1 (int): Indice of internal variable EPSPEQ
-        l_instplas (list): List of time steps (order, time step) where there is plasticity
         seuil (float): value of SEUIL_EPSP_CUMU
-        l_epspmax (list): list of values of maximum of plasticity, if
-            strictly greater than 0
     """
-    mawbrest = reswbrest.getModel().getMesh()
-    liter = [elt[0] for elt in l_instplas]
+    mawbrest = data_resu[0].getModel().getMesh()
+    liter = [elt[0] for elt in data_resu[1]]
     dval = {}
+    l_inte_vale = []
+
     for indice, iteration in enumerate(liter):
 
-        if l_epspmax[indice] < seuil:
+        if data_resu[2][indice] < seuil:
             dval[f"min{indice}"] = 0
-            dval[f"max{indice}"] = l_epspmax[indice]
+            dval[f"max{indice}"] = data_resu[2][indice]
         else:
             dval[f"min{indice}"] = seuil
-            dval[f"max{indice}"] = l_epspmax[indice]
+            dval[f"max{indice}"] = data_resu[2][indice]
 
-    mawbrest = DEFI_GROUP(
-        reuse=mawbrest,
-        MAILLAGE=mawbrest,
-        CREA_GROUP_NO=tuple(
-            [
+    for (indice, iteration) in enumerate(liter):
+        cham_gd = data_resu[0].getField("VARI_ELGA", iteration).toFieldOnNodes()
+        np_cham_gd = np.array(cham_gd.getValuesWithDescription(f"V{numv1}", [])[0])
+
+        if np.any((np_cham_gd > dval[f"min{indice}"]) & (np_cham_gd < dval[f"max{indice}"])):
+            l_inte_vale.append(
                 _F(
                     NOM=f"vale_{iteration}",
                     OPTION="INTERVALLE_VALE",
-                    CHAM_GD=reswbrest.getField("VARI_ELGA", iteration).toFieldOnNodes(),
+                    CHAM_GD=cham_gd,
                     NOM_CMP=f"V{numv1}",
                     VALE=(dval[f"min{indice}"], dval[f"max{indice}"]),
                 )
-                for (indice, iteration) in enumerate(liter)
-            ]
-            + [
+            )
+
+    mawbrest = DEFI_GROUP(reuse=mawbrest, MAILLAGE=mawbrest, CREA_GROUP_NO=tuple(l_inte_vale))
+
+    d_gr = {"l_ngrplas": [], "l_mgrplas": [], "l_union": []}
+    for iteration in liter:
+        if mawbrest.hasGroupOfNodes(f"vale_{iteration}"):
+            d_gr["l_ngrplas"].append(
                 _F(NOM=f"ngrplas_{iteration}", INTERSEC=(f"vale_{iteration}", "ngrmapb"))
-                for iteration in liter
-            ]
-        ),
-    )
+            )
+            d_gr["l_mgrplas"].append(
+                _F(
+                    NOM=f"mgrplas_{iteration}",
+                    OPTION="APPUI",
+                    TYPE_MAILLE="{}D".format(mawbrest.getDimension()),
+                    GROUP_NO=f"ngrplas_{iteration}",
+                    TYPE_APPUI="AU_MOINS_UN",
+                )
+            )
+            d_gr["l_union"].append(f"mgrplas_{iteration}")
+
+    mawbrest = DEFI_GROUP(reuse=mawbrest, MAILLAGE=mawbrest, CREA_GROUP_NO=tuple(d_gr["l_ngrplas"]))
 
     mawbrest = DEFI_GROUP(
         reuse=mawbrest,
         MAILLAGE=mawbrest,
-        CREA_GROUP_MA=tuple(
-            _F(
-                NOM=f"mgrplas_{iteration}",
-                OPTION="APPUI",
-                TYPE_MAILLE="{}D".format(mawbrest.getDimension()),
-                GROUP_NO=f"ngrplas_{iteration}",
-                TYPE_APPUI="AU_MOINS_UN",
-            )
-            for iteration in liter
-        )
+        CREA_GROUP_MA=tuple(d_gr["l_mgrplas"])
         + tuple(
             [
                 _F(
                     NOM="mgrplasfull",
                     TYPE_MAILLE="{}D".format(mawbrest.getDimension()),
-                    UNION=tuple(f"mgrplas_{iteration}" for iteration in liter),
+                    UNION=tuple(d_gr["l_union"]),
                 )
             ]
         ),
