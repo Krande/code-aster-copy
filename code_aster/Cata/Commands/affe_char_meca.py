@@ -98,6 +98,7 @@ AFFE_CHAR_MECA = OPER(
             "FLUX_THM_REP",
             "FORCE_SOL",
             "ECHANGE_THM",
+            "ECHANGE_THM_HR",
         ),
         PRESENT_PRESENT("EFFE_FOND", "PRES_REP"),
         EXCLUS("FORCE_COQUE", "FORCE_COQUE_FO"),
@@ -1201,12 +1202,26 @@ AFFE_CHAR_MECA = OPER(
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        COEF_11=SIMP(statut="o", typ="R"),
+        COEF_11=SIMP(statut="f", typ="R"),
         COEF_12=SIMP(statut="f", typ="R"),
         COEF_21=SIMP(statut="f", typ="R"),
         COEF_22=SIMP(statut="f", typ="R"),
-        PRE1_EXT=SIMP(statut="o", typ="R"),
+        PRE1_EXT=SIMP(statut="f", typ="R"),
         PRE2_EXT=SIMP(statut="f", typ="R"),
+    ),
+    ECHANGE_THM_HR=FACT(
+        statut="f",
+        max="**",
+        fr=tr(
+            "Applique à un domaine de milieu continu 2D ou 3D une condition echange de type HR"
+            "(flux hydraulique)"
+        ),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
+        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        HR_EXT=SIMP(statut="o", typ="R"),
+        ALPHA=SIMP(statut="o", typ="R"),
+        PVAP_SAT=SIMP(statut="o", typ="R"),
     ),
     FORCE_SOL=FACT(
         statut="f",

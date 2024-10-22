@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine charme(load, valeType)
 #include "asterfort/caddli.h"
 #include "asterfort/caddlp.h"
 #include "asterfort/caethm.h"
+#include "asterfort/caethr.h"
 #include "asterfort/cafaci.h"
 #include "asterfort/cafond.h"
 #include "asterfort/cafono.h"
@@ -106,7 +107,6 @@ subroutine charme(load, valeType)
     if (geomDime .gt. 3) then
         call utmess('A', 'CHARGES2_4')
     end if
-
 ! - Get Ligrel for load
     call lisnnl(phenom, load, loadDescBase)
     loadLigrel = loadDescBase//'.LIGRE'
@@ -132,6 +132,9 @@ subroutine charme(load, valeType)
 ! ----- ECHA_THM
         call caethm(load, mesh, model, valeType)
 
+! ----- ECHA_THM_HR
+        call caethr(load, mesh, model, valeType)
+
 ! ----- FORCE_SOL
         call caveis(load)
 
@@ -150,6 +153,9 @@ subroutine charme(load, valeType)
 
 ! ----- ECHA_THM
         call caethm(load, mesh, model, valeType)
+
+! ----- ECHA_THM_HR
+        call caethr(load, mesh, model, valeType)
 
     else
         ASSERT(ASTER_FALSE)

@@ -43,6 +43,12 @@ CCOECH = LocatedComponents(
 CCOECHF = LocatedComponents(
     phys=PHY.ETHM_F, type="ELGA", location="RIGI", components=("COEF[4]", "PRE[2]")
 )
+CCOECHH = LocatedComponents(
+    phys=PHY.ETHMH_R, type="ELGA", location="RIGI", components=("COEF[2]", "HR[1]")
+)
+CCOECHHF = LocatedComponents(
+    phys=PHY.ETHMH_F, type="ELGA", location="RIGI", components=("COEF[2]", "HR[1]")
+)
 EFLHN = LocatedComponents(
     phys=PHY.FLHN_R, type="ELGA", location="RIGI", components=("FH1[2]", "FH2[2]")
 )
@@ -119,6 +125,29 @@ class THH2M_FACE8(Element):
     nodes = (SetOfNodes("EN2", (5, 6, 7, 8)), SetOfNodes("EN1", (1, 2, 3, 4)))
     elrefe = (ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9",)), ElrefeLoc(MT.QU4, gauss=("RIGI=FPG9",)))
     calculs = (
+        OP.CHAR_ECHA_THM_F(
+            te=475,
+            para_in=(
+                (SP.PFLUXF, CFLUXF),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PCHTHMF, CCOECHF),
+                (SP.PINSTR, CTEMPSR),
+                (SP.PDEPLMR, DDL_MECA),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.CHAR_ECHA_HR_F(
+            te=475,
+            para_in=(
+                (SP.PFLUXF, CFLUXF),
+                (SP.PGEOMER, NGEOMER),
+                (SP.HCHTHMF, CCOECHHF),
+                (SP.PINSTR, CTEMPSR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.CHAR_ECHA_THM_R(
             te=475,
             para_in=(
@@ -130,14 +159,15 @@ class THH2M_FACE8(Element):
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
-        OP.CHAR_ECHA_THM_F(
+        OP.CHAR_ECHA_HR_R(
             te=475,
             para_in=(
-                (SP.PFLUXF, CFLUXF),
+                (SP.PFLUXR, EFLUXE),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PCHTHMF, CCOECHF),
+                (SP.HECHTHM, CCOECHH),
                 (SP.PINSTR, CTEMPSR),
                 (SP.PDEPLMR, DDL_MECA),
+                (SP.PMATERC, LC.CMATERC),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

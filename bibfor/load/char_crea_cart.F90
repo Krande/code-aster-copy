@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -107,6 +107,8 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         nbMap = 1
     else if (loadType .eq. 'ECHANGE_THM') then
         nbMap = 1
+    else if (loadType .eq. 'ECHANGE_THM_HR') then
+        nbMap = 1
     else if (loadType .eq. 'PRES_REP') then
         nbMap = 1
     else if (loadType .eq. 'FORCE_TUYAU') then
@@ -135,6 +137,8 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         map(1) = obje_pref(1:13)//'.ONDE'
     else if (loadType .eq. 'ECHANGE_THM') then
         map(1) = obje_pref(1:13)//'.ETHM'
+    else if (loadType .eq. 'ECHANGE_THM_HR') then
+        map(1) = obje_pref(1:13)//'.ETHMH'
     else if (loadType .eq. 'PRES_REP') then
         map(1) = obje_pref(1:13)//'.PRESS'
     else if (loadType .eq. 'FORCE_TUYAU') then
@@ -184,6 +188,14 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
             physQuantity(1) = 'ETHM_R'
         else if (valeType .eq. 'FONC') then
             physQuantity(1) = 'ETHM_F'
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+    else if (loadType .eq. 'ECHANGE_THM_HR') then
+        if (valeType .eq. 'REEL') then
+            physQuantity(1) = 'ETHMH_R'
+        else if (valeType .eq. 'FONC') then
+            physQuantity(1) = 'ETHMH_F'
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -260,6 +272,14 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
             ASSERT(ASTER_FALSE)
         end if
     else if (loadType .eq. 'ECHANGE_THM') then
+        if (valeType .eq. 'REEL') then
+            mapType(1) = 'R'
+        else if (valeType .eq. 'FONC') then
+            mapType(1) = 'K8'
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+    else if (loadType .eq. 'ECHANGE_THM_HR') then
         if (valeType .eq. 'REEL') then
             mapType(1) = 'R'
         else if (valeType .eq. 'FONC') then
@@ -350,6 +370,11 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         cmpName(1, 4) = 'COEF4'
         cmpName(1, 5) = 'PRE1'
         cmpName(1, 6) = 'PRE2'
+    else if (loadType .eq. 'ECHANGE_THM_HR') then
+        nbCmp(1) = 3
+        cmpName(1, 1) = 'COEF1'
+        cmpName(1, 2) = 'COEF2'
+        cmpName(1, 3) = 'HR1'
     else if (loadType .eq. 'PRES_REP') then
         nbCmp(1) = 2
         cmpName(1, 1) = 'PRES'
@@ -396,7 +421,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
             end if
         end do
     end if
-
 ! - Initialization of the <CARTE>
     if (createMap) then
         do iMap = 1, nbMap

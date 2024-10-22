@@ -70,6 +70,8 @@ def C_NOM_GRANDEUR():
         "FTHM_R",
         "ETHM_R",
         "ETHM_F",
+        "ETHMH_R",
+        "ETHMH_F",
         "GEOM_R",
         "G_DEPL_R",
         "HYDR_R",
