@@ -195,7 +195,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         '       ', '       ', '       ', '       ', &
         'PMATUUR', 'PMATUNS', '       ', 'PMATUNS', &
         '       ', '       ', '       ', '       ', &
-        '       ', 'PMATUUR', '       ', '       '/
+        '       ', 'PMATUNS', '       ', '       '/
 !
 ! --------------------------------------------------------------------------------------------------
 !

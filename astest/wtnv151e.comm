@@ -443,13 +443,8 @@ DEP = POST_RELEVE_T(
     )
 )
 
-ttabp1 = []
-ttabt = []
-ttabp1.append(DEP.EXTR_TABLE().PRE1[0])
-ttabt.append(DEP.EXTR_TABLE().TEMP[0])
-
-pc = ttabp1[0]
-temp = ttabt[0] + TREF
+pc = DEP.EXTR_TABLE().PRE1[0]
+temp = DEP.EXTR_TABLE().TEMP[0] + TREF
 
 coef = alphaech * pvsat * MAMOLVAP / (RHOW * R * temp)
 flux_eau = coef * (exp(-pc * MAMOLVAP / (RHOW * R * temp)) - hrext)

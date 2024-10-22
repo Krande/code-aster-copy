@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import numpy
 import math
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
@@ -45,7 +44,7 @@ def isotherme_PC_S(S, alpha, beta, Ad, T0, Temp, R=8.314, Mmolaire=18.01528e-3):
     gamma = tension_superficielle(Temp)
     a = densite_liquide(T0) * R * T0 / (alpha * Mmolaire)
     K0_KT = (10 ** (Ad * (2 * 10**-3 * (Temp - T0) - 1e-6 * (Temp - T0) ** 2))) ** (-1)
-    pc = +a * ((S ** (-1.0 / beta) - 1.0) ** (1.0 - beta)) * (gamma0 / gamma) * numpy.sqrt(K0_KT)
+    pc = +a * ((S ** (-1.0 / beta) - 1.0) ** (1.0 - beta)) * (gamma0 / gamma) * math.sqrt(K0_KT)
     return pc
 
 
@@ -54,7 +53,7 @@ def isotherme_S_PC(Pc, alpha, beta, Ad, T0, Temp, R=8.314, Mmolaire=18.01528e-3)
     gamma = tension_superficielle(Temp)
     a = densite_liquide(T0) * R * T0 / (alpha * Mmolaire)
     K0_KT = (10 ** (Ad * (2 * 10**-3 * (Temp - T0) - 1e-6 * (Temp - T0) ** 2))) ** (-1)
-    Facteur = a * (gamma0 / gamma) * numpy.sqrt(K0_KT)
+    Facteur = a * (gamma0 / gamma) * math.sqrt(K0_KT)
     s = (1.0 + (Pc / Facteur) ** (1.0 / (1.0 - beta))) ** (-beta)
     return s
 
@@ -591,13 +590,9 @@ DEP = POST_RELEVE_T(
     )
 )
 
-ttabp1 = []
-ttabt = []
-ttabp1.append(DEP.EXTR_TABLE().PRE1[0])
-ttabt.append(DEP.EXTR_TABLE().TEMP[0])
+pc = DEP.EXTR_TABLE().PRE1[0]
+temp = DEP.EXTR_TABLE().TEMP[0] + TREF
 
-pc = ttabp1[0]
-temp = ttabt[0] + TREF
 coef = alphaech * pvsat * MAMOLVAP / (rho0l * R * temp)
 flux_eau = -coef * (exp(-pc * MAMOLVAP / (rho0l * R * temp)) - hrext)
 
