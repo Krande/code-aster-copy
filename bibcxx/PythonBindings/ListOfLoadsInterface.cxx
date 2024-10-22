@@ -2,7 +2,7 @@
  * @file ListOfLoadsInterface.cxx
  * @brief Interface python de ListOfLoads
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,6 +24,7 @@
 
 #include "aster_pybind.h"
 
+#include "PythonBindings/FieldOnNodesInterface.h"
 #include "PythonBindings/LoadUtilities.h"
 
 void exportListOfLoadsToPython( py::module_ &mod ) {
@@ -113,6 +114,12 @@ Returns:
     (FiniteElementDescriptor): Finite Element Descriptor defining
         list of contact pair
         )" );
+    c1.def( "setDifferentialDisplacement", &ListOfLoads::setDifferentialDisplacement, R"(
+Set differential displacement field for DIDI loads
+    )" );
+    c1.def( "hasDifferentialLoads", &ListOfLoads::hasDifferentialLoads, R"(
+Return True if there are DIDI loads
+    )" );
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
     addThermalLoadToInterface( c1 );
