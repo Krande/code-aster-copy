@@ -117,6 +117,10 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         """
         super().add_dependencies(keywords)
         self.remove_dependencies(keywords, "RESULTAT")
+        self.remove_dependencies(keywords, "MODELE")
+        self.remove_dependencies(keywords, "CHAM_MATER")
+        self.remove_dependencies(keywords, "CARA_ELEM")
+        self.remove_dependencies(keywords, "CONTACT")
         self.remove_dependencies(
             keywords,
             "ETAT_INIT",

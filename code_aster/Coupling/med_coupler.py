@@ -576,4 +576,4 @@ class MEDCoupler:
                 MAILLAGE_2=self.mesh,
             )
 
-        return PROJ_CHAMP(CHAM_GD=field, MATR_PROJECTION=self.matr_proj, PROL_ZERO="OUI")
+        return PROJ_CHAMP(CHAM_GD=field, MATR_PROJECTION=self.matr_proj)
