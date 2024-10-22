@@ -88,13 +88,15 @@ except ImportError:
             self.app_name = app_name
             self.base_comm = MPI.COMM_WORLD
 
-            size = self.base_comm.size
             rank = self.base_comm.rank
 
             # split the global communicator
-            color = 0 if rank < size / 2 else 1
+            color = 0
+            for letter in app_name:
+                color += ord(letter)
 
             self.my_comm = self.base_comm.Split(color, rank)
+            assert self.my_comm.size < self.base_comm.size
 
             # send name, root, n_rank
             mapping = self.base_comm.allgather({self.app_name: {self.my_comm.rank: rank}})
