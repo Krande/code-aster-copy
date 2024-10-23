@@ -169,13 +169,15 @@ subroutine vecgme(model, cara_elem, matez, matecoz, lload_namez, lload_infoz, &
             call load_neum_comp(stop, i_load, load_name, load_nume, 'Suiv', &
                                 ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
                                 base, resu_elem, vect_elem)
-        end if
+
 !
 ! ----- Composite undead Neumann loads (EVOL_CHAR)
 !
-        call load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
-                            inst_curr, disp_prev, strx_prev, disp_cumu_inst, vite_curr, &
-                            base, resu_elem, vect_elem)
+            call load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
+                                nb_in_maxi, nb_in_prep, lpain, lchin, &
+                                inst_curr, disp_prev, strx_prev, disp_cumu_inst, vite_curr, &
+                                base, resu_elem, vect_elem)
+        end if
     end do
 !
 99  continue
