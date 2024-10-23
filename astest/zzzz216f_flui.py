@@ -17,9 +17,116 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
+
+import medcoupling as MEDC
+
 
 from code_aster.Commands import *
 from code_aster import CA
+
+from code_aster.Coupling import ExternalCoupling
+
+
+class FakeSaturne(ExternalCoupling):
+    """Fake saturne Solver.
+
+    Arguments:
+        app (str): Application name (default: "code_aster").
+        starter (bool): *True* if this instance starts (it sends first),
+            *False* if it receives first (default: "False").
+        debug (bool): Enable debugging mode (default: "False")".
+    """
+
+    def __init__(self, debug=False):
+        super().__init__("code_saturne", True, debug)
+
+    def set_parameter(self, params):
+        """Set parameters.
+
+        Arguments:
+            params (dict): Parameters of the coupling scheme.
+        """
+
+        self._params.set_values(params)
+
+        self.MPI.COUPLING_COMM_WORLD.send(0, "NBSSIT", self._params.nb_iter, self.MPI.INT)
+        self.MPI.COUPLING_COMM_WORLD.send(0, "EPSILO", self._params.epsilon, self.MPI.DOUBLE)
+
+        nb_step = (self._params.final_time - self._params.init_time) / self._params.delta_t
+        self.MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self.MPI.INT)
+        self.MPI.COUPLING_COMM_WORLD.send(0, "TTINIT", self._params.init_time, self.MPI.DOUBLE)
+        self.MPI.COUPLING_COMM_WORLD.send(0, "PDTREF", self._params.delta_t, self.MPI.DOUBLE)
+
+    def run(self, solver, **params):
+        """Execute the coupling loop.
+
+        Arguments:
+            solver (object): Solver contains at least a method run_iteration.
+            params (dict): Parameters of the coupling scheme.
+        """
+
+        # set parameters
+        self.set_parameter(params)
+
+        # initial sync before the loop
+        exit_coupling = self.sync()
+
+        stepper = self._params.stepper
+        first_start = self._starter
+        completed = False
+        input_data = None
+        istep = 0
+
+        while not stepper.isFinished():
+            istep += 1
+            current_time = stepper.getCurrent()
+            delta_time = stepper.getIncrement()
+
+            _ = self.MPI.COUPLING_COMM_WORLD.recv(istep, "DTAST", self.MPI.DOUBLE)
+            self.MPI.COUPLING_COMM_WORLD.send(istep, "DTCALC", delta_time, self.MPI.DOUBLE)
+
+            print("coupling step #{0:d}, time: {1:f}".format(istep, current_time))
+
+            for i_iter in range(self._params.nb_iter):
+
+                print("coupling iteration #{0:d}, time: {1:f}".format(i_iter, current_time))
+
+                if first_start:
+                    first_start = False
+                    input_data = {}
+                    for name, _, _ in self._fields_in:
+                        input_data[name] = None
+                elif i_iter > 0:
+                    input_data = self.recv_input_fields()
+
+                has_cvg, output_data = solver.run_iteration(
+                    i_iter, current_time, delta_time, input_data
+                )
+
+                # send cvg
+                self.MPI.COUPLING_COMM_WORLD.send(istep, "ICVAST", int(has_cvg), self.MPI.INT)
+
+                # send results to code_aster
+                self.send_output_fields(output_data)
+
+                if has_cvg:
+                    break
+
+            stepper.completed()
+            input_data = self.recv_input_fields()
+            print(
+                f"end of time step {current_time} with status: {stepper.isFinished()}", flush=True
+            )
+            exit_coupling = self.sync(end_coupling=stepper.isFinished())
+
+            print("end of time step with status: {}".format(exit_coupling))
+
+        print(
+            "coupling {0} with exit status: {1}".format(
+                "completed" if completed else "interrupted", exit_coupling
+            )
+        )
 
 
 def coupled_fluid(cpl, UNITE_MA):
@@ -69,8 +176,6 @@ def coupled_fluid(cpl, UNITE_MA):
         INFO=1,
     )
 
-    L_INST0 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=5))
-
     ################################################################################
     # define one iteration
     ################################################################################
@@ -92,6 +197,21 @@ def coupled_fluid(cpl, UNITE_MA):
             self.depl_prev = None
             self.result = []
 
+        def _export_pressure(self, pres):
+            filename = "pres_elem.med"
+            pres.printMedFile(filename)
+
+            mc_press = MEDC.ReadFieldCell(
+                filename, pres.getMesh().getName(), -1, pres.getName(), -1, -1
+            )
+            pressure = mc_press[self._medcpl.interf_ids]
+            pressure.setName("Pressure")
+            pressure.setNature(MEDC.IntensiveConservation)
+            pressure.setMesh(self._medcpl.interf_mc)
+            pressure.getArray().setInfoOnComponents(["PRES [Pa]"])
+            pressure.checkConsistencyLight()
+            return pressure
+
         def run_iteration(self, i_iter, current_time, delta_t, data):
             """Execute one iteration.
 
@@ -108,7 +228,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             assert len(data) == 1, "expecting one field"
 
-            mc_depl = data["DEPL"]
+            mc_depl = data["Displ"]
             depl = None
             if mc_depl:
                 # MEDC field => .med => code_aster field
@@ -139,12 +259,18 @@ def coupled_fluid(cpl, UNITE_MA):
                 ASSE=_F(TOUT="OUI", CHAM_GD=CHNEUT, NOM_CMP=("X1",), NOM_CMP_RESU=("PRES",)),
             )
 
-            if i_iter == 0:
-                self.result.append(pres)
-            else:
-                self.result[-1] = pres
+            pres_elem = CREA_CHAMP(
+                OPERATION="DISC", TYPE_CHAM="ELEM_PRES_R", MODELE=MOFLUIDE, CHAM_GD=pres
+            )
 
-            mc_pres = self._medcpl.export_pressure(pres, "PRES")
+            if i_iter == 0:
+                self.result.append(pres_elem)
+            else:
+                self.result[-1] = pres_elem
+
+            # export
+
+            mc_pres = self._export_pressure(pres_elem)
 
             # test convergence:
             has_cvg = False
@@ -157,7 +283,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             self.depl_prev = depl
 
-            return has_cvg, {"PRES": mc_pres}
+            return has_cvg, {"Pressure": mc_pres}
 
     ################################################################################
     # loop on time steps
@@ -167,11 +293,13 @@ def coupled_fluid(cpl, UNITE_MA):
 
     cpl.setup(
         interface=(MAFLUIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("DEPL", ["DX", "DY", "DZ"], "NODES")],
-        output_fields=[("PRES", ["PRES"], "NODES")],
+        input_fields=[("Displ", ["DX", "DY", "DZ"], "NODES")],
+        output_fields=[("Pressure", ["PRES"], "CELLS")],
     )
 
-    cpl.run(fluid_solv, time_list=L_INST0.getValues(), nb_iter=10, epsilon=fluid_solv.epsilon)
+    cpl.run(
+        fluid_solv, init_time=0.0, final_time=1.0, nb_step=5, nb_iter=10, epsilon=fluid_solv.epsilon
+    )
 
     # Extract the field from the result
 

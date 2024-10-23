@@ -26,7 +26,7 @@ import os
 import medcoupling as MEDC
 import ParaMEDMEM as PMM
 
-from ..Commands import CREA_RESU, LIRE_CHAMP, PROJ_CHAMP
+from ..Commands import CREA_RESU, LIRE_CHAMP, PROJ_CHAMP, AFFE_MODELE
 from ..Objects import Mesh
 from ..Utilities import logger, no_new_attributes
 from ..Utilities.mpi_utils import MPI
@@ -114,6 +114,7 @@ class MEDCoupler:
 
     dec = xdec = None
     mesh_interf = interf_mc = mesh = interf_ids = None
+    model_interf = None
     matr_proj = meshDimRelToMaxExt = None
     exch_fields = None
     log = None
@@ -523,39 +524,54 @@ class MEDCoupler:
 
         return self.import_field(mc_pres, "NOEU_PRES_R", time)
 
-    def import_fluidforces(self, mc_fluidf, field_name, time=0.0):
+    def import_fluidforces(self, mc_fluidf, model, time=0.0):
         """Convert a MEDCoupling pressure field as a code_aster field.
 
         Arguments:
             mc_fluidf (*MEDCouplingField*): MEDCoupling pressure field.
-            field_name (str): Field name.
+            model (Model): Mechanical model.
             time (float, optional): Time of assignment.
 
         Returns:
             *LoadResult*: code_aster pressure as *LoadResult*.
         """
 
-        forces = self.import_field(mc_fluidf, "ELEM_FORC_R", time)
+        if self.model_interf is None:
+            modelization = "3D" if self.mesh_interf.getDimension() == 3 else "D_PLAN"
 
-        forces = CREA_RESU(
+            self.model_interf = AFFE_MODELE(
+                MAILLAGE=self.mesh_interf,
+                AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=modelization),
+            )
+
+        mc_mesh = mc_fluidf.getMesh()
+        tmpfile = "fort.78"
+        MEDC.WriteUMesh(tmpfile, mc_mesh, True)
+        MEDC.WriteFieldUsingAlreadyWrittenMesh(tmpfile, mc_fluidf)
+        pres_elem = LIRE_CHAMP(
+            MAILLAGE=self.model_interf.getMesh(),
+            MODELE=self.model_interf,
+            UNITE=78,
+            NOM_MED=mc_fluidf.getName(),
+            TYPE_CHAM="ELEM_PRES_R",
+            NOM_CMP_IDEM="OUI",
+        )
+        os.remove(tmpfile)
+
+        evol_char = CREA_RESU(
             TYPE_RESU="EVOL_CHAR",
             OPERATION="AFFE",
-            AFFE=_F(NOM_CHAM="FORC_NODA", CHAM_GD=forces, MODELE=self.model_interf, INST=time),
+            AFFE=_F(NOM_CHAM="PRES", CHAM_GD=pres_elem, MODELE=self.model_interf, INST=time),
         )
-        # projection on the entire model
-        proj_forces = PROJ_CHAMP(
-            METHODE="COLLOCATION",
-            RESULTAT=forces,
-            MODELE_1=self.model_interf,
-            MODELE_2=self.model,
-            # VIS_A_VIS=_F(
-            #     GROUP_MA_1="interf",
-            #     GROUP_MA_2="interf",
-            # ),
-            TOUT_ORDRE="OUI",
-            PROL_ZERO="OUI",
+
+        if self.matr_proj is None:
+            self.matr_proj = PROJ_CHAMP(
+                METHODE="COLLOCATION", PROJECTION="NON", MODELE_1=self.model_interf, MODELE_2=model
+            )
+
+        return PROJ_CHAMP(
+            RESULTAT=evol_char, MATR_PROJECTION=self.matr_proj, TOUT_ORDRE="OUI", MODELE_2=model
         )
-        return proj_forces
 
     def project_field(self, field):
         """Project field from ther interface to the whole mesh and

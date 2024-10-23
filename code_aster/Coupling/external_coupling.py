@@ -136,11 +136,11 @@ class ExternalCoupling:
         if self._starter:
             self._params.set_values(params)
 
-        self._params.nb_iter = self._MPI.COUPLING_COMM_WORLD.bcast(
-            self._starter, 0, "NBSSIT", self._params.nb_iter, self._MPI.INT
+        self._params.nb_iter = self.MPI.COUPLING_COMM_WORLD.bcast(
+            self._starter, 0, "NBSSIT", self._params.nb_iter, self.MPI.INT
         )
-        self._params.epsilon = self._MPI.COUPLING_COMM_WORLD.bcast(
-            self._starter, 0, "EPSILO", self._params.epsilon, self._MPI.DOUBLE
+        self._params.epsilon = self.MPI.COUPLING_COMM_WORLD.bcast(
+            self._starter, 0, "EPSILO", self._params.epsilon, self.MPI.DOUBLE
         )
 
         if self._starter:
@@ -149,19 +149,19 @@ class ExternalCoupling:
                 nb_step = len(times)
             else:
                 nb_step = 0
-            self._MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self._MPI.INT)
+            self.MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self.MPI.INT)
             if nb_step > 0:
-                self._MPI.COUPLING_COMM_WORLD.send(
-                    0, "STEP", self._params.init_time, self._MPI.DOUBLE
+                self.MPI.COUPLING_COMM_WORLD.send(
+                    0, "STEP", self._params.init_time, self.MPI.DOUBLE
                 )
                 for i in range(nb_step):
-                    self._MPI.COUPLING_COMM_WORLD.send(0, "STEP", times[i], self._MPI.DOUBLE)
+                    self.MPI.COUPLING_COMM_WORLD.send(0, "STEP", times[i], self.MPI.DOUBLE)
         else:
-            nb_step = self._MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self._MPI.INT)
+            nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
             if nb_step > 0:
-                times = [self._MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self._MPI.DOUBLE)]
+                times = [self.MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self.MPI.DOUBLE)]
                 for _ in range(nb_step):
-                    times.append(self._MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self._MPI.DOUBLE))
+                    times.append(self.MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self.MPI.DOUBLE))
 
                 self._params.set_values({"time_list": times})
 
@@ -276,12 +276,12 @@ class ExternalCoupling:
                 # send data to other code
                 if self._starter:
                     self.send_output_fields(output_data)
-                    converged = self._MPI.COUPLING_COMM_WORLD.allreduce(
-                        i_iter, "ICVAST", has_cvg, self._MPI.BOOL, self._MPI.LAND
+                    converged = self.MPI.COUPLING_COMM_WORLD.allreduce(
+                        i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
                     )
                 else:
-                    converged = self._MPI.COUPLING_COMM_WORLD.allreduce(
-                        i_iter, "ICVAST", has_cvg, self._MPI.BOOL, self._MPI.LAND
+                    converged = self.MPI.COUPLING_COMM_WORLD.allreduce(
+                        i_iter, "ICVAST", has_cvg, self.MPI.BOOL, self.MPI.LAND
                     )
                     self.send_output_fields(output_data)
 
@@ -330,10 +330,11 @@ class SaturneCoupling(ExternalCoupling):
 
     Arguments:
         app (str): Application name (default: "code_aster").
-        starter (bool): *True* if this instance starts (it sends first),
-            *False* if it receives first (default: "False").
         debug (bool): Enable debugging mode (default: "False")".
     """
+
+    def __init__(self, app="code_aster", debug=False):
+        super().__init__(app, False, debug)
 
     def set_parameter(self, params):
         """Set parameters.
@@ -342,7 +343,14 @@ class SaturneCoupling(ExternalCoupling):
             params (dict): Parameters of the coupling scheme.
         """
 
-        raise NotImplemented()
+        self._params.nb_iter = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBSSIT", self.MPI.INT)
+        self._params.epsilon = self.MPI.COUPLING_COMM_WORLD.recv(0, "EPSILO", self.MPI.DOUBLE)
+
+        nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
+        init_time = self.MPI.COUPLING_COMM_WORLD.recv(0, "TTINIT", self.MPI.DOUBLE)
+        delta_t = self.MPI.COUPLING_COMM_WORLD.recv(0, "PDTREF", self.MPI.DOUBLE)
+
+        self._params.set_values({"nb_step": nb_step, "init_time": init_time, "delta_t": delta_t})
 
     def run(self, solver, **params):
         """Execute the coupling loop.
@@ -359,22 +367,23 @@ class SaturneCoupling(ExternalCoupling):
         exit_coupling = self.sync()
 
         current_time = self._params.init_time
-        delta_t = self._params.delta_t
+        delta_time = self._params.delta_t
         completed = False
         istep = 0
 
         while not completed and not exit_coupling:
             istep += 1
+            self.MPI.COUPLING_COMM_WORLD.send(istep, "DTAST", delta_time, self.MPI.DOUBLE)
+            delta_time = self.MPI.COUPLING_COMM_WORLD.recv(istep, "DTCALC", self.MPI.DOUBLE)
+            current_time += delta_time
+
+            self.log("coupling step #{0:d}, time: {1:f}".format(istep, current_time))
 
             for i_iter in range(self._params.nb_iter):
-
-                self._MPI.COUPLING_COMM_WORLD.send(istep, "DTAST", delta_t, self._MPI.DOUBLE)
-                delta_t = self._MPI.COUPLING_COMM_WORLD.recv(istep, "DTCALC", self._MPI.DOUBLE)
 
                 self.log("coupling iteration #{0:d}, time: {1:f}".format(i_iter, current_time))
 
                 # recv data from code_saturne
-                current_time += delta_t
                 input_data = self.recv_input_fields()
 
                 has_cvg, output_data = solver.run_iteration(
@@ -382,16 +391,13 @@ class SaturneCoupling(ExternalCoupling):
                 )
 
                 # received cvg
-                converged = bool(self.recv(istep, "ICVAST", self._MPI.INT))
+                converged = bool(self.MPI.COUPLING_COMM_WORLD.recv(istep, "ICVAST", self.MPI.INT))
 
                 # send results to code_saturne
                 self.send_output_fields(output_data)
 
                 if converged:
                     break
-
-                exit_coupling = self.sync()
-                self.log("end of iteration status: {}".format(exit_coupling))
 
             completed = current_time >= self._params.final_time
             exit_coupling = self.sync(end_coupling=completed)
