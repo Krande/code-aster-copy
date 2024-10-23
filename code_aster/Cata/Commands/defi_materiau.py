@@ -139,6 +139,7 @@ DEFI_MATERIAU = MACRO(
             "ELAS_COQUE",
             "ELAS_COQUE_FO",
             "ELAS_MEMBRANE",
+            "BETON_DESORP",
             "SECOND_ELAS",
             "FONDA_SUPERFI",
             "ELAS_HYPER",
