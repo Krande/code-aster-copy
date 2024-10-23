@@ -155,6 +155,9 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 NOM_CMP="DX",
                 VALE_CALC=test_vale[0],
                 GROUP_MA="M81",
+                REFERENCE="AUTRE_ASTER",
+                VALE_REFE=-5.651487142853497,
+                PRECISION=0.05,
             ),
             _F(
                 INST=1.0,
@@ -164,6 +167,9 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 NOM_CMP="DX",
                 VALE_CALC=test_vale[1],
                 GROUP_MA="M81",
+                REFERENCE="AUTRE_ASTER",
+                VALE_REFE=-9.461715704873017,
+                PRECISION=0.05,
             ),
             _F(
                 INST=1.0,
@@ -173,6 +179,9 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 NOM_CMP="DY",
                 VALE_CALC=test_vale[2],
                 GROUP_MA="M81",
+                REFERENCE="AUTRE_ASTER",
+                VALE_REFE=-2.0593425755745725,
+                PRECISION=0.05,
             ),
             _F(
                 INST=1.0,
@@ -182,6 +191,9 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 NOM_CMP="DZ",
                 VALE_CALC=test_vale[3],
                 GROUP_MA="M81",
+                REFERENCE="AUTRE_ASTER",
+                VALE_REFE=-7.165504593709366,
+                PRECISION=0.05,
             ),
         )
     )
