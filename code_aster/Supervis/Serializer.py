@@ -40,6 +40,7 @@ import pickle
 import re
 import traceback
 import types
+from enum import IntFlag, auto
 from functools import partial
 from hashlib import sha256
 from io import IOBase
@@ -66,13 +67,22 @@ EMBEDDED = "_MARK_EMBEDDED_"
 
 
 # same values in op9999
-class FinalizeOptions:
-    """Options for closure."""
+class FinalizeOptions(IntFlag):
+    """Options for closure.
 
-    SaveBase = 1
-    InfoResu = 2
-    Repack = 4
-    OnlyProc0 = 8
+    - *SaveBase*: The database is saved.
+    - *OnlyProc0*: The database is saved only on rank #0.
+    - *InfoResu*: Print detailed informations about *Result* objects.
+    - *Repack*: Enable repacking process.
+    - *Set*: Indicates that options are set (different from the default, 0).
+    """
+
+    SaveBase = auto()
+    InfoResu = auto()
+    Repack = auto()
+    OnlyProc0 = auto()
+    InfoBase = auto()
+    Set = auto()
 
 
 class Serializer:
@@ -276,7 +286,10 @@ def saveObjectsFromContext(context, delete=True, options=0):
         options (*FinalizeOptions*): Options for finalization.
     """
     gc.collect()
-    options |= FinalizeOptions.SaveBase
+    if not options:
+        options = FinalizeOptions.SaveBase
+    if options & FinalizeOptions.SaveBase:
+        options |= FinalizeOptions.InfoBase
     rank = MPI.ASTER_COMM_WORLD.Get_rank()
     if options & FinalizeOptions.OnlyProc0 and rank != 0:
         logger.info("Objects not saved on processor #%d", rank)
@@ -294,12 +307,17 @@ def saveObjectsFromContext(context, delete=True, options=0):
 
     # orig = logger.getEffectiveLevel()
     # logger.setLevel(DEBUG)
-    pickler = Serializer(context)
-    saved = pickler.save()
+    if options & FinalizeOptions.SaveBase:
+        pickler = Serializer(context)
+        saved = pickler.save()
+    else:
+        saved = []
+        logger.info("Objects not saved on processor #%d", rank)
 
     # close Jeveux files (should not be done before pickling)
     libaster.jeveux_finalize(options)
-    pickler.sign()
+    if options & FinalizeOptions.SaveBase:
+        pickler.sign()
     # logger.setLevel(orig)
 
     if delete:
@@ -472,6 +490,8 @@ def file_signature(filename, offset=0, bufsize=-1):
     Returns:
         str: Signature as SHA256 string to identify the file.
     """
+    if not osp.isfile(filename):
+        return "no such file"
     try:
         with open(filename, "rb") as fobj:
             fobj.seek(offset, 0)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,8 @@ class Options:
     - *SlaveMode*: Execution embedded by another program (do not abort, do not
       exit in case of time limit...).
     - *LastStep*: Last step of a study, database won't be reloaded from the
-      temporary directory
+      temporary directory.
+    - *SaveBase*: The database will be copied at the end of the calculation.
     - *HPCMode*: High Performance Computing mode, parallel computing using
       domain decomposition.
     """
@@ -60,8 +61,9 @@ class Options:
     TestMode = 0x0100
     SlaveMode = 0x0200
     LastStep = 0x0400
-    HPCMode = 0x0800
-    WarningAsError = 0x1000
+    SaveBase = 0x0800
+    HPCMode = 0x1000
+    WarningAsError = 0x2000
     # do not forget to document each new option
 
     @classmethod

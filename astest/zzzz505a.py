@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 from math import sqrt
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # For a Mesh
 mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
@@ -105,10 +105,10 @@ test.assertEqual(len(fr.getValues(["DY"], ["A"])), 1)
 test.assertAlmostEqual(fr.getValues(["DY"], ["A"])[0], 2.0)
 test.assertEqual(len(fr.getValues(["DY"], ["ZZ"])), 0)
 
-with test.assertRaises(code_aster.AsterError):
+with test.assertRaises(CA.AsterError):
     ferror = field.restrict(groupsOfNodes=["NOEXI"])
 
-with test.assertRaises(code_aster.AsterError):
+with test.assertRaises(CA.AsterError):
     ferror = field.restrict(["YD"])
 
 f0 = field.copy()
@@ -121,7 +121,7 @@ f3 = -f + f2
 f3.getValues()
 test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
-myField = code_aster.FieldOnNodesReal(dofNume)
+myField = CA.FieldOnNodesReal(dofNume)
 myField.setValues({"DX": 1.0, "DY": 1.0, "DZ": 1.0, "XX": 1234.5})
 test.assertAlmostEqual(myField.norm("NORM_1"), 3 * nbNodes)
 
@@ -259,7 +259,7 @@ TEST_RESU(
 )
 
 # TEST getValuesWithDescription for FieldOnNodesReal
-f_real = code_aster.FieldOnNodesReal(dofNume)
+f_real = CA.FieldOnNodesReal(dofNume)
 f_real.setValues(1.0)
 vals_real, _ = f_real.getValuesWithDescription("DX")
 test.assertEqual(vals_real[0], 1.0)
@@ -270,12 +270,12 @@ test.assertEqual(sf_real_values[0][0], 1.0)
 test.assertEqual(sf_real_mask.all(), True)
 
 # TEST getValuesWithDescription for FieldOnNodesComplex
-f_complex = code_aster.FieldOnNodesComplex(dofNume)
+f_complex = CA.FieldOnNodesComplex(dofNume)
 f_complex.setValues(1 + 2j)
 vals_complex, _ = f_complex.getValuesWithDescription("DX")
 test.assertEqual(vals_complex[0], 1 + 2j)
 
-f2_complex = code_aster.FieldOnNodesComplex(dofNume)
+f2_complex = CA.FieldOnNodesComplex(dofNume)
 f2_complex.setValues(1 + 5j)
 dot_f_f2 = sum(
     f_complex.getValues()[p] * f2_complex.getValues()[p].conjugate()
@@ -295,4 +295,4 @@ test.assertEqual(sf_complex_mask.all(), True)
 
 #
 test.printSummary()
-code_aster.close()
+CA.close(INFO_BASE="NON")
