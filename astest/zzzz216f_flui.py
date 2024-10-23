@@ -31,10 +31,9 @@ from code_aster.Coupling import ExternalCoupling
 class FakeSaturne(ExternalCoupling):
     """Fake saturne Solver.
 
+    It allows to test SaturneCoupling without code_saturne installation.
+
     Arguments:
-        app (str): Application name (default: "code_aster").
-        starter (bool): *True* if this instance starts (it sends first),
-            *False* if it receives first (default: "False").
         debug (bool): Enable debugging mode (default: "False")".
     """
 

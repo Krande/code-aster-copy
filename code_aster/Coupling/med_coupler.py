@@ -542,6 +542,7 @@ class MEDCoupler:
             self.model_interf = AFFE_MODELE(
                 MAILLAGE=self.mesh_interf,
                 AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=modelization),
+                DISTRIBUTION=_F(METHODE="CENTRALISE"),
             )
 
         mc_mesh = mc_fluidf.getMesh()
