@@ -80,5 +80,15 @@ class FieldReader(ExecuteCommand):
             fed = model.getFiniteElementDescriptor()
             self._result.build([fed])
 
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "MAILLAGE")
+        self.remove_dependencies(keywords, "MODELE")
+
 
 LIRE_CHAMP = FieldReader.run

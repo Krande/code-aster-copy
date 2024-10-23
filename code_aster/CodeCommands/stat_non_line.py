@@ -126,6 +126,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
             "ETAT_INIT",
             ("DEPL", "SIGM", "VARI", "STRX", "COHE", "VITE", "ACCE", "EVOL_NOLI"),
         )
+        self.remove_dependencies(keywords, "INCREMENT", ("LIST_INST"))
 
 
 STAT_NON_LINE = NonLinearStaticAnalysis.run

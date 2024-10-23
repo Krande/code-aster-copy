@@ -213,6 +213,8 @@ class FieldCreator(ExecuteCommand):
         super().add_dependencies(keywords)
         self.remove_dependencies(keywords, "ASSE", "CHAM_GD")
         self.remove_dependencies(keywords, "COMB", "CHAM_GD")
+        self.remove_dependencies(keywords, "MAILLAGE")
+        self.remove_dependencies(keywords, "MODELE")
 
         if keywords["OPERATION"] in ("ASSE_DEPL", "R2C", "C2R", "DISC"):
             self.remove_dependencies(keywords, "CHAM_GD")
@@ -226,6 +228,10 @@ class FieldCreator(ExecuteCommand):
             self.remove_dependencies(keywords, "TABLE")
             self.remove_dependencies(keywords, "CARA_ELEM")
             self.remove_dependencies(keywords, "CHARGE")
+
+        if keywords["OPERATION"] == "EVAL":
+            self.remove_dependencies(keywords, "CHAM_F")
+            self.remove_dependencies(keywords, "CHAM_PARA")
 
 
 CREA_CHAMP = FieldCreator.run
