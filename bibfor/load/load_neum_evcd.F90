@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, ligrel_calc, &
+subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, load_nume, ligrel_calc, &
                           nb_in_maxi, nb_in_prep, lpain, lchin, base, &
                           resu_elem, vect_elem)
 !
@@ -43,7 +43,7 @@ subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, ligrel_calc, &
     character(len=1), intent(in) :: stop
     real(kind=8), intent(in) :: inst_curr
     character(len=8), intent(in) :: load_name
-    integer, intent(in) :: i_load
+    integer, intent(in) :: i_load, load_nume
     character(len=19), intent(in) :: ligrel_calc
     integer, intent(in) :: nb_in_maxi
     character(len=*), intent(inout) :: lpain(nb_in_maxi)
@@ -193,24 +193,24 @@ subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, ligrel_calc, &
 !
 ! - Get pressure (CHAR_MECA_PRES_R)
 !
-    call rsinch(evol_char, 'PRES', 'INST', inst_curr, load_name_evol, &
-                'EXCLU', 'EXCLU', 0, 'V', ier)
-    if (ier .le. 2) then
-        option = 'CHAR_MECA_PRES_R'
-        goto 30
-    else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
-        call utmess('F', 'CHARGES3_8', sk=evol_char, sr=inst_curr)
-    end if
-30  continue
+    if (load_nume .ne. 4) then
+        call rsinch(evol_char, 'PRES', 'INST', inst_curr, load_name_evol, &
+                    'EXCLU', 'EXCLU', 0, 'V', ier)
+        if (ier .le. 2) then
+            option = 'CHAR_MECA_PRES_R'
+        else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
+            call utmess('F', 'CHARGES3_8', sk=evol_char, sr=inst_curr)
+        end if
 !
 ! - Compute pressure (CHAR_MECA_PRES_R)
 !
-    if (option .eq. 'CHAR_MECA_PRES_R') then
-        iden_direct = '.PRESS'
-        call load_neum_comp(stop, i_load, load_name, load_nume_evol, load_type, &
-                            ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
-                            base, resu_elem, vect_elem, iden_direct=iden_direct, &
-                            name_inputz=load_name_evol)
+        if (option .eq. 'CHAR_MECA_PRES_R') then
+            iden_direct = '.PRESS'
+            call load_neum_comp(stop, i_load, load_name, load_nume_evol, load_type, &
+                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                                base, resu_elem, vect_elem, iden_direct=iden_direct, &
+                                name_inputz=load_name_evol)
+        end if
     end if
 !
 ! - Get nodal force (VECT_ASSE)

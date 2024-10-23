@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
+                          nb_in_maxi, nb_in_prep, lpain, lchin, &
                           inst_curr, disp_prev, strx_prev, disp_cumu_inst, vite_curr, &
                           base, resu_elem, vect_elem)
 !
@@ -48,6 +49,7 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtgpld.h"
+#include "asterfort/load_neum_comp.h"
 !
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
@@ -61,6 +63,10 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
     character(len=19), intent(in) :: disp_cumu_inst
     character(len=19), intent(in) :: vite_curr
     integer, intent(in) :: i_load
+    integer, intent(in) :: nb_in_maxi
+    character(len=*), intent(inout) :: lpain(nb_in_maxi)
+    character(len=*), intent(inout) :: lchin(nb_in_maxi)
+    integer, intent(in) :: nb_in_prep
     character(len=19), intent(inout) :: resu_elem
     character(len=19), intent(in) :: vect_elem
     character(len=1), intent(in) :: base
@@ -82,6 +88,10 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
 ! In  disp_cumu_inst : displacement increment from beginning of current time
 ! In  inst_curr      : current time
 ! In  i_load         : index of current load
+! In  nb_in_maxi     : maximum number of input fields
+! In  nb_in_prep     : number of input fields before specific ones
+! IO  lpain          : list of input parameters
+! IO  lchin          : list of input fields
 ! In  load_name      : name of current load
 ! IO  resu_elem      : name of resu_elem
 ! In  vect_elem      : name of vect_elem
@@ -91,15 +101,16 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
 !
     character(len=8) :: newnom
     integer :: ibid, ier, nb_cham
+    character(len=4) :: load_type, stop
     character(len=8) :: evol_char
     character(len=16) :: type_sd, option, repk
-    character(len=19) :: load_name_evol, nume_equa
+    character(len=19) :: load_name_evol, nume_equa, iden_direct
     character(len=24) :: chgeom, chcara(18)
-    character(len=8) :: lpain(8), lpaout
-    character(len=19) :: lchin(8)
+    character(len=8) :: lpain2(8), lpaout
+    character(len=19) :: lchin2(8)
     character(len=8) :: mesh_1, mesh_2, mesh_defo
     character(len=19) :: field_no_refe, nuage1, nuage2, method, field_no_refe1
-    integer :: nbequa, nbno, dime, ndim
+    integer :: nbequa, nbno, dime, ndim, load_nume_evol
     integer, pointer :: p_mesh1_dime(:) => null()
     character(len=24) :: object
     character(len=8), pointer :: p_object(:) => null()
@@ -122,6 +133,12 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
     field_no_refe1 = '.0000000'
     newnom = '.0000000'
 !
+! - Only scalar loadings, dead and fixed loads
+!
+    load_nume_evol = 1
+    load_type = 'Suiv'
+    stop = "S"
+!
 ! - Get evol_char
 !
     object = load_name//'.CHME.EVOL.CHAR'
@@ -138,6 +155,28 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
     ASSERT(nb_cham .gt. 0)
     call gettco(evol_char, type_sd)
     ASSERT(type_sd .eq. 'EVOL_CHAR')
+!
+! - Get pressure (CHAR_MECA_PRES_R)
+!
+    call rsinch(evol_char, 'PRES', 'INST', inst_curr, load_name_evol, &
+                'EXCLU', 'EXCLU', 0, 'V', ier)
+    if (ier .le. 2) then
+        option = 'CHAR_MECA_PRSU_R'
+        goto 30
+    else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
+        call utmess('F', 'CHARGES3_8', sk=evol_char, sr=inst_curr)
+    end if
+30  continue
+!
+! - Compute pressure (CHAR_MECA_PRSU_R)
+!
+    if (option .eq. 'CHAR_MECA_PRSU_R') then
+        iden_direct = '.PRESS'
+        call load_neum_comp(stop, i_load, load_name, load_nume_evol, load_type, &
+                            ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                            base, resu_elem, vect_elem, iden_direct=iden_direct, &
+                            name_inputz=load_name_evol)
+    end if
 !
 ! - Get lineic forces (CHAR_MECA_SR1D1D)
 !
@@ -225,22 +264,22 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
 !
         call megeom(model, chgeom)
         call mecara(cara_elem, chcara)
-        lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom(1:19)
-        lpain(2) = 'PVITER'
-        lchin(2) = field_no_refe
-        lpain(3) = 'PVENTCX'
-        lchin(3) = chcara(14) (1:19)
-        lpain(4) = 'PDEPLMR'
-        lchin(4) = disp_prev(1:19)
-        lpain(5) = 'PDEPLPR'
-        lchin(5) = disp_cumu_inst(1:19)
-        lpain(6) = 'PCAGNPO'
-        lchin(6) = chcara(6) (1:19)
-        lpain(7) = 'PCAORIE'
-        lchin(7) = chcara(1) (1:19)
-        lpain(8) = 'PSTRXMR'
-        lchin(8) = strx_prev(1:19)
+        lpain2(1) = 'PGEOMER'
+        lchin2(1) = chgeom(1:19)
+        lpain2(2) = 'PVITER'
+        lchin2(2) = field_no_refe
+        lpain2(3) = 'PVENTCX'
+        lchin2(3) = chcara(14) (1:19)
+        lpain2(4) = 'PDEPLMR'
+        lchin2(4) = disp_prev(1:19)
+        lpain2(5) = 'PDEPLPR'
+        lchin2(5) = disp_cumu_inst(1:19)
+        lpain2(6) = 'PCAGNPO'
+        lchin2(6) = chcara(6) (1:19)
+        lpain2(7) = 'PCAORIE'
+        lchin2(7) = chcara(1) (1:19)
+        lpain2(8) = 'PSTRXMR'
+        lchin2(8) = strx_prev(1:19)
 !
 ! ----- Output fields
 !
@@ -255,8 +294,8 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
 !
 ! ----- Compute
 !
-        call calcul('S', option, ligrel_calc, 8, lchin, &
-                    lpain, 1, resu_elem, lpaout, base, &
+        call calcul('S', option, ligrel_calc, 8, lchin2, &
+                    lpain2, 1, resu_elem, lpaout, base, &
                     'OUI')
         call reajre(vect_elem, resu_elem, base)
 !

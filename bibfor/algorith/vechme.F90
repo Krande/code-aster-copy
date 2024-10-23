@@ -177,7 +177,7 @@ subroutine vechme(stop, modelz, lload_namez, lload_infoz, inst, &
 !
 ! ----- Composite dead Neumann loads (EVOL_CHAR)
 !
-        call load_neum_evcd(stop, inst_prev, load_name, i_load, ligrel_calc, &
+        call load_neum_evcd(stop, inst_prev, load_name, i_load, load_nume, ligrel_calc, &
                             nb_in_maxi, nb_in_prep, lpain, lchin, base, &
                             resu_elem, vect_elem)
     end do
