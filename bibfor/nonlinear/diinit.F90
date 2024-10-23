@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine diinit(mesh_, model_, ds_inout, mate, mateco, cara_elem, &
                   list_func_acti, sddyna, ds_conv, ds_algopara, solver, &
@@ -72,43 +71,35 @@ subroutine diinit(mesh_, model_, ds_inout, mate, mateco, cara_elem, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_expl, l_implex
-    character(len=19) :: list_inst
+    character(len=19) :: listInst
     character(len=8) :: model, mesh, result
-    real(kind=8) :: init_time
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=list_inst)
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=listInst)
     model = model_
     mesh = mesh_
-!
+
 ! - Get parameters
-!
-    init_time = ds_inout%init_time
     result = ds_inout%result
-!
+
 ! - Active functionnalities
-!
     l_expl = ndynlo(sddyna, 'EXPLICITE')
     l_implex = isfonc(list_func_acti, 'IMPLEX')
-!
+
 ! - Create time discretization datastructure
-!
-    call nmcrli(init_time, list_inst, sddisc)
-!
+    call nmcrli(listInst, sddisc)
+
 ! - Courant condition
-!
     if (l_expl) then
         call ndxcfl(mate, mateco, cara_elem, sddyna, sddisc)
     end if
-!
+
 ! - Create storing datastructure
-!
     call nmcrar(result, sddisc, list_func_acti)
-!
+
 ! - Automatic management of time stepping
-!
-    call nmcrsu(sddisc, list_inst, ds_conv, ds_algopara, l_implex, &
+    call nmcrsu(sddisc, listInst, ds_conv, ds_algopara, l_implex, &
                 solver, ds_contact)
 !
 end subroutine

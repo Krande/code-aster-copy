@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
@@ -36,6 +35,8 @@ subroutine mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
 #include "asterfort/mminfr.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/ndynre.h"
+#include "Contact_type.h"
+#include "jeveux.h"
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: ligrcf
@@ -81,21 +82,17 @@ subroutine mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
     real(kind=8), pointer :: v_sdcont_jsupco(:) => null()
     character(len=24) :: sdcont_cychis
     real(kind=8), pointer :: v_sdcont_cychis(:) => null()
-    integer :: n_cychis
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
     glis_maxi = 0.
-!
+
 ! - Active functionnalities
-!
     l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
-    n_cychis = ds_contact%n_cychis
-!
+
 ! - Access to contact objects
-!
     sdcont_jsupco = ds_contact%sdcont_solv(1:14)//'.JSUPCO'
     sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     sdcont_cychis = ds_contact%sdcont_solv(1:14)//'.CYCHIS'
@@ -157,7 +154,7 @@ subroutine mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
             zr(vale_indx-1+13) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+17)
             zr(vale_indx-1+14) = v_sdcont_jsupco(i_cont_poin)
             zr(vale_indx-1+15) = i_algo_cont
-            zr(vale_indx-1+16) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+2)
+            zr(vale_indx-1+16) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+2)
 !            A la premiere iteration on ne passe pas par mmalgo
 !            On prend directement la valeur de coef*_cont venant de nmprma
             if (nint(ds_contact%update_init_coefficient) .eq. 1 .and. &
@@ -165,16 +162,16 @@ subroutine mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
                 zr(vale_indx-1+16) = max(ds_contact%estimated_coefficient, &
                                          zr(vale_indx-1+16))
                 if (i_algo_cont .ne. 3) zr(vale_indx-1+16) = zr(vale_indx-1+16)*1.d-6
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+2) = zr(vale_indx-1+16)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+2) = zr(vale_indx-1+16)
             end if
             zr(vale_indx-1+17) = i_reso_fric
             zr(vale_indx-1+25) = i_reso_geom
             zr(vale_indx-1+18) = i_algo_fric
-            zr(vale_indx-1+19) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+6)
+            zr(vale_indx-1+19) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+6)
             if ((i_algo_cont .ne. 3) .and. (i_algo_fric .eq. 3) .and. &
                 (ds_contact%iteration_newton .eq. 1)) then
                 glis_maxi = mminfr(ds_contact%sdcont_defi, 'GLIS_MAXI', i_zone)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+6) = &
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+6) = &
                     1.d-3*ds_contact%estimated_coefficient*ds_contact%arete_min/glis_maxi
             end if
             zr(vale_indx-1+20) = coef_fric
@@ -184,52 +181,52 @@ subroutine mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
             zr(vale_indx-1+24) = 0.d0
 !           Previous iteration state
             ! previous pressure
-            zr(vale_indx-1+26) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+3)
+            zr(vale_indx-1+26) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+3)
             ! previous contact status
-            zr(vale_indx-1+27) = nint(v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+1))
+            zr(vale_indx-1+27) = nint(v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+1))
             ! alpha_cont_matr
-            zr(vale_indx-1+28) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+59)
+            zr(vale_indx-1+28) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+59)
             ! alpha_frot_matr
-            zr(vale_indx-1+42) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+55)
+            zr(vale_indx-1+42) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+55)
             ! alpha_frot_vect
-            zr(vale_indx-1+43) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+54)
+            zr(vale_indx-1+43) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+54)
             ! previous gap
-            zr(vale_indx-1+29) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+4)
+            zr(vale_indx-1+29) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+4)
             ! treatment of cycling or not cycling
             !    contact cycling
-            zr(vale_indx-1+30) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+57)
+            zr(vale_indx-1+30) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+57)
             !    glis_av-glis_ar cycling
-            zr(vale_indx-1+44) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+50)
+            zr(vale_indx-1+44) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+50)
             ! alpha_cont_vect
-            zr(vale_indx-1+31) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+56)
+            zr(vale_indx-1+31) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+56)
             ! Previous tangentials
-            zr(vale_indx-1+32) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+13)
-            zr(vale_indx-1+33) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+14)
-            zr(vale_indx-1+34) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+15)
-            zr(vale_indx-1+35) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+16)
-            zr(vale_indx-1+36) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+17)
-            zr(vale_indx-1+37) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+18)
+            zr(vale_indx-1+32) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+13)
+            zr(vale_indx-1+33) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+14)
+            zr(vale_indx-1+34) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+15)
+            zr(vale_indx-1+35) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+16)
+            zr(vale_indx-1+36) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+17)
+            zr(vale_indx-1+37) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+18)
             ! Previous contact points coordinates and projections
-            zr(vale_indx-1+38) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+19)
-            zr(vale_indx-1+39) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+20)
-            zr(vale_indx-1+40) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+21)
-            zr(vale_indx-1+41) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+22)
+            zr(vale_indx-1+38) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+19)
+            zr(vale_indx-1+39) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+20)
+            zr(vale_indx-1+40) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+21)
+            zr(vale_indx-1+41) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+22)
             !mode robuste contact
-            zr(vale_indx-1+45) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+51)
+            zr(vale_indx-1+45) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+51)
             !mode robuste frottement
-            zr(vale_indx-1+46) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+52)
+            zr(vale_indx-1+46) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+52)
             !mode adaptatif : frottement penalise
             if ((i_algo_cont .eq. 3) .and. (i_algo_fric .eq. 1)) then
-                zr(vale_indx-1+47) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+5)
+                zr(vale_indx-1+47) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+5)
             end if
             ! and ALGO_RESO_POINT_FIXE="POINT_FIXE"
             !if (ds_contact%iteration_newton .le. 0) then
             !    zr(vale_indx-1+48) = 0
             !else
-            zr(vale_indx-1+48) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+73)
+            zr(vale_indx-1+48) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+73)
             !endif
             !wpg old
-            zr(vale_indx-1+49) = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+75)
+            zr(vale_indx-1+49) = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+75)
         end do
         nt_liel = nt_liel+nb_liel
     end do

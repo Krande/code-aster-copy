@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,7 @@ subroutine tiinit(ds_inout, sddisc, lostat, l_evol)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result
-    real(kind=8) :: init_time
-    character(len=19) :: list_inst
+    character(len=19) :: listInst
     integer :: nocc
     aster_logical :: l_reuse
 !
@@ -61,12 +60,11 @@ subroutine tiinit(ds_inout, sddisc, lostat, l_evol)
 !
     l_evol = .false._1
     result = ds_inout%result
-    init_time = ds_inout%init_time
     l_reuse = ds_inout%l_reuse
 !
 ! - Transient computation ?
 !
-    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=list_inst, nbret=nocc)
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=listInst, nbret=nocc)
     if (nocc .eq. 0) then
         if (.not. lostat) then
             call utmess('F', 'DISCRETISATION_8')
@@ -75,11 +73,10 @@ subroutine tiinit(ds_inout, sddisc, lostat, l_evol)
     else
         l_evol = .true.
     end if
-!
+
 ! - Create time discretization datastructure and storing datastructure
-!
     if (l_evol) then
-        call ntcrli(init_time, list_inst, sddisc, lostat)
+        call ntcrli(listInst, sddisc, lostat)
         call ntcrar(result, sddisc, l_reuse)
     else
         call ntcra0(sddisc)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "event_def.h"
-#include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
 #include "asterfort/compr8.h"
 #include "asterfort/diadap.h"
 #include "asterfort/diinst.h"
+#include "asterfort/getAdapAction.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -36,11 +34,13 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 #include "asterfort/juveca.h"
 #include "asterfort/nmcadt.h"
 #include "asterfort/nmdcei.h"
+#include "asterfort/nmecev.h"
 #include "asterfort/nmjalo.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/getAdapAction.h"
+#include "event_def.h"
+#include "jeveux.h"
 !
     character(len=19) :: valinc(*)
     character(len=19) :: sddisc
@@ -62,8 +62,9 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=19), parameter :: dtplus = '&&NMADAP.DTPLUS'
     integer :: nb_adap, i_adap, jdt
-    character(len=19) :: metlis, dtplus
+    character(len=19) :: metlis
     real(kind=8) :: r8bid, dt, min, pasmin, pasmax, dtm, jalon
     real(kind=8) :: newins, newdt, deltac
     real(kind=8) :: inst, prec, valr(2)
@@ -73,18 +74,13 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
     integer :: jiter
     integer :: nb_inst, nmax, inspas
     character(len=24) :: tpsext
-    integer :: jtpsex, action_type
+    integer :: jtpsex, actionType
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- INITIALISATIONS
-!
-    dtplus = '&&NMADAP.DTPLUS'
-!
-! - Parameters
-!
+
+! - Get parameters
     call utdidt('L', sddisc, 'LIST', 'PAS_MINI', &
                 valr_=pasmin)
     call utdidt('L', sddisc, 'LIST', 'PAS_MAXI', &
@@ -147,7 +143,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
     do i_adap = 1, nb_adap
 !
-        call getAdapAction(sddisc, i_adap, action_type)
+        call getAdapAction(sddisc, i_adap, actionType)
 !
         zr(jdt-1+i_adap) = r8vide()
 !
@@ -162,9 +158,9 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 ! ----- AFFICHAGE
 !
         if (newdt .ne. r8vide()) then
-            call utmess('I', 'ADAPTATION_2', sk=adapActionKeyword(action_type), sr=newdt)
+            call utmess('I', 'ADAPTATION_2', sk=adapActionKeyword(actionType), sr=newdt)
         else
-            call utmess('I', 'ADAPTATION_3', sk=adapActionKeyword(action_type))
+            call utmess('I', 'ADAPTATION_3', sk=adapActionKeyword(actionType))
         end if
     end do
 !
@@ -193,7 +189,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
     if (dt .gt. pasmax) then
 !       EMISSION DU MESSAGE D'INFO (SAUF POUR IMPLEX)
-        if (action_type .ne. ADAP_ACT_IMPLEX) then
+        if (actionType .ne. ADAP_ACT_IMPLEX) then
             valr(1) = dt
             valr(2) = pasmax
             call utmess('I', 'ADAPTATION_12', nr=2, valr=valr)
@@ -204,7 +200,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 ! --- PROJECTION SUR LA BORNE INF POUR IMPLEX
 ! --- (ATTENTION : A FAIRE AVANT L'AJUSTEMENT / JALON)
 !
-    if (action_type .eq. ADAP_ACT_IMPLEX) then
+    if (actionType .eq. ADAP_ACT_IMPLEX) then
         if (dt .lt. pasmin) dt = pasmin
     end if
 !
@@ -247,14 +243,12 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
 ! --- ON VERIFIE LES GARDE FOUS
 !
-    if (action_type .ne. ADAP_ACT_IMPLEX) then
+    if (actionType .ne. ADAP_ACT_IMPLEX) then
         if (dt .lt. pasmin) then
             call utmess('F', 'ADAPTATION_11', sr=dt)
         end if
     end if
-    if (numins .gt. nmax) then
-        call utmess('F', 'ADAPTATION_13')
-    end if
+
 !
 ! --- INSERTION DU NOUVEL INSTANT
 !

@@ -313,7 +313,7 @@ nonlinearResult = MECA_NON_LINE(
 )
 test.assertEqual(nonlinearResult.getNumberOfIndexes() - 1, 3 * 2)
 
-nonlinearResult = MECA_NON_LINE(
+nonlinearResult = STAT_NON_LINE(
     reuse=nonlinearResult,
     MODELE=modelMeca,
     CHAM_MATER=materialField,

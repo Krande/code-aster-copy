@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ subroutine nmarch(numeInst, model, ds_material, caraElem, listFuncActi, &
     integer :: iret, numeStoring
     real(kind=8) :: timeCurr
     character(len=8) :: result
-    aster_logical :: force, lprint, l_hho, lStoringInitState
+    aster_logical :: forceStoring, lprint, l_hho, lStoringInitState, lastTimeStep
     character(len=19) :: k19bid, list_load_resu
     character(len=4) :: etcalc
     integer :: numeReuse
@@ -109,22 +109,23 @@ subroutine nmarch(numeInst, model, ds_material, caraElem, listFuncActi, &
     call nmleeb(sderro, 'CALC', etcalc)
 
 ! - Last step => storing
-    force = .false.
-    call nmfinp(sddisc, numeInst, force)
+    forceStoring = ASTER_FALSE
+    call nmfinp(sddisc, numeInst, lastTimeStep)
+    forceStoring = lastTimeStep
 
 ! - Storing
     if (etcalc .eq. 'CONV') then
-        force = .true.
+        forceStoring = .true.
     end if
     if (etcalc .eq. 'STOP') then
-        force = .true.
+        forceStoring = .true.
     end if
 
 ! - Print timer
     call uttcpg('IMPR', 'INCR')
 
 ! - Get index for storing
-    call dinuar(result, sddisc, numeInst, force, &
+    call dinuar(result, sddisc, numeInst, forceStoring, &
                 numeStoring, numeReuse, lStoringInitState)
 
 ! - Current time
@@ -163,7 +164,7 @@ subroutine nmarch(numeInst, model, ds_material, caraElem, listFuncActi, &
 
 ! ----- Storing fields
         call nmarce(ds_inout, result, sddisc, timeCurr, numeStoring, &
-                    force, ds_print)
+                    forceStoring, ds_print)
 
 ! ----- If HHO, we compute a post_processing
         if (l_hho) then

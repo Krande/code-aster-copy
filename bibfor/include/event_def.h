@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
 ! Event define : Parameters <-> integer definitions
 ! -------------------------------------------------------------------------
@@ -34,7 +32,7 @@
 #define SIZE_LATPR           6
 #define SIZE_LATPK           4
 ! Defines for ECHEC/EVENEMENT
-#define FAIL_EVT_NB               7
+#define FAIL_EVT_NB               8
 #define FAIL_EVT_ERROR            1
 #define FAIL_EVT_INCR_QUANT       2
 #define FAIL_EVT_COLLISION        3
@@ -42,22 +40,24 @@
 #define FAIL_EVT_DIVE_RESI        5
 #define FAIL_EVT_INSTABILITY      6
 #define FAIL_EVT_RESI_MAXI        7
+#define FAIL_EVT_NBPAS_MAXI       8
 ! Localisation
 #define LOCA_VIDE    0
 #define LOCA_PARTIEL 1
 #define LOCA_TOUT    2
 !
-integer, parameter :: failEventMaxi(FAIL_EVT_NB)     = (/1, 99, 1,&
-                                                         1, 99, 1,&
-                                                         1/)
+integer, parameter :: failEventMaxi(FAIL_EVT_NB) = (/1, 99, 1, &
+                                                     1, 99, 1, &
+                                                     1, 1/)
 
-character(len=16), parameter :: failEventKeyword(FAIL_EVT_NB) = (/'ERREUR          ',&
-                                                                  'DELTA_GRANDEUR  ',&
-                                                                  'COLLISION       ',&
-                                                                  'INTERPENETRATION',&
-                                                                  'DIVE_RESI       ',&
-                                                                  'INSTABILITE     ',&
-                                                                  'RESI_MAXI       '/)
+character(len=16), parameter :: failEventKeyword(FAIL_EVT_NB) = (/'ERREUR          ', &
+                                                                  'DELTA_GRANDEUR  ', &
+                                                                  'COLLISION       ', &
+                                                                  'INTERPENETRATION', &
+                                                                  'DIVE_RESI       ', &
+                                                                  'INSTABILITE     ', &
+                                                                  'RESI_MAXI       ', &
+                                                                  'NB_PAS_MAXI     '/)
 
 ! Defines for ECHEC/ACTION
 #define FAIL_ACT_NB               6
@@ -68,11 +68,11 @@ character(len=16), parameter :: failEventKeyword(FAIL_EVT_NB) = (/'ERREUR       
 #define FAIL_ACT_ADAPT_COEF       5
 #define FAIL_ACT_CONTINUE         6
 
-character(len=16), parameter :: failActionKeyword(FAIL_ACT_NB) = (/'ARRET           ',&
-                                                                   'DECOUPE         ',&
-                                                                   'ITER_SUPPL      ',&
-                                                                   'AUTRE_PILOTAGE  ',&
-                                                                   'ADAPT_COEF_PENA ',&
+character(len=16), parameter :: failActionKeyword(FAIL_ACT_NB) = (/'ARRET           ', &
+                                                                   'DECOUPE         ', &
+                                                                   'ITER_SUPPL      ', &
+                                                                   'AUTRE_PILOTAGE  ', &
+                                                                   'ADAPT_COEF_PENA ', &
                                                                    'CONTINUE        '/)
 ! Defines for ADAPTATION/EVENEMENT
 #define ADAP_EVT_NB               3
@@ -80,8 +80,8 @@ character(len=16), parameter :: failActionKeyword(FAIL_ACT_NB) = (/'ARRET       
 #define ADAP_EVT_ALLSTEPS         2
 #define ADAP_EVT_TRIGGER          3
 
-character(len=16), parameter :: adapEventKeyword(ADAP_EVT_NB) = (/'AUCUN           ',&
-                                                                  'TOUT_INST       ',&
+character(len=16), parameter :: adapEventKeyword(ADAP_EVT_NB) = (/'AUCUN           ', &
+                                                                  'TOUT_INST       ', &
                                                                   'SEUIL           '/)
 
 ! Defines for ADAPTATION/MODE_CALCUL_TPLUS
@@ -91,7 +91,7 @@ character(len=16), parameter :: adapEventKeyword(ADAP_EVT_NB) = (/'AUCUN        
 #define ADAP_ACT_ITER             3
 #define ADAP_ACT_IMPLEX           4
 
-character(len=16), parameter :: adapActionKeyword(ADAP_ACT_NB) = (/'FIXE            ',&
-                                                                   'DELTA_GRANDEUR  ',&
-                                                                   'ITER_NEWTON     ',&
+character(len=16), parameter :: adapActionKeyword(ADAP_ACT_NB) = (/'FIXE            ', &
+                                                                   'DELTA_GRANDEUR  ', &
+                                                                   'ITER_NEWTON     ', &
                                                                    'IMPLEX          '/)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
 !
-! person_in_charge: mickael.abbas at edf.fr
+subroutine nmdeco(sddisc, numeInst, iterat, i_event_acti, retdec)
 !
     implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
@@ -37,19 +36,19 @@ subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
 #include "asterfort/nmdecv.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
+!
     integer :: i_event_acti
-    integer :: nume_inst, iterat
-    character(len=19) :: sddisc
+    integer :: numeInst, iterat
+    character(len=19), intent(in) :: sddisc
     integer :: retdec
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! GESTION DE L'ACTION DECOUPE DU PAS DE TEMPS
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! In  sddisc           : datastructure for time discretization
 ! In  i_event_acti     : index of active event
@@ -60,7 +59,7 @@ subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
 !     1 - ON A DECOUPE
 !     2 - PAS DE DECOUPE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: submet, metlis
     real(kind=8) :: dtmin, durdec
@@ -71,12 +70,11 @@ subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
     aster_logical :: ldcext
     integer :: retdex
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- INITIALISATIONS
-!
+
+! - INITIALISATIONS
     retdec = 0
     retdex = -1
     dtmin = r8gaem()
@@ -88,8 +86,8 @@ subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
 !
     call utdidt('L', sddisc, 'LIST', 'METHODE', &
                 valk_=metlis)
-    instam = diinst(sddisc, nume_inst-1)
-    instap = diinst(sddisc, nume_inst)
+    instam = diinst(sddisc, numeInst-1)
+    instap = diinst(sddisc, numeInst)
     deltat = instap-instam
     insref = instap
 !
@@ -144,25 +142,25 @@ subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
 !
 ! --- VERIFICATIONS DE LA DECOUPE
 !
-    call nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
+    call nmdecv(sddisc, numeInst, i_event_acti, dtmin, retdec)
     if (retdec .eq. 0) goto 999
 !
 ! --- MISE A JOUR DES SD APRES DECOUPE
 !
-    call nmdcdc(sddisc, nume_inst, nomlis, nbrpas)
+    call nmdcdc(sddisc, numeInst, nomlis, nbrpas)
 !
 ! --- EXTENSION DE LA DECOUPE AUX PAS SUIVANTS
 !
 888 continue
     if (ldcext) then
-        instam = diinst(sddisc, nume_inst-1)
-        instap = diinst(sddisc, nume_inst)
+        instam = diinst(sddisc, numeInst-1)
+        instap = diinst(sddisc, numeInst)
         deltac = instap-instam
         if (metlis .eq. 'MANUEL') then
             call nmdcex(sddisc, insref, durdec, i_event_acti, deltac, &
                         retdex)
         else if (metlis .eq. 'AUTO') then
-            call nmdcax(sddisc, insref, nume_inst, durdec, deltac)
+            call nmdcax(sddisc, insref, numeInst, durdec, deltac)
             retdex = 1
         else
             ASSERT(.false.)
