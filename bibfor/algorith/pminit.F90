@@ -119,7 +119,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     real(kind=8) :: instam, angl_naut(3), sigm(6), epsm(9), vale, rac2
     real(kind=8) :: vim(nbvari), vip(nbvari), vr(*)
     real(kind=8) :: sigi, kel(6, 6), cimpo(6, 12)
-    real(kind=8) :: angd(3), ang1(1), pgl(3, 3), coef, instin
+    real(kind=8) :: angd(3), ang1(1), pgl(3, 3), coef
     real(kind=8) :: angeul(3), dsidep(36)
     real(kind=8) :: sigini(6), epsini(6), valimp(9)
     aster_logical :: limpex
@@ -496,8 +496,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 !     CREATION SD DISCRETISATION
 !     ----------------------------------------
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
-    instin = r8vide()
-    call nmcrli(instin, lisins, sddisc)
+    call nmcrli(lisins, sddisc)
 !
 !
 !

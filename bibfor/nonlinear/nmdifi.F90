@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,18 +71,13 @@ subroutine nmdifi(keywf, list_inst, tole, nb_inst, nume_end)
 !
     if (n1+n2 .eq. 0) then
         nume_end = nb_inst-1
-!
-! - INST_FIN
-!
     else if (n1 .eq. 0) then
         call utacli(inst, v_list_inst, nb_inst, tole, nume_end)
     end if
-!
+
 ! - Checks
-!
     if (nume_end .lt. 0 .or. nume_end .gt. (nb_inst-1)) then
         call utmess('F', 'DISCRETISATION_94')
-        nume_end = nb_inst-1
     end if
 !
 end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,6 @@ cata_msg = {
         """
 Certains pas de temps de la liste (LISTE_INST) sont plus petits
  que le pas de temps minimal renseigné (SUBD_PAS_MINI)
-"""
-    ),
-    2: _(
-        """
- L'instant initial de la liste est plus grand que le deuxième instant.
 """
     ),
     3: _(
@@ -105,6 +100,17 @@ La liste d'instants n'est pas strictement croissante.
 L'instant initial est introuvable dans la liste d'instants (LIST_INST).
 Risque & Conseil :
    Vérifiez le mot-clé INST_INIT (ou NUME_INST_INIT), en tenant compte de la précision (mot-clé PRECISION).
+"""
+    ),
+    90: _(
+        """
+L'instant initial est introuvable dans la liste d'instants (LIST_INST).
+Nous commençons le calcul par l'instant strictement supérieur le plus proche: %(r1)f.
+"""
+    ),
+    91: _(
+        """
+L'instant initial est introuvable dans la liste d'instants (LIST_INST) et nous ne trouvons pas d'instant supérieur dans la liste initiale.
 """
     ),
     92: _(

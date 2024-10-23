@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmcrls(sddisc, list_inst, nume_ini, nume_end, l_init_noexist, &
-                  inst_init, nb_inst_new, dtmin)
+!
+subroutine nmcrls(sddisc, listInstJv, numeInit, numeEnd, &
+                  nbInstNew, dtmin)
 !
     implicit none
 !
@@ -29,15 +29,9 @@ subroutine nmcrls(sddisc, list_inst, nume_ini, nume_end, l_init_noexist, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=19), intent(in) :: sddisc
-    character(len=19), intent(in) :: list_inst
-    integer, intent(in) :: nume_ini
-    integer, intent(in) :: nume_end
-    aster_logical, intent(in) :: l_init_noexist
-    real(kind=8), intent(in) :: inst_init
-    integer, intent(out) :: nb_inst_new
+    character(len=19), intent(in) :: sddisc, listInstJv
+    integer, intent(in) :: numeInit, numeEnd
+    integer, intent(out) :: nbInstNew
     real(kind=8), intent(out) :: dtmin
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,66 +43,48 @@ subroutine nmcrls(sddisc, list_inst, nume_ini, nume_end, l_init_noexist, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sddisc           : datastructure for time discretization
-! In  list_inst        : list of times from INCREMENT/LIST_INST
-! In  nume_ini         : index of initial time
-! In  nume_end         : index of final time
-! In  inst_init        : initial time if ETAT_INIT
-! In  l_init_noexist   : .true. if initial time doesn't exist in list of times
-! Out nb_inst          : number of time steps in list after resize
+! In  listInstJv       : list of times from INCREMENT/LIST_INST
+! In  numeInit         : index of initial time
+! In  numeEnd          : index of final time
+! Out nbInst           : number of time steps in list after resize
 ! Out dtmin            : minimum time between two steps after resize
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: pos, i_inst, nb_inst
-    real(kind=8) :: deltat, valr(2)
-    real(kind=8), pointer :: v_list_inst(:) => null()
-    character(len=24) :: sddisc_ditr
-    real(kind=8), pointer :: v_sddisc_ditr(:) => null()
+    integer :: pos, iInst, nbInst
+    real(kind=8) :: deltat
+    real(kind=8), pointer :: listInst(:) => null()
+    character(len=24) :: sddiscDITRJv
+    real(kind=8), pointer :: sddiscDITR(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call utdidt('L', sddisc, 'LIST', 'NBINST', &
-                vali_=nb_inst)
-!
+    call utdidt('L', sddisc, 'LIST', 'NBINST', vali_=nbInst)
+
 ! - Final number of time steps
-!
-    nb_inst_new = (nume_end-nume_ini)+1
-    ASSERT(nb_inst_new .le. nb_inst)
-!
+    nbInstNew = (numeEnd-numeInit)+1
+    ASSERT(nbInstNew .le. nbInst)
+
 ! - Acces to list of times
-!
-    call jeveuo(list_inst, 'L', vr=v_list_inst)
-!
+    call jeveuo(listInstJv, 'L', vr=listInst)
+
 ! - Create new list of time
-!
-    sddisc_ditr = sddisc(1:19)//'.DITR'
-    call wkvect(sddisc_ditr, 'V V R', nb_inst_new, vr=v_sddisc_ditr)
-!
+    sddiscDITRJv = sddisc(1:19)//'.DITR'
+    call wkvect(sddiscDITRJv, 'V V R', nbInstNew, vr=sddiscDITR)
+
 ! - Update new list of time
-!
-    pos = 0
-    do i_inst = nume_ini, nume_end
-        v_sddisc_ditr(pos+1) = v_list_inst(i_inst+1)
+    pos = 1
+    do iInst = numeInit, numeEnd
+        sddiscDITR(pos) = listInst(iInst+1)
         pos = pos+1
     end do
-!
+    ASSERT(pos-1 .eq. nbInstNew)
+
 ! - New minimum time between two steps
-!
     dtmin = r8maem()
-    do i_inst = 1, nb_inst_new-1
-        deltat = v_sddisc_ditr(i_inst+1)-v_sddisc_ditr(i_inst)
+    do iInst = 1, nbInstNew-1
+        deltat = sddiscDITR(iInst+1)-sddiscDITR(iInst)
         dtmin = min(deltat, dtmin)
     end do
-!
-! - Initial time doesn't exist in list of times => change for real initial time
-!
-    if (l_init_noexist) then
-        v_sddisc_ditr(1) = inst_init
-        if (inst_init .ge. v_sddisc_ditr(2)) then
-            valr(1) = inst_init
-            valr(2) = v_sddisc_ditr(2)
-            call utmess('F', 'DISCRETISATION_2', nr=2, valr=valr)
-        end if
-    end if
 !
 end subroutine
