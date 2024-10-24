@@ -96,11 +96,12 @@ class ExternalCoupling:
         other_ranks = self._ple.get_app_ranks(with_app)
 
         # Creating the parallel DEC
-        fields_name = [name for name, _, _ in self._fields_in + self._fields_out]
+        fields_name = {}
+
         if self._starter:
-            self._medcpl.init_coupling(fields_name, ranks1=my_ranks, ranks2=other_ranks)
+            self._medcpl.init_coupling(ranks1=my_ranks, ranks2=other_ranks)
         else:
-            self._medcpl.init_coupling(fields_name, ranks1=other_ranks, ranks2=my_ranks)
+            self._medcpl.init_coupling(ranks1=other_ranks, ranks2=my_ranks)
 
         # Define coupling mesh
         self._medcpl.create_mesh_interface(interface[0], interface[1])
