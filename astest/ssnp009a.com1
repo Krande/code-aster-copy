@@ -1,0 +1,83 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+n = 2.32
+
+p_r = 1.979e4
+
+mat = DEFI_MATERIAU(
+    ELAS=_F(ALPHA=0.0, E=1e8, NU=0.3, RHO=rho),
+    MOHR_COULOMB=_F(ANGDIL=phi, PHI=phi, COHESION=c),
+    COMP_THM="LIQU_GAZ",
+    THM_INIT=_F(PORO=0.2, PRE1=0.0, PRE2=1.0, PRES_VAPE=2300.0, TEMP=300.0),
+    THM_LIQU=_F(RHO=1e3, UN_SUR_K=0.0, VISC=VISC, D_VISC_TEMP=ZERO),
+    THM_GAZ=_F(MASS_MOL=0.03, VISC=VISC, D_VISC_TEMP=ZERO),
+    THM_DIFFU=_F(
+        R_GAZ=8.315,
+        RHO=1e3,
+        BIOT_COEF=1.0,
+        PESA_X=0.0,
+        PESA_Y=-g,
+        PESA_Z=0.0,
+        PERM_IN=K,
+        VG_N=n,
+        VG_PR=p_r,
+        VG_SR=0.25,
+        VG_SMAX=0.999,
+        VG_SATUR=0.999,
+    ),
+)
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=(_F(MATER=mat, TOUT="OUI")))
+
+
+TAB_FS = CALC_STAB_PENTE(
+    METHODE_STAB="LEM",
+    METHODE_LEM="BISHOP",
+    CHAM_MATER=CHMAT,
+    GROUP_MA="range_pente",
+    NB_TRANCHE=15,
+    SUCCION="OUI",
+    LIGN_PHREA=_F(INDIC_PIEZO=[1, 2], TABLE=TABPIEZO, TOUT="OUI"),
+    X1_MINI=5.35,
+    X1_MAXI=5.35,
+    X2_MINI=31.7,
+    X2_MAXI=31.7,
+    NB_POINT_1=1,
+    NB_POINT_2=1,
+    Y_MINI=9.0,
+    Y_MAXI=9.0,
+    RAFF_MAIL=_F(NB_RAFF_MAXI=0),
+)
+
+# VERIFICATION
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=0),
+    NOM_PARA="FS",
+    TABLE=TAB_FS,
+    VALE_CALC=(1.2467709213754843,),
+    VALE_REFE=(1.250),
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=1e-2,
+)
+
+
+FIN()

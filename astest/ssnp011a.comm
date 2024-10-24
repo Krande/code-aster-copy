@@ -1,0 +1,89 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+rho = 2e3
+
+c = 25e3
+
+phi = 30
+
+rho_w = 1e3
+
+g = 9.81
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+MODE1 = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
+
+mat = DEFI_MATERIAU(
+    ELAS=_F(ALPHA=0.0, E=1e8, NU=0.3, RHO=rho), MOHR_COULOMB=_F(ANGDIL=phi, PHI=phi, COHESION=c)
+)
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=(_F(MATER=mat, TOUT="OUI"),))
+
+# ========================================================================
+#       ANALYSE DE STABILITE
+# ========================================================================
+
+TAB_KC = CALC_STAB_PENTE(
+    CHAM_MATER=CHMAT,
+    GROUP_MA="range_pente",
+    METHODE_STAB="LEM",
+    METHODE_LEM="BISHOP",
+    NB_TRANCHE=8,
+    COEF_RU=_F(TOUT="OUI", VALE=0.5),
+    ACCE=_F(CALC_KC="OUI"),
+    X1_MINI=30.0,
+    X1_MAXI=30.0,
+    X2_MINI=115,
+    X2_MAXI=115,
+    RAFF_MAIL=_F(NB_RAFF_MAXI=4),
+    INFO_TABLE=2,
+)
+
+
+# TEST DE NON_REGRESSION
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=0),
+    NOM_PARA="KC",
+    TABLE=TAB_KC,
+    VALE_CALC=(0.153563045817779,),
+)
+TEST_TABLE(NOM_PARA="CENTRE_X", VALE_CALC=48.99995573855952, TABLE=TAB_KC)
+TEST_TABLE(NOM_PARA="CENTRE_Y", VALE_CALC=117.40015048889764, TABLE=TAB_KC)
+TEST_TABLE(NOM_PARA="RAYON", VALE_CALC=94.3333775947737, TABLE=TAB_KC)
+TEST_TABLE(NOM_PARA="NB_SURF_TEST", VALE_CALC_I=14, TABLE=TAB_KC)
+
+# VERIFICATION
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=4),
+    NOM_PARA="KC",
+    TABLE=TAB_KC,
+    VALE_CALC=(0.13214103745794414,),
+    VALE_REFE=(0.132),
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=1e-2,
+)
+
+
+FIN()

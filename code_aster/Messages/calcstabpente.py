@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,11 +99,6 @@ Le FS initial doit être strictement positif.
 X1_MINI, X1_MAXI, X2_MINI, X2_MAXI doivent prendre les valeurs d'ordre croissante.     
 """
     ),
-    15: _(
-        """
-Le champ PTOT doit affecter le modèle entier via TOUT = 'OUI' dans AFFE_VARC.     
-"""
-    ),
     16: _(
         """
 Les zones des points d'extrémité sont en dehors du profil de la pente. 
@@ -112,11 +107,6 @@ Les zones des points d'extrémité sont en dehors du profil de la pente.
     17: _(
         """
 La résolution du FS selon la procédure MORGENSTERN_PRICE diverge. 
-"""
-    ),
-    18: _(
-        """
-Les opérandes Y_MINI et Y_MAXI doivent apparaître en paire.    
 """
     ),
     19: _(
@@ -129,9 +119,60 @@ La valeur de Y_MINI est trop grande.
 La population des feux d'artifices doit être strictement positive.    
 """
     ),
-    21: _(
+    22: _(
         """
-Impossible de déterminer les limites de l'ordonnée du point %(i1)d sur la surface de rupture. 
+La direction d'accélération doit être un vecteur non nul.  
+"""
+    ),
+    23: _(
+        """
+Le résultat de pression hydraulique doit provenir du modèle D_PLAN_H/HH*.
+"""
+    ),
+    24: _(
+        """
+Matériau non défini sur la maille M%(i1)d.
+"""
+    ),
+    25: _(
+        """
+On se propose d'utiliser PHI_B (angle de succion) pour calculer la résistance due à la succion.
+Cependant, on ne l'a pas affecté à la maille M%(i1)d.
+"""
+    ),
+    26: _(
+        """
+Afin de calculer la résistance due à la succion, en l'absence de PHI_B,
+le comportement hydraulique du matériau doit être défini par le modèle Van-Genuchten ou par la courbe saturation / pression capillaire. 
+"""
+    ),
+    27: _(
+        """
+Impossible de trouver une surface de rupture circulaire sur le maillage entré à l'issue de 100 fois d'ajustement. 
+Code retour : %(i1)d
+"""
+    ),
+    28: _(
+        """
+Une surface de rupture seule à tester : x_enter=%(r1)f, x_exit=%(r2)f, Rayon=%(r3)f.
+Cependant, cette surface se situe en dehors du modèle. 
+"""
+    ),
+    29: _(
+        """
+Fondation de taille insuffisante.
+"""
+    ),
+    30: _(
+        """
+Impossible de trouve une surface de rupture circulaire valide. 
+Code retour : %(i1)d
+"""
+    ),
+    31: _(
+        """
+Impossible d'initialiser l'algorithme EFWA suite à l'échec de générer les surfaces ruptures non-circulaires. 
+Veuillez vérifier et ajuster le maillage et les paramètres EFWA. 
 """
     ),
 }
