@@ -20,6 +20,7 @@
 """
 Definition of objects for coupled simulations with code_aster.
 """
+import os
 
 from ..Utilities import logger, no_new_attributes
 from .med_coupler import MEDCoupler
@@ -173,7 +174,8 @@ class ExternalCoupling:
         """
         verbosity = 2 if self._debug else 1
         output = "all" if self._debug else "master"
-        self._ple = pyple_coupler(verbosity=verbosity, logdir="/tmp", output_mode=output)
+        LOGDIR = os.environ.get("CA_COUPLING_LOGDIR", "/tmp")
+        self._ple = pyple_coupler(verbosity=verbosity, logdir=LOGDIR, output_mode=output)
         self._ple.init_coupling(app_name=self._whoami, app_type="code_aster")
 
         self._other_app = with_app
@@ -336,32 +338,30 @@ class SaturneCoupling(ExternalCoupling):
     def __init__(self, app="code_aster", debug=False):
         super().__init__(app, False, debug)
 
-    def set_parameter(self, params):
-        """Set parameters.
+    def set_parameters(self, params):
+        """Set parameters. Received values from code_saturne.
 
         Arguments:
-            params (dict): Parameters of the coupling scheme.
+            params (dict): Parameters of the coupling scheme (not used).
         """
 
+        nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
         self._params.nb_iter = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBSSIT", self.MPI.INT)
         self._params.epsilon = self.MPI.COUPLING_COMM_WORLD.recv(0, "EPSILO", self.MPI.DOUBLE)
-
-        nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
         init_time = self.MPI.COUPLING_COMM_WORLD.recv(0, "TTINIT", self.MPI.DOUBLE)
         delta_t = self.MPI.COUPLING_COMM_WORLD.recv(0, "PDTREF", self.MPI.DOUBLE)
 
-        self._params.set_values({"nb_step": nb_step, "init_time": init_time, "delta_t": delta_t})
+        if nb_step > 0:
+            self._params.set_values(
+                {"nb_step": nb_step, "init_time": init_time, "delta_t": delta_t}
+            )
 
-    def run(self, solver, **params):
+    def run(self, solver):
         """Execute the coupling loop.
 
         Arguments:
             solver (object): Solver contains at least a method run_iteration.
-            params (dict): Parameters of the coupling scheme.
         """
-
-        # set parameters
-        self.set_parameter(params)
 
         # initial sync before the loop
         exit_coupling = self.sync()

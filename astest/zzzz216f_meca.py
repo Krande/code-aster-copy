@@ -96,12 +96,27 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             """
 
             assert len(data) == 1, "expecting one field"
-            mc_pres = data["Pressure"]
+            mc_pres = data["Forces"]
 
             # MEDC field => .med => code_aster field
-            PRES = self._medcpl.import_fluidforces(mc_pres, MOSOLIDE, current_time)
+            FORCE = self._medcpl.import_fluidforces(mc_pres, MOSOLIDE, current_time)
 
-            CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=PRES)
+            FORC = FORCE.getField("FORC_NODA", current_time, "INST")
+
+            PRES = CREA_CHAMP(
+                OPERATION="ASSE",
+                TYPE_CHAM="ELEM_PRES_R",
+                MODELE=MOSOLIDE,
+                ASSE=_F(TOUT="OUI", CHAM_GD=FORC, NOM_CMP=("FX"), NOM_CMP_RESU=("PRES",)),
+            )
+
+            evol_char = CREA_RESU(
+                TYPE_RESU="EVOL_CHAR",
+                OPERATION="AFFE",
+                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES, MODELE=MOSOLIDE, INST=current_time),
+            )
+
+            CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=evol_char)
 
             previous_time = current_time - delta_t
 
@@ -137,7 +152,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
     cpl.setup(
         interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("Pressure", ["PRES"], "CELLS")],
+        input_fields=[("Forces", ["FX", "FY", "FZ"], "CELLS")],
         output_fields=[("Displ", ["DX", "DY", "DZ"], "NODES")],
     )
 

@@ -40,7 +40,7 @@ class FakeSaturne(ExternalCoupling):
     def __init__(self, debug=False):
         super().__init__("code_saturne", True, debug)
 
-    def set_parameter(self, params):
+    def set_parameters(self, params):
         """Set parameters.
 
         Arguments:
@@ -49,24 +49,21 @@ class FakeSaturne(ExternalCoupling):
 
         self._params.set_values(params)
 
+        nb_step = (self._params.final_time - self._params.init_time) / self._params.delta_t
+        self.MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self.MPI.INT)
+
         self.MPI.COUPLING_COMM_WORLD.send(0, "NBSSIT", self._params.nb_iter, self.MPI.INT)
         self.MPI.COUPLING_COMM_WORLD.send(0, "EPSILO", self._params.epsilon, self.MPI.DOUBLE)
 
-        nb_step = (self._params.final_time - self._params.init_time) / self._params.delta_t
-        self.MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self.MPI.INT)
         self.MPI.COUPLING_COMM_WORLD.send(0, "TTINIT", self._params.init_time, self.MPI.DOUBLE)
         self.MPI.COUPLING_COMM_WORLD.send(0, "PDTREF", self._params.delta_t, self.MPI.DOUBLE)
 
-    def run(self, solver, **params):
+    def run(self, solver):
         """Execute the coupling loop.
 
         Arguments:
             solver (object): Solver contains at least a method run_iteration.
-            params (dict): Parameters of the coupling scheme.
         """
-
-        # set parameters
-        self.set_parameter(params)
 
         # initial sync before the loop
         exit_coupling = self.sync()
@@ -166,12 +163,13 @@ def coupled_fluid(cpl, UNITE_MA):
     )
 
     FORM = FORMULE(VALE="1.E-4*INST*(X+Y+Z)", NOM_PARA=["X", "Y", "Z", "INST"])
+    FORM0 = FORMULE(VALE="0.", NOM_PARA=["X", "Y", "Z", "INST"])
 
     PRES_F = CREA_CHAMP(
         TYPE_CHAM="NOEU_NEUT_F",
         OPERATION="AFFE",
         MODELE=MOFLUIDE,
-        AFFE=_F(TOUT="OUI", NOM_CMP="X1", VALE_F=FORM),
+        AFFE=_F(TOUT="OUI", NOM_CMP=("X1", "X2", "X3"), VALE_F=(FORM, FORM0, FORM0)),
         INFO=1,
     )
 
@@ -204,10 +202,10 @@ def coupled_fluid(cpl, UNITE_MA):
                 filename, pres.getMesh().getName(), -1, pres.getName(), -1, -1
             )
             pressure = mc_press[self._medcpl.interf_ids]
-            pressure.setName("Pressure")
+            pressure.setName("Force")
             pressure.setNature(MEDC.IntensiveConservation)
             pressure.setMesh(self._medcpl.interf_mc)
-            pressure.getArray().setInfoOnComponents(["PRES [Pa]"])
+            pressure.getArray().setInfoOnComponents(["FX", "FY", "FZ"])
             pressure.checkConsistencyLight()
             return pressure
 
@@ -251,25 +249,30 @@ def coupled_fluid(cpl, UNITE_MA):
                 OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=PRES_F, CHAM_PARA=(CHXN, CHINST)
             )
 
-            pres = CREA_CHAMP(
+            force = CREA_CHAMP(
                 OPERATION="ASSE",
-                TYPE_CHAM="NOEU_PRES_R",
+                TYPE_CHAM="NOEU_FORC_R",
                 MAILLAGE=self.mesh,
-                ASSE=_F(TOUT="OUI", CHAM_GD=CHNEUT, NOM_CMP=("X1",), NOM_CMP_RESU=("PRES",)),
+                ASSE=_F(
+                    TOUT="OUI",
+                    CHAM_GD=CHNEUT,
+                    NOM_CMP=("X1", "X2", "X3"),
+                    NOM_CMP_RESU=("FX", "FY", "FZ"),
+                ),
             )
 
-            pres_elem = CREA_CHAMP(
-                OPERATION="DISC", TYPE_CHAM="ELEM_PRES_R", MODELE=MOFLUIDE, CHAM_GD=pres
+            force_elem = CREA_CHAMP(
+                OPERATION="DISC", TYPE_CHAM="ELEM_FORC_R", MODELE=MOFLUIDE, CHAM_GD=force
             )
 
             if i_iter == 0:
-                self.result.append(pres_elem)
+                self.result.append(force_elem)
             else:
-                self.result[-1] = pres_elem
+                self.result[-1] = force_elem
 
             # export
 
-            mc_pres = self._export_pressure(pres_elem)
+            mc_pres = self._export_pressure(force_elem)
 
             # test convergence:
             has_cvg = False
@@ -282,7 +285,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             self.depl_prev = depl
 
-            return has_cvg, {"Pressure": mc_pres}
+            return has_cvg, {"Forces": mc_pres}
 
     ################################################################################
     # loop on time steps
@@ -293,12 +296,15 @@ def coupled_fluid(cpl, UNITE_MA):
     cpl.setup(
         interface=(MAFLUIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
         input_fields=[("Displ", ["DX", "DY", "DZ"], "NODES")],
-        output_fields=[("Pressure", ["PRES"], "CELLS")],
+        output_fields=[("Forces", ["FX", "FY", "FZ"], "CELLS")],
+        init_time=0.0,
+        final_time=1.0,
+        nb_step=5,
+        nb_iter=10,
+        epsilon=fluid_solv.epsilon,
     )
 
-    cpl.run(
-        fluid_solv, init_time=0.0, final_time=1.0, nb_step=5, nb_iter=10, epsilon=fluid_solv.epsilon
-    )
+    cpl.run(fluid_solv)
 
     # Extract the field from the result
 

@@ -549,12 +549,12 @@ class MEDCoupler:
         tmpfile = "fort.78"
         MEDC.WriteUMesh(tmpfile, mc_mesh, True)
         MEDC.WriteFieldUsingAlreadyWrittenMesh(tmpfile, mc_fluidf)
-        pres_elem = LIRE_CHAMP(
+        forc_elem = LIRE_CHAMP(
             MAILLAGE=self.model_interf.getMesh(),
             MODELE=self.model_interf,
             UNITE=78,
             NOM_MED=mc_fluidf.getName(),
-            TYPE_CHAM="ELEM_PRES_R",
+            TYPE_CHAM="ELEM_FORC_R",
             NOM_CMP_IDEM="OUI",
         )
         os.remove(tmpfile)
@@ -562,7 +562,7 @@ class MEDCoupler:
         evol_char = CREA_RESU(
             TYPE_RESU="EVOL_CHAR",
             OPERATION="AFFE",
-            AFFE=_F(NOM_CHAM="PRES", CHAM_GD=pres_elem, MODELE=self.model_interf, INST=time),
+            AFFE=_F(NOM_CHAM="FORC_NODA", CHAM_GD=forc_elem, MODELE=self.model_interf, INST=time),
         )
 
         if self.matr_proj is None:
