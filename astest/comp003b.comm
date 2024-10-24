@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,8 @@ ETA_ID_Pa = ETA_ID * C_Pa
 K_IS_Pa = K_IS * C_Pa
 
 BETON[0] = DEFI_MATERIAU(
-    ELAS_FO=_F(NU=POISSON, E=YOUNG_Pa, ALPHA=ALPHA, TEMP_DEF_ALPHA=0.0, FONC_DESORP=FONC1),
+    ELAS_FO=_F(NU=POISSON, E=YOUNG_Pa, ALPHA=ALPHA, TEMP_DEF_ALPHA=0.0),
+    BETON_DESORP=_F(FONC_DESORP=FONC1),
     BETON_UMLV=_F(
         K_RS=K_RS_Pa,
         ETA_RS=ETA_RS_Pa,
@@ -84,7 +85,8 @@ BETON[0] = DEFI_MATERIAU(
 # unite en MPa
 
 BETON[1] = DEFI_MATERIAU(
-    ELAS_FO=_F(NU=POISSON, E=YOUNG, ALPHA=ALPHA, TEMP_DEF_ALPHA=0.0, FONC_DESORP=FONC1),
+    ELAS_FO=_F(NU=POISSON, E=YOUNG, ALPHA=ALPHA, TEMP_DEF_ALPHA=0.0),
+    BETON_DESORP=_F(FONC_DESORP=FONC1),
     BETON_UMLV=_F(
         K_RS=K_RS, ETA_RS=ETA_RS, ETA_IS=ETA_IS, K_RD=K_RD, ETA_RD=ETA_RD, ETA_ID=ETA_ID, K_IS=K_IS
     ),

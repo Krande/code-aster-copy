@@ -121,6 +121,9 @@ DEFI_MATERIAU = MACRO(
         PRESENT_PRESENT("ELAS_GLRC", "GLRC_DM"),
         EXCLUS("HAYHURST", "HAYHURST_FO"),
         EXCLUS("POST_ROCHE", "POST_ROCHE_FO"),
+        PRESENT_PRESENT("BETON_BURGER", "BETON_DESORP"),
+        PRESENT_PRESENT("BETON_BURGER_FO", "BETON_DESORP"),
+        PRESENT_PRESENT("SECH_RFT", "BETON_DESORP"),
         AU_MOINS_UN(
             "TABLE",
             "ELAS",
@@ -136,6 +139,7 @@ DEFI_MATERIAU = MACRO(
             "ELAS_COQUE",
             "ELAS_COQUE_FO",
             "ELAS_MEMBRANE",
+            "BETON_DESORP",
             "SECOND_ELAS",
             "FONDA_SUPERFI",
             "ELAS_HYPER",
@@ -251,6 +255,7 @@ DEFI_MATERIAU = MACRO(
             "SECH_MENSI",
             "SECH_BAZANT",
             "SECH_NAPPE",
+            "SECH_RFT",
             "META_ACIER_REVENU",
             "META_ACIER",
             "META_ZIRC",
@@ -400,7 +405,6 @@ DEFI_MATERIAU = MACRO(
         AMOR_HYST=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         K_DESSIC=SIMP(statut="f", typ="R", defaut=0.0),
         B_ENDOGE=SIMP(statut="f", typ="R", defaut=0.0),
-        FONC_DESORP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         LONG_CARA=SIMP(statut="f", typ="R", val_min=0.0),
         COEF_AMOR=SIMP(statut="f", typ="R", defaut=1.0),
     ),
@@ -1862,6 +1866,22 @@ DEFI_MATERIAU = MACRO(
         ETA_ID=SIMP(statut="o", typ="R"),
         ETA_FD=SIMP(statut="f", typ="R"),
     ),
+    BETON_DESORP=FACT(
+        statut="f",
+        LEVERETT=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+        b_fonc_deso=BLOC(
+            condition="""equal_to("LEVERETT", 'NON')""",
+            FONC_DESORP=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        ),
+        b_leverett=BLOC(
+            condition="""equal_to("LEVERETT", 'OUI')""",
+            VG_PR=SIMP(statut="o", typ="R"),
+            VG_N=SIMP(statut="o", typ="R"),
+            ATH=SIMP(statut="o", typ="R"),
+            TEMP_0_C=SIMP(statut="o", typ="R"),
+            PORO=SIMP(statut="o", typ="R"),
+        ),
+    ),
     BETON_RAG=FACT(
         statut="f",
         COMP_BETON=SIMP(
@@ -2680,6 +2700,14 @@ DEFI_MATERIAU = MACRO(
         FONC_DESORP=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
     SECH_NAPPE=FACT(statut="f", FONCTION=SIMP(statut="o", typ=(nappe_sdaster, formule))),
+    SECH_RFT=FACT(
+        statut="f",
+        PERM_IN=SIMP(statut="o", typ="R"),
+        QSR_K=SIMP(statut="o", typ="R"),
+        A_MIL=SIMP(statut="o", typ="R"),
+        B_MIL=SIMP(statut="o", typ="R"),
+        VG_M_P=SIMP(statut="o", typ="R"),
+    ),
     #
     # comportement métallurgique
     #

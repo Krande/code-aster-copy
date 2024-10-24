@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,6 @@ for i in range(2):
             NU=nu,
             # ALPHA = ALPHA,
             # TEMP_DEF_ALPHA = 0.,
-            # FONC_DESORP = FONC1,
         ),
         ENDO_LOCA_EXP=_F(
             KAPPA=kappa, P=p, SIGC=sigc * C_Pa[i], SIG0=sig0 * C_Pa[i], REST_RIGIDITE=rest

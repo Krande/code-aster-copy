@@ -17,26 +17,26 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: vinicius.alves-fernandes at edf.fr
+# person_in_charge: sylvie.michel-ponnelle at edf.fr
 
-from .cata_comportement import LoiComportementMFront
+from .cata_comportement import LoiComportement
 
-loi = LoiComportementMFront(
-    nom="BETON_BURGER",
-    lc_type=None,
-    doc="""Comportement de fluage propre du beton selon modele de burger avec non linearite sur le fluide de Maxwell (R7.01.35)""",
-    num_lc=58,
+loi = LoiComportement(
+    nom="SECH_RFT",
+    lc_type=("SECHAGE",),
+    doc="""Relation de comportement de thermique non lineaire pour modéliser le séchage du béton suivant le modèle de Richards Fick avec tempétarute (RFT)""",
+    num_lc=0,
     nb_vari=0,
     nom_vari=None,
-    mc_mater=("ELAS", "BETON_DESORP", "BETON_BURGER"),
-    modelisation=("3D", "AXIS", "D_PLAN"),
-    deformation=("PETIT", "PETIT_REAC", "GDEF_LOG"),
-    algo_inte=("NEWTON_PERT",),
+    mc_mater=None,
+    modelisation=("3D", "AXIS", "PLAN", "3D_DIAG", "PLAN_DIAG", "AXIS_DIAG"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("SANS_OBJET",),
     type_matr_tang=None,
     proprietes=None,
     syme_matr_tang=("Yes",),
     exte_vari=None,
-    deform_ldc=("MECANIQUE",),
+    deform_ldc=("OLD",),
     regu_visc=("No",),
     post_incr=None,
 )

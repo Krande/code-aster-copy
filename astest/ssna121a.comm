@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,8 @@ FCTD = DEFI_FONCTION(
 )
 
 BETON = DEFI_MATERIAU(
-    ELAS_FO=_F(E=E, NU=NU, TEMP_DEF_ALPHA=0.0, ALPHA=ALPHA, FONC_DESORP=FCTD),
+    ELAS_FO=_F(E=E, NU=NU, TEMP_DEF_ALPHA=0.0, ALPHA=ALPHA),
+    BETON_DESORP=_F(FONC_DESORP=FCTD),
     BETON_UMLV=_F(
         K_RS=2.0e11,  # [Pa]
         ETA_RS=4.0e16,  # [Pa.s]

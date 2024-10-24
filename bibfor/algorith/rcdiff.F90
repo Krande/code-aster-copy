@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 #include "asterc/r8t0.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/rftDiffusion.h"
 #include "asterfort/utmess.h"
     integer :: imate
     real(kind=8) :: temp, c, diff
@@ -104,6 +105,10 @@ subroutine rcdiff(imate, comp, temp, c, diff)
                     4, nomres, valres, icodre, 1)
         rap = ((1.d0-valres(4))/0.25d0)**valres(3)
         diff = valres(1)*(valres(2)+(1.d0-valres(2))/(1.d0+rap))
+!
+    else if (phenom .eq. 'SECH_RFT') then
+        call rftDiffusion(fami, kpg, spt, poum, imate, &
+                          c, temp, diff)
 !
     else if (phenom .eq. 'SECH_NAPPE') then
         nbpar = 2

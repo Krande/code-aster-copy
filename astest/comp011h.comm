@@ -1,0 +1,379 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# person_in_charge: marina.bottoni at edf.fr
+#
+# CAS-TEST DE REFERENCE : SSNV163B
+#
+# =====================================================================
+
+import numpy as N
+
+
+def loi_de_kelvin_hr(pc, Temp, rho_liquide, R=8.314, Mmolaire=18.01528e-3):
+    hr = N.exp(pc * Mmolaire / (rho_liquide * R * Temp))
+    return hr
+
+
+def densite_liquide(Temp):
+    """
+    Masse volumique de l'eau liquide
+    """
+    rho_liquide = 314.4 + 685.6 * (1 - ((Temp - 273.15) / 374.14) ** (1 / 0.55)) ** 0.55
+    return rho_liquide
+
+
+def tension_superficielle(Temp):
+    """
+    Tension superficielle de l'eau'
+    """
+    gamma = 0.1558 * (1 - (Temp / 647.1)) ** 1.26
+    return gamma
+
+
+def isotherme_hr_T(S, alpha, beta, Ad, T0, Temp, poro, R=8.314, Mmolaire=18.01528e-3):
+    """
+    Isotherme Leverett(S,T)
+    """
+
+    # passage en Kelvin
+    Temp = Temp + 273.15
+    T0 = T0 + 273.15
+
+    HR = 1.0
+
+    satu = S / poro / 1e3
+
+    satu = N.minimum(satu, 1 - 1e-6)
+    satu = N.maximum(satu, 1e-6)
+    gamma0 = tension_superficielle(T0)
+    gamma = tension_superficielle(Temp)
+
+    a = densite_liquide(T0) * R * T0 / (alpha * Mmolaire)
+    K0_KT = (10 ** (Ad * (2 * 10**-3 * (Temp - T0) - 1e-6 * (Temp - T0) ** 2))) ** (-1)
+    pc = -a * ((satu ** (-1.0 / beta) - 1.0) ** (1.0 - beta)) * (gamma0 / gamma) * N.sqrt(K0_KT)
+    rho_liquide = densite_liquide(Temp)
+    HR = loi_de_kelvin_hr(pc, Temp, rho_liquide)
+
+    return HR
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
+
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
+
+TREF = 0.0
+
+T0 = TREF
+
+
+NCAL = 2
+
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+UN = DEFI_CONSTANTE(VALE=1.0)
+
+compor = "BETON_BURGER"
+
+YOUN = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(0.0, 11000.0, 500.0, 31000.0))
+
+ALPH = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(0.0, 1.0e-04, 500.0, 2.0e-04))
+
+# définition de l'isotherme de Leverett
+# via une formule pour calcul de référence
+alpha = 9.33427661  # premier coefficient de Van Genuchten [Pa]
+beta = 0.38923339  # second coefficient de Van Genuchten [-]
+Ad = 10.160105601  # activation thermique de l'isotherme
+T0_Lev = 20
+poro = 0.161
+
+FONC1 = FORMULE(
+    NOM_PARA=("SECH", "TEMP"),
+    VALE="isotherme_hr_T(SECH, alpha, beta, Ad, T0_Lev, TEMP,poro)",
+    isotherme_hr_T=isotherme_hr_T,
+    alpha=alpha,
+    beta=beta,
+    Ad=Ad,
+    T0_Lev=T0_Lev,
+    poro=poro,
+)
+
+KRS_F = DEFI_CONSTANTE(VALE=4360)
+ETARS_F = DEFI_CONSTANTE(VALE=3.41e9)
+KAPPA_F = DEFI_CONSTANTE(VALE=3e-3)
+ETAIS_F = DEFI_CONSTANTE(VALE=5.76e12)
+KRD_F = DEFI_CONSTANTE(VALE=3270)
+ETARD_F = DEFI_CONSTANTE(VALE=2.55e9)
+ETAID_F = DEFI_CONSTANTE(VALE=4.32e12)
+TEMP0C_F = DEFI_CONSTANTE(VALE=20.0)
+
+
+MATERREF = DEFI_MATERIAU(
+    ELAS_FO=_F(E=YOUN, NU=ZERO, TEMP_DEF_ALPHA=TREF, ALPHA=ALPH),
+    BETON_DESORP=_F(FONC_DESORP=FONC1),
+    BETON_BURGER_FO=_F(
+        YoungModulus=YOUN,
+        PoissonRatio=ZERO,
+        K_RS=KRS_F,
+        ETA_RS=ETARS_F,
+        KAPPA=KAPPA_F,
+        ETA_IS=ETAIS_F,
+        K_RD=KRD_F,
+        ETA_RD=ETARD_F,
+        ETA_ID=ETAID_F,
+        ETA_FD=ZERO,
+        QSR_K=ZERO,
+        TEMP_0_C=TEMP0C_F,
+    ),
+)
+
+MATER = DEFI_MATERIAU(
+    ELAS_FO=_F(E=YOUN, NU=ZERO, TEMP_DEF_ALPHA=TREF, ALPHA=ALPH),
+    BETON_DESORP=_F(LEVERETT="OUI", VG_PR=alpha, VG_N=beta, ATH=Ad, TEMP_0_C=T0_Lev, PORO=poro),
+    BETON_BURGER_FO=_F(
+        YoungModulus=YOUN,
+        PoissonRatio=ZERO,
+        K_RS=KRS_F,
+        ETA_RS=ETARS_F,
+        KAPPA=KAPPA_F,
+        ETA_IS=ETAIS_F,
+        K_RD=KRD_F,
+        ETA_RD=ETARD_F,
+        ETA_ID=ETAID_F,
+        ETA_FD=ZERO,
+        QSR_K=ZERO,
+        TEMP_0_C=TEMP0C_F,
+    ),
+)
+
+MOMECA = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
+
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=NCAL),))
+
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=L_INST),
+    ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=2, SUBD_NIVEAU=10),
+)
+
+TIMP = DEFI_FONCTION(NOM_PARA="INST", NOM_RESU="TEMP", VALE=(0.0, TREF, 1.0, 200.0))
+
+CHP_TEMP = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_F",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TIMP),
+)
+
+RTEMP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=CHP_TEMP, LIST_INST=L_INST),
+)
+
+SECH = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=0.5 * poro * 1e3),
+)
+
+CHMTHREF = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", MATER=MATERREF),
+    AFFE_VARC=(
+        _F(TOUT="OUI", CHAM_GD=SECH, NOM_VARC="SECH", VALE_REF=0.0),
+        _F(NOM_VARC="TEMP", VALE_REF=TREF, TOUT="OUI", EVOL=RTEMP, NOM_CHAM="TEMP"),
+    ),
+)
+
+CHMTH = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", MATER=MATER),
+    AFFE_VARC=(
+        _F(TOUT="OUI", CHAM_GD=SECH, NOM_VARC="SECH", VALE_REF=0.0),
+        _F(NOM_VARC="TEMP", VALE_REF=TREF, TOUT="OUI", EVOL=RTEMP, NOM_CHAM="TEMP"),
+    ),
+)
+
+
+LIAISON1 = AFFE_CHAR_MECA(
+    MODELE=MOMECA,
+    DDL_IMPO=(_F(GROUP_NO=("N1", "N2", "N3", "N4"), DX=0.0), _F(GROUP_NO=("N1", "N2"), DY=0.0)),
+)
+
+LIAISON = AFFE_CHAR_MECA(
+    MODELE=MOMECA,
+    DDL_IMPO=(
+        _F(GROUP_NO=("N1", "N2", "N3", "N4"), DX=0.0),
+        _F(GROUP_NO=("N1", "N2", "N3", "N4"), DY=0.0),
+    ),
+)
+
+UREF = STAT_NON_LINE(
+    MODELE=MOMECA,
+    CHAM_MATER=CHMTHREF,
+    EXCIT=(_F(CHARGE=LIAISON1),),
+    COMPORTEMENT=_F(RELATION=compor, RESI_INTE=1e-11),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    NEWTON=_F(REAC_INCR=1, REAC_ITER=1),
+)
+
+U = STAT_NON_LINE(
+    MODELE=MOMECA,
+    CHAM_MATER=CHMTH,
+    EXCIT=(_F(CHARGE=LIAISON1),),
+    COMPORTEMENT=_F(RELATION=compor, RESI_INTE=1e-11),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    NEWTON=_F(REAC_INCR=1, REAC_ITER=1),
+)
+
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=0.5,
+            RESULTAT=UREF,
+            NOM_CHAM="SIEF_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="SIXX",
+            VALE_CALC=-179.99972053257426,
+        ),
+        _F(
+            INST=0.5,
+            RESULTAT=UREF,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="V1",
+            VALE_CALC=-0.011999981368838284,
+        ),
+        _F(
+            INST=0.5,
+            RESULTAT=UREF,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="V9",
+            VALE_CALC=1.4922375611128752e-08,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=UREF,
+            NOM_CHAM="SIEF_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="SIXX",
+            VALE_CALC=-531.9980812464843,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=UREF,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="V1",
+            VALE_CALC=-0.027999899012972854,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=UREF,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="V9",
+            VALE_CALC=8.088417206902127e-08,
+        ),
+    )
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=0.5,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="SIXX",
+            VALE_CALC=-179.99972053257426,
+            VALE_REFE=-179.99972053257426,
+        ),
+        _F(
+            INST=0.5,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="V1",
+            VALE_CALC=-0.011999981368838284,
+            VALE_REFE=-0.011999981368838284,
+        ),
+        _F(
+            INST=0.5,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="V9",
+            VALE_CALC=1.4922375611128752e-08,
+            VALE_REFE=1.4922375611128752e-08,
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="SIXX",
+            VALE_CALC=-531.9980812464843,
+            VALE_REFE=-531.9980812464843,
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="V1",
+            VALE_CALC=-0.027999899012972854,
+            VALE_REFE=-0.027999899012972854,
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELGA",
+            GROUP_MA="M1",
+            POINT=1,
+            NOM_CMP="V9",
+            VALE_CALC=8.088417206902127e-08,
+            VALE_REFE=8.088417206902127e-08,
+        ),
+    )
+)
+
+
+FIN()

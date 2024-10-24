@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,8 @@ FONC_D = DEFI_CONSTANTE(VALE=1.0)  # Desorption function ( C --> h )
 
 
 BET = DEFI_MATERIAU(
-    ELAS_FO=_F(E=YOUNG, NU=NU, TEMP_DEF_ALPHA=20.0, ALPHA=ALPHA, FONC_DESORP=FONC_D),
+    ELAS_FO=_F(E=YOUNG, NU=NU, TEMP_DEF_ALPHA=20.0, ALPHA=ALPHA),
+    BETON_DESORP=_F(FONC_DESORP=FONC_D),
     BETON_GRANGER=_F(
         J1=JS[0],
         J2=JS[1],
