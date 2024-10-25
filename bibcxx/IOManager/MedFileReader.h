@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MedFileReader
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -63,6 +63,8 @@ class MedFileReader {
     /** @brief map profile name -> index in _profiles */
     std::map< std::string, int > _mapProfileNameRank;
 
+    int readFile();
+
   public:
     /**
      * @typedef MedFileReaderPtr
@@ -101,6 +103,9 @@ class MedFileReader {
 
     /** @brief med parallel open of file */
     int openParallel( const std::string &filename, const MedFileAccessType &openType );
+
+    /** @brief med open of file */
+    int open( const std::string &filename, const MedFileAccessType &openType );
 };
 
 /**

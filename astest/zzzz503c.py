@@ -25,6 +25,8 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.Utilities import shared_tmpdir
 
+from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import readMedFileToResults
+
 CA.init("--test")
 
 test = CA.TestCase()
@@ -37,8 +39,6 @@ DEFI_GROUP(
     MAILLAGE=pMesh,
     CREA_GROUP_MA=(_F(NOM="BLABLA", OPTION="SPHERE", POINT=(0.2, 0.2, 0.2), RAYON=0.2),),
 )
-
-pMesh.debugPrint(30 + rank)
 
 list_cells = pMesh.getCells("BLABLA")
 nb_cells = [72, 4, 0, 4]
@@ -110,6 +110,24 @@ with shared_tmpdir("zzzz503c_") as tmpdir:
     )
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=81)
+
+with shared_tmpdir("zzzz503c_") as tmpdir:
+    medfile = osp.join(tmpdir, "resu" + str(rank) + ".zzzz503c.no.med")
+    DEFI_FICHIER(UNITE=81, FICHIER=medfile, TYPE="BINARY")
+
+    IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=resu), VERSION_MED="4.0.0", UNITE=81)
+
+    DEFI_FICHIER(ACTION="LIBERER", UNITE=81)
+
+    myResu = readMedFileToResults(
+        medfile,
+        {"resu____DEPL": "DEPL", "resu____SIEF_ELGA": "SIEF_ELGA"},
+        CA.ElasticResult,
+        monModel,
+    )
+    depl1 = myResu.getField("DEPL", 1).getValues()
+    depl2 = resu.getField("DEPL", 1).getValues()
+    test.assertEqual(depl1, depl2)
 
 with shared_tmpdir("zzzz503c_") as tmpdir:
     medfile = osp.join(tmpdir, "resu.zzzz503c.ma.med")

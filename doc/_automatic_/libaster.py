@@ -15847,6 +15847,17 @@ class MedFileReader:
             int: profile number
         """
 
+    def open(self, path, accessType):
+        """Open med file
+
+        Arguments:
+            path (str): path to med file
+            accessType (MedFileAccessType): med access type
+
+        Returns:
+            int: return code (0 if open is ok)
+        """
+
     def openParallel(self, path, accessType):
         """Open med file in parallel
 

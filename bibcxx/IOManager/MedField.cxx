@@ -84,9 +84,8 @@ int MedField::getProfileNumberAtSequenceOnEntity( int numdt, int numit, int enti
 
 MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
     int numdt, int numit, std::vector< med_geometry_type > medTypesList ) const {
-    if ( !_filePtr.isParallel() ) {
-        throw std::runtime_error( "Sequential read not yet implemented" );
-    }
+    const bool isParallel = _filePtr.isParallel();
+
     const med_entity_type entitype = MED_CELL;
     const med_entity_type entitypes[2] = { MED_CELL, MED_NODE_ELEMENT };
     const int csit = _numdtNumitToSeq.at( numdt ).at( numit );
@@ -102,10 +101,16 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
         const med_geometry_type geotype = medTypesList[i];
         const auto nbElemT =
             _mesh->getCellNumberForGeometricTypeAtSequence( meshnumdt, meshnumit, geotype );
-        const auto pair = splitEntitySet( nbElemT, rank, nbProcs );
-        cumulatedElem += pair.first;
-        nbElems.push_back( pair.first );
-        starts.push_back( pair.second );
+        if ( isParallel ) {
+            const auto pair = splitEntitySet( nbElemT, rank, nbProcs );
+            cumulatedElem += pair.first;
+            nbElems.push_back( pair.first );
+            starts.push_back( pair.second );
+        } else {
+            cumulatedElem += nbElemT;
+            nbElems.push_back( nbElemT );
+            starts.push_back( 1 );
+        }
     }
     MedVectorPtr medV( new MedVector( cumulatedElem ) );
     medV->setComponentNumber( _nbCmp );
@@ -160,7 +165,6 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
                     } else {
                         const auto profSize =
                             MEDprofileSizeByName( _filePtr.getFileId(), profilename );
-                        const auto &pair = splitEntitySet( profSize, rank, nbProcs );
                         auto &profilearray = profs.emplace_back( profSize );
                         MEDprofileRd( _filePtr.getFileId(), profilename, &profilearray[0] );
                         int deb = -1, taille = 0;
@@ -205,8 +209,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
         const auto &curPos = cumPos[i];
         const auto &geotype = geoTypes[i];
         const auto cmpPg = nbCmp * nbPg;
-        MedFilter medFilter( _filePtr, nbNoT, nbPg, nbCmp, MED_ALL_CONSTITUENT, MED_FULL_INTERLACE,
-                             MED_COMPACT_STMODE, start2, nbNoL, 1, nbNoL, 0, profPtr );
+
         double *value = nullptr;
         VectorReal valVec;
         if ( profPtr == nullptr ) {
@@ -215,9 +218,22 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
             valVec = VectorReal( cmpPg * nbNoL, 0. );
             value = &valVec[0];
         }
-        MEDfieldValueAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit,
-                                 entitypes[medType], geotype, medFilter.getPointer(),
-                                 (unsigned char *)value );
+        if ( isParallel ) {
+            MedFilter medFilter( _filePtr, nbNoT, nbPg, nbCmp, MED_ALL_CONSTITUENT,
+                                 MED_FULL_INTERLACE, MED_COMPACT_STMODE, start2, nbNoL, 1, nbNoL, 0,
+                                 profPtr );
+            MEDfieldValueAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit,
+                                     entitypes[medType], geotype, medFilter.getPointer(),
+                                     (unsigned char *)value );
+        } else {
+            std::string profilename( "" );
+            if ( profPtr != nullptr )
+                profilename = profPtr->getName();
+            MEDfieldValueWithProfileRd( _filePtr.getFileId(), _name.c_str(), numdt, numit,
+                                        entitypes[medType], geotype, MED_COMPACT_STMODE,
+                                        profilename.c_str(), MED_FULL_INTERLACE,
+                                        MED_ALL_CONSTITUENT, (unsigned char *)value );
+        }
         if ( profPtr != nullptr ) {
             const auto &curProf = profs[i];
             const auto &size = curProf.size();
@@ -238,9 +254,8 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
 };
 
 MedVectorPtr MedField::getValuesAtSequenceOnNodes( int numdt, int numit ) const {
-    if ( !_filePtr.isParallel() ) {
-        throw std::runtime_error( "Sequential read not yet implemented" );
-    }
+    const bool isParallel = _filePtr.isParallel();
+
     const med_entity_type entitype = MED_NODE;
     const int csit = _numdtNumitToSeq.at( numdt ).at( numit );
     med_int numdt2, numit2, meshnumdt, meshnumit;
@@ -250,7 +265,8 @@ MedVectorPtr MedField::getValuesAtSequenceOnNodes( int numdt, int numit ) const 
     const auto rank = getMPIRank();
     const auto nbProcs = getMPISize();
     const auto nbNodeT = _mesh->getNodeNumberAtSequence( meshnumdt, meshnumit );
-    const auto pair = splitEntitySet( nbNodeT, rank, nbProcs );
+    const std::pair< int, int > pair = ( isParallel ? splitEntitySet( nbNodeT, rank, nbProcs )
+                                                    : std::make_pair( (int)nbNodeT, 1 ) );
     const auto &start = pair.second;
     const auto &end = pair.first + start;
     MedVectorPtr medV( new MedVector( pair.first ) );
@@ -317,8 +333,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnNodes( int numdt, int numit ) const 
         const auto &start2 = indirection[i].second;
         const auto &nbNoL = indirection[i].first;
         const auto &profPtr = profsPtr[i];
-        MedFilter medFilter( _filePtr, nbNoT, nbPg, nbCmp, MED_ALL_CONSTITUENT, MED_FULL_INTERLACE,
-                             MED_COMPACT_STMODE, start2, nbNoL, 1, nbNoL, 0, profPtr );
+
         double *value = nullptr;
         VectorReal valVec;
         if ( profPtr == nullptr ) {
@@ -327,8 +342,22 @@ MedVectorPtr MedField::getValuesAtSequenceOnNodes( int numdt, int numit ) const 
             valVec = VectorReal( nbCmp * nbPg * nbNoL, 0. );
             value = &valVec[0];
         }
-        MEDfieldValueAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, entitype,
-                                 MED_NO_GEOTYPE, medFilter.getPointer(), (unsigned char *)value );
+        if ( isParallel ) {
+            MedFilter medFilter( _filePtr, nbNoT, nbPg, nbCmp, MED_ALL_CONSTITUENT,
+                                 MED_FULL_INTERLACE, MED_COMPACT_STMODE, start2, nbNoL, 1, nbNoL, 0,
+                                 profPtr );
+            MEDfieldValueAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, entitype,
+                                     MED_NO_GEOTYPE, medFilter.getPointer(),
+                                     (unsigned char *)value );
+        } else {
+            std::string profilename( "" );
+            if ( profPtr != nullptr )
+                profilename = profPtr->getName();
+            MEDfieldValueWithProfileRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, entitype,
+                                        MED_NO_GEOTYPE, MED_COMPACT_STMODE, profilename.c_str(),
+                                        MED_FULL_INTERLACE, MED_ALL_CONSTITUENT,
+                                        (unsigned char *)value );
+        }
         if ( profPtr != nullptr ) {
             const auto &curProf = profs[i];
             const auto &size = curProf.size();
