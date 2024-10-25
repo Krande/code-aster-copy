@@ -17,10 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IMPR_MACRO="NON")
-
+from code_aster.Commands import *
+from code_aster import CA
 from numpy import array, shape, reshape, real
 from cmath import *
+
+CA.init("--test")
 
 
 #
@@ -576,13 +578,16 @@ TAB_RES = POST_NEWMARK(
     CHAM_MATER=MATDYN1,
     RESI_RELA=0.05,
     ITER_MAXI=1,
-    MAILLAGE_VERI_MASSE=CO("MA_VERI"),
+    MAILLAGE_RESU=_F(MAILLAGE_MASSE=CO("MA_MASSE")),
     INFO=2,
 )
 
 IMPR_TABLE(UNITE=39, TABLE=TAB_RES)
-IMPR_RESU(RESU=_F(MAILLAGE=MA_VERI), FORMAT="MED", UNITE=22)
+IMPR_RESU(RESU=_F(MAILLAGE=MA_MASSE), FORMAT="MED", UNITE=22)
 
+test = CA.TestCase()
+test.assertEqual(MA_MASSE.getNumberOfNodes(), 8038)
+test.assertEqual(MA_MASSE.getNumberOfCells(), 3703)
 
 TEST_TABLE(
     TABLE=TAB_RES,
@@ -607,6 +612,3 @@ TEST_TABLE(
     CRITERE="RELATIF",
     VALE_ABS="NON",
 )
-
-
-FIN()

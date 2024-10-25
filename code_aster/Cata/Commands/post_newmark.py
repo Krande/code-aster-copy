@@ -66,9 +66,9 @@ POST_NEWMARK = MACRO(
                 statut="f", typ="I", default=2, val_min=1, fr="Nombre maximal d'itérations"
             ),
             CHAM_MATER=SIMP(statut="f", typ=cham_mater),
-            MAILLAGE_VERI_MASSE=SIMP(
-                statut="f", typ=CO, fr="Maillage utilisé pour vérification de la masse"
-            ),
+            # MAILLAGE_VERI_MASSE=SIMP(
+            #     statut="f", typ=CO, fr="Maillage utilisé pour vérification de la masse"
+            # ),
         ),
     ),
     RESULTAT_PESANTEUR=SIMP(
@@ -99,6 +99,21 @@ POST_NEWMARK = MACRO(
     ),
     KY=SIMP(statut="f", typ="R", fr="Valeur de ky pour le calcul de l'accélération critique"),
     GROUP_MA_CALC=SIMP(statut="o", typ=grma, max="**", fr="GROUP_MA associé au modèle utilisé"),
-    GROUP_MA_ZONE=SIMP(statut="f", typ=grma, max=1, fr="GROUP_MA construit pour calcul de Newmark"),
+    MAILLAGE_RESU=FACT(
+        statut="f",
+        max=1,
+        NOM_GROUP=SIMP(
+            statut="f", typ="TXM", max=1, fr="GROUP_MA construit pour calcul de Newmark"
+        ),
+        MAILLAGE=SIMP(
+            statut="f",
+            typ=CO,
+            fr="Maillage en sortie de la commande avec groupe de mailles NOM_GROUP",
+        ),
+        MAILLAGE_MASSE=SIMP(
+            statut="f", typ=CO, fr="Maillage utilisé pour vérification de la masse"
+        ),
+    ),
+    # GROUP_MA_ZONE=SIMP(statut="f", typ=grma, max=1, fr="GROUP_MA construit pour calcul de Newmark"),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
 )

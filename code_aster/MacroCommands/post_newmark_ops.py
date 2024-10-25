@@ -24,6 +24,7 @@
 import aster
 import numpy as np
 from scipy.optimize import curve_fit
+import copy
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
@@ -341,13 +342,14 @@ def getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2, gname):
     return None
 
 
-def cleanStructureMeshwithCreatedGroup(__mail, TYPE, mgroup):
+def cleanStructureMeshwithCreatedGroup(__mail, TYPE, gname, keep_gname=False):
     ## Clean mesh groups on structure mesh
     ## Input : __mail : structure mesh
-    ## TYPE : "CERCLE or "MAILLAGE"
-    ## mgroup : True or False if mesh group name given by the user
+    ##          TYPE : "CERCLE or "MAILLAGE"
+    ##          gname : group of mesh name of sliding zone
+    ##          keep_gname = True to keep gname on mesh, False to delete it
 
-    if mgroup:
+    if keep_gname:
         __mail = DEFI_GROUP(
             reuse=__mail,
             MAILLAGE=__mail,
@@ -359,7 +361,7 @@ def cleanStructureMeshwithCreatedGroup(__mail, TYPE, mgroup):
         __mail = DEFI_GROUP(
             reuse=__mail,
             MAILLAGE=__mail,
-            DETR_GROUP_MA=_F(NOM=("GLISSE", "GLISSE_")),
+            DETR_GROUP_MA=_F(NOM=(gname, "GLISSE_")),
             DETR_GROUP_NO=_F(NOM=("GLISSE",)),
         )
 
@@ -522,16 +524,14 @@ def post_newmark_ops(self, **args):
         ## critical acceleration
         ay = ky * g
 
-    ### Gget mesh groups used on dynamic calculation (defining model)
+    ### Get mesh groups used on dynamic calculation (defining model)
     grpma = args["GROUP_MA_CALC"]
 
-    ### Gget mesh groups used on dynamic calculation (defining model)
-    if args["GROUP_MA_ZONE"] is not None:
-        gname = args["GROUP_MA_ZONE"]
-        mgroup = True
-    else:
-        gname = "GLISSE"
-        mgroup = False
+    ### Get mesh groups used on dynamic calculation (defining model)
+    gname = "GLISSE"
+    if args["MAILLAGE_RESU"] is not None:
+        if args["MAILLAGE_RESU"]["NOM_GROUP"] is not None:
+            gname = args["MAILLAGE_RESU"]["NOM_GROUP"]
 
     ### Position of sliding circle
     fac_cercle = 1.0
@@ -1201,7 +1201,7 @@ def post_newmark_ops(self, **args):
             masses.append(masse)
             error = 1.0
             while (error > args["RESI_RELA"]) and (iterat < args["ITER_MAXI"] + 1):
-                cleanStructureMeshwithCreatedGroup(__mail, TYPE, mgroup)
+                cleanStructureMeshwithCreatedGroup(__mail, TYPE, gname)
 
                 NewMesh, CHMAT = getMaterialonNewMesh(CHMATs[-1], TYPE, pos)
                 CHMATs.append(CHMAT)
@@ -1240,8 +1240,9 @@ def post_newmark_ops(self, **args):
             elif TYPE == "MAILLAGE":
                 getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2, gname)
 
-            if args["MAILLAGE_VERI_MASSE"] is not None:
-                self.register_result(NewMesh, args["MAILLAGE_VERI_MASSE"])
+            if args["MAILLAGE_RESU"] is not None:
+                if args["MAILLAGE_RESU"]["MAILLAGE_MASSE"] is not None:
+                    self.register_result(NewMesh, args["MAILLAGE_RESU"]["MAILLAGE_MASSE"])
 
         ##############################################################################
         ##   Method : Mean acceleration obtained as force over mass of the sliding zone
@@ -1382,7 +1383,22 @@ def post_newmark_ops(self, **args):
     ## Cleaning of mesh groups created in the command
 
     cleanMeshwithALLGroup(__mail)
-    cleanStructureMeshwithCreatedGroup(__mail, TYPE, mgroup)
+
+    if args["MAILLAGE_RESU"] is not None:
+        if args["MAILLAGE_RESU"]["MAILLAGE"] is not None:
+            cleanStructureMeshwithCreatedGroup(__mail, TYPE, gname, keep_gname=True)
+            mail_out = CREA_MAILLAGE(
+                MAILLAGE=__mail,
+                RESTREINT=_F(
+                    GROUP_MA=__mail.getGroupsOfCells(), GROUP_NO=__mail.getGroupsOfNodes()
+                ),
+            )
+            self.register_result(mail_out, args["MAILLAGE_RESU"]["MAILLAGE"])
+            __mail = DEFI_GROUP(reuse=__mail, MAILLAGE=__mail, DETR_GROUP_MA=_F(NOM=(gname)))
+        else:
+            cleanStructureMeshwithCreatedGroup(__mail, TYPE, gname, keep_gname=False)
+    else:
+        cleanStructureMeshwithCreatedGroup(__mail, TYPE, gname, keep_gname=False)
 
     if TYPE == "MAILLAGE":
         cleanRuptureMeshwithCreatedGroup(__mail_1)
