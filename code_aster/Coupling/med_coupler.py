@@ -26,8 +26,8 @@ import os
 import medcoupling as MEDC
 import ParaMEDMEM as PMM
 
-from ..Commands import CREA_RESU, LIRE_CHAMP, PROJ_CHAMP, AFFE_MODELE
-from ..Objects import Mesh
+from ..Commands import LIRE_CHAMP, PROJ_CHAMP, AFFE_MODELE
+from ..Objects import Mesh, LoadResult
 from ..Utilities import logger, no_new_attributes
 from ..Utilities.mpi_utils import MPI
 
@@ -536,7 +536,7 @@ class MEDCoupler:
         MEDC.WriteUMesh(tmpfile, mc_mesh, True)
         MEDC.WriteFieldUsingAlreadyWrittenMesh(tmpfile, mc_fluidf)
         forc_elem = LIRE_CHAMP(
-            MAILLAGE=self.model_interf.getMesh(),
+            MAILLAGE=self.mesh_interf,
             MODELE=self.model_interf,
             UNITE=78,
             NOM_MED=mc_fluidf.getName(),
@@ -545,11 +545,11 @@ class MEDCoupler:
         )
         os.remove(tmpfile)
 
-        evol_char = CREA_RESU(
-            TYPE_RESU="EVOL_CHAR",
-            OPERATION="AFFE",
-            AFFE=_F(NOM_CHAM="FORC_NODA", CHAM_GD=forc_elem, MODELE=self.model_interf, INST=time),
-        )
+        evol_char = LoadResult()
+        evol_char.allocate(1)
+        evol_char.setModel(self.model_interf, 0)
+        evol_char.setTime(time, 0)
+        evol_char.setField(forc_elem, "FORC_NODA", 0)
 
         if self.matr_proj is None:
             self.matr_proj = PROJ_CHAMP(
