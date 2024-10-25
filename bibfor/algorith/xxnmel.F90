@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
-! person_in_charge: samuel.geniaut at edf.fr
 !
 subroutine xxnmel(elrefp, elrese, ndim, coorse, &
                   igeom, he, nfh, ddlc, ddlm, &
@@ -43,7 +42,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 #include "asterfort/elrefe_info.h"
 #include "asterfort/indent.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/ortrep.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xcinem.h"
@@ -59,11 +58,13 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
     integer :: idecpg, idepl, igeom, imate, ivectu, nnops
     integer :: lgpg, ndim, nfe, nfh, npg, heavn(nnop, 5)
     integer :: jstno
-    real(kind=8) :: basloc(3*ndim*nnop), coorse(*), carcri(*), he(nfiss)
+    real(kind=8) :: basloc(3*ndim*nnop), coorse(*), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg), instam, instap
     real(kind=8) :: matuu(*), vi(lgpg, npg)
-    character(len=8) :: elrefp, elrese, typmod(*), fami_se
-    character(len=16) :: option, compor(*)
+    character(len=8) :: elrefp, elrese, fami_se
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    character(len=8), intent(in)  :: typmod(2)
+    character(len=16), intent(in)  :: compor(COMPOR_SIZE), option
     aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -106,6 +107,8 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
+    character(len=4), parameter :: fami = "XFEM"
     integer :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg
     integer :: ddld, ddls, nno, npgbis, cpt, ndimb, dec(nnop)
     integer :: idfde, ipoids, ivf, hea_se
@@ -118,7 +121,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
     real(kind=8) :: r
     real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
     integer :: nbsig
-    real(kind=8) :: bary(3), repere(7), d(36), instan
+    real(kind=8) :: angl_naut(3), d(36), instan
     aster_logical :: axi, cplan
     type(Behaviour_Integ) :: BEHinteg
     real(kind=8) :: angmas(3)
@@ -128,10 +131,18 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 ! --------------------------------------------------------------------------------------------------
 !
     angmas = 0.d0
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    if (l_nonlin) then
+        call behaviourSetParaCell(ndim, typmod, option, &
+                                  compor, carcri, &
+                                  instam, instap, &
+                                  fami, imate, &
+                                  BEHinteg)
+    end if
 !
 !     ATTENTION, EN 3D, ZR(IDEPL) ET ZR(VECTU) SONT DIMENSIONNÉS DE
 !     TELLE SORTE QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES
@@ -155,9 +166,8 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
             fami_se = 'XGEO'
         end if
     end if
-!
+
 ! - Get element parameters
-!
     call elrefe_info(elrefe=elrese, fami=fami_se, ndim=ndimb, nno=nno, &
                      npg=npgbis, jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(npg .eq. npgbis .and. ndim .eq. ndimb)
@@ -174,19 +184,12 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 !
 !   calcul du repère d'othotropie, pour calculer la matrice de Hooke
 !   dans le cas de l'option RIGI_MECA
-    bary = 0.d0
-    repere = 0.d0
+    angl_naut = 0.d0
     if (l_line) then
-        do n = 1, nnop
-            do i = 1, ndim
-                bary(i) = bary(i)+zr(igeom-1+ndim*(n-1)+i)/nnop
-            end do
-        end do
-        call ortrep(ndim, bary, repere)
+        call getElemOrientation(ndim, nnop, igeom, angl_naut)
     end if
-!
-!  - Loop on Gauss points
-!
+
+! - Loop on Gauss points
     do kpg = 1, npg
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
@@ -264,7 +267,8 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
                 do i = 1, ndim
                     cpt = cpt+1
                     do m = 1, 2*ndim
-                        def(m, cpt, n) = def(m, i, n)*xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
+                        def(m, cpt, n) = &
+                            def(m, i, n)*xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
                     end do
                     if (ndim .eq. 2) then
                         def(3, cpt, n) = 0.d0
@@ -272,10 +276,9 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
                 end do
 !               TERME DE CORRECTION (3,3) A PORTER SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                    def(3, 1+ndim*ig, n) = f(3, 3)*ff(n)/r &
-                                           *xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
+                    def(3, 1+ndim*ig, n) = &
+                        f(3, 3)*ff(n)/r*xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
                 end if
-!
             end do
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
             do alp = 1, ndim*nfe
@@ -302,9 +305,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
                     def(3, 1+ndim*(nfh+alp), n) = f(3, 3)*fk(n, alp, 1)/r
                 end do
             end if
-!
             ASSERT(cpt .eq. ddld)
-!
         end do
 !       CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       AVEC LES COORDONNEES DU SOUS-ELEMENT
@@ -329,7 +330,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
             nbsig = 2*ndim
 !
             call dmatmc('XFEM', imate, instan, '+', &
-                        ipg, 1, repere, xg, nbsig, d)
+                        ipg, 1, angl_naut, nbsig, d)
 !
 !           Calcul du tenseur de comportement tangent [D']
 !              {sxx, syy, szz, sqrt(2)*sxy, sqrt(2)*sxz, sqrt(2)*syz}^T =
@@ -390,6 +391,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
             end do
             goto 999
         end if
+        ASSERT(l_nonlin)
 !
 ! - LOI DE COMPORTEMENT : CALCUL DE S(E) ET DS/DE À PARTIR DE EPS
 !                       {XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ}
@@ -399,21 +401,20 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 !       FAMILLE 'XFEM'
         ipg = idecpg+kpg
 
-        ! Aooel aux routines de comportement hyperelastiques (on pourrait refondre avec xxnmpl)
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(ipg, ksp, BEHinteg)
+
+! ----- Integrate (on pourrait refondre avec xxnmpl)
         zero6 = 0
         vim = 0
         call nmcomp(BEHinteg, &
-                    'XFEM', ipg, 1, ndim, typmod, &
+                    fami, ipg, ksp, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
                     6, eps, zero6, 6, zero6, &
                     vim, option, angmas, sigma, vi(1, kpg), &
                     36, dsidep, codret)
 
-!
-!
-! - CALCUL DE LA MATRICE DE RIGIDITE POUR LES OPTIONS RIGI_MECA_TANG
-!   ET FULL_MECA
-!
+! - CALCUL DE LA MATRICE DE RIGIDITE POUR LES OPTIONS RIGI_MECA_TANGET FULL_MECA
         if (lMatr) then
             do n = 1, nnop
                 nn = dec(n)

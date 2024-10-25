@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc0050(BEHinteg, &
-                  fami, kpg, ksp, ndim, typmod, &
-                  imate, compor, carcri, instam, instap, &
-                  neps, epsm, deps, nsig, sigm, &
-                  nvi, vim, option, angmas, &
+subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
+                  typmod, imate, compor, carcri, instam, &
+                  instap, neps, epsm, deps, nsig, &
+                  sigm, nvi, vim, option, angmas, &
                   stress, statev, dsidep, codret)
 !
     use calcul_module, only: ca_iactif_
@@ -121,7 +120,7 @@ subroutine lc0050(BEHinteg, &
     integer :: nprops, pfumat
     integer :: nshr, i, nstatv, npt, noel, layer
     integer :: kspt, kstep, kinc, j
-    integer:: jv_iterat, iadzi, iazk24
+    integer :: jv_iterat, iadzi, iazk24
     real(kind=8) :: drott(3, 3), drot(3, 3), dstran(9), stran(9)
     real(kind=8) :: sse, spd, scd, rpl
     real(kind=8) :: time(2), dtime, pnewdt
@@ -135,6 +134,7 @@ subroutine lc0050(BEHinteg, &
     real(kind=8) :: temp, dtemp
 !
     integer :: ntens, ndi
+    blas_int :: b_incx, b_incy, b_n
     common/tdim/ntens, ndi
 !
 ! --------------------------------------------------------------------------------------------------
@@ -149,11 +149,10 @@ subroutine lc0050(BEHinteg, &
 ! - Pointer to UMAT function
 !
     pfumat = int(carcri(EXTE_PTR))
-!
+
 ! - Get temperature
-!
-    temp = BEHinteg%esva%temp_prev
-    dtemp = BEHinteg%esva%temp_incr
+    temp = BEHInteg%behavESVA%behavESVAField(ESVA_FIELD_TEMP)%valeScalPrev
+    dtemp = BEHInteg%behavESVA%behavESVAField(ESVA_FIELD_TEMP)%valeScalIncr
 !
 ! - Get index of element / Newton iteration
 !
@@ -173,18 +172,17 @@ subroutine lc0050(BEHinteg, &
 !
 ! - Coordinates of current Gauss point
 !
-    coords(ndim+1:) = BEHinteg%elem%coor_elga(kpg, 1:ndim)
+    coords(ndim+1:) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 1:ndim)
 !
 ! - Get material properties
 !
-    call mat_proto(BEHinteg, &
-                   fami, kpg, ksp, '+', imate, compor(1), &
-                   nprops, props)
+    call mat_proto(BEHinteg, fami, kpg, ksp, '+', &
+                   imate, compor(1), nprops, props)
 !
 ! - Prepare strains
 !
-    call umatPrepareStrain(neps, epsm, deps, &
-                           stran, dstran, dfgrd0, dfgrd1)
+    call umatPrepareStrain(neps, epsm, deps, stran, dstran, &
+                           dfgrd0, dfgrd1)
 !
 ! - Number of internal state variables
 !
@@ -229,14 +227,20 @@ subroutine lc0050(BEHinteg, &
 !
     pnewdt = 1.d0
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        call dcopy(nsig, sigm, 1, stress, 1)
-        call dscal(3, usrac2, stress(4), 1)
+        b_n = to_blas_int(nsig)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigm, b_incx, stress, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, usrac2, stress(4), b_incx)
         statev(1:nstatv) = vim(1:nstatv)
         call umatwp(pfumat, stress, statev, ddsdde, &
                     sse, spd, scd, rpl, ddsddt, &
                     drplde, drpldt, stran, dstran, time, &
                     dtime, temp, dtemp, &
-                    BEHinteg%exte%predef, BEHinteg%exte%dpred, &
+                    BEHinteg%behavESVA%behavESVAExte%scalESVAPrev, &
+                    BEHinteg%behavESVA%behavESVAExte%scalESVAIncr, &
                     cmname, ndi, nshr, ntens, nstatv, &
                     props, nprops, coords, drot, pnewdt, &
                     celent, dfgrd0, dfgrd1, noel, npt, &
@@ -248,7 +252,8 @@ subroutine lc0050(BEHinteg, &
                     sse, spd, scd, rpl, ddsddt, &
                     drplde, drpldt, stran, dstran, time, &
                     dtime, temp, dtemp, &
-                    BEHinteg%exte%predef, BEHinteg%exte%dpred, &
+                    BEHinteg%behavESVA%behavESVAExte%scalESVAPrev, &
+                    BEHinteg%behavESVA%behavESVAExte%scalESVAIncr, &
                     cmname, ndi, nshr, ntens, nstatv, &
                     props, nprops, coords, drot, pnewdt, &
                     celent, dfgrd0, dfgrd1, noel, npt, &
@@ -256,12 +261,16 @@ subroutine lc0050(BEHinteg, &
     end if
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        call dscal(3, rac2, stress(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, stress(4), b_incx)
     end if
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         dsidep = 0.d0
-        call lcicma(ddsdde, ntens, ntens, ntens, ntens, 1, 1, dsidep, 6, 6, 1, 1)
+        call lcicma(ddsdde, ntens, ntens, ntens, ntens, &
+                    1, 1, dsidep, 6, 6, &
+                    1, 1)
         do i = 1, 6
             do j = 4, 6
                 dsidep(i, j) = dsidep(i, j)*rac2

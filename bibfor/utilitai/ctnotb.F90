@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha, &
-                  nkcmp, toucmp, nbcmp, typac, ndim, &
+                  nkcmp, toucmp, nbcmp, typac, &
                   nrval, resu, nomtb, nsymb, nival, &
                   niord, label)
     implicit none
@@ -35,7 +35,8 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha, &
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
 !
-    integer :: nbcmp, nbno, ndim, nbval
+    integer, parameter :: ndim = 3
+    integer :: nbcmp, nbno, nbval
     character(len=8) :: typac, noma, resu, nomtb
     character(len=16) :: nsymb
     character(len=24) :: nkcha, nkcmp, mesnoe, nival, nrval, niord
@@ -208,7 +209,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha, &
                 end do
 !
                 kk = 0
-                table_valk(kk+1) = slabel
+                table_valk(kk+1) = slabel(1:16)
                 kk = kk+1
                 if (resu .ne. ' ') then
                     table_valk(kk+1) = nsymb

@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1306,W1504
 !
 subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
                   nnom, npg, nddl, dimdef, iw, vff, &
                   vffb, idff, idffb, geomi, compor, &
-                  mate, lgpg, crit, instam, instap, &
+                  mate, lgpg, carcri, instam, instap, &
                   ddlm, ddld, siefm, vim, &
                   siefp, vip, fint, matr, &
                   lMatr, lVect, lSigm, codret)
@@ -40,15 +41,16 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
 #include "asterfort/dil2gr.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmbeps.h"
+#include "asterfort/Behaviour_type.h"
 
 !
     aster_logical :: lVect, lMatr, lSigm
     type(dil_modelisation)          :: ds_dil
-    character(len=8), intent(in)    :: typmod(*)
-    character(len=16), intent(in)   :: option, compor(*)
+    character(len=8), intent(in)    :: typmod(2)
+    character(len=16), intent(in)   :: option, compor(COMPOR_SIZE)
     integer, intent(in)             :: ndim, nnos, nnom, npg, nddl, lgpg, dimdef
     integer, intent(in)             :: mate, iw, idff, idffb
-    real(kind=8)                    :: crit(*), instam, instap
+    real(kind=8)                    :: carcri(CARCRI_SIZE), instam, instap
     real(kind=8), intent(in)        :: geomi(ndim, nnos+nnom)
     real(kind=8), intent(in)        :: vff(nnos+nnom, npg), vffb(nnos, npg)
     real(kind=8), intent(in)        :: ddlm(nddl), ddld(nddl)
@@ -109,6 +111,8 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
 ! ----------------------------------------------------------------------
     aster_logical :: axi
     type(Behaviour_Integ) :: BEHinteg
+    character(len=4), parameter :: fami = 'RIGI'
+    integer, parameter :: ksp = 1
     integer       :: g, n, i
     integer       :: xu(ndim, nnos+nnom), xg(1, nnos), xp(1, nnos)
     integer       :: cod(npg)
@@ -175,6 +179,16 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
     forall (i=1:ndp, n=1:nnp) dpm(i, n) = ddlm(xp(i, n))
     forall (i=1:ndp, n=1:nnp) dpp(i, n) = ddlm(xp(i, n))+ddld(xp(i, n))
 
+! - Initialisation of behaviour datastructure
+    call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              fami, mate, &
+                              BEHinteg)
+
     gauss: do g = 1, npg
 
         ! -----------------------!
@@ -215,8 +229,6 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
         ! -------------------------------------------------------!
         !   LOI DE COMPORTEMENT PREMIER GRADIENT                 !
         ! -------------------------------------------------------!
-        !Initialisation of behaviour datastructure
-        call behaviourInit(BEHinteg)
 
         !Calcul des déformations pour ldc
         epl1gm = 0.0d0
@@ -240,11 +252,13 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
 
         sigp1g = 0.0d0
         dsde1g = 0.0d0
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(g, ksp, BEHinteg)
 
-        !Loi de comportement
+! ----- Integrator
         call nmcomp(BEHinteg, &
-                    'RIGI', g, 1, ndim, typmod, &
-                    mate, compor, crit, instam, instap, &
+                    fami, g, ksp, ndim, typmod, &
+                    mate, compor, carcri, instam, instap, &
                     6, epl1gm, epl1gp-epl1gm, 6, sigm1g, &
                     vim(1+lgpg*(g-1):lgpg*g), option, angmas, &
                     sigp1g, vip(1+lgpg*(g-1):lgpg*g), 36, dsde1g, cod(g))

@@ -40,6 +40,7 @@ Définition des mots-clés et fonctions utilisables dans les catalogues :
       - en mm : retourne 10^expo
   - prol : dictionnaire qui renvoie le type de prolongement :
       prol['droite'], prol['gauche']
+  - option : option utilisateur dans le contexte d'évaluation.
   - defi_motscles : fonction qui définit tous les mots-clés, filtrés
     ensuite en fonction de EXTRACTION.
   - motscles : objet résultat de DEFI_MOTSCLES contenant les mots-clés
@@ -66,6 +67,7 @@ FTEMP = "temp_eval"
 FCOEF = "coef_unit"
 COEF_MULT = "coef_mult"
 DPROL = "prol"
+OPTION = "option"
 DEFI_MOTSCLES = "defi_motscles"
 MOTSCLES = "motscles"
 COMMANDES = [
@@ -80,7 +82,7 @@ COMMANDES = [
 ]
 
 
-def build_context(unite, temp, prol, coef_mult):
+def build_context(unite, temp, prol, coef_mult, option):
     """Construit le contexte pour exécuter un catalogue matériau."""
     # définition du coefficient multiplicatif selon l'unité.
     unite = unite.lower()
@@ -105,6 +107,7 @@ def build_context(unite, temp, prol, coef_mult):
         DPROL: prol,
         FTEMP: func_temp,
         COEF_MULT: coef_mult,
+        OPTION: option,
         DEFI_MOTSCLES: defi_motscles,
     }
     return context
@@ -118,6 +121,7 @@ def include_materiau_ops(
     PROL_GAUCHE=None,
     PROL_DROITE=None,
     COEF_MULT=None,
+    OPTION=None,
     **args
 ):
     """Macro INCLUDE_MATERIAU"""
@@ -152,7 +156,7 @@ def include_materiau_ops(
     # définition du prolongement des fonctions
     dict_prol = {"droite": PROL_DROITE, "gauche": PROL_GAUCHE}
 
-    context = build_context(UNITE_LONGUEUR, TEMP_EVAL, dict_prol, COEF_MULT)
+    context = build_context(UNITE_LONGUEUR, TEMP_EVAL, dict_prol, COEF_MULT, OPTION)
     # ajout des commandes autorisées
     commandes = dict([(cmd, getattr(Commands, cmd)) for cmd in COMMANDES])
     context.update(commandes)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,6 +90,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta, &
     real(kind=8) :: zero, one
     parameter(one=1.0d+0, zero=0.0d+0)
     character(len=4) :: cara
+    blas_int :: b_incx, b_n
 !
     call infniv(ifm, niv)
 !
@@ -141,8 +142,12 @@ subroutine unista(h, ldh, v, ldv, ddlsta, &
 !
     end if
 !
-    err = dnrm2(ldv, zr(vectt), 1)
-    call dscal(ldv, one/err, zr(vectt), 1)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    err = dnrm2(b_n, zr(vectt), b_incx)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, one/err, zr(vectt), b_incx)
     call mrmult('ZERO', ldynfa, zr(vectt), zr(xsol), 1, &
                 .true._1)
 !
@@ -188,8 +193,12 @@ subroutine unista(h, ldh, v, ldv, ddlsta, &
     call mppsta(zr(b), ldh, v, ldv, ddlsta, &
                 n, zr(vect2), ddlexc, indico, proj)
 !
-    err = dnrm2(ldv, zr(vect2), 1)
-    call dscal(ldv, one/err, zr(vect2), 1)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    err = dnrm2(b_n, zr(vect2), b_incx)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, one/err, zr(vect2), b_incx)
     call mrmult('ZERO', ldynfa, zr(vect2), zr(xsol), 1, &
                 .true._1)
     vtest = 0.d0
@@ -221,8 +230,12 @@ subroutine unista(h, ldh, v, ldv, ddlsta, &
     call mppsta(zr(q), ldh, v, ldv, ddlsta, &
                 n, vectp, ddlexc, indico, proj)
 !
-    err = dnrm2(ldv, vectp, 1)
-    call dscal(ldv, one/err, vectp, 1)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    err = dnrm2(b_n, vectp, b_incx)
+    b_n = to_blas_int(ldv)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, one/err, vectp, b_incx)
     call mrmult('ZERO', ldynfa, vectp, zr(xsol), 1, &
                 .true._1)
     vtest = 0.d0

@@ -37,6 +37,10 @@ PVARCPR = InputParameter(
     comment="""  PVARCPR : VARIABLES DE COMMANDE  """,
 )
 
+# For HHO
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
+
+PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
 
 PFLUXPG = OutputParameter(
     phys=PHY.FLUX_R, type="ELGA", comment="""  PFLUXPG : FLUX AUX POINTS DE GAUSS """
@@ -54,6 +58,8 @@ FLUX_ELGA = Option(
         SP.PTEMPER,
         SP.PINSTR,
         PVARCPR,
+        PCHHOGT,
+        PCHHOST,
     ),
     para_out=(PFLUXPG,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),

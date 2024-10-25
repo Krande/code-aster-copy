@@ -2,7 +2,7 @@
 #define ASTERCXX_H_
 
 /* ==================================================================== */
-/* Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org */
+/* Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org */
 /*                                                                      */
 /* This file is part of Code_Aster.                                     */
 /*                                                                      */
@@ -66,6 +66,7 @@ using VectorPairReal = std::vector< PairReal >;
 using VectorPairString = std::vector< PairString >;
 
 using MapLong = std::map< ASTERINTEGER, ASTERINTEGER >;
+using MapString = std::map< std::string, std::string >;
 
 #define AS_ABORT( message )                                                                        \
     DEBUG_LOC;                                                                                     \

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine iredm1(masse, noma, basemo, nbmode, nbmods, &
                   iamor, mass, rigi, amored, freq, &
                   smass, srigi, samor, cmass, crigi, &
@@ -83,6 +83,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods, &
     real(kind=8), pointer :: vect2(:) => null()
     character(len=8), pointer :: idc_type(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -418,7 +419,10 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods, &
 !
     if (typi(1:5) .ne. 'CRAIG' .or. impmec .eq. 'OUI') then
         do j = 1, nbmode
-            call dcopy(neq, zr(idbase+(j-1)*neq), 1, vect1, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(idbase+(j-1)*neq), b_incx, vect1, b_incy)
             write (ifmis, '(''MODE DYNA INTER'',1X,I6)') j
             do ino = 1, nbno
                 inoe = noeud(ino)
@@ -455,7 +459,10 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods, &
     if (typi(1:5) .ne. 'CRAIG' .or. impmod .eq. 'OUI') then
         do j = 1, nbmods
             j2 = j+nbmode
-            call dcopy(neq, zr(idbase+(j2-1)*neq), 1, vect2, 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(idbase+(j2-1)*neq), b_incx, vect2, b_incy)
             write (ifmis, '(''MODE STAT INTER'',1X,I6)') j
             do ino = 1, nbno
                 inoe = noeud(ino)

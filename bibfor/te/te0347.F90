@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0347(option, nomte)
 !
 !
@@ -124,7 +124,8 @@ subroutine te0347(option, nomte)
         call jevech('PCOMPOR', 'L', icompo)
         call jevech('PVARINR', 'E', ichn)
 !
-        call tecach('OOO', 'PVARIGR', 'L', iret(1), nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIGR', 'L', iret(1), nval=7, &
+                    itab=jtab)
         lgpg = max(jtab(6), 1)*jtab(7)
         read (zk16(icompo+1), '(I16)') nbvar
 !       pour les variables internes, on projette avec les fonctions de forme sur les
@@ -185,10 +186,12 @@ subroutine te0347(option, nomte)
                 co(3) = 5.d0/9.d0
 !
 !               THERMIQUE A T+
-                call moytem(fami, npg, 1, '+', temp, iret(1))
+                call moytem(fami, npg, 1, '+', temp, &
+                            iret(1))
                 nomres(1) = 'E'
                 nomres(2) = 'NU'
-                call rcvalb(fami, 1, 1, '+', zi(imate), ' ', 'ELAS', 1, 'TEMP', [temp], &
+                call rcvalb(fami, 1, 1, '+', zi(imate), &
+                            ' ', 'ELAS', 1, 'TEMP', [temp], &
                             2, nomres, valres, iret, 1)
                 e = valres(1)
                 nu = valres(2)
@@ -237,7 +240,8 @@ subroutine te0347(option, nomte)
             if (reactu) then
                 call jevech('PSTRXMR', 'L', istrxm)
                 gamma = zr(istrxm+3-1)
-                call porea2(nno, nc, zr(igeom), gamma, pgl, xl, "PDEPLAR")
+                call porea2(nno, nc, zr(igeom), gamma, pgl, &
+                            xl, "PDEPLAR")
             else
                 call matrot(zr(lorien), pgl)
             end if

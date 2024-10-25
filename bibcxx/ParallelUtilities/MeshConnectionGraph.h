@@ -60,6 +60,7 @@ class MeshConnectionGraph {
     /**
      * @brief Build graph from IncompleteMeshPtr
      * @param mesh IncompleteMeshPtr
+     * @param weights vertex weight
      */
     void buildFromIncompleteMeshWithVertexWeights( const IncompleteMeshPtr &mesh,
                                                    const VectorLong &weights );

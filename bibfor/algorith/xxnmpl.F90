@@ -1,4 +1,4 @@
-! ------------------------------grand--------------------------------------
+! --------------------------------------------------------------------
 ! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
-! person_in_charge: samuel.geniaut at edf.fr
 !
 subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
                   he, nfh, ddlc, ddlm, nfe, &
@@ -55,12 +54,14 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
     integer :: nfh, ddlc, ddlm, nfe, idepl, ivectu, ideplp
     integer :: nfiss, heavn(nnop, 5), idecpg
     integer :: jstno
-    character(len=8) :: elrefp, typmod(*), elrese
-    character(len=16) :: option, compor(*)
-    real(kind=8) :: basloc(3*ndim*nnop), carcri(*), he(nfiss)
+    character(len=8) :: elrefp, elrese
+    real(kind=8) :: basloc(3*ndim*nnop), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop), coorse(*)
     real(kind=8) :: vi(lgpg, npg), vip(lgpg, npg), sig(2*ndim, npg), matuu(*)
     real(kind=8) :: instam, instap, sigm(2*ndim, npg), sign(6)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    character(len=8), intent(in)  :: typmod(2)
+    character(len=16), intent(in)  :: compor(COMPOR_SIZE), option
     aster_logical, intent(in) :: lMatr, lVect, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -100,6 +101,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
+    character(len=4), parameter :: fami = "XFEM"
     integer :: i, ig, j, j1, kkd, kl, kpg, l, m, n, nn, mn
     integer :: ddls, ddld, cpt, idfde, ipoids, ivf, dec(nnop)
     integer :: ndimb, nno, nnops, npgbis, hea_se
@@ -120,10 +123,16 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
 ! --------------------------------------------------------------------------------------------------
 !
     angmas = 0.d0
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              fami, imate, &
+                              BEHinteg)
 !
 !     ATTENTION, EN 3D, ZR(IDEPL) ET ZR(VECTU) SONT DIMENSIONNÉS DE
 !     TELLE SORTE QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES
@@ -138,22 +147,18 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
 !
     axi = typmod(1) .eq. 'AXIS'
     cplan = typmod(1) .eq. 'C_PLAN'
-!
+
 ! - Get element parameters
-!
     call elrefe_info(elrefe=elrese, fami='XINT', ndim=ndimb, nno=nno, &
                      npg=npgbis, jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(npg .eq. npgbis .and. ndim .eq. ndimb)
-!
+
 ! - Prepare external state variables
-!
-    call behaviourPrepESVAElem(carcri, typmod, &
-                               nno, npg, ndim, &
+    call behaviourPrepESVAGeom(nno, npg, ndim, &
                                ipoids, ivf, idfde, &
                                zr(igeom), BEHinteg)
-!
+
 ! - DECALAGES CALCULES EN AMONT: PERF
-!
     do n = 1, nnop
         call indent(n, ddls, ddlm, nnops, dec(n))
     end do
@@ -161,9 +166,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
 ! - CALCUL DE L IDENTIFIANT DU SS ELEMENT
 !
     hea_se = xcalc_code(nfiss, he_real=[he])
-!
-!  - Loop on Gauss points
-!
+
+! - Loop on Gauss points
     do kpg = 1, npg
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
@@ -245,8 +249,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
                 end do
 !               TERME DE CORRECTION (3,3) A PORTER SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                    def(3, n, (1+ndim*ig)) = f(3, 3)*ff(n)/r* &
-                                             xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
+                    def(3, n, (1+ndim*ig)) = &
+                        f(3, 3)*ff(n)/r*xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
                 end if
             end do
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
@@ -298,9 +302,13 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
             sign(m) = sigm(m, kpg)*rac2
         end do
         sigma = 0.d0
-! ----- Behaviour
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(idecpg+kpg, ksp, BEHinteg)
+
+! ----- Integrate
         call nmcomp(BEHinteg, &
-                    'XFEM', idecpg+kpg, 1, ndim, typmod, &
+                    fami, idecpg+kpg, ksp, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
                     6, eps, deps, 6, sign, &
                     vi(1, kpg), option, angmas, &

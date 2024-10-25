@@ -30,6 +30,7 @@ subroutine compMecaChckStrain(iComp, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/BehaviourMGIS_type.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isParallelMesh.h"
@@ -190,10 +191,14 @@ subroutine compMecaChckStrain(iComp, &
 
 ! --------- Check model of strains for Mfront
             if (lMfront) then
-                if (exteDefo .eq. MFRONT_STRAIN_SMALL) then
+                if (exteDefo .eq. MGIS_STRAIN_SMALL) then
                     if (defoComp .ne. 'PETIT' .and. &
                         defoComp .ne. 'PETIT_REAC' .and. &
                         defoComp .ne. 'GDEF_LOG') then
+                        call utmess('F', 'COMPOR4_35', sk=defoComp)
+                    end if
+                else if (exteDefo .eq. MGIS_STRAIN_F) then
+                    if (defoComp .ne. 'GREEN_LAGRANGE') then
                         call utmess('F', 'COMPOR4_35', sk=defoComp)
                     end if
                 else

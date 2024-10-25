@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ subroutine zmulmv(trans, m, n, alpha, a, &
     integer :: i, ix, iy, ky, lenx, leny
     complex(kind=8) :: a(*)
     integer :: kx
+    blas_int :: b_incx, b_incy, b_n
 !
     if (m .eq. 0 .or. n .eq. 0 .or. alpha .eq. (0.0d0, 0.0d0) .and. beta .eq. (1.0d0, 0.0d0)) &
         goto 999
@@ -88,22 +89,31 @@ subroutine zmulmv(trans, m, n, alpha, a, &
     if (trans(1:1) .eq. 'N' .or. trans(1:1) .eq. 'n') then
         kx = ix
         do i = 1, n
-            call zaxpy(m, alpha*x(kx), a(lda*(i-1)+1), 1, y, &
-                       incy)
+            b_n = to_blas_int(m)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(incy)
+            call zaxpy(b_n, alpha*x(kx), a(lda*(i-1)+1), b_incx, y, &
+                       b_incy)
             kx = kx+incx
         end do
     else if (trans(1:1) .eq. 'T' .or. trans(1:1) .eq. 't') then
 !
         ky = iy
         do i = 1, n
-            y(ky) = y(ky)+alpha*zdotu(m, a(lda*(i-1)+1), 1, x, incx)
+            b_n = to_blas_int(m)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(incx)
+            y(ky) = y(ky)+alpha*zdotu(b_n, a(lda*(i-1)+1), b_incx, x, b_incy)
             ky = ky+incy
         end do
 !
     else
         ky = iy
         do i = 1, n
-            y(ky) = y(ky)+alpha*zdotc(m, a(lda*(i-1)+1), 1, x, incx)
+            b_n = to_blas_int(m)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(incx)
+            y(ky) = y(ky)+alpha*zdotc(b_n, a(lda*(i-1)+1), b_incx, x, b_incy)
             ky = ky+incy
         end do
     end if

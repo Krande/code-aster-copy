@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,19 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dpassa(repere, irep, matr_tran, xyzgau_)
+subroutine dpassa(angl, irep, matr_tran)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/matrot.h"
-#include "asterfort/utrcyl.h"
 !
 !
-    real(kind=8), intent(in) :: repere(7)
+    real(kind=8), intent(in) :: angl(3)
     integer, intent(out) :: irep
     real(kind=8), intent(out) :: matr_tran(6, 6)
-    real(kind=8), optional, intent(in) :: xyzgau_(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,23 +35,13 @@ subroutine dpassa(repere, irep, matr_tran, xyzgau_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  repere           : define reference frame (AFFE_CARA_ELEM/MASSIF)
-!                        repere(1) =  1 => nautical angles (ANGL_REP)
-!                           repere(2:4) : nautical angles
-!                           repere(5:7) : 0.d0
-!                        repere(1) =  2 => Euler angles (ANGL_EULER)
-!                           repere(2:4) : nautical angles
-!                           repere(5:7) : Euler angles
-!                        repere(1) = -1 => axisymetric axis (ANGL_AXE)
-!                           repere(2:4) : ANGL_AXE
-!                           repere(5:7) : ORIG_AXE
+! In  angl             : nautical angles
 ! Out irep             : 0 if matrix is trivial (identity), 1 otherwise
 ! Out matr_tran        : transition matrix
-! In  xyzgau           : coordinates of Gauss point (for ANGL_AXE case)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: angl(3), p(3, 3), dire(3), orig(3)
+    real(kind=8) :: p(3, 3)
     real(kind=8) :: deux, zero
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,27 +53,10 @@ subroutine dpassa(repere, irep, matr_tran, xyzgau_)
 !
 ! - Compute matrix from orthotropic referance frame to global reference frame
 !
-    if (repere(1) .gt. zero) then
-! ----- Orthotropic reference frame defined with nautical angles
-        angl(1) = repere(2)
-        angl(2) = repere(3)
-        angl(3) = repere(4)
-        if (angl(1) .eq. zero .and. angl(2) .eq. zero .and. angl(3) .eq. zero) then
-            irep = 0
-        else
-            call matrot(angl, p)
-            irep = 1
-        end if
+    if (angl(1) .eq. zero .and. angl(2) .eq. zero .and. angl(3) .eq. zero) then
+        irep = 0
     else
-! ----- Orthotropic reference frame defined with two angles and another point (axisymmetric)
-        dire(1) = repere(2)
-        dire(2) = repere(3)
-        dire(3) = repere(4)
-        orig(1) = repere(5)
-        orig(2) = repere(6)
-        orig(3) = repere(7)
-        ASSERT(present(xyzgau_))
-        call utrcyl(xyzgau_, dire, orig, p)
+        call matrot(angl, p)
         irep = 1
     end if
 !

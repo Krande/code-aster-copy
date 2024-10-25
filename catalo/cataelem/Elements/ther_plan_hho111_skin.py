@@ -33,6 +33,10 @@ DDL_THER = LocatedComponents(
     phys=PHY.TEMP_R, type="ELNO", diff=True, components=(("EN1", ("HHO_T[2]",)), ("EN2", ()))
 )
 
+CHHOBS = LocatedComponents(
+    phys=PHY.N480_R, type="ELNO", diff=True, components=(("EN1", ("X[6]",)), ("EN2", ()))
+)
+
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
@@ -48,12 +52,22 @@ class THER_2D_HHO1_F(Element):
     calculs = (
         OP.CHAR_THER_FLUN_F(
             te=461,
-            para_in=((SP.PFLUXNF, LC.CFLUXNF), (SP.PGEOMER, LC.EGEOM2D), (SP.PINSTR, LC.CTIMETR)),
+            para_in=(
+                (SP.PFLUXNF, LC.CFLUXNF),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.CHAR_THER_FLUN_F.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUN_R(
             te=461,
-            para_in=((SP.PFLUXNR, LC.CFLUXNR), (SP.PGEOMER, LC.EGEOM2D), (SP.PINSTR, LC.CTIMETR)),
+            para_in=(
+                (SP.PFLUXNR, LC.CFLUXNR),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.CHAR_THER_FLUN_R.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUNL(
@@ -63,6 +77,7 @@ class THER_2D_HHO1_F(Element):
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
+                (OP.CHAR_THER_FLUNL.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -74,6 +89,7 @@ class THER_2D_HHO1_F(Element):
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
                 (SP.PT_EXTF, LC.CTEMPEF),
+                (OP.CHAR_THER_ECHA_F.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -85,6 +101,7 @@ class THER_2D_HHO1_F(Element):
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
                 (SP.PT_EXTR, LC.ET_EXTR),
+                (OP.CHAR_THER_ECHA_R.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -95,6 +112,7 @@ class THER_2D_HHO1_F(Element):
                 (SP.PRAYONF, LC.CRAYONF),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
+                (OP.CHAR_THER_RAYO_F.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -105,17 +123,28 @@ class THER_2D_HHO1_F(Element):
                 (SP.PRAYONR, LC.CRAYONR),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
+                (OP.CHAR_THER_RAYO_R.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.RIGI_THER_ECHA_F(
             te=457,
-            para_in=((SP.PCOEFHF, LC.CHECHPF), (SP.PGEOMER, LC.EGEOM2D), (SP.PINSTR, LC.CTIMETR)),
+            para_in=(
+                (SP.PCOEFHF, LC.CHECHPF),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.RIGI_THER_ECHA_F.PCHHOBS, CHHOBS),
+            ),
             para_out=((OP.RIGI_THER_ECHA_F.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_ECHA_R(
             te=457,
-            para_in=((SP.PCOEFHR, LC.CHECHPR), (SP.PGEOMER, LC.EGEOM2D), (SP.PINSTR, LC.CTIMETR)),
+            para_in=(
+                (SP.PCOEFHR, LC.CHECHPR),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.RIGI_THER_ECHA_R.PCHHOBS, CHHOBS),
+            ),
             para_out=((OP.RIGI_THER_ECHA_R.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_FLUXNL(
@@ -125,6 +154,7 @@ class THER_2D_HHO1_F(Element):
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
+                (OP.MTAN_THER_FLUXNL.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.MTAN_THER_FLUXNL.PMATTTR, MMATTTR),),
         ),
@@ -135,6 +165,7 @@ class THER_2D_HHO1_F(Element):
                 (SP.PRAYONF, LC.CRAYONF),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
+                (OP.MTAN_THER_RAYO_F.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.MTAN_THER_RAYO_F.PMATTTR, MMATTTR),),
         ),
@@ -145,6 +176,7 @@ class THER_2D_HHO1_F(Element):
                 (SP.PRAYONR, LC.CRAYONR),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
+                (OP.MTAN_THER_RAYO_R.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.MTAN_THER_RAYO_R.PMATTTR, MMATTTR),),
         ),

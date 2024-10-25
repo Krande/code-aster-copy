@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine nmfi2d(npg, lgpg, mate, option, geom, &
+subroutine nmfi2d(BEHInteg, &
+                  npg, lgpg, mate, option, geom, &
                   deplm, ddepl, sigmo, sigma, fint, &
                   ktan, vim, vip, tm, tp, &
                   carcri, compor, typmod, lMatr, lVect, lSigm, &
@@ -28,27 +29,31 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/codere.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/gedisc.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmfisa.h"
+#include "jeveux.h"
 !
+    type(Behaviour_Integ), intent(inout) :: BEHinteg
     integer :: mate, npg, lgpg, codret
     real(kind=8) :: geom(2, 4), deplm(8), ddepl(8), tm, tp
     real(kind=8) :: fint(8), ktan(8, 8), sigmo(6, npg), sigma(6, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
-    character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(*)
+    character(len=8), intent(in) :: typmod(2)
+    character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    real(kind=8) :: angmas(3)
     aster_logical, intent(in) :: lMatr, lVect, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! BUT: DEVELOPPEMENT D'UN ELEMENT DE JOINT.
+! ELEMENT DE JOINT
 !      CALCUL DU SAUT DANS L'ELEMENT
 !             DE LA CONTRAINTE A PARTIR D'UNE LDC
 !             DE FINT ET KTAN : EFFORTS INTERIEURS ET MATRICE TANGENTE.
@@ -69,6 +74,8 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
+    character(len=4), parameter :: fami = "RIGI"
     aster_logical :: axi
     integer :: cod(9), i, j, q, s, kpg
     integer :: ndim, nno, nnos, ipoids, ivf, idfde, jgano
@@ -76,21 +83,13 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
     real(kind=8) :: coopg(3, npg)
     real(kind=8) :: dsidep(6, 6), b(2, 8), sigmPost(6)
     real(kind=8) :: sum(2), dsu(2), poids
-    real(kind=8) :: carcri(*)
-    real(kind=8) :: angmas(3)
-    type(Behaviour_Integ) :: BEHinteg
 !
 ! --------------------------------------------------------------------------------------------------
 !
     cod = 0
     axi = typmod(1) .eq. 'AXIS'
-!
-! - Initialisation of behaviour datastructure
-!
-    call behaviourInit(BEHinteg)
-!
+
 ! - Don't use orientation (MASSIF in AFFE_CARA_ELEM)
-!
     angmas = r8vide()
 !
     if (lVect) then
@@ -99,18 +98,16 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
     if (lMatr) then
         ktan = 0.d0
     end if
-!
+
 ! - Get element parameters
-!
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     CALCUL DES COORDONNEES DES POINTS DE GAUSS
     call gedisc(2, nno, npg, zr(ivf), geom, &
                 coopg)
-!
+
 ! - Loop on Gauss points
-!
     do kpg = 1, npg
 !
 ! CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES
@@ -133,21 +130,27 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
                 dsu(2) = dsu(2)+b(2, j)*ddepl(j)
             end do
         end if
-! ----- Compute behaviour
-        BEHinteg%elem%coor_elga(kpg, 1:2) = coopg(1:2, kpg)
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+        BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 1:2) = coopg(1:2, kpg)
+
+! ----- Integrator
         sigmPost = 0.d0
         call nmcomp(BEHinteg, &
-                    'RIGI', kpg, 1, 2, typmod, &
+                    fami, kpg, ksp, ndim, typmod, &
                     mate, compor, carcri, tm, tp, &
                     2, sum, dsu, 1, sigmo(:, kpg), &
                     vim(:, kpg), option, angmas, &
                     sigmPost, vip(:, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) goto 900
 
+! ----- Stresses
         if (lSigm) then
             sigma(1, kpg) = sigmPost(1)
             sigma(2, kpg) = sigmPost(2)
         end if
+
 ! ----- Internal forces
         if (lVect) then
 !       Il faudrait séparer les deux => petit travail de réflexion
@@ -158,6 +161,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
                 end do
             end do
         end if
+
 ! ----- Rigidity matrix
         if (lMatr) then
             do i = 1, 8

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 #include "asterfort/assert.h"
 #include "asterfort/teattr.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/BehaviourMGIS_type.h"
 !
     character(len=16), intent(in) :: elem_type_name
     aster_logical, intent(in) :: l_mfront_cp
@@ -63,7 +64,7 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 !
     codret = 0
     model_dim = 0
-    model_mfront = MFRONT_MODEL_UNSET
+    model_mfront = MGIS_MODEL_UNSET
     type_cpla = 'VIDE'
 !
 ! - Get attributes on finite element
@@ -77,22 +78,22 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 !
     if (principal .eq. 'OUI') then
         if (model_type .eq. '3D') then
-            model_mfront = MFRONT_MODEL_TRIDIMENSIONAL
+            model_mfront = MGIS_MODEL_TRIDIMENSIONAL
         elseif (model_type .eq. 'C_PLAN') then
             if (l_mfront_cp) then
-                model_mfront = MFRONT_MODEL_PLANESTRESS
+                model_mfront = MGIS_MODEL_PLANESTRESS
                 type_cpla = 'ANALYTIQUE'
             else
-                model_mfront = MFRONT_MODEL_AXISYMMETRICAL
+                model_mfront = MGIS_MODEL_AXISYMMETRICAL
                 model_dim = 2
                 type_cpla = 'DEBORST'
             end if
         elseif (model_type .eq. 'D_PLAN') then
-            model_mfront = MFRONT_MODEL_PLANESTRAIN
+            model_mfront = MGIS_MODEL_PLANESTRAIN
         elseif (model_type .eq. 'AXIS') then
-            model_mfront = MFRONT_MODEL_AXISYMMETRICAL
+            model_mfront = MGIS_MODEL_AXISYMMETRICAL
         elseif (model_type .eq. '1D') then
-            model_mfront = MFRONT_MODEL_AXISYMMETRICAL
+            model_mfront = MGIS_MODEL_AXISYMMETRICAL
             model_dim = 2
             type_cpla = 'DEBORST'
         else

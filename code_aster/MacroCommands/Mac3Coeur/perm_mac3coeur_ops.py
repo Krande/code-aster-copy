@@ -90,6 +90,9 @@ def perm_mac3coeur_ops(self, **args):
     vari_perm = FieldOnCellsReal(model_perm, "ELGA", "VARI_R", bhv_prop, caraelem_perm)
     vari_perm.setValues(0.0)
 
+    strx_perm = FieldOnCellsReal(model_perm, "ELGA", "STRX_R", bhv_prop, caraelem_perm)
+    strx_perm.setValues(0.0)
+
     RESU_PERM = CREA_RESU(
         OPERATION="AFFE",
         TYPE_RESU="EVOL_NOLI",
@@ -129,6 +132,22 @@ def perm_mac3coeur_ops(self, **args):
         AFFE=_F(
             NOM_CHAM="VARI_ELGA",
             CHAM_GD=vari_perm,
+            CHAM_MATER=material_perm,
+            CARA_ELEM=caraelem_perm,
+            INST=0.0,
+            MODELE=model_perm,
+        ),
+    )
+
+    CREA_RESU(
+        reuse=RESU_PERM,
+        RESULTAT=RESU_PERM,
+        COMPORTEMENT=compor,
+        OPERATION="AFFE",
+        TYPE_RESU="EVOL_NOLI",
+        AFFE=_F(
+            NOM_CHAM="STRX_ELGA",
+            CHAM_GD=strx_perm,
             CHAM_MATER=material_perm,
             CARA_ELEM=caraelem_perm,
             INST=0.0,

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104
+! aslint: disable=W1306,W1504,W0104
 !
-subroutine lc7058(BEHinteg, &
-                  fami, kpg, ksp, ndim, typmod, &
-                  imate, compor, carcri, instam, instap, &
-                  neps, epsm, deps, nsig, sigm, &
-                  nvi, vim, option, angmas, &
+subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
+                  typmod, imate, compor, carcri, instam, &
+                  instap, neps, epsm, deps, nsig, &
+                  sigm, nvi, vim, option, angmas, &
                   sigp, vip, dsidep, codret)
 !
     use Behaviour_type
@@ -107,13 +106,13 @@ subroutine lc7058(BEHinteg, &
     aster_logical :: lMatr, lSigm, lVari
     integer :: nstatv, j, i
     integer, parameter :: s0 = 0, s1 = 1
-    real(kind=8) :: drot(3, 3), dstran(9)
+    real(kind=8) :: drot(3, 3), dstran(3)
     real(kind=8) :: time(2)
-    real(kind=8) :: ddsdde(54)
-    real(kind=8) :: stran(9)
+    real(kind=8) :: ddsdde(36)
+    real(kind=8) :: stran(3)
     real(kind=8) :: dtime, pnewdt
     character(len=16) :: rela_comp, defo_comp, extern_addr
-    aster_logical :: l_greenlag, l_czm, l_pred
+    aster_logical :: l_greenlag, l_czm
     real(kind=8) :: sigp_loc(6), vi_loc(nvi), dsidep_loc(6, 6)
     integer, parameter :: npropmax = 197
     real(kind=8) :: props(npropmax)
@@ -125,23 +124,22 @@ subroutine lc7058(BEHinteg, &
 !
     ASSERT(nsig .ge. 2*ndim)
     ASSERT(neps .eq. ndim)
-
+!
     lSigm = L_SIGM(option)
     lVari = L_VARI(option)
     lMatr = L_MATR(option)
-
+!
     sigp_loc = 0.d0
     vi_loc = 0.d0
     dsidep_loc = 0.d0
-
+!
     dbg = is_enabled(LOGLEVEL_MGIS, DEBUG)
-
+!
     ntens = 6
     ndi = 3
     codret = 0
     rela_comp = compor(RELA_NAME)
     defo_comp = compor(DEFO)
-    l_pred = option(1:9) .eq. 'RIGI_MECA'
 !
 ! - Finite element
 !
@@ -165,7 +163,7 @@ subroutine lc7058(BEHinteg, &
 !
 ! - Prepare strains
 !
-    call mfrontPrepareStrain(l_greenlag, l_pred, neps, epsm, deps, stran, dstran)
+    call mfrontPrepareStrain(l_greenlag, neps, epsm, deps, stran, dstran)
 !
 ! - Number of internal state variables
 !
@@ -204,13 +202,13 @@ subroutine lc7058(BEHinteg, &
 !   TODO: sqrt(2) should be removed, same convention seems to be in used in MGIS/MFront
     pnewdt = 1.d0
     sigp_loc = sigm
-    ! sigp_loc(1:2*ndim) = sigm(1:2*ndim)
-    ! sigp_loc(4:6)      = sigp_loc(4:6)*usrac2
+! sigp_loc(1:2*ndim) = sigm(1:2*ndim)
+! sigp_loc(4:6)      = sigp_loc(4:6)*usrac2
     vi_loc(1:nstatv) = vim(1:nstatv)
-
-    ! nstatv must be equal to the value returned by mgis_get_sizeof_isvs
-    ! (not increased by kit...)
-
+!
+! nstatv must be equal to the value returned by mgis_get_sizeof_isvs
+! (not increased by kit...)
+!
     if (dbg) then
         write (6, *) "+++ inputs +++ ", option
         write (6, *) "ddsdde", (ddsdde(i), i=1, ntens*ntens)
@@ -219,25 +217,29 @@ subroutine lc7058(BEHinteg, &
         write (6, *) "stran:", (stran(i), i=1, ndim)
         write (6, *) "dstran:", (dstran(i), i=1, ndim)
         write (6, *) "dtime:", dtime
-        write (6, *) "predef:", (BEHinteg%exte%predef(i), i=1, BEHinteg%exte%nb_pred)
-        write (6, *) "dpred:", (BEHinteg%exte%dpred(i), i=1, BEHinteg%exte%nb_pred)
+        write (6, *) "predef:", (BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(i), &
+                                 i=1, BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
+        write (6, *) "dpred:", (BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(i), &
+                                i=1, BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
         write (6, *) "props:", (props(i), i=1, nprops)
         write (6, *) "angl_naut:", (angmas(i), i=1, ndim)
         write (6, *) "ntens/nstatv:", ntens, nstatv
     end if
-
+!
     call mgis_set_material_properties(extern_addr, s0, props, nprops)
     call mgis_set_gradients(extern_addr, s0, stran, ndim)
     call mgis_set_thermodynamic_forces(extern_addr, s0, sigp_loc, ndim)
     call mgis_set_internal_state_variables(extern_addr, s0, vi_loc, nstatv)
-    call mgis_set_external_state_variables(extern_addr, s0, BEHinteg%exte%predef, &
-                                           BEHinteg%exte%nb_pred)
+    call mgis_set_external_state_variables(extern_addr, s0, &
+                                           BEHinteg%behavESVA%behavESVAExte%scalESVAPrev, &
+                                           BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
 
     call mgis_set_material_properties(extern_addr, s1, props, nprops)
     call mgis_set_gradients(extern_addr, s1, stran+dstran, ndim)
     call mgis_set_external_state_variables(extern_addr, s1, &
-                                           BEHinteg%exte%predef+BEHinteg%exte%dpred, &
-                                           BEHinteg%exte%nb_pred)
+                                           BEHinteg%behavESVA%behavESVAExte%scalESVAPrev+ &
+                                           BEHinteg%behavESVA%behavESVAExte%scalESVAIncr, &
+                                           BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
 
     ! call mgis_debug(extern_addr, "Before integration:")
 
@@ -260,7 +262,7 @@ subroutine lc7058(BEHinteg, &
 ! - Convert stresses
 !
 !   TODO: sqrt(2) should be removed, same convention seems to be in used in MGIS/MFront
-    ! sigp_loc(4:6) = sigp_loc(4:6)*rac2
+! sigp_loc(4:6) = sigp_loc(4:6)*rac2
 !
 ! - Convert matrix
 !
@@ -290,7 +292,7 @@ subroutine lc7058(BEHinteg, &
             call utmess('F', 'MFRONT_3')
         end if
     end if
-
+!
     if (lSigm) sigp(1:2*ndim) = sigp_loc(1:2*ndim)
     if (lVari) then
         vip(1:nvi) = 0

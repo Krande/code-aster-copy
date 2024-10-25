@@ -46,7 +46,8 @@ subroutine te0076(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: icamas, kp, imate, itemps
+    character(len=8), parameter :: famiR = "RIGI"
+    integer :: kp, imate, itemps
     integer :: icodre(1)
     character(len=32) :: phenom
     real(kind=8) ::   time
@@ -54,7 +55,7 @@ subroutine te0076(option, nomte)
     real(kind=8) ::  valQPK(3, 3, MAX_QP)
 ! ----------------------------------------------------------------------
     call FECell%init()
-    call FEQuadCell%initCell(FECell, "RIGI")
+    call FEQuadCell%initCell(FECell, famiR)
     call FEBasis%initCell(FECell)
 !
     call jevech('PMATERC', 'L', imate)
@@ -62,14 +63,11 @@ subroutine te0076(option, nomte)
     time = zr(itemps)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
-    if (phenom .eq. 'THER_ORTH') then
-        call jevech('PCAMASS', 'L', icamas)
-    end if
 !
     valQPK = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
-        call nlcomp(phenom, imate, icamas, FECell%ndim, FEQuadCell%points(1:3, kp), time, &
-                    0.d0, valQPK(1:3, 1:3, kp))
+        call nlcomp(phenom, famiR, kp, imate, FECell%ndim, FEQuadCell%points(1:3, kp), &
+                    time, 0.d0, valQPK(1:3, 1:3, kp))
     end do
 !
     call FEStiffJacoScal(FEQuadCell, FEBasis, valQPK, rigi)

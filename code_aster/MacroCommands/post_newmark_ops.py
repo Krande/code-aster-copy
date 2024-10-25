@@ -1315,15 +1315,17 @@ def post_newmark_ops(self, **args):
                     text = "Accélération critique : " + str(ky) + " g"
                     aster.affiche("MESSAGE", text)
 
-        ## Velocity calculation without without imposing ay value on accelerations
+        ## Velocity calculation imposing ay value on accelerations and
         ## Then imposes velocity always positive
-        __vitxFL = CALC_FONCTION(INTEGRE=_F(FONCTION=__accxFL))
-        vitA = __vitxFL.Ordo()
-        for i in range(len(time)):
-            if vitA[i] < 0:
-                vitA[i] = 0.0
+        acc = acc - ay
+        vite = list([0])
+        for i in range(1, len(time)):
+            deltav = (acc[i] + acc[i - 1]) * (time[i] - time[i - 1]) * 0.5
+            viteaux = np.max([0, vite[i - 1] + deltav])
+            vite.append(viteaux)
+
         __vitAF = (
-            DEFI_FONCTION(NOM_RESU="VITE", NOM_PARA="INST", ABSCISSE=time, ORDONNEE=list(vitA)),
+            DEFI_FONCTION(NOM_RESU="VITE", NOM_PARA="INST", ABSCISSE=time, ORDONNEE=list(vite)),
         )
 
         __deplAF = CALC_FONCTION(INTEGRE=_F(FONCTION=__vitAF))

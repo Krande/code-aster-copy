@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine carc_info(behaviourPrepCrit)
+subroutine carc_info(prepMapCarcri)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
 #include "asterc/getfac.h"
 !
-    type(Behaviour_PrepCrit), intent(out) :: behaviourPrepCrit
+    type(BehaviourPrep_MapCarcri), intent(out) :: prepMapCarcri
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -35,7 +35,7 @@ subroutine carc_info(behaviourPrepCrit)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out behaviourPrepCrit: datastructure to prepare parameters for constitutive laws
+! Out prepMapCarcri    : datastructure to construct CARCRI map
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,8 +57,8 @@ subroutine carc_info(behaviourPrepCrit)
     end if
 
 ! - Initializations
-    behaviourPrepCrit%nb_comp = nbFactorKeyword
-    behaviourPrepCrit%v_crit => null()
-    allocate (behaviourPrepCrit%v_crit(nbInfo))
+    prepMapCarcri%nb_comp = nbFactorKeyword
+    prepMapCarcri%prepCrit => null()
+    allocate (prepMapCarcri%prepCrit(nbInfo))
 !
 end subroutine

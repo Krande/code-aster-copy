@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg, &
                   jinter, ifa, cface, nptf, ipg, &
-                  nnop, nnops, igeom, jbasec, xg, jac, &
-                  ffp, ffpc, dfdi, nd, tau1, dfdic)
+                  nnop, nnops, igeom, jbasec, xg, &
+                  jac, ffp, ffpc, dfdi, nd, &
+                  tau1, dfdic)
     implicit none
 !
 #include "asterf_types.h"
@@ -76,11 +77,12 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg, &
 !
     parameter(nptfmx=4)
     real(kind=8) :: coor2d(nptfmx*3)
+    blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !
 !
-    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nno, &
-                     jpoids=ipoidf, jvf=ivff, jdfde=idfdef)
+    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nno, jpoids=ipoidf, &
+                     jvf=ivff, jdfde=idfdef)
 !
     axi = lteatt('AXIS', 'OUI')
 !
@@ -123,19 +125,23 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg, &
     nd(2) = -sina
     do j = 1, ndim
         do k = 1, nno
-            grln(j) = grln(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ &
-                                                          ndim*ndim*(k-1)+j)
-            grlt(j) = grlt(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ &
-                                                          ndim*ndim*(k-1)+j+ndim)
+            grln(j) = grln(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j)
+            grlt(j) = grlt(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j+ndim)
         end do
     end do
 !
-    ps = ddot(ndim, nd, 1, grln, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    ps = ddot(b_n, nd, b_incx, grln, b_incy)
     if (ps .lt. 0.d0) then
         nd(1:2) = -nd(1:2)
     end if
     call normev(nd, norme)
-    ps = ddot(ndim, grlt, 1, nd, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    ps = ddot(b_n, grlt, b_incx, nd, b_incy)
     do j = 1, ndim
         tau1(j) = grlt(j)-ps*nd(j)
     end do
@@ -156,7 +162,8 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg, &
     end if
 !
 !     CALCUL DES FF DE L'ÉLÉMENT PARENT EN CE POINT DE GAUSS
-    call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ffp, dfdi=dfdi)
+    call reeref(elrefp, nnop, zr(igeom), xg, ndim, &
+                xe, ffp, dfdi=dfdi)
 !
     if (elrefc .eq. elrefp) goto 999
     if (elrefc(1:3) .eq. 'NON') goto 999
@@ -164,7 +171,8 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg, &
 !     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
-    call reeref(elrefc, nnoc, zr(igeom), xg, ndim, xe, ffpc, dfdi=dfdic)
+    call reeref(elrefc, nnoc, zr(igeom), xg, ndim, &
+                xe, ffpc, dfdi=dfdic)
 !
 999 continue
 !

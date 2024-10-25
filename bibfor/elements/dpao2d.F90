@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dpao2d(repere, irep, matr_tran)
+subroutine dpao2d(angl_naut, irep, matr_tran)
 !
     implicit none
 !
 #include "asterfort/assert.h"
 !
-    real(kind=8), intent(in) :: repere(7)
+    real(kind=8), intent(in) :: angl_naut(3)
     integer, intent(out) :: irep
     real(kind=8), intent(out) :: matr_tran(4, 4)
 !
@@ -34,16 +34,7 @@ subroutine dpao2d(repere, irep, matr_tran)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  repere           : define reference frame (AFFE_CARA_ELEM/MASSIF)
-!                        repere(1) =  1 => nautical angles (ANGL_REP)
-!                           repere(2:4) : nautical angles
-!                           repere(5:7) : 0.d0
-!                        repere(1) =  2 => Euler angles (ANGL_EULER)
-!                           repere(2:4) : nautical angles
-!                           repere(5:7) : Euler angles
-!                        repere(1) = -1 => axisymetric axis (ANGL_AXE)
-!                           repere(2:4) : ANGL_AXE
-!                           repere(5:7) : ORIG_AXE
+! In  angl_naut        : nautical angles for define reference frame (AFFE_CARA_ELEM/MASSIF)
 ! Out irep             : 0 if matrix is trivial (identity), 1 otherwise
 ! Out matr_tran        : transition matrix
 !
@@ -57,7 +48,7 @@ subroutine dpao2d(repere, irep, matr_tran)
 ! --------------------------------------------------------------------------------------------------
 !
     irep = 0
-    angl = repere(2)
+    angl = angl_naut(1)
 !
     if (angl .eq. zero) then
         irep = 0

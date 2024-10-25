@@ -194,8 +194,9 @@ subroutine te0579(option, nomte)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ier)
 !
-    if (ier .eq. 0 .and. (enr(1:2) .eq. 'XH') .and. (.not. iselli(elref))) call jevech('PPMILTO', &
-                                                                                       'L', jpmilt)
+    if (ier .eq. 0 .and. (enr(1:2) .eq. 'XH') .and. (.not. iselli(elref))) call jevech( &
+        'PPMILTO', 'L', &
+        jpmilt)
 !
     call jevech('PVECTUR', 'E', ires)
 !
@@ -213,14 +214,11 @@ subroutine te0579(option, nomte)
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino .gt. 1000 .and. ino .lt. 2000) then
-                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000- &
-                                                              1)+j)
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000-1)+j)
                 else if (ino .gt. 2000 .and. ino .lt. 3000) then
-                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000- &
-                                                              1)+j)
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000-1)+j)
                 else if (ino .gt. 3000) then
-                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000- &
-                                                              1)+j)
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000-1)+j)
                 end if
             end do
         end do
@@ -288,9 +286,9 @@ subroutine te0579(option, nomte)
                         pos = pos+ndim+1
 !
 !             TERME HEAVISIDE
-                        zr(ires-1+pos) = zr(ires-1+pos)-xcalc_heav(zi(jheavn-1+ncompn*(ino-1)+&
-                                         &ifh), zi(jheavs-1+ise), zi(jheavn-1+ncompn*(ino-1)+ncom&
-                                         &pn))*deltat*flux*poids*ff(ino)
+                        zr(ires-1+pos) = zr(ires-1+pos)-xcalc_heav(zi(jheavn-1+ncompn*(ino-1)+ifh&
+                                         &), zi(jheavs-1+ise), zi(jheavn-1+ncompn*(ino-1)+ncompn)&
+                                         &)*deltat*flux*poids*ff(ino)
                     end do
 !
                 end do
@@ -324,9 +322,9 @@ subroutine te0579(option, nomte)
                         pos = pos+ndim+1
 !
 !             TERME HEAVISIDE
-                        zr(ires-1+pos) = zr(ires-1+pos)-xcalc_heav(zi(jheavn-1+ncompn*(ino-1)+&
-                                         &ifh), zi(jheavs-1+ise), zi(jheavn-1+ncompn*(ino-1)+ncom&
-                                         &pn))*deltat*flux*poids*ff(ino)
+                        zr(ires-1+pos) = zr(ires-1+pos)-xcalc_heav(zi(jheavn-1+ncompn*(ino-1)+ifh&
+                                         &), zi(jheavs-1+ise), zi(jheavn-1+ncompn*(ino-1)+ncompn)&
+                                         &)*deltat*flux*poids*ff(ino)
                     end do
                 end do
             else

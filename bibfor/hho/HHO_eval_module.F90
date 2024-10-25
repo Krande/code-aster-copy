@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,22 +54,20 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalScalCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                  :: hhoCell
-        type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
-        integer, intent(in)                         :: order
-        real(kind=8), dimension(3), intent(in)      :: pt
-        real(kind=8), dimension(:), intent(in)      :: coeff
-        integer, intent(in)                         :: size_coeff
-        real(kind=8)                                :: eval
+        type(HHO_basis_cell), intent(inout) :: hhoBasisCell
+        integer, intent(in) :: order
+        real(kind=8), dimension(3), intent(in) :: pt
+        real(kind=8), dimension(:), intent(in) :: coeff
+        integer, intent(in) :: size_coeff
+        real(kind=8) :: eval
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a scalar function at a point pt
-!   In hhoCell      : a HHo cell
 !   In hhoBasisCell : basis cell
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -78,13 +76,17 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
+        blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisCell%BSEval(hhoCell, pt, 0, order, BSCEval)
+        call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
-        eval = ddot(size_coeff, coeff, 1, BSCEval, 1)
+        b_n = to_blas_int(size_coeff)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        eval = ddot(b_n, coeff, b_incx, BSCEval, b_incy)
 !
     end function
 !
@@ -92,22 +94,20 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalFace(hhoFace, hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalScalFace(hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Face), intent(in)                  :: hhoFace
-        type(HHO_basis_face), intent(inout)         :: hhoBasisFace
-        integer, intent(in)                         :: order
-        real(kind=8), dimension(3), intent(in)      :: pt
-        real(kind=8), dimension(:), intent(in)      :: coeff
-        integer, intent(in)                         :: size_coeff
-        real(kind=8)                                :: eval
+        type(HHO_basis_face), intent(inout) :: hhoBasisFace
+        integer, intent(in) :: order
+        real(kind=8), dimension(3), intent(in) :: pt
+        real(kind=8), dimension(:), intent(in) :: coeff
+        integer, intent(in) :: size_coeff
+        real(kind=8) :: eval
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a scalar at a point pt
-!   In hhoFace      : a HHo Face
 !   In hhoBasisFace : basis Face
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -116,13 +116,17 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
+        blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisFace%BSEval(hhoFace, pt, 0, order, BSFEval)
+        call hhoBasisFace%BSEval(pt, 0, order, BSFEval)
 !
-        eval = ddot(size_coeff, coeff, 1, BSFEval, 1)
+        b_n = to_blas_int(size_coeff)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        eval = ddot(b_n, coeff, b_incx, BSFEval, b_incy)
 !
     end function
 !
@@ -130,22 +134,20 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalVecCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                  :: hhoCell
-        type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
-        integer, intent(in)                         :: order
-        real(kind=8), dimension(3), intent(in)      :: pt
-        real(kind=8), dimension(:), intent(in)      :: coeff
-        integer, intent(in)                         :: size_coeff
-        real(kind=8)                                :: eval(3)
+        type(HHO_basis_cell), intent(inout) :: hhoBasisCell
+        integer, intent(in) :: order
+        real(kind=8), dimension(3), intent(in) :: pt
+        real(kind=8), dimension(:), intent(in) :: coeff
+        integer, intent(in) :: size_coeff
+        real(kind=8) :: eval(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a vector at a point pt
-!   In hhoCell      : a HHo cell
 !   In hhoBasisCell : basis cell
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -155,16 +157,20 @@ contains
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
         integer :: i, size_cmp, deca
+        blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
-        size_cmp = size_coeff/hhoCell%ndim
+        size_cmp = size_coeff/hhoBasisCell%ndim
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisCell%BSEval(hhoCell, pt, 0, order, BSCEval)
+        call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
         deca = 0
-        do i = 1, hhoCell%ndim
-            eval(i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+        do i = 1, hhoBasisCell%ndim
+            b_n = to_blas_int(size_cmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            eval(i) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_incx, BSCEval, b_incy)
             deca = deca+size_cmp
         end do
 !
@@ -174,22 +180,20 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecFace(hhoFace, hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalVecFace(hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Face), intent(in)                  :: hhoFace
-        type(HHO_basis_face), intent(inout)         :: hhoBasisFace
-        integer, intent(in)                         :: order
-        real(kind=8), dimension(3), intent(in)      :: pt
-        real(kind=8), dimension(:), intent(in)      :: coeff
-        integer, intent(in)                         :: size_coeff
-        real(kind=8)                                :: eval(3)
+        type(HHO_basis_face), intent(inout) :: hhoBasisFace
+        integer, intent(in) :: order
+        real(kind=8), dimension(3), intent(in) :: pt
+        real(kind=8), dimension(:), intent(in) :: coeff
+        integer, intent(in) :: size_coeff
+        real(kind=8) :: eval(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a vector at a point pt
-!   In hhoFace      : a HHo Face
 !   In hhoBasisFace : basis Face
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -199,16 +203,20 @@ contains
 !
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
         integer :: i, size_cmp, deca
+        blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
-        size_cmp = size_coeff/(hhoFace%ndim+1)
+        size_cmp = size_coeff/(hhoBasisFace%ndim+1)
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisFace%BSEval(hhoFace, pt, 0, order, BSFEval)
+        call hhoBasisFace%BSEval(pt, 0, order, BSFEval)
 !
         deca = 0
-        do i = 1, (hhoFace%ndim+1)
-            eval(i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSFEval, 1)
+        do i = 1, (hhoBasisFace%ndim+1)
+            b_n = to_blas_int(size_cmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            eval(i) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_incx, BSFEval, b_incy)
             deca = deca+size_cmp
         end do
 !
@@ -218,22 +226,20 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalMatCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalMatCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                  :: hhoCell
-        type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
-        integer, intent(in)                         :: order
-        real(kind=8), dimension(3), intent(in)      :: pt
-        real(kind=8), dimension(:), intent(in)      :: coeff
-        integer, intent(in)                         :: size_coeff
-        real(kind=8)                                :: eval(3, 3)
+        type(HHO_basis_cell), intent(inout) :: hhoBasisCell
+        integer, intent(in) :: order
+        real(kind=8), dimension(3), intent(in) :: pt
+        real(kind=8), dimension(:), intent(in) :: coeff
+        integer, intent(in) :: size_coeff
+        real(kind=8) :: eval(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a matrix at a point pt
-!   In hhoCell      : a HHo cell
 !   In hhoBasisCell : basis cell
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -243,17 +249,21 @@ contains
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
         integer :: i, j, size_cmp, deca
+        blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
-        size_cmp = size_coeff/(hhoCell%ndim*hhoCell%ndim)
+        size_cmp = size_coeff/(hhoBasisCell%ndim*hhoBasisCell%ndim)
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisCell%BSEval(hhoCell, pt, 0, order, BSCEval)
+        call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
         deca = 0
-        do i = 1, hhoCell%ndim
-            do j = 1, hhoCell%ndim
-                eval(i, j) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+        do i = 1, hhoBasisCell%ndim
+            do j = 1, hhoBasisCell%ndim
+                b_n = to_blas_int(size_cmp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                eval(i, j) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_incx, BSCEval, b_incy)
                 deca = deca+size_cmp
             end do
         end do
@@ -264,22 +274,20 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalSymMatCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalSymMatCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)                  :: hhoCell
-        type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
-        integer, intent(in)                         :: order
-        real(kind=8), dimension(3), intent(in)      :: pt
-        real(kind=8), dimension(:), intent(in)      :: coeff
-        integer, intent(in)                         :: size_coeff
-        real(kind=8)                                :: eval(6)
+        type(HHO_basis_cell), intent(inout) :: hhoBasisCell
+        integer, intent(in) :: order
+        real(kind=8), dimension(3), intent(in) :: pt
+        real(kind=8), dimension(:), intent(in) :: coeff
+        integer, intent(in) :: size_coeff
+        real(kind=8) :: eval(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   evaluate a symetrix matrix at a point pt
-!   In hhoCell      : a HHo cell
 !   In hhoBasisCell : basis cell
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
@@ -291,28 +299,35 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
         real(kind=8) :: mat(3, 3)
         integer :: i, j, size_cmp, deca
+        blas_int :: b_incx, b_incy, b_n
 !
-        if (hhoCell%ndim == 2) then
+        if (hhoBasisCell%ndim == 2) then
             size_cmp = size_coeff/3
-        else if (hhoCell%ndim == 3) then
+        else if (hhoBasisCell%ndim == 3) then
             size_cmp = size_coeff/6
         else
             ASSERT(ASTER_FALSE)
         end if
 !
 ! --- Evaluate basis function at pt
-        call hhoBasisCell%BSEval(hhoCell, pt, 0, order, BSCEval)
+        call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
         deca = 0
         mat = 0.d0
-        do i = 1, hhoCell%ndim
-            mat(i, i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+        do i = 1, hhoBasisCell%ndim
+            b_n = to_blas_int(size_cmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            mat(i, i) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_incx, BSCEval, b_incy)
             deca = deca+size_cmp
         end do
 !
-        do i = 1, hhoCell%ndim
-            do j = i+1, hhoCell%ndim
-                mat(i, j) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+        do i = 1, hhoBasisCell%ndim
+            do j = i+1, hhoBasisCell%ndim
+                b_n = to_blas_int(size_cmp)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                mat(i, j) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_incx, BSCEval, b_incy)
                 mat(j, i) = mat(i, j)
                 deca = deca+size_cmp
             end do
@@ -337,18 +352,18 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara, ndim, FuncValuesQp,&
-                                    & coeff_mult)
+    subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara, &
+                                  ndim, FuncValuesQp, coeff_mult)
 !
         implicit none
-
-        type(HHO_Quadrature), intent(in)   :: hhoQuad
-        character(len=8), intent(in)       :: nomfunc
-        integer, intent(in)                :: nbpara
-        character(len=8), intent(in)       :: nompara(*)
-        real(kind=8), intent(inout)        :: valpara(*)
-        integer, intent(in)                :: ndim
-        real(kind=8), intent(out)          :: FuncValuesQP(*)
+!
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        character(len=8), intent(in) :: nomfunc
+        integer, intent(in) :: nbpara
+        character(len=8), intent(in) :: nompara(*)
+        real(kind=8), intent(inout) :: valpara(*)
+        integer, intent(in) :: ndim
+        real(kind=8), intent(out) :: FuncValuesQP(*)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 !
@@ -369,19 +384,22 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: npg, ipg, iret
+        blas_int :: b_incx, b_n
 !
         npg = hhoQuad%nbQuadPoints
 ! ---- Value of the function at the quadrature point
 !
         if (ndim == 0) then
             do ipg = 1, npg
-                call fointe('FM', nomfunc, nbpara, nompara, valpara, FuncValuesQP(ipg), iret)
+                call fointe('FM', nomfunc, nbpara, nompara, valpara, &
+                            FuncValuesQP(ipg), iret)
                 ASSERT(iret == 0)
             end do
-        elseif (ndim <= 3) then
+        else if (ndim <= 3) then
             do ipg = 1, npg
                 valpara(1:ndim) = hhoQuad%points(1:ndim, ipg)
-                call fointe('FM', nomfunc, nbpara, nompara, valpara, FuncValuesQP(ipg), iret)
+                call fointe('FM', nomfunc, nbpara, nompara, valpara, &
+                            FuncValuesQP(ipg), iret)
                 ASSERT(iret == 0)
             end do
         else
@@ -389,7 +407,9 @@ contains
         end if
 !
         if (present(coeff_mult)) then
-            call dscal(npg, coeff_mult, FuncValuesQP, 1)
+            b_n = to_blas_int(npg)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coeff_mult, FuncValuesQP, b_incx)
         end if
 !
     end subroutine
@@ -403,10 +423,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)         :: hhoFace
-        type(HHO_Quadrature), intent(in)   :: hhoQuad
-        real(kind=8), intent(in)           :: funcnoEF(*)
-        real(kind=8), intent(out)          :: FuncValuesQP(MAX_QP_FACE)
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: funcnoEF(*)
+        real(kind=8), intent(out) :: FuncValuesQP(MAX_QP_FACE)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 ! --------------------------------------------------------------------------------------------------
@@ -423,11 +443,13 @@ contains
         integer :: npg, ipg, ino
         real(kind=8) :: ff(9)
         character(len=8) :: typma
+        blas_int :: b_incx, b_n
 !
         call cellNameL2S(hhoFace%typema, typma)
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
         ASSERT(npg <= MAX_QP_FACE)
+        ASSERT(hhoQuad%l_point_param)
 !
         ff = 0.d0
         do ipg = 1, npg
@@ -438,7 +460,9 @@ contains
         end do
 !
         if (present(coeff_mult)) then
-            call dscal(npg, coeff_mult, FuncValuesQP, 1)
+            b_n = to_blas_int(npg)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coeff_mult, FuncValuesQP, b_incx)
         end if
 !
     end subroutine
@@ -451,10 +475,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)         :: hhoFace
-        type(HHO_Quadrature), intent(in)   :: hhoQuad
-        real(kind=8), intent(in)           :: funcnoEF(*)
-        real(kind=8), intent(out)          :: FuncValuesQP(3, MAX_QP_FACE)
+        type(HHO_Face), intent(in) :: hhoFace
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: funcnoEF(*)
+        real(kind=8), intent(out) :: FuncValuesQP(3, MAX_QP_FACE)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 ! --------------------------------------------------------------------------------------------------
@@ -472,25 +496,29 @@ contains
         integer :: npg, ino, idim, celldim, ipg
         real(kind=8) :: ff(9)
         character(len=8) :: typma
+        blas_int :: b_incx, b_n
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
         celldim = hhoFace%ndim+1
         ASSERT(npg <= MAX_QP_FACE)
+        ASSERT(hhoQuad%l_point_param)
         call cellNameL2S(hhoFace%typema, typma)
 !
         do ipg = 1, npg
             call elrfvf(typma, hhoQuad%points_param(1:3, ipg), ff)
             do idim = 1, celldim
                 do ino = 1, hhoFace%nbnodes
-                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ &
-                                              ff(ino)*funcnoEF(celldim*(ino-1)+idim)
+                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ff(ino)*funcnoEF(celldim*(&
+                                              &ino-1)+idim)
                 end do
             end do
         end do
 !
         if (present(coeff_mult)) then
-            call dscal(3*npg, coeff_mult, FuncValuesQP, 1)
+            b_n = to_blas_int(3*npg)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coeff_mult, FuncValuesQP, b_incx)
         end if
 !
     end subroutine
@@ -504,10 +532,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)         :: hhoCell
-        type(HHO_Quadrature), intent(in)   :: hhoQuad
-        real(kind=8), intent(in)           :: funcnoEF(*)
-        real(kind=8), intent(out)          :: FuncValuesQP(3, MAX_QP_CELL)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: funcnoEF(*)
+        real(kind=8), intent(out) :: FuncValuesQP(3, MAX_QP_CELL)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 ! --------------------------------------------------------------------------------------------------
@@ -525,24 +553,28 @@ contains
         integer :: npg, ino, idim, ipg
         real(kind=8) :: ff(27)
         character(len=8) :: typma
+        blas_int :: b_incx, b_n
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
         ASSERT(npg <= MAX_QP_CELL)
+        ASSERT(hhoQuad%l_point_param)
         call cellNameL2S(hhoCell%typema, typma)
 !
         do ipg = 1, npg
             call elrfvf(typma, hhoQuad%points_param(1:3, ipg), ff)
             do idim = 1, hhoCell%ndim
                 do ino = 1, hhoCell%nbnodes
-                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ &
-                                              ff(ino)*funcnoEF(hhoCell%ndim*(ino-1)+idim)
+                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ff(ino)*funcnoEF(hhoCell%n&
+                                              &dim*(ino-1)+idim)
                 end do
             end do
         end do
 !
         if (present(coeff_mult)) then
-            call dscal(3*npg, coeff_mult, FuncValuesQP, 1)
+            b_n = to_blas_int(3*npg)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coeff_mult, FuncValuesQP, b_incx)
         end if
 !
     end subroutine
@@ -556,10 +588,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)         :: hhoCell
-        type(HHO_Quadrature), intent(in)   :: hhoQuad
-        real(kind=8), intent(in)           :: funcnoEF(*)
-        real(kind=8), intent(out)          :: FuncValuesQP(MAX_QP_CELL)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+        real(kind=8), intent(in) :: funcnoEF(*)
+        real(kind=8), intent(out) :: FuncValuesQP(MAX_QP_CELL)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 ! --------------------------------------------------------------------------------------------------
@@ -577,10 +609,12 @@ contains
         integer :: npg, ino, ipg
         real(kind=8) :: ff(27)
         character(len=8) :: typma
+        blas_int :: b_incx, b_n
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
         ASSERT(npg <= MAX_QP_CELL)
+        ASSERT(hhoQuad%l_point_param)
         call cellNameL2S(hhoCell%typema, typma)
 !
         ff = 0.d0
@@ -592,7 +626,9 @@ contains
         end do
 !
         if (present(coeff_mult)) then
-            call dscal(npg, coeff_mult, FuncValuesQP, 1)
+            b_n = to_blas_int(npg)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, coeff_mult, FuncValuesQP, b_incx)
         end if
 !
     end subroutine

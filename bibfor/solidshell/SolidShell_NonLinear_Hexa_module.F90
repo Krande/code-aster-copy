@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ module SolidShell_NonLinear_Hexa_module
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
-    public  :: compNonLinearHexa
+    public :: compNonLinearHexa
     private :: compSmallStrainHexa, compGdefLogHexa, postLog
 ! ==================================================================================================
     private
@@ -64,29 +64,30 @@ contains
 ! In  elemProp         : general properties of element
 ! In  cellGeom         : general geometric properties of cell
 ! In  matePara         : parameters of material
-! In  behaPara         : parameters of behaviour
+! IO  behaPara         : parameters of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine compNonLinearHexa(option, elemProp, cellGeom, matePara, behaPara)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        character(len=16), intent(in)   :: option
+        character(len=16), intent(in) :: option
         type(SSH_ELEM_PROP), intent(in) :: elemProp
         type(SSH_CELL_GEOM), intent(in) :: cellGeom
         type(SSH_MATE_PARA), intent(in) :: matePara
-        type(SSH_BEHA_PARA), intent(in) :: behaPara
+        type(SSH_BEHA_PARA), intent(inout) :: behaPara
 ! - Local
         integer :: nbIntePoint, nbVari
         integer :: jtab(7), iret
         integer :: jvGeom, jvMater
         integer :: jvMatr, jvVect, jvSigmP, jvVariP, jvVariX, jvCodret
         integer :: jvTimeM, jvTimeP, jvSigmM, jvVariM, jvDispM, jvDispIncr
+        blas_int :: b_incx, b_incy, b_n
 !   ------------------------------------------------------------------------------------------------
 !
-
+!
 ! - Properties of finite element
         nbIntePoint = elemProp%elemInte%nbIntePoint
-
+!
 ! - Get input fields
         jvGeom = cellGeom%jvGeom
         jvMater = matePara%jvMater
@@ -95,10 +96,11 @@ contains
         call jevech('PCONTMR', 'L', jvSigmM)
         call jevech('PDEPLMR', 'L', jvDispM)
         call jevech('PDEPLPR', 'L', jvDispIncr)
-        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                    itab=jtab)
         jvVariM = jtab(1)
         nbVari = max(jtab(6), 1)*jtab(7)
-
+!
 ! - Get output fields
         jvMatr = isnnem()
         if (behaPara%lMatr) then
@@ -121,32 +123,25 @@ contains
         if (behaPara%lVari) then
             call jevech('PVARIPR', 'E', jvVariP)
             call jevech('PVARIMP', 'L', jvVariX)
-            call dcopy(nbIntePoint*nbVari, zr(jvVariX), 1, zr(jvVariP), 1)
+            b_n = to_blas_int(nbIntePoint*nbVari)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jvVariX), b_incx, zr(jvVariP), b_incy)
         end if
-
+!
 ! - Compute
         if (behaPara%defoComp .eq. 'PETIT') then
-            call compSmallStrainHexa(option, elemProp, cellGeom, &
-                                     matePara, behaPara, &
-                                     nbIntePoint, nbVari, &
-                                     zr(jvTimeM), zr(jvTimeP), &
-                                     zr(jvDispM), zr(jvDispIncr), &
-                                     zr(jvSigmM), zr(jvVariM), &
-                                     zr(jvSigmP), zr(jvVariP), &
-                                     zr(jvMatr), zr(jvVect), &
-                                     zi(jvCodret))
-
-        elseif (behaPara%defoComp .eq. 'GDEF_LOG') then
-            call compGdefLogHexa(option, elemProp, cellGeom, &
-                                 matePara, behaPara, &
-                                 nbIntePoint, nbVari, &
-                                 zr(jvTimeM), zr(jvTimeP), &
-                                 zr(jvDispM), zr(jvDispIncr), &
-                                 zr(jvSigmM), zr(jvVariM), &
-                                 zr(jvSigmP), zr(jvVariP), &
-                                 zr(jvMatr), zr(jvVect), &
-                                 zi(jvCodret))
-
+            call compSmallStrainHexa(option, elemProp, cellGeom, matePara, behaPara, &
+                                     nbIntePoint, nbVari, zr(jvTimeM), zr(jvTimeP), zr(jvDispM), &
+                                     zr(jvDispIncr), zr(jvSigmM), zr(jvVariM), zr(jvSigmP), &
+                                     zr(jvVariP), zr(jvMatr), zr(jvVect), zi(jvCodret))
+!
+        else if (behaPara%defoComp .eq. 'GDEF_LOG') then
+            call compGdefLogHexa(option, elemProp, cellGeom, matePara, behaPara, &
+                                 nbIntePoint, nbVari, zr(jvTimeM), zr(jvTimeP), zr(jvDispM), &
+                                 zr(jvDispIncr), zr(jvSigmM), zr(jvVariM), zr(jvSigmP), &
+                                 zr(jvVariP), zr(jvMatr), zr(jvVect), zi(jvCodret))
+!
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -163,7 +158,7 @@ contains
 ! In  elemProp         : general properties of element
 ! In  cellGeom         : general geometric properties of cell
 ! In  matePara         : parameters of material
-! In  behaPara         : parameters of behaviour
+! IO  behaPara         : parameters of behaviour
 ! In  nbIntePoint      : number of integration points on cell
 ! In  nbVari           : number of internal state variables
 ! In  timePrev         : time of previous time step
@@ -179,23 +174,18 @@ contains
 ! Out codret           : error code from integration of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine compSmallStrainHexa(option, elemProp, cellGeom, &
-                                   matePara, behaPara, &
-                                   nbIntePoint, nbVari, &
-                                   timePrev, timeCurr, &
-                                   dispPrev, dispIncr, &
-                                   sigm, vim, &
-                                   sigp, vip, &
-                                   matr, vect, &
-                                   codret)
+    subroutine compSmallStrainHexa(option, elemProp, cellGeom, matePara, behaPara, &
+                                   nbIntePoint, nbVari, timePrev, timeCurr, dispPrev, &
+                                   dispIncr, sigm, vim, sigp, vip, &
+                                   matr, vect, codret)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        character(len=16), intent(in)   :: option
+        character(len=16), intent(in) :: option
         type(SSH_ELEM_PROP), intent(in) :: elemProp
         type(SSH_CELL_GEOM), intent(in) :: cellGeom
         type(SSH_MATE_PARA), intent(in) :: matePara
-        type(SSH_BEHA_PARA), intent(in) :: behaPara
-        integer, intent(in)      :: nbIntePoint, nbVari
+        type(SSH_BEHA_PARA), intent(inout) :: behaPara
+        integer, intent(in) :: nbIntePoint, nbVari
         real(kind=8), intent(in) :: timePrev, timeCurr
         real(kind=8), intent(in) :: dispPrev(SSH_NBDOF_HEXA), dispIncr(SSH_NBDOF_HEXA)
         real(kind=8), intent(in) :: sigm(SSH_SIZE_TENS, nbIntePoint), vim(nbVari, nbIntePoint)
@@ -228,31 +218,31 @@ contains
             vect = 0.d0
         end if
 
-! - Properties of finite element
+! ----- Properties of finite element
         nbDof = elemProp%nbDof
         nbDofGeom = elemProp%nbDofGeom
         jvCoor = elemProp%elemInte%jvCoor
         jvWeight = elemProp%elemInte%jvWeight
 
-! - Properties of finite element
+! ----- Properties of finite element
         ASSERT(.not. behaPara%lLarge)
 
-! - Total displacement from initial configuration
+! ----- Total displacement from initial configuration
         dispCurr = dispIncr+dispPrev
 
-! - Prepare geometric quantities
+! ----- Prepare geometric quantities
         call initGeomCellHexa(cellGeom, geomHexa)
         if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
-! - Compute gradient matrix in covariant basis
+! ----- Compute gradient matrix in covariant basis
         kineHexa%lLarge = ASTER_FALSE
         call compBCovaMatrHexa(geomHexa, kineHexa)
 
-! - Compute gradient matrix in cartesian frame
+! ----- Compute gradient matrix in cartesian frame
         call compBCartMatrHexa(geomHexa, kineHexa)
         if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_=ASTER_TRUE)
 
-! - Loop on Gauss points
+! ----- Loop on Gauss points
         Ueff = 0.d0
         matrTang = 0.d0
         do kpg = 1, nbIntePoint
@@ -260,20 +250,20 @@ contains
             poids = zr(jvWeight-1+kpg)
             jacob = poids*cellGeom%detJac0
 
-! ----- Compute EAS B matrix in cartesian frame at current Gauss point
+! --------- Compute EAS B matrix in cartesian frame at current Gauss point
             call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
 
-! ----- Compute B matrix
+! --------- Compute B matrix
             call compBMatrHexa(zeta, kineHexa)
             if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_=ASTER_TRUE)
 
-! ----- Compute small strains at beginning of time step
+! --------- Compute small strains at beginning of time step
             call compEpsiHexa(kineHexa, dispPrev, epsiPrev)
 
-! ----- Compute increment of small strains
+! --------- Compute increment of small strains
             call compEpsiHexa(kineHexa, dispIncr, epsiIncr)
 
-! ----- Pre-treatment of stresses and strains
+! --------- Pre-treatment of stresses and strains
             epsiPrev(4) = epsiPrev(4)/rac2
             epsiPrev(5) = epsiPrev(5)/rac2
             epsiPrev(6) = epsiPrev(6)/rac2
@@ -285,28 +275,23 @@ contains
                 sigmPrep(iTens+3) = sigm(iTens+3, kpg)*rac2
             end do
 
-! ----- Integrate behaviour law
+! --------- Set main parameters for behaviour (on point)
+            call behaviourSetParaPoin(kpg, ksp, behaPara%BEHinteg)
+
+! --------- Integrator
             sigmPost = 0.d0
             dsidep = 0.d0
             cod(kpg) = 0
-            call nmcomp(behaPara%BEHInteg, &
-                        elemProp%elemInte%inteFami, kpg, ksp, &
-                        SSH_NDIM, typmod, &
-                        matePara%jvMater, &
-                        zk16(behaPara%jvCompor), &
-                        zr(behaPara%jvCarcri), &
-                        timePrev, timeCurr, &
-                        SSH_SIZE_TENS, epsiPrev, epsiIncr, &
-                        SSH_SIZE_TENS, sigmPrep, &
-                        vim(1, kpg), option, matePara%mateBase, &
-                        sigmPost, vip(1, kpg), &
-                        SSH_SIZE_TENS*SSH_SIZE_TENS, dsidep, &
-                        cod(kpg))
+            call nmcomp(behaPara%BEHInteg, elemProp%elemInte%inteFami, kpg, ksp, SSH_NDIM, &
+                        typmod, matePara%jvMater, zk16(behaPara%jvCompor), zr(behaPara%jvCarcri), &
+                        timePrev, timeCurr, SSH_SIZE_TENS, epsiPrev, epsiIncr, &
+                        SSH_SIZE_TENS, sigmPrep, vim(1, kpg), option, matePara%mateBase, &
+                        sigmPost, vip(1, kpg), SSH_SIZE_TENS*SSH_SIZE_TENS, dsidep, cod(kpg))
             if (cod(kpg) .eq. 1) then
                 goto 99
             end if
 
-! ----- Post-treatment of stresses and matrix
+! --------- Post-treatment of stresses and matrix
             if (behaPara%lSigm) then
                 sigmPost(4) = sigmPost(4)/rac2
                 sigmPost(5) = sigmPost(5)/rac2
@@ -318,37 +303,37 @@ contains
                 dsidep(1:3, 4:6) = dsidep(1:3, 4:6)/rac2
             end if
 
-! ----- Compute effective shear modulus for stabilization
+! --------- Compute effective shear modulus for stabilization
             call compStabModulusHexa(sigmPost, epsiIncr, dsidep, UeffKpg)
             Ueff = Ueff+UeffKpg*poids/8.d0
 
-! ----- Compute material part  at current Gauss point
+! --------- Compute material part  at current Gauss point
             if (behaPara%lMatr) then
                 matrMate = 0.d0
                 call prodBTDB(dsidep, SSH_SIZE_TENS, elemProp%nbDof, kineHexa%B, matrMate)
             end if
 
-! ----- Update tangent matrix
+! --------- Update tangent matrix
             if (behaPara%lMatr) then
                 matrTang = matrTang+jacob*matrMate
             end if
 
-! ----- Update internal force at current Gauss point
+! --------- Update internal force at current Gauss point
             if (behaPara%lVect) then
-                call btsig(elemProp%nbDof, SSH_SIZE_TENS, jacob, &
-                           kineHexa%B, sigmPost, vect)
+                call btsig(elemProp%nbDof, SSH_SIZE_TENS, jacob, kineHexa%B, sigmPost, &
+                           vect)
             end if
 
-! ----- Save stresses
+! --------- Save stresses
             if (behaPara%lSigm) then
                 do iTens = 1, SSH_SIZE_TENS
                     sigp(iTens, kpg) = sigmPost(iTens)
                 end do
             end if
-
+!
         end do
 
-! - Stabilization
+! ----- Stabilization
         if (behaPara%lVect) then
             call compStabSigmHexa(geomHexa, kineHexa, Ueff, dispCurr, stabHexa)
         end if
@@ -359,24 +344,23 @@ contains
             call compStabForcHexa(kineHexa, stabHexa)
         end if
 
-! - Save matrix and vector
+! ----- Save matrix and vector
         if (behaPara%lMatr) then
-            matrTang(1:nbDofGeom, 1:nbDofGeom) = matrTang(1:nbDofGeom, 1:nbDofGeom)+ &
-                                                 stabHexa%matrStabMate
+            matrTang(1:nbDofGeom, 1:nbDofGeom) = matrTang(1:nbDofGeom, 1:nbDofGeom &
+                                                          )+stabHexa%matrStabMate
         end if
         if (behaPara%lVect) then
-            vect(1:SSH_NBDOFG_HEXA) = &
-                vect(1:SSH_NBDOFG_HEXA)+cellGeom%detJac0*stabHexa%forcStab
+            vect(1:SSH_NBDOFG_HEXA) = vect(1:SSH_NBDOFG_HEXA)+cellGeom%detJac0*stabHexa%forcStab
         end if
 !
 99      continue
 
-! - Return code summary
+! ----- Return code summary
         if (behaPara%lSigm) then
             call codere(cod, nbIntePoint, codret)
         end if
 
-! - Write matrix
+! ----- Write matrix
         if (behaPara%lMatr) then
             if (behaPara%lMatrSyme) then
                 do i = 1, SSH_NBDOF_HEXA
@@ -407,7 +391,7 @@ contains
 ! In  elemProp         : general properties of element
 ! In  cellGeom         : general geometric properties of cell
 ! In  matePara         : parameters of material
-! In  behaPara         : parameters of behaviour
+! IO  behaPara         : parameters of behaviour
 ! In  nbIntePoint      : number of integration points on cell
 ! In  nbVari           : number of internal state variables
 ! In  timePrev         : time of previous time step
@@ -423,30 +407,25 @@ contains
 ! Out codret           : error code from integration of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine compGdefLogHexa(option, elemProp, cellGeom, &
-                               matePara, behaPara, &
-                               nbIntePoint, nbVari, &
-                               timePrev, timeCurr, &
-                               dispPrev, dispIncr, &
-                               sigm, vim, &
-                               sigp, vip, &
-                               matr, vect, &
-                               codret)
+    subroutine compGdefLogHexa(option, elemProp, cellGeom, matePara, behaPara, &
+                               nbIntePoint, nbVari, timePrev, timeCurr, dispPrev, &
+                               dispIncr, sigm, vim, sigp, vip, &
+                               matr, vect, codret)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+! ----- Parameters
         character(len=16), intent(in)   :: option
         type(SSH_ELEM_PROP), intent(in) :: elemProp
         type(SSH_CELL_GEOM), intent(in) :: cellGeom
         type(SSH_MATE_PARA), intent(in) :: matePara
-        type(SSH_BEHA_PARA), intent(in) :: behaPara
-        integer, intent(in)      :: nbIntePoint, nbVari
+        type(SSH_BEHA_PARA), intent(inout) :: behaPara
+        integer, intent(in) :: nbIntePoint, nbVari
         real(kind=8), intent(in) :: timePrev, timeCurr
         real(kind=8), intent(in) :: dispPrev(SSH_NBDOF_HEXA), dispIncr(SSH_NBDOF_HEXA)
         real(kind=8), intent(in) :: sigm(SSH_SIZE_TENS, nbIntePoint), vim(nbVari, nbIntePoint)
         real(kind=8), intent(out) :: sigp(SSH_SIZE_TENS, nbIntePoint), vip(nbVari, nbIntePoint)
         real(kind=8), intent(out) :: matr(*), vect(SSH_NBDOF_HEXA)
         integer, intent(out) :: codret
-! - Local
+! ----- Local
         type(SSH_GEOM_HEXA) :: geomHexa
         integer, parameter :: ksp = 1
         integer :: cod(nbIntePoint), kpg, iTens, nbDof, nbDofGeom
@@ -463,6 +442,7 @@ contains
         real(kind=8) :: tPrev(SSH_SIZE_TENS), tCurr(SSH_SIZE_TENS)
         real(kind=8), dimension(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) :: matrMate, matrGeom, matrTang
         real(kind=8), dimension(SSH_SIZE_TENS, SSH_SIZE_TENS) :: dtde, dsidep
+        blas_int :: b_incx, b_incy, b_n
 !   ------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -478,31 +458,31 @@ contains
         lVari = L_VARI(option)
         lMatrPred = L_MATR_PRED(option)
 
-! - Properties of finite element
+! ----- Properties of finite element
         nbDof = elemProp%nbDof
         nbDofGeom = elemProp%nbDofGeom
         jvCoor = elemProp%elemInte%jvCoor
         jvWeight = elemProp%elemInte%jvWeight
 
-! - Properties of finite element
+! ----- Properties of finite element
         ASSERT(behaPara%lLarge)
 
-! - Total displacement from initial configuration
+! ----- Total displacement from initial configuration
         dispCurr = dispIncr+dispPrev
 
-! - Prepare geometric quantities
+! ----- Prepare geometric quantities
         call initGeomCellHexa(cellGeom, geomHexa, dispCurr)
         if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
-! - Compute gradient matrix in covariant basis
+! ----- Compute gradient matrix in covariant basis
         kineHexa%lLarge = ASTER_TRUE
         call compBCovaMatrHexa(geomHexa, kineHexa)
 
-! - Compute gradient matrix in cartesian frame
+! ----- Compute gradient matrix in cartesian frame
         call compBCartMatrHexa(geomHexa, kineHexa)
         if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_=ASTER_TRUE)
 
-! - Loop on Gauss points
+! ----- Loop on Gauss points
         Ueff = 0.d0
         matrTang = 0.d0
         do kpg = 1, nbIntePoint
@@ -510,91 +490,92 @@ contains
             poids = zr(jvWeight-1+kpg)
             jacob = poids*cellGeom%detJac0
 
-! ----- Compute EAS B matrix in cartesian frame at current Gauss point
+! --------- Compute EAS B matrix in cartesian frame at current Gauss point
             call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
 
-! ----- Compute B matrix
+! --------- Compute B matrix
             call compBMatrHexa(zeta, kineHexa)
 
-! ----- Compute Green-Lagrange strains at beginning of time step
+! --------- Compute Green-Lagrange strains at beginning of time step
             call compECovaMatrHexa(cellGeom, dispPrev, kineHexa%epsgPrev)
             call compEpsgHexa(zeta, geomHexa, kineHexa%epsgPrev)
             kineHexa%epsgPrev%vale = kineHexa%epsgPrev%vale+kineHexa%BCartEAS*dispPrev(25)
             if (SSH_DBG_KINE) call dbgObjEpsgHexa(kineHexa%epsgPrev)
 
-! ----- Compute logarithmic strains at beginning of time step
+! --------- Compute logarithmic strains at beginning of time step
             call compEpslHexa(kineHexa%epsgPrev, kineHexa%epslPrev, cod(kpg))
             if (cod(kpg) .ne. 0) then
                 goto 99
             end if
             if (SSH_DBG_KINE) call dbgObjEpslHexa(kineHexa%epslPrev)
 
-! ----- Compute Green-Lagrange strains at end of time step
+! --------- Compute Green-Lagrange strains at end of time step
             call compECovaMatrHexa(cellGeom, dispCurr, kineHexa%epsgCurr)
             call compEpsgHexa(zeta, geomHexa, kineHexa%epsgCurr)
             kineHexa%epsgCurr%vale = kineHexa%epsgCurr%vale+kineHexa%BCartEAS*dispCurr(25)
             if (SSH_DBG_KINE) call dbgObjEpsgHexa(kineHexa%epsgCurr)
 
-! ----- Compute logarithmic strains at end of time step
+! --------- Compute logarithmic strains at end of time step
             call compEpslHexa(kineHexa%epsgCurr, kineHexa%epslCurr, cod(kpg))
             if (cod(kpg) .ne. 0) then
                 goto 99
             end if
             if (SSH_DBG_KINE) call dbgObjEpslHexa(kineHexa%epslCurr)
 
-! ----- Compute increment of strains
+! --------- Compute increment of strains
             epslIncr = kineHexa%epslCurr%vale-kineHexa%epslPrev%vale
 
-! ----- Get "logarithmic" stresses from internal state variables at previous time step
-            call dcopy(2*SSH_NDIM, vim(nbVari-6+1, kpg), 1, tPrev, 1)
+! --------- Get "logarithmic" stresses from internal state variables at previous time step
+            b_n = to_blas_int(2*SSH_NDIM)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vim(nbVari-6+1, kpg), b_incx, tPrev, b_incy)
 
-! ----- Get Cauchy stresses
+! --------- Get Cauchy stresses
             do iTens = 1, 6
                 sigmPrep(iTens) = sigm(iTens, kpg)
             end do
 
-! ----- Integrate behaviour law
+! --------- Set main parameters for behaviour (on point)
+            call behaviourSetParaPoin(kpg, ksp, behaPara%BEHinteg)
+
+! --------- Integrator
             tCurr = 0.d0
             dtde = 0.d0
             cod(kpg) = 0
-            call nmcomp(behaPara%BEHInteg, &
-                        elemProp%elemInte%inteFami, kpg, ksp, &
-                        SSH_NDIM, typmod, &
-                        matePara%jvMater, &
-                        zk16(behaPara%jvCompor), &
-                        zr(behaPara%jvCarcri), &
-                        timePrev, timeCurr, &
-                        SSH_SIZE_TENS, kineHexa%epslPrev%vale, epslIncr, &
-                        SSH_SIZE_TENS, tPrev, &
-                        vim(1, kpg), option, matePara%mateBase, &
-                        tCurr, vip(1, kpg), &
-                        SSH_SIZE_TENS*SSH_SIZE_TENS, dtde, &
-                        cod(kpg))
+            call nmcomp(behaPara%BEHInteg, elemProp%elemInte%inteFami, kpg, ksp, SSH_NDIM, &
+                        typmod, matePara%jvMater, zk16(behaPara%jvCompor), zr(behaPara%jvCarcri), &
+                        timePrev, timeCurr, SSH_SIZE_TENS, kineHexa%epslPrev%vale, epslIncr, &
+                        SSH_SIZE_TENS, tPrev, vim(1, kpg), option, matePara%mateBase, &
+                        tCurr, vip(1, kpg), SSH_SIZE_TENS*SSH_SIZE_TENS, dtde, cod(kpg))
             if (cod(kpg) .eq. 1) then
                 goto 99
             end if
 
-! ----- Post-treatment for logarithmic quantities
+! --------- Post-treatment for logarithmic quantities
             call postLog(lMatrPred, lMatr, lSigm, &
                          kineHexa, tPrev, tCurr, dtde, &
                          dsidep, pk2)
 
-! ----- Save "logarithmic" stresses in internal state variables
+! --------- Save "logarithmic" stresses in internal state variables
             if (lVari) then
-                call dcopy(2*SSH_NDIM, tCurr, 1, vip(nbVari-6+1, kpg), 1)
+                b_n = to_blas_int(2*SSH_NDIM)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, tCurr, b_incx, vip(nbVari-6+1, kpg), b_incy)
             end if
 
-! ----- Compute effective shear modulus for stabilization
+! --------- Compute effective shear modulus for stabilization
             call compStabModulusHexa(sigmPrep, kineHexa%epsgPrev%vale, dsidep, UeffKpg)
             Ueff = Ueff+UeffKpg*poids/8.d0
 
-! ----- Compute material part of matrix at current Gauss point
+! --------- Compute material part of matrix at current Gauss point
             if (behaPara%lMatr) then
                 matrMate = 0.d0
                 call prodBTDB(dsidep, SSH_SIZE_TENS, elemProp%nbDof, kineHexa%B, matrMate)
             end if
 
-! ----- Compute geometric part of matrix at current Gauss point
+! --------- Compute geometric part of matrix at current Gauss point
             if (behaPara%lMatr) then
                 matrGeom = 0.d0
                 if (lMatrPred) then
@@ -604,30 +585,31 @@ contains
                 end if
             end if
 
-! ----- Update tangent matrix
+! --------- Update tangent matrix
             if (behaPara%lMatr) then
                 matrTang = matrTang+jacob*matrMate
                 matrTang = matrTang+jacob*matrGeom
             end if
 
-! ----- Update internal force at current Gauss point
+! --------- Update internal force at current Gauss point
             if (behaPara%lVect) then
-                call btsig(elemProp%nbDof, SSH_SIZE_TENS, jacob, &
-                           kineHexa%B, pk2, vect)
+                call btsig(elemProp%nbDof, SSH_SIZE_TENS, jacob, kineHexa%B, pk2, &
+                           vect)
             end if
 
-! ----- Save stresses
+! --------- Save stresses
             if (behaPara%lSigm) then
                 do iTens = 1, SSH_SIZE_TENS
                     sigp(iTens, kpg) = pk2(iTens)
                 end do
             end if
-
+!
         end do
 
-! - Stabilization
+! ----- Stabilization
         if (behaPara%lVect .or. behaPara%lMatr) then
-            call compStabSigmHexa(geomHexa, kineHexa, Ueff, dispCurr, stabHexa, kineHexa%epsgCurr)
+            call compStabSigmHexa(geomHexa, kineHexa, Ueff, dispCurr, stabHexa, &
+                                  kineHexa%epsgCurr)
         end if
         if (behaPara%lMatr) then
             call compStabMatrMateHexa(geomHexa, kineHexa, Ueff, stabHexa)
@@ -637,26 +619,24 @@ contains
             call compStabForcHexa(kineHexa, stabHexa)
         end if
 
-! - Save matrix and vector
+! ----- Save matrix and vector
         if (behaPara%lMatr) then
-            matrTang(1:nbDofGeom, 1:nbDofGeom) = matrTang(1:nbDofGeom, 1:nbDofGeom)+ &
-                                                 stabHexa%matrStabMate
-            matrTang(1:nbDofGeom, 1:nbDofGeom) = matrTang(1:nbDofGeom, 1:nbDofGeom)+ &
-                                                 stabHexa%matrStabGeom
+            matrTang(1:nbDofGeom, 1:nbDofGeom) = matrTang(1:nbDofGeom, 1:nbDofGeom &
+                                                          )+stabHexa%matrStabMate
+            matrTang(1:nbDofGeom, 1:nbDofGeom) = matrTang(1:nbDofGeom, 1:nbDofGeom &
+                                                          )+stabHexa%matrStabGeom
         end if
-
+!
         if (behaPara%lVect) then
-            vect(1:SSH_NBDOFG_HEXA) = &
-                vect(1:SSH_NBDOFG_HEXA)+cellGeom%detJac0*stabHexa%forcStab
+            vect(1:SSH_NBDOFG_HEXA) = vect(1:SSH_NBDOFG_HEXA)+cellGeom%detJac0*stabHexa%forcStab
         end if
 !
 99      continue
-!
-! - Return code summary
-!
+
+! ----- Return code summary
         call codere(cod, nbIntePoint, codret)
 
-! - Write matrix
+! ----- Write matrix
         if (behaPara%lMatr) then
             if (behaPara%lMatrSyme) then
                 do i = 1, SSH_NBDOF_HEXA
@@ -695,16 +675,15 @@ contains
 ! Out pk2              : PK2 stress after integration of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine postLog(lMatrPred, lMatr, lSigm, &
-                       kineHexa, tPrev, tCurr, dtde, &
-                       dsidep, pk2)
+    subroutine postLog(lMatrPred, lMatr, lSigm, kineHexa, tPrev, &
+                       tCurr, dtde, dsidep, pk2)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        aster_logical, intent(in)       :: lMatrPred, lMatr, lSigm
+        aster_logical, intent(in) :: lMatrPred, lMatr, lSigm
         type(SSH_KINE_HEXA), intent(in) :: kineHexa
-        real(kind=8), intent(in)        :: tPrev(SSH_SIZE_TENS), tCurr(SSH_SIZE_TENS)
-        real(kind=8), intent(in)        :: dtde(SSH_SIZE_TENS, SSH_SIZE_TENS)
-        real(kind=8), intent(out)       :: dsidep(SSH_SIZE_TENS, SSH_SIZE_TENS), pk2(SSH_SIZE_TENS)
+        real(kind=8), intent(in) :: tPrev(SSH_SIZE_TENS), tCurr(SSH_SIZE_TENS)
+        real(kind=8), intent(in) :: dtde(SSH_SIZE_TENS, SSH_SIZE_TENS)
+        real(kind=8), intent(out) :: dsidep(SSH_SIZE_TENS, SSH_SIZE_TENS), pk2(SSH_SIZE_TENS)
 ! - Local
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         integer :: i, j
@@ -713,11 +692,12 @@ contains
         real(kind=8) :: tWork(6)
         real(kind=8) :: me(3, 3, 3, 3), xi(3, 3), feta(4)
         real(kind=8) :: tl(3, 3, 3, 3), tlSyme(6, 6), trav2(6, 6)
+        blas_int :: b_incx, b_incy, b_n
 !   ------------------------------------------------------------------------------------------------
 !
         pk2 = 0.d0
         dsidep = 0.d0
-
+!
 ! - Current quantities
         if (lMatrPred) then
             epsl = kineHexa%epslPrev
@@ -726,29 +706,34 @@ contains
             epsl = kineHexa%epslCurr
             tWork = tCurr
         end if
-
+!
 ! - Compute tensor P (symmetric)
-        call deflg2(epsl%eigenVect, epsl%eigenVale, epsl%logl, &
-                    pSyme, feta, xi, me)
+        call deflg2(epsl%eigenVect, epsl%eigenVale, epsl%logl, pSyme, feta, &
+                    xi, me)
         pSymeT = transpose(pSyme)
-
+!
         if (lMatr) then
 ! ----- Compute tensor T:L
-            call deflg3(epsl%eigenVect, feta, xi, me, tWork, tl)
-
+            call deflg3(epsl%eigenVect, feta, xi, me, tWork, &
+                        tl)
+!
 ! ----- Symmetric version of T:L
             call symt46(tl, tlSyme)
-
+!
 ! ----- Compute dsidep
             trav2 = matmul(pSymeT, dtde)
             dsidep = matmul(trav2, pSyme)
-            call daxpy(36, 1.d0, tlSyme, 1, dsidep, 1)
-
+            b_n = to_blas_int(36)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, tlSyme, b_incx, dsidep, &
+                       b_incy)
+!
             dsidep(4:6, 4:6) = dsidep(4:6, 4:6)/2.0d0
             dsidep(4:6, 1:3) = dsidep(4:6, 1:3)/rac2
             dsidep(1:3, 4:6) = dsidep(1:3, 4:6)/rac2
         end if
-
+!
 ! - Compute PK2 stresses
         if (lSigm) then
             do i = 1, 6

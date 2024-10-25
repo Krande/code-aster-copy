@@ -43,7 +43,9 @@ class THAXTL3(Element):
     meshType = MT.TRIA3
     elrefe = (
         ElrefeLoc(
-            MT.TR3, gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.TR3,
+            gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )
     calculs = (
@@ -196,6 +198,20 @@ class THAXTL3(Element):
             te=4,
             para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX2R),),
             para_out=((SP.PFLUXNO, LC.NFLUX2R),),
+        ),
+        OP.GRAT_ELGA(
+            te=52,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PTEMPER, DDL_THER),
+                (OP.GRAT_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.GRAT_ELGA.PGRATPG, LC.EGRAT2R),),
+        ),
+        OP.GRAT_ELNO(
+            te=4,
+            para_in=((OP.GRAT_ELNO.PGRATPG, LC.EGRAT2R),),
+            para_out=((SP.PGRATNO, LC.NGRAT2R),),
         ),
         OP.HYDR_ELGA(
             te=385,
@@ -423,6 +439,8 @@ class THAXQL4(THAXTL3):
     meshType = MT.QUAD4
     elrefe = (
         ElrefeLoc(
-            MT.QU4, gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.QU4,
+            gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
+            mater=("FPG1", "RIGI", "MASS"),
         ),
     )

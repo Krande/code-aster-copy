@@ -20,41 +20,6 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _(
-        """
- le noeud %(k1)s n'appartient pas au maillage: %(k2)s
-"""
-    ),
-    2: _(
-        """
- le groupe de noeuds %(k1)s n'appartient pas au maillage: %(k2)s
-"""
-    ),
-    3: _(
-        """
- le noeud %(k1)s n'est pas un noeud support.
-"""
-    ),
-    4: _(
-        """
- le vecteur directeur du spectre est nul.
-"""
-    ),
-    5: _(
-        """
- cas du MONO_APPUI: vous avez déjà donné un spectre pour cette direction.
-"""
-    ),
-    6: _(
-        """
- erreur(s) rencontrée(s) lors de la lecture des supports.
-"""
-    ),
-    7: _(
-        """
- vous avez déjà donné un spectre pour le support %(k1)s
-"""
-    ),
     9: _(
         """
  -------Échantillonnage temporel et fréquentiel des signaux -------
@@ -85,14 +50,6 @@ cata_msg = {
         """
    la règle de combinaison des contributions
    de chaque mouvement d'appui est           : %(k1)s """
-    ),
-    26: _(
-        """
-  problème stockage
-    option de calcul: %(k1)s
-    direction       : %(k2)s
-    nom du champ    : %(k3)s
-"""
     ),
     35: _(
         """
@@ -176,54 +133,10 @@ Conseil:
  MODE      FREQUENCE    AMORTISSEMENT    DIR         SPECTRE
 """
     ),
-    54: _(
-        """ %(i1)4d   %(r1)12.5e     %(r2)12.5e      %(k1)s    %(r3)12.5e
-"""
-    ),
-    55: _(
-        """                                           %(k1)s    %(r1)12.5e
-"""
-    ),
     56: _(
         """
  --- VALEURS LUES SUR LE SPECTRE ACCE POUR LA CORRECTION STATIQUE ---
  DIRECTION      FREQUENCE        SPECTRE        APPUI
-"""
-    ),
-    57: _(
-        """         %(k1)s    %(r1)12.5e    %(r2)12.5e    %(k2)s
-"""
-    ),
-    59: _(
-        """
- --- VALEURS DU SPECTRE ---
- MODE      FREQUENCE   AMORTISSEMENT   DIR   SUPPORT         SPECTRE
-"""
-    ),
-    60: _(
-        """ %(i1)4d   %(r1)12.5e    %(r2)12.5e   %(k1)s     %(k2).8s         %(r3)12.5e
-"""
-    ),
-    61: _(
-        """                                             %(k1).8s         %(r1)12.5e
-"""
-    ),
-    62: _(
-        """
- --- VALEURS CORRECTION STATIQUE ---
-  DIRECTION
-"""
-    ),
-    63: _(
-        """          %(k1)s  %(k2).8s     %(r1)12.5e
-"""
-    ),
-    64: _(
-        """             %(k1).8s    %(r1)12.5e
-"""
-    ),
-    73: _(
-        """                                       %(k1)s     %(k2).8s         %(r1)12.5e
 """
     ),
     77: _(

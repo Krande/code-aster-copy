@@ -1,0 +1,60 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# This test is a copy of hsnv100a
+# It allows to test MPI-coupling with two instance of code_aster
+
+from mpi4py import MPI
+
+from code_aster.Coupling import ExternalCoupling
+
+from hsnv100z_meca import coupled_mechanics
+from hsnv100z_ther import coupled_thermics
+
+
+# Tis test is normally run with:
+#   mpiexec --tag-output -n 1 run_aster coupled_mechanics.py : \
+#                        -n 1 run_aster coupled_thermics.py | tee $@
+# but it is not possible here.
+
+# Get the rank and size in the original communicator
+comm = MPI.COMM_WORLD
+global_rank = comm.rank
+global_size = comm.size
+
+assert global_size == 2, "This testcase should be executed with 2 processes."
+
+
+################################################################################
+# definition of the coupled cpl
+################################################################################
+
+
+if global_rank == 0:
+    # define thermal coupling
+    cpl_ther = ExternalCoupling("thermics", starter=True, debug=True)
+    cpl_ther.init_coupling("mechanics")
+
+    coupled_thermics(cpl_ther)
+else:
+    # define mechanical coupling
+    cpl_meca = ExternalCoupling("mechanics", starter=False, debug=True)
+    cpl_meca.init_coupling("thermics")
+
+    coupled_mechanics(cpl_meca)

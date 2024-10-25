@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -142,8 +142,8 @@ def check_fortran_preprocessor(self):
     def _check(define, msg, fragment):
         """"""
         program = (
-                "\n".join(["program main", "%s", "print *, str(hello)", "end program main", ""])
-                % fragment
+            "\n".join(["program main", "%s", "print *, str(hello)", "end program main", ""])
+            % fragment
         )
         self.start_msg("Checking fpp stringify using %s" % msg)
         res = self.check_fc(
@@ -173,10 +173,10 @@ def check_fortran_preprocessor(self):
         ]
     )
     if not self.check_fc(
-            msg="Checking compilation with long lines",
-            fragment=fragment,
-            mandatory=False,
-            compile_filename="test.F90",
+        msg="Checking compilation with long lines",
+        fragment=fragment,
+        mandatory=False,
+        compile_filename="test.F90",
     ):
         Logs.warn(
             "The compiler failed on long lines that may be generated "
@@ -187,16 +187,16 @@ def check_fortran_preprocessor(self):
 
 @Configure.conf
 def code_checker(
-        self,
-        define,
-        check,
-        fragment,
-        start_msg,
-        error_msg,
-        into=None,
-        optional=False,
-        setbool=False,
-        use="",
+    self,
+    define,
+    check,
+    fragment,
+    start_msg,
+    error_msg,
+    into=None,
+    optional=False,
+    setbool=False,
+    use="",
 ):
     """Check the size of a type compiling 'fragment' code with 'check',
     add 'define' macro."""
@@ -355,15 +355,11 @@ def check_sizeof_string_size(self):
     """Check fortran string length size"""
     self.start_msg("Setting type for fortran string length")
     # prefer use ISO_C_BINDING
+    # ref: https://gcc.gnu.org/onlinedocs/gfortran/Argument-passing-conventions.html
     # ref: http://gcc.gnu.org/onlinedocs/gfortran/Interoperability-with-C.html
-    if self.env.CC_NAME.lower() in ("icc", "clang"):
-        typ = "size_t"
-    else:
-        typ = "unsigned int"
-
-    # because win64
-    if self.env.ASTER_PLATFORM_MINGW or self.env.ASTER_PLATFORM_MSVC64:
-        typ = "size_t"
+    typ = "size_t"
+    if self.env.FC_NAME.lower() == "gfortran" and int(self.env.FC_VERSION[0] or 0) <= 7:
+        typ = "int"
     self.define("ASTER_C_STRING_SIZE", typ, quote=False)
     self.end_msg(typ)
 
@@ -459,6 +455,7 @@ def check_optimization_fcflags(self):
     """Check for optimization FCFLAGS."""
     self.setenv("debug")
     self.start_msg("Setting fortran debug flags")
+    self.define("ASTER_DEBUG_FC", 1)
     self.remove_optflags("FCFLAGS")
     flags = ["-g", "-O0"] + Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
     if self.options.enable_coverage:

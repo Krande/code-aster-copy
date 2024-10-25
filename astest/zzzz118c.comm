@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ MATERI18 = INCLUDE_MATERIAU(TYPE_MODELE="REF", TYPE_VALE="NOMI", NOM_AFNOR="A48"
 MATERI19 = INCLUDE_MATERIAU(TYPE_MODELE="REF", TYPE_VALE="NOMI", NOM_AFNOR="A52", VARIANTE="A")
 MATERI20 = INCLUDE_MATERIAU(TYPE_MODELE="REF", TYPE_VALE="NOMI", NOM_AFNOR="A52", VARIANTE="B")
 MATERI21 = INCLUDE_MATERIAU(
-    TYPE_MODELE="REF", TYPE_VALE="NOMI", NOM_AFNOR="ERNICRFE3", VARIANTE="A"
+    TYPE_MODELE="REF", TYPE_VALE="NOMI", NOM_AFNOR="ERNICRFE3", VARIANTE="A", OPTION="SANS"
 )
 MATERI22 = INCLUDE_MATERIAU(TYPE_MODELE="REF", TYPE_VALE="NOMI", NOM_AFNOR="NC15FE", VARIANTE="A")
 MATERI23 = INCLUDE_MATERIAU(TYPE_MODELE="REF", TYPE_VALE="NOMI", NOM_AFNOR="NC30FE", VARIANTE="A")

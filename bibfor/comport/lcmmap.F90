@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
                   imat, nmat, angmas, pgl, materd, &
                   materf, matcst, nbcomm, cpmono, ndt, &
@@ -134,7 +134,7 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
     integer :: nhsr
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), hook(6, 6)
     real(kind=8) :: hsr(nsg, nsg, nhsr)
-    real(kind=8) :: repere(7), xyz(3), kooh(6, 6), tbsysg
+    real(kind=8) :: kooh(6, 6), tbsysg
     real(kind=8) :: epsi, angmas(3), pgl(3, 3), hookf(6, 6)
     real(kind=8) :: valres(nmat), ms(6), ng(3), q(3, 3), lg(3)
     character(len=8) :: mod, nomc(14)
@@ -149,6 +149,7 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
     integer :: nbphas, icompk, icompi, icompr, dimk, tabicp(nmat), nvloc
     integer :: indmat, indcp, imono, nbval, indloc, indcom, iphas, nbfam
     integer :: numono, nvintg, idmono, nbval1, nbval2, nbval3, nbcoef
+    blas_int :: b_incx, b_incy, b_n
     common/tbsysg/tbsysg(900)
 !     ----------------------------------------------------------------
     call jemarq()
@@ -168,7 +169,7 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
     call r8inir(2*nmat, 0.d0, materd, 1)
     call r8inir(2*nmat, 0.d0, materf, 1)
 !
-
+!
 !
 !     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
     nr = nvi+ndt-1
@@ -235,7 +236,10 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
             call r8inir(900, 0.d0, tbsysg, 1)
             call jeveuo(monor, 'L', imonor)
 !           TABLE CONTENANT LES SYSTEMES
-            call dcopy(6*nbtbsy+12, zr(imonor), 1, tbsysg, 1)
+            b_n = to_blas_int(6*nbtbsy+12)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(imonor), b_incx, tbsysg, b_incy)
         else
             tbsysg(1) = 0.d0
         end if
@@ -363,17 +367,13 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
         materf(nmat, 1) = 0
 !
     else if (phenom .eq. 'ELAS_ORTH') then
-        repere(1) = 1
-        do i = 1, 3
-            repere(i+1) = angmas(i)
-        end do
 ! -    ELASTICITE ORTHOTROPE
 ! -     MATRICE D'ELASTICITE ET SON INVERSE A TEMPD(T)
 !
         call dmat3d(fami, imat, r8vide(), '-', kpg, &
-                    ksp, repere, xyz, hook)
+                    ksp, angmas, hook)
         call d1ma3d(fami, imat, r8vide(), '-', kpg, &
-                    ksp, repere, xyz, kooh)
+                    ksp, angmas, kooh)
 !
 !         termes  SQRT(2) qui ne sont pas mis dans DMAT3D
         do j = 4, 6
@@ -415,9 +415,9 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
 !
 ! -     MATRICE D'ELASTICITE ET SON INVERSE A A TEMPF (T+DT)
         call dmat3d(fami, imat, r8vide(), '+', kpg, &
-                    ksp, repere, xyz, hookf)
+                    ksp, angmas, hookf)
         call d1ma3d(fami, imat, r8vide(), '+', kpg, &
-                    ksp, repere, xyz, kooh)
+                    ksp, angmas, kooh)
 !       termes  SQRT(2) qui ne sont pas mis dans DMAT3D
         do j = 4, 6
             do i = 1, 6

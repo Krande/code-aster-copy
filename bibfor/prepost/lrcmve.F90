@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -185,7 +185,8 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa, &
                     goto 12
                 end if
             end do
-            goto 11
+            cycle
+12          continue
 !
 ! 1.1.2. ==> QUAND ON STOCKE A L'IDENTIQUE, ON RECHERCHE LE NUMERO DE
 !            COMPOSANTE DE REFERENCE QUI A LE MEME NOM QUE LA
@@ -207,8 +208,6 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa, &
 !
 ! 1.2. ==> SI AUCUNE COMPOSANTE N'A ETE TROUVEE, MALAISE ...
 !
-12      continue
-!
         if (nrcmp .eq. 0) then
             call utmess('F', 'MED_73', sk=zk16(adncfi-1+iaux))
         end if
@@ -227,26 +226,17 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa, &
                 do jaux = 1, nmatyp
                     ima = zi(jnumma+jaux-1)
                     nbpt = npgma(ima)
-                    nbptm = npgmm(ima)
                     nbspm = nspmm(ima)
-                    i2 = 1
-                    isp = 1
-                    do i = 1, nbptm
-!
-                        laux = laux+nbcmfi
-!                       IS GAUSS POINT IN ASTER ELEMENT ?
-                        if (i2 .le. nbpt) then
-                            ipg = indpg(nutyma, i2)
+                    nbptm = npgmm(ima)/nbspm
+                    do i = 1, min(nbptm, nbpt)
+                        ipg = indpg(nutyma, i)
+                        do isp = 1, nbspm
+                            laux = laux+nbcmfi
                             call cesexi('S', adsd, adsl, ima, ipg, &
                                         isp, nrcmp, kk)
                             zl(adsl-kk-1) = .true.
                             zr(adsv-kk-1) = zr(laux)
-                        end if
-                        i2 = i2+1
-                        if (mod(i, nbptm/nbspm) .eq. 0) then
-                            i2 = 1
-                            isp = isp+1
-                        end if
+                        end do
                     end do
                 end do
 !
@@ -284,26 +274,17 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa, &
                 do nuval = 0, lgproa-1
                     ima = zi(jnumma+nuval)
                     nbpt = npgma(ima)
-                    nbptm = npgmm(ima)
                     nbspm = nspmm(ima)
-                    i2 = 1
-                    isp = 1
-                    do i = 1, nbptm
-!
-                        laux = laux+nbcmfi
-!                       IS GAUSS POINT IN ASTER ELEMENT ?
-                        if (i2 .le. nbpt) then
-                            ipg = indpg(nutyma, i2)
+                    nbptm = npgmm(ima)/nbspm
+                    do i = 1, min(nbptm, nbpt)
+                        ipg = indpg(nutyma, i)
+                        do isp = 1, nbspm
+                            laux = laux+nbcmfi
                             call cesexi('S', adsd, adsl, ima, ipg, &
                                         isp, nrcmp, kk)
                             zl(adsl-kk-1) = .true.
                             zr(adsv-kk-1) = zr(laux)
-                        end if
-                        i2 = i2+1
-                        if (mod(i, nbptm/nbspm) .eq. 0) then
-                            i2 = 1
-                            isp = isp+1
-                        end if
+                        end do
                     end do
                 end do
 !
@@ -339,7 +320,6 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa, &
         if (nbcmpv .ne. 0) then
             goto 110
         end if
-11      continue
     end do
 !
 !====

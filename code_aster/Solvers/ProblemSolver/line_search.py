@@ -54,14 +54,11 @@ class LineSearch(SolverFeature):
 
     def setup(self):
         """Set up the line search object"""
-        if self.phys_pb.isMechanical():
-            self.solve = self.__solve_meca
-        elif self.phys_pb.isThermal():
-            self.solve = self.__solve_ther
+        self.solve = self.__solve
 
     @profile
     @SolverFeature.check_once
-    def __solve_meca(self, solution, scaling=1.0):
+    def __solve(self, solution, scaling=1.0):
         """Apply linear search for mechanical problems.
 
         Arguments:
@@ -80,7 +77,7 @@ class LineSearch(SolverFeature):
                 opersManager = self.get_feature(SOP.OperatorsManager)
                 resi_state = opersManager.getResidual(scaling)
                 self.phys_state.primal_step -= rho * solution
-                return resi_state.resi.dot(solution)
+                return -resi_state.resi.dot(solution)
 
             def _proj(rho, param=self.param):
                 rhotmp = rho
@@ -103,16 +100,23 @@ class LineSearch(SolverFeature):
             iteropt = -1
 
             assert method in ("CORDE", "MIXTE"), method
-            if method == "CORDE":
-                rhom, rho = 0.0, 1.0
-                rhoopt = rho
-                fm = f0
-            elif method == "MIXTE":
-                raise NotImplementedError()
+            rhom, rho = 0.0, 1.0
+            rhoopt = rho
+            fm = f0
+            if method == "MIXTE":
+                if f0 <= 0.0:
+                    sens = 1.0
+                else:
+                    sens = -1.0
+                rhoneg = 0.0
+                fneg = sens * f0
+                bpos = False
+            else:
+                sens = 1.0
 
             for iter in range(self.param["ITER_LINE_MAXI"] + 1):
                 try:
-                    f = _f(rho)
+                    f = _f(sens * rho)
                 except Exception as e:
                     # do we already have an rhoopt ?
                     if iter > 0:
@@ -120,101 +124,76 @@ class LineSearch(SolverFeature):
                     else:
                         raise e
                 # keep best rho
+                # zbopti
                 if abs(f) <= fopt:
                     rhoopt = rho
                     fopt = abs(f)
                     iteropt = iter
                     # converged ?
                     if abs(f) < fcvg:
-                        logger.info(
+                        logger.debug(
                             "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iter, rho, f)
                         )
                         return rhoopt * solution
 
                 rhotmp = rho
-                if abs(f - fm) > tiny:
-                    rho = (f * rhom - fm * rho) / (f - fm)
-                    rho = _proj(rho)
-                elif f * (rho - rhom) * (f - fm) <= 0.0:
-                    rho = self.param["RHO_MAX"]
-                else:
-                    rho = self.param["RHO_MAX"]
-
+                if method == "CORDE":
+                    if abs(f - fm) > tiny:
+                        rho = (f * rhom - fm * rho) / (f - fm)
+                        rho = _proj(rho)
+                    elif f * (rho - rhom) * (f - fm) <= 0.0:
+                        rho = self.param["RHO_MAX"]
+                    else:
+                        rho = self.param["RHO_MIN"]
+                elif method == "MIXTE":
+                    # zbborn
+                    if np.sign(f) == np.sign(f0):
+                        rhoneg = rho
+                    else:
+                        rhopos = rho
+                        bpos = True
+                    if not bpos:
+                        rhom = rho
+                        rho = 3 * rhom
+                    else:
+                        # zbroot
+                        if abs(f) >= abs(fm):
+                            # en cas de non pertinence des iteres : dichotomie
+                            rho = 0.5 * (rhoneg + rhopos)
+                        else:
+                            # interpolation lineaire
+                            if abs(rho - rhom) > tiny:
+                                p1 = (f - fm) / (rho - rhom)
+                                p0 = fm - p1 * rhom
+                                if abs(p1) <= abs(fm) / (rhopos + rhom):
+                                    rho = 0.5 * (rhoneg + rhopos)
+                                else:
+                                    rho = -p0 / p1
+                            else:
+                                logger.debug(
+                                    "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f"
+                                    % (iteropt, rhoopt, fopt)
+                                )
+                                return rhoopt * solution
+                    # zbproj
+                    if rho < rhoneg:
+                        if bpos:
+                            rho = 0.5 * (rhoneg + rhopos)
+                        else:
+                            logger.debug(
+                                "LinesearchB: iter = %d, rho = %0.6f and f(rho) = %0.6f"
+                                % (iteropt, rhoopt, fopt)
+                            )
+                            return rhoopt * solution
+                    if bpos and rho > rhopos:
+                        rho = 0.5 * (rhoneg + rhopos)
+                    # zbinte
+                    rho = sens * _proj(sens * rho)
                 rhom = rhotmp
                 fm = f
-            logger.info(
+            logger.debug(
                 "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iteropt, rhoopt, fopt)
             )
             return rhoopt * solution
-
-        return solution
-
-    @profile
-    @SolverFeature.check_once
-    def __solve_ther(self, solution, scaling=1.0):
-        """Apply linear search for thermal problems.
-
-        Arguments:
-            solution (FieldOnNodes): Temperature solution.
-
-        Returns:
-            FieldOnNodes: Accelerated solution by linear search.
-        """
-
-        if self.activated():
-
-            def _f(rho, solution=solution, scaling=scaling):
-                self.phys_state.primal_step += rho * solution
-                opersManager = self.get_feature(SOP.OperatorsManager)
-                resi_state = opersManager.getResidual(scaling)
-                self.phys_state.primal_step -= rho * solution
-                testm = resi_state.resi.norm("NORM_INFINITY")
-                return resi_state.resi.dot(solution), testm
-
-            # retrieve args
-            f0, testm = _f(0.0, solution)
-
-            rho0 = 0.0
-            rho = 1.0
-
-            for iter in range(self.param["ITER_LINE_MAXI"] + 1):
-
-                f1, testm = _f(rho)
-
-                if testm < self.param["RESI_LINE_RELA"]:
-                    return rho * solution
-
-                if iter == 0:
-                    ffinal = f1
-                    rhof = 1.0
-
-                if abs(f1) < abs(ffinal):
-                    ffinal = f1
-                    rhof = rho
-
-                rhot = rho
-
-                if abs(f1 - f0) > np.finfo("float64").tiny:
-                    rho = -(f0 * rhot - f1 * rho0) / (f1 - f0)
-                    # print(
-                    #     "Linesearch: f1 = {}, rho0 = {}, f0 = {}, rhot = {}, rho = {}".format(f1, rho0, f0, rhot, rho),
-                    #     flush=True
-                    # )
-                    if rho < self.param["RHO_MIN"]:
-                        rho = self.param["RHO_MIN"]
-                    if rho > self.param["RHO_MAX"]:
-                        rho = self.param["RHO_MAX"]
-                    if abs(rho - rhot) < 1.0e-8:
-                        break
-                else:
-                    break
-
-                rho0 = rhot
-                f0 = f1
-
-            rho = rhof
-            f1 = ffinal
-
-            return rho * solution
 
         return solution

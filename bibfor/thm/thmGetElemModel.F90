@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,6 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret1, iret2
-    real(kind=8) :: r8bid
     aster_logical :: l_axi, l_vf
     integer :: ndim
     character(len=8) :: type_elem(2)
@@ -62,9 +60,8 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
     ndim = 0
     type_elem = ' '
     l_vf = ASTER_FALSE
-!
+
 ! - Get dof in finite element
-!
     ds_thm%ds_elem%l_dof_ther = lteatt('THER', 'OUI')
     ds_thm%ds_elem%l_dof_meca = lteatt('MECA', 'OUI')
     ds_thm%ds_elem%l_dof_pre1 = .not. lteatt('HYDR1', '0')
@@ -84,9 +81,8 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
     if (lteatt('HYDR2', '2')) then
         ds_thm%ds_elem%nb_phase(2) = 2
     end if
-!
+
 ! - Get general model
-!
     l_axi = lteatt('AXIS', 'OUI')
     if (l_axi) then
         type_elem(1) = 'AXIS'
@@ -98,13 +94,12 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
         type_elem(1) = '3D'
         ndim = 3
     end if
-!
-! - Finite volume
-!
+    type_elem(2) = 'THM'
+
+! - Finite volume ?
     l_vf = lteatt('TYPMOD3', 'SUSHI')
-!
+
 ! - Copy
-!
     if (present(l_axi_)) then
         l_axi_ = l_axi
     end if

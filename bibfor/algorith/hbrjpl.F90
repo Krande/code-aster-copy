@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip, &
     real(kind=8) :: deux, trois, sf(6), seqf
     real(kind=8) :: parame(4), derive(5), gres, grup, detadg, dgdl
     real(kind=8) :: pi, pphi1, pphi2, pphi0
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
     parameter(deux=2.0d0)
     parameter(un=1.0d0)
@@ -82,7 +83,10 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip, &
 ! --- CALCUL DES VALEURS PROPRES --------------------------------------
 ! =====================================================================
     call lcdevi(sigp, sf)
-    seqf = ddot(ndt, sf, 1, sf, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    seqf = ddot(b_n, sf, b_incx, sf, b_incy)
     sigeqe = sqrt(trois*seqf/deux)+trois*mu*dg/(etap+un)
     i1e = trace(ndi, sigp)+9.0d0*k*etap*dg/(etap+un)
     do ii = 1, ndt
@@ -98,8 +102,8 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip, &
     if (gp .lt. materf(1, 2)) then
         detadg = 6.0d0*(pphi1-pphi0)*pi*cos(parame(4)*pi)/(grup*(trois+sin(parame(4)*pi))**2)
     else if (gp .lt. materf(2, 2)) then
-        detadg = 6.0d0*(pphi2-pphi1)*pi*cos(parame(4)*pi)/((gres-grup)*(trois+sin(parame(4)*pi&
-                 &))**2)
+        detadg = 6.0d0*(pphi2-pphi1)*pi*cos(parame(4)*pi)/((gres-grup)*(trois+sin(parame(4)*pi))*&
+                                                          &*2)
     else
         detadg = 0.d0
     end if

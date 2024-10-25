@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine te0325(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
-    integer :: icodre(1), kpg, spt
+    integer :: icodre(1), spt
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
@@ -60,14 +60,10 @@ subroutine te0325(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PVECTTR', 'E', ivectt)
 !
-    fami = 'FPG1'
-    kpg = 1
+    fami = 'RIGI'
     spt = 1
     poum = '+'
     mater = zi(imate)
-    call rcvalb(fami, kpg, spt, poum, mater, &
-                ' ', 'THER', 0, ' ', [0.d0], &
-                1, 'RHO_CP', rho, icodre, 1)
 !
     if (option(16:16) .eq. 'R') then
         call jevech('PACCELR', 'L', iacce)
@@ -124,6 +120,10 @@ subroutine te0325(option, nomte)
     do ipg = 1, npg1
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
+!
+        call rcvalb(fami, ipg, spt, poum, mater, &
+                    ' ', 'THER', 0, ' ', [0.d0], &
+                    1, 'RHO_CP', rho, icodre, 1)
 !
         nx = 0.0d0
         ny = 0.0d0

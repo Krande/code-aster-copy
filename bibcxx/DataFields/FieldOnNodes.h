@@ -406,6 +406,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return lhs;
     };
 
+    std::string getLocalization() const { return "NOEU"; };
+
     VectorString getComponents() const { return _dofDescription->getComponents(); };
 
     ASTERINTEGER getNumberOfComponents() const { return getComponents().size(); }
@@ -433,8 +435,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param scaling The scaling of the Lagrange DOFs
      */
 #ifdef ASTER_HAVE_PETSC
-    FieldOnNodes *fromPetsc( const Vec &vec, const ASTERDOUBLE &scaling = 1.0 ) {
-        CALLO_VECT_ASSE_FROM_PETSC( getName(), _dofDescription->getName(), &vec, &scaling );
+    FieldOnNodes *fromPetsc( const Vec &vec, const ASTERDOUBLE &scaling = 1.0,
+                             bool local = false ) {
+        const ASTERINTEGER local2 = local ? 1 : 0;
+        CALLO_VECT_ASSE_FROM_PETSC( getName(), _dofDescription->getName(), &vec, &scaling,
+                                    &local2 );
         _values->updateValuePointer();
 
         return this;
@@ -585,6 +590,15 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return toFieldOnNodes( simpFieldRest );
     };
 
+    FieldOnNodesPtr asPhysicalQuantity( const std::string physQuant,
+                                        const MapString &map_cmps ) const {
+
+        auto simpField = toSimpleFieldOnNodes( *this );
+        auto simpFieldRest = simpField->asPhysicalQuantity( physQuant, map_cmps );
+
+        return toFieldOnNodes( simpFieldRest );
+    };
+
     /**
      * @brief Wrap of copy constructor
      * @param desc Description that is used for the copy
@@ -647,9 +661,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( this->getMesh()->isParallel() ) {
             ASTERDOUBLE norm2 = norme;
             if ( normType == "NORM_1" || normType == "NORM_2" )
-                AsterMPI::all_reduce( norm2, norme, MPI_SUM );
+                norme = AsterMPI::sum( norm2 );
             else
-                AsterMPI::all_reduce( norm2, norme, MPI_MAX );
+                norme = AsterMPI::max( norm2 );
         }
 #endif
 
@@ -693,8 +707,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
 #ifdef ASTER_HAVE_MPI
         if ( this->getMesh()->isParallel() ) {
-            ValueType ret2 = ret;
-            AsterMPI::all_reduce( ret2, ret, MPI_SUM );
+            ret = AsterMPI::sum( ret );
         }
 #endif
         CALL_JEDEMA();
@@ -773,61 +786,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return renvoie un nouvel objet de FieldOnNodes
      *         avec les valeurs transformées
      */
-    template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value,
-                             FieldOnNodes< ValueType > >::type
-    transform( py::object &func ) const {
-        if ( !PyCallable_Check( func.ptr() ) )
-            raiseAsterError( "Input parameter to the transform \
-        method should be a callable Python object" );
-
-        FieldOnNodes< ValueType > tmp( *this );
-        updateValuePointers();
-
-        ASTERINTEGER size = _values->size();
-        for ( auto i = 0; i < size; i++ ) {
-            PyObject *res = PyObject_CallFunction( func.ptr(), "d", ( *_values )[i] );
-            if ( PyFloat_Check( res ) ) {
-                tmp[i] = (ASTERDOUBLE)PyFloat_AsDouble( res );
-            } else if ( PyLong_Check( res ) ) {
-                tmp[i] = (ASTERDOUBLE)PyLong_AsDouble( res );
-            } else {
-                raiseAsterError( "Invalid function return type. Expected ASTERDOUBLE." );
-            }
-            Py_XDECREF( res );
-        }
-        return tmp;
-    };
-
-    template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERCOMPLEX >::value,
-                             FieldOnNodes< ValueType > >::type
-    transform( py::object &func ) const {
-        if ( !PyCallable_Check( func.ptr() ) )
-            raiseAsterError( "Input parameter to the transform \
-        method should be a callable Python object" );
-
-        FieldOnNodes< ValueType > tmp( *this );
-        _values->updateValuePointer();
-
-        ASTERINTEGER size = _values->size();
-
-        Py_complex val;
-        for ( auto i = 0; i < size; i++ ) {
-            val.real = ( *_values )[i].real();
-            val.imag = ( *_values )[i].imag();
-            PyObject *res = PyObject_CallFunction( func.ptr(), "D", val );
-            if ( PyComplex_Check( res ) ) {
-                ASTERDOUBLE re = (ASTERDOUBLE)PyComplex_RealAsDouble( res );
-                ASTERDOUBLE im = (ASTERDOUBLE)PyComplex_ImagAsDouble( res );
-                tmp[i] = { re, im };
-            } else {
-                raiseAsterError( "Invalid function return type. Expected ASTERCOMPLEX." );
-            }
-            Py_XDECREF( res );
-        }
-        return tmp;
-    };
+    FieldOnNodes< ValueType > transform( py::object &func ) const;
 
     friend class FieldBuilder;
 };

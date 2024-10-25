@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,11 +55,11 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
     type(FE_Quadrature), intent(in) :: FEQuad
     type(FE_basis), intent(in) :: FEBasis
     character(len=16), intent(in) :: option
-    character(len=8), intent(in) :: typmod(*)
+    character(len=8), intent(in) :: typmod(2)
     integer, intent(in) :: imate
     integer, intent(in) :: ndim, nno, npg, lgpg
-    character(len=16), intent(in) :: compor(*)
-    real(kind=8), intent(in) :: carcri(*), angmas(*)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE), angmas(*)
     character(len=16), intent(in) :: mult_comp
     real(kind=8), intent(in) :: instam, instap
     real(kind=8), intent(inout) :: dispPrev(ndim*nno), dispIncr(ndim*nno)
@@ -107,12 +107,12 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-    aster_logical :: lVect, lMatr, lSigm, lMatrPred, lPred
+    integer, parameter :: ksp = 1
+    aster_logical :: lVect, lMatr, lSigm, lMatrPred, lMFront, lPred
     integer :: kpg, ipoids, ivf, idfde
     integer :: cod(MAX_QP)
     real(kind=8) :: dsidep(6, 6), coorpg(3), BGSEval(3, MAX_BS)
-    real(kind=8) :: fPrev(3, 3), fCurr(3, 3), gPrev(3, 3), gCurr(3, 3)
+    real(kind=8) :: fPrev(3, 3), fCurr(3, 3), fIncr(3, 3), gPrev(3, 3), gCurr(3, 3)
     real(kind=8) :: epsgPrev(6), epsgIncr(6), epsgCurr(6)
     real(kind=8) :: detfPrev, detfCurr
     real(kind=8) :: dispCurr(ndim*nno)
@@ -123,32 +123,39 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 ! --------------------------------------------------------------------------------------------------
 !
     cod = 0
+    dispCurr = 0.d0
+
+! - Finite element parameters
+    call elrefe_info(fami=FEQuad%fami, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+
+! - Initialisation of behaviour datastructure
+    call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              FEQuad%fami, imate, &
+                              BEHinteg)
+
+! - Prepare external state variables (geometry)
+    call behaviourPrepESVAGeom(nno, npg, ndim, &
+                               ipoids, ivf, idfde, &
+                               FECell%coorno(1:ndim, 1:nno), BEHinteg, &
+                               dispPrev, dispIncr)
+
+! - Quantities to compute
     lSigm = L_SIGM(option)
     lVect = L_VECT(option)
     lMatr = L_MATR(option)
     lPred = L_PRED(option)
     lMatrPred = L_MATR_PRED(option)
-    dispCurr = 0.d0
-!
-! - Initialisation of behaviour datastructure
-!
-    call behaviourInit(BEHinteg)
-!
-! - Prepare external state variables
-!
-    call elrefe_info(fami=FEQuad%fami, jpoids=ipoids, jvf=ivf, jdfde=idfde)
-    call behaviourPrepESVAElem(carcri, typmod, &
-                               nno, npg, ndim, &
-                               ipoids, ivf, idfde, &
-                               FECell%coorno(1:ndim, 1:nno), BEHinteg, &
-                               dispPrev, dispIncr)
-!
+    lMFront = carcri(EXTE_TYPE) == 1 .or. carcri(EXTE_TYPE) == 2
+
 ! - Update displacements
-!
     dispCurr(:) = dispPrev(:)+dispIncr(:)
-!
+
 ! - Loop on Gauss points
-!
     do kpg = 1, FEQuad%nbQuadPoints
         coorpg = FEQuad%points_param(1:3, kpg)
         BGSEval = FEBasis%grad(coorpg, FEQuad%jacob(1:3, 1:3, kpg))
@@ -168,17 +175,34 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
         call pk2sig(ndim, fPrev, detfPrev, sigmPrep, sigmPrev(1, kpg), -1)
         sigmPrep(4:2*ndim) = sigmPrep(4:2*ndim)*rac2
 
-! ----- Compute behaviour
-        sigmPost = 0
-        epsgIncr = epsgCurr-epsgPrev
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
 
-        call nmcomp(BEHinteg, &
-                    FEQuad%fami, kpg, 1, ndim, typmod, &
-                    imate, compor, carcri, instam, instap, &
-                    6, epsgPrev, epsgIncr, 6, sigmPrep, &
-                    vim(1, kpg), option, angmas, &
-                    sigmPost, vip(1, kpg), 36, dsidep, &
-                    cod(kpg), mult_comp)
+! ----- Integrator
+        sigmPost = 0
+! ----- Check if the behavior law is MFRONT
+        if (lMFront) then
+! --------- Compute the increment of f for MFRONT
+            fIncr = fCurr-fPrev
+            call nmcomp(BEHinteg, &
+                        FEQuad%fami, kpg, ksp, ndim, typmod, &
+                        imate, compor, carcri, instam, instap, &
+                        9, fPrev, fIncr, 6, sigmPrep, &
+                        vim(1, kpg), option, angmas, &
+                        sigmPost, vip(1, kpg), 36, dsidep, &
+                        cod(kpg), mult_comp)
+        else
+! --------- Original behavior
+            epsgIncr = epsgCurr-epsgPrev
+
+            call nmcomp(BEHinteg, &
+                        FEQuad%fami, kpg, ksp, ndim, typmod, &
+                        imate, compor, carcri, instam, instap, &
+                        6, epsgPrev, epsgIncr, 6, sigmPrep, &
+                        vim(1, kpg), option, angmas, &
+                        sigmPost, vip(1, kpg), 36, dsidep, &
+                        cod(kpg), mult_comp)
+        end if
         if (cod(kpg) .eq. 1) goto 999
 !        write (6,*) 'option = ',option
 !        write (6,*) 'epsm   = ',epsgPrev
@@ -199,6 +223,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
             call lcdetf(ndim, fCurr, detfCurr)
             call pk2sig(ndim, fCurr, detfCurr, sigmPost, sigmCurr(1, kpg), 1)
         end if
+        !ASSERT(.false.)
     end do
 !
 999 continue

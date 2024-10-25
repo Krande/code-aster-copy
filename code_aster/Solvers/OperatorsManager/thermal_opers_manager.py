@@ -138,17 +138,11 @@ class ThermalOperatorsManager(BaseOperatorsManager):
             self.phys_state.primal_prev, self.phys_state.primal_step, self.phys_state.externVar
         )
 
-        rigi_ther = disc_comp.getTangentConductivityMatrix(
-            self.phys_state.primal_prev,
-            self.phys_state.primal_step,
-            self.phys_state.externVar,
-            with_dual=False,
-        )
-
-        rigi_ther_dual = disc_comp.getDualLinearConductivityMatrix()
-        dt, theta = self.phys_state.time_step, self._theta
+        codret, rigi_ther, rigi_ther_dual = disc_comp.getInternalTangentMatrix(self.phys_state)
 
         rigi_ther_ext = disc_comp.getExternalTangentMatrix(self.phys_state)
+
+        dt, theta = self.phys_state.time_step, self._theta
 
         jacobian = AssemblyMatrixTemperatureReal(self.phys_pb)
         jacobian.addElementaryMatrix(rigi_ther, theta)

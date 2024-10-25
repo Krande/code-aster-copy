@@ -3,7 +3,7 @@
  * @brief Implementation de
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -390,7 +390,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     }
 
     /* Gather the types and connectivities of cells */
-    AsterMPI::all_reduce( ASTERINTEGER( cellsToSend.size() ), totalNumberOfCells, MPI_SUM );
+    totalNumberOfCells = AsterMPI::sum( ASTERINTEGER( cellsToSend.size() ) );
     cellsToSend.clear();
 
     AsterMPI::all_gather( connectivitiesToSend, connectivitiesGathered );

@@ -53,7 +53,9 @@ RESUL = CREA_RESU(
     AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=CHTEMPL, INST=1.0, MODELE=MO, CHAM_MATER=CHMAT),
 )
 #
-RESUL = CALC_CHAMP(reuse=RESUL, RESULTAT=RESUL, THERMIQUE=("FLUX_ELGA", "FLUX_ELNO"))
+RESUL = CALC_CHAMP(
+    reuse=RESUL, RESULTAT=RESUL, THERMIQUE=("FLUX_ELGA", "FLUX_ELNO", "GRAT_ELGA", "GRAT_ELNO")
+)
 
 #
 # TEST TEMPERATURE :
@@ -313,6 +315,213 @@ TEST_RESU(
 )
 
 #
+# TEST GRAT_ELGA :
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELGA",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=2.000000000,
+            VALE_REFE=2.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELGA",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=3.000000000,
+            VALE_REFE=3.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELGA",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=2.000000000,
+            VALE_REFE=2.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M420",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELGA",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=3.000000000,
+            VALE_REFE=3.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M420",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELGA",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=2.000000000,
+            VALE_REFE=2.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M1181",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELGA",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=3.000000000,
+            VALE_REFE=3.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M1181",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELGA",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=2.000000000,
+            VALE_REFE=2.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M2000",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELGA",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=3.000000000,
+            VALE_REFE=3.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M2000",
+        ),
+    )
+)
+
+#
+# TEST GRAT_ELNO :
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="A",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=2.000000000,
+            VALE_REFE=2.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            GROUP_NO="A",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=3.000000000,
+            VALE_REFE=3.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            GROUP_NO="C",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=2.000000000,
+            VALE_REFE=2.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M420",
+        ),
+        _F(
+            GROUP_NO="C",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=3.000000000,
+            VALE_REFE=3.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M420",
+        ),
+        _F(
+            GROUP_NO="J",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=2.000000000,
+            VALE_REFE=2.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M1181",
+        ),
+        _F(
+            GROUP_NO="J",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=3.000000000,
+            VALE_REFE=3.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M1181",
+        ),
+        _F(
+            GROUP_NO="L",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=2.000000000,
+            VALE_REFE=2.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M2000",
+        ),
+        _F(
+            GROUP_NO="L",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUL,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=3.000000000,
+            VALE_REFE=3.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M2000",
+        ),
+    )
+)
+
+
+#
 #
 # -----------------------------------------------------------------
 # CHAMP DE TEMPERATURE QUADRATIQUE => FLUX LINEAIRE
@@ -332,7 +541,9 @@ RESUQ = CREA_RESU(
     AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=CHTEMPQ, INST=1.0, MODELE=MO, CHAM_MATER=CHMAT),
 )
 #
-RESUQ = CALC_CHAMP(reuse=RESUQ, RESULTAT=RESUQ, THERMIQUE=("FLUX_ELGA", "FLUX_ELNO"))
+RESUQ = CALC_CHAMP(
+    reuse=RESUQ, RESULTAT=RESUQ, THERMIQUE=("FLUX_ELGA", "FLUX_ELNO", "GRAT_ELGA", "GRAT_ELNO")
+)
 
 #
 # TEST TEMPERATURE :
@@ -487,6 +698,110 @@ TEST_RESU(
         ),
     )
 )
+
+#
+# TEST GRAT_ELNO :
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="A",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUQ,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=4.000000000,
+            VALE_REFE=4.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            GROUP_NO="A",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUQ,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=3.000000000,
+            VALE_REFE=3.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            GROUP_NO="C",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUQ,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=20.000000000,
+            VALE_REFE=20.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M420",
+        ),
+        _F(
+            GROUP_NO="C",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUQ,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=3.000000000,
+            VALE_REFE=3.0,
+            PRECISION=1.0e-3,
+            GROUP_MA="M420",
+        ),
+        _F(
+            GROUP_NO="J",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUQ,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=4.200000000,
+            VALE_REFE=4.0,
+            PRECISION=0.055,
+            GROUP_MA="M1181",
+        ),
+        _F(
+            GROUP_NO="J",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUQ,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=29.700000000,
+            VALE_REFE=30.0,
+            PRECISION=0.014999999999999999,
+            GROUP_MA="M1181",
+        ),
+        _F(
+            GROUP_NO="L",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUQ,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_X",
+            VALE_CALC=19.800000000,
+            VALE_REFE=20.0,
+            PRECISION=0.014999999999999999,
+            GROUP_MA="M2000",
+        ),
+        _F(
+            GROUP_NO="L",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUQ,
+            NOM_CHAM="GRAT_ELNO",
+            NOM_CMP="GRAT_Y",
+            VALE_CALC=29.700000000,
+            VALE_REFE=30.0,
+            PRECISION=0.014999999999999999,
+            GROUP_MA="M2000",
+        ),
+    )
+)
+
 
 #
 FIN()

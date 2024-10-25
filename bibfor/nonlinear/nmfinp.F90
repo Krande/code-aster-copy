@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,66 +15,75 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmfinp(sddisc, numins, lstop)
 !
-! person_in_charge: mickael.abbas at edf.fr
+subroutine nmfinp(sddisc, numeInst, lastTimeStep)
 !
     implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
+!
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
 #include "asterfort/didern.h"
 #include "asterfort/diinst.h"
 #include "asterfort/nmjalo.h"
 #include "asterfort/utdidt.h"
-    character(len=19) :: sddisc
-    integer :: numins
-    aster_logical :: lstop
+#include "asterfort/utmess.h"
+#include "event_def.h"
+#include "jeveux.h"
 !
-! ----------------------------------------------------------------------
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: numeInst
+    aster_logical, intent(out) :: lastTimeStep
 !
-! ROUTINE MECA_NON_LINE (UTILITAIRE)
+! --------------------------------------------------------------------------------------------------
 !
-! FIN DU TRANSITOIRE
+! MECA_NON_LINE
 !
-! ----------------------------------------------------------------------
+! Detect last time step
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  NUMINS : NUMERO D'INSTANT
-! IN  LSTOP  : .TRUE. SI DERNIER INSTANT DE LA LISTE
+! In  sddisc           : datastructure for time discretization
+! In  numeInst         : index of current time step
+! Out lastTimeStep     : flag for last time step
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-    real(kind=8) :: prec, jalon
-    real(kind=8) :: inst
+    real(kind=8) :: prec, jalon, timeCurr
     character(len=16) :: metlis
+    integer :: nbStepMaxi
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    lstop = .false.
-    inst = diinst(sddisc, numins)
-!
-! --- PRECISION SUR LES INSTANTS
-! --- (LIEE A CELLE DE VAL_MIN DE PAS_MINI DANS DEFI_LIST_INST.CAPY)
-!
+    lastTimeStep = ASTER_FALSE
+
+! - Current time step
+    timeCurr = diinst(sddisc, numeInst)
+
+! - PRECISION SUR LES INSTANTS
+! - (LIEE A CELLE DE VAL_MIN DE PAS_MINI DANS DEFI_LIST_INST.CAPY)
     prec = 1.d-12
-!
-! --- METHODE DE GESTION DE LA LISTE D'INSTANTS
-!
-    call utdidt('L', sddisc, 'LIST', 'METHODE', &
-                valk_=metlis)
-!
-! --- CONVERGENCE DU CALCUL: DERNIER PAS !
-!
-    if (didern(sddisc, numins)) lstop = .true.
-!
-! --- CONVERGENCE DU CALCUL: CAS LISTE AUTOMATIQUE
-!
+
+! - METHODE DE GESTION DE LA LISTE D'INSTANTS
+    call utdidt('L', sddisc, 'LIST', 'METHODE', valk_=metlis)
+
+! - Detect last time step by "manual" time stepping
+    if (didern(sddisc, numeInst)) then
+        lastTimeStep = ASTER_TRUE
+    end if
+
+! - Detect last time step by NB_PAS_MAXI
+    call utdidt('L', sddisc, 'LIST', 'NB_PAS_MAXI', vali_=nbStepMaxi)
+    if (numeInst .eq. nbStepMaxi) then
+        call utmess('I', 'ADAPTATION_13')
+        lastTimeStep = ASTER_TRUE
+    end if
+
+! -  Detect last time step by automatic time stepping
     if (metlis .eq. 'AUTO') then
-        call nmjalo(sddisc, inst, prec, jalon)
-        if (jalon .eq. r8vide()) lstop = .true.
+        call nmjalo(sddisc, timeCurr, prec, jalon)
+        if (jalon .eq. r8vide()) then
+            lastTimeStep = ASTER_TRUE
+        end if
     end if
 !
 end subroutine

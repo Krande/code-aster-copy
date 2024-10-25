@@ -225,7 +225,7 @@ steel = DEFI_MATERIAU(
 )
 
 timeList = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=800.0, NOMBRE=8))
-timeStepper = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=timeList))
+timeStepper = DEFI_LIST_INST(METHODE="AUTO", DEFI_LIST=_F(LIST_INST=timeList, NB_PAS_MAXI=3))
 
 # Create thermal result
 tempFunc = DEFI_FONCTION(
@@ -296,6 +296,37 @@ nonlinearResult = MECA_NON_LINE(
     NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=5),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
 )
+test.assertEqual(nonlinearResult.getNumberOfIndexes() - 1, 3)
+
+nonlinearResult = MECA_NON_LINE(
+    reuse=nonlinearResult,
+    MODELE=modelMeca,
+    CHAM_MATER=materialField,
+    ETAT_INIT=_F(EVOL_NOLI=nonlinearResult),
+    EXCIT=_F(CHARGE=clampBC),
+    COMPORTEMENT=_F(
+        RELATION="VMIS_ISOT_LINE", DEFORMATION="PETIT", TOUT="OUI", POST_INCR="REST_ECRO"
+    ),
+    INCREMENT=_F(LIST_INST=timeStepper),
+    NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=5),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
+)
+test.assertEqual(nonlinearResult.getNumberOfIndexes() - 1, 3 * 2)
+
+nonlinearResult = STAT_NON_LINE(
+    reuse=nonlinearResult,
+    MODELE=modelMeca,
+    CHAM_MATER=materialField,
+    ETAT_INIT=_F(EVOL_NOLI=nonlinearResult),
+    EXCIT=_F(CHARGE=clampBC),
+    COMPORTEMENT=_F(
+        RELATION="VMIS_ISOT_LINE", DEFORMATION="PETIT", TOUT="OUI", POST_INCR="REST_ECRO"
+    ),
+    INCREMENT=_F(LIST_INST=timeStepper),
+    NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=5),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
+)
+test.assertEqual(nonlinearResult.getNumberOfIndexes() - 1, 8)
 
 # Post traitement
 nonlinearResult = CALC_CHAMP(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
+! aslint: disable=W1504,W1306
 !
 subroutine cgfint(ndim, nno1, nno2, npg, wref, &
                   vff1, vff2, dffr1, geom, tang, &
@@ -41,7 +41,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(2)
     character(len=16) :: option, comporKit(COMPOR_SIZE)
 !
     integer :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 3), iuc(3), im(3)
@@ -91,6 +91,8 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
 ! OUT CODRET  : CODE RETOUR
 ! --------------------------------------------------------------------------------------------------
     integer, parameter:: nepsSheath = 2, nsigSheath = 1, ndsdeSheath = 2
+    integer, parameter :: ksp = 1
+    character(len=4), parameter :: fami = "RIGI"
 ! --------------------------------------------------------------------------------------------------
     aster_logical     :: lMatr, lSigm, lVari
     character(len=16) :: relaSheath, relaCable
@@ -119,10 +121,16 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
     rigi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RIGI'
     nddl = nno1*(ndim+1)+nno2
     cod = 0
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              comporKit, carcri, &
+                              instam, instap, &
+                              fami, mat, &
+                              BEHinteg)
 
 ! - Prepare compor maps
     ASSERT(comporKit(RELA_NAME) .eq. 'KIT_CG')
@@ -221,16 +229,18 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
                     ' ', 'CABLE_GAINE_FROT', 0, ' ', [0.d0], &
                     1, nom, val, codm, 2)
         r = val(1)
-!
-        BEHinteg%elga%tenscab = a*sigcab
-        BEHinteg%elga%curvcab = courb
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(g, ksp, BEHinteg)
+        BEHinteg%behavESVA%behavESVAOther%tenscab = a*sigcab
+        BEHinteg%behavESVA%behavESVAOther%curvcab = courb
 !
         de = 0.d0
         epsmSheath = [mu, gliss]
         depsSheath = [0.d0, 0.d0]
         sigmSheath = [0.d0]
         call nmcomp(BEHinteg, &
-                    'RIGI', g, 1, ndim, typmod, &
+                    fami, g, ksp, ndim, typmod, &
                     mat, comporSheath, carcri, instam, instap, &
                     nepsSheath, epsmSheath, depsSheath, nsigSheath, sigmSheath, &
                     vim(nbviCable+1, g), option, [0.d0, 0.d0, 0.d0], &

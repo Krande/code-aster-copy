@@ -486,7 +486,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
             call nmelnl(BEHinteg, &
                         'XFEM', kpg+idecpg, 1, ndim, &
                         typmod, matcod, compor, &
-                        eps, sigl, energi)
+                        eps, 0.d0, 0.d0, sigl, energi)
 
         end if
 

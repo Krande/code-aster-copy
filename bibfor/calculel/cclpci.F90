@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,9 @@
 subroutine cclpci(option, modele, resuin, resuou, mater, mateco, &
                   carael, ligrel, numord, nbpain, lipain, &
                   lichin, codret)
+!
+    use HHO_precalc_module, only: hhoAddInputField
+!
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
@@ -34,7 +37,7 @@ subroutine cclpci(option, modele, resuin, resuou, mater, mateco, &
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbpain, numord, codret
+    integer :: nbpain, numord, codret, nb_in_maxi
     character(len=8) :: modele, resuin, resuou, mater, mateco, carael
     character(len=8) :: lipain(*)
     character(len=16) :: option
@@ -160,6 +163,9 @@ subroutine cclpci(option, modele, resuin, resuou, mater, mateco, &
         lichin(nbpain) = nochin
 10      continue
     end do
+!
+    nb_in_maxi = nbpain+3
+    call hhoAddInputField(modele, nb_in_maxi, lichin, lipain, nbpain)
 !
     call jedema()
 !

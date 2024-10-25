@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,11 +43,15 @@ subroutine proqua(quat1, quat2, quat3)
 !
     real(kind=8) :: prosca
     integer :: i
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ------------------------------------------------------------------
 !
     call provec(quat1, quat2, quat3)
-    prosca = ddot(3, quat1, 1, quat2, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    prosca = ddot(b_n, quat1, b_incx, quat2, b_incy)
     quat3(4) = quat1(4)*quat2(4)-prosca
     do i = 1, 3
         quat3(i) = quat3(i)+quat1(4)*quat2(i)+quat2(4)*quat1(i)

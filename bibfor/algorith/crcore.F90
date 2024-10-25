@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine crcore()
     implicit none
 !
@@ -98,6 +98,7 @@ subroutine crcore()
     real(kind=8), pointer :: val(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: vicmp(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     data linst, listr8, lcpt, ldist/'&&CRCORE_LINST', '&&CRCORE_LISR8',&
      &     '&&CPT_CRCORE', '&&CRCORE_LDIST'/
@@ -135,7 +136,7 @@ subroutine crcore()
         typabs = 'INST'
         nbinst = -nis
     end if
-
+!
     if (nis .ne. 0) then
         call wkvect(lcpt, 'V V I', nbinst, jcpt)
         call wkvect(linst, 'V V R', nbinst, jinst)
@@ -143,13 +144,16 @@ subroutine crcore()
                     nbret=n1)
         call getvr8('CONV_RESU', 'PRECISION', iocc=iocc, scal=prec, nbret=ibid)
         call getvtx('CONV_RESU', 'CRITERE', iocc=iocc, scal=criter, nbret=ibid)
-        call rsorac(resu, 'LONUTI', 0, rbid, k8b, cbid, rbid, k8b, nbv, 1, ibid)
+        call rsorac(resu, 'LONUTI', 0, rbid, k8b, &
+                    cbid, rbid, k8b, nbv, 1, &
+                    ibid)
 !
         ivmx = rsmxno(resu)
         do k = 1, nbinst
             if (nbv(1) .gt. 0) then
                 call rsorac(resu, typabs, ibid, zr(jinst+k-1), k8b, &
-                            cbid, prec, criter, tnum, 1, nbr)
+                            cbid, prec, criter, tnum, 1, &
+                            nbr)
                 nume = tnum(1)
             else
                 nbr = 0
@@ -182,8 +186,9 @@ subroutine crcore()
 !
         call wkvect(linst, 'V V R', nbinst, jinst)
         call jeveuo(listr8//'.VALE', 'L', vr=val)
-        call rsorac(resu, 'LONUTI', 0, rbid, k8b, cbid, rbid, k8b, nbv, &
-                    1, ibid)
+        call rsorac(resu, 'LONUTI', 0, rbid, k8b, &
+                    cbid, rbid, k8b, nbv, 1, &
+                    ibid)
         call wkvect(lcpt, 'V V I', nbinst, jcpt)
         ivmx = rsmxno(resu)
         j = 0
@@ -193,8 +198,9 @@ subroutine crcore()
             j = j+1
             zr(jinst-1+j) = val(k)
             if (nbv(1) .gt. 0) then
-                call rsorac(resu, typabs, ibid, val(k), k8b, cbid, prec, criter, tnum, &
-                            1, nbr)
+                call rsorac(resu, typabs, ibid, val(k), k8b, &
+                            cbid, prec, criter, tnum, 1, &
+                            nbr)
                 nume = tnum(1)
             else
                 nbr = 0
@@ -278,8 +284,8 @@ subroutine crcore()
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         call jelira(jexnom(magrno, nomgr), 'LONUTI', nbno)
         call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
-        call getvr8('CONV_RESU', 'DIRECTION', iocc=iocc, nbval=3, &
-                    vect=dire, nbret=nbd)
+        call getvr8('CONV_RESU', 'DIRECTION', iocc=iocc, nbval=3, vect=dire, &
+                    nbret=nbd)
         dist = 0.d0
         do in = 1, 3
             dist = dist+dire(in)**2.0
@@ -288,8 +294,8 @@ subroutine crcore()
         do in = 1, 3
             dire(in) = dire(in)/dist
         end do
-        call getvr8('CONV_RESU', 'COOR_REFE', iocc=iocc, nbval=3, &
-                    vect=coorre, nbret=nbd)
+        call getvr8('CONV_RESU', 'COOR_REFE', iocc=iocc, nbval=3, vect=coorre, &
+                    nbret=nbd)
         call getvr8('CONV_RESU', 'VITE_ONDE', iocc=iocc, scal=vs, nbret=nbd)
         call wkvect(ldist, 'V V R', nbno, jdist)
         do ino = 1, nbno
@@ -304,29 +310,34 @@ subroutine crcore()
             zr(jdist+ino-1) = dist
         end do
     end if
-
+!
     do j = 1, nbinst
         if (j .ge. 2) call jemarq()
         call jerecu('V')
         icompt = zi(jcpt+j-1)
         tps = zr(jinst+j-1)
-        call rsexch(' ', resu, nsymb, icompt, nomch, iret)
+        call rsexch(' ', resu, nsymb, icompt, nomch, &
+                    iret)
         if (iret .eq. 0) then
             call rsadpa(resu, 'L', 1, typabs, icompt, &
                         0, sjv=iad, styp=k8b)
         else if (iret .eq. 110) then
             call rsagsd(resu, 0)
-            call rsexch(' ', resu, nsymb, icompt, nomch, iret)
+            call rsexch(' ', resu, nsymb, icompt, nomch, &
+                        iret)
         else if (iret .eq. 100) then
             call vtcreb(nomch, 'G', 'R', nume_ddlz=numedd)
         end if
         call jeveuo(nomch//'.VALE', 'E', jchout)
-        call rsorac(resui, typabs, ibid, tps, k8b, cbid, prec, criter, tnum, 1, nbr)
+        call rsorac(resui, typabs, ibid, tps, k8b, &
+                    cbid, prec, criter, tnum, 1, &
+                    nbr)
         numei = tnum(1)
         nbr0 = nbr
-        call rsexch(' ', resui, nsymb0, numei, chamno, iret)
+        call rsexch(' ', resui, nsymb0, numei, chamno, &
+                    iret)
         call vtcopy(chamno, chamn2, ' ', ier)
-
+!
         call jeveuo(chamn2//'.VALE', 'L', jchin)
         if (lddlex) then
             do inoe = 1, nbnoeu
@@ -346,11 +357,14 @@ subroutine crcore()
                 ncmp = zi(aprno+(nec+2)*(inoe-1)+2-1)
                 delay = zr(jdist+ino-1)/vs
                 tp2 = tps-dt*int(delay/dt)
-                call rsorac(resui, typabs, ibid, tp2, k8b, cbid, prec, criter, tnum, 1, nbr)
+                call rsorac(resui, typabs, ibid, tp2, k8b, &
+                            cbid, prec, criter, tnum, 1, &
+                            nbr)
                 if (iddl .ne. 0) then
                     if (nbr .ne. 0) then
                         numei = tnum(1)
-                        call rsexch(' ', resui, nsymb0, numei, chamn1, iret)
+                        call rsexch(' ', resui, nsymb0, numei, chamn1, &
+                                    iret)
                         call jeveuo(chamn1//'.VALE', 'L', jchi1)
                         do icmp = 1, ncmp
                             zr(jchin-1+iddl+icmp-1) = zr(jchi1-1+iddl+icmp-1)
@@ -460,9 +474,13 @@ subroutine crcore()
                 end if
             end do
         end if
-
-        call daxpy(neq, coefr, zr(jchin), 1, zr(jchout), 1)
-
+!
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, coefr, zr(jchin), b_incx, zr(jchout), &
+                   b_incy)
+!
         o1 = chamno//'.DESC'
         o2 = nomch//'.DESC'
         call jedupo(o1, 'G', o2, .false._1)
@@ -473,11 +491,13 @@ subroutine crcore()
 !
         call jeveuo(nomch//'.REFE', 'E', jrefe)
         zk24(jrefe+1) = profch
-
+!
         call rsnoch(resu, nsymb, icompt)
-        call rsadpa(resu, 'E', 1, typabs, icompt, 0, sjv=iad, styp=k8b)
+        call rsadpa(resu, 'E', 1, typabs, icompt, &
+                    0, sjv=iad, styp=k8b)
         zr(iad) = tps
-        call rssepa(resu, icompt, modele, materi, carele, list_load)
+        call rssepa(resu, icompt, modele, materi, carele, &
+                    list_load)
         if (j .ge. 2) call jedema()
 !
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho, &
     character(len=16) :: tvar(10), npara(nbpara)
     character(len=24) :: valek(3)
     complex(kind=8) :: c16b
+    blas_int :: b_incx, b_incy, b_n
     data tvar/'DEPL_X', 'DEPL_Y', 'DEPL_Z', 'DEPL_RADIAL',&
      &             'DEPL_ANGULAIRE', 'FORCE_NORMALE', 'FORCE_TANG_1',&
      &             'FORCE_TANG_2', 'STAT_CHOC', 'PUIS_USURE'/
@@ -176,7 +177,10 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho, &
             dxmint = -dxmaxt
 !
             idec = 3*(i-1)+j
-            call dcopy(nbpt, dloc(idec), 3*nbobst, wk1(1), 1)
+            b_n = to_blas_int(nbpt)
+            b_incx = to_blas_int(3*nbobst)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, dloc(idec), b_incx, wk1(1), b_incy)
 !
             do ibl = 1, nbloc
                 dxmoy = zero
@@ -222,8 +226,14 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho, &
 !       --- ANALYSE DES DEPLACEMENTS EN COORDONNEES POLAIRES ---
 !       --------------------------------------------------------
 !
-        call dcopy(nbpt, dloc(3*(i-1)+2), 3*nbobst, wk1, 1)
-        call dcopy(nbpt, dloc(3*(i-1)+3), 3*nbobst, wk2, 1)
+        b_n = to_blas_int(nbpt)
+        b_incx = to_blas_int(3*nbobst)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dloc(3*(i-1)+2), b_incx, wk1, b_incy)
+        b_n = to_blas_int(nbpt)
+        b_incx = to_blas_int(3*nbobst)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, dloc(3*(i-1)+3), b_incx, wk2, b_incy)
         do in = 1, nbpt
             wk3(in) = sqrt(wk1(in)*wk1(in)+wk2(in)*wk2(in))
         end do
@@ -339,7 +349,10 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho, &
         fxmaxt = zero
         fxmint = zero
         txchoc = zero
-        call dcopy(nbpt, fcho(3*(i-1)+1), 3*nbobst, wk1, 1)
+        b_n = to_blas_int(nbpt)
+        b_incx = to_blas_int(3*nbobst)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fcho(3*(i-1)+1), b_incx, wk1, b_incy)
         do ibl = 1, nbloc
             fnmoyt = zero
             fnmoyc = zero
@@ -399,7 +412,10 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho, &
             fyrmsc = zero
             fymaxt = zero
             fymint = zero
-            call dcopy(nbpt, fcho(3*(i-1)+j), 3*nbobst, wk1, 1)
+            b_n = to_blas_int(nbpt)
+            b_incx = to_blas_int(3*nbobst)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, fcho(3*(i-1)+j), b_incx, wk1, b_incy)
             do ibl = 1, nbloc
                 ftmoye = zero
                 ftetyp = zero
@@ -409,9 +425,9 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho, &
                 frms = zero
                 ftmax = -1.d30
                 ftmin = -ftmax
-                call dstapv(nbval, wk1((ibl-1)*nbval+idebut), temps((ibl-1)*nbval+idebut), &
-                            ftmin, ftmax, ftmoye, ftetyp, ftrms, &
-                            ftmoy, fetyp, frms)
+                call dstapv(nbval, wk1((ibl-1)*nbval+idebut), temps((ibl-1)*nbval+idebut), ftmin, &
+                            ftmax, ftmoye, ftetyp, ftrms, ftmoy, &
+                            fetyp, frms)
                 fymoyt = fymoyt+ftmoy
                 fyetyt = fyetyt+fetyp
                 fyrmst = fyrmst+frms
@@ -458,7 +474,10 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho, &
         tchomi = zero
         tchoma = zero
         tchomy = zero
-        call dcopy(nbpt, fcho(3*(i-1)+1), 3*nbobst, wk1, 1)
+        b_n = to_blas_int(nbpt)
+        b_incx = to_blas_int(3*nbobst)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fcho(3*(i-1)+1), b_incx, wk1, b_incy)
         do ibl = 1, nbloc
             tchocm = zero
             tchoct = zero

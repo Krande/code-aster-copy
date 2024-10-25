@@ -19,19 +19,21 @@
 subroutine thmCompNonLin(option, ds_thm)
 !
     use THM_type
-    use Behaviour_module, only: behaviourOption
+    use Behaviour_module
+    use Behaviour_type
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/ismaem.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/assthm.h"
-#include "asterfort/thmGetElemPara.h"
-#include "asterfort/thmGetParaOrientation.h"
-#include "asterfort/jevech.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/getElemOrientation.h"
+#include "asterfort/jevech.h"
+#include "asterfort/thmGetElemPara.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option
     type(THM_DS), intent(inout) :: ds_thm
@@ -62,12 +64,14 @@ subroutine thmCompNonLin(option, ds_thm)
     integer :: ndim, nno, nnos
     integer :: npi, npg, nbvari
     integer :: jv_poids, jv_func, jv_dfunc, jv_poids2, jv_func2, jv_dfunc2, jv_gano
-    character(len=8) :: type_elem(2)
+    character(len=8) :: typmod(2)
     integer:: lg_vi, lg_sig
     real(kind=8), allocatable:: varip(:), sigp(:), deplp(:)
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred
     character(len=16) :: compor_copy(COMPOR_SIZE), rela_meca
     integer :: iCompor
+    type(Behaviour_Integ) :: BEHinteg
+    character(len=4), parameter :: fami = 'FPG1'
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +80,7 @@ subroutine thmCompNonLin(option, ds_thm)
 
 ! - Get all parameters for current element
     call thmGetElemPara(ds_thm, l_axi, &
-                        type_elem, inte_type, ndim, &
+                        typmod, inte_type, ndim, &
                         mecani, press1, press2, tempe, second, &
                         dimdep, dimdef, dimcon, dimuel, &
                         nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
@@ -131,7 +135,7 @@ subroutine thmCompNonLin(option, ds_thm)
     end if
 
 ! - Get frame orientation for anisotropy
-    call thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
+    call getElemOrientation(ndim, nno, jv_geom, angl_naut)
 
 ! - Number of (total) internal variables
     read (compor_copy(NVAR), '(I16)') nbvari
@@ -157,11 +161,24 @@ subroutine thmCompNonLin(option, ds_thm)
     allocate (deplp(dimuel))
     deplp(1:dimuel) = zr(jv_dispm:jv_dispm+dimuel-1)+zr(jv_dispp:jv_dispp+dimuel-1)
 
+! - Initialisation of behaviour datastructure
+    call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              zk16(jv_compor), zr(jv_carcri), &
+                              zr(jv_instm), zr(jv_instp), &
+                              fami, zi(jv_mater), &
+                              BEHinteg)
+
+! - Save
+    ds_thm%ds_behaviour%BEHinteg = BEHinteg
+
 ! - Compute
     call assthm(ds_thm, option, zi(jv_mater), &
                 lMatr, lSigm, lVect, &
                 lVari, lMatrPred, l_axi, &
-                type_elem, inte_type, angl_naut, &
+                typmod, inte_type, angl_naut, &
                 ndim, nbvari, nno, nnos, &
                 npg, npi, &
                 nddls, nddlm, nddl_meca, &

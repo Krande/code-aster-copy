@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 !
 subroutine te0201(option, nomte)
 !
-    use Behaviour_module, only: behaviourOption
+    use Behaviour_module
+    use Behaviour_type
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmfi2d.h"
 #include "asterfort/tecach.h"
-#include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
-
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -49,6 +49,8 @@ subroutine te0201(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ndim = 2
+    character(len=4), parameter :: fami = "RIGI"
     integer :: kk, i, j, npg
     integer :: igeom, imater, icarcr, icomp, idepm, iddep, icoret
     integer :: icontm, icontp, ivect, imatr
@@ -59,6 +61,8 @@ subroutine te0201(option, nomte)
     character(len=16) :: rela_comp
     aster_logical :: matsym
     aster_logical :: lVect, lMatr, lVari, lSigm
+    blas_int :: b_incx, b_incy, b_n
+    type(Behaviour_Integ) :: BEHinteg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,18 +72,16 @@ subroutine te0201(option, nomte)
     icontp = 1
     ivect = 1
     icoret = 1
-!
+
 ! - Type of finite element
-!
     if (lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
     else
         typmod(1) = 'PLAN'
     end if
     typmod(2) = 'ELEMJOIN'
-!
+
 ! - Get input fields
-!
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imater)
     call jevech('PCARCRI', 'L', icarcr)
@@ -90,22 +92,30 @@ subroutine te0201(option, nomte)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
-!
+
+! - Initialisation of behaviour datastructure
+    call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              zk16(icomp), zr(icarcr), &
+                              zr(iinstm), zr(iinstp), &
+                              fami, zi(imater), &
+                              BEHinteg)
+
 ! - Select objects to construct from option name
-!
     call behaviourOption(option, zk16(icomp), &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
-!
+
 ! - Properties of behaviour
-!
     rela_comp = zk16(icomp-1+RELA_NAME)
-!
+
 ! - Get output fields
-!
     if (lMatr) then
         matsym = .true.
         if (rela_comp .eq. 'JOINT_MECA_RUPT') matsym = .false.
@@ -120,23 +130,23 @@ subroutine te0201(option, nomte)
     if (lVect) then
         call jevech('PVECTUR', 'E', ivect)
     end if
-
+!
 !     CONTRAINTE -, RANGEE DANS UN TABLEAU (6,NPG)
     sigmo = 0.d0
     sigmo(1, 1) = zr(icontm)
     sigmo(2, 1) = zr(icontm+1)
     sigmo(1, 2) = zr(icontm+2)
     sigmo(2, 2) = zr(icontm+3)
-!
+
 ! CALCUL DES CONTRAINTES, VIP, FORCES INTERNES ET MATR TANG ELEMENTAIRES
-    call nmfi2d(npg, lgpg, zi(imater), option, zr(igeom), &
+    call nmfi2d(BEHInteg, &
+                npg, lgpg, zi(imater), option, zr(igeom), &
                 zr(idepm), zr(iddep), sigmo, sigma, fint, &
                 mat, zr(ivarim), zr(ivarip), zr(iinstm), zr(iinstp), &
                 zr(icarcr), zk16(icomp), typmod, lMatr, lVect, lSigm, &
                 codret)
-!
+
 ! - Save matrix
-!
     if (lMatr) then
         if (matsym) then
             call jevech('PMATUUR', 'E', imatr)
@@ -158,24 +168,24 @@ subroutine te0201(option, nomte)
             end do
         end if
     end if
-!
+
 ! - Save stresses
-!
     if (lSigm) then
         zr(icontp) = sigma(1, 1)
         zr(icontp+1) = sigma(2, 1)
         zr(icontp+2) = sigma(1, 2)
         zr(icontp+3) = sigma(2, 2)
     end if
-!
+
 ! - Save internal forces
-!
     if (lVect) then
-        call dcopy(8, fint, 1, zr(ivect), 1)
+        b_n = to_blas_int(8)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fint, b_incx, zr(ivect), b_incy)
     end if
-!
+
 ! - Save return code
-!
     if (lSigm) then
         call jevech('PCODRET', 'E', icoret)
         zi(icoret) = codret

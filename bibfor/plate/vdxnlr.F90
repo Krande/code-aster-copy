@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,14 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                   codret)
 !
     use Behaviour_type
-    use Behaviour_module, only: behaviourOption, behaviourInit
+    use Behaviour_module
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/btdfn.h"
 #include "asterfort/btdmsn.h"
 #include "asterfort/btdmsr.h"
@@ -39,9 +39,9 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 #include "asterfort/jevete.h"
 #include "asterfort/mahsf.h"
 #include "asterfort/mahsms.h"
+#include "asterfort/matrc2.h"
 #include "asterfort/matrkb.h"
 #include "asterfort/moytpg.h"
-#include "asterfort/matrc2.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
@@ -54,12 +54,11 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 #include "asterfort/vexpan.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-#include "asterfort/Behaviour_type.h"
+#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jnbspi
-    character(len=8) :: typmod(2)
     character(len=32) :: elasKeyword
     character(len=16) :: option, nomte
     integer :: nb1, nb2, nddle, npge, npgsr, npgsn, itab(8), codret
@@ -83,27 +82,30 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     real(kind=8) :: dtild(5, 5), sgmtd(5), effint(42), vecl(48), vecll(51)
     real(kind=8) :: sign(4), sigma(4), dsidep(6, 6), angmas(3)
     real(kind=8) :: matc(5, 5), valpar
-    type(Behaviour_Integ) :: BEHinteg
     integer :: i, ib, icarcr, icompo, icontm, icontp, icou
     integer :: ideplm, ideplp, iinstm, iinstp, imate, inte, intsn
     integer :: intsr, iret, ivarim, ivarip, ivarix, ivectu, j
     integer :: jcara, jcrf, k1, k2, kpgs, kwgt, lgpg
     integer :: lzi, lzr, nbcou, nbvari, nddlet, ndimv
-    real(kind=8) :: cisail, coef, crf, gxz, gyz, hic, rac2
+    real(kind=8) :: coef, crf, gxz, gyz, hic
     real(kind=8) :: x(1), zic, zmin
     parameter(npge=3)
     real(kind=8) :: ksi3s2
     aster_logical :: lVect, lMatr, lVari, lSigm
+
+    blas_int :: b_incx, b_incy, b_n
+    real(kind=8) :: cisail
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    integer, parameter :: ndimLdc = 2
+    character(len=8), parameter :: typmod(2) = (/"C_PLAN  ", "        "/)
+    type(Behaviour_Integ) :: BEHinteg
+    character(len=4), parameter :: fami = "MASS"
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    rac2 = sqrt(2.d0)
-    typmod(1) = 'C_PLAN  '
-    typmod(2) = '        '
     codret = 0
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
@@ -117,9 +119,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     effint = 0.d0
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
-!
+
 ! - Get input fields
-!
     call jevech('PMATERC', 'L', imate)
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PINSTMR', 'L', iinstm)
@@ -132,7 +133,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PVARIMP', 'L', ivarix)
     call jevech('PCACOQU', 'L', jcara)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=itab)
     if (itab(6) .le. 1) then
         lgpg = itab(7)
     else
@@ -142,26 +144,33 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     if (nbcou .le. 0) then
         call utmess('F', 'PLATE1_10')
     end if
-!
+
+! - Don"t use AFFE_CARA_ELEM/MASSIF
+    angmas = r8vide()
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndimLdc, typmod, option, &
+                              zk16(icompo), zr(icarcr), &
+                              zr(iinstm), zr(iinstp), &
+                              fami, zi(imate), &
+                              BEHinteg)
+
 ! - Select objects to construct from option name
-!
     call behaviourOption(option, zk16(icompo), &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
-!
-! - Properties of behaviour
-!
-    read (zk16(icompo-1+NVAR), '(I16)') nbvari
 
+! - Properties of behaviour
+    read (zk16(icompo-1+NVAR), '(I16)') nbvari
+!
     epais = zr(jcara)
     kappa = zr(jcara+3)
     ctor = zr(jcara+4)
     zmin = -epais/2.d0
     hic = epais/nbcou
-!
+
 ! - Get output fields
-!
     if (option .eq. 'RAPH_MECA') then
         call jevech('PCACO3D', 'L', jcrf)
         crf = zr(jcrf)
@@ -180,7 +189,10 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     end if
 !
     ndimv = lgpg*npgsn
-    call dcopy(ndimv, zr(ivarix), 1, zr(ivarip), 1)
+    b_n = to_blas_int(ndimv)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
 !
     call vectan(nb1, nb2, xi, zr(lzr), vecta, &
                 vectn, vectpt)
@@ -283,21 +295,20 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                     sign(i) = zr(icontm-1+k1+i)
                 end do
                 sign(4) = zr(icontm-1+k1+4)*rac2
-! - LOI DE COMPORTEMENT
-! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
-! --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
-!
-                call r8inir(3, r8vide(), angmas, 1)
-!
-! -    APPEL A LA LOI DE COMPORTEMENT
-!
-                ksp = (icou-1)*npge+inte
+
                 cisail = 0.d0
 
+! ------------- Index of "sub"-point
+                ksp = (icou-1)*npge+inte
+
+! ------------- Set main parameters for behaviour (on point)
+                call behaviourSetParaPoin(intsn, ksp, BEHinteg)
+
+! ------------- Integrator
                 if (elasKeyword .eq. 'ELAS') then
                     sigma = 0.d0
                     call nmcomp(BEHinteg, &
-                                'MASS', intsn, ksp, 2, typmod, &
+                                fami, intsn, ksp, ndimLdc, typmod, &
                                 zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
                                 4, eps2d, deps2d, 4, sign, &
                                 zr(ivarim+k2), option, angmas, &
@@ -311,7 +322,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         if (cod .eq. 1) goto 999
                     end if
 !
-                    call rcvalb('MASS', intsn, ksp, '+', zi(imate), &
+                    call rcvalb(fami, intsn, ksp, '+', zi(imate), &
                                 ' ', elasKeyword, 0, ' ', [0.d0], &
                                 nbv, nomres, valres, valret, 1)
 !
@@ -320,7 +331,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                 else if (elasKeyword .eq. 'ELAS_ORTH') then
                     call moytpg('RIGI', intsn, 3, '+', valpar, &
                                 iret)
-                    call matrc2(1, 'TEMP    ', [valpar], kappa, matc, vectt)
+                    call matrc2(1, 'TEMP    ', [valpar], kappa, matc, &
+                                vectt)
                 end if
 !
 !    CALCULS DE LA MATRICE TANGENTE : BOUCLE SUR L'EPAISSEUR
@@ -380,8 +392,10 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                     else
                         ASSERT(ASTER_FALSE)
                     end if
-
-                    call dscal(25, wgt, dtild, 1)
+!
+                    b_n = to_blas_int(25)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, wgt, dtild, b_incx)
 !
                     call btkb(5, 42, nddle, dtild, btild, &
                               wmatcb, ktildi)
@@ -431,7 +445,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                         sgmtd(4) = dtild(4, 4)*gxz
                         sgmtd(5) = dtild(5, 5)*gyz
                     end if
-
+!
                     call epseff('EFFORI', nb1, x, btild, sgmtd, &
                                 x, wgt, effint)
 !

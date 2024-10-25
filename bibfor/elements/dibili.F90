@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine dibili(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out)          :: iret
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,6 +73,7 @@ subroutine dibili(for_discret, iret)
     integer :: codret(nbpart)
     character(len=8) :: nompar(nbpart)
     aster_logical :: okdire(6)
+    blas_int :: b_incx, b_incy, b_n
 !   nbparc paramètres par composante
     data nompar/'KDEB_DX', 'KFIN_DX', 'FPRE_DX', &
         'KDEB_DY', 'KFIN_DY', 'FPRE_DY', &
@@ -119,7 +120,10 @@ subroutine dibili(for_discret, iret)
                 ' ', 'DIS_BILI_ELAS', 1, 'TEMP', [temper], &
                 nbpart, nompar, valpar, codret, 0)
 !   les caractéristiques sont toujours dans le repère local on fait seulement une copie
-    call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
+    b_n = to_blas_int(for_discret%nbt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jdc), b_incx, klv, b_incy)
 !   si un ddl n'est pas affecte d'un comportement non-linéaire
 !   il est donc élastique dans cette direction. ==> dinonc
     raide(:) = 0.0d0
@@ -147,15 +151,15 @@ subroutine dibili(for_discret, iret)
     end if
     !
     if (for_discret%lVect .or. for_discret%lSigm) then
-        ! demi-matrice klv transformée en matrice pleine klc
+! demi-matrice klv transformée en matrice pleine klc
         call vecma(klv, for_discret%nbt, klc, neq)
-        ! calcul de fl = klc.dul (incrément d'effort)
+! calcul de fl = klc.dul (incrément d'effort)
         call pmavec('ZERO', neq, klc, for_discret%dul, fl)
     end if
-    ! calcul des efforts généralisés
+! calcul des efforts généralisés
     if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, neq
                 zr(icontp-1+ii) = fl(ii)+zr(icontm-1+ii)
@@ -163,15 +167,15 @@ subroutine dibili(for_discret, iret)
         else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
                 zr(icontp-1+ii) = -fl(ii)+zr(icontm-1+ii)
-                zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
-                                                 zr(icontm-1+ii+for_discret%nc)
+                zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discre&
+                                                 &t%nc)
             end do
         end if
     end if
-    ! calcul des forces nodales
+! calcul des forces nodales
     if (for_discret%lVect) then
         call jevech('PVECTUR', 'E', ifono)
-        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, neq
                 fl(ii) = fl(ii)+zr(icontm-1+ii)
@@ -179,18 +183,17 @@ subroutine dibili(for_discret, iret)
         else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
                 fl(ii) = fl(ii)-zr(icontm-1+ii)
-                fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
-                                        zr(icontm-1+ii+for_discret%nc)
+                fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discret%nc)
             end do
         end if
-        ! forces nodales aux noeuds 1 et 2 (repère global)
+! forces nodales aux noeuds 1 et 2 (repère global)
         if (for_discret%nc .ne. 2) then
             call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         else
             call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         end if
     end if
-    ! mise à jour des variables internes
+! mise à jour des variables internes
     if (for_discret%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         do ii = 1, nbvint

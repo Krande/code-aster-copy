@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,6 +85,7 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
     integer, pointer :: vnddl(:) => null()
     character(len=8), pointer :: type(:) => null()
     real(kind=8), pointer :: orig(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 !
@@ -93,7 +94,9 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
 ! ----------------------------------------------------------------------
     call jeveuo(xus, 'L', ius)
     call jeveuo(xeng, 'E', ieng)
-    call dscal(nbpt-1, 0.d0, zr(ieng), 1)
+    b_n = to_blas_int(nbpt-1)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(ieng), b_incx)
     call jeveuo(xcdl, 'L', icdl)
     call jeveuo(parcho//'.TYPE', 'L', vk8=type)
     call jeveuo(parcho//'.NDDL', 'L', vi=vnddl)
@@ -116,40 +119,76 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
     AS_ALLOCATE(vr=kye, size=neq)
     AS_ALLOCATE(vr=mdye, size=neq)
     do ind = 1, nbpt-1
-        call dscal(nd*(2*h+1), 0.d0, zr(ix), 1)
-        call dscal(nd, 0.d0, zr(iy), 1)
-        call dscal(nd, 0.d0, zr(idy), 1)
-        call dscal(nd, 0.d0, zr(imdy), 1)
-        call dscal(nd, 0.d0, zr(iky), 1)
+        b_n = to_blas_int(nd*(2*h+1))
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(ix), b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(iy), b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(idy), b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(imdy), b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(iky), b_incx)
 !
         omega = zr(ius-1+ind*ninc)
-        call dcopy(nd*(2*h+1), zr(ius+(ind-1)*ninc), 1, zr(ix), 1)
+        b_n = to_blas_int(nd*(2*h+1))
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ius+(ind-1)*ninc), b_incx, zr(ix), b_incy)
 ! ----------------------------------------------------------------------
 ! --- PASSAGE EN TEMPOREL (t=T/4)
 ! ----------------------------------------------------------------------
 ! ---   PI
         pi = r8pi()
-        call dcopy(nd, zr(ix), 1, zr(iy), 1)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ix), b_incx, zr(iy), b_incy)
         ratio = 4.d0
         do k = 1, h
 ! ---     COS
-            call daxpy(nd, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(iy), &
-                       1)
-            call daxpy(nd, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(idy), &
-                       1)
+            b_n = to_blas_int(nd)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(iy), &
+                       b_incy)
+            b_n = to_blas_int(nd)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(idy), &
+                       b_incy)
 ! ---     SIN
-            call daxpy(nd, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(iy), &
-                       1)
-            call daxpy(nd, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(idy), &
-                       1)
+            b_n = to_blas_int(nd)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), b_incx, zr(iy), &
+                       b_incy)
+            b_n = to_blas_int(nd)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), b_incx, zr(idy), &
+                       b_incy)
         end do
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE K*Y ET M*DY
 ! ----------------------------------------------------------------------
-        call dscal(nd, 0.d0, ye, 1)
-        call dscal(nd, 0.d0, dye, 1)
-        call dscal(nd, 0.d0, kye, 1)
-        call dscal(nd, 0.d0, mdye, 1)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, ye, b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, dye, b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, kye, b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, mdye, b_incx)
         i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
@@ -162,8 +201,12 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
                     .false._1)
         call mrmult('ZERO', imat(2), dye, mdye, 1, &
                     .false._1)
-        call dscal(nd, 0.d0, zr(iky), 1)
-        call dscal(nd, 0.d0, zr(imdy), 1)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(iky), b_incx)
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 0.d0, zr(imdy), b_incx)
         i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
@@ -172,8 +215,14 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
                 zr(imdy-1+i) = mdye(k)
             end if
         end do
-        e = ddot(nd, zr(iy), 1, zr(iky), 1)/2
-        e = e+ddot(nd, zr(idy), 1, zr(imdy), 1)/2
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        e = ddot(b_n, zr(iy), b_incx, zr(iky), b_incy)/2
+        b_n = to_blas_int(nd)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        e = e+ddot(b_n, zr(idy), b_incx, zr(imdy), b_incy)/2
         do k = 1, nchoc
             alpha = raid(k)
             jeu = vjeu(k)

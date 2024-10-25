@@ -172,6 +172,7 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
         }
         curSet = std::set< ASTERINTEGER >();
     }
+    _vertices[nbVert] = posInEdges;
     const int totNodeNb = allRanges[2 * nbProcs - 1];
     int nbNodesByProcs = totNodeNb / nbProcs;
     VectorInt tmp( 1, orphanNodeNb ), allON;
@@ -184,7 +185,6 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
         throw std::runtime_error( "Too many orphan nodes in mesh. Remove orphan"
                                   " nodes from your mesh or reduce MPI process number." );
     }
-    _vertices[nbVert] = posInEdges;
 };
 
 void MeshConnectionGraph::buildFromIncompleteMeshWithVertexWeights( const IncompleteMeshPtr &mesh,

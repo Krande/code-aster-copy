@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,8 @@ BC = DEFI_CONSTANTE(VALE=1390.0)
 K = DEFI_CONSTANTE(VALE=0.7)
 
 BETON = DEFI_MATERIAU(
-    ELAS_FO=_F(E=E, NU=NU, FONC_DESORP=FONC1, ALPHA=ALPHA, TEMP_DEF_ALPHA=20.0),
+    ELAS_FO=_F(E=E, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=20.0),
+    BETON_DESORP=_F(FONC_DESORP=FONC1),
     MAZARS_FO=_F(EPSD0=EPSD0, AT=AT, BT=BT, AC=AC, BC=BC, K=K, CHI=0.6),
     BETON_UMLV=_F(
         K_RS=6.0e4,

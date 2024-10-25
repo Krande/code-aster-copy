@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,6 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
-
-import math
-
-
-def Heaviside(x):
-    if x < 0:
-        return 0.0
-    else:
-        return x
-
 
 g = 9.81
 
@@ -114,53 +104,24 @@ CHPROJ = PROJ_CHAMP(
     METHODE="COLLOCATION", MODELE_1=MODHY, MODELE_2=MODLIN, PROL_ZERO="OUI", RESULTAT=REHY
 )
 
-Heavi = FORMULE(NOM_PARA=("PRE1",), VALE="Heaviside(PRE1)", Heaviside=Heaviside)
-
-CHPRE1 = CREA_CHAMP(
-    INST=1, NOM_CHAM="DEPL", OPERATION="EXTR", RESULTAT=CHPROJ, TYPE_CHAM="NOEU_DEPL_R"
-)
-
-CHFonc = CREA_CHAMP(
-    AFFE=_F(NOM_CMP=("X1",), TOUT="OUI", VALE_F=(Heavi,)),
-    MAILLAGE=mesh,
-    OPERATION="AFFE",
-    TYPE_CHAM="NOEU_NEUT_F",
-)
-
-CHEVAL = CREA_CHAMP(CHAM_F=CHFonc, CHAM_PARA=(CHPRE1,), OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R")
-
-CHSEEP = CREA_CHAMP(
-    ASSE=_F(CHAM_GD=CHEVAL, NOM_CMP=("X1",), NOM_CMP_RESU=("PTOT",), TOUT="OUI"),
-    MAILLAGE=mesh,
-    OPERATION="ASSE",
-    TYPE_CHAM="NOEU_DEPL_R",
-)
-
-CHMAT1 = AFFE_MATERIAU(
-    AFFE=_F(TOUT="OUI", MATER=(sol,)),
-    AFFE_VARC=_F(NOM_VARC="PTOT", TOUT="OUI", CHAM_GD=CHSEEP),
-    MAILLAGE=mesh,
-)
-
 TAB_INIT = LIRE_TABLE(UNITE=40)
 
 TABFS = CALC_STAB_PENTE(
-    CHAM_MATER=CHMAT1,
+    CHAM_MATER=CHMAT,
     METHODE_STAB="LEM",
     METHODE_LEM="MORGENSTERN_PRICE",
     CRITERE="MOHR_COULOMB",
     GROUP_MA=("range_pente",),
     NB_TRANCHE=5,
+    CHAM_PRES=_F(RESULTAT=CHPROJ, INST=CHPROJ.LIST_VARI_ACCES()["INST"][-1], ALGO_PRES="INVERSE"),
     RAFF_MAIL=_F(NB_RAFF_MAXI=1),
     X1_MINI=3.0,
     X1_MAXI=3.0,
     X2_MINI=13.2,
     X2_MAXI=13.2,
-    ALGO_EFWA=_F(ETAT_INIT=TAB_INIT, ITER_MAXI=1, A=50, N=2, M=2, MG=1, MARGE_PENTE=0.8),
+    ALGO_EFWA=_F(ETAT_INIT=TAB_INIT, ITER_MAXI=1, A=50, N=1, M=1, MG=0, MARGE_PENTE=0.8),
     CHAM_DEFO=CO("chamdef"),
 )
-
-IMPR_TABLE(TABLE=TABFS, UNITE=80)
 
 # Indicateur de glissement sur un neoud N391 autour de la surface de rupture
 TEST_RESU(
@@ -180,14 +141,14 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=0),
     NOM_PARA="FS",
     TABLE=TABFS,
-    VALE_CALC=(1.598078371690653,),
+    VALE_CALC=(1.6414166163464856,),
 )
 
 TEST_TABLE(
     FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=1),
     NOM_PARA="FS",
     TABLE=TABFS,
-    VALE_CALC=(1.60025990801935,),
+    VALE_CALC=(1.6080333735248051,),
 )
 
 TEST_TABLE(

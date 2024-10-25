@@ -45,6 +45,7 @@ liste_option_extr = (
     "SIGM_ELGA",
     "SIGM_ELNO",
     "VARC_ELGA",
+    "VARC_ELNO",
     "VARI_ELGA",
     "VARI_ELNO",
     "EPVC_ELGA",

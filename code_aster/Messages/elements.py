@@ -209,21 +209,12 @@ Conseil :
         """
  Élément de poutre %(k1)s :
  Vous faites des calculs avec l'option GROT_GDEP. Lors de la réactualisation de la géométrie,
- une rotation pour la poutre %(k1)s varie de plus de PI/8.
- Variation d'angle %(k2)s de %(r1)f degrés.
-
- * Cela peut arriver lorsque l'axe de la poutre correspond à l'axe global Z. Dans ce cas le
- calcul des angles définissant l'orientation de la poutre peut présenter une indétermination.
- -> Risque & Conseils :
-    Des problèmes de convergence peuvent survenir.
-    a) Essayez de définir une poutre qui n'est pas exactement verticale en déplaçant légèrement
-       un des noeuds.
-    b) Essayez de modifier votre maillage, pour qu'au cours du calcul, l'axe de la poutre ne soit
-       jamais l'axe Z global.
+ le repère local la poutre %(k1)s a varié d'un angle supérieur de PI/8 : %(r1)f degrés.
 
  * Cela peut être due à une instabilité de type flambement, déversement, ...
  -> Risque & Conseils :
     Des problèmes de convergence peuvent survenir.
+    Vous pouvez tenter de réduire les pas de temps.
     L'utilisation du pilotage peut permettre de passer cette instabilité.
 """
     ),

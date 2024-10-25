@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -120,7 +120,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="AUTRE_ASTER",
     VALE_REFE=1.36646e04,
-    VALE_CALC=14801.895803606281,
+    VALE_CALC=14798.868384403426,
     PRECISION=0.1,
     NOM_PARA="G",
     TABLE=T_FIC,
@@ -132,7 +132,7 @@ TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     PRECISION=0.05,
     VALE_REFE=2.99144e07,
-    VALE_CALC=31129195.410906643,
+    VALE_CALC=31125982.797060218,
     NOM_PARA="K1",
     TABLE=T_FIC,
     FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),
@@ -143,7 +143,7 @@ TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     PRECISION=0.1,
     VALE_REFE=2.16579e06,
-    VALE_CALC=2322211.453392158,
+    VALE_CALC=2322363.169895185,
     NOM_PARA="K2",
     TABLE=T_FIC,
     FILTRE=(_F(NOM_PARA="INST", VALE=1.0),),

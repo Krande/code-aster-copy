@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0439(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -139,7 +139,8 @@ subroutine te0439(option, nomte)
 !
 ! - CALCUL DE LA MATRICE "B" : DEPL NODAL -> EPS11 ET DU JACOBIEN
 !
-        call mbcine(nno, zr(igeom), dff, alpha, beta, b, jac)
+        call mbcine(nno, zr(igeom), dff, alpha, beta, &
+                    b, jac)
 !
         wgt = wgt+rho(1)*zr(ipoids+kpg-1)*jac*h
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,10 @@
 subroutine nmrigi(modelz, cara_elem, &
                   ds_material, ds_constitutive, &
                   list_func_acti, iter_newt, sddyna, ds_measure, ds_system, &
-                  hval_incr, hval_algo, hhoField, &
+                  hval_incr, hval_algo, &
                   optioz, ldccvg)
 !
     use NonLin_Datastructure_type
-    use HHO_type
 !
     implicit none
 !
@@ -47,7 +46,6 @@ subroutine nmrigi(modelz, cara_elem, &
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-    type(HHO_Field), intent(in) :: hhoField
     character(len=*), intent(in) :: optioz
     integer, intent(out) :: ldccvg
 !
@@ -67,7 +65,6 @@ subroutine nmrigi(modelz, cara_elem, &
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_system        : datastructure for non-linear system management
-! In  hhoField         : datastructure for HHO
 ! IN  ITERAT : NUMERO D'ITERATION
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -84,7 +81,7 @@ subroutine nmrigi(modelz, cara_elem, &
     character(len=1) :: base
     character(len=24) :: model
     character(len=16) :: optrig
-    aster_logical :: lendo, l_xfem, l_macr_elem, l_hho
+    aster_logical :: lendo, l_xfem, l_macr_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,7 +102,6 @@ subroutine nmrigi(modelz, cara_elem, &
     l_xfem = isfonc(list_func_acti, 'XFEM')
     l_macr_elem = isfonc(list_func_acti, 'MACR_ELEM_STAT')
     lendo = isfonc(list_func_acti, 'ENDO_NO')
-    l_hho = isfonc(list_func_acti, 'HHO')
 !
 ! --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
 !
@@ -123,10 +119,10 @@ subroutine nmrigi(modelz, cara_elem, &
 ! - Computation
 !
     call merimo(base, &
-                l_xfem, l_macr_elem, l_hho, &
+                l_xfem, l_macr_elem, &
                 model, cara_elem, iter_newt+1, &
                 ds_constitutive, ds_material, ds_system, &
-                hval_incr, hval_algo, hhoField, &
+                hval_incr, hval_algo, &
                 optrig, ldccvg, sddyna)
 !
 ! - End timer

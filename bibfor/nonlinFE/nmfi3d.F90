@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,41 +16,49 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
-
-subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
+! aslint: disable=W1504,W1006
+!
+subroutine nmfi3d(BEHInteg, typmod, &
+                  nno, nddl, npg, lgpg, wref, &
                   vff, dfde, mate, option, geom, &
                   deplm, ddepl, sigm, sigp, fint, &
                   ktan, vim, vip, carcri, compor, &
-                  matsym, coopg, tm, tp, lMatr, lVect, lSigm, &
-                  codret)
+                  matsym, coopg, tm, tp, lMatr, &
+                  lVect, lSigm, codret)
 !
     use Behaviour_type
     use Behaviour_module
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/codere.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmfici.h"
 #include "asterfort/r8inir.h"
 #include "blas/ddot.h"
 !
+    type(Behaviour_Integ), intent(inout) :: BEHinteg
     integer :: nno, nddl, npg, lgpg, mate, codret
-    real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg), carcri(*)
+    real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg)
     real(kind=8) :: geom(nddl), deplm(nddl), ddepl(nddl), tm, tp
     real(kind=8) :: fint(nddl), ktan(*), coopg(4, npg)
     real(kind=8) :: sigm(3, npg), sigp(3, npg), vim(lgpg, npg), vip(lgpg, npg)
-    character(len=16) :: option, compor(*)
     aster_logical :: matsym
+    character(len=8), intent(in) :: typmod(2)
+    character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     aster_logical, intent(in) :: lMatr, lVect, lSigm
 !
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
 !  OPTIONS DE MECANIQUE NON LINEAIRE POUR LES JOINTS 3D (TE0206)
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN  NNO    NOMBRE DE NOEUDS DE LA FACE (*2 POUR TOUT L'ELEMENT)
 ! IN  NDDL   NOMBRE DE DEGRES DE LIBERTE EN DEPL TOTAL (3 PAR NOEUDS)
 ! IN  NPG    NOMBRE DE POINTS DE GAUSS
@@ -77,29 +85,26 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
+    integer, parameter :: ndim = 3
+    character(len=4), parameter :: fami = "RIGI"
     integer :: cod(9), ni, mj, kk, p, q, kpg, n
     real(kind=8) :: b(3, 60), sigmo(6), sigma(6)
     real(kind=8) :: sum(3), dsu(3), dsidep(6, 6), poids
     real(kind=8) :: angmas(3)
-    type(Behaviour_Integ) :: BEHinteg
-    character(len=8), parameter :: typmod(2) = (/'3D      ', 'ELEMJOIN'/)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
     sum = 0.d0
     dsu = 0.d0
     cod = 0
-!
-! - Initialisation of behaviour datastructure
-!
-    call behaviourInit(BEHinteg)
-!
+
 ! - Don't use orientation (MASSIF in AFFE_CARA_ELEM)
-!
     angmas = r8vide()
 !
     if (lVect) then
-        call r8inir(nddl, 0.d0, fint, 1)
+        fint = 0.d0
     end if
     if (lMatr) then
         if (matsym) then
@@ -108,9 +113,8 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
             call r8inir(nddl*nddl, 0.d0, ktan, 1)
         end if
     end if
-!
+
 ! - Loop on Gauss points
-!
     do kpg = 1, npg
 !
 ! CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES
@@ -122,44 +126,69 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
 ! CALCUL DU SAUT DE DEPLACEMENT - : SUM, ET DE L'INCREMENT : DSU
 ! AU POINT DE GAUSS KPG
 !
-        sum(1) = ddot(nddl, b(1, 1), 3, deplm, 1)
-        sum(2) = ddot(nddl, b(2, 1), 3, deplm, 1)
-        sum(3) = ddot(nddl, b(3, 1), 3, deplm, 1)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(3)
+        b_incy = to_blas_int(1)
+        sum(1) = ddot(b_n, b(1, 1), b_incx, deplm, b_incy)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(3)
+        b_incy = to_blas_int(1)
+        sum(2) = ddot(b_n, b(2, 1), b_incx, deplm, b_incy)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(3)
+        b_incy = to_blas_int(1)
+        sum(3) = ddot(b_n, b(3, 1), b_incx, deplm, b_incy)
         if (lVect) then
-            dsu(1) = ddot(nddl, b(1, 1), 3, ddepl, 1)
-            dsu(2) = ddot(nddl, b(2, 1), 3, ddepl, 1)
-            dsu(3) = ddot(nddl, b(3, 1), 3, ddepl, 1)
+            b_n = to_blas_int(nddl)
+            b_incx = to_blas_int(3)
+            b_incy = to_blas_int(1)
+            dsu(1) = ddot(b_n, b(1, 1), b_incx, ddepl, b_incy)
+            b_n = to_blas_int(nddl)
+            b_incx = to_blas_int(3)
+            b_incy = to_blas_int(1)
+            dsu(2) = ddot(b_n, b(2, 1), b_incx, ddepl, b_incy)
+            b_n = to_blas_int(nddl)
+            b_incx = to_blas_int(3)
+            b_incy = to_blas_int(1)
+            dsu(3) = ddot(b_n, b(3, 1), b_incx, ddepl, b_incy)
         end if
-! ----- Compute behaviour
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+        BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 1:3) = coopg(1:3, kpg)
+
+! ----- Integrator
         sigmo = 0.d0
         do n = 1, 3
             sigmo(n) = sigm(n, kpg)
         end do
-!
-        BEHinteg%elem%coor_elga(kpg, 1:3) = coopg(1:3, kpg)
-!
         sigma = 0.d0
         call nmcomp(BEHinteg, &
-                    'RIGI', kpg, 1, 3, typmod, &
+                    fami, kpg, ksp, ndim, typmod, &
                     mate, compor, carcri, tm, tp, &
                     3, sum, dsu, 6, sigmo, &
                     vim(1, kpg), option, angmas, &
                     sigma, vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) goto 900
-
+!
 ! ----- Stresses
         if (lSigm) then
             do n = 1, 3
                 sigp(n, kpg) = sigma(n)
             end do
         end if
+
 ! ----- Internal forces
         if (lVect) then
             ASSERT(lSigm)
             do ni = 1, nddl
-                fint(ni) = fint(ni)+poids*ddot(3, b(1, ni), 1, sigma, 1)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                fint(ni) = fint(ni)+poids*ddot(b_n, b(1, ni), b_incx, sigma, b_incy)
             end do
         end if
+
 ! ----- Rigidity matrix
         if (lMatr) then
             if (matsym) then

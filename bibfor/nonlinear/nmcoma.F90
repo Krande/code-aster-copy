@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine nmcoma(listFuncActi, &
                   sddisc, numeTime, iterNewt, &
                   ds_algopara, ds_contact, ds_algorom, &
                   ds_print, ds_measure, &
-                  hval_incr, hval_algo, hhoField, &
+                  hval_incr, hval_algo, &
                   hval_meelem, hval_measse, &
                   numeDof, numeDofFixe, sdnume, &
                   solveu, ds_system, &
@@ -35,7 +35,6 @@ subroutine nmcoma(listFuncActi, &
     use NonLin_Datastructure_type
     use NonLinearDyna_type
     use Rom_Datastructure_type
-    use HHO_type
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
                                 isRigiMatrCompute, isInteVectCompute, &
                                 factorSystem, updateLoadBCMatrix
@@ -77,7 +76,6 @@ subroutine nmcoma(listFuncActi, &
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
-    type(HHO_Field), intent(in) :: hhoField
     character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
     character(len=24), intent(inout) :: numeDof
     character(len=24), intent(in) :: numeDofFixe
@@ -117,7 +115,6 @@ subroutine nmcoma(listFuncActi, &
 ! In  iterNewt        : index of current Newton iteration
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! In  hhoField         : datastructure for HHO
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
 ! OUT LFINT  : .TRUE. SI FORCES INTERNES CALCULEES
@@ -212,7 +209,6 @@ subroutine nmcoma(listFuncActi, &
                             ds_system, ds_measure, &
                             hval_incr, hval_algo, &
                             ldccvg, &
-                            hhoField_=hhoField, &
                             sddyna_=sddyna)
     end if
 

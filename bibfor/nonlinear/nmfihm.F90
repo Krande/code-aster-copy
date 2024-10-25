@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,11 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/codere.h"
 #include "asterfort/ejcine.h"
 #include "asterfort/gedisc.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/codere.h"
 !
     integer :: ndim, mate, npg, ipg, idf2, lgpg, nno1, nno2, nddl, iu(3, 16)
     integer :: ip(8)
@@ -45,9 +46,9 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
     real(kind=8) :: vect(nddl), matr(nddl*nddl)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     character(len=16), intent(in) :: option
-    real(kind=8), intent(in) :: carcri(*)
-    character(len=16), intent(in) :: compor(*)
-    character(len=8), intent(in) :: typmod(*)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    character(len=8), intent(in) :: typmod(2)
     aster_logical, intent(in) :: lSigm, lVect, lMatr
     integer, intent(out) :: codret
 !
@@ -93,6 +94,8 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=4), parameter :: fami = "RIGI"
+    integer, parameter :: ksp = 1
     aster_logical :: axi, ifhyme
     integer :: i, j, kk, m, n, os, p, q, kpg, cod(npg)
     real(kind=8) :: dsidep(6, 6), b(2*ndim-1, ndim+1, 2*nno1+nno2)
@@ -118,17 +121,21 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
     else
         ASSERT(ASTER_FALSE)
     end if
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              tm, tp, &
+                              fami, mate, &
+                              BEHinteg)
+
 ! - CALCUL DES COORDONNEES DES POINTS DE GAUSS
-!
     call gedisc(ndim, nno2, npg, vff2, geom, coopg)
-!
+
 ! - Loop on Gauss points
-!
     do kpg = 1, npg
 !
 !       CALCUL DE LA MATRICE CINEMATIQUE
@@ -172,10 +179,10 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
 !       COOROT : COORDONNEES DU PG + MATRICE DE ROTATION
 !       (MATRICE UTILE POUR LES VI DE POST-TRAITEMENT DANS LA LDC)
         do j = 1, ndim
-            BEHinteg%elem%coor_elga(kpg, j) = coopg(j, kpg)
+            BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, j) = coopg(j, kpg)
         end do
         do j = 1, ndim*ndim
-            BEHinteg%elga%rotpg(j) = rot(j)
+            BEHinteg%behavESVA%behavESVAOther%rotpg(j) = rot(j)
         end do
 !
 !       CONTRAINTES -
@@ -183,10 +190,14 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
         do n = 1, 2*ndim-1
             sigmo(n) = sigm(n, kpg)
         end do
-! ----- Integration of behaviour
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         sigma = 0.d0
         call nmcomp(BEHinteg, &
-                    'RIGI', kpg, 1, ndim, typmod, &
+                    fami, kpg, ksp, ndim, typmod, &
                     mate, compor, carcri, tm, tp, &
                     6, epsm, deps, 6, sigmo, &
                     vim(1, kpg), option, rbid, &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
 !
-
+!
+!
 interface
-    subroutine dspmv(uplo, n, alpha, a, x ,incx,beta, y,incy)
-
-        integer,intent(in) :: n,incx,incy
-        real(kind=8),intent(in) :: x        
-        real(kind=8),intent(inout) :: y
-        real(kind=8),intent(in) :: a(n*(n+1)/2),alpha,beta
-        character(len=1),intent(in) :: uplo  
-
+    subroutine dspmv(uplo, n, alpha, a, x,&
+                     incx, beta, y, incy)
+!
+        blas_int, intent(in) :: n, incx, incy
+        real(kind=8), intent(in) :: x
+        real(kind=8), intent(inout) :: y
+        real(kind=8), intent(in) :: a(n*(n+1)/2), alpha, beta
+        character(len=1), intent(in) :: uplo
+!
     end subroutine dspmv
 end interface

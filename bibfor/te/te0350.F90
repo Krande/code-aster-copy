@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,8 @@
 !
 subroutine te0350(option, nomte)
 !
-    use Behaviour_module, only: behaviourOption
+    use Behaviour_type
+    use Behaviour_module
 !
     implicit none
 !
@@ -29,7 +30,7 @@ subroutine te0350(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmas2d.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
@@ -61,10 +62,12 @@ subroutine te0350(option, nomte)
     integer :: icontm, ivarim, jv_mult_comp
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip
-    integer :: ivarix, iret, idim
+    integer :: ivarix, iret
     integer :: jtab(7), jcret, codret
     real(kind=8) :: def(4*27*2), dfdi(54)
-    real(kind=8) :: angl_naut(7), bary(3)
+    real(kind=8) :: angl_naut(3)
+    type(Behaviour_Integ) :: BEHinteg
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,15 +76,13 @@ subroutine te0350(option, nomte)
     icontp = 1
     ivarip = 1
     codret = 0
-!
+
 ! - Get element parameters
-!
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(nno .eq. 4)
-!
+
 ! - Type of finite element
-!
     if (lteatt('C_PLAN', 'OUI')) then
         typmod(1) = 'C_PLAN'
     else if (lteatt('D_PLAN', 'OUI')) then
@@ -90,9 +91,8 @@ subroutine te0350(option, nomte)
         ASSERT(ASTER_FALSE)
     end if
     typmod(2) = ' '
-!
+
 ! - Get input fields
-!
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCONTMR', 'L', icontm)
@@ -104,38 +104,26 @@ subroutine te0350(option, nomte)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PMULCOM', 'L', jv_mult_comp)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
-!
-! - Compute barycentric center
-!
-    bary = 0.d0
-    do i = 1, nno
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        end do
-    end do
-!
+
 ! - Get orientation
-!
-    call rcangm(ndim, bary, angl_naut)
+    call getElemOrientation(ndim, nno, igeom, angl_naut)
 !
 ! - Select objects to construct from option name
-!
     call behaviourOption(option, zk16(icompo), &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
-!
+
 ! - Properties of behaviour
-!
     mult_comp = zk16(jv_mult_comp-1+1)
     rela_comp = zk16(icompo-1+RELA_NAME)
     defo_comp = zk16(icompo-1+DEFO)
     type_comp = zk16(icompo-1+INCRELAS)
-!
+
 ! - Get output fields
-!
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
     end if
@@ -149,19 +137,30 @@ subroutine te0350(option, nomte)
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*lgpg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
-!
+
+! - Initialisation of behaviour datastructure
+    call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              zk16(icompo), zr(icarcr), &
+                              zr(iinstm), zr(iinstp), &
+                              fami, zi(imate), &
+                              BEHinteg)
+
 ! - HYPER-ELASTICITE
-!
     if (type_comp .eq. 'COMP_ELAS') then
         if (rela_comp .ne. 'ELAS') then
             call utmess('F', 'ELEMENTSSI_2')
         end if
     end if
-!
+
 ! - HYPO-ELASTICITE
-!
     if (defo_comp(6:10) .eq. '_REAC') then
         do i = 1, ndim*nno
             zr(igeom+i-1) = zr(igeom+i-1)+zr(ideplm+i-1)+zr(ideplp+i-1)
@@ -169,18 +168,18 @@ subroutine te0350(option, nomte)
     end if
 !
     if (defo_comp(1:5) .eq. 'PETIT') then
-        call nmas2d(fami, nno, npg, ipoids, ivf, &
+        call nmas2d(BEHinteg, &
+                    fami, nno, npg, ipoids, ivf, &
                     idfde, zr(igeom), typmod, option, zi(imate), &
-                    zk16(icompo), mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
-                    zr(ideplm), zr(ideplp), angl_naut, zr(icontm), zr(ivarim), &
-                    dfdi, def, zr(icontp), zr(ivarip), zr(imatuu), &
-                    zr(ivectu), codret)
+                    zk16(icompo), mult_comp, lgpg, zr(icarcr), zr(iinstm), &
+                    zr(iinstp), zr(ideplm), zr(ideplp), angl_naut, zr(icontm), &
+                    zr(ivarim), dfdi, def, zr(icontp), zr(ivarip), &
+                    zr(imatuu), zr(ivectu), codret)
     else
         call utmess('F', 'ELEMENTSSI_1', sk=defo_comp)
     end if
-!
+
 ! - Save return code
-!
     if (lSigm) then
         zi(jcret) = codret
     end if

@@ -47,7 +47,6 @@ def C_RELATION(command):
             "CABLE",
             "ARME",
             "ASSE_CORN",
-            "BARCELONE",
             "BETON_DOUBLE_DP",
             "BETON_RAG",
             "BETON_REGLE_PR",
@@ -223,7 +222,8 @@ def C_RELATION(command):
             "MetaAcierEPIL_PT",
             "MohrCoulombAS",
             "GonfElas",
-            "KH_CSSM",
             "NLH_CSRM",
             "MCC",
+            "Barcelone",
+            "CSSM",
         )

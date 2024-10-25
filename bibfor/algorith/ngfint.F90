@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,10 @@
 !
 subroutine ngfint(option, typmod, ndim, nddl, neps, &
                   npg, w, b, compor, fami, &
-                  mat, angmas, lgpg, crit, instam, &
+                  mat, angmas, lgpg, carcri, instam, &
                   instap, ddlm, ddld, ni2ldc, sigmam, &
                   vim, sigmap, vip, fint, matr, &
-                  lMatr, lVect, lSigm, &
-                  codret)
+                  lMatr, lVect, lSigm, codret)
 !
     use Behaviour_type
     use Behaviour_module
@@ -34,20 +33,21 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/nmcomp.h"
+#include "asterfort/Behaviour_type.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
 !
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(2)
     character(len=*) :: fami
-    character(len=16) :: option, compor(*)
+    character(len=16) :: option, compor(COMPOR_SIZE)
     integer :: ndim, nddl, neps, npg, mat, lgpg
     real(kind=8) :: w(neps, npg), ni2ldc(neps, npg), b(neps, npg, nddl)
-    real(kind=8) :: angmas(3), crit(*), instam, instap
+    real(kind=8) :: angmas(3), carcri(*), instam, instap
     real(kind=8) :: ddlm(nddl), ddld(nddl)
     real(kind=8) :: sigmam(neps, npg), sigmap(neps, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), matr(nddl, nddl), fint(nddl)
-    aster_logical, intent(in)       :: lMatr, lVect, lSigm
-    integer, intent(out)            :: codret
+    aster_logical, intent(in) :: lMatr, lVect, lSigm
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,12 +83,15 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
     integer :: nepg, g, i, cod(npg)
     real(kind=8) :: sigm(neps, npg), sigp(neps, npg)
     real(kind=8) :: epsm(neps, npg), epsd(neps, npg)
     real(kind=8) :: dsidep(neps, neps, npg)
     real(kind=8) :: ktgb(0:neps*npg*nddl-1)
     type(Behaviour_Integ) :: BEHinteg
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+    blas_int :: b_incx, b_incy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,30 +100,51 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
     if (lMatr) dsidep = 0.d0
     if (lSigm) sigp = 0.d0
     cod = 0
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              fami, mat, &
+                              BEHinteg)
 !
 ! - CALCUL DES DEFORMATIONS GENERALISEES
 !
-    call dgemv('N', nepg, nddl, 1.d0, b, &
-               nepg, ddlm, 1, 0.d0, epsm, &
-               1)
-    call dgemv('N', nepg, nddl, 1.d0, b, &
-               nepg, ddld, 1, 0.d0, epsd, &
-               1)
+    b_lda = to_blas_int(nepg)
+    b_m = to_blas_int(nepg)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddlm, b_incx, 0.d0, epsm, &
+               b_incy)
+    b_lda = to_blas_int(nepg)
+    b_m = to_blas_int(nepg)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dgemv('N', b_m, b_n, 1.d0, b, &
+               b_lda, ddld, b_incx, 0.d0, epsd, &
+               b_incy)
 !
 ! - CALCUL DE LA LOI DE COMPORTEMENT
 !
 !    FORMAT LDC DES CONTRAINTES (AVEC RAC2)
     sigm = sigmam*ni2ldc
 !
-!    LOI DE COMPORTEMENT EN CHAQUE POINT DE GAUSS
+! - LOI DE COMPORTEMENT EN CHAQUE POINT DE GAUSS
     do g = 1, npg
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(g, ksp, BEHinteg)
+
+! ----- Integrator
         call nmcomp(BEHinteg, &
-                    fami, g, 1, ndim, typmod, &
-                    mat, compor, crit, instam, instap, &
+                    fami, g, ksp, ndim, typmod, &
+                    mat, compor, carcri, instam, instap, &
                     neps, epsm(:, g), epsd(:, g), neps, sigm(:, g), &
                     vim(1, g), option, angmas, &
                     sigp(:, g), vip(1, g), neps*neps, dsidep(:, :, g), cod(g))
@@ -136,9 +160,14 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
 !      PRISE EN CHARGE DU POIDS DU POINT DE GAUSS
         sigp = sigp*w
 !      FINT = SOMME(G) WG.BT.SIGMA
-        call dgemv('T', nepg, nddl, 1.d0, b, &
-                   nepg, sigp, 1, 0.d0, fint, &
-                   1)
+        b_lda = to_blas_int(nepg)
+        b_m = to_blas_int(nepg)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('T', b_m, b_n, 1.d0, b, &
+                   b_lda, sigp, b_incx, 0.d0, fint, &
+                   b_incy)
     end if
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE (STOCKAGE PAR LIGNES SUCCESSIVES)
@@ -150,14 +179,26 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
         end do
 !      CALCUL DES PRODUITS INTERMEDIAIRES (WG.DSIDEP).B POUR CHAQUE G
         do g = 1, npg
-            call dgemm('N', 'N', neps, nddl, neps, &
-                       1.d0, dsidep(1, 1, g), neps, b(1, g, 1), nepg, &
-                       0.d0, ktgb((g-1)*neps), nepg)
+            b_ldc = to_blas_int(nepg)
+            b_ldb = to_blas_int(nepg)
+            b_lda = to_blas_int(neps)
+            b_m = to_blas_int(neps)
+            b_n = to_blas_int(nddl)
+            b_k = to_blas_int(neps)
+            call dgemm('N', 'N', b_m, b_n, b_k, &
+                       1.d0, dsidep(1, 1, g), b_lda, b(1, g, 1), b_ldb, &
+                       0.d0, ktgb((g-1)*neps), b_ldc)
         end do
 !      CALCUL DU PRODUIT FINAL SOMME(G) BT. ((WG.DSIDEP).B)  TRANSPOSE
-        call dgemm('T', 'N', nddl, nddl, nepg, &
-                   1.d0, ktgb, nepg, b, nepg, &
-                   0.d0, matr, nddl)
+        b_ldc = to_blas_int(nddl)
+        b_ldb = to_blas_int(nepg)
+        b_lda = to_blas_int(nepg)
+        b_m = to_blas_int(nddl)
+        b_n = to_blas_int(nddl)
+        b_k = to_blas_int(nepg)
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, ktgb, b_lda, b, b_ldb, &
+                   0.d0, matr, b_ldc)
     end if
 !
 ! - SYNTHESE DU CODE RETOUR

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine getExternalStrainModel(defo_comp, strain_model)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/BehaviourMGIS_type.h"
 !
     character(len=16), intent(in) :: defo_comp
     integer, intent(out) :: strain_model
@@ -40,22 +41,23 @@ subroutine getExternalStrainModel(defo_comp, strain_model)
 ! Out strain_model     : model of (large) strains
 !                        1 - small strains
 !                        2 - Simo-Miehe
-!                        3 - TotalLagrangian - not yet used
+!                        3 - GreenLagrange
 ! --------------------------------------------------------------------------------------------------
-    strain_model = MFRONT_STRAIN_UNSET
+    strain_model = MGIS_STRAIN_UNSET
 
 ! ----- Indicator for large strains
 
 !   Obsolete - for trace
     ASSERT(defo_comp .ne. 'GROT_GDEP')
     ASSERT(defo_comp .ne. 'SIMO_MIEHE')
-    ASSERT(defo_comp .ne. 'GREEN_LAGRANGE')
 
 !   for GDEF_LOG, prelog/poslog are called in te*
     if (defo_comp .eq. 'PETIT' .or. &
         defo_comp .eq. 'PETIT_REAC' .or. &
         defo_comp .eq. 'GDEF_LOG') then
-        strain_model = MFRONT_STRAIN_SMALL
+        strain_model = MGIS_STRAIN_SMALL
+    else if (defo_comp .eq. 'GREEN_LAGRANGE') then
+        strain_model = MGIS_STRAIN_F
     else
         ASSERT(ASTER_FALSE)
     end if

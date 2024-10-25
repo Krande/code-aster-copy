@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine sigmmc(fami, nno, ndim, nbsig, npg, &
                   ipoids, ivf, idfde, xyz, depl, &
-                  instan, repere, mater, nharm, sigma)
+                  instan, angl_naut, mater, nharm, sigma)
 !.======================================================================
     implicit none
 !
@@ -39,7 +39,7 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg, &
 !    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR
 !                                   L'ELEMENT
 !    INSTAN         IN     R        INSTANT DE CALCUL
-!    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
+!    ANGL_NAUT(3)   IN     R        ANGLES NAUTIQUES DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE
 !    MATER          IN     I        MATERIAU
 !    NHARM          IN     R        NUMERO D'HARMONIQUE
@@ -52,19 +52,19 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg, &
 #include "asterfort/dbudef.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/lteatt.h"
-    real(kind=8) :: xyz(1), depl(1), repere(7), sigma(1)
+    real(kind=8) :: xyz(1), depl(1), angl_naut(3), sigma(1)
     real(kind=8) :: instan, nharm
     character(len=*) :: fami
 ! -----  VARIABLES LOCALES
-    integer :: igau, i, nno
-    real(kind=8) :: b(486), d(36), jacgau, xyzgau(3)
+    integer :: igau, nno
+    real(kind=8) :: b(486), d(36), jacgau
     character(len=2) :: k2bid
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: idfde, idim, ipoids, ivf, mater, nbinco, nbsig
+    integer :: idfde, ipoids, ivf, mater, nbinco, nbsig
     integer :: ndim, ndim2, npg
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
@@ -83,19 +83,6 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg, &
 !      -----------------------------------
     do igau = 1, npg
 !
-!  --      COORDONNEES ET TEMPERATURE AU POINT D'INTEGRATION
-!  --      COURANT
-!          -------
-        xyzgau(1) = zero
-        xyzgau(2) = zero
-        xyzgau(3) = zero
-!
-        do i = 1, nno
-            do idim = 1, ndim2
-                xyzgau(idim) = xyzgau(idim)+zr(ivf+i+nno*(igau-1)-1)*xyz(idim+ndim2*(i-1))
-            end do
-        end do
-!
 !  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 !  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
 !  --      COURANT : (EPS_1) = (B)*(UN)
@@ -107,7 +94,7 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg, &
 !  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !          -------------------------------------------------
         call dmatmc(fami, mater, instan, '+', &
-                    igau, 1, repere, xyzgau, nbsig, &
+                    igau, 1, angl_naut, nbsig, &
                     d)
 !
 !  --      CALCUL DE LA CONTRAINTE AU POINT D'INTEGRATION COURANT

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matrHooke3d(elas_type, repere, &
+subroutine matrHooke3d(elas_type, angl, &
                        h, g, g1, g2, g3, &
-                       matr_elas, xyzgau_)
+                       matr_elas)
 !
     implicit none
 !
@@ -28,11 +28,10 @@ subroutine matrHooke3d(elas_type, repere, &
 !
 !
     integer, intent(in) :: elas_type
-    real(kind=8), intent(in) :: repere(7)
+    real(kind=8), intent(in) :: angl(3)
     real(kind=8), intent(in) :: g, h(6)
     real(kind=8), intent(in) :: g1, g2, g3
     real(kind=8), intent(out) :: matr_elas(6, 6)
-    real(kind=8), optional, intent(in) :: xyzgau_(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,23 +49,13 @@ subroutine matrHooke3d(elas_type, repere, &
 !                 4 - Isotropic
 !                 5 - Orthotropic
 !                 6 - Transverse isotropic
-! In  repere           : define reference frame (AFFE_CARA_ELEM/MASSIF)
-!                        repere(1) =  1 => nautical angles (ANGL_REP)
-!                           repere(2:4) : nautical angles
-!                           repere(5:7) : 0.d0
-!                        repere(1) =  2 => Euler angles (ANGL_EULER)
-!                           repere(2:4) : nautical angles
-!                           repere(5:7) : Euler angles
-!                        repere(1) = -1 => axisymetric axis (ANGL_AXE)
-!                           repere(2:4) : ANGL_AXE
-!                           repere(5:7) : ORIG_AXE
+! In  angl             : nautical angles
 ! In  h                : Hook coefficient (all)
 ! In  g                : shear ratio (isotropic/Transverse isotropic)
 ! In  g1               : shear ratio (Orthotropic)
 ! In  g2               : shear ratio (Orthotropic)
 ! In  g3               : shear ratio (Orthotropic)
 ! Out matr_elas        : Hooke matrix in global reference frame
-! In  xyzgau           : coordinates of Gauss point (for ANGL_AXE case)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,7 +106,7 @@ subroutine matrHooke3d(elas_type, repere, &
 !
 ! ----- Compute transition matrix from orthotropic basis to global 3D basis
 !
-        call dpassa(repere, irep, matr_tran, xyzgau_)
+        call dpassa(angl, irep, matr_tran)
 !
 ! ----- Change Hooke matrix to global 3D basis
 !
@@ -151,7 +140,7 @@ subroutine matrHooke3d(elas_type, repere, &
 !
 ! ----- Compute transition matrix from orthotropic basis to global 3D basis
 !
-        call dpassa(repere, irep, matr_tran, xyzgau_)
+        call dpassa(angl, irep, matr_tran)
 !
 ! ----- Change Hooke matrix to global 3D basis
 !

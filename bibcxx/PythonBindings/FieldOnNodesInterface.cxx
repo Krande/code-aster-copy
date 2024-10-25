@@ -72,6 +72,12 @@ Returns:
         .def( "build", &FieldOnNodesReal::build, py::arg( "mesh" ) = nullptr )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
+        .def( "getLocalization", &FieldOnNodesReal::getLocalization, R"(
+            Get localization = NOEU
+
+            Returns:
+                str: "NOEU"
+            )" )
         .def( "_restrict", &FieldOnNodesReal::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given
@@ -90,6 +96,19 @@ Returns:
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString(),
               py::arg( "same_rank" ) = PythonBool::None )
+        .def( "asPhysicalQuantity", &FieldOnNodesReal::asPhysicalQuantity,
+              R"(
+            Return a new field with a new physical quantity and renamed components.
+
+            Arguments:
+                physQuantity [str]: name of the new physical quantity
+                map_cmps[dict[str, str]]: dict to rename components
+                (only renamed component will be keeped)
+
+            Returns:
+                FieldOnNodesReal: field with name physical quantity.
+            )",
+              py::arg( "physQuantity" ), py::arg( "map_cmps" ) )
         .def( "getRealPart", []( const FieldOnNodesReal &f ) { return getRealPart( f ); },
               R"(
 Extract the real part of the real field (the field is duplicated)
@@ -159,7 +178,7 @@ Returns:
             Returns:
                 int: number of element in the field
             )" )
-        .def( "transform", &FieldOnNodesReal::transform< ASTERDOUBLE >, R"(
+        .def( "transform", &FieldOnNodesReal::transform, R"(
             Apply a function to each value of the object.
 
             Arguments:
@@ -191,8 +210,9 @@ Returns:
             Arguments:
                 vec (Vec): The PETSc vector
                 scaling (float) : The scaling of the Lagrange DOFs
+                local (bool) : Only import the dof that are local to the subdomain
             )",
-              py::arg( "vec" ), py::arg( "scaling" ) = 1.0 )
+              py::arg( "vec" ), py::arg( "scaling" ) = 1.0, py::arg( "local" ) = false )
 #endif
         .def( "setValues", py::overload_cast< const ASTERDOUBLE & >( &FieldOnNodesReal::setValues ),
               R"(
@@ -302,6 +322,12 @@ Returns:
         .def( "build", &FieldOnNodesComplex::build, py::arg( "mesh" ) = nullptr )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
+        .def( "getLocalization", &FieldOnNodesComplex::getLocalization, R"(
+            Get localization = NOEU
+
+            Returns:
+                str: "NOEU"
+            )" )
         .def( "_restrict", &FieldOnNodesComplex::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given
@@ -367,7 +393,7 @@ Returns:
             Returns:
                 int: number of components
             )" )
-        .def( "transform", &FieldOnNodesComplex::transform< ASTERCOMPLEX >, R"(
+        .def( "transform", &FieldOnNodesComplex::transform, R"(
             Apply a function to each value of the object.
 
             Arguments:

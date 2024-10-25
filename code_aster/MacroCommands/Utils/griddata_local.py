@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ def griddata(seeds, Data_, grid_x, grid_y, A):
 
     for i_ in range(nbrow):
         for j_ in range(nbcol):
-            if A[i_, j_] == True:  # The point is inside the geometry
+            if A[i_, j_]:  # The point is inside the geometry
 
                 Nod_detec_x = seeds[:, 0] == grid_x[i_, j_]
                 Nod_detec_y = seeds[:, 1] == grid_y[i_, j_]
@@ -53,7 +53,7 @@ def griddata(seeds, Data_, grid_x, grid_y, A):
 
                 if Nod_detec_xy.sum() == 1:
                     # Data is available for the current coordinates
-                    grid_z[i_, j_] = Data_[Nod_detec_xy]
+                    grid_z[i_, j_] = Data_[Nod_detec_xy][0]
 
                 elif Nod_detec_x.sum() > 0 and Nod_detec_y.sum() == 0:
                     # Linear interpolation Y axis

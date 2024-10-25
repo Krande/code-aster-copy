@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,10 +49,11 @@ class TimeStepper(SolverFeature, Observer):
 
     _times = _eps = _current = _initial = _final = _last = None
     _actions = _state = None
-    _split = _maxLevel = _minStep = _maxStep = _maxNbSteps = None
+    _split = _maxLevel = _minStep = _maxStep = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     default_increment = 1.0e-12
+    maxNbSteps = 1.0e6
 
     def __init__(self, times, epsilon=default_increment, initial=0.0, final=None):
         super().__init__()
@@ -68,7 +69,6 @@ class TimeStepper(SolverFeature, Observer):
         self._maxLevel = -1
         self._minStep = 1.0e-99
         self._maxStep = 1.0e99
-        self._maxNbSteps = 1.0e6
         self._resetState()
         logger.debug("TimeStepper.init: %s, %s, %s", initial, final, times)
         self._check_bounds()
@@ -95,7 +95,6 @@ class TimeStepper(SolverFeature, Observer):
         new._maxLevel = self._maxLevel
         new._minStep = self._minStep
         new._maxStep = self._maxStep
-        new._maxNbSteps = self._maxNbSteps
         for act in self._actions:
             new.register_event(act.copy())
         new.register_default_error_event()
@@ -142,20 +141,24 @@ class TimeStepper(SolverFeature, Observer):
         self._initial = time
         self._check_bounds()
 
-    def setFinal(self, time=None):
+    def setFinal(self, time=None, current=None):
         """Limit the sequence to the times lower than `time`.
 
         If `time` is not already in the sequence, it is appended.
         If `time` is not provided, the final time is set to the last one of
         the sequence.
-        Calling `setInitial` resets the next calculated time at the first
-        position.
+        Calling `setFinal` resets the next calculated time at the first
+        position. If `current` is provided, moves the current time at this step.
 
         Arguments:
             time (float, optional): Last time to be used.
         """
         self._final = time
         self._check_bounds()
+        if current is not None:
+            for idx, value in enumerate(self._times):
+                if self.cmp(value, current) == 0:
+                    self._current = idx
 
     def size(self):
         """Return the total number of steps in the list.
@@ -192,7 +195,7 @@ class TimeStepper(SolverFeature, Observer):
         # print("\ninsert at", index, time, self._current, end=" ")
         if index < self._current:
             raise KeyError("can not insert a step before the current time.")
-        if self.size() >= self._maxNbSteps:
+        if self.size() >= TimeStepper.maxNbSteps:
             logger.error(MessageLog.GetText("F", "ADAPTATION_13"))
         self._times.insert(index, time)
         self._last = len(self._times) - 1
@@ -427,7 +430,8 @@ class TimeStepper(SolverFeature, Observer):
                 stp._minStep = definition["PAS_MINI"]
             if "PAS_MAXI" in definition:
                 stp._maxStep = definition["PAS_MAXI"]
-            stp._maxNbSteps = definition["NB_PAS_MAXI"]
+            maxNbSteps = definition["NB_PAS_MAXI"]
+            stp.register_event(TimeStepper.Finalize(TimeStepper.MaximumNbOfSteps(maxNbSteps)))
             for adapt in args["ADAPTATION"]:
                 if adapt["EVENEMENT"] == "AUCUN":
                     continue
@@ -513,10 +517,10 @@ class TimeStepper(SolverFeature, Observer):
     def _check_error_posteriori(self, delta):
         """Check for ErrorPosteriori events."""
         for act in self._actions:
-            if isinstance(act.event, TimeStepper.ErrorPosteriori):
-                if act.event.is_raised(delta=delta):
-                    act.call(timeStepper=self)
-                    return False
+            if not isinstance(act.event, TimeStepper.ErrorPosteriori):
+                continue
+            if act.event.is_raised(timeStepper=self, delta=delta):
+                return act.call(timeStepper=self)
         return True
 
     def _check_adapt(self, delta):
@@ -527,22 +531,23 @@ class TimeStepper(SolverFeature, Observer):
         delta_t = 2.1e6
         currIncr = self.getIncrement()
         for act in self._actions:
-            if isinstance(act, TimeStepper.AdaptAction):
-                if delta_t > 2.0e6:
-                    logger.info(MessageLog.GetText("I", "ADAPTATION_1"))
-                delta_t = min(delta_t, 1.1e6)
-                if act.event.is_raised(delta=delta):
-                    try:
-                        dt_i = act.call(timeStepper=self, delta=delta)
-                        delta_t = min(delta_t, dt_i * currIncr)
-                        logger.info(
-                            MessageLog.GetText("I", "ADAPTATION_2", valk=act.name, valr=delta_t)
-                        )
-                    except ValueError:
-                        logger.info(MessageLog.GetText("I", "ADAPTATION_3", valk=act.name))
-                        raise
-                else:
+            if not isinstance(act, TimeStepper.AdaptAction):
+                continue
+            if delta_t > 2.0e6:
+                logger.info(MessageLog.GetText("I", "ADAPTATION_1"))
+            delta_t = min(delta_t, 1.1e6)
+            if act.event.is_raised(delta=delta):
+                try:
+                    dt_i = act.call(timeStepper=self, delta=delta)
+                    delta_t = min(delta_t, dt_i * currIncr)
+                    logger.info(
+                        MessageLog.GetText("I", "ADAPTATION_2", valk=act.name, valr=delta_t)
+                    )
+                except ValueError:
                     logger.info(MessageLog.GetText("I", "ADAPTATION_3", valk=act.name))
+                    raise
+            else:
+                logger.info(MessageLog.GetText("I", "ADAPTATION_3", valk=act.name))
         if delta_t < 1.0e6:
             logger.info(MessageLog.GetText("I", "ADAPTATION_5", valr=delta_t))
             nextIncr = self.getNextIncrement()
@@ -667,6 +672,31 @@ class TimeStepper(SolverFeature, Observer):
                 logger.info(MessageLog.GetText("I", "MECANONLINE10_24"))
             return raised
 
+    class MaximumNbOfSteps(ErrorPosteriori):
+        """Event raised after a number of steps have been completed.
+
+        Arguments:
+            maxNbSteps (int): Maximum number of time steps.
+        """
+
+        _value = None
+        __setattr__ = no_new_attributes(object.__setattr__)
+
+        def __init__(self, maxNbSteps):
+            super().__init__()
+            self._value = maxNbSteps
+
+        def is_raised(self, **context):
+            """Tell if the event is raised in this context.
+
+            Returns:
+                bool: *True* if the event is raised, *False* otherwise.
+            """
+            stp = context.get("timeStepper")
+            # + 1 because 'completed()' not yet called for the current
+            done = stp.size() - stp.remaining() + 1
+            return done >= self._value
+
     class Action:
         """This object allow to execute an action on a TimeStepper when an event
         occurs."""
@@ -691,23 +721,55 @@ class TimeStepper(SolverFeature, Observer):
 
             Arguments:
                 context (dict): Context of the event.
+
+            Returns:
+                bool: *False* in case of "error", *True* otherwise.
             """
             raise NotImplementedError("must be subclassed!")
 
     class AdaptAction(Action):
         """Action that provides a multiplicative factor for the next timestep."""
 
+        def call(self, **context):
+            """Execute the action.
+
+            Arguments:
+                context (dict): Context of the event.
+
+            Returns:
+                float: multiplicative factor.
+            """
+            raise NotImplementedError("must be subclassed!")
+
     class Interrupt(Action):
         """This action stops the calculation (keyword value: ARRET)."""
 
         def call(self, **context):
-            """Execute the action.
+            """Execute the action. Raises an exception.
 
             Arguments:
                 context (dict): Context of the event.
             """
             logger.info(MessageLog.GetText("I", "MECANONLINE10_30"))
             raise context["exception"]
+
+    class Finalize(Action):
+        """This action finalizes the calculation without error."""
+
+        def call(self, **context):
+            """Execute the action.
+
+            Arguments:
+                context (dict): Context of the event.
+
+            Returns:
+                bool: always *True*.
+            """
+            stp = context.get("timeStepper")
+            step = stp.getCurrent()
+            stp.setFinal(step, current=step)
+            logger.info(MessageLog.GetText("I", "ADAPTATION_13"))
+            return True
 
     class Split(Action):
         """This action adds intermediate timesteps (keyword value: DECOUPE).

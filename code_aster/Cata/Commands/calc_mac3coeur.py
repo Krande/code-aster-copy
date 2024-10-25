@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,6 +61,7 @@ CALC_MAC3COEUR = MACRO(
     RESU_DEF=SIMP(statut="f", typ=CO),
     FLUENCE_CYCLE=SIMP(statut="f", typ="R", max=1, defaut=0.0),
     TYPE_DEFORMATION=SIMP(statut="f", typ="TXM", defaut="RIGI_GEOM", into=("RIGI_GEOM",)),
+    ROTATION_GRILLE=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
     ETAT_INITIAL=FACT(
         statut="f",
         max=1,

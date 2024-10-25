@@ -148,7 +148,9 @@ CCAMA3D = LocatedComponents(
 )
 
 # Field for material orientation in 2D (ANGLE_MASSIF)
-CCAMA2D = LocatedComponents(phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA"))
+CCAMA2D = LocatedComponents(
+    phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
+)
 
 # Field for RESI_REFE_RELA/EFFORT
 CRESEFF = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EFFORT",))
@@ -915,6 +917,12 @@ NFLUX2R = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "F
 # Field for flux in thermic (3D - real)
 NFLUX3R = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY", "FLUZ"))
 
+# Field for gradient in thermic (2D - real)
+NGRAT2R = LocatedComponents(phys=PHY.GRAT_R, type="ELNO", components=("GRAT_X", "GRAT_Y"))
+
+# Field for gradient in thermic (3D - real)
+NGRAT3R = LocatedComponents(phys=PHY.GRAT_R, type="ELNO", components=("GRAT_X", "GRAT_Y", "GRAT_Z"))
+
 # For body source in thermic
 NSOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELNO", components=("SOUR",))
 
@@ -1250,6 +1258,16 @@ EFLUX3R = LocatedComponents(
     phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY", "FLUZ")
 )
 
+# Field for gradient in thermic (2D - real)
+EGRAT2R = LocatedComponents(
+    phys=PHY.GRAT_R, type="ELGA", location="RIGI", components=("GRAT_X", "GRAT_Y")
+)
+
+# Field for gradient in thermic (3D - real)
+EGRAT3R = LocatedComponents(
+    phys=PHY.GRAT_R, type="ELGA", location="RIGI", components=("GRAT_X", "GRAT_Y", "GRAT_Z")
+)
+
 # Field for hydratation
 EHYDRR = LocatedComponents(phys=PHY.HYDR_R, type="ELGA", location="MASS", components=("HYDR",))
 
@@ -1344,6 +1362,12 @@ EVARC_R = LocatedComponents(
     phys=PHY.VARC_R,
     type="ELGA",
     location="RIGI",
+    components=("TEMP", "HYDR", "SECH", "IRRA", "CORR", "PTOT", "NEUT[2]"),
+)
+
+EVARCNR = LocatedComponents(
+    phys=PHY.VARC_R,
+    type="ELNO",
     components=("TEMP", "HYDR", "SECH", "IRRA", "CORR", "PTOT", "NEUT[2]"),
 )
 

@@ -42,7 +42,7 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
 #include "asterfort/nonlinDSVectCombAddHat.h"
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/nonlinDSVectCombAddAny.h"
-!
+    !
     integer, intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: sddyna, hval_incr(*), hval_veasse(*)
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping

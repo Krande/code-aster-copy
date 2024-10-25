@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
-                  sddyna, nlDynaDamping, &
+                  ds_constitutive, sddyna, nlDynaDamping, &
                   mater, model)
 !
     use NonLin_Datastructure_type
@@ -43,6 +43,7 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
     character(len=19), intent(in) :: solver, sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24), intent(in) :: mater, model
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
@@ -56,6 +57,7 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 !
 ! In  listFuncActi     : list of active functionnalities
 ! In  ds_algopara      : datastructure for algorithm parameters
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  solver           : datastructure for solver parameters
 ! In  ds_contact       : datastructure for contact management
 ! In  sddyna           : name of datastructure for dynamic parameters
@@ -73,8 +75,9 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
     aster_logical :: l_energy, lproj, lmatdi, lldsp, lResiCompRela, lResiRefeRela
     aster_logical :: l_unil_pena, l_cont_acti, l_hho, l_undead, lDampModal, lthms, limpl
     aster_logical :: l_state_init, l_reuse
+    aster_logical :: check_frot, check_rupt, check_endo
     character(len=24) :: typilo, metres, char24
-    character(len=16) :: reli_meth, matrix_pred, partit
+    character(len=16) :: reli_meth, matrix_pred, matrix_corr, partit
     character(len=3) :: mfdet
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: slvi(:) => null()
@@ -129,7 +132,12 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
     reac_iter = ds_algopara%reac_iter
     reac_incr = ds_algopara%reac_incr
     matrix_pred = ds_algopara%matrix_pred
+    matrix_corr = ds_algopara%matrix_corr
     reli_meth = ds_algopara%line_search%method
+    check_frot = ds_constitutive%lJoiFrot
+    check_rupt = ds_constitutive%lJoiRupt
+    check_endo = ds_constitutive%lJoiEndo
+
 !
 ! - Get solver parameters
 !
@@ -199,6 +207,14 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
         end if
         if (reac_iter .ne. 1) then
             call utmess('F', 'MECANONLINE5_72')
+        end if
+    end if
+!
+! - Joint elements
+!
+    if (matrix_corr .eq. 'ELASTIQUE') then
+        if (check_frot .or. check_rupt .or. check_endo) then
+            call utmess('F', 'MECANONLINE3_3')
         end if
     end if
 !

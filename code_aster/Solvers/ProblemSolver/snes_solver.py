@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,10 @@ from ..Basics import SolverFeature
 from ..Basics import SolverOptions as SOP
 
 
+def Print(*args):
+    print(*args, flush=True)
+
+
 class SNESSolver(SolverFeature):
     """Solves a step using PETSc SNES, loops on iterations."""
 
@@ -38,21 +42,25 @@ class SNESSolver(SolverFeature):
     current_incr = current_matrix = None
     _primal_incr = _resi_comp = None
     _scaling = _options = None
+    local = snes = fnorm0 = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self):
+    def __init__(self, local=False):
         super().__init__()
         self.matr_update_incr = self.prediction = None
         self.param = self.logManager = None
         self.current_incr = self.current_matrix = None
         self._primal_incr = self._resi_comp = None
         self._scaling = self._options = None
+        self.local = local
+        self.snes = None
+        self.fnorm0 = None
 
     def initialize(self):
         """Initialize the object for the next step."""
         self.check_features()
         self.current_incr = 0
-        self.current_matrix = None
+        # self.current_matrix = None  # keep
 
     @property
     def matrix_type(self):
@@ -72,7 +80,7 @@ class SNESSolver(SolverFeature):
         """
         self.param = param
 
-        self.prediction = self._get("NEWTON", "PREDICTION")
+        self.prediction = self._get("NEWTON", "PREDICTION") or self._get("NEWTON", "MATRICE")
 
         assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: "
 
@@ -101,7 +109,8 @@ class SNESSolver(SolverFeature):
 
     def _evalFunction(self, snes, X, F):
         # Get the solution increment from PETSc
-        self._primal_incr.fromPetsc(snes.getSolutionUpdate())
+        if snes.getSolutionUpdate().handle:
+            self._primal_incr.fromPetsc(snes.getSolutionUpdate(), local=self.local)
         # Increment the solution
         self._primal_incr.applyLagrangeScaling(1 / self._scaling)
         self.phys_state.primal_step += self._primal_incr
@@ -116,35 +125,35 @@ class SNESSolver(SolverFeature):
         )
         self.current_matrix.applyDirichletBC(diriBCs, residual.resi)
         # Copy to PETSc
-        residual.resi.toPetsc().copy(F)
+        residual.resi.toPetsc(local=self.local).copy(F)
+        # print("internVar=", self.opers_manager._temp_internVar.getValues()[:40:8], flush=True)
 
     def _evalJacobian(self, snes, X, J, P):
         if self.current_incr % self.matr_update_incr == 0:
             _matrix = self.opers_manager.getJacobian(self.matrix_type)
             self.current_matrix = _matrix
             self._scaling = self.opers_manager.getLagrangeScaling(self.matrix_type)
-            _matrix.toPetsc().copy(P)
+            _matrix.toPetsc(local=self.local).copy(P)
         self.current_incr += 1
         if J != P:
             J.assemble()  # matrix-free operator
         return PETSc.Mat.Structure.SAME_NONZERO_PATTERN
 
-    @profile
-    def solve(self, current_matrix):
-        """Solve a step with SNES.
-
-        Raises:
-            *ConvergenceError* exception in case of error.
-        """
-
+    def initSNES(self):
+        if self.snes and self.local:
+            return
         self.opers_manager.initialize()
 
         self._scaling = self.opers_manager.getLagrangeScaling(self.matrix_type)
         self.current_matrix = self.opers_manager.first_jacobian
 
-        p_jac = self.current_matrix.toPetsc()
+        p_jac = self.current_matrix.toPetsc(local=self.local)
 
-        snes = PETSc.SNES().create()
+        snes = PETSc.SNES().create(comm=p_jac.comm)
+        # set a prefix if the solver is local in order to conveniently set options
+        if self.local:
+            snes.prefix = "lsnes_"
+        self.snes = snes
 
         # register the function in charge of
         # computing the nonlinear residual
@@ -157,9 +166,17 @@ class SNESSolver(SolverFeature):
         snes.setJacobian(self._evalJacobian, p_jac)
 
         def _monitor(snes, its, fgnorm):
-            self.logManager.printConvTableRow([its, " - ", fgnorm, " - ", self.matrix_type])
+            self.fnorm0 = self.fnorm0 if its else fgnorm
+            self.logManager.printConvTableRow(
+                [its, fgnorm / self.fnorm0, fgnorm, " - ", self.matrix_type]
+            )
 
-        snes.setMonitor(_monitor)
+        snes.setMonitor(_monitor) if not self.local else None
+
+        rtol = self._get("CONVERGENCE", "RESI_GLOB_RELA")
+        atol = self._get("CONVERGENCE", "RESI_GLOB_MAXI", 1.0e-24)
+        maxiter = self._get("CONVERGENCE", "ITER_GLOB_MAXI")
+        snes.setTolerances(rtol=rtol, atol=atol, max_it=maxiter)
 
         OptDB = PETSc.Options()
         if not self._options:
@@ -168,6 +185,19 @@ class SNESSolver(SolverFeature):
             self._options = linear_solver.getPetscOptions()
         OptDB.insertString(self._options)
         snes.setFromOptions()
+
+    @profile
+    def solve(self, current_matrix):
+        """Solve a step with SNES.
+
+        Raises:
+            *ConvergenceError* exception in case of error.
+        """
+
+        self.initSNES()
+
+        snes = self.snes
+        p_resi, _ = snes.getFunction()
 
         # solve the nonlinear problem
         b, x = None, p_resi.copy()

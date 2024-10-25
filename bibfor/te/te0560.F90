@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine te0560(option, nomte)
 #include "asterfort/massup.h"
 #include "asterfort/nmgvno.h"
 #include "asterfort/nmtstm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
@@ -58,21 +58,21 @@ subroutine te0560(option, nomte)
 !
     aster_logical :: matsym
     integer :: nb_DOF
-    integer :: nnoQ, npg, i, imatuu, lgpg, lgpg1, ndim
+    integer :: nnoQ, npg, imatuu, lgpg, lgpg1, ndim
     integer :: jv_poids, jv_vfQ, jv_dfdeQ, igeom, imate
     integer :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
     integer :: icontm, ivarim
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip, nnos, jv_ganoQ
-    integer :: ivarix, idim, iret
+    integer :: ivarix, iret
     integer :: jtab(7), jcret, codret
-    real(kind=8) :: xyz(3)
-    real(kind=8) :: angmas(7)
+    real(kind=8) :: angmas(3)
     integer :: icodr1(1)
     character(len=8) :: typmod(2)
     character(len=4) :: fami
     character(len=16) :: elasKeyword, defo_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,12 +89,9 @@ subroutine te0560(option, nomte)
     if (option .eq. 'MASS_MECA') then
         fami = 'MASS'
     end if
-    call elrefv(fami, ndim, &
-                nnoL, nnoQ, nnos, &
-                npg, jv_poids, &
-                jv_vfL, jv_vfQ, &
-                jv_dfdeL, jv_dfdeQ, &
-                jv_ganoL, jv_ganoQ)
+    call elrefv(fami, ndim, nnoL, nnoQ, nnos, &
+                npg, jv_poids, jv_vfL, jv_vfQ, jv_dfdeL, &
+                jv_dfdeQ, jv_ganoL, jv_ganoQ)
     ASSERT(ndim .eq. 2 .or. ndim .eq. 3)
 !
 ! - Input fields
@@ -129,25 +126,16 @@ subroutine te0560(option, nomte)
             call utmess('F', 'ELEMENTS3_16', sk=defo_comp)
         end if
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), &
-                             lMatr, lVect, &
-                             lVari, lSigm)
+        call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                             lSigm)
 !
-        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                    itab=jtab)
         lgpg1 = max(jtab(6), 1)*jtab(7)
         lgpg = lgpg1
 !
 !     ORIENTATION DU MASSIF
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-        xyz = 0.d0
-!
-        do i = 1, nnoQ
-            do idim = 1, ndim
-                xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nnoQ
-            end do
-        end do
-        call rcangm(ndim, xyz, angmas)
+        call getElemOrientation(ndim, nnoQ, igeom, angmas)
 !
 !     VARIABLES DE COMMANDE
 !
@@ -167,17 +155,20 @@ subroutine te0560(option, nomte)
         end if
         if (lSigm) then
             call jevech('PCODRET', 'E', jcret)
-
+!
             call jevech('PCONTPR', 'E', icontp)
         end if
         if (lVari) then
             call jevech('PVARIPR', 'E', ivarip)
             call jevech('PVARIMP', 'L', ivarix)
-            call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+            b_n = to_blas_int(npg*lgpg)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
         end if
 !
-        if (option .eq. 'RIGI_MECA_ELAS' .or. option .eq. 'FULL_MECA_ELAS' .or. &
-            option .eq. 'RAPH_MECA') then
+        if (option .eq. 'RIGI_MECA_ELAS' .or. option .eq. 'FULL_MECA_ELAS' .or. option .eq. &
+            'RAPH_MECA') then
             fami = 'ELAS'
         else
             fami = 'RIGI'

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,11 @@ module HHO_measure_module
     implicit none
 !
     private
+#include "asterc/r8maem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "MeshTypes_type.h"
 #include "blas/ddot.h"
-#include "asterc/r8maem.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,11 +40,14 @@ module HHO_measure_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public   :: hhoMeasureCell, hhoMeasureFace, hhoDiameterCell, hhoDiameterFace, hho_surface_tri
+    public   :: hhoMeasureCell, hhoMeasureFace, hhoDiameterCell, hhoDiameterFace
     public   :: hhoLengthBoundingBoxCell, hhoLengthBoundingBoxFace
-    private  :: hho_vol_hexa, hho_vol_tetra, hho_surface_quad, hho_length_edge
+    public   :: hhoCenterBoundingBoxCell, hhoCenterBoundingBoxFace
+    public   :: hho_vol_tetra, hho_surface_tri
+    private  :: hho_vol_hexa, hho_surface_quad, hho_length_edge
     private  :: hho_vol_prism, hho_vol_pyram
     private  :: hhoDiameter, prod_vec
+    private  :: hhoBoundingBoxCell, hhoBoundingBoxFace
 !
 contains
 !
@@ -55,8 +59,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3), intent(in)  :: v0, v1
-        real(kind=8), dimension(3)              :: v2
+        real(kind=8), dimension(3), intent(in) :: v0, v1
+        real(kind=8), dimension(3) :: v2
 !
 ! --------------------------------------------------------------------------------------------------
 !  In v0        :: vector 0
@@ -69,7 +73,7 @@ contains
         v2(1) = v0(2)*v1(3)-v0(3)*v1(2)
         v2(2) = -(v0(1)*v1(3)-v0(3)*v1(1))
         v2(3) = v0(1)*v1(2)-v0(2)*v1(1)
-        !
+!
     end function
 !
 !===================================================================================================
@@ -80,25 +84,25 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 8), intent(in)   :: nodes
-        real(kind=8)                               :: vol
+        real(kind=8), dimension(3, 8), intent(in) :: nodes
+        real(kind=8) :: vol
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4, 5)  :: tets
+        integer, dimension(4, 5) :: tets
         integer :: i, j
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
-! --- split the hexa in 5 tets
+! --- split the hexa in 5 tets - see hhoSplitSimplex
         tets(1:4, 1) = (/1, 2, 4, 5/)
         tets(1:4, 2) = (/2, 3, 4, 7/)
-        tets(1:4, 3) = (/2, 7, 5, 6/)
-        tets(1:4, 4) = (/4, 5, 7, 8/)
-        tets(1:4, 5) = (/2, 4, 5, 7/)
+        tets(1:4, 3) = (/2, 4, 5, 7/)
+        tets(1:4, 4) = (/2, 5, 6, 7/)
+        tets(1:4, 5) = (/4, 5, 7, 8/)
 !
         vol = 0.d0
         do i = 1, 5
@@ -118,20 +122,20 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 6), intent(in)   :: nodes
-        real(kind=8)                               :: vol
+        real(kind=8), dimension(3, 6), intent(in) :: nodes
+        real(kind=8) :: vol
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4, 3)  :: tets
+        integer, dimension(4, 3) :: tets
         integer :: i, j
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
-! --- split the hexa in 3 tets
+! --- split the prsim in 3 tets - see hhoSplitSimplex
         tets(1:4, 1) = (/1, 2, 3, 4/)
         tets(1:4, 2) = (/2, 3, 4, 5/)
         tets(1:4, 3) = (/3, 4, 5, 6/)
@@ -154,20 +158,20 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 5), intent(in)   :: nodes
-        real(kind=8)                               :: vol
+        real(kind=8), dimension(3, 5), intent(in) :: nodes
+        real(kind=8) :: vol
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4, 2)  :: tets
+        integer, dimension(4, 2) :: tets
         integer :: i, j
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
-! --- split the pyramid in 2 tets
+! --- split the pyramid in 2 tets - see hhoSplitSimplex
         tets(1:4, 1) = (/1, 2, 3, 5/)
         tets(1:4, 2) = (/1, 3, 4, 5/)
 !
@@ -189,15 +193,15 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)    :: nodes
-        real(kind=8)                                :: vol
+        real(kind=8), dimension(3, 4), intent(in) :: nodes
+        real(kind=8) :: vol
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3)  :: v0, v1, v2, cross
+        real(kind=8), dimension(3) :: v0, v1, v2, cross
 ! --------------------------------------------------------------------------------------------------
 !
         vol = 0.d0
@@ -218,15 +222,15 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 4), intent(in)    :: nodes
-        real(kind=8)                                :: surface
+        real(kind=8), dimension(3, 4), intent(in) :: nodes
+        real(kind=8) :: surface
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: surface
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3)  :: e1, e2, e3, e4, d1, d2
+        real(kind=8), dimension(3) :: e1, e2, e3, e4, d1, d2
         real(kind=8) :: l1, l2, l3, l4, ld1, ld2
 !
 ! ---- edge
@@ -258,8 +262,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 3), intent(in)  :: nodes
-        real(kind=8)                              :: surface
+        real(kind=8), dimension(3, 3), intent(in) :: nodes
+        real(kind=8) :: surface
 !
 !---------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
@@ -285,15 +289,15 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(3, 2), intent(in)  :: nodes
-        real(kind=8)                              :: length
+        real(kind=8), dimension(3, 2), intent(in) :: nodes
+        real(kind=8) :: length
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
 !  Out vol         :: length
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3)  :: v0
+        real(kind=8), dimension(3) :: v0
 ! --------------------------------------------------------------------------------------------------
 !
         v0(1:3) = nodes(1:3, 2)-nodes(1:3, 1)
@@ -310,28 +314,28 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)    :: cell
-        real(kind=8)                  :: measure
+        type(HHO_Cell), intent(in) :: cell
+        real(kind=8) :: measure
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Cell           :: cell HHO
 !  Out measure           :: measure of the cell
 ! --------------------------------------------------------------------------------------------------
-
+!
 !
         measure = 0.d0
 !
-        if (cell%typema == 'HEXA8') then
+        if (cell%typema == MT_HEXA8) then
             measure = hho_vol_hexa(cell%coorno(1:3, 1:8))
-        elseif (cell%typema == 'TETRA4') then
+        else if (cell%typema == MT_TETRA4) then
             measure = hho_vol_tetra(cell%coorno(1:3, 1:4))
-        elseif (cell%typema == 'PYRAM5') then
+        else if (cell%typema == MT_PYRAM5) then
             measure = hho_vol_pyram(cell%coorno(1:3, 1:5))
-        elseif (cell%typema == 'PENTA6') then
+        else if (cell%typema == MT_PENTA6) then
             measure = hho_vol_prism(cell%coorno(1:3, 1:6))
-        elseif (cell%typema == 'QUAD4') then
+        else if (cell%typema == MT_QUAD4) then
             measure = hho_surface_quad(cell%coorno(1:3, 1:4))
-        elseif (cell%typema == 'TRIA3') then
+        else if (cell%typema == MT_TRIA3) then
             measure = hho_surface_tri(cell%coorno(1:3, 1:3))
         else
             ASSERT(ASTER_FALSE)
@@ -347,8 +351,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)                  :: face
-        real(kind=8)                                :: measure
+        type(HHO_Face), intent(in) :: face
+        real(kind=8) :: measure
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face           :: face HHO
@@ -357,11 +361,11 @@ contains
 !
         measure = 0.d0
 !
-        if (face%typema(1:5) == 'QUAD4') then
+        if (face%typema == MT_QUAD4) then
             measure = hho_surface_quad(face%coorno(1:3, 1:4))
-        elseif (face%typema(1:5) == 'TRIA3') then
+        else if (face%typema == MT_TRIA3) then
             measure = hho_surface_tri(face%coorno(1:3, 1:3))
-        elseif (face%typema(1:4) == 'SEG2') then
+        else if (face%typema == MT_SEG2) then
             measure = hho_length_edge(face%coorno(1:3, 1:2))
         else
             ASSERT(ASTER_FALSE)
@@ -376,9 +380,9 @@ contains
     function hhoDiameter(coorno, nbnodes) result(diam)
 !
         implicit none
-        integer, intent(in)                             :: nbnodes
+        integer, intent(in) :: nbnodes
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
-        real(kind=8)                                    :: diam
+        real(kind=8) :: diam
 !
 ! --------------------------------------------------------------------------------------------------
 !  In coorno            :: coordinates of the nodes
@@ -394,7 +398,7 @@ contains
         do inode = 1, nbnodes
             do jnode = inode+1, nbnodes
                 vector(1:3) = coorno(1:3, inode)-coorno(1:3, jnode)
-                diam = max(norm2(vector), diam); 
+                diam = max(norm2(vector), diam)
             end do
         end do
 !
@@ -408,28 +412,28 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)    :: cell
-        real(kind=8)                  :: measure
+        type(HHO_Cell), intent(in) :: cell
+        real(kind=8) :: measure
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Cell              :: cell HHO
 !  Out measure              :: maximum length of two distinc nodes
 ! --------------------------------------------------------------------------------------------------
-
+!
 !
         measure = 0.d0
 !
-        if (cell%typema == 'HEXA8') then
+        if (cell%typema == MT_HEXA8) then
             measure = hhoDiameter(cell%coorno(1:3, 1:8), 8)
-        elseif (cell%typema == 'TETRA4') then
+        else if (cell%typema == MT_TETRA4) then
             measure = hhoDiameter(cell%coorno(1:3, 1:4), 4)
-        elseif (cell%typema == 'PYRAM5') then
+        else if (cell%typema == MT_PYRAM5) then
             measure = hhoDiameter(cell%coorno(1:3, 1:5), 5)
-        elseif (cell%typema == 'PENTA6') then
+        else if (cell%typema == MT_PENTA6) then
             measure = hhoDiameter(cell%coorno(1:3, 1:6), 6)
-        elseif (cell%typema == 'QUAD4') then
+        else if (cell%typema == MT_QUAD4) then
             measure = hhoDiameter(cell%coorno(1:3, 1:4), 4)
-        elseif (cell%typema == 'TRIA3') then
+        else if (cell%typema == MT_TRIA3) then
             measure = hhoDiameter(cell%coorno(1:3, 1:3), 3)
         else
             ASSERT(ASTER_FALSE)
@@ -445,8 +449,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Face), intent(in)    :: face
-        real(kind=8)                  :: measure
+        type(HHO_Face), intent(in) :: face
+        real(kind=8) :: measure
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face              :: face HHO
@@ -454,11 +458,11 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         measure = 0.d0
-        if (face%typema == 'QUAD4') then
+        if (face%typema == MT_QUAD4) then
             measure = hhoDiameter(face%coorno(1:3, 1:4), 4)
-        elseif (face%typema == 'TRIA3') then
+        else if (face%typema == MT_TRIA3) then
             measure = hhoDiameter(face%coorno(1:3, 1:3), 3)
-        elseif (face%typema == 'SEG2') then
+        else if (face%typema == MT_SEG2) then
             measure = hhoDiameter(face%coorno(1:3, 1:2), 2)
         else
             ASSERT(ASTER_FALSE)
@@ -470,39 +474,35 @@ contains
 !
 !===================================================================================================
 !
-    function hhoLengthBoundingBoxCell(hhocell) result(length)
+    function hhoBoundingBoxCell(hhoCell, axes) result(box)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)    :: hhocell
-        real(kind=8), dimension(3)    :: length
+        type(HHO_Cell), intent(in)    :: hhoCell
+        real(kind=8), intent(in)      :: axes(3, 3)
+        real(kind=8), dimension(3, 2) :: box
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Cell              :: cell HHO
-!  Out length               :: length of the boundix box of the cell
+!  In axes                  :: axes to use
+!  Out box                  :: bounding box of the cell
 ! --------------------------------------------------------------------------------------------------
-        real(kind=8), dimension(3) :: xmin, xmax, pt
+        real(kind=8), dimension(3) :: pt
         real(kind=8) :: rotmat(3, 3)
-        integer :: inode, idim, ndim
+        integer :: inode, idim
 ! --------------------------------------------------------------------------------------------------
-        length = 1.d0
-        ndim = hhoCell%ndim
 !
-        xmin = r8maem()
-        xmax = -r8maem()
+        box(:, 1) = r8maem()
+        box(:, 2) = -r8maem()
         pt = 0.d0
-        rotmat = transpose(hhocell%axes)
+        rotmat = transpose(axes)
 !
         do inode = 1, hhoCell%nbnodes
             pt = matmul(rotmat, hhoCell%coorno(1:3, inode))
-            do idim = 1, ndim
-                xmin(idim) = min(xmin(idim), pt(idim))
-                xmax(idim) = max(xmax(idim), pt(idim))
+            do idim = 1, 3
+                box(idim, 1) = min(box(idim, 1), pt(idim))
+                box(idim, 2) = max(box(idim, 2), pt(idim))
             end do
-        end do
-!
-        do idim = 1, ndim
-            length(idim) = abs(xmax(idim)-xmin(idim))
         end do
 !
     end function
@@ -511,20 +511,89 @@ contains
 !
 !===================================================================================================
 !
-    function hhoLengthBoundingBoxFace(hhoFace) result(length)
+    function hhoBoundingBoxFace(hhoFace, axes) result(box)
 !
         implicit none
 !
         type(HHO_Face), intent(in)    :: hhoFace
+        real(kind=8), intent(in)      :: axes(3, 2)
+        real(kind=8), dimension(2, 2)  :: box
+!
+! --------------------------------------------------------------------------------------------------
+!  In HHO_Face              :: face HHO
+!  In axes                  :: axes to use
+!  Out box                  :: bounding box of the face
+! --------------------------------------------------------------------------------------------------
+        real(kind=8) :: pt(2)
+        real(kind=8) :: rotmat(2, 3)
+        integer :: inode, idim
+! --------------------------------------------------------------------------------------------------
+!
+        rotmat = transpose(axes)
+        box(:, 1) = r8maem()
+        box(:, 2) = -r8maem()
+        pt = 0.d0
+!
+        do inode = 1, hhoFace%nbnodes
+            pt = matmul(rotmat, hhoFace%coorno(1:3, inode))
+            do idim = 1, 2
+                box(idim, 1) = min(box(idim, 1), pt(idim))
+                box(idim, 2) = max(box(idim, 2), pt(idim))
+            end do
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoLengthBoundingBoxCell(hhoCell, axes) result(length)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)    :: hhoCell
+        real(kind=8), intent(in)      :: axes(3, 3)
+        real(kind=8), dimension(3)    :: length
+!
+! --------------------------------------------------------------------------------------------------
+!  In HHO_Cell              :: cell HHO
+!  In axes                  :: axes to use
+!  Out length               :: length of the bounding box of the cell
+! --------------------------------------------------------------------------------------------------
+        real(kind=8), dimension(3, 2) :: box
+        integer :: idim, ndim
+! --------------------------------------------------------------------------------------------------
+        length = 1.d0
+        ndim = hhoCell%ndim
+!
+        box = hhoBoundingBoxCell(hhoCell, axes)
+!
+        do idim = 1, ndim
+            length(idim) = abs(box(idim, 2)-box(idim, 1))
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoLengthBoundingBoxFace(hhoFace, axes) result(length)
+!
+        implicit none
+!
+        type(HHO_Face), intent(in)    :: hhoFace
+        real(kind=8), intent(in)      :: axes(3, 2)
         real(kind=8), dimension(2)    :: length
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face              :: face HHO
-!  Out length               :: length of the boundix box of the face
+!  In axes                  :: axes to use
+!  Out length               :: length of the bounding box of the face
 ! --------------------------------------------------------------------------------------------------
-        real(kind=8) :: xmin(2), xmax(2), pt(2)
-        real(kind=8) :: rotmat(2, 3)
-        integer :: inode, idim, ndim
+        real(kind=8) :: box(2, 2)
+        integer :: idim, ndim
 ! --------------------------------------------------------------------------------------------------
         length = 1.d0
         ndim = hhoFace%ndim
@@ -532,22 +601,80 @@ contains
         if (ndim == 1) then
             length(1) = hhoDiameterFace(hhoFace)
         else
-            rotmat = transpose(hhoFace%axes)
-            xmin = r8maem()
-            xmax = -r8maem()
-            pt = 0.d0
-!
-            do inode = 1, hhoFace%nbnodes
-                pt = matmul(rotmat, hhoFace%coorno(1:3, inode))
-                do idim = 1, ndim
-                    xmin(idim) = min(xmin(idim), pt(idim))
-                    xmax(idim) = max(xmax(idim), pt(idim))
-                end do
-            end do
+            box = hhoBoundingBoxFace(hhoFace, axes)
 !
             do idim = 1, ndim
-                length(idim) = abs(xmax(idim)-xmin(idim))
+                length(idim) = abs(box(idim, 2)-box(idim, 1))
             end do
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoCenterBoundingBoxCell(hhoCell, axes) result(center)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)    :: hhoCell
+        real(kind=8), intent(in)      :: axes(3, 3)
+        real(kind=8), dimension(3)    :: center
+!
+! --------------------------------------------------------------------------------------------------
+!  In HHO_Cell              :: cell HHO
+!  In axes                  :: axes to use
+!  Out center               :: center of the bounding box of the cell
+! --------------------------------------------------------------------------------------------------
+        real(kind=8), dimension(3, 2) :: box, c(3)
+        integer :: idim, ndim
+! --------------------------------------------------------------------------------------------------
+        c = 0.d0
+        ndim = hhoCell%ndim
+!
+        box = hhoBoundingBoxCell(hhoCell, axes)
+!
+        do idim = 1, ndim
+            c(idim) = (box(idim, 1)+box(idim, 2))/2.d0
+        end do
+
+        center = matmul(axes, c)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoCenterBoundingBoxFace(hhoFace, axes) result(center)
+!
+        implicit none
+!
+        type(HHO_Face), intent(in)    :: hhoFace
+        real(kind=8), intent(in)      :: axes(3, 2)
+        real(kind=8), dimension(3)    :: center
+!
+! --------------------------------------------------------------------------------------------------
+!  In HHO_Face              :: face HHO
+!  In axes                  :: axes to use
+!  Out center               :: center of the bounding box of the face
+! --------------------------------------------------------------------------------------------------
+        real(kind=8) :: box(2, 2), c(2)
+        integer :: idim, ndim
+! --------------------------------------------------------------------------------------------------
+        ndim = hhoFace%ndim
+!
+        if (ndim == 1) then
+            center = hhoFace%barycenter
+        else
+            box = hhoBoundingBoxFace(hhoFace, axes)
+!
+            do idim = 1, ndim
+                c(idim) = (box(idim, 2)+box(idim, 1))/2.d0
+            end do
+
+            center = matmul(axes, c)
         end if
 !
     end function

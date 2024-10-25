@@ -20,7 +20,7 @@
 subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
                   ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
                   list_func_acti, ds_print, ds_measure, ds_algorom, sddisc, &
-                  nume_inst, hval_incr, hval_algo, hhoField, matass, maprec, &
+                  nume_inst, hval_incr, hval_algo, matass, maprec, &
                   sddyna, nlDynaDamping, &
                   ds_contact, hval_meelem, hval_measse, hval_veelem, &
                   hval_veasse, sdnume, ldccvg, faccvg, &
@@ -29,7 +29,6 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
     use NonLinearDyna_type
-    use HHO_type
 !
     implicit none
 !
@@ -67,7 +66,6 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
     character(len=24) :: model, cara_elem
     character(len=24) :: nume_dof, numfix
     character(len=19) :: hval_algo(*), hval_incr(*)
-    type(HHO_Field), intent(in) :: hhoField
     type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19) :: hval_veelem(*), hval_veasse(*)
     character(len=19) :: hval_meelem(*), hval_measse(*)
@@ -180,7 +178,7 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
                 sddisc, nume_inst, &
                 ds_algopara, ds_contact, ds_algorom, &
                 ds_print, ds_measure, &
-                hval_incr, hval_algo, hhoField, &
+                hval_incr, hval_algo, &
                 hval_meelem, hval_measse, &
                 nume_dof, numfix, &
                 solveu, ds_system, &
@@ -228,7 +226,6 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
                         ds_system, ds_measure, &
                         hval_incr, hval_algo, &
                         ldccvg, &
-                        hhoField_=hhoField, &
                         sddyna_=sddyna, &
                         ds_algorom_=ds_algorom)
     if (ldccvg .eq. 1) then

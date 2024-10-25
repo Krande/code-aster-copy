@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
                   typmod, option, mate, compor, carcri, &
                   instam, instap, angmas, ddlm, ddld, &
                   sigm, lgpg, vim, sigp, vip, &
-                  matr, vect, codret, livois, &
-                  nbvois, numa, lisoco, nbsoco, &
-                  lVari, lSigm, lMatr, lVect)
+                  matr, vect, codret, livois, nbvois, &
+                  numa, lisoco, nbsoco, lVari, lSigm, &
+                  lMatr, lVect)
 !
     use Behaviour_type
     use Behaviour_module
@@ -32,8 +32,8 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/cavini.h"
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
@@ -48,6 +48,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 #include "blas/dspev.h"
+#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,8 +88,9 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
 ! --------------------------------------------------------------------------------------------------
 !
     common/trucit/iteamm
-    character(len=8) :: typmod(*), fami, poum
-    character(len=16) :: option, compor(*)
+    integer, parameter :: ksp = 1
+    character(len=8) :: typmod(2), fami, poum
+    character(len=16) :: option, compor(COMPOR_SIZE)
     integer :: nbvois, nvoima, numav, iret, nscoma, iteamm
     integer(kind=4) :: reuss
     parameter(nvoima=12, nscoma=4)
@@ -96,7 +98,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
     integer :: livois(1:nvoima), numa
     integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno1)
-    real(kind=8) :: carcri(*), instam, instap
+    real(kind=8) :: carcri(CARCRI_SIZE), instam, instap
     real(kind=8) :: ddlm(*), ddld(*), sigm(2*ndim, npg), sigp(2*ndim, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), matr(*), vect(*)
     real(kind=8) :: dfdi2(nno2, ndim), angmas(3), compar
@@ -115,6 +117,8 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
     real(kind=8) :: dirr(ndim)
     type(Behaviour_Integ) :: BEHinteg
     aster_logical, intent(in) :: lVari, lSigm, lMatr, lVect
+    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_ldz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -124,12 +128,11 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
     nddl = nno1*ndim+nno2*ndimsi
     cod = 0
     dfdi2(:, :) = 0.
-
+!
     epsgm = 0
     epsgd = 0
-!
+
 ! - Get length
-!
     fami = 'FPG1'
     kpg = 1
     spt = 1
@@ -138,15 +141,21 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
                 ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
                 1, 'LONG_CARA', lc, k2, 1)
     c = lc(1)**2
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+
+! - Set main parameters for behaviour (on cell)
+    fami = "RIGI"
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instam, instap, &
+                              fami, mate, &
+                              BEHinteg)
+
 ! INITIALISATION CAVINI + INCREMENTATION
 ! DU COMPTEUR D'ITERATION + L ELEMENT EST-IL POINTE?
-    call cavini(ndim, nno2, geom, vim, npg, &
-                lgpg, mate)
+    call cavini(ndim, nno2, geom, vim, npg, lgpg, mate)
 !
     nono = 0.d0
     nini = 0
@@ -165,7 +174,8 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
         do kvois = 1, nbvois
 !
             numav = livois(kvois)
-            call tecach('OOO', 'PVARIMP', 'L', iret, iad=vivois, numa=numav)
+            call tecach('OOO', 'PVARIMP', 'L', iret, iad=vivois, &
+                        numa=numav)
             ASSERT(iret .eq. 0)
 !
             if (nint(zr(vivois-1+5)) .eq. numa) then
@@ -214,7 +224,9 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
                     epsrss(kl) = epsrss(kl)+ddld(ll)/dble(nno2)
                 end do
             end do
-            call dscal(ndimsi-3, 1.d0/rac2, epsrss(4), 1)
+            b_n = to_blas_int(ndimsi-3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/rac2, epsrss(4), b_incx)
         end if
 !
         if (nint(vip(2, 1)) .eq. 1) then
@@ -238,7 +250,9 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
                     epsrss(kl) = epsrss(kl)+(1.0d0-scal(i)/scal(3))*ddld(ll)
                 end do
             end do
-            call dscal(ndimsi-3, 1.d0/rac2, epsrss(4), 1)
+            b_n = to_blas_int(ndimsi-3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/rac2, epsrss(4), b_incx)
         end if
 !
         sigell(1) = epsrss(1)
@@ -248,8 +262,10 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
         sigell(5) = epsrss(6)
         sigell(6) = epsrss(3)
 !
-        call dspev('V', 'U', 3, sigell, w, &
-                   z, 3, work, reuss)
+        b_ldz = to_blas_int(3)
+        b_n = to_blas_int(3)
+        call dspev('V', 'U', b_n, sigell, w, &
+                   z, b_ldz, work, reuss)
 !
         if (nini .eq. 0) then
             do i = 1, ndim
@@ -526,25 +542,38 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
 !
 !      DEFORMATIONS ET ECARTS EN FIN DE PAS DE TEMPS
 !
-        call daxpy(18, 1.d0, gepsm, 1, geps, 1)
+        b_n = to_blas_int(18)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, gepsm, b_incx, geps, &
+                   b_incy)
         do kl = 1, ndimsi
             de(kl) = epsgm(kl, 2)+epsgd(kl, 2)
         end do
 !
 !      LOI DE COMPORTEMENT
 !
-        call dcopy(ndimsi, sigm(1, g), 1, sigmam, 1)
-        call dscal(3, rac2, sigmam(4), 1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigm(1, g), b_incx, sigmam, b_incy)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, sigmam(4), b_incx)
         call r8inir(36, 0.d0, p, 1)
         if (nono .gt. 0.d0) then
             cod(g) = 1
             goto 999
         end if
-!
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(g, ksp, BEHinteg)
+
+! ----- Integrator
         sigma = 0.d0
         dsidep = 0.d0
         call nmcomp(BEHinteg, &
-                    'RIGI', g, 1, ndim, typmod, &
+                    fami, g, ksp, ndim, typmod, &
                     mate, compor, carcri, instam, instap, &
                     12, epsgm, epsgd, 6, sigmam, &
                     vim(1, g), option, angmas, &
@@ -587,8 +616,13 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
         end if
 ! ----- Stress
         if (lSigm) then
-            call dcopy(ndimsi, sigma, 1, sigp(1, g), 1)
-            call dscal(ndimsi-3, 1.d0/rac2, sigp(4, g), 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, sigma, b_incx, sigp(1, g), b_incy)
+            b_n = to_blas_int(ndimsi-3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/rac2, sigp(4, g), b_incx)
         end if
 ! ----- Rigidity matrix
         if (lMatr) then
@@ -627,8 +661,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
                             kk = os+iu(j, m)
                             t1 = 0
                             do pq = 1, ndimsi
-                                t1 = t1-dsidep(kl, pq, 1)*b(pq, j, m)* &
-                                     vff2(n, g)
+                                t1 = t1-dsidep(kl, pq, 1)*b(pq, j, m)*vff2(n, g)
                             end do
                             matr(kk) = matr(kk)+wg*t1
                         end do

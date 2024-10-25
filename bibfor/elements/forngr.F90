@@ -121,6 +121,7 @@ subroutine forngr(option, nomte)
     integer :: jnbspi
 !
     real(kind=8) :: blam(9, 3, 3)
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 ! DEB
@@ -447,9 +448,9 @@ subroutine forngr(option, nomte)
 !              ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * STILD ( 5 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, &
-                               b2su, stild, zr(ivectu))
-
+                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, b2su, stild, &
+                               zr(ivectu))
+!
 !------------- VARIABLES INTERNES INACTIVES COMPORTEMENT NON PLASTIQUE
 !
                 else if (option .eq. 'REFE_FORC_NODA') then
@@ -463,8 +464,8 @@ subroutine forngr(option, nomte)
 !
                     do i = 1, 5
                         sigtmp(i) = sigref
-                        call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, &
-                                   b2su, sigtmp, effint)
+                        call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, b2su, sigtmp, &
+                                   effint)
                         sigtmp(i) = 0.d0
                         do j = 1, 51
                             ftemp(j) = ftemp(j)+abs(effint(j))
@@ -479,8 +480,11 @@ subroutine forngr(option, nomte)
 !
     if (option .eq. 'REFE_FORC_NODA') then
         nval = nbcou*npge*npgsn*5
-        call daxpy(51, 1.d0/nval, ftemp, 1, zr(ivectu), &
-                   1)
+        b_n = to_blas_int(51)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0/nval, ftemp, b_incx, zr(ivectu), &
+                   b_incy)
         do j = 1, 51
             if (zr(ivectu+j-1) .eq. 0.) then
                 kmess(1) = 'COQUE3D'

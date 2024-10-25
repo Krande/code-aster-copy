@@ -63,6 +63,7 @@ import linecache
 import re
 import sys
 import traceback
+import time
 from collections import namedtuple
 from contextlib import contextmanager
 
@@ -83,6 +84,7 @@ from ..Utilities import (
     import_object,
     logger,
     no_new_attributes,
+    config,
 )
 from ..Utilities.outputs import command_text, decorate_name
 from .code_file import track_coverage
@@ -352,7 +354,17 @@ class ExecuteCommand:
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        self._cata.get_compat_syntax()(keywords)
+        try:
+            self._cata.get_compat_syntax()(keywords)
+        except (AssertionError, KeyError, TypeError, ValueError, AttributeError) as exc:
+            # in case of syntax error, show the syntax and raise the exception
+            self.print_syntax(keywords)
+            ExecuteCommand.level -= 1
+            msg = getattr(exc, "msg", str(exc))
+            if ExecutionParameter().option & Options.Debug:
+                logger.error(msg)
+                raise
+            UTMESS("F", "DVP_10", valk=("compat_syntax", self.command_name, msg))
         self.change_syntax(keywords)
 
     def change_syntax(self, keywords):
@@ -435,13 +447,20 @@ class ExecuteCommand:
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        self._cata.addDefaultKeywords(keywords)
-        remove_none(keywords)
         try:
+            self._cata.addDefaultKeywords(keywords)
+            remove_none(keywords)
             logger.debug("checking syntax of %s...", self.name)
             max_check = ExecutionParameter().get_option("max_check")
             checkCommandSyntax(self._cata, keywords, add_default=False, max_check=max_check)
-        except (CheckerError, AssertionError, KeyError, TypeError, ValueError) as exc:
+        except (
+            CheckerError,
+            AssertionError,
+            KeyError,
+            TypeError,
+            ValueError,
+            AttributeError,
+        ) as exc:
             # in case of syntax error, show the syntax and raise the exception
             self.print_syntax(keywords)
             ExecuteCommand.level -= 1
@@ -999,6 +1018,8 @@ class ExceptHookManager:
         """
         traceback.print_exception(type, value, traceb, file=sys.stderr)
         sys.stderr.flush()
+        if config["ASTER_PLATFORM_MINGW"]:
+            time.sleep(1)
         try:
             assert sys.flags.interactive or "__IPYTHON__" in globals()
             print("An exception occurred! Return to interactive session.")

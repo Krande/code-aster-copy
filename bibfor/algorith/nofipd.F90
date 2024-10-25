@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
                   option, nomte, mate, compor, lgpg, &
                   carcri, instm, instp, ddlm, ddld, &
                   angmas, sigm, vim, sigp, vip, &
-                  vect, matr, codret, &
-                  lSigm, lVect, lMatr)
+                  vect, matr, codret, lSigm, lVect, &
+                  lMatr)
 !
     use Behaviour_type
     use Behaviour_module
@@ -52,9 +52,10 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
     real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: vect(*), matr(*)
-    real(kind=8) :: carcri(*)
-    character(len=8) :: typmod(*)
-    character(len=16) :: compor(*), option, nomte
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    character(len=8), intent(in)  :: typmod(2)
+    character(len=16), intent(in)  :: compor(COMPOR_SIZE), option
+    character(len=16) :: nomte
     aster_logical, intent(in) :: lSigm, lVect, lMatr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -101,7 +102,10 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: axi, grand, mini
+    integer, parameter :: ksp = 1
+    character(len=4), parameter :: fami = "RIGI"
+    aster_logical, parameter :: mini = ASTER_FALSE, grand = ASTER_FALSE
+    aster_logical :: axi
     integer :: kpg, nddl
     integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
     integer :: os, kk
@@ -129,12 +133,12 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
                                                       -1.d0, -1.d0, 2.d0, 0.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0, &
-                                                     0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), (/6, 6/))
+                                                      0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), &
+                                                    (/6, 6/))
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    mini = ASTER_FALSE
-    grand = ASTER_FALSE
     axi = typmod(1) .eq. 'AXIS'
     cod = 0
     nddl = nnod*ndim+nnop+nnog*ndim
@@ -146,13 +150,18 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
     if (lMatr) then
         matr(1:nddl*(nddl+1)/2) = 0.d0
     end if
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instm, instp, &
+                              fami, mate, &
+                              BEHinteg)
+
 ! - Compute stabilization
-!
     call uthk(nomte, geomi, hk, ndim, 1)
     stab = 1.d-4*hk*hk
 !
@@ -178,9 +187,8 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
 ! - Properties of behaviour
 !
     rela_comp = compor(RELA_NAME)
-!
+
 ! - Loop on Gauss points
-!
     do kpg = 1, npg
         epsm = 0.d0
         deps = 0.d0
@@ -196,13 +204,31 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
                     r, dff1, depld, fm, deps)
         ddivu = deps(1)+deps(2)+deps(3)
 ! ----- Pressure and "gonflement"
-        pm = ddot(nnop, vffp(1, kpg), 1, presm, 1)
-        pd = ddot(nnop, vffp(1, kpg), 1, presd, 1)
+        b_n = to_blas_int(nnop)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vffp(1, kpg), b_incx, presm, b_incy)
+        b_n = to_blas_int(nnop)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pd = ddot(b_n, vffp(1, kpg), b_incx, presd, b_incy)
         do ia = 1, ndim
-            pim(ia) = ddot(nnog, vffg(1, kpg), 1, gpresm(ia), ndim)
-            pid(ia) = ddot(nnog, vffg(1, kpg), 1, gpresd(ia), ndim)
-            gpm(ia) = ddot(nnop, dff1(1, ia), 1, presm, 1)
-            gpd(ia) = ddot(nnop, dff1(1, ia), 1, presd, 1)
+            b_n = to_blas_int(nnog)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(ndim)
+            pim(ia) = ddot(b_n, vffg(1, kpg), b_incx, gpresm(ia), b_incy)
+            b_n = to_blas_int(nnog)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(ndim)
+            pid(ia) = ddot(b_n, vffg(1, kpg), b_incx, gpresd(ia), b_incy)
+            b_n = to_blas_int(nnop)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            gpm(ia) = ddot(b_n, dff1(1, ia), b_incx, presm, b_incy)
+            b_n = to_blas_int(nnop)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            gpd(ia) = ddot(b_n, dff1(1, ia), b_incx, presd, b_incy)
         end do
 ! ----- Kinematic - Product [F].[B]
         if (ndim .eq. 2) then
@@ -219,7 +245,7 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
                     def(3, na, 1) = fm(3, 3)*vffd(na, kpg)/r
                 end do
             end if
-        elseif (ndim .eq. 3) then
+        else if (ndim .eq. 3) then
             do na = 1, nnod
                 do ia = 1, ndim
                     def(1, na, ia) = fm(ia, 1)*dff1(na, 1)
@@ -246,10 +272,14 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
         do ia = 4, 2*ndim
             sigmPrep(ia) = sigm(ia, kpg)*rac2
         end do
-! ----- Compute behaviour
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         sigma = 0.d0
         call nmcomp(BEHinteg, &
-                    'RIGI', kpg, 1, ndim, typmod, &
+                    fami, kpg, ksp, ndim, typmod, &
                     mate, compor, carcri, instm, instp, &
                     6, epsm, deps, 6, sigmPrep, &
                     vim(1, kpg), option, angmas, &
@@ -269,7 +299,10 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
             do na = 1, nnod
                 do ia = 1, ndim
                     kk = vu(ia, na)
-                    t1 = ddot(2*ndim, sigma, 1, def(1, na, ia), 1)
+                    b_n = to_blas_int(2*ndim)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    t1 = ddot(b_n, sigma, b_incx, def(1, na, ia), b_incy)
                     vect(kk) = vect(kk)+w*t1
                 end do
             end do
@@ -409,9 +442,8 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
     end do
 !
 999 continue
-!
+
 ! - Return code summary
-!
     call codere(cod, npg, codret)
 !
 end subroutine

@@ -62,7 +62,8 @@ FONC1 = DEFI_FONCTION(
 )
 
 MATER = DEFI_MATERIAU(
-    ELAS_FO=_F(E=YOUN, NU=ZERO, TEMP_DEF_ALPHA=TREF, ALPHA=ALPH, FONC_DESORP=FONC1),
+    ELAS_FO=_F(E=YOUN, NU=ZERO, TEMP_DEF_ALPHA=TREF, ALPHA=ALPH),
+    BETON_DESORP=_F(FONC_DESORP=FONC1),
     BETON_UMLV=_F(
         K_RS=2.0e5,
         ETA_RS=4.0e10,
@@ -191,9 +192,10 @@ for i in range(NCAL):
     MATER[i] = DEFI_MATERIAU(  # ELAS=_F(E=YOUN(Ti),
         #        NU=0.,
         #        ALPHA=0.,
-        #        # FONC_DESORP = FONC1(Ti)
+        #
         #      ),
-        ELAS_FO=_F(E=Ei, NU=ZERO, TEMP_DEF_ALPHA=0.0, ALPHA=ZERO, FONC_DESORP=FONC1),
+        ELAS_FO=_F(E=Ei, NU=ZERO, TEMP_DEF_ALPHA=0.0, ALPHA=ZERO),
+        BETON_DESORP=_F(FONC_DESORP=FONC1),
         BETON_UMLV=_F(
             K_RS=2.0e5,
             ETA_RS=4.0e10,

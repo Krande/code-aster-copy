@@ -1,0 +1,89 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
+
+RESTAB = CALC_STAB_PENTE(
+    CHAM_MATER=CHMAT,
+    METHODE_STAB="LEM",
+    METHODE_LEM="BISHOP",
+    GROUP_MA="range_pente",
+    NB_TRANCHE=15,
+    NB_RAYON=15,
+    SUCCION="OUI",
+    PHI_B=_F(TOUT="OUI", VALE=10.0),
+    LIGN_PHREA=_F(INDIC_PIEZO=[1, 2], TABLE=TABPIEZO, TOUT="OUI"),
+    FONC_PRES=f_pres,
+    RAFF_MAIL=_F(NB_RAFF_MAXI=4, RAFF_CRIT_STAB=1e-3),
+    X1_MINI=7.6,
+    X1_MAXI=7.6,
+    X2_MINI=30.8,
+    X2_MAXI=30.8,
+    NB_POINT_1=1,
+    NB_POINT_2=1,
+    INFO_TABLE=2,
+)
+
+# TEST DE NON_REGRESSION
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=0),
+    NOM_PARA="FS",
+    TABLE=RESTAB,
+    VALE_CALC=(1.305339472434331,),
+)
+
+TEST_TABLE(NOM_PARA="NB_SURF_TEST", VALE_CALC_I=21, TABLE=RESTAB)
+
+# VALIDATION
+TEST_TABLE(
+    NOM_PARA="CENTRE_X",
+    VALE_CALC=23.994507712938862,
+    VALE_REFE=24.617366,
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=5e-2,
+    TABLE=RESTAB,
+)
+
+TEST_TABLE(
+    NOM_PARA="CENTRE_Y",
+    VALE_CALC=20.12325789401816,
+    VALE_REFE=21.654858,
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=0.1,
+    TABLE=RESTAB,
+)
+TEST_TABLE(
+    NOM_PARA="RAYON",
+    VALE_CALC=17.50069056883949,
+    VALE_REFE=18.66,
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=0.1,
+    TABLE=RESTAB,
+)
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=4),
+    NOM_PARA="FS",
+    TABLE=RESTAB,
+    VALE_CALC=(1.3678279708432919,),
+    VALE_REFE=(1.366),
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=1e-2,
+)
+
+FIN()

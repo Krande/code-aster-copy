@@ -77,7 +77,7 @@ class NewtonSolver(SolverFeature):
         """
         self.param = param
 
-        self.prediction = self._get("NEWTON", "PREDICTION")
+        self.prediction = self._get("NEWTON", "PREDICTION") or self._get("NEWTON", "MATRICE")
 
         assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: "
 
@@ -133,6 +133,7 @@ class NewtonSolver(SolverFeature):
             matrix_type = "PRED_" + self.prediction
         else:
             matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
+
             self._resetMatrix(current_incr)
         return matrix_type
 
@@ -155,6 +156,7 @@ class NewtonSolver(SolverFeature):
 
         while not self.conv_manager.isFinished():
             current_incr += 1
+
             iter_glob.value = current_incr
 
             # Select type of matrix

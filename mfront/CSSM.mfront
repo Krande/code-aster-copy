@@ -1,0 +1,409 @@
+@Parser Implicit;
+@Behaviour CSSM;
+@Author Goustan Bacquaert;
+@Date 26/07/2024;
+
+@Algorithm NewtonRaphson;
+@CompareToNumericalJacobian false;
+@Theta 1.;
+@Epsilon 1.e-14;
+
+// >>>>>>>>>>>>>>>>>>>
+// Material properties
+// <<<<<<<<<<<<<<<<<<<
+
+@MaterialProperty stress k;            // Bulk modulus [Pa]
+@MaterialProperty stress mu;           // Shear modulus [Pa]
+@MaterialProperty stress pc0;          // Initial critical pressure [Pa]
+@MaterialProperty real M;              // Critical state slope [-]
+@MaterialProperty real bt;             // Volumetric hardening index [-]
+@MaterialProperty real nhyp;           // Exponent from the hyperbolic model [-]
+@MaterialProperty real gammahyp;       // Distortion from the hyperbolic model [-]
+@MaterialProperty real C;              // Center of every half-ellipse [Pa]
+@MaterialProperty real rho;            // Shear modulus ratio [-]
+@MaterialProperty real eta;            // Homothetic reduction ratio of the initial yield surface [-]
+@MaterialProperty real om;             // Isotropic hardening index [-]
+
+k.setGlossaryName("BulkModulus");
+mu.setGlossaryName("ShearModulus");
+pc0.setEntryName("InitCritPress");
+M.setEntryName("CritStateSlope");
+bt.setEntryName("IncoPlastIndex");
+nhyp.setEntryName("HypExponent");
+gammahyp.setEntryName("HypDistortion");
+C.setEntryName("MinCritPress");
+rho.setEntryName("ShearModulusRatio");
+eta.setEntryName("IsoHardRatio");
+om.setEntryName("IsoHardIndex");
+
+// >>>>>>>>>>>>>>>
+// Local variables
+// <<<<<<<<<<<<<<<
+
+@LocalVariable bool b[2];              // If b[0] = true, plastic loading in the Modified Cam-Clay element
+                                       // If b[1] = True, plastic loading in the Iwan elemnt on the plasticity yield criterion without hardening
+@LocalVariable Stensor id2;            // Identity of order 2
+@LocalVariable Stensor4 id4;           // Identity or order 4
+@LocalVariable Stensor4 k4;            // Deviatoric projector of order 4
+@LocalVariable Stensor4 j4;            // Spheric projector of order 4
+@LocalVariable Stensor sig_mcc;        // Stress in the Modified Cam-Clay element
+@LocalVariable Stensor sig_iwa;        // Stress in the Iwan element
+@LocalVariable Stensor4 Ce;            // Total stiffness tensor
+@LocalVariable Stensor4 Ce_mcc;        // Stiffness tensor in the Modified Cam-Clay element
+@IntegerConstant Ns = 10;              // Number of calibration points for the Iwan element
+@LocalVariable stress R[Ns];           // Yield stresses matching the "modified hyperbolic" relationship
+@LocalVariable real gamma[Ns];         // Calibrated distorsion points
+@LocalVariable stress H[Ns-1];         // Corresponding deviatoric kinematic hardening moduli
+@LocalVariable Stensor depl_iwa[Ns-1]; // Increment of internal variables in the Iwan element
+@LocalVariable real ipp;               // Indicator for the largest plasticity yield criterion consistent with the calibration of the Iwan element
+@LocalVariable real lzt;               // Local zero tolerance
+
+// >>>>>>>>>>>>>>>
+// State variables
+// <<<<<<<<<<<<<<<
+
+@StateVariable Stensor eel_mcc;        // Elastic strain in the Modified Cam-Clay element
+@StateVariable real lam_mcc;           // Cumulative plastic strain in the Modified Cam-Clay element
+@StateVariable real lam_iwa;           // Cumulative plastic strain in the Iwan element related to the plasticity yield criterion without hardening
+@StateVariable real epv_mcc;           // Volumetric plastic strain in the Modified Cam-Clay element
+
+eel_mcc.setEntryName("ElasticStrain1");
+lam_mcc.setEntryName("CumPlastStrain1");
+lam_iwa.setEntryName("CumPlastStrain2");
+epv_mcc.setEntryName("VolPlastStrain1");
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>
+// Auxiliary state variables
+// <<<<<<<<<<<<<<<<<<<<<<<<<
+
+@AuxiliaryStateVariable Stensor Xn[Ns-1];
+@AuxiliaryStateVariable stress Rn;
+@AuxiliaryStateVariable real ip;
+
+Xn.setEntryName("OldBkStress");
+Rn.setEntryName("OldYieldSize");
+ip.setEntryName("PlasticIndicator");
+
+// >>>>>>>>>>>>>>>>>>>>
+// Init Local Variables
+// <<<<<<<<<<<<<<<<<<<<
+
+@InitLocalVariables{
+
+	// Initialization of some tensors
+	id2 = Stensor::Id();
+	k4 = Stensor4::K();
+	j4 = Stensor4::J();
+	id4 = Stensor4::Id();
+	Ce = 3.*k*j4+2.*mu*k4;
+	Ce_mcc = (j4+rho*k4)*Ce;
+
+	// Local zero tolerance (to avoid floating point errors)
+	lzt = 1.e-12;
+
+	// Calibration of the Iwan element
+    gamma[0] = 1.00000000e-05;
+    gamma[1] = 2.15443469e-05;
+    gamma[2] = 4.64158883e-05;
+    gamma[3] = 1.00000000e-04;
+    gamma[4] = 2.15443469e-04;
+    gamma[5] = 4.64158883e-04;
+	gamma[6] = 1.00000000e-03;
+    gamma[7] = 2.15443469e-03;
+    gamma[8] = 4.64158883e-03;
+    gamma[9] = 1.00000000e-02;
+    for ( unsigned short i = 0; i < Ns; i++ ) {
+        R[i] = sqrt(3.)*mu*gamma[i]/(1.+1.*pow(gamma[i]/gammahyp,nhyp));
+    }
+    real sum = 1./(max(1.-rho,lzt)*mu);
+	ipp = 0;
+    for ( unsigned short i = 0; i < Ns-1; i++ ) {
+		H[i] = 2./(1./((R[i+1]-R[i])/(sqrt(3.)*(gamma[i+1]-gamma[i]))-rho*mu)-sum);
+		if (H[i] > 0.){
+			ipp = i+1;
+			sum += 2./H[i];
+		}
+		else{
+			break;
+		}
+    }
+	/* Remark: None of the i-th surface for i>ipp can be reached by the stress sig_iwa in the Iwan element,
+	           since indeel_mcc the ipp-th surface behaves as perfect plasticity. As a consequence
+			   only iteration of the i<ipp plasticity criteria will be made in the following
+			   for which H[i]>0. On the other hand, the ipp-th surface
+			   is dealt with the internal state variable lam_iwa. */
+
+	// Initialization of the yield stress in the Modified Cam-Clay element
+	if (Rn < pc0){
+		Rn = pc0*exp(-bt*epv_mcc);
+	}
+
+	// Initialization of elastic strains - For cases with initial stresses without displacements, e.g. tunnels or dams
+    const Stensor4 Se = invert(Ce);
+    eel = Se*sig;
+	bool init_eel_mcc = true;
+	if (lam_mcc == 0. and lam_iwa == 0.){
+		for (unsigned short i = 0; i < ipp; i++) {
+			if ((Xn[i]|Xn[i]) != 0.) {
+				init_eel_mcc = false;
+				break;
+			}
+		}
+		if (init_eel_mcc){
+			eel_mcc = eel;
+		}
+	}
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>
+// Stress-strain relationship
+// <<<<<<<<<<<<<<<<<<<<<<<<<<
+
+@ComputeStress{
+	sig = k*trace(eel)*id2+2.*mu*deviator(eel);
+}
+
+// >>>>>>>>>>>>>>>>>>
+// Elastic Prediction
+// <<<<<<<<<<<<<<<<<<
+
+@Predictor{
+	const Stensor sigel_mcc = k*trace(eel_mcc+deto)*id2+2.*rho*mu*deviator(eel_mcc+deto);
+	const Stensor sigel_iwa = k*trace(eel_mcc+deto)*id2-2.*rho*mu*deviator(eel_mcc+deto)+2.*mu*deviator(eel+deto);
+	b[0] = sqrt(pow(sigmaeq(sigel_mcc/M),2.)+pow(trace(sigel_mcc)/3.+pc0*exp(-bt*epv_mcc)-pc0*eta*exp(-om*(lam_mcc-epv_mcc)),2.))-(Rn-pc0*eta*exp(-om*(lam_mcc-epv_mcc))) > 0.;
+	b[1] = sqrt(pow(sigmaeq(sigel_iwa),2.)+pow(R[ipp]*max(trace(sigel_iwa)/(3.*C)+1.,0.),2.))-R[ipp] > 0.;
+}
+
+// >>>>>>>>>>>
+// Integration
+// <<<<<<<<<<<
+
+@Integrator{
+
+	// Initialization of the system corresponding to an elastic loading
+
+    feel = deel-deto;
+	feel_mcc = deel_mcc-deel;
+	flam_mcc = dlam_mcc;
+	flam_iwa = dlam_iwa;
+	fepv_mcc = depv_mcc;
+	dfeel_mcc_ddeel = -id4;
+
+	if(b[0]){  // Plastic loading in the Modified Cam-Clay element
+		if ( -om*(lam_mcc+dlam_mcc-epv_mcc-depv_mcc) > 300. ) return false;
+		if ( -bt*(epv_mcc+depv_mcc) > 300. ) return false;
+		if ( -bt*depv_mcc > 300. ) return false;
+
+	    sig_mcc = k*trace(eel_mcc+deel_mcc)*id2+2.*rho*mu*deviator(eel_mcc+deel_mcc);
+		const stress pc_mcc = pc0*exp(-bt*(epv_mcc+depv_mcc));
+		const stress S_mcc = pc0*eta*exp(-om*(lam_mcc+dlam_mcc-epv_mcc-depv_mcc));
+		const stress Teq_mcc = max(sqrt(pow(sigmaeq(sig_mcc/M),2.)+pow(trace(sig_mcc)/3.+pc_mcc-S_mcc,2.)),lzt*mu);
+		const stress Rnp = Rn*max(1.,exp(-bt*depv_mcc));
+		const stress f_mcc = Teq_mcc-(Rnp-S_mcc);
+		const Stensor n_mcc = (3.*deviator(sig_mcc)/(2.*pow(M,2.))+(trace(sig_mcc)/3.+pc_mcc-S_mcc)*id2/3.)/Teq_mcc;
+
+		// Modification of the system to solve
+		feel += (rho*k4+j4)*dlam_mcc*n_mcc;
+		feel_mcc += (1.-rho)*k4*dlam_mcc*n_mcc;
+		flam_mcc = f_mcc/k;
+		fepv_mcc += -dlam_mcc*trace(n_mcc);
+
+		// Modification of the jacobian
+
+		// Derivatives of A = sig_mcc+(pc_mcc-S_mcc)*id2
+		const Stensor4 dA_deel_mcc = Ce_mcc;
+		const Stensor dA_depv_mcc = (-bt*pc_mcc-om*S_mcc)*id2;
+		const Stensor dA_dlam_mcc = om*S_mcc*id2;
+
+		// Derivatives of the yield criterion f_mcc
+		const Stensor df_mcc_deel_mcc = (n_mcc|dA_deel_mcc);
+		const stress dRnp = Rnp>Rn ? bt*Rnp : 0.;
+		const stress df_mcc_depv_mcc = (n_mcc|dA_depv_mcc)+om*S_mcc+dRnp;
+		const stress df_mcc_dlam_mcc = (n_mcc|dA_dlam_mcc)-om*S_mcc;
+
+		// Derivatives of the flow direction n_mcc
+		const Stensor4 dn_mcc_dA = (3.*k4/(2.*pow(M,2.))+j4/3.-(n_mcc^n_mcc))/Teq_mcc;
+		const Stensor4 dn_mcc_deel_mcc = dn_mcc_dA*dA_deel_mcc;
+		const Stensor dn_mcc_depv_mcc = dn_mcc_dA*dA_depv_mcc;
+		const Stensor dn_mcc_dlam_mcc = dn_mcc_dA*dA_dlam_mcc;
+
+		// 1st line of the jacobian
+		dfeel_ddeel_mcc += (rho*k4+j4)*dlam_mcc*dn_mcc_deel_mcc;
+		dfeel_ddlam_mcc += (rho*k4+j4)*(n_mcc+dlam_mcc*dn_mcc_dlam_mcc);
+		dfeel_ddepv_mcc += (rho*k4+j4)*dlam_mcc*dn_mcc_depv_mcc;
+
+		// 2nd line of the jacobian
+		dfeel_mcc_ddeel_mcc += (1.-rho)*k4*dlam_mcc*dn_mcc_deel_mcc;
+		dfeel_mcc_ddlam_mcc += (1.-rho)*k4*(n_mcc+dlam_mcc*dn_mcc_dlam_mcc);
+		dfeel_mcc_ddepv_mcc += (1.-rho)*k4*dlam_mcc*dn_mcc_depv_mcc;
+
+		// 3rd line of the jacobian
+		dflam_mcc_ddeel_mcc = df_mcc_deel_mcc/k;
+		dflam_mcc_ddlam_mcc = df_mcc_dlam_mcc/k;
+		dflam_mcc_ddepv_mcc = df_mcc_depv_mcc/k;
+
+		// 5rd line of the jacobian
+		dfepv_mcc_ddeel_mcc += -dlam_mcc*(id2|dn_mcc_deel_mcc);
+		dfepv_mcc_ddlam_mcc += -trace(n_mcc)-dlam_mcc*(id2|dn_mcc_dlam_mcc);
+		dfepv_mcc_ddepv_mcc += -dlam_mcc*(id2|dn_mcc_depv_mcc);
+	}
+
+	if(b[1]){  // Plastic loading in the Iwan element on the criterion without hardening
+
+		sig_iwa = sig-2.*rho*mu*deviator(eel_mcc+deel_mcc);
+		const stress mx = max(trace(sig_iwa)/(3.*C)+1.,0.);
+		const stress Teq_iwa = max(sqrt(pow(sigmaeq(sig_iwa),2.)+pow(R[ipp]*mx,2.)),lzt*mu);
+		const stress f_iwa = Teq_iwa-R[ipp];
+		const Stensor n_iwa = (3.*deviator(sig_iwa)/2.+pow(R[ipp],2.)*mx*id2/(3.*C))/Teq_iwa;
+
+		// Modification of the system to solve
+		feel += ((1.-rho)*k4+j4)*dlam_iwa*n_iwa;
+		feel_mcc += -(1.-rho)*k4*dlam_iwa*n_iwa;
+		flam_iwa = f_iwa/k;
+
+		// Modification of the jacobian
+
+		// Derivatives of the yield criterion f_iwa
+		const Stensor df_iwa_deel = n_iwa*Ce;
+		const Stensor df_iwa_deel_mcc = -n_iwa*(k4*Ce_mcc);
+
+		// Derivatives of the flow direction n_iwa
+		const real dmx = mx>0. ? 1./C : 0.;
+		const Stensor4 dn_iwa_dsig = (3.*k4/2.+pow(R[ipp],2.)*dmx*j4/(3.*C)-(n_iwa^n_iwa))/Teq_iwa;
+		const Stensor4 dn_iwa_deel = dn_iwa_dsig*Ce;
+		const Stensor4 dn_iwa_deel_mcc = -dn_iwa_dsig*(k4*Ce_mcc);
+
+		// 1st line of the jacobian
+		dfeel_ddeel += ((1.-rho)*k4+j4)*dlam_iwa*dn_iwa_deel;
+		dfeel_ddeel_mcc += ((1.-rho)*k4+j4)*dlam_iwa*dn_iwa_deel_mcc;
+		dfeel_ddlam_iwa += ((1.-rho)*k4+j4)*n_iwa;
+
+		// 2nd line of the jacobian
+		dfeel_mcc_ddeel += -(1.-rho)*k4*dlam_iwa*dn_iwa_deel;
+		dfeel_mcc_ddeel_mcc += -(1.-rho)*k4*dlam_iwa*dn_iwa_deel_mcc;
+		dfeel_mcc_ddlam_iwa += -(1.-rho)*k4*n_iwa;
+
+		// 4th line of the jacobian
+		dflam_iwa_ddeel = df_iwa_deel/k;
+		dflam_iwa_ddeel_mcc = df_iwa_deel_mcc/k;
+		dflam_iwa_ddlam_iwa = 0.;
+	}
+
+	// Activation of other criteria with hardening
+	sig_iwa = sig-2.*rho*mu*deviator(eel_mcc+deel_mcc);
+	for (unsigned short i = 0; i < ipp; i++) {
+    	const stress mx = max(trace(sig_iwa+Xn[i])/(3.*C)+1.,0.);
+    	const stress Teqi_iwa = max(sqrt(pow(sigmaeq(sig_iwa+Xn[i]),2.)+pow(R[i]*mx,2.)),lzt*mu);
+		const stress fel_iwa = Teqi_iwa-R[i];
+
+		if (fel_iwa > 0.){
+			const Stensor ni_iwa = (3.*deviator(sig_iwa+Xn[i])/2.+pow(R[i],2.)*mx*id2/(3.*C))/Teqi_iwa;
+			const real dlami_iwa = 2./(3.*H[i])*fel_iwa;
+			depl_iwa[i] = dlami_iwa*ni_iwa;
+			feel += ((1.-rho)*k4+j4)*dlami_iwa*ni_iwa;
+			feel_mcc += -(1.-rho)*k4*dlami_iwa*ni_iwa;
+
+			// Modification of the jacobian
+
+			// Derivatives of dlami_iwa
+			const Stensor ddlami_iwa_dsig = 2./(3.*H[i])*ni_iwa;
+
+			// Derivatives of ni_iwa
+			const real dmx = mx>0. ? 1./C : 0.;
+			const Stensor4 dni_iwa_dsig = (3.*k4/2.+pow(R[i],2.)*dmx*j4/(3.*C)-(ni_iwa^ni_iwa))/Teqi_iwa;
+
+			// 1st line of the jacobian
+			dfeel_ddeel += ((1.-rho)*k4+j4)*(dlami_iwa*dni_iwa_dsig+(ni_iwa^ddlami_iwa_dsig))*Ce;
+			dfeel_ddeel_mcc += ((1.-rho)*k4+j4)*(dlami_iwa*dni_iwa_dsig+(ni_iwa^ddlami_iwa_dsig))*(-k4*Ce_mcc);
+
+			// 2nd line of the jacobian
+			dfeel_mcc_ddeel += -(1.-rho)*k4*(dlami_iwa*dni_iwa_dsig+(ni_iwa^ddlami_iwa_dsig))*Ce;
+			dfeel_mcc_ddeel_mcc += -(1.-rho)*k4*(dlami_iwa*dni_iwa_dsig+(ni_iwa^ddlami_iwa_dsig))*(-k4*Ce_mcc);
+		}
+		else{
+			depl_iwa[i] = Stensor(0.);
+		}
+    }
+}
+
+// <<<<<<<<<<<<<<<<
+// Tangent operator
+// >>>>>>>>>>>>>>>>
+
+@TangentOperator{
+	Stensor4 Je;
+  	getPartialJacobianInvert(Je);
+  	Dt = Ce*Je;
+}
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// Additional convergence checks
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+@AdditionalConvergenceChecks{
+	if (converged){
+			sig_mcc = k*trace(eel_mcc+deel_mcc)*id2+2.*rho*mu*deviator(eel_mcc+deel_mcc);
+			sig_iwa = sig-2.*rho*mu*deviator(eel_mcc+deel_mcc);
+            const stress f_mcc = sqrt(pow(sigmaeq(sig_mcc/M),2.)+pow(trace(sig_mcc)/3.+pc0*exp(-bt*(epv_mcc+depv_mcc))-pc0*eta*exp(-om*(lam_mcc+dlam_mcc-epv_mcc-depv_mcc)),2.))-(Rn-pc0*eta*exp(-om*(lam_mcc+dlam_mcc-epv_mcc-depv_mcc)));
+			const stress f_iwa = sqrt(pow(sigmaeq(sig_iwa),2.)+pow(R[ipp]*max(trace(sig_iwa)/(3.*C)+1.,0.),2.))-R[ipp];
+		if (b[0] and !b[1]) {
+			if (dlam_mcc < 0.) {
+				converged = b[0] = false;
+			}
+			if (f_iwa > 0.) {
+				b[1] = true;
+				converged = false;
+			}
+		}
+		else if (b[1] and !b[0]) {
+			if (dlam_iwa < 0.) {
+				converged = b[1] = false;
+			}
+			if (f_mcc > 0.) {
+				b[0] = true;
+				converged = false;
+			}
+    	}
+		else if (b[0] and b[1]) {
+    		if (dlam_mcc < 0.) {
+				converged = b[0] = false;
+			}
+    		if (dlam_iwa < 0.) {
+				converged = b[1] = false;
+			}
+    	}
+		else if (!b[0] and !b[1]) {
+			if (f_mcc > 0.) {
+				b[0] = true;
+				converged = false;
+			}
+			if (f_iwa > 0.) {
+				b[1] = true;
+				converged = false;
+			}
+    	}
+	}
+}
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// Update auxiliary state variables
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+@UpdateAuxiliaryStateVariables{
+	for (unsigned short i = 0; i < ipp; i++) {
+		Xn[i] += -H[i]*(deviator(depl_iwa[i])+pow(C/R[i],2.)*3./2.*trace(depl_iwa[i])*id2);
+	}
+	if (!b[0] and !b[1]){
+        ip = 0.;
+    }
+    else if (b[0] and !b[1]){
+        ip = 1.;
+    }
+    else if (!b[0] and b[1]){
+        ip = 2.;
+    }
+    else if (b[0] and b[1]){
+        ip = 3;
+    }
+	Rn *= max(1.,exp(-bt*depv_mcc));
+}

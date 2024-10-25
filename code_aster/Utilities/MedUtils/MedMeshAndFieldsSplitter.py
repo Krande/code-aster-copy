@@ -26,7 +26,12 @@ from . import toAsterGeoType
 
 
 def splitMeshAndFieldsFromMedFile(
-    filename, cellBalancer=False, nodeBalancer=False, outMesh=None, deterministic=False
+    filename,
+    cellBalancer=False,
+    nodeBalancer=False,
+    outMesh=None,
+    nodeGrpToGather=[],
+    deterministic=False,
 ):
     """Split a MED mesh and MED fields from a filename
 
@@ -35,6 +40,8 @@ def splitMeshAndFieldsFromMedFile(
         cellBalancer (bool): True if cell balancer must be return.
         nodeBalancer (bool): True if node balancer must be return.
         outMesh (ParallelMesh): split mesh.
+        nodeGrpToGather (list of list): list of list of node groups to gather
+            each item of list will be gather on a sigle MPI processor
 
     Returns:
         tuple: first element: split mesh, second element: dict with split fields,
@@ -45,13 +52,20 @@ def splitMeshAndFieldsFromMedFile(
     fr.openParallel(filename, MedFileAccessType.MedReadOnly)
     mesh = IncompleteMesh()
     mesh.readMedFile(filename, verbose=0)
+    idsToGather = []
+    if nodeGrpToGather != []:
+        for tab1 in nodeGrpToGather:
+            curIdsToGather = []
+            for grpName in tab1:
+                curIdsToGather += mesh.getNodesFromGroup(grpName)
+            idsToGather.append(curIdsToGather)
     bMesh = MeshBalancer()
     bMesh.buildFromBaseMesh(mesh)
     meshGraph = MeshConnectionGraph()
     meshGraph.buildFromIncompleteMesh(mesh)
 
     part2 = PtScotchPartitioner()
-    part2.buildGraph(meshGraph)
+    part2.buildGraph(meshGraph, idsToGather)
     scotchPart = part2.partitionGraph(deterministic)
 
     outMesh = bMesh.applyBalancingStrategy(scotchPart, outMesh)

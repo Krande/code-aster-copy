@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcresa(fami, kpg, ksp, typmod, imat, &
                   nmat, materd, materf, rela_comp, nr, &
                   nvi, timed, timef, deps, epsd, &
@@ -62,6 +62,7 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
     character(len=*) :: fami
     character(len=3) :: matcst
     character(len=16) :: rela_comp
+    blas_int :: b_incx, b_incy, b_n
     common/tdim/ndt, ndi
 !----------------------------------------------------------------
 !
@@ -82,12 +83,29 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
     matcst = 'OUI'
 !
 !     CALCUL DE DSIG AVEC THETA
-    call dcopy(ndt, dy, 1, dsig, 1)
-    call dcopy(ndt, yd, 1, smx, 1)
-    call daxpy(6, theta, dsig, 1, smx, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, dy, b_incx, dsig, b_incy)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, yd, b_incx, smx, b_incy)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, theta, dsig, b_incx, smx, &
+               b_incy)
 !
-    call dcopy(nvi, yd(ndt+1), 1, vini, 1)
-    call daxpy(nvi, theta, dy, 1, vini, 1)
+    b_n = to_blas_int(nvi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, yd(ndt+1), b_incx, vini, b_incy)
+    b_n = to_blas_int(nvi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, theta, dy, b_incx, vini, &
+               b_incy)
 !
 !     CALCUL DES DERIVEES DES VARIABLES INTERNES AU POINT T+THETA*DT
     call lcdvin(fami, kpg, ksp, rela_comp, typmod, &
@@ -95,7 +113,9 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
                 materf(1, 2), x, dtime, smx, dvin, &
                 iret)
 !
-    call dscal(nvi, dtime, dvin, 1)
+    b_n = to_blas_int(nvi)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, dtime, dvin, b_incx)
 !
     do itens = 1, nvi
         vini(itens) = yd(ndt+itens)+dvin(itens)
@@ -111,14 +131,24 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
                 deps, nmat, materf(1, 1), sigi)
 !
 !     CALCUL DES RESIDUS AU POINT T+DT
-    call dcopy(ndt, yf, 1, sigf, 1)
+    b_n = to_blas_int(ndt)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, yf, b_incx, sigf, b_incy)
     epsef(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigi(1:ndt))
     h1sigf(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigf(1:ndt))
     r(1:ndt) = epsef(1:ndt)-h1sigf(1:ndt)
 !
 !     CALCUL DES RESIDUS AU POINT T+DT
 !
-    call dcopy(nvi, dvin, 1, r(ndt+1), 1)
-    call daxpy(nvi, -1.d0, dy(ndt+1), 1, r(ndt+1), 1)
+    b_n = to_blas_int(nvi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, dvin, b_incx, r(ndt+1), b_incy)
+    b_n = to_blas_int(nvi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call daxpy(b_n, -1.d0, dy(ndt+1), b_incx, r(ndt+1), &
+               b_incy)
 !
 end subroutine

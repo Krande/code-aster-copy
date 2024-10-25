@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine mltfld(n, front, adper, t1, ad, &
     parameter(seuin=1500, seuik=300)
     integer :: nn, kk, lda, incx, incy
     character(len=1) :: tra
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 !     MLTFLD TRAITE UNIQUEMENT LES BLOCS DIAGONAUX
 !
@@ -53,9 +54,14 @@ subroutine mltfld(n, front, adper, t1, ad, &
                 call sspmvb(n-k+1, k-1, front, ad, t1, &
                             front(adper(k)))
             else
-                call dgemv(tra, nn, kk, alpha, front(k), &
-                           lda, t1, incx, beta, front(adper(k)), &
-                           incy)
+                b_lda = to_blas_int(lda)
+                b_m = to_blas_int(nn)
+                b_n = to_blas_int(kk)
+                b_incx = to_blas_int(incx)
+                b_incy = to_blas_int(incy)
+                call dgemv(tra, b_m, b_n, alpha, front(k), &
+                           b_lda, t1, b_incx, beta, front(adper(k)), &
+                           b_incy)
             end if
         end if
 !         DIVISION PAR LE TERME DIAGONAL

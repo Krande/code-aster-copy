@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -132,7 +132,7 @@ class ParallelEquationNumbering : public EquationNumbering {
     /**
      * @brief Get Rows owned locally (aka not Ghost)
      */
-    VectorLong getNoGhostDOFs() const;
+    VectorLong getNoGhostDOFs( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof

@@ -30,9 +30,8 @@ from ..Objects import (
     MechanicalLoadReal,
     ParallelMechanicalLoadFunction,
     ParallelMechanicalLoadReal,
-    PhysicalProblem,
 )
-
+from ..ObjectsExt import PhysicalProblem
 from ..Utilities import logger, print_stats, profile, reset_stats
 from ..Solvers import PhysicalState, StorageManager, TimeStepper
 from ..Solvers import ProblemType as PBT

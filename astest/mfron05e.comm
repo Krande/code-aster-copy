@@ -1,0 +1,88 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="elasticCZMimplicit", UNITE_MFRONT=38)
+
+mesh = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
+
+model = AFFE_MODELE(
+    MAILLAGE=mesh,
+    AFFE=(
+        _F(GROUP_MA=("CUBE", "DROITE"), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA="CUBEDEG", PHENOMENE="MECANIQUE", MODELISATION="3D_JOINT"),
+    ),
+)
+
+materialProp = DEFI_MATERIAU(ELAS=_F(E=50.0, NU=0.0), MFRONT=_F(LISTE_COEF=(30, 2)))
+
+materialField = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=materialProp))
+
+clamp = AFFE_CHAR_MECA(MODELE=model, FACE_IMPO=(_F(GROUP_MA="GAUCHE2", DX=0, DY=0, DZ=0),))
+
+# CHARGEMENT MODE I PUR
+traction = AFFE_CHAR_MECA(MODELE=model, FACE_IMPO=(_F(GROUP_MA="DROITE", DX=5.0, DY=0.0, DZ=0),))
+
+listInst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=10)))
+
+rampUnit = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1), PROL_DROITE="LINEAIRE")
+
+listInstMngt = DEFI_LIST_INST(
+    METHODE="MANUEL",
+    DEFI_LIST=_F(LIST_INST=listInst),
+    INFO=1,
+    ECHEC=_F(
+        SUBD_NIVEAU=10,
+        SUBD_PAS_MINI=0.0,
+        SUBD_PAS=10,
+        SUBD_METHODE="MANUEL",
+        ACTION="DECOUPE",
+        EVENEMENT="ERREUR",
+    ),
+)
+
+resuNonLin = STAT_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=materialField,
+    EXCIT=(_F(CHARGE=clamp), _F(CHARGE=traction, FONC_MULT=rampUnit)),
+    COMPORTEMENT=(
+        _F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, GROUP_MA="CUBEDEG"),
+        _F(RELATION="ELAS", GROUP_MA="G_CUBE"),
+    ),
+    INCREMENT=_F(LIST_INST=listInstMngt),
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="NOREF_3D",
+            INST=1.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resuNonLin,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=3.124999999999999,
+            VALE_REFE=3.124999999999999,
+            PRECISION=0.05,
+        ),
+    )
+)
+
+FIN()

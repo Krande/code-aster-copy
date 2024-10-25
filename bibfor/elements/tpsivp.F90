@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tpsivp(p, sigmav)
     implicit none
 #include "asterfort/assert.h"
@@ -39,6 +39,7 @@ subroutine tpsivp(p, sigmav)
     integer :: ld
     real(kind=8) :: alpha, beta
     real(kind=8), dimension(3, 3) :: sigma, temp
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 !     ------------------------------------------------------------------
     ASSERT(size(p, 1) == 3)
 !      ASSERT(size(sigmav)==6)
@@ -55,13 +56,24 @@ subroutine tpsivp(p, sigmav)
     ld = 3
     alpha = 1.d0
     beta = 0.d0
-    call dsymm('L', 'L', ld, ld, alpha, &
-               sigma, ld, p, ld, beta, &
-               temp, ld)
+    b_ldc = to_blas_int(ld)
+    b_ldb = to_blas_int(ld)
+    b_lda = to_blas_int(ld)
+    b_m = to_blas_int(ld)
+    b_n = to_blas_int(ld)
+    call dsymm('L', 'L', b_m, b_n, alpha, &
+               sigma, b_lda, p, b_ldb, beta, &
+               temp, b_ldc)
 ! sigma <- P^T*temp
-    call dgemm('T', 'N', 3, 3, 3, &
-               alpha, p, 3, temp, 3, &
-               beta, sigma(1, 1), 3)
+    b_ldc = to_blas_int(3)
+    b_ldb = to_blas_int(3)
+    b_lda = to_blas_int(3)
+    b_m = to_blas_int(3)
+    b_n = to_blas_int(3)
+    b_k = to_blas_int(3)
+    call dgemm('T', 'N', b_m, b_n, b_k, &
+               alpha, p, b_lda, temp, b_ldb, &
+               beta, sigma(1, 1), b_ldc)
 ! On re-compacte le tenseur
 !xx
     sigmav(1) = sigma(1, 1)

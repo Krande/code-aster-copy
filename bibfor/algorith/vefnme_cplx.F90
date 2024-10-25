@@ -20,6 +20,8 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
                        compor, nh, ligrelz, varicomz, &
                        sigmaz, strxz, deplz, vecelz)
 !
+    use HHO_precalc_module, only: hhoAddInputField
+!
     implicit none
 !
 #include "asterf_types.h"
@@ -87,22 +89,22 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 1
-    integer, parameter :: nbin = 32
-    character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=19) :: lchout(nbout), lchin(nbin)
+    integer, parameter :: nbxin = 35
+    character(len=8) :: lpaout(nbout), lpain(nbxin)
+    character(len=19) :: lchout(nbout), lchin(nbxin)
 !
     character(len=8) :: k8bla, mesh
     character(len=8) :: newnom, nomgd, carael
     character(len=19) :: numhar, ligrel_local, ligrel
     character(len=19) :: chgeom, chcara(18), vecele, veceli
-    character(len=19) :: lchinr(nbin), lchini(nbin)
+    character(len=19) :: lchinr(nbxin), lchini(nbxin)
     character(len=16) :: optio2
-    integer :: iret, inddec(nbin), iexi, k
+    integer :: iret, inddec(nbxin), iexi, k, nbin
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno, hea_no
     character(len=19) :: sigma, varicom, strx
     character(len=19) :: depl
-    character(len=19) :: chdecr(nbin), chdeci(nbin), ch19, chr, chi, ch1(nbout), ch2(nbout)
+    character(len=19) :: chdecr(nbxin), chdeci(nbxin), ch19, chr, chi, ch1(nbout), ch2(nbout)
     aster_logical :: debug, lcmplx, lsspt
     integer :: ifmdbg, nivdbg
 !
@@ -167,9 +169,9 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
                 ncmp=1, nomcmp='NH', si=nh)
 
 ! - Init fields
-    call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
-    call inical(nbin, lpain, lchin, nbout, lpaout, ch1)
-    call inical(nbin, lpain, lchin, nbout, lpaout, ch2)
+    call inical(nbxin, lpain, lchin, nbout, lpaout, lchout)
+    call inical(nbxin, lpain, lchin, nbout, lpaout, ch1)
+    call inical(nbxin, lpain, lchin, nbout, lpaout, ch2)
 !
 ! - CREATION DES LISTES DES CHAMPS IN
 !
@@ -260,6 +262,10 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     lchin(31) = strx
     lpain(32) = 'PHEA_NO'
     lchin(32) = hea_no
+!
+    nbin = 32
+!
+    call hhoAddInputField(model, nbxin, lchin, lpain, nbin)
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                                 varmo, force, varpl)
 !
@@ -27,9 +27,9 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 #include "asterfort/utpvgl.h"
 #include "blas/dcopy.h"
 !
-    type(te0047_dscr), intent(in)   :: for_discret
-    integer         :: icodma
-    real(kind=8)    :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*)
+    type(te0047_dscr), intent(in) :: for_discret
+    integer :: icodma
+    real(kind=8) :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,10 +50,10 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer, parameter  :: nbre1 = 9
-    integer             :: codre1(nbre1)
-    real(kind=8)        :: valre1(nbre1)
-    character(len=8)    :: nomre1(nbre1)
+    integer, parameter :: nbre1 = 9
+    integer :: codre1(nbre1)
+    real(kind=8) :: valre1(nbre1)
+    character(len=8) :: nomre1(nbre1)
 !   Index des variables internes
     integer, parameter :: idepx = 1, idepy = 2, idepz = 3, iidic = 4, idepyp = 5, idepzp = 6
     integer, parameter :: ifx = 7, ify = 8, ifz = 9, icalc = 10
@@ -61,10 +61,10 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
     integer, parameter :: EtatAdher = 0, EtatGliss = 1, EtatDecol = 2
     integer, parameter :: EnPlasticite = 2
 !
-    integer             :: indic, ii
-    real(kind=8)        :: xl(6), xd(3), rignor, rigtan
-    real(kind=8)        :: coulom, dist12, utot, depx, depy, depz
-    real(kind=8)        :: lambda, fort, dist0, rtmp
+    integer :: indic, ii
+    real(kind=8) :: xl(6), xd(3), rignor, rigtan
+    real(kind=8) :: coulom, dist12, utot, depx, depy, depz
+    real(kind=8) :: lambda, fort, dist0, rtmp
 !
     character(len=32) :: messak(3)
 !
@@ -88,8 +88,9 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
     valre1(:) = 0.0
     valre1(1) = klv(1); valre1(2) = klv(3)
 !   Caractéristiques du matériau
-    call rcvala(icodma, ' ', 'DIS_CONTACT', 0, ' ', [0.0d0], &
-                nbre1, nomre1, valre1, codre1, 0, nan='NON')
+    call rcvala(icodma, ' ', 'DIS_CONTACT', 0, ' ', &
+                [0.0d0], nbre1, nomre1, valre1, codre1, &
+                0, nan='NON')
     if (nint(valre1(9)) .ne. 0) then
         messak(1) = 'DIS_CONTACT'
         messak(2) = 'DIS_CHOC (cas non symétrique)'
@@ -193,17 +194,20 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                 klv(id6(6, 1)) = -rtmp
                 klv(id6(3, 4)) = -rtmp
                 klv(id6(6, 4)) = rtmp
-                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2/fort**2)
+                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2/fort**&
+                       &2)
                 klv(id6(2, 2)) = rtmp
                 klv(id6(2, 5)) = -rtmp
                 klv(id6(5, 2)) = -rtmp
                 klv(id6(5, 5)) = rtmp
-                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2/fort**2)
+                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2/fort**&
+                       &2)
                 klv(id6(3, 3)) = rtmp
                 klv(id6(3, 6)) = -rtmp
                 klv(id6(6, 3)) = -rtmp
                 klv(id6(6, 6)) = rtmp
-                rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))*(depz-varmo(idepzp))
+                rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))*(depz-varmo(idepzp)&
+                       &)
                 klv(id6(2, 3)) = rtmp
                 klv(id6(3, 2)) = rtmp
                 klv(id6(2, 6)) = -rtmp
@@ -225,11 +229,14 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                 klv(id3(2, 1)) = rtmp
                 rtmp = -rignor*rigtan*coulom/fort*(depz-varmo(idepzp))
                 klv(id3(3, 1)) = rtmp
-                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2/fort**2)
+                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2/fort**&
+                       &2)
                 klv(id3(2, 2)) = rtmp
-                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2/fort**2)
+                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2/fort**&
+                       &2)
                 klv(id3(3, 3)) = rtmp
-                rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))*(depz-varmo(idepzp))
+                rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))*(depz-varmo(idepzp)&
+                       &)
                 klv(id3(2, 3)) = rtmp
                 klv(id3(3, 2)) = rtmp
             end if

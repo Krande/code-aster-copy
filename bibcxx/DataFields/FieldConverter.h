@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -196,12 +196,12 @@ toFieldOnCells( const SimpleFieldOnCells< ValueType > &field, const FiniteElemen
     // Convert to CHAM_ELEM
     const std::string prol0 = "OUI", base = "G", kstop = "F";
     ASTERINTEGER iret = 0, nncp = 0;
-    CALLO_CESCEL( field.getName(), fed->getName(), option, nompar, prol0, &nncp, base,
-                  cham_elem->getName(), kstop, &iret );
+    CALLO_CESCEL_WRAP( field.getName(), fed->getName(), option, nompar, prol0, &nncp, base,
+                       cham_elem->getName(), kstop, &iret );
 
     AS_ASSERT( iret == 0 );
 
-    cham_elem->build( {fed} );
+    cham_elem->build( { fed } );
     cham_elem->updateValuePointers();
     return cham_elem;
 }

@@ -34,9 +34,11 @@ PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+
 
 MASS_THER_RESI = Option(
-    para_in=(PCOMPOR, SP.PGEOMER, PHYDRPR, SP.PMATERC, SP.PTEMPEI, SP.PINSTR, PVARCPR),
+    para_in=(PCOMPOR, SP.PGEOMER, PHYDRPR, SP.PMATERC, SP.PTEMPEI, SP.PINSTR, PVARCPR, PCHHOBS),
     para_out=(SP.PRESIDU,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

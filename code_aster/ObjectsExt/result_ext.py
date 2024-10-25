@@ -105,7 +105,7 @@ class ResultStateBuilder(InternalStateBuilder):
             )
             self._st["loads"] = []
 
-        indexes = result.getIndexes()
+        indexes = self._st["index"]
         self._st["fields"] = {}
         for i in indexes:
             self._st["fields"][i] = {}
@@ -371,9 +371,6 @@ class ExtendedResult:
             para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
             crit (str) : search criterion ABSOLU or RELATIF
             prec (float) : precision for the search criterion
-
-        Returns:
-            Nothing
         """
 
         assert crit in ("ABSOLU", "RELATIF")

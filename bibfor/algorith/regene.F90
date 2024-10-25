@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine regene(nomres, resgen, profno)
     implicit none
 #include "asterf_types.h"
@@ -111,7 +111,9 @@ subroutine regene(nomres, resgen, profno)
     call dcapno(resgen, depl, 1, chamol)
     call jelira(chamol, 'TYPE', cval=typsca)
     if (typsca .eq. 'C') zcmplx = .true.
-    call rsorac(resgen, 'LONUTI', 0, rbid, kbid, cbid, rbid, kbid, tmod, 1, ibid)
+    call rsorac(resgen, 'LONUTI', 0, rbid, kbid, &
+                cbid, rbid, kbid, tmod, 1, &
+                ibid)
     nbmod = tmod(1)
 !
 ! --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
@@ -205,7 +207,9 @@ subroutine regene(nomres, resgen, profno)
 !
         call getvid(' ', 'MODE_MECA', scal=modmec, nbret=ibid)
         if (ibid .ne. 0) basmod = modmec
-        call rsorac(basmod, 'LONUTI', 0, rbid, kbid, cbid, rbid, kbid, tmod, 1, ibid)
+        call rsorac(basmod, 'LONUTI', 0, rbid, kbid, &
+                    cbid, rbid, kbid, tmod, 1, &
+                    ibid)
         nbmo2 = tmod(1)
         call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
         call copmod(basmod, numer=profno(1:14), bmodr=zr(idbase), nequa=neq)
@@ -229,27 +233,30 @@ subroutine regene(nomres, resgen, profno)
 !
 ! --------- REQUETE NOM ET ADRESSE NOUVEAU CHAMNO
 !
-            call rsexch(' ', nomres, depl, i, chamne, ier)
+            call rsexch(' ', nomres, depl, i, chamne, &
+                        ier)
             if (zcmplx) then
                 call vtcrea(chamne, crefe, 'G', 'C', neq)
             else
                 call vtcrea(chamne, crefe, 'G', 'R', neq)
             end if
             call jeveuo(chamne//'.VALE', 'E', ldnew)
-            call rsadpa(resgen, 'L', 13, nompar, iord, 0, tjv=iadpar, styp=kbid)
+            call rsadpa(resgen, 'L', 13, nompar, iord, &
+                        0, tjv=iadpar, styp=kbid)
 !
             if (zcmplx) then
-                call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc(ldnew), kacce=kacce, &
-                            kprof=kprof, inst=inst, instt=nbmod, indice=indice, taille=taille, &
-                            kcham=chamne//'.VALE')
+                call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc(ldnew), &
+                            kacce=kacce, kprof=kprof, inst=inst, instt=nbmod, indice=indice, &
+                            taille=taille, kcham=chamne//'.VALE')
             else
-                call mdgeph(neq, nbmo2, zr(idbase), zr(llchol), zr(ldnew), kacce=kacce, &
-                            kprof=kprof, inst=inst, instt=nbmod, indice=indice, taille=taille, &
-                            kcham=chamne//'.VALE')
+                call mdgeph(neq, nbmo2, zr(idbase), zr(llchol), zr(ldnew), &
+                            kacce=kacce, kprof=kprof, inst=inst, instt=nbmod, indice=indice, &
+                            taille=taille, kcham=chamne//'.VALE')
             end if
 !
             call rsnoch(nomres, depl, i)
-            call rsadpa(nomres, 'E', 13, nompar, i, 0, tjv=iadpas, styp=kbid)
+            call rsadpa(nomres, 'E', 13, nompar, i, &
+                        0, tjv=iadpas, styp=kbid)
             do j = 1, 11
                 zr(iadpas(j)) = zr(iadpar(j))
             end do
@@ -262,8 +269,10 @@ subroutine regene(nomres, resgen, profno)
 !******** Autre Cas
     else
 !-----------------------------------------------------------------------
-
-        call rsorac(basmod, 'LONUTI', 0, rbid, kbid, cbid, rbid, kbid, tmod, 1, ibid)
+!
+        call rsorac(basmod, 'LONUTI', 0, rbid, kbid, &
+                    cbid, rbid, kbid, tmod, 1, &
+                    ibid)
         nbmo2 = tmod(1)
 !
         call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numedd)
@@ -302,25 +311,28 @@ subroutine regene(nomres, resgen, profno)
 !
 ! --------- REQUETE NOM ET ADRESSE NOUVEAU CHAMNO
 !
-            call rsexch(' ', nomres, depl, i, chamno, ier)
+            call rsexch(' ', nomres, depl, i, chamno, &
+                        ier)
             if (zcmplx) then
                 call vtcreb(chamno, 'G', 'C', nume_ddlz=numedd, nb_equa_outz=neq)
             else
                 call vtcreb(chamno, 'G', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
             end if
             call jeveuo(chamno//'.VALE', 'E', ldnew)
-            call rsadpa(resgen, 'L', 13, nompar, iord, 0, tjv=iadpar, styp=kbid, istop=0)
+            call rsadpa(resgen, 'L', 13, nompar, iord, &
+                        0, tjv=iadpar, styp=kbid, istop=0)
             if (zcmplx) then
-                call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc(ldnew), kacce=kacce, &
-                            kprof=kprof, inst=inst, instt=nbmod, indice=indice, taille=taille, &
-                            kcham=chamno//'.VALE')
+                call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc(ldnew), &
+                            kacce=kacce, kprof=kprof, inst=inst, instt=nbmod, indice=indice, &
+                            taille=taille, kcham=chamno//'.VALE')
             else
-                call mdgeph(neq, nbmo2, zr(idbase), zr(llchol), zr(ldnew), kacce=kacce, &
-                            kprof=kprof, inst=inst, instt=nbmod, indice=indice, taille=taille, &
-                            kcham=chamno//'.VALE')
+                call mdgeph(neq, nbmo2, zr(idbase), zr(llchol), zr(ldnew), &
+                            kacce=kacce, kprof=kprof, inst=inst, instt=nbmod, indice=indice, &
+                            taille=taille, kcham=chamno//'.VALE')
             end if
             call rsnoch(nomres, depl, i)
-            call rsadpa(nomres, 'E', 13, nompar, i, 0, tjv=iadpas, styp=kbid)
+            call rsadpa(nomres, 'E', 13, nompar, i, &
+                        0, tjv=iadpas, styp=kbid)
             do j = 1, 11
                 zr(iadpas(j)) = zr(iadpar(j))
             end do
@@ -333,7 +345,8 @@ subroutine regene(nomres, resgen, profno)
             matric(1) = ' '
             matric(2) = ' '
             matric(3) = ' '
-            call refdaj('F', nomres, nbmod, numedd, 'DYNAMIQUE', matric, ier)
+            call refdaj('F', nomres, nbmod, numedd, 'DYNAMIQUE', &
+                        matric, ier)
         else
             call refdcp(basmod, nomres)
         end if

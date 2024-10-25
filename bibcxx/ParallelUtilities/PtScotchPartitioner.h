@@ -53,6 +53,11 @@ class PtScotchPartitioner {
     int _nbVertex = 0, _minId = 0;
     /** @brief Graph in PtScotch format */
     VectorLong _vertices, _edges;
+    /** @brief If some nodes are gathered */
+    bool _gatheredNodes = false;
+    VectorLong _range;
+    VectorOfVectorsLong _toForgetVector;
+    VectorLong _newVertices, _newEdges, _weights;
 
     void buildPartition( const VectorLong &, VectorLong & );
 
@@ -72,7 +77,8 @@ class PtScotchPartitioner {
      * @brief Define graph for existing graph (Warning: works with reference)
      * @param graph graph containing vertex and edge description
      */
-    int buildGraph( const MeshConnectionGraphPtr &graph );
+    int buildGraph( const MeshConnectionGraphPtr &graph,
+                    const VectorOfVectorsLong &nodesToGather = {} );
 
     /**
      * @brief Ask ptscotch to check graph

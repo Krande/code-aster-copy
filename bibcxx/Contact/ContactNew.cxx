@@ -2,7 +2,7 @@
  * @file ContactNew.cxx
  * @brief Implementation de Contact
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -126,8 +126,7 @@ bool ContactNew::build() {
 #ifdef ASTER_HAVE_MPI
             if ( mesh->isParallel() ) {
                 ASTERINTEGER nb_doublNodes_lc = nb_doublNodes;
-                nb_doublNodes = 0;
-                AsterMPI::all_reduce( nb_doublNodes_lc, nb_doublNodes, MPI_MIN );
+                nb_doublNodes = AsterMPI::min( nb_doublNodes_lc );
             }
 #endif
             if ( nb_doublNodes > 0 ) {

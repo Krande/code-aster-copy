@@ -26,6 +26,7 @@
 @MaterialProperty real M;            // Criticial state line slope [-]           @PhysicalBounds M in ]0:*[;
 @MaterialProperty stress s0;         // Yield stress in isotropic traction [Pa]  @PhysicalBounds s0 in [0:*[;
 @MaterialProperty real bt;           // Volumetric hardening index [-]           @PhysicalBounds bt in [0:*[;
+
 k.setGlossaryName("BulkModulus");
 mu.setGlossaryName("ShearModulus");
 kp.setEntryName("SwellingIndex");
@@ -51,6 +52,7 @@ bt.setEntryName("IncoPlastIndex");
 
 @StateVariable real lam;
 @StateVariable real epv;
+
 lam.setEntryName("CumPlastStrain");
 epv.setEntryName("VolPlastStrain");
 
@@ -60,14 +62,13 @@ epv.setEntryName("VolPlastStrain");
 
 @AuxiliaryStateVariable stress Rn;   // Old yield stress at previous time
 @AuxiliaryStateVariable stress Hn;   // Yield size increase
-@AuxiliaryStateVariable real Ip;     // Plastic index
+@AuxiliaryStateVariable real Ip;     // Plastic indicator
 @AuxiliaryStateVariable stress Di;   // Dissipated energy per volume unit
-@AuxiliaryStateVariable real Inst;   // Time for the initialization of elastic strain in case of initial stress state
+
 Rn.setEntryName("OldYieldSize");
 Hn.setEntryName("YieldSizeGrowth");
-Ip.setEntryName("PlasticIndex");
+Ip.setEntryName("PlasticIndicator");
 Di.setEntryName("Dissipation");
-Inst.setEntryName("IniSigTime");
 
 /// >>>>>>>>>>>>>>>>>>>>
 /// Init Local Variables
@@ -83,13 +84,11 @@ Inst.setEntryName("IniSigTime");
 		Rn=pc0+s0;
 	}
 	/// Initialize elastic strain if there is initial stresses without displacements (tunnels or dams)
-	if (Inst==0. && lam==0.){
-		if (kp>0.){
-			eel=(1./kp*log(k/(k-kp*trace(sig)/3.))+kp*k/pow(k-kp*trace(sig)/3.,2.)*(deviator(sig)|deviator(sig))/(4.*mu))*id2/3.+k/(k-kp*trace(sig)/3.)*deviator(sig)/(2.*mu);
-		}
-		else{
-			eel=-k*trace(sig)/3.*id2/3.+deviator(sig)/(2.*mu);
-		}
+	if (kp>0.){
+		eel=(1./kp*log(k/(k-kp*trace(sig)/3.))+kp*k/pow(k-kp*trace(sig)/3.,2.)*(deviator(sig)|deviator(sig))/(4.*mu))*id2/3.+k/(k-kp*trace(sig)/3.)*deviator(sig)/(2.*mu);
+	}
+	else{
+		eel=-k*trace(sig)/3.*id2/3.+deviator(sig)/(2.*mu);
 	}
 }
 
@@ -241,5 +240,4 @@ Inst.setEntryName("IniSigTime");
 	else{
 		Ip=0.;
 	}
-	Inst+=dt;
 }

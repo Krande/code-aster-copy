@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! person_in_charge: matthieu-m.le-cren at edf.fr
+! person_in_charge: matthieu.le-cren at edf.fr
 !
 subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !
@@ -81,7 +81,7 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
     character(len=24) :: chgeom, chsig, chgtheta
     character(len=24) :: pavolu, papres, pa2d3d, pepsin, pa1d2d
     character(len=24) :: lchin(50), lchout(1)
-    aster_logical     :: lfonc
+    aster_logical     :: lfonc, inco
     integer, pointer  :: v_cesv(:) => null()
     real(kind=8), pointer :: v_absc(:) => null()
     real(kind=8), pointer :: v_base(:) => null()
@@ -148,6 +148,9 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !
         call rsexch('F', cgField%result_in, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
     end if
+!
+!   Elements incompressibles
+    inco = cgStudy%l_exi_inco
 !
 !   Recuperation de l'etat initial
     if (cgField%l_incr) then
@@ -315,6 +318,11 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !
         call cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, &
                           v_absc, v_basf, v_cesv, jcesd, jcesl, i_theta, lpain, lchin, nchin)
+        if (inco) then
+            lpain(nchin+1) = 'PDEPLA'
+            lchin(nchin+1) = cgStudy%depl
+            nchin = nchin+1
+        end if
 
         if (cgStudy%option .eq. 'K') then
             lpain(nchin+1) = 'PCOURB'

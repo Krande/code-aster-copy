@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujori(sens, nmat, reorie, angl, vec, &
+subroutine hujori(sens, nmat, reorie, angl_naut, vec, &
                   mat)
     implicit none
 !
@@ -30,9 +30,7 @@ subroutine hujori(sens, nmat, reorie, angl, vec, &
 !                 D'ORTHOTROPIE
 !
 !   ARGUMENT        E/S  TYPE         ROLE
-!    XYZGAU(3)      IN     R        COORDONNEES DU POINT D'INTEGRATION
-!                                   COURANT
-!    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
+!    ANGL_NAUT(3)   IN     R        ANGLES NAUTIQUES DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE
 !    IREP           OUT    I        = 0
 !                                     SI LE CHANGEMENT DE REPERE EST
@@ -47,7 +45,7 @@ subroutine hujori(sens, nmat, reorie, angl, vec, &
 #include "asterfort/matrot.h"
     integer :: i, j, nmat
     real(kind=8) :: zero, deux, dsqr, isqr
-    real(kind=8) :: angl(3), p(3, 3), passag(6, 6), passal(6, 6)
+    real(kind=8) :: angl_naut(3), p(3, 3), passag(6, 6), passal(6, 6)
     real(kind=8) :: vec1(6), vec(6), mat(6, 6), mat1(6, 6), work(6, 6)
     character(len=5) :: sens
     aster_logical :: reorie
@@ -73,7 +71,7 @@ subroutine hujori(sens, nmat, reorie, angl, vec, &
 ! ----   CONSTRUCTION DE LA MATRICE DE PASSAGE (POUR DES VECTEURS)
 ! ----   DU REPERE D'ORTHOTROPIE AU REPERE GLOBAL
 !        ----------------------------------------
-    call matrot(angl, p)
+    call matrot(angl_naut, p)
 !
 !
 ! calcul de PASSAGT * SIG *PASSAG et PASSAGT * DEPS *PASSAG

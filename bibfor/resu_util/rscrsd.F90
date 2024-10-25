@@ -65,10 +65,11 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For thermic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldTher = 20
+    integer, parameter :: nbFieldTher = 23
     character(len=16), parameter :: fieldTher(nbFieldTher) = (/ &
                                     'TEMP            ', &
                                     'FLUX_ELGA       ', 'FLUX_ELNO       ', 'FLUX_NOEU       ', &
+                                    'GRAT_ELGA       ', 'GRAT_ELNO       ', 'GRAT_NOEU       ', &
                                     'META_ELNO       ', 'META_NOEU       ', &
                                     'DURT_ELNO       ', 'DURT_NOEU       ', 'ETHE_ELEM       ', &
                                     'HYDR_ELGA       ', 'HYDR_ELNO       ', 'HYDR_NOEU       ', &
@@ -115,7 +116,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For mechanic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldMeca = 132
+    integer, parameter :: nbFieldMeca = 134
     character(len=16), parameter :: fieldMeca(nbFieldMeca) = (/ &
                                     'DEPL            ', 'VITE            ', 'ACCE            ', &
                                     'DEPL_ABSOLU     ', 'VITE_ABSOLU     ', 'ACCE_ABSOLU     ', &
@@ -162,6 +163,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
                                     'INDL_ELGA       ', 'SISE_ELNO       ', &
                                     'COHE_ELEM       ', 'INDC_ELEM       ', 'SECO_ELEM       ', &
                                     'VARC_ELGA       ', 'FERR_ELEM       ', 'EPVC_NOEU       ', &
+                                    'VARC_NOEU       ', 'VARC_ELNO       ', &
                                     'EPFD_NOEU       ', 'EPFP_NOEU       ', 'PDIL_ELGA       ', &
                                     'MATE_ELGA       ', 'MATE_ELEM       ', &
                                     'HHO_DEPL        ', 'HHO_VITE        ', 'HHO_ACCE        ', &

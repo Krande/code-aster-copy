@@ -53,7 +53,7 @@ except ImportError:
     pass
 
 from waflib import Configure, Errors, Logs, Utils
-
+from waftools.wafutils import pyenv_abspath
 
 def options(self):
     group = self.get_option_group("code_aster options")
@@ -473,7 +473,7 @@ def check_config(self):
     cfg = {}
     cfgext = self.env["CFG_EXT"]
     self.start_msg(f"Set parameters for 'config.{cfgext}'")
-    tmpdir = os.environ["TEMP"] if self.env.ASTER_PLATFORM_MINGW else "/tmp"
+    tmpdir = None if self.env.ASTER_PLATFORM_MINGW or self.env.ASTER_PLATFORM_MSVC64 else "/tmp"
     if os.environ.get("ASTER_TMPDIR"):
         tmpdir = os.environ["ASTER_TMPDIR"]
     cfg["tmpdir"] = tmpdir
@@ -487,10 +487,10 @@ def check_config(self):
     cfg["addmem"] = addmem
     cfg["version_tag"] = ".".join([str(i) for i in self.env.ASTER_VERSION[0]])
     cfg["version_sha1"] = self.env.ASTER_VERSION[1]
-    cfg["python"] = "python"
+    cfg["python"] = pyenv_abspath(self, "python3")
     _check_prog(self, "IPYTHON", ["ipython3", "ipython"], mandatory=False, var_prefix="")
     cfg["python_interactive"] = (
-        osp.basename(self.env.IPYTHON[0]) if self.env.IPYTHON else cfg["python"]
+        pyenv_abspath(self, "ipython3") if self.env.IPYTHON else cfg["python"]
     )
     cfg["python_interactive_is_wrapped"] = int(is_python_wrapped(cfg["python_interactive"]))
     cfg["parallel"] = int(self.get_define("ASTER_HAVE_MPI") or 0)
@@ -642,6 +642,7 @@ def _call_cmd(self, msg, cmd):
 @Configure.conf
 def check_external_programs(self):
     exe = ".exe" if self.env.ASTER_PLATFORM_MINGW else ""
+    bat = ".bat" if self.env.ASTER_PLATFORM_MINGW else ""
     _check_prog(
         self, "gmsh", ["gmsh"], mandatory=self.options.with_prog_gmsh, add_paths=["${GMSH_BIN_DIR}"]
     )
@@ -652,7 +653,7 @@ def check_external_programs(self):
         ["run_miss3d"],
         mandatory=self.options.with_prog_run_miss3d,
         add_paths=["${MISS3D_DIR}"],
-        ext=exe,
+        ext=bat,
     )
 
     _check_prog(
@@ -664,7 +665,7 @@ def check_external_programs(self):
             "${HOMARD_ASTER_ROOT_DIR}",
             osp.join("${HOMARD_ASTER_ROOT_DIR}", "ASTER_HOMARD"),
         ],
-        ext=exe,
+        ext=bat,
     )
 
     _check_prog(

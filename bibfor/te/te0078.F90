@@ -61,13 +61,15 @@ subroutine te0078(option, nomte)
     real(kind=8) :: valQPM(MAX_QP), tpg, dtpg(3), flux(3), BGSEval(3, MAX_BS)
     real(kind=8) :: resi_f(MAX_BS), resi_m(MAX_BS), resi(MAX_BS)
     real(kind=8) :: cp, valres(1), Kglo(3, 3), time, deltat, theta
-    integer :: kp, imate, icamas, itemps
+    integer :: kp, imate, itemps
     real(kind=8), pointer :: temp(:) => null()
+    character(len=8), parameter :: famiR = "RIGI"
+    character(len=8), parameter :: famiM = "MASS"
 !
     call FECell%init()
     call FEBasis%initCell(FECell)
-    call FEQuadMass%initCell(FECell, "MASS")
-    call FEQuadRigi%initCell(FECell, "RIGI")
+    call FEQuadMass%initCell(FECell, famiM)
+    call FEQuadRigi%initCell(FECell, famiR)
 !
     call jevech('PMATERC', 'L', imate)
     call jevech('PINSTR', 'L', itemps)
@@ -79,28 +81,24 @@ subroutine te0078(option, nomte)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
-    if (phenom == "THER_ORTH") then
-        call jevech('PCAMASS', 'L', icamas)
-    end if
-!
     resi_f = 0.d0
     do kp = 1, FEQuadRigi%nbQuadPoints
         BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp), FEQuadRigi%jacob(1:3, 1:3, kp))
 !
         dtpg = FEEvalGradVec(FEBasis, temp, FEQuadRigi%points_param(1:3, kp), BGSEval)
 !
-        call nlcomp(phenom, imate, icamas, FECell%ndim, FEQuadRigi%points(1:3, kp), time, &
-                    0.d0, Kglo, dtp_=dtpg, fluglo_=flux)
+        call nlcomp(phenom, famiR, kp, imate, FECell%ndim, FEQuadRigi%points(1:3, kp), &
+                    time, 0.d0, Kglo, dtp_=dtpg, fluglo_=flux)
 !
         call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
     end do
 !
-    call rcvalb('FPG1', 1, 1, '+', zi(imate), &
-                ' ', phenom, 1, 'INST', [time], &
-                1, 'RHO_CP', valres, icodre, 1)
-    cp = valres(1)
-!
     do kp = 1, FEQuadMass%nbQuadPoints
+!
+        call rcvalb(famiM, kp, 1, '+', zi(imate), ' ', phenom, 1, 'INST', [time], &
+                    1, 'RHO_CP', valres, icodre, 1)
+        cp = valres(1)
+!
         tpg = FEEvalFuncScal(FEBasis, temp, FEQuadMass%points_param(1:3, kp))
         ValQPM(kp) = cp*tpg
     end do

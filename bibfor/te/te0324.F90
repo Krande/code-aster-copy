@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0324(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -58,6 +58,7 @@ subroutine te0324(option, nomte)
     integer :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     aster_logical :: ljfr
+    blas_int :: b_incx, b_incy, b_n
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos)
 !
@@ -131,18 +132,27 @@ subroutine te0324(option, nomte)
         ASSERT(.false.)
     end if
     call provec(a, b, c1)
-    surf = ddot(3, c1, 1, c1, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    surf = ddot(b_n, c1, b_incx, c1, b_incy)
     c1(1) = c1(1)/sqrt(surf)
     c1(2) = c1(2)/sqrt(surf)
     c1(3) = c1(3)/sqrt(surf)
     surf = sqrt(surf)*0.5d0
     if (nnos .eq. 3) then
-        surf2 = ddot(3, b, 1, b, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        surf2 = ddot(b_n, b, b_incx, b, b_incy)
         c2(1) = b(1)/sqrt(surf2)
         c2(2) = b(2)/sqrt(surf2)
         c2(3) = b(3)/sqrt(surf2)
     else if (nnos .eq. 4) then
-        surf2 = ddot(3, a, 1, a, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        surf2 = ddot(b_n, a, b_incx, a, b_incy)
         c2(1) = a(1)/sqrt(surf2)
         c2(2) = a(2)/sqrt(surf2)
         c2(3) = a(3)/sqrt(surf2)
@@ -187,8 +197,8 @@ subroutine te0324(option, nomte)
                         do j = 1, 3
                             i = 3*(i3-1)+j
                             i2 = i+3*nnos
-                            zr(iresu-1+i*(i+1)/2) = valres(2)*c1(j)**2+ &
-                                                    valres(3)*c2(j)**2+valres(3)*c3(j)**2
+                            zr(iresu-1+i*(i+1)/2) = valres(2)*c1(j)**2+valres(3)*c2(j)**2+valres&
+                                                    &(3)*c3(j)**2
                             zr(iresu-1+i*(i+1)/2) = zr(iresu-1+i*(i+1)/2)*surf/nnos
                             if (nnos .eq. 3 .and. nno .eq. 3) then
                                 if (zr(ivari-1+7) .ge. 0.d0) then

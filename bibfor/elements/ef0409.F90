@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ef0409(nomte)
 ! aslint: disable=W0104
 !     CALCUL DE EFGE_ELNO EN NON LINEAIRE
@@ -42,12 +42,13 @@ subroutine ef0409(nomte)
 !     ---> POUR DKT EFFINT = 24
 !     ---> POUR DKQ EFFINT = 32
     real(kind=8) :: effint(32)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     call jevech('PEFFORR', 'E', ichn)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -58,7 +59,10 @@ subroutine ef0409(nomte)
 !
     do ipg = 1, npg
         icontm = jtab(1)+8*(ipg-1)
-        call dcopy(8, zr(icontm), 1, effint(8*(ipg-1)+1), 1)
+        b_n = to_blas_int(8)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(icontm), b_incx, effint(8*(ipg-1)+1), b_incy)
     end do
 !
     call ppgan2(jgano, 1, 8, effint, zr(ichn))

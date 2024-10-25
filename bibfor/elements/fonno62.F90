@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine fonno62(resu, noma, ndim, &
-                   iseg, noe, indr, nbnoel, &
-                   vnor, vdir, basseg, vect, sens)
+!
+subroutine fonno62(resu, noma, ndim, iseg, noe, &
+                   indr, nbnoel, vnor, vdir, basseg, &
+                   vect, sens)
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
@@ -69,7 +69,7 @@ subroutine fonno62(resu, noma, ndim, &
 !
 !       ----------------------------------------------------
 !
-    integer ::  iamase, ityp, iatyma, jbasse
+    integer :: iamase, ityp, iatyma, jbasse
     integer :: i, j, iret, inp, compt, ino, ifl
     integer :: ilev, inor
     integer :: nblev, nn
@@ -79,6 +79,7 @@ subroutine fonno62(resu, noma, ndim, &
     character(len=6) :: syme
     character(len=8) :: type
     character(len=8), pointer :: mail(:) => null()
+    blas_int :: b_incx, b_incy, b_n
     parameter(angmax=2.5d0)
 !
 !     -----------------------------------------------------------------
@@ -202,7 +203,10 @@ subroutine fonno62(resu, noma, ndim, &
 !       LE VECTEUR NORMAL DOIT ALLER DE LA LEVRE INF
 !       VERS LA LEVRE SUP
         if ((iseg .eq. 1) .and. (ilev .ne. 0)) then
-            p = ddot(ndim, vecnor, 1, vect, 1)
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            p = ddot(b_n, vecnor, b_incx, vect, b_incy)
             if (p .lt. 0.d0) then
                 sens = -1.d0
                 do i = 1, ndim
@@ -255,7 +259,10 @@ subroutine fonno62(resu, noma, ndim, &
 !       LE VECTEUR NORMAL DOIT ALLER DE LA LEVRE INF
 !       VERS LA LEVRE SUP
         if ((iseg .eq. 1) .and. (ilev .ne. 0)) then
-            p = ddot(ndim, vecnor, 1, vect, 1)
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            p = ddot(b_n, vecnor, b_incx, vect, b_incy)
             if (p .lt. 0.d0) then
                 sens = -1.d0
                 do i = 1, ndim
@@ -284,7 +291,10 @@ subroutine fonno62(resu, noma, ndim, &
         do i = 1, ndim
             vnprec(i) = zr(jbasse-1+2*ndim*(iseg-2)+i)
         end do
-        s = ddot(ndim, vecnor, 1, vnprec, 1)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        s = ddot(b_n, vecnor, b_incx, vnprec, b_incy)
         beta = trigom('ACOS', s)*180.d0/r8pi()
         if (abs(beta) .gt. 10.d0) then
             call utmess('A', 'RUPTURE0_61')

@@ -239,7 +239,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N1",
             NOM_CMP="FLUY",
-            VALE_CALC=(-0.0086549666437, +0.0086549666437),
+            VALE_CALC=(-0.00865498556, +0.00865498556),
         ),
         _F(
             RESULTAT=base_d,

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 #include "asterf_types.h"
 !
 interface
+!
     subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                       base, noca, method, xfem)
         character(len=8) :: resu1
@@ -33,4 +34,5 @@ interface
         character(len=19) :: method
         aster_logical, optional :: xfem
     end subroutine pjxxpr
+!
 end interface

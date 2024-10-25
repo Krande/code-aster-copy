@@ -98,3 +98,19 @@ def remove_previous(install_node, patterns):
     for pattern in patterns:
         for i in install_node.ant_glob(pattern):
             os.remove(i.abspath())
+
+def pyenv_abspath(self, program):
+    """Return abspath to program, even if pyenv is used.
+
+    Arguments:
+        self (Context): *Context* object.
+        program (str): Path to program.
+
+    Returns:
+        str: Path to program, eventually expanded by pyenv which.
+    """
+    try:
+        program = self.cmd_and_log(["pyenv", "which", osp.basename(program)]).strip()
+    except:
+        pass
+    return program

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -154,6 +154,13 @@ subroutine te0004(option, nomte)
         call tecach('OOO', 'PFLUXNO', 'E', iret, nval=7, &
                     itab=itabou)
 !
+    else if (option .eq. 'GRAT_ELNO') then
+        fami = 'RIGI'
+        call tecach('OOO', 'PGRATPG', 'L', iret, nval=7, &
+                    itab=itabin)
+        call tecach('OOO', 'PGRATNO', 'E', iret, nval=7, &
+                    itab=itabou)
+!
     else if (option .eq. 'HYDR_ELNO') then
         fami = 'MASS'
         call tecach('OOO', 'PHYDRPG', 'L', iret, nval=7, &
@@ -175,6 +182,12 @@ subroutine te0004(option, nomte)
         call tecach('OOO', 'PSIEFNOR', 'E', iret, nval=7, &
                     itab=itabou)
 !
+    else if (option .eq. 'VARC_ELNO') then
+        fami = 'RIGI'
+        call tecach('OOO', 'PVARCGR', 'L', iret, nval=7, &
+                    itab=itabin)
+        call tecach('OOO', 'PVARCNR', 'E', iret, nval=7, &
+                    itab=itabou)
     else if (option .eq. 'VARI_ELNO') then
         fami = 'RIGI'
         call tecach('OOO', 'PVARIGR', 'L', iret, nval=7, &

@@ -1,0 +1,88 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+rho = 2e3
+
+g = 9.81
+
+phi = 15.0
+
+c = 35e3
+
+f_eq = 0.25
+
+k_mhr = 0.1
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+MODE1 = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
+
+mat = DEFI_MATERIAU(
+    ELAS=_F(ALPHA=0.0, E=1e8, NU=0.3, RHO=rho), MOHR_COULOMB=_F(ANGDIL=phi, PHI=phi, COHESION=c)
+)
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(MATER=mat, TOUT="OUI"))
+
+
+RESTAB = CALC_STAB_PENTE(
+    CHAM_MATER=CHMAT,
+    METHODE_STAB="LEM",
+    METHODE_LEM="BISHOP",
+    GROUP_MA="range_pente",
+    ACCE=_F(COEF_ACCE=k_mhr * f_eq, DIRECTION=(-1.0, 0.0)),
+    X1_MINI=50.0,
+    X1_MAXI=50.0,
+    X2_MINI=76.8,
+    X2_MAXI=76.8,
+    Y_MINI=10.0,
+    Y_MAXI=15.0,
+    NB_RAYON=8,
+    NB_TRANCHE=5,
+    RAFF_MAIL=_F(NB_RAFF_MAXI=4),
+    INFO_TABLE=2,
+)
+
+# TEST DE NON_REGRESSION
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=0),
+    NOM_PARA="FS",
+    TABLE=RESTAB,
+    VALE_CALC=(1.3978063262350626,),
+)
+TEST_TABLE(NOM_PARA="CENTRE_X", VALE_CALC=53.474566673602205, TABLE=RESTAB)
+TEST_TABLE(NOM_PARA="CENTRE_Y", VALE_CALC=40.233440876497404, TABLE=RESTAB)
+TEST_TABLE(NOM_PARA="RAYON", VALE_CALC=25.47153611459264, TABLE=RESTAB)
+TEST_TABLE(NOM_PARA="NB_SURF_TEST", VALE_CALC_I=10, TABLE=RESTAB)
+
+# VERIFICATION
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=4),
+    NOM_PARA="FS",
+    TABLE=RESTAB,
+    VALE_CALC=(1.3275467409647865,),
+    VALE_REFE=(1.32),
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=1e-2,
+)
+
+FIN()

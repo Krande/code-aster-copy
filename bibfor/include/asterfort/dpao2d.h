@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dpao2d(repere, irep, matr_tran)
-        real(kind=8), intent(in) :: repere(7)
+    subroutine dpao2d(angl_naut, irep, matr_tran)
+        real(kind=8), intent(in) :: angl_naut(3)
         integer, intent(out) :: irep
         real(kind=8), intent(out) :: matr_tran(4, 4)
     end subroutine dpao2d

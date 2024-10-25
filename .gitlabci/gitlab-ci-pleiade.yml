@@ -16,9 +16,13 @@ default:
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"
+      variables:
+        IMAGE_URL: nexus.retd.edf.fr:5075/codeaster-prerequisites:${PREREQ_VERSION}-debian-11
+        REFREV: main
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
-    # - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-    #   seems redudant using fast-forward merges
+      variables:
+        BUILD: debug
 
 stages:
   - setup
@@ -56,13 +60,6 @@ compile:
       - build/mpi*/*/*.mod
       - install/*
     expire_in: 3 days
-  rules:
-    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
-      variables:
-        BUILD: mpi
-    - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
-      variables:
-        BUILD: debug
 
 doc_html:
   stage: build
@@ -74,7 +71,7 @@ doc_html:
       - install/share/doc/html/*
     expire_in: 3 days
   rules:
-    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $CI_MERGE_REQUEST_IID
 
 minimal_build:
   stage: test
@@ -82,7 +79,7 @@ minimal_build:
   script:
     - .gitlabci/compile_minimal.sh
   rules:
-    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $CI_MERGE_REQUEST_IID
 
 check_source:
   stage: test
@@ -94,7 +91,7 @@ check_source:
       - list_issues.txt
     expire_in: 3 days
   rules:
-    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $CI_MERGE_REQUEST_IID
 
 check_issues:
   stage: test
@@ -102,14 +99,14 @@ check_issues:
   script:
     - .gitlabci/check_issues.sh
   rules:
-    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $CI_MERGE_REQUEST_IID
 
 minimal_test:
   stage: test
   needs: ["prepare", "compile"]
   script:
     - .gitlabci/test.sh
-        -R "(asrun0|mumps02b|supv002|vocab0|zzzz503n)"
+        -R "(asrun0|mumps02b|supv002|vocab0|zzzz509j)"
         --resutest=results_mini
   artifacts:
     when: always
@@ -121,13 +118,21 @@ minimal_test:
     reports:
       junit: results_mini/run_testcases.xml
   rules:
-    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $CI_MERGE_REQUEST_IID
 
 verification_test:
   stage: test
   tags:
     - hulk
-  needs: ["prepare", "compile", "minimal_test", "check_source", "doc_html"]
+  needs:
+    - job: prepare
+    - job: compile
+    - job: minimal_test
+      optional: true
+    - job: check_source
+      optional: true
+    - job: doc_html
+      optional: true
   script:
     - .gitlabci/test.sh
         -L verification
@@ -164,7 +169,7 @@ known_failures_test:
     reports:
       junit: results_failures/run_testcases.xml
   rules:
-    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $CI_MERGE_REQUEST_IID
 
 debugging_test:
   stage: test
@@ -185,13 +190,3 @@ debugging_test:
       junit: results_debugging/run_testcases.xml
   rules:
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
-
-# debugging_permissions:
-#   stage: debugging
-#   script:
-#   - whoami
-#   - groups
-#   - echo "${CI_PROJECT_DIR}"
-#   - ls -lart "${CI_PROJECT_DIR}"
-#   - ls -lart "${CI_PROJECT_DIR}/../"
-#   - git status

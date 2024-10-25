@@ -31,7 +31,7 @@ medresu_temp = TEMP_STAT.createMedCouplingResult()
 with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
     medresu_temp.write(f.name, 2)
 
-test_export.assertSequenceEqual(medresu_temp.getFields().getFieldsNames(), ("TEMP_R",))
+test_export.assertSequenceEqual(medresu_temp.getFields().getFieldsNames(), ("GRAT_R", "TEMP_R"))
 test_export.assertEqual(len(medresu_temp.getMeshes()), 1)
 
 medresu_depl = DEPL31_FONC.createMedCouplingResult()

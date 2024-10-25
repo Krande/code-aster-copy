@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -295,8 +295,8 @@ def configure(self):
 
     self.set_installdirs()
     self.load("parallel", tooldir="waftools")
-    self.load("python_cfg", tooldir="waftools")
     self.check_platform()
+    self.load("python_cfg", tooldir="waftools")
     # keep compatibility for as_run
     if self.get_define("ASTER_HAVE_MPI"):
         self.env.ASRUN_MPI_VERSION = 1

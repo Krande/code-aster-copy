@@ -26,6 +26,9 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+
+
 PVARCPR = InputParameter(
     phys=PHY.VARI_R,
     container="VOLA!&&CCPARA.VARI_INT_N",
@@ -81,6 +84,7 @@ EPSI_ELGA = Option(
         SP.PINSTR,
         PVARCPR,
         SP.PVARCRR,
+        PCHHOBS,
     ),
     para_out=(SP.PDEFOPC, PDEFOPG),
     condition=(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,8 @@
 ! aslint: disable=W1504
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine calcme(option, j_mater, ndim, typmod, angl_naut, &
+subroutine calcme(BEHinteg, &
+                  option, j_mater, ndim, typmod, angl_naut, &
                   compor, carcri, instam, instap, &
                   addeme, adcome, dimdef, dimcon, &
                   defgem, deps, &
@@ -33,11 +34,13 @@ subroutine calcme(option, j_mater, ndim, typmod, angl_naut, &
 !
 #include "asterf_types.h"
 #include "asterfort/nmcomp.h"
+#include "asterfort/Behaviour_type.h"
 !
-    character(len=16), intent(in) :: option, compor(*)
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
     integer, intent(in) :: j_mater
     character(len=8), intent(in) :: typmod(2)
-    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam, instap
     integer, intent(in) :: ndim, dimdef, dimcon, addeme, adcome
     real(kind=8), intent(in) :: vintm(*)
@@ -84,24 +87,15 @@ subroutine calcme(option, j_mater, ndim, typmod, angl_naut, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nsig = 6, neps = 6, ndsdeme = 36
-    integer ::  kpg, ksp
-    character(len=8) :: fami
-    type(Behaviour_Integ) :: BEHinteg
+    integer, parameter ::  kpg = 1, ksp = 1
+    character(len=4), parameter :: fami = 'FPG1'
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    fami = 'FPG1'
-    kpg = 1
-    ksp = 1
-    dsdeme(:, :) = 0.d0
+    dsdeme = 0.d0
     retcom = 0
-!
-! - Initialisation of behaviour datastructure
-!
-    call behaviourInit(BEHinteg)
-!
+
 ! - Integration of mechanical behaviour
-!
     call nmcomp(BEHinteg, &
                 fami, kpg, ksp, ndim, typmod, &
                 j_mater, compor, carcri, instam, instap, &

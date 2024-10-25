@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops, &
-                  txlsn, n, c)
+!
+subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, &
+                  nfiss, nfisc, fisco, nnops, txlsn, &
+                  n, c)
     implicit none
 !
 #include "asterf_types.h"
@@ -55,6 +56,7 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,
     real(kind=8) :: cref(ndim), ff(27), val
     character(len=8) :: typma
     aster_logical :: jonc, arete, face
+    blas_int :: b_incx, b_incy, b_n
     parameter(cridist=1.d-8)
 !
 !---------------------------------------------------------------------
@@ -76,7 +78,7 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,
                     zi(joncno-1+n) = 1
                 end if
             end do
-        elseif (n .le. nno) then
+        else if (n .le. nno) then
             call conare(typma, ar, nbar)
             do i = 1, nfisc
                 if (zr(jlsn-1+(n-1)*nfiss+fisco(2*i-1)) .eq. 0.d0) then
@@ -88,13 +90,13 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,
                     end do
                 end if
             end do
-        elseif (n .gt. nno .and. n .lt. 1000) then
+        else if (n .gt. nno .and. n .lt. 1000) then
             do i = 1, nfisc
                 if (txlsn((n-nno-1)*nfiss+fisco(2*i-1)) .eq. 0.d0) then
                     zi(joncno-1+n) = 1
                 end if
             end do
-        elseif (n .lt. 2000) then
+        else if (n .lt. 2000) then
             call reeref(elrefp, nno, zr(igeom), c, ndim, &
                         cref, ff)
             do i = 1, nfisc
@@ -104,7 +106,7 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,
                 end do
                 if (abs(val) .lt. cridist) jonc = .true.
             end do
-        elseif (n .lt. 3000) then
+        else if (n .lt. 3000) then
             call reeref(elrefp, nno, zr(igeom), c, ndim, &
                         cref, ff)
             do i = 1, nfisc
@@ -153,7 +155,10 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,
                 call xnormv(ndim, w, norme)
                 call provec(u, v, normal)
                 call xnormv(ndim, normal, norme)
-                if (abs(ddot(ndim, w, 1, normal, 1)) .lt. cridist) then
+                b_n = to_blas_int(ndim)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                if (abs(ddot(b_n, w, b_incx, normal, b_incy)) .lt. cridist) then
                     zi(joncno-1+f(iar, 1)) = 1
                     zi(joncno-1+f(iar, 2)) = 1
                     zi(joncno-1+f(iar, 3)) = 1

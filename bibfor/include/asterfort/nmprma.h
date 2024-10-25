@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                       sddisc, numeTime,&
                       ds_algopara, ds_contact, ds_algorom,&
                       ds_print, ds_measure ,&
-                      hval_incr, hval_algo, hhoField,&
+                      hval_incr, hval_algo, &
                       hval_meelem, hval_measse,&
                       numeDof, numeDofFixe,&
                       solveu, ds_system,&
@@ -33,7 +33,6 @@ interface
         use NonLin_Datastructure_type
         use NonLinearDyna_type
         use Rom_Datastructure_type
-        use HHO_type
         integer, intent(in) :: listFuncActi(*)
         character(len=8), intent(in) :: mesh
         character(len=*), intent(in) :: modelz
@@ -50,7 +49,6 @@ interface
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
-        type(HHO_Field), intent(in) :: hhoField
         character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
         character(len=24), intent(inout) :: numeDof
         character(len=24), intent(in) :: numeDofFixe

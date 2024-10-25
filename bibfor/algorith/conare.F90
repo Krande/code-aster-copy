@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,9 +68,9 @@ subroutine conare(typma, ar, nbar)
         ar(11, 2) = 7
         ar(12, 1) = 4
         ar(12, 2) = 8
-    else if (typma .eq. 'HEXA20') then
+    else if (typma .eq. 'HEXA20' .or. typma .eq. 'HEXA27') then
         nbar = 12
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA20
+!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA20 / HEXA27
         ar(1, 1) = 1
         ar(1, 2) = 2
         ar(1, 3) = 9
@@ -128,9 +128,9 @@ subroutine conare(typma, ar, nbar)
         ar(8, 2) = 5
         ar(9, 1) = 3
         ar(9, 2) = 6
-    else if (typma .eq. 'PENTA15') then
+    else if (typma .eq. 'PENTA15' .or. typma .eq. 'PENTA18') then
         nbar = 9
-!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
+!       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PENTA15 OU PENTA18
         ar(1, 1) = 1
         ar(1, 2) = 2
         ar(1, 3) = 7

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hayjac(mod, nmat, coefel, coeft, timed, &
                   timef, yf, deps, nr, nvi, &
                   vind, vinf, yd, dy, crit, &
@@ -61,6 +61,7 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed, &
     real(kind=8) :: id(6, 6), nxn(6, 6), dfedee(6, 6), dh1
     real(kind=8) :: dh2
     real(kind=8) :: un, zero, d23, d13, dseqde(6), hookf(6, 6), troisk, gh1, gh2
+    blas_int :: b_incx, b_n
     parameter(un=1.d0)
     parameter(zero=0.d0)
     parameter(d23=2.d0/3.d0)
@@ -132,10 +133,14 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed, &
     sigf(1:ndt) = matmul(hookf(1:ndt, 1:ndt), epsef(1:ndt))
     sigf(1:ndt) = dm1*sigf(1:ndt)
 !
-    call dscal(3, 1.d0/sqrt(2.d0), sigf(4), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 1.d0/sqrt(2.d0), sigf(4), b_incx)
     call fgequi(sigf, 'SIGM_DIR', ndim, equi)
 !     on retablit le tenseur
-    call dscal(3, sqrt(2.d0), sigf(4), 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, sqrt(2.d0), sigf(4), b_incx)
     trsig = equi(16)
     grj0 = max(equi(3), equi(4))
     grj0 = max(grj0, equi(5))
@@ -246,11 +251,9 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed, &
         drdy(10, 10) = 1.d0+biga*dt*cosh2/sig0*(1-alphad)*theta*seq0
         if (sequid .gt. 0) then
             if (trsig .gt. epsi) then
-                drdy(10, 10) = drdy(10, 10)+biga*dt*cosh2/sig0*alphad* &
-                               theta*trsig0
+                drdy(10, 10) = drdy(10, 10)+biga*dt*cosh2/sig0*alphad*theta*trsig0
                 do i = 1, 6
-                    drdy(10, i) = drdy(10, i)+coef*troisk*theta*alphad* &
-                                  kron(i)*(1.d0-d)
+                    drdy(10, i) = drdy(10, i)+coef*troisk*theta*alphad*kron(i)*(1.d0-d)
                 end do
             end if
         end if

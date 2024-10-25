@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
+! aslint: disable=W1504,W0413
 !
 subroutine pminit(imate, nbvari, ndim, typmod, table, &
-                  nbpar, iforta, nompar, typpar, ang, &
+                  nbpar, iforta, nompar, typpar, angl_naut, &
                   pgl, irota, epsm, sigm, vim, &
                   vip, vr, defimp, coef, indimp, &
-                  fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara, &
-                  pred, matrel, imptgt, option, nomvi, &
-                  nbvita, sderro)
+                  fonimp, cimpo, kel, sddisc, ds_conv, &
+                  ds_algopara, pred, matrel, imptgt, option, &
+                  nomvi, nbvita, sderro)
 !
     use NonLin_Datastructure_type
 !
@@ -78,7 +78,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 ! OUT  TABLE  : TABLE RESULTAT
 ! OUT  NBPAR  : NOMBRE DE PARAMETRES DE LA TABLE RESULTAT
 ! OUT  NOMPAR : NOMS DES PARAMETRES DE LA TABLE RESULTAT
-! OUT  ANG    : ANGLES DU MOT-CLE MASSIF
+! OUT  ANGL_NAUT : ANGLES DU MOT-CLE MASSIF
 ! OUT  PGL    : MATRICE DE ROTATION AUTOUR DE Z
 ! OUT  IROTA  : =1 SI ROTATION AUTOUR DE Z
 ! OUT  EPSM   : DEFORMATIONS INITIALES
@@ -109,43 +109,41 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     character(len=4), parameter :: nomgrd(9) = (/'F11', 'F12', 'F13', &
                                                  'F21', 'F22', 'F23', &
                                                  'F31', 'F32', 'F33'/)
-    real(kind=8), parameter :: id(9) = (/1.d0, 0.d0, 0.d0, &
-                                         0.d0, 1.d0, 0.d0, &
-                                         0.d0, 0.d0, 1.d0/)
+    real(kind=8), parameter :: id(9) = (/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/)
     character(len=4) :: optgt
     character(len=8) :: typmod(2), k8b, table, fonimp(9), fongrd(9), f0, vk8(2)
     character(len=8) :: foneps(6), fonsig(6), typpar(*), valef, nomvi(*)
     character(len=16) :: option, nompar(*), predic, matric, fortab
     character(len=19) :: lisins, sddisc, solveu
     character(len=24) :: sderro
-    real(kind=8) :: instam, ang(7), sigm(6), epsm(9), vale, rac2
+    real(kind=8) :: instam, angl_naut(3), sigm(6), epsm(9), vale, rac2
     real(kind=8) :: vim(nbvari), vip(nbvari), vr(*)
-    real(kind=8) :: sigi, rep(7), kel(6, 6), cimpo(6, 12)
-    real(kind=8) :: angd(3), ang1(1), pgl(3, 3), xyzgau(3), coef, instin
+    real(kind=8) :: sigi, kel(6, 6), cimpo(6, 12)
+    real(kind=8) :: angd(3), ang1(1), pgl(3, 3), coef
     real(kind=8) :: angeul(3), dsidep(36)
     real(kind=8) :: sigini(6), epsini(6), valimp(9)
     aster_logical :: limpex
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
     cbid = (0.d0, 0.d0)
-    ndim = 3
     typmod(1) = '3D'
     typmod(2) = ' '
     solveu = '&&OP0033'
     rac2 = sqrt(2.d0)
     pgl = 0.d0
     valimp = 0.d0
-
+!
 ! - Read parameters for convergence
     call nmdocn(ds_conv)
-
+!
 ! - Read parameters for algorithm management
     call nmdomt(ds_algopara)
-
+!
 ! - Create datastructure for events in algorithm
     call nmcrga(sderro)
-
+!
 ! - Initializations for convergence management
     call nonlinDSConvergenceInit(ds_conv, sderro)
 !
@@ -236,39 +234,36 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 !     ----------------------------------------
 !     TRAITEMENT DES ANGLES
 !     ----------------------------------------
-    call r8inir(7, 0.d0, ang, 1)
+    angl_naut(:) = 0.d0
     call r8inir(3, 0.d0, angeul, 1)
-    call r8inir(3, 0.d0, xyzgau, 1)
-    call getvr8('MASSIF', 'ANGL_REP', iocc=1, nbval=3, vect=ang(1), &
+    call getvr8('MASSIF', 'ANGL_REP', iocc=1, nbval=3, vect=angl_naut, &
                 nbret=n1)
     call getvr8('MASSIF', 'ANGL_EULER', iocc=1, nbval=3, vect=angeul, &
                 nbret=n2)
 !
     if (n1 .gt. 0) then
-        ang(1) = ang(1)*r8dgrd()
+        angl_naut(1) = angl_naut(1)*r8dgrd()
         if (ndim .eq. 3) then
-            ang(2) = ang(2)*r8dgrd()
-            ang(3) = ang(3)*r8dgrd()
+            angl_naut(2) = angl_naut(2)*r8dgrd()
+            angl_naut(3) = angl_naut(3)*r8dgrd()
         end if
-        ang(4) = 1.d0
 !
 !     ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
     else if (n2 .gt. 0) then
         call eulnau(angeul, angd)
-        ang(1) = angd(1)*r8dgrd()
-        ang(5) = angeul(1)*r8dgrd()
+        angl_naut(1) = angd(1)*r8dgrd()
         if (ndim .eq. 3) then
-            ang(2) = angd(2)*r8dgrd()
-            ang(3) = angd(3)*r8dgrd()
-            ang(6) = angeul(2)*r8dgrd()
-            ang(7) = angeul(3)*r8dgrd()
+            angl_naut(2) = angd(2)*r8dgrd()
+            angl_naut(3) = angd(3)*r8dgrd()
         end if
-        ang(4) = 2.d0
     end if
     if (ncmp .eq. 6) then
         call r8inir(9, 0.d0, epsm, 1)
     else
-        call dcopy(9, id, 1, epsm, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, id, b_incx, epsm, b_incy)
     end if
     call r8inir(6, 0.d0, sigm, 1)
     call r8inir(nbvari, 0.d0, vim, 1)
@@ -279,7 +274,9 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     if ((n1 .ne. 0) .and. (ang1(1) .ne. 0.d0)) then
 !        VERIFS
         irota = 1
-        call dscal(1, r8dgrd(), ang1(1), 1)
+        b_n = to_blas_int(1)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, r8dgrd(), ang1(1), b_incx)
         pgl(1, 1) = cos(ang1(1))
         pgl(2, 2) = cos(ang1(1))
         pgl(1, 2) = sin(ang1(1))
@@ -298,7 +295,9 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
                 sigm(i) = sigi
             end if
         end do
-        call dscal(3, rac2, sigm(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, sigm(4), b_incx)
     end if
 !
     call getfac('EPSI_INIT', nbocc)
@@ -309,7 +308,9 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
                 epsm(i) = sigi
             end if
         end do
-        call dscal(3, rac2, epsm(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, rac2, epsm(4), b_incx)
     end if
     call getfac('VARI_INIT', nbocc)
     if (nbocc .gt. 0) then
@@ -323,9 +324,6 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     end if
     kpg = 1
     ksp = 1
-    call r8inir(7, 0.d0, rep, 1)
-    rep(1) = 1.d0
-    call dcopy(3, ang, 1, rep(2), 1)
     instam = 0.d0
 !     ----------------------------------------
 !     CHARGEMENT
@@ -409,11 +407,12 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
         end do
         defimp = -1
     end if
-
+!
 !  RECUPERER LES VALEURS INITIALES DE F "GRAD_IMPOSE"
     if (igrad .eq. 9) then
         do i = 1, 9
-            call fointe('F', fonimp(i), 1, ['INST'], [instam], valimp(i), ier)
+            call fointe('F', fonimp(i), 1, ['INST'], [instam], &
+                        valimp(i), ier)
         end do
     end if
 !
@@ -424,26 +423,45 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 ! CONSTRUCTION DES VECTEURS DE DEFORMATION ET CONTRAINTES
 ! RETIRE LE TERME EN RAC2 SUR COMPOSANTES DE CISAILLEMENT
 ! PUIS RECOPIE DANS LA TABLE DES VECTEURS SIGINI ET EPSINI
-
+!
         if (igrad .eq. 9) then
-            call dcopy(ncmp, valimp, 1, vr(2), 1)
+            b_n = to_blas_int(ncmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, valimp, b_incx, vr(2), b_incy)
         else
             epsini(1:6) = epsm(1:6)
-            call dscal(3, 1.d0/rac2, epsini(4), 1)
-            call dcopy(ncmp, epsini, 1, vr(2), 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/rac2, epsini(4), b_incx)
+            b_n = to_blas_int(ncmp)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, epsini, b_incx, vr(2), b_incy)
         end if
-
+!
         sigini(1:6) = sigm(1:6)
-        call dscal(3, 1.d0/rac2, sigini(4), 1)
-        call dcopy(6, sigini, 1, vr(ncmp+2), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, 1.d0/rac2, sigini(4), b_incx)
+        b_n = to_blas_int(6)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigini, b_incx, vr(ncmp+2), b_incy)
         vr(1+ncmp+6+1) = 0.d0
         vr(1+ncmp+6+2) = 0.d0
-        call dcopy(nbvita, vim, 1, vr(1+ncmp+6+3), 1)
+        b_n = to_blas_int(nbvita)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vim, b_incx, vr(1+ncmp+6+3), b_incy)
         vr(1) = instam
 !        ajout KTGT
         if (imptgt .eq. 1) then
             call r8inir(36, 0.d0, dsidep, 1)
-            call dcopy(36, dsidep, 1, vr(1+6+6+3+nbvari), 1)
+            b_n = to_blas_int(36)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, dsidep, b_incx, vr(1+6+6+3+nbvari), b_incy)
         end if
         vr(nbpar) = 0
         call tbajli(table, nbpar, nompar, [0], vr, &
@@ -454,13 +472,15 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
         do i = 1, ncmp
             vr(2) = epsm(i)
             vk8(2) = nomeps(i)
-            call tbajli(table, nbpar, nompar, [0], vr, [cbid], vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr, &
+                        [cbid], vk8, 0)
         end do
         vk8(1) = 'SIGM'
         do i = 1, ncmp
             vr(2) = sigm(i)
             vk8(2) = nomsig(i)
-            call tbajli(table, nbpar, nompar, [0], vr, [cbid], vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr, &
+                        [cbid], vk8, 0)
         end do
         vk8(1) = 'VARI'
         do i = 1, nbvita
@@ -468,16 +488,16 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
             vk8(2) (1:1) = 'V'
             call codent(i, 'G', vk8(2) (2:8))
             nomvi(i) = vk8(2)
-            call tbajli(table, nbpar, nompar, [0], vr, [cbid], vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr, &
+                        [cbid], vk8, 0)
         end do
     end if
 !     ----------------------------------------
 !     CREATION SD DISCRETISATION
 !     ----------------------------------------
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
-    instin = r8vide()
-    call nmcrli(instin, lisins, sddisc)
-
+    call nmcrli(lisins, sddisc)
+!
 !
 !
 !     ----------------------------------------
@@ -512,7 +532,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 !     MATRICE ELASTIQUE ET COEF POUR ADIMENSIONNALISER
 !     ----------------------------------------
     call dmat3d('PMAT', imate, instam, '+', kpg, &
-                ksp, rep, xyzgau, kel)
+                ksp, angl_naut, kel)
 !     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
     coef = max(kel(1, 1), kel(2, 2), kel(3, 3))
     do j = 4, 6

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,6 +55,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom, &
     real(kind=8) :: an(ndim), coloc(2), xe(3), n(ndim)
     integer :: j, igeolo, ino
     character(len=24) :: geomlo
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 !
@@ -104,16 +105,28 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom, &
                 n(j) = zr(igeom-1+ndim*(ino-1)+j)
                 an(j) = n(j)-a(j)
             end do
-            zr(igeolo-1+ndime*(ino-1)+1) = ddot(ndim, an, 1, ab, 1)
-            if (ndime .eq. 2) zr(igeolo-1+ndime*(ino-1)+2) = ddot(ndim, an, 1, y, 1)
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            zr(igeolo-1+ndime*(ino-1)+1) = ddot(b_n, an, b_incx, ab, b_incy)
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            if (ndime .eq. 2) zr(igeolo-1+ndime*(ino-1)+2) = ddot(b_n, an, b_incx, y, b_incy)
         end do
 !
 !       COORDONNÉES RÉELLES LOCALES DU POINT EN QUESTION : COLOC
         do j = 1, ndim
             an(j) = co(j)-a(j)
         end do
-        coloc(1) = ddot(ndim, an, 1, ab, 1)
-        if (ndime .eq. 2) coloc(2) = ddot(ndim, an, 1, y, 1)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        coloc(1) = ddot(b_n, an, b_incx, ab, b_incy)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        if (ndime .eq. 2) coloc(2) = ddot(b_n, an, b_incx, y, b_incy)
         call reeref(elrefp, nnop, zr(igeolo), coloc, ndime, &
                     xe, ff)
 !

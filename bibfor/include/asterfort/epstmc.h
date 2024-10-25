@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine epstmc(fami     , ndim  , instan, poum   , kpg   ,&
-                      ksp      , xyzgau, repere, j_mater, option,&
+                      ksp      , angl_naut, j_mater, option,&
                       epsi_varc)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: ndim
@@ -28,8 +28,7 @@ interface
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
         integer, intent(in) :: j_mater
-        real(kind=8), intent(in) :: xyzgau(3)
-        real(kind=8), intent(in) :: repere(7)
+        real(kind=8), intent(in) :: angl_naut(3)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: instan
         real(kind=8), intent(out) :: epsi_varc(6)

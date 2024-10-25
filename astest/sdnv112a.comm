@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -425,6 +425,7 @@ TABAVMAC = MACR_SPECTRE(
     LIST_FREQ=frequ,
     NOM_CHAM="ACCE",
     CALCUL="ABSOLU",
+    ENVELOPPE="OUI",
     NORME=9.81,
     AMOR_SPEC=(0.05, 0.07),
     MULT_APPUI="OUI",
@@ -491,6 +492,7 @@ TABSPEC1 = MACR_SPECTRE(
     LIST_FREQ=frequ,
     NORME=1.0,
     CALCUL="RELATIF",
+    ENVELOPPE="OUI",
     RESU=_F(TABLE=TAB_RESU, ACCE_X=ACCERX, ACCE_Y=ACCERY, ACCE_Z=ACCERZ),
 )
 
@@ -501,6 +503,7 @@ TABSPEC2 = MACR_SPECTRE(
     LIST_FREQ=frequ,
     NORME=9.7647346,
     CALCUL="RELATIF",
+    ENVELOPPE="OUI",
     RESU=_F(TABLE=TAB_RESU, ACCE_X=ACCEPX, ACCE_Y=ACCEPY, ACCE_Z=ACCEPZ),
 )
 

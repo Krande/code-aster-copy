@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine ctresu(nomtb)
 !        IN/OUT : NOMTB (K8) : NOM DE LA TABLE
 !
 ! ----------------------------------------------------------------------
-    integer :: nbcmp, ndim, nbno, nbma, nbval
+    integer :: nbcmp, nbno, nbma, nbval
     aster_logical :: toucmp
     character(len=1) :: tygd
     character(len=4) :: tych
@@ -67,25 +67,25 @@ subroutine ctresu(nomtb)
 !
 !   RECUPERATION DES NOEUDS,MAILLES,COMPOSANTES
     call ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
-                nkcmp, nkvari, nbcmp, ndim, chpgs, &
+                nkcmp, nkvari, nbcmp, chpgs, &
                 chpsu, noma, nbno, nbma, nbval, tygd)
 !   field or result user name
     call getvtx('RESU', 'INTITULE', iocc=1, scal=label)
 
 !   CREATION DE LA TABLE
     call ctcrtb(nomtb, tych, sdres, nkcha, typac, &
-                toucmp, nbcmp, nbval, nkcmp, nkvari, ndim)
+                toucmp, nbcmp, nbval, nkcmp, nkvari)
 !
 !   REMPLISSAGE DE LA TABLE
     if (tych .eq. 'NOEU') then
         call ctnotb(nbno, mesnoe, noma, nbval, nkcha, &
-                    nkcmp, toucmp, nbcmp, typac, ndim, &
+                    nkcmp, toucmp, nbcmp, typac, &
                     nrval, sdres, nomtb, nsymb, nival, &
                     niord, label)
     else if (tych(1:2) .eq. 'EL' .or. tych .eq. 'CART') then
         call cteltb(nbma, mesmai, noma, nbval, nkcha, &
                     nkcmp, nkvari, toucmp, nbcmp, typac, &
-                    ndim, nrval, sdres, nomtb, nsymb, &
+                    nrval, sdres, nomtb, nsymb, &
                     chpgs, chpsu, tych, nival, niord, &
                     label)
     end if

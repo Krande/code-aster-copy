@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine readVector(name, nb_value, vect, offset)
 !
 !
     character(len=*), intent(in) :: name
-    integer, intent(in)          :: nb_value
-    real(kind=8), intent(out)    :: vect(*)
+    integer, intent(in) :: nb_value
+    real(kind=8), intent(out) :: vect(*)
     integer, intent(in), optional :: offset
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,13 +45,17 @@ subroutine readVector(name, nb_value, vect, offset)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jv_vect_in, offset_
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
     offset_ = 0
     if (present(offset)) offset_ = offset
-
+!
     call jevech(name, 'L', jv_vect_in)
-    call dcopy(nb_value, zr(jv_vect_in+offset_), 1, vect, 1)
+    b_n = to_blas_int(nb_value)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(jv_vect_in+offset_), b_incx, vect, b_incy)
 !
 end subroutine

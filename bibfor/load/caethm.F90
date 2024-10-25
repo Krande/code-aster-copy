@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine caethm(load, mesh, model, valeType)
     character(len=16), parameter :: keywordfact = 'ECHANGE_THM'
     character(len=24), parameter :: listCell = '&&CAETHM.LIST_ELEM'
     integer :: jnfis, jvalv, jvCell
-    integer :: nbCell, nbOcc, nfiss, nech
+    integer :: nbCell, nbocc(6), nfiss, nech
     integer :: iret, iocc
     character(len=19) :: map(LOAD_MAP_NBMAX)
     integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
@@ -68,6 +68,7 @@ subroutine caethm(load, mesh, model, valeType)
 !
 ! - Initializations
 !
+    nbocc(:) = 0
     call exixfe(model, iret)
     nfiss = 0
     if (iret .ne. 0) then
@@ -95,19 +96,19 @@ subroutine caethm(load, mesh, model, valeType)
 
         if (nbCell .ne. 0) then
             if (valeType .eq. 'REEL') then
-                call getvr8(keywordFact, 'COEF_11', iocc=iocc, scal=zr(jvalv), nbret=nbOcc)
-                call getvr8(keywordFact, 'COEF_12', iocc=iocc, scal=zr(jvalv+1), nbret=nbOcc)
-                call getvr8(keywordFact, 'COEF_21', iocc=iocc, scal=zr(jvalv+2), nbret=nbOcc)
-                call getvr8(keywordFact, 'COEF_22', iocc=iocc, scal=zr(jvalv+3), nbret=nbOcc)
-                call getvr8(keywordFact, 'PRE1_EXT', iocc=iocc, scal=zr(jvalv+4), nbret=nbOcc)
-                call getvr8(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zr(jvalv+5), nbret=nbOcc)
+                call getvr8(keywordFact, 'COEF_11', iocc=iocc, scal=zr(jvalv), nbret=nbocc(1))
+                call getvr8(keywordFact, 'COEF_12', iocc=iocc, scal=zr(jvalv+1), nbret=nbocc(2))
+                call getvr8(keywordFact, 'COEF_21', iocc=iocc, scal=zr(jvalv+2), nbret=nbocc(3))
+                call getvr8(keywordFact, 'COEF_22', iocc=iocc, scal=zr(jvalv+3), nbret=nbocc(4))
+                call getvr8(keywordFact, 'PRE1_EXT', iocc=iocc, scal=zr(jvalv+4), nbret=nbocc(5))
+                call getvr8(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zr(jvalv+5), nbret=nbocc(6))
             elseif (valeType .eq. 'FONC') then
-                call getvid(keywordFact, 'COEF_11', iocc=iocc, scal=zk8(jvalv), nbret=nbOcc)
-                call getvid(keywordFact, 'COEF_12', iocc=iocc, scal=zk8(jvalv+1), nbret=nbOcc)
-                call getvid(keywordFact, 'COEF_21', iocc=iocc, scal=zk8(jvalv+2), nbret=nbOcc)
-                call getvid(keywordFact, 'COEF_22', iocc=iocc, scal=zk8(jvalv+3), nbret=nbOcc)
-                call getvid(keywordFact, 'PRE1_EXT', iocc=iocc, scal=zk8(jvalv+4), nbret=nbOcc)
-                call getvid(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zk8(jvalv+5), nbret=nbOcc)
+                call getvid(keywordFact, 'COEF_11', iocc=iocc, scal=zk8(jvalv), nbret=nbocc(1))
+                call getvid(keywordFact, 'COEF_12', iocc=iocc, scal=zk8(jvalv+1), nbret=nbocc(2))
+                call getvid(keywordFact, 'COEF_21', iocc=iocc, scal=zk8(jvalv+2), nbret=nbocc(3))
+                call getvid(keywordFact, 'COEF_22', iocc=iocc, scal=zk8(jvalv+3), nbret=nbocc(4))
+                call getvid(keywordFact, 'PRE1_EXT', iocc=iocc, scal=zk8(jvalv+4), nbret=nbocc(5))
+                call getvid(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zk8(jvalv+5), nbret=nbocc(6))
             else
                 ASSERT(ASTER_FALSE)
             end if

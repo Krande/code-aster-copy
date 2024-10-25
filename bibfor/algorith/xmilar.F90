@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
-                  ia, ib, im, ip, ksia, ksib, milara, milarb, &
-                  pintt, pmitt)
+                  ia, ib, im, ip, ksia, &
+                  ksib, milara, milarb, pintt, pmitt)
 !
     implicit none
 !
@@ -52,6 +52,7 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
     integer :: nno, j
     real(kind=8) :: x(81), newpt(ndim), pta(ndim), ptb(ndim), ptm(ndim), ff(27)
     real(kind=8) :: ab(ndime), aip(ndime), normab, normaip, s
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------
 !
@@ -103,7 +104,10 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
         end do
         call xnormv(ndime, ab, normab)
         call xnormv(ndime, aip, normaip)
-        s = normaip/normab*ddot(ndime, ab, 1, aip, 1)
+        b_n = to_blas_int(ndime)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        s = normaip/normab*ddot(b_n, ab, b_incx, aip, b_incy)
         do j = 1, ndime
             ksia(j) = (1.d0-s)*(1.d0-s/2.d0)*pta(j)+s/2.d0*(s-1.d0)*ptb(j)+s*(2.d0-s)*ptm(j)
             ksib(j) = s/2.d0*(s-1.d0)*pta(j)+s/2.d0*(s+1.d0)*ptb(j)+(s+1.d0)*(1.d0-s)*ptm(j)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@
 !
 ! --- Maximum number of componants for scalar cell function (order=3 and dim=3)
 #define MSIZE_CELL_SCAL 20
-! --- Maximum number of componants for scalar face function (order=3 and dim=3)
-#define MSIZE_FACE_SCAL 10
+! --- Maximum number of componants for scalar face function (order=2 and dim=3)
+#define MSIZE_FACE_SCAL 6
 ! --- Maximum number of total dofs for a HHO function (dim=3,  and order=2 for a face)
 ! --- Max size for a hexahedron:   6 (nb faces) * 6 (face dofs)
 #define MSIZE_FDOFS_SCAL 36
@@ -44,8 +44,8 @@
 ! --- vector function
 ! --- Maximum number of componants for vector cell function (order=3 and dim=3)
 #define MSIZE_CELL_VEC 60
-! --- Maximum number of componants for vector face function (order=3 and dim=3)
-#define MSIZE_FACE_VEC 30
+! --- Maximum number of componants for vector face function (order=2 and dim=3)
+#define MSIZE_FACE_VEC 18
 ! --- Maximum number of total dofs for vector faces (dim=3,  and order=2 for a face)
 ! --- Max size for a hexahedron:   6 (nb faces) * 6 (face dofs)
 #define MSIZE_FDOFS_VEC 108
@@ -67,8 +67,8 @@
 #define MSIZE_CELL_MAT 180
 !
 ! --- maximum number of quadrature points
-#define MAX_QP 64
+#define MAX_QP 115
 ! --- maximum number of quadrature points on a face QUAD = 16
-#define MAX_QP_FACE 16
+#define MAX_QP_FACE 32
 ! --- maximum number of quadrature points on a cell HEXA = 64
-#define MAX_QP_CELL 64
+#define MAX_QP_CELL 115

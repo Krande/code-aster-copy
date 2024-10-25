@@ -15,8 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
+!
+subroutine ptforp(itype, option, nomte, a, a2, &
+                  xl, ist, nno, ncf, pgl, &
+                  fer, fei)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,13 +74,14 @@ subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8)    :: nompar(13)
-    real(kind=8)        :: valpar(13)
+    character(len=8) :: nompar(13)
+    real(kind=8) :: valpar(13)
 !
     character(len=8), parameter :: nompav(1) = ['VITE']
-    real(kind=8)                :: valpav(1)
+    real(kind=8) :: valpav(1)
 !
-    character(len=16)   :: ch16, messk(2)
+    character(len=16) :: ch16, messk(2)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -125,7 +128,8 @@ subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
         else
             gamma = zr(istrxm+3-1)
         end if
-        call porea2(nno, ncf, zr(lx), gamma, pgl, xl)
+        call porea2(nno, ncf, zr(lx), gamma, pgl, &
+                    xl)
         do i = 1, 3
             dwx(i) = zr(idepla-1+i)+zr(ideplp-1+i)
             dwx(i+3) = zr(idepla-1+i+ncc)+zr(ideplp-1+i+ncc)
@@ -182,9 +186,13 @@ subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
             coef2 = 1.d0
         else
             if (ist .eq. 1) then
-                call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ', [r8bid], 1, 'RHO', rho(1), icodre, 1)
+                call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ', &
+                            [r8bid], 1, 'RHO', rho(1), icodre, &
+                            1)
             else
-                call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ', [r8bid], 1, 'RHO', rho(1), icodre, 0)
+                call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ', &
+                            [r8bid], 1, 'RHO', rho(1), icodre, &
+                            0)
                 if (icodre(1) .ne. 0) rho(1) = 0.0d0
             end if
 !           a cause des chargements variable
@@ -267,21 +275,25 @@ subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
         valpar(7:9) = wv(1:3); valpar(10:12) = wa(1:3)
         valpar(13) = temps
         do i = 1, 6
-            call fointe('FM', zk8(lforc-1+i), nbpar, nompar, valpar, q(i), ier)
+            call fointe('FM', zk8(lforc-1+i), nbpar, nompar, valpar, &
+                        q(i), ier)
         end do
         do i = 7, ncf
-            call fointe('FM', zk8(lforc+i), nbpar, nompar, valpar, q(i), ier)
+            call fointe('FM', zk8(lforc+i), nbpar, nompar, valpar, &
+                        q(i), ier)
         end do
-
+!
 !       Noeud 2
         valpar(1:3) = wx(4:6); valpar(4:6) = w2(1:3)
         valpar(7:9) = wv(4:6); valpar(10:12) = wa(4:6)
         valpar(13) = temps
         do i = 1, 6
-            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar, q(i+ncf), ier)
+            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar, &
+                        q(i+ncf), ier)
         end do
         do i = 7, ncf
-            call fointe('FM', zk8(lforc+i), nbpar, nompar, valpar, q(i+ncf), ier)
+            call fointe('FM', zk8(lforc+i), nbpar, nompar, valpar, &
+                        q(i+ncf), ier)
         end do
     else
         ch16 = option
@@ -307,10 +319,16 @@ subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
             call utmess('F', 'ELEMENTS2_53')
         end if
 !
-        xs = ddot(3, w2, 1, w2, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xs = ddot(b_n, w2, b_incx, w2, b_incy)
         s2 = 1.0/xs
 !       calcul de la norme du vecteur a projeter
-        xs = ddot(3, q(1), 1, q(1), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xs = ddot(b_n, q(1), b_incx, q(1), b_incy)
         s4 = sqrt(xs)
 !       calcul du vecteur vitesse perpendiculaire
         fcx = 0.0; vp(:) = 0.0
@@ -319,17 +337,24 @@ subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
             call provec(xu, w2, xv)
             call pscvec(3, s2, xv, vp)
 !           norme de la vitesse perpendiculaire
-            vite2 = ddot(3, vp, 1, vp, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            vite2 = ddot(b_n, vp, b_incx, vp, b_incy)
             valpav(1) = sqrt(vite2)
             if (valpav(1) .gt. r8min) then
-                call fointe('FM', zk8(ifcx), 1, nompav, valpav, fcx, iret)
+                call fointe('FM', zk8(ifcx), 1, nompav, valpav, &
+                            fcx, iret)
                 fcx = fcx/valpav(1)
             end if
         end if
         call pscvec(3, fcx, vp, q(1))
 !
 !       calcul de la norme du vecteur a projeter
-        xs = ddot(3, q(7), 1, q(7), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xs = ddot(b_n, q(7), b_incx, q(7), b_incy)
         s4 = sqrt(xs)
 !       calcul du vecteur vitesse perpendiculaire
         fcx = 0.0; vp(:) = 0.0
@@ -338,23 +363,36 @@ subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
             call provec(xu, w2, xv)
             call pscvec(3, s2, xv, vp)
 !           norme de la vitesse perpendiculaire
-            vite2 = ddot(3, vp, 1, vp, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            vite2 = ddot(b_n, vp, b_incx, vp, b_incy)
             valpav(1) = sqrt(vite2)
             if (valpav(1) .gt. r8min) then
-                call fointe('FM', zk8(ifcx), 1, nompav, valpav, fcx, iret)
+                call fointe('FM', zk8(ifcx), 1, nompav, valpav, &
+                            fcx, iret)
                 fcx = fcx/valpav(1)
             end if
         end if
         call pscvec(3, fcx, vp, q(7))
 !
     else if (normal) then
-        xs = ddot(3, w2, 1, w2, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xs = ddot(b_n, w2, b_incx, w2, b_incy)
         s2 = 1.d0/xs
-        xs = ddot(3, q(1), 1, q(1), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xs = ddot(b_n, q(1), b_incx, q(1), b_incy)
         s4 = sqrt(xs)
         if (s4 .gt. r8min) then
             call provec(w2, q(1), xu)
-            xs = ddot(3, xu, 1, xu, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xs = ddot(b_n, xu, b_incx, xu, b_incy)
             s3 = sqrt(xs)
             s5 = s3*sqrt(s2)/s4
             call provec(xu, w2, xv)
@@ -362,11 +400,17 @@ subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
             call pscvec(3, s5, xu, q(1))
         end if
 !
-        xs = ddot(3, q(7), 1, q(7), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xs = ddot(b_n, q(7), b_incx, q(7), b_incy)
         s4 = sqrt(xs)
         if (s4 .gt. r8min) then
             call provec(w2, q(7), xu)
-            xs = ddot(3, xu, 1, xu, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            xs = ddot(b_n, xu, b_incx, xu, b_incy)
             s3 = sqrt(xs)
             s5 = s3*sqrt(s2)/s4
             call provec(xu, w2, xv)
@@ -394,18 +438,22 @@ subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
         do i = 1, 2*ncf
             qq(i) = qq(i)*zr(icoer)
         end do
-        call ptfop1(itype, ncf, coef1, coef2, xl, qq, fer)
+        call ptfop1(itype, ncf, coef1, coef2, xl, &
+                    qq, fer)
 !
     else if (iretc .eq. 0) then
         do i = 1, 2*ncf
             qqr(i) = qq(i)*dble(zc(icoec))
             qqi(i) = qq(i)*dimag(zc(icoec))
         end do
-        call ptfop1(itype, ncf, coef1, coef2, xl, qqr, fer)
-        call ptfop1(itype, ncf, coef1, coef2, xl, qqi, fei)
+        call ptfop1(itype, ncf, coef1, coef2, xl, &
+                    qqr, fer)
+        call ptfop1(itype, ncf, coef1, coef2, xl, &
+                    qqi, fei)
 !
     else
-        call ptfop1(itype, ncf, coef1, coef2, xl, qq, fer)
+        call ptfop1(itype, ncf, coef1, coef2, xl, &
+                    qq, fer)
     end if
 !
 end subroutine

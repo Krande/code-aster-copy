@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0448(nomopt, nomte)
 !
     use HHO_basis_module
@@ -68,7 +68,8 @@ subroutine te0448(nomopt, nomte)
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_curr
     real(kind=8), dimension(MSIZE_CELL_MAT) :: G_curr_coeff
-    real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)   :: gradrec
+    real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC) :: gradrec
+    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --- Get HHO informations
 !
@@ -80,7 +81,8 @@ subroutine te0448(nomopt, nomte)
     call elrefe_info(fami=fami, npg=npg)
 !
 ! --- Number of dofs
-    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+                       gbs, gbs_sym)
     nsig = nbsigm()
     gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
     ASSERT(cbs <= MSIZE_CELL_VEC)
@@ -145,12 +147,24 @@ subroutine te0448(nomopt, nomte)
 ! --- Compute local contribution
 !
     if (l_largestrains) then
-        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, depl_curr, 1, &
-                   0.d0, G_curr_coeff, 1)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(gbs)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
+                   b_incy)
         gbs_curr = gbs
     else
-        call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                   depl_curr, 1, 0.d0, G_curr_coeff, 1)
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(gbs_sym)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
+                   b_incy)
         gbs_curr = gbs_sym
     end if
 !
@@ -161,14 +175,14 @@ subroutine te0448(nomopt, nomte)
 !
 ! --------- Eval basis function at the quadrature point
 !
-        call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+        call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
         if (l_largestrains) then
-            G_curr = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
-                                    coorpg(1:3), G_curr_coeff, gbs)
+            G_curr = hhoEvalMatCell( &
+                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs)
         else
-            E_curr = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
-                                       coorpg(1:3), G_curr_coeff, gbs_sym)
+            E_curr = hhoEvalSymMatCell( &
+                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs_sym)
             zr(idefo-1+(ipg-1)*nsig+1:idefo-1+ipg*nsig) = E_curr(1:nsig)
         end if
     end do

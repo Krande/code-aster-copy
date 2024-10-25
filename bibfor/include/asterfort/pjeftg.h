@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,12 @@
 !
 !
 interface
-    subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
+    subroutine pjeftg(igeom, geomi, nomai, motfac, iocc, ncas)
         integer :: igeom
         character(len=24) :: geomi
-        character(len=8) :: nomai
-        character(len=*) :: motfac
-        integer :: iocc
+        character(len=8)  :: nomai
+        character(len=*)  :: motfac
+        integer           :: iocc
+        character(len=8)  :: ncas
     end subroutine pjeftg
 end interface

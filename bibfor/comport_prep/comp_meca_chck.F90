@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_meca_chck(model, mesh, chmate, &
-                          fullElemField, lInitialState, behaviourPrepPara)
+                          fullElemField, lInitialState, prepMapCompor)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -36,6 +36,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
+#include "asterfort/nmvcd2.h"
 !
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
@@ -43,7 +44,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     character(len=8), intent(in) :: model, mesh, chmate
     character(len=19), intent(in) :: fullElemField
     aster_logical, intent(in) :: lInitialState
-    type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
+    type(BehaviourPrep_MapCompor), intent(inout) :: prepMapCompor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,7 +59,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
 ! In  chmate           : material field
 ! In  fullElemField    : <CHELEM_S> of FULL_MECA option
 ! In  lInitialState    : .true. if initial state is defined
-! IO  behaviourPrepPara: datastructure to prepare behaviour
+! IO  prepMapCompor    : datastructure to construct COMPOR map
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,11 +74,11 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     character(len=24) :: modelLigrel
     mpi_int :: nbCPU, mpiCurr
     aster_logical :: lElasByDefault, lNeedDeborst, lMfront, lDistParallel
-    aster_logical :: lIncoUpo, lExistVarc
+    aster_logical :: lIncoUpo, lExistVarc, exis_temp, exis_sech
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbFactorKeyword = behaviourPrepPara%nb_comp
+    nbFactorKeyword = prepMapCompor%nb_comp
     lNeedDeborst = ASTER_FALSE
     lElasByDefault = ASTER_FALSE
     lDistParallel = ASTER_FALSE
@@ -103,14 +104,14 @@ subroutine comp_meca_chck(model, mesh, chmate, &
                             cellAffe, lAllCellAffe, nbCellAffe)
 
 ! ----- Get main parameters for this behaviour
-        relaComp = behaviourPrepPara%v_para(iFactorKeyword)%rela_comp
-        defoComp = behaviourPrepPara%v_para(iFactorKeyword)%defo_comp
-        typeComp = behaviourPrepPara%v_para(iFactorKeyword)%type_comp
-        reguVisc = behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
-        lMfront = behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_offi .or. &
-                  behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_proto
-        exteDefo = behaviourPrepPara%v_paraExte(iFactorKeyword)%strain_model
-        postIncr = behaviourPrepPara%v_para(iFactorKeyword)%post_incr
+        relaComp = prepMapCompor%prepPara(iFactorKeyword)%rela_comp
+        defoComp = prepMapCompor%prepPara(iFactorKeyword)%defo_comp
+        typeComp = prepMapCompor%prepPara(iFactorKeyword)%type_comp
+        reguVisc = prepMapCompor%prepPara(iFactorKeyword)%regu_visc
+        lMfront = prepMapCompor%prepExte(iFactorKeyword)%l_mfront_offi .or. &
+                  prepMapCompor%prepExte(iFactorKeyword)%l_mfront_proto
+        exteDefo = prepMapCompor%prepExte(iFactorKeyword)%strain_model
+        postIncr = prepMapCompor%prepPara(iFactorKeyword)%post_incr
 
 ! ----- Coding comportment (Python)
         call lccree(1, relaComp, relaCompPY)
@@ -124,9 +125,9 @@ subroutine comp_meca_chck(model, mesh, chmate, &
                                lElasByDefault, lNeedDeborst, lIncoUpo)
 
 ! ----- Select plane stress algorithm
-        typeCpla = behaviourPrepPara%v_para(iFactorKeyword)%type_cpla
+        typeCpla = prepMapCompor%prepPara(iFactorKeyword)%type_cpla
         call compMecaSelectPlaneStressAlgo(lNeedDeborst, typeCpla)
-        behaviourPrepPara%v_para(iFactorKeyword)%type_cpla = typeCpla
+        prepMapCompor%prepPara(iFactorKeyword)%type_cpla = typeCpla
 
 ! ----- Check the consistency of the strain model with the behaviour
         call compMecaChckStrain(iFactorKeyword, &
@@ -172,6 +173,18 @@ subroutine comp_meca_chck(model, mesh, chmate, &
             end if
         end if
 
+! ----- Temperature and drying with_BETON_BURGER
+        if (relaComp .eq. 'BETON_BURGER') then
+            call nmvcd2('TEMP', chmate, exis_temp)
+            call nmvcd2('SECH', chmate, exis_sech)
+            if (.not. (exis_temp)) then
+                call utmess('F', 'COMPOR6_8')
+            end if
+            if (.not. (exis_sech)) then
+                call utmess('F', 'COMPOR6_9')
+            end if
+        end if
+
 ! ----- Warning if ELASTIC comportment and initial state
         if (lInitialState .and. typeComp .eq. 'COMP_ELAS') then
             call utmess('A', 'COMPOR1_61')
@@ -190,13 +203,13 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     if (lElasByDefault) then
         call utmess('I', 'COMPOR5_21')
     end if
-    if (lExistVarc .and. behaviourPrepPara%lTotalStrain) then
+    if (lExistVarc .and. prepMapCompor%lTotalStrain) then
         call utmess('A', 'COMPOR4_17')
     end if
-    if (behaviourPrepPara%nb_comp .eq. 0) then
+    if (prepMapCompor%nb_comp .eq. 0) then
         call utmess('I', 'COMPOR4_64')
     end if
-    if (behaviourPrepPara%nb_comp .ge. 99999) then
+    if (prepMapCompor%nb_comp .ge. 99999) then
         call utmess('A', 'COMPOR4_65')
     end if
 !

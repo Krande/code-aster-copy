@@ -37,6 +37,17 @@ DDL_THER = LocatedComponents(
 
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
+CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[1380]",))
+
+CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[1081]",))
+
+CHHOBS = LocatedComponents(
+    phys=PHY.N480_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[250]"))),
+)
+
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
@@ -44,6 +55,7 @@ MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
+
 
 # --------------------------------------------------------------------------------------------------
 class THER3DH27_HHO222(Element):
@@ -72,6 +84,9 @@ class THER3DH27_HHO222(Element):
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.CHAR_THER_EVOL.PVARCPR, LC.ZVARCPG),
+                (OP.CHAR_THER_EVOL.PCHHOGT, CHHOGT),
+                (OP.CHAR_THER_EVOL.PCHHOST, CHHOST),
+                (OP.CHAR_THER_EVOL.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
@@ -82,12 +97,29 @@ class THER3DH27_HHO222(Element):
                 (SP.PSOURCF, LC.CSOURCF),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.CHAR_THER_SOUR_F.PVARCPR, LC.ZVARCPG),
+                (OP.CHAR_THER_SOUR_F.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PVECTTR, MVECTTR),),
+        ),
+        OP.CHAR_THER_SOURNL(
+            te=465,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PSOURNL, LC.CSOURCF),
+                (SP.PTEMPER, DDL_THER),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.CHAR_THER_SOURNL.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_SOUR_R(
             te=465,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PSOURCR, LC.ESOURCR), (SP.PINSTR, LC.CTIMETR)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PSOURCR, LC.ESOURCR),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.CHAR_THER_SOUR_R.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.COOR_ELGA(
@@ -104,6 +136,8 @@ class THER3DH27_HHO222(Element):
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.FLUX_ELGA.PVARCPR, LC.ZVARCPG),
+                (OP.FLUX_ELGA.PCHHOGT, CHHOGT),
+                (OP.FLUX_ELGA.PCHHOST, CHHOST),
             ),
             para_out=((OP.FLUX_ELGA.PFLUXPG, LC.EFLUX3R),),
         ),
@@ -112,30 +146,63 @@ class THER3DH27_HHO222(Element):
             para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX3R),),
             para_out=((SP.PFLUXNO, LC.NFLUX3R),),
         ),
+        OP.HHO_PRECALC_BS(
+            te=494,
+            para_in=((SP.PGEOMER, LC.EGEOM3D),),
+            para_out=((OP.HHO_PRECALC_BS.PCHHOBO, CHHOBS),),
+        ),
+        OP.HHO_PRECALC_OP(
+            te=460,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (OP.HHO_PRECALC_OP.PCHHOBS, CHHOBS)),
+            para_out=((OP.HHO_PRECALC_OP.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_OP.PCHHOST, CHHOST)),
+        ),
         OP.HHO_PROJ_THER(
             te=473,
             para_in=(
                 (SP.PGEOMER, LC.EGEOM3D),
                 (OP.HHO_PROJ_THER.PFUNC_R, PFONC),
                 (SP.PINSTPR, LC.MTEMPSR),
+                (OP.HHO_PROJ_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
         ),
         OP.HHO_PROJ2_THER(
             te=484,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (OP.HHO_PROJ2_THER.PH1TP_R, TEMPHHO)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (OP.HHO_PROJ2_THER.PH1TP_R, TEMPHHO),
+                (OP.HHO_PROJ2_THER.PCHHOBS, CHHOBS),
+            ),
             para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
         ),
         OP.HHO_PROJ3_THER(
             te=484,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (OP.HHO_PROJ3_THER.PQPTP_R, LC.ETEMPPG)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (OP.HHO_PROJ3_THER.PQPTP_R, LC.ETEMPPG),
+                (OP.HHO_PROJ3_THER.PCHHOBS, CHHOBS),
+            ),
             para_out=((OP.HHO_PROJ3_THER.PTEMP_R, DDL_THER),),
         ),
         OP.HHO_TEMP_THER(
             te=456,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PTMPCHF, DDL_THER)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PTMPCHF, DDL_THER),
+                (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
+            ),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),
+        OP.HHO_CINE_R_THER(
+            te=492,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (OP.HHO_CINE_R_THER.PCMPVALE, TEMPHHO),
+                (OP.HHO_CINE_R_THER.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_CINE_R_THER.PCINE, DDL_THER),),
+        ),
+        OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),
         OP.MASS_THER(
             te=449,
             para_in=(
@@ -143,8 +210,45 @@ class THER3DH27_HHO222(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.MASS_THER.PVARCPR, LC.ZVARCPG),
+                (OP.MASS_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
+        ),
+        OP.MASS_THER_TANG(
+            te=429,
+            para_in=(
+                (OP.MASS_THER_TANG.PCOMPOR, LC.CCOMPOT),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTEMPEI, DDL_THER),
+                (OP.MASS_THER_TANG.PVARCPR, LC.ZVARCPG),
+                (OP.MASS_THER_TANG.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.MASS_THER_TANG.PMATTTR, MMATTTR),),
+        ),
+        OP.MASS_THER_RESI(
+            te=429,
+            para_in=(
+                (OP.MASS_THER_RESI.PCOMPOR, LC.CCOMPOT),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (OP.MASS_THER_RESI.PHYDRPR, LC.EHYDRR),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTEMPEI, DDL_THER),
+                (OP.MASS_THER_RESI.PVARCPR, LC.ZVARCPG),
+                (OP.MASS_THER_RESI.PCHHOBS, CHHOBS),
+            ),
+            para_out=((SP.PRESIDU, MVECTTR),),
+        ),
+        OP.MTAN_THER_SOURNL(
+            te=437,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PSOURNL, LC.CSOURCF),
+                (SP.PTEMPEI, DDL_THER),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.MTAN_THER_SOURNL.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.MTAN_THER_SOURNL.PMATTTR, MMATTTR),),
         ),
         OP.NSPG_NBVA(
             te=496,
@@ -160,6 +264,9 @@ class THER3DH27_HHO222(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
+                (OP.RAPH_THER.PCHHOGT, CHHOGT),
+                (OP.RAPH_THER.PCHHOST, CHHOST),
+                (OP.RAPH_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, LC.EFLUX3R)),
         ),
@@ -171,6 +278,9 @@ class THER3DH27_HHO222(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.RIGI_THER.PVARCPR, LC.ZVARCPG),
+                (OP.RIGI_THER.PCHHOGT, CHHOGT),
+                (OP.RIGI_THER.PCHHOST, CHHOST),
+                (OP.RIGI_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
         ),
@@ -183,12 +293,19 @@ class THER3DH27_HHO222(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
+                (OP.RIGI_THER_TANG.PCHHOGT, CHHOGT),
+                (OP.RIGI_THER_TANG.PCHHOST, CHHOST),
+                (OP.RIGI_THER_TANG.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.RIGI_THER_TANG.PMATTTR, MMATTTR),),
         ),
         OP.TEMP_ELGA(
             te=456,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PTEMPER, DDL_THER)),
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PTEMPER, DDL_THER),
+                (OP.TEMP_ELGA.PCHHOBS, CHHOBS),
+            ),
             para_out=((SP.PTEMP_R, LC.ETEMPPG),),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),

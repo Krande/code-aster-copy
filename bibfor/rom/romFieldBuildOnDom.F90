@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine romFieldBuildOnDom(resultRom, fieldBuild)
     integer :: ifm, niv
     type(ROM_DS_Empi) :: base
     integer :: nbMode, nbEqua, nbStore
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,8 +71,14 @@ subroutine romFieldBuildOnDom(resultRom, fieldBuild)
 !
 ! - Construct object
 !
-    call dgemm('N', 'N', nbEqua, nbStore-1, nbMode, 1.d0, &
-               fieldBuild%matrPhi, nbEqua, fieldBuild%reduMatr, &
-               nbMode, 0.d0, fieldBuild%fieldTransientVale, nbEqua)
+    b_ldc = to_blas_int(nbEqua)
+    b_ldb = to_blas_int(nbMode)
+    b_lda = to_blas_int(nbEqua)
+    b_m = to_blas_int(nbEqua)
+    b_n = to_blas_int(nbStore-1)
+    b_k = to_blas_int(nbMode)
+    call dgemm('N', 'N', b_m, b_n, b_k, &
+               1.d0, fieldBuild%matrPhi, b_lda, fieldBuild%reduMatr, b_ldb, &
+               0.d0, fieldBuild%fieldTransientVale, b_ldc)
 !
 end subroutine

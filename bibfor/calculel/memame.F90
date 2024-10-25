@@ -19,6 +19,8 @@
 subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
                   comporMultz, matrElemz, basez, listElemCalcz)
 !
+    use HHO_precalc_module, only: hhoAddInputField
+!
     implicit none
 !
 #include "asterf_types.h"
@@ -64,7 +66,7 @@ subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbFieldInMax = 30, nbFieldOutMax = 2
+    integer, parameter :: nbFieldInMax = 33, nbFieldOutMax = 2
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
     character(len=19) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
 !
@@ -171,7 +173,9 @@ subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
     if (lxfem) then
         call xajcin(model, option, nbFieldInMax, lchin, lpain, nbFieldIn)
     end if
-
+!
+    call hhoAddInputField(model, nbFieldInMax, lchin, lpain, nbFieldIn)
+!
 ! - Output fields
     lpaout(1) = 'PMATUUR'
     lchout(1) = matrElem(1:15)//'.M01'

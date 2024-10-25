@@ -242,6 +242,13 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
         end if
 ! ---   MARGE POUR LES TRES PETITS CAS
         if (n .lt. 100) icoefm = 50
+
+#ifdef ASTER_PLATFORM_MINGW
+        if (type .eq. 'Z' .and. (usersm(1:4) .eq. 'AUTO' .or. usersm(1:11) .eq. 'OUT_OF_CORE')) then
+            usersm = 'IN_CORE'
+            call utmess('A', 'FACTOR_86')
+        end if
+#endif
 !
 ! ---   CONSO MUMPS  + VERIFICATION DE SA VALIDITE
         maxmem_ic = int(maxmem_ic*((icoefm+100)*1.d0/100.d0))
@@ -279,6 +286,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
         if (niv .ge. 2) write (ifm, *) '<AMUMPU> RVAL1/2/3, maxmem_ic/26, NSIZEMA, TMAX ', rval1, &
             rval2, rval3, maxmem_ic, maxmem_ooc, nsizema, tmax
 !
+
         select case (usersm)
         case ('IN_CORE')
 ! --------------

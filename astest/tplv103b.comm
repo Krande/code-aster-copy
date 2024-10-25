@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,9 +39,7 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATERI))
 
 MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="PLAN", PHENOMENE="THERMIQUE"))
 
-ESSAI = AFFE_CARA_ELEM(
-    MODELE=MOTH, MASSIF=_F(GROUP_MA=("VOLUME",), ANGL_AXE=(0.0, 0.0), ORIG_AXE=(0.0, 0.0))
-)
+ESSAI = AFFE_CARA_ELEM(MODELE=MOTH, MASSIF=_F(GROUP_MA=("VOLUME",), ORIG_AXE=(0.0, 0.0)))
 
 CHTH1 = AFFE_CHAR_THER_F(MODELE=MOTH, TEMP_IMPO=_F(GROUP_NO="TEMPIM1", TEMP=TIMP1))
 

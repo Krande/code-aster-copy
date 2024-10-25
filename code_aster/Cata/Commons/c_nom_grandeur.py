@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,6 +70,8 @@ def C_NOM_GRANDEUR():
         "FTHM_R",
         "ETHM_R",
         "ETHM_F",
+        "ETHMH_R",
+        "ETHMH_F",
         "GEOM_R",
         "G_DEPL_R",
         "HYDR_R",
@@ -116,6 +118,7 @@ def C_NOM_GRANDEUR():
         "VALO_R",
         "VANL_R",
         "VAR2_R",
+        "VARC_R",
         "VARI_R",
         "VENTCX_F",
         "VFAC_C",
@@ -123,4 +126,5 @@ def C_NOM_GRANDEUR():
         "VFAC_R",
         "CLAC_R",
         "THET_R",
+        "GRAT_R",
     )

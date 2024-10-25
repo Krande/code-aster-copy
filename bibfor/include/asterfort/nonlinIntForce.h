@@ -24,10 +24,9 @@ interface
                               ds_system, ds_measure, &
                               hval_incr, hval_algo, &
                               ldccvg, &
-                              hhoField_, sddyna_, &
+                               sddyna_, &
                               ds_algorom_)
         use NonLin_Datastructure_type
-        use HHO_type
         use Rom_Datastructure_type
         integer, intent(in) :: phaseType
         character(len=24), intent(in) :: model, cara_elem
@@ -40,7 +39,6 @@ interface
         integer, intent(in) :: iter_newt
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
         integer, intent(out) :: ldccvg
-        type(HHO_Field), optional, intent(in) :: hhoField_
         character(len=19), optional, intent(in) :: sddyna_
         type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
     end subroutine nonlinIntForce

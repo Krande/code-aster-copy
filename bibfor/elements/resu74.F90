@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine resu74(tran, nomres)
-
+!
     use DynaGene_module
-
+!
     implicit none
 !
 !     CETTE ROUTINE PERMET LA CONCATENATION DE DEUX CONCEPTS TRAN_GENE
@@ -67,7 +67,7 @@ subroutine resu74(tran, nomres)
     character(len=7) :: intk7
     type(DynaGene) :: dyna_gene
 !
-
+!
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -87,27 +87,27 @@ subroutine resu74(tran, nomres)
     call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
     if (nc .eq. 0) crit = 'RELATIF'
     if (np .eq. 0) prec = 1.d-6
-
+!
 !
 !      --- RECHERCHE DU NUMERO D'ORDRE DE L'INSTANT DE REPRISE
 !
 !
     call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=tinit, nbret=ni)
-
+!
     call dyna_gene%init(tran)
-
+!
     if (ni .eq. 0) then
         call dyna_gene%get_values(dyna_gene%disc, dyna_gene%n_bloc, shift, nbsto1, vr=inst1)
         tinit = inst1(nbsto1)
     else
         call dyna_gene%get_values_by_disc(dyna_gene%disc, tinit, shift, nbsto1, vr=inst1)
     end if
-
+!
     prec2 = prec
     if (crit(1:7) .eq. 'RELATIF') prec2 = prec*inst1(1)
     if (abs(tinit-inst1(1)) .le. prec2) then
         nbinst = 1+shift
-        ! on prend la dernière valeur du bloc précédent
+! on prend la dernière valeur du bloc précédent
         call dyna_gene%get_values_by_index(dyna_gene%disc, nbinst, shift, vr=inst1)
         goto 202
     end if
@@ -123,21 +123,21 @@ subroutine resu74(tran, nomres)
             goto 202
         end if
     end do
-
+!
 !   tran is thus to be truncated from i=1 up to i=nbinst
 !   its total size is nbsto1
-
+!
 202 continue
-
+!
 !
 !     --- Retrieval of DEPL, VITE, and ACCE fields ---
 !     Note : fortran pointers are not used for nomres and resu fields since the
 !            blas function dcopy is used to copy part of the corresponding variables
 !            jeveux pointers referrals with zr(*+....) in dcopy are possible
 !
-
-    ! reduction taille du bloc de l'instant de reprise
-
+!
+! reduction taille du bloc de l'instant de reprise
+!
     if (dyna_gene%n_bloc .eq. 0) then
         last_bloc = 1
         tran16 = tran//'        '
@@ -146,7 +146,7 @@ subroutine resu74(tran, nomres)
         call codent(last_bloc, 'D0', intk7)
         tran16 = tran//'.'//intk7
     end if
-
+!
     call juveca(tran16//'   .ORDR', (nbinst-shift))
     call juveca(tran16//'   .DISC', (nbinst-shift))
     call juveca(tran16//'   .PTEM', (nbinst-shift))
@@ -156,10 +156,10 @@ subroutine resu74(tran, nomres)
     if (nbnoli .gt. 0) then
         call juveca(tran16//'.NL.VINT', (nbinst-shift)*nbvint)
     end if
-
+!
     if (dyna_gene%n_bloc .eq. 0) then
-        ! si 1 seul bloc, renomme '       ' -> '0000001'
-        call dyna_gene%free
+! si 1 seul bloc, renomme '       ' -> '0000001'
+        call dyna_gene%free()
         call codent(1, 'D0', intk7)
         tran16 = tran//'.'//intk7
         call jedupo(tran//'           .DEPL', 'G', tran16//'   .DEPL', .false._1)
@@ -174,15 +174,15 @@ subroutine resu74(tran, nomres)
         call jedetr(tran//'           .DISC')
         call jedupo(tran//'           .PTEM', 'G', tran16//'   .PTEM', .false._1)
         call jedetr(tran//'           .PTEM')
-
+!
         if (nbnoli .ne. 0) then
             call jedupo(tran//'        .NL.VINT', 'G', tran16//'.NL.VINT', .false._1)
             call jedetr(tran//'        .NL.VINT')
         end if
     else
-        ! sinon suppression des blocs après l'instant de reprise
+! sinon suppression des blocs après l'instant de reprise
         call dyna_gene%get_current_bloc(dyna_gene%disc, last_bloc)
-
+!
         do i_bloc = last_bloc+1, dyna_gene%n_bloc
             call codent(i_bloc, 'D0', intk7)
             tran16 = tran//'.'//intk7
@@ -196,11 +196,11 @@ subroutine resu74(tran, nomres)
                 call jedetr(tran16//'.NL.VINT')
             end if
         end do
-        call dyna_gene%free
+        call dyna_gene%free()
     end if
-
+!
 !   déplacement les blocs de nomres à la suite de tran
-
+!
     call jeexin(nomres//'           .BLOC', iret)
     if (iret .eq. 0) then
 !       si 1 seul bloc, renomme '       ' -> '%07i'
@@ -249,9 +249,9 @@ subroutine resu74(tran, nomres)
             end if
         end do
     end if
-
+!
 !   mise à jour SD .BLOC
-
+!
     call jeexin(tran//'           .BLOC', iret)
     if (iret .eq. 0) then
         call wkvect(tran//'           .BLOC', 'G V R', last_bloc+n_bloc, vr=v_bloc)
@@ -262,7 +262,7 @@ subroutine resu74(tran, nomres)
         call juveca(tran//'           .BLO2', last_bloc+n_bloc)
         call jeveuo(tran//'           .BLO2', 'E', vi=v_blo2)
     end if
-
+!
 !   redefinition taille de last_bloc
     call codent(last_bloc, 'D0', intk7)
     tran16 = tran//'.'//intk7
@@ -288,23 +288,23 @@ subroutine resu74(tran, nomres)
             v_blo2(last_bloc+i_bloc) = ordr1(i_bloc)
         end do
     end if
-
+!
 !   menage nomres
-
+!
     call jeexin(nomres//'           .BLOC', iret)
     if (iret .ne. 0) then
         call jedetr(nomres//'           .BLOC')
         call jedetr(nomres//'           .BLO2')
     end if
-
+!
     if (nbnoli .ne. 0) then
         call jedetr(nomres//'        .NL.TYPE')
         call jedetr(nomres//'        .NL.INTI')
         call jedetr(nomres//'        .NL.VIND')
     end if
-
+!
     call jedetr(nomres//'           .DESC')
-
+!
 !
 !   --- Further cleanup
     call jeexin(nomres//'           .FDEP', iret)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
-        use Behaviour_type
+    subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
+        use BehaviourPrepare_type
         aster_logical, intent(in) :: l_etat_init
-        type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
+        type(BehaviourPrep_MapCompor), intent(inout) :: prepMapCompor
         character(len=8), intent(in), optional :: model
     end subroutine comp_meca_read
 end interface

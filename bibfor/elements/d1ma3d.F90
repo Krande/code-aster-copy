@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine d1ma3d(fami, mater, instan, poum, kpg, &
-                  ksp, repere, xyzgau, d1)
+                  ksp, angl, d1)
 !.======================================================================
     implicit none
 !
@@ -33,9 +33,8 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg, &
 !    POUM           IN     K1       T ou T+DT
 !    KPG            IN     I        POINT DE GAUSS
 !    KSP            IN     I        SOUS-POINT DE GAUSS
-!    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
+!    ANGL(3)        IN     R        ANGLES NAUTIQUES DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE
-!    XYZGAU(3)      IN     R        COORDONNEES DU POINT D'INTEGRATION
 !    D1(6,6)        OUT    R        INVERSE DE LA MATRICE DE HOOKE
 !
 !
@@ -51,7 +50,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg, &
 #include "asterfort/utmess.h"
     character(len=*) :: poum, fami
     integer :: kpg, ksp
-    real(kind=8) :: repere(7), xyzgau(3), d1(6, 6), instan
+    real(kind=8) :: angl(3), d1(6, 6), instan
 ! -----  VARIABLES LOCALES
 !-----------------------------------------------------------------------
     integer :: i, irep, j, mater, nbres, nbv
@@ -186,7 +185,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg, &
 ! ----   CALCUL DE LA MATRICE DE PASSAGE DU REPERE D'ORTHOTROPIE AU
 ! ----   REPERE GLOBAL POUR L'INVERSE DE LA MATRICE DE HOOKE
 !        ---------------------------------------------------
-        call d1pa3d(xyzgau, repere, irep, passag)
+        call d1pa3d(angl, irep, passag)
 !
 ! ----   'INVERSE' DU TENSEUR D'ELASTICITE DANS LE REPERE GLOBAL :
 ! ----    D1_GLOB = PASSAG_T * D1_ORTH * PASSAG
@@ -246,7 +245,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg, &
 ! ----   CALCUL DE LA MATRICE DE PASSAGE DU REPERE D'ORTHOTROPIE AU
 ! ----   REPERE GLOBAL POUR L'INVERSE DE LA MATRICE DE HOOKE
 !        ---------------------------------------------------
-        call d1pa3d(xyzgau, repere, irep, passag)
+        call d1pa3d(angl, irep, passag)
 !
 ! ----   'INVERSE' DU TENSEUR D'ELASTICITE DANS LE REPERE GLOBAL :
 ! ----    D_GLOB = PASSAG_T * D_ORTH * PASSAG

@@ -56,7 +56,6 @@ def add_import_commands(text):
     """Add import of code_aster commands if not present.
 
     Arguments:
-        filename (str): Path of the comm file to check.
         text (str): Text of a command file.
 
     Returns:
@@ -70,11 +69,21 @@ def add_import_commands(text):
     if re_init.search(text):
         starter = r"\g<init>"
         text = re_init.sub(NOINIT_START.substitute(prolog="", starter=starter), text)
+    return text
 
+
+def add_coding_line(text):
+    """Ensure to have 'coding' line at the beginning.
+
+    Arguments:
+        text (str): Text of a command file.
+
+    Returns:
+        str: Changed content.
+    """
     re_coding = re.compile(r"^#( *(?:|\-\*\- *|en)coding.*)" + "\n", re.M)
-    if not re_coding.search(text):
-        text = "# coding=utf-8\n" + text
-
+    text = re_coding.sub("", text)
+    text = "# coding=utf-8\n" + text
     return text
 
 
@@ -118,6 +127,37 @@ def file_changed(text, original):
     """
     add = f"""# original filename
 __file__ = r"{original}"
+
+"""
+    return add + text
+
+
+def change_procdir(text):
+    """Insert command to change into the 'proc.N' directory with N the rank of
+    the MPI process.
+
+    Arguments:
+        text (str): Text of a command file.
+
+    Returns:
+        str: Changed content.
+    """
+    # do not use 'CA.MPI' that would start 'CA.init()'
+    add = """
+import os
+import time
+from mpi4py import MPI
+
+os.chdir(f"proc.{MPI.COMM_WORLD.Get_rank()}")
+with open(".pid", "w") as fpid:
+    fpid.write(str(os.getpid()))
+
+delay = int(os.environ.get("WAIT_FOR_DDT", 0))
+if delay:
+    print(f"waiting {delay} seconds before starting...")
+    time.sleep(delay)
+
+del delay
 
 """
     return add + text

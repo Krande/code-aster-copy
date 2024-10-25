@@ -35,14 +35,14 @@ void exportMatrixToPetscToPython( py::module_ &mod ) {
 Stops the PETSc interface.
         )" );
     //
-    mod.def( "_petscInitializeWithOptions", petscInitializeWithOptions, R"(
+    mod.def( "petscInitialize", petscInitializeWithOptions, R"(
 Starts the PETSc interface with options.
 
 Arguments:
     options[str]: PETSc options
 
         )",
-             py::arg( "options" ) );
+             py::arg( "options" ) = "" );
 
     mod.def( "assemblyMatrixToPetsc", &assemblyMatrixToPetsc< AssemblyMatrixDisplacementRealPtr >,
              R"(

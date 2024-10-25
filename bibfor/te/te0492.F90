@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,57 @@
 ! --------------------------------------------------------------------
 
 subroutine te0492(nomopt, nomte)
+!
+    use HHO_type
+    use HHO_size_module, only: hhoTherDofs
+    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_Dirichlet_module
+!
     implicit none
-#include "asterfort/utmess.h"
+!
+#include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/writeVector.h"
+#include "asterfort/HHO_size_module.h"
+!
+! --------------------------------------------------------------------------------------------------
+!  HHO - Thermics
+!  Option: AFFE_CHAR_CINE_R
+! --------------------------------------------------------------------------------------------------
+!
     character(len=16) :: nomte, nomopt
-    call utmess('F', 'FERMETUR_8')
+!
+! -- Local variables
+
+    type(HHO_Data) :: hhoData
+    type(HHO_Cell) :: hhoCell
+    real(kind=8) :: rhs_cine(MSIZE_TDOFS_SCAL)
+    integer :: cbs, fbs, total_dofs
+    real(kind=8), pointer :: r_vale(:) => null()
+!
+! --- Retrieve HHO informations
+!
+    call hhoInfoInitCell(hhoCell, hhoData)
+!
+    if (nomopt .eq. 'HHO_CINE_R_THER') then
+!
+! --- Read Name of field
+!
+        call jevech('PCMPVALE', 'L', vr=r_vale)
+!
+! --- Projection of the boundary conditions
+!
+        call hhoDiriTherProjReal(hhoCell, hhoData, r_vale, rhs_cine)
+!
+    else
+        ASSERT(ASTER_FALSE)
+    end if
+!
+! -- Save
+!
+    call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+    call writeVector('PCINE', total_dofs, rhs_cine)
+!
 end subroutine

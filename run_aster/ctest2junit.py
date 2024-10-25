@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ class XUnitReport:
         self.legend = legend
         self.junit_test = []
 
-    def read_ctest(self):
+    def read_ctest(self, resudir=None):
         """Read the CTest report.
 
         It reads the list of testcases that passed and that failed from the
@@ -59,8 +59,9 @@ class XUnitReport:
         ``LastTest.log`` is also parsed to get the elapsed time of testcases
         in failure.
         """
-        cost = osp.join(self.base, "Testing", "Temporary", "CTestCostData.txt")
-        lastlog = osp.join(self.base, "Testing", "Temporary", "LastTest.log")
+        resudir = resudir or self.base
+        cost = osp.join(resudir, "Testing", "Temporary", "CTestCostData.txt")
+        lastlog = osp.join(resudir, "Testing", "Temporary", "LastTest.log")
         if not osp.isfile(cost):
             return
 
@@ -89,12 +90,11 @@ class XUnitReport:
             secs = int(hours) * 3600 + int(mins) * 60 + int(secs)
             timedict[mat.group("name")] = secs
 
-        self.junit_test = []
         for mat in iternames:
             ctname = mat.group("ctname")
             testname = mat.group("name")
             jstate = "failure" if ctname in failures else ""
-            mess = osp.join(self.base, testname + "." + MESS_EXT)
+            mess = osp.join(resudir, testname + "." + MESS_EXT)
             if osp.isfile(mess):
                 with open(mess, "rb") as fmess:
                     output = fmess.read().decode(errors="replace")

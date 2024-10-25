@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -209,7 +209,9 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
         ico = 0
         do ima = 1, nbma
             nume_ma = list_ma(ima)
-            if (l_pmesh .and. v_maex(nume_ma) .ne. rang) cycle
+            if (l_pmesh) then
+                if (v_maex(nume_ma) .ne. rang) cycle
+            end if
             if (repe(2*(nume_ma-1)+1) .eq. 0) cycle
             nbpt = zi(jcesd-1+5+4*(nume_ma-1)+1)
             nbsp = zi(jcesd-1+5+4*(nume_ma-1)+2)

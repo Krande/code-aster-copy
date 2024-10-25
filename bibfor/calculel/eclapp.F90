@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine eclapp(ndim, nno2, lonmin, coor)
 !
     real(kind=8) :: corr, l1, l2, d1(3), d2(3), prec
     integer :: i
+    blas_int :: b_incx, b_n
     parameter(prec=1.d-5)
 ! ----------------------------------------------------------------------
     call matfpe(-1)
@@ -49,8 +50,12 @@ subroutine eclapp(ndim, nno2, lonmin, coor)
             d2(i) = (coor(i, 3)+coor(i, 4)-coor(i, 1)-coor(i, 2))/2
         end do
 !
-        l1 = dnrm2(ndim, d1, 1)
-        l2 = dnrm2(ndim, d2, 1)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        l1 = dnrm2(b_n, d1, b_incx)
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        l2 = dnrm2(b_n, d2, b_incx)
 !
 !      ELEMENTS PLATS
         if (min(l1, l2)/max(l1, l2) .lt. prec) then
@@ -58,7 +63,9 @@ subroutine eclapp(ndim, nno2, lonmin, coor)
                 call r8inir(ndim, 0.d0, d1, 1)
                 d1(1) = d2(2)
                 d1(2) = -d2(1)
-                corr = lonmin/2.d0/dnrm2(ndim, d1, 1)
+                b_n = to_blas_int(ndim)
+                b_incx = to_blas_int(1)
+                corr = lonmin/2.d0/dnrm2(b_n, d1, b_incx)
                 do i = 1, ndim
                     coor(i, 1) = coor(i, 1)-corr*d1(i)
                     coor(i, 2) = coor(i, 2)+corr*d1(i)
@@ -69,7 +76,9 @@ subroutine eclapp(ndim, nno2, lonmin, coor)
                 call r8inir(ndim, 0.d0, d2, 1)
                 d2(1) = -d1(2)
                 d2(2) = d1(1)
-                corr = lonmin/2.d0/dnrm2(ndim, d2, 1)
+                b_n = to_blas_int(ndim)
+                b_incx = to_blas_int(1)
+                corr = lonmin/2.d0/dnrm2(b_n, d2, b_incx)
                 do i = 1, ndim
                     coor(i, 1) = coor(i, 1)-corr*d2(i)
                     coor(i, 2) = coor(i, 2)-corr*d2(i)

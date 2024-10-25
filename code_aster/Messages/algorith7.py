@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,9 +50,15 @@ cata_msg = {
  loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L vaut 0. Dans ces conditions le paramètre BETA doit être positif ou nul
 """
     ),
+    97: _(
+        """
+ il faut fournir le mot-clé BETON_DESORP à DEFI_MATERIAU pour le fluage de dessiccation
+ intrinsèque
+"""
+    ),
     98: _(
         """
- il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessiccation
+ il faut obligatoirement déclarer FONC_DESORP sous BETON_DESORP pour le fluage de dessiccation
  intrinsèque avec SECH comme paramètre
 """
     ),

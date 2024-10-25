@@ -232,6 +232,10 @@ class Mac3CoeurCalcul:
         return self.keyw.get("TYPE_COEUR").startswith("LIGNE")
 
     @property
+    def lock_grid_rotation(self):
+        return self.keyw.get("ROTATION_GRILLE").startswith("NON")
+
+    @property
     def niv_fluence(self):
         """Return the fluence level"""
         return self._niv_fluence
@@ -424,9 +428,12 @@ class Mac3CoeurCalcul:
     def rigid_load(self):
         """Compute the rigid body loading"""
 
-        grid_lock = AFFE_CHAR_MECA(
-            MODELE=self.model, LIAISON_SOLIDE=self.coeur.cl_rigidite_grille()
-        )
+        rigid_loads = self.coeur.cl_rigidite_grille()
+        if self.coeur.is_multi_rod:
+            rigid_loads.extend(self.coeur.cl_rigidite_embouts())
+
+        grid_lock = AFFE_CHAR_MECA(MODELE=self.model, LIAISON_SOLIDE=rigid_loads)
+
         return [_F(CHARGE=grid_lock)]
 
     @property
@@ -532,9 +539,14 @@ class Mac3CoeurCalcul:
             kddl["GROUP_MA" if grma else "GROUP_NO"] = grma or grno
             return kddl
 
+        if self.lock_grid_rotation:
+            ddl_lock_grid = ["DRX", "DRY", "DRZ"]
+        else:
+            ddl_lock_grid = ["DRX"]
+
         ddl_impo = [
             block(grma="CRAYON", ddl=["DRX"]),
-            block(grno="LISPG", ddl=["DRX", "DRY", "DRZ"]),
+            block(grno="LISPG", ddl=ddl_lock_grid),
             block(grma=("EBOSUP", "EBOINF"), ddl=["DRX", "DRY", "DRZ"]),
         ]
         _excit = AFFE_CHAR_CINE(MODELE=self.model, MECA_IMPO=ddl_impo)
@@ -589,6 +601,9 @@ class Mac3CoeurCalcul:
     def snl(self, **kwds):
         """Return the common keywords for STAT_NON_LINE
         All keywords can be overridden using `kwds`."""
+
+        # FIXME issue33947, issue33519
+        nprec = -1 if self.coeur.is_multi_rod else 8
         keywords = {
             "MODELE": self.model,
             "CARA_ELEM": self.carael,
@@ -605,7 +620,7 @@ class Mac3CoeurCalcul:
                 _F(RELATION="DIS_CHOC", GROUP_MA=("CREIC", "RES_TOT")),
                 _F(
                     RELATION="ELAS",
-                    GROUP_MA=("GRIL_I", "GRIL_E", "ELAP", "CREI", "EBOINF", "EBOSUP", "RIG", "DIL"),
+                    GROUP_MA=("GRIL_I", "GRIL_E", "CREI", "EBOINF", "EBOSUP", "RIG", "DIL"),
                 ),
                 _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA="MAINTIEN", DEFORMATION="PETIT"),
             ),
@@ -614,7 +629,7 @@ class Mac3CoeurCalcul:
             ),
             "NEWTON": _F(MATRICE="TANGENTE", REAC_ITER=1),
             "CONVERGENCE": _F(ITER_GLOB_MAXI=10, RESI_GLOB_MAXI=1.0e-2, RESI_GLOB_RELA=1.0e-6),
-            "SOLVEUR": _F(METHODE="MUMPS", PRETRAITEMENTS="AUTO"),
+            "SOLVEUR": _F(METHODE="MUMPS", PRETRAITEMENTS="AUTO", NPREC=nprec),
             "ARCHIVAGE": _F(LIST_INST=self.times_arch, PRECISION=1.0e-08),
             "AFFICHAGE": _F(INFO_RESIDU="OUI"),
             "INFO": 1,

@@ -1,0 +1,203 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+import math
+from scipy import special
+from code_aster.Commands import *
+from code_aster import CA
+
+test = CA.TestCase()
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+# =======================================================================
+#
+#          VALIDATION DE DEFI_PRES_EC8
+#
+# =======================================================================
+
+# Validation de la variation de la pression impulsive rigide
+# selon la position radiale r (sur le fond du réservoir)
+
+# L'eurocode 8 fourni 3 courbes de pression
+# en fonction du rapport r/R ou R est le rayon du réservoir.
+# Ces trois courbes correspondent au ratio H (hauteur d'eau)/R suivants :
+# gamma = 3
+# gamma = 1
+# gamma = 0.5
+
+# Paramètres globaux
+g = 9.81
+rho_eau = 1000
+rho_acier = 7800
+H = 9.250
+liste_epais = [0.006] * 11
+Ac1 = 0.085 * g
+Afhn = 0.51252007 * g
+Afv = 0.33572503 * g
+Arh = 0.241 * g
+Arv = 0.1606700 * g
+
+
+valeEC8 = {
+    3: [0, 0.10176, 0.19911, 0.29941, 0.3997, 0.5, 0.60029, 0.70058, 0.80235, 0.90412, 1],
+    1: [
+        0,
+        0.06342,
+        0.12684,
+        0.19321,
+        0.25958,
+        0.33038,
+        0.40265,
+        0.48082,
+        0.56342,
+        0.65191,
+        0.75073,
+    ],
+    0.5: [
+        0,
+        0.01769,
+        0.03687,
+        0.05899,
+        0.08554,
+        0.11504,
+        0.15339,
+        0.20058,
+        0.25958,
+        0.33038,
+        0.42477,
+    ],
+}
+
+valeAster = {
+    3: [
+        0.0000000000e00,
+        9.8947521911e-02,
+        1.9792172501e-01,
+        2.9694853953e-01,
+        3.9605241674e-01,
+        4.9525565175e-01,
+        5.9457783170e-01,
+        6.9403589318e-01,
+        7.9364879903e-01,
+        8.9348123422e-01,
+        9.9402288208e-01,
+    ],
+    1: [
+        0.0000000000e00,
+        5.9708865342e-02,
+        1.2035054679e-01,
+        1.8284984183e-01,
+        2.4811252562e-01,
+        3.1700866524e-01,
+        3.9034831748e-01,
+        4.6884919699e-01,
+        5.5309833175e-01,
+        6.4351305422e-01,
+        7.4053768365e-01,
+    ],
+    0.5: [
+        0.0000000000e00,
+        1.5904845576e-02,
+        3.2986426828e-02,
+        5.2510966529e-02,
+        7.5924942242e-02,
+        1.0494360028e-01,
+        1.4162095948e-01,
+        1.8835915920e-01,
+        2.4777617952e-01,
+        3.2233101080e-01,
+        4.1381308559e-01,
+    ],
+}
+
+precision = {
+    3: [0.001, 0.03, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.011, 0.012, 0.01],
+    1: [0.001, 0.06, 0.06, 0.06, 0.05, 0.05, 0.04, 0.03, 0.02, 0.02, 0.02],
+    0.5: [0.001, 0.11, 0.11, 0.11, 0.12, 0.09, 0.08, 0.07, 0.05, 0.03, 0.03],
+}
+
+liste_gamma = [3, 1, 0.5]
+for gamma in liste_gamma:
+
+    R = H / gamma
+    liste_R = [R * i / 10 for i in range(0, 11)]
+
+    fonc_pres = DEFI_PRES_EC8(
+        Z_FOND=0.0,
+        RAYON=R,
+        HAUT_EAU=H,
+        ACCE_SP_H=Arh,
+        ACCE_FLEX_H_N=Afhn,
+        ACCE_FLEX_V=Afv,
+        ACCE_SP_V=Arv,
+        ACCE_CONV_H=Ac1,
+        RHO_EAU=rho_eau,
+        GRAVITE=g,
+        PRES_SURF_LIBR=0.0,
+        EVAL=(
+            _F(RHO=rho_acier, LIST_R_FOND=liste_R, LIST_EPAIS=liste_epais, TABLE=CO("TAB_FOND")),
+        ),
+    )
+
+    rapportRayon = FORMULE(VALE="R/RAYON", NOM_PARA="R", RAYON=R)
+    PIR_Adim = FORMULE(
+        VALE="PIR/rho_eau/RAYON/Arh", NOM_PARA="PIR", RAYON=R, rho_eau=rho_eau, Arh=Arh
+    )
+
+    # PIF_Adim = FORMULE(
+    #    VALE="PIF/rho_eau/RAYON/(Afhn)", NOM_PARA="PIF", RAYON=R, rho_eau=rho_eau, Arh=Arh, Afhn=Afhn
+    # )
+
+    TAB_FOND = CALC_TABLE(
+        reuse=TAB_FOND,
+        TABLE=TAB_FOND,
+        ACTION=(
+            _F(OPERATION="OPER", FORMULE=rapportRayon, NOM_PARA="r/R"),
+            _F(OPERATION="OPER", FORMULE=PIR_Adim, NOM_PARA="PIR_ADIM"),
+            # _F(OPERATION="OPER", FORMULE=PIF_Adim, NOM_PARA="PIF_ADIM"),
+        ),
+    )
+
+    IMPR_TABLE(UNITE=6, TABLE=TAB_FOND, FORMAT_R="E12.10")
+
+    for i, r in enumerate(liste_R):
+        rsurR = r / R
+
+        TEST_TABLE(
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_CALC=valeAster[gamma][i],
+            VALE_REFE=valeEC8[gamma][i],
+            NOM_PARA="PIR_ADIM",
+            TABLE=TAB_FOND,
+            PRECISION=precision[gamma][i],
+            FILTRE=(_F(NOM_PARA="r/R", VALE=rsurR),),
+        )
+
+        # TEST_TABLE(
+        #    REFERENCE="SOURCE_EXTERNE",
+        #    VALE_CALC=valeAster[gamma][i],
+        #    VALE_REFE=valeEC8[gamma][i],
+        #    NOM_PARA="PIF_ADIM",
+        #    TABLE=TAB_FOND,
+        #    PRECISION=precision[gamma][i],
+        #    FILTRE=(_F(NOM_PARA="r/R", VALE=rsurR),),
+        # )
+
+
+FIN()

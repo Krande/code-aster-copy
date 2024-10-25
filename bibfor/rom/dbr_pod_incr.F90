@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine dbr_pod_incr(lReuse, base, paraPod, &
-                        q, s, v, nbModeOut, nbSnapOut)
+subroutine dbr_pod_incr(lReuse, base, paraPod, q, s, &
+                        v, nbModeOut, nbSnapOut)
 !
     use Rom_Datastructure_type
 !
@@ -92,6 +92,8 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, &
     character(len=4) :: fieldSupp
     integer :: iret
     real(kind=8), pointer :: v_mode(:) => null()
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+    blas_int :: b_nrhs
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -145,10 +147,11 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, &
     if (lReuse) then
 ! ----- Add previous modes in v
         do iMode = 1, nbModePrev
-            call rsexch(' ', baseName, fieldName, iMode, mode, iret)
+            call rsexch(' ', baseName, fieldName, iMode, mode, &
+                        iret)
             if (fieldSupp .eq. 'NOEU') then
                 call jeveuo(mode(1:19)//'.VALE', 'L', vr=v_mode)
-            elseif (fieldSupp .eq. 'ELGA') then
+            else if (fieldSupp .eq. 'ELGA') then
                 call jeveuo(mode(1:19)//'.CELV', 'L', vr=v_mode)
             else
                 ASSERT(ASTER_FALSE)
@@ -205,55 +208,75 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, &
                 qi(iEqua) = q(iEqua+nbEqua*(iAlgo-1))
             end do
         end if
-
+!
 ! ----- Compute norm of current snapshot
         call norm_frobenius(nbEqua, qi, norm_q)
         if (norm_q .le. r8prem()) then
             cycle
         end if
-
+!
 ! ----- Compute {kt} = [v]^T {q} (projection of current snaphot on base)
         AS_ALLOCATE(vr=kt, size=iAlgoSnap)
-        call dgemm('T', 'N', iAlgoSnap, 1, nbEqua, 1.d0, &
-                   vt, nbEqua, &
-                   qi, nbEqua, &
-                   0.d0, kt, iAlgoSnap)
-
+        b_ldc = to_blas_int(iAlgoSnap)
+        b_ldb = to_blas_int(nbEqua)
+        b_lda = to_blas_int(nbEqua)
+        b_m = to_blas_int(iAlgoSnap)
+        b_n = to_blas_int(1)
+        b_k = to_blas_int(nbEqua)
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, vt, b_lda, qi, b_ldb, &
+                   0.d0, kt, b_ldc)
+!
 ! ----- Compute [kv] = [v]^T [v]
         AS_ALLOCATE(vr=kv, size=iAlgoSnap*iAlgoSnap)
-        call dgemm('T', 'N', iAlgoSnap, iAlgoSnap, nbEqua, 1.d0, &
-                   vt, nbEqua, &
-                   vt, nbEqua, &
-                   0.d0, kv, iAlgoSnap)
-
+        b_ldc = to_blas_int(iAlgoSnap)
+        b_ldb = to_blas_int(nbEqua)
+        b_lda = to_blas_int(nbEqua)
+        b_m = to_blas_int(iAlgoSnap)
+        b_n = to_blas_int(iAlgoSnap)
+        b_k = to_blas_int(nbEqua)
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, vt, b_lda, vt, b_ldb, &
+                   0.d0, kv, b_ldc)
+!
 ! ----- Solve [v]^T [v] {Y} = [v]^T {q} => {Y} are reduced coordinates
         AS_ALLOCATE(vi4=IPIV, size=iAlgoSnap)
-        call dgesv(iAlgoSnap, 1, kv, iAlgoSnap, IPIV, kt, iAlgoSnap, info)
-
+        b_ldb = to_blas_int(iAlgoSnap)
+        b_lda = to_blas_int(iAlgoSnap)
+        b_n = to_blas_int(iAlgoSnap)
+        b_nrhs = to_blas_int(1)
+        call dgesv(b_n, b_nrhs, kv, b_lda, IPIV, &
+                   kt, b_ldb, info)
+!
 ! ----- Compute residu {r} = [v] {Y}
-        call dgemm('N', 'N', nbEqua, 1, iAlgoSnap, 1.d0, &
-                   vt, nbEqua, &
-                   kt, iAlgoSnap, &
-                   0.d0, rt, nbEqua)
+        b_ldc = to_blas_int(nbEqua)
+        b_ldb = to_blas_int(iAlgoSnap)
+        b_lda = to_blas_int(nbEqua)
+        b_m = to_blas_int(nbEqua)
+        b_n = to_blas_int(1)
+        b_k = to_blas_int(iAlgoSnap)
+        call dgemm('N', 'N', b_m, b_n, b_k, &
+                   1.d0, vt, b_lda, kt, b_ldb, &
+                   0.d0, rt, b_ldc)
         ri = qi-rt
-
+!
 ! ----- Compute norm of residu
         call norm_frobenius(nbEqua, ri, norm_r)
-
+!
 ! ----- Select vector or not ?
         if (norm_r/norm_q .ge. toleIncr) then
 ! --------- Add mode (residu !) at current iAlgoSnap iteration
             do iEqua = 1, nbEqua
                 vt(iEqua+nbEqua*iAlgoSnap) = ri(iEqua)/norm_r
             end do
-
+!
 ! --------- Add singular value
 ! --------- G matrice rectangulaire en quatre morceaux.
 ! --------- Partie du bas: iAlgoSnap+1
 ! --------- Partie du haut: 1 => iAlgoSnap
 ! --------- Partie gauche: 1 => iAlgo -1
 ! --------- Partie droit: iAlgo
-
+!
 ! --------- Valeurs haut-gauche
             do iSnap = 1, iAlgoSnap
                 g(iSnap+(iAlgoSnap+1)*(iAlgo-1)) = kt(iSnap)
@@ -261,23 +284,23 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, &
                     g(iSnap+(iAlgoSnap+1)*(k-1)) = gt(iSnap+iAlgoSnap*(k-1))
                 end do
             end do
-
+!
 ! --------- Valeurs bas-gauche
             do k = 1, iAlgo-1
                 g((iAlgoSnap+1)*k) = 0.d0
             end do
-
+!
 ! --------- Valeur bas-droite
             g((iAlgoSnap+1)*iAlgo) = norm_r
-
+!
 ! --------- Valeurs haut-droite
             do k = 1, (iAlgoSnap+1)*iAlgo
                 gt(k) = g(k)
             end do
-
+!
 ! --------- Next snap
             iAlgoSnap = iAlgoSnap+1
-
+!
         else
             do iSnap = 1, iAlgoSnap
                 gt(iSnap+iAlgoSnap*(iAlgo-1)) = kt(iSnap)
@@ -306,7 +329,8 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, &
 !
 ! - Compute SVD on matrix of reduced coordinates: Q = V S Wt
 !
-    call dbr_calcpod_svd(iAlgoSnap, nbSnapOut, g, s, b, nbSing)
+    call dbr_calcpod_svd(iAlgoSnap, nbSnapOut, g, s, b, &
+                         nbSing)
 !
 ! - Select empiric modes
 !
@@ -315,18 +339,28 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, &
 ! - Compute matrix of singular vector: V <= V * B (dim : [nbModeOut x nbEqua] )
 !
     AS_ALLOCATE(vr=v, size=nbEqua*nbModeOut)
-    call dgemm('N', 'N', nbEqua, nbModeOut, iAlgoSnap, 1.d0, &
-               vt, nbEqua, &
-               b, iAlgoSnap, &
-               0.d0, v, nbEqua)
+    b_ldc = to_blas_int(nbEqua)
+    b_ldb = to_blas_int(iAlgoSnap)
+    b_lda = to_blas_int(nbEqua)
+    b_m = to_blas_int(nbEqua)
+    b_n = to_blas_int(nbModeOut)
+    b_k = to_blas_int(iAlgoSnap)
+    call dgemm('N', 'N', b_m, b_n, b_k, &
+               1.d0, vt, b_lda, b, b_ldb, &
+               0.d0, v, b_ldc)
 !
 ! - Compute reduced coordinates G <= B^T G (dim : [nbModeOut x nbSnapOut] )
 !
     AS_ALLOCATE(vr=v_gamma, size=nbModeOut*nbSnapOut)
-    call dgemm('T', 'N', nbModeOut, nbSnapOut, iAlgoSnap, 1.d0, &
-               b, iAlgoSnap, &
-               gt, iAlgoSnap, &
-               0.d0, v_gamma, nbModeOut)
+    b_ldc = to_blas_int(nbModeOut)
+    b_ldb = to_blas_int(iAlgoSnap)
+    b_lda = to_blas_int(iAlgoSnap)
+    b_m = to_blas_int(nbModeOut)
+    b_n = to_blas_int(nbSnapOut)
+    b_k = to_blas_int(iAlgoSnap)
+    call dgemm('T', 'N', b_m, b_n, b_k, &
+               1.d0, b, b_lda, gt, b_ldb, &
+               0.d0, v_gamma, b_ldc)
 !
 ! - Save the reduced coordinates in a table
 !
@@ -334,8 +368,7 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, &
         call utmess('I', 'ROM5_39', ni=2, vali=[nbSnapOut, nbModeOut])
     end if
     do iSnap = 1, nbSnapOut
-        call romTableSave(paraPod%tablReduCoor%tablResu, nbModeOut, v_gamma, &
-                          numeSnap_=iSnap)
+        call romTableSave(paraPod%tablReduCoor%tablResu, nbModeOut, v_gamma, numeSnap_=iSnap)
     end do
 !
 ! - Debug print

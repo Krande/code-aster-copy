@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
                   mxvect, masmod, facpar)
     implicit none
@@ -61,6 +61,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
     aster_logical :: gene
     character(len=24), pointer :: refn(:) => null()
     real(kind=8) :: rundef
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
     data nomddl/'DX      ', 'DY      ', 'DZ      ',&
      &              'DRX     ', 'DRY     ', 'DRZ     '/
@@ -70,9 +71,9 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
     data posddl/'&&VPPFAC.POSITION.DDL'/
     data vecau1/'&&VPPFAC.VECTEUR.AUX1'/
     data vecau2/'&&VPPFAC.VECTEUR.AUX2'/
-
+!
     rundef = r8vide()
-
+!
 !     ------------------------------------------------------------------
 !     ----------------- CREATION DE VECTEURS DE TRAVAIL ----------------
 !     ------------------------------------------------------------------
@@ -138,7 +139,10 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
         call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1, &
                     .false._1)
         do ivect = 1, nbvect
-            rval = ddot(neq, vect(1, ivect), 1, zr(laux2), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            rval = ddot(b_n, vect(1, ivect), b_incx, zr(laux2), b_incy)
             raux = masgen(ivect)
             if ((abs(raux) .lt. rmin) .or. (abs(rval) .gt. rmax)) then
                 masmod(ivect, iddl) = rmax

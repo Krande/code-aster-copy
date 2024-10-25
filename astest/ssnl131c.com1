@@ -1,0 +1,171 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#       LOI DIS_GRICRA POUR DES ELEMENTS DISCRETS
+# ======================================================================
+# UTILISATION : ASSEMBLAGE COMBUSTIBLE, TEST DE LA LIAISON GRILLE-CRAYON
+#               COMPORTEMENT EN GLISSEMENT AVEC DEPENDANCE VIS-A-VIS
+#               DE LA TEMPERATURE ET DE L'IRRADIATION
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+from ssnl131c_mater import MAT_G
+
+CHMATG = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE_VARC=(
+        _F(NOM_VARC="IRRA", TOUT="OUI", EVOL=CHIRRA, PROL_DROITE="CONSTANT"),
+        _F(
+            NOM_VARC="TEMP",
+            TOUT="OUI",
+            EVOL=CHTEMP,
+            PROL_DROITE="CONSTANT",
+            VALE_REF=0.0,  # inutile mais obligatoire
+        ),
+    ),
+    AFFE=_F(GROUP_MA=("LI1"), MATER=MAT_G),
+)
+
+RESG1 = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMATG,
+    CARA_ELEM=CAREG1,
+    EXCIT=(_F(CHARGE=CHART, FONC_MULT=FONCT), _F(CHARGE=BLOC)),
+    COMPORTEMENT=(_F(RELATION="ELAS", TOUT="OUI"), _F(RELATION="DIS_GRICRA", GROUP_MA=("LI1"))),
+    INCREMENT=_F(LIST_INST=LINST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=100),
+)
+
+RESG1 = CALC_CHAMP(reuse=RESG1, RESULTAT=RESG1, FORCE="FORC_NODA", GROUP_MA=("LI1"))
+
+RESG2 = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMATG,
+    CARA_ELEM=CAREG2,
+    EXCIT=(_F(CHARGE=CHART, FONC_MULT=FONCT), _F(CHARGE=BLOC)),
+    COMPORTEMENT=(_F(RELATION="ELAS", TOUT="OUI"), _F(RELATION="DIS_GRICRA", GROUP_MA=("LI1"))),
+    INCREMENT=_F(LIST_INST=LINST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=100),
+)
+
+RESG2 = CALC_CHAMP(reuse=RESG2, RESULTAT=RESG2, FORCE="FORC_NODA", GROUP_MA=("LI1"))
+
+# ---------- Test sur RESG1
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=0.10, RESULTAT=RESG1, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DZ", VALE_CALC=1e-05
+        ),
+        _F(
+            INST=0.10,
+            RESULTAT=RESG1,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N2",
+            NOM_CMP="DZ",
+            VALE_CALC=5.0,
+        ),
+        _F(
+            INST=0.20, RESULTAT=RESG1, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DZ", VALE_CALC=2e-05
+        ),
+        _F(
+            INST=0.20,
+            RESULTAT=RESG1,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N2",
+            NOM_CMP="DZ",
+            VALE_CALC=10.0,
+        ),
+        _F(
+            INST=1.0, RESULTAT=RESG1, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DZ", VALE_CALC=0.0001
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=RESG1,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N2",
+            NOM_CMP="DZ",
+            VALE_CALC=8.0000042,
+        ),
+        _F(
+            INST=2.0, RESULTAT=RESG1, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DZ", VALE_CALC=-1e-05
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=RESG1,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N2",
+            NOM_CMP="DZ",
+            VALE_CALC=-8.0000081,
+        ),
+    )
+)
+
+# ---------- Test sur RESG2
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=0.10, RESULTAT=RESG2, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DZ", VALE_CALC=1e-05
+        ),
+        _F(
+            INST=0.10,
+            RESULTAT=RESG2,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N2",
+            NOM_CMP="DZ",
+            VALE_CALC=5.0,
+        ),
+        _F(
+            INST=0.20, RESULTAT=RESG2, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DZ", VALE_CALC=2e-05
+        ),
+        _F(
+            INST=0.20,
+            RESULTAT=RESG2,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N2",
+            NOM_CMP="DZ",
+            VALE_CALC=10.0,
+        ),
+        _F(
+            INST=1.0, RESULTAT=RESG2, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DZ", VALE_CALC=0.0001
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=RESG2,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N2",
+            NOM_CMP="DZ",
+            VALE_CALC=8.0000042,
+        ),
+        _F(
+            INST=2.0, RESULTAT=RESG2, NOM_CHAM="DEPL", GROUP_NO="N2", NOM_CMP="DZ", VALE_CALC=-1e-05
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=RESG2,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N2",
+            NOM_CMP="DZ",
+            VALE_CALC=-8.0000081,
+        ),
+    )
+)
+
+FIN()

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -32,14 +32,6 @@
 
 #include "asterc_config.h"
 
-/* test required value */
-#if ( !defined ASTER_PLATFORM_POSIX ) && ( !defined ASTER_PLATFORM_WINDOWS )
-#error ERROR ASTER_PLATFORM_POSIX or ASTER_PLATFORM_WINDOWS is required
-#endif
-#if ( defined ASTER_PLATFORM_POSIX ) && ( defined ASTER_PLATFORM_WINDOWS )
-#error ERROR only one of ASTER_PLATFORM_POSIX or ASTER_PLATFORM_WINDOWS, not both
-#endif
-
 #ifdef ASTER_PLATFORM_LINUX64
 #define ASTER_PLATFORM_LINUX
 #endif
@@ -49,15 +41,25 @@
 #endif
 
 #if defined ASTER_PLATFORM_MINGW32 || defined ASTER_PLATFORM_MINGW64 || defined __MINGW32__
+#ifndef ASTER_PLATFORM_MINGW
 #define ASTER_PLATFORM_MINGW
+#endif
 #endif
 
 #if ( defined ASTER_PLATFORM_FREEBSD64 ) || ( defined __FreeBSD__ )
 #define ASTER_PLATFORM_FREEBSD
 #endif
 
+/* test required value */
+#if ( !defined ASTER_PLATFORM_POSIX ) && ( !defined ASTER_PLATFORM_MINGW )
+#error ERROR ASTER_PLATFORM_POSIX or ASTER_PLATFORM_MINGW is required
+#endif
+#if ( defined ASTER_PLATFORM_POSIX ) && ( defined ASTER_PLATFORM_MINGW )
+#error ERROR only one of ASTER_PLATFORM_POSIX or ASTER_PLATFORM_MINGW, not both
+#endif
+
 /* MS Windows platforms */
-#ifdef ASTER_PLATFORM_WINDOWS
+#ifdef ASTER_PLATFORM_MINGW
 
 /* win64 - use LLP64 model */
 #ifdef ASTER_HAVE_64_BITS

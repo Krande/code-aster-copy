@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine blkobs(matobs, obsdim, alpha, matprod)
 !
 !
@@ -47,6 +47,7 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/cntdif.h"
 #include "blas/dpotrf.h"
 #include "asterfort/getvid.h"
@@ -68,12 +69,14 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
     character(len=8) :: baseno, mnorme
     character(len=11) :: bl11
     integer :: idesc, ivale, nvect, nvale, iobfil, iobcol, iobval, ii, jj
-    integer :: indval, info, inwfil, inwcol, inwval, ifile, ntnlmp, diff, kk
+    integer :: indval, inwfil, inwcol, inwval, ifile, ntnlmp, diff, kk
     integer :: valdif(obsdim(3)), ifull, numcol, numfil, nstock, ictcol, linfil(obsdim(1)+1), il1
     integer :: il2, posvec, taivec, nfil1, nfil2, tt, ismde, ismdi, ismhc, ivalm, aa, bb, icolst
     integer :: idiff, istock, ifil
     logical :: isdiag
+    blas_int :: b_n, b_lda, info
     real(kind=8) :: MATCHOL(obsdim(1), obsdim(1)), coeff_alpha
+    blas_int :: b_incx
 !
     baseno = '&&OP0066'
     bl11 = '           '
@@ -114,14 +117,16 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
     end if
 !     DECOMPOSITION DE CHOLESKY PROPREMENT DITE
     info = 0
-    call dpotrf('U', nvect, MATCHOL, nvect, info)
+    b_n = to_blas_int(nvect)
+    b_lda = to_blas_int(nvect)
+    call dpotrf('U', b_n, MATCHOL, b_lda, info)
     ASSERT(info .eq. 0)
 !
 ! --- RECUPERATION DE LA MATRICE D'OBSERVATION
     call jeveuo(matobs(1), 'L', iobfil)
     call jeveuo(matobs(2), 'L', iobcol)
     call jeveuo(matobs(3), 'L', iobval)
-
+!
 !     !!
 ! --- PAR CONSTRUCTION LA MATRICE D'OBSERVATION VIENT RANGEE PAR FILE
 !     CROISSANTE
@@ -186,8 +191,8 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
                 kk = indiis(zi(iobcol), numcol, ii, obsdim(3))
                 if (kk .eq. 0) goto 999
                 if (zi(iobfil+kk-1) .ge. numfil) then
-                    zr(inwval+jj-1) = zr(inwval+jj-1)+zr(iobval+kk-1)* &
-                                      MATCHOL(numfil, zi(iobfil+kk-1))
+                    zr(inwval+jj-1) = zr(inwval+jj-1)+zr(iobval+kk-1)*MATCHOL(numfil, zi(iobfil+&
+                                      &kk-1))
                 end if
 !
             end do
@@ -237,12 +242,12 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
     end do
 !
 ! --- CREATION VECTEURS DE LA BONNE TAILLE POUR STOCKAGE MORSE NUME_DDL
-
+!
     matprod(1) = baseno//'NU.HTGH.ERC.SMDE'
     matprod(2) = baseno//'NU.HTGH.ERC.SMHC'
     matprod(3) = baseno//'NU.HTGH.ERC.SMDI'
     matprod(4) = baseno//'MA.HTGH.ERC.VALM'
-
+!
     call wkvect(matprod(1), 'V V I', 3, ismde)
     zi(ismde) = obsdim(2)
     zi(ismde+1) = nstock
@@ -250,7 +255,7 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
     call wkvect(matprod(2), 'V V S', nstock, ismhc)
     call wkvect(matprod(3), 'V V I', obsdim(2), ismdi)
     call wkvect(matprod(4), 'V V R', nstock, ivalm)
-
+!
 ! --- REMPLISSAGE
     call r8inir(nstock, 0.d0, zr(ivalm), 1)
 !
@@ -273,9 +278,8 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
                     il2 = indiis(zi(inwcol+posvec), icolst, 1, taivec)
 !
                     if ((il1 .ne. 0) .and. (il2 .ne. 0)) then
-                        zr(ivalm+istock-1) = zr(ivalm+istock-1)+ &
-                                             zr(inwval+posvec+il1-1)*zr(inwval+posvec+il2- &
-                                                                        1)
+                        zr(ivalm+istock-1) = zr(ivalm+istock-1)+zr(inwval+posvec+il1-1)*zr(inwva&
+                                             &l+posvec+il2-1)
 !             CETTE VALEUR EST POTENTIELLEMENT RENSEIGNEE PLUSIEURS FOIS
                         zi4(ismhc+istock-1) = int(ifil, 4)
                     end if
@@ -299,8 +303,10 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
 !
 ! --- ON FINIT PAR FAIRE LE PRODUIT PAR LE COEFFICIENT RELATIF A ALPHA
     coeff_alpha = -2.0d0*alpha/(1.0d0-alpha)
-    call dscal(nstock, coeff_alpha, zr(ivalm), 1)
-
+    b_n = to_blas_int(nstock)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, coeff_alpha, zr(ivalm), b_incx)
+!
 !
 ! --- A CE STADE LE PRODUIT  (H^T*G*H) EST FAIT ET STOCKE SELON LA
 !     SD-STOCKAGE MORSE. LES VECTEURS SONT DANS LA VARIABLE DE SORTIE matprod

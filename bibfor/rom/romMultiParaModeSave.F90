@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romMultiParaModeSave(multPara, base, &
-                                numeMode, modeName)
+subroutine romMultiParaModeSave(multPara, base, numeMode, modeName)
 !
     use Rom_Datastructure_type
 !
@@ -59,6 +58,7 @@ subroutine romMultiParaModeSave(multPara, base, &
     type(ROM_DS_Field) :: mode
     complex(kind=8), pointer :: modeValeC(:) => null()
     real(kind=8), pointer :: modeValeR(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,18 +73,20 @@ subroutine romMultiParaModeSave(multPara, base, &
 !
     if (syst_type .eq. 'C') then
         call jeveuo(modeName(1:19)//'.VALE', 'E', vc=modeValeC)
-        normc = zdotc(nbEqua, modeValeC, 1, modeValeC, 1)
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normc = zdotc(b_n, modeValeC, b_incx, modeValeC, b_incy)
         modeValeC(:) = modeValeC(:)/sqrt(normc)
-        call romModeSave(resultName, numeMode, &
-                         fieldName, mode, &
-                         modeValeC_=modeValeC)
-    elseif (syst_type .eq. 'R') then
+        call romModeSave(resultName, numeMode, fieldName, mode, modeValeC_=modeValeC)
+    else if (syst_type .eq. 'R') then
         call jeveuo(modeName(1:19)//'.VALE', 'E', vr=modeValeR)
-        normr = ddot(nbEqua, modeValeR, 1, modeValeR, 1)
+        b_n = to_blas_int(nbEqua)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        normr = ddot(b_n, modeValeR, b_incx, modeValeR, b_incy)
         modeValeR(:) = modeValeR(:)/sqrt(normr)
-        call romModeSave(resultName, numeMode, &
-                         fieldName, mode, &
-                         modeValeR_=modeValeR)
+        call romModeSave(resultName, numeMode, fieldName, mode, modeValeR_=modeValeR)
     else
         ASSERT(ASTER_FALSE)
     end if

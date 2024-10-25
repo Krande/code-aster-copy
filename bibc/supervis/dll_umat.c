@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -124,6 +124,7 @@ void DEFSSP( UMAT_GET_FUNCTION, umat_get_function, char *nomlib, STRING_SIZE lno
     FreeStr( symbol );
 #else
     printf( "UMAT: Not available under Windows.\n" );
+    fflush( stdout );
     abort();
 #endif
 }
@@ -153,6 +154,7 @@ void DEFPPPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP(
               kstep, kinc );
 #else
     printf( "UMAT: Not available under Windows.\n" );
+    fflush( stdout );
     abort();
 #endif
 }

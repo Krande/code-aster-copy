@@ -238,9 +238,12 @@ PCOEFFR = InputParameter(
            PRESENCE DE CHARGE REPARTIE POUR UNE MODELISATION POUTRE
 """,
 )
-# echange THM ici
+# echange THM lineaire
 PECHTHM = InputParameter(phys=PHY.ETHM_R, comment="""""")
 PCHTHMF = InputParameter(phys=PHY.ETHM_F, comment="""""")
+# echange THM non lineaire sur HR
+HECHTHM = InputParameter(phys=PHY.ETHMH_R, comment="""""")
+HCHTHMF = InputParameter(phys=PHY.ETHMH_F, comment="""""")
 #
 PCOEFHF = InputParameter(phys=PHY.COEH_F, comment="""""")
 
@@ -1248,6 +1251,13 @@ PVARCPR = InputParameter(
 
 PVARCCR = InputParameter(phys=PHY.VARI_R, comment=""" External state variables """)
 
+PVARCGR = InputParameter(
+    phys=PHY.VARC_R,
+    container="RESU!VARC_ELGA!N",
+    comment="""  PVARCGR : VARIABLES DE COMMANDES NOMMEES AUX POINTS DE GAUSS
+""",
+)
+
 PVARIGR = InputParameter(
     phys=PHY.VARI_R,
     container="RESU!VARI_ELGA!N",
@@ -1651,6 +1661,14 @@ PGESCLA = OutputParameter(phys=PHY.N816_R, type="ELEM", comment="""""")
 
 PGTHETA = OutputParameter(phys=PHY.RUPT_R, type="ELEM", comment="""""")
 
+PGRATNO = OutputParameter(
+    phys=PHY.GRAT_R,
+    type="ELNO",
+    comment="""  PGRATNO : GRADIENT DE T AUX NOEUDS PAR ELEMENT
+""",
+)
+
+
 PHYDMAT = OutputParameter(phys=PHY.HYDR_R, type="ELGA", comment="""""")
 
 PHYDRPP = OutputParameter(phys=PHY.HYDR_R, type="ELGA", comment="""""")
@@ -1844,7 +1862,14 @@ PVALO_R = OutputParameter(phys=PHY.VALO_R, type="ELGA", comment="""""")
 PVARC_R = OutputParameter(
     phys=PHY.VARC_R,
     type="ELGA",
-    comment=""" VARIABLES DE COMMANDE (NOMMEES)
+    comment=""" VARIABLES DE COMMANDE (NOMMEES) PAR POINTS DE GAUSS
+""",
+)
+
+PVARCNR = OutputParameter(
+    phys=PHY.VARC_R,
+    type="ELNO",
+    comment=""" VARIABLES DE COMMANDE (NOMMEES) AUX NOEUDS PAR ELEMENT
 """,
 )
 

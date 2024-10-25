@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0517(option, nomte)
 !
 !
@@ -101,11 +101,13 @@ subroutine te0517(option, nomte)
         end do
     else if (option .eq. 'FORC_NODA') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
+        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, &
+                     jacf=jacf)
 !
         call jevech('PCAORIE', 'L', iorien)
         call jevech('PGEOMER', 'L', igeom)
-        call tecach('OOO', 'PSIEFR', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PSIEFR', 'L', iret, nval=7, &
+                    itab=jtab)
         nbsp = jtab(7)
         if (nbsp .ne. nbfibr) then
             call utmess('F', 'ELEMENTS_4')
@@ -119,16 +121,18 @@ subroutine te0517(option, nomte)
             reactu = (zk16(icompo+2) .eq. 'GROT_GDEP')
             rigige = (zk16(icompo-1+RIGI_GEOM) .eq. 'OUI')
         end if
-
+!
         call jevech('PVECTUR', 'E', ivectu)
         call r8inir(2*nc, 0.d0, fl, 1)
 !       Calcul de la matrice de passage global/local
         if (reactu) then
             gamma = zr(istrxm+18-1)
-            call porea2(nno, nc, zr(igeom), gamma, pgl, xl, "PDEPLAR")
+            call porea2(nno, nc, zr(igeom), gamma, pgl, &
+                        xl, "PDEPLAR")
         else if (rigige) then
             gamma = zr(istrxm+18-1)
-            call porea4(nno, nc, zr(igeom), gamma, pgl, xl, "PDEPLAR")
+            call porea4(nno, nc, zr(igeom), gamma, pgl, &
+                        xl, "PDEPLAR")
         else
             xl = lonele()
             call matrot(zr(iorien), pgl)
@@ -155,7 +159,7 @@ subroutine te0517(option, nomte)
             aa = carsec(1)
             xiy = carsec(5)
             xiz = carsec(4)
-
+!
             call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
             alfay = vale_cara(1)
             alfaz = vale_cara(2)
@@ -164,11 +168,13 @@ subroutine te0517(option, nomte)
             ez = vale_cara(4)
 !
             call jevech('PMATERC', 'L', imate)
-            call moytem('RIGI', npg, 1, '+', temp, iret)
+            call moytem('RIGI', npg, 1, '+', temp, &
+                        iret)
 !
             call pmfmats(imate, mator)
             ASSERT(mator .ne. ' ')
-            call matela(zi(imate), mator, 1, temp, e, nu)
+            call matela(zi(imate), mator, 1, temp, e, &
+                        nu)
             g = e/(2.d0*(1.d0+nu))
             phiy = e*xiz*12.d0*alfay/(xl*xl*g*aa)
             phiz = e*xiy*12.d0*alfaz/(xl*xl*g*aa)

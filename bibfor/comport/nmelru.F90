@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine nmelru(fami, kpg, ksp, &
-                  imate, compor, epseq, p_arg, divu, &
+                  imate, compor, epseq, p_arg, divu, gonf, inco, &
                   nonlin, ener)
 !
 ! FONCTION REALISEE:
@@ -61,6 +61,8 @@ subroutine nmelru(fami, kpg, ksp, &
     real(kind=8), intent(in)     :: epseq
     real(kind=8), intent(in)     :: p_arg
     real(kind=8), intent(in)     :: divu
+    real(kind=8), intent(in)     :: gonf
+    aster_logical, intent(in)    :: inco
     aster_logical, intent(in)    :: nonlin
     real(kind=8), intent(out)    :: ener(2)
 ! --------------------------------------------------------------------------------------------------
@@ -213,7 +215,7 @@ subroutine nmelru(fami, kpg, ksp, &
 !
     nrj = 0.5d0*k*divu*divu
 !
-!    POUR COMPARER AVEC CALC_K_G, enlener le terme constant
+!    POUR COMPARER AVEC CALC_K_G, enlever le terme constant
 !    nrj = 0.5d0*k*divu*divu - 9/2*k*alpha*alpha*(temp- tref)*(temp- tref)
     if (iret1 .eq. 0) then
         if (iret2 .eq. 1) then
@@ -225,14 +227,22 @@ subroutine nmelru(fami, kpg, ksp, &
         dnrj = 0.5d0*dk*divu*divu-k3*divu*alpha
     end if
 !
-!    POUR COMPARER AVEC CALC_K_G, enlener le terme constant
+!    POUR COMPARER AVEC CALC_K_G, enlever le terme constant
 !    dnrj = dnrj - 9*k*alpha*alpha*(temp- tref)
 !
     if (nonlin) then
-        ener(1) = nrj+rp*rp/demu/3.d0+airep
+        if (inco) then
+            ener(1) = 0.5d0*k*gonf*gonf+rp*rp/demu/3.d0+airep
+        else
+            ener(1) = nrj+rp*rp/demu/3.d0+airep
+        end if
         ener(2) = dnrj+rp*(drp-demudt*rp/demu/2.d0)/demu/1.5d0+dairep
     else
-        ener(1) = nrj+demu*epseq*epseq/3.d0
+        if (inco) then
+            ener(1) = 0.5d0*k*gonf*gonf+demu*epseq*epseq/3.d0
+        else
+            ener(1) = nrj+demu*epseq*epseq/3.d0
+        end if
         ener(2) = dnrj+demudt*epseq*epseq/3.d0
     end if
 !

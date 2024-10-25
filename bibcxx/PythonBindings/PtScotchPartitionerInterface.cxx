@@ -46,16 +46,17 @@ Arguments:
     edgeloctab: Describes vertex connections (at which vertices each vertex is connected)
         )",
               py::arg( "vertloctab" ), py::arg( "edgeloctab" ) )
-        .def(
-            "buildGraph",
-            py::overload_cast< const MeshConnectionGraphPtr & >( &PtScotchPartitioner::buildGraph ),
-            R"(
+        .def( "buildGraph",
+              py::overload_cast< const MeshConnectionGraphPtr &, const VectorOfVectorsLong & >(
+                  &PtScotchPartitioner::buildGraph ),
+              R"(
 Build the PtScotch graph from a MeshConnectionGraph
 
 Arguments:
     meshConnectionGraph: MeshConnectionGraph
+    nodesToGather: list of list of nodes to be gather on same MPI processor
         )",
-            py::arg( "meshConnectionGraph" ) )
+              py::arg( "meshConnectionGraph" ), py::arg( "nodesToGather" ) = VectorOfVectorsLong() )
         .def( "checkGraph", &PtScotchPartitioner::checkGraph, R"(
 Ask PtScotch to check the graph
         )" )

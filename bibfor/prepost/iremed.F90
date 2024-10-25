@@ -221,6 +221,7 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
                 end if
             else
                 fieldName = dsNameZ
+                newcom = 0
             end if
 !
 !         * IMPRESSION DU CHAMP (CHAM_NO OU CHAM_ELEM)

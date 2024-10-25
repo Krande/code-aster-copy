@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -56,8 +56,8 @@ VectorLong ParallelDOFNumbering::getGhostDOFs( const bool local ) const {
     return _globalNumbering->getGhostDOFs( local );
 };
 
-VectorLong ParallelDOFNumbering::getNoGhostDOFs() const {
-    return _globalNumbering->getNoGhostDOFs();
+VectorLong ParallelDOFNumbering::getNoGhostDOFs( const bool local ) const {
+    return _globalNumbering->getNoGhostDOFs( local );
 };
 
 VectorLong ParallelDOFNumbering::getLagrangeDOFs( const bool local ) const {

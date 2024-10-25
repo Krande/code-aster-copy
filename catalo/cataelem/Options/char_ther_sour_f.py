@@ -28,10 +28,14 @@ import cataelem.Commons.attributes as AT
 
 # Sources reparties + sources nodales
 
+
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+
+
 PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
 CHAR_THER_SOUR_F = Option(
-    para_in=(SP.PGEOMER, SP.PSOURCF, SP.PINSTR, PVARCPR),
+    para_in=(SP.PGEOMER, SP.PSOURCF, SP.PINSTR, PVARCPR, PCHHOBS),
     para_out=(SP.PVECTTR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

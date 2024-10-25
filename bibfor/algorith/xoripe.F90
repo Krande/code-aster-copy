@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xoripe(modele)
     implicit none
 !
@@ -87,6 +87,7 @@ subroutine xoripe(modele)
     integer, pointer :: connex(:) => null()
     character(len=8), pointer :: vfiss(:) => null()
     integer, pointer :: listCellNume(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -138,8 +139,7 @@ subroutine xoripe(modele)
         elfis_heav = '&&'//nompro//'.ELEMFISS.HEAV'
         elfis_ctip = '&&'//nompro//'.ELEMFISS.CTIP'
         elfis_hect = '&&'//nompro//'.ELEMFISS.HECT'
-        call xelfis_lists(fiss, modele, elfis_heav, &
-                          elfis_ctip, elfis_hect)
+        call xelfis_lists(fiss, modele, elfis_heav, elfis_ctip, elfis_hect)
         grp(1) = elfis_heav
         grp(2) = elfis_ctip
         grp(3) = elfis_hect
@@ -356,7 +356,10 @@ subroutine xoripe(modele)
 !
 !
 !         PRODUIT SCALAIRE DES NORMALES : N2D.NEXT
-            if (ddot(ndim, n2d, 1, next, 1) .lt. 0.d0) then
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            if (ddot(b_n, n2d, b_incx, next, b_incy) .lt. 0.d0) then
 !           ON INVERSE LES SOMMETS S1 ET S2
 !           (ON INVERSE 1 ET 2 EN 2D
                 s1 = ndim-1
@@ -394,7 +397,7 @@ subroutine xoripe(modele)
 !             VERIF QUE C'EST NORMAL
                     if ((typbo(1:4) .eq. 'TRIA') .or. (typbo(1:3) .eq. 'SEG')) then
                         ASSERT(nse .eq. 1)
-                    elseif (typbo(1:4) .eq. 'QUAD') then
+                    else if (typbo(1:4) .eq. 'QUAD') then
                         ASSERT(nse .eq. 2)
                     else
                         ASSERT(.false.)

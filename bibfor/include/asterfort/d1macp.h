@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,14 @@
 !
 interface
     subroutine d1macp(fami, mater, instan, poum, kpg,&
-                      ksp, repere, d1)
+                      ksp, angl, d1)
         character(len=*) :: fami
         integer :: mater
         real(kind=8) :: instan
         character(len=*) :: poum
         integer :: kpg
         integer :: ksp
-        real(kind=8) :: repere(7)
+        real(kind=8) :: angl
         real(kind=8) :: d1(4, *)
     end subroutine d1macp
 end interface

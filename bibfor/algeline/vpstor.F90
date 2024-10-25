@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpstor(ineg, typ, modes, nbmode, neq, &
                   vecpr8, vecpc8, mxresf, nbpari, nbparr, &
                   nbpark, nopara, mod45, resufi, resufr, &
@@ -79,6 +79,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     aster_logical :: lrefd, lbasm, lstock
     character(len=24), pointer :: rerr(:) => null()
     integer, pointer :: p_desc(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
 ! --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE
     data nopast/'NUME_MODE',&
@@ -250,7 +251,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             kmode = nbmode-imode+1
             jmode = kmode
         end if
-
+!
         nordr = iprec+imode
 !
 !        --- VECTEUR PROPRE ---
@@ -259,9 +260,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
         if (ier .eq. 0) then
             continue
         else if (ier .eq. 100 .and. lrefd) then
-            call vtcreb(chamno, 'G', typ(1:1), &
-                        nume_ddlz=nume, &
-                        nb_equa_outz=neq)
+            call vtcreb(chamno, 'G', typ(1:1), nume_ddlz=nume, nb_equa_outz=neq)
         else
             vali(1) = kmode
             vali(2) = jmode
@@ -270,8 +269,8 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             call utmess('F', 'ALGELINE4_85', sk=valk, ni=3, vali=vali)
         end if
         if (typcon .eq. 'MODE_GENE' .or. typcon .eq. 'HARM_GENE') then
-            ! GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
-            ! DE TAILLE 2 ET NON 4 COMME UN CHAM_NO ET PAS DE .DESC
+! GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
+! DE TAILLE 2 ET NON 4 COMME UN CHAM_NO ET PAS DE .DESC
             call wkvect(chamno//'.DESC', 'G V I', 2, vi=p_desc)
             call dismoi("NOM_GD", nume, "NUME_DDL", repk=nomgd)
             call jenonu(jexnom('&CATA.GD.NOMGD', nomgd(1:5)//typ(1:1)), igd)
@@ -280,7 +279,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             call jeecra(chamno//'.DESC', 'DOCU', iarg, 'VGEN')
             call jeecra(chamno//'.REFE', 'DOCU', iarg, 'VGEN')
             call juveca(chamno//'.REFE', 2)
-
+!
             call dismoi("NOM_MAILLA", nume, "NUME_DDL", repk=mesh)
             call jeveuo(chamno//'.REFE', 'E', jrefe)
             zk24(jrefe) = mesh
@@ -288,9 +287,15 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
         end if
         call jeveuo(chamno//'.VALE', 'E', lvale)
         if (typ(1:1) .eq. 'R') then
-            call dcopy(neq, vecpr8(1, kmode), 1, zr(lvale), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vecpr8(1, kmode), b_incx, zr(lvale), b_incy)
         else if (typ(1:1) .eq. 'C') then
-            call zcopy(neq, vecpc8(1, kmode), 1, zc(lvale), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call zcopy(b_n, vecpc8(1, kmode), b_incx, zc(lvale), b_incy)
         end if
 !       SI LE CHAMP A DEJA ETE NOTE PAR SEMOCO, ON NE LE REFAIT PAS
         if (ier .ne. 0) call rsnoch(modes, nosy, nordr)

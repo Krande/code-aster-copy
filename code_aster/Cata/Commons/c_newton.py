@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,7 @@ def C_NEWTON(command="STAT_NON_LINE"):
     if command == "MECA_NON_LINE":
         mfact = FACT(
             statut="d",
-            PREDICTION=SIMP(
-                statut="f", typ="TXM", defaut="TANGENTE", into=("TANGENTE", "ELASTIQUE")
-            ),
+            PREDICTION=SIMP(statut="f", typ="TXM", into=("TANGENTE", "ELASTIQUE")),
             MATRICE=SIMP(statut="f", typ="TXM", defaut="TANGENTE", into=("TANGENTE", "ELASTIQUE")),
             REAC_ITER=SIMP(statut="f", typ="I", defaut=1, val_min=0),
             REAC_INCR=SIMP(statut="f", typ="I", defaut=1, val_min=0),

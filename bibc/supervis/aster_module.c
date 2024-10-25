@@ -982,8 +982,7 @@ void gcncon2_( char *type, char *resul, STRING_SIZE ltype, int lresul ) {
 }
 
 /* ------------------------------------------------------------------ */
-static char getvectjev_doc[] = "getvectjev(nomsd)->valsd      \n\
-\n\
+static char getvectjev_doc[] = "\
 Retourne la valeur du concept nomsd \n\
 dans un tuple.";
 
@@ -1092,7 +1091,7 @@ static PyObject *aster_getvectjev( PyObject *self, PyObject *args ) {
     return tup;
 }
 
-static char getcolljev_doc[] = "getcolljev(nomsd)->valsd      \n\
+static char getcolljev_doc[] = "\
 \n\
 Retourne la valeur du concept nomsd \n\
 dans un tuple.";

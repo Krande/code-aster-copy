@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,4 +82,7 @@ class MecaStatStepSolver(BaseStepSolver):
             feat_obj = self.get_feature(feat, optional=(not required))
             opers_manager.use(feat_obj)
         self.conv_criteria.use(opers_manager)
+        if hasattr(self.conv_criteria, "local_solver"):
+            if self.conv_criteria.local_solver:
+                self.conv_criteria.local_solver.use(opers_manager)
         self.use(opers_manager)

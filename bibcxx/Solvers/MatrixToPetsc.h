@@ -37,7 +37,7 @@
 void petscFinalize();
 
 /** @brief Turns PETSc on with options */
-void petscInitializeWithOptions( const std::string &options );
+void petscInitializeWithOptions( const std::string &options = "" );
 
 /** @brief Convert an AssemblyMatrix object to a PETSc Mat object */
 template < class T >

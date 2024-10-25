@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1306,W1504
+! aslint: disable=W1306,W1504,W1501
 !
-subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
-                  vffd, vffg, vffp, idffd, &
-                  vu, vg, vp, &
-                  geomi, typmod, option, mate, compor, &
-                  lgpg, carcri, instm, instp, ddlm, &
-                  ddld, angmas, sigm, vim, sigp, vip, &
-                  lMatr, lVect, lSigm, lVari, &
-                  vect, matr, matsym, codret)
+subroutine nifilg(ndim, nnod, nnog, nnop, npg, &
+                  iw, vffd, vffg, vffp, idffd, &
+                  vu, vg, vp, geomi, typmod, &
+                  option, mate, compor, lgpg, carcri, &
+                  instm, instp, ddlm, ddld, angmas, &
+                  sigm, vim, sigp, vip, lMatr, &
+                  lVect, lSigm, lVari, vect, matr, &
+                  matsym, codret)
 !
     use Behaviour_type
     use Behaviour_module
@@ -33,6 +33,7 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/dsde2d.h"
@@ -45,7 +46,6 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-#include "asterfort/Behaviour_type.h"
 !
     aster_logical :: matsym
     integer :: ndim, nnod, nnog, nnop, npg, iw, idffd, lgpg
@@ -58,9 +58,9 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
     real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: vect(*), matr(*)
-    real(kind=8) :: carcri(*)
-    character(len=8) :: typmod(*)
-    character(len=16) :: compor(*), option
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    character(len=8), intent(in) :: typmod(2)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE), option
     aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
 !
 ! --------------------------------------------------------------------------------------------------
@@ -108,6 +108,8 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
+    character(len=4), parameter :: fami = 'RIGI'
     aster_logical, parameter :: grand = ASTER_TRUE
     aster_logical :: axi
     aster_logical :: lCorr
@@ -146,6 +148,7 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
                                                       0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), &
                                                     (/6, 6/))
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -159,6 +162,8 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
     dsidep = 0.d0
     codret = 0
     cod = 0
+
+! - Output quantities
     if (lVect) then
         vect(1:nddl) = 0.d0
     end if
@@ -169,9 +174,16 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
             matr(1:nddl*nddl) = 0.d0
         end if
     end if
-
+!
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instm, instp, &
+                              fami, mate, &
+                              BEHinteg)
 
 ! - Extract for fields
     do na = 1, nnod
@@ -190,7 +202,7 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
         gonfm(ra) = ddlm(vg(ra))
         gonfd(ra) = ddld(vg(ra))
     end do
-
+!
 ! - Loop on Gauss points
     do kpg = 1, npg
 ! ----- Kinematic - Previous strains
@@ -199,37 +211,50 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
                     dffd)
         call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg), &
                     r, dffd, deplm, fPrev)
-
+!
 ! ----- Kinematic - Current strains
         call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg), &
                     r, dffd, deplp, fCurr)
         call dfdmip(ndim, nnod, axi, geomp, kpg, &
                     iw, vffd(1, kpg), idffd, r, wp, &
                     dffd)
-        call nmmalu(nnod, axi, r, vffd(1, kpg), dffd, lij)
-
+        call nmmalu(nnod, axi, r, vffd(1, kpg), dffd, &
+                    lij)
+!
 ! ----- Gradient
-        jm = fPrev(1, 1)*(fPrev(2, 2)*fPrev(3, 3)-fPrev(2, 3)*fPrev(3, 2))- &
-             fPrev(2, 1)*(fPrev(1, 2)*fPrev(3, 3)-fPrev(1, 3)*fPrev(3, 2))+ &
-             fPrev(3, 1)*(fPrev(1, 2)*fPrev(2, 3)-fPrev(1, 3)*fPrev(2, 2))
-        jp = fCurr(1, 1)*(fCurr(2, 2)*fCurr(3, 3)-fCurr(2, 3)*fCurr(3, 2))- &
-             fCurr(2, 1)*(fCurr(1, 2)*fCurr(3, 3)-fCurr(1, 3)*fCurr(3, 2))+ &
-             fCurr(3, 1)*(fCurr(1, 2)*fCurr(2, 3)-fCurr(1, 3)*fCurr(2, 2))
+        jm = fPrev(1, 1)*(fPrev(2, 2)*fPrev(3, 3)-fPrev(2, 3)*fPrev(3, 2))-fPrev(2, 1)*(fPrev(1, &
+             &2)*fPrev(3, 3)-fPrev(1, 3)*fPrev(3, 2))+fPrev(3, 1)*(fPrev(1, 2)*fPrev(2, 3)-fPrev(&
+             &1, 3)*fPrev(2, 2))
+        jp = fCurr(1, 1)*(fCurr(2, 2)*fCurr(3, 3)-fCurr(2, 3)*fCurr(3, 2))-fCurr(2, 1)*(fCurr(1, &
+             &2)*fCurr(3, 3)-fCurr(1, 3)*fCurr(3, 2))+fCurr(3, 1)*(fCurr(1, 2)*fCurr(2, 3)-fCurr(&
+             &1, 3)*fCurr(2, 2))
         if (jp .le. 0.d0) then
             cod(kpg) = 1
             goto 999
         end if
-
+!
 ! ----- Pressure
-        pm = ddot(nnop, vffp(1, kpg), 1, presm, 1)
-        pd = ddot(nnop, vffp(1, kpg), 1, presd, 1)
+        b_n = to_blas_int(nnop)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pm = ddot(b_n, vffp(1, kpg), b_incx, presm, b_incy)
+        b_n = to_blas_int(nnop)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        pd = ddot(b_n, vffp(1, kpg), b_incx, presd, b_incy)
         pp = pm+pd
-
+!
 ! ----- Gonflement
-        gm = ddot(nnog, vffg(1, kpg), 1, gonfm, 1)
-        gd = ddot(nnog, vffg(1, kpg), 1, gonfd, 1)
+        b_n = to_blas_int(nnog)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        gm = ddot(b_n, vffg(1, kpg), b_incx, gonfm, b_incy)
+        b_n = to_blas_int(nnog)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        gd = ddot(b_n, vffg(1, kpg), b_incx, gonfd, b_incy)
         gp = gm+gd
-
+!
 ! ----- CALCUL DES FONCTIONS A, B,... DETERMINANT LA RELATION LIANT G ET J
         call nirela(2, jp, gm, gp, am, &
                     ap, bp, boa, aa, bb, &
@@ -238,15 +263,25 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
             cod(kpg) = 1
             goto 999
         end if
-
+!
 ! ----- CALCUL DES DEFORMATIONS ENRICHIES
         corm = (am/jm)**(1.d0/3.d0)
-        call dcopy(9, fPrev, 1, ftm, 1)
-        call dscal(9, corm, ftm, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fPrev, b_incx, ftm, b_incy)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, corm, ftm, b_incx)
         corp = (ap/jp)**(1.d0/3.d0)
-        call dcopy(9, fCurr, 1, ftp, 1)
-        call dscal(9, corp, ftp, 1)
-
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fCurr, b_incx, ftp, b_incy)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, corp, ftp, b_incx)
+!
 ! ----- Pre-treatment of kinematic quantities
         call prelog(ndim, lgpg, vim(1, kpg), gn, lamb, &
                     logl, ftm, ftp, epslPrev, epslIncr, &
@@ -255,13 +290,16 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
             goto 999
         end if
 
-! ----- Compute behaviour
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         cod(kpg) = 0
         dtde = 0.d0
         tlogCurr = 0.d0
         taup = 0.d0
         call nmcomp(BEHinteg, &
-                    'RIGI', kpg, 1, ndim, typmod, &
+                    fami, kpg, ksp, ndim, typmod, &
                     mate, compor, carcri, instm, instp, &
                     6, epslPrev, epslIncr, 6, tlogPrev, &
                     vim(1, kpg), option, angmas, &
@@ -275,27 +313,32 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
         do ia = 4, 2*ndim
             sigm_ldc(ia) = sigm(ia, kpg)
         end do
-
+!
 ! ----- Post-treatment of sthenic quantities
-        call poslog(lCorr, lMatr, lSigm, lVari, &
-                    tlogPrev, tlogCurr, ftm, &
-                    lgpg, vip(1, kpg), ndim, ftp, kpg, &
-                    dtde, sigm_ldc, .false._1, 'RIGI', mate, &
-                    instp, angmas, gn, lamb, logl, &
-                    sigp_ldc, dsidep, pk2Prev, pk2Curr, iret)
+        call poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
+                    tlogCurr, ftm, lgpg, vip(1, kpg), ndim, &
+                    ftp, kpg, dtde, sigm_ldc, .false._1, &
+                    'RIGI', mate, instp, angmas, gn, &
+                    lamb, logl, sigp_ldc, dsidep, pk2Prev, &
+                    pk2Curr, iret)
         if (iret .eq. 1) then
             cod(kpg) = 1
             goto 999
         end if
-
+!
 ! - CONTRAINTE HYDROSTATIQUE ET DEVIATEUR
-        call dscal(2*ndim, exp(gp), sigp_ldc, 1)
-        call dcopy(2*ndim, sigp_ldc, 1, taup, 1)
+        b_n = to_blas_int(2*ndim)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, exp(gp), sigp_ldc, b_incx)
+        b_n = to_blas_int(2*ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, sigp_ldc, b_incx, taup, b_incy)
         tauhy = (taup(1)+taup(2)+taup(3))/3.d0
         do ia = 1, 6
             taudv(ia) = taup(ia)-tauhy*kr(ia)
         end do
-
+!
 ! ----- Cauchy stresses
         if (lSigm) then
             do ia = 1, 2*ndim
@@ -303,7 +346,7 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
             end do
             sigp(2*ndim+1, kpg) = (tauhy-pp*bb)/jp
         end if
-
+!
 ! ----- Internal forces
         if (lVect) then
             ASSERT(lSigm)
@@ -331,16 +374,27 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
                 vect(kk) = vect(kk)+w*t1
             end do
         end if
-
+!
 ! ----- Rigidity matrix
         if (lMatr) then
-            ! Contraintes generalisees EF (bloc mecanique pour la rigidite geometrique)
+! Contraintes generalisees EF (bloc mecanique pour la rigidite geometrique)
             if (lCorr) then
-                call dcopy(9, ftp, 1, ftr, 1)
+                b_n = to_blas_int(9)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, ftp, b_incx, ftr, b_incy)
             else
-                call dcopy(2*ndim, sigm_ldc, 1, taup, 1)
-                call dscal(2*ndim, jm, taup, 1)
-                call dcopy(9, ftm, 1, ftr, 1)
+                b_n = to_blas_int(2*ndim)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, sigm_ldc, b_incx, taup, b_incy)
+                b_n = to_blas_int(2*ndim)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, jm, taup, b_incx)
+                b_n = to_blas_int(9)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, ftm, b_incx, ftr, b_incy)
             end if
 !
 ! - CALCUL DE L'OPERATEUR TANGENT SYMÉTRISÉ D
@@ -389,7 +443,8 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
                                             t2 = t2-2.d0/3.d0*( &
                                                  taup(viaja)*kr(vibjb)+taup(vibjb)*kr(viaja))
                                             t2 = t2+2.d0/3.d0*tauhy*kr(viaja)*kr(vibjb)
-                                            t1 = t1+dffd(na, lij(ia, ja))*t2*dffd(nb, lij(ib, jb))
+                                            t1 = t1+dffd(na, lij(ia, ja))*t2*dffd(nb, lij(ib, jb) &
+                                                                                  )
                                         end do
                                     end do
                                     t2 = pp*jp*dbb
@@ -536,7 +591,9 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
 ! - RIGIDITE GEOMETRIQUE
                                 do jb = 1, ndu
                                     t1 = t1-dffd( &
-                                         na, lij(ia, ib))*dffd(nb, lij(ib, jb))*tauldc(vij(ia, jb))
+                                         na, lij(ia, ib))*dffd(nb, &
+                                                               lij(ib, jb))*tauldc(vij(ia, jb) &
+                                                                                   )
                                 end do
                                 matr(kk) = matr(kk)+w*t1
                             end do
@@ -627,7 +684,7 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
     end do
 !
 999 continue
-
+!
 ! - Return code summary
     call codere(cod, npg, codret)
 !

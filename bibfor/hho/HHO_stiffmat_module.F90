@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ module HHO_stiffmat_module
 ! Module to compute stiffness matrix
 !
 ! --------------------------------------------------------------------------------------------------
-    public  :: hhoStiffMatCellScal, hhoSymStiffMatCellVec
+    public :: hhoStiffMatCellScal, hhoSymStiffMatCellVec
 !    private  ::
 !
 contains
@@ -53,9 +53,9 @@ contains
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in)        :: min_order
-        integer, intent(in)        :: max_order
-        real(kind=8), intent(out)  :: stiffMat(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        real(kind=8), intent(out) :: stiffMat(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
 !
 !
 !
@@ -71,9 +71,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        type(HHO_quadrature)  :: hhoQuad
+        type(HHO_quadrature) :: hhoQuad
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSGradEval
         integer :: dimMat, ipg, ndim
+        blas_int :: b_k, b_lda, b_ldc, b_n
 !
         ndim = hhoCell%ndim
 ! ----- init basis
@@ -88,12 +89,16 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-            call hhoBasisCell%BSEvalGrad(hhoCell, hhoQuad%points(1:3, ipg), &
-                                        & min_order, max_order, BSGradEval)
+            call hhoBasisCell%BSEvalGrad(hhoQuad%points(1:3, ipg), min_order, max_order, &
+                                         BSGradEval)
 !
 ! --------  Eval stiffMat
-            call dsyrk('U', 'T', dimMat, ndim, hhoQuad%weights(ipg), BSGradEval, 3, &
-                        & 1.d0, stiffMat, MSIZE_CELL_SCAL)
+            b_n = to_blas_int(dimMat)
+            b_k = to_blas_int(ndim)
+            b_lda = to_blas_int(3)
+            b_ldc = to_blas_int(MSIZE_CELL_SCAL)
+            call dsyrk('U', 'T', b_n, b_k, hhoQuad%weights(ipg), &
+                       BSGradEval, b_lda, 1.d0, stiffMat, b_ldc)
         end do
 !
 ! ----- Copy the lower part
@@ -112,9 +117,9 @@ contains
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in)        :: min_order
-        integer, intent(in)        :: max_order
-        real(kind=8), intent(out)  :: stiffMat(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+        integer, intent(in) :: min_order
+        integer, intent(in) :: max_order
+        real(kind=8), intent(out) :: stiffMat(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -130,9 +135,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        type(HHO_quadrature)  :: hhoQuad
+        type(HHO_quadrature) :: hhoQuad
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVGradEval
         integer :: dimMat, ipg
+        blas_int :: b_k, b_lda, b_ldc, b_n
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
@@ -146,12 +152,16 @@ contains
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval basis function at the quadrature point
-            call hhoBasisCell%BVEvalSymGrad(hhoCell, hhoQuad%points(1:3, ipg), &
-                                            & min_order, max_order, BVGradEval)
+            call hhoBasisCell%BVEvalSymGrad(hhoQuad%points(1:3, ipg), min_order, max_order, &
+                                            BVGradEval)
 !
 ! --------  Eval stiffMat
-            call dsyrk('U', 'T', dimMat, 6, hhoQuad%weights(ipg), BVGradEval, 6, &
-                        & 1.d0, stiffMat, MSIZE_CELL_VEC)
+            b_n = to_blas_int(dimMat)
+            b_k = to_blas_int(6)
+            b_lda = to_blas_int(6)
+            b_ldc = to_blas_int(MSIZE_CELL_VEC)
+            call dsyrk('U', 'T', b_n, b_k, hhoQuad%weights(ipg), &
+                       BVGradEval, b_lda, 1.d0, stiffMat, b_ldc)
         end do
 !
 ! ----- Copy the lower part

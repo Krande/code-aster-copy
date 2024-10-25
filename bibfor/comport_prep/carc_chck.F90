@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine carc_chck(behaviourPrepCrit)
+subroutine carc_chck(prepMapCarcri)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -28,7 +28,7 @@ subroutine carc_chck(behaviourPrepCrit)
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/utmess.h"
 !
-    type(Behaviour_PrepCrit), intent(in) :: behaviourPrepCrit
+    type(BehaviourPrep_MapCarcri), intent(in) :: prepMapCarcri
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,7 +38,7 @@ subroutine carc_chck(behaviourPrepCrit)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  behaviourPrepCrit: datastructure to prepare parameters for constitutive laws
+! In  prepMapCarcri    : datastructure to construct CARCRI map
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,12 +48,12 @@ subroutine carc_chck(behaviourPrepCrit)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbFactorKeyword = behaviourPrepCrit%nb_comp
+    nbFactorKeyword = prepMapCarcri%nb_comp
     lProtoAQ = ASTER_FALSE
 
 ! - Loop on occurrences of COMPORTEMENT
     do iFactorKeyword = 1, nbFactorKeyword
-        rela_comp = behaviourPrepCrit%v_crit(iFactorKeyword)%rela_comp
+        rela_comp = prepMapCarcri%prepCrit(iFactorKeyword)%rela_comp
 
 ! ----- Detection of specific cases
         call comp_meca_l(rela_comp, 'MFRONT_PROTO', l_mfront_proto)
@@ -65,7 +65,7 @@ subroutine carc_chck(behaviourPrepCrit)
         end if
 
 ! ----- Ban if RELATION = MFRONT and ITER_INTE_PAS negative
-        if (behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_pas .lt. 0.d0) then
+        if (prepMapCarcri%prepCrit(iFactorKeyword)%iter_inte_pas .lt. 0.d0) then
             if (l_mfront_offi .or. l_mfront_proto) then
                 call utmess('F', 'COMPOR1_95')
             end if

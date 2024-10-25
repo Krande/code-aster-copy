@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine dichoc_galet_elasnl(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out)          :: iret
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,26 +67,27 @@ subroutine dichoc_galet_elasnl(for_discret, iret)
     character(len=24) :: messak(6)
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter  :: nbres = 3
-    real(kind=8)        :: valres(nbres)
-    integer             :: codres(nbres)
-    character(len=8)    :: nomres(nbres)
-    integer             :: nbpar
-    real(kind=8)        :: valpar
-    character(len=8)    :: nompar
+    integer, parameter :: nbres = 3
+    real(kind=8) :: valres(nbres)
+    integer :: codres(nbres)
+    character(len=8) :: nomres(nbres)
+    integer :: nbpar
+    real(kind=8) :: valpar
+    character(len=8) :: nompar
 !
 ! --------------------------------------------------------------------------------------------------
 !   Variables internes
-    integer, parameter  :: nbvari = 1
-    real(kind=8)        :: varmo(nbvari), varpl(nbvari)
+    integer, parameter :: nbvari = 1
+    real(kind=8) :: varmo(nbvari), varpl(nbvari)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: xl(6), xd(3), ld0, ldm, ldp, forcem, forcep, raidemp, ktang
+    blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
     iret = 0
 !   Seulement en 3D, sur un segment, avec seulement de la translation
-    if ((for_discret%nomte(1:12) .ne. 'MECA_DIS_T_L') .or. &
-        (for_discret%ndim .ne. 3) .or. (for_discret%nno .ne. 2) .or. (for_discret%nc .ne. 3)) then
+    if ((for_discret%nomte(1:12) .ne. 'MECA_DIS_T_L') .or. (for_discret%ndim .ne. 3) .or. &
+        (for_discret%nno .ne. 2) .or. (for_discret%nc .ne. 3)) then
         call jevech('PCOMPOR', 'L', icompo)
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
@@ -107,7 +108,10 @@ subroutine dichoc_galet_elasnl(for_discret, iret)
     if (irep .eq. 1) then
         call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
     else
-        call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
+        b_n = to_blas_int(for_discret%nbt)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jdc), b_incx, klv, b_incy)
     end if
 !   Récupération des termes diagonaux : raide = klv(i,i)
     call diraidklv(for_discret%nomte, raide, klv)
@@ -126,8 +130,9 @@ subroutine dichoc_galet_elasnl(for_discret, iret)
     nbpar = 0; nompar = ' '; valpar = 0.d0
     valres(:) = 0.0; nomres(:) = ' '
     nomres(1) = 'DIST_1'; nomres(2) = 'DIST_2'
-    call rcvala(zi(imat), ' ', 'DIS_CHOC_ELAS', nbpar, nompar, [valpar], &
-                2, nomres, valres, codres, 0, nan='NON')
+    call rcvala(zi(imat), ' ', 'DIS_CHOC_ELAS', nbpar, nompar, &
+                [valpar], 2, nomres, valres, codres, &
+                0, nan='NON')
 !   longueur du discret
     xd(1:3) = xl(1+for_discret%ndim:2*for_discret%ndim)-xl(1:for_discret%ndim)
     ld0 = xd(1)-valres(1)-valres(2)
@@ -144,16 +149,18 @@ subroutine dichoc_galet_elasnl(for_discret, iret)
 !   Instant '-' : Contact ou pas
     if (ldm <= 0.0) then
         nomres(1) = 'FX'; nomres(2) = 'RIGIP'
-        call rcvala(zi(imat), ' ', 'DIS_CHOC_ELAS', 1, 'DX', [-ldm], &
-                    2, nomres, valres, codres, 1)
+        call rcvala(zi(imat), ' ', 'DIS_CHOC_ELAS', 1, 'DX', &
+                    [-ldm], 2, nomres, valres, codres, &
+                    1)
         forcem = -valres(1)
         raidemp = valres(2)
     end if
 !   Instant '+' : Contact ou pas
     if (ldp <= 0.0) then
         nomres(1) = 'FX'; nomres(2) = 'RIGIP'
-        call rcvala(zi(imat), ' ', 'DIS_CHOC_ELAS', 1, 'DX', [-ldp], &
-                    2, nomres, valres, codres, 1)
+        call rcvala(zi(imat), ' ', 'DIS_CHOC_ELAS', 1, 'DX', &
+                    [-ldp], 2, nomres, valres, codres, &
+                    1)
         forcep = -valres(1)
         raidemp = valres(2)
         varpl(1) = 1.0
@@ -192,11 +199,10 @@ subroutine dichoc_galet_elasnl(for_discret, iret)
 !       Changement du signe des efforts sur le premier noeud pour les MECA_DIS_T_L
         do ii = 1, for_discret%nc
             zr(icontp-1+ii) = -fl(ii)+zr(icontm-1+ii)
-            zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
-                                             zr(icontm-1+ii+for_discret%nc)
+            zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discret%nc&
+                                             &)
             fl(ii) = fl(ii)-zr(icontm-1+ii)
-            fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
-                                    zr(icontm-1+ii+for_discret%nc)
+            fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discret%nc)
         end do
 !       Surcharge par l'effort 'réel' dans le discret
         zr(icontp-1+1) = forcep

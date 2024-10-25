@@ -39,9 +39,9 @@ void DEFSSSS( ALCART, alcart, const char *, STRING_SIZE, const char *, STRING_SI
 void DEFSSS( CELCES_WRAP, celces_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const char *, STRING_SIZE );
 
-#define CALLO_CESCEL( a, b, c, d, e, f, g, h, i, j )                                               \
-    CALLOOOOOPOOOP( CESCEL, cescel, a, b, c, d, e, f, g, h, i, j )
-void DEFSSSSSPSSSP( CESCEL, cescel, const char *, STRING_SIZE, const char *, STRING_SIZE,
+#define CALLO_CESCEL_WRAP( a, b, c, d, e, f, g, h, i, j )                                          \
+    CALLOOOOOPOOOP( CESCEL_WRAP, cescel_wrap, a, b, c, d, e, f, g, h, i, j )
+void DEFSSSSSPSSSP( CESCEL_WRAP, cescel_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
                     const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
                     ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE,
                     const char *, STRING_SIZE, ASTERINTEGER * );

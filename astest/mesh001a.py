@@ -65,6 +65,9 @@ test.assertFalse(mesh.hasGroupOfNodes("AA"))
 test.assertFalse(mesh.hasGroupOfNodes("AA", True))
 test.assertFalse(mesh.hasGroupOfNodes("AA", False))
 
+test.assertSequenceEqual(mesh._getGroupsOfCellsContainingIds(40), ["Bas"])
+test.assertSequenceEqual(mesh._getGroupsOfCellsContainingIds((40, 47)), ["Bas", "Haut"])
+test.assertSequenceEqual(mesh._getGroupsOfNodesContainingIds(5), ["B", "Bas"])
 
 # do the same thing (compatibily with ParallelMesh)
 test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()), ["Bas", "Haut"])
@@ -578,6 +581,48 @@ mesh4 = CA.Mesh()
 mesh4.readMedFile("mesh001a.mmed", verbose=2)
 mesh4r = mesh4.refine(1)
 test.assertAlmostEqual(sum(mesh4r.getCoordinates().getValues()), 216000.0)
+
+
+# from mesh builder - pointscloud
+coords_1p_3d = [(0.0, 0.0, 0.0)]
+coords_2p_3d = [(0.0, 0.0, 0.0), (1.0, 1.0, 1.0), (2.0, 2.0, 0.0)]
+coords_2p_2d = [(0.0, 0.0), (1.0, 1.0)]
+coords_2p_1d = [(0.0,), (1.0,)]
+
+MP0_A = CA.Mesh.buildPointCloud(coords_1p_3d)
+MP0_B = CA.Mesh.buildPointCloud(coords_2p_3d)
+MP0_C = CA.Mesh.buildPointCloud(coords_2p_3d, groups=True)
+MP0_D = CA.Mesh.buildPointCloud(coords_2p_2d, groups=False)
+MP0_E = CA.Mesh.buildPointCloud(coords_2p_1d, groups=False)
+
+
+test.assertEqual(MP0_A.getNumberOfNodes(), 1)
+test.assertEqual(MP0_B.getNumberOfNodes(), 3)
+test.assertEqual(MP0_C.getNumberOfNodes(), 3)
+test.assertEqual(MP0_D.getNumberOfNodes(), 2)
+test.assertEqual(MP0_E.getNumberOfNodes(), 2)
+
+test.assertEqual(len(MP0_B.getGroupsOfNodes()), 1)
+test.assertEqual(len(MP0_C.getGroupsOfNodes()), 4)
+test.assertEqual(len(MP0_C.getGroupsOfCells()), 4)
+test.assertEqual(len(MP0_D.getGroupsOfCells()), 1)
+test.assertEqual(len(MP0_E.getGroupsOfCells()), 1)
+
+with test.assertRaisesRegex(AssertionError, "Invalid parameter"):
+    coords_nook = [(0.0, 0.0, 0.0), (1.0, 1.0)]
+    MP0_NOOK_A = CA.Mesh.buildPointCloud(coords_nook)
+with test.assertRaisesRegex(AssertionError, "Invalid parameter"):
+    MP0_NOOK_B = CA.Mesh.buildPointCloud([])
+
+# from mesh builder - line
+ML1_A = CA.Mesh.buildSpline1D(coords_2p_3d, groups=True)
+test.assertEqual(ML1_A.getNumberOfNodes(), 3)
+test.assertEqual(ML1_A.getNumberOfCells(), 2)
+test.assertEqual(len(ML1_A.getGroupsOfCells()), 3)
+test.assertEqual(len(ML1_A.getGroupsOfNodes()), 4)
+with test.assertRaisesRegex(AssertionError, "Invalid parameter"):
+    ML1_NOOK_A = CA.Mesh.buildSpline1D(coords_1p_3d)
+
 
 test.printSummary()
 

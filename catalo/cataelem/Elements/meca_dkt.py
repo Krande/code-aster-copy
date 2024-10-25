@@ -614,6 +614,7 @@ class MEDKQU4(Element):
             para_out=(
                 (SP.PCODRET, LC.ECODRET),
                 (OP.FULL_MECA.PCONTPR, LC.EGIG3DR),
+                (SP.PMATUNS, MMATUNS),
                 (SP.PMATUUR, MMATUUR),
                 (OP.FULL_MECA.PVARIPR, ZVARIPG),
                 (SP.PVECTUR, MVECTUR),
@@ -907,6 +908,7 @@ class MEDKQU4(Element):
                 (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG),
             ),
             para_out=(
+                (SP.PMATUNS, MMATUNS),
                 (SP.PMATUUR, MMATUUR),
                 (SP.PVECTUR, MVECTUR),
                 (OP.RIGI_MECA_TANG.PCONTPR, LC.EGIG3DR),
@@ -996,6 +998,9 @@ class MEDKQU4(Element):
             te=530,
             para_in=((OP.VARC_ELGA.PVARCPR, LC.ZVARCPG),),
             para_out=((SP.PVARC_R, LC.EVARC_R),),
+        ),
+        OP.VARC_ELNO(
+            te=4, para_in=((SP.PVARCGR, LC.EVARC_R),), para_out=((SP.PVARCNR, LC.EVARCNR),)
         ),
         OP.VARI_ELNO(
             te=4, para_in=((SP.PVARIGR, ZVARIPG),), para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),)

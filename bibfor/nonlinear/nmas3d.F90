@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf, &
+subroutine nmas3d(BEHInteg, &
+                  fami, nno, npg, ipoids, ivf, &
                   idfde, geom, typmod, option, imate, &
                   compor, mult_comp, lgpg, carcri, instam, instap, &
                   deplm, deplp, angmas, sigm, vim, &
@@ -46,7 +47,8 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf, &
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
 !
-    integer :: nno, imate, lgpg, codret, nbpg1
+    type(Behaviour_Integ), intent(inout) :: BEHinteg
+    integer :: nno, imate, lgpg, codret, npg
     integer :: ipoids, ivf, idfde
     integer :: ipoid2, ivf2, idfde2
     character(len=*) :: fami
@@ -59,8 +61,8 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf, &
     real(kind=8) :: geom(3, nno)
     real(kind=8) :: deplm(3, nno), deplp(3, nno), dfdi(nno, 3)
     real(kind=8) :: def(6, 3, nno)
-    real(kind=8) :: sigm(78, nbpg1), sigp(78, nbpg1)
-    real(kind=8) :: vim(lgpg, nbpg1), vip(lgpg, nbpg1)
+    real(kind=8) :: sigm(78, npg), sigp(78, npg)
+    real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*), vectu(3, nno), angmas(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -72,7 +74,7 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
-! IN  NBPG1   : NOMBRE DE POINTS DE GAUSS
+! IN  NPG     : NOMBRE DE POINTS DE GAUSS
 ! IN  POIDSG  : POIDS DES POINTS DE GAUSS
 ! IN  VFF     : VALEUR  DES FONCTIONS DE FORME
 ! IN  DFDE    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
@@ -101,10 +103,11 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
     aster_logical :: grand, calbn, axi
     integer :: kpg, i, ii, ino, ia, j, k, kl, proj, cod(9), nbpg2
     integer :: nnos, jgano, kp, iaa, ndim2
-    integer, parameter :: ndim = 3
+    integer, parameter :: ndimLdc = 3
     real(kind=8) :: d(6, 6), f(3, 3), eps(6), deps(6), r, s, sigma(6), sign(6)
     real(kind=8) :: poids, poipg2(8)
     real(kind=8) :: jac, sigas(6, 8), invja(3, 3), bi(3, 8), hx(3, 4)
@@ -118,7 +121,6 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf, &
     integer :: icodre(1)
     character(len=16) :: nomres(2)
     character(len=16) :: optios
-    type(Behaviour_Integ) :: BEHinteg
     data h/1.d0, 1.d0, -1.d0, -1.d0, -1.d0, -1.d0, 1.d0, 1.d0,&
      &        1.d0, -1.d0, -1.d0, 1.d0, -1.d0, 1.d0, 1.d0, -1.d0,&
      &        1.d0, -1.d0, 1.d0, -1.d0, 1.d0, -1.d0, 1.d0, -1.d0,&
@@ -138,21 +140,15 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf, &
     end if
     grand = .false.
     calbn = .false.
-!
-! - Initialisation of behaviour datastructure
-!
-    call behaviourInit(BEHinteg)
-!
-! - Prepare external state variables
-!
-    call behaviourPrepESVAElem(carcri, typmod, &
-                               nno, nbpg1, ndim, &
+
+! - Prepare external state variables (geometry)
+    call behaviourPrepESVAGeom(nno, npg, ndimLdc, &
                                ipoids, ivf, idfde, &
                                geom, BEHinteg, &
                                deplm, deplp)
 !
 ! - INITIALISATION CODES RETOURS
-    do kpg = 1, nbpg1
+    do kpg = 1, npg
         cod(kpg) = 0
     end do
 !
@@ -205,11 +201,8 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf, &
 !
 ! - CALCUL POUR LE POINT DE GAUSS CENTRAL
     kpg = 1
-!
-!
-!
+
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
-!
 !     CALCUL DE DFDI,F,EPS,DEPS ET POIDS
 !
     do j = 1, 6
@@ -253,10 +246,14 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf, &
     else
         optios = option
     end if
-!
+
+! - Set main parameters for behaviour (on point)
+    call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! - Integrator
     sigma = 0.d0
     call nmcomp(BEHinteg, &
-                fami, kpg, 1, 3, typmod, &
+                fami, kpg, ksp, ndimLdc, typmod, &
                 imate, compor, carcri, instam, instap, &
                 6, eps, deps, 6, sign, &
                 vim(1, kpg), optios, angmas, &
@@ -429,6 +426,6 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf, &
 !
 999 continue
 ! - SYNTHESE DES CODES RETOURS
-    call codere(cod, nbpg1, codret)
+    call codere(cod, npg, codret)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,13 @@
 subroutine vdpnlr(option, nomte, codret)
 !
     use Behaviour_type
-    use Behaviour_module, only: behaviourOption, behaviourInit
+    use Behaviour_module
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/antisy.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/btdbma.h"
 #include "asterfort/btsig.h"
 #include "asterfort/gdt.h"
@@ -57,7 +57,8 @@ subroutine vdpnlr(option, nomte, codret)
 #include "asterfort/vectrn.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
-#include "asterfort/Behaviour_type.h"
+#include "jeveux.h"
+!
     character(len=16) :: option, nomte
     integer :: codret
 !
@@ -164,8 +165,6 @@ subroutine vdpnlr(option, nomte, codret)
     real(kind=8) :: theta(3), thetan
     real(kind=8) :: tmoin1(3, 3), tm1t(3, 3)
     real(kind=8) :: term(3)
-
-    character(len=8) :: typmod(2)
     integer, parameter :: nbv = 2
     character(len=16), parameter :: nomres(nbv) = (/'E ', 'NU'/)
     integer :: icodre(nbv)
@@ -173,26 +172,25 @@ subroutine vdpnlr(option, nomte, codret)
     character(len=32) :: elasKeyword
     integer :: imate, icarcr, iinstm, iinstp, ivarim
     integer :: nbvari, itab(8), lgpg, k2, iret
-
-    real(kind=8) :: rac2, angmas(3)
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    real(kind=8) :: angmas(3)
     character(len=16) :: defo_comp, rela_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     real(kind=8) :: cisail
+    integer, parameter :: ndimLdc = 2
+    character(len=8), parameter :: typmod(2) = (/"C_PLAN  ", "        "/)
     type(Behaviour_Integ) :: BEHinteg
+    character(len=4), parameter :: fami = "MASS"
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    rac2 = sqrt(2.d0)
-    typmod(1) = 'C_PLAN  '
-    typmod(2) = '        '
     codret = 0
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+
 ! - Get input fields
-!
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou = zi(jnbspi-1+1)
     if (nbcou .le. 0) then
@@ -205,22 +203,31 @@ subroutine vdpnlr(option, nomte, codret)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=itab)
     if (itab(6) .le. 1) then
         lgpg = itab(7)
     else
         lgpg = itab(6)*itab(7)
     end if
-!
+
+! - Don"t use AFFE_CARA_ELEM/MASSIF
+    angmas = r8vide()
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndimLdc, typmod, option, &
+                              zk16(icompo), zr(icarcr), &
+                              zr(iinstm), zr(iinstp), &
+                              fami, zi(imate), &
+                              BEHinteg)
+
 ! - Select objects to construct from option name
-!
     call behaviourOption(option, zk16(icompo), &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
-!
+
 ! - Properties of behaviour
-!
     rela_comp = zk16(icompo-1+RELA_NAME)
     defo_comp = zk16(icompo-1+DEFO)
     read (zk16(icompo-1+NVAR), '(I16)') nbvari
@@ -266,9 +273,7 @@ subroutine vdpnlr(option, nomte, codret)
 !______________________________________________________________________
 !
 
-!
 ! - Get output fields
-!
     ivarip = ivarim
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
@@ -281,7 +286,10 @@ subroutine vdpnlr(option, nomte, codret)
     end if
     ndimv = lgpg*npgsn
     call jevech('PVARIMP', 'L', ivarix)
-    call dcopy(ndimv, zr(ivarix), 1, zr(ivarip), 1)
+    b_n = to_blas_int(ndimv)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
 !
     if (lMatr) then
 !
@@ -371,10 +379,8 @@ subroutine vdpnlr(option, nomte, codret)
     do in = 1, nb1
         do ii = 1, 3
 !
-            vecu(in, ii) = zr(ium-1+6*(in-1)+ii &
-                              )+zr(iup-1+6*(in-1)+ii)
-            vecum(in, ii) = zr(ium-1+6*(in-1)+ii &
-                               )
+            vecu(in, ii) = zr(ium-1+6*(in-1)+ii)+zr(iup-1+6*(in-1)+ii)
+            vecum(in, ii) = zr(ium-1+6*(in-1)+ii)
 !
         end do
     end do
@@ -392,20 +398,16 @@ subroutine vdpnlr(option, nomte, codret)
 !
         do in = 1, nb1
             do ii = 1, 3
-                vecthe(in, ii) = zr(iup-1+6*(in-1)+ &
-                                    ii+3)
-                vecthm(in, ii) = zr(ium-1+6*(in-1)+ &
-                                    ii+3)
+                vecthe(in, ii) = zr(iup-1+6*(in-1)+ii+3)
+                vecthm(in, ii) = zr(ium-1+6*(in-1)+ii+3)
             end do
         end do
 !
 !------- SUPERNOEUD
 !
         do ii = 1, 3
-            vecthe(nb2, ii) = zr(iup-1+6*(nb1)+ii &
-                                 )
-            vecthm(nb2, ii) = zr(ium-1+6*(nb1)+ii &
-                                 )
+            vecthe(nb2, ii) = zr(iup-1+6*(nb1)+ii)
+            vecthm(nb2, ii) = zr(ium-1+6*(nb1)+ii)
         end do
 !
     else
@@ -416,20 +418,16 @@ subroutine vdpnlr(option, nomte, codret)
 !
         do in = 1, nb1
             do ii = 1, 3
-                vecthe(in, ii) = zr(ium-1+6*(in-1)+ &
-                                    ii+3)+zr(iup-1+6*(in-1)+ii+3)
-                vecthm(in, ii) = zr(ium-1+6*(in-1)+ &
-                                    ii+3)
+                vecthe(in, ii) = zr(ium-1+6*(in-1)+ii+3)+zr(iup-1+6*(in-1)+ii+3)
+                vecthm(in, ii) = zr(ium-1+6*(in-1)+ii+3)
             end do
         end do
 !
 !--------- SUPERNOEUD
 !
         do ii = 1, 3
-            vecthe(nb2, ii) = zr(ium-1+6*(nb1)+ii &
-                                 )+zr(iup-1+6*(nb1)+ii)
-            vecthm(nb2, ii) = zr(ium-1+6*(nb1)+ii &
-                                 )
+            vecthe(nb2, ii) = zr(ium-1+6*(nb1)+ii)+zr(iup-1+6*(nb1)+ii)
+            vecthm(nb2, ii) = zr(ium-1+6*(nb1)+ii)
         end do
 !
     end if
@@ -684,23 +682,23 @@ subroutine vdpnlr(option, nomte, codret)
                     sign(i) = zr(icontm-1+k1+i)
                 end do
                 sign(4) = zr(icontm-1+k1+4)*rac2
-!
-! - LOI DE COMPORTEMENT
-! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
-! --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
-                call r8inir(3, r8vide(), angmas, 1)
-! -    APPEL A LA LOI DE COMPORTEMENT
+
+! ------------- Index of "sub"-point
                 ksp = (icou-1)*npge+inte
-!
+
+! ------------- Set main parameters for behaviour (on point)
+                call behaviourSetParaPoin(intsn, ksp, BEHinteg)
+
+! ------------- Integrator
                 sigma = 0.d0
                 call nmcomp(BEHinteg, &
-                            'MASS', intsn, ksp, 2, typmod, &
+                            fami, intsn, ksp, ndimLdc, typmod, &
                             zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
                             4, eps2d, deps2d, 4, sign, &
                             zr(ivarim+k2), option, angmas, &
                             sigma, zr(ivarip+k2), 36, dsidep, cod)
 !
-                call rcvalb('MASS', intsn, ksp, '+', zi(imate), &
+                call rcvalb(fami, intsn, ksp, '+', zi(imate), &
                             ' ', elasKeyword, 0, ' ', [0.d0], &
                             nbv, nomres, valres, icodre, 1)
 !
@@ -766,7 +764,7 @@ subroutine vdpnlr(option, nomte, codret)
                     stild(2) = sigma(2)
                     stild(3) = sigma(4)/rac2
                 end if
-
+!
                 stild(4) = cisail*kappa*gxz/2.d0
                 stild(5) = cisail*kappa*gyz/2.d0
 !
@@ -774,8 +772,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS
 !
-                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte- &
-                            1)
+                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
                     zr(icontp-1+k1+1) = stild(1)
                     zr(icontp-1+k1+2) = stild(2)
 !
@@ -792,8 +789,8 @@ subroutine vdpnlr(option, nomte, codret)
 !              ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * STILD ( 5 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, &
-                               b2su, stild, zr(ivectu))
+                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, b2su, stild, &
+                               zr(ivectu))
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -810,10 +807,8 @@ subroutine vdpnlr(option, nomte, codret)
 !
                         do i = 1, 5
 !
-                            stlis(i, kntsr) = stlis(i, kntsr) &
-                                              +zr(lzr-1+702+4*(intsn-1)+ &
-                                                  kntsr)*stild(i)*zr(lzr-1+ &
-                                                                     127+intsn-1)
+                            stlis(i, kntsr) = stlis(i, kntsr)+zr(lzr-1+702+4*(intsn-1)+kntsr)*sti&
+                                              &ld(i)*zr(lzr-1+127+intsn-1)
 !
                         end do
                     end do
@@ -823,8 +818,8 @@ subroutine vdpnlr(option, nomte, codret)
 !                  B2SU ( 5 , 6 * NB1 + 3 )
 !                POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(b2su, matc, zr(lzr-1+127+intsn-1)*detj*coef, 5, &
-                                6*nb1+3, zr(imatun))
+                    call btdbma(b2su, matc, zr(lzr-1+127+intsn-1)*detj*coef, 5, 6*nb1+3, &
+                                zr(imatun))
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -852,8 +847,8 @@ subroutine vdpnlr(option, nomte, codret)
 !           ( BTILD3 ( 5 , 27 ) ) T * STILD ( 5 ) *
 !           POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(3*nb2, 5, zr(lzr-1+127+intsn-1)*detj*coef, btild3, &
-                               stild, veczn)
+                    call btsig(3*nb2, 5, zr(lzr-1+127+intsn-1)*detj*coef, btild3, stild, &
+                               veczn)
 !
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -876,8 +871,8 @@ subroutine vdpnlr(option, nomte, codret)
 !           *                               JDN2NC ( 9 , 6 * NB1 + 3 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(jdn2nc, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, &
-                                6*nb1+3, vrignc)
+                    call btdbma(jdn2nc, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3, &
+                                vrignc)
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -886,8 +881,8 @@ subroutine vdpnlr(option, nomte, codret)
 !           *                               JDN1NI ( 9 , 6 * NB1 + 3 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btdbma(jdn1ni, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, &
-                                6*nb1+3, vrigni)
+                    call btdbma(jdn1ni, bars, zr(lzr-1+127+intsn-1)*detj*coef, 9, 6*nb1+3, &
+                                vrigni)
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -997,8 +992,7 @@ subroutine vdpnlr(option, nomte, codret)
 !------- AFFECTATION DE LA RIGIDITE GEOMETRIQUE
 !
         do jd = 1, (6*nb1+3)*(6*nb1+3)
-            zr(imatun-1+jd) = zr(imatun-1+jd)+ &
-                              vrignc(jd)-vrigni(jd)+vrigri(jd)+vrigrc(jd)
+            zr(imatun-1+jd) = zr(imatun-1+jd)+vrignc(jd)-vrigni(jd)+vrigri(jd)+vrigrc(jd)
 !
         end do
 !
@@ -1051,7 +1045,10 @@ subroutine vdpnlr(option, nomte, codret)
             theta(ii) = vecthe(in, ii)
         end do
 !
-        thetan = ddot(3, theta, 1, vecni, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        thetan = ddot(b_n, theta, b_incx, vecni, b_incy)
 !
 !+++++++++++ MATRICE T MOIUNS 1 DE THETA
 !
@@ -1114,18 +1111,14 @@ subroutine vdpnlr(option, nomte, codret)
 !
                 do ii = 1, 3
 !
-                    zr(ivectu-1+6*(in-1)+ii+3) = &
-                        zr(ivectu-1+6*(in-1)+ii+3)+ &
-                        knn*term(ii)*thetan
+                    zr(ivectu-1+6*(in-1)+ii+3) = zr(ivectu-1+6*(in-1)+ii+3)+knn*term(ii)*thetan
 !
                 end do
 !
             else
 !
                 do ii = 1, 3
-                    zr(ivectu-1+6*(in-1)+ii) = zr( &
-                                               ivectu-1+6*(in-1)+ii)+knn*term( &
-                                               ii)*thetan
+                    zr(ivectu-1+6*(in-1)+ii) = zr(ivectu-1+6*(in-1)+ii)+knn*term(ii)*thetan
                 end do
 !
             end if

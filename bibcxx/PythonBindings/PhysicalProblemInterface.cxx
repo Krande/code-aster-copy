@@ -3,7 +3,7 @@
  * @brief Interface python de PhysicalProblem
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -43,50 +43,50 @@ void exportPhysicalProblemToPython( py::module_ &mod ) {
 Return the model
 
 Returns:
-    ModelPtr: a pointer to the model
+    Model: a pointer to the model
         )" );
     c1.def( "getMesh", &PhysicalProblem::getMesh, R"(
 Return the mesh
 
 Returns:
-    MeshPtr: a pointer to the mesh
+    Mesh: a pointer to the mesh
         )" );
     c1.def( "getMaterialField", &PhysicalProblem::getMaterialField, R"(
 Return the material field
 
 Returns:
-    MaterialFieldPtr: a pointer to the material field
+    MaterialField: a pointer to the material field
         )" );
     c1.def( "getCodedMaterial", &PhysicalProblem::getCodedMaterial, R"(
 Return the coded material
 
 Returns:
-    CodedMaterialPtr: a pointer to the coded material
+    CodedMaterial: a pointer to the coded material
         )" );
     c1.def( "getElementaryCharacteristics", &PhysicalProblem::getElementaryCharacteristics, R"(
 Return the elementary charateristics
 
 Returns:
-    ElementaryCharacteristicsPtr: a pointer to the elementary charateristics
+    ElementaryCharacteristics: a pointer to the elementary charateristics
         )" );
     c1.def( "getDOFNumbering", &PhysicalProblem::getDOFNumbering, R"(
 Return the DOF numbering
 
 Returns:
-    BaseDOFNumberingPtr: a pointer to the DOF numbering
+    BaseDOFNumbering: a pointer to the DOF numbering
         )" );
     c1.def( "setDOFNumbering", &PhysicalProblem::setDOFNumbering, R"(
 Set the DOF numbering
 
 Arguments:
-    dofNum (BaseDOFNumberingPtr): a pointer to the DOF numbering
+    dofNum (BaseDOFNumbering): a pointer to the DOF numbering
         )",
             py::arg( "dofNum" ) );
     c1.def( "getBehaviourProperty", &PhysicalProblem::getBehaviourProperty, R"(
 Return the behaviour properties
 
 Returns:
-    BehaviourPropertyPtr: a pointer to the behaviour properties
+    BehaviourProperty: a pointer to the behaviour properties
         )" );
     c1.def( "computeListOfLoads", &PhysicalProblem::computeListOfLoads, R"(
 Build the list of loads from the added loads
@@ -118,8 +118,15 @@ Returns:
 Return list of loads.
 
 Returns:
-    ListOfLoadsPtr: a pointer to list of loads
+    ListOfLoads: a pointer to list of loads
         )" );
+    c1.def( "setListOfLoads", &PhysicalProblem::setListOfLoads, R"(
+Set list of loads
+
+Arguments:
+    loads (ListOfLoads): a pointer to the list of loads
+        )",
+            py::arg( "loads" ) );
     c1.def( "getExternalStateVariables", &PhysicalProblem::getExternalStateVariables, R"(
     Get the field for external state variables
 
@@ -127,7 +134,7 @@ Returns:
         time [float] : time value to evaluate values
 
     Returns:
-        FieldOnCellsRealPtr : external values
+        FieldOnCellsReal : external values
           )",
             py::arg( "time" ) );
     c1.def( "getReferenceExternalStateVariables",
@@ -135,7 +142,7 @@ Returns:
     Get the field of reference values for external state variables
 
     Returns:
-        FieldOnCellsRealPtr : field of reference values
+        FieldOnCellsReal : field of reference values
           )" );
     c1.def( "computeReferenceExternalStateVariables",
             &PhysicalProblem::computeReferenceExternalStateVariables, R"(

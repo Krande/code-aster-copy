@@ -51,12 +51,14 @@ class ExtendedMesh:
     internalStateBuilder = MeshStateBuilder
 
     @classmethod
-    def buildRectangle(cls, lx=1.0, ly=1.0, refine=0, info=1):
+    def buildRectangle(cls, lx=1.0, ly=1.0, nx=1, ny=1, refine=0, info=1):
         """Build the quadrilateral mesh of a rectangle.
 
         Arguments:
             lx [float] : length along the x axis (default 1.).
             ly [float] : length along the y axis (default 1.).
+            nx [int] : number of elements along the x axis (default 1).
+            ny [int] : number of elements along the y axis (default 1).
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (0|1|2). (default 1).
         """
@@ -65,8 +67,8 @@ class ExtendedMesh:
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
-        nb_seg_x = 1 * (2**refine)
-        nb_seg_y = 1 * (2**refine)
+        nb_seg_x = nx * (2**refine)
+        nb_seg_y = ny * (2**refine)
 
         mcmesh = mesh_builder.rectangle(
             xmin=0.0, xmax=lx, ymin=0.0, ymax=ly, nx=nb_seg_x, ny=nb_seg_y
@@ -221,6 +223,44 @@ class ExtendedMesh:
         """
         return cls.buildTube(height=height, rint=0, rext=radius, refine=refine, info=info)
 
+    @classmethod
+    def buildPointCloud(cls, coordlist, groups=False, info=1):
+        """Build the mesh of a point cloud from a set of coordinates.
+
+        Arguments:
+            coordlist list[float] : list of points coordinates (1D, 2D, 3D).
+            groups [bool] : if True, creates a group for each point,(default False).
+            info [int] : verbosity mode (1 or 2), (default 1).
+        """
+        assert info in (0, 1, 2), "Invalid parameter"
+
+        mcmesh = mesh_builder.pointcloud(coordlist=coordlist, groups=groups)
+
+        # Convert to aster mesh
+        mesh = cls()
+        mesh.buildFromMedCouplingMesh(mcmesh, verbose=info)
+
+        return mesh
+
+    @classmethod
+    def buildSpline1D(cls, coordlist, groups=False, info=1):
+        """Build the mesh of a 1D spline from a set of coordinates.
+
+        Arguments:
+            coordlist list[float] : list of points coordinates (1D, 2D, 3D).
+            groups [bool] : if True, creates a group for each point,(default False).
+            info [int] : verbosity mode (1 or 2), (default 1).
+        """
+        assert info in (0, 1, 2), "Invalid parameter"
+
+        mcmesh = mesh_builder.spline1d(coordlist=coordlist, groups=groups)
+
+        # Convert to aster mesh
+        mesh = cls()
+        mesh.buildFromMedCouplingMesh(mcmesh, verbose=info)
+
+        return mesh
+
     def LIST_GROUP_NO(self):
         """Retourne la liste des groupes de noeuds sous la forme :
         [ (gno1, nb noeuds  gno1), ...]"""
@@ -280,6 +320,18 @@ class ExtendedMesh:
         )
         return new_mesh
 
+    def restrict(self, groupsOfCells, info=1):
+        """Restrict the mesh to given groups of cells.
+
+        groupsOfCells (list[str]): groups of cells to restrict the mesh on.
+            info [int] : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the restricted mesh.
+        """
+
+        return CREA_MAILLAGE(MAILLAGE=self, RESTREINT=_F(GROUP_MA=groupsOfCells), INFO=info)
+
     def createMedCouplingMesh(self):
         """Returns the MEDCoupling unstructured mesh associated to the current mesh.
 
@@ -320,3 +372,39 @@ class ExtendedMesh:
         val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
         return self._getNodesFromCells(force_list(group_name), localNumbering, val[same_rank])
+
+    def _getGroupsOfCellsContainingIds(self, idcell):
+        """Returns the list of groups of cells containing the cell ids.
+
+        *For debugging only, performance issues.*
+
+        Arguments:
+            idcell (int/list[int]): Cell idS to find.
+
+        Returns:
+            list[str]: Names of groups containing the cell ids.
+        """
+
+        return [
+            grp
+            for grp in self.getGroupsOfCells()
+            if any(ids in self.getCells(grp) for ids in force_list(idcell))
+        ]
+
+    def _getGroupsOfNodesContainingIds(self, idnode):
+        """Returns the list of groups of nodes containing the node ids.
+
+        *For debugging only, performance issues.*
+
+        Arguments:
+            idnode (int/list[int]): Node idS to find.
+
+        Returns:
+            list[str]: Names of groups containing the node ids.
+        """
+
+        return [
+            grp
+            for grp in self.getGroupsOfNodes()
+            if any(ids in self.getNodes(grp) for ids in force_list(idnode))
+        ]

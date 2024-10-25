@@ -18,7 +18,8 @@
 !
 subroutine te0431(option, nomte)
 !
-    use Behaviour_module, only: behaviourOption
+    use Behaviour_type
+    use Behaviour_module
 !
     implicit none
 !
@@ -59,6 +60,8 @@ subroutine te0431(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
+    integer, parameter :: ndimLdc = 2
     integer :: codres(2)
     character(len=4) :: fami
     character(len=16) :: nomres(2)
@@ -71,28 +74,29 @@ subroutine te0431(option, nomte)
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
     real(kind=8) :: epsm, deps, sigm, sig, tmp, rig, valres(2)
     real(kind=8) :: angmas(3)
+    integer :: iinstm, iinstp
     aster_logical :: lexc, lNonLine, lLine
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=16) :: rela_cpla, rela_comp
+    type(Behaviour_Integ) :: BEHinteg
+    character(len=8), parameter :: typmod(2) = (/"COMP1D  ", "        "/)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
     lexc = (lteatt('MODELI', 'GRC'))
 !
-    lNonLine = (option(1:9) .eq. 'FULL_MECA') .or. &
-               (option(1:9) .eq. 'RAPH_MECA') .or. &
+    lNonLine = (option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA') .or. &
                (option(1:10) .eq. 'RIGI_MECA_')
     lLine = option .eq. 'RIGI_MECA'
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
+
 ! - Get input fields
-!
     call jevech('PGEOMER', 'L', igeom)
     if (lLine) then
         call jevech('PMATERC', 'L', imate)
@@ -102,31 +106,40 @@ subroutine te0431(option, nomte)
         rela_comp = ' '
         rela_cpla = ' '
         lMatr = ASTER_TRUE
-    elseif (lNonLine) then
+    else if (lNonLine) then
         call jevech('PMATERC', 'L', imate)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PCARCRI', 'L', icarcr)
         call jevech('PCOMPOR', 'L', icompo)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PDEPLMR', 'L', ideplm)
-        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                    itab=jtab)
         lgpg = max(jtab(6), 1)*jtab(7)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PVARIMP', 'L', ivarix)
         call r8inir(3, r8nnem(), angmas, 1)
+        call jevech('PINSTMR', 'L', iinstm)
+        call jevech('PINSTPR', 'L', iinstp)
     else
         ASSERT(ASTER_FALSE)
     end if
-
+!
     if (lNonLine) then
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), &
-                             lMatr, lVect, &
-                             lVari, lSigm)
+        call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                             lSigm)
 ! ----- Properties of behaviour
         rela_comp = zk16(icompo-1+RELA_NAME)
         rela_cpla = zk16(icompo-1+PLANESTRESS)
     end if
+
+! - Initialisation of behaviour datastructure
+    if (lNonLine) then
+        call behaviourInit(BEHinteg)
+    end if
+!
+
 !
 ! - Get output fields
 !
@@ -140,13 +153,19 @@ subroutine te0431(option, nomte)
     end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-        call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*lgpg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 ! - PARAMETRES EN SORTIE SUPPLEMENTAIE POUR LA METHODE IMPLEX
     if (option .eq. 'RIGI_MECA_IMPLEX') then
         call jevech('PCONTXR', 'E', icontx)
 ! ------ INITIALISATION DE LA CONTRAINTE INTERPOLE CONTX=CONTM
-        call dcopy(npg, zr(icontm), 1, zr(icontx), 1)
+        b_n = to_blas_int(npg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(icontm), b_incx, zr(icontx), b_incy)
     end if
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
@@ -177,9 +196,17 @@ subroutine te0431(option, nomte)
     else
         nddl = 3
     end if
-!
+
+! - Set main parameters for behaviour (on cell)
+    if (lNonLine) then
+        call behaviourSetParaCell(ndimLdc, typmod, option, &
+                                  zk16(icompo), zr(icarcr), &
+                                  zr(iinstm), zr(iinstp), &
+                                  fami, zi(imate), &
+                                  BEHinteg)
+    end if
+
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
-!
     do kpg = 1, npg
 !
 ! --- MISE SOUS FORME DE TABLEAU DES VALEURS DES FONCTIONS DE FORME
@@ -206,7 +233,7 @@ subroutine te0431(option, nomte)
 !
 ! --- RAPH_MECA, FULL_MECA*, RIGI_MECA_* : ON PASSE PAR LA LDC 1D
 !
-        elseif (lNonLine) then
+        else if (lNonLine) then
             sigm = zr(icontm+kpg-1)
 !
 !         CALCUL DE LA DEFORMATION DEPS11
@@ -218,8 +245,12 @@ subroutine te0431(option, nomte)
                     deps = deps+b(j, i)*zr(ideplp+(i-1)*nddl+j-1)
                 end do
             end do
-!
-            call nmco1d(fami, kpg, 1, zi(imate), rela_comp, rela_cpla, &
+! --------- Set main parameters for behaviour (on point)
+            call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! --------- Integrator
+            call nmco1d(BEHInteg, &
+                        fami, kpg, ksp, zi(imate), rela_comp, rela_cpla, &
                         option, epsm, deps, angmas, sigm, &
                         zr(ivarim+(kpg-1)*lgpg), sig, zr(ivarip+(kpg-1)*lgpg), rig, cod(kpg))
             if (cod(kpg) .eq. 1) goto 900
@@ -236,8 +267,10 @@ subroutine te0431(option, nomte)
         if (lVect) then
             do n = 1, nno
                 do i = 1, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i-1)+ &
-                                                b(i, n)*sig*zr(ipoids+kpg-1)*jac*densit
+                    zr(ivectu+(n-1)*nddl+i-1) = zr( &
+                                                ivectu+(n-1)*nddl+i-1)+b(i, &
+                                                                         n)*sig*zr(ipoids+kpg-1 &
+                                                                                   )*jac*densit
                 end do
             end do
         end if

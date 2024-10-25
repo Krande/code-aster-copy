@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0449(nomopt, nomte)
 !
     use HHO_type
@@ -41,7 +41,7 @@ subroutine te0449(nomopt, nomte)
 #include "asterfort/lteatt.h"
 #include "jeveux.h"
 #include "blas/dsyr.h"
-
+!
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -58,17 +58,16 @@ subroutine te0449(nomopt, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     integer :: cbs, fbs, total_dofs, npg
-    aster_logical :: laxis
     character(len=8), parameter :: fami = 'MASS'
     real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs
-!
-! --- Get HHO informations
-!
-    call hhoInfoInitCell(hhoCell, hhoData)
 !
 ! --- Get element parameters
 !
     call elrefe_info(fami=fami, npg=npg)
+!
+! --- Get HHO informations
+!
+    call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellMass)
 !
 ! --- Number of dofs
     call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
@@ -79,11 +78,6 @@ subroutine te0449(nomopt, nomte)
     if (nomopt /= "MASS_THER") then
         ASSERT(ASTER_FALSE)
     end if
-!
-! --- Initialize quadrature for the mass
-!
-    laxis = lteatt("TYPMOD", "AXIS")
-    call hhoQuadCellMass%initCell(hhoCell, npg, laxis)
 !
     if (lteatt('LUMPE', 'OUI')) then
         ASSERT(ASTER_FALSE)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,6 +65,7 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
     aster_logical :: bnews(3), mtrac
     common/tdim/ndt, ndi
     integer :: irr, decirr, nbsyst, decal, gdef
+    blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !     ----------------------------------------------------------------
@@ -109,9 +110,15 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
         if (gdef .eq. 1) then
 ! les 9 variables internes  de 6+3*ns+1 à 6+3*ns+9
 ! REPRESENTENT FE - ID
-            call dcopy(9, vind(nvi-3-18+10), 1, fe, 1)
-            call daxpy(9, +1.d0, id, 1, fe, &
-                       1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, vind(nvi-3-18+10), b_incx, fe, b_incy)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, +1.d0, id, b_incx, fe, &
+                       b_incy)
             call lcgrla(fe, epsegl)
             if (materf(nmat, 2) .eq. 0) then
                 call lcopli('ISOTROPE', mod, materf(1, 1), hookf)

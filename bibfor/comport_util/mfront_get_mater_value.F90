@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
 !
 ! - Coordinates of current Gauss point
 !
-    para_vale = BEHinteg%elem%coor_elga(kpg, :)
+    para_vale = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, :)
 !
     ASSERT(nprops <= npropmax)
     call mgis_get_props(extern_addr, nomres)
@@ -86,7 +86,7 @@ subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
     else
 ! ----- Get the properties values (enter under 'rela_comp' in DEFI_MATERIAU)
         props(1:nprops) = r8nnem()
-        if (BEHinteg%tabcod(ZFERRITE) .eq. 1) then
+        if (BEHinteg%behavESVA%tabcod(ZFERRITE) .eq. 1) then
             meta_type = 1
             nb_phasis = 5
             call metaGetPhase(fami, '+', kpg, ksp, meta_type, &
@@ -102,12 +102,12 @@ subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
                                 1, nomres(i), props(i), codrel(i), 1)
                 end if
             end do
-        elseif (BEHinteg%tabcod(ZALPHPUR) .eq. 1) then
+        elseif (BEHinteg%behavESVA%tabcod(ZALPHPUR) .eq. 1) then
             meta_type = 2
             nb_phasis = 3
             call utmess('F', 'COMPOR4_24')
         else
-            if (BEHinteg%l_varext_geom) then
+            if (BEHinteg%behavESVA%lGeomInESVA) then
                 call rcvalb(fami, kpg, ksp, '+', imate, &
                             ' ', rela_comp, 0, ' ', [0.d0], &
                             nprops, nomres, props, codrel, 1)

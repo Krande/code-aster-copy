@@ -42,7 +42,8 @@ subroutine te0069(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: icamas, kp, imate, itemps
+    character(len=8), parameter :: famiR = "RIGI"
+    integer :: kp, imate, itemps
     integer :: icodre(1)
     character(len=16) :: phenom
     real(kind=8) :: time, Kglo(3, 3), fluglo(3), dtpg(3), tpg
@@ -52,7 +53,7 @@ subroutine te0069(option, nomte)
 ! ----------------------------------------------------------------------
 !
     call FECell%init()
-    call FEQuadCell%initCell(FECell, "RIGI")
+    call FEQuadCell%initCell(FECell, famiR)
     call FEBasis%initCell(FECell)
 !
     call jevech('PMATERC', 'L', imate)
@@ -63,15 +64,12 @@ subroutine te0069(option, nomte)
     time = zr(itemps)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
-    if (phenom .eq. 'THER_ORTH') then
-        call jevech('PCAMASS', 'L', icamas)
-    end if
 !
     do kp = 1, FEQuadCell%nbQuadPoints
         tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
-        call nlcomp(phenom, imate, icamas, FECell%ndim, FEQuadCell%points(1:3, kp), time, &
-                    tpg, Kglo, dtpg, fluglo)
+        call nlcomp(phenom, famiR, kp, imate, FECell%ndim, FEQuadCell%points(1:3, kp), &
+                    time, tpg, Kglo, dtpg, fluglo)
         flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
     end do
 !

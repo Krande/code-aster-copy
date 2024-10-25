@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ subroutine resu60(resu1, resu2)
     real(kind=8), pointer :: freq2(:) => null()
     integer, pointer :: ordr1(:) => null()
     integer, pointer :: ordr2(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()
     resu = '88888'
@@ -111,8 +112,14 @@ subroutine resu60(resu1, resu2)
         call jeveuo(resu1//'           .DEPL', 'E', vc=depl1)
         call jeveuo(resu2//'           .DEPL', 'E', vc=depl2)
         call wkvect(resu//'           .DEPL', 'G V C', nbstoc, jdepl)
-        call zcopy(nbsto1, depl1, 1, zc(jdepl), 1)
-        call zcopy(nbsto2, depl2, 1, zc(jdepl+nbsto1), 1)
+        b_n = to_blas_int(nbsto1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, depl1, b_incx, zc(jdepl), b_incy)
+        b_n = to_blas_int(nbsto2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, depl2, b_incx, zc(jdepl+nbsto1), b_incy)
     end if
 !                         ^
 !                         |______________
@@ -122,16 +129,28 @@ subroutine resu60(resu1, resu2)
         call jeveuo(resu1//'           .VITE', 'E', vc=vite1)
         call jeveuo(resu2//'           .VITE', 'E', vc=vite2)
         call wkvect(resu//'           .VITE', 'G V C', nbstoc, jvite)
-        call zcopy(nbsto1, vite1, 1, zc(jvite), 1)
-        call zcopy(nbsto2, vite2, 1, zc(jvite+nbsto1), 1)
+        b_n = to_blas_int(nbsto1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, vite1, b_incx, zc(jvite), b_incy)
+        b_n = to_blas_int(nbsto2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, vite2, b_incx, zc(jvite+nbsto1), b_incy)
     end if
 !
     if (flaga1 .ne. 0) then
         call jeveuo(resu1//'           .ACCE', 'E', vc=acce1)
         call jeveuo(resu2//'           .ACCE', 'E', vc=acce2)
         call wkvect(resu//'           .ACCE', 'G V C', nbstoc, jacce)
-        call zcopy(nbsto1, acce1, 1, zc(jacce), 1)
-        call zcopy(nbsto2, acce2, 1, zc(jacce+nbsto1), 1)
+        b_n = to_blas_int(nbsto1)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, acce1, b_incx, zc(jacce), b_incy)
+        b_n = to_blas_int(nbsto2)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, acce2, b_incx, zc(jacce+nbsto1), b_incy)
     end if
 !
 !     --- RECUPERATION DES CHAMPS ORDR
@@ -155,8 +174,14 @@ subroutine resu60(resu1, resu2)
     call jeveuo(resu1//'           .DISC', 'E', vr=freq1)
     call jeveuo(resu2//'           .DISC', 'E', vr=freq2)
     call wkvect(resu//'           .DISC', 'G V R', nbsauv, jfreq)
-    call dcopy(nbsau1, freq1, 1, zr(jfreq), 1)
-    call dcopy(nbsau2, freq2, 1, zr(jfreq+nbsau1), 1)
+    b_n = to_blas_int(nbsau1)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, freq1, b_incx, zr(jfreq), b_incy)
+    b_n = to_blas_int(nbsau2)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, freq2, b_incx, zr(jfreq+nbsau1), b_incy)
 !
 !     --- DUPLICATION ---
 !

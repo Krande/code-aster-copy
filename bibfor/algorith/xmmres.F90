@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,10 +69,10 @@ subroutine xmmres(depdel, modele, cnsinr, ds_contact)
     integer :: ifm, niv
     integer :: jcesl1, jcesl2, jcesl3, jcesl4, jcesl5, ndime
     integer :: jcesd1, jcesd2, jcesd3, jcesd4, jcesd5
-    integer ::  jconl, jfrol, jdepl
-    integer ::  nbma, ima, iad, i, ia, in, iadb, k
+    integer :: jconl, jfrol, jdepl
+    integer :: nbma, ima, iad, i, ia, in, iadb, k
     integer :: ninter, itypma, nuno, jconx2, j, ndim
-    integer ::   jcnslr
+    integer :: jcnslr
     integer :: nsom, nosom(2), ar(12, 3), nbar, zresu
     integer :: zxain
     integer :: nbno
@@ -105,6 +105,7 @@ subroutine xmmres(depdel, modele, cnsinr, ds_contact)
     integer, pointer :: xfem_cont(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     integer, pointer :: connex(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -332,12 +333,14 @@ subroutine xmmres(depdel, modele, cnsinr, ds_contact)
                     end if
 !             DDL ASYMPTOTIQUE
                     if (zl(jdepl-1+2*ndim*(nosom(k)-1)+ndim+j)) then
-                        saut(j) = saut(j)-2.d0*ff(k)*rr*depv(2*ndim*(nosom(k)-1)+nd&
-                                  &im+j)
+                        saut(j) = saut(j)-2.d0*ff(k)*rr*depv(2*ndim*(nosom(k)-1)+ndim+j)
                     end if
                 end do
             end do
-            jeu = ddot(ndim, n, 1, saut, 1)
+            b_n = to_blas_int(ndim)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            jeu = ddot(b_n, n, b_incx, saut, b_incy)
 !
 !         RNX, RNY, RNZ SONT LES 3 COMPOSANTES DE RNXYZ
             rnxyz(:) = 0.d0
@@ -346,13 +349,11 @@ subroutine xmmres(depdel, modele, cnsinr, ds_contact)
                     rnxyz(j) = rnxyz(j)+ff(k)*mult*vcont(3*ndim*(nosom(k)-1)+j)
 !             DDL HEAVISIDE
                     if (zl(jconl-1+3*ndim*(nosom(k)-1)+ndim+1)) then
-                        rnxyz(j) = rnxyz(j)-ff(k)*mult*vcont(3*ndim*(nosom(k)-1)+ndim&
-                                   &+j)
+                        rnxyz(j) = rnxyz(j)-ff(k)*mult*vcont(3*ndim*(nosom(k)-1)+ndim+j)
                     end if
 !             DDL ASYMPTOTIQUE
                     if (zl(jconl-1+3*ndim*(nosom(k)-1)+2*ndim+1)) then
-                        rnxyz(j) = rnxyz(j)-ff(k)*rr*mult*vcont(3*ndim*(nosom(k)-1)+&
-                                   &2*ndim+j)
+                        rnxyz(j) = rnxyz(j)-ff(k)*rr*mult*vcont(3*ndim*(nosom(k)-1)+2*ndim+j)
                     end if
                 end do
             end do
@@ -379,8 +380,8 @@ subroutine xmmres(depdel, modele, cnsinr, ds_contact)
                 do k = 1, nsom
                     if (zl(jlagl-1+ndim*(nosom(k)-1)+1)) then
                         lagfro(j) = lagfro(j)+ff(k)*lagv(ndim*(nosom(k)-1)+2)*tau1(j)
-                        if (ndim .eq. 3) lagfro(j) = lagfro(j)+ff(k)*lagv(ndim*(nosom(k)-1)&
-                                                 &+3)*tau2(j)
+                        if (ndim .eq. 3) lagfro(j) = lagfro(j)+ff(k)*lagv(ndim*(nosom(k)-1)+3)*ta&
+                                                     &u2(j)
                     end if
                 end do
             end do
@@ -390,13 +391,11 @@ subroutine xmmres(depdel, modele, cnsinr, ds_contact)
                     rtxyz(j) = rtxyz(j)+ff(k)*mult*frot(3*ndim*(nosom(k)-1)+j)
 !             DDL HEAVISIDE
                     if (zl(jfrol-1+3*ndim*(nosom(k)-1)+ndim+1)) then
-                        rtxyz(j) = rtxyz(j)-ff(k)*mult*frot(3*ndim*(nosom(k)-1)+ndim&
-                                   &+j)
+                        rtxyz(j) = rtxyz(j)-ff(k)*mult*frot(3*ndim*(nosom(k)-1)+ndim+j)
                     end if
 !             DDL ASYMPTOTIQUE
                     if (zl(jfrol-1+3*ndim*(nosom(k)-1)+2*ndim+1)) then
-                        rtxyz(j) = rtxyz(j)-ff(k)*rr*mult*frot(3*ndim*(nosom(k)-1)+&
-                                   &2*ndim+j)
+                        rtxyz(j) = rtxyz(j)-ff(k)*rr*mult*frot(3*ndim*(nosom(k)-1)+2*ndim+j)
                     end if
                 end do
             end do
@@ -439,8 +438,8 @@ subroutine xmmres(depdel, modele, cnsinr, ds_contact)
             cnsvr(zresu*(nuno-1)+16) = rnx+rtax+rtgx
             cnsvr(zresu*(nuno-1)+17) = rny+rtay+rtgy
             cnsvr(zresu*(nuno-1)+18) = rnz+rtaz+rtgz
-            cnsvr(zresu*(nuno-1)+19) = sqrt((rnx+rtax+rtgx)**2+ &
-                                            (rny+rtay+rtgy)**2+(rnz+rtaz+rtgz)**2)
+            cnsvr(zresu*(nuno-1)+19) = sqrt( &
+                                       (rnx+rtax+rtgx)**2+(rny+rtay+rtgy)**2+(rnz+rtaz+rtgz)**2)
             cnsvr(zresu*(nuno-1)+25) = xyz(1)
             cnsvr(zresu*(nuno-1)+26) = xyz(2)
             cnsvr(zresu*(nuno-1)+27) = xyz(3)

@@ -50,7 +50,7 @@ The list of the supported *version parameters* are (with their type):
     FC: str                 - fortran compiler
     FCFLAGS: list[str]      - flags for fortran compiler
     exectool: dict[str]     - command lines for execution wrappers
-    outputdir: str     - output directory for ``waf test`` and derivated
+    outputdir: str          - output directory for ``waf test`` and derivated
 
 All these parameters are set during the *configure* step of the installation.
 

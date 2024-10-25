@@ -47,18 +47,153 @@ int PtScotchPartitioner::buildGraph( const VectorLong &vertloctab, const VectorL
                                _edges.data(), 0, 0 );
 };
 
-int PtScotchPartitioner::buildGraph( const MeshConnectionGraphPtr &graph ) {
+int PtScotchPartitioner::buildGraph( const MeshConnectionGraphPtr &graph,
+                                     const VectorOfVectorsLong &nodesToGather ) {
     auto &vert = const_cast< VectorLong & >( graph->getVertices() );
     auto &edge = const_cast< VectorLong & >( graph->getEdges() );
     _nbVertex = vert.size() - 1;
     _minId = graph->getRange()[0];
-    if ( graph->getVertexWeights().size() == 0 ) {
-        return SCOTCH_dgraphBuild( _graph, 0, vert.size() - 1, vert.size() - 1, vert.data(), 0, 0,
-                                   0, edge.size(), edge.size(), edge.data(), 0, 0 );
+    if ( nodesToGather.size() == 0 ) {
+        if ( graph->getVertexWeights().size() == 0 ) {
+            return SCOTCH_dgraphBuild( _graph, 0, vert.size() - 1, vert.size() - 1, vert.data(), 0,
+                                       0, 0, edge.size(), edge.size(), edge.data(), 0, 0 );
+        } else {
+            auto &weights = const_cast< VectorLong & >( graph->getVertexWeights() );
+            return SCOTCH_dgraphBuild( _graph, 0, vert.size() - 1, vert.size() - 1, vert.data(), 0,
+                                       weights.data(), 0, edge.size(), edge.size(), edge.data(), 0,
+                                       0 );
+        }
     } else {
-        auto &weights = const_cast< VectorLong & >( graph->getVertexWeights() );
-        return SCOTCH_dgraphBuild( _graph, 0, vert.size() - 1, vert.size() - 1, vert.data(), 0,
-                                   weights.data(), 0, edge.size(), edge.size(), edge.data(), 0, 0 );
+        // If user aske to gather some nodes
+        _gatheredNodes = true;
+        const auto nbProcs = getMPISize();
+        VectorOfVectorsLong firstNodesAndWeights =
+            VectorOfVectorsLong( nodesToGather.size(), VectorLong( 2, 0 ) );
+        VectorOfVectorsLong nodesToConnectToMaster;
+        _range = graph->getRange();
+
+        // First put a flag on nodes to gather (forget) in nodesToForget
+        // and save weight to apply on survival node (firstNodesAndWeights)
+        int pos = 0;
+        std::map< int, int > nodesToForget, masterNodeToPos;
+        for ( const auto &nodeVec : nodesToGather ) {
+            VectorLong allNodeId, nodeVec2;
+            // nodeVec to global numbering
+            for ( const auto &nodeId : nodeVec ) {
+                nodeVec2.push_back( nodeId + _range[0] );
+            }
+            // Share node ids to gather over procs
+            AsterMPI::all_gather( nodeVec2, allNodeId );
+            std::sort( allNodeId.begin(), allNodeId.end() );
+
+            // Save this vector
+            _toForgetVector.push_back( allNodeId );
+            const auto &savedNodeId = allNodeId[0];
+            auto &fNAW = firstNodesAndWeights[pos];
+            fNAW[0] = savedNodeId;
+            fNAW[1] = allNodeId.size();
+            masterNodeToPos[savedNodeId] = pos;
+            // All nodes but the first must put in nodesToForget
+            // First node will be the master node of group
+            bool first = true;
+            for ( const auto &curId : allNodeId ) {
+                if ( first ) {
+                    first = false;
+                    continue;
+                }
+                const auto toFind = nodesToForget.find( curId );
+                if ( toFind != nodesToForget.end() ) {
+                    throw std::runtime_error( "Nodes to gather must be in only one list."
+                                              " Tip: fuse lists" );
+                } else {
+                    nodesToForget[curId] = savedNodeId;
+                }
+            }
+
+            VectorLong curVec;
+            for ( const auto &nodeId : allNodeId ) {
+                if ( nodeId >= _range[0] && nodeId < _range[1] ) {
+                    const auto &localId = nodeId - _range[0];
+                    const auto &start = vert[localId];
+                    const auto &end = vert[localId + 1];
+                    for ( int edgeNum = start; edgeNum < end; ++edgeNum ) {
+                        const auto &nodeId2 = edge[edgeNum];
+                        const auto toFind = nodesToForget.find( nodeId2 );
+                        if ( toFind == nodesToForget.end() && nodeId2 != savedNodeId ) {
+                            curVec.push_back( nodeId2 );
+                        }
+                    }
+                }
+            }
+            VectorLong allConnectionToMaster;
+            AsterMPI::all_gather( curVec, allConnectionToMaster );
+            std::sort( allConnectionToMaster.begin(), allConnectionToMaster.end() );
+            auto size = std::unique( allConnectionToMaster.begin(), allConnectionToMaster.end() );
+            allConnectionToMaster.resize( std::distance( allConnectionToMaster.begin(), size ) );
+            nodesToConnectToMaster.push_back( allConnectionToMaster );
+            ++pos;
+        }
+
+        int count = 0;
+        // Build new Scotch graph by removing nodes in nodesToForget
+        pos = 0;
+        for ( int vertNum = 0; vertNum < _nbVertex; ++vertNum ) {
+            const auto &start = vert[vertNum];
+            const auto &end = vert[vertNum + 1];
+            _newVertices.push_back( pos );
+            // Local to global numbering
+            const int nodeId1 = vertNum + _range[0];
+
+            // Test if this node is a master node
+            const auto &tmp = masterNodeToPos.find( nodeId1 );
+            bool mNode = ( tmp != masterNodeToPos.end() );
+            std::set< int > alreadySeen;
+            if ( mNode ) {
+                const auto &nodesToAdd = nodesToConnectToMaster[tmp->second];
+                for ( const auto &nodeId : nodesToAdd ) {
+                    alreadySeen.insert( nodeId );
+                    _newEdges.push_back( nodeId );
+                    ++pos;
+                }
+            }
+            const auto toFind1 = nodesToForget.find( nodeId1 );
+            if ( toFind1 == nodesToForget.end() ) {
+                _weights.push_back( 1 );
+                for ( int edgeNum = start; edgeNum < end; ++edgeNum ) {
+                    const auto &nodeId2 = edge[edgeNum];
+                    const auto toFind2 = nodesToForget.find( nodeId2 );
+                    if ( toFind2 == nodesToForget.end() ) {
+                        if ( alreadySeen.count( nodeId2 ) == 0 ) {
+                            alreadySeen.insert( nodeId2 );
+                            _newEdges.push_back( nodeId2 );
+                            ++pos;
+                        }
+                    } else if ( !mNode ) {
+                        const auto &masterNodeId = toFind2->second;
+                        if ( alreadySeen.count( masterNodeId ) == 0 ) {
+                            alreadySeen.insert( masterNodeId );
+                            _newEdges.push_back( masterNodeId );
+                            ++pos;
+                        }
+                    }
+                }
+            } else {
+                // If node must be forget, its weight must be equal to 0
+                _weights.push_back( 0 );
+            }
+        }
+        _newVertices.push_back( pos );
+        // Add weight on remaining nodes (master nodes of each group)
+        for ( const auto &fNAW : firstNodesAndWeights ) {
+            const auto &nodeId = fNAW[0];
+            if ( nodeId >= _range[0] && nodeId < _range[1] ) {
+                const auto &curWeight = fNAW[1];
+                _weights[nodeId] = curWeight;
+            }
+        }
+        return SCOTCH_dgraphBuild( _graph, 0, _newVertices.size() - 1, _newVertices.size() - 1,
+                                   _newVertices.data(), 0, _weights.data(), 0, _newEdges.size(),
+                                   _newEdges.size(), _newEdges.data(), 0, 0 );
     }
 };
 
@@ -82,6 +217,33 @@ VectorLong PtScotchPartitioner::partitionGraph( bool deterministic ) {
         delete _graph2;
     } else {
         auto cret = SCOTCH_dgraphPart( _graph, nbProcs, _scotchStrat, partition.data() );
+    }
+    if ( _gatheredNodes ) {
+        // Ensure that gathered nodes will be on the same proc than master node
+        VectorLong toReduce, masterProcId( _toForgetVector.size(), -1 );
+        int count = 0;
+        // For each gathered node group, we are looking for master node proc
+        for ( const auto &curVec : _toForgetVector ) {
+            const auto &nodeId = curVec[0];
+            if ( nodeId >= _range[0] && nodeId < _range[1] ) {
+                toReduce.push_back( rank );
+            } else {
+                toReduce.push_back( -1 );
+            }
+            ++count;
+        }
+        AsterMPI::all_reduce( toReduce, masterProcId, MPI_MAX );
+        for ( int i = 0; i < masterProcId.size(); ++i ) {
+            const auto &procId = masterProcId[i];
+            const auto &curVec = _toForgetVector[i];
+            for ( int j = 0; j < curVec.size(); ++j ) {
+                const auto &nodeId = curVec[j];
+                if ( nodeId >= _range[0] && nodeId < _range[1] ) {
+                    const auto &localId = nodeId - _range[0];
+                    partition[localId] = procId;
+                }
+            }
+        }
     }
     buildPartition( partition, distributed );
     return distributed;

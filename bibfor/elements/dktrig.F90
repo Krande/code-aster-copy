@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dktrig(nomte, xyzl, option, pgl, rig, &
                   ener, multic)
     implicit none
@@ -58,6 +58,7 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig, &
     real(kind=8) :: bsigth(24), enerth, ctor
     aster_logical :: coupmf, indith
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
+    blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
     enerth = 0.0d0
 !
@@ -90,8 +91,13 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig, &
     aire = carat3(8)
 !
 !     ------ CALCUL DU PRODUIT BMT.DM.BM -------------------------------
-    call dcopy(9, dm, 1, dmf2, 1)
-    call dscal(9, aire, dmf2, 1)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, dm, b_incx, dmf2, b_incy)
+    b_n = to_blas_int(9)
+    b_incx = to_blas_int(1)
+    call dscal(b_n, aire, dmf2, b_incx)
     call utbtab('ZERO', 3, 6, dmf2, bm, &
                 xab1, memb)
 !
@@ -106,14 +112,24 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig, &
 !        ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
         call dktbf(qsi, eta, carat3, bf)
 !        ----- CALCUL DU PRODUIT BFT.DF.BF -------------------------
-        call dcopy(9, df, 1, df2, 1)
-        call dscal(9, wgt, df2, 1)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, df, b_incx, df2, b_incy)
+        b_n = to_blas_int(9)
+        b_incx = to_blas_int(1)
+        call dscal(b_n, wgt, df2, b_incx)
         call utbtab('CUMU', 3, 9, df2, bf, &
                     xab1, flex)
         if (coupmf) then
 !        ----- CALCUL DU PRODUIT BMT.DMF.BF ------------------------
-            call dcopy(9, dmf, 1, dmf2, 1)
-            call dscal(9, wgt, dmf2, 1)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, dmf, b_incx, dmf2, b_incy)
+            b_n = to_blas_int(9)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, wgt, dmf2, b_incx)
             call utctab('CUMU', 3, 9, 6, dmf2, &
                         bf, bm, xab1, mefl)
         end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ module HHO_inertia_module
 #include "asterc/r8prem.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 #include "blas/dsyev.h"
 #include "blas/dsyr.h"
 !
@@ -63,37 +64,41 @@ contains
 !   In hhoCell     : the current HHO Cell
 ! ---------------------------------------------------------------------------------
 !
-        type(HHO_quadrature)  :: hhoQuad
+        type(HHO_quadrature) :: hhoQuad
         integer :: ipg, idim
         integer(kind=4) :: info
         real(kind=8) :: coor(3), evalues(3), work(50)
+        blas_int :: b_lda, b_lwork, b_n
+        blas_int :: b_incx
 !
         axes = 0.d0
 !
-        if (hhoCell%use_inertia) then
 !
 ! ----- get quadrature
-            call hhoQuad%GetQuadCell(hhoCell, 2)
+        call hhoQuad%GetQuadCell(hhoCell, 2)
 !
 ! ----- Loop on quadrature point
-            do ipg = 1, hhoQuad%nbQuadPoints
-                coor = hhoCell%barycenter-hhoQuad%points(1:3, ipg)
-                call dsyr('U', hhoCell%ndim, hhoQuad%weights(ipg), coor, 1, axes, 3)
-            end do
+        do ipg = 1, hhoQuad%nbQuadPoints
+            coor = hhoCell%barycenter-hhoQuad%points(1:3, ipg)
+            b_n = to_blas_int(hhoCell%ndim)
+            b_incx = to_blas_int(1)
+            b_lda = to_blas_int(3)
+            call dsyr('U', b_n, hhoQuad%weights(ipg), coor, b_incx, &
+                      axes, b_lda)
+        end do
 !
 ! ----- Compute eigenvector
-            evalues = 0.d0
-            call dsyev('V', 'U', hhoCell%ndim, axes, 3, evalues, work, 50, info)
-            ASSERT(info == 0)
+        evalues = 0.d0
+        b_n = to_blas_int(hhoCell%ndim)
+        b_lda = to_blas_int(3)
+        b_lwork = to_blas_int(50)
+        call dsyev('V', 'U', b_n, axes, b_lda, &
+                   evalues, work, b_lwork, info)
+        ASSERT(info == 0)
 !
-            do idim = 1, hhoCell%ndim
-                axes(1:3, idim) = axes(1:3, idim)/norm2(axes(1:3, idim))
-            end do
-        else
-            do idim = 1, hhoCell%ndim
-                axes(idim, idim) = 1.d0
-            end do
-        end if
+        do idim = 1, hhoCell%ndim
+            axes(1:3, idim) = axes(1:3, idim)/norm2(axes(1:3, idim))
+        end do
 !
     end function
 !
@@ -115,42 +120,51 @@ contains
 !   In hhoFace     : the current HHO Face
 ! ---------------------------------------------------------------------------------
 !
-        type(HHO_quadrature)  :: hhoQuad
+        type(HHO_quadrature) :: hhoQuad
         integer :: ipg, idim
         integer(kind=4) :: info
         real(kind=8) :: coor(3), evalues(3), work(50), axes_3d(3, 3)
+        blas_int :: b_lda, b_lwork, b_n
+        blas_int :: b_incx
 !
         axes = 0.d0
         axes_3d = 0.d0
 !
-        if (hhoFace%use_inertia) then
-            if (hhoFace%ndim == 1) then
-                coor = hhoFace%coorno(1:3, 2)-hhoFace%coorno(1:3, 1)
-                axes(1:3, 1) = coor/norm2(coor)
-            else
+        if (hhoFace%ndim == 1) then
+            coor = hhoFace%coorno(1:3, 2)-hhoFace%coorno(1:3, 1)
+            axes(1:3, 1) = coor/norm2(coor)
+        else
 !
 ! ----- get quadrature
-                call hhoQuad%GetQuadFace(hhoFace, 2)
+            call hhoQuad%GetQuadFace(hhoFace, 2)
 !
 ! ----- Loop on quadrature point
-                do ipg = 1, hhoQuad%nbQuadPoints
-                    coor = hhoFace%barycenter-hhoQuad%points(1:3, ipg)
-                    call dsyr('U', hhoFace%ndim+1, hhoQuad%weights(ipg), coor, 1, axes_3d, 3)
-                end do
+            do ipg = 1, hhoQuad%nbQuadPoints
+                coor = hhoFace%barycenter-hhoQuad%points(1:3, ipg)
+                b_n = to_blas_int(hhoFace%ndim+1)
+                b_incx = to_blas_int(1)
+                b_lda = to_blas_int(3)
+                call dsyr('U', b_n, hhoQuad%weights(ipg), coor, b_incx, &
+                          axes_3d, b_lda)
+            end do
 !
 ! ----- Compute eigenvector
-                evalues = 0.d0
-                call dsyev('V', 'U', hhoFace%ndim+1, axes_3d, 3, evalues, work, 50, info)
-                ASSERT(info == 0)
-                ASSERT(minloc(evalues(1:hhoFace%ndim+1), dim=1) == 1)
-                axes(1:3, 1:2) = axes_3d(1:3, 2:3)
-!
-                do idim = 1, hhoFace%ndim
-                    axes(1:3, idim) = axes(1:3, idim)/norm2(axes(1:3, idim))
-                end do
+            evalues = 0.d0
+            b_n = to_blas_int(hhoFace%ndim+1)
+            b_lda = to_blas_int(3)
+            b_lwork = to_blas_int(50)
+            call dsyev('V', 'U', b_n, axes_3d, b_lda, &
+                       evalues, work, b_lwork, info)
+            ASSERT(info == 0)
+            ASSERT(minloc(evalues(1:hhoFace%ndim+1), dim=1) == 1)
+            if (abs(evalues(1))/maxval(evalues) > 1.d-10) then
+                call utmess('F', 'HHO1_13', sr=abs(evalues(1))/maxval(evalues))
             end if
-        else
-            axes = hhoLocalBasisFace(hhoFace)
+            axes(1:3, 1:2) = axes_3d(1:3, 2:3)
+!
+            do idim = 1, hhoFace%ndim
+                axes(1:3, idim) = axes(1:3, idim)/norm2(axes(1:3, idim))
+            end do
         end if
 !
     end function

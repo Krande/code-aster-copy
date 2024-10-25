@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=4),
     NOM_PARA="FS",
     TABLE=TABFS,
-    VALE_CALC=(1.5469235715723666,),
+    VALE_CALC=(1.540807984559323,),
     VALE_REFE=(1.534),
     REFERENCE="SOURCE_EXTERNE",
     PRECISION=1e-2,

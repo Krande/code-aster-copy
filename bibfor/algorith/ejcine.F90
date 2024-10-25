@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,7 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1, &
     real(kind=8) :: ray
     real(kind=8) :: geoloc(ndim, nno2), geotan(ndim-1, nno2)
     real(kind=8) :: dfdis(nno2, ndim-1), wg2
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
 !
     if (ndim .eq. 3) then
@@ -105,7 +106,10 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1, &
 !
 !       CALCUL DE LA DISTANCE A L'AXE EN AXI, R=RAYON DU PG COURANT
         if (axi) then
-            ray = ddot(nno2, geom, 2, vff2, 1)
+            b_n = to_blas_int(nno2)
+            b_incx = to_blas_int(2)
+            b_incy = to_blas_int(1)
+            ray = ddot(b_n, geom, b_incx, vff2, b_incy)
             wg = ray*wg
         end if
 !

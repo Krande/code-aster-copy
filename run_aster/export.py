@@ -78,7 +78,6 @@ import os.path as osp
 import platform
 import re
 
-from .config import CFG
 from .logger import logger
 from .settings import (
     DEPRECATED,
@@ -326,7 +325,6 @@ class File:
 
 class Export(Store):
     """This object represents a `.export` file.
-
 
     Arguments:
         export_file (str, optional): File name of the export file.

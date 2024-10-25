@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,13 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate, &
 #include "asterf_types.h"
 #include "asterc/r8t0.h"
 #include "asterfort/granvi.h"
+#include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
     integer :: imate, kpg, ksp
     character(len=8) :: typmod(*), materi
-    character(len=16) :: compor(*), option
+    character(len=16) :: compor(*), option, phenbid
     character(len=*) :: fami
     real(kind=8) :: instam, instap
     real(kind=8) :: tpmxm, tpmxp
@@ -284,16 +285,21 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate, &
 !
 !  ------- CARACTERISTIQUES HYGROMETRIE H
 !
+    call rccoma(imate, 'BETON_DESORP', 0, phenbid, icodre(1))
+    if (icodre(1) .ne. 0) then
+        call utmess('F', 'ALGORITH7_97')
+    end if
+
     nomres(1) = 'FONC_DESORP'
-    call rcvalb(fami, kpg, ksp, '-', imate, materi, 'ELAS', &
-                1, nompar, [valpam], 1, nomres, valres, icodre, 2)
+    call rcvalb(fami, kpg, ksp, '-', imate, materi, 'BETON_DESORP', &
+                1, nompar, [valpam], 1, nomres, valres, icodre, 0)
 !
     if (icodre(1) .ne. 0) then
         call utmess('F', 'ALGORITH7_98')
     end if
     hygrm = valres(1)
-    call rcvalb(fami, kpg, ksp, '+', imate, materi, 'ELAS', &
-                1, nompar, [valpap], 1, nomres, valres, icodre, 2)
+    call rcvalb(fami, kpg, ksp, '+', imate, materi, 'BETON_DESORP', &
+                1, nompar, [valpap], 1, nomres, valres, icodre, 0)
 !
     if (icodre(1) .ne. 0) then
         call utmess('F', 'ALGORITH7_98')

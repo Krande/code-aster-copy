@@ -71,7 +71,8 @@ ETAID_F = DEFI_CONSTANTE(VALE=4.32e12)
 TEMP0C_F = DEFI_CONSTANTE(VALE=20.0)
 
 MATER = DEFI_MATERIAU(
-    ELAS_FO=_F(E=YOUN, NU=ZERO, TEMP_DEF_ALPHA=TREF, ALPHA=ALPH, FONC_DESORP=FONC1),
+    ELAS_FO=_F(E=YOUN, NU=ZERO, TEMP_DEF_ALPHA=TREF, ALPHA=ALPH),
+    BETON_DESORP=_F(FONC_DESORP=FONC1),
     BETON_BURGER_FO=_F(
         YoungModulus=YOUN,
         PoissonRatio=ZERO,
@@ -146,7 +147,7 @@ U = STAT_NON_LINE(
     MODELE=MOMECA,
     CHAM_MATER=CHMTH,
     EXCIT=(_F(CHARGE=LIAISON1),),
-    COMPORTEMENT=_F(RELATION=compor, RESI_INTE=1e-10),
+    COMPORTEMENT=_F(RELATION=compor, RESI_INTE=1e-11),
     # ITER_INTE_MAXI = 100,
     # ALGO_INTE = 'NEWTON',),
     INCREMENT=_F(LIST_INST=DEFLIST),
@@ -211,9 +212,9 @@ for i in range(NCAL):
     MATER[i] = DEFI_MATERIAU(  # ELAS=_F(E=YOUN(Ti),
         #        NU=0.,
         #        ALPHA=0.,
-        #        # FONC_DESORP = FONC1(Ti)
         #      ),
-        ELAS_FO=_F(E=Ei, NU=ZERO, TEMP_DEF_ALPHA=0.0, ALPHA=ZERO, FONC_DESORP=FONC1),
+        ELAS_FO=_F(E=Ei, NU=ZERO, TEMP_DEF_ALPHA=0.0, ALPHA=ZERO),
+        BETON_DESORP=_F(FONC_DESORP=FONC1),
         BETON_BURGER=_F(
             YoungModulus=Ei2,
             PoissonRatio=0.0,
@@ -254,7 +255,7 @@ for i in range(NCAL):
             MODELE=MOMECA,
             CHAM_MATER=CHMTH[i],
             EXCIT=(_F(CHARGE=CHRGE[i]), _F(CHARGE=LIAISON2)),
-            COMPORTEMENT=_F(RELATION=compor),
+            COMPORTEMENT=_F(RELATION=compor, RESI_INTE=1e-11),
             INCREMENT=_F(LIST_INST=listinst),
             NEWTON=_F(REAC_INCR=1, REAC_ITER=1),
         )
@@ -290,7 +291,7 @@ for i in range(NCAL):
             CHAM_MATER=CHMTH[i],
             EXCIT=(_F(CHARGE=CHRGE[i]), _F(CHARGE=LIAISON2)),
             ETAT_INIT=_F(DEPL=EM, SIGM=SM1, VARI=VM),
-            COMPORTEMENT=_F(RELATION=compor),
+            COMPORTEMENT=_F(RELATION=compor, RESI_INTE=1e-11),
             INCREMENT=_F(LIST_INST=listinst),
             NEWTON=_F(REAC_INCR=1, REAC_ITER=1),
         )

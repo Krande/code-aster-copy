@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -153,7 +153,7 @@ subroutine nmdesc(mesh, modele, numedd, &
                 sddisc, numins, iterat, &
                 ds_algopara, ds_contact, ds_algorom, &
                 ds_print, ds_measure, &
-                valinc, solalg, hhoField, &
+                valinc, solalg, &
                 meelem, measse, &
                 numedd, numfix, sdnume, &
                 solveu, ds_system, &

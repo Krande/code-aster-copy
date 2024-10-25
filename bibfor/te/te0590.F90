@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine te0590(option, nomte)
 #include "asterfort/nifism.h"
 #include "asterfort/niinit.h"
 #include "asterfort/nmtstm.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tgverm.h"
 #include "asterfort/utmess.h"
@@ -63,13 +63,13 @@ subroutine te0590(option, nomte)
     integer :: ndim, nno1, nno2, nno3, npg, nb_elrefe
     integer :: icoret, codret, iret
     integer :: iw, ivf1, ivf2, ivf3, idf1, idf2
-    integer :: jtab(7), lgpg, i, idim
+    integer :: jtab(7), lgpg
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
     integer :: igeom, imate, icontm, ivarim
     integer :: iinstm, iinstp, iddlm, iddld, icompo, icarcr, ivarix
     integer :: ivectu, icontp, ivarip, imatuu
     integer :: idbg, nddl, ia, ja
-    real(kind=8) :: angl_naut(7), bary(3)
+    real(kind=8) :: angl_naut(3)
     character(len=8) :: list_elrefe(10), typmod(2)
     aster_logical :: matsym
     character(len=16) :: defo_comp, rela_comp, type_comp
@@ -79,7 +79,8 @@ subroutine te0590(option, nomte)
     real(kind=8) :: epsilo, epsilp, epsilg
     real(kind=8) :: varia(2*135*135)
     real(kind=8) :: tab_out(27*3*27*3)
-    integer      :: na, os, nb, ib, kk
+    integer :: na, os, nb, ib, kk
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,14 +102,12 @@ subroutine te0590(option, nomte)
 ! - Get shape functions
 !
 ! - PRES
-    call elrefe_info(elrefe=list_elrefe(3), fami='RIGI', nno=nno3, &
-                     jvf=ivf3)
+    call elrefe_info(elrefe=list_elrefe(3), fami='RIGI', nno=nno3, jvf=ivf3)
 ! - GONF
-    call elrefe_info(elrefe=list_elrefe(2), fami='RIGI', nno=nno2, &
-                     jvf=ivf2, jdfde=idf2)
+    call elrefe_info(elrefe=list_elrefe(2), fami='RIGI', nno=nno2, jvf=ivf2, jdfde=idf2)
 ! - DX, DY, DZ
-    call elrefe_info(elrefe=list_elrefe(1), fami='RIGI', ndim=ndim, nno=nno1, &
-                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1)
+    call elrefe_info(elrefe=list_elrefe(1), fami='RIGI', ndim=ndim, nno=nno1, npg=npg, &
+                     jpoids=iw, jvf=ivf1, jdfde=idf1)
 !
     nddl = nno1*ndim+nno2+nno3
 !
@@ -126,9 +125,8 @@ subroutine te0590(option, nomte)
 !
 ! - Get index of dof
 !
-    call niinit(typmod, &
-                ndim, nno1, nno2, nno3, 0, &
-                vu, vg, vp, vpi)
+    call niinit(typmod, ndim, nno1, nno2, nno3, &
+                0, vu, vg, vp, vpi)
 !
 ! - Get input fields
 !
@@ -142,28 +140,18 @@ subroutine te0590(option, nomte)
     call jevech('PDEPLPR', 'L', iddld)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
-!
-! - Compute barycentric center
-!
-    bary(:) = 0.d0
-    do i = 1, nno1
-        do idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno1
-        end do
-    end do
 !
 ! - Get orientation
 !
-    call rcangm(ndim, bary, angl_naut)
+    call getElemOrientation(ndim, nno1, igeom, angl_naut)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
     lMatrPred = option .eq. 'RIGI_MECA_TANG'
 !
 ! - Properties of behaviour
@@ -187,7 +175,10 @@ subroutine te0590(option, nomte)
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*lgpg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 !
 100 continue
@@ -198,9 +189,8 @@ subroutine te0590(option, nomte)
                     vu, vg, vp, zr(igeom), typmod, &
                     option, zi(imate), zk16(icompo), lgpg, zr(icarcr), &
                     zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut, &
-                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
-                    lMatr, lVect, &
-                    zr(ivectu), zr(imatuu), codret)
+                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), lMatr, &
+                    lVect, zr(ivectu), zr(imatuu), codret)
     else if (defo_comp .eq. 'GDEF_LOG') then
 !
 ! - PARAMETRES EN SORTIE
@@ -209,9 +199,9 @@ subroutine te0590(option, nomte)
                     vu, vg, vp, zr(igeom), typmod, &
                     option, zi(imate), zk16(icompo), lgpg, zr(icarcr), &
                     zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut, &
-                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
-                    lMatr, lVect, lSigm, lVari, &
-                    zr(ivectu), zr(imatuu), matsym, codret)
+                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), lMatr, &
+                    lVect, lSigm, lVari, zr(ivectu), zr(imatuu), &
+                    matsym, codret)
     else if (defo_comp .eq. 'SIMO_MIEHE') then
 !
 ! - PARAMETRES EN SORTIE
@@ -222,8 +212,8 @@ subroutine te0590(option, nomte)
                     typmod, option, zi(imate), zk16(icompo), lgpg, &
                     zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), &
                     angl_naut, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
-                    lMatr, lVect, lMatrPred, &
-                    zr(ivectu), zr(imatuu), codret)
+                    lMatr, lVect, lMatrPred, zr(ivectu), zr(imatuu), &
+                    codret)
     else
         call utmess('F', 'ELEMENTS3_16', sk=defo_comp)
     end if

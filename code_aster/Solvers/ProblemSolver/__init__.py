@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,5 +29,6 @@ from .newton_solver import NewtonSolver
 from .non_linear_solver import NonLinearSolver
 from .problem_solver import ProblemSolver
 from .snes_solver import SNESSolver
+from .raspen_solver import RASPENSolver
 from .storage_manager import StorageManager
 from .time_stepper import TimeStepper

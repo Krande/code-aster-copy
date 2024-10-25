@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,6 +65,12 @@ recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, post_iter)
         l_detec = (rela_comp .eq. 'KIT_CG')
     else if (what .eq. 'KIT') then
         l_detec = (rela_comp(1:4) .eq. 'KIT_')
+    else if (what .eq. 'JOINT_MECA_FROT') then
+        l_detec = (rela_comp .eq. 'JOINT_MECA_FROT')
+    else if (what .eq. 'JOINT_MECA_RUPT') then
+        l_detec = (rela_comp .eq. 'JOINT_MECA_RUPT')
+    else if (what .eq. 'JOINT_MECA_ENDO') then
+        l_detec = (rela_comp .eq. 'JOINT_MECA_ENDO')
     else if (what .eq. 'UMAT') then
         l_detec = (rela_comp .eq. 'UMAT')
     else if (what .eq. 'MFRONT_OFFI') then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn, &
     integer :: i, nbf, ibid, ifq, j
     integer :: fa(6, 8), ibid3(12, 3), ifisc, jfisc, ino
     integer :: nnof, na, nb, iret
-    aster_logical :: chgsgn, lajpf, ajout
+    aster_logical :: chgsgn, lajpf, ajout, c1, c2
 ! ----------------------------------------------------------------------
 !
     call elref1(elref)
@@ -81,7 +81,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn, &
 !     BOUCLE SUR LES FACES
     do ifq = 1, nbf
 !
-        lajpf = .false.
+        lajpf = ASTER_FALSE
         if (fa(ifq, 4) .eq. 0) then
             nnof = 3
             alias = 'TR3'
@@ -100,7 +100,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn, &
         if (somlsn .eq. 0.d0) goto 200
 !
         do ifisc = 1, nfisc
-            chgsgn = .false.
+            chgsgn = ASTER_FALSE
             do i = 1, nnof
                 na = fa(ifq, i)
                 if (i .eq. 1) then
@@ -120,11 +120,16 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn, &
                     0.d0) goto 110
 !           ON ACCEPTE SI LE FRONT EST SUR UN NOEUD OU UN PT DE L'ARETE
                 if (lsna .eq. 0.d0 .and. lsja .eq. 0.d0 .or. lsna .eq. 0.d0 .and. lsnb .eq. &
-                    0.d0 .and. (lsja*lsjb) .lt. r8prem()) chgsgn = .true.
+                    0.d0 .and. (lsja*lsjb) .lt. r8prem()) chgsgn = ASTER_TRUE
 !           ON ACCEPTE SI UNE ARETE DE LA FACETTE EST COUPÉE
-                if (abs(lsna-lsnb) .gt. r8prem() .and. (lsjb-lsnb*(lsja-lsjb)/(lsna-lsnb)) &
-                    .lt. prec .or. abs(lsna-lsnb) .le. r8prem() .and. (lsja*lsjb) .lt. r8prem()) &
-                    chgsgn = .true.
+                c1 = abs(lsna-lsnb) .gt. r8prem()
+                if (c1) then
+                    c1 = lsjb-lsnb*(lsja-lsjb)/(lsna-lsnb) .lt. prec
+                end if
+                c2 = abs(lsna-lsnb) .le. r8prem() .and. (lsja*lsjb) .lt. r8prem()
+                if (c1 .or. c2) then
+                    chgsgn = ASTER_TRUE
+                end if
             end do
             if (.not. chgsgn) goto 110
 !
@@ -154,7 +159,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn, &
                 end do
                 if (lsj .gt. 0) goto 110
             end do
-            lajpf = .true.
+            lajpf = ASTER_TRUE
             do i = 1, ndim
                 m(i) = 0
                 do j = 1, nnof
@@ -171,7 +176,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn, &
 !       DETECTES DANS XCFACE LORSQUE LE PT EST EXACT SUR UNE ARETE
             do j = 1, ipt
                 dst = padist(ndim, m, ptint(ndim*(j-1)+1))
-                if (dst .le. r8prem()) lajpf = .false.
+                if (dst .le. r8prem()) lajpf = ASTER_FALSE
             end do
         end if
 !

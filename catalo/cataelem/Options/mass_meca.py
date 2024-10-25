@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,9 @@ from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option,
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
+
+
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
 
 
 PVARCPR = InputParameter(phys=PHY.VARI_R)
@@ -109,6 +112,7 @@ MASS_MECA = Option(
         PPMILTO,
         PSTANO,
         PVARCPR,
+        PCHHOBS,
     ),
     para_out=(SP.PMATUNS, SP.PMATUUR),
     condition=(

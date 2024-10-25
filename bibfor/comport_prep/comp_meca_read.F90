@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
+subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -38,7 +38,7 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
 #include "asterfort/comp_meca_l.h"
 !
     aster_logical, intent(in) :: l_etat_init
-    type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
+    type(BehaviourPrep_MapCompor), intent(inout) :: prepMapCompor
     character(len=8), intent(in), optional :: model
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  l_etat_init      : .true. if initial state is defined
-! IO  behaviourPrepPara: datastructure to prepare behaviour
+! IO  prepMapCompor    : datastructure to construct COMPOR map
 ! In  model            : model
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbFactorKeyword = behaviourPrepPara%nb_comp
+    nbFactorKeyword = prepMapCompor%nb_comp
     mesh = ' '
     lTotalStrain = ASTER_FALSE
 
@@ -146,7 +146,7 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
 ! ----- Get parameters for external programs (MFRONT/UMAT)
         type_cpla = 'VIDE'
         call getExternalBehaviourPara(mesh, modelCell, rela_comp, defo_comp, kit_comp, &
-                                      behaviourPrepPara%v_paraExte(iFactorKeyword), &
+                                      prepMapCompor%prepExte(iFactorKeyword), &
                                       factorKeyword, iFactorKeyword, &
                                       type_cpla_out_=type_cpla)
 
@@ -162,41 +162,41 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
         end if
 
 ! ----- Save parameters
-        behaviourPrepPara%v_para(iFactorKeyword)%rela_comp = rela_comp
-        behaviourPrepPara%v_para(iFactorKeyword)%meca_comp = meca_comp
-        behaviourPrepPara%v_para(iFactorKeyword)%defo_comp = defo_comp
-        behaviourPrepPara%v_para(iFactorKeyword)%type_comp = type_comp
-        behaviourPrepPara%v_para(iFactorKeyword)%type_cpla = type_cpla
-        behaviourPrepPara%v_para(iFactorKeyword)%kit_comp = kit_comp
-        behaviourPrepPara%v_para(iFactorKeyword)%mult_comp = mult_comp
-        behaviourPrepPara%v_para(iFactorKeyword)%post_iter = post_iter
-        behaviourPrepPara%v_para(iFactorKeyword)%defo_ldc = defo_ldc
-        behaviourPrepPara%v_para(iFactorKeyword)%rigi_geom = rigi_geom
-        behaviourPrepPara%v_para(iFactorKeyword)%regu_visc = regu_visc
-        behaviourPrepPara%v_para(iFactorKeyword)%post_incr = post_incr
+        prepMapCompor%prepPara(iFactorKeyword)%rela_comp = rela_comp
+        prepMapCompor%prepPara(iFactorKeyword)%meca_comp = meca_comp
+        prepMapCompor%prepPara(iFactorKeyword)%defo_comp = defo_comp
+        prepMapCompor%prepPara(iFactorKeyword)%type_comp = type_comp
+        prepMapCompor%prepPara(iFactorKeyword)%type_cpla = type_cpla
+        prepMapCompor%prepPara(iFactorKeyword)%kit_comp = kit_comp
+        prepMapCompor%prepPara(iFactorKeyword)%mult_comp = mult_comp
+        prepMapCompor%prepPara(iFactorKeyword)%post_iter = post_iter
+        prepMapCompor%prepPara(iFactorKeyword)%defo_ldc = defo_ldc
+        prepMapCompor%prepPara(iFactorKeyword)%rigi_geom = rigi_geom
+        prepMapCompor%prepPara(iFactorKeyword)%regu_visc = regu_visc
+        prepMapCompor%prepPara(iFactorKeyword)%post_incr = post_incr
 
     end do
 
-    if (behaviourPrepPara%lDebug) then
+    if (prepMapCompor%lDebug) then
         WRITE (6, *) "Données lues: ", nbFactorKeyword, " occurrences."
         do iFactorKeyword = 1, nbFactorKeyword
             WRITE (6, *) "- Occurrence : ", iFactorKeyword
-            WRITE (6, *) "--- rela_comp : ", behaviourPrepPara%v_para(iFactorKeyword)%rela_comp
-            WRITE (6, *) "--- meca_comp : ", behaviourPrepPara%v_para(iFactorKeyword)%meca_comp
-            WRITE (6, *) "--- defo_comp : ", behaviourPrepPara%v_para(iFactorKeyword)%defo_comp
-            WRITE (6, *) "--- type_comp : ", behaviourPrepPara%v_para(iFactorKeyword)%type_comp
-            WRITE (6, *) "--- type_cpla : ", behaviourPrepPara%v_para(iFactorKeyword)%type_cpla
-            WRITE (6, *) "--- kit_comp  : ", behaviourPrepPara%v_para(iFactorKeyword)%kit_comp
-            WRITE (6, *) "--- mult_comp : ", behaviourPrepPara%v_para(iFactorKeyword)%mult_comp
-            WRITE (6, *) "--- post_iter : ", behaviourPrepPara%v_para(iFactorKeyword)%post_iter
-            WRITE (6, *) "--- defo_ldc  : ", behaviourPrepPara%v_para(iFactorKeyword)%defo_ldc
-            WRITE (6, *) "--- rigi_geom : ", behaviourPrepPara%v_para(iFactorKeyword)%rigi_geom
-            WRITE (6, *) "--- regu_visc : ", behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
-            WRITE (6, *) "--- post_incr : ", behaviourPrepPara%v_para(iFactorKeyword)%post_incr
+            WRITE (6, *) "--- rela_comp : ", prepMapCompor%prepPara(iFactorKeyword)%rela_comp
+            WRITE (6, *) "--- meca_comp : ", prepMapCompor%prepPara(iFactorKeyword)%meca_comp
+            WRITE (6, *) "--- defo_comp : ", prepMapCompor%prepPara(iFactorKeyword)%defo_comp
+            WRITE (6, *) "--- type_comp : ", prepMapCompor%prepPara(iFactorKeyword)%type_comp
+            WRITE (6, *) "--- type_cpla : ", prepMapCompor%prepPara(iFactorKeyword)%type_cpla
+            WRITE (6, *) "--- kit_comp  : ", prepMapCompor%prepPara(iFactorKeyword)%kit_comp
+            WRITE (6, *) "--- mult_comp : ", prepMapCompor%prepPara(iFactorKeyword)%mult_comp
+            WRITE (6, *) "--- post_iter : ", prepMapCompor%prepPara(iFactorKeyword)%post_iter
+            WRITE (6, *) "--- defo_ldc  : ", prepMapCompor%prepPara(iFactorKeyword)%defo_ldc
+            WRITE (6, *) "--- rigi_geom : ", prepMapCompor%prepPara(iFactorKeyword)%rigi_geom
+            WRITE (6, *) "--- regu_visc : ", prepMapCompor%prepPara(iFactorKeyword)%regu_visc
+            WRITE (6, *) "--- post_incr : ", prepMapCompor%prepPara(iFactorKeyword)%post_incr
         end do
     end if
 
 ! - Is at least ONE behaviour is not incremental ?
-    behaviourPrepPara%lTotalStrain = lTotalStrain
+    prepMapCompor%lTotalStrain = lTotalStrain
 !
 end subroutine

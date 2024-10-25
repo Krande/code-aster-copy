@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
                   idfde, geom, typmod, compor, deplm, &
                   ddepl, depl0, depl1, dfdi, fm, &
@@ -74,6 +74,7 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
     real(kind=8) :: r, deps(6)
     real(kind=8) :: t9bid(3, 3)
     real(kind=8) :: poids
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,8 +96,11 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
 !
 ! ----- REACTUALISATION DE LA GEOMETRIE SI GRANDES DEFS
         if (grand) then
-            call daxpy(ndim*nno, 1.d0, deplm, 1, geom, &
-                       1)
+            b_n = to_blas_int(ndim*nno)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, deplm, b_incx, geom, &
+                       b_incy)
         end if
 !
 ! ----- CALCUL DE DEPS = EPS(DU)
@@ -110,8 +114,11 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
                     kpg, ipoids, ivf, idfde, depl0, &
                     .true._1, poids, dfdi, t9bid, epsp, &
                     r)
-        call daxpy(ndimsi, 1.d0, deps, 1, epsp, &
-                   1)
+        b_n = to_blas_int(ndimsi)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps, b_incx, epsp, &
+                   b_incy)
 !
 ! ----- CALCUL DE EPSD (DEPS = EPSP + ETA EPSD)
         call nmgeom(ndim, nno, axi, .false._1, geom, &

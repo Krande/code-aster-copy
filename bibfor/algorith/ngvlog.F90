@@ -20,7 +20,7 @@
 subroutine ngvlog(fami, option, typmod, ndim, nno, &
                   nnob, npg, nddl, iw, vff, &
                   vffb, idff, idffb, geomi, compor, &
-                  mate, lgpg, crit, angmas, instm, &
+                  mate, lgpg, carcri, angmas, instm, &
                   instp, matsym, ddlm, ddld, siefm, &
                   vim, siefp, vip, fint, matr, &
                   lMatr, lVect, lSigm, lVari, &
@@ -40,14 +40,15 @@ subroutine ngvlog(fami, option, typmod, ndim, nno, &
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
+#include "asterfort/Behaviour_type.h"
 !
     aster_logical, intent(in)       :: matsym
-    character(len=8), intent(in)    :: typmod(*)
+    character(len=8), intent(in)    :: typmod(2)
     character(len=*), intent(in)    :: fami
-    character(len=16), intent(in)   :: option, compor(*)
+    character(len=16), intent(in)   :: option, compor(COMPOR_SIZE)
     integer, intent(in)             :: ndim, nno, nnob, npg, nddl, lgpg
     integer, intent(in)             :: mate, iw, idff, idffb
-    real(kind=8), intent(in)        :: geomi(ndim, nno), crit(*), instm, instp
+    real(kind=8), intent(in)        :: geomi(ndim, nno), carcri(CARCRI_SIZE), instm, instp
     real(kind=8), intent(in)        :: vff(nno, npg), vffb(nnob, npg)
     real(kind=8), intent(in)        :: angmas(3), ddlm(nddl), ddld(nddl), siefm(3*ndim+2, npg)
     real(kind=8), intent(in)        :: vim(lgpg, npg)
@@ -106,6 +107,7 @@ subroutine ngvlog(fami, option, typmod, ndim, nno, &
     real(kind=8), dimension(6), parameter  :: vrac2 = (/1.d0, 1.d0, 1.d0, &
                                                         sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)/)
 ! ----------------------------------------------------------------------
+    integer, parameter :: ksp = 1
     type(GDLOG_DS):: gdlm, gdlp
     aster_logical :: axi, resi
     integer       :: g, n, i
@@ -130,6 +132,7 @@ subroutine ngvlog(fami, option, typmod, ndim, nno, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    ASSERT(nddl .eq. nno*ndim+nnob*2)
 
 ! Remarque sur l'ordre des composantes (cf. grandeurs premieres)
 ! degres de liberte : DX,DY,DZ,PRES,GONF,VARI,LAG_GV
@@ -138,12 +141,15 @@ subroutine ngvlog(fami, option, typmod, ndim, nno, &
 
 ! - La distinction RIGI_MECA_TANG est problématique en GDEF_LOG (rigi geom ! )
     resi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA'
-!
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-! Tests de coherence
-    ASSERT(nddl .eq. nno*ndim+nnob*2)
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instm, instp, &
+                              fami, mate, &
+                              BEHinteg)
 
 ! --- INITIALISATION ---
 
@@ -222,11 +228,14 @@ subroutine ngvlog(fami, option, typmod, ndim, nno, &
         silcm(1:neu) = vim(lgpg-5:lgpg-6+neu, g)*vrac2(1:neu)
         silcm(neu+1:neu+neg) = siefm(neu+1:neu+neg, g)
 
-        ! Comportement
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(g, ksp, BEHinteg)
+
+! ----- Integrator
         silcp = 0.d0
         call nmcomp(BEHinteg, &
-                    fami, g, 1, ndim, typmod, &
-                    mate, compor, crit, instm, instp, &
+                    fami, g, ksp, ndim, typmod, &
+                    mate, compor, carcri, instm, instp, &
                     neu+neg, eplcm, eplcp-eplcm, neu+neg, silcm, &
                     vim(1, g), option, angmas, &
                     silcp, vip(1, g), (neu+neg)*(neu+neg), dsde, cod(g))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,6 @@
 subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
                   base, noca, method, xfem)
 !
-! person_in_charge: jacques.pellet at edf.fr
-!
 ! --------------------------------------------------------------------------------------------------
 ! BUT :
 !  PROJETER LES CHAMPS CONTENUS DANS LA SD RESU1
@@ -38,6 +36,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
 !   2- ON NE TRAITE CORRECTEMENT QUE LES EVOL_XXX (INST)
 ! --------------------------------------------------------------------------------------------------
 !
+    use proj_champ_module
     implicit none
 !
 #include "asterf_types.h"
@@ -91,13 +90,14 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
     complex(kind=8) :: c16b
     character(len=1) :: typerr
     character(len=4) :: tychv, tych
-    character(len=8) :: kb, ma1, ma2, nume, prol0, k8b, typ1, typ2, crit, mo2
+    character(len=8) :: kb, ma1, ma2, nume, k8b, typ1, typ2, crit, mo2
     character(len=16) :: nomsym(200), k16b, nomcmd, typres
     character(len=19) :: ch1, ch2, prfchn, ligrel, prfch2, noms2, kpar(nbmax)
     character(len=24) :: valk(3), noojb
 !
     character(len=24), pointer :: pjxx_k1(:) => null()
 !
+    type(prolongation)  :: prolong
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
@@ -122,22 +122,17 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
         call dismoi('NOM_MAILLA', moa2, 'MODELE', repk=ma2)
         mo2 = moa2
         ligrel = mo2//'.MODELE'
-!
     else
         ma2 = moa2
         mo2 = ' '
         ligrel = ' '
     end if
 !
-!
-!
     if (nomcmd .eq. 'DEPL_INTERNE') then
 !       ON NE TRAITE QUE LE CHAMP DEPL
         nbsym = 1
         nomsym(1) = 'DEPL'
-        call rsorac(resu1, 'LONUTI', 0, r8b, kb, &
-                    c16b, r8b, kb, tmod, 1, &
-                    ibid)
+        call rsorac(resu1, 'LONUTI', 0, r8b, kb, c16b, r8b, kb, tmod, 1, ibid)
         nbordr = tmod(1)
         if (nbordr .eq. 0) then
             call utmess('F', 'CALCULEL4_62', sk=resu1)
@@ -145,11 +140,11 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
 !
         call wkvect('&&PJXXPR.NUME_ORDRE', 'V V I', nbordr, jordr)
 !
-        call rsorac(resu1, 'TOUT_ORDRE', 0, r8b, kb, &
-                    c16b, r8b, kb, zi(jordr), nbordr, &
-                    ibid)
+        call rsorac(resu1, 'TOUT_ORDRE', 0, r8b, kb, c16b, r8b, kb, zi(jordr), nbordr, ibid)
 !
-        prol0 = 'OUI'
+!       On prolonge obligatoirement par 0
+        prolong%prol_vale_r = 'OUI'
+        prolong%vale_r = 0.0d0
 !
     else
         call jeveuo(corres//'.PJXX_K1', 'L', vk24=pjxx_k1)
@@ -162,21 +157,20 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
                 call utmess('F', 'CALCULEL5_28')
             end if
         end if
-!
-        call rsutc4(resu1, ' ', 1, 200, nomsym, &
-                    nbsym, acceno)
+        !
+        call rsutc4(resu1, ' ', 1, 200, nomsym, nbsym, acceno)
         ASSERT(nbsym .gt. 0)
-!
-        call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ier)
+        !
+        ! Quel est le type de la prolongation
+        call prolongation_get(prolong)
+        !
         call getvtx(' ', 'TYPE_CHAM', scal=tychv, nbret=ibid)
-!
-!
-!     1- CREATION DE LA SD RESULTAT : RESU2
-!     ------------------------------------
+        !
+        ! CREATION DE LA SD RESULTAT : RESU2
+        ! ----------------------------------
         call getvr8(' ', 'PRECISION', scal=prec, nbret=ie)
         call getvtx(' ', 'CRITERE', scal=crit, nbret=ie)
-        call rsutnu(resu1, ' ', 0, '&&PJXXPR.NUME_ORDRE', nbordr, &
-                    prec, crit, iret)
+        call rsutnu(resu1, ' ', 0, '&&PJXXPR.NUME_ORDRE', nbordr, prec, crit, iret)
         if (iret .ne. 0) then
             call utmess('F', 'CALCULEL4_61', sk=resu1)
         end if
@@ -199,7 +193,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
     if (nomcmd .eq. 'DEPL_INTERNE') then
 !
     else
-!       ON ESSAYE DE RECUPERER LA NUMEROTATION IMPOSEE
+        ! ON ESSAYE DE RECUPERER LA NUMEROTATION IMPOSEE
         call getvid(' ', 'NUME_DDL', scal=nume, nbret=ier)
         if (ier .ne. 0) then
             prfch2 = nume(1:8)//'      .NUME'
@@ -212,60 +206,54 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
     do isym = 1, nbsym
 !
         if (prfch2 .ne. '12345678.00000.NUME') then
-!           ON PREND LA NUMEROTATION IMPOSEE
+            ! ON PREND LA NUMEROTATION IMPOSEE
             prfchn = prfch2
         else
-!           ON DEFINIT UNE NUMEROTATION 'BIDON"
+            ! ON DEFINIT UNE NUMEROTATION 'BIDON"
             noojb = '12345678.00000.NUME.PRNO'
             call gnomsd(' ', noojb, 10, 14)
             prfchn = noojb(1:19)
         end if
-!
+        !
         do i = 1, nbordr
             iordr = zi(jordr+i-1)
-            call rsexch(' ', resu1, nomsym(isym), iordr, ch1, &
-                        iret)
+            call rsexch(' ', resu1, nomsym(isym), iordr, ch1, iret)
             if (iret .gt. 0) goto 20
-!           PROJECTION DU CHAMP SI POSSIBLE :
-            call rsexch(' ', resu2, nomsym(isym), iordr, ch2, &
-                        iret)
-!           VERIF ULTIME DANS LE CAS XFEM SI LE CHAMP EST NODAL :
+            ! PROJECTION DU CHAMP SI POSSIBLE
+            call rsexch(' ', resu2, nomsym(isym), iordr, ch2, iret)
+            ! VERIF ULTIME DANS LE CAS XFEM SI LE CHAMP EST NODAL
             lpjxfem = .false._1
             if (lxfem) then
                 call dismoi('TYPE_CHAMP', ch1, 'CHAMP', repk=tych)
                 if (tych .eq. 'NOEU' .and. nomsym(isym) .eq. 'DEPL') lpjxfem = .true._1
             end if
             if (method(1:10) .eq. 'SOUS_POINT') then
-                call pjspma(corres, ch1, ch2, prol0, ligrel, &
-                            noca, base, iret)
+                call pjspma(corres, ch1, ch2, prolong, ligrel, noca, base, iret)
             else
                 if (.not. lpjxfem) then
-                    call pjxxch(corres, ch1, ch2, tychv, prfchn, &
-                                prol0, ligrel, base, iret)
+                    call pjxxch(corres, ch1, ch2, tychv, prfchn, prolong, ligrel, base, iret)
                 else
                     if ((typres(1:4) .eq. 'EVOL') .or. (typres(1:4) .eq. 'DYNA')) then
-                        call rsadpa(resu1, 'L', 1, 'INST', iordr, &
-                                    0, sjv=iains1, styp=kb, istop=0)
+                        call rsadpa(resu1, 'L', 1, 'INST', iordr, 0, sjv=iains1, styp=kb, istop=0)
                         inst = zr(iains1)
                     else
                         inst = 0.
                     end if
                     call pjxfem(corres, ch1, ch2, tychv, prfchn, &
-                                prol0, ligrel, base, moa1, inst, &
-                                iret)
+                                prolong%prol_vale_r, ligrel, base, moa1, inst, iret)
                 end if
             end if
             ASSERT(iret .eq. 0 .or. iret .eq. 1 .or. iret .eq. 10)
-!           ELGA ET CART : ON NE FAIT RIEN :
+            ! ELGA ET CART : ON NE FAIT RIEN
             if (iret .eq. 10) goto 20
 !
             if (iret .gt. 0) then
                 if (acceno) then
-!                   L'UTILISATEUR A DEMANDE EXPLICITEMENT LA PROJECTION :
+                    ! L'UTILISATEUR A DEMANDE EXPLICITEMENT LA PROJECTION :
                     typerr = 'F'
                 else
-!                   L'UTILISATEUR N'A PAS DEMANDE EXPLICITEMENT
-!                   LA PROJECTION, ON SE CONTENTE D'UNE ALARME  :
+                    ! L'utilisateur n'a pas demande explicitement la projection
+                    !   ==> on se contente d'une alarme
                     typerr = 'A'
                 end if
                 valk(1) = nomsym(isym)
@@ -275,92 +263,73 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
                 goto 20
             end if
             call rsnoch(resu2, nomsym(isym), iordr)
-!
-!           ATTRIBUTION DES ATTRIBUTS DU CONCEPT RESULTAT
-!           EXTRACTION DES PARAMETRES MODAUX
+            !
+            ! Attribution des attributs du concept résultat extraction des paramètres modaux
             if ((typres(1:9) .eq. 'MODE_MECA') .or. (typres(1:4) .eq. 'BASE')) then
-                call vpcrea(0, resu2, ' ', ' ', ' ', &
-                            prfch2(1:8), ier)
-                call rsadpa(resu1, 'L', 1, 'FREQ', iordr, &
-                            0, sjv=iains1, styp=kb, istop=0)
-                call rsadpa(resu2, 'E', 1, 'FREQ', iordr, &
-                            0, sjv=iains2, styp=kb)
+                call vpcrea(0, resu2, ' ', ' ', ' ', prfch2(1:8), ier)
+                call rsadpa(resu1, 'L', 1, 'FREQ', iordr, 0, sjv=iains1, styp=kb, istop=0)
+                call rsadpa(resu2, 'E', 1, 'FREQ', iordr, 0, sjv=iains2, styp=kb)
                 zr(iains2) = zr(iains1)
-!
-!               RECOPIE DE NUME_MODE S'IL EXISTE:
+                ! RECOPIE DE NUME_MODE S'IL EXISTE
                 call jenonu(jexnom(resu1//'           .NOVA', 'NUME_MODE'), inume)
                 if (inume .ne. 0) then
-                    call rsadpa(resu1, 'L', 1, 'NUME_MODE', iordr, &
-                                0, sjv=iains1, styp=kb, istop=0)
-                    call rsadpa(resu2, 'E', 1, 'NUME_MODE', iordr, &
-                                0, sjv=iains2, styp=kb)
+                    call rsadpa(resu1, 'L', 1, 'NUME_MODE', iordr, 0, sjv=iains1, styp=kb, istop=0)
+                    call rsadpa(resu2, 'E', 1, 'NUME_MODE', iordr, 0, sjv=iains2, styp=kb)
                     zi(iains2) = zi(iains1)
                 end if
-!
+                !
             else if (typres(1:9) .eq. 'MODE_STAT') then
-                call vpcrea(0, resu2, ' ', ' ', ' ', &
-                            prfch2(1:8), ier)
-                call rsadpa(resu1, 'L', 1, 'NOEUD_CMP', iordr, &
-                            0, sjv=iains1, styp=kb, istop=0)
-                call rsadpa(resu2, 'E', 1, 'NOEUD_CMP', iordr, &
-                            0, sjv=iains2, styp=kb)
+                call vpcrea(0, resu2, ' ', ' ', ' ', prfch2(1:8), ier)
+                call rsadpa(resu1, 'L', 1, 'NOEUD_CMP', iordr, 0, sjv=iains1, styp=kb, istop=0)
+                call rsadpa(resu2, 'E', 1, 'NOEUD_CMP', iordr, 0, sjv=iains2, styp=kb)
                 zk16(iains2) = zk16(iains1)
-!
+                !
             else if (typres .eq. 'DYNA_HARMO') then
-                call rsadpa(resu1, 'L', 1, 'FREQ', iordr, &
-                            0, sjv=iains1, styp=kb, istop=0)
-                call rsadpa(resu2, 'E', 1, 'FREQ', iordr, &
-                            0, sjv=iains2, styp=kb)
+                call rsadpa(resu1, 'L', 1, 'FREQ', iordr, 0, sjv=iains1, styp=kb, istop=0)
+                call rsadpa(resu2, 'E', 1, 'FREQ', iordr, 0, sjv=iains2, styp=kb)
                 zr(iains2) = zr(iains1)
-!
+                !
             else if ((typres(1:4) .eq. 'EVOL') .or. (typres(1:4) .eq. 'DYNA')) then
-                call rsadpa(resu1, 'L', 1, 'INST', iordr, &
-                            0, sjv=iains1, styp=kb, istop=0)
-                call rsadpa(resu2, 'E', 1, 'INST', iordr, &
-                            0, sjv=iains2, styp=kb)
+                call rsadpa(resu1, 'L', 1, 'INST', iordr, 0, sjv=iains1, styp=kb, istop=0)
+                call rsadpa(resu2, 'E', 1, 'INST', iordr, 0, sjv=iains2, styp=kb)
                 zr(iains2) = zr(iains1)
-!
+                !
             else if (typres .eq. 'FOURIER_ELAS') then
-                call rsadpa(resu1, 'L', 1, 'NUME_MODE', iordr, &
-                            0, sjv=iains1, istop=0)
-                call rsadpa(resu2, 'E', 1, 'NUME_MODE', iordr, &
-                            0, sjv=iains2)
+                call rsadpa(resu1, 'L', 1, 'NUME_MODE', iordr, 0, sjv=iains1, istop=0)
+                call rsadpa(resu2, 'E', 1, 'NUME_MODE', iordr, 0, sjv=iains2)
                 zi(iains2) = zi(iains1)
-!
+                !
             end if
-!
+            !
             if (nomcmd .eq. 'DEPL_INTERNE') then
                 ipar = 0
             else
-!               REMPLIT D AUTRES PARAMETRES SI DEMANDE PAR UTILISATEUR
+                ! Remplit d autres parametres si demande par utilisateur
                 call getvtx(' ', 'NOM_PARA', nbval=nbmax, vect=kpar, nbret=ipar)
             end if
-!
-!
+            !
             do ind = 1, ipar
-                call rsadpa(resu1, 'L', 1, kpar(ind), iordr, &
-                            1, sjv=ipar1, styp=typ1, istop=0)
-                call rsadpa(resu2, 'E', 1, kpar(ind), iordr, &
-                            0, sjv=ipar2, styp=typ2)
+                call rsadpa(resu1, 'L', 1, kpar(ind), iordr, 1, sjv=ipar1, styp=typ1, istop=0)
+                call rsadpa(resu2, 'E', 1, kpar(ind), iordr, 0, sjv=ipar2, styp=typ2)
                 if (typ1(1:1) .eq. 'I') then
                     zi(ipar2) = zi(ipar1)
-!
+                    !
                 else if (typ1(1:1) .eq. 'R') then
                     zr(ipar2) = zr(ipar1)
-!
+                    !
                 else if (typ1(1:2) .eq. 'K8') then
                     zk8(ipar2) = zk8(ipar1)
-!
+                    !
                 else if (typ1(1:3) .eq. 'K16') then
                     zk16(ipar2) = zk16(ipar1)
-!
+                    !
                 else if (typ1(1:3) .eq. 'K32') then
                     zk32(ipar2) = zk32(ipar1)
-!
+                    !
                 end if
             end do
             ico = ico+1
-!
+            !
 20          continue
         end do
     end do
@@ -374,17 +343,15 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
         call jeveuo(resu2//'           .ORDR', 'L', jordr)
         call jelira(resu2//'           .ORDR', 'LONUTI', nbordr)
         do i = 1, nbordr
-            call rsadpa(resu2, 'E', 1, 'MODELE', zi(jordr-1+i), &
-                        0, sjv=jpara, styp=k8b)
+            call rsadpa(resu2, 'E', 1, 'MODELE', zi(jordr-1+i), 0, sjv=jpara, styp=k8b)
             zk8(jpara) = mo2
         end do
     end if
-!   CREATION DE L'OBJET .REFD SI NECESSAIRE:
+!   Création de l'objet .REFD si nécessaire:
     call jeexin(resu1//'           .REFD', iret)
     if (iret .gt. 0) then
         call jeexin(resu2//'           .REFD', iret)
-        if (iret .eq. 0) call refdaj(' ', resu2, -1, ' ', 'INIT', &
-                                     ' ', ibid)
+        if (iret .eq. 0) call refdaj(' ', resu2, -1, ' ', 'INIT', ' ', ibid)
     end if
     call jedema()
 end subroutine

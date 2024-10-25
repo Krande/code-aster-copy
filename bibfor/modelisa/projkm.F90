@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -131,6 +131,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
     character(len=24) :: conxma, coorno, tymama, linobet2, linobet1, nomama
     character(len=24) :: lnuma, liproj, linoma
     aster_logical :: lrechelarg, lnopres
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -291,8 +292,8 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
 !............. EXCENTRICITE DU NOEUD DU CABLE ET COORDONNEES
 !............. DU POINT PROJETE
 !
-                    excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+&
-                             & normal(3)*(x3dca(3)-xyzma(3, 1))
+                    excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+no&
+                             &rmal(3)*(x3dca(3)-xyzma(3, 1))
 !               l'excentrement ne peut pas etre plus grand que la distance
 !               au noeud de beton le plus proche
                     if (abs(excent) .gt. exc_max) then
@@ -325,13 +326,21 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
                     end do
                     if (dmax .eq. 0.0d0) dmax = 1.0d0
                     if (dble(abs(excent))/dmax .lt. epsg) excent = 0.0d0
-                    call dcopy(3, x3dca(1), 1, x3dp(1), 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, x3dca(1), b_incx, x3dp(1), b_incy)
                     if (excent .ne. 0.0d0) then
-                        call daxpy(3, -excent, normal(1), 1, x3dp(1), &
-                                   1)
+                        b_n = to_blas_int(3)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        call daxpy(b_n, -excent, normal(1), b_incx, x3dp(1), &
+                                   b_incy)
                         if (excent .lt. 0.0d0) then
                             excent = dble(abs(excent))
-                            call dscal(3, -1.0d0, normal(1), 1)
+                            b_n = to_blas_int(3)
+                            b_incx = to_blas_int(1)
+                            call dscal(b_n, -1.0d0, normal(1), b_incx)
                         end if
                     end if
 !
@@ -507,11 +516,17 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
                 ntyma = zi(jtyma+numail-1)
                 call canorm(xyzma, normal, 3, ntyma, 1)
 !
-                excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+nor&
-                         &mal(3)*(x3dca(3)-xyzma(3, 1))
-                call dcopy(3, x3dca, 1, x3dp, 1)
-                call daxpy(3, -excent, normal, 1, x3dp, &
-                           1)
+                excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+normal&
+                         &(3)*(x3dca(3)-xyzma(3, 1))
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, x3dca, b_incx, x3dp, b_incy)
+                b_n = to_blas_int(3)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, -excent, normal, b_incx, x3dp, &
+                           b_incy)
                 call projtq(nbcnx, xyzma(1, 1), icnx, x3dp, abs(excent), &
                             itria, inoeu, icote, xbar, iproj)
                 if (iproj .ge. 0) then

@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,9 +23,17 @@
 #include "DataFields/FieldConverter.h"
 #include "Discretization/Calcul.h"
 
+ModelPtr HHO::getModel() const {
+    if ( _phys_problem ) {
+        return _phys_problem->getModel();
+    }
+
+    return nullptr;
+};
+
 FunctionPtr HHO::_createFunc( const ASTERDOUBLE &value ) const {
     auto funct = std::make_shared< Function >();
-    funct->setValues( {1.}, {value} );
+    funct->setValues( { 1. }, { value } );
     funct->setResultName( "TOUTRESU" );
     funct->setParameterName( "TOUTPARA" );
     funct->setInterpolation( "LIN LIN" );
@@ -39,7 +47,7 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
 
     std::string option, para_name_in, para_name_out;
 
-    auto model = _phys_problem->getModel();
+    auto model = this->getModel();
 
     if ( model->isMechanical() ) {
         option = "HHO_DEPL_MECA";
@@ -61,6 +69,8 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
     calcul->addInputField( "PGEOMER", model->getMesh()->getCoordinates() );
     calcul->addInputField( para_name_in, hho_field );
 
+    calcul->addHHOField( model->getHHOModel() );
+
     // Add output terms
     auto exitField = std::make_shared< FieldOnCellsReal >( model );
     calcul->addOutputField( para_name_out, exitField );
@@ -77,7 +87,7 @@ FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces, const GenericFunctionPt
                                              ASTERDOUBLE time ) const {
 
     const std::string option = "HHO_PROJ_THER";
-    auto model = _phys_problem->getModel();
+    auto model = this->getModel();
     auto mesh = model->getMesh();
 
     AS_ASSERT( model->isThermal() );
@@ -85,18 +95,19 @@ FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces, const GenericFunctionPt
     auto calcul = std::make_unique< Calcul >( option );
     calcul->setModel( model );
 
-    std::map< bool, std::string > dic_faces {{true, "ALL"}, {false, "CELL"}};
+    std::map< bool, std::string > dic_faces { { true, "ALL" }, { false, "CELL" } };
 
     auto funcField = std::make_shared< ConstantFieldOnCellsChar8 >( mesh );
     const std::string physicalName( "NEUT_K8" );
     funcField->allocate( physicalName );
     ConstantFieldOnZone a( mesh );
-    ConstantFieldValues< JeveuxChar8 > b( {"Z1", "Z2"}, {fct->getName(), dic_faces[faces]} );
+    ConstantFieldValues< JeveuxChar8 > b( { "Z1", "Z2" }, { fct->getName(), dic_faces[faces] } );
     funcField->setValueOnZone( a, b );
 
     // Input fields
     calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
     calcul->addInputField( "PFUNC_R", funcField );
+    calcul->addHHOField( model->getHHOModel() );
     calcul->addTimeField( "PINSTPR", time );
 
     // Output fields
@@ -121,11 +132,11 @@ FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces,
                                              ASTERDOUBLE time ) const {
 
     const std::string option = "HHO_PROJ_MECA";
-    auto model = _phys_problem->getModel();
+    auto model = this->getModel();
     auto mesh = model->getMesh();
     auto dimMesh = mesh->getDimension();
 
-    std::map< bool, std::string > dic_faces {{true, "ALL"}, {false, "CELL"}};
+    std::map< bool, std::string > dic_faces { { true, "ALL" }, { false, "CELL" } };
 
     AS_ASSERT( model->isMechanical() );
     AS_ASSERT( fct.size() == dimMesh );
@@ -140,18 +151,19 @@ FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces,
 
     if ( dimMesh == 2 ) {
         ConstantFieldValues< JeveuxChar8 > b(
-            {"Z1", "Z2", "Z3"}, {fct[0]->getName(), fct[1]->getName(), dic_faces[faces]} );
+            { "Z1", "Z2", "Z3" }, { fct[0]->getName(), fct[1]->getName(), dic_faces[faces] } );
         funcField->setValueOnZone( a, b );
     } else {
         ConstantFieldValues< JeveuxChar8 > b(
-            {"Z1", "Z2", "Z3", "Z4"},
-            {fct[0]->getName(), fct[1]->getName(), fct[2]->getName(), dic_faces[faces]} );
+            { "Z1", "Z2", "Z3", "Z4" },
+            { fct[0]->getName(), fct[1]->getName(), fct[2]->getName(), dic_faces[faces] } );
         funcField->setValueOnZone( a, b );
     }
 
     // Input fields
     calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
     calcul->addInputField( "PFUNC_R", funcField );
+    calcul->addHHOField( model->getHHOModel() );
     calcul->addTimeField( "PINSTPR", time );
 
     // Output fields
@@ -209,7 +221,7 @@ FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const VectorReal &values ) const
 };
 
 FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FieldOnNodesRealPtr h1_field ) const {
-    auto model = _phys_problem->getModel();
+    auto model = this->getModel();
     auto mesh = model->getMesh();
 
     const std::string option = model->isThermal() ? "HHO_PROJ2_THER" : "HHO_PROJ2_MECA";
@@ -219,10 +231,12 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FieldOnNodesRealPtr h1_field )
     // Input fields
     calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
     calcul->addInputField( "PH1TP_R", h1_field );
+    calcul->addHHOField( model->getHHOModel() );
 
     // Output fields
     auto hho_elno = std::make_shared< FieldOnCellsReal >( model );
-    calcul->addOutputField( "PTEMP_R", hho_elno );
+    const std::string pname = model->isThermal() ? "PTEMP_R" : "PDEPL_R";
+    calcul->addOutputField( pname, hho_elno );
 
     // Compute
     if ( model->existsFiniteElement() ) {
@@ -233,7 +247,7 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FieldOnNodesRealPtr h1_field )
 };
 
 FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const FieldOnCellsRealPtr field_elga ) const {
-    auto model = _phys_problem->getModel();
+    auto model = this->getModel();
     auto mesh = model->getMesh();
 
     const std::string option = model->isThermal() ? "HHO_PROJ3_THER" : "HHO_PROJ3_MECA";
@@ -243,10 +257,12 @@ FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const FieldOnCellsRealPtr field_
     // Input fields
     calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
     calcul->addInputField( "PQPTP_R", field_elga );
+    calcul->addHHOField( model->getHHOModel() );
 
     // Output fields
     auto hho_elno = std::make_shared< FieldOnCellsReal >( model );
-    calcul->addOutputField( "PTEMP_R", hho_elno );
+    const std::string pname = model->isThermal() ? "PTEMP_R" : "PDEPL_R";
+    calcul->addOutputField( pname, hho_elno );
 
     // Compute
     if ( model->existsFiniteElement() ) {
@@ -257,7 +273,7 @@ FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const FieldOnCellsRealPtr field_
 };
 
 FieldOnCellsRealPtr HHO::evaluateAtQuadraturePoints( const FieldOnNodesRealPtr hho_field ) const {
-    auto model = _phys_problem->getModel();
+    auto model = this->getModel();
     auto mesh = model->getMesh();
 
     const std::string option = model->isThermal() ? "TEMP_ELGA" : "DEPL_ELGA";
@@ -267,10 +283,12 @@ FieldOnCellsRealPtr HHO::evaluateAtQuadraturePoints( const FieldOnNodesRealPtr h
     // Input fields
     calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
     calcul->addInputField( "PTEMPER", hho_field );
+    calcul->addHHOField( model->getHHOModel() );
 
     // Output fields
     auto hho_elga = std::make_shared< FieldOnCellsReal >( model );
-    calcul->addOutputField( "PTEMP_R", hho_elga );
+    const std::string pname = model->isThermal() ? "PTEMP_R" : "PDEPL_R";
+    calcul->addOutputField( pname, hho_elga );
 
     // Compute
     if ( model->existsFiniteElement() ) {

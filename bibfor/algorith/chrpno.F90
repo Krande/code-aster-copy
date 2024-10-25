@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine chrpno(champ1, repere, nom_cham, type)
 ! aslint: disable=W1501
     implicit none
@@ -62,8 +62,8 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 ! ---------------------------------------------------------------------
 !
     integer :: i, nbno, ino, ibid, nbcmp, ndim_type
-    integer ::  ii, nbma, ipt2, inel
-    integer ::   jcnsv, jconx1, jconx2, nbpt
+    integer :: ii, nbma, ipt2, inel
+    integer :: jcnsv, jconx1, jconx2, nbpt
     integer :: ipt, inot, ndim, licmpu(6), jcnsl
     integer :: nbn, idnoeu, nbnoeu, inoe
     real(kind=8) :: angnot(3), pgl(3, 3), valer(6), valed(6)
@@ -78,13 +78,14 @@ subroutine chrpno(champ1, repere, nom_cham, type)
     character(len=19) :: chams1, chams0
     character(len=24) :: mesnoe
     character(len=24) :: valk
-    integer, parameter  :: nbCmpMax = 8
+    integer, parameter :: nbCmpMax = 8
     character(len=8) :: nom_cmp(nbCmpMax)
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
-    integer iocc, nocc
+    integer :: iocc, nocc
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
     epsi = 1.0d-6
@@ -105,7 +106,8 @@ subroutine chrpno(champ1, repere, nom_cham, type)
     chams1 = '&&CHRPNO.CHAMS1'
     call cnocns(champ1, 'V', chams0)
 !   sélection des composantes :
-    call selectCompN(chams0, nom_cham, type, nbcmp, nom_cmp, ndim_type)
+    call selectCompN(chams0, nom_cham, type, nbcmp, nom_cmp, &
+                     ndim_type)
     call cnsred(chams0, 0, [0], nbcmp, nom_cmp, &
                 'V', chams1)
     call detrsd('CHAM_NO_S', chams0)
@@ -125,7 +127,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 !
     if (ndim .gt. ndim_type) then
         call utmess('F', 'ALGORITH12_45', sk=type)
-    elseif (ndim .lt. ndim_type) then
+    else if (ndim .lt. ndim_type) then
         call utmess('A', 'ALGORITH12_44', sk=type)
         ndim = 3
     end if
@@ -393,7 +395,10 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                     else
                         axer(3) = 0.0d0
                     end if
-                    prosca = ddot(3, axer, 1, axez, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    prosca = ddot(b_n, axer, b_incx, axez, b_incy)
                     axer(1) = axer(1)-prosca*axez(1)
                     axer(2) = axer(2)-prosca*axez(2)
                     if (ndim .eq. 3) then
@@ -445,7 +450,10 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         axer(1) = axer(1)-orig(1)
                         axer(2) = axer(2)-orig(2)
                         axer(3) = axer(3)-orig(3)
-                        prosca = ddot(3, axer, 1, axez, 1)
+                        b_n = to_blas_int(3)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        prosca = ddot(b_n, axer, b_incx, axez, b_incy)
                         axer(1) = axer(1)-prosca*axez(1)
                         axer(2) = axer(2)-prosca*axez(2)
                         if (ndim .eq. 3) then
@@ -489,8 +497,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         valer(5) = valet(4)
                         valer(6) = valet(5)
                         do ii = 1, nbcmp
-                            zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(licmpu(ii) &
-                                                                  )
+                            zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(licmpu(ii))
                         end do
                     else
 ! CHAMP COMPLEXE
@@ -547,7 +554,10 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                     else
                         axer(3) = 0.0d0
                     end if
-                    prosca = ddot(3, axer, 1, axez, 1)
+                    b_n = to_blas_int(3)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    prosca = ddot(b_n, axer, b_incx, axez, b_incy)
                     axer(1) = axer(1)-prosca*axez(1)
                     axer(2) = axer(2)-prosca*axez(2)
                     if (ndim .eq. 3) then
@@ -597,7 +607,10 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         axer(1) = axer(1)-orig(1)
                         axer(2) = axer(2)-orig(2)
                         axer(3) = axer(3)-orig(3)
-                        prosca = ddot(3, axer, 1, axez, 1)
+                        b_n = to_blas_int(3)
+                        b_incx = to_blas_int(1)
+                        b_incy = to_blas_int(1)
+                        prosca = ddot(b_n, axer, b_incx, axez, b_incy)
                         axer(1) = axer(1)-prosca*axez(1)
                         axer(2) = axer(2)-prosca*axez(2)
                         if (ndim .eq. 3) then
@@ -662,14 +675,14 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                 end do
             end if
         end if
-
+!
 ! Fin de la boucle sur les occcurrences du mot-clé AFFE
         call jedetr(mesnoe)
     end do
     call cnscno(chams1, ' ', 'NON', 'G', champ1, &
                 'F', ibid)
     call detrsd('CHAM_NO_S', chams1)
-
+!
     call jedema()
 !
 end subroutine

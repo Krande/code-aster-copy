@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,9 +39,7 @@ On ne peut pas utiliser d'éléments de structures (coques, plaques, poutres) da
     ),
     94: _("""Le champ de séchage issu du concept %(k1)s n'est pas calculé à l'instant %(i3)i"""),
     96: _("""Le séchage ne peut pas être mélangé à un autre comportement."""),
-    97: _(
-        """EVOL_THER_SECH est un mot-clé obligatoire pour le séchage de type SECH_GRANGER et SECH_NAPPE."""
-    ),
+    97: _("""EVOL_THER_SECH est un mot-clé obligatoire pour le séchage de type %(k1)s."""),
     98: _("""Le concept %(k1)s  n'est pas un champ de température"""),
     99: _(
         """Pour le séchage, le concept EVOL_THER %(k1)s  ne contient aucun champ de température."""

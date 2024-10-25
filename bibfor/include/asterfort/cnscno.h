@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,17 +20,23 @@
 !
 !
 interface
-    subroutine cnscno(cnsz, numeqz, prol0, basez, cnoz,&
-                      kstop, iret, nbz, vchamz, lprofconst)
+!
+    subroutine cnscno(cnsz, numeqz, prol0, basez, cnoz, &
+                      kstop, iret, nbz, vchamz, lprofconst, prolong)
+        !
+        use proj_champ_module
+        !
         character(len=*) :: cnsz
         character(len=*) :: numeqz
         character(len=*) :: prol0
         character(len=*) :: basez
         character(len=*) :: cnoz
         character(len=1) :: kstop
-        integer :: iret
-        integer,           optional :: nbz
-        character(len=24), optional :: vchamz
-        aster_logical, optional :: lprofconst
+        integer          :: iret
+        integer,            optional :: nbz
+        character(len=24),  optional :: vchamz
+        aster_logical,      optional :: lprofconst
+        type(prolongation), optional :: prolong
     end subroutine cnscno
+!
 end interface

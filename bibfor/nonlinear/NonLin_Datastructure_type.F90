@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -339,7 +339,6 @@ module NonLin_Datastructure_type
 ! ----- Total number of contact pairs
         integer           :: nb_cont_pair = 0
 ! ----- Number of stored values from precedent Newton iteration
-        integer           :: n_cychis = 75
         integer           :: cycl_long_acti = 3
 ! ----- Automatic update of penalised coefficient
         real(kind=8)      :: estimated_coefficient = 100.d0
@@ -473,6 +472,13 @@ module NonLin_Datastructure_type
         aster_logical         :: lLinear = ASTER_FALSE
 ! ----- Flag for if everything is only DIS_CHOC/DIS_CONTACT in behaviour
         aster_logical         :: lDisCtc = ASTER_FALSE
+! ----- Flag for JOINT_MECA_FROT
+        aster_logical         :: lJoiFrot = ASTER_FALSE
+! ----- Flag for JOINT_MECA_RUPT
+        aster_logical         :: lJoiRupt = ASTER_FALSE
+! ----- Flag for JOINT_MECA_ENDO
+        aster_logical         :: lJoiEndo = ASTER_FALSE
+
     end type NL_DS_Constitutive
 !
 ! - Type: selection list

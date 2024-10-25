@@ -25,9 +25,11 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+
 
 CHAR_MECA_FF2D2D = Option(
-    para_in=(SP.PFF2D2D, SP.PGEOMER, SP.PINSTR),
+    para_in=(SP.PFF2D2D, SP.PGEOMER, SP.PINSTR, PCHHOBS),
     para_out=(SP.PVECTUR,),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.DIM_TOPO_MODELI, "2"))),

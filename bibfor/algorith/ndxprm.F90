@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
                   maprec, matass, faccvg, ldccvg)
 !
     use NonLin_Datastructure_type
-    use HHO_type
     use NonLinearDyna_type
     use NonLinearDyna_module, only: isDampMatrUpdate, compDampMatrix
     use NonLinear_module, only: updateLoadBCMatrix
@@ -117,7 +116,6 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
     character(len=16) :: explMatrType
     integer :: ifm, niv, ibid
     character(len=19) :: rigid
-    type(HHO_Field) :: hhoField
     real(kind=8) :: time
 !
 ! --------------------------------------------------------------------------------------------------
@@ -176,7 +174,7 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
         call nmrigi(modelz, carele, &
                     ds_material, ds_constitutive, &
                     list_func_acti, iterNewtPred, sddyna, ds_measure, ds_system, &
-                    valinc, solalg, hhoField, &
+                    valinc, solalg, &
                     nonLinearOption, ldccvg)
         if (lRigiAssemble) then
             call nmchex(measse, 'MEASSE', 'MERIGI', rigid)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -243,9 +243,14 @@ il faut un saut élastique plus petit, ou redécouper le pas de temps
  état convergé non conforme en compression
 """
     ),
+    93: _(
+        """
+ il faut fournir le mot-clé BETON_DESORP à DEFI_MATERIAU pour le fluage propre
+"""
+    ),
     94: _(
         """
- il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage propre
+ il faut nécessairement déclarer FONC_DESORP sous BETON_DESORP pour le fluage propre
  avec SECH comme paramètre
 """
     ),

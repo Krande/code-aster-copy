@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine statim(nbobst, nbpt, temps, fcho, vgli, &
-                  vint, wk1, wk2, wk3, &
-                  nbloc, offset, trepos, nbclas, &
-                  noecho, intitu, nomres, nbvint)
+                  vint, wk1, wk2, wk3, nbloc, &
+                  offset, trepos, nbclas, noecho, intitu, &
+                  nomres, nbvint)
     implicit none
 #include "jeveux.h"
 #include "asterfort/histog.h"
@@ -66,6 +66,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli, &
     character(len=16) :: tvar(4), lpari(npari), lparg(nparg), lparp(nparp)
     character(len=16) :: npara(nbpara), lparf(nparf)
     character(len=24) :: valek(4)
+    blas_int :: b_incx, b_incy, b_n
 !
     data tvar/'IMPACT', 'GLOBAL', 'PROBA', 'FLAMBAGE'/
 !
@@ -124,8 +125,14 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli, &
         valek(3) = tvar(1)
 !
         nbchoc = 0
-        call dcopy(nbpas, fcho(3*(i-1)+1), 3*nbobst, wk1, 1)
-        call dcopy(nbpas, vgli(3*(i-1)+1), 3*nbobst, wk2, 1)
+        b_n = to_blas_int(nbpas)
+        b_incx = to_blas_int(3*nbobst)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, fcho(3*(i-1)+1), b_incx, wk1, b_incy)
+        b_n = to_blas_int(nbpas)
+        b_incx = to_blas_int(3*nbobst)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vgli(3*(i-1)+1), b_incx, wk2, b_incy)
         call impact(nomres, nbpas, wk1(idebut), wk2(idebut), wk3, &
                     offset, temps(idebut), trepos, nbchoc, fnmaxa, &
                     fnmmoy, fnmety, npari, lpari, valek)
@@ -182,7 +189,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli, &
                 call tbajli(nomres, nparf, lparf, [i], para, &
                             [c16b], valek, 0)
 !               2eme noeud
-                ! valek(1) = intitu(nbobst+i)
+! valek(1) = intitu(nbobst+i)
                 valek(2) = noecho(nbobst+i)
                 call tbajli(nomres, nparf, lparf, [i], para, &
                             [c16b], valek, 0)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
 #include "jeveux.h"
 !
 !
-    character(len=*), intent(in)              :: name
-    integer, intent(in)                       :: nrows, ncols
-    aster_logical, intent(in)                 :: l_sym
-    real(kind=8), dimension(:, :), intent(in)  :: mat
+    character(len=*), intent(in) :: name
+    integer, intent(in) :: nrows, ncols
+    aster_logical, intent(in) :: l_sym
+    real(kind=8), dimension(:, :), intent(in) :: mat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,6 +47,7 @@ subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jv_matr_out, j, ij, i
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,14 +57,18 @@ subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
         ASSERT(ncols == nrows)
         do j = 1, ncols
             ij = (j-1)*j/2
-            call dcopy(j, mat(:, j), 1, zr(jv_matr_out+ij), 1)
+            b_n = to_blas_int(j)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, mat(:, j), b_incx, zr(jv_matr_out+ij), b_incy)
         end do
     else
-        do j = 1, ncols
-            do i = 1, nrows
-                ij = j+(i-1)*ncols
-                zr(jv_matr_out+ij-1) = mat(i, j)
-            end do
+        do i = 1, nrows
+            ij = (i-1)*ncols
+            b_n = to_blas_int(ncols)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, mat(i, :), b_incx, zr(jv_matr_out+ij), b_incy)
         end do
     end if
 !

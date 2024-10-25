@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -124,6 +124,11 @@ extern void DEFSPP( UTPTME, utptme, char *, STRING_SIZE, ASTERDOUBLE *, ASTERINT
 
 #define CALL_UTTCSM( a ) CALLP( UTTCSM, uttcsm, a )
 extern void DEFP( UTTCSM, uttcsm, ASTERDOUBLE * );
+
+#define CALL_VERIGD_WRAP( a, b, c, d ) CALLSSPP( VERIGD_WRAP, verigd_wrap, a, b, c, d )
+#define CALLO_VERIGD_WRAP( a, b, c, d ) CALLOOPP( VERIGD_WRAP, verigd_wrap, a, b, c, d )
+void DEFSSPP( VERIGD_WRAP, verigd_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
+              ASTERINTEGER *, ASTERINTEGER * );
 
 /* intrinsics */
 #define CALL_ABORTF() CALL0( ABORTF, abortf )

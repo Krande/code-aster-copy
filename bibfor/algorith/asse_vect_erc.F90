@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim, alpha, n_ordre_mes, omega)
+!
+subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim, &
+                         alpha, n_ordre_mes, omega)
 !
 !
     implicit none
@@ -70,9 +71,10 @@ subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim, alpha, n_
     real(kind=8) :: coeff_alpha, coef_mes
     character(len=24), intent(in) :: matobs(3)
     logical :: isdiag
+    blas_int :: b_incx, b_incy, b_n
 !
     bl11 = '           '
-
+!
 ! --- RECUPERATION DE LA MESURE
     call getvtx(' ', 'CHAMP_MESURE', scal=type_mes)
     if (type_mes .eq. 'DEPL') then
@@ -85,12 +87,12 @@ subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim, alpha, n_
         occ = 3
         coef_mes = 1.0d0/(-omega*omega)
     end if
-
+!
     call jeveuo(jexnum(nommes//'           .TACH', occ), 'L', i_tach)
     nom_objev_mes = zk24(i_tach+n_ordre_mes-1) (1:19)
     call jeveuo(nom_objev_mes//'.VALE', 'L', i_mes)
 !
-
+!
     isdiag = .true.
 ! --- RECUPERATION DE LA MATRICE NORME
     call getvid(' ', 'MATR_NORME', scal=mnorme)
@@ -110,21 +112,28 @@ subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim, alpha, n_
     coeff_alpha = -2.0d0*alpha/(1.0d0-alpha)*coef_mes
 ! --- ON RECOPIE LA MESURE DANS UN VECTEUR DE TRAVAIL iaux1
     call wkvect(baseno//'.VECAUX1ERC.VAL', 'V V R', nvect_mes, iaux1)
-    call dcopy(nvect_mes, zr(i_mes), 1, zr(iaux1), 1)
+    b_n = to_blas_int(nvect_mes)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, zr(i_mes), b_incx, zr(iaux1), b_incy)
 ! --- ON CREE UN (PETIT) VECTEUR DE TRAVAIL  iaux2
     call wkvect(baseno//'.VECAUX2ERC.VAL', 'V V R', nvect_mes, iaux2)
     call r8inir(nvect_mes, 0.d0, zr(iaux2), 1)
-
+!
 ! --- PREMIER PRODUIT MATRICE VECTEUR   coef_alpha*G*tilde(u)
-
+!
     if (isdiag) then
-
+!
         do ii = 1, nvect_mes
             zr(iaux2-1+ii) = coeff_alpha*zr(ivale_norm-1+ii)*zr(iaux1-1+ii)
         end do
-
+!
     else
-        call dspmv('u', nvect_mes, coeff_alpha, zr(ivale_norm), zr(iaux1), 1, 0.d0, zr(iaux2), 1)
+        b_n = to_blas_int(nvect_mes)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dspmv('u', b_n, coeff_alpha, zr(ivale_norm), zr(iaux1), &
+                   b_incx, 0.d0, zr(iaux2), b_incy)
     end if
 ! --- RECUPERATION DE LA MATRICE D'OBSERVATION
     call jeveuo(matobs(1), 'L', iobsfil)
@@ -133,17 +142,19 @@ subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim, alpha, n_
 !   --- RECUPERATION ET PRECONDITIONNEMENT DU VECTEUR ERC
     call jeveuo(nom_vect_erc//'.VALE', 'L', ivecterc)
     call r8inir(2*obsdim(2), 0.d0, zr(ivecterc), 1)
-
+!
 ! --- FINALISATION DU PRODUIT   H^T* VECT_AUX_2 (coef_alpha*G*tilde(u))
-
+!
     do ii = 1, obsdim(3)
         n_fil = zi(iobsfil-1+ii)
         n_col = zi(iobscol-1+ii)
-        zr(ivecterc-1+obsdim(2)+n_col) = zr(ivecterc-1+obsdim(2)+n_col) &
-                                         +zr(iobsval-1+ii)*zr(iaux2-1+n_fil)
+        zr(ivecterc-1+obsdim(2)+n_col) = zr( &
+                                         ivecterc-1+obsdim(2)+n_col)+zr(iobsval-1+ii)*zr(iaux2-1+&
+                                         &n_fil &
+                                         )
     end do
 !     NETOYAGE DES OBJETS JEVEUX TEMPORAIRES
     call jedetr(baseno//'.VECAUX1ERC.VAL')
     call jedetr(baseno//'.VECAUX2ERC.VAL')
-
+!
 end subroutine

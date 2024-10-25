@@ -136,6 +136,7 @@ subroutine comdlh()
     real(kind=8), pointer :: puls(:) => null()
     real(kind=8), pointer :: kineRealVale(:) => null()
     complex(kind=8), pointer :: kineVale(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -235,23 +236,24 @@ subroutine comdlh()
 !
 ! --- RECUPERATION DES DESCRIPTEURS DES MATRICES ET DES MATRICES
 !
-    call dylema(raide, masse, amor, impe, &
-                l_damp_modal, l_damp, l_impe, &
-                nb_matr, matr_list, coef_type, coef_vale, &
-                dynam, numddl, nb_equa)
+    call dylema(raide, masse, amor, impe, l_damp_modal, &
+                l_damp, l_impe, nb_matr, matr_list, coef_type, &
+                coef_vale, dynam, numddl, nb_equa)
     ASSERT(nb_matr .le. 4)
 !
 ! --- LECTURE INFORMATIONS MECANIQUES
 !
     call dydome(nomo, mate, mateco, carele)
-
+!
 ! - Get loads
-    call dylech(nomo, listLoad, nbexre, exreco, exresu, calgen)
-
+    call dylech(nomo, listLoad, nbexre, exreco, exresu, &
+                calgen)
+!
 ! - Get kinematic loads
-    call dyGetKineLoad(masse, raide, amor, l_damp, listLoad, kineLoadReal)
+    call dyGetKineLoad(masse, raide, amor, l_damp, listLoad, &
+                       kineLoadReal)
     kineLoad = ' '
-
+!
     if (kineLoadReal .ne. ' ') then
         if (calgen) then
             call utmess('F', 'DYNALINE2_12')
@@ -259,10 +261,10 @@ subroutine comdlh()
             kineLoad = '&&COMDLH.KINE'
         end if
     end if
-
+!
 ! - CALCUL ET PRE-ASSEMBLAGE DU CHARGEMENT
-    call dylach(nomo, mate, mateco, carele, listLoad, numddl, &
-                vediri, veneum, vevoch, vassec)
+    call dylach(nomo, mate, mateco, carele, listLoad, &
+                numddl, vediri, veneum, vevoch, vassec)
 !
 !============================================
 ! 3. ==> ALLOCATION DES RESULTATS
@@ -335,10 +337,10 @@ subroutine comdlh()
 ! --- INFORMATIONS SOLVEUR
     solveu = '&&COMDLH.SOLVEUR'
     call cresol(solveu)
-
+!
 !
 ! --- EXTRA INFORMATION FOR REDUCED MODAL CALCULATIONS
-
+!
     if (calgen) then
         call gettco(basemo, typco)
         sstruct = 0
@@ -353,7 +355,7 @@ subroutine comdlh()
         else
             sstruct = 1
         end if
-
+!
         nbmode = nb_equa
         nume24 = numddl
         AS_ALLOCATE(vr=mass_dia, size=nbmode)
@@ -361,16 +363,17 @@ subroutine comdlh()
         AS_ALLOCATE(vr=puls, size=nbmode)
         call extdia(masse, nume24, sstruct, mass_dia)
         call extdia(raide, nume24, sstruct, rigi_dia)
-
+!
         if (sstruct .eq. 1) then
             call jeveuo(numddl(1:14)//'.NUME.REFN', 'L', jrefe)
             modgen = zk24(jrefe) (1:8)
             call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
-
+!
             nbmodi = 0
             nbmody = 0
             do i = 1, nbsst
-                call mgutdm(modgen, ' ', i, 'NOM_BASE_MODALE', ibid, basemo)
+                call mgutdm(modgen, ' ', i, 'NOM_BASE_MODALE', ibid, &
+                            basemo)
                 call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbbas)
                 do j = 1, nbbas
                     omeg2 = 0.d0
@@ -392,7 +395,7 @@ subroutine comdlh()
                 puls(i) = sqrt(omeg2)
             end do
         end if
-
+!
         fmin = 1.d25
         fmax = -1.d25
         do i = 1, nbmode
@@ -400,14 +403,14 @@ subroutine comdlh()
             if (freq .lt. fmin) fmin = freq
             if (freq .gt. fmax) fmax = freq
         end do
-
+!
         AS_DEALLOCATE(vr=mass_dia)
         AS_DEALLOCATE(vr=rigi_dia)
         AS_DEALLOCATE(vr=puls)
     else
         call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=nomo)
     end if
-
+!
     fcal_min = 1.d25
     fcal_max = -1.d25
     do i = 1, nbfreq
@@ -415,31 +418,30 @@ subroutine comdlh()
         if (freq .lt. fcal_min) fcal_min = freq
         if (freq .gt. fcal_max) fcal_max = freq
     end do
-
+!
     last_freq = zr(lfreq-1+nbfreq)
 !
 ! --- IMPRESSIONS RECAPITULATIVES POUR L'UTILISATEUR
     print_type = 'PHYSique'
     if (calgen) print_type = 'GENEralisee'
-    call utmess('I', 'DYNAMIQUE_55', nk=3, valk=['D Y N A _ V I B R A', &
-                                                 'HARMonique         ', &
-                                                 print_type])
-
+    call utmess('I', 'DYNAMIQUE_55', nk=3, &
+                valk=['D Y N A _ V I B R A', 'HARMonique         ', print_type])
+!
     if (calgen) then
 !       1 - Calculation type : standard, substructuring
         if (sstruct .eq. 0) then
-            call utmess('I', 'DYNAMIQUE_56', nk=1, valk=[basemo], &
-                        ni=1, vali=[nbpheq])
+            call utmess('I', 'DYNAMIQUE_56', nk=1, valk=[basemo], ni=1, &
+                        vali=[nbpheq])
         else
             call utmess('I', 'DYNAMIQUE_57', nk=2, valk=[basemo, numddl])
         end if
 !       2 - Minimum and max frequencies
-        call utmess('I', 'DYNAMIQUE_59', ni=1, vali=[nbmode], &
-                    nr=2, valr=[fmin, fmax])
+        call utmess('I', 'DYNAMIQUE_59', ni=1, vali=[nbmode], nr=2, &
+                    valr=[fmin, fmax])
     else
         call utmess('I', 'DYNAMIQUE_82', sk=nomo, si=nb_equa)
     end if
-
+!
 !   3 - Dynamic matrices
     call utmess('I', 'DYNAMIQUE_60')
     call utmess('I', 'DYNAMIQUE_61', nk=2, valk=[masse, raide])
@@ -453,27 +455,27 @@ subroutine comdlh()
     if (l_impe) then
         call utmess('I', 'DYNAMIQUE_87', sk=impe)
     end if
-
+!
 !   4 - Calculation and saving parameters
     champs = ' '
     do i = 1, nbsym
         dec = 5*(i-1)
         champs(dec+i:dec+i+3) = nomsym(i) (1:4)
     end do
-    call utmess('I', 'DYNAMIQUE_88', nr=2, valr=[fcal_min, fcal_max], &
-                si=nbfreq, sk=champs)
-
+    call utmess('I', 'DYNAMIQUE_88', nr=2, valr=[fcal_min, fcal_max], si=nbfreq, &
+                sk=champs)
+!
 !
 !====
 ! 4.2 ==> BOUCLE SUR LES FREQUENCES ---
 !====
     call uttcpu('CPU.COMDLH', 'INIT', ' ')
-
+!
 !   NIVEAU D'IMPRESSION DE L'AVANCEMENT DE CALCUL
     freqpr = 5
     if (niv .eq. 2) freqpr = 1
     last_prperc = 999
-
+!
     do ifreq = 1, nbfreq
         call uttcpu('CPU.COMDLH', 'DEBUT', ' ')
 !
@@ -504,10 +506,11 @@ subroutine comdlh()
             charge = listLoad(1:19)//'.NCHA'
             multFunc = listLoad(1:19)//'.NFON'
             infoch = listLoad(1:19)//'.GENC'
-            call ascavc(charge, infoch, multFunc, numddl, freq, kineLoadReal, nom_para=nom_para)
-
+            call ascavc(charge, infoch, multFunc, numddl, freq, &
+                        kineLoadReal, nom_para=nom_para)
+!
 ! --------- Convert value in complex
-
+!
             if (ifreq .eq. 1) then
                 call dismoi('NB_EQUA', kineLoadReal, 'CHAM_NO', repi=nbEqua)
                 call vtcrec(kineLoad, kineLoadReal, 'V', 'C', nbEqua)
@@ -542,12 +545,18 @@ subroutine comdlh()
 !
 ! ----- RESOLUTION DU SYSTEME, CELUI DU CHARGEMENT STANDARD
 !
-        call zcopy(nb_equa, zc(lsecmb), 1, secmb, 1)
+        b_n = to_blas_int(nb_equa)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, zc(lsecmb), b_incx, secmb, b_incy)
         call resoud(dynam, maprec, solveu, kineLoad, 0, &
                     secmbr, soluti, 'V', [0.d0], [c16bid], &
                     crgc, .true._1, 0, iret)
         call jeveuo(soluti(1:19)//'.VALE', 'L', vc=solut)
-        call zcopy(nb_equa, solut, 1, zc(lsecmb), 1)
+        b_n = to_blas_int(nb_equa)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call zcopy(b_n, solut, b_incx, zc(lsecmb), b_incy)
         call jedetr(soluti)
 !
 ! ----- IMPRESSION DE L'ETAT D'AVANCEMENT DU CALCUL FREQUENTIEL
@@ -560,13 +569,13 @@ subroutine comdlh()
                 last_prperc = perc
             end if
         end if
-
+!
 !
 ! ----------------------------------------------------------------
 ! --- ARCHIVAGE DES RESULTATS SUR BASE PHYSIQUE OU GENERALISEE ---
 ! ----------------------------------------------------------------
 !
-
+!
         if (.not. calgen) then
 !       --- SI CALCUL SUR BASE PHYSIQUE
 !         - CREER UN CHAM_NO DANS LA SD_RESULTAT
@@ -665,7 +674,7 @@ subroutine comdlh()
                         num_except=ASTER_TIMELIMIT_ERROR)
         end if
     end do
-
+!
 !
 !     --- DETRUIRE LES OBJETS TEMPORAIRES A LA FIN DU CALCUL GENE
     if (calgen) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine lc7045(BEHinteg, &
                   fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, epsm, &
-                  deps, sigm, vim, option, angmas, &
+                  deps, vim, option, angmas, &
                   sigp, vip, typmod, icomp, &
                   nvi, dsidep, codret)
 !
@@ -43,7 +43,6 @@ subroutine lc7045(BEHinteg, &
     real(kind=8), intent(in) :: instap
     real(kind=8), intent(in) :: epsm(6)
     real(kind=8), intent(in) :: deps(6)
-    real(kind=8), intent(in) :: sigm(6)
     real(kind=8), intent(in) :: vim(*)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(*)
@@ -66,7 +65,7 @@ subroutine lc7045(BEHinteg, &
     codret = 0
     call lcejmr(BEHinteg, &
                 fami, kpg, ksp, ndim, imate, &
-                option, epsm, deps, sigm, sigp, &
+                option, epsm, deps, sigp, &
                 dsidep, vim, vip, typmod, &
                 instam, instap)
 end subroutine

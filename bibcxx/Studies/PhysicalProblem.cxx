@@ -2,7 +2,7 @@
  * @file PhysicalProblem.cxx
  * @brief Implementation of class PhysicalProblem
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -90,6 +90,18 @@ CodedMaterialPtr PhysicalProblem::getCodedMaterial() const {
     }
 
     return nullptr;
+};
+
+void PhysicalProblem::setListOfLoads( const ListOfLoadsPtr loads ) {
+    if ( loads ) {
+        _listOfLoads = loads;
+    };
+};
+
+void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
+    if ( dofNume ) {
+        _dofNume = dofNume;
+    }
 };
 
 void PhysicalProblem::computeBehaviourProperty( py::object &keywords,

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
 subroutine te0239(option, nomte)
 !
     use Behaviour_type
-    use Behaviour_module, only: behaviourOption, behaviourInit
+    use Behaviour_module
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8nnem.h"
-#include "asterfort/comcq1.h"
+#include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/defgen.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/effi.h"
@@ -36,12 +36,13 @@ subroutine te0239(option, nomte)
 #include "asterfort/matdtd.h"
 #include "asterfort/mattge.h"
 #include "asterfort/moytpg.h"
+#include "asterfort/nmcomp.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
-#include "asterfort/Behaviour_type.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -60,13 +61,15 @@ subroutine te0239(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ndimLdc = 2
+    character(len=4), parameter :: fami = "RIGI"
     integer :: icompo, nbcou, npge, icontm, ideplm, ivectu, icou, inte, icontp
     integer :: kpki, k1, k2, kompt, ivarim, ivarip, iinstm, iinstp, lgpg, ideplp
     integer :: icarcr, nbvari, jcret, codret
     real(kind=8) :: cisail, zic, coef, rhos, rhot, epsx3, gsx3, sgmsx3
     real(kind=8) :: zmin, hic, depsx3
     integer :: itab(8), jnbspi
-    character(len=8) ::  nompar, elrefe
+    character(len=8) :: nompar, elrefe
     real(kind=8) :: tempm
     real(kind=8) :: dfdx(3), zero, un, deux
     real(kind=8) :: test, test2, eps, nu, h, cosa, sina, cour, r
@@ -90,6 +93,8 @@ subroutine te0239(option, nomte)
     data zero, un, deux/0.d0, 1.d0, 2.d0/
     character(len=16) :: defo_comp, rela_comp, rela_cpla
     aster_logical :: lVect, lMatr, lVari, lSigm
+    character(len=8), parameter :: typmod(2) = (/'C_PLAN  ', '        '/)
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,24 +102,19 @@ subroutine te0239(option, nomte)
 !
     eps = 1.d-3
     codret = 0
-!
+
 !   Angle du mot clef MASSIF de AFFE_CARA_ELEM, initialisé à r8nnem (on ne s'en sert pas)
-!
     angmas = r8nnem()
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
+
 !
     call elref1(elrefe)
     call elrefe_info(fami='RIGI', nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk)
-!
-!       TYPMOD(1) = 'C_PLAN  '
-!       TYPMOD(2) = '        '
-!
+
 ! - Get input fields
-!
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCACOQU', 'L', icaco)
     call jevech('PMATERC', 'L', imate)
@@ -126,7 +126,8 @@ subroutine te0239(option, nomte)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=itab)
 !      LGPG = MAX(ITAB(6),1)*ITAB(7) resultats faux sur Bull avec ifort
     if (itab(6) .le. 1) then
         lgpg = itab(7)
@@ -134,30 +135,33 @@ subroutine te0239(option, nomte)
         lgpg = itab(6)*itab(7)
     end if
     call jevech('PNBSP_I', 'L', jnbspi)
-!
+
 ! - Properties of shell
-!
     h = zr(icaco)
     kappa = zr(icaco+1)
     correc = zr(icaco+2)
     zmin = -h/2.d0
-!
+
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndimLdc, typmod, option, &
+                              zk16(icompo), zr(icarcr), &
+                              zr(iinstm), zr(iinstp), &
+                              fami, zi(imate), &
+                              BEHinteg)
+
 ! - Select objects to construct from option name
-!
     call behaviourOption(option, zk16(icompo), &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
-!
+
 ! - Properties of behaviour
-!
     rela_comp = zk16(icompo-1+RELA_NAME)
     defo_comp = zk16(icompo-1+DEFO)
     rela_cpla = zk16(icompo-1+PLANESTRESS)
     read (zk16(icompo-1+2), '(I16)') nbvari
-!
+
 ! - Some checks
-!
     if (rela_cpla .eq. 'COMP_ELAS') then
         if (rela_comp .ne. 'ELAS') then
             call utmess('F', 'PLATE1_8')
@@ -166,7 +170,7 @@ subroutine te0239(option, nomte)
     if (defo_comp(6:10) .eq. '_REAC') then
         call utmess('A', 'PLATE1_9', sk=defo_comp)
     end if
-!
+
 !--- NBRE DE  COUCHES ET LONG. MAX
     nbcou = zi(jnbspi-1+1)
     if (nbcou .le. 0) then
@@ -194,7 +198,10 @@ subroutine te0239(option, nomte)
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(ndimv, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(ndimv)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 !
     call r8inir(81, 0.d0, rtange, 1)
@@ -218,7 +225,8 @@ subroutine te0239(option, nomte)
 !===============================================================
 !     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 !     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-        call moytpg('RIGI', kp, 3, '-', tempm, iret)
+        call moytpg('RIGI', kp, 3, '-', tempm, &
+                    iret)
         nbpar = 1
         nompar = 'TEMP'
         call rcvalb('RIGI', kp, 1, '-', zi(imate), &
@@ -298,13 +306,25 @@ subroutine te0239(option, nomte)
                 do i = 1, 4
                     sigm2d(i) = zr(icontm+k1+i-1)
                 end do
-!
-!  APPEL AU COMPORTEMENT
-                call comcq1('RIGI', kp, ksp, zi(imate), &
-                            zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), eps2d, &
-                            deps2d, sigm2d, zr(ivarim+k2), &
-                            option, angmas, sigp2d, zr(ivarip+k2), dsidep, &
-                            cod, BEHinteg)
+
+! ------------- Set main parameters for behaviour (on point)
+                call behaviourSetParaPoin(kp, ksp, BEHinteg)
+
+! ------------- Integrate
+!     INTEGRATION DE LA LOI DE COMPORTEMENT POUR LES COQUE_1D :
+!     COQUE_AXIS : COMPORTEMENT C_PLAN
+!     COQUE_AXIS, DIRECTION Y : CPLAN (EVT DEBORST)
+!     DIRECTION Z : EPSZZ CONNU
+                dsidep = 0.d0
+                sigp2d = 0.d0
+                cod = 0
+                call nmcomp(BEHinteg, &
+                            fami, kp, ksp, ndimLdc, typmod, &
+                            zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
+                            4, eps2d, deps2d, 4, sigm2d, &
+                            zr(ivarim+k2), option, angmas, &
+                            sigp2d, zr(ivarip+k2), 36, dsidep, cod)
+
                 if (lSigm) then
                     do i = 1, 4
                         zr(icontp+k1+i-1) = sigp2d(i)

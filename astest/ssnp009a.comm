@@ -1,0 +1,47 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+rho = 2000
+
+c = 5e3
+
+phi = 20
+
+rho_w = 1e3
+
+g = 9.81
+
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+ONE = DEFI_CONSTANTE(VALE=1.0)
+VISC = DEFI_CONSTANTE(VALE=1e-3)
+K = DEFI_CONSTANTE(VALE=1e-8 * 1e-3 / rho_w / g)
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+MODE1 = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
+
+TABPIEZO = CREA_TABLE(
+    LISTE=(_F(LISTE_R=[0.0, 30.0], PARA="COOR_X"), _F(LISTE_R=[10.0, 10.0], PARA="HEAD"))
+)
+
+FIN()

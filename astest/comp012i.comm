@@ -1,0 +1,99 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# person_in_charge: goustan.bacquaert@edf.fr
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Cyclic shear test with macro-command CALC_ESSAI_GEOMECA with the CSSM model
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+k = 516.0e6
+mu = 238.0e6
+rho = 0.1
+M = 1.38
+pc0 = 100.0e3
+bt = 30.0
+eta = 0.0
+om = 32.0
+gammahyp = 2.0e-4
+nhyp = 0.78
+C = 448.0e3
+
+MATER = DEFI_MATERIAU(
+    ELAS=_F(
+        E=9.0 * k * mu / (3.0 * k + mu), NU=(3.0 * k - 2.0 * mu) / (2.0 * (3.0 * k + mu)), ALPHA=0.0
+    ),
+    CSSM=_F(
+        BulkModulus=k,
+        ShearModulus=mu,
+        InitCritPress=pc0,
+        CritStateSlope=M,
+        IncoPlastIndex=bt,
+        HypExponent=nhyp,
+        HypDistortion=gammahyp,
+        MinCritPress=C,
+        ShearModulusRatio=rho,
+        IsoHardRatio=eta,
+        IsoHardIndex=om,
+    ),
+)
+
+### >>>>>>>>
+### Solution
+### <<<<<<<<
+
+import numpy as np
+
+GAM = np.logspace(-6, -2, 10)
+
+CALC_ESSAI_GEOMECA(
+    INFO=2,
+    MATER=MATER,
+    COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=10),
+    ESSAI_CISA_DR_C_D=_F(
+        PRES_CONF=200.0e3,
+        GAMMA_IMPOSE=(GAM.tolist()[:]),
+        NB_CYCLE=3,
+        TYPE_CHARGE="TRIANGULAIRE",
+        TABLE_RESU=(CO("TRES1"), CO("TRES2")),
+    ),
+)
+
+TEST_TABLE(
+    TABLE=TRES1,
+    VALE_CALC=-237.9999955384302,
+    NOM_PARA="SIG_XY_01",
+    FILTRE=_F(NOM_PARA="INST_01", VALE=50.0, CRITERE="ABSOLU", PRECISION=1.0e-10),
+)
+
+TEST_TABLE(
+    TABLE=TRES1,
+    VALE_CALC=-165087.2891707449,
+    NOM_PARA="SIG_XY_10",
+    FILTRE=_F(NOM_PARA="INST_10", VALE=50.0, CRITERE="ABSOLU", PRECISION=1.0e-10),
+)
+
+FIN()

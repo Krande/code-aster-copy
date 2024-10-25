@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,6 +89,7 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
     real(kind=8) :: pc, pt, kuc, kut, ke, tbid, rbid, fcp, ftp
     character(len=8) :: mod, fami
     character(len=3) :: matcst
+    blas_int :: b_incx, b_incy, b_n
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 ! ----------------------------------------------------------------------
@@ -152,9 +153,18 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
     end do
 !
 !     CRITERE DE TRACTION
-    p0 = d13*ddot(ndimsi, pp, 1, pp, 1)-(d*ft)**2+d23*c*d*ft*trsigp-c**2/neuf*trsigp**2
-    p1 = d13*ddot(ndimsi, pp, 1, dd, 1)+d13*c*d*ft*trsigd-c**2/neuf*trsigp*trsigd
-    p2 = d13*ddot(ndimsi, dd, 1, dd, 1)-c**2/neuf*trsigd**2
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p0 = d13*ddot(b_n, pp, b_incx, pp, b_incy)-(d*ft)**2+d23*c*d*ft*trsigp-c**2/neuf*trsigp**2
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p1 = d13*ddot(b_n, pp, b_incx, dd, b_incy)+d13*c*d*ft*trsigd-c**2/neuf*trsigp*trsigd
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    p2 = d13*ddot(b_n, dd, b_incx, dd, b_incy)-c**2/neuf*trsigd**2
 !
     p0 = p0/(d*ftp)**2
     p1 = p1/(d*ftp)**2
@@ -162,9 +172,18 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
 !
 !    CRITERE DE COMPRESSION
 !
-    q0 = d13*ddot(ndimsi, pp, 1, pp, 1)-(b*fc)**2+d23*a*b*fc*trsigp-a**2/neuf*trsigp**2
-    q1 = d13*ddot(ndimsi, pp, 1, dd, 1)+d13*a*b*fc*trsigd-a**2/neuf*trsigp*trsigd
-    q2 = d13*ddot(ndimsi, dd, 1, dd, 1)-a**2/neuf*trsigd**2
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    q0 = d13*ddot(b_n, pp, b_incx, pp, b_incy)-(b*fc)**2+d23*a*b*fc*trsigp-a**2/neuf*trsigp**2
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    q1 = d13*ddot(b_n, pp, b_incx, dd, b_incy)+d13*a*b*fc*trsigd-a**2/neuf*trsigp*trsigd
+    b_n = to_blas_int(ndimsi)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    q2 = d13*ddot(b_n, dd, b_incx, dd, b_incy)-a**2/neuf*trsigd**2
 !
     q0 = q0/(b*fcp)**2
     q1 = q1/(b*fcp)**2
@@ -193,8 +212,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
                 eps1(k) = epsp(k)+rac2(1)*epsd(k)-epsm(k)
                 eps2(k) = epsp(k)+rac2(2)*epsd(k)-epsm(k)
             end do
-            d1 = dnrm2(ndimsi, eps1, 1)
-            d2 = dnrm2(ndimsi, eps2, 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            d1 = dnrm2(b_n, eps1, b_incx)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            d2 = dnrm2(b_n, eps2, b_incx)
             if (d1 .le. d2) then
                 eta = rac2(1)
             else
@@ -216,8 +239,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
                 eps1(k) = epsp(k)+rac1(1)*epsd(k)-epsm(k)
                 eps2(k) = epsp(k)+rac1(2)*epsd(k)-epsm(k)
             end do
-            d1 = dnrm2(ndimsi, eps1, 1)
-            d2 = dnrm2(ndimsi, eps2, 1)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            d1 = dnrm2(b_n, eps1, b_incx)
+            b_n = to_blas_int(ndimsi)
+            b_incx = to_blas_int(1)
+            d2 = dnrm2(b_n, eps2, b_incx)
             if (d1 .le. d2) then
                 eta = rac1(1)
             else
@@ -245,8 +272,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
                     eps1(k) = epsp(k)+rac1(1)*epsd(k)-epsm(k)
                     eps2(k) = epsp(k)+rac1(2)*epsd(k)-epsm(k)
                 end do
-                d1 = dnrm2(ndimsi, eps1, 1)
-                d2 = dnrm2(ndimsi, eps2, 1)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d1 = dnrm2(b_n, eps1, b_incx)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d2 = dnrm2(b_n, eps2, b_incx)
                 if (d1 .le. d2) then
                     eta1 = rac1(1)
                 else
@@ -275,8 +306,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
                     eps1(k) = epsp(k)+rac2(1)*epsd(k)-epsm(k)
                     eps2(k) = epsp(k)+rac2(2)*epsd(k)-epsm(k)
                 end do
-                d1 = dnrm2(ndimsi, eps1, 1)
-                d2 = dnrm2(ndimsi, eps2, 1)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d1 = dnrm2(b_n, eps1, b_incx)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d2 = dnrm2(b_n, eps2, b_incx)
                 if (d1 .le. d2) then
                     eta2 = rac2(1)
                 else
@@ -301,8 +336,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
                     eps1(k) = epsp(k)+eta1*epsd(k)-epsm(k)
                     eps2(k) = epsp(k)+eta2*epsd(k)-epsm(k)
                 end do
-                d1 = dnrm2(ndimsi, eps1, 1)
-                d2 = dnrm2(ndimsi, eps2, 1)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d1 = dnrm2(b_n, eps1, b_incx)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d2 = dnrm2(b_n, eps2, b_incx)
                 if (d1 .le. d2) then
                     eta = eta1
                     a0 = -p2*eta**2+p0
@@ -327,8 +366,12 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
                     eps1(k) = epsp(k)+eta1*epsd(k)-epsm(k)
                     eps2(k) = epsp(k)+eta2*epsd(k)-epsm(k)
                 end do
-                d1 = dnrm2(ndimsi, eps1, 1)
-                d2 = dnrm2(ndimsi, eps2, 1)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d1 = dnrm2(b_n, eps1, b_incx)
+                b_n = to_blas_int(ndimsi)
+                b_incx = to_blas_int(1)
+                d2 = dnrm2(b_n, eps2, b_incx)
                 if (d1 .le. d2) then
                     eta = eta1
                     a0 = -p2*eta**2+p0

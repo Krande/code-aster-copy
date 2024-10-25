@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
+subroutine comp_meca_save(model, mesh, chmate, compor, prepMapCompor)
 !
-    use Behaviour_type
+    use BehaviourPrepare_type
 !
     implicit none
 !
@@ -40,7 +40,7 @@ subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
 !
     character(len=8), intent(in) :: model, mesh, chmate
     character(len=19), intent(in) :: compor
-    type(Behaviour_PrepPara), intent(in) :: behaviourPrepPara
+    type(BehaviourPrep_MapCompor), intent(in) :: prepMapCompor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
 ! In  mesh             : mesh
 ! In  chmate           : material field
 ! In  compor           : map for parameters of constitutive laws
-! In  behaviourPrepPara: datastructure to prepare comportement
+! In  prepMapCompor    : datastructure to construct COMPOR map
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbFactorKeyword = behaviourPrepPara%nb_comp
+    nbFactorKeyword = prepMapCompor%nb_comp
     l_is_pmf = ASTER_FALSE
     l_parallel_mesh = isParallelMesh(mesh)
 
@@ -87,7 +87,7 @@ subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
 ! - Loop on occurrences of COMPORTEMENT
     do iFactorKeyword = 1, nbFactorKeyword
 ! ----- Detection of specific cases
-        rela_comp = behaviourPrepPara%v_para(iFactorKeyword)%rela_comp
+        rela_comp = prepMapCompor%prepPara(iFactorKeyword)%rela_comp
         call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
         call comp_meca_l(rela_comp, 'PMF', l_pmf)
 
@@ -118,7 +118,7 @@ subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
         end if
 
 ! ----- Save informations in the field <COMPOR>
-        call setBehaviourTypeValue(behaviourPrepPara, iFactorKeyword, &
+        call setBehaviourTypeValue(prepMapCompor, iFactorKeyword, &
                                    comporMap_=comporValv)
 
 ! ----- Affect in <CARTE>

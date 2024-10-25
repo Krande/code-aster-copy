@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine gdmd(x0pg, pn, pm, d)
 !-----------------------------------------------------------------------
     integer :: i, j
     real(kind=8) :: scal, un, zero
+    blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
@@ -55,7 +56,10 @@ subroutine gdmd(x0pg, pn, pm, d)
             d(6+i, j) = pntild(i, j)
         end do
     end do
-    scal = ddot(3, pn, 1, x0pg, 1)
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    scal = ddot(b_n, pn, b_incx, x0pg, b_incy)
     do j = 1, 3
         do i = 1, 3
             d(6+i, 6+j) = pn(i)*x0pg(j)

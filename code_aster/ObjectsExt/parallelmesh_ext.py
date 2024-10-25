@@ -41,6 +41,7 @@ from ..Objects import (
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, Options, force_list, injector, shared_tmpdir
 from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from . import mesh_builder
 
 
@@ -248,6 +249,27 @@ class ExtendedParallelMesh:
 
         return CREA_MAILLAGE(MAILLAGE=self, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes), INFO=info)
 
+    def restrict(self, groupsOfCells, info=1):
+        """Restrict the mesh to given groups of cells.
+
+        groupsOfCells (list[str]): groups of cells to restrict the mesh on.
+            info [int] : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            ParallelMesh: the restricted mesh.
+        """
+
+        return CREA_MAILLAGE(MAILLAGE=self, RESTREINT=_F(GROUP_MA=groupsOfCells), INFO=info)
+
+    def createMedCouplingMesh(self):
+        """Returns the MEDCoupling unstructured mesh associated to the current mesh.
+
+        Returns:
+            Mesh: The MEDCoupling unstructured mesh associated to the current mesh.
+        """
+
+        return convertMesh2MedCoupling(self)
+
     @classmethod
     def buildSquare(cls, l=1, refine=0, info=1, deterministic=False):
         """Build the quadrilateral mesh of a square.
@@ -267,6 +289,36 @@ class ExtendedParallelMesh:
             filename = osp.join(tmpdir, "buildSquare.med")
             if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
                 mesh = Mesh.buildSquare(l=l, refine=refine_0, info=info)
+                mesh.printMedFile(filename)
+            ResultNaming.syncCounter()
+
+            # Mesh creation
+            mesh_p = cls()
+            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            return mesh_p.refine(refine_1, info)
+
+    @classmethod
+    def buildRectangle(cls, lx=1, ly=1, nx=1, ny=1, refine=0, info=1, deterministic=False):
+        """Build the quadrilateral mesh of a square.
+
+        Arguments:
+            lx [float] : length along the x axis (default 1.).
+            ly [float] : length along the y axis (default 1.).
+            nx [int] : number of elements along the x axis (default 1).
+            ny [int] : number of elements along the y axis (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+
+        ### Refine some levels on whole mesh, the remaining after partitioning
+        min_level = 6
+        refine_0 = min(min_level, refine)
+        refine_1 = refine - refine_0
+
+        with shared_tmpdir("buildRectangle") as tmpdir:
+            filename = osp.join(tmpdir, "buildRectangle.med")
+            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
+                mesh = Mesh.buildRectangle(lx=lx, ly=ly, nx=nx, ny=ny, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
 

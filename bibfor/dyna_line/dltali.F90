@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 !
 subroutine dltali(neq, result, imat, masse, rigid, &
                   liad, lifo, nchar, nveca, lcrea, &
-                  lprem, lamort, t0, mate, mateco, carele, &
-                  charge, infoch, fomult, modele, numedd, &
-                  nume, solveu, criter, dep0, vit0, &
-                  acc0, fexte0, famor0, fliai0, &
+                  lprem, lamort, t0, mate, mateco, &
+                  carele, charge, infoch, fomult, modele, &
+                  numedd, nume, solveu, criter, dep0, &
+                  vit0, acc0, fexte0, famor0, fliai0, &
                   tabwk, force0, force1, ds_energy, kineLoad)
 !
     use NonLin_Datastructure_type
@@ -106,17 +106,14 @@ subroutine dltali(neq, result, imat, masse, rigid, &
     character(len=19) :: chsol
     integer :: iforc0, iforc1
     integer :: iret
+    blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call vtcreb(force0, 'V', 'R', &
-                nume_ddlz=numedd, &
-                nb_equa_outz=neq)
+    call vtcreb(force0, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
     call jeveuo(force0(1:19)//'.VALE', 'E', iforc0)
-    call vtcreb(force1, 'V', 'R', &
-                nume_ddlz=numedd, &
-                nb_equa_outz=neq)
+    call vtcreb(force1, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
     call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
 !
 ! 1.2. ==> NOM DES STRUCTURES DE TRAVAIL
@@ -152,7 +149,10 @@ subroutine dltali(neq, result, imat, masse, rigid, &
 ! 5.1. ==> --- RESOLUTION AVEC FORCE1 COMME SECOND MEMBRE ---
 !
         call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
-        call dcopy(neq, zr(iforc0), 1, zr(iforc1), 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(iforc0), b_incx, zr(iforc1), b_incy)
         call dlfdyn(imat(1), imat(3), lamort, neq, dep0, &
                     vit0, zr(iforc1), tabwk)
 !
@@ -184,7 +184,10 @@ subroutine dltali(neq, result, imat, masse, rigid, &
 !
 ! 5.6 ==> STOCKAGE DE LA SOLUTION, FORC1, DANS LA STRUCTURE DE RESULTAT
 !           EN TANT QUE CHAMP D'ACCELERATION A L'INSTANT COURANT
-        call dcopy(neq, zr(iforc1), 1, acc0, 1)
+        b_n = to_blas_int(neq)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(iforc1), b_incx, acc0, b_incy)
 !
     end if
 !

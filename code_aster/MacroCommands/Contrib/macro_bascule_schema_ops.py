@@ -17,10 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import copy
-
-import aster
-from ...Messages import UTMESS, MasquerAlarme, RetablirAlarme
+from ...Messages import MasquerAlarme, RetablirAlarme
 
 from ...Cata.Syntax import _F
 from ...CodeCommands import CREA_CHAMP, DEFI_LIST_REEL, DYNA_NON_LINE

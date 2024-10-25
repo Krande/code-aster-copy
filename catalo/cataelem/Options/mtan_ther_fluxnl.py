@@ -26,11 +26,14 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+
+
 PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
 
 
 MTAN_THER_FLUXNL = Option(
-    para_in=(SP.PFLUXNL, SP.PGEOMER, SP.PTEMPEI, SP.PINSTR),
+    para_in=(SP.PFLUXNL, SP.PGEOMER, SP.PTEMPEI, SP.PINSTR, PCHHOBS),
     para_out=(PMATTTR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "-1"))),),
 )

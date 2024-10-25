@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,6 +55,9 @@ PVARCPR = InputParameter(
     comment="""  VARIABLES DE COMMANDES POUR T+  """,
 )
 
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+
+
 TEMP_ELGA = Option(
     para_in=(
         PBASLOR,
@@ -70,6 +73,7 @@ TEMP_ELGA = Option(
         SP.PCACOQU,
         PVARCPR,
         PNBSP_I,
+        PCHHOBS,
     ),
     para_out=(SP.PTEMP_R,),
     condition=(

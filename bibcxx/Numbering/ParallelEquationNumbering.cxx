@@ -3,7 +3,7 @@
  * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -108,17 +108,25 @@ VectorLong ParallelEquationNumbering::getGhostDOFs( const bool local ) const {
     return ghostRows;
 };
 
-VectorLong ParallelEquationNumbering::getNoGhostDOFs() const {
+VectorLong ParallelEquationNumbering::getNoGhostDOFs( const bool local ) const {
     auto localToRank = this->getLocalToRank();
     localToRank->updateValuePointer();
     const auto rank = getMPIRank();
     ASTERINTEGER dofOwner;
     VectorLong noGhostRows;
+    auto loc2glo = getLocalToGlobalMapping();
+    if ( !local )
+        loc2glo->updateValuePointer();
 
     for ( int i = 0; i < getNumberOfDOFs( true ); i++ ) {
         dofOwner = ( *localToRank )[i];
-        if ( dofOwner == rank )
-            noGhostRows.push_back( i );
+        if ( dofOwner == rank ) {
+            if ( local )
+                noGhostRows.push_back( i );
+            else {
+                noGhostRows.push_back( ( *loc2glo )[i] );
+            }
+        }
     }
     return noGhostRows;
 };

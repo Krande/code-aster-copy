@@ -48,6 +48,20 @@ with test.assertRaisesRegex(CA.AsterError, "SUPERVIS_4"):
 with test.assertRaisesRegex(CA.AsterError, "SUPERVIS_4"):
     CREA_MAILLAGE(RESTREINT=(_F(GROUP_MA="group1"), _F(GROUP_MA="group2")), MAILLAGE=MA)
 
+# check proper handling of non-dict passed to FactorKeywords
+with test.assertRaisesRegex(CA.AsterError, "Unexpected type.*str"):
+    DEFI_LIST_REEL(VALE="a")
+
+with test.assertRaisesRegex(CA.AsterError, "Unexpected type.*int"):
+    DEFI_LIST_REEL(VALE=(0.0, 1.0), TITRE=12)
+
+with test.assertRaisesRegex(CA.AsterError, "Unexpected type.*str"):
+    DEFI_LIST_REEL(VALE=(0.0, 1.0), INTERVALLE="a")
+
+
+with test.assertRaisesRegex(CA.AsterError, "Unexpected type.*float"):
+    DEFI_LIST_REEL(VALE=(0.0, 1.0), INTERVALLE=45.0)
+
 test.printSummary()
 
 FIN(FORMAT_HDF="OUI")

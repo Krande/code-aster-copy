@@ -18,14 +18,13 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine merimo(base, &
-                  l_xfem, l_macr_elem, l_hho, &
+                  l_xfem, l_macr_elem, &
                   model, cara_elem, iter_newt, &
                   ds_constitutive, ds_material, ds_system, &
-                  hval_incr, hval_algo, hhoField, &
+                  hval_incr, hval_algo, &
                   optioz, ldccvg, sddynz_)
 !
     use NonLin_Datastructure_type
-    use HHO_type
 !
     implicit none
 !
@@ -48,14 +47,13 @@ subroutine merimo(base, &
 #include "asterfort/detrsd.h"
 !
     character(len=1), intent(in) :: base
-    aster_logical, intent(in) :: l_xfem, l_macr_elem, l_hho
+    aster_logical, intent(in) :: l_xfem, l_macr_elem
     character(len=24), intent(in) :: model, cara_elem
     integer, intent(in) :: iter_newt
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-    type(HHO_Field), intent(in) :: hhoField
     character(len=*), intent(in) :: optioz
     integer, intent(out) :: ldccvg
     character(len=*), optional, intent(in) :: sddynz_
@@ -71,7 +69,6 @@ subroutine merimo(base, &
 ! In  base             : JEVEUX base to create objects
 ! In  l_xfem           : flag for XFEM elements
 ! In  l_macr_elem      : flag for macro-elements
-! In  l_hho            : flag for HHO elements
 ! In  model            : name of model
 ! In  cara_elem        : name of elementary characteristics (field)
 ! In  iter_newt        : index of current Newton iteration
@@ -80,7 +77,6 @@ subroutine merimo(base, &
 ! In  ds_system        : datastructure for non-linear system management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
-! In  hhoField         : datastructure for HHO
 ! In  option           : name of option to compute
 ! Out ldccvg           : return code from integration of behaviour
 !                       -1 - no integration of behaviour
@@ -131,10 +127,10 @@ subroutine merimo(base, &
 !
 ! - Input fields
 !
-    call merimp(l_xfem, l_dyna, l_hho, &
+    call merimp(l_xfem, l_dyna, &
                 model, cara_elem, sddyna, iter_newt, &
                 ds_constitutive, ds_material, &
-                hval_incr, hval_algo, hhoField, caco3d, &
+                hval_incr, hval_algo, caco3d, &
                 mxchin, lpain, lchin, nbin)
 !
 ! - Prepare flags

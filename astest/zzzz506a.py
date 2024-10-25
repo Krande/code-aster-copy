@@ -49,7 +49,7 @@ mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=acier))
 
 encast = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=(_F(GROUP_MA="BAS", DX=0, DY=0.0, DZ=0.0),))
 
-depl = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=(_F(GROUP_MA="HAUT", DZ=1.0),))
+depl = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=(_F(GROUP_MA="HAUT", DZ=10000.0),))
 
 LIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
 
@@ -111,7 +111,7 @@ snl.use(CA.LinearSolver.factory(METHODE="MUMPS"))
 snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE})
 snl.phys_pb.addLoadFromDict({"CHARGE": depl, "FONC_MULT": RAMPE})
 snl.setKeywords(
-    CONVERGENCE={"RESI_GLOB_MAXI": 1.0e-6, "ITER_GLOB_MAXI": 20},
+    CONVERGENCE={"RESI_GLOB_RELA": 1.0e-6, "ITER_GLOB_MAXI": 20},
     NEWTON={"PREDICTION": "ELASTIQUE"},
     COMPORTEMENT={"RELATION": "VMIS_ISOT_LINE"},
     INFO=1,
@@ -174,7 +174,7 @@ TEST_RESU(
         _F(
             CRITERE="ABSOLU",
             REFERENCE="AUTRE_ASTER",
-            ORDRE_GRANDEUR=1.0e-08,
+            ORDRE_GRANDEUR=5.0e-08,
             TYPE_TEST="MIN",
             CHAM_GD=DIF_VAR,
             VALE_CALC=0.0,
@@ -184,7 +184,7 @@ TEST_RESU(
         _F(
             CRITERE="ABSOLU",
             REFERENCE="AUTRE_ASTER",
-            ORDRE_GRANDEUR=1.0e-8,
+            ORDRE_GRANDEUR=5.0e-8,
             TYPE_TEST="MAX",
             CHAM_GD=DIF_VAR,
             VALE_CALC=0.0,

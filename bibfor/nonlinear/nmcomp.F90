@@ -85,7 +85,7 @@ subroutine nmcomp(BEHinteg, &
 !                out : en t+
 !     ndsde   : dimension de dsidep
 !     dsidep  : operateur tangent dsig/deps ou dsig/df
-!     codret  : code retour loi de comporment, par gravite decroissante
+! Out codret           : code for error
 !                   1 : echec fatal dans l'integration de la loi (resultats non utilisables)
 !                   3 : contraintes planes deborst non convergees (interdit la convergence)
 !                   2 : criteres de qualite de la loi non respectes (decoupage si convergence)
@@ -122,14 +122,16 @@ subroutine nmcomp(BEHinteg, &
     real(kind=8):: epsm_meca(neps), deps_meca(neps), epsm(neps), deps(neps)
     real(kind=8) :: dsidep_cp(merge(nsig, 6, nsig*neps .eq. ndsde), &
                               merge(neps, 6, nsig*neps .eq. ndsde))
-    real(kind=8), allocatable:: vip_cp(:), ka3_max, k3a_max, c_max
+    real(kind=8), allocatable:: vip_cp(:), ka3_min, k3a_min, c_min
     character(len=8)  :: materi
     character(len=8)  :: typmod_cp(2), typ_crit
     character(len=16) :: option_cp, mult_comp, defo_ldc, defo_comp
+    type(Behaviour_Integ) :: BEHintegCP
+!
 ! --------------------------------------------------------------------------------------------------
 
     ! Controles
-    ASSERT(neps*nsig .eq. ndsde .or. (ndsde .eq. 36 .and. neps .le. 6 .and. nsig .le. 6))
+    ASSERT(neps*nsig .eq. ndsde .or. (ndsde .eq. 36 .and. neps .le. 9 .and. nsig .le. 6))
 
 !   Les paramètres optionnels
     mult_comp = ' '
@@ -144,7 +146,7 @@ subroutine nmcomp(BEHinteg, &
     deps = deps_inp
 
     ! Initialisation
-    codret_ldc = 0
+    codret_ldc = LDC_ERROR_NONE
     codret_cp = 0
     codret_vali = 0
     read (compor(NUME), '(I16)') numlc
@@ -159,7 +161,8 @@ subroutine nmcomp(BEHinteg, &
     l_defo_meca = defo_ldc .eq. 'MECANIQUE'
     l_czm = typmod(2) .eq. 'ELEMJOIN'
     l_grad_vari = typmod(2) .eq. 'GRADVARI'
-    l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP'
+    l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP' &
+              .or. defo_comp .eq. 'GREEN_LAGRANGE'
     l_deborst = compor(PLANESTRESS) (1:7) .eq. 'DEBORST'
 
 ! --------------------------------------------------------------------------------------------------
@@ -177,15 +180,15 @@ subroutine nmcomp(BEHinteg, &
         end if
     end if
 
-    ! En phase de prediction / defo_meca, deps est tel que deps_meca = 0 (strucure additive defos)
+! En phase de prediction / defo_meca, deps est tel que deps_meca = 0 (structure additive defos)
     if (l_defo_meca .and. lPred) then
+! ----- Prepare external state variables at Gauss point
+        call behaviourPrepESVAPoin(BEHinteg)
 
-        call behaviourPrepESVAGauss(carcri, defo_ldc, imate, fami, kpg, ksp, neps, instap, BEHinteg)
-
+! ----- Prepare input strains for the behaviour law
         epsm_meca = epsm
         deps_meca = 0
-        call behaviourPrepStrain(l_czm, l_large, l_defo_meca, l_grad_vari, imate, fami, &
-                                 kpg, ksp, neps, BEHinteg%esva, epsm_meca, deps_meca)
+        call behaviourPrepStrain(neps, epsm_meca, deps_meca, BEHinteg)
         deps = -deps_meca
     end if
 
@@ -203,7 +206,7 @@ subroutine nmcomp(BEHinteg, &
                     angmas, numlc, sigp, vip, &
                     ndsde, dsidep, codret_ldc)
 
-        if (codret_ldc .eq. 1) goto 900
+        if (codret_ldc .eq. LDC_ERROR_NCVG) goto 900
 
 ! --------------------------------------------------------------------------------------------------
 !  Resolution des contraintes planes sizz=0 par une methode de Newton pour les lois non equipees
@@ -217,9 +220,11 @@ subroutine nmcomp(BEHinteg, &
         ASSERT(compor(DEFO) .eq. 'PETIT')
 
         ! Modification des parametres
-        nvi = nvi_all-1
+        BEHintegCP = BEHinteg
         typmod_cp(1) = 'AXIS'
         typmod_cp(2) = typmod(2)
+        call behaviourPrepModel(typmod_cp, BEHintegCP)
+        nvi = nvi_all-1
 
         ! Definition du critere de convergence
         prec = carcri(RESI_DEBORST_MAX)
@@ -252,7 +257,7 @@ subroutine nmcomp(BEHinteg, &
                 end if
 
                 ! Integration du comportement
-                call redece(BEHinteg, &
+                call redece(BEHintegCP, &
                             fami, kpg, ksp, ndim, typmod_cp, &
                             l_epsi_varc, imate, materi, compor, mult_comp, &
                             carcri, instam, instap, neps, epsm, &
@@ -260,7 +265,7 @@ subroutine nmcomp(BEHinteg, &
                             angmas, numlc, sigp, vip_cp, &
                             ndsde, dsidep_cp, codret_ldc)
 
-                if (codret_ldc .eq. 1) then
+                if (codret_ldc .eq. LDC_ERROR_NCVG) then
                     deallocate (vip_cp)
                     goto 900
                 end if
@@ -274,8 +279,11 @@ subroutine nmcomp(BEHinteg, &
                 if (conv_cp) exit
 
                 ! Reactualisation de la deformation EPZZ en verifiant l'inversibilite
-                invert = ASTER_TRUE
-                if (abs(dsidep_cp(3, 3)) .lt. abs(sigp(3))) then
+                if (abs(dsidep_cp(3, 3)) .eq. 0 .and. abs(sigp(3)) .eq. 0) then
+                    invert = ASTER_FALSE
+                else if (abs(dsidep_cp(3, 3)) .gt. abs(sigp(3))) then
+                    invert = ASTER_TRUE
+                else
                     invert = abs(dsidep_cp(3, 3))/abs(sigp(3)) .gt. 1.d0/r8gaem()
                 end if
 
@@ -298,7 +306,7 @@ subroutine nmcomp(BEHinteg, &
                     angmas, numlc, sigp, vip, &
                     ndsde, dsidep, codret_ldc)
 
-        if (codret_ldc .eq. 1) goto 900
+        if (codret_ldc .eq. LDC_ERROR_NCVG) goto 900
 
         ! Test de convergence des contraintes planes pour le code retour (0=OK, 1=NON CVG)
         if (lSigm) then
@@ -313,18 +321,21 @@ subroutine nmcomp(BEHinteg, &
         if (lMatr) then
 
             ! pivot nul -> on ne corrige pas la matrice
-            ka3_max = max(maxval(abs(dsidep(1:2, 3))), maxval(abs(dsidep(4:, 3))))
-            k3a_max = max(maxval(abs(dsidep(3, 1:2))), maxval(abs(dsidep(3, 4:))))
-            c_max = ka3_max*k3a_max
-            invert = ASTER_TRUE
-            if (abs(dsidep(3, 3)) .lt. c_max) then
-                invert = abs(dsidep(3, 3))/c_max .gt. 1.d0/r8gaem()
+            ka3_min = min(minval(abs(dsidep(1:2, 3))), abs(dsidep(4, 3)))
+            k3a_min = min(minval(abs(dsidep(3, 1:2))), abs(dsidep(3, 4)))
+            c_min = ka3_min*k3a_min
+            if (abs(dsidep(3, 3)) .eq. 0 .and. c_min .eq. 0) then
+                invert = ASTER_FALSE
+            else if (abs(dsidep(3, 3)) .gt. c_min) then
+                invert = ASTER_TRUE
+            else
+                invert = abs(dsidep(3, 3))/c_min .gt. 1.d0/r8gaem()
             end if
 
             if (invert) then
-                do k = 1, nsig
+                do k = 1, 4
                     if (k .eq. 3) goto 136
-                    do l = 1, neps
+                    do l = 1, 4
                         if (l .eq. 3) goto 137
                         dsidep(k, l) = dsidep(k, l)-dsidep(k, 3)*dsidep(3, l)/dsidep(3, 3)
 137                     continue
@@ -354,12 +365,11 @@ subroutine nmcomp(BEHinteg, &
             ASSERT(size(dsidep, 1) .ge. ndimsi)
             ASSERT(size(dsidep, 2) .ge. ndimsi)
             ASSERT(lSigm .and. lMatr)
-
-            call behaviourPredictionStress(BEHinteg%esva, dsidep, sigp(1:ndimsi))
+            call behaviourPredictionStress(BEHinteg%behavESVA, dsidep, sigp(1:ndimsi))
         end if
     end if
 
-!   Examen du domaine de validité
+! - Examen du domaine de validité
     call lcvali(fami, kpg, ksp, imate, materi, &
                 compor, ndim, epsm, deps, instam, &
                 instap, codret_vali)
@@ -368,27 +378,26 @@ subroutine nmcomp(BEHinteg, &
 
 ! Traitement du code retour par ordre de gravite
 
-    ! La loi de comportement a echoue (les resultats n'ont pas de signification)
-    if (codret_ldc .eq. 1) then
-        codret = 1
+! La loi de comportement a echoue (les resultats n'ont pas de signification)
+    if (codret_ldc .eq. LDC_ERROR_NCVG) then
+        codret = LDC_ERROR_NCVG
 
-        ! Les contraintes planes n'ont pas converge : le resultat n'est pas acceptable
+! Les contraintes planes n'ont pas converge : le resultat n'est pas acceptable
     else if (codret_cp .eq. 1) then
-        codret = 3
+        codret = LDC_ERROR_CPLA
 
-        ! Certaines qualites (criteres) ne sont pas respectees
-    else if (codret_ldc .eq. 2) then
-        codret = 2
+! Certaines qualites (criteres) ne sont pas respectees
+    else if (codret_ldc .eq. LDC_ERROR_QUAL) then
+        codret = LDC_ERROR_QUAL
 
-        ! Le domaine de validite du comportement n'est pas respecte
-    else if (codret_vali .eq. 4) then
-        codret = 4
+! Le domaine de validite du comportement n'est pas respecte
+    else if (codret_vali .eq. LDC_ERROR_DVAL) then
+        codret = LDC_ERROR_DVAL
 
-        ! Tout est satisfaisant
-    else if (codret_ldc .eq. 0 .and. codret_cp .eq. 0 .and. codret_vali .eq. 0) then
-        codret = 0
+! Tout est satisfaisant
+    else if (codret_ldc .eq. LDC_ERROR_NONE .and. codret_cp .eq. 0 .and. codret_vali .eq. 0) then
+        codret = LDC_ERROR_NONE
 
-        ! Situation non prevue
     else
         ASSERT(ASTER_FALSE)
     end if

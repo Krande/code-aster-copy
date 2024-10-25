@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -151,7 +151,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
     integer :: ifm, niv
     integer :: niveau, iterat
     aster_logical :: lerrit
-    aster_logical :: l_loop_exte, l_cont_disc, l_cont, l_hrom_corref, l_hho
+    aster_logical :: l_loop_exte, l_cont_disc, l_cont, l_hrom_corref
     character(len=4) :: etnewt, etfixe
     real(kind=8) :: time
 !
@@ -172,7 +172,6 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
     l_cont_disc = isfonc(fonact, 'CONT_DISCRET')
     l_cont = isfonc(fonact, 'CONTACT')
     l_hrom_corref = isfonc(fonact, 'HROM_CORR_EF')
-    l_hho = isfonc(fonact, 'HHO')
 !
 ! - Reset events
 !
@@ -254,7 +253,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
     call nmpred(mesh, model, numedd, numfix, ds_material, cara_elem, &
                 ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
                 fonact, ds_print, ds_measure, ds_algorom, sddisc, &
-                sdnume, sderro, numins, valinc, solalg, hhoField, &
+                sdnume, sderro, numins, valinc, solalg, &
                 matass, maprec, ds_contact, &
                 sddyna, nlDynaDamping, &
                 meelem, measse, veelem, veasse, lerrit)
@@ -294,7 +293,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
                 iterat, ds_measure, sddisc, &
                 sddyna, nlDynaDamping, &
                 sdnume, sderro, ds_contact, &
-                valinc, solalg, hhoField, &
+                valinc, solalg, &
                 veelem, veasse, measse, matass, lerrit)
 !
     if (lerrit) goto 315

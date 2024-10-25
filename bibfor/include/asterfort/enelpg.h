@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,14 @@
 !
 !
 interface
-    subroutine enelpg(fami, iadmat, instan, igau, repere,&
-                      xyzgau, compor, f, sigma, nbvari,&
+    subroutine enelpg(fami, iadmat, instan, igau, angl_naut,&
+                      compor, f, sigma, nbvari,&
                       vari, enelas)
         character(len=4) :: fami
         integer :: iadmat
         real(kind=8) :: instan
         integer :: igau
-        real(kind=8) :: repere(7)
-        real(kind=8) :: xyzgau(3)
+        real(kind=8) :: angl_naut(3)
         character(len=16) :: compor(*)
         real(kind=8) :: f(3, 3)
         real(kind=8) :: sigma(6)

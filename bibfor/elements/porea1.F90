@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine porea1(nno, nc, deplm, deplp, geom, &
                   gamma, vecteu, pgl, xl1, angp)
     implicit none
@@ -23,12 +23,12 @@ subroutine porea1(nno, nc, deplm, deplp, geom, &
 #include "jeveux.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/angvx.h"
+#include "asterfort/angvxy.h"
 #include "asterfort/assert.h"
-#include "asterfort/gareac.h"
 #include "asterfort/matrot.h"
 #include "asterfort/normev.h"
+#include "asterfort/provec.h"
 #include "asterfort/tecael.h"
-#include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
     integer :: nno, nc
@@ -56,19 +56,20 @@ subroutine porea1(nno, nc, deplm, deplp, geom, &
 ! OUT PGL    : MATRICE DE PASSAGE GLOBAL/LOCAL
 ! OUT XL     : LONGUEUR DE L'ELEMENT
 ! OUT ANGP   : ANGLES NAUTIQUES ACTUALISEE
-!              ATTENTION ANGP(3) EST DIFFERENT DE GAMMA1 QUI A SERVIT
+!              ATTENTION ANGP(3) EST DIFFERENT DE ANG1(3) QUI A SERVIT
 !              POUR CALCUL PGL
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i
-    real(kind=8) :: utg(14), xug(6), xd0(3), xd1(3), alfa1, beta1, xdn0(3), xdn1(3), cosangle
-    real(kind=8) :: dgamma, tet1, tet2, gamma1, xl0
-    real(kind=8) :: ang1(3)
+    real(kind=8) :: utg(14), xug(6), xd0(3), xd1(3), xdn0(3), xdn1(3), cosangle
+    real(kind=8) :: tet1, tet2, xl0, pgl2(3, 3)
+    real(kind=8) :: ang1(3), angm(3), ytrm(3), ytrp(3), vect(3), sinangle, angle
 !
     integer :: iadzi, iazk24
-    character(len=24) :: valkm(2)
+    character(len=24) :: valkm
     real(kind=8) :: valrm
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
     ASSERT(nno .eq. 2)
@@ -93,46 +94,76 @@ subroutine porea1(nno, nc, deplm, deplp, geom, &
     xdn1(:) = xd1(:)
     call normev(xdn0, xl0)
     call normev(xdn1, xl1)
-!   si angle > pi/8 : cos(angle) < 0.9238
-    cosangle = ddot(3, xdn0, 1, xdn1, 1)
-    if (cosangle .lt. 0.9238) then
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    cosangle = ddot(b_n, xdn0, b_incx, xdn1, b_incy)
+    call provec(xdn0, xdn1, vect)
+    sinangle = (ddot(b_n, vect, b_incx, vect, b_incy))**0.5
+    angle = atan2(sinangle, cosangle)*r8rddg()
+!   si angle > pi/4
+    if (abs(angle) .gt. 22.5d0) then
         call tecael(iadzi, iazk24)
-        valkm(1) = zk24(iazk24+3-1)
-        valkm(2) = ' '
-        valrm = trigom('ACOS', cosangle)
-        call utmess('A', 'ELEMENTS_38', nk=2, valk=valkm, sr=valrm)
+        valkm = zk24(iazk24+3-1)
+        valrm = angle
+        call utmess('A', 'ELEMENTS_38', sk=valkm, sr=valrm)
     end if
 !
     if (vecteu) then
 !       mise a jour du 3eme angle nautique au temps t+
-        call gareac(xd0, xd1, dgamma)
-!       si dgamma > pi/8
-        if (abs(dgamma) .gt. 0.3927d+00) then
-            call tecael(iadzi, iazk24)
-            valkm(1) = zk24(iazk24+3-1)
-            valkm(2) = 'GAMMA'
-            valrm = dgamma*r8rddg()
-            call utmess('A', 'ELEMENTS_38', nk=2, valk=valkm, sr=valrm)
-        end if
+
+!       ON CALCULE LES VECTEURS LOCAUX À L'INSTANT T-
+        call angvx(xd0, angm(1), angm(2))
+        angm(3) = gamma
+        call matrot(angm, pgl)
+
+!       VY À L'INSTANT T-
+        ytrm(1) = pgl(2, 1)
+        ytrm(2) = pgl(2, 2)
+        ytrm(3) = pgl(2, 3)
+
+!       CALCUL ET SAUVEGARDE DES ANGLES NAUTIQUES À L'INSTANT T+
+!       ON S'EN SERT DE VY À L'INSTANT T- COMMME VECT_Y À L'INSTANT T+
+!       ztrp = xdp ^ ytrm
+!       ytrp = ztrp ^ xdp
+
+        call angvxy(xd1, ytrm, angp)
+
     else
-        dgamma = 0.d0
+        call angvx(xd1, angp(1), angp(2))
+        angp(3) = gamma
     end if
 !
-!   calcul des deux premiers angles nautiques au temps t+, pour mémorisation
-    call angvx(xd1, alfa1, beta1)
+!   CALCUL DES TORSIONS AUX NOEUDS EXPRIMEE DABNS LE REPERE GLOBAL À T+
 !
-    tet1 = ddot(3, utg(4), 1, xd1, 1)
-    tet2 = ddot(3, utg(nc+4), 1, xd1, 1)
+    tet1 = ddot(b_n, utg(4), b_incx, xd1, b_incy)
+    tet2 = ddot(b_n, utg(nc+4), b_incx, xd1, b_incy)
     tet1 = tet1/xl1
     tet2 = tet2/xl1
-    gamma1 = gamma+dgamma+(tet1+tet2)/2.d0
-!   Sauvegarde des angles nautiques
-    angp(1) = alfa1
-    angp(2) = beta1
-    angp(3) = gamma+dgamma
 !   Matrice de passage global -> local
-    ang1(1) = alfa1
-    ang1(2) = beta1
-    ang1(3) = gamma1
+    ang1(1) = angp(1)
+    ang1(2) = angp(2)
+    ang1(3) = angp(3)+0.5d0*(tet1+tet2)
     call matrot(ang1, pgl)
+
+!   VERIF ANGLE ENTRE YLOCAL T- ET T+
+    if (vecteu) then
+!       0.5d0*(tet1+tet2) n'est pas pris en compte dans angm, il faut
+!       donc comparer à angp et non à ang1
+        call matrot(angp, pgl2)
+        ytrp(1) = pgl2(2, 1)
+        ytrp(2) = pgl2(2, 2)
+        ytrp(3) = pgl2(2, 3)
+        cosangle = ddot(b_n, ytrm, b_incx, ytrp, b_incy)
+        call provec(ytrm, ytrp, vect)
+        sinangle = (ddot(b_n, vect, b_incx, vect, b_incy))**0.5
+        angle = atan2(sinangle, cosangle)*r8rddg()
+        if (abs(angle) .gt. 22.5d0) then
+            call tecael(iadzi, iazk24)
+            valkm = zk24(iazk24+3-1)
+            valrm = angle
+            call utmess('A', 'ELEMENTS_38', sk=valkm, sr=valrm)
+        end if
+    end if
+
 end subroutine

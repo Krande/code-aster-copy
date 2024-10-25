@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0459(option, nomte)
 !
     use HHO_type
@@ -98,7 +98,7 @@ subroutine te0459(option, nomte)
             NeumValuesQP(1:3, ipg) = -PresQP(ipg)*normal
         end do
 !
-    elseif (option .eq. 'CHAR_MECA_PRES_F') then
+    else if (option .eq. 'CHAR_MECA_PRES_F') then
 !
 ! ---- Get Function Parameters
 !
@@ -122,7 +122,7 @@ subroutine te0459(option, nomte)
 !
         call jevech('PPRESSF', 'L', j_pres)
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_pres), nbpara, nompar, valpar, &
-                                & celldim, PresQp)
+                                celldim, PresQp)
 !
 ! ---- Compute the load at the quadrature points T = -p*normal
         do ipg = 1, hhoQuadFace%nbQuadPoints
@@ -130,7 +130,7 @@ subroutine te0459(option, nomte)
             NeumValuesQP(1:3, ipg) = -PresQP(ipg)*normal
         end do
 !
-    elseif (option .eq. 'CHAR_MECA_FF2D3D' .or. option .eq. 'CHAR_MECA_FF1D2D') then
+    else if (option .eq. 'CHAR_MECA_FF2D3D' .or. option .eq. 'CHAR_MECA_FF1D2D') then
 !
 ! ---- Get Function Parameters
 !
@@ -158,10 +158,10 @@ subroutine te0459(option, nomte)
 !
         do idim = 1, celldim
             call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_forc-1+idim), nbpara, nompar, valpar, &
-                                & celldim, NeumValuesQP(idim, 1:MAX_QP_FACE))
+                                    celldim, NeumValuesQP(idim, 1:MAX_QP_FACE))
         end do
 !
-    elseif (option .eq. 'CHAR_MECA_FR1D2D' .or. option .eq. 'CHAR_MECA_FR2D3D') then
+    else if (option .eq. 'CHAR_MECA_FR1D2D' .or. option .eq. 'CHAR_MECA_FR2D3D') then
 !
 ! ---- Get Forces
 !
@@ -180,7 +180,7 @@ subroutine te0459(option, nomte)
         call hhoFuncRVecEvalQp(hhoFace, hhoQuadFace, zr(j_forc), NeumValuesQP)
 !
     else
-
+!
         ASSERT(ASTER_FALSE)
     end if
 !

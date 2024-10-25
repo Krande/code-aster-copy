@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413,W1306
 !
 subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
                   mate, option, epsm, deps, sigma, &
@@ -76,6 +77,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
     character(len=16) :: nom(nbpa)
     character(len=1) :: poum
     aster_logical :: resi, rigi, elas, ifpahm, ifhyme
+    blas_int :: b_incx, b_incy, b_n
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 ! CALCUL DE CONTRAINTE (RESIDU)
@@ -149,10 +151,10 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
 ! DEFINITION DES PARAMETRES POUR LA RECUPERATION DES FONCTIONS
     coorot = 0.d0
     do i = 1, ndim
-        coorot(i) = BEHinteg%elem%coor_elga(kpg, i)
+        coorot(i) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, i)
     end do
     do i = 1, ndim*ndim
-        coorot(ndim+i) = BEHinteg%elga%rotpg(i)
+        coorot(ndim+i) = BEHinteg%behavESVA%behavESVAOther%rotpg(i)
     end do
 !
     nompar(1) = 'INST'
@@ -239,10 +241,18 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
 !
 ! CALCUL DU SAUT EN T+ OU T- EN FOCTION DE L'OPTION DE CALCUL
 !     A=AM
-    call dcopy(ndim, epsm, 1, a, 1)
+    b_n = to_blas_int(ndim)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, epsm, b_incx, a, b_incy)
 !     A=A+DA
-    if (resi) call daxpy(ndim, 1.d0, deps, 1, a, &
-                         1)
+    if (resi) then
+        b_n = to_blas_int(ndim)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, deps, b_incx, a, &
+                   b_incy)
+    end if
 !
 ! DANS LE CAS DU SCIAGE
 ! INITIALISATION DU POINT D'EQUILIBRE POUR LA LDC (OFFSET)
@@ -479,8 +489,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
 !       TERME : DW/DGP  (POUR KTAN P P)
         do n = 1, ndim-1
 !
-            dsidep(ndim+n, ndim+n) = -rhof*(max(amin, a(1)+amin))**3/(12* &
-                                                                      visf)
+            dsidep(ndim+n, ndim+n) = -rhof*(max(amin, a(1)+amin))**3/(12*visf)
 !
         end do
 !
@@ -517,8 +526,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
     end do
 ! DSIGMA_T/DDELTA_T
     if (ifplas .eq. 1) then
-        coefhd = -(kappa*lambda+adhe-mu*sigma(1))*kt**2/abstau**3/( &
-                 kt+kappa)
+        coefhd = -(kappa*lambda+adhe-mu*sigma(1))*kt**2/abstau**3/(kt+kappa)
         coefd = kappa*kt/(kt+kappa)-coefhd*abstau**2
         do j = 2, ndim
             do i = j, ndim

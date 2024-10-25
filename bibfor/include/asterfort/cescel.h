@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,24 @@
 !
 !
 interface
+!
     subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
-                      nncp, basez, celz, kstop, iret)
-        character(len=*) :: cesz
-        character(len=*) :: ligrez
-        character(len=*) :: optini
-        character(len=*) :: nompaz
-        character(len=*) :: prolz
-        integer :: nncp
-        character(len=*) :: basez
-        character(len=*) :: celz
-        character(len=1) :: kstop
-        integer :: iret
+                      nncp, basez, celz, kstop, iret, prolong)
+        !
+        use proj_champ_module
+        !
+        character(len=*)    :: cesz
+        character(len=*)    :: ligrez
+        character(len=*)    :: optini
+        character(len=*)    :: nompaz
+        character(len=*)    :: prolz
+        integer             :: nncp
+        character(len=*)    :: basez
+        character(len=*)    :: celz
+        character(len=1)    :: kstop
+        integer             :: iret
+        type(prolongation), optional :: prolong
+        !
     end subroutine cescel
+!
 end interface

@@ -3,7 +3,7 @@
  * @brief Python interface for FieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -83,7 +83,17 @@ Convert to SimpleFieldOnNodes
 Returns:
     SimpleFieldOnNodesReal: field converted
         )" )
-        .def( "changeLocalization", &FieldOnCellsReal::changeLocalization )
+        .def( "asLocalization", &FieldOnCellsReal::asLocalization,
+              R"(
+            Return a new field interpolated at the given localozation.
+
+            Arguments:
+                loc [str]: name of localization (ELEM, ELNO or ELGA)
+
+            Returns:
+                FieldOnCellsReal: new field with new localization.
+            )",
+              py::arg( "loc" ) )
         .def( "getDescription", &FieldOnCellsReal::getDescription, R"(
             Return the descriptor associated with the FieldOnCellsReal object
 
@@ -145,7 +155,7 @@ Returns:
             Returns:
                 int: number of element in the field
             )" )
-        .def( "transform", &FieldOnCellsReal::transform< ASTERDOUBLE >, R"(
+        .def( "transform", &FieldOnCellsReal::transform, R"(
             Apply a function to each value of the object.
 
             Arguments:
@@ -191,7 +201,7 @@ Returns:
                 bool: *True* if succeeds, *False* otherwise.
             )",
               py::arg( "filename" ), py::arg( "local" ) = true )
-        .def( "norm", &FieldOnCellsReal::norm< ASTERDOUBLE >, R"(
+        .def( "norm", &FieldOnCellsReal::norm, R"(
             Return the euclidean norm of the field
 
             Arguments:
@@ -200,7 +210,7 @@ Returns:
             Returns:
                 float: euclidean norm
             )" )
-        .def( "dot", &FieldOnCellsReal::dot< ASTERDOUBLE >, R"(
+        .def( "dot", &FieldOnCellsReal::dot, R"(
             Return the dot product of two fields
 
             Arguments:
@@ -307,7 +317,7 @@ Returns:
             Returns:
                 int: number of element in the field
             )" )
-        .def( "transform", &FieldOnCellsComplex::transform< ASTERCOMPLEX >, R"(
+        .def( "transform", &FieldOnCellsComplex::transform, R"(
             Apply a function to each value of the object.
 
             Arguments:

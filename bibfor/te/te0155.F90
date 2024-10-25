@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0155(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -82,19 +82,20 @@ subroutine te0155(option, nomte)
     real(kind=8) :: kendog(1), kdessi(1), sech, hydr
     real(kind=8) :: epsth, sref
 !
-    character(len=4)    :: fami
-    character(len=8)    :: poum, nomail
+    character(len=4) :: fami
+    character(len=8) :: poum, nomail
 !
     logical :: normal, global, okvent
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8)                :: valpav(1)
+    real(kind=8) :: valpav(1)
     character(len=8), parameter :: nompav(1) = ['VITE']
 !
-    real(kind=8)        :: valr(2), valpar(13)
-    character(len=8)    :: valp(2), nompar(13)
+    real(kind=8) :: valr(2), valpar(13)
+    character(len=8) :: valp(2), nompar(13)
 !
-    real(kind=8)        :: wx(6), wv(6), wa(6), temps
+    real(kind=8) :: wx(6), wv(6), wa(6), temps
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -166,7 +167,10 @@ subroutine te0155(option, nomte)
     end if
 !
 !   Si l'élément est de taille nulle
-    xss = ddot(dimens, w2, 1, w2, 1)
+    b_n = to_blas_int(dimens)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    xss = ddot(b_n, w2, b_incx, w2, b_incy)
     xl = sqrt(xss)
     if (xl .le. r8min) then
         call tecael(iadzi, iazk24)
@@ -184,7 +188,8 @@ subroutine te0155(option, nomte)
 !       recuperation des caracteristiques materiaux ---
         call jevech('PMATERC', 'L', lmater)
         kpg = 1; spt = 1; poum = '+'
-        call rcvalb('FPG1', kpg, spt, poum, zi(lmater), ' ', 'ELAS', 0, ' ', [0.d0], &
+        call rcvalb('FPG1', kpg, spt, poum, zi(lmater), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'RHO', rho, codres, 1)
 !
         call jevech('PPESANR', 'L', lpesa)
@@ -205,7 +210,7 @@ subroutine te0155(option, nomte)
         r1 = abs(zr(lforc+3))
         global = r1 .lt. 0.001
         normal = r1 .gt. 1.001
-
+!
         do i = 1, 3
             force(i) = zr(lforc+i-1)
             force(i+3) = force(i)
@@ -246,21 +251,31 @@ subroutine te0155(option, nomte)
             viterela(i) = zr(lforc-1+i)
         end do
 !
-        xss = ddot(3, w2, 1, w2, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xss = ddot(b_n, w2, b_incx, w2, b_incy)
         xs2 = 1.d0/xss
 !       Calcul du vecteur vitesse perpendiculaire : noeud 1
         fcx = 0.0; xvp(:) = 0.0
-        xss = ddot(3, viterela(1), 1, viterela(1), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xss = ddot(b_n, viterela(1), b_incx, viterela(1), b_incy)
         xs4 = sqrt(xss)
         if (xs4 .gt. r8min) then
             call provec(w2, viterela(1), xuu)
             call provec(xuu, w2, xvv)
             call pscvec(3, xs2, xvv, xvp)
 !           Norme de la vitesse perpendiculaire
-            vite2 = ddot(3, xvp, 1, xvp, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            vite2 = ddot(b_n, xvp, b_incx, xvp, b_incy)
             valpav(1) = sqrt(vite2)
             if (valpav(1) .gt. r8min) then
-                call fointe('FM', zk8(ifcx), 1, nompav, valpav, fcx, iret)
+                call fointe('FM', zk8(ifcx), 1, nompav, valpav, &
+                            fcx, iret)
                 fcx = fcx/valpav(1)
             end if
         end if
@@ -268,17 +283,24 @@ subroutine te0155(option, nomte)
 !
 !       Calcul du vecteur vitesse perpendiculaire : noeud 2
         fcx = 0.0; xvp(:) = 0.0
-        xss = ddot(3, viterela(4), 1, viterela(4), 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        xss = ddot(b_n, viterela(4), b_incx, viterela(4), b_incy)
         xs4 = sqrt(xss)
         if (xs4 .gt. r8min) then
             call provec(w2, viterela(4), xuu)
             call provec(xuu, w2, xvv)
             call pscvec(3, xs2, xvv, xvp)
 !           Norme de la vitesse perpendiculaire
-            vite2 = ddot(3, xvp, 1, xvp, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            vite2 = ddot(b_n, xvp, b_incx, xvp, b_incy)
             valpav(1) = sqrt(vite2)
             if (valpav(1) .gt. r8min) then
-                call fointe('FM', zk8(ifcx), 1, nompav, valpav, fcx, iret)
+                call fointe('FM', zk8(ifcx), 1, nompav, valpav, &
+                            fcx, iret)
                 fcx = fcx/valpav(1)
             end if
         end if
@@ -304,14 +326,16 @@ subroutine te0155(option, nomte)
         valpar(7:9) = wv(1:3); valpar(10:12) = wa(1:3)
         valpar(13) = temps
         do i = 1, 3
-            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar, force(i), iret)
+            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar, &
+                        force(i), iret)
         end do
 !
         valpar(1:3) = wx(4:6); valpar(4:6) = w2(1:3)
         valpar(7:9) = wv(4:6); valpar(10:12) = wa(4:6)
         valpar(13) = temps
         do i = 1, 3
-            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar, force(i+3), iret)
+            call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar, &
+                        force(i+3), iret)
         end do
 !
         if (normal) then
@@ -338,10 +362,12 @@ subroutine te0155(option, nomte)
         aire = valr(1)
 !       Recuperation des caracteristiques materiaux ---
         call jevech('PMATERC', 'L', lmater)
-        call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [0.d0], &
+        call rcvalb(fami, 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'E', e, codres, 1)
 !       Temperature de reference
-        call verift(fami, 1, 1, '+', zi(lmater), epsth_=epsth)
+        call verift(fami, 1, 1, '+', zi(lmater), &
+                    epsth_=epsth)
 !       Terme de la matrice elementaire
         xrig = e(1)*aire/xl
 !       Deplacement induit par la temperature
@@ -359,7 +385,8 @@ subroutine te0155(option, nomte)
         aire = valr(1)
 !       Recuperation des caracteristiques materiaux
         call jevech('PMATERC', 'L', lmater)
-        call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [0.d0], &
+        call rcvalb(fami, 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'E', e, codres, 1)
 !       Recuperation de l'instant
         call tecach('ONO', 'PINSTR', 'L', iret, iad=itemps)
@@ -367,10 +394,13 @@ subroutine te0155(option, nomte)
             temps = zr(itemps)
         end if
 !       Temperature effective
-        call rcvarc(' ', 'TEMP', '+', fami, 1, 1, temper, iret)
-        call rcvarc(' ', 'SECH', '+', 'RIGI', 1, 1, sech, iret)
+        call rcvarc(' ', 'TEMP', '+', fami, 1, &
+                    1, temper, iret)
+        call rcvarc(' ', 'SECH', '+', 'RIGI', 1, &
+                    1, sech, iret)
         if (iret .ne. 0) sech = 0.d0
-        call rcvarc(' ', 'SECH', 'REF', 'RIGI', 1, 1, sref, iret)
+        call rcvarc(' ', 'SECH', 'REF', 'RIGI', 1, &
+                    1, sref, iret)
         if (iret .ne. 0) sref = 0.d0
 !
         nompar(1) = 'TEMP'; nompar(2) = 'INST'; nompar(3) = 'SECH'
@@ -378,7 +408,8 @@ subroutine te0155(option, nomte)
 !       Terme de la matrice elementaire
         xrig = e(1)*aire/xl
 !       Interpolation de k_dessicca en fonction de la temperature du sechage
-        call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', 3, nompar, valpar, &
+        call rcvalb('RIGI', 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 3, nompar, valpar, &
                     1, 'K_DESSIC', kdessi, codres, 0)
         if (codres(1) .ne. 0) kdessi(1) = 0.d0
 !
@@ -397,7 +428,8 @@ subroutine te0155(option, nomte)
         aire = valr(1)
 !       Recuperation des caracteristiques materiaux ---
         call jevech('PMATERC', 'L', lmater)
-        call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [0.d0], &
+        call rcvalb('RIGI', 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'E', e, codres, 1)
 !       Recuperation de l'instant
         call tecach('ONO', 'PINSTR', 'L', iret, iad=itemps)
@@ -405,9 +437,11 @@ subroutine te0155(option, nomte)
             temps = zr(itemps)
         end if
 !       Temperature effective
-        call rcvarc(' ', 'TEMP', '+', fami, 1, 1, temper, iret)
+        call rcvarc(' ', 'TEMP', '+', fami, 1, &
+                    1, temper, iret)
 !       Hydratation effective
-        call rcvarc(' ', 'HYDR', '+', 'RIGI', 1, 1, hydr, iret)
+        call rcvarc(' ', 'HYDR', '+', 'RIGI', 1, &
+                    1, hydr, iret)
         if (iret .ne. 0) hydr = 0.d0
 !
         nompar(1) = 'TEMP'; nompar(2) = 'INST'; nompar(3) = 'HYDR'
@@ -415,7 +449,8 @@ subroutine te0155(option, nomte)
 !       Terme de la matrice elementaire
         xrig = e(1)*aire/xl
 !       Interpolation de k_dessicca en fonction de la temperature ou de l hydratation
-        call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', 3, nompar, valpar, &
+        call rcvalb('RIGI', 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 3, nompar, valpar, &
                     1, 'B_ENDOGE', kendog, codres, 0)
         if (codres(1) .ne. 0) kendog(1) = 0.d0
 !
@@ -434,7 +469,8 @@ subroutine te0155(option, nomte)
         aire = valr(1)
 !       Recuperation des caracteristiques materiaux
         call jevech('PMATERC', 'L', lmater)
-        call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [0.d0], &
+        call rcvalb(fami, 1, 1, '+', zi(lmater), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'E', e, codres, 1)
 !       Recuperation de la deformation
         if (option(15:16) .eq. '_R') then
@@ -449,7 +485,8 @@ subroutine te0155(option, nomte)
             valpar(2) = (wx(2)+wx(5))/2.d0
             valpar(3) = (wx(3)+wx(6))/2.d0
             valpar(4) = zr(itemps)
-            call fointe('FM', zk8(iepsini), 4, nompar, valpar, epsini, iret)
+            call fointe('FM', zk8(iepsini), 4, nompar, valpar, &
+                        epsini, iret)
         end if
 !       Calcul des forces induites
         force_rep_local(1) = -e(1)*aire*epsini
@@ -482,26 +519,45 @@ contains
 #include "blas/ddot.h"
 #include "asterc/r8miem.h"
 !
-        real(kind=8), intent(in)    :: w2(3)
+        real(kind=8), intent(in) :: w2(3)
         real(kind=8), intent(inout) :: force(3)
 !
         real(kind=8) :: xuu(3), xvv(3), xsu(3)
         real(kind=8) :: xss, xs2, xs3, xs4, xs5, r8min
+        blas_int :: b_incx, b_incy, b_n
 !
         r8min = r8miem()
-        xss = ddot(3, force, 1, force, 1)
+        b_n = to_blas_int(3)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        b_n = to_blas_int(b_n)
+        b_incx = to_blas_int(b_incx)
+        b_incy = to_blas_int(b_incy)
+        xss = ddot(b_n, force, b_incx, force, b_incy)
         xs4 = sqrt(xss)
         if (xs4 .gt. r8min) then
-            xss = ddot(3, w2, 1, w2, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            b_n = to_blas_int(b_n)
+            b_incx = to_blas_int(b_incx)
+            b_incy = to_blas_int(b_incy)
+            xss = ddot(b_n, w2, b_incx, w2, b_incy)
             xs2 = 1.0/xss
             call provec(w2, force, xuu)
             call provec(xuu, w2, xvv)
             call pscvec(3, xs2, xvv, xsu)
-            xss = ddot(3, xuu, 1, xuu, 1)
+            b_n = to_blas_int(3)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            b_n = to_blas_int(b_n)
+            b_incx = to_blas_int(b_incx)
+            b_incy = to_blas_int(b_incy)
+            xss = ddot(b_n, xuu, b_incx, xuu, b_incy)
             xs3 = sqrt(xss)
             xs5 = xs3*sqrt(xs2)/xs4
             call pscvec(3, xs5, xsu, force)
         end if
     end subroutine ForceNormale
-
+!
 end subroutine te0155

@@ -170,7 +170,7 @@ subroutine coeihm(ds_thm, option, &
 !
 ! - Update unknowns
 !
-    call calcva(ds_thm, kpi, ndim-1, &
+    call calcva(ds_thm, ndim-1, &
                 defgem, defgep, &
                 addeme, addep1, addep2, addete, &
                 depsv, epsv, deps, &

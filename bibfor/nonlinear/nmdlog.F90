@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, ndim, nno, &
-                  npg, compor, mult_comp, mate, lgpg, &
-                  carcri, angmas, instm, instp, matsym, &
-                  dispPrev, dispIncr, sigmPrev, vim, sigmCurr, &
-                  vip, fint, matuu, codret)
+subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
+                  ndim, nno, npg, compor, mult_comp, &
+                  mate, lgpg, carcri, angmas, instm, &
+                  instp, matsym, dispPrev, dispIncr, sigmPrev, &
+                  vim, sigmCurr, vip, fint, matuu, &
+                  codret)
 !
     use FE_topo_module
     use FE_quadrature_module
@@ -98,16 +99,17 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, ndim, nno, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: ksp = 1
     aster_logical :: cplan
     aster_logical :: matsym, lintbo
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lCorr, lVari
     integer :: kpg, nddl, cod(MAX_QP), ivf
     integer :: mate, lgpg, codret, iw, idff, iret
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(2)
     character(len=16) :: option
-    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
     character(len=16), intent(in) :: mult_comp
-    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8) :: instm, instp
     real(kind=8) :: dtde(6, 6)
     real(kind=8) :: angmas(3), dispPrev(*), dispIncr(*), sigmPrev(2*ndim, npg), epslPrev(6)
@@ -119,6 +121,7 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, ndim, nno, &
     real(kind=8) :: gPrev(3, 3), gCurr(3, 3), coorpg(3), BGSEval(3, MAX_BS)
     real(kind=8) :: dsidep(6, 6), pk2Curr(6), pk2Prev(6)
     type(Behaviour_Integ) :: BEHinteg
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -132,39 +135,52 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, ndim, nno, &
     nddl = ndim*nno
     ASSERT(nno .le. 27)
     ASSERT(compor(PLANESTRESS) .ne. 'DEBORST')
-
+!
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
 
-! - Prepare external state variables
+! - Set main parameters for behaviour (on cell)
+    call behaviourSetParaCell(ndim, typmod, option, &
+                              compor, carcri, &
+                              instm, instp, &
+                              FEQuad%fami, mate, &
+                              BEHinteg)
+
+! - Prepare external state variables (geometry)
     call elrefe_info(fami=FEQuad%fami, jpoids=iw, jvf=ivf, jdfde=idff)
-    call behaviourPrepESVAElem(carcri, typmod, &
-                               nno, npg, ndim, &
+    call behaviourPrepESVAGeom(nno, npg, ndim, &
                                iw, ivf, idff, &
                                FECell%coorno(1:ndim, 1:nno), BEHinteg, &
                                dispPrev, dispIncr)
-
+!
 ! - Update configuration
-    call dcopy(nddl, dispPrev, 1, dispCurr, 1)
+    b_n = to_blas_int(nddl)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, dispPrev, b_incx, dispCurr, b_incy)
     if (lCorr) then
-        call daxpy(nddl, 1.d0, dispIncr, 1, dispCurr, 1)
+        b_n = to_blas_int(nddl)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call daxpy(b_n, 1.d0, dispIncr, b_incx, dispCurr, &
+                   b_incy)
     end if
-
+!
 ! - Loop on Gauss points
     lintbo = ASTER_FALSE
     cod = 0
     do kpg = 1, npg
         coorpg = FEQuad%points_param(1:3, kpg)
         BGSEval = FEBasis%grad(coorpg, FEQuad%jacob(1:3, 1:3, kpg))
-
+!
 ! ----- Kinematic - Previous strains
         gPrev = FEEvalGradMat(FEBasis, dispPrev, coorpg, BGSEval)
         fPrev = matG2F(gPrev)
-
+!
 ! ----- Kinematic - Current strains
         gCurr = FEEvalGradMat(FEBasis, dispCurr, coorpg, BGSEval)
         fCurr = matG2F(gCurr)
-
+!
 ! ----- Pre-treatment of kinematic quantities
         call prelog(ndim, lgpg, vim(1, kpg), gn, lamb, &
                     logl, fPrev, fCurr, epslPrev, epslIncr, &
@@ -172,12 +188,16 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, ndim, nno, &
         if (cod(kpg) .ne. 0) then
             goto 999
         end if
-! ----- Compute behaviour
+
+! ----- Set main parameters for behaviour (on point)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+
+! ----- Integrator
         cod(kpg) = 0
         dtde = 0.d0
         tlogCurr = 0.d0
         call nmcomp(BEHinteg, &
-                    FEQuad%fami, kpg, 1, ndim, typmod, &
+                    FEQuad%fami, kpg, ksp, ndim, typmod, &
                     mate, compor, carcri, instm, instp, &
                     6, epslPrev, epslIncr, 6, tlogPrev, &
                     vim(1, kpg), option, angmas, &
@@ -189,22 +209,23 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, ndim, nno, &
         if (cod(kpg) .eq. 4) then
             lintbo = .true.
         end if
+
 ! ----- Post-treatment of sthenic quantities
-        call poslog(lCorr, lMatr, lSigm, lVari, &
-                    tlogPrev, tlogCurr, fPrev, &
-                    lgpg, vip(1, kpg), ndim, fCurr, kpg, &
-                    dtde, sigmPrev(1, kpg), cplan, FEQuad%fami, mate, &
-                    instp, angmas, gn, lamb, logl, &
-                    sigmCurr(1, kpg), dsidep, pk2Prev, pk2Curr, iret)
+        call poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
+                    tlogCurr, fPrev, lgpg, vip(1, kpg), ndim, &
+                    fCurr, kpg, dtde, sigmPrev(1, kpg), cplan, &
+                    FEQuad%fami, mate, instp, angmas, gn, &
+                    lamb, logl, sigmCurr(1, kpg), dsidep, pk2Prev, &
+                    pk2Curr, iret)
         if (iret .eq. 1) then
             cod(kpg) = 1
             goto 999
         end if
+
 ! ----- Compute internal forces and matrix
-        call nmgrtg(FEBasis, coorpg, FEQuad%weights(kpg), BGSEval, &
-                    lVect, lMatr, lMatrPred, &
-                    fPrev, fCurr, dsidep, pk2Prev, &
-                    pk2Curr, matsym, matuu, fint)
+        call nmgrtg(FEBasis, coorpg, FEQuad%weights(kpg), BGSEval, lVect, &
+                    lMatr, lMatrPred, fPrev, fCurr, dsidep, &
+                    pk2Prev, pk2Curr, matsym, matuu, fint)
     end do
     if (lintbo) then
         cod(1) = 4

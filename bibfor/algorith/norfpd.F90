@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine norfpd(ndim, nno1, nno2, nno3, npg, iw, &
-                  vff1, vff2, vff3, idff1, vu, vp, vpi, &
-                  typmod, nomte, geomi, sigref, epsref, piref, vect)
+!
+subroutine norfpd(ndim, nno1, nno2, nno3, npg, &
+                  iw, vff1, vff2, vff3, idff1, &
+                  vu, vp, vpi, typmod, nomte, &
+                  geomi, sigref, epsref, piref, vect)
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
 ! aslint: disable=W1306
@@ -73,6 +74,7 @@ subroutine norfpd(ndim, nno1, nno2, nno3, npg, iw, &
     real(kind=8) :: def(2*ndim, nno1, ndim)
     real(kind=8) :: t1, dff1(nno1, 4)
     real(kind=8) :: stab, hk
+    blas_int :: b_incx, b_incy, b_n
 !
     data f/1.d0, 0.d0, 0.d0,&
      &                  0.d0, 1.d0, 0.d0,&
@@ -93,7 +95,9 @@ subroutine norfpd(ndim, nno1, nno2, nno3, npg, iw, &
 !
     do g = 1, npg
 !
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
+        call dfdmip(ndim, nno1, axi, geomi, g, &
+                    iw, vff1(1, g), idff1, r, w, &
+                    dff1)
 !
 ! - CALCUL DE LA MATRICE B EPS_ij=B_ijkl U_kl
 ! - DEF (XX,YY,ZZ,2/RAC(2)XY,2/RAC(2)XZ,2/RAC(2)YZ)
@@ -133,7 +137,10 @@ subroutine norfpd(ndim, nno1, nno2, nno3, npg, iw, &
             do na = 1, nno1
                 do ia = 1, ndim
                     kk = vu(ia, na)
-                    t1 = ddot(2*ndim, sigma, 1, def(1, na, ia), 1)
+                    b_n = to_blas_int(2*ndim)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    t1 = ddot(b_n, sigma, b_incx, def(1, na, ia), b_incy)
                     vect(kk) = vect(kk)+abs(w*t1)/ndimsi
                 end do
             end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
-!
+
+! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
+! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
+
 module HHO_utils_module
 !
     use HHO_type
@@ -35,6 +37,7 @@ module HHO_utils_module
 #include "asterfort/getResuElem.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,6 +51,7 @@ module HHO_utils_module
     public :: hhoGetTypeFromModel, MatScal2Vec, hhoRenumMecaVecInv, MatCellScal2Vec
     public :: SigVec2Mat, hhoGetMatrElem, CellNameL2S, CellNameS2L
     public :: hhoRenumTherVec, hhoRenumTherMat, hhoRenumTherVecInv
+    public :: hhoIsIdentityMat, hhoIdentityMat
 !    private  ::
 !
 contains
@@ -61,8 +65,8 @@ contains
         implicit none
 !
         character(len=8), intent(in) :: model
-        type(HHO_Data), intent(out)  :: hhoData
-        integer, intent(out)         :: ndim
+        type(HHO_Data), intent(out) :: hhoData
+        integer, intent(out) :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,11 +87,13 @@ contains
         if (answer .eq. 'OUI') then
             call dismoi('EXI_HHO_QUAD', model, 'MODELE', repk=answer)
             if (answer .eq. 'OUI') then
-                call hhoData%initialize(2, 2, 2, 0.d0, ASTER_FALSE, ASTER_FALSE)
+                call hhoData%initialize(2, 2, 2, 0.d0, ASTER_FALSE, &
+                                        ASTER_FALSE)
             else
                 call dismoi('EXI_HHO_LINE', model, 'MODELE', repk=answer)
                 if (answer .eq. 'OUI') then
-                    call hhoData%initialize(1, 1, 1, 0.d0, ASTER_FALSE, ASTER_FALSE)
+                    call hhoData%initialize(1, 1, 1, 0.d0, ASTER_FALSE, &
+                                            ASTER_FALSE)
                 else
                     ASSERT(ASTER_FALSE)
                 end if
@@ -110,9 +116,9 @@ contains
 !
         implicit none
 !
-        character(len=1), intent(in)                :: uplo
+        character(len=1), intent(in) :: uplo
         real(kind=8), dimension(:, :), intent(inout) :: mat
-        integer, intent(in), optional               :: size_mat
+        integer, intent(in), optional :: size_mat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -138,7 +144,7 @@ contains
             do i = 1, ncols-1
                 mat(i, i+1:ncols) = mat(i+1:ncols, i)
             end do
-        elseif (uplo == 'U') then
+        else if (uplo == 'U') then
             do i = 1, ncols-1
                 mat(i+1:ncols, i) = mat(i, i+1:ncols)
             end do
@@ -156,8 +162,8 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(in)                :: long
-        character(len=8), intent(out)                :: short
+        integer, intent(in) :: long
+        character(len=8), intent(out) :: short
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -169,15 +175,19 @@ contains
 !
 !
         select case (long)
-        case ("HEXA8")
+        case (MT_HEXA8)
             short = "HE8"
-        case ("TETRA4")
+        case (MT_TETRA4)
             short = "TE4"
-        case ("QUAD4")
+        case (MT_PYRAM5)
+            short = "PY5"
+        case (MT_PENTA6)
+            short = "PE6"
+        case (MT_QUAD4)
             short = "QU4"
-        case ("TRIA3")
+        case (MT_TRIA3)
             short = "TR3"
-        case ("SEG2")
+        case (MT_SEG2)
             short = "SE2"
         case default
             ASSERT(ASTER_FALSE)
@@ -193,8 +203,8 @@ contains
 !
         implicit none
 !
-        character(len=8), intent(out)                :: long
-        character(len=8), intent(in)                :: short
+        character(len=8), intent(out) :: long
+        character(len=8), intent(in) :: short
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -300,7 +310,7 @@ contains
 !   print fourth order tensor
 !   In tens   : tensor to print
 ! --------------------------------------------------------------------------------------------------
-
+!
 !
         integer :: i, k
 !
@@ -309,8 +319,8 @@ contains
         do i = 1, 3
             do k = 1, 3
                 write (6, '(50F14.7)') tens(i, 1, k, 1), tens(i, 1, k, 2), tens(i, 1, k, 3), &
-                                    &   tens(i, 2, k, 1), tens(i, 2, k, 2), tens(i, 2, k, 3), &
-                                    &   tens(i, 3, k, 1), tens(i, 3, k, 2), tens(i, 3, k, 3)
+                    tens(i, 2, k, 1), tens(i, 2, k, 2), tens(i, 2, k, 3), &
+                    tens(i, 3, k, 1), tens(i, 3, k, 2), tens(i, 3, k, 3)
             end do
         end do
 !
@@ -331,7 +341,7 @@ contains
 !   print fourth order tensor
 !   In tens   : tensor to print
 ! --------------------------------------------------------------------------------------------------
-
+!
 !
         real(kind=8) :: tens6(6, 6)
 !
@@ -349,8 +359,8 @@ contains
 !
         implicit none
 !
-        real(kind=8), dimension(:, :), intent(in)    :: mat
-        real(kind=8)                                :: norm
+        real(kind=8), dimension(:, :), intent(in) :: mat
+        real(kind=8) :: norm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -384,8 +394,8 @@ contains
 !
         real(kind=8), dimension(6), intent(in) :: SymMat
         real(kind=8), dimension(3), intent(in) :: vect
-        integer, intent(in)                    :: ndim
-        real(kind=8), dimension(3), intent(out):: resu
+        integer, intent(in) :: ndim
+        real(kind=8), dimension(3), intent(out) :: resu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -421,9 +431,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in)             :: ndim
-        real(kind=8), intent(in)        :: sigvec(*)
-        real(kind=8), intent(out)       :: sigmat(3, 3)
+        integer, intent(in) :: ndim
+        real(kind=8), intent(in) :: sigvec(*)
+        real(kind=8), intent(out) :: sigmat(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -461,9 +471,9 @@ contains
 !
         implicit none
 !
-        character(len=19), intent(in)  :: matr_elem
+        character(len=19), intent(in) :: matr_elem
         character(len=19), intent(out) :: resu_elem
-        integer, intent(out)           :: isym
+        integer, intent(out) :: isym
 ! --------------------------------------------------------------------------------------------------
 !   HHO
 !
@@ -489,7 +499,7 @@ contains
                 call dismoi('NOM_GD', resu_elem, 'RESUELEM', repk=nomgd)
                 if (nomgd == 'MDNS_R') then
                     isym = 0
-                elseif (nomgd == 'MDEP_R') then
+                else if (nomgd == 'MDEP_R') then
                     isym = 1
                 else
                     ASSERT(ASTER_FALSE)
@@ -510,10 +520,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(in)    :: mat_scal(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out)   :: mat_vec(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        real(kind=8), intent(in) :: mat_scal(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out) :: mat_vec(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -553,7 +563,7 @@ contains
                 iendFace = ibeginFace+fbs_comp-1
                 ibeginVec = cbs_comp+(iFace-1)*fbs_comp+1
                 iendVec = ibeginVec+fbs_comp-1
-
+!
                 do jFace = 1, hhoCell%nbfaces
                     jbeginFace = cbs+(jFace-1)*fbs+(idim-1)*fbs_comp+1
                     jendFace = jbeginFace+fbs_comp-1
@@ -582,10 +592,10 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(in)    :: mat_scal(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-        real(kind=8), intent(out)   :: mat_vec(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        real(kind=8), intent(in) :: mat_scal(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
+        real(kind=8), intent(out) :: mat_vec(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -628,8 +638,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
         real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -646,17 +656,27 @@ contains
 !
         integer :: cbs, fbs, total_dofs, faces_dofs
         real(kind=8) :: vec_tmp(MSIZE_TDOFS_VEC)
+        blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---- Number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         faces_dofs = total_dofs-cbs
 !
-        call dcopy(total_dofs, vec, 1, vec_tmp, 1)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec, b_incx, vec_tmp, b_incy)
 ! --- v_F
-        call dcopy(faces_dofs, vec_tmp(cbs+1), 1, vec, 1)
+        b_n = to_blas_int(faces_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec_tmp(cbs+1), b_incx, vec, b_incy)
 ! --- v_T
-        call dcopy(cbs, vec_tmp, 1, vec(faces_dofs+1), 1)
+        b_n = to_blas_int(cbs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec_tmp, b_incx, vec(faces_dofs+1), b_incy)
 !
     end subroutine
 !
@@ -668,8 +688,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
         real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -686,17 +706,27 @@ contains
 !
         integer :: cbs, fbs, total_dofs, faces_dofs
         real(kind=8) :: vec_tmp(MSIZE_TDOFS_VEC)
+        blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---- Number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         faces_dofs = total_dofs-cbs
 !
-        call dcopy(total_dofs, vec, 1, vec_tmp, 1)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec, b_incx, vec_tmp, b_incy)
 ! --- v_T
-        call dcopy(cbs, vec_tmp(faces_dofs+1), 1, vec, 1)
+        b_n = to_blas_int(cbs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec_tmp(faces_dofs+1), b_incx, vec, b_incy)
 ! --- v_F
-        call dcopy(faces_dofs, vec_tmp, 1, vec(cbs+1), 1)
+        b_n = to_blas_int(faces_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec_tmp, b_incx, vec(cbs+1), b_incy)
 !
     end subroutine
 !
@@ -708,8 +738,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
         real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -726,17 +756,27 @@ contains
 !
         integer :: cbs, fbs, total_dofs, faces_dofs
         real(kind=8) :: vec_tmp(MSIZE_TDOFS_SCAL)
+        blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---- Number of dofs
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         faces_dofs = total_dofs-cbs
 !
-        call dcopy(total_dofs, vec, 1, vec_tmp, 1)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec, b_incx, vec_tmp, b_incy)
 ! --- v_T
-        call dcopy(cbs, vec_tmp(faces_dofs+1), 1, vec, 1)
+        b_n = to_blas_int(cbs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec_tmp(faces_dofs+1), b_incx, vec, b_incy)
 ! --- v_F
-        call dcopy(faces_dofs, vec_tmp, 1, vec(cbs+1), 1)
+        b_n = to_blas_int(faces_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec_tmp, b_incx, vec(cbs+1), b_incy)
 !
     end subroutine
 !
@@ -748,8 +788,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
         real(kind=8), intent(inout) :: mat(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -766,7 +806,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8) :: mat_tmp(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        real(kind=8), save :: mat_tmp(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---- Number of dofs
@@ -794,8 +834,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
         real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -812,17 +852,27 @@ contains
 !
         integer :: cbs, fbs, total_dofs, faces_dofs
         real(kind=8) :: vec_tmp(MSIZE_TDOFS_SCAL)
+        blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---- Number of dofs
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         faces_dofs = total_dofs-cbs
 !
-        call dcopy(total_dofs, vec, 1, vec_tmp, 1)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec, b_incx, vec_tmp, b_incy)
 ! --- v_F
-        call dcopy(faces_dofs, vec_tmp(cbs+1), 1, vec, 1)
+        b_n = to_blas_int(faces_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec_tmp(cbs+1), b_incx, vec, b_incy)
 ! --- v_T
-        call dcopy(cbs, vec_tmp, 1, vec(faces_dofs+1), 1)
+        b_n = to_blas_int(cbs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vec_tmp, b_incx, vec(faces_dofs+1), b_incy)
 !
     end subroutine
 !
@@ -834,8 +884,8 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)  :: hhoCell
-        type(HHO_Data), intent(in)  :: hhoData
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
         real(kind=8), intent(inout) :: mat(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -869,6 +919,68 @@ contains
         mat((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
 ! ---- K_TT
         mat((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoIsIdentityMat(mat, size) result(id)
+!
+        implicit none
+!
+        real(kind=8), dimension(:, :), intent(in) :: mat
+        integer, intent(in) :: size
+        aster_logical :: id
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Return True if the matrix is Identity
+!   In mat   : matrix to evaluate
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i, j
+!
+        id = ASTER_TRUE
+        do j = 1, size
+            if (abs(mat(j, j)-1.d0) .ge. 1.d-10) then
+                id = ASTER_FALSE
+                exit
+            end if
+            do i = 1, j-1
+                if (abs(mat(i, j)) .ge. 1.d-11) then
+                    id = ASTER_FALSE
+                    exit
+                end if
+            end do
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoIdentityMat(mat, size)
+!
+        implicit none
+!
+        real(kind=8), dimension(:, :), intent(inout) :: mat
+        integer, intent(in) :: size
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Return the matrix is Identity
+!   In mat   : matrix to evaluate
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: j
+!
+        mat(:, :) = 0.d0
+        do j = 1, size
+            mat(j, j) = 1.d0
+        end do
 !
     end subroutine
 !

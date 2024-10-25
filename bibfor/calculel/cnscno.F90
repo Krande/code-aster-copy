@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 
 subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
-                  kstop, iret, nbz, vchamz, lprofconst)
-! person_in_charge: jacques.pellet at edf.fr
+                  kstop, iret, nbz, vchamz, lprofconst, prolong)
 !
 ! aslint: disable=
+    use proj_champ_module
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -58,6 +58,8 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     integer, optional :: nbz
     character(len=24), optional :: vchamz
     aster_logical, optional :: lprofconst
+    type(prolongation), optional :: prolong
+!
 ! ------------------------------------------------------------------
 ! BUT : TRANSFORMER UN CHAM_NO_S (CNSZ) EN CHAM_NO (CNOZ)
 ! ------------------------------------------------------------------
@@ -102,7 +104,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     integer :: jprn2, ino, idg2, ico, jvale, iret
     integer :: lshift, nuprf, nb_equa_gl, jrefn
     character(len=1) :: base
-    character(len=8) :: ma, nomgd, nomno, nomcmp
+    character(len=8) :: ma, nomgd, nomno, nomcmp, prolv
     aster_logical :: l_crea_nume_equa, l_chck_nume_equa, ldist, l_pmesh
     aster_logical :: lprof_const
     character(len=3) :: tsca
@@ -121,7 +123,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     integer, pointer :: v_nequ(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
-! EVENTUEL PARALLELISME EN TEMPS
+!   EVENTUEL PARALLELISME EN TEMPS
     if (present(nbz) .and. present(vchamz)) then
         ldist = .True.
         ASSERT(nbz .ge. 2)
@@ -167,8 +169,18 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
     call dismoi('NUM_GD', nomgd, 'GRANDEUR', repi=gd)
 !
-!
-!     -- SI CNO EXISTE DEJA, ON LE DETRUIT :
+!   Si 'prolong' est donné, 'prol0' ne sert pas
+    prolv = '???'
+    if (present(prolong)) then
+        prol0 = '???'
+        ! si prolong%prol_vale_r sur tsca : R C
+        !   Si C ==> c'est seulement 0
+        if (prolong%prol_vale_r .eq. 'OUI') then
+            ASSERT((tsca .eq. 'R') .or. (tsca .eq. 'C'))
+        end if
+        prolv = prolong%prol_vale_r
+    end if
+!   SI CNO EXISTE DEJA, ON LE DETRUIT :
     call detrsd('CHAM_NO', cno)
 !
 ! - NUME_EQUA name
@@ -197,8 +209,8 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     end if
 !
 !
-!     1- REMPLISSAGE DE .TMP_NUCMP ET .TMP_NUCM1 :
-!     --------------------------------------------
+!   1- REMPLISSAGE DE .TMP_NUCMP ET .TMP_NUCM1 :
+!   --------------------------------------------
     AS_ALLOCATE(vi=tmp_nucmp, size=ncmpmx)
     if (ncmp1 .ne. 0) then
         AS_ALLOCATE(vi=tmp_nucm1, size=ncmp1)
@@ -216,7 +228,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 ! - Check NUME_EQUA
 !
     if (l_chck_nume_equa) then
-!         --  ON PEUT VERIFIER maillage et grandeur
+!       ON PEUT VERIFIER maillage et grandeur
         call jeveuo(nume_equa(1:19)//'.REFN', 'L', vk24=refn)
         if ((refn(1) .ne. ma) .or. (refn(2) .ne. nomgd)) then
             if (nomgd(1:5) == refn(2) (1:5)) then
@@ -250,7 +262,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
         do k = 1, nbno*ncmp1
             if (zl(jcnsl-1+k)) then
                 nb_equa = nb_equa+1
-            elseif (prol0 .eq. 'OUI') then
+            else if (prol0 .eq. 'OUI') then
                 zl(jcnsl-1+k) = .true.
                 if (tsca .eq. 'R') then
                     zr(jcnsv-1+k) = 0.d0
@@ -264,6 +276,14 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
                     zk8(jcnsv-1+k) = ' '
                 else
                     ASSERT(.false.)
+                end if
+                nb_equa = nb_equa+1
+            else if (prolv .eq. 'OUI') then
+                zl(jcnsl-1+k) = .true.
+                if (tsca .eq. 'R') then
+                    zr(jcnsv-1+k) = prolong%vale_r
+                else if (tsca .eq. 'C') then
+                    zc(jcnsv-1+k) = (0.d0, 0.d0)
                 end if
                 nb_equa = nb_equa+1
             end if
@@ -298,8 +318,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
                     code = lshift(1, reste)
                     idg2 = jprn2-1+((2+nec)*(ino-1))+2+iec
                     zi(idg2) = ior(zi(idg2), code)
-                    zi(jprn2-1+((2+nec)*(ino-1))+2) = zi(jprn2-1+ &
-                                                         ((2+nec)*(ino-1))+2)+1
+                    zi(jprn2-1+((2+nec)*(ino-1))+2) = zi(jprn2-1+((2+nec)*(ino-1))+2)+1
                 end if
             end do
         end do
@@ -311,13 +330,10 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
         end do
         call jelibe(nume_equa//'.PRNO')
 !
-!       2.4 CREATION  DE .DEEQ :
-!       POUR DES RAISONS DE PERFORMANCES, IL VAUT MIEUX LE
-!       FAIRE PLUS TARD.
+!       2.4 CREATION DE .DEEQ : POUR DES RAISONS DE PERFORMANCES, IL VAUT MIEUX LE FAIRE PLUS TARD.
     end if
 !
-! - Get number of equations
-!
+!   Get number of equations
     call jeexin(nume_equa//'.NEQU', iexi)
     if (iexi .eq. 0) then
         call jelira(nume_equa//'.NUEQ', 'LONUTI', nb_equa)
@@ -328,7 +344,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 !
 ! - Create node field
 !
-! CREATION DES SDS CHAM_NOS SIMPLE OU SIMULTANES
+!   CREATION DES SDS CHAM_NOS SIMPLE OU SIMULTANES
     if (ldist .and. (nb .ge. 2)) then
         call vtcreb(cno, base, tsca, &
                     meshz=ma, nume_equaz=nume_equa, idx_gdz=gd, nb_equa_inz=nb_equa, &
@@ -339,20 +355,16 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     end if
 !
 !
-!     5-BIS ON CREE SI NECESSAIRE LE .DEEQ DU NUME_EQUA
-!     ----------------------------------------------------
+!   5-BIS ON CREE SI NECESSAIRE LE .DEEQ DU NUME_EQUA
+!   -------------------------------------------------
     if (l_crea_nume_equa) then
-!
-! ----- Create object local components (field) => global components (catalog)
-!
+        !
+        ! Create object local components (field) => global components (catalog)
         call cmpcha(cno, cmp_name, cata_to_field, field_to_cata, nb_cmpz=ncmp)
-!       -- POUR ECONOMISER LA MEMOIRE (PENDANT PTEEQU)
-!          ON LIBERE TEMPORAIREMENT .CNSV ET .CNSL :
+        ! Pour économiser la mémoire (pendant pteequ) on libère temporairement .cnsv et .cnsl
         call jelibe(cns//'.CNSV')
         call jelibe(cns//'.CNSL')
-        call pteequ(nume_equa, base, nb_equa, gd, ncmp, &
-                    field_to_cata)
-!
+        call pteequ(nume_equa, base, nb_equa, gd, ncmp, field_to_cata)
         AS_DEALLOCATE(vi=cata_to_field)
         AS_DEALLOCATE(vi=field_to_cata)
         AS_DEALLOCATE(vk8=cmp_name)
@@ -360,10 +372,8 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
         call jeveuo(cns//'.CNSL', 'L', jcnsl)
     end if
 !
-!
-!     6- ON REMPLIT LE .VALE :
-!     -----------------------------------
-
+!   6- ON REMPLIT LE .VALE
+!   ----------------------
     call jeveuo(nume_equa//'.DEEQ', 'L', vi=deeq)
     call jeveuo(cno//'.VALE', 'E', jvale)
 !
@@ -373,46 +383,45 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
         if (ino*icmp .gt. 0) then
             nomcmp = zk8(jcmpgd-1+icmp)
             icmp1 = tmp_nucmp(icmp)
-!
+            !
             if (icmp1 .eq. 0) then
-                if (prol0 .eq. 'NON') then
+                if ((prol0 .eq. 'NON') .or. (prolv .eq. 'NON')) then
                     call jenuno(jexnum(ma//'.NOMNOE', ino), nomno)
                     valk(1) = nomcmp
                     valk(2) = nomno
                     valk(3) = cno
                     messag = 'CALCULEL2_13'
                     goto 70
-!
                 else
-                    ASSERT(prol0 .eq. 'OUI')
-                    if (tsca .eq. 'R') then
-                        zr(jvale-1+ieq2) = 0.d0
-!
-                    else if (tsca .eq. 'C') then
-                        zc(jvale-1+ieq2) = (0.d0, 0.d0)
-!
-                    else if (tsca .eq. 'I') then
-                        zi(jvale-1+ieq2) = 0
-!
-                    else if (tsca .eq. 'L') then
-                        zl(jvale-1+ieq2) = .false.
-!
-                    else if (tsca .eq. 'K8') then
-                        zk8(jvale-1+ieq2) = ' '
-!
-                    else
-                        ASSERT(.false.)
+                    if (prol0 .eq. 'OUI') then
+                        if (tsca .eq. 'R') then
+                            zr(jvale-1+ieq2) = 0.d0
+                        else if (tsca .eq. 'C') then
+                            zc(jvale-1+ieq2) = (0.d0, 0.d0)
+                        else if (tsca .eq. 'I') then
+                            zi(jvale-1+ieq2) = 0
+                        else if (tsca .eq. 'L') then
+                            zl(jvale-1+ieq2) = .false.
+                        else if (tsca .eq. 'K8') then
+                            zk8(jvale-1+ieq2) = ' '
+                        else
+                            ASSERT(.false.)
+                        end if
+                    else if (prolv .eq. 'OUI') then
+                        if (tsca .eq. 'R') then
+                            zr(jvale-1+ieq2) = prolong%vale_r
+                        else if (tsca .eq. 'C') then
+                            zc(jvale-1+ieq2) = (0.d0, 0.d0)
+                        end if
                     end if
                     goto 60
-!
                 end if
             end if
 !
             if (zl(jcnsl-1+(ino-1)*ncmp1+icmp1)) then
+!
                 if (tsca .eq. 'R') then
-!
 ! ----------------- Test for protect when nb_equa.ne.nb_dof
-!
                     if (zr(jvale-1+ieq2) .ne. 0.d0) then
                         if (zr(jcnsv-1+(ino-1)*ncmp1+icmp1) .ne. zr(jvale-1+ieq2)) then
                             ASSERT(.false.)
@@ -421,9 +430,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
                     zr(jvale-1+ieq2) = zr(jcnsv-1+(ino-1)*ncmp1+icmp1)
 !
                 else if (tsca .eq. 'C') then
-!
 ! ----------------- Test for protect when nb_equa.ne.nb_dof
-!
                     if (zc(jvale-1+ieq2) .ne. (0.d0, 0.d0)) then
                         if (zc(jvale-1+ieq2) .ne. zc(jcnsv-1+(ino-1)*ncmp1+icmp1)) then
                             ASSERT(.false.)
@@ -432,9 +439,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
                     zc(jvale-1+ieq2) = zc(jcnsv-1+(ino-1)*ncmp1+icmp1)
 !
                 else if (tsca .eq. 'I') then
-!
 ! ----------------- Test for protect when nb_equa.ne.nb_dof
-!
                     if (zi(jvale-1+ieq2) .ne. 0) then
                         if (zi(jvale-1+ieq2) .ne. zi(jcnsv-1+(ino-1)*ncmp1+icmp1)) then
                             ASSERT(.false.)
@@ -443,9 +448,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
                     zi(jvale-1+ieq2) = zi(jcnsv-1+(ino-1)*ncmp1+icmp1)
 !
                 else if (tsca .eq. 'L') then
-!
 ! ----------------- Test for protect when nb_equa.ne.nb_dof
-!
                     if (.not. zl(jvale-1+ieq2)) then
                         if (zl(jvale-1+ieq2) .neqv. zl(jcnsv-1+(ino-1)*ncmp1+icmp1)) then
                             ASSERT(.false.)
@@ -454,9 +457,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
                     zl(jvale-1+ieq2) = zl(jcnsv-1+(ino-1)*ncmp1+icmp1)
 !
                 else if (tsca .eq. 'K8') then
-!
 ! ----------------- Test for protect when nb_equa.ne.nb_dof
-!
                     if (zk8(jvale-1+ieq2) .ne. ' ') then
                         if (zk8(jvale-1+ieq2) .ne. zk8(jcnsv-1+(ino-1)*ncmp1+icmp1)) then
                             ASSERT(.false.)
@@ -469,46 +470,44 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
                 end if
 !
             else
-                if (prol0 .eq. 'NON') then
+                if ((prol0 .eq. 'NON') .or. (prolv .eq. 'NON')) then
                     call jenuno(jexnum(ma//'.NOMNOE', ino), nomno)
                     valk(1) = nomcmp
                     valk(2) = nomno
                     valk(3) = cno
                     messag = 'CALCULEL2_13'
                     goto 70
-!
                 else
-                    ASSERT(prol0 .eq. 'OUI')
-                    if (tsca .eq. 'R') then
-                        zr(jvale-1+ieq2) = 0.d0
-!
-                    else if (tsca .eq. 'C') then
-                        zc(jvale-1+ieq2) = (0.d0, 0.d0)
-!
-                    else if (tsca .eq. 'I') then
-                        zi(jvale-1+ieq2) = 0
-!
-                    else if (tsca .eq. 'L') then
-                        zl(jvale-1+ieq2) = .false.
-!
-                    else if (tsca .eq. 'K8') then
-                        zk8(jvale-1+ieq2) = ' '
-!
-                    else
-                        ASSERT(.false.)
+                    if (prol0 .eq. 'OUI') then
+                        if (tsca .eq. 'R') then
+                            zr(jvale-1+ieq2) = 0.d0
+                        else if (tsca .eq. 'C') then
+                            zc(jvale-1+ieq2) = (0.d0, 0.d0)
+                        else if (tsca .eq. 'I') then
+                            zi(jvale-1+ieq2) = 0
+                        else if (tsca .eq. 'L') then
+                            zl(jvale-1+ieq2) = .false.
+                        else if (tsca .eq. 'K8') then
+                            zk8(jvale-1+ieq2) = ' '
+                        else
+                            ASSERT(.false.)
+                        end if
+                    else if (prolv .eq. 'OUI') then
+                        if (tsca .eq. 'R') then
+                            zr(jvale-1+ieq2) = prolong%vale_r
+                        else if (tsca .eq. 'C') then
+                            zc(jvale-1+ieq2) = (0.d0, 0.d0)
+                        end if
                     end if
                     goto 60
-!
                 end if
             end if
         end if
 60      continue
     end do
 !
-!
-!     7 - POUR ECONOMISER LES NUME_EQUA, ON REGARDE SI
-!         LE PRECEDENT NE CONVIENDRAIT PAS :
-!     -----------------------------------------------------
+!   7 - POUR ECONOMISER LES NUME_EQUA, ON REGARDE SI LE PRECEDENT NE CONVIENDRAIT PAS
+!   ---------------------------------------------------------------------------------
     if (nume_equaz .eq. ' ' .and. base .eq. 'G') then
         read (nume_equa(15:19), '(I5)') nuprf
         if (nuprf .gt. 0) then
@@ -518,8 +517,8 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
                 call detrsd('NUME_EQUA', nume_equa)
                 call jeveuo(cno//'.REFE', 'E', jrefe)
                 zk24(jrefe-1+2) = prnoav
-! SI PARALLELISME EN TEMPS: ON PREND LA MEME DECISION POUR TOUS LES CHAM_NOS
-! CALCULES AU MEME PAS PARALLELE (COHERENCE AVEC LE VTCREB PLUS HAUT)
+                ! SI PARALLELISME EN TEMPS: ON PREND LA MEME DECISION POUR TOUS LES CHAM_NOS
+                ! CALCULES AU MEME PAS PARALLELE (COHERENCE AVEC LE VTCREB PLUS HAUT)
                 if (ldist) then
                     call jeveuo(vcham, 'L', jvcham)
                     do k = 1, nb
@@ -531,13 +530,10 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
         end if
     end if
 !
-!
     iret = 0
     goto 80
 !
-!
-!     -- MESSAGES D'ERREUR:
-!     ---------------------
+!   MESSAGES D'ERREUR
 70  continue
     ASSERT(kstop .eq. 'F' .or. kstop .eq. 'A' .or. kstop .eq. ' ')
     iret = 1
@@ -551,8 +547,6 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     else
         ASSERT(.false.)
     end if
-!
-!
 !
 80  continue
     AS_DEALLOCATE(vi=tmp_nucmp)

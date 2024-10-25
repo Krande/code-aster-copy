@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine te0545(option, nomte)
 #include "asterfort/nglgic.h"
 #include "asterfort/ngvlog.h"
 #include "asterfort/nmgvmb.h"
-#include "asterfort/rcangm.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "blas/dcopy.h"
@@ -65,15 +65,14 @@ subroutine te0545(option, nomte)
     integer :: imate, icontm, ivarim, iinstm, iinstp, ideplm, ideplp, icompo
     integer :: ivectu, icontp, ivarip, imatuu, icarcr, ivarix, igeom, icoret
     integer :: iret, nnos, jv_ganoQ, jv_ganoL, itab(7)
-    integer :: i, codret
-    real(kind=8) :: xyz(3), angmas(7)
-    real(kind=8), allocatable:: b(:, :, :), w(:, :), ni2ldc(:, :)
+    integer :: codret
+    real(kind=8) :: angmas(3)
+    real(kind=8), allocatable :: b(:, :, :), w(:, :), ni2ldc(:, :)
     aster_logical :: lMatr, lVect, lSigm, lVari
 !
 ! --------------------------------------------------------------------------------------------------
 !
     matsym = ASTER_FALSE
-    xyz = 0.d0
     ivectu = 1
     icontp = 1
     ivarip = 1
@@ -88,12 +87,9 @@ subroutine te0545(option, nomte)
 !
 ! - Get parameters of element
 !
-    call elrefv('RIGI', ndim, &
-                nnoL, nnoQ, nnos, &
-                npg, jv_poids, &
-                jv_vfL, jv_vfQ, &
-                jv_dfdeL, jv_dfdeQ, &
-                jv_ganoL, jv_ganoQ)
+    call elrefv('RIGI', ndim, nnoL, nnoQ, nnos, &
+                npg, jv_poids, jv_vfL, jv_vfQ, jv_dfdeL, &
+                jv_dfdeQ, jv_ganoL, jv_ganoQ)
 !
 ! - PARAMETRES EN ENTREE ET DIMENSION
 !
@@ -107,7 +103,8 @@ subroutine te0545(option, nomte)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
-    call tecach('OOO', 'PDEPLPR', 'L', iret, nval=2, itab=itab)
+    call tecach('OOO', 'PDEPLPR', 'L', iret, nval=2, &
+                itab=itab)
     nddl = itab(2)
 !
 ! - Behaviour
@@ -116,13 +113,12 @@ subroutine te0545(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 !    NOMBRE DE VARIABLES INTERNES
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                itab=itab)
     lgpg = max(itab(6), 1)*itab(7)
 !
 ! - PARAMETRES EN SORTIE
@@ -144,33 +140,28 @@ subroutine te0545(option, nomte)
         zr(ivarip:ivarip-1+npg*lgpg) = zr(ivarix:ivarix-1+npg*lgpg)
     end if
 !
-!    BARYCENTRE ET ORIENTATION DU MASSIF
-    do i = 1, ndim
-        xyz(i) = sum(zr(igeom-1+i:igeom-1+(nnoQ-1)*ndim+i:ndim))/nnoQ
-    end do
-    call rcangm(ndim, xyz, angmas)
+!    ORIENTATION DU MASSIF
+    call getElemOrientation(ndim, nnoQ, igeom, angmas)
 !
 ! - CALCUL DES FORCES INTERIEURES ET MATRICES TANGENTES
 !
     if (defo_comp .eq. 'GDEF_LOG') then
         if (lteatt('INCO', 'C5GV')) then
-            call nglgic('RIGI', option, typmod, ndim, nnoQ, nnoL, &
-                        npg, nddl, jv_poids, zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, &
-                        zr(igeom), zk16(icompo), zi(imate), lgpg, &
-                        zr(icarcr), angmas, zr(iinstm), zr(iinstp), matsym, &
-                        zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp), &
-                        zr(ivarip), zr(ivectu), zr(imatuu), &
-                        lMatr, lVect, lSigm, lVari, &
-                        codret)
+            call nglgic('RIGI', option, typmod, ndim, nnoQ, &
+                        nnoL, npg, nddl, jv_poids, zr(jv_vfQ), &
+                        zr(jv_vfL), jv_dfdeQ, jv_dfdeL, zr(igeom), zk16(icompo), &
+                        zi(imate), lgpg, zr(icarcr), angmas, zr(iinstm), &
+                        zr(iinstp), matsym, zr(ideplm), zr(ideplp), zr(icontm), &
+                        zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
+                        lMatr, lVect, lSigm, lVari, codret)
         else
-            call ngvlog('RIGI', option, typmod, ndim, nnoQ, nnoL, &
-                        npg, nddl, jv_poids, zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, &
-                        zr(igeom), zk16(icompo), zi(imate), lgpg, &
-                        zr(icarcr), angmas, zr(iinstm), zr(iinstp), matsym, &
-                        zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp), &
-                        zr(ivarip), zr(ivectu), zr(imatuu), &
-                        lMatr, lVect, lSigm, lVari, &
-                        codret)
+            call ngvlog('RIGI', option, typmod, ndim, nnoQ, &
+                        nnoL, npg, nddl, jv_poids, zr(jv_vfQ), &
+                        zr(jv_vfL), jv_dfdeQ, jv_dfdeL, zr(igeom), zk16(icompo), &
+                        zi(imate), lgpg, zr(icarcr), angmas, zr(iinstm), &
+                        zr(iinstp), matsym, zr(ideplm), zr(ideplp), zr(icontm), &
+                        zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
+                        lMatr, lVect, lSigm, lVari, codret)
         end if
     else if (defo_comp(1:5) .eq. 'PETIT') then
         call nmgvmb(ndim, nnoQ, nnoL, npg, axi, &
@@ -182,8 +173,7 @@ subroutine te0545(option, nomte)
                     zi(imate), angmas, lgpg, zr(icarcr), zr(iinstm), &
                     zr(iinstp), zr(ideplm), zr(ideplp), ni2ldc, zr(icontm), &
                     zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
-                    lMatr, lVect, lSigm, &
-                    codret)
+                    lMatr, lVect, lSigm, codret)
         deallocate (b)
         deallocate (w)
         deallocate (ni2ldc)

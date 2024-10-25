@@ -65,7 +65,7 @@ SOL = DEFI_MATERIAU(
     ELAS=_F(E=5800.0e6, NU=0.3, RHO=2764.0, ALPHA=0.0),
     DRUCK_PRAGER=_F(ECROUISSAGE="LINEAIRE", ALPHA=0.328, P_ULTM=0.000, SY=2.11e6, H=0.000),
     # données de drpel01a.mfront
-    Iwan=_F(YoungModulus=5800.0e6, PoissonRatio=0.3, GammaRef=2.0e-4, n=0.1),
+    Iwan=_F(YoungModulus=5800.0e6, PoissonRatio=0.3, HypDistortion=2.0e-4, HypExponent=0.1),
     COMP_THM="LIQU_SATU",
     THM_INIT=_F(PRE1=0.0, PORO=0.15),
     THM_DIFFU=_F(RHO=2500, BIOT_COEF=0.8, PESA_X=0.0, PESA_Y=0.0, PESA_Z=0.0, PERM_IN=KINT),

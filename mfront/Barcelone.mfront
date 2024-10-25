@@ -1,0 +1,274 @@
+@Parser Implicit;
+@Behaviour Barcelone;
+@Author Goustan Bacquaert;
+@Date 06/08/2024;
+
+@Algorithm NewtonRaphson;//_NumericalJacobian;
+@CompareToNumericalJacobian false;
+
+@Epsilon 1e-14;
+@Theta 1;
+
+// >>>>>>>>>>>>>>>>>>>
+// Material properties
+// <<<<<<<<<<<<<<<<<<<
+
+@MaterialProperty stress k;          // Bulk modulus [Pa]                                                 
+@MaterialProperty stress mu;         // Shear modulus [Pa]                                                        
+@MaterialProperty real kp;           // Swelling index [-]                                                    
+@MaterialProperty real kps;          // Succion index [-]   
+@MaterialProperty stress Ks;         // Capillary modulus [Pa]
+@MaterialProperty real M;            // Critical state line slope [-]                                                                
+@MaterialProperty stress pc0;        // Initial consolidation pressure in saturated conditions [Pa]
+@MaterialProperty stress s0;         // Initial yield capillary pressure [Pa]
+@MaterialProperty real ks;           // Tensile yield stress slope [-]
+@MaterialProperty real lms;          // Capillary compression index [-]
+@MaterialProperty real lm0;          // Compression index in saturated conditions [-]
+@MaterialProperty real bta;          // 1st parameter of the compression index [-]
+@MaterialProperty real r;            // 2nd parameter of the compression index [-]
+@MaterialProperty stress pcr;        // Reference consolidation pressure in saturated conditions [Pa]
+@MaterialProperty real alpha;        // Correction of the flow rule on the first plasticity yield criterion [-]                                                      
+@MaterialProperty real e0;           // Initial voids ratio [-]
+
+k.setGlossaryName("BulkModulus");
+mu.setGlossaryName("ShearModulus");
+kp.setEntryName("SwellingIndex");
+kps.setEntryName("SuccionIndex");
+Ks.setEntryName("SuccionModulus");
+M.setEntryName("CritStateSlope");
+pc0.setEntryName("InitConsPress");
+s0.setEntryName("YieldSuccion");
+ks.setEntryName("YieldTensSlope");
+lms.setEntryName("PlastSuccionIndex");
+lm0.setEntryName("PlastStrainIndex");
+bta.setEntryName("PlastStrainPara1");
+r.setEntryName("PlastStrainPara2");
+pcr.setEntryName("RefeConsPress");
+alpha.setEntryName("FlowCorrection"); 
+e0.setEntryName("InitVoidsRatio");
+
+// >>>>>>>>>>>>>>>
+// State variables
+// <<<<<<<<<<<<<<<
+
+@StateVariable real lam1;            // Cumulated plastic strain associated to the first plasticity yield criterion
+@StateVariable real epv1;            // Volumetric plastic strain associated to the first plasticity yield criterion
+
+lam1.setEntryName("CumPlastStrain1");
+epv1.setEntryName("VolPlastStrain1");
+
+// >>>>>>>>>>>>>>>
+// Local variables
+// <<<<<<<<<<<<<<<
+
+@LocalVariable bool b;              // If b true, plastic loading with respect to the first plasticity yield criterion
+@LocalVariable stress PCAPp;        // Capillary pressure at current time increment 
+@LocalVariable real kp_e0;          // = kp/(1.+e0)
+@LocalVariable real kps_e0;         // = kps/(1.+e0)
+@LocalVariable real lm0_e0;         // = lm0/(1.+e0)
+@LocalVariable real lms_e0;         // = lms/(1.+e0)
+@LocalVariable real lm_e0;          // = lm0_e0*((1.-r)*exp(-bta*pc)+r)
+@LocalVariable real dlam2;          // Cumulated plastic strain increment associated to the second plasticity yield criterion
+@LocalVariable Stensor id2;         // Identity of order 2
+@LocalVariable Stensor4 id4;        // Identity or order 4
+@LocalVariable Stensor4 k4;         // Deviatoric projector of order 4
+@LocalVariable Stensor4 j4;         // Spheric projector of order 4
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>
+// Auxiliary State Variables
+// <<<<<<<<<<<<<<<<<<<<<<<<<
+
+@AuxiliaryStateVariable real epvn;      // Volumetric plastic strain at the previous time increment
+@AuxiliaryStateVariable real Inst;      // Time for the initialization of the capillary pressure
+@AuxiliaryStateVariable stress PCAP0;   // Initial capillary pressure [Pa]
+@AuxiliaryStateVariable real ip;        // Plastic index
+
+epvn.setEntryName("VolPlastStrain");
+Inst.setEntryName("IniSigTime");
+PCAP0.setEntryName("IniSuccion");
+ip.setEntryName("PlasticIndex");
+
+// >>>>>>>>>>>>>>>>>>
+// External variables
+// <<<<<<<<<<<<<<<<<<
+
+@ExternalStateVariable stress PCAP; // Capillary pressure at previous time increment
+
+/// >>>>>>>>>>>>>>>>>>>>
+/// Init Local Variables
+/// <<<<<<<<<<<<<<<<<<<<
+
+@InitLocalVariables{
+
+	// Initialization of some tensors
+	id2 = Stensor::Id();
+	k4 = Stensor4::K();
+	j4 = Stensor4::J();
+	id4 = Stensor4::Id();
+
+	// Capillary pressure at current time increment
+	PCAPp = PCAP+dPCAP;
+
+	// Parameters adjusted to the initial voids ratio
+	kp_e0 = kp/(1.+e0);
+	kps_e0 = kps/(1.+e0); 
+	lm0_e0 = lm0/(1.+e0);
+	lms_e0 = lms/(1.+e0);
+	lm_e0 = lm0_e0*((1.-r)*exp(-bta*PCAPp)+r);
+
+	// Initialize elastic strain (where we assume eel = 0 if sig = 0 and PCAP = PCAP(Inst=0))
+	if (Inst==0. && lam1==0.){
+		PCAP0 = PCAP;
+		eel = -(kp_e0*log(1.-trace(sig)/(3*k*kp_e0))+kps_e0*log((PCAP+Ks*kps_e0)/(PCAP0+Ks*kps_e0)))*id2/3.+deviator(sig)/(2.*mu);
+	}
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>
+// Stress-strain relationship
+// <<<<<<<<<<<<<<<<<<<<<<<<<<
+
+@ComputeStress{
+	const real Exp = exp(-trace(eel)/kp_e0-kps_e0*log((PCAPp+Ks*kps_e0)/(PCAP0+Ks*kps_e0))/kp_e0);
+	sig = k*kp_e0*(1.-Exp)*id2+2.*mu*deviator(eel);
+}
+
+// >>>>>>>>>>>>>>>>>>
+// Elastic Prediction
+// <<<<<<<<<<<<<<<<<<
+
+@Predictor{
+
+	// Compute the elastic stress
+	const real Expel = exp(-trace(eel+deto)/kp_e0-kps_e0*log((PCAPp+Ks*kps_e0)/(PCAP0+Ks*kps_e0))/kp_e0);
+	const Stensor sigel = k*kp_e0*(1.-Expel)*id2+2.*mu*deviator(eel+deto);
+
+	// Compute the consolidation pressure
+	const stress pcel = pc0*exp(-epvn/(lm_e0-kp_e0))*pow(pcr/pc0,(lm_e0-lm0_e0)/(lm_e0-kp_e0));
+
+	// Test the first plasticity yield criterion
+	b = sqrt(pow(sigmaeq(sigel)/M,2.)+pow(trace(sigel)/3.+(pcel-ks*PCAPp)/2.,2.))-(pcel+ks*PCAPp)/2 > 0.;
+}
+
+// >>>>>>>>>>>
+// Integration
+// <<<<<<<<<<<
+
+@Integrator{
+
+	if (!b){
+
+		// Compute dlam2
+		const stress ss = (s0+Ks*kps_e0)*exp(-epvn/(lms_e0-kps_e0))-Ks*kps_e0;
+ 		const stress fs = PCAPp-ss;
+		dlam2 = log(max(fs,0.)/(ss+Ks*kps_e0)+1.)*(lms_e0-kps_e0);
+
+		// Equations to be solved
+		feel = deel-deto-dlam2*id2/3.;
+		flam1 = dlam1;
+		fepv1 = depv1;
+
+	}
+
+	if (b) {
+
+		// Compute dlam2
+		const stress ss = (s0+Ks*kps_e0)*exp(-(epvn+depv1)/(lms_e0-kps_e0))-Ks*kps_e0;
+ 		const stress fs = PCAPp-ss;
+		dlam2 = log(max(fs,0.)/(ss+Ks*kps_e0)+1.)*(lms_e0-kps_e0);
+
+		// Compute the consolidation pressure
+		const stress pc = pc0*exp(-(epvn+depv1-dlam2)/(lm_e0-kp_e0))*pow(pcr/pc0,(lm_e0-lm0_e0)/(lm_e0-kp_e0));
+
+		// Compute the center and the radius of the first plasticity yield criterion
+		const stress C =(pc-ks*PCAPp)/2.;
+		const stress R =(pc+ks*PCAPp)/2.;
+		
+		// Compute the first plasticity yield criterion
+		const stress Teq = sqrt(pow(sigmaeq(sig)/M,2.)+pow(trace(sig)/3.+C,2.));
+    	const stress fP = Teq-R;
+
+        // Compute the plastic flow direction
+		const stress Teq_alpha = sqrt(alpha*pow(sigmaeq(sig)/M,2.)+pow(trace(sig)/3.+C,2.));
+        const Stensor nP = (3.*alpha*deviator(sig)/(2.*pow(M,2.))+(trace(sig)/3.+C)*id2/3.)/Teq_alpha;
+
+        // Equations to be solved
+		feel = deel-deto+dlam1*nP-dlam2*id2/3.;
+		flam1 = fP/mu;
+		fepv1 = depv1-dlam1*trace(nP);
+
+		// Jacobian
+
+		// Derivative of dlam2
+		const real dlam2_depv1 = fs > 0. ? 1. : 0.;
+
+		// Derivative of pc
+		const real dpc_depv1 = -pc/(lm_e0-kp_e0);
+
+		// Derivatives of A = sig+C*id2
+		const real Exp = exp(-trace(eel+deel)/kp_e0-kps_e0*log((PCAPp+Ks*kps_e0)/(PCAP0+Ks*kps_e0))/kp_e0);
+		const Stensor4 dA_deel = 3.*k*Exp*j4+2.*mu*k4;
+		const Stensor dA_depv1 = dpc_depv1/2.*id2;
+
+		// Derivative of R;
+		const stress dR_depv1 = dpc_depv1/2.;
+
+		// Derivatives of the yield criterion fP
+		const Stensor dfP_dA = (3.*deviator(sig)/(2.*pow(M,2.))+(trace(sig)/3.+C)*id2/3.)/Teq;
+		const Stensor dfP_deel = (dfP_dA|dA_deel);
+		const stress dfP_depv1 = (dfP_dA|dA_depv1)-dR_depv1;
+		
+		// Derivatives of the flow direction nP
+		const Stensor4  dnP_dA = (3.*alpha*k4/(2.*pow(M,2.))+j4/3.-(nP^nP))/Teq_alpha;
+		const Stensor4 dnP_deel = dnP_dA*dA_deel;
+		const Stensor dnP_depv1 = dnP_dA*dA_depv1;
+
+		// 1st line of the jacobian
+		dfeel_ddeel = id4+dlam1*dnP_deel;
+		dfeel_ddlam1 = nP;
+		dfeel_ddepv1 = dlam1*dnP_depv1-dlam2_depv1*id2/3.;
+
+		// 2nd line of the jacobian
+		dflam1_ddeel = dfP_deel/mu;
+		dflam1_ddlam1 = 0.;
+		dflam1_ddepv1 = dfP_depv1/mu;
+
+		// 3rd line of the jacobian
+		dfepv1_ddeel = -dlam1*(id2|dnP_deel);
+		dfepv1_ddlam1 = -trace(nP);
+		dfepv1_ddepv1 = 1.-dlam1*(id2|dnP_depv1);
+	}	
+}
+
+/// <<<<<<<<<<<<<<<<
+/// Tangent operator
+/// >>>>>>>>>>>>>>>>
+
+@TangentOperator{ 
+	const real Exp = exp(-trace(eel)/kp_e0-kps_e0*log((PCAPp+Ks*kps_e0)/(PCAP0+Ks*kps_e0))/kp_e0);
+	StiffnessTensor De = 3.*k*Exp*j4+2.*mu*k4;
+	Stensor4 Je;
+  	getPartialJacobianInvert(Je);
+  	Dt = De*Je;
+}
+
+/// <<<<<<<<<<<<<<<<<<<<<<<<<
+/// Auxiliary state variables
+/// >>>>>>>>>>>>>>>>>>>>>>>>>
+
+@UpdateAuxiliaryStateVariables{
+	epvn += depv1-dlam2;
+	Inst += dt;
+	if (!b and dlam2 == 0.){
+        ip = 0;
+    }
+    else if (b and dlam2 == 0.){
+        ip = 1;
+    }
+    else if (!b and dlam2 > 0.){
+        ip = 2;
+    }
+    else if (b and dlam2 > 0.){
+        ip = 3;
+    }
+}
+

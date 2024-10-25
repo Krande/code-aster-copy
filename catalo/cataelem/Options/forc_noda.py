@@ -95,6 +95,10 @@ PHEA_NO = InputParameter(
                          PSTANO  : STATUT DES NOEUDS (ENRICHISSEMENT) """,
 )
 
+# For HHO
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
+PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
+PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
 
 FORC_NODA = Option(
     para_in=(
@@ -125,6 +129,9 @@ FORC_NODA = Option(
         PSTANO,
         SP.PSTRXMR,
         SP.PVARCPR,
+        PCHHOGT,
+        PCHHOST,
+        PCHHOBS,
     ),
     para_out=(SP.PVECTUR,),
     condition=(

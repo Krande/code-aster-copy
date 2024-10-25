@@ -24,6 +24,7 @@
 # LOADING CASE : LCAS_1 /  (Operating weight)
 #
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+test = CA.TestCase()
 #
 # MESH AND FE-MODEL DEFINITIONS ##########
 MESH = LIRE_MAILLAGE(FORMAT="MED")
@@ -231,5 +232,28 @@ TEST_RESU(
         ),
     )
 )
+
+# SIMPLE COMBINATION TEST (#issue33924)
+COEF_TAB = CREA_TABLE(
+    LISTE=(
+        _F(LISTE_K=["C.0"], PARA="Cmb", TYPE_K="K24"),
+        _F(LISTE_R=[1.0], PARA="L1"),
+        _F(LISTE_R=[3.0], PARA="L2"),
+    )
+)
+#
+COMB_RESULT = POST_COMBINAISON(
+    MODELE=MODEL,
+    TABLE_COEF=COEF_TAB,
+    TYPE_COMB="RESULTAT",
+    NOM_CHAM=("EFGE_ELNO",),
+    AFFE=(_F(NOM_CAS="L1", RESULTAT=STATIC), _F(NOM_CAS="L2", RESULTAT=STATIC)),
+    TABLE_COEF_RESU=CO("_MA_TABLE"),
+)
+
+
+diff = (4.0 * STATIC.getField("EFGE_ELNO", 1)) - COMB_RESULT.getField("EFGE_ELNO", 1)
+test.assertLess(diff.norm("NORM_INFINITY"), 1.0e-6)
+
 #
 FIN()

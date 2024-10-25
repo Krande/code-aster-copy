@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,11 +63,11 @@ subroutine ntdcom(result_dry, l_dry)
         call getvtx(keywfact, 'RELATION', iocc=iocc, scal=comp_rela, nbret=n1)
         if (comp_rela(1:10) .eq. 'SECH_NAPPE') then
             l_dry = ASTER_TRUE
-        end if
-        if (comp_rela(1:12) .eq. 'SECH_GRANGER') then
+        elseif (comp_rela(1:12) .eq. 'SECH_GRANGER') then
             l_dry = ASTER_TRUE
-        end if
-        if (comp_rela(1:5) .ne. 'SECH_') then
+        elseif (comp_rela(1:8) .eq. 'SECH_RFT') then
+            l_dry = ASTER_TRUE
+        elseif (comp_rela(1:5) .ne. 'SECH_') then
             lrela = ASTER_TRUE
         end if
     end do
@@ -79,7 +79,7 @@ subroutine ntdcom(result_dry, l_dry)
     if (l_dry) then
         call getvid(' ', 'EVOL_THER_SECH', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
-            call utmess('F', 'THERNONLINE4_97')
+            call utmess('F', 'THERNONLINE4_97', sk=comp_rela)
         else
             call getvid(' ', 'EVOL_THER_SECH', scal=result_dry, nbret=n1)
             call gettco(result_dry, tysd)

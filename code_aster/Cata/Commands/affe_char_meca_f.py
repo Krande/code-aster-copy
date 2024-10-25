@@ -58,6 +58,7 @@ AFFE_CHAR_MECA_F = OPER(
             "EFFE_FOND",
             "FLUX_THM_REP",
             "ECHANGE_THM",
+            "ECHANGE_THM_HR",
         ),
     ),
     VERI_NORM=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
@@ -649,6 +650,24 @@ AFFE_CHAR_MECA_F = OPER(
         COEF_22=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         PRE1_EXT=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         PRE2_EXT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+    ),
+    ECHANGE_THM_HR=FACT(
+        statut="f",
+        max="**",
+        fr=tr(
+            "Applique à un domaine de milieu continu 2D ou 3D une condition echange en HR "
+            "dont les valeurs des coef sont des fonctions"
+            "(flux hydraulique)"
+        ),
+        regles=(
+            UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
+            PRESENT_PRESENT("HR_EXT", "ALPHA", "PVAP_SAT"),
+        ),
+        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        HR_EXT=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        ALPHA=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        PVAP_SAT=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
 )

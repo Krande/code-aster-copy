@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine gcour2(resu, noma, nomno, coorn, &
-                  nbnoeu, trav1, trav2, trav3, fonoeu, chfond, basfon, &
-                  nomfiss, connex, stok4, liss, &
+!
+subroutine gcour2(resu, noma, nomno, coorn, nbnoeu, &
+                  trav1, trav2, trav3, fonoeu, chfond, &
+                  basfon, nomfiss, connex, stok4, liss, &
                   nbre, milieu, ndimte, norfon)
     implicit none
 !
@@ -132,7 +132,7 @@ subroutine gcour2(resu, noma, nomno, coorn, &
     call getvis('THETA', 'NB_POINT_FOND', iocc=1, nbval=1, nbret=nbptfd)
 !
 ! SI PRESENCE NB_POINT_FOND ALORS NOEUDS MILIEU ABSENTS
-
+!
     if (nbptfd .ne. 0) then
         milieu = .false.
     end if
@@ -141,8 +141,8 @@ subroutine gcour2(resu, noma, nomno, coorn, &
 ! LAGRANGE_NO_NO, MIXTE OU LEGENDRE
 !
     if (nbptfd .ne. 0) then
-        if ((liss .eq. 'LEGENDRE') .or. (liss .eq. 'MIXTE') &
-            .or. (liss .eq. 'LAGRANGE_NO_NO')) then
+        if ((liss .eq. 'LEGENDRE') .or. (liss .eq. 'MIXTE') .or. &
+            (liss .eq. 'LAGRANGE_NO_NO')) then
             call utmess('F', 'RUPTURE1_73')
         end if
     end if
@@ -184,7 +184,7 @@ subroutine gcour2(resu, noma, nomno, coorn, &
     else
         ASSERT(.FALSE.)
     end if
-
+!
 !
     norfon = '&&NORM.STOCK'
     call wkvect(norfon, 'V V R', 3*nbnoeu, inorfon)
@@ -217,9 +217,9 @@ subroutine gcour2(resu, noma, nomno, coorn, &
 ! ALLOCATION D UN OBJET INDICATEUR DU CHAMP THETA SUR GAMMO
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbel)
-
+!
     indicg = '&&COURON.INDIC        '
-
+!
     call wkvect(indicg, 'V V I', nbel, indic)
 !
 ! ALLOCATION DES OBJETS POUR STOCKER LE CHAMP_NO THETA ET LA DIRECTION
@@ -265,8 +265,8 @@ subroutine gcour2(resu, noma, nomno, coorn, &
         call wkvect(chamno, base//' V R', 3*nbel, itheta)
 !
         if (k .ne. (ndimte+1)) then
-            if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO') &
-                .or. (liss .eq. 'MIXTE')) then
+            if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO') .or. &
+                (liss .eq. 'MIXTE')) then
                 if (nbptfd .eq. 0) then
                     do i = 1, nbnoeu
                         num = zi(iadnum+i-1)
@@ -285,12 +285,9 @@ subroutine gcour2(resu, noma, nomno, coorn, &
                         num = zi(iadnum+ndimte-1)
                         iadrtt = iadrt3+(k-1)*nbnoeu+ndimte-1
                         zr(iadrtt) = 1.d0
-                        zr(itheta+(num-1)*3+1-1) = zr(iadrtt)*zr(in2+( &
-                                                                 ndimte-1)*3+1-1)
-                        zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+( &
-                                                                 ndimte-1)*3+2-1)
-                        zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+( &
-                                                                 ndimte-1)*3+3-1)
+                        zr(itheta+(num-1)*3+1-1) = zr(iadrtt)*zr(in2+(ndimte-1)*3+1-1)
+                        zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+(ndimte-1)*3+2-1)
+                        zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(ndimte-1)*3+3-1)
                     end if
                     if (connex .and. (k .eq. ndimte)) then
                         num = zi(iadnum+1-1)
@@ -435,5 +432,5 @@ subroutine gcour2(resu, noma, nomno, coorn, &
 !
     call jedema()
 !
-
+!
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,6 +79,7 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
     real(kind=8), pointer :: reg(:) => null()
     character(len=8), pointer :: type(:) => null()
     integer, pointer :: vnddl(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -115,57 +116,115 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
         jeu = vjeu(i)/jeumax(1)
         if (type(i) (1:7) .eq. 'BI_PLAN') then
             nddl = vnddl(6*(i-1)+1)
-            call dscal(2*h+1, 0.d0, zr(idep1), 1)
-            call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1), &
-                       1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(idep1), b_incx)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
+                       b_incy)
             call mnlbil(zr(idep1), omega, alpha, eta, h, &
                         hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
         else if (type(i) (1:6) .eq. 'CERCLE') then
             nddlx = vnddl(6*(i-1)+1)
             nddly = vnddl(6*(i-1)+2)
-            call dscal(2*h+1, 0.d0, zr(idep1), 1)
-            call dscal(2*h+1, 0.d0, zr(idep2), 1)
-            call dscal(ninc, 0.d0, zr(itemp), 1)
-            call dcopy(2*h+1, zr(ivect-1+nddlx), nd, zr(idep1), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(idep1), b_incx)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(idep2), b_incx)
+            b_n = to_blas_int(ninc)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(itemp), b_incx)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivect-1+nddlx), b_incx, zr(idep1), b_incy)
             zr(idep1) = zr(idep1)-orig(3*(i-1)+1)
-            call dscal(2*h+1, 1.d0/jeu, zr(idep1), 1)
-            call dcopy(2*h+1, zr(ivect-1+nddly), nd, zr(idep2), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/jeu, zr(idep1), b_incx)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(ivect-1+nddly), b_incx, zr(idep2), b_incy)
             zr(idep2) = zr(idep2)-orig(3*(i-1)+2)
-            call dscal(2*h+1, 1.d0/jeu, zr(idep2), 1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 1.d0/jeu, zr(idep2), b_incx)
 !
             call mnlcir(xdep1, xdep2, omega, alpha, eta, &
                         h, hf, nt, xtemp)
 !
-            call daxpy(4*(2*hf+1), -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), 1, zr(itemp), &
-                       1)
+            b_n = to_blas_int(4*(2*hf+1))
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, zr(itemp), &
+                       b_incy)
 !
-            nrm = dnrm2(4*(2*hf+1), zr(itemp), 1)
+            b_n = to_blas_int(4*(2*hf+1))
+            b_incx = to_blas_int(1)
+            nrm = dnrm2(b_n, zr(itemp), b_incx)
             if (nrm .gt. 0.d0) then
                 nrm = 0.d0
                 do j = 1, 2
-                    call dscal(2*h+1, 0.d0, tep2, 1)
-                    call dcopy(h+1, zr(itemp+(j-1)*(2*hf+1)), 1, tep2, 1)
-                    call dcopy(h, zr(itemp+(j-1)*(2*hf+1)+hf+1), 1, tep2, 1)
-                    nrm = nrm+dnrm2(2*h+1, tep2, 1)
+                    b_n = to_blas_int(2*h+1)
+                    b_incx = to_blas_int(1)
+                    call dscal(b_n, 0.d0, tep2, b_incx)
+                    b_n = to_blas_int(h+1)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(itemp+(j-1)*(2*hf+1)), b_incx, tep2, b_incy)
+                    b_n = to_blas_int(h)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(itemp+(j-1)*(2*hf+1)+hf+1), b_incx, tep2, b_incy)
+                    b_n = to_blas_int(2*h+1)
+                    b_incx = to_blas_int(1)
+                    nrm = nrm+dnrm2(b_n, tep2, b_incx)
                 end do
                 err = err+nrm/2.d0
             end if
         else if (type(i) (1:4) .eq. 'PLAN') then
             nddl = vnddl(6*(i-1)+1)
-            call dscal(2*h+1, 0.d0, zr(idep1), 1)
-            call dscal(ninc, 0.d0, zr(itemp), 1)
-            call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1), &
-                       1)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(idep1), b_incx)
+            b_n = to_blas_int(ninc)
+            b_incx = to_blas_int(1)
+            call dscal(b_n, 0.d0, zr(itemp), b_incx)
+            b_n = to_blas_int(2*h+1)
+            b_incx = to_blas_int(nd)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0/jeu, zr(ivect-1+nddl), b_incx, zr(idep1), &
+                       b_incy)
             call mnluil(zr(idep1), omega, alpha, eta, h, &
                         hf, nt, zr(itemp))
-            call daxpy(2*hf+1, -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), 1, zr(itemp), &
-                       1)
-            nrm = dnrm2(2*hf+1, zr(itemp), 1)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, -1.d0, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), b_incx, zr(itemp), &
+                       b_incy)
+            b_n = to_blas_int(2*hf+1)
+            b_incx = to_blas_int(1)
+            nrm = dnrm2(b_n, zr(itemp), b_incx)
             if (nrm .gt. 0.d0) then
-                call dscal(2*h+1, 0.d0, tep2, 1)
-                call dcopy(h+1, zr(itemp), 1, tep2, 1)
-                call dcopy(h, zr(itemp+hf+1), 1, tep2, 1)
-                err = err+dnrm2(2*h+1, tep2, 1)
+                b_n = to_blas_int(2*h+1)
+                b_incx = to_blas_int(1)
+                call dscal(b_n, 0.d0, tep2, b_incx)
+                b_n = to_blas_int(h+1)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(itemp), b_incx, tep2, b_incy)
+                b_n = to_blas_int(h)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call dcopy(b_n, zr(itemp+hf+1), b_incx, tep2, b_incy)
+                b_n = to_blas_int(2*h+1)
+                b_incx = to_blas_int(1)
+                err = err+dnrm2(b_n, tep2, b_incx)
             end if
         end if
         neqs = neqs+vneqs(i)

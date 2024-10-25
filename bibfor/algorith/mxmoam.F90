@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,6 +84,7 @@ subroutine mxmoam(sddyna, nbmodp)
     character(len=24) :: nomcha
     character(len=24), pointer :: lifoge(:) => null()
     real(kind=8), pointer :: fge(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -170,7 +171,10 @@ subroutine mxmoam(sddyna, nbmodp)
             call rsexch('F', modmec, 'DEPL', imode, nomcha, &
                         iret)
             call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
-            call dcopy(neq, zr(jval), 1, zr(jbasmo+(imode-1)*neq), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jval), b_incx, zr(jbasmo+(imode-1)*neq), b_incy)
             call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
         end do
 !
@@ -202,7 +206,10 @@ subroutine mxmoam(sddyna, nbmodp)
             call rsexch('F', modmec, 'DEPL', imode, nomcha, &
                         iret)
             call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
-            call dcopy(neq, zr(jval), 1, zr(jbasmo+(imode-1)*neq), 1)
+            b_n = to_blas_int(neq)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, zr(jval), b_incx, zr(jbasmo+(imode-1)*neq), b_incy)
             call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
         end do
 !
@@ -252,10 +259,8 @@ subroutine mxmoam(sddyna, nbmodp)
         do imode = 1, nbmodp
             do imode2 = 1, imode
                 if (nbag .ne. 0) then
-                    zr(jamoge+(imode-1)*nbmodp+imode2-1) = zr(ldblo2+imode*(imode-1)/2+imode2-1 &
-                                                              )
-                    zr(jamoge+(imode2-1)*nbmodp+imode-1) = zr(ldblo2+imode*(imode-1)/2+imode2-1 &
-                                                              )
+                    zr(jamoge+(imode-1)*nbmodp+imode2-1) = zr(ldblo2+imode*(imode-1)/2+imode2-1)
+                    zr(jamoge+(imode2-1)*nbmodp+imode-1) = zr(ldblo2+imode*(imode-1)/2+imode2-1)
                 end if
             end do
         end do

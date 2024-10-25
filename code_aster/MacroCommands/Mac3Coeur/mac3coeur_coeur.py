@@ -123,6 +123,16 @@ class Coeur:
     _time = ("T0", "T0b", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8b", "T9")
     _subtime = ("N0", "N0b", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N8b", "N9")
     _type_coeur = None
+    _is_multi_rod = False
+    _len_mnt = 1.0
+
+    @property
+    def is_multi_rod(self):
+        return self._is_multi_rod
+
+    @property
+    def len_mnt(self):
+        return self._len_mnt
 
     @property
     def type_coeur(self):
@@ -186,6 +196,7 @@ class Coeur:
             "GC_ME": self.nb_cr_mesh,
             "GC_EB": self.nb_cr_mesh,
             "GC_EH": self.nb_cr_mesh,
+            "MNT": self.len_mnt,
         }
 
         self.load_materials(update_materials)
@@ -593,52 +604,56 @@ class Coeur:
         if "UNLINKED_LOCAL" not in gno_names:
             MA0.setGroupOfNodes("UNLINKED_LOCAL", tuple(unlinked_local))
 
-        LISGRIL = []
-        LISGRILI = []
-        LISGRILE = []
-        LISG = []
-        LIS_PG = []
-        nbgrmax = 0
+        dict_grids = []
+        grids_middle = []
+        grids_extr = []
+        grids_lock = []
+
+        lsnbgrids = list(set(ac.NBGR for ac in self.collAC))
+        assert len(lsnbgrids) == 1, "Invalid Mesh"
+        nbgr = lsnbgrids[0]
+
         for ac in self.collAC:
-            nbgrmax = max(nbgrmax, ac.NBGR)
             LIS_GNO = []
             for igr in range(ac.NBGR):
                 LIS_GNO.append("G_%s_%d" % (ac.pos_aster, igr + 1))
-                LIS_PG.append("P_%s_%d" % (ac.pos_aster, igr + 1))
+                grids_lock.append("P_%s_%d" % (ac.pos_aster, igr + 1))
 
-            DICG = {"NOM_GROUP_MA": "GR_%s" % ac.pos_aster, "GROUP_NO": LIS_GNO}
-            LISG.append(DICG)
+            dict_grids.append({"NOM_GROUP_MA": "GR_%s" % ac.pos_aster, "GROUP_NO": LIS_GNO})
 
-        for igr in range(0, nbgrmax):
+        for igr in range(0, nbgr):
             grid_name = "GRIL_%d" % (igr + 1)
-            DICGRIL = {"NOM_GROUP_MA": grid_name, "GROUP_NO": grid_name}
-            LISGRIL.append(DICGRIL)
-            if igr in (0, nbgrmax - 1):
-                LISGRILE.append(grid_name)
+            dict_grids.append({"NOM_GROUP_MA": grid_name, "GROUP_NO": grid_name})
+            if igr in (0, nbgr - 1):
+                grids_extr.append(grid_name)
             else:
-                LISGRILI.append(grid_name)
+                grids_middle.append(grid_name)
 
-        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(LISGRIL + LISG))
+        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(dict_grids))
 
-        DICCR1 = {"GROUP_MA": "CREI", "NOM": "CREIC", "PREF_MAILLE": "MM"}
+        dict_creic = [
+            {
+                "GROUP_MA": "CREI_%s" % ac.pos_aster,
+                "NOM": "CREIC_%s" % ac.pos_aster,
+                "PREF_MAILLE": "MM",
+            }
+            for ac in self.collAC
+        ]
 
-        DICCR2 = {"GROUP_MA": "ELA", "NOM": "ELAP", "PREF_MAILLE": "MM"}
-
-        LISCR2 = [DICCR1, DICCR2]
-
-        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=tuple(LISCR2))
+        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=dict_creic)
 
         _MA = DEFI_GROUP(
             reuse=_MA,
             ALARME="NON",
             MAILLAGE=_MA,
             CREA_GROUP_MA=(
-                _F(NOM="GRIL_I", UNION=tuple(LISGRILI)),
-                _F(NOM="GRIL_E", UNION=tuple(LISGRILE)),
+                _F(NOM="GRIL_I", UNION=tuple(grids_middle)),
+                _F(NOM="GRIL_E", UNION=tuple(grids_extr)),
+                _F(NOM="CREIC", UNION=[i["NOM"] for i in dict_creic]),
             ),
             CREA_GROUP_NO=(
                 _F(GROUP_MA=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN")),
-                _F(NOM="LISPG", UNION=tuple(LIS_PG)),
+                _F(NOM="LISPG", UNION=tuple(grids_lock)),
             ),
         )
 
@@ -660,6 +675,15 @@ class Coeur:
         coords_x = MAILL.getCoordinates().toNumpy().T[0].copy()
         gcells = MAILL.getGroupsOfCells()
         gnodes = MAILL.getGroupsOfNodes()
+
+        # Mailles MNT
+        mnt_names = [i for i in gcells if i.startswith("MNT_")]
+        mnt_nodes = MAILL.getNodesFromCells(mnt_names)
+        mnt_x = set(coords_x[mnt_nodes])
+        assert len(mnt_x) == 2, "Invalid mesh"
+        self._len_mnt = round(max(mnt_x) - min(mnt_x), 8)
+
+        self._is_multi_rod = len([i for i in gnodes if i.startswith("CREIBAS_")]) > 0
 
         for ac in self.collAC:
             id_cr = "CR_%s" % ac.pos_aster
@@ -722,6 +746,25 @@ class Coeur:
             for igr in range(ac._para["NBGR"])
         ]
 
+    def cl_rigidite_embouts(self):
+
+        rigi_einf = [
+            _F(
+                GROUP_NO=(
+                    "CREIBAS_%s" % (ac.pos_aster),
+                    "TGBAS_%s" % (ac.pos_aster),
+                    "PI_%s" % (ac.pos_aster),
+                )
+            )
+            for ac in self.collAC
+        ]
+
+        rigi_esup = [
+            _F(GROUP_NO=("TGHAUT_%s" % ac.pos_aster, "PS_%s" % ac.pos_aster)) for ac in self.collAC
+        ]
+
+        return rigi_einf + rigi_esup
+
     def affectation_modele(self, MAILLAGE):
         _MODELE = AFFE_MODELE(
             MAILLAGE=MAILLAGE,
@@ -734,7 +777,7 @@ class Coeur:
                 ),
                 _F(GROUP_MA=("ELA", "RIG"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
                 _F(
-                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI", "CREIC", "ELAP"),
+                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI", "CREIC"),
                     PHENOMENE="MECANIQUE",
                     MODELISATION="DIS_T",
                 ),
@@ -1688,6 +1731,23 @@ class CoeurFactory(Mac3Factory):
         coeur.init_from_table(damactab)
         return coeur
 
+    @classmethod
+    def buildFromMesh(
+        cls, type_coeur, sdtab, mesh, contact="NON", fluence_level=0.0, longueur=None
+    ):
+
+        core = CoeurFactory.build(type_coeur, sdtab)
+        model = core.affectation_modele(mesh)
+        core.init_from_mesh(mesh)
+        gfibre = core.definition_geom_fibre()
+        carael = core.definition_cara_coeur(model, gfibre)
+        timeline = core.definition_time(fluence_level, 1.0)
+        fluence = core.definition_fluence(fluence_level, mesh, 0.0)
+        tempfield = core.definition_champ_temperature(mesh)
+        mater = core.definition_materiau(mesh, gfibre, fluence, tempfield, CONTACT=contact)
+
+        return model, carael, mater
+
     def build_supported_types(self):
         """Construit la liste des types autorisés."""
         ctxt = {}
@@ -1720,7 +1780,7 @@ class MateriauAC:
 
         for typ in self._types:
             cmult = update_values.get(typ, 1.0)
-
+            logger.debug("<MAC3_COEUR>: Loading material %s with CMULT %s" % (typ, cmult))
             self._mate[typ] = INCLUDE_MATERIAU(
                 NOM_AFNOR="%s_%s" % (self.typeAC, typ),
                 TYPE_MODELE="REF",

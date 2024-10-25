@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -113,7 +113,7 @@ Arguments:
     local (bool, optional): local or global numbering of DOFs (default: false).
 
 Returns:
-    [dict]: {1 : indexes of the first Lagrange multipliers dof, 
+    [dict]: {1 : indexes of the first Lagrange multipliers dof,
              2 : indexes of the second Lagrange multipliers dof }
         )",
               py::arg( "local" ) = false )
@@ -216,9 +216,13 @@ Returns:
               R"(
 Returns the indexes of the DOFs owned locally (aka not ghost).
 
+Arguments:
+    local (bool): local or global numbering
+
 Returns:
     int: indexes of the DOFs owned locally.
-        )" )
+        )",
+              py::arg( "local" ) = true )
         // ---------------------------------------------------------------------
         .def( "localToGlobalDOF", &ParallelDOFNumbering::localToGlobalDOF,
               R"(

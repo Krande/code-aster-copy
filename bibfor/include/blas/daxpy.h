@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine daxpy(n, da, dx, incx, dy,&
                      incy)
-        integer, intent(in) :: n
-        real(kind=8),intent(in) :: da
-        real(kind=8),intent(in) :: dx(*)
-        integer, intent(in) :: incx
-        real(kind=8),intent(inout) :: dy(*)
-        integer, intent(in) :: incy
+        blas_int, intent(in) :: n
+        real(kind=8), intent(in) :: da
+        real(kind=8), intent(in) :: dx(*)
+        blas_int, intent(in) :: incx
+        real(kind=8), intent(inout) :: dy(*)
+        blas_int, intent(in) :: incy
     end subroutine daxpy
 end interface

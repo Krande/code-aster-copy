@@ -258,7 +258,7 @@ Arguments:
     globalNodeIds (list[int]): Global IDs of each node.
     nodesOwner (list[int]): Owner of each node.
     globalCellIds (list[int]): Global IDs of each cell.
-    joints (list[list[int]]): Definition of *E*mission and *R*eception joints.
+    joints (list[list[int]]): Definition of *E* mission and *R* eception joints.
         )",
               py::arg( "domains" ), py::arg( "globalNodeIds" ), py::arg( "nodesOwner" ),
               py::arg( "globalCellIds" ), py::arg( "joints" ) )

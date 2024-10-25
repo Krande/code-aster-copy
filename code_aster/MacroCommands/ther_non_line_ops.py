@@ -31,7 +31,6 @@ from ..Objects import (
 )
 from ..Solvers import NonLinearSolver, ProblemSolver
 from ..Solvers import ProblemType as PBT
-from ..Solvers import SolverOptions as SOP
 from ..Solvers.Post import ComputeHydr, ComputeTempFromHHO
 from ..Utilities import force_list, print_stats, reset_stats
 from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
@@ -83,7 +82,7 @@ def ther_non_line_ops(self, **args):
 
     adapt_increment_init(args, "EVOL_THER")
 
-    verbosity = args.get("INFO") or 1
+    verbosity = args["INFO"]
 
     # python Version
     if "RESULTAT" in args:
@@ -151,7 +150,7 @@ def ther_non_line_ops(self, **args):
 
     # Run computation
     solver.run()
-    if verbosity:
+    if verbosity > 1:
         print_stats()
     reset_stats()
     return solver.result

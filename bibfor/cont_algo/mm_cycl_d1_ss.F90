@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,9 @@ subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_pr
         alpha_cont_vect = 1.0
 
     else
-        ASSERT(.false.)
+        cycl_sub_type = 5
+        alpha_cont_matr = 1.0
+        alpha_cont_vect = 1.0
     end if
 
 end subroutine

@@ -380,12 +380,17 @@ subroutine calcul(stop, option_, ligrel_, nin, lchin, &
             call vrcdec()
             ca_iactif_ = 3
 
+! --------- For coupled problem (THM)
             ca_ctempl_ = 0
-            if (l_thm) ca_ctempl_ = 1
-
-            ! Vérifier que attribut HYRD2 > 0 pour activer pressio capillaire
             ca_cpcapl_ = 0
-            if (l_thm) ca_cpcapl_ = 1
+            if (l_thm) then
+                if (lteatt('THER', 'OUI', typel=ca_nomte_)) then
+                    ca_ctempl_ = 1
+                end if
+                ! Vérifier que attribut HYRD2 > 0 pour activer pressio capillaire
+                ca_cpcapl_ = 1
+            end if
+
             call te0000(numc, ca_nuop_, ca_nute_)
             ca_iactif_ = 1
 

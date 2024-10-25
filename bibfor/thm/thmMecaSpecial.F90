@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine thmMecaSpecial(ds_thm, option, lMatr, meca, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
-#include "asterfort/nmbarc.h"
 #include "asterfort/dsipdp.h"
 #include "asterfort/lchbr2.h"
 #include "asterfort/mxwell_mt.h"
@@ -120,34 +119,7 @@ subroutine thmMecaSpecial(ds_thm, option, lMatr, meca, &
     nu = ds_thm%ds_material%elas%nu
     alpha0 = ds_thm%ds_material%ther%alpha
 
-    if (meca .eq. 'BARCELONE') then
-! ----- Compute behaviour
-        sipm = congem(adcome+6)
-        call nmbarc(ndim, j_mater, carcri, satur, tbiot(1), &
-                    deps, congem(adcome), vintm, &
-                    option, congep(adcome), vintp, dsdeme, p1, &
-                    p2, dp1, dp2, dsidp1, sipm, &
-                    congep(adcome+6), retcom)
-! ----- Add mecanic and p1 matrix
-        if (lMatr) then
-            do i = 1, 2*ndim
-                dsde(adcome+i-1, addep1) = dsde(adcome+i-1, addep1)+dsidp1(i)
-                do j = 1, 2*ndim
-                    dsde(adcome+i-1, addeme+ndim+j-1) = dsde(adcome+i-1, addeme+ndim+j-1)+ &
-                                                        dsdeme(i, j)
-                end do
-            end do
-        end if
-! ----- Compute thermic dilatation
-        if (ds_thm%ds_elem%l_dof_ther) then
-            do i = 1, 3
-                ther_meca(i) = -alpha0*( &
-                               dsde(adcome-1+i, addeme+ndim-1+1)+ &
-                               dsde(adcome-1+i, addeme+ndim-1+2)+ &
-                               dsde(adcome-1+i, addeme+ndim-1+3))/3.d0
-            end do
-        end if
-    elseif (meca .eq. 'HOEK_BROWN_TOT') then
+    if (meca .eq. 'HOEK_BROWN_TOT') then
 ! ----- Preparation for HOEK_BROWN_TOT
         call dsipdp(ds_thm, &
                     adcome, addep1, addep2, &

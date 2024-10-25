@@ -1033,6 +1033,17 @@ contains
         call getvis('THETA', 'NB_COUCHE_SUP', iocc=1, scal=this%nb_couche_sup, nbret=ier)
         if (ier .ne. 0) then
             this%radius_type = 'NB_COUCHE'
+            !       Blindage pour interdire NB_COUCHE avec HEXA27 et PENTA18
+            !       temporaire à supprimer quand issue 33988 sera corrigée
+            call jeveuo(this%crack//'.LEVRESUP.MAIL', 'L', jma)
+            call jeveuo(this%mesh//'.TYPMAIL', 'L', vi=typmail)
+            call jenonu(jexnom(this%mesh//'.NOMMAI', zk8(jma)), nume)
+            call jenuno(jexnum('&CATA.TM.NOMTM', typmail(nume)), typma)
+!
+            if ((typma .eq. 'QUAD9') .or. (typma .eq. 'TRIA7')) then
+                call utmess('F', 'RUPTURE1_89')
+            end if
+!
         end if
 !
         if (ier == 1 .and. ((this%nb_couche_inf < 0) .or. &

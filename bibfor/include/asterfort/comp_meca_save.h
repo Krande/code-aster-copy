@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
-        use Behaviour_type
+    subroutine comp_meca_save(model, mesh, chmate, compor, prepMapCompor)
+        use BehaviourPrepare_type
         character(len=8), intent(in) :: model, mesh, chmate
         character(len=19), intent(in) :: compor
-        type(Behaviour_PrepPara), intent(in) :: behaviourPrepPara
+        type(BehaviourPrep_MapCompor), intent(in) :: prepMapCompor
     end subroutine comp_meca_save
 end interface

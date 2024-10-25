@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
 !
     integer :: ifm, niv
     type(ROM_DS_Empi) :: base
-    type(ROM_DS_Field):: mode
+    type(ROM_DS_Field) :: mode
     character(len=8) :: resultRomName
     integer :: nbStore, nbEqua, nbEquaRom, nbMode, nbEquaRID
     integer :: iStore, iMode, iEqua
@@ -66,6 +66,8 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
     character(len=4) :: fieldSupp
     character(len=24) :: fieldRom, fieldName
     real(kind=8), pointer :: valeField(:) => null(), valeRom(:) => null()
+    blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+    blas_int :: b_nrhs
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,10 +109,10 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
 !
     do iStore = 1, nbStore-1
         numeStore = iStore
-
+!
 ! ----- Get current field from reduced model
-        call rsexch(' ', resultRomName, fieldName, &
-                    numeStore, fieldRom, iret)
+        call rsexch(' ', resultRomName, fieldName, numeStore, fieldRom, &
+                    iret)
         ASSERT(iret .eq. 0)
         call dismoi('TYPE_CHAMP', fieldRom, 'CHAMP', repk=fieldSupp)
         if (fieldSupp == 'NOEU') then
@@ -122,7 +124,7 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
         else
             ASSERT(ASTER_FALSE)
         end if
-
+!
 ! ----- Truncate input field if required
         if (fieldBuild%lRIDTrunc) then
             nbEqua = 0
@@ -144,22 +146,38 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
                 ASSERT(ASTER_FALSE)
             end if
         end if
-
+!
 ! ----- Compute matrix and vector
-        call dgemm('T', 'N', &
-                   nbMode, 1, nbEquaRID, 1.d0, &
-                   fieldBuild%matrPhiRID, nbEquaRID, valeField, nbEquaRID, 0.d0, &
-                   systVect, nbMode)
-        call dgemm('T', 'N', nbMode, nbMode, nbEquaRID, 1.d0, &
-                   fieldBuild%matrPhiRID, nbEquaRID, fieldBuild%matrPhiRID, nbEquaRID, 0.d0, &
-                   systMatr, nbMode)
-
+        b_ldc = to_blas_int(nbMode)
+        b_ldb = to_blas_int(nbEquaRID)
+        b_lda = to_blas_int(nbEquaRID)
+        b_m = to_blas_int(nbMode)
+        b_n = to_blas_int(1)
+        b_k = to_blas_int(nbEquaRID)
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, fieldBuild%matrPhiRID, b_lda, valeField, b_ldb, &
+                   0.d0, systVect, b_ldc)
+        b_ldc = to_blas_int(nbMode)
+        b_ldb = to_blas_int(nbEquaRID)
+        b_lda = to_blas_int(nbEquaRID)
+        b_m = to_blas_int(nbMode)
+        b_n = to_blas_int(nbMode)
+        b_k = to_blas_int(nbEquaRID)
+        call dgemm('T', 'N', b_m, b_n, b_k, &
+                   1.d0, fieldBuild%matrPhiRID, b_lda, fieldBuild%matrPhiRID, b_ldb, &
+                   0.d0, systMatr, b_ldc)
+!
 ! ----- Solve system
-        call dgesv(nbMode, 1, systMatr, nbMode, systPerm, systVect, nbMode, systInfo)
+        b_ldb = to_blas_int(nbMode)
+        b_lda = to_blas_int(nbMode)
+        b_n = to_blas_int(nbMode)
+        b_nrhs = to_blas_int(1)
+        call dgesv(b_n, b_nrhs, systMatr, b_lda, systPerm, &
+                   systVect, b_ldb, systInfo)
         if (systInfo .ne. 0) then
             call utmess('F', 'ROM17_9')
         end if
-
+!
 ! ----- Copy result
         do iMode = 1, nbMode
             fieldBuild%reduMatr(iMode+nbMode*(numeStore-1)) = systVect(iMode)

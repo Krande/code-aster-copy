@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,5 +78,6 @@ INCLUDE_MATERIAU = MACRO(
     COEF_MULT=SIMP(statut="c", typ="R", defaut=1.0),
     PROL_DROITE=SIMP(statut="f", typ="TXM", defaut="EXCLU", into=("CONSTANT", "LINEAIRE", "EXCLU")),
     PROL_GAUCHE=SIMP(statut="f", typ="TXM", defaut="EXCLU", into=("CONSTANT", "LINEAIRE", "EXCLU")),
+    OPTION=SIMP(statut="c", typ="TXM"),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
 )

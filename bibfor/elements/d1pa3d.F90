@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine d1pa3d(xyzgau, repere, irep, passag)
+subroutine d1pa3d(angl, irep, passag)
 !.======================================================================
     implicit none
 !
@@ -28,9 +28,7 @@ subroutine d1pa3d(xyzgau, repere, irep, passag)
 !                 LORS D'UN CHANGEMENT DE REPERE.
 !
 !   ARGUMENT        E/S  TYPE         ROLE
-!    XYZGAU(3)      IN     R        COORDONNEES DU POINT D'INTEGRATION
-!                                   COURANT
-!    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
+!    ANLG           IN     R        ANGLES NAUTIQUES DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE
 !    IREP           OUT    I        = 0
 !                                     SI LE CHANGEMENT DE REPERE EST
@@ -43,68 +41,28 @@ subroutine d1pa3d(xyzgau, repere, irep, passag)
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
 #include "asterfort/matrot.h"
-#include "asterfort/utrcyl.h"
-    real(kind=8) :: repere(7), xyzgau(3), passag(6, 6)
+    real(kind=8) :: angl(3), passag(6, 6)
 ! -----  VARIABLES LOCALES
-    real(kind=8) :: angl(3), p(3, 3), dire(3), orig(3)
+    real(kind=8) :: p(3, 3)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: i, irep, j
+    integer :: irep
     real(kind=8) :: deux, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0
     deux = 2.0d0
     irep = 0
 !
-    do i = 1, 3
-        do j = 1, 3
-            p(i, j) = zero
-        end do
-    end do
+    p(:, :) = zero
 !
-! ---- CAS OU LE REPERE D'ORTHOTROPIE EST DEFINI PAR 3 ANGLES NAUTIQUES
-!      ----------------------------------------------------------------
-    if (repere(1) .gt. zero) then
-!
-        angl(1) = repere(2)
-        angl(2) = repere(3)
-        angl(3) = repere(4)
-!
-        if (angl(1) .eq. zero .and. angl(2) .eq. zero .and. angl(3) .eq. zero) then
-            irep = 0
-        else
-!
-! ----     CONSTRUCTION DE LA MATRICE DE PASSAGE (POUR DES VECTEURS)
-! ----     DU REPERE D'ORTHOTROPIE AU REPERE GLOBAL
-!          ----------------------------------------
-            call matrot(angl, p)
-            irep = 1
-        end if
-!
-! ---- CAS OU LE REPERE D'ORTHOTROPIE EST DEFINI COMME SUIT :
-! ----    LA DIRECTION D'ORTHOTROPIE EST DEFINIE PAR 2 ANGLES
-! ----    CETTE DIRECTION EST EN OUTRE CELLE D'UN AXE AUTOUR DUQUEL
-! ----    LA PARTIE DE LA STRUCTURE CONSIDEREE EST AXISYMETRIQUE,
-! ----    CET AXE EST DEFINI PAR LA DONNEE SUPPLEMENTAIRE D'UN POINT
-! ----    QUI LUI APPARTIENT
-!      ----------------------------------------------------------------
+    if (angl(1) .eq. zero .and. angl(2) .eq. zero .and. angl(3) .eq. zero) then
+        irep = 0
     else
-!
-        dire(1) = repere(2)
-        dire(2) = repere(3)
-        dire(3) = repere(4)
-!
-        orig(1) = repere(5)
-        orig(2) = repere(6)
-        orig(3) = repere(7)
-!
-! ---- CONSTRUCTION DE LA MATRICE DE PASSAGE (POUR DES VECTEURS)
-! ---- DU REPERE D'ORTHOTROPIE AU REPERE GLOBAL
-!      ----------------------------------------
-        call utrcyl(xyzgau, dire, orig, p)
+!       construction de la matrice de passage
+        call matrot(angl, p)
         irep = 1
     end if
 !
@@ -159,5 +117,4 @@ subroutine d1pa3d(xyzgau, repere, irep, passag)
         passag(6, 6) = p(2, 2)*p(3, 3)+p(3, 2)*p(2, 3)
 !
     end if
-!.============================ FIN DE LA ROUTINE ======================
 end subroutine

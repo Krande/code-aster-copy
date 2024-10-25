@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,9 +73,10 @@ subroutine te0539(option, nomte)
     integer :: jtab(7), nnos, idim, jfisno
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
     aster_logical :: matsym, l_nonlin, l_line
-    real(kind=8) :: angmas(7), bary(3), crit(1), sig(1), vi(1)
+    real(kind=8) :: bary(3), crit(1), sig(1), vi(1)
     character(len=16) :: defo_comp, rela_comp, type_comp
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred
+    blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,8 +119,7 @@ subroutine te0539(option, nomte)
 !
 ! - General options
 !
-    l_nonlin = (option(1:9) .eq. 'FULL_MECA') .or. &
-               (option .eq. 'RAPH_MECA') .or. &
+    l_nonlin = (option(1:9) .eq. 'FULL_MECA') .or. (option .eq. 'RAPH_MECA') .or. &
                (option(1:10) .eq. 'RIGI_MECA_')
     l_line = option .eq. 'RIGI_MECA'
     ASSERT(l_nonlin .or. l_line)
@@ -147,7 +147,8 @@ subroutine te0539(option, nomte)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCARCRI', 'L', icarcr)
-        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
+                    itab=jtab)
         lgpg = max(jtab(6), 1)*jtab(7)
         npg = jtab(2)
     end if
@@ -179,13 +180,14 @@ subroutine te0539(option, nomte)
         call jevech('PMATUUR', 'E', imatuu)
         lgpg = 0
         compor = ' '
-        call xnmel(nno, nfh, nfe, ddlc, &
-                   ddlm, igeom, typmod, option, zi(imate), &
-                   compor, lgpg, crit, jpintt, zi(jcnset), &
-                   zi(jheavt), zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ibid, zr(jlsn), &
-                   zr(jlst), sig, vi, zr(imatuu), ibid, &
-                   codret, jpmilt, nfiss, jheavn, jstno, &
-                   l_line, l_nonlin, lMatr, lVect, lSigm)
+        call xnmel(nno, nfh, nfe, ddlc, ddlm, &
+                   igeom, typmod, option, zi(imate), compor, &
+                   lgpg, crit, jpintt, zi(jcnset), zi(jheavt), &
+                   zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ibid, &
+                   zr(jlsn), zr(jlst), sig, vi, zr(imatuu), &
+                   ibid, codret, jpmilt, nfiss, jheavn, &
+                   jstno, l_line, l_nonlin, lMatr, lVect, &
+                   lSigm)
         matsym = .true.
         goto 999
     end if
@@ -199,16 +201,10 @@ subroutine te0539(option, nomte)
         end do
     end do
 !
-! - Get orientation
-!
-    call rcangm(ndim, bary, angmas)
-!
 ! - Select objects to construct from option name (non-linear case)
 !
-    call behaviourOption(option, zk16(icompo), &
-                         lMatr, lVect, &
-                         lVari, lSigm, &
-                         codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+                         lSigm, codret)
 !
 ! - Properties of behaviour
 !
@@ -231,31 +227,36 @@ subroutine te0539(option, nomte)
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
+        b_n = to_blas_int(npg*lgpg)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 !
 ! - HYPER-ELASTICITE
 !
     if (type_comp .eq. 'COMP_ELAS') then
         if (lMatrPred) then
-            call xnmel(nno, nfh, nfe, ddlc, &
-                       ddlm, igeom, typmod, option, zi(imate), &
-                       zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset), &
-                     zi(jheavt), zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ideplm, zr(jlsn), &
-                       zr(jlst), zr(icontm), zr(ivarim), zr(imatuu), ivectu, &
-                       codret, jpmilt, nfiss, jheavn, jstno, &
-                       l_line, l_nonlin, lMatr, lVect, lSigm)
+            call xnmel(nno, nfh, nfe, ddlc, ddlm, &
+                       igeom, typmod, option, zi(imate), zk16(icompo), &
+                       lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt), &
+                       zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ideplm, &
+                       zr(jlsn), zr(jlst), zr(icontm), zr(ivarim), zr(imatuu), &
+                       ivectu, codret, jpmilt, nfiss, jheavn, &
+                       jstno, l_line, l_nonlin, lMatr, lVect, &
+                       lSigm)
         else
             do li = 1, nddl
                 zr(ideplp+li-1) = zr(ideplm+li-1)+zr(ideplp+li-1)
             end do
-            call xnmel(nno, nfh, nfe, ddlc, &
-                       ddlm, igeom, typmod, option, zi(imate), &
-                       zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset), &
-                     zi(jheavt), zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ideplp, zr(jlsn), &
-                       zr(jlst), zr(icontp), zr(ivarip), zr(imatuu), ivectu, &
-                       codret, jpmilt, nfiss, jheavn, jstno, &
-                       l_line, l_nonlin, lMatr, lVect, lSigm)
+            call xnmel(nno, nfh, nfe, ddlc, ddlm, &
+                       igeom, typmod, option, zi(imate), zk16(icompo), &
+                       lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt), &
+                       zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ideplp, &
+                       zr(jlsn), zr(jlst), zr(icontp), zr(ivarip), zr(imatuu), &
+                       ivectu, codret, jpmilt, nfiss, jheavn, &
+                       jstno, l_line, l_nonlin, lMatr, lVect, &
+                       lSigm)
         end if
     else
 !
@@ -268,8 +269,8 @@ subroutine te0539(option, nomte)
                        lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt), &
                        zi(jlonch), zr(jbaslo), ideplm, zr(jlsn), zr(jlst), &
                        zr(icontp), zr(ivarim), zr(imatuu), ivectu, codret, &
-                       jpmilt, nfiss, jheavn, jstno, &
-                       lMatr, lVect, lSigm)
+                       jpmilt, nfiss, jheavn, jstno, lMatr, &
+                       lVect, lSigm)
         else
             ASSERT(.false.)
         end if
@@ -282,7 +283,7 @@ subroutine te0539(option, nomte)
     if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
         nno = nnos
     end if
-
+!
 !   OPTIONS RELATIVES A UNE MATRICE UNIQUEMENT
     if (option .eq. 'RIGI_MECA') then
         call xteddl(ndim, nfh, nfe, ddls, nddl, &

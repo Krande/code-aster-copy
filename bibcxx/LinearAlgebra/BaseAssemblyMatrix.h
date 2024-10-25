@@ -248,7 +248,6 @@ class BaseAssemblyMatrix : public DataStructure {
         if ( not getMesh()->isParallel() && local )
             throw std::runtime_error( "local export is only usable on a ParallelMesh" );
 
-        /* local2 = local ? 1 : 0;*/
         CALLO_MATASS2PETSC( getName(), &local2, &myMat, &ierr );
 
         return myMat;

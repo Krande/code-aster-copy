@@ -48,7 +48,7 @@ subroutine dxsith(nomte, mater, sigma)
     integer :: npgh
     integer :: jnbspi, itab(8)
 !
-    real(kind=8) :: d(4, 4), repere(7), inst, zero, epsth(nbepsg)
+    real(kind=8) :: d(4, 4), angl_naut(3), inst, zero, epsth(nbepsg)
 !
     character(len=4) :: fami
 !
@@ -62,7 +62,7 @@ subroutine dxsith(nomte, mater, sigma)
                      jgano=jgano)
 !
     zero = 0.0d0
-    repere(:) = zero
+    angl_naut(:) = zero
 !
     dkg = .false.
 !
@@ -120,7 +120,7 @@ subroutine dxsith(nomte, mater, sigma)
 !           -- CALCUL DE LA MATRICE DE HOOKE
 !           --------------------------------
                 call dmatcp('RIGI', mater, inst, '+', ipg, &
-                            igauh, repere, d)
+                            igauh, angl_naut, d)
 !
 !           -- CALCUL DES CONTRAINTES VRAIES (==SIGMA_MECA - SIGMA_THER)
 !           -- AU POINT D'INTEGRATION COURANT

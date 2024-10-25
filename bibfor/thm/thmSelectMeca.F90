@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,18 +29,20 @@ subroutine thmSelectMeca(ds_thm, &
                          dsde, retcom)
 !
     use THM_type
+    use Behaviour_type
+    use Behaviour_module
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/calcme.h"
-#include "asterfort/Behaviour_type.h"
-#include "asterfort/thmMecaElas.h"
 #include "asterfort/thmCheckPorosity.h"
+#include "asterfort/thmMecaElas.h"
 #include "asterfort/thmMecaSpecial.h"
-#include "asterfort/Behaviour_type.h"
+#include "asterfort/utmess.h"
 !
     type(THM_DS), intent(in) :: ds_thm
     integer, intent(in) :: j_mater
@@ -113,6 +115,8 @@ subroutine thmSelectMeca(ds_thm, &
     common/tdim/ndt, ndi
     character(len=16) :: meca, defo, extern_addr
     integer :: nb_vari_meca, nume_meca, nume_thmc
+    type(Behaviour_Integ) :: BEHinteg
+    integer, parameter :: kpg = 1, ksp = 1
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -172,13 +176,20 @@ subroutine thmSelectMeca(ds_thm, &
         write (compor_meca(NVAR), '(I16)') nb_vari_meca
         compor_meca(DEFO) = defo
         write (compor_meca(NUME), '(I16)') nume_meca
-        call calcme(option, j_mater, ndim, typmod, angl_naut, &
+
+! ----- Set main parameters for behaviour (on point)
+        BEHinteg = ds_thm%ds_behaviour%BEHinteg
+        call setFromCompor(compor_meca, BEHinteg)
+        call behaviourSetParaPoin(kpg, ksp, BEHinteg)
+        call calcme(BEHinteg, &
+                    option, j_mater, ndim, typmod, angl_naut, &
                     compor_meca, carcri, instam, instap, &
                     addeme, adcome, dimdef, dimcon, &
                     defgem, deps, &
                     congem, vintm, &
                     congep, vintp, &
                     dsdeme, retcom)
+
 ! ----- Compute thermic dilatation
         if (ds_thm%ds_elem%l_dof_ther) then
             do i = 1, 3

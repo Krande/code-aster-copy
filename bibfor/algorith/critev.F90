@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ subroutine critev(epsp, epsd, eta, lambda, deuxmu, &
     real(kind=8) :: tr(6), vecp(3, 3)
     real(kind=8) :: epm(3), tre, rac2, phi
     real(kind=8) :: treps, sigel(3), ppeps(6), dfde(6)
+    blas_int :: b_incx, b_incy, b_n
 !
 !
 !
@@ -83,7 +84,10 @@ subroutine critev(epsp, epsd, eta, lambda, deuxmu, &
         end if
     end do
 !
-    crit = fpd*0.5d0*ddot(3, epm, 1, sigel, 1)+phi-rd-seuil
+    b_n = to_blas_int(3)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    crit = fpd*0.5d0*ddot(b_n, epm, b_incx, sigel, b_incy)+phi-rd-seuil
 !
     do i = 1, 3
         if (epm(i) .lt. 0.d0) then
@@ -112,7 +116,10 @@ subroutine critev(epsp, epsd, eta, lambda, deuxmu, &
         dfde(i) = deuxmu*fpd*ppeps(i)*rac2
     end do
 !
-    critp = ddot(6, dfde, 1, epsd, 1)+epsd(7)
+    b_n = to_blas_int(6)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    critp = ddot(b_n, dfde, b_incx, epsd, b_incy)+epsd(7)
 !
 !
 end subroutine

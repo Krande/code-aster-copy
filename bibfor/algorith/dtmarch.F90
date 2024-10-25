@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     use iso_c_binding, only: c_loc, c_ptr, c_f_pointer
     implicit none
@@ -44,21 +44,21 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, pointer             :: buffdtm(:)
-    integer, pointer             :: buffint(:)
+    integer, pointer :: buffdtm(:)
+    integer, pointer :: buffint(:)
 !
 !   -0.2- Local variables
-    integer           :: ipas, nbmode, nbsauv, nbnoli, nbvint
-    integer           :: ndec
-    integer           :: ind, iret, nlcase
-    integer           :: index, iarch_sd
-    real(kind=8)      :: t, dt
-    character(len=7)  :: casek7, intk7
-    character(len=8)  :: sd_dtm, sd_int, sd_nl
+    integer :: ipas, nbmode, nbsauv, nbnoli, nbvint
+    integer :: ndec
+    integer :: ind, iret, nlcase
+    integer :: index, iarch_sd
+    real(kind=8) :: t, dt
+    character(len=7) :: casek7, intk7
+    character(len=8) :: sd_dtm, sd_int, sd_nl
     character(len=16) :: nomres16
     character(len=24) :: nomres
     type(c_ptr) :: pc
-
+!
     integer, pointer :: vindx(:) => null()
     integer, pointer :: allocs(:) => null()
     integer, pointer :: isto(:) => null()
@@ -78,16 +78,17 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8), pointer :: vint(:) => null()
     real(kind=8), pointer :: vintsto(:) => null()
     integer, pointer :: buffnl(:) => null()
+    blas_int :: b_incx, b_incy, b_n
 !
 !   0 - Initializations
-
+!
     sd_dtm = sd_dtm_
     sd_int = sd_int_
-
+!
     call dtmget(sd_dtm, _ARCH_STO, vi=isto, buffer=buffdtm)
     call intget(sd_int, IND_ARCH, iscal=index, buffer=buffint)
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode, buffer=buffdtm)
-
+!
     call dtmget(sd_dtm, _CALC_SD, kscal=nomres, buffer=buffdtm)
     call dtmget(sd_dtm, _IARCH_SD, iscal=iarch_sd)
     if (iarch_sd .gt. 0) then
@@ -105,13 +106,13 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
             ASSERT(.false.)
         end if
     end if
-
+!
     call intget(sd_int, STEP, iocc=index, rscal=dt, buffer=buffint)
     call intget(sd_int, INDEX, iocc=index, iscal=ipas, buffer=buffint)
     call intget(sd_int, TIME, iocc=index, rscal=t, buffer=buffint)
-
+!
     call dtmget(sd_dtm, _NL_CASE, iscal=nlcase, buffer=buffdtm)
-
+!
     call intget(sd_int, DEPL, iocc=index, lonvec=iret, buffer=buffint)
     if (iret .ne. 0) then
         if (nlcase .eq. 0) then
@@ -145,18 +146,18 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
 !   [jordr, jdisc, jptem, jdepl , jvite, jacce,
 !    jfcho, jdcho, jvcho, jadcho, jredc, jredd,
 !    jrevc, jrevv, jvint                       ]
-
+!
     call jgetptc(allocs(1)+isto(1), pc, vi=zi(1))
     call c_f_pointer(pc, iorsto, [1])
-
+!
     call jgetptc(allocs(2)+isto(1), pc, vr=zr(1))
     call c_f_pointer(pc, temsto, [1])
-
+!
     call jgetptc(allocs(3)+isto(1), pc, vr=zr(1))
     call c_f_pointer(pc, passto, [1])
-
+!
     ind = nbmode*isto(1)
-
+!
     call jgetptc(allocs(4)+ind, pc, vr=zr(1))
     call c_f_pointer(pc, depsto, [nbmode])
     call jgetptc(allocs(5)+ind, pc, vr=zr(1))
@@ -168,28 +169,40 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     iorsto(1) = ipas
     temsto(1) = t
     passto(1) = dt
-    call dcopy(nbmode, depgen, 1, depsto, 1)
-    call dcopy(nbmode, vitgen, 1, vitsto, 1)
-    call dcopy(nbmode, accgen, 1, accsto, 1)
+    b_n = to_blas_int(nbmode)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, depgen, b_incx, depsto, b_incy)
+    b_n = to_blas_int(nbmode)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, vitgen, b_incx, vitsto, b_incy)
+    b_n = to_blas_int(nbmode)
+    b_incx = to_blas_int(1)
+    b_incy = to_blas_int(1)
+    call dcopy(b_n, accgen, b_incx, accsto, b_incy)
 !
 !   Optional information (nonlinearities)
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli, buffer=buffdtm)
     if (nbnoli .gt. 0) then
         call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl, buffer=buffdtm)
         call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
-
+!
         call nlget(sd_nl, _INTERNAL_VARS_INDEX, vi=vindx, buffer=buffnl)
         nbvint = vindx(nbnoli+1)-1
-
+!
         ndec = nbvint*isto(1)
         call jgetptc(allocs(7)+ndec, pc, vr=zr(1))
         call c_f_pointer(pc, vintsto, [nbvint])
-
+!
         call nlget(sd_nl, _INTERNAL_VARS, vr=vint, buffer=buffnl)
-
-        call dcopy(nbvint, vint, 1, vintsto, 1)
+!
+        b_n = to_blas_int(nbvint)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, vint, b_incx, vintsto, b_incy)
     end if
-
+!
     isto(1) = isto(1)+1
 !
 end subroutine

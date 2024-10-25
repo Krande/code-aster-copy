@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-import platform
+
+# aslint: disable=C4008
+
 import time
 from functools import wraps
-if platform.system() == "Linux":
+
+from . import config
+
+if config["ASTER_PLATFORM_POSIX"]:
     from resource import RUSAGE_SELF, getrusage
-else:
-    import psutil
 
 from .logger import logger
 
@@ -51,12 +54,10 @@ class Profiler:
             result = func(*args, **kwargs)
             delta = time.perf_counter() - start
             self._elaps[key] += delta
-            if platform.system() == "Linux":
+            if config["ASTER_PLATFORM_POSIX"]:
                 mem_used = int(getrusage(RUSAGE_SELF).ru_maxrss / 1024)
             else:
-                # Use psutil to get memory usage on Windows
-                mem_used = int(psutil.Process().memory_info().peak_wset / 1024 / 1024)
-
+                mem_used = -1
             logger.debug("function '%s' has run in %f s (VmPeak %d MB)", key, delta, mem_used)
             return result
 

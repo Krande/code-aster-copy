@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,15 @@
 !
 !
 interface
-    subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
-                      idfde, geom, typmod, option, imate,&
-                      compor, mult_comp, lgpg, carcri, instam, instap,&
-                      deplm, deplp, angmas, sigm, vim,&
-                      dfdi, def, sigp, vip, matuu,&
+    subroutine nmas3d(BEHinteg, &
+                      fami, nno, nbpg1, ipoids, ivf, &
+                      idfde, geom, typmod, option, imate, &
+                      compor, mult_comp, lgpg, carcri, instam, instap, &
+                      deplm, deplp, angmas, sigm, vim, &
+                      dfdi, def, sigp, vip, matuu, &
                       vectu, codret)
+        use Behaviour_type
+        type(Behaviour_Integ), intent(in) :: BEHinteg
         integer :: lgpg
         integer :: nbpg1
         integer :: nno

@@ -75,8 +75,9 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     character(len=24) :: cfsc
     real(kind=8), pointer :: coef_sch(:) => null()
     real(kind=8) :: alpha, beta, gamma, phi
+    real(kind=8) :: eta, delta, eps, mu
     real(kind=8) :: instam, instap, deltat
-    aster_logical :: lexge, lctcc, lmuap, lgrot, lexpl, lmpas, lhhtc, limpl
+    aster_logical :: lexge, lctcc, lmuap, lgrot, lexpl, lmpas, lhht, lihht, lhhtc, limpl
     aster_logical :: ldepl, lvite, lacce
     aster_logical :: lnewma
     real(kind=8) :: coerig, coeamo, coemas
@@ -90,6 +91,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     character(len=19) :: depgem, vitgem, accgem, depgep, vitgep, accgep
     integer :: jdepgm, jvitgm, jaccgm, jdepgp, jvitgp, jaccgp
     integer :: ifm, niv
+    blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------
 !
@@ -139,7 +141,9 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
 !
 ! --- HHT COMPLET (MULTI-PAS)
 !
-    lhhtc = ndynlo(sddyna, 'HHT_COMPLET')
+    lhht = ndynlo(sddyna, 'HHT_COMPLET')
+    lihht = ndynlo(sddyna, 'NOHHT')
+    lhhtc = lhht .or. lihht
 !
 ! --- COEFFICIENTS DU SCHEMA EN TEMPS
 !
@@ -147,6 +151,26 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     gamma = ndynre(sddyna, 'GAMMA')
     phi = ndynre(sddyna, 'PHI')
     alpha = ndynre(sddyna, 'ALPHA')
+    if (lihht) then
+! NOHHT coefficients
+        eta = -alpha
+        delta = eta*0.5d0
+        eps = gamma-beta
+        mu = 1.0d0-gamma
+    else if (lhht) then
+! HHT coefficients
+        eta = -alpha
+        delta = eta
+        eps = 0.5d0-beta
+        mu = 0.5d0+alpha
+    else
+! Newmark coefficients
+        eta = -alpha
+        delta = eta
+        eps = 0.5d0-beta
+        mu = 1.0d0-gamma
+    end if
+!
 !
 ! --- COEFFICIENTS POUR MATRICES
 !
@@ -163,8 +187,8 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
             ASSERT(.false.)
         end if
         if (lhhtc) then
-            coeamo = coeamo
-            coemas = coemas/(un+alpha)
+            coeamo = coeamo*(un-delta)/(un-eta)
+            coemas = coemas/(un-eta)
         end if
     else
         ASSERT(.false.)
@@ -217,10 +241,10 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
             coefd(3) = zero
             coefv(1) = zero
             coefv(2) = (beta-gamma)/beta
-            coefv(3) = ((deux*beta-gamma)*deltat)/(deux*beta)
+            coefv(3) = (mu-(eps*gamma/beta))*deltat
             coefa(1) = zero
             coefa(2) = -un/(beta*deltat)
-            coefa(3) = (deux*beta-un)/(deux*beta)
+            coefa(3) = -eps/beta
         else if (lacce) then
             if (lexpl) then
                 if (ndynlo(sddyna, 'TCHAMWA')) then
@@ -247,7 +271,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
             else
                 coefd(1) = un
                 coefd(2) = deltat
-                coefd(3) = deltat*deltat/deux
+                coefd(3) = deltat*deltat*(eps+beta)
                 coefv(1) = zero
                 coefv(2) = un
                 coefv(3) = deltat
@@ -285,11 +309,11 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
 !
     if (lmpas) then
         if (lhhtc) then
-            coeext = -alpha/(un+alpha)
-            coeint = -alpha/(un+alpha)
-            coeequ = un/(un+alpha)
+            coeext = eta/(un-eta)
+            coeint = eta/(un-eta)
+            coeequ = un/(un-eta)
             coeex2 = un
-            coeam0 = -alpha
+            coeam0 = delta
         else
             ASSERT(.false.)
         end if
@@ -312,6 +336,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
             write (ifm, *) '<MECANONLINE> ... MULTI-PAS F. EXT. N  : ', coeex2
             write (ifm, *) '<MECANONLINE> ... MULTI-PAS F. INT. N-1: ', coeint
             write (ifm, *) '<MECANONLINE> ... MULTI-PAS F. EQU.    : ', coeequ
+            write (ifm, *) '<MECANONLINE> ... MULTI-PAS F. AMO. N-1: ', coeam0
         end if
     end if
 !
@@ -338,7 +363,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     coeram = un
     coerri = un
     if (lmpas) then
-        coeram = coeram*(un+alpha)
+        coeram = coeram*(un-delta)
     end if
     coef_sch(21) = coerma
     coef_sch(22) = coeram
@@ -376,15 +401,24 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
         call jeveuo(vitgep, 'E', jvitgp)
         call jeveuo(depgem, 'E', jdepgm)
         call jeveuo(depgep, 'E', jdepgp)
-        call dcopy(nbmodp, zr(jdepgm), 1, zr(jdepgp), 1)
-        call dcopy(nbmodp, zr(jvitgm), 1, zr(jvitgp), 1)
-        call dcopy(nbmodp, zr(jaccgm), 1, zr(jaccgp), 1)
+        b_n = to_blas_int(nbmodp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jdepgm), b_incx, zr(jdepgp), b_incy)
+        b_n = to_blas_int(nbmodp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jvitgm), b_incx, zr(jvitgp), b_incy)
+        b_n = to_blas_int(nbmodp)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, zr(jaccgm), b_incx, zr(jaccgp), b_incy)
 !
 ! --- PREDICTION DEPLACEMENT GENERALISE
 !
         do imode = 1, nbmodp
-            zr(jdepgp+imode-1) = zr(jdepgm+imode-1)+coefd(2)*zr(jvitgm+imode-1)+coefd(3)*zr(&
-                                 &jaccgm+imode-1)
+            zr(jdepgp+imode-1) = zr(jdepgm+imode-1)+coefd(2)*zr(jvitgm+imode-1)+coefd(3)*zr(jaccg&
+                                 &m+imode-1)
         end do
         if (niv .ge. 2) then
             write (ifm, *) '<MECANONLINE> ...... PRED. DEPL. GENE'

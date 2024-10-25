@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ subroutine mnlcir(xdep, ydep, omega, alpha, eta, &
     real(kind=8), pointer :: fy(:) => null()
     real(kind=8), pointer :: r(:) => null()
     real(kind=8), pointer :: t(:) => null()
+    blas_int :: b_incx, b_n
 !
     call jemarq()
 !
@@ -76,13 +77,14 @@ subroutine mnlcir(xdep, ydep, omega, alpha, eta, &
         end do
         rk = xt**2+yt**2
         r(k) = sqrt(rk)
-        fn(k) = ((r(k)-1.d0)+sqrt((r(k)-1.d0)**2+ &
-                                  4.d0*eta/alpha))/(2.d0/alpha)
+        fn(k) = ((r(k)-1.d0)+sqrt((r(k)-1.d0)**2+4.d0*eta/alpha))/(2.d0/alpha)
         fx(k) = fn(k)*xt/r(k)
         fy(k) = fn(k)*yt/r(k)
     end do
 !
-    call dscal(4*(2*hf+1), 0.d0, zr(isor), 1)
+    b_n = to_blas_int(4*(2*hf+1))
+    b_incx = to_blas_int(1)
+    call dscal(b_n, 0.d0, zr(isor), b_incx)
     call mnlfft(1, zr(isor), fx, hf, nt, &
                 1)
     call mnlfft(1, zr(isor+(2*hf+1)), fy, hf, nt, &

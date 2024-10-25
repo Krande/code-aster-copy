@@ -33,8 +33,7 @@ import unittest
 from glob import glob
 
 from code_aster.Utilities import config
-
-from run_aster.command_files import add_import_commands, stop_at_end
+from run_aster.command_files import add_coding_line, add_import_commands, stop_at_end
 from run_aster.config import CFG, Config
 from run_aster.ctest2junit import XUnitReport
 from run_aster.export import PARAMS_TYPE, Export, ExportParameter, File, split_export
@@ -436,6 +435,8 @@ class TestExport(unittest.TestCase):
         param.set(False)
         self.assertFalse(export.get("hide-command"))
         self.assertEqual(repr(export), "\n")
+        savdb = bool([i for i in export.resultfiles if i.filetype == "base"])
+        self.assertFalse(savdb)
 
     def test_split(self):
         text = "\n".join(
@@ -445,6 +446,7 @@ class TestExport(unittest.TestCase):
                 "F mail filename.mail D 20",
                 "P time_limit 3600.0",
                 "A args --tpmax 3600",
+                "R base path-to-base R 0",
             ]
         )
         export = Export(from_string=text)
@@ -468,6 +470,8 @@ class TestExport(unittest.TestCase):
             self.assertEqual(len(obj.commfiles), 1)
             comm.append(obj.commfiles[0])
         self.assertSequenceEqual([i.path for i in comm], ["filename.comm", "filename.com1"])
+        savdb = bool([i for i in export.resultfiles if i.filetype == "base"])
+        self.assertTrue(savdb)
 
 
 class TestCommandFiles(unittest.TestCase):
@@ -475,12 +479,11 @@ class TestCommandFiles(unittest.TestCase):
 
     def test_import(self):
         text = ""
-        res = add_import_commands(text)
+        res = add_coding_line(text)
         self.assertEqual(res, "# coding=utf-8\n")
 
         text = "DEBUT()"
         res = add_import_commands(text)
-        self.assertIn("# coding=utf-8", res)
         self.assertIn("import code_aster", res)
         self.assertIn("from code_aster.Commands import *", res)
         self.assertIn("from math import *", res)

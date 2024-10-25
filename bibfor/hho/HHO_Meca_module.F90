@@ -23,6 +23,7 @@ module HHO_Meca_module
     use NonLin_Datastructure_type
     use HHO_compor_module
     use HHO_Dirichlet_module
+    use HHO_eval_module
     use HHO_LargeStrainMeca_module
     use HHO_quadrature_module
     use HHO_size_module
@@ -31,14 +32,16 @@ module HHO_Meca_module
     use HHO_type
     use HHO_utils_module
     use HHO_basis_module
-    use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat, &
-                                 & hhoGradRecSymMat, hhoGradRecFullMatFromVec
+    use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat
+    use HHO_gradrec_module, only: hhoGradRecSymMat, hhoGradRecFullMatFromVec
 !
     implicit none
 !
     private
 #include "asterf_types.h"
 #include "asterfort/alchml.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/calcul.h"
@@ -55,11 +58,14 @@ module HHO_Meca_module
 #include "asterfort/nmtime.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/readMatrix.h"
 #include "asterfort/readVector.h"
+#include "asterfort/sigtopk1.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
+#include "blas/dgemv.h"
 #include "blas/dsymv.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
@@ -74,15 +80,15 @@ module HHO_Meca_module
 !
 !
     public :: HHO_Meca_State
-    public :: hhoMecaInit, hhoPreCalcMeca, hhoLocalContribMeca, hhoCalcStabCoeffMeca
-    public :: hhoCalcOpMeca, hhoReloadPreCalcMeca
+    public :: hhoMecaInit, hhoLocalContribMeca, hhoCalcStabCoeffMeca
+    public :: hhoCalcOpMeca, hhoReloadPreCalcMeca, hhoLocalForcNoda
     public :: YoungModulus, hhoLocalMassMeca
 !
 ! --------------------------------------------------------------------------------------------------
 !
     type HHO_Meca_State
 !
-        aster_logical      :: l_debug = ASTER_FALSE
+        aster_logical :: l_debug = ASTER_FALSE
 ! ----- Time : prev, curr, incr
         real(kind=8) :: time_prev = 0.d0
         real(kind=8) :: time_curr = 0.d0
@@ -139,15 +145,11 @@ contains
             call utmess('I', 'HHO2_8')
         end if
 !
-! --- Prepare fields for algorithm
-!
-        hhoField%fieldOUT_cell_GT = '&&HHOMECA.OU.CELLGT'
-        hhoField%fieldOUT_cell_ST = '&&HHOMECA.OU.CELLST'
-!
 ! --- Prepare fields for Dirichlet loads
 !
         hhoField%fieldCineFunc = '&&HHOMEC.CINEFUNC'
         hhoField%fieldCineVale = '&&HHOMEC.CINEVALE'
+!
         if (isfonc(list_func_acti, 'DIRI_CINE')) then
             call hhoDiriFuncPrepare(model, list_load, hhoField)
         end if
@@ -158,98 +160,15 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoPreCalcMeca(model, hhoField, ds_constitutive, ds_measure)
-!
-        implicit none
-!
-        character(len=24), intent(in)           :: model
-        type(HHO_Field), intent(in)             :: hhoField
-        type(NL_DS_Constitutive), intent(in)    :: ds_constitutive
-        type(NL_DS_Measure), intent(inout)      :: ds_measure
-!
-! --------------------------------------------------------------------------------------------------
-!
-! HHO - Mechanics
-!
-! Precomputation of the operators
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  model            : name of model
-! In  hhoField         : fields for HHO
-! In  ds_constitutive  : datastructure for constitutive laws management
-! IO  ds_measure       : datastructure for measure and statistics management
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer, parameter :: nbin = 2
-        integer, parameter :: nbout = 2
-        character(len=8)  :: lpain(nbin), lpaout(nbout)
-        character(len=19) :: lchin(nbin), lchout(nbout)
-        character(len=19) :: ligrel_model
-        character(len=16) :: option
-        character(len=1)  :: base
-        character(len=24) :: chgeom
-!
-! --------------------------------------------------------------------------------------------------
-!
-        base = 'V'
-        option = 'HHO_PRECALC_MECA'
-        ligrel_model = model(1:8)//'.MODELE'
-!
-! - Timer
-!
-        call nmtime(ds_measure, 'Init', 'HHO_Prep')
-        call nmtime(ds_measure, 'Launch', 'HHO_Prep')
-!
-! --- Init fields
-!
-        call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
-!
-! --- Geometry field
-!
-        call megeom(model, chgeom)
-!
-! --- Input fields
-!
-        lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom(1:19)
-        lpain(2) = 'PCOMPOR'
-        lchin(2) = ds_constitutive%compor(1:19)
-!
-! --- Output fields
-!
-        lpaout(1) = 'PCHHOGT'
-        lchout(1) = hhoField%fieldOUT_cell_GT
-        lpaout(2) = 'PCHHOST'
-        lchout(2) = hhoField%fieldOUT_cell_ST
-!
-! - Compute
-!
-        call calcul('S', option, ligrel_model, nbin, lchin, &
-                    lpain, nbout, lchout, lpaout, base, &
-                    'OUI')
-!
-        call nmtime(ds_measure, 'Stop', 'HHO_Prep')
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, gradsav, stabsav, &
-                                    gradfull, stab)
+    subroutine hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, gradfull, stab)
 !
         implicit none
 !
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Cell), intent(in) :: hhoCell
         aster_logical, intent(in) :: l_largestrains
-        real(kind=8), intent(in) :: gradsav(*)
-        real(kind=8), intent(in) :: stabsav(*)
-        real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC), intent(out)   :: gradfull
-        real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC), intent(out)  :: stab
+        real(kind=8), intent(out) :: gradfull(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -258,66 +177,35 @@ contains
 ! In  hhoCell         : hho Cell
 ! In hhoData          : information about the HHO formulation
 ! In l_largestrains   : large strains ?
-! In gradsav          : full gradient for mechanics (precomputed)
-! In stabsav          : stabilization for mechanics (precomputed)
 ! Out gradfull        : full gradient for mechanics
 ! Out stab            : stabilization for mechanics
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- Local variables
 !
-        integer :: cbs, fbs, total_dofs, gbs, gbs_sym, gbs2, j
-        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)  :: gradfullvec
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL):: stabvec
+        integer :: cbs, fbs, total_dofs, gbs
+        real(kind=8) :: gradfullvec(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
+        real(kind=8) :: stabvec(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
 !
-        if (hhoCell%ndim == 2) then
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+                           gbs)
 !
-! ---- if ndim = 2, we save the full operator
+        if (l_largestrains) then
 !
-            call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+! -------- Reload gradient
+            call readMatrix('PCHHOGT', gbs, total_dofs, ASTER_FALSE, gradfullvec)
             gradfull = 0.d0
-!
-            if (l_largestrains) then
-                gbs2 = gbs
-            else
-                gbs2 = gbs_sym
-            end if
-!
-            do j = 1, total_dofs
-                call dcopy(gbs2, gradsav((j-1)*gbs2+1), 1, gradfull(1, j), 1)
-            end do
-!
-        elseif (hhoCell%ndim == 3) then
-!
-! ---- if ndim = 3, we save the scalar operator for large_strain (not for small strains)
-!
-            call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs2)
-!
-            if (l_largestrains) then
-                gradfullvec = 0.d0
-!
-                do j = 1, total_dofs
-                    call dcopy(gbs2, gradsav((j-1)*gbs2+1), 1, gradfullvec(1, j), 1)
-                end do
-!
-! ------- Compute vectoriel Gradient reconstruction
-                call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradfullvec, gradfull)
-!
-            else
-! -------- Compute Operators
-                call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, gradfull)
-            end if
+            call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradfullvec, gradfull)
         else
-            ASSERT(ASTER_FALSE)
+!
+! -------- Compute symetric gradient
+            call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, gradfull)
         end if
 !
 ! -------- Reload stabilization
         stab = 0.d0
         stabvec = 0.d0
-        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs2)
-        do j = 1, total_dofs
-            call dcopy(total_dofs, stabsav((j-1)*total_dofs+1), 1, stabvec(1, j), 1)
-        end do
+        call readMatrix('PCHHOST', total_dofs, total_dofs, ASTER_TRUE, stabvec)
         call MatScal2Vec(hhoCell, hhoData, stabvec, stab)
 !
     end subroutine
@@ -326,18 +214,18 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, &
-                                   hhoCS, lhs, rhs)
+    subroutine hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, hhoCS, &
+                                   lhs, rhs)
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)      :: hhoCell
-        type(HHO_Data), intent(inout)   :: hhoData
-        type(HHO_Quadrature), intent(in):: hhoQuadCellRigi
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(inout) :: hhoData
+        type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
         type(HHO_Meca_State), intent(in) :: hhoMecaState
         type(HHO_Compor_State), intent(inout) :: hhoCS
-        real(kind=8), intent(out)       :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
-        real(kind=8), intent(out)       :: rhs(MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out) :: rhs(MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -352,16 +240,17 @@ contains
 !   Out rhs         : local contribution (rhs)
 ! --------------------------------------------------------------------------------------------------
 !
-        aster_logical ::  l_rigi_meca
-        integer:: cbs, fbs, total_dofs, j
+        aster_logical :: l_rigi_meca, l_vari
+        integer :: cbs, fbs, total_dofs, j
+        blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_lda
 !
 ! --- Verif compor
 !
         l_rigi_meca = (hhoCS%option == "RIGI_MECA")
+        l_vari = L_VARI(hhoCS%option)
 !
-        if (hhoCS%axis .or. hhoCS%c_plan) then
-            ASSERT(ASTER_FALSE)
-        end if
+        ASSERT(.not. (hhoCS%axis .or. hhoCS%c_plan))
 !
 ! --- number of dofs
 !
@@ -371,20 +260,23 @@ contains
 !
         lhs = 0.d0
         rhs = 0.d0
+        if (.not. l_vari) then
+!           not accessed but expected to be (lgpg, *)
+            AS_ALLOCATE(vr=hhoCS%vari_curr, size=max(1, hhoCS%lgpg))
+        end if
 !
         if (hhoCS%l_largestrain) then
 !
 ! --- large strains and use gradient
 !
             call hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
-                                      hhoCS%fami, hhoCS%typmod, hhoCS%imater, &
-                                      hhoCS%compor, hhoCS%option, hhoCS%carcri, hhoCS%lgpg, &
-                                      hhoCS%nbsigm, hhoMecaState%time_prev, &
-                                      hhoMecaState%time_curr, &
+                                      hhoCS%fami, hhoCS%typmod, hhoCS%imater, hhoCS%compor, &
+                                      hhoCS%option, hhoCS%carcri, hhoCS%lgpg, hhoCS%nbsigm, &
+                                      hhoMecaState%time_prev, hhoMecaState%time_curr, &
                                       hhoMecaState%depl_prev, hhoMecaState%depl_curr, &
-                                      hhoCS%sig_prev, hhoCS%vari_prev, &
-                                      hhoCS%angl_naut, hhoCS%mult_comp, hhoCS%c_plan, &
-                                      lhs, rhs, hhoCS%sig_curr, hhoCS%vari_curr, hhoCS%codret)
+                                      hhoCS%sig_prev, hhoCS%vari_prev, hhoCS%angl_naut, &
+                                      hhoCS%mult_comp, hhoCS%c_plan, lhs, rhs, hhoCS%sig_curr, &
+                                      hhoCS%vari_curr, hhoCS%codret)
         else
 !
 ! --- small strains and use symmetric gradient
@@ -396,15 +288,18 @@ contains
                 hhoCS%codret = 0
             else
                 call hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
-                                          hhoCS%fami, hhoCS%typmod, hhoCS%imater, &
-                                          hhoCS%compor, hhoCS%option, hhoCS%carcri, hhoCS%lgpg, &
-                                          hhoCS%nbsigm, hhoMecaState%time_prev, &
-                                          hhoMecaState%time_curr, &
+                                          hhoCS%fami, hhoCS%typmod, hhoCS%imater, hhoCS%compor, &
+                                          hhoCS%option, hhoCS%carcri, hhoCS%lgpg, hhoCS%nbsigm, &
+                                          hhoMecaState%time_prev, hhoMecaState%time_curr, &
                                           hhoMecaState%depl_prev, hhoMecaState%depl_incr, &
-                                          hhoCS%sig_prev, hhoCS%vari_prev, &
-                                          hhoCS%angl_naut, hhoCS%mult_comp, &
-                                          lhs, rhs, hhoCS%sig_curr, hhoCS%vari_curr, hhoCS%codret)
+                                          hhoCS%sig_prev, hhoCS%vari_prev, hhoCS%angl_naut, &
+                                          hhoCS%mult_comp, lhs, rhs, hhoCS%sig_curr, &
+                                          hhoCS%vari_curr, hhoCS%codret)
             end if
+        end if
+!
+        if (.not. l_vari) then
+            AS_DEALLOCATE(vr=hhoCS%vari_curr)
         end if
 !
 ! --- test integration of the behavior
@@ -416,14 +311,21 @@ contains
         call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, hhoMecaState%time_curr, hhoQuadCellRigi)
 !
         if (L_VECT(hhoCS%option)) then
-            call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC, &
-                       hhoMecaState%depl_curr, 1, 1.d0, rhs, 1)
+            b_lda = to_blas_int(MSIZE_TDOFS_VEC)
+            b_n = to_blas_int(total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dsymv('U', b_n, hhoData%coeff_stab(), hhoMecaState%stab, b_lda, &
+                       hhoMecaState%depl_curr, b_incx, 1.d0, rhs, b_incy)
         end if
 !
         if (L_MATR(hhoCS%option)) then
             do j = 1, total_dofs
-                call daxpy(total_dofs, hhoData%coeff_stab(), hhoMecaState%stab(1, j), 1, &
-                           lhs(1, j), 1)
+                b_n = to_blas_int(total_dofs)
+                b_incx = to_blas_int(1)
+                b_incy = to_blas_int(1)
+                call daxpy(b_n, hhoData%coeff_stab(), hhoMecaState%stab(1, j), b_incx, lhs(1, j), &
+                           b_incy)
             end do
         end if
 !
@@ -441,9 +343,9 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        aster_logical, intent(in)  :: l_largestrains
-        real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC), intent(out)   :: gradfull
-        real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC), intent(out), optional  :: stab
+        aster_logical, intent(in) :: l_largestrains
+        real(kind=8), intent(out) :: gradfull(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out), optional :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -460,8 +362,8 @@ contains
 ! Out stab            : stabilization for mechanics
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: gradrec_scal
-!        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)   :: gradrec_sym
+        real(kind=8) :: gradrec_scal(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
+!        real(kind=8) :: gradrec_sym(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -499,9 +401,9 @@ contains
 !
         implicit none
 !
-        character(len=*), intent(in)  :: fami
-        integer, intent(in)           :: imate
-        real(kind=8), intent(in)      :: time
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: imate
+        real(kind=8), intent(in) :: time
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8) :: coeff
 !
@@ -526,7 +428,7 @@ contains
         call behaviourInit(BEHinteg)
 !
         do ipg = 1, hhoQuad%nbQuadPoints
-            BEHinteg%elem%coor_elga(ipg, 1:3) = hhoQuad%points(1:3, ipg)
+            BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 1:3) = hhoQuad%points(1:3, ipg)
             call get_elas_para(fami, imate, '+', ipg, 1, elas_id, elas_keyword, &
                                e_=e, time=time, BEHinteg=BEHinteg)
             coeff = coeff+e
@@ -576,9 +478,9 @@ contains
 !
         implicit none
 !
-        class(HHO_Meca_State), intent(inout)  :: this
-        type(HHO_Cell), intent(in)      :: hhoCell
-        type(HHO_Data), intent(inout)   :: hhoData
+        class(HHO_Meca_State), intent(inout) :: this
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(inout) :: hhoData
         type(HHO_Compor_State), intent(in) :: hhoComporState
 !
 ! --------------------------------------------------------------------------------------------------
@@ -590,9 +492,10 @@ contains
         integer :: mk_cbs, mk_fbs, mk_total_dofs, iFace, iDof
         integer :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
+        blas_int :: b_incx, b_incy, b_n
 !
-        if (hhoComporState%option .ne. "RIGI_MECA" .and. &
-            hhoComporState%option .ne. "FORC_NODA") then
+        if (hhoComporState%option .ne. "RIGI_MECA" .and. hhoComporState%option .ne. &
+            "FORC_NODA" .and. hhoComporState%option .ne. "REFE_FORC_NODA") then
             call jevech('PINSTMR', 'L', iinstm)
             call jevech('PINSTPR', 'L', iinstp)
             this%time_curr = zr(iinstp)
@@ -600,7 +503,7 @@ contains
             this%time_incr = this%time_curr-this%time_prev
 !
             call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
-
+!
             if (hhoComporState%typmod(2) == "HHO") then
 !
 ! --- get displacement in T-
@@ -638,16 +541,27 @@ contains
 !
 ! --- compute displacement in T+
 !
-            call dcopy(mk_total_dofs, this%depl_prev, 1, this%depl_curr, 1)
-            call daxpy(mk_total_dofs, 1.d0, this%depl_incr, 1, this%depl_curr, 1)
-        elseif (hhoComporState%option == "RIGI_MECA") then
+            b_n = to_blas_int(mk_total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, this%depl_prev, b_incx, this%depl_curr, b_incy)
+            b_n = to_blas_int(mk_total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call daxpy(b_n, 1.d0, this%depl_incr, b_incx, this%depl_curr, &
+                       b_incy)
+        else if (hhoComporState%option == "RIGI_MECA") then
             call tecach('ONO', 'PINSTR', 'L', iret, iad=iinstp)
             if (iinstp .ne. 0) then
                 this%time_curr = zr(iinstp)
             end if
-        elseif (hhoComporState%option == "FORC_NODA") then
+        else if (hhoComporState%option == "FORC_NODA") then
             call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
             call readVector('PDEPLAR', mk_total_dofs, this%depl_curr)
+            call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_curr)
+        else if (hhoComporState%option == "REFE_FORC_NODA") then
+            call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
+            call readVector('PDEPLMR', mk_total_dofs, this%depl_curr)
             call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_curr)
         else
             ASSERT(ASTER_FALSE)
@@ -663,17 +577,17 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in)      :: hhoCell
-        type(HHO_Data), intent(inout)   :: hhoData
-        type(HHO_Quadrature), intent(in):: hhoQuadCellMass
-        character(len=8), intent(in)    :: fami
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(inout) :: hhoData
+        type(HHO_Quadrature), intent(in) :: hhoQuadCellMass
+        character(len=8), intent(in) :: fami
         real(kind=8), intent(out) :: mass(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - thermics
 !
-!   Compute the local mass contribution for thermics
-!   RHS = (rho_cp * uT, vT)_T
+!   Compute the local mass contribution for mechanics
+!   RHS = (rho * uT, vT)_T
 !   In hhoCell      : the current HHO Cell
 !   In hhoData       : information on HHO methods
 !   In hhoQuadCellRigi : quadrature rules from the rigidity family
@@ -683,12 +597,13 @@ contains
 !
         type(HHO_basis_cell) :: hhoBasisCell
         character(len=32) :: phenom
-        integer:: cbs, fbs, total_dofs, faces_dofs
+        integer :: cbs, fbs, total_dofs, faces_dofs
         integer :: jmate, ipg, icodre(3), dimMatScal
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight, rho, rho_(1), coeff
         real(kind=8) :: mass_scal(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
         real(kind=8) :: mass_vec(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+        blas_int :: b_incx, b_lda, b_n
 !
 ! --- Get input fields
 !
@@ -716,18 +631,23 @@ contains
 !
 ! --------- Eval basis function at the quadrature point
 !
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
 !
 ! -------- Compute behavior
 !
             call rcvalb(fami, ipg, 1, '+', zi(jmate), &
-                        ' ', phenom, 0, ' ', [0.d0], 1, 'RHO', rho_, icodre(1), 1)
+                        ' ', phenom, 0, ' ', [0.d0], &
+                        1, 'RHO', rho_, icodre(1), 1)
             rho = rho_(1)
 !
 ! -------- Compute lhs
 !
             coeff = rho*weight
-            call dsyr('U', dimMatScal, coeff, BSCEval, 1, mass_scal, MSIZE_CELL_SCAL)
+            b_n = to_blas_int(dimMatScal)
+            b_incx = to_blas_int(1)
+            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            call dsyr('U', b_n, coeff, BSCEval, b_incx, &
+                      mass_scal, b_lda)
 !
         end do
 !
@@ -736,6 +656,127 @@ contains
         call hhoCopySymPartMat('U', mass_scal(1:dimMatScal, 1:dimMatScal))
         call MatCellScal2Vec(hhoCell, hhoData, mass_scal, mass_vec)
         mass(1:cbs, 1:cbs) = mass_vec(1:cbs, 1:cbs)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoLocalForcNoda(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, hhoCS, &
+                                stress, rhs)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(inout) :: hhoData
+        type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
+        type(HHO_Meca_State), intent(in) :: hhoMecaState
+        type(HHO_Compor_State), intent(in) :: hhoCS
+        real(kind=8), intent(in) :: stress(*)
+        real(kind=8), intent(out) :: rhs(MSIZE_TDOFS_VEC)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the local residual for a given state
+!   In hhoCell      : the current HHO Cell
+!   In hhoData       : information on HHO methods
+!   In hhoQuadCellRigi : quadrature rules from the rigidity family
+!   In fami         : familly of quadrature points (of hhoQuadCellRigi)
+!   Out rhs         : local contribution (rhs)
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_basis_cell) :: hhoBasisCell
+        integer :: cbs, fbs, total_dofs, gbs, gbs_sym
+        integer :: ipg, ncomp, gbs_curr, gbs_cmp
+        real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8) :: coorpg(3), weight
+        real(kind=8) :: Cauchy_curr(6), PK1_curr(3, 3), G_curr(3, 3), F_curr(3, 3)
+        real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_curr_coeff
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+!
+        rhs = 0.d0
+        bT = 0.d0
+        ncomp = hhoCS%nbsigm
+!
+! ----- init basis
+!
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
+                           gbs, gbs_sym)
+        gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
+        call hhoBasisCell%initialize(hhoCell)
+!
+! --- Compute local contribution
+!
+        if (hhoCS%l_largestrain) then
+            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_m = to_blas_int(gbs)
+            b_n = to_blas_int(total_dofs)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad, &
+                       b_lda, hhoMecaState%depl_curr, b_incx, 0.d0, G_curr_coeff, &
+                       b_incy)
+            gbs_curr = gbs
+        else
+            gbs_curr = gbs_sym
+        end if
+!
+! ----- Loop on quadrature point
+!
+        do ipg = 1, hhoQuadCellRigi%nbQuadPoints
+            coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
+            weight = hhoQuadCellRigi%weights(ipg)
+!
+! -------- tranform sigm in symmetric form
+!
+            call tranfoMatToSym(hhoCell%ndim, stress((ipg-1)*ncomp+1:ipg*ncomp), Cauchy_curr)
+!
+! --------- Eval basis function at the quadrature point
+!
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+!
+! --------- Eval gradient at T- and T+
+!
+            if (hhoCS%l_largestrain) then
+                G_curr = hhoEvalMatCell( &
+                         hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs)
+!
+! --------- Eval gradient of the deformation at T- and T+
+!
+                call hhoCalculF(hhoCell%ndim, G_curr, F_curr)
+!
+                call sigtopk1(hhoCell%ndim, Cauchy_curr, F_curr, PK1_curr)
+!
+                call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs, &
+                                        bT)
+            else
+!
+                call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, &
+                                        bT)
+            end if
+        end do
+!
+        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_m = to_blas_int(gbs_curr)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dgemv('T', b_m, b_n, 1.d0, hhoMecaState%grad, &
+                   b_lda, bT, b_incx, 1.d0, rhs, &
+                   b_incy)
+!
+! --- add stabilization
+!
+        call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, 0.d0, hhoQuadCellRigi)
+!
+        b_lda = to_blas_int(MSIZE_TDOFS_VEC)
+        b_n = to_blas_int(total_dofs)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dsymv('U', b_n, hhoData%coeff_stab(), hhoMecaState%stab, b_lda, &
+                   hhoMecaState%depl_curr, b_incx, 1.d0, rhs, b_incy)
 !
     end subroutine
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,11 @@
 ! --------------------------------------------------------------------
 
 subroutine pjefch(corres, ch1, ch2, tychv, prfchn, &
-                  prol0, ligrel, base, iret)
-! person_in_charge: jacques.pellet at edf.fr
+                  prolong, ligrel, base, iret)
+!
+    use proj_champ_module
     implicit none
+!
 !-------------------------------------------------------------------
 !     BUT : PROJETER UN CHAMP "CH1" SUIVANT "CORRES"
 !           POUR CREER "CH2" SUR LA BASE "BASE"
@@ -48,10 +50,11 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn, &
     character(len=8) :: param
     character(len=4) :: tych, tychv
     character(len=1) :: base
-    character(len=*) :: prol0
     integer :: iret, ibid, nncp
     character(len=24), pointer :: celk(:) => null()
 !
+    type(prolongation)  :: prolong
+    character(len=8)    :: prol0
 !
     ch0s = '&&PJEFCH'//'.CH0S'
     ch1s = '&&PJEFCH'//'.CH1S'
@@ -61,63 +64,54 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn, &
 !
     call dismoi('TYPE_CHAMP', ch1, 'CHAMP', repk=tych)
 !
-!
-!     1 : TRANSFORMATION DE CH1 EN CHAMP SIMPLE : CH1S
-!     -------------------------------------------------
+!   1 : TRANSFORMATION DE CH1 EN CHAMP SIMPLE : CH1S
+!   -------------------------------------------------
     if (tych .eq. 'NOEU') then
         call cnocns(ch1, 'V', ch1s)
-!
     else if ((tych .eq. 'ELEM') .or. (tych .eq. 'ELNO')) then
         if (corres .eq. ' ') then
-!         -- CAS MODIFICATION STRUCTURALE :
+!           CAS MODIFICATION STRUCTURALE :
             tych = 'NOEU'
             call celces(ch1, 'V', ch0s)
-            call cescns(ch0s, ' ', 'V', ch1s, ' ', &
-                        ibid)
+            call cescns(ch0s, ' ', 'V', ch1s, ' ', ibid)
             call detrsd('CHAM_ELEM_S', ch0s)
         else
             call celces(ch1, 'V', ch1s)
         end if
-!
     else
-!       -- ON NE SAIT PAS ENCORE TRAITER LES CART ET ELGA:
+!       ON NE SAIT PAS ENCORE TRAITER LES CART ET ELGA
         iret = 10
         goto 10
-!
     end if
 !
-!
-!     2 : PROJECTION DU CHAMP SIMPLE : CH1S -> CH2S
-!     ----------------------------------------------
+!   2 : PROJECTION DU CHAMP SIMPLE : CH1S -> CH2S
+!   ----------------------------------------------
     if (corres .eq. ' ') then
-!       -- CAS MODIFICATION STRUCTURALE : PROJECTION SUR MAILLAGE MESURE
+!       CAS MODIFICATION STRUCTURALE : PROJECTION SUR MAILLAGE MESURE
         call cnsprm(ch1s, 'V', ch2s, iret)
-!
     else
         if (tych .eq. 'NOEU') then
             call cnsprj(ch1s, corres, 'V', ch2s, iret)
-!
         else if ((tych .eq. 'ELEM') .or. (tych .eq. 'ELNO')) then
             call cesprj(ch1s, corres, 'V', ch2s, iret)
         end if
     end if
     if (iret .gt. 0) goto 10
 !
+!   'prolong' est donné alors 'prol0' ne sert pas
+    prol0 = '????'
 !
-!     3 : TRANSFORMATION DE CH2S EN CHAMP : CH2
-!     ----------------------------------------------
+!   3 : TRANSFORMATION DE CH2S EN CHAMP : CH2
+!   -----------------------------------------
     if (tychv .eq. 'NOEU' .and. tych(1:2) .eq. 'EL') then
-        call cescns(ch2s, ' ', 'V', ch3s, 'F', &
-                    iret)
+        call cescns(ch2s, ' ', 'V', ch3s, 'F', iret)
         ASSERT(iret .eq. 0)
-        call cnscno(ch3s, prfchn, prol0, base, ch2, &
-                    'A', iret)
+        call cnscno(ch3s, prfchn, prol0, base, ch2, 'A', iret, prolong=prolong)
         ASSERT(iret .eq. 0)
         call detrsd('CHAM_NO_S', ch3s)
 !
     else if (tych .eq. 'NOEU') then
-        call cnscno(ch2s, prfchn, prol0, base, ch2, &
-                    'A', iret)
+        call cnscno(ch2s, prfchn, prol0, base, ch2, 'A', iret, prolong=prolong)
 !
     else if ((tych .eq. 'ELEM') .or. (tych .eq. 'ELNO')) then
         call jeveuo(ch1//'.CELK', 'L', vk24=celk)
@@ -126,11 +120,8 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn, &
         if (ligrel .eq. ' ') then
             call utmess('F', 'CALCULEL4_73')
         end if
-        call cescel(ch2s, ligrel, option, param, prol0, &
-                    nncp, base, ch2, 'A', iret)
+        call cescel(ch2s, ligrel, option, param, prol0, nncp, base, ch2, 'A', iret, prolong)
     end if
-!
-!
 !
 10  continue
     call detrsd('CHAM_NO_S', ch1s)

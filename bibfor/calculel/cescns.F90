@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp, &
 #include "asterfort/jexatr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterc/r8vide.h"
 !
     character(len=*) :: cnsz, cesz, base, celfpz
     character(len=1) :: comp
@@ -172,6 +173,10 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp, &
                     zl(jcnsl-1+ieq) = .true.
                     if (tsca .eq. 'R') then
                         if (zi(jnbno-1+nuno) .eq. 0) zr(jcnsv-1+ieq) = 0.d0
+                        if (zr(jcesv-1+iad1) .eq. r8vide()) then
+                            zr(jcnsv-1+ieq) = r8vide()
+                            goto 10
+                        end if
                         zr(jcnsv-1+ieq) = zr(jcnsv-1+ieq)+zr(jcesv-1+iad1)
                     else if (tsca .eq. 'C') then
                         if (zi(jnbno-1+nuno) .eq. 0) zc(jcnsv-1+ieq) = (0.d0, 0.d0)
@@ -200,7 +205,9 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp, &
             ieq = (nuno-1)*ncmp+icmp
             if (zl(jcnsl-1+ieq)) then
                 if (tsca .eq. 'R') then
-                    zr(jcnsv-1+ieq) = zr(jcnsv-1+ieq)/zi(jnbno-1+nuno)
+                    if (zr(jcnsv-1+ieq) .ne. r8vide()) then
+                        zr(jcnsv-1+ieq) = zr(jcnsv-1+ieq)/zi(jnbno-1+nuno)
+                    end if
                 else if (tsca .eq. 'C') then
                     zc(jcnsv-1+ieq) = zc(jcnsv-1+ieq)/zi(jnbno-1+nuno)
                 end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine redrpr(mod, imate, sigp, vip, dsde, &
                   icode)
     implicit none
@@ -38,6 +38,7 @@ subroutine redrpr(mod, imate, sigp, vip, dsde, &
     real(kind=8) :: pplus, materf(5, 2), hookf(6, 6), dpdeno, dp
     real(kind=8) :: se(6), seq, plas, alpha, phi
     real(kind=8) :: siie, deux, trois
+    blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
     common/tdim/ndt, ndi
 ! =====================================================================
@@ -81,7 +82,10 @@ subroutine redrpr(mod, imate, sigp, vip, dsde, &
 ! --- INTEGRATION ELASTIQUE : SIGF = HOOKF EPSP -----------------------
 ! =====================================================================
             call lcdevi(sigp, se)
-            siie = ddot(ndt, se, 1, se, 1)
+            b_n = to_blas_int(ndt)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            siie = ddot(b_n, se, b_incx, se, b_incy)
             seq = sqrt(trois*siie/deux)
         end if
         call dpmata(mod, materf, alpha, dp, dpdeno, &

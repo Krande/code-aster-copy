@@ -22,6 +22,8 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
                   dispz, &
                   base, vect_elemz)
 !
+    use HHO_precalc_module, only: hhoAddInputField
+!
     implicit none
 !
 #include "asterf_types.h"
@@ -186,6 +188,9 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     if (l_xfem) then
         call xajcin(model, option, mxchin, lchin, lpain, nbin)
     end if
+!
+    call hhoAddInputField(model, mxchin, lchin, lpain, nbin)
+!
 !
 ! - Output field
 !

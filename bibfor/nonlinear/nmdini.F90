@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmdini(keywf, list_inst, tole, &
-                  nb_inst, l_init_noexist, nume_ini)
+!
+subroutine nmdini(factorKeyword, listInstJv, tole, &
+                  nbInst, numeInstInit, instInit)
 !
     implicit none
 !
@@ -29,14 +29,12 @@ subroutine nmdini(keywf, list_inst, tole, &
 #include "asterfort/utacli.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=16), intent(in) :: keywf
-    character(len=19), intent(in) :: list_inst
+    character(len=16), intent(in) :: factorKeyword
+    character(len=19), intent(in) :: listInstJv
     real(kind=8), intent(in) :: tole
-    integer, intent(in) :: nb_inst
-    aster_logical, intent(out) :: l_init_noexist
-    integer, intent(out) :: nume_ini
+    integer, intent(in) :: nbInst
+    integer, intent(out) :: numeInstInit
+    real(kind=8), intent(out) :: instInit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,50 +44,53 @@ subroutine nmdini(keywf, list_inst, tole, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  keywf            : factor keyword
-! In  list_inst        : list of times from INCREMENT/LIST_INST
+! In  factorKeyword    : factor keyword
+! In  listInstJv       : name of JEVEUX object for list of times from INCREMENT/LIST_INST
 ! In  tole             : tolerance to search time
-! In  nb_inst          : number of time steps in list
-! Out l_init_noexist   : .true. if initial time doesn't exist in list of times
-! Out nume_ini         : index of initial time
+! In  nbInst           : number of time steps in list
+! Out numeInstInit     : index of initial time
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1, n2
-    real(kind=8) :: inst
-    real(kind=8), pointer :: v_list_inst(:) => null()
+    integer :: n1, n2, iInst
+    real(kind=8), pointer :: listInst(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nume_ini = 0
-    inst = -1.d0
-    l_init_noexist = .false.
-!
-! - Acces to list of times
-!
-    call jeveuo(list_inst, 'L', vr=v_list_inst)
-!
+    numeInstInit = 0
+
+! - Acces to list of time steps
+    call jeveuo(listInstJv, 'L', vr=listInst)
+
 ! - Get keywords
-!
-    call getvis(keywf, 'NUME_INST_INIT', iocc=1, scal=nume_ini, nbret=n1)
-    call getvr8(keywf, 'INST_INIT', iocc=1, scal=inst, nbret=n2)
-!
-! - No NUME_INST_INIT/INST_INIT
-!
+    call getvis(factorKeyword, 'NUME_INST_INIT', iocc=1, scal=numeInstInit, nbret=n1)
+    call getvr8(factorKeyword, 'INST_INIT', iocc=1, scal=instInit, nbret=n2)
+
+! - Find index of initial time step
     if (n1 .eq. 0) then
         if (n2 .eq. 0) then
-            nume_ini = 0.0
+            numeInstInit = 0
         else
-            call utacli(inst, v_list_inst, nb_inst, tole, nume_ini)
-            if (nume_ini .lt. 0) then
-                call utmess('F', 'DISCRETISATION_89', sr=inst)
+            call utacli(instInit, listInst, nbInst, tole, numeInstInit)
+            if (numeInstInit .lt. 0) then
+                do iInst = 1, nbInst
+                    if (listInst(iInst) .ge. instInit) then
+                        numeInstInit = iInst
+                        exit
+                    end if
+                end do
+                call utmess('I', 'DISCRETISATION_90', sr=listInst(numeInstInit))
+                if (numeInstInit .lt. 2) then
+                    call utmess('F', 'DISCRETISATION_91')
+                else
+                    numeInstInit = numeInstInit-2
+                end if
             end if
         end if
     end if
-!
+
 ! - Checks
-!
-    ASSERT(nume_ini .ge. 0)
-    ASSERT(nume_ini .le. nb_inst)
+    ASSERT(numeInstInit .ge. 0)
+    ASSERT(numeInstInit .le. nbInst)
 !
 end subroutine

@@ -289,62 +289,7 @@ class FieldOnCells : public DataField {
      * @return renvoie un nouvel objet de FieldOnCells
      *         avec les valeurs transformées
      */
-    template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value,
-                             FieldOnCells< ValueType > >::type
-    transform( py::object &func ) const {
-        if ( !PyCallable_Check( func.ptr() ) )
-            raiseAsterError( "Input parameter to the transform \
-        method should be a callable Python object" );
-
-        FieldOnCells< ValueType > tmp( *this );
-        updateValuePointers();
-
-        ASTERINTEGER size = _values->size();
-        for ( auto i = 0; i < size; i++ ) {
-            PyObject *res = PyObject_CallFunction( func.ptr(), "d", ( *_values )[i] );
-            if ( PyFloat_Check( res ) ) {
-                tmp[i] = (ASTERDOUBLE)PyFloat_AsDouble( res );
-            } else if ( PyLong_Check( res ) ) {
-                tmp[i] = (ASTERDOUBLE)PyLong_AsDouble( res );
-            } else {
-                raiseAsterError( "Invalid function return type. Expected ASTERDOUBLE." );
-            }
-            Py_XDECREF( res );
-        }
-
-        return tmp;
-    };
-
-    template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERCOMPLEX >::value,
-                             FieldOnCells< ValueType > >::type
-    transform( py::object &func ) const {
-        if ( !PyCallable_Check( func.ptr() ) )
-            raiseAsterError( "Input parameter to the transform \
-        method should be a callable Python object" );
-
-        FieldOnCells< ValueType > tmp( *this );
-        _values->updateValuePointer();
-
-        ASTERINTEGER size = _values->size();
-
-        Py_complex val;
-        for ( auto i = 0; i < size; i++ ) {
-            val.real = ( *_values )[i].real();
-            val.imag = ( *_values )[i].imag();
-            PyObject *res = PyObject_CallFunction( func.ptr(), "D", val );
-            if ( PyComplex_Check( res ) ) {
-                ASTERDOUBLE re = (ASTERDOUBLE)PyComplex_RealAsDouble( res );
-                ASTERDOUBLE im = (ASTERDOUBLE)PyComplex_ImagAsDouble( res );
-                tmp[i] = { re, im };
-            } else {
-                raiseAsterError( "Invalid function return type. Expected ASTERCOMPLEX." );
-            }
-            Py_XDECREF( res );
-        }
-        return tmp;
-    };
+    FieldOnCells< ValueType > transform( py::object &func ) const;
 
     // OVERLOADING C++ OPERATORS
 
@@ -600,117 +545,23 @@ class FieldOnCells : public DataField {
      * @brief Comput norm
      * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
      */
-    template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value, ASTERDOUBLE >::type
-    norm( const std::string normType ) const {
-        AS_ASSERT( normType == "NORM_1" || normType == "NORM_2" || normType == "NORM_INFINITY" );
-
-        ASTERDOUBLE norme = 0.0;
-        ASTERINTEGER beg = 0, end = 0, nbgrp = 0;
-
-        const int rank = getMPIRank();
-
-        _values->updateValuePointer();
-        _descriptor->updateValuePointer();
-
-        JeveuxVectorLong CellsRank = getMesh()->getCellsOwner();
-        CellsRank->updateValuePointer();
-
-        JeveuxCollectionLong collec = _dofDescription->getListOfGroupsOfElements();
-        nbgrp = ( *_descriptor )[1];
-
-        for ( auto i = 0; i < nbgrp; i++ ) {
-
-            ASTERINTEGER adress = ( *_descriptor )[4 + i];
-            if ( ( *_descriptor )[adress + 2] == 0 )
-                continue;
-
-            ASTERINTEGER nel = ( *_descriptor )[adress];
-            auto liel = ( *collec )[i + 1];
-            liel->updateValuePointer();
-
-            if ( normType == "NORM_1" ) {
-                for ( auto p = 0; p < nel; p++ ) {
-
-                    if ( ( *CellsRank )[( *liel )[p] - 1] != rank )
-                        continue;
-                    beg = ( *_descriptor )[adress + 3 + 4 * p + 4] - 1;
-                    end = beg + ( *_descriptor )[adress + 3 + 4 * p + 3];
-
-                    for ( int pos = beg; pos < end; ++pos ) {
-                        norme += std::abs( ( *this )[pos] );
-                    }
-                }
-            } else if ( normType == "NORM_2" ) {
-                for ( auto p = 0; p < nel; p++ ) {
-
-                    if ( ( *CellsRank )[( *liel )[p] - 1] != rank )
-                        continue;
-                    beg = ( *_descriptor )[adress + 3 + 4 * p + 4] - 1;
-                    end = beg + ( *_descriptor )[adress + 3 + 4 * p + 3];
-
-                    for ( int pos = beg; pos < end; ++pos ) {
-                        norme += ( *this )[pos] * ( *this )[pos];
-                    }
-                }
-            } else if ( normType == "NORM_INFINITY" ) {
-                for ( auto p = 0; p < nel; p++ ) {
-
-                    if ( ( *CellsRank )[( *liel )[p] - 1] != rank )
-                        continue;
-                    beg = ( *_descriptor )[adress + 3 + 4 * p + 4] - 1;
-                    end = beg + ( *_descriptor )[adress + 3 + 4 * p + 3];
-
-                    for ( int pos = beg; pos < end; ++pos ) {
-                        norme = std::max( norme, std::abs( ( *this )[pos] ) );
-                    }
-                }
-            }
-        }
-
-#ifdef ASTER_HAVE_MPI
-        if ( getMesh()->isParallel() ) {
-            ASTERDOUBLE norm2 = norme;
-            if ( normType == "NORM_1" || normType == "NORM_2" )
-                AsterMPI::all_reduce( norm2, norme, MPI_SUM );
-            else
-                AsterMPI::all_reduce( norm2, norme, MPI_MAX );
-        }
-#endif
-
-        if ( normType == "NORM_2" )
-            norme = std::sqrt( norme );
-
-        return norme;
-    }
+    ASTERDOUBLE norm( const std::string normType ) const;
 
     /**
      * @brief Dot product
      * @param tmp object FieldOnCellsPtr
      */
-    template < class T = ValueType >
-    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value, ASTERDOUBLE >::type
-    dot( const FieldOnCellsPtr &tmp ) const {
-        tmp->updateValuePointers();
-        _values->updateValuePointer();
-        ASTERINTEGER taille = _values->size();
-
-        if ( taille != tmp->size() )
-            raiseAsterError( "Incompatible size" );
-
-        ASTERDOUBLE ret = 0.0;
-        for ( auto pos = 0; pos < taille; ++pos ) {
-            ret += ( *this )[pos] * ( *tmp )[pos];
-        }
-        return ret;
-    }
+    ASTERDOUBLE dot( const FieldOnCellsPtr &tmp ) const;
 
     bool printMedFile( const std::string fileName, bool local = true ) const;
 
-    FieldOnCellsPtr changeLocalization( const std::string &loc ) const {
+    FieldOnCellsPtr asLocalization( const std::string &loc ) const {
         if ( loc == getLocalization() ) {
             return std::make_shared< FieldOnCells< ValueType > >( *this );
         }
+
+        auto cham_model = std::make_shared< FieldOnCells< ValueType > >( _dofDescription, loc,
+                                                                         getPhysicalQuantity() );
 
         auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
 
@@ -721,7 +572,8 @@ class FieldOnCells : public DataField {
             model = getModel()->getName();
         }
 
-        CALLO_CHPCHD( getName(), loc, getName(), prol, base, cham_elem->getName(), model );
+        CALLO_CHPCHD( getName(), loc, cham_model->getName(), prol, base, cham_elem->getName(),
+                      model );
 
         cham_elem->build( { _dofDescription } );
 

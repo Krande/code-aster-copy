@@ -25,7 +25,6 @@ module HHO_compor_module
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
-#include "asterfort/ortrep.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/lteatt.h"
@@ -62,7 +61,7 @@ module HHO_compor_module
         integer             :: codret = 0
         integer             :: imater = 0
 !
-        real(kind=8)        :: angl_naut(7)
+        real(kind=8)        :: angl_naut(3)
 ! --- pointer
         character(len=16), pointer :: compor(:) => null()
         real(kind=8), pointer :: carcri(:) => null()
@@ -114,7 +113,8 @@ contains
         call jevech('PMATERC', 'L', jmate)
         this%imater = zi(jmate-1+1)
 !
-        if (this%option .ne. "RIGI_MECA" .and. this%option .ne. "FORC_NODA") then
+        if (this%option .ne. "RIGI_MECA" .and. this%option .ne. "FORC_NODA" &
+            .and. this%option .ne. "REFE_FORC_NODA") then
             call jevech('PCOMPOR', 'L', vk16=this%compor)
             call jevech('PCARCRI', 'L', vr=this%carcri)
             call jevech('PCONTMR', 'L', vr=this%sig_prev)
@@ -133,8 +133,11 @@ contains
                 call jevech('PSIEFR', 'L', vr=this%sig_prev)
                 call jevech('PCOMPOR', 'L', vk16=this%compor)
                 this%l_largestrain = isLargeStrain(this%compor(DEFO))
+            elseif (this%option == "REFE_FORC_NODA") then
+                call jevech('PCOMPOR', 'L', vk16=this%compor)
+                this%l_largestrain = isLargeStrain(this%compor(DEFO))
             end if
-            call ortrep(ndim, bary, this%angl_naut)
+            call rcangm(ndim, bary, this%angl_naut)
         end if
 
         if (L_SIGM(option)) then

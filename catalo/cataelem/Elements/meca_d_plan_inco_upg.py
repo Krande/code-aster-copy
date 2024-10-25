@@ -256,6 +256,7 @@ class MIPLQU8(Element):
                 (SP.PCONTGR, ESIGMPG),
                 (OP.CALC_G.PCONTRR, ESIGMPG),
                 (SP.PDEPLAR, NDEPLAR),
+                (SP.PDEPLA, DDL_MECA),
                 (SP.PEPSINR, CEPSINO),
                 (SP.PFRVOLU, NFORCER),
                 (SP.PGEOMER, NGEOMER),
@@ -278,6 +279,7 @@ class MIPLQU8(Element):
                 (SP.PCONTGR, ESIGMPG),
                 (OP.CALC_G_F.PCONTRR, ESIGMPG),
                 (SP.PDEPLAR, NDEPLAR),
+                (SP.PDEPLA, DDL_MECA),
                 (SP.PEPSINF, CEPSINF),
                 (SP.PFFVOLU, CFORCEF),
                 (SP.PGEOMER, NGEOMER),
@@ -298,6 +300,7 @@ class MIPLQU8(Element):
             para_in=(
                 (OP.CALC_K_G.PCOMPOR, LC.CCOMPOR),
                 (SP.PDEPLAR, NDEPLAR),
+                (SP.PDEPLA, DDL_MECA),
                 (SP.PEPSINR, CEPSINO),
                 (SP.PFRVOLU, NFORCER),
                 (OP.CALC_K_G.PBASLOR, LC.N6NEUT_R),
@@ -318,6 +321,7 @@ class MIPLQU8(Element):
             para_in=(
                 (OP.CALC_K_G_F.PCOMPOR, LC.CCOMPOR),
                 (SP.PDEPLAR, NDEPLAR),
+                (SP.PDEPLA, DDL_MECA),
                 (SP.PEPSINF, CEPSINF),
                 (SP.PFFVOLU, CFORCEF),
                 (OP.CALC_K_G_F.PBASLOR, LC.N6NEUT_R),

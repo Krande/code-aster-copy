@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
                   kscal, iscal, rscal, cscal, kvect, &
                   ivect, rvect, cvect)
@@ -92,6 +92,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
     character(len=6) :: k_iobs
     character(len=8) :: params(nbparams)
     character(len=24) :: savename
+    blas_int :: b_incx, b_incy, b_n
 !
 !   -0.3- Initialization
     data params/'RESU_OUT', 'RESU_IN ', 'TYP_RESU', 'BASE    ', 'MODELE  ', &
@@ -182,9 +183,15 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
                         kvect(i) = zk24(jvect+i-1)
                     end do
                 else if (partyp(ip) .eq. 'R8') then
-                    call dcopy(lvec, zr(jvect), 1, rvect, 1)
+                    b_n = to_blas_int(lvec)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call dcopy(b_n, zr(jvect), b_incx, rvect, b_incy)
                 else if (partyp(ip) .eq. 'C16') then
-                    call zcopy(lvec, zc(jvect), 1, cvect, 1)
+                    b_n = to_blas_int(lvec)
+                    b_incx = to_blas_int(1)
+                    b_incy = to_blas_int(1)
+                    call zcopy(b_n, zc(jvect), b_incx, cvect, b_incy)
                 else if (partyp(ip) .eq. 'I') then
                     do i = 1, lvec
                         ivect(i) = zi(jvect+i-1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0413
 subroutine lccgad(BEHinteg, &
                   fami, kpg, ksp, mat, option, &
                   mu, su, glis, dde, vim, vip)
@@ -48,8 +48,8 @@ subroutine lccgad(BEHinteg, &
 !      VIM     : VARIABLES INTERNES
 !                |1   : GLISSEMENT
 !                |2   : INDICATEUR GLISSEMENT
-!      BEHinteg%elga%tenscab    : TENSION CABLE
-!      BEHinteg%elga%curvcab    : COURBURE CABLE
+!      BEHinteg%behavESVA%behavESVAOther%tenscab    : TENSION CABLE
+!      BEHinteg%behavESVA%behavESVAOther%curvcab    : COURBURE CABLE
 !
 !
 ! OUT : GLIS   : DELTA, SOLUTION DE LA MINIMISATION
@@ -101,8 +101,8 @@ subroutine lccgad(BEHinteg, &
         poum = '+'
     end if
 !
-    n = BEHinteg%elga%tenscab
-    courb = BEHinteg%elga%curvcab
+    n = BEHinteg%behavESVA%behavESVAOther%tenscab
+    courb = BEHinteg%behavESVA%behavESVAOther%curvcab
 !
     call rcvalb(fami, kpg, ksp, poum, mat, &
                 ' ', 'CABLE_GAINE_FROT', 0, ' ', [0.d0], &
