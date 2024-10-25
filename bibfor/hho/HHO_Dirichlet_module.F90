@@ -90,7 +90,7 @@ contains
 !
 !===================================================================================================
 !
-    integerfunction hhoDiriNum(nb_cmp_hho_dir, nume_cmp, ndim)
+    integer function hhoDiriNum(nb_cmp_hho_dir, nume_cmp, ndim)
 !
     implicit none
 !
@@ -1066,7 +1066,7 @@ contains
 !
 !===================================================================================================
 !
-    integerfunction hhoDiriOffset(typema)
+    integer function hhoDiriOffset(typema)
 !
     implicit none
 !

@@ -12,9 +12,11 @@ set COLOR_ENABLED=1
 :: BUILD_TYPE can be either debug or release
 set BUILD_TYPE=debug
 set CLEAN_BUILD=0
+set PIXI_BUILD=0
 
 :parse_args
 if "%~1"=="" goto end_parse_args
+if /i "%~1"=="--pixi-build" set PIXI_BUILD=1
 if /i "%~1"=="--install-tests" set INCLUDE_TESTS=1
 if /i "%~1"=="--use-log" set USE_LOG=1
 if /i "%~1"=="--no-color" set COLOR_ENABLED=0
@@ -32,7 +34,6 @@ if %COLOR_ENABLED%==1 (
     set CLICOLOR_FORCE=0
 )
 
-
 echo "Setting compiler env vars"
 set "CC=clang-cl.exe"
 set "CXX=clang-cl.exe"
@@ -40,7 +41,17 @@ set "FC=ifx.exe"
 @REM set "LINK=link.exe"
 
 :: TO set the number of cores, use the env variable JOBS
-call %PARENT_DIR%\conda_env.bat
+if %PIXI_BUILD% == 1 (
+    echo "Using pixi build"
+    echo CONDA_PREFIX=%CONDA_PREFIX%
+    set "PREFIX=%CONDA_PREFIX%"
+    set "LIBRARY_PREFIX=%CONDA_PREFIX%/Library"
+    set "ASTER_ROOT=%CONDA_PREFIX%"
+    set "RUNASTER_ROOT=%CONDA_PREFIX%/Library"
+    call %PARENT_DIR%\ifx_env.bat
+) else (
+    call %PARENT_DIR%\conda_env.bat
+)
 
 if defined JOBS (
     echo "Using %JOBS% cores"

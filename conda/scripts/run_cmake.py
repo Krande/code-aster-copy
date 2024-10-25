@@ -39,7 +39,7 @@ def cli():
     args = parser.parse_args()
     # run_cmake(args.module_name)
     # run_cmake("bibc")
-    run_cmake("bibcxx")
+    run_cmake("bibfor")
 
 
 if __name__ == "__main__":

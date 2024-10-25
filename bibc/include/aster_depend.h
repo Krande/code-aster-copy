@@ -51,11 +51,16 @@
 #endif
 
 /* test required value */
-#if ( !defined ASTER_PLATFORM_POSIX ) && ( !defined ASTER_PLATFORM_MINGW )
-#error ERROR ASTER_PLATFORM_POSIX or ASTER_PLATFORM_MINGW is required
+#if ( !defined ASTER_PLATFORM_POSIX ) && ( !defined ASTER_PLATFORM_MINGW ) && ( !defined ASTER_PLATFORM_WINDOWS )
+#error ERROR ASTER_PLATFORM_POSIX or ASTER_PLATFORM_MINGW or ASTER_PLATFORM_WINDOWS is required
 #endif
-#if ( defined ASTER_PLATFORM_POSIX ) && ( defined ASTER_PLATFORM_MINGW )
-#error ERROR only one of ASTER_PLATFORM_POSIX or ASTER_PLATFORM_MINGW, not both
+#if ( \
+    ( defined ASTER_PLATFORM_POSIX && defined ASTER_PLATFORM_MINGW ) || \
+    ( defined ASTER_PLATFORM_POSIX && defined ASTER_PLATFORM_WINDOWS ) || \
+    ( defined ASTER_PLATFORM_MINGW && defined ASTER_PLATFORM_WINDOWS ) \
+    )
+
+#error ERROR only one of ASTER_PLATFORM_POSIX, ASTER_PLATFORM_MINGW or ASTER_PLATFORM_WINDOWS can be defined
 #endif
 
 /* MS Windows platforms */
