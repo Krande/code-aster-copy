@@ -23,7 +23,7 @@ ninja = "*"
 psutil = "*"
 pybind11 = "2.13.1"
 setuptools = "*"
-clang = "18.1.8"
+clang = "19.1.2"
 mfront = { version = "*", build = "*debug*" }
 mgis = { version = "*", build = "*debug*" }
 libmed = { version = "*", build = "*debug*" }
@@ -42,4 +42,4 @@ bibfor_cmake_configure = { cmd = [
     "-DCMAKE_BUILD_TYPE=release",
     "--fresh"
 ], description = "Configure the project for building bibfor", env = {FC="ifx.exe", CC="clang-cl", CXX="clang-cl"} }
-bibfor_cmake_build = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibfor", depends_on = ["bibfor_cmake_configure"] }
+bibfor = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibfor", depends_on = ["bibfor_cmake_configure"] }

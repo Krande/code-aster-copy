@@ -2,6 +2,8 @@ import pathlib
 import json
 import re
 
+BIBFOR_DIR = pathlib.Path("../../bibfor").resolve().absolute()
+BIBFOR_DEF = BIBFOR_DIR / "bibfor.def"
 
 def scan_fortran_files(
     directory: pathlib.Path, cache_file: pathlib.Path = pathlib.Path("temp/fc_cache.json"), clear_cache=False
@@ -48,7 +50,8 @@ def scan_fortran_files(
 
 def create_def_file(modules: dict, output_file: pathlib.Path, suffix="_", make_lower=True, make_upper=False):
     output_file.parent.mkdir(exist_ok=True, parents=True)
-    functions_sorted = sorted(set([i for x in modules.values() for i in x]), key=lambda x: x)
+    functions_only = set([i.lower() for x in modules.values() for i in x])
+    functions_sorted = sorted(functions_only)
     with open(output_file, "w") as def_file:
         def_file.write("LIBRARY bibfor\n")
         def_file.write("EXPORTS\n")
@@ -60,13 +63,35 @@ def create_def_file(modules: dict, output_file: pathlib.Path, suffix="_", make_l
             else:
                 def_file.write(f"    {function}{suffix}\n")
 
+def compare_with_existing_def(existing_def_file: pathlib.Path, modules: dict):
+    functions_only = set([f"{i.lower()}_" for x in modules.values() for i in x])
+    existing = set()
+    for existing_def in existing_def_file.read_text().splitlines():
+        if existing_def.startswith("LIBRARY") or existing_def.startswith("EXPORTS"):
+            continue
+        existing.add(existing_def.strip().lower())
+
+    result_dict = {}
+    missing = existing - functions_only
+    print(f"Missing symbols: {len(missing)}")
+    result_dict["missing"] = list(missing)
+
+    unnecessary = functions_only - existing
+    print(f"unnecessary symbols: {len(unnecessary)}")
+    result_dict["unnecessary"] = list(unnecessary)
+
+    matching = functions_only & existing
+    print(f"Matching symbols: {len(matching)}")
+    result_dict["matching"] = list(matching)
+
+    with open("temp/fc_def_compare.json", "w") as f:
+        json.dump(result_dict, f, indent=4)
 
 def main():
-    directory = pathlib.Path("../../bibfor").resolve().absolute()
     output_file = pathlib.Path("temp/output.def")  # Output .def file path
-
-    modules = scan_fortran_files(directory, clear_cache=True)
-    create_def_file(modules, output_file)
+    modules = scan_fortran_files(BIBFOR_DIR, clear_cache=False)
+    compare_with_existing_def(BIBFOR_DEF, modules)
+    #create_def_file(modules, output_file)
     print(f".def file created at: {output_file}")
 
 

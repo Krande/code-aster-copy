@@ -588,7 +588,6 @@ EXPORTS
 	thmmatrhooke_
 	thmgetpermeabilitytensor_
 	thmgetparather_
-	thmgetparaorientation_
 	thmgetparainit_
 	thmgetparahydr_
 	thmgetparaelas_
@@ -4376,9 +4375,7 @@ EXPORTS
 	hho_rhs_module_mp_hhomakerhscellvec_
 	hho_quadrature_module._
 	hho_quadrature_module_mp_check_order_
-	hho_quadrature_module_mp_hho_transfo_3d_
 	hho_quadrature_module_mp_hho_edge_rules_
-	hho_quadrature_module_mp_hho_transfo_quad_
 	hho_quadrature_module_mp_hho_quad_rules_
 	hho_quadrature_module_mp_hho_hexa_rules_
 	hho_quadrature_module_mp_hho_tri_rules_
@@ -4407,7 +4404,6 @@ EXPORTS
 	hho_monogen_module_mp_maxorder_
 	hho_meca_module._
 	hho_meca_module_mp_hhomecainit_
-	hho_meca_module_mp_hhoprecalcmeca_
 	hho_meca_module_mp_hhoreloadprecalcmeca_
 	hho_meca_module_mp_hhocalcopmeca_
 	hho_meca_module_mp_hholocalcontribmeca_
@@ -4923,7 +4919,6 @@ EXPORTS
 	pgyty_
 	parglr_
 	paeldt_
-	ortrep_
 	ortloc_
 	ornofd_
 	nrsmtt_
@@ -5044,7 +5039,6 @@ EXPORTS
 	gdecva_
 	gddyng_
 	gausch_
-	gareac_
 	fun2_
 	fun1_
 	fsurf_
@@ -5335,7 +5329,6 @@ EXPORTS
 	cosiro_
 	coqrep_
 	coqgth_
-	comcq1_
 	clffch_
 	cgtang_
 	cgnoor_
@@ -6045,27 +6038,15 @@ EXPORTS
 	behaviour_module._
 	behaviour_module_mp_behaviourinit_
 	behaviour_module_mp_varcisgeom_
-	behaviour_module_mp_initelem_
-	behaviour_module_mp_initelga_
 	behaviour_module_mp_initesva_
-	behaviour_module_mp_initexte_
 	behaviour_module_mp_behaviourinitpoint_
 	behaviour_module_mp_getlistuseresva_
-	behaviour_module_mp_behaviourprepesvaelem_
 	behaviour_module_mp_prepeltsize1_
 	behaviour_module_mp_prepgradvelo_
-	behaviour_module_mp_prepcoorgauss_
-	behaviour_module_mp_behaviourprepesvagauss_
-	behaviour_module_mp_relaisexte_
-	behaviour_module_mp_prephygrometry_
-	behaviour_module_mp_behaviourprepesva_
 	behaviour_module_mp_getmfrontvariablename_
 	behaviour_module_mp_getastervariablename_
-	behaviour_module_mp_checkumatbehaviour_
 	behaviour_module_mp_logundefinedvariable_
 	behaviour_module_mp_behaviourprepesvaexte_
-	behaviour_module_mp_getesvaptot_
-	behaviour_module_mp_getesva_
 	behaviour_module_mp_behaviourprepstrain_
 	behaviour_module_mp_computestrainesva_
 	behaviour_module_mp_computestrainmeca_
@@ -6282,7 +6263,6 @@ EXPORTS
 	nmcham_
 	nmchab_
 	nmccam_
-	nmbarc_
 	nm1dis_
 	nm1das_
 	mxwell_mt_
@@ -8544,8 +8524,6 @@ EXPORTS
 	bamo78_
 	axacti_
 	asvepr_
-	astron_
-	asstoc_
 	assgen_
 	assgcy_
 	asse_vect_erc_
@@ -8557,10 +8535,6 @@ EXPORTS
 	asgnbn_
 	asgnbc_
 	asgeel_
-	asexc2_
-	asexc1_
-	asefen_
-	asdir_
 	ascova_
 	ascomb_
 	ascoma_
@@ -8568,7 +8542,6 @@ EXPORTS
 	ascavc_wrap_
 	ascavc_
 	asasve_
-	asacce_
 	argu80_
 	arg126_
 	archi_erc_
@@ -8647,8 +8620,6 @@ EXPORTS
 	vtcmbl_
 	vtaxpy_
 	vrrefe_
-	vrnoli_
-	vrdesc_
 	vpzrbk_
 	vpzqrh_
 	vpzhes_
@@ -9071,8 +9042,6 @@ EXPORTS
 	bijsom_
 	bijmoc_
 	axial_
-	ascorm_
-	ascarm_
 	apm345_
 	apchar_
 	antisy_
@@ -9081,3 +9050,5 @@ EXPORTS
 	amdapt_
 	almulr_
 	addmatrasse_
+	verigd_wrap_
+	cescel_wrap_
