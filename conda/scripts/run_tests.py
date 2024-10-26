@@ -151,9 +151,14 @@ def cli():
     parser.add_argument("--seq", action="store_true")
     parser.add_argument("--test-file", type=str, help="Run a specific test file")
     parser.add_argument("--manual", action="store_true")
+    parser.add_argument("--attach-debugger", action="store_true")
 
     args = parser.parse_args()
     no_args = True
+
+    if args.attach_debugger:
+        attach_debugger()
+
     if args.simple:
         simple()
         no_args = False
@@ -173,12 +178,13 @@ def cli():
     if args.manual or no_args:
         manual()
 
-
-def manual():
-    # get the current process id
+def attach_debugger():
     pid = os.getpid()
     # attach a running visual studio (with the code-aster project loaded) debugger to this process
     os.system(f"vsjitdebugger -p {pid}")
+
+def manual():
+    attach_debugger()
     # run the test
     run_specific_test('zzzz185a')
 

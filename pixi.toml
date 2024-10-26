@@ -45,6 +45,8 @@ test = { cmd = [
     "--timefactor=5.0",
     "--only-failed-results",
     "-j", "6"] , depends_on=["test_config"], description = "Run the default sequential tests" }
+debug = { cmd = ["python", "conda/scripts/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
+
 
 bibfor_cmake_configure = { cmd = [
     "call_compile_ifx.bat",
