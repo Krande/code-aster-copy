@@ -33,12 +33,13 @@ metis = { version = "*", build = "*debug*" }
 mumps = { version = "*", build = "*debug*" }
 
 [tasks]
-configure = { cmd = ["ifx_env.bat"], description = "set up ifx environment", env = {FC="ifx.exe"} }
 build = { cmd = ["conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { RUNASTER_ROOT = "%CONDA_PREFIX%/Library", ASTER_ROOT = "%CONDA_PREFIX%" } }
-bibfor_cmake = { cmd = [
+bibfor_cmake_configure = { cmd = [
+    "call_compile_ifx.bat",
     "cmake", "-B", "build-cmake", "-G", "Ninja",
     "-DBUILD_BIBFOR=ON",
     "-DWIN32_LEAN_AND_MEAN=ON",
     "-DCMAKE_BUILD_TYPE=release",
     "--fresh"
-], depends-on = ["configure"], description = "Configure the project for building bibfor", env = {CC="clang-cl", CXX="clang-cl"} }
+], description = "Configure the project for building bibfor", env = {FC="ifx.exe", CC="clang-cl", CXX="clang-cl"} }
+bibfor_cmake_build = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibfor", depends_on = ["bibfor_cmake_configure"] }
