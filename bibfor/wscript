@@ -90,8 +90,8 @@ MAIN = "      program main\n      end program main\n"
 
 @Configure.conf
 def check_fortran_compiler_flags(self):
-    self.check_fortran_compiler_options("-fPIC")
     if "gfortran" in self.env.FC_NAME.lower():
+        self.check_fortran_compiler_options("-fPIC")
         if "64" in self.env.DEST_CPU:
             flags = ["-fdefault-%s-%i" % (name, 8) for name in ("double", "integer", "real")]
             self.check_fortran_compiler_options(flags)

@@ -168,6 +168,7 @@ python conda\scripts\update_version.py
 set BUILD=std
 set EXTRA_ARGS=
 if "%INCLUDE_TESTS%" == "1" (
+    echo "Including tests"
     set "EXTRA_ARGS=--install-tests"
 )
 

@@ -487,7 +487,7 @@ def check_config(self):
     cfg["addmem"] = addmem
     cfg["version_tag"] = ".".join([str(i) for i in self.env.ASTER_VERSION[0]])
     cfg["version_sha1"] = self.env.ASTER_VERSION[1]
-    cfg["python"] = pyenv_abspath(self, "python3")
+    cfg["python"] = pyenv_abspath(self, "python" if self.env.ASTER_PLATFORM_WINDOWS else "python3")
     _check_prog(self, "IPYTHON", ["ipython3", "ipython"], mandatory=False, var_prefix="")
     cfg["python_interactive"] = (
         pyenv_abspath(self, "ipython3") if self.env.IPYTHON else cfg["python"]

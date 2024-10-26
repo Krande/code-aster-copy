@@ -34,6 +34,18 @@ mumps = { version = "*", build = "*debug*" }
 
 [tasks]
 build = { cmd = ["conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { RUNASTER_ROOT = "%CONDA_PREFIX%/Library", ASTER_ROOT = "%CONDA_PREFIX%" } }
+install_tests = { cmd = ["cp", "-r", "astest", "$CONDA_PREFIX/Library/share/aster/tests"], description = "Install test tests"}
+test_config = {cmd=["conda_rearrange.bat"], description="Copy the latest build files to their respective locations"}
+test = { cmd = [
+    "run_ctest",
+    "--resutest=temp\\seq",
+    "-L", "submit",
+    "-L", "sequential",
+    "-LE", "need_data",
+    "--timefactor=5.0",
+    "--only-failed-results",
+    "-j", "6"] , depends_on=["test_config"], description = "Run the default sequential tests" }
+
 bibfor_cmake_configure = { cmd = [
     "call_compile_ifx.bat",
     "cmake", "-B", "build-cmake", "-G", "Ninja",
@@ -41,5 +53,5 @@ bibfor_cmake_configure = { cmd = [
     "-DWIN32_LEAN_AND_MEAN=ON",
     "-DCMAKE_BUILD_TYPE=release",
     "--fresh"
-], description = "Configure the project for building bibfor", env = {FC="ifx.exe", CC="clang-cl", CXX="clang-cl"} }
-bibfor = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibfor", depends_on = ["bibfor_cmake_configure"] }
+], description = "Configure the project for building bibfor", env = { FC = "ifx.exe", CC = "clang-cl", CXX = "clang-cl" } }
+cmake_bibfor = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibfor", depends_on = ["bibfor_cmake_configure"] }

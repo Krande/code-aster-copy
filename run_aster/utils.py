@@ -158,7 +158,13 @@ def run_command(cmd, exitcode_file=None):
         return 4
     else:
         iret = os.system(" ".join(cmd))
-    iret = waitstatus_to_exitcode(iret)
+
+    try:
+        iret = waitstatus_to_exitcode(iret)
+    except OverflowError:
+        # In certain situations on Windows, the conversion of iret to exit code may overflow
+        pass
+    # iret = waitstatus_to_exitcode(iret)
     if exitcode_file and osp.isfile(exitcode_file):
         with open(exitcode_file) as fexit:
             iret = int(fexit.read() or 1)
