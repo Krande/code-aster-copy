@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,6 +35,83 @@
 #include "Modeling/Model.h"
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
+
+FieldOnNodesRealPtr DiscreteComputation::getDifferentialDualDisplacement() const {
+    // reimplement nmdidi.F90 & vecdid.F90
+    auto chalph = std::make_shared< ConstantFieldOnCellsReal >( _phys_problem->getMesh() );
+    const std::string physicalName( "NEUT_R" );
+    chalph->allocate( physicalName );
+    ConstantFieldOnZone a( _phys_problem->getMesh() );
+    ConstantFieldValues< ASTERDOUBLE > b( { "X1" }, { 1.0 } );
+    chalph->setValueOnZone( a, b );
+
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    // Init
+    ASTERINTEGER iload = 1;
+
+    // Setup
+    const std::string calcul_option( "CHAR_MECA" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto listOfLoads = _phys_problem->getListOfLoads();
+
+    FieldOnNodesRealPtr disp_didi = listOfLoads->getDifferentialDisplacement();
+
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+    calcul->setOption( "MECA_BU_R" );
+
+    auto impl = [&]( auto &load, const ASTERINTEGER &iload ) {
+        auto load_FEDesc = load->getFiniteElementDescriptor();
+        auto mult_field = load->getMultiplicativeField();
+        if ( mult_field && mult_field->exists() && load_FEDesc ) {
+            calcul->clearInputs();
+            calcul->clearOutputs();
+            calcul->setFiniteElementDescriptor( load_FEDesc );
+            calcul->addInputField( "PDDLMUR", mult_field );
+            calcul->addInputField( "PDDLIMR", disp_didi );
+            calcul->addInputField( "PALPHAR", chalph );
+
+            calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ),
+                                             iload );
+            }
+        }
+    };
+
+    auto types = listOfLoads->getListOfMechaTyp();
+    for ( const auto &load : listOfLoads->getMechanicalLoadsReal() ) {
+        if ( types[iload - 1] == "DIDI" )
+            impl( load, iload );
+        iload++;
+    }
+
+    auto nloads = types.size();
+    types = listOfLoads->getListOfMechaFuncTyp();
+    for ( const auto &load : listOfLoads->getMechanicalLoadsFunction() ) {
+        if ( types[iload - 1 - nloads] == "DIDI" )
+            impl( load, iload );
+        iload++;
+    }
+
+    elemVect->build();
+
+    if ( elemVect->hasElementaryTerm() ) {
+        return elemVect->assemble( _phys_problem->getDOFNumbering() );
+    } else {
+        FieldOnNodesRealPtr vectAsse =
+            std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+        vectAsse->setValues( 0.0 );
+        vectAsse->build();
+        return vectAsse;
+    }
+}
 
 FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPtr disp_curr,
                                                               ASTERDOUBLE scaling ) const {
@@ -71,6 +148,9 @@ FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPt
 
     if ( _phys_problem->getMesh()->isParallel() )
         CALLO_AP_ASSEMBLY_VECTOR( bume->getName() );
+
+    if ( listOfLoads->hasDifferentialDisplacement() )
+        bume->operator-=( *getDifferentialDualDisplacement() );
 
     return bume;
 };

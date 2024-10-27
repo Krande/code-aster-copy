@@ -5,7 +5,7 @@
  * @file DiscreteComputation.h
  * @brief Header of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -139,6 +139,12 @@ class DiscreteComputation {
      * @return Nodal field for Dirichlet reaction vector
      */
     FieldOnNodesRealPtr getDualForces( FieldOnNodesRealPtr lagr_curr ) const;
+
+    /**
+     * @brief Compute Dirichlet differential imposed dualized displacement B * U
+     * @return Nodal field for dualized differential displacement
+     */
+    FieldOnNodesRealPtr getDifferentialDualDisplacement() const;
 
     /**
      * @brief Compute Dirichlet imposed dualized displacement B * U
