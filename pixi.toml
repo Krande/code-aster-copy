@@ -34,8 +34,7 @@ mumps = { version = "*", build = "*debug*" }
 
 [tasks]
 build = { cmd = ["conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { RUNASTER_ROOT = "%CONDA_PREFIX%/Library", ASTER_ROOT = "%CONDA_PREFIX%" } }
-install_tests = { cmd = ["cp", "-r", "astest", "$CONDA_PREFIX/Library/share/aster/tests"], description = "Install test tests"}
-test_config = {cmd=["conda_rearrange.bat"], description="Copy the latest build files to their respective locations"}
+install = {cmd=["conda_rearrange.bat"], description="Copy the latest build files to their respective locations"}
 test = { cmd = [
     "run_ctest",
     "--resutest=temp\\seq",
@@ -44,7 +43,7 @@ test = { cmd = [
     "-LE", "need_data",
     "--timefactor=5.0",
     "--only-failed-results",
-    "-j", "6"] , depends_on=["test_config"], description = "Run the default sequential tests" }
+    "-j", "6"] , description = "Run the default sequential tests" }
 debug = { cmd = ["python", "conda/scripts/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
 
 

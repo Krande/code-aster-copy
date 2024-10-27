@@ -88,7 +88,11 @@ def run_specific_test(test_name: str, debug_openmp=False):
 
     test_file = init_str + comm_file.read_text()
 
-    with open("main_test_file.py", "w") as f:
+    run_dir = ROOT_DIR / "temp/run"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    os.chdir(run_dir.as_posix())
+
+    with open(run_dir / "main_test_file.py", "w") as f:
         f.write(f"#{test_name}\n")
         #f.write("from run_tests import init_env")
         if debug_openmp:
@@ -98,6 +102,7 @@ def run_specific_test(test_name: str, debug_openmp=False):
             f.write("\n")
         #f.write("#init_env()\n")
         f.write(test_file)
+
 
     exec(test_file)
 

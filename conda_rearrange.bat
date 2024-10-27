@@ -1,6 +1,8 @@
 @echo off
 
 setlocal enabledelayedexpansion
+SET PARENT_DIR=%~dp0
+SET PARENT_DIR=%PARENT_DIR:\=/%
 
 if not defined SP_DIR (
     set SP_DIR=%CONDA_PREFIX%\Lib\site-packages
@@ -33,6 +35,11 @@ for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.pdb") do move "%%f" "%LIBRARY_BIN%"
 REM Move all lib files to %LIBRARY_DIR%
 echo Moving .lib files...
 for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.lib") do move "%%f" "%LIBRARY_LIB%"
+
+REM if %CONDA_PREFIX%/Library/share/aster/tests not exists, create it
+if not exist "%CONDA_PREFIX%\Library\share\aster\tests" (
+    xcopy "%PARENT_DIR%\astest\*" "%CONDA_PREFIX%\Library\share\aster\tests" /E /I /Y
+)
 
 echo Files moved successfully.
 
