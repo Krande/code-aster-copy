@@ -25,11 +25,15 @@ between code_saturne and code_aster.
 import numpy as np
 
 from ..Solvers import TimeStepper
-from ..Utilities.logger import logger
+from ..Utilities import no_new_attributes
 
 
 class SchemeParams:
     """Object thats holds the values of the parameters of the scheme."""
+
+    epsilon = nb_iter = stepper = None
+
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
         self.epsilon = 1.0e-6
@@ -62,16 +66,16 @@ class SchemeParams:
 
         if time_list or nb_step or final_time or delta_t:
             if time_list is None:
-                assert nb_step is not None and init_time is not None
+                assert init_time is not None
                 if final_time is None:
                     assert delta_t is not None
                     final_time = init_time + nb_step * delta_t
 
-                if delta_t is None:
+                if nb_step is None:
                     assert final_time is not None
-                    delta_t = (final_time - init_time) / nb_step
+                    nb_step = (final_time - init_time) / delta_t
 
-                time_list = np.linspace(init_time, final_time, delta_t)
+                time_list = np.linspace(init_time, final_time, nb_step + 1, endpoint=True)
 
             self.stepper = TimeStepper(time_list, initial=time_list[0])
 

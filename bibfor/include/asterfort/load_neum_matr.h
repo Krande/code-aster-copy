@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine load_neum_matr(idx_load    , idx_matr  , load_name , load_nume, load_type,&
                               ligrel_model, nb_in_maxi, nb_in_prep, lpain    , lchin    ,&
-                              matr_elem   )
+                              matr_elem,  iden_direct, name_inputz   )
         character(len=8), intent(in) :: load_name
         integer, intent(in) :: idx_load
         integer, intent(inout) :: idx_matr
@@ -33,5 +33,7 @@ interface
         character(len=*), intent(inout) :: lpain(nb_in_maxi)
         character(len=*), intent(inout) :: lchin(nb_in_maxi)
         character(len=19), intent(in) :: matr_elem
+        character(len=*), optional, intent(in) :: iden_direct
+        character(len=*), optional, intent(in) :: name_inputz
     end subroutine load_neum_matr
 end interface

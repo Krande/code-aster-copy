@@ -22,7 +22,7 @@ from code_aster.Commands import *
 from code_aster import CA
 
 
-def coupled_mechanics(cpl):
+def coupled_mechanics(cpl, UNITE_MA, test_vale):
     """Run mechanical coupling.
 
     Arguments:
@@ -38,9 +38,9 @@ def coupled_mechanics(cpl):
 
     # Read the mesh - 2 cases : 1 or several procs
     if CA.MPI.ASTER_COMM_WORLD.size > 1:
-        MASOLIDE = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, PARTITIONNEUR="PTSCOTCH")
+        MASOLIDE = LIRE_MAILLAGE(FORMAT="MED", UNITE=UNITE_MA, PARTITIONNEUR="PTSCOTCH")
     else:
-        MASOLIDE = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+        MASOLIDE = LIRE_MAILLAGE(FORMAT="MED", UNITE=UNITE_MA)
 
     # Check the orientation of the boundary
     MASOLIDE = MODI_MAILLAGE(
@@ -58,11 +58,9 @@ def coupled_mechanics(cpl):
 
     MATER = AFFE_MATERIAU(MAILLAGE=MASOLIDE, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
-    CHA_IMPO = AFFE_CHAR_MECA(
-        MODELE=MOSOLIDE, FACE_IMPO=_F(GROUP_MA="Face1", DX=0.0, DY=0.0, DZ=0.0)
+    CHA_IMPO = AFFE_CHAR_CINE(
+        MODELE=MOSOLIDE, MECA_IMPO=_F(GROUP_MA="Face1", DX=0.0, DY=0.0, DZ=0.0)
     )
-
-    RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
     ################################################################################
     # define one iteration
@@ -98,18 +96,29 @@ def coupled_mechanics(cpl):
             """
 
             assert len(data) == 1, "expecting one field"
-            mc_pres = data["PRES"]
+            mc_pres = data["Forces"]
 
             # MEDC field => .med => code_aster field
-            PRES = self._medcpl.import_pressure(mc_pres)
+            FORCE = self._medcpl.import_fluidforces(mc_pres, MOSOLIDE, current_time)
 
-            RES_PROJ = CREA_RESU(
-                OPERATION="AFFE",
+            FORC = FORCE.getField("FORC_NODA", current_time, "INST")
+
+            PRES = CREA_CHAMP(
+                OPERATION="ASSE",
+                TYPE_CHAM="ELEM_PRES_R",
+                MODELE=MOSOLIDE,
+                ASSE=_F(TOUT="OUI", CHAM_GD=FORC, NOM_CMP=("FX"), NOM_CMP_RESU=("PRES",)),
+            )
+
+            evol_char = CREA_RESU(
                 TYPE_RESU="EVOL_CHAR",
+                OPERATION="AFFE",
                 AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES, MODELE=MOSOLIDE, INST=current_time),
             )
 
-            CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=RES_PROJ)
+            CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=evol_char)
+
+            previous_time = current_time - delta_t
 
             opts = {}
             if self.result:
@@ -117,13 +126,11 @@ def coupled_mechanics(cpl):
                 opts["RESULTAT"] = self.result
                 opts["ETAT_INIT"] = _F(EVOL_NOLI=self.result)
 
-            previous_time = current_time - delta_t
-
             # Solve the mechanical problem
             self.result = STAT_NON_LINE(
                 MODELE=MOSOLIDE,
                 CHAM_MATER=MATER,
-                EXCIT=(_F(CHARGE=CHA_IMPO), _F(CHARGE=CHA_PROJ)),
+                EXCIT=(_F(CHARGE=CHA_IMPO), _F(CHARGE=CHA_PROJ, TYPE_CHARGE="SUIV")),
                 COMPORTEMENT=_F(RELATION="ELAS"),
                 INCREMENT=_F(
                     LIST_INST=DEFI_LIST_REEL(VALE=(previous_time, current_time)),
@@ -133,9 +140,9 @@ def coupled_mechanics(cpl):
             )
 
             displ = self.result.getField("DEPL", self.result.getLastIndex())
-            mc_displ = self._medcpl.export_displacement(displ, "Displ")
+            mc_displ = self._medcpl.export_displacement(displ, "DEPL")
 
-            return True, {"DEPL": mc_displ}
+            return True, {"Displ": mc_displ}
 
     ################################################################################
     # loop on time steps
@@ -145,8 +152,8 @@ def coupled_mechanics(cpl):
 
     cpl.setup(
         interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("PRES", ["PRES"], "NODES")],
-        output_fields=[("DEPL", ["DX", "DY", "DZ"], "NODES")],
+        input_fields=[("Forces", ["FX", "FY", "FZ"], "CELLS")],
+        output_fields=[("Displ", ["DX", "DY", "DZ"], "NODES")],
     )
 
     cpl.run(mech_solv)
@@ -156,13 +163,28 @@ def coupled_mechanics(cpl):
     TEST_RESU(
         RESU=(
             _F(
+                INST=0.6,
+                RESULTAT=RESU,
+                NOM_CHAM="DEPL",
+                GROUP_NO="N134",
+                NOM_CMP="DX",
+                VALE_CALC=test_vale[0],
+                GROUP_MA="M81",
+                REFERENCE="AUTRE_ASTER",
+                VALE_REFE=-5.0739405591730105,
+                PRECISION=0.01,
+            ),
+            _F(
                 INST=1.0,
                 RESULTAT=RESU,
                 NOM_CHAM="DEPL",
                 GROUP_NO="N134",
                 NOM_CMP="DX",
-                VALE_CALC=-9.323277465885031,
+                VALE_CALC=test_vale[1],
                 GROUP_MA="M81",
+                REFERENCE="AUTRE_ASTER",
+                VALE_REFE=-8.003836010765115,
+                PRECISION=0.01,
             ),
             _F(
                 INST=1.0,
@@ -170,8 +192,11 @@ def coupled_mechanics(cpl):
                 NOM_CHAM="DEPL",
                 GROUP_NO="N134",
                 NOM_CMP="DY",
-                VALE_CALC=-2.3117208947423626,
+                VALE_CALC=test_vale[2],
                 GROUP_MA="M81",
+                REFERENCE="AUTRE_ASTER",
+                VALE_REFE=-2.560446118368371,
+                PRECISION=0.03,
             ),
             _F(
                 INST=1.0,
@@ -179,8 +204,11 @@ def coupled_mechanics(cpl):
                 NOM_CHAM="DEPL",
                 GROUP_NO="N134",
                 NOM_CMP="DZ",
-                VALE_CALC=-6.949019476525089,
+                VALE_CALC=test_vale[3],
                 GROUP_MA="M81",
+                REFERENCE="AUTRE_ASTER",
+                VALE_REFE=-5.844174410665044,
+                PRECISION=0.01,
             ),
         )
     )

@@ -1,0 +1,109 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# this test gives the reference values for coupling test.
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+MASOLIDE = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+# Check the orientation of the boundary
+MASOLIDE = MODI_MAILLAGE(
+    reuse=MASOLIDE,
+    MAILLAGE=MASOLIDE,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("Face1", "Face2", "Face3", "Face4", "Face5", "Face6")),
+)
+
+# Assign Mechanical model
+MOSOLIDE = AFFE_MODELE(
+    MAILLAGE=MASOLIDE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D")
+)
+
+ACIER = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3))
+
+MATER = AFFE_MATERIAU(MAILLAGE=MASOLIDE, AFFE=_F(TOUT="OUI", MATER=ACIER))
+
+CHA_IMPO = AFFE_CHAR_CINE(MODELE=MOSOLIDE, MECA_IMPO=_F(GROUP_MA="Face1", DX=0.0, DY=0.0, DZ=0.0))
+
+FORM = FORMULE(VALE="1.E-4*INST*(XF+YF+ZF)", NOM_PARA=["XF", "YF", "ZF", "INST"])
+
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=5))
+
+CHA_PRES = AFFE_CHAR_MECA_F(
+    PRES_REP=_F(PRES=FORM, GROUP_MA=("Face2", "Face3", "Face4", "Face5", "Face6")), MODELE=MOSOLIDE
+)
+
+
+# Solve the mechanical problem
+RESU = STAT_NON_LINE(
+    MODELE=MOSOLIDE,
+    CHAM_MATER=MATER,
+    EXCIT=(_F(CHARGE=CHA_IMPO), _F(CHARGE=CHA_PRES, TYPE_CHARGE="SUIV")),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_INST),
+)
+
+################################################################################
+# loop on time steps
+################################################################################
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=0.6,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N134",
+            NOM_CMP="DX",
+            VALE_CALC=-5.0739405591730105,
+            GROUP_MA="M81",
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N134",
+            NOM_CMP="DX",
+            VALE_CALC=-8.003836010765115,
+            GROUP_MA="M81",
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N134",
+            NOM_CMP="DY",
+            VALE_CALC=-2.560446118368371,
+            GROUP_MA="M81",
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N134",
+            NOM_CMP="DZ",
+            VALE_CALC=-5.844174410665044,
+            GROUP_MA="M81",
+        ),
+    )
+)
+
+
+FIN()
