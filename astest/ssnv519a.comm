@@ -1,0 +1,264 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# ---------------------------------------------------------------------
+#  TEST DE LA LOI DE visco-hyper-élastique (3D) - Test de fluage
+# ---------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+
+## PARAMETRES
+forc1 = 3.45
+tauFor = 1
+
+modelINTEGR = "3D_SI"
+
+nbPointInt = 8
+
+
+# Evolution du deplacement impose (en mm)
+# ---------------------------------------
+
+FORC = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(0.0, 0.0, tauFor, forc1, 100000, forc1),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+############################################
+# Recup du Maillage et definition des groupes
+# -----------------------------------------------
+MAIL = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", VERI_MAIL=_F(VERIF="NON"))
+
+MAIL = DEFI_GROUP(
+    reuse=MAIL,
+    CREA_GROUP_NO=(
+        _F(TOUT_GROUP_MA="OUI"),
+        _F(NOM="NTOP", OPTION="ENV_SPHERE", POINT=(0.0, 0.0, 1.0), RAYON=0.01, PRECISION=0.02),
+    ),
+    MAILLAGE=MAIL,
+)
+
+MAIL = MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, ORIE_PEAU_3D=_F(GROUP_MA=("SSUP",)))
+
+# LISTE DE PAS DE TEMPS DE CALCUL
+# ------------------------------------------------
+LREE = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.0, NOMBRE=10),
+        _F(JUSQU_A=10.0, NOMBRE=10),
+        _F(JUSQU_A=100.0, NOMBRE=10),
+        _F(JUSQU_A=1000.0, NOMBRE=10),
+        _F(JUSQU_A=10000.0, NOMBRE=10),
+        _F(JUSQU_A=100000.0, NOMBRE=10),
+        _F(JUSQU_A=1000000.0, NOMBRE=10),
+        _F(JUSQU_A=10000000.0, NOMBRE=10),
+    ),
+)
+
+LPAS = DEFI_LIST_INST(
+    METHODE="MANUEL",
+    DEFI_LIST=_F(LIST_INST=LREE),
+    ECHEC=_F(EVENEMENT="RESI_MAXI", RESI_GLOB_MAXI=1e3),
+)
+
+###########################################################################
+# CALCUL MECANIQUE
+###########################################################################
+
+# Definition modele mecanique
+# -----------------------------------------------------------------
+MOMECA = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(
+            GROUP_MA=("VOL", "SSUP"),
+            # TOUT='OUI',
+            PHENOMENE="MECANIQUE",
+            MODELISATION=modelINTEGR,
+        ),
+        # _F(GROUP_MA='MA_RP',
+        # MODELISATION='DIS_TR',
+        # PHENOMENE='MECANIQUE',
+        # ),
+    ),
+)
+
+# Definition chargement : CL et liaison
+# -----------------------------------------------------------------
+CLMECA = AFFE_CHAR_MECA(
+    MODELE=MOMECA,
+    DDL_IMPO=(
+        _F(GROUP_NO=("SYMX",), DX=0.0),
+        _F(GROUP_NO=("SYMY",), DY=0.0),
+        _F(GROUP_NO=("SMIL",), DZ=0.0),
+    ),
+    LIAISON_UNIF=_F(GROUP_NO="SSUP", DDL=("DZ")),
+)
+
+# Definition chargement : application depl_impo
+# -----------------------------------------------------------------
+CHMECA = AFFE_CHAR_MECA_F(MODELE=MOMECA, FORCE_FACE=_F(GROUP_MA=("SSUP"), FZ=FORC))
+
+
+# DEFINITION PARAMETRES MATERIAU
+# ----------------------------------------------------------------
+
+# MATERIAU HYPER-ELASTIQUE: Mooney-Rivlin
+# ----------------------------------------
+C01 = 0.0
+C10 = 1.0
+C20 = 0
+
+# Paramètres d'hyperviscoélasticité
+
+g = [0.4, 0.2, 0.1]
+
+ginf = 1 - sum(g)
+g = [x / ginf for x in g]
+tau = [100.0, 10000.0, 1000000.0]
+
+NU = 0.495
+K = (6 * (C10 + C01)) / (3 * (1 - 2 * NU))
+
+
+rubber = DEFI_MATERIAU(ELAS_HYPER_VISC=_F(C10=C10 * ginf, C01=C01, C20=C20, K=K, G=g, TAU=tau))
+
+
+# Champ de materiau
+# --------------------------------------------
+Mat = AFFE_MATERIAU(MAILLAGE=MAIL, MODELE=MOMECA, AFFE=(_F(TOUT="OUI", MATER=rubber),))
+
+# FIN();
+
+# RESOLUTION MECANIQUE
+# -----------------------------------------------
+U1 = STAT_NON_LINE(
+    # CARA_ELEM=CARA,
+    MODELE=MOMECA,
+    CHAM_MATER=Mat,
+    EXCIT=(_F(CHARGE=CLMECA), _F(CHARGE=CHMECA)),
+    COMPORTEMENT=(
+        _F(
+            GROUP_MA="VOL",
+            RELATION="ELAS_HYPER_VISC",
+            DEFORMATION="GREEN_LAGRANGE",
+            RESI_INTE_MAXI=1e-11,
+        ),
+    ),
+    INCREMENT=_F(LIST_INST=LPAS),
+    NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=1),
+)
+
+
+U1 = CALC_CHAMP(
+    reuse=U1,
+    TOUT_ORDRE="OUI",
+    RESULTAT=U1,
+    CONTRAINTE=("SIEF_NOEU",),
+    DEFORMATION=("EPSG_NOEU", "EPSL_NOEU"),
+    CRITERES=("SIEQ_NOEU", "EPGQ_NOEU", "SIEQ_ELGA", "EPGQ_ELGA"),
+    ENERGIE=("ETOT_ELGA",),
+    FORCE=("REAC_NODA",),
+)
+
+
+# ----------------------------------------------------------------#
+# TESTS PAR RAPPORT AUX RESULTAT d'ABAQUS                         #
+# ----------------------------------------------------------------#
+vale_test = 6.80791
+vale_calc = 6.807915476662714
+
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=U1,
+            INST=1.0,
+            NOM_CHAM="SIEQ_ELGA",
+            NOM_CMP="VMIS",
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=vale_test,
+            VALE_CALC=vale_calc,
+            TYPE_TEST="MAX",
+        ),
+    )
+)
+
+vale_test = 1.158708
+vale_calc = 1.1587088913345094
+
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=U1,
+            INST=1.0,
+            NOM_CHAM="EPGQ_ELGA",
+            NOM_CMP="INVA_2",
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=vale_test,
+            VALE_CALC=vale_calc,
+            TYPE_TEST="MAX",
+            PRECISION=1e-4,
+        ),
+    )
+)
+
+vale_test = 19.72086
+vale_calc = 19.720869747146086
+
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=U1,
+            INST=1.0e7,
+            NOM_CHAM="SIEQ_ELGA",
+            NOM_CMP="VMIS",
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=vale_test,
+            VALE_CALC=vale_calc,
+            TYPE_TEST="MAX",
+        ),
+    )
+)
+
+
+vale_test = 11.561240
+vale_calc = 11.5612404035528
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=U1,
+            INST=1.0e7,
+            NOM_CHAM="EPGQ_ELGA",
+            NOM_CMP="INVA_2",
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=vale_test,
+            VALE_CALC=vale_calc,
+            TYPE_TEST="MAX",
+            PRECISION=1e-4,
+        ),
+    )
+)
+
+
+FIN()

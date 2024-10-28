@@ -38,6 +38,18 @@ class MaterialDefinition(ExecuteMacro):
                 in place.
         """
         adapt_elas(keywords)
+        if "ELAS_HYPER_VISC" in keywords:
+            mcfact = keywords["ELAS_HYPER_VISC"]
+            # check list sizes
+            if "G" in mcfact and "TAU" in mcfact:
+                mcfact["G"] = force_list(mcfact["G"])
+                mcfact["TAU"] = force_list(mcfact["TAU"])
+                if len(mcfact["G"]) != len(mcfact["TAU"]):  # and len(mcfact["G"]) != mcfact["Nv"]:
+                    UTMESS("F", "TABLE0_14", valk=("G", "TAU"))
+                mcfact["NV"] = len(mcfact["G"])
+                adapt_list_of_values(mcfact, "G")
+                adapt_list_of_values(mcfact, "TAU")
+
         if "TABLE" not in keywords:
             return
 
@@ -50,9 +62,8 @@ class MaterialDefinition(ExecuteMacro):
         table_values = table_kws["TABLE"].EXTR_TABLE().values()
 
         varc_name = table_kws["NOM_PARA"]
-
         # Vérification du contenu de la table
-        if not varc_name in table_values.keys():
+        if varc_name not in table_values.keys():
             errmsg = "Parameter '{0}' is missing.".format(varc_name)
             UTMESS("F", "SUPERVIS_4", valk=(cmd_name, errmsg))
 
@@ -180,5 +191,22 @@ def adapt_elas(keywords):
 # MU = E / (2. * (1 + NU))
 # Vp = sqrt( (K + 4/3 * MU) / rho )
 # Vs = sqrt( MU / rho )
+
+
+def adapt_list_of_values(mcfact, name):
+    """Replace a list of values by separated parameters.
+
+    Example: G=(a, b, c) is replaced by G1=a, G2=b, G3=c.
+
+    Args:
+        mcfact (dict): factor keyword, changed in place.
+        name (str): keyword containing the list.
+    """
+    values = mcfact.pop(name, None)
+    if not values:
+        return
+    for i, value in enumerate(values):
+        mcfact[f"{name}{i + 1}"] = value
+
 
 DEFI_MATERIAU = MaterialDefinition.run
