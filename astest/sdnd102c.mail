@@ -1,6 +1,6 @@
  TITRE
-* SYSTEME MASSE-RESSORT  A BUTEES MOBILES                                       
-* ACCELERATIONS IMPOSEES                                                        
+* SYSTEME MASSE-RESSORT  A BUTEES MOBILES
+* ACCELERATIONS IMPOSEES
  FINSF
  %
  COOR_3D
@@ -8,42 +8,42 @@
  NO2       1.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
  FINSF
  %
- SEG2    
- ELN1     NO1      NO2     
+ SEG2
+ ELN1     NO1      NO2
  FINSF
  %
- POI1    
- ELM1     NO2     
- FINSF
- %
- GROUP_NO
- ENCBICHO                
- NO1     
+ POI1
+ ELM1     NO2
  FINSF
  %
  GROUP_NO
- MASSES1                 
- NO2     
+ ENCBICHO
+ NO1
  FINSF
  %
  GROUP_NO
- NO2                     
- NO2     
+ MASSES1
+ NO2
  FINSF
  %
  GROUP_NO
- NO1                     
- NO1     
+ NO2
+ NO2
+ FINSF
+ %
+ GROUP_NO
+ NO1
+ NO1
  FINSF
  %
  GROUP_MA
- RESSORT1                
- ELN1    
+ RESSORT1
+ ELN1
  FINSF
  %
  GROUP_MA
- MASSES1                 
- ELM1    
+ MASSES1
+ ELM1
  FINSF
  %
  FIN
