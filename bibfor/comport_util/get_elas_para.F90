@@ -166,7 +166,7 @@ subroutine get_elas_para(fami, j_mater, poum, ipg, ispg, &
 ! - Get elastic parameters
 !
     if (elas_id .eq. 1) then
-        if (elas_keyword .eq. 'ELAS_HYPER') then
+        if (elas_keyword .eq. 'ELAS_HYPER' .or. elas_keyword .eq. 'ELAS_HYPER_VISC') then
             call hypmat(fami, ipg, ispg, poum, j_mater, &
                         c10, c01, c20, k)
             nur = (3.d0*k-4.0d0*(c10+c01))/(6.d0*k+4.0d0*(c10+c01))
