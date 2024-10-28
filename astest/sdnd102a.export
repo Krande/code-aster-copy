@@ -7,4 +7,4 @@ P testlist submit verification sequential
 
 F comm sdnd102a.comm D 1
 F mail sdnd102a.mail D 20
-F mail sdnd102a.21 D 21
+F mail sdnd102b.mail D 21
