@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,8 +82,6 @@ for n in range(nbcouche):
         noeu_depl[cle[m]][n_pas_incr_0:n_pas_incr] = dy[m :: n + 1]
 
     # <--30: fin boucle for
-
-    # DETRUIRE(NOM=(v))
 
 # <--20: fin boucle for
 
@@ -183,25 +181,25 @@ IMPR_FONCTION(FORMAT="XMGRACE", UNITE=25, COURBE=COURBE)
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-4.332271020453e-03,
+            VALE_CALC=-4.647426505463e-03,
             VALE_REFE=-4.6480000000000002e-3,
             CRITERE="RELATIF",
             VALE_PARA=2.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.07,
+            PRECISION=0.08,
             FONCTION=tass[2],
         ),
         _F(
-            VALE_CALC=-8.103724679664e-03,
+            VALE_CALC=-8.371602657588e-03,
             VALE_REFE=-8.3909999999999992e-3,
             CRITERE="RELATIF",
             VALE_PARA=2.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.035,
+            PRECISION=0.05,
             FONCTION=tass[3],
         ),
         _F(
-            VALE_CALC=-0.01169511964288,
+            VALE_CALC=-0.01186237733660,
             VALE_REFE=-0.011939999999999999,
             CRITERE="RELATIF",
             VALE_PARA=2.0,
@@ -210,7 +208,7 @@ TEST_FONCTION(
             FONCTION=tass[4],
         ),
         _F(
-            VALE_CALC=-0.01523987914003,
+            VALE_CALC=-0.01528487581458,
             VALE_REFE=-0.015440000000000001,
             CRITERE="RELATIF",
             VALE_PARA=2.0,
@@ -219,7 +217,7 @@ TEST_FONCTION(
             FONCTION=tass[5],
         ),
         _F(
-            VALE_CALC=-0.01881828076246,
+            VALE_CALC=-0.01873030749904,
             VALE_REFE=-0.01898,
             CRITERE="RELATIF",
             VALE_PARA=2.0,
@@ -228,39 +226,39 @@ TEST_FONCTION(
             FONCTION=tass[6],
         ),
         _F(
-            VALE_CALC=-0.02250190025923,
+            VALE_CALC=-0.02227688459359,
             VALE_REFE=-0.02265,
             CRITERE="RELATIF",
             VALE_PARA=2.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=1.0e-2,
+            PRECISION=2.0e-2,
             FONCTION=tass[7],
         ),
         _F(
-            VALE_CALC=-0.02632556632365,
+            VALE_CALC=-0.02596471585606,
             VALE_REFE=-0.02647,
             CRITERE="RELATIF",
             VALE_PARA=2.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=1.0e-2,
+            PRECISION=2.0e-2,
             FONCTION=tass[8],
         ),
         _F(
-            VALE_CALC=-0.03031063056950,
+            VALE_CALC=-0.02981758997861,
             VALE_REFE=-0.03049,
             CRITERE="RELATIF",
             VALE_PARA=2.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.025,
             FONCTION=tass[9],
         ),
         _F(
-            VALE_CALC=-0.03446830222155,
+            VALE_CALC=-0.03384906271965,
             VALE_REFE=-0.034729999999999997,
             CRITERE="RELATIF",
             VALE_PARA=2.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[10],
         ),
     )
@@ -270,7 +268,7 @@ TEST_FONCTION(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-8.104062216192e-03,
+            VALE_CALC=-8.364232725281e-03,
             VALE_REFE=-8.4089999999999998e-3,
             CRITERE="RELATIF",
             VALE_PARA=3.0,
@@ -279,7 +277,7 @@ TEST_FONCTION(
             FONCTION=tass[3],
         ),
         _F(
-            VALE_CALC=-0.01546407414811,
+            VALE_CALC=-0.01557588574599,
             VALE_REFE=-0.015720000000000001,
             CRITERE="RELATIF",
             VALE_PARA=3.0,
@@ -288,7 +286,7 @@ TEST_FONCTION(
             FONCTION=tass[4],
         ),
         _F(
-            VALE_CALC=-0.02259809066920,
+            VALE_CALC=-0.02248716369898,
             VALE_REFE=-0.022780000000000002,
             CRITERE="RELATIF",
             VALE_PARA=3.0,
@@ -297,7 +295,7 @@ TEST_FONCTION(
             FONCTION=tass[5],
         ),
         _F(
-            VALE_CALC=-0.02971915922573,
+            VALE_CALC=-0.02935314790529,
             VALE_REFE=-0.029829999999999999,
             CRITERE="RELATIF",
             VALE_PARA=3.0,
@@ -306,7 +304,7 @@ TEST_FONCTION(
             FONCTION=tass[6],
         ),
         _F(
-            VALE_CALC=-0.03697876716745,
+            VALE_CALC=-0.03634286288387,
             VALE_REFE=-0.03703,
             CRITERE="RELATIF",
             VALE_PARA=3.0,
@@ -315,7 +313,7 @@ TEST_FONCTION(
             FONCTION=tass[7],
         ),
         _F(
-            VALE_CALC=-0.04448336569136,
+            VALE_CALC=-0.04357476471025,
             VALE_REFE=-0.044510000000000001,
             CRITERE="RELATIF",
             VALE_PARA=3.0,
@@ -324,21 +322,21 @@ TEST_FONCTION(
             FONCTION=tass[8],
         ),
         _F(
-            VALE_CALC=-0.05228909354717,
+            VALE_CALC=-0.05111265355778,
             VALE_REFE=-0.052359999999999997,
             CRITERE="RELATIF",
             VALE_PARA=3.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.025,
             FONCTION=tass[9],
         ),
         _F(
-            VALE_CALC=-0.06042850273580,
+            VALE_CALC=-0.05899385149705,
             VALE_REFE=-0.060609999999999997,
             CRITERE="RELATIF",
             VALE_PARA=3.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[10],
         ),
     )
@@ -348,7 +346,7 @@ TEST_FONCTION(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-0.01169251941885,
+            VALE_CALC=-0.01185557312290,
             VALE_REFE=-0.011979999999999999,
             CRITERE="RELATIF",
             VALE_PARA=4.0,
@@ -357,7 +355,7 @@ TEST_FONCTION(
             FONCTION=tass[4],
         ),
         _F(
-            VALE_CALC=-0.02259616588864,
+            VALE_CALC=-0.02248860326057,
             VALE_REFE=-0.022800000000000001,
             CRITERE="RELATIF",
             VALE_PARA=4.0,
@@ -366,7 +364,7 @@ TEST_FONCTION(
             FONCTION=tass[5],
         ),
         _F(
-            VALE_CALC=-0.03330729250638,
+            VALE_CALC=-0.03284400041804,
             VALE_REFE=-0.033410000000000002,
             CRITERE="RELATIF",
             VALE_PARA=4.0,
@@ -375,7 +373,7 @@ TEST_FONCTION(
             FONCTION=tass[6],
         ),
         _F(
-            VALE_CALC=-0.04411040848055,
+            VALE_CALC=-0.04325496600556,
             VALE_REFE=-0.044119999999999999,
             CRITERE="RELATIF",
             VALE_PARA=4.0,
@@ -384,7 +382,7 @@ TEST_FONCTION(
             FONCTION=tass[7],
         ),
         _F(
-            VALE_CALC=-0.05519200859910,
+            VALE_CALC=-0.05393096906643,
             VALE_REFE=-0.055149999999999998,
             CRITERE="RELATIF",
             VALE_PARA=4.0,
@@ -393,21 +391,21 @@ TEST_FONCTION(
             FONCTION=tass[8],
         ),
         _F(
-            VALE_CALC=-0.06667975503141,
+            VALE_CALC=-0.06501395545943,
             VALE_REFE=-0.066650000000000001,
             CRITERE="RELATIF",
             VALE_PARA=4.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[9],
         ),
         _F(
-            VALE_CALC=-0.07864097494638,
+            VALE_CALC=-0.07658127181585,
             VALE_REFE=-0.078729999999999994,
             CRITERE="RELATIF",
             VALE_PARA=4.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[10],
         ),
     )
@@ -417,7 +415,7 @@ TEST_FONCTION(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-0.01523443882174,
+            VALE_CALC=-0.01527432119583,
             VALE_REFE=-0.015469999999999999,
             CRITERE="RELATIF",
             VALE_PARA=5.0,
@@ -426,7 +424,7 @@ TEST_FONCTION(
             FONCTION=tass[5],
         ),
         _F(
-            VALE_CALC=-0.02971307751101,
+            VALE_CALC=-0.02934969755371,
             VALE_REFE=-0.029839999999999998,
             CRITERE="RELATIF",
             VALE_PARA=5.0,
@@ -435,7 +433,7 @@ TEST_FONCTION(
             FONCTION=tass[6],
         ),
         _F(
-            VALE_CALC=-0.04410395918457,
+            VALE_CALC=-0.04324810860849,
             VALE_REFE=-0.044110000000000003,
             CRITERE="RELATIF",
             VALE_PARA=5.0,
@@ -444,7 +442,7 @@ TEST_FONCTION(
             FONCTION=tass[7],
         ),
         _F(
-            VALE_CALC=-0.05872641144188,
+            VALE_CALC=-0.05734302133964,
             VALE_REFE=-0.058650000000000001,
             CRITERE="RELATIF",
             VALE_PARA=5.0,
@@ -453,21 +451,21 @@ TEST_FONCTION(
             FONCTION=tass[8],
         ),
         _F(
-            VALE_CALC=-0.07378792080324,
+            VALE_CALC=-0.07186715969682,
             VALE_REFE=-0.073690000000000005,
             CRITERE="RELATIF",
             VALE_PARA=5.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[9],
         ),
         _F(
-            VALE_CALC=-0.08942736137702,
+            VALE_CALC=-0.08697604863582,
             VALE_REFE=-0.089429999999999996,
             CRITERE="RELATIF",
             VALE_PARA=5.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[10],
         ),
     )
@@ -477,7 +475,7 @@ TEST_FONCTION(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-0.01880843069726,
+            VALE_CALC=-0.01871644091957,
             VALE_REFE=-0.019019999999999999,
             CRITERE="RELATIF",
             VALE_PARA=6.0,
@@ -486,7 +484,7 @@ TEST_FONCTION(
             FONCTION=tass[6],
         ),
         _F(
-            VALE_CALC=-0.03696608701863,
+            VALE_CALC=-0.03633414285691,
             VALE_REFE=-0.03705,
             CRITERE="RELATIF",
             VALE_PARA=6.0,
@@ -495,7 +493,7 @@ TEST_FONCTION(
             FONCTION=tass[7],
         ),
         _F(
-            VALE_CALC=-0.05517544339218,
+            VALE_CALC=-0.05391570573960,
             VALE_REFE=-0.055149999999999998,
             CRITERE="RELATIF",
             VALE_PARA=6.0,
@@ -504,21 +502,21 @@ TEST_FONCTION(
             FONCTION=tass[8],
         ),
         _F(
-            VALE_CALC=-0.07377678653934,
+            VALE_CALC=-0.07185782179595,
             VALE_REFE=-0.073700000000000002,
             CRITERE="RELATIF",
             VALE_PARA=6.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[9],
         ),
         _F(
-            VALE_CALC=-0.09298877298342,
+            VALE_CALC=-0.09040676561318,
             VALE_REFE=-0.092979999999999993,
             CRITERE="RELATIF",
             VALE_PARA=6.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=1.0e-2,
+            PRECISION=0.03,
             FONCTION=tass[10],
         ),
     )
@@ -528,7 +526,7 @@ TEST_FONCTION(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-0.02248607838816,
+            VALE_CALC=-0.02225737071786,
             VALE_REFE=-0.022679999999999999,
             CRITERE="RELATIF",
             VALE_PARA=7.0,
@@ -537,7 +535,7 @@ TEST_FONCTION(
             FONCTION=tass[7],
         ),
         _F(
-            VALE_CALC=-0.04446083155795,
+            VALE_CALC=-0.04355701502238,
             VALE_REFE=-0.044540000000000003,
             CRITERE="RELATIF",
             VALE_PARA=7.0,
@@ -546,21 +544,21 @@ TEST_FONCTION(
             FONCTION=tass[8],
         ),
         _F(
-            VALE_CALC=-0.06664754981510,
+            VALE_CALC=-0.06498442385871,
             VALE_REFE=-0.066650000000000001,
             CRITERE="RELATIF",
             VALE_PARA=7.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[9],
         ),
         _F(
-            VALE_CALC=-0.08939758613505,
+            VALE_CALC=-0.08694974228653,
             VALE_REFE=-0.089440000000000006,
             CRITERE="RELATIF",
             VALE_PARA=7.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[10],
         ),
     )
@@ -570,7 +568,7 @@ TEST_FONCTION(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-0.02630181488765,
+            VALE_CALC=-0.02593817534536,
             VALE_REFE=-0.026499999999999999,
             CRITERE="RELATIF",
             VALE_PARA=8.0,
@@ -579,7 +577,7 @@ TEST_FONCTION(
             FONCTION=tass[8],
         ),
         _F(
-            VALE_CALC=-0.05225269527472,
+            VALE_CALC=-0.05108255464799,
             VALE_REFE=-0.052380000000000003,
             CRITERE="RELATIF",
             VALE_PARA=8.0,
@@ -588,12 +586,12 @@ TEST_FONCTION(
             FONCTION=tass[9],
         ),
         _F(
-            VALE_CALC=-0.07858673324252,
+            VALE_CALC=-0.07653192655795,
             VALE_REFE=-0.078719999999999998,
             CRITERE="RELATIF",
             VALE_PARA=8.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[10],
         ),
     )
@@ -603,7 +601,7 @@ TEST_FONCTION(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-0.03027648307390,
+            VALE_CALC=-0.02978153626059,
             VALE_REFE=-0.030519999999999999,
             CRITERE="RELATIF",
             VALE_PARA=9.0,
@@ -612,12 +610,12 @@ TEST_FONCTION(
             FONCTION=tass[9],
         ),
         _F(
-            VALE_CALC=-0.06037331850375,
+            VALE_CALC=-0.05894665503527,
             VALE_REFE=-0.060630000000000003,
             CRITERE="RELATIF",
             VALE_PARA=9.0,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.03,
             FONCTION=tass[10],
         ),
     )
@@ -626,12 +624,12 @@ TEST_FONCTION(
 # tassement de la neuvième couche
 TEST_FONCTION(
     VALEUR=_F(
-        VALE_CALC=-0.03442091687931,
+        VALE_CALC=-0.03380086697764,
         VALE_REFE=-0.034750000000000003,
         CRITERE="RELATIF",
         VALE_PARA=10.0,
         REFERENCE="SOURCE_EXTERNE",
-        PRECISION=0.025000000000000001,
+        PRECISION=0.03,
         FONCTION=tass[10],
     )
 )

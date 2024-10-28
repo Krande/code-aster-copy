@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 ! aslint: disable=W1504
 subroutine lcinit(fami, kpg, ksp, rela_comp, typess, &
                   essai, mod, nmat, materf, &
-                  timed, timef, intg, nr, nvi, &
+                  timed, timef, nr, nvi, &
                   yd, epsd, deps, dy, compor, &
                   nbcomm, cpmono, pgl, nfs, nsg, &
                   toutms, vind, sigd, sigf, epstr, &
-                  bnews, mtrac, indi, iret)
+                  iret)
 
     implicit none
 !       ROUTINE AIGUILLAGE
@@ -41,30 +41,25 @@ subroutine lcinit(fami, kpg, ksp, rela_comp, typess, &
 !           MATERF :  COEFFICIENTS MATERIAU A T+DT
 !           TIMED  :  INSTANT  T
 !           TIMEF  :  INSTANT  T+DT
-!           INTG   :  NOMBRE DE TENTATIVES D'INTEGRATION
 !           EPSD   :  DEFORMATION A T
 !           YD     :  VARIABLES A T   = ( SIG  VIN  (EPS3)  )
 !           NVI    :  NOMBRE VARIABLES INTERNES
 !           VIND   :  VECTEUR VARIABLES INTERNES A T
 !           NR     :  DIMENSION VECTEUR INCONNUES
 !           SIGF   :  PREDICTION ELASTIQUE DES CONTRAINTES (LCELAS)
-!           BNEWS  :  GESTION TRACTION AVEC HUJEUX (IN/OUT)
-!           MTRAC  :  GESTION TRACTION AVEC HUJEUX (BIS) (IN/OUT)
 !           IRET   :  IRET = 2 - RELANCE DU PROCESSUS DE RESOLUTION
 !       VAR DEPS   :  INCREMENT DE DEFORMATION
 !       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
-!           INDI   :  INDICATEURS DES MECANISMES POT. ACTIFS (HUJEUX)
 !       ----------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterfort/cvmini.h"
-#include "asterfort/hujini.h"
 #include "asterfort/irrini.h"
 #include "asterfort/lcmmin.h"
 #include "asterfort/lklini.h"
 #include "asterfort/srlini.h"
 #include "asterfort/Behaviour_type.h"
     integer :: typess, nmat, nr, nvi, kpg, ksp, nfs, nsg
-    integer :: nbcomm(nmat, 3), iret, indi(7), intg
+    integer :: nbcomm(nmat, 3), iret
     real(kind=8) :: deps(6), epsd(6), essai
     real(kind=8) :: yd(*), dy(*)
     real(kind=8) :: materf(nmat, 2)
@@ -77,7 +72,6 @@ subroutine lcinit(fami, kpg, ksp, rela_comp, typess, &
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     character(len=24) :: cpmono(5*nmat+1)
-    aster_logical :: bnews(3), mtrac
 !       ----------------------------------------------------------------
 !
     iret = 0
@@ -104,12 +98,6 @@ subroutine lcinit(fami, kpg, ksp, rela_comp, typess, &
 !
     else if (rela_comp .eq. 'LKR') then
         call srlini(sigf, nr, yd, dy)
-!
-    else if (rela_comp .eq. 'HUJEUX') then
-        call hujini(mod, nmat, materf, intg, deps, &
-                    nr, yd, nvi, vind, sigd, &
-                    sigf, bnews, mtrac, dy, indi, &
-                    iret)
 !
     else
 !        SOLUTION INITIALE = ZERO

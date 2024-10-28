@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104
 !
-subroutine lcmate(BEHinteg, &
-                  fami, kpg, ksp, comp, mod, &
+subroutine lcmate(fami, kpg, ksp, comp, mod, &
                   imat, nmat, tempd, tempf, tref, impexp, &
                   typma, hsr, materd, materf, matcst, &
                   nbcomm, cpmono, angmas, pgl, itmax, &
@@ -26,15 +24,12 @@ subroutine lcmate(BEHinteg, &
                   nvi, vind, nfs, nsg, toutms, &
                   nhsr, numhsr, sigd, mult_comp_)
 !
-    use Behaviour_type
-!
     implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/cvmmat.h"
 #include "asterfort/haymat.h"
 #include "asterfort/hbrmat.h"
-#include "asterfort/hujma2.h"
 #include "asterfort/irrmat.h"
 #include "asterfort/lcmatt.h"
 #include "asterfort/lcmmap.h"
@@ -47,10 +42,7 @@ subroutine lcmate(BEHinteg, &
 #include "asterfort/rsvmat.h"
 #include "asterfort/vecmat.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
-!
 !       RECUPERATION DU MATERIAU A TEMPF ET TEMPD
-! In  BEHinteg         : parameters for integration of behaviour
 !       IN  FAMI   :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 !           KPG,KSP:  NUMERO DU (SOUS)POINT DE GAUSS
 !           COMP   :  COMPORTEMENT
@@ -188,13 +180,6 @@ subroutine lcmate(BEHinteg, &
                     nmat, '+', materf(1, 1), materf(1, 2), nvi, &
                     nr)
         call matect(materd, materf, nmat, matcst)
-        typma = 'COHERENT'
-!
-    else if (rela_comp .eq. 'HUJEUX') then
-        call hujma2(fami, kpg, ksp, mod, imat, &
-                    nmat, tempf, angmas, sigd, vind, &
-                    materd, materf, ndt, ndi, nvi, &
-                    nr, matcst)
         typma = 'COHERENT'
 !
     else

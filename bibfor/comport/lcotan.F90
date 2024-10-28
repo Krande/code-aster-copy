@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcotan(opt, angmas, etatd, etatf, fami, &
+subroutine lcotan(opt, etatd, etatf, fami, &
                   kpg, ksp, rela_comp, mod, imat, &
                   nmat, materd, materf, epsd, deps, &
                   sigd, sigf, nvi, vind, vinf, &
@@ -59,9 +59,6 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami, &
 !                        'RIGI_MECA_TANG'> DSDE(T)
 !                        'FULL_MECA'     > DSDE(T+DT), SIGF, VINF
 !                        'RAPH_MECA'     > SIGF, VINF
-!        ANGMAS  ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
-!                +  0 SI NAUTIQUIES OU 2 SI EULER
-!                + LES 3 ANGLES D'EULER
 !     OUT
 !        SIGF    CONTRAINTE A T+DT
 !        VINF    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
@@ -84,7 +81,7 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami, &
     character(len=24) :: cpmono(5*nmat+1)
 !
     integer :: imat, ndt, ndi, nr, nvi, itmax, kpg, ksp, codret, k, l
-    real(kind=8) :: toler, materd(nmat, 2), materf(nmat, 2), angmas(3)
+    real(kind=8) :: toler, materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: vind(*), vinf(*), timed, timef, epsd(9), deps(9), sigd(6)
     real(kind=8) :: sigf(6)
     real(kind=8) :: theta, dt, devg(6), devgii, vp(3), vecp(3, 3), dsde(6, *)
@@ -112,13 +109,12 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami, &
 !
         else if ((etatd .eq. 'PLASTIC') .and. (rela_comp .eq. 'MONOCRISTAL')) then
 !
-            call lcjplc(rela_comp, mod, angmas, imat, nmat, &
+            call lcjplc(rela_comp, mod, nmat, &
                         materf, timed, timef, compor, nbcomm, &
                         cpmono, pgl, nfs, nsg, toutms, &
                         hsr, nr, nvi, epsd, deps, &
                         itmax, toler, sigd, vind, sigd, &
-                        vind, dsde, drdy, opt, codret, &
-                        fami, kpg, ksp)
+                        vind, dsde, drdy, opt, codret)
             if (codret .ne. 0) goto 999
 !
         else if ((etatd .eq. 'PLASTIC') .and. (typma .eq. 'VITESSE ')) then
@@ -152,13 +148,12 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami, &
 !   --->    ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 !   --->    VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
             if (typma .eq. 'COHERENT') then
-                call lcjplc(rela_comp, mod, angmas, imat, nmat, &
+                call lcjplc(rela_comp, mod, nmat, &
                             materf, timed, timef, compor, nbcomm, &
                             cpmono, pgl, nfs, nsg, toutms, &
                             hsr, nr, nvi, epsd, deps, &
                             itmax, toler, sigf, vinf, sigd, &
-                            vind, dsde, drdy, opt, codret, &
-                            fami, kpg, ksp)
+                            vind, dsde, drdy, opt, codret)
                 if (codret .ne. 0) goto 999
             else if (typma .eq. 'VITESSE ') then
                 call lcjpla(fami, kpg, ksp, rela_comp, mod, &

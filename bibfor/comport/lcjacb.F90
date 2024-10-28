@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
                   yf, deps, itmax, toler, nbcomm, &
                   cpmono, pgl, nfs, nsg, toutms, &
                   hsr, nr, nvi, vind, &
-                  vinf, epsd, yd, dy, ye, &
-                  crit, indi, vind1, bnews, mtrac, &
+                  vinf, epsd, yd, dy, &
+                  crit, &
                   drdy, iret)
 
     implicit none
@@ -55,11 +55,6 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
 !           YD     :  VARIABLES A T   = ( SIGD  VARD  ) A T
 !           DY     :  SOLUTION           =    ( DSIG  DVIN  (DEPS3)  )
 !           CRIT   :  CRITERES LOCAUX
-!           INDI   :  MECANISMES POTENTIEL ACTIFS (HUJEUX)
-!           VIND1  :  VARIABLES INTERNES D'ORIGINE (HUJEUX)
-!           YE     :  VECTEUR SOLUTION APRES LCINIT
-!           BNEWS  :  INDICATEURS LIES A LA TRACTION (HUJEUX)
-!           MTRAC  :  INDICATEUR LIE A LA TRACTION (HUJEUX - BIS)
 !       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 !           IRET   :  CODE RETOUR
 !       ----------------------------------------------------------------
@@ -67,16 +62,13 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
 #include "asterf_types.h"
 #include "asterfort/cvmjac.h"
 #include "asterfort/hayjac.h"
-#include "asterfort/hujjac.h"
 #include "asterfort/irrjac.h"
 #include "asterfort/lcmmja.h"
 #include "asterfort/lkijac.h"
 #include "asterfort/srijac.h"
     integer :: nr, nmat, kpg, ksp, itmax, iret, nvi, nfs, nsg
-    integer :: indi(7)
     real(kind=8) :: deps(*), epsd(*), toler, crit(*)
-    real(kind=8) :: drdy(nr, nr), yf(nr), dy(nr), yd(nr), vind1(nvi)
-    real(kind=8) :: ye(nr)
+    real(kind=8) :: drdy(nr, nr), yf(nr), dy(nr), yd(nr)
 !
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: timed, timef, vind(*), vinf(*)
@@ -90,7 +82,6 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
     real(kind=8) :: pgl(3, 3)
     character(len=24) :: cpmono(5*nmat+1)
 !
-    aster_logical :: bnews(3), mtrac
 !       ----------------------------------------------------------------
 !
     iret = 0
@@ -125,12 +116,6 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
                     timef, yf, deps, nr, nvi, &
                     vind, vinf, yd, dy, crit, &
                     drdy, iret)
-!
-    else if (rela_comp .eq. 'HUJEUX') then
-        call hujjac(mod, nmat, materf, indi, deps, &
-                    nr, yd, yf, ye, nvi, &
-                    vind, vind1, vinf, drdy, bnews, &
-                    mtrac, iret)
 !
     end if
 !

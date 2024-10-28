@@ -22,7 +22,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
                   hsr, nr, nvi, vind, vinf, &
                   itmax, toler, timed, timef, yd, &
                   yf, deps, epsd, dy, r, &
-                  ddy, iret, crit, indi)
+                  ddy, iret, crit)
 ! aslint: disable=W1306,W1504
     implicit none
 !
@@ -43,7 +43,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), crit(*)
     character(len=*) :: fami
 !
-    integer :: nbcomm(nmat, 3), indi(7)
+    integer :: nbcomm(nmat, 3)
     real(kind=8) :: pgl(3, 3)
     character(len=24) :: cpmono(5*nmat+1)
 !
@@ -116,7 +116,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
                 hsr, nr, nvi, vind, vinf, &
                 itmax, toler, timed, timef, yd, &
                 yfp, deps, epsd, dyp, rp, &
-                iret, crit, indi)
+                iret, crit)
 !
     if (iret .ne. 0) goto 999
 !
@@ -142,7 +142,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
                 hsr, nr, nvi, vind, vinf, &
                 itmax, toler, timed, timef, yd, &
                 yfp, deps, epsd, dyp, rp, &
-                iret, crit, indi)
+                iret, crit)
     if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
@@ -173,7 +173,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
                 hsr, nr, nvi, vind, vinf, &
                 itmax, toler, timed, timef, yd, &
                 yfp, deps, epsd, dyp, rp, &
-                iret, crit, indi)
+                iret, crit)
     if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
@@ -214,7 +214,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
                     hsr, nr, nvi, vind, vinf, &
                     itmax, toler, timed, timef, yd, &
                     yfp, deps, epsd, dyp, rp, &
-                    iret, crit, indi)
+                    iret, crit)
         if (iret .ne. 0) goto 999
 !
 !       TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT

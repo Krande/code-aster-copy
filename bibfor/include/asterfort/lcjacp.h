@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,7 @@ interface
                       deps, epsd, vind, vinf, yd,&
                       nbcomm, cpmono, pgl, nfs,&
                       nsg, toutms, hsr, dy, r,&
-                      drdy, verjac, drdyb, iret, crit,&
-                      indi)
+                      drdy, verjac, drdyb, iret, crit)
         integer :: nsg
         integer :: nfs
         integer :: nvi
@@ -61,6 +60,5 @@ interface
         real(kind=8) :: drdyb(nr, nr)
         integer :: iret
         real(kind=8) :: crit(*)
-        integer :: indi(7)
     end subroutine lcjacp
 end interface

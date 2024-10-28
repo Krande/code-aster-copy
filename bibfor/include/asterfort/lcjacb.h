@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
                       yf, deps, itmax, toler, nbcomm,&
                       cpmono, pgl, nfs, nsg, toutms,&
                       hsr, nr, nvi, vind,&
-                      vinf, epsd, yd, dy, ye,&
-                      crit, indi, vind1, bnews, mtrac,&
+                      vinf, epsd, yd, dy,&
+                      crit,&
                       drdy, iret)
         integer :: nvi
         integer :: nr
@@ -53,12 +53,7 @@ interface
         real(kind=8) :: epsd(*)
         real(kind=8) :: yd(nr)
         real(kind=8) :: dy(nr)
-        real(kind=8) :: ye(nr)
         real(kind=8) :: crit(*)
-        integer :: indi(7)
-        real(kind=8) :: vind1(nvi)
-        aster_logical :: bnews(3)
-        aster_logical :: mtrac
         real(kind=8) :: drdy(nr, nr)
         integer :: iret
     end subroutine lcjacb

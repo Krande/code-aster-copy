@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,9 +67,6 @@ subroutine lcelpl(loi, nmat, materf, &
         vinf(10) = 0.d0
         vinf(11) = 0.d0
         vinf(12) = 0
-    else if (loi(1:6) .eq. 'HUJEUX') then
-! --- PAS DE MODIFICATION PARTICULIERE
-! --- CAS DIFFERENT DE LA GENERALITE
     else
 !
 ! --- CAS GENERAL :

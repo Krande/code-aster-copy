@@ -17,13 +17,11 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmvprk(BEHinteg, fami, kpg, ksp, ndim, &
+subroutine nmvprk(fami, kpg, ksp, ndim, &
                   typmod, imat, comp, crit, timed, &
                   timef, neps, epsdt, depst, sigd, &
                   nvi, vind, opt, angmas, sigf, &
                   vinf, dsde, iret, mult_comp_)
-!
-    use Behaviour_type
 !
     implicit none
 !
@@ -43,10 +41,6 @@ subroutine nmvprk(BEHinteg, fami, kpg, ksp, ndim, &
 ! Behaviour - The RUNGE_KUTTA environment (prefer MFront !)
 !
 ! Main subroutine
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  BEHinteg         : parameters for integration of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -123,7 +117,6 @@ subroutine nmvprk(BEHinteg, fami, kpg, ksp, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*) :: fami
     integer, intent(in) :: nvi
     integer :: imat, ndim, ndt, ndi, nr, kpg, ksp, i, nbphas, itmax
@@ -182,7 +175,7 @@ subroutine nmvprk(BEHinteg, fami, kpg, ksp, ndim, &
 ! --  RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 !                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 !
-    call lcmate(BEHinteg, fami, kpg, ksp, comp, &
+    call lcmate(fami, kpg, ksp, comp, &
                 mod, imat, nmat, rbid, rbid, &
                 rbid, 1, typma, hsr, materd, &
                 materf, matcst, nbcomm, cpmono, angmas, &
