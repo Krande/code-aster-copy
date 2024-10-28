@@ -71,7 +71,7 @@ subroutine thmFlh009(ds_thm, lMatr, lSigm, ndim, j_mater, &
 ! In  adcp11           : adress of first hydraulic/first component dof in vector of gene. stresses
 ! In  adcp12           : adress of first hydraulic/second component dof in vector of gene. stresses
 ! In  adcp21           : adress of second hydraulic/first component dof in vector of gene. stresses
-! In  adcp22           : adress of second hydraulic/second component dof in vector of gene. stresses
+! In  adcp22           : adress of second hydraulic/sec component dof in vector of gene. stresses
 ! In  t                : temperature - At end of current step
 ! In  p1               : capillary pressure - At end of current step
 ! In  p2               : gaz pressure - At end of current step
@@ -140,18 +140,6 @@ subroutine thmFlh009(ds_thm, lMatr, lSigm, ndim, j_mater, &
     gpa = 0.d0
     gr12 = 0.d0
     gr21 = 0.d0
-    dp11p1 = 0.d0
-    dp11p2 = 0.d0
-    dp11t = 0.d0
-    dp21p1 = 0.d0
-    dp21p2 = 0.d0
-    dp21t = 0.d0
-    dp22p1 = 0.d0
-    dp22p2 = 0.d0
-    dp22t = 0.d0
-    dp12p1 = 0.d0
-    dp12p2 = 0.d0
-    dp12t = 0.d0
     dcvp1 = 0.d0
     dcvp2 = 0.d0
     dcvt = 0.d0
@@ -288,6 +276,7 @@ subroutine thmFlh009(ds_thm, lMatr, lSigm, ndim, j_mater, &
                 dp1pp1, dp2pp1, dtpp1, &
                 dp1pp2, dp2pp2, dtpp2, &
                 dp1pt, dp2pt, dtpt)
+
 !
 ! - Pressure gradient (Eq. 5.5.1-7)
 !
@@ -590,14 +579,14 @@ subroutine thmFlh009(ds_thm, lMatr, lSigm, ndim, j_mater, &
                                                           (-grap2(k)+(rho12+rho21)*gravity(k))
                     end do
                     dsde(adcp12+i, addeme+ndim-1+j) = dsde(adcp12+i, addeme+ndim-1+j)- &
-                                                      rho12*(1.d0-cvp)*fv(2)*gc(i)
+                                                      rhog*fv(2)*gc(i)
                     do k = 1, ndim
                         dsde(adcp21+i, addeme+ndim-1+j) = dsde(adcp21+i, addeme+ndim-1+j)+ &
                                                           rho21*lambd2(2)*tperm(i, k)* &
                                                           (-grap2(k)+(rho12+rho21)*gravity(k))
                     end do
                     dsde(adcp21+i, addeme+ndim-1+j) = dsde(adcp21+i, addeme+ndim-1+j)+ &
-                                                      rho21*cvp*fv(2)*gc(i)
+                                                      rhog*fv(2)*gc(i)
                     do k = 1, ndim
                         dsde(adcp22+i, addeme+ndim-1+j) = dsde(adcp22+i, addeme+ndim-1+j)+ &
                                                           rho22*lambd1(2)*tperm(i, k)* &
