@@ -41,9 +41,9 @@
 @MaterialProperty stress G10;
 
 @StateVariable StressStensor Si;
-Si.setEntryName("IsochoricElasticStress");
+Si.setEntryName("IsochoricElas");
 @StateVariable StressStensor H[NvMax];
-H.setEntryName("ViscoplasticStress");
+H.setEntryName("ViscoPlas");
 @LocalVariable StiffnessTensor dS_dC;
 
 @Integrator{

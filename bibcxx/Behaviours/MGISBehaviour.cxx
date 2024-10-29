@@ -365,6 +365,8 @@ void convertMatrixFromMgis( const VectorReal &vect, ASTERDOUBLE *array ) {
     }
 
     switch ( size ) {
+    case 4:
+        break;
     case 9:
         break;
     case 16:
@@ -414,6 +416,10 @@ void convertTensorToMgis( const ASTERDOUBLE *src, const int insize, VectorReal &
         dest[2] = src[8]; // 2, 2
         dest[3] = src[3]; // 0, 1
         dest[4] = src[1]; // 1, 0
+        break;
+    case 2:
+        dest[0] = src[0]; // 0, 0
+        dest[1] = src[1]; // 1, 1
         break;
     case 3:
     case 4:
