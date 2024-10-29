@@ -52,6 +52,7 @@ subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbVariMGIS, iVariType, iVari, iCmp, variSizeMGIS, leng, variTypeMGIS, lenTronca
+    integer :: lenMaxi
     character(len=16) :: variName, variNameMGIS
     character(len=80), pointer :: variNameList(:) => null()
     integer, pointer :: variSizeList(:) => null()
@@ -89,49 +90,54 @@ subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
                 lenTronca = min(leng, 14)
 
                 if (variTypeMGIS .eq. MGIS_BV_SCALAR) then
+                    lenMaxi = 16
                     infoVari(iVari+1) = variNameMGIS
 
                 else if (variTypeMGIS .eq. MGIS_BV_VECTOR_1D .or. &
                          variTypeMGIS .eq. MGIS_BV_VECTOR_2D .or. &
                          variTypeMGIS .eq. MGIS_BV_VECTOR_3D .or. &
                          variTypeMGIS .eq. MGIS_BV_VECTOR) then
+                    lenMaxi = 14
                     if (variSizeMGIS .le. 3) then
                         do iCmp = 1, variSizeMGIS
                             variName = variNameMGIS(1:lenTronca)//cmpNameVector(iCmp)
                             infoVari(iVari+iCmp) = variName
                         end do
                     else
-                        call utmess('F', "COMPOR6_20")
+                        call utmess('F', "MGIS1_20")
                     end if
 
                 else if (variTypeMGIS .eq. MGIS_BV_STENSOR_1D .or. &
                          variTypeMGIS .eq. MGIS_BV_STENSOR_2D .or. &
                          variTypeMGIS .eq. MGIS_BV_STENSOR_3D .or. &
                          variTypeMGIS .eq. MGIS_BV_STENSOR) then
+                    lenMaxi = 14
                     if (variSizeMGIS .le. 6) then
                         do iCmp = 1, variSizeMGIS
                             variName = variNameMGIS(1:lenTronca)//cmpNameSTensor(iCmp)
                             infoVari(iVari+iCmp) = variName
                         end do
                     else
-                        call utmess('F', "COMPOR6_21")
+                        call utmess('F', "MGIS1_21")
                     end if
 
                 else if (variTypeMGIS .eq. MGIS_BV_TENSOR_1D .or. &
                          variTypeMGIS .eq. MGIS_BV_TENSOR_2D .or. &
                          variTypeMGIS .eq. MGIS_BV_TENSOR_3D .or. &
                          variTypeMGIS .eq. MGIS_BV_TENSOR) then
+                    lenMaxi = 14
                     if (variSizeMGIS .le. 9) then
                         do iCmp = 1, variSizeMGIS
                             variName = variNameMGIS(1:lenTronca)//cmpNameTensor(iCmp)
                             infoVari(iVari+iCmp) = variName
                         end do
                     else
-                        call utmess('F', "COMPOR6_22")
+                        call utmess('F', "MGIS1_22")
                     end if
 
                 else if (variTypeMGIS .eq. MGIS_BV_HIGHER_ORDER_TENSOR .or. &
                          variTypeMGIS .eq. MGIS_BV_ARRAY) then
+                    lenMaxi = 14
                     if (variSizeMGIS .le. 99) then
                         do iCmp = 1, variSizeMGIS
                             call codent(iCmp, 'D0', nomk2)
@@ -139,11 +145,15 @@ subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
                             infoVari(iVari+iCmp) = variName
                         end do
                     else
-                        call utmess('F', "COMPOR6_23")
+                        call utmess('F', "MGIS1_23")
                     end if
 
                 else
-                    call utmess('F', "COMPOR6_24")
+                    call utmess('F', "MGIS1_24")
+                end if
+                if (leng .gt. lenMaxi) then
+                    call utmess('A', "MGIS1_19", nk=2, &
+                                valk=[variNameMGIS, variNameMGIS(1:lenTronca)])
                 end if
                 iVari = iVari+variSizeMGIS
             end do
