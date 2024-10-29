@@ -124,7 +124,7 @@ def get_resu_gdef_log(resusd, rvga, numsief):
     Arguments:
         resusd (NonLinearResult): Resultat aster concept
         rvga (NonLinearResult): Result of VARI_ELGA
-        numsief (list): Indices of Kirchhoff stresses
+        numsief (list): Indices of logarithmic stresses
 
     Returns:
         NonLinearResult: Result to consider to compute Weibull stress
