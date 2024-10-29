@@ -81,6 +81,8 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
             end if
         elseif (model_type .eq. 'D_PLAN') then
             model_mfront = MGIS_MODEL_PLANESTRAIN
+        elseif (model_type .eq. 'PLAN') then
+            model_mfront = MGIS_MODEL_PLANESTRAIN
         elseif (model_type .eq. 'AXIS') then
             model_mfront = MGIS_MODEL_AXISYMMETRICAL
         elseif (model_type .eq. '1D') then

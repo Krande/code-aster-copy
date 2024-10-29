@@ -140,7 +140,7 @@ subroutine nmfi2d(BEHInteg, &
         call nmcomp(BEHinteg, &
                     fami, kpg, ksp, ndim, typmod, &
                     mate, compor, carcri, tm, tp, &
-                    2, sum, dsu, 1, sigmo(:, kpg), &
+                    2, sum, dsu, 4, sigmo(:, kpg), &
                     vim(:, kpg), option, angmas, &
                     sigmPost, vip(:, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) goto 900

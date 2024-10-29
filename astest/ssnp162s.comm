@@ -1,0 +1,151 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Compilation of the mfront source file
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="elasticCZMimplicit", UNITE_MFRONT=38)
+
+### >>>>>>>>>>>>>
+### Read the mesh
+### <<<<<<<<<<<<<
+
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(_F(NOEUD=("NO2", "NO4"), NOM="DROITE"), _F(NOEUD=("NO1", "NO3"), NOM="GAUCHE")),
+)
+
+### >>>>>>>>>>>>>>>>>
+### Model affectation
+### <<<<<<<<<<<<<<<<<
+
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA="CUBE", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+        _F(GROUP_MA="CUBEDEG", PHENOMENE="MECANIQUE", MODELISATION="PLAN_JOINT"),
+    ),
+)
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+E = 50.0e9
+NU = 0.3
+KN = 30.0e9
+KT = 30.0e9
+
+MAT_CUBE = DEFI_MATERIAU(ELAS=_F(E=E, NU=NU))
+
+MAT_JOINT = DEFI_MATERIAU(ELAS=_F(E=E, NU=NU), MFRONT=_F(LISTE_COEF=(KN, KT)))
+
+### >>>>>>>>>>>>>>>>>>>>
+### Material affectation
+### <<<<<<<<<<<<<<<<<<<<
+
+CM_F = AFFE_MATERIAU(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA="CUBE", MATER=MAT_CUBE), _F(GROUP_MA="CUBEDEG", MATER=MAT_JOINT))
+)
+
+### >>>>>>>>>>>>>>>>>>>
+### Boundary conditions
+### <<<<<<<<<<<<<<<<<<<
+
+from math import cos, sin, pi
+
+# Joint inclination
+angle = 30 / 180 * pi
+
+# Opening
+delta = 0.1
+
+CL_ENCAS = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="GAUCHE2", DX=0, DY=0))
+
+COEF_DX = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, -delta * sin(angle)))
+
+COEF_DY = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, delta * cos(angle)))
+
+CL_TANGE = AFFE_CHAR_MECA_F(
+    MODELE=MO, DDL_IMPO=(_F(GROUP_NO=("GAUCHE", "DROITE"), DX=COEF_DX, DY=COEF_DY))
+)
+
+### >>>>>>>>>>
+### Time steps
+### <<<<<<<<<<
+
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=10)))
+
+### >>>>>>>>
+### Solution
+### <<<<<<<<
+
+U_F = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM_F,
+    EXCIT=(_F(CHARGE=CL_ENCAS), _F(CHARGE=CL_TANGE)),
+    COMPORTEMENT=(
+        _F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, GROUP_MA="CUBEDEG"),
+        _F(RELATION="ELAS", GROUP_MA="CUBE"),
+    ),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-8),
+)
+
+### >>>>>>>>>>>>>>>
+### Post-processing
+### <<<<<<<<<<<<<<<
+
+IMPR_RESU(FORMAT="RESULTAT", UNITE=80, RESU=(_F(RESULTAT=U_F, NOM_CHAM="DEPL")))
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="TOUTSEUL",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U_F,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=-0.05,
+            VALE_REFE=-delta * sin(angle),
+            PRECISION=0.01,
+        ),
+        _F(
+            GROUP_NO="TOUTSEUL",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U_F,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=0.08660254037844388,
+            VALE_REFE=delta * cos(angle),
+            PRECISION=0.01,
+        ),
+    )
+)
+FIN()
