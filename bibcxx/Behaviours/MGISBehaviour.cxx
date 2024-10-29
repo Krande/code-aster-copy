@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -68,7 +68,7 @@ void MGISBehaviour::repr() const {
 
 VectorString MGISBehaviour::internal_state() const {
     // add arguments for `load()`?
-    VectorString ret = {_libpath, _bname};
+    VectorString ret = { _libpath, _bname };
     return ret;
 }
 
@@ -357,10 +357,12 @@ void convertMatrixFromMgis( const VectorReal &vect, ASTERDOUBLE *array ) {
     }
 
     switch ( size ) {
+    case 4:
+        break;
     case 9:
         break;
     case 16:
-        for ( auto i : {3, 7, 11, 12, 13, 14} ) {
+        for ( auto i : { 3, 7, 11, 12, 13, 14 } ) {
             array[i] = ( ASTERDOUBLE )( vect[i] / sqr2 );
         }
         array[15] = ( ASTERDOUBLE )( vect[15] / 2.0 );
@@ -368,10 +370,10 @@ void convertMatrixFromMgis( const VectorReal &vect, ASTERDOUBLE *array ) {
     case 25:
         break;
     case 36:
-        for ( auto i : {3, 4, 5, 9, 10, 11, 15, 16, 17, 18, 19, 20, 24, 25, 26, 30, 31, 32} ) {
+        for ( auto i : { 3, 4, 5, 9, 10, 11, 15, 16, 17, 18, 19, 20, 24, 25, 26, 30, 31, 32 } ) {
             array[i] = ( ASTERDOUBLE )( vect[i] / sqr2 );
         }
-        for ( auto i : {21, 22, 23, 27, 28, 29, 33, 34, 35} ) {
+        for ( auto i : { 21, 22, 23, 27, 28, 29, 33, 34, 35 } ) {
             array[i] = ( ASTERDOUBLE )( vect[i] / 2.0 );
         }
         break;
@@ -406,6 +408,10 @@ void convertTensorToMgis( const ASTERDOUBLE *src, const int insize, VectorReal &
         dest[2] = src[8]; // 2, 2
         dest[3] = src[1]; // 0, 1
         dest[4] = src[3]; // 1, 0
+        break;
+    case 2:
+        dest[0] = src[0]; // 0, 0
+        dest[1] = src[1]; // 1, 1
         break;
     case 3:
     case 4:

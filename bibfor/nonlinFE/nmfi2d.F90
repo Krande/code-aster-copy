@@ -139,7 +139,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
         call nmcomp(BEHinteg, &
                     'RIGI', kpg, 1, 2, typmod, &
                     mate, compor, carcri, tm, tp, &
-                    2, sum, dsu, 1, sigmo(:, kpg), &
+                    2, sum, dsu, 4, sigmo(:, kpg), &
                     vim(:, kpg), option, angmas, &
                     sigmPost, vip(:, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) goto 900
