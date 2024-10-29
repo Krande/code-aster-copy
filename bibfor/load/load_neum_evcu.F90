@@ -119,6 +119,8 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
     integer :: nblic
     character(len=8) :: licmp(3)
     data licmp/'DX', 'DY', 'DZ'/
+    real(kind=8), parameter :: prec = 1.0d-10
+    character(len=8), parameter :: crit = 'ABSOLU'
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -159,7 +161,7 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
 ! - Get pressure (CHAR_MECA_PRES_R)
 !
     call rsinch(evol_char, 'PRES', 'INST', inst_curr, load_name_evol, &
-                'EXCLU', 'EXCLU', 0, 'V', ier)
+                'EXCLU', 'EXCLU', 0, 'V', prec, crit, ier)
     if (ier .le. 2) then
         option = 'CHAR_MECA_PRSU_R'
         goto 30
@@ -182,7 +184,7 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
 !
     option = ' '
     call rsinch(evol_char, 'VITE_VENT', 'INST', inst_curr, load_name_evol, &
-                'EXCLU', 'EXCLU', 0, 'V', ier)
+                'EXCLU', 'EXCLU', 0, 'V', prec, crit, ier)
     if (ier .le. 2) then
         option = 'CHAR_MECA_SR1D1D'
         goto 10

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,6 +110,8 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
     integer, pointer :: deeq(:) => null()
     character(len=8), pointer :: typegd(:) => null()
     integer :: jv_cesd, jv_cesl, jv_cesv
+    real(kind=8), parameter :: prec = 1.0d-10
+    character(len=8), parameter :: crit = 'ABSOLU'
 
 !----------------------------------------------------------------------
 !                DEBUT DES INSTRUCTIONS
@@ -212,7 +214,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
             end if
             ASSERT(fonc)
             call rsinch(evoim, nomch, npara, vpara, cnoimp, &
-                        'EXCLU', 'EXCLU', 2, 'V', ier)
+                        'EXCLU', 'EXCLU', 2, 'V', prec, crit, ier)
             call cnocns(cnoimp, 'V', cnsimp)
             call detrsd('CHAMP', cnoimp)
             call jeveuo(cnsimp//'.CNSD', 'L', vi=cnsd)

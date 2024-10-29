@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ThermalLoad
  * @author Jean-Pierre Lefebvre
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -105,6 +105,41 @@ class ThermalLoad : public DataStructure {
     bool hasLoadResult() const { return _therLoadDesc->hasLoadResult(); }
 
     std::string getLoadResultName() const { return _therLoadDesc->getLoadResultName(); }
+
+    bool canInterpolateLoadResult( const std::string name ) const {
+        // FIXME workaround for issue32183
+
+        AS_ASSERT( hasLoadResult() );
+        std::string para( "INST" );
+        ASTERINTEGER iret = 100;
+        CALLO_RSINCHPRE( getLoadResultName(), name, para, &iret );
+        return ( iret == 0 );
+    }
+
+    FieldOnCellsRealPtr interpolateLoadResult( const std::string name,
+                                               const ASTERDOUBLE value ) const {
+        // FIXME workaround for issue32183
+        AS_ASSERT( canInterpolateLoadResult( name ) );
+
+        const auto fed = getFiniteElementDescriptor();
+        FieldOnCellsRealPtr result = std::make_shared< FieldOnCellsReal >( fed );
+
+        std::string para( "INST" );
+        std::string base( "G" );
+        std::string right( "EXCLU" );
+        std::string left( "EXCLU" );
+        std::string crit( "ABSOLU" );
+        ASTERDOUBLE prec = 1.e-10;
+        ASTERINTEGER stop = 0;
+        ASTERINTEGER iret = 100;
+
+        CALLO_RSINCH( getLoadResultName(), name, para, &value, result->getName(), right, left,
+                      &stop, base, &prec, crit, &iret );
+
+        AS_ASSERT( iret == 0 );
+
+        return result;
+    }
 
     ConstantFieldOnCellsTypePtr getImposedField() const { return _therLoadDesc->getImposedField(); }
 

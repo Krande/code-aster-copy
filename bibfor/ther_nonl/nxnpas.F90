@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,6 +83,8 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
     real(kind=8) :: theta, timet, timtdt, theta_read, time_prev
     integer :: icoret, nbcham
     character(len=1) :: base
+    real(kind=8), parameter :: prec = 1.0d-10
+    character(len=8), parameter :: crit = 'ABSOLU'
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -136,12 +138,12 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
             timtdt = time_curr+deltat
             base = 'V'
             call rsinch(result_dry, 'TEMP', 'INST', timet, dry_prev, &
-                        'CONSTANT', 'CONSTANT', 1, base, icoret)
+                        'CONSTANT', 'CONSTANT', 1, base, prec, crit, icoret)
             if (icoret .ge. 10) then
                 call utmess('F', 'THERNONLINE4_94', sk=result_dry, si=icoret, sr=timet)
             end if
             call rsinch(result_dry, 'TEMP', 'INST', timtdt, dry_curr, &
-                        'CONSTANT', 'CONSTANT', 1, base, icoret)
+                        'CONSTANT', 'CONSTANT', 1, base, prec, crit, icoret)
             if (icoret .ge. 10) then
                 call utmess('F', 'THERNONLINE4_94', sk=result_dry, si=icoret, sr=timtdt)
             end if

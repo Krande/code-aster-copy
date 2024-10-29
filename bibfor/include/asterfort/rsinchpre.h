@@ -18,15 +18,11 @@
 
 !
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine rsbary(lr8, nr8, tous, lexi, x,&
-                      i1, i2, iposit, prec, crit)
-        real(kind=8), intent(in) :: x, prec, lr8(*)
-        integer, intent(in) :: nr8
-        aster_logical, intent(in) :: tous, lexi(*)
-        integer, intent(out) :: i1, i2, iposit
-        character(len=8), intent(in) :: crit
-    end subroutine rsbary
+    subroutine rsinchpre(nomsd, nomch, acces, ier)
+        character(len=*), intent(in) :: nomsd
+        character(len=*), intent(in) :: nomch
+        character(len=*), intent(in) :: acces
+        integer, intent(out) :: ier
+    end subroutine rsinchpre
 end interface
