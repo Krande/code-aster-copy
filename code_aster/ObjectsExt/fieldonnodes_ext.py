@@ -148,11 +148,11 @@ class ExtendedFieldOnNodesReal:
 
         return medfield
 
-    def getValuesWithDescription(self, component="", groups=[]):
+    def getValuesWithDescription(self, components=[], groups=[]):
         """Return the values of a component of the field.
 
         Arguments:
-            component (str, optional): Extracted component or all components if
+            components (list[str], optional): Extracted component or all components if
                 it is empty.
             groups (list[str], optional): The extraction is limited to the given
                 groups of nodes.
@@ -161,7 +161,9 @@ class ExtendedFieldOnNodesReal:
             tuple(values, description): List of values and description.
             The description provides a tuple with (nodes ids, components).
         """
-        description, dofs = self.getDescription().getDOFsWithDescription(component, groups)
+        description, dofs = self.getDescription().getDOFsWithDescription(
+            force_list(components), force_list(groups), local=True
+        )
         values = self.getValues(dofs)
         return values, description
 
@@ -372,7 +374,9 @@ class ExtendedFieldOnNodesComplex:
             tuple(values, description): List of values and description.
             The description provides a tuple with (nodes ids, components).
         """
-        description, dofs = self.getDescription().getDOFsWithDescription(component, groups)
+        description, dofs = self.getDescription().getDOFsWithDescription(
+            force_list(component), force_list(groups)
+        )
         values = self.getValues(dofs)
         return values, description
 

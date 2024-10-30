@@ -3,7 +3,7 @@
  * @brief Interface python de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -160,16 +160,36 @@ Returns:
             Returns:
                 list[str]: list of components
             )" )
-        .def( "getDOFsWithDescription", &EquationNumbering::getDOFsWithDescription, R"(
+        .def( "getDOFsWithDescription",
+              py::overload_cast< const VectorString &, const VectorString &, const bool,
+                                 const ASTERINTEGER >( &EquationNumbering::getDOFsWithDescription,
+                                                       py::const_ ),
+              R"(
             Get the dofs associated to the given component restricted to the given group
             Arguments:
-                str: component to extract
+                list[str] = []: components to extract
                 list[str] = []: group names to filter
                 local (bool) = True: if True use local dof index else use global index in HPC
             Returns:
                 pair[list[int], list[str]]: list of nodes and list of components
                 list[int]: list of dofs
             )",
-              py::arg( "cmp" ), py::arg( "groupNames" ) = VectorString(), py::arg( "local" ) = true,
-              py::arg( "same_rank" ) = PythonBool::None );
+              py::arg( "cmp" ) = VectorString(), py::arg( "groupNames" ) = VectorString(),
+              py::arg( "local" ) = true, py::arg( "same_rank" ) = PythonBool::None )
+        .def( "getDOFsWithDescription",
+              py::overload_cast< const VectorString &, const VectorLong &, const bool,
+                                 const ASTERINTEGER >( &EquationNumbering::getDOFsWithDescription,
+                                                       py::const_ ),
+              R"(
+            Get the dofs associated to the given component restricted to the given nodes
+            Arguments:
+                list[str] = []: components to extract
+                list[int] = []: list of nodes to filter
+                local (bool) = True: if True use local dof index else use global index in HPC
+            Returns:
+                pair[list[int], list[str]]: list of nodes and list of components
+                list[int]: list of dofs
+            )",
+              py::arg( "cmp" ) = VectorString(), py::arg( "groupNames" ) = VectorString(),
+              py::arg( "local" ) = true, py::arg( "same_rank" ) = PythonBool::None );
 };

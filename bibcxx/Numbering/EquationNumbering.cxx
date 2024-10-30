@@ -3,7 +3,7 @@
  * @brief Implementation de EquationNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -431,64 +431,73 @@ bool EquationNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local 
 };
 
 std::pair< std::pair< VectorLong, VectorString >, VectorLong >
-EquationNumbering::getDOFsWithDescription( const std::string cmp, const VectorString groupNames,
+EquationNumbering::getDOFsWithDescription( const VectorString &cmps, const VectorLong &nodes,
                                            const bool local, const ASTERINTEGER same_rank ) const {
 
     VectorLong v_nodes;
-    VectorString cmps;
+    VectorString v_cmps;
     VectorLong dofs;
 
-    std::set< ASTERINTEGER > nodes;
-    if ( groupNames.size() == 0 ) {
-        auto group = _mesh->getNodes();
-        std::copy( group.begin(), group.end(), std::inserter( nodes, nodes.end() ) );
-    } else {
-        auto group = _mesh->getNodes( groupNames );
-        std::copy( group.begin(), group.end(), std::inserter( nodes, nodes.end() ) );
-    }
+    std::set< ASTERINTEGER > set_nodes = toSet( nodes );
 
     auto idToName = getComponentsIdToName();
 
-    ASTERINTEGER icmp, ncmp;
-    bool all_cmp = strip( cmp ) == "";
-    if ( all_cmp ) {
-        ncmp = getComponents().size();
-        cmps.reserve( ncmp * nodes.size() );
+    std::set< std::string > set_cmps;
+    if ( cmps.size() == 0 ) {
+        set_cmps = toSet( getComponents() );
     } else {
-        ncmp = 1;
-        icmp = getComponentsNameToId()[cmp];
+        set_cmps = toSet( cmps );
     }
-    v_nodes.reserve( ncmp * nodes.size() );
+
+    v_cmps.reserve( set_cmps.size() * set_nodes.size() );
+    v_nodes.reserve( set_cmps.size() * set_nodes.size() );
+    dofs.reserve( set_cmps.size() * set_nodes.size() );
 
     const auto descr = getNodeAndComponentIdFromDOF();
 
     for ( auto dof = 0; dof < descr.size(); ++dof ) {
-        if ( all_cmp ) {
-            if ( descr[dof].second > 0 ) {
-                if ( nodes.find( descr[dof].first ) != nodes.end() ) {
+        if ( descr[dof].second > 0 ) {
+            if ( set_nodes.find( descr[dof].first ) != set_nodes.end() ) {
+                auto cmp = idToName[descr[dof].second];
+                if ( set_cmps.find( cmp ) != set_cmps.end() ) {
                     v_nodes.push_back( descr[dof].first );
-                    cmps.push_back( idToName[descr[dof].second] );
+                    v_cmps.push_back( cmp );
                     dofs.push_back( dof );
                 }
             } else if ( descr[dof].second == 0 ) {
-                v_nodes.push_back( descr[dof].first );
-                cmps.push_back( "LAGR:MPC" );
-                dofs.push_back( dof );
+                const std::string cmp = "LAGR:MPC";
+                if ( set_cmps.find( cmp ) != set_cmps.end() ) {
+                    v_nodes.push_back( descr[dof].first );
+                    v_cmps.push_back( cmp );
+                    dofs.push_back( dof );
+                }
+
             } else if ( descr[dof].second < 0 ) {
-                v_nodes.push_back( descr[dof].first );
-                const std::string cmpName( "LAGR:" + idToName[-descr[dof].second] );
-                cmps.push_back( cmpName );
-                dofs.push_back( dof );
-            }
-        } else if ( icmp == descr[dof].second ) {
-            if ( nodes.find( descr[dof].first ) != nodes.end() ) {
-                v_nodes.push_back( descr[dof].first );
-                dofs.push_back( dof );
+                const std::string cmp = "LAGR:" + idToName[-descr[dof].second];
+                if ( set_cmps.find( cmp ) != set_cmps.end() ) {
+                    v_nodes.push_back( descr[dof].first );
+                    v_cmps.push_back( cmp );
+                    dofs.push_back( dof );
+                }
             }
         }
     }
 
-    return std::make_pair( std::make_pair( v_nodes, cmps ), dofs );
+    return std::make_pair( std::make_pair( v_nodes, v_cmps ), dofs );
+};
+
+std::pair< std::pair< VectorLong, VectorString >, VectorLong >
+EquationNumbering::getDOFsWithDescription( const VectorString &cmps, const VectorString &groupNames,
+                                           const bool local, const ASTERINTEGER same_rank ) const {
+
+    VectorLong nodes;
+    if ( groupNames.size() == 0 ) {
+        nodes = _mesh->getNodes();
+    } else {
+        nodes = _mesh->getNodes( groupNames );
+    }
+
+    return this->getDOFsWithDescription( cmps, nodes, local, same_rank );
 };
 
 /**

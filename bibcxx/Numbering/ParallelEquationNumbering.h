@@ -106,7 +106,11 @@ class ParallelEquationNumbering : public EquationNumbering {
      * groups
      */
     std::pair< std::pair< VectorLong, VectorString >, VectorLong >
-    getDOFsWithDescription( const std::string, const VectorString, const bool local = false,
+    getDOFsWithDescription( const VectorString &, const VectorString &, const bool local = false,
+                            const ASTERINTEGER same_rank = PythonBool::None ) const;
+
+    std::pair< std::pair< VectorLong, VectorString >, VectorLong >
+    getDOFsWithDescription( const VectorString &, const VectorLong &, const bool local = false,
                             const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
