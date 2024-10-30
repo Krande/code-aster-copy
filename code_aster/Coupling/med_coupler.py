@@ -26,10 +26,12 @@ import os
 import medcoupling as MEDC
 import ParaMEDMEM as PMM
 
-from ..Commands import LIRE_CHAMP, PROJ_CHAMP, AFFE_MODELE
-from ..Objects import Mesh, LoadResult
+from ..Commands import LIRE_CHAMP, PROJ_CHAMP, AFFE_MODELE, DEFI_GROUP
+from ..Objects import Mesh, LoadResult, SimpleFieldOnNodesReal
 from ..Utilities import logger, no_new_attributes
 from ..Utilities.mpi_utils import MPI
+
+from mpi4py import MPI as MPI4
 
 
 class CoupledField:
@@ -115,7 +117,7 @@ class MEDCoupler:
     """Class handling the MEDCoupling related calls."""
 
     dec = None
-    mesh_interf = interf_mc = mesh = interf_ids = None
+    mesh_interf = interf_mc = mesh = None
     model_interf = None
     matr_proj = meshDimRelToMaxExt = None
     exch_fields = None
@@ -173,28 +175,24 @@ class MEDCoupler:
         self.log("creating interface mesh", verbosity=2)
 
         self.mesh = mesh
+        self.mesh_interf = mesh.restrict(groupsOfCells)
+
+        self.mesh_interf = DEFI_GROUP(
+            reuse=self.mesh_interf,
+            MAILLAGE=self.mesh_interf,
+            CREA_GROUP_NO=_F(GROUP_MA=groupsOfCells),
+        )
 
         groupsOfCells_res = []
         for grp in groupsOfCells:
             if self.mesh.hasGroupOfCells(grp, local=True):
                 groupsOfCells_res.append(grp)
 
-        mm = self.mesh.createMedCouplingMesh()
+        mm = self.mesh_interf.createMedCouplingMesh()
         levels = mm.getGrpsNonEmptyLevels(groupsOfCells_res)
         assert len(levels) == 1, "Groups are not at one level"
         self.meshDimRelToMaxExt = levels[0]
-        self.interf_ids = mm.getGroupsArr(self.meshDimRelToMaxExt, groupsOfCells_res)
-        self.interf_ids.setName("interf")
-        self.interf_mc = mm.getMeshAtLevel(self.meshDimRelToMaxExt)[self.interf_ids]
-        self.interf_mc.setName("interface")
-        # remove orphelan nodes
-        self.interf_mc.zipCoords()
-
-        meshMEDFile = MEDC.MEDFileUMesh()
-        meshMEDFile.setMeshAtLevel(self.meshDimRelToMaxExt, self.interf_mc)
-
-        self.mesh_interf = Mesh()
-        self.mesh_interf.buildFromMedCouplingMesh(meshMEDFile)
+        self.interf_mc = mm.getMeshAtLevel(self.meshDimRelToMaxExt)
 
         self._create_paramesh()
 
@@ -215,6 +213,30 @@ class MEDCoupler:
             self.log(msg)
             raise KeyError(msg)
         return found
+
+    def restrict_field(self, field, cmps=[]):
+        """Create a new field restricted to the interface mesh."""
+
+        if field.getLocalization() == "NOEU":
+
+            if len(cmps) == 0:
+                cmps = field.getComponents()
+
+            sfield = SimpleFieldOnNodesReal(self.mesh_interf, field.getPhysicalQuantity(), cmps)
+
+            rest2orig = self.mesh_interf.getRestrictedToOriginalNodesIds()
+            orig2rest = self.mesh_interf.getOriginalToRestrictedNodesIds()
+
+            descr, dofs = field.getDescription().getDOFsWithDescription(cmps, rest2orig, local=True)
+
+            sfield.setValues(
+                [orig2rest[node] for node in descr[0]], descr[1], field.getValues(dofs)
+            )
+
+            return sfield.toFieldOnNodes()
+
+        else:
+            raise NotImplemented()
 
     def add_field(self, field_name, components, field_type):
         """Add a coupled field.
@@ -350,7 +372,7 @@ class MEDCoupler:
         Arguments:
             mc_field (*MEDCouplingField*): MEDCoupling field.
             field_type (str): type of the field (like `NOEU_DEPL_R`)
-            time (float, optional): Time of assignment.
+            time (float): Time of assignment.
 
         Returns:
             *Field*: aster field.
@@ -380,7 +402,7 @@ class MEDCoupler:
         Arguments:
             mc_field (*MEDCouplingField*): MEDCoupling field.
             field_type (str): type of the field (like `NOEU_DEPL_R`)
-            time (float, optional): Time of assignment.
+            time (float): Time of assignment.
 
         Returns:
             *FieldOnNodesReal*: code_aster field defined on the whole mesh.
@@ -389,32 +411,35 @@ class MEDCoupler:
         field = self._medcfield2aster(mc_field, field_type, time)
         return self.project_field(field)
 
-    def export_field(self, field, field_name):
+    def export_field(self, field, field_name, cmps=[]):
         """Convert a code_aster field defined on the whole mesh to
             a MEDCoupling field defined on the interface.
 
         Arguments:
-            *FieldOnNodesReal*: code_aster field defined on the whole mesh.
+            field *FieldOnNodesReal*: code_aster field defined on the whole mesh.
             field_name (str): name of the field (like `DEPL`)
+            cmps (list[str]): list of components. (default: all)
 
         Returns:
             *MEDCouplingField*: MEDCoupling field.
         """
 
+        if len(cmps) == 0:
+            cmps = field.getComponents()
+
+        field_interf = self.restrict_field(field, cmps)
         filename = "field_%i.med" % (MPI.ASTER_COMM_WORLD.rank)
-        self._write_field2med(field, filename)
+        self._write_field2med(field_interf, filename)
 
-        fieldname = field.getName()[:8]
-        mc_field = MEDC.ReadFieldNode(
-            filename, field.getMesh().getName(), self.meshDimRelToMaxExt, fieldname, -1, -1
+        fieldname = field_interf.getName()[:8]
+        pfield = MEDC.ReadFieldNode(
+            filename, field_interf.getMesh().getName(), self.meshDimRelToMaxExt, fieldname, -1, -1
         )
-
-        pfield = mc_field[self.interf_ids]
         pfield.setName(field_name)
         pfield.setNature(MEDC.IntensiveMaximum)
         pfield.setMesh(self.interf_mc)
         array = pfield.getArray()
-        array.setInfoOnComponents(field.getComponents())
+        array.setInfoOnComponents(field_interf.getComponents())
         pfield.checkConsistencyLight()
         os.remove(filename)
 
@@ -426,10 +451,10 @@ class MEDCoupler:
 
         Arguments:
             mc_displ (*MEDCouplingField*): MEDCoupling displacement field.
-            time (float, optional): Time of assignment.
+            time (float): Time of assignment.
 
         Returns:
-            *FieldOnNodesReal*: code_aster displacement field.
+            FieldOnNodesReal: code_aster displacement field.
         """
 
         return self.import_field(mc_displ, "NOEU_DEPL_R", time)
@@ -438,44 +463,37 @@ class MEDCoupler:
         """Create a MEDCoupling field of displacement reduced on the interface mesh.
 
         Arguments:
-            displ (*FieldOnNodesReal*): code_aster displacement field.
+            displ (FieldOnNodesReal): code_aster displacement field.
             field_name (str): Field name.
 
         Returns:
             *MEDCouplingFieldDouble*: Displacement field.
         """
-        cmps = [cmp for cmp in displ.getComponents() if cmp in ["DX", "DY", "DZ"]]
-        if len(cmps) != len(displ.getComponents()):
-            displ = displ.restrict(cmps=cmps)
 
-        return self.export_field(displ, field_name)
+        return self.export_field(displ, field_name, ["DX", "DY", "DZ"])
 
     def export_temperature(self, temp, field_name):
         """Create a MEDCoupling field of temperature reduced on the interface mesh.
 
         Arguments:
-            temp (*FieldOnNodesReal*): code_aster thermal field.
+            temp (FieldOnNodesReal): code_aster thermal field.
             field_name (str): Field name.
 
         Returns:
             *MEDCouplingFieldDouble*: Thermal field on cells.
         """
 
-        cmps = [cmp for cmp in temp.getComponents() if cmp in ["TEMP"]]
-        if len(cmps) != len(temp.getComponents()):
-            temp = temp.restrict(cmps=cmps)
-
-        return self.export_field(temp, field_name)
+        return self.export_field(temp, field_name, ["TEMP"])
 
     def import_temperature(self, mc_temp, time=0.0):
         """Convert a MEDCoupling thermal field as a code_aster field.
 
         Arguments:
             mc_temp (*MEDCouplingFieldDouble*): MEDCoupling thermal field.
-            time (float, optional): Time of assignment.
+            time (float): Time of assignment.
 
         Returns:
-            *FieldOnNodesReal*: code_aster thermal field.
+            FieldOnNodesReal: code_aster thermal field.
         """
 
         return self.import_field(mc_temp, "NOEU_TEMP_R", time)
@@ -491,18 +509,14 @@ class MEDCoupler:
             *MEDCouplingFieldDouble*: Pressure field on cells.
         """
 
-        cmps = [cmp for cmp in pres.getComponents() if cmp in ["PRES"]]
-        if len(cmps) != len(pres.getComponents()):
-            pres = pres.restrict(cmps=cmps)
-
-        return self.export_field(pres, field_name)
+        return self.export_field(pres, field_name, ["PRES"])
 
     def import_pressure(self, mc_pres, time=0.0):
         """Convert a MEDCoupling pressure field as a code_aster field.
 
         Arguments:
             mc_pres (*MEDCouplingFieldDouble*): MEDCoupling pressure field.
-            time (float, optional): Time of assignment.
+            time (float): Time of assignment.
 
         Returns:
             *FieldOnNodesReal*: code_aster pressure field.
@@ -516,7 +530,7 @@ class MEDCoupler:
         Arguments:
             mc_fluidf (*MEDCouplingField*): MEDCoupling pressure field.
             model (Model): Mechanical model.
-            time (float, optional): Time of assignment.
+            time (float): Time of assignment.
 
         Returns:
             *LoadResult*: code_aster pressure as *LoadResult*.
