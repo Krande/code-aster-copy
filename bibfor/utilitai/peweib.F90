@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,7 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat, &
     integer :: vali
     integer :: ibid, ibik, mxvale, ifm, niv
     integer :: nd, ng, ni, nm, np, nq, nr, nt, i, n1, n2, n3
+    integer :: no, nlo, nli
     integer :: iret, nbordr, jord, jins, nc, nbgrma, jgr, ig, nbma, jad
     integer :: nbmail, jma, im, nume, imc, ier
     integer :: numord, iainst, iord, nbmtrc, nbin, iocc
@@ -134,8 +135,18 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat, &
         call chpve2(contg, 3, tabtyp, ier)
     end if
     ni = 0
+    no = 0
+    nlo = 0
+    nli = 0
     if (.not. opti) then
+        call getvr8(' ', 'NUME_ORDRE', scal=inst, nbret=no)
+        call getvr8(' ', 'LIST_ORDRE', scal=inst, nbret=nlo)
+        call getvr8(' ', 'LIST_INST', scal=inst, nbret=nli)
+        inst = 0.d0
         call getvr8(' ', 'INST', scal=inst, nbret=ni)
+        if ((ni .ne. 0) .or. (no .ne. 0) .or. (nli .ne. 0) .or. (nlo .ne. 0)) then
+            call utmess('I', 'UTILITAI6_63')
+        end if
     end if
 !
     if (.not. opti) then

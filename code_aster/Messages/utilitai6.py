@@ -203,6 +203,14 @@ cata_msg = {
  contrainte de référence = %(r3)f
 """
     ),
+    63: _(
+        """
+    Seuls les instants ou numéros d'ordre donnés en entrée de POST_ELEM option
+    WEIBULL sont pris en compte dans le calcul du maximum des contraintes sur
+    l'historique.
+    Pour prendre en compte tout l'historique, utiliser TOUT_ORDRE = "OUI".
+"""
+    ),
     72: _(
         """
  trop de mailles dans le GROUP_MA
