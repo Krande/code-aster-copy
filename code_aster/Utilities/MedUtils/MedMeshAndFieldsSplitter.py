@@ -18,11 +18,111 @@
 # --------------------------------------------------------------------
 
 from . import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph, PtScotchPartitioner
-from . import MedFileAccessType
+from . import MedFileAccessType, ParallelMesh
 from . import FieldCharacteristics, SimpleFieldOnNodesReal, Result
 from . import SimpleFieldOnCellsReal
 from . import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
 from . import toAsterGeoType
+
+
+def _splitMeshAndFieldsFromMedFile(
+    filename,
+    cellBalancer=False,
+    nodeBalancer=False,
+    outMesh=None,
+    nodeGrpToGather=[],
+    deterministic=False,
+    parallel=True,
+):
+    """Split a MED mesh and MED fields from a filename
+
+    Arguments:
+        filename (str): filename of MED file.
+        cellBalancer (bool): True if cell balancer must be return.
+        nodeBalancer (bool): True if node balancer must be return.
+        outMesh (ParallelMesh): split mesh.
+        nodeGrpToGather (list of list): list of list of node groups to gather
+            each item of list will be gather on a sigle MPI processor
+        parallel (bool): True if med file must be open in parallel
+
+    Returns:
+        tuple: first element: split mesh, second element: dict with split fields,
+               third element: cell balancer (if asked),
+               fourth element: node balancer (if asked).
+    """
+    fr = MedFileReader()
+    nBalancer = None
+    cBalancer = None
+
+    if parallel:
+        fr.openParallel(filename, MedFileAccessType.MedReadOnly)
+        mesh = IncompleteMesh()
+        mesh.readMedFile(filename, verbose=0)
+        idsToGather = []
+        if nodeGrpToGather != []:
+            for tab1 in nodeGrpToGather:
+                curIdsToGather = []
+                for grpName in tab1:
+                    curIdsToGather += mesh.getNodesFromGroup(grpName)
+                idsToGather.append(curIdsToGather)
+        bMesh = MeshBalancer()
+        bMesh.buildFromBaseMesh(mesh)
+        meshGraph = MeshConnectionGraph()
+        meshGraph.buildFromIncompleteMesh(mesh)
+
+        part2 = PtScotchPartitioner()
+        part2.buildGraph(meshGraph, idsToGather)
+        scotchPart = part2.partitionGraph(deterministic)
+
+        outMesh = bMesh.applyBalancingStrategy(scotchPart, outMesh)
+
+        nBalancer = bMesh.getNodeObjectBalancer()
+        cBalancer = bMesh.getCellObjectBalancer()
+    else:
+        fr.open(filename, MedFileAccessType.MedReadOnly)
+        outMesh = ParallelMesh()
+        outMesh.readMedFile(filename, partitioned=True, verbose=0)
+
+    cellTypes = outMesh.getAllMedCellsTypes()
+    asterTypes = [toAsterGeoType(item) for item in cellTypes]
+    cellTypes = [x for _, x in sorted(zip(asterTypes, cellTypes))]
+
+    nbField = fr.getFieldNumber()
+    fieldDict = {}
+
+    for i in range(nbField):
+        curField = fr.getField(i)
+        nbSeq = curField.getSequenceNumber()
+        fieldDict[curField.getName()] = {}
+        fieldDict[curField.getName()]["id2time"] = []
+        for j in range(nbSeq):
+            curSeq = curField.getSequence(j)
+            assert curSeq[0] == curSeq[1]
+            curTime = curField.getTime(j)
+            fieldDict[curField.getName()]["id2time"].append((curSeq[0], curTime))
+            supportEnt = curField.getAllSupportEntitiesAtSequence(curSeq[0], curSeq[1])
+            if supportEnt[0] == 3:
+                valuesVec = curField.getValuesAtSequenceOnNodes(curSeq[0], curSeq[1])
+                if parallel:
+                    out = nBalancer.balanceMedVectorOverProcessesWithRenumbering(valuesVec)
+                else:
+                    out = valuesVec
+                fieldDict[curField.getName()][curSeq[0]] = out
+            else:
+                valuesVec = curField.getValuesAtSequenceOnCellTypesList(
+                    curSeq[0], curSeq[1], cellTypes
+                )
+                if parallel:
+                    out = cBalancer.balanceMedVectorOverProcessesWithRenumbering(valuesVec)
+                else:
+                    out = valuesVec
+                fieldDict[curField.getName()][curSeq[0]] = out
+    toReturn = (outMesh, fieldDict)
+    if cellBalancer:
+        toReturn += (cBalancer,)
+    if nodeBalancer:
+        toReturn += (nBalancer,)
+    return toReturn
 
 
 def splitMeshAndFieldsFromMedFile(
@@ -48,68 +148,12 @@ def splitMeshAndFieldsFromMedFile(
                third element: cell balancer (if asked),
                fourth element: node balancer (if asked).
     """
-    fr = MedFileReader()
-    fr.openParallel(filename, MedFileAccessType.MedReadOnly)
-    mesh = IncompleteMesh()
-    mesh.readMedFile(filename, verbose=0)
-    idsToGather = []
-    if nodeGrpToGather != []:
-        for tab1 in nodeGrpToGather:
-            curIdsToGather = []
-            for grpName in tab1:
-                curIdsToGather += mesh.getNodesFromGroup(grpName)
-            idsToGather.append(curIdsToGather)
-    bMesh = MeshBalancer()
-    bMesh.buildFromBaseMesh(mesh)
-    meshGraph = MeshConnectionGraph()
-    meshGraph.buildFromIncompleteMesh(mesh)
-
-    part2 = PtScotchPartitioner()
-    part2.buildGraph(meshGraph, idsToGather)
-    scotchPart = part2.partitionGraph(deterministic)
-
-    outMesh = bMesh.applyBalancingStrategy(scotchPart, outMesh)
-
-    cellTypes = outMesh.getAllMedCellsTypes()
-    asterTypes = [toAsterGeoType(item) for item in cellTypes]
-    cellTypes = [x for _, x in sorted(zip(asterTypes, cellTypes))]
-
-    nBalancer = bMesh.getNodeObjectBalancer()
-    cBalancer = bMesh.getCellObjectBalancer()
-
-    nbField = fr.getFieldNumber()
-    fieldDict = {}
-
-    for i in range(nbField):
-        curField = fr.getField(i)
-        nbSeq = curField.getSequenceNumber()
-        fieldDict[curField.getName()] = {}
-        fieldDict[curField.getName()]["id2time"] = []
-        for j in range(nbSeq):
-            curSeq = curField.getSequence(j)
-            assert curSeq[0] == curSeq[1]
-            curTime = curField.getTime(j)
-            fieldDict[curField.getName()]["id2time"].append((curSeq[0], curTime))
-            supportEnt = curField.getAllSupportEntitiesAtSequence(curSeq[0], curSeq[1])
-            if supportEnt[0] == 3:
-                valuesVec = curField.getValuesAtSequenceOnNodes(curSeq[0], curSeq[1])
-                out = nBalancer.balanceMedVectorOverProcessesWithRenumbering(valuesVec)
-                fieldDict[curField.getName()][curSeq[0]] = out
-            else:
-                valuesVec = curField.getValuesAtSequenceOnCellTypesList(
-                    curSeq[0], curSeq[1], cellTypes
-                )
-                out = cBalancer.balanceMedVectorOverProcessesWithRenumbering(valuesVec)
-                fieldDict[curField.getName()][curSeq[0]] = out
-    toReturn = (outMesh, fieldDict)
-    if cellBalancer:
-        toReturn += (cBalancer,)
-    if nodeBalancer:
-        toReturn += (nBalancer,)
-    return toReturn
+    return _splitMeshAndFieldsFromMedFile(
+        filename, cellBalancer, nodeBalancer, outMesh, nodeGrpToGather, deterministic, parallel=True
+    )
 
 
-def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
+def _splitMedFileToResults(filename, fieldToRead, resultType, model=None, parallel=True):
     """Split a MED mesh and MED fields from a filename and return Result
 
     Arguments:
@@ -117,6 +161,7 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
         fieldToRead (dict): dict that matches med field name and aster name (in Result)
         resultType (class): A Result class to instanciate (child of Result)
         model (Model): Model (in case of ELGA field reading)
+        parallel (bool): True if med file must be open in parallel
 
     Returns:
         Result: results container (type: resultType) with mesh and all readen fields
@@ -126,7 +171,7 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
     result = resultType()
 
     # Split mesh and fields
-    (mesh, fields) = splitMeshAndFieldsFromMedFile(filename)
+    (mesh, fields) = _splitMeshAndFieldsFromMedFile(filename, parallel=parallel)
 
     if model is not None:
         mesh = model.getMesh()
@@ -147,6 +192,11 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
         param = fieldChar.getParameter()
 
         # Get split field
+        if fields.get(medFieldName) is None:
+            fieldListStr = ", ".join(list(fields.keys()))
+            raise NameError(
+                "Field " + medFieldName + " is missing. Fields in file: " + fieldListStr
+            )
         curMedFieldDict = fields[medFieldName]
         # Resize output result
         if first:
@@ -221,3 +271,33 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
             result.setTime(curTime, index)
 
     return result
+
+
+def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
+    """Split a MED mesh and MED fields from a filename and return Result
+
+    Arguments:
+        filename (str): filename of MED file.
+        fieldToRead (dict): dict that matches med field name and aster name (in Result)
+        resultType (class): A Result class to instanciate (child of Result)
+        model (Model): Model (in case of ELGA field reading)
+
+    Returns:
+        Result: results container (type: resultType) with mesh and all readen fields
+    """
+    return _splitMedFileToResults(filename, fieldToRead, resultType, model, parallel=True)
+
+
+def readMedFileToResults(filename, fieldToRead, resultType, model=None):
+    """Read a MED mesh and MED fields from a filename and return Result
+
+    Arguments:
+        filename (str): filename of MED file.
+        fieldToRead (dict): dict that matches med field name and aster name (in Result)
+        resultType (class): A Result class to instanciate (child of Result)
+        model (Model): Model (in case of ELGA field reading)
+
+    Returns:
+        Result: results container (type: resultType) with mesh and all readen fields
+    """
+    return _splitMedFileToResults(filename, fieldToRead, resultType, model, parallel=False)

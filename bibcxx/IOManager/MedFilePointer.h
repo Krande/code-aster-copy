@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MEdFilePointer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -69,6 +69,9 @@ class MedFilePointer {
 
     /** @brief true if file is open in parallel */
     bool isParallel() const { return _parallelOpen; };
+
+    /** @brief open med file */
+    int open( const std::string &filename, const MedFileAccessType & );
 
     /** @brief open med file in parallel */
     int openParallel( const std::string &filename, const MedFileAccessType & );

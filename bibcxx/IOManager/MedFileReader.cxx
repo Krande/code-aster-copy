@@ -3,7 +3,7 @@
  * @brief Implementation de MedFileReader
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -59,11 +59,24 @@ int MedFileReader::getMeshNumber() const { return _meshes.size(); };
 
 int MedFileReader::getProfileNumber() const { return _profiles.size(); };
 
+int MedFileReader::open( const std::string &filename, const MedFileAccessType &openType ) {
+    _filePtr.open( filename, openType );
+    readFile();
+
+    return 0;
+};
+
 int MedFileReader::openParallel( const std::string &filename, const MedFileAccessType &openType ) {
+    _filePtr.openParallel( filename, openType );
+    readFile();
+
+    return 0;
+};
+
+int MedFileReader::readFile() {
     _fields = std::vector< MedFieldPtr >();
     _profiles = std::vector< MedProfilePtr >();
 
-    _filePtr.openParallel( filename, openType );
     const auto fileId = _filePtr.getFileId();
 
     const auto nbMeshes = MEDnMesh( fileId );
@@ -153,4 +166,5 @@ int MedFileReader::openParallel( const std::string &filename, const MedFileAcces
     }
     return 0;
 };
+
 #endif
