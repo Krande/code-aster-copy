@@ -11,7 +11,7 @@ set USE_LOG=0
 set COLOR_ENABLED=1
 :: BUILD_TYPE can be either debug or release
 set BUILD_TYPE=debug
-set CLEAN_BUILD=0
+set CLEAN_BUILD=1
 set PIXI_BUILD=0
 
 :parse_args
@@ -20,7 +20,7 @@ if /i "%~1"=="--pixi-build" set PIXI_BUILD=1
 if /i "%~1"=="--install-tests" set INCLUDE_TESTS=1
 if /i "%~1"=="--use-log" set USE_LOG=1
 if /i "%~1"=="--no-color" set COLOR_ENABLED=0
-if /i "%~1"=="--clean" set CLEAN_BUILD=1
+if /i "%~1"=="--no-clean" set CLEAN_BUILD=0
 shift
 goto parse_args
 
@@ -52,6 +52,8 @@ if %PIXI_BUILD% == 1 (
 ) else (
     call %PARENT_DIR%\conda_env.bat
 )
+
+if errorlevel 1 exit 1
 
 if defined JOBS (
     echo "Using %JOBS% cores"
@@ -103,13 +105,13 @@ set LIBPATH=%PREF_ROOT%/libs %LIBPATH%
 
 REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
 
-set CFLAGS=%CFLAGS% /FS /MD /DMKL_ILP64 -Wno-visibility
-set CXXFLAGS=%CXXFLAGS% /MD /DMKL_ILP64
+set CFLAGS=%CFLAGS% /FS /MD -Wno-visibility
+set CXXFLAGS=%CXXFLAGS% /MD
 
 if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"
     set FC_SEARCH=ifort
-    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /4R8 /real-size:64 /integer-size:64 /names:lowercase /assume:underscore /assume:nobscc /DMKL_ILP64 /fpe:0
+    set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /4R8 /names:lowercase /assume:underscore /assume:nobscc /fpe:0
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 
@@ -136,7 +138,7 @@ if "%BUILD_TYPE%" == "debug" (
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 :: Add Math libs
-set LDFLAGS=%LDFLAGS% mkl_intel_ilp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib
+set LDFLAGS=%LDFLAGS% mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib
 
 :: Add threading libs
 set LDFLAGS=%LDFLAGS% pthread.lib

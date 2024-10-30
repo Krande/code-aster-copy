@@ -54,7 +54,7 @@ def options(self):
 def configure(self):
     self.load("compiler_c")
     opts = self.options
-    # preserve symbols in the dyn table for stdcallsspo
+    # preserve symbols in the dyn table for stdcalls
     if sys.platform == "darwin":
         # '--export-dynamic' is '-export_dynamic' in OS X linker
         # http://stackoverflow.com/questions/21279036/what-is-clangs-equivalent-to-rdynamic-gcc-flag

@@ -28,11 +28,12 @@ def check_mess_file(mess_file: str | pathlib.Path) -> TestStats:
     )
 
 
-def eval_tests(test_dir: str | pathlib.Path):
+def eval_tests(test_dir: str | pathlib.Path, results_dir: str | pathlib.Path = "results"):
+
     if isinstance(test_dir, str):
         test_dir = pathlib.Path(test_dir)
 
-    tot_seq_files = 2204
+    tot_seq_files = 2217
     failed_test_files = list(test_dir.glob("*.mess"))
     tot_failed = len(failed_test_files)
     perc_passing = 100 - 100 * tot_failed / tot_seq_files
@@ -48,6 +49,7 @@ def eval_tests(test_dir: str | pathlib.Path):
 
     err_str = f"Total passing tests: {perc_passing:.2f}% [{tot_passing}/{tot_seq_files}]\n"
     err_str += f"Total failed tests: {tot_failed} of {tot_seq_files}\n"
+
     # sort error_map by ref name of key object
     for error in sorted(error_map.keys(), key=lambda x: x.ref):
         failing_tests = error_map[error]
@@ -58,9 +60,17 @@ def eval_tests(test_dir: str | pathlib.Path):
     # save to file with todays date
     os.makedirs('results', exist_ok=True)
     today_str = datetime.now().strftime("%Y-%m-%d")
-    with open(f"results/{today_str}.txt", "w") as f:
+    with open(f"{results_dir}/{today_str}.txt", "w") as f:
         f.write(err_str)
 
+def scan_cli():
+    import argparse
+    parser = argparse.ArgumentParser(description='Evaluate test results')
+    parser.add_argument('test_dir', type=str, help='Directory containing test files')
+    parser.add_argument('--output', type=str, help='Output directory for results')
+    args = parser.parse_args()
+    eval_tests(args.test_dir, args.output)
 
 if __name__ == '__main__':
-    eval_tests("../../temp/seq-debug")
+    # eval_tests("../../temp/seq-debug")
+    scan_cli()

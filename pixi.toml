@@ -42,8 +42,8 @@ test = { cmd = [
     "-L", "sequential",
     "-LE", "need_data",
     "--timefactor=5.0",
-    "--only-failed-results",
-    "-j", "6"] , description = "Run the default sequential tests" }
+    "--only-failed-results"] , description = "Run the default sequential tests" }
+test_scan = { cmd = ["python", "conda/test_scanner/eval_tests.py", "--output", "conda/test_scanner/results"], description = "Scan the test results" }
 debug = { cmd = ["python", "conda/scripts/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
 
 

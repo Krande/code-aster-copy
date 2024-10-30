@@ -122,7 +122,10 @@ def detect_mkl(self):
     if os.environ.get("MKLROOT") is None:
         return False
     self.start_msg("Detecting MKL libraries")
-    suffix = "_ilp64" if "64" in self.env.DEST_CPU else ""
+    if self.get_define("ASTER_BLAS_INT_SIZE") == 8:
+        suffix = "_ilp64" if "64" in self.env.DEST_CPU else ""
+    else:
+        suffix = "_lp64" if "64" in self.env.DEST_CPU else ""
     scalapack = ""
     blacs = []
     thread = "mkl_sequential"
@@ -145,12 +148,15 @@ def detect_mkl(self):
         if self.get_define("ASTER_HAVE_OPENMP"):
             thread = "mkl_gnu_thread"
         interf = "mkl_gf" + suffix
+
     if scalapack:
         libs.append(scalapack)
+
     if self.env.CXX_NAME == 'msvc':
         interf += "_dll"
         thread += "_dll"
         core += "_dll"
+
     libs.append(interf)
     libs.append(thread)
     libs.append(core)

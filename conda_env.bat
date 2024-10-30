@@ -23,6 +23,8 @@ if "%FC%" == "ifx.exe" (
     @call "%INTEL_VARS_PATH%\vars.bat" -arch intel64
 )
 
+if errorlevel 1 exit 1
+
 REM if variable "print" is passed, call printenv
 if "%1" == "print" (
     set
