@@ -82,7 +82,6 @@ def post_beremin_ops(self, **args):
     grmapb = args.get("GROUP_MA")
     deformation = args.get("DEFORMATION")
     numvs = {"vari": args.get("LIST_NUME_VARI")}
-    mtpb = args.get("MAXI_TPS")
 
     if deformation == "GDEF_LOG":
         numvs.update({"sief": args.get("LIST_NUME_SIEF")})
@@ -125,7 +124,7 @@ def compute_pb(self, resupb, grmapb, numvi, data_resu, **args):
         Table: Final table with Weibull stress and failure probability
     """
     resanpb = args.get("SIGM_MAXI")
-    linstplasac = tuple(elt[1] for elt in data_resu[1])
+
     dwb = get_beremin_properties(resupb, grmapb)
 
     mawbrest = data_resu[0].getModel().getMesh()
@@ -137,7 +136,10 @@ def compute_pb(self, resupb, grmapb, numvi, data_resu, **args):
     if args.get("FILTRE_SIGM") == "SIGM_ELGA":
 
         rsieq = CALC_CHAMP(
-            RESULTAT=data_resu[0], GROUP_MA="mgrplasfull", INST=linstplasac, CRITERES="SIEQ_ELGA"
+            RESULTAT=data_resu[0],
+            GROUP_MA="mgrplasfull",
+            INST=tuple(elt[1] for elt in data_resu[1]),
+            CRITERES="SIEQ_ELGA",
         )
 
         (sigw, resimpr) = tps_maxsigm(
@@ -146,35 +148,13 @@ def compute_pb(self, resupb, grmapb, numvi, data_resu, **args):
             sig1plasac(data_resu[0], rsieq, numvi, dwb, resupb, grmapb, data_resu[1]),
             resanpb,
             dwb[grmapb]["M"],
+            args.get("MAXI_TPS"),
         )
 
     elif args.get("FILTRE_SIGM") == "SIGM_ELMOY":
 
-        rmelmoy = CALC_CHAMP(
-            RESULTAT=data_resu[0], GROUP_MA="mgrplasfull", INST=linstplasac, CONTRAINTE="SIMY_ELGA"
-        )
-
-        relmoysief = NonLinearResult()
-        relmoysief.allocate(rmelmoy.getNumberOfIndexes())
-
-        for nume_inst in rmelmoy.getIndexes():
-            relmoysief.setField(rmelmoy.getField("SIMY_ELGA", nume_inst), "SIEF_ELGA", nume_inst)
-            for field in ("COMPORTEMENT", "VARI_ELGA"):
-                relmoysief.setField(data_resu[0].getField(field, nume_inst), field, nume_inst)
-                relmoysief.setModel(rmelmoy.getModel(nume_inst), nume_inst)
-                relmoysief.setTime(rmelmoy.getTime(nume_inst), nume_inst)
-
-        rsieq = CALC_CHAMP(
-            RESULTAT=relmoysief, GROUP_MA="mgrplasfull", INST=linstplasac, CRITERES="SIEQ_ELGA"
-        )
-
-        (sigw, resimpr) = tps_maxsigm(
-            rsieq,
-            data_resu[1],
-            sig1plasac(relmoysief, rsieq, numvi, dwb, resupb, grmapb, data_resu[1]),
-            resanpb,
-            dwb[grmapb]["M"],
-            mtpb,
+        (sigw, resimpr) = compute_sigm_elmoy(
+            data_resu, numvi, dwb, resupb, grmapb, resanpb, args.get("MAXI_TPS")
         )
 
     else:
@@ -214,6 +194,60 @@ def compute_pb(self, resupb, grmapb, numvi, data_resu, **args):
     mawbrest.resetDependencies()
 
     return table
+
+
+def compute_sigm_elmoy(data_resu, numvi, dwb, resupb, grmapb, resanpb, mtpb):
+    """
+    Compute POST_BEREMIN/SIGM_ELMOY
+
+    Arguments:
+        data_resu (tuple): (result to consider for Weibull stress,
+                            list of time steps (nume_ordre, time step) in plasticity only,
+                            list of values of maximum of plasticity, if strictly greater than 0)
+        numvi (tuple): Indices of EPSPEQ and INDIPLAS
+        dwb (dict): Beremin parameters
+        resupb (NonLinearResult): Resultat input of POST_BEREMIN
+        grmapb (str): Mesh cells group given in POST_BEREMIN
+        resanpb (NonLinearResult): Name of auxiliary result
+        mtpb (str): {"OUI", "NON"} Value of keyword MAXI_TPS
+
+    Returns:
+        Table: Final table with Weibull stress and failure probability
+    """
+    rmelmoy = CALC_CHAMP(
+        RESULTAT=data_resu[0],
+        GROUP_MA="mgrplasfull",
+        INST=tuple(elt[1] for elt in data_resu[1]),
+        CONTRAINTE="SIMY_ELGA",
+    )
+
+    relmoysief = NonLinearResult()
+    relmoysief.allocate(rmelmoy.getNumberOfIndexes())
+
+    for nume_inst in rmelmoy.getIndexes():
+        relmoysief.setField(rmelmoy.getField("SIMY_ELGA", nume_inst), "SIEF_ELGA", nume_inst)
+        for field in ("COMPORTEMENT", "VARI_ELGA"):
+            relmoysief.setField(data_resu[0].getField(field, nume_inst), field, nume_inst)
+            relmoysief.setModel(rmelmoy.getModel(nume_inst), nume_inst)
+            relmoysief.setTime(rmelmoy.getTime(nume_inst), nume_inst)
+
+    rsieq = CALC_CHAMP(
+        RESULTAT=relmoysief,
+        GROUP_MA="mgrplasfull",
+        INST=tuple(elt[1] for elt in data_resu[1]),
+        CRITERES="SIEQ_ELGA",
+    )
+
+    (sigw, resimpr) = tps_maxsigm(
+        rsieq,
+        data_resu[1],
+        sig1plasac(relmoysief, rsieq, numvi, dwb, resupb, grmapb, data_resu[1]),
+        resanpb,
+        dwb[grmapb]["M"],
+        mtpb,
+    )
+
+    return (sigw, resimpr)
 
 
 def indic_plasac(_v1, _v2, seuil):
@@ -495,93 +529,138 @@ def tps_maxsigm(rsieq, l_instplas, maxsig, resanpb, bere_m, mtpb):
 
     linstants = rsieq.getAccessParameters()["INST"]
 
-    def puiss_m(valsixx):
-        return valsixx**bere_m
-
     if mtpb == "OUI":
 
-        indice = 0
-        for nume_inst, inst in enumerate(linstants):
-
-            if inst in [elt[1] for elt in l_instplas]:
-
-                if inst == maxsig.getTime(0):
-                    chmaxsig = maxsig.getField("SIEF_ELGA", 0)
-                    maxsig_r = NonLinearResult()
-                    maxsig_r.allocate(2)
-                    maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
-                elif inst > maxsig.getTime(0):
-
-                    maxsig_r.setField(maxsig.getField("SIEF_ELGA", indice), "SIEF_ELGA", 1)
-
-                    chmaxsig = CREA_CHAMP(
-                        TYPE_CHAM="ELGA_SIEF_R",
-                        OPERATION="EXTR",
-                        RESULTAT=maxsig_r,
-                        NOM_CHAM="SIEF_ELGA",
-                        TYPE_MAXI="MAXI",
-                        TYPE_RESU="VALE",
-                        NUME_ORDRE=(0, 1),
-                    )
-
-                    maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
-
-                chsixxm = chmaxsig.transform(puiss_m)
-
-                if resanpb is not None:
-                    resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
-                    resimpr.setTime(inst, nume_inst)
-
-                indice = indice + 1
-
-            else:
-
-                if resanpb is not None:
-
-                    chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
-                    chsixxm.setValues(0)
-                    resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
-                    resimpr.setTime(inst, nume_inst)
-
-            sigw.setField(chsixxm, "SIEF_ELGA", nume_inst)
-            sigw.setTime(inst, nume_inst)
+        (sigw, resimpr) = maxi_tps_oui(
+            sigw, linstants, l_instplas, maxsig, resanpb, bere_m, resimpr
+        )
 
     elif mtpb == "NON":
 
-        indice = 0
-        for nume_inst, inst in enumerate(linstants):
-
-            if inst in [elt[1] for elt in l_instplas]:
-
-                if inst == maxsig.getTime(0):
-
-                    chmaxsig = maxsig.getField("SIEF_ELGA", 0)
-
-                elif inst > maxsig.getTime(0):
-
-                    chmaxsig = maxsig.getField("SIEF_ELGA", indice)
-
-                chsixxm = chmaxsig.transform(puiss_m)
-
-                if resanpb is not None:
-                    resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
-                    resimpr.setTime(inst, nume_inst)
-
-                indice = indice + 1
-
-            else:
-
-                if resanpb is not None:
-
-                    chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
-                    chsixxm.setValues(0)
-                    resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
-                    resimpr.setTime(inst, nume_inst)
-
-            sigw.setField(chsixxm, "SIEF_ELGA", nume_inst)
-            sigw.setTime(inst, nume_inst)
+        (sigw, resimpr) = maxi_tps_non(
+            sigw, linstants, l_instplas, maxsig, resanpb, bere_m, resimpr
+        )
 
     sigw.setModel(maxsig.getModel())
+
+    return (sigw, resimpr)
+
+
+def maxi_tps_oui(sigw, linstants, l_instplas, maxsig, resanpb, bere_m, resimpr):
+    """
+    Compute temporal maximum for each Gauss point and elevation to power m
+
+    Arguments:
+        l_instplas (list): List of time steps (order, time step) where there is plasticity
+        maxsig (NonLinearResult): ELGA_SIEF_R filled by PRIN_3
+        resanpb (NonLinearResult): Name of auxiliary result
+        bere_m (float): Value of Beremin parameter M
+        resimpr (NonLinearResult):
+
+    Returns:
+        tuple (NonLinearResult, NonLinearResult)
+        FieldOnCells:
+
+            ELGA_SIEF_R filled by PRIN_3
+
+    if SIGM_MAXI in command file, MED file containing:
+
+        - where the plasticity is active: maximum of major principal stress
+        - where the plasticity is not active: 0
+    """
+
+    def puiss_m(valsixx):
+        return valsixx**bere_m
+
+    indice = 0
+    for nume_inst, inst in enumerate(linstants):
+
+        if inst in [elt[1] for elt in l_instplas]:
+
+            if inst == maxsig.getTime(0):
+                chmaxsig = maxsig.getField("SIEF_ELGA", 0)
+                maxsig_r = NonLinearResult()
+                maxsig_r.allocate(2)
+                maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
+            elif inst > maxsig.getTime(0):
+
+                maxsig_r.setField(maxsig.getField("SIEF_ELGA", indice), "SIEF_ELGA", 1)
+
+                chmaxsig = CREA_CHAMP(
+                    TYPE_CHAM="ELGA_SIEF_R",
+                    OPERATION="EXTR",
+                    RESULTAT=maxsig_r,
+                    NOM_CHAM="SIEF_ELGA",
+                    TYPE_MAXI="MAXI",
+                    TYPE_RESU="VALE",
+                    NUME_ORDRE=(0, 1),
+                )
+
+                maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
+
+            chsixxm = chmaxsig.transform(puiss_m)
+
+            if resanpb is not None:
+                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                resimpr.setTime(inst, nume_inst)
+
+            indice = indice + 1
+
+        else:
+
+            if resanpb is not None:
+
+                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
+                chsixxm.setValues(0)
+                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                resimpr.setTime(inst, nume_inst)
+
+        sigw.setField(chsixxm, "SIEF_ELGA", nume_inst)
+        sigw.setTime(inst, nume_inst)
+
+    return (sigw, resimpr)
+
+
+def maxi_tps_non(sigw, linstants, l_instplas, maxsig, resanpb, bere_m, resimpr):
+    """
+    TODO
+    """
+
+    def puiss_m(valsixx):
+        return valsixx**bere_m
+
+    indice = 0
+    for nume_inst, inst in enumerate(linstants):
+
+        if inst in [elt[1] for elt in l_instplas]:
+
+            if inst == maxsig.getTime(0):
+
+                chmaxsig = maxsig.getField("SIEF_ELGA", 0)
+
+            elif inst > maxsig.getTime(0):
+
+                chmaxsig = maxsig.getField("SIEF_ELGA", indice)
+
+            chsixxm = chmaxsig.transform(puiss_m)
+
+            if resanpb is not None:
+                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                resimpr.setTime(inst, nume_inst)
+
+            indice = indice + 1
+
+        else:
+
+            if resanpb is not None:
+
+                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
+                chsixxm.setValues(0)
+                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                resimpr.setTime(inst, nume_inst)
+
+        sigw.setField(chsixxm, "SIEF_ELGA", nume_inst)
+        sigw.setTime(inst, nume_inst)
 
     return (sigw, resimpr)
 
@@ -601,9 +680,6 @@ def compute_beremin_integral(coefmultpb, sigw, dwb, grmapb, resupb):
     Returns:
         Table: POST_BEREMIN final table
     """
-    poids = CALC_CHAM_ELEM(MODELE=sigw.getModel(), OPTION="COOR_ELGA").getValuesWithDescription(
-        "W", ["mgrplasfull"]
-    )[0]
     sigwinst = sigw.getAccessParameters()["NUME_ORDRE"]
     valinte_sixx = [
         np.sum(
@@ -612,7 +688,9 @@ def compute_beremin_integral(coefmultpb, sigw, dwb, grmapb, resupb):
                     [
                         elt_poids * elt_sigw
                         for (elt_poids, elt_sigw) in zip(
-                            poids,
+                            CALC_CHAM_ELEM(
+                                MODELE=sigw.getModel(), OPTION="COOR_ELGA"
+                            ).getValuesWithDescription("W", ["mgrplasfull"])[0],
                             sigw.getField("SIEF_ELGA", nume_inst).getValuesWithDescription(
                                 "SIXX", ["mgrplasfull"]
                             )[0],
@@ -646,8 +724,9 @@ def compute_beremin_integral(coefmultpb, sigw, dwb, grmapb, resupb):
         {"bere_m": dwb[grmapb]["M"]},
         {"sigma_u": sigma_u, "bere_m": dwb[grmapb]["M"], "exp": np.exp},
     )
-    for clef in t_clef:
-        d_form[clef] = Formula()
+
+    d_form = {clef: Formula() for clef in t_clef}
+
     for (clef, expression, variable, context) in zip(t_clef, t_expr, t_var, t_context):
         d_form[clef].setExpression(expression)
         d_form[clef].setVariables(variable)
@@ -663,9 +742,10 @@ def compute_beremin_integral(coefmultpb, sigw, dwb, grmapb, resupb):
         ),
     )
 
-    tab_aux = {}
-    for clef in ("SIGMA_WEIBULL", "SIGMA_WEIBULL**M", "PROBA_WEIBULL"):
-        tab_aux[clef] = (sigwaux.EXTR_TABLE()).values()[clef]
+    tab_aux = {
+        clef: (sigwaux.EXTR_TABLE()).values()[clef]
+        for clef in ("SIGMA_WEIBULL", "SIGMA_WEIBULL**M", "PROBA_WEIBULL")
+    }
 
     lentable = len(resupb.getAccessParameters()["INST"])
     liste_zero = [0] * (lentable - len(tab_aux["SIGMA_WEIBULL"]))
