@@ -108,7 +108,7 @@ Returns:
               R"(
 Return generalized displacements values at a given time index.
 
-Arguments
+Arguments:
     idx (int): time index
 
 Returns:
@@ -131,7 +131,7 @@ Returns:
               R"(
 Return generalized velocities values at a given time index.
 
-Arguments
+Arguments:
     idx (int): time index
 
 Returns:
@@ -154,13 +154,87 @@ Returns:
               R"(
 Return generalized accelerations values at a given time index.
 
-Arguments
+Arguments:
     idx (int): time index
 
 Returns:
     list[double]: generalized accelerations values.
         )",
-              py::arg( "idx" ) );
+              py::arg( "idx" ) )
+
+        .def( "setDisplacementValues",
+              py::overload_cast< ASTERINTEGER, VectorReal >(
+                  &TransientGeneralizedResult::setDisplacementValues, py::const_ ),
+              R"(
+Set generalized displacement values at a given time index.
+
+Arguments:
+    idx (int): time index
+
+    val (list[double]): generalized displacement values.
+        )",
+              py::arg( "idx" ), py::arg( "val" ) )
+
+        .def( "setDisplacementValues",
+              py::overload_cast< VectorReal >( &TransientGeneralizedResult::setDisplacementValues,
+                                               py::const_ ),
+              R"(
+Set generalized displacement values for all time indices.
+
+Arguments:
+    val (list[double]): generalized displacement values.
+        )",
+              py::arg( "val" ) )
+
+        .def( "setVelocityValues",
+              py::overload_cast< ASTERINTEGER, VectorReal >(
+                  &TransientGeneralizedResult::setVelocityValues, py::const_ ),
+              R"(
+Set generalized velocity values at a given time index.
+
+Arguments:
+    idx (int): time index
+
+    val (list[double]): generalized velocity values.
+        )",
+              py::arg( "idx" ), py::arg( "val" ) )
+
+        .def( "setVelocityValues",
+              py::overload_cast< VectorReal >( &TransientGeneralizedResult::setVelocityValues,
+                                               py::const_ ),
+              R"(
+Set generalized velocity values for all time indices.
+
+Arguments:
+    val (list[double]): generalized velocity values.
+        )",
+              py::arg( "val" ) )
+
+        .def( "setAccelerationValues",
+              py::overload_cast< ASTERINTEGER, VectorReal >(
+                  &TransientGeneralizedResult::setAccelerationValues, py::const_ ),
+              R"(
+Set generalized acceleration values at a given time index.
+
+Arguments:
+    idx (int): time index
+
+    val (list[double]): generalized acceleration values.
+        )",
+              py::arg( "idx" ), py::arg( "val" ) )
+
+        .def( "setAccelerationValues",
+              py::overload_cast< VectorReal >( &TransientGeneralizedResult::setAccelerationValues,
+                                               py::const_ ),
+              R"(
+Set generalized acceleration values for all time indices.
+
+Arguments:
+    val (list[double]): generalized acceleration values.
+        )",
+              py::arg( "val" ) )
+
+        ;
 
     py::class_< HarmoGeneralizedResult, HarmoGeneralizedResultPtr, GeneralizedResultComplex >(
         mod, "HarmoGeneralizedResult" )
