@@ -111,13 +111,13 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
     integer :: ipg, ipgm, jperm
     integer :: npr, nbValues, l_fapg
     integer :: iopt, imod, jvModeLoc, igrd, jvDescrigd, nec, nbsp
-    integer :: typeCellNume, jadproa, jtypma, jmedtoaster, ima, imed
+    integer :: typeCellNume, jadproa, jtypma, jmedtoaster, ima, imed, itypma
     character(len=8) :: typma
     integer, parameter :: MEDIterMesh = 1
 !
     character(len=1) :: fileState
     character(len=8) :: cellTypeIden, fapg, elref, typeCellName
-    character(len=16) :: typeElemName, nofgpg
+    character(len=16) :: nofgpg
     character(len=24) :: liel, nolipr, nlnbpg
     character(len=64) :: profileName, localizationName, MEDMeshName
     character(len=64) :: k24Dummy1, k24Dummy2
@@ -131,6 +131,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
     !character(len=8), pointer :: asterElemType(:) => null()
     integer, pointer :: tmfpg(:) => null()
     aster_logical :: l_parallel_mesh
+    integer, pointer :: repe(:) => null()
 !
     integer, parameter :: MED_GEOMETRY_TYPE(nbCellType) = &
                           (/1, 102, 103, 104, &
@@ -286,6 +287,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
     end if
 !
 
+    call jeveuo(ligrel//'.REPE', 'L', vi=repe)
     liel = ligrel//'.LIEL'
     call jelira(liel, 'NMAXOC', nbgrel)
 !
@@ -301,7 +303,6 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
 
 ! ----- Type of finite element on current GREL
         typeElemNume = typele(ligrel, igrel)
-        call jenuno(jexnum('&CATA.TE.NOMTE', typeElemNume), typeElemName)
 
 ! ----- Geometric support for this GREL
         typeCellName = typema(typeElemNume)
@@ -338,19 +339,16 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
             l_fapg = len(trim(adjustl(fapg)))
 
             call jeveuo(nomaas(1:8)//'.TYPMAIL', 'L', jtypma)
+            itypma = zi(jtypma+zi(jvGrel)-1)
 
             call wkvect('&&LRMPGA.MED_TO_ASTER', 'V V I', nbcell, jmedtoaster)
             imed = 0
             do ima = 1, nbcell
-                call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma+ima-1)), typma)
-                if (typma .eq. typeCellName) then
+                if (zi(jtypma+ima-1) .eq. itypma) then
                     imed = imed+1
-                    do iElem = 1, nbElem
-                        if (zi(jvGrel+iElem-1) .eq. ima) then
-                            zi(jmedtoaster+imed-1) = ima
-                            exit
-                        end if
-                    end do
+                    if (repe(2*(ima-1)+1) .eq. igrel) then
+                        zi(jmedtoaster+imed-1) = ima
+                    end if
                 end if
             end do
 
