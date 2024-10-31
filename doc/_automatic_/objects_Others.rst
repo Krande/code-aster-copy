@@ -84,6 +84,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.CoordinatesSpace` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.CoordinatesSpace
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.CrackShape` object
 ********************************************************************************
 
@@ -434,6 +443,15 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.PairingAlgo
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.PairingMethod` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.PairingMethod
    :show-inheritance:
    :members:
 

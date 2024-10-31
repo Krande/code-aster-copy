@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
 #include "asterf_types.h"
+#include "asterfort/mesh_pairing_type.h"
 !
 interface
-    subroutine getQuadCont(elem_dime, l_axis, &
-                        nb_node_slav, elem_slav_code, elem_slav_coor,&
-                        elem_mast_code, &
-                        nb_qp, coor_qp     , weight_qp )
-        integer, intent(in) :: elem_dime, nb_node_slav
-        aster_logical, intent(in) :: l_axis
+    subroutine getQuadCont(elem_dime, &
+                           elem_slav_code, elem_mast_code, &
+                           nbPoinInte, poinInteSlav, &
+                           nb_qp, coor_qp, &
+                           l_axis_, nb_node_slav_, elem_slav_coor_, &
+                           weight_qp_)
+        integer, intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-        real(kind=8), intent(in) :: elem_slav_coor(3, 9)
-        real(kind=8), intent(out) :: coor_qp(2, 48), weight_qp(48)
+        integer, intent(in) :: nbPoinInte
+        real(kind=8), intent(in) :: poinInteSlav(2, MAX_NB_INTE)
+        real(kind=8), intent(out) :: coor_qp(2, 48)
         integer, intent(out) :: nb_qp
+        integer, optional, intent(in) :: nb_node_slav_
+        real(kind=8), optional, intent(in) :: elem_slav_coor_(3, 9)
+        aster_logical, optional, intent(in) :: l_axis_
+        real(kind=8), optional, intent(out) :: weight_qp_(48)
     end subroutine getQuadCont
 end interface

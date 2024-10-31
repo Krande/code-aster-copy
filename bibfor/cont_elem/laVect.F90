@@ -25,6 +25,7 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
 #include "asterfort/laElemCont.h"
 #include "blas/daxpy.h"
@@ -59,7 +60,7 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_cont_qp, l_fric_qp
-    integer :: i_qp, nb_qp
+    integer ::  i_qp, nb_qp
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
@@ -67,6 +68,8 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
     real(kind=8) :: lagr_f(2), vT(2), gamma_f, projBsVal(2), term_f(2)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), mu_c(MAX_LAGA_DOFS)
     real(kind=8) :: mu_f(MAX_LAGA_DOFS, 2), jump_t(MAX_LAGA_DOFS, 3)
+    integer :: nbPoinInte
+    real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_m
 !
@@ -94,11 +97,17 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
         go to 999
     end if
-!
+
+! - Get intersection points
+    call getInterCont(nbPoinInte, poinInteSlav)
+
 ! - Get quadrature (slave side)
-!
-    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
-                     geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp)
+    call getQuadCont(geom%elem_dime, &
+                     geom%elem_slav_code, geom%elem_mast_code, &
+                     nbPoinInte, poinInteSlav, &
+                     nb_qp, coor_qp, &
+                     geom%l_axis, geom%nb_node_slav, geom%coor_slav_init, &
+                     weight_qp)
 !
 ! - Diameter of slave side
 !
@@ -115,10 +124,10 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
 ! ----- Compute contact quantities
 !
-        call laElemCont(parameters, geom, coor_qp_sl, hF, lagr_c, &
-                        gap, gamma_c, projRmVal, l_cont_qp, lagr_f, &
-                        vT, gamma_f, projBsVal, l_fric_qp, dGap=dGap, &
-                        mu_c=mu_c, mu_f=mu_f, jump_t=jump_t)
+        call laElemCont(parameters, geom, coor_qp_sl, hF, &
+                        lagr_c, gap, gamma_c, projRmVal, l_cont_qp, &
+                        lagr_f, vT, gamma_f, projBsVal, l_fric_qp, &
+                        dGap=dGap, mu_c=mu_c, mu_f=mu_f, jump_t=jump_t)
 !
 ! ------ CONTACT PART (always computed)
 !

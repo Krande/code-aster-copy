@@ -50,6 +50,7 @@ using VectorComplex = std::vector< ASTERCOMPLEX >;
 using VectorString = std::vector< std::string >;
 
 using VectorOfVectorsLong = std::vector< VectorLong >;
+using VectorOfVectorsReal = std::vector< VectorReal >;
 
 using SetInt = std::set< ASTERINTEGER4 >;
 using SetLong = std::set< ASTERINTEGER >;

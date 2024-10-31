@@ -283,6 +283,18 @@ JeveuxVectorLong BaseMesh::getCellsType() const {
     return _cellsType;
 };
 
+ASTERINTEGER BaseMesh::getCellDime( const ASTERINTEGER &index ) const {
+    ASTERINTEGER returnValue;
+
+    auto cellType = getCellType( index );
+    const std::string cata = "&CATA.TM.TMDIM";
+    JeveuxChar32 objName, charName;
+    CALLO_JEXNUM( objName, cata, &cellType );
+    CALLO_JENONU( objName, &returnValue );
+
+    return returnValue;
+};
+
 std::string BaseMesh::getCellTypeName( const ASTERINTEGER &index ) const {
     auto cellType = getCellType( index );
     const std::string cata = "&CATA.TM.NOMTM";
@@ -315,6 +327,34 @@ bool BaseMesh::hasCellsOfType( const std::string typma ) const {
             return true;
     }
     return false;
+}
+
+bool BaseMesh::isSkin( const std::string groupName ) const {
+
+    if ( isParallel() ) {
+        auto meshDime = getDimension();
+        std::cout << "PARALLEL Mesh dime: " << meshDime << std::endl;
+        return true;
+    } else {
+        auto meshDime = getDimension();
+        std::cout << "Mesh dime: " << meshDime << std::endl;
+        if ( hasGroupOfCells( groupName ) ) {
+            const VectorLong cells = getCells( groupName );
+            const auto cellsType = getCellsType();
+            for ( auto &cellId : cells ) {
+                auto cellType = ( *cellsType )[cellId];
+                auto cellDime = getCellDime( cellType );
+                std::cout << "Cell dime: " << cellDime << std::endl;
+                if ( cellDime != ( meshDime - 1 ) ) {
+                    return false;
+                }
+            }
+
+        } else {
+            throw std::runtime_error( "The given group " + groupName + " doesn't exist in mesh" );
+        }
+    }
+    return true;
 }
 
 bool BaseMesh::build() {

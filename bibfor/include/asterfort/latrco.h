@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "mesh_pairing_type.h"
 !
 interface
-    subroutine latrco(i_tria, nb_poin_inte, poin_inte, tria_coor)
-        integer, intent(in) :: i_tria
-        integer, intent(in) :: nb_poin_inte
-        real(kind=8), intent(in) :: poin_inte(2,8)
-        real(kind=8), intent(out) :: tria_coor(2,3)
+    subroutine latrco(iTria, nbPoinInte, poinInte, triaCoorPara)
+        integer, intent(in) :: iTria
+        integer, intent(in) :: nbPoinInte
+        real(kind=8), intent(in) :: poinInte(2, MAX_NB_INTE)
+        real(kind=8), intent(out) :: triaCoorPara(2, 3)
     end subroutine latrco
 end interface

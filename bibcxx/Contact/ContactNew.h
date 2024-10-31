@@ -1,8 +1,8 @@
 /**
  * @file ContactNew.h
- * @brief Fichier entete de la class ContactNew
+ * @brief Header of class ContactNew
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,126 +33,142 @@
 
 class ContactNew : public DataStructure {
   protected:
-    /** @brief Modele */
+    /** @brief Model */
     ModelPtr _model;
-    /** @brief Ligel ".CHME.LIGRE" */
+
+    /** @brief Ligrel ".CHME.LIGRE" */
     FiniteElementDescriptorPtr _FEDesc;
-    /** @brief List of contact zone */
+
+    /** @brief List of contact zones */
     std::vector< ContactZonePtr > _zones;
+
     /** @brief Level of verbosity */
     ASTERINTEGER _verbosity;
 
-    /**
-     * @brief Constructeur
-     */
+  protected:
+    /** @brief Main constructor */
     ContactNew( const std::string name, const ModelPtr model, const std::string type );
 
+  private:
+    /** @brief Get global dimension of space */
+    ASTERINTEGER getSpaceDime() const;
+
   public:
-    typedef std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > VectorLongPairs;
+    using ContactNewPtr = std::shared_ptr< ContactNew >;
 
-    /**
-     * @typedef ContactNewPtr
-     * @brief Pointeur intelligent vers un ContactNew
-     */
-    typedef std::shared_ptr< ContactNew > ContactNewPtr;
-
-    /**
-     * @brief Constructeur
-     */
+    /** @brief No default constructor */
     ContactNew() = delete;
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor with given name */
     ContactNew( const std::string name, const ModelPtr model )
         : ContactNew( name, model, "CHAR_CONT" ) {};
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor with automatic name */
     ContactNew( const ModelPtr model ) : ContactNew( ResultNaming::getNewResultName(), model ) {};
 
-    /**
-     * @brief Get Model
-     */
-    ModelPtr getModel() const { return _model; }
-
-    /**
-     * @brief Get FiniteElementDescriptor
-     */
-    FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; }
-
+    /** @brief Get mesh */
     BaseMeshPtr getMesh() const { return _model->getMesh(); }
 
-    void appendContactZone( const ContactZonePtr zone ) { _zones.push_back( zone ); }
+    /** @brief Get model */
+    ModelPtr getModel() const { return _model; }
 
+    /** @brief Get Finite Element Descriptor */
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; }
+
+    /** @brief Set verbosity */
+    void setVerbosity( const ASTERINTEGER &level );
+
+    /** @brief Get verbosity */
+    ASTERINTEGER getVerbosity() const { return _verbosity; }
+
+    /** @brief Append contact zone */
+    void appendContactZone( const ContactZonePtr zone );
+
+    /** @brief Get number of contact zones */
     ASTERINTEGER getNumberOfContactZones() const { return _zones.size(); }
 
+    /** @brief Get contact zone */
     ContactZonePtr getContactZone( const ASTERINTEGER &zone_id ) const {
         return _zones.at( zone_id );
     }
 
+    /** @brief Get pair geometry of zone */
+    MeshPairingPtr getMeshPairing( const ASTERINTEGER &zone_id ) {
+        return _zones.at( zone_id )->getMeshPairing();
+    };
+
+    /** @brief Clear pairing result of zone */
+    void clearPairing( const ASTERINTEGER &zone_id ) {
+        _zones.at( zone_id )->getMeshPairing()->clearResult();
+    };
+
+    /** @brief Update coordinates */
+    void updateCoordinates( const FieldOnNodesRealPtr &disp ) {
+        for ( auto &zone : _zones ) {
+            zone->updateCoordinates( disp );
+        }
+    };
+
+    /** @brief Set coordinates */
+    void setCoordinates( const MeshCoordinatesFieldPtr &coor ) {
+        for ( auto &zone : _zones ) {
+            zone->setCoordinates( coor );
+        }
+    };
+
+    /** @brief Get all contact zones */
     std::vector< ContactZonePtr > getContactZones() const { return _zones; }
 
-    void setVerbosity( const ASTERINTEGER &level ) { _verbosity = level; }
-
-    ASTERINTEGER getVerbosity() const { return _verbosity; }
-
-    bool build();
-
-    void enableFriction( const bool &friction );
-
-    bool hasFriction() const;
-
-    void enableSmoothing( const bool &smoothing );
-
-    bool hasSmoothing() const;
-
+    /** @brief Get all slaves nodes */
     VectorLong getSlaveNodes() const;
 
+    /** @brief Get all slaves cells */
     VectorLong getSlaveCells() const;
+
+    /** @brief Set/unset friction flag everywhere */
+    void enableFriction( const bool &friction );
+
+    /** @brief Detect if friction on one of the contact zone */
+    bool hasFriction() const;
+
+    /** @brief Set/unset smoothing of normals flag everywhere */
+    void enableSmoothing( const bool &smoothing );
+
+    /** @brief Detect if smoothing of normals on one of the contact zone */
+    bool hasSmoothing() const;
+
+    /** @brief Get number of intersection points on all zones */
+    VectorLong getNumberOfIntersectionPoints() const;
+
+    /** @brief Get number of intersection points on a contact zone */
+    VectorLong getNumberOfIntersectionPoints( const ASTERINTEGER &indexZone ) const;
+
+    /** @brief Builder from Fortran part */
+    bool build();
 };
 
-/**
- * @typedef ContactNewPtr
- * @brief Pointeur intelligent vers un ContactNew
- */
 using ContactNewPtr = std::shared_ptr< ContactNew >;
 
 class FrictionNew : public ContactNew {
 
   public:
-    /**
-     * @typedef FrictionNewPtr
-     * @brief Pointeur intelligent vers un FrictionNew
-     */
-    typedef std::shared_ptr< FrictionNew > FrictionNewPtr;
+    using FrictionNewPtr = std::shared_ptr< FrictionNew >;
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief No default constructor */
     FrictionNew() = delete;
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor with given name */
     FrictionNew( const std::string name, const ModelPtr model )
         : ContactNew( name, model, "CHAR_FROT" ) {};
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor with automatic name */
     FrictionNew( const ModelPtr model ) : FrictionNew( ResultNaming::getNewResultName(), model ) {};
 
+    /** @brief Builder from Fortran part */
     bool build() {
         AS_ASSERT( hasFriction() );
-
         return ContactNew::build();
     };
 };
 
-/**
- * @typedef FrictionNewPtr
- * @brief Pointeur intelligent vers un FrictionNew
- */
 using FrictionNewPtr = std::shared_ptr< FrictionNew >;

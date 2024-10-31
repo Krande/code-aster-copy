@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,10 +60,8 @@ subroutine lcptga(elem_dime, tria_coor, gauss_family, &
 !
     model_ndim = elem_dime-1
     nb_gauss = 0
-    do i_dime = 1, model_ndim
-        gauss_coor(i_dime, 1:12) = 0.d0
-    end do
-    gauss_weight(1:12) = 0.d0
+    gauss_coor = 0.d0
+    gauss_weight = 0.d0
 !
 ! - Select reference geometry for auxiliary parametric space
 !
