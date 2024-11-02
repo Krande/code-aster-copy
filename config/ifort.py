@@ -99,25 +99,16 @@ all_ifort_platforms = [('intel64', 'amd64'), ('em64t', 'amd64'), ('ia32', 'x86')
 
 @conf
 def gather_ifort_versions(conf, versions):
-    ifort_batch_file = pathlib.Path(os.getenv("INTEL_VARS_PATH")+'\\vars.bat')
-    if ifort_batch_file.exists():
-        arch = 'amd64'
-        version = '192.49896'
-        target = 'intel64'
-        targets = dict(intel64=target_compiler(conf, 'intel', arch, version, target, ifort_batch_file.as_posix()))
-        major = version[0:2]
-        versions['intel ' + major] = targets
-        return
-
     version_pattern = re.compile(r'^...?.?\....?.?')
     try:
         all_versions = Utils.winreg.OpenKey(Utils.winreg.HKEY_LOCAL_MACHINE,
-                                            'SOFTWARE\\Wow6432node\\Intel\\Compilers\\Fortran')
+                                            'SOFTWARE\\Wow6432node\\Intel\\Compilers\\1AFortran')
     except OSError:
         try:
             all_versions = Utils.winreg.OpenKey(Utils.winreg.HKEY_LOCAL_MACHINE, 'SOFTWARE\\Intel\\Compilers\\Fortran')
         except OSError:
             return
+
     index = 0
     while 1:
         try:
@@ -147,7 +138,7 @@ def gather_ifort_versions(conf, versions):
                 else:
                     batch_file = os.path.join(path, 'env', 'vars.bat')
                     if os.path.isfile(batch_file):
-                        Logs.info(f"{conf=}, {arch=}, {version=}, {target=}, {batch_file=}")
+                        # Logs.info(f"{conf=}, {arch=}, {version=}, {target=}, {batch_file=}")
                         targets[target] = target_compiler(conf, 'intel', arch, version, target, batch_file)
         for target, arch in all_ifort_platforms:
             try:
@@ -261,6 +252,9 @@ class target_compiler(object):
         self.bat_target = bat_target
         self.bat = bat
         self.callback = callback
+        self.bindirs = None
+        self.incdirs = None
+        self.libdirs = None
 
     def evaluate(self):
         if self.is_done:
@@ -268,7 +262,8 @@ class target_compiler(object):
         self.is_done = True
         try:
             vs = self.conf.get_ifort_version_win32(self.compiler, self.version, self.bat_target, self.bat)
-        except Errors.ConfigurationError:
+        except Errors.ConfigurationError as e:
+            Logs.warn(f"ifort: {e}")
             self.is_valid = False
             return
         if self.callback:
@@ -297,7 +292,7 @@ def get_ifort_versions(self, eval_and_save=True):
 
 def _get_prog_names(self, compiler):
     if compiler == 'intel':
-        compiler_name = 'ifort'
+        compiler_name = 'ifx'
         linker_name = 'XILINK'
         lib_name = 'LIB'
     else:
