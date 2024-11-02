@@ -99,6 +99,17 @@ all_ifort_platforms = [('intel64', 'amd64'), ('em64t', 'amd64'), ('ia32', 'x86')
 
 @conf
 def gather_ifort_versions(conf, versions):
+    ifort_batch_file = pathlib.Path(os.getenv("INTEL_VARS_PATH")+'\\vars.bat')
+    ifort_version = os.getenv("INTEL_FORTRAN_VERSION", None)
+    if ifort_batch_file.exists() and ifort_version:
+        arch = 'amd64'
+        version = ifort_version
+        target = 'intel64'
+        targets = dict(intel64=target_compiler(conf, 'intel', arch, version, target, ifort_batch_file.as_posix()))
+        major = version[0:2]
+        versions['intel ' + major] = targets
+        return
+
     version_pattern = re.compile(r'^...?.?\....?.?')
     try:
         all_versions = Utils.winreg.OpenKey(Utils.winreg.HKEY_LOCAL_MACHINE,
