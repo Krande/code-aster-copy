@@ -110,6 +110,8 @@ def gather_ifort_versions(conf, versions):
         major = version[0:2]
         versions['intel ' + major] = targets
         return
+    else:
+        Logs.info(f"INTEL_VARS_PATH: {ifort_batch_file}, INTEL_FORTRAN_VERSION: {ifort_version}")
 
     version_pattern = re.compile(r'^...?.?\....?.?')
     try:
