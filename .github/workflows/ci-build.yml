@@ -17,6 +17,12 @@ jobs:
         with:
             fetch-depth: '1'
 
+      - uses: ./.github/actions/install-intel-fortran
+        if: ${{ runner.os == 'Windows' }}
+        with:
+          version: 2025.0.0
+          activate: false
+
       - uses: prefix-dev/setup-pixi@v0.8.0
         with:
           pixi-version: v0.34.0
