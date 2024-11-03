@@ -48,7 +48,7 @@ if %PIXI_BUILD% == 1 (
     set "LIBRARY_PREFIX=%CONDA_PREFIX%/Library"
     set "ASTER_ROOT=%CONDA_PREFIX%"
     set "RUNASTER_ROOT=%CONDA_PREFIX%/Library"
-    call %PARENT_DIR%\ifx_env.bat
+    REM call %PARENT_DIR%\ifx_env.bat
 ) else (
     call %PARENT_DIR%\conda_env.bat
 )

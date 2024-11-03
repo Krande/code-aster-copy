@@ -33,7 +33,7 @@ metis = { version = "*", build = "*debug*" }
 mumps = { version = "*", build = "*debug*" }
 
 [tasks]
-build = { cmd = ["conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { RUNASTER_ROOT = "%CONDA_PREFIX%/Library", ASTER_ROOT = "%CONDA_PREFIX%" } }
+build = { cmd = ["conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { RUNASTER_ROOT = "%CONDA_PREFIX%/Library", ASTER_ROOT = "%CONDA_PREFIX%", INTEL_VARS_PATH="C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install = {cmd=["conda_rearrange.bat"], description="Copy the latest build files to their respective locations"}
 test = { cmd = [
     "run_ctest",
@@ -56,3 +56,6 @@ bibfor_cmake_configure = { cmd = [
     "--fresh"
 ], description = "Configure the project for building bibfor", env = { FC = "ifx.exe", CC = "clang-cl", CXX = "clang-cl" } }
 cmake_bibfor = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibfor", depends_on = ["bibfor_cmake_configure"] }
+
+[target.win-64.activation]
+scripts = ["activate.bat", "activate_intel.bat"]
