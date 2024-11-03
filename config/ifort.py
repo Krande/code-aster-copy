@@ -101,7 +101,7 @@ all_ifort_platforms = [('intel64', 'amd64'), ('em64t', 'amd64'), ('ia32', 'x86')
 def gather_ifort_versions(conf, versions):
     ifort_batch_file = pathlib.Path(os.getenv("INTEL_VARS_PATH")+'\\vars.bat')
     ifort_version = os.getenv("INTEL_FORTRAN_VERSION", None)
-    if ifort_batch_file.exists() and ifort_version:
+    if ifort_batch_file.exists():
         Logs.info(f"Using ifort batch file: {ifort_batch_file}")
         arch = 'amd64'
         version = ifort_version
