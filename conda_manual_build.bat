@@ -188,6 +188,7 @@ if %CLEAN_BUILD%==1 (
       --enable-mumps ^
       --enable-metis ^
       --enable-scotch ^
+      --disable-openmp ^
       --disable-mpi ^
       --disable-petsc ^
       --maths-libs=auto ^
