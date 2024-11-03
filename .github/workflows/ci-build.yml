@@ -1,0 +1,33 @@
+name: ci-code-aster-build
+
+# bump 1
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - win-support
+#    - donotrun
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0.8.0
+        with:
+          pixi-version: v0.34.0
+          cache: true
+
+      - name: Build Code_Aster
+        run: |
+          pixi run build
+
+      - name: Install Code_Aster
+        run: |
+          pixi run install
+
+      - name: Test Code_Aster
+        run: |
+          pixi run test
