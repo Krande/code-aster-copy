@@ -197,7 +197,10 @@ if %CLEAN_BUILD%==1 (
 )
 REM   --install-tests ^
 
-if errorlevel 1 exit 1
+if errorlevel 1 (
+    type %OUTPUT_DIR%/config.log
+    exit 1
+)
 
 REM Conditional log handling
 if %USE_LOG%==1 (
