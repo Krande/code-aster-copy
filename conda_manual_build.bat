@@ -196,9 +196,8 @@ if %CLEAN_BUILD%==1 (
       --without-repo %EXTRA_ARGS%
 )
 REM   --install-tests ^
-
-if errorlevel 1 (
-    type %OUTPUT_DIR%/config.log
+if "%errorlevel%" == "1" (
+    type "%OUTPUT_DIR%/config.log"
     exit 1
 )
 
