@@ -26,12 +26,9 @@ import os
 import medcoupling as MEDC
 import ParaMEDMEM as PMM
 
-from ..Commands import LIRE_CHAMP, PROJ_CHAMP, AFFE_MODELE, DEFI_GROUP
-from ..Objects import Mesh, LoadResult, SimpleFieldOnNodesReal
+from ..Commands import LIRE_CHAMP, PROJ_CHAMP, AFFE_MODELE
+from ..Objects import LoadResult, SimpleFieldOnNodesReal, SimpleFieldOnCellsReal
 from ..Utilities import logger, no_new_attributes
-from ..Utilities.mpi_utils import MPI
-
-from mpi4py import MPI as MPI4
 
 
 class CoupledField:
@@ -177,12 +174,6 @@ class MEDCoupler:
         self.mesh = mesh
         self.mesh_interf = mesh.restrict(groupsOfCells)
 
-        self.mesh_interf = DEFI_GROUP(
-            reuse=self.mesh_interf,
-            MAILLAGE=self.mesh_interf,
-            CREA_GROUP_NO=_F(GROUP_MA=groupsOfCells),
-        )
-
         groupsOfCells_res = []
         for grp in groupsOfCells:
             if self.mesh.hasGroupOfCells(grp, local=True):
@@ -217,11 +208,12 @@ class MEDCoupler:
     def restrict_field(self, field, cmps=[]):
         """Create a new field restricted to the interface mesh."""
 
-        if field.getLocalization() == "NOEU":
+        loc = field.getLocalization()
 
-            if len(cmps) == 0:
-                cmps = field.getComponents()
+        if len(cmps) == 0:
+            cmps = field.getComponents()
 
+        if loc == "NOEU":
             sfield = SimpleFieldOnNodesReal(self.mesh_interf, field.getPhysicalQuantity(), cmps)
 
             rest2orig = self.mesh_interf.getRestrictedToOriginalNodesIds()
@@ -236,7 +228,23 @@ class MEDCoupler:
             return sfield
 
         else:
-            raise NotImplemented()
+            assert loc == "ELEM"
+
+            sfield = SimpleFieldOnCellsReal(
+                self.mesh_interf, loc, field.getPhysicalQuantity(), cmps
+            )
+
+            orig2rest = self.mesh_interf.getOriginalToRestrictedCellsIds()
+
+            values, descr = field.getValuesWithDescription(
+                cmps, self.mesh_interf.getGroupsOfCells()
+            )
+
+            sfield.setValues(
+                [orig2rest[cell] for cell in descr[0]], descr[1], descr[2], descr[3], values
+            )
+
+            return sfield
 
     def extent_field(self, field, cmps=[]):
         """Create a new field extent to the whole mesh."""
@@ -375,19 +383,6 @@ class MEDCoupler:
                 dec.recvData()
         self.log(f"pmm_recv: done", verbosity=2)
         return fields
-
-    @staticmethod
-    def _write_field2med(field, filename):
-        """Write field on disk using MED format.
-
-        Arguments:
-            field (FieldOn*): aster field.
-            filename (str): name of MED file.
-        """
-        if os.path.exists(filename):
-            os.remove(filename)
-        logger.debug("writing file {0!r}...".format(filename))
-        field.printMedFile(filename)
 
     def _medcfield2aster(self, mc_field):
         """Convert MEDCouplingField to FieldOnNodes/Cells
@@ -564,20 +559,20 @@ class MEDCoupler:
         )
         os.remove(tmpfile)
 
-        evol_char = LoadResult()
-        evol_char.allocate(1)
-        evol_char.setModel(self.model_interf, 0)
-        evol_char.setTime(time, 0)
-        evol_char.setField(forc_elem, "FORC_NODA", 0)
-
         if self.matr_proj is None:
             self.matr_proj = PROJ_CHAMP(
                 METHODE="COLLOCATION", PROJECTION="NON", MODELE_1=self.model_interf, MODELE_2=model
             )
 
-        return PROJ_CHAMP(
-            RESULTAT=evol_char, MATR_PROJECTION=self.matr_proj, TOUT_ORDRE="OUI", MODELE_2=model
-        )
+        forc_proj = PROJ_CHAMP(CHAM_GD=forc_elem, MATR_PROJECTION=self.matr_proj, MODELE_2=model)
+
+        evol_char = LoadResult()
+        evol_char.allocate(1)
+        evol_char.setModel(model, 0)
+        evol_char.setTime(time, 0)
+        evol_char.setField(forc_proj, "FORC_NODA", 0)
+
+        return evol_char
 
     def project_field(self, field):
         """Project field from ther interface to the whole mesh and

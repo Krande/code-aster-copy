@@ -3755,9 +3755,17 @@ class SimpleFieldOnCellsReal(DataField):
 
         2. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: int, arg5: int, arg6: bool) -> None
+        3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh) -> None
 
-        4. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: list[int], arg5: int, arg6: bool) -> None
+        4. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str]) -> None
+
+        5. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: bool) -> None
+
+        6. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: int, arg5: int) -> None
+
+        7. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: int, arg5: int, arg6: bool) -> None
+
+        8. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: list[int], arg5: int, arg6: bool) -> None
         """
 
     def __setitem__(self, arg0, arg1):
@@ -3786,6 +3794,9 @@ class SimpleFieldOnCellsReal(DataField):
         pass
 
     def getComponents(self):
+        pass
+
+    def getComponentsName2Index(self):
         pass
 
     def getLocalization(self):
@@ -3837,21 +3848,42 @@ class SimpleFieldOnCellsReal(DataField):
         """Returns values and description corresponding to given cmp and given cells
 
         Args:
-            cells[list[int]]: list of nodes
-            cmp[str]: component to extract
+            cells (list[int]): list of cells
+            cmps (list[str]): components to extract
 
         Returns:
             values[list[double],
-            tuple[cells[list[int]], points[list[int]], subpoints[list[int]]]
+            tuple[cells[list[int]], cmps[list[int]]  points[list[int]], subpoints[list[int]]]
         """
 
-    def hasValue(self, ima, icmp, ipt, ispt=0):
-        """Returns True  if the value of the `icmp` component of the field on the `ima` cell,
+    def hasValue(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. hasValue(self: libaster.SimpleFieldOnCellsReal, ima: int, icmp: int, ipt: int, ispt: int = 0) -> bool
+
+
+        Returns True  if the value of the `icmp` component of the field on the `ima` cell,
         at the `ipt` point, at the `ispt` sub-point is affected.
 
         Args:
             ima  (int): Index of cells.
             icmp (int): Index of component.
+            ipt  (int): Index of point.
+            ispt (int): Index of sub-point (default = 0).
+
+        Returns:
+            bool: True  if the value is affected
+
+
+        2. hasValue(self: libaster.SimpleFieldOnCellsReal, ima: int, cmp: str, ipt: int, ispt: int = 0) -> bool
+
+
+        Returns True  if the value of the `icmp` component of the field on the `ima` cell,
+        at the `ipt` point, at the `ispt` sub-point is affected.
+
+        Args:
+            ima  (int): Index of cells.
+            cmp (str): name of component.
             ipt  (int): Index of point.
             ispt (int): Index of sub-point (default = 0).
 
@@ -3901,6 +3933,9 @@ class SimpleFieldOnCellsReal(DataField):
             ipt  (int): Index of point.
             val (float) : value to set
         """
+
+    def setValues(self, arg0, arg1, arg2, arg3, arg4):
+        pass
 
     def toFieldOnCells(self, fed, option="", nompar=""):
         """Converts to FieldOnCells

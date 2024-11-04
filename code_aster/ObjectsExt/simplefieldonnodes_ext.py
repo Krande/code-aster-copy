@@ -129,10 +129,6 @@ class ExtendedSimpleFieldOnNodesReal:
         restricted_nodes = np.where(np.any(mask, axis=1) == True)[0]
         restricted_values = values[restricted_nodes, :]
 
-        # Med profile
-        field_profile = medc.DataArrayInt(restricted_nodes)
-        field_profile.setName("NodesProfile")
-
         # Medcoupling field
         field_values = medc.DataArrayDouble(restricted_values)
         field_values.setInfoOnComponents(self.getComponents())
@@ -145,6 +141,10 @@ class ExtendedSimpleFieldOnNodesReal:
         if len(restricted_nodes) == medmesh.getNumberOfNodes():
             medc_node_field.setMesh(medmesh)
         else:
+            # Med profile
+            field_profile = medc.DataArrayInt(restricted_nodes)
+            field_profile.setName("NodesProfile")
+
             # Med support mesh for field ( restricted to profile nodes ) without cells
             field_mesh = medc.MEDCouplingUMesh()
             field_mesh.setName("")

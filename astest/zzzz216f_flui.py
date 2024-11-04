@@ -198,7 +198,7 @@ def coupled_fluid(cpl, UNITE_MA):
             filename = "pres_elem.med"
             pres.printMedFile(filename)
 
-            mc_press = MEDC.ReadFieldCell(
+            pressure = MEDC.ReadFieldCell(
                 filename, pres.getMesh().getName(), -1, pres.getName(), -1, -1
             )
             pressure = mc_press[self._medcpl.interf_ids]
@@ -272,7 +272,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             # export
 
-            mc_pres = self._export_pressure(force_elem)
+            mc_pres = self._medcpl.export_field(force_elem, "Force")
 
             # test convergence:
             has_cvg = False
