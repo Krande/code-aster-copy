@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -367,6 +367,8 @@ DETRUIRE(NOM=XX)
 #   fy= z
 FX = FORMULE(VALE="sqrt(X**2+Y**2)", NOM_PARA=["X", "Y"])
 FY = FORMULE(VALE="Z", NOM_PARA="Z")
+FZ = DEFI_CONSTANTE(VALE=0.0)
+
 
 # 3.1) Projection d'un champ de temperature :
 # --------------------------------------------
@@ -400,7 +402,9 @@ XX = PROJ_CHAMP(
     METHODE="COLLOCATION",
     MODELE_1=CARRE2,
     MODELE_2=CUBE1,
-    VIS_A_VIS=_F(GROUP_MA_1="CARRE2", GROUP_MA_2="CUBE1", CAS_FIGURE="2D", TRANSF_GEOM_2=(FX, FY)),
+    VIS_A_VIS=_F(
+        GROUP_MA_1="CARRE2", GROUP_MA_2="CUBE1", CAS_FIGURE="2D", TRANSF_GEOM_2=(FX, FY, FZ)
+    ),
 )
 TEST_RESU(
     RESU=_F(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,6 +88,8 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
                 type_cpla = 'DEBORST'
             end if
         elseif (model_type .eq. 'D_PLAN') then
+            model_mfront = MFRONT_MODEL_PLANESTRAIN
+        elseif (model_type .eq. 'PLAN') then
             model_mfront = MFRONT_MODEL_PLANESTRAIN
         elseif (model_type .eq. 'AXIS') then
             model_mfront = MFRONT_MODEL_AXISYMMETRICAL

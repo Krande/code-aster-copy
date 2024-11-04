@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -357,6 +357,7 @@ CHAMPMAB = AFFE_MATERIAU(
 FX = FORMULE(NOM_PARA=("X", "Y"), VALE="X+201.")
 FY = FORMULE(NOM_PARA=("X", "Y"), VALE="Y")
 FX2 = FORMULE(NOM_PARA=("X", "Y"), VALE="X-200.")
+FZ0 = DEFI_CONSTANTE(VALE=0.0)
 
 XX = PROJ_CHAMP(
     RESULTAT=DYNA0,
@@ -365,8 +366,8 @@ XX = PROJ_CHAMP(
     MODELE_1=MODELE0,
     MODELE_2=MODELE,
     VIS_A_VIS=(
-        _F(GROUP_MA_2="FOND_RG", GROUP_MA_1="SURF", CAS_FIGURE="2D", TRANSF_GEOM_2=(FX, FY)),
-        _F(GROUP_MA_2="FOND_RD", GROUP_MA_1="SURF", CAS_FIGURE="2D", TRANSF_GEOM_2=(FX2, FY)),
+        _F(GROUP_MA_2="FOND_RG", GROUP_MA_1="SURF", CAS_FIGURE="2D", TRANSF_GEOM_2=(FX, FY, FZ0)),
+        _F(GROUP_MA_2="FOND_RD", GROUP_MA_1="SURF", CAS_FIGURE="2D", TRANSF_GEOM_2=(FX2, FY, FZ0)),
     ),
     PROL_ZERO="OUI",
 )
