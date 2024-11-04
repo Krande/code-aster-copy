@@ -92,12 +92,12 @@ Returns:
                                  const ASTERINTEGER >(
                   &ParallelEquationNumbering::getDOFsWithDescription, py::const_ ),
               R"(
-Get the dofs associated to the given component restricted to the given group
+Get the dofs associated to the given component restricted to the given group.
 
 Arguments:
-    list[str] = []: components to extract
-    list[str] = []: group names to filter
-    local (bool) = True: if True use local dof index else use global index in HPC
+    cmps (list[str]): components to extract.
+    groupNames (list[str]): group names to filter.
+    local (bool): if True use local dof index else use global index in HPC
     same_rank : - None: keep all nodes (default: None)
                 - True: keep the nodes which are owned by the current MPI-rank
                 - False: keep the nodes which are not owned by the current MPI-rank
@@ -106,28 +106,28 @@ Returns:
     pair[list[int], list[str]]: list of nodes and list of components
     list[int]: list of dofs
             )",
-              py::arg( "cmp" ) = VectorString(), py::arg( "groupNames" ) = VectorString(),
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupNames" ) = VectorString(),
               py::arg( "local" ) = true, py::arg( "same_rank" ) = PythonBool::None )
         .def( "getDOFsWithDescription",
               py::overload_cast< const VectorString &, const VectorLong &, const bool,
                                  const ASTERINTEGER >(
                   &ParallelEquationNumbering::getDOFsWithDescription, py::const_ ),
               R"(
-Get the dofs associated to the given component restricted to the given nodes
+Get the dofs associated to the given component restricted to the given nodes.
 
 Arguments:
-    list[str] = []: components to extract
-    list[int] = []: list of nodes to filter
-    local (bool) = True: if True use local dof index else use global index in HPC
+    cmps (list[str]): components to extract.
+    nodes (list[int]): list of nodes to filter.
+    local (bool): if True use local dof index else use global index in HPC
     same_rank : - None: keep all nodes (default: None)
                 - True: keep the nodes which are owned by the current MPI-rank
                 - False: keep the nodes which are not owned by the current MPI-rank
 
 Returns:
-    pair[list[int], list[str]]: list of nodes and list of components
-    list[int]: list of dofs
+    pair[list[int], list[str]]: list of nodes and list of components.
+    list[int]: list of dofs.
             )",
-              py::arg( "cmp" ) = VectorString(), py::arg( "groupNames" ) = VectorString(),
+              py::arg( "cmps" ) = VectorString(), py::arg( "nodes" ) = VectorLong(),
               py::arg( "local" ) = true, py::arg( "same_rank" ) = PythonBool::None );
 };
 

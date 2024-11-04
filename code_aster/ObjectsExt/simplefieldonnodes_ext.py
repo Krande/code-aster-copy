@@ -76,7 +76,39 @@ class ExtendedSimpleFieldOnNodesReal:
 
         return values, mask
 
-    def toMedCouplingField(self, medmesh):
+    def fromMEDCouplingField(self, mc_field):
+        """Import the field to a new MEDCoupling field. Set values in place.
+
+            It assumes that the DataArray contains the list of components and
+            its names is the physical quantity.
+
+        Arguments:
+            field (*MEDCouplingFieldDouble*): The medcoupling field.
+        """
+
+        if not isinstance(mc_field, (medc.MEDCouplingFieldDouble, PMM.MEDCouplingFieldDouble)):
+            msg = "fromMEDCouplingField() argument must be a MEDCouplingFieldDouble, not '{}'"
+            raise TypeError(msg.format(type(mc_field).__name__))
+
+        if mc_field.getTypeOfField() != medc.ON_NODES:
+            raise RuntimeError("Field is not defined on nodes.")
+
+        mesh = mc_field.getMesh()
+        if mesh.getNumberOfNodes() != self.getMesh().getNumberOfNodes():
+            raise RuntimeError("Meshes have an incompatible number of nodes.")
+
+        # mc values
+        arr = mc_field.getArray()
+
+        cmps = arr.getInfoOnComponents()
+        phys = arr.getName()
+        print(phys, cmps, flush=True)
+
+        self.allocate(phys, cmps)
+
+        self.setValues(arr.getValues())
+
+    def toMEDCouplingField(self, medmesh):
         """Export the field to a new MEDCoupling field
 
         Arguments:
@@ -87,7 +119,7 @@ class ExtendedSimpleFieldOnNodesReal:
         """
 
         if not isinstance(medmesh, (medc.MEDCouplingUMesh, PMM.MEDCouplingUMesh)):
-            msg = "toMedCouplingField() argument must be a MEDCouplingUMesh, not '{}'"
+            msg = "toMEDCouplingField() argument must be a MEDCouplingUMesh, not '{}'"
             raise TypeError(msg.format(type(medmesh).__name__))
 
         # Aster values
@@ -104,6 +136,7 @@ class ExtendedSimpleFieldOnNodesReal:
         # Medcoupling field
         field_values = medc.DataArrayDouble(restricted_values)
         field_values.setInfoOnComponents(self.getComponents())
+        field_values.setName(self.getPhysicalQuantity())
         medc_node_field = medc.MEDCouplingFieldDouble(medc.ON_NODES, medc.ONE_TIME)
         medc_node_field.setName(self.getPhysicalQuantity())
         medc_node_field.setArray(field_values)
@@ -159,6 +192,7 @@ class ExtendedSimpleFieldOnNodesReal:
         # Medcoupling field
         field_values = medc.DataArrayDouble(restricted_values)
         field_values.setInfoOnComponents(self.getComponents())
+        field_values.setName(self.getPhysicalQuantity())
         medc_node_field = medc.MEDCouplingFieldDouble(medc.ON_NODES, medc.ONE_TIME)
         medc_node_field.setMesh(field_mesh)
         medc_node_field.setName(self.getPhysicalQuantity())

@@ -214,6 +214,10 @@ test.assertAlmostEqual(
 
 medmesh = resu.getMesh().createMedCouplingMesh()
 medfield = resu.toMEDFileField1TS(medmesh)
+medcfield = resu2.toMEDCouplingField(medmesh.getMeshAtLevel(0))
+
+resu3 = CA.SimpleFieldOnNodesReal(monMaillage)
+resu3.fromMEDCouplingField(medcfield)
 
 with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
     medmesh.write(f.name, 2)

@@ -154,6 +154,12 @@ class SimpleFieldOnNodes : public DataField {
     SimpleFieldOnNodes( const BaseMeshPtr mesh, const std::string quantity,
                         const VectorString &comp, bool zero = false )
         : SimpleFieldOnNodes( mesh ) {
+        this->allocate( quantity, comp, zero );
+    }
+
+    BaseMeshPtr getMesh() const { return _mesh; };
+
+    void allocate( const std::string quantity, const VectorString &comp, bool zero = false ) {
         ASTERINTEGER nbComp = comp.size();
         std::string base = "G";
 
@@ -166,8 +172,6 @@ class SimpleFieldOnNodes : public DataField {
 
         build();
     }
-
-    BaseMeshPtr getMesh() const { return _mesh; };
 
     /**
      * @brief Surcharge de l'operateur []
@@ -336,7 +340,7 @@ class SimpleFieldOnNodes : public DataField {
     std::string getPhysicalQuantity() const { return strip( ( *_descriptor )[1].toString() ); }
 
     void setValues( const VectorLong &nodes, const VectorString &cmps,
-                    const std::vector< ValueType > values ) {
+                    const std::vector< ValueType > &values ) {
 
         AS_ASSERT( nodes.size() == cmps.size() );
         AS_ASSERT( nodes.size() == values.size() );
@@ -345,6 +349,28 @@ class SimpleFieldOnNodes : public DataField {
         for ( int i = 0; i < size; i++ ) {
             ( *this )( nodes[i], cmps[i] ) = values[i];
         }
+    }
+
+    void setValues( const std::vector< std::vector< ValueType > > &values ) {
+
+        AS_ASSERT( values.size() == this->getNumberOfNodes() );
+        for ( int ino = 0; ino < this->getNumberOfNodes(); ino++ ) {
+            auto &row = values[ino];
+#ifdef ASTER_DEBUG_CXX
+            if ( this->getNumberOfComponents() != row.size() )
+                throw std::runtime_error( "Incompatible size" );
+#endif
+            for ( int icmp = 0; icmp < this->getNumberOfComponents(); icmp++ ) {
+                ( *this )( ino, icmp ) = row[icmp];
+            }
+        }
+    }
+
+    void setValues( const std::vector< ValueType > &values ) {
+
+        AS_ASSERT( values.size() == this->getNumberOfNodes() * this->getNumberOfComponents() );
+        _allocated->assign( true );
+        *_values = values;
     }
 
     /**

@@ -35,6 +35,7 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
         mod, "SimpleFieldOnNodesReal" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, BaseMeshPtr > ) )
         .def( py::init(
             &initFactoryPtr< SimpleFieldOnNodesReal, BaseMeshPtr, std::string, VectorString > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, BaseMeshPtr, std::string,
@@ -56,6 +57,15 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
             +[]( SimpleFieldOnNodesReal &v, const std::pair< ASTERINTEGER, std::string > &i ) {
                 return v.operator()( i.first, i.second );
             } )
+        .def( "allocate", &SimpleFieldOnNodesReal::allocate,
+              R"(
+            Allocate the field.
+
+            Arguments:
+                quantity [str]: physical quantity like 'DEPL_R'
+                cmps [list[str]]: list of components.
+            )",
+              py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "zero" ) = false )
         .def(
             "toFieldOnNodes", []( const SimpleFieldOnNodesReal &f ) { return toFieldOnNodes( f ); },
             R"(
@@ -112,7 +122,9 @@ Returns:
         .def( "getComponent", &SimpleFieldOnNodesReal::getComponent )
         .def( "getMesh", &SimpleFieldOnNodesReal::getMesh, R"(Returns base mesh)" )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesReal::getPhysicalQuantity )
-        .def( "setValues", &SimpleFieldOnNodesReal::setValues,
+        .def( "setValues",
+              py::overload_cast< const VectorLong &, const VectorString &, const VectorReal & >(
+                  &SimpleFieldOnNodesReal::setValues ),
               R"(
             Set values for a given list of triplet (node, cmp, value).
             Each value of the triplet is given as a separated list.
@@ -123,6 +135,27 @@ Returns:
                 values list[float]: list of values to set.
             )",
               py::arg( "nodes" ), py::arg( "cmps" ), py::arg( "values" ) )
+        .def( "setValues",
+              py::overload_cast< const VectorReal & >( &SimpleFieldOnNodesReal::setValues ),
+              R"(
+             Set values for each nodes and components as (node_0_val_0, node_0_val_1, ...)
+
+            Arguments:
+                values list[float]: list of values to set.
+
+            )",
+              py::arg( "values" ) )
+        .def( "setValues",
+              py::overload_cast< const std::vector< VectorReal > & >(
+                  &SimpleFieldOnNodesReal::setValues ),
+              R"(
+            Set values for each nodes and components.
+
+            Arguments:
+                values list[list[float]]: list of values to set.
+                For each node, give the values for all component is a list.
+            )",
+              py::arg( "values" ) )
         .def( "updateValuePointers", &SimpleFieldOnNodesReal::updateValuePointers );
 
     py::class_< SimpleFieldOnNodesComplex, SimpleFieldOnNodesComplexPtr, DataField >(

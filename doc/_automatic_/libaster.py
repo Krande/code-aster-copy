@@ -1864,15 +1864,37 @@ class EquationNumbering(DataStructure):
             dict[int, str] : dofs id for each node id and component id
         """
 
-    def getDOFsWithDescription(self, cmp, groupNames=[], local=True, same_rank=-1):
-        """Get the dofs associated to the given component restricted to the given group
-        Arguments:
-            str: component to extract
-            list[str] = []: group names to filter
-            local (bool) = True: if True use local dof index else use global index in HPC
-        Returns:
-            pair[list[int], list[str]]: list of nodes and list of components
-            list[int]: list of dofs
+    def getDOFsWithDescription(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getDOFsWithDescription(self: libaster.EquationNumbering, cmps: list[str] = [], groupNames: list[str] = [], local: bool = True, same_rank: int = <PythonBool.NONE: -1>) -> tuple[tuple[list[int], list[str]], list[int]]
+
+
+                    Get the dofs associated to the given component restricted to the given group.
+
+                    Arguments:
+                        cmps (list[str]): components to extract.
+                        groupNames (list[str]): group names to filter.
+                        local (bool): if True use local dof index else use global index in HPC.
+
+                    Returns:
+                        pair[list[int], list[str]]: list of nodes and list of components.
+                        list[int]: list of dofs.
+
+
+        2. getDOFsWithDescription(self: libaster.EquationNumbering, cmps: list[str] = [], nodes: list[int] = [], local: bool = True, same_rank: int = <PythonBool.NONE: -1>) -> tuple[tuple[list[int], list[str]], list[int]]
+
+
+                    Get the dofs associated to the given component restricted to the given nodes.
+
+                    Arguments:
+                        cmps (list[str]): components to extract.
+                        nodes (list[int]): list of nodes to filter.
+                        local (bool): if True use local dof index else use global index in HPC.
+
+                    Returns:
+                        pair[list[int], list[str]]: list of nodes and list of components.
+                        list[int]: list of dofs.
         """
 
     def getMesh(self):
@@ -3952,7 +3974,11 @@ class SimpleFieldOnNodesReal(DataField):
 
         2. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: str) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
+        3. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh) -> None
+
+        4. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str]) -> None
+
+        5. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
         """
 
     def __setitem__(self, *args, **kwargs):
@@ -3961,6 +3987,14 @@ class SimpleFieldOnNodesReal(DataField):
         1. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, int], arg1: float) -> float
 
         2. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, str]) -> float
+        """
+
+    def allocate(self, quantity, cmps, zero=False):
+        """Allocate the field.
+
+        Arguments:
+            quantity [str]: physical quantity like 'DEPL_R'
+            cmps [list[str]]: list of components.
         """
 
     def asPhysicalQuantity(self, physQuantity, map_cmps):
@@ -3992,6 +4026,41 @@ class SimpleFieldOnNodesReal(DataField):
 
     def getPhysicalQuantity(self):
         pass
+
+    def setValues(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. setValues(self: libaster.SimpleFieldOnNodesReal, nodes: list[int], cmps: list[str], values: list[float]) -> None
+
+
+                    Set values for a given list of triplet (node, cmp, value).
+                    Each value of the triplet is given as a separated list.
+
+                    Arguments:
+                        nodes list[int]: list of nodes.
+                        cmps list[str]: list of comp components
+                        values list[float]: list of values to set.
+
+
+        2. setValues(self: libaster.SimpleFieldOnNodesReal, values: list[float]) -> None
+
+
+                     Set values for each nodes and components as (node_0_val_0, node_0_val_1, ...)
+
+                    Arguments:
+                        values list[float]: list of values to set.
+
+
+
+        3. setValues(self: libaster.SimpleFieldOnNodesReal, values: list[list[float]]) -> None
+
+
+                    Set values for each nodes and components.
+
+                    Arguments:
+                        values list[list[float]]: list of values to set.
+                        For each node, give the values for all component is a list.
+        """
 
     def toFieldOnNodes(self):
         """Convert to FieldOnNodes
@@ -14026,13 +14095,18 @@ class ParallelEquationNumbering(EquationNumbering):
         2. __init__(self: libaster.ParallelEquationNumbering, arg0: str) -> None
         """
 
-    def getDOFsWithDescription(self, cmp, groupNames=[], local=True, same_rank=-1):
-        """Get the dofs associated to the given component restricted to the given group
+    def getDOFsWithDescription(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getDOFsWithDescription(self: libaster.ParallelEquationNumbering, cmps: list[str] = [], groupNames: list[str] = [], local: bool = True, same_rank: int = <PythonBool.NONE: -1>) -> tuple[tuple[list[int], list[str]], list[int]]
+
+
+        Get the dofs associated to the given component restricted to the given group.
 
         Arguments:
-            str: component to extract
-            list[str] = []: group names to filter
-            local (bool) = True: if True use local dof index else use global index in HPC
+            cmps (list[str]): components to extract.
+            groupNames (list[str]): group names to filter.
+            local (bool): if True use local dof index else use global index in HPC
             same_rank : - None: keep all nodes (default: None)
                         - True: keep the nodes which are owned by the current MPI-rank
                         - False: keep the nodes which are not owned by the current MPI-rank
@@ -14040,6 +14114,24 @@ class ParallelEquationNumbering(EquationNumbering):
         Returns:
             pair[list[int], list[str]]: list of nodes and list of components
             list[int]: list of dofs
+
+
+        2. getDOFsWithDescription(self: libaster.ParallelEquationNumbering, cmps: list[str] = [], nodes: list[int] = [], local: bool = True, same_rank: int = <PythonBool.NONE: -1>) -> tuple[tuple[list[int], list[str]], list[int]]
+
+
+        Get the dofs associated to the given component restricted to the given nodes.
+
+        Arguments:
+            cmps (list[str]): components to extract.
+            nodes (list[int]): list of nodes to filter.
+            local (bool): if True use local dof index else use global index in HPC
+            same_rank : - None: keep all nodes (default: None)
+                        - True: keep the nodes which are owned by the current MPI-rank
+                        - False: keep the nodes which are not owned by the current MPI-rank
+
+        Returns:
+            pair[list[int], list[str]]: list of nodes and list of components.
+            list[int]: list of dofs.
         """
 
     def getGhostDOFs(self, local=True):
