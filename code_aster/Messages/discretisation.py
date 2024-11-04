@@ -49,7 +49,7 @@ Conseils :
     ),
     6: _(
         """
-Le paramètre SUBD_PAS_MINI est plus grand que le plus petit intervalle de temps donné %(r1)g.
+Le paramètre SUBD_PAS_MINI est plus grand que le plus petit intervalle de temps donné %(r1)12.5E.
 """
     ),
     8: _(
