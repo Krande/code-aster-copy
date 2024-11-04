@@ -213,7 +213,7 @@ test.assertAlmostEqual(
 ### medcoupling conversion
 
 medmesh = resu.getMesh().createMedCouplingMesh()
-medfield = resu.createMedCouplingField(medmesh)
+medfield = resu.toMEDFileField1TS(medmesh)
 
 with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
     medmesh.write(f.name, 2)

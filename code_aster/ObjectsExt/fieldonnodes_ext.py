@@ -98,7 +98,7 @@ class ExtendedFieldOnNodesReal:
 
         return self._restrict(force_list(cmps), force_list(groupsOfNodes), val[same_rank])
 
-    def createMedCouplingField(self, medmesh):
+    def toMEDFileField1TS(self, medmesh):
         """Export the field to a new MED field
 
         Arguments:
@@ -109,44 +109,13 @@ class ExtendedFieldOnNodesReal:
         """
 
         if not isinstance(medmesh, medc.MEDFileUMesh):
-            msg = "createMedCouplingField() argument must be a MEDFileUMesh, not '{}'"
+            msg = "toMEDFileField1TS() argument must be a MEDFileUMesh, not '{}'"
             raise TypeError(msg.format(type(medmesh).__name__))
 
         # Aster values
         sfield = self.toSimpleFieldOnNodes()
-        field_name = sfield.getPhysicalQuantity()
-        field_components = sfield.getComponents()
-        values, mask = sfield.toNumpy()
 
-        # Restrict field based on mask
-        restricted_nodes = np.where(np.any(mask, axis=1) == True)[0]
-        restricted_values = values[restricted_nodes, :]
-
-        # Med profile
-        field_profile = medc.DataArrayInt(restricted_nodes)
-        field_profile.setName("NodesProfile")
-
-        # Med support mesh for field ( restricted to profile nodes ) without cells
-        field_mesh = medc.MEDCouplingUMesh()
-        field_mesh.setName("")
-        field_mesh.setMeshDimension(medmesh.getMeshDimension())
-        field_mesh.setCoords(medmesh.getCoords()[field_profile])
-        field_mesh.allocateCells()
-
-        # Medcoupling field
-        field_values = medc.DataArrayDouble(restricted_values)
-        field_values.setInfoOnComponents(field_components)
-        medc_node_field = medc.MEDCouplingFieldDouble(medc.ON_NODES, medc.ONE_TIME)
-        medc_node_field.setMesh(field_mesh)
-        medc_node_field.setName(field_name)
-        medc_node_field.setArray(field_values)
-        medc_node_field.checkConsistencyLight()
-
-        # Med field with profile
-        medfield = medc.MEDFileField1TS()
-        medfield.setFieldProfile(medc_node_field, medmesh, 1, field_profile)
-
-        return medfield
+        return sfield.toMEDFileField1TS(medmesh)
 
     def getValuesWithDescription(self, components=[], groups=[]):
         """Return the values of a component of the field.

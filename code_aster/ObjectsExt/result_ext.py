@@ -482,7 +482,7 @@ class ExtendedResult:
         for fname in save_fields:
             fmts = medc.MEDFileFieldMultiTS()
             for rank, time in zip(ranks, times):
-                medcfield = self.getField(fname, rank).createMedCouplingField(medmesh)
+                medcfield = self.getField(fname, rank).toMEDFileField1TS(medmesh)
                 medcfield.setTime(rank, 0, time)
                 fmts.pushBackTimeStep(medcfield)
             fields.pushField(fmts)

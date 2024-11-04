@@ -233,7 +233,7 @@ class MEDCoupler:
                 [orig2rest[node] for node in descr[0]], descr[1], field.getValues(dofs)
             )
 
-            return sfield.toFieldOnNodes()
+            return sfield
 
         else:
             raise NotImplemented()
@@ -428,20 +428,8 @@ class MEDCoupler:
             cmps = field.getComponents()
 
         field_interf = self.restrict_field(field, cmps)
-        filename = "field_%i.med" % (MPI.ASTER_COMM_WORLD.rank)
-        self._write_field2med(field_interf, filename)
-
-        fieldname = field_interf.getName()[:8]
-        pfield = MEDC.ReadFieldNode(
-            filename, field_interf.getMesh().getName(), self.meshDimRelToMaxExt, fieldname, -1, -1
-        )
+        pfield = field_interf.toMedCouplingField(self.interf_mc)
         pfield.setName(field_name)
-        pfield.setNature(MEDC.IntensiveMaximum)
-        pfield.setMesh(self.interf_mc)
-        array = pfield.getArray()
-        array.setInfoOnComponents(field_interf.getComponents())
-        pfield.checkConsistencyLight()
-        os.remove(filename)
 
         return pfield
 
