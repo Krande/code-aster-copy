@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -126,24 +126,21 @@ subroutine irecri(fileUnit, dsName, lResu, &
 ! --------------------------------------------------------------------------------------------------
 !
     subtitleJvName = '&&IRECRI.SOUS_TITRE.TITR'
-!
+
 ! - If result is a result and not a field name
-!
     if (lResu) then
         resultName = dsName
     else
         resultName = ' '
     end if
-!
+
 ! - Print list of parameters for all storing index
-!
     call irpara(resultName, fileUnit, &
                 storeNb, storeListIndx, &
                 paraNb, paraName, &
                 paraFormat)
-!
+
 ! - Loop on storing slots
-!
     do iStore = 1, storeNb
         call jemarq()
         call jerecu('V')
@@ -173,6 +170,7 @@ subroutine irecri(fileUnit, dsName, lResu, &
                 else
                     fieldName = dsName
                 end if
+
 ! ------------- Check support
                 call dismoi('TYPE_CHAMP', fieldName, 'CHAMP', repk=fieldSupport)
                 if ((fieldSupport .eq. 'NOEU') .or. (fieldSupport(1:2) .eq. 'EL')) then
@@ -188,6 +186,7 @@ subroutine irecri(fileUnit, dsName, lResu, &
                         call utmess('A', 'RESULT3_1', sk=fieldType)
                     end if
                 end if
+
 ! ------------- Print list of parameters for this storing index
                 if (lordr) then
                     write (fileUnit, '(/,1X,A)') '======>'
@@ -197,19 +196,21 @@ subroutine irecri(fileUnit, dsName, lResu, &
                                 paraFormat)
                     lordr = ASTER_FALSE
                 end if
+
 ! ------------- Create subtitle
                 if (lResu) then
                     call titre2(dsName, fieldName, subtitleJvName, titleKeywf, titleKeywfIocc, &
                                 realFormat, fieldType, storeIndx)
-                else
-                    call titre2(dsName, fieldName, subtitleJvName, titleKeywf, titleKeywfIocc, &
-                                realFormat)
                 end if
+
 ! ------------- Print subtitle
                 write (fileUnit, '(/,1X,A)') '------>'
-                call jeveuo(subtitleJvName, 'L', vk80=titleLine)
-                call jelira(subtitleJvName, 'LONMAX', titleLineNb)
-                write (fileUnit, '(1X,A)') (titleLine(iLine), iLine=1, titleLineNb)
+                if (lResu) then
+                    call jeveuo(subtitleJvName, 'L', vk80=titleLine)
+                    call jelira(subtitleJvName, 'LONMAX', titleLineNb)
+                    write (fileUnit, '(1X,A)') (titleLine(iLine), iLine=1, titleLineNb)
+                end if
+
 ! ------------- Print field
                 if (fieldSupport .eq. 'NOEU' .and. nodeUserNb .ge. 0) then
                     call irdepl(fileUnit, &
