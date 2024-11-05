@@ -103,17 +103,20 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
             FORC = FORCE.getField("FORC_NODA", current_time, "INST")
 
+            # PRES = FORC.asPhysicalQuantity("PRES_R", {"FX": "PRES"})
+
             PRES = CREA_CHAMP(
                 OPERATION="ASSE",
                 TYPE_CHAM="ELEM_PRES_R",
                 MODELE=MOSOLIDE,
+                PROL_ZERO="OUI",
                 ASSE=_F(TOUT="OUI", CHAM_GD=FORC, NOM_CMP=("FX"), NOM_CMP_RESU=("PRES",)),
             )
 
             evol_char = CREA_RESU(
                 TYPE_RESU="EVOL_CHAR",
                 OPERATION="AFFE",
-                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES, MODELE=MOSOLIDE, INST=current_time),
+                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES, INST=current_time),
             )
 
             CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=evol_char)

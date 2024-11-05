@@ -21,14 +21,15 @@
 Definition of a convenient object to synchronize MEDCoupling fields.
 """
 
-import os
 
-import medcoupling as MEDC
-import ParaMEDMEM as PMM
-
-from ..Commands import LIRE_CHAMP, PROJ_CHAMP, AFFE_MODELE
-from ..Objects import LoadResult, SimpleFieldOnNodesReal, SimpleFieldOnCellsReal
-from ..Utilities import logger, no_new_attributes
+from ..Commands import PROJ_CHAMP
+from ..Objects import (
+    LoadResult,
+    SimpleFieldOnNodesReal,
+    SimpleFieldOnCellsReal,
+    FiniteElementDescriptor,
+)
+from ..Utilities import logger, no_new_attributes, medcoupling as MEDC, ParaMEDMEM as PMM
 
 
 class CoupledField:
@@ -115,8 +116,7 @@ class MEDCoupler:
 
     dec = None
     mesh_interf = interf_mc = mesh = None
-    model_interf = None
-    matr_proj = meshDimRelToMaxExt = None
+    matr_proj = None
     exch_fields = None
     log = None
 
@@ -182,8 +182,8 @@ class MEDCoupler:
         mm = self.mesh_interf.createMedCouplingMesh()
         levels = mm.getGrpsNonEmptyLevels(groupsOfCells_res)
         assert len(levels) == 1, "Groups are not at one level"
-        self.meshDimRelToMaxExt = levels[0]
-        self.interf_mc = mm.getMeshAtLevel(self.meshDimRelToMaxExt)
+        meshDimRelToMaxExt = levels[0]
+        self.interf_mc = mm.getMeshAtLevel(meshDimRelToMaxExt)
 
         self._create_paramesh()
 
@@ -235,7 +235,7 @@ class MEDCoupler:
             SimpleField: extented field.
         """
 
-        return field.transfert(self.mesh_interf, cmps)
+        return field.transfert(self.mesh, cmps)
 
     def add_field(self, field_name, components, field_type):
         """Add a coupled field.
@@ -370,22 +370,29 @@ class MEDCoupler:
 
         return sfield
 
-    def import_field(self, mc_field):
+    def import_field(self, mc_field, model=None):
         """Convert a MEDCoupling field defined on the interface as
         a code_aster field defined on the whole mesh.
 
         Arguments:
             mc_field (*MEDCouplingField*): MEDCoupling field.
+            model (Model): model to use for FieldOnCells.
 
         Returns:
             *FieldOnNodesReal*: code_aster field defined on the whole mesh.
         """
 
         field = self._medcfield2aster(mc_field)
-        # self.extent_field(field).toFieldOnNodes().debugPrint()
-        # self.project_field(field).debugPrint()
 
-        return self.project_field(field.toFieldOnNodes())
+        if mc_field.getTypeOfField() == MEDC.ON_NODES:
+            # self.extent_field(field).toFieldOnNodes().debugPrint()
+            # self.project_field(field).debugPrint()
+            return self.project_field(field.toFieldOnNodes())
+        else:
+            fed = FiniteElementDescriptor(
+                model.getFiniteElementDescriptor(), self.mesh_interf.getGroupsOfCells()
+            )
+            return self.extent_field(field).toFieldOnCells(fed)
 
     def export_field(self, field, field_name, cmps=[]):
         """Convert a code_aster field defined on the whole mesh to
@@ -492,44 +499,25 @@ class MEDCoupler:
         return self.import_field(mc_pres)
 
     def import_fluidforces(self, mc_fluidf, model, time=0.0):
-        """Convert a MEDCoupling pressure field as a code_aster field.
+        """Convert a MEDCoupling fluid forces field as a code_aster field.
 
         Arguments:
-            mc_fluidf (*MEDCouplingField*): MEDCoupling pressure field.
+            mc_fluidf (*MEDCouplingField*): MEDCoupling fluid forces field.
             model (Model): Mechanical model.
             time (float): Time of assignment.
 
         Returns:
-            *LoadResult*: code_aster pressure as *LoadResult*.
+            *LoadResult*: surface forces load.
         """
 
-        if self.model_interf is None:
-            modelization = "3D" if self.mesh_interf.getDimension() == 3 else "D_PLAN"
-
-            self.model_interf = AFFE_MODELE(
-                MAILLAGE=self.mesh_interf,
-                AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=modelization),
-                DISTRIBUTION=_F(METHODE="CENTRALISE"),
-            )
-
         mc_fluidf.getArray().setName("FORC_R")
-
-        forc_elem = self._medcfield2aster(mc_fluidf).toFieldOnCells(
-            self.model_interf.getFiniteElementDescriptor()
-        )
-
-        if self.matr_proj is None:
-            self.matr_proj = PROJ_CHAMP(
-                METHODE="COLLOCATION", PROJECTION="NON", MODELE_1=self.model_interf, MODELE_2=model
-            )
-
-        forc_proj = PROJ_CHAMP(CHAM_GD=forc_elem, MATR_PROJECTION=self.matr_proj, MODELE_2=model)
+        forc_elem = self.import_field(mc_fluidf, model)
 
         evol_char = LoadResult()
         evol_char.allocate(1)
-        # evol_char.setModel(model, 0)
+        evol_char.setModel(model, 0)
         evol_char.setTime(time, 0)
-        evol_char.setField(forc_proj, "FORC_NODA", 0)
+        evol_char.setField(forc_elem, "FORC_NODA", 0)
 
         return evol_char
 
