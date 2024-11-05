@@ -13303,26 +13303,12 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             list[double]: generalized velocities values.
         """
 
-    def setAccelerationValues(self, *args, **kwargs):
-        """Overloaded function.
-
-        1. setAccelerationValues(self: libaster.TransientGeneralizedResult, idx: int, val: list[float]) -> bool
-
-
-        Set generalized acceleration values at a given time index.
+    def setAccelerationValues(self, idx, val):
+        """Set generalized acceleration values at a given time index.
 
         Arguments:
             idx (int): time index
 
-            val (list[double]): generalized acceleration values.
-
-
-        2. setAccelerationValues(self: libaster.TransientGeneralizedResult, val: list[float]) -> bool
-
-
-        Set generalized acceleration values for all time indices.
-
-        Arguments:
             val (list[double]): generalized acceleration values.
         """
 
@@ -13333,26 +13319,12 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             dofn (DOFNumbering): DOF numbering
         """
 
-    def setDisplacementValues(self, *args, **kwargs):
-        """Overloaded function.
-
-        1. setDisplacementValues(self: libaster.TransientGeneralizedResult, idx: int, val: list[float]) -> bool
-
-
-        Set generalized displacement values at a given time index.
+    def setDisplacementValues(self, idx, val):
+        """Set generalized displacement values at a given time index.
 
         Arguments:
             idx (int): time index
 
-            val (list[double]): generalized displacement values.
-
-
-        2. setDisplacementValues(self: libaster.TransientGeneralizedResult, val: list[float]) -> bool
-
-
-        Set generalized displacement values for all time indices.
-
-        Arguments:
             val (list[double]): generalized displacement values.
         """
 
@@ -13363,26 +13335,12 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             dofg (GeneralizedDOFNumbering): generalized DOF numbering
         """
 
-    def setVelocityValues(self, *args, **kwargs):
-        """Overloaded function.
-
-        1. setVelocityValues(self: libaster.TransientGeneralizedResult, idx: int, val: list[float]) -> bool
-
-
-        Set generalized velocity values at a given time index.
+    def setVelocityValues(self, idx, val):
+        """Set generalized velocity values at a given time index.
 
         Arguments:
             idx (int): time index
 
-            val (list[double]): generalized velocity values.
-
-
-        2. setVelocityValues(self: libaster.TransientGeneralizedResult, val: list[float]) -> bool
-
-
-        Set generalized velocity values for all time indices.
-
-        Arguments:
             val (list[double]): generalized velocity values.
         """
 

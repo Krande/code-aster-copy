@@ -497,58 +497,6 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
      *
      */
     VectorReal getAccelerationValues() const { return getValues( _acce ); }
-
-    /**
-     * @brief Set values of generalized coordinates for all time indices
-     * @param jvec generalized coordinates
-     * @param val generalized coordinates values
-     *
-     */
-    bool setValues( std::vector< JeveuxVectorReal > jvec, VectorReal val ) const {
-        CALL_JEMARQ();
-        ASTERINTEGER nmod = getNumberOfModes();
-        ASTERINTEGER nt = getTimes().size();
-        AS_ASSERT( val.size() == nmod * nt );
-        if ( _bloc.exists() ) {
-            _blo2->updateValuePointer();
-            VectorLong blocks = _blo2->toVector();
-            jvec[0]->updateValuePointer();
-            for ( ASTERINTEGER j = 0; j < ( blocks[0] + 1 ) * nmod; ++j ) {
-                ( *jvec[0] )[j] = val[j];
-            }
-            for ( ASTERINTEGER i = 1; i < jvec.size(); ++i ) {
-                jvec[i]->updateValuePointer();
-                for ( ASTERINTEGER j = nmod * blocks[i - 1]; j < nmod * ( blocks[i] + 1 ); ++j ) {
-                    ( *jvec[i] )[j - nmod * blocks[i - 1]] = val[j];
-                }
-            }
-        } else {
-            return false;
-        }
-        CALL_JEDEMA();
-        return true;
-    }
-
-    /**
-     * @brief Set values of generalized displacements for all time indices
-     * @param val displacements values for all time indices
-     *
-     */
-    bool setDisplacementValues( VectorReal val ) const { return setValues( _depl, val ); }
-
-    /**
-     * @brief Set values of generalized velocities for all time indices
-     * @param val velocities values for all time indices
-     *
-     */
-    bool setVelocityValues( VectorReal val ) const { return setValues( _vite, val ); }
-
-    /**
-     * @brief Set values of generalized accelerations for all time indices
-     * @param val accelerations values for all time indices
-     *
-     */
-    bool setAccelerationValues( VectorReal val ) const { return setValues( _acce, val ); }
 };
 typedef std::shared_ptr< TransientGeneralizedResult > TransientGeneralizedResultPtr;
 
