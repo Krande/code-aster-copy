@@ -3771,6 +3771,17 @@ class SimpleFieldOnCellsReal(DataField):
     def __setitem__(self, arg0, arg1):
         pass
 
+    def allocate(self, loc, quantity, cmps, nbPG, nbSP=1, zero=False):
+        """Allocate the field.
+
+        Arguments:
+            loc [str]: localization like 'ELEM'
+            quantity [str]: physical quantity like 'DEPL_R'
+            cmps [list[str]]: list of components.
+            nbPG [int]: number of Gauss Point by cell
+            nbSP [int]: number of sub-point by point.
+        """
+
     def asPhysicalQuantity(self, physQuantity, map_cmps):
         """Return a new field with a new physical quantity and renamed components.
 
@@ -3844,12 +3855,31 @@ class SimpleFieldOnCellsReal(DataField):
                      NaN if the position is not allocated.
         """
 
-    def getValuesWithDescription(self, arg0, arg1):
-        """Returns values and description corresponding to given cmp and given cells
+    def getValuesWithDescription(self, *args, **kwargs):
+        """Overloaded function.
 
-        Args:
-            cells (list[int]): list of cells
-            cmps (list[str]): components to extract
+        1. getValuesWithDescription(self: libaster.SimpleFieldOnCellsReal, cmps: list[str], cells: list[int]) -> tuple[list[float], tuple[list[int], list[str], list[int], list[int]]]
+
+
+        Returns values and description corresponding to given cmp and given cells
+
+        Arguments:
+            cmps (list[str]): components to extract.
+            cells (list[int]): list of cells.
+
+        Returns:
+            values[list[double],
+            tuple[cells[list[int]], cmps[list[int]]  points[list[int]], subpoints[list[int]]]
+
+
+        2. getValuesWithDescription(self: libaster.SimpleFieldOnCellsReal, cmps: list[str] = [], cells: list[str] = []) -> tuple[list[float], tuple[list[int], list[str], list[int], list[int]]]
+
+
+        Returns values and description corresponding to given cmp and given cells
+
+        Arguments:
+            cmps (list[str]): components to extract.
+            groupsOfCells (list[str]): list of groups of cells to use.
 
         Returns:
             values[list[double],
@@ -3934,8 +3964,31 @@ class SimpleFieldOnCellsReal(DataField):
             val (float) : value to set
         """
 
-    def setValues(self, arg0, arg1, arg2, arg3, arg4):
-        pass
+    def setValues(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. setValues(self: libaster.SimpleFieldOnCellsReal, cells: list[int], cmps: list[str], npg: list[int], spt: list[int], values: list[float]) -> None
+
+
+                    Set values for a given list of tuple (cell, cmp, ipg, isp, value).
+                    Each value of the tuple is given as a separated list.
+
+                    Arguments:
+                        cells (list[int]): list of cells.
+                        cmps (list[str)]: list of components
+                        npg (list[int]): list of point
+                        spt (list[int]): list of sub-point
+                        values (list[float]): list of values to set.
+
+
+        2. setValues(self: libaster.SimpleFieldOnCellsReal, values: list[float]) -> None
+
+
+                     Set values for each cells and components as (cell_0_val_0, cell_0_val_1, ...)
+
+                    Arguments:
+                        values (list[float]): list of values to set.
+        """
 
     def toFieldOnCells(self, fed, option="", nompar=""):
         """Converts to FieldOnCells
@@ -4062,6 +4115,37 @@ class SimpleFieldOnNodesReal(DataField):
     def getPhysicalQuantity(self):
         pass
 
+    def getValuesWithDescription(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getValuesWithDescription(self: libaster.SimpleFieldOnNodesReal, cmps: list[str] = [], groupsOfNodes: list[str] = []) -> tuple[list[float], tuple[list[int], list[str]]]
+
+
+                    Return the values of components of the field.
+
+                    Arguments:
+                       cmps (list[str]) : Extracted components or all components if it is empty.
+                       groups (list[str]): The extraction is limited to the given groups of nodes.
+
+                    Returns:
+                       tuple( values, description ): List of values and description.
+                        The description provides a tuple with( nodes ids, components ).
+
+
+        2. getValuesWithDescription(self: libaster.SimpleFieldOnNodesReal, cmps: list[str], nodes: list[int]) -> tuple[list[float], tuple[list[int], list[str]]]
+
+
+                    Return the values of components of the field.
+
+                    Arguments:
+                       cmps (list[str]) : Extracted components or all components if it is empty.
+                       nodes (list[int]): The extraction is limited to the given nodes.
+
+                    Returns:
+                       tuple( values, description ): List of values and description.
+                        The description provides a tuple with( nodes ids, components ).
+        """
+
     def setValues(self, *args, **kwargs):
         """Overloaded function.
 
@@ -4072,9 +4156,9 @@ class SimpleFieldOnNodesReal(DataField):
                     Each value of the triplet is given as a separated list.
 
                     Arguments:
-                        nodes list[int]: list of nodes.
-                        cmps list[str]: list of comp components
-                        values list[float]: list of values to set.
+                        nodes (list[int]): list of nodes.
+                        cmps (list[str]): list of comp components
+                        values (list[float]): list of values to set.
 
 
         2. setValues(self: libaster.SimpleFieldOnNodesReal, values: list[float]) -> None
@@ -4083,7 +4167,7 @@ class SimpleFieldOnNodesReal(DataField):
                      Set values for each nodes and components as (node_0_val_0, node_0_val_1, ...)
 
                     Arguments:
-                        values list[float]: list of values to set.
+                        values (list[float]): list of values to set.
 
 
 
@@ -4093,7 +4177,7 @@ class SimpleFieldOnNodesReal(DataField):
                     Set values for each nodes and components.
 
                     Arguments:
-                        values list[list[float]]: list of values to set.
+                        values (list[list[float]]): list of values to set.
                         For each node, give the values for all component is a list.
         """
 

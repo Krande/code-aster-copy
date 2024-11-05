@@ -101,7 +101,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             # MEDC field => .med => code_aster field
             FORCE = self._medcpl.import_fluidforces(mc_pres, MOSOLIDE, current_time)
 
-            FORC = FORCE.getField("FORC_NODA", current_time, "INST")
+            FORC = FORCE.getField("FSUR_3D", current_time, "INST")
 
             # PRES = FORC.asPhysicalQuantity("PRES_R", {"FX": "PRES"})
 

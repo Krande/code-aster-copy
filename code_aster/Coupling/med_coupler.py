@@ -517,7 +517,7 @@ class MEDCoupler:
         evol_char.allocate(1)
         evol_char.setModel(model, 0)
         evol_char.setTime(time, 0)
-        evol_char.setField(forc_elem, "FORC_NODA", 0)
+        evol_char.setField(forc_elem, "FSUR_3D", 0)
 
         return evol_char
 
