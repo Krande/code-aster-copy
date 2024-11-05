@@ -13213,7 +13213,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
 
         Return generalized accelerations values at a given time index.
 
-        Arguments
+        Arguments:
             idx (int): time index
 
         Returns:
@@ -13244,7 +13244,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
 
         Return generalized displacements values at a given time index.
 
-        Arguments
+        Arguments:
             idx (int): time index
 
         Returns:
@@ -13296,11 +13296,20 @@ class TransientGeneralizedResult(GeneralizedResultReal):
 
         Return generalized velocities values at a given time index.
 
-        Arguments
+        Arguments:
             idx (int): time index
 
         Returns:
             list[double]: generalized velocities values.
+        """
+
+    def setAccelerationValues(self, idx, val):
+        """Set generalized acceleration values at a given time index.
+
+        Arguments:
+            idx (int): time index
+
+            val (list[double]): generalized acceleration values.
         """
 
     def setDOFNumbering(self, dofn):
@@ -13310,11 +13319,29 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             dofn (DOFNumbering): DOF numbering
         """
 
+    def setDisplacementValues(self, idx, val):
+        """Set generalized displacement values at a given time index.
+
+        Arguments:
+            idx (int): time index
+
+            val (list[double]): generalized displacement values.
+        """
+
     def setGeneralizedDOFNumbering(self, dofg):
         """Set generalized DOF numbering
 
         Arguments:
             dofg (GeneralizedDOFNumbering): generalized DOF numbering
+        """
+
+    def setVelocityValues(self, idx, val):
+        """Set generalized velocity values at a given time index.
+
+        Arguments:
+            idx (int): time index
+
+            val (list[double]): generalized velocity values.
         """
 
 
