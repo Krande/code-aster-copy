@@ -627,7 +627,7 @@ class SimpleFieldOnCells : public DataField {
     };
 
     void setValues( const VectorLong &cells, const VectorString &cmps, const VectorLong &npg,
-                    const VectorLong spt, const std::vector< ValueType > &values ) {
+                    const VectorLong &spt, const std::vector< ValueType > &values ) {
 
         AS_ASSERT( cells.size() == cmps.size() );
         AS_ASSERT( cells.size() == values.size() );
@@ -638,6 +638,14 @@ class SimpleFieldOnCells : public DataField {
         for ( int i = 0; i < size; i++ ) {
             ( *this )( cells[i], cmps[i], npg[i], spt[i] ) = values[i];
         }
+    }
+
+    void setValues( const std::vector< ValueType > &values ) {
+
+        AS_ASSERT( values.size() == this->getNumberOfCells() * this->getNumberOfComponents() *
+                                        getMaxNumberOfPoints() * getMaxNumberOfSubPoints() );
+        _allocated->assign( true );
+        *_values = values;
     }
 
     SimpleFieldOnCellsPtr restrict( const VectorString &cmps = {},

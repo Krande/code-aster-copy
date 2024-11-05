@@ -194,8 +194,6 @@ class ExtendedSimpleFieldOnCellsReal:
         cmps = arr.getInfoOnComponents()
         phys = arr.getName()
 
-        self.allocate(phys, cmps)
-
-        print(arr.getValues())
+        self.allocate("ELEM", phys, cmps, 1, 1)
 
         self.setValues(arr.getValues())

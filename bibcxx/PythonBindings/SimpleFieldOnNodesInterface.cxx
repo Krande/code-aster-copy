@@ -130,9 +130,9 @@ Returns:
             Each value of the triplet is given as a separated list.
 
             Arguments:
-                nodes list[int]: list of nodes.
-                cmps list[str]: list of comp components
-                values list[float]: list of values to set.
+                nodes (list[int]): list of nodes.
+                cmps (list[str]): list of comp components
+                values (list[float]): list of values to set.
             )",
               py::arg( "nodes" ), py::arg( "cmps" ), py::arg( "values" ) )
         .def( "setValues",
@@ -141,7 +141,7 @@ Returns:
              Set values for each nodes and components as (node_0_val_0, node_0_val_1, ...)
 
             Arguments:
-                values list[float]: list of values to set.
+                values (list[float]): list of values to set.
 
             )",
               py::arg( "values" ) )
@@ -152,7 +152,7 @@ Returns:
             Set values for each nodes and components.
 
             Arguments:
-                values list[list[float]]: list of values to set.
+                values (list[list[float]]): list of values to set.
                 For each node, give the values for all component is a list.
             )",
               py::arg( "values" ) )

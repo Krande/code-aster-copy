@@ -198,19 +198,19 @@ Returns the list of cells where the field is defined.
 Returns:
     tuple (int): Indexes of cells where the field is defined.
         )" )
-        // .def( "allocate", &SimpleFieldOnNodesReal::allocate,
-        //       R"(
-        //     Allocate the field.
+        .def( "allocate", &SimpleFieldOnCellsReal::allocate,
+              R"(
+            Allocate the field.
 
-        //     Arguments:
-        //         loc [str]: localization like 'ELEM'
-        //         quantity [str]: physical quantity like 'DEPL_R'
-        //         cmps [list[str]]: list of components.
-        //         nbPG [int]: number of Gauss Point by cell
-        //         nbSP [int]: number of sub-point by point.
-        //     )",
-        //       py::arg( "loc" ), py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "nbPG" ),
-        //       py::arg( "nbSP" ) = 1, py::arg( "zero" ) = false )
+            Arguments:
+                loc [str]: localization like 'ELEM'
+                quantity [str]: physical quantity like 'DEPL_R'
+                cmps [list[str]]: list of components.
+                nbPG [int]: number of Gauss Point by cell
+                nbSP [int]: number of sub-point by point.
+            )",
+              py::arg( "loc" ), py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "nbPG" ),
+              py::arg( "nbSP" ) = 1, py::arg( "zero" ) = false )
         .def( "getNumberOfComponents", &SimpleFieldOnCellsReal::getNumberOfComponents )
         .def( "getComponent", &SimpleFieldOnCellsReal::getComponent )
         .def( "getComponents", &SimpleFieldOnCellsReal::getComponents )
@@ -222,7 +222,32 @@ Returns:
         .def( "getNumberOfSubPointsOfCell", &SimpleFieldOnCellsReal::getNumberOfSubPointsOfCell )
         .def( "getNumberOfComponentsForSubpointsOfCell",
               &SimpleFieldOnCellsReal::getNumberOfComponentsForSubpointsOfCell )
-        .def( "setValues", &SimpleFieldOnCellsReal::setValues )
+        .def( "setValues",
+              py::overload_cast< const VectorLong &, const VectorString &, const VectorLong &,
+                                 const VectorLong &, const VectorReal & >(
+                  &SimpleFieldOnCellsReal::setValues ),
+              R"(
+            Set values for a given list of tuple (cell, cmp, ipg, isp, value).
+            Each value of the tuple is given as a separated list.
+
+            Arguments:
+                cells (list[int]): list of cells.
+                cmps (list[str)]: list of components
+                npg (list[int]): list of point
+                spt (list[int]): list of sub-point
+                values (list[float]): list of values to set.
+            )",
+              py::arg( "cells" ), py::arg( "cmps" ), py::arg( "npg" ), py::arg( "spt" ),
+              py::arg( "values" ) )
+        .def( "setValues",
+              py::overload_cast< const VectorReal & >( &SimpleFieldOnCellsReal::setValues ), R"(
+             Set values for each cells and components as (cell_0_val_0, cell_0_val_1, ...)
+
+            Arguments:
+                values (list[float]): list of values to set.
+
+            )",
+              py::arg( "values" ) )
         .def( "getPhysicalQuantity", &SimpleFieldOnCellsReal::getPhysicalQuantity )
         .def( "getComponentsName2Index", &SimpleFieldOnCellsReal::getComponentsName2Index )
         .def( "getLocalization", &SimpleFieldOnCellsReal::getLocalization )

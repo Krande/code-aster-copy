@@ -512,7 +512,11 @@ class MEDCoupler:
                 DISTRIBUTION=_F(METHODE="CENTRALISE"),
             )
 
-        forc_elem = self._medcfield2aster(mc_fluidf).toFieldOnCells(self.model_interf)
+        mc_fluidf.getArray().setName("FORC_R")
+
+        forc_elem = self._medcfield2aster(mc_fluidf).toFieldOnCells(
+            self.model_interf.getFiniteElementDescriptor()
+        )
 
         if self.matr_proj is None:
             self.matr_proj = PROJ_CHAMP(
@@ -523,7 +527,7 @@ class MEDCoupler:
 
         evol_char = LoadResult()
         evol_char.allocate(1)
-        evol_char.setModel(model, 0)
+        # evol_char.setModel(model, 0)
         evol_char.setTime(time, 0)
         evol_char.setField(forc_proj, "FORC_NODA", 0)
 
