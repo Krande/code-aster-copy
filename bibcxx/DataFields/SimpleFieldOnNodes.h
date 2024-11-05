@@ -503,6 +503,59 @@ class SimpleFieldOnNodes : public DataField {
         new_field->build();
         return new_field;
     };
+
+    std::pair< std::vector< ValueType >, std::pair< VectorLong, VectorString > >
+    getValuesWithDescription( const VectorString &cmps, const VectorString &groupsOfNodes ) const {
+
+        VectorLong nodes = _mesh->getNodes( groupsOfNodes, true, PythonBool::None );
+
+        return this->getValuesWithDescription( cmps, nodes );
+    }
+
+    std::pair< std::vector< ValueType >, std::pair< VectorLong, VectorString > >
+    getValuesWithDescription( const VectorString &cmps, const VectorLong &nodes ) const {
+
+        this->updateValuePointers();
+
+        VectorString list_cmp;
+        auto list_cmp_in = this->getComponents();
+        if ( cmps.empty() ) {
+            list_cmp = list_cmp_in;
+        } else {
+            auto set_cmps = toSet( cmps );
+
+            for ( auto &cmp : list_cmp_in ) {
+                if ( set_cmps.count( cmp ) > 0 ) {
+                    list_cmp.push_back( cmp );
+                }
+            }
+        }
+
+        if ( list_cmp.empty() ) {
+            raiseAsterError( "Restriction on list of components is empty" );
+        }
+
+        std::vector< ValueType > values;
+        VectorLong v_nodes;
+        VectorString v_cmps;
+
+        values.reserve( nodes.size() * list_cmp.size() );
+        v_nodes.reserve( nodes.size() * list_cmp.size() );
+        v_cmps.reserve( nodes.size() * list_cmp.size() );
+
+        for ( auto &node : nodes ) {
+            for ( auto &cmp : list_cmp ) {
+                auto icmp = ( *this )._name2Index.at( cmp );
+                if ( this->hasValue( node, icmp ) ) {
+                    values.push_back( ( *this )( node, icmp ) );
+                    v_nodes.push_back( node );
+                    v_cmps.push_back( cmp );
+                }
+            }
+        }
+
+        return std::make_pair( values, std::make_pair( v_nodes, v_cmps ) );
+    }
 };
 
 /** @typedef SimpleFieldOnNodesReal Class d'une champ simple de doubles */

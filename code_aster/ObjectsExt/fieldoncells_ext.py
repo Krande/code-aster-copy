@@ -81,22 +81,8 @@ class ExtendedFieldOnCellsReal:
             The description provides a tuple with identifiers of
             (cells, points, subpoints).
         """
-        mesh = self.getMesh()
-        if groups:
-            cells = set()
-            for grp in groups:
-                if mesh.hasGroupOfCells(grp):
-                    cells.update(mesh.getCells(grp))
-                else:
-                    raise ValueError("no {} group of cell".format(grp))
-            cells = sorted(cells)
-        else:
-            cells = mesh.getCells()
 
-        if len(components) == 0:
-            components = self.getComponents()
-
-        return self.toSimpleFieldOnCells().getValuesWithDescription(cells, force_list(components))
+        return self.toSimpleFieldOnCells().getValuesWithDescription(components, groups)
 
     def asPhysicalQuantity(self, physQuantity, map_cmps, fed=None):
         """Return a new field with a new physical quantity and renamed components.

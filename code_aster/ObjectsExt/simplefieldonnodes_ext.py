@@ -102,7 +102,6 @@ class ExtendedSimpleFieldOnNodesReal:
 
         cmps = arr.getInfoOnComponents()
         phys = arr.getName()
-        print(phys, cmps, flush=True)
 
         self.allocate(phys, cmps)
 
@@ -204,6 +203,40 @@ class ExtendedSimpleFieldOnNodesReal:
         medfield.setFieldProfile(medc_node_field, medmesh, 1, field_profile)
 
         return medfield
+
+    def transfert(self, mesh, cmps=[]):
+        """Tranfert the field to an other mesh. One of the mesh has to be a restriction
+        to the other one.
+
+        Arguments:
+            mesh (Mesh) : mesh to use for transfert.
+            cmps [list[str]]: filter on list of components. If empty, all components are used
+
+        Returns:
+            SimpleFieldOnNodesReal: field transfered to new mesh.
+        """
+
+        if len(cmps) == 0:
+            cmps = self.getComponents()
+
+        sfield = SimpleFieldOnNodesReal(mesh, self.getPhysicalQuantity(), cmps)
+
+        rest2orig = mesh.getRestrictedToOriginalNodesIds()
+
+        if len(rest2orig) > 0:
+            orig2rest = mesh.getOriginalToRestrictedNodesIds()
+
+            values, descr = self.getValuesWithDescription(cmps, rest2orig)
+
+            sfield.setValues([orig2rest[node] for node in descr[0]], descr[1], values)
+        else:
+            rest2orig = self.getMesh().getRestrictedToOriginalNodesIds()
+
+            values, descr = self.getValuesWithDescription(cmps)
+
+            sfield.setValues([rest2orig[node] for node in descr[0]], descr[1], values)
+
+        return sfield
 
 
 @injector(SimpleFieldOnNodesComplex)

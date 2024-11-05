@@ -206,68 +206,36 @@ class MEDCoupler:
         return found
 
     def restrict_field(self, field, cmps=[]):
-        """Create a new field restricted to the interface mesh."""
+        """Create a new field restricted to the interface mesh.
+
+        Arguments:
+            field (Field) aster field to restrict.
+
+        Returns:
+            SimpleField: restricted field.
+        """
 
         loc = field.getLocalization()
 
-        if len(cmps) == 0:
-            cmps = field.getComponents()
-
         if loc == "NOEU":
-            sfield = SimpleFieldOnNodesReal(self.mesh_interf, field.getPhysicalQuantity(), cmps)
-
-            rest2orig = self.mesh_interf.getRestrictedToOriginalNodesIds()
-            orig2rest = self.mesh_interf.getOriginalToRestrictedNodesIds()
-
-            descr, dofs = field.getDescription().getDOFsWithDescription(cmps, rest2orig, local=True)
-
-            sfield.setValues(
-                [orig2rest[node] for node in descr[0]], descr[1], field.getValues(dofs)
-            )
-
-            return sfield
-
+            sfield = field.toSimpleFieldOnNodes()
         else:
             assert loc == "ELEM"
+            sfield = field.toSimpleFieldOnCells()
 
-            sfield = SimpleFieldOnCellsReal(
-                self.mesh_interf, loc, field.getPhysicalQuantity(), cmps
-            )
-
-            orig2rest = self.mesh_interf.getOriginalToRestrictedCellsIds()
-
-            values, descr = field.getValuesWithDescription(
-                cmps, self.mesh_interf.getGroupsOfCells()
-            )
-
-            sfield.setValues(
-                [orig2rest[cell] for cell in descr[0]], descr[1], descr[2], descr[3], values
-            )
-
-            return sfield
+        return sfield.transfert(self.mesh_interf, cmps)
 
     def extent_field(self, field, cmps=[]):
-        """Create a new field extent to the whole mesh."""
+        """Create a new field extent to the whole mesh.
 
-        if field.getLocalization() == "NOEU":
+        Arguments:
+            field (SimpleField) aster field to extent.
 
-            if len(cmps) == 0:
-                cmps = field.getComponents()
+        Returns:
+            SimpleField: extented field.
+        """
 
-            sfield = SimpleFieldOnNodesReal(self.mesh, field.getPhysicalQuantity(), cmps)
-
-            rest2orig = self.mesh_interf.getRestrictedToOriginalNodesIds()
-
-            descr, dofs = field.getDescription().getDOFsWithDescription(cmps, local=True)
-
-            sfield.setValues(
-                [rest2orig[node] for node in descr[0]], descr[1], field.getValues(dofs)
-            )
-
-            return sfield
-
-        else:
-            raise NotImplemented()
+        return field.transfert(self.mesh_interf, cmps)
 
     def add_field(self, field_name, components, field_type):
         """Add a coupled field.
@@ -394,14 +362,13 @@ class MEDCoupler:
             *SimpleField*: aster field.
         """
         if mc_field.getTypeOfField() == MEDC.ON_NODES:
-
             sfield = SimpleFieldOnNodesReal(self.mesh_interf)
-            sfield.fromMEDCouplingField(mc_field)
-
-            return sfield
-
         else:
-            raise NotImplemented()
+            sfield = SimpleFieldOnCellsReal(self.mesh_interf)
+
+        sfield.fromMEDCouplingField(mc_field)
+
+        return sfield
 
     def import_field(self, mc_field):
         """Convert a MEDCoupling field defined on the interface as
@@ -545,19 +512,7 @@ class MEDCoupler:
                 DISTRIBUTION=_F(METHODE="CENTRALISE"),
             )
 
-        mc_mesh = mc_fluidf.getMesh()
-        tmpfile = "fort.78"
-        MEDC.WriteUMesh(tmpfile, mc_mesh, True)
-        MEDC.WriteFieldUsingAlreadyWrittenMesh(tmpfile, mc_fluidf)
-        forc_elem = LIRE_CHAMP(
-            MAILLAGE=self.mesh_interf,
-            MODELE=self.model_interf,
-            UNITE=78,
-            NOM_MED=mc_fluidf.getName(),
-            TYPE_CHAM="ELEM_FORC_R",
-            NOM_CMP_IDEM="OUI",
-        )
-        os.remove(tmpfile)
+        forc_elem = self._medcfield2aster(mc_fluidf).toFieldOnCells(self.model_interf)
 
         if self.matr_proj is None:
             self.matr_proj = PROJ_CHAMP(

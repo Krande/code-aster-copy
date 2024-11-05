@@ -227,20 +227,7 @@ class SimpleFieldOnCells : public DataField {
                         const ASTERINTEGER &nbSP, bool zero = false )
         : SimpleFieldOnCells( mesh ) {
 
-        const std::string base = "G";
-        ASTERINTEGER nbComp = comp.size();
-        ASTERINTEGER _npg = -nbPG;
-        ASTERINTEGER _nsp = nbSP;
-        ASTERLOGICAL _zero = zero;
-
-        char *tabNames = vectorStringAsFStrArray( comp, 8 );
-
-        CALL_CESCRE_WRAP( base.c_str(), getName().c_str(), loc.c_str(), _mesh->getName().c_str(),
-                          quantity.c_str(), &nbComp, tabNames, &_npg, &_nsp, &nbComp, &_zero );
-
-        FreeStr( tabNames );
-
-        build();
+        this->allocate( loc, quantity, comp, nbPG, nbSP, zero );
     }
 
     SimpleFieldOnCells( const BaseMeshPtr mesh, const std::string &loc, const std::string &quantity,
@@ -271,6 +258,24 @@ class SimpleFieldOnCells : public DataField {
     }
 
     BaseMeshPtr getMesh() const { return _mesh; };
+
+    void allocate( const std::string &loc, const std::string &quantity, const VectorString &comp,
+                   const ASTERINTEGER &nbPG, ASTERINTEGER nbSP = 1, bool zero = false ) {
+        const std::string base = "G";
+        ASTERINTEGER nbComp = comp.size();
+        ASTERINTEGER _npg = -nbPG;
+        ASTERINTEGER _nsp = nbSP;
+        ASTERLOGICAL _zero = zero;
+
+        char *tabNames = vectorStringAsFStrArray( comp, 8 );
+
+        CALL_CESCRE_WRAP( base.c_str(), getName().c_str(), loc.c_str(), _mesh->getName().c_str(),
+                          quantity.c_str(), &nbComp, tabNames, &_npg, &_nsp, &nbComp, &_zero );
+
+        FreeStr( tabNames );
+
+        build();
+    }
 
     /**
      * @brief Surcharge de l'operateur []
@@ -527,7 +532,16 @@ class SimpleFieldOnCells : public DataField {
 
     std::pair< std::vector< ValueType >,
                std::tuple< VectorLong, VectorString, VectorLong, VectorLong > >
-    getValuesWithDescription( const VectorLong &cells, const VectorString &cmps ) {
+    getValuesWithDescription( const VectorString &cmps, const VectorString &groupsOfCells ) const {
+
+        VectorLong cells = _mesh->getCells( groupsOfCells );
+
+        return this->getValuesWithDescription( cmps, cells );
+    }
+
+    std::pair< std::vector< ValueType >,
+               std::tuple< VectorLong, VectorString, VectorLong, VectorLong > >
+    getValuesWithDescription( const VectorString &cmps, const VectorLong &cells ) const {
 
         std::vector< ValueType > values;
         VectorLong v_cells;
@@ -535,7 +549,23 @@ class SimpleFieldOnCells : public DataField {
         VectorLong points;
         VectorLong subpoints;
 
-        ASTERINTEGER ncmp = getNumberOfComponents();
+        VectorString list_cmp;
+        auto list_cmp_in = this->getComponents();
+        if ( cmps.empty() ) {
+            list_cmp = list_cmp_in;
+        } else {
+            auto set_cmps = toSet( cmps );
+
+            for ( auto &cmp : list_cmp_in ) {
+                if ( set_cmps.count( cmp ) > 0 ) {
+                    list_cmp.push_back( cmp );
+                }
+            }
+        }
+
+        if ( list_cmp.empty() ) {
+            raiseAsterError( "Restriction on list of components is empty" );
+        }
 
         ASTERINTEGER size =
             cells.size() * cmps.size() * getMaxNumberOfPoints() * getMaxNumberOfSubPoints();
@@ -546,9 +576,8 @@ class SimpleFieldOnCells : public DataField {
         subpoints.reserve( size );
 
         for ( auto &cell : cells ) {
-            for ( auto &cmp : cmps ) {
-
-                auto icmp = _name2Index[cmp];
+            for ( auto &cmp : list_cmp ) {
+                auto icmp = _name2Index.at( cmp );
 
                 ASTERINTEGER npt = getNumberOfPointsOfCell( cell );
                 ASTERINTEGER nspt = getNumberOfSubPointsOfCell( cell );

@@ -156,6 +156,38 @@ Returns:
                 For each node, give the values for all component is a list.
             )",
               py::arg( "values" ) )
+        .def( "getValuesWithDescription",
+              py::overload_cast< const VectorString &, const VectorString & >(
+                  &SimpleFieldOnNodesReal::getValuesWithDescription, py::const_ ),
+              R"(
+            Return the values of components of the field.
+
+            Arguments:
+               cmps (list[str]) : Extracted components or all components if it is empty.
+               groups (list[str]): The extraction is limited to the given groups of nodes.
+
+            Returns:
+               tuple( values, description ): List of values and description.
+                The description provides a tuple with( nodes ids, components ).
+                 )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
+
+        .def( "getValuesWithDescription",
+              py::overload_cast< const VectorString &, const VectorLong & >(
+                  &SimpleFieldOnNodesReal::getValuesWithDescription, py::const_ ),
+              R"(
+            Return the values of components of the field.
+
+            Arguments:
+               cmps (list[str]) : Extracted components or all components if it is empty.
+               nodes (list[int]): The extraction is limited to the given nodes.
+
+            Returns:
+               tuple( values, description ): List of values and description.
+                The description provides a tuple with( nodes ids, components ).
+                 )",
+              py::arg( "cmps" ), py::arg( "nodes" ) )
+
         .def( "updateValuePointers", &SimpleFieldOnNodesReal::updateValuePointers );
 
     py::class_< SimpleFieldOnNodesComplex, SimpleFieldOnNodesComplexPtr, DataField >(

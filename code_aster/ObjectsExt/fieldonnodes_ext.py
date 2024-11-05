@@ -98,6 +98,20 @@ class ExtendedFieldOnNodesReal:
 
         return self._restrict(force_list(cmps), force_list(groupsOfNodes), val[same_rank])
 
+    def transfert(self, mesh, cmps=[]):
+        """Tranfert the field to an other mesh. One of the mesh has to be a restriction
+        to the other one.
+
+        Arguments:
+            mesh (Mesh) : mesh to use for transfert.
+            cmps [list[str]]: filter on list of components. If empty, all components are used
+
+        Returns:
+            FieldOnNodesReal: field transfered to new mesh.
+        """
+
+        return self.toSimpleFieldOnNodes().transfert(mesh, cmps).toFieldOnNodes()
+
     def toMEDFileField1TS(self, medmesh):
         """Export the field to a new MED field
 

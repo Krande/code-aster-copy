@@ -162,24 +162,55 @@ Returns:
     ndarray (float): Field values.
     ndarray (bool): Mask for the field values.
         )" )
-        .def( "getValuesWithDescription", &SimpleFieldOnCellsReal::getValuesWithDescription,
+        .def( "getValuesWithDescription",
+              py::overload_cast< const VectorString &, const VectorLong & >(
+                  &SimpleFieldOnCellsReal::getValuesWithDescription, py::const_ ),
               R"(
 Returns values and description corresponding to given cmp and given cells
 
-Args:
-    cells (list[int]): list of cells
-    cmps (list[str]): components to extract
+Arguments:
+    cmps (list[str]): components to extract.
+    cells (list[int]): list of cells.
 
 Returns:
     values[list[double],
     tuple[cells[list[int]], cmps[list[int]]  points[list[int]], subpoints[list[int]]]
-        )" )
+        )",
+              py::arg( "cmps" ), py::arg( "cells" ) )
+        .def( "getValuesWithDescription",
+              py::overload_cast< const VectorString &, const VectorString & >(
+                  &SimpleFieldOnCellsReal::getValuesWithDescription, py::const_ ),
+              R"(
+Returns values and description corresponding to given cmp and given cells
+
+Arguments:
+    cmps (list[str]): components to extract.
+    groupsOfCells (list[str]): list of groups of cells to use.
+
+Returns:
+    values[list[double],
+    tuple[cells[list[int]], cmps[list[int]]  points[list[int]], subpoints[list[int]]]
+        )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "cells" ) = VectorString() )
         .def( "getCellsWithComponents", &SimpleFieldOnCellsReal::getCellsWithComponents, R"(
 Returns the list of cells where the field is defined.
 
 Returns:
     tuple (int): Indexes of cells where the field is defined.
         )" )
+        // .def( "allocate", &SimpleFieldOnNodesReal::allocate,
+        //       R"(
+        //     Allocate the field.
+
+        //     Arguments:
+        //         loc [str]: localization like 'ELEM'
+        //         quantity [str]: physical quantity like 'DEPL_R'
+        //         cmps [list[str]]: list of components.
+        //         nbPG [int]: number of Gauss Point by cell
+        //         nbSP [int]: number of sub-point by point.
+        //     )",
+        //       py::arg( "loc" ), py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "nbPG" ),
+        //       py::arg( "nbSP" ) = 1, py::arg( "zero" ) = false )
         .def( "getNumberOfComponents", &SimpleFieldOnCellsReal::getNumberOfComponents )
         .def( "getComponent", &SimpleFieldOnCellsReal::getComponent )
         .def( "getComponents", &SimpleFieldOnCellsReal::getComponents )
