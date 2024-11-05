@@ -82,7 +82,7 @@ class ExtendedFieldOnCellsReal:
             (cells, points, subpoints).
         """
 
-        return self.toSimpleFieldOnCells().getValuesWithDescription(components, groups)
+        return self.toSimpleFieldOnCells().getValuesWithDescription(force_list(components), groups)
 
     def asPhysicalQuantity(self, physQuantity, map_cmps, fed=None):
         """Return a new field with a new physical quantity and renamed components.

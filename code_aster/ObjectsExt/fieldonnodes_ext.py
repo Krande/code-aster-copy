@@ -344,7 +344,7 @@ class ExtendedFieldOnNodesComplex:
 
         return self._restrict(force_list(cmps), force_list(groupsOfNodes), val[same_rank])
 
-    def getValuesWithDescription(self, component="", groups=[]):
+    def getValuesWithDescription(self, component=[], groups=[]):
         """Return the values of a component of the field.
 
         Arguments:
@@ -358,7 +358,7 @@ class ExtendedFieldOnNodesComplex:
             The description provides a tuple with (nodes ids, components).
         """
         description, dofs = self.getDescription().getDOFsWithDescription(
-            force_list(component), force_list(groups)
+            force_list(component), force_list(groups), local=True
         )
         values = self.getValues(dofs)
         return values, description

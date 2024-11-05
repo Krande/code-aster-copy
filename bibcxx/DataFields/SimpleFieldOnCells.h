@@ -549,6 +549,11 @@ class SimpleFieldOnCells : public DataField {
         VectorLong points;
         VectorLong subpoints;
 
+        VectorLong cells_ = cells;
+        if ( cells_.empty() ) {
+            cells_ = _mesh->getCells();
+        }
+
         VectorString list_cmp;
         auto list_cmp_in = this->getComponents();
         if ( cmps.empty() ) {
@@ -568,14 +573,14 @@ class SimpleFieldOnCells : public DataField {
         }
 
         ASTERINTEGER size =
-            cells.size() * cmps.size() * getMaxNumberOfPoints() * getMaxNumberOfSubPoints();
+            cells_.size() * cmps.size() * getMaxNumberOfPoints() * getMaxNumberOfSubPoints();
         v_cells.reserve( size );
         v_cmps.reserve( size );
         values.reserve( size );
         points.reserve( size );
         subpoints.reserve( size );
 
-        for ( auto &cell : cells ) {
+        for ( auto &cell : cells_ ) {
             for ( auto &cmp : list_cmp ) {
                 auto icmp = _name2Index.at( cmp );
 

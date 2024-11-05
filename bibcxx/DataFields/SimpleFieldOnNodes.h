@@ -517,6 +517,11 @@ class SimpleFieldOnNodes : public DataField {
 
         this->updateValuePointers();
 
+        VectorLong nodes_ = nodes;
+        if ( nodes_.empty() ) {
+            nodes_ = _mesh->getNodes();
+        }
+
         VectorString list_cmp;
         auto list_cmp_in = this->getComponents();
         if ( cmps.empty() ) {
@@ -539,11 +544,11 @@ class SimpleFieldOnNodes : public DataField {
         VectorLong v_nodes;
         VectorString v_cmps;
 
-        values.reserve( nodes.size() * list_cmp.size() );
-        v_nodes.reserve( nodes.size() * list_cmp.size() );
-        v_cmps.reserve( nodes.size() * list_cmp.size() );
+        values.reserve( nodes_.size() * list_cmp.size() );
+        v_nodes.reserve( nodes_.size() * list_cmp.size() );
+        v_cmps.reserve( nodes_.size() * list_cmp.size() );
 
-        for ( auto &node : nodes ) {
+        for ( auto &node : nodes_ ) {
             for ( auto &cmp : list_cmp ) {
                 auto icmp = ( *this )._name2Index.at( cmp );
                 if ( this->hasValue( node, icmp ) ) {

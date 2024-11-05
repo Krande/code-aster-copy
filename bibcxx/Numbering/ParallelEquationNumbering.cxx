@@ -370,8 +370,8 @@ ParallelEquationNumbering::getDOFsWithDescription( const VectorString &cmps,
     auto mapLG = getLocalToGlobalMapping();
     mapLG->updateValuePointer();
     for ( auto dof = 0; dof < descr.size(); ++dof ) {
-        if ( descr[dof].second > 0 ) {
-            if ( set_nodes.find( descr[dof].first ) != set_nodes.end() ) {
+        if ( set_nodes.find( descr[dof].first ) != set_nodes.end() ) {
+            if ( descr[dof].second > 0 ) {
                 auto cmp = idToName[descr[dof].second];
                 if ( set_cmps.find( cmp ) != set_cmps.end() ) {
                     v_nodes.push_back( descr[dof].first );
