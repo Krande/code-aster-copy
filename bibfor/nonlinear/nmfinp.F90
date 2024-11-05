@@ -73,9 +73,11 @@ subroutine nmfinp(sddisc, numeInst, lastTimeStep)
 
 ! - Detect last time step by NB_PAS_MAXI
     call utdidt('L', sddisc, 'LIST', 'NB_PAS_MAXI', vali_=nbStepMaxi)
-    if (numeInst .eq. nbStepMaxi) then
-        call utmess('I', 'ADAPTATION_13')
-        lastTimeStep = ASTER_TRUE
+    if (numeInst .ne. 0) then
+        if (numeInst .eq. nbStepMaxi) then
+            call utmess('I', 'ADAPTATION_13')
+            lastTimeStep = ASTER_TRUE
+        end if
     end if
 
 ! -  Detect last time step by automatic time stepping
