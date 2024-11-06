@@ -98,6 +98,7 @@ void BaseAssemblyMatrix::updateDOFNumbering() {
         _description->updateValuePointer();
         std::string dofName = ( *_description )[1];
         _dofNum = std::make_shared< DOFNumbering >( dofName );
+        _isBuilt = true;
     }
 };
 
