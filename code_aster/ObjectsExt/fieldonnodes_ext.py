@@ -186,7 +186,7 @@ class ExtendedFieldOnNodesReal:
         nueq = dofNumbering.getEquationNumbering()
         phys_cmp = [cmp for cmp in dofNumbering.getComponents() if not cmp.startswith("LAGR")]
         for cmp in phys_cmp:
-            ldx = nueq.getDOFsWithDescription(f"LAGR:{cmp}")
+            ldx = nueq.getDOFsWithDescription([f"LAGR:{cmp}"])
             for node, row in enumerate(ldx[-1]):
                 indir.setdefault((ldx[0][0][node], cmp), []).append(row)
         return indir

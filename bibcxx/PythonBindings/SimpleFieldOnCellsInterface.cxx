@@ -192,7 +192,7 @@ Returns:
     tuple[cells[list[int]], cmps[list[int]]  points[list[int]], subpoints[list[int]]]
         )",
               py::arg( "cmps" ) = VectorString(), py::arg( "cells" ) = VectorString() )
-        .def( "getCellsWithComponents", &SimpleFieldOnCellsReal::getCellsWithComponents, R"(
+        .def( "getCellsWithValues", &SimpleFieldOnCellsReal::getCellsWithValues, R"(
 Returns the list of cells where the field is defined.
 
 Returns:

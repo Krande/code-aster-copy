@@ -389,9 +389,8 @@ class MEDCoupler:
             # self.project_field(field).debugPrint()
             return self.project_field(field.toFieldOnNodes())
         else:
-            fed = FiniteElementDescriptor(
-                model.getFiniteElementDescriptor(), self.mesh_interf.getGroupsOfCells()
-            )
+            fed = model.getFiniteElementDescriptor().restrict(self.mesh_interf.getGroupsOfCells())
+
             return self.extent_field(field).toFieldOnCells(fed)
 
     def export_field(self, field, field_name, cmps=[]):

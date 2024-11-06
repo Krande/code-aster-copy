@@ -49,7 +49,7 @@ def buildCompleteFieldOnCells(field):
     nbCmp = field.getNumberOfComponents()
     nbPt = field.getMaxNumberOfPoints()
     nbSPt = field.getMaxNumberOfSubPoints()
-    cWComps = field.getCellsWithComponents()
+    cWComps = field.getCellsWithValues()
 
     completeSief = np.zeros((maxCells + 1, nbCmp * nbPt * nbSPt))
     cmpt = 0

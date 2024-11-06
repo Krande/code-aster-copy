@@ -2374,11 +2374,22 @@ class FiniteElementDescriptor(DataStructure):
     def getModel(self):
         pass
 
+    def getNumberOfCells(self):
+        pass
+
     def getPhysics(self):
         pass
 
     def getVirtualCellsDescriptor(self):
         pass
+
+    def restrict(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. restrict(self: libaster.FiniteElementDescriptor, arg0: list[int]) -> libaster.FiniteElementDescriptor
+
+        2. restrict(self: libaster.FiniteElementDescriptor, arg0: list[str]) -> libaster.FiniteElementDescriptor
+        """
 
     def setModel(self, arg0):
         pass
@@ -3794,7 +3805,7 @@ class SimpleFieldOnCellsReal(DataField):
             SimpleFieldOnCellsReal: field with name physical quantity.
         """
 
-    def getCellsWithComponents(self):
+    def getCellsWithValues(self):
         """Returns the list of cells where the field is defined.
 
         Returns:

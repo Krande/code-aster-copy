@@ -75,12 +75,9 @@ class SimpleFieldOnCells : public DataField {
      */
 
     void _buildComponentsName2Index() {
-        if ( _name2Index.empty() ) {
-
-            auto nbCmp = this->getNumberOfComponents();
-            for ( ASTERINTEGER i = 0; i < nbCmp; i++ ) {
-                _name2Index[this->getComponent( i )] = i;
-            }
+        auto nbCmp = this->getNumberOfComponents();
+        for ( ASTERINTEGER i = 0; i < nbCmp; i++ ) {
+            _name2Index[this->getComponent( i )] = i;
         }
     }
 
@@ -183,6 +180,25 @@ class SimpleFieldOnCells : public DataField {
         this->_checkSptOOR( ima, ispt );
         this->_checkCmpAtCellOOR( ima, icmp );
     };
+
+    bool _hasValueCells( const ASTERINTEGER &ima ) const {
+
+        ASTERINTEGER npt = getNumberOfPointsOfCell( ima );
+        ASTERINTEGER nspt = getNumberOfSubPointsOfCell( ima );
+        ASTERINTEGER ncmp = getNumberOfComponents();
+
+        for ( ASTERINTEGER icmp = 0; icmp < ncmp; icmp++ ) {
+            for ( ASTERINTEGER ipt = 0; ipt < npt; ipt++ ) {
+                for ( ASTERINTEGER ispt = 0; ispt < nspt; ispt++ ) {
+                    if ( hasValue( ima, icmp, ipt, ispt ) ) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 
   public:
     /**
@@ -495,11 +511,16 @@ class SimpleFieldOnCells : public DataField {
     /**
      * @brief Get cells holding components
      */
-    VectorLong getCellsWithComponents() const {
+    VectorLong getCellsWithValues() const {
+        auto nbCells = this->getNumberOfCells();
+
         VectorLong values;
-        for ( ASTERINTEGER ima = 0; ima < this->getNumberOfCells(); ima++ ) {
-            if ( this->_cmpsSptCell( ima ) > 0 )
+        values.reserve( nbCells );
+
+        for ( ASTERINTEGER ima = 0; ima < nbCells; ima++ ) {
+            if ( this->_hasValueCells( ima ) ) {
                 values.push_back( ima );
+            }
         }
         return values;
     }
@@ -581,11 +602,10 @@ class SimpleFieldOnCells : public DataField {
         subpoints.reserve( size );
 
         for ( auto &cell : cells_ ) {
+            ASTERINTEGER npt = getNumberOfPointsOfCell( cell );
+            ASTERINTEGER nspt = getNumberOfSubPointsOfCell( cell );
             for ( auto &cmp : list_cmp ) {
                 auto icmp = _name2Index.at( cmp );
-
-                ASTERINTEGER npt = getNumberOfPointsOfCell( cell );
-                ASTERINTEGER nspt = getNumberOfSubPointsOfCell( cell );
 
                 for ( ASTERINTEGER ipt = 0; ipt < npt; ipt++ ) {
                     for ( ASTERINTEGER ispt = 0; ispt < nspt; ispt++ ) {
