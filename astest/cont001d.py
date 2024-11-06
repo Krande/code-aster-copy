@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -112,8 +112,8 @@ except AsterError as err:
     print(fmt_raison % str(err))
     # on verifie que l'erreur fatale est bien celle que l'on attendait :
     if err.id_message == "CONTACT1_3":
-        is_ok = 0
+        is_ok = 1
 
-test.assertEqual(is_ok, 0)
+test.assertEqual(is_ok, 1)
 
 FIN()
