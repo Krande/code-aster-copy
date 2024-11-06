@@ -929,9 +929,9 @@ subroutine lc0000(BEHinteg, &
     end select
 ! --------------------------------------------------------------------------------------------------
 
-! - For "old" drediction
+! - For "old" prediction
     if (BEHInteg%behavPara%lPred .and. BEHInteg%behavPara%lSigm .and. &
-        BEHInteg%behavPara%lStrainAll) then
+        .not. BEHinteg%behavPara%lStrainMeca) then
         sigp = sigm
     end if
 

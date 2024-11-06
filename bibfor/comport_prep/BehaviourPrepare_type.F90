@@ -94,6 +94,8 @@ module BehaviourPrepare_type
         character(len=16) :: meca_comp = ' '
 ! ----- Keyword POST_INCR
         character(len=16) :: post_incr = ' '
+! ----- Flag for total strain model cases
+        aster_logical :: lTotalStrain = ASTER_FALSE
     end type BehaviourPrep_Para
 ! ==================================================================================================
 ! Type: behaviour criteria from user
@@ -147,8 +149,6 @@ module BehaviourPrepare_type
         type(BehaviourPrep_Para), pointer :: prepPara(:) => null()
 ! ----- List of parameters for external behaviours
         type(BehaviourPrep_Exte), pointer :: prepExte(:) => null()
-! ----- Flag for total strain model cases (at least one behaviour)
-        aster_logical :: lTotalStrain = ASTER_FALSE
 ! ----- Flag for debug
         aster_logical :: lDebug = ASTER_FALSE
     end type BehaviourPrep_MapCompor

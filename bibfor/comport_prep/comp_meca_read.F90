@@ -157,9 +157,7 @@ subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
 ! ----- Select type of strain (mechanical or total) from catalog
         defo_ldc = 'VIDE'
         call comp_meca_deflc(rela_comp, defo_comp, defo_ldc)
-        if (defo_ldc .eq. 'TOTALE') then
-            lTotalStrain = ASTER_TRUE
-        end if
+        lTotalStrain = defo_ldc .eq. 'TOTALE'
 
 ! ----- Save parameters
         prepMapCompor%prepPara(iFactorKeyword)%rela_comp = rela_comp
@@ -174,7 +172,7 @@ subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
         prepMapCompor%prepPara(iFactorKeyword)%rigi_geom = rigi_geom
         prepMapCompor%prepPara(iFactorKeyword)%regu_visc = regu_visc
         prepMapCompor%prepPara(iFactorKeyword)%post_incr = post_incr
-
+        prepMapCompor%prepPara(iFactorKeyword)%lTotalStrain = lTotalStrain
     end do
 
     if (prepMapCompor%lDebug) then
@@ -193,10 +191,8 @@ subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
             WRITE (6, *) "--- rigi_geom : ", prepMapCompor%prepPara(iFactorKeyword)%rigi_geom
             WRITE (6, *) "--- regu_visc : ", prepMapCompor%prepPara(iFactorKeyword)%regu_visc
             WRITE (6, *) "--- post_incr : ", prepMapCompor%prepPara(iFactorKeyword)%post_incr
+            WRITE (6, *) "--- total strain : ", prepMapCompor%prepPara(iFactorKeyword)%lTotalStrain
         end do
     end if
-
-! - Is at least ONE behaviour is not incremental ?
-    prepMapCompor%lTotalStrain = lTotalStrain
 !
 end subroutine

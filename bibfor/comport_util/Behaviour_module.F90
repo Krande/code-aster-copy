@@ -313,7 +313,8 @@ contains
         BEHinteg%behavPara%lGdefLog = defo_comp .eq. 'GDEF_LOG'
         BEHinteg%behavPara%lAnnealing = postIncr .eq. "REST_ECRO"
         BEHinteg%behavPara%lStrainMeca = defo_ldc .eq. 'MECANIQUE'
-        BEHinteg%behavPara%lStrainAll = defo_ldc .ne. 'MECANIQUE'
+        BEHinteg%behavPara%lStrainAll = defo_ldc .eq. 'TOTALE'
+        BEHinteg%behavPara%lStrainOld = defo_ldc .eq. 'OLD'
         BEHinteg%behavPara%lReguVisc = regu_visc .eq. 'REGU_VISC_ELAS'
         BEHinteg%behavESVA%behavESVAExte%mgisAddr = mgisAddr
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -322,6 +323,7 @@ contains
             WRITE (6, *) '<DEBUG>  From COMPOR - lAnnealing: ', BEHinteg%behavPara%lAnnealing
             WRITE (6, *) '<DEBUG>  From COMPOR - lStrainMeca: ', BEHinteg%behavPara%lStrainMeca
             WRITE (6, *) '<DEBUG>  From COMPOR - lStrainAll: ', BEHinteg%behavPara%lStrainAll
+            WRITE (6, *) '<DEBUG>  From COMPOR - lStrainOld: ', BEHinteg%behavPara%lStrainOld
             WRITE (6, *) '<DEBUG>  From COMPOR - lReguVisc: ', BEHinteg%behavPara%lReguVisc
             WRITE (6, *) '<DEBUG>  From COMPOR - mgisAddr: ', mgisAddr
         end if
@@ -445,11 +447,12 @@ contains
         real(kind=8), intent(inout) :: epsm(neps), deps(neps)
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Local
-        aster_logical :: lFiniteStrain, lPtot, lStrainMeca
+        aster_logical :: lFiniteStrain, lPtot, lStrainMeca, lStrainAll
 !   ------------------------------------------------------------------------------------------------
 !
         if (ca_nbcvrc_ .ne. 0) then
             lStrainMeca = BEHinteg%behavPara%lStrainMeca
+            lStrainAll = BEHinteg%behavPara%lStrainAll
             lFiniteStrain = BEHinteg%behavPara%lFiniteStrain
             lPtot = BEHinteg%behavESVA%behavESVAField(ESVA_FIELD_PTOT)%exist
             if (lStrainMeca .or. lPtot) then
@@ -462,10 +465,6 @@ contains
                                        BEHinteg%behavPara%ldcDime, neps)
 ! ------------- Subtract to get mechanical strain epsm and deps become mechanical strains
                 call computeStrainMeca(BEHinteg, neps, epsm, deps)
-            else
-                if (LDC_PREP_DEBUG .eq. 1) then
-                    WRITE (6, *) '<DEBUG>  Présence de VARC, mais ancien système'
-                end if
             end if
         else
             if (LDC_PREP_DEBUG .eq. 1) then
@@ -513,7 +512,6 @@ contains
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 !   ------------------------------------------------------------------------------------------------
 !
-!
 
 ! ----- Set "real" zero
         BEHinteg%behavESVA%behavESVAGeom%coorElga = 0.d0
@@ -526,9 +524,9 @@ contains
 
 ! ----- Special for ELTSIZE1
         if (BEHinteg%behavESVA%tabcod(ELTSIZE1) .eq. 1) then
-        if (relaComp .ne. 'BETON_DOUBLE_DP') then
-            call utmess('F', 'COMPOR2_12')
-        end if
+            if (relaComp .ne. 'BETON_DOUBLE_DP') then
+                call utmess('F', 'COMPOR2_12')
+            end if
         end if
 !
 !   ------------------------------------------------------------------------------------------------
@@ -640,7 +638,8 @@ contains
 ! ----- Parameters
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Local
-        aster_logical :: lExteSolver, lStrainMeca
+        aster_logical :: lExteSolver, lStrainMeca, lhasInelasticStrains
+        integer :: iField
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -682,6 +681,18 @@ contains
                                 BEHinteg%behavESVA)
             end if
         end if
+
+! ----- Detect inelastic strains
+        lhasInelasticStrains = ASTER_FALSE
+        if (ca_nbcvrc_ .ne. 0) then
+            do iField = 1, ESVA_FIELD_NBMAXI
+                if (BEHinteg%behavESVA%behavESVAField(iField)%exist) then
+                    lhasInelasticStrains = ASTER_TRUE
+                    exit
+                end if
+            end do
+        end if
+        BEHinteg%behavESVA%lhasInelasticStrains = lhasInelasticStrains
 
 ! ----- Prepare other external state variables (For temperature: see preparation of fields)
         if (lExteSolver) then
@@ -829,12 +840,12 @@ contains
         BEHinteg%behavESVA%behavESVAExte%nbESVAScal = nbESVA
 
         if (LDC_PREP_DEBUG .eq. 1) then
-        if (nbESVA .eq. 0) then
-            WRITE (6, *) '<DEBUG> No external state variables defined in MFront/UMAT'
-        else
-            WRITE (6, *) '<DEBUG> Number of external state variables defined in MFront/UMAT:', &
-                nbESVA
-        end if
+            if (nbESVA .eq. 0) then
+                WRITE (6, *) '<DEBUG> No external state variables defined in MFront/UMAT'
+            else
+                WRITE (6, *) '<DEBUG> Number of external state variables defined in MFront/UMAT:', &
+                    nbESVA
+            end if
         end if
 
 ! ----- Set values of ExternalStateVariables
@@ -1923,14 +1934,14 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine computeStrainESVA(behavESVA, ldcDime, neps)
-!   ------------------------------------------------------------------------------------------------
+!   -----------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(BehaviourESVA), intent(inout) :: behavESVA
         integer, intent(in) :: ldcDime
         integer, intent(in) :: neps
 ! ----- Local
         integer :: iComp, iField, iDime
-        aster_logical :: exist
+        aster_logical :: exist, hasAnelastiStrains
         integer :: nbComp, typeForStrain
         real(kind=8) :: valePrev(ESVA_FIELD_NBCMPMAXI)
         real(kind=8) :: valeIncr(ESVA_FIELD_NBCMPMAXI)
@@ -1942,6 +1953,7 @@ contains
 
         behavESVA%depsi_varc = 0.d0
         behavESVA%epsi_varc = 0.d0
+        hasAnelastiStrains = ASTER_FALSE
 
         do iField = 1, ESVA_FIELD_NBMAXI
 ! --------- Get current field

@@ -20,6 +20,7 @@
 from ..Utilities import _
 
 cata_msg = {
+    1: _("""Les comportements MFront ne fonctionnent qu'en déformation mécanique."""),
     19: _(
         """Le nom de la variable interne %(k1)s est trop long, il va être tronqué en %(k2)s. Il faudra vérifier qu'il n'y a pas de risque de confusion avec d'autres variables internes."""
     ),
