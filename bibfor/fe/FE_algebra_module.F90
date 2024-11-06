@@ -35,7 +35,7 @@ module FE_algebra_module
 !
     public :: dgemv_T_2xn, dgemv_T_3xn, dgemv_T_4xn, dgemv_T_6xn
     public :: dgemv_2x2, dgemv_3x3, dgemv_T_4x4, dgemv_T_6x6
-    public :: daxpy_1
+    public :: daxpy_1, daxpy_1x2, daxpy_1x3, daxpy_1xm
 !
 contains
 !
@@ -53,7 +53,6 @@ contains
         real(kind=8), intent(in) :: mat(6, *)
         real(kind=8), intent(in) :: x(*), alpha
         real(kind=8), intent(out) :: y(*)
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,6 +64,8 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+
         b_lda = to_blas_int(6)
         b_m = to_blas_int(6)
         b_n = to_blas_int(6)
@@ -114,7 +115,6 @@ contains
         real(kind=8), intent(in) :: mat(6, *)
         real(kind=8), intent(in) :: x(*), alpha
         real(kind=8), intent(out) :: y(*)
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -126,6 +126,7 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
         b_lda = to_blas_int(6)
         b_m = to_blas_int(4)
         b_n = to_blas_int(4)
@@ -155,7 +156,6 @@ contains
         real(kind=8), intent(in) :: mat(3, *)
         real(kind=8), intent(in) :: x(*), alpha
         real(kind=8), intent(out) :: y(*)
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -167,6 +167,7 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
         b_lda = to_blas_int(3)
         b_m = to_blas_int(3)
         b_n = to_blas_int(3)
@@ -195,7 +196,6 @@ contains
         real(kind=8), intent(in) :: mat(3, *)
         real(kind=8), intent(in) :: x(*), alpha
         real(kind=8), intent(out) :: y(*)
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -207,6 +207,7 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
         b_lda = to_blas_int(3)
         b_m = to_blas_int(2)
         b_n = to_blas_int(2)
@@ -235,7 +236,6 @@ contains
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
         integer, intent(in) :: ncol, offset
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -246,6 +246,7 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
         b_lda = to_blas_int(6)
         b_m = to_blas_int(6)
         b_n = to_blas_int(ncol)
@@ -356,7 +357,6 @@ contains
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
         integer, intent(in) :: ncol, offset
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -367,6 +367,7 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
         b_lda = to_blas_int(4)
         b_m = to_blas_int(6)
         b_n = to_blas_int(ncol)
@@ -460,7 +461,6 @@ contains
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
         integer, intent(in) :: ncol
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -471,6 +471,7 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
         b_lda = to_blas_int(3)
         b_m = to_blas_int(3)
         b_n = to_blas_int(ncol)
@@ -532,7 +533,6 @@ contains
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
         integer, intent(in) :: ncol
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -543,14 +543,15 @@ contains
 !
 !
 #ifdef FE_USE_BLAS
+        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+
         b_lda = to_blas_int(3)
         b_m = to_blas_int(2)
         b_n = to_blas_int(ncol)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dgemv('T', b_m, b_n, 1.d0, mat, &
-                   b_lda, x, b_incx, 1.d0, y, &
-                   b_incy)
+                   b_lda, x, b_incx, 1.d0, y, b_incy)
 #else
         integer :: icol
 !
@@ -608,7 +609,6 @@ contains
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
         integer, intent(in) :: n
-        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -618,12 +618,13 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
+        blas_int :: b_incx, b_incy, b_n
+
 #ifdef FE_USE_BLAS
         b_n = to_blas_int(n)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, alpha, x, b_incx, y, &
-                   b_incy)
+        call daxpy(b_n, alpha, x, b_incx, y, b_incy)
 #else
 !
         select case (n)
@@ -652,8 +653,178 @@ contains
             b_n = to_blas_int(n)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call daxpy(b_n, alpha, x, b_incx, y, &
-                       b_incy)
+            call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+        end select
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine daxpy_1x2(n, alpha, x, y)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: alpha
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(inout) :: y(*)
+        integer, intent(in) :: n
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dgemv product with given size
+!   y += y * alpha*x
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        blas_int :: b_incx, b_incy, b_n
+
+#ifdef FE_USE_BLAS
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(2)
+        call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+#else
+!
+        select case (n)
+        case (1)
+            y(1) = y(1)+alpha*x(1)
+        case (2)
+            y(1) = y(1)+alpha*x(1)
+            y(3) = y(3)+alpha*x(2)
+        case (3)
+            y(1) = y(1)+alpha*x(1)
+            y(3) = y(3)+alpha*x(2)
+            y(5) = y(5)+alpha*x(3)
+        case (4)
+            y(1) = y(1)+alpha*x(1)
+            y(3) = y(3)+alpha*x(2)
+            y(5) = y(5)+alpha*x(3)
+            y(7) = y(7)+alpha*x(4)
+        case (6)
+            y(1) = y(1)+alpha*x(1)
+            y(3) = y(3)+alpha*x(2)
+            y(5) = y(5)+alpha*x(3)
+            y(7) = y(7)+alpha*x(4)
+            y(9) = y(9)+alpha*x(5)
+            y(11) = y(11)+alpha*x(6)
+        case default
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(2)
+            call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+        end select
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine daxpy_1x3(n, alpha, x, y)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: alpha
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(inout) :: y(*)
+        integer, intent(in) :: n
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dgemv product with given size
+!   y += y * alpha*x
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        blas_int :: b_incx, b_incy, b_n
+!
+#ifdef FE_USE_BLAS
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(3)
+        call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+#else
+!
+        select case (n)
+        case (1)
+            y(1) = y(1)+alpha*x(1)
+        case (2)
+            y(1) = y(1)+alpha*x(1)
+            y(4) = y(4)+alpha*x(2)
+        case (3)
+            y(1) = y(1)+alpha*x(1)
+            y(4) = y(4)+alpha*x(2)
+            y(7) = y(7)+alpha*x(3)
+        case (4)
+            y(1) = y(1)+alpha*x(1)
+            y(4) = y(4)+alpha*x(2)
+            y(7) = y(7)+alpha*x(3)
+            y(10) = y(10)+alpha*x(4)
+        case (6)
+            y(1) = y(1)+alpha*x(1)
+            y(4) = y(4)+alpha*x(2)
+            y(7) = y(7)+alpha*x(3)
+            y(10) = y(10)+alpha*x(4)
+            y(13) = y(13)+alpha*x(5)
+            y(16) = y(16)+alpha*x(6)
+        case default
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(3)
+            call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+        end select
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine daxpy_1xm(n, alpha, x, y, m)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: alpha
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(inout) :: y(*)
+        integer, intent(in) :: n, m
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dgemv product with given size
+!   y += y * alpha*x
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        blas_int :: b_incx, b_incy, b_n
+!
+#ifdef FE_USE_BLAS
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(m)
+        call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+#else
+!
+        select case (m)
+        case (1)
+            call daxpy_1(n, alpha, x, y)
+        case (2)
+            call daxpy_1x2(n, alpha, x, y)
+        case (3)
+            call daxpy_1x3(n, alpha, x, y)
+        case default
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(m)
+            call daxpy(b_n, alpha, x, b_incx, y, b_incy)
         end select
 #endif
 !

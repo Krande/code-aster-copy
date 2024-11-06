@@ -127,7 +127,7 @@ subroutine load_neum_spec(loadName, loadNume, loadApply, ligrel_calc, i_type_neu
 !
 ! - Name of option for undead load (real coefficient)
 !
-    data optsui_r/'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+    data optsui_r/'No_Load         ', 'No_Load         ', 'CHAR_MECA_FRSU23', 'No_Load         ', &
         'No_Load         ', 'No_Load         ', 'CHAR_MECA_SR1D1D', 'CHAR_MECA_PESA_R', &
         'CHAR_MECA_ROTA_R', 'CHAR_MECA_PRSU_R', 'No_Load         ', 'CHAR_MECA_SRCO3D', &
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
@@ -175,7 +175,7 @@ subroutine load_neum_spec(loadName, loadNume, loadApply, ligrel_calc, i_type_neu
 !
 ! - Flag if load can been undead load type
 !
-    data l_suiv/.false., .false., .false., .false., &
+    data l_suiv/.false., .false., .true., .false., &
         .false., .false., .true., .true., &
         .true., .true., .false., .true., &
         .false., .false., .false., .false., &

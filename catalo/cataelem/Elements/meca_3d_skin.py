@@ -290,13 +290,23 @@ class MECA_FACE3(Element):
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FF2D3D(
-            te=29,
+            te=305,
             para_in=((SP.PFF2D3D, LC.CFOR3DF), (SP.PGEOMER, LC.EGEOM3D), (SP.PINSTR, LC.MTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FR2D3D(
-            te=28,
+            te=305,
             para_in=((SP.PFR2D3D, LC.NFOR3DR), (SP.PGEOMER, LC.EGEOM3D)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.CHAR_MECA_FRSU23(
+            te=305,
+            para_in=(
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PFR2D3D, LC.NFOR3DR),
+                (SP.PGEOMER, LC.EGEOM3D),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_PRES_F(

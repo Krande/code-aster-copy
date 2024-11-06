@@ -99,7 +99,7 @@ subroutine te0078(option, nomte)
                     1, 'RHO_CP', valres, icodre, 1)
         cp = valres(1)
 !
-        tpg = FEEvalFuncScal(FEBasis, temp, FEQuadMass%points_param(1:3, kp))
+        tpg = FEEvalFuncRScal(FEBasis, temp, FEQuadMass%points_param(1:3, kp))
         ValQPM(kp) = cp*tpg
     end do
 !

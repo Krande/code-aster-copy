@@ -20,6 +20,7 @@ module FE_rhs_module
 !
     use FE_basis_module
     use FE_quadrature_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -39,7 +40,7 @@ module FE_rhs_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: FEMakeRhsScal
+    public :: FEMakeRhsScal, FEMakeRhsVec
 !    private  ::
 !
 contains
@@ -72,7 +73,6 @@ contains
         integer :: ipg
         real(kind=8), dimension(MAX_BS) :: BSEval
         real(kind=8) :: coeff
-        blas_int :: b_incx, b_incy, b_n
 !
         rhs = 0.d0
 !
@@ -83,11 +83,51 @@ contains
 !
 ! ---- rhs = rhs + weight * BSEval
             coeff = FEQuad%weights(ipg)*ValuesQP(ipg)
-            b_n = to_blas_int(FEBasis%size)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call daxpy(b_n, coeff, BSEval, b_incx, rhs, &
-                       b_incy)
+            call daxpy_1(FEBasis%size, coeff, BSEval, rhs)
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine FeMakeRhsVec(FEQuad, FEBasis, ValuesQP, rhs)
+!
+        implicit none
+!
+        type(FE_Quadrature), intent(in) :: FEQuad
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: ValuesQP(3, MAX_QP)
+        real(kind=8), intent(out) :: rhs(MAX_BV)
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the term (f, v)_F
+!   In hhoQuad      : Quadrature
+!   In hhoBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, v)_F term
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ----- Local variables
+        integer :: ipg, idim
+        real(kind=8), dimension(MAX_BS) :: BSEval
+        real(kind=8) :: coeff(3)
+!
+        rhs = 0.d0
+!
+! -- Loop on quadrature point
+        do ipg = 1, FEQuad%nbQuadPoints
+! ----- Eval cell basis function at the quadrature point
+            BSEval = FEBasis%func(FEQuad%points_param(1:3, ipg))
+            coeff = FEQuad%weights(ipg)*ValuesQP(1:3, ipg)
+!
+! ---- rhs = rhs + weight * BSEval
+            do idim = 1, FEBasis%ndim
+                call daxpy_1xm(FEBasis%size, coeff(idim), BSEval, rhs(idim), FEBasis%ndim)
+            end do
         end do
 !
     end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,10 @@ FOCIS = DEFI_FONCTION(
 )
 
 TRACTION = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_FACE=_F(GROUP_MA="GAUCHE", FX=-1.0))
+# test force_face avec suiveuse
+Fake0 = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_FACE=_F(GROUP_MA="GAUCHE", FX=-1.0))
+Fake1 = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_FACE=_F(GROUP_MA="GAUCHE", FX=1.0))
+
 
 CISAIL = AFFE_CHAR_MECA(
     MODELE=MODEL,
@@ -96,6 +100,8 @@ CALCNL = STAT_NON_LINE(
         _F(CHARGE=CONDLIM),
         _F(CHARGE=TRACTION, FONC_MULT=FOTRAC),
         _F(CHARGE=CISAIL, FONC_MULT=FOCIS),
+        _F(CHARGE=Fake0, FONC_MULT=FOTRAC, TYPE_CHARGE="SUIV"),
+        _F(CHARGE=Fake1, FONC_MULT=FOTRAC, TYPE_CHARGE="SUIV"),
     ),
     INFO=1,
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
@@ -114,6 +120,8 @@ CALCNL = STAT_NON_LINE(
         _F(CHARGE=CONDLIM),
         _F(CHARGE=TRACTION, FONC_MULT=FOTRAC),
         _F(CHARGE=CISAIL, FONC_MULT=FOCIS),
+        _F(CHARGE=Fake0, FONC_MULT=FOTRAC, TYPE_CHARGE="SUIV"),
+        _F(CHARGE=Fake1, FONC_MULT=FOTRAC, TYPE_CHARGE="SUIV"),
     ),
     INFO=1,
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
