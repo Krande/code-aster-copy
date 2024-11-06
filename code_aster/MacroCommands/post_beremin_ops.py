@@ -285,7 +285,7 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
     """
     if reswbrest.getModel().getMesh().hasGroupOfCells(f"mgrplas_{nume_inst}"):
 
-        if not "SIGM_CNV" in dwb[grwb]:
+        if "SIGM_CNV" not in dwb[grwb]:
 
             sg1 = CREA_CHAMP(
                 OPERATION="ASSE",
@@ -433,7 +433,7 @@ def sig1plasac(resultat, rsieq, numvi, dwb, reswbrest, grmapb, l_instplas):
         NonLinearResult: ELGA_SIEF_R filled by PRIN_3
     """
     modele = resultat.getModel()
-    if not grmapb in dwb:
+    if grmapb not in dwb:
         UTMESS("F", "RUPTURE1_88", valk=(grmapb))
 
     maxsig = NonLinearResult()
