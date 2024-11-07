@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,7 @@ subroutine chckma(nomu, dtol)
     connex = nomu//'.CONNEX         '
     call dismoi('NB_MA_MAILLA', nomu, 'MAILLAGE', repi=nbmail)
     call dismoi('NB_NO_MAILLA', nomu, 'MAILLAGE', repi=nbnoeu)
+    if (nbnoeu == 0) goto 100
     call jeveuo(nomu//'.TYPMAIL', 'L', iatyma)
 !
     call jeveuo(connex, 'L', iaconx)
@@ -92,7 +93,7 @@ subroutine chckma(nomu, dtol)
 !     A PARTIR DE LA CONNECTIVITE INVERSE RENVOYEE PAR CNCINV
 !     -----------------------------------------------------------
     nsolo = '&&CHCKMA.NSOLO          '
-    call wkvect(nsolo, 'V V I', nbnoeu, insolo)
+    call wkvect(nsolo, 'V V I', max(nbnoeu, 1), insolo)
 !
     it = 0
     knso = 0
@@ -139,7 +140,7 @@ subroutine chckma(nomu, dtol)
 !
     mdoubl = '&&CHCKMA.MDOUBLE'
     nmdoub = nbmail
-    call wkvect(mdoubl, 'V V I', nmdoub, imdoub)
+    call wkvect(mdoubl, 'V V I', max(nmdoub, 1), imdoub)
 !
 !     BOUCLE SUR TOUTES LES MAILLES DU MAILLAGE
 !
@@ -291,6 +292,7 @@ subroutine chckma(nomu, dtol)
 !     LES NOEUDS ORPHELINS SONT RANGES DANS &&CHCKMA.NSOLO(1:KNSO)
 !     LES MAILLES DOUBLES SONT RANGEES DANS &&CHCKMA.MDOUBLE(1:KMDB)
 !
+100 continue
     call jedetr('&&CHCKMA.NSOLO          ')
     call jedetr('&&CHCKMA.MDOUBLE')
     call jedetr('&&CHCKMA.CONNECINVERSE  ')

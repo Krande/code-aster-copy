@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,12 @@
 !
 !
 interface
-    subroutine rdtmai(noma, nomare, base, corrn, corrm,&
-                      bascor, nbmal, lima)
+    subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
         character(len=8) :: noma
         character(len=8) :: nomare
         character(len=1) :: base
         character(len=*) :: corrn
         character(len=*) :: corrm
         character(len=1) :: bascor
-        integer :: nbmal
-        integer :: lima(*)
     end subroutine rdtmai
 end interface
