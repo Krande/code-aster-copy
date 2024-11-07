@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -292,6 +292,11 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     end do
 
 30  continue
+
+    if (iarch_sd .eq. 0) then
+!   --- check the last archived value is at nbsauv
+        ASSERT((i_nbar-oldarch+1) .eq. nbsauv)
+    end if
 !
     if (last_prperc .ne. 100) then
         perc = 100
