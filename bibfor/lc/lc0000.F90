@@ -873,7 +873,7 @@ subroutine lc0000(BEHinteg, &
                     imate, compor, carcri, instam, instap, &
                     neps, epsm, deps, nsig, sigm, &
                     nvi, vim, option, angmas, &
-                    sigp, vip, dsidep, codret)
+                    sigp, vip, ndsde, dsidep, codret)
     case (7077)
         call lc7077(BEHinteg, fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, neps, epsm, &
