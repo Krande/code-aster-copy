@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -133,10 +133,12 @@ subroutine dtmprep_arch(sd_dtm_)
         nbarch = nbarch+1
         archlst(nbarch) = tfin
         j = int((tfin-tinit)/dt)
-        residue = mod(tfin-tinit, perarch)
-        residue = min(residue, abs(tfin-perarch))
-        if ((residue .gt. (j*epsi)) .and. (abs(residue-perarch) .gt. (j*epsi))) then
-            nbsaves = nbsaves+1
+        if (checktfin) then
+            residue = mod(tfin-tinit, perarch)
+            residue = min(residue, abs(tfin-perarch))
+            if ((residue .gt. (j*epsi)) .and. (abs(residue-perarch) .gt. (j*epsi))) then
+                nbsaves = nbsaves+1
+            end if
         end if
     end if
 
