@@ -21,14 +21,7 @@
 Definition of a convenient object to synchronize MEDCoupling fields.
 """
 
-
-from ..Commands import PROJ_CHAMP
-from ..Objects import (
-    LoadResult,
-    SimpleFieldOnNodesReal,
-    SimpleFieldOnCellsReal,
-    FiniteElementDescriptor,
-)
+from ..Objects import LoadResult, SimpleFieldOnNodesReal, SimpleFieldOnCellsReal
 from ..Utilities import logger, no_new_attributes, medcoupling as MEDC, ParaMEDMEM as PMM
 
 
