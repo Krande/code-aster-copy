@@ -3308,6 +3308,17 @@ class FieldOnNodesReal(DataField):
             int: number of element in the field
         """
 
+    def toFieldOnCells(self, fed, loc):
+        """Converts to FieldOnCells
+
+        Arguments:
+            fed [FiniteElementDescriptor]: finite element descriptor
+            loc [str] : name of localization like 'ELGA'.
+
+        Returns:
+            FieldOnCellsReal: field converted.
+        """
+
     def toSimpleFieldOnNodes(self):
         """Convert to SimpleFieldOnNodes
 
