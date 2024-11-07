@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine infoma(nomu, niv_)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/dismoi.h"
 !
     character(len=8) :: nomu
     integer, optional :: niv_
@@ -71,6 +72,9 @@ subroutine infoma(nomu, niv_)
     titre = nomu//'           .TITR'
     cooval = nomu//'.COORDO    .VALE'
 !
+    call dismoi('NB_MA_MAILLA', nomu, 'MAILLAGE', repi=nbmail)
+    call dismoi('NB_NO_MAILLA', nomu, 'MAILLAGE', repi=nbnoeu)
+!
 !
 !
     if (present(niv_)) then
@@ -100,8 +104,6 @@ subroutine infoma(nomu, niv_)
     else
         nbltit = 0
     end if
-    call jelira(nomnoe, 'NOMMAX', nbnoeu)
-    call jelira(nommai, 'NOMMAX', nbmail)
     call jeveuo(nomu//'.DIME', 'L', vi=dime)
     call jeveuo(nomu//'.TYPMAIL', 'L', vi=typmail)
     nbcoor = dime(6)
