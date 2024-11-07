@@ -25,6 +25,7 @@
 
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataFields/FieldOnCells.h"
+#include "DataFields/FieldOnCellsBuilder.h"
 #include "DataFields/FieldOnNodes.h"
 #include "DataFields/MeshCoordinatesField.h"
 #include "DataFields/SimpleFieldOnCells.h"
@@ -194,12 +195,41 @@ toFieldOnCells( const SimpleFieldOnCells< ValueType > &field, const FiniteElemen
     auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
 
     // Convert to CHAM_ELEM
-    const std::string prol0 = "NON", base = "G", kstop = "F";
+    const std::string prol0 = "OUI", base = "G", kstop = "F";
     ASTERINTEGER iret = 0, nncp = 0;
     CALLO_CESCEL_WRAP( field.getName(), fed->getName(), option, nompar, prol0, &nncp, base,
                        cham_elem->getName(), kstop, &iret );
 
     AS_ASSERT( iret == 0 );
+
+    cham_elem->build( { fed } );
+    cham_elem->updateValuePointers();
+    return cham_elem;
+}
+
+template < typename ValueType >
+std::shared_ptr< FieldOnCells< ValueType > >
+toFieldOnCells( const std::shared_ptr< FieldOnNodes< ValueType > > field,
+                const FiniteElementDescriptorPtr fed, const std::string loc,
+                const std::string option = std::string(),
+                const std::string nompar = std::string() ) {
+    return toFieldOnCells( *field, fed, loc, option, nompar );
+}
+
+template < typename ValueType >
+std::shared_ptr< FieldOnCells< ValueType > >
+toFieldOnCells( const FieldOnNodes< ValueType > &field, const FiniteElementDescriptorPtr fed,
+                const std::string loc, const std::string option = std::string(),
+                const std::string nompar = std::string() ) {
+    auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
+
+    // Convert to CHAM_ELEM
+    std::string base = "G";
+    std::string prol = "OUI", model = " ";
+
+    auto data = FieldOnCellsPtrBuilder< ValueType >( fed, loc, field.getPhysicalQuantity() );
+
+    CALLO_CHPCHD( field.getName(), loc, data->getName(), prol, base, cham_elem->getName(), model );
 
     cham_elem->build( { fed } );
     cham_elem->updateValuePointers();

@@ -63,7 +63,7 @@ FieldOnCellsPtrBuilder( const FiniteElementDescriptorPtr FEDesc, const std::stri
         option = loc;
     };
 
-    if ( quantity[0] != 'P' ) {
+    if ( quantity[0] != 'P' || quantity == "PRES_R" ) {
         nompar = "P" + quantity;
     } else {
         nompar = quantity;

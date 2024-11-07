@@ -99,12 +99,19 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             mc_pres = data["PRES"]
 
             # MEDC field => .med => code_aster field
-            PRES = self._medcpl.import_pressure(mc_pres)
+            PRES_noeu = self._medcpl.import_pressure(mc_pres)
+
+            fed = MOSOLIDE.getFiniteElementDescriptor().restrict(
+                self._medcpl.mesh_interf.getGroupsOfCells()
+            )
+            PRES_elno = PRES_noeu.toFieldOnCells(fed, "ELNO")
+
+            print(PRES_elno.getValuesWithDescription())
 
             RES_PROJ = CREA_RESU(
                 OPERATION="AFFE",
                 TYPE_RESU="EVOL_CHAR",
-                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES, INST=current_time),
+                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES_elno, INST=current_time),
             )
 
             CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=RES_PROJ)
