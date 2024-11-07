@@ -114,18 +114,15 @@ class ExtendedDEC:
 class MEDCoupler:
     """Class handling the MEDCoupling related calls."""
 
-    dec = None
-    mesh_interf = interf_mc = mesh = None
-    matr_proj = None
+    dec = log = None
+    mesh_interf = mc_interf = mesh = None
     exch_fields = None
-    log = None
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, logfunc=None):
         self.dec = {MEDC.ON_NODES: None, MEDC.ON_CELLS: None}
-        self.mesh_interf = self.interf_mc = self.mesh = None
-        self.matr_proj = None
+        self.mesh_interf = self.mc_interf = self.mesh = None
         self.exch_fields = {}
 
         self.log = logfunc if logfunc else logger
@@ -158,7 +155,7 @@ class MEDCoupler:
                 group = dec.getSourceGrp()
             else:
                 group = dec.getTargetGrp()
-            dec.mesh = PMM.ParaMESH(self.interf_mc, group, "couplingMesh")
+            dec.mesh = PMM.ParaMESH(self.mc_interf, group, "couplingMesh")
 
     def create_mesh_interface(self, mesh, groupsOfCells):
         """Create the Medcoupling mesh of the interface.
@@ -183,7 +180,7 @@ class MEDCoupler:
         levels = mm.getGrpsNonEmptyLevels(groupsOfCells_res)
         assert len(levels) == 1, "Groups are not at one level"
         meshDimRelToMaxExt = levels[0]
-        self.interf_mc = mm.getMeshAtLevel(meshDimRelToMaxExt)
+        self.mc_interf = mm.getMeshAtLevel(meshDimRelToMaxExt)
 
         self._create_paramesh()
 
@@ -251,10 +248,10 @@ class MEDCoupler:
             dec = self.dec[sup]
             if field_type == "CELLS":
                 nature = MEDC.IntensiveConservation
-                nb_tuples = self.interf_mc.getNumberOfCells()
+                nb_tuples = self.mc_interf.getNumberOfCells()
             else:
                 nature = MEDC.IntensiveMaximum
-                nb_tuples = self.interf_mc.getNumberOfNodes()
+                nb_tuples = self.mc_interf.getNumberOfNodes()
 
             topo = PMM.ComponentTopology(len(components))
             pfield = PMM.ParaFIELD(sup, MEDC.ONE_TIME, dec.mesh, topo)
@@ -385,12 +382,9 @@ class MEDCoupler:
         field = self._medcfield2aster(mc_field)
 
         if mc_field.getTypeOfField() == MEDC.ON_NODES:
-            # self.extent_field(field).toFieldOnNodes().debugPrint()
-            # self.project_field(field).debugPrint()
-            return self.project_field(field.toFieldOnNodes())
+            return self.extent_field(field).toFieldOnNodes()
         else:
             fed = model.getFiniteElementDescriptor().restrict(self.mesh_interf.getGroupsOfCells())
-
             return self.extent_field(field).toFieldOnCells(fed)
 
     def export_field(self, field, field_name, cmps=[]):
@@ -409,8 +403,10 @@ class MEDCoupler:
         if len(cmps) == 0:
             cmps = field.getComponents()
 
+        assert field.getMesh() == self.mesh
+
         field_interf = self.restrict_field(field, cmps)
-        pfield = field_interf.toMEDCouplingField(self.interf_mc)
+        pfield = field_interf.toMEDCouplingField(self.mc_interf)
         pfield.setName(field_name)
 
         return pfield
@@ -519,24 +515,3 @@ class MEDCoupler:
         evol_char.setField(forc_elem, "FSUR_3D", 0)
 
         return evol_char
-
-    def project_field(self, field):
-        """Project field from ther interface to the whole mesh and
-        extend by zero where the field does not exist.
-
-        Arguments:
-            field (FieldOn***): field defined on the interface mesh.
-
-        Returns
-            (FieldOn***): field projected on the whole mesh.
-        """
-
-        if self.matr_proj is None:
-            self.matr_proj = PROJ_CHAMP(
-                METHODE="COLLOCATION",
-                PROJECTION="NON",
-                MAILLAGE_1=self.mesh_interf,
-                MAILLAGE_2=self.mesh,
-            )
-
-        return PROJ_CHAMP(CHAM_GD=field, MATR_PROJECTION=self.matr_proj)

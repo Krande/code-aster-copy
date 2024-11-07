@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
-
 import medcoupling as MEDC
 
 
@@ -165,14 +163,6 @@ def coupled_fluid(cpl, UNITE_MA):
     FORM = FORMULE(VALE="1.E-4*INST*(X+Y+Z)", NOM_PARA=["X", "Y", "Z", "INST"])
     FORM0 = FORMULE(VALE="0.", NOM_PARA=["X", "Y", "Z", "INST"])
 
-    PRES_F = CREA_CHAMP(
-        TYPE_CHAM="NOEU_NEUT_F",
-        OPERATION="AFFE",
-        MODELE=MOFLUIDE,
-        AFFE=_F(TOUT="OUI", NOM_CMP=("X1", "X2", "X3"), VALE_F=(FORM, FORM0, FORM0)),
-        INFO=1,
-    )
-
     ################################################################################
     # define one iteration
     ################################################################################
@@ -190,24 +180,18 @@ def coupled_fluid(cpl, UNITE_MA):
 
             self._medcpl = cpl.medcpl
             self.epsilon = 1e-7
-            self.mesh = MAFLUIDE
             self.depl_prev = None
             self.result = []
 
-        def _export_pressure(self, pres):
-            filename = "pres_elem.med"
-            pres.printMedFile(filename)
+        def extent(self, depl):
+            fns = depl.toSimpleFieldOnNodes()
 
-            pressure = MEDC.ReadFieldCell(
-                filename, pres.getMesh().getName(), -1, pres.getName(), -1, -1
-            )
-            pressure = mc_press[self._medcpl.interf_ids]
-            pressure.setName("Force")
-            pressure.setNature(MEDC.IntensiveConservation)
-            pressure.setMesh(self._medcpl.interf_mc)
-            pressure.getArray().setInfoOnComponents(["FX", "FY", "FZ"])
-            pressure.checkConsistencyLight()
-            return pressure
+            val, desc = fns.getValuesWithDescription()
+
+            fns.setValues([0] * 3 * MAFLUIDE.getNumberOfNodes())
+            fns.setValues(desc[0], desc[1], val)
+
+            return fns.toFieldOnNodes()
 
         def run_iteration(self, i_iter, current_time, delta_t, data):
             """Execute one iteration.
@@ -234,16 +218,25 @@ def coupled_fluid(cpl, UNITE_MA):
             CHINST = CREA_CHAMP(
                 OPERATION="AFFE",
                 TYPE_CHAM="NOEU_INST_R",
-                MAILLAGE=self.mesh,
+                MAILLAGE=MAFLUIDE,
                 AFFE=_F(TOUT="OUI", NOM_CMP=("INST",), VALE=current_time),
             )
 
             CHXN = CREA_CHAMP(
-                OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=self.mesh
+                OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAFLUIDE
             )
 
             if depl:
-                CHXN += depl
+                DEPL = self.extent(depl)
+                CHXN += DEPL
+
+            PRES_F = CREA_CHAMP(
+                TYPE_CHAM="NOEU_NEUT_F",
+                OPERATION="AFFE",
+                MAILLAGE=MAFLUIDE,
+                AFFE=_F(TOUT="OUI", NOM_CMP=("X1", "X2", "X3"), VALE_F=(FORM, FORM0, FORM0)),
+                INFO=1,
+            )
 
             CHNEUT = CREA_CHAMP(
                 OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=PRES_F, CHAM_PARA=(CHXN, CHINST)
@@ -252,7 +245,7 @@ def coupled_fluid(cpl, UNITE_MA):
             force = CREA_CHAMP(
                 OPERATION="ASSE",
                 TYPE_CHAM="NOEU_FORC_R",
-                MAILLAGE=self.mesh,
+                MAILLAGE=MAFLUIDE,
                 ASSE=_F(
                     TOUT="OUI",
                     CHAM_GD=CHNEUT,

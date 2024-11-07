@@ -106,8 +106,6 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             )
             PRES_elno = PRES_noeu.toFieldOnCells(fed, "ELNO")
 
-            print(PRES_elno.getValuesWithDescription())
-
             RES_PROJ = CREA_RESU(
                 OPERATION="AFFE",
                 TYPE_RESU="EVOL_CHAR",
