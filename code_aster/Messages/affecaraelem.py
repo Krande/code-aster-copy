@@ -219,6 +219,32 @@ La maille %(k2)s ne fait pas partie du modèle.
 Vérifier l'affection du modèle.
 """
     ),
+    31: _(
+        """
+AFFE_CARA_ELEM. Vous ne pouvez pas affecter des valeurs de type "%(k2)s" au modèle %(k1)s
+qui ne contient aucun élément %(k3)s.
+"""
+    ),
+    32: _(
+        """
+AFFE_CARA_ELEM. Des éléments de type "%(k1)s" sont présents dans le modèle.
+Ces éléments n'ont pas été affecté par des caractéristiques de type %(k1)s.
+"""
+    ),
+    33: _(
+        """
+AFFE_CARA_ELEM.  Erreur(s) rencontrée(s) lors de la vérification des affectations.
+"""
+    ),
+    34: _(
+        """
+AFFE_CARA_ELEM. Dans le modèle, il y a des éléments de type %(k1)s.
+Ces éléments ne peuvent pas être surchargé par une autre forme de
+section ou une variation de section le long de leur axe.
+    Déjà affecté par : %(k2)s, %(k3)s
+    Surchargé par    : %(k4)s, %(k5)s
+"""
+    ),
     99: _(
         """AFFE_CARA_ELEM / RIGI_PARASOL
 Il n'est actuellement pas possible d'utiliser un maillage partitionné pour un calcul parallèle.

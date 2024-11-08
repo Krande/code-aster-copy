@@ -19,13 +19,14 @@
 !
 !
 interface
-    subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        integer(kind=8) :: nbepo
-        integer(kind=8) :: ntyele(*)
-        integer(kind=8) :: ivr(*)
-        integer(kind=8) :: ifm
-        integer(kind=8) :: nbocc(*)
+    subroutine aceatu(nbocc, infoconcept)
+
+    use cara_elem_info_type
+!
+    implicit none
+!
+    integer(kind=8)         :: nbocc
+    type(cara_elem_info)    :: infoconcept
+
     end subroutine aceatu
 end interface

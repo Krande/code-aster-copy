@@ -45,9 +45,9 @@ mat_bar = DEFI_MATERIAU(ELAS=_F(E=2.1e11, NU=0.3, ALPHA=0.0, RHO=7800.0))
 # Affectation des caractéristiques élémentaires pour les barres et les cables
 calbar = AFFE_CARA_ELEM(
     MODELE=affect,
-    VERIF="MAILLE",
+    VERIF="OUI",
     BARRE=_F(GROUP_MA="Group_barre", SECTION="GENERALE", CARA="A", VALE=0.0001),
-    CABLE=_F(GROUP_MA="Group_cable", SECTION=Cable_Aire, N_INIT=5000.0),
+    CABLE=_F(GROUP_MA="Group_cable", AIRE=Cable_Aire, N_INIT=5000.0),
 )
 
 # Création des champs de température

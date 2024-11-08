@@ -17,13 +17,15 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
+    subroutine aceamr(nbocc, infdonn, infcarte, grp_lmax)
+!
         use cara_elem_info_type
         use cara_elem_carte_type
-        type (cara_elem_info) :: infdonn
-        integer(kind=8) :: lmax
-        integer(kind=8) :: nbocc
-        type (cara_elem_carte) :: infcarte(*)
-        integer(kind=8) :: ivr(*)
+!
+        integer(kind=8)         :: nbocc
+        type (cara_elem_info)   :: infdonn
+        type (cara_elem_carte)  :: infcarte(*)
+        character(len=24)       :: grp_lmax(*)
+!
     end subroutine aceamr
 end interface

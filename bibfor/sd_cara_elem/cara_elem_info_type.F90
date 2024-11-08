@@ -24,14 +24,22 @@ module cara_elem_info_type
 ! --------------------------------------------------------------------------------------------------
 !
 !   cara_elem_info  : Variable globale définit pour tout AFFE_CARA_ELEM
-!       nomu        : nom du concept en sortie de la commande.  getres(nomu , x , x )
-!       concept     : nom du concept résultat.                  getres( x , concept , x )
-!       commande    : nom de la commande.                       getres( x , x , commande )
-!       modele      : nom du modèle.
-!       maillage    : nom du maillage.
-!       nbnoeu      : nombre de noeud du maillage.
-!       nbmail      : nombre de maille du maillage.
-!       dimmod      : dimension topologique du modèle.          dismoi('DIM_GEOM' sur 'MODELE')
+!       nomu            : nom du concept en sortie de la commande.  getres(nomu , x , x )
+!       concept         : nom du concept résultat.                  getres( x , concept , x )
+!       commande        : nom de la commande.                       getres( x , x , commande )
+!       modele          : nom du modèle.
+!       maillage        : nom du maillage.
+!       modmail         : nom de la sd des mailles du maillages  : modele//'.MAILLE'
+!       jmodmail        : pointeur sur la SD modmail !!! Doit être fait avec jeveut !!!
+!       nbnoeu          : nombre de noeud du maillage.
+!       nbmail          : nombre de maille du maillage.
+!       GroupeMaxOccur   : nombre d'entité sous les mots clefs simple GROUP_MA
+!       dimmod          : dimension topologique du modèle.      dismoi('DIM_GEOM' sur 'MODELE')
+!
+!       Pour certains mot clef : RIGI_PARASOL, ...
+!           MailleMaxOccur  : Le nombre de maille traitée dans les occurrences
+!           NoeudMaxMaille  : Le nombre max de noeud par maille
+!
 !       ivr         : Pour faire des vérifications de cohérences et des impressions
 !           ivr(1)=1    : vérification MAILLES
 !           ivr(2)      : libre
@@ -39,20 +47,27 @@ module cara_elem_info_type
 !           ivr(4)=ifm  : unité d'impression
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
+!
+#include "asterf_types.h"
 !
     implicit none
 !
     type cara_elem_info
-        character(len=8)   :: nomu
-        character(len=16)   :: concept
-        character(len=16)   :: commande
-        character(len=8)   :: modele
-        character(len=8)   :: maillage
-        integer(kind=8)             :: nbmail
-        integer(kind=8)             :: nbnoeu
-        integer(kind=8)             :: dimmod
-        integer(kind=8)             :: ivr(4)
+        character(len=8)  :: nomu
+        character(len=16) :: concept
+        character(len=16) :: commande
+        character(len=8)  :: modele
+        character(len=8)  :: maillage
+        character(len=24) :: modmail
+        aster_logical     :: IsParaMesh
+        integer(kind=8)   :: jmodmail
+        integer(kind=8)   :: nbmail
+        integer(kind=8)   :: nbnoeu
+        integer(kind=8)   :: dimmod
+        integer(kind=8)   :: GroupeMaxOccur
+        integer(kind=8)   :: NoeudMaxMaille, MailleMaxOccur
+        integer(kind=8)   :: ivr(4)
+        logical           :: VerifMaille
     end type cara_elem_info
 !
 end module

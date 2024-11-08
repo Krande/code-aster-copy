@@ -16,37 +16,27 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
-                  mclf, nbepo, ntyele, ivr, zjdlm)
+subroutine aceapo(nbocc, npoutr, infoconcept, infocarte, zjdlm)
+!
+    use cara_elem_parameter_module
+    use cara_elem_info_type
+    use cara_elem_carte_type
+!
     implicit none
 !
-    integer(kind=8) :: lmax, npoutr, nbocc, nbepo, zjdlm(*)
-    integer(kind=8) :: ntyele(*), ivr(*)
-    character(len=8) :: noma, nomo
-    character(len=*) :: mclf
+    integer(kind=8)         :: nbocc, npoutr
+    type(cara_elem_info)    :: infoconcept
+    type(cara_elem_carte)   :: infocarte(*)
+    integer(kind=8)         :: zjdlm(*)
+!
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     AFFE_CARA_ELEM
-!
-!     AFFECTATION DES CARACTÉRISTIQUES POUR L'ÉLEMENT POUTRE
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IN  : NOMA   : NOM DU MAILLAGE
-!       NOMO   : NOM DU MODELE
-!       LMAX   : NOMBRE MAX DE MAILLE OU GROUPE DE MAILLE
-!       NPOUTR : NOMBRE DE POUTRE DU MODELE
-!       NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE POUTRE
-!       NBEPO  : NOMBRE D'ELEMENT DE TYPE POUTRE
-!       NTYELE : TABLEAU DES TYPES D'ELEMENTS
-!       IVR    : TABLEAU DES INDICES DE VERIFICATION
-!       JDLM   : ADRESSE DES MAILLES
+!     AFFE_CARA_ELEM : AFFECTATION DES CARACTÉRISTIQUES POUR L'ÉLEMENT POUTRE
 !
 ! --------------------------------------------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/acedat.h"
 #include "asterfort/affdef.h"
 #include "asterfort/affgen.h"
@@ -56,21 +46,15 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/calc_cara_homo.h"
-#include "asterfort/char8_to_int.h"
 #include "asterfort/codent.h"
 #include "asterfort/coecis.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/int_to_char8.h"
-#include "asterfort/isParallelMesh.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -81,42 +65,42 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 #include "asterfort/nocart.h"
 #include "asterfort/tecart.h"
 #include "asterfort/utmess.h"
+#include "asterfort/verima.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8) :: GroupeMaxOccur
+    integer(kind=8) :: ii, idw, ier, iisec, iivar, ioc, isec, ifm, jj, kk
+    integer(kind=8) :: itabl, ivar, ivect, ivr(4)
+    integer(kind=8) :: jdcge, jdcpo, jdge, jdgef
+    integer(kind=8) :: jdgm, jdme, jdvge, jdvpo
+    integer(kind=8) :: nbcar, nbcolo, nblign, nbmagr, nbmail, nbo, nbval
+    integer(kind=8) :: ncar, ncarac, ndim, nfcx, ng, nnosec
+    integer(kind=8) :: npoaff, nsec, nsecpo, ntab, ntypse, nummai, nutyel
+    integer(kind=8) :: nval, nvsec, nutyptu(3), jdccfcx, jdvcfcx
+    real(kind=8) :: epy1, hy1
 !
     character(len=6)  :: kioc
-    character(len=8)  :: k8b, nomu, fcx, nomsec
-    character(len=8)  :: caram(4)
-    character(len=16) :: k16b, sec, concep, cmd, varsec
-    character(len=16) :: nunoel
-    character(len=19) :: cartpo, cartge, cartpf, tabcar, napcis, foncis, ligrel
+    character(len=8)  :: k8b, nomu, fcx, nomsec, caram(4), noma, nomo
+    character(len=16) :: k16b, sec, varsec, nunoel, mclf
+    character(len=19) :: cartpo, cartge, tabcar, napcis, foncis, cartefcx
     character(len=24) :: tmpnpo, tmpvpo, tmpgen, tmpnge, tmpvge, typca, nommai
-    character(len=24) :: tmpnpf, tmpvpf, tmpgef, modmai, mlggma, mlgnma
+    character(len=24) :: tmpgef, modmai, mlggma
     character(len=24) :: vmessk(2)
-!
-! --------------------------------------------------------------------------------------------------
-!
-    integer(kind=8) :: ii, idw, ier, iisec, iivar, ioc, isec, ifm, jj, kk
-    integer(kind=8) :: itabl, ivar, ivect, ixma, j
-    integer(kind=8) :: jdcge, jdcpo, jdcpof, jdge, jdgef
-    integer(kind=8) :: jdgm, jdme, jdvge, jdvpo, jdvpof
-    integer(kind=8) :: nbcar, nbcolo, nblign, nbmagr, nbmail, nbo, nbval
-    integer(kind=8) :: ncar, ncarac, ndim, nfcx, ng, nm, nnosec
-    integer(kind=8) :: npoaff, nsec, nsecpo, ntab, ntypse, nummai, nutyel
-    integer(kind=8) :: nval, nvsec, nutyptu(3)
-    real(kind=8) :: epy1, hy1
 !
     integer(kind=8), pointer :: ncp(:) => null()
     integer(kind=8), pointer :: tab_para(:) => null()
     integer(kind=8), pointer :: tbnp(:) => null()
 !
-    real(kind=8), pointer :: vale(:) => null()
-    real(kind=8), pointer :: valem(:) => null()
+    real(kind=8), pointer    :: vale(:) => null()
+    real(kind=8), pointer    :: valem(:) => null()
 !
-    character(len=8), pointer :: cara(:) => null()
-    character(len=8), pointer :: carpou(:) => null()
-    character(len=8), pointer :: exppou(:) => null()
-    character(len=8), pointer :: tabpou(:) => null()
+    character(len=8), pointer  :: cara(:) => null()
+    character(len=8), pointer  :: carpou(:) => null()
+    character(len=8), pointer  :: exppou(:) => null()
+    character(len=8), pointer  :: tabpou(:) => null()
     character(len=16), pointer :: typ_sect(:) => null()
     character(len=24), pointer :: poutre(:) => null()
     character(len=24), pointer :: tblp(:) => null()
@@ -124,11 +108,17 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    if (npoutr .le. 0) then
-        if (isParallelMesh(noma)) goto 999
-        ASSERT(.false.)
-    end if
-    call getres(nomu, concep, cmd)
+    ier = 0
+!   Récupère les informations
+    nomu = infoconcept%nomu
+    noma = infoconcept%maillage
+    nomo = infoconcept%modele
+    jdme = infoconcept%jmodmail
+    GroupeMaxOccur = infoconcept%GroupeMaxOccur
+    nbmail = infoconcept%nbmail
+    ivr(:) = infoconcept%ivr(:)
+!
+    mclf = ACE_MCLEF(ACE_POUTRE)
 !
     AS_ALLOCATE(vi=tab_para, size=10)
     call acedat('POUTRE', 0, tab_para, k16b, k8b, k8b, k8b)
@@ -153,14 +143,8 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     AS_ALLOCATE(vk8=cara, size=nbcar)
     AS_ALLOCATE(vr=vale, size=nbval)
 !
-    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
-    modmai = ligrel//'.TYFE'
-    mlgnma = noma//'.TYPMAIL'
+    modmai = nomo//'.MAILLE'
     mlggma = noma//'.GROUPEMA'
-    ier = 0
-    call jelira(mlgnma, 'LONMAX', nbmail)
-    call jeexin(modmai, ixma)
-    if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
 !
 !   Construction des cartes
     tmpgen = nomu//'.POUTRE'
@@ -171,41 +155,51 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     tmpnge = cartge//'.NCMP'
     tmpvge = cartge//'.VALV'
 !
+!   La carte est déjà alouée : ace_crea_carte
+    cartefcx = infocarte(ACE_CAR_CVCXF)%nom_carte
+    jdccfcx = infocarte(ACE_CAR_CVCXF)%adr_cmp
+    jdvcfcx = infocarte(ACE_CAR_CVCXF)%adr_val
+!   Objet temporaire
     tmpgef = nomu//'.VENT'
-    cartpf = nomu//'.CVENTCXF'
-    tmpnpf = cartpf//'.NCMP'
-    tmpvpf = cartpf//'.VALV'
 !
 !   Création d un objet tampon (surdimensionné a nbo*npoutr)  :
     call jecrec(tmpgen, 'V V R', 'NO', 'CONTIG', 'CONSTANT', npoutr)
     call jeecra(tmpgen, 'LONMAX', nbo)
     call jecrec(tmpgef, 'V V K8', 'NO', 'CONTIG', 'CONSTANT', npoutr)
     call jeecra(tmpgef, 'LONMAX', 1)
-    AS_ALLOCATE(vk24=poutre, size=lmax)
+    AS_ALLOCATE(vk24=poutre, size=GroupeMaxOccur)
 !
 !   Récupération des numéros des types d'éléments tuyaux
+!       Ils sont classés dans les éléments de POUTRE
     kk = 0
-    do j = 1, nbepo
-        call jenuno(jexnum('&CATA.TE.NOMTE', ntyele(j)), nunoel)
-        if ((nunoel .eq. 'MET3SEG3') .or. (nunoel .eq. 'MET6SEG3') .or. &
+    do jj = elem_supp%aceind(ACE_NU_POUTRE, 1), elem_supp%aceind(ACE_NU_POUTRE, 2)
+        nunoel = elem_supp%catanom(jj)
+        if ((nunoel .eq. 'MET3SEG3') .or. &
+            (nunoel .eq. 'MET6SEG3') .or. &
             (nunoel .eq. 'MET3SEG4')) then
             kk = kk+1
-            nutyptu(kk) = ntyele(j)
+            nutyptu(kk) = elem_supp%catanum(jj)
         end if
     end do
     ASSERT(kk .eq. 3)
 !
 !   Lecture et stockage des données  dans l objet tampon
     do ioc = 1, nbocc
-
+        !
+        call getvtx('POUTRE', 'GROUP_MA', iocc=ioc, nbval=GroupeMaxOccur, vect=poutre, nbret=ng)
+        ! En //, il faut vérifier que les groupes existent sur le proc
+        !   en sortie de verima ==> les groupes présents sur le proc
+        if (infoconcept%VerifMaille .or. infoconcept%IsParaMesh) then
+            call verima(noma, poutre, ng, 'GROUP_MA')
+        end if
+        if (ng .eq. 0) cycle
+!
         call modiMetriVeri(noma, ioc, modmai, nutyptu)
-
+!
         call getvtx('POUTRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
         if (sec .eq. 'COUDE') cycle
-        !
+!
         call codent(ioc, 'G', kioc)
-        call getvem(noma, 'GROUP_MA', 'POUTRE', 'GROUP_MA', ioc, lmax, poutre, ng)
-        call getvem(noma, 'MAILLE', 'POUTRE', 'MAILLE', ioc, lmax, poutre, nm)
         call getvtx('POUTRE', 'VARI_SECT', iocc=ioc, scal=varsec, nbret=nvsec)
         !
         call getvid('POUTRE', 'TABLE_CARA', iocc=ioc, scal=tabcar, nbret=ntab)
@@ -291,7 +285,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
             ncar = ncar+1
             cara(ncar) = 'HY2'
             vale(ncar) = hy1
-            if (epy1 .ne. 0.d0) then
+            if (epy1 .gt. 0.d0) then
                 ncar = ncar+1
                 cara(ncar) = 'EPY2'
                 vale(ncar) = epy1
@@ -303,8 +297,8 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
             do ii = 1, ntypse
                 if (sec .eq. typ_sect(ii)) then
                     isec = ii-1
-                    do j = 1, ncp(ii)
-                        if (cara(1) .eq. carpou(1+j+ndim*(ii-1)-1)) then
+                    do jj = 1, ncp(ii)
+                        if (cara(1) .eq. carpou(1+jj+ndim*(ii-1)-1)) then
                             ivar = 0
                             goto 24
                         end if
@@ -319,73 +313,50 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 24      continue
         iivar = ivar
         ! "GROUP_MA" = toutes les mailles possibles de la liste des groupes de mailles
-        if (ng .gt. 0) then
-            do ii = 1, ng
-                call jeveuo(jexnom(mlggma, poutre(ii)), 'L', jdgm)
-                call jelira(jexnom(mlggma, poutre(ii)), 'LONUTI', nbmagr)
-                ! traitement des affectations CERCLE HOMOTHETIQUE GROUP_MA
-                if (isec .eq. 2 .and. ivar .eq. 2) then
-                    AS_ALLOCATE(vr=valem, size=ncarac*nbmagr)
-                    call calc_cara_homo(noma, poutre(ii), zi(jdgm), nbmagr, ncarac, &
-                                        cara, vale, caram, valem)
-                end if
-                do j = 1, nbmagr
-                    nummai = zi(jdgm+j-1)
-                    nommai = int_to_char8(nummai)
-                    nutyel = zi(jdme+nummai-1)
-                    do kk = 1, nbepo
-                        if (nutyel .eq. ntyele(kk)) then
-                            if (isec .eq. 2 .and. ivar .eq. 2) then
-                                call affpou(tmpgen, tmpgef, fcx, nommai, isec, &
-                                            iivar, caram, ncarac, &
-                                            valem(ncarac*(j-1)+1:ncarac*j), tabpou, &
-                                            exppou, nbo, kioc, ier)
-                            else
-                                call affpou(tmpgen, tmpgef, fcx, nommai, isec, &
-                                            iivar, cara, ncarac, &
-                                            vale, tabpou, &
-                                            exppou, nbo, kioc, ier)
-                            end if
-                            iivar = ivar
-                            goto 42
-                        end if
-                    end do
-                    vmessk(1) = mclf
-                    vmessk(2) = nommai
-                    call utmess('F', 'MODELISA_8', nk=2, valk=vmessk)
-42                  continue
-                end do
-                if (isec .eq. 2 .and. ivar .eq. 2) then
-                    AS_DEALLOCATE(vr=valem)
-                end if
-            end do
-        end if
-        !
-        ! "MAILLE" = Toutes les mailles possibles de la liste de mailles
-        if (nm .gt. 0) then
-            do ii = 1, nm
-                nommai = poutre(ii)
-                nummai = char8_to_int(nommai)
+        do ii = 1, ng
+            call jeveuo(jexnom(mlggma, poutre(ii)), 'L', jdgm)
+            call jelira(jexnom(mlggma, poutre(ii)), 'LONUTI', nbmagr)
+            ! traitement des affectations CERCLE HOMOTHETIQUE GROUP_MA
+            if (isec .eq. 2 .and. ivar .eq. 2) then
+                AS_ALLOCATE(vr=valem, size=ncarac*nbmagr)
+                call calc_cara_homo(noma, poutre(ii), zi(jdgm), nbmagr, ncarac, &
+                                    cara, vale, caram, valem)
+            end if
+            do jj = 1, nbmagr
+                nummai = zi(jdgm+jj-1)
+                nommai = int_to_char8(nummai)
                 nutyel = zi(jdme+nummai-1)
-                do j = 1, nbepo
-                    if (nutyel .eq. ntyele(j)) then
-                        call affpou(tmpgen, tmpgef, fcx, nommai, isec, &
-                                    iivar, cara, ncarac, vale, tabpou, &
-                                    exppou, nbo, kioc, ier)
+                do kk = elem_supp%aceind(ACE_NU_POUTRE, 1), elem_supp%aceind(ACE_NU_POUTRE, 2)
+                    if (nutyel .eq. elem_supp%catanum(kk)) then
+                        if (isec .eq. 2 .and. ivar .eq. 2) then
+                            call affpou(tmpgen, tmpgef, fcx, nommai, isec, &
+                                        iivar, caram, ncarac, &
+                                        valem(ncarac*(jj-1)+1:ncarac*jj), &
+                                        tabpou, exppou, nbo, kioc, ier)
+                        else
+                            call affpou(tmpgen, tmpgef, fcx, nommai, isec, &
+                                        iivar, cara, ncarac, &
+                                        vale, &
+                                        tabpou, exppou, nbo, kioc, ier)
+                        end if
                         iivar = ivar
-                        goto 50
+                        goto 42
                     end if
                 end do
                 vmessk(1) = mclf
                 vmessk(2) = nommai
                 call utmess('F', 'MODELISA_8', nk=2, valk=vmessk)
-50              continue
+42              continue
             end do
-        end if
+            if (isec .eq. 2 .and. ivar .eq. 2) then
+                AS_DEALLOCATE(vr=valem)
+            end if
+        end do
     end do
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA_14')
     end if
+!
     call jelira(tmpgen, 'NUTIOC', npoaff)
 !
 !   Vérification des obligations et affectation des défauts
@@ -393,13 +364,16 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
         call jenuno(jexnum(tmpgen, ii), nommai)
         nummai = char8_to_int(nommai)
         nutyel = zi(jdme+nummai-1)
-        call affdef(tmpgen, nommai, nutyel, ntyele, tabpou, ier)
+        !   zz = elem_supp%catanum( indx1 : index2 )
+        !       indx1 = elem_supp%aceind(ACE_NU_POUTRE,1)
+        !       indx2 = elem_supp%aceind(ACE_NU_POUTRE,2)
+        call affdef(tmpgen, nommai, nutyel, tabpou, ier)
     end do
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA_15')
     end if
 !
-!   Calcul des donnees generales a partir des donnees geometriques (cerc+rect) et
+!   Calcul des donnees générales à partir des données géométriques (cerc+rect) et
 !   affectations dans le tampon
 !
 !   Utilisation de la nappe pour les sections rectangulaires et de la fonction pour les
@@ -410,7 +384,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
         call jenuno(jexnum(tmpgen, ii), nommai)
         nummai = char8_to_int(nommai)
         nutyel = zi(jdme+nummai-1)
-        call affgen(tmpgen, nommai, nutyel, ntyele, napcis, foncis)
+        call affgen(tmpgen, nommai, nutyel, napcis, foncis)
     end do
 !
 !   Impression des valeurs affectées dans le tampon si demande
@@ -423,7 +397,8 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
             call jeveuo(jexnum(tmpgen, ii), 'L', jdge)
             ivar = nint(zr(jdge+22))
             isec = nint(zr(jdge+35))
-            write (ifm, 201) nommai, (zr(jdge+j-1), j=1, 22), (zr(jdge+j-1), j=37, 44), ivar, isec
+            write (ifm, 201) nommai, (zr(jdge+jj-1), jj=1, 22), (zr(jdge+jj-1), jj=37, 44), &
+                ivar, isec
             call jenuno(jexnum(tmpgef, ii), nommai)
             call jeveuo(jexnum(tmpgef, ii), 'L', jdgef)
             write (ifm, *) 'CX : ', zk8(jdgef)
@@ -439,7 +414,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
                     write (ifm, 202)
                     idw = 1
                 end if
-                write (ifm, 203) nommai, (zr(jdge+j-1), j=24, 35), isec
+                write (ifm, 203) nommai, (zr(jdge+jj-1), jj=24, 35), isec
             end if
         end do
     end if
@@ -470,8 +445,6 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     call jeveuo(tmpvpo, 'E', jdvpo)
     call jeveuo(tmpnge, 'E', jdcge)
     call jeveuo(tmpvge, 'E', jdvge)
-    call jeveuo(tmpnpf, 'E', jdcpof)
-    call jeveuo(tmpvpf, 'E', jdvpof)
 !   Affectations des données générales
     do ii = 1, 23
         zk8(jdcpo+ii-1) = tabpou(ii)
@@ -480,32 +453,34 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
         zk8(jdcpo+ii-1) = tabpou(1+ii+13-1)
     end do
 !   POUR LA CARTE DE VENT ==> FCXP
-    zk8(jdcpof) = 'FCXP'
+    zk8(jdccfcx) = 'FCXP'
+    infocarte(ACE_CAR_CVCXF)%utilise = ASTER_TRUE
 !
     do ii = 1, npoaff
         call jenuno(jexnum(tmpgen, ii), nommai)
         nummai = char8_to_int(nommai)
-        zjdlm(nummai) = -1
+        nutyel = zi(jdme+nummai-1)
+        zjdlm(nummai) = -nutyel
         call jeveuo(jexnum(tmpgen, ii), 'L', jdge)
-        do j = 1, 23
-            zr(jdvpo+j-1) = zr(jdge+j-1)
+        do jj = 1, 23
+            zr(jdvpo+jj-1) = zr(jdge+jj-1)
         end do
-        do j = 24, 31
-            zr(jdvpo+j-1) = zr(jdge+j+13-1)
+        do jj = 24, 31
+            zr(jdvpo+jj-1) = zr(jdge+jj+13-1)
         end do
         call jeveuo(jexnum(tmpgef, ii), 'L', jdgef)
-        zk8(jdvpof) = zk8(jdgef)
+        zk8(jdvcfcx) = zk8(jdgef)
         call nocart(cartpo, 3, 31, mode='NOM', nma=1, limano=[nommai])
-        call nocart(cartpf, 3, 1, mode='NOM', nma=1, limano=[nommai])
+        call nocart(cartefcx, 3, 1, mode='NOM', nma=1, limano=[nommai])
     end do
 !
 !   Affectations données géométriques (on affecte toutes les cmps)
     do ii = 1, 13
         zk8(jdcge+ii-1) = tabpou(1+ii+23-1)
     end do
-    do j = 1, npoaff
-        call jenuno(jexnum(tmpgen, j), nommai)
-        call jeveuo(jexnum(tmpgen, j), 'L', jdge)
+    do jj = 1, npoaff
+        call jenuno(jexnum(tmpgen, jj), nommai)
+        call jeveuo(jexnum(tmpgen, jj), 'L', jdge)
         isec = nint(zr(jdge+35))
         if (isec .eq. 0) then
             ! GENERALE
@@ -543,6 +518,5 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     call jedetr(tmpnge)
     call jedetr(tmpvge)
 !
-999 continue
     call jedema()
 end subroutine

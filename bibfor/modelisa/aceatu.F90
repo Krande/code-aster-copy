@@ -16,34 +16,35 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
+subroutine aceatu(nbocc, infoconcept)
+!
     use cara_elem_parameter_module
+    use cara_elem_info_type
+!
     implicit none
+!
+    type(cara_elem_info)    :: infoconcept
+    integer(kind=8)         :: nbocc
+
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/aceat2.h"
 #include "asterfort/aceat3.h"
 #include "asterfort/acemmt.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
-    integer(kind=8) :: nbepo, ntyele(*), nbocc(*), ivr(*), ifm
-    character(len=8) :: noma, nomo
 !     AFFE_CARA_ELEM
 !     AFFECTATION DES CARACTERISTIQUES GEOMETRIQUES POUR LES TUYAUX
 !     PAR CREATION D'UNE CARTE : NOMU//'.CAORTU' CONTENANT :
@@ -55,26 +56,18 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
 !        ANGZZK           : ANGLE OMEGA ENTRE LA NORMALE AU PLAN DU
 !                           COUDE ET LE VECTEUR ZK (GENERATRICE)
 ! ----------------------------------------------------------------------
-! IN  : NOMA   : NOM DU MAILLAGE
-! IN  : NOMO   : NOM DU MODELE
-! IN  : NBEPO  : NOMBRE DE TYPES D'ELEMENTS
-! IN  : NTYELE : NUMEROS DES TYPES ELEMENTS
-! IN  : IVR    : (3) = INFO 2
-! IN  : IFM    : FICHIER MESSAGES
-! IN  : NBOCC  : NBOCC(4) NB OCCURENCES ORIENTATION
-! ----------------------------------------------------------------------
 !
     integer(kind=8) :: iext1, iext2, ima, inn, ioc, jcozk, jdco, jdgn, jdno, jdme
-    integer(kind=8) ::   jma, jnozk
+    integer(kind=8) :: jma, jnozk, jj, ivr(4), ifm
     integer(kind=8) :: nbext2, nbpart, nbtuy, ncar, ni1, ni2, nj, nj1, nj2, nng
-    integer(kind=8) ::  nutyel, nval, ixma, j
-    integer(kind=8) ::  nno, nbtuy4, nbext1, jzkpar, ibid
+    integer(kind=8) :: nutyel, nval
+    integer(kind=8) :: nno, nbtuy4, nbext1, jzkpar, ibid, index1, index2
     integer(kind=8) :: ier, nbmail
     real(kind=8) :: val(3), epsi
     character(len=8) :: nomu, car, crit
-    character(len=16) :: concep, cmd, nunoel
-    character(len=24) :: mlggno, mlgcoo, mlgcnx, modmai, nomlu
-    character(len=19) :: ligrel
+    character(len=8) :: noma
+    character(len=16) :: nunoel
+    character(len=24) :: mlggno, mlgcoo, mlgcnx, nomlu
     integer(kind=8), pointer :: eltuy(:) => null()
     integer(kind=8), pointer :: lismapart(:) => null()
     integer(kind=8), pointer :: lisnopart(:) => null()
@@ -88,46 +81,51 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
 !
     call jemarq()
     ier = 0
-    call getres(nomu, concep, cmd)
+!   Récupère les informations du concept
+    nomu = infoconcept%nomu
+    noma = infoconcept%maillage
+    nbmail = infoconcept%nbmail
+    jdme = infoconcept%jmodmail
+    ivr(:) = infoconcept%ivr(:)
 !
 !   Reconstruction des noms jeveux du concept maillage associe
     mlgcnx = noma//'.CONNEX'
     mlggno = noma//'.GROUPENO'
     mlgcoo = noma//'.COORDO    .VALE'
-    call jelira(noma//'.TYPMAIL', 'LONMAX', nbmail)
     call jeveuo(mlgcoo, 'L', jdco)
 !
-    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
-    modmai = ligrel//'.TYFE'
-    call jeexin(modmai, ixma)
-    if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
-!
-!   Comptage des MET3SEG3
+    index1 = elem_supp%aceind(ACE_NU_POUTRE, 1)
+    index2 = elem_supp%aceind(ACE_NU_POUTRE, 2)
+!   Comptage des TUYAUX
     nbtuy = 0
     do ima = 1, nbmail
         nutyel = zi(jdme+ima-1)
-        do j = 1, nbepo
-            if (nutyel .eq. ntyele(j)) then
-                call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
-                if ((nunoel .eq. 'MET3SEG3') .or. (nunoel .eq. 'MET6SEG3') .or. &
+        bjj1: do jj = index1, index2
+            if (nutyel .eq. elem_supp%catanum(jj)) then
+                nunoel = elem_supp%catanom(jj)
+                if ((nunoel .eq. 'MET3SEG3') .or. &
+                    (nunoel .eq. 'MET6SEG3') .or. &
                     (nunoel .eq. 'MET3SEG4')) then
                     nbtuy = nbtuy+1
+                    cycle bjj1
                 end if
             end if
-        end do
+        end do bjj1
     end do
 !
-!   Stockage des éléments MET3SEG3 et des noeuds
     AS_ALLOCATE(vi=notuy, size=nbtuy*4)
     AS_ALLOCATE(vi=eltuy, size=nbtuy)
+!
+!   Stockage des éléments SEG3 et des noeuds
     nno = 0
     nbtuy = 0
     do ima = 1, nbmail
         nutyel = zi(jdme+ima-1)
-        do j = 1, nbepo
-            if (nutyel .eq. ntyele(j)) then
-                call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
-                if ((nunoel .eq. 'MET3SEG3') .or. (nunoel .eq. 'MET6SEG3')) then
+        bjj2: do jj = index1, index2
+            if (nutyel .eq. elem_supp%catanum(jj)) then
+                nunoel = elem_supp%catanom(jj)
+                if ((nunoel .eq. 'MET3SEG3') .or. &
+                    (nunoel .eq. 'MET6SEG3')) then
                     nno = 3
                     nbtuy = nbtuy+1
                     eltuy(nbtuy) = ima
@@ -135,17 +133,19 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
                     notuy(3*nbtuy-2) = zi(jdno)
                     notuy(3*nbtuy-1) = zi(jdno+1)
                     notuy(3*nbtuy) = zi(jdno+2)
+                    cycle bjj2
                 end if
             end if
-        end do
+        end do bjj2
     end do
 !
+!   Stockage des éléments SEG4 et des noeuds
     nbtuy4 = 0
     do ima = 1, nbmail
         nutyel = zi(jdme+ima-1)
-        do j = 1, nbepo
-            if (nutyel .eq. ntyele(j)) then
-                call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
+        bjj3: do jj = index1, index2
+            if (nutyel .eq. elem_supp%catanum(jj)) then
+                nunoel = elem_supp%catanom(jj)
                 if (nunoel .eq. 'MET3SEG4') then
                     nno = 4
                     nbtuy4 = nbtuy4+1
@@ -155,20 +155,22 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
                     notuy(4*nbtuy4-2) = zi(jdno+1)
                     notuy(4*nbtuy4-1) = zi(jdno+2)
                     notuy(4*nbtuy4) = zi(jdno+3)
+                    cycle bjj3
                 end if
             end if
-        end do
+        end do bjj3
     end do
 !
+!   On ne peut pas avoir des SEG3 et SEG4
     if (nbtuy4 .ne. 0) then
         if (nbtuy .ne. 0) then
             call utmess('F', 'MODELISA_27')
-        else
-            nbtuy = nbtuy4
         end if
+        nbtuy = nbtuy4
     end if
 !
-!   Comptage des parties connexes. HYPOTHESE : LES MAILLES SONT TOUTES ORIENTÉES DANS LE MÊME SENS
+!   Comptage des parties connexes.
+!   HYPOTHESE : LES MAILLES SONT TOUTES ORIENTÉES DANS LE MÊME SENS
     nbext1 = 0
     nbext2 = 0
     do ima = 1, nbtuy
@@ -226,10 +228,10 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
 !   Pour ne pas passer des variables non-initialisées en argument
     jnozk = 1
     jcozk = 1
-    if (nbocc(ACE_ORIENTATION) .ne. 0) then
-        call wkvect('&&ACEATU.LISNOZK', 'V V I', nbocc(ACE_ORIENTATION), jnozk)
-        call wkvect('&&ACEATU.LISCOZK', 'V V R', 3*nbocc(ACE_ORIENTATION), jcozk)
-        do ioc = 1, nbocc(ACE_ORIENTATION)
+    if (nbocc .ne. 0) then
+        call wkvect('&&ACEATU.LISNOZK', 'V V I', nbocc, jnozk)
+        call wkvect('&&ACEATU.LISCOZK', 'V V R', 3*nbocc, jcozk)
+        do ioc = 1, nbocc
 !           Un seul noeud permis
             call getvem(noma, 'GROUP_NO', 'ORIENTATION', 'GROUP_NO', ioc, 1, nomlu, nj)
             call getvtx('ORIENTATION', 'CARA', iocc=ioc, scal=car, nbret=ncar)

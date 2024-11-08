@@ -57,12 +57,9 @@ subroutine te0119(option, nomte)
         call jevech('PCACOQU', 'L', jvCacoqu)
         call jevech('PCODRET', "E", jvCodret)
         excent = zr(jvCacoqu-1+6)
-        if (nint(excent) .ne. 0) then
-            call utmess('F', 'CALCULEL2_31')
+        if (abs(excent) .ge. r8prem()) then
+            zi(jvCodret-1+1) = 1
         end if
-        ! if (excent .ge. r8prem()) then
-        !     zi(jvCodret-1+1) = 1
-        ! end if
     end if
 
 ! - Checks for TUYAU

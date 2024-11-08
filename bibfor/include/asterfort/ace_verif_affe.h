@@ -18,21 +18,14 @@
 
 !
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
-                      locaco, locagb, locamb, zjdlm, lmax, ier)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        integer(kind=8) :: ntyele(*)
-        integer(kind=8) :: nbocc(*)
-        integer(kind=8) :: ivr(*)
-        aster_logical :: locaco
-        aster_logical :: locagb
-        aster_logical :: locamb
-        integer(kind=8) :: zjdlm(*)
-        integer(kind=8) :: lmax
-        integer(kind=8) :: ier
-    end subroutine aceinc
+    subroutine ace_verif_affe(infoconcept ,nbocc, nb_ty_el, zjdlm)
+!
+        use cara_elem_info_type
+!
+        type (cara_elem_info), intent(in) :: infoconcept
+        integer(kind=8), intent(in)       :: nbocc(*)
+        integer(kind=8), intent(out)      :: nb_ty_el(*)
+        integer(kind=8), intent(out)      :: zjdlm(*)
+    end subroutine ace_verif_affe
 end interface

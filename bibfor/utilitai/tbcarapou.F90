@@ -32,10 +32,10 @@ subroutine tbcarapou(nomta, nomsec, nbcarac, nomcarac, valcarac, okcarac)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), intent(in)             :: nbcarac
-    character(len=*), intent(in)    :: nomta, nomsec, nomcarac(nbcarac)
-    integer(kind=8), intent(out)            :: okcarac(nbcarac)
-    real(kind=8), intent(out)       :: valcarac(nbcarac)
+    integer(kind=8), intent(in)  :: nbcarac
+    character(len=*), intent(in) :: nomta, nomsec, nomcarac(nbcarac)
+    integer(kind=8), intent(out) :: okcarac(nbcarac)
+    real(kind=8), intent(out)    :: valcarac(nbcarac)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -65,7 +65,7 @@ subroutine tbcarapou(nomta, nomsec, nbcarac, nomcarac, valcarac, okcarac)
         call utmess('F', 'UTILITAI4_64')
     end if
 !
-    call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
+    call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
     nbcolo = tbnp(1)
     nblign = tbnp(2)
     if (nbcolo .eq. 0) then
@@ -77,7 +77,7 @@ subroutine tbcarapou(nomta, nomsec, nbcarac, nomcarac, valcarac, okcarac)
 !
     call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
 !   On recherche :
-!       - le paramètre LIEU
+!       - le paramètre LIEU ou NOM_SEC
 !       - les paramètres nomcarac et on vérifie qu'ils sont R
     collieu = 0
     AS_ALLOCATE(size=nbcarac, vi=colpara)
@@ -86,7 +86,8 @@ subroutine tbcarapou(nomta, nomsec, nbcarac, nomcarac, valcarac, okcarac)
     do ii = 1, nbcolo
         kpara = tblp((ii-1)*4+1)
         typca = tblp((ii-1)*4+2)
-        if (kpara(1:4) .eq. 'LIEU') then
+        if ((kpara(1:4) .eq. 'LIEU') .or. &
+            (kpara(1:7) .eq. 'NOM_SEC')) then
             collieu = ii
         end if
         jja: do jj = 1, nbcarac
@@ -98,9 +99,9 @@ subroutine tbcarapou(nomta, nomsec, nbcarac, nomcarac, valcarac, okcarac)
             end if
         end do jja
     end do
-!   Si on n'a pas trouve LIEU
+!   Si on n'a pas trouve LIEU ou NOM_SEC
     if (collieu .eq. 0) then
-        call utmess('F', 'UTILITAI4_63', sk='LIEU')
+        call utmess('F', 'UTILITAI4_63', sk='[ LIEU | NOM_SEC ]')
     end if
 !   On recherche la ligne avec LIEU='nomsec'
     call jeveuo(tblp((collieu-1)*4+3), 'L', itabl)

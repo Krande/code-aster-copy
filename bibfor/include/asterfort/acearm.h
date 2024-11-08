@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-!
 interface
-    subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr )
+    subroutine acearm(nbocc, infdonn, infcarte )
+!
         use cara_elem_info_type
         use cara_elem_carte_type
-        type (cara_elem_info) :: infdonn
-        integer(kind=8) :: lmax
-        integer(kind=8) :: nbocc
-        type (cara_elem_carte) :: infcarte(*)
-        integer(kind=8) :: ivr(*)
+!
+        type (cara_elem_info)   :: infdonn
+        integer(kind=8)         :: nbocc
+        type (cara_elem_carte)  :: infcarte(*)
+!
     end subroutine acearm
 end interface

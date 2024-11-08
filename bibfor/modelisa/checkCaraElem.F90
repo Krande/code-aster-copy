@@ -98,7 +98,7 @@ subroutine checkCaraElem(modelZ, caraElemZ)
 ! ----- Return code
         call nmiret(codret, tabret)
         if (tabret(1)) then
-            !call utmess('F', 'CALCULEL2_31')
+            call utmess('F', 'CALCULEL2_31')
         end if
         if (tabret(2)) then
             call utmess('A', 'PIPE1_54', sr=PIPE_METRIC_LIMIT)

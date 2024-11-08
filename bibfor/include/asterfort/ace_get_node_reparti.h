@@ -15,15 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine testli(ima, numa, nma, kma, ierr)
-        integer(kind=8) :: nma
-        integer(kind=8) :: ima
-        integer(kind=8) :: numa(nma)
-        integer(kind=8) :: kma
-        integer(kind=8) :: ierr
-    end subroutine testli
+    subroutine ace_get_node_reparti(nbocc, mclef, infdonn, grplmax)
+!
+    use cara_elem_info_type
+!
+        integer(kind=8)         :: nbocc
+        character(len=16)       :: mclef
+        type(cara_elem_info)    :: infdonn
+        character(len=24)       :: grplmax(*)
+!
+    end subroutine ace_get_node_reparti
 end interface

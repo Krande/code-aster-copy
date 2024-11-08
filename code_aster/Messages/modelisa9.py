@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,11 +129,6 @@ Conseil :
 
 """
     ),
-    11: _(
-        """
- mot-clé facteur non traite :  %(k1)s
-"""
-    ),
     15: _(
         """
  pas de FREQ initiale définie : on prend la fréquence mini des modes calcules
@@ -214,15 +209,6 @@ Conseil :
         """
  trop de noeuds dans le GROUP_NO mot clé facteur  %(k1)s  occurrence  %(i1)d
    noeud utilise:  %(k2)s
-"""
-    ),
-    31: _(
-        """
- poutre : occurrence %(i2)d :
- "CARA" nombre de valeurs entrées:  %(i2)d
- "VALE" nombre de valeurs entrées:  %(i3)d
- vérifiez vos données
-
 """
     ),
     32: _(

@@ -41,7 +41,7 @@ MOD = AFFE_MODELE(
 
 CARA_ELE = AFFE_CARA_ELEM(
     MODELE=MOD,
-    VERIF=("MAILLE",),
+    VERIF="OUI",
     DISCRET_2D=(
         _F(GROUP_MA="S1", CARA="K_T_D_L", VALE=(1.0e7, 1.0e7)),
         _F(GROUP_MA="S2", CARA="K_T_D_L", VALE=(1.0, 1.0)),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -152,42 +152,6 @@ Conseil et solution :
     - vérifier que les mailles sont correctement ordonnées dans le groupe
     définissant la poutre
     - réorienter les mailles du groupe avec MODI_MAILLAGE/ORIE_LIGNE.
-"""
-    ),
-    54: _(
-        """
-Poutre circulaire à section homothétique :
-La présence de la caractéristique %(k1)s est obligatoire.
-"""
-    ),
-    56: _(
-        """
- il manque le mot clé facteur POUTRE.
-"""
-    ),
-    57: _(
-        """
- erreur(s) rencontrée(s) lors de la vérification des affectations.
-"""
-    ),
-    59: _(
-        """
- une erreur d affectation a été détectée : certaines mailles demandées possèdent un type élément incompatible avec les données a affecter
-"""
-    ),
-    60: _(
-        """
- des poutres ne sont pas affectées
-"""
-    ),
-    61: _(
-        """
- des barres ne sont pas affectées
-"""
-    ),
-    62: _(
-        """
- des câbles ne sont pas affectés
 """
     ),
     63: _(

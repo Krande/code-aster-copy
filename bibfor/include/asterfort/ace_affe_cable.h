@@ -15,20 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
-                      nlg, nln, nlj, ier)
-        integer(kind=8) :: nbocc
-        character(len=*) :: nomaz
-        character(len=*) :: nomoz
-        character(len=*) :: mcf
-        integer(kind=8) :: nlm
-        integer(kind=8) :: nlg
-        integer(kind=8) :: nln
-        integer(kind=8) :: nlj
-        integer(kind=8) :: ier
-    end subroutine acevdi
+    subroutine ace_affe_cable(nbocc, infoconcept, infocarte, grp_lmax, grp_nbma, listemail)
+!
+        use cara_elem_carte_type
+        use cara_elem_info_type
+!
+        integer(kind=8)         :: nbocc
+        type (cara_elem_info)   :: infoconcept
+        type (cara_elem_carte)  :: infocarte(*)
+        character(len=24)       :: grp_lmax(*)
+        integer(kind=8)         :: grp_nbma(*)
+        integer(kind=8)         :: listemail(*)
+    end subroutine ace_affe_cable
 end interface

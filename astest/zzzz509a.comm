@@ -46,7 +46,7 @@ mo = AFFE_MODELE(
 
 cael = AFFE_CARA_ELEM(
     MODELE=mo,
-    BARRE=_F(GROUP_MA="barre", SECTION="GENERALE", CARA="A", VALE=100.0),
+    BARRE=_F(GROUP_MA="barre", SECTION="GENERALE", AIRE=100.0),
     GRILLE=_F(GROUP_MA="grille", SECTION=2.0, VECT_1=(1.0, 0.0, 0.0)),
 )
 
