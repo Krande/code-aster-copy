@@ -283,21 +283,21 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
     Returns:
         FieldOnCells: ELGA_DEPL_R filled by PRIN_3
     """
-    if reswbrest.getModel().getMesh().hasGroupOfCells(f"mgrplas_{nume_inst}"):
+    modele = reswbrest.getModel()
+    if modele.getMesh().hasGroupOfCells(f"mgrplas_{nume_inst}"):
 
         if "SIGM_CNV" not in dwb[grwb]:
 
-            sg1 = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="ELGA_DEPL_R",
-                MODELE=reswbrest.getModel(),
-                PROL_ZERO="OUI",
-                ASSE=_F(
-                    GROUP_MA=f"mgrplas_{nume_inst}",
-                    CHAM_GD=rsieq.getField("SIEQ_ELGA", nume_inst),
-                    NOM_CMP="PRIN_3",
-                    NOM_CMP_RESU="DX",
-                ),
+            sg1 = FieldOnCellsReal(modele, "ELGA", "DEPL_R")
+            sg1.setValues(
+                (
+                    rsieq.getField("SIEQ_ELGA", nume_inst)
+                    .asPhysicalQuantity("DEPL_R", {"PRIN_3": "DX"})
+                    .toSimpleFieldOnCells()
+                )
+                .restrict(["DX"], [f"mgrplas_{nume_inst}"])
+                .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
+                .getValues()
             )
 
         else:
@@ -305,7 +305,7 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
             sg1 = sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb)
 
     else:
-        sg1 = FieldOnCellsReal(reswbrest.getModel(), "ELGA", "DEPL_R")
+        sg1 = FieldOnCellsReal(modele, "ELGA", "DEPL_R")
         sg1.setValues(0)
 
     if "CRIT_SIGM" in dwb[grwb]:
