@@ -40,23 +40,23 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
             &initFactoryPtr< SimpleFieldOnNodesReal, BaseMeshPtr, std::string, VectorString > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, BaseMeshPtr, std::string,
                                          VectorString, bool > ) )
-        .def( "__getitem__",
-              +[]( const SimpleFieldOnNodesReal &v, const PairLong &i ) {
-                  return v.operator()( i.first, i.second );
-              } )
-        .def( "__getitem__",
-              +[]( const SimpleFieldOnNodesReal &v,
-                   const std::pair< ASTERINTEGER, std::string > &i ) {
-                  return v.operator()( i.first, i.second );
-              } )
-        .def( "__setitem__",
-              +[]( SimpleFieldOnNodesReal &v, const PairLong &i, ASTERDOUBLE f ) {
-                  return v.operator()( i.first, i.second ) = f;
-              } )
-        .def( "__setitem__",
-              +[]( SimpleFieldOnNodesReal &v, const std::pair< ASTERINTEGER, std::string > &i ) {
-                  return v.operator()( i.first, i.second );
-              } )
+        .def(
+            "__getitem__", +[]( const SimpleFieldOnNodesReal &v,
+                                const PairLong &i ) { return v.operator()( i.first, i.second ); } )
+        .def(
+            "__getitem__",
+            +[]( const SimpleFieldOnNodesReal &v,
+                 const std::pair< ASTERINTEGER, std::string > &i ) {
+                return v.operator()( i.first, i.second );
+            } )
+        .def(
+            "__setitem__", +[]( SimpleFieldOnNodesReal &v, const PairLong &i,
+                                ASTERDOUBLE f ) { return v.operator()( i.first, i.second ) = f; } )
+        .def(
+            "__setitem__",
+            +[]( SimpleFieldOnNodesReal &v, const std::pair< ASTERINTEGER, std::string > &i ) {
+                return v.operator()( i.first, i.second );
+            } )
         .def( "allocate", &SimpleFieldOnNodesReal::allocate,
               R"(
             Allocate the field.
@@ -66,9 +66,9 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
                 cmps [list[str]]: list of components.
             )",
               py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "zero" ) = false )
-        .def( "toFieldOnNodes",
-              []( const SimpleFieldOnNodesReal &f ) { return toFieldOnNodes( f ); },
-              R"(
+        .def(
+            "toFieldOnNodes", []( const SimpleFieldOnNodesReal &f ) { return toFieldOnNodes( f ); },
+            R"(
 Convert to FieldOnNodes
 
 Returns:
@@ -120,6 +120,7 @@ Returns:
         .def( "getNumberOfNodes", &SimpleFieldOnNodesReal::getNumberOfNodes )
         .def( "getComponents", &SimpleFieldOnNodesReal::getComponents )
         .def( "getComponent", &SimpleFieldOnNodesReal::getComponent )
+        .def( "hasComponent", &SimpleFieldOnNodesReal::hasComponent )
         .def( "getMesh", &SimpleFieldOnNodesReal::getMesh, R"(Returns base mesh)" )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesReal::getPhysicalQuantity )
         .def( "setValues",
@@ -156,6 +157,42 @@ Returns:
                 For each node, give the values for all component is a list.
             )",
               py::arg( "values" ) )
+        .def( "setValues",
+              py::overload_cast< const std::map< std::string, ASTERDOUBLE > &, const VectorLong & >(
+                  &SimpleFieldOnNodesReal::setValues ),
+              R"(
+            Set values of the field where components and values are given as a dict.
+            If the component is not present in the field then it is discarded
+            Example: { "X1" : 0.0, "X3" : 0.0 }
+
+            Arguments:
+                value (dict[str, float]): dict of values to set (key: str, value: float)
+                nodes (list[int]): list of nodes.
+            )",
+              py::arg( "value" ), py::arg( "nodes" ) )
+        .def(
+            "setValues",
+            py::overload_cast< const std::map< std::string, ASTERDOUBLE > &, const VectorString & >(
+                &SimpleFieldOnNodesReal::setValues ),
+            R"(
+            Set values of the field where components and values are given as a dict.
+            If the component is not present in the field then it is discarded
+            Example: { "X1" : 0.0, "X3" : 0.0 }
+
+            Arguments:
+                value (dict[str, float]): dict of values to set (key: str, value: float)
+                groupsOfNodes (list[str]): list of groups. If empty, the full mesh is considered
+            )",
+            py::arg( "value" ), py::arg( "groupsOfNodes" ) = VectorString() )
+        .def( "setValues",
+              py::overload_cast< const ASTERDOUBLE >( &SimpleFieldOnNodesReal::setValues ),
+              R"(
+            Set the value everywhere.
+
+            Arguments:
+                value [float]: value to set everywhere.
+            )",
+              py::arg( "value" ) )
         .def( "getValuesWithDescription",
               py::overload_cast< const VectorString &, const VectorString & >(
                   &SimpleFieldOnNodesReal::getValuesWithDescription, py::const_ ),
@@ -197,14 +234,12 @@ Returns:
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesComplex, BaseMeshPtr, std::string,
                                          VectorString, bool > ) )
 
-        .def( "__getitem__",
-              +[]( const SimpleFieldOnNodesComplex &v, const PairLong &i ) {
-                  return v.operator()( i.first, i.second );
-              } )
-        .def( "__setitem__",
-              +[]( SimpleFieldOnNodesComplex &v, const PairLong &i, ASTERCOMPLEX f ) {
-                  return v.operator()( i.first, i.second ) = f;
-              } )
+        .def(
+            "__getitem__", +[]( const SimpleFieldOnNodesComplex &v,
+                                const PairLong &i ) { return v.operator()( i.first, i.second ); } )
+        .def(
+            "__setitem__", +[]( SimpleFieldOnNodesComplex &v, const PairLong &i,
+                                ASTERCOMPLEX f ) { return v.operator()( i.first, i.second ) = f; } )
         .def( "toNumpy", &SimpleFieldOnNodesComplex::toNumpy,
               R"(
 Returns two numpy arrays with shape ( number_of_components, space_dimension )
@@ -221,6 +256,7 @@ Returns:
         .def( "getNumberOfNodes", &SimpleFieldOnNodesComplex::getNumberOfNodes )
         .def( "getComponents", &SimpleFieldOnNodesComplex::getComponents )
         .def( "getComponent", &SimpleFieldOnNodesComplex::getComponent )
+        .def( "hasComponent", &SimpleFieldOnNodesComplex::hasComponent )
         .def( "getMesh", &SimpleFieldOnNodesComplex::getMesh, R"(Returns base mesh)" )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesComplex::getPhysicalQuantity )
         .def( "updateValuePointers", &SimpleFieldOnNodesComplex::updateValuePointers );
