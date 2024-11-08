@@ -1326,7 +1326,9 @@ def post_newmark_ops(self, **args):
         ## verify if ky is given, otherwise obtain it from dynamic safety factor
         if args["RESULTAT_PESANTEUR"] is not None:
             if args["KY"] is None:
-                nstd = args["NB_ECART_TYPE"]
+                nstd = 3.0
+                if args["NB_ECART_TYPE"] is not None:
+                    nstd = args["NB_ECART_TYPE"]
                 aster.affiche("MESSAGE", "NB_ECART_TYPE = " + str(args["NB_ECART_TYPE"]))
 
                 ky = get_ky_value(FSp, acc, nstd)
