@@ -136,7 +136,6 @@ verification_test:
   script:
     - .gitlabci/test.sh
         -L verification
-        --only-failed-results
         --exclude-testlist .gitlabci/known_failures-pleiade.list
         --resutest=results
   artifacts:

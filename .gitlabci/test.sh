@@ -35,6 +35,11 @@ if [ -z "${changes}" ]; then
     fi
 fi
 
+# keep only outputs for failed tests, except for scheduled runs
+if [ "${CI_PIPELINE_SOURCE}" != "schedule" ]; then
+    args+=( "--only-failed-results" )
+fi
+
 printf "\nrun_ctest arguments: ${args}\n"
 
 printf "\nrunning testcases #1... - $(date)\n"
@@ -51,6 +56,14 @@ if [ ${iret} -ne 0 ]; then
     printf "\nrunning testcases #3 (rerun-failed)... - $(date)\n"
     ./install/bin/run_ctest "${args[@]}" --rerun-failed
     iret=$?
+fi
+
+# scheduled runs: archive results files
+if [ "${CI_PIPELINE_SOURCE}" = "schedule" ]; then
+    cd results
+    tar czf mess_files.tar.gz *.mess
+    rm -f *.mess *.code
+    cd ..
 fi
 
 exit ${iret}
