@@ -96,7 +96,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             """
 
             assert len(data) == 1, "expecting one field"
-            mc_pres = data["Forces"]
+            mc_pres = data["fluid_forces"]
 
             # MEDC field => .med => code_aster field
             FORCE = self._medcpl.import_fluidforces(mc_pres, MOSOLIDE, current_time)
@@ -137,7 +137,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             displ = self.result.getField("DEPL", self.result.getLastIndex())
             mc_displ = self._medcpl.export_displacement(displ)
 
-            return True, {"Displ": mc_displ}
+            return True, {"mesh_displacement": mc_displ}
 
     ################################################################################
     # loop on time steps
@@ -147,8 +147,8 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
     cpl.setup(
         interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("Forces", ["FX", "FY", "FZ"], "CELLS")],
-        output_fields=[("Displ", ["DX", "DY", "DZ"], "NODES")],
+        input_fields=[("fluid_forces", ["FX", "FY", "FZ"], "CELLS")],
+        output_fields=[("mesh_displacement", ["DX", "DY", "DZ"], "NODES")],
     )
 
     cpl.run(mech_solv)

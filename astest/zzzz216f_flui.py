@@ -209,7 +209,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             assert len(data) == 1, "expecting one field"
 
-            mc_depl = data["Displ"]
+            mc_depl = data["mesh_displacement"]
             depl = None
             if mc_depl:
                 # MEDC field => .med => code_aster field
@@ -261,7 +261,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             self.depl_prev = depl
 
-            return has_cvg, {"Forces": mc_pres}
+            return has_cvg, {"fluid_forces": mc_pres}
 
     ################################################################################
     # loop on time steps
@@ -271,8 +271,8 @@ def coupled_fluid(cpl, UNITE_MA):
 
     cpl.setup(
         interface=(MAFLUIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("Displ", ["DX", "DY", "DZ"], "NODES")],
-        output_fields=[("Forces", ["FX", "FY", "FZ"], "CELLS")],
+        input_fields=[("mesh_displacement", ["DX", "DY", "DZ"], "NODES")],
+        output_fields=[("fluid_forces", ["FX", "FY", "FZ"], "CELLS")],
         init_time=0.0,
         final_time=1.0,
         nb_step=5,

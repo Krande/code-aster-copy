@@ -103,23 +103,22 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             """
 
             assert len(data) == 1, "expecting one field"
-            mc_pres = data["PRES"]
+            mc_pres = data["fluid_forces"]
 
             # MEDC field => .med => code_aster field
-            PRES_noeu = self._medcpl.import_pressure(mc_pres)
+            FORCE = self._medcpl.import_fluidforces(mc_pres, MOSOLIDE, current_time)
 
-            fed = MOSOLIDE.getFiniteElementDescriptor().restrict(
-                self._medcpl.mesh_interf.getGroupsOfCells()
-            )
-            PRES_elno = PRES_noeu.toFieldOnCells(fed, "ELNO")
+            FORC = FORCE.getField("FSUR_3D", current_time, "INST")
 
-            RES_PROJ = CREA_RESU(
-                OPERATION="AFFE",
+            PRES = FORC.asPhysicalQuantity("PRES_R", {"FX": "PRES"})
+
+            evol_char = CREA_RESU(
                 TYPE_RESU="EVOL_CHAR",
-                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES_elno, INST=current_time),
+                OPERATION="AFFE",
+                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES, INST=current_time),
             )
 
-            CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=RES_PROJ)
+            CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=evol_char)
 
             previous_time = current_time - delta_t
 
@@ -148,9 +147,12 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             displ = self.result.getField("DEPL", self.result.getLastIndex())
             mc_displ = self._medcpl.export_displacement(displ)
 
+            velo = self.result.getField("VITE", self.result.getLastIndex())
+            mc_velo = self._medcpl.export_displacement(velo)
+
             print("[Norm] ", displ.norm("NORM_2"), flush=True)
 
-            return True, {"DEPL": mc_displ}
+            return True, {"mesh_displacement": mc_displ, "mesh_velocity": mc_velo}
 
     ################################################################################
     # loop on time steps
@@ -160,8 +162,11 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
     cpl.setup(
         interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("PRES", ["PRES"], "NODES")],
-        output_fields=[("DEPL", ["DX", "DY", "DZ"], "NODES")],
+        input_fields=[("fluid_forces", ["FX", "FY", "FZ"], "CELLS")],
+        output_fields=[
+            ("mesh_displacement", ["DX", "DY", "DZ"], "NODES"),
+            ("mesh_velocity", ["DX", "DY", "DZ"], "NODES"),
+        ],
     )
 
     cpl.run(mech_solv)
@@ -204,7 +209,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=-0.2935190732779141,
-                PRECISION=0.01,
+                PRECISION=0.03,
             ),
             _F(
                 INST=1.0,

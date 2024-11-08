@@ -17,9 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-
 from code_aster.Commands import *
 from code_aster import CA
+
+
+from zzzz216f_flui import FakeSaturne
 
 
 def coupled_fluid(cpl, UNITE_MA):
@@ -39,26 +41,28 @@ def coupled_fluid(cpl, UNITE_MA):
 
     # Read the  mesh - 2 cases : 1 or several procs
     if CA.MPI.ASTER_COMM_WORLD.size > 1:
-        MAFLUIDE0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=UNITE_MA, PARTITIONNEUR="PTSCOTCH")
+        MAFLUIDE = LIRE_MAILLAGE(FORMAT="MED", UNITE=UNITE_MA, PARTITIONNEUR="PTSCOTCH")
     else:
-        MAFLUIDE0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=UNITE_MA)
+        MAFLUIDE = LIRE_MAILLAGE(FORMAT="MED", UNITE=UNITE_MA)
 
     MAFLUIDE = MODI_MAILLAGE(
-        MAILLAGE=MAFLUIDE0,
-        ORIE_PEAU=_F(GROUP_MA_PEAU=("Face2", "Face3", "Face4", "Face5", "Face6")),
+        reuse=MAFLUIDE,
+        MAILLAGE=MAFLUIDE,
+        ORIE_PEAU=_F(GROUP_MA_PEAU=("Face1", "Face2", "Face3", "Face4", "Face5", "Face6")),
+    )
+
+    # Assign model
+    MOFLUIDE = AFFE_MODELE(
+        MAILLAGE=MAFLUIDE,
+        AFFE=_F(
+            GROUP_MA=("Face1", "Face2", "Face3", "Face4", "Face5", "Face6"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="3D",
+        ),
     )
 
     FORM = FORMULE(VALE="INST*(X+Y+Z)", NOM_PARA=["X", "Y", "Z", "INST"])
-
-    PRES_F = CREA_CHAMP(
-        TYPE_CHAM="NOEU_NEUT_F",
-        OPERATION="AFFE",
-        MAILLAGE=MAFLUIDE,
-        AFFE=_F(TOUT="OUI", NOM_CMP="X1", VALE_F=FORM),
-        INFO=1,
-    )
-
-    L_INST0 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=10))
+    FORM0 = FORMULE(VALE="0.", NOM_PARA=["X", "Y", "Z", "INST"])
 
     ################################################################################
     # define one iteration
@@ -85,7 +89,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             val, desc = fns.getValuesWithDescription()
 
-            fns.setValues(0)
+            fns.setValues([0] * 3 * MAFLUIDE.getNumberOfNodes())
             fns.setValues(desc[0], desc[1], val)
 
             return fns.toFieldOnNodes()
@@ -97,16 +101,16 @@ def coupled_fluid(cpl, UNITE_MA):
                 i_iter (int): Iteration number if the current time_step.
                 current_time (float): Current time.
                 delta_t (float): Time step.
-                data (dict[*MEDCouplingField*]): dict    of input fields.
+                data (dict[*MEDCouplingField*]): dict of input fields.
 
             Returns:
                 bool: True if solver has converged at the current time step, else False.
                 dict[*MEDCouplingField*]: Output fields, on nodes.
             """
 
-            assert len(data) == 1, "expecting one field"
+            assert len(data) == 2, "expecting one field"
 
-            mc_depl = data["DEPL"]
+            mc_depl = data["mesh_displacement"]
             depl = None
             if mc_depl:
                 # MEDC field => .med => code_aster field
@@ -122,36 +126,44 @@ def coupled_fluid(cpl, UNITE_MA):
                 DEPL = self.extent(depl)
                 CHXN += DEPL
 
+            PRES_F = CREA_CHAMP(
+                TYPE_CHAM="NOEU_NEUT_F",
+                OPERATION="AFFE",
+                MAILLAGE=MAFLUIDE,
+                AFFE=_F(TOUT="OUI", NOM_CMP=("X1", "X2", "X3"), VALE_F=(FORM, FORM0, FORM0)),
+                INFO=1,
+            )
+
             CHNEUT = CREA_CHAMP(
                 OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=PRES_F, CHAM_PARA=(CHXN, CHINST)
             )
 
-            pres = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="NOEU_PRES_R",
-                MAILLAGE=MAFLUIDE,
-                ASSE=_F(TOUT="OUI", CHAM_GD=CHNEUT, NOM_CMP=("X1",), NOM_CMP_RESU=("PRES",)),
-            )
+            force = CHNEUT.asPhysicalQuantity("FORC_R", {"X1": "FX", "X2": "FY", "X3": "FZ"})
+
+            force_elem = force.toFieldOnCells(MOFLUIDE.getFiniteElementDescriptor(), "ELEM")
 
             if i_iter == 0:
-                self.result.append(pres)
+                self.result.append(force_elem)
             else:
-                self.result[-1] = pres
+                self.result[-1] = force_elem
 
-            mc_pres = self._medcpl.export_pressure(pres)
+            # export
+
+            mc_pres = self._medcpl.export_field(force_elem)
 
             # test convergence:
             has_cvg = False
             if i_iter > 0 and self.depl_prev:
-                print("[Norm] ", depl.norm("NORM_2"), flush=True)
                 depl_incr = depl - self.depl_prev
+                print("[Norm] ", depl.norm("NORM_2"), flush=True)
+
                 resi_rela = depl_incr.norm("NORM_INFINITY") / depl.norm("NORM_INFINITY")
                 has_cvg = resi_rela < self.epsilon
                 print(f"RESI_CPL: #iter {i_iter}, #resi: {resi_rela}")
 
             self.depl_prev = depl
 
-            return has_cvg, {"PRES": mc_pres}
+            return has_cvg, {"fluid_forces": mc_pres}
 
     ################################################################################
     # loop on time steps
@@ -161,11 +173,19 @@ def coupled_fluid(cpl, UNITE_MA):
 
     cpl.setup(
         interface=(MAFLUIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("DEPL", ["DX", "DY", "DZ"], "NODES")],
-        output_fields=[("PRES", ["PRES"], "NODES")],
+        input_fields=[
+            ("mesh_displacement", ["DX", "DY", "DZ"], "NODES"),
+            ("mesh_velocity", ["DX", "DY", "DZ"], "NODES"),
+        ],
+        output_fields=[("fluid_forces", ["FX", "FY", "FZ"], "CELLS")],
+        init_time=0.0,
+        final_time=1.0,
+        nb_step=10,
+        nb_iter=10,
+        epsilon=fluid_solv.epsilon,
     )
 
-    cpl.run(fluid_solv, time_list=L_INST0.getValues(), nb_iter=10, epsilon=fluid_solv.epsilon)
+    cpl.run(fluid_solv)
 
     # Extract the field from the result
 
