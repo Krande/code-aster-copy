@@ -61,8 +61,8 @@ fi
 # scheduled runs: archive results files
 if [ "${CI_PIPELINE_SOURCE}" = "schedule" ]; then
     cd results
-    tar czf mess_files.tar.gz *.mess
-    rm -f *.mess *.code
+    tar czf mess_files.tar.gz *.${MESS_EXT}
+    rm -f *.${MESS_EXT} *.code
     cd ..
 fi
 
