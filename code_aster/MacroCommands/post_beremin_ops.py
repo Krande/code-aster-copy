@@ -445,17 +445,20 @@ def sig1plasac(resultat, rsieq, numvi, dwb, reswbrest, grmapb, l_instplas):
     fotrq.setVariables(["V{}".format(numvi[0]), "V{}".format(numvi[1])])
     fotrq.setContext({"indic_plasac": indic_plasac, "seuil": dwb[grmapb]["SEUIL_EPSP_CUMU"]})
 
+    linst_tronque = [elt[1] for elt in l_instplas]
+
+    if len(linst_tronque) > 0:
+        tronque = CALC_CHAMP(
+            RESULTAT=resultat,
+            INST=tuple(linst_tronque),
+            GROUP_MA=grmapb,
+            CHAM_UTIL=_F(NOM_CHAM="VARI_ELGA", FORMULE=fotrq, NUME_CHAM_RESU=1),
+        )
+
     for nume_inst in rsieq.getAccessParameters()["NUME_ORDRE"]:
         inst = rsieq.getTime(nume_inst)
 
-        if inst in [elt[1] for elt in l_instplas]:
-
-            tronque = CALC_CHAMP(
-                RESULTAT=resultat,
-                INST=inst,
-                GROUP_MA=grmapb,
-                CHAM_UTIL=_F(NOM_CHAM="VARI_ELGA", FORMULE=fotrq, NUME_CHAM_RESU=1),
-            )
+        if inst in linst_tronque:
 
             sigtyp = FieldOnCellsReal(modele, "ELGA", "SIEF_R")
 
@@ -692,6 +695,9 @@ def compute_beremin_integral(coefmultpb, sigw, dwb, grmapb, resupb):
         Table: POST_BEREMIN final table
     """
     sigwinst = sigw.getAccessParameters()["NUME_ORDRE"]
+    poids = CALC_CHAM_ELEM(MODELE=sigw.getModel(), OPTION="COOR_ELGA").getValuesWithDescription(
+        "W", ["mgrplasfull"]
+    )[0]
     valinte_sixx = [
         np.sum(
             np.array(
@@ -699,9 +705,7 @@ def compute_beremin_integral(coefmultpb, sigw, dwb, grmapb, resupb):
                     [
                         elt_poids * elt_sigw
                         for (elt_poids, elt_sigw) in zip(
-                            CALC_CHAM_ELEM(
-                                MODELE=sigw.getModel(), OPTION="COOR_ELGA"
-                            ).getValuesWithDescription("W", ["mgrplasfull"])[0],
+                            poids,
                             sigw.getField("SIEF_ELGA", nume_inst).getValuesWithDescription(
                                 "SIXX", ["mgrplasfull"]
                             )[0],
