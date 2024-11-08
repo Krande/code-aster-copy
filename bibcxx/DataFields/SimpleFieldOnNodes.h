@@ -352,6 +352,8 @@ class SimpleFieldOnNodes : public DataField {
         AS_ASSERT( nodes.size() == cmps.size() );
         AS_ASSERT( nodes.size() == values.size() );
 
+        this->updateValuePointers();
+
         const int size = values.size();
         for ( int i = 0; i < size; i++ ) {
             ( *this )( nodes[i], cmps[i] ) = values[i];
@@ -361,6 +363,8 @@ class SimpleFieldOnNodes : public DataField {
     void setValues( const std::vector< std::vector< ValueType > > &values ) {
 
         AS_ASSERT( values.size() == this->getNumberOfNodes() );
+        this->updateValuePointers();
+
         for ( int ino = 0; ino < this->getNumberOfNodes(); ino++ ) {
             auto &row = values[ino];
 #ifdef ASTER_DEBUG_CXX
@@ -387,6 +391,8 @@ class SimpleFieldOnNodes : public DataField {
     }
 
     void setValues( const std::map< std::string, ValueType > &values, const VectorLong &nodes ) {
+        this->updateValuePointers();
+
         for ( auto &[cmp, val] : values ) {
             if ( this->hasComponent( cmp ) ) {
                 const auto icmp = _name2Index[cmp];

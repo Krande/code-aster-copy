@@ -67,6 +67,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
     for ( auto &cell : listOfCells )
         cell += 1;
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
+    this->build();
 };
 
 FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
@@ -76,7 +77,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
 }
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
+    FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 
     VectorLong listOfCells = _mesh->getCells( groupsOfCells );
 
@@ -84,7 +85,7 @@ FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
+    FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
 
     auto fed = std::make_shared< FiniteElementDescriptor >( getMesh() );
 
@@ -95,6 +96,7 @@ FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
     for ( auto &cell : listOfCells )
         cell += 1;
     CALL_EXLIM2( listOfCells.data(), &nbCells, getName(), base, fed->getName() );
+    fed->build();
     return fed;
 };
 
