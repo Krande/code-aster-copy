@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -275,13 +275,13 @@ subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz, &
 !
     do i_load = 1, nb_load
         load_name = lchar(i_load)
-        call dismoi('TYPE_CHARGE', lchar(i_load), 'CHARGE', repk=kbid)
+        call dismoi('TYPE_CHARGE', load_name, 'CHARGE', repk=kbid)
         if (kbid(5:7) .eq. '_FO') then
             lfonc = .true.
         else
             lfonc = .false.
         end if
-        ligrch = lchar(i_load)//'.CHME.LIGRE'
+        ligrch = load_name//'.CHME.LIGRE'
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.CIMPO', iret)
         if (iret .ne. 0) then
@@ -602,7 +602,7 @@ subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz, &
         end if
 ! ====================================================================
 
-        call jeexin(lchar(i_load)//'.CHME.EVOL.CHAR', ier)
+        call jeexin(load_name//'.CHME.EVOL.CHAR', ier)
         if (ier .ne. 0) then
             call me2mme_evol(model, cara_elem, mate, mateco, nharm, base, &
                              i_load, load_name, ligrmo, inst_prev, inst_curr, &

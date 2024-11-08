@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, i_type_neum,&
-                              nb_type_neumz, nb_in_maxi , nb_in_prep , lchin      , lpain      ,&
-                              nb_in_add    , load_ligrel, load_option, matr_type  , iden_direct,&
-                              name_inputz  )
-        character(len=8), intent(in) :: load_name
-        integer, intent(in) :: load_nume
+    subroutine load_neum_spec(loadName, loadNume, loadApply, ligrel_calc, i_type_neum, &
+                              nb_type_neumz, nb_in_maxi, nb_in_prep, lchin, lpain, &
+                              nb_in_add, load_ligrel, load_option, matr_type, iden_direct, &
+                              name_inputz)
+        character(len=8), intent(in) :: loadName
+        integer, intent(in) :: loadNume
         character(len=19), intent(in) :: ligrel_calc
-        character(len=4), intent(in) :: load_type
+        character(len=4), intent(in) :: loadApply
         integer, intent(in) :: i_type_neum
         integer, intent(in) :: nb_type_neumz
         integer, intent(in) :: nb_in_maxi
