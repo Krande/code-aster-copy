@@ -101,7 +101,7 @@ subroutine te0305(option, nomte)
         end if
         nompar(nbpar) = 'INST'
         call jevech('PINSTR', 'L', jv_time)
-        valpar(4) = zr(jv_time)
+        valpar(nbpar) = zr(jv_time)
     else
         if (FESkin%ndim == 2) then
             call tefrep(option, 'PFR2D3D', jv_forc)
