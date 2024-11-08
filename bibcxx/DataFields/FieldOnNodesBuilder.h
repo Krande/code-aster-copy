@@ -30,51 +30,51 @@
 #include "Utilities/Tools.h"
 
 /**
- * There is a separate file to construct some object to avoid circular inclusions.
- * Theses new methods are binding as contructor.
+ * There is a separate file to construct some object to avoid circular
+ * inclusions. Theses new methods are binding as contructor.
  */
 
 /**
  * @brief Constructor for empty FieldOnNodes.
  */
-template < typename ValueType >
-std::shared_ptr< FieldOnNodes< ValueType > > FieldOnNodesPtrBuilder( const BaseMeshPtr mesh,
-                                                                     const std::string &quantity,
-                                                                     const VectorString &cmps ) {
+template <typename ValueType>
+std::shared_ptr<FieldOnNodes<ValueType>>
+FieldOnNodesPtrBuilder(const BaseMeshPtr mesh, const std::string &quantity,
+                       const VectorString &cmps) {
 
-    SimpleFieldOnNodes< ValueType > cns( mesh, quantity, cmps );
+  SimpleFieldOnNodes<ValueType> cns(mesh, quantity, cmps);
 
-    cns.setValues( 0. );
+  cns.setValues(0.);
 
-    return toFieldOnNodes( cns );
+  return toFieldOnNodes(cns);
 };
 
-template < typename ValueType >
-std::shared_ptr< FieldOnNodes< ValueType > >
-FieldOnNodesPtrBuilder( const BaseMeshPtr mesh, const std::string &quantity,
-                        const std::map< std::string, ValueType > &values,
-                        const VectorString &groupsOfNodes = {},
-                        const VectorString &groupsOfCells = {} ) {
+template <typename ValueType>
+std::shared_ptr<FieldOnNodes<ValueType>>
+FieldOnNodesPtrBuilder(const BaseMeshPtr mesh, const std::string &quantity,
+                       const std::map<std::string, ValueType> &values,
+                       const VectorString &groupsOfNodes = {},
+                       const VectorString &groupsOfCells = {}) {
 
-    VectorString cmps;
-    for ( auto &[cmp, val] : values ) {
-        cmps.push_back( cmp );
-    }
+  VectorString cmps;
+  for (auto &[cmp, val] : values) {
+    cmps.push_back(cmp);
+  }
 
-    SimpleFieldOnNodes< ValueType > cns( mesh, quantity, cmps );
+  SimpleFieldOnNodes<ValueType> cns(mesh, quantity, cmps);
 
-    VectorLong nodes;
+  VectorLong nodes;
 
-    if ( groupsOfCells.empty() || !groupsOfNodes.empty() ) {
-        nodes = mesh->getNodes( groupsOfNodes );
-    }
+  if (groupsOfCells.empty() || !groupsOfNodes.empty()) {
+    nodes = mesh->getNodes(groupsOfNodes);
+  }
 
-    if ( !groupsOfCells.empty() ) {
-        auto nodes2 = mesh->getNodesFromCells( groupsOfCells );
-        nodes = set_union( nodes, nodes2 );
-    }
+  if (!groupsOfCells.empty()) {
+    auto nodes2 = mesh->getNodesFromCells(groupsOfCells);
+    nodes = set_union(nodes, nodes2);
+  }
 
-    cns.setValues( values, nodes );
+  cns.setValues(values, nodes);
 
-    return toFieldOnNodes( cns );
+  return toFieldOnNodes(cns);
 };

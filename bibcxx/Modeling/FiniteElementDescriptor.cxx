@@ -77,7 +77,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
 }
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-    FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
+FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 
     VectorLong listOfCells = _mesh->getCells( groupsOfCells );
 
@@ -85,7 +85,7 @@ FiniteElementDescriptor::FiniteElementDescriptorPtr
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-    FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
+FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
 
     auto fed = std::make_shared< FiniteElementDescriptor >( getMesh() );
 

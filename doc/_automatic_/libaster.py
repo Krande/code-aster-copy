@@ -3070,6 +3070,10 @@ class FieldOnNodesReal(DataField):
         4. __init__(self: libaster.FieldOnNodesReal, arg0: Model) -> None
 
         5. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
+
+        6. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str]) -> None
+
+        7. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, values: dict[str, float], groupsOfNodes: list[str] = [], groupsOfCells: list[str] = []) -> None
         """
 
     def __isub__(self, arg0):
@@ -4168,6 +4172,9 @@ class SimpleFieldOnNodesReal(DataField):
                         The description provides a tuple with( nodes ids, components ).
         """
 
+    def hasComponent(self, arg0):
+        pass
+
     def setValues(self, *args, **kwargs):
         """Overloaded function.
 
@@ -4201,6 +4208,39 @@ class SimpleFieldOnNodesReal(DataField):
                     Arguments:
                         values (list[list[float]]): list of values to set.
                         For each node, give the values for all component is a list.
+
+
+        4. setValues(self: libaster.SimpleFieldOnNodesReal, value: dict[str, float], nodes: list[int]) -> None
+
+
+                    Set values of the field where components and values are given as a dict.
+                    If the component is not present in the field then it is discarded
+                    Example: { "X1" : 0.0, "X3" : 0.0 }
+
+                    Arguments:
+                        value (dict[str, float]): dict of values to set (key: str, value: float)
+                        nodes (list[int]): list of nodes.
+
+
+        5. setValues(self: libaster.SimpleFieldOnNodesReal, value: dict[str, float], groupsOfNodes: list[str] = []) -> None
+
+
+                    Set values of the field where components and values are given as a dict.
+                    If the component is not present in the field then it is discarded
+                    Example: { "X1" : 0.0, "X3" : 0.0 }
+
+                    Arguments:
+                        value (dict[str, float]): dict of values to set (key: str, value: float)
+                        groupsOfNodes (list[str]): list of groups. If empty, the full mesh is considered
+
+
+        6. setValues(self: libaster.SimpleFieldOnNodesReal, value: float) -> None
+
+
+                    Set the value everywhere.
+
+                    Arguments:
+                        value [float]: value to set everywhere.
         """
 
     def toFieldOnNodes(self):
@@ -4273,6 +4313,9 @@ class SimpleFieldOnNodesComplex(DataField):
         pass
 
     def getPhysicalQuantity(self):
+        pass
+
+    def hasComponent(self, arg0):
         pass
 
     def toNumpy(self):
