@@ -112,12 +112,7 @@ def coupled_fluid(cpl, UNITE_MA):
                 # MEDC field => .med => code_aster field
                 depl = self._medcpl.import_displacement(mc_depl)
 
-            CHINST = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="NOEU_INST_R",
-                MAILLAGE=MAFLUIDE,
-                AFFE=_F(TOUT="OUI", NOM_CMP=("INST",), VALE=current_time),
-            )
+            CHINST = CA.FieldOnNodesReal(MAFLUIDE, "INST_R", {"INST": current_time})
 
             CHXN = CREA_CHAMP(
                 OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAFLUIDE
@@ -143,7 +138,7 @@ def coupled_fluid(cpl, UNITE_MA):
             else:
                 self.result[-1] = pres
 
-            mc_pres = self._medcpl.export_pressure(pres, "PRES")
+            mc_pres = self._medcpl.export_pressure(pres)
 
             # test convergence:
             has_cvg = False

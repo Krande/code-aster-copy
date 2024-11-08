@@ -103,15 +103,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
             FORC = FORCE.getField("FSUR_3D", current_time, "INST")
 
-            # PRES = FORC.asPhysicalQuantity("PRES_R", {"FX": "PRES"})
-
-            PRES = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="ELEM_PRES_R",
-                MODELE=MOSOLIDE,
-                PROL_ZERO="OUI",
-                ASSE=_F(TOUT="OUI", CHAM_GD=FORC, NOM_CMP=("FX"), NOM_CMP_RESU=("PRES",)),
-            )
+            PRES = FORC.asPhysicalQuantity("PRES_R", {"FX": "PRES"})
 
             evol_char = CREA_RESU(
                 TYPE_RESU="EVOL_CHAR",
@@ -143,7 +135,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             )
 
             displ = self.result.getField("DEPL", self.result.getLastIndex())
-            mc_displ = self._medcpl.export_displacement(displ, "DEPL")
+            mc_displ = self._medcpl.export_displacement(displ)
 
             return True, {"Displ": mc_displ}
 

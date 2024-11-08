@@ -215,12 +215,7 @@ def coupled_fluid(cpl, UNITE_MA):
                 # MEDC field => .med => code_aster field
                 depl = self._medcpl.import_displacement(mc_depl)
 
-            CHINST = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="NOEU_INST_R",
-                MAILLAGE=MAFLUIDE,
-                AFFE=_F(TOUT="OUI", NOM_CMP=("INST",), VALE=current_time),
-            )
+            CHINST = CA.FieldOnNodesReal(MAFLUIDE, "INST_R", {"INST": current_time})
 
             CHXN = CREA_CHAMP(
                 OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAFLUIDE
@@ -242,21 +237,9 @@ def coupled_fluid(cpl, UNITE_MA):
                 OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=PRES_F, CHAM_PARA=(CHXN, CHINST)
             )
 
-            force = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="NOEU_FORC_R",
-                MAILLAGE=MAFLUIDE,
-                ASSE=_F(
-                    TOUT="OUI",
-                    CHAM_GD=CHNEUT,
-                    NOM_CMP=("X1", "X2", "X3"),
-                    NOM_CMP_RESU=("FX", "FY", "FZ"),
-                ),
-            )
+            force = CHNEUT.asPhysicalQuantity("FORC_R", {"X1": "FX", "X2": "FY", "X3": "FZ"})
 
-            force_elem = CREA_CHAMP(
-                OPERATION="DISC", TYPE_CHAM="ELEM_FORC_R", MODELE=MOFLUIDE, CHAM_GD=force
-            )
+            force_elem = force.toFieldOnCells(MOFLUIDE.getFiniteElementDescriptor(), "ELEM")
 
             if i_iter == 0:
                 self.result.append(force_elem)
@@ -265,7 +248,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             # export
 
-            mc_pres = self._medcpl.export_field(force_elem, "Force")
+            mc_pres = self._medcpl.export_field(force_elem)
 
             # test convergence:
             has_cvg = False

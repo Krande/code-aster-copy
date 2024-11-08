@@ -380,13 +380,13 @@ class MEDCoupler:
             fed = model.getFiniteElementDescriptor().restrict(self.mesh_interf.getGroupsOfCells())
             return self.extent_field(field).toFieldOnCells(fed)
 
-    def export_field(self, field, field_name, cmps=[]):
+    def export_field(self, field, field_name=None, cmps=[]):
         """Convert a code_aster field defined on the whole mesh to
             a MEDCoupling field defined on the interface.
 
         Arguments:
             field *FieldOnNodesReal*: code_aster field defined on the whole mesh.
-            field_name (str): name of the field (like `DEPL`)
+            field_name (str): name of the field (like `DEPL`) (default: field's name)
             cmps (list[str]): list of components. (default: all)
 
         Returns:
@@ -400,7 +400,8 @@ class MEDCoupler:
 
         field_interf = self.restrict_field(field, cmps)
         pfield = field_interf.toMEDCouplingField(self.mc_interf)
-        pfield.setName(field_name)
+        if field_name:
+            pfield.setName(field_name)
 
         return pfield
 
@@ -419,12 +420,12 @@ class MEDCoupler:
 
         return self.import_field(mc_displ)
 
-    def export_displacement(self, displ, field_name):
+    def export_displacement(self, displ, field_name=None):
         """Create a MEDCoupling field of displacement reduced on the interface mesh.
 
         Arguments:
             displ (FieldOnNodesReal): code_aster displacement field.
-            field_name (str): Field name.
+            field_name (str): Field name. (default: field's name)
 
         Returns:
             *MEDCouplingFieldDouble*: Displacement field.
@@ -432,12 +433,12 @@ class MEDCoupler:
 
         return self.export_field(displ, field_name, ["DX", "DY", "DZ"])
 
-    def export_temperature(self, temp, field_name):
+    def export_temperature(self, temp, field_name=None):
         """Create a MEDCoupling field of temperature reduced on the interface mesh.
 
         Arguments:
             temp (FieldOnNodesReal): code_aster thermal field.
-            field_name (str): Field name.
+            field_name (str): Field name. (default: field's name)
 
         Returns:
             *MEDCouplingFieldDouble*: Thermal field on cells.
@@ -459,12 +460,12 @@ class MEDCoupler:
 
         return self.import_field(mc_temp)
 
-    def export_pressure(self, pres, field_name):
+    def export_pressure(self, pres, field_name=None):
         """Create a MEDCoupling field of pressure reduced on the interface mesh.
 
         Arguments:
             press (*FieldOnNodesReal*): code_aster pressure field.
-            field_name (str): Field name.
+            field_name (str): Field name. (default: field's name)
 
         Returns:
             *MEDCouplingFieldDouble*: Pressure field on cells.
@@ -506,5 +507,6 @@ class MEDCoupler:
         evol_char.setModel(model, 0)
         evol_char.setTime(time, 0)
         evol_char.setField(forc_elem, "FSUR_3D", 0)
+        evol_char.build()
 
         return evol_char

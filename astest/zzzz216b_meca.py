@@ -136,7 +136,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             )
 
             displ = self.result.getField("DEPL", self.result.getLastIndex())
-            mc_displ = self._medcpl.export_displacement(displ, "Displ")
+            mc_displ = self._medcpl.export_displacement(displ)
 
             return True, {"DEPL": mc_displ}
 

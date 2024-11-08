@@ -110,12 +110,7 @@ def coupled_fluid(cpl):
                 # MEDC field => .med => code_aster field
                 depl = self._medcpl.import_displacement(mc_depl)
 
-            CHINST = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="NOEU_INST_R",
-                MAILLAGE=MAFLUIDE,
-                AFFE=_F(TOUT="OUI", NOM_CMP=("INST",), VALE=current_time),
-            )
+            CHINST = CA.FieldOnNodesReal(MAFLUIDE, "INST_R", {"INST": current_time})
 
             CHXN = CREA_CHAMP(
                 OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAFLUIDE
@@ -125,12 +120,7 @@ def coupled_fluid(cpl):
                 OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=PRES_F, CHAM_PARA=(CHXN, CHINST)
             )
 
-            pres = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="NOEU_PRES_R",
-                MAILLAGE=MAFLUIDE,
-                ASSE=_F(TOUT="OUI", CHAM_GD=CHNEUT, NOM_CMP=("X1",), NOM_CMP_RESU=("PRES",)),
-            )
+            pres = CHNEUT.asPhysicalQuantity("PRES_R", {"X1": "PRES"})
 
             self.result.append(pres)
 
