@@ -173,11 +173,6 @@ def coupled_fluid(cpl, UNITE_MA):
 
     cpl.setup(
         interface=(MAFLUIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[
-            ("mesh_displacement", ["DX", "DY", "DZ"], "NODES"),
-            ("mesh_velocity", ["DX", "DY", "DZ"], "NODES"),
-        ],
-        output_fields=[("fluid_forces", ["FX", "FY", "FZ"], "CELLS")],
         init_time=0.0,
         final_time=1.0,
         nb_step=10,

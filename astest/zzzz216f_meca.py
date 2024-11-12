@@ -137,7 +137,11 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             displ = self.result.getField("DEPL", self.result.getLastIndex())
             mc_displ = self._medcpl.export_displacement(displ)
 
-            return True, {"mesh_displacement": mc_displ}
+            velo = displ.copy()
+            # velo.setValues(0.0)
+            mc_velo = self._medcpl.export_displacement(velo)
+
+            return {"mesh_displacement": mc_displ, "mesh_velocity": mc_velo}
 
     ################################################################################
     # loop on time steps
@@ -145,11 +149,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
     mech_solv = MechanicalSolver(cpl)
 
-    cpl.setup(
-        interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("fluid_forces", ["FX", "FY", "FZ"], "CELLS")],
-        output_fields=[("mesh_displacement", ["DX", "DY", "DZ"], "NODES")],
-    )
+    cpl.setup(interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]))
 
     cpl.run(mech_solv)
 

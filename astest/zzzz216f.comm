@@ -26,7 +26,8 @@ from mpi4py import MPI
 from code_aster.Coupling import SaturneCoupling
 
 from zzzz216f_meca import coupled_mechanics
-from zzzz216f_flui import coupled_fluid, FakeSaturne
+from zzzz216f_flui import coupled_fluid
+from zzzz216f_sat import FakeSaturne
 
 
 # Tis test is normally run with:
@@ -43,7 +44,6 @@ global_size = comm.size
 ################################################################################
 # definition of the coupled cpl
 ################################################################################
-
 
 if global_rank < global_size / 2:
     # define thermal coupling

@@ -17,110 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import medcoupling as MEDC
-
-
 from code_aster.Commands import *
 from code_aster import CA
 
 from code_aster.Coupling import ExternalCoupling
-
-
-class FakeSaturne(ExternalCoupling):
-    """Fake saturne Solver.
-
-    It allows to test SaturneCoupling without code_saturne installation.
-
-    Arguments:
-        debug (bool): Enable debugging mode (default: "False")".
-    """
-
-    def __init__(self, debug=False):
-        super().__init__("code_saturne", True, debug)
-
-    def set_parameters(self, params):
-        """Set parameters.
-
-        Arguments:
-            params (dict): Parameters of the coupling scheme.
-        """
-
-        self._params.set_values(params)
-
-        nb_step = (self._params.final_time - self._params.init_time) / self._params.delta_t
-        self.MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self.MPI.INT)
-
-        self.MPI.COUPLING_COMM_WORLD.send(0, "NBSSIT", self._params.nb_iter, self.MPI.INT)
-        self.MPI.COUPLING_COMM_WORLD.send(0, "EPSILO", self._params.epsilon, self.MPI.DOUBLE)
-
-        self.MPI.COUPLING_COMM_WORLD.send(0, "TTINIT", self._params.init_time, self.MPI.DOUBLE)
-        self.MPI.COUPLING_COMM_WORLD.send(0, "PDTREF", self._params.delta_t, self.MPI.DOUBLE)
-
-    def run(self, solver):
-        """Execute the coupling loop.
-
-        Arguments:
-            solver (object): Solver contains at least a method run_iteration.
-        """
-
-        # initial sync before the loop
-        exit_coupling = self.sync()
-
-        stepper = self._params.stepper
-        first_start = self._starter
-        completed = False
-        input_data = None
-        istep = 0
-
-        while not stepper.isFinished():
-            istep += 1
-            current_time = stepper.getCurrent()
-            delta_time = stepper.getIncrement()
-
-            _ = self.MPI.COUPLING_COMM_WORLD.recv(istep, "DTAST", self.MPI.DOUBLE)
-            self.MPI.COUPLING_COMM_WORLD.send(istep, "DTCALC", delta_time, self.MPI.DOUBLE)
-
-            print("coupling step #{0:d}, time: {1:f}".format(istep, current_time))
-
-            for i_iter in range(self._params.nb_iter):
-
-                print("coupling iteration #{0:d}, time: {1:f}".format(i_iter, current_time))
-
-                if first_start:
-                    first_start = False
-                    input_data = {}
-                    for name, _, _ in self._fields_in:
-                        input_data[name] = None
-                elif i_iter > 0:
-                    input_data = self.recv_input_fields()
-
-                has_cvg, output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data
-                )
-
-                # send cvg
-                self.MPI.COUPLING_COMM_WORLD.send(istep, "ICVAST", int(has_cvg), self.MPI.INT)
-
-                # send results to code_aster
-                self.send_output_fields(output_data)
-
-                if has_cvg:
-                    break
-
-            stepper.completed()
-            input_data = self.recv_input_fields()
-            print(
-                f"end of time step {current_time} with status: {stepper.isFinished()}", flush=True
-            )
-            exit_coupling = self.sync(end_coupling=stepper.isFinished())
-
-            print("end of time step with status: {}".format(exit_coupling))
-
-        print(
-            "coupling {0} with exit status: {1}".format(
-                "completed" if completed else "interrupted", exit_coupling
-            )
-        )
 
 
 def coupled_fluid(cpl, UNITE_MA):
@@ -207,7 +107,7 @@ def coupled_fluid(cpl, UNITE_MA):
                 dict[*MEDCouplingField*]: Output fields, on nodes.
             """
 
-            assert len(data) == 1, "expecting one field"
+            assert len(data) == 2, "expecting one field"
 
             mc_depl = data["mesh_displacement"]
             depl = None
@@ -271,8 +171,6 @@ def coupled_fluid(cpl, UNITE_MA):
 
     cpl.setup(
         interface=(MAFLUIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("mesh_displacement", ["DX", "DY", "DZ"], "NODES")],
-        output_fields=[("fluid_forces", ["FX", "FY", "FZ"], "CELLS")],
         init_time=0.0,
         final_time=1.0,
         nb_step=5,

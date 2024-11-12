@@ -81,7 +81,7 @@ class ExternalCoupling:
             prargs = kwargs.copy()
             prargs.pop("verbosity", None)
             prargs["flush"] = True
-            logger.debug(*args)
+            logger.info(*args)
         return func(*args, **kwargs)
 
     def _init_paramedmem(self, with_app, interface):
@@ -339,6 +339,30 @@ class SaturneCoupling(ExternalCoupling):
     def __init__(self, app="code_aster", debug=False):
         super().__init__(app, False, debug)
 
+    def setup(self, interface, **params):
+        """Initialize the coupling.
+
+        The input filed is the fluid forces and the output fields ate the mesh_displacement
+        and the mesh_velocity of the interface.
+
+        These names are impodes by code_saturne.
+
+        Arguments:
+            interface (tuple(Mesh, list[str])): whole mesh and groups of the interface.
+            params (dict): Parameters of the coupling scheme.
+        """
+
+        if interface[0].getDimension() != 3:
+            raise RuntimeError("The mesh has to be 3D.")
+
+        self._fields_in = [("fluid_forces", ["FX", "FY", "FZ"], "CELLS")]
+        self._fields_out = [
+            ("mesh_displacement", ["DX", "DY", "DZ"], "NODES"),
+            ("mesh_velocity", ["DX", "DY", "DZ"], "NODES"),
+        ]
+        self.set_parameters(params)
+        self._init_paramedmem(self._other_app, interface)
+
     def set_parameters(self, params):
         """Set parameters. Received values from code_saturne.
 
@@ -387,9 +411,9 @@ class SaturneCoupling(ExternalCoupling):
                 # recv data from code_saturne
                 input_data = self.recv_input_fields()
 
-                has_cvg, output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data
-                )
+                output_data = solver.run_iteration(i_iter, current_time, delta_time, input_data)
+
+                assert "mesh_displacement" in output_data and "mesh_velocity" in output_data
 
                 # received cvg
                 converged = bool(self.MPI.COUPLING_COMM_WORLD.recv(istep, "ICVAST", self.MPI.INT))

@@ -152,7 +152,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
             print("[Norm] ", displ.norm("NORM_2"), flush=True)
 
-            return True, {"mesh_displacement": mc_displ, "mesh_velocity": mc_velo}
+            return {"mesh_displacement": mc_displ, "mesh_velocity": mc_velo}
 
     ################################################################################
     # loop on time steps
@@ -160,14 +160,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
     mech_solv = MechanicalSolver(cpl)
 
-    cpl.setup(
-        interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("fluid_forces", ["FX", "FY", "FZ"], "CELLS")],
-        output_fields=[
-            ("mesh_displacement", ["DX", "DY", "DZ"], "NODES"),
-            ("mesh_velocity", ["DX", "DY", "DZ"], "NODES"),
-        ],
-    )
+    cpl.setup(interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]))
 
     cpl.run(mech_solv)
 
