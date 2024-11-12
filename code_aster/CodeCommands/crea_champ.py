@@ -51,6 +51,8 @@ class FieldCreator(ExecuteCommand):
         numeDdl = keywords.get("NUME_DDL")
         chamgd = keywords.get("CHAM_GD")
         fiss = keywords.get("FISSURE")
+        chamF = keywords.get("CHAM_F")
+
         if mesh is None:
             if model is not None:
                 mesh = model.getMesh()
@@ -64,6 +66,10 @@ class FieldCreator(ExecuteCommand):
                 mesh = chamgd.getMesh()
             elif fiss is not None:
                 mesh = fiss.getMesh()
+            elif numeDdl is not None:
+                mesh = numeDdl.getMesh()
+            elif chamF is not None:
+                mesh = chamF.getMesh()
 
         if mesh is None:
             for comb in force_list(keywords.get("COMB", [])):
@@ -93,24 +99,6 @@ class FieldCreator(ExecuteCommand):
         caraElem = keywords.get("CARA_ELEM")
         numeDdl = keywords.get("NUME_DDL")
         chamF = keywords.get("CHAM_F")
-
-        if mesh is None:
-            if model is None:
-                if resultat is None:
-                    if caraElem is None:
-                        if numeDdl is None:
-                            if chamF is None:
-                                assert False
-                            else:
-                                mesh = chamF.getMesh()
-                        else:
-                            mesh = numeDdl.getMesh()
-                    else:
-                        mesh = caraElem.getModel().getMesh()
-                else:
-                    mesh = resultat.getModel().getMesh()
-            else:
-                mesh = model.getMesh()
 
         if mesh.isParallel() and location == "NOEUD" and numeDdl is None:
             raise NameError("NUME_DDL is mandatory with ParallelMesh")
