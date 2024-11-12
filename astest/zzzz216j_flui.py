@@ -20,8 +20,7 @@
 from code_aster.Commands import *
 from code_aster import CA
 
-
-from zzzz216f_flui import FakeSaturne
+from zzzz216f_sat import FakeSaturne
 
 
 def coupled_fluid(cpl, UNITE_MA):
@@ -110,7 +109,8 @@ def coupled_fluid(cpl, UNITE_MA):
 
             assert len(data) == 2, "expecting one field"
 
-            mc_depl = data["mesh_displacement"]
+            # FIXME: mesh_displacement
+            mc_depl = data["mesh_velocity"]
             depl = None
             if mc_depl:
                 # MEDC field => .med => code_aster field
@@ -155,8 +155,6 @@ def coupled_fluid(cpl, UNITE_MA):
             has_cvg = False
             if i_iter > 0 and self.depl_prev:
                 depl_incr = depl - self.depl_prev
-                print("[Norm] ", depl.norm("NORM_2"), flush=True)
-
                 resi_rela = depl_incr.norm("NORM_INFINITY") / depl.norm("NORM_INFINITY")
                 has_cvg = resi_rela < self.epsilon
                 print(f"RESI_CPL: #iter {i_iter}, #resi: {resi_rela}")

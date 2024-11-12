@@ -123,7 +123,7 @@ class MEDCoupler:
     dec = log = None
     mesh_interf = mc_interf = mesh = None
     exch_fields = None
-    debug = True
+    debug = False
 
     __setattr__ = no_new_attributes(object.__setattr__)
 

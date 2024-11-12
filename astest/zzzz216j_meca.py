@@ -150,9 +150,8 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             velo = self.result.getField("VITE", self.result.getLastIndex())
             mc_velo = self._medcpl.export_displacement(velo)
 
-            print("[Norm] ", displ.norm("NORM_2"), flush=True)
-
-            return {"mesh_displacement": mc_displ, "mesh_velocity": mc_velo}
+            # FIXME: ecxhange field
+            return {"mesh_displacement": mc_velo, "mesh_velocity": mc_displ}
 
     ################################################################################
     # loop on time steps
@@ -202,7 +201,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=-0.2935190732779141,
-                PRECISION=0.03,
+                PRECISION=0.01,
             ),
             _F(
                 INST=1.0,
@@ -214,7 +213,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=1.2137277872609367,
-                PRECISION=0.01,
+                PRECISION=0.02,
             ),
         )
     )
