@@ -126,7 +126,7 @@ bool ContactNew::build() {
 #ifdef ASTER_HAVE_MPI
             if ( mesh->isParallel() ) {
                 ASTERINTEGER nb_doublNodes_lc = nb_doublNodes;
-                nb_doublNodes = AsterMPI::min( nb_doublNodes_lc );
+                nb_doublNodes = AsterMPI::max( nb_doublNodes_lc );
             }
 #endif
             if ( nb_doublNodes > 0 ) {

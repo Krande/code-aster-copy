@@ -54,6 +54,7 @@ module Behaviour_type
 ! ----- Type of strain decomposition
         aster_logical :: lStrainMeca = ASTER_FALSE
         aster_logical :: lStrainAll = ASTER_FALSE
+        aster_logical :: lStrainOld = ASTER_FALSE
 ! ----- Viscuous model
         aster_logical :: lReguVisc = ASTER_FALSE
 ! ----- Flags for finite transformation
@@ -166,6 +167,9 @@ module Behaviour_type
     type BehaviourESVA
 ! ----- Flag when GEOM external state variable is present
         aster_logical :: lGeomInESVA = ASTER_FALSE
+
+! ----- Flag when inelastic strains are present
+        aster_logical :: lhasInelasticStrains = ASTER_FALSE
 
 ! ----- Integer coded for presence of external state variables
         integer :: tabcod(60) = 0

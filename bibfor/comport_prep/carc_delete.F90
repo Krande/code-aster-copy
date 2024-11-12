@@ -17,72 +17,47 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdocr(model, carcri, base)
+subroutine carc_delete(prepMapCarcri)
 !
     use BehaviourPrepare_type
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/carc_chck.h"
-#include "asterfort/carc_delete.h"
-#include "asterfort/carc_info.h"
-#include "asterfort/carc_init.h"
-#include "asterfort/carc_read.h"
-#include "asterfort/carc_save.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infniv.h"
-#include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
 !
-    character(len=8), intent(in)  :: model
-    character(len=24), intent(in) :: carcri
-    character(len=1), intent(in) :: base
+    type(BehaviourPrep_MapCarcri), intent(inout) :: prepMapCarcri
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of behaviours (mechanics)
+! Parameters for integration of constitutive laws (mechanics)
 !
-! Get parameters from COMPORTEMENT keyword and prepare CARCRI <CARTE>
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  model            : model
-! In  carcri           : map for parameters for integration of constitutive law
-! In  base             : Jeveux base
+! Delete objects
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    character(len=8) :: mesh
-    type(BehaviourPrep_MapCarcri) :: prepMapCarcri
+! IO  prepMapCarcri    : datastructure to construct CARCRI map
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'MECANONLINE12_5')
+    integer :: nbFactorKeyword, nbInfo, iInfo
+!
+! --------------------------------------------------------------------------------------------------
+!
+    nbFactorKeyword = prepMapCarcri%nb_comp
+    if (nbFactorKeyword .eq. 0) then
+        nbInfo = 1
+    else
+        nbInfo = nbFactorKeyword
     end if
-
-! - Initialisations
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-
-! - Create objects
-    call carc_info(prepMapCarcri)
-
-! - Create CARCRI <CARTE>
-    call carc_init(mesh, carcri, base)
-
-! - Read informations from command file
-    call carc_read(prepMapCarcri, model)
-
-! - Check informations in CARCRI <CARTE>
-    call carc_chck(prepMapCarcri)
-
-! - Save and check informations in CARCRI <CARTE>
-    call carc_save(mesh, carcri, prepMapCarcri)
-
-! - Cleaning
-    call carc_delete(prepMapCarcri)
-
+    do iInfo = 1, nbInfo
+        if (associated(prepMapCarcri%prepCrit(iInfo)%resi_inte)) then
+            deallocate (prepMapCarcri%prepCrit(iInfo)%resi_inte)
+        end if
+        if (associated(prepMapCarcri%prepCrit(iInfo)%iter_inte_maxi)) then
+            deallocate (prepMapCarcri%prepCrit(iInfo)%iter_inte_maxi)
+        end if
+    end do
+    deallocate (prepMapCarcri%prepCrit)
 !
 end subroutine

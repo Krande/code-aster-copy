@@ -74,7 +74,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     character(len=24) :: modelLigrel
     mpi_int :: nbCPU, mpiCurr
     aster_logical :: lElasByDefault, lNeedDeborst, lMfront, lDistParallel
-    aster_logical :: lIncoUpo, lExistVarc, exis_temp, exis_sech
+    aster_logical :: lIncoUpo, lExistVarc, exis_temp, exis_sech, lTotalStrain
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,6 +112,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
                   prepMapCompor%prepExte(iFactorKeyword)%l_mfront_proto
         exteDefo = prepMapCompor%prepExte(iFactorKeyword)%strain_model
         postIncr = prepMapCompor%prepPara(iFactorKeyword)%post_incr
+        lTotalStrain = prepMapCompor%prepPara(iFactorKeyword)%lTotalStrain
 
 ! ----- Coding comportment (Python)
         call lccree(1, relaComp, relaCompPY)
@@ -133,7 +134,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
         call compMecaChckStrain(iFactorKeyword, &
                                 model, fullElemField, &
                                 lAllCellAffe, cellAffe, nbCellAffe, &
-                                lMfront, exteDefo, &
+                                lTotalStrain, lMfront, exteDefo, &
                                 defoComp, defoCompPY, &
                                 relaComp, relaCompPY)
 
@@ -202,9 +203,6 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     end if
     if (lElasByDefault) then
         call utmess('I', 'COMPOR5_21')
-    end if
-    if (lExistVarc .and. prepMapCompor%lTotalStrain) then
-        call utmess('A', 'COMPOR4_17')
     end if
     if (prepMapCompor%nb_comp .eq. 0) then
         call utmess('I', 'COMPOR4_64')

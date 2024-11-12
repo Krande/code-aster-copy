@@ -24,12 +24,13 @@ subroutine pmdocr(carcri)
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/carc_info.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/carc_chck.h"
+#include "asterfort/carc_delete.h"
+#include "asterfort/carc_info.h"
 #include "asterfort/carc_read.h"
-#include "asterfort/Behaviour_type.h"
 #include "asterfort/setBehaviourParaValue.h"
-#include "asterfort/Behaviour_type.h"
 !
     real(kind=8), intent(out) :: carcri(CARCRI_SIZE)
 !
@@ -65,7 +66,7 @@ subroutine pmdocr(carcri)
                                prepMapCarcri%parm_theta_thm, prepMapCarcri%parm_alpha_thm, &
                                carcriList_=carcri(1:CARCRI_SIZE))
 
-! - Clean
-    deallocate (prepMapCarcri%prepCrit)
+! - Cleaning
+    call carc_delete(prepMapCarcri)
 !
 end subroutine
