@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
     real(kind=8) :: epc0, epc00, epleqc, epleqc0, epleqc00, vrgi
     real(kind=8) :: epleqc01, epser, epsklim1, epsklim2, epsm00, inputVR6(6, 16)
     real(kind=8) :: ept, ept00, ept1, epsklim, hyd00, inputR(25)
-    real(kind=8) :: pg0, rc00, rc1, reduc1, ref00, ref1, rt00, rt1, outputR(6)
+    real(kind=8) :: pg0, rc00, rc1, reduc1, ref00, ref1, rt00, rt1, outputR(12)
     real(kind=8) :: tauk00, tauk1, taum00, teta, treps, trepspg, gfr, epeqpc, errgf
     real(kind=8) :: vrgi00, vrgi1, vrgi2, vw, vw1, vw2, we0s
     real(kind=8) :: xflu, young00, xnsat, xnsat00, outputVR6(6, 11)

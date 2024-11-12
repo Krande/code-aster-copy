@@ -150,7 +150,7 @@ subroutine assthm(ds_thm, option, j_mater, &
     integer :: i, j, n, k, kji
     integer :: nb_vari_meca
     real(kind=8) :: a(2), as(2), ak(2), poids, poids2
-    real(kind=8) :: c(21), ck(21), cs(21)
+    real(kind=8) :: c(dimdef), ck(dimdef), cs(dimdef)
     integer :: addeme, addep1, addep2, addete, adde2nd, ii, jj
     real(kind=8) :: defgep(dimdef), defgem(dimdef)
     real(kind=8) :: dfdi(nno, 3), dfdi2(nnos, 3), b(dimdef, dimuel)
