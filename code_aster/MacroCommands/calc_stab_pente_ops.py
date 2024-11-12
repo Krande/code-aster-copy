@@ -1815,7 +1815,10 @@ class Surf_Circ_Solver(LEM_Solver):
             delta = 0.0
         else:
             if delta < 0.0:
-                raise Exception("Echec solve circle")
+                if R is None:
+                    raise Exception("Echec solve circle")
+                dist = np.linalg.norm([x_e - x_s, y1 - y2]) / 2
+                UTMESS("F", "CALCSTABPENTE_32", valr=[R, dist, x_e, x_s])
 
         sgn = 1.0 if R is not None else -1.0
         y0 = (-B + sgn * np.sqrt(delta)) / 2 / A
@@ -2118,7 +2121,7 @@ class Surf_Circ_Solver(LEM_Solver):
                     R = self.radius_tripnt(
                         [x_e, pnt[0], x_s], [y_e, pnt[1] - self.min_cell_size, y_s]
                     )
-                    if R > R_m:
+                    if R_m < 0.0 or R < R_m:
                         R_m = R
 
             if R_m < 0.0:
@@ -3058,7 +3061,7 @@ class Efwa_Optimizer:
         if (is_up and passif) or (not is_up and not passif):
             flipped = False
             return (l_vari, ivar, flipped)
-        return (np.flip(l_vari), self.nb_vari - 1 - ivar, flipped)
+        return (np.flip(l_vari, 0), self.nb_vari - 1 - ivar, flipped)
 
     def proc_point_interm(self, vari_etat, ivar=1, is_flip=None, check=False, recur=True):
         """Generate or verify a set of state variables

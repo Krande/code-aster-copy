@@ -175,4 +175,15 @@ Impossible d'initialiser l'algorithme EFWA suite à l'échec de générer les su
 Veuillez vérifier et ajuster le maillage et les paramètres EFWA. 
 """
     ),
+    32: _(
+        """
+Échec de résoudre l'équations des cercles. 
+Cela est probablement à cause du rayon trop faible (%(r1)f) et inférieure à 1/2 du segment X1-X2 (%(r2)f)
+pour les abscisses X1 = %(r3)f, X2 = %(r4)f.
+
+On propose les solutions suivantes :
+-   Raffinement du maillage autour de la pente. 
+-   Ajuster NB_POINT_1 et NB_POINT_2 afin d'éviter que les points d'extrémité soient trop proches des points aigus convexes sur la pente.   
+"""
+    ),
 }
