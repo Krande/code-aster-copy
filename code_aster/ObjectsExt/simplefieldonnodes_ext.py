@@ -218,6 +218,7 @@ class ExtendedSimpleFieldOnNodesReal:
 
         if len(cmps) == 0:
             cmps = self.getComponents()
+        cmps = list(set(cmps) & set(self.getComponents()))
 
         sfield = SimpleFieldOnNodesReal(mesh, self.getPhysicalQuantity(), cmps)
 

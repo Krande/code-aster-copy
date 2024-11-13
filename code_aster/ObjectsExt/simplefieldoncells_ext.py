@@ -102,6 +102,7 @@ class ExtendedSimpleFieldOnCellsReal:
 
         if len(cmps) == 0:
             cmps = self.getComponents()
+        cmps = list(set(cmps) & set(self.getComponents()))
 
         sfield = SimpleFieldOnCellsReal(
             mesh, self.getLocalization(), self.getPhysicalQuantity(), cmps
