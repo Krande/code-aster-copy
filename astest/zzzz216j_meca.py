@@ -148,10 +148,9 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             mc_displ = self._medcpl.export_displacement(displ)
 
             velo = self.result.getField("VITE", self.result.getLastIndex())
-            mc_velo = self._medcpl.export_displacement(velo)
+            mc_velo = self._medcpl.export_velocity(velo)
 
-            # FIXME: ecxhange field
-            return {"mesh_displacement": mc_velo, "mesh_velocity": mc_displ}
+            return {"mesh_displacement": mc_displ, "mesh_velocity": mc_velo}
 
     ################################################################################
     # loop on time steps

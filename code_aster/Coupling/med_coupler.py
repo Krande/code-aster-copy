@@ -394,6 +394,31 @@ class MEDCoupler:
 
         return self.export_field(displ, field_name, ["DX", "DY", "DZ"])
 
+    def import_velocity(self, mc_velo):
+        """Convert a MEDCoupling velocity field defined on the interface as
+        a code_aster field.
+
+        Arguments:
+            mc_velo (*MEDCouplingField*): MEDCoupling velocity field.
+
+        Returns:
+            FieldOnNodesReal: code_aster velocity field.
+        """
+        return self.import_displacement(mc_velo)
+
+    def export_velocity(self, velo, field_name=None):
+        """Create a MEDCoupling field of velocity reduced on the interface mesh.
+
+        Arguments:
+            velo (FieldOnNodesReal): code_aster velocity field.
+            field_name (str): Field name. (default: field's name)
+
+        Returns:
+            *MEDCouplingFieldDouble*: Velocity field.
+        """
+
+        return self.export_displacement(velo, field_name)
+
     def export_temperature(self, temp, field_name=None):
         """Create a MEDCoupling field of temperature reduced on the interface mesh.
 

@@ -109,8 +109,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             assert len(data) == 2, "expecting one field"
 
-            # FIXME: mesh_displacement
-            mc_depl = data["mesh_velocity"]
+            mc_depl = data["mesh_displacement"]
             depl = None
             if mc_depl:
                 # MEDC field => .med => code_aster field

@@ -20,8 +20,6 @@
 from code_aster.Commands import *
 from code_aster import CA
 
-from zzzz216f_sat import FakeSaturne
-
 
 def coupled_fluid(cpl, UNITE_MA):
     """Run Fluid coupling.
@@ -109,8 +107,7 @@ def coupled_fluid(cpl, UNITE_MA):
 
             assert len(data) == 2, "expecting one field"
 
-            # FIXME: mesh_displacement
-            mc_depl = data["mesh_velocity"]
+            mc_depl = data["mesh_displacement"]
             depl = None
             if mc_depl:
                 # MEDC field => .med => code_aster field

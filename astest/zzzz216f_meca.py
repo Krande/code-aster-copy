@@ -138,8 +138,8 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             mc_displ = self._medcpl.export_displacement(displ)
 
             velo = displ.copy()
-            # velo.setValues(0.0)
-            mc_velo = self._medcpl.export_displacement(velo)
+            velo.setValues(0.0)
+            mc_velo = self._medcpl.export_velocity(velo)
 
             return {"mesh_displacement": mc_displ, "mesh_velocity": mc_velo}
 
