@@ -160,6 +160,7 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
 !
 ! - Get pressure (CHAR_MECA_PRES_R)
 !
+    option = ' '
     call rsinch(evol_char, 'PRES', 'INST', inst_curr, load_name_evol, &
                 'EXCLU', 'EXCLU', 0, 'V', prec, crit, ier)
     if (ier .le. 2) then
