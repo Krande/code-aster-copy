@@ -109,7 +109,6 @@ subroutine thmFlh009(ds_thm, lMatr, lSigm, ndim, j_mater, &
     real(kind=8) :: dp21p1, dp21p2, dp21t
     real(kind=8) :: dp22p1, dp22p2, dp22t
     real(kind=8) :: dp12p1, dp12p2, dp12t
-    real(kind=8) :: dcvp1, dcvp2, dcvt
     real(kind=8) :: dr11p1, dr11p2, dr11t
     real(kind=8) :: dr12p1, dr12p2, dr12t
     real(kind=8) :: dr22p1, dr22p2, dr22t
@@ -140,9 +139,6 @@ subroutine thmFlh009(ds_thm, lMatr, lSigm, ndim, j_mater, &
     gpa = 0.d0
     gr12 = 0.d0
     gr21 = 0.d0
-    dcvp1 = 0.d0
-    dcvp2 = 0.d0
-    dcvt = 0.d0
     dr11p1 = 0.d0
     dr11p2 = 0.d0
     dr11t = 0.d0
@@ -302,13 +298,6 @@ subroutine thmFlh009(ds_thm, lMatr, lSigm, ndim, j_mater, &
             gca(i) = gca(i)-mamola*pad/rgaz/t/t*grat(i)
         end if
     end do
-    if (lMatr) then
-        dcvp1 = dp12p1/p2
-        dcvp2 = dp12p2/p2-pvp/p2/p2
-        if (ds_thm%ds_elem%l_dof_ther) then
-            dcvt = dp12t/p2
-        end if
-    end if
 !
 ! - Volumic mass - Derivative
 !
@@ -366,7 +355,7 @@ subroutine thmFlh009(ds_thm, lMatr, lSigm, ndim, j_mater, &
             if (ds_thm%ds_elem%l_dof_ther) then
                 dgrvp1(i) = dgrvp1(i)-grat(i)/t*dr12p1
                 dgrvp2(i) = dgrvp2(i)-grat(i)/t*dr12p2
-                dgrvt(i) = masvrt*dgpvt(i)-masvrt/t*gpv(i)-grat(i)/t*dr12t
+                dgrvt(i) = masvrt*dgpvt(i)-masvrt/t*gpv(i)-grat(i)/t*dr12t+grat(i)/t/t*rho12
                 dgrvgt = masvrt*dgpgt(1)-rho12/t
 !
                 dgrasp1(i) = dgrasp1(i)+grat(i)/t/t*dr21p1
