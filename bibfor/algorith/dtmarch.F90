@@ -105,6 +105,7 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
         end if
     else
         call dtmget(sd_dtm, _CALC_SD, kscal=nomres, buffer=buffdtm)
+        call jelira(nomres(1:8)//'           .ORDR', 'LONMAX', nbsauv)
         call dtmget(sd_dtm, _ARCH_NB, iscal=nbsauv, buffer=buffdtm)
         if (isto(1) .ge. (nbsauv)) then
             ASSERT(.false.)
