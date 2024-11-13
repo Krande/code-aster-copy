@@ -1,4 +1,6 @@
 variables:
+  MINIO_URL: https://minio.retd.edf.fr
+  MINIO_MC: ./mc --insecure
   ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
   PREREQ_VERSION: 20221225
   IMAGE_URL: nexus.retd.edf.fr:5075/codeaster-prerequisites:${PREREQ_VERSION}-debian-10
