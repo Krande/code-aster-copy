@@ -62,7 +62,17 @@ fi
 if [ "${CI_PIPELINE_SOURCE}" = "schedule" ]; then
     cd results
     tar czf mess_files.tar.gz *.${MESS_EXT}
+    tar czf code_files.tar.gz *.code
     rm -f *.${MESS_EXT} *.code
+
+    wget --no-check-certificate -O ./mc ${MINIO_URL}/codeaster/tools/mc
+    chmod 755 ./mc
+    ./mc --insecure alias set minio/ ${MINIO_URL} ${MINIO_LOGIN} ${MINIO_PASSWD}
+    dest=minio/codeaster/devops/ci-debian11/results/${REFREV}/verification
+    ./mc --insecure cp run_testcases.xml ${dest}/
+    ./mc --insecure cp mess_files.tar.gz ${dest}/
+    ./mc --insecure cp code_files.tar.gz ${dest}/
+
     cd ..
 fi
 
