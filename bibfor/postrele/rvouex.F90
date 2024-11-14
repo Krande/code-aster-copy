@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -257,10 +257,12 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac, &
 404                     continue
                     end if
                     igrel = zi(arepe+2*(m-1))
-                    imolo = celd(celd(4+igrel)+2)
-                    if (igrel .ne. 0 .and. imolo .gt. 0) then
-                        entier(libre) = entier(i)
-                        libre = libre+1
+                    if (igrel .gt. 0) then
+                        imolo = celd(celd(4+igrel)+2)
+                        if (imolo .gt. 0) then
+                            entier(libre) = entier(i)
+                            libre = libre+1
+                        end if
                     end if
                 end if
 110             continue
