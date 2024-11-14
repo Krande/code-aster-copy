@@ -244,26 +244,20 @@ class MEDCoupler:
         Arguments:
             fields (dict[*ParaFIELD*]): Fields to send.
         """
-        if not fields:
-            return
-        for sup, dec in self.dec.items():
-            nb_field = 0
-            for field_name, field in fields.items():
-                pfield = self.get_field(field_name)
-                if sup == pfield.sup and dec == pfield.dec:
-                    sup_name = "nodes" if sup == MEDC.ON_NODES else "cells"
-                    self.log(f"sending field {field_name!r} on {sup_name}...")
-                    # update values
-                    pfield.setArray(field.getArray())
-                    if self.debug:
-                        self.log(repr(field), verbosity=2)
-                    dec.attachLocalField(pfield)
-                    nb_field += 1
-            if nb_field:
-                self.log(f"sync...", verbosity=2)
-                dec.synchronize()
-                self.log(f"sendData...")
-                dec.sendData()
+        for field_name, field in fields.items():
+            pfield = self.get_field(field_name)
+            dec = pfield.dec
+            sup_name = "nodes" if pfield.sup == MEDC.ON_NODES else "cells"
+            self.log(f"sending field {field_name!r} on {sup_name}...")
+            # update values
+            pfield.setArray(field.getArray())
+            if self.debug:
+                self.log(repr(field), verbosity=2)
+            dec.attachLocalField(pfield)
+            self.log(f"sync...", verbosity=2)
+            dec.synchronize()
+            self.log(f"sendData...")
+            dec.sendData()
         self.log("pmm_send: done", verbosity=2)
 
     def recv(self, fields_names):
@@ -276,30 +270,22 @@ class MEDCoupler:
             dict[*ParaFIELD*]: Received fields.
         """
         fields = {}
-        if not fields_names:
-            return fields
-        for sup, dec in self.dec.items():
-            nb_field = 0
-            for field_name in fields_names:
-                pfield = self.get_field(field_name)
-                if sup == pfield.sup and dec == pfield.dec:
-                    sup_name = "nodes" if sup == MEDC.ON_NODES else "cells"
-                    self.log(f"waiting for field {field_name!r} on {sup_name}...")
-                    dec.attachLocalField(pfield)
-                    fields[field_name] = pfield.getField()
-                    nb_field += 1
-            if nb_field > 0:
-                self.log(f"sync...", verbosity=2)
-                dec.synchronize()
-                self.log(f"recvData...", verbosity=2)
-                dec.recvData()
+
+        for field_name in fields_names:
+            pfield = self.get_field(field_name)
+            dec = pfield.dec
+            sup_name = "nodes" if pfield.sup == MEDC.ON_NODES else "cells"
+            self.log(f"waiting for field {field_name!r} on {sup_name}...")
+            dec.attachLocalField(pfield)
+            fields[field_name] = pfield.getField()
+            self.log(f"sync...", verbosity=2)
+            dec.synchronize()
+            self.log(f"recvData...", verbosity=2)
+            dec.recvData()
+            self.log(f"received field {field_name!r} on {sup_name}...")
             if self.debug:
-                for field_name in fields_names:
-                    pfield = self.get_field(field_name)
-                    if sup == pfield.sup and dec == pfield.dec:
-                        sup_name = "nodes" if sup == MEDC.ON_NODES else "cells"
-                        self.log(f"received field {field_name!r} on {sup_name}...")
-                        self.log(repr(pfield.getField()), verbosity=2)
+                self.log(repr(pfield.getField()), verbosity=2)
+
         self.log(f"pmm_recv: done", verbosity=2)
         return fields
 
