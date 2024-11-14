@@ -65,7 +65,7 @@ if [ "${CI_PIPELINE_SOURCE}" = "schedule" ]; then
     tar czf code_files.tar.gz *.code
     rm -f *.${MESS_EXT} *.code
 
-    wget --no-check-certificate -O ./mc ${MINIO_URL}/codeaster/tools/mc
+    wget --no-verbose --no-check-certificate -O ./mc ${MINIO_URL}/codeaster/tools/mc
     chmod 755 ./mc
     ./mc --insecure alias set minio/ ${MINIO_URL} ${MINIO_LOGIN} ${MINIO_PASSWD}
     dest=minio/codeaster/devops/ci-debian11/results/${REFREV}/verification
