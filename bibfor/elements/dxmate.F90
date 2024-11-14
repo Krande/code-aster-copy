@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,6 +83,8 @@ subroutine dxmate(fami, df, dm, dmf, dc, &
     call r8inir(9, zero, dmf, 1)
     call r8inir(6, zero, dmc, 1)
     call r8inir(6, zero, dfc, 1)
+    dc = 0.d0
+    dci = 0.d0
 !
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
