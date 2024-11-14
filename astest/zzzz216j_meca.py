@@ -88,25 +88,22 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             self._medcpl = cpl.medcpl
             self.result = None
 
-        def run_iteration(self, i_iter, current_time, delta_t, data):
+        def run_iteration(self, i_iter, current_time, delta_t, fluid_forces):
             """Execute one iteration.
 
             Arguments:
                 i_iter (int): Iteration number if the current time_step.
                 current_time (float): Current time.
                 delta_t (float): Time step.
-                data (dict[*MEDCouplingField*]): dict of input fields.
+                fluid_forces (MEDCouplingFieldDouble): fluid forces field.
 
             Returns:
                 bool: True if solver has converged at the current time step, else False.
-                dict[*MEDCouplingField*]: Output fields, on nodes.
+                dict[*MEDCouplingFieldDouble*]: Output fields, on nodes with keys "mesh_displacement"
+                and "mesh_velocity".
             """
 
-            assert len(data) == 1, "expecting one field"
-            mc_pres = data["fluid_forces"]
-
-            # MEDC field => .med => code_aster field
-            FORCE = self._medcpl.import_fluidforces(mc_pres, MOSOLIDE, current_time)
+            FORCE = self._medcpl.import_fluidforces(fluid_forces, MOSOLIDE, current_time)
 
             FORC = FORCE.getField("FSUR_3D", current_time, "INST")
 

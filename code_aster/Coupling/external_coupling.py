@@ -410,16 +410,22 @@ class SaturneCoupling(ExternalCoupling):
 
                 # recv data from code_saturne
                 input_data = self.recv_input_fields()
+                assert len(input_data) == 1
 
-                output_data = solver.run_iteration(i_iter, current_time, delta_time, input_data)
-
-                assert "mesh_displacement" in output_data and "mesh_velocity" in output_data
+                output_data = solver.run_iteration(
+                    i_iter, current_time, delta_time, input_data["fluid_forces"]
+                )
 
                 # received cvg
                 converged = bool(self.MPI.COUPLING_COMM_WORLD.recv(istep, "ICVAST", self.MPI.INT))
 
                 # send results to code_saturne
-                self.send_output_fields(output_data)
+                self.send_output_fields(
+                    {
+                        "mesh_displacement": output_data["mesh_displacement"],
+                        "mesh_velocity": output_data["mesh_velocity"],
+                    }
+                )
 
                 if converged:
                     break
