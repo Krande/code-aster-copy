@@ -307,6 +307,8 @@ class ExternalCoupling:
             )
         )
 
+        return exit_coupling
+
     @property
     def mesh_interface(self):
         """Mesh|ParallelMesh: mesh of the interface."""
@@ -368,6 +370,9 @@ class SaturneCoupling(ExternalCoupling):
 
         Arguments:
             params (dict): Parameters of the coupling scheme (not used).
+
+        Returns:
+            (bool): True if the computation is a success else False.
         """
 
         nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
@@ -386,6 +391,9 @@ class SaturneCoupling(ExternalCoupling):
 
         Arguments:
             solver (object): Solver contains at least a method run_iteration.
+
+        Returns:
+            (bool): True if the computation is a success else False.
         """
 
         # initial sync before the loop
@@ -440,3 +448,5 @@ class SaturneCoupling(ExternalCoupling):
                 "completed" if completed else "interrupted", exit_coupling
             )
         )
+
+        return exit_coupling

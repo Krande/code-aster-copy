@@ -157,7 +157,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
     cpl.setup(interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]))
 
-    cpl.run(mech_solv)
+    assert cpl.run(mech_solv)
 
     RESU = mech_solv.result
 
