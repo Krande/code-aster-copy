@@ -190,10 +190,10 @@ class ExternalCoupling:
 
         self.log(
             f"{self._whoami!r} coupler created from #{myranks[0]}, "
-            f"{with_app!r} root proc is #{1}"
+            f"{with_app!r} root proc is #{other_ranks[0]}"
         )
 
-        self._medcpl = MEDCoupler(logfunc=self.log)
+        self._medcpl = MEDCoupler(logfunc=self.log, debug=self._debug)
 
     def setup(self, interface, input_fields, output_fields, **params):
         """Initialize the coupling.

@@ -93,11 +93,11 @@ class MEDCoupler:
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, logfunc=None):
+    def __init__(self, logfunc=None, debug=False):
         self.dec = {MEDC.ON_NODES: None, MEDC.ON_CELLS: None}
         self.mesh_interf = self.mc_interf = self.mesh = None
         self.exch_fields = {}
-
+        self.debug = debug
         self.log = logfunc if logfunc else logger
 
     def init_coupling(self, ranks1, ranks2):
