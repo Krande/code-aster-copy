@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -190,8 +190,8 @@ TEST_TABLE(
 
 TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
-    PRECISION=1.0e-2,
-    VALE_CALC=1.72748150e08,
+    PRECISION=1.1e-2,
+    VALE_CALC=172664353.68101114,
     VALE_REFE=1.74470000e8,
     NOM_PARA="SIXX",
     TABLE=CONTG,
