@@ -66,10 +66,9 @@ contains
 !
         type(HHO_quadrature) :: hhoQuad
         integer :: ipg, idim
-        integer(kind=4) :: info
         real(kind=8) :: coor(3), evalues(3), work(50)
         blas_int :: b_lda, b_lwork, b_n
-        blas_int :: b_incx
+        blas_int :: b_incx, info
 !
         axes = 0.d0
 !
@@ -122,10 +121,9 @@ contains
 !
         type(HHO_quadrature) :: hhoQuad
         integer :: ipg, idim
-        integer(kind=4) :: info
         real(kind=8) :: coor(3), evalues(3), work(50), axes_3d(3, 3)
         blas_int :: b_lda, b_lwork, b_n
-        blas_int :: b_incx
+        blas_int :: b_incx, info
 !
         axes = 0.d0
         axes_3d = 0.d0
@@ -157,9 +155,6 @@ contains
                        evalues, work, b_lwork, info)
             ASSERT(info == 0)
             ASSERT(minloc(evalues(1:hhoFace%ndim+1), dim=1) == 1)
-            if (abs(evalues(1))/maxval(evalues) > 1.d-10) then
-                call utmess('F', 'HHO1_13', sr=abs(evalues(1))/maxval(evalues))
-            end if
             axes(1:3, 1:2) = axes_3d(1:3, 2:3)
 !
             do idim = 1, hhoFace%ndim
