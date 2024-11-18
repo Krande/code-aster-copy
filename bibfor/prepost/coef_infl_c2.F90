@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,6 +99,7 @@ subroutine coef_infl_c2(ix1, ix2, iy1, iy2, i, &
     data(coef(1, 2, k), k=1, 5)/0.284d0, 0.256d0, 0.231d0, 0.208d0, 0.187d0/
     data(coef(1, 3, k), k=1, 5)/0.284d0, 0.233d0, 0.192d0, 0.158d0, 0.131d0/
     data(coef(1, 4, k), k=1, 5)/0.285d0, 0.200d0, 0.141d0, 0.101d0, 7.20d-2/
+    data(coef(1, 5, k), k=1, 5)/0.287d0, 0.160d0, 9.04d-2, 5.25d-2, 3.14d-2/
     data(coef(1, 6, k), k=1, 5)/0.290d0, 0.136d0, 6.61d-2, 3.39d-2, 1.86d-2/
     data(coef(1, 7, k), k=1, 5)/0.293d0, 0.120d0, 5.25d-2, 2.51d-2, 1.33d-2/
     data(coef(1, 8, k), k=1, 5)/0.298d0, 0.101d0, 3.87d-2, 1.74d-2, 9.26d-3/

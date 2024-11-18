@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,11 +72,10 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
     real(kind=8) :: tempdi, lamb1, lamb2, tempd, coef1, coef2, rya, pi
     real(kind=8) :: betaa, betab, ca, cb, val1, val2
     character(len=6) :: k6
-    character(len=8) :: proln
-    character(len=16) :: phenom, prolg
+    character(len=32) :: phenom
     character(len=19) :: valnom, romnom, tranom, fonct
     character(len=24) :: nomcmp, typnom, ty2nom, autnom, vaenom, cocnom, parnom
-    character(len=24) :: natnom, pronom
+    character(len=24) :: natnom, pronom, prolg, proln
 ! ======================================================================
     call jemarq()
 ! ======================================================================
@@ -148,12 +147,9 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
                                     sigma1 = zr(ineut3+ldim+k-1)
                                     sigma2 = zr(ineut3+ldim+k)
                                     tempdi = zr(ineut3+k)-zr(ineut3+k-1)
-                                    sigma = ( &
-                                            1-( &
-                                            tempa-zr(ineut3+k-1))/tempdi)*sigma1+(1-(zr(ineu&
-                                            &t3+k)-tempa &
-                                            )/tempdi &
-                                            )*sigma2
+                                    sigma = (1-(tempa-zr(ineut3+k-1))/tempdi)*sigma1+ &
+                                            (1-(zr(ineut3+k)-tempa)/tempdi)*sigma2
+                                    goto 30
                                 end if
                             end do
                         end if
