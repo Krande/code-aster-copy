@@ -209,7 +209,7 @@ def compute_sigm_elmoy(data_resu, numvi, dwb, resupb, grmapb, resanpb, mtpb):
 
     Returns:
         (NonLinearResult, NonLinearResult): (
-            ELGA_SIEF_R filled by PRIN_3,
+            ELGA_DEPL_R filled by PRIN_3,
             informative MED file: where the plasticity is active: maximum of major principal stress,
                                             )
     """
@@ -247,24 +247,6 @@ def compute_sigm_elmoy(data_resu, numvi, dwb, resupb, grmapb, resanpb, mtpb):
     )
 
     return (sigw, resimpr)
-
-
-def indic_plasac(_v1, _v2, seuil):
-    """
-    Characteristic function of active plasticity
-
-    Arguments:
-        _v1 (float): Cumulated plastic strain
-        _v2 (float): Plasticity indicator
-        seuil (float): Value of SEUIL_EPSP_CUMU
-
-    Returns:
-        Float: Characteristic function of active plasticity
-    """
-    vale = 0
-    if (_v1 >= seuil) and (_v2 > 0.99):
-        vale = 1
-    return vale
 
 
 def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
@@ -430,7 +412,7 @@ def sig1plasac(resultat, rsieq, numvi, dwb, reswbrest, grmapb, l_instplas):
         l_instplas (list): List of time steps (order, time step) where there is plasticity
 
     Returns:
-        NonLinearResult: ELGA_SIEF_R filled by PRIN_3
+        NonLinearResult: ELGA_DEPL_R filled by PRIN_3
     """
     modele = resultat.getModel()
     if grmapb not in dwb:
@@ -438,52 +420,57 @@ def sig1plasac(resultat, rsieq, numvi, dwb, reswbrest, grmapb, l_instplas):
 
     maxsig = NonLinearResult()
     maxsig.allocate(rsieq.getNumberOfIndexes())
-
+    seuil = dwb[grmapb]["SEUIL_EPSP_CUMU"]
     indice = 0
-    fotrq = Formula()
-    fotrq.setExpression("indic_plasac(V{}, V{}, seuil)".format(numvi[0], numvi[1]))
-    fotrq.setVariables(["V{}".format(numvi[0]), "V{}".format(numvi[1])])
-    fotrq.setContext({"indic_plasac": indic_plasac, "seuil": dwb[grmapb]["SEUIL_EPSP_CUMU"]})
-
     for nume_inst in rsieq.getAccessParameters()["NUME_ORDRE"]:
         inst = rsieq.getTime(nume_inst)
 
         if inst in [elt[1] for elt in l_instplas]:
 
-            tronque = CALC_CHAMP(
-                RESULTAT=resultat,
-                INST=inst,
-                GROUP_MA=grmapb,
-                CHAM_UTIL=_F(NOM_CHAM="VARI_ELGA", FORMULE=fotrq, NUME_CHAM_RESU=1),
-            )
-
-            sigtyp = FieldOnCellsReal(modele, "ELGA", "SIEF_R")
-
-            sigtyp.setValues(
+            tronque = FieldOnCellsReal(modele, "ELGA", "DEPL_R")
+            tronque.setValues(
                 [
-                    vxx * vyy
-                    for (vxx, vyy) in zip(
+                    np.sign(max(_v1 - seuil, 0) * _v2)
+                    for (_v1, _v2) in zip(
                         (
-                            sigma1(rsieq, nume_inst, dwb, reswbrest, grmapb)
-                            .asPhysicalQuantity("SIEF_R", {"DX": "SIXX"})
+                            resultat.getField("VARI_ELGA", nume_inst)
+                            .asPhysicalQuantity("DEPL_R", {f"V{numvi[0]}": "DX"})
                             .toSimpleFieldOnCells()
                         )
-                        .restrict(["SIXX"])
+                        .restrict(["DX"])
                         .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
                         .getValues(),
                         (
-                            tronque.getField("UT01_ELGA", nume_inst)
-                            .asPhysicalQuantity("SIEF_R", {"X1": "SIXX"})
+                            resultat.getField("VARI_ELGA", nume_inst)
+                            .asPhysicalQuantity("DEPL_R", {f"V{numvi[1]}": "DX"})
                             .toSimpleFieldOnCells()
                         )
-                        .restrict(["SIXX"])
+                        .restrict(["DX"])
                         .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
                         .getValues(),
                     )
                 ]
             )
 
-            maxsig.setField(sigtyp, "SIEF_ELGA", indice)
+            sigtyp = FieldOnCellsReal(modele, "ELGA", "DEPL_R")
+
+            sigtyp.setValues(
+                [
+                    vxx * vyy
+                    for (vxx, vyy) in zip(
+                        (sigma1(rsieq, nume_inst, dwb, reswbrest, grmapb).toSimpleFieldOnCells())
+                        .restrict(["DX"])
+                        .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
+                        .getValues(),
+                        (tronque.toSimpleFieldOnCells())
+                        .restrict(["DX"])
+                        .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
+                        .getValues(),
+                    )
+                ]
+            )
+
+            maxsig.setField(sigtyp, "DEPL_ELGA", indice)
             maxsig.setTime(resultat.getTime(nume_inst), indice)
             indice = indice + 1
 
@@ -499,14 +486,14 @@ def tps_maxsigm(rsieq, l_instplas, maxsig, resanpb, bere_m, mtpb):
     Arguments:
         rsieq (NonLinearResult): SIEQ_ELGA field
         l_instplas (list): List of time steps (order, time step) where there is plasticity
-        maxsig (NonLinearResult): ELGA_SIEF_R filled by PRIN_3
+        maxsig (NonLinearResult): ELGA_DEPL_R filled by PRIN_3
         resanpb (NonLinearResult): Name of auxiliary result
         bere_m (float): Value of Beremin parameter M
         mtpb (str): {"OUI", "NON"} Value of keyword MAXI_TPS
 
     Returns:
         (NonLinearResult, NonLinearResult): (
-            ELGA_SIEF_R filled by PRIN_3,
+            ELGA_DEPL_R filled by PRIN_3,
             informative MED file: where the plasticity is active: maximum of major principal stress,
                                             )
     """
@@ -530,13 +517,13 @@ def maxi_tps_oui(rsieq, l_instplas, maxsig, resanpb, bere_m):
     Arguments:
         rsieq (NonLinearResult): SIEQ_ELGA field
         l_instplas (list): List of time steps (order, time step) where there is plasticity
-        maxsig (NonLinearResult): ELGA_SIEF_R filled by PRIN_3
+        maxsig (NonLinearResult): ELGA_DEPL_R filled by PRIN_3
         resanpb (NonLinearResult): Name of auxiliary result
         bere_m (float): Value of Beremin parameter M
 
     Returns:
         (NonLinearResult, NonLinearResult): (
-            ELGA_SIEF_R filled by PRIN_3,
+            ELGA_DEPL_R filled by PRIN_3,
             informative MED file: where the plasticity is active: maximum of major principal stress,
                                             )
 
@@ -563,30 +550,30 @@ def maxi_tps_oui(rsieq, l_instplas, maxsig, resanpb, bere_m):
         if inst in [elt[1] for elt in l_instplas]:
 
             if inst == maxsig.getTime(0):
-                chmaxsig = maxsig.getField("SIEF_ELGA", 0)
+                chmaxsig = maxsig.getField("DEPL_ELGA", 0)
                 maxsig_r = NonLinearResult()
                 maxsig_r.allocate(2)
-                maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
+                maxsig_r.setField(chmaxsig, "DEPL_ELGA", 0)
             elif inst > maxsig.getTime(0):
 
-                maxsig_r.setField(maxsig.getField("SIEF_ELGA", indice), "SIEF_ELGA", 1)
+                maxsig_r.setField(maxsig.getField("DEPL_ELGA", indice), "DEPL_ELGA", 1)
 
                 chmaxsig = CREA_CHAMP(
-                    TYPE_CHAM="ELGA_SIEF_R",
+                    TYPE_CHAM="ELGA_DEPL_R",
                     OPERATION="EXTR",
                     RESULTAT=maxsig_r,
-                    NOM_CHAM="SIEF_ELGA",
+                    NOM_CHAM="DEPL_ELGA",
                     TYPE_MAXI="MAXI",
                     TYPE_RESU="VALE",
                     NUME_ORDRE=(0, 1),
                 )
 
-                maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
+                maxsig_r.setField(chmaxsig, "DEPL_ELGA", 0)
 
             chsixxm = chmaxsig.transform(puiss_m)
 
             if resanpb is not None:
-                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                resimpr.setField(chsixxm, "DEPL_ELGA", nume_inst)
                 resimpr.setTime(inst, nume_inst)
 
             indice = indice + 1
@@ -595,12 +582,12 @@ def maxi_tps_oui(rsieq, l_instplas, maxsig, resanpb, bere_m):
 
             if resanpb is not None:
 
-                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
+                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "DEPL_R")
                 chsixxm.setValues(0)
-                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                resimpr.setField(chsixxm, "DEPL_ELGA", nume_inst)
                 resimpr.setTime(inst, nume_inst)
 
-        sigw.setField(chsixxm, "SIEF_ELGA", nume_inst)
+        sigw.setField(chsixxm, "DEPL_ELGA", nume_inst)
         sigw.setTime(inst, nume_inst)
 
     return (sigw, resimpr)
@@ -613,13 +600,13 @@ def maxi_tps_non(rsieq, l_instplas, maxsig, resanpb, bere_m):
     Arguments:
         rsieq (NonLinearResult): SIEQ_ELGA field
         l_instplas (list): List of time steps (order, time step) where there is plasticity
-        maxsig (NonLinearResult): ELGA_SIEF_R filled by PRIN_3
+        maxsig (NonLinearResult): ELGA_DEPL_R filled by PRIN_3
         resanpb (NonLinearResult): Name of auxiliary result
         bere_m (float): Value of Beremin parameter M
 
     Returns:
         (NonLinearResult, NonLinearResult): (
-            ELGA_SIEF_R filled by PRIN_3,
+            ELGA_DEPL_R filled by PRIN_3,
             informative MED file: where the plasticity is active: maximum of major principal stress,
                                             )
 
@@ -647,16 +634,16 @@ def maxi_tps_non(rsieq, l_instplas, maxsig, resanpb, bere_m):
 
             if inst == maxsig.getTime(0):
 
-                chmaxsig = maxsig.getField("SIEF_ELGA", 0)
+                chmaxsig = maxsig.getField("DEPL_ELGA", 0)
 
             elif inst > maxsig.getTime(0):
 
-                chmaxsig = maxsig.getField("SIEF_ELGA", indice)
+                chmaxsig = maxsig.getField("DEPL_ELGA", indice)
 
             chsixxm = chmaxsig.transform(puiss_m)
 
             if resanpb is not None:
-                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                resimpr.setField(chsixxm, "DEPL_ELGA", nume_inst)
                 resimpr.setTime(inst, nume_inst)
 
             indice = indice + 1
@@ -665,12 +652,12 @@ def maxi_tps_non(rsieq, l_instplas, maxsig, resanpb, bere_m):
 
             if resanpb is not None:
 
-                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
+                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "DEPL_R")
                 chsixxm.setValues(0)
-                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                resimpr.setField(chsixxm, "DEPL_ELGA", nume_inst)
                 resimpr.setTime(inst, nume_inst)
 
-        sigw.setField(chsixxm, "SIEF_ELGA", nume_inst)
+        sigw.setField(chsixxm, "DEPL_ELGA", nume_inst)
         sigw.setTime(inst, nume_inst)
 
     return (sigw, resimpr)
@@ -683,7 +670,7 @@ def compute_beremin_integral(coefmultpb, sigw, dwb, grmapb, resupb):
 
     Arguments:
         coefmultpb (float): Value of COEF_MULT in POST_BEREMIN
-        sigw (NonLinearResult): ELGA_SIEF_R filled by PRIN_3
+        sigw (NonLinearResult): ELGA_DEPL_R filled by PRIN_3
         dwb (dict): POST_BEREMIN keywords
         grmapb (str): Mesh cells group given in POST_BEREMIN
         resupb (NonLinearResult): Resultat input of POST_BEREMIN
@@ -703,8 +690,8 @@ def compute_beremin_integral(coefmultpb, sigw, dwb, grmapb, resupb):
                         elt_poids * elt_sigw
                         for (elt_poids, elt_sigw) in zip(
                             poids,
-                            sigw.getField("SIEF_ELGA", nume_inst).getValuesWithDescription(
-                                "SIXX", ["mgrplasfull"]
+                            sigw.getField("DEPL_ELGA", nume_inst).getValuesWithDescription(
+                                "DX", ["mgrplasfull"]
                             )[0],
                         )
                     ]
