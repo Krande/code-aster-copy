@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,15 +24,14 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/codent.h"
+#include "asterf_types.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfdisr.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfnumm.h"
+#include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
@@ -42,23 +41,25 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/mcomce.h"
 #include "asterfort/mm_cycl_algo.h"
-#include "asterfort/mmbouc.h"
 #include "asterfort/mm_cycl_prop.h"
 #include "asterfort/mm_cycl_stat.h"
+#include "asterfort/mmbouc.h"
 #include "asterfort/mmeval_prep.h"
-#include "asterfort/mmstac.h"
 #include "asterfort/mmeven.h"
 #include "asterfort/mmextm.h"
+#include "asterfort/mmfield_prep.h"
 #include "asterfort/mmglis.h"
 #include "asterfort/mmimp4.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfm.h"
 #include "asterfort/mminfr.h"
+#include "asterfort/mmstac.h"
 #include "asterfort/mmstaf.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/mmfield_prep.h"
 #include "asterfort/mreacg.h"
+#include "asterfort/ndynlo.h"
+#include "Contact_type.h"
+#include "jeveux.h"
 !
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: iter_newt
@@ -127,7 +128,7 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
     real(kind=8)  :: wpg_old
     aster_logical :: l_coef_adap
     character(len=8) :: iptxt
-    integer :: hist_index, n_cychis, coun_bcle_geom, nb_cont_poin
+    integer :: hist_index, coun_bcle_geom, nb_cont_poin
     aster_logical :: l_granglis
 !
 ! --------------------------------------------------------------------------------------------------
@@ -148,7 +149,6 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
     loop_cont_vali = 0
     ds_contact%critere_geom = 0.0
     resi_geom = 0.0
-    n_cychis = ds_contact%n_cychis
     vale_pene = 0.0
     glis_maxi = 0.d0
     resi_cont = -1.0
@@ -294,16 +294,16 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 !
                 ksipc1 = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+4)
                 ksipc2 = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+5)
-                ksipc1_old = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+19)
-                ksipc2_old = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+20)
-                wpg_old = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+74)
+                ksipc1_old = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+19)
+                ksipc2_old = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+20)
+                wpg_old = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+74)
 !
 ! ------------- Get coordinates of the projection of contact point
 !
                 ksipr1 = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+6)
                 ksipr2 = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+7)
-                ksipr1_old = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+22)
-                ksipr2_old = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+23)
+                ksipr1_old = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+22)
+                ksipr2_old = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+23)
 !
 ! ------------- Get local basis
 !
@@ -313,42 +313,42 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
                 tau2(1) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+11)
                 tau2(2) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+12)
                 tau2(3) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+13)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+74) = &
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+74) = &
                     v_sdcont_tabfin(ztabf*(i_cont_poin-1)+15)
 !
 ! ------------- Store current local basis :
 !               needed for previous cycling matrices and vectors computrations
 !
                 do hist_index = 1, 24
-                    v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24+hist_index) = &
-                        v_sdcont_cychis(n_cychis*(i_cont_poin-1)+hist_index)
+                    v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24+hist_index) = &
+                        v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+hist_index)
                 end do
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+61+6) = &
-                    v_sdcont_cychis(n_cychis*(i_cont_poin-1)+61)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+62+6) = &
-                    v_sdcont_cychis(n_cychis*(i_cont_poin-1)+62)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+63+6) = &
-                    v_sdcont_cychis(n_cychis*(i_cont_poin-1)+63)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+64+6) = &
-                    v_sdcont_cychis(n_cychis*(i_cont_poin-1)+64)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+65+6) = &
-                    v_sdcont_cychis(n_cychis*(i_cont_poin-1)+65)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+66+6) = &
-                    v_sdcont_cychis(n_cychis*(i_cont_poin-1)+66)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+75) = &
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+61+6) = &
+                    v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+61)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+62+6) = &
+                    v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+62)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+63+6) = &
+                    v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+63)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+64+6) = &
+                    v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+64)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+65+6) = &
+                    v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+65)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+66+6) = &
+                    v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+66)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+75) = &
                     wpg_old
 
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+13) = tau1(1)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+14) = tau1(2)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+15) = tau1(3)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+16) = tau2(1)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+17) = tau2(2)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+18) = tau2(3)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+19) = ksipc1
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+20) = ksipc2
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+22) = ksipr1
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+23) = ksipr2
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+24) = elem_mast_nume
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+13) = tau1(1)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+14) = tau1(2)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+15) = tau1(3)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+16) = tau2(1)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+17) = tau2(2)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+18) = tau2(3)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+19) = ksipc1
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+20) = ksipc2
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+22) = ksipr1
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+23) = ksipr2
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+24) = elem_mast_nume
 
 !
 ! ------------- Compute gap and contact pressure : current configuration
@@ -364,24 +364,24 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
                                  norm, &
                                  gap, gap_user, lagr_cont_poin, &
                                  poin_slav_coor=coor_escl_curr, poin_proj_coor=coor_proj_curr)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+61) = coor_escl_curr(1)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+62) = coor_escl_curr(2)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+63) = coor_escl_curr(3)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+64) = coor_proj_curr(1)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+65) = coor_proj_curr(2)
-                v_sdcont_cychis(n_cychis*(i_cont_poin-1)+66) = coor_proj_curr(3)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+61) = coor_escl_curr(1)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+62) = coor_escl_curr(2)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+63) = coor_escl_curr(3)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+64) = coor_proj_curr(1)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+65) = coor_proj_curr(2)
+                v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+66) = coor_proj_curr(3)
 !
                 if (l_granglis) then
-                    v_sdcont_cychis(n_cychis*(i_cont_poin-1)+73) = 1
+                    v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+73) = 1
                 else
-                    v_sdcont_cychis(n_cychis*(i_cont_poin-1)+73) = 0
+                    v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+73) = 0
                 end if
 
 !
 ! ------------- Previous status and coefficients
 !
-                coef_cont = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+2)
-                coef_frot = v_sdcont_cychis(n_cychis*(i_cont_poin-1)+6)
+                coef_cont = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+2)
+                coef_frot = v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+6)
 !
 ! ------------- Initial bilateral contact ?
 !
@@ -411,7 +411,8 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 !
                 if (l_frot_zone) then
                     call mmstaf(mesh, model_ndim, chdepd, coef_frot, &
-                           elem_slav_nume, elem_slav_type, elem_slav_nbno, elem_mast_nume, ksipc1, &
+                                elem_slav_nume, elem_slav_type, &
+                                elem_slav_nbno, elem_mast_nume, ksipc1, &
                                 ksipc2, ksipr1, ksipr2, lagr_fro1_node, lagr_fro2_node, &
                                 tau1, tau2, norm, pres_frot, gap_user_frot, &
                                 indi_frot_eval)
@@ -432,20 +433,20 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
                 v_sdcont_tabfin(ztabf*(i_cont_poin-1)+17) = lagr_cont_poin
 !
 19              continue
-                if (ds_contact%iteration_newton .ge. 2 .and. indi_cont_curr .eq. 1) then
+                if (iter_newt .ge. 2 .and. indi_cont_curr .eq. 1) then
                     do coun_bcle_geom = 1, 3
-                        resi_geom = sqrt(((v_sdcont_cychis(n_cychis*(i_cont_poin-1)+61+6) &
+                        resi_geom = sqrt(((v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+61+6) &
                                            -coor_escl_curr(1))**2+ &
-                                          (v_sdcont_cychis(n_cychis*(i_cont_poin-1)+62+6) &
+                                          (v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+62+6) &
                                            -coor_escl_curr(2))**2+ &
-                                          (v_sdcont_cychis(n_cychis*(i_cont_poin-1)+63+6) &
+                                          (v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+63+6) &
                                            -coor_escl_curr(3))**2 &
                                           )+ &
-                                         ((v_sdcont_cychis(n_cychis*(i_cont_poin-1)+64+6) &
+                                         ((v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+64+6) &
                                            -coor_proj_curr(1))**2+ &
-                                          (v_sdcont_cychis(n_cychis*(i_cont_poin-1)+65+6) &
+                                          (v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+65+6) &
                                            -coor_proj_curr(2))**2+ &
-                                          (v_sdcont_cychis(n_cychis*(i_cont_poin-1)+66+6) &
+                                          (v_sdcont_cychis(NB_DATA_CYCL*(i_cont_poin-1)+66+6) &
                                            -coor_proj_curr(3))**2 &
                                           ))
                     end do
@@ -456,7 +457,7 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
                     end if
 
                     if (resi_geom .gt. ds_contact%critere_geom .and. &
-                        ds_contact%iteration_newton .ge. 2) then
+                        iter_newt .ge. 2) then
                         ds_contact%critere_geom = resi_geom
                         call codent(i_poin_elem, 'G', iptxt)
                         ds_contact%crit_geom_noeu = 'NPOINCO'//iptxt//' '

@@ -1,6 +1,6 @@
  TITRE
-* DOUBLE SYSTEME MASSE-RESSORTA BUTEES MOBILES                                  
-* ACCELERATIONS IMPOSEES                                                        
+* DOUBLE SYSTEME MASSE-RESSORTA BUTEES MOBILES
+* ACCELERATIONS IMPOSEES
  FINSF
  %
  COOR_3D
@@ -10,80 +10,75 @@
  NO12      1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
  FINSF
  %
- SEG2    
- ELN1     NO1      NO2     
- ELN11    NO12     NO11    
- ELN2     NO2      NO12    
+ SEG2
+ ELN1     NO1      NO2
+ ELN11    NO12     NO11
+ ELN2     NO2      NO12
  FINSF
  %
- POI1    
- ELM1     NO2     
- ELM2     NO12    
- FINSF
- %
- GROUP_NO
- ENCBICHO                
- NO1      NO11    
+ POI1
+ ELM1     NO2
+ ELM2     NO12
  FINSF
  %
  GROUP_NO
- MASSES1                 
- NO2     
+ ENCBICHO
+ NO1      NO11
  FINSF
  %
  GROUP_NO
- MASSES2                 
- NO12    
+ MASSES1
+ NO2
  FINSF
  %
  GROUP_NO
- NO2                     
- NO2     
+ MASSES2
+ NO12
  FINSF
  %
  GROUP_NO
- NO1                     
- NO1     
+ NO2
+ NO2
  FINSF
  %
  GROUP_NO
- NO11                    
- NO11    
+ NO1
+ NO1
+ FINSF
+ %
+ GROUP_NO
+ NO11
+ NO11
+ FINSF
+ %
+ GROUP_NO
+ NO12
+ NO12
  FINSF
  %
  GROUP_MA
- RESSORTS                
- ELN1     ELN11   
+ RESSORTS
+ ELN1     ELN11
  FINSF
  %
  GROUP_MA
- RESSORT1                
- ELN1    
+ RESSORT1
+ ELN1
  FINSF
  %
  GROUP_MA
- RESSORT2                
- ELN2    
+ RESSORT2
+ ELN2
  FINSF
  %
  GROUP_MA
- MASSES1                 
- ELM1    
+ MASSES1
+ ELM1
  FINSF
  %
  GROUP_MA
- MASSES2                 
- ELM2    
- FINSF
- %
- GROUP_MA
- ELM1                    
- ELM1    
- FINSF
- %
- GROUP_MA
- ELN2                    
- ELN2    
+ MASSES2
+ ELM2
  FINSF
  %
  FIN

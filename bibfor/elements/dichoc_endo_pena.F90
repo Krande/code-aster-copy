@@ -205,22 +205,24 @@ subroutine dichoc_endo_pena(for_discret, iret)
 !   calcul de l'enfoncement
     if (resi) then
         if (for_discret%nno .eq. 1) then
-            deplace = for_discret%ulm(1)+for_discret%dul(1)
-            vitesse = dvl(1)
+            deplace = for_discret%ulm(1)+for_discret%dul(1)+dpe(1)
+            vitesse = dvl(1)+dve(1)
         else
-            deplace = ( &
-                      for_discret%ulm(1+for_discret%nc)+for_discret%dul(1+for_discret%nc)-for_di&
-                      &scret%ulm(1)-for_discret%dul(1) &
-                      )
-            vitesse = (dvl(1+for_discret%nc)-dvl(1))
+            deplace = (for_discret%ulm(1+for_discret%nc)-for_discret%ulm(1)+ &
+                       for_discret%dul(1+for_discret%nc)-for_discret%dul(1)+ &
+                       dpe(1+for_discret%nc)-dpe(1))
+            vitesse = (dvl(1+for_discret%nc)-dvl(1))+ &
+                      (dve(1+for_discret%nc)-dve(1))
         end if
     else
         if (for_discret%nno .eq. 1) then
-            deplace = for_discret%ulm(1)
-            vitesse = dvl(1)
+            deplace = for_discret%ulm(1)+dpe(1)
+            vitesse = dvl(1)+dve(1)
         else
-            deplace = (for_discret%ulm(1+for_discret%nc)-for_discret%ulm(1))
-            vitesse = (dvl(1+for_discret%nc)-dvl(1))
+            deplace = (for_discret%ulm(1+for_discret%nc)-for_discret%ulm(1))+ &
+                      (dpe(1+for_discret%nc)-dpe(1))
+            vitesse = (dvl(1+for_discret%nc)-dvl(1))+ &
+                      (dve(1+for_discret%nc)-dve(1))
         end if
     end if
     enfoncement = deplace+ld

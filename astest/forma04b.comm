@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,16 @@ CONT = DEFI_CONTACT(
     ZONE=_F(GROUP_MA_MAIT="CONT2", GROUP_MA_ESCL="CONT1", INTEGRATION="GAUSS", CONTACT_INIT="OUI"),
 )
 
-TPS = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=0.1, NOMBRE=2), _F(JUSQU_A=1, NOMBRE=1)))
+LINST = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=0.1, NOMBRE=2), _F(JUSQU_A=1, NOMBRE=1)))
+
+TPS = DEFI_LIST_INST(
+    METHODE="MANUEL",
+    DEFI_LIST=_F(LIST_INST=LINST),
+    ECHEC=_F(
+        EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=5, SUBD_NIVEAU=5
+    ),
+)
+
 
 STNL = STAT_NON_LINE(
     MODELE=MO,

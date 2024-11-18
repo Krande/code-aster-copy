@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine mecgme(modelz, cara_elemz, matez, matecoz, list_load, inst_curr, &
 #include "asterfort/load_list_info.h"
 #include "asterfort/load_neum_prep.h"
 #include "asterfort/load_neum_matr.h"
+#include "asterfort/load_neum_evcm.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/fointe.h"
@@ -155,6 +156,10 @@ subroutine mecgme(modelz, cara_elemz, matez, matecoz, list_load, inst_curr, &
                 call load_neum_matr(i_load, idx_matr, load_name, load_nume, 'Suiv', &
                                     ligrel_model, nb_in_maxi, nb_in_prep, lpain, lchin, &
                                     matr_elem)
+
+                call load_neum_evcm(inst_curr, load_name, i_load, ligrel_model, &
+                                    nb_in_maxi, nb_in_prep, lpain, lchin, &
+                                    idx_matr, matr_elem)
             end if
         end do
     else
@@ -164,10 +169,15 @@ subroutine mecgme(modelz, cara_elemz, matez, matecoz, list_load, inst_curr, &
                 idx_matr = -ichme
                 load_name = v_load_name(i_load) (1:8)
                 load_nume = v_load_info(nb_load+i_load+1)
+
                 if (load_nume .eq. 4) then
                     call load_neum_matr(i_load, idx_matr, load_name, load_nume, 'Suiv', &
                                         ligrel_model, nb_in_maxi, nb_in_prep, lpain, lchin, &
                                         matr_elem)
+
+                    call load_neum_evcm(inst_curr, load_name, i_load, ligrel_model, &
+                                        nb_in_maxi, nb_in_prep, lpain, lchin, &
+                                        idx_matr, matr_elem)
                 end if
             end if
         end do

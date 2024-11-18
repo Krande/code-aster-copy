@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 !
 !
 interface
-    subroutine load_neum_evcd(stop      , inst_curr , load_name, i_load, ligrel_calc,&
+    subroutine load_neum_evcd(stop      , inst_curr , load_name, i_load, load_nume, ligrel_calc,&
                               nb_in_maxi, nb_in_prep, lpain    , lchin , base       ,&
                               resu_elem , vect_elem)
         character(len=1), intent(in) :: stop
         real(kind=8), intent(in) :: inst_curr
         character(len=8), intent(in) :: load_name
-        integer, intent(in) :: i_load
+        integer, intent(in) :: i_load, load_nume
         character(len=19), intent(in) :: ligrel_calc
         integer, intent(in) :: nb_in_maxi
         character(len=*), intent(inout) :: lpain(nb_in_maxi)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine load_neum_matr(idx_load, idx_matr, load_name, load_nume, load_type, &
                           ligrel_model, nb_in_maxi, nb_in_prep, lpain, lchin, &
-                          matr_elem)
+                          matr_elem, iden_direct, name_inputz)
 !
     implicit none
 !
@@ -42,6 +42,8 @@ subroutine load_neum_matr(idx_load, idx_matr, load_name, load_nume, load_type, &
     character(len=*), intent(inout) :: lpain(nb_in_maxi)
     character(len=*), intent(inout) :: lchin(nb_in_maxi)
     character(len=19), intent(in) :: matr_elem
+    character(len=*), optional, intent(in) :: iden_direct
+    character(len=*), optional, intent(in) :: name_inputz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,9 +88,16 @@ subroutine load_neum_matr(idx_load, idx_matr, load_name, load_nume, load_type, &
 !
 ! ----- Get information about load
 !
-        call load_neum_spec(load_name, load_nume, load_type, ligrel_model, i_type_neum, &
-                            nb_type_neum, nb_in_maxi, nb_in_prep, lchin, lpain, &
-                            nb_in_add, load_ligrel, load_option, matr_type)
+        if (present(iden_direct)) then
+            call load_neum_spec(load_name, load_nume, load_type, ligrel_model, i_type_neum, &
+                                nb_type_neum, nb_in_maxi, nb_in_prep, lchin, lpain, &
+                                nb_in_add, load_ligrel, load_option, matr_type, &
+                                iden_direct=iden_direct, name_inputz=name_inputz)
+        else
+            call load_neum_spec(load_name, load_nume, load_type, ligrel_model, i_type_neum, &
+                                nb_type_neum, nb_in_maxi, nb_in_prep, lchin, lpain, &
+                                nb_in_add, load_ligrel, load_option, matr_type)
+        end if
 !
         if (load_option .ne. 'No_Load') then
 !

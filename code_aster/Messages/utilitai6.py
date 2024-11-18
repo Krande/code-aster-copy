@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -201,6 +201,14 @@ cata_msg = {
  exposant de la loi      = %(r1)f
  volume de référence     = %(r2)f
  contrainte de référence = %(r3)f
+"""
+    ),
+    63: _(
+        """
+    Seuls les instants ou numéros d'ordre donnés en entrée de POST_ELEM option
+    WEIBULL sont pris en compte dans le calcul du maximum des contraintes sur
+    l'historique.
+    Pour prendre en compte tout l'historique, utiliser TOUT_ORDRE = "OUI".
 """
     ),
     72: _(

@@ -15,20 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
+
+!
 !
 interface
-    subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
-                              rela_comp, defo_comp, kit_comp, type_cpla, post_iter, &
-                              regu_visc, post_incr, &
-                              extern_addr, extern_type, infoVari)
-        integer, intent(in) :: nbVari, nbVariMeca
-        aster_logical, intent(in) :: l_excl
-        character(len=16), intent(in) :: vari_excl
-        aster_logical, intent(in) :: l_kit_meta
-        character(len=16), intent(in) :: extern_addr, rela_comp, defo_comp, kit_comp(4)
-        character(len=16), intent(in) :: type_cpla, post_iter, regu_visc, post_incr
-        integer, intent(in) :: extern_type
-        character(len=16), pointer :: infoVari(:)
-    end subroutine comp_meca_name
+    subroutine load_neum_evcm(inst_curr , load_name, i_load, ligrel_calc,&
+                              nb_in_maxi, nb_in_prep, lpain    , lchin ,&
+                              idx_matr , matr_elem)
+        real(kind=8), intent(in) :: inst_curr
+        character(len=8), intent(in) :: load_name
+        integer, intent(in) :: i_load
+        character(len=19), intent(in) :: ligrel_calc
+        integer, intent(in) :: nb_in_maxi
+        character(len=*), intent(inout) :: lpain(nb_in_maxi)
+        character(len=*), intent(inout) :: lchin(nb_in_maxi)
+        integer, intent(in) :: nb_in_prep
+        integer, intent(inout) :: idx_matr
+        character(len=19), intent(in) :: matr_elem
+    end subroutine load_neum_evcm
 end interface
