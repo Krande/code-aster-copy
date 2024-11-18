@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+import aster_core
 
 from code_aster.Commands import FORMULE
 
 
-def Solu_Manu():
+def Solu_Manu(Lambda):
 
     try:
         # Import du module de calcul symbolique Sympy
+        aster_core.matfpe(-1)
         import sympy
+
+        aster_core.matfpe(+1)
 
         sympy_available = True
         # cet import inutile est du au plantage sur la machine clpaster (fiche 17434)

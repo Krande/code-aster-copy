@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,11 +66,12 @@ class Tensor:
         self.rank = len(self.array.shape)
 
     def __repr__(self):
-        return str(self)
-
-    def __str__(self):
         s = "TensorModule.Tensor(numpy.array(" + str(self.array) + ")  )"
         s = s.replace("\n", ",")
+        return s
+
+    def __str__(self):
+        s = str(self.array)
         return s
 
     def __add__(self, other):
@@ -93,7 +94,13 @@ class Tensor:
         else:
             return Tensor(self.array * other, 1)
 
-    def __div__(self, other):
+    def __mul__(self, other):
+        if isTensor(other):
+            return Tensor(self.array * other.array, 1)
+        else:
+            return Tensor(self.array * other, 1)
+
+    def __truediv__(self, other):
         if isTensor(other):
             if other.rank == 0:
                 return Tensor(self.array / other.array, 1)
@@ -102,8 +109,8 @@ class Tensor:
         else:
             return Tensor(self.array / (1.0 * other), 1)
 
-    def __rdiv__(self, other):
-        raise TypeError("Can't divide by a tensor")
+    # def __rdiv__(self, other):
+    #     raise TypeError("Can't divide by a tensor")
 
     def __cmp__(self, other):
         if not isTensor(other):
@@ -283,6 +290,7 @@ def grad(F):
         raise ValueError("Argument must be a Tensor")
     varList = [X, Y, Z]  # F.sympyVariables()
     gradF = NP.resize(F.array, flatten((F.array.shape, 3)))
+
     # see http://code.google.com/p/sympy/issues/detail?id=2622
     def _diff(elt, symb):
         """apply sympy.diff on 'elt' or each element of 'elt' if iterable"""
@@ -294,7 +302,10 @@ def grad(F):
         return res
 
     for i in range(3):
-        gradF[i] = [_diff(elt, varList[i]) for elt in gradF[i].tolist()]
+        if hasattr(gradF[i], "__iter__"):
+            gradF[i] = [_diff(elt, varList[i]) for elt in gradF[i]]
+        else:
+            gradF[i] = _diff(gradF[i], varList[i])
     return Tensor(NP.transpose(NP.array(gradF)))
 
 
