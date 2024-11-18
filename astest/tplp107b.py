@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,18 +21,21 @@ from code_aster.Commands import FORMULE
 
 import math
 
+import aster_core
+
 try:
     # Import du module de calcul symbolique Sympy
+    aster_core.matfpe(-1)
     import sympy
 
+    aster_core.matfpe(+1)
+
     sympy_available = True
-    # cet import inutile est du au plantage sur la machine clpaster (fiche 17434)
-    import numpy
 except ImportError:
     sympy_available = False
 
 
-def Solu_Manu():
+def Solu_Manu(Lambda):
 
     if sympy_available:
 

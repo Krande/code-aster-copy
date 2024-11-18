@@ -45,6 +45,7 @@ from functools import partial
 from hashlib import sha256
 from io import IOBase
 
+import aster_core
 import libaster
 import numpy
 
@@ -233,6 +234,7 @@ class Serializer:
         should_fail = ExecutionParameter().option & Options.StrictUnpickling
         pool = objList[:]
         logger.debug("Objects pool: %s", pool)
+        aster_core.matfpe(-1)
         with open(self._pick_filename, "rb") as pick:
             unpickler = pickle.Unpickler(pick)
             # load all the objects
@@ -259,6 +261,7 @@ class Serializer:
                     names.append(name)
             except EOFError:
                 pass
+        aster_core.matfpe(+1)
 
         not_read = set(objList).difference(names)
         if not_read:
