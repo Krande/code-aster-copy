@@ -279,6 +279,7 @@ subroutine te0475(option, nomte)
             rhovs = pvs*coefvap/tm
             flu1 = +alpha*rhovs*(hrext-exp(-coefvap*p1m/(tm)))
             flu2 = 0.
+            fluth = 0.
         else
             ASSERT(ASTER_FALSE)
         end if
