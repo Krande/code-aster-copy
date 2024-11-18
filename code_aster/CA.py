@@ -20,7 +20,7 @@
 # person_in_charge: mathieu.courtois@edf.fr
 
 """
-This modules provides a compatibility module to emulate
+This modules provides a compatibility module to emulate the v17 API.
 """
 
 from functools import partial
