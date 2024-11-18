@@ -225,7 +225,7 @@ class MEDCoupler:
                 nature = MEDC.IntensiveMaximum
 
             topo = PMM.ComponentTopology(len(components))
-            pfield = CoupledField(sup, MEDC.LINEAR_TIME, dec, topo)
+            pfield = CoupledField(sup, MEDC.ONE_TIME, dec, topo)
             field = pfield.getField()
             field.setName(field_name)
             field.setNature(nature)
