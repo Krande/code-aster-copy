@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,18 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rssepa(result, nuordr, modele, mate, carele, &
-                  excit)
+subroutine rssepa(resultZ, numeStore, modelZ, materFieldZ, caraElemZ, listLoadZ)
 !
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/rsadpa.h"
-    integer :: nuordr
-    character(len=8) :: result, modele, carele, mate
-    character(len=19) :: excit
+
+    character(len=*), intent(in) :: resultZ
+    integer, intent(in)  :: numeStore
+    character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ, listLoadZ
 !----------------------------------------------------------------------
 !     BUT: ECRIRE DANS LA SD RESULTAT LES PARAMETRES MODELE, MATE,
 !          CARELE ET EXCIT POUR LE NUME_ORDRE NUORDR
@@ -40,40 +38,18 @@ subroutine rssepa(result, nuordr, modele, mate, carele, &
 !     IN      EXCIT  : NOM DE LA SD INFO_CHARGE
 !
 !
-!     VARIABLES LOCALES
-    integer :: jpara
-    character(len=8) :: k8b
+    character(len=19) :: listLoad
+    integer :: jvPara
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
+    listLoad = listLoadZ(1:19)
+    call rsadpa(resultZ, 'E', 1, 'MODELE', numeStore, 0, sjv=jvPara)
+    zk8(jvPara) = modelZ(1:8)
+    call rsadpa(resultZ, 'E', 1, 'CHAMPMAT', numeStore, 0, sjv=jvPara)
+    zk8(jvPara) = materFieldZ(1:8)
+    call rsadpa(resultZ, 'E', 1, 'CARAELEM', numeStore, 0, sjv=jvPara)
+    zk8(jvPara) = caraElemZ(1:8)
+    call rsadpa(resultZ, 'E', 1, 'EXCIT', numeStore, 0, sjv=jvPara)
+    zk24(jvPara) = listLoad
 !
-!     ======================================================
-! --- STOCKAGE DE NOMS DE CONCEPT A PARTIR DE LA SD RESULTAT
-!     ======================================================
-!
-!     STOCKAGE DU NOM DU MODELE
-!     -------------------------
-    call rsadpa(result, 'E', 1, 'MODELE', nuordr, &
-                0, sjv=jpara, styp=k8b)
-    zk8(jpara) = modele
-!
-!     STOCKAGE DU NOM DU CHAMP MATERIAU
-!     ---------------------------------
-    call rsadpa(result, 'E', 1, 'CHAMPMAT', nuordr, &
-                0, sjv=jpara, styp=k8b)
-    zk8(jpara) = mate(1:8)
-!
-!     STOCKAGE DU NOM DE LA CARACTERISTIQUE ELEMENTAIRE
-!     -------------------------------------------------
-    call rsadpa(result, 'E', 1, 'CARAELEM', nuordr, &
-                0, sjv=jpara, styp=k8b)
-    zk8(jpara) = carele
-!
-!     STOCKAGE DU NOM DE LA SD INFO_CHARGE
-!     ------------------------------------
-    call rsadpa(result, 'E', 1, 'EXCIT', nuordr, &
-                0, sjv=jpara, styp=k8b)
-    zk24(jpara) = excit(1:19)
-!
-    call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 !--------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1504
 subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                   ltest, rang, nbproc, mpicou, nbordr, &
                   nbpas, vldist, vcham, lisori, nbordi, &
-                  lisord, modele, partsd, lsdpar, i, &
+                  lisord, modelZ, partsd, lsdpar, i, &
                   ipas, ideb, ifin, irelat, chamno, &
                   lonnew, lonch, ktyp, vcnoch, noch, &
                   nochc)
@@ -52,7 +53,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
     integer :: option, nbordr, i, ipas, lonnew, lonch
     character(len=1) :: ktyp
     character(len=19) :: lisord, partsd
-    character(len=24) :: vldist, vcham, lisori, modele, chamno, vcnoch
+    character(len=*), intent(in) :: modelZ
+    character(len=24) :: vldist, vcham, lisori, chamno, vcnoch
     aster_logical :: ldist, dbg_ob, lsdpar
     aster_logical :: dbgv_ob, lcpu, ltest
     integer :: rang, nbpas, nbproc, ideb, ifin, irelat
@@ -72,7 +74,7 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
     complex(kind=8) :: czero
     character(len=6) :: k6
     character(len=16) :: kmpi
-    character(len=24) :: kblanc, k24b
+    character(len=24) :: kblanc, k24b, model
     blas_int :: b_incx, b_incy, b_n
 !
     if (((option .ge. 1) .and. (option .le. 8)) .or. (option .eq. 101) .or. &
@@ -81,6 +83,7 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
     else
         ASSERT(.False.)
     end if
+    model = modelZ
     call infniv(ifm, niv)
     rzero = 0.d0
     czero = dcmplx(0.D0, 0.D0)
@@ -246,24 +249,24 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
     else if (option .eq. 2) then
 ! OPTION=2
 ! DEBRANCHE LE PARALLELISME EN ESPACE
-! INPUT: ldist, modele, dbg_ob, rang
+! INPUT: ldist, model, dbg_ob, rang
 ! OUTPUT: partsd, lsdpar
         partsd = ' '
         ASSERT(rang .ge. 0)
-        call exisd('PARTITION', modele(1:8)//'.PARTSD', iret)
+        call exisd('PARTITION', model(1:8)//'.PARTSD', iret)
         lsdpar = iret .eq. 1
         if (lsdpar .and. ldist) then
 !         AFIN DE STOPPER PONCTUELLEMENT LE PARALLELISME EN ESPACE
             partsd = '&&PCPTCC.PARTSD'
-            call copisd('PARTITION', 'G', modele(1:8)//'.PARTSD', partsd)
-            call detrsd('PARTITION', modele(1:8)//'.PARTSD')
+            call copisd('PARTITION', 'G', model(1:8)//'.PARTSD', partsd)
+            call detrsd('PARTITION', model(1:8)//'.PARTSD')
         end if
         if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> lsdpar/partsd_init= ', lsdpar, partsd
 !
     else if ((option .eq. 3) .or. (option .eq. 301)) then
 ! OPTION=3
 ! REBRANCHE LE PARALLELISME EN ESPACE ET DETRUIT OBJETS JEVEUX DU CONTEXTE PARALLELISME TEMPS
-! INPUT: ldist, modele, partsd, rang, lsdpar, dbg_ob, vcham, lisori (avec option=3),&
+! INPUT: ldist, model, partsd, rang, lsdpar, dbg_ob, vcham, lisori (avec option=3),&
 !        vcnoch, vldist
 ! NETTOYAGE POUR PARALLELISME EN TEMPS
         if (ldist) then
@@ -286,12 +289,12 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
         if (ldist) then
             if (lsdpar) then
 !         it should have been previously copied
-                call exisd('PARTITION', modele(1:8)//'.PARTSD', iret)
+                call exisd('PARTITION', model(1:8)//'.PARTSD', iret)
                 ASSERT(iret .eq. 0)
                 call exisd('PARTITION', '&&PCPTCC.PARTSD', iret)
                 ASSERT(iret .eq. 1)
 !         restore PARTSD object
-                call copisd('PARTITION', 'G', '&&PCPTCC.PARTSD', modele(1:8)//'.PARTSD')
+                call copisd('PARTITION', 'G', '&&PCPTCC.PARTSD', model(1:8)//'.PARTSD')
                 call detrsd('PARTITION', '&&PCPTCC.PARTSD')
             end if
             if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> lsdpar/partsd_fin= ', lsdpar, partsd

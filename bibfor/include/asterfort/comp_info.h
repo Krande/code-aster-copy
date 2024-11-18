@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine comp_info(model, compor)
-        character(len=8), intent(in) :: model
+    subroutine comp_info(modelZ, compor)
+        character(len=*), intent(in) :: modelZ
         character(len=19), intent(in) :: compor
     end subroutine comp_info
 end interface

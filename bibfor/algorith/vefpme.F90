@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,35 +15,39 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vefpme(modelz, cara_elem, mate, mateco, lload_namez, lload_infoz, &
-                  inst, varc_curr, vect_elemz, ligrel_calcz, &
-                  disp_prevz, disp_cumu_instz)
+!
+subroutine vefpme(stop, &
+                  modelZ, caraElemZ, materFieldZ, matecoZ, &
+                  loadNameJvZ, loadInfoJvZ, &
+                  timePara, &
+                  dispPrevZ, dispCumuInstZ, &
+                  varcCurrZ, &
+                  vectElemZ, ligrelCalcZ_, jvBase_)
+!
+    use loadMecaCompute_module
+    use loadMecaCompute_type
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/load_list_info.h"
-#include "asterfort/load_neum_prep.h"
-#include "asterfort/load_neum_comp.h"
+#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/load_list_info.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
+#include "LoadTypes_type.h"
 !
-    character(len=*), intent(in) :: modelz
-    character(len=*), intent(in) :: lload_namez
-    character(len=*), intent(in) :: lload_infoz
-    real(kind=8), intent(in) :: inst(3)
-    character(len=*), intent(in) :: cara_elem
-    character(len=*), intent(in) :: mate, mateco
-    character(len=*), intent(in) :: varc_curr
-    character(len=*), intent(in) :: ligrel_calcz
-    character(len=*), intent(inout) :: vect_elemz
-    character(len=*), intent(in) :: disp_prevz
-    character(len=*), intent(in) :: disp_cumu_instz
+    character(len=1), intent(in) :: stop
+    character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ, matecoZ
+    character(len=*), intent(in) :: loadNameJvZ, loadInfoJvZ
+    real(kind=8), intent(in) :: timePara(3)
+    character(len=*), intent(in) :: dispPrevZ, dispCumuInstZ
+    character(len=*), intent(in) :: varcCurrZ
+    character(len=*), intent(inout) :: vectElemZ
+    character(len=*), optional, intent(in) :: ligrelCalcZ_
+    character(len=1), optional, intent(in) :: jvBase_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,122 +57,132 @@ subroutine vefpme(modelz, cara_elem, mate, mateco, lload_namez, lload_infoz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  stop           : COMPORTEMENT DE CALCUL
-! In  model          : name of model
-! In  mateco         : mane of coded material
-! In  mate           : name of material characteristics (field)
-! In  cara_elem      : name of elementary characteristics (field)
-! In  lload_name     : name of object for list of loads name
-! In  lload_info     : name of object for list of loads info
-! In  inst           : times informations
-! In  ligrel_calc    : LIGREL to compute
-! In  varc_curr      : command variable for current time
-! IO  vect_elem      : name of vect_elem result
-! In  disp_prev      : displacement at beginning of current time
-! In  disp_cumu_inst : displacement increment from beginning of current time
-!
-! ATTENTION :
-!   LE VECT_ELEM (VECELZ) RESULTAT A 1 PARTICULARITE :
-!   CERTAINS RESUELEM NE SONT PAS DES RESUELEM MAIS DES CHAM_NO (.VEASS)
+! In  stop              : continue or stop computation if no loads on elements
+! In  model             : name of model
+! In  materField        : name of material characteristics (field)
+! In  mateco            : name of coded material
+! In  caraElem          : name of elementary characteristics (field)
+! In  loadNameJv        : name of object for list of loads name
+! In  loadInfoJv        : name of object for list of loads info
+! In  timePara          : times informations
+! In  dispPrev          : displacement at beginning of current time
+! In  dispCumuInst      : displacement increment from beginning of current time
+! In  varcCurr          : external state variables for current time
+! IO  vectElem          : name of elementary vectors
+! In  ligrelCalc        : LIGREL to compute loads
+! In  jvBase            : JEVEUX base to create vector
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_in_maxi, nbout
-    parameter(nb_in_maxi=42, nbout=1)
-    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
-    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
-!
-    character(len=1) :: stop
-    integer :: nb_load, i_load
-    integer :: load_nume
-    integer :: nb_in_prep
-    real(kind=8) :: inst_prev, inst_curr, inst_theta
-    character(len=19) :: disp_prev, disp_cumu_inst
-    character(len=8) :: load_name
-    character(len=24) :: ligrel_calc, model
-    character(len=19) :: vect_elem, resu_elem
-    character(len=24) :: lload_name
-    character(len=24), pointer :: v_load_name(:) => null()
-    character(len=24) :: lload_info
-    integer, pointer :: v_load_info(:) => null()
-    aster_logical :: load_empty
-    character(len=1) :: base
+    character(len=8) :: lpain(LOAD_NEUM_NBMAXIN)
+    character(len=24) :: lchin(LOAD_NEUM_NBMAXIN)
+    aster_logical, parameter :: applyPilo = ASTER_TRUE
+    aster_logical :: applySuiv
+    integer :: nbLoad, iLoad, loadNume, nbFieldInGene
+    integer :: nharm
+    real(kind=8) :: timePrev, timeCurr, timeTheta
+    character(len=8) :: loadName, model
+    character(len=13) :: loadPreObject
+    character(len=24) :: ligrelCalc, loadLigrel
+    character(len=24) :: vectElem, resuElem
+    character(len=24), pointer :: listLoadName(:) => null()
+    integer, pointer :: listLoadInfo(:) => null()
+    aster_logical :: noLoadInList
+    character(len=1) :: jvBase
+    character(len=24) :: varcCurr
+    character(len=24) :: dispPrev, dispCumuInst, strxPrev, viteCurr, acceCurr
+    character(len=24) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
-    stop = 'S'
-    resu_elem = '&&VEFPME.0000000'
-    model = modelz
-    lload_name = lload_namez
-    lload_info = lload_infoz
-    ligrel_calc = ligrel_calcz
-    disp_prev = disp_prevz
-    disp_cumu_inst = disp_cumu_instz
-    if (ligrel_calc .eq. ' ') then
-        ligrel_calc = model(1:8)//'.MODELE'
+    resuElem = '&&VEFPME.0000000'
+    model = modelZ(1:8)
+    ligrelCalc = model(1:8)//'.MODELE'
+    if (present(ligrelCalcZ_)) then
+        ligrelCalc = ligrelCalcZ_(1:24)
     end if
-    inst_prev = inst(1)
-    inst_curr = inst(1)+inst(2)
-    inst_theta = inst(3)
-    base = 'V'
-!
-! - Init fields
-!
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
-                lchout)
-!
-! - Result name for vect_elem
-!
-    vect_elem = vect_elemz
-    if (vect_elem .eq. ' ') then
-        vect_elem = '&&VEFPME'
+    jvBase = 'V'
+    if (present(jvBase_)) then
+        jvBase = jvBase_
     end if
-!
-! - Loads
-!
-    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
-                        lload_name, lload_info)
-!
+    lpain = " "
+    lchin = " "
+
+! - Input fields (required)
+    dispPrev = dispPrevZ
+    dispCumuInst = dispCumuInstZ
+    varcCurr = varcCurrZ
+
+! - Input fields (useless)
+    nharm = -1
+    strxPrev = " "
+    viteCurr = " "
+    acceCurr = " "
+    compor = " "
+
+! - Time stepping
+    timePrev = timePara(1)
+    timeCurr = timePara(1)+timePara(2)
+    timeTheta = timePara(3)
+
+! - Result name for vectElem
+    vectElem = vectElemZ
+    if (vectElem .eq. ' ') then
+        vectElem = '&&VEFPME'
+    end if
+
+! - Get loads
+    call load_list_info(noLoadInList, nbLoad, listLoadName, listLoadInfo, &
+                        loadNameJvZ, loadInfoJvZ)
+
 ! - Allocate result
-!
-    call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, 'CHAR_MECA')
-    call reajre(vect_elem, ' ', base)
-    if (load_empty) then
+    call detrsd('VECT_ELEM', vectElem)
+    call memare(jvBase, vectElem, model, 'CHAR_MECA')
+    call reajre(vectElem, ' ', jvBase)
+    if (noLoadInList) then
         goto 99
     end if
-!
+
 ! - Preparing input fields
-!
-    call load_neum_prep(model, cara_elem, mate, mateco, 'Pilo', inst_prev, &
-                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
-                        lpain, disp_prev=disp_prev, disp_cumu_inst=disp_cumu_inst, &
-                        varc_curr=varc_curr)
-!
+    call prepGeneralFields(model, caraElemZ, materFieldZ, matecoZ, &
+                           applySuiv, &
+                           timePrev, timeCurr, timeTheta, nharm, &
+                           varcCurr, dispPrev, dispCumuInst, &
+                           compor, strxPrev, viteCurr, acceCurr, &
+                           nbFieldInGene, lpain, lchin)
+
 ! - Computation
-!
-    do i_load = 1, nb_load
-        load_name = v_load_name(i_load) (1:8)
-        load_nume = v_load_info(nb_load+i_load+1)
-        if ((load_nume .eq. 5) .or. (load_nume .eq. 8)) then
-            call load_neum_comp(stop, i_load, load_name, load_nume, 'Pilo', &
-                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
-                                base, resu_elem, vect_elem)
+    do iLoad = 1, nbLoad
+        loadName = listLoadName(iLoad) (1:8)
+        loadNume = listLoadInfo(nbLoad+iLoad+1)
+        loadPreObject = loadName(1:8)//'.CHME'
+        loadLigrel = loadPreObject(1:13)//'.LIGRE'
+
+! ----- Standard dead Neumann loads
+        if ((loadNume .eq. 5) .or. (loadNume .eq. 8)) then
+            applySuiv = ASTER_FALSE
+            call compLoadVect(applyPilo, applySuiv, &
+                              iLoad, loadNume, loadPreObject, loadLigrel, &
+                              stop, nbFieldInGene, lpain, lchin, &
+                              ligrelCalc, jvBase, resuElem, vectElem)
         end if
-        if ((load_nume .eq. 9) .or. (load_nume .eq. 11)) then
-            call load_neum_comp(stop, i_load, load_name, load_nume, 'Suiv', &
-                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
-                                base, resu_elem, vect_elem)
+
+! ----- Standard undead Neumann loads
+        if ((loadNume .eq. 9) .or. (loadNume .eq. 11)) then
+            applySuiv = ASTER_TRUE
+            call compLoadVect(applyPilo, applySuiv, &
+                              iLoad, loadNume, loadPreObject, loadLigrel, &
+                              stop, nbFieldInGene, lpain, lchin, &
+                              ligrelCalc, jvBase, resuElem, vectElem)
         end if
     end do
 !
 99  continue
 !
-    vect_elemz = vect_elem//'.RELR'
+    vectElemZ = vectElem(1:19)//'.RELR'
 !
     call jedema()
 end subroutine

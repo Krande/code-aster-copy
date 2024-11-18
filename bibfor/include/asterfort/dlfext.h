@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,26 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine dlfext(nveca, nchar, temps, neq, liad,&
-                      lifo, charge, infoch, fomult, modele,&
-                      mate, mateco, carele, numedd, f)
-        integer :: nveca
-        integer :: nchar
-        real(kind=8) :: temps
-        integer :: neq
-        integer :: liad(*)
-        character(len=24) :: lifo(*)
-        character(len=24) :: charge
-        character(len=24) :: infoch
-        character(len=24) :: fomult
-        character(len=24) :: modele
-        character(len=24) :: mate, mateco
-        character(len=24) :: carele
-        character(len=24) :: numedd
-        real(kind=8) :: f(*)
+    subroutine dlfext(nbVectAsse, nbLoad, temps, neq, liad, &
+                      lifo, loadNameJv, loadInfoJv, loadFuncJv, model, &
+                      materField, mateco, caraElem, numedd, f)
+        integer, intent(in) :: nbVectAsse, nbLoad, neq, liad(*)
+        real(kind=8), intent(in) :: temps
+        character(len=24), intent(in) :: lifo(*), loadInfoJv, loadFuncJv
+        character(len=24), intent(in) :: model, caraElem, loadNameJv, materField, mateco, numedd
+        real(kind=8), intent(out) :: f(*)
     end subroutine dlfext
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ntload_chck(list_load)
+!
+subroutine ntload_chck(listLoad)
+!
+    use listLoad_module
 !
     implicit none
 !
@@ -26,9 +28,7 @@ subroutine ntload_chck(list_load)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: listLoad
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,39 +38,34 @@ subroutine ntload_chck(list_load)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  list_load        : name of datastructure for list of loads
+! In  listLoad         : name of datastructure for list of loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, i_load, nb_load
+    integer :: iret, iLoad, nbLoad
     aster_logical :: isnotallowed
-    character(len=8) :: load_name
-    character(len=19) :: cart_name
-    character(len=24) :: lload_name, lload_info
-    integer, pointer :: v_load_info(:) => null()
-    character(len=24), pointer :: v_load_name(:) => null()
+    character(len=8) :: loadName
+    character(len=24) :: loadField
+    character(len=24) :: loadNameJv
+    character(len=24), pointer :: listLoadName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     isnotallowed = .false.
-!
+
 ! - Datastructure access
-!
-    lload_name = list_load(1:19)//'.LCHA'
-    lload_info = list_load(1:19)//'.INFC'
-    call jeveuo(lload_name, 'L', vk24=v_load_name)
-    call jeveuo(lload_info, 'L', vi=v_load_info)
-!
+    call getNbLoadsFromList(listLoad, nbLoad)
+    loadNameJv = listLoad(1:19)//'.LCHA'
+    call jeveuo(loadNameJv, "E", vk24=listLoadName)
+
 ! - Seek for special loads
-!
-    call jeexin(lload_name, iret)
+    call jeexin(loadNameJv, iret)
     if (iret .ne. 0) then
-        nb_load = v_load_info(1)
-        if (nb_load .ne. 0) then
-            do i_load = 1, nb_load
-                load_name = v_load_name(i_load)
-                cart_name = load_name(1:8)//'.CHTH'//'.CONVE'
-                call jeexin(cart_name//'.VALE', iret)
+        if (nbLoad .ne. 0) then
+            do iLoad = 1, nbLoad
+                loadName = listLoadName(iLoad) (1:8)
+                loadField = loadName(1:8)//'.CHTH'//'.CONVE'
+                call jeexin(loadField(1:19)//'.VALE', iret)
                 if (iret .ne. 0) then
                     isnotallowed = .true.
                 end if

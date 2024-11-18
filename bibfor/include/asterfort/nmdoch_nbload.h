@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdoch_nbload(l_load_user , list_load_resu, l_zero_allowed, nb_load,&
+    subroutine nmdoch_nbload(l_zero_allowed, nb_load, &
                              load_keyword)
-        aster_logical, intent(in) :: l_load_user
-        character(len=19), intent(in) :: list_load_resu
         aster_logical, intent(in) :: l_zero_allowed
         integer, intent(out) :: nb_load
         character(len=16), intent(out) :: load_keyword

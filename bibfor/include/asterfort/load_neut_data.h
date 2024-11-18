@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 !
 interface
-    subroutine load_neut_data(i_type_neum    , nb_type_neumz, type_calc_,&
-                              load_type_ligr_, load_opti_r_ , load_opti_f_, load_para_r_,&
-                              load_para_f_   , load_keyw_   , load_obje_  , nb_obje_)
+    subroutine load_neut_data(i_type_neum, nb_type_neumz, type_calc_, &
+                              load_type_ligr_, load_opti_r_, load_opti_f_, load_para_r_, &
+                              load_para_f_, load_keyw_, load_obje_, nb_obje_)
         integer, intent(in) :: i_type_neum
         integer, intent(in) :: nb_type_neumz
         character(len=4), optional, intent(in) :: type_calc_
@@ -31,7 +31,7 @@ interface
         character(len=8), optional, intent(out) :: load_para_r_(2)
         character(len=8), optional, intent(out) :: load_para_f_(2)
         character(len=24), optional, intent(out) :: load_keyw_
-        character(len=10), optional, intent(out) :: load_obje_(2)
+        character(len=6), optional, intent(out) :: load_obje_(2)
         integer, optional, intent(out) :: nb_obje_
     end subroutine load_neut_data
 end interface

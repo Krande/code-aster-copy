@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,15 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine loadExcludedForAnalysis(list_load)
-        character(len=19), intent(in) :: list_load
-    end subroutine loadExcludedForAnalysis
+    subroutine rsGetMainPara(phenom, resultZ, numeStore, &
+                             listLoadZ, model, materField, mateco, caraElem, &
+                             noLoads)
+        character(len=4), intent(in) :: phenom
+        character(len=*), intent(in) :: resultZ
+        integer, intent(in) :: numeStore
+        character(len=*), intent(in) :: listLoadZ
+        character(len=24), intent(out) :: mateco
+        character(len=8), intent(out) :: model, materField, caraElem
+        aster_logical, intent(out) :: noLoads
+    end subroutine rsGetMainPara
 end interface

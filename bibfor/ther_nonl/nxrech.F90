@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
-                  tpsthe, time, lonch, compor, varc_curr, &
+subroutine nxrech(model, mateco, caraElem, listLoad, nume_dof, &
+                  tpsthe, timeMap, lonch, comporTher, varc_curr, &
                   temp_iter, vtempp, vtempr, temp_prev, hydr_prev, &
-                  hydr_curr, dry_prev, dry_curr, vec2nd, cnvabt, &
+                  hydr_curr, dry_curr, vec2nd, cnvabt, &
                   cnresi, rho, iterho, ds_algopara, l_stat)
 !
     use NonLin_Datastructure_type
@@ -45,19 +44,18 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 !
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: mate, mateco
-    character(len=24), intent(in) :: cara_elem
-    character(len=19), intent(in) :: list_load
+    character(len=8), intent(in) :: model, caraElem
+    character(len=24), intent(in) :: mateco
+    character(len=24), intent(in) :: listLoad
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     real(kind=8), intent(in) :: tpsthe(6)
-    character(len=24), intent(in) :: time
+    character(len=24), intent(in) :: timeMap
     character(len=19), intent(in) :: varc_curr
     integer :: lonch
     real(kind=8) :: rho
     character(len=24) :: temp_prev, vtempr, vtempp, temp_iter, cnvabt, cnresi, vec2nd
-    character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
+    character(len=24) :: hydr_prev, hydr_curr, comporTher, dry_curr
     aster_logical, intent(in) :: l_stat
 !
 ! --------------------------------------------------------------------------------------------------
@@ -77,7 +75,7 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
     real(kind=8) :: testm, r8bid, resi_i
     character(len=24) :: vebtla, veresi, varesi, bidon, vabtla
     character(len=1) :: typres
-    character(len=8) :: noma
+    character(len=8) :: mesh
     character(len=19) :: nume_equa
     integer :: itrmax, iterho
     real(kind=8) :: time_curr
@@ -86,7 +84,7 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
     real(kind=8), pointer :: tempr(:) => null()
     aster_logical, pointer :: v_pddl(:) => null()
     integer, pointer :: v_posdd(:) => null()
-    character(len=24) :: lload_name, lload_info
+    character(len=24) :: loadNameJv, loadInfoJv
     parameter(rhomin=-2.d0, rhomax=2.d0)
     mpi_int :: mrank
     data typres/'R'/
@@ -99,8 +97,10 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
     varesi = '&&VARESI'
     veresi = '&&VERESI'
     time_curr = tpsthe(1)
-    lload_name = list_load(1:19)//'.LCHA'
-    lload_info = list_load(1:19)//'.INFC'
+
+! - Access to datastructure of list of loads
+    loadNameJv = listLoad(1:19)//'.LCHA'
+    loadInfoJv = listLoad(1:19)//'.INFC'
 !
     call asmpi_info(rank=mrank)
     rang = to_aster_int(mrank)
@@ -116,8 +116,8 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
     call wkvect("&&NXRECH.PDDL", "V V L", lonch, vl=v_pddl)
 
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk=noma)
-    if (isParallelMesh(noma)) then
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    if (isParallelMesh(mesh)) then
         call dismoi('NUME_EQUA', nume_dof, 'NUME_DDL', repk=nume_equa)
         call jeveuo(nume_equa//'.PDDL', 'L', vi=v_posdd)
 !
@@ -147,16 +147,14 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
         do i = 1, lonch
             tempr(i) = tempm(i)+rho*tempp(i)
         end do
-!
-! ----- Neumann loads elementary vectors (residuals)
-!
-        call verstp(model, lload_name, lload_info, cara_elem, mateco, &
-                    tpsthe, time, compor, temp_prev, vtempr, &
-                    varc_curr, veresi, 'V', l_stat, &
-                    hydr_prev, hydr_curr, dry_prev, dry_curr)
-!
-! ----- Neumann loads vector (residuals)
-!
+! ----- Compute residual vector (non-linear) - Material and loads
+        call verstp(l_stat, &
+                    model, caraElem, mateco, &
+                    loadNameJv, loadInfoJv, &
+                    tpsthe, timeMap, temp_prev, vtempr, &
+                    varc_curr, comporTher, &
+                    hydr_prev, hydr_curr, dry_curr, &
+                    veresi, "V")
         call asasve(veresi, nume_dof, typres, varesi)
         call ascova('D', varesi, bidon, 'INST', r8bid, &
                     typres, cnresi)
@@ -164,7 +162,7 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
 ! --- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
-        call vethbt(model, lload_name, lload_info, cara_elem, mate, &
+        call vethbt(model, loadNameJv, loadInfoJv, &
                     vtempr, vebtla, 'V')
         call asasve(vebtla, nume_dof, typres, vabtla)
         call ascova('D', vabtla, bidon, 'INST', r8bid, &

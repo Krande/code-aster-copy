@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,10 @@
 ! aslint: disable=W1501
 !
 subroutine crtype()
+!
+    use listLoad_module
+    use listLoad_type
+!
     implicit none
 
 !
@@ -29,19 +33,20 @@ subroutine crtype()
 !           "MODE_MECA"    "MODE_MECA_C"
 !
 ! --- ------------------------------------------------------------------
-#include "asterf_types.h"
-#include "jeveux.h"
+#include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getexm.h"
-#include "asterfort/getvid.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/exisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fonbpa.h"
+#include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -57,9 +62,10 @@ subroutine crtype()
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/lisccr.h"
 #include "asterfort/lrcomm.h"
 #include "asterfort/refdaj.h"
+#include "asterfort/resuGetLoads.h"
+#include "asterfort/resuSaveParameters.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"
 #include "asterfort/rscrsd.h"
@@ -70,18 +76,15 @@ subroutine crtype()
 #include "asterfort/rssepa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/resuSaveParameters.h"
-#include "asterfort/resuGetLoads.h"
+#include "jeveux.h"
 !
     integer :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
     integer :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
     integer :: iad, jinst, nbpf, nuprev
-    integer :: ino, nbv(1), jrefe, nb_load, icmpd, icmpi, nocc
+    integer :: ino, nbv(1), jrefe, icmpd, icmpi, nocc
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
     integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
-    integer :: nbordr1, nbordr2, ier1, nb_model, nb_fieldMate, nb_caraElem
+    integer :: nbordr1, nbordr2, ier1, nbModel, nbMaterField, nbCaraElem
 !
     parameter(mxpara=10)
 !
@@ -89,19 +92,18 @@ subroutine crtype()
 !
     real(kind=8) :: valpu(mxpara), rbid, tps, prec, valrr(3), freq, amor_red, coef(3)
     complex(kind=8) :: cbid
-!
     character(len=4) :: typabs
     character(len=6) :: typegd, typegd2
-    character(len=8) :: k8b, resultName, nomf, noma, typmod, criter, matr, nogdsi, axe
+    character(len=8) :: k8b, resultName, nomf, mesh, typmod, criter, matr, nogdsi, axe
     character(len=8) :: resultNameReuse
-    character(len=8) :: model, fieldMate, caraElem, blan8, noma2, model_prev, fieldMate_prev
-    character(len=8) :: caraElem_prev
+    character(len=8) :: model, materField, caraElem, mesh2
+    character(len=8) :: modelPrev, materFieldPrev, caraElemPrev
     character(len=14) :: numedd
     character(len=16) :: nomp(mxpara), type, oper, acces, k16b
-    character(len=19) :: nomch, champ, listr8, list_load, pchn1, resu19, profprev, profch, listLoad
+    character(len=19) :: nomch, champ, listr8, pchn1, resu19, profprev, profch
     character(len=19) :: nume_equa_tmp
     character(len=24) :: k24, linst, fieldType, resultType, lcpt, o1, o2, noojb
-    character(len=24) :: valkk(4), matric(3)
+    character(len=24) :: valkk(4), matric(3), listLoad
     character(len=32) :: kjexn
     character(len=8), pointer :: champs(:) => null()
     real(kind=8), pointer :: coor(:) => null()
@@ -109,25 +111,34 @@ subroutine crtype()
     real(kind=8), pointer :: val(:) => null()
     integer, pointer :: desc(:) => null()
     integer, pointer :: deeq(:) => null()
-    character(len=24), pointer :: lcha(:) => null()
     character(len=24), pointer :: prol(:) => null()
     character(len=8) :: answer
     aster_logical :: lAlarm
+    aster_logical, parameter :: staticOperator = ASTER_TRUE
+    integer :: nbLoad, iLoad, indxLoadInList
+    character(len=4), parameter :: phenom = "MECA"
+    character(len=16), parameter :: loadApply = "FIXE_CSTE"
+    character(len=8), pointer :: loadName(:) => null()
+    character(len=8) :: loadFunc
+    character(len=8), parameter :: funcCste = '&&NMDOME'
+    character(len=16) :: loadCommand
+    character(len=13) :: loadPreObject
+    aster_logical :: loadIsFunc
+
 !
     data linst, listr8, lcpt/'&&CRTYPE_LINST', '&&CRTYPE_LISR8',&
      &     '&&CPT_CRTYPE'/
 ! --- ------------------------------------------------------------------
     call jemarq()
 !
-    blan8 = ' '
-    list_load = ' '
+    listLoad = ' '
     nboini = 10
-    nb_model = 0
-    nb_fieldMate = 0
-    nb_caraElem = 0
-    model_prev = ' '
-    fieldMate_prev = ' '
-    caraElem_prev = ' '
+    nbModel = 0
+    nbMaterField = 0
+    nbCaraElem = 0
+    modelPrev = ' '
+    materFieldPrev = ' '
+    caraElemPrev = ' '
     answer = ' '
     lLireResu = ASTER_FALSE
 !
@@ -167,57 +178,83 @@ subroutine crtype()
 !
     do iocc = 1, nbfac
         model = ' '
-        call getvid('AFFE', 'MODELE', iocc=iocc, scal=model, nbret=n1)
+
         call getvtx('AFFE', 'NOM_CHAM', iocc=iocc, scal=fieldType, nbret=n1)
 !
 !   on compte les modeles, materiaux et les cara_ele différents d'un pas à l'autre
 !   (y compris la chaine ' ' )
 !   si on en trouve au moins 2 différents, l'appel final à lrcomm se fera avec ' '
 !
-        if (model .ne. ' ' .and. model .ne. model_prev) nb_model = nb_model+1
-        model_prev = model
-        fieldMate = blan8
-        call getvid('AFFE', 'CHAM_MATER', iocc=iocc, scal=fieldMate, nbret=n1)
-        if (fieldMate .ne. ' ' .and. fieldMate .ne. fieldMate_prev) nb_fieldMate = nb_fieldMate+1
-        fieldMate_prev = fieldMate
-        caraElem = blan8
+! ----- Count number of different model/caraElem/materField
+        model = " "
+        call getvid('AFFE', 'MODELE', iocc=iocc, scal=model, nbret=n1)
+        if (model .ne. ' ' .and. model .ne. modelPrev) then
+            nbModel = nbModel+1
+        end if
+        modelPrev = model
+
+        materField = " "
+        call getvid('AFFE', 'CHAM_MATER', iocc=iocc, scal=materField, nbret=n1)
+        if (materField .ne. ' ' .and. materField .ne. materFieldPrev) then
+            nbMaterField = nbMaterField+1
+        end if
+        materFieldPrev = materField
+
+        caraElem = " "
         call getvid('AFFE', 'CARA_ELEM', iocc=iocc, scal=caraElem, nbret=n1)
-        if (caraElem .ne. ' ' .and. caraElem .ne. caraElem_prev) nb_caraElem = nb_caraElem+1
-        caraElem_prev = caraElem
-!        -- POUR STOCKER INFO_CHARGE DANS LE PARAMETRE EXCIT :
+        if (caraElem .ne. ' ' .and. caraElem .ne. caraElemPrev) then
+            nbCaraElem = nbCaraElem+1
+        end if
+        caraElemPrev = caraElem
+
+! ----- Get current loads
         call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .lt. 0) then
-            nb_load = -n1
-            noojb = '12345678'//'.1234'//'.EXCIT.INFC'
-            call gnomsd(' ', noojb, 10, 13)
-            list_load = noojb(1:19)
-!           ON CREE LA SD_INFO_CHARGE
-            call lisccr('MECA', list_load, nb_load, 'G')
-            call jeveuo(list_load//'.LCHA', 'E', vk24=lcha)
-            call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=nb_load, vect=lcha)
+! --------- Generate name of datastructure to save in result datastructure
+            call nameListLoad(listLoad)
+
+! --------- Generate constant function
+            call createUnitFunc(funcCste, "G", loadFunc)
+
+! --------- Create list of loads datastructure
+            nbLoad = -n1
+            call creaListLoad("MECA", "G", nbLoad, listLoad)
+            if (nbLoad .ne. 0) then
+                AS_ALLOCATE(vk8=loadName, size=nbLoad)
+                call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=nbLoad, vect=loadName)
+                indxLoadInList = 0
+                do iLoad = 1, nbLoad
+                    call getLoadParameters(phenom, model, loadName(iLoad), &
+                                           loadPreObject, loadCommand, loadIsFunc)
+                    call addLoadMeca(staticOperator, listLoad, &
+                                     loadName(iLoad), loadFunc, &
+                                     loadApply, loadCommand, loadPreObject, &
+                                     loadIsFunc, &
+                                     indxLoadInList)
+                end do
+                AS_DEALLOCATE(vk8=loadName)
+            end if
         end if
-!
+
+! ----- Get current field
         call getvid('AFFE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=n1)
         champs(iocc) = champ(1:8)
-        call dismoi('NOM_MAILLA', champ, 'CHAMP', repk=noma)
+        call dismoi('NOM_MAILLA', champ, 'CHAMP', repk=mesh)
         if (model .ne. ' ') then
-            call dismoi('NOM_MAILLA', model, 'MODELE', repk=noma2)
-            if (noma .ne. noma2) then
-                valkk(1) = noma
-                valkk(2) = noma2
-                call utmess('F', 'ALGORITH2_1', nk=2, valk=valkk)
+            call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh2)
+            if (mesh .ne. mesh2) then
+                call utmess('F', 'ALGORITH2_1')
             end if
         end if
         call dismoi('NOM_GD', champ, 'CHAMP', repk=nogdsi)
         if (resultType .eq. 'EVOL_CHAR' .and. nogdsi .eq. 'NEUT_R') then
-            valkk(1) = champ
-            valkk(2) = 'NEUT_R'
-            valkk(3) = 'EVOL_CHAR'
-            call utmess('F', 'ALGORITH2_80', nk=3, valk=valkk)
+            valkk(1) = 'NEUT_R'
+            valkk(2) = 'EVOL_CHAR'
+            call utmess('F', 'ALGORITH2_80', nk=2, valk=valkk)
         end if
 !
         call dismoi('TYPE_SUPERVIS', champ, 'CHAMP', repk=k24)
-        call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coor)
+        call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=coor)
 !
 !        CALCUL DE LFONC ET TYPEGD
         lfonc = .false.
@@ -355,8 +392,7 @@ subroutine crtype()
             end if
 !
             call rsnoch(resultName, fieldType, numini)
-            call rssepa(resultName, numini, model, fieldMate, caraElem, &
-                        list_load)
+            call rssepa(resultName, numini, model, materField, caraElem, listLoad)
 !
             call getvtx('AFFE', 'NOM_CAS', iocc=iocc, scal=acces, nbret=n0)
             if (n0 .ne. 0) then
@@ -685,11 +721,9 @@ subroutine crtype()
             end if
 !
             call rsnoch(resultName, fieldType, icompt)
-            call rsadpa(resultName, 'E', 1, typabs, icompt, &
-                        0, sjv=iad, styp=k8b)
+            call rsadpa(resultName, 'E', 1, typabs, icompt, 0, sjv=iad)
             zr(iad) = tps
-            call rssepa(resultName, icompt, model, fieldMate, caraElem, &
-                        list_load)
+            call rssepa(resultName, icompt, model, materField, caraElem, listLoad)
             if (j .ge. 2) call jedema()
 !
         end do
@@ -760,22 +794,22 @@ subroutine crtype()
 !
     if (resultType .eq. 'EVOL_NOLI' .or. resultType .eq. 'EVOL_ELAS' .or. &
         resultType .eq. 'EVOL_THER') then
-        if (nb_model .gt. 1) model = ' '
-        if (nb_fieldMate .gt. 1) fieldMate = ' '
-        if (nb_caraElem .gt. 1) caraElem = ' '
-! ----- Get loads
-        call resuGetLoads(resultType, listLoad)
+        if (nbModel .gt. 1) model = ' '
+        if (nbMaterField .gt. 1) materField = ' '
+        if (nbCaraElem .gt. 1) caraElem = ' '
+! ----- Get loads/BC and create list of loads
+        call resuGetLoads(model, resultType, listLoad)
+
 ! ----- Save standard parameters in results datastructure
         call resuSaveParameters(resultName, resultType, &
-                                model, caraElem, fieldMate, listLoad)
+                                model, caraElem, materField, listLoad)
     end if
-!
+
 ! - Non-linear behaviour management
-!
     if (resultType .eq. 'EVOL_NOLI') then
         call getvtx(' ', 'VERI_VARI', scal=answer, nbret=n1)
         lAlarm = answer .eq. 'OUI'
-        call lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu, lAlarm)
+        call lrcomm(lReuse, resultName, model, caraElem, materField, lLireResu, lAlarm)
     end if
 !
     AS_DEALLOCATE(vk8=champs)

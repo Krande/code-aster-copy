@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,7 @@ subroutine ntcrch(model, nume_dof, vhydr_, hydr_init_)
 #include "asterfort/mecact.h"
 #include "asterfort/vtcreb.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=24), intent(in) :: model
+    character(len=8), intent(in) :: model
     character(len=24), intent(in) :: nume_dof
     character(len=24), optional, intent(in) :: vhydr_
     character(len=24), optional, intent(out) :: hydr_init_

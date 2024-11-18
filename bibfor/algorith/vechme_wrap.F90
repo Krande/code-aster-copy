@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,11 @@ subroutine vechme_wrap(stop, modelz, lload_namez, lload_infoz, &
     inst(1) = time_value
     inst(2) = time_delta
     inst(3) = time_theta
-    call vechme(stop, modelz, lload_namez, lload_infoz, inst, &
-                cara_elem, mate, mateco, vect_elemz, varc_currz=varc_currz, basez='G')
+    call vechme(stop, &
+                modelz, cara_elem, mate, mateco, &
+                lload_namez, lload_infoz, &
+                inst, &
+                vect_elemz, &
+                varcCurrZ_=varc_currz, jvBase_='G')
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
-                  list_load, solver, ds_conv, sddyna, ds_posttimestep, &
+                  listLoad, solver, ds_conv, sddyna, ds_posttimestep, &
                   ds_energy, ds_errorindic, ds_print, ds_algopara, &
                   ds_inout, ds_contact, ds_measure, ds_algorom, &
                   nlDynaDamping)
@@ -27,36 +26,40 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
     use NonLinearDyna_type
     use Rom_Datastructure_type
     use NonLinearDyna_module
+    use listLoad_type
 !
     implicit none
 !
-#include "asterf_types.h"
+#include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/GetIOField.h"
+#include "asterfort/gettco.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/ndcrdy.h"
 #include "asterfort/ndlect.h"
+#include "asterfort/nmdoch.h"
 #include "asterfort/nmdocn.h"
-#include "asterfort/nonlinDSContactRead.h"
-#include "asterfort/nonlinDSPrintRead.h"
-#include "asterfort/nonlinDSInOutRead.h"
-#include "asterfort/nonlinDSMeasureRead.h"
-#include "asterfort/nonlinDSEnergyRead.h"
-#include "asterfort/GetIOField.h"
-#include "asterfort/verif_affe.h"
-#include "asterfort/gettco.h"
-#include "asterfort/nmdomt.h"
 #include "asterfort/nmdomt_ls.h"
+#include "asterfort/nmdomt.h"
 #include "asterfort/nmdopo.h"
 #include "asterfort/nmdorc.h"
 #include "asterfort/nmlect.h"
-#include "asterfort/utmess.h"
+#include "asterfort/nonlinDSContactRead.h"
+#include "asterfort/nonlinDSEnergyRead.h"
 #include "asterfort/nonlinDSErrorIndicRead.h"
+#include "asterfort/nonlinDSInOutRead.h"
+#include "asterfort/nonlinDSMeasureRead.h"
+#include "asterfort/nonlinDSPrintRead.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
+#include "asterfort/utmess.h"
+#include "asterfort/verif_affe.h"
 !
-    character(len=*), intent(out) :: model, mesh, mater, mateco, cara_elem
+    character(len=24), intent(out) :: model
+    character(len=*), intent(out) :: mesh, mater, mateco, cara_elem
     type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
-    character(len=*), intent(out) :: list_load, solver
+    character(len=*), intent(out) :: listLoad, solver
     type(NL_DS_Conv), intent(inout) :: ds_conv
     character(len=19) :: sddyna
     type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
@@ -84,7 +87,7 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
 ! Out mateco           : name of coded material
 ! Out cara_elem        : name of elementary characteristics (field)
 ! IO  ds_constitutive  : datastructure for constitutive laws management
-! Out list_load        : name of datastructure for list of loads
+! Out listLoad        : name of datastructure for list of loads
 ! Out solver           : name of datastructure for solver
 ! IO  ds_conv          : datastructure for convergence management
 ! IN  SDDYNA : SD DYNAMIQUE
@@ -102,12 +105,14 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=1), parameter:: jvBase = "V"
     character(len=8) :: result
     character(len=16) :: k16bid, nomcmd
-    aster_logical :: l_etat_init, l_sigm
+    aster_logical :: l_etat_init, l_sigm, lHasPilo, staticOperator
     character(len=24) :: typco
-
     character(len=8) :: stin_evol, cara_elem_in
+    type(ListLoad_Prep) :: listLoadPrep
+    integer :: nocc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,30 +121,46 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
         call nonlinDSPrintSepLine()
         call utmess('I', 'MECANONLINE12_1')
     end if
-!
+
+    model = " "
+
 ! - Get command parameters
-!
     call getres(result, k16bid, nomcmd)
-!
+    staticOperator = nomcmd .eq. 'STAT_NON_LINE'
+
 ! - Read parameters for input/output management
-!
     call nonlinDSInOutRead('MECA', result, ds_inout)
-!
-! - Initial state (EVOL_NOL or stresses)
-!
+
+! - Initial state (complete datastructure or only stresses)
     call GetIOField(ds_inout, 'SIEF_ELGA', l_read_=l_sigm)
     l_etat_init = ((ds_inout%l_stin_evol) .or. (l_sigm))
-!
-! --- LECTURE DONNEES GENERALES
-!
-    call nmlect(result, model, mater, mateco, cara_elem, list_load, solver)
+
+! - LECTURE DONNEES GENERALES
+    call nmlect(result, model, mater, mateco, cara_elem, solver)
+
+! - Continueation method
+    lHasPilo = ASTER_FALSE
+    if (staticOperator) then
+        call getfac('PILOTAGE', nocc)
+        lHasPilo = nocc .gt. 0
+    end if
+
+! - Get loads/BC and create list of loads datastructure
+    listLoad = '&&OP00XX.LIST_LOAD'
+    listLoadPrep%model = model(1:8)
+    listLoadPrep%lHasPilo = lHasPilo
+    listLoadPrep%funcIsCplx = ASTER_FALSE
+    listLoadPrep%staticOperator = staticOperator
+    call nmdoch(listLoadPrep, listLoad, jvBase)
+
+! - Get mesh (only one !)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
 !   ------------------------------------------------------------------------------------------------
 !   VERIFICATION OF CARA_ELEM
 !
 !   COEF_RIGI_DRZ prohibited in non-linear
-    if (nomcmd(6:13) .eq. 'NON_LINE' .and. cara_elem .ne. ' ') then
+    if (cara_elem .ne. ' ') then
         call gettco(cara_elem, typco)
         if (typco .eq. 'CARA_ELEM') then
             call verif_affe(model, cara_elem, non_lin=ASTER_TRUE)
@@ -178,7 +199,7 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
     call ndcrdy(result, sddyna)
 
 ! - Get parameters from command file for dynamic
-    call ndlect(model, mater, cara_elem, list_load, &
+    call ndlect(model, mater, cara_elem, listLoad, &
                 sddyna, nlDynaDamping)
 !
 ! - Read parameters for post-treatment management (CRIT_STAB and MODE_VIBR)
@@ -199,7 +220,7 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
 !
 ! - Read parameters for error indicator
 !
-    if (nomcmd .eq. 'STAT_NON_LINE') then
+    if (staticOperator) then
         call nonlinDSErrorIndicRead(ds_errorindic)
     end if
 !

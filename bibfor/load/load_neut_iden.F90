@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine load_neut_iden(nb_type_neumz, load_name, list_load_keyw, nb_load_exist_)
 !
     implicit none
@@ -25,8 +25,6 @@ subroutine load_neut_iden(nb_type_neumz, load_name, list_load_keyw, nb_load_exis
 #include "asterfort/exisd.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/load_neut_data.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: load_name
     integer, intent(in) :: nb_type_neumz
@@ -54,7 +52,7 @@ subroutine load_neut_iden(nb_type_neumz, load_name, list_load_keyw, nb_load_exis
 !
     character(len=24) :: load_keyw, obje_name
     character(len=19) :: cart_name(2)
-    character(len=10) :: load_obje(2)
+    character(len=6) :: load_obje(2)
     integer :: nb_obje, nb_load_exist, i_obje, i_type_neum, iret
     aster_logical :: l_load_exist
 !

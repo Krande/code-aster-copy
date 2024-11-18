@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
+!
+subroutine mertth(model, loadNameJv, loadInfoJv, caraElem, mateco, &
                   time, time_move, temp_prev, temp_iter, matr_elem)
 !
     implicit none
@@ -32,12 +32,9 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 !
-!
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: lload_name
-    character(len=24), intent(in) :: lload_info
-    character(len=24), intent(in) :: cara_elem
-    character(len=24), intent(in) :: mate, mateco
+    character(len=8), intent(in) :: model, caraElem
+    character(len=24), intent(in) :: loadNameJv, loadInfoJv
+    character(len=24), intent(in) :: mateco
     character(len=24), intent(in) :: time
     character(len=24), intent(in) :: time_move
     character(len=24), intent(in) :: temp_prev
@@ -53,10 +50,9 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of the model
-! In  mate             : name of material characteristics (field)
-! In  cara_elem        : name of elementary characteristics (field)
-! In  lload_name       : name of object for list of loads name
-! In  lload_info       : name of object for list of loads info
+! In  caraElem         : name of elementary characteristics (field)
+! In  loadNameJv       : name of object for list of loads name
+! In  loadInfoJv       : name of object for list of loads info
 ! In  time             : time (<CARTE>)
 ! In  time_move        : modified time (<CARTE>) for THER_NON_LINE_MO
 ! In  temp_prev        : previous temperature
@@ -94,10 +90,10 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
 ! - Loads
 !
     call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
-                        lload_name, lload_info)
+                        loadNameJv, loadInfoJv)
 !
     call megeom(model, chgeom)
-    call mecara(cara_elem, chcara)
+    call mecara(caraElem, chcara)
 !
     call jeexin(matr_elem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then

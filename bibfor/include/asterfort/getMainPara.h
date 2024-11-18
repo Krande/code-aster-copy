@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine lislfc(list_load_resu, i_load      , i_excit   , l_load_user,&
-                      l_func_c      , load_keyword, const_func, load_func, basez)
-        character(len=19), intent(in) :: list_load_resu
-        integer, intent(in) :: i_load, i_excit
-        aster_logical, intent(in) :: l_load_user, l_func_c
-        character(len=16), intent(in) :: load_keyword
-        character(len=8), intent(inout) :: const_func
-        character(len=8), intent(out) :: load_func
-        character(len=1), intent(in), optional :: basez
-    end subroutine lislfc
+    subroutine getMainPara(phenom, &
+                           model, materField, mateco, caraElem, listLoad)
+        character(len=4), intent(in) :: phenom
+        character(len=24), intent(out) :: mateco
+        character(len=8), intent(out) :: model, materField, caraElem
+        character(len=24), intent(out) :: listLoad
+    end subroutine getMainPara
 end interface

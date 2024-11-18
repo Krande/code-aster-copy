@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,26 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine mecgme(modelz   , cara_elemz    , matez    , matecoz  , list_load, inst_curr,&
-                      disp_prev, disp_cumu_inst, inst_prev, compor   , matr_elem)
-        character(len=*), intent(in) :: modelz
-        character(len=*), intent(in) :: cara_elemz
-        character(len=*), intent(in) :: matez, matecoz
-        character(len=19), intent(in) :: list_load
-        real(kind=8), intent(in) :: inst_prev
-        real(kind=8), intent(in) :: inst_curr
-        character(len=19), intent(in) :: disp_prev
-        character(len=19), intent(in) :: disp_cumu_inst
-        character(len=24), intent(in) :: compor
-        character(len=19), intent(in) :: matr_elem
+    subroutine mecgme(stop, &
+                      modelZ, caraElemZ, materFieldZ, matecoZ, comporZ, &
+                      listLoadZ, &
+                      timePrev, timeCurr, &
+                      dispPrevZ, dispCumuInstZ, &
+                      matrElemZ, &
+                      varcCurrZ_, nharm_, &
+                      ligrelCalcZ_, jvBase_)
+        character(len=1), intent(in) :: stop
+        character(len=*), intent(in) :: modelZ, caraElemZ
+        character(len=*), intent(in) :: materFieldZ, matecoZ, comporZ
+        character(len=*), intent(in) :: listLoadZ
+        real(kind=8), intent(in) :: timePrev, timeCurr
+        character(len=*), intent(in) :: dispPrevZ, dispCumuInstZ
+        character(len=*), intent(in) :: matrElemZ
+        character(len=*), optional, intent(in) :: varcCurrZ_
+        integer, optional, intent(in) :: nharm_
+        character(len=*), optional, intent(in) :: ligrelCalcZ_
+        character(len=1), optional, intent(in) :: jvBase_
     end subroutine mecgme
 end interface

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -103,19 +103,15 @@ void DEFS( MATR_ASSE_SYME, matr_asse_syme, const char *, STRING_SIZE );
 void DEFSSS( MATR_ASSE_COMPUTE_KINEMATIC_RHS, matr_asse_compute_kinematic_rhs, const char *,
              STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_NMDOCH_WRAP( a, b, c, d, e, f, g )                                                   \
-    CALLOPPOOOO( NMDOCH_WRAP, nmdoch_wrap, a, b, c, d, e, f, g )
-void DEFSPPSSSS( NMDOCH_WRAP, nmdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *,
-                 ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
-                 STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_NMDOCH_WRAP( a, b, c, d ) CALLOOOO( NMDOCH_WRAP, nmdoch_wrap, a, b, c, d )
+void DEFSSSS( NMDOCH_WRAP, nmdoch_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
+              const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_NTDOCH_WRAP( a, b, c, d ) CALLOPOO( NTDOCH_WRAP, ntdoch_wrap, a, b, c, d )
-void DEFSPSS( NTDOCH_WRAP, ntdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
-              STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_NTDOCH_WRAP( a, b ) CALLOO( NTDOCH_WRAP, ntdoch_wrap, a, b )
+void DEFSS( NTDOCH_WRAP, ntdoch_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_ACDOCH_WRAP( a, b, c, d ) CALLOPOO( ACDOCH_WRAP, acdoch_wrap, a, b, c, d )
-void DEFSPSS( ACDOCH_WRAP, acdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
-              STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_ACDOCH_WRAP( a, b ) CALLOO( ACDOCH_WRAP, acdoch_wrap, a, b )
+void DEFSS( ACDOCH_WRAP, acdoch_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_NUMCIMA( a, b, c, d ) CALLOOOO( NUMCIMA, numcima, a, b, c, d )
 void DEFSSSS( NUMCIMA, numcima, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,

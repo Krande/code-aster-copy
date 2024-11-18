@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxinit(mesh, model, mate, &
-                      cara_elem, compor, list_load, &
+    subroutine nxinit(mesh, model, materField, &
+                      caraElem, compor, listLoad, &
                       para, nume_dof, &
                       sddisc, ds_inout, sdobse, &
                       time, ds_algopara, &
@@ -28,11 +28,11 @@ interface
                       l_line_search, lnkry)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
-        character(len=24), intent(in) :: model, mate, cara_elem, compor
-        character(len=19), intent(in) :: list_load
+        character(len=24), intent(in) ::  compor
+        character(len=24), intent(in) :: listLoad
         real(kind=8), intent(in) :: para(*)
         character(len=24), intent(out) :: nume_dof
-        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: materField, caraElem, model, mesh
         character(len=19), intent(in) :: sddisc
         type(NL_DS_InOut), intent(inout) :: ds_inout
         character(len=19), intent(out) :: sdobse

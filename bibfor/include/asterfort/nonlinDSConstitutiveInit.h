@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine  nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
+    subroutine nonlinDSConstitutiveInit(modelZ, caraElemZ, ds_constitutive, verbose_)
         use NonLin_Datastructure_type
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: cara_elem
+        character(len=*), intent(in) :: modelZ, caraElemZ
         type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
         aster_logical, intent(in), optional :: verbose_
     end subroutine nonlinDSConstitutiveInit

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,9 +81,9 @@ subroutine comdlt()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nveca, nchar
-    integer :: imat(3), nume, niv, ifm, iondp, ladpa, numrep
-    integer :: ialifo, iaadve, nondp, ifexte, ifamor, ifliai
+    integer :: nbVectAsse, nbLoad
+    integer :: jvMatr(3), nume, niv, ifm, jvLoadWave, ladpa, numrep
+    integer :: jvVectFunc, jvVectAsse, nbWave, ifexte, ifamor, ifliai
     integer :: neq, idepl0, ivite0, iacce0, iwk, iordr
     integer :: iinteg, iret, nbpas, nbpas_min, nbpas_max
     integer :: nbord, jchar, jinst, pasar, nbar
@@ -99,9 +99,9 @@ subroutine comdlt()
     character(len=9) :: nomsym(6)
     character(len=19) :: solveu, listLoad, ligrel, linst
     character(len=12) :: allschemes(4), schema, schtyp
-    character(len=24) :: modele, carele, charge, fomult, mateco, materi
+    character(len=24) :: model, caraElem, loadNameJv, loadFuncJv, mateco, materField
     character(len=24) :: numedd, chamgd
-    character(len=24) :: infoch, criter
+    character(len=24) :: loadInfoJv, criter
     character(len=24) :: chgeom, chcara(18), chharm, chtime
     character(len=24) :: chvarc, chvref, chstru, compor, kineLoad
     complex(kind=8) :: calpha
@@ -113,7 +113,7 @@ subroutine comdlt()
     aster_logical :: lamort, lcrea, lprem, exipou
     integer, pointer :: ordr(:) => null()
     character(len=8), pointer :: chexc(:) => null()
-    data modele/'                        '/
+    data model/'                        '/
     data allschemes/'NEWMARK', 'WILSON', 'DIFF_CENTRE', 'ADAPT_ORDRE2'/
     character(len=8) :: mesh
     aster_logical :: l_obsv
@@ -151,30 +151,32 @@ subroutine comdlt()
     dt = 0.d0
     dtmin = 0.d0
     dtmax = 0.d0
-!
-! - Names of datastructures
-!
-    solveu = '&&COMDLT.SOLVEUR   '
-    listLoad = '&&COMDLT.LISTLOAD'
-    charge = listLoad(1:19)//'.LCHA'
-    infoch = listLoad(1:19)//'.INFC'
     chvarc = '&&COMDLT.VARC'
     chvref = '&&COMDLT.VREF'
 !
 ! - Get parameters
-    call dltlec(result, modele, numedd, materi, mateco, &
-                carele, imat, masse, rigid, amort, &
-                lamort, nchar, nveca, listLoad, charge, &
-                infoch, fomult, iaadve, ialifo, nondp, &
-                iondp, solveu, iinteg, t0, nume, &
+    call dltlec(result, model, numedd, materField, mateco, &
+                caraElem, jvMatr, masse, rigid, amort, &
+                lamort, nbLoad, nbVectAsse, listLoad, loadNameJv, &
+                loadInfoJv, loadFuncJv, jvVectAsse, jvVectFunc, nbWave, &
+                jvLoadWave, solveu, iinteg, t0, nume, &
                 numrep, ds_inout)
-    if (nondp .gt. 0 .and. materi .eq. ' ') call utmess('F', 'DYNALINE1_4')
+    if (nbWave .gt. 0 .and. materField .eq. ' ') then
+        call utmess('F', 'DYNALINE1_4')
+    end if
 !
 ! - Get kinematic loads
     call dyGetKineLoad(masse, rigid, amort, lamort, listLoad, &
                        kineLoad, iinteg)
 !
-    neq = zi(imat(1)+2)
+    neq = zi(jvMatr(1)+2)
+
+    ! WRITE (6, *) "CHARGEMENTS"
+    ! WRITE (6, *) "==========="
+    ! WRITE (6, *) "nbLoad: ", nbLoad, listLoad
+    ! WRITE (6, *) "nbVectAsse: ", nbVectAsse, jvVectAsse, jvVectFunc
+    ! WRITE (6, *) "nbWave: ", nbWave, jvLoadWave
+
 !
 !====
 ! 3. CREATION DES VECTEURS DE TRAVAIL SUR BASE VOLATILE
@@ -220,7 +222,7 @@ subroutine comdlt()
 !
     call utmess('I', 'DYNAMIQUE_55', nk=3, &
                 valk=['D Y N A _ V I B R A', 'TRANsitoire        ', 'PHYSique           '])
-    call utmess('I', 'DYNAMIQUE_82', sk=modele, si=neq)
+    call utmess('I', 'DYNAMIQUE_82', sk=model, si=neq)
     call utmess('I', 'DYNAMIQUE_60')
     call utmess('I', 'DYNAMIQUE_61', nk=2, valk=[masse, rigid])
     if (lamort) then
@@ -286,10 +288,10 @@ subroutine comdlt()
 !
     force0 = '&&COMDLT.FORCE0'
     force1 = '&&COMDLT.FORCE1'
-    call dltali(neq, result, imat, masse, rigid, &
-                zi(iaadve), zk24(ialifo), nchar, nveca, lcrea, &
-                lprem, lamort, t0, materi, mateco, &
-                carele, charge, infoch, fomult, modele, &
+    call dltali(neq, result, jvMatr, masse, rigid, &
+                zi(jvVectAsse), zk24(jvVectFunc), nbLoad, nbVectAsse, lcrea, &
+                lprem, lamort, t0, materField, mateco, &
+                caraElem, loadNameJv, loadInfoJv, loadFuncJv, model, &
                 numedd, nume, solveu, criter, zr(idepl0), &
                 zr(ivite0), zr(iacce0), zr(ifexte+neq), zr(ifamor+neq), zr(ifliai+neq), &
                 zr(iwk), force0, force1, ds_energy, kineLoad)
@@ -354,8 +356,8 @@ subroutine comdlt()
 !--- Create observation datastructure
 ! -  routine in stat_non_line : nmcrob => dvcrob
 !
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
-    call dvcrob(mesh, modele, ds_inout, materi, sd_obsv)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    call dvcrob(mesh, model, ds_inout, materField, sd_obsv)
 !
 ! - Make initial observation
 !
@@ -375,43 +377,43 @@ subroutine comdlt()
     if (iinteg .eq. 1) then
 !
         call dlnewi(result, force0, force1, lcrea, lamort, &
-                    iinteg, neq, imat, masse, rigid, &
+                    iinteg, neq, jvMatr, masse, rigid, &
                     amort, zr(idepl0), zr(ivite0), zr(iacce0), zr(ifexte), &
-                    zr(ifamor), zr(ifliai), t0, nchar, nveca, &
-                    zi(iaadve), zk24(ialifo), modele, materi, mateco, &
-                    carele, charge, infoch, fomult, numedd, &
-                    nume, solveu, criter, zk8(iondp), nondp, &
+                    zr(ifamor), zr(ifliai), t0, nbLoad, nbVectAsse, &
+                    zi(jvVectAsse), zk24(jvVectFunc), model, materField, mateco, &
+                    caraElem, loadNameJv, loadInfoJv, loadFuncJv, numedd, &
+                    nume, solveu, criter, zk8(jvLoadWave), nbWave, &
                     numrep, ds_energy, sd_obsv, mesh, kineLoad)
 !
     else if (iinteg .eq. 2) then
 !
         call dlnewi(result, force0, force1, lcrea, lamort, &
-                    iinteg, neq, imat, masse, rigid, &
+                    iinteg, neq, jvMatr, masse, rigid, &
                     amort, zr(idepl0), zr(ivite0), zr(iacce0), zr(ifexte), &
-                    zr(ifamor), zr(ifliai), t0, nchar, nveca, &
-                    zi(iaadve), zk24(ialifo), modele, materi, mateco, &
-                    carele, charge, infoch, fomult, numedd, &
-                    nume, solveu, criter, zk8(iondp), nondp, &
+                    zr(ifamor), zr(ifliai), t0, nbLoad, nbVectAsse, &
+                    zi(jvVectAsse), zk24(jvVectFunc), model, materField, mateco, &
+                    caraElem, loadNameJv, loadInfoJv, loadFuncJv, numedd, &
+                    nume, solveu, criter, zk8(jvLoadWave), nbWave, &
                     numrep, ds_energy, sd_obsv, mesh, kineLoad)
 !
     else if (iinteg .eq. 3) then
 !
         call dldiff(result, force1, lcrea, lamort, neq, &
-                    imat, masse, rigid, amort, zr(idepl0), &
+                    jvMatr, masse, rigid, amort, zr(idepl0), &
                     zr(ivite0), zr(iacce0), zr(ifexte), zr(ifamor), zr(ifliai), &
-                    t0, nchar, nveca, zi(iaadve), zk24(ialifo), &
-                    modele, materi, mateco, carele, charge, &
-                    infoch, fomult, numedd, nume, numrep, &
+                    t0, nbLoad, nbVectAsse, zi(jvVectAsse), zk24(jvVectFunc), &
+                    model, materField, mateco, caraElem, loadNameJv, &
+                    loadInfoJv, loadFuncJv, numedd, nume, numrep, &
                     ds_energy, sd_obsv, mesh)
 !
     else if (iinteg .eq. 4) then
 !
         call dladap(result, t0, lcrea, lamort, neq, &
-                    imat, masse, rigid, amort, zr(idepl0), &
+                    jvMatr, masse, rigid, amort, zr(idepl0), &
                     zr(ivite0), zr(iacce0), zr(ifexte), zr(ifamor), zr(ifliai), &
-                    nchar, nveca, zi(iaadve), zk24(ialifo), modele, &
-                    materi, mateco, carele, charge, infoch, &
-                    fomult, numedd, nume, numrep, ds_energy, &
+                    nbLoad, nbVectAsse, zi(jvVectAsse), zk24(jvVectFunc), model, &
+                    materField, mateco, caraElem, loadNameJv, loadInfoJv, &
+                    loadFuncJv, numedd, nume, numrep, ds_energy, &
                     sd_obsv, mesh)
 !
     end if
@@ -426,34 +428,34 @@ subroutine comdlt()
     do iordr = 1, nbord
         call rsadpa(result, 'E', 1, 'MODELE', ordr(iordr), &
                     0, sjv=ladpa)
-        zk8(ladpa) = modele(1:8)
-        if (materi .ne. ' ') then
+        zk8(ladpa) = model(1:8)
+        if (materField .ne. ' ') then
             call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(iordr), &
                         0, sjv=ladpa)
-            zk8(ladpa) = materi(1:8)
+            zk8(ladpa) = materField(1:8)
         else
             call utmess('I', 'DYNALINE1_3')
         end if
 !
         call rsadpa(result, 'E', 1, 'CARAELEM', ordr(iordr), &
                     0, sjv=ladpa)
-        zk8(ladpa) = carele(1:8)
+        zk8(ladpa) = caraElem(1:8)
     end do
 !
 ! --- ON CALCULE LE CHAMP DE STRUCTURE STRX_ELGA SI BESOIN
 !
-    call dismoi('EXI_STR2', modele, 'MODELE', repk=kstr)
+    call dismoi('EXI_STR2', model, 'MODELE', repk=kstr)
     if (kstr(1:3) .eq. 'OUI') then
-        compor = materi(1:8)//'.COMPOR'
-        ligrel = modele(1:8)//'.MODELE'
+        compor = materField(1:8)//'.COMPOR'
+        ligrel = model(1:8)//'.MODELE'
         exipou = .false.
 !
-        call dismoi('EXI_POUX', modele, 'MODELE', repk=k8b)
+        call dismoi('EXI_POUX', model, 'MODELE', repk=k8b)
         if (k8b(1:3) .eq. 'OUI') then
             exipou = .true.
-            if (nchar .ne. 0) then
-                call jeveuo(charge, 'L', jchar)
-                call cochre(zk24(jchar), nchar, nbchre, iocc)
+            if (nbLoad .ne. 0) then
+                call jeveuo(loadNameJv, 'L', jchar)
+                call cochre(zk24(jchar), nbLoad, nbchre, iocc)
                 if (nbchre .gt. 1) then
                     call utmess('F', 'DYNAMIQUE_19')
                 end if
@@ -472,16 +474,16 @@ subroutine comdlt()
             call rsexch(' ', result, 'DEPL', iordr, chamgd, &
                         iret)
             if (iret .gt. 0) cycle
-            call mecham('STRX_ELGA', modele, carele(1:8), 0, chgeom, &
+            call mecham('STRX_ELGA', model, caraElem(1:8), 0, chgeom, &
                         chcara, chharm, iret)
             if (iret .ne. 0) cycle
             call rsadpa(result, 'L', 1, 'INST', iordr, &
                         0, sjv=ladpa)
             time = zr(ladpa)
             call mechti(chgeom(1:8), time, rundf, rundf, chtime)
-            call vrcins(modele, materi, carele(1:8), time, chvarc(1:19), &
+            call vrcins(model, materField, caraElem(1:8), time, chvarc(1:19), &
                         codret)
-            call vrcref(modele(1:8), materi(1:8), carele(1:8), chvref(1:19))
+            call vrcref(model(1:8), materField(1:8), caraElem(1:8), chvref(1:19))
             if (exipou .and. nfon .ne. 0) then
                 call fointe('F ', nomfon, 1, ['INST'], [time], &
                             alpha, iret)
@@ -489,7 +491,7 @@ subroutine comdlt()
             call rsexch(' ', result, 'STRX_ELGA', iordr, chstru, &
                         iret)
             if (iret .ne. 0) cycle
-            call compStrx(modele, ligrel, compor, chamgd, chgeom, &
+            call compStrx(model, ligrel, compor, chamgd, chgeom, &
                           mateco, chcara, chvarc, chvref, base, &
                           chstru, iret, exipou, charep, typcoe, &
                           alpha, calpha)

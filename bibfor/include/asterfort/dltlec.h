@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,43 +15,28 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine dltlec(result, modele, numedd, materi, mate,&
-                      carele, imat, masse, rigid,&
-                      amort, lamort, nchar, nveca, lischa,&
-                      charge, infoch, fomult, iaadve, ialifo,&
-                      nondp, iondp, solveu, iinteg, t0,&
+    subroutine dltlec(result, &
+                      model, numeDOF, materField, mate, caraElem, &
+                      jvMatr, masse, rigid, amort, lamort, &
+                      nbLoad, nbVectAsse, listLoad, &
+                      loadNameJv, loadInfoJv, loadFuncJv, jvVectAsse, jvVectFunc, &
+                      nbWave, jvLoadWave, solveu, iinteg, t0, &
                       nume, numrep, ds_inout)
         use NonLin_Datastructure_type
-        character(len=8) :: result
-        character(len=24) :: modele
-        character(len=24) :: numedd
-        character(len=24) :: materi
-        character(len=24) :: mate
-        character(len=24) :: carele
-        integer :: imat(3)
-        character(len=8) :: masse
-        character(len=8) :: rigid
-        character(len=8) :: amort
-        aster_logical :: lamort
-        integer :: nchar
-        integer :: nveca
-        character(len=19) :: lischa
-        character(len=24) :: charge
-        character(len=24) :: infoch
-        character(len=24) :: fomult
-        integer :: iaadve
-        integer :: ialifo
-        integer :: nondp
-        integer :: iondp
-        character(len=19) :: solveu
-        integer :: iinteg
-        real(kind=8) :: t0
-        integer :: nume
-        integer :: numrep
+        character(len=8), intent(out) :: result
+        character(len=24), intent(out) :: model, numeDOF, materField, mate, caraElem
+        integer, intent(out) :: jvMatr(3)
+        character(len=8), intent(out) :: masse, rigid, amort
+        aster_logical, intent(out) :: lamort
+        character(len=19), intent(out) :: listLoad, solveu
+        character(len=24), intent(out) :: loadNameJv, loadInfoJv, loadFuncJv
+        integer, intent(out) :: nbVectAsse, nbLoad, nbWave
+        integer, intent(out) :: jvLoadWave, jvVectAsse, jvVectFunc
+        integer, intent(out) :: nume, numrep, iinteg
+        real(kind=8), intent(out) :: t0
         type(NL_DS_InOut), intent(out) :: ds_inout
     end subroutine dltlec
 end interface

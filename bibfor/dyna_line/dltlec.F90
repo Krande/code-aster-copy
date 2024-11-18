@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,14 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine dltlec(result, modele, numedd, materi, mate, &
-                  carele, imat, masse, rigid, &
-                  amort, lamort, nchar, nveca, lischa, &
-                  charge, infoch, fomult, iaadve, ialifo, &
-                  nondp, iondp, solveu, iinteg, t0, &
+subroutine dltlec(result, model, numeDOF, materField, mate, &
+                  caraElem, jvMatr, masse, rigid, &
+                  amort, lamort, nbLoad, nbVectAsse, listLoad, &
+                  loadNameJv, loadInfoJv, loadFuncJv, jvVectAsse, jvVectFunc, &
+                  nbWave, jvLoadWave, solveu, iinteg, t0, &
                   nume, numrep, ds_inout)
+!
+    use listLoad_type
     use NonLin_Datastructure_type
 !
     implicit none
@@ -45,12 +47,25 @@ subroutine dltlec(result, modele, numedd, materi, mate, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/nmarnr.h"
-#include "asterfort/nmdome.h"
+#include "asterfort/nmdoch.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/nonlinDSInOutCreate.h"
 #include "asterfort/assert.h"
+!
+    character(len=19), intent(out) :: listLoad, solveu
+    character(len=24), intent(out) :: loadNameJv, loadInfoJv, loadFuncJv
+    integer, intent(out) :: nbVectAsse, nbLoad, nbWave
+    integer, intent(out) :: jvLoadWave, jvVectAsse, jvVectFunc
+    character(len=8), intent(out) :: result
+    character(len=8), intent(out) :: masse, rigid, amort
+    aster_logical, intent(out) :: lamort
+    integer, intent(out) :: jvMatr(3)
+    character(len=24), intent(out) :: model, numeDOF, mate, caraElem, materField
+    type(NL_DS_InOut), intent(out) :: ds_inout
+    integer, intent(out) :: nume, numrep, iinteg
+    real(kind=8), intent(out) :: t0
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,40 +106,31 @@ subroutine dltlec(result, modele, numedd, materi, mate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat(3)
-    integer :: nveca, nchar, ierc
-    integer :: iaadve, ialifo, iondp, iener
-    integer :: iinteg, nondp
-    integer :: nume, numrep
-    real(kind=8) :: t0
-    aster_logical :: lamort
-    character(len=8) :: result
-    character(len=8) :: masse, rigid, amort
-    character(len=19) :: lischa, solveu
-    character(len=24) :: modele, numedd, mate, carele, mater, materi
-    character(len=24) :: charge, infoch, fomult, loadType
-    integer :: niv, ifm
-    integer :: nr, nm, na, nvect, ivec, n1, nbCine
-    integer :: iaux, ibid
-    integer :: indic, nond, jinf, ialich, ich
+    integer :: jvEner
+    character(len=1), parameter :: jvBase = "V"
+    character(len=24) :: loadType
+    integer :: nbLoadKeyword, iLoadKeyword, n1, nbCine
+    integer :: iaux, ibid, nbRet
+    integer :: indic, iLoad
     real(kind=8) :: rval
-    character(len=8) :: k8b
-    character(len=8) :: blan8
     character(len=16) :: method, k16bid
     character(len=19) :: channo
-    type(NL_DS_InOut), intent(out) :: ds_inout
+
+    type(ListLoad_Prep) :: listLoadPrep
+    integer, pointer :: listLoadInfo(:) => null()
+    character(len=24), pointer :: listLoadName(:) => null(), listLoadFunc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    modele = ' '
-    materi = ' '
-    carele = ' '
-    blan8 = ' '
-!
-    lamort = .true.
-    amort = ' '
-!
-    call infniv(ifm, niv)
+    solveu = '&&COMDLT.SOLVEUR'
+    listLoad = '&&COMDLT.LISTLOAD'
+    model = ' '
+    materField = ' '
+    caraElem = ' '
+    jvLoadWave = 0
+    jvVectAsse = 0
+    jvVectFunc = 0
+
 !
 !====
 ! 2. LES DONNEES DU CALCUL
@@ -136,47 +142,41 @@ subroutine dltlec(result, modele, numedd, materi, mate, &
 !
 ! 2.3. ==> CALCUL DES ENERGIES
 !
-    call wkvect('&&COMDLT.ENER      .VALE', 'V V R', 6, iener)
+    call wkvect('&&COMDLT.ENER      .VALE', 'V V R', 6, jvEner)
 !
-! 2.4. ==> --- LES MATRICES ---
-    call getvid(' ', 'MATR_RIGI', scal=rigid, nbret=nr)
-    call getvid(' ', 'MATR_MASS', scal=masse, nbret=nm)
-    call getvid(' ', 'MATR_AMOR', scal=amort, nbret=na)
-    if (na .le. 0) then
-        lamort = .false.
-    end if
+! - Get matrices
+    rigid = ' '
+    masse = ' '
+    amort = ' '
+    call getvid(' ', 'MATR_RIGI', scal=rigid, nbret=nbRet)
+    call getvid(' ', 'MATR_MASS', scal=masse, nbret=nbRet)
+    call getvid(' ', 'MATR_AMOR', scal=amort, nbret=nbRet)
+    lamort = nbRet .gt. 0
+
+    jvMatr = 0
     call mtdscr(rigid)
-    call jeveuo(rigid//'           .&INT', 'E', imat(1))
+    call jeveuo(rigid//'           .&INT', 'E', jvMatr(1))
     call mtdscr(masse)
-    call jeveuo(masse//'           .&INT', 'E', imat(2))
+    call jeveuo(masse//'           .&INT', 'E', jvMatr(2))
     if (lamort) then
         call mtdscr(amort)
-        call jeveuo(amort//'           .&INT', 'E', imat(3))
+        call jeveuo(amort//'           .&INT', 'E', jvMatr(3))
     end if
-!
-!====
-! 3. LE CHARGEMENT
-!====
-!
-! 3.1. ==> DECODAGE DU CHARGEMENT
-!
-    call getfac('EXCIT', nvect)
-!
+
+! - Get loads
+    nbVectAsse = 0
+    nbLoad = 0
     nbCine = 0
-    if (nvect .gt. 0) then
-!
-! 3.1.1. ==> DECODAGE DU CHARGEMENT
-!
-        nveca = 0
-        nchar = 0
-        do ivec = 1, nvect
-            call getvid('EXCIT', 'VECT_ASSE', iocc=ivec, scal=channo, nbret=iaux)
+    call getfac('EXCIT', nbLoadKeyword)
+    if (nbLoadKeyword .gt. 0) then
+        do iLoadKeyword = 1, nbLoadKeyword
+            call getvid('EXCIT', 'VECT_ASSE', iocc=iLoadKeyword, scal=channo, nbret=iaux)
             if (iaux .eq. 1) then
-                nveca = nveca+1
+                nbVectAsse = nbVectAsse+1
             end if
-            call getvid('EXCIT', 'CHARGE', iocc=ivec, scal=channo, nbret=iaux)
+            call getvid('EXCIT', 'CHARGE', iocc=iLoadKeyword, scal=channo, nbret=iaux)
             if (iaux .eq. 1) then
-                nchar = nchar+1
+                nbLoad = nbLoad+1
             end if
             call gettco(channo, loadType)
             if (loadType .eq. 'CHAR_CINE_MECA') then
@@ -186,13 +186,11 @@ subroutine dltlec(result, modele, numedd, materi, mate, &
 !
 ! 3.1.2. ==> LISTE DE VECT_ASSE DECRIVANT LE CHARGEMENT
 !
-        if (nveca .ne. 0) then
-!
-            call wkvect('&&COMDLT.LIFONCT', 'V V K24', nveca, ialifo)
-            call wkvect('&&COMDLT.ADVECASS', 'V V I  ', nveca, iaadve)
-!
+        if (nbVectAsse .ne. 0) then
+            call wkvect('&&COMDLT.LIFONCT', 'V V K24', nbVectAsse, jvVectFunc)
+            call wkvect('&&COMDLT.ADVECASS', 'V V I  ', nbVectAsse, jvVectAsse)
             indic = 0
-            do ivec = 1, nveca
+            do iLoadKeyword = 1, nbVectAsse
                 indic = indic+1
 10              continue
                 call getvid('EXCIT', 'VECT_ASSE', iocc=indic, scal=channo, nbret=iaux)
@@ -201,86 +199,87 @@ subroutine dltlec(result, modele, numedd, materi, mate, &
                     goto 10
                 end if
                 call chpver('F', channo, 'NOEU', 'DEPL_R', ibid)
-                call jeveuo(channo//'.VALE', 'L', zi(iaadve+ivec-1))
-                call getvid('EXCIT', 'FONC_MULT', iocc=indic, scal=zk24(ialifo+ivec-1), &
-                            nbret=iaux)
+                call jeveuo(channo//'.VALE', 'L', zi(jvVectAsse+iLoadKeyword-1))
+                call getvid('EXCIT', 'FONC_MULT', iocc=indic, &
+                            scal=zk24(jvVectFunc+iLoadKeyword-1), nbret=iaux)
                 if (iaux .eq. 0) then
-                    call getvid('EXCIT', 'ACCE', iocc=indic, scal=zk24(ialifo+ivec-1), &
-                                nbret=iaux)
+                    call getvid('EXCIT', 'ACCE', iocc=indic, &
+                                scal=zk24(jvVectFunc+iLoadKeyword-1), nbret=iaux)
                     if (iaux .eq. 0) then
                         rval = 1.d0
                         call getvr8('EXCIT', 'COEF_MULT', iocc=indic, scal=rval, nbret=iaux)
-                        zk24(ialifo+ivec-1) = '&&COMDLT.F_'
-                        call codent(ivec, 'G', zk24(ialifo+ivec-1) (12:19))
-                        call focste(zk24(ialifo+ivec-1), 'INST', rval, 'V')
+                        zk24(jvVectFunc+iLoadKeyword-1) = '&&COMDLT.F_'
+                        call codent(iLoadKeyword, 'G', zk24(jvVectFunc+iLoadKeyword-1) (12:19))
+                        call focste(zk24(jvVectFunc+iLoadKeyword-1), 'INST', rval, 'V')
                     end if
                 end if
             end do
-!
-!
         end if
-!
-! 3.1.3. ==> LISTE DES CHARGES
-!
-        if (nchar .ne. 0) then
-            call getvid(' ', 'MODELE', scal=k8b, nbret=iaux)
+
+! ----- Get loads/BC and create list of loads datastructure
+        if (nbLoad .ne. 0) then
+            call getvid(' ', 'MODELE', scal=model, nbret=iaux)
             if (iaux .eq. 0) then
                 call utmess('F', 'DYNALINE1_24')
             end if
-            call nmdome(modele, mater, mate, carele, lischa, blan8, &
-                        ibid)
-            materi = mater
-            fomult = lischa//'.FCHA'
+            listLoadPrep%model = model(1:8)
+            call nmdoch(listLoadPrep, listLoad, jvBase)
         end if
-!
-! 3.1.4. ==> PAS DE CHARGES
-!
     else
-!
-        nveca = 0
-        nchar = 0
-!
+        nbVectAsse = 0
+        nbLoad = 0
+    end if
+
+! - Access to load object
+    if (nbLoad .eq. 0) then
+        loadNameJv = listLoad(1:19)//'.LCHA'
+        loadInfoJv = listLoad(1:19)//'.INFC'
+        loadFuncJv = listLoad(1:19)//'.FCHA'
+    else
+        loadNameJv = listLoad(1:19)//'.LCHA'
+        loadInfoJv = listLoad(1:19)//'.INFC'
+        loadFuncJv = listLoad(1:19)//'.FCHA'
+        call jeveuo(loadNameJv, 'L', vk24=listLoadName)
+        call jeveuo(loadInfoJv, 'L', vi=listLoadInfo)
+        call jeveuo(loadFuncJv, 'L', vk24=listLoadFunc)
     end if
 !
 ! 3.2. ==> TEST DE LA PRESENCE DE CHARGES DE TYPE 'ONDE_PLANE'
 !
-    nondp = 0
-    if (nchar .ne. 0) then
-        call jeveuo(infoch, 'L', jinf)
-        call jeveuo(charge, 'L', ialich)
-        do ich = 1, nchar
-            if (zi(jinf+nchar+ich) .eq. 6) then
-                nondp = nondp+1
+    nbWave = 0
+    if (nbLoad .ne. 0) then
+        do iLoad = 1, nbLoad
+            if (listLoadInfo(1+nbLoad+iLoad) .eq. 6) then
+                nbWave = nbWave+1
             end if
         end do
     end if
 !
 ! 3.3. ==> RECUPERATION DES DONNEES DE CHARGEMENT PAR ONDE PLANE
 !
-    if (nondp .eq. 0) then
-        call wkvect('&&COMDLT.ONDP', 'V V K8', 1, iondp)
+    if (nbWave .eq. 0) then
+        call wkvect('&&COMDLT.ONDP', 'V V K8', 1, jvLoadWave)
     else
-        call wkvect('&&COMDLT.ONDP', 'V V K8', nondp, iondp)
-        nond = 0
-        do ich = 1, nchar
-            if (zi(jinf+nchar+ich) .eq. 6) then
-                nond = nond+1
-                zk8(iondp+nond-1) = zk24(ialich+ich-1) (1:8)
+        call wkvect('&&COMDLT.ONDP', 'V V K8', nbWave, jvLoadWave)
+        indic = 0
+        do iLoad = 1, nbLoad
+            if (listLoadInfo(1+nbLoad+iLoad) .eq. 6) then
+                indic = indic+1
+                zk8(jvLoadWave+indic-1) = listLoadName(iLoad) (1:8)
             end if
         end do
     end if
-!
-!
-!====
-! 4. AUTRES DONNEES
-!====
-!
-! 4.1. ==>
-!
-    call dismoi('NOM_NUME_DDL', rigid, 'MATR_ASSE', repk=numedd)
-    call dismoi('NOM_MODELE', rigid, 'MATR_ASSE', repk=modele)
-    if (materi .eq. ' ') call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
-    if (carele .eq. ' ') call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n1)
+
+! - Main parameters from rigid matrix
+    call dismoi('NOM_NUME_DDL', rigid, 'MATR_ASSE', repk=numeDOF)
+    call dismoi('NOM_MODELE', rigid, 'MATR_ASSE', repk=model)
+
+! - Main parameters from command
+    if (materField .eq. ' ') call getvid(' ', 'CHAM_MATER', scal=materField, nbret=n1)
+    if (caraElem .eq. ' ') call getvid(' ', 'CARA_ELEM', scal=caraElem, nbret=n1)
+    if (materField .ne. ' ') then
+        call rcmfmc(materField, mate)
+    end if
 !
 ! 4.2. ==> LECTURE DES PARAMETRES DU MOT CLE FACTEUR SOLVEUR ---
 !

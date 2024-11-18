@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,8 @@ subroutine nmarch(numeInst, model, ds_material, caraElem, listFuncActi, &
     real(kind=8) :: timeCurr
     character(len=8) :: result
     aster_logical :: forceStoring, lprint, l_hho, lStoringInitState, lastTimeStep
-    character(len=19) :: k19bid, list_load_resu
+    character(len=19) :: k19bid
+    character(len=24) :: listLoadResu
     character(len=4) :: etcalc
     integer :: numeReuse
 !
@@ -102,7 +103,7 @@ subroutine nmarch(numeInst, model, ds_material, caraElem, listFuncActi, &
         lStoringInitState = lStoringInitState_
     end if
     result = ds_inout%result
-    list_load_resu = ds_inout%list_load_resu
+    listLoadResu = ds_inout%listLoadResu
     l_hho = isfonc(listFuncActi, 'HHO')
 
 ! - Loop state
@@ -160,7 +161,7 @@ subroutine nmarch(numeInst, model, ds_material, caraElem, listFuncActi, &
 ! ----- Storing parameters
         call nmarc0(result, model, ds_material, caraElem, listFuncActi, &
                     sdcrit, sddyna, ds_errorindic, &
-                    sdpilo, list_load_resu, numeStoring, timeCurr)
+                    sdpilo, listLoadResu, numeStoring, timeCurr)
 
 ! ----- Storing fields
         call nmarce(ds_inout, result, sddisc, timeCurr, numeStoring, &

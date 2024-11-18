@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine ntdata(list_load, solver, matcst   , coecst  , result,&
-                      model    , mater  , mateco  , cara_elem, ds_inout, theta )
+    subroutine ntdata(listLoad, solver, matcst, coecst, result, &
+                      model, materField, mateco, caraElem, ds_inout, theta)
         use NonLin_Datastructure_type
-        character(len=19), intent(inout) :: list_load
+        character(len=24), intent(inout) :: listLoad
         character(len=19), intent(in) :: solver
         aster_logical, intent(out) :: matcst
         aster_logical, intent(out) :: coecst
-        character(len=8), intent(out) :: result
-        character(len=24), intent(out) :: model
-        character(len=24), intent(out) :: mater  , mateco
-        character(len=24), intent(out) :: cara_elem
+        character(len=8), intent(out) :: result, model, materField, caraElem
+        character(len=24), intent(out) :: mateco
         type(NL_DS_InOut), intent(inout) :: ds_inout
         real(kind=8), intent(out) :: theta
     end subroutine ntdata

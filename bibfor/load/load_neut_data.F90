@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine load_neut_data(i_type_neum, nb_type_neumz, type_calc_, &
     character(len=8), optional, intent(out) :: load_para_r_(2)
     character(len=8), optional, intent(out) :: load_para_f_(2)
     character(len=24), optional, intent(out) :: load_keyw_
-    character(len=10), optional, intent(out) :: load_obje_(2)
+    character(len=6), optional, intent(out) :: load_obje_(2)
     integer, optional, intent(out) :: nb_obje_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,8 +66,7 @@ subroutine load_neut_data(i_type_neum, nb_type_neumz, type_calc_, &
 !
     integer :: nb_type_neum
     parameter(nb_type_neum=11)
-    character(len=10) :: object1(nb_type_neum)
-    character(len=10) :: object2(nb_type_neum)
+    character(len=6) :: object1(nb_type_neum), object2(nb_type_neum)
     character(len=6) :: ligrel(nb_type_neum)
     character(len=24) :: keyw(nb_type_neum)
     character(len=8) :: para_2mbr_r1(nb_type_neum), para_2mbr_f1(nb_type_neum)
@@ -91,7 +90,7 @@ subroutine load_neut_data(i_type_neum, nb_type_neumz, type_calc_, &
 !
     data object1/'.COEFH', '.FLURE', '.FLUR2', '.SOURE', &
         '.HECHP', '.GRAIN', '.FLUNL', '.SOUNL', &
-        '.RAYO ', '.EVOL.CHAR', '.SOURC'/
+        '.RAYO ', '.EVOL ', '.SOURC'/
     data object2/'.T_EXT', ' ', ' ', ' ', &
         ' ', ' ', ' ', ' ', &
         ' ', ' ', ' '/

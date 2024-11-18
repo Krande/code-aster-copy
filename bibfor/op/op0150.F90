@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,12 +68,12 @@ subroutine op0150()
     character(len=16) :: fieldList(100)
     integer :: nbOcc, iField, fieldNb
     character(len=8) :: resultName, resultNameReuse
-    character(len=8) :: meshAst, model, caraElem, fieldMate
+    character(len=8) :: meshAst, model, caraElem, materField
     character(len=8) :: matrRigi, matrMass
     character(len=16) :: nomcmd, resultType2, resultType
     integer :: fileUnit, nbret
     character(len=16) :: fileFormat
-    character(len=19) :: listLoad
+    character(len=24) :: listLoad
     aster_logical:: lReuse, lLireResu, lVeriVari
     character(len=8) :: answer
 !
@@ -133,14 +133,12 @@ subroutine op0150()
             call utmess('F', 'UTILITAI2_86')
         end if
     end if
-!
+
 ! - Get standard parameters
-!
-    call resuReadGetParameters(meshAst, model, caraElem, fieldMate)
-!
-! - Get loads
-!
-    call resuGetLoads(resultType, listLoad)
+    call resuReadGetParameters(meshAst, model, caraElem, materField)
+
+! - Get loads/BC and create list of loads
+    call resuGetLoads(model, resultType, listLoad)
 !
 ! - Get parameters for MODE_EMPI
 !
@@ -220,7 +218,7 @@ subroutine op0150()
 ! - Save standard parameters in results datastructure
 !
     call resuSaveParameters(resultName, resultType, &
-                            model, caraElem, fieldMate, listLoad, &
+                            model, caraElem, materField, listLoad, &
                             empiNumePlan, empiSnapNb, empiFieldType)
 !
 ! - Non-linear behaviour management
@@ -228,7 +226,7 @@ subroutine op0150()
     if (resultType .eq. 'EVOL_NOLI') then
         call getvtx(' ', 'VERI_VARI', scal=answer, nbret=nbret)
         lVeriVari = answer .eq. 'OUI'
-        call lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu, lVeriVari)
+        call lrcomm(lReuse, resultName, model, caraElem, materField, lLireResu, lVeriVari)
     end if
 !
 ! - Debug

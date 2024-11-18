@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine op0186()
 !
@@ -85,11 +84,11 @@ subroutine op0186()
     real(kind=8) :: tps2(4), tps3(4), tpex, ther_crit_r(2), rho
     real(kind=8) :: para(2), time_curr, tconso
     real(kind=8) :: rtab(2), theta_read
-    character(len=8) :: result, result_dry, mesh
+    character(len=8) :: result, result_dry, mesh, model, materField, caraElem
     character(len=19) :: sdobse
-    character(len=19) :: solver, maprec, sddisc, varc_curr, list_load
-    character(len=24) :: model, mateco, mater, cara_elem
-    character(len=24) :: time, dry_prev, dry_curr, compor, vtemp, vtempm, vtempp
+    character(len=19) :: solver, maprec, sddisc, varc_curr
+    character(len=24) :: mateco, listLoad
+    character(len=24) :: timeMap, dry_prev, dry_curr, comporTher, vtemp, vtempm, vtempp
     character(len=24) :: vtempr, cn2mbr_stat, cn2mbr_tran, nume_dof, mediri, matass, cndiri, cn2mbr
     character(len=24) :: cncine, cnresi, vabtla, vhydr, vhydrp
     character(len=24) :: tpscvt
@@ -121,7 +120,6 @@ subroutine op0186()
 ! - Initializations
 !
     solver = '&&OP0186.SOLVER'
-    list_load = '&&OP0186.LISCHA'
     varc_curr = '&&OP0186.CHVARC'
 ! --- CE BOOLEEN ARRET EST DESTINE AUX DEVELOPPEURS QUI VOUDRAIENT
 ! --- FORCER LE CALCUL MEME SI ON N'A PAS CONVERGENCE (ARRET=TRUE)
@@ -133,8 +131,8 @@ subroutine op0186()
 !
 ! - Read parameters (linear)
 !
-    call ntdata(list_load, solver, matcst, coecst, result, &
-                model, mater, mateco, cara_elem, ds_inout, theta_read)
+    call ntdata(listLoad, solver, matcst, coecst, result, &
+                model, materField, mateco, caraElem, ds_inout, theta_read)
     para(1) = theta_read
 !
 ! - Read parameters (non-linear)
@@ -143,17 +141,17 @@ subroutine op0186()
                 ther_crit_i, ther_crit_r, &
                 ds_inout, ds_algopara, &
                 ds_algorom, ds_print, &
-                result_dry, compor, &
+                result_dry, comporTher, &
                 mesh, l_dry)
     itmax = ther_crit_i(3)
 !
 ! - Initializations
 !
-    call nxinit(mesh, model, mater, &
-                cara_elem, compor, list_load, &
+    call nxinit(mesh, model, materField, &
+                caraElem, comporTher, listLoad, &
                 para, nume_dof, &
                 sddisc, ds_inout, sdobse, &
-                time, ds_algopara, &
+                timeMap, ds_algopara, &
                 ds_algorom, ds_print, vhydr, &
                 l_stat, l_evol, l_rom, &
                 l_line_search, lnkry)
@@ -193,7 +191,7 @@ subroutine op0186()
 !
 ! - Elementary matrix for Dirichlet BC
 !
-    call medith('V', 'ZERO', model, list_load, mediri)
+    call medith('V', 'ZERO', model, listLoad, mediri)
 !
     call uttcpu('CPU.OP0186.1', 'INIT', ' ')
     call uttcpr('CPU.OP0186.1', 7, tps1)
@@ -229,11 +227,11 @@ subroutine op0186()
 !
 ! - Compute second members and tangent matrix
 !
-    call nxacmv(model, mater, mateco, cara_elem, list_load, nume_dof, &
-                solver, l_stat, time, tpsthe, vtemp, &
+    call nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
+                solver, l_stat, timeMap, tpsthe, vtemp, &
                 vhydr, varc_curr, dry_prev, dry_curr, cn2mbr_stat, &
                 cn2mbr_tran, matass, maprec, cndiri, cncine, &
-                mediri, compor, ds_algorom)
+                mediri, comporTher, ds_algorom)
 !
 ! ======================================================================
 !                        PHASE DE PREDICTION
@@ -244,11 +242,11 @@ subroutine op0186()
 ! EN TRANSITOIRE : |            VEC2NI                |
 !                  |           DIRICHLET              |
 !
-    call nxpred(model, mater, mateco, cara_elem, list_load, nume_dof, &
-                solver, l_stat, tpsthe, time, matass, &
+    call nxpred(model, mateco, caraElem, listLoad, nume_dof, &
+                solver, l_stat, tpsthe, timeMap, matass, &
                 neq, maprec, varc_curr, vtemp, vtempm, &
-                cn2mbr, vhydr, vhydrp, dry_prev, dry_curr, &
-                compor, cndiri, cncine, cn2mbr_stat, cn2mbr_tran, &
+                cn2mbr, vhydr, vhydrp, dry_curr, &
+                comporTher, cndiri, cncine, cn2mbr_stat, cn2mbr_tran, &
                 ds_algorom)
 !
     iter_newt = 0
@@ -285,11 +283,11 @@ subroutine op0186()
 ! SYSTEME LINEAIRE RESOLU:  A * (T+,I+1 - T+,I) = B
 ! SOLUTION: VTEMPP = T+,I+1 - T+,I
 !
-    call nxnewt(model, mater, mateco, cara_elem, list_load, nume_dof, &
-                solver, tpsthe, time, matass, cn2mbr, &
+    call nxnewt(model, mateco, caraElem, listLoad, nume_dof, &
+                solver, tpsthe, timeMap, matass, cn2mbr, &
                 maprec, cncine, varc_curr, vtemp, vtempm, &
                 vtempp, cn2mbr_stat, mediri, conver, vhydr, &
-                vhydrp, dry_prev, dry_curr, compor, vabtla, &
+                vhydrp, dry_curr, comporTher, vabtla, &
                 cnresi, ther_crit_i, ther_crit_r, reasma, ds_algorom, &
                 ds_print, sddisc, iter_newt, l_stat)
 !
@@ -302,10 +300,10 @@ subroutine op0186()
     call nmimr0(ds_print, 'RELI')
     if (.not. conver) then
         if (l_line_search) then
-            call nxrech(model, mater, mateco, cara_elem, list_load, nume_dof, &
-                        tpsthe, time, neq, compor, varc_curr, &
+            call nxrech(model, mateco, caraElem, listLoad, nume_dof, &
+                        tpsthe, timeMap, neq, comporTher, varc_curr, &
                         vtempm, vtempp, vtempr, vtemp, vhydr, &
-                        vhydrp, dry_prev, dry_curr, cn2mbr_stat, vabtla, &
+                        vhydrp, dry_curr, cn2mbr_stat, vabtla, &
                         cnresi, rho, iterho, ds_algopara, l_stat)
             call nmimci(ds_print, 'RELI_NBIT', iterho, l_affe=ASTER_TRUE)
             call nmimcr(ds_print, 'RELI_COEF', rho, l_affe=ASTER_TRUE)
@@ -411,7 +409,7 @@ subroutine op0186()
     else
         force = .false.
     end if
-    call ntarch(nume_inst, model, mater, cara_elem, para, &
+    call ntarch(nume_inst, model, materField, caraElem, para, &
                 sddisc, ds_inout, force, ds_algorom)
 !
 ! - Make observation

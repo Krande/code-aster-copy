@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,21 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vefpme(modelz    , cara_elem      , mate      , mateco      ,&
-                      lload_namez , lload_infoz,&
-                      inst      , varc_curr      , vect_elemz, ligrel_calcz,&
-                      disp_prevz, disp_cumu_instz)
-        character(len=*), intent(in) :: modelz
-        character(len=*), intent(in) :: lload_namez
-        character(len=*), intent(in) :: lload_infoz
-        real(kind=8), intent(in) :: inst(3)
-        character(len=*), intent(in) :: cara_elem
-        character(len=*), intent(in) :: mate, mateco
-        character(len=*), intent(in) :: varc_curr
-        character(len=*), intent(in) :: ligrel_calcz
-        character(len=*), intent(inout) :: vect_elemz
-        character(len=*), intent(in) :: disp_prevz
-        character(len=*), intent(in) :: disp_cumu_instz
+    subroutine vefpme(stop, &
+                      modelZ, caraElemZ, materFieldZ, matecoZ, &
+                      loadNameJvZ, loadInfoJvZ, &
+                      timePara, &
+                      dispPrevZ, dispCumuInstZ, &
+                      varcCurrZ, &
+                      vectElemZ, ligrelCalcZ_, jvBase_)
+        character(len=1), intent(in) :: stop
+        character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ, matecoZ
+        character(len=*), intent(in) :: loadNameJvZ, loadInfoJvZ
+        real(kind=8), intent(in) :: timePara(3)
+        character(len=*), intent(in) :: dispPrevZ, dispCumuInstZ
+        character(len=*), intent(in) :: varcCurrZ
+        character(len=*), intent(inout) :: vectElemZ
+        character(len=*), optional, intent(in) :: ligrelCalcZ_
+        character(len=1), optional, intent(in) :: jvBase_
     end subroutine vefpme
 end interface

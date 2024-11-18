@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,22 +18,21 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine calcCalcMeca(nb_option      , list_option,&
-                            l_elem_nonl    , nume_harm  ,&
-                            list_load      , model      , cara_elem,&
-                            ds_constitutive, ds_material, ds_system,&
-                            hval_incr      , hval_algo  ,&
-                            vediri         , vefnod     ,&
-                            vevarc_prev    , vevarc_curr,&
-                            nb_obje_maxi   , obje_name  , obje_sdname, nb_obje,&
+    subroutine calcCalcMeca(nb_option, list_option, &
+                            l_elem_nonl, nume_harm, &
+                            listLoadZ, modelZ, caraElemZ, &
+                            ds_constitutive, ds_material, ds_system, &
+                            hval_incr, hval_algo, &
+                            vediri, vefnod, &
+                            vevarc_prev, vevarc_curr, &
+                            nb_obje_maxi, obje_name, obje_sdname, nb_obje, &
                             l_pred)
         use NonLin_Datastructure_type
         integer, intent(in) :: nb_option
         character(len=16), intent(in) :: list_option(:)
         aster_logical, intent(in) :: l_elem_nonl
         integer, intent(in) :: nume_harm
-        character(len=19), intent(in) :: list_load
-        character(len=24), intent(in) :: model, cara_elem
+        character(len=*), intent(in) :: listLoadZ, modelZ, caraElemZ
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_System), intent(in) :: ds_system

@@ -3,7 +3,7 @@
  * @brief Implementation de ListOfLoads
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -90,12 +90,8 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         physic = this->getPhysics();
     }
 
-    ASTERINTEGER iexcit = 1;
-    ASTERINTEGER icalc = 0;
     std::string name( getName().c_str() );
     name.resize( 19, ' ' );
-    std::string blank( " " );
-    blank.resize( 19, ' ' );
     std::string base( JeveuxMemoryTypesNames[(int)Permanent] );
 
     SyntaxMapContainer dict;
@@ -178,7 +174,7 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
             ligrel_cont = _contact.second->getName();
         }
 
-        CALLO_NMDOCH_WRAP( name, &iexcit, &icalc, blank, base, ligrel_slav, ligrel_cont );
+        CALLO_NMDOCH_WRAP( name, base, ligrel_slav, ligrel_cont );
     } else if ( physic == Physics::Thermal ) {
         if ( command.empty() ) {
             command = "THER_NON_LINE";
@@ -239,7 +235,7 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         dict.container["EXCIT"] = listeExcit;
         cmdSt.define( dict );
 
-        CALLO_NTDOCH_WRAP( name, &iexcit, blank, base );
+        CALLO_NTDOCH_WRAP( name, base );
     } else if ( physic == Physics::Acoustic ) {
         CommandSyntax cmdSt( "THER_NON_LINE" );
 
@@ -265,7 +261,7 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         dict.container["EXCIT"] = listeExcit;
         cmdSt.define( dict );
 
-        CALLO_ACDOCH_WRAP( name, &iexcit, blank, base );
+        CALLO_ACDOCH_WRAP( name, base );
     } else {
         AS_ABORT( "Should not be here" );
     }

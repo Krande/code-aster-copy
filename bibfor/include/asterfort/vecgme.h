@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,23 +17,25 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vecgme(model, caraElem, matez, matecoz, loadNameJvZ, loadInfoJvZ, &
-                      inst_curr, disp_prevz, disp_cumu_instz, vect_elemz, inst_prev, &
-                      compor, ligrel_calcz, vite_currz, acce_currz, strx_prevz)
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: caraElem
-        character(len=*), intent(in) :: matez, matecoz
-        real(kind=8), intent(in) :: inst_curr
-        character(len=*), intent(in) :: disp_prevz
-        character(len=*), intent(in) :: disp_cumu_instz
-        character(len=*), intent(in) :: loadNameJvZ
-        character(len=*), intent(in) :: loadInfoJvZ
-        character(len=*), intent(inout) :: vect_elemz
-        real(kind=8), intent(in) :: inst_prev
-        character(len=24), intent(in) :: compor
-        character(len=*), intent(in) :: ligrel_calcz
-        character(len=*), intent(in) :: vite_currz
-        character(len=*), intent(in) :: acce_currz
-        character(len=*), intent(in) :: strx_prevz
+    subroutine vecgme(stop, &
+                      modelZ, caraElemZ, materFieldZ, matecoZ, comporZ, &
+                      loadNameJvZ, loadInfoJvZ, &
+                      timePrev, timeCurr, &
+                      dispPrevZ, dispCumuInstZ, &
+                      viteCurrZ, acceCurrZ, strxPrevZ, &
+                      vectElemZ, &
+                      varcCurrZ_, nharm_, &
+                      ligrelCalcZ_, jvBaseZ_)
+        character(len=1), intent(in) :: stop
+        character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ, matecoZ, comporZ
+        character(len=*), intent(in) :: loadNameJvZ, loadInfoJvZ
+        real(kind=8), intent(in) :: timePrev, timeCurr
+        character(len=*), intent(in) :: dispPrevZ, dispCumuInstZ
+        character(len=*), intent(in) :: viteCurrZ, acceCurrZ, strxPrevZ
+        character(len=*), intent(inout) :: vectElemZ
+        character(len=*), optional, intent(in) :: varcCurrZ_
+        integer, optional, intent(in) :: nharm_
+        character(len=*), optional, intent(in) :: ligrelCalcZ_
+        character(len=1), optional, intent(in) :: jvBaseZ_
     end subroutine vecgme
 end interface

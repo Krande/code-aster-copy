@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,44 +15,41 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ntdoch_wrap(list_load0, l_load_user0, list_load_resu0, base)
-    !
+!
+subroutine ntdoch_wrap(listLoadZ, jvBaseZ)
+!
+    use listLoad_type
+    use listLoad_module
+!
     implicit none
-    !
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ntdoch.h"
-    !
-    ! person_in_charge: nicolas.sellenet at edf.fr
-    !
-    character(len=*), intent(in) :: list_load0
-    integer, intent(in) :: l_load_user0
-    character(len=*), intent(in) :: list_load_resu0
-    character(len=*), intent(in) :: base
-    !
-    ! ----------------------------------------------------------------------------------------------
-    !
-    ! Thermics - Read parameters
-    !
-    ! Get loads information and create datastructure
-    !
-    ! ----------------------------------------------------------------------------------------------
-    !
-    ! In  list_load_resu : name of datastructure for list of loads from result datastructure
-    ! In  l_load_user    : .true. if loads come from user (EXCIT)
-    ! In  list_load      : name of datastructure for list of loads
-    !
-    ! ----------------------------------------------------------------------------------------------
-    !
-    character(len=19) :: list_load
-    aster_logical :: l_load_user
-    character(len=19) :: list_load_resu
-    !
-    ! ----------------------------------------------------------------------------------------------
-    !
-    l_load_user = int_to_logical(l_load_user0)
-    list_load = list_load0
-    list_load_resu = list_load_resu0
-    call ntdoch(list_load, l_load_user, list_load_resu, base)
+!
+    character(len=*), intent(in) :: listLoadZ
+    character(len=*), intent(in) :: jvBaseZ
+!
+! ----------------------------------------------------------------------------------------------
+!
+! Thermics - Read parameters
+!
+! Get loads information and create datastructure
+!
+! ----------------------------------------------------------------------------------------------
+!
+! In  listLoad      : name of datastructure for list of loads
+!
+! ----------------------------------------------------------------------------------------------
+!
+    character(len=1) :: jvBase
+    character(len=19) :: listLoad
+    type(ListLoad_Prep) :: listLoadPrep
+!
+! ----------------------------------------------------------------------------------------------
+!
+    listLoad = listLoadZ
+    jvBase = jvBaseZ
+
+    call ntdoch(listLoadPrep, listLoad, jvBase)
 end subroutine

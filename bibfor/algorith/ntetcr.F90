@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ntetcr(nume_dof, ds_inout, &
-                  list_load_, compor_, hydr_, hydr_init_)
+                  listLoad_, compor_, hydr_, hydr_init_)
 !
     use NonLin_Datastructure_type
 !
@@ -31,11 +31,9 @@ subroutine ntetcr(nume_dof, ds_inout, &
 #include "asterfort/copisd.h"
 #include "asterfort/SetIOField.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_InOut), intent(inout) :: ds_inout
-    character(len=19), optional, intent(in) :: list_load_
+    character(len=24), optional, intent(in) :: listLoad_
     character(len=*), optional, intent(in) :: compor_
     character(len=*), optional, intent(in) :: hydr_
     character(len=*), optional, intent(in) :: hydr_init_
@@ -50,7 +48,7 @@ subroutine ntetcr(nume_dof, ds_inout, &
 !
 ! In  nume_dof         : name of nume_dof object (numbering equation)
 ! In  compor           : name of <CARTE> COMPOR
-! In  list_load        : name of datastructure for list of loads
+! In  listLoad         : name of datastructure for list of loads
 ! In  hydr             : name of field for hydration
 ! In  hydr_init        : name of field for initialhydration
 ! IO  ds_inout         : datastructure for input/output management
@@ -59,9 +57,9 @@ subroutine ntetcr(nume_dof, ds_inout, &
 !
     integer :: nb_field, i_field
     aster_logical :: l_hydr, l_temp_nonl
-    character(len=24) :: temp_init
+    character(len=24) :: temp_init, listLoadResu
     character(len=24) :: field_type, algo_name, init_name
-    character(len=19) :: compor, list_load_resu
+    character(len=19) :: compor
     character(len=24) :: hydr, hydr_init
 !
 ! --------------------------------------------------------------------------------------------------
@@ -79,14 +77,14 @@ subroutine ntetcr(nume_dof, ds_inout, &
         hydr_init = hydr_init_
     end if
     nb_field = ds_inout%nb_field
-    list_load_resu = ds_inout%list_load_resu
+    listLoadResu = ds_inout%listLoadResu
     temp_init = '&&NTETCR.TEMP0'
     l_temp_nonl = ds_inout%l_temp_nonl
 !
 ! - Copy of list of loads for save in results datastructure
 !
-    if (present(list_load_)) then
-        call copisd('LISTE_CHARGES', 'G', list_load_, list_load_resu)
+    if (present(listLoad_)) then
+        call copisd('LISTE_CHARGES', 'G', listLoad_, listLoadResu)
     end if
 !
 ! - Active functionnalities

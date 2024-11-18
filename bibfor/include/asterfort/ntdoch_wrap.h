@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine ntdoch_wrap(list_load0, l_load_user0, list_load_resu0, base)
-        character(len=*), intent(in) :: list_load0
-        integer, intent(in) :: l_load_user0
-        character(len=*), intent(in) :: list_load_resu0
-        character(len=*), intent(in) :: base
+    subroutine ntdoch_wrap(listLoadZ, jvBaseZ)
+        character(len=*), intent(in) :: listLoadZ, jvBaseZ
     end subroutine ntdoch_wrap
 end interface

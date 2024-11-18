@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nminmc(listFuncActi, &
-                  model, caraElem, ds_material, &
-                  listLoad, numfix, &
+                  model, listLoad, numfix, &
                   meelem, measse)
 !
     use NonLin_Datastructure_type
@@ -34,8 +33,7 @@ subroutine nminmc(listFuncActi, &
 #include "asterfort/nmchex.h"
 !
     integer, intent(in) :: listFuncActi(*)
-    character(len=24), intent(in) :: model, caraElem
-    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24), intent(in) :: model
     character(len=19), intent(in) :: listLoad
     character(len=24), intent(in) :: numfix
     character(len=19), intent(in) :: meelem(*), measse(*)
@@ -57,8 +55,6 @@ subroutine nminmc(listFuncActi, &
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR DEPLACEMENTS
 ! In  ds_constitutive  : datastructure for constitutive laws management
-! In  ds_material      : datastructure for material parameters
-! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! OUT MEELEM : MATRICES ELEMENTAIRES
@@ -90,7 +86,7 @@ subroutine nminmc(listFuncActi, &
     if (lSuperElement) then
         call nmchex(meelem, 'MEELEM', 'MESSTR', superElem)
         call nmchex(measse, 'MEASSE', 'MESSTR', superAsse)
-        call elemSuper(model, ds_material%mater, caraElem, superElem)
+        call elemSuper(model, superElem)
         call asseSuper(numfix, listLoad, superElem, superAsse)
     end if
 !

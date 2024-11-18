@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
-                  solver, l_stat, time, tpsthe, temp_iter, &
+subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
+                  solver, l_stat, timeMap, tpsthe, temp_iter, &
                   vhydr, varc_curr, dry_prev, dry_curr, cn2mbr_stat, &
                   cn2mbr_tran, matass, maprec, cndiri, cncine, &
-                  mediri, compor, ds_algorom_)
+                  mediri, comporTher, ds_algorom_)
 !
     use Rom_Datastructure_type
 !
@@ -52,20 +51,17 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 #include "asterfort/vetnth_nonl.h"
 #include "asterfort/vrcins.h"
 !
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: mate, mateco
-    character(len=24), intent(in) :: cara_elem
-    character(len=19), intent(in) :: list_load
+    character(len=8), intent(in) :: model, materField, caraElem
+    character(len=24), intent(in) :: mateco, listLoad
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
-    character(len=24), intent(in) :: time
+    character(len=24), intent(in) :: timeMap
     character(len=19), intent(in) :: varc_curr
     aster_logical, intent(in) :: l_stat
     real(kind=8), intent(in) :: tpsthe(6)
     character(len=24), intent(in) :: temp_iter
     character(len=24), intent(in) :: vhydr
-    character(len=24), intent(in) :: dry_prev
-    character(len=24), intent(in) :: dry_curr
+    character(len=24), intent(in) :: dry_prev, dry_curr
     character(len=24), intent(in) :: cn2mbr_stat
     character(len=24), intent(in) :: cn2mbr_tran
     character(len=24), intent(in) :: matass
@@ -73,7 +69,7 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     character(len=24), intent(in) :: cndiri
     character(len=24), intent(out) :: cncine
     character(len=24), intent(in) :: mediri
-    character(len=24), intent(in) :: compor
+    character(len=24), intent(in) :: comporTher
     type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -84,10 +80,10 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : name of model
-! In  mate             : name of material characteristics (field)
-! In  cara_elem        : name of elementary characteristics (field)
-! In  list_load        : name of datastructure for list of loads
+! In  model           : name of model
+! In  materField      : name of material characteristics (field)
+! In  caraElem        : name of elementary characteristics (field)
+! In  listLoad        : name of datastructure for list of loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,8 +107,7 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     character(len=24) :: cnchtp
     character(len=24) :: cnchnl
     character(len=24) :: cntnti
-
-    character(len=24) :: lload_name, lload_info, lload_func
+    character(len=24) :: loadNameJv, loadInfoJv, loadFuncJv
     character(len=24), pointer :: v_resu_elem(:) => null()
     integer, parameter :: nb_max = 9
     integer :: nb_vect, nb_matr
@@ -141,37 +136,39 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     vatnti = '&&NTACMV.VATNTI'
     vachtn = '&&NTACMV.VACHTN'
     time_curr = tpsthe(1)
-    lload_name = list_load(1:19)//'.LCHA'
-    lload_info = list_load(1:19)//'.INFC'
-    lload_func = list_load(1:19)//'.FCHA'
+
+! - Access to datastructure of list of loads
+    loadNameJv = listLoad(1:19)//'.LCHA'
+    loadInfoJv = listLoad(1:19)//'.INFC'
+    loadFuncJv = listLoad(1:19)//'.FCHA'
 !
 ! - Construct command variables fields
 !
-    call vrcins(model, mate, cara_elem, tpsthe(1), varc_curr, &
+    call vrcins(model, materField, caraElem, time_curr, varc_curr, &
                 codret)
 !
 ! - Update <CARTE> for time
 !
-    call mecact('V', time, 'MODELE', ligrmo, 'INST_R', &
+    call mecact('V', timeMap, 'MODELE', ligrmo, 'INST_R', &
                 ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
 !
 ! - Compute Dirichlet loads (AFFE_CHAR_THER)
 !
-    call vedith(model, lload_name, lload_info, time, vediri)
+    call vedith(model, loadNameJv, loadInfoJv, timeMap, vediri)
     call asasve(vediri, nume_dof, 'R', vadiri)
-    call ascova('D', vadiri, lload_func, 'INST', tpsthe(1), &
+    call ascova('D', vadiri, loadFuncJv, 'INST', time_curr, &
                 'R', cndiri)
 !
 ! - Compute Dirichlet loads (AFFE_CHAR_CINE)
 !
     cncine = ' '
-    call ascavc(lload_name, lload_info, lload_func, nume_dof, tpsthe(1), &
+    call ascavc(loadNameJv, loadInfoJv, loadFuncJv, nume_dof, time_curr, &
                 cncine)
 !
 ! - Compute CHAR_THER_EVOLNI
 !
     if (.not. l_stat) then
-        call vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
+        call vetnth_nonl(model, caraElem, mateco, timeMap, comporTher, &
                          temp_iter, varc_curr, &
                          vetntp, vetnti, 'V', &
                          dry_prev, dry_curr, vhydr)
@@ -182,14 +179,17 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
         call jeveuo(vatntp, 'L', jtn)
         cntntp = zk24(jtn)
     end if
-!
+
 ! - Compute Neumann loads (second member) - Linear part
-!
-    call vechth('STAT', model, lload_name, lload_info, cara_elem, &
-                mate, mateco, time_curr, time, temp_iter, vechtp, &
-                varc_curr_=varc_curr)
+    call vechth('STAT', &
+                model, mateco, &
+                loadNameJv, loadInfoJv, &
+                time_curr, &
+                vechtp, &
+                varcCurrZ_=varc_curr, timeMapZ_=timeMap, tempPrevZ_=temp_iter)
+
     call asasve(vechtp, nume_dof, 'R', vachtp)
-    call ascova('D', vachtp, lload_func, 'INST', tpsthe(1), &
+    call ascova('D', vachtp, loadFuncJv, 'INST', time_curr, &
                 'R', cnchtp)
     if (l_stat) then
         call jedetr(vechtp)
@@ -197,10 +197,10 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
 ! - Compute Neumann loads (second member) - Nonlinear part
 !
-    call vechnl(model, lload_name, lload_info, time, &
+    call vechnl(model, loadNameJv, loadInfoJv, timeMap, &
                 temp_iter, vechtn, 'V')
     call asasve(vechtn, nume_dof, 'R', vachtn)
-    call ascova('D', vachtn, ' ', 'INST', tpsthe(1), &
+    call ascova('D', vachtn, ' ', 'INST', time_curr, &
                 'R', cnchnl)
     if (l_stat) then
         call jedetr(vechtn)
@@ -237,13 +237,14 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
             call vtaxpy(vect_coef(i_vect), vect_name(i_vect), cn2mbr_tran)
         end do
     end if
-!
-! - Tangent matrix (non-linear) - Volumic and surfacic terms
-!
-    call merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
-                tpsthe, time, temp_iter, compor, varc_curr, &
-                merigi, 'V', l_stat, &
-                dry_prev, dry_curr)
+
+! - Tangent matrix (non-linear) - Material and loads
+    call merxth(l_stat, &
+                model, caraElem, mateco, &
+                loadNameJv, loadInfoJv, &
+                tpsthe, timeMap, &
+                temp_iter, comporTher, varc_curr, dry_curr, &
+                merigi, 'V')
     nb_matr = 0
     call jeexin(merigi(1:8)//'           .RELR', iret)
     if (iret .gt. 0) then
@@ -270,7 +271,7 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
         end if
     end if
     call asmatr(nb_matr, matr_name, ' ', nume_dof, &
-                lload_info, 'ZERO', 'V', 1, matass)
+                loadInfoJv, 'ZERO', 'V', 1, matass)
 !
 ! - Factorization of matrix
 !

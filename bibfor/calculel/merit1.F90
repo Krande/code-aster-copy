@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine merit1(modele, nchar, lchar, mate, mateco, &
-                  cara, time, matel, nh, prefch, &
-                  numero, base)
+subroutine merit1(modelZ, caraElemZ, matecoZ, &
+                  loadNameZ, &
+                  timeMap, matrElem, resuElemPref, &
+                  indxMatrElem, jvBase)
+!
     implicit none
 !
-!
-!     ARGUMENTS:
-!     ----------
-#include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/exisd.h"
@@ -37,12 +35,14 @@ subroutine merit1(modele, nchar, lchar, mate, mateco, &
 #include "asterfort/meharm.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-    character(len=8) :: modele, cara, lcharz
-    character(len=19) :: matel, prefch
-    character(len=*) :: lchar(*), mateco, mate
-    character(len=24) :: time
-    character(len=1) :: base
-    integer :: nchar, numero
+#include "jeveux.h"
+!
+    character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
+    character(len=*), intent(in) :: loadNameZ
+    character(len=24), intent(in) :: timeMap
+    character(len=19), intent(in) :: matrElem, resuElemPref
+    integer, intent(in) :: indxMatrElem
+    character(len=1), intent(in) :: jvBase
 ! ----------------------------------------------------------------------
 !
 !     CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE THERMIQUE (1)
@@ -70,76 +70,72 @@ subroutine merit1(modele, nchar, lchar, mate, mateco, &
 !
 ! ----------------------------------------------------------------------
 !
-!     FONCTIONS EXTERNES:
-!     -------------------
-!
-!     VARIABLES LOCALES:
-!     ------------------
+    character(len=8) :: model, caraElem, loadName
     character(len=8) :: lpain(6), lpaout(1)
     character(len=16) :: option
     character(len=24) :: chgeom, chharm, lchin(6), lchout(1)
     character(len=24) :: ligrmo, ligrch, chcara(18)
-!
-!-----------------------------------------------------------------------
-    integer :: icha, ilires, iret, nh
-!-----------------------------------------------------------------------
+    integer :: ilires, iret
+    integer, parameter :: nbHarm = 0
+
+! -----------------------------------------------------------------------
     call jemarq()
+
+    model = modelz
+    caraElem = caraElemZ
+    loadName = loadNameZ
+    ligrmo = model//'.MODELE'
+
+! - Create input fields
+    call megeom(modelZ, chgeom)
+    call mecara(caraElemZ, chcara)
+    call meharm(modelZ, nbHarm, chharm)
 !
-!     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
-!        ET CHAM_MATER :
-    call megeom(modele, chgeom)
-    call mecara(cara, chcara)
-    call meharm(modele, nh, chharm)
-!
-    call jeexin(matel//'.RERR', iret)
+    call jeexin(matrElem//'.RERR', iret)
     if (iret .gt. 0) then
-        call jedetr(matel//'.RERR')
-        call jedetr(matel//'.RELR')
+        call jedetr(matrElem//'.RERR')
+        call jedetr(matrElem//'.RELR')
     end if
-    call memare('V', matel, modele, 'RIGI_THER')
+    call memare('V', matrElem, modelZ, 'RIGI_THER')
 !
     lpaout(1) = 'PMATTTR'
-    lchout(1) = prefch(1:8)//'.ME000'
+    lchout(1) = resuElemPref(1:8)//'.ME000'
     ilires = 0
-    if (modele .ne. '       ') then
+    if (model .ne. ' ') then
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom
         lpain(2) = 'PMATERC'
-        lchin(2) = mateco(1:24)
+        lchin(2) = matecoZ(1:24)
         lpain(3) = 'PCACOQU'
         lchin(3) = chcara(7)
         lpain(4) = 'PINSTR'
-        lchin(4) = time
+        lchin(4) = timeMap
         lpain(5) = 'PHARMON'
         lchin(5) = chharm
         lpain(6) = 'PCAMASS'
         lchin(6) = chcara(12)
-        ligrmo = modele//'.MODELE'
         option = 'RIGI_THER'
         ilires = ilires+1
-        call codent(ilires+numero, 'D0', lchout(1) (12:14))
+        call codent(ilires+indxMatrElem, 'D0', lchout(1) (12:14))
         call calcul('S', option, ligrmo, 6, lchin, &
-                    lpain, 1, lchout, lpaout, base, &
+                    lpain, 1, lchout, lpaout, jvBase, &
                     'OUI')
-        call reajre(matel, lchout(1), base)
+        call reajre(matrElem, lchout(1), jvBase)
     end if
-    if (lchar(1) (1:8) .ne. '        ') then
-        do icha = 1, nchar
-            lpain(1) = 'PDDLMUR'
-            lcharz = lchar(icha)
-            call exisd('CHAMP_GD', lcharz//'.CHTH.CMULT', iret)
-            if (iret .eq. 0) goto 10
-            lchin(1) = lchar(icha)//'.CHTH.CMULT     '
+    if (loadName .ne. " ") then
+        lpain(1) = 'PDDLMUR'
+        call exisd('CHAMP_GD', loadName//'.CHTH.CMULT', iret)
+        if (iret .ne. 0) then
+            lchin(1) = loadName//'.CHTH.CMULT     '
             ilires = ilires+1
-            call codent(ilires+numero, 'D0', lchout(1) (12:14))
-            ligrch = lchar(icha)//'.CHTH.LIGRE'
+            call codent(ilires+indxMatrElem, 'D0', lchout(1) (12:14))
+            ligrch = loadName//'.CHTH.LIGRE'
             option = 'THER_DDLM_R'
             call calcul('S', option, ligrch, 1, lchin, &
-                        lpain, 1, lchout, lpaout, base, &
+                        lpain, 1, lchout, lpaout, jvBase, &
                         'OUI')
-            call reajre(matel, lchout(1), base)
-10          continue
-        end do
+            call reajre(matrElem, lchout(1), jvBase)
+        end if
     end if
 !
     call jedema()

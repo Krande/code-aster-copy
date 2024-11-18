@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ntarc0(result, model, mate, cara_elem, list_load_resu, &
+subroutine ntarc0(result, model, materfield, caraElem, listLoadResu, &
                   para, nume_store, time_curr)
 !
     implicit none
@@ -29,14 +29,11 @@ subroutine ntarc0(result, model, mate, cara_elem, list_load_resu, &
 #include "asterfort/rsadpa.h"
 #include "asterfort/rssepa.h"
 !
-    character(len=8), intent(in) :: result
+    character(len=8), intent(in) :: result, model, materfield, caraElem
     integer, intent(in) :: nume_store
     real(kind=8), intent(in) :: time_curr
     real(kind=8), intent(in) :: para(*)
-    character(len=19), intent(in) :: list_load_resu
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: mate
-    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: listLoadResu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +57,7 @@ subroutine ntarc0(result, model, mate, cara_elem, list_load_resu, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_para
+    integer :: jvPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,18 +65,17 @@ subroutine ntarc0(result, model, mate, cara_elem, list_load_resu, &
 !
 ! - Store time
 !
-    call rsadpa(result, 'E', 1, 'INST', nume_store, 0, sjv=jv_para)
-    zr(jv_para) = time_curr
+    call rsadpa(result, 'E', 1, 'INST', nume_store, 0, sjv=jvPara)
+    zr(jvPara) = time_curr
 !
 ! - Store some parameters
 !
-    call rsadpa(result, 'E', 1, 'PARM_THETA', nume_store, 0, sjv=jv_para)
-    zr(jv_para) = para(1)
+    call rsadpa(result, 'E', 1, 'PARM_THETA', nume_store, 0, sjv=jvPara)
+    zr(jvPara) = para(1)
 !
 ! - Store others
 !
-    call rssepa(result, nume_store, model, mate, cara_elem, &
-                list_load_resu)
+    call rssepa(result, nume_store, model, materfield, caraElem, listLoadResu)
 !
     call jedema()
 end subroutine
