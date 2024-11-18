@@ -287,6 +287,35 @@ class SimpKwdLine(KwdLine):
         return os.linesep.join(lines)
 
 
+class ReuseLine(KwdLine):
+    """Content for :
+
+    .. code-block:: text
+
+        ♦     reuse = ...
+    """
+
+    def __init__(self, lvl, name) -> None:
+        super().__init__(lvl, name)
+
+    @property
+    def hidden(self):
+        """Tell if the block should be hidden"""
+        self._hide = False
+        return super().hidden
+
+    def set(self, defs, rules):
+        """Set block settings from the keyword definition"""
+        super().set(defs, rules)
+        self._value = defs.get("value")
+
+    def repr(self):
+        """Representation of the block."""
+        prefix = self.offset + self._name + " = "
+        lines = [prefix + f"<objet de {self._value}>" + ","]
+        return os.linesep.join(lines)
+
+
 class FactLine(KwdLine):
     """For factor keyword:
 
@@ -352,13 +381,10 @@ class CmdLine(BaseLine):
         lines[-1] += self._name + "("
         lines = [self.offset + line for line in lines]
         if self._reused:
-            cmt = f"{CMT} "
-            if self._reused[0] == "o":
-                cmt += "modifie "
-            else:
-                cmt += "peut modifier "
-            cmt += " ou ".join(["/".join(i.split(":")) for i in self._reused[1].split("|")])
-            lines.append(self.offset + INDENT + cmt)
+            reusable = " ou ".join(["/".join(i.split(":")) for i in self._reused[1].split("|")])
+            reuse = ReuseLine(self.offset + INDENT, "reuse")
+            reuse.set({"statut": self._reused[0], "value": reusable}, [])
+            lines.append(reuse.repr())
         return os.linesep.join(lines)
 
 
@@ -638,7 +664,7 @@ class TestDoc(unittest.TestCase):
         text = syntax.repr()
         # print(text)
         self.assertTrue(text.startswith("maillage = TEST("), msg="with one result")
-        self.assertFalse(CMT in text, msg="not reusable")
+        self.assertFalse("reuse" in text, msg="not reusable")
 
         def sd_prod(**args):
             if args.get("__all__"):
@@ -655,7 +681,7 @@ class TestDoc(unittest.TestCase):
         self.assertIsNotNone(
             re.search(rf"\{XOR} (maillage|grille|squelette) = TEST\(", text), msg="last line"
         )
-        self.assertTrue(CMT in text, msg="reusable")
+        self.assertTrue("reuse" in text, msg="reusable")
 
     def _test10_lire_maillage(self):
         text = self.repr_and_write(CMD.LIRE_MAILLAGE)
