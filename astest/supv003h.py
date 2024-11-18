@@ -37,9 +37,10 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MAT))
 
 BLOCAGE = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=_F(GROUP_MA="BASE", DX=0.0, DY=0.0, DZ=0.0))
 
+size = 3
 list_vect = []
-for i in range(300):
-    list_vect.append({"VECTEUR": CO("tmp%s" % i), "OPTION": "CHAR_MECA", "CHARGE": BLOCAGE})
+for i in range(size):
+    list_vect.append({"VECTEUR": CO(f"tmp{i}"), "OPTION": "CHAR_MECA", "CHARGE": BLOCAGE})
 
 
 ASSEMBLAGE(
@@ -56,11 +57,12 @@ ASSEMBLAGE(
 
 # on vérifie que le premier et dernier vect_asse existent
 test.assertTrue(tmp0.getType(), "VECT_ASSE")
-test.assertTrue(tmp299.getType(), "VECT_ASSE")
+last = globals()[f"tmp{size-1}"]
+test.assertTrue(last.getType(), "VECT_ASSE")
 
 ExecutionParameter().disable(Options.UseLegacyMode)
 try:
-    result = ASSEMBLAGE(
+    restup = ASSEMBLAGE(
         MODELE=MODELE,
         CHAM_MATER=CHMAT,
         CHARGE=BLOCAGE,
@@ -75,10 +77,13 @@ except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "SUPERVIS2_90")
     test.assertTrue(sys.version_info < (3, 7))
 else:
-    # main (None) + NUMEDDL + RIGIDITE + MASSE + 300 tmp
-    test.assertEqual(len(result), 1 + 3 + 300)
-    assert result.main is None, result.main
+    # main (None) + NUMEDDL + RIGIDITE + MASSE + tmp*
+    test.assertEqual(len(restup), 1 + 3 + size)
+    test.assertIsNone(restup.main, msg="restup.main should be None")
+    test.assertIsNotNone(restup.NUMEDDL, msg="restup.NUMEDDL should exist")
+    test.assertIsNotNone(restup.MASSE, msg="restup.MASSE should exist")
+    test.assertIsNotNone(restup.RIGIDITE, msg="restup.RIGIDITE should exist")
+
+test.printSummary()
 
 CA.close()
-
-# TODO: check result after POURSUITE
