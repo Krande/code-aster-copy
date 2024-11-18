@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vechme(stop, modelz, lload_namez, lload_infoz, inst, &
-                  cara_elem, mate, mateco, vect_elemz, varc_currz, ligrel_calcz, &
+!
+subroutine vechme(stop, modelz, loadNameJvZ, loadInfoJvz, inst, &
+                  caraElem, mate, mateco, vect_elemz, varc_currz, ligrel_calcz, &
                   nharm, basez)
+!
+    use loadCompute_module
 !
     implicit none
 !
@@ -28,21 +30,17 @@ subroutine vechme(stop, modelz, lload_namez, lload_infoz, inst, &
 #include "asterfort/load_list_info.h"
 #include "asterfort/load_neum_prep.h"
 #include "asterfort/load_neum_comp.h"
-#include "asterfort/load_neum_evcd.h"
-#include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-!
-! person_in_charge: jacques.pellet at edf.fr
+#include "LoadTypes_type.h"
 !
     character(len=1), intent(in) :: stop
     character(len=*), intent(in) :: modelz
-    character(len=*), intent(in) :: lload_namez
-    character(len=*), intent(in) :: lload_infoz
+    character(len=*), intent(in) :: loadNameJvZ, loadInfoJvz
     real(kind=8), intent(in) :: inst(3)
-    character(len=*), intent(in) :: cara_elem
+    character(len=*), intent(in) :: caraElem
     character(len=*), intent(in) :: mate, mateco
     character(len=*), intent(inout) :: vect_elemz
     character(len=*), optional, intent(in) :: varc_currz
@@ -62,50 +60,48 @@ subroutine vechme(stop, modelz, lload_namez, lload_infoz, inst, &
 ! In  model          : name of model
 ! In  mate           : name of material characteristics (field)
 ! In  mateco         : mane of coded material
-! In  cara_elem      : name of elementary characteristics (field)
-! In  lload_name     : name of object for list of loads name
-! In  lload_info     : name of object for list of loads info
+! In  caraElem       : name of elementary characteristics (field)
+! In  loadNameJv     : name of object for list of loads name
+! In  loadInfoJv     : name of object for list of loads info
 ! In  inst           : times informations
 ! In  ligrel_calc    : LIGREL to compute
 ! In  varc_curr      : command variable for current time
-! IO  vect_elem      : name of vect_elem result
+! IO  vectElem      : name of vectElem result
 ! In  nharm          : Fourier mode
 !
 ! ATTENTION :
-!   LE VECT_ELEM (VECELZ) RESULTAT A 1 PARTICULARITE :
+!   LE vectElem (VECELZ) RESULTAT A 1 PARTICULARITE :
 !   CERTAINS RESUELEM NE SONT PAS DES RESUELEM MAIS DES CHAM_NO (.VEASS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_in_maxi, nbout
-    parameter(nb_in_maxi=48, nbout=1)
-    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
-    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
-!
-    integer :: nb_load, i_load
-    integer :: load_nume
+    integer, parameter :: nbout = 1
+    character(len=8) :: lpain(LOAD_NEUM_NBMAXIN), lpaout(nbout)
+    character(len=19) :: lchin(LOAD_NEUM_NBMAXIN), lchout(nbout)
+    character(len=4), parameter :: loadApply = "Dead"
+    integer :: nbLoad, iLoad
+    integer :: loadNume
     integer :: nb_in_prep
     real(kind=8) :: inst_prev, inst_curr, inst_theta
-    character(len=8) :: load_name
+    character(len=8) :: loadName
     character(len=24) :: ligrel_calc, model
-    character(len=19) :: vect_elem, varc_curr, resu_elem
-    character(len=24) :: lload_name
-    character(len=24), pointer :: v_load_name(:) => null()
-    character(len=24) :: lload_info
-    integer, pointer :: v_load_info(:) => null()
+    character(len=19) :: vectElem, varc_curr, resuElem
+    character(len=24) :: loadNameJv
+    character(len=24), pointer :: listLoadName(:) => null()
+    character(len=24) :: loadInfoJv
+    integer, pointer :: listLoadInfo(:) => null()
     aster_logical :: load_empty
     character(len=1) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
-    resu_elem = '&&VECHME.0000000'
+    resuElem = '&&VECHME.0000000'
     model = modelz
-    lload_name = lload_namez
-    lload_info = lload_infoz
+    loadNameJv = loadNameJvZ
+    loadInfoJv = loadInfoJvz
     varc_curr = ' '
     if (present(varc_currz)) then
         varc_curr = varc_currz
@@ -121,69 +117,63 @@ subroutine vechme(stop, modelz, lload_namez, lload_infoz, inst, &
     if (present(basez)) then
         base = basez
     end if
-!
-! - Init fields
-!
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
-                lchout)
-!
-! - Result name for vect_elem
-!
-    vect_elem = vect_elemz
-    if (vect_elem .eq. ' ') then
-        vect_elem = '&&VECHME'
+    lpain = " "
+    lchin = " "
+    lpaout = " "
+    lchout = " "
+
+! - Result name for vectElem
+    vectElem = vect_elemz
+    if (vectElem .eq. ' ') then
+        vectElem = '&&VECHME'
     end if
-!
+
 ! - Loads
-!
-    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
-                        lload_name, lload_info)
-!
+    call load_list_info(load_empty, nbLoad, listLoadName, listLoadInfo, &
+                        loadNameJv, loadInfoJv)
+
 ! - Allocate result
-!
-    call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, 'CHAR_MECA')
-    call reajre(vect_elem, ' ', base)
+    call detrsd('VECT_ELEM', vectElem)
+    call memare(base, vectElem, model, 'CHAR_MECA')
+    call reajre(vectElem, ' ', base)
     if (load_empty) then
         goto 99
     end if
-!
+
 ! - Preparing input fields
-!
     if (present(nharm)) then
-        call load_neum_prep(model, cara_elem, mate, mateco, 'Dead', inst_prev, &
-                            inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
+        call load_neum_prep(model, caraElem, mate, mateco, loadApply, inst_prev, &
+                            inst_curr, inst_theta, LOAD_NEUM_NBMAXIN, nb_in_prep, lchin, &
                             lpain, varc_curr=varc_curr, nharm=nharm)
     else
-        call load_neum_prep(model, cara_elem, mate, mateco, 'Dead', inst_prev, &
-                            inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
+        call load_neum_prep(model, caraElem, mate, mateco, 'Dead', inst_prev, &
+                            inst_curr, inst_theta, LOAD_NEUM_NBMAXIN, nb_in_prep, lchin, &
                             lpain, varc_curr=varc_curr)
     end if
-!
+
 ! - Computation
-!
-    do i_load = 1, nb_load
-        load_name = v_load_name(i_load) (1:8)
-        load_nume = v_load_info(nb_load+i_load+1)
-!
-! ----- Standard dead Neumann loads
-!
-        if ((load_nume .gt. 0 .and. load_nume .lt. 4) .or. (load_nume .eq. 55)) then
-            call load_neum_comp(stop, i_load, load_name, load_nume, 'Dead', &
-                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
-                                base, resu_elem, vect_elem)
+    do iLoad = 1, nbLoad
+        loadName = listLoadName(iLoad) (1:8)
+        loadNume = listLoadInfo(nbLoad+iLoad+1)
+
+        if ((loadNume .gt. 0 .and. loadNume .lt. 4) .or. (loadNume .eq. 55)) then
+! --------- Standard dead Neumann loads
+            call load_neum_comp(stop, iLoad, loadName, loadNume, loadApply, &
+                                ligrel_calc, LOAD_NEUM_NBMAXIN, nb_in_prep, lpain, lchin, &
+                                base, resuElem, vectElem)
+
+! --------- Composite dead Neumann loads (EVOL_CHAR)
+            call compEvolChar(model, caraElem, inst_prev, base, &
+                              iLoad, loadName, loadApply, ligrel_calc, &
+                              nb_in_prep, lpain, lchin, &
+                              resuElem, vectElem)
+
         end if
-!
-! ----- Composite dead Neumann loads (EVOL_CHAR)
-!
-        call load_neum_evcd(stop, inst_prev, load_name, i_load, load_nume, ligrel_calc, &
-                            nb_in_maxi, nb_in_prep, lpain, lchin, base, &
-                            resu_elem, vect_elem)
     end do
 !
 99  continue
 !
-    vect_elemz = vect_elem//'.RELR'
+    vect_elemz = vectElem//'.RELR'
 !
     call jedema()
 end subroutine

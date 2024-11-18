@@ -128,14 +128,13 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
     tpsthe(4) = r8vide()
     tpsthe(5) = r8vide()
     tpsthe(6) = r8vide()
-!
+
 ! - RECUPERATION DU CHAMP DE TEMPERATURE A T ET T+DT POUR LE SECHAGE
-!
     if (l_dry) then
         call dismoi('NB_CHAMP_UTI', result_dry, 'RESULTAT', repi=nbcham)
         if (nbcham .gt. 0) then
-            timet = time_curr
-            timtdt = time_curr+deltat
+            timet = time_curr-deltat
+            timtdt = time_curr
             base = 'V'
             call rsinch(result_dry, 'TEMP', 'INST', timet, dry_prev, &
                         'CONSTANT', 'CONSTANT', 1, base, prec, crit, icoret)

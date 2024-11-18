@@ -20,30 +20,22 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _(
+    2: _(
         """
-  Le concept EVOL_CHAR %(k1)s ne contient aucun champ.
+Problème lors du traitement du chargement de type EVOL_CHAR.
+L'extraction du chargement de type %(k1)s a échoué pour l'instant %(r1)f.
+Le chargement n'a pas été trouvé pour cet instant.
 """
     ),
-    8: _(
+    10: _("""Les composantes dans le champ de vent doivent être exactement DX, DY et DZ."""),
+    13: _(
         """
-Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.
-L'extraction du chargement de pression a échoué pour l'instant %(r1)f.
-Le chargement est mal défini:
-- soit %(k1)s n'est pas indexé par l'instant;
-- soit le chargement n'a pas été trouvé pour cet instant;
+Le chargement EVOL_CHAR contient des chargements s'appliquant simultanément sur des modèles de dimensions différentes. Ce n'est pas possible.
 """
     ),
-    12: _(
+    14: _(
         """
-Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.
-L'extraction du chargement a échoué pour l'instant %(r1)f.
-Le chargement est mal défini:
-- soit %(k1)s n'est pas indexé par l'instant;
-- soit le chargement n'a pas été trouvé pour cet instant;
-- soit il manque un champ nécessaire :
-    - COEF_H et T_EXT pour ECHANGE
-    - FLUN pour FLUX_REP
+Le chargement EVOL_CHAR contient un chargement déclaré suiveur. Or ce chargement ne peut pas être suiveur.
 """
     ),
 }
