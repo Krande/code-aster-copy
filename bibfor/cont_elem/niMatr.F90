@@ -67,6 +67,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !
     matr_cont = 0.d0
     matr_fric = 0.d0
+    dGapRenum = 0.d0
 !
 ! - Mapping of dofs
 !

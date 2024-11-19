@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,6 +65,10 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat, &
 !     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 !
     ifl = nbcomm(ifa, 1)
+    dgamma = 0.d0
+    dp = 0.d0
+    crit = 0.d0
+    sgns = 0.d0
     iret = 0
     ptit = r8miem()
     k = coeft(ifl+1)

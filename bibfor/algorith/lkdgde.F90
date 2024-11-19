@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,6 +69,8 @@ subroutine lkdgde(val, vintr, dt, seuive, ucrim, &
     parameter(zero=0.0d0)
     parameter(deux=2.0d0)
     parameter(trois=3.0d0)
+    dfdsv = 0.d0
+    vecnv = 0.d0
 ! =================================================================
 ! --- RECUPERATION DES DONNEES MATERIAUX --------------------------
 ! =================================================================
@@ -99,6 +101,7 @@ subroutine lkdgde(val, vintr, dt, seuive, ucrim, &
 ! =================================================================
 ! --- CALCUL DE DEPSV ------------------------------------
 ! =================================================================
+    depsv = 0.d0
     do i = 1, ndt
         if (seuive .le. zero) then
             depsv(i) = zero

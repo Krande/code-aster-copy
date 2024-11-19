@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,23 +22,18 @@ subroutine lcdevi(a, d)
 !       IN  A      :  TENSEUR
 !       OUT D      :  DEVIATEUR DE A = A - 1/3 TR(A) I
 !       ----------------------------------------------------------------
-    integer :: n, nd
+    integer :: ndt, ndi
     real(kind=8) :: a(6), d(6), ta
-    common/tdim/n, nd
+    common/tdim/ndt, ndi
 !
 !
 !-----------------------------------------------------------------------
     integer :: i
 !-----------------------------------------------------------------------
-    ta = 0.d0
-    do i = 1, nd
-        ta = ta+a(i)
-    end do
-    ta = ta/3.d0
-    do i = 1, nd
-        d(i) = a(i)-ta
-    end do
-    do i = nd+1, n
-        d(i) = a(i)
-    end do
+    d = 0.d0
+    ta = sum(a(1:ndi))/3.d0
+!
+    d(1:ndt) = a(1:ndt)
+    d(1:ndi) = d(1:ndi)-ta
+
 end subroutine
