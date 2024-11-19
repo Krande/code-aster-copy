@@ -345,8 +345,6 @@ contains
         else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
             call utmess('F', 'CHARGES8_2', sr=time, sk=nameInEvol)
         end if
-
-        WRITE (6, *) "Chargement: ", nameInEvol, " => ", ier, exist
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
