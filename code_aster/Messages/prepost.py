@@ -54,21 +54,6 @@ PARALLELISME_TEMPS='NON'.
  être égale a 5.
 """
     ),
-    7: _(
-        """
-  Le prolongement linéaire est impossible avec 1 seul point. Utiliser CONSTANT.
-"""
-    ),
-    8: _(
-        """
- prolongement à gauche exclu
-"""
-    ),
-    9: _(
-        """
- prolongement à droite exclu
-"""
-    ),
     10: _(
         """
  Phénomène non valide. Utiliser TRACTION ou ECRO_LINE pour récupérer les limites élastiques.

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -286,21 +286,6 @@ On ne peut donc pas tenir compte des KRX, KRY, KRZ. Les degrés de libertés son
     89: _(
         """
  type non traite  %(k1)s
-"""
-    ),
-    90: _(
-        """
- les tables TABL_MECA_REV et TABL_MECA_MDB n'ont pas les mêmes dimensions
-"""
-    ),
-    91: _(
-        """
- les tables n'ont pas les mêmes instants de calculs
-"""
-    ),
-    92: _(
-        """
- les tables n'ont pas les mêmes dimensions
 """
     ),
     94: _(

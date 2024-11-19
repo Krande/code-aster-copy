@@ -171,7 +171,6 @@ subroutine ex0000(nuoper)
 #include "asterfort/op0195.h"
 #include "asterfort/op0196.h"
 #include "asterfort/op0197.h"
-#include "asterfort/op0198.h"
 #include "asterfort/op0199.h"
 #include "asterfort/utmess.h"
     integer, intent(in) :: nuoper
@@ -485,8 +484,6 @@ subroutine ex0000(nuoper)
         call op0196()
     case (197)
         call op0197()
-    case (198)
-        call op0198()
     case (199)
         call op0199()
     case default
