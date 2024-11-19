@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -63,12 +64,12 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 !     ------------------------------------------------------------------
 !
     character(len=80) :: text80, text1
-    character(len=24) :: naux24, kordre, nomobj
+    character(len=24) :: naux24, kordre, nomobj, operation
     character(len=19) :: nchp19
     character(len=16) :: nchsym
-    character(len=8) :: k8b, nresu, nchgd, granch, nomcp(50)
+    character(len=8) :: k8b, nresu, nchgd, granch, nomcp(50), nomail
     character(len=4) :: typech
-    aster_logical :: existe
+    aster_logical :: existe, parMesh
     integer :: anomcp, anumcp, ancpu1, ancpu2, acpgd, avchef
     integer :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, avcodo
     integer :: nbpost, nbchgd, nbcpgd, nbcmp, nbresu, nbtcp, nbsom
@@ -101,6 +102,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
         call wkvect('&&RVGARG.NOM.OPERATION', 'V V K80', n3, adr)
         call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=n3, vect=zk80(adr), &
                     nbret=n4)
+        operation = zk80(adr)
         if (n3 .eq. 1) then
             text1 = zk80(adr+1-1)
             if (text1(1:1) .eq. 'E') then
@@ -120,6 +122,8 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 !        /* CAS D' UN RESULTAT COMPOSE */
             call getvid('ACTION', 'RESULTAT', iocc=iocc, scal=nresu, nbret=n1)
             call getvtx('ACTION', 'NOM_CHAM', iocc=iocc, scal=text80, nbret=n1)
+            call dismoi('NOM_MAILLA', nresu, 'RESU', repk=nomail)
+            parMesh = isParallelMesh(nomail)
             nchsym = text80(1:16)
             call jenonu(jexnom(nresu//'           .DESC', nchsym), n1)
             if (n1 .ne. 0) then
@@ -164,6 +168,11 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
             call getvid('ACTION', 'CHAM_GD', iocc=iocc, scal=nchgd, nbret=n1)
             existe = .true.
             nchp19 = nchgd//'           '
+            call dismoi('NOM_MAILLA', nchgd, 'CHAMP', repk=nomail)
+            parMesh = isParallelMesh(nomail)
+        end if
+        if (parMesh .and. operation .ne. 'EXTRACTION') then
+            call utmess('F', 'POSTRELE_24')
         end if
         call jecroc(jexnum(nxdnom, iocc))
         call jecroc(jexnum(nxdnum, iocc))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
 !
     integer :: nbrgpn, nbneud, aneud, agrpn, alndtp, alstnd, agneud
     integer :: i, j, k, libre, numnd, nbtnd, n1, nbn, iret, iera
-    integer :: asgtu, i1, i2, ny
+    integer :: asgtu, i1, i2, ny, ier
     real(kind=8) :: vecty(3), tole
     character(len=8) :: courbe, crit
     character(len=24) :: nomgrn
@@ -91,8 +91,11 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
         call getvem(nmaila, 'GROUP_NO', mcf, 'GROUP_NO', iocc, &
                     nbrgpn, zk24(agrpn), n1)
         do i = 1, nbrgpn, 1
-            call jelira(jexnom(nrepgn, zk24(agrpn+i-1)), 'LONUTI', n1)
-            nbtnd = nbtnd+n1
+            call jeexin(jexnom(nrepgn, zk24(agrpn+i-1)), ier)
+            if (ier .ne. 0) then
+                call jelira(jexnom(nrepgn, zk24(agrpn+i-1)), 'LONUTI', n1)
+                nbtnd = nbtnd+n1
+            end if
         end do
     end if
     if (nbneud .ne. 0) then
@@ -118,12 +121,15 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
     if (nbrgpn .ne. 0) then
         do i = 1, nbrgpn, 1
             nomgrn = zk24(agrpn+i-1)
-            call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
-            call jeveuo(jexnom(nrepgn, nomgrn), 'L', agneud)
-            do j = 1, nbn, 1
-                zi(alndtp+libre-1+j-1) = zi(agneud+j-1)
-            end do
-            libre = libre+nbn
+            call jeexin(jexnom(nrepgn, nomgrn), ier)
+            if (ier .ne. 0) then
+                call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
+                call jeveuo(jexnom(nrepgn, nomgrn), 'L', agneud)
+                do j = 1, nbn, 1
+                    zi(alndtp+libre-1+j-1) = zi(agneud+j-1)
+                end do
+                libre = libre+nbn
+            end if
         end do
     end if
 !
@@ -192,9 +198,12 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
         if ((nbneud .ge. 2 .and. nbrgpn .eq. 0) .or. (nbneud .eq. 0 .and. nbrgpn .eq. 1)) then
             if (nbrgpn .eq. 1) then
                 nomgrn = zk24(agrpn+1-1)
-                call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
-                if (nbn .lt. 2) then
-                    call utmess('F', 'POSTRELE_21')
+                call jeexin(jexnom(nrepgn, nomgrn), ier)
+                if (ier .ne. 0) then
+                    call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
+                    if (nbn .lt. 2) then
+                        call utmess('F', 'POSTRELE_21')
+                    end if
                 end if
             end if
         else
