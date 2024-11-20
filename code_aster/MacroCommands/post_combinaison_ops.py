@@ -178,7 +178,12 @@ def extract_results_values_by_field(
                 if field_type == "CHAM_NO":
                     field_array.append(restrain_field(field, model, nodes_groups, True))
                 else:
-                    field_array.append(restrain_field(field, model, cells_groups, is_node=False))
+                    if cells_groups:
+                        field_array.append(
+                            restrain_field(field, model, cells_groups, is_node=False)
+                        )
+                    else:
+                        field_array.append(field)
                 counter += 1
         values_by_field[field_name] = field_array
 
