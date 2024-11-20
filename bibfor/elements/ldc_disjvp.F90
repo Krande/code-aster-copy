@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine ldc_disjvp(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: mm, xm, sim, my, fp, re, dre, hrem, hrep, hdrp, hdrm, kplus, kmoins, lamb
-    real(kind=8) :: factp, factm, fact, dm1, dm2, dd1, dd2
+    real(kind=8) :: factp, factm, fact, dm1, dm2, dd1, dd2, eps
 !
 !   système d'équations :
     integer :: imoment, itheta, ithetap, idp, idm, ixm, idiss
@@ -62,6 +62,7 @@ subroutine ldc_disjvp(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     parameter(ike=1, ikp=2, ikdp=3, ikdm=4, irdp=5, irdm=6, imyp=7, imym=8)
 !
     decoup = ASTER_FALSE
+    eps = r8prem()
 !   initialisation
     dyy(itheta) = dy0(itheta)
 !   par defaut rien n evolue
@@ -72,6 +73,10 @@ subroutine ldc_disjvp(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     dyy(imoment) = 0.0
     dyy(idiss) = 0.0
 !   raideurs secantes
+    if (abs(yy0(idp)) .lt. eps .or. abs(yy0(idm)) .lt. eps) then
+        decoup = ASTER_TRUE
+        goto 999
+    end if
     kplus = ppr(ikdp)+(ppr(ike)-ppr(ikdp))*ppr(irdp)/yy0(idp)
     kmoins = ppr(ikdm)+(ppr(ike)-ppr(ikdm))*abs(ppr(irdm))/yy0(idm)
 !   rotation elastique
@@ -110,7 +115,7 @@ subroutine ldc_disjvp(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
         factp = ppr(ikdp)+(ppr(ike)-ppr(ikdp))*(ppr(irdp)/yy0(idp))*(1.+re*hdrp/yy0(idp))
         factm = ppr(ikdm)+(ppr(ike)-ppr(ikdm))*(abs(ppr(irdm))/yy0(idm))*(1.-re*hdrm/yy0(idm))
         fact = hrep*factp+hrem*factm
-        if ((ppr(ikp)+fact) > r8prem()) then
+        if ((ppr(ikp)+fact) > eps) then
             lamb = sim*dyy(itheta)*fact/(ppr(ikp)+fact)
             if (lamb > 0.) then
                 dyy(ithetap) = sim*lamb
@@ -134,5 +139,5 @@ subroutine ldc_disjvp(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     dd2 = (1./2.)*(ppr(ike)-ppr(ikdm))*abs(ppr(irdm))*dyy(idm)+my*abs(dyy(ithetap))
     dyy(idiss) = dd1+dd2
 !
-!999 continue
+999 continue
 end subroutine
