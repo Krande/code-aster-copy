@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -214,7 +214,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix, &
         write (ifm, 20001) nochmd, nbtv
     end if
 20001 format&
-   & ('LE CHAMP MED ', a, ' CONTIENT ', i6, ' TABLEAUX SUR LES NOEUDS :')
+ & ('LE CHAMP MED ', a, ' CONTIENT ', i6, ' TABLEAUX SUR LES NOEUDS :')
 !
 !====
 ! 3. ALLOCATION DES TABLEAUX
@@ -248,6 +248,9 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix, &
             if (codret .ne. 0) then
                 saux08 = 'mfdcsi'
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
+            end if
+            if (finupt .ne. finuno) then
+                call utmess('F', 'MED_12', sk=saux08, si=codret)
             end if
             zi(jnptno+iaux*2-2) = finupt
             zi(jnptno+iaux*2-1) = finuno
@@ -317,7 +320,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix, &
 !
 40012 format(2x, '. AUCUNE INDICATION DE PAS DE TEMPS')
 40022 format(2x, '. PAS DE TEMPS NUMERO ', i5,&
-   &       /, 2x, '. INSTANT : ', g13.5)
+ &       /, 2x, '. INSTANT : ', g13.5)
 40013 format(2x, '. AUCUNE INDICATION DE NUMERO D''ORDRE',/)
 40023 format(2x, '. NUMERO D''ORDRE : ', i5,/)
 !
