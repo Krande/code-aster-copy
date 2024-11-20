@@ -17,12 +17,20 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from enum import Enum, auto
+
 from . import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph, PtScotchPartitioner
 from . import MedFileAccessType, ParallelMesh
 from . import FieldCharacteristics, SimpleFieldOnNodesReal, Result
 from . import SimpleFieldOnCellsReal
 from . import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
 from . import toAsterGeoType
+
+
+class MedSequenceToOrder(Enum):
+    Both = auto()
+    TimeStep = auto()
+    Iteration = auto()
 
 
 def _splitMeshAndFieldsFromMedFile(
@@ -33,6 +41,7 @@ def _splitMeshAndFieldsFromMedFile(
     nodeGrpToGather=[],
     deterministic=False,
     parallel=True,
+    sequenceToOrder=MedSequenceToOrder.Both,
 ):
     """Split a MED mesh and MED fields from a filename
 
@@ -44,6 +53,7 @@ def _splitMeshAndFieldsFromMedFile(
         nodeGrpToGather (list of list): list of list of node groups to gather
             each item of list will be gather on a sigle MPI processor
         parallel (bool): True if med file must be open in parallel
+        sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
 
     Returns:
         tuple: first element: split mesh, second element: dict with split fields,
@@ -97,9 +107,19 @@ def _splitMeshAndFieldsFromMedFile(
         fieldDict[curField.getName()]["id2time"] = []
         for j in range(nbSeq):
             curSeq = curField.getSequence(j)
-            assert curSeq[0] == curSeq[1]
+            if sequenceToOrder == MedSequenceToOrder.Both:
+                if curSeq[0] != curSeq[1]:
+                    raise NameError(
+                        "Time step and iteration number must be equal in med field\n"
+                        "Try to change the sequenceToOrder argument"
+                    )
+                orderNb = curSeq[1]
+            elif sequenceToOrder == MedSequenceToOrder.TimeStep:
+                orderNb = curSeq[0]
+            elif sequenceToOrder == MedSequenceToOrder.Iteration:
+                orderNb = curSeq[1]
             curTime = curField.getTime(j)
-            fieldDict[curField.getName()]["id2time"].append((curSeq[0], curTime))
+            fieldDict[curField.getName()]["id2time"].append((orderNb, curTime))
             supportEnt = curField.getAllSupportEntitiesAtSequence(curSeq[0], curSeq[1])
             if supportEnt[0] == 3:
                 valuesVec = curField.getValuesAtSequenceOnNodes(curSeq[0], curSeq[1])
@@ -107,7 +127,7 @@ def _splitMeshAndFieldsFromMedFile(
                     out = nBalancer.balanceMedVectorOverProcessesWithRenumbering(valuesVec)
                 else:
                     out = valuesVec
-                fieldDict[curField.getName()][curSeq[0]] = out
+                fieldDict[curField.getName()][orderNb] = out
             else:
                 valuesVec = curField.getValuesAtSequenceOnCellTypesList(
                     curSeq[0], curSeq[1], cellTypes
@@ -116,7 +136,7 @@ def _splitMeshAndFieldsFromMedFile(
                     out = cBalancer.balanceMedVectorOverProcessesWithRenumbering(valuesVec)
                 else:
                     out = valuesVec
-                fieldDict[curField.getName()][curSeq[0]] = out
+                fieldDict[curField.getName()][orderNb] = out
     toReturn = (outMesh, fieldDict)
     if cellBalancer:
         toReturn += (cBalancer,)
@@ -132,6 +152,7 @@ def splitMeshAndFieldsFromMedFile(
     outMesh=None,
     nodeGrpToGather=[],
     deterministic=False,
+    sequenceToOrder=MedSequenceToOrder.Both,
 ):
     """Split a MED mesh and MED fields from a filename
 
@@ -142,6 +163,7 @@ def splitMeshAndFieldsFromMedFile(
         outMesh (ParallelMesh): split mesh.
         nodeGrpToGather (list of list): list of list of node groups to gather
             each item of list will be gather on a sigle MPI processor
+        sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
 
     Returns:
         tuple: first element: split mesh, second element: dict with split fields,
@@ -149,11 +171,25 @@ def splitMeshAndFieldsFromMedFile(
                fourth element: node balancer (if asked).
     """
     return _splitMeshAndFieldsFromMedFile(
-        filename, cellBalancer, nodeBalancer, outMesh, nodeGrpToGather, deterministic, parallel=True
+        filename,
+        cellBalancer,
+        nodeBalancer,
+        outMesh,
+        nodeGrpToGather,
+        deterministic,
+        parallel=True,
+        sequenceToOrder=sequenceToOrder,
     )
 
 
-def _splitMedFileToResults(filename, fieldToRead, resultType, model=None, parallel=True):
+def _splitMedFileToResults(
+    filename,
+    fieldToRead,
+    resultType,
+    model=None,
+    parallel=True,
+    sequenceToOrder=MedSequenceToOrder.Both,
+):
     """Split a MED mesh and MED fields from a filename and return Result
 
     Arguments:
@@ -162,6 +198,7 @@ def _splitMedFileToResults(filename, fieldToRead, resultType, model=None, parall
         resultType (class): A Result class to instanciate (child of Result)
         model (Model): Model (in case of ELGA field reading)
         parallel (bool): True if med file must be open in parallel
+        sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
 
     Returns:
         Result: results container (type: resultType) with mesh and all readen fields
@@ -171,7 +208,9 @@ def _splitMedFileToResults(filename, fieldToRead, resultType, model=None, parall
     result = resultType()
 
     # Split mesh and fields
-    (mesh, fields) = _splitMeshAndFieldsFromMedFile(filename, parallel=parallel)
+    (mesh, fields) = _splitMeshAndFieldsFromMedFile(
+        filename, parallel=parallel, sequenceToOrder=sequenceToOrder
+    )
 
     if model is not None:
         mesh = model.getMesh()
@@ -273,7 +312,9 @@ def _splitMedFileToResults(filename, fieldToRead, resultType, model=None, parall
     return result
 
 
-def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
+def splitMedFileToResults(
+    filename, fieldToRead, resultType, model=None, sequenceToOrder=MedSequenceToOrder.Both
+):
     """Split a MED mesh and MED fields from a filename and return Result
 
     Arguments:
@@ -281,14 +322,19 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
         fieldToRead (dict): dict that matches med field name and aster name (in Result)
         resultType (class): A Result class to instanciate (child of Result)
         model (Model): Model (in case of ELGA field reading)
+        sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
 
     Returns:
         Result: results container (type: resultType) with mesh and all readen fields
     """
-    return _splitMedFileToResults(filename, fieldToRead, resultType, model, parallel=True)
+    return _splitMedFileToResults(
+        filename, fieldToRead, resultType, model, parallel=True, sequenceToOrder=sequenceToOrder
+    )
 
 
-def readMedFileToResults(filename, fieldToRead, resultType, model=None):
+def readMedFileToResults(
+    filename, fieldToRead, resultType, model=None, sequenceToOrder=MedSequenceToOrder.Both
+):
     """Read a MED mesh and MED fields from a filename and return Result
 
     Arguments:
@@ -296,8 +342,11 @@ def readMedFileToResults(filename, fieldToRead, resultType, model=None):
         fieldToRead (dict): dict that matches med field name and aster name (in Result)
         resultType (class): A Result class to instanciate (child of Result)
         model (Model): Model (in case of ELGA field reading)
+        sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
 
     Returns:
         Result: results container (type: resultType) with mesh and all readen fields
     """
-    return _splitMedFileToResults(filename, fieldToRead, resultType, model, parallel=False)
+    return _splitMedFileToResults(
+        filename, fieldToRead, resultType, model, parallel=False, sequenceToOrder=sequenceToOrder
+    )
