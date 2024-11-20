@@ -375,7 +375,6 @@ class MEMBTR3(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, EGAMIMA), (SP.PNOMIMA, LC.ENOMIMA))),
         OP.NSPG_NBVA(
             te=496,
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),

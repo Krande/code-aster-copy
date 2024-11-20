@@ -561,7 +561,6 @@ DEFI_MATERIAU = MACRO(
         C01=SIMP(statut="o", typ="R"),
         C20=SIMP(statut="o", typ="R"),
         K=SIMP(statut="f", typ="R", fr=tr("Module de compressibilité.")),
-        NU=SIMP(statut="f", typ="R", val_min=-1.0, val_max=0.5, fr=tr("Coefficient de Poisson.")),
         # these parameters will be automatically changed as G1=, G2=..., TAU1=, TAU2=...
         G=SIMP(statut="f", typ="R", max="**", fr=tr("Coefficients G")),
         TAU=SIMP(statut="f", typ="R", max="**", fr=tr("Coefficients tau")),

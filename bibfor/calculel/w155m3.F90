@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine w155m3(numa, jce2d, jce2l, jce2v, isp, &
 !       A PARTIR DU NUMERO DE SOUS-POINT ISP
 ! ----------------------------------------------------------------------
 !
-!   ON DETERMINE SI LA MAILLE EST DE TYPE COQUE, PMF, GRILLE OU TUYAU :
+!   ON DETERMINE SI LA MAILLE EST DE TYPE COQUE, PMF OU TUYAU :
 !
 !   CMP1 = COQ_NCOU
     call cesexi('C', jce2d, jce2l, numa, 1, 1, 1, iad1)
