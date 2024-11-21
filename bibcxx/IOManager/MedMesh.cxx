@@ -3,7 +3,7 @@
  * @brief Implementation de MedMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -118,9 +118,10 @@ std::vector< med_int > MedMesh::getConnectivityAtSequence( int numdt, int numit,
     med_geometry_type geotype = MED_NONE;
     MEDmeshEntityInfo( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_CELL, iterator,
                        geotypename, &geotype );
+    auto nbElemT = getCellNumberAtSequence( numdt, numit, iterator );
+    auto nbNoCell = getNodeNumberForGeometricType( geotype );
+    std::vector< med_int > connectivity;
     if ( _filePtr.isParallel() ) {
-        auto nbElemT = getCellNumberAtSequence( numdt, numit, iterator );
-        auto nbNoCell = getNodeNumberForGeometricType( geotype );
         const auto rank = getMPIRank();
         const auto nbProcs = getMPISize();
         const auto pair = splitEntitySet( nbElemT, rank, nbProcs );
@@ -129,22 +130,25 @@ std::vector< med_int > MedMesh::getConnectivityAtSequence( int numdt, int numit,
         MedFilter medFilter( _filePtr, nbElemT, 1, nbNoCell, MED_ALL_CONSTITUENT,
                              MED_FULL_INTERLACE, MED_COMPACT_STMODE, start, nbElemL, 1, nbElemL,
                              0 );
-        std::vector< med_int > connectivity( nbElemL * nbNoCell, 0 );
+        connectivity = std::vector< med_int >( nbElemL * nbNoCell, 0 );
         MEDmeshElementConnectivityAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit,
                                               MED_CELL, geotype, MED_NODAL, medFilter.getPointer(),
                                               &connectivity[0] );
-        return connectivity;
     } else {
-        throw std::runtime_error( "Not yet implemented" );
+        connectivity = std::vector< med_int >( nbElemT * nbNoCell, 0 );
+        MEDmeshElementConnectivityRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_CELL,
+                                      geotype, MED_NODAL, MED_FULL_INTERLACE, &connectivity[0] );
     }
+    return connectivity;
 };
 
 std::vector< med_int >
 MedMesh::getConnectivityForGeometricTypeAtSequence( int numdt, int numit,
                                                     med_geometry_type geotype ) const {
+    auto nbElemT = getCellNumberForGeometricTypeAtSequence( numdt, numit, geotype );
+    auto nbNoCell = getNodeNumberForGeometricType( geotype );
+    std::vector< med_int > connectivity;
     if ( _filePtr.isParallel() ) {
-        auto nbElemT = getCellNumberForGeometricTypeAtSequence( numdt, numit, geotype );
-        auto nbNoCell = getNodeNumberForGeometricType( geotype );
         const auto rank = getMPIRank();
         const auto nbProcs = getMPISize();
         const auto pair = splitEntitySet( nbElemT, rank, nbProcs );
@@ -153,14 +157,16 @@ MedMesh::getConnectivityForGeometricTypeAtSequence( int numdt, int numit,
         MedFilter medFilter( _filePtr, nbElemT, 1, nbNoCell, MED_ALL_CONSTITUENT,
                              MED_FULL_INTERLACE, MED_COMPACT_STMODE, start, nbElemL, 1, nbElemL,
                              0 );
-        std::vector< med_int > connectivity( nbElemL * nbNoCell, 0 );
+        connectivity = std::vector< med_int >( nbElemL * nbNoCell, 0 );
         MEDmeshElementConnectivityAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit,
                                               MED_CELL, geotype, MED_NODAL, medFilter.getPointer(),
                                               &connectivity[0] );
-        return connectivity;
     } else {
-        throw std::runtime_error( "Not yet implemented" );
+        connectivity = std::vector< med_int >( nbElemT * nbNoCell, 0 );
+        MEDmeshElementConnectivityRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_CELL,
+                                      geotype, MED_NODAL, MED_FULL_INTERLACE, &connectivity[0] );
     }
+    return connectivity;
 };
 
 med_int MedMesh::getCellNumberAtSequence( int numdt, int numit, int iterator ) const {
@@ -224,11 +230,11 @@ med_int MedMesh::getNodeNumberForGeometricType( med_int geoType ) const {
 
 std::vector< double > MedMesh::readCoordinates( int numdt, int numit ) const {
     std::vector< double > toReturn;
+    med_bool changement, transformation;
+    auto nbNoT =
+        MEDmeshnEntity( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE, MED_NO_GEOTYPE,
+                        MED_COORDINATE, MED_NO_CMODE, &changement, &transformation );
     if ( _filePtr.isParallel() ) {
-        med_bool changement, transformation;
-        auto nbNoT = MEDmeshnEntity( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE,
-                                     MED_NO_GEOTYPE, MED_COORDINATE, MED_NO_CMODE, &changement,
-                                     &transformation );
         const auto rank = getMPIRank();
         const auto nbProcs = getMPISize();
         const auto pair = splitEntitySet( nbNoT, rank, nbProcs );
@@ -240,7 +246,9 @@ std::vector< double > MedMesh::readCoordinates( int numdt, int numit ) const {
         MEDmeshNodeCoordinateAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit,
                                          medFilter.getPointer(), &toReturn[0] );
     } else {
-        throw std::runtime_error( "Not yet implemented" );
+        toReturn = std::vector< double >( _dim * nbNoT, 0. );
+        MEDmeshNodeCoordinateRd( _filePtr.getFileId(), _name.c_str(), numdt, numit,
+                                 MED_FULL_INTERLACE, &toReturn[0] );
     }
     return toReturn;
 }

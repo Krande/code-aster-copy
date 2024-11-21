@@ -20,7 +20,7 @@
 subroutine compMecaChckStrain(iComp, &
                               model, fullElemField, &
                               lAllCellAffe, cellAffe, nbCellAffe, &
-                              lMfront, exteDefo, &
+                              lTotalStrain, lMfront, exteDefo, &
                               defoComp, defoCompPY, &
                               relaComp, relaCompPY)
 !
@@ -50,7 +50,7 @@ subroutine compMecaChckStrain(iComp, &
     aster_logical, intent(in) :: lAllCellAffe
     character(len=24), intent(in) :: cellAffe
     integer, intent(in) :: nbCellAffe
-    aster_logical, intent(in) :: lMfront
+    aster_logical, intent(in) :: lMfront, lTotalStrain
     integer, intent(in) :: exteDefo
     character(len=16), intent(in) :: defoComp, defoCompPY
     character(len=16), intent(in) :: relaComp, relaCompPY
@@ -70,6 +70,7 @@ subroutine compMecaChckStrain(iComp, &
 ! In  nbCellAffe       : number of cells where behaviour is defined
 ! In  cellAffe         : list of cells where behaviour is defined
 ! In  lMfront          : flag if MFront
+! In  lTotalStrain     : flag for total strains
 ! In  exteDefo         : strain model for external behaviour (MFront)
 ! In  defoComp         : comportement DEFORMATION
 ! In  defoCompPY       : comportement DEFORMATION - Python coding
@@ -118,6 +119,11 @@ subroutine compMecaChckStrain(iComp, &
     call lctest(relaCompPY, 'DEFORMATION', defoComp, lctestIret)
     if (lctestIret .eq. 0) then
         call utmess('F', 'COMPOR1_44', nk=2, valk=[defoComp, relaComp])
+    end if
+
+! - Only mechanical strains with MFront
+    if (lMFront .and. lTotalStrain .and. relaComp .ne. "META_LEMA_ANI") then
+        call utmess('F', 'MGIS1_1')
     end if
 
 ! - Loop on elements

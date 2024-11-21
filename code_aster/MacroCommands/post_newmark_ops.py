@@ -24,6 +24,7 @@
 import aster
 import numpy as np
 from scipy.optimize import curve_fit
+import copy
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
@@ -235,11 +236,12 @@ def cleanMeshwithALLGroup(__mail):
     return None
 
 
-def getMeshwithGLISSEGroupCERCLE(__mail, pos):
+def getMeshwithGLISSEGroupCERCLE(__mail, pos, gname):
     ## Obtain mesh group 'GLISSE 'defining sliding zone on mesh
     ## Used only for CERCLE option
     ## Input : __mail : mesh
     ##         pos : vector with [posx,posy,r]
+    ##         gname : group of mesh name of sliding zone
     ## Output : none (as mesh groups are directly available on mesh object on main program)
 
     posx = pos[0]
@@ -262,7 +264,7 @@ def getMeshwithGLISSEGroupCERCLE(__mail, pos):
         reuse=__mail,
         MAILLAGE=__mail,
         CREA_GROUP_MA=_F(
-            NOM="GLISSE",
+            NOM=gname,
             # TYPE_MAILLE = '2D',
             INTERSEC=("GLISSE_", "ALL"),
         ),
@@ -271,11 +273,11 @@ def getMeshwithGLISSEGroupCERCLE(__mail, pos):
     __mail = DEFI_GROUP(
         reuse=__mail,
         MAILLAGE=__mail,
-        CREA_GROUP_MA=_F(NOM="NGLISSE", TYPE_MAILLE="2D", DIFFE=("ALL", "GLISSE")),
+        CREA_GROUP_MA=_F(NOM="NGLISSE", TYPE_MAILLE="2D", DIFFE=("ALL", gname)),
     )
 
     __mail = DEFI_GROUP(
-        reuse=__mail, MAILLAGE=__mail, CREA_GROUP_NO=_F(GROUP_MA=("NGLISSE", "GLISSE"))
+        reuse=__mail, MAILLAGE=__mail, CREA_GROUP_NO=_F(GROUP_MA=("NGLISSE", gname))
     )
 
     # __mail = DEFI_GROUP(reuse = __mail,
@@ -288,11 +290,12 @@ def getMeshwithGLISSEGroupCERCLE(__mail, pos):
     return None
 
 
-def getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2):
+def getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2, gname):
     ## Obtain mesh group 'GLISSE 'defining sliding zone on mesh
     ## Used only for MAILLAGE option
     ## Input : __mail : struture mesh
     ##         __mail_2 : sliding zone mesh
+    ##         gname : group of mesh name of sliding zone
     ## Output : none (as mesh groups are directly available on mesh object on main program)
 
     DEFI_GROUP(
@@ -320,7 +323,7 @@ def getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2):
         reuse=__mail,
         MAILLAGE=__mail,
         CREA_GROUP_MA=_F(
-            NOM="GLISSE",
+            NOM=gname,
             # TYPE_MAILLE = '2D',
             INTERSEC=("GLISSE_", "ALL"),
         ),
@@ -329,27 +332,38 @@ def getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2):
     __mail = DEFI_GROUP(
         reuse=__mail,
         MAILLAGE=__mail,
-        CREA_GROUP_MA=_F(NOM="NGLISSE", TYPE_MAILLE="2D", DIFFE=("ALL", "GLISSE")),
+        CREA_GROUP_MA=_F(NOM="NGLISSE", TYPE_MAILLE="2D", DIFFE=("ALL", gname)),
     )
 
     __mail = DEFI_GROUP(
-        reuse=__mail, MAILLAGE=__mail, CREA_GROUP_NO=_F(GROUP_MA=("NGLISSE", "GLISSE"))
+        reuse=__mail, MAILLAGE=__mail, CREA_GROUP_NO=_F(GROUP_MA=("NGLISSE", gname))
     )
 
     return None
 
 
-def cleanStructureMeshwithCreatedGroup(__mail, TYPE):
+def cleanStructureMeshwithCreatedGroup(__mail, TYPE, gname, keep_gname=False):
     ## Clean mesh groups on structure mesh
     ## Input : __mail : structure mesh
-    ## TYPE : "CERCLE or "MAILLAGE"
+    ##          TYPE : "CERCLE or "MAILLAGE"
+    ##          gname : group of mesh name of sliding zone
+    ##          keep_gname = True to keep gname on mesh, False to delete it
 
-    __mail = DEFI_GROUP(
-        reuse=__mail,
-        MAILLAGE=__mail,
-        DETR_GROUP_MA=_F(NOM=("GLISSE", "GLISSE_")),
-        DETR_GROUP_NO=_F(NOM=("GLISSE",)),
-    )
+    if keep_gname:
+        __mail = DEFI_GROUP(
+            reuse=__mail,
+            MAILLAGE=__mail,
+            DETR_GROUP_MA=_F(NOM=("GLISSE_")),
+            DETR_GROUP_NO=_F(NOM=("GLISSE",)),
+        )
+
+    else:
+        __mail = DEFI_GROUP(
+            reuse=__mail,
+            MAILLAGE=__mail,
+            DETR_GROUP_MA=_F(NOM=(gname, "GLISSE_")),
+            DETR_GROUP_NO=_F(NOM=("GLISSE",)),
+        )
 
     __mail = (
         DEFI_GROUP(
@@ -416,10 +430,11 @@ def slice_array(x, val_min, val_max):
     return filter_array
 
 
-def get_ky_value(FsP, acc):
+def get_ky_value(FsP, acc, nstd=3):
     ## Obtain ky value from dynamic safety factors and mean acceleration
     ## Input : FsP : list of dynamic safety values
-    ##        acc : mean acceleration of sliding zone
+    ##         acc : mean acceleration of sliding zone
+    ##         nstd : number of std for linear regression
     ## Output : ay : limit acceleration leading to unitary safty factor
 
     ## we look at safety factor values around 1
@@ -442,7 +457,7 @@ def get_ky_value(FsP, acc):
         mean_ay = root_linear_function(popt[0], popt[1], y=1)  # y=1 as root for FS=1
         perr = np.sqrt(np.diag(pcov))
         ## ay is chosen 3 sigma lower from the obtained mean regression value
-        ay = root_linear_function(popt[0] - 3 * perr[0], popt[1] - 3 * perr[1], y=1)
+        ay = root_linear_function(popt[0] - nstd * perr[0], popt[1] - nstd * perr[1], y=1)
 
     ky = ay / 9.81
     return ky
@@ -509,8 +524,14 @@ def post_newmark_ops(self, **args):
         ## critical acceleration
         ay = ky * g
 
-    ### Gget mesh groups used on dynamic calculation (defining model)
+    ### Get mesh groups used on dynamic calculation (defining model)
     grpma = args["GROUP_MA_CALC"]
+
+    ### Get mesh groups used on dynamic calculation (defining model)
+    gname = "GLISSE"
+    if args["MAILLAGE_RESU"] is not None:
+        if args["MAILLAGE_RESU"]["NOM_GROUP"] is not None:
+            gname = args["MAILLAGE_RESU"]["NOM_GROUP"]
 
     ### Position of sliding circle
     fac_cercle = 1.0
@@ -529,7 +550,7 @@ def post_newmark_ops(self, **args):
         posy = args["CENTRE_Y"]
         pos = [posx, posy, r]
 
-        getMeshwithGLISSEGroupCERCLE(__mail, pos)
+        getMeshwithGLISSEGroupCERCLE(__mail, pos, gname)
 
         ### Create a disk mesh to compute safety factors
         ### refine value (7) is taken from discretisation used for static FS validation
@@ -670,14 +691,14 @@ def post_newmark_ops(self, **args):
     )
 
     if TYPE == "MAILLAGE":
-        getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_1)
+        getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_1, gname)
     # IMPR_RESU(RESU=_F(MAILLAGE = __mail_2,),FORMAT='MED',UNITE=23)
 
     ## Restrain sliding mesh to the common zone to the structure mesh to increase numerical performance
     __mail_s = CREA_MAILLAGE(
         MAILLAGE=__mail,  # INFO=2,
         RESTREINT=_F(
-            GROUP_MA=("GLISSE"),
+            GROUP_MA=(gname),
             # GROUP_NO=("LIGNE_",),
         ),
     )
@@ -1143,7 +1164,7 @@ def post_newmark_ops(self, **args):
         ## Some mesh group definitions on structure mesh to obtain center of mass of sliding zone
         ## Mass obtained from GROUPE_MA 'GLISSE'
 
-        __tabmas = POST_ELEM(RESULTAT=RESULTAT, MASS_INER=_F(GROUP_MA="GLISSE"))
+        __tabmas = POST_ELEM(RESULTAT=RESULTAT, MASS_INER=_F(GROUP_MA=gname))
 
         masse = __tabmas["MASSE", 1]
 
@@ -1180,7 +1201,7 @@ def post_newmark_ops(self, **args):
             masses.append(masse)
             error = 1.0
             while (error > args["RESI_RELA"]) and (iterat < args["ITER_MAXI"] + 1):
-                cleanStructureMeshwithCreatedGroup(__mail, TYPE)
+                cleanStructureMeshwithCreatedGroup(__mail, TYPE, gname)
 
                 NewMesh, CHMAT = getMaterialonNewMesh(CHMATs[-1], TYPE, pos)
                 CHMATs.append(CHMAT)
@@ -1191,13 +1212,13 @@ def post_newmark_ops(self, **args):
                 )
 
                 if TYPE == "CERCLE":
-                    getMeshwithGLISSEGroupCERCLE(NewMesh, pos)
+                    getMeshwithGLISSEGroupCERCLE(NewMesh, pos, gname)
 
                 elif TYPE == "MAILLAGE":
-                    getMeshwithGLISSEGroupMAILLAGE(NewMesh, __mail_2)
+                    getMeshwithGLISSEGroupMAILLAGE(NewMesh, __mail_2, gname)
 
                 __tabmas = POST_ELEM(
-                    CHAM_MATER=CHMAT, MODELE=__MODMAT, MASS_INER=_F(GROUP_MA="GLISSE")
+                    CHAM_MATER=CHMAT, MODELE=__MODMAT, MASS_INER=_F(GROUP_MA=gname)
                 )
 
                 masses.append(__tabmas["MASSE", 1])
@@ -1214,10 +1235,14 @@ def post_newmark_ops(self, **args):
 
             masse = masses[-1]
             if TYPE == "CERCLE":
-                getMeshwithGLISSEGroupCERCLE(__mail, pos)
+                getMeshwithGLISSEGroupCERCLE(__mail, pos, gname)
 
             elif TYPE == "MAILLAGE":
-                getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2)
+                getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2, gname)
+
+            if args["MAILLAGE_RESU"] is not None:
+                if args["MAILLAGE_RESU"]["MAILLAGE_MASSE"] is not None:
+                    self.register_result(NewMesh, args["MAILLAGE_RESU"]["MAILLAGE_MASSE"])
 
         ##############################################################################
         ##   Method : Mean acceleration obtained as force over mass of the sliding zone
@@ -1231,7 +1256,7 @@ def post_newmark_ops(self, **args):
             MODELE=__model,
             CHAM_MATER=__ch_mat,
             FORCE=("FORC_NODA"),
-            GROUP_MA=("GLISSE"),
+            GROUP_MA=(gname),
         )
 
         __tabFLI = POST_RELEVE_T(
@@ -1301,7 +1326,12 @@ def post_newmark_ops(self, **args):
         ## verify if ky is given, otherwise obtain it from dynamic safety factor
         if args["RESULTAT_PESANTEUR"] is not None:
             if args["KY"] is None:
-                ky = get_ky_value(FSp, acc)
+                nstd = 3.0
+                if args["NB_ECART_TYPE"] is not None:
+                    nstd = args["NB_ECART_TYPE"]
+                aster.affiche("MESSAGE", "NB_ECART_TYPE = " + str(args["NB_ECART_TYPE"]))
+
+                ky = get_ky_value(FSp, acc, nstd)
                 ay = ky * 9.81
 
                 tabini = Table(para=["INST", "KY"], typ=["R", "R"])
@@ -1355,7 +1385,22 @@ def post_newmark_ops(self, **args):
     ## Cleaning of mesh groups created in the command
 
     cleanMeshwithALLGroup(__mail)
-    cleanStructureMeshwithCreatedGroup(__mail, TYPE)
+
+    if args["MAILLAGE_RESU"] is not None:
+        if args["MAILLAGE_RESU"]["MAILLAGE"] is not None:
+            cleanStructureMeshwithCreatedGroup(__mail, TYPE, gname, keep_gname=True)
+            mail_out = CREA_MAILLAGE(
+                MAILLAGE=__mail,
+                RESTREINT=_F(
+                    GROUP_MA=__mail.getGroupsOfCells(), GROUP_NO=__mail.getGroupsOfNodes()
+                ),
+            )
+            self.register_result(mail_out, args["MAILLAGE_RESU"]["MAILLAGE"])
+            __mail = DEFI_GROUP(reuse=__mail, MAILLAGE=__mail, DETR_GROUP_MA=_F(NOM=(gname)))
+        else:
+            cleanStructureMeshwithCreatedGroup(__mail, TYPE, gname, keep_gname=False)
+    else:
+        cleanStructureMeshwithCreatedGroup(__mail, TYPE, gname, keep_gname=False)
 
     if TYPE == "MAILLAGE":
         cleanRuptureMeshwithCreatedGroup(__mail_1)

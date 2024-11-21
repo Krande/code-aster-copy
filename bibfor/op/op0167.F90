@@ -553,10 +553,7 @@ subroutine op0167()
 ! --------------------------------------------------------------------------------------------------
 !
     if (nbOccRestreint .ne. 0) then
-        if (isParallelMesh(meshIn)) then
-            call utmess('F', 'MESH1_22')
-        end if
-        call rdtmai(meshIn, meshOut, 'G', meshOut//'.CRNO', meshOut//'.CRMA', 'G', 0, [0])
+        call rdtmai(meshIn, meshOut, 'G', meshOut//'.CRNO', meshOut//'.CRMA', 'G')
         call chckma(meshOut, 1.0d-03)
         goto 350
     end if

@@ -7,4 +7,4 @@ P testlist submit verification sequential
 
 F comm supv003d.comm D 1
 F comm supv003d.com1 D 1
-F mail efica01a.mail D 20
+F mail supv003d.mail D 20

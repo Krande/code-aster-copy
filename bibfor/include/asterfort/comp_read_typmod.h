@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine comp_read_typmod(mesh     , v_model_elem, elem_type    ,&
-                                keywf    , i_comp      , rela_comp    , type_cpla_in,&
-                                model_dim, model_mfront, type_cpla_out)
+    subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
+                                keywf, i_comp, rela_comp, type_cpla_in, &
+                                model_mfront, type_cpla_out)
         character(len=8), intent(in) :: mesh
         integer, pointer :: v_model_elem(:)
         integer, intent(in) :: elem_type
@@ -28,7 +28,6 @@ interface
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: type_cpla_in
         integer, intent(out) :: model_mfront
-        integer, intent(out) :: model_dim
         character(len=16), intent(out) :: type_cpla_out
     end subroutine comp_read_typmod
 end interface

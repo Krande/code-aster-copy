@@ -66,9 +66,6 @@ Comportement - Occurrence  %(i1)d"""
   Pour les comportements externes prototypes (MFRONT ou UMAT), on n'a pas d'informations sur le nom des variables internes.
 """
     ),
-    17: _(
-        """Vous utilisez des variables de commande et il y a au moins un comportement qui ne peut pas prendre en compte les déformations anélastiques (thermique par exemple)."""
-    ),
     18: _("""     Pas de régularisation visqueuse"""),
     19: _("""     Pas de post-traitement à la fin du pas de temps"""),
     20: _("""            V%(i1)d : %(k1)s"""),

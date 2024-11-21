@@ -663,6 +663,38 @@ class BaseMesh(DataStructure):
             int: Number of nodes.
         """
 
+    def getOriginalToRestrictedCellsIds(self):
+        """If the mesh is created as restriction of an initial mesh,
+        It returns a dict between the cell id of the initial mesh and the current cell id.
+
+        Returns:
+            dict[int]: a dict between the cell id of the initial mesh and the current cell id.
+        """
+
+    def getOriginalToRestrictedNodesIds(self):
+        """If the mesh is created as a restriction of an initial mesh,
+        It returns a dict betweenn the node id of the initial mesh and the current node id.
+
+        Returns:
+            dict[int]: a dict betweenn the node id of the initial mesh and the current node id.
+        """
+
+    def getRestrictedToOriginalCellsIds(self):
+        """If the mesh is created as restriction of an initial mesh,
+        It returns for each cells, the cell id of the initial mesh.
+
+        Returns:
+            list[int]: for each cells, the cell id of the initial mesh.
+        """
+
+    def getRestrictedToOriginalNodesIds(self):
+        """If the mesh is created as a restriction of an initial mesh,
+        It returns for each nodes, the node id of the initial mesh.
+
+        Returns:
+            list[int]: for each nodes, the node id of the initial mesh.
+        """
+
     def getTable(self, identifier):
         """Extract a Table from the datastructure.
 
@@ -13213,7 +13245,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
 
         Return generalized accelerations values at a given time index.
 
-        Arguments
+        Arguments:
             idx (int): time index
 
         Returns:
@@ -13244,7 +13276,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
 
         Return generalized displacements values at a given time index.
 
-        Arguments
+        Arguments:
             idx (int): time index
 
         Returns:
@@ -13296,11 +13328,20 @@ class TransientGeneralizedResult(GeneralizedResultReal):
 
         Return generalized velocities values at a given time index.
 
-        Arguments
+        Arguments:
             idx (int): time index
 
         Returns:
             list[double]: generalized velocities values.
+        """
+
+    def setAccelerationValues(self, idx, val):
+        """Set generalized acceleration values at a given time index.
+
+        Arguments:
+            idx (int): time index
+
+            val (list[double]): generalized acceleration values.
         """
 
     def setDOFNumbering(self, dofn):
@@ -13310,11 +13351,29 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             dofn (DOFNumbering): DOF numbering
         """
 
+    def setDisplacementValues(self, idx, val):
+        """Set generalized displacement values at a given time index.
+
+        Arguments:
+            idx (int): time index
+
+            val (list[double]): generalized displacement values.
+        """
+
     def setGeneralizedDOFNumbering(self, dofg):
         """Set generalized DOF numbering
 
         Arguments:
             dofg (GeneralizedDOFNumbering): generalized DOF numbering
+        """
+
+    def setVelocityValues(self, idx, val):
+        """Set generalized velocity values at a given time index.
+
+        Arguments:
+            idx (int): time index
+
+            val (list[double]): generalized velocity values.
         """
 
 
@@ -15845,6 +15904,17 @@ class MedFileReader:
 
         Returns:
             int: profile number
+        """
+
+    def open(self, path, accessType):
+        """Open med file
+
+        Arguments:
+            path (str): path to med file
+            accessType (MedFileAccessType): med access type
+
+        Returns:
+            int: return code (0 if open is ok)
         """
 
     def openParallel(self, path, accessType):

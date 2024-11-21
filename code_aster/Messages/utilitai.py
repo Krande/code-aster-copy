@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -273,6 +273,11 @@ un COEF_R à 0.
         """
 Erreur utilisateur dans la commande CREA_CHAMP.
 Il n'y a pas de composante %(k1)s dans le champ %(k2)s.
+"""
+    ),
+    44: _(
+        """
+Les instants de la liste ne sont pas uniques selon le critère %(k1)s et précision %(r1)e.
 """
     ),
     46: _(

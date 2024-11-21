@@ -71,6 +71,8 @@ subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
     real(kind=8), pointer :: v_disp_prev(:) => null()
     real(kind=8), pointer :: v_incr_esti(:) => null()
     blas_int :: b_incx, b_incy, b_n
+    real(kind=8), parameter :: prec = 1.0d-10
+    character(len=8), parameter :: crit = 'ABSOLU'
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +94,7 @@ subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
 !
     disp_extr = '&&NMPRDC.DEPEST'
     call rsinch(result_extr, 'DEPL', 'INST', time, disp_extr, &
-                'EXCLU', 'EXCLU', 0, 'V', iret)
+                'EXCLU', 'EXCLU', 0, 'V', prec, crit, iret)
     if (iret .gt. 0) then
         call utmess('F', 'MECANONLINE2_27', sk=result_extr, sr=time)
     end if

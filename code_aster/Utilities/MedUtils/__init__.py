@@ -34,8 +34,10 @@ if config.get("ASTER_HAVE_MPI") and config.get("ASTER_HAVE_MED"):
     from ...Objects import PtScotchPartitioner
     from ...Objects import FieldCharacteristics, SimpleFieldOnNodesReal, Result
     from ...Objects import SimpleFieldOnCellsReal
+    from ...Objects import ParallelMesh
     from .medtoasterconnectivity import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES, toAsterGeoType
 else:
     MedFileReader = IncompleteMesh = MeshBalancer = MeshConnectionGraph = PtScotchPartitioner = None
     FieldCharacteristics = SimpleFieldOnNodesReal = Result = SimpleFieldOnCellsReal = None
     MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = MedFileAccessType = toAsterGeoType = None
+    ParallelMesh = None

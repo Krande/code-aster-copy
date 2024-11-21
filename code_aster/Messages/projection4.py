@@ -38,8 +38,14 @@ Vous ne devez définir la transformation géométrique %(k2)s que sous le mot cl
     ),
     4: _(
         """Vous utilisez le mot clef %(k1)s pour faire une projection.
-Vous êtes en dimension %(k3)s. Vous devez définir les 3 fonctions (FX, FY, FZ) pour la
-transformation géométrique %(k2)s.
+La transformation géométrique %(k2)s est appliquée à des mailles dont
+la topologie est %(k3)s.
+Vous devez définir les 3 fonctions (FX, FY, FZ).
+
+Remarque : CAS_FIGURE est utilisé pour filtrer les mailles, du MODELE_1 ou du MAILLAGE_1,
+qui portent les champs à projeter. Seuls les champs portés par les mailles qui
+correspondent à la topologie donnée sous CAS_FIGURE seront projetés sur les mailles
+du MODELE_2 ou du MAILLAGE_2.
 """
     ),
     54: _("""Il n'y a aucun noeud sur lesquels projeter."""),

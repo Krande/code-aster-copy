@@ -3,7 +3,7 @@
  * @brief Implementation de BaseMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,8 +53,8 @@ BaseMesh::BaseMesh( const std::string &name, const std::string &type )
       _groupsOfCells( JeveuxCollectionLongNamePtr( getName() + ".GROUPEMA  ", _nameOfGrpCells ) ),
       _adapt( JeveuxVectorLong( getName() + ".ADAPTATION" ) ),
       _oriMeshName( JeveuxVectorChar8( getName() + ".MAOR" ) ),
-      _oriMeshCells( JeveuxVectorLong( getName() + ".CRMA" ) ),
-      _oriMeshNodes( JeveuxVectorLong( getName() + ".CRNO" ) ),
+      _resMeshCells( JeveuxVectorLong( getName() + ".CRMA" ) ),
+      _resMeshNodes( JeveuxVectorLong( getName() + ".CRNO" ) ),
       _patch( JeveuxCollectionLong( getName() + ".PATCH" ) ),
       _nodePatchConnectivity( JeveuxVectorLong( getName() + ".CONOPA" ) ),
       _cellPatchConnectivity( JeveuxVectorLong( getName() + ".COMAPA" ) ),
@@ -465,3 +465,65 @@ void BaseMesh::deleteReverseConnectivity() {
     _reverseConnex = std::map< int, std::set< int > >();
     _bReverseConnex = false;
 };
+
+VectorLong BaseMesh::getRestrictedToOriginalNodesIds() const {
+
+    if ( !_resMeshNodes->exists() ) {
+        return VectorLong();
+    }
+
+    auto v_nodes = _resMeshNodes->toVector();
+    for ( auto &val : v_nodes ) {
+        // 0-based
+        val -= 1;
+    }
+
+    return v_nodes;
+}
+
+VectorLong BaseMesh::getRestrictedToOriginalCellsIds() const {
+
+    if ( !_resMeshCells->exists() ) {
+        return VectorLong();
+    }
+
+    auto v_cells = _resMeshCells->toVector();
+    for ( auto &val : v_cells ) {
+        // 0-based
+        val -= 1;
+    }
+
+    return v_cells;
+}
+
+MapLong BaseMesh::getOriginalToRestrictedNodesIds() const {
+
+    MapLong nodes;
+
+    if ( _resMeshNodes->exists() ) {
+        _resMeshNodes->updateValuePointer();
+        const int size = _resMeshNodes->size();
+        for ( int i = 0; i < size; i++ ) {
+            // 0-based
+            nodes[( *_resMeshNodes )[i] - 1] = i;
+        }
+    }
+
+    return nodes;
+}
+
+MapLong BaseMesh::getOriginalToRestrictedCellsIds() const {
+
+    MapLong cells;
+
+    if ( _resMeshCells->exists() ) {
+        _resMeshCells->updateValuePointer();
+        const int size = _resMeshCells->size();
+        for ( int i = 0; i < size; i++ ) {
+            // 0-based
+            cells[( *_resMeshCells )[i] - 1] = i;
+        }
+    }
+
+    return cells;
+}

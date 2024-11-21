@@ -1,0 +1,84 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+g = 9.81
+
+rho = 16e3 / g
+
+nu = 0.3
+
+E = 2.6e6
+
+c = 5e3
+
+phi = 20
+
+k = 1e-7 / 1e3 / g * 1e-3
+
+lev_up = 4
+
+lev_dn = 2
+
+levup_below = lev_up - 1
+
+levdn_below = lev_dn - 1
+
+incr_p = 1e3 * g
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+mesh = DEFI_GROUP(
+    reuse=mesh, MAILLAGE=mesh, CREA_GROUP_MA=_F(TOUT="OUI", TYPE_MAILLE="2D", NOM="SOL")
+)
+
+
+sol = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu, RHO=rho), MOHR_COULOMB=_F(COHESION=c, PHI=phi, ANGDIL=phi))
+
+CHMAT = AFFE_MATERIAU(AFFE=_F(MATER=(sol,), TOUT="OUI"), MAILLAGE=mesh)
+
+TABFS = CALC_STAB_PENTE(
+    CHAM_MATER=CHMAT,
+    METHODE_STAB="LEM",
+    METHODE_LEM="BISHOP",
+    GROUP_MA=("range_pente",),
+    NB_TRANCHE=5,
+    COEF_RU=_F(GROUP_MA="SOL", VALE=0.5),
+    RAFF_MAIL=_F(NB_RAFF_MAXI=1),
+    X1_MINI=3.0,
+    X1_MAXI=3.0,
+    X2_MINI=13.2,
+    X2_MAXI=13.2,
+    NB_POINT_1=1,
+    NB_POINT_2=1,
+    Y_MINI=1.2,
+    Y_MAXI=1.6,
+)
+
+# TEST DE NON_REGRESSION
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=1),
+    NOM_PARA="FS",
+    TABLE=TABFS,
+    VALE_CALC=(1.0377896423819528,),
+)
+
+
+FIN()

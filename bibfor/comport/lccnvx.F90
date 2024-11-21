@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lccnvx(fami, kpg, ksp, rela_comp, mod, &
+subroutine lccnvx(fami, kpg, ksp, rela_comp, &
                   imat, nmat, materf, sigd, &
                   sigf, deps, vind, vinf, nbcomm, &
                   cpmono, pgl, nvi, vp, vecp, &
                   hsr, nfs, nsg, toutms, timed, &
                   timef, &
-                  seuil, iret)
+                  seuil)
 ! aslint: disable=W1504
     implicit none
 ! --- BUT : CONVEXE ELASTO PLASTIQUE A T+DT POUR (SIGF , VIND) DONNES --
@@ -42,7 +42,6 @@ subroutine lccnvx(fami, kpg, ksp, rela_comp, mod, &
 ! --- : MATERD :  COEFFICIENTS MATERIAU A T ----------------------------
 ! --- : MATERF :  COEFFICIENTS MATERIAU A T+DT -------------------------
 ! --- : NBCOMM :  INDICES DES COEF MATERIAU ----------------------------
-! --- : MOD    :  TYPE DE MODELISATION ---------------------------------
 ! --- : TIMED  :  INSTANT T --------------------------------------------
 ! --- : TIMEF  :  INSTANT T+DT -----------------------------------------
 ! OUT : VP     :  VALEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) --
@@ -50,19 +49,17 @@ subroutine lccnvx(fami, kpg, ksp, rela_comp, mod, &
 ! --- : SEUIL  :  SEUIL  ELASTICITE  A T+DT ----------------------------
 ! --- : YD     :  VECTEUR INCONNUES A T --------------------------------
 ! --- : YF     :  VECTEUR INCONNUES A T+DT -----------------------------
-! --- : IRET   :  CODE RETOUR = 1 -> ECHEC D'INTEGRATION
 ! ----------------------------------------------------------------------
 ! ======================================================================
 #include "asterfort/cvmcvx.h"
 #include "asterfort/hbrcvx.h"
-#include "asterfort/hujcvx.h"
 #include "asterfort/irrcvx.h"
 #include "asterfort/lcmmvx.h"
 #include "asterfort/lglcvx.h"
 #include "asterfort/lkcnvx.h"
 #include "asterfort/srcnvx.h"
 #include "asterfort/rslcvx.h"
-    integer :: nmat, imat, nvi, kpg, ksp, nfs, nsg, iret
+    integer :: nmat, imat, nvi, kpg, ksp, nfs, nsg
     character(len=*) :: fami
     real(kind=8) :: materf(nmat, 2), seuil
     real(kind=8) :: timed, timef, deps(6), vinf(*)
@@ -71,7 +68,6 @@ subroutine lccnvx(fami, kpg, ksp, rela_comp, mod, &
     integer :: nbcomm(nmat, 3)
     real(kind=8) :: pgl(3, 3), vp(3), vecp(3, 3), toutms(nfs, nsg, 6)
     character(len=24) :: cpmono(5*nmat+1)
-    character(len=8) :: mod
 ! ======================================================================
     if (rela_comp .eq. 'ROUSS_PR') then
         call rslcvx(fami, kpg, ksp, imat, nmat, &
@@ -107,10 +103,6 @@ subroutine lccnvx(fami, kpg, ksp, rela_comp, mod, &
 ! ======================================================================
     else if (rela_comp .eq. 'LKR') then
         call srcnvx(sigd, sigf, nvi, vind, nmat, materf, seuil, vinf)
-! ======================================================================
-    else if (rela_comp .eq. 'HUJEUX') then
-        call hujcvx(mod, nmat, materf, vinf, deps, &
-                    sigd, sigf, seuil, iret)
 ! ======================================================================
     end if
 ! ======================================================================

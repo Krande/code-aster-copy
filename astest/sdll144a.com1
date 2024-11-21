@@ -75,6 +75,27 @@ u1 = ug1.dot(Phi.T)
 v1 = vg1.dot(Phi.T)
 a1 = ag1.dot(Phi.T)
 
+## Test GeneralizedResult setters implementation
+
+# Time indices
+idx1 = len(TRANGEN.getIndexes()) - 1
+idx2 = 0
+
+# Displacements
+depl_set = TRANGEN.getDisplacementValues(idx1)
+TRANGEN2.setDisplacementValues(idx2, depl_set)
+depl_get = TRANGEN2.getDisplacementValues(idx2)
+
+# Velocities
+vite_set = TRANGEN.getVelocityValues(idx1)
+TRANGEN2.setVelocityValues(idx2, vite_set)
+vite_get = TRANGEN2.getVelocityValues(idx2)
+
+# Velocities
+acce_set = TRANGEN.getAccelerationValues(idx1)
+TRANGEN2.setAccelerationValues(idx2, acce_set)
+acce_get = TRANGEN2.getAccelerationValues(idx2)
+
 ## Test results
 test = CA.TestCase()
 
@@ -85,6 +106,10 @@ test.assertTrue(np.allclose(a, a_ref))
 test.assertTrue(np.allclose(u1, u_ref))
 test.assertTrue(np.allclose(v1, v_ref))
 test.assertTrue(np.allclose(a1, a_ref))
+
+test.assertTrue(depl_set == depl_get)
+test.assertTrue(vite_set == vite_get)
+test.assertTrue(acce_set == acce_get)
 
 test.printSummary()
 

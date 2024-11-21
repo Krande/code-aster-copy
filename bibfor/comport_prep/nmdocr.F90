@@ -24,14 +24,15 @@ subroutine nmdocr(model, carcri, base)
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/carc_chck.h"
+#include "asterfort/carc_delete.h"
 #include "asterfort/carc_info.h"
 #include "asterfort/carc_init.h"
-#include "asterfort/carc_chck.h"
 #include "asterfort/carc_read.h"
 #include "asterfort/carc_save.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
+#include "asterfort/utmess.h"
 !
     character(len=8), intent(in)  :: model
     character(len=24), intent(in) :: carcri
@@ -81,6 +82,7 @@ subroutine nmdocr(model, carcri, base)
     call carc_save(mesh, carcri, prepMapCarcri)
 
 ! - Cleaning
-    deallocate (prepMapCarcri%prepCrit)
+    call carc_delete(prepMapCarcri)
+
 !
 end subroutine

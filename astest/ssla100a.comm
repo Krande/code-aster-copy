@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -134,14 +134,14 @@ RELINE = 10
 
 NBIGLOB = 5
 
-RESIGLOB = 1.0e-03
+RESIGLOB = 1.0e-06
 
 L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=2.0, PAS=1.0))
 
 RESU = STAT_NON_LINE(
     MODELE=MOD_CYLI,
     CHAM_MATER=MAT_CYLI,
-    EXCIT=(_F(CHARGE=CHVOL), _F(CHARGE=LIMIT)),
+    EXCIT=(_F(CHARGE=CHVOL, TYPE_CHARGE="FIXE_CSTE"), _F(CHARGE=LIMIT)),
     INCREMENT=_F(LIST_INST=L_INST, NUME_INST_FIN=2),
     COMPORTEMENT=_F(RELATION="ELAS"),
     NEWTON=_F(MATRICE="ELASTIQUE", REAC_ITER=1),

@@ -78,9 +78,9 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /** @brief jeveux vector '.MAOR' */
     JeveuxVectorChar8 _oriMeshName;
     /** @brief jeveux vector '.CRMA' */
-    JeveuxVectorLong _oriMeshCells;
+    JeveuxVectorLong _resMeshCells;
     /** @brief jeveux vector '.CRNO' */
-    JeveuxVectorLong _oriMeshNodes;
+    JeveuxVectorLong _resMeshNodes;
     /** @brief Collection jeveux '.PATCH' */
     JeveuxCollectionLong _patch;
     /** @brief jeveux vector '.CONOPA' */
@@ -435,6 +435,12 @@ class BaseMesh : public DataStructure, public ListOfTables {
         AS_ASSERT( false );
         return {};
     }
+
+    VectorLong getRestrictedToOriginalNodesIds() const;
+    VectorLong getRestrictedToOriginalCellsIds() const;
+
+    MapLong getOriginalToRestrictedNodesIds() const;
+    MapLong getOriginalToRestrictedCellsIds() const;
 
     /**
      * @brief Build the mesh

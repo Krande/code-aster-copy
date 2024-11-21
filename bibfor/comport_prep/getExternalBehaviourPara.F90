@@ -78,7 +78,7 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
     character(len=255) :: libr_name, subr_name
     integer :: model_mfront, nbVariUMAT
     character(len=16) :: type_cpla_out, type_cpla_in, extern_addr
-    integer :: extern_ptr, extern_type, model_dim, elem_type, strain_model
+    integer :: extern_ptr, extern_type, elem_type, strain_model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,7 +91,6 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
     subr_name = ' '
     nbVariUMAT = 0
     model_mfront = MGIS_MODEL_UNSET
-    model_dim = 0
     type_cpla_out = 'VIDE'
     if (present(type_cpla_in_)) then
         type_cpla_in = type_cpla_in_
@@ -157,10 +156,9 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
 !               For *_NON_LINE cases
                 call comp_read_typmod(mesh, v_model_elem, elem_type, &
                                       keywf, i_comp, rela_comp, type_cpla_in, &
-                                      model_dim, model_mfront, type_cpla_out)
+                                      model_mfront, type_cpla_out)
             else
 !               For CALC_POINT_MAT case
-                model_dim = 3
                 model_mfront = MGIS_MODEL_TRIDIMENSIONAL
             end if
 !           Get model of strains and load library
@@ -183,7 +181,6 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
     prepExte%subr_name = subr_name
     prepExte%extern_ptr = extern_ptr
     prepExte%model_mfront = model_mfront
-    prepExte%model_dim = model_dim
     prepExte%nbVariUMAT = nbVariUMAT
     prepExte%l_umat = l_umat
     prepExte%l_mfront_proto = l_mfront_proto

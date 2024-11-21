@@ -59,14 +59,4 @@ Quadratures HHO:
 Vous voulez une quadrature d'ordre supérieur au maximum autorisé par votre quadrature
 """
     ),
-    13: _(
-        """
-Face HHO:
-Vous utilisez un maillage dont au moins une cellule à une face non-plane.
-
-Le coefficient de non-planéité suivant (%(r1)f) n'est pas nul.
-
-Cela n'est pas autorisé. Il faut retravailler le maillage.
-"""
-    ),
 }

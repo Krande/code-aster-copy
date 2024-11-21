@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp ,&
-                                   model_dim     , model_mfront,&
-                                   codret        , type_cpla)
+    subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
+                                   model_mfront, &
+                                   codret, type_cpla)
         character(len=16), intent(in) :: elem_type_name
         aster_logical, intent(in) :: l_mfront_cp
-        integer, intent(out) :: model_dim
         integer, intent(out) :: model_mfront
         integer, intent(out) :: codret
         character(len=16), intent(out) :: type_cpla

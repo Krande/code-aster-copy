@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,8 +79,7 @@ subroutine lc1137(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
 !
     if (compor(1) .eq. 'POLYCRISTAL') then
-        call nmvprk(BEHinteg, &
-                    fami, kpg, ksp, ndim, typmod, &
+        call nmvprk(fami, kpg, ksp, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
                     neps, epsm, deps, sigm, nvi, vim, &
                     option, angmas, sigp, vip, dsidep, &
@@ -97,8 +96,7 @@ subroutine lc1137(BEHinteg, &
                         dsidep, icomp, nvi, codret, mult_comp)
         else if (algo_inte .eq. 'RUNGE_KUTTA') then
             meting = 'RUNGE_KUTTA'
-            call nmvprk(BEHinteg, &
-                        fami, kpg, ksp, ndim, typmod, &
+            call nmvprk(fami, kpg, ksp, ndim, typmod, &
                         imate, compor, carcri, instam, instap, &
                         neps, epsm, deps, sigm, nvi, vim, &
                         option, angmas, sigp, vip, dsidep, &

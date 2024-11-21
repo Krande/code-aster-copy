@@ -16,13 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmveei(BEHinteg, &
-                  fami, kpg, ksp, ndim, typmod, &
+subroutine nmveei(fami, kpg, ksp, ndim, typmod, &
                   imate, compor, carcri, instam, instap, &
                   epsm, deps, sigm, nvi, vim, option, &
                   sigp, vip, dsidep, iret)
-!
-    use Behaviour_type
 !
     implicit none
 !
@@ -40,7 +37,6 @@ subroutine nmveei(BEHinteg, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
     integer :: ndim, imate, iret, kpg, ksp
     integer, intent(in):: nvi
     character(len=16) :: compor(*), option
@@ -59,7 +55,6 @@ subroutine nmveei(BEHinteg, &
 !-- ARGUMENTS
 !------------
 !
-! In  BEHinteg         : parameters for integration of behaviour
 ! IN  FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 ! IN  KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
 ! IN  NDIM    : DIMENSION DE L'ESPACE
@@ -194,8 +189,7 @@ subroutine nmveei(BEHinteg, &
         call utmess('F', 'COMPOR5_43')
     end if
 !
-    call lcmate(BEHinteg, &
-                fami, kpg, ksp, compor, mod, &
+    call lcmate(fami, kpg, ksp, compor, mod, &
                 imate, nmat, tm, tp, tref, 0, &
                 typma, hsr, matm, mate, matcst, &
                 nbcomm, cpmono, angmas, pgl, itmax, &

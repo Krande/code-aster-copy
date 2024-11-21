@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmvprk(BEHinteg,&
-                      fami, kpg, ksp, ndim, typmod,&
+    subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
                       imat, comp, crit, timed, timef,&
                       neps, epsdt, depst, sigd, nvi, vind,&
                       opt, angmas, sigf, vinf, dsde,&
                       iret, mult_comp_)
-        use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
         integer :: neps
         character(len=*) :: fami
         integer :: kpg

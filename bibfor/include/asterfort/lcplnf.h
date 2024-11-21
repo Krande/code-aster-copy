@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                       hsr, dt, dy, yd, yf,&
                       vinf, sigd, sigf,&
                       deps, nr, mod, timef,&
-                      indi, vins, codret)
+                      codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
         integer :: nsg
@@ -53,8 +53,6 @@ interface
         integer :: nr
         character(len=8) :: mod
         real(kind=8) :: timef
-        integer :: indi(7)
-        real(kind=8) :: vins(nvi)
         integer :: codret
     end subroutine lcplnf
 end interface

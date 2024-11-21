@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,6 +62,7 @@ subroutine get_elas_id(j_mater, elas_id, elas_keyword)
 !
     if (elas_keyword_in .eq. 'ELAS' .or. &
         elas_keyword_in .eq. 'ELAS_HYPER' .or. &
+        elas_keyword_in .eq. 'ELAS_HYPER_VISC' .or. &
         elas_keyword_in .eq. 'ELAS_MEMBRANE' .or. &
         elas_keyword_in .eq. 'ELAS_META' .or. &
         elas_keyword_in .eq. 'ELAS_GLRC' .or. &

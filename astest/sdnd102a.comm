@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,19 +27,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
 
-MAILLAG0 = LIRE_MAILLAGE(FORMAT="ASTER")
-MAILLAGE = CREA_MAILLAGE(
-    MAILLAGE=MAILLAG0, CREA_POI1=(_F(NOM_GROUP_MA="MASSES", GROUP_NO=("MASSES",)),)
-)
+MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MAILLA20 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
-MAILLA2 = CREA_MAILLAGE(
-    MAILLAGE=MAILLA20,
-    CREA_POI1=(
-        _F(NOM_GROUP_MA="MASSES1", GROUP_NO=("MASSES1",)),
-        _F(NOM_GROUP_MA="MASSES2", GROUP_NO=("MASSES2",)),
-    ),
-)
+MAILLA2 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
 
 MODELE = AFFE_MODELE(
     MAILLAGE=MAILLAGE,

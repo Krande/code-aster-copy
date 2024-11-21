@@ -3,7 +3,7 @@
  * @brief Interface python de MedFileReader
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -99,6 +99,20 @@ Get profile number
 Returns:
     int: profile number
             )" )
+        .def( "open",
+              py::overload_cast< const std::string &, const MedFileAccessType & >(
+                  &MedFileReader::open ),
+              R"(
+Open med file
+
+Arguments:
+    path (str): path to med file
+    accessType (MedFileAccessType): med access type
+
+Returns:
+    int: return code (0 if open is ok)
+            )",
+              py::arg( "path" ), py::arg( "accessType" ) )
         .def( "openParallel",
               py::overload_cast< const std::string &, const MedFileAccessType & >(
                   &MedFileReader::openParallel ),

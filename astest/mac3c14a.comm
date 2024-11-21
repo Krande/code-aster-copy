@@ -134,8 +134,8 @@ CAREL = AFFE_CARA_ELEM(
             VALE=1,
         ),
         _F(CARA="M_TR_D_L", GROUP_MA="GR_TG", REPERE="GLOBAL", VALE=(0.0, 0.0, 0.0, 0.0)),
-        _F(CARA="K_T_D_L", GROUP_MA="GR_CR_R", REPERE="LOCAL", VALE=(knor_ress, 0.0, 0.0)),
-        _F(CARA="K_T_D_L", GROUP_MA="GR_CR_B", REPERE="LOCAL", VALE=(knor_boss, 0.0, 0.0)),
+        _F(CARA="K_T_D_L", GROUP_MA="GR_CR_R", REPERE="LOCAL", VALE=(0.0, 0.0, 0.0)),
+        _F(CARA="K_T_D_L", GROUP_MA="GR_CR_B", REPERE="LOCAL", VALE=(0.0, 0.0, 0.0)),
         _F(
             CARA="K_TR_D_N",
             GROUP_MA="BAS_CR",

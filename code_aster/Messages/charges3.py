@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,54 +25,6 @@ cata_msg = {
   Le concept EVOL_CHAR %(k1)s ne contient aucun champ.
 """
     ),
-    2: _(
-        """
-Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.
-L'extraction du chargement volumique 3D a échoué pour l'instant %(r1)f.
-Le chargement est mal défini:
-- soit %(k1)s n'est pas indexé par l'instant;
-- soit le chargement n'a pas été trouvé pour cet instant;
-"""
-    ),
-    3: _(
-        """
-Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.
-L'extraction du chargement volumique 2D a échoué pour l'instant %(r1)f.
-Le chargement est mal défini:
-- soit %(k1)s n'est pas indexé par l'instant;
-- soit le chargement n'a pas été trouvé pour cet instant;
-"""
-    ),
-    4: _(
-        """
-Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s pour l'instant %(r1)f.
-Il y a simultanément un chargement de type volumique 2D et un chargement de type surfacique 3D.
-"""
-    ),
-    5: _(
-        """
-Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.
-L'extraction du chargement surfacique 3D a échoué pour l'instant %(r1)f.
-Le chargement est mal défini:
-- soit %(k1)s n'est pas indexé par l'instant;
-- soit le chargement n'a pas été trouvé pour cet instant;
-"""
-    ),
-    6: _(
-        """
-Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s pour l'instant %(r1)f.
-Il y a simultanément un chargement de type volumique 3D et un chargement de type surfacique 2D.
-"""
-    ),
-    7: _(
-        """
-Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.
-L'extraction du chargement surfacique 2D a échoué pour l'instant %(r1)f.
-Le chargement est mal défini:
-- soit %(k1)s n'est pas indexé par l'instant;
-- soit le chargement n'a pas été trouvé pour cet instant;
-"""
-    ),
     8: _(
         """
 Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.
@@ -80,20 +32,6 @@ L'extraction du chargement de pression a échoué pour l'instant %(r1)f.
 Le chargement est mal défini:
 - soit %(k1)s n'est pas indexé par l'instant;
 - soit le chargement n'a pas été trouvé pour cet instant;
-"""
-    ),
-    9: _(
-        """
-Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.
-L'interpolation de la vitesse a échoué pour l'instant %(r1)f.
-Le chargement est mal défini:
-- soit %(k1)s n'est pas indexé par l'instant;
-- soit le chargement n'a pas été trouvé pour cet instant;
-"""
-    ),
-    10: _(
-        """
-Les composantes dans le champ de vent %(k1)s doivent être exactement DX, DY et DZ.
 """
     ),
     12: _(

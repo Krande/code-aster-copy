@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,34 +15,34 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine me2mme_evol(model_, cara_elem_, mate_, mateco_, nharm, base_, &
-                       i_load, load_name, ligrel_calc, inst_prev, inst_curr, &
-                       inst_theta, resu_elem, vect_elem)
+!
+subroutine me2mme_evol(modelZ, caraElemZ, mateZ, matecoZ, nharm, jvBase, &
+                       iLoad, loadName, ligrel_calcZ, inst_prev, inst_curr, &
+                       inst_theta, resuElem, vectElem)
+!
+    use loadCompute_module
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/load_neum_prep.h"
-#include "asterfort/load_neum_evcd.h"
-#include "asterfort/inical.h"
+#include "LoadTypes_type.h"
 !
-!
-    character(len=*), intent(in) :: model_
-    character(len=*), intent(in) :: cara_elem_
-    character(len=*), intent(in) :: mate_
-    character(len=*), intent(in) :: mateco_
+    character(len=*), intent(in) :: modelZ
+    character(len=*), intent(in) :: caraElemZ
+    character(len=*), intent(in) :: mateZ
+    character(len=*), intent(in) :: matecoZ
     integer, intent(in) :: nharm
-    character(len=*), intent(in) :: base_
-    integer, intent(in) :: i_load
-    character(len=8), intent(in) :: load_name
-    character(len=19), intent(in) :: ligrel_calc
+    character(len=1), intent(in) :: jvBase
+    integer, intent(in) :: iLoad
+    character(len=8), intent(in) :: loadName
+    character(len=*), intent(in) :: ligrel_calcZ
     real(kind=8), intent(in) :: inst_prev
     real(kind=8), intent(in) :: inst_curr
     real(kind=8), intent(in) :: inst_theta
-    character(len=19), intent(inout) :: resu_elem
-    character(len=19), intent(in) :: vect_elem
+    character(len=19), intent(inout) :: resuElem
+    character(len=19), intent(in) :: vectElem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,39 +52,34 @@ subroutine me2mme_evol(model_, cara_elem_, mate_, mateco_, nharm, base_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_in_maxi, nbout
-    parameter(nb_in_maxi=42, nbout=1)
-    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
-    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
-!
+    integer, parameter :: nbout = 1
+    character(len=8) :: lpain(LOAD_NEUM_NBMAXIN), lpaout(nbout)
+    character(len=19) :: lchin(LOAD_NEUM_NBMAXIN), lchout(nbout)
+    character(len=4), parameter :: loadApply = "Dead"
     integer :: nb_in_prep
-    character(len=1) :: stop, base
-    character(len=24) :: model, cara_elem, mate, mateco
+    character(len=24) :: model, caraElem, mate, mateco, ligrel_calc
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    stop = 'S'
-    base = base_
-    model = model_
-    cara_elem = cara_elem_
-    mate = mate_
-    mateco = mateco_
-!
-! - Init fields
-!
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
-                lchout)
-!
-! - Preparing input fields
-!
-    call load_neum_prep(model, cara_elem, mate, mateco, 'Dead', inst_prev, &
-                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
-                        lpain, nharm=nharm)
-!
-! - Compute composite dead Neumann loads (EVOL_CHAR)
-!
-    call load_neum_evcd(stop, inst_prev, load_name, i_load, ligrel_calc, &
-                        nb_in_maxi, nb_in_prep, lpain, lchin, base, &
-                        resu_elem, vect_elem)
+    model = modelZ
+    caraElem = caraElemZ
+    mate = mateZ
+    mateco = matecoZ
+    ligrel_calc = ligrel_calcZ
+    lpain = " "
+    lchin = " "
+    lpaout = " "
+    lchout = " "
 
+! - Preparing input fields
+    call load_neum_prep(model, caraElem, mate, mateco, 'Dead', inst_prev, &
+                        inst_curr, inst_theta, LOAD_NEUM_NBMAXIN, nb_in_prep, lchin, &
+                        lpain, nharm=nharm)
+
+! - Composite dead Neumann loads (EVOL_CHAR)
+    call compEvolChar(model, caraElem, inst_prev, jvBase, &
+                      iLoad, loadName, loadApply, ligrel_calc, &
+                      nb_in_prep, lpain, lchin, &
+                      resuElem, vectElem)
+!
 end subroutine

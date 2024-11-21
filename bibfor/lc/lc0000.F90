@@ -435,12 +435,11 @@ subroutine lc0000(BEHinteg, &
                     typmod, icomp, nvi, dsidep, &
                     codret)
     case (31)
-        call lc0031(BEHinteg, &
-                    fami, kpg, ksp, ndim, imate, &
+        call lc0031(fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, neps, &
                     epsm, deps, sigm, vim, option, &
                     angmas, sigp, vip, typmod, &
-                    icomp, nvi, dsidep, codret)
+                    nvi, dsidep, codret)
     case (32)
         call lc0032(BEHinteg, &
                     fami, kpg, ksp, ndim, imate, &
@@ -457,12 +456,11 @@ subroutine lc0000(BEHinteg, &
                     typmod, icomp, nvi, dsidep, &
                     codret)
     case (34)
-        call lc0034(BEHinteg, &
-                    fami, kpg, ksp, ndim, imate, &
-                    compor, carcri, instam, instap, epsm, &
+        call lc0034(fami, kpg, ksp, imate, &
+                    carcri, epsm, &
                     deps, sigm, vim, option, angmas, &
                     sigp, vip, typmod, icomp, &
-                    nvi, dsidep, codret)
+                    dsidep, codret)
     case (35)
         call lc0035(BEHinteg, &
                     fami, kpg, ksp, ndim, imate, &
@@ -875,7 +873,7 @@ subroutine lc0000(BEHinteg, &
                     imate, compor, carcri, instam, instap, &
                     neps, epsm, deps, nsig, sigm, &
                     nvi, vim, option, angmas, &
-                    sigp, vip, dsidep, codret)
+                    sigp, vip, ndsde, dsidep, codret)
     case (7077)
         call lc7077(BEHinteg, fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, neps, epsm, &
@@ -931,9 +929,9 @@ subroutine lc0000(BEHinteg, &
     end select
 ! --------------------------------------------------------------------------------------------------
 
-! - For "old" drediction
+! - For "old" prediction
     if (BEHInteg%behavPara%lPred .and. BEHInteg%behavPara%lSigm .and. &
-        BEHInteg%behavPara%lStrainAll) then
+        .not. BEHinteg%behavPara%lStrainMeca) then
         sigp = sigm
     end if
 

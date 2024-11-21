@@ -391,6 +391,50 @@ Return the list of indexs used to store fields
 Returns:
     list[int]: List of indexs used to store fields.
         )" )
+        .def( "_interpolateFieldOnNodesReal", &Result::interpolateFieldOnNodesReal, R"(
+Interpolate a FieldOnNodesReal from result.
+
+* For internal use only - prefer to use interpolateField() *
+
+Arguments:
+    name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
+    value (float) : acces variable value
+    para (str, optional) : acces variable name (ex : 'INST'), (default : 'INST')
+    left (str, optional) : extrapolation ('EXCLU', 'CONSTANT', 'LINEAIRE'), (default : 'EXCLU')
+    right (str, optional) : extrapolation ('EXCLU', 'CONSTANT', 'LINEAIRE'), (default : 'EXCLU')
+    crit (str, optional) : search precision criterion ('RELATIF', 'ABSOLU'), (default : 'RELATIF')
+    prec (float, optional) : search precision value, (default : 1.e-6)
+    updatePtr (bool, optional): update pointer on values (default: True)
+
+Returns:
+    FieldOnNodesReal: interpolated field
+        )",
+              py::arg( "name" ), py::arg( "value" ), py::arg( "para" ) = "INST",
+              py::arg( "left" ) = "EXCLU", py::arg( "right" ) = "EXCLU",
+              py::arg( "crit" ) = "RELATIF", py::arg( "prec" ) = 1.e-6,
+              py::arg( "updatePtr" ) = true )
+        .def( "_interpolateFieldOnCellsReal", &Result::interpolateFieldOnCellsReal, R"(
+Interpolate a FieldOnCellsReal from result.
+
+* For internal use only - prefer to use interpolateField() *
+
+Arguments:
+    name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
+    value (float) : acces variable value
+    para (str, optional) : acces variable name (ex : 'INST'), (default : 'INST')
+    left (str, optional) : extrapolation ('EXCLU', 'CONSTANT', 'LINEAIRE'), (default : 'EXCLU')
+    right (str, optional) : extrapolation ('EXCLU', 'CONSTANT', 'LINEAIRE'), (default : 'EXCLU')
+    crit (str, optional) : search precision criterion ('RELATIF', 'ABSOLU'), (default : 'RELATIF')
+    prec (float, optional) : search precision value, (default : 1.e-6)
+    updatePtr (bool, optional): update pointer on values (default: True)
+
+Returns:
+    FieldOnCellsReal: interpolated field
+        )",
+              py::arg( "name" ), py::arg( "value" ), py::arg( "para" ) = "INST",
+              py::arg( "left" ) = "EXCLU", py::arg( "right" ) = "EXCLU",
+              py::arg( "crit" ) = "RELATIF", py::arg( "prec" ) = 1.e-6,
+              py::arg( "updatePtr" ) = true )
         .def( "_getFieldOnNodesReal", &Result::getFieldOnNodesReal, R"(
 Get a FieldOnNodesReal from result.
 * For internal use only - prefer to use getField() *

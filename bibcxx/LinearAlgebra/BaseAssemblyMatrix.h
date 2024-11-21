@@ -243,7 +243,8 @@ class BaseAssemblyMatrix : public DataStructure {
 
         if ( !_isBuilt )
             throw std::runtime_error( "Assembly matrix is empty" );
-        if ( getType() != "MATR_ASSE_DEPL_R" && getType() != "MATR_ASSE_TEMP_R" )
+        if ( getType() != "MATR_ASSE_DEPL_R" && getType() != "MATR_ASSE_TEMP_R" &&
+             getType() != "MATR_ASSE_ELIM_R" )
             throw std::runtime_error( "Not yet implemented" );
         if ( not getMesh()->isParallel() && local )
             throw std::runtime_error( "local export is only usable on a ParallelMesh" );

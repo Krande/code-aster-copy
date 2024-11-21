@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -285,8 +285,12 @@ subroutine chprec(chou)
             proldr = 'EXCLUS'
             prolga = 'EXCLUS'
             acces = 'INST'
+            call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
+            ASSERT(np .eq. 1)
+            call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
+            ASSERT(nc .eq. 1)
             call rsinch(resuco, nomch, acces, inst, noch19, &
-                        proldr, prolga, 2, base, icoret)
+                        proldr, prolga, 2, base, epsi, crit, icoret)
         else
             if (n5 .ne. 0) then
                 call chmima(resuco, nomch, tychlu, typmax, noch19)

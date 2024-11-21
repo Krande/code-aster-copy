@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 subroutine acevrp(nbocc, noma, noemax, noemaf)
     implicit none
 #include "jeveux.h"
+#include "asterfort/utmess.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/getvem.h"
@@ -51,12 +52,22 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
     nbgrmx = 0
     magrma = noma//'.GROUPEMA'
     manoma = noma//'.CONNEX'
+!   MESSAGE <A> si plus de 2 occurrences
+    if (nbocc .ge. 2) then
+        call utmess('A', 'AFFECARAELEM_98', si=nbocc)
+    end if
+!
     do ioc = 1, nbocc
 !        --- ON RECUPERE UNE LISTE DE GROUP_MA ---
         call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc, &
                     0, k8b, nbgr)
         nbgr = -nbgr
         nbgrmx = max(nbgrmx, nbgr)
+!       MESSAGE <A> si plus de 2 groupes
+        if (nbgr .ge. 2) then
+            call utmess('A', 'AFFECARAELEM_99', ni=2, vali=[ioc, nbgr])
+        end if
+!
     end do
     AS_ALLOCATE(vk24=group_ma, size=nbgrmx)
     noemax = 0

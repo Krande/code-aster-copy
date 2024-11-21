@@ -1,0 +1,167 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.Utilities import PETSc, SLEPc, petscInitialize
+import numpy as np
+
+CA.init("--test")
+
+# petscInitialize("-help")
+
+test = CA.TestCase()
+
+
+MAILLAG = LIRE_MAILLAGE(PARTITIONNEUR="PTSCOTCH")
+
+# MAILLAG = MAILLAG.refine()
+
+MODELEG = AFFE_MODELE(
+    AFFE=(
+        _F(GROUP_MA=("s1Tuyau", "Tuyau"), MODELISATION="3D", PHENOMENE="MECANIQUE"),
+        _F(
+            FORMULATION="U_P",
+            GROUP_MA=("s1Eau", "Eau"),
+            MODELISATION="3D_FLUIDE",
+            PHENOMENE="MECANIQUE",
+        ),
+        _F(
+            FORMULATION="U_P", GROUP_MA=("IFS_2D",), MODELISATION="FLUI_STRU", PHENOMENE="MECANIQUE"
+        ),
+    ),
+    MAILLAGE=MAILLAG,
+)
+
+# -- DEFINITION DU MATERIAU
+scaling = 1.0e10
+acier = DEFI_MATERIAU(ELAS=_F(E=190.0e9 / scaling, NU=0.3, RHO=7800.0 / scaling))
+
+eau = DEFI_MATERIAU(FLUIDE=_F(CELE_R=970.0, RHO=732.0 / scaling))
+
+
+CHAMATG = AFFE_MATERIAU(
+    AFFE=(_F(GROUP_MA=("Tuyau"), MATER=(acier,)), _F(GROUP_MA=("IFS_2D", "Eau"), MATER=(eau,))),
+    MODELE=MODELEG,
+)
+
+CL = AFFE_CHAR_CINE(
+    MECA_IMPO=(
+        _F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("s1Tuyau", "s2Tuyau")),
+        _F(GROUP_MA=("s1Eau", "s2Eau"), PRES=0.0),
+    ),
+    MODELE=MODELEG,
+)
+
+ASSEMBLAGE(
+    CHAM_MATER=CHAMATG,
+    CHAR_CINE=CL,
+    MATR_ASSE=(
+        _F(MATRICE=CO("MASS"), OPTION="MASS_MECA"),
+        _F(MATRICE=CO("STIFF"), MODE_FOURIER=0, OPTION="RIGI_MECA"),
+    ),
+    MODELE=MODELEG,
+    NUME_DDL=CO("NDDL"),
+)
+
+nModes = 6
+compute_ref = False
+if compute_ref:
+    modes = CALC_MODES(
+        CALC_FREQ=_F(NMAX_FREQ=nModes),
+        MATR_MASS=MASS,
+        MATR_RIGI=STIFF,
+        TYPE_RESU="DYNAMIQUE",
+        SOLVEUR=_F(METHODE="MUMPS", NPREC=11),
+        VERI_MODE=_F(STOP_ERREUR="NON"),
+    )
+
+# Transfer the assembly matrix to PETSc
+K = STIFF.toPetsc()
+M = MASS.toPetsc()
+
+# Build the list of DOFs with Dirichlet BC in global numbering
+loc_diri = np.where(STIFF.getDirichletBCDOFs()[:-1])[0]
+l2g = NDDL.getLocalToGlobalMapping()
+glo_diri = [l2g[i] for i in loc_diri]
+
+# Fully zero rows and columns
+# code_aster put a 1 on the diagonal of the DOFs with Dirichlet BC
+# -> this causes false rigid body modes
+K.zeroRowsColumns(glo_diri, 0.0)
+M.zeroRowsColumns(glo_diri, 0.0)
+
+comm = K.comm
+
+# define the Eigenvalue Problem Solver
+eps = SLEPc.EPS().create(comm)
+if False:  # want to try Arpack ?
+    eps.setType(SLEPc.EPS.Type.ARPACK)
+eps.setOperators(K, M)
+eps.setDimensions(nModes)
+eps.setWhichEigenpairs(SLEPc.EPS.Which.TARGET_MAGNITUDE)
+eps.setTarget(0)
+# define the Spectral Transform
+# pc_redistribute is used to fully remove the DOFs with Dirichlet BC
+st = eps.getST()
+st.setType(SLEPc.ST.Type.SINVERT)
+st.setShift(5.0)
+st.getKSP().setType("preonly")
+st.getKSP().getPC().setType("redistribute")
+# Extra options
+optDB = PETSc.Options()
+prefix = "st_redistribute_"
+optDB.setValue(f"-{prefix}ksp_type", "preonly")  # sub ksp
+optDB.setValue(f"-{prefix}pc_type", "lu")  # sub pc lu
+optDB.setValue(f"-{prefix}pc_factor_mat_solver_type", "mumps")  # using mumps
+
+# Build and save
+eps.setFromOptions()
+eps.solve()
+
+# Retrieve eigenvalues
+nconv = eps.getConverged()
+eps.view()
+
+Print = PETSc.Sys.Print
+ref = [1.31117e01, 2.84234e01, 3.71644e01, 5.50777e01, 6.87567e01, 6.95364e01]
+calc = []
+if nconv > 0:
+    # Create the results vectors
+    vr, vi = K.getVecs()
+    # Print the eigenvalues
+    Print()
+    Print("        k          ||Ax-kx||/||kx|| ")
+    Print("----------------- ------------------")
+    for i in range(nconv):
+        k = eps.getEigenpair(i, vr, vi)
+        error = eps.computeError(i)
+        if k.imag != 0.0:
+            Print(" %9f%+9f j %12g" % (k.real, k.imag, error))
+            Print("But we should not pass here...")
+            assert False
+        else:
+            Print(" %12f      %12g" % (np.sqrt(k.real) / 2.0 / np.pi, error))
+            calc.append(np.sqrt(k.real) / 2.0 / np.pi)
+    Print()
+
+# Verification
+for idx, v in enumerate(ref):
+    test.assertAlmostEqual(v, calc[idx], places=4)
+
+FIN()

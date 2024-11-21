@@ -61,6 +61,9 @@ void DEFSS( MGIS_GET_ISVS, mgis_get_isvs, const char *hexid, STRING_SIZE l_id, c
 void DEFSP( MGIS_GET_ISVS_SIZES, mgis_get_isvs_sizes, const char *hexid, STRING_SIZE l_id,
             ASTERINTEGER *sizes );
 
+void DEFSP( MGIS_GET_ISVS_TYPES, mgis_get_isvs_types, const char *hexid, STRING_SIZE l_id,
+            ASTERINTEGER *types );
+
 void DEFSPPP( MGIS_SET_INTERNAL_STATE_VARIABLES, mgis_set_internal_state_variables,
               const char *hexid, STRING_SIZE l_id, ASTERINTEGER *stid, ASTERDOUBLE *value,
               ASTERINTEGER *vectsize );

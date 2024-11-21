@@ -407,33 +407,14 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
         auto load_FEDesc = load->getFiniteElementDescriptor();
 
         if ( load->hasLoadResult() ) {
-            std::string evol_char_name = load->getLoadResultName();
-            FieldOnCellsRealPtr evol_exchange_field =
-                std::make_shared< FieldOnCellsReal >( FEDesc );
-            std::string para( "COEF_H" );
-            std::string access_var( "INST" );
-            std::string base( "G" );
-            std::string extr_right( "EXCLU" );
-            std::string extr_left( "EXCLU" );
-            ASTERINTEGER iret = 100;
-            ASTERINTEGER stop = 0;
-
-            CALLO_RSINCH( evol_char_name, para, access_var, &time_curr,
-                          evol_exchange_field->getName(), extr_right, extr_left, &stop, base,
-                          &iret );
-
-            if ( iret >= 2 ) {
-                AS_ABORT( "Cannot find COEF_H in EVOL_CHAR " + evol_char_name + " at time " +
-                          std::to_string( time_curr ) );
-            }
-
+            auto exchange_field = load->interpolateLoadResult( "COEF_H", time_curr );
             calcul->setOption( "RIGI_THER_ECHA_R" );
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
             calcul->addInputField( "PGEOMER",
                                    _phys_problem->getModel()->getMesh()->getCoordinates() );
-            calcul->addInputField( "PCOEFHR", evol_exchange_field );
+            calcul->addInputField( "PCOEFHR", exchange_field );
             calcul->addHHOField( currModel );
             calcul->addTimeField( "PINSTR", time_curr, 0.0, 1.0 );
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );

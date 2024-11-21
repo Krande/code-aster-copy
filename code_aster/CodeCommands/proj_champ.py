@@ -169,6 +169,7 @@ class FieldProjector(ExecuteCommand):
         self.remove_dependencies(keywords, "RESULTAT")
         self.remove_dependencies(keywords, "CHAM_GD")
         self.remove_dependencies(keywords, "CHAM_NO_REFE")
+        self.remove_dependencies(keywords, "MATR_PROJECTION")
 
 
 PROJ_CHAMP = FieldProjector.run

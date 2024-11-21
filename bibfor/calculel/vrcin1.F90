@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,6 +112,8 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
     character(len=8), pointer :: cvrcvarc(:) => null()
     character(len=16), pointer :: cesv(:) => null()
     character(len=8), pointer :: cvrcgd(:) => null()
+    real(kind=8), parameter :: prec = 1.0d-10
+    character(len=8), parameter :: crit = 'ABSOLU'
     save nval1
 ! ----------------------------------------------------------------------
 
@@ -274,7 +276,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
                 instev = inst
             end if
             call rsinch(nomevo, nomsym, 'INST', instev, nomch, &
-                        proldr, prolga, 2, 'V', iret)
+                        proldr, prolga, 2, 'V', prec, crit, iret)
             ASSERT(iret .le. 12)
             if (iret .ge. 10) then
                 codret = 'NO'

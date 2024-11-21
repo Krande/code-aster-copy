@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine lcplnf(BEHinteg, &
                   hsr, dt, dy, yd, yf, &
                   vinf, sigd, sigf, &
                   deps, nr, mod, timef, &
-                  indi, vins, codret)
+                  codret)
 !
     use Behaviour_type
 !
@@ -57,20 +57,17 @@ subroutine lcplnf(BEHinteg, &
 !     DY     : INCREMENT DES VARIABLES INTERNES
 !     TIMED  : INSTANT T
 !     TIMEF  : INSTANT T+DT
-!     INDI   : INDICATEUR MECANIQMES POT. ACTIFS (HUJEUX)
-!     VINS   : VARIABLES INTERNES A T (ORIGINAL - HUJEUX)
 !  OUT
 !     VINF   :  VARIABLES INTERNES A T+DT
 ! ----------------------------------------------------------------
-#include "asterfort/hujlnf.h"
 #include "asterfort/irrlnf.h"
 #include "asterfort/lcdpec.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lkilnf.h"
 #include "asterfort/srilnf.h"
     integer :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), iter, itmax, nr, codret
-    integer :: nfs, nsg, indi(7), i
-    real(kind=8) :: materf(nmat, 2), vins(nvi), timef
+    integer :: nfs, nsg, i
+    real(kind=8) :: materf(nmat, 2), timef
     real(kind=8) :: pkc, m13, dtot, hookf(6, 6)
     real(kind=8) :: yd(*), vind(*), toler, pgl(3, 3), dt
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), dy(*), yf(*), vinf(*)
@@ -126,10 +123,6 @@ subroutine lcplnf(BEHinteg, &
             vinf(i) = yf(i)
         end do
         vinf(nvi) = iter
-    else if (rela_comp .eq. 'HUJEUX') then
-        call hujlnf(toler, nmat, materf, nvi, vind, &
-                    vinf, vins, nr, yd, yf, &
-                    sigd, sigf, indi, codret)
     else
 !        CAS GENERAL :
         vinf(1:nvi-1) = yf(ndt+1:ndt+nvi-1)

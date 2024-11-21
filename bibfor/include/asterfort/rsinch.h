@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,16 +20,18 @@
 !
 interface
     subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
-                      proldr, prolga, istop, base, ier)
-        character(len=*) :: nomsd
-        character(len=*) :: nomch
-        character(len=*) :: acces
-        real(kind=8) :: rval
-        character(len=*) :: chextr
-        character(len=*) :: proldr
-        character(len=*) :: prolga
-        integer :: istop
-        character(len=*) :: base
-        integer :: ier
+                      proldr, prolga, istop, base, prec, crit, ier)
+        character(len=*), intent(in) :: nomsd
+        character(len=*), intent(in) :: nomch
+        character(len=*), intent(in) :: acces
+        real(kind=8), intent(in) :: rval
+        character(len=*), intent(in) :: chextr
+        character(len=*), intent(in) :: proldr
+        character(len=*), intent(in) :: prolga
+        integer, intent(in) :: istop
+        character(len=*), intent(in) :: base
+        real(kind=8), intent(in) :: prec
+        character(len=8), intent(in) :: crit
+        integer, intent(out) :: ier
     end subroutine rsinch
 end interface

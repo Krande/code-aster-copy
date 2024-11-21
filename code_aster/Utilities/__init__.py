@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ from .ExecutionParameter import ExecutionParameter
 from .general import initial_context
 from .i18n import localization
 from .i18n import translate as _
-from .import_helper import PETSc, medcoupling
+from .import_helper import PETSc, SLEPc, medcoupling
 from .injector import injector
 from .logger import DEBUG, ERROR, INFO, WARNING, logger, loglevel, with_loglevel
 from .misc import get_shared_tmpdir, shared_tmpdir
@@ -69,6 +69,7 @@ from .options import Options
 from .petsc_utils import petscFinalize, petscInitialize
 from .report import CR
 from .searchlist import SearchList
+from .interpolatelist import InterpolateList
 from .statistics_manager import print_stats, profile, reset_stats
 from .strfunc import (
     center,

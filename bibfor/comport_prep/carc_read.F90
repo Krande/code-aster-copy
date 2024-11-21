@@ -315,6 +315,7 @@ subroutine carc_read(prepMapCarcri, model_)
         call getBehaviourPara(l_mfront_proto, l_kit_thm, &
                               factorKeyword, iFactorKeyword, algo_inte, &
                               iter_inte_maxi_p, resi_inte_p)
+
 ! ----- Get external state variables
         call getExternalStateVariable(rela_comp, rela_code_py, &
                                       l_mfront_offi, l_mfront_proto, &

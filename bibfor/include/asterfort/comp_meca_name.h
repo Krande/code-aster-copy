@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@ interface
     subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                               rela_comp, defo_comp, kit_comp, type_cpla, post_iter, &
                               regu_visc, post_incr, &
-                              extern_addr, extern_type, model_dim, infoVari)
+                              extern_addr, extern_type, infoVari)
         integer, intent(in) :: nbVari, nbVariMeca
         aster_logical, intent(in) :: l_excl
         character(len=16), intent(in) :: vari_excl
         aster_logical, intent(in) :: l_kit_meta
         character(len=16), intent(in) :: extern_addr, rela_comp, defo_comp, kit_comp(4)
         character(len=16), intent(in) :: type_cpla, post_iter, regu_visc, post_incr
-        integer, intent(in) :: extern_type, model_dim
+        integer, intent(in) :: extern_type
         character(len=16), pointer :: infoVari(:)
     end subroutine comp_meca_name
 end interface

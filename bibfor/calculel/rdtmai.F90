@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rdtmai(noma, nomare, base, corrn, corrm, &
-                  bascor, nbmal, lima)
+subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
     implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterf_types.h"
+#include "asterfort/addGrpMa.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/existGrpMa.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -33,6 +36,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -45,13 +49,11 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "jeveux.h"
 !
     character(len=8) :: noma, nomare
     character(len=*) :: corrn, corrm
     character(len=1) :: base, bascor
-    integer :: nbmal, lima(*)
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -66,34 +68,33 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
 !  CORRM  : IN/JXOUT : SI != ' ' : NOM DE L'OBJET QUI CONTIENDRA
 !           LA CORRESPONDANCE IMA_RE -> IMA
 !  BASCOR : IN  : 'G' OU 'V' : BASE POUR LA CREATION DE CORRN ET CORRM
-!  NBMAL  : IN   : / =0 => LA LISTE DE MAILLES EST OBTENUE EN SCRUTANT
-!                          LE MOT CLE RESTREINT
-!                : / >0 => LA LISTE DE MAILLE EST FOURNIE PAR LIMA
-!  LIMA   : IN   : SI NBMAL> 0 : LISTE DES NUMEROS DE MAILLES SUR
-!                  LESQUELLES IL FAUT REDUIRE LE MAILLAGE.
 ! ======================================================================
 !
     integer :: nbmaou, nbnoin, iret, jnuma, jwk1, jconx2, ima, numa
     integer :: nbno, lont
     integer :: ino, nuno, jdim, itypou, jadin, jadou, ibid
-    integer :: jcorou
+    integer :: jcorou, iadr, jwk4
     integer :: iad, ntgeo, nbnoou, nbnomx, jwk2, nbgma, jgma, igm, nbma, nbmain
     integer :: jwk3, nbgmin, jgmanv, nbgmnv, k, jnmpg, nmpg, nbgno, jmaor
     integer :: nbgnin, jgnonv, jnnpg, nbgnnv, ign, nnpg, numgno
     integer :: jcorrm, imain, imaou, n1
     character(len=4) :: docu
-    character(len=8) :: typmcl(2), nomres
-    character(len=16) :: motcle(2), nomcmd, typres
+    character(len=8) :: typmcl(2)
+    character(len=16) :: motcle(2)
     character(len=8) :: nomma, nomno, ttgrma, ttgrno
     character(len=24) :: nommai, nomnoe, grpnoe, cooval, coodsc
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
     character(len=24) :: ptngrn, ptngrm, valk(2)
-    aster_logical :: lvide
+    aster_logical :: lvide, lpmesh, l_exi_in_grp, l_exi_in_grp_p
     character(len=24), pointer :: grp_noeu_in(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: vconnex(:) => null()
     integer, pointer :: typmail(:) => null()
     integer, pointer :: num_noeu_in(:) => null()
+    integer, pointer :: maex(:) => null()
+    integer, pointer :: malg(:) => null()
+    integer, pointer :: noex(:) => null()
+    integer, pointer :: nolg(:) => null()
 !
     call jemarq()
 !
@@ -104,24 +105,18 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
 ! -1- PRELIMINAIRES
 !     ============
 !
-    call getres(nomres, typres, nomcmd)
+    lpmesh = isParallelMesh(nomare)
 !
 !
 ! --- CALCUL DE LA LISTE DES MAILLES SUR LESQUELLES IL FAUT REDUIRE :
-    if (nbmal .eq. 0) then
-        motcle(1) = 'GROUP_MA'
-        motcle(2) = 'MAILLE'
-        typmcl(1) = 'GROUP_MA'
-        typmcl(2) = 'MAILLE'
-        call reliem(' ', noma, 'NU_MAILLE', 'RESTREINT', 1, &
-                    2, motcle, typmcl, '&&RDTMAI.NUM_MAIL_IN', nbmaou)
+    motcle(1) = 'GROUP_MA'
+    motcle(2) = 'MAILLE'
+    typmcl(1) = 'GROUP_MA'
+    typmcl(2) = 'MAILLE'
+    call reliem(' ', noma, 'NU_MAILLE', 'RESTREINT', 1, &
+                2, motcle, typmcl, '&&RDTMAI.NUM_MAIL_IN', nbmaou)
+    if (nbmaou > 0) then
         call jeveuo('&&RDTMAI.NUM_MAIL_IN', 'L', jnuma)
-    else
-        nbmaou = nbmal
-        call wkvect('&&RDTMAI.NUM_MAIL_IN', 'V V I', nbmaou, jnuma)
-        do k = 1, nbmaou
-            zi(jnuma-1+k) = lima(k)
-        end do
     end if
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoin)
@@ -156,6 +151,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
 !         -> SI IMA2=0: LA MAILLE IMA1 DU MAILLAGE IN N'EST PAS PRESENTE
 !                       DANS LE MAILLAGE OUT.
     call wkvect('&&RDTMAI_WORK_3', 'V V I', nbmain, jwk3)
+    call wkvect('&&RDTMAI_WORK_4', 'V V I', nbmain, jwk4)
 !
 !
 ! ---  REMPLISSAGE DES TABLEAUX DE TRAVAIL
@@ -218,22 +214,21 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
 !
 ! --- OBJET .NOMMAI
     call jecreo(nommai, base//' N K8')
-    call jeecra(nommai, 'NOMMAX', nbmaou)
+    call jeecra(nommai, 'NOMMAX', max(nbmaou, 1))
     do ima = 1, nbmaou
         call jenuno(jexnum(noma//'.NOMMAI', zi(jnuma+ima-1)), nomma)
         call jecroc(jexnom(nommai, nomma))
     end do
 !
 ! --- OBJET .TYPMAIL
-    call wkvect(typmai, base//' V I', nbmaou, itypou)
+    call wkvect(typmai, base//' V I', max(nbmaou, 1), itypou)
     call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
     do ima = 1, nbmaou
         zi(itypou-1+ima) = typmail(zi(jnuma+ima-1))
     end do
 !
 ! --- OBJET .CONNEX
-    call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE', &
-                nbmaou)
+    call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE', max(nbmaou, 1))
     call jeecra(connex, 'NUTIOC', nbmaou)
     call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
 !
@@ -255,7 +250,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
 !
 ! --- OBJET .NOMNOE
     call jecreo(nomnoe, base//' N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbnoou)
+    call jeecra(nomnoe, 'NOMMAX', max(nbnoou, 1))
     do ino = 1, nbnoou
         call jenuno(jexnum(noma//'.NOMNOE', zi(jwk2+ino-1)), nomno)
         call jecroc(jexnom(nomnoe, nomno))
@@ -263,8 +258,8 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
 !
 ! --- OBJET .COORDO.VALE
     call jecreo(cooval, base//' V R')
-    call jeecra(cooval, 'LONMAX', nbnoou*3)
-    call jeecra(cooval, 'LONUTI', nbnoou*3)
+    call jeecra(cooval, 'LONMAX', max(nbnoou, 1)*3)
+    call jeecra(cooval, 'LONUTI', max(nbnoou, 1)*3)
     call jelira(noma//'.COORDO    .VALE', 'DOCU', cval=docu)
     call jeecra(cooval, 'DOCU', cval=docu)
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
@@ -289,15 +284,47 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
     zi(iad+1) = -3
     zi(iad+2) = 14
 !
+    if (lpmesh) then
+!
+! --- OBJET .MAEX
+        call wkvect(nomare//'.MAEX', base//' V I', max(nbmaou, 1), iadr)
+        call jeveuo(noma//'.MAEX', 'L', vi=maex)
+        do ima = 1, nbmaou
+            zi(iadr-1+ima) = maex(zi(jnuma+ima-1))
+        end do
+!
+! --- OBJET .NUMALG
+        call jeexin(nomare//'.NUMALG', iret)
+        if (iret .ne. 0) then
+            call wkvect(nomare//'.NUMALG', base//' V I', nbmaou, iadr)
+            call jeveuo(noma//'.NUMALG', 'L', vi=malg)
+            do ima = 1, nbmaou
+                zi(iadr-1+ima) = maex(zi(jnuma+ima-1))
+            end do
+        end if
+! --- OBJET .NOEX
+        call wkvect(nomare//'.NOEX', base//' V I', max(nbnoou, 1), iadr)
+        call jeveuo(noma//'.NOEX', 'L', vi=noex)
+        do ino = 1, nbnoin
+            if (zi(jwk1+ino-1) .ne. 0) then
+                zi(iadr-1+zi(jwk1+ino-1)-1) = noex(ino)
+            end if
+        end do
+! --- OBJET .NUNOLG
+        call wkvect(nomare//'.NUNOLG', base//' V I', max(nbnoou, 1), iadr)
+        call jeveuo(noma//'.NUNOLG', 'L', vi=nolg)
+        do ino = 1, nbnoin
+            if (zi(jwk1+ino-1) .ne. 0) then
+                zi(iadr-1+zi(jwk1+ino-1)-1) = nolg(ino)
+            end if
+        end do
+    end if
+!
 !
 !
 !     --- OBJET .GROUPEMA
 !     --------------------
-    if (nbmal .eq. 0) then
-        call getvtx('RESTREINT', 'TOUT_GROUP_MA', iocc=1, scal=ttgrma, nbret=iret)
-    else
-        ttgrma = 'OUI'
-    end if
+    call getvtx('RESTREINT', 'TOUT_GROUP_MA', iocc=1, scal=ttgrma, nbret=iret)
     if (ttgrma .eq. 'NON') then
 !       'TOUT_GROUP_MA'='NON'
         call getvtx('RESTREINT', 'GROUP_MA', iocc=1, nbval=0, nbret=nbgma)
@@ -312,17 +339,18 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
                     nbgma)
         do igm = 1, nbgma
             nomgma = zk24(jgma+igm-1)
-            call jecroc(jexnom(grpmai, nomgma))
-            call jelira(jexnom(noma//'.GROUPEMA', nomgma), 'LONUTI', nbma)
-            call jeecra(jexnom(grpmai, nomgma), 'LONMAX', max(nbma, 1))
-            call jeecra(jexnom(grpmai, nomgma), 'LONUTI', nbma)
-            call jeveuo(jexnom(noma//'.GROUPEMA', nomgma), 'L', jadin)
-            call jeveuo(jexnom(grpmai, nomgma), 'E', jadou)
-            do ima = 1, nbma
-                zi(jadou+ima-1) = zi(jwk3+zi(jadin+ima-1)-1)
-            end do
+            call existGrpMa(noma, nomgma, l_exi_in_grp, l_exi_in_grp_p)
+            if (l_exi_in_grp) then
+                call jelira(jexnom(noma//'.GROUPEMA', nomgma), 'LONUTI', nbma)
+                call jeveuo(jexnom(noma//'.GROUPEMA', nomgma), 'L', jadin)
+                do ima = 1, nbma
+                    zi(jwk4+ima-1) = zi(jwk3+zi(jadin+ima-1)-1)
+                end do
+                call addGrpMa(nomare, nomgma, zi(jwk4), nbma)
+            end if
         end do
     else
+        ASSERT(.not. lpmesh)
 !       TOUT_GROUP_MA='OUI'
         call jelira(noma//'.GROUPEMA', 'NOMUTI', nbgmin)
         call wkvect('&&RDTMAI_GRMA_NON_VIDES', 'V V I', nbgmin, jgmanv)
@@ -375,13 +403,8 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
 !
 !     --- OBJET .GROUPENO
 !     --------------------
-    if (nbmal .eq. 0) then
-        call getvtx('RESTREINT', 'TOUT_GROUP_NO', iocc=1, scal=ttgrno, nbret=iret)
-        call getvtx('RESTREINT', 'GROUP_NO', iocc=1, nbval=0, nbret=nbgno)
-    else
-        ttgrno = 'OUI'
-        nbgno = 0
-    end if
+    call getvtx('RESTREINT', 'TOUT_GROUP_NO', iocc=1, scal=ttgrno, nbret=iret)
+    call getvtx('RESTREINT', 'GROUP_NO', iocc=1, nbval=0, nbret=nbgno)
 !
     if (nbgno .ne. 0) then
         nbgno = -nbgno
@@ -391,10 +414,12 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
     end if
 !
 !     SI 'TOUT_GROUP_NO'='NON' ET 'GROUP_NO' ABSENT => ON SORT
+    nbgnnv = 0
     if (ttgrno .eq. 'NON' .and. nbgno .eq. 0) goto 210
+    ASSERT(.not. lpmesh)
 !
     if (ttgrno .eq. 'NON') then
-!       'TOUT_GROUP_MA'='NON' ET 'GROUP_NO' PRESENT
+!       'TOUT_GROUP_NO'='NON' ET 'GROUP_NO' PRESENT
         call wkvect('&&RDTMAI_GRNO_NON_VIDES', 'V V I', nbnoou, jgnonv)
         call wkvect('&&RDTMAI_NB_NO_PAR_GRNO', 'V V I', nbnoou, jnnpg)
         nbgnnv = 0
@@ -484,22 +509,27 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
     end if
 !     -- SI L'ON SOUHAITE RECUPERER LES TABLEAUX DE CORRESPONDANCE :
     if (corrn .ne. ' ') then
-        call juveca('&&RDTMAI_WORK_2', nbnoou)
-        call jedupo('&&RDTMAI_WORK_2', bascor, corrn, .false._1)
+        if (nbnoou > 0) then
+            call juveca('&&RDTMAI_WORK_2', nbnoou)
+            call jedupo('&&RDTMAI_WORK_2', bascor, corrn, .false._1)
+        end if
     end if
     if (corrm .ne. ' ') then
-        call wkvect(corrm, bascor//' V I', nbmaou, jcorrm)
-        do imain = 1, nbmain
-            imaou = zi(jwk3-1+imain)
-            if (imaou .ne. 0) then
-                zi(jcorrm-1+imaou) = imain
-            end if
-        end do
+        if (nbmaou > 0) then
+            call wkvect(corrm, bascor//' V I', nbmaou, jcorrm)
+            do imain = 1, nbmain
+                imaou = zi(jwk3-1+imain)
+                if (imaou .ne. 0) then
+                    zi(jcorrm-1+imaou) = imain
+                end if
+            end do
+        end if
     end if
 !
     call jedetr('&&RDTMAI_WORK_1')
     call jedetr('&&RDTMAI_WORK_2')
     call jedetr('&&RDTMAI_WORK_3')
+    call jedetr('&&RDTMAI_WORK_4')
 !
     call jedetr('&&RDTMAI_GRMA_FOURNIS')
     call jedetr('&&RDTMAI_GRNO_FOURNIS')

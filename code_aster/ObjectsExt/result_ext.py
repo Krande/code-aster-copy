@@ -28,7 +28,7 @@ from libaster import Result
 
 from ..Messages import UTMESS
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import SearchList, force_list, injector, is_number, logger
+from ..Utilities import SearchList, InterpolateList, force_list, injector, is_number, logger
 from ..Utilities import medcoupling as medc
 
 
@@ -359,6 +359,57 @@ class ExtendedResult:
             return self.getGeneralizedVectorComplex(name, storageIndex)
 
         raise KeyError("name of field %s not found" % name)
+
+    def interpolateField(
+        self, name, value, left="EXCLU", right="EXCLU", crit="RELATIF", prec=1.0e-6, updatePtr=True
+    ):
+        """Interpolate the specified field by its name and a time value.
+
+        Arguments:
+            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
+            value (float|int|str): value of time (the access parameter)
+            left (str): extrapolation (EXCLU, LINEAIRE, CONSTANT)
+            right (str): extrapolation (EXCLU, LINEAIRE, CONSTANT)
+            crit (str): search criterion ABSOLU or RELATIF
+            prec (float): precision for the search criterion
+            updatePtr (bool): update the pointer on the field values if *True* (default).
+                The argument should not be disabled by the user, mainly for internal use.
+
+        Returns:
+            FieldXXX: field to get with type in (FieldOnNodesXXX/FieldOnCellsXXX/
+            ConstantFieldOnCellXXX)
+        """
+
+        if not name in self.getFieldsNames():
+            raise ValueError(f"Invalid field name {name}")
+
+        acpara = self.getAccessParameters()
+        para = "INST"
+        if not para in acpara:
+            raise KeyError(f"Access parameter `{para}` is not available")
+
+        times = InterpolateList(acpara["INST"], left, right, prec, crit)
+        times.assertInclude(value)
+
+        kws = {
+            "name": name,
+            "value": value,
+            "para": "INST",
+            "left": left,
+            "right": right,
+            "crit": crit,
+            "prec": prec,
+            "updatePtr": updatePtr,
+        }
+
+        names = self.getFieldsOnNodesRealNames()
+        if name in names:
+            return self._interpolateFieldOnNodesReal(**kws)
+        names = self.getFieldsOnCellsRealNames()
+        if name in names:
+            return self._interpolateFieldOnCellsReal(**kws)
+
+        raise KeyError("cannot interpolate field %s" % name)
 
     def setField(self, field, name, value=None, para="NUME_ORDRE", crit="RELATIF", prec=1.0e-6):
         """Set the specified field. This is an overlay to existing methods

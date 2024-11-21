@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine lcresi(fami, kpg, ksp, rela_comp, typmod, &
                   toutms, hsr, nr, nvi, vind, &
                   vinf, itmax, toler, timed, timef, &
                   yd, yf, deps, epsd, dy, &
-                  r, iret, crit, indi)
+                  r, iret, crit)
 ! aslint: disable=W1504
     implicit none
 !       CALCUL DES TERMES DU SYSTEME NL A RESOUDRE = R(DY)
@@ -44,20 +44,18 @@ subroutine lcresi(fami, kpg, ksp, rela_comp, typmod, &
 !           YD     :  VARIABLES A T      =    ( SIGD  VIND  (EPSD3)  )
 !           YF     :  VARIABLES A T + DT =    ( SIGF  VINF  (EPS3F)  )
 !           DY     :  SOLUTION           =    ( DSIG  DVIN  (DEPS3)  )
-!           INDI   :  INDICATEURS DES MECANISMES POT.ACTIFS (HUJEUX)
 !       OUT R      :  SYSTEME NL A T + DT
 !       ----------------------------------------------------------------
 !
 #include "asterfort/cvmres.h"
 #include "asterfort/hayres.h"
-#include "asterfort/huresi.h"
 #include "asterfort/irrres.h"
 #include "asterfort/lcmmre.h"
 #include "asterfort/lcresa.h"
 #include "asterfort/lkresi.h"
 #include "asterfort/srresi.h"
     integer :: imat, nmat, nr, nvi, kpg, ksp, itmax, iret
-    integer :: nfs, nsg, indi(7)
+    integer :: nfs, nsg
     real(kind=8) :: deps(6), epsd(6), vind(*), toler
     real(kind=8) :: r(*), yd(*), yf(*), dy(*), vinf(*)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
@@ -100,10 +98,6 @@ subroutine lcresi(fami, kpg, ksp, rela_comp, typmod, &
         call hayres(typmod, nmat, materd, materf, timed, &
                     timef, yd, yf, deps, dy, &
                     r, crit, iret)
-    else if (rela_comp .eq. 'HUJEUX') then
-        call huresi(typmod, nmat, materf, indi, deps, &
-                    nr, yd, yf, nvi, vind, &
-                    r, iret)
     else
         call lcresa(fami, kpg, ksp, typmod, imat, &
                     nmat, materd, materf, rela_comp, nr, &

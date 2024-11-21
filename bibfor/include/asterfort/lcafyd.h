@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
-                      nmat, mod, nvi, vind, vinf,&
-                      sigd, nr, yd, bnews, mtrac)
+                      nmat, mod, nvi, vind,&
+                      sigd, nr, yd)
         integer :: nvi
         integer :: nmat
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
@@ -31,11 +31,8 @@ interface
         character(len=24) :: cpmono(5*nmat+1)
         character(len=8) :: mod
         real(kind=8) :: vind(*)
-        real(kind=8) :: vinf(nvi)
         real(kind=8) :: sigd(6)
         integer :: nr
         real(kind=8) :: yd(*)
-        aster_logical :: bnews(3)
-        aster_logical :: mtrac
     end subroutine lcafyd
 end interface

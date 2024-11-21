@@ -1,0 +1,369 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import os
+import os.path as osp
+import numpy as np
+from math import *
+from code_aster.Commands import *
+from code_aster import CA
+
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="EXCEPTION"),
+    DEBUG=_F(SDVERI="OUI", JXVERI="OUI", JEVEUX="NON"),
+)
+
+############ UNITE ############
+# m
+# s
+# Newton
+# kg
+###############################
+
+K = 1e6
+masse_mobile = 80
+
+MAILLAGE0 = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MAILLAGE = CREA_MAILLAGE(
+    MAILLAGE=MAILLAGE0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA="M1", GROUP_NO=("PT1",)),
+        _F(NOM_GROUP_MA="M2", GROUP_NO=("PT2",)),
+        _F(NOM_GROUP_MA="M3", GROUP_NO=("PT3",)),
+    ),
+)
+
+
+#
+# DESCRIPTION DES PAS DE CALCUL ET D ARCHIVAGE
+# ---------------------------------------------
+
+L_INST = DEFI_LIST_REEL(DEBUT=0.5, INTERVALLE=_F(JUSQU_A=0.55, PAS=0.0005))
+
+#
+# DESCRIPTION DES ACCELEROGRAMMES ET DE LEURS INTEGRALES :
+# ---------------------------------------------------------
+OMEGAA = (2.0 * pi) * 10.0
+ALPHA = 100000.0
+
+
+ACCE1 = FORMULE(VALE="ALPHA*INST*sin(OMEGAA*INST) ", OMEGAA=OMEGAA, ALPHA=ALPHA, NOM_PARA="INST")
+
+ACCELER1 = CALC_FONC_INTERP(
+    FONCTION=ACCE1,
+    LIST_PARA=L_INST,
+    NOM_RESU="ACCE",
+    NOM_PARA="INST",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    INFO=1,
+)
+
+ACCE2 = FORMULE(VALE="- ALPHA*INST*sin(OMEGAA*INST) ", OMEGAA=OMEGAA, ALPHA=ALPHA, NOM_PARA="INST")
+
+ACCELER2 = CALC_FONC_INTERP(
+    FONCTION=ACCE2,
+    LIST_PARA=L_INST,
+    NOM_RESU="ACCE",
+    NOM_PARA="INST",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    INFO=1,
+)
+
+VITE1 = FORMULE(
+    VALE="ALPHA/OMEGAA/OMEGAA*sin(OMEGAA*INST)-ALPHA/OMEGAA*INST*cos(OMEGAA*INST)",
+    OMEGAA=OMEGAA,
+    ALPHA=ALPHA,
+    NOM_PARA="INST",
+)
+
+VITESSE1 = CALC_FONC_INTERP(
+    FONCTION=VITE1,
+    LIST_PARA=L_INST,
+    NOM_RESU="VITE",
+    NOM_PARA="INST",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    INFO=1,
+)
+
+DEPL1 = FORMULE(
+    VALE="-2*ALPHA/OMEGAA**3*cos(OMEGAA*INST)-ALPHA/OMEGAA**2*INST*sin(OMEGAA*INST)+2*ALPHA/OMEGAA**3",
+    OMEGAA=OMEGAA,
+    ALPHA=ALPHA,
+    NOM_PARA="INST",
+)
+
+DEPLACE1 = CALC_FONC_INTERP(
+    FONCTION=DEPL1,
+    LIST_PARA=L_INST,
+    NOM_RESU="DEPL",
+    NOM_PARA="INST",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    INFO=1,
+)
+
+#
+
+VITE2 = FORMULE(
+    VALE="ALPHA/OMEGAA/OMEGAA*sin(OMEGAA*INST)-ALPHA/OMEGAA*INST*cos(OMEGAA*INST)",
+    OMEGAA=OMEGAA,
+    ALPHA=ALPHA,
+    NOM_PARA="INST",
+)
+
+VITESSE2 = CALC_FONC_INTERP(
+    FONCTION=VITE2,
+    LIST_PARA=L_INST,
+    NOM_RESU="VITE",
+    NOM_PARA="INST",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    INFO=1,
+)
+
+DEPL2 = FORMULE(
+    VALE="2*ALPHA/OMEGAA**3*cos(OMEGAA*INST)+ALPHA/OMEGAA**2*INST*sin(OMEGAA*INST)-2*ALPHA/OMEGAA**3",
+    OMEGAA=OMEGAA,
+    ALPHA=ALPHA,
+    NOM_PARA="INST",
+)
+
+DEPLACE2 = CALC_FONC_INTERP(
+    FONCTION=DEPL2,
+    LIST_PARA=L_INST,
+    NOM_RESU="DEPL",
+    NOM_PARA="INST",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    INFO=1,
+)
+
+#
+# MATERIAU
+
+
+ldepla = np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0])
+lforce = np.array([1.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 9.9]) * 5.0e7
+# Raideur constante
+lraide = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]) * 5.0e7
+# Amortissement nul
+lamort = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]) * 0.0
+
+
+fctfx = DEFI_FONCTION(
+    NOM_PARA="DX", ABSCISSE=ldepla, ORDONNEE=lforce, PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
+fctrd = DEFI_FONCTION(
+    NOM_PARA="DX", ABSCISSE=ldepla, ORDONNEE=lraide, PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
+fctam = DEFI_FONCTION(
+    NOM_PARA="DX", ABSCISSE=ldepla, ORDONNEE=lamort, PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
+
+MATCHO = DEFI_MATERIAU(
+    INFO=1,
+    DIS_CHOC_ENDO=_F(
+        FX=fctfx, RIGI_NOR=fctrd, AMOR_NOR=fctam, DIST_1=0.0, DIST_2=0.0, CRIT_AMOR="INCLUS"
+    ),
+)
+
+# Materiau DIS_CHOC pour produire le résultat de référence
+MATCHO_REFE = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=lraide[0], DIST_1=0.0, DIST_2=0.0))
+
+MATBID = DEFI_MATERIAU(ELAS=_F(E=1.0e10, NU=0.3, RHO=0.0))
+
+#
+
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MAILLAGE, AFFE=(_F(GROUP_MA="RESSORT", MATER=MATBID), _F(GROUP_MA="GAC", MATER=MATCHO))
+)
+
+
+# MODELISATION
+#
+
+BICHOC = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=(
+        _F(GROUP_MA=("RESSORT", "GAC"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA=("M1", "M2", "M3"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
+
+CL_BICHO = AFFE_CHAR_MECA(
+    MODELE=BICHOC,
+    DDL_IMPO=(
+        _F(GROUP_NO=("PT2", "PT3"), DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO=("PT1",), DY=0.0, DZ=0.0),
+    ),
+)
+
+#
+
+CARA_BIC = AFFE_CARA_ELEM(
+    MODELE=BICHOC,
+    DISCRET=(
+        _F(REPERE="LOCAL", GROUP_MA=("M1", "M2", "M3"), CARA="K_T_D_N", VALE=(0, 0, 0)),
+        _F(REPERE="LOCAL", GROUP_MA="M1", CARA="M_T_D_N", VALE=masse_mobile),
+        _F(REPERE="LOCAL", GROUP_MA=("M2", "M3"), CARA="M_T_D_N", VALE=1.0),
+        _F(REPERE="LOCAL", GROUP_MA=("M1", "M2", "M3"), CARA="A_T_D_N", VALE=(0, 0, 0)),
+        _F(REPERE="LOCAL", GROUP_MA="RESSORT", CARA="K_T_D_L", VALE=(K, K, K)),
+        _F(REPERE="LOCAL", GROUP_MA="RESSORT", CARA="M_T_D_L", VALE=0.0),
+        _F(REPERE="LOCAL", GROUP_MA="RESSORT", CARA="A_T_D_L", VALE=(0, 0, 0)),
+        _F(REPERE="LOCAL", GROUP_MA="GAC", CARA="K_T_D_L", VALE=(0, 0, 0)),
+        _F(REPERE="LOCAL", GROUP_MA="GAC", CARA="M_T_D_L", VALE=0.0),
+        _F(REPERE="LOCAL", GROUP_MA="GAC", CARA="A_T_D_L", VALE=(0, 0, 0)),
+    ),
+)
+
+ASSEMBLAGE(
+    MODELE=BICHOC,
+    CARA_ELEM=CARA_BIC,
+    CHARGE=CL_BICHO,
+    NUME_DDL=CO("NUMDDLC"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("RIGI_BIC"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASS_BIC"), OPTION="MASS_MECA"),
+    ),
+)
+
+# CALCUL DES MODES STATIQUES AUX POINTS D ANCRAGE ET DES CHARGEMENTS
+# SISMIQUES :
+
+MSTA_BIC = MODE_STATIQUE(
+    MATR_RIGI=RIGI_BIC, MATR_MASS=MASS_BIC, MODE_STAT=_F(TOUT="OUI", AVEC_CMP="DX")
+)
+
+
+MULT_X1 = CALC_CHAR_SEISME(
+    MATR_MASS=MASS_BIC, DIRECTION=(1.0, 0.0, 0.0), MODE_STAT=MSTA_BIC, GROUP_NO="PT2"
+)
+
+MULT_X2 = CALC_CHAR_SEISME(
+    MATR_MASS=MASS_BIC, DIRECTION=(1.0, 0.0, 0.0), MODE_STAT=MSTA_BIC, GROUP_NO="PT3"
+)
+
+CHAR_SE1 = AFFE_CHAR_MECA(MODELE=BICHOC, VECT_ASSE=MULT_X1)
+
+CHAR_SE2 = AFFE_CHAR_MECA(MODELE=BICHOC, VECT_ASSE=MULT_X2)
+
+MODE_BIC = CALC_MODES(
+    MATR_RIGI=RIGI_BIC,
+    OPTION="PLUS_PETITE",
+    CALC_FREQ=_F(NMAX_FREQ=1),
+    MATR_MASS=MASS_BIC,
+    SOLVEUR_MODAL=_F(MODE_RIGIDE="NON", METHODE="TRI_DIAG"),
+)
+
+MODE_BIC = NORM_MODE(reuse=MODE_BIC, MODE=MODE_BIC, NORME="MASS_GENE")
+
+# CALCUL DIRECT
+# -------------
+
+TRAN_DY2 = DYNA_NON_LINE(
+    MODELE=BICHOC,
+    CHAM_MATER=CHMAT,
+    MODE_STAT=MSTA_BIC,
+    CARA_ELEM=CARA_BIC,
+    EXCIT=(
+        _F(CHARGE=CL_BICHO),
+        _F(
+            CHARGE=CHAR_SE1,
+            DEPL=DEPLACE1,
+            ACCE=ACCELER1,
+            VITE=VITESSE1,
+            MULT_APPUI="OUI",
+            DIRECTION=(1.0, 0.0, 0.0),
+            GROUP_NO="PT2",
+        ),
+        _F(
+            CHARGE=CHAR_SE2,
+            DEPL=DEPLACE2,
+            ACCE=ACCELER2,
+            VITE=VITESSE2,
+            MULT_APPUI="OUI",
+            DIRECTION=(1.0, 0.0, 0.0),
+            GROUP_NO="PT3",
+        ),
+    ),
+    AMOR_MODAL=_F(MODE_MECA=MODE_BIC, AMOR_REDUIT=0.07, REAC_VITE="OUI"),
+    COMPORTEMENT=(
+        _F(RELATION="ELAS", GROUP_MA="RESSORT"),
+        _F(RELATION="CHOC_ENDO_PENA", GROUP_MA="GAC"),
+    ),
+    INCREMENT=_F(LIST_INST=L_INST),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+    NEWTON=_F(REAC_ITER=1),
+    SOLVEUR=_F(METHODE="LDLT"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8, ITER_GLOB_MAXI=20),
+)
+
+DEPL1 = RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM="DEPL_ABSOLU", NOM_CMP="DX", GROUP_NO="PT1")
+DEPL2 = RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM="DEPL_ABSOLU", NOM_CMP="DX", GROUP_NO="PT2")
+
+DEPL = CALC_FONCTION(COMB=(_F(FONCTION=DEPL1, COEF=1.0), _F(FONCTION=DEPL2, COEF=-1.0)))
+
+FORC = RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM="SIEF_ELGA", NOM_CMP="N", GROUP_MA="GAC", POINT=1)
+
+INSTS_CHOC = FORC.Ordo() < -1
+
+
+# Comparaison à un calcul de référence avec CHOC_ELASTIQUE
+REFE_DIS_CHOC = LIRE_TABLE(FORMAT="TABLEAU", UNITE=30)
+tabrefe = REFE_DIS_CHOC.EXTR_TABLE().values()
+drefe = np.array(tabrefe["DEPL"])[INSTS_CHOC]
+frefe = np.array(tabrefe["FORC"])[INSTS_CHOC]
+
+insts = DEPL.Absc()[INSTS_CHOC]
+dcalc = DEPL.Ordo()[INSTS_CHOC]
+fcalc = FORC.Ordo()[INSTS_CHOC]
+
+delta_depl = np.abs((dcalc - drefe) / drefe)
+delta_force = np.abs((fcalc - frefe) / frefe)
+
+test = CA.TestCase()
+tol = 1.0e-4
+for inst_i, depl_i, forc_i in zip(insts, delta_depl, delta_force):
+    test.assertLess(depl_i, tol, msg="DEPL inst %e" % inst_i)
+    test.assertLess(forc_i, tol, msg="FORC inst %e" % inst_i)
+test.printSummary()
+
+try:
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(1, 1)
+    ax.plot(tabrefe["DEPL"], tabrefe["FORC"], color="k", label="Reference DIS_CHOC")
+    ax.scatter(DEPL.Ordo(), FORC.Ordo(), color="crimson", label="CHOC_ENDO_PENA")
+    ax.grid()
+    ax.set_xlabel("Déplacement N02-N01 [m]")
+    ax.set_ylabel("Effort impact [N]")
+    ax.legend(loc=3)
+    savedir = "" or os.getcwd()
+    plt.savefig(osp.join(savedir, "sdnd102h.png"))
+    plt.close()
+
+except ImportError:
+    pass
+
+FIN()

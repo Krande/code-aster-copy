@@ -226,4 +226,5 @@ def C_RELATION(command):
             "MCC",
             "Barcelone",
             "CSSM",
+            "ELAS_HYPER_VISC",
         )

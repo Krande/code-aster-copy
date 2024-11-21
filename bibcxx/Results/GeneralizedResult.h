@@ -393,6 +393,67 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
     }
 
     /**
+     * @brief Set values of generalized coordinates at a given time index
+     * @param jvec generalized coordinates
+     * @param idx time index
+     * @param val values at time index
+     *
+     */
+    bool setValuesAtIndex( std::vector< JeveuxVectorReal > jvec, ASTERINTEGER idx,
+                           VectorReal val ) const {
+        CALL_JEMARQ();
+        ASTERINTEGER nmod = getNumberOfModes();
+        AS_ASSERT( val.size() == nmod );
+        if ( _bloc.exists() ) {
+            ASTERINTEGER iblo = getBlockFromIndex( idx );
+            ASTERINTEGER idx0 = 0;
+            _blo2->updateValuePointer();
+            VectorLong blocks = _blo2->toVector();
+            if ( iblo != 0 ) {
+                idx0 = blocks[iblo - 1];
+            }
+            jvec[iblo]->updateValuePointer();
+            for ( ASTERINTEGER i = 0; i < val.size(); i++ ) {
+                ( *jvec[iblo] )[( idx - idx0 ) * nmod + i] = val[i];
+            }
+        } else {
+            return false;
+        }
+        CALL_JEDEMA();
+        return true;
+    }
+
+    /**
+     * @brief Set values of generalized displacements at a given time index
+     * @param idx time index
+     * @param val values at time index
+     *
+     */
+    bool setDisplacementValues( ASTERINTEGER idx, VectorReal val ) const {
+        return setValuesAtIndex( _depl, idx, val );
+    }
+
+    /**
+     * @brief Set values of generalized velocities at a given time index
+     * @param idx time index
+     * @param val values at time index
+     *
+     */
+    bool setVelocityValues( ASTERINTEGER idx, VectorReal val ) const {
+        return setValuesAtIndex( _vite, idx, val );
+    }
+
+    /**
+     * @brief Set values of generalized accelerations at a given time index
+     * @param idx time index
+     * @param val values at time index
+     *
+     */
+    bool setAccelerationValues( ASTERINTEGER idx, VectorReal val ) const {
+        return setValuesAtIndex( _acce, idx, val );
+    }
+
+    /**
      * @brief Return values of generalized coordinates for all time indices
      * @param jvec generalized coordinates
      *

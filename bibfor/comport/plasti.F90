@@ -149,7 +149,6 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nmat = 90, nsg = 30, nfs = 5, nrm = nfs*nsg+6
-    integer :: iret
     character(len=3) :: matcst
     character(len=7) :: etatd, etatf
     character(len=8) :: mod, typma
@@ -208,7 +207,7 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
 !
 ! --  RECUPERATION COEF MATERIAU A T ET/OU T+DT
 !
-    call lcmate(BEHinteg, fami, kpg, ksp, compor, &
+    call lcmate(fami, kpg, ksp, compor, &
                 mod, imate, nmat, tempd, tempf, &
                 tref, 0, typma, hsr, materd, &
                 materf, matcst, nbcomm, cpmono, angmas, &
@@ -263,23 +262,20 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
             seuil = 1.d0
         else
 ! --        INTEGRATION ELASTIQUE SUR DT
-            call lcelas(fami, kpg, ksp, rela_comp, mod, &
-                        imate, nmat, materd, materf, matcst, &
-                        nvi, angmas, deps, sigm, vim, &
-                        sigp, vip, theta, etatd, carcri, &
-                        iret)
-            if (iret .ne. 0) goto 1
+            call lcelas(rela_comp, mod, &
+                        nmat, materd, materf, matcst, &
+                        deps, sigm, vim, &
+                        sigp, theta)
 !
 ! --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
             seuil = 1.d0
-            call lccnvx(fami, kpg, ksp, rela_comp, mod, &
+            call lccnvx(fami, kpg, ksp, rela_comp, &
                         imate, nmat, materf, sigm, sigp, &
                         deps, vim, vip, nbcomm, cpmono, &
                         pgl, nvi, vp, vecp, hsr, &
                         nfs, nsg, toutms, instam, instap, &
-                        seuil, iret)
+                        seuil)
 !
-            if (iret .ne. 0) goto 1
         end if
 !
         if (seuil .ge. 0.d0) then
@@ -311,8 +307,8 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
         end if
 !
 !        POST-TRAITEMENTS PARTICULIERS
-        call lcpopl(rela_comp, angmas, nmat, materd, materf, &
-                    mod, deps, sigm, sigp, vim, &
+        call lcpopl(rela_comp, nmat, materd, materf, &
+                    mod, sigp, vim, &
                     vip)
 !
     end if
@@ -325,7 +321,7 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
 !     ----------------------------------------------------------------
 !
     if (rigi) then
-        call lcotan(option, angmas, etatd, etatf, fami, &
+        call lcotan(option, etatd, etatf, fami, &
                     kpg, ksp, rela_comp, mod, imate, &
                     nmat, materd, materf, epsd, deps, &
                     sigm, sigp, nvi, vim, vip, &
