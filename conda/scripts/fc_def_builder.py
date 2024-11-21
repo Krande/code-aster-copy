@@ -2,7 +2,9 @@ import pathlib
 import json
 import re
 
-BIBFOR_DIR = pathlib.Path("../../bibfor").resolve().absolute()
+
+ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent.parent.absolute()
+BIBFOR_DIR = ROOT_DIR  / "bibfor"
 BIBFOR_DEF = BIBFOR_DIR / "bibfor.def"
 
 
@@ -99,7 +101,6 @@ def create_def_file(modules: dict, headers:dict, output_file: pathlib.Path, suff
     functions_only = set([i.lower() for x in modules.values() for i in x])
     headers_only = set([i.lower() for x in headers.values() for i in x])
     functions_w_headers = headers_only & functions_only
-
     functions_sorted = sorted(functions_w_headers)
 
     with open(output_file, "w") as def_file:

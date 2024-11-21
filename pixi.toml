@@ -45,7 +45,7 @@ test = { cmd = [
     "--only-failed-results"] , description = "Run the default sequential tests" }
 test_scan = { cmd = ["python", "conda/test_scanner/eval_tests.py", "--output", "conda/test_scanner/results"], description = "Scan the test results" }
 debug = { cmd = ["python", "conda/scripts/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
-
+run_aster = { cmd = ["run_aster.bat"], description = "Run the aster executable (code aster needs to be built and installed)" }
 
 bibfor_cmake_configure = { cmd = [
     "call_compile_ifx.bat",
