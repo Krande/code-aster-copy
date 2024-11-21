@@ -251,7 +251,7 @@ def parse_args(argv):
         dest="no_comm",
         action="store_true",
         help="do not execute the `.comm` files but start an interactive Python session. "
-        "`CA.init()` or `DEBUT()` should be executed to copy data files",
+        "`CA.init()` is automatically called.",
     )
     parser.add_argument(
         "--gdb",
