@@ -14,13 +14,27 @@ set BUILD_TYPE=debug
 set CLEAN_BUILD=1
 set PIXI_BUILD=0
 
+set EXTRA_WAF_ARGS=
+
 :parse_args
 if "%~1"=="" goto end_parse_args
-if /i "%~1"=="--pixi-build" set PIXI_BUILD=1
-if /i "%~1"=="--install-tests" set INCLUDE_TESTS=1
-if /i "%~1"=="--use-log" set USE_LOG=1
-if /i "%~1"=="--no-color" set COLOR_ENABLED=0
-if /i "%~1"=="--no-clean" set CLEAN_BUILD=0
+if /i "%~1"=="--pixi-build" (
+    set PIXI_BUILD=1
+) else if /i "%~1"=="--install-tests" (
+    set INCLUDE_TESTS=1
+) else if /i "%~1"=="--use-log" (
+    set USE_LOG=1
+) else if /i "%~1"=="--no-color" (
+    set COLOR_ENABLED=0
+) else if /i "%~1"=="--no-clean" (
+    set CLEAN_BUILD=0
+) else if /i "%~1"=="--build-type" (
+    shift
+    set BUILD_TYPE=%~1
+) else (
+    REM Collect unrecognized arguments
+    set EXTRA_WAF_ARGS=!EXTRA_WAF_ARGS! %~1
+)
 shift
 goto parse_args
 
@@ -194,7 +208,7 @@ if %CLEAN_BUILD%==1 (
       --maths-libs=auto ^
       --msvc-entry ^
       --without-hg ^
-      --without-repo %EXTRA_ARGS%
+      --without-repo %EXTRA_ARGS% %EXTRA_WAF_ARGS%
 )
 REM   --install-tests ^
 

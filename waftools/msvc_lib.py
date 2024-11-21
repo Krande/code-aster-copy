@@ -21,7 +21,8 @@ class msvclibgen(Task.Task):
         output_fp.parent.mkdir(parents=True, exist_ok=True)
         obld = self.generator.bld
         root_path = pathlib.Path(obld.root.abspath()).resolve().absolute()
-
+        #Logs.info(f"{self.env.BIBC_DEF=}, {self.env.BIBCXX_DEF=}, {self.env.BIBFOR_DEF=}")
+        clean_name_map = {"bibc": self.env.BIBC_DEF, "bibcxx": self.env.BIBCXX_DEF, "bibfor": self.env.BIBFOR_DEF}
         clean_name = output_fp.stem.replace("_gen", "")
         # Location of python 3.11 libs
         libs_dir = pathlib.Path(self.env.PREFIX).resolve().absolute().parent / "libs"
@@ -35,6 +36,10 @@ class msvclibgen(Task.Task):
             def_file = root_path / "msvc/c_entrypoints" / f"{clean_name}.def"
             opts += [f"/DEF:{def_file}"]
         else:
+            def_file_v = clean_name_map.get(clean_name, None)
+            if def_file_v is not None:
+                def_file = root_path / def_file_v
+                Logs.info(f"Using passed ref 2{def_file=}")
             opts += [f"/DEF:{def_file}"]
 
         cmd = cmd[:2] + opts + cmd[2:]

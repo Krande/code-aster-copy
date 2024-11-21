@@ -165,6 +165,7 @@ def options(self):
     self.load("scotch", tooldir="waftools")
     self.load("petsc", tooldir="waftools")
     self.load("runtest", tooldir="waftools")
+    self.recurse("msvc")
     self.recurse("bibfor")
     self.recurse("code_aster")
     self.recurse("run_aster")

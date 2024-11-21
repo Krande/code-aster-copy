@@ -18,6 +18,7 @@ def scan_header_files(
     # Regex patterns to identify modules and subroutines/functions
     module_pattern = re.compile(r"^\s*module\s+(\w+)", re.IGNORECASE)
     func_pattern = re.compile(r"^\s*(subroutine|function)\s+(\w+)", re.IGNORECASE)
+    end_func_pattern = re.compile(r"^\s*end\s+(subroutine|function)\s+(\w+)", re.IGNORECASE)
 
     # Dictionary to store modules and associated functions
     modules = {"na": []}
@@ -28,6 +29,8 @@ def scan_header_files(
             continue
         with open(fp, "r", encoding="utf-8") as file:
             current_module = "na"
+            inside_subroutine = False
+            current_subroutine = ""
             for line in file:
                 if line.startswith("!"):
                     continue
@@ -39,9 +42,18 @@ def scan_header_files(
 
                 # Check if line defines a function/subroutine
                 func_match = func_pattern.match(line)
-                if func_match:
+                if func_match and not inside_subroutine:
+                    inside_subroutine = True
+                    current_subroutine = func_match.group(2)
                     function_name = func_match.group(2)
                     modules[current_module].append(function_name)
+
+                end_func_match = end_func_pattern.match(line)
+                if inside_subroutine and end_func_match:
+                    if current_subroutine == end_func_match.group(2):
+                        inside_subroutine = False
+                        current_subroutine = ""
+
     # save to cache
     cache_file.parent.mkdir(exist_ok=True, parents=True)
     with open(cache_file, "w") as cache:
@@ -100,8 +112,12 @@ def create_def_file(modules: dict, headers:dict, output_file: pathlib.Path, suff
     output_file.parent.mkdir(exist_ok=True, parents=True)
     functions_only = set([i.lower() for x in modules.values() for i in x])
     headers_only = set([i.lower() for x in headers.values() for i in x])
+
     functions_w_headers = headers_only & functions_only
     functions_sorted = sorted(functions_w_headers)
+
+    #functions_and_headers = functions_only | headers_only
+    #functions_sorted = sorted(functions_and_headers)
 
     with open(output_file, "w") as def_file:
         def_file.write("LIBRARY bibfor\n")
@@ -170,9 +186,12 @@ def compare_with_existing_def(existing_def_file: pathlib.Path, modules: dict, he
 
 def main():
     output_file = pathlib.Path("temp/output.def")  # Output .def file path
-    headers = scan_header_files(BIBFOR_DIR, clear_cache=False)
+    output_file = BIBFOR_DEF.parent / "bibfor_v2.def"
+    headers = scan_header_files(BIBFOR_DIR, clear_cache=True)
     modules = scan_fortran_files(BIBFOR_DIR, clear_cache=False)
+
     compare_with_existing_def(BIBFOR_DEF, modules, headers)
+
     create_def_file(modules, headers, output_file)
     print(f".def file created at: {output_file}")
 
