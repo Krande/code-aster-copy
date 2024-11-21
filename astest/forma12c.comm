@@ -73,9 +73,6 @@ vectElem = CALC_VECT_ELEM(CHAM_MATER=CHMAT, CHARGE=(BLOCAGE, GRAV), OPTION="CHAR
 
 vectCharge = ASSE_VECTEUR(NUME_DDL=NUMEDDL, VECT_ELEM=vectElem)
 
-# ==========================================================================================
-#                    CALCUL SUR BASE MODALE
-# ==========================================================================================
 
 # Calcul des modes dans la bande de fréquence 0-50 Hz
 dynaModes = CALC_MODES(
@@ -101,6 +98,11 @@ vectorGen = PROJ_VECT_BASE(
 # Projection matrices
 massGen = PROJ_MATR_BASE(BASE=MODES, MATR_ASSE=massPhy, NUME_DDL_GENE=numeDdlGene)
 rigiGen = PROJ_MATR_BASE(BASE=MODES, MATR_ASSE=rigiPhy, NUME_DDL_GENE=numeDdlGene)
+
+# ==========================================================================================
+#                    CALCUL SUR BASE MODALE SANs CORRECTION STATIQUE
+# ==========================================================================================
+
 
 # Résolution
 TRANGEN = DYNA_VIBRA(
@@ -140,7 +142,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=DEPLPDZ, VALE_PARA=0.05, VALE_CALC=0.1455487169
 TEST_FONCTION(VALEUR=_F(FONCTION=DEPLPDX, VALE_PARA=0.05, VALE_CALC=6.487913904939e-05))
 
 # ==========================================================================================
-#                    CALCUL SUR BASE MODALE AVEC CORRECTION STATIQUE
+#                    CALCUL SUR BASE MODALE AVEC CORRECTION STATIQUE A PRIORI
 # ==========================================================================================
 pa_s100 = pas / 100
 
@@ -268,4 +270,38 @@ TEST_TABLE(CRITERE='ABSOLU',
            PRECISION=0.005,
            )
 """
+
+# ==========================================================================================
+#                    CALCUL SUR BASE MODALE AVEC CORRECTION STATIQUE A PRIORI
+# avec amortissement modal à 1.86%
+# ==========================================================================================
+
+# Résolution
+tranGene3 = DYNA_VIBRA(
+    ARCHIVAGE=_F(LIST_INST=LISTR, PAS_ARCH=10**8),
+    AMOR_MODAL=_F(AMOR_REDUIT=(1.86 / 100.0,)),
+    BASE_CALCUL="GENE",
+    EXCIT=_F(FONC_MULT=sinom, VECT_ASSE_GENE=vectorGen),
+    INCREMENT=_F(INST_FIN=tfin, PAS=pas, VERI_PAS="NON"),
+    MATR_MASS=massGen,
+    MATR_RIGI=rigiGen,
+    SCHEMA_TEMPS=_F(SCHEMA="DEVOGE"),
+    TYPE_CALCUL="TRAN",
+)
+
+# Retour sur base physique
+tranPhy3 = REST_GENE_PHYS(MODE_MECA=baseModale, RESU_GENE=tranGene3, TOUT_CHAM="OUI")
+
+UZ5 = RECU_FONCTION(RESULTAT=tranPhy3, NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO="P")
+
+UX5 = RECU_FONCTION(RESULTAT=tranPhy3, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="P")
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=UZ5, VALE_PARA=0.05, VALE_CALC=0.14265238312907)))
+
+
+TEST_FONCTION(
+    VALEUR=(_F(FONCTION=UX5, VALE_PARA=0.05, CRITERE="ABSOLU", VALE_CALC=2.116664743322e-04))
+)
+
+
 FIN()
