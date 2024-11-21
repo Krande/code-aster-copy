@@ -33,6 +33,8 @@ subroutine op0167()
 #include "asterc/getres.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/chckma.h"
@@ -123,9 +125,9 @@ subroutine op0167()
     integer :: nbField
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
     integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint, nbOccRepere
-    integer :: iOccQuadTria, iad, nbOccRaff
+    integer :: iOccQuadTria, iad, nbOccRaff, rank, nbproc, pCellShift, iProc
     integer :: nbOccCreaPoi1, nbOccCreaMaille, nbOccModiHHO, nbOccCoqueSolide
-    aster_logical :: lpb
+    aster_logical :: lpb, pMesh
     character(len=8) :: cellNameIn, cellNameOut, nodeNameIn, nodeNameOut
     aster_logical :: lPrefCellName, lPrefCellNume, lPrefNodeName, lPrefNodeNume
     integer :: prefCellNume, prefNodeNume, prefNume, info
@@ -150,9 +152,12 @@ subroutine op0167()
     integer, pointer :: nodeInGrIn(:) => null(), nodeInGrOut(:) => null()
     integer, pointer :: meshDimeIn(:) => null(), meshDimeOut(:) => null()
     integer, pointer :: meshTypmailIn(:) => null(), meshTypmailOut(:) => null()
+    integer, pointer :: nodeOwner(:) => null(), cellOwner(:) => null(), globalCellId(:) => null()
+    integer, pointer :: nbCellPerProc(:) => null()
     real(kind=8), pointer :: meshValeIn(:) => null(), meshValeOut(:) => null()
     type(Mmesh) :: meshSolidShell
     character(len=8) :: convType(2)
+    mpi_int :: mrank, msize
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -813,6 +818,16 @@ subroutine op0167()
     call jedupo(meshIn//'.SUPMAIL', 'G', meshOut//'.SUPMAIL', ASTER_FALSE)
     call jedupo(meshIn//'.TYPL', 'G', meshOut//'.TYPL', ASTER_FALSE)
     call jedupo(meshIn//'.ABSC_CURV', 'G', meshOut//'.ABSC_CURV', ASTER_FALSE)
+    if (isParallelMesh(meshIn)) then
+        ASSERT(nbNodeCrea .eq. 0)
+        call jedupo(meshIn//'.NOEX', 'G', meshOut//'.NOEX', ASTER_FALSE)
+        call jeveuo(meshOut//'.NOEX', 'L', vi=nodeOwner)
+        call jedupo(meshIn//'.NUNOLG', 'G', meshOut//'.NUNOLG', ASTER_FALSE)
+        call copisd('DOMJOINTS', 'G', meshIn//'.JOIN', meshOut//'.JOIN')
+        pMesh = .true.
+    else
+        pMesh = .false.
+    end if
 
 ! - New sizes
 
@@ -824,6 +839,23 @@ subroutine op0167()
     call jeveuo(meshOut//'.DIME', 'E', vi=meshDimeOut)
     meshDimeOut(1) = nbNodeOut
     meshDimeOut(3) = nbCellOut
+    if (pMesh) then
+        call jedupo(meshIn//'.MAEX', 'G', meshOut//'.MAEX', ASTER_FALSE)
+        call juveca(meshOut//'.MAEX', nbCellOut)
+        call jeveuo(meshOut//'.MAEX', 'E', vi=cellOwner)
+        call wkvect(meshOut//'.NUMALG', 'G V I', nbCellOut, vi=globalCellId)
+        call asmpi_info(rank=mrank, size=msize)
+        rank = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
+        AS_ALLOCATE(vi=nbCellPerProc, size=nbproc+1)
+        nbCellPerProc(rank+2) = nbCellOut
+        call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc+1, vi=nbCellPerProc)
+        do iProc = 1, nbproc
+            nbCellPerProc(iProc+1) = nbCellPerProc(iProc+1)+nbCellPerProc(iProc)
+        end do
+        pCellShift = nbCellPerProc(rank+1)
+        AS_DEALLOCATE(vi=nbCellPerProc)
+    end if
 
 ! - Repertory of name of nodes
     if (nbNodeOut .eq. nbNodeIn) then
@@ -952,7 +984,6 @@ subroutine op0167()
         nbNodeByCellOut(cellShift+iCell) = nbNodeInCellOut
         connexAdr(cellShift+iCell) = jvConnexIn
         allCellNume(cellShift+iCell) = cellNumeOut
-
     end do
 
 ! - Set new connexity of cells
@@ -970,6 +1001,11 @@ subroutine op0167()
         do iNode = 1, nbNodeInCellOut
             zi(jvConnexOut-1+iNode) = zi(jvConnexIn-1+iNode)
         end do
+
+! ----- Add parallel informations
+        if (pMesh) then
+            globalCellId(iCell) = iCell+pCellShift-1
+        end if
     end do
     cellShift = cellShift+nbCellIn
 
@@ -983,6 +1019,9 @@ subroutine op0167()
         do iNode = 1, nbNodeInCellOut
             zi(jvConnexOut-1+iNode) = zi(jvConnexIn-1+iNode)
         end do
+        if (pMesh) then
+            ASSERT(.false.)
+        end if
     end do
 
 ! - Create cell for CREA_POI1
@@ -1009,6 +1048,11 @@ subroutine op0167()
         call jenonu(jexnom(meshOut//'.NOMNOE', nodeNameOut), nodeNumeOut)
         zi(jvConnexOut) = nodeNumeOut
 
+! ----- Add parallel informations
+        if (pMesh) then
+            cellOwner(cellNumeOut) = nodeOwner(nodeNumeOut)
+            globalCellId(cellNumeOut) = iCell+pCellShift+cellShift-1
+        end if
     end do
     AS_DEALLOCATE(vi=nbNodeByCellOut)
     AS_DEALLOCATE(vi=connexAdr)
