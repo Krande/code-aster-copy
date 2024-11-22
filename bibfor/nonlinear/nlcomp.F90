@@ -74,8 +74,14 @@ subroutine nlcomp(phenom, fami, kpg, imate, ndim, coorpg, time, tp, Kglo, dtp_, 
                     ' ', phenom, 1, 'TEMP', [tp], &
                     3, nomres, lambor, icodre, 1)
         aniso = ASTER_TRUE
+    else if (phenom .eq. 'THER_HYDR') then
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', phenom, 1, 'TEMP', [tp], &
+                    1, 'LAMBDA', valres, icodre, 1)
+        lambda = valres(1)
+        aniso = ASTER_FALSE
     else
-        call utmess('F', 'ELEMENTS2_63')
+        call utmess('F', 'THERMIQUE1_1')
     end if
 !
 ! ------- TRAITEMENT DE L ANISOTROPIE
