@@ -31,7 +31,7 @@ from ..Utilities import no_new_attributes
 class SchemeParams:
     """Object thats holds the values of the parameters of the scheme."""
 
-    epsilon = nb_iter = stepper = None
+    epsilon = nb_iter = stepper = adapt_step = None
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -39,6 +39,7 @@ class SchemeParams:
         self.epsilon = 1.0e-6
         self.nb_iter = 1
         self.stepper = None
+        self.adapt_step = False
 
     @staticmethod
     def _get_value(args, param, default=None):

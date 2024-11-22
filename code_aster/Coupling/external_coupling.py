@@ -160,6 +160,7 @@ class ExternalCoupling:
                     self.MPI.COUPLING_COMM_WORLD.send(0, "STEP", times[i], self.MPI.DOUBLE)
         else:
             nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
+
             if nb_step > 0:
                 times = [self.MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self.MPI.DOUBLE)]
                 for _ in range(nb_step):
@@ -291,23 +292,19 @@ class ExternalCoupling:
                 if converged:
                     break
 
-                self.log("end of iteration status: {}".format(exit_coupling))
+                self.log(f"end of iteration.")
 
             stepper.completed()
 
-            self.log("end of time step with status: {}".format(exit_coupling))
+            self.log(f"end of time step.")
 
         # only to avoid deadlock
         if self._starter:
             input_data = self.recv_input_fields()
 
-        self.log(
-            "coupling {0} with exit status: {1}".format(
-                "completed" if completed else "interrupted", exit_coupling
-            )
-        )
+        self.log(f"coupling completed with exit status: {stepper.isFinished()}")
 
-        return exit_coupling
+        return True
 
     @property
     def mesh_interface(self):
@@ -377,6 +374,8 @@ class SaturneCoupling(ExternalCoupling):
 
         nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
         self._params.nb_iter = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBSSIT", self.MPI.INT)
+        self._params.adapt_step = bool(self.MPI.COUPLING_COMM_WORLD.recv(0, "TADAPT", self.MPI.INT))
+
         self._params.epsilon = self.MPI.COUPLING_COMM_WORLD.recv(0, "EPSILO", self.MPI.DOUBLE)
         init_time = self.MPI.COUPLING_COMM_WORLD.recv(0, "TTINIT", self.MPI.DOUBLE)
         delta_t = self.MPI.COUPLING_COMM_WORLD.recv(0, "PDTREF", self.MPI.DOUBLE)
@@ -396,13 +395,13 @@ class SaturneCoupling(ExternalCoupling):
             (bool): True if the computation is a success else False.
         """
 
-        # initial sync before the loop
-        exit_coupling = self.sync()
-
         current_time = self._params.init_time
         delta_time = self._params.delta_t
-        completed = False
+        completed = exit_coupling = False
         istep = 0
+
+        if not self._params.adapt_step:
+            self.sync(end_coupling=False)
 
         while not completed and not exit_coupling:
             istep += 1
@@ -439,9 +438,14 @@ class SaturneCoupling(ExternalCoupling):
                     break
 
             completed = current_time >= self._params.final_time
-            exit_coupling = self.sync(end_coupling=completed)
+            if not self._params.adapt_step:
+                exit_coupling = self.sync(end_coupling=completed)
+            else:
+                exit_coupling = completed
 
-            self.log("end of time step with status: {}".format(exit_coupling))
+            self.log(f"end of time step with status: {exit_coupling}")
+
+        exit_coupling = self.sync(end_coupling=True)
 
         self.log(
             "coupling {0} with exit status: {1}".format(

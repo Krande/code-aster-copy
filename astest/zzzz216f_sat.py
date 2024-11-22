@@ -62,6 +62,8 @@ class FakeSaturne(ExternalCoupling):
         self.MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self.MPI.INT)
 
         self.MPI.COUPLING_COMM_WORLD.send(0, "NBSSIT", self._params.nb_iter, self.MPI.INT)
+        self.MPI.COUPLING_COMM_WORLD.send(0, "TADAPT", int(self._params.adapt_step), self.MPI.INT)
+
         self.MPI.COUPLING_COMM_WORLD.send(0, "EPSILO", self._params.epsilon, self.MPI.DOUBLE)
 
         self.MPI.COUPLING_COMM_WORLD.send(0, "TTINIT", self._params.init_time, self.MPI.DOUBLE)
@@ -74,14 +76,14 @@ class FakeSaturne(ExternalCoupling):
             solver (object): Solver contains at least a method run_iteration.
         """
 
-        # initial sync before the loop
-        exit_coupling = self.sync()
-
         stepper = self._params.stepper
         first_start = self._starter
         completed = False
         input_data = None
         istep = 0
+
+        if not self._params.adapt_step:
+            self.sync(end_coupling=False)
 
         while not stepper.isFinished():
             istep += 1
@@ -122,12 +124,15 @@ class FakeSaturne(ExternalCoupling):
 
             stepper.completed()
             input_data = self.recv_input_fields()
-            print(
-                f"end of time step {current_time} with status: {stepper.isFinished()}", flush=True
-            )
-            exit_coupling = self.sync(end_coupling=stepper.isFinished())
 
-            print("end of time step with status: {}".format(exit_coupling))
+            if not self._params.adapt_step:
+                exit_coupling = self.sync(end_coupling=stepper.isFinished())
+            else:
+                exit_coupling = stepper.isFinished()
+
+            print(f"end of time step {current_time} with status: {exit_coupling}")
+
+        self.sync(end_coupling=stepper.isFinished())
 
         print(
             "coupling {0} with exit status: {1}".format(
