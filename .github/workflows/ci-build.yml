@@ -40,3 +40,9 @@ jobs:
       - name: Test Code_Aster
         run: |
           pixi run test
+
+      - name: Save Run directory to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults-${{ runner.os }}-${{ github.run_id }}
+          path: ${{ github.workspace }}/temp
