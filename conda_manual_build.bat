@@ -201,6 +201,7 @@ if %CLEAN_BUILD%==1 (
       --enable-hdf5 ^
       --enable-mumps ^
       --enable-metis ^
+      --enable-mfront ^
       --enable-scotch ^
       --disable-openmp ^
       --disable-mpi ^

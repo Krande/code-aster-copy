@@ -23,7 +23,7 @@ ninja = "*"
 psutil = "*"
 pybind11 = "2.13.1"
 setuptools = "*"
-clang = "19.1.2"
+clang = "19.1.4"
 mfront = { version = "*", build = "*debug*" }
 mgis = { version = "*", build = "*debug*" }
 libmed = { version = "*", build = "*debug*" }
