@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine msmnsm(fid, n, cret) BIND(C, name='MSMNSM')
 #else
     subroutine msmnsm(fid, n, cret)

@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mmhgnw(fid, nomail, numdt, numo, typent,&
                       typgeo, n, tblogl, cret) BIND(C, name='MMHGNW')
 #else

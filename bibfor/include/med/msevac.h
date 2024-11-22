@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine msevac(fid, mname, aname, atype, anc,&
                       cret) BIND(C, name='MSEVAC')
 #else

@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mmhcaw(fid, name, numdt, numit, dt,&
                       filter, coo, cret) BIND(C, name='MMHCAW')
 #else

@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mfioex(fid, class, oname, oexist, cret) BIND(C, name='MFIOEX')
 #else
     subroutine mfioex(fid, class, oname, oexist, cret)

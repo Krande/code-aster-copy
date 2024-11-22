@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mfdfin(fid, fname, mname, lmesh, type,&
                       cname, cunit, dtunit, nc, cret) BIND(C, name='MFDFIN')
 #else

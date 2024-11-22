@@ -18,8 +18,7 @@
 # --------------------------------------------------------------------
 
 import os.path as osp
-import platform
-import pathlib
+
 from waflib import Configure, Utils
 
 
@@ -81,7 +80,7 @@ def build(self):
             "PARMETIS",
         ],
         env=env.derive(),
-        install_path=env.ASTERLIBDIR
+        install_path=env.ASTERLIBDIR,
     )
 
 

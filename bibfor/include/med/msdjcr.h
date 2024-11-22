@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine msdjcr(fid,lmname,jname,des,dom,rmname,cret) BIND(C, name='MSDJCR')
 #else
     subroutine msdjcr(fid,lmname,jname,des,dom,rmname,cret)

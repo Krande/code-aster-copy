@@ -19,7 +19,7 @@
 !
 !
 interface
-    subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
+    subroutine rcvale_wrap(nommaz, phenom, nbpar, nompar, valpar,&
                       nbres, nomres, valres, icodre, iarret)
         integer, intent(in) :: nbres
         integer, intent(in) :: nbpar
@@ -31,5 +31,5 @@ interface
         real(kind=8), intent(out) :: valres(nbres)
         integer, intent(out) :: icodre(nbres)
         integer, intent(in) :: iarret
-    end subroutine rcvale
+    end subroutine rcvale_wrap
 end interface

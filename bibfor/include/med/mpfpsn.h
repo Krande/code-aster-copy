@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mpfpsn(fid, pname, psize, cret) BIND(C, name='MPFPSN')
 #else
     subroutine mpfpsn(fid, pname, psize, cret)

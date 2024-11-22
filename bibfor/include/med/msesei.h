@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine msesei(fid, it, mname, mgtype, mdim,&
                       smname, setype, snnode, sncell, sgtype,&
                       ncatt, ap, nvatt, cret) BIND(C, name='MSESEI')

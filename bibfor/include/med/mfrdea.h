@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mfrdea(nflt, flt, cret) BIND(C, name='MFRDEA')
 #else
     subroutine mfrdea(nflt, flt, cret)

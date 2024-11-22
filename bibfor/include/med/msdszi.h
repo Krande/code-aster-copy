@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine msdszi(fid,mname,jname,numdt,numit,it,letype,lgtype,&
                       retype,rgtype,ncor,cret) BIND(C, name='MSDSZI')
 #else

@@ -21,18 +21,21 @@ class msvclibgen(Task.Task):
         output_fp.parent.mkdir(parents=True, exist_ok=True)
         obld = self.generator.bld
         root_path = pathlib.Path(obld.root.abspath()).resolve().absolute()
-        #Logs.info(f"{self.env.BIBC_DEF=}, {self.env.BIBCXX_DEF=}, {self.env.BIBFOR_DEF=}")
-        clean_name_map = {"bibc": self.env.BIBC_DEF, "bibcxx": self.env.BIBCXX_DEF, "bibfor": self.env.BIBFOR_DEF}
+        # Logs.info(f"{self.env.BIBC_DEF=}, {self.env.BIBCXX_DEF=}, {self.env.BIBFOR_DEF=}")
+        clean_name_map = {
+            "bibc": self.env.BIBC_DEF,
+            "bibcxx": self.env.BIBCXX_DEF,
+            "bibfor": self.env.BIBFOR_DEF,
+            "aster": self.env.ASTER_DEF,
+            "mfront": self.env.MFRONT_DEF,
+        }
         clean_name = output_fp.stem.replace("_gen", "")
         # Location of python 3.11 libs
         libs_dir = pathlib.Path(self.env.PREFIX).resolve().absolute().parent / "libs"
         # This is a hack to copy the generated lib to the build directory
         opts = ["/NOLOGO", "/MACHINE:X64", "/SUBSYSTEM:CONSOLE", f"/LIBPATH:{libs_dir}"]
         def_file = root_path / clean_name / f"{clean_name}.def"
-        if clean_name == "aster":
-            def_file = root_path / "bibc" / "aster.def"
-            opts += [f"/DEF:{def_file}"]
-        elif clean_name.endswith("proxy"):
+        if clean_name.endswith("proxy"):
             def_file = root_path / "msvc/c_entrypoints" / f"{clean_name}.def"
             opts += [f"/DEF:{def_file}"]
         else:
@@ -86,7 +89,9 @@ class msvc_symlink_installer(Task.Task):
                 result = create_symlink(in_file_fp, output_fp)
                 if result is False:
                     shutil.copy(in_file_fp, output_fp)
-            Logs.info(f"Failed to create symlink: {in_file_fp} -> {output_fp}, therefore copying file instead")
+            Logs.info(
+                f"Failed to create symlink: {in_file_fp} -> {output_fp}, therefore copying file instead"
+            )
             # else:
             #    Logs.info(f"Successfully created symlink: {in_file_fp} -> {output_fp}")
         return 0
@@ -168,7 +173,9 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
         lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
 
     # create nodes for the output files
-    bib_lib_output_file_node = self.bld.bldnode.make_node(lib_output_file_path.relative_to(bld_path).as_posix())
+    bib_lib_output_file_node = self.bld.bldnode.make_node(
+        lib_output_file_path.relative_to(bld_path).as_posix()
+    )
 
     msvc_libgen_task = self.create_task("msvclibgen")
     msvc_libgen_task.inputs = input_tasks
@@ -204,7 +211,9 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     c_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterbibc.tasks]
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.asterbibcxx.tasks]
     fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor.tasks]
-    aster_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterlib.tasks if ctask.outputs[0].suffix() == ".o"]
+    aster_input_tasks = [
+        ctask.outputs[0] for ctask in task_obj.asterlib.tasks if ctask.outputs[0].suffix() == ".o"
+    ]
     Logs.info(f"{aster_input_tasks=}")
 
     if len(aster_input_tasks) == 0:
@@ -299,13 +308,17 @@ def set_flags(self) -> None:
     elif name.endswith("proxy"):
         archive_name = name
         conda_dir = bld_path / "msvc"
-        args += [f"/LIBPATH:{conda_dir.as_posix()}",]
+        args += [f"/LIBPATH:{conda_dir.as_posix()}"]
     else:
         Logs.info(f"Skipping {name=}")
         return None
 
     archive_dir = bld_path / archive_name
-    args += [f"/LIBPATH:{archive_dir.as_posix()}", f"/WHOLEARCHIVE:{archive_name}.lib", f"{archive_name}.exp"]
+    args += [
+        f"/LIBPATH:{archive_dir.as_posix()}",
+        f"/WHOLEARCHIVE:{archive_name}.lib",
+        f"{archive_name}.exp",
+    ]
 
     Logs.info(f"Setting flags {args} for {name=}")
     self.link_task.env.append_unique("LINKFLAGS", args)

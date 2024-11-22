@@ -39,7 +39,7 @@ if (BUILD_BIBCXX)
     add_library(bibcxx_shared SHARED ${bibcxx_SOURCES})
 
     # Add /std:c++17 to the compiler flags
-    target_compile_options(bibcxx_shared PRIVATE /std:c++17 /nologo /FS /EHs /permissive- /Zi /0d /DTFEL_ARCH64 /DASTER_HAVE_INTEL_IFORT /DH5_BUILT_AS_DYNAMIC_LIB)
+    target_compile_options(bibcxx_shared PRIVATE /std:c++17 /nologo /FS /EHs /permissive- /Zi /DTFEL_ARCH64 /DASTER_HAVE_INTEL_IFORT /DH5_BUILT_AS_DYNAMIC_LIB)
 
     # Add lib path to the linker flags
     target_link_options(bibcxx_shared PRIVATE ${DEP_PATHS})

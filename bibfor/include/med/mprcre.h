@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mprcre(fid, nopara, typ, des, dtunit, cret) BIND(C, name='MPRCRE')
 #else
     subroutine mprcre(fid, nopara, typ, des, dtunit, cret)

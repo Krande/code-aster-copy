@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mlclci(fid, it, lname, gtype, sdim,&
                       nip, giname, isname, nsmc, sgtype,&
                       cret) BIND(C, name='MLCLCI')

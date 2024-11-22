@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mficom(fname, hdfok, medok, cret) BIND(C, name='MFICOM')
 #else
     subroutine mficom(fname, hdfok, medok, cret)

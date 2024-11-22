@@ -47,8 +47,17 @@ test_scan = { cmd = ["python", "conda/test_scanner/eval_tests.py", "--output", "
 debug = { cmd = ["python", "conda/scripts/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
 run_aster = { cmd = ["run_aster.bat"], description = "Run the aster executable (code aster needs to be built and installed)" }
 
+dumpbin = { cmd = ["dumpbin",], description = "Dump the dependencies of the aster executable" }
+bibcxx_cc = { cmd = [
+    "cmake", "-B", "build-cmake", "-G", "Ninja",
+    "-DBUILD_BIBCXX=ON",
+    "-DWIN32_LEAN_AND_MEAN=ON",
+    "-DCMAKE_BUILD_TYPE=release",
+    "--fresh"
+], description = "Configure the project for building bibcxx", env = { CC = "clang-cl", CXX = "clang-cl" } }
+bibcxx_ci = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibcxx", depends_on = ["bibcxx_cc"] }
+
 bibfor_cmake_configure = { cmd = [
-    "call_compile_ifx.bat",
     "cmake", "-B", "build-cmake", "-G", "Ninja",
     "-DBUILD_BIBFOR=ON",
     "-DWIN32_LEAN_AND_MEAN=ON",

@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mfdcre(fid, fname, ftype, ncomp, cname,&
                       cunit, dtunit, mname, cret) BIND(C, name='MFDCRE')
 #else

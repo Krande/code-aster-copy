@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mprrvw(fid, nom, numdt, numit, dt, val, cret) BIND(C, name='MPRRVW')
 #else
     subroutine mprrvw(fid, nom, numdt, numit, dt, val, cret)

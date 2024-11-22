@@ -1,4 +1,4 @@
-from def_utils import symbol_out_to_def_file
+from conda.scripts.other.def_utils import symbol_out_to_def_file
 from config import get_obj_sym_file, get_lib_file, DEFOption
 from manual_lib import run_lib
 from msvc_utils import call_using_env

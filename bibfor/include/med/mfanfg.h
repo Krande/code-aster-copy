@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mfanfg(fid, maa, it, n, cret) BIND(C, name='MFANFG')
 #else
     subroutine mfanfg(fid, maa, it, n, cret)

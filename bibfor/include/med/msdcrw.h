@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine msdcrw(fid,lmname,jname,numdt,numit,entlcl,&
                       geolcl,entdst,geodst,ncorr,corrtab,cret) BIND(C, name='MSDCRW')
 #else

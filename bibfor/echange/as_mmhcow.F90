@@ -30,7 +30,7 @@ subroutine as_mmhcow(fid, maa, coo, modcoo, n, &
     real(kind=8) :: coo(*)
     integer :: fid
     integer :: n, cret, modcoo, mdnont, mdnoit
-    real(kind=8) :: mdnodt, i
+    real(kind=8) :: mdnodt
 #ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
@@ -53,17 +53,6 @@ subroutine as_mmhcow(fid, maa, coo, modcoo, n, &
     mdnont = -1
     mdnoit = -1
     mdnodt = -1.d0
-!    print *, "Inside as_mmhcow:"
-!    print *, "FID:", fid
-!    print *, "Address of MAA (maa):", LOC(maa)
-!    print *, "MAA:", maa
-!    print *, "MODCOO:", modcoo
-!    print *, "N:", n
-!    print *, "CRET:", cret
-!    print *, "First few elements of COO:"
-!    do i = 1, min(n, 10)
-!        print *, "COO(", i, "):", coo(i)
-!    end do
     call mmhcow(fid, maa, mdnont, mdnoit, mdnodt, &
                 modcoo, n, coo, cret)
 #endif

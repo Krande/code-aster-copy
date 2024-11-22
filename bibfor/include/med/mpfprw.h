@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mpfprw(fid, pname, psize, profil, cret) BIND(C, name='MPFPRW')
 #else
     subroutine mpfprw(fid, pname, psize, profil, cret)

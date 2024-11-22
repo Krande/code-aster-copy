@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mfdonp(fid, fname, numdt, numit, etype,&
                       gtype, it, mname, dpname, dlname,&
                       n, cret) BIND(C, name='MFDONP')

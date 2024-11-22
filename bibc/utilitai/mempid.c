@@ -26,10 +26,7 @@
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #include <sys/user.h>
-#elif defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
-#include <windows.h>
-#include <psapi.h>
-#elif defined ASTER_PLATFORM_MINGW
+#elif defined ASTER_PLATFORM_WINDOWS
 #include <windows.h>
 #
 #include <psapi.h>
@@ -122,7 +119,7 @@ ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
 #endif
     return iret;
 
-#elif defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
+#elif defined ASTER_PLATFORM_WINDOWS
     PROCESS_MEMORY_COUNTERS pmc;
     GetProcessMemoryInfo( GetCurrentProcess(), &pmc, sizeof( pmc ) );
     /* VmSize */

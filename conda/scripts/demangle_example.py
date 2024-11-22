@@ -2,7 +2,7 @@ import pathlib
 
 from cpp_demangle import demangle
 
-from def_utils import iter_symbol_names
+from conda.scripts.other.def_utils import iter_symbol_names
 from msvc_utils import call_using_env
 
 

@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine msecre(fid, mname, mdim, smname, setype,&
                       sgtype, etype, cret) BIND(C, name='MSECRE')
 #else

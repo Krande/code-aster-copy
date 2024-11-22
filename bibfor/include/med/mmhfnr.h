@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mmhfnr(fid, name, numdt, numit, entype,&
                       geotype, num, cret) BIND(C, name='MMHFNR')
 #else

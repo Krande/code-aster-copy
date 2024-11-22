@@ -2,7 +2,7 @@ import pathlib
 
 
 def main():
-    existing_def = pathlib.Path("../../bibfor/bibfor.def")
+    existing_def = pathlib.Path("../../msvc/bibfor.def")
     new_file = existing_def.with_name("bibfor_new.def")
     total_lines = 0
     new_lines = 0

@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mfdrpw(fid, fname, numdt, numit, dt,&
                       etype, gtype, stm, pname, lname,&
                       swm, cs, n, val, cret) BIND(C, name='MFDRPW')

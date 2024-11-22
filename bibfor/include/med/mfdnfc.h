@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mfdnfc(fid, ind, n, cret) BIND(C, name='MFDNFC')
 #else
     subroutine mfdnfc(fid, ind, n, cret)

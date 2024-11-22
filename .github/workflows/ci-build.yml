@@ -23,9 +23,9 @@ jobs:
           version: 2025.0.0
           activate: false
 
-      - uses: prefix-dev/setup-pixi@v0.8.0
+      - uses: prefix-dev/setup-pixi@v0.8.1
         with:
-          pixi-version: v0.34.0
+          pixi-version: v0.36.0
           cache: true
 
       - name: Build Code_Aster

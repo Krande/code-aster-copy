@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mficor(fid, cmt, cret) BIND(C, name='MFICOR')
 #else
     subroutine mficor(fid, cmt, cret)

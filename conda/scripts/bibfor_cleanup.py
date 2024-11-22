@@ -2,7 +2,7 @@ import pathlib
 
 
 def main():
-    existing_def = pathlib.Path("../../bibfor/bibfor.def")
+    existing_def = pathlib.Path("../../msvc/bibfor.def")
     missing_symbols = []
     with open('files/bibfor_def_error_1.txt', 'r') as f:
         for line in f:

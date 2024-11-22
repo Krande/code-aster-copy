@@ -18,7 +18,7 @@
 !
 !
 interface
-    subroutine nume_ddl_matr(nume, ligrel, modeloc, modelz)
+    subroutine nume_ddl_chamElem(nume, ligrel, modeloc, modelz)
         character(len=*), intent(in) :: nume
         character(len=*), intent(in) :: ligrel
         character(len=*), intent(in) :: modeloc

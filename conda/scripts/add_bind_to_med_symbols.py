@@ -2,7 +2,7 @@ import pathlib
 import re
 
 THIS_DIR = pathlib.Path(__file__).parent
-ROOT_DIR = THIS_DIR.parent
+ROOT_DIR = THIS_DIR.parent.parent
 
 
 def add_bind_c_directive(code: str) -> str:
@@ -16,7 +16,7 @@ def add_bind_c_directive(code: str) -> str:
         # Return the modified subroutine declaration
         print(f"Found subroutine: {subroutine_name}")
         return f"""
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     {subroutine_declaration} BIND(C, name='{subroutine_name}')
 #else
     {subroutine_declaration}

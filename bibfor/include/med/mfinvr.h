@@ -21,7 +21,7 @@
 interface
 #include "asterf_types.h"
     
-#ifdef _WIN32
+#ifdef ASTER_PLATFORM_MSVC64
     subroutine mfinvr(fid, major, minor, rel, cret) BIND(C, name='MFINVR')
 #else
     subroutine mfinvr(fid, major, minor, rel, cret)
