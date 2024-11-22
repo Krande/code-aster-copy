@@ -226,6 +226,7 @@ class RunAster:
         cmd = self._get_cmdline(idx, comm, timeout)
         logger.info("    %s", " ".join(cmd))
 
+        set_num_threads(self.export.get("ncpus", 1))
         # use environment variable to make it works with ipython
         os.environ["PYTHONFAULTHANDLER"] = "1"
         exitcode = run_command(cmd, exitcode_file=EXITCODE_FILE)
@@ -489,6 +490,18 @@ def get_nbcores():
         int: Number of cores.
     """
     return os.cpu_count()
+
+
+def set_num_threads(value):
+    """Define the number of threads to be used by OpenMP, MKL and OpenBLAS.
+
+    Arguments:
+        value (int): Maximum number of threads.
+    """
+    # openblas_set_num_threads does not work, maybe conflicts with numpy init
+    # --numthreads option could be removed
+    os.environ["OMP_NUM_THREADS"] = str(value)
+    # mkl and openblas should used the same value if they are not defined.
 
 
 def change_comm_file(comm, interact=False, use_procdir=None, dstdir=None, show=False):
