@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,9 +126,9 @@ TRANGENE = DYNA_VIBRA(
     MODE_CORR=CORGRA,
 )
 
-
+# restitution sans correction
 DEPLPDZ = RECU_FONCTION(RESU_GENE=TRANGENE, NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO="P")
-
+# restituation avec correction
 DEPLPDZc = RECU_FONCTION(
     RESU_GENE=TRANGENE, NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO="P", CORR_STAT="OUI"
 )
@@ -137,16 +137,6 @@ DEPLPDX = RECU_FONCTION(RESU_GENE=TRANGENE, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP
 
 DEPLPDXc = RECU_FONCTION(
     RESU_GENE=TRANGENE, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="P", CORR_STAT="OUI"
-)
-
-IMPR_FONCTION(
-    FORMAT="XMGRACE", COURBE=(_F(FONCTION=DEPLPDZ, MARQUEUR=0), _F(FONCTION=DEPLPDZc, MARQUEUR=0))
-)
-
-IMPR_FONCTION(
-    FORMAT="XMGRACE",
-    UNITE=30,
-    COURBE=(_F(FONCTION=DEPLPDX, MARQUEUR=0), _F(FONCTION=DEPLPDXc, MARQUEUR=0)),
 )
 
 
