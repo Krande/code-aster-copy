@@ -23,7 +23,7 @@ ninja = "*"
 psutil = "*"
 pybind11 = "2.13.1"
 setuptools = "*"
-clang = "19.1.4"
+clang = "18*"
 mfront = { version = "*", channel="conda-forge" }
 mgis = { version = "*", channel="conda-forge" }
 libmed = { version = "*", build = "*debug*" }

@@ -198,7 +198,6 @@ class PostBuild:
 
 
 def msvc_build_init(self):
-    self.msg_start("MSVC build init")
     self.load("msvc_lib", tooldir="msvc")
     pops = []
     for i, lib in enumerate(self.env.LIBPATH):
@@ -222,7 +221,6 @@ def msvc_build_init(self):
     py_incl = pathlib.Path(os.environ["PREFIX"]) / "include"
     self.env.INCLUDES.append(py_incl.as_posix())
     # Logs.info(f"INCLUDES: {self.env.INCLUDES}")
-    self.msg_end(f"MSVC build init {self.env.LIBPATH} {self.env.INCLUDES}")
 
 
 @Configure.conf
