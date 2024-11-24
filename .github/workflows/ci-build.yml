@@ -33,6 +33,13 @@ jobs:
         run: |
           pixi run build
 
+      - name: If failed build, upload log
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuildLog-${{ runner.os }}-${{ github.run_id }}
+          path: ${{ github.workspace }}/build
+
       - name: Install Code_Aster
         run: |
           pixi run install
