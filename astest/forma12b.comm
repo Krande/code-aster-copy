@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,16 @@ rho = 8000.0
 
 nu = 0.3
 
+# definition des coefficients de l'amortissement Rayleigh
+f1 = 5.0  # [Hz]
+
+f2 = 50.0  # [Hz]
+
+xi = 0.02  # [-]
+
+alpha = xi / (pi * (f1 + f2))
+
+beta = 4 * pi * xi * f1 * f2 / (f1 + f2)
 
 MAIL = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
@@ -41,7 +51,7 @@ MODELE = AFFE_MODELE(
     MAILLAGE=MAIL, AFFE=_F(GROUP_MA="VOL", PHENOMENE="MECANIQUE", MODELISATION="3D")
 )
 
-MAT = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu, RHO=rho))
+MAT = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu, RHO=rho, AMOR_ALPHA=alpha, AMOR_BETA=beta))
 
 CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(GROUP_MA="VOL", MATER=MAT))
 
@@ -66,9 +76,10 @@ ASSEMBLAGE(
     MATR_ASSE=(
         _F(MATRICE=CO("RIGIDITE"), OPTION="RIGI_MECA"),
         _F(MATRICE=CO("MASSE"), OPTION="MASS_MECA"),
+        _F(MATRICE=CO("AMOR_R"), OPTION="AMOR_MECA"),
     ),
 )
-
+# calcul transitoire sans amortissement
 TRANSD = DYNA_VIBRA(
     TYPE_CALCUL="TRAN",
     BASE_CALCUL="PHYS",
@@ -86,13 +97,31 @@ DEPLPDZ = RECU_FONCTION(RESULTAT=TRANSD, NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO
 
 DEPLPDX = RECU_FONCTION(RESULTAT=TRANSD, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="P")
 
-IMPR_FONCTION(FORMAT="XMGRACE", UNITE=29, COURBE=(_F(FONCTION=DEPLPDZ, MARQUEUR=0),))
-
-IMPR_FONCTION(FORMAT="XMGRACE", UNITE=30, COURBE=(_F(FONCTION=DEPLPDX, MARQUEUR=0),))
-
-
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.14537012, VALE_PARA=0.05, FONCTION=DEPLPDZ),))
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.00017243164, VALE_PARA=0.05, FONCTION=DEPLPDX),))
+
+# calcul transitoire avec amortissement Rayleigh
+TRANSD = DYNA_VIBRA(
+    TYPE_CALCUL="TRAN",
+    BASE_CALCUL="PHYS",
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    MATR_AMOR=AMOR_R,
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=GRAV, FONC_MULT=sinom), _F(CHARGE=BLOCAGE)),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
+    INCREMENT=_F(INST_FIN=tfin, PAS=pa),
+)
+
+
+DEPLPDZ = RECU_FONCTION(RESULTAT=TRANSD, NOM_CHAM="DEPL", NOM_CMP="DZ", GROUP_NO="P")
+
+DEPLPDX = RECU_FONCTION(RESULTAT=TRANSD, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="P")
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.14188580146757, VALE_PARA=0.05, FONCTION=DEPLPDZ),))
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.000169292, VALE_PARA=0.05, FONCTION=DEPLPDX),))
 
 FIN()
