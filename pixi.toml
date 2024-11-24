@@ -6,7 +6,7 @@ channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
 platforms = ["win-64"]
 
 [dependencies]
-python = "3.12.4"
+python = "3.12.7"
 vswhere = "*"
 libboost-devel = "1.84"
 libblas = { version = "*", build = "*mkl" }
@@ -24,8 +24,8 @@ psutil = "*"
 pybind11 = "2.13.1"
 setuptools = "*"
 clang = "19.1.4"
-mfront = { version = "*", build = "*debug*" }
-mgis = { version = "*", build = "*debug*" }
+mfront = { version = "*", channel="conda-forge" }
+mgis = { version = "*", channel="conda-forge" }
 libmed = { version = "*", build = "*debug*" }
 medcoupling = { version = "*", build = "*debug*" }
 scotch = { version = "*", build = "*debug*" }
@@ -33,7 +33,7 @@ metis = { version = "*", build = "*debug*" }
 mumps = { version = "*", build = "*debug*" }
 
 [tasks]
-build = { cmd = ["conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { RUNASTER_ROOT = "%CONDA_PREFIX%/Library", ASTER_ROOT = "%CONDA_PREFIX%", INTEL_VARS_PATH="C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+build = { cmd = ["conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { INTEL_VARS_PATH="C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install = {cmd=["conda_rearrange.bat"], description="Copy the latest build files to their respective locations"}
 test = { cmd = [
     "run_ctest",

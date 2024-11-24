@@ -54,49 +54,6 @@ class msvclibgen(Task.Task):
         return ret
 
 
-def create_symlink(source, link_name):
-    """
-    Attempts to create a symbolic link on Windows.
-
-    Args:
-    source (str): The path to the target file or directory.
-    link_name (str): The path where the symbolic link should be created.
-
-    Returns:
-    bool: True if the symlink was created successfully, False otherwise.
-    """
-    try:
-        os.symlink(source, link_name)
-        print(f"Symlink created successfully: {link_name} -> {source}")
-        return True
-    except OSError as e:
-        print(f"Failed to create symlink: {e}")
-        return False
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        return False
-
-
-class msvc_symlink_installer(Task.Task):
-    ext_in = "install"
-
-    def run(self):
-        for i, in_file in enumerate(self.inputs):
-            in_file_fp = pathlib.Path(in_file.abspath())
-            output_fp = pathlib.Path(self.outputs[i].abspath())
-            if not output_fp.exists():
-                Logs.info(f"Creating symlink: {in_file_fp} -> {output_fp}")
-                result = create_symlink(in_file_fp, output_fp)
-                if result is False:
-                    shutil.copy(in_file_fp, output_fp)
-            Logs.info(
-                f"Failed to create symlink: {in_file_fp} -> {output_fp}, therefore copying file instead"
-            )
-            # else:
-            #    Logs.info(f"Successfully created symlink: {in_file_fp} -> {output_fp}")
-        return 0
-
-
 @dataclass
 class TaskObject:
     libtask: Task
@@ -173,9 +130,7 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
         lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
 
     # create nodes for the output files
-    bib_lib_output_file_node = self.bld.bldnode.make_node(
-        lib_output_file_path.relative_to(bld_path).as_posix()
-    )
+    bib_lib_output_file_node = self.bld.bldnode.make_node(lib_output_file_path.relative_to(bld_path).as_posix())
 
     msvc_libgen_task = self.create_task("msvclibgen")
     msvc_libgen_task.inputs = input_tasks
@@ -211,9 +166,7 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     c_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterbibc.tasks]
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.asterbibcxx.tasks]
     fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor.tasks]
-    aster_input_tasks = [
-        ctask.outputs[0] for ctask in task_obj.asterlib.tasks if ctask.outputs[0].suffix() == ".o"
-    ]
+    aster_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterlib.tasks if ctask.outputs[0].suffix() == ".o"]
     Logs.info(f"{aster_input_tasks=}")
 
     if len(aster_input_tasks) == 0:
@@ -314,11 +267,7 @@ def set_flags(self) -> None:
         return None
 
     archive_dir = bld_path / archive_name
-    args += [
-        f"/LIBPATH:{archive_dir.as_posix()}",
-        f"/WHOLEARCHIVE:{archive_name}.lib",
-        f"{archive_name}.exp",
-    ]
+    args += [f"/LIBPATH:{archive_dir.as_posix()}", f"/WHOLEARCHIVE:{archive_name}.lib", f"{archive_name}.exp"]
 
     Logs.info(f"Setting flags {args} for {name=}")
     self.link_task.env.append_unique("LINKFLAGS", args)

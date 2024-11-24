@@ -120,7 +120,7 @@ set LIBPATH=%PREF_ROOT%/libs %LIBPATH%
 REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
 
 set CFLAGS=%CFLAGS% /FS /MD -Wno-visibility
-set CXXFLAGS=%CXXFLAGS% /MD
+set CXXFLAGS=%CXXFLAGS% /MD /std:c++17
 
 if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"

@@ -33,6 +33,6 @@ temp/
 *pick.code_aster*
 code_aster/pkginfo.py
 conda/test_file.py
-.pixi/*
+.pixi/
 build/*
 build-cmake/*
