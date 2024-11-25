@@ -67,10 +67,7 @@ TEST_FONCTION(
     VALEUR=_F(
         CRITERE="RELATIF",
         FONCTION=func2,
-        REFERENCE="NON_DEFINI",
         VALE_ABS="NON",
-        PRECISION=0.005,
-        VALE_REFE=[56169.38346371],
         VALE_CALC=[56169.38346371],
         VALE_PARA=[0.15],
     )
