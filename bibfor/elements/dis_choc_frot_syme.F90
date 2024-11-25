@@ -34,7 +34,6 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpsgl.h"
-#include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: DD
     integer :: icodma
@@ -79,7 +78,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     integer, parameter :: EnVitesse = 1, EnPlasticite = 2
 !
     integer :: ii
-    real(kind=8) :: xl(6), xd(3), auxil(6), raide(6), rignor, rigtan, depxyz(3), vitxyz(3)
+    real(kind=8) :: xl(6), xd(3), raide(6), rignor, rigtan, depxyz(3), vitxyz(3)
     real(kind=8) :: coulom, dist12, psca, vit123(3)
     real(kind=8) :: vitt, fort
 !
@@ -102,7 +101,10 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 ! ----------------------------------------------------------------------
 !
 !   Définition des parametres
-    xl(:) = 0.d0; auxil(:) = 0.d0; xd(:) = 0.d0
+    xl = 0.d0
+    xd = 0.d0
+    dist12 = 0.d0
+!
 !   Coordonnees dans le repere local
     if (DD%ndim .eq. 3) then
         call utpvgl(DD%nno, 3, DD%pgl, xg, xl)
@@ -113,7 +115,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !       ==> Elles sont surchargées par celles du matériau
     call diraidklv(DD%nomte, raide, klv)
     !
-    valre1(:) = 0.0
+    valre1 = 0.0
     valre1(1) = raide(1)
 !   Caractéristiques du matériau
     call rcvala(icodma, ' ', 'DIS_CONTACT', 0, ' ', &
@@ -151,26 +153,28 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     if (DD%nno .eq. 2) then
         dist12 = valre1(6)+valre1(7)
 ! Vitesse tangente
-        vit123(:) = 0.0
+        vit123 = 0.0
         vit123(2) = dvl(2+DD%nc)-dvl(2)
         if (DD%ndim .eq. 3) then
             vit123(3) = dvl(3+DD%nc)-dvl(3)
         end if
 ! ------------------------------------------------------------------------------------------
 ! Détermination du plan du discret : géométrie initiale
-        ldm(1:3) = xg(4:6)-xg(1:3); axes(:) = 0; SigneAxe(:) = 0.0
+        ldm(1:3) = xg(4:6)-xg(1:3)
+        axes = 0
+        SigneAxe = 0.0
         if (in_liste_entier(ContactInGlobal, [ReperGlobal, ReperBizarre])) then
 ! Plan du discret     : [ axes(1), axes(2) ]
 ! Axe perpendiculaire : axes(3)
             if (abs(ldm(1)) <= r8prem()) then
 ! Plan YZ, vect ↑ X
-                axes(:) = [2, 3, 1]
+                axes = [2, 3, 1]
             else if (abs(ldm(2)) <= r8prem()) then
 ! Plan XZ, vect ↑ Y
-                axes(:) = [1, 3, 2]
+                axes = [1, 3, 2]
             else if (abs(ldm(3)) <= r8prem()) then
 ! Plan XY, vect ↑ Z
-                axes(:) = [1, 2, 3]
+                axes = [1, 2, 3]
             else
 ! <F> Le discret n'est pas plan
                 messak(1) = 'DIS_CONTACT'
@@ -197,37 +201,22 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             xd(ii) = xl(DD%ndim+ii)-xl(ii)
         end do
 ! Déplacement d'entrainement
-        b_n = to_blas_int(DD%ndim)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, dpe(1), b_incx, auxil, b_incy)
-        b_n = to_blas_int(DD%ndim)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, dpe(1+DD%nc), b_incx, auxil(4), b_incy)
-        depxyz(:) = 0.0
-        depxyz(1) = (xd(1)+ulp(1+DD%nc)-ulp(1)+auxil(4)-auxil(1)-dist12)-r8prem()
-        depxyz(2) = (xd(2)+ulp(2+DD%nc)-ulp(2)+auxil(5)-auxil(2))
+        depxyz = 0.0
+        depxyz(1) = (xd(1)+ulp(1+DD%nc)-ulp(1)+dpe(1+DD%nc)-dpe(1)-dist12)-r8prem()
+        depxyz(2) = (xd(2)+ulp(2+DD%nc)-ulp(2)+dpe(2+DD%nc)-dpe(2))
         if (DD%ndim .eq. 3) then
-            depxyz(3) = xd(3)+ulp(3+DD%nc)-ulp(3)+auxil(6)-auxil(3)
+            depxyz(3) = xd(3)+ulp(3+DD%nc)-ulp(3)+dpe(3+DD%nc)-dpe(3)
         end if
-! Vitesse d'entrainement
-        b_n = to_blas_int(DD%ndim)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, dve(1), b_incx, auxil, b_incy)
-        b_n = to_blas_int(DD%ndim)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, dve(1+DD%nc), b_incx, auxil(4), b_incy)
 ! Vitesse tangente
-        vitxyz(:) = 0.0
-        vitxyz(2) = vit123(2)+auxil(5)-auxil(2)
+        vitxyz = 0.0
+        vitxyz(2) = vit123(2)+dve(2+DD%nc)-dve(2)
         if (DD%ndim .eq. 3) then
-            vitxyz(3) = vit123(3)+auxil(6)-auxil(3)
+            vitxyz(3) = vit123(3)+dve(3+DD%nc)-dve(3)
         end if
 ! ------------------------------------------------------------------------------------------
-        force(1:3) = 0.0; forceglob(:) = 0.0; raideglob(:) = 0.0
+        force(1:3) = 0.0
+        forceglob = 0.0
+        raideglob = 0.0
         IsEnfonce = ASTER_FALSE
         if (in_liste_entier(ContactInGlobal, [ReperGlobal, ReperBizarre])) then
             if ((ldp(axes(1))*SigneAxe(axes(1)) <= 0.0) .and. &
@@ -236,7 +225,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 ! Les 2 ldp sont <= 0.0
 !   On garde le plus petit pour le calcul de l'effort
 !   Pas de déplacement, ni d'effort dans le plan perpendiculaire
-                ldpglob(:) = 0.0
+                ldpglob = 0.0
                 if (abs(ldp(axes(1))) <= abs(ldp(axes(2)))) then
                     ldpglob(axes(1)) = ldp(axes(1))
                     ldpglob(axes(2)) = abs(ldpglob(axes(1)))*LeSigne(ldp(axes(2)))
@@ -338,30 +327,22 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
         end if
         dist12 = valre1(8)-valre1(6)
 ! Vitesse tangente
-        vit123(:) = 0.0
+        vit123 = 0.0
         vit123(2) = dvl(2)
         if (DD%ndim .eq. 3) then
             vit123(3) = dvl(3)
         end if
-        b_n = to_blas_int(DD%ndim)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, dpe(1), b_incx, auxil, b_incy)
-        depxyz(:) = 0.0
-        depxyz(1) = ulp(1)+dist12+auxil(1)
-        depxyz(2) = ulp(2)+auxil(2)
+        depxyz = 0.0
+        depxyz(1) = ulp(1)+dist12+dpe(1)
+        depxyz(2) = ulp(2)+dpe(2)
         if (DD%ndim .eq. 3) then
-            depxyz(3) = ulp(3)+auxil(3)
+            depxyz(3) = ulp(3)+dpe(3)
         end if
-        b_n = to_blas_int(DD%ndim)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, dve(1), b_incx, auxil, b_incy)
 ! Vitesse tangente
-        vitxyz(:) = 0.0
-        vitxyz(2) = vit123(2)+auxil(2)
+        vitxyz = 0.0
+        vitxyz(2) = vit123(2)+dve(2)
         if (DD%ndim .eq. 3) then
-            vitxyz(3) = vit123(3)+auxil(3)
+            vitxyz(3) = vit123(3)+dve(3)
         end if
         force(1:3) = 0.0
         if (depxyz(1) .le. 0.0d0) then

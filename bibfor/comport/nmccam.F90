@@ -124,6 +124,9 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
     cplan = typmod(1) .eq. 'C_PLAN'
     ndimsi = 2*ndim
     retcom = 0
+    sigp = 0.d0
+    pcrp = 0.d0
+    dsidep = 0.d0
 !
     ptit = r8miem()
 !
