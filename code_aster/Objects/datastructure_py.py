@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+
+from ..Utilities import no_new_attributes
 
 
 class UnavailableObject:
@@ -68,6 +70,54 @@ class AsFloat(PyDataStructure):
     def getType(cls):
         """Return type as string."""
         return "REEL"
+
+
+class NamedTuple:
+    """This class defines a namedtuple-like object.
+
+    This is not a namedtuple because the field names are known during the
+    execution of the macro-command itself.
+
+    Arguments:
+        values (dict[str]): Values of each member.
+    """
+
+    _items = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    def __init__(self, field_items={}):
+        self._items = field_items
+
+    def __getstate__(self):
+        return self._items
+
+    def __setstate__(self, items):
+        self._items = items
+
+    def __getattr__(self, key):
+        if not self._items:
+            return
+        try:
+            return self._items[key]
+        except KeyError:
+            raise AttributeError(f"'NamedTuple' object has no attribute {key!r}")
+
+    # dicts keep insertion ordered in python>=3.7
+    def __getitem__(self, idx):
+        return list(self._items.values())[idx]
+
+    def __len__(self):
+        return len(self._items)
+
+    def __repr__(self):
+        values = ", ".join([f"{k}={v}" for k, v in self._items.items()])
+        return f"NamedTuple({values})"
+
+    def __iter__(self):
+        return iter(self._items.values())
+
+    def __contains__(self, elt):
+        return elt in self._items.values()
 
 
 class DataStructureDict(PyDataStructure):
