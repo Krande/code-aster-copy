@@ -1,0 +1,77 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI")
+
+
+resdynl = DYNA_LINE(
+    identifier="0:4",
+    AMORTISSEMENT=_F(AMOR_REDUIT=(0.05,), TYPE_AMOR="MODAL"),
+    BANDE_ANALYSE=(500.0,),
+    BASE_CALCUL="GENE",
+    CHAM_MATER=MATER,
+    CHARGE=(ENCAS,),
+    COMPORTEMENT=(
+        _F(
+            GROUP_NO_1=("CHOC_a2",),
+            JEU=1.0,
+            NORM_OBST=(1.0, 0.0, 0.0),
+            OBSTACLE=obs,
+            ORIG_OBST=(2.0, 2.0, 1.0),
+            RELATION="DIS_CHOC",
+            RIGI_NOR=100000000.0,
+        ),
+        _F(
+            GROUP_NO_1=("CHOC_b2",),
+            JEU=1.0,
+            NORM_OBST=(1.0, 0.0, 0.0),
+            OBSTACLE=obs,
+            ORIG_OBST=(0.0, 2.0, 1.0),
+            RELATION="DIS_CHOC",
+            RIGI_NOR=100000000.0,
+        ),
+    ),
+    ETAT_INIT=_F(DEPL=RES_STAT),
+    INCREMENT=_F(INST_FIN=0.2, PAS=1e-05),
+    MODELE=model,
+    SCHEMA_TEMPS=_F(SCHEMA="DIFF_CENTRE"),
+    TYPE_CALCUL="TRAN",
+    RESU_GENE=CO("resdynlG"),
+    ARCHIVAGE=_F(INST=0.1),
+)
+
+# Contact force
+func2 = RECU_FONCTION(
+    identifier="3:4", RESU_GENE=resdynlG, GROUP_NO=("CHOC_b2",), NOM_CHAM="DEPL", NOM_CMP="DZ"
+)
+
+
+TEST_FONCTION(
+    VALEUR=_F(
+        CRITERE="RELATIF",
+        FONCTION=func2,
+        VALE_ABS="NON",
+        TOLE_MACHINE=1.5e-04,
+        VALE_CALC=[0.1654092352985],
+        VALE_PARA=[0.1],
+    )
+)
+
+
+FIN()
