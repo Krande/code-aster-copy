@@ -63,7 +63,6 @@ import linecache
 import re
 import sys
 import traceback
-from collections import namedtuple
 from contextlib import contextmanager
 
 import aster_core
@@ -74,11 +73,12 @@ from ..Cata.Language.SyntaxObjects import _F
 from ..Cata.SyntaxChecker import CheckerError, checkCommandSyntax
 from ..Cata.SyntaxUtils import force_list, mixedcopy, remove_none, search_for
 from ..Messages import UTMESS, MessageLog
-from ..Objects import DataStructure, PyDataStructure
+from ..Objects import DataStructure, NamedTuple, PyDataStructure
 from ..Utilities import (
     DEBUG,
     ExecutionParameter,
     Options,
+    config,
     deprecated,
     import_object,
     logger,
@@ -619,7 +619,6 @@ def check_jeveux():
 
 
 class ExecuteCommandOps(ExecuteCommand):
-
     """This implements an executor of commands that use an
     `opsXXX` subroutine."""
 
@@ -647,8 +646,9 @@ class ExecuteMacro(ExecuteCommand):
     Now the results must be directly returned by the OPS function.
 
     Long term: ``result = MACRO_COMMAND(**keywords)`` where ``result`` is
-    a *DataStructure* object (for one result) or a *namedtuple* (for several
-    results). ``result`` is created by the *ops* function.
+    a *DataStructure* object (for one result) or a *namedtuple-like* object
+    (a code_aster *NamedTuple*) for several results).
+    ``result`` is created by the *ops* function.
 
     For compatibility: :meth:`create_result` gets the names of the results.
     The *ops* function returns the "main" result and registers others with
@@ -726,21 +726,16 @@ class ExecuteMacro(ExecuteCommand):
             self._result = output
         else:
             dres = dict(main=output)
-            dres.update(self._add_results)
+            dres.update([(k, v) for k, v in self._add_results.items() if k in self._result_names])
             missing = set(self._result_names).difference(list(dres.keys()))
             if missing:
                 raise ValueError("Missing results: {0}".format(tuple(missing)))
-            # explicit message for python < 3.7
-            if len(self._result_names) > 254 and sys.version_info[:2] < (3, 7):
-                UTMESS("F", "SUPERVIS2_90", valk=("namedtuple", HELP_LEGACY_MODE))
-            result_type = namedtuple("Result", ["main"] + self._result_names)
-            self._result = result_type(**dres)
+            self._result = NamedTuple(dres)
 
     def register_result(self, result, target):
         """Register an additional result.
 
-        It must called **after** that
-        the result has been created.
+        It must called **after** that the result has been created.
 
         Arguments:
             result (*DataStructure*): Result object to register.
