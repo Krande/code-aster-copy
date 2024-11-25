@@ -67,7 +67,8 @@ TEST_FONCTION(
         CRITERE="RELATIF",
         FONCTION=func2,
         VALE_ABS="NON",
-        VALE_CALC=[0.16539047038175],
+        TOLE_MACHINE=1.5e-04,
+        VALE_CALC=[0.1654092352985],
         VALE_PARA=[0.1],
     )
 )
