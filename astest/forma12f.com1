@@ -1,0 +1,109 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI")
+
+
+obs = DEFI_OBSTACLE(identifier="1:2", TYPE="PLAN_Z")
+
+MODES1 = CALC_MODES(
+    identifier="2:2",
+    CALC_FREQ=_F(FREQ=(0.0, 500.0)),
+    MATR_MASS=MASSE,
+    MATR_RIGI=RIGI,
+    OPTION="BANDE",
+    TYPE_RESU="DYNAMIQUE",
+    VERI_MODE=_F(SEUIL=1e-05),
+)
+
+MODES_ST = MODE_STATIQUE(
+    identifier="3:2",
+    FORCE_NODALE=_F(AVEC_CMP=("DZ",), GROUP_NO=("CHOC_a2", "CHOC_b2")),
+    MATR_MASS=MASSE,
+    MATR_RIGI=RIGI,
+)
+
+MODES0 = DEFI_BASE_MODALE(identifier="4:2", NUME_REF=NUMDDL, RITZ=_F(MODE_MECA=(MODES1, MODES_ST)))
+
+MODES = DEFI_BASE_MODALE(identifier="5:2", ORTHO_BASE=_F(BASE=MODES0, MATRICE=MASSE))
+
+PROJ_BASE(
+    identifier="6:2",
+    BASE=MODES,
+    MATR_ASSE_GENE=(
+        _F(MATRICE=CO("RIGI_P"), MATR_ASSE=RIGI),
+        _F(MATRICE=CO("MASSE_P"), MATR_ASSE=MASSE),
+    ),
+    STOCKAGE="DIAG",
+    VECT_ASSE_GENE=_F(TYPE_VECT="DEPL", VECTEUR=CO("DEP_INI"), VECT_ASSE=RES_STAT),
+)
+
+# comment: IMPR_RESU(identifier='7:2',
+# comment:           RESU=(_F(RESULTAT=MODES1),
+# comment:                 _F(RESULTAT=MODES_ST),
+# comment:                 _F(RESULTAT=MODES)),
+# comment:           UNITE=80)
+
+DYNA = DYNA_VIBRA(
+    identifier="11:2",
+    AMOR_MODAL=_F(AMOR_REDUIT=(0.05,)),
+    BASE_CALCUL="GENE",
+    COMPORTEMENT=(
+        _F(
+            FROTTEMENT="NON",
+            GROUP_NO_1=("CHOC_a2",),
+            JEU=1.0,
+            NORM_OBST=(1.0, 0.0, 0.0),
+            OBSTACLE=obs,
+            ORIG_OBST=(2.0, 2.0, 1.0),
+            RELATION="DIS_CHOC",
+            RIGI_NOR=100000000.0,
+        ),
+        _F(
+            FROTTEMENT="NON",
+            GROUP_NO_1=("CHOC_b2",),
+            JEU=1.0,
+            NORM_OBST=(1.0, 0.0, 0.0),
+            OBSTACLE=obs,
+            ORIG_OBST=(0.0, 2.0, 1.0),
+            RELATION="DIS_CHOC",
+            RIGI_NOR=100000000.0,
+        ),
+    ),
+    ETAT_INIT=_F(DEPL=DEP_INI),
+    INCREMENT=_F(INST_FIN=1.0, PAS=0.0001),
+    MATR_MASS=MASSE_P,
+    MATR_RIGI=RIGI_P,
+    SCHEMA_TEMPS=_F(SCHEMA="RUNGE_KUTTA_32"),
+    TRAITEMENT_NONL="EXPLICITE",
+    TYPE_CALCUL="TRAN",
+)
+
+ListVisu = DEFI_LIST_REEL(identifier="0:2", DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, PAS=0.001))
+
+RestPhys = REST_GENE_PHYS(
+    identifier="12:2", INTERPOL="LIN", LIST_INST=ListVisu, NOM_CHAM=("DEPL",), RESU_GENE=DYNA
+)
+
+# comment: IMPR_RESU(identifier='13:2',
+# comment:           FORMAT='MED',
+# comment:           RESU=_F(RESULTAT=RestPhys),
+# comment:           UNITE=3)
+
+FIN()

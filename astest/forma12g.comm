@@ -1,0 +1,281 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+# temps
+tfin = 0.1
+pa = 0.002
+
+# chargement
+fc = 15.0
+om = (2.0 * pi) * fc
+
+# matériau - propriétés élastiques
+E = 200.0e9
+rho = 8000.0
+nu = 0.3
+
+# matériau - propriétés plastiques
+dse = E / 100
+sy = 200e6
+
+# matériau - amortissement de Rayleigh : 2% (calé sur la plage 5-50 Hz)
+alpha_am = 2.0 / 100.0 / ((50 + 5) * pi)
+beta_am = 2.0 / 100.0 * 2 * 2 * pi * (50 * 5) / (50 + 5)
+ARGS_AMOR = {"AMOR_ALPHA": alpha_am, "AMOR_BETA": beta_am}
+
+# --------------------------------------------------------------------
+MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+# ETAPE 1 : création du macro-élément de la portion libre de la plaque dite 'VOL_2'
+
+MODELE2 = AFFE_MODELE(
+    AFFE=_F(GROUP_MA=["VOL_2"], MODELISATION="3D", PHENOMENE="MECANIQUE"), MAILLAGE=MAIL
+)
+
+MAT2 = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu, RHO=rho, **ARGS_AMOR))
+
+CHMAT2 = AFFE_MATERIAU(AFFE=_F(GROUP_MA=["VOL_2"], MATER=[MAT2]), MAILLAGE=MAIL)
+
+# encastrement de l'interface pour obtention des modes normaux (méthode de Craig-Bampton)
+COND_INT2 = AFFE_CHAR_MECA(
+    MODELE=MODELE2, DDL_IMPO=(_F(GROUP_NO="No_Int", DX=0.0, DY=0.0, DZ=0.0),)
+)
+
+# chargement réel de la plaque
+GRAV2 = AFFE_CHAR_MECA(
+    MODELE=MODELE2, PESANTEUR=_F(GROUP_MA="VOL_2", DIRECTION=(-1.0, 0, 1), GRAVITE=300.0)
+)
+
+ASSEMBLAGE(
+    MODELE=MODELE2,
+    CHAM_MATER=CHMAT2,
+    CHARGE=COND_INT2,
+    NUME_DDL=CO("NUME2"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATR2"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MATM2"), OPTION="MASS_MECA"),
+        _F(MATRICE=CO("MATA2"), OPTION="AMOR_MECA"),
+    ),
+    VECT_ASSE=(_F(VECTEUR=CO("VECAS2"), OPTION="CHAR_MECA", CHARGE=GRAV2),),
+)
+
+# calcul des modes normaux : le nombre de modes retenus doit être multiple du nombre de DDL des éléments finis que composent le domaine condensé (3 dans ce cas)
+MODE2 = CALC_MODES(
+    MATR_RIGI=MATR2, VERI_MODE=_F(STOP_ERREUR="NON"), CALC_FREQ=_F(NMAX_FREQ=30), MATR_MASS=MATM2
+)
+
+# calcul des modes contraints
+MODESTA2 = MODE_STATIQUE(
+    MATR_RIGI=MATR2, MODE_STAT=(_F(GROUP_NO="No_Int", AVEC_CMP=("DX", "DY", "DZ")))
+)
+
+# definition de l'interface
+INTERDY2 = DEFI_INTERF_DYNA(
+    NUME_DDL=NUME2, INTERFACE=_F(NOM="INT2", TYPE="CRAIGB", GROUP_NO=("No_Int",))
+)
+
+# definition de la base avec modes normaux + modes d'interface + interface dynamique
+BAMODA = DEFI_BASE_MODALE(
+    RITZ=(_F(MODE_INTF=MODESTA2), _F(MODE_MECA=MODE2)), NUME_REF=NUME2, INTERF_DYNA=INTERDY2
+)
+
+NDDLGE2 = NUME_DDL_GENE(BASE=BAMODA, STOCKAGE="PLEIN")
+
+VECGE2 = PROJ_VECT_BASE(BASE=BAMODA, NUME_DDL_GENE=NDDLGE2, VECT_ASSE=VECAS2, TYPE_VECT="FORC")
+
+# calcul du macro élément
+MAEL2 = MACR_ELEM_DYNA(
+    BASE_MODALE=BAMODA,
+    MATR_RIGI=MATR2,
+    MATR_MASS=MATM2,
+    MATR_AMOR=MATA2,
+    CAS_CHARGE=(_F(NOM_CAS="CHP2", VECT_ASSE_GENE=VECGE2),),
+)
+
+MAYADYN = DEFI_MAILLAGE(
+    DEFI_SUPER_MAILLE=(_F(MACR_ELEM=MAEL2, SUPER_MAILLE="STAT2"),),
+    RECO_GLOBAL=_F(TOUT="OUI"),
+    DEFI_NOEUD=_F(TOUT="OUI", INDEX=(1, 0, 1, 8)),
+)
+
+# intégration du modèle condensé dans le maillage original
+MAILB = ASSE_MAILLAGE(MAILLAGE_1=MAIL, MAILLAGE_2=MAYADYN, OPERATION="SOUS_STR")
+
+# ETAPE 2 : calcul du modèle équivalent composé par la portion encastrée de la plaque dite 'VOL_1' + portion libre condensée
+MATB = DEFI_MATERIAU(
+    ECRO_LINE=_F(D_SIGM_EPSI=dse, SY=sy), ELAS=_F(E=E, NU=nu, RHO=rho, **ARGS_AMOR)
+)
+
+CHMATB = AFFE_MATERIAU(MAILLAGE=MAILB, AFFE=(_F(GROUP_MA="VOL_1", MATER=MATB),))
+
+MODELB = AFFE_MODELE(
+    MAILLAGE=MAILB,
+    AFFE_SOUS_STRUC=_F(SUPER_MAILLE=("STAT2",), PHENOMENE="MECANIQUE"),
+    AFFE=(_F(GROUP_MA="VOL_1", PHENOMENE="MECANIQUE", MODELISATION="3D"),),
+)
+
+BLOCAGE = AFFE_CHAR_MECA(DDL_IMPO=_F(BLOCAGE=("DEPLACEMENT"), GROUP_MA=["ENCAS"]), MODELE=MODELB)
+
+GRAV = AFFE_CHAR_MECA(
+    MODELE=MODELB, PESANTEUR=_F(GROUP_MA="VOL_1", DIRECTION=(-1.0, 0, 1), GRAVITE=300.0)
+)
+
+# ---------------------------------------------------------------------------
+# calcul de modes pour vérification avec modèle complet (pas nécessaire au calcul en soit)
+ASSEMBLAGE(
+    MODELE=MODELB,
+    CHAM_MATER=CHMATB,
+    CHARGE=(BLOCAGE),
+    NUME_DDL=CO("NUMEB"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATRB"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MATMB"), OPTION="MASS_MECA"),
+    ),
+)
+
+MODEB = CALC_MODES(
+    MATR_RIGI=MATRB, VERI_MODE=_F(STOP_ERREUR="NON"), CALC_FREQ=_F(NMAX_FREQ=30), MATR_MASS=MATMB
+)
+# ---------------------------------------------------------------------------
+
+LISTR = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tfin, PAS=pa))
+
+sinom = FORMULE(NOM_PARA="INST", VALE="sin(om*INST)", om=om)
+
+LIS = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LISTR),
+    ECHEC=_F(
+        ACTION="DECOUPE",
+        EVENEMENT="ERREUR",
+        SUBD_METHODE="MANUEL",
+        SUBD_NIVEAU=5,
+        SUBD_PAS=4,
+        SUBD_PAS_MINI=1e-05,
+    ),
+    METHODE="MANUEL",
+)
+
+DYNADNL = DYNA_NON_LINE(
+    MODELE=MODELB,
+    CHAM_MATER=CHMATB,
+    COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="VMIS_CINE_LINE"),
+    CONVERGENCE=_F(ARRET="OUI", ITER_GLOB_MAXI=30),
+    EXCIT=(
+        _F(CHARGE=BLOCAGE, MULT_APPUI="NON", TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=GRAV, FONC_MULT=sinom, MULT_APPUI="NON", TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    INCREMENT=_F(LIST_INST=LIS),
+    SCHEMA_TEMPS=_F(FORMULATION="DEPLACEMENT", SCHEMA="HHT", ALPHA=-0.1),
+    ENERGIE=_F(CALCUL="OUI"),
+    MODE_VIBR=_F(LIST_INST=LISTR, NMAX_FREQ=1, MATR_RIGI="TANGENTE", OPTION="PLUS_PETITE"),
+    ARCHIVAGE=_F(LIST_INST=LISTR),
+    SOUS_STRUC=(_F(CAS_CHARGE="CHP2", SUPER_MAILLE="STAT2", FONC_MULT=sinom),),
+)
+
+# restitution des résultats dans la portion condensée dite 'VOL_2'
+RESUGLO = REST_COND_TRAN(
+    RESULTAT=DYNADNL,
+    MACR_ELEM_DYNA=MAEL2,
+    LIST_INST=LISTR,
+    PRECISION=1.0e-4,
+    TOUT_CHAM="OUI",
+    TYPE_RESU="EVOL_NOLI",
+)
+
+# DEFI_FICHIER(UNITE = 22, FICHIER = './REPE_OUT/DYNADNL.med')
+# IMPR_RESU(FORMAT='MED',UNITE=22, RESU=(_F(MAILLAGE=MAILB),_F(RESULTAT=DYNADNL)))
+# DEFI_FICHIER(ACTION='LIBERER', UNITE=22,)
+
+# ---------------------------------------------------------------------------
+# création d'un modèle complet pour vérification des modes propres
+MODELE0 = AFFE_MODELE(
+    AFFE=_F(GROUP_MA=["VOL"], MODELISATION="3D", PHENOMENE="MECANIQUE"), MAILLAGE=MAIL
+)
+
+BLOCAGE0 = AFFE_CHAR_MECA(DDL_IMPO=_F(BLOCAGE=("DEPLACEMENT"), GROUP_MA=["ENCAS"]), MODELE=MODELE0)
+
+CHMAT0 = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=(_F(GROUP_MA="VOL", MATER=MATB),))
+
+ASSEMBLAGE(
+    MODELE=MODELE0,
+    CHAM_MATER=CHMAT0,
+    CHARGE=BLOCAGE0,
+    NUME_DDL=CO("NUME0"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATR0"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MATM0"), OPTION="MASS_MECA"),
+    ),
+)
+
+MODE0 = CALC_MODES(
+    MATR_RIGI=MATR0, VERI_MODE=_F(STOP_ERREUR="NON"), CALC_FREQ=_F(NMAX_FREQ=30), MATR_MASS=MATM0
+)
+# ---------------------------------------------------------------------------
+
+tableNrj = RECU_TABLE(CO=DYNADNL, NOM_TABLE="PARA_CALC")
+
+IMPR_TABLE(TABLE=tableNrj, UNITE=3, SEPARATEUR=";")
+
+ACCE_DZ = RECU_FONCTION(GROUP_NO="P", NOM_CHAM="ACCE", NOM_CMP="DZ", RESULTAT=RESUGLO)
+
+VITE_DZ = RECU_FONCTION(GROUP_NO="P", NOM_CHAM="VITE", NOM_CMP="DZ", RESULTAT=RESUGLO)
+
+DEPL_DZ = RECU_FONCTION(GROUP_NO="P", NOM_CHAM="DEPL", NOM_CMP="DZ", RESULTAT=RESUGLO)
+
+fsinom = CALC_FONC_INTERP(FONCTION=sinom, NOM_PARA="INST", LIST_PARA=LISTR)
+
+IMPR_FONCTION(
+    FORMAT="TABLEAU",
+    UNITE=2,
+    SEPARATEUR=";",
+    COURBE=(_F(FONCTION=ACCE_DZ), _F(FONCTION=VITE_DZ), _F(FONCTION=DEPL_DZ), _F(FONCTION=fsinom)),
+)
+# test de validation: il faut ajouter VALE_REFE qui est le resultat du calcul aster version 17.0.5
+# test de la valeur du déplacement
+TEST_FONCTION(
+    VALEUR=_F(
+        CRITERE="RELATIF",
+        FONCTION=DEPL_DZ,
+        TOLE_MACHINE=1e-06,
+        VALE_ABS="NON",
+        VALE_CALC=[0.14153716735099],
+        VALE_REFE=[0.14153716735099],
+        REFERENCE="NON_DEFINI",
+        VALE_PARA=[0.05],
+    )
+)
+
+# test de la valeur de l'accélération
+TEST_FONCTION(
+    VALEUR=_F(
+        CRITERE="RELATIF",
+        FONCTION=ACCE_DZ,
+        TOLE_MACHINE=1e-06,
+        VALE_ABS="NON",
+        VALE_CALC=[-503.2460427641],
+        VALE_REFE=[-503.2460427641],
+        REFERENCE="NON_DEFINI",
+        VALE_PARA=[0.05],
+    )
+)
+
+FIN()
