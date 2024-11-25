@@ -1,6 +1,21 @@
 version: 5
 environments:
+  conda:
+    channels:
+    - url: https://repo.prefix.dev/code-aster/
+    - url: https://conda.anaconda.org/conda-forge/
+    packages:
+      win-64:
+      - conda: https://conda.anaconda.org/conda-forge/win-64/rattler-build-0.31.1-h49672d7_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/ucrt-10.0.22621.0-h57928b3_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/vc-14.3-ha32ba9b_23.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34433-he29a5d6_23.conda
   default:
+    channels:
+    - url: https://repo.prefix.dev/code-aster/
+    - url: https://conda.anaconda.org/conda-forge/
+    packages: {}
+  local:
     channels:
     - url: https://repo.prefix.dev/code-aster/
     - url: https://conda.anaconda.org/conda-forge/
@@ -1137,6 +1152,22 @@ packages:
   license_family: MIT
   size: 181227
   timestamp: 1725456516473
+- kind: conda
+  name: rattler-build
+  version: 0.31.1
+  build: h49672d7_0
+  subdir: win-64
+  url: https://conda.anaconda.org/conda-forge/win-64/rattler-build-0.31.1-h49672d7_0.conda
+  sha256: e6078c05f8171837c2ca425519abe6206af2fbb70531c62fe9661614a84b2db8
+  md5: b635c204cb7362bea1cc6ecff02e9e2d
+  depends:
+  - ucrt >=10.0.20348.0
+  - vc >=14.3,<15
+  - vc14_runtime >=14.42.34433
+  license: BSD-3-Clause
+  license_family: BSD
+  size: 8765519
+  timestamp: 1732202675675
 - kind: conda
   name: scotch
   version: 7.0.4

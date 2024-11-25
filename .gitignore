@@ -36,3 +36,4 @@ conda/test_file.py
 .pixi/
 build/*
 build-cmake/*
+output/
