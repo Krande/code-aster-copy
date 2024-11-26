@@ -122,7 +122,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 !        /* CAS D' UN RESULTAT COMPOSE */
             call getvid('ACTION', 'RESULTAT', iocc=iocc, scal=nresu, nbret=n1)
             call getvtx('ACTION', 'NOM_CHAM', iocc=iocc, scal=text80, nbret=n1)
-            call dismoi('NOM_MAILLA', nresu, 'RESU', repk=nomail)
+            call dismoi('NOM_MAILLA', nresu, 'RESULTAT', repk=nomail)
             parMesh = isParallelMesh(nomail)
             nchsym = text80(1:16)
             call jenonu(jexnom(nresu//'           .DESC', nchsym), n1)
