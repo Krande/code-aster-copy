@@ -154,7 +154,8 @@ Le champ fourni doit être issu de l'option EFGE_ELNO et non %(k1)s.
     ),
     24: _(
         """
-Les opérations 'MOYENNE', 'EXTREMA' et 'MOYENNE_ARITH' ne sont pas autorisées en HPC.
+Les opérations 'MOYENNE', 'EXTREMA' et 'MOYENNE_ARITH' ne sont pas autorisées
+en parallélisme distribué.
 """
     ),
     26: _(
