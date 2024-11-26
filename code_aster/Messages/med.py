@@ -104,7 +104,7 @@ Risque & Conseil : Utiliser DEFI_FICHIER pour associer l'unité logique à un ch
 Vous avez demandé de relire un champ MED pour lequel les numéros de pas de temps et d'itération
 ne sont pas égaux. Ce n'est pas autorisé dans LIRE_RESU.
 
-Conseil : Utilisez readMedFileToResults.
+Conseil : Utilisez %(k1)s.
     """
     ),
     18: _(

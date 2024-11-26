@@ -250,7 +250,8 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix, &
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
             end if
             if (finupt .ne. finuno) then
-                call utmess('F', 'MED_12', sk=saux08, si=codret)
+                saux08 = 'readMedFileToResults'
+                call utmess('F', 'MED_12', sk=saux08)
             end if
             zi(jnptno+iaux*2-2) = finupt
             zi(jnptno+iaux*2-1) = finuno
