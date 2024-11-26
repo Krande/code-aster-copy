@@ -535,7 +535,8 @@ Args:
     medname (str): Name of the result in the MED file. (default: "")
     local (bool): Print only the local domain if *True*. (default: True)
               )",
-              py::arg( "filename" ), py::arg( "medname" ) = "", py::arg( "local" ) = true )
+              py::arg( "filename" ), py::arg( "medname" ) = "", py::arg( "local" ) = true,
+              py::arg( "internalVar" ) = true )
         .def( "setMesh", &Result::setMesh, R"(
 Set the mesh used by the result.
 

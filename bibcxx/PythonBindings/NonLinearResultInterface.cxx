@@ -3,7 +3,7 @@
  * @brief Interface python de NonLinearResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,5 +33,16 @@ void exportNonLinearResultToPython( py::module_ &mod ) {
         .def( "setContact", py::overload_cast< const ContactPtr >( &NonLinearResult::setContact ) )
         .def( "setContact", py::overload_cast< const ContactPtr, const ASTERINTEGER & >(
                                 &NonLinearResult::setContact ) )
-        .def( "getTangentMatrix", &NonLinearResult::getTangentMatrix );
+        .def( "getTangentMatrix", &NonLinearResult::getTangentMatrix )
+        .def( "printMedFile", &Result::printMedFile,
+              R"(
+Print the result in a MED file.
+
+Args:
+    filename (str): Path to the output file.
+    medname (str): Name of the result in the MED file. (default: "")
+    local (bool): Print only the local domain if *True*. (default: True)
+              )",
+              py::arg( "filename" ), py::arg( "medname" ) = "", py::arg( "local" ) = true,
+              py::arg( "internalVar" ) = true );
 };

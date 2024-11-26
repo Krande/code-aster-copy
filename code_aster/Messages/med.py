@@ -99,6 +99,14 @@ de préciser un chemin absolu vers ce fichier (doit commencer par '/').
 Risque & Conseil : Utiliser DEFI_FICHIER pour associer l'unité logique à un chemin absolu.
     """
     ),
+    12: _(
+        """
+Vous avez demandé de relire un champ MED pour lequel les numéros de pas de temps et d'itération
+ne sont pas égaux. Ce n'est pas autorisé dans LIRE_RESU.
+
+Conseil : Utilisez %(k1)s.
+    """
+    ),
     18: _(
         """
   Vous essayer de partitionner le maillage alors que le calcul est séquentiel.

@@ -2,7 +2,7 @@
  * @file NonLinearResult.cxx
  * @brief Implementation de NonLinearResult
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,6 +21,8 @@
  */
 
 #include "Results/NonLinearResult.h"
+
+#include "Behaviour_type.h"
 
 #include "Supervis/Exceptions.h"
 
@@ -53,3 +55,28 @@ VectorReal NonLinearResult::getTangentMatrix( const std::string &suffix ) {
     } else
         return {};
 };
+
+void NonLinearResult::printMedFile( const std::string fileName, std::string medName, bool local,
+                                    bool internalVar ) const {
+    const auto indexes = getIndexes();
+    bool mFront = false;
+    for ( const auto &index : indexes ) {
+        const auto compor = getConstantFieldOnCellsChar16( "COMPORTEMENT", index, true );
+        const auto size = compor->size();
+        const auto values = compor->getValues();
+        for ( const auto &tmp : values ) {
+            const auto &val2 = tmp.getValues();
+            // MGIS_ADDR-1 because MGIS_ADDR come from Fortran
+            const auto &val23 = strip( val2[MGIS_ADDR - 1] );
+            if ( val23 != "VIDE" && val23 != "" ) {
+                mFront = true;
+                break;
+            }
+        }
+        if ( mFront )
+            break;
+        break;
+    }
+    Result::printMedFile( fileName, medName, local, !mFront );
+    return;
+}
