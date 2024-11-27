@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -51,6 +51,13 @@ class GroupDefinition(ExecuteCommand):
             self._result._updateGlobalGroupOfNodes()
 
         self._result.build()
+
+    def add_dependencies(self, keywords):
+        """The output mesh has no dependency on inputs.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
 
 
 DEFI_GROUP = GroupDefinition.run
