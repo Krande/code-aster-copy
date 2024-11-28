@@ -36,6 +36,13 @@ jobs:
         run: |
           pixi run cbuild --no-test
 
+      - name: If failed build, upload log
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuildLog-${{ runner.os }}-${{ github.run_id }}
+          path: ${{ github.workspace }}/output/bld/work
+
       - name: Find the outputted .conda file and set it as an output
         run: |
           import pathlib
@@ -55,15 +62,8 @@ jobs:
         run: |
           pixi run ctest --package-file ${{ env.CONDA_FILE }} -c https://repo.prefix.dev/code-aster -c conda-forge
 
-      - name: If failed build, upload log
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: BuildLog-${{ runner.os }}-${{ github.run_id }}
-          path: ${{ github.workspace }}/output/bld/work
-
       - name: Save Run directory to artifacts
         uses: actions/upload-artifact@v4
         with:
           name: TestResults-${{ runner.os }}-${{ github.run_id }}
-          path: ${{ github.workspace }}/conda/temp
+          path: ${{ env.OUTPUT_DIR }}
