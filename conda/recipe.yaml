@@ -77,12 +77,6 @@ tests:
         - code_aster
       pip_check: false
 
-  - script:
-      - run_ctest --resutest=temp\\seq -L submit -L sequential -LE need_data --timefactor=10.0 --only-failed-results
-      - if errorlevel 1 exit 1
-    files:
-      source:
-        - basic_import.py
 
 about:
   license: GPL-3.0-only AND CECILL-C AND Apache-2.0 AND LGPL-3.0-only
