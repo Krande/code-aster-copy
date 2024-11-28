@@ -52,7 +52,7 @@ jobs:
 
       - name: run rattler test
         run: |
-          pixi run ctest --package-file ${{ env.CONDA_FILE }}
+          pixi run ctest --package-file ${{ env.CONDA_FILE }} -c https://repo.prefix.dev/code-aster -c conda-forge
 
       - name: If failed build, upload log
         if: ${{ failure() }}
@@ -60,14 +60,6 @@ jobs:
         with:
           name: BuildLog-${{ runner.os }}-${{ github.run_id }}
           path: ${{ github.workspace }}/output/bld
-
-#      - name: Install Code_Aster
-#        run: |
-#          pixi run install
-#
-#      - name: Test Code_Aster
-#        run: |
-#          pixi run test
 
       - name: Save Run directory to artifacts
         uses: actions/upload-artifact@v4
