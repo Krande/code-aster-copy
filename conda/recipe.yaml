@@ -76,7 +76,11 @@ tests:
       imports:
         - code_aster
       pip_check: false
-
+  - script:
+      - run_test.bat
+    files:
+      source:
+        - run_test.bat
 
 about:
   license: GPL-3.0-only AND CECILL-C AND Apache-2.0 AND LGPL-3.0-only
