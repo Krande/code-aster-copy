@@ -7,6 +7,8 @@ on:
     branches:
       - win-support
 #    - donotrun
+env:
+  CONDA_FILE: ""
 
 jobs:
   build:
@@ -31,7 +33,26 @@ jobs:
       - name: Build Code_Aster
         shell: cmd
         run: |
-          pixi run cbuild
+          pixi run cbuild --no-test
+
+      - name: Find the outputted .conda file and set it as an output
+        run: |
+          import pathlib
+          import os
+          
+          output_dir = pathlib.Path("output").resolve()
+          conda_files = list(output_dir.rglob("*.conda"))
+          if len(conda_files) != 1:
+              raise ValueError(f"Expected 1 .conda file, found {len(conda_files)}")
+          conda_file = conda_files[0]
+          with open(os.environ["GITHUB_ENV"], "a") as env_file:
+                env_file.write(f"CONDA_FILE={conda_file.as_posix()}\n")
+
+        shell: pixi run python {0}
+
+      - name: run rattler test
+        run: |
+          pixi run ctest --package-file ${{ env.CONDA_FILE }}
 
       - name: If failed build, upload log
         if: ${{ failure() }}
