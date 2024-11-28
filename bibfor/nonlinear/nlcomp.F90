@@ -75,7 +75,7 @@ subroutine nlcomp(phenom, fami, kpg, imate, ndim, coorpg, time, tp, Kglo, dtp_, 
                     3, nomres, lambor, icodre, 1)
         aniso = ASTER_TRUE
     else if (phenom .eq. 'THER_HYDR') then
-        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+        call rcvalb(fami, kpg, 1, '+', zi(imate), &
                     ' ', phenom, 1, 'TEMP', [tp], &
                     1, 'LAMBDA', valres, icodre, 1)
         lambda = valres(1)
