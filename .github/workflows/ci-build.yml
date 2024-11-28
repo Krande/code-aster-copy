@@ -9,6 +9,7 @@ on:
 #    - donotrun
 env:
   CONDA_FILE: ""
+  OUTPUT_DIR: "${{ github.workspace }}\\test_output"
 
 jobs:
   build:

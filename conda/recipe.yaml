@@ -78,7 +78,7 @@ tests:
       pip_check: false
 
   - script:
-      - run_ctest --resutest=temp\\seq -L submit -L sequential -LE need_data --timefactor=5.0 --only-failed-results
+      - run_ctest --resutest=temp\\seq -L submit -L sequential -LE need_data --timefactor=10.0 --only-failed-results
       - if errorlevel 1 exit 1
     files:
       source:

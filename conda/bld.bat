@@ -1,5 +1,7 @@
 @echo off
 
+set CLICOLOR_FORCE=1
+
 setlocal enabledelayedexpansion
 
 echo "Setting compiler env vars"
