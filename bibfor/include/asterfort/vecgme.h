@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,22 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine vecgme(model    , cara_elem   , matez          , matecoz    , &
-                      lload_namez, lload_infoz,&
-                      inst_curr, disp_prevz  , disp_cumu_instz, vect_elemz , inst_prev  ,&
-                      compor   , ligrel_calcz, vite_currz     , acce_currz , strx_prevz)
+    subroutine vecgme(model, caraElem, matez, matecoz, loadNameJvZ, loadInfoJvZ, &
+                      inst_curr, disp_prevz, disp_cumu_instz, vect_elemz, inst_prev, &
+                      compor, ligrel_calcz, vite_currz, acce_currz, strx_prevz)
         character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: cara_elem
+        character(len=24), intent(in) :: caraElem
         character(len=*), intent(in) :: matez, matecoz
         real(kind=8), intent(in) :: inst_curr
         character(len=*), intent(in) :: disp_prevz
         character(len=*), intent(in) :: disp_cumu_instz
-        character(len=*), intent(in) :: lload_namez
-        character(len=*), intent(in) :: lload_infoz
+        character(len=*), intent(in) :: loadNameJvZ
+        character(len=*), intent(in) :: loadInfoJvZ
         character(len=*), intent(inout) :: vect_elemz
         real(kind=8), intent(in) :: inst_prev
         character(len=24), intent(in) :: compor

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -219,6 +219,9 @@ RESUDIAG = THER_NON_LINE(
     INCREMENT=_F(LIST_INST=LINST),
     ETAT_INIT=_F(EVOL_THER=THINI),
 )
+
+RESUTHER = CALC_CHAMP(reuse=RESUTHER, RESULTAT=RESUTHER, THERMIQUE=("FLUX_ELGA", "FLUX_NOEU"))
+RESUDIAG = CALC_CHAMP(reuse=RESUDIAG, RESULTAT=RESUDIAG, THERMIQUE=("FLUX_ELGA", "FLUX_NOEU"))
 
 TT = POST_RELEVE_T(
     ACTION=_F(

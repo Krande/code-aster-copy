@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_neum, &
+subroutine load_neum_spec(loadName, loadNume, loadApply, ligrel_calc, i_type_neum, &
                           nb_type_neumz, nb_in_maxi, nb_in_prep, lchin, lpain, &
                           nb_in_add, load_ligrel, load_option, matr_type, iden_direct, &
                           name_inputz)
@@ -33,10 +33,10 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: load_name
-    integer, intent(in) :: load_nume
+    character(len=8), intent(in) :: loadName
+    integer, intent(in) :: loadNume
     character(len=19), intent(in) :: ligrel_calc
-    character(len=4), intent(in) :: load_type
+    character(len=4), intent(in) :: loadApply
     integer, intent(in) :: i_type_neum
     integer, intent(in) :: nb_type_neumz
     integer, intent(in) :: nb_in_maxi
@@ -58,9 +58,9 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  load_name      : name of current load
-! In  load_nume      : identification of load type
-! In  load_type      : load type to compute
+! In  loadName       : name of current load
+! In  loadNume       : identification of load type
+! In  loadApply      : type of application for load
 !                        'Dead' - Dead loads (not dependent on displacements)
 !                        'Pilo' - Loads for continuation (not dependent on displacements)
 !                        'Suiv' - Undead loads (dependent on displacements)
@@ -200,7 +200,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrel_load = load_name(1:8)//'.CHME.LIGRE'
+    ligrel_load = loadName(1:8)//'.CHME.LIGRE'
     load_ligrel = ' '
     load_option = 'No_Load'
     l_constant = .false.
@@ -221,11 +221,11 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         name_input = name_inputz
     else
         if (object(i_type_neum) .eq. '.VEASS') then
-            identify = load_name(1:8)//'.CHME'//object(i_type_neum)
+            identify = loadName(1:8)//'.CHME'//object(i_type_neum)
         else
-            identify = load_name(1:8)//'.CHME'//object(i_type_neum)//'.DESC'
+            identify = loadName(1:8)//'.CHME'//object(i_type_neum)//'.DESC'
         end if
-        name_input = load_name(1:8)//'.CHME'//object(i_type_neum)
+        name_input = loadName(1:8)//'.CHME'//object(i_type_neum)
         call jeexin(identify, iret)
     end if
 !
@@ -233,25 +233,25 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
 !
 ! ----- Value type
 !
-        if (load_nume .eq. 1) then
+        if (loadNume .eq. 1) then
             l_constant = .true.
-        elseif (load_nume .eq. 5) then
+        elseif (loadNume .eq. 5) then
             l_constant = .true.
-        elseif (load_nume .eq. 8) then
+        elseif (loadNume .eq. 8) then
             l_fonct_0 = .true.
-        else if (load_nume .eq. 2) then
+        else if (loadNume .eq. 2) then
             l_fonct_0 = .true.
-        else if (load_nume .eq. 3) then
+        else if (loadNume .eq. 3) then
             l_fonct_t = .true.
-        else if (load_nume .eq. 55) then
+        else if (loadNume .eq. 55) then
             l_sigm_int = .true.
         end if
 !
 ! ----- Special for undeads loads
 !
-        if (load_nume .eq. 4 .or. load_nume .eq. 9 .or. load_nume .eq. 11) then
+        if (loadNume .eq. 4 .or. loadNume .eq. 9 .or. loadNume .eq. 11) then
             l_constant = .true.
-            call dismoi('TYPE_CHARGE', load_name, 'CHARGE', repk=affcha)
+            call dismoi('TYPE_CHARGE', loadName, 'CHARGE', repk=affcha)
             if (affcha(5:7) .eq. '_FO') then
                 l_constant = .false.
                 l_fonct_0 = .true.
@@ -261,7 +261,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
 ! ----- Name of option
 !
         if (l_constant) then
-            if (load_type .eq. 'Suiv') then
+            if (loadApply .eq. 'Suiv') then
                 if (present(matr_type)) then
                     load_option = optmat_r(i_type_neum)
                 else
@@ -271,7 +271,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
                 load_option = option_r(i_type_neum)
             end if
         else if (l_fonct_0 .or. l_fonct_t) then
-            if (load_type .eq. 'Suiv') then
+            if (loadApply .eq. 'Suiv') then
                 if (present(matr_type)) then
                     load_option = optmat_f(i_type_neum)
                 else
@@ -308,23 +308,23 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
             if (load_option .eq. 'CHAR_MECA_EFON_R') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFR'
-                lchin(i_field_in) = load_name//'.CHME.PREFF'
+                lchin(i_field_in) = loadName//'.CHME.PREFF'
             else if (load_option .eq. 'CHAR_MECA_EFSU_R') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFR'
-                lchin(i_field_in) = load_name//'.CHME.PREFF'
+                lchin(i_field_in) = loadName//'.CHME.PREFF'
             else if (load_option .eq. 'RIGI_MECA_EFSU_R') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFR'
-                lchin(i_field_in) = load_name//'.CHME.PREFF'
+                lchin(i_field_in) = loadName//'.CHME.PREFF'
             else if (load_option .eq. 'CHAR_ECHA_THM_R') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PDEPLMR'
-                lchin(i_field_in) = load_name//'.CHME.DEPL_R'
+                lchin(i_field_in) = loadName//'.CHME.DEPL_R'
             else if (load_option .eq. 'CHAR_ECHA_THM_F') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PDEPLMR'
-                lchin(i_field_in) = load_name//'.CHME.DEPL_R'
+                lchin(i_field_in) = loadName//'.CHME.DEPL_R'
             end if
         else if (l_fonct_0 .or. l_fonct_t) then
             i_field_in = i_field_in+1
@@ -333,17 +333,17 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
             if (load_option .eq. 'CHAR_MECA_EFON_F') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFF'
-                lchin(i_field_in) = load_name//'.CHME.PREFF'
+                lchin(i_field_in) = loadName//'.CHME.PREFF'
             end if
             if (load_option .eq. 'CHAR_MECA_EFSU_F') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFF'
-                lchin(i_field_in) = load_name//'.CHME.PREFF'
+                lchin(i_field_in) = loadName//'.CHME.PREFF'
             end if
             if (load_option .eq. 'RIGI_MECA_EFSU_F') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFF'
-                lchin(i_field_in) = load_name//'.CHME.PREFF'
+                lchin(i_field_in) = loadName//'.CHME.PREFF'
             end if
         else if (l_sigm_int) then
             call jeveuo(ligrel_load(1:13)//'.SIINT.VALE', 'L', vk8=p_vale_sigm)
@@ -356,7 +356,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
 !
 ! ----- Parameter name of output field for matrix (undead loads)
 !
-        if (load_type .eq. 'Suiv') then
+        if (loadApply .eq. 'Suiv') then
             if (present(matr_type)) then
                 matr_type = para_matr(i_type_neum)
             end if
@@ -370,30 +370,30 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
             load_ligrel = ligrel_calc
         end if
         if (load_option .eq. 'Copy_Load') then
-            ASSERT((load_nume .ge. 1 .and. load_nume .le. 3) .or. load_nume .eq. 5)
+            ASSERT((loadNume .ge. 1 .and. loadNume .le. 3) .or. loadNume .eq. 5)
             call jeveuo(lchin(i_field_in), 'L', vk8=p_vect_asse)
             load_ligrel = p_vect_asse(1)
         end if
 !
 ! ----- Checking for undead loads
 !
-        if (load_type .eq. 'Suiv') then
+        if (loadApply .eq. 'Suiv') then
             if (.not. l_suiv(i_type_neum)) then
-                call utmess('F', 'CHARGES_23', sk=load_name)
+                call utmess('F', 'CHARGES_23', sk=loadName)
             end if
             if ((load_option .eq. 'No_Load') .and. (.not. present(matr_type))) then
-                call utmess('F', 'CHARGES_23', sk=load_name)
+                call utmess('F', 'CHARGES_23', sk=loadName)
             end if
         end if
 !
 ! ----- Checking for continuation type loads
 !
-        if (load_type .eq. 'Pilo') then
+        if (loadApply .eq. 'Pilo') then
             if (.not. l_pilo(i_type_neum)) then
-                call utmess('F', 'CHARGES_26', sk=load_name)
+                call utmess('F', 'CHARGES_26', sk=loadName)
             end if
             if (l_fonct_t) then
-                call utmess('F', 'CHARGES_28', sk=load_name)
+                call utmess('F', 'CHARGES_28', sk=loadName)
             end if
         end if
 !

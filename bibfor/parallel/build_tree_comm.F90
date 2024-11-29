@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -107,13 +107,13 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
     count_recv = count_send
     call asmpi_allgather_i([nbdom_inf], count_send, v_nbdist, count_recv, mpicom)
     max_nbdom = maxval(v_nbdist)
-    AS_ALLOCATE(vi=v_deca, size=nbproc)
+    AS_ALLOCATE(vi=v_deca, size=nbproc+1)
 !
     v_deca = 0
-    do i_proc = 1, nbproc-1
+    do i_proc = 1, nbproc
         v_deca(i_proc+1) = v_deca(i_proc)+v_nbdist(i_proc)
     end do
-    nbdist_tot = v_deca(nbproc)+v_nbdist(nbproc)
+    nbdist_tot = v_deca(nbproc+1)
     if (nbdist_tot == 0 .or. max_nbdom == 0) go to 999
 !
 ! --- On récupère la liste des sous-domaines
@@ -127,8 +127,13 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
     AS_ALLOCATE(vi=v_dist, size=nbdist_tot)
 !
     do i_proc = 1, nbproc
-        v_dist(v_deca(i_proc)+1:v_deca(i_proc+1)) = &
-            v_recv((i_proc-1)*max_nbdom+1:(i_proc-1)*max_nbdom+v_nbdist(i_proc))
+        if (v_deca(i_proc)+1 .le. nbdist_tot) then
+            ASSERT(v_deca(i_proc+1) .le. nbdist_tot)
+            ASSERT((i_proc-1)*max_nbdom+1 .le. nbproc*max_nbdom)
+            ASSERT((i_proc-1)*max_nbdom+v_nbdist(i_proc) .le. nbproc*max_nbdom)
+            v_dist(v_deca(i_proc)+1:v_deca(i_proc+1)) = &
+                v_recv((i_proc-1)*max_nbdom+1:(i_proc-1)*max_nbdom+v_nbdist(i_proc))
+        end if
     end do
 !
 ! --- On crée la liste des comm
@@ -145,7 +150,9 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
                 dom1 = i_proc-1
                 do i_dom = 1, v_nbdist(i_proc)
                     ind = v_deca(i_proc)+i_dom
+                    ASSERT(ind .le. nbdist_tot)
                     dom2 = v_dist(ind)
+                    ASSERT(dom2 .le. nbproc)
                     if (dom2 .ne. -1 .and. v_proc(dom2)) then
                         nb_comm = nb_comm+1
                         v_proc(dom1+1) = ASTER_FALSE
