@@ -89,7 +89,7 @@ subroutine load_neum_prep(model, cara_elem, mate, mateco, load_type, inst_prev, 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: chgeom, chcara(18), chharm, chtime, chinst_curr, chinst_prev
+    character(len=24) :: chgeom, chcara(18), chharm, chtime
     character(len=19) :: ligrel_model
     character(len=8) :: nomcmp(3), mesh
     real(kind=8) :: time(3)
@@ -112,30 +112,19 @@ subroutine load_neum_prep(model, cara_elem, mate, mateco, load_type, inst_prev, 
 ! - Elementary characteristics fields
 !
     call mecara(cara_elem, chcara)
-!
+
 ! - Times field
-!
-    if (load_type .ne. 'Dead') then
-        nomcmp(1) = 'INST'
-        chinst_curr = '&&VECHME.CH_INST_R'
-        call mecact('V', chinst_curr, 'LIGREL', ligrel_model, 'INST_R  ', &
-                    ncmp=1, nomcmp=nomcmp(1), sr=inst_curr)
-        chinst_prev = '&&VECHME.CH_INST_M'
-        call mecact('V', chinst_prev, 'LIGREL', ligrel_model, 'INST_R  ', &
-                    ncmp=1, nomcmp=nomcmp(1), sr=inst_prev)
-        nomcmp(1) = 'INST'
-        nomcmp(2) = 'DELTAT'
-        nomcmp(3) = 'THETA'
-        time(1) = inst_curr
+    nomcmp(1) = 'INST'
+    nomcmp(2) = 'DELTAT'
+    nomcmp(3) = 'THETA'
+    if (load_type .eq. 'Dead') then
+        time(1) = inst_prev
         time(2) = inst_curr-inst_prev
         time(3) = inst_theta
         call mecact('V', chtime, 'LIGREL', ligrel_model, 'INST_R  ', &
                     ncmp=3, lnomcmp=nomcmp, vr=time)
     else
-        nomcmp(1) = 'INST'
-        nomcmp(2) = 'DELTAT'
-        nomcmp(3) = 'THETA'
-        time(1) = inst_prev
+        time(1) = inst_curr
         time(2) = inst_curr-inst_prev
         time(3) = inst_theta
         call mecact('V', chtime, 'LIGREL', ligrel_model, 'INST_R  ', &
@@ -211,12 +200,6 @@ subroutine load_neum_prep(model, cara_elem, mate, mateco, load_type, inst_prev, 
         nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PDEPLPR'
         lchin(nb_in_prep) = disp_cumu_inst(1:19)
-        nb_in_prep = nb_in_prep+1
-        lpain(nb_in_prep) = 'PINSTMR'
-        lchin(nb_in_prep) = chinst_prev(1:19)
-        nb_in_prep = nb_in_prep+1
-        lpain(nb_in_prep) = 'PINSTPR'
-        lchin(nb_in_prep) = chinst_curr(1:19)
     end if
     if (load_type .eq. 'Suiv') then
         nb_in_prep = nb_in_prep+1
@@ -225,12 +208,6 @@ subroutine load_neum_prep(model, cara_elem, mate, mateco, load_type, inst_prev, 
         nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PDEPLPR'
         lchin(nb_in_prep) = disp_cumu_inst(1:19)
-        nb_in_prep = nb_in_prep+1
-        lpain(nb_in_prep) = 'PINSTMR'
-        lchin(nb_in_prep) = chinst_prev(1:19)
-        nb_in_prep = nb_in_prep+1
-        lpain(nb_in_prep) = 'PINSTPR'
-        lchin(nb_in_prep) = chinst_curr(1:19)
         nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PCOMPOR'
         lchin(nb_in_prep) = compor(1:19)
