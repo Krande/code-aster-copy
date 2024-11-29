@@ -79,7 +79,7 @@ class ExtendedParallelMesh:
         """Read a MED file containing a mesh and eventually partition it.
 
         Arguments:
-            filename (str): Name of the MED file.
+            filename (Path|str): Name of the MED file.
             meshname (str): Name of the mesh to be read from file.
             partitioned (bool): False if the mesh is not yet partitioned and have to
                 be partitioned before reading.
@@ -88,11 +88,11 @@ class ExtendedParallelMesh:
         """
         if not partitioned:
             self, field = splitMeshAndFieldsFromMedFile(
-                filename, outMesh=self, deterministic=deterministic
+                str(filename), outMesh=self, deterministic=deterministic
             )
             self.show(verbose & 3)
         else:
-            mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
+            mesh_builder.buildFromMedFile(self, str(filename), meshname, verbose)
 
     def checkConsistency(self, filename):
         """Check that the partitioned mesh is consistent, i.e. that all nodes,

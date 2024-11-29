@@ -22,9 +22,6 @@ from itertools import chain
 
 from mpi4py import MPI
 
-# Study directory (containing this file and the datafiles)
-STUDY = osp.dirname(__file__)
-
 # Get the rank and size in the original communicator
 comm = MPI.COMM_WORLD
 global_rank = comm.rank
@@ -62,7 +59,7 @@ if for_aster:
     CA.init("--test", comm=subcomm, ERREUR=_F(ALARME="EXCEPTION"))
 
     mesh = CA.ParallelMesh()
-    mesh.readMedFile(osp.join(STUDY, "mesh004b", f"{rank}.med"), partitioned=True, verbose=1)
+    mesh.readMedFile(CA.basedir / "mesh004b" / f"{rank}.med", partitioned=True, verbose=1)
 
     nb_nodes = mesh.getNumberOfNodes()
     test.assertEqual(nb_nodes, 6)

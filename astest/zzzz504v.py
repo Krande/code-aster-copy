@@ -24,14 +24,9 @@
 # or (if the mpi environment is consistent):
 #     path/to/run_aster -n 2 --only-proc0 this-file.py
 
-import os.path as osp
-
-
 from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster import CA
-
-root = osp.dirname(__file__)
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
@@ -40,7 +35,7 @@ test = CA.TestCase()
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 POUTRE0 = CA.ParallelMesh()
-POUTRE0.readMedFile(osp.join(root, f"zzzz504v/{rank}.med"), partitioned=True)
+POUTRE0.readMedFile(CA.basedir / f"zzzz504v/{rank}.med", partitioned=True)
 
 DEFI_GROUP(reuse=POUTRE0, MAILLAGE=POUTRE0, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 

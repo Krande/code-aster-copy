@@ -296,13 +296,12 @@ class ExtendedMesh:
         """Read a MED file containing a mesh.
 
         Arguments:
-            filename (string): name of the MED file
+            filename (Path|[str): Name of the MED file
             meshname (str): Name of the mesh to be read from file.
-            verbose (int) : 0 - warnings
-                            1 - informations about main steps
-                            2 - informations about all steps
+            verbose (int): 0 - warnings, 1 - informations about main steps,
+                2 - informations about all steps
         """
-        mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
+        mesh_builder.buildFromMedFile(self, str(filename), meshname, verbose)
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.

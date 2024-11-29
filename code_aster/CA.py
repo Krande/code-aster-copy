@@ -39,7 +39,10 @@ In a standard commands file, without advanced Python usage:
 """
 
 import atexit
+import os
 from functools import partial
+from pathlib import Path
+
 from .Utilities.rc import rc
 
 if rc.initialize is None:
@@ -61,6 +64,8 @@ from .Supervis import (
 )
 from .Utilities import MPI, TestCase
 from .Utilities.version import __version__
+
+basedir = Path(os.environ.get("RUNASTER_CA_BASEDIR", "."))
 
 if rc.initialize:
     init()
