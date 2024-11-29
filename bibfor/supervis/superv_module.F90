@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -174,6 +174,7 @@ contains
         integer, intent(in) :: nbThreads
 #ifdef ASTER_HAVE_OPENMP
 #ifdef ASTER_HAVE_OPENBLAS
+!       no effect, conflicts with numpy init. run_aster sets OPENBLAS_NUM_THREADS=1
         call openblas_set_num_threads(nbThreads)
 # endif
 #ifdef ASTER_HAVE_MKL

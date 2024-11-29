@@ -131,7 +131,8 @@ subroutine op9999(options)
 
     call jedema()
 
-!   The diagnosis of the execution is OK thanks to this message
+!   The diagnosis of the execution is OK thanks to this message.
+!   This message is not printed when FIN is automatically called on termination.
     if (options .ne. 0) then
         call utmess('I', 'SUPERVIS2_99')
     end if

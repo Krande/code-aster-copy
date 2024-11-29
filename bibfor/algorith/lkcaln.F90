@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine lkcaln(s, b, vecn, retcom)
 ! =================================================================
     integer :: i, ndt, ndi
     real(kind=8) :: sii, racine, un, trois, kron(6), zero
-    real(kind=8) :: ptit
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRE ---------------------------------
 ! =================================================================
@@ -45,20 +44,19 @@ subroutine lkcaln(s, b, vecn, retcom)
     data kron/un, un, un, zero, zero, zero/
 ! --- INITIALISATION ----------------------------------------------
 ! =================================================================
-    retcom = 0
-    ptit = r8miem()
-    sii = norm2(s(1:ndt))
-    if (sii .lt. ptit) then
-        retcom = 1
-        goto 1000
-    end if
+    retcom = 1
+    vecn = 0.d0
 ! =================================================================
 ! --- CALCUL DE N -------------------------------------------------
 ! =================================================================
-    racine = sqrt(b*b+trois)
-    do i = 1, ndt
-        vecn(i) = (b*s(i)/sii-kron(i))/racine
-    end do
-! =================================================================
-1000 continue
-end subroutine
+
+    sii = norm2(s(1:ndt))
+    if (sii .gt. r8miem()) then
+        racine = sqrt(b*b+trois)
+        do i = 1, ndt
+            vecn(i) = (b*s(i)/sii-kron(i))/racine
+        end do
+        retcom = 0
+    end if
+
+end subroutine lkcaln

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -1399,7 +1399,7 @@ contains
         character(len=32) :: name
         character(len=4) :: dimesp
         integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id, iret, nb_no_loc
-        integer :: rank, nbproc, i_proc, deca, cell_id
+        integer :: rank, nbproc, i_proc, deca, cell_id, pCellShift, hugeValue, iProc, iCount
         mpi_int :: mrank, msize
         real(kind=8):: start, end
         real(kind=8), pointer :: v_coor(:) => null()
@@ -1409,6 +1409,8 @@ contains
         integer, pointer :: v_maex(:) => null()
         integer, pointer :: v_nuloc(:) => null()
         integer, pointer :: v_nulogl(:) => null()
+        integer, pointer :: v_numagl(:) => null()
+        integer, pointer :: nbCellPerProc(:) => null()
 !
         call jemarq()
 !
@@ -1524,8 +1526,25 @@ contains
         call jeecra(connex, 'LONT', nbnoma)
         if (this%isHPC) then
             call wkvect(mesh_out//'.MAEX', 'G V I', this%nb_cells, vi=v_maex)
+            call wkvect(mesh_out//'.NUMALG', 'G V I', this%nb_cells, vi=v_numagl)
+            AS_ALLOCATE(vi=nbCellPerProc, size=nbproc+1)
+            nbCellPerProc(rank+2) = this%nb_total_cells
+            call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc+1, vi=nbCellPerProc)
+            do iProc = 1, nbproc
+                nbCellPerProc(iProc+1) = nbCellPerProc(iProc+1)+nbCellPerProc(iProc)
+            end do
+            pCellShift = nbCellPerProc(rank+1)
+! --------- A huge value is used for global numbering of cells which are not
+!           owned by current processor because to obtain the true value
+!           it must be mandatory to communicate (#34152)
+            hugeValue = huge(pCellShift)
+            AS_DEALLOCATE(vi=nbCellPerProc)
+        else
+            pCellShift = 0
+            hugeValue = 0
         end if
 !
+        iCount = pCellShift+1
         do i_cell = 1, this%nb_total_cells
             if (this%cells(i_cell)%keep) then
                 cell_id = this%cells(i_cell)%id
@@ -1539,6 +1558,12 @@ contains
                 end do
                 if (this%isHPC) then
                     v_maex(cell_id) = this%owner_cell(nno, this%cells(i_cell)%nodes)
+                    if (v_maex(cell_id) .eq. rank) then
+                        v_numagl(cell_id) = iCount
+                        iCount = iCount+1
+                    else
+                        v_numagl(cell_id) = hugeValue
+                    end if
                 end if
             end if
         end do

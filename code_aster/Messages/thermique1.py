@@ -17,35 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
+from ..Utilities import _
 
-"""
-This module provides pybind11 DataStructures and low level objects.
-"""
-
-from libaster import *
-
-from .config_dependent import (
-    CommGraph,
-    ConnectionMesh,
-    IncompleteMesh,
-    MGISBehaviour,
-    ParallelDOFNumbering,
-    ParallelEquationNumbering,
-    ParallelFiniteElementDescriptor,
-    ParallelMechanicalLoadFunction,
-    ParallelMechanicalLoadReal,
-    ParallelMesh,
-    ParallelThermalLoadFunction,
-    ParallelThermalLoadReal,
-)
-from .datastructure_py import (
-    AsFloat,
-    AsInteger,
-    ElasticResultDict,
-    NamedTuple,
-    PyDataStructure,
-    ThermalResultDict,
-    UnavailableObject,
-)
-from .Serialization import InternalStateBuilder
+cata_msg = {1: _("""On ne trouve pas les paramètres thermiques dans le matériau.""")}

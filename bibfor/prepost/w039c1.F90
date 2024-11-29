@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -116,7 +116,6 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     nuzone = 0
     do kgedit = 1, ngedit
         izone = kgedit
-        write (6, *) "desc", zi(jdesc+3+2*kgedit-1)
 !       -- ON REGARDE SI LES VALEURS DE IZONE N'ONT PAS DEJA ETE VUES
 !          POUR KZONE < IZONE :
         do kzone = 1, izone-1
@@ -147,7 +146,6 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
         end do
         nuzone = nuzone+1
         zones(izone) = nuzone
-        write (6, *) "izone, zones(izone)", izone, zones(izone)
         call w039c2(izone, nuzone, jvale, jdesc, nomgd, ifm, &
                     ifr)
 30      continue
@@ -174,7 +172,6 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
         izone = ptma(ima)
         if (izone .gt. 0) then
             nuzone = zones(izone)
-            write (6, *) "ima", ima, izone, nuzone
             ASSERT(nuzone .gt. 0)
             call cesexi('C', jcesd, jcesl, ima, 1, &
                         1, 1, iad)

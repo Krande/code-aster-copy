@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,6 +78,7 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
     !!!
 
     retcom = 0
+    ds2hds = 0.d0
     ptit = r8miem()
 
     sii = norm2(s(1:ndt))

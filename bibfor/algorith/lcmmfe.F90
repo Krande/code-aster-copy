@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,8 +66,12 @@ subroutine lcmmfe(taus, coeft, materf, ifa, nmat, &
 !
     ifl = nbcomm(ifa, 1)
     nuecou = nint(coeft(ifl))
-    iret = 0
     ptit = r8miem()
+    dgamma = 0.d0
+    dp = 0.d0
+    crit = 0.d0
+    sgns = 0.d0
+    iret = 0
 !
 !-------------------------------------------------------------
 !     POUR UN NOUVEAU TYPE D'ECOULEMENT, CREER UN BLOC IF

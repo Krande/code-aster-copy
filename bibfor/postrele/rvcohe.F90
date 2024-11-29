@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,13 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/gettco.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -64,7 +67,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     integer :: acheff, alneud, anumcp, anomcp, nbcmp
     integer :: nbgrpn, nbneud, grel, nbgrel, jceld, amod, mod
     integer :: j, k, n1, ngrn, iexi
-    aster_logical :: chelok
+    aster_logical :: chelok, parMesh
     character(len=24), pointer :: grpn(:) => null()
 !
 !=====================================================================
@@ -138,6 +141,12 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
         call getvtx('ACTION', 'NOEUD', iocc=i, nbval=0, nbret=nbneud)
         nbgrpn = -nbgrpn
         nbneud = -nbneud
+        parMesh = isParallelMesh(nmaich)
+        if (parMesh) then
+            if (nbneud .ne. 0) then
+                ASSERT(.false.)
+            end if
+        end if
         if (nbgrpn .ne. 0) then
             call jecreo('&&OP0051.NOM.GRPN', 'V V K24')
             call jeecra('&&OP0051.NOM.GRPN', 'LONMAX', nbgrpn)
@@ -162,8 +171,15 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                         end if
                     end if
                 end if
-                if (ier .eq. 0) then
-                    exit
+                if (parMesh) then
+                    call asmpi_comm_vect('MPI_MAX', 'I', sci=ier)
+                    if (ier .eq. 0) then
+                        exit
+                    end if
+                else
+                    if (ier .eq. 0) then
+                        exit
+                    end if
                 end if
             end do
             call jedetr('&&OP0051.NOM.GRPN')

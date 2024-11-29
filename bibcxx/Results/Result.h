@@ -531,8 +531,8 @@ class Result : public DataStructure, public ListOfTables {
      * @todo revoir la gestion des mot-clés par défaut (ex : TOUT_ORDRE)
      * @todo revoir la gestion des unités logiques (notamment si fort.20 existe déjà)
      */
-    void printMedFile( const std::string fileName, std::string medName = std::string(),
-                       bool local = true ) const;
+    virtual void printMedFile( const std::string fileName, std::string medName = std::string(),
+                               bool local = true, bool internalVar = true ) const;
 
     /**
      * @brief Get the number of steps stored in the Result

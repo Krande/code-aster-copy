@@ -295,6 +295,7 @@ def get_status(exitcode, output, test=False):
     ndeb = len(RE_DEBUT.findall(text))
     nfin = len(RE_FIN.findall(text))
     if state & StateOptions.Completed and ndeb != nfin:
+        exitcode = exitcode or 1
         state = StateOptions.Abort
 
     status = Status(state, exitcode)

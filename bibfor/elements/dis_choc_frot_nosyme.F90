@@ -25,7 +25,6 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
-#include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
     integer :: icodma

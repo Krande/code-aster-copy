@@ -19,14 +19,10 @@
 
 from code_aster.Commands import *
 from code_aster import CA
-from numpy import array, shape, reshape, real
-from cmath import *
 
 CA.init("--test")
 
 
-#
-# --------
 # RECALAGE DES VALEURS D'AMORTISSEMENT DE RAYLEIGH
 # PAR RAPPORT A L'AMORTISSEMENT REDUIT
 # ========================================================
@@ -612,3 +608,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     VALE_ABS="NON",
 )
+
+test.printSummary()
+
+CA.close()
