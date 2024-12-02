@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -365,6 +365,7 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !
         do ili = 2, nlili
 !
+            call jenuno(jexnum(lili, ili), nomli)
             call jeexin(nomli(1:19)//'.MULT', iret)
             if (lparallel_mesh .and. iret .ne. 0) then
                 call jeveuo(nomli(1:19)//'.MULT', 'L', vi=lagr_mult)
@@ -402,7 +403,7 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
                             zi(iderli+n2) = n1
                         end if
 !
-                        if (lparallel_mesh) then
+                        if (lparallel_mesh .and. iret .ne. 0) then
                             if (lagr_mult(n22) .gt. 1) then
                                 zi(iddlag+2*(ilag-1)) = 0
                                 zi(iddlag+2*(ilag-1)+1) = 0
