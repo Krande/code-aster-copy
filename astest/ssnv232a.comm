@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ TEMPS1 = DEFI_LIST_REEL(
 #    ESSAI TRIAXIAL NON DRAINE CYCLIQUE
 # ***********************************************************************
 SOL = DEFI_MATERIAU(
-    ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.0), MOHR_COULOMB=_F(PHI=33.0, ANGDIL=27.0, COHESION=1.0e3)
+    ELAS=_F(E=YOUNG, NU=POISSON), MOHR_COULOMB=_F(PHI=33.0, ANGDIL=27.0, COHESION=1.0e3)
 )
 
 COEF1 = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 0.0, temps_max, 0.0))
