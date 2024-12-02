@@ -417,7 +417,8 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
         nbField = nbFieldMeca+nbFieldTher
 !       Beware : TEMP_ELGA is in fieldMeca and fieldTher
 !                Do not create twice
-        nbField = nbField-1
+!                RESI_NOEU and RESI_RELA_NOEU too
+        nbField = nbField-3
 !
         call jeecra(resultName//'.DESC', 'NOMMAX', nbField)
         call jeecra(resultName//'.DESC', 'DOCU', cval='COFO')
@@ -425,7 +426,9 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
             call jecroc(jexnom(resultName//'.DESC', fieldMeca(iField)))
         end do
         do iField = 1, nbFieldTher
-            if (fieldTher(iField) (1:9) .ne. 'TEMP_ELGA') then
+            if (fieldTher(iField) (1:9) .ne. 'TEMP_ELGA' &
+                .and. fieldTher(iField) (1:9) .ne. 'RESI_NOEU' &
+                .and. fieldTher(iField) (1:14) .ne. 'RESI_RELA_NOEU') then
                 call jecroc(jexnom(resultName//'.DESC', fieldTher(iField)))
             end if
         end do
