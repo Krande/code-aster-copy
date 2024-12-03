@@ -349,6 +349,76 @@ subroutine op0168()
 !
                     end do
                 end if
+                if (critfi .eq. 'INER_EFFE_UN' .and. typcon(1:9) .eq. 'MODE_MECA') then
+                    do j = 1, nbmodt
+                        iord = zi(jor+j-1)
+                        call rsadpa(modein, 'L', 3, nompar(4:6), iord, &
+                                    0, tjv=lpar, styp=k8b, istop=0)
+                        dx = zr(lpar(1))
+                        dy = zr(lpar(2))
+                        dz = zr(lpar(3))
+                        if (dx .eq. undf .or. dy .eq. undf .or. dz .eq. undf) then
+                            call utmess('F', 'ALGELINE3_10')
+                        end if
+                        if (n7 .ne. 0) then
+                            if (dx .ge. seuil .or. dy .ge. seuil .or. dz .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n8 .ne. 0) then
+                            if (dx .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n9 .ne. 0) then
+                            if (dy .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n10 .ne. 0) then
+                            if (dz .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        end if
+!
+                    end do
+                end if
+                if (critfi .eq. 'INER_EFFE' .and. typcon(1:9) .eq. 'MODE_MECA') then
+                    do j = 1, nbmodt
+                        iord = zi(jor+j-1)
+                        call rsadpa(modein, 'L', 3, nompa2(4:6), iord, &
+                                    0, tjv=lpar, styp=k8b, istop=0)
+                        dx = zr(lpar(1))
+                        dy = zr(lpar(2))
+                        dz = zr(lpar(3))
+                        if (dx .eq. undf .or. dy .eq. undf .or. dz .eq. undf) then
+                            call utmess('F', 'ALGELINE3_10')
+                        end if
+                        if (n7 .ne. 0) then
+                            if (dx .ge. seuil .or. dy .ge. seuil .or. dz .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n8 .ne. 0) then
+                            if (dx .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n9 .ne. 0) then
+                            if (dy .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n10 .ne. 0) then
+                            if (dz .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        end if
+!
+                    end do
+                end if
                 if (critfi .eq. 'MASS_GENE') then
                     mastot = zero
                     do j = 1, nbmodt

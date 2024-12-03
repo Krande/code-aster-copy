@@ -355,7 +355,10 @@ CALC_MODES = MACRO(
             FILTRE_MODE=FACT(
                 statut="f",
                 CRIT_EXTR=SIMP(
-                    statut="f", typ="TXM", defaut="MASS_EFFE_UN", into=("MASS_EFFE_UN", "MASS_GENE")
+                    statut="f",
+                    typ="TXM",
+                    defaut="MASS_EFFE_UN",
+                    into=("MASS_EFFE_UN", "MASS_GENE", "INER_EFFE_UN"),
                 ),
                 SEUIL=SIMP(statut="f", typ="R", defaut=1.0e-3),
             ),
@@ -364,7 +367,10 @@ CALC_MODES = MACRO(
                 TOUT_PARA=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
                 CUMUL=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
                 CRIT_EXTR=SIMP(
-                    statut="f", typ="TXM", defaut="MASS_EFFE_UN", into=("MASS_EFFE_UN", "MASS_GENE")
+                    statut="f",
+                    typ="TXM",
+                    defaut="MASS_EFFE_UN",
+                    into=("MASS_EFFE_UN", "MASS_GENE", "INER_EFFE_UN"),
                 ),
             ),
         ),
