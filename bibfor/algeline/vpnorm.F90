@@ -177,6 +177,13 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode, &
             if (xmastr(1) .gt. epsi) resufr(im, 13) = resufr(im, 7)/xmastr(1)
             if (xmastr(2) .gt. epsi) resufr(im, 14) = resufr(im, 8)/xmastr(2)
             if (xmastr(3) .gt. epsi) resufr(im, 15) = resufr(im, 9)/xmastr(3)
+
+            resufr(im, 19) = 0.d0
+            resufr(im, 20) = 0.d0
+            resufr(im, 21) = 0.d0
+            ! if (xmastr(1) .gt. epsi) resufr(im, 19) = resufr(im, 16)/xmastr(1)
+            ! if (xmastr(2) .gt. epsi) resufr(im, 20) = resufr(im, 17)/xmastr(2)
+            ! if (xmastr(3) .gt. epsi) resufr(im, 21) = resufr(im, 18)/xmastr(3)
         end do
     end if
 !

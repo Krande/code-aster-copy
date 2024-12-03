@@ -68,7 +68,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     integer(kind=8) :: nmin1, kmode, nordr, iarg, i, ladpa, lmode, lvale
     integer(kind=8) :: nbpast, irang, iret, jmodg
     integer(kind=8) :: jmod2, igd, jrefe
-    parameter(nbpast=19)
+    parameter(nbpast=25)
     character(len=8) :: res, k8b, modele, chmat, carael, basemo, mesh, nomgd
     character(len=16) :: typcon, nomcmd, nosy, typmod
     character(len=19) :: chamno, sd2
@@ -85,7 +85,9 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
      &  'MASS_GENE', 'RIGI_GENE', 'AMOR_GENE',&
      &  'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
      &  'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
-     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ'/
+     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ',&
+     &  'INER_EFFE_DX', 'INER_EFFE_DY', 'INER_EFFE_DZ',&
+     &  'INER_EFFE_UN_DX', 'INER_EFFE_UN_DY', 'INER_EFFE_UN_DZ'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -379,6 +381,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             zr(ladpa) = resufr(kmode, 1)
         else
             do i = 5, nbpast
+
                 irang = indk24(nopara(nbpari+nbpark+1), nopast(i), 1, nbparr)
                 if (irang .gt. 0) then
                     call rsadpa(modes, 'E', 1, nopast(i), nordr, &

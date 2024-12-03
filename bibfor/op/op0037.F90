@@ -78,7 +78,7 @@ subroutine op0037()
     integer(kind=8) :: npark, nparr, numddl, numnoe, tmod(1)
     real(kind=8) :: dir(3), xmastr(3), maxmas, dmass
 !-----------------------------------------------------------------------
-    parameter(nbpami=1, nbpamr=15, nbpamk=1, nbpamt=17)
+    parameter(nbpami=1, nbpamr=21, nbpamk=1, nbpamt=23)
 !     PARAMETRES "MODE_FLAMB"
     parameter(nbpafi=1, nbpafr=1, nbpafk=1, nbpaft=3)
     integer(kind=8) :: lmat(2), ibid, ifm, niv, lddl2, vali, iret
@@ -107,7 +107,9 @@ subroutine op0037()
      &  'MASS_GENE', 'RIGI_GENE', 'AMOR_GENE',&
      &  'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
      &  'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
-     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ'/
+     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ',&
+     &  'INER_EFFE_DX', 'INER_EFFE_DY', 'INER_EFFE_DZ',&
+     &  'INER_EFFE_UN_DX', 'INER_EFFE_UN_DY', 'INER_EFFE_UN_DZ'/
     data noparf/'NUME_MODE', 'NORME', 'CHAR_CRIT'/
 !     ------------------------------------------------------------------
 !

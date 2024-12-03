@@ -21,7 +21,7 @@ import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...CodeCommands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE
+from ...CodeCommands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE, POST_ELEM
 from ...Objects import GeneralizedAssemblyMatrixReal, GeneralizedAssemblyMatrixComplex
 from ...Utilities.mpi_utils import MPI
 from .mode_iter_simult import MODE_ITER_SIMULT
@@ -45,6 +45,21 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
     STOP_BANDE_VIDE = "NON"
     CARA_ELEM = args.get("CARA_ELEM")
     CHAM_MATER = args.get("CHAM_MATER")
+    model = None
+    if not MATR_RIGI.getType().startswith("MATR_ASSE_GENE"):
+        model = MATR_RIGI.getDOFNumbering().getModel()
+
+    l_cdg = False
+    if model is not None and CHAM_MATER is not None:
+        if CARA_ELEM is not None:
+            TABLE = POST_ELEM(
+                MODELE=model, CARA_ELEM=CARA_ELEM, CHAM_MATER=CHAM_MATER, MASS_INER=_F(TOUT="OUI")
+            )
+        else:
+            TABLE = POST_ELEM(MODELE=model, CHAM_MATER=CHAM_MATER, MASS_INER=_F(TOUT="OUI"))
+        values = TABLE.EXTR_TABLE().values()
+        cdg = [values["CDG_X"][0], values["CDG_Y"][0], values["CDG_Z"][0]]
+        l_cdg = True
 
     # ----------------------------------------------------------------------
     #
@@ -204,6 +219,8 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 motscit["CARA_ELEM"] = CARA_ELEM
             if CHAM_MATER is not None:
                 motscit["CHAM_MATER"] = CHAM_MATER
+            if l_cdg:
+                motscit["CENTRE"] = cdg
             motscfa = {}
             if SOLVEUR_MODAL["DIM_SOUS_ESPACE"]:
                 motscfa["DIM_SOUS_ESPACE"] = SOLVEUR_MODAL["DIM_SOUS_ESPACE"]

@@ -79,7 +79,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
     integer(kind=8) :: lmat(2), lddl, lvali, lvalr, lvalk
     integer(kind=8) :: npari, nparr, npark
     integer(kind=8) :: nbpari, nbparr, nbpark, nbpara
-    parameter(nbpari=1, nbparr=15, nbpark=1, nbpara=17)
+    parameter(nbpari=1, nbparr=21, nbpark=1, nbpara=23)
     real(kind=8) :: frequ, amort, omeg2, masg, rigg
     real(kind=8) :: factx, facty, factz, depi, xmastr(3)
     character(len=1) :: typmod
@@ -104,7 +104,9 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
      &  'MASS_GENE', 'RIGI_GENE', 'AMOR_GENE',&
      &  'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
      &  'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
-     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ'/
+     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ',&
+     &  'INER_EFFE_DX', 'INER_EFFE_DY', 'INER_EFFE_DZ',&
+     &  'INER_EFFE_UN_DX', 'INER_EFFE_UN_DY', 'INER_EFFE_UN_DZ'/
 !
 !     ------------------------------------------------------------------
 !

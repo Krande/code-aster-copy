@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
-                  mxvect, masmod, facpar)
+                  mxvect, masmod, facpar, inemodz)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -25,6 +25,8 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 #include "asterc/r8miem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/get_equa_info.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
@@ -40,6 +42,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
     integer(kind=8) :: lmasse, neq, nbvect, mxvect
     real(kind=8) :: masgen(*), vect(neq, *)
     real(kind=8) :: masmod(mxvect, *), facpar(mxvect, *)
+    real(kind=8), optional ::  inemodz(mxvect, *)
 !     CALCUL DES PARAMETRES MODAUX :
 !            FACTEUR DE PARTICIPATION ET MASSE MODALE UNITAIRE
 !     ------------------------------------------------------------------
@@ -51,13 +54,14 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 !
 !
     integer(kind=8) :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, iadpar(1), l1, ibid
+    integer :: iddl2, iddl3, ia2, ia3, ncdg, nbmrig, nb_nodes_mesh, kcoor, node
     parameter(mxddl=6)
-    character(len=8) :: nomddl(mxddl), basemo, k8b
+    character(len=8) :: nomddl(mxddl), basemo, k8b, typeq, mesh
     character(len=14) :: nume
     character(len=16) :: nompar(3), typmas, typbas
     character(len=19) :: masse
     character(len=24) :: posddl, vecau1, vecau2
-    real(kind=8) :: rmin, rmax, raux, rval
+    real(kind=8) :: rmin, rmax, raux, rval, cdg(3), coorno(3)
     aster_logical :: gene
     character(len=24), pointer :: refn(:) => null()
     real(kind=8) :: rundef
@@ -81,6 +85,15 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
     call wkvect(vecau1, 'V V R', neq, laux1)
     call wkvect(vecau2, 'V V R', neq, laux2)
     call wkvect(posddl, 'V V I', neq*mxddl, lddl)
+!
+!
+!   recuperation des coordonnées du centre de gravité pour le calcul
+!   des inerties effectives
+    nbmrig = 3
+    call getvr8('', 'CENTRE', nbval=3, vect=cdg, nbret=ncdg)
+    if (ncdg .ne. 0 .and. present(inemodz)) then
+        nbmrig = 6
+    end if
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
@@ -109,9 +122,20 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
         if (typbas(1:14) .eq. 'MODE_MECA') then
             gene = .true.
         end if
+    elseif (nbmrig .eq. 6) then
+        call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=mesh)
+        call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_nodes_mesh)
+        call jeveuo(mesh//'.COORDO    .VALE', 'L', kcoor)
     end if
-    do iddl = 1, 3
+
+    if (.not. gene) then
+        call pteddl('NUME_DDL', nume, mxddl, nomddl, neq, &
+                    tabl_equa=zi(lddl))
+    end if
+
+    do iddl = 1, nbmrig
         if (gene) then
+            if (iddl .gt. 3) exit
             do ieq = 1, neq
                 call rsvpar(basemo, 1, nompar(iddl), ibid, rundef, &
                             k8b, l1)
@@ -125,12 +149,44 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 ! SECURITE SI ON EST PASSE PAR DES MODES HETERODOXES AVEC FACTEURS DE PARTICIPATIONS HERETIQUES
             end do
         else
-            call pteddl('NUME_DDL', nume, mxddl, nomddl, neq, &
-                        tabl_equa=zi(lddl))
+            if (iddl .eq. 4) then
+                iddl2 = 2
+                iddl3 = 3
+            elseif (iddl .eq. 5) then
+                iddl2 = 3
+                iddl3 = 1
+            elseif (iddl .eq. 6) then
+                iddl2 = 1
+                iddl3 = 2
+            else
+                iddl2 = 0
+                iddl3 = 0
+            end if
             ia = (iddl-1)*neq
-            do ieq = 1, neq
-                zr(laux1+ieq-1) = zi(lddl+ia+ieq-1)
-            end do
+            ia2 = (iddl2-1)*neq
+            ia3 = (iddl3-1)*neq
+            if (iddl .le. 3) then
+                do ieq = 1, neq
+                    zr(laux1+ieq-1) = zi(lddl+ia+ieq-1)
+                end do
+            else
+                do ieq = 1, neq
+                    call get_equa_info(nume, ieq, typeq, nume_nodez=node)
+                    if (typeq(1:1) .ne. 'A') cycle
+                    coorno(1) = zr(kcoor-1+3*(node-1)+1)
+                    coorno(2) = zr(kcoor-1+3*(node-1)+2)
+                    coorno(3) = zr(kcoor-1+3*(node-1)+3)
+                    if (iddl2 .gt. 0) then
+!                       il y a au plus un zi(lddl+iaX non nul
+!                       car une équation ne correspond qu'à une composante
+                        zr(laux1+ieq-1) = zi(lddl+ia+ieq-1) &
+                                          -zi(lddl+ia2+ieq-1) &
+                                          *(coorno(iddl3)-cdg(iddl3)) &
+                                          +zi(lddl+ia3+ieq-1) &
+                                          *(coorno(iddl2)-cdg(iddl2))
+                    end if
+                end do
+            end if
         end if
 !
 !     ------------------------------------------------------------------
@@ -145,12 +201,23 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
             rval = ddot(b_n, vect(1, ivect), b_incx, zr(laux2), b_incy)
             raux = masgen(ivect)
             if ((abs(raux) .lt. rmin) .or. (abs(rval) .gt. rmax)) then
-                masmod(ivect, iddl) = rmax
-                facpar(ivect, iddl) = rmax
+                if (iddl .le. 3) then
+                    masmod(ivect, iddl) = rmax
+                    facpar(ivect, iddl) = rmax
+                else
+                    iddl2 = iddl-3
+                    inemodz(ivect, iddl2) = rmax
+                end if
+
             else
                 raux = rval/raux
-                masmod(ivect, iddl) = rval*raux
-                facpar(ivect, iddl) = raux
+                if (iddl .le. 3) then
+                    masmod(ivect, iddl) = rval*raux
+                    facpar(ivect, iddl) = raux
+                else
+                    iddl2 = iddl-3
+                    inemodz(ivect, iddl2) = rval*raux
+                end if
             end if
         end do
     end do
