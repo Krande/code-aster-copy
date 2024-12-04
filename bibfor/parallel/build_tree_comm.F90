@@ -85,7 +85,6 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
         goto 999
     end if
 !
-    ASSERT(nbdom < 100)
     comm(1:nbdom) = -1
     tag(1:nbdom) = -1
     nb_comm = 0
@@ -97,6 +96,7 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
         valtmp = pgid(domdist(i_dom)+1)
         if (valtmp > rank) then
             nbdom_inf = nbdom_inf+1
+            ASSERT(nbdom_inf .le. 50)
             domtmp(nbdom_inf) = valtmp
         end if
     end do

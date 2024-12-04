@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -54,7 +54,7 @@
  * - nbchild: number of childs
  * - name: for nicer print and debug
  */
-#define MAX_CHILDS 200
+#define MAX_CHILDS 2000
 #define NAME_LENGTH 16
 
 #ifdef __cplusplus
