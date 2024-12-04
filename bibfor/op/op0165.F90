@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,8 @@ subroutine op0165()
     character(len=16) :: typtab, typmec, kopt(4)
     character(len=24) :: option
     integer :: n1, nbopt, icodre
-    character(len=8) :: nommat
+    character(len=8) :: nommat, symm
+    aster_logical :: lsymm
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -58,6 +59,13 @@ subroutine op0165()
     call getvtx(' ', 'TYPE_RESU', scal=typtab, nbret=n1)
 !
     call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
+!
+    call getvtx(' ', 'AXIS', scal=symm, nbret=n1)
+    lsymm = .false.
+    if (symm .eq. 'OUI') lsymm = .true.
+    if (lsymm .and. typmec .ne. 'EVOLUTION') then
+        call utmess('F', 'POSTRCCM_59')
+    end if
 !
 !     ------------------------------------------------------------------
 !
@@ -79,7 +87,7 @@ subroutine op0165()
             call utmess('F', 'POSTRCCM_7', sk='RCCM')
         end if
 !
-        call rcevol(typtab, nommat, symax, nbopt, kopt)
+        call rcevol(typtab, nommat, symax, nbopt, kopt, lsymm)
 !
 !     ------------------------------------------------------------------
 !

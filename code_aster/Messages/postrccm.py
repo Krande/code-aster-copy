@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -368,6 +368,13 @@ Contactez le support technique.
     58: _(
         """
 La prise en compte de l'axisymétrie est activée, la concordance avec le modèle n'est pas vérifiée par le code
+"""
+    ),
+    59: _(
+        """
+L'axisymétrie est correctement prise en compte uniquement 
+pour la valeur EVOLUTION de TYPE_RESU_MECA. Pour les autres valeurs les
+calculs axisymétriques sont interdits.  
 """
     ),
 }

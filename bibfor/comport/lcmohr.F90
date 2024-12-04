@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,10 +182,13 @@ subroutine lcmohr(ndim, &
 !
 ! Reading material linear elastic properties
     nomres(1) = 'ALPHA   '
-    nomres(2) = 'E       '
-    nomres(3) = 'NU      '
     call rcvala(imate, ' ', 'ELAS', 0, '   ', &
-                [0.d0], 3, nomres, rprops, icode, 2)
+                [0.d0], 1, nomres, rprops, icode, 0)
+    if (icode(1) .ne. 0) rprops(1) = 0.d0
+    nomres(1) = 'E       '
+    nomres(2) = 'NU      '
+    call rcvala(imate, ' ', 'ELAS', 0, '   ', &
+                [0.d0], 2, nomres, rprops(2:3), icode(2:3), 2)
 !
 ! Reading material Mohr-Coulomb properties
     nomres(1) = 'PHI     '
