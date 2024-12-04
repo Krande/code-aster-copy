@@ -190,11 +190,10 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
 def prepare_alpha_loads(ls_affe_mod_mate, varc_values):
     """
     Cette fonction sert récuperer les coeff ALPHA affecté sur differents zones
-    pour en créer une fonction de INST  qui servira dans le affe_char_meca pour
+    pour en créer une fonction de INST qui servira dans le affe_char_meca pour
     le calcul des correcteurs de dilatation
     """
 
-    ls_insts = [inst for inst, value in enumerate(varc_values)]
     ls_alpha_calc = []
 
     for item in ls_affe_mod_mate:
@@ -206,7 +205,7 @@ def prepare_alpha_loads(ls_affe_mod_mate, varc_values):
         f_alpha_time.setParameterName("INST")
         f_alpha_time.setInterpolation(pro[1])
         f_alpha_time.setExtrapolation(pro[4])
-        f_alpha_time.setValues(ls_insts, [f_alpha_temp(t) for t in varc_values])
+        f_alpha_time.setValues(varc_values, [f_alpha_temp(t) for t in varc_values])
         ls_alpha_calc.append({"GROUP_MA": group_ma_affe, "FONC_ALPHA_TIME": f_alpha_time})
 
     return ls_alpha_calc
@@ -238,10 +237,10 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
                     MAILLAGE=mesh,
                     AFFE=_F(GROUP_MA=ls_group_tout, NOM_CMP="TEMP", VALE=value),
                 ),
-                INST=inst,
+                INST=value,
                 NOM_CHAM="TEMP",
             )
-            for inst, value in enumerate(varc_values)
+            for value in varc_values
         ],
     )
 
@@ -265,7 +264,7 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
         MODELE=MODTH, AFFE=[_F(**affekw) for affekw in ls_affe_mod_calc], AFFE_VARC=_F(**affevarckw)
     )
 
-    L_INST = DEFI_LIST_REEL(VALE=list(range(len(varc_values))))
+    L_INST = DEFI_LIST_REEL(VALE=varc_values)
 
     # Calcul des lois de melange
     # ======================================================================
@@ -281,7 +280,7 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
     return DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_alpha_calc
 
 
-def cross_work(RESU1, RESU2, N_ORDRE, ls_group_tout):
+def cross_work(RESU1, RESU2, INST, ls_group_tout):
     """
     Cette fonction sert à effectuer le calcul du travail croisé des correcteurs au travers
     d'un calcul de l'énergie potentielle d'un correcteur ou de leur combinaison
@@ -305,11 +304,11 @@ def cross_work(RESU1, RESU2, N_ORDRE, ls_group_tout):
         TYPE_CHAM="NOEU_%s_R" % CH_TYPE,
         OPERATION="EXTR",
         NOM_CHAM=CH_TYPE,
-        NUME_ORDRE=N_ORDRE,
+        INST=INST,
     )
 
     EPOT_CH1 = POST_ELEM(
-        CHAM_GD=CH1, MODELE=MOD, CHAM_MATER=CHMAT, ENER_POT=_F(GROUP_MA=ls_group_tout)
+        CHAM_GD=CH1, INST=INST, MODELE=MOD, CHAM_MATER=CHMAT, ENER_POT=_F(GROUP_MA=ls_group_tout)
     )
 
     epot_ch1 = abs(sum(EPOT_CH1.EXTR_TABLE().values()["TOTALE"]))
@@ -323,16 +322,24 @@ def cross_work(RESU1, RESU2, N_ORDRE, ls_group_tout):
             TYPE_CHAM="NOEU_%s_R" % CH_TYPE,
             OPERATION="EXTR",
             NOM_CHAM=CH_TYPE,
-            NUME_ORDRE=N_ORDRE,
+            INST=INST,
         )
 
         EPOT_CH2 = POST_ELEM(
-            CHAM_GD=CH2, MODELE=MOD, CHAM_MATER=CHMAT, ENER_POT=_F(GROUP_MA=ls_group_tout)
+            CHAM_GD=CH2,
+            INST=INST,
+            MODELE=MOD,
+            CHAM_MATER=CHMAT,
+            ENER_POT=_F(GROUP_MA=ls_group_tout),
         )
         epot_ch2 = abs(sum(EPOT_CH2.EXTR_TABLE().values()["TOTALE"]))
 
         EPOT_SOMME = POST_ELEM(
-            CHAM_GD=CH1 + CH2, MODELE=MOD, CHAM_MATER=CHMAT, ENER_POT=_F(GROUP_MA=ls_group_tout)
+            CHAM_GD=CH1 + CH2,
+            INST=INST,
+            MODELE=MOD,
+            CHAM_MATER=CHMAT,
+            ENER_POT=_F(GROUP_MA=ls_group_tout),
         )
         epot_chsomme = abs(sum(EPOT_SOMME.EXTR_TABLE().values()["TOTALE"]))
 

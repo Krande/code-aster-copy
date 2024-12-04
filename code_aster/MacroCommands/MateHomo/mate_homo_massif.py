@@ -364,36 +364,38 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
     CORR_THER22 = fields["CORR_THER22"]
     CORR_THER33 = fields["CORR_THER33"]
 
-    ranks_meca = CORR_MECA11.getAccessParameters()["NUME_ORDRE"]
-    ranks_ther = CORR_THER11.getAccessParameters()["NUME_ORDRE"]
+    insts_meca = CORR_MECA11.getAccessParameters()["INST"]
+    insts_ther = CORR_THER11.getAccessParameters()["INST"]
 
-    ASSERT(len(ranks_meca) == len(ranks_ther) == len(ls_varc))
+    ASSERT(len(insts_meca) == len(insts_ther) == len(ls_varc))
 
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAMASSIF)
     loimel = calc_loimel_massif(DEPLMATE, ls_group_ma)
     tda = utilities.get_temp_def_alpha(DEPLMATE)
 
-    for i, (rank_meca, rank_ther) in enumerate(zip(ranks_meca, ranks_ther)):
+    for i, (inst_meca, inst_ther) in enumerate(zip(insts_meca, insts_ther)):
 
-        work_dila_11 = utilities.cross_work(CORR_MECA11, CORR_DILA, rank_meca, ls_group_ma)
-        work_dila_22 = utilities.cross_work(CORR_MECA22, CORR_DILA, rank_meca, ls_group_ma)
-        work_dila_33 = utilities.cross_work(CORR_MECA33, CORR_DILA, rank_meca, ls_group_ma)
+        ASSERT(inst_meca == inst_ther)
 
-        work_ther_11 = utilities.cross_work(CORR_THER11, CORR_THER11, rank_ther, ls_group_ma)
-        work_ther_22 = utilities.cross_work(CORR_THER22, CORR_THER22, rank_ther, ls_group_ma)
-        work_ther_33 = utilities.cross_work(CORR_THER33, CORR_THER33, rank_ther, ls_group_ma)
+        work_dila_11 = utilities.cross_work(CORR_MECA11, CORR_DILA, inst_meca, ls_group_ma)
+        work_dila_22 = utilities.cross_work(CORR_MECA22, CORR_DILA, inst_meca, ls_group_ma)
+        work_dila_33 = utilities.cross_work(CORR_MECA33, CORR_DILA, inst_meca, ls_group_ma)
 
-        work_meca_11_11 = utilities.cross_work(CORR_MECA11, CORR_MECA11, rank_meca, ls_group_ma)
-        work_meca_22_22 = utilities.cross_work(CORR_MECA22, CORR_MECA22, rank_meca, ls_group_ma)
-        work_meca_33_33 = utilities.cross_work(CORR_MECA33, CORR_MECA33, rank_meca, ls_group_ma)
+        work_ther_11 = utilities.cross_work(CORR_THER11, CORR_THER11, inst_ther, ls_group_ma)
+        work_ther_22 = utilities.cross_work(CORR_THER22, CORR_THER22, inst_ther, ls_group_ma)
+        work_ther_33 = utilities.cross_work(CORR_THER33, CORR_THER33, inst_ther, ls_group_ma)
 
-        work_meca_11_22 = utilities.cross_work(CORR_MECA11, CORR_MECA22, rank_meca, ls_group_ma)
-        work_meca_11_33 = utilities.cross_work(CORR_MECA11, CORR_MECA33, rank_meca, ls_group_ma)
-        work_meca_22_33 = utilities.cross_work(CORR_MECA22, CORR_MECA33, rank_meca, ls_group_ma)
+        work_meca_11_11 = utilities.cross_work(CORR_MECA11, CORR_MECA11, inst_meca, ls_group_ma)
+        work_meca_22_22 = utilities.cross_work(CORR_MECA22, CORR_MECA22, inst_meca, ls_group_ma)
+        work_meca_33_33 = utilities.cross_work(CORR_MECA33, CORR_MECA33, inst_meca, ls_group_ma)
 
-        work_meca_12_12 = utilities.cross_work(CORR_MECA12, CORR_MECA12, rank_meca, ls_group_ma)
-        work_meca_23_23 = utilities.cross_work(CORR_MECA23, CORR_MECA23, rank_meca, ls_group_ma)
-        work_meca_31_31 = utilities.cross_work(CORR_MECA31, CORR_MECA31, rank_meca, ls_group_ma)
+        work_meca_11_22 = utilities.cross_work(CORR_MECA11, CORR_MECA22, inst_meca, ls_group_ma)
+        work_meca_11_33 = utilities.cross_work(CORR_MECA11, CORR_MECA33, inst_meca, ls_group_ma)
+        work_meca_22_33 = utilities.cross_work(CORR_MECA22, CORR_MECA33, inst_meca, ls_group_ma)
+
+        work_meca_12_12 = utilities.cross_work(CORR_MECA12, CORR_MECA12, inst_meca, ls_group_ma)
+        work_meca_23_23 = utilities.cross_work(CORR_MECA23, CORR_MECA23, inst_meca, ls_group_ma)
+        work_meca_31_31 = utilities.cross_work(CORR_MECA31, CORR_MECA31, inst_meca, ls_group_ma)
 
         ########################
         # Matrice homogeneisee
