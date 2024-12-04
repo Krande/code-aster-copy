@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ def mate_homo_ops(self, **kwargs):
     )
 
     varc_name = ls_varc["NOM_VARC"]
-    varc_values = ls_varc["VALE"]
+    varc_values = sorted(ls_varc["VALE"])
 
     mesh, group_tout, volume_ver, dirthick = prepare_mesh_syme(meshin, affe_groups, affe_all)
 
