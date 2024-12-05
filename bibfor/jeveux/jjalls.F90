@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -161,10 +161,10 @@ subroutine jjalls(lonoi, ic, genri, typei, lty, &
         nbdyn = nbdyn+1
     else
         if (iessai .gt. 1) then
-            call utmess('E', 'JEVEUX_60', ni=2, vali=ival)
-            call jeimpm(6)
             ival(1) = lsic*lois
             ival(2) = ltot*lois
+            call utmess('E', 'JEVEUX_60', ni=2, vali=ival)
+            call jeimpm(6)
             call utmess('F', 'JEVEUX_60', ni=2, vali=ival)
         else
             call jjldyn(2, -2, ltot)
