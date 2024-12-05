@@ -46,7 +46,7 @@ def mate_homo_ops(self, **kwargs):
     )
 
     varc_name = ls_varc["NOM_VARC"]
-    varc_values = ls_varc["VALE"]
+    varc_values = sorted(ls_varc["VALE"])
 
     mesh, group_tout, volume_ver, dirthick = prepare_mesh_syme(meshin, affe_groups, affe_all)
 
