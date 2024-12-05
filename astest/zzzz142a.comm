@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ for VARFIELD, PHENOM in (("DEPL", "MECANIQUE"), ("TEMP", "THERMIQUE")):
 
             ZERO = DEFI_CONSTANTE(VALE=0.0)
             FCONST = DEFI_FONCTION(
-                NOM_PARA=VARC, VALE=(vale_varc, 1), PROL_GAUCHE="CONSTANT", PROL_DROITE="CONSTANT"
+                NOM_PARA=VARC, VALE=(vale_varc, 1), PROL_GAUCHE="EXCLU", PROL_DROITE="EXCLU"
             )
 
             MATE = DEFI_MATERIAU(
@@ -71,6 +71,13 @@ for VARFIELD, PHENOM in (("DEPL", "MECANIQUE"), ("TEMP", "THERMIQUE")):
                 AFFE=_F(GROUP_MA=group_ma[MODELISATION], NOM_CMP=VARC, VALE=vale_varc),
             )
 
+            RESUVARC = CREA_RESU(
+                OPERATION="AFFE",
+                TYPE_RESU="EVOL_VARC",
+                NOM_CHAM=VARC,
+                AFFE=_F(CHAM_GD=FIELDVARC, INST=vale_varc),
+            )
+
             FIELD = CREA_CHAMP(
                 TYPE_CHAM="NOEU_%s_R" % VARFIELD,
                 OPERATION="AFFE",
@@ -82,7 +89,7 @@ for VARFIELD, PHENOM in (("DEPL", "MECANIQUE"), ("TEMP", "THERMIQUE")):
                 ),
             )
 
-            affevarckw = {"TOUT": "OUI", "NOM_VARC": VARC, "CHAM_GD": FIELDVARC}
+            affevarckw = {"TOUT": "OUI", "NOM_VARC": VARC, "EVOL": RESUVARC}
 
             if VARC == "TEMP":
                 affevarckw["VALE_REF"] = 20
@@ -95,6 +102,7 @@ for VARFIELD, PHENOM in (("DEPL", "MECANIQUE"), ("TEMP", "THERMIQUE")):
 
             EPOT = POST_ELEM(
                 CHAM_GD=FIELD,
+                INST=vale_varc,
                 MODELE=MOD,
                 CHAM_MATER=CHMAT,
                 ENER_POT=_F(GROUP_MA=group_ma[MODELISATION]),
