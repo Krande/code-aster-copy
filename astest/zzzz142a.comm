@@ -74,7 +74,8 @@ for VARFIELD, PHENOM in (("DEPL", "MECANIQUE"), ("TEMP", "THERMIQUE")):
             RESUVARC = CREA_RESU(
                 OPERATION="AFFE",
                 TYPE_RESU="EVOL_VARC",
-                AFFE=_F(NOM_CHAM=VARC, CHAM_GD=FIELDVARC, INST=vale_varc),
+                NOM_CHAM=VARC,
+                AFFE=_F(CHAM_GD=FIELDVARC, INST=vale_varc),
             )
 
             FIELD = CREA_CHAMP(
