@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -21,12 +21,27 @@
 
 from ..Objects import Table
 from ..Supervis import ExecuteCommand
+from ..Messages import UTMESS
 
 
 class PostElem(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.Table`."""
 
     command_name = "POST_ELEM"
+
+    def adapt_syntax(self, keywords):
+        """Perform checks of syntax based on argument content's.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords.
+        """
+
+        chamgd = keywords.get("CHAM_GD")
+        chmater = keywords.get("CHAM_MATER")
+
+        if chamgd and chmater:
+            if chmater.hasExternalStateVariable() and keywords.get("INST") is None:
+                UTMESS("F", "POSTELEM_7")
 
     def create_result(self, keywords):
         """Initialize the result.
