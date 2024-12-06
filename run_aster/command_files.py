@@ -142,13 +142,17 @@ def change_procdir(text):
     Returns:
         str: Changed content.
     """
-    # do not use 'CA.MPI' that would start 'CA.init()'
+    # 1. Do not use 'CA.MPI' that would start 'CA.init()'
+    # 2. Usual mpi runs start from the workdir, so sys.path "." is expanded to
+    # the workdir. That's why "." is inserted here again.
     add = """
 import os
+import sys
 import time
 from mpi4py import MPI
 
 os.chdir(f"proc.{MPI.COMM_WORLD.Get_rank()}")
+sys.path.insert(0, ".")
 with open(".pid", "w") as fpid:
     fpid.write(str(os.getpid()))
 
