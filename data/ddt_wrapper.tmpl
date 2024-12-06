@@ -1,5 +1,14 @@
 #!/bin/bash
 
+set_workdir() {
+    local this=$(readlink -n -f "$1")
+    workdir=$(dirname $(dirname "${this}"))
+    echo "working directory is ${workdir}"
+}
+
+set_workdir "${0}"
+cd "${workdir}"
+
 wait_for_pid() {
     local ready=0
     printf "waiting for code_aster processes to start..."
@@ -32,6 +41,8 @@ wait_for_pid() {
 
 # clean previous values
 rm -f proc.*/.pid
+
+export OMP_NUM_THREADS=%{nbthread}
 
 # start code_aster execution
 export WAIT_FOR_DDT=10
