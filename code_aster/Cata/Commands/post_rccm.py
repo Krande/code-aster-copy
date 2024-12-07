@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,13 @@ POST_RCCM = OPER(
     TYPE_RESU_MECA=SIMP(
         statut="o", typ="TXM", into=("EVOLUTION", "ZE200a", "ZE200b", "B3200", "B3600")
     ),
+    AXIS=SIMP(
+        statut="f",
+        typ="TXM",
+        defaut="NON",
+        into=("NON", "OUI"),
+        fr=tr("Indiquer si le modèle est axisymétrique"),
+    ),
     # ======================================================================
     b_evolution=BLOC(
         condition="""equal_to("TYPE_RESU_MECA", 'EVOLUTION') and not equal_to("TYPE_RESU","SYSTUS")""",
@@ -59,13 +66,6 @@ POST_RCCM = OPER(
             defaut="KE_MECA",
             into=("KE_MECA", "KE_MIXTE"),
             fr=tr("Ke meca seul ou partition mecanique + thermique"),
-        ),
-        AXIS=SIMP(
-            statut="f",
-            typ="TXM",
-            defaut="NON",
-            into=("NON", "OUI"),
-            fr=tr("Indiquer si le modèle est axisymétrique"),
         ),
         RAYON_MOYEN=SIMP(
             statut="f", typ="R", defaut=-1.0, fr=tr("La courbure attribuées à la ligne coupe")

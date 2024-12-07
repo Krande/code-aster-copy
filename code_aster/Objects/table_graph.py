@@ -48,7 +48,6 @@ except ImportError:
 
 
 class Graph:
-
     """Cette classe définit l'objet Graph pour Code_Aster.
 
     Important :  Utiliser les méthodes dédiées à la manipulation des données
@@ -362,7 +361,6 @@ class Graph:
 
 
 class TraceGraph:
-
     """
     Cette classe définit le tracé d'un objet Graph dans un fichier.
 
@@ -497,7 +495,6 @@ class TraceGraph:
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------
 class TraceTableau(TraceGraph):
-
     """
     Impression d'un objet Graph sous forme d'un tableau de colonnes,
     on suppose que les courbes partagent la même liste d'abscisse à 'EPSILON'
@@ -582,7 +579,6 @@ class TraceTableau(TraceGraph):
 
 
 class TraceXmgrace(TraceGraph):
-
     """
     Impression d'un objet Graph au format XMGRACE.
     Attribut supplémentaire : .PILOTE
@@ -1046,7 +1042,6 @@ class TraceXmgrace(TraceGraph):
 
 
 class TraceAgraf(TraceGraph):
-
     """
     Impression d'un objet Graph au format AGRAF.
     """
@@ -1277,8 +1272,7 @@ class TraceMatplotlib(TraceGraph):
                 alpha=1.0,
                 zorder=10,
             )
-            table_props = agg.properties()
-            table_cells = table_props["child_artists"]
+            table_cells = agg.get_children()
             for cell in table_cells:
                 txt = cell.get_text().get_text()
                 if "Freq" in txt or "Damp" in txt:
@@ -1307,8 +1301,7 @@ class TraceMatplotlib(TraceGraph):
             zorder=10,
             fontsize=32,
         )
-        table_props = legend.properties()
-        table_cells = table_props["child_artists"]
+        table_cells = legend.get_children()
         table_cells[2].set_height(0.05)
         table_cells[1].set_height(0.05)
         table_cells[0].set_height(0.1)

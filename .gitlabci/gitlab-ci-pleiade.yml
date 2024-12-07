@@ -25,6 +25,8 @@ workflow:
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
       variables:
         BUILD: debug
+  auto_cancel:
+    on_new_commit: interruptible
 
 stages:
   - setup
@@ -35,6 +37,7 @@ image:
   name: ${IMAGE_URL}
 
 prepare:
+  interruptible: true
   stage: setup
   script:
     - .gitlabci/prepare.sh
@@ -45,6 +48,7 @@ prepare:
     expire_in: 6 hours
 
 compile:
+  interruptible: true
   stage: build
   needs: ["prepare"]
   script:
@@ -64,6 +68,7 @@ compile:
     expire_in: 3 days
 
 doc_html:
+  interruptible: true
   stage: build
   needs: ["prepare", "compile"]
   script:
@@ -76,6 +81,7 @@ doc_html:
     - if: $CI_MERGE_REQUEST_IID
 
 minimal_build:
+  interruptible: true
   stage: test
   needs: ["prepare", "compile", "check_source"]
   script:
@@ -84,6 +90,7 @@ minimal_build:
     - if: $CI_MERGE_REQUEST_IID
 
 check_source:
+  interruptible: true
   stage: test
   needs: ["prepare", "compile"]
   script:
@@ -96,6 +103,7 @@ check_source:
     - if: $CI_MERGE_REQUEST_IID
 
 check_issues:
+  interruptible: true
   stage: test
   needs: ["prepare", "check_source"]
   script:
@@ -104,6 +112,7 @@ check_issues:
     - if: $CI_MERGE_REQUEST_IID
 
 minimal_test:
+  interruptible: true
   stage: test
   needs: ["prepare", "compile"]
   script:
@@ -123,6 +132,7 @@ minimal_test:
     - if: $CI_MERGE_REQUEST_IID
 
 verification_test:
+  interruptible: true
   stage: test
   tags:
     - hulk
@@ -153,6 +163,7 @@ verification_test:
     - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
 
 known_failures_test:
+  interruptible: true
   stage: test
   needs: ["prepare", "compile", "minimal_test"]
   script:
@@ -173,6 +184,7 @@ known_failures_test:
     - if: $CI_MERGE_REQUEST_IID
 
 debugging_test:
+  interruptible: true
   stage: test
   needs: ["prepare", "compile"]
   script:

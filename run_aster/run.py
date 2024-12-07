@@ -284,6 +284,7 @@ class RunAster:
         else:
             cmd.append(CFG.get("python_interactive", python))
             wrapped = CFG.get("python_interactive_is_wrapped")
+            # 'python3 -m mpi4py -i' does not work
             cmd.append("-i")
         # To show executed lines with trace module:
         # import sys

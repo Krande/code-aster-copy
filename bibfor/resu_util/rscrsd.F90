@@ -65,7 +65,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For thermic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldTher = 23
+    integer, parameter :: nbFieldTher = 25
     character(len=16), parameter :: fieldTher(nbFieldTher) = (/ &
                                     'TEMP            ', &
                                     'FLUX_ELGA       ', 'FLUX_ELNO       ', 'FLUX_NOEU       ', &
@@ -75,7 +75,8 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
                                     'HYDR_ELGA       ', 'HYDR_ELNO       ', 'HYDR_NOEU       ', &
                                     'SOUR_ELGA       ', 'COMPORTHER      ', 'COMPORMETA      ', &
                                     'ERTH_ELEM       ', 'ERTH_ELNO       ', 'ERTH_NOEU       ', &
-                                    'TEMP_ELGA       ', 'HHO_TEMP        '/)
+                                    'TEMP_ELGA       ', 'HHO_TEMP        ', &
+                                    'RESI_NOEU       ', 'RESI_RELA_NOEU  '/)
 
 !     ------------------------------------------------------------------
 !                      For external state variables
@@ -416,7 +417,8 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
         nbField = nbFieldMeca+nbFieldTher
 !       Beware : TEMP_ELGA is in fieldMeca and fieldTher
 !                Do not create twice
-        nbField = nbField-1
+!                RESI_NOEU and RESI_RELA_NOEU too
+        nbField = nbField-3
 !
         call jeecra(resultName//'.DESC', 'NOMMAX', nbField)
         call jeecra(resultName//'.DESC', 'DOCU', cval='COFO')
@@ -424,7 +426,9 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
             call jecroc(jexnom(resultName//'.DESC', fieldMeca(iField)))
         end do
         do iField = 1, nbFieldTher
-            if (fieldTher(iField) (1:9) .ne. 'TEMP_ELGA') then
+            if (fieldTher(iField) (1:9) .ne. 'TEMP_ELGA' &
+                .and. fieldTher(iField) (1:9) .ne. 'RESI_NOEU' &
+                .and. fieldTher(iField) (1:14) .ne. 'RESI_RELA_NOEU') then
                 call jecroc(jexnom(resultName//'.DESC', fieldTher(iField)))
             end if
         end do

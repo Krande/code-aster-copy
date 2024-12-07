@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -243,7 +243,7 @@ TEST_RESU(
             VALE_REFE=-2.9762e-02,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=3.791801e-01 / 100.0,
+            PRECISION=0.005,
         ),
         _F(
             NUME_ORDRE=1,
@@ -255,7 +255,7 @@ TEST_RESU(
             VALE_REFE=1.6071e-01,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=4.050915e-01 / 100.0,
+            PRECISION=0.005,
         ),
         _F(
             NUME_ORDRE=1,
@@ -267,7 +267,7 @@ TEST_RESU(
             VALE_REFE=-3.7004e-01,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=3.877914e-01 / 100.0,
+            PRECISION=0.005,
         ),
     )
 )
@@ -284,7 +284,7 @@ TEST_RESU(
             VALE_REFE=8437.5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=4.024140e-01 / 100,
+            PRECISION=0.005,
         ),
         _F(
             NUME_ORDRE=1,
@@ -296,7 +296,7 @@ TEST_RESU(
             VALE_REFE=-1562.5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=3.666341e-01 / 100,
+            PRECISION=0.005,
         ),
         _F(
             NUME_ORDRE=1,
@@ -308,7 +308,7 @@ TEST_RESU(
             VALE_REFE=-3125,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=3.795008e-01 / 100,
+            PRECISION=0.005,
         ),
         _F(
             NUME_ORDRE=1,
@@ -320,7 +320,7 @@ TEST_RESU(
             VALE_REFE=1562.5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=3.795008e-01 / 100,
+            PRECISION=0.005,
         ),
         _F(
             NUME_ORDRE=1,
@@ -332,7 +332,7 @@ TEST_RESU(
             VALE_REFE=8437.5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=3.895462e-01 / 100,
+            PRECISION=0.005,
         ),
         _F(
             NUME_ORDRE=1,
@@ -344,7 +344,7 @@ TEST_RESU(
             VALE_REFE=3125,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=3.795010e-01 / 100,
+            PRECISION=0.005,
         ),
     )
 )

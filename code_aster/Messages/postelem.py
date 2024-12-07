@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,9 @@ Erreur utilisateur :
     ),
     6: _(
         """La sélection des composantes par NOM_VARI n'est possible que sur une structure de données de type résultat et non sur un champ isolé."""
+    ),
+    7: _(
+        """Vous utilisez la commande sur une structure de données de type champ (CHAM_GD) et le champ matériau donné par CHAM_MATER contient une variable de commande. Or, dans ce cas, il est obligatoire de renseigner INST."""
     ),
     10: _(
         """Pour le calcul de l'option MASS_INER sur la géométrie déformée, il faut que le résultat contienne plus d'un numéro d'ordre"""

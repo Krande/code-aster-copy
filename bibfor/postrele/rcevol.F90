@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcevol(typtab, nommat, symax, nbopt, option)
+subroutine rcevol(typtab, nommat, symax, nbopt, option, lsymm)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,6 +40,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
     real(kind=8) :: symax
     character(len=8) :: nommat
     character(len=16) :: typtab, option(*)
+    aster_logical, intent(in) :: lsymm
 !
 !     OPERATEUR POST_RCCM:    TYPE_ANALYSE = 'COMPOSANT'
 !                           TYPE_RESU_MECA = 'EVOLUTION'
@@ -48,8 +49,8 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !
     integer :: i, j, n1, nbinti, jinti, nbtran
     real(kind=8) :: para(3), sm
-    aster_logical :: lpmpb, lsn, lfatig, flexio, lrocht, lamorc, kemixt, lsymm
-    character(len=8) :: typeke, symm
+    aster_logical :: lpmpb, lsn, lfatig, flexio, lrocht, lamorc, kemixt
+    character(len=8) :: typeke
     character(len=16) :: kinti
     character(len=24) :: cinst, csili, csiex, csno, csne, csneo, csnee, cspo
     character(len=24) :: cspe, cfao, cfae, cnoc, cresu, cresp, intitu, cspto
@@ -109,11 +110,8 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
     flexio = .false.
     lrocht = .false.
     lamorc = .false.
-    lsymm = .false.
 !
-    call getvtx(' ', 'AXIS', scal=symm, nbret=n1)
-    if (symm .eq. 'OUI') then
-        lsymm = .true.
+    if (lsymm) then
         call utmess('I', 'POSTRCCM_58')
     end if
 !
