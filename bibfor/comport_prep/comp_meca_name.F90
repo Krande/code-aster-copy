@@ -134,14 +134,11 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                         infoVari(iVari) = metaPhasName(iMetaPhas)//'##'//metaRelaName(iVariMetaRela)
                     end do
                 end do
-                do iVariMetaRela = 1, nbVariMetaRela
-                    iVari = iVari+1
-                    infoVari(iVari) = metaRelaName(iVariMetaRela)
-                end do
                 do iVariMetaGlob = 1, nbVariMetaGlob
                     iVari = iVari+1
                     infoVari(iVari) = metaGlobName(iVariMetaGlob)
                 end do
+                ASSERT(iVari .eq. nbVariMetaGlob+nbVariMetaRela*nbMetaPhas)
                 call lcdiscard(metaPhasPy)
                 call lcdiscard(metaRelaPy)
                 call lcdiscard(metaGlobPy)

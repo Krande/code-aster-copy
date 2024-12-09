@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ loi = LoiComportement(
     lc_type=("META_G_CINE",),
     doc="""Loi de comportement prenant en compte la métallurgie - Ecrouissage cinématique""",
     num_lc=0,
-    nb_vari=1,
-    nom_vari=("INDIPLAS",),
+    nb_vari=7,
+    nom_vari=("XCINXX", "XCINYY", "XCINZZ", "XCINXY", "XCINXZ", "XCINYZ", "INDIPLAS"),
     mc_mater=None,
     modelisation=("3D", "AXIS", "D_PLAN"),
     deformation=("PETIT", "PETIT_REAC", "GROT_GDEP", "SIMO_MIEHE"),

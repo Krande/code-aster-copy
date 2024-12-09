@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,6 +72,7 @@ subroutine comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp, l_etat_init_)
 
         call getvtx(keywordfact, 'RELATION', iocc=iocc, scal=relaCompMeta)
 
+! ----- Internal state variables (by phase)
         metaRela = 'VIDE'
         lIsot = ASTER_FALSE
         lCine = ASTER_FALSE
@@ -97,6 +98,7 @@ subroutine comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp, l_etat_init_)
             ASSERT(ASTER_FALSE)
         end if
 
+! ----- Internal state variables (global)
         metaGlob = 'VIDE'
         if (lIsot) then
             metaGlob = 'META_G_ISOT'
