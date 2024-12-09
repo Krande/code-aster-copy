@@ -7,7 +7,7 @@ variables:
   BUILD: mpi
   REFREV: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
   GIT_SSL_NO_VERIFY: "true"
-  NPROC_MAX: 16
+  NPROC_MAX: 12
   reg_debugging: '/^debugci.*/'
   FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: "true"
 
