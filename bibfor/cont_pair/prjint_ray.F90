@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,6 +88,8 @@ subroutine prjint_ray(proj_tole, dist_ratio, elem_dime, &
 ! --------------------------------------------------------------------------------------------------
 !
     nb_poin_inte = 0
+    nb_poin_inte_ma = 0
+    nb_poin_inte_es = 0
     inte_weight = 0.d0
     iret = 0
     poin_inte_es_tmp = 0.d0
