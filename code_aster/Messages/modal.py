@@ -304,4 +304,12 @@ Opérateur DYNA_ALEA_MODAL :
   Cette commande est CALC_MODES dans la plupart des cas. Il suffit de lui fournir le mot-clé CARA_ELEM.
 """
     ),
+    25: _(
+        """
+Opérateur POST_MODE :
+  On ne parvient pas à trouver le champ de matériaux associé à l'objet mode_meca fourni.
+  Vous avez certainement oublié de fournir le mot-clé CHAM_MATER à la commande CALC_MODES de laquelle
+  est issu l'objet fourni au mot-clé MODE.
+"""
+    ),
 }
