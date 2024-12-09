@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ subroutine comp_nbvari_kit(kit_comp, &
         nbVariKit(1) = nbVariMetaRela
         nbVariKit(2) = nbMetaPhas
         nbVariKit(3) = nbVariMetaGlob
-        nbVariFromKit = nbVariMetaGlob+nbVariMetaRela*(nbMetaPhas+1)
+        nbVariFromKit = nbVariMetaGlob+nbVariMetaRela*nbMetaPhas
     end if
 
 ! - Number of internal state variables for KIT DDI

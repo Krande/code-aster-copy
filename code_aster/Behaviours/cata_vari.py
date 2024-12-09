@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -836,7 +836,7 @@ DICT_NOM_VARI = {
     "XMEMB3": _("GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 3"),
     "Y1": _("coordonnée Y de la pointe de fissure après rupture par propagation,"),
     "Y2": _("coordonnée Y de la pointe de fissure 2 lors de l'amorçage,"),
-    "ZIRCALBE": _("phase métallurgique zirconium ALPHA/BETA"),
+    "ZIRCABET": _("phase métallurgique zirconium ALPHA/BETA"),
     "ZIRCALPH": _("phase métallurgique zirconium ALPHA"),
     "ZIRCBETA": _("phase métallurgique zirconium BETA"),
     "EPSIN1": _("RGI_BETON_BA Déformation axiale Renforcement 1"),
