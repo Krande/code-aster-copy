@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -540,49 +540,51 @@ contains
             onAllCells = ASTER_FALSE
             call getelem(mesh, factorKeyword, iAffe, ' ', listCell, nbCellAffe, &
                          model=model, onAllCells_=onAllCells)
-            if (onAllCells) then
-                call nocart(exteVariMap1, 1, nbCmp)
-                call nocart(exteVariMap2, 1, EXTEVARI_MAP2_SIZE)
-            else
-                call jeveuo(listCell, 'L', jvCell)
-                call nocart(exteVariMap1, 3, nbCmp, &
-                            mode='NUM', nma=nbCellAffe, limanu=zi(jvCell))
-                call nocart(exteVariMap2, 3, EXTEVARI_MAP2_SIZE, &
-                            mode='NUM', nma=nbCellAffe, limanu=zi(jvCell))
-            end if
+            if (nbCellAffe .gt. 0) then
+                if (onAllCells) then
+                    call nocart(exteVariMap1, 1, nbCmp)
+                    call nocart(exteVariMap2, 1, EXTEVARI_MAP2_SIZE)
+                else
+                    call jeveuo(listCell, 'L', jvCell)
+                    call nocart(exteVariMap1, 3, nbCmp, &
+                                mode='NUM', nma=nbCellAffe, limanu=zi(jvCell))
+                    call nocart(exteVariMap2, 3, EXTEVARI_MAP2_SIZE, &
+                                mode='NUM', nma=nbCellAffe, limanu=zi(jvCell))
+                end if
 
 ! --------- Some checks
-            if (exteVariName .eq. "TEMP") then
+                if (exteVariName .eq. "TEMP") then
 ! ------------- For XFEM: change TEMP to TEMP_ELGA
-                call xvarc_temp(affeType, dsName, funcExtrLeft, funcExtrRight, &
-                                funcResult, nbAffe, exteVariMap2)
+                    call xvarc_temp(affeType, dsName, funcExtrLeft, funcExtrRight, &
+                                    funcResult, nbAffe, exteVariMap2)
 
 ! ------------- For THM: no temperature
-                if (model .ne. " ") then
-                    call dismoi('EXI_THM', model, 'MODELE', repk=answer)
-                    hasTHM = answer .eq. "OUI"
-                    if (hasTHM) then
-                        call jeveuo(model//'.MAILLE', 'L', vi=cellAffectedByModel)
-                        if (onAllCells) then
-                            call utmess('F', 'MATERIAL2_51')
-                        else
-                            if (nbCellAffe .ne. 0) then
-                                do iCellAffe = 1, nbCellAffe
-                                    cellNume = zi(jvCell-1+iCellAffe)
-                                    elemTypeNume = cellAffectedByModel(cellNume)
-                                    call jenuno(jexnum('&CATA.TE.NOMTE', elemTypeNume), &
-                                                elemTypeName)
-                                    if (lteatt('TYPMOD2', 'THM', typel=elemTypeName)) then
-                                        call utmess('F', 'MATERIAL2_51')
-                                    end if
-                                end do
-                            end if
+                    if (model .ne. " ") then
+                        call dismoi('EXI_THM', model, 'MODELE', repk=answer)
+                        hasTHM = answer .eq. "OUI"
+                        if (hasTHM) then
+                            call jeveuo(model//'.MAILLE', 'L', vi=cellAffectedByModel)
+                            if (onAllCells) then
+                                call utmess('F', 'MATERIAL2_51')
+                            else
+                                if (nbCellAffe .ne. 0) then
+                                    do iCellAffe = 1, nbCellAffe
+                                        cellNume = zi(jvCell-1+iCellAffe)
+                                        elemTypeNume = cellAffectedByModel(cellNume)
+                                        call jenuno(jexnum('&CATA.TE.NOMTE', elemTypeNume), &
+                                                    elemTypeName)
+                                        if (lteatt('TYPMOD2', 'THM', typel=elemTypeName)) then
+                                            call utmess('F', 'MATERIAL2_51')
+                                        end if
+                                    end do
+                                end if
 
+                            end if
                         end if
                     end if
                 end if
+                call jedetr(listCell)
             end if
-            call jedetr(listCell)
         end do
 !
 !   ------------------------------------------------------------------------------------------------
