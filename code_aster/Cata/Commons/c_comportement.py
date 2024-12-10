@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -272,7 +272,62 @@ def C_COMPORTEMENT(command):
                 ),
             ),
             b_kit_thm=BLOC(
-                condition="""is_in("RELATION", ['KIT_HHM','KIT_HH', 'KIT_H','KIT_HM','KIT_THHM', 'KIT_THH','KIT_THM','KIT_THV','KIT_THH2M','KIT_HH2M','KIT_HH2','KIT_THH2'])""",
+                condition="""is_in("RELATION", ['KIT_THHM', 'KIT_THH','KIT_THM','KIT_THV','KIT_THH2M','KIT_THH2'])""",
+                fr=tr("lois de comportements thermo-hydro-mecaniques"),
+                RELATION_KIT=SIMP(
+                    statut="o",
+                    typ="TXM",
+                    max=9,
+                    validators=NoRepeat(),
+                    into=(
+                        "BARCELONE",
+                        "CAM_CLAY",
+                        "CJS",
+                        "CZM_EXP_REG",
+                        "CZM_LIN_REG",
+                        "DRUCK_PRAGER",
+                        "DRUCK_PRAG_N_A",
+                        "ELAS",
+                        "ENDO_ISOT_BETON",
+                        "GonfElas",
+                        "HOEK_BROWN_EFF",
+                        "HOEK_BROWN_TOT",
+                        "HUJEUX",
+                        "Iwan",
+                        "JOINT_BANDIS",
+                        "NLH_CSRM",
+                        "LAIGLE",
+                        "LETK",
+                        "LKR",
+                        "MAZARS",
+                        "MOHR_COULOMB",
+                        "RANKINE",
+                        "VISC_DRUC_PRAG",
+                        "VISC_MAXWELL",
+                        "VISC_MAXWELL_MT",
+                    )
+                    + (
+                        "GAZ",
+                        "LIQU_SATU",
+                        "LIQU_GAZ_ATM",
+                        "LIQU_VAPE_GAZ",
+                        "LIQU_AD_GAZ_VAPE",
+                        "LIQU_AD_GAZ",
+                        "LIQU_VAPE",
+                        "LIQU_GAZ",
+                        "HYDR_UTIL",
+                        "HYDR_TABBAL",
+                        "HYDR_VGM",
+                        "HYDR_VGC",
+                        "HYDR_ENDO",
+                    ),
+                ),
+                COMPOR_MFRONT=SIMP(
+                    statut="c", typ=compor_mgis, fr=tr("objet ajouté automatiquement")
+                ),
+            ),
+            b_kit_hm=BLOC(
+                condition="""is_in("RELATION", ['KIT_HHM','KIT_HH', 'KIT_H','KIT_HM','KIT_HH2M','KIT_HH2',])""",
                 fr=tr("lois de comportements thermo-hydro-mecaniques"),
                 RELATION_KIT=SIMP(
                     statut="o",
@@ -323,7 +378,7 @@ def C_COMPORTEMENT(command):
                         "HYDR_ENDO",
                     ),
                 ),
-                b_mfr_thm=BLOC(
+                b_mfr_hm=BLOC(
                     condition="""'MFRONT' in value("RELATION_KIT")""",
                     fr=tr("Comportement utilisateur meca THM de type MFRONT"),
                     COMPOR_MFRONT=SIMP(
@@ -343,7 +398,7 @@ def C_COMPORTEMENT(command):
                     ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=100),
                     SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
                 ),
-                b_mfr_thm_hidden=BLOC(
+                b_mfr_hm_hidden=BLOC(
                     condition="""'MFRONT' not in value("RELATION_KIT")""",
                     COMPOR_MFRONT=SIMP(
                         statut="c", typ=compor_mgis, fr=tr("objet ajouté automatiquement")
