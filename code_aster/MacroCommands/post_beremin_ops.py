@@ -144,13 +144,13 @@ def compute_pb(self, resupb, grmapb, numvi, data_resu, **args):
             sig1plasac(data_resu[0], rsieq, numvi, dwb, resupb, grmapb, data_resu[1]),
             resanpb,
             dwb[grmapb]["M"],
-            args.get("MAXI_TPS"),
+            args.get("HIST_MAXI"),
         )
 
     elif args.get("FILTRE_SIGM") == "SIGM_ELMOY":
 
         (sigw, resimpr) = compute_sigm_elmoy(
-            data_resu, numvi, dwb, resupb, grmapb, resanpb, args.get("MAXI_TPS")
+            data_resu, numvi, dwb, resupb, grmapb, resanpb, args.get("HIST_MAXI")
         )
 
     else:
@@ -205,7 +205,7 @@ def compute_sigm_elmoy(data_resu, numvi, dwb, resupb, grmapb, resanpb, mtpb):
         resupb (NonLinearResult): Resultat input of POST_BEREMIN
         grmapb (str): Mesh cells group given in POST_BEREMIN
         resanpb (NonLinearResult): Name of auxiliary result
-        mtpb (str): {"OUI", "NON"} Value of keyword MAXI_TPS
+        mtpb (str): {"OUI", "NON"} Value of keyword HIST_MAXI
 
     Returns:
         (NonLinearResult, NonLinearResult): (
@@ -290,10 +290,10 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
         sg1 = FieldOnCellsReal(modele, "ELGA", "DEPL_R")
         sg1.setValues(0)
 
-    if "CRIT_SIGM" in dwb[grwb]:
+    if "SIGM_SEUIL" in dwb[grwb]:
 
         def crit_sigm(sigma):
-            return max(sigma - dwb[grwb]["CRIT_SIGM"], 0.0)
+            return max(sigma - dwb[grwb]["SIGM_SEUIL"], 0.0)
 
         sg1 = sg1.transform(crit_sigm)
 
@@ -489,7 +489,7 @@ def tps_maxsigm(rsieq, l_instplas, maxsig, resanpb, bere_m, mtpb):
         maxsig (NonLinearResult): ELGA_DEPL_R filled by PRIN_3
         resanpb (NonLinearResult): Name of auxiliary result
         bere_m (float): Value of Beremin parameter M
-        mtpb (str): {"OUI", "NON"} Value of keyword MAXI_TPS
+        mtpb (str): {"OUI", "NON"} Value of keyword HIST_MAXI
 
     Returns:
         (NonLinearResult, NonLinearResult): (
@@ -573,7 +573,9 @@ def maxi_tps_oui(rsieq, l_instplas, maxsig, resanpb, bere_m):
             chsixxm = chmaxsig.transform(puiss_m)
 
             if resanpb is not None:
-                resimpr.setField(chsixxm, "DEPL_ELGA", nume_inst)
+                resimpr.setField(
+                    chsixxm.asPhysicalQuantity("SIEF_R", {"DX": "SIXX"}), "SIEF_ELGA", nume_inst
+                )
                 resimpr.setTime(inst, nume_inst)
 
             indice = indice + 1
@@ -582,9 +584,9 @@ def maxi_tps_oui(rsieq, l_instplas, maxsig, resanpb, bere_m):
 
             if resanpb is not None:
 
-                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "DEPL_R")
+                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
                 chsixxm.setValues(0)
-                resimpr.setField(chsixxm, "DEPL_ELGA", nume_inst)
+                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
                 resimpr.setTime(inst, nume_inst)
 
         sigw.setField(chsixxm, "DEPL_ELGA", nume_inst)
@@ -643,7 +645,9 @@ def maxi_tps_non(rsieq, l_instplas, maxsig, resanpb, bere_m):
             chsixxm = chmaxsig.transform(puiss_m)
 
             if resanpb is not None:
-                resimpr.setField(chsixxm, "DEPL_ELGA", nume_inst)
+                resimpr.setField(
+                    chsixxm.asPhysicalQuantity("SIEF_R", {"DX": "SIXX"}), "SIEF_ELGA", nume_inst
+                )
                 resimpr.setTime(inst, nume_inst)
 
             indice = indice + 1
@@ -652,9 +656,9 @@ def maxi_tps_non(rsieq, l_instplas, maxsig, resanpb, bere_m):
 
             if resanpb is not None:
 
-                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "DEPL_R")
+                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
                 chsixxm.setValues(0)
-                resimpr.setField(chsixxm, "DEPL_ELGA", nume_inst)
+                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
                 resimpr.setTime(inst, nume_inst)
 
         sigw.setField(chsixxm, "DEPL_ELGA", nume_inst)

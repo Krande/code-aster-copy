@@ -4602,7 +4602,7 @@ DEFI_MATERIAU = MACRO(
         M=SIMP(statut="o", typ="R"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
         SIGM_REFE=SIMP(statut="o", typ="R"),
-        CRIT_SIGM=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
+        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
         SEUIL_EPSP_CUMU=SIMP(statut="f", typ="R", defaut=1.0e-6),
     ),
     WEIBULL_FO=FACT(
@@ -4610,7 +4610,7 @@ DEFI_MATERIAU = MACRO(
         M=SIMP(statut="o", typ="R"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
         SIGM_CNV=SIMP(statut="o", typ="R"),
-        CRIT_SIGM=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
+        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
         SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         SEUIL_EPSP_CUMU=SIMP(statut="f", typ="R", defaut=1.0e-6),
     ),

@@ -79,7 +79,7 @@ POST_BEREMIN = MACRO(
             max=6,
         ),
     ),
-    MAXI_TPS=SIMP(
+    HIST_MAXI=SIMP(
         statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI", fr=tr("Maximum temporel ou pas")
     ),
     SIGM_MAXI=SIMP(
