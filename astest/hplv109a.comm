@@ -1,0 +1,73 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster.CodeCommands import *
+from code_aster.Objects import *
+from code_aster import CA
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"))
+
+ACIER = INCLUDE_MATERIAU(
+    NOM_AFNOR="16MND5",
+    TYPE_MODELE="REF",
+    VARIANTE="A",
+    TYPE_VALE="NOMI",
+    UNITE_LONGUEUR="MM",
+    PROL_GAUCHE="EXCLU",
+    PROL_DROITE="CONSTANT",
+    INFO=1,
+)
+
+INSTS = [0.0, 3600.0, 7200.0, 10800.0, 14400.0, 18000.0]
+
+MAGLOB_HOMO_THER = LIRE_MAILLAGE(UNITE=21, FORMAT="MED")
+
+RESU_GLOB_HOMO_THER = LIRE_RESU(
+    TYPE_RESU="EVOL_THER",
+    FORMAT="MED",
+    MAILLAGE=MAGLOB_HOMO_THER,
+    FORMAT_MED=(
+        _F(NOM_CHAM_MED="00001096TEMP", NOM_CHAM="TEMP"),
+        _F(NOM_CHAM_MED="00001096GRAT_NOEU", NOM_CHAM="GRAT_NOEU"),
+    ),
+    PROL_ZERO="OUI",
+    UNITE=21,
+    INST=INSTS,
+)
+
+MAGLOB_HOMO_MECA = LIRE_MAILLAGE(UNITE=22, FORMAT="MED")
+
+RESU_GLOB_HOMO_MECA = LIRE_RESU(
+    TYPE_RESU="EVOL_ELAS",
+    FORMAT="MED",
+    MAILLAGE=MAGLOB_HOMO_MECA,
+    FORMAT_MED=(
+        _F(NOM_CHAM_MED="00001095DEPL", NOM_CHAM="DEPL"),
+        _F(NOM_CHAM_MED="00001095EPSI_NOEU", NOM_CHAM="EPSI_NOEU"),
+    ),
+    PROL_ZERO="OUI",
+    UNITE=22,
+    INST=INSTS,
+)
+
+x0 = 221.005
+y0 = -68.575
+z0 = 595.0
+
+FIN()

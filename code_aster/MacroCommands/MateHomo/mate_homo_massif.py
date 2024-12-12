@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -201,6 +201,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHARDIL), _F(CHARGE=SYME_MECA_XX)),
+        OPTION="SANS",
     )
 
     # Calcul des correcteurs MECANIQUES
@@ -211,6 +212,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR11), _F(CHARGE=SYME_MECA_XX)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA22"] = MECA_STATIQUE(
@@ -218,6 +220,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR22), _F(CHARGE=SYME_MECA_XX)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA12"] = MECA_STATIQUE(
@@ -225,6 +228,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR12), _F(CHARGE=ANTI_MECA_12)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA33"] = MECA_STATIQUE(
@@ -232,6 +236,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR33), _F(CHARGE=SYME_MECA_XX)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA31"] = MECA_STATIQUE(
@@ -239,6 +244,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR31), _F(CHARGE=ANTI_MECA_31)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA23"] = MECA_STATIQUE(
@@ -246,6 +252,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR23), _F(CHARGE=ANTI_MECA_23)),
+        OPTION="SANS",
     )
 
     # Calcul des correcteurs MECANIQUES de pression interne
@@ -258,6 +265,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
             CHAM_MATER=CHMATME,
             LIST_INST=L_INST,
             EXCIT=(_F(CHARGE=CHAR_PINT), _F(CHARGE=SYME_MECA_XX)),
+            OPTION="SANS",
         )
 
     # Calcul des correcteurs THERMIQUES
@@ -372,6 +380,8 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAMASSIF)
     loimel = calc_loimel_massif(DEPLMATE, ls_group_ma)
     tda = utilities.get_temp_def_alpha(DEPLMATE)
+    ls_A_hom = {}
+    ls_K_hom = {}
 
     for i, (inst_meca, inst_ther) in enumerate(zip(insts_meca, insts_ther)):
 
@@ -410,6 +420,7 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
                           [0,       K22_hom, 0      ],
                           [0,       0,       K33_hom]])
         # fmt: on
+        ls_K_hom[inst_ther] = K_hom
 
         lambda_meca = loimel["LAME1"][i]
         mu_meca = loimel["LAME2"][i]
@@ -436,6 +447,7 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
                           [0,         0,         0,         0,         A2323_hom, 0         ],
                           [0,         0,         0,         0,         0,         A3131_hom]])
         # fmt: on
+        ls_A_hom[inst_meca] = A_hom
 
         A_inv = np.linalg.inv(A_hom)
         K_inv = np.linalg.inv(K_hom)
@@ -500,4 +512,4 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
 
     tabpara = CREA_TABLE(LISTE=[_F(PARA=para, LISTE_R=values) for para, values in dictpara.items()])
 
-    return A_hom, K_hom, tabpara
+    return ls_A_hom, ls_K_hom, tabpara

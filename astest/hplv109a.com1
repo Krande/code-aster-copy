@@ -1,0 +1,50 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster.CodeCommands import *
+from code_aster.Objects import *
+from code_aster import CA
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+TABPARA = LIRE_CORR_HOMO(UNITE=30, CORR_THER=CO("CORR_THER"), CORR_MECA=CO("CORR_MECA"))
+
+RELOC_MECA = REST_HOMO_LOCA(
+    TYPE_HOMO="MASSIF",
+    POSITION=(x0, y0, z0),
+    AFFE=(_F(GROUP_MA=("plaque",), MATER=ACIER),),
+    CORR_MECA=CORR_MECA,
+    CORR_THER=CORR_THER,
+    TEMP_REF=20,
+    PRESSION=1.0,
+    EVOL_ELAS=RESU_GLOB_HOMO_MECA,
+    EVOL_THER=RESU_GLOB_HOMO_THER,
+    RESU_THER=CO("RELOC_THER"),
+    OPTION="OUI",
+    TRAN="OUI",
+    INST=INSTS,
+    SYME="NON",
+)
+
+
+test = CA.TestCase()
+test.assertTrue(True)
+test.printSummary()
+
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,9 @@
 Calcul de proprietés homo
 """
 from ...Cata.Syntax import _F
-from ...CodeCommands import IMPR_RESU
 from ...Messages import ASSERT, UTMESS
 
-from .mate_homo_utilities import setup_calcul
+from .mate_homo_utilities import setup_calcul, print_med_file
 from .mate_homo_mesh import prepare_mesh_syme
 from .mate_homo_massif import calc_tabpara_massif, calc_corr_massif_syme
 from .mate_homo_plaque import calc_tabpara_plaque, calc_corr_plaque_syme
@@ -96,25 +95,7 @@ def mate_homo_ops(self, **kwargs):
         self.register_result(ther_fields, kwargs.get("CORR_THER"))
 
     # Save MED
-    med_name = (
-        lambda s: s.replace("MECA", "ME")
-        .replace("THER", "TH")
-        .replace("DILA", "DIL")
-        .replace("CORR_", "")
-        .replace("MEMB", "ME")
-        .replace("FLEX", "FL")
-        .replace("PINT", "PINT")
-    )
-
-    save_fields = dict(**elas_fields, **ther_fields)
     if unit is not None:
-        IMPR_RESU(
-            FORMAT="MED",
-            RESU=[
-                _F(RESULTAT=fld, NOM_RESU_MED=med_name(fldname))
-                for fldname, fld in save_fields.items()
-            ],
-            UNITE=unit,
-        )
+        print_med_file(unit, elas_fields, ther_fields)
 
     return tabpara

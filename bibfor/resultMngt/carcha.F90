@@ -179,6 +179,9 @@ subroutine carcha(fieldType, fieldQuantity, fieldSupport, option, param)
     else if (fieldType .eq. 'FLUX_NOEU') then
         fieldQuantity = 'FLUX_R'
         fieldSupport = 'NOEU'
+    else if (fieldType .eq. 'GRAT_NOEU') then
+        fieldQuantity = 'GRAT_R'
+        fieldSupport = 'NOEU'
     else if (fieldType .eq. 'VARI_ELGA') then
         fieldQuantity = 'VARI_R'
         fieldSupport = 'ELGA'

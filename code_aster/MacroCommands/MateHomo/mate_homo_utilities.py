@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,11 @@ from ...CodeCommands import (
     AFFE_CHAR_CINE,
     MECA_STATIQUE,
     POST_ELEM,
+    IMPR_RESU,
 )
 from ...Messages import ASSERT, UTMESS
 from ...Objects import Function
+from . import NameConverter
 
 
 def create_empty_dictpara(ls_para):
@@ -60,6 +62,28 @@ def get_temp_def_alpha(resu):
                 pass
 
     return temp_def_alpha
+
+
+def print_med_file(unit, elas, ther):
+    """
+    Save corrector fields as med file.
+
+    Arguments
+    ---------
+        unit (int): Logical unit.
+        elas (ElasticResultDict): The elastic corrector fields collection.
+        ther (ThermalResultDict): The thermal corrector fields collection.
+    """
+
+    save_fields = dict(**elas, **ther)
+    IMPR_RESU(
+        FORMAT="MED",
+        RESU=[
+            _F(RESULTAT=fld, NOM_RESU_MED=NameConverter.toMed(fldname))
+            for fldname, fld in save_fields.items()
+        ],
+        UNITE=unit,
+    )
 
 
 def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
@@ -274,7 +298,11 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
     )
 
     DEPLMATE = MECA_STATIQUE(
-        MODELE=MODME, CHAM_MATER=CHLOIME, LIST_INST=L_INST, EXCIT=(_F(CHARGE=LOCK_MECA))
+        MODELE=MODME,
+        CHAM_MATER=CHLOIME,
+        LIST_INST=L_INST,
+        EXCIT=(_F(CHARGE=LOCK_MECA)),
+        OPTION="SANS",
     )
 
     return DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_alpha_calc
@@ -290,7 +318,6 @@ def cross_work(RESU1, RESU2, INST, ls_group_tout):
     ASSERT(RESU1.getModel() is RESU2.getModel())
     ASSERT(RESU1.getMaterialField() is RESU2.getMaterialField())
     ASSERT(RESU1.getType() == RESU2.getType())
-    epot = 0
 
     RESU_TYPE = RESU1.getType()
     ASSERT(RESU_TYPE in ("EVOL_ELAS", "EVOL_THER"))

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,6 +126,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR11_mm), _F(CHARGE=SYME_MECA_XX_mm)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA22_MEMB"] = MECA_STATIQUE(
@@ -133,6 +134,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR22_mm), _F(CHARGE=SYME_MECA_XX_mm)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA12_MEMB"] = MECA_STATIQUE(
@@ -140,6 +142,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR12_mm), _F(CHARGE=ANTI_MECA_12_mm)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA11_FLEX"] = MECA_STATIQUE(
@@ -147,6 +150,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR11_ff), _F(CHARGE=SYME_MECA_XX_ff)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA22_FLEX"] = MECA_STATIQUE(
@@ -154,6 +158,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR22_ff), _F(CHARGE=SYME_MECA_XX_ff)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA12_FLEX"] = MECA_STATIQUE(
@@ -161,6 +166,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR12_ff), _F(CHARGE=ANTI_MECA_12_ff)),
+        OPTION="SANS",
     )
 
     return elas_fields, ther_fields
@@ -261,6 +267,9 @@ def calc_tabpara_plaque(
     loimel = calc_loimel_plaque(DEPLMATE, ls_group_ma, dir_plaque)
     h = dirthick[dir_plaque]
     tda = utilities.get_temp_def_alpha(DEPLMATE)
+    ls_C_hom = {}
+    ls_D_hom = {}
+    ls_G_hom = {}
 
     for i, inst_meca in enumerate(insts_meca):
 
@@ -321,6 +330,10 @@ def calc_tabpara_plaque(
         G_hom = np.array([[G11_hom,   0       ],
                           [0,         G22_hom ]])
         # fmt: on
+
+        ls_C_hom[inst_meca] = C_hom
+        ls_D_hom[inst_meca] = D_hom
+        ls_G_hom[inst_meca] = G_hom
 
         RHO = (1 / volume_ver) * loimel["RHO"][i]
 
