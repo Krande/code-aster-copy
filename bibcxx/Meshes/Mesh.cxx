@@ -3,7 +3,7 @@
  * @brief Implementation de Mesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,17 +31,17 @@
 
 #include "Utilities/Tools.h"
 
-bool Mesh::readAsterFile( const std::string &fileName ) {
+bool Mesh::readAsterFile( const std::filesystem::path &fileName ) {
     readMeshFile( fileName, "ASTER", 0 );
     return true;
 }
 
-bool Mesh::readGibiFile( const std::string &fileName ) {
+bool Mesh::readGibiFile( const std::filesystem::path &fileName ) {
     readMeshFile( fileName, "GIBI", 0 );
     return true;
 }
 
-bool Mesh::readGmshFile( const std::string &fileName ) {
+bool Mesh::readGmshFile( const std::filesystem::path &fileName ) {
     readMeshFile( fileName, "GMSH", 0 );
     return true;
 }
@@ -106,7 +106,7 @@ VectorLong Mesh::getCells( const std::string name ) const {
 VectorLong Mesh::getCells( const VectorString &names ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfCells() - 1 ) );
+        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfCells() - 1 ) );
     }
 
     std::vector< VectorLong > cells;
@@ -129,7 +129,7 @@ VectorLong Mesh::getCells( const VectorString &names ) const {
 VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINTEGER ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfNodes() - 1 ) );
+        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfNodes() - 1 ) );
     }
 
     std::vector< VectorLong > nodes;

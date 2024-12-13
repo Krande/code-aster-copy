@@ -531,7 +531,7 @@ Returns:
 Print the result in a MED file.
 
 Args:
-    filename (str): Path to the output file.
+    filename (Path|str): Path to the output file.
     medname (str): Name of the result in the MED file. (default: "")
     local (bool): Print only the local domain if *True*. (default: True)
               )",

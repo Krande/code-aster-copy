@@ -40,6 +40,8 @@
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 
+#include <filesystem>
+
 /**
  * @class FieldOnCells
  * @brief Template class for FieldOnCells
@@ -553,7 +555,7 @@ class FieldOnCells : public DataField {
      */
     ASTERDOUBLE dot( const FieldOnCellsPtr &tmp ) const;
 
-    bool printMedFile( const std::string fileName, bool local = true ) const;
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true ) const;
 
     FieldOnCellsPtr asLocalization( const std::string &loc ) const {
         if ( loc == getLocalization() ) {
@@ -584,7 +586,8 @@ class FieldOnCells : public DataField {
 };
 
 template < class ValueType >
-bool FieldOnCells< ValueType >::printMedFile( const std::string fileName, bool local ) const {
+bool FieldOnCells< ValueType >::printMedFile( const std::filesystem::path &fileName,
+                                              bool local ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;
     ASTERINTEGER retour = -1;

@@ -5,7 +5,7 @@
  * @file Mesh.h
  * @brief Fichier entete de la classe Mesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,6 +30,8 @@
 #include "Meshes/BaseMesh.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/ResultNaming.h"
+
+#include <filesystem>
 
 /**
  * @class Mesh
@@ -140,19 +142,19 @@ class Mesh : public BaseMesh {
      * @brief Read a Aster Mesh file
      * @return retourne true si tout est ok
      */
-    bool readAsterFile( const std::string &fileName );
+    bool readAsterFile( const std::filesystem::path &fileName );
 
     /**
      * @brief Read a Gibi Mesh file
      * @return retourne true si tout est ok
      */
-    bool readGibiFile( const std::string &fileName );
+    bool readGibiFile( const std::filesystem::path &fileName );
 
     /**
      * @brief Read a Gmsh Mesh file
      * @return retourne true si tout est ok
      */
-    bool readGmshFile( const std::string &fileName );
+    bool readGmshFile( const std::filesystem::path &fileName );
 
     MeshPtr convertToLinear( const ASTERINTEGER info = 1 );
 

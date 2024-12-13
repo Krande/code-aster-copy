@@ -59,14 +59,16 @@ int MedFileReader::getMeshNumber() const { return _meshes.size(); };
 
 int MedFileReader::getProfileNumber() const { return _profiles.size(); };
 
-int MedFileReader::open( const std::string &filename, const MedFileAccessType &openType ) {
+int MedFileReader::open( const std::filesystem::path &filename,
+                         const MedFileAccessType &openType ) {
     _filePtr.open( filename, openType );
     readFile();
 
     return 0;
 };
 
-int MedFileReader::openParallel( const std::string &filename, const MedFileAccessType &openType ) {
+int MedFileReader::openParallel( const std::filesystem::path &filename,
+                                 const MedFileAccessType &openType ) {
     _filePtr.openParallel( filename, openType );
     readFile();
 

@@ -89,8 +89,8 @@ def build(self):
 def check_bibcxx_depends(self):
     """check dependencies of bibcxx"""
     self.check_cxx(uselib_store="CXX", lib="stdc++")
-    # if int(self.env.CC_VERSION[0] or 0) < 9:
-    #     self.check_cxx(uselib_store="CXX", lib="stdc++fs")
+    if int(self.env.CC_VERSION[0] or 0) < 9:
+        self.check_cxx(uselib_store="CXX", lib="stdc++fs")
 
 
 @Configure.conf

@@ -88,11 +88,11 @@ class ExtendedParallelMesh:
         """
         if not partitioned:
             self, field = splitMeshAndFieldsFromMedFile(
-                str(filename), outMesh=self, deterministic=deterministic
+                filename, outMesh=self, deterministic=deterministic
             )
             self.show(verbose & 3)
         else:
-            mesh_builder.buildFromMedFile(self, str(filename), meshname, verbose)
+            mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
 
     def checkConsistency(self, filename):
         """Check that the partitioned mesh is consistent, i.e. that all nodes,

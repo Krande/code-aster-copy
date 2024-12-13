@@ -31,6 +31,8 @@
 #include "Meshes/MeshExplorer.h"
 #include "Utilities/GenericEnum.h"
 
+#include <filesystem>
+
 /** @brief Forward declaration of ConstantFieldOnCells */
 template < class ValueType >
 class ConstantFieldOnCells;
@@ -108,7 +110,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Read a Mesh file
      * @return return true if it succeeds, false otherwise
      */
-    bool readMeshFile( const std::string &fileName, const std::string &format,
+    bool readMeshFile( const std::filesystem::path &fileName, const std::string &format,
                        const int verbosity );
 
   public:
@@ -410,7 +412,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @param fileName Nom du fichier MED à imprimer
      * @return true
      */
-    bool printMedFile( const std::string fileName, bool local = true ) const;
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true ) const;
 
     /**
      * @brief Get the mapping between local and global numbering of nodes

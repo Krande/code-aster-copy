@@ -165,7 +165,7 @@ Returns:
 Print the mesh in the MED format
 
 Arguments:
-    filename (str): Name of the file
+    filename (Path|str): Name of the file
     local (bool=True) : print local values only (relevant for BaseMesh only)
 
 Returns:

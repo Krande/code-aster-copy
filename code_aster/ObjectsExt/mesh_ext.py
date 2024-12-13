@@ -301,7 +301,7 @@ class ExtendedMesh:
             verbose (int): 0 - warnings, 1 - informations about main steps,
                 2 - informations about all steps
         """
-        mesh_builder.buildFromMedFile(self, str(filename), meshname, verbose)
+        mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.

@@ -74,3 +74,8 @@ exit = partial(close, exit=True)
 
 # objects can not be automatically saved during automatic exit
 atexit.register(partial(close, atexit=True))
+
+del atexit
+del os
+del partial
+del Path

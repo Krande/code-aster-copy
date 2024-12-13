@@ -60,24 +60,27 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 FieldOnCellsReal
             )" )
-        .def( "toSimpleFieldOnCells",
-              []( const FieldOnCellsReal &f ) { return toSimpleFieldOnCells( f ); },
-              R"(
+        .def(
+            "toSimpleFieldOnCells",
+            []( const FieldOnCellsReal &f ) { return toSimpleFieldOnCells( f ); },
+            R"(
 Convert to SimpleFieldOnNodes
 
 Returns:
     SimpleFieldOnNodesReal: field converted
         )" )
-        .def( "toFieldOnNodes", []( const FieldOnCellsReal &f ) { return toFieldOnNodes( f ); },
-              R"(
+        .def(
+            "toFieldOnNodes", []( const FieldOnCellsReal &f ) { return toFieldOnNodes( f ); },
+            R"(
 Convert to FieldOnNodes
 
 Returns:
     FieldOnNodesReal: field converted
         )" )
-        .def( "toSimpleFieldOnNodes",
-              []( const FieldOnCellsReal &f ) { return toSimpleFieldOnNodes( f ); },
-              R"(
+        .def(
+            "toSimpleFieldOnNodes",
+            []( const FieldOnCellsReal &f ) { return toSimpleFieldOnNodes( f ); },
+            R"(
 Convert to SimpleFieldOnNodes
 
 Returns:
@@ -116,10 +119,13 @@ Returns:
         .def( "getDescription", &FieldOnCellsReal::getDescription )
         .def( "build", &FieldOnCellsReal::build,
               py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() )
-        .def( "__getitem__", +[]( const FieldOnCellsReal &v, ASTERINTEGER i ) { return v[i]; } )
-        .def( "__setitem__", +[]( FieldOnCellsReal &v, ASTERINTEGER i,
-                                  float f ) { return v.operator[]( i ) = f; } )
-        .def( "__len__", +[]( const FieldOnCellsReal &v ) { return v.size(); } )
+        .def(
+            "__getitem__", +[]( const FieldOnCellsReal &v, ASTERINTEGER i ) { return v[i]; } )
+        .def(
+            "__setitem__",
+            +[]( FieldOnCellsReal &v, ASTERINTEGER i, float f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__len__", +[]( const FieldOnCellsReal &v ) { return v.size(); } )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self + py::self )
@@ -193,7 +199,7 @@ Returns:
             Print the field in MED format.
 
             Arguments:
-                filename (str): Path to the file to be printed.
+                filename (Path|str): Path to the file to be printed.
                 local (bool): Print local values only (relevant for ParallelMesh only,
                     default: *True*)
 
@@ -282,18 +288,22 @@ Returns:
             Returns:
                 list[complex]: List of values.
             )" )
-        .def( "__getitem__", +[]( const FieldOnCellsComplex &v, int i ) { return v[i]; } )
-        .def( "__setitem__", +[]( FieldOnCellsComplex &v, ASTERINTEGER i,
-                                  ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
-        .def( "__len__", +[]( const FieldOnCellsComplex &v ) { return v.size(); } )
+        .def(
+            "__getitem__", +[]( const FieldOnCellsComplex &v, int i ) { return v[i]; } )
+        .def(
+            "__setitem__", +[]( FieldOnCellsComplex &v, ASTERINTEGER i,
+                                ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__len__", +[]( const FieldOnCellsComplex &v ) { return v.size(); } )
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self * float() )
         .def( float() * py::self )
-        .def( "toFieldOnNodes", []( const FieldOnCellsComplex &f ) { return toFieldOnNodes( f ); },
-              R"(
+        .def(
+            "toFieldOnNodes", []( const FieldOnCellsComplex &f ) { return toFieldOnNodes( f ); },
+            R"(
 Convert to FieldOnNodes
 
 Returns:
@@ -331,7 +341,7 @@ Returns:
             Print the field in MED format.
 
             Arguments:
-                filename (str): Path to the file to be printed.
+                filename (Path|str): Path to the file to be printed.
 
             Returns:
                 bool: *True* if succeeds, *False* otherwise.
@@ -382,10 +392,13 @@ Returns:
             Returns:
                 list[int]: List of values.
             )" )
-        .def( "__getitem__", +[]( const FieldOnCellsLong &v, int i ) { return v[i]; } )
-        .def( "__setitem__", +[]( FieldOnCellsLong &v, ASTERINTEGER i,
-                                  ASTERINTEGER f ) { return v.operator[]( i ) = f; } )
-        .def( "__len__", +[]( const FieldOnCellsLong &v ) { return v.size(); } )
+        .def(
+            "__getitem__", +[]( const FieldOnCellsLong &v, int i ) { return v[i]; } )
+        .def(
+            "__setitem__", +[]( FieldOnCellsLong &v, ASTERINTEGER i,
+                                ASTERINTEGER f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__len__", +[]( const FieldOnCellsLong &v ) { return v.size(); } )
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( py::self += py::self )
@@ -402,7 +415,7 @@ Returns:
             Print the field in MED format.
 
             Arguments:
-                filename (str): Path to the file to be printed.
+                filename (Path|str): Path to the file to be printed.
 
             Returns:
                 bool: *True* if succeeds, *False* otherwise.

@@ -17,12 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
+
 import numpy as np
 
 from ..Messages import UTMESS
-from ..Utilities import MPI, Timer, config
+from ..Utilities import MPI, Timer, config, no_new_attributes
 from ..Utilities import medcoupling as medc
-from ..Utilities import no_new_attributes
 from ..Utilities.MedUtils import MedFileAccessType, MedFileReader
 from ..Utilities.MedUtils.medtoasterconnectivity import (
     ASTER_TYPES,
@@ -112,10 +113,10 @@ class MEDCouplingMeshHelper:
         """Define the medcoupling mesh by reading a MED file.
 
         Arguments:
-            path (str): Path to the med file.
+            path (Path|str): Path to the med file.
             meshname (str): Name of the mesh to be read from file.
         """
-        self.setMedCouplingMesh(medc.MEDFileUMesh(path, meshname))
+        self.setMedCouplingMesh(medc.MEDFileUMesh(os.fspath(path), meshname))
         self._file_name = path
 
     def buildMesh(self, mesh, verbose=0):
